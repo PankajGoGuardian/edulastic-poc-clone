@@ -1,3 +1,4 @@
+const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
 module.exports = {
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
@@ -71,7 +72,7 @@ module.exports = {
       key: 'enableSkipAlert',
       id: 'skip-alert',
     },
-    immersiveReader: { key: 'showImmersiveReader', id: 'immersive-reader' },
+    immersiveReader: { key: SHOW_IMMERSIVE_READER, id: 'immersive-reader' },
   },
   settingCategoriesFeatureMap: {
     'test-type': 'selectTestType',
@@ -437,6 +438,7 @@ module.exports = {
     'penaltyOnUsingHints',
     'allowTeacherRedirect',
     'showTtsForPassages',
+    SHOW_IMMERSIVE_READER,
   ],
   docBasedSettingsOptions: [
     'partialScore',

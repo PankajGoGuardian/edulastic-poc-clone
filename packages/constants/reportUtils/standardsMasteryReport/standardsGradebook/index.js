@@ -21,6 +21,7 @@ const {
 } = require('./constants')
 
 // common utils
+const roundUpto = 2 // Rounding off a decimal value upto 2 decimal places
 
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
@@ -39,9 +40,12 @@ const preProcessSummaryMetrics = ({ summaryMetricInfo }) => {
   return summaryMetricInfo.map((standard) => {
     const { totalStudents, performance } = standard
     const _performance = {
-      avgScore: round(performance.totalScore / totalStudents, 2),
-      totalScore: round(performance.totalMaxScore / totalStudents, 2),
-      masteryScore: round(performance.totalMasteryScore / totalStudents, 2),
+      avgScore: round(performance.totalScore, roundUpto),
+      totalScore: round(performance.totalMaxScore, roundUpto),
+      masteryScore: round(
+        performance.totalMasteryScore / totalStudents,
+        roundUpto
+      ),
     }
     return { ...standard, performance: _performance }
   })
@@ -107,6 +111,7 @@ const getChartData = (summaryMetricInfoWithSkillInfo, scaleInfo) => {
 const getAllAnalyseByPerformanceData = ({
   avgScore,
   totalScore,
+  scorePercent,
   masteryScore,
   scaleInfo,
   useAbbreviation = false,
@@ -115,15 +120,20 @@ const getAllAnalyseByPerformanceData = ({
   const masteryLevelLabel = useAbbreviation
     ? masteryLevel.masteryLabel
     : masteryLevel.masteryName
+  const avgScorePercent = `${round(
+    typeof scorePercent === 'number'
+      ? scorePercent * 100
+      : percentage(avgScore, totalScore),
+    roundUpto
+  )}%`
   return {
-    [analyseByKeys.SCORE_PERCENT]:
-      avgScore != null ? `${round(percentage(avgScore, totalScore))}%` : null,
+    [analyseByKeys.SCORE_PERCENT]: avgScore != null ? avgScorePercent : null,
     [analyseByKeys.RAW_SCORE]:
       avgScore != null
-        ? `${round(avgScore, 2)} / ${round(totalScore, 2)}`
+        ? `${round(avgScore, roundUpto)} / ${round(totalScore, roundUpto)}`
         : null,
     [analyseByKeys.MASTERY_SCORE]:
-      masteryScore != null ? round(masteryScore, 2) : null,
+      masteryScore != null ? round(masteryScore, roundUpto) : null,
     [analyseByKeys.MASTERY_LEVEL]:
       masteryScore != null ? masteryLevelLabel : null,
     color: masteryScore != null ? masteryLevel.color : null,

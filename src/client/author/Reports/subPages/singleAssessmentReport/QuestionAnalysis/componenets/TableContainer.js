@@ -1,9 +1,11 @@
-import React from 'react'
-import { Pagination, Col } from 'antd'
 import { EduIf, SpinLoader } from '@edulastic/common'
+import { reportUtils } from '@edulastic/constants'
+import { Col, Pagination } from 'antd'
+import React from 'react'
 
 import { QuestionAnalysisTable } from './table/questionAnalysisTable'
-import { compareByToPluralName } from '../constants'
+
+const { compareByToPluralName } = reportUtils.questionAnalysis
 
 const TableContainer = ({
   performanceByDimensionLoading,

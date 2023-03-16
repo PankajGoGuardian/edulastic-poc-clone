@@ -1,24 +1,19 @@
+import next from 'immer'
 import {
-  partialRight,
   ceil,
-  groupBy,
-  sumBy,
-  includes,
-  map,
-  orderBy,
-  round,
   find,
+  groupBy,
+  includes,
   indexOf,
   keyBy,
+  map,
+  orderBy,
+  partialRight,
+  round,
+  sumBy,
 } from 'lodash'
-import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
-import {
-  getOrderedQuestions,
-  sortByAvgPerformanceAndLabel,
-} from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
-import { compareByToPluralName } from '../subPages/singleAssessmentReport/QuestionAnalysis/constants'
 
 const studentFiltersDefaultValues = [
   {
@@ -287,60 +282,6 @@ export const toggleItem = (items, item) =>
       draftState.push(item)
     }
   })
-
-export const convertQAnalysisTableToCSV = (
-  qSummary,
-  dataSource,
-  compareBy,
-  filter,
-  sortBy
-) => {
-  const csv = []
-  const csvRawData = []
-  const headerRow = []
-  // header row
-  const qLabelsToFilter = Object.keys(filter)
-  const compareByTitle = compareByToPluralName[compareBy]
-  headerRow.push(`${compareByTitle}`)
-  let orderedQuestions = sortByAvgPerformanceAndLabel(
-    getOrderedQuestions(qSummary),
-    sortBy
-  )
-  if (qLabelsToFilter.length) {
-    orderedQuestions = orderedQuestions.filter((item) =>
-      qLabelsToFilter.includes(item.questionLabel)
-    )
-  }
-  orderedQuestions.forEach((question) => {
-    headerRow.push(
-      `${question.questionLabel}: ${question.standards.join('|')}: ${
-        question.points
-      }`
-    )
-  })
-  csv.push(headerRow.join(','))
-  csvRawData.push(headerRow)
-  // district avg row
-  const districtHeaderRow = ['District Avg.']
-  orderedQuestions.forEach((question) => {
-    districtHeaderRow.push(Math.round(question.districtAvgPerf))
-  })
-  csv.push(districtHeaderRow.join(','))
-  csvRawData.push(districtHeaderRow)
-  // content area
-  dataSource.forEach((data) => {
-    const contentRows = [data.dimension]
-    orderedQuestions.forEach((question) => {
-      contentRows.push(data.scorePercentByQId[question.questionId])
-    })
-    csv.push(contentRows.join(','))
-    csvRawData.push(contentRows)
-  })
-  return {
-    csvText: csv.join('\n'),
-    csvRawData,
-  }
-}
 
 export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
   const rows = refComponent.querySelectorAll('table')[0].querySelectorAll('tr')

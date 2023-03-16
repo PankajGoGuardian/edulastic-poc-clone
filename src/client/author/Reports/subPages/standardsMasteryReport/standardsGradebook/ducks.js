@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -259,10 +259,20 @@ function* getStandardsGradebookSummaryRequest({ payload }) {
 
 function* getStandardsGradebookDetailsRequest({ payload }) {
   try {
+    let lastTotalRows = null
+    const willGetPageSize = !!payload.requireTotalCount
+    if (!willGetPageSize) {
+      const currentDetails = yield select(getStandardsGradebookDetails)
+      lastTotalRows = currentDetails?.data?.result?.totalRows
+    }
     const details = yield call(
       reportsApi.fetchStandardsGradebookDetails,
       payload
     )
+    const hasReceivedData = !!details?.data?.result
+    if (!willGetPageSize && hasReceivedData) {
+      details.data.result.totalRows = lastTotalRows
+    }
     const dataSizeExceeded = details?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put({

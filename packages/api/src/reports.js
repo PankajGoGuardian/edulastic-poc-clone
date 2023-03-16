@@ -156,21 +156,21 @@ const fetchStandardMasteryBrowseStandards = ({
   })
 }
 
-const fetchQuestionAnalysisSummaryReport = ({ requestFilters, testId }) =>
+const fetchQuestionAnalysisSummaryReport = (params) =>
   api
     .callApi({
       useSlowApi: true,
       url: `/report/question-analysis/summary`,
-      params: { ...requestFilters, testId },
+      params,
     })
     .then((response) => response.data.result)
 
-const fetchQuestionAnalysisPerformanceReport = ({ requestFilters, testId }) =>
+const fetchQuestionAnalysisPerformanceReport = (params) =>
   api
     .callApi({
       useSlowApi: true,
       url: `report/question-analysis/details`,
-      params: { ...requestFilters, testId },
+      params,
     })
     .then((response) => response.data.result)
 

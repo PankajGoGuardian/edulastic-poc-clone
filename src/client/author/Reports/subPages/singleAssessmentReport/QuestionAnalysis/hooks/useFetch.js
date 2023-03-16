@@ -3,6 +3,12 @@ import { pick } from 'lodash'
 import { useEffect, useState } from 'react'
 import { pickDataForDetails, pickDataForSummary } from '../constants'
 
+const {
+  fetchQuestionAnalysisSummaryReport,
+  fetchQuestionAnalysisPerformanceReport,
+} = reportsApi
+
+const timeout_100ms = 100
 export const useQAnalysisSummaryFetch = ({
   settings,
   demographicFilters,
@@ -16,29 +22,21 @@ export const useQAnalysisSummaryFetch = ({
     if (settings.selectedTest && settings.selectedTest.key) {
       try {
         setLoading(true)
-        const q = {
-          requestFilters: {
-            ...settings.requestFilters,
-            ...demographicFilters,
-          },
+        const params = {
+          ...pick(settings.requestFilters, pickDataForSummary),
+          ...demographicFilters,
           testId: settings.selectedTest.key,
         }
-        reportsApi
-          .fetchQuestionAnalysisSummaryReport({
-            ...q,
-            requestFilters: {
-              ...pick(q.requestFilters, pickDataForSummary),
-            },
-          })
-          .then((response) => {
-            setData(response || {})
-            setLoading(false)
-            if (response?.metricInfo?.length) {
-              toggleFilter(null, false)
-            } else {
-              toggleFilter(null, true)
-            }
-          })
+
+        fetchQuestionAnalysisSummaryReport(params).then((response) => {
+          setData(response || {})
+          setLoading(false)
+          if (response?.metricInfo?.length) {
+            toggleFilter(null, false)
+          } else {
+            toggleFilter(null, true)
+          }
+        })
       } catch (e) {
         setError(e)
         setLoading(false)
@@ -61,35 +59,33 @@ export const useQAnalysisDetailsFetch = ({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      try {
-        setLoading(true)
-        const q = {
-          requestFilters: {
-            ...settings.requestFilters,
+    const fetchData = () => {
+      if (settings.selectedTest && settings.selectedTest.key) {
+        try {
+          setLoading(true)
+          const params = {
+            ...pick(settings.requestFilters, pickDataForDetails),
             ...demographicFilters,
             compareBy,
             sortOrder: !sortOrder ? 'asc' : 'desc',
             page: pageNo,
             pageSize,
-          },
-          testId: settings.selectedTest.key,
-        }
-        reportsApi
-          .fetchQuestionAnalysisPerformanceReport({
-            ...q,
-            requestFilters: {
-              ...pick(q.requestFilters, pickDataForDetails),
-            },
-          })
-          .then((response) => {
+            testId: settings.selectedTest.key,
+          }
+
+          fetchQuestionAnalysisPerformanceReport(params).then((response) => {
             setData(response)
             setLoading(false)
           })
-      } catch (e) {
-        setError(e)
-        setLoading(false)
+        } catch (e) {
+          setError(e)
+          setLoading(false)
+        }
       }
+    }
+    const timeout = setTimeout(fetchData, timeout_100ms)
+    return () => {
+      clearTimeout(timeout)
     }
   }, [
     settings.selectedTest?.key,

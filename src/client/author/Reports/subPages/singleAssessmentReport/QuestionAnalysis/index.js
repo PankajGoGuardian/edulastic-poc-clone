@@ -94,6 +94,12 @@ const QuestionAnalysis = ({
     }
   }, [qSummary, qSummaryLoading, performanceByDimensionLoading])
 
+  useEffect(() => {
+    if (pageNo !== 1) {
+      setpageNo(1)
+    }
+  }, [settings])
+
   const chartData = useMemo(() => getChartData(qSummary, sortKey), [
     qSummary,
     sortKey,

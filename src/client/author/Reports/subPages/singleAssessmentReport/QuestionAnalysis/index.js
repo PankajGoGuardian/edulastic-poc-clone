@@ -62,11 +62,12 @@ const QuestionAnalysis = ({
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
-  const selectedTest = settings.selectedTest
+  const { selectedTest } = settings
   if (testList) {
     const currentTest = testList.find((item) => item._id === selectedTest?.key)
     if (currentTest) {
-      selectedTest.title = currentTest.title
+      const { title } = currentTest
+      selectedTest.title = title
     }
   }
   const assessmentName = getAssessmentName(

@@ -57,6 +57,12 @@ export const DemographicCompareByOptions = [
   'hispanicEthnicity',
 ]
 
+const tableHeaderFields = {
+  question: 'Question',
+  standards: 'STANDARDS',
+  points: 'POINTS',
+}
+
 export const percentage = (
   numerator = 0,
   denominator = 0,
@@ -296,14 +302,14 @@ export const convertQAnalysisTableToCSV = (
 ) => {
   const csv = []
   const csvRawData = []
-  const headerRow = []
+  const questionRow = []
   const standards = []
   const points = []
   // header row
   const qLabelsToFilter = Object.keys(filter)
-  headerRow.push(`Question`)
-  standards.push('STANDARDS')
-  points.push('POINTS')
+  questionRow.push(tableHeaderFields.question)
+  standards.push(tableHeaderFields.standards)
+  points.push(tableHeaderFields.points)
   let orderedQuestions = sortByAvgPerformanceAndLabel(
     getOrderedQuestions(qSummary),
     sortBy
@@ -314,14 +320,16 @@ export const convertQAnalysisTableToCSV = (
     )
   }
   orderedQuestions.forEach((question) => {
-    headerRow.push(`${question.questionLabel}`)
-    standards.push(`"${question.standards.join(',')}"`)
+    questionRow.push(`${question.questionLabel}`)
+    standards.push(
+      `"${question.standards ? question.standards.join(',') : ''}"`
+    )
     points.push(`${question.points}`)
   })
-  csv.push(headerRow.join(','))
+  csv.push(questionRow.join(','))
   csv.push(standards.join(','))
   csv.push(points.join(','))
-  csvRawData.push(headerRow)
+  csvRawData.push(questionRow)
   csvRawData.push(standards)
   csvRawData.push(points)
   // district avg row

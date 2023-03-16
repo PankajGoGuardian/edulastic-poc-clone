@@ -13,7 +13,6 @@ export const useQAnalysisSummaryFetch = ({
   settings,
   demographicFilters,
   toggleFilter,
-  sortOrder,
 }) => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -42,7 +41,7 @@ export const useQAnalysisSummaryFetch = ({
         setLoading(false)
       }
     }
-  }, [settings.selectedTest?.key, settings.requestFilters, sortOrder])
+  }, [settings.selectedTest?.key, settings.requestFilters])
 
   return [data, loading, error]
 }

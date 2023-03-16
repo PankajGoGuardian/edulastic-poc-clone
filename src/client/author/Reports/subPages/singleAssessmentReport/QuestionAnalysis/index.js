@@ -68,7 +68,6 @@ const QuestionAnalysis = ({
     settings,
     demographicFilters,
     toggleFilter,
-    sortOrder,
   })
   const [
     performanceByDimension,

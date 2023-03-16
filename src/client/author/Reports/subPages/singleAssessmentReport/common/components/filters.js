@@ -470,7 +470,7 @@ const SingleAssessmentReportFilters = ({
       <FilterTags
         isPrinting={isPrinting}
         visible={!reportId && !isCliUser}
-        tagsData={tagsData}
+        tagsData={{ ...tempTagsData, ...tagsData }}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
         handleTagClick={handleTagClick}

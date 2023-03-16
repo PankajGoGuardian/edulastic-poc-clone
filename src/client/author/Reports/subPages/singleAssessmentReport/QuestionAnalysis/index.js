@@ -13,9 +13,13 @@ import {
   StyledP,
   BottomRow,
   UpperContainer,
+  StyledDiv,
+  StyledSwitch,
+  StyledSpan,
+  StyledCol,
 } from './componenets/styled'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
 import TableContainer from './componenets/TableContainer'
@@ -41,6 +45,7 @@ const QuestionAnalysis = ({
   sharedReport,
   toggleFilter,
   demographicFilters,
+  testList,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -57,8 +62,17 @@ const QuestionAnalysis = ({
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
-
-  const assessmentName = getAssessmentName(settings.selectedTest)
+  const { selectedTest } = settings
+  if (testList) {
+    const currentTest = testList.find((item) => item._id === selectedTest?.key)
+    if (currentTest) {
+      const { title } = currentTest
+      selectedTest.title = title
+    }
+  }
+  const assessmentName = getAssessmentName(
+    settings.tagsData?.testId || selectedTest
+  )
 
   const [
     qSummaryData,
@@ -166,9 +180,24 @@ const QuestionAnalysis = ({
     <div>
       <UpperContainer>
         <StyledCard>
-          <StyledH3 data-testid="title">
-            Question Performance Analysis | {assessmentName}
-          </StyledH3>
+          <Row type="flex" justify="space-between" align="middle">
+            <StyledH3 data-testid="title" align="middle" margin="0">
+              Question Performance Analysis | {assessmentName}
+            </StyledH3>
+            <StyledCol>
+              <StyledDiv fontWeight="600" marginRight="10px" opacity="0.65">
+                Sort By (asc.):
+              </StyledDiv>
+              <StyledDiv>
+                <StyledSpan>Performance</StyledSpan>
+                <StyledSwitch
+                  checked={sortKey === sortByOptions.Q_LABEL}
+                  onChange={handleSort}
+                />
+                <StyledSpan>Question</StyledSpan>
+              </StyledDiv>
+            </StyledCol>
+          </Row>
           <SimpleStackedBarWithLineChartContainer
             chartData={chartData}
             onBarClickCB={onBarClickCB}
@@ -188,8 +217,6 @@ const QuestionAnalysis = ({
               userRole={userRole}
               compareBy={compareBy}
               assessmentName={assessmentName}
-              sortKey={sortKey}
-              handleSort={handleSort}
               updateCompareByCB={updateCompareByCB}
             />
             <TableContainer
@@ -224,4 +251,5 @@ QuestionAnalysis.propTypes = {
 export default connect((state) => ({
   isCsvDownloading: getCsvDownloadingState(state),
   role: getUserRole(state),
+  testList: getTestListSelector(state),
 }))(QuestionAnalysis)

@@ -22,7 +22,9 @@ const GetCellContents = (props) => {
   const { score } = props
   const bgColor = getHSLFromRange1(score)
   return (
-    <ColoredCell bgColor={bgColor}>{score ? `${score}%` : '-'}</ColoredCell>
+    <ColoredCell bgColor={bgColor}>
+      {!Number.isNaN(score) ? `${score}%` : '0%'}
+    </ColoredCell>
   )
 }
 
@@ -67,7 +69,9 @@ const getTableColumns = (
       key: question.questionId,
       children: [
         {
-          title: Math.round(question.districtAvgPerf),
+          title: !Number.isNaN(question.districtAvgPerf)
+            ? `${Math.round(question.districtAvgPerf)}%`
+            : '0%',
           dataIndex: `scorePercentByQId.${question.questionId}`,
           key: question.questionId,
           render: (text, record) => (
@@ -151,7 +155,6 @@ export const QuestionAnalysisTable = ({
       const { csvText, csvRawData } = convertQAnalysisTableToCSV(
         qSummary,
         tableData,
-        compareBy,
         filter,
         sortKey
       )
@@ -170,7 +173,7 @@ export const QuestionAnalysisTable = ({
       rowKey="questionId"
       colorCellStart={2}
       flexWrap="unset"
-      scroll={{ y: 300 }}
+      scroll={{ x: '100%', y: '100%' }}
       onChange={() => {
         setSortByDimension((prevState) => !prevState)
       }}

@@ -139,19 +139,24 @@ export const QLabelSpan = styled.span`
   color: ${themeColor};
   margin-bottom: 10px;
   display: inline-block;
+  font-size: 12px;
 `
 export const StyledSwitch = styled(Switch)`
   margin-left: 10px;
   margin-right: 10px;
   width: 35px;
   display: inline-block;
+  &.ant-switch-checked,
+  &.ant-switch {
+    background-color: #1890ff;
+  }
 `
 export const StyledDiv = styled.div`
   font-size: 12px;
   color: black;
   opacity: ${(props) => props.opacity || 1};
   font-weight: ${(props) => props.fontWeight || 400};
-  margin-right: ${(props) => props.marginRight || '25px'};
+  margin-right: ${(props) => props.marginRight || '0'};
 `
 
 export const StyledCol = styled(Col)`
@@ -161,4 +166,8 @@ export const StyledCol = styled(Col)`
 `
 export const StyledSpan = styled.span`
   opacity: 0.65;
+`
+export const StyledHeadDiv = styled.div`
+  display: flex;
+  flex-direction: column;
 `

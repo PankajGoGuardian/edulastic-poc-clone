@@ -18,7 +18,6 @@ import {
   getOrderedQuestions,
   sortByAvgPerformanceAndLabel,
 } from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
-import { compareByToPluralName } from '../subPages/singleAssessmentReport/QuestionAnalysis/constants'
 
 const studentFiltersDefaultValues = [
   {
@@ -57,6 +56,13 @@ export const DemographicCompareByOptions = [
   'iepStatus',
   'hispanicEthnicity',
 ]
+
+const tableHeaderFields = {
+  question: 'Question',
+  standards: 'STANDARDS',
+  points: 'POINTS',
+  districtAvg: 'District Avg.',
+}
 
 export const percentage = (
   numerator = 0,
@@ -288,20 +294,30 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertQAnalysisTableToCSV = (
-  qSummary,
-  dataSource,
-  compareBy,
-  filter,
-  sortBy
-) => {
-  const csv = []
-  const csvRawData = []
-  const headerRow = []
-  // header row
+const prepareHeaderRow = (questions) => {
+  const questionRow = [tableHeaderFields.question]
+  const standards = [tableHeaderFields.standards]
+  const points = [tableHeaderFields.points]
+  questions.forEach((question) => {
+    questionRow.push(`${question.questionLabel}`)
+    standards.push(
+      `"${question.standards ? question.standards.join(',') : ''}"`
+    )
+    points.push(`${question.points}`)
+  })
+  return { questionRow, standards, points }
+}
+
+const prepareDistrictHeaderRow = (questions) => {
+  const districtHeaderRow = [tableHeaderFields.districtAvg]
+  questions.forEach((question) => {
+    districtHeaderRow.push(Math.round(question.districtAvgPerf))
+  })
+  return districtHeaderRow
+}
+
+const getOrderedAndSelectedQuestions = (qSummary, filter, sortBy) => {
   const qLabelsToFilter = Object.keys(filter)
-  const compareByTitle = compareByToPluralName[compareBy]
-  headerRow.push(`${compareByTitle}`)
   let orderedQuestions = sortByAvgPerformanceAndLabel(
     getOrderedQuestions(qSummary),
     sortBy
@@ -311,20 +327,30 @@ export const convertQAnalysisTableToCSV = (
       qLabelsToFilter.includes(item.questionLabel)
     )
   }
-  orderedQuestions.forEach((question) => {
-    headerRow.push(
-      `${question.questionLabel}: ${question.standards.join('|')}: ${
-        question.points
-      }`
-    )
+  return orderedQuestions
+}
+
+export const convertQAnalysisTableToCSV = (
+  qSummary,
+  dataSource,
+  filter,
+  sortBy
+) => {
+  const csv = []
+  const csvRawData = []
+  const orderedQuestions = getOrderedAndSelectedQuestions(
+    qSummary,
+    filter,
+    sortBy
+  )
+  // header row
+  const headerRows = prepareHeaderRow(orderedQuestions)
+  Object.values(headerRows).forEach((row) => {
+    csv.push(row.join(','))
+    csvRawData.push(row)
   })
-  csv.push(headerRow.join(','))
-  csvRawData.push(headerRow)
   // district avg row
-  const districtHeaderRow = ['District Avg.']
-  orderedQuestions.forEach((question) => {
-    districtHeaderRow.push(Math.round(question.districtAvgPerf))
-  })
+  const districtHeaderRow = prepareDistrictHeaderRow(orderedQuestions)
   csv.push(districtHeaderRow.join(','))
   csvRawData.push(districtHeaderRow)
   // content area

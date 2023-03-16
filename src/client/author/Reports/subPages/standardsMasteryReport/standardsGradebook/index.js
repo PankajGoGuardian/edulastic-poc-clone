@@ -1,51 +1,51 @@
+import { Row } from 'antd'
+import { get, isEmpty, pickBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEmpty, pickBy } from 'lodash'
-import { Row } from 'antd'
 
 import { SpinLoader } from '@edulastic/common'
-import { reportUtils } from '@edulastic/constants'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
-import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { StyledCard, NoDataContainer } from '../../../common/styled'
+import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import { NoDataContainer, StyledCard } from '../../../common/styled'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
 import StandardsGradebookTable from './components/table'
 
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
-  getStandardsGradebookSummaryLoader,
-  getStandardsGradebookSummary,
-  getStandardsGradebookSummaryAction,
-  getStandardsGradebookDetailsLoader,
+  getReportsStandardsGradebookError,
+  getSkillInfoLoader,
   getStandardsGradebookDetails,
   getStandardsGradebookDetailsAction,
-  getSkillInfoLoader,
+  getStandardsGradebookDetailsLoader,
   getStandardsGradebookSkillInfo,
   getStandardsGradebookSkillInfoAction,
+  getStandardsGradebookSummary,
+  getStandardsGradebookSummaryAction,
+  getStandardsGradebookSummaryLoader,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
-  getReportsStandardsGradebookError,
   resetStandardsGradebookAction,
 } from './ducks'
 
 import BackendPagination from '../../../common/components/BackendPagination'
+import ChartHeader from './components/ChartHeader'
+import TableFilters from './components/TableFilters'
+import TableHeader from './components/TableHeader'
 import useSelectedStandardBars from './hooks/useSelectedStandardBars'
 import useStudentAssignmentModal from './hooks/useStudentAssignmentModal'
+import useTableFilters from './hooks/useTableFilters'
 import {
   getDetailsApiQuery,
   getScaleInfo,
   getSkillInfoApiQuery,
   getSummaryApiQuery,
 } from './utils/transformers'
-import TableFilters from './components/TableFilters'
-import TableHeader from './components/TableHeader'
-import ChartHeader from './components/ChartHeader'
-import useTableFilters from './hooks/useTableFilters'
 
 const { getStudentAssignments } = reportUtils.common
 const {
@@ -80,6 +80,7 @@ const StandardsGradebook = ({
   ddfilter,
   userRole,
   sharedReport,
+  generateCSV,
 }) => {
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -172,6 +173,13 @@ const StandardsGradebook = ({
         (c) => selectedStandardBars[c.standardId]
       )
 
+  const generateCSVSelectionCriteria = [
+    chartFilters.pageSize < standardIdsCount,
+    tableFilters.pageSize < totalRows,
+    error && error.dataSizeExceeded,
+  ]
+  const generateCSVRequired = generateCSVSelectionCriteria.some((c) => c)
+
   useEffect(() => () => resetStandardsGradebook(), [])
 
   useEffect(() => {
@@ -221,6 +229,32 @@ const StandardsGradebook = ({
       }
     }
   }, [summaryMetricInfoWithSkillInfo, detailsMetricInfo])
+
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const {
+        compareByKey: compareBy,
+        analyseByKey: analyseBy,
+        sortKey,
+        sortOrder,
+      } = tableFilters
+
+      const params = {
+        reportType: reportTypes.reportNavType.STANDARDS_GRADEBOOK,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          analyseBy,
+          sortKey,
+          sortOrder,
+        },
+        reportExtras: {
+          tableFilters,
+        },
+      }
+      generateCSV(params)
+    }
+  }, [isCsvDownloading])
 
   if (loadingSummary || loadingSkillInfo || loadingDetails) {
     return (
@@ -285,7 +319,7 @@ const StandardsGradebook = ({
               summaryMetricInfo={summaryMetricInfo}
               detailsMetricInfo={detailsMetricInfo}
               isSharedReport={isSharedReport}
-              isCsvDownloading={isCsvDownloading}
+              isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
               navigationItems={navigationItems}
               summaryMetricInfoWithSkillInfo={
                 filteredSummaryMetricInfoWithSkillInfo
@@ -342,6 +376,7 @@ const enhance = compose(
       getDetailsRequest: getStandardsGradebookDetailsAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
+      generateCSV: generateCSVAction,
     }
   )
 )

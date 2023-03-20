@@ -54,7 +54,7 @@ const getHorizontalBarData = (data, selectedPerformanceBand) => {
         totalStudents,
         true
       ),
-      color: band.color,
+      color: band?.color,
     }
   })
 }

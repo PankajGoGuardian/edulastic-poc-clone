@@ -97,11 +97,12 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
   )
 }
 
-export const getTableApiQuery = (settings, tableFilters) => {
+export const getTableApiQuery = (settings, tableFilters, profileId) => {
   const { query } = curateApiFiltersQuery(
     {
       ...settings.requestFilters,
       ...tableFilters,
+      profileId,
       compareBy: tableFilters.compareBy.key,
     },
     filterDetailsFields,

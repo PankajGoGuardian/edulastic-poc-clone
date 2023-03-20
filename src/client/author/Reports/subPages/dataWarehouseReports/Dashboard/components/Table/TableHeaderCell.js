@@ -1,11 +1,24 @@
 import React from 'react'
 import { TableHeaderCellWrapper } from '../common/styledComponents'
 
-const TableHeaderCell = ({ title, value, color }) => {
+const TableHeaderCell = ({
+  title,
+  value,
+  color,
+  onTableHeaderCellClick,
+  cellKey,
+  isSelected,
+}) => {
   return (
-    <TableHeaderCellWrapper color={color}>
+    <TableHeaderCellWrapper color={color} isSelected={isSelected}>
       <span>{title}</span>
-      <span>{value}</span>
+      <span
+        onClick={() => {
+          onTableHeaderCellClick(cellKey)
+        }}
+      >
+        {value}
+      </span>
     </TableHeaderCellWrapper>
   )
 }

@@ -147,6 +147,7 @@ const Dashboard = ({
     tableFilters,
     setTableFilters,
     updateTableFiltersCB,
+    onTableHeaderCellClick,
     // setTablePagination,
   } = useTableFilters(compareByOptions[0])
 
@@ -165,12 +166,20 @@ const Dashboard = ({
 
   // get table data
   useEffect(() => {
-    const q = getTableApiQuery(settings, tableFilters)
+    const q = getTableApiQuery(
+      settings,
+      tableFilters,
+      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
+    )
     if (q.termId || q.reportId) {
       fetchDashboardTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, tableFilters])
+  }, [
+    settings.requestFilters,
+    tableFilters,
+    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
+  ])
 
   const showSpinLoader = [
     loadingAcademicSummaryData,
@@ -232,7 +241,7 @@ const Dashboard = ({
         <DashboardTable
           tableFilters={tableFilters}
           setTableFilters={setTableFilters}
-          updateTableFiltersCB={updateTableFiltersCB}
+          onTableHeaderCellClick={onTableHeaderCellClick}
           tableData={tableData}
           selectedPerformanceBand={selectedPerformanceBand}
           loadingTableData={loadingTableData}

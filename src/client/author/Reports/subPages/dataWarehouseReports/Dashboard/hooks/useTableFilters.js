@@ -17,16 +17,29 @@ const useTableFilters = (defaultCompareBy) => {
   const updateTableFiltersCB = (selected, tableFilterType) => {
     setTableFilters((prevState) => {
       const nextState = { ...prevState, [tableFilterType]: selected }
-      if (
-        !nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] &&
-        !nextState[tableFilterTypes.BELOW_AVG]
-      ) {
-        // if both are false, set true to both
-        nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] = true
-        nextState[tableFilterTypes.BELOW_AVG] = true
-      }
       return nextState
     })
+  }
+
+  const updateTableHeaderFilters = (filters, cellKey, keyName) => {
+    if (tableFilters[cellKey] && !tableFilters[keyName]) {
+      filters[keyName] = true
+    } else {
+      filters[keyName] = false
+      filters[cellKey] = true
+    }
+  }
+
+  const onTableHeaderCellClick = (cellKey) => {
+    const filters = { ...tableFilters }
+    if (cellKey === tableFilterTypes.ABOVE_EQUAL_TO_AVG) {
+      const keyName = tableFilterTypes.BELOW_AVG
+      updateTableHeaderFilters(filters, cellKey, keyName)
+    } else {
+      const keyName = tableFilterTypes.ABOVE_EQUAL_TO_AVG
+      updateTableHeaderFilters(filters, cellKey, keyName)
+    }
+    setTableFilters({ ...filters })
   }
 
   const setTablePagination = ({ page }) => {
@@ -37,6 +50,7 @@ const useTableFilters = (defaultCompareBy) => {
     tableFilters,
     setTableFilters,
     updateTableFiltersCB,
+    onTableHeaderCellClick,
     setTablePagination,
   }
 }

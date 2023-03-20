@@ -1,36 +1,32 @@
+import Recorder from 'recorder-js'
 import { getUserMedia } from '../../../utils/helpers'
 
 class VoiceRecorder {
   constructor() {
-    this.audioBlobs = []
-    this.mediaRecorder = null
     this.streamBeingCaptured = null
+    this.recorder = null
   }
 
   startRecording = async () => {
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)()
+    this.recorder = new Recorder(audioContext)
     const stream = await getUserMedia({ audio: true })
+    this.recorder.init(stream)
     this.streamBeingCaptured = stream
-    this.mediaRecorder = new MediaRecorder(stream)
-    this.audioBlobs = []
-    this.mediaRecorder.addEventListener('dataavailable', (event) => {
-      this.audioBlobs.push(event.data)
-    })
-    this.mediaRecorder.start()
+    this.recorder.start()
   }
 
   stopRecording = () => {
     return new Promise((resolve) => {
-      const mimeType = this.mediaRecorder.mimeType
-      this.mediaRecorder.addEventListener('stop', () => {
-        const audioBlob = new Blob(this.audioBlobs, { type: mimeType })
-        resolve(audioBlob)
+      this.recorder.stop().then(({ blob }) => {
+        resolve(blob)
+        this.cancelRecording()
       })
-      this.cancelRecording()
     })
   }
 
   cancelRecording = () => {
-    this.mediaRecorder.stop()
     this.stopStream()
     this.resetRecordingProperties()
   }
@@ -40,7 +36,7 @@ class VoiceRecorder {
   }
 
   resetRecordingProperties = () => {
-    this.mediaRecorder = null
+    this.recorder = null
     this.streamBeingCaptured = null
   }
 }

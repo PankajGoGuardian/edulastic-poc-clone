@@ -145,6 +145,7 @@ const Dashboard = ({
 
   const {
     tableFilters,
+    setTableFilters,
     updateTableFiltersCB,
     // setTablePagination,
   } = useTableFilters(compareByOptions[0])
@@ -203,11 +204,6 @@ const Dashboard = ({
         />
       </EduIf>
       <EduIf condition={!showSpinLoader}>
-        <SubHeader
-          breadcrumbData={breadcrumbData}
-          isCliUser={isCliUser}
-          alignment="baseline"
-        />
         <SectionLabel>Overview</SectionLabel>
         <MasonGrid>
           <EduIf condition={!isEmpty(academicSummaryData)}>
@@ -235,6 +231,7 @@ const Dashboard = ({
         />
         <DashboardTable
           tableFilters={tableFilters}
+          setTableFilters={setTableFilters}
           updateTableFiltersCB={updateTableFiltersCB}
           tableData={tableData}
           selectedPerformanceBand={selectedPerformanceBand}

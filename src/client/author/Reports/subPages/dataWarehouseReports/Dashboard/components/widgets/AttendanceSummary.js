@@ -1,8 +1,10 @@
 import {
+  lightBrown,
   lightGreen12,
   lightGrey8,
   lightGrey9,
   lightRed5,
+  lightRed6,
 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { Spin } from 'antd'
@@ -70,7 +72,7 @@ const AttendanceSummary = ({
               header="TARDIES"
               value={`${tardiesPercentage}%`}
               footer={tardiesPercentage - prevMonthtardiesPercentage}
-              color="#cef5d8"
+              color={lightBrown}
               cellType="small"
             />
             <WidgetCell
@@ -78,7 +80,7 @@ const AttendanceSummary = ({
               subHeader="ABSENTEEISM"
               value={`${chronicAbsentPercentage}%`}
               footer={chronicAbsentPercentage - prevMonthChronicPercentage}
-              color="#cef5d8"
+              color={lightRed6}
               cellType="small"
             />
           </ContentWrapper>

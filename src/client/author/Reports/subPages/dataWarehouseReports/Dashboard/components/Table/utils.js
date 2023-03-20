@@ -1,14 +1,19 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap, sumBy } from 'lodash'
+import { flatMap, sumBy, maxBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { IconExternalLink } from '@edulastic/icons'
-import { availableTestTypes, compareBylabels } from '../../utils'
+import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
 
-const { downloadCSV, percentage, DECIMAL_BASE } = reportUtils.common
+const {
+  downloadCSV,
+  percentage,
+  DECIMAL_BASE,
+  dbToTableSortOrderMap,
+} = reportUtils.common
 
 const tableColumnsData = [
   {
@@ -17,6 +22,7 @@ const tableColumnsData = [
     align: 'center',
     fixed: 'left',
     width: 250,
+    sorter: true,
   },
   {
     dataIndex: 'avgAttendance',
@@ -26,6 +32,7 @@ const tableColumnsData = [
     width: 200,
     className: 'avg-attendance-column-header',
     render: (value) => `${value}%`,
+    sorter: true,
   },
   // next up are dynamic columns for each assessment type
 ]
@@ -51,30 +58,54 @@ const getHorizontalBarData = (data, selectedPerformanceBand) => {
     }
   })
 }
+export const getTableColumns = (
+  metricInfo,
+  tableFilters,
+  selectedPerformanceBand
+) => {
+  const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
 
-export const getTableColumns = (compareBy, selectedPerformanceBand) => {
+  const rowWithMaxTestTypes = maxBy(
+    metricInfo,
+    (row) => Object.keys(row.performance).length
+  )
+  const availableTestTypes = Object.keys(rowWithMaxTestTypes?.performance || {})
+
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByIdx = _columns.findIndex((col) => col.key === 'dimension')
-    _columns[compareByIdx].title = compareBylabels.compareBy
+    _columns[compareByIdx].title =
+      tableFilters[tableFilterTypes.COMPARE_BY].title
     _columns[compareByIdx].render = (value) => <CompareByTitle value={value} />
-    _columns[compareByIdx].defaultSortOrder = 'ascend'
+    _columns[compareByIdx].sortOrder =
+      tableFilters.sortKey === tableFilters[tableFilterTypes.COMPARE_BY].key &&
+      columnSortOrder
+
+    // avg attendance Column
+    const avgAttendanceIdx = _columns.findIndex(
+      (col) => col.key === 'avgAttendance'
+    )
+    _columns[avgAttendanceIdx].sortOrder =
+      tableFilters.sortKey === 'avgAttendance' && columnSortOrder
 
     // dynamic columns
     const testTypesBasedColumns = flatMap(availableTestTypes, (testType) => {
       return [
         {
-          key: 'avgScore',
-          title: <AvgScoreTitle testType={testType.key} />,
+          key: `avgScore${testType}`,
+          title: <AvgScoreTitle testType={testType} />,
           dataIndex: 'performance',
           align: 'center',
           width: 150,
           visibleOn: ['browser'],
           render: (value) =>
-            value[testType.key] ? `${value[testType.key].avg}%` : '-',
+            value[testType] ? `${value[testType].avg}%` : '-',
+          sorter: true,
+          sortOrder:
+            tableFilters.sortKey === `avgScore${testType}` && columnSortOrder,
         },
         {
-          key: 'performance',
+          key: `performance${testType}`,
           title: <div>PERFORMANCE DISTRIBUTION</div>,
           dataIndex: 'performance',
           align: 'center',
@@ -83,7 +114,7 @@ export const getTableColumns = (compareBy, selectedPerformanceBand) => {
           render: (value) => (
             <HorizontalBar
               data={getHorizontalBarData(
-                value[testType.key]?.distribution,
+                value[testType]?.distribution,
                 selectedPerformanceBand
               )}
             />

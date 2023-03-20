@@ -9,8 +9,8 @@ const useTableFilters = (defaultCompareBy) => {
     [tableFilterTypes.PAGE_SIZE]: TABLE_PAGE_SIZE,
     [tableFilterTypes.SORT_KEY]: defaultCompareBy.key,
     [tableFilterTypes.SORT_ORDER]: DB_SORT_ORDER_TYPES.ASCEND,
-    // [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
-    // [tableFilterTypes.BELOW_AVG]: true,
+    [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
+    [tableFilterTypes.BELOW_AVG]: true,
     // requireTotalCount: true,
   })
 
@@ -35,6 +35,7 @@ const useTableFilters = (defaultCompareBy) => {
 
   return {
     tableFilters,
+    setTableFilters,
     updateTableFiltersCB,
     setTablePagination,
   }

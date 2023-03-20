@@ -1,4 +1,4 @@
-import { lightGrey8 } from '@edulastic/colors'
+import { lightGreen13, lightGrey8 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { Spin } from 'antd'
 import React from 'react'
@@ -66,7 +66,7 @@ const AcademicSummary = ({
               <WidgetCell
                 header="ABOVE STANDARD"
                 value={`${aboveStandardsStudents}%`}
-                color="#cef5d8"
+                color={lightGreen13}
               />
             </div>
             <DashedLine

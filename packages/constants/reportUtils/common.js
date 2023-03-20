@@ -13,6 +13,7 @@ const {
   capitalize,
   isEmpty,
   pick,
+  invert,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -37,6 +38,8 @@ const tableToDBSortOrderMap = {
   [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
   [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
 }
+
+const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 
 const calcMethod = {
   MOST_RECENT: 'Most Recent',
@@ -509,6 +512,7 @@ module.exports = {
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
+  dbToTableSortOrderMap,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,

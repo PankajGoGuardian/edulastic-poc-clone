@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Spin } from 'antd'
 import { EduIf } from '@edulastic/common'
-
 import { isEmpty } from 'lodash'
+import { lightGreen13, lightRed6 } from '@edulastic/colors'
+import { reportUtils } from '@edulastic/constants'
+
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledTag } from '../../../common/styled'
 import {
@@ -15,20 +17,50 @@ import TableHeaderCell from './TableHeaderCell'
 
 import { tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
+import {} from '@edulastic/constants/reportUtils/common'
+
+const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
 
 const DashboardTable = ({
   tableFilters,
+  setTableFilters,
   updateTableFiltersCB,
   tableData,
   selectedPerformanceBand,
   loadingTableData,
   isCsvDownloading,
 }) => {
+  const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
+
   const tableColumns = getTableColumns(
-    tableFilters.compareBy,
+    metricInfo,
+    tableFilters,
     selectedPerformanceBand
   )
-  const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
+
+  const handleTableChange = useCallback(
+    (_pagination, _filters, sorter) => {
+      setTableFilters((activeTableFilters) => {
+        const curSortKey =
+          sorter.columnKey === 'dimension'
+            ? activeTableFilters[tableFilterTypes.COMPARE_BY].key
+            : sorter.columnKey
+        const curSortOrder =
+          tableToDBSortOrderMap[sorter.order] || DB_SORT_ORDER_TYPES.ASCEND
+        if (
+          activeTableFilters.sortKey === curSortKey &&
+          activeTableFilters.sortOrder === curSortOrder
+        )
+          return activeTableFilters
+        return {
+          ...activeTableFilters,
+          sortKey: curSortKey,
+          sortOrder: curSortOrder,
+        }
+      })
+    },
+    [setTableFilters]
+  )
   return (
     <TableContainer>
       <Spin spinning={loadingTableData}>
@@ -44,7 +76,7 @@ const DashboardTable = ({
             <TableHeaderCell
               title="Above/Equal to avg.:"
               value={aboveOrAtStandardCount}
-              color="#BBEFC9"
+              color={lightGreen13}
               onClick={() =>
                 updateTableFiltersCB(
                   !tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG],
@@ -55,7 +87,7 @@ const DashboardTable = ({
             <TableHeaderCell
               title="Below avg.:"
               value={belowStandardCount}
-              color="#EFBBBB"
+              color={lightRed6}
               onClick={() =>
                 updateTableFiltersCB(
                   !tableFilters[tableFilterTypes.BELOW_AVG],
@@ -68,6 +100,7 @@ const DashboardTable = ({
             dataSource={metricInfo}
             columns={tableColumns}
             tableToRender={CustomStyledTable}
+            onChange={handleTableChange}
             onCsvConvert={onCsvConvert}
             bordered="dashed"
             isCsvDownloading={isCsvDownloading}

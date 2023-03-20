@@ -13,6 +13,7 @@ const common = require('./common')
 const singleAssessmentReport = require('./singleAssessmentReport/common')
 const performanceByStandards = require('./singleAssessmentReport/performanceByStandards')
 const performanceByStudents = require('./singleAssessmentReport/performanceByStudents')
+const questionAnalysis = require('./singleAssessmentReport/questionAnalysis')
 
 // -----|-----|-----|-----| SINGLE ASSESSMENT REPORT |-----|-----|-----|----- //
 
@@ -41,6 +42,7 @@ module.exports = {
   singleAssessmentReport,
   performanceByStandards,
   performanceByStudents,
+  questionAnalysis,
   // SMR
   standardsPerformanceSummary,
   standardsGradebook,

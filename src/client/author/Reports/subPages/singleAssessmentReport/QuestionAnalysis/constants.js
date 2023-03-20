@@ -68,12 +68,6 @@ export const comparedByToToolTipLabel = {
   },
 }
 
-export const compareByToPluralName = {
-  school: 'Schools',
-  teacher: 'Teachers',
-  class: 'Classes',
-}
-
 export const compareByDropDownData = [
   { key: 'school', title: 'School' },
   { key: 'teacher', title: 'Teacher' },

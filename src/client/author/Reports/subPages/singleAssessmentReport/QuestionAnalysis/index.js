@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { report as reportTypes, roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -19,7 +19,11 @@ import {
   StyledCol,
 } from './componenets/styled'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import {
+  getCsvDownloadingState,
+  getTestListSelector,
+  generateCSVAction,
+} from '../../../ducks'
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
 import TableContainer from './componenets/TableContainer'
@@ -46,6 +50,7 @@ const QuestionAnalysis = ({
   toggleFilter,
   demographicFilters,
   testList,
+  generateCSV,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -97,6 +102,35 @@ const QuestionAnalysis = ({
   })
   const qSummary = qSummaryData.metricInfo || EMPTY_ARRAY
   const isDynamicTest = qSummaryData.isRecommended
+
+  const dataSizeError =
+    (qSummaryLoadError && qSummaryLoadError.dataSizeExceeded) ||
+    (performanceLoadError && performanceLoadError.dataSizeExceeded)
+
+  const generateCSVSelectionCriteria = [
+    (performanceByDimension?.totalRows || 0) > pageSize,
+    dataSizeError,
+  ]
+  const generateCSVRequired = generateCSVSelectionCriteria.some(Boolean)
+
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const params = {
+        reportType: reportTypes.reportNavType.QUESTION_ANALYSIS,
+        reportFilters: {
+          ...settings.requestFilters,
+          ...demographicFilters,
+          visibleIndices,
+          compareBy,
+          sortKey,
+          sortOrder: !sortOrder ? 'asc' : 'desc',
+          testId: settings.selectedTest.key,
+        },
+        reportExtras: {},
+      }
+      generateCSV(params)
+    }
+  }, [isCsvDownloading])
 
   useEffect(() => {
     if (
@@ -159,10 +193,7 @@ const QuestionAnalysis = ({
     )
   }
 
-  if (
-    (qSummaryLoadError && qSummaryLoadError.dataSizeExceeded) ||
-    (performanceLoadError && performanceLoadError.dataSizeExceeded)
-  ) {
+  if (dataSizeError) {
     return <DataSizeExceeded />
   }
 
@@ -222,7 +253,7 @@ const QuestionAnalysis = ({
             <TableContainer
               performanceByDimensionLoading={performanceByDimensionLoading}
               compareBy={compareBy}
-              isCsvDownloading={isCsvDownloading}
+              isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
               chartFilter={chartFilter}
               userRole={userRole}
               sortKey={sortKey}
@@ -248,8 +279,13 @@ QuestionAnalysis.propTypes = {
   settings: PropTypes.object.isRequired,
 }
 
-export default connect((state) => ({
-  isCsvDownloading: getCsvDownloadingState(state),
-  role: getUserRole(state),
-  testList: getTestListSelector(state),
-}))(QuestionAnalysis)
+export default connect(
+  (state) => ({
+    isCsvDownloading: getCsvDownloadingState(state),
+    role: getUserRole(state),
+    testList: getTestListSelector(state),
+  }),
+  {
+    generateCSV: generateCSVAction,
+  }
+)(QuestionAnalysis)

@@ -1,22 +1,22 @@
 import React, { useMemo, useEffect } from 'react'
-import { uniqBy, get } from 'lodash'
+import { get } from 'lodash'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+import { reportUtils } from '@edulastic/constants'
 import { StyledTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
-import {
-  getOrderedQuestions,
-  getTableData,
-  sortByAvgPerformanceAndLabel,
-} from '../../utils/transformers'
 import { ColoredCell } from '../../../../../common/styled'
-import {
-  convertQAnalysisTableToCSV,
-  getHSLFromRange1,
-} from '../../../../../common/util'
+import { getHSLFromRange1 } from '../../../../../common/util'
 import { TooltipText } from './ToolTipText'
 import ColumnTitle from './ColumnTitle'
-import { compareByEnums, compareByToPluralName } from '../../constants'
+import { compareByEnums } from '../../constants'
+
+const {
+  compareByToPluralName,
+  getTableData,
+  getTableColumns,
+  convertQAnalysisTableToCSV,
+} = reportUtils.questionAnalysis
 
 const GetCellContents = (props) => {
   const { score } = props
@@ -28,7 +28,7 @@ const GetCellContents = (props) => {
   )
 }
 
-const getTableColumns = (
+const getTableColumnsWrapper = (
   qSummary,
   compareBy,
   filter = {},
@@ -36,30 +36,12 @@ const getTableColumns = (
   sortKey,
   questionLinkData
 ) => {
-  const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')?.map((item) => {
-    const { avgPerformance: _avgPerformance, ...rest } = item
-    const avgPerformance = !Number.isNaN(_avgPerformance)
-      ? Math.round(_avgPerformance)
-      : 0
-    return {
-      ...rest,
-      avgPerformance,
-    }
-  })
-  const qLabelsToFilter = Object.keys(filter)
-  const orderedQuestions = sortByAvgPerformanceAndLabel(
-    getOrderedQuestions(uniqQuestionMetrics),
+  const orderedQuestions = getTableColumns(
+    qSummary,
+    filter,
+    visibleIndices,
     sortKey
-  ).filter((question, index) => {
-    // filter out selected bars
-    if (qLabelsToFilter && qLabelsToFilter.length) {
-      return qLabelsToFilter.includes(question.questionLabel)
-    }
-    // if no bar selected then choose current page items
-    return (
-      index >= visibleIndices.startIndex && index <= visibleIndices.endIndex
-    )
-  })
+  )
   const result = orderedQuestions.map((question) => {
     return {
       title: (
@@ -129,7 +111,7 @@ export const QuestionAnalysisTable = ({
 
   const columns = useMemo(
     () =>
-      getTableColumns(
+      getTableColumnsWrapper(
         qSummary,
         compareBy,
         filter,
@@ -156,7 +138,8 @@ export const QuestionAnalysisTable = ({
         qSummary,
         tableData,
         filter,
-        sortKey
+        sortKey,
+        compareBy
       )
       onCsvConvert(csvText, csvRawData)
     }

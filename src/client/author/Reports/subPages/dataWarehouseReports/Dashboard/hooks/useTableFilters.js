@@ -16,7 +16,11 @@ const useTableFilters = (defaultCompareBy) => {
 
   const updateTableFiltersCB = (selected, tableFilterType) => {
     setTableFilters((prevState) => {
-      const nextState = { ...prevState, [tableFilterType]: selected }
+      const nextState = {
+        ...prevState,
+        [tableFilterType]: selected,
+        [tableFilterTypes.SORT_KEY]: selected.key,
+      }
       return nextState
     })
   }

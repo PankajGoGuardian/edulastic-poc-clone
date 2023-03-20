@@ -1,14 +1,13 @@
 import React from 'react'
 import { EduIf } from '@edulastic/common'
 import { Link } from 'react-router-dom'
-import { QLabelSpan, StyledHeadDiv } from '../styled'
+import { QLabelSpan, StyledHeadDiv, FlexWrap } from '../styled'
 import Tags from '../../../../../../src/components/common/Tags'
 
 const ColumnTitle = ({ question, questionLinkData }) => {
   const { questionLabel, standards = [], points, questionId } = question
   const { assignmentId, groupId, isQuetionLinkEnabled } = questionLinkData
   const { pathname, search } = window.location
-  const tags = standards.filter((item) => item !== '-')
   return (
     <>
       <StyledHeadDiv>
@@ -27,8 +26,10 @@ const ColumnTitle = ({ question, questionLinkData }) => {
             {questionLabel}
           </Link>
         </EduIf>
-        <Tags placement="topRight" tags={tags} show={1} />
-        <span>points {points}</span>
+        <FlexWrap>points {points}</FlexWrap>
+        <FlexWrap>
+          <Tags placement="topRight" tags={standards} show={1} />
+        </FlexWrap>
       </StyledHeadDiv>
     </>
   )

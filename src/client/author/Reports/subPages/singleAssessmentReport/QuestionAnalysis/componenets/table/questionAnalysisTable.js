@@ -134,14 +134,14 @@ export const QuestionAnalysisTable = ({
 
   useEffect(() => {
     if (isCsvDownloading) {
-      const { csvText, csvRawData } = convertQAnalysisTableToCSV(
+      const { csvText } = convertQAnalysisTableToCSV(
         qSummary,
         tableData,
         filter,
         sortKey,
         compareBy
       )
-      onCsvConvert(csvText, csvRawData)
+      onCsvConvert(csvText)
     }
   }, [isCsvDownloading])
 

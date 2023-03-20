@@ -103,17 +103,19 @@ const getTableData = (
   return result
 }
 
-const prepareHeaderRow = (questions, compareBy) => {
-  const headerRow = [compareByToPluralName[compareBy]]
-
+const prepareHeaderRow = (questions) => {
+  const questionRow = [tableHeaderFields.question]
+  const standardsRow = [tableHeaderFields.standards]
+  const pointsRow = [tableHeaderFields.points]
   questions.forEach((question) => {
-    headerRow.push(
-      `${question.questionLabel}: ${question.standards?.join('|') || ''}: ${
-        question.points
-      }`
+    questionRow.push(`${question.questionLabel}`)
+    standardsRow.push(
+      `"${question.standards ? question.standards.join(',') : ''}"`
     )
+    pointsRow.push(`${question.points}`)
   })
-  return headerRow
+
+  return [questionRow, pointsRow, standardsRow]
 }
 
 const prepareDistrictHeaderRow = (questions) => {
@@ -165,7 +167,6 @@ const convertQAnalysisTableToCSV = (
   compareBy
 ) => {
   const csv = []
-  const csvRawData = []
 
   const orderedQuestions = getOrderedAndSelectedQuestions(
     qSummary,
@@ -175,24 +176,20 @@ const convertQAnalysisTableToCSV = (
 
   // header row
   const headerRows = prepareHeaderRow(orderedQuestions, compareBy)
-  csv.push(headerRows.join(','))
-  csvRawData.push(headerRows)
+  headerRows.forEach((row) => {
+    csv.push(row.join(','))
+  })
 
   // district avg row
   const districtHeaderRow = prepareDistrictHeaderRow(orderedQuestions)
   csv.push(districtHeaderRow.join(','))
-  csvRawData.push(districtHeaderRow)
 
   // content area
   const tableData = prepareTableDataRow(dataSource, orderedQuestions)
 
   csv.push(...tableData.csv)
-  csvRawData.push(...tableData.csvRawData)
 
-  return {
-    csvText: csv.join('\n'),
-    csvRawData,
-  }
+  return { csvText: csv.join('\n') }
 }
 
 module.exports = {
@@ -204,5 +201,6 @@ module.exports = {
   getOrderedQuestions,
   convertQAnalysisTableToCSV,
   sortByAvgPerformanceAndLabel,
+  getOrderedAndSelectedQuestions,
   getTableColumns,
 }

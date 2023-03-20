@@ -244,7 +244,7 @@ const StandardsGradebook = ({
     if (isCsvDownloading && generateCSVRequired) {
       const {
         compareByKey: compareBy,
-        analyseByKey: analyseBy,
+        analyseByKey: analyzeBy,
         sortKey,
         sortOrder,
       } = tableFilters
@@ -254,7 +254,7 @@ const StandardsGradebook = ({
         reportFilters: {
           ...settings.requestFilters,
           compareBy,
-          analyseBy,
+          analyzeBy,
           sortKey,
           sortOrder,
         },

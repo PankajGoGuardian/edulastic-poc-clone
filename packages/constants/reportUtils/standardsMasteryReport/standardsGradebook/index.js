@@ -22,6 +22,7 @@ const {
 
 // common utils
 const roundUpto = 2 // Rounding off a decimal value upto 2 decimal places
+const scorePerRoundUpto = 0 // Rounding off ScorePercentage to Integer value
 
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
@@ -124,7 +125,7 @@ const getAllAnalyseByPerformanceData = ({
     typeof scorePercent === 'number'
       ? scorePercent * 100
       : percentage(avgScore, totalScore),
-    roundUpto
+    scorePerRoundUpto
   )}%`
   return {
     [analyseByKeys.SCORE_PERCENT]: avgScore != null ? avgScorePercent : null,

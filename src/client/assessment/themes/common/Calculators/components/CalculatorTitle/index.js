@@ -4,7 +4,7 @@ import { CalcTitle, CloseIcon, TitleContainer } from './styled-components'
 
 export const CalculatorTitle = ({ title, onClose, calcId }) => (
   <TitleContainer className="calculator-drag-handler">
-    <CloseIcon onClick={onClose} />
+    <CloseIcon onClick={onClose} data-cy="closeCalculator" />
     <CalcTitle data-cy={calcId}>{title}</CalcTitle>
   </TitleContainer>
 )

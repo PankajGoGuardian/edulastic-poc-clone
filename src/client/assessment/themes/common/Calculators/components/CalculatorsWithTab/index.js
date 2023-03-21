@@ -60,6 +60,7 @@ const CalculatorsWithTab = ({
         minWidth={params.width}
         minHeight={params.height}
         dragHandleClassName="calculator-drag-handler"
+        data-cy="calculator-drag-handler"
       >
         <CalculatorTitle
           onClose={changeTool}

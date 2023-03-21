@@ -92,6 +92,8 @@ const PlayerHeader = ({
       hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
+      currentItem={currentItem}
+      options={dropdownOptions}
       isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
     />
   )

@@ -15,7 +15,7 @@ import {
   IconMinusRounded,
 } from '@edulastic/icons'
 import { Tooltip } from 'antd'
-import { get } from 'lodash'
+import { get, isNaN } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -55,7 +55,7 @@ const SaveAndExit = ({
   setSettingsModalVisibility,
   showZoomBtn,
   onSubmit,
-  pauseAllowed = true,
+  pauseAllowed: defaultPauseAllowed = true,
   utaId,
   groupId,
   timedAssignment,
@@ -73,14 +73,22 @@ const SaveAndExit = ({
   options,
   features,
 }) => {
-  const _pauseAllowed = useUtaPauseAllowed(utaId)
-  const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
+  const utaPauseAllowed = useUtaPauseAllowed(utaId)
+
+  const showPause =
+    utaPauseAllowed === undefined ? defaultPauseAllowed : utaPauseAllowed
+
   const currentVisibilityState = hideData ? 'show' : 'hide'
-  const immersiveReaderTitle = `Question ${currentItem + 1}/${get(
-    options,
-    'length',
-    ''
-  )}`
+
+  const currentItemIndex = Number(currentItem + 1)
+  const totalNumberOfItems = get(options, 'length', 0)
+
+  let immersiveReaderTitle = ''
+
+  if (!isNaN(currentItemIndex) && totalNumberOfItems) {
+    immersiveReaderTitle = `Question ${currentItemIndex}/${totalNumberOfItems}`
+  }
+
   const { canUseImmersiveReader = false } = features
 
   return (

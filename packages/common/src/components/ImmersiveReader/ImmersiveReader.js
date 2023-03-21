@@ -1,17 +1,16 @@
-/* eslint-disable react/button-has-type */
-import React, { useEffect } from 'react'
-import { renderButtons, launchAsync } from '@microsoft/immersive-reader-sdk'
+import React from 'react'
+import { launchAsync } from '@microsoft/immersive-reader-sdk'
 import { fetchIRtokenAndSubDomain } from '@edulastic/api'
 import { isUndefined } from 'lodash'
+import IconImmersiveReader from '@edulastic/icons/src/IconImmersiveReader'
 
+import { Tooltip } from 'antd'
 import { notification, captureSentryException } from '@edulastic/common'
-import EduButton from '../EduButton'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
+import { StyledButton } from '../../../../../src/client/assessment/themes/common/styledCompoenents'
 
-const ImmersiveReader = ({ title }) => {
-  useEffect(() => {
-    renderButtons()
-  })
-
+const ImmersiveReader = ({ t: i18translate, title }) => {
   const getImmersiveReaderArgs = async () => {
     try {
       const { token, subdomain } = await fetchIRtokenAndSubDomain()
@@ -62,15 +61,19 @@ const ImmersiveReader = ({ title }) => {
   }
 
   return (
-    <EduButton
-      className="immersive-reader-button"
-      data-locale="en"
-      btnType="primary"
-      isGhost
-      data-icon-px-size={20}
-      onClick={() => handleLaunchImmersiveReader()}
-    />
+    <Tooltip
+      placement="bottom"
+      title={i18translate('assessmentPlayer.immersiveReaderToolTip')}
+    >
+      <StyledButton
+        data-cy="immersiveReader"
+        onClick={() => handleLaunchImmersiveReader()}
+      >
+        <IconImmersiveReader />
+      </StyledButton>
+    </Tooltip>
   )
 }
 
-export default ImmersiveReader
+const enhance = compose(withNamespaces('common'))
+export default enhance(ImmersiveReader)

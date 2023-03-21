@@ -485,4 +485,5 @@ module.exports = {
     WEEKDAYS: 'Weekdays (Mon to Fri)',
     CUSTOM: 'Custom',
   },
+  SHOW_IMMERSIVE_READER,
 }

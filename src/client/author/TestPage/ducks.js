@@ -118,6 +118,7 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
   testCategoryTypes,
+  SHOW_IMMERSIVE_READER,
 } = testConstants
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
@@ -1049,6 +1050,7 @@ export const createBlankTest = () => ({
   penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
   showTtsForPassages: true,
+  [SHOW_IMMERSIVE_READER]: false,
 })
 
 const initialState = {

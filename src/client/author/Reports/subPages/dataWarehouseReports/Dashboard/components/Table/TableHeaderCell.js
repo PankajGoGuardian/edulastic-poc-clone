@@ -5,8 +5,7 @@ const TableHeaderCell = ({
   title,
   value,
   color,
-  onTableHeaderCellClick,
-  cellKey,
+  tableHeaderCellClick,
   isSelected,
 }) => {
   return (
@@ -14,7 +13,7 @@ const TableHeaderCell = ({
       <span>{title}</span>
       <span
         onClick={() => {
-          onTableHeaderCellClick(cellKey)
+          tableHeaderCellClick()
         }}
       >
         {value}

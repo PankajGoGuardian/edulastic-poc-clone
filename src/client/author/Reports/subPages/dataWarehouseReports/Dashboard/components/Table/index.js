@@ -17,7 +17,6 @@ import TableHeaderCell from './TableHeaderCell'
 
 import { tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
-import {} from '@edulastic/constants/reportUtils/common'
 
 const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
 
@@ -77,16 +76,18 @@ const DashboardTable = ({
               title="Above/Equal to avg.:"
               value={aboveOrAtStandardCount}
               color={lightGreen13}
-              onTableHeaderCellClick={onTableHeaderCellClick}
-              cellKey={tableFilterTypes.ABOVE_EQUAL_TO_AVG}
+              tableHeaderCellClick={() => {
+                onTableHeaderCellClick(tableFilterTypes.ABOVE_EQUAL_TO_AVG)
+              }}
               isSelected={tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG]}
             />
             <TableHeaderCell
               title="Below avg.:"
               value={belowStandardCount}
               color={lightRed6}
-              onTableHeaderCellClick={onTableHeaderCellClick}
-              cellKey={tableFilterTypes.BELOW_AVG}
+              tableHeaderCellClick={() => {
+                onTableHeaderCellClick(tableFilterTypes.BELOW_AVG)
+              }}
               isSelected={tableFilters[tableFilterTypes.BELOW_AVG]}
             />
           </StyledRow>

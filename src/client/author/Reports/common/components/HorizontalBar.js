@@ -10,9 +10,9 @@ const HorizontalBar = ({ data }) => {
       {map(data, ({ value, color }) => {
         const valueToShow = value > 10 ? `${value}%` : ''
         return (
-          <EduIf condition={value}>
+          <EduIf key={color} condition={value}>
             <Tooltip title={`${value}%`}>
-              <StyledSpan key={color} color={color} value={value}>
+              <StyledSpan color={color} value={value}>
                 {valueToShow}
               </StyledSpan>
             </Tooltip>

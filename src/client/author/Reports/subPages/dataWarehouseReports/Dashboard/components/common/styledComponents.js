@@ -107,7 +107,8 @@ export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin: 12px 25px;
-  box-shadow: ${(props) => (props.isSelected ? '0px 10px 13px #0000000f' : '')};
+  box-shadow: ${(props) =>
+    props.isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
   opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   span {
     &:first-child {

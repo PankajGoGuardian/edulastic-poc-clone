@@ -81,7 +81,7 @@ function useApiQuery(api, params, options = {}) {
       try {
         const response = await api(...params)
         setResult({
-          data: response.data,
+          data: response,
           loading: false,
           error: null,
         })

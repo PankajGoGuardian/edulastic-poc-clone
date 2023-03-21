@@ -46,12 +46,12 @@ const AcademicSummary = ({
     return <NoDataContainer />
   }
   // @Todo handle data transformation properly
-  const { result: { avgScore, bandDistribution } = {} } = data || {}
+  const { result: { avgScore, bandDistribution } = {} } = data.data || {}
   const {
     avgScorePercentage,
     aboveStandardPercentage,
     scoreTrendPercentage,
-  } = getAcademicSummaryMetrics(data)
+  } = getAcademicSummaryMetrics(data.data)
 
   const avgScoreCellColor = data
     ? getCellColor(avgScore, selectedPerformanceBand)

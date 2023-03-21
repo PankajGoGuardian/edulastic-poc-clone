@@ -12,21 +12,23 @@ const ColumnTitle = ({ question, questionLinkData }) => {
     <>
       <StyledHeadDiv>
         <EduIf condition={!isQuetionLinkEnabled}>
-          <QLabelSpan>{questionLabel}</QLabelSpan>
+          <QLabelSpan data-cy="headerQLabel">{questionLabel}</QLabelSpan>
         </EduIf>
         <EduIf condition={isQuetionLinkEnabled}>
-          <Link
-            to={{
-              pathname: `/author/classboard/${assignmentId}/${groupId}/question-activity/${questionId}`,
-              state: {
-                from: `${pathname}${search}`,
-              },
-            }}
-          >
-            {questionLabel}
-          </Link>
+          <QLabelSpan data-cy="headerQLabel">
+            <Link
+              to={{
+                pathname: `/author/classboard/${assignmentId}/${groupId}/question-activity/${questionId}`,
+                state: {
+                  from: `${pathname}${search}`,
+                },
+              }}
+            >
+              {questionLabel}
+            </Link>
+          </QLabelSpan>
         </EduIf>
-        <FlexWrap>points {points}</FlexWrap>
+        <FlexWrap data-cy="headerPoints">points {points}</FlexWrap>
         <FlexWrap>
           <Tags placement="topRight" tags={standards} show={1} />
         </FlexWrap>

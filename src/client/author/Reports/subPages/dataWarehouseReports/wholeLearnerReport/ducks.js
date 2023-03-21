@@ -58,7 +58,7 @@ const initialState = {
 // -----|-----|-----|-----| SLICE BEGIN |-----|-----|-----|----- //
 
 const slice = createSlice({
-  name: 'wholeLearnerReport',
+  name: 'wholeLearnerReport', //! FIXME key should be `slice` not `name`
   initialState: { ...initialState },
   reducers: {
     fetchFiltersDataRequest: (state) => {

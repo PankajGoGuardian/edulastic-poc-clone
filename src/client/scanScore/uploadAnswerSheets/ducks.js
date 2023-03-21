@@ -60,7 +60,7 @@ const getTotalPdfPageCount = (file) =>
   })
 
 const slice = createSlice({
-  name: 'uploadAnswerSheets',
+  name: 'uploadAnswerSheets', //! FIXME key should be `slice` not `name`
   initialState: {
     uploading: false,
     uploadProgress: 0,

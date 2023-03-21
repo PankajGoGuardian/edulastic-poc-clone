@@ -37,7 +37,7 @@ const initialState = {
 // -----|-----|-----|-----| SLICE BEGIN |-----|-----|-----|----- //
 
 const slice = createSlice({
-  name: 'multipleAssessmentReportDw',
+  name: 'multipleAssessmentReportDw', //! FIXME key should be `slice` not `name`
   initialState: { ...initialState },
   reducers: {
     fetchDWMARFiltersDataRequest: (state) => {

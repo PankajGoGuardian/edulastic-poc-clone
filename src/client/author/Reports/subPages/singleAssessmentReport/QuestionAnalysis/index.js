@@ -259,6 +259,7 @@ const QuestionAnalysis = ({
               sortKey={sortKey}
               visibleIndices={visibleIndices}
               setSortOrder={setSortOrder}
+              sortOrder={sortOrder}
               performanceByDimension={performanceByDimension}
               qSummary={qSummary}
               pageSize={pageSize}

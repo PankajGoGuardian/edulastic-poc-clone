@@ -16,6 +16,7 @@ const TableContainer = ({
   sortKey,
   visibleIndices,
   setSortOrder,
+  sortOrder,
   performanceByDimension,
   pageSize,
   qSummary,
@@ -40,6 +41,7 @@ const TableContainer = ({
           visibleIndices={visibleIndices}
           setSortByDimension={setSortOrder}
           isSharedReport={isSharedReport}
+          sortOrder={sortOrder}
         />
         <EduIf condition={performanceByDimension?.totalRows > pageSize}>
           <Pagination

@@ -34,7 +34,8 @@ const getTableColumnsWrapper = (
   filter = {},
   visibleIndices,
   sortKey,
-  questionLinkData
+  questionLinkData,
+  sortOrder
 ) => {
   const orderedQuestions = getTableColumns(
     qSummary,
@@ -74,6 +75,7 @@ const getTableColumnsWrapper = (
     width: 150,
     dataIndex: 'dimension',
     sorter: true,
+    sortOrder: sortOrder ? 'ascend' : 'descend',
     children: [
       {
         title: 'District Avg.',
@@ -99,6 +101,7 @@ export const QuestionAnalysisTable = ({
   sortKey,
   setSortByDimension,
   isSharedReport,
+  sortOrder,
 }) => {
   const groupId = get(performanceByDimension, 'details.0.dimensionId', '') // only for group details dimensionId will be groupId others are handled with showLink variable
   const assignmentId = get(performanceByDimension, 'details.0.assignmentId', '')
@@ -117,9 +120,18 @@ export const QuestionAnalysisTable = ({
         filter,
         visibleIndices,
         sortKey,
-        questionLinkData
+        questionLinkData,
+        sortOrder
       ),
-    [qSummary, compareBy, filter, visibleIndices, sortKey, questionLinkData]
+    [
+      qSummary,
+      compareBy,
+      filter,
+      visibleIndices,
+      sortKey,
+      questionLinkData,
+      sortOrder,
+    ]
   )
   const tableData = useMemo(
     () => getTableData(qSummary, performanceByDimension, 'dimensionId'),
@@ -156,7 +168,6 @@ export const QuestionAnalysisTable = ({
       rowKey="questionId"
       colorCellStart={2}
       flexWrap="unset"
-      scroll={{ x: '100%', y: '100%' }}
       onChange={() => {
         setSortByDimension((prevState) => !prevState)
       }}

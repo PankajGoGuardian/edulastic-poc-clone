@@ -1,5 +1,11 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax, themeColor } from '@edulastic/colors'
+import {
+  borderGrey3,
+  fadedGrey,
+  lightGrey11,
+  themeColor,
+  white,
+} from '@edulastic/colors'
 import { Col, Switch } from 'antd'
 import {
   StyledTable as Table,
@@ -9,70 +15,39 @@ import {
 export const StyledCard = styled(Card)``
 
 export const StyledTable = styled(Table)`
-  .ant-table-layout-fixed {
-    .ant-table-scroll {
-      table tbody tr td {
-        border-bottom: 1px solid #e9e9e9;
-      }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
-      .ant-table-thead > tr:nth-child(2) > th {
-        background-color: #e5e5e5;
-        color: black;
-        font-size: 11px;
-      }
-      .ant-table-body {
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-        max-height: 200px;
-      }
-      .ant-table-body::-webkit-scrollbar {
-        display: none;
-      }
-      @media print {
-        .ant-table-body {
-          overflow-x: hidden !important;
-        }
-      }
+  table tbody tr td {
+    border-bottom: 1px solid ${borderGrey3};
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .ant-table-thead {
+    th {
+      color: ${lightGrey11};
+      background: ${white};
+      text-transform: uppercase;
+      font-size: 10px;
     }
-    .ant-table-fixed-left {
-      .ant-table-thead {
-        th {
-          padding: 8px;
-          color: #aaafb5;
-          font-weight: 900;
-          text-transform: uppercase;
-          font-size: 10px;
-          border: 0px;
-          .ant-table-column-sorter {
-            vertical-align: top;
-          }
-        }
+    tr:first-child {
+      th.ant-table-column-sort,
+      th.ant-table-column-sort:hover {
+        background: ${white} !important;
       }
-      .ant-table-tbody {
-        td {
-          padding: 10px 0px 10px 8px;
-          font-size: 11px;
-          color: #434b5d;
-          font-weight: 600;
-          @media (min-width: ${extraDesktopWidthMax}) {
-            font-size: 14px;
-          }
-        }
+      th:first-child span:first-child {
+        margin-top: 6px;
+        display: inline-block;
       }
     }
   }
+  .ant-table-thead > tr:nth-child(2) > th {
+    background-color: ${fadedGrey};
+    color: black;
+    font-size: 11px;
+    font-weight: 600;
+  }
   .ant-table-body {
     table {
-      thead {
-        tr th {
-          white-space: nowrap;
-        }
-      }
-
       tbody {
         tr {
           td:nth-child(n + ${(props) => props.colorCellStart}) {
@@ -87,30 +62,23 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-  @media print {
-    table thead tr, table tbody tr{
-      display: flex;
-      flex-direction: row;
-      padding: 0px;
+  table thead tr {
+    th {
+      border-bottom: 1px solid ${borderGrey3};
+      padding: 10px;
+      text-align: center;
     }
-    .ant-table-thead > tr > th:first-child{
-      width : 85px !important;
-    }
-    .ant-table-tbody > tr > td:first-child{
-      width : 85px !important;
-    }
-    table thead tr th, table tbody tr td{
-      width: 80px;
-      font-size: 11px !important;
-      font-weight: 600 ;
-    }
-    table tbody tr td:before, table tbody tr td:after{
-      height : 0px ;
-    }
-    tr, td , thead, tfoot {
-      margin: 0 ;
-    }
+  }
 
+  @media print {
+    table tbody tr td {
+      padding: 0;
+    }
+    table tbody tr td:before,
+    table tbody tr td:after {
+      height: 0px;
+    }
+  }
 `
 
 export const UpperContainer = styled.div``

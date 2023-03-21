@@ -6,13 +6,13 @@ import { HorizontalBarWrapper, StyledSpan } from '../styled'
 
 const HorizontalBar = ({ data }) => {
   return (
-    <HorizontalBarWrapper>
+    <HorizontalBarWrapper barsCount={data.length}>
       {map(data, ({ value, color }) => {
         const valueToShow = value > 10 ? `${value}%` : ''
         return (
-          <EduIf condition={value}>
+          <EduIf key={color} condition={value}>
             <Tooltip title={`${value}%`}>
-              <StyledSpan key={color} color={color} value={value}>
+              <StyledSpan color={color} value={value}>
                 {valueToShow}
               </StyledSpan>
             </Tooltip>

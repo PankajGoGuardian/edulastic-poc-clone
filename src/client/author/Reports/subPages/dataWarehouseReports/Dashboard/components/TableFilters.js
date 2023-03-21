@@ -16,12 +16,14 @@ const DashboardTableFilters = ({
   isSharedReport = false,
 }) => {
   const showAddToGroupButton = addStudentToGroupFeatureEnabled(
-    tableFilters.compareBy.key,
+    tableFilters.compareBy,
     isSharedReport
   )
   return (
     <StyledRow type="flex" justifyContent="space-between" margin="-2px 10px">
-      <SectionLabel>Performance By {tableFilters.compareBy.title}</SectionLabel>
+      <SectionLabel>
+        Performance By {tableFilters[tableFilterTypes.COMPARE_BY].title}
+      </SectionLabel>
       <StyledRow type="flex" justifyContent="right" margin="-2px 10px">
         <EduIf condition={showAddToGroupButton}>
           <StyledEduButton onClick={() => {}}>

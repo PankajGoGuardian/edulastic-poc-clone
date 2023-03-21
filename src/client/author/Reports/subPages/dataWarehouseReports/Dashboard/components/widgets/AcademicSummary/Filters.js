@@ -11,10 +11,10 @@ const AcademicSummaryWidgetFilters = ({
   availableTestTypes,
 }) => {
   const { performanceBand, testType } = filters
-  const updateFilterDropdownCB = (e, selected, keyName) => {
+  const updateFilterDropdownCB = (e, selected, comData) => {
     setFilters({
       ...filters,
-      [keyName]: selected,
+      [comData]: selected,
     })
   }
   return (
@@ -30,14 +30,9 @@ const AcademicSummaryWidgetFilters = ({
         <ControlDropDown
           height="35px"
           by={testType}
-          selectCB={(e, selected) =>
-            updateFilterDropdownCB(
-              e,
-              selected,
-              academicSummaryFiltersTypes.TEST_TYPE
-            )
-          }
+          selectCB={updateFilterDropdownCB}
           data={availableTestTypes}
+          comData={academicSummaryFiltersTypes.TEST_TYPE}
           prefix="Test Type"
           showPrefixOnSelected={false}
         />
@@ -53,14 +48,9 @@ const AcademicSummaryWidgetFilters = ({
         <ControlDropDown
           height="35px"
           by={performanceBand}
-          selectCB={(e, selected) =>
-            updateFilterDropdownCB(
-              e,
-              selected,
-              academicSummaryFiltersTypes.PERFORMANCE_BAND
-            )
-          }
+          selectCB={updateFilterDropdownCB}
           data={performanceBandsList}
+          comData={academicSummaryFiltersTypes.PERFORMANCE_BAND}
           prefix="Performance Band"
           showPrefixOnSelected={false}
         />

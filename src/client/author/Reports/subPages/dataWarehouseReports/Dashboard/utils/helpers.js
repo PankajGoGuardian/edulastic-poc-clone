@@ -1,9 +1,12 @@
 import React from 'react'
 import next from 'immer'
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
-import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
 import qs from 'qs'
+import { reportUtils } from '@edulastic/constants'
 import navigation from '../../../../common/static/json/navigation.json'
+import { filterDetailsFields, sharedDetailsFields } from './constants'
+
+const { getProficiencyBand, curateApiFiltersQuery } = reportUtils.common
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
   const { requestFilters } = settings
@@ -92,4 +95,18 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
       </text>
     </g>
   )
+}
+
+export const getTableApiQuery = (settings, tableFilters, profileId) => {
+  const { query } = curateApiFiltersQuery(
+    {
+      ...settings.requestFilters,
+      ...tableFilters,
+      profileId,
+      compareBy: tableFilters.compareBy.key,
+    },
+    filterDetailsFields,
+    sharedDetailsFields
+  )
+  return query
 }

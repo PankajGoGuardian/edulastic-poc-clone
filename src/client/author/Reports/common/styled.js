@@ -852,15 +852,18 @@ export const PieChartWrapper = styled.div`
 export const HorizontalBarWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  min-width: 230px;
+  min-width: 300px;
   margin-inline: 10px;
   justify-content: center;
   span {
     &:first-child {
-      border-radius: 12px 0px 0px 12px;
+      border-radius: ${(props) =>
+        props.barsCount === 1 ? '12px 12px 12px 12px' : '12px 0px 0px 12px'};
     }
     &:last-child {
-      border-radius: 0px 12px 12px 0px;
+      border-radius:${(props) =>
+        props.barsCount === 1 ? '12px 12px 12px 12px' : '0px 12px 12px 0px'};
+    }
     }
   }
 `

@@ -118,67 +118,6 @@ export const attendanceSummaryData = {
   prevMonthChronicPercentage: 5,
 }
 
-export const tableData = {
-  metricInfo: [
-    {
-      dimension: {
-        id: '1',
-        name: 'El Dorado Adventist School',
-      },
-      avgAttendance: 85,
-      performance: {
-        Edulastic: {
-          avg: 70,
-          distribution: [
-            {
-              totalStudents: 36,
-              bandScore: 0,
-            },
-            {
-              totalStudents: 10,
-              bandScore: 50,
-            },
-            {
-              totalStudents: 5,
-              bandScore: 70,
-            },
-          ],
-        },
-      },
-    },
-    {
-      dimension: {
-        id: '2',
-        name: 'St. James',
-      },
-      avgAttendance: 85,
-      avgPerformance: 70,
-      performance: {
-        Edulastic: {
-          avg: 70,
-          distribution: [
-            {
-              totalStudents: 36,
-              bandScore: 0,
-            },
-            {
-              totalStudents: 10,
-              bandScore: 50,
-            },
-            {
-              totalStudents: 5,
-              bandScore: 70,
-            },
-          ],
-        },
-      },
-    },
-  ],
-  dimensionCount: 15,
-  aboveOrAtStandardCount: 8,
-  belowStandardCount: 7,
-}
-
 export const cellStyles = {
   large: { padding: '18px 30px', font: '24px' },
   medium: { padding: '10px 15px', font: '18px' },
@@ -187,9 +126,15 @@ export const cellStyles = {
 
 export const tableFilterTypes = {
   COMPARE_BY: 'compareBy',
+  PAGE: 'page',
+  PAGE_SIZE: 'pageSize',
+  SORT_KEY: 'sortKey',
+  SORT_ORDER: 'sortOrder',
   ABOVE_EQUAL_TO_AVG: 'aboveEqualToAvg',
   BELOW_AVG: 'belowAvg',
 }
+
+export const TABLE_PAGE_SIZE = 50
 
 export const compareByKeys = {
   SCHOOL: 'school',
@@ -204,30 +149,30 @@ export const compareByKeys = {
   HISPANIC_ETHNICITY: 'hispanicEthnicity',
 }
 
-// const compareByFieldKeys = {
-//   [compareByKeys.SCHOOL]: 'schoolId',
-//   [compareByKeys.TEACHER]: 'teacherId',
-//   [compareByKeys.CLASS]: 'groupId',
-//   [compareByKeys.STUDENT]: 'studentId',
-//   [compareByKeys.RACE]: compareByKeys.RACE,
-//   [compareByKeys.GENDER]: compareByKeys.GENDER,
-//   [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
-//   [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
-//   [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
-//   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
-// }
+export const compareByFieldKeys = {
+  [compareByKeys.SCHOOL]: 'schoolId',
+  [compareByKeys.TEACHER]: 'teacherId',
+  [compareByKeys.CLASS]: 'groupId',
+  [compareByKeys.STUDENT]: 'studentId',
+  [compareByKeys.RACE]: compareByKeys.RACE,
+  [compareByKeys.GENDER]: compareByKeys.GENDER,
+  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+}
 
-// const compareBylabels = {
-//   [compareByKeys.SCHOOL]: 'schoolName',
-//   [compareByKeys.TEACHER]: 'teacherName',
-//   [compareByKeys.CLASS]: 'groupName',
-//   [compareByKeys.RACE]: compareByKeys.RACE,
-//   [compareByKeys.GENDER]: compareByKeys.GENDER,
-//   [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
-//   [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
-//   [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
-//   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
-// }
+export const compareBylabels = {
+  [compareByKeys.SCHOOL]: 'schoolName',
+  [compareByKeys.TEACHER]: 'teacherName',
+  [compareByKeys.CLASS]: 'groupName',
+  [compareByKeys.RACE]: compareByKeys.RACE,
+  [compareByKeys.GENDER]: compareByKeys.GENDER,
+  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+}
 
 export const compareByOptions = [
   { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
@@ -410,3 +355,31 @@ export const staticDropDownData = {
     },
   ],
 }
+
+const filterFields = [
+  'creator',
+  'termId',
+  'testGrades',
+  'testSubjects',
+  'assessmentTypes',
+  'schoolIds',
+  'teacherIds',
+  'grades',
+  'subjects',
+  'courseId',
+  'classIds',
+  'groupIds',
+  'profileId',
+  'race',
+  'gender',
+  'iepStatus',
+  'frlStatus',
+  'ellStatus',
+  'hispanicEthnicity',
+]
+
+const detailsExtraFields = Object.values(tableFilterTypes)
+
+export const filterDetailsFields = [...filterFields, ...detailsExtraFields]
+
+export const sharedDetailsFields = ['reportId', ...detailsExtraFields]

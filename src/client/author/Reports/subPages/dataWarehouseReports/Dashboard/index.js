@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { head, mapValues } from 'lodash'
+import { head, mapValues, isEmpty } from 'lodash'
 import qs from 'qs'
+import { EduIf, SpinLoader } from '@edulastic/common'
+
 import { SubHeader } from '../../../common/components/Header'
 import SectionLabel from '../../../common/components/SectionLabel'
 
@@ -25,11 +27,10 @@ import {
   masteryScales,
   attendanceSummaryData,
   academicSummaryData,
-  tableData,
   compareByOptions as compareByOptionsRaw,
-  tableFilterTypes,
   academicSummaryFiltersTypes,
   availableTestTypes,
+  getTableApiQuery,
 } from './utils'
 import {
   fetchUpdateTagsDataAction,
@@ -43,13 +44,14 @@ import Filters from './components/Filters/Filters'
 import { actions, selectors } from './ducks'
 import useTabNavigation from './hooks/useTabNavigation'
 
+import useTableFilters from './hooks/useTableFilters'
+
 const Dashboard = ({
   loc,
   history,
   location,
   isPrinting,
   userRole,
-  filters = {},
   breadcrumbData,
   isCliUser,
   isCsvDownloading,
@@ -63,6 +65,21 @@ const Dashboard = ({
   resetAllReports,
 
   updateNavigation,
+  // report selectors
+  loadingAcademicSummaryData,
+  loadingAttendanceSummaryData,
+  loadingTableData,
+  // academicSummaryData,
+  // attendanceSummaryData,
+  tableData,
+  // academicSummaryRequestError,
+  // attendanceSummaryRequestError,
+  tableDataRequestError,
+  // report actions
+  // fetchAcademicSummaryDataRequest,
+  // fetchAttendanceSummaryDataRequest,
+  fetchDashboardTableDataRequest,
+  // resetDashboardReport,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -121,26 +138,21 @@ const Dashboard = ({
 
   useTabNavigation(settings, reportId, history, loc, updateNavigation)
 
-  const requestFilters = { profileId: '6322e2b799978a000a298469' }
-  const [defaultCompareBy] = compareByOptions
-
   const performanceBandList = useMemo(
     () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
     [masteryScales]
   )
 
-  const [tableFilters, setTableFilters] = useState({
-    [tableFilterTypes.COMPARE_BY]:
-      // compareByOptions.find((c) => c.key === location?.search?.compareBy) ||
-      defaultCompareBy,
-    [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
-    [tableFilterTypes.BELOW_AVG]: true,
-  })
+  const {
+    tableFilters,
+    setTableFilters,
+    updateTableFiltersCB,
+    onTableHeaderCellClick,
+    // setTablePagination,
+  } = useTableFilters(compareByOptions[0])
 
   const [academicSummaryFilters, setAcademicSummaryFilters] = useState({
-    [academicSummaryFiltersTypes.PERFORMANCE_BAND]:
-      performanceBandList.find((p) => p.key === filters.profileId) ||
-      performanceBandList[0],
+    [academicSummaryFiltersTypes.PERFORMANCE_BAND]: performanceBandList[0],
     [academicSummaryFiltersTypes.TEST_TYPE]: availableTestTypes[0],
   })
 
@@ -152,20 +164,28 @@ const Dashboard = ({
     )[0] || masteryScales[0]
   )?.performanceBand
 
-  const updateTableFiltersCB = (selected, tableFilterType) => {
-    setTableFilters((prevState) => {
-      const nextState = { ...prevState, [tableFilterType]: selected }
-      if (
-        !nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] &&
-        !nextState[tableFilterTypes.BELOW_AVG]
-      ) {
-        // if both are false, set true to both
-        nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] = true
-        nextState[tableFilterTypes.BELOW_AVG] = true
-      }
-      return nextState
-    })
-  }
+  // get table data
+  useEffect(() => {
+    const q = getTableApiQuery(
+      settings,
+      tableFilters,
+      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
+    )
+    if (q.termId || q.reportId) {
+      fetchDashboardTableDataRequest(q)
+      return () => toggleFilter(null, false)
+    }
+  }, [
+    settings.requestFilters,
+    tableFilters,
+    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
+  ])
+
+  const showSpinLoader = [
+    loadingAcademicSummaryData,
+    loadingAttendanceSummaryData,
+    loadingTableData,
+  ].every((v) => v)
 
   return (
     <DashboardReportContainer>
@@ -186,30 +206,49 @@ const Dashboard = ({
           toggleFilter={toggleFilter}
         />
       </SubHeader>
-      <SectionLabel>Overview</SectionLabel>
-      <MasonGrid>
-        <AcademicSummary
-          academicSummaryData={academicSummaryData}
-          selectedPerformanceBand={selectedPerformanceBand}
-          performanceBandList={performanceBandList}
-          availableTestTypes={availableTestTypes}
-          filters={academicSummaryFilters}
-          setFilters={setAcademicSummaryFilters}
+      <EduIf condition={showSpinLoader}>
+        <SpinLoader
+          tip="Please wait while we gather the required information..."
+          position="fixed"
         />
-        <AttendanceSummary attendanceSummaryData={attendanceSummaryData} />
-      </MasonGrid>
-      <DashboardTableFilters
-        tableFilters={tableFilters}
-        updateTableFiltersCB={updateTableFiltersCB}
-        compareByOptions={compareByOptions}
-      />
-      <DashboardTable
-        tableFilters={tableFilters}
-        updateTableFiltersCB={updateTableFiltersCB}
-        tableData={tableData}
-        selectedPerformanceBand={selectedPerformanceBand}
-        isCsvDownloading={isCsvDownloading}
-      />
+      </EduIf>
+      <EduIf condition={!showSpinLoader}>
+        <SectionLabel>Overview</SectionLabel>
+        <MasonGrid>
+          <EduIf condition={!isEmpty(academicSummaryData)}>
+            <AcademicSummary
+              academicSummaryData={academicSummaryData}
+              selectedPerformanceBand={selectedPerformanceBand}
+              performanceBandList={performanceBandList}
+              availableTestTypes={availableTestTypes}
+              filters={academicSummaryFilters}
+              setFilters={setAcademicSummaryFilters}
+              loadingAcademicSummaryData={loadingAcademicSummaryData}
+            />
+          </EduIf>
+          <EduIf condition={!isEmpty(attendanceSummaryData)}>
+            <AttendanceSummary
+              attendanceSummaryData={attendanceSummaryData}
+              loadingAttendanceSummaryData={loadingAttendanceSummaryData}
+            />
+          </EduIf>
+        </MasonGrid>
+        <DashboardTableFilters
+          tableFilters={tableFilters}
+          updateTableFiltersCB={updateTableFiltersCB}
+          compareByOptions={compareByOptions}
+        />
+        <DashboardTable
+          tableFilters={tableFilters}
+          setTableFilters={setTableFilters}
+          onTableHeaderCellClick={onTableHeaderCellClick}
+          tableData={tableData}
+          selectedPerformanceBand={selectedPerformanceBand}
+          loadingTableData={loadingTableData}
+          tableDataRequestError={tableDataRequestError}
+          isCsvDownloading={isCsvDownloading}
+        />
+      </EduIf>
     </DashboardReportContainer>
   )
 }

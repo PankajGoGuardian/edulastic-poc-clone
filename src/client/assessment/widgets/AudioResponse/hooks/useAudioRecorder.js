@@ -64,7 +64,7 @@ const useAudioRecorder = ({
   }
 
   const handleCancelRecording = (voiceRecorderReference) => {
-    if (voiceRecorderReference?.mediaRecorder?.state === 'recording') {
+    if (voiceRecorderReference?.recorder?.audioRecorder?.recording) {
       voiceRecorderReference.cancelRecording()
     }
   }

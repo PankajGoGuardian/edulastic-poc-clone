@@ -4,10 +4,12 @@ import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
 import {
   getProficiencyBand,
   percentage,
+  curateApiFiltersQuery,
 } from '@edulastic/constants/reportUtils/common'
 import qs from 'qs'
 import { isEmpty, round, sumBy } from 'lodash'
 import navigation from '../../../../common/static/json/navigation.json'
+import { filterDetailsFields, sharedDetailsFields } from './constants'
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
   const { requestFilters } = settings
@@ -59,7 +61,8 @@ export const getAcademicSummaryPieChartData = (
 }
 
 export const getAcademicSummaryMetrics = (rawData) => {
-  if (isEmpty(rawData.result)) return {}
+  if (isEmpty(rawData?.result)) return {}
+
   const {
     avgScore,
     periodAvgScore,
@@ -129,4 +132,30 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
       </text>
     </g>
   )
+}
+
+export const getTableApiQuery = (settings, tableFilters, profileId) => {
+  const { query } = curateApiFiltersQuery(
+    {
+      ...settings.requestFilters,
+      ...tableFilters,
+      profileId,
+      compareBy: tableFilters.compareBy.key,
+    },
+    filterDetailsFields,
+    sharedDetailsFields
+  )
+  return query
+}
+
+export function buildRequestFilters(_settings) {
+  const _requestFilters = {}
+  Object.keys(_settings.requestFilters).forEach((filterType) => {
+    _requestFilters[filterType] =
+      _settings.requestFilters[filterType] === 'All' ||
+      _settings.requestFilters[filterType] === 'all'
+        ? ''
+        : _settings.requestFilters[filterType]
+  })
+  return _requestFilters
 }

@@ -23,8 +23,16 @@ const initialState = {
     selectedCompareBy: {},
     academicSummaryFilters: {},
   },
-
   error: '',
+  loadingAcademicSummaryData: false,
+  loadingAttendanceSummaryData: false,
+  loadingTableData: false,
+  academicSummaryData: {},
+  attendanceSummaryData: {},
+  tableData: {},
+  academicSummaryRequestError: '',
+  attendanceSummaryRequestError: '',
+  tableDataRequestError: '',
 }
 const slice = createSlice({
   slice: reduxNamespaceKey,
@@ -65,6 +73,45 @@ const slice = createSlice({
     },
     setSelectedFilterTagsData: (state, { payload }) => {
       state.settings.selectedFilterTagsData = payload
+    },
+    fetchAcademicSummaryDataRequest: (state) => {
+      state.loadingAcademicSummaryData = true
+    },
+    fetchAcademicSummaryDataRequestSuccess: (state, { payload }) => {
+      state.loadingAcademicSummaryData = false
+      state.academicSummaryData = payload.academicSummaryData
+      state.academicSummaryError = ''
+    },
+    fetchAcademicSummaryDataRequestError: (state, { payload }) => {
+      state.loadingAcademicSummaryData = false
+      state.academicSummaryError = payload.error
+      state.academicSummaryData = {}
+    },
+    fetchAttendanceSummaryDataRequest: (state) => {
+      state.loadingAttendanceSummaryData = true
+    },
+    fetchAttendanceSummaryDataRequestSuccess: (state, { payload }) => {
+      state.loadingAttendanceSummaryData = false
+      state.attendanceSummaryData = payload.attendanceSummaryData
+      state.attendanceSummaryError = ''
+    },
+    fetchAttendanceSummaryDataRequestError: (state, { payload }) => {
+      state.loadingAttendanceSummaryData = false
+      state.attendanceSummaryError = payload.error
+      state.attendanceSummaryData = {}
+    },
+    fetchDashboardTableDataRequest: (state) => {
+      state.loadingTableData = true
+    },
+    fetchDashboardTableDataRequestSuccess: (state, { payload }) => {
+      state.loadingTableData = false
+      state.tableData = payload.tableData
+      state.tableDataRequestError = ''
+    },
+    fetchDashboardTableDataRequestError: (state, { payload }) => {
+      state.loadingTableData = false
+      state.tableDataRequestError = payload.error
+      state.tableData = {}
     },
     resetReport: () => ({ ...initialState }),
   },

@@ -1,45 +1,31 @@
-import React, { useState } from 'react'
+import React from 'react'
 import SectionLabel from '../../../common/components/SectionLabel'
 
 import {
   masteryScales,
-  tableFilterTypes,
   academicSummaryFiltersTypes,
   availableTestTypes,
   attendanceSummaryData,
-  tableData,
 } from './utils'
 
 import { MasonGrid } from './components/common/styledComponents'
-import DashboardTable from './components/Table'
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary'
-import DashboardTableFilters from './components/TableFilters'
+import TableSection from './components/TableSection'
 
 function ReportView({
   performanceBandList,
-  academicSummaryFilters,
   setAcademicSummaryFilters,
   compareByOptions,
   isCsvDownloading,
   settings,
-  setSettings,
+  fetchDashboardTableDataRequest,
+  loadingTableData,
+  tableDataRequestError,
+  toggleFilter,
+  tableData,
 }) {
-  const updateFilterDropdownCB = (selected, keyName) => {
-    if (keyName === 'compareBy') {
-      setSettings({ ...settings, selectedCompareBy: selected })
-    }
-  }
-
-  const [defaultCompareBy] = compareByOptions
-
-  const [tableFilters, setTableFilters] = useState({
-    [tableFilterTypes.COMPARE_BY]:
-      // compareByOptions.find((c) => c.key === location?.search?.compareBy) ||
-      defaultCompareBy,
-    [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
-    [tableFilterTypes.BELOW_AVG]: true,
-  })
+  const { academicSummaryFilters } = settings
   const selectedPerformanceBand = (
     masteryScales.filter(
       (x) =>
@@ -49,26 +35,11 @@ function ReportView({
     )[0] || masteryScales[0]
   )?.performanceBand
 
-  const updateTableFiltersCB = (selected, tableFilterType) => {
-    setTableFilters((prevState) => {
-      const nextState = { ...prevState, [tableFilterType]: selected }
-      if (
-        !nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] &&
-        !nextState[tableFilterTypes.BELOW_AVG]
-      ) {
-        // if both are false, set true to both
-        nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] = true
-        nextState[tableFilterTypes.BELOW_AVG] = true
-      }
-      return nextState
-    })
-  }
-
   return (
     <>
       <SectionLabel>Overview</SectionLabel>
       <MasonGrid>
-        <AcademicSummary
+        <AcademicSummary // null on no data
           selectedPerformanceBand={selectedPerformanceBand}
           performanceBandList={performanceBandList}
           availableTestTypes={availableTestTypes}
@@ -76,19 +47,21 @@ function ReportView({
           setWidgetFilters={setAcademicSummaryFilters}
           settings={settings}
         />
-        <AttendanceSummary attendanceSummaryData={attendanceSummaryData} />
+        <AttendanceSummary // null on no data
+          attendanceSummaryData={attendanceSummaryData}
+        />
       </MasonGrid>
-      <DashboardTableFilters
-        tableFilters={tableFilters}
-        updateTableFiltersCB={updateTableFiltersCB}
+      <TableSection
+        academicSummaryFilters={academicSummaryFilters}
         compareByOptions={compareByOptions}
-      />
-      <DashboardTable
-        tableFilters={tableFilters}
-        updateTableFiltersCB={updateTableFiltersCB}
-        tableData={tableData}
-        selectedPerformanceBand={selectedPerformanceBand}
+        fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
+        loadingTableData={loadingTableData}
+        selectedPerformanceBand={selectedPerformanceBand}
+        settings={settings}
+        tableData={tableData}
+        tableDataRequestError={tableDataRequestError}
+        toggleFilter={toggleFilter}
       />
     </>
   )

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { head, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
+
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { SubHeader } from '../../../common/components/Header'
 
 import { DashboardReportContainer } from './components/common/styledComponents'
@@ -18,6 +20,7 @@ import {
   compareByOptions as compareByOptionsRaw,
   academicSummaryFiltersTypes,
   availableTestTypes,
+  buildRequestFilters,
 } from './utils'
 import {
   fetchUpdateTagsDataAction,
@@ -33,13 +36,14 @@ import useTabNavigation from './hooks/useTabNavigation'
 import ReportView from './ReportView'
 import { NoDataContainer } from '../../../common/styled'
 
+const { PERFORMANCE_BAND, TEST_TYPE } = academicSummaryFiltersTypes
+
 const Dashboard = ({
   loc,
   history,
   location,
   isPrinting,
   userRole,
-  filters = {},
   breadcrumbData,
   isCliUser,
   isCsvDownloading,
@@ -54,6 +58,21 @@ const Dashboard = ({
   resetAllReports,
 
   updateNavigation,
+  // report selectors
+  loadingAcademicSummaryData,
+  loadingAttendanceSummaryData,
+  loadingTableData,
+  // academicSummaryData,
+  // attendanceSummaryData,
+  tableData,
+  // academicSummaryRequestError,
+  // attendanceSummaryRequestError,
+  tableDataRequestError,
+  // report actions
+  // fetchAcademicSummaryDataRequest,
+  // fetchAttendanceSummaryDataRequest,
+  fetchDashboardTableDataRequest,
+  // resetDashboardReport,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -79,14 +98,16 @@ const Dashboard = ({
     [masteryScales]
   )
   const onGoClick = (_settings) => {
-    const _requestFilters = {}
-    Object.keys(_settings.requestFilters).forEach((filterType) => {
-      _requestFilters[filterType] =
-        _settings.requestFilters[filterType] === 'All' ||
-        _settings.requestFilters[filterType] === 'all'
-          ? ''
-          : _settings.requestFilters[filterType]
-    })
+    const _requestFilters = buildRequestFilters(_settings)
+    const performanceBand =
+      performanceBandList.find(
+        (p) => p.key === academicSummaryFilters[PERFORMANCE_BAND]
+      ) || performanceBandList[0]
+    const testType = availableTestTypes.includes(
+      academicSummaryFilters[TEST_TYPE]
+    )
+      ? academicSummaryFilters[TEST_TYPE]
+      : availableTestTypes[0]
     setSettings({
       ...settings,
       requestFilters: {
@@ -100,19 +121,8 @@ const Dashboard = ({
         ? settings.selectedCompareBy
         : head(compareByOptions),
       academicSummaryFilters: {
-        [academicSummaryFiltersTypes.PERFORMANCE_BAND]:
-          performanceBandList.find(
-            (p) =>
-              p.key ===
-              academicSummaryFilters[
-                academicSummaryFiltersTypes.PERFORMANCE_BAND
-              ]
-          ) || performanceBandList[0],
-        [academicSummaryFiltersTypes.TEST_TYPE]: availableTestTypes.includes(
-          academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]
-        )
-          ? academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]
-          : availableTestTypes[0],
+        [PERFORMANCE_BAND]: performanceBand,
+        [TEST_TYPE]: testType,
       },
     })
     setShowApply(false)
@@ -129,6 +139,12 @@ const Dashboard = ({
   useTabNavigation(settings, reportId, history, loc, updateNavigation)
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
+
+  const showSpinLoader = [
+    loadingAcademicSummaryData,
+    loadingAttendanceSummaryData,
+    loadingTableData,
+  ].every((v) => v)
 
   return (
     <DashboardReportContainer>
@@ -149,19 +165,35 @@ const Dashboard = ({
           toggleFilter={toggleFilter}
         />
       </SubHeader>
-      {isWithoutFilters ? (
-        <NoDataContainer />
-      ) : (
-        <ReportView
-          performanceBandList={performanceBandList}
-          academicSummaryFilters={academicSummaryFilters}
-          setAcademicSummaryFilters={setAcademicSummaryFilters}
-          compareByOptions={compareByOptions}
-          isCsvDownloading={isCsvDownloading}
-          settings={settings}
-          setSettings={setSettings}
-        />
-      )}
+      <EduIf condition={showSpinLoader}>
+        <EduThen>
+          <SpinLoader
+            tip="Please wait while we gather the required information..."
+            position="fixed"
+          />
+        </EduThen>
+        <EduElse>
+          <EduIf condition={isWithoutFilters}>
+            <EduThen>
+              <NoDataContainer />
+            </EduThen>
+            <EduElse>
+              <ReportView
+                performanceBandList={performanceBandList}
+                setAcademicSummaryFilters={setAcademicSummaryFilters}
+                compareByOptions={compareByOptions}
+                isCsvDownloading={isCsvDownloading}
+                settings={settings}
+                fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
+                loadingTableData={loadingTableData}
+                tableDataRequestError={tableDataRequestError}
+                toggleFilter={toggleFilter}
+                tableData={tableData}
+              />
+            </EduElse>
+          </EduIf>
+        </EduElse>
+      </EduIf>
     </DashboardReportContainer>
   )
 }

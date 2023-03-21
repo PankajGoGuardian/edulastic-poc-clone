@@ -106,8 +106,10 @@ export const TableContainer = styled.div`
 export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
-  margin: 8px 25px;
-  box-shadow: 0px 10px 11px #0000000f;
+  margin: 12px 25px;
+  box-shadow: ${(props) =>
+    props.isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
+  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   span {
     &:first-child {
       padding: 13px 32px;
@@ -122,6 +124,7 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
+      cursor: pointer;
       border-radius: 0px 10px 10px 0px;
     }
   }
@@ -175,6 +178,7 @@ export const CustomStyledTable = styled(StyledTable)`
         padding: 10px 0px 10px 8px;
         color: #434b5d;
         font-weight: 600;
+        font-size: 12px;
         @media (min-width: ${extraDesktopWidthMax}) {
           font-size: 14px;
         }

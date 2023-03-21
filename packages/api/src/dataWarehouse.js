@@ -94,9 +94,31 @@ const getAttendanceMetrics = (data) => {
 
 const getDashboardAcademicSummary = (data) => {
   const queryString = qs.stringify(data)
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DASHBOARD_REPORT}/academic-summary?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data)
+}
+
+const getDashboardAttendanceSummaryMetrics = (data) => {
+  const queryString = qs.stringify(data)
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${DASHBOARD_REPORT}/academic-summary?${queryString}`,
+    url: `${prefix}/${DASHBOARD_REPORT}/attendance-summary?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
+const getDashboardTableMatrics = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${DASHBOARD_REPORT}/details?${queryString}`,
     method: 'get',
     data,
   })
@@ -111,4 +133,6 @@ export default {
   getMARTableMetrics,
   getAttendanceMetrics,
   getDashboardAcademicSummary,
+  getDashboardAttendanceSummaryMetrics,
+  getDashboardTableMatrics,
 }

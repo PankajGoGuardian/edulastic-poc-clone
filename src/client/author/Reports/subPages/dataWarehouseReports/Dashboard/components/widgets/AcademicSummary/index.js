@@ -1,10 +1,10 @@
 import { dataWarehouseApi } from '@edulastic/api'
-import { lightGrey8 } from '@edulastic/colors'
-import { useApiQuery } from '@edulastic/common'
+import { lightGreen13, lightGrey8 } from '@edulastic/colors'
+import { EduIf, useApiQuery } from '@edulastic/common'
 import { Spin } from 'antd'
 import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
-import { DashedLine, NoDataContainer } from '../../../../../../common/styled'
+import { DashedLine } from '../../../../../../common/styled'
 import {
   getCellColor,
   getAcademicSummaryPieChartData,
@@ -42,16 +42,14 @@ const AcademicSummary = ({
     loading,
     error,
   } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
-  if (!data) {
-    return <NoDataContainer />
-  }
+
   // @Todo handle data transformation properly
-  const { result: { avgScore, bandDistribution } = {} } = data.data || {}
+  const { result: { avgScore, bandDistribution } = {} } = data || {}
   const {
     avgScorePercentage,
     aboveStandardPercentage,
     scoreTrendPercentage,
-  } = getAcademicSummaryMetrics(data.data)
+  } = getAcademicSummaryMetrics(data)
 
   const avgScoreCellColor = data
     ? getCellColor(avgScore, selectedPerformanceBand)
@@ -63,26 +61,22 @@ const AcademicSummary = ({
 
   return (
     <Spin spinning={loading}>
-      {!data ? (
-        <NoDataContainer />
-      ) : error ? (
-        <NoDataContainer />
-      ) : (
-        <Widget>
-          <WidgetHeader title={title} />
-          <AcademicSummaryWidgetFilters
-            filters={widgetFilters}
-            setFilters={setWidgetFilters}
-            performanceBandsList={performanceBandList}
-            availableTestTypes={availableTestTypes}
-          />
+      <Widget>
+        <WidgetHeader title={title} />
+        <AcademicSummaryWidgetFilters
+          filters={widgetFilters}
+          setFilters={setWidgetFilters}
+          performanceBandsList={performanceBandList}
+          availableTestTypes={availableTestTypes}
+        />
+        <EduIf condition={!loading && data && !error}>
           <ContentWrapper>
             <div>
               <WidgetCell
                 header="AVG. SCORE"
                 value={`${avgScorePercentage}%`}
                 footer={scoreTrendPercentage}
-                subFooter="vs Dec'22"
+                subFooter="vs Dec'22" // TODO use from API
                 color={avgScoreCellColor}
               />
               <DashedLine
@@ -94,7 +88,7 @@ const AcademicSummary = ({
               <WidgetCell
                 header="ABOVE STANDARD"
                 value={`${aboveStandardPercentage}%`}
-                color="#cef5d8"
+                color={lightGreen13}
               />
             </div>
             <DashedLine
@@ -109,8 +103,8 @@ const AcademicSummary = ({
               getChartLabelJSX={getAcademicSummaryChartLabelJSX}
             />
           </ContentWrapper>
-        </Widget>
-      )}
+        </EduIf>
+      </Widget>
     </Spin>
   )
 }

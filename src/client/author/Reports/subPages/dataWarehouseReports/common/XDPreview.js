@@ -6,6 +6,7 @@ import navigation from '../../../common/static/json/navigation.json'
 const XDPreview = ({
   url,
   title,
+  style = { display: 'block', width: '100%', height: '100%' },
   breadcrumbData,
   isCliUser,
   updateNavigation,
@@ -36,7 +37,7 @@ const XDPreview = ({
         allowfullscreen="true"
         marginheight="0"
         marginwidth="0"
-        style={{ display: 'block', width: '100%', height: '100%' }}
+        style={style}
         src={url}
         title={title}
       />

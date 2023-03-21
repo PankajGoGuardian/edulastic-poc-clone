@@ -29,6 +29,7 @@ import {
   getCurrentRubricDataSelector,
 } from '../../../author/GradingRubric/ducks'
 import PreviewRubricModal from '../../../author/GradingRubric/Components/common/PreviewRubricModal'
+import ImmersiveReaderWrapper from '../ImmersiveReadeWrapper'
 
 const InfoButtons = ({
   showHintHandler,
@@ -259,7 +260,7 @@ const Hints = ({
             ref={hintContRef}
           >
             {!!showCount && !toggleHints && (
-              <>
+              <ImmersiveReaderWrapper>
                 <QuestionLabel>Hint(s)</QuestionLabel>
                 {validHints.map(
                   ({ value, label }, index) =>
@@ -294,7 +295,7 @@ const Hints = ({
                       </HintItem>
                     )
                 )}
-              </>
+              </ImmersiveReaderWrapper>
             )}
           </HintCont>
         </HintsContainer>

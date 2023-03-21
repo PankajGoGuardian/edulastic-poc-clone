@@ -1,9 +1,12 @@
 import React from 'react'
 import next from 'immer'
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
-import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
+import {
+  getProficiencyBand,
+  percentage,
+} from '@edulastic/constants/reportUtils/common'
 import qs from 'qs'
-import { isEmpty } from 'lodash'
+import { isEmpty, round, sumBy } from 'lodash'
 import navigation from '../../../../common/static/json/navigation.json'
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
@@ -38,10 +41,14 @@ export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand
 ) => {
+  console.log({
+    bandDistribution,
+    selectedPerformanceBand,
+  })
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   return selectedPerformanceBand.map((pb) => {
     const totalStudents = bandDistribution.find(
-      (bd) => bd.bandScore === pb.threshold
+      (bd) => bd.bandThreshold === pb.threshold
     )?.students
     return {
       name: pb.name,
@@ -49,6 +56,34 @@ export const getAcademicSummaryPieChartData = (
       fill: pb.color,
     }
   })
+}
+
+export const getAcademicSummaryMetrics = (rawData) => {
+  if (isEmpty(rawData.result)) return {}
+  const {
+    avgScore,
+    periodAvgScore,
+    aboveStandardStudents,
+    bandDistribution,
+  } = rawData.result
+
+  const totalStudents = sumBy(bandDistribution, ({ students }) => students)
+  const avgScorePercentage = round(avgScore * 100, 2)
+  const periodAvgScorePercentage = round(periodAvgScore * 100, 2)
+  const scoreTrendPercentage = round(
+    periodAvgScorePercentage - avgScorePercentage,
+    2
+  )
+  const aboveStandardPercentage = percentage(
+    aboveStandardStudents,
+    totalStudents,
+    true
+  )
+  return {
+    avgScorePercentage,
+    aboveStandardPercentage,
+    scoreTrendPercentage,
+  }
 }
 
 export const getAcademicSummaryChartLabelJSX = (props) => {

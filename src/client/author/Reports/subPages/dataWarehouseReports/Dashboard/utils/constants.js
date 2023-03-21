@@ -78,8 +78,8 @@ export const masteryScales = [
 
 export const availableTestTypes = [
   {
-    key: 'Edulastic',
-    title: 'Edulastic',
+    key: 'assessment',
+    title: 'Class Assessment',
   },
   // {
   //   key: 'CAASPP',

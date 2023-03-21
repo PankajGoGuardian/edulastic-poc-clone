@@ -10,6 +10,7 @@ import {
   getAcademicSummaryPieChartData,
   getAcademicSummaryChartLabelJSX,
   academicSummaryFiltersTypes,
+  getAcademicSummaryMetrics,
 } from '../../../utils'
 import { ContentWrapper, Widget } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
@@ -44,14 +45,13 @@ const AcademicSummary = ({
   if (!data) {
     return <NoDataContainer />
   }
+  // @Todo handle data transformation properly
+  const { result: { avgScore, bandDistribution } = {} } = data || {}
   const {
-    result: {
-      avgScore,
-      periodAvgScore,
-      aboveStandardsStudents,
-      bandDistribution,
-    } = {},
-  } = data || {}
+    avgScorePercentage,
+    aboveStandardPercentage,
+    scoreTrendPercentage,
+  } = getAcademicSummaryMetrics(data)
 
   const avgScoreCellColor = data
     ? getCellColor(avgScore, selectedPerformanceBand)
@@ -60,6 +60,7 @@ const AcademicSummary = ({
     bandDistribution,
     selectedPerformanceBand
   )
+
   return (
     <Spin spinning={loading}>
       {!data ? (
@@ -79,8 +80,8 @@ const AcademicSummary = ({
             <div>
               <WidgetCell
                 header="AVG. SCORE"
-                value={`${avgScore}%`}
-                footer={periodAvgScore - avgScore}
+                value={`${avgScorePercentage}%`}
+                footer={scoreTrendPercentage}
                 subFooter="vs Dec'22"
                 color={avgScoreCellColor}
               />
@@ -92,7 +93,7 @@ const AcademicSummary = ({
               />
               <WidgetCell
                 header="ABOVE STANDARD"
-                value={`${aboveStandardsStudents}%`}
+                value={`${aboveStandardPercentage}%`}
                 color="#cef5d8"
               />
             </div>

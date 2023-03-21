@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap, sumBy } from 'lodash'
+import { flatMap, isEmpty, sumBy } from 'lodash'
 import {
   downloadCSV,
   percentage,
@@ -35,6 +35,8 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
 const getHorizontalBarData = (data, selectedPerformanceBand) => {
+  if (isEmpty(data) || isEmpty(selectedPerformanceBand)) return []
+
   const totalStudents = sumBy(data, 'totalStudents')
   return data.map((d) => {
     const band = selectedPerformanceBand.find(
@@ -42,7 +44,7 @@ const getHorizontalBarData = (data, selectedPerformanceBand) => {
     )
     return {
       value: percentage(d.totalStudents, totalStudents, true),
-      color: band.color,
+      color: band?.color,
     }
   })
 }

@@ -1,3 +1,5 @@
+import { PERIODS } from '@edulastic/constants/reportUtils/datawarehouseReports/dashboardReport'
+
 export const masteryScales = [
   {
     _id: '6322e2b799978a000a298469',
@@ -250,15 +252,6 @@ export const academicSummaryFiltersTypes = {
   TEST_TYPE: 'academicTestType',
 }
 
-const PERIODS = {
-  TILL_DATE: 'TILL_DATE',
-  THIS_MONTH: 'THIS_MONTH',
-  THIS_QUARTER: 'THIS_QUARTER',
-  LAST_MONTH: 'LAST_MONTH',
-  LAST_QUARTER: 'LAST_QUARTER',
-  CUSTOM: 'CUSTOM',
-}
-
 export const staticDropDownData = {
   filterSections: {
     TEST_FILTERS: {
@@ -319,7 +312,6 @@ export const staticDropDownData = {
     courseId: 'All',
     classIds: '',
     groupIds: '',
-    profileId: '',
     assignedBy: 'anyone',
     race: 'all',
     gender: 'all',

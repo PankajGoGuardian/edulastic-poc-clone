@@ -17,16 +17,17 @@ const initialState = {
 
   settings: {
     requestFilters: {
-      ...staticDropDownData.requestFilters,
+      // ...staticDropDownData.requestFilters,
     },
     selectedFilterTagsData: {},
     selectedCompareBy: {},
+    academicSummaryFilters: {},
   },
 
   error: '',
 }
 const slice = createSlice({
-  name: 'dwDashboardReport',
+  slice: reduxNamespaceKey,
   initialState: { ...initialState },
   reducers: {
     fetchFiltersDataRequest: (state) => {
@@ -58,6 +59,9 @@ const slice = createSlice({
     },
     setSettings: (state, { payload }) => {
       state.settings = payload
+    },
+    setAcademicSummaryFilters: (state, { payload }) => {
+      state.settings.academicSummaryFilters = payload
     },
     setSelectedFilterTagsData: (state, { payload }) => {
       state.settings.selectedFilterTagsData = payload

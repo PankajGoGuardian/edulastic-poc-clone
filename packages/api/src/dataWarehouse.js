@@ -5,6 +5,7 @@ const api = new API()
 const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
+const DASHBOARD_REPORT = 'dashboard-report'
 
 const getSignedUrl = (
   filename,
@@ -91,6 +92,16 @@ const getAttendanceMetrics = (data) => {
   })
 }
 
+const getDashboardAcademicSummary = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${DASHBOARD_REPORT}/academic-summary?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -99,4 +110,5 @@ export default {
   getMARChartMetrics,
   getMARTableMetrics,
   getAttendanceMetrics,
+  getDashboardAcademicSummary,
 }

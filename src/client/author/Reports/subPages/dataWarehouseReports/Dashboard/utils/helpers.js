@@ -3,6 +3,7 @@ import next from 'immer'
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
 import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
 import qs from 'qs'
+import { isEmpty } from 'lodash'
 import navigation from '../../../../common/static/json/navigation.json'
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
@@ -37,6 +38,7 @@ export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand
 ) => {
+  if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   return selectedPerformanceBand.map((pb) => {
     const totalStudents = bandDistribution.find(
       (bd) => bd.bandScore === pb.threshold

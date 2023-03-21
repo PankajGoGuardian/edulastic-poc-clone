@@ -36,6 +36,8 @@ const POST_MERIDIEM = 'PM'
 
 const PASSWORD_KEY = 'password'
 
+const PUBLIC_URL_IDENTIFIER = '/public/'
+
 module.exports = {
   helpCenterUrl,
   sessionFilters,
@@ -52,4 +54,5 @@ module.exports = {
   ANTE_MERIDIEM,
   POST_MERIDIEM,
   PASSWORD_KEY,
+  PUBLIC_URL_IDENTIFIER,
 }

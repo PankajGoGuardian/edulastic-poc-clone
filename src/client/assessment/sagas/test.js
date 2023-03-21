@@ -43,6 +43,7 @@ import {
   testActivityStatus,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
+import { PUBLIC_URL_IDENTIFIER } from '@edulastic/constants/const/common'
 import { ORG_TYPE } from '@edulastic/constants/const/roleType'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
@@ -406,10 +407,15 @@ function* loadTest({ payload }) {
     }
     let enableAudioResponseQuestion =
       testActivity?.enableAudioResponseQuestion || false
-    const isTestBeingPreviewed = [preview, userRole !== roleuser.STUDENT].every(
-      (o) => !!o
-    )
-    if (isTestBeingPreviewed) {
+    const userAuthenticated = getAccessToken()
+    const isPublicUrl = window.location.href.includes(PUBLIC_URL_IDENTIFIER)
+    const canLoadTestSettingWhilePreviewing = [
+      preview,
+      userRole !== roleuser.STUDENT,
+      !isPublicUrl,
+      userAuthenticated,
+    ].every((o) => !!o)
+    if (canLoadTestSettingWhilePreviewing) {
       const userCurrentDistrictId = yield select(getUserOrgId)
       const districtTestSetting = yield call(testsApi.getDefaultTestSettings, {
         orgId: userCurrentDistrictId,
@@ -427,7 +433,6 @@ function* loadTest({ payload }) {
         testId,
       },
     })
-    const userAuthenticated = getAccessToken()
     const getPublicTest = userAuthenticated
       ? testsApi.getById
       : testsApi.getPublicTest

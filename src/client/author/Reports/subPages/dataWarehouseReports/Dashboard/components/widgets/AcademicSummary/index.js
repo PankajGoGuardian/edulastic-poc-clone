@@ -11,6 +11,7 @@ import {
   getAcademicSummaryChartLabelJSX,
   academicSummaryFiltersTypes,
   getAcademicSummaryMetrics,
+  filterPopupFilterSelectedTestTypes,
 } from '../../../utils'
 import { ContentWrapper, Widget } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
@@ -37,13 +38,22 @@ const AcademicSummary = ({
     }),
     [widgetFilters, settings.requestFilters]
   )
+
+  const filteredAvailableTestTypes = useMemo(
+    () =>
+      filterPopupFilterSelectedTestTypes(
+        settings.requestFilters.assessmentTypes,
+        availableTestTypes
+      ),
+    [settings.requestFilters.assessmentTypes]
+  )
+
   const {
     data,
     loading,
     error,
   } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
 
-  // @Todo handle data transformation properly
   const { result: { avgScore, bandDistribution } = {} } = data || {}
   const {
     avgScorePercentage,
@@ -67,7 +77,7 @@ const AcademicSummary = ({
           filters={widgetFilters}
           setFilters={setWidgetFilters}
           performanceBandsList={performanceBandList}
-          availableTestTypes={availableTestTypes}
+          availableTestTypes={filteredAvailableTestTypes}
         />
         <EduIf condition={!loading && data && !error}>
           <ContentWrapper>

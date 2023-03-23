@@ -78,25 +78,13 @@ export const masteryScales = [
 
 export const availableTestTypes = [
   {
+    key: 'common assessment',
+    title: 'Common Assessment',
+  },
+  {
     key: 'assessment',
     title: 'Class Assessment',
   },
-  // {
-  //   key: 'CAASPP',
-  //   title: 'CAASPP',
-  // },
-  // {
-  //   key: 'NWEA',
-  //   title: 'NWEA',
-  // },
-  // {
-  //   key: 'iReady_ELA',
-  //   title: 'iReady (ELA)',
-  // },
-  // {
-  //   key: 'iReady_Math',
-  //   title: 'iReady (MATH)',
-  // },
 ]
 
 export const academicSummaryData = {

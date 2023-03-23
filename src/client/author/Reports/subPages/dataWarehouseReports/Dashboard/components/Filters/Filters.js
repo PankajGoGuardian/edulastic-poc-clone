@@ -6,9 +6,11 @@ import { connect } from 'react-redux'
 
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
-import { staticDropDownData } from '../../utils'
+import {
+  staticDropDownData,
+  availableTestTypes as availableAssessmentType,
+} from '../../utils'
 
-import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import { actions, selectors } from '../../ducks'
 import {
   getCurrentTerm,
@@ -57,10 +59,7 @@ const Filters = ({
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
-  const {
-    demographics = [],
-    testTypes: availableAssessmentType = getArrayOfAllTestTypes(),
-  } = get(filtersData, 'data.result', {})
+  const { demographics = [] } = get(filtersData, 'data.result', {})
 
   const search = useUrlSearchParams(location)
 

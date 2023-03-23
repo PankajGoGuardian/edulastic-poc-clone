@@ -43,10 +43,6 @@ export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand
 ) => {
-  console.log({
-    bandDistribution,
-    selectedPerformanceBand,
-  })
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   return selectedPerformanceBand.map((pb) => {
     const totalStudents = bandDistribution.find(
@@ -74,7 +70,7 @@ export const getAcademicSummaryMetrics = (rawData) => {
   const avgScorePercentage = round(avgScore * 100, 2)
   const periodAvgScorePercentage = round(periodAvgScore * 100, 2)
   const scoreTrendPercentage = round(
-    periodAvgScorePercentage - avgScorePercentage,
+    avgScorePercentage - periodAvgScorePercentage,
     2
   )
   const aboveStandardPercentage = percentage(
@@ -107,7 +103,7 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
   const textY = my - 5
   return (
     <g>
-      <circle
+      <circlex
         cx={circleX}
         cy={circleY}
         r={4}
@@ -158,4 +154,16 @@ export function buildRequestFilters(_settings) {
         : _settings.requestFilters[filterType]
   })
   return _requestFilters
+}
+
+export const filterPopupFilterSelectedTestTypes = (
+  selectedAssessmentTypes,
+  availableTestTypes
+) => {
+  const testTypesSelectedInPopupFilters = selectedAssessmentTypes.split(',')
+  return isEmpty(selectedAssessmentTypes)
+    ? availableTestTypes
+    : availableTestTypes.filter(({ key }) =>
+        testTypesSelectedInPopupFilters.includes(key)
+      )
 }

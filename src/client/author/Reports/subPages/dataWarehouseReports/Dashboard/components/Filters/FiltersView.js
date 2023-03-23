@@ -1,7 +1,6 @@
 import { Col, DatePicker, Row, Spin, Tabs } from 'antd'
 import React from 'react'
 
-import { FieldLabel, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
@@ -18,8 +17,6 @@ import {
   FilterLabel,
   ReportFiltersContainer,
   ReportFiltersWrapper,
-  SecondaryFilterRow,
-  StyledDropDownContainer,
   StyledEduButton,
 } from '../../../../../common/styled'
 

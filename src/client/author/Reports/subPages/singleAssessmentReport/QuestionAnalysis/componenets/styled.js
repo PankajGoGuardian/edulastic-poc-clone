@@ -43,7 +43,7 @@ export const StyledTable = styled(Table)`
   .ant-table-thead > tr:nth-child(2) > th {
     background-color: ${fadedGrey};
     color: black;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
   }
   .ant-table-body {
@@ -108,6 +108,7 @@ export const QLabelSpan = styled.span`
   margin-bottom: 10px;
   display: inline-block;
   font-size: 12px;
+  text-transform: initial;
 `
 export const StyledSwitch = styled(Switch)`
   margin-left: 10px;

@@ -1,7 +1,11 @@
 import { reportsApi } from '@edulastic/api'
 import { pick } from 'lodash'
 import { useEffect, useState } from 'react'
-import { pickDataForDetails, pickDataForSummary } from '../constants'
+import {
+  pickDataForDetails,
+  pickDataForSummary,
+  sortOrderMap,
+} from '../constants'
 
 const {
   fetchQuestionAnalysisSummaryReport,
@@ -66,7 +70,7 @@ export const useQAnalysisDetailsFetch = ({
             ...pick(settings.requestFilters, pickDataForDetails),
             ...demographicFilters,
             compareBy,
-            sortOrder: !sortOrder ? 'asc' : 'desc',
+            sortOrder: sortOrderMap[sortOrder],
             page: pageNo,
             pageSize,
             testId: settings.selectedTest.key,

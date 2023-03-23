@@ -79,3 +79,8 @@ export const dropDownKeyToLabel = {
   teacher: 'Teacher',
   class: 'Class',
 }
+
+export const sortOrderMap = {
+  ascend: 'asc',
+  descend: 'desc',
+}

@@ -32,6 +32,7 @@ import {
   pageSize,
   sortByLabels,
   sortByOptions,
+  sortOrderMap,
 } from './constants'
 import TableTitleAndFilter from './componenets/TableTitleAndFilter'
 import {
@@ -66,7 +67,7 @@ const QuestionAnalysis = ({
     endIndex: 9,
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
-  const [sortOrder, setSortOrder] = useState(false)
+  const [sortOrder, setSortOrder] = useState(undefined)
   const { selectedTest } = settings
   if (testList) {
     const currentTest = testList.find((item) => item._id === selectedTest?.key)
@@ -123,7 +124,7 @@ const QuestionAnalysis = ({
           visibleIndices,
           compareBy,
           sortKey,
-          sortOrder: !sortOrder ? 'asc' : 'desc',
+          sortOrder: sortOrderMap[sortOrder],
           testId: settings.selectedTest.key,
         },
         reportExtras: {},
@@ -157,7 +158,7 @@ const QuestionAnalysis = ({
   const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
     setpageNo(1)
-    setSortOrder(false)
+    setSortOrder(undefined)
     setSortKey(sortByOptions.AVG_PERFORMANCE)
   }
 

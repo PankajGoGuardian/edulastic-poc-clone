@@ -23,7 +23,7 @@ export const TooltipText = (
           {comparedByToToolTipLabel[compareByType].type}:{' '}
         </Col>
         <Col className="custom-table-tooltip-value">
-          {record.scorePercentByQId?.[questionId]}%
+          {record.scorePercentByQId?.[questionId]}
         </Col>
       </Row>
       <Row type="flex" justify="start">
@@ -31,13 +31,13 @@ export const TooltipText = (
           {comparedByToToolTipLabel[compareByType].all}:{' '}
         </Col>
         <Col className="custom-table-tooltip-value">
-          {record.averageScoreByQId?.[questionId]}%
+          {record.averageScoreByQId?.[questionId]}
         </Col>
       </Row>
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">District (% Score):</Col>
         <Col className="custom-table-tooltip-value">
-          {record.districtAverage?.[questionId]}%
+          {record.districtAverage?.[questionId]}
         </Col>
       </Row>
     </div>

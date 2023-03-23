@@ -100,6 +100,11 @@ const Dashboard = ({
   )
 
   const search = useUrlSearchParams(location)
+  const selectedCompareBy = search.selectedCompareBy
+    ? compareByOptions.find((o) => o.key === search.selectedCompareBy)
+    : settings.selectedCompareBy?.key
+    ? settings.selectedCompareBy
+    : head(compareByOptions)
 
   const onGoClick = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
@@ -121,9 +126,7 @@ const Dashboard = ({
         testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy: settings.selectedCompareBy?.key
-        ? settings.selectedCompareBy
-        : head(compareByOptions),
+      selectedCompareBy,
       academicSummaryFilters: {
         [PERFORMANCE_BAND]: performanceBand,
         [TEST_TYPE]: testType,
@@ -185,7 +188,7 @@ const Dashboard = ({
             <EduElse>
               <ReportView
                 location={location}
-                selectedCompareBy={search.selectedCompareBy}
+                selectedCompareBy={selectedCompareBy}
                 performanceBandList={performanceBandList}
                 setAcademicSummaryFilters={setAcademicSummaryFilters}
                 compareByOptions={compareByOptions}

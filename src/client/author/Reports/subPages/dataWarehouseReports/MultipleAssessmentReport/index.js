@@ -166,11 +166,11 @@ const MultipleAssessmentReport = ({
   const computeChartNavigationLinks = () => {
     const { requestFilters } = settings
     if (navigation.locToData[loc]) {
-      const arr = Object.keys(requestFilters)
-      const obj = {}
-      arr.forEach((item) => {
+      const requestFilterKeys = Object.keys(requestFilters)
+      const _filters = {}
+      requestFilterKeys.forEach((item) => {
         const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-        obj[item] = val
+        _filters[item] = val
       })
       const _navigationItems = navigation.navigation[
         navigation.locToData[loc].group
@@ -180,7 +180,7 @@ const MultipleAssessmentReport = ({
       })
       return next(_navigationItems, (draft) => {
         const _currentItem = draft.find((t) => t.key === loc)
-        _currentItem.location += `?${qs.stringify(obj)}`
+        _currentItem.location += `?${qs.stringify(_filters)}`
       })
     }
     return []
@@ -194,22 +194,20 @@ const MultipleAssessmentReport = ({
     []
   )
 
-  console.log(settings)
-
   useEffect(() => {
     if (settings.requestFilters.termId) {
-      const obj = {}
-      const arr = Object.keys(settings.requestFilters)
-      arr.forEach((item) => {
+      const _filters = {}
+      const requestFilterKeys = Object.keys(settings.requestFilters)
+      requestFilterKeys.forEach((item) => {
         const val =
           settings.requestFilters[item] === ''
             ? 'All'
             : settings.requestFilters[item]
-        obj[item] = val
+        _filters[item] = val
       })
-      obj.reportId = reportId || ''
-      obj.selectedCompareBy = selectedCompareBy.key
-      const path = `?${qs.stringify(obj)}`
+      _filters.reportId = reportId || ''
+      _filters.selectedCompareBy = selectedCompareBy.key
+      const path = `?${qs.stringify(_filters)}`
       history.push(path)
     }
     const navigationItems = computeChartNavigationLinks()

@@ -6,14 +6,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { DashedLine } from '../../../../../common/styled'
 import { CompareByContainer } from '../common/styledComponents'
-import { compareByKeys, tableFilterTypes } from '../../utils'
+import { compareByKeys } from '../../utils'
 
-const CompareByTitle = ({ tableFilters, value, getTableDrillDownUrl }) => {
+const CompareByTitle = ({ selectedCompareBy, value, getTableDrillDownUrl }) => {
   const maxCharsInColumn = 25
   const dashedLineMarginX =
     96 - 3.5 * min([value.name?.length, maxCharsInColumn])
 
-  const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
   const url = getTableDrillDownUrl(value._id)
 
   const showLink = [
@@ -25,7 +24,7 @@ const CompareByTitle = ({ tableFilters, value, getTableDrillDownUrl }) => {
   return value.name ? (
     <Tooltip title={value.name}>
       <EduIf condition={showLink}>
-        <Link to={url} target="_blank">
+        <Link to={url} target={url}>
           <div>
             <CompareByContainer>{value.name}</CompareByContainer>
             <DashedLine

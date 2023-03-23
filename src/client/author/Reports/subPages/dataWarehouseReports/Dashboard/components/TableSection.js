@@ -19,17 +19,18 @@ function TableSection({
   loadingTableData,
   tableDataRequestError,
 }) {
-  const defaultCompareBy = selectedCompareBy
-    ? compareByOptions.find((o) => o.key === selectedCompareBy)
-    : compareByOptions[0]
-
   const {
     tableFilters,
     setTableFilters,
     updateTableFiltersCB,
     onTableHeaderCellClick,
     getTableDrillDownUrl,
-  } = useTableFilters({ location, defaultCompareBy, settings, setSettings })
+  } = useTableFilters({
+    location,
+    defaultCompareBy: selectedCompareBy,
+    settings,
+    setSettings,
+  })
 
   useEffect(() => {
     const q = getTableApiQuery(

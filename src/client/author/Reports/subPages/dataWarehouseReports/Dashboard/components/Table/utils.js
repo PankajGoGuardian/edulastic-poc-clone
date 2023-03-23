@@ -66,6 +66,7 @@ export const getTableColumns = ({
     (row) => Object.keys(row.performance).length
   )
   const availableTestTypes = Object.keys(rowWithMaxTestTypes?.performance || {})
+  const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
 
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -74,7 +75,7 @@ export const getTableColumns = ({
       tableFilters[tableFilterTypes.COMPARE_BY].title
     _columns[compareByIdx].render = (value) => (
       <CompareByTitle
-        tableFilters={tableFilters}
+        selectedCompareBy={selectedCompareBy}
         value={value}
         getTableDrillDownUrl={getTableDrillDownUrl}
       />
@@ -135,14 +136,14 @@ export const getTableColumns = ({
     align: 'center',
     fixed: 'right',
     width: 200,
-    render: (value) => (
-      <Link
-        to={getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)}
-        target="_blank"
-      >
-        <IconExternalLink />
-      </Link>
-    ),
+    render: (value) => {
+      const url = getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)
+      return (
+        <Link to={url} target={url}>
+          <IconExternalLink />
+        </Link>
+      )
+    },
   }
 
   tableColumns.push(externalLinkColumn)

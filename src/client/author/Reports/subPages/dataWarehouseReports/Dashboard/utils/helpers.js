@@ -43,10 +43,6 @@ export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand
 ) => {
-  console.log({
-    bandDistribution,
-    selectedPerformanceBand,
-  })
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   return selectedPerformanceBand.map((pb) => {
     const totalStudents = bandDistribution.find(

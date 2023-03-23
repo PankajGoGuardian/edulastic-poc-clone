@@ -20,7 +20,7 @@ const {
 
 const GetCellContents = (props) => {
   const { score } = props
-  const bgColor = getHSLFromRange1(score)
+  const bgColor = getHSLFromRange1(parseInt(score, 10))
   return <ColoredCell bgColor={bgColor}>{score}</ColoredCell>
 }
 

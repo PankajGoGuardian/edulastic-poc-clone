@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react'
+import { isEmpty } from 'lodash'
+import { Spin } from 'antd'
+import { EduIf } from '@edulastic/common'
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
 import { academicSummaryFiltersTypes, getTableApiQuery } from '../utils'
+import BackendPagination from '../../../../common/components/BackendPagination'
+import { NoDataContainer, TableContainer } from './common/styledComponents'
 
 function TableSection({
   location,
@@ -25,6 +30,7 @@ function TableSection({
     updateTableFiltersCB,
     onTableHeaderCellClick,
     getTableDrillDownUrl,
+    setTablePagination,
   } = useTableFilters({
     location,
     defaultCompareBy: selectedCompareBy,
@@ -48,6 +54,13 @@ function TableSection({
     tableFilters,
     academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
   ])
+
+  const showNoDataContainer =
+    tableDataRequestError || isEmpty(tableData?.metricInfo)
+  const noDataContainerText = tableDataRequestError?.dataSizeExceeded
+    ? tableDataRequestError.message
+    : 'No data available.'
+
   return (
     <>
       <DashboardTableFilters
@@ -55,17 +68,33 @@ function TableSection({
         updateTableFiltersCB={updateTableFiltersCB}
         compareByOptions={compareByOptions}
       />
-      <DashboardTable
-        tableFilters={tableFilters}
-        setTableFilters={setTableFilters}
-        onTableHeaderCellClick={onTableHeaderCellClick}
-        getTableDrillDownUrl={getTableDrillDownUrl}
-        tableData={tableData}
-        selectedPerformanceBand={selectedPerformanceBand}
-        loadingTableData={loadingTableData}
-        tableDataRequestError={tableDataRequestError}
-        isCsvDownloading={isCsvDownloading}
-      />
+      <TableContainer>
+        <Spin spinning={loadingTableData}>
+          <EduIf condition={!loadingTableData && showNoDataContainer}>
+            <NoDataContainer>{noDataContainerText}</NoDataContainer>
+          </EduIf>
+          <EduIf condition={!loadingTableData && !showNoDataContainer}>
+            <DashboardTable
+              tableFilters={tableFilters}
+              setTableFilters={setTableFilters}
+              onTableHeaderCellClick={onTableHeaderCellClick}
+              getTableDrillDownUrl={getTableDrillDownUrl}
+              tableData={tableData}
+              selectedPerformanceBand={selectedPerformanceBand}
+              loadingTableData={loadingTableData}
+              isCsvDownloading={isCsvDownloading}
+            />
+            <BackendPagination
+              itemsCount={100}
+              backendPagination={{
+                page: tableFilters.page,
+                pageSize: tableFilters.pageSize,
+              }}
+              setBackendPagination={setTablePagination}
+            />
+          </EduIf>
+        </Spin>
+      </TableContainer>
     </>
   )
 }

@@ -5,6 +5,7 @@ import { head, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { Spin } from 'antd'
 import { SubHeader } from '../../../common/components/Header'
 
 import { DashboardReportContainer } from './components/common/styledComponents'
@@ -51,6 +52,7 @@ const Dashboard = ({
   settings,
   setSettings,
   setAcademicSummaryFilters,
+  firstLoad,
 
   showApply,
   onRefineResultsCB,
@@ -173,6 +175,9 @@ const Dashboard = ({
           toggleFilter={toggleFilter}
         />
       </SubHeader>
+      <EduIf condition={firstLoad}>
+        <Spin size="large" />
+      </EduIf>
       <EduIf condition={showSpinLoader}>
         <EduThen>
           <SpinLoader

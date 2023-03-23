@@ -2,6 +2,7 @@ import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
 import { EduIf, useApiQuery } from '@edulastic/common'
 import { Spin } from 'antd'
+import { isEmpty } from 'lodash'
 import qs from 'qs'
 import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
@@ -15,7 +16,11 @@ import {
   getAcademicSummaryMetrics,
   filterPopupFilterSelectedTestTypes,
 } from '../../../utils'
-import { ContentWrapper, Widget } from '../../common/styledComponents'
+import {
+  ContentWrapper,
+  NoDataContainer,
+  Widget,
+} from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
 import WidgetHeader from '../common/WidgetHeader'
 import AcademicSummaryWidgetFilters from './Filters'
@@ -56,7 +61,7 @@ const AcademicSummary = ({
     error,
   } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
 
-  const { result: { avgScore, bandDistribution } = {} } = data || {}
+  const { result: { avgScore, bandDistribution = [] } = {} } = data || {}
   const {
     avgScorePercentage,
     aboveStandardPercentage,
@@ -76,6 +81,10 @@ const AcademicSummary = ({
     widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
+  const showNoDataContainer = error || isEmpty(bandDistribution)
+  const noDataContainerText = data?.dataSizeExceeded
+    ? data?.message
+    : 'No data available.'
 
   return (
     <Spin spinning={loading}>
@@ -87,7 +96,7 @@ const AcademicSummary = ({
           performanceBandsList={performanceBandList}
           availableTestTypes={filteredAvailableTestTypes}
         />
-        <EduIf condition={!loading && data && !error}>
+        <EduIf condition={!loading && !showNoDataContainer}>
           <ContentWrapper>
             <div>
               <WidgetCell
@@ -121,6 +130,9 @@ const AcademicSummary = ({
               getChartLabelJSX={getAcademicSummaryChartLabelJSX}
             />
           </ContentWrapper>
+        </EduIf>
+        <EduIf condition={!loading && showNoDataContainer}>
+          <NoDataContainer>{noDataContainerText}</NoDataContainer>
         </EduIf>
       </Widget>
     </Spin>

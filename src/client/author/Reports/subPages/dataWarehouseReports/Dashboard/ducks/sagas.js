@@ -77,11 +77,13 @@ function* fetchDashboardTableDataRequestSaga({ payload }) {
       dataWarehouseApi.getDashboardTableMatrics,
       payload
     )
-    const dataSizeExceeded = reportTableDataResponse?.dataSizeExceeded || false
+
+    const dataSizeExceeded =
+      reportTableDataResponse.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put(
         actions.fetchDashboardTableDataRequestError({
-          error: { ...reportTableDataResponse },
+          error: { ...reportTableDataResponse.data },
         })
       )
       return

@@ -58,17 +58,9 @@ const Filters = ({
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
   const {
-    bandInfo = [],
     demographics = [],
     testTypes: availableAssessmentType = getArrayOfAllTestTypes(),
   } = get(filtersData, 'data.result', {})
-  const performanceBandsList = useMemo(
-    () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
-    [bandInfo]
-  )
-  const selectedPerformanceBand =
-    performanceBandsList.find((p) => p.key === filters.profileId) ||
-    performanceBandsList[0]
 
   const search = useUrlSearchParams(location)
 
@@ -88,23 +80,22 @@ const Filters = ({
   })
 
   useFiltersFromURL({
-    filtersData,
-    reportId,
     _onGoClick,
-    filters,
-    search,
-    schoolYears,
-    defaultTermId,
-    performanceBandsList,
-    userRole,
     availableAssessmentType,
-    setFilterTagsData,
-    setFilters,
+    defaultTermId,
+    fetchUpdateTagsData,
+    filters,
+    filtersData,
     location,
+    reportId,
+    schoolYears,
+    search,
+    setFilters,
+    setFilterTagsData,
+    setFirstLoad,
     setShowApply,
     toggleFilter,
-    fetchUpdateTagsData,
-    setFirstLoad,
+    userRole,
   })
 
   const onGoClick = (_settings = {}) => {
@@ -213,8 +204,6 @@ const Filters = ({
       showApply={showApply}
       loadingFiltersData={loadingFiltersData}
       onGoClick={onGoClick}
-      selectedPerformanceBand={selectedPerformanceBand}
-      performanceBandsList={performanceBandsList}
     />
   )
 }

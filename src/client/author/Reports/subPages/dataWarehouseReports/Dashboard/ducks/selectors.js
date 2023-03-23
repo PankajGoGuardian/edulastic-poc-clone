@@ -58,7 +58,7 @@ const tableDataRequestError = createSelector(
   (state) => state.tableDataRequestError
 )
 
-const selectors = {
+export {
   firstLoad,
   loadingFiltersData,
   filtersData,
@@ -77,5 +77,3 @@ const selectors = {
   attendanceRequestSummaryError,
   tableDataRequestError,
 }
-
-export default selectors

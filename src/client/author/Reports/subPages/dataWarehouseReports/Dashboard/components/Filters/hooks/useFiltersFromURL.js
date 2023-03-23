@@ -6,23 +6,22 @@ import { roleuser } from '@edulastic/constants'
 import { staticDropDownData } from '../../../utils'
 
 function useFiltersFromURL({
-  filtersData,
-  reportId,
   _onGoClick,
-  filters,
-  search,
-  schoolYears,
-  defaultTermId,
-  performanceBandsList,
-  userRole,
   availableAssessmentType,
-  setFilterTagsData,
-  setFilters,
+  defaultTermId,
+  fetchUpdateTagsData,
+  filters,
+  filtersData,
   location,
+  reportId,
+  schoolYears,
+  search,
+  setFilters,
+  setFilterTagsData,
+  setFirstLoad,
   setShowApply,
   toggleFilter,
-  fetchUpdateTagsData,
-  setFirstLoad,
+  userRole,
 }) {
   useEffect(() => {
     if (isEmpty(filtersData)) return
@@ -48,9 +47,13 @@ function useFiltersFromURL({
       const urlGrades = staticDropDownData.grades.filter(
         (item) => search.grades && search.grades.includes(item.key)
       )
-      const urlPerformanceBand =
-        performanceBandsList.find((item) => item.key === search.profileId) ||
-        performanceBandsList[0]
+      const urlAssignedBy =
+        staticDropDownData.assignedBy.find(
+          (a) => a.key === search.assignedBy
+        ) || staticDropDownData.assignedBy[0]
+      const urlPeriod =
+        staticDropDownData.periods.find((a) => a.key === search.period) ||
+        staticDropDownData.periods[0]
 
       const _filters = {
         termId: urlSchoolYear.key,
@@ -66,7 +69,17 @@ function useFiltersFromURL({
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
-        profileId: urlPerformanceBand?.key || '',
+
+        assignedBy: urlAssignedBy.key,
+        race: search.race || 'all',
+        gender: search.gender || 'all',
+        iepStatus: search.iepStatus || 'all',
+        frlStatus: search.frlStatus || 'all',
+        ellStatus: search.ellStatus || 'all',
+        hispanicEthnicity: search.hispanicEthnicity || 'all',
+        period: urlPeriod.key,
+        customPeriodStartTime: search.customPeriodStartTime,
+        customPeriodEndTime: search.customPeriodEndTime,
       }
       if (userRole === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -80,7 +93,8 @@ function useFiltersFromURL({
         ),
         subjects: urlSubjects,
         grades: urlGrades,
-        profileId: urlPerformanceBand,
+        assignedBy: urlAssignedBy,
+        period: urlPeriod,
       }
 
       // set filterTagsData, filters and testId

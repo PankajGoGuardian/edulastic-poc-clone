@@ -7,7 +7,7 @@ import { push } from 'connected-react-router'
 import { fetchUserAction } from '../student/Login/ducks'
 
 const slice = createSlice({
-  name: 'parentCode',
+  name: 'parentCode', //! FIXME key should be `slice` not `name`
   initialState: {
     loading: true,
     parentUserId: null,

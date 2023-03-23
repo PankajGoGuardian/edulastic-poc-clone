@@ -1,13 +1,16 @@
+import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
+import { EduIf, useApiQuery } from '@edulastic/common'
 import { Spin } from 'antd'
-import React from 'react'
+import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import { DashedLine } from '../../../../../../common/styled'
 import {
   getCellColor,
   getAcademicSummaryPieChartData,
   getAcademicSummaryChartLabelJSX,
+  academicSummaryFiltersTypes,
+  getAcademicSummaryMetrics,
 } from '../../../utils'
 import { ContentWrapper, Widget } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
@@ -17,44 +20,63 @@ import AcademicSummaryWidgetFilters from './Filters'
 const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
 const AcademicSummary = ({
-  academicSummaryData,
   selectedPerformanceBand,
   performanceBandList,
   availableTestTypes,
-  filters,
-  setFilters,
-  loadingAcademicSummaryData,
+  widgetFilters,
+  setWidgetFilters,
+  settings,
 }) => {
+  const query = useMemo(
+    () => ({
+      ...settings.requestFilters,
+      [academicSummaryFiltersTypes.PERFORMANCE_BAND]:
+        widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
+      [academicSummaryFiltersTypes.TEST_TYPE]:
+        widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
+    }),
+    [widgetFilters, settings.requestFilters]
+  )
   const {
-    avgScore,
-    periodAvgScore,
-    aboveStandardsStudents,
-    bandDistribution,
-  } = academicSummaryData
+    data,
+    loading,
+    error,
+  } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
 
-  const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
+  // @Todo handle data transformation properly
+  const { result: { avgScore, bandDistribution } = {} } = data || {}
+  const {
+    avgScorePercentage,
+    aboveStandardPercentage,
+    scoreTrendPercentage,
+  } = getAcademicSummaryMetrics(data)
+
+  const avgScoreCellColor = data
+    ? getCellColor(avgScore, selectedPerformanceBand)
+    : null
   const PieChartData = getAcademicSummaryPieChartData(
     bandDistribution,
     selectedPerformanceBand
   )
+
   return (
-    <Widget>
-      <Spin spinning={loadingAcademicSummaryData}>
+    <Spin spinning={loading}>
+      <Widget>
         <WidgetHeader title={title} />
         <AcademicSummaryWidgetFilters
-          filters={filters}
-          setFilters={setFilters}
+          filters={widgetFilters}
+          setFilters={setWidgetFilters}
           performanceBandsList={performanceBandList}
           availableTestTypes={availableTestTypes}
         />
-        <EduIf condition={!loadingAcademicSummaryData}>
+        <EduIf condition={!loading && data && !error}>
           <ContentWrapper>
             <div>
               <WidgetCell
                 header="AVG. SCORE"
-                value={`${avgScore}%`}
-                footer={periodAvgScore - avgScore}
-                subFooter="vs Dec'22"
+                value={`${avgScorePercentage}%`}
+                footer={scoreTrendPercentage}
+                subFooter="vs Dec'22" // TODO use from API
                 color={avgScoreCellColor}
               />
               <DashedLine
@@ -65,7 +87,7 @@ const AcademicSummary = ({
               />
               <WidgetCell
                 header="ABOVE STANDARD"
-                value={`${aboveStandardsStudents}%`}
+                value={`${aboveStandardPercentage}%`}
                 color={lightGreen13}
               />
             </div>
@@ -82,8 +104,8 @@ const AcademicSummary = ({
             />
           </ContentWrapper>
         </EduIf>
-      </Spin>
-    </Widget>
+      </Widget>
+    </Spin>
   )
 }
 

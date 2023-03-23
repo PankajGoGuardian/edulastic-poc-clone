@@ -1,19 +1,16 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap, sumBy, maxBy } from 'lodash'
-import { reportUtils } from '@edulastic/constants'
+import { flatMap, isEmpty, maxBy, sumBy } from 'lodash'
+import {
+  downloadCSV,
+  percentage,
+  dbToTableSortOrderMap,
+} from '@edulastic/constants/reportUtils/common'
 import { IconExternalLink } from '@edulastic/icons'
 import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
-
-const {
-  downloadCSV,
-  percentage,
-  DECIMAL_BASE,
-  dbToTableSortOrderMap,
-} = reportUtils.common
 
 const tableColumnsData = [
   {
@@ -41,19 +38,15 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
 const getHorizontalBarData = (data, selectedPerformanceBand) => {
-  const totalStudents = sumBy(data, (d) =>
-    parseInt(d.totalStudents, DECIMAL_BASE)
-  )
+  if (isEmpty(data) || isEmpty(selectedPerformanceBand)) return []
+
+  const totalStudents = sumBy(data, 'totalStudents')
   return data.map((d) => {
     const band = selectedPerformanceBand.find(
       (pb) => pb.threshold === d.bandScore
     )
     return {
-      value: percentage(
-        parseInt(d.totalStudents, DECIMAL_BASE),
-        totalStudents,
-        true
-      ),
+      value: percentage(d.totalStudents, totalStudents, true),
       color: band?.color,
     }
   })

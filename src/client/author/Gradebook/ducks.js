@@ -14,7 +14,7 @@ import { getAllTestTypesMap } from '../../common/utils/testTypeUtils'
 
 // slice
 const slice = createSlice({
-  name: 'gradebook',
+  name: 'gradebook', //! FIXME key should be `slice` not `name`
   initialState: {
     filtersData: {
       assessments: [],

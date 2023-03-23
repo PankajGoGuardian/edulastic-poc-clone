@@ -18,7 +18,7 @@ function* fetchFiltersDataRequestSaga({ payload }) {
 function* fetchAcademicSummaryDataRequestSaga({ payload }) {
   try {
     const academicSummaryData = yield call(
-      dataWarehouseApi.getDashboardAcademicSummaryMetrics,
+      dataWarehouseApi.getDashboardAcademicSummary,
       payload
     )
     const dataSizeExceeded = academicSummaryData?.dataSizeExceeded || false

@@ -14,6 +14,7 @@ import { updateAdditionalDataAction } from '../src/reducers/testActivity'
 const { passwordPolicy: passwordPolicyValues } = test
 
 const slice = createSlice({
+  //! FIXME must use `slice` property as namespace
   initialState: {
     assignment: null,
     loading: false,

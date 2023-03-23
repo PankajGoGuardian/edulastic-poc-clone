@@ -1,12 +1,15 @@
 import React from 'react'
 import next from 'immer'
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
+import {
+  getProficiencyBand,
+  percentage,
+  curateApiFiltersQuery,
+} from '@edulastic/constants/reportUtils/common'
 import qs from 'qs'
-import { reportUtils } from '@edulastic/constants'
+import { isEmpty, round, sumBy } from 'lodash'
 import navigation from '../../../../common/static/json/navigation.json'
 import { filterDetailsFields, sharedDetailsFields } from './constants'
-
-const { getProficiencyBand, curateApiFiltersQuery } = reportUtils.common
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
   const { requestFilters } = settings
@@ -40,9 +43,14 @@ export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand
 ) => {
+  console.log({
+    bandDistribution,
+    selectedPerformanceBand,
+  })
+  if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   return selectedPerformanceBand.map((pb) => {
     const totalStudents = bandDistribution.find(
-      (bd) => bd.bandScore === pb.threshold
+      (bd) => bd.bandThreshold === pb.threshold
     )?.students
     return {
       name: pb.name,
@@ -50,6 +58,35 @@ export const getAcademicSummaryPieChartData = (
       fill: pb.color,
     }
   })
+}
+
+export const getAcademicSummaryMetrics = (rawData) => {
+  if (isEmpty(rawData?.result)) return {}
+
+  const {
+    avgScore,
+    periodAvgScore,
+    aboveStandardStudents,
+    bandDistribution,
+  } = rawData.result
+
+  const totalStudents = sumBy(bandDistribution, ({ students }) => students)
+  const avgScorePercentage = round(avgScore * 100, 2)
+  const periodAvgScorePercentage = round(periodAvgScore * 100, 2)
+  const scoreTrendPercentage = round(
+    periodAvgScorePercentage - avgScorePercentage,
+    2
+  )
+  const aboveStandardPercentage = percentage(
+    aboveStandardStudents,
+    totalStudents,
+    true
+  )
+  return {
+    avgScorePercentage,
+    aboveStandardPercentage,
+    scoreTrendPercentage,
+  }
 }
 
 export const getAcademicSummaryChartLabelJSX = (props) => {
@@ -109,4 +146,16 @@ export const getTableApiQuery = (settings, tableFilters, profileId) => {
     sharedDetailsFields
   )
   return query
+}
+
+export function buildRequestFilters(_settings) {
+  const _requestFilters = {}
+  Object.keys(_settings.requestFilters).forEach((filterType) => {
+    _requestFilters[filterType] =
+      _settings.requestFilters[filterType] === 'All' ||
+      _settings.requestFilters[filterType] === 'all'
+        ? ''
+        : _settings.requestFilters[filterType]
+  })
+  return _requestFilters
 }

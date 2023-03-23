@@ -5,7 +5,7 @@ const api = new API()
 const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
-const DASHBOARD = 'dashboard-report'
+const DASHBOARD_REPORT = 'dashboard-report'
 
 const getSignedUrl = (
   filename,
@@ -92,21 +92,23 @@ const getAttendanceMetrics = (data) => {
   })
 }
 
-const getDashboardAcademicSummaryMetrics = (data) => {
+const getDashboardAcademicSummary = (data) => {
   const queryString = qs.stringify(data)
-  return api.callApi({
-    useSlowApi: true,
-    url: `${prefix}/${DASHBOARD}/academic-summary?${queryString}`,
-    method: 'get',
-    data,
-  })
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DASHBOARD_REPORT}/academic-summary?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data)
 }
 
 const getDashboardAttendanceSummaryMetrics = (data) => {
   const queryString = qs.stringify(data)
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${DASHBOARD}/attendance-summary?${queryString}`,
+    url: `${prefix}/${DASHBOARD_REPORT}/attendance-summary?${queryString}`,
     method: 'get',
     data,
   })
@@ -116,7 +118,7 @@ const getDashboardTableMatrics = (data) => {
   const queryString = qs.stringify(data)
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${DASHBOARD}/details?${queryString}`,
+    url: `${prefix}/${DASHBOARD_REPORT}/details?${queryString}`,
     method: 'get',
     data,
   })
@@ -130,7 +132,7 @@ export default {
   getMARChartMetrics,
   getMARTableMetrics,
   getAttendanceMetrics,
-  getDashboardAcademicSummaryMetrics,
+  getDashboardAcademicSummary,
   getDashboardAttendanceSummaryMetrics,
   getDashboardTableMatrics,
 }

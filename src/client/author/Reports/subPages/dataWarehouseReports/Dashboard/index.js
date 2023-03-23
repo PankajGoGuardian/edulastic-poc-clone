@@ -1,21 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { head, mapValues, isEmpty } from 'lodash'
+import { head, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
-import { EduIf, SpinLoader } from '@edulastic/common'
 
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { SubHeader } from '../../../common/components/Header'
-import SectionLabel from '../../../common/components/SectionLabel'
 
-import {
-  MasonGrid,
-  DashboardReportContainer,
-} from './components/common/styledComponents'
-import DashboardTable from './components/Table'
-import AcademicSummary from './components/widgets/AcademicSummary'
-import AttendanceSummary from './components/widgets/AttendanceSummary'
-import DashboardTableFilters from './components/TableFilters'
+import { DashboardReportContainer } from './components/common/styledComponents'
 
 import {
   getCurrentTerm,
@@ -25,12 +17,10 @@ import {
 
 import {
   masteryScales,
-  attendanceSummaryData,
-  academicSummaryData,
   compareByOptions as compareByOptionsRaw,
   academicSummaryFiltersTypes,
   availableTestTypes,
-  getTableApiQuery,
+  buildRequestFilters,
 } from './utils'
 import {
   fetchUpdateTagsDataAction,
@@ -43,8 +33,10 @@ import { resetAllReportsAction } from '../../../common/reportsRedux'
 import Filters from './components/Filters/Filters'
 import { actions, selectors } from './ducks'
 import useTabNavigation from './hooks/useTabNavigation'
+import ReportView from './ReportView'
+import { NoDataContainer } from '../../../common/styled'
 
-import useTableFilters from './hooks/useTableFilters'
+const { PERFORMANCE_BAND, TEST_TYPE } = academicSummaryFiltersTypes
 
 const Dashboard = ({
   loc,
@@ -57,6 +49,7 @@ const Dashboard = ({
   isCsvDownloading,
   settings,
   setSettings,
+  setAcademicSummaryFilters,
 
   showApply,
   onRefineResultsCB,
@@ -85,6 +78,7 @@ const Dashboard = ({
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
   )
+
   const setShowApply = (status) => {
     onRefineResultsCB(null, status, 'applyButton')
   }
@@ -97,15 +91,23 @@ const Dashboard = ({
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
+
+  const { academicSummaryFilters } = settings
+  const performanceBandList = useMemo(
+    () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
+    [masteryScales]
+  )
   const onGoClick = (_settings) => {
-    const _requestFilters = {}
-    Object.keys(_settings.requestFilters).forEach((filterType) => {
-      _requestFilters[filterType] =
-        _settings.requestFilters[filterType] === 'All' ||
-        _settings.requestFilters[filterType] === 'all'
-          ? ''
-          : _settings.requestFilters[filterType]
-    })
+    const _requestFilters = buildRequestFilters(_settings)
+    const performanceBand =
+      performanceBandList.find(
+        (p) => p.key === academicSummaryFilters[PERFORMANCE_BAND]
+      ) || performanceBandList[0]
+    const testType = availableTestTypes.includes(
+      academicSummaryFilters[TEST_TYPE]
+    )
+      ? academicSummaryFilters[TEST_TYPE]
+      : availableTestTypes[0]
     setSettings({
       ...settings,
       requestFilters: {
@@ -118,14 +120,12 @@ const Dashboard = ({
       selectedCompareBy: settings.selectedCompareBy?.key
         ? settings.selectedCompareBy
         : head(compareByOptions),
+      academicSummaryFilters: {
+        [PERFORMANCE_BAND]: performanceBand,
+        [TEST_TYPE]: testType,
+      },
     })
     setShowApply(false)
-  }
-
-  const updateFilterDropdownCB = (selected, keyName) => {
-    if (keyName === 'compareBy') {
-      setSettings({ ...settings, selectedCompareBy: selected })
-    }
   }
 
   useEffect(
@@ -138,48 +138,7 @@ const Dashboard = ({
 
   useTabNavigation(settings, reportId, history, loc, updateNavigation)
 
-  const performanceBandList = useMemo(
-    () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
-    [masteryScales]
-  )
-
-  const {
-    tableFilters,
-    setTableFilters,
-    updateTableFiltersCB,
-    onTableHeaderCellClick,
-    // setTablePagination,
-  } = useTableFilters(compareByOptions[0])
-
-  const [academicSummaryFilters, setAcademicSummaryFilters] = useState({
-    [academicSummaryFiltersTypes.PERFORMANCE_BAND]: performanceBandList[0],
-    [academicSummaryFiltersTypes.TEST_TYPE]: availableTestTypes[0],
-  })
-
-  const selectedPerformanceBand = (
-    masteryScales.filter(
-      (x) =>
-        x._id ===
-        academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
-    )[0] || masteryScales[0]
-  )?.performanceBand
-
-  // get table data
-  useEffect(() => {
-    const q = getTableApiQuery(
-      settings,
-      tableFilters,
-      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
-    )
-    if (q.termId || q.reportId) {
-      fetchDashboardTableDataRequest(q)
-      return () => toggleFilter(null, false)
-    }
-  }, [
-    settings.requestFilters,
-    tableFilters,
-    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
-  ])
+  const isWithoutFilters = isEmpty(settings.requestFilters)
 
   const showSpinLoader = [
     loadingAcademicSummaryData,
@@ -207,47 +166,33 @@ const Dashboard = ({
         />
       </SubHeader>
       <EduIf condition={showSpinLoader}>
-        <SpinLoader
-          tip="Please wait while we gather the required information..."
-          position="fixed"
-        />
-      </EduIf>
-      <EduIf condition={!showSpinLoader}>
-        <SectionLabel>Overview</SectionLabel>
-        <MasonGrid>
-          <EduIf condition={!isEmpty(academicSummaryData)}>
-            <AcademicSummary
-              academicSummaryData={academicSummaryData}
-              selectedPerformanceBand={selectedPerformanceBand}
-              performanceBandList={performanceBandList}
-              availableTestTypes={availableTestTypes}
-              filters={academicSummaryFilters}
-              setFilters={setAcademicSummaryFilters}
-              loadingAcademicSummaryData={loadingAcademicSummaryData}
-            />
+        <EduThen>
+          <SpinLoader
+            tip="Please wait while we gather the required information..."
+            position="fixed"
+          />
+        </EduThen>
+        <EduElse>
+          <EduIf condition={isWithoutFilters}>
+            <EduThen>
+              <NoDataContainer />
+            </EduThen>
+            <EduElse>
+              <ReportView
+                performanceBandList={performanceBandList}
+                setAcademicSummaryFilters={setAcademicSummaryFilters}
+                compareByOptions={compareByOptions}
+                isCsvDownloading={isCsvDownloading}
+                settings={settings}
+                fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
+                loadingTableData={loadingTableData}
+                tableDataRequestError={tableDataRequestError}
+                toggleFilter={toggleFilter}
+                tableData={tableData}
+              />
+            </EduElse>
           </EduIf>
-          <EduIf condition={!isEmpty(attendanceSummaryData)}>
-            <AttendanceSummary
-              attendanceSummaryData={attendanceSummaryData}
-              loadingAttendanceSummaryData={loadingAttendanceSummaryData}
-            />
-          </EduIf>
-        </MasonGrid>
-        <DashboardTableFilters
-          tableFilters={tableFilters}
-          updateTableFiltersCB={updateTableFiltersCB}
-          compareByOptions={compareByOptions}
-        />
-        <DashboardTable
-          tableFilters={tableFilters}
-          setTableFilters={setTableFilters}
-          onTableHeaderCellClick={onTableHeaderCellClick}
-          tableData={tableData}
-          selectedPerformanceBand={selectedPerformanceBand}
-          loadingTableData={loadingTableData}
-          tableDataRequestError={tableDataRequestError}
-          isCsvDownloading={isCsvDownloading}
-        />
+        </EduElse>
       </EduIf>
     </DashboardReportContainer>
   )

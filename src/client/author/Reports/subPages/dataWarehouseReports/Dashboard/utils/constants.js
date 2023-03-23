@@ -87,27 +87,6 @@ export const availableTestTypes = [
   },
 ]
 
-export const academicSummaryData = {
-  avgScore: 66,
-  periodAvgScore: 85,
-  aboveStandardsStudents: 69,
-  bandDistribution: [
-    { bandScore: 0, students: 5 },
-    { bandScore: 50, students: 10 },
-    { bandScore: 70, students: 8 },
-  ],
-}
-
-export const attendanceSummaryData = {
-  avg: 67,
-  prevMonthAvg: 54,
-  prevMonth: '1st Dec.',
-  tardiesPercentage: 12,
-  chronicAbsentPercentage: 12,
-  prevMonthtardiesPercentage: 9,
-  prevMonthChronicPercentage: 5,
-}
-
 export const cellStyles = {
   large: { padding: '18px 30px', font: '24px' },
   medium: { padding: '10px 15px', font: '18px' },
@@ -181,7 +160,7 @@ export const compareByOptions = [
 ]
 
 export const academicSummaryFiltersTypes = {
-  PERFORMANCE_BAND: 'academicPerformanceBand',
+  PERFORMANCE_BAND: 'profileId',
   TEST_TYPE: 'academicTestType',
 }
 
@@ -208,27 +187,23 @@ export const staticDropDownData = {
     { key: 'termId', tabKey: '0' },
     { key: 'testGrades', subType: 'test', tabKey: '0' },
     { key: 'testSubjects', subType: 'test', tabKey: '0' },
-    // { key: 'tagIds', tabKey: '0' },
     { key: 'assessmentTypes', tabKey: '0' },
-    // { key: 'testIds', tabKey: '0' },
     { key: 'schoolIds', tabKey: '1' },
     { key: 'teacherIds', tabKey: '1' },
     { key: 'grades', subType: 'class', tabKey: '1' },
     { key: 'subjects', subType: 'class', tabKey: '1' },
-    // { key: 'assignedBy', tabKey: '1' },
     { key: 'courseId', tabKey: '1' },
     { key: 'classIds', tabKey: '1' },
     { key: 'groupIds', tabKey: '1' },
-    // { key: 'profileId', tabKey: '2' },
     { key: 'race', tabKey: '2' },
     { key: 'gender', tabKey: '2' },
     { key: 'iepStatus', tabKey: '2' },
     { key: 'frlStatus', tabKey: '2' },
     { key: 'ellStatus', tabKey: '2' },
     { key: 'hispanicEthnicity', tabKey: '2' },
-    { key: 'period', tabKey: '3' },
-    { key: 'customPeriodStartTime', tabKey: '3' },
-    { key: 'customPeriodEndTime', tabKey: '3' },
+    { key: 'periodType', tabKey: '3' },
+    { key: 'customPeriodStart', tabKey: '3' },
+    { key: 'customPeriodEnd', tabKey: '3' },
   ],
   initialFilters: {
     reportId: '',
@@ -252,9 +227,9 @@ export const staticDropDownData = {
     frlStatus: 'all',
     ellStatus: 'all',
     hispanicEthnicity: 'all',
-    period: PERIODS.TILL_DATE,
-    customPeriodStartTime: undefined,
-    customPeriodEndTime: undefined,
+    periodType: PERIODS.TILL_DATE,
+    customPeriodStart: undefined,
+    customPeriodEnd: undefined,
   },
   requestFilters: {
     reportId: '',
@@ -308,7 +283,7 @@ export const staticDropDownData = {
     { key: 'anyone', title: 'Anyone' },
     { key: 'me', title: 'Me' },
   ],
-  periods: [
+  periodTypes: [
     {
       key: PERIODS.TILL_DATE,
       title: 'Till Date',
@@ -349,7 +324,6 @@ export const nextCompareByOptionsMap = {
 }
 
 const filterFields = [
-  'creator',
   'termId',
   'testGrades',
   'testSubjects',
@@ -361,16 +335,18 @@ const filterFields = [
   'courseId',
   'classIds',
   'groupIds',
-  'profileId',
   'race',
   'gender',
   'iepStatus',
   'frlStatus',
   'ellStatus',
   'hispanicEthnicity',
+  'periodType',
+  'customPeriodStart',
+  'customPeriodEnd',
 ]
 
-const detailsExtraFields = Object.values(tableFilterTypes)
+const detailsExtraFields = [...Object.values(tableFilterTypes), 'profileId']
 
 export const filterDetailsFields = [...filterFields, ...detailsExtraFields]
 

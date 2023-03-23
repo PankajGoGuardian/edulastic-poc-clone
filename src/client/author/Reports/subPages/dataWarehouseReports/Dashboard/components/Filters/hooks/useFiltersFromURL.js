@@ -52,8 +52,9 @@ function useFiltersFromURL({
           (a) => a.key === search.assignedBy
         ) || staticDropDownData.assignedBy[0]
       const urlPeriod =
-        staticDropDownData.periods.find((a) => a.key === search.period) ||
-        staticDropDownData.periods[0]
+        staticDropDownData.periodTypes.find(
+          (a) => a.key === search.periodType
+        ) || staticDropDownData.periodTypes[0]
 
       const _filters = {
         termId: urlSchoolYear.key,
@@ -77,9 +78,9 @@ function useFiltersFromURL({
         frlStatus: search.frlStatus || 'all',
         ellStatus: search.ellStatus || 'all',
         hispanicEthnicity: search.hispanicEthnicity || 'all',
-        period: urlPeriod.key,
-        customPeriodStartTime: search.customPeriodStartTime,
-        customPeriodEndTime: search.customPeriodEndTime,
+        periodType: urlPeriod.key,
+        customPeriodStart: search.customPeriodStart,
+        customPeriodEnd: search.customPeriodEnd,
       }
       if (userRole === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -94,7 +95,7 @@ function useFiltersFromURL({
         subjects: urlSubjects,
         grades: urlGrades,
         assignedBy: urlAssignedBy,
-        period: urlPeriod,
+        periodType: urlPeriod,
       }
 
       // set filterTagsData, filters and testId

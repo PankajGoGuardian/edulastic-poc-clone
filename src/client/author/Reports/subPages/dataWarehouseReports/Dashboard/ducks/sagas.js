@@ -15,62 +15,6 @@ function* fetchFiltersDataRequestSaga({ payload }) {
   }
 }
 
-function* fetchAcademicSummaryDataRequestSaga({ payload }) {
-  try {
-    const academicSummaryData = yield call(
-      dataWarehouseApi.getDashboardAcademicSummary,
-      payload
-    )
-    const dataSizeExceeded = academicSummaryData?.dataSizeExceeded || false
-    if (dataSizeExceeded) {
-      yield put(
-        actions.fetchAcademicSummaryDataRequestError({
-          error: { ...academicSummaryData },
-        })
-      )
-      return
-    }
-    yield put(
-      actions.fetchAcademicSummaryDataRequestSuccess({
-        academicSummaryData,
-      })
-    )
-  } catch (error) {
-    const msg =
-      'Error fetching Dashboard academic summary data. Please try again after a few minutes.'
-    notification({ type: 'error', msg })
-    yield put(actions.fetchAcademicSummaryDataRequestError({ error: msg }))
-  }
-}
-
-function* fetchAttendanceSummaryDataRequestSaga({ payload }) {
-  try {
-    const attendanceSummaryData = yield call(
-      dataWarehouseApi.getDashboardAttendanceSummaryMetrics,
-      payload
-    )
-    const dataSizeExceeded = attendanceSummaryData?.dataSizeExceeded || false
-    if (dataSizeExceeded) {
-      yield put(
-        actions.fetchAttendanceSummaryDataRequestError({
-          error: { ...attendanceSummaryData },
-        })
-      )
-      return
-    }
-    yield put(
-      actions.fetchAttendanceSummaryDataRequestSuccess({
-        attendanceSummaryData,
-      })
-    )
-  } catch (error) {
-    const msg =
-      'Error fetching Dashboard attendance summary data. Please try again after a few minutes.'
-    notification({ type: 'error', msg })
-    yield put(actions.fetchAttendanceSummaryDataRequestError({ error: msg }))
-  }
-}
-
 function* fetchDashboardTableDataRequestSaga({ payload }) {
   try {
     const reportTableDataResponse = yield call(
@@ -102,14 +46,6 @@ function* fetchDashboardTableDataRequestSaga({ payload }) {
 export default function* watcherSaga() {
   yield all([
     takeLatest(actions.fetchFiltersDataRequest, fetchFiltersDataRequestSaga),
-    takeLatest(
-      actions.fetchAcademicSummaryDataRequest,
-      fetchAcademicSummaryDataRequestSaga
-    ),
-    takeLatest(
-      actions.fetchAttendanceSummaryDataRequest,
-      fetchAttendanceSummaryDataRequestSaga
-    ),
     takeLatest(
       actions.fetchDashboardTableDataRequest,
       fetchDashboardTableDataRequestSaga

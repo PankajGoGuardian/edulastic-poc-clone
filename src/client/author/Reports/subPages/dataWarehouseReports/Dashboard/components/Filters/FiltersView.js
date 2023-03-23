@@ -4,6 +4,9 @@ import React from 'react'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
+import { EduIf } from '@edulastic/common'
+import moment from 'moment'
+import { PERIODS } from '@edulastic/constants/reportUtils/datawarehouseReports/dashboardReport'
 import TagFilter from '../../../../../../src/components/common/TagFilter'
 import ClassAutoComplete from '../../../../../common/components/autocompletes/ClassAutoComplete'
 import CourseAutoComplete from '../../../../../common/components/autocompletes/CourseAutoComplete'
@@ -45,6 +48,27 @@ function FiltersView({
   loadingFiltersData,
   onGoClick,
 }) {
+  const presentTerms = terms.filter(
+    (term) => term.startDate <= Date.now() && term.endDate >= Date.now()
+  )
+  const isPresentTermSelected = presentTerms
+    .map((t) => t._id)
+    .includes(filters.termId)
+  const availablePeriodTypes = !isPresentTermSelected
+    ? staticDropDownData.periodTypes.filter(
+        (period) => period.key === PERIODS.CUSTOM
+      )
+    : staticDropDownData.periodTypes
+
+  const isDateWithinTermTillPresent = (date) => {
+    const { startDate, endDate } =
+      terms.find((term) => term._id === filters.termId) || {}
+    if (!startDate || !endDate) return true
+    const fromDate = +moment(startDate).startOf('month')
+    const toDate = +moment(Math.min(endDate, Date.now())).endOf('month')
+    return date <= toDate && date >= fromDate
+  }
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -350,71 +374,65 @@ function FiltersView({
                     >
                       <Row type="flex" gutter={[5, 10]}>
                         <Col span={6}>
-                          <FilterLabel data-cy="period">Period</FilterLabel>
+                          <FilterLabel data-cy="periodType">Period</FilterLabel>
                           <ControlDropDown
-                            by={{ key: filters.period }}
+                            by={{ key: filters.periodType }}
                             selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, 'period')
+                              updateFilterDropdownCB(selected, 'periodType')
                             }
-                            data={staticDropDownData.periods}
+                            data={availablePeriodTypes}
                             prefix="Period"
                             showPrefixOnSelected={false}
                           />
                         </Col>
-                        <Col span={6}>
-                          <FilterLabel data-cy="customPeriodStartTime">
-                            Start Date
-                          </FilterLabel>
-                          <DatePicker.MonthPicker
-                            style={{ width: '100%' }}
-                            disabledDate={(date) => {
-                              let isEnabled = true
-                              const {
-                                startDate: termStartDate,
-                                endDate: termEndDate,
-                              } =
-                                terms.find(
-                                  (term) => term._id === filters.termId
-                                ) || {}
-                              if (!termStartDate || !termEndDate) return true
-                              isEnabled =
-                                date.valueOf() <= termEndDate &&
-                                date.valueOf() >= termStartDate
-                              const maxDate = filters.customPeriodEndTime
-                              isEnabled = maxDate
-                                ? +maxDate > date && isEnabled
-                                : isEnabled
-                              return !isEnabled
-                            }}
-                          />
-                        </Col>
-                        <Col span={6}>
-                          <FilterLabel data-cy="customPeriodEndTime">
-                            End Date
-                          </FilterLabel>
-                          <DatePicker.MonthPicker
-                            style={{ width: '100%' }}
-                            disabledDate={(date) => {
-                              let isEnabled = true
-                              const {
-                                startDate: termStartDate,
-                                endDate: termEndDate,
-                              } =
-                                terms.find(
-                                  (term) => term._id === filters.termId
-                                ) || {}
-                              if (!termStartDate || !termEndDate) return true
-                              isEnabled =
-                                date.valueOf() <= termEndDate &&
-                                date.valueOf() >= termStartDate
-                              const minDate = filters.customPeriodStartTime
-                              isEnabled = minDate
-                                ? +minDate < date && isEnabled
-                                : isEnabled
-                              return !isEnabled
-                            }}
-                          />
-                        </Col>
+                        <EduIf
+                          condition={filters.periodType === PERIODS.CUSTOM}
+                        >
+                          <Col span={6}>
+                            <FilterLabel data-cy="customPeriodStart">
+                              Start Date
+                            </FilterLabel>
+                            <DatePicker.MonthPicker
+                              style={{ width: '100%' }}
+                              disabledDate={(date) => {
+                                if (!isDateWithinTermTillPresent(date))
+                                  return true
+                                const maxDate = filters.customPeriodEnd
+                                if (maxDate && maxDate < date) return true
+                                return false
+                              }}
+                              value={moment(filters.customPeriodStart)}
+                              onChange={(date) => {
+                                updateFilterDropdownCB(
+                                  { key: +date },
+                                  'customPeriodStart'
+                                )
+                              }}
+                            />
+                          </Col>
+                          <Col span={6}>
+                            <FilterLabel data-cy="customPeriodEnd">
+                              End Date
+                            </FilterLabel>
+                            <DatePicker.MonthPicker
+                              style={{ width: '100%' }}
+                              disabledDate={(date) => {
+                                if (!isDateWithinTermTillPresent(date))
+                                  return true
+                                const minDate = filters.customPeriodStart
+                                if (minDate && minDate > date) return true
+                                return false
+                              }}
+                              value={moment(filters.customPeriodEnd)}
+                              onChange={(date) =>
+                                updateFilterDropdownCB(
+                                  { key: +date },
+                                  'customPeriodEnd'
+                                )
+                              }
+                            />
+                          </Col>
+                        </EduIf>
                       </Row>
                     </Tabs.TabPane>
                   </Tabs>

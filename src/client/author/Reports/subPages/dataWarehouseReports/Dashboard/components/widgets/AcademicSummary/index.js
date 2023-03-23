@@ -1,7 +1,7 @@
 import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
-import { EduIf, useApiQuery } from '@edulastic/common'
-import { Spin } from 'antd'
+import { EduElse, EduIf, EduThen, useApiQuery } from '@edulastic/common'
+import { Empty, Spin } from 'antd'
 import qs from 'qs'
 import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
@@ -47,7 +47,7 @@ const AcademicSummary = ({
         settings.requestFilters.assessmentTypes,
         availableTestTypes
       ),
-    [settings.requestFilters.assessmentTypes]
+    [settings.requestFilters.assessmentTypes, availableTestTypes]
   )
 
   const {
@@ -56,6 +56,41 @@ const AcademicSummary = ({
     error,
   } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
 
+  const _filters = {
+    ...settings.requestFilters,
+    profileId: widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
+  }
+
+  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
+
+  return (
+    <Widget>
+      <WidgetHeader title={title} url={externalUrl} />
+      <AcademicSummaryWidgetFilters
+        filters={widgetFilters}
+        setFilters={setWidgetFilters}
+        performanceBandsList={performanceBandList}
+        availableTestTypes={filteredAvailableTestTypes}
+      />
+      <Spin spinning={loading}>
+        <EduIf condition={data && !error}>
+          <EduThen>
+            <AcademicSummaryContent
+              data={data}
+              selectedPerformanceBand={selectedPerformanceBand}
+            />
+          </EduThen>
+          <EduElse>
+            <Empty />
+          </EduElse>
+        </EduIf>
+      </Spin>
+    </Widget>
+  )
+}
+
+export default AcademicSummary
+function AcademicSummaryContent({ data, selectedPerformanceBand }) {
   const { result: { avgScore, bandDistribution } = {} } = data || {}
   const {
     avgScorePercentage,
@@ -63,68 +98,44 @@ const AcademicSummary = ({
     scoreTrendPercentage,
   } = getAcademicSummaryMetrics(data)
 
-  const avgScoreCellColor = data
-    ? getCellColor(avgScore, selectedPerformanceBand)
-    : null
+  const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
   const PieChartData = getAcademicSummaryPieChartData(
     bandDistribution,
     selectedPerformanceBand
   )
-
-  const _filters = { ...settings.requestFilters }
-  _filters.profileId =
-    widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
-
-  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
-
   return (
-    <Spin spinning={loading}>
-      <Widget>
-        <WidgetHeader title={title} url={externalUrl} />
-        <AcademicSummaryWidgetFilters
-          filters={widgetFilters}
-          setFilters={setWidgetFilters}
-          performanceBandsList={performanceBandList}
-          availableTestTypes={filteredAvailableTestTypes}
+    <ContentWrapper>
+      <div>
+        <WidgetCell
+          header="AVG. SCORE"
+          value={`${avgScorePercentage}%`}
+          footer={scoreTrendPercentage}
+          subFooter="vs Dec'22" // TODO use from API
+          color={avgScoreCellColor}
         />
-        <EduIf condition={!loading && data && !error}>
-          <ContentWrapper>
-            <div>
-              <WidgetCell
-                header="AVG. SCORE"
-                value={`${avgScorePercentage}%`}
-                footer={scoreTrendPercentage}
-                subFooter="vs Dec'22" // TODO use from API
-                color={avgScoreCellColor}
-              />
-              <DashedLine
-                dashWidth="1px"
-                height="1px"
-                margin="20px 5px"
-                dashColor={lightGrey8}
-              />
-              <WidgetCell
-                header="ABOVE STANDARD"
-                value={`${aboveStandardPercentage}%`}
-                color={lightGreen13}
-              />
-            </div>
-            <DashedLine
-              dashWidth="1px"
-              height="250px"
-              maxWidth="1px"
-              dashColor={lightGrey8}
-              margin="0 10px"
-            />
-            <SimplePieChart
-              data={PieChartData}
-              getChartLabelJSX={getAcademicSummaryChartLabelJSX}
-            />
-          </ContentWrapper>
-        </EduIf>
-      </Widget>
-    </Spin>
+        <DashedLine
+          dashWidth="1px"
+          height="1px"
+          margin="20px 5px"
+          dashColor={lightGrey8}
+        />
+        <WidgetCell
+          header="ABOVE STANDARD"
+          value={`${aboveStandardPercentage}%`}
+          color={lightGreen13}
+        />
+      </div>
+      <DashedLine
+        dashWidth="1px"
+        height="250px"
+        maxWidth="1px"
+        dashColor={lightGrey8}
+        margin="0 10px"
+      />
+      <SimplePieChart
+        data={PieChartData}
+        getChartLabelJSX={getAcademicSummaryChartLabelJSX}
+      />
+    </ContentWrapper>
   )
 }
-
-export default AcademicSummary

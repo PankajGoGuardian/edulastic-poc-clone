@@ -24,35 +24,11 @@ const settings = createSelector(stateSelector, (state) => state.settings)
 const error = createSelector(stateSelector, (state) => state.error)
 
 // Report Data selectors
-const loadingAcademicSummaryData = createSelector(
-  stateSelector,
-  (state) => state.loadingAcademicSummaryData
-)
-const loadingAttendanceSummaryData = createSelector(
-  stateSelector,
-  (state) => state.loadingAttendanceSummaryData
-)
 const loadingTableData = createSelector(
   stateSelector,
   (state) => state.loadingTableData
 )
-const academicSummaryData = createSelector(
-  stateSelector,
-  (state) => state.academicSummaryData
-)
-const attendanceSummaryData = createSelector(
-  stateSelector,
-  (state) => state.attendanceSummaryData
-)
 const tableData = createSelector(stateSelector, (state) => state.tableData)
-const academicSummaryRequestError = createSelector(
-  stateSelector,
-  (state) => state.academicSummaryRequestError
-)
-const attendanceRequestSummaryError = createSelector(
-  stateSelector,
-  (state) => state.attendanceRequestSummaryError
-)
 const tableDataRequestError = createSelector(
   stateSelector,
   (state) => state.tableDataRequestError
@@ -67,13 +43,7 @@ export {
   filterTagsData,
   settings,
   error,
-  loadingAcademicSummaryData,
-  loadingAttendanceSummaryData,
   loadingTableData,
-  academicSummaryData,
-  attendanceSummaryData,
   tableData,
-  academicSummaryRequestError,
-  attendanceRequestSummaryError,
   tableDataRequestError,
 }

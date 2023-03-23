@@ -14,11 +14,14 @@ import AttendanceSummary from './components/widgets/AttendanceSummary'
 import TableSection from './components/TableSection'
 
 function ReportView({
+  location,
   performanceBandList,
   setAcademicSummaryFilters,
   compareByOptions,
   isCsvDownloading,
   settings,
+  setSettings,
+  selectedCompareBy,
   fetchDashboardTableDataRequest,
   loadingTableData,
   tableDataRequestError,
@@ -52,6 +55,7 @@ function ReportView({
         />
       </MasonGrid>
       <TableSection
+        location={location}
         academicSummaryFilters={academicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
@@ -59,6 +63,8 @@ function ReportView({
         loadingTableData={loadingTableData}
         selectedPerformanceBand={selectedPerformanceBand}
         settings={settings}
+        setSettings={setSettings}
+        selectedCompareBy={selectedCompareBy}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
         toggleFilter={toggleFilter}

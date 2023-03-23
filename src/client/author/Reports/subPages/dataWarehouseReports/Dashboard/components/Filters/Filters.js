@@ -21,7 +21,6 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersPreload from './hooks/useFiltersPreload'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
-import useUrlSearchParams from './hooks/useUrlSearchParams'
 
 const Filters = ({
   showFilter,
@@ -29,6 +28,7 @@ const Filters = ({
   firstLoad = false,
   isPrinting = false,
   location,
+  search,
   userRole,
   orgData,
   defaultTermId,
@@ -60,8 +60,6 @@ const Filters = ({
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
   const { demographics = [] } = get(filtersData, 'data.result', {})
-
-  const search = useUrlSearchParams(location)
 
   useFiltersPreload({
     reportId,

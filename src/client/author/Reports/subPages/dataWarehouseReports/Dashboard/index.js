@@ -35,6 +35,7 @@ import { actions, selectors } from './ducks'
 import useTabNavigation from './hooks/useTabNavigation'
 import ReportView from './ReportView'
 import { NoDataContainer } from '../../../common/styled'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 
 const { PERFORMANCE_BAND, TEST_TYPE } = academicSummaryFiltersTypes
 
@@ -97,6 +98,14 @@ const Dashboard = ({
     () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
     [masteryScales]
   )
+
+  const search = useUrlSearchParams(location)
+  const selectedCompareBy = search.selectedCompareBy
+    ? compareByOptions.find((o) => o.key === search.selectedCompareBy)
+    : settings.selectedCompareBy?.key
+    ? settings.selectedCompareBy
+    : head(compareByOptions)
+
   const onGoClick = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
     const performanceBand =
@@ -117,9 +126,7 @@ const Dashboard = ({
         testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy: settings.selectedCompareBy?.key
-        ? settings.selectedCompareBy
-        : head(compareByOptions),
+      selectedCompareBy,
       academicSummaryFilters: {
         [PERFORMANCE_BAND]: performanceBand,
         [TEST_TYPE]: testType,
@@ -136,7 +143,7 @@ const Dashboard = ({
     []
   )
 
-  useTabNavigation(settings, reportId, history, loc, updateNavigation)
+  useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
 
@@ -159,6 +166,7 @@ const Dashboard = ({
           onGoClick={onGoClick}
           history={history}
           location={location}
+          search={search}
           showApply={showApply}
           setShowApply={setShowApply}
           showFilter={showFilter}
@@ -179,11 +187,14 @@ const Dashboard = ({
             </EduThen>
             <EduElse>
               <ReportView
+                location={location}
+                selectedCompareBy={selectedCompareBy}
                 performanceBandList={performanceBandList}
                 setAcademicSummaryFilters={setAcademicSummaryFilters}
                 compareByOptions={compareByOptions}
                 isCsvDownloading={isCsvDownloading}
                 settings={settings}
+                setSettings={setSettings}
                 fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
                 loadingTableData={loadingTableData}
                 tableDataRequestError={tableDataRequestError}

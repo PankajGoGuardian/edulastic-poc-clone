@@ -8,9 +8,11 @@ import {
   YAxis,
   BarChart,
   Bar,
+  LabelList,
 } from 'recharts'
 import styled from 'styled-components'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
+import { YAxisLabel } from '../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../common/styled'
 import { getAttendanceChartData } from '../wholeLearnerReport/utils'
 
@@ -406,6 +408,28 @@ const transformData = (page, pagedData) => {
   ]
 }
 
+const renderCustomizedLabel = (props) => {
+  const { x, y, width, value } = props
+  const radius = 10
+  if (!value) {
+    return null
+  }
+  return (
+    <g>
+      <text
+        x={x + width / 2}
+        y={y - radius}
+        fill="#74B2E2"
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+      >
+        {value}
+      </text>
+    </g>
+  )
+}
+
 const Tardies = () => {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(hardcodedAttendanceData)
@@ -463,10 +487,47 @@ const Tardies = () => {
               data={renderData}
               margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
             >
-              <XAxis dataKey="week" />
-              <YAxis dataKey="tardies" />
+              <XAxis
+                dataKey="week"
+                xAxisId="0"
+                tickMargin={20}
+                interval={0}
+                tickLine={false}
+                label={{ fill: 'red', fontSize: 20 }}
+                tickFormatter={(v) => `Week ${v}`}
+              />
+              <XAxis
+                dataKey="startDate"
+                xAxisId="1"
+                tickLine={false}
+                dy={-7}
+                tickMargin={20}
+                interval={0}
+                axisLine={false}
+                label={{ fill: 'red', fontSize: 20 }}
+              />
+              <YAxis
+                dataKey="tardies"
+                label={
+                  <YAxisLabel
+                    data={{
+                      value: 'NO OF TARDIES',
+                      angle: -90,
+                      dx: 25,
+                      fontSize: 14,
+                    }}
+                  />
+                }
+              />
               <Tooltip />
-              <Bar dataKey="tardies" fill="#74B2E2" width="32px" />
+              <Bar
+                dataKey="tardies"
+                fill="#74B2E2"
+                barSize={32}
+                fillOpacity={0.5}
+              >
+                <LabelList dataKey="tardies" content={renderCustomizedLabel} />
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </EduIf>
@@ -504,6 +565,12 @@ export const TardiesWrapper = styled.div`
   height: 386px;
   border-radius: 10px;
   padding: 24px;
+  .navigator-left {
+    left: 10px;
+  }
+  .navigator-right {
+    right: 10px;
+  }
 `
 
 export const LegendWrap = styled.div`

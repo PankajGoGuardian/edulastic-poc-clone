@@ -37,6 +37,7 @@ import { actions, selectors } from './ducks'
 
 import navigation from '../../../common/static/json/navigation.json'
 import { getCompareByOptions, getChartData, getTableData } from './utils'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 
 const { downloadCSV } = reportUtils.common
 
@@ -126,6 +127,13 @@ const MultipleAssessmentReport = ({
     }
   }
 
+  const search = useUrlSearchParams(location)
+  const selectedCompareBy = search.selectedCompareBy
+    ? compareByOptions.find((o) => o.key === search.selectedCompareBy)
+    : settings.selectedCompareBy?.key
+    ? settings.selectedCompareBy
+    : head(compareByOptions)
+
   const onGoClick = (_settings) => {
     const _requestFilters = {}
     Object.keys(_settings.requestFilters).forEach((filterType) => {
@@ -144,9 +152,7 @@ const MultipleAssessmentReport = ({
         testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy: settings.selectedCompareBy?.key
-        ? settings.selectedCompareBy
-        : head(compareByOptions),
+      selectedCompareBy,
     })
     setShowApply(false)
   }
@@ -188,6 +194,8 @@ const MultipleAssessmentReport = ({
     []
   )
 
+  console.log(settings)
+
   useEffect(() => {
     if (settings.requestFilters.termId) {
       const obj = {}
@@ -200,6 +208,7 @@ const MultipleAssessmentReport = ({
         obj[item] = val
       })
       obj.reportId = reportId || ''
+      obj.selectedCompareBy = selectedCompareBy.key
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
@@ -392,9 +401,7 @@ const MultipleAssessmentReport = ({
             <TableFilters
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
-              selectedCompareBy={
-                settings.selectedCompareBy || head(compareByOptions)
-              }
+              selectedCompareBy={selectedCompareBy}
             />
             <Table
               tableData={tableData}

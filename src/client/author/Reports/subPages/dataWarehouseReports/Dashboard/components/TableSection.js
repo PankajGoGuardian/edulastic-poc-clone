@@ -5,10 +5,13 @@ import useTableFilters from '../hooks/useTableFilters'
 import { academicSummaryFiltersTypes, getTableApiQuery } from '../utils'
 
 function TableSection({
+  location,
   compareByOptions,
   selectedPerformanceBand,
   isCsvDownloading,
   settings,
+  setSettings,
+  selectedCompareBy,
   academicSummaryFilters,
   fetchDashboardTableDataRequest,
   toggleFilter,
@@ -16,12 +19,17 @@ function TableSection({
   loadingTableData,
   tableDataRequestError,
 }) {
+  const defaultCompareBy = selectedCompareBy
+    ? compareByOptions.find((o) => o.key === selectedCompareBy)
+    : compareByOptions[0]
+
   const {
     tableFilters,
     setTableFilters,
     updateTableFiltersCB,
     onTableHeaderCellClick,
-  } = useTableFilters(compareByOptions[0])
+    getTableDrillDownUrl,
+  } = useTableFilters({ location, defaultCompareBy, settings, setSettings })
 
   useEffect(() => {
     const q = getTableApiQuery(
@@ -50,6 +58,7 @@ function TableSection({
         tableFilters={tableFilters}
         setTableFilters={setTableFilters}
         onTableHeaderCellClick={onTableHeaderCellClick}
+        getTableDrillDownUrl={getTableDrillDownUrl}
         tableData={tableData}
         selectedPerformanceBand={selectedPerformanceBand}
         loadingTableData={loadingTableData}

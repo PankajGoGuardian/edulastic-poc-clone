@@ -19,7 +19,6 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersPreload from './hooks/useFiltersPreload'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
-import useUrlSearchParams from './hooks/useUrlSearchParams'
 
 const Filters = ({
   showFilter,
@@ -27,6 +26,7 @@ const Filters = ({
   firstLoad = false,
   isPrinting = false,
   location,
+  search,
   userRole,
   orgData,
   defaultTermId,
@@ -61,8 +61,6 @@ const Filters = ({
     demographics = [],
     testTypes: availableAssessmentType = getArrayOfAllTestTypes(),
   } = get(filtersData, 'data.result', {})
-
-  const search = useUrlSearchParams(location)
 
   useFiltersPreload({
     reportId,

@@ -24,6 +24,7 @@ const DashboardTable = ({
   tableFilters,
   setTableFilters,
   onTableHeaderCellClick,
+  getTableDrillDownUrl,
   tableData,
   selectedPerformanceBand,
   loadingTableData,
@@ -31,11 +32,12 @@ const DashboardTable = ({
 }) => {
   const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
 
-  const tableColumns = getTableColumns(
+  const tableColumns = getTableColumns({
     metricInfo,
     tableFilters,
-    selectedPerformanceBand
-  )
+    getTableDrillDownUrl,
+    selectedPerformanceBand,
+  })
 
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {

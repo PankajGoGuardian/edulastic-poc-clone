@@ -2,8 +2,10 @@ import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
 import { EduIf, useApiQuery } from '@edulastic/common'
 import { Spin } from 'antd'
+import qs from 'qs'
 import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
+import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
 import {
   getCellColor,
@@ -59,10 +61,16 @@ const AcademicSummary = ({
     selectedPerformanceBand
   )
 
+  const _filters = { ...settings.requestFilters }
+  _filters.profileId =
+    widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+
+  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
+
   return (
     <Spin spinning={loading}>
       <Widget>
-        <WidgetHeader title={title} />
+        <WidgetHeader title={title} url={externalUrl} />
         <AcademicSummaryWidgetFilters
           filters={widgetFilters}
           setFilters={setWidgetFilters}

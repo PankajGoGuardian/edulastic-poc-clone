@@ -7,10 +7,12 @@ import {
   dbToTableSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
 import { IconExternalLink } from '@edulastic/icons'
+import { Link } from 'react-router-dom'
 import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
+import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
 
 const tableColumnsData = [
   {
@@ -51,11 +53,12 @@ const getHorizontalBarData = (data, selectedPerformanceBand) => {
     }
   })
 }
-export const getTableColumns = (
+export const getTableColumns = ({
   metricInfo,
   tableFilters,
-  selectedPerformanceBand
-) => {
+  getTableDrillDownUrl,
+  selectedPerformanceBand,
+}) => {
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
 
   const rowWithMaxTestTypes = maxBy(
@@ -69,7 +72,13 @@ export const getTableColumns = (
     const compareByIdx = _columns.findIndex((col) => col.key === 'dimension')
     _columns[compareByIdx].title =
       tableFilters[tableFilterTypes.COMPARE_BY].title
-    _columns[compareByIdx].render = (value) => <CompareByTitle value={value} />
+    _columns[compareByIdx].render = (value) => (
+      <CompareByTitle
+        tableFilters={tableFilters}
+        value={value}
+        getTableDrillDownUrl={getTableDrillDownUrl}
+      />
+    )
     _columns[compareByIdx].sortOrder =
       tableFilters.sortKey === tableFilters[tableFilterTypes.COMPARE_BY].key &&
       columnSortOrder
@@ -120,13 +129,20 @@ export const getTableColumns = (
 
   // external link column
   const externalLinkColumn = {
-    dataIndex: 'link',
+    dataIndex: 'dimension',
     key: 'link',
     title: 'PERFORMANCE TRENDS',
     align: 'center',
     fixed: 'right',
     width: 200,
-    render: () => <IconExternalLink />,
+    render: (value) => (
+      <Link
+        to={getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)}
+        target="_blank"
+      >
+        <IconExternalLink />
+      </Link>
+    ),
   }
 
   tableColumns.push(externalLinkColumn)

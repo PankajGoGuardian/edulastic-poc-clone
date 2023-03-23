@@ -348,6 +348,18 @@ export const staticDropDownData = {
   ],
 }
 
+export const compareByFilterFieldKeys = {
+  [compareByKeys.SCHOOL]: 'schoolIds',
+  [compareByKeys.TEACHER]: 'teacherIds',
+  [compareByKeys.CLASS]: 'classIds',
+}
+
+export const nextCompareByOptionsMap = {
+  [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
+  [compareByKeys.TEACHER]: compareByKeys.CLASS,
+  [compareByKeys.CLASS]: compareByKeys.STUDENT,
+}
+
 const filterFields = [
   'creator',
   'termId',

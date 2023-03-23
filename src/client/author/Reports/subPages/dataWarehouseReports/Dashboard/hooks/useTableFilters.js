@@ -1,8 +1,20 @@
 import { DB_SORT_ORDER_TYPES } from '@edulastic/constants/reportUtils/common'
 import { useState } from 'react'
-import { tableFilterTypes, TABLE_PAGE_SIZE } from '../utils'
+import qs from 'qs'
+import {
+  tableFilterTypes,
+  TABLE_PAGE_SIZE,
+  compareByFilterFieldKeys,
+  compareByOptions,
+  nextCompareByOptionsMap,
+} from '../utils'
 
-const useTableFilters = (defaultCompareBy) => {
+const useTableFilters = ({
+  location,
+  defaultCompareBy,
+  settings,
+  setSettings,
+}) => {
   const [tableFilters, setTableFilters] = useState({
     [tableFilterTypes.COMPARE_BY]: defaultCompareBy,
     [tableFilterTypes.PAGE]: 1,
@@ -23,6 +35,7 @@ const useTableFilters = (defaultCompareBy) => {
       }
       return nextState
     })
+    setSettings({ ...settings, selectedCompareBy: selected })
   }
 
   const updateTableHeaderFilters = (filters, cellKey, keyName) => {
@@ -50,11 +63,32 @@ const useTableFilters = (defaultCompareBy) => {
     setTableFilters((prevState) => ({ ...prevState, page }))
   }
 
+  const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
+    const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
+    const filterField = compareByFilterFieldKeys[selectedCompareBy]
+
+    const _filters = { ...settings.requestFilters }
+    const updatedFilterField = _filters[filterField]?.length
+      ? `${_filters[filterField]},${key}`
+      : `${key}`
+    _filters[filterField] = updatedFilterField
+
+    const nextCompareBy =
+      compareByOptions.find(
+        (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
+      ) || selectedCompareBy
+
+    _filters.selectedCompareBy = nextCompareBy.key
+    const url = `${baseUrl}?${qs.stringify(_filters)}`
+    return url
+  }
+
   return {
     tableFilters,
     setTableFilters,
     updateTableFiltersCB,
     onTableHeaderCellClick,
+    getTableDrillDownUrl,
     setTablePagination,
   }
 }

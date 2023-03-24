@@ -165,6 +165,7 @@ export { default as measureTextWithImage } from './src/customHooks/measureTextWi
 export { default as useDropdownData } from './src/customHooks/useDropDownData'
 export { default as useOfflinePagination } from './src/customHooks/useOfflinePagination'
 export { default as useLatestRef } from './src/customHooks/useLatestRef'
+export { default as useApiQuery } from './src/customHooks/useApiQuery'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

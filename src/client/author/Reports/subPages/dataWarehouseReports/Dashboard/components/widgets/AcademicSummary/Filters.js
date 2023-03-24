@@ -1,17 +1,24 @@
 import React from 'react'
 import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
 import { StyledDropDownContainer } from '../../../../../../common/styled'
+import { academicSummaryFiltersTypes } from '../../../utils'
 import { StyledLabel, StyledRow } from '../../common/styledComponents'
 
 const AcademicSummaryWidgetFilters = ({
   filters,
-  // setFilters,
+  setFilters,
   performanceBandsList,
   availableTestTypes,
 }) => {
   const { performanceBand, testType } = filters
+  const updateFilterDropdownCB = (e, selected, comData) => {
+    setFilters({
+      ...filters,
+      [comData]: selected,
+    })
+  }
   return (
-    <StyledRow type="flex" margin="30px 0 0 0">
+    <StyledRow type="flex" margin="40px 0 0 0">
       <StyledLabel>TEST TYPE:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"
@@ -23,8 +30,9 @@ const AcademicSummaryWidgetFilters = ({
         <ControlDropDown
           height="35px"
           by={testType}
-          selectCB={() => {}}
+          selectCB={updateFilterDropdownCB}
           data={availableTestTypes}
+          comData={academicSummaryFiltersTypes.TEST_TYPE}
           prefix="Test Type"
           showPrefixOnSelected={false}
         />
@@ -40,8 +48,9 @@ const AcademicSummaryWidgetFilters = ({
         <ControlDropDown
           height="35px"
           by={performanceBand}
-          selectCB={() => {}}
+          selectCB={updateFilterDropdownCB}
           data={performanceBandsList}
+          comData={academicSummaryFiltersTypes.PERFORMANCE_BAND}
           prefix="Performance Band"
           showPrefixOnSelected={false}
         />

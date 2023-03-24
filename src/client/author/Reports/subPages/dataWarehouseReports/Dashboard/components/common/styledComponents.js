@@ -6,9 +6,11 @@ import {
   extraDesktopWidthMax,
   themeColor,
   lightGrey8,
+  fadedBlack,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import { IconCarets } from '@edulastic/icons'
-import { Row } from 'antd'
+import { Empty, Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
 import { cellStyles } from '../../utils'
@@ -24,24 +26,22 @@ export const StyledIconCaretDown = styled(IconCaretDown)`
 
 export const MasonGrid = styled.div`
   display: flex;
-  flex-direction-row;
+  flex-direction: row;
   justify-content: center;
-  padding: 30px 60px;
+  padding: 30px 10px;
   gap: 30px;
   flex-wrap: wrap;
   background-color: ${greyThemeLighter};
   & > div {
-    flex: 1 1 0;
-    min-width: 670px;
-    max-width: 765px;
+    width: 700px;
   }
 `
 export const Widget = styled.div`
-  height: ${({ small }) => (small ? '200px' : '420px')};
+  height: ${({ small }) => (small ? '200px' : '450px')};
   border-radius: 20px;
   background-color: ${white};
   padding-top: 10px;
-  box-shadow: 0px 3px 6px #00000029;
+  box-shadow: 0px 3px 8px #00000029;
   .title {
     font-size: 15px;
     font-weight: bold;
@@ -99,6 +99,7 @@ export const StyledText = styled.div`
 `
 export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};
+  min-height: 300px;
   justify-content: center;
   padding-inline: 15px;
   padding-block: 15px 40px;
@@ -107,8 +108,10 @@ export const TableContainer = styled.div`
 export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
-  margin: 8px 25px;
-  box-shadow: 0px 10px 11px #0000000f;
+  margin: 12px 25px;
+  box-shadow: ${(props) =>
+    props.isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
+  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
   span {
     &:first-child {
       padding: 13px 32px;
@@ -123,6 +126,7 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
+      cursor: pointer;
       border-radius: 0px 10px 10px 0px;
     }
   }
@@ -151,6 +155,9 @@ export const CustomStyledTable = styled(StyledTable)`
   }
   .ant-table-column-title {
     white-space: nowrap !important;
+    .ant-tag {
+      font-size: 10px;
+    }
   }
   .ant-table-fixed-left,
   .ant-table-fixed-right {
@@ -171,9 +178,9 @@ export const CustomStyledTable = styled(StyledTable)`
     .ant-table-tbody {
       td {
         padding: 10px 0px 10px 8px;
-        font-size: 5px;
         color: #434b5d;
         font-weight: 600;
+        font-size: 12px;
         @media (min-width: ${extraDesktopWidthMax}) {
           font-size: 14px;
         }
@@ -195,35 +202,13 @@ export const CustomStyledTable = styled(StyledTable)`
     }
   }
 `
-export const HorizontalBarWrapper = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  min-width: 230px;
-  margin-inline: 10px;
-  justify-content: center;
-  span {
-    &:first-child {
-      border-radius: 12px 0px 0px 12px;
-    }
-    &:last-child {
-      border-radius: 0px 12px 12px 0px;
-    }
-  }
-`
-export const StyledSpan = styled.span`
-  background-color: ${({ color }) => color};
-  padding: 5px;
-  flex-wrap: nowrap;
-  width: ${({ value }) => value}%;
-  font-size: 11px;
-`
 export const CompareByContainer = styled.div`
   color: ${themeColor};
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 @media print {
@@ -233,6 +218,35 @@ export const CompareByContainer = styled.div`
     -webkit-box-orient: unset;
   }
 }
+`
+export const StyledEduButton = styled(EduButton)`
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
+  }
+`
+export const DataSizeExceededContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 120px;
+  font-size: 25px;
+  font-weight: bold;
+  color: ${fadedBlack};
+`
+export const StyledEmptyContainer = styled(Empty)`
+  margin-block: 60px;
+`
+export const StyledDiv = styled.div`
+  display: flex;
+  width: fit-content;
+  padding: 2px;
+  border: 1px solid;
+  margin-left: 80px;
+  border-radius: 5px;
+  .link {
+    font-size: 20px;
+  }
 `
 
 export const DashboardReportContainer = styled.div`

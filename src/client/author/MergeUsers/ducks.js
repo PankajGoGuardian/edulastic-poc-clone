@@ -6,7 +6,7 @@ import { userApi } from '@edulastic/api'
 
 // slice
 const slice = createSlice({
-  name: 'mergeUsers',
+  name: 'mergeUsers', //! FIXME key should be `slice` not `name`
   initialState: {
     userDetails: [],
     // mergedUser: {},

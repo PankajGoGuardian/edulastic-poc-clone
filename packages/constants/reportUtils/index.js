@@ -35,6 +35,8 @@ const standardsGradebook = require('./standardsMasteryReport/standardsGradebook'
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
+const dwDashboardReport = require('./datawarehouseReports/dashboardReport')
+
 module.exports = {
   common,
   // SAR
@@ -44,4 +46,5 @@ module.exports = {
   // SMR
   standardsPerformanceSummary,
   standardsGradebook,
+  dwDashboardReport,
 }

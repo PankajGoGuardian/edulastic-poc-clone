@@ -841,9 +841,38 @@ export const SectionLabelWrapper = styled.div`
 export const PieChartWrapper = styled.div`
   width: 400px;
   height: 300px;
-  .label-text {
-    max-width: 100px;
+  .label-name {
+    font-weight: normal;
+    overflow: wrap;
   }
+  .label-value {
+    font-weight: bold;
+  }
+`
+export const HorizontalBarWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 300px;
+  margin-inline: 10px;
+  justify-content: center;
+  span {
+    &:first-child {
+      border-radius: ${(props) =>
+        props.barsCount === 1 ? '12px 12px 12px 12px' : '12px 0px 0px 12px'};
+    }
+    &:last-child {
+      border-radius:${(props) =>
+        props.barsCount === 1 ? '12px 12px 12px 12px' : '0px 12px 12px 0px'};
+    }
+    }
+  }
+`
+export const StyledSpan = styled.span`
+  background-color: ${({ color }) => color};
+  padding: 5px;
+  flex-wrap: nowrap;
+  width: ${({ value }) => value}%;
+  font-size: 11px;
 `
 
 export const SectionDescriptionWrapper = styled.div`

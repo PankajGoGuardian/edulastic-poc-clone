@@ -7,7 +7,7 @@ import {
   StyledIconCaretUp,
   StyledIconCaretDown,
   StyledText,
-} from './styledComponents'
+} from '../../common/styledComponents'
 
 const WidgetCell = ({
   header,
@@ -39,7 +39,7 @@ const WidgetCell = ({
       </Row>
       <EduIf condition={!!footer}>
         <StyledText color={footerFontColor}>
-          {footer}%{' '}
+          {Math.abs(footer)}%{' '}
           <EduIf condition={footer >= 0}>
             <StyledIconCaretUp color={lightGreen12} />
           </EduIf>

@@ -182,6 +182,7 @@ const MultipleAssessmentReportFilters = ({
         } else {
           _onGoClick({
             requestFilters: { ..._filters },
+            selectedCompareBy: search.selectedCompareBy,
             selectedFilterTagsData: { ..._filterTagsData },
           })
           fetchUpdateTagsData({

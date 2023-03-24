@@ -54,18 +54,22 @@ function useApiQuery(api, params, options = {}) {
   /** @type {ApiQueryResult<ApiFunc>} */
   const initialState = {
     error: null,
-    loading: true,
+    loading: false,
     data: null,
   }
 
-  const [result, setResult] = useState(initialState)
+  const [result, _setResult] = useState(initialState)
 
   const parsedOptions = parseOptions(options, params)
 
   useEffect(() => {
-    // TODO TBD return when previous request failed ?
     if (!parsedOptions.enabled) return
     if (_.isEqual(previousParamsRef.current, params)) return
+    let cancelled = false
+    const setResult = (value) => {
+      if (cancelled) return
+      return _setResult(value)
+    }
 
     const fetchData = async () => {
       setResult((state) => ({
@@ -94,6 +98,7 @@ function useApiQuery(api, params, options = {}) {
     const timeout = setTimeout(fetchData, parsedOptions.debounceTimeout)
     return () => {
       clearTimeout(timeout)
+      cancelled = true
     }
   }, [parsedOptions.enabled, parsedOptions.debounceTimeout, ...params])
 

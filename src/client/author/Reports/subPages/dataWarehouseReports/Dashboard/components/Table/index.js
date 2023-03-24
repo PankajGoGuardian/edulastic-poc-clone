@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { lightGreen13, lightRed6 } from '@edulastic/colors'
+import { reportUtils } from '@edulastic/constants'
 
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledTag } from '../../../common/styled'
 import {
   StyledRow,
   StyledText,
-  TableContainer,
   CustomStyledTable,
 } from '../common/styledComponents'
 import TableHeaderCell from './TableHeaderCell'
@@ -13,55 +14,91 @@ import TableHeaderCell from './TableHeaderCell'
 import { tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
 
+const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
+
 const DashboardTable = ({
   tableFilters,
-  updateTableFiltersCB,
+  setTableFilters,
+  onTableHeaderCellClick,
+  getTableDrillDownUrl,
   tableData,
+  selectedPerformanceBand,
   isCsvDownloading,
+  rowSelection,
 }) => {
-  const tableColumns = getTableColumns(tableData, tableFilters.compareBy)
+  const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
+
+  const tableColumns = getTableColumns({
+    metricInfo,
+    tableFilters,
+    getTableDrillDownUrl,
+    selectedPerformanceBand,
+  })
+
+  const handleTableChange = useCallback(
+    (_pagination, _filters, sorter) => {
+      setTableFilters((activeTableFilters) => {
+        const curSortKey =
+          sorter.columnKey === 'dimension'
+            ? activeTableFilters[tableFilterTypes.COMPARE_BY].key
+            : sorter.columnKey
+        const curSortOrder =
+          tableToDBSortOrderMap[sorter.order] || DB_SORT_ORDER_TYPES.ASCEND
+        if (
+          activeTableFilters.sortKey === curSortKey &&
+          activeTableFilters.sortOrder === curSortOrder
+        )
+          return activeTableFilters
+        return {
+          ...activeTableFilters,
+          sortKey: curSortKey,
+          sortOrder: curSortOrder,
+        }
+      })
+    },
+    [setTableFilters]
+  )
+
   return (
-    <TableContainer>
+    <>
       <StyledRow type="flex" wrap justify="space-between" margin="30px">
         <StyledTag border="1.5px solid black" font="bold">
           Edulastic
         </StyledTag>
         <StyledText textTransform="uppercase">
-          {tableFilters.compareBy.title} PERFORMANCE ACCORDING TO DISTRICT
-          AVERAGE
+          {tableFilters[tableFilterTypes.COMPARE_BY].title} PERFORMANCE
+          ACCORDING TO DISTRICT AVERAGE
         </StyledText>
         <TableHeaderCell
           title="Above/Equal to avg.:"
-          value={12}
-          color="#BBEFC9"
-          onClick={() =>
-            updateTableFiltersCB(
-              !tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG],
-              tableFilterTypes.ABOVE_EQUAL_TO_AVG
-            )
-          }
+          value={aboveOrAtStandardCount}
+          color={lightGreen13}
+          tableHeaderCellClick={() => {
+            onTableHeaderCellClick(tableFilterTypes.ABOVE_EQUAL_TO_AVG)
+          }}
+          isSelected={tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG]}
         />
         <TableHeaderCell
           title="Below avg.:"
-          value={4}
-          color="#EFBBBB"
-          onClick={() =>
-            updateTableFiltersCB(
-              !tableFilters[tableFilterTypes.BELOW_AVG],
-              tableFilterTypes.BELOW_AVG
-            )
-          }
+          value={belowStandardCount}
+          color={lightRed6}
+          tableHeaderCellClick={() => {
+            onTableHeaderCellClick(tableFilterTypes.BELOW_AVG)
+          }}
+          isSelected={tableFilters[tableFilterTypes.BELOW_AVG]}
         />
       </StyledRow>
       <CsvTable
-        dataSource={tableData}
+        dataSource={metricInfo}
         columns={tableColumns}
         tableToRender={CustomStyledTable}
+        onChange={handleTableChange}
         onCsvConvert={onCsvConvert}
+        rowSelection={rowSelection}
         bordered="dashed"
         isCsvDownloading={isCsvDownloading}
       />
-    </TableContainer>
+    </>
   )
 }
 

@@ -13,6 +13,7 @@ const {
   capitalize,
   isEmpty,
   pick,
+  invert,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -20,6 +21,8 @@ const moment = require('moment')
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
+
+const DECIMAL_BASE = 10
 
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
@@ -35,6 +38,8 @@ const tableToDBSortOrderMap = {
   [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
   [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
 }
+
+const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 
 const calcMethod = {
   MOST_RECENT: 'Most Recent',
@@ -503,9 +508,11 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
+  DECIMAL_BASE,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
+  dbToTableSortOrderMap,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,

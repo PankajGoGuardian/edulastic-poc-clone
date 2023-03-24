@@ -178,7 +178,6 @@ const Dashboard = ({
             fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
             loadingTableData={loadingTableData}
             tableDataRequestError={tableDataRequestError}
-            toggleFilter={toggleFilter}
             tableData={tableData}
           />
         </EduElse>

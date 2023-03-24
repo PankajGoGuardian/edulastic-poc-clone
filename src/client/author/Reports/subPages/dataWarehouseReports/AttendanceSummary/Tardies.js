@@ -1,5 +1,5 @@
 import { EduIf, useOfflinePagination } from '@edulastic/common'
-import { Col } from 'antd'
+import { Col, Row, Switch } from 'antd'
 import React, { useMemo } from 'react'
 import {
   ResponsiveContainer,
@@ -9,6 +9,7 @@ import {
   BarChart,
   Bar,
   LabelList,
+  CartesianGrid,
 } from 'recharts'
 import styled from 'styled-components'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
@@ -423,6 +424,7 @@ const renderCustomizedLabel = (props) => {
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
+        fontSize={12}
       >
         {value}
       </text>
@@ -452,11 +454,33 @@ const Tardies = () => {
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
   const renderData = transformData(page, pagedData)
+  const yMax = renderData.reduce((prev, current) => prev.tardies > current.tardies ? prev : current).tardies
+
+  const generateVerticalCoordinates = ({ chartWidth=693 }) => {
+    const numVerticalLines = renderData.length;
+    const step = chartWidth / (numVerticalLines);
+    const coordinates = [80];
+    for (let i = 1; i <= numVerticalLines; i++) {
+      coordinates.push(step * i+80);
+    }
+    return coordinates;
+  } 
 
   return (
     <Col span={14}>
       <TardiesWrapper>
-        <Title>Tardies</Title>
+        <Row type='flex' justify='space-between'>
+          <Col>
+            <Title>Tardies</Title>
+          </Col>
+          <Col >
+            <StyledDiv>
+              <StyledSpan>Weekly</StyledSpan>
+              <StyledSwitch/>
+              <StyledSpan>Monthly</StyledSpan>
+            </StyledDiv>   
+          </Col>
+        </Row>
         <StyledChartNavButton
           type="primary"
           shape="circle"
@@ -490,9 +514,12 @@ const Tardies = () => {
               <XAxis
                 dataKey="week"
                 xAxisId="0"
+                strokeOpacity={0.2}
                 tickMargin={20}
+                fontSize={12}
                 interval={0}
                 tickLine={false}
+                fontWeight="900"
                 label={{ fill: 'red', fontSize: 20 }}
                 tickFormatter={(v) => `Week ${v}`}
               />
@@ -502,19 +529,25 @@ const Tardies = () => {
                 tickLine={false}
                 dy={-7}
                 tickMargin={20}
+                fontSize={12}
                 interval={0}
                 axisLine={false}
                 label={{ fill: 'red', fontSize: 20 }}
               />
               <YAxis
                 dataKey="tardies"
+                tickLine={false}
+                axisLine={false}
+                dx={-18}
+                ticks={[0, yMax + 1]}
+                opacity={0.5}
                 label={
                   <YAxisLabel
                     data={{
+                      opacity: 0.5,
                       value: 'NO OF TARDIES',
                       angle: -90,
-                      dx: 25,
-                      fontSize: 14,
+                      fontSize: 12,
                     }}
                   />
                 }
@@ -525,9 +558,16 @@ const Tardies = () => {
                 fill="#74B2E2"
                 barSize={32}
                 fillOpacity={0.5}
+                radius={5}
               >
                 <LabelList dataKey="tardies" content={renderCustomizedLabel} />
               </Bar>
+              <CartesianGrid
+                strokeOpacity={0.4}
+                horizontal={false}
+                verticalCoordinatesGenerator={generateVerticalCoordinates}
+              />
+              
             </BarChart>
           </ResponsiveContainer>
         </EduIf>
@@ -557,7 +597,6 @@ export const Title = styled.div`
 `
 export const TardiesWrapper = styled.div`
   border: 1px solid #dedede;
-  align-items: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -600,4 +639,25 @@ export const LegendSymbol = styled.span`
 export const LegendName = styled.span`
   font-size: 11px;
   color: #4b4b4b;
+`
+
+export const StyledSwitch = styled(Switch)`
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 35px;
+  display: inline-block;
+  &.ant-switch-checked,
+  &.ant-switch {
+    background-color: #1890ff;
+  }
+`
+export const StyledDiv = styled.div`
+  font-size: 12px;
+  color: black;
+  opacity: ${(props) => props.opacity || 1};
+  font-weight: ${(props) => props.fontWeight || 400};
+  margin-right: ${(props) => props.marginRight || '0'};
+`
+export const StyledSpan = styled.span`
+  opacity: 0.65;
 `

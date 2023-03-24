@@ -1,6 +1,6 @@
 import { EduIf, useOfflinePagination } from '@edulastic/common'
 import { Col, Row, Switch } from 'antd'
-import React, { useMemo } from 'react'
+import React, { useMemo , useState, useEffect} from 'react'
 import {
   ResponsiveContainer,
   Tooltip,
@@ -432,11 +432,24 @@ const renderCustomizedLabel = (props) => {
   )
 }
 
+const dataAPI = () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      setData(hardcodedAttendanceData);
+    };
+    fetchData();
+  }, []);
+
+  return data;
+};
+
 const Tardies = () => {
+  const apiData= dataAPI()
   const attendanceChartData = useMemo(() => {
-    const _attendanceChartData = getAttendanceChartData(hardcodedAttendanceData)
+    const _attendanceChartData = getAttendanceChartData(apiData)
     return _attendanceChartData
-  }, [hardcodedAttendanceData])
+  }, [apiData])
 
   const {
     next: nextPage,
@@ -456,9 +469,9 @@ const Tardies = () => {
   const renderData = transformData(page, pagedData)
   const yMax = renderData.reduce((prev, current) => prev.tardies > current.tardies ? prev : current).tardies
 
-  const generateVerticalCoordinates = ({ chartWidth=693 }) => {
+  const generateVerticalCoordinates = ({ width }) => {
     const numVerticalLines = renderData.length;
-    const step = chartWidth / (numVerticalLines);
+    const step = (width-130) / (numVerticalLines);
     const coordinates = [80];
     for (let i = 1; i <= numVerticalLines; i++) {
       coordinates.push(step * i+80);
@@ -558,7 +571,7 @@ const Tardies = () => {
                 fill="#74B2E2"
                 barSize={32}
                 fillOpacity={0.5}
-                radius={5}
+                radius={[5, 5, 0, 0]}
               >
                 <LabelList dataKey="tardies" content={renderCustomizedLabel} />
               </Bar>
@@ -567,7 +580,6 @@ const Tardies = () => {
                 horizontal={false}
                 verticalCoordinatesGenerator={generateVerticalCoordinates}
               />
-              
             </BarChart>
           </ResponsiveContainer>
         </EduIf>

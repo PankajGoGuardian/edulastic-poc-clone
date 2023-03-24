@@ -6,26 +6,22 @@ import { ControlDropDown } from '../../../../common/components/widgets/controlDr
 import SectionLabel from '../../../../common/components/SectionLabel'
 import { StyledRow, StyledEduButton } from './common/styledComponents'
 
-import { compareByKeys, tableFilterTypes } from '../utils'
+import { tableFilterTypes } from '../utils'
 
 const DashboardTableFilters = ({
   tableFilters,
   updateTableFiltersCB,
   handleAddToGroupClick,
+  addToStudentGroupEnabled,
   compareByOptions,
-  isSharedReport = false,
 }) => {
-  const showAddToGroupButton =
-    !isSharedReport &&
-    tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
-
   return (
     <StyledRow type="flex" justifyContent="space-between" margin="-2px 10px">
       <SectionLabel>
         Performance By {tableFilters[tableFilterTypes.COMPARE_BY].title}
       </SectionLabel>
       <StyledRow type="flex" justifyContent="right" margin="-2px 10px">
-        <EduIf condition={showAddToGroupButton}>
+        <EduIf condition={addToStudentGroupEnabled}>
           <StyledEduButton onClick={handleAddToGroupClick}>
             <IconPlusCircle /> Add To Student Group
           </StyledEduButton>

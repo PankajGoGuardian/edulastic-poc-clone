@@ -5,7 +5,12 @@ import { EduIf, EduThen, EduElse, notification } from '@edulastic/common'
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
-import { academicSummaryFiltersTypes, getTableApiQuery } from '../utils'
+import {
+  academicSummaryFiltersTypes,
+  compareByKeys,
+  getTableApiQuery,
+  tableFilterTypes,
+} from '../utils'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import {
   DataSizeExceededContainer,
@@ -28,6 +33,7 @@ function TableSection({
   tableData,
   loadingTableData,
   tableDataRequestError,
+  isSharedReport = false,
 }) {
   const {
     tableFilters,
@@ -98,6 +104,12 @@ function TableSection({
     }
   }
 
+  const addToStudentGroupEnabled =
+    !isSharedReport &&
+    tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
+
+  const _rowSelection = addToStudentGroupEnabled ? rowSelection : null
+
   return (
     <>
       <FeaturesSwitch
@@ -115,6 +127,7 @@ function TableSection({
         tableFilters={tableFilters}
         updateTableFiltersCB={updateTableFiltersCB}
         handleAddToGroupClick={handleAddToGroupClick}
+        addToStudentGroupEnabled={addToStudentGroupEnabled}
         compareByOptions={compareByOptions}
       />
       <TableContainer>
@@ -133,7 +146,7 @@ function TableSection({
                   getTableDrillDownUrl={getTableDrillDownUrl}
                   tableData={tableData}
                   selectedPerformanceBand={selectedPerformanceBand}
-                  rowSelection={rowSelection}
+                  rowSelection={_rowSelection}
                   loadingTableData={loadingTableData}
                   isCsvDownloading={isCsvDownloading}
                 />

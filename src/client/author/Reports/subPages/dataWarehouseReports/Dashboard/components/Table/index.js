@@ -13,7 +13,6 @@ import TableHeaderCell from './TableHeaderCell'
 
 import { tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
-import { addStudentToGroupFeatureEnabled } from '../../../../multipleAssessmentReport/PreVsPost/utils'
 
 const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
 
@@ -26,7 +25,6 @@ const DashboardTable = ({
   selectedPerformanceBand,
   isCsvDownloading,
   rowSelection,
-  isSharedReport = false,
 }) => {
   const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
 
@@ -36,13 +34,6 @@ const DashboardTable = ({
     getTableDrillDownUrl,
     selectedPerformanceBand,
   })
-
-  const _rowSelection = addStudentToGroupFeatureEnabled(
-    tableFilters.compareBy.key,
-    isSharedReport
-  )
-    ? rowSelection
-    : null
 
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {
@@ -103,7 +94,7 @@ const DashboardTable = ({
         tableToRender={CustomStyledTable}
         onChange={handleTableChange}
         onCsvConvert={onCsvConvert}
-        rowSelection={_rowSelection}
+        rowSelection={rowSelection}
         bordered="dashed"
         isCsvDownloading={isCsvDownloading}
       />

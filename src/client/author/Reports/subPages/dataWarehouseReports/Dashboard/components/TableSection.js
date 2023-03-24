@@ -23,7 +23,6 @@ function TableSection({
   selectedCompareBy,
   academicSummaryFilters,
   fetchDashboardTableDataRequest,
-  toggleFilter,
   tableData,
   loadingTableData,
   tableDataRequestError,
@@ -48,8 +47,6 @@ function TableSection({
     const q = getTableApiQuery(settings, tableFilters, profileId)
     if ((q.termId || q.reportId) && profileId) {
       fetchDashboardTableDataRequest(q)
-      // TODO Why toogle Filter in cleanup function ?
-      return () => toggleFilter(null, false)
     }
   }, [
     settings.requestFilters,
@@ -84,7 +81,7 @@ function TableSection({
                   isCsvDownloading={isCsvDownloading}
                 />
                 <BackendPagination
-                  itemsCount={100}
+                  itemsCount={tableData.dimensionCount}
                   backendPagination={{
                     page: tableFilters.page,
                     pageSize: tableFilters.pageSize,

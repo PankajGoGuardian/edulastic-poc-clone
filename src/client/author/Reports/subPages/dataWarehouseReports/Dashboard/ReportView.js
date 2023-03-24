@@ -24,7 +24,6 @@ function ReportView({
   fetchDashboardTableDataRequest,
   loadingTableData,
   tableDataRequestError,
-  toggleFilter,
   tableData,
 }) {
   const { academicSummaryFilters } = settings
@@ -64,7 +63,6 @@ function ReportView({
         selectedCompareBy={selectedCompareBy}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
-        toggleFilter={toggleFilter}
       />
     </>
   )

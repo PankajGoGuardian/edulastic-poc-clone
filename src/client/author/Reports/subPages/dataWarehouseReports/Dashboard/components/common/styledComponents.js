@@ -237,7 +237,7 @@ export const DataSizeExceededContainer = styled.div`
 export const StyledEmptyContainer = styled(Empty)`
   margin-block: 60px;
 `
-export const StyledIconLinkContainer = styled.div`
+export const StyledDiv = styled.div`
   display: flex;
   width: fit-content;
   padding: 2px;

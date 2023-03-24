@@ -13,7 +13,7 @@ import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
 import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
-import { StyledIconLinkContainer } from '../common/styledComponents'
+import { StyledDiv } from '../common/styledComponents'
 
 const tableColumnsData = [
   {
@@ -141,9 +141,9 @@ export const getTableColumns = ({
       const url = getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)
       return (
         <Link to={url} target={url}>
-          <StyledIconLinkContainer>
+          <StyledDiv>
             <IoMdLink className="link" />
-          </StyledIconLinkContainer>
+          </StyledDiv>
         </Link>
       )
     },

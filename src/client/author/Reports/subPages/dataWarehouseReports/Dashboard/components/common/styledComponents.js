@@ -6,10 +6,11 @@ import {
   extraDesktopWidthMax,
   themeColor,
   lightGrey8,
+  fadedBlack,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconCarets } from '@edulastic/icons'
-import { Row } from 'antd'
+import { Empty, Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
 import { cellStyles } from '../../utils'
@@ -98,6 +99,7 @@ export const StyledText = styled.div`
 `
 export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};
+  min-height: 300px;
   justify-content: center;
   padding-inline: 15px;
   padding-block: 15px 40px;
@@ -224,6 +226,18 @@ export const StyledEduButton = styled(EduButton)`
     margin-right: 10px;
   }
 `
+export const DataSizeExceededContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 120px;
+  font-size: 25px;
+  font-weight: bold;
+  color: ${fadedBlack};
+`
+export const StyledEmptyContainer = styled(Empty)`
+  margin-block: 60px;
+`
+
 export const DashboardReportContainer = styled.div`
   @media print {
     -webkit-print-color-adjust: exact;

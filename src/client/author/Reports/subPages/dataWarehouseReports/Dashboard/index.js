@@ -50,6 +50,7 @@ const Dashboard = ({
   settings,
   setSettings,
   setAcademicSummaryFilters,
+  firstLoad,
 
   showApply,
   onRefineResultsCB,
@@ -64,7 +65,6 @@ const Dashboard = ({
   tableDataRequestError,
   // report actions
   fetchDashboardTableDataRequest,
-  firstLoad,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,

@@ -66,15 +66,16 @@ const getTableColumnsWrapper = (
 
   const compareColumn = {
     title: compareByToPluralName[compareBy],
-    width: 150,
     dataIndex: 'dimension',
     sorter: true,
     sortOrder,
+    align: 'left',
     children: [
       {
         title: 'District Avg.',
         dataIndex: 'dimension',
         key: `dimension`,
+        align: 'left',
       },
     ],
   }

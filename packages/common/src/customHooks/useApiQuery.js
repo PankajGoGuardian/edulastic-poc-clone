@@ -54,7 +54,7 @@ function useApiQuery(api, params, options = {}) {
   /** @type {ApiQueryResult<ApiFunc>} */
   const initialState = {
     error: null,
-    loading: true,
+    loading: false,
     data: null,
   }
 

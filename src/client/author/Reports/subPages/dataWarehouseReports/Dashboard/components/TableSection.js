@@ -43,12 +43,10 @@ function TableSection({
   })
 
   useEffect(() => {
-    const q = getTableApiQuery(
-      settings,
-      tableFilters,
-      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
-    )
-    if (q.termId || q.reportId) {
+    const profileId =
+      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const q = getTableApiQuery(settings, tableFilters, profileId)
+    if ((q.termId || q.reportId) && profileId) {
       fetchDashboardTableDataRequest(q)
       // TODO Why toogle Filter in cleanup function ?
       return () => toggleFilter(null, false)

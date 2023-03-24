@@ -1,6 +1,7 @@
 import { dataWarehouseApi } from '@edulastic/api'
 import { EduElse, EduIf, EduThen, useApiQuery } from '@edulastic/common'
 import { Empty, Spin } from 'antd'
+import { isEmpty } from 'lodash'
 import React, { useMemo } from 'react'
 import { Widget } from '../../common/styledComponents'
 import WidgetHeader from '../common/WidgetHeader'
@@ -16,11 +17,13 @@ const AttendanceSummary = ({ settings }) => {
     [settings.requestFilters]
   )
 
-  const {
-    data,
-    loading,
-    error,
-  } = useApiQuery(dataWarehouseApi.getDashboardAttendanceSummary, [query])
+  const { data, loading, error } = useApiQuery(
+    dataWarehouseApi.getDashboardAttendanceSummary,
+    [query],
+    {
+      enabled: !isEmpty(query),
+    }
+  )
   return (
     <Widget small>
       <WidgetHeader title={title} />

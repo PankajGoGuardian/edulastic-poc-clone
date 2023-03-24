@@ -188,7 +188,6 @@ const Filters = ({
         periodType: PERIODS.CUSTOM,
       }
       setFilters(newFilters)
-      history.replace(`${location.pathname}?${qs.stringify(newFilters)}`)
     }
   }, [filters.termId])
 
@@ -207,7 +206,6 @@ const Filters = ({
         customPeriodEnd: +moment(customPeriodBaseDate).endOf('month'),
       }
       setFilters(newFilters)
-      history.push(`${location.pathname}?${qs.stringify(newFilters)}`)
     }
   }, [filters.termId, filters.periodType])
 

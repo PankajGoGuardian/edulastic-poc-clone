@@ -56,11 +56,13 @@ const AcademicSummary = ({
     [settings.requestFilters.assessmentTypes, availableTestTypes]
   )
 
-  const {
-    data,
-    loading,
-    error,
-  } = useApiQuery(dataWarehouseApi.getDashboardAcademicSummary, [query])
+  const { data, loading, error } = useApiQuery(
+    dataWarehouseApi.getDashboardAcademicSummary,
+    [query],
+    {
+      enabled: !isEmpty(settings.requestFilters) && !isEmpty(widgetFilters),
+    }
+  )
 
   const { result: { avgScore, bandDistribution = [] } = {} } = data || {}
   const {

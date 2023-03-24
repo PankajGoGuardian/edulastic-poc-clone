@@ -6,7 +6,7 @@ import {
 } from '@edulastic/common'
 import { SortableElement } from 'react-sortable-hoc'
 import { withNamespaces } from '@edulastic/localization'
-import { appLanguages } from '@edulastic/constants'
+import { appLanguages, question } from '@edulastic/constants'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -191,7 +191,7 @@ const Option = (props) => {
         />
       </CheckboxContainer>
       <span
-        className="labelOnly"
+        className={`labelOnly ${question.IR_MCQ_LABEL_SELECTOR}`}
         data-cy="label"
         style={{ display: !label && 'none' }}
         onClick={fromSetAnswers && onChangeHandler}

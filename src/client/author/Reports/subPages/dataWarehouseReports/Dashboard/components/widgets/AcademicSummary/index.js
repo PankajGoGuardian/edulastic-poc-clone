@@ -80,6 +80,8 @@ const AcademicSummary = ({
   const _filters = { ...settings.requestFilters }
   _filters.profileId =
     widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+  _filters.assessmentTypes =
+    widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
 

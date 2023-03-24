@@ -6,19 +6,19 @@ import { ControlDropDown } from '../../../../common/components/widgets/controlDr
 import SectionLabel from '../../../../common/components/SectionLabel'
 import { StyledRow, StyledEduButton } from './common/styledComponents'
 
-import { tableFilterTypes } from '../utils'
-import { addStudentToGroupFeatureEnabled } from '../../../multipleAssessmentReport/PreVsPost/utils'
+import { compareByKeys, tableFilterTypes } from '../utils'
 
 const DashboardTableFilters = ({
   tableFilters,
   updateTableFiltersCB,
+  handleAddToGroupClick,
   compareByOptions,
   isSharedReport = false,
 }) => {
-  const showAddToGroupButton = addStudentToGroupFeatureEnabled(
-    tableFilters.compareBy,
-    isSharedReport
-  )
+  const showAddToGroupButton =
+    !isSharedReport &&
+    tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
+
   return (
     <StyledRow type="flex" justifyContent="space-between" margin="-2px 10px">
       <SectionLabel>
@@ -26,7 +26,7 @@ const DashboardTableFilters = ({
       </SectionLabel>
       <StyledRow type="flex" justifyContent="right" margin="-2px 10px">
         <EduIf condition={showAddToGroupButton}>
-          <StyledEduButton onClick={() => {}}>
+          <StyledEduButton onClick={handleAddToGroupClick}>
             <IconPlusCircle /> Add To Student Group
           </StyledEduButton>
         </EduIf>

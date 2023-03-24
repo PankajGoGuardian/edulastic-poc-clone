@@ -1,6 +1,6 @@
 import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
-import { EduIf, useApiQuery } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, useApiQuery } from '@edulastic/common'
 import { Spin } from 'antd'
 import { isEmpty } from 'lodash'
 import qs from 'qs'
@@ -18,7 +18,8 @@ import {
 } from '../../../utils'
 import {
   ContentWrapper,
-  NoDataContainer,
+  DataSizeExceededContainer,
+  StyledEmptyContainer,
   Widget,
 } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
@@ -52,7 +53,7 @@ const AcademicSummary = ({
         settings.requestFilters.assessmentTypes,
         availableTestTypes
       ),
-    [settings.requestFilters.assessmentTypes]
+    [settings.requestFilters.assessmentTypes, availableTestTypes]
   )
 
   const {
@@ -68,9 +69,7 @@ const AcademicSummary = ({
     scoreTrendPercentage,
   } = getAcademicSummaryMetrics(data)
 
-  const avgScoreCellColor = data
-    ? getCellColor(avgScore, selectedPerformanceBand)
-    : null
+  const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
   const PieChartData = getAcademicSummaryPieChartData(
     bandDistribution,
     selectedPerformanceBand
@@ -81,10 +80,6 @@ const AcademicSummary = ({
     widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
-  const showNoDataContainer = error || isEmpty(bandDistribution)
-  const noDataContainerText = data?.dataSizeExceeded
-    ? data?.message
-    : 'No data available.'
 
   return (
     <Spin spinning={loading}>
@@ -96,43 +91,56 @@ const AcademicSummary = ({
           performanceBandsList={performanceBandList}
           availableTestTypes={filteredAvailableTestTypes}
         />
-        <EduIf condition={!loading && !showNoDataContainer}>
-          <ContentWrapper>
-            <div>
-              <WidgetCell
-                header="AVG. SCORE"
-                value={`${avgScorePercentage}%`}
-                footer={scoreTrendPercentage}
-                subFooter="vs Dec'22" // TODO use from API
-                color={avgScoreCellColor}
-              />
-              <DashedLine
-                dashWidth="1px"
-                height="1px"
-                margin="20px 5px"
-                dashColor={lightGrey8}
-              />
-              <WidgetCell
-                header="ABOVE STANDARD"
-                value={`${aboveStandardPercentage}%`}
-                color={lightGreen13}
-              />
-            </div>
-            <DashedLine
-              dashWidth="1px"
-              height="250px"
-              maxWidth="1px"
-              dashColor={lightGrey8}
-              margin="0 10px"
-            />
-            <SimplePieChart
-              data={PieChartData}
-              getChartLabelJSX={getAcademicSummaryChartLabelJSX}
-            />
-          </ContentWrapper>
-        </EduIf>
-        <EduIf condition={!loading && showNoDataContainer}>
-          <NoDataContainer>{noDataContainerText}</NoDataContainer>
+        <EduIf condition={!loading}>
+          <EduIf condition={!error && !isEmpty(bandDistribution)}>
+            <EduThen>
+              <ContentWrapper>
+                <div>
+                  <WidgetCell
+                    header="AVG. SCORE"
+                    value={`${avgScorePercentage}%`}
+                    footer={scoreTrendPercentage}
+                    subFooter="vs Dec'22" // TODO use from API
+                    color={avgScoreCellColor}
+                  />
+                  <DashedLine
+                    dashWidth="1px"
+                    height="1px"
+                    margin="20px 5px"
+                    dashColor={lightGrey8}
+                  />
+                  <WidgetCell
+                    header="ABOVE STANDARD"
+                    value={`${aboveStandardPercentage}%`}
+                    color={lightGreen13}
+                  />
+                </div>
+                <DashedLine
+                  dashWidth="1px"
+                  height="250px"
+                  maxWidth="1px"
+                  dashColor={lightGrey8}
+                  margin="0 10px"
+                />
+                <SimplePieChart
+                  data={PieChartData}
+                  getChartLabelJSX={getAcademicSummaryChartLabelJSX}
+                />
+              </ContentWrapper>
+            </EduThen>
+            <EduElse>
+              <EduIf condition={data?.dataSizeExceeded}>
+                <EduThen>
+                  <DataSizeExceededContainer>
+                    {data?.message}
+                  </DataSizeExceededContainer>
+                </EduThen>
+                <EduElse>
+                  <StyledEmptyContainer />
+                </EduElse>
+              </EduIf>
+            </EduElse>
+          </EduIf>
         </EduIf>
       </Widget>
     </Spin>

@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react'
 import { isEmpty } from 'lodash'
 import { Spin } from 'antd'
-import { EduIf } from '@edulastic/common'
+import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
 import { academicSummaryFiltersTypes, getTableApiQuery } from '../utils'
 import BackendPagination from '../../../../common/components/BackendPagination'
-import { NoDataContainer, TableContainer } from './common/styledComponents'
+import {
+  DataSizeExceededContainer,
+  StyledEmptyContainer,
+  TableContainer,
+} from './common/styledComponents'
 
 function TableSection({
   location,
@@ -55,12 +59,6 @@ function TableSection({
     academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
   ])
 
-  const showNoDataContainer =
-    tableDataRequestError || isEmpty(tableData?.metricInfo)
-  const noDataContainerText = tableDataRequestError?.dataSizeExceeded
-    ? tableDataRequestError.message
-    : 'No data available.'
-
   return (
     <>
       <DashboardTableFilters
@@ -70,28 +68,45 @@ function TableSection({
       />
       <TableContainer>
         <Spin spinning={loadingTableData}>
-          <EduIf condition={!loadingTableData && showNoDataContainer}>
-            <NoDataContainer>{noDataContainerText}</NoDataContainer>
-          </EduIf>
-          <EduIf condition={!loadingTableData && !showNoDataContainer}>
-            <DashboardTable
-              tableFilters={tableFilters}
-              setTableFilters={setTableFilters}
-              onTableHeaderCellClick={onTableHeaderCellClick}
-              getTableDrillDownUrl={getTableDrillDownUrl}
-              tableData={tableData}
-              selectedPerformanceBand={selectedPerformanceBand}
-              loadingTableData={loadingTableData}
-              isCsvDownloading={isCsvDownloading}
-            />
-            <BackendPagination
-              itemsCount={100}
-              backendPagination={{
-                page: tableFilters.page,
-                pageSize: tableFilters.pageSize,
-              }}
-              setBackendPagination={setTablePagination}
-            />
+          <EduIf condition={!loadingTableData}>
+            <EduIf
+              condition={
+                !tableDataRequestError && !isEmpty(tableData?.metricInfo)
+              }
+            >
+              <EduThen>
+                <DashboardTable
+                  tableFilters={tableFilters}
+                  setTableFilters={setTableFilters}
+                  onTableHeaderCellClick={onTableHeaderCellClick}
+                  getTableDrillDownUrl={getTableDrillDownUrl}
+                  tableData={tableData}
+                  selectedPerformanceBand={selectedPerformanceBand}
+                  loadingTableData={loadingTableData}
+                  isCsvDownloading={isCsvDownloading}
+                />
+                <BackendPagination
+                  itemsCount={100}
+                  backendPagination={{
+                    page: tableFilters.page,
+                    pageSize: tableFilters.pageSize,
+                  }}
+                  setBackendPagination={setTablePagination}
+                />
+              </EduThen>
+              <EduElse>
+                <EduIf condition={tableDataRequestError?.dataSizeExceeded}>
+                  <EduThen>
+                    <DataSizeExceededContainer>
+                      {tableDataRequestError?.message}
+                    </DataSizeExceededContainer>
+                  </EduThen>
+                  <EduElse>
+                    <StyledEmptyContainer />
+                  </EduElse>
+                </EduIf>
+              </EduElse>
+            </EduIf>
           </EduIf>
         </Spin>
       </TableContainer>

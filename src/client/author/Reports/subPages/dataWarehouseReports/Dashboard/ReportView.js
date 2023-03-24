@@ -5,12 +5,11 @@ import {
   masteryScales,
   academicSummaryFiltersTypes,
   availableTestTypes,
-  attendanceSummaryData,
 } from './utils'
 
 import { MasonGrid } from './components/common/styledComponents'
 import AcademicSummary from './components/widgets/AcademicSummary'
-import AttendanceSummary from './components/widgets/AttendanceSummary'
+import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
 import TableSection from './components/TableSection'
 
 function ReportView({
@@ -42,7 +41,7 @@ function ReportView({
     <>
       <SectionLabel>Overview</SectionLabel>
       <MasonGrid>
-        <AcademicSummary // null on no data
+        <AcademicSummary
           selectedPerformanceBand={selectedPerformanceBand}
           performanceBandList={performanceBandList}
           availableTestTypes={availableTestTypes}
@@ -50,9 +49,7 @@ function ReportView({
           setWidgetFilters={setAcademicSummaryFilters}
           settings={settings}
         />
-        <AttendanceSummary // null on no data
-          attendanceSummaryData={attendanceSummaryData}
-        />
+        <AttendanceSummary settings={settings} />
       </MasonGrid>
       <TableSection
         location={location}

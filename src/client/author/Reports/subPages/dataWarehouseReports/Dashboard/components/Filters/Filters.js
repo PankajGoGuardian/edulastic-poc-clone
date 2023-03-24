@@ -1,9 +1,11 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import qs from 'qs'
-import { get, mapValues } from 'lodash'
+import { clamp, get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
+import { PERIODS } from '@edulastic/constants/reportUtils/datawarehouseReports/dashboardReport'
+import moment from 'moment'
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import {
@@ -177,6 +179,37 @@ const Filters = ({
       setShowApply(true)
     }
   }
+  useEffect(() => {
+    const { startDate, endDate } =
+      terms.find((term) => term._id === filters.termId) || {}
+    if (!(startDate <= Date.now() && endDate >= Date.now())) {
+      const newFilters = {
+        ...filters,
+        periodType: PERIODS.CUSTOM,
+      }
+      setFilters(newFilters)
+      history.replace(`${location.pathname}?${qs.stringify(newFilters)}`)
+    }
+  }, [filters.termId])
+
+  useEffect(() => {
+    if (filters.periodType === PERIODS.CUSTOM) {
+      const { endDate, startDate } =
+        terms.find((term) => term._id === filters.termId) || {}
+      const fromDate = +moment(startDate).startOf('month')
+      const toDate = +moment(endDate).endOf('month')
+      const customPeriodBaseDate = clamp(Date.now(), fromDate, toDate)
+      const newFilters = {
+        ...filters,
+        customPeriodStart: +moment(customPeriodBaseDate)
+          .subtract(1, 'month')
+          .startOf('month'),
+        customPeriodEnd: +moment(customPeriodBaseDate).endOf('month'),
+      }
+      setFilters(newFilters)
+      history.push(`${location.pathname}?${qs.stringify(newFilters)}`)
+    }
+  }, [filters.termId, filters.periodType])
 
   return (
     <FiltersView

@@ -5,7 +5,6 @@ import { head, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { Spin } from 'antd'
 import { SubHeader } from '../../../common/components/Header'
 
 import { DashboardReportContainer } from './components/common/styledComponents'
@@ -35,7 +34,6 @@ import Filters from './components/Filters/Filters'
 import { actions, selectors } from './ducks'
 import useTabNavigation from './hooks/useTabNavigation'
 import ReportView from './ReportView'
-import { NoDataContainer } from '../../../common/styled'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 
 const { PERFORMANCE_BAND, TEST_TYPE } = academicSummaryFiltersTypes
@@ -62,20 +60,11 @@ const Dashboard = ({
 
   updateNavigation,
   // report selectors
-  loadingAcademicSummaryData,
-  loadingAttendanceSummaryData,
   loadingTableData,
-  // academicSummaryData,
-  // attendanceSummaryData,
   tableData,
-  // academicSummaryRequestError,
-  // attendanceSummaryRequestError,
   tableDataRequestError,
   // report actions
-  // fetchAcademicSummaryDataRequest,
-  // fetchAttendanceSummaryDataRequest,
   fetchDashboardTableDataRequest,
-  // resetDashboardReport,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -139,7 +128,7 @@ const Dashboard = ({
 
   useEffect(
     () => () => {
-      console.log('Multiple Assessment Report Component Unmount')
+      console.log('Dashboard Report Component Unmount')
       resetAllReports()
     },
     []
@@ -148,12 +137,6 @@ const Dashboard = ({
   useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
-
-  const showSpinLoader = [
-    loadingAcademicSummaryData,
-    loadingAttendanceSummaryData,
-    loadingTableData,
-  ].every((v) => v)
 
   return (
     <DashboardReportContainer>
@@ -175,10 +158,7 @@ const Dashboard = ({
           toggleFilter={toggleFilter}
         />
       </SubHeader>
-      <EduIf condition={firstLoad}>
-        <Spin size="large" />
-      </EduIf>
-      <EduIf condition={showSpinLoader}>
+      <EduIf condition={firstLoad && isWithoutFilters}>
         <EduThen>
           <SpinLoader
             tip="Please wait while we gather the required information..."
@@ -186,28 +166,21 @@ const Dashboard = ({
           />
         </EduThen>
         <EduElse>
-          <EduIf condition={isWithoutFilters}>
-            <EduThen>
-              <NoDataContainer />
-            </EduThen>
-            <EduElse>
-              <ReportView
-                location={location}
-                selectedCompareBy={selectedCompareBy}
-                performanceBandList={performanceBandList}
-                setAcademicSummaryFilters={setAcademicSummaryFilters}
-                compareByOptions={compareByOptions}
-                isCsvDownloading={isCsvDownloading}
-                settings={settings}
-                setSettings={setSettings}
-                fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
-                loadingTableData={loadingTableData}
-                tableDataRequestError={tableDataRequestError}
-                toggleFilter={toggleFilter}
-                tableData={tableData}
-              />
-            </EduElse>
-          </EduIf>
+          <ReportView
+            location={location}
+            selectedCompareBy={selectedCompareBy}
+            performanceBandList={performanceBandList}
+            setAcademicSummaryFilters={setAcademicSummaryFilters}
+            compareByOptions={compareByOptions}
+            isCsvDownloading={isCsvDownloading}
+            settings={settings}
+            setSettings={setSettings}
+            fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
+            loadingTableData={loadingTableData}
+            tableDataRequestError={tableDataRequestError}
+            toggleFilter={toggleFilter}
+            tableData={tableData}
+          />
         </EduElse>
       </EduIf>
     </DashboardReportContainer>

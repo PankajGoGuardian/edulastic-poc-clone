@@ -160,6 +160,7 @@ export const filterPopupFilterSelectedTestTypes = (
   selectedAssessmentTypes,
   availableTestTypes
 ) => {
+  selectedAssessmentTypes = selectedAssessmentTypes || ''
   const testTypesSelectedInPopupFilters = selectedAssessmentTypes.split(',')
   return isEmpty(selectedAssessmentTypes)
     ? availableTestTypes

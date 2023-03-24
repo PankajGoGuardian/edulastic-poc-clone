@@ -104,14 +104,16 @@ const getDashboardAcademicSummary = (data) => {
     .then((result) => result.data)
 }
 
-const getDashboardAttendanceSummaryMetrics = (data) => {
+const getDashboardAttendanceSummary = (data) => {
   const queryString = qs.stringify(data)
-  return api.callApi({
-    useSlowApi: true,
-    url: `${prefix}/${DASHBOARD_REPORT}/attendance-summary?${queryString}`,
-    method: 'get',
-    data,
-  })
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DASHBOARD_REPORT}/attendance-summary?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data)
 }
 
 const getDashboardTableMatrics = (data) => {
@@ -133,6 +135,6 @@ export default {
   getMARTableMetrics,
   getAttendanceMetrics,
   getDashboardAcademicSummary,
-  getDashboardAttendanceSummaryMetrics,
+  getDashboardAttendanceSummary,
   getDashboardTableMatrics,
 }

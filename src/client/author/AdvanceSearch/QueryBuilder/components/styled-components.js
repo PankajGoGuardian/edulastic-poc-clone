@@ -107,3 +107,7 @@ p{
   color:${lightGrey11};
 }
 `
+export const StyledAnchor = Styled.a`
+  display: flex;
+  align-items: center;
+`

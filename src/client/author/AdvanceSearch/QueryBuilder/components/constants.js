@@ -1,4 +1,4 @@
 export const advancedSearchHelpArtical =
-  'https://support.goguardian.com/s/article/Common-Assessment-Admin-Assigned-1629327843673'
+  'https://support.goguardian.com/s/article/How-to-use-Advanced-Search-in-Assignments'
 export const advancedSearchHelpVideo =
-  '//fast.wistia.net/embed/iframe/na92pypvxo'
+  'https://swvideo.wistia.com/medias/e3fsthjb3q'

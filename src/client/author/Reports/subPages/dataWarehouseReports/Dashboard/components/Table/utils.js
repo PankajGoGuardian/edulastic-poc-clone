@@ -6,13 +6,14 @@ import {
   percentage,
   dbToTableSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
-import { IconExternalLink } from '@edulastic/icons'
 import { Link } from 'react-router-dom'
+import { IoMdLink } from 'react-icons/io'
 import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
 import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
+import { StyledIconLinkContainer } from '../common/styledComponents'
 
 const tableColumnsData = [
   {
@@ -140,7 +141,9 @@ export const getTableColumns = ({
       const url = getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)
       return (
         <Link to={url} target={url}>
-          <IconExternalLink />
+          <StyledIconLinkContainer>
+            <IoMdLink className="link" />
+          </StyledIconLinkContainer>
         </Link>
       )
     },

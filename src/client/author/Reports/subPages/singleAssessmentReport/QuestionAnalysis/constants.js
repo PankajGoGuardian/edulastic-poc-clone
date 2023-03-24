@@ -37,16 +37,6 @@ export const compareByEnums = {
   TEACHER: 'teacher',
 }
 
-export const sortByOptions = {
-  AVG_PERFORMANCE: 'avgPerformance',
-  Q_LABEL: 'qLabel',
-}
-
-export const sortByLabels = {
-  avgPerformance: 'PERFORMANCE',
-  qLabel: 'QUESTION',
-}
-
 export const comparedByToToolTipLabel = {
   [compareByEnums.SCHOOL]: {
     name: 'School Name',

@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
-import { report as reportTypes, roleuser } from '@edulastic/constants'
+import {
+  report as reportTypes,
+  roleuser,
+  reportUtils,
+} from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -27,13 +31,7 @@ import {
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
 import TableContainer from './componenets/TableContainer'
-import {
-  compareByEnums,
-  pageSize,
-  sortByLabels,
-  sortByOptions,
-  sortOrderMap,
-} from './constants'
+import { compareByEnums, pageSize, sortOrderMap } from './constants'
 import TableTitleAndFilter from './componenets/TableTitleAndFilter'
 import {
   useQAnalysisDetailsFetch,
@@ -42,6 +40,8 @@ import {
 
 //! FIXME Have better null-value handling than using memoized empty value
 const EMPTY_ARRAY = []
+
+const { sortByOptions, sortByLabels } = reportUtils.questionAnalysis
 
 const QuestionAnalysis = ({
   isCsvDownloading,

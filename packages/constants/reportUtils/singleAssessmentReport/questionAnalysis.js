@@ -1,5 +1,17 @@
 const { groupBy, orderBy, uniqBy } = require('lodash')
 
+const base_10 = 10
+
+const sortByOptions = {
+  AVG_PERFORMANCE: 'avgPerformance',
+  Q_LABEL: 'questionLabel',
+}
+
+const sortByLabels = {
+  [sortByOptions.AVG_PERFORMANCE]: 'PERFORMANCE',
+  [sortByOptions.Q_LABEL]: 'QUESTION',
+}
+
 const compareByToPluralName = {
   school: 'Schools',
   teacher: 'Teachers',
@@ -41,14 +53,27 @@ const getOrderedQuestions = (questions) => {
   })
 }
 
-const sortByAvgPerformanceAndLabel = (arr, sortKey) =>
-  orderBy(
+const sortByQuesNum = (item) =>
+  parseInt((item.questionLabel || '').substring(1), base_10)
+
+const sortByAvgPerformanceAndLabel = (arr, sortKey) => {
+  const sortByPerf = [
+    sortKey,
+    sortByQuesNum, // sort by question number when the perfomance avg is same
+    (item) => item.questionLabel,
+  ]
+
+  const sortByQuestion = [
+    sortByQuesNum,
+    sortKey, // in order to compare the question label string value for multipart
+  ]
+
+  return orderBy(
     arr,
-    sortKey === 'qLabel'
-      ? [(item) => Number((item.qLabel || '').substring(1))]
-      : [sortKey, (item) => Number((item.qLabel || '').substring(1))],
+    sortKey === sortByOptions.Q_LABEL ? sortByQuestion : sortByPerf,
     ['asc']
   )
+}
 
 const getTableColumns = (qSummary, filter = {}, visibleIndices, sortKey) => {
   const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')?.map((item) => {
@@ -215,4 +240,6 @@ module.exports = {
   sortByAvgPerformanceAndLabel,
   getOrderedAndSelectedQuestions,
   getTableColumns,
+  sortByOptions,
+  sortByLabels,
 }

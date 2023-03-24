@@ -9,7 +9,6 @@ export const getChartData = (qSummary = [], sortKey) => {
   const arr = qSummary.map((item) => {
     const {
       avgPerformance: _avgPerformance,
-      questionLabel: qLabel,
       avgTimeSpent: avgTimeMins,
       districtAvgPerf,
       ...rest
@@ -22,7 +21,6 @@ export const getChartData = (qSummary = [], sortKey) => {
     const avgTimeSecs = Math.floor(avgTimeMins / milliseconds_1000)
     return {
       ...rest,
-      qLabel,
       avgPerformance,
       avgIncorrect,
       avgTime: avgTimeMins,

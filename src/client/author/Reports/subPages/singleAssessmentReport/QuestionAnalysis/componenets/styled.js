@@ -78,6 +78,9 @@ export const StyledTable = styled(Table)`
     table tbody tr td:after {
       height: 0px;
     }
+    table thead tr:first-child th:first-child {
+      min-width: 150px;
+    }
   }
 `
 

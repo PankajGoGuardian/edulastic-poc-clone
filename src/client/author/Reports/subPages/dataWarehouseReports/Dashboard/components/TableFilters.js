@@ -7,26 +7,22 @@ import SectionLabel from '../../../../common/components/SectionLabel'
 import { StyledRow, StyledEduButton } from './common/styledComponents'
 
 import { tableFilterTypes } from '../utils'
-import { addStudentToGroupFeatureEnabled } from '../../../multipleAssessmentReport/PreVsPost/utils'
 
 const DashboardTableFilters = ({
   tableFilters,
   updateTableFiltersCB,
+  handleAddToGroupClick,
+  addToStudentGroupEnabled,
   compareByOptions,
-  isSharedReport = false,
 }) => {
-  const showAddToGroupButton = addStudentToGroupFeatureEnabled(
-    tableFilters.compareBy,
-    isSharedReport
-  )
   return (
     <StyledRow type="flex" justifyContent="space-between" margin="-2px 10px">
       <SectionLabel>
         Performance By {tableFilters[tableFilterTypes.COMPARE_BY].title}
       </SectionLabel>
       <StyledRow type="flex" justifyContent="right" margin="-2px 10px">
-        <EduIf condition={showAddToGroupButton}>
-          <StyledEduButton onClick={() => {}}>
+        <EduIf condition={addToStudentGroupEnabled}>
+          <StyledEduButton onClick={handleAddToGroupClick}>
             <IconPlusCircle /> Add To Student Group
           </StyledEduButton>
         </EduIf>

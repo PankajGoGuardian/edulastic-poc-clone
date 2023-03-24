@@ -80,19 +80,21 @@ const AcademicSummary = ({
   const _filters = { ...settings.requestFilters }
   _filters.profileId =
     widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+  _filters.assessmentTypes =
+    widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
 
   return (
-    <Spin spinning={loading}>
-      <Widget>
-        <WidgetHeader title={title} url={externalUrl} />
-        <AcademicSummaryWidgetFilters
-          filters={widgetFilters}
-          setFilters={setWidgetFilters}
-          performanceBandsList={performanceBandList}
-          availableTestTypes={filteredAvailableTestTypes}
-        />
+    <Widget>
+      <WidgetHeader title={title} url={externalUrl} />
+      <AcademicSummaryWidgetFilters
+        filters={widgetFilters}
+        setFilters={setWidgetFilters}
+        performanceBandsList={performanceBandList}
+        availableTestTypes={filteredAvailableTestTypes}
+      />
+      <Spin spinning={loading}>
         <EduIf condition={!loading}>
           <EduIf condition={!error && !isEmpty(bandDistribution)}>
             <EduThen>
@@ -144,8 +146,8 @@ const AcademicSummary = ({
             </EduElse>
           </EduIf>
         </EduIf>
-      </Widget>
-    </Spin>
+      </Spin>
+    </Widget>
   )
 }
 

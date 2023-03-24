@@ -24,6 +24,7 @@ const DashboardTable = ({
   tableData,
   selectedPerformanceBand,
   isCsvDownloading,
+  rowSelection,
 }) => {
   const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
 
@@ -93,6 +94,7 @@ const DashboardTable = ({
         tableToRender={CustomStyledTable}
         onChange={handleTableChange}
         onCsvConvert={onCsvConvert}
+        rowSelection={rowSelection}
         bordered="dashed"
         isCsvDownloading={isCsvDownloading}
       />

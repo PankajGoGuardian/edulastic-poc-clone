@@ -237,6 +237,17 @@ export const DataSizeExceededContainer = styled.div`
 export const StyledEmptyContainer = styled(Empty)`
   margin-block: 60px;
 `
+export const StyledDiv = styled.div`
+  display: flex;
+  width: fit-content;
+  padding: 2px;
+  border: 1px solid;
+  margin-left: 80px;
+  border-radius: 5px;
+  .link {
+    font-size: 20px;
+  }
+`
 
 export const DashboardReportContainer = styled.div`
   @media print {

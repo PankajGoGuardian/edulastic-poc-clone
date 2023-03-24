@@ -69,8 +69,10 @@ export const StyledTable = styled(Table)`
       text-align: center;
     }
   }
-  table thead tr:first-child th:first-child {
-    width: 35%;
+
+  table tbody tr td:first-child {
+    max-width: 250px;
+    min-width: 150px;
   }
 
   @media print {

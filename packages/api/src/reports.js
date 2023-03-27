@@ -352,6 +352,23 @@ const fetchAttendanceReportDetails = (params) =>
     })
     .then((res) => res.data)
 
+const fetchAttendanceSummaryReport = (params) =>
+  api
+    .callApi({
+      // url: `/data-studio/attendance/report`,
+      url: `report/question-analysis/details`,
+      params: {
+        ...params,
+        termId: '63db9012b5fd16000842c899',
+        assignedBy: 'anyone',
+        compareBy: 'school',
+        page: 1,
+        pageSize: 25,
+        testId: '641d76d233c068000893fd49',
+      },
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -395,4 +412,5 @@ export default {
   fetchPreVsPostReportSummaryData,
   fetchPreVsPostReportTableData,
   fetchAttendanceReportDetails,
+  fetchAttendanceSummaryReport,
 }

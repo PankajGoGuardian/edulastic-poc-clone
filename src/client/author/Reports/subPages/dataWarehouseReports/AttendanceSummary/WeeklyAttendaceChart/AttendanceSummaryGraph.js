@@ -16,7 +16,6 @@ import {
 } from '../../../../common/styled'
 import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
-import { hardcodedAttendanceData } from './constants'
 import {
   CustomDot,
   CustomizedLabel,
@@ -30,11 +29,11 @@ import {
   updateTooltipPos,
 } from './utils'
 
-function AttendanceSummaryGraph() {
+function AttendanceSummaryGraph({ attendanceData }) {
   const attendanceChartData = useMemo(() => {
-    const _attendanceChartData = getAttendanceChartData(hardcodedAttendanceData)
+    const _attendanceChartData = getAttendanceChartData(attendanceData)
     return _attendanceChartData
-  }, [hardcodedAttendanceData])
+  }, [attendanceData])
 
   const [tooltipType, setTooltipType] = useState('right')
   const parentContainerRef = useRef(null)

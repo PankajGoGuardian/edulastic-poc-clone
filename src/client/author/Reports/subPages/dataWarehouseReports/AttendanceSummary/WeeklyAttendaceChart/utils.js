@@ -52,11 +52,11 @@ export const getAttendanceChartData = (attendanceData) => {
       .startOf('week')
       .add(1, 'day')
       .format('DD MMM'),
-    presents: item.presentDays,
-    absents: item.absentDays,
-    tardies: item.tardyDays,
-    total: item.totalDays,
-    value1: percentage(item.attendanceValue, item.totalDays, true), // Attendance data
+    presents: item.presentEvents,
+    absents: item.absentEvents,
+    tardies: item.tardyEvents,
+    total: item.totalEvents,
+    value1: percentage(item.attendanceRatio, item.totalEvents, true), // Attendance data
   }))
   return attendanceChartData
 }

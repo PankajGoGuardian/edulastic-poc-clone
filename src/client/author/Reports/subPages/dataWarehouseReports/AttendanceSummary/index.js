@@ -19,6 +19,7 @@ import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
 import Tardies from './Tardies'
+import { useAttendanceSummaryFetch } from './hooks/useFetch'
 
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
@@ -41,6 +42,10 @@ const AttendanceReport = (props) => {
     isCliUser,
   } = props
   const [filters] = useState({})
+  const [data, loading] = useAttendanceSummaryFetch({
+    filters,
+  })
+  const attendanceData = data
   const isSharedReport = !!filters?.reportId
   const hideOtherTabs = isSharedReport
   useLegacyReportActions(filters, props, hideOtherTabs)
@@ -56,11 +61,14 @@ const AttendanceReport = (props) => {
         {/* Add Filters */}
       </SubHeader>
       {/* Add Report stuff (sections) */}
-      <AttendanceSummaryChart />
+      <AttendanceSummaryChart
+        attendanceData={attendanceData}
+        loading={loading}
+      />
       <div>
         <Row gutter={[4, 4]}>
           <AttendanceDistribution />
-          <Tardies />
+          <Tardies attendanceData={attendanceData} loading={loading} />
         </Row>
         <PerformanceTable filters={filters} />
       </div>

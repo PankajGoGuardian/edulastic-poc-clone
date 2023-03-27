@@ -2,24 +2,14 @@ import React from 'react'
 import { Row } from 'antd'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 
-const TableFilters = ({
-  setTableFilters,
-  compareByOptions = [],
-  selectedTableFilters = {},
-}) => {
-  const updateTableFilters = (e, selected, keyName) => {
-    setTableFilters({
-      ...selectedTableFilters,
-      [keyName]: selected,
-    })
-  }
+const TableFilters = ({ setCompareBy, compareByOptions = [], compareBy }) => {
   return (
     <Row type="flex">
       <ControlDropDown
         style={{ marginRight: '10px' }}
         prefix="Compare By"
-        by={selectedTableFilters.compareBy}
-        selectCB={(e, selected) => updateTableFilters(e, selected, 'compareBy')}
+        by={compareBy}
+        selectCB={(e, selected) => setCompareBy(selected.key)}
         data={compareByOptions}
       />
     </Row>

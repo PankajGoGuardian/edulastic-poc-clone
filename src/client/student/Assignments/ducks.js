@@ -33,6 +33,7 @@ import {
   notification,
   handleChromeOsSEB,
 } from '@edulastic/common'
+import { getUser } from '../../author/src/selectors/user'
 import {
   getCurrentSchool,
   fetchUserAction,
@@ -1008,6 +1009,7 @@ function* bootstrapAssesment({ payload }) {
 // launch assignment
 function* launchAssignment({ payload }) {
   try {
+    const user = yield select(getUser)
     const role = yield select(getUserRole)
     const { assignmentId, groupId } = payload
     if (role === 'student') {
@@ -1146,6 +1148,8 @@ function* launchAssignment({ payload }) {
           }
         }
       }
+    } else if (user.status === 409) {
+      yield put(push(`/`))
     } else {
       yield put(push(`/author/classboard/${assignmentId}/${groupId}`))
     }

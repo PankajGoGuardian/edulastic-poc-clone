@@ -443,7 +443,10 @@ export default class API {
             Sentry.getCurrentHub().getClient().getOptions().enabled = false
           }
           // returning skeleton reponses to avoid erroring out in Api call
-          return Promise.resolve({ data: { result: null } })
+          return Promise.resolve({
+            data: { result: null },
+            status: data?.response?.status,
+          })
         }
       }
     )

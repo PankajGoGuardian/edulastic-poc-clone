@@ -21,7 +21,6 @@ import {
   getCsvDocsLoading,
   updateCsvDocsAction,
   setHasCsvDocsAction,
-  getCsvDownloadingState,
 } from '../../ducks'
 import {
   closeHangoutNotification as closeFirebaseNotification,
@@ -41,7 +40,6 @@ const ReportsNotificationListener = ({
   visible,
   setVisible,
   setBulkActionStatus,
-  isCsvDownloading,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
@@ -180,7 +178,12 @@ const ReportsNotificationListener = ({
   useEffect(() => {
     if (
       user &&
-      isCsvDownloading !== undefined &&
+      userNotifications.some(
+        (d) =>
+          d.status === 'initiated' &&
+          d.processStatus === 'done' &&
+          d.downloadLink
+      ) &&
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
       const filteredUserNotifications = userNotifications.filter(
@@ -231,7 +234,6 @@ export default compose(
       visible: getCsvModalVisible(state),
       csvDocs: getCsvDocs(state),
       csvDocsLoading: getCsvDocsLoading(state),
-      isCsvDownloading: getCsvDownloadingState(state),
     }),
     {
       setHasCsvDocs: setHasCsvDocsAction,

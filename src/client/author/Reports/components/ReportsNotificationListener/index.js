@@ -184,19 +184,21 @@ const ReportsNotificationListener = ({
   useEffect(() => {
     if (
       user &&
-      userNotifications.some(
-        (d) =>
-          d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
-          d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
-          d.downloadLink
-      ) &&
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
       const filteredUserNotifications = userNotifications.filter(
         (d) => d.downloadLink && d.reportType !== DOWNLOAD_GRADES_AND_RESPONSE
       )
       setHasCsvDocs(!!filteredUserNotifications.length)
-      showUserNotifications(userNotifications)
+      if (
+        userNotifications.some(
+          (d) =>
+            d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+            d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
+            d.downloadLink
+        )
+      )
+        showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 

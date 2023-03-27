@@ -21,7 +21,6 @@ import {
   getCsvDocsLoading,
   updateCsvDocsAction,
   setHasCsvDocsAction,
-  getCsvDownloadingState,
 } from '../../ducks'
 import {
   closeHangoutNotification as closeFirebaseNotification,
@@ -31,6 +30,11 @@ import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks
 
 const reportCSVCollectionName = 'ReportCSV'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
+const REPORT_NOTIFICATION_STATUS = {
+  INITIATED: 'initiated',
+  COMPLETED: 'completed',
+  DONE: 'done',
+}
 
 const ReportsNotificationListener = ({
   user,
@@ -41,7 +45,6 @@ const ReportsNotificationListener = ({
   visible,
   setVisible,
   setBulkActionStatus,
-  isCsvDownloading,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
@@ -117,8 +120,9 @@ const ReportsNotificationListener = ({
         // delete documents older than 15 days
         deleteNotificationDocument(doc.__id)
       } else if (
-        status === 'initiated' &&
-        (processStatus === 'done' || downloadLinkStatus === 'done') &&
+        status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+        (processStatus === REPORT_NOTIFICATION_STATUS.DONE ||
+          downloadLinkStatus === REPORT_NOTIFICATION_STATUS.DONE) &&
         !notificationIds.includes(doc.__id)
       ) {
         setNotificationIds([...notificationIds, doc.__id])
@@ -180,14 +184,21 @@ const ReportsNotificationListener = ({
   useEffect(() => {
     if (
       user &&
-      isCsvDownloading !== undefined &&
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
       const filteredUserNotifications = userNotifications.filter(
         (d) => d.downloadLink && d.reportType !== DOWNLOAD_GRADES_AND_RESPONSE
       )
       setHasCsvDocs(!!filteredUserNotifications.length)
-      showUserNotifications(userNotifications)
+      if (
+        userNotifications.some(
+          (d) =>
+            d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+            d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
+            d.downloadLink
+        )
+      )
+        showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 
@@ -195,14 +206,14 @@ const ReportsNotificationListener = ({
     if (isNotificationClicked) {
       const docsToUpdate = userNotifications.filter(
         (d) =>
-          d.status === 'initiated' &&
-          d.processStatus === 'done' &&
+          d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+          d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
           d.downloadLink
       )
       // bulk update docs for which the notification has been clicked
       updateNotificationDocuments(
         docsToUpdate,
-        { status: 'completed' },
+        { status: REPORT_NOTIFICATION_STATUS.COMPLETED },
         updateCallback
       )
       setIsNotificationClicked(false)
@@ -231,7 +242,6 @@ export default compose(
       visible: getCsvModalVisible(state),
       csvDocs: getCsvDocs(state),
       csvDocsLoading: getCsvDocsLoading(state),
-      isCsvDownloading: getCsvDownloadingState(state),
     }),
     {
       setHasCsvDocs: setHasCsvDocsAction,

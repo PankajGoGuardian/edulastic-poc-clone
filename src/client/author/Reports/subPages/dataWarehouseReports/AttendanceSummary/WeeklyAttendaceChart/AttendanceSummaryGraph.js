@@ -37,9 +37,9 @@ function AttendanceSummaryGraph() {
   }, [hardcodedAttendanceData])
 
   const [tooltipType, setTooltipType] = useState('right')
-  const tooltipRef = useRef(null)
-  const chartRef = useRef(null)
   const parentContainerRef = useRef(null)
+  const chartRef = useRef(null)
+  const tooltipRef = useRef(null)
 
   const {
     next: nextPage,
@@ -158,7 +158,7 @@ function AttendanceSummaryGraph() {
             type="monotone"
             dataKey="value1"
             stroke="#9FC6D2"
-            label={CustomizedLabel}
+            label={<CustomizedLabel stroke="#9FC6D2" />}
             dot={<CustomDot />}
             activeDot={<CustomDot active />}
           />

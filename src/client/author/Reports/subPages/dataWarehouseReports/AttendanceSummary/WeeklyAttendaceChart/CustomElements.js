@@ -42,13 +42,18 @@ export const getTooltipJSX = (payload) => {
 }
 
 export const CustomizedLabel = (props) => {
-  const { x, y, value, index } = props
+  const { x, y, value, stroke, index } = props
 
   if (index === 0) return null
+
   const labelWidth = 40
   const labelHeight = 15
+  const isLabelOverFlowing = y - labelHeight - 10 < 10
+
   const rectx = x - labelWidth + 20
-  const recty = y - labelHeight - 10
+  const recty = isLabelOverFlowing ? y + labelHeight : y - labelHeight - 10
+  const newY = isLabelOverFlowing ? y + 30 : y - 10
+
   return (
     <g>
       <rect
@@ -56,11 +61,11 @@ export const CustomizedLabel = (props) => {
         y={recty}
         width={labelWidth}
         height={labelHeight}
-        fill="#9FC6D2"
+        fill={stroke}
       />
       <text
         x={x}
-        y={y - 10}
+        y={newY}
         dy={-4}
         fill="#5D5D5D"
         fontSize={10}

@@ -17,7 +17,7 @@ import {
 } from '../../../ducks'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable, { compareByOptions } from './Performance'
-import AttendanceSummaryChart from './AttendanceSummaryChart'
+import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
 import Tardies from './Tardies'
 
 // TODO move this action to parent.

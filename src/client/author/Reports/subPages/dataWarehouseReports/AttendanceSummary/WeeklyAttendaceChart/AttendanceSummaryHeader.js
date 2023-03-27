@@ -1,8 +1,6 @@
+import React from 'react'
 import { CheckboxLabel } from '@edulastic/common'
-import React, { useEffect, useState } from 'react'
-import AttendanceSummaryGraph from './AttendanceSummaryGraph'
 import {
-  ChartWrapper,
   CheckboxText,
   CheckBoxWrapper,
   CustomLegend,
@@ -12,20 +10,16 @@ import {
   LegendWrap,
   SwitchStyled,
   Title,
-} from './styled-component'
+} from '../styled-component'
+import { AttendanceSummaryLegends } from './constants'
 
-const data = [
-  { name: 'Average', color: '#9FC6D2' },
-  { name: 'Edulastic Avg Score', color: '#B5B5B5' },
-]
-
-const AttendanceSummaryTitleJSX = ({ response }) => {
+const AttendanceSummaryHeader = () => {
   return (
     <FlexWrapper flex="1">
       <Title>Weekly Attendance</Title>
       <FlexWrapper>
         <LegendWrap>
-          {response.map((entry) => {
+          {AttendanceSummaryLegends.map((entry) => {
             return (
               <CustomLegend>
                 <LegendSymbol color={entry.color} />
@@ -47,19 +41,4 @@ const AttendanceSummaryTitleJSX = ({ response }) => {
   )
 }
 
-function AttendanceSummaryChart() {
-  const [response, setResponse] = useState([])
-  useEffect(() => {
-    // dispatch the action for triggering API.
-    setResponse(data)
-  }, [])
-
-  return (
-    <ChartWrapper>
-      <AttendanceSummaryTitleJSX response={response} />
-      <AttendanceSummaryGraph />
-    </ChartWrapper>
-  )
-}
-
-export default AttendanceSummaryChart
+export default AttendanceSummaryHeader

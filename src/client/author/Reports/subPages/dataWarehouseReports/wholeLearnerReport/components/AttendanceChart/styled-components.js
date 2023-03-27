@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const StyledAttendanceChartContainer = styled.div`
   padding: 10px;
   position: relative;
-
+  height: ${(props) => props.height};
   .navigator-left {
     left: 5px;
     top: 50%;
@@ -16,7 +16,7 @@ export const StyledAttendanceChartContainer = styled.div`
 
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-    stroke-opacity: 0;
+    stroke-opacity: ${(props) => props.strokeOpacity || 0};
   }
 
   .recharts-yAxis {

@@ -8,6 +8,7 @@ export const ChartWrapper = styled.div`
   border-radius: 10px;
   padding: 24px;
   margin-bottom: 16px;
+  min-height: 400px;
 `
 
 export const Title = styled.div`
@@ -84,4 +85,28 @@ export const StyledDiv = styled.div`
 `
 export const StyledSpan = styled.span`
   opacity: 0.65;
+`
+
+export const TardiesTitle = styled.div`
+  font-size: 16px;
+  color: #434b5d;
+  width: 100%;
+  font-weight: bold;
+  margin-bottom: 15px;
+`
+export const TardiesWrapper = styled.div`
+  border: 1px solid #dedede;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 386px;
+  border-radius: 10px;
+  padding: 24px;
+  .navigator-left {
+    left: 10px;
+  }
+  .navigator-right {
+    right: 10px;
+  }
 `

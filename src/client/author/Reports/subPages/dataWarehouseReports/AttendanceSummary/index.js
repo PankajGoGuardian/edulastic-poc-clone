@@ -42,16 +42,21 @@ const AttendanceReport = (props) => {
     isCliUser,
     userRole,
   } = props
-  const [groupBy, setGroupBy] = useState(groupByConstants.WEEK)
+  const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const [filters] = useState({})
-  const [data, loading] = useAttendanceSummaryFetch({
+  const [attendanceData, loading] = useAttendanceSummaryFetch({
     filters,
     groupBy,
   })
-  const attendanceData = data
   const isSharedReport = !!filters?.reportId
   const hideOtherTabs = isSharedReport
   useLegacyReportActions(filters, props, hideOtherTabs)
+  const _setGroupBy = (checked) => {
+    if (checked) {
+      return setGroupBy(groupByConstants.WEEK)
+    }
+    return setGroupBy(groupByConstants.MONTH)
+  }
   return (
     <>
       <ShareReportModal
@@ -63,12 +68,11 @@ const AttendanceReport = (props) => {
       <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
         {/* Add Filters */}
       </SubHeader>
-      {/* Add Report stuff (sections) */}
       <AttendanceSummaryChart
         attendanceData={attendanceData}
         loading={loading}
         groupBy={groupBy}
-        setGroupBy={setGroupBy}
+        setGroupBy={_setGroupBy}
       />
       <div>
         <Row gutter={[4, 4]}>
@@ -77,7 +81,7 @@ const AttendanceReport = (props) => {
             attendanceData={attendanceData}
             loading={loading}
             groupBy={groupBy}
-            setGroupBy={setGroupBy}
+            setGroupBy={_setGroupBy}
           />
         </Row>
         <PerformanceTable filters={filters} userRole={userRole} />

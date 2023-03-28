@@ -66,20 +66,18 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 }
 
 const AttendanceDistribution = () => {
-  const [response, loading] = useAttendanceDistributionFetch({})
+  const [data, loading] = useAttendanceDistributionFetch({})
   return (
     <Col span={10}>
       <PieWrapper>
         <Title>Attendance Distribution</Title>
         <EduIf condition={loading}>
-          <PieChart width={400} height={280}>
-            <SpinLoader />
-          </PieChart>
+          <SpinLoader />
         </EduIf>
         <EduIf condition={!loading}>
           <PieChart width={400} height={280}>
             <Pie
-              data={response}
+              data={data}
               cx="50%"
               cy="50%"
               innerRadius={80}
@@ -88,13 +86,13 @@ const AttendanceDistribution = () => {
               dataKey="value"
               label={getAcademicSummaryChartLabelJSX}
             >
-              {response.map((entry) => (
+              {data.map((entry) => (
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
               ))}
             </Pie>
           </PieChart>
           <LegendWrap>
-            {response.map((entry) => {
+            {data.map((entry) => {
               return (
                 <CustomLegend>
                   <LegendSymbol color={entry.color} />

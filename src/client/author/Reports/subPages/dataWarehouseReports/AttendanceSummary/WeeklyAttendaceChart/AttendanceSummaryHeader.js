@@ -16,11 +16,6 @@ import {
 import { AttendanceSummaryLegends, groupByConstants } from '../constants'
 
 const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
-  const handleToggle = () => {
-    groupBy === groupByConstants.WEEK
-      ? setGroupBy(groupByConstants.MONTH)
-      : setGroupBy(groupByConstants.WEEK)
-  }
   return (
     <FlexWrapper flex="1">
       <Title>Weekly Attendance</Title>
@@ -44,8 +39,8 @@ const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
           <StyledDiv>
             <StyledSpan>Weekly</StyledSpan>
             <StyledSwitch
-              checked={!(groupBy === groupByConstants.WEEK)}
-              onChange={handleToggle}
+              checked={groupBy === groupByConstants.WEEK}
+              onChange={setGroupBy}
             />
             <StyledSpan>Monthly</StyledSpan>
           </StyledDiv>

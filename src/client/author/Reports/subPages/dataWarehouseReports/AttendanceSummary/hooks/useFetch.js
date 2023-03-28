@@ -520,24 +520,25 @@ export const useAttendanceDetailsFetch = ({
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      try {
-        setLoading(true)
-        const params = {
-          ...filters,
-          compareBy,
-          [sortKey]: sortOrderMap[sortOrder],
-          pageNo,
-          pageSize,
-        }
-        fetchAttendanceReportDetails(params).then((response) => {
+      setLoading(true)
+      const params = {
+        ...filters,
+        compareBy,
+        [sortKey]: sortOrderMap[sortOrder],
+        pageNo,
+        pageSize,
+      }
+      fetchAttendanceReportDetails(params)
+        .then((response) => {
           setData(tableData)
           setLoading(false)
           response
         })
-      } catch (e) {
-        setError(e)
-        setLoading(false)
-      }
+        .catch((e) => {
+          setData(tableData)
+          setError(e)
+          setLoading(false)
+        })
     }
     const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {
@@ -553,23 +554,24 @@ export const useAttendanceSummaryFetch = ({ filters, groupBy }) => {
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      try {
-        setLoading(true)
-        const params = {
-          ...filters,
-          groupBy,
-        }
-        fetchAttendanceSummaryReport(params).then((response) => {
+      setLoading(true)
+      const params = {
+        ...filters,
+        groupBy,
+      }
+      fetchAttendanceSummaryReport(params)
+        .then((response) => {
           setData(hardCodedData || {})
           setLoading(false)
           response
         })
-      } catch (e) {
-        setError(e)
-        setLoading(false)
-      }
+        .catch((e) => {
+          setData(hardCodedData || {})
+          setError(e)
+          setLoading(false)
+        })
     }
-    const timeout = setTimeout(fetchData, 30)
+    const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {
       clearTimeout(timeout)
     }
@@ -595,6 +597,7 @@ export const useAttendanceDistributionFetch = ({ filters }) => {
           response
         })
         .catch((e) => {
+          setData(attendanceDistribution || [])
           console.log(e, 'error')
           setError(e)
           setLoading(false)

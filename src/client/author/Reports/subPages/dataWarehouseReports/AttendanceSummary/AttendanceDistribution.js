@@ -1,35 +1,12 @@
-import { reportsApi } from '@edulastic/api'
 import { white } from '@edulastic/colors'
+import { EduIf, SpinLoader } from '@edulastic/common'
 import { Col } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
+import { useAttendanceDistributionFetch } from './hooks/useFetch'
 
 const greyThemeDark7 = '#ADADAD'
-export const data = [
-  {
-    name: 'Satisfactory',
-    value: 30,
-    id: 1,
-    color: '#73C578',
-    textColor: '#2A7A2F',
-  },
-  {
-    name: 'Extreme Chronic',
-    value: 40,
-    id: 2,
-    color: '#FBBC04',
-    textColor: '#9C7501',
-  },
-  {
-    name: 'Moderate Chronic',
-    value: 10,
-    id: 3,
-    color: '#FF6D01',
-    textColor: '#9F4909',
-  },
-  { name: 'At-risk', value: 20, id: 4, color: '#EA4335', textColor: '#982B22' },
-]
 
 const getAcademicSummaryChartLabelJSX = (props) => {
   const RADIAN = Math.PI / 180
@@ -89,51 +66,44 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 }
 
 const AttendanceDistribution = () => {
-  const [response, setResponse] = useState([])
-  useEffect(() => {
-    reportsApi
-      .fetchAssessmentSummaryReport({
-        requestFilters: {
-          termId: '62727a9911af9a0009c02f05',
-          assessmentTypes: 'common assessment',
-          testId: '63f455237ae6e700087633d9',
-        },
-        testId: '63f455237ae6e700087633d9',
-      })
-      .then(() => {
-        setResponse(data)
-      })
-  }, [])
+  const [response, loading] = useAttendanceDistributionFetch({})
   return (
     <Col span={10}>
       <PieWrapper>
         <Title>Attendance Distribution</Title>
-        <PieChart width={400} height={280}>
-          <Pie
-            data={response}
-            cx="50%"
-            cy="50%"
-            innerRadius={80}
-            outerRadius={110}
-            fill="#8884d8"
-            dataKey="value"
-            label={getAcademicSummaryChartLabelJSX}
-          >
-            {data.map((entry) => (
-              <Cell key={`cell-${entry.id}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-        <LegendWrap>
-          {data.map((entry) => {
-            return (
-              <CustomLegend>
-                <LegendSymbol color={entry.color} />
-                <LegendName>{entry.name}</LegendName>
-              </CustomLegend>
-            )
-          })}
-        </LegendWrap>
+        <EduIf condition={loading}>
+          <PieChart width={400} height={280}>
+            <SpinLoader />
+          </PieChart>
+        </EduIf>
+        <EduIf condition={!loading}>
+          <PieChart width={400} height={280}>
+            <Pie
+              data={response}
+              cx="50%"
+              cy="50%"
+              innerRadius={80}
+              outerRadius={110}
+              fill="#8884d8"
+              dataKey="value"
+              label={getAcademicSummaryChartLabelJSX}
+            >
+              {response.map((entry) => (
+                <Cell key={`cell-${entry.id}`} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+          <LegendWrap>
+            {response.map((entry) => {
+              return (
+                <CustomLegend>
+                  <LegendSymbol color={entry.color} />
+                  <LegendName>{entry.name}</LegendName>
+                </CustomLegend>
+              )
+            })}
+          </LegendWrap>
+        </EduIf>
       </PieWrapper>
     </Col>
   )

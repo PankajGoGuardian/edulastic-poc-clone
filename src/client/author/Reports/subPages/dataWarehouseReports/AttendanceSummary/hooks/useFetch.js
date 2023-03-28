@@ -474,9 +474,35 @@ const hardCodedData = [
   },
 ]
 
+export const attendanceDistribution = [
+  {
+    name: 'Satisfactory',
+    value: 30,
+    id: 1,
+    color: '#73C578',
+    textColor: '#2A7A2F',
+  },
+  {
+    name: 'Extreme Chronic',
+    value: 40,
+    id: 2,
+    color: '#FBBC04',
+    textColor: '#9C7501',
+  },
+  {
+    name: 'Moderate Chronic',
+    value: 10,
+    id: 3,
+    color: '#FF6D01',
+    textColor: '#9F4909',
+  },
+  { name: 'At-risk', value: 20, id: 4, color: '#EA4335', textColor: '#982B22' },
+]
+
 const {
   fetchAttendanceReportDetails,
   fetchAttendanceSummaryReport,
+  fetchAttendanceDistributionReport,
 } = reportsApi
 
 const timeout_100ms = 100
@@ -541,6 +567,37 @@ export const useAttendanceSummaryFetch = ({ filters }) => {
         setError(e)
         setLoading(false)
       }
+    }
+    const timeout = setTimeout(fetchData, timeout_100ms)
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [filters])
+
+  return [data, loading, error]
+}
+
+export const useAttendanceDistributionFetch = ({ filters }) => {
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  useEffect(() => {
+    const fetchData = () => {
+      setLoading(true)
+      const params = {
+        ...filters,
+      }
+      fetchAttendanceDistributionReport(params)
+        .then((response) => {
+          setData(attendanceDistribution || [])
+          setLoading(false)
+          response
+        })
+        .catch((e) => {
+          console.log(e, 'error')
+          setError(e)
+          setLoading(false)
+        })
     }
     const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {

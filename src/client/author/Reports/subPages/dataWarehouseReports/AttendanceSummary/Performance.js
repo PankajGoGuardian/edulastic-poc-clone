@@ -93,7 +93,10 @@ const PerformanceTable = ({ isCsvDownloading = false, filters = {} }) => {
         />
       </StyledRow>
       <EduIf condition={loading}>
-        <SpinLoader tip={`Loading ${compareByToPluralName[compareBy]} data`} />
+        <SpinLoader
+          tip={`Loading ${compareByToPluralName[compareBy]} data`}
+          height="200px"
+        />
       </EduIf>
       <EduIf condition={!loading}>
         <CsvTable

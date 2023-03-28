@@ -27,3 +27,14 @@ export const compareByOptions = [
   { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.CLASS, title: 'Class' },
 ]
+
+export const AttendanceSummaryLegends = [
+  { name: 'Attendance', color: '#9FC6D2' },
+]
+
+export const yAxisTickValues = [0, 100]
+
+export const groupByConstants = {
+  WEEK: 'week',
+  MONTH: 'month',
+}

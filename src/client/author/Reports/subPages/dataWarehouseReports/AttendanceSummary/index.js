@@ -20,7 +20,7 @@ import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
 import Tardies from './Tardies'
 import { useAttendanceSummaryFetch } from './hooks/useFetch'
-import { groupByConstants } from './WeeklyAttendaceChart/constants'
+import { groupByConstants } from './constants'
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
   useEffect(() => {

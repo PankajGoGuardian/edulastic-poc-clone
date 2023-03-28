@@ -17,7 +17,7 @@ import NoDataNotification from '../../../../../common/components/NoDataNotificat
 import { YAxisLabel } from '../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../common/styled'
 import { getAttendanceChartData } from './WeeklyAttendaceChart/utils'
-import { groupByConstants } from './WeeklyAttendaceChart/constants'
+import { groupByConstants } from './constants'
 import { StyledSwitch, StyledSpan, StyledDiv } from './styled-component'
 
 const transformData = (page, pagedData) => {
@@ -109,7 +109,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
         <EduIf condition={renderData.length}>
           <Row type="flex" justify="space-between">
             <Col>
-              <Title>Tardies</Title>
+              <TardiesTitle>Tardies</TardiesTitle>
             </Col>
             <Col>
               <StyledDiv>
@@ -229,7 +229,7 @@ Tardies.defaultProps = {}
 
 export default Tardies
 
-export const Title = styled.div`
+export const TardiesTitle = styled.div`
   font-size: 16px;
   color: #434b5d;
   width: 100%;

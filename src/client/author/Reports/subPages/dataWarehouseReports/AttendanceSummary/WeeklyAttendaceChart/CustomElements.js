@@ -5,7 +5,7 @@ import {
   TooltipRowTitle,
   TooltipRowValue,
 } from '../../../../common/styled'
-import { yAxisTickValues } from './constants'
+import { yAxisTickValues } from '../constants'
 
 const TooltipRowItem = ({ title = '', value = '' }) => (
   <TooltipRow>

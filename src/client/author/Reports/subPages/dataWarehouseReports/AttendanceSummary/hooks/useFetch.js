@@ -547,7 +547,7 @@ export const useAttendanceDetailsFetch = ({
   return [data, loading, error]
 }
 
-export const useAttendanceSummaryFetch = ({ filters }) => {
+export const useAttendanceSummaryFetch = ({ filters, groupBy }) => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -557,6 +557,7 @@ export const useAttendanceSummaryFetch = ({ filters }) => {
         setLoading(true)
         const params = {
           ...filters,
+          groupBy,
         }
         fetchAttendanceSummaryReport(params).then((response) => {
           setData(hardCodedData || {})
@@ -568,11 +569,11 @@ export const useAttendanceSummaryFetch = ({ filters }) => {
         setLoading(false)
       }
     }
-    const timeout = setTimeout(fetchData, timeout_100ms)
+    const timeout = setTimeout(fetchData, 30)
     return () => {
       clearTimeout(timeout)
     }
-  }, [filters])
+  }, [filters, groupBy])
 
   return [data, loading, error]
 }

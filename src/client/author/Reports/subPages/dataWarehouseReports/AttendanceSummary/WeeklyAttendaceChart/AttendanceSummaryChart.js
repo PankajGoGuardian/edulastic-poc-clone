@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react'
-import { EduIf, SpinLoader } from '@edulastic/common'
+import { EduIf } from '@edulastic/common'
 import { ChartWrapper } from '../styled-component'
 import AttendanceSummaryGraph from './AttendanceSummaryGraph'
 import AttendanceSummaryHeader from './AttendanceSummaryHeader'
 
-function AttendanceSummaryChart({ attendanceData, loading }) {
+function AttendanceSummaryChart({
+  attendanceData,
+  loading,
+  groupBy,
+  setGroupBy,
+}) {
   useEffect(() => {
     // dispatch the action for triggering API.
     // Currently display console
@@ -13,10 +18,7 @@ function AttendanceSummaryChart({ attendanceData, loading }) {
 
   return (
     <ChartWrapper>
-      <AttendanceSummaryHeader />
-      <EduIf condition={loading}>
-        <SpinLoader tip="Loading attendance data" height="100px" />
-      </EduIf>
+      <AttendanceSummaryHeader groupBy={groupBy} setGroupBy={setGroupBy} />
       <EduIf condition={!loading}>
         <AttendanceSummaryGraph attendanceData={attendanceData} />
       </EduIf>

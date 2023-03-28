@@ -1,9 +1,4 @@
-import {
-  greyLight1,
-  lightGrey9,
-  secondaryTextColor,
-  themeColorBlue,
-} from '@edulastic/colors'
+import { greyLight1, lightGrey9, secondaryTextColor } from '@edulastic/colors'
 import { Switch } from 'antd'
 import styled from 'styled-components'
 
@@ -58,22 +53,6 @@ export const CheckBoxWrapper = styled.div`
   }
 `
 
-export const SwitchStyled = styled(Switch)`
-  margin-top: 3px;
-  &.ant-switch {
-    width: 75px;
-    line-height: 16px;
-    &.ant-switch-checked {
-      background: ${themeColorBlue};
-    }
-  }
-  .ant-switch-inner {
-    font-weight: 900;
-    font-size: 10px;
-    margin: 0 10px;
-  }
-`
-
 export const CheckboxText = styled.span`
   font: normal normal normal 11px/22px Open Sans;
   letter-spacing: 0.2px;
@@ -85,4 +64,24 @@ export const FlexWrapper = styled.div`
   justify-content: space-between;
   flex: ${({ flex }) => flex};
   margin-bottom: 15px;
+`
+export const StyledSwitch = styled(Switch)`
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 35px;
+  display: inline-block;
+  &.ant-switch-checked,
+  &.ant-switch {
+    background-color: #1890ff;
+  }
+`
+export const StyledDiv = styled.div`
+  font-size: 12px;
+  color: black;
+  opacity: ${(props) => props.opacity || 1};
+  font-weight: ${(props) => props.fontWeight || 400};
+  margin-right: ${(props) => props.marginRight || '0'};
+`
+export const StyledSpan = styled.span`
+  opacity: 0.65;
 `

@@ -8,12 +8,19 @@ import {
   LegendName,
   LegendSymbol,
   LegendWrap,
-  SwitchStyled,
+  StyledSwitch,
+  StyledSpan,
+  StyledDiv,
   Title,
 } from '../styled-component'
-import { AttendanceSummaryLegends } from './constants'
+import { AttendanceSummaryLegends, groupByConstants } from './constants'
 
-const AttendanceSummaryHeader = () => {
+const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
+  const handleToggle = () => {
+    groupBy === groupByConstants.WEEK
+      ? setGroupBy(groupByConstants.MONTH)
+      : setGroupBy(groupByConstants.WEEK)
+  }
   return (
     <FlexWrapper flex="1">
       <Title>Weekly Attendance</Title>
@@ -28,13 +35,20 @@ const AttendanceSummaryHeader = () => {
             )
           })}
         </LegendWrap>
-        <div style={{ display: 'flex', gap: '0 24px' }}>
+        <div style={{ display: 'flex', gap: '0 24px', alignItems: 'center' }}>
           <CheckBoxWrapper>
             <CheckboxLabel size="14px">
               <CheckboxText>Show Average Score</CheckboxText>
             </CheckboxLabel>
           </CheckBoxWrapper>
-          <SwitchStyled checkedChildren="Monthly" unCheckedChildren="Weekly" />
+          <StyledDiv>
+            <StyledSpan>Weekly</StyledSpan>
+            <StyledSwitch
+              checked={!(groupBy === groupByConstants.WEEK)}
+              onChange={handleToggle}
+            />
+            <StyledSpan>Monthly</StyledSpan>
+          </StyledDiv>
         </div>
       </FlexWrapper>
     </FlexWrapper>

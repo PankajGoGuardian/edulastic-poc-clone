@@ -1,5 +1,5 @@
 import { EduIf, useOfflinePagination } from '@edulastic/common'
-import { Col, Row, Switch } from 'antd'
+import { Col, Row } from 'antd'
 import React, { useMemo } from 'react'
 import { maxBy } from 'lodash'
 import {
@@ -17,6 +17,8 @@ import NoDataNotification from '../../../../../common/components/NoDataNotificat
 import { YAxisLabel } from '../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../common/styled'
 import { getAttendanceChartData } from './WeeklyAttendaceChart/utils'
+import { groupByConstants } from './WeeklyAttendaceChart/constants'
+import { StyledSwitch, StyledSpan, StyledDiv } from './styled-component'
 
 const transformData = (page, pagedData) => {
   const START_X_LABEL = 'START DATE'
@@ -62,7 +64,7 @@ const renderCustomizedLabel = (props) => {
   )
 }
 
-const Tardies = ({ attendanceData, loading }) => {
+const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData)
     return _attendanceChartData.filter((item) => !!item.tardies)
@@ -86,6 +88,11 @@ const Tardies = ({ attendanceData, loading }) => {
   const renderData = transformData(page, pagedData)
   const yMax = maxBy(renderData, 'tardies')?.tardies
 
+  const handleToggle = () => {
+    groupBy === groupByConstants.WEEK
+      ? setGroupBy(groupByConstants.MONTH)
+      : setGroupBy(groupByConstants.WEEK)
+  }
   const generateVerticalCoordinates = ({ width }) => {
     const numVerticalLines = renderData.length
     const step = (width - 130) / numVerticalLines
@@ -107,7 +114,10 @@ const Tardies = ({ attendanceData, loading }) => {
             <Col>
               <StyledDiv>
                 <StyledSpan>Weekly</StyledSpan>
-                <StyledSwitch />
+                <StyledSwitch
+                  checked={!(groupBy === groupByConstants.WEEK)}
+                  onChange={handleToggle}
+                />
                 <StyledSpan>Monthly</StyledSpan>
               </StyledDiv>
             </Col>
@@ -270,25 +280,4 @@ export const LegendSymbol = styled.span`
 export const LegendName = styled.span`
   font-size: 11px;
   color: #4b4b4b;
-`
-
-export const StyledSwitch = styled(Switch)`
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 35px;
-  display: inline-block;
-  &.ant-switch-checked,
-  &.ant-switch {
-    background-color: #1890ff;
-  }
-`
-export const StyledDiv = styled.div`
-  font-size: 12px;
-  color: black;
-  opacity: ${(props) => props.opacity || 1};
-  font-weight: ${(props) => props.fontWeight || 400};
-  margin-right: ${(props) => props.marginRight || '0'};
-`
-export const StyledSpan = styled.span`
-  opacity: 0.65;
 `

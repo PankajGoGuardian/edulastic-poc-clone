@@ -20,7 +20,7 @@ import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
 import Tardies from './Tardies'
 import { useAttendanceSummaryFetch } from './hooks/useFetch'
-
+import { groupByConstants } from './WeeklyAttendaceChart/constants'
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
   useEffect(() => {
@@ -42,9 +42,11 @@ const AttendanceReport = (props) => {
     isCliUser,
     userRole,
   } = props
+  const [groupBy, setGroupBy] = useState(groupByConstants.WEEK)
   const [filters] = useState({})
   const [data, loading] = useAttendanceSummaryFetch({
     filters,
+    groupBy,
   })
   const attendanceData = data
   const isSharedReport = !!filters?.reportId
@@ -65,11 +67,18 @@ const AttendanceReport = (props) => {
       <AttendanceSummaryChart
         attendanceData={attendanceData}
         loading={loading}
+        groupBy={groupBy}
+        setGroupBy={setGroupBy}
       />
       <div>
         <Row gutter={[4, 4]}>
           <AttendanceDistribution />
-          <Tardies attendanceData={attendanceData} loading={loading} />
+          <Tardies
+            attendanceData={attendanceData}
+            loading={loading}
+            groupBy={groupBy}
+            setGroupBy={setGroupBy}
+          />
         </Row>
         <PerformanceTable filters={filters} userRole={userRole} />
       </div>

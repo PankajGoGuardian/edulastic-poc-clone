@@ -11,7 +11,7 @@ import HorizontalStackedBarChart from './HorizontalStackedChart'
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
 import { useAttendanceDetailsFetch } from './hooks/useFetch'
 import {
-  compareByKeys,
+  compareByEnums,
   compareByOptions,
   compareByToPluralName,
   pageSize,
@@ -69,7 +69,7 @@ const PerformanceTable = ({
   userRole,
 }) => {
   const [compareBy, setCompareBy] = useState(
-    userRole === roleuser.TEACHER ? compareByKeys.CLASS : compareByKeys.SCHOOL
+    userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
   )
   const [sortOrder, setSortOrder] = useState(undefined)
   const [sortKey, setSortKey] = useState('')

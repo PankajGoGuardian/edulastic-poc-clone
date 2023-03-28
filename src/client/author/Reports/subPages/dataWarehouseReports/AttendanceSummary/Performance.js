@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Pagination, Typography } from 'antd'
-import { darkGrey } from '@edulastic/colors'
+import { Pagination } from 'antd'
 import { roleuser, reportUtils } from '@edulastic/constants'
 import { EduIf, SpinLoader } from '@edulastic/common'
 import CsvTable from '../../../common/components/tables/CsvTable'
 
-import { StyledCard, DashedLine } from '../../../common/styled'
-import { StyledRow } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
+import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
 import HorizontalStackedBarChart from './HorizontalStackedChart'
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
@@ -102,17 +100,11 @@ const PerformanceTable = ({
 
   return (
     <StyledCard>
-      <StyledRow type="flex" justify="space-between" margin="20px">
-        <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
-          Performance Change By {compareByToPluralName[compareBy]}
-        </Typography.Title>
-        <DashedLine margin="15px 24px" dashColor={darkGrey} />
-        <TableFilters
-          compareByOptions={compareByOptions}
-          setCompareBy={_setCompareBy}
-          compareBy={compareBy}
-        />
-      </StyledRow>
+      <TableFilters
+        compareByOptions={compareByOptions}
+        setCompareBy={_setCompareBy}
+        compareBy={compareBy}
+      />
       <EduIf condition={loading}>
         <SpinLoader
           tip={`Loading ${compareByToPluralName[compareBy]} data`}
@@ -131,13 +123,14 @@ const PerformanceTable = ({
             setSortOrder(column.order)
           }}
         />
-        <EduIf condition>
+        {/* TODO: update condition = data.totalRows.length > pageSize  as well as total */}
+        <EduIf condition={data.length > 1}>
           <Pagination
             style={{ marginTop: '10px' }}
             onChange={setPageNo}
             current={pageNo}
             pageSize={pageSize}
-            total={200}
+            total={50}
           />
         </EduIf>
       </EduIf>

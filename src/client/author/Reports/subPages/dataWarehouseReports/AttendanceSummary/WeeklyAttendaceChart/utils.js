@@ -45,8 +45,8 @@ export const updateTooltipPos = (
 }
 
 export const getAttendanceChartData = (attendanceData) => {
-  attendanceData = sortBy(attendanceData, 'minDate')
-  const attendanceChartData = attendanceData.map((item) => ({
+  const _attendanceData = sortBy(attendanceData, 'minDate')
+  const attendanceChartData = _attendanceData.map((item) => ({
     week: item.weekFromTermStart,
     startDate: moment(item.minDate)
       .startOf('week')
@@ -64,7 +64,9 @@ export const getAttendanceChartData = (attendanceData) => {
 export const transformDataForChart = (page, pagedData) => {
   const START_X_LABEL = 'START DATE'
   const START_X_WEEK = -1
-
+  if (!pagedData.length) {
+    return []
+  }
   if (page === 0) {
     return [
       {

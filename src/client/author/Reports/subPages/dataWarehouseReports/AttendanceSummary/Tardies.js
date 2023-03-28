@@ -1,6 +1,7 @@
 import { EduIf, useOfflinePagination } from '@edulastic/common'
 import { Col, Row, Switch } from 'antd'
 import React, { useMemo } from 'react'
+import { maxBy } from 'lodash'
 import {
   ResponsiveContainer,
   Tooltip,
@@ -20,30 +21,22 @@ import { getAttendanceChartData } from './WeeklyAttendaceChart/utils'
 const transformData = (page, pagedData) => {
   const START_X_LABEL = 'START DATE'
   const START_X_WEEK = -1
-
+  if (!pagedData.length) {
+    return []
+  }
+  const first = pagedData[0]
   if (page === 0) {
     return [
       {
+        ...first,
         week: START_X_WEEK,
         startDate: START_X_LABEL,
-        presents: 0,
-        absents: 0,
-        tardies: 0,
-        total: 0,
-        value: 0,
       },
       ...pagedData,
     ]
   }
-  const first = pagedData[0]
-  return [
-    {
-      ...first,
-      week: START_X_WEEK,
-      startDate: START_X_LABEL,
-    },
-    ...pagedData.slice(1),
-  ]
+
+  return pagedData.slice(1)
 }
 
 const renderCustomizedLabel = (props) => {
@@ -72,7 +65,7 @@ const renderCustomizedLabel = (props) => {
 const Tardies = ({ attendanceData, loading }) => {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData)
-    return _attendanceChartData
+    return _attendanceChartData.filter((item) => !!item.tardies)
   }, [attendanceData])
 
   const {
@@ -91,9 +84,7 @@ const Tardies = ({ attendanceData, loading }) => {
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
   const renderData = transformData(page, pagedData)
-  const yMax = renderData.reduce((prev, current) =>
-    prev.tardies > current.tardies ? prev : current
-  ).tardies
+  const yMax = maxBy(renderData, 'tardies')?.tardies
 
   const generateVerticalCoordinates = ({ width }) => {
     const numVerticalLines = renderData.length
@@ -108,18 +99,20 @@ const Tardies = ({ attendanceData, loading }) => {
   return (
     <Col span={14}>
       <TardiesWrapper>
-        <Row type="flex" justify="space-between">
-          <Col>
-            <Title>Tardies</Title>
-          </Col>
-          <Col>
-            <StyledDiv>
-              <StyledSpan>Weekly</StyledSpan>
-              <StyledSwitch />
-              <StyledSpan>Monthly</StyledSpan>
-            </StyledDiv>
-          </Col>
-        </Row>
+        <EduIf condition={renderData.length}>
+          <Row type="flex" justify="space-between">
+            <Col>
+              <Title>Tardies</Title>
+            </Col>
+            <Col>
+              <StyledDiv>
+                <StyledSpan>Weekly</StyledSpan>
+                <StyledSwitch />
+                <StyledSpan>Monthly</StyledSpan>
+              </StyledDiv>
+            </Col>
+          </Row>
+        </EduIf>
         <StyledChartNavButton
           type="primary"
           shape="circle"

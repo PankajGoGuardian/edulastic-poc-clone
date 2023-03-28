@@ -15,7 +15,7 @@ function AttendanceSummaryChart({ attendanceData, loading }) {
     <ChartWrapper>
       <AttendanceSummaryHeader />
       <EduIf condition={loading}>
-        <SpinLoader tip="Loading report data" />
+        <SpinLoader tip="Loading attendance data" height="100px" />
       </EduIf>
       <EduIf condition={!loading}>
         <AttendanceSummaryGraph attendanceData={attendanceData} />

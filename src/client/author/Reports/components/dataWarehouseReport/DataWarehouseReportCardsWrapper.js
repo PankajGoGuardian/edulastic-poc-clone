@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import {
   IconWholeLearnerReport,
   IconMultipleAssessmentReportDW,
+  IconAttendanceReport,
 } from '@edulastic/icons'
 import ReportLinkCard from './common/components/ReportLinkCard'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
@@ -31,9 +32,9 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         loc={loc}
       />
       <ReportLinkCard
-        IconThumbnail={IconWholeLearnerReport}
+        IconThumbnail={IconAttendanceReport}
         title="Attendance Report"
-        description="Get a complete understanding of a learner’s academic and behavioral profiles and take necessary actions for the learner’s growth."
+        description="Monitor attendance and tardies, identify students at risk of chronic absenteeism, and intervene."
         url={DW_ATTENDANCE_REPORT_URL}
         loc={loc}
       />

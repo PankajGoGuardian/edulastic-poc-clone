@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination, Typography } from 'antd'
 import { darkGrey } from '@edulastic/colors'
-import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+import { roleuser, reportUtils } from '@edulastic/constants'
 import { EduIf, SpinLoader } from '@edulastic/common'
 import CsvTable from '../../../common/components/tables/CsvTable'
 
@@ -18,6 +18,8 @@ import {
   compareByToPluralName,
   pageSize,
 } from './constants'
+
+const { downloadCSV } = reportUtils.common
 
 const getTableColumns = (sortOrder, sortKey, compareBy) => {
   return [
@@ -63,8 +65,14 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
 export const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
 
-const PerformanceTable = ({ isCsvDownloading = false, filters = {} }) => {
-  const [compareBy, setCompareBy] = useState(compareByKeys.SCHOOL)
+const PerformanceTable = ({
+  isCsvDownloading = false,
+  filters = {},
+  userRole,
+}) => {
+  const [compareBy, setCompareBy] = useState(
+    userRole === roleuser.TEACHER ? compareByKeys.CLASS : compareByKeys.SCHOOL
+  )
   const [sortOrder, setSortOrder] = useState(undefined)
   const [sortKey, setSortKey] = useState('')
   const [pageNo, setPageNo] = useState(1)
@@ -76,9 +84,22 @@ const PerformanceTable = ({ isCsvDownloading = false, filters = {} }) => {
     pageNo,
     pageSize,
   })
+  useEffect(() => {
+    setPageNo(1)
+    setSortOrder(undefined)
+    setSortKey('')
+  }, [filters])
   const columns = useMemo(() => {
     return getTableColumns(sortOrder, sortKey, compareBy)
   }, [sortOrder, sortKey])
+
+  const _setCompareBy = (value) => {
+    setCompareBy(value)
+    setSortOrder(undefined)
+    setSortKey('')
+    setPageNo(1)
+  }
+
   return (
     <StyledCard>
       <StyledRow type="flex" justify="space-between" margin="20px">
@@ -88,7 +109,7 @@ const PerformanceTable = ({ isCsvDownloading = false, filters = {} }) => {
         <DashedLine margin="15px 24px" dashColor={darkGrey} />
         <TableFilters
           compareByOptions={compareByOptions}
-          setCompareBy={setCompareBy}
+          setCompareBy={_setCompareBy}
           compareBy={compareBy}
         />
       </StyledRow>

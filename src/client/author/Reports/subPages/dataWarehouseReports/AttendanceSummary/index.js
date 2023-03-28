@@ -40,6 +40,7 @@ const AttendanceReport = (props) => {
     loc,
     breadcrumbData,
     isCliUser,
+    userRole,
   } = props
   const [filters] = useState({})
   const [data, loading] = useAttendanceSummaryFetch({
@@ -70,7 +71,7 @@ const AttendanceReport = (props) => {
           <AttendanceDistribution />
           <Tardies attendanceData={attendanceData} loading={loading} />
         </Row>
-        <PerformanceTable filters={filters} />
+        <PerformanceTable filters={filters} userRole={userRole} />
       </div>
     </>
   )

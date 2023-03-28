@@ -338,7 +338,7 @@ const fetchPreVsPostReportTableData = (params) =>
 const fetchAttendanceReportDetails = (params) =>
   api
     .callApi({
-      // url: '/data-studio/attendance/report/details',
+      // url: '/data-warehouse/attendance/report/details',
       url: `report/question-analysis/details`,
       params: {
         ...params,
@@ -355,7 +355,7 @@ const fetchAttendanceReportDetails = (params) =>
 const fetchAttendanceSummaryReport = (params) =>
   api
     .callApi({
-      // url: `/data-studio/attendance/report`,
+      // url: `/data-warehouse/attendance/report`,
       url: `report/question-analysis/details`,
       params: {
         ...params,
@@ -372,7 +372,7 @@ const fetchAttendanceSummaryReport = (params) =>
 const fetchAttendanceDistributionReport = (params) =>
   api
     .callApi({
-      // url: `/data-studio/attendance/distribution`,
+      // url: `/data-warehouse/attendance/distribution`,
       url: `report/question-analysis/details`,
       params: {
         ...params,

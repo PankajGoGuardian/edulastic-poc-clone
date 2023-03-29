@@ -7,8 +7,9 @@ import CsvTable from '../../../common/components/tables/CsvTable'
 
 import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
-import HorizontalStackedBarChart, {
+import {
   StudentBand,
+  HorizontalStackedBarChart,
 } from './HorizontalStackedChart'
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
 import { useAttendanceDetailsFetch } from './hooks/useFetch'

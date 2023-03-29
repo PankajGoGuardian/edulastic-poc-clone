@@ -90,7 +90,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
   return (
     <Col span={14}>
       <TardiesWrapper>
-        <EduIf condition={renderData.length}>
+        <EduIf condition={renderData.length && !loading}>
           <Row type="flex" justify="space-between">
             <Col>
               <TardiesTitle>Tardies</TardiesTitle>
@@ -215,6 +215,8 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
             <NoDataNotification
               heading="No Tardies data available"
               description="Please include Tardies in attendance data to view the trends"
+              style={{ height: '100%' }}
+              wrapperStyle={{ minHeight: '100%' }}
             />
           </EduIf>
         </EduIf>

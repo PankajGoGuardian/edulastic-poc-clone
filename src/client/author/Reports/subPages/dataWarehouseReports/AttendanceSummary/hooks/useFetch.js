@@ -33,11 +33,12 @@ export const useAttendanceDetailsFetch = ({
           sortOrder: sortOrderMap[sortOrder] || '',
           pageNo,
           pageSize,
+          recompute: true,
         }
         fetchAttendanceReportDetails(params)
           .then((response) => {
             setData(response.metrics)
-            setTotalRows(response.totalRows || 1)
+            setTotalRows(response.totalRows)
             setLoading(false)
           })
           .catch((e) => {

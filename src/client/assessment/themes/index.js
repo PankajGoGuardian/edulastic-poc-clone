@@ -84,7 +84,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
-import { extensionBlocker } from '../../../extensionBlocker'
+import { extensionBlocker } from '../../../extension-blocker/extensionBlocker'
 
 const { playerSkinValues } = testConstants
 

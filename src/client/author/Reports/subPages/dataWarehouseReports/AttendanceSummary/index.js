@@ -98,11 +98,11 @@ const AttendanceReport = (props) => {
     settings,
     groupBy,
   })
-  const _setGroupBy = (checked) => {
+  const onSetGroupBy = (checked) => {
     if (checked) {
-      return setGroupBy(groupByConstants.WEEK)
+      return setGroupBy(groupByConstants.MONTH)
     }
-    return setGroupBy(groupByConstants.MONTH)
+    return setGroupBy(groupByConstants.WEEK)
   }
   return (
     <>
@@ -124,7 +124,7 @@ const AttendanceReport = (props) => {
         attendanceData={attendanceData}
         loading={loading}
         groupBy={groupBy}
-        setGroupBy={_setGroupBy}
+        setGroupBy={onSetGroupBy}
       />
       <div>
         <Row gutter={[4, 4]}>
@@ -133,7 +133,7 @@ const AttendanceReport = (props) => {
             attendanceData={attendanceData}
             loading={loading}
             groupBy={groupBy}
-            setGroupBy={_setGroupBy}
+            setGroupBy={onSetGroupBy}
           />
         </Row>
         <PerformanceTable settings={settings} userRole={userRole} />

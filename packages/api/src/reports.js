@@ -341,7 +341,7 @@ const fetchAttendanceReportDetails = (params) =>
       url: '/data-warehouse/attendance/report/details',
       params,
     })
-    .then((res) => res.data)
+    .then((response) => response?.data?.result)
 
 const fetchAttendanceSummaryReport = (params) =>
   api

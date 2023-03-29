@@ -115,7 +115,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
               <StyledDiv>
                 <StyledSpan>Weekly</StyledSpan>
                 <StyledSwitch
-                  checked={groupBy === groupByConstants.WEEK}
+                  checked={groupBy === groupByConstants.MONTH}
                   onChange={setGroupBy}
                 />
                 <StyledSpan>Monthly</StyledSpan>

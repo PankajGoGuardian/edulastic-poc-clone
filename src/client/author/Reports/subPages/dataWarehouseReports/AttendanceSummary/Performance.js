@@ -15,6 +15,8 @@ import {
   compareByOptions,
   compareByToPluralName,
   pageSize,
+  sortKeys,
+  sortOrders,
 } from './utils/constants'
 
 const { downloadCSV } = reportUtils.common
@@ -23,14 +25,14 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
   return [
     {
       title: compareByToPluralName[compareBy],
-      key: 'dimension',
+      key: sortKeys.DIMENSION,
       dataIndex: 'dimension.name',
       align: 'left',
       sorter: true,
     },
     {
       title: 'AVG ATTENDANCE',
-      key: 'attendance',
+      key: sortKeys.ATTENDANCE,
       align: 'center',
       dataIndex: 'avgAttendance',
       render: (text) => `${text}%`,
@@ -38,7 +40,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
     },
     {
       title: 'TARDIES',
-      key: 'tardies',
+      key: sortKeys.TARDIES,
       align: 'center',
       dataIndex: 'tardyEventCount',
       sorter: true,
@@ -71,8 +73,8 @@ const PerformanceTable = ({
   const [compareBy, setCompareBy] = useState(
     userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
   )
-  const [sortOrder, setSortOrder] = useState(undefined)
-  const [sortKey, setSortKey] = useState('')
+  const [sortOrder, setSortOrder] = useState(sortOrders.ASCEND)
+  const [sortKey, setSortKey] = useState(sortKeys.DIMENSION)
   const [pageNo, setPageNo] = useState(1)
   const [data, loading] = useAttendanceDetailsFetch({
     settings,
@@ -84,17 +86,17 @@ const PerformanceTable = ({
   })
   useEffect(() => {
     setPageNo(1)
-    setSortOrder(undefined)
-    setSortKey('')
-  }, [settings])
+    setSortOrder(sortOrders.ASCEND)
+    setSortKey(sortKeys.DIMENSION)
+  }, [settings.requestFilters])
   const columns = useMemo(() => {
     return getTableColumns(sortOrder, sortKey, compareBy)
   }, [sortOrder, sortKey])
 
   const _setCompareBy = (value) => {
     setCompareBy(value)
-    setSortOrder(undefined)
-    setSortKey('')
+    setSortOrder(sortOrders.ASCEND)
+    setSortKey(sortKeys.DIMENSION)
     setPageNo(1)
   }
 

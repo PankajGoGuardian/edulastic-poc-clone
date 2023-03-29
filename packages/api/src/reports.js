@@ -354,17 +354,8 @@ const fetchAttendanceSummaryReport = (params) =>
 const fetchAttendanceDistributionReport = (params) =>
   api
     .callApi({
-      // url: `/data-warehouse/attendance/distribution`,
-      url: `report/question-analysis/details`,
-      params: {
-        ...params,
-        termId: '63db9012b5fd16000842c899',
-        assignedBy: 'anyone',
-        compareBy: 'school',
-        page: 1,
-        pageSize: 25,
-        testId: '641d76d233c068000893fd49',
-      },
+      url: `/data-warehouse/attendance/distribution`,
+      params,
     })
     .then((response) => response?.data?.result)
 

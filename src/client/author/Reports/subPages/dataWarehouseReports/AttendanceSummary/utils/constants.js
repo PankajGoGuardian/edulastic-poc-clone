@@ -8,6 +8,17 @@ export const sortOrderMap = {
   descend: 'desc',
 }
 
+export const sortOrders = {
+  ASCEND: 'ascend',
+  DESCEND: 'descend',
+}
+
+export const sortKeys = {
+  DIMENSION: 'dimension',
+  ATTENDANCE: 'attendance',
+  TARDIES: 'tardies',
+}
+
 export const pageSize = 25
 
 export const compareByEnums = {

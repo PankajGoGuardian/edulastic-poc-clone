@@ -520,7 +520,7 @@ export const useAttendanceDetailsFetch = ({
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      if (settings.requestFilters && settings.requestFilters.periodType) {
+      if (settings.requestFilters && settings.requestFilters.termId) {
         setLoading(true)
         const params = {
           ...settings.requestFilters,
@@ -556,7 +556,7 @@ export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      if (settings.requestFilters && settings.requestFilters.periodType) {
+      if (settings.requestFilters && settings.requestFilters.termId) {
         setLoading(true)
         const params = {
           ...settings.requestFilters,
@@ -583,25 +583,24 @@ export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {
   return [data, loading, error]
 }
 
-export const useAttendanceDistributionFetch = ({ settings = {} }) => {
+export const useAttendanceDistributionFetch = (settings) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      if (settings.requestFilters && settings.requestFilters.periodType) {
+      if (settings.requestFilters && settings.requestFilters.termId) {
         setLoading(true)
         const params = {
           ...settings.requestFilters,
         }
         fetchAttendanceDistributionReport(params)
           .then((response) => {
+            console.log(response, 'distribution response')
             setData(attendanceDistribution || [])
             setLoading(false)
-            response
           })
           .catch((e) => {
-            setData(attendanceDistribution || [])
             console.log(e, 'error')
             setError(e)
             setLoading(false)

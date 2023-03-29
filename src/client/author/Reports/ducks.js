@@ -167,6 +167,8 @@ import {
   selectors as reportMultipleAssessmentDwSelectors,
   actions as reportMultipleAssessmentDwActions,
 } from './subPages/dataWarehouseReports/MultipleAssessmentReport/ducks'
+import * as dwAttendanceSummaryDucks from './subPages/dataWarehouseReports/AttendanceSummary/ducks'
+
 import {
   customReportReducer,
   customReportSaga,
@@ -433,6 +435,8 @@ export const reportReducer = combineReducers({
   sharedReportsReducer,
   reportWholeLearnerReducer,
   reportMultipleAssessmentDwReducer,
+  [dwAttendanceSummaryDucks.reduxNamespaceKey]:
+    dwAttendanceSummaryDucks.reducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
 
@@ -535,6 +539,12 @@ const selectorDict = {
     getSettings: reportMultipleAssessmentDwSelectors.settings,
     setTags: reportMultipleAssessmentDwActions.setDWMARSelectedFilterTagsData,
     setTempTags: reportMultipleAssessmentDwActions.setDWMARFilterTagsData,
+  },
+  [reportGroupType.DW_ATTENDANCE_SUMMARY_REPORT]: {
+    getTempTags: dwAttendanceSummaryDucks.selectors.filterTagsData,
+    getSettings: dwAttendanceSummaryDucks.selectors.settings,
+    setTags: dwAttendanceSummaryDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwAttendanceSummaryDucks.actions.setFilterTagsData,
   },
 }
 
@@ -831,6 +841,7 @@ export function* reportSaga() {
     sharedReportsSaga(),
     reportWholeLearnerSaga(),
     reportMultipleAssessmentDwSaga(),
+    dwAttendanceSummaryDucks.watcherSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

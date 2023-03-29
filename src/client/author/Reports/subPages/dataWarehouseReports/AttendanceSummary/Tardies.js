@@ -16,7 +16,7 @@ import NoDataNotification from '../../../../../common/components/NoDataNotificat
 import { YAxisLabel } from '../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../common/styled'
 import { getAttendanceChartData } from './WeeklyAttendaceChart/utils'
-import { groupByConstants } from './constants'
+import { groupByConstants } from './utils/constants'
 import {
   StyledSwitch,
   StyledSpan,

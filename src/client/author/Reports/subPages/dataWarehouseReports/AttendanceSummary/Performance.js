@@ -15,7 +15,7 @@ import {
   compareByOptions,
   compareByToPluralName,
   pageSize,
-} from './constants'
+} from './utils/constants'
 
 const { downloadCSV } = reportUtils.common
 

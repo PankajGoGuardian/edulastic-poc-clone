@@ -4,7 +4,7 @@ import { darkGrey } from '@edulastic/colors'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledRow } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { DashedLine } from '../../../common/styled'
-import { compareByToPluralName } from './constants'
+import { compareByToPluralName } from './utils/constants'
 
 const TableFilters = ({ setCompareBy, compareByOptions = [], compareBy }) => {
   return (

@@ -1,6 +1,6 @@
 import { reportsApi } from '@edulastic/api'
 import { useEffect, useState } from 'react'
-import { sortOrderMap } from '../constants'
+import { sortOrderMap } from '../utils/constants'
 
 const tableData = [
   {

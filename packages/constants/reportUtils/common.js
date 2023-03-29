@@ -500,6 +500,23 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
   return [csvHeadings, ...csvData]
 }
 
+const PERIOD_TYPES = {
+  TILL_DATE: 'TILL_DATE',
+  THIS_MONTH: 'THIS_MONTH',
+  THIS_QUARTER: 'THIS_QUARTER',
+  LAST_MONTH: 'LAST_MONTH',
+  LAST_QUARTER: 'LAST_QUARTER',
+  CUSTOM: 'CUSTOM',
+}
+const PERIOD_NAMES = {
+  [PERIOD_TYPES.TILL_DATE]: 'Till Date',
+  [PERIOD_TYPES.THIS_MONTH]: 'This Month',
+  [PERIOD_TYPES.THIS_QUARTER]: 'This Quarter',
+  [PERIOD_TYPES.LAST_MONTH]: 'Last Month',
+  [PERIOD_TYPES.LAST_QUARTER]: 'Last Quarter',
+  [PERIOD_TYPES.CUSTOM]: 'Custom',
+}
+
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -539,4 +556,6 @@ module.exports = {
   resetStudentFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
+  PERIOD_TYPES,
+  PERIOD_NAMES,
 }

@@ -13,7 +13,7 @@ import {
   StyledDiv,
   Title,
 } from '../styled-component'
-import { AttendanceSummaryLegends, groupByConstants } from '../constants'
+import { AttendanceSummaryLegends, groupByConstants } from '../utils/constants'
 
 const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
   return (

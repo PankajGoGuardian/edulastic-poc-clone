@@ -1,5 +1,6 @@
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+const DW_ATTENDANCE_SUMMARY_REPORT = 'attendance-summary'
 
 const reportGroupType = {
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
@@ -9,6 +10,7 @@ const reportGroupType = {
   ENGAGEMENT_REPORT: 'engagement-report',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_ATTENDANCE_SUMMARY_REPORT,
 }
 
 const reportNavType = {

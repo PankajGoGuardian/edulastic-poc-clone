@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
+import { isEmpty } from 'lodash'
 import {
   getCurrentTerm,
   getOrgDataSelector,
@@ -8,7 +9,6 @@ import {
 } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
-import { computeChartNavigationLinks } from '../../../common/util'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
   getCsvDownloadingState,
@@ -20,18 +20,16 @@ import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
 import Tardies from './Tardies'
 import { useAttendanceSummaryFetch } from './hooks/useFetch'
-import { groupByConstants } from './constants'
-// TODO move this action to parent.
-const useLegacyReportActions = (filters, props, reportId) => {
-  useEffect(() => {
-    const navigationItems = computeChartNavigationLinks(
-      filters,
-      props.loc,
-      reportId
-    )
-    props.updateNavigation(navigationItems)
-  }, [filters])
-}
+import {
+  groupByConstants,
+  compareByOptions as compareByOptionsRaw,
+} from './utils/constants'
+import useTabNavigation from '../common/hooks/useTabNavigation'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
+import { buildRequestFilters } from '../common/utils'
+import { selectors, actions } from './ducks'
+import Filters from './components/Filters'
+import { resetAllReportsAction } from '../../../common/reportsRedux'
 
 const AttendanceReport = (props) => {
   const {
@@ -41,16 +39,79 @@ const AttendanceReport = (props) => {
     breadcrumbData,
     isCliUser,
     userRole,
+    onRefineResultsCB,
+    showFilter,
+    location,
+
+    history,
+    isPrinting,
+    isCsvDownloading,
+    firstLoad,
+
+    settings,
+    setSettings,
+
+    showApply,
+
+    resetAllReports,
+
+    updateNavigation,
   } = props
+
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
+  const toggleFilter = (e, status) => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
+    }
+  }
+
+  const compareByOptions = compareByOptionsRaw.filter(
+    (option) => !option.hiddenFromRole?.includes(userRole)
+  )
+
+  const search = useUrlSearchParams(location)
+  const reportId = search.reportId
+  const selectedCompareBy = search.selectedCompareBy
+    ? compareByOptions.find((o) => o.key === search.selectedCompareBy)
+    : settings.selectedCompareBy?.key
+    ? settings.selectedCompareBy
+    : compareByOptions[0]
+
+  const onApplyFilter = (_settings) => {
+    const _requestFilters = buildRequestFilters(_settings)
+    setSettings({
+      ...settings,
+      requestFilters: {
+        ..._requestFilters,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
+        testIds: _requestFilters.testIds || '',
+      },
+      selectedFilterTagsData: _settings.selectedFilterTagsData,
+      selectedCompareBy,
+    })
+    setShowApply(false)
+  }
+
+  useEffect(
+    () => () => {
+      resetAllReports()
+    },
+    []
+  )
+
+  useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
+
+  const isWithoutFilters = isEmpty(settings.requestFilters)
+
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const [filters] = useState({})
   const [attendanceData, loading] = useAttendanceSummaryFetch({
     filters,
     groupBy,
   })
-  const isSharedReport = !!filters?.reportId
-  const hideOtherTabs = isSharedReport
-  useLegacyReportActions(filters, props, hideOtherTabs)
   const _setGroupBy = (checked) => {
     if (checked) {
       return setGroupBy(groupByConstants.WEEK)
@@ -66,7 +127,18 @@ const AttendanceReport = (props) => {
         setShowModal={setIsBeingShared}
       />
       <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
-        {/* Add Filters */}
+        <Filters
+          reportId={reportId}
+          isPrinting={isPrinting}
+          onGoClick={onApplyFilter}
+          history={history}
+          location={location}
+          search={search}
+          showApply={showApply}
+          setShowApply={setShowApply}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
+        />
       </SubHeader>
       <AttendanceSummaryChart
         attendanceData={attendanceData}
@@ -90,6 +162,8 @@ const AttendanceReport = (props) => {
   )
 }
 
+const { setSettings } = actions
+const { settings, firstLoad } = selectors
 const enhance = connect(
   (state) => ({
     isBeingShared: getSharingState(state),
@@ -98,9 +172,13 @@ const enhance = connect(
     userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
+    settings: settings(state),
+    firstLoad: firstLoad(state),
   }),
   {
+    resetAllReports: resetAllReportsAction,
     setIsBeingShared: setSharingStateAction,
+    setSettings,
   }
 )
 

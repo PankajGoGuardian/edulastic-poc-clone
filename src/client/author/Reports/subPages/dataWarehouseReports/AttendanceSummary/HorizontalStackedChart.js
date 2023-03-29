@@ -1,35 +1,84 @@
 import React from 'react'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  LabelList,
+} from 'recharts'
+import { map } from 'lodash'
 import styled from 'styled-components'
 
-const HorizontalStackedBarChart = ({ data }) => {
+const renderCustomizedLabel = (color) => (props) => {
+  const { x, width, value } = props
+  if (!value) {
+    return null
+  }
   return (
-    <CellWrap>
-      <ChartWrap>
-        {data.map((item) => (
-          <ChartBar bgColor={item.color} width={item.value}>
-            {item.value}%
-          </ChartBar>
-        ))}
-      </ChartWrap>
-    </CellWrap>
+    <g>
+      <text
+        x={x + width / 2}
+        y={20}
+        fill={color}
+        fontWeight="bold"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontSize={10}
+      >
+        {`${value}%`}
+      </text>
+    </g>
+  )
+}
+
+const HorizontalStackedBarChart = ({ data }) => {
+  // distribution type names
+  let tableData = {
+    Tardy: 0,
+    Present: 0,
+    Absent: 0,
+    Excused: 0,
+    Late: 0,
+  }
+  for (const val of data) {
+    tableData[`${val.name}`] = val.value
+  }
+  tableData = [tableData]
+  return (
+    <ChartContainer>
+      <ResponsiveContainer height={40} width={300}>
+        <BarChart
+          layout="vertical"
+          data={tableData}
+          margin={{ top: 0, bottom: 0 }}
+          stackOffset="expand"
+        >
+          <XAxis hide type="number" />
+          <YAxis type="category" hide dataKey="" fontSize="12" />
+          {map(data, (item) => {
+            return (
+              <Bar
+                dataKey={item.name}
+                fill={item.color}
+                fillOpacity={0.5}
+                stackId="a"
+                barSize={40}
+                key={item.name}
+              >
+                <LabelList
+                  dataKey={item.name}
+                  content={renderCustomizedLabel(item.color)}
+                />
+              </Bar>
+            )
+          })}
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartContainer>
   )
 }
 
 export default HorizontalStackedBarChart
 
-const CellWrap = styled.div`
-  display: flex;
-  justify-content: center;
-`
-const ChartWrap = styled.div`
-  display: flex;
-  width: 260px;
-`
-
-const ChartBar = styled.div`
-  width: ${(props) => 2.6 * props.width + 35}px;
-  background-color: ${(props) => props.bgColor};
-  height: 35px;
-  text-align: center;
-  padding: 10px 0px;
-`
+const ChartContainer = styled.div``

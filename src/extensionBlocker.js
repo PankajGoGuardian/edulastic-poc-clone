@@ -1,5 +1,5 @@
 class ExtensionBlocker {
-  READ_WRITE_EXTN_CLASS = 'th-rw'
+  READ_WRITE_EXTN_TAG_NAME = 'th-rw4gc'
   DISPLAY_STYLE_NONE = 'none'
   DISPLAY_STYLE_BLOCK = 'block'
   MUTATION_OBSERVER_OPTIONS = {
@@ -10,7 +10,7 @@ class ExtensionBlocker {
     {
       extName: 'READ_WRITE_EXTN', // Read&Write for Google Chrome™
       identifyBy: () =>
-        document.getElementsByClassName(this.READ_WRITE_EXTN_CLASS),
+        document.getElementsByTagName(this.READ_WRITE_EXTN_TAG_NAME),
       callBack: (el) => this.showHideExtensionRootElement(el),
     },
   ]

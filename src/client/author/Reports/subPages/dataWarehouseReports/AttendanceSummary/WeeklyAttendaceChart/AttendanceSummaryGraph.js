@@ -63,10 +63,6 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
     return getTooltipJSX(payload)
   }
 
-  const generateXTick = (payload, _data) => {
-    return getXTickText(payload, _data, groupBy)
-  }
-
   return (
     <StyledAttendanceChartContainer
       strokeOpacity={1}
@@ -110,7 +106,9 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
             tick={
               <CustomChartXTick
                 data={renderData}
-                getXTickText={generateXTick}
+                getXTickText={(payload, _data) =>
+                  getXTickText(payload, _data, groupBy)
+                }
                 fontWeight={600}
               />
             }

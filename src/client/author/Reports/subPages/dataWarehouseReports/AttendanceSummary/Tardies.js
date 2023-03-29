@@ -15,7 +15,11 @@ import {
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
 import { YAxisLabel } from '../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../common/styled'
-import { getAttendanceChartData } from './WeeklyAttendaceChart/utils'
+import {
+  getAttendanceChartData,
+  getXTickText,
+  transformDataForChart,
+} from './WeeklyAttendaceChart/utils'
 import { groupByConstants } from './utils/constants'
 import {
   StyledSwitch,
@@ -24,27 +28,7 @@ import {
   TardiesTitle,
   TardiesWrapper,
 } from './styled-component'
-
-const transformData = (page, pagedData) => {
-  const START_X_LABEL = 'START DATE'
-  const START_X_WEEK = -1
-  if (!pagedData.length) {
-    return []
-  }
-  const first = pagedData[0]
-  if (page === 0) {
-    return [
-      {
-        ...first,
-        week: START_X_WEEK,
-        startDate: START_X_LABEL,
-      },
-      ...pagedData,
-    ]
-  }
-
-  return pagedData.slice(1)
-}
+import { CustomChartXTick } from '../../../common/components/charts/chartUtils/customChartXTick'
 
 const renderCustomizedLabel = (props) => {
   const { x, y, width, value } = props
@@ -71,7 +55,7 @@ const renderCustomizedLabel = (props) => {
 
 const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
   const attendanceChartData = useMemo(() => {
-    const _attendanceChartData = getAttendanceChartData(attendanceData)
+    const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
     return _attendanceChartData.filter((item) => !!item.tardies)
   }, [attendanceData])
 
@@ -90,7 +74,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
   })
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
-  const renderData = transformData(page, pagedData)
+  const renderData = transformDataForChart(page, pagedData, groupBy)
   const yMax = maxBy(renderData, 'tardies')?.tardies
 
   const generateVerticalCoordinates = ({ width }) => {
@@ -158,7 +142,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
                 margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
               >
                 <XAxis
-                  dataKey="week"
+                  dataKey={groupBy}
                   xAxisId="0"
                   strokeOpacity={0.2}
                   tickMargin={20}
@@ -166,8 +150,16 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
                   interval={0}
                   tickLine={false}
                   fontWeight="900"
+                  tick={
+                    <CustomChartXTick
+                      data={renderData}
+                      getXTickText={(payload, _data) =>
+                        getXTickText(payload, _data, groupBy)
+                      }
+                      fontWeight={600}
+                    />
+                  }
                   label={{ fill: 'red', fontSize: 20 }}
-                  tickFormatter={(v) => `Week ${v}`}
                 />
                 <XAxis
                   dataKey="startDate"

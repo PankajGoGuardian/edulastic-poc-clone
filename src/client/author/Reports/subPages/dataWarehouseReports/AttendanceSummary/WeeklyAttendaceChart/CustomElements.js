@@ -17,7 +17,8 @@ const TooltipRowItem = ({ title = '', value = '' }) => (
 export const getTooltipJSX = (payload) => {
   if (payload && payload.length) {
     const tooltipData = payload[0].payload
-    if (!tooltipData || tooltipData.week === -1) return null
+    if (!tooltipData || tooltipData.week === -1 || tooltipData.month === -1)
+      return null
 
     const { presents, absents, tardies, total } = tooltipData
     const tooltipText = (

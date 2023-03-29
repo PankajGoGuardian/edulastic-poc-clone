@@ -259,13 +259,9 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
-    if (inFullScreen) {
-      extensionBlocker.toggleExtensionBlocker(true)
-    }
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
-      extensionBlocker.toggleExtensionBlocker(false)
       setTimeout(
         (win, _disableSave) => {
           const { pathname: _path } = win.location
@@ -666,6 +662,13 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useEffect(() => {
+    extensionBlocker.toggleExtensionBlocker(enteredIntoFullScreen)
+    return () => {
+      extensionBlocker.toggleExtensionBlocker(false)
+    }
+  }, [enteredIntoFullScreen])
 
   useEffect(() => {
     if (document && window) {

@@ -508,7 +508,7 @@ const {
 const timeout_100ms = 100
 
 export const useAttendanceDetailsFetch = ({
-  filters,
+  settings,
   compareBy,
   sortOrder,
   sortKey,
@@ -520,94 +520,99 @@ export const useAttendanceDetailsFetch = ({
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      setLoading(true)
-      const params = {
-        ...filters,
-        compareBy,
-        [sortKey]: sortOrderMap[sortOrder],
-        pageNo,
-        pageSize,
+      if (settings.requestFilters && settings.requestFilters.periodType) {
+        setLoading(true)
+        const params = {
+          ...settings.requestFilters,
+          compareBy,
+          sortKey: sortKey || '',
+          sortOrder: sortOrderMap[sortOrder] || '',
+          pageNo,
+          pageSize,
+        }
+        fetchAttendanceReportDetails(params)
+          .then((response) => {
+            console.log(response, 'details response')
+            setData(tableData)
+            setLoading(false)
+          })
+          .catch((e) => {
+            setError(e)
+            setLoading(false)
+          })
       }
-      fetchAttendanceReportDetails(params)
-        .then((response) => {
-          setData(tableData)
-          setLoading(false)
-          response
-        })
-        .catch((e) => {
-          setData(tableData)
-          setError(e)
-          setLoading(false)
-        })
     }
     const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {
       clearTimeout(timeout)
     }
-  }, [filters, compareBy, pageNo, pageSize, sortKey, sortOrder])
+  }, [settings.requestFilters, compareBy, pageNo, pageSize, sortKey, sortOrder])
   return [data, loading, error]
 }
 
-export const useAttendanceSummaryFetch = ({ filters, groupBy }) => {
+export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      setLoading(true)
-      const params = {
-        ...filters,
-        groupBy,
+      if (settings.requestFilters && settings.requestFilters.periodType) {
+        setLoading(true)
+        const params = {
+          ...settings.requestFilters,
+          groupBy,
+        }
+        fetchAttendanceSummaryReport(params)
+          .then((response) => {
+            console.log(response, 'report summary')
+            setData(hardCodedData || {})
+            setLoading(false)
+          })
+          .catch((e) => {
+            setError(e)
+            setLoading(false)
+          })
       }
-      fetchAttendanceSummaryReport(params)
-        .then((response) => {
-          setData(hardCodedData || {})
-          setLoading(false)
-          response
-        })
-        .catch((e) => {
-          setData(hardCodedData || {})
-          setError(e)
-          setLoading(false)
-        })
     }
     const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {
       clearTimeout(timeout)
     }
-  }, [filters, groupBy])
+  }, [settings.requestFilters, groupBy])
 
   return [data, loading, error]
 }
 
-export const useAttendanceDistributionFetch = ({ filters }) => {
+export const useAttendanceDistributionFetch = ({ settings = {} }) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
     const fetchData = () => {
-      setLoading(true)
-      const params = {
-        ...filters,
+      if (settings.requestFilters && settings.requestFilters.periodType) {
+        setLoading(true)
+        const params = {
+          ...settings.requestFilters,
+        }
+        fetchAttendanceDistributionReport(params)
+          .then((response) => {
+            setData(attendanceDistribution || [])
+            setLoading(false)
+            response
+          })
+          .catch((e) => {
+            setData(attendanceDistribution || [])
+            console.log(e, 'error')
+            setError(e)
+            setLoading(false)
+          })
       }
-      fetchAttendanceDistributionReport(params)
-        .then((response) => {
-          setData(attendanceDistribution || [])
-          setLoading(false)
-          response
-        })
-        .catch((e) => {
-          setData(attendanceDistribution || [])
-          console.log(e, 'error')
-          setError(e)
-          setLoading(false)
-        })
     }
     const timeout = setTimeout(fetchData, timeout_100ms)
     return () => {
       clearTimeout(timeout)
     }
-  }, [filters])
+  }, [settings.requestFilters])
 
   return [data, loading, error]
 }

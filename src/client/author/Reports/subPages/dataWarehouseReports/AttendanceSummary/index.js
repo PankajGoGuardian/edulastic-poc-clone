@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
-import { isEmpty } from 'lodash'
 import {
   getCurrentTerm,
   getOrgDataSelector,
   getUserRole,
 } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
-import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
   getCsvDownloadingState,
@@ -33,8 +31,6 @@ import { resetAllReportsAction } from '../../../common/reportsRedux'
 
 const AttendanceReport = (props) => {
   const {
-    isBeingShared,
-    setIsBeingShared,
     loc,
     breadcrumbData,
     isCliUser,
@@ -42,19 +38,12 @@ const AttendanceReport = (props) => {
     onRefineResultsCB,
     showFilter,
     location,
-
     history,
     isPrinting,
-    isCsvDownloading,
-    firstLoad,
-
     settings,
     setSettings,
-
     showApply,
-
     resetAllReports,
-
     updateNavigation,
   } = props
 
@@ -104,12 +93,9 @@ const AttendanceReport = (props) => {
 
   useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
 
-  const isWithoutFilters = isEmpty(settings.requestFilters)
-
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
-  const [filters] = useState({})
   const [attendanceData, loading] = useAttendanceSummaryFetch({
-    filters,
+    settings,
     groupBy,
   })
   const _setGroupBy = (checked) => {
@@ -120,12 +106,6 @@ const AttendanceReport = (props) => {
   }
   return (
     <>
-      <ShareReportModal
-        reportType={loc}
-        reportFilters={filters}
-        showModal={isBeingShared}
-        setShowModal={setIsBeingShared}
-      />
       <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
         <Filters
           reportId={reportId}
@@ -148,7 +128,7 @@ const AttendanceReport = (props) => {
       />
       <div>
         <Row gutter={[4, 4]}>
-          <AttendanceDistribution />
+          <AttendanceDistribution settings={settings} />
           <Tardies
             attendanceData={attendanceData}
             loading={loading}
@@ -156,7 +136,7 @@ const AttendanceReport = (props) => {
             setGroupBy={_setGroupBy}
           />
         </Row>
-        <PerformanceTable filters={filters} userRole={userRole} />
+        <PerformanceTable settings={settings} userRole={userRole} />
       </div>
     </>
   )

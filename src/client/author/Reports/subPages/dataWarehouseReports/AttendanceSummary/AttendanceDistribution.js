@@ -65,8 +65,8 @@ const getAcademicSummaryChartLabelJSX = (props) => {
   )
 }
 
-const AttendanceDistribution = () => {
-  const [data, loading] = useAttendanceDistributionFetch({})
+const AttendanceDistribution = ({ settings }) => {
+  const [data, loading] = useAttendanceDistributionFetch(settings)
   return (
     <Col span={10}>
       <PieWrapper>

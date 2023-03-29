@@ -34,6 +34,7 @@ const reportNavType = {
   ENGAGEMENT_SUMMARY: 'engagement-summary',
   ACTIVITY_BY_SCHOOL: 'activity-by-school',
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
+  ATTENDANCE_SUMMARY: 'attendance-summary',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
 }

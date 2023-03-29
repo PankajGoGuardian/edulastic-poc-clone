@@ -65,7 +65,7 @@ export const onCsvConvert = (data) =>
 
 const PerformanceTable = ({
   isCsvDownloading = false,
-  filters = {},
+  settings = {},
   userRole,
 }) => {
   const [compareBy, setCompareBy] = useState(
@@ -75,7 +75,7 @@ const PerformanceTable = ({
   const [sortKey, setSortKey] = useState('')
   const [pageNo, setPageNo] = useState(1)
   const [data, loading] = useAttendanceDetailsFetch({
-    filters,
+    settings,
     compareBy,
     sortOrder,
     sortKey,
@@ -86,7 +86,7 @@ const PerformanceTable = ({
     setPageNo(1)
     setSortOrder(undefined)
     setSortKey('')
-  }, [filters])
+  }, [settings])
   const columns = useMemo(() => {
     return getTableColumns(sortOrder, sortKey, compareBy)
   }, [sortOrder, sortKey])

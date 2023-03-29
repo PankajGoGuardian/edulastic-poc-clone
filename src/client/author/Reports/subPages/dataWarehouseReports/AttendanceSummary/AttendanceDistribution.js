@@ -119,12 +119,14 @@ export const Title = styled.div`
   width: 100%;
   font-weight: bold;
   margin-bottom: 15px;
+  display: flex;
+  justify-content: flex-start;
 `
 export const PieWrapper = styled.div`
   border: 1px solid #dedede;
   align-items: center;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
   height: 386px;
   border-radius: 10px;

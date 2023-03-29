@@ -9,6 +9,7 @@ export const ChartWrapper = styled.div`
   padding: 24px;
   margin-bottom: 16px;
   min-height: 400px;
+  position: relative;
 `
 
 export const Title = styled.div`
@@ -97,7 +98,7 @@ export const TardiesTitle = styled.div`
 export const TardiesWrapper = styled.div`
   border: 1px solid #dedede;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
   width: 100%;
   height: 386px;

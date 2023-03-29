@@ -19,6 +19,7 @@ export const useAttendanceDetailsFetch = ({
   pageSize = 25,
 }) => {
   const [data, setData] = useState([])
+  const [totalRows, setTotalRows] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
@@ -35,7 +36,8 @@ export const useAttendanceDetailsFetch = ({
         }
         fetchAttendanceReportDetails(params)
           .then((response) => {
-            setData(response)
+            setData(response.metrics)
+            setTotalRows(response.totalRows || 1)
             setLoading(false)
           })
           .catch((e) => {
@@ -49,7 +51,7 @@ export const useAttendanceDetailsFetch = ({
       clearTimeout(timeout)
     }
   }, [settings.requestFilters, compareBy, pageNo, pageSize, sortKey, sortOrder])
-  return [data, loading, error]
+  return [data, totalRows, loading, error]
 }
 
 export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {

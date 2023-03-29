@@ -7,7 +7,9 @@ import CsvTable from '../../../common/components/tables/CsvTable'
 
 import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
-import HorizontalStackedBarChart from './HorizontalStackedChart'
+import HorizontalStackedBarChart, {
+  StudentBand,
+} from './HorizontalStackedChart'
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
 import { useAttendanceDetailsFetch } from './hooks/useFetch'
 import {
@@ -22,6 +24,26 @@ import {
 const { downloadCSV } = reportUtils.common
 
 const getTableColumns = (sortOrder, sortKey, compareBy) => {
+  let attendanceDistributionColumn = {
+    title: 'ATTENDANCE DISTRIBUTION',
+    key: 'attendanceDistribution',
+    align: 'center',
+    dataIndex: 'attendanceDistribution',
+    render: (attendanceDistribution) => {
+      return <HorizontalStackedBarChart data={attendanceDistribution} />
+    },
+  }
+  if (compareBy === compareByEnums.STUDENT) {
+    attendanceDistributionColumn = {
+      title: 'ATTENDANCE',
+      key: 'studentBand',
+      align: 'center',
+      dataIndex: 'studentBand',
+      render: (studentBand) => {
+        return <StudentBand data={studentBand} />
+      },
+    }
+  }
   return [
     {
       title: compareByToPluralName[compareBy],
@@ -35,7 +57,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       key: sortKeys.ATTENDANCE,
       align: 'center',
       dataIndex: 'avgAttendance',
-      render: (text) => `${text}%`,
+      render: (text) => `${Math.round(text)}%`,
       sorter: true,
     },
     {
@@ -45,15 +67,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       dataIndex: 'tardyEventCount',
       sorter: true,
     },
-    {
-      title: 'ATTENDANCE DISTRIBUTION',
-      key: 'attendanceDistribution',
-      align: 'center',
-      dataIndex: 'attendanceDistribution',
-      render: (attendanceDistribution) => {
-        return <HorizontalStackedBarChart data={attendanceDistribution} />
-      },
-    },
+    attendanceDistributionColumn,
   ].map((item) => {
     if (item.key === sortKey) {
       item.sortOrder = sortOrder
@@ -76,7 +90,7 @@ const PerformanceTable = ({
   const [sortOrder, setSortOrder] = useState(sortOrders.ASCEND)
   const [sortKey, setSortKey] = useState(sortKeys.DIMENSION)
   const [pageNo, setPageNo] = useState(1)
-  const [data, loading] = useAttendanceDetailsFetch({
+  const [data, totalRows, loading] = useAttendanceDetailsFetch({
     settings,
     compareBy,
     sortOrder,
@@ -91,7 +105,7 @@ const PerformanceTable = ({
   }, [settings.requestFilters])
   const columns = useMemo(() => {
     return getTableColumns(sortOrder, sortKey, compareBy)
-  }, [sortOrder, sortKey])
+  }, [sortOrder, sortKey, compareBy])
 
   const _setCompareBy = (value) => {
     setCompareBy(value)
@@ -125,14 +139,13 @@ const PerformanceTable = ({
             setSortOrder(column.order)
           }}
         />
-        {/* TODO: update condition = data.totalRows.length > pageSize  as well as total */}
-        <EduIf condition={data.length > 1}>
+        <EduIf condition={totalRows > pageSize}>
           <Pagination
             style={{ marginTop: '10px' }}
             onChange={setPageNo}
             current={pageNo}
             pageSize={pageSize}
-            total={50}
+            total={totalRows}
           />
         </EduIf>
       </EduIf>

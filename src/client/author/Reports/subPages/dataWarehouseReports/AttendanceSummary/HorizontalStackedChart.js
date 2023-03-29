@@ -10,7 +10,7 @@ import {
 import { map } from 'lodash'
 import styled from 'styled-components'
 
-const renderCustomizedLabel = (color) => (props) => {
+const renderCustomizedLabel = (props) => {
   const { x, width, value } = props
   if (!value) {
     return null
@@ -20,7 +20,7 @@ const renderCustomizedLabel = (color) => (props) => {
       <text
         x={x + width / 2}
         y={20}
-        fill={color}
+        fill="#333"
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
@@ -52,6 +52,7 @@ const HorizontalStackedBarChart = ({ data }) => {
           layout="vertical"
           data={tableData}
           margin={{ top: 0, bottom: 0 }}
+          padding={10}
           stackOffset="expand"
         >
           <XAxis hide type="number" />
@@ -68,7 +69,7 @@ const HorizontalStackedBarChart = ({ data }) => {
               >
                 <LabelList
                   dataKey={item.name}
-                  content={renderCustomizedLabel(item.color)}
+                  content={renderCustomizedLabel}
                 />
               </Bar>
             )
@@ -81,4 +82,19 @@ const HorizontalStackedBarChart = ({ data }) => {
 
 export default HorizontalStackedBarChart
 
-const ChartContainer = styled.div``
+export const StudentBand = ({ data }) => {
+  return (
+    <Band color={data.color}>
+      {data.name} {data.value ? `${data.value}%` : ''}
+    </Band>
+  )
+}
+
+const ChartContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
+const Band = styled.div`
+  background: ${(props) => props.color};
+`

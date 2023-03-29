@@ -1,8 +1,5 @@
 import React from 'react'
-import { CheckboxLabel } from '@edulastic/common'
 import {
-  CheckboxText,
-  CheckBoxWrapper,
   CustomLegend,
   FlexWrapper,
   LegendName,
@@ -31,11 +28,6 @@ const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
           })}
         </LegendWrap>
         <div style={{ display: 'flex', gap: '0 24px', alignItems: 'center' }}>
-          <CheckBoxWrapper>
-            <CheckboxLabel size="14px">
-              <CheckboxText>Show Average Score</CheckboxText>
-            </CheckboxLabel>
-          </CheckBoxWrapper>
           <StyledDiv>
             <StyledSpan>Weekly</StyledSpan>
             <StyledSwitch

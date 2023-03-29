@@ -17,7 +17,10 @@ const AttendanceSummaryChart = ({
         <SpinLoader />
       </EduIf>
       <EduIf condition={!loading}>
-        <AttendanceSummaryGraph attendanceData={attendanceData} />
+        <AttendanceSummaryGraph
+          attendanceData={attendanceData}
+          groupBy={groupBy}
+        />
       </EduIf>
     </ChartWrapper>
   )

@@ -1,10 +1,8 @@
-import { reportUtils } from '@edulastic/constants'
-import { sortBy } from 'lodash'
+import { round, sortBy } from 'lodash'
 import moment from 'moment'
 import { setProperties, tooltipParams } from '../../../../common/util'
 
 const { spaceForLittleTriangle } = tooltipParams
-const { percentage } = reportUtils.common
 
 export const updateTooltipPos = (
   parentContainerRef,
@@ -44,40 +42,42 @@ export const updateTooltipPos = (
   setProperties(parentContainerRef, tooltipCssVars)
 }
 
-export const getAttendanceChartData = (attendanceData) => {
+export const getAttendanceChartData = (attendanceData, groupBy) => {
   const _attendanceData = sortBy(attendanceData, 'minDate')
-  const attendanceChartData = _attendanceData.map((item) => ({
-    week: item.weekFromTermStart,
-    startDate: moment(item.minDate)
-      .startOf('week')
-      .add(1, 'day')
-      .format('DD MMM'),
-    presents: item.presentEvents,
-    absents: item.absentEvents,
-    tardies: item.tardyEvents,
-    total: item.totalEvents,
-    value1: percentage(item.attendanceRatio, item.totalEvents, true), // Attendance data
-  }))
+  const attendanceChartData = _attendanceData
+    .map((item) => {
+      if (item.fromTermStart < 0) return
+
+      return {
+        [groupBy]: item.fromTermStart,
+        startDate: moment(item.minDate).format('DD MMM'),
+        presents: item.presentEvents,
+        absents: item.absentEvents,
+        tardies: item.tardyEvents,
+        total: item.totalEvents,
+        value: round(item.attendanceRatio),
+      }
+    })
+    .filter((item) => !!item)
   return attendanceChartData
 }
 
-export const transformDataForChart = (page, pagedData) => {
+export const transformDataForChart = (page, pagedData, groupBy) => {
   const START_X_LABEL = 'START DATE'
-  const START_X_WEEK = -1
+  const START_X_VALUE = -1
   if (!pagedData.length) {
     return []
   }
   if (page === 0) {
     return [
       {
-        week: START_X_WEEK,
+        [groupBy]: START_X_VALUE,
         startDate: START_X_LABEL,
         presents: 0,
         absents: 0,
         tardies: 0,
         total: 0,
         value: 0,
-        value1: 20,
       },
       ...pagedData,
     ]
@@ -86,14 +86,14 @@ export const transformDataForChart = (page, pagedData) => {
   return [
     {
       ...first,
-      week: START_X_WEEK,
+      [groupBy]: START_X_VALUE,
       startDate: START_X_LABEL,
     },
     ...pagedData.slice(1),
   ]
 }
 
-export const getXTickText = (payload, _data) => {
-  const week = _data[payload.index]?.week + 1
-  return week ? `WEEK ${week}` : ``
+export const getXTickText = (payload, _data, groupBy) => {
+  const data = _data[payload.index]?.[groupBy] + 1
+  return data ? `${groupBy.toUpperCase()} ${data}` : ``
 }

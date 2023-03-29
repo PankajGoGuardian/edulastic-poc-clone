@@ -29,9 +29,9 @@ import {
   updateTooltipPos,
 } from './utils'
 
-function AttendanceSummaryGraph({ attendanceData }) {
+function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {
-    const _attendanceChartData = getAttendanceChartData(attendanceData)
+    const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
     return _attendanceChartData
   }, [attendanceData])
 
@@ -56,11 +56,15 @@ function AttendanceSummaryGraph({ attendanceData }) {
 
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
-  const renderData = transformDataForChart(page, pagedData)
+  const renderData = transformDataForChart(page, pagedData, groupBy)
 
   const getTooltipContent = (payload) => {
     updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
     return getTooltipJSX(payload)
+  }
+
+  const generateXTick = (payload, _data) => {
+    return getXTickText(payload, _data, groupBy)
   }
 
   return (
@@ -101,12 +105,12 @@ function AttendanceSummaryGraph({ attendanceData }) {
         >
           <CartesianGrid stroke="#EFEFEF" />
           <XAxis
-            dataKey="week"
             xAxisId="0"
+            dataKey={groupBy}
             tick={
               <CustomChartXTick
                 data={renderData}
-                getXTickText={getXTickText}
+                getXTickText={generateXTick}
                 fontWeight={600}
               />
             }
@@ -155,7 +159,7 @@ function AttendanceSummaryGraph({ attendanceData }) {
           />
           <Line
             type="monotone"
-            dataKey="value1"
+            dataKey="value"
             stroke="#9FC6D2"
             label={<CustomizedLabel stroke="#9FC6D2" />}
             dot={<CustomDot />}

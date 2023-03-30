@@ -1,6 +1,6 @@
 import { reportsApi } from '@edulastic/api'
 import { useEffect, useState } from 'react'
-import { sortOrderMap } from '../utils/constants'
+import { sortKeys, sortOrderMap } from '../utils/constants'
 
 const {
   fetchAttendanceReportDetails,
@@ -29,8 +29,8 @@ export const useAttendanceDetailsFetch = ({
         const params = {
           ...settings.requestFilters,
           compareBy,
-          sortKey: sortKey || '',
-          sortOrder: sortOrderMap[sortOrder] || '',
+          sortKey: sortOrder ? sortKey : sortKeys.DIMENSION,
+          sortOrder: sortOrderMap[sortOrder] || sortOrderMap.ascend,
           pageNo,
           pageSize,
           recompute: true,

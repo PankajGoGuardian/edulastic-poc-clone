@@ -13,13 +13,7 @@ import {
   useAttendanceDistributionFetch,
   useAttendanceSummaryFetch,
 } from './hooks/useFetch'
-import {
-  groupByConstants,
-  compareByEnums,
-  sortOrders,
-  sortKeys,
-  pageSize,
-} from './utils/constants'
+import { groupByConstants, compareByEnums, pageSize } from './utils/constants'
 
 import { selectors } from './ducks'
 import { NoDataContainer } from '../../../common/styled'
@@ -29,8 +23,8 @@ const Container = ({ userRole, settings, toggleFilter }) => {
   const [compareBy, setCompareBy] = useState(
     userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
   )
-  const [sortOrder, setSortOrder] = useState(sortOrders.ASCEND)
-  const [sortKey, setSortKey] = useState(sortKeys.DIMENSION)
+  const [sortOrder, setSortOrder] = useState('')
+  const [sortKey, setSortKey] = useState('')
   const [pageNo, setPageNo] = useState(1)
   const [attendanceData, loading] = useAttendanceSummaryFetch({
     settings,

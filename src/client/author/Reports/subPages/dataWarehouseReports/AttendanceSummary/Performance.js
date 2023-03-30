@@ -17,7 +17,6 @@ import {
   compareByToPluralName,
   pageSize,
   sortKeys,
-  sortOrders,
 } from './utils/constants'
 
 const { downloadCSV } = reportUtils.common
@@ -95,8 +94,8 @@ const PerformanceTable = ({
 }) => {
   useEffect(() => {
     setPageNo(1)
-    setSortOrder(sortOrders.ASCEND)
-    setSortKey(sortKeys.DIMENSION)
+    setSortOrder('')
+    setSortKey('')
   }, [settings.requestFilters])
   const columns = useMemo(() => {
     return getTableColumns(sortOrder, sortKey, compareBy)
@@ -104,8 +103,8 @@ const PerformanceTable = ({
 
   const _setCompareBy = (value) => {
     setCompareBy(value)
-    setSortOrder(sortOrders.ASCEND)
-    setSortKey(sortKeys.DIMENSION)
+    setSortOrder('')
+    setSortKey('')
     setPageNo(1)
   }
 

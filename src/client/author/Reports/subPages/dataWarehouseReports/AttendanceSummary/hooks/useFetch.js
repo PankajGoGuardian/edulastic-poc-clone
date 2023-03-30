@@ -55,7 +55,11 @@ export const useAttendanceDetailsFetch = ({
   return [data, totalRows, loading, error]
 }
 
-export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {
+export const useAttendanceSummaryFetch = ({
+  settings,
+  groupBy,
+  toggleFilter,
+}) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -71,6 +75,11 @@ export const useAttendanceSummaryFetch = ({ settings, groupBy }) => {
           .then((response) => {
             setData(response || [])
             setLoading(false)
+            if (response?.length) {
+              toggleFilter({}, false)
+            } else {
+              toggleFilter({}, true)
+            }
           })
           .catch((e) => {
             setError(e)

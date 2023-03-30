@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Row } from 'antd'
-import {
-  getCurrentTerm,
-  getOrgDataSelector,
-  getUserRole,
-} from '../../../../src/selectors/user'
+import { getOrgDataSelector, getUserRole } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
@@ -13,21 +8,14 @@ import {
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
-import AttendanceDistribution from './AttendanceDistribution'
-import PerformanceTable from './Performance'
-import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
-import Tardies from './Tardies'
-import { useAttendanceSummaryFetch } from './hooks/useFetch'
-import {
-  groupByConstants,
-  compareByOptions as compareByOptionsRaw,
-} from './utils/constants'
+import { compareByOptions as compareByOptionsRaw } from './utils/constants'
 import useTabNavigation from '../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { buildRequestFilters } from '../common/utils'
 import { selectors, actions } from './ducks'
 import Filters from './components/Filters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
+import Container from './Container'
 
 const AttendanceReport = (props) => {
   const {
@@ -93,17 +81,6 @@ const AttendanceReport = (props) => {
 
   useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
 
-  const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
-  const [attendanceData, loading] = useAttendanceSummaryFetch({
-    settings,
-    groupBy,
-  })
-  const onSetGroupBy = (checked) => {
-    if (checked) {
-      return setGroupBy(groupByConstants.MONTH)
-    }
-    return setGroupBy(groupByConstants.WEEK)
-  }
   return (
     <>
       <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
@@ -120,24 +97,7 @@ const AttendanceReport = (props) => {
           toggleFilter={toggleFilter}
         />
       </SubHeader>
-      <AttendanceSummaryChart
-        attendanceData={attendanceData}
-        loading={loading}
-        groupBy={groupBy}
-        setGroupBy={onSetGroupBy}
-      />
-      <div>
-        <Row gutter={[4, 4]}>
-          <AttendanceDistribution settings={settings} />
-          <Tardies
-            attendanceData={attendanceData}
-            loading={loading}
-            groupBy={groupBy}
-            setGroupBy={onSetGroupBy}
-          />
-        </Row>
-        <PerformanceTable settings={settings} userRole={userRole} />
-      </div>
+      <Container toggleFilter={toggleFilter} />
     </>
   )
 }
@@ -151,7 +111,6 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
-    defaultTermId: getCurrentTerm(state),
     settings: settings(state),
     firstLoad: firstLoad(state),
   }),

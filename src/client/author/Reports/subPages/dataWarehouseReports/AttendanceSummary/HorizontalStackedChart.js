@@ -9,7 +9,7 @@ export const HorizontalStackedBarChart = ({ data = [] }) => {
       <ChartWrap>
         {data.map((item) => (
           <ChartBar bgColor={item.color} width={item.value}>
-            {item.value}%
+            {Math.round(item.value)}%
           </ChartBar>
         ))}
       </ChartWrap>

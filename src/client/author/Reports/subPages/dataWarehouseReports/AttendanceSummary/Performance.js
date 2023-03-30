@@ -1,10 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
-import { roleuser, reportUtils } from '@edulastic/constants'
+import { reportUtils } from '@edulastic/constants'
 import { EduIf, SpinLoader } from '@edulastic/common'
 import CsvTable from '../../../common/components/tables/CsvTable'
-
 import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
 import {
@@ -12,7 +11,6 @@ import {
   HorizontalStackedBarChart,
 } from './HorizontalStackedChart'
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
-import { useAttendanceDetailsFetch } from './hooks/useFetch'
 import {
   compareByEnums,
   compareByOptions,
@@ -83,22 +81,18 @@ export const onCsvConvert = (data) =>
 const PerformanceTable = ({
   isCsvDownloading = false,
   settings = {},
-  userRole,
+  data,
+  totalRows,
+  loading,
+  sortOrder,
+  setSortOrder,
+  sortKey,
+  setSortKey,
+  pageNo,
+  setPageNo,
+  compareBy,
+  setCompareBy,
 }) => {
-  const [compareBy, setCompareBy] = useState(
-    userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
-  )
-  const [sortOrder, setSortOrder] = useState(sortOrders.ASCEND)
-  const [sortKey, setSortKey] = useState(sortKeys.DIMENSION)
-  const [pageNo, setPageNo] = useState(1)
-  const [data, totalRows, loading] = useAttendanceDetailsFetch({
-    settings,
-    compareBy,
-    sortOrder,
-    sortKey,
-    pageNo,
-    pageSize,
-  })
   useEffect(() => {
     setPageNo(1)
     setSortOrder(sortOrders.ASCEND)

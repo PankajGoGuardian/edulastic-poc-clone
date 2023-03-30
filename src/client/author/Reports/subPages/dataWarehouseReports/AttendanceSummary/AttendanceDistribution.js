@@ -4,7 +4,6 @@ import { Col } from 'antd'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
-import { useAttendanceDistributionFetch } from './hooks/useFetch'
 
 const greyThemeDark7 = '#ADADAD'
 
@@ -66,8 +65,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
   )
 }
 
-const AttendanceDistribution = ({ settings }) => {
-  const [data, loading] = useAttendanceDistributionFetch(settings)
+const AttendanceDistribution = ({ data, loading }) => {
   return (
     <Col span={10}>
       <PieWrapper>

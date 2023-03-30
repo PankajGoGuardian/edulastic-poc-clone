@@ -484,10 +484,7 @@ const AssignmentCard = memo(
                   </>
                 )}
                 {StartButtonContainer && (
-                  <StyledActionButton
-                    isValidAttempt={isValidAttempt}
-                    sm={btnWrapperSize}
-                  >
+                  <StyledActionButton sm={btnWrapperSize}>
                     {StartButtonContainer}
                   </StyledActionButton>
                 )}

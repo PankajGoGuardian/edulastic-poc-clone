@@ -106,11 +106,7 @@ const AttendanceDistribution = ({ data, loading }) => {
   )
 }
 
-AttendanceDistribution.propTypes = {}
-
-AttendanceDistribution.defaultProps = {}
-
-export default AttendanceDistribution
+export default React.memo(AttendanceDistribution)
 
 export const Title = styled.div`
   font-size: 16px;

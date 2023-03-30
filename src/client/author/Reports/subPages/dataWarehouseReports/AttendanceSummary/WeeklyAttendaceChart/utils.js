@@ -21,11 +21,14 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
   return attendanceChartData
 }
 
-export const transformDataForChart = (page, pagedData, groupBy) => {
+export const transformDataForChart = (page, pagedData, groupBy, type) => {
   const START_X_LABEL = 'START DATE'
   const START_X_VALUE = -1
   if (!pagedData.length) {
     return []
+  }
+  if (type == 'tardies') {
+    return [...pagedData]
   }
   if (page === 0) {
     return [

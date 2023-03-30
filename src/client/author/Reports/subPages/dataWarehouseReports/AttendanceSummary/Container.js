@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
-import { SpinLoader } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { getUserRole } from '../../../../src/selectors/user'
 import AttendanceDistribution from './AttendanceDistribution'
@@ -60,54 +60,59 @@ const Container = ({ userRole, settings, toggleFilter }) => {
     return setGroupBy(groupByConstants.WEEK)
   }
   const showNoData = !loading && !attendanceData.length
-  if (loading) {
-    return (
-      <SpinLoader
-        tip="Please wait while we gather the required information..."
-        position="fixed"
-      />
-    )
-  }
-  if (showNoData) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
-  }
+
   return (
-    <>
-      <AttendanceSummaryChart
-        attendanceData={attendanceData}
-        loading={loading}
-        groupBy={groupBy}
-        setGroupBy={onSetGroupBy}
-      />
-      <div>
-        <Row gutter={[4, 4]}>
-          <AttendanceDistribution
-            data={attDistributionData}
-            loading={attDistrDataLoading}
-          />
-          <Tardies
-            attendanceData={attendanceData}
-            loading={loading}
-            groupBy={groupBy}
-            setGroupBy={onSetGroupBy}
-          />
-        </Row>
-        <PerformanceTable
-          settings={settings}
-          data={atDetailsData}
-          totalRows={totalRows}
-          loading={atDetailsLoading}
-          sortOrder={sortOrder}
-          sortKey={sortKey}
-          pageNo={pageNo}
-          compareBy={compareBy}
-          setSortOrder={setSortOrder}
-          setSortKey={setSortKey}
-          setPageNo={setPageNo}
-          setCompareBy={setCompareBy}
+    <EduIf condition={loading}>
+      <EduThen>
+        <SpinLoader
+          tip="Please wait while we gather the required information..."
+          position="fixed"
         />
-      </div>
-    </>
+      </EduThen>
+      <EduElse>
+        <EduIf condition={showNoData}>
+          <EduThen>
+            <NoDataContainer>No data available currently.</NoDataContainer>
+          </EduThen>
+          <EduElse>
+            <AttendanceSummaryChart
+              attendanceData={attendanceData}
+              loading={loading}
+              groupBy={groupBy}
+              setGroupBy={onSetGroupBy}
+            />
+            <div>
+              <Row gutter={[4, 4]}>
+                <AttendanceDistribution
+                  data={attDistributionData}
+                  loading={attDistrDataLoading}
+                />
+                <Tardies
+                  attendanceData={attendanceData}
+                  loading={loading}
+                  groupBy={groupBy}
+                  setGroupBy={onSetGroupBy}
+                />
+              </Row>
+              <PerformanceTable
+                settings={settings}
+                data={atDetailsData}
+                totalRows={totalRows}
+                loading={atDetailsLoading}
+                sortOrder={sortOrder}
+                sortKey={sortKey}
+                pageNo={pageNo}
+                compareBy={compareBy}
+                setSortOrder={setSortOrder}
+                setSortKey={setSortKey}
+                setPageNo={setPageNo}
+                setCompareBy={setCompareBy}
+              />
+            </div>
+          </EduElse>
+        </EduIf>
+      </EduElse>
+    </EduIf>
   )
 }
 

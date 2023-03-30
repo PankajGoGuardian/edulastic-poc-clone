@@ -72,7 +72,6 @@ const DataWarehouseReportsContainer = ({
         exact
         path={DW_ATTENDANCE_REPORT_URL}
         render={() => {
-          // setTimeout(() => setShowHeader(true), 0)
           setShowHeader(true)
           return (
             <AttendanceReport

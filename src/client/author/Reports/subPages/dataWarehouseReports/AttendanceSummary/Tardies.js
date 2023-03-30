@@ -74,7 +74,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
   })
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
-  const renderData = transformDataForChart(page, pagedData, groupBy)
+  const renderData = transformDataForChart(page, pagedData, groupBy, 'tardies')
   const yMax = maxBy(renderData, 'tardies')?.tardies
 
   const generateVerticalCoordinates = ({ width }) => {

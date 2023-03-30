@@ -16,18 +16,17 @@ import {
 } from '../../../../common/styled'
 import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
-import {
-  CustomDot,
-  CustomizedLabel,
-  getTooltipJSX,
-  yAxisTick,
-} from './CustomElements'
+import { CustomizedLabel, yAxisTick } from './CustomElements'
 import {
   getAttendanceChartData,
   getXTickText,
   transformDataForChart,
 } from './utils'
-import { updateTooltipPos } from '../../../../common/chart-utils'
+import {
+  CustomDot,
+  getTooltipJSX,
+  updateTooltipPos,
+} from '../../../../common/chart-utils'
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {

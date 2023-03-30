@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useMemo, useRef, useState } from 'react'
 import {
-  Dot,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -18,51 +17,19 @@ import {
   ResetButtonClear,
   StyledChartNavButton,
   StyledCustomChartTooltipDark,
-  TooltipRow,
-  TooltipRowTitle,
-  TooltipRowValue,
 } from '../../../../../common/styled'
 import SectionLabel from '../../../../../common/components/SectionLabel'
 import SectionDescription from '../../../../../common/components/SectionDescription'
 import { StyledAttendanceChartContainer } from './styled-components'
-import { updateTooltipPos } from '../../../../../common/chart-utils'
+import {
+  CustomDot,
+  getTooltipJSX,
+  updateTooltipPos,
+} from '../../../../../common/chart-utils'
 
 const getXTickText = (payload, _data) => {
   const week = _data[payload.index]?.week + 1
   return week ? `WEEK ${week}` : ''
-}
-
-const TooltipRowItem = ({ title = '', value = '' }) => (
-  <TooltipRow>
-    <TooltipRowTitle>{title}</TooltipRowTitle>
-    <TooltipRowValue>{value}</TooltipRowValue>
-  </TooltipRow>
-)
-
-const getTooltipJSX = (payload) => {
-  if (payload && payload.length) {
-    const tooltipData = payload[0].payload
-    if (!tooltipData || tooltipData.week === -1) return null
-    const { presents, absents, tardies, total } = tooltipData
-    const tooltipText = (
-      <div>
-        <TooltipRowItem
-          title="No. of"
-          value={`Presents - ${presents}/${total}`}
-        />
-        <TooltipRowItem
-          title="No. of"
-          value={`Absents - ${absents}/${total}`}
-        />
-        <TooltipRowItem
-          title="No. of"
-          value={`Tardies - ${tardies}/${total}`}
-        />
-      </div>
-    )
-    return tooltipText
-  }
-  return null
 }
 
 const CustomizedLabel = (props) => {
@@ -82,20 +49,6 @@ const CustomizedLabel = (props) => {
       {`${value}%`}
     </text>
   )
-}
-
-const CustomDot = (props) => {
-  const { active, ...restProps } = props
-  const { index } = restProps
-  if (index === 0) return null
-  const activeProps = active
-    ? {}
-    : {
-        strokeWidth: 1.5,
-        r: 6,
-        strokeDasharray: '',
-      }
-  return <Dot {...restProps} {...activeProps} />
 }
 
 const AttendanceChart = ({

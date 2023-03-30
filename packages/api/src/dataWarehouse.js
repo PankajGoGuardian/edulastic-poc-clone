@@ -1,3 +1,4 @@
+import { reportNavType } from '@edulastic/constants/const/report'
 import qs from 'qs'
 import API from './utils/API'
 
@@ -5,6 +6,8 @@ const api = new API()
 const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
+
+const { DW_DASHBOARD_REPORT } = reportNavType
 
 const getSignedUrl = (
   filename,
@@ -91,6 +94,40 @@ const getAttendanceMetrics = (data) => {
   })
 }
 
+const getDashboardAcademicSummary = (data) => {
+  const queryString = qs.stringify(data)
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_DASHBOARD_REPORT}/academic-summary?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data)
+}
+
+const getDashboardAttendanceSummary = (data) => {
+  const queryString = qs.stringify(data)
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_DASHBOARD_REPORT}/attendance-summary?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data)
+}
+
+const getDashboardTableMatrics = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${DW_DASHBOARD_REPORT}/details?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -99,4 +136,7 @@ export default {
   getMARChartMetrics,
   getMARTableMetrics,
   getAttendanceMetrics,
+  getDashboardAcademicSummary,
+  getDashboardAttendanceSummary,
+  getDashboardTableMatrics,
 }

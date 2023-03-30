@@ -10,9 +10,15 @@ import {
   find,
   indexOf,
   keyBy,
+  pullAllBy,
 } from 'lodash'
+import qs from 'qs'
 import next from 'immer'
 import moment from 'moment'
+import {
+  DW_DASHBOARD_REPORT,
+  reportGroupType,
+} from '@edulastic/constants/const/report'
 import calcMethod from './static/json/calcMethod.json'
 
 const studentFiltersDefaultValues = [
@@ -517,4 +523,87 @@ export const tooltipParams = {
   spaceForPercentageLabel: 20,
   navButtonMargin: 50,
   xAxisHeight: 100,
+}
+
+export const getHeaderSettings = (
+  loc,
+  navigation,
+  navigationItems,
+  location,
+  dynamicBreadcrumb,
+  onShareClickCB,
+  onPrintClickCB,
+  onDownloadCSVClickCB,
+  onRefineResultsCB
+) => {
+  const {
+    STANDARD_REPORT,
+    CUSTOM_REPORT,
+    SHARED_REPORT,
+    DATA_WAREHOUSE_REPORT,
+  } = reportGroupType
+
+  const isReportGroup = [
+    STANDARD_REPORT,
+    CUSTOM_REPORT,
+    SHARED_REPORT,
+    DATA_WAREHOUSE_REPORT,
+  ].some((group) => loc === group)
+
+  if (!loc || isReportGroup) {
+    const breadcrumbInfo = navigation.locToData[loc].breadcrumb
+    if (loc === CUSTOM_REPORT && dynamicBreadcrumb) {
+      const isCustomReportLoading =
+        location.pathname.split(CUSTOM_REPORT)[1].length > 1 || false
+      if (isCustomReportLoading) {
+        breadcrumbInfo.push({
+          title: dynamicBreadcrumb,
+          to: '',
+        })
+      }
+      pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
+    }
+    return {
+      loc,
+      group: navigation.locToData[loc].group,
+      title: navigation.locToData[loc].title,
+      breadcrumbData: breadcrumbInfo,
+      navigationItems,
+    }
+  }
+  const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+  const reportId = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  }).reportId
+  const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
+  if (isSharedReport) {
+    breadcrumbInfo[0] = navigation.locToData[SHARED_REPORT].breadcrumb[0]
+  }
+  if (loc === DW_DASHBOARD_REPORT) {
+    onDownloadCSVClickCB = undefined
+  }
+  return {
+    loc,
+    group: navigation.locToData[loc].group,
+    title: navigation.locToData[loc].title,
+    onShareClickCB,
+    onPrintClickCB,
+    onDownloadCSVClickCB,
+    onRefineResultsCB,
+    breadcrumbData: breadcrumbInfo,
+    navigationItems,
+    isSharedReport,
+  }
+}
+
+export const getSelectedCompareBy = (search, settings, compareByOptions) => {
+  let selectedCompareBy = compareByOptions[0]
+  if (search.selectedCompareBy) {
+    selectedCompareBy =
+      compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
+      compareByOptions[0]
+  } else if (settings.selectedCompareBy?.key) {
+    selectedCompareBy = settings.selectedCompareBy
+  }
+  return selectedCompareBy
 }

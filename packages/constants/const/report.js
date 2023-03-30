@@ -1,7 +1,13 @@
+// TODO use consistent names, like `ds-whole-learner-report` ?
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+const DW_DASHBOARD_REPORT = 'dashboard-report'
 
 const reportGroupType = {
+  STANDARD_REPORT: 'standard-reports',
+  CUSTOM_REPORT: 'custom-reports',
+  SHARED_REPORT: 'shared-reports',
+  DATA_WAREHOUSE_REPORT: 'data-warehouse-reports',
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
   MULTIPLE_ASSESSMENT_REPORT: 'multiple-assessment-report',
   STANDARDS_MASTERY_REPORT: 'standards-mastery-report',
@@ -9,6 +15,7 @@ const reportGroupType = {
   ENGAGEMENT_REPORT: 'engagement-report',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }
 
 const reportNavType = {
@@ -34,6 +41,7 @@ const reportNavType = {
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }
 
 const ReportPaths = {
@@ -52,4 +60,5 @@ module.exports = {
   ReportPaths,
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }

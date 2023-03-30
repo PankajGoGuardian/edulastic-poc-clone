@@ -6,7 +6,7 @@ import moment from 'moment'
 import { keyBy, groupBy } from 'lodash'
 
 const slice = createSlice({
-  name: 'studentPlaylist',
+  name: 'studentPlaylist', //! FIXME key should be `slice` not `name`
   initialState: {
     isLoading: false,
     playlists: [],

@@ -22,6 +22,8 @@ const moment = require('moment')
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
+const DECIMAL_BASE = 10
+
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
   DESCEND: 'descend',
@@ -36,6 +38,8 @@ const tableToDBSortOrderMap = {
   [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
   [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
 }
+const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
+
 const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 
 const calcMethod = {
@@ -500,11 +504,81 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
   return [csvHeadings, ...csvData]
 }
 
+const SUBJECTS = [
+  'Mathematics',
+  'ELA',
+  'Science',
+  'Social Studies',
+  'Computer Science',
+  'Other Subjects',
+]
+
+const SUBJECT_OPTIONS = SUBJECTS.map((key) => ({ key, title: key }))
+
+const GRADE_KEYS = {
+  PRE_KG: 'TK',
+  KG: 'K',
+  GRADE_1: '1',
+  GRADE_2: '2',
+  GRADE_3: '3',
+  GRADE_4: '4',
+  GRADE_5: '5',
+  GRADE_6: '6',
+  GRADE_7: '7',
+  GRADE_8: '8',
+  GRADE_9: '9',
+  GRADE_10: '10',
+  GRADE_11: '11',
+  GRADE_12: '12',
+  OTHER: 'O',
+}
+
+const GRADES = {
+  [GRADE_KEYS.PRE_KG]: 'PreKindergarten',
+  [GRADE_KEYS.KG]: 'Kindergarten',
+  [GRADE_KEYS.GRADE_1]: 'Grade 1',
+  [GRADE_KEYS.GRADE_2]: 'Grade 2',
+  [GRADE_KEYS.GRADE_3]: 'Grade 3',
+  [GRADE_KEYS.GRADE_4]: 'Grade 4',
+  [GRADE_KEYS.GRADE_5]: 'Grade 5',
+  [GRADE_KEYS.GRADE_6]: 'Grade 6',
+  [GRADE_KEYS.GRADE_7]: 'Grade 7',
+  [GRADE_KEYS.GRADE_8]: 'Grade 8',
+  [GRADE_KEYS.GRADE_9]: 'Grade 9',
+  [GRADE_KEYS.GRADE_10]: 'Grade 10',
+  [GRADE_KEYS.GRADE_11]: 'Grade 11',
+  [GRADE_KEYS.GRADE_12]: 'Grade 12',
+  [GRADE_KEYS.OTHER]: 'Other',
+}
+
+const GRADE_OPTIONS = Object.values(GRADE_KEYS).map((key) => ({
+  key,
+  title: GRADES[key],
+}))
+
+const PERIOD_TYPES = {
+  TILL_DATE: 'TILL_DATE',
+  THIS_MONTH: 'THIS_MONTH',
+  THIS_QUARTER: 'THIS_QUARTER',
+  LAST_MONTH: 'LAST_MONTH',
+  LAST_QUARTER: 'LAST_QUARTER',
+  CUSTOM: 'CUSTOM',
+}
+const PERIOD_NAMES = {
+  [PERIOD_TYPES.TILL_DATE]: 'Till Date',
+  [PERIOD_TYPES.THIS_MONTH]: 'This Month',
+  [PERIOD_TYPES.THIS_QUARTER]: 'This Quarter',
+  [PERIOD_TYPES.LAST_MONTH]: 'Last Month',
+  [PERIOD_TYPES.LAST_QUARTER]: 'Last Quarter',
+  [PERIOD_TYPES.CUSTOM]: 'Custom',
+}
+
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
+  DECIMAL_BASE,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
@@ -539,4 +613,11 @@ module.exports = {
   resetStudentFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
+  PERIOD_TYPES,
+  PERIOD_NAMES,
+  SUBJECTS,
+  SUBJECT_OPTIONS,
+  GRADE_KEYS,
+  GRADES,
+  GRADE_OPTIONS,
 }

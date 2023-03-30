@@ -113,6 +113,7 @@ const CustomizedHeaderWrapper = ({
     ACTIVITY_BY_TEACHER,
     PERFORMANCE_BY_RUBRICS_CRITERIA,
     PRE_VS_POST,
+    DW_DASHBOARD_REPORT,
   } = reportNavType
 
   const reportTypes = navigation.locToData
@@ -122,6 +123,7 @@ const CustomizedHeaderWrapper = ({
     reportTypes[ACTIVITY_BY_SCHOOL].title,
     reportTypes[ACTIVITY_BY_TEACHER].title,
     reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
+    reportTypes[DW_DASHBOARD_REPORT].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
     reportTypes[ENGAGEMENT_SUMMARY].title,

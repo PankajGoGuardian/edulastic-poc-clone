@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { connect } from 'react-redux'
-import { isEmpty, get, mapValues, head, includes, filter } from 'lodash'
-import next from 'immer'
+import { isEmpty, get, mapValues, includes, filter } from 'lodash'
 import { Spin } from 'antd'
 
 import { SpinLoader } from '@edulastic/common'
@@ -39,8 +38,10 @@ import {
 } from '../../../../src/selectors/user'
 import { actions, selectors } from './ducks'
 
-import navigation from '../../../common/static/json/navigation.json'
 import { getCompareByOptions, getChartData, getTableData } from './utils'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
+import { getSelectedCompareBy } from '../../../common/util'
+import useTabNavigation from '../common/hooks/useTabNavigation'
 
 const { downloadCSV } = reportUtils.common
 
@@ -130,6 +131,13 @@ const MultipleAssessmentReport = ({
     }
   }
 
+  const search = useUrlSearchParams(location)
+  const selectedCompareBy = getSelectedCompareBy(
+    search,
+    settings,
+    compareByOptions
+  )
+
   const onGoClick = (_settings) => {
     const _requestFilters = {}
     Object.keys(_settings.requestFilters).forEach((filterType) => {
@@ -148,9 +156,7 @@ const MultipleAssessmentReport = ({
         testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy: settings.selectedCompareBy?.key
-        ? settings.selectedCompareBy
-        : head(compareByOptions),
+      selectedCompareBy,
     })
     setShowApply(false)
   }
@@ -161,29 +167,6 @@ const MultipleAssessmentReport = ({
     }
   }
 
-  const computeChartNavigationLinks = () => {
-    const { requestFilters } = settings
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(requestFilters)
-      const obj = {}
-      arr.forEach((item) => {
-        const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-        obj[item] = val
-      })
-      const _navigationItems = navigation.navigation[
-        navigation.locToData[loc].group
-      ].filter((item) => {
-        // if data warehouse report is shared, only that report tab should be shown
-        return !reportId || item.key === loc
-      })
-      return next(_navigationItems, (draft) => {
-        const _currentItem = draft.find((t) => t.key === loc)
-        _currentItem.location += `?${qs.stringify(obj)}`
-      })
-    }
-    return []
-  }
-
   useEffect(
     () => () => {
       console.log('Multiple Assessment Report Component Unmount')
@@ -192,24 +175,14 @@ const MultipleAssessmentReport = ({
     []
   )
 
-  useEffect(() => {
-    if (settings.requestFilters.termId) {
-      const obj = {}
-      const arr = Object.keys(settings.requestFilters)
-      arr.forEach((item) => {
-        const val =
-          settings.requestFilters[item] === ''
-            ? 'All'
-            : settings.requestFilters[item]
-        obj[item] = val
-      })
-      obj.reportId = reportId || ''
-      const path = `?${qs.stringify(obj)}`
-      history.push(path)
-    }
-    const navigationItems = computeChartNavigationLinks()
-    updateNavigation(navigationItems)
-  }, [settings])
+  useTabNavigation({
+    settings,
+    reportId,
+    history,
+    loc,
+    updateNavigation,
+    extraFilters: { selectedCompareBy: selectedCompareBy.key },
+  })
 
   // get report data
   useEffect(() => {
@@ -399,9 +372,7 @@ const MultipleAssessmentReport = ({
             <TableFilters
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
-              selectedCompareBy={
-                settings.selectedCompareBy || head(compareByOptions)
-              }
+              selectedCompareBy={selectedCompareBy}
             />
             <Table
               tableData={tableData}

@@ -10,7 +10,7 @@ const initialState = {
 }
 
 const slice = createSlice({
-  name: 'preVsPostReport',
+  name: 'preVsPostReport', //! FIXME key should be `slice` not `name`
   initialState: { ...initialState },
   reducers: {
     fetchReportSummaryDataRequest: (state) => {

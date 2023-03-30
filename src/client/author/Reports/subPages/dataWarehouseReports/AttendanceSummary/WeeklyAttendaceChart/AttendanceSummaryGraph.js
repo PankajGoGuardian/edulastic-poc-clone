@@ -26,8 +26,8 @@ import {
   getAttendanceChartData,
   getXTickText,
   transformDataForChart,
-  updateTooltipPos,
 } from './utils'
+import { updateTooltipPos } from '../../../../common/chart-utils'
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {

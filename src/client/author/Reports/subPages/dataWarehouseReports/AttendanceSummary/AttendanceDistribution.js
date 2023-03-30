@@ -49,6 +49,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         width={labelWidth}
         height={labelHeight}
         fill={color}
+        rx="5px"
       />
       <text
         className="label-text"

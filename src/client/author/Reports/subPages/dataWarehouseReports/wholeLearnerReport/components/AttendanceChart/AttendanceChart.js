@@ -24,10 +24,8 @@ import {
 } from '../../../../../common/styled'
 import SectionLabel from '../../../../../common/components/SectionLabel'
 import SectionDescription from '../../../../../common/components/SectionDescription'
-import { setProperties, tooltipParams } from '../../../../../common/util'
 import { StyledAttendanceChartContainer } from './styled-components'
-
-const { spaceForLittleTriangle } = tooltipParams
+import { updateTooltipPos } from '../../../../../common/chart-utils'
 
 const getXTickText = (payload, _data) => {
   const week = _data[payload.index]?.week + 1
@@ -155,41 +153,8 @@ const AttendanceChart = ({
     ]
   }, [page, pagedData])
 
-  const updateTooltipPos = () => {
-    const tooltipElement = tooltipRef.current?.tooltipElementRef.current
-    if (!tooltipElement) return
-
-    const chartState = chartRef.current?.state
-    if (!chartState) return
-
-    const { width } = chartRef.current.props
-    const idx = chartState.activeTooltipIndex
-    const chartItems = chartState.formatedGraphicalItems
-    const barchartLayer = chartItems?.[0]
-    const activePoint = barchartLayer?.props?.points?.[idx]
-    if (!activePoint) return
-
-    const tooltipRect = tooltipElement.getBoundingClientRect()
-    const OFFSET = 20
-    const isTooltipOverflowing =
-      tooltipRect.width + activePoint.x + OFFSET > width
-
-    setTooltipType(isTooltipOverflowing ? 'left' : 'right')
-    const tooltipXShift = isTooltipOverflowing
-      ? `-100% - ${spaceForLittleTriangle}px - ${OFFSET}px`
-      : `${spaceForLittleTriangle}px + ${OFFSET}px`
-    const tooltipCssVars = {
-      '--tooltip-transform': `translate(
-        calc( ${activePoint.x}px + ${tooltipXShift}),
-        calc( ${activePoint.y}px - 50% )`,
-      '--tooltip-top': '0',
-      '--tooltip-left': '0',
-    }
-    setProperties(parentContainerRef, tooltipCssVars)
-  }
-
   const getTooltipContent = (payload) => {
-    updateTooltipPos()
+    updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
     // console.log(chartRef)
     return getTooltipJSX(payload)
   }

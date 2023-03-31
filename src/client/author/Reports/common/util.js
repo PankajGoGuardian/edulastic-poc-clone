@@ -22,6 +22,8 @@ import {
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 
+// TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
+
 const studentFiltersDefaultValues = [
   {
     key: 'networkIds',
@@ -59,13 +61,6 @@ export const DemographicCompareByOptions = [
   'iepStatus',
   'hispanicEthnicity',
 ]
-
-const tableHeaderFields = {
-  question: 'Question',
-  standards: 'STANDARDS',
-  points: 'POINTS',
-  districtAvg: 'District Avg.',
-}
 
 export const percentage = (
   numerator = 0,
@@ -526,18 +521,18 @@ export const tooltipParams = {
   xAxisHeight: 100,
 }
 
-export const computeChartNavigationLinks = (
+export const computeChartNavigationLinks = ({
   requestFilters,
   loc,
-  hideOtherTabs = false
-) => {
+  hideOtherTabs = false,
+}) => {
   if (navigation.locToData[loc]) {
     requestFilters = requestFilters || {}
-    const arr = Object.keys(requestFilters)
-    const obj = {}
-    arr.forEach((item) => {
+    const requestFilterKeys = Object.keys(requestFilters)
+    const _filters = {}
+    requestFilterKeys.forEach((item) => {
       const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-      obj[item] = val
+      _filters[item] = val
     })
     const _navigationItems = navigation.navigation[
       navigation.locToData[loc].group
@@ -547,7 +542,7 @@ export const computeChartNavigationLinks = (
     })
     return next(_navigationItems, (draft) => {
       const _currentItem = draft.find((t) => t.key === loc)
-      _currentItem.location += `?${qs.stringify(obj)}`
+      _currentItem.location += `?${qs.stringify(_filters)}`
     })
   }
   return []
@@ -555,7 +550,6 @@ export const computeChartNavigationLinks = (
 
 export const getHeaderSettings = (
   loc,
-  navigation,
   navigationItems,
   location,
   dynamicBreadcrumb,
@@ -625,7 +619,7 @@ export const getHeaderSettings = (
 }
 
 export const getSelectedCompareBy = (search, settings, compareByOptions) => {
-  let selectedCompareBy = compareByOptions[0]
+  let [selectedCompareBy] = compareByOptions
   if (search.selectedCompareBy) {
     selectedCompareBy =
       compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
@@ -634,4 +628,29 @@ export const getSelectedCompareBy = (search, settings, compareByOptions) => {
     selectedCompareBy = settings.selectedCompareBy
   }
   return selectedCompareBy
+}
+
+export function removeFilter(
+  filterTagsData,
+  filters,
+  initialFilters,
+  type,
+  key
+) {
+  const _filterTagsData = { ...filterTagsData }
+  const _filters = { ...filters }
+  resetStudentFilters(_filterTagsData, _filters, type, '')
+  if (filters[type] === key) {
+    // handles single selection filters
+    _filters[type] = initialFilters[type]
+    delete _filterTagsData[type]
+  } else if (filters[type].includes(key)) {
+    // handles multiple selection filters
+    _filters[type] = filters[type]
+      .split(',')
+      .filter((d) => d !== key)
+      .join(',')
+    _filterTagsData[type] = filterTagsData[type].filter((d) => d.key !== key)
+  }
+  return { _filters, _filterTagsData }
 }

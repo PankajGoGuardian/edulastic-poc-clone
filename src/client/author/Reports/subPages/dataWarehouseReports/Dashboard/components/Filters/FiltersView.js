@@ -13,8 +13,8 @@ import {
 } from '../../../../../common/styled'
 
 import { staticDropDownData } from '../../utils'
-import FilterTestFields from './FilterTestFields'
-import FilterClassFields from './FilterClassFields'
+import FilterTestFields from '../../../../../common/components/FilterTestFields'
+import FilterClassFields from '../../../../../common/components/FilterClassFields'
 import FilterPeriodFields from '../../../../../common/components/FilterPeriodFields'
 import FilterActions from '../../../../../common/components/FilterActions'
 
@@ -80,13 +80,16 @@ function FiltersView({
                       key={staticDropDownData.filterSections.TEST_FILTERS.key}
                       tab={staticDropDownData.filterSections.TEST_FILTERS.title}
                     >
-                      <FilterTestFields
-                        filters={filters}
-                        updateFilterDropdownCB={updateFilterDropdownCB}
-                        schoolYears={schoolYears}
-                        assessmentTypesRef={assessmentTypesRef}
-                        availableAssessmentType={availableAssessmentType}
-                      />
+                      <Row type="flex" gutter={[5, 10]}>
+                        <FilterTestFields
+                          filters={filters}
+                          updateFilterDropdownCB={updateFilterDropdownCB}
+                          schoolYears={schoolYears}
+                          assessmentTypesRef={assessmentTypesRef}
+                          availableAssessmentType={availableAssessmentType}
+                          dropdownData={staticDropDownData}
+                        />
+                      </Row>
                     </Tabs.TabPane>
 
                     <Tabs.TabPane
@@ -96,11 +99,14 @@ function FiltersView({
                       }
                       forceRender
                     >
-                      <FilterClassFields
-                        userRole={userRole}
-                        filters={filters}
-                        updateFilterDropdownCB={updateFilterDropdownCB}
-                      />
+                      <Row type="flex" gutter={[5, 10]}>
+                        <FilterClassFields
+                          userRole={userRole}
+                          filters={filters}
+                          updateFilterDropdownCB={updateFilterDropdownCB}
+                          dropDownData={staticDropDownData}
+                        />
+                      </Row>
                     </Tabs.TabPane>
 
                     <Tabs.TabPane
@@ -135,13 +141,15 @@ function FiltersView({
                       key={staticDropDownData.filterSections.PERIOD.key}
                       tab={staticDropDownData.filterSections.PERIOD.title}
                     >
-                      <FilterPeriodFields
-                        filters={filters}
-                        updateFilterDropdownCB={updateFilterDropdownCB}
-                        terms={terms}
-                        allPeriodTypes={staticDropDownData.periodTypes}
-                        setFilters={setFilters}
-                      />
+                      <Row type="flex" gutter={[5, 10]}>
+                        <FilterPeriodFields
+                          filters={filters}
+                          updateFilterDropdownCB={updateFilterDropdownCB}
+                          terms={terms}
+                          allPeriodTypes={staticDropDownData.periodTypes}
+                          setFilters={setFilters}
+                        />
+                      </Row>
                     </Tabs.TabPane>
                   </Tabs>
                 </Col>

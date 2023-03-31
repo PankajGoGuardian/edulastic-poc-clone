@@ -4,12 +4,14 @@ import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
-import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+import {
+  removeFilter,
+  resetStudentFilters as resetFilters,
+} from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import {
   staticDropDownData,
   availableTestTypes as availableAssessmentType,
-  removeFilter,
 } from '../../utils'
 
 import { actions, selectors } from '../../ducks'

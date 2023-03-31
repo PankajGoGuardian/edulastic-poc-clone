@@ -41,7 +41,7 @@ import { actions, selectors } from './ducks'
 import { getCompareByOptions, getChartData, getTableData } from './utils'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
-import useTabNavigation from '../common/hooks/useTabNavigation'
+import useTabNavigation from '../../../common/hooks/useTabNavigation'
 
 const { downloadCSV } = reportUtils.common
 

@@ -167,7 +167,6 @@ const Container = ({
     () =>
       getHeaderSettings(
         reportType,
-        navigation,
         navigationItems,
         location,
         dynamicBreadcrumb,

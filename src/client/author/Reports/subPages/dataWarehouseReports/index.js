@@ -104,6 +104,7 @@ const DataWarehouseReportsContainer = ({
               isCliUser={isCliUser}
               isPrinting={isPrinting}
               showApply={showApply}
+              setShowApply={setShowApply}
               showFilter={showFilter}
               onRefineResultsCB={onRefineResultsCB}
               loc={loc}

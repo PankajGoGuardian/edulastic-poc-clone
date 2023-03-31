@@ -1,6 +1,8 @@
 import {
+  GRADE_OPTIONS,
   PERIOD_NAMES,
   PERIOD_TYPES,
+  SUBJECT_OPTIONS,
 } from '@edulastic/constants/reportUtils/common'
 
 export const sortOrderMap = {
@@ -119,31 +121,8 @@ export const staticDropDownData = {
     customPeriodStart: undefined,
     customPeriodEnd: undefined,
   },
-  subjects: [
-    { key: 'Mathematics', title: 'Mathematics' },
-    { key: 'ELA', title: 'ELA' },
-    { key: 'Science', title: 'Science' },
-    { key: 'Social Studies', title: 'Social Studies' },
-    { key: 'Computer Science', title: 'Computer Science' },
-    { key: 'Other Subjects', title: 'Other Subjects' },
-  ],
-  grades: [
-    { key: 'TK', title: 'PreKindergarten' },
-    { key: 'K', title: 'Kindergarten' },
-    { key: '1', title: 'Grade 1' },
-    { key: '2', title: 'Grade 2' },
-    { key: '3', title: 'Grade 3' },
-    { key: '4', title: 'Grade 4' },
-    { key: '5', title: 'Grade 5' },
-    { key: '6', title: 'Grade 6' },
-    { key: '7', title: 'Grade 7' },
-    { key: '8', title: 'Grade 8' },
-    { key: '9', title: 'Grade 9' },
-    { key: '10', title: 'Grade 10' },
-    { key: '11', title: 'Grade 11' },
-    { key: '12', title: 'Grade 12' },
-    { key: 'O', title: 'Other' },
-  ],
+  subjects: SUBJECT_OPTIONS,
+  grades: GRADE_OPTIONS,
   periodTypes: Object.entries(PERIOD_NAMES).map(([key, title]) => ({
     key,
     title,

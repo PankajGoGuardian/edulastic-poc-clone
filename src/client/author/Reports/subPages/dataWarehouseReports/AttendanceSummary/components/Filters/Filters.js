@@ -4,8 +4,10 @@ import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
-import usePeriodFilters from '../../../common/hooks/usePeriodFilters'
-import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+import {
+  removeFilter,
+  resetStudentFilters as resetFilters,
+} from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import { staticDropDownData } from '../../utils/constants'
 
@@ -35,6 +37,7 @@ const Filters = ({
   filtersData,
   filtersTabKey,
   filters,
+  setFilters,
   filterTagsData,
   settings,
   selectedFilterTagsData = settings.selectedFilterTagsData || {},
@@ -44,7 +47,6 @@ const Filters = ({
   setFirstLoad,
   fetchFiltersDataRequest,
   setFiltersTabKey,
-  setFilters,
   setFilterTagsData,
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
@@ -57,6 +59,10 @@ const Filters = ({
 
   const { demographics = [] } = get(filtersData, 'data.result', {})
 
+  const termId =
+    search.termId ||
+    defaultTermId ||
+    (schoolYears.length ? schoolYears[0].key : '')
   useFiltersPreload({
     reportId,
     fetchFiltersDataRequest,
@@ -66,10 +72,7 @@ const Filters = ({
     firstLoad,
     userRole,
     institutionIds,
-    termId:
-      search.termId ||
-      defaultTermId ||
-      (schoolYears.length ? schoolYears[0].key : ''),
+    termId,
   })
 
   useFiltersFromURL({
@@ -103,22 +106,12 @@ const Filters = ({
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _filterTagsData = { ...filterTagsData }
-    const _filters = { ...filters }
-    resetFilters(_filterTagsData, _filters, type, '')
-    // handles single selection filters
-    if (filters[type] === key) {
-      _filters[type] = staticDropDownData.initialFilters[type]
-      delete _filterTagsData[type]
-    }
-    // handles multiple selection filters
-    else if (filters[type].includes(key)) {
-      _filters[type] = filters[type]
-        .split(',')
-        .filter((d) => d !== key)
-        .join(',')
-      _filterTagsData[type] = filterTagsData[type].filter((d) => d.key !== key)
-    }
+    const { _filters, _filterTagsData } = removeFilter(
+      filterTagsData,
+      filters,
+      type,
+      key
+    )
     setFilters(_filters)
     setFilterTagsData(_filterTagsData)
     setShowApply(true)
@@ -172,7 +165,6 @@ const Filters = ({
       setShowApply(true)
     }
   }
-  usePeriodFilters(terms, filters, setFilters)
 
   return (
     <FiltersView
@@ -187,6 +179,7 @@ const Filters = ({
       filtersTabKey={filtersTabKey}
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
+      setFilters={setFilters}
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
       userRole={userRole}

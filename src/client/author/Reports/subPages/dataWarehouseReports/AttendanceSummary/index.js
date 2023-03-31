@@ -9,7 +9,7 @@ import {
   setSharingStateAction,
 } from '../../../ducks'
 import { compareByOptions as compareByOptionsRaw } from './utils/constants'
-import useTabNavigation from '../common/hooks/useTabNavigation'
+import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { buildRequestFilters } from '../common/utils'
 import { selectors, actions } from './ducks'
@@ -32,13 +32,11 @@ const AttendanceReport = (props) => {
     settings,
     setSettings,
     showApply,
+    setShowApply,
     resetAllReports,
     updateNavigation,
   } = props
 
-  const setShowApply = (status) => {
-    onRefineResultsCB(null, status, 'applyButton')
-  }
   const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
       onRefineResultsCB(e, status === false ? status : status || !showFilter)
@@ -65,7 +63,6 @@ const AttendanceReport = (props) => {
         ..._requestFilters,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
-        testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
@@ -86,7 +83,10 @@ const AttendanceReport = (props) => {
     history,
     loc,
     updateNavigation,
-    extraFilters: { selectedCompareBy: selectedCompareBy.key },
+    extraFilters: {
+      selectedCompareBy:
+        search.selectedCompareBy || settings.selectedCompareBy.key,
+    },
   })
 
   return (

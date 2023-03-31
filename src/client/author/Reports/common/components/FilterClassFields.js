@@ -1,18 +1,24 @@
-import { Col, Row } from 'antd'
 import React from 'react'
+import { Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
-import ClassAutoComplete from '../../../../../common/components/autocompletes/ClassAutoComplete'
-import CourseAutoComplete from '../../../../../common/components/autocompletes/CourseAutoComplete'
-import GroupsAutoComplete from '../../../../../common/components/autocompletes/GroupsAutoComplete'
-import SchoolAutoComplete from '../../../../../common/components/autocompletes/SchoolAutoComplete'
-import TeacherAutoComplete from '../../../../../common/components/autocompletes/TeacherAutoComplete'
-import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
-import { FilterLabel } from '../../../../../common/styled'
-import { staticDropDownData } from '../../utils'
+import ClassAutoComplete from './autocompletes/ClassAutoComplete'
+import CourseAutoComplete from './autocompletes/CourseAutoComplete'
+import GroupsAutoComplete from './autocompletes/GroupsAutoComplete'
+import SchoolAutoComplete from './autocompletes/SchoolAutoComplete'
+import TeacherAutoComplete from './autocompletes/TeacherAutoComplete'
+import MultiSelectDropdown from './widgets/MultiSelectDropdown'
+import { FilterLabel } from '../styled'
 
-function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
+function FilterClassFields(props) {
+  const {
+    userRole,
+    filters,
+    updateFilterDropdownCB,
+    // TODO dropDownData hardly changes. Better provide a default
+    dropDownData,
+  } = props
   return (
-    <Row type="flex" gutter={[5, 10]}>
+    <>
       {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
         <>
           <Col span={6}>
@@ -42,7 +48,7 @@ function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
           dataCy="classGrade"
           label="Class Grade"
           onChange={(e) => {
-            const selected = staticDropDownData.grades.filter((a) =>
+            const selected = dropDownData.grades.filter((a) =>
               e.includes(a.key)
             )
             updateFilterDropdownCB(selected, 'grades', true)
@@ -52,7 +58,7 @@ function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
               ? filters.grades.split(',')
               : []
           }
-          options={staticDropDownData.grades}
+          options={dropDownData.grades}
         />
       </Col>
       <Col span={6}>
@@ -60,7 +66,7 @@ function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
           dataCy="classSubject"
           label="Class Subject"
           onChange={(e) => {
-            const selected = staticDropDownData.subjects.filter((a) =>
+            const selected = dropDownData.subjects.filter((a) =>
               e.includes(a.key)
             )
             updateFilterDropdownCB(selected, 'subjects', true)
@@ -70,7 +76,7 @@ function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
               ? filters.subjects.split(',')
               : []
           }
-          options={staticDropDownData.subjects}
+          options={dropDownData.subjects}
         />
       </Col>
       <Col span={6}>
@@ -106,7 +112,7 @@ function FilterClassFields({ userRole, filters, updateFilterDropdownCB }) {
           selectCB={(e) => updateFilterDropdownCB(e, 'groupIds', true)}
         />
       </Col>
-    </Row>
+    </>
   )
 }
 export default FilterClassFields

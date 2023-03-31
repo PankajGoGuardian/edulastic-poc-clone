@@ -51,6 +51,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
     lookbackCount: 1,
     pageSize: 8,
     backFillLastPage: true,
+    startFromLastPage: true,
   })
 
   const hasPreviousPage = page !== 0

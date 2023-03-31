@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from 'react'
  * 	lookbackCount?: Number;
  * 	lookaheadCount?: Number;
  *  backFillLastPage?: Boolean;
+ *  startFromLastPage?: Boolean;
  * }} options
  * @returns {{
  * 	page: Number;
@@ -22,15 +23,18 @@ import { useCallback, useMemo, useState } from 'react'
  */
 function useOfflinePagination(options = {}) {
   const {
-    defaultPage = 0,
     pageSize = 8,
     data,
     lookbackCount = 0,
     lookaheadCount = 0,
     backFillLastPage = false,
+    startFromLastPage = false,
   } = options
-  const [page, _setPage] = useState(defaultPage)
+  let { defaultPage = 0 } = options
   const totalPages = Math.ceil(data.length / pageSize)
+  if (startFromLastPage) defaultPage = totalPages - 1
+
+  const [page, _setPage] = useState(defaultPage)
 
   const setPage = useCallback(
     (newPage) => {

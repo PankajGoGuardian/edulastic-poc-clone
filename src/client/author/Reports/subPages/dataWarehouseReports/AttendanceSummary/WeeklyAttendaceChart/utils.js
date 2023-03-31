@@ -1,5 +1,6 @@
 import { round, sortBy } from 'lodash'
 import moment from 'moment'
+import { sortKeys } from '../utils/constants'
 
 export const getAttendanceChartData = (attendanceData, groupBy) => {
   const _attendanceData = sortBy(attendanceData, 'minDate')
@@ -24,13 +25,14 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
 export const transformDataForChart = (page, pagedData, groupBy, type) => {
   const START_X_LABEL = 'START DATE'
   const START_X_VALUE = -1
+  const isTardies = type === sortKeys.TARDIES
   if (!pagedData.length) {
     return []
   }
-  if (type == 'tardies') {
-    return [...pagedData]
-  }
   if (page === 0) {
+    if (isTardies) {
+      return [...pagedData]
+    }
     return [
       {
         [groupBy]: START_X_VALUE,
@@ -45,6 +47,9 @@ export const transformDataForChart = (page, pagedData, groupBy, type) => {
     ]
   }
   const first = pagedData[0]
+  if (isTardies) {
+    return [...pagedData.slice(1)]
+  }
   return [
     {
       ...first,

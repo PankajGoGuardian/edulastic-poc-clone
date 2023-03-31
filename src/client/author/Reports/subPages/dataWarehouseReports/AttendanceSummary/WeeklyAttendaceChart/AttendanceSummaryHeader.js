@@ -15,7 +15,7 @@ import { AttendanceSummaryLegends, groupByConstants } from '../utils/constants'
 const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
   return (
     <FlexWrapper flex="1">
-      <Title>Weekly Attendance</Title>
+      <Title>Attendance Trends</Title>
       <FlexWrapper>
         <LegendWrap>
           {AttendanceSummaryLegends.map((entry) => {

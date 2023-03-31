@@ -71,6 +71,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
     lookbackCount: 1,
     pageSize: 8,
     backFillLastPage: true,
+    startFromLastPage: true,
   })
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1

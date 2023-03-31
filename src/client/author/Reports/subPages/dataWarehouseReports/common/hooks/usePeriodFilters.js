@@ -31,6 +31,9 @@ function usePeriodFilters(terms, filters, setFilters) {
         customPeriodEnd: +moment(customPeriodBaseDate).endOf('month'),
       }
       setFilters(newFilters)
+    } else {
+      const { customPeriodStart, customPeriodEnd, ...newFilters } = filters
+      setFilters(newFilters)
     }
   }, [filters.termId, filters.periodType])
 }

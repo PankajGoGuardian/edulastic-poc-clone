@@ -116,6 +116,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
           className="navigator navigator-left"
           onClick={prevPage}
           style={{
+            marginLeft: '10px',
             visibility: hasPreviousPage ? 'visible' : 'hidden',
           }}
         />
@@ -127,6 +128,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
           className="navigator navigator-right"
           onClick={nextPage}
           style={{
+            marginRight: '10px',
             visibility: hasNextPage ? 'visible' : 'hidden',
           }}
         />
@@ -178,6 +180,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
                   tickLine={false}
                   axisLine={false}
                   dx={-18}
+                  domain={[0, yMax + 1]}
                   ticks={[0, yMax + 1]}
                   opacity={0.5}
                   label={

@@ -12,7 +12,7 @@ export const CustomizedLabel = (props) => {
 
   const rectx = x - labelWidth + 20
   const recty = isLabelOverFlowing ? y + labelHeight : y - labelHeight - 10
-  const newY = isLabelOverFlowing ? y + 30 : y - 10
+  const newY = isLabelOverFlowing ? y + 43 : y - 10
   const textX = x + 2
 
   return (

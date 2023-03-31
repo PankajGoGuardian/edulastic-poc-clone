@@ -368,6 +368,20 @@
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
     },
+    "dashboard-report": {
+      "title": "Dashboard",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "DASHBOARD"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
     "shared-reports": {
       "title": "Shared Reports",
       "breadcrumb": [
@@ -518,6 +532,11 @@
       }
     ],
     "data-warehouse-reports": [
+      {
+        "key": "dashboard-report",
+        "title": "DASHBOARD",
+        "location": "/author/reports/dashboard-report"
+      },
       {
         "key": "multiple-assessment-report-dw",
         "title": "Performance Trends",

@@ -1,3 +1,4 @@
+const EDULASTIC = 'edulastic'
 const AIR = 'AIR'
 const CAASPP = 'CAASPP'
 const ELPAC = 'ELPAC'
@@ -68,6 +69,7 @@ module.exports = {
   PREMIUM_TEST_TYPES,
   EXTERNAL_TEST_TYPES,
   NON_ACADEMIC_DATA_TYPES,
+  EDULASTIC,
   AIR,
   CAASPP,
   ELPAC,

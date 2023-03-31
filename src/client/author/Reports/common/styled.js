@@ -820,6 +820,7 @@ export const DashedLine = styled.div`
   position: relative;
   flex-grow: 1;
   height: ${(props) => props.height ?? '0.5px'};
+  max-width: ${(props) => props.maxWidth};
   margin: ${(props) => props.margin ?? '0 24px'};
   &:before {
     content: '';
@@ -833,8 +834,38 @@ export const DashedLine = styled.div`
 export const SectionLabelWrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
+  width: 100%;
+  flex-grow: 1;
   margin: ${(p) => p.$margin || '32px 0'};
   align-items: center;
+`
+
+export const PieChartWrapper = styled.div`
+  width: 400px;
+  height: 300px;
+  .label-name {
+    font-weight: normal;
+    overflow: wrap;
+  }
+  .label-value {
+    font-weight: bold;
+  }
+`
+export const HorizontalBarWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 300px;
+  margin-inline: 10px;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+`
+export const StyledSpan = styled.span`
+  background-color: ${({ color }) => color};
+  padding: 5px;
+  flex-wrap: nowrap;
+  width: ${({ value }) => value}%;
+  font-size: 11px;
 `
 
 export const SectionDescriptionWrapper = styled.div`
@@ -844,5 +875,11 @@ export const SectionDescriptionWrapper = styled.div`
   p {
     font-size: 12px;
     color: ${fadedBlack};
+  }
+`
+export const StyledReportContainer = styled.div`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
   }
 `

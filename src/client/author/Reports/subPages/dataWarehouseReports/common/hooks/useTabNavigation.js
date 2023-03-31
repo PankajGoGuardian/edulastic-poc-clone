@@ -2,14 +2,14 @@ import qs from 'qs'
 import { useEffect } from 'react'
 import { computeChartNavigationLinks } from '../utils'
 
-function useTabNavigation(
-  search,
+function useTabNavigation({
   settings,
   reportId,
   history,
   loc,
-  updateNavigation
-) {
+  updateNavigation,
+  extraFilters = {},
+}) {
   useEffect(() => {
     if (settings.requestFilters.termId) {
       const _filters = {}
@@ -23,8 +23,7 @@ function useTabNavigation(
       })
       Object.assign(_filters, {
         reportId: reportId || '',
-        selectedCompareBy:
-          search.selectedCompareBy || settings.selectedCompareBy.key,
+        ...extraFilters,
       })
       const path = `?${qs.stringify(_filters)}`
       history.push(path)

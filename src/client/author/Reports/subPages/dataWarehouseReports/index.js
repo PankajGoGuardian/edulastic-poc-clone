@@ -5,10 +5,12 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import WholeLearnerReport from './wholeLearnerReport'
 
 import MultipleAssessmentReport from './MultipleAssessmentReport'
+import Dashboard from './Dashboard'
 import {
   DW_ATTENDANCE_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_DASHBOARD_URL,
 } from '../../common/constants/dataWarehouseReports'
 import AttendanceReport from './AttendanceSummary'
 
@@ -17,6 +19,7 @@ const DataWarehouseReportsContainer = ({
   isCliUser,
   isPrinting,
   showApply,
+  setShowApply,
   showFilter,
   onRefineResultsCB,
   loc,
@@ -60,6 +63,27 @@ const DataWarehouseReportsContainer = ({
               isCliUser={isCliUser}
               isPrinting={isPrinting}
               showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={DW_DASHBOARD_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <Dashboard
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              setShowApply={setShowApply}
               showFilter={showFilter}
               onRefineResultsCB={onRefineResultsCB}
               loc={loc}

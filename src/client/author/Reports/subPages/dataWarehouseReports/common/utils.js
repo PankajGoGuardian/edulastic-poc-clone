@@ -1,16 +1,16 @@
 import next from 'immer'
 import qs from 'qs'
-import { isEmpty } from 'lodash'
 import navigation from '../../../common/static/json/navigation.json'
+import { isEmpty } from 'lodash'
 
 export function computeChartNavigationLinks(settings, loc, reportId) {
   const { requestFilters } = settings
   if (navigation.locToData[loc]) {
-    const arr = Object.keys(requestFilters)
-    const obj = {}
-    arr.forEach((item) => {
+    const requestFilterKeys = Object.keys(requestFilters)
+    const _filters = {}
+    requestFilterKeys.forEach((item) => {
       const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-      obj[item] = val
+      _filters[item] = val
     })
     const _navigationItems = navigation.navigation[
       navigation.locToData[loc].group
@@ -20,11 +20,12 @@ export function computeChartNavigationLinks(settings, loc, reportId) {
     })
     return next(_navigationItems, (draft) => {
       const _currentItem = draft.find((t) => t.key === loc)
-      _currentItem.location += `?${qs.stringify(obj)}`
+      _currentItem.location += `?${qs.stringify(_filters)}`
     })
   }
   return []
 }
+
 export function buildRequestFilters(_settings) {
   const _requestFilters = {}
   Object.keys(_settings.requestFilters).forEach((filterType) => {

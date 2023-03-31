@@ -17,7 +17,7 @@ const initialState = {
 // -----|-----|-----|-----| SLICE BEGIN |-----|-----|-----|----- //
 
 const slice = createSlice({
-  name: 'performanceByRubricsCriteriaReport',
+  name: 'performanceByRubricsCriteriaReport', //! FIXME key should be `slice` not `name`
   initialState: { ...initialState },
   reducers: {
     fetchReportChartDataRequest: (state) => {

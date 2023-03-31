@@ -5,6 +5,7 @@ import {
   IconWholeLearnerReport,
   IconMultipleAssessmentReportDW,
   IconAttendanceReport,
+  IconDashboardReport,
 } from '@edulastic/icons'
 import ReportLinkCard from './common/components/ReportLinkCard'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
@@ -12,11 +13,19 @@ import {
   DW_ATTENDANCE_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_DASHBOARD_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 const DataWarehoureReportCardsWrapper = ({ loc }) => {
   return (
     <StyledCardsContainer>
+      <ReportLinkCard
+        IconThumbnail={IconDashboardReport}
+        title="Dashboard"
+        description="View key health checks for students' performance. Drill down to analyze and intervene."
+        url={DW_DASHBOARD_URL}
+        loc={loc}
+      />
       <ReportLinkCard
         IconThumbnail={IconMultipleAssessmentReportDW}
         title="Performance Trends"

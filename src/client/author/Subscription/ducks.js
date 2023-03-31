@@ -138,7 +138,7 @@ export const getNeedsRenewal = createSelector(
 )
 
 const slice = createSlice({
-  name: 'subscription',
+  name: 'subscription', //! FIXME key should be `slice` not `name`
   initialState: {
     isSubscriptionExpired: false,
     verificationPending: false,

@@ -16,6 +16,7 @@ import { selectors, actions } from './ducks'
 import Filters from './components/Filters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import Container from './Container'
+import { getSelectedCompareBy } from '../../../common/util'
 
 const AttendanceReport = (props) => {
   const {
@@ -50,11 +51,11 @@ const AttendanceReport = (props) => {
 
   const search = useUrlSearchParams(location)
   const reportId = search.reportId
-  const selectedCompareBy = search.selectedCompareBy
-    ? compareByOptions.find((o) => o.key === search.selectedCompareBy)
-    : settings.selectedCompareBy?.key
-    ? settings.selectedCompareBy
-    : compareByOptions[0]
+  const selectedCompareBy = getSelectedCompareBy(
+    search,
+    settings,
+    compareByOptions
+  )
 
   const onApplyFilter = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
@@ -79,7 +80,14 @@ const AttendanceReport = (props) => {
     []
   )
 
-  useTabNavigation(search, settings, reportId, history, loc, updateNavigation)
+  useTabNavigation({
+    settings,
+    reportId,
+    history,
+    loc,
+    updateNavigation,
+    extraFilters: { selectedCompareBy: selectedCompareBy.key },
+  })
 
   return (
     <>

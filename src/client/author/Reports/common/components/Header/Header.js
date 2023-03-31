@@ -114,7 +114,7 @@ const CustomizedHeaderWrapper = ({
     ACTIVITY_BY_TEACHER,
     PERFORMANCE_BY_RUBRICS_CRITERIA,
     PRE_VS_POST,
-    ATTENDANCE_SUMMARY,
+    DW_ATTENDANCE_SUMMARY_REPORT,
     DW_DASHBOARD_REPORT,
   } = reportNavType
 
@@ -125,13 +125,13 @@ const CustomizedHeaderWrapper = ({
     reportTypes[ACTIVITY_BY_SCHOOL].title,
     reportTypes[ACTIVITY_BY_TEACHER].title,
     reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
-    reportTypes[ATTENDANCE_SUMMARY].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
     reportTypes[DW_DASHBOARD_REPORT].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
     reportTypes[ENGAGEMENT_SUMMARY].title,
     reportTypes[PRE_VS_POST].title,
-    reportTypes[ATTENDANCE_SUMMARY].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
   ]
   const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
   const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)

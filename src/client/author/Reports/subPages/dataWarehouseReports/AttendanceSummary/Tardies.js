@@ -20,7 +20,7 @@ import {
   getXTickText,
   transformDataForChart,
 } from './WeeklyAttendaceChart/utils'
-import { groupByConstants } from './utils/constants'
+import { groupByConstants, sheetSize } from './utils/constants'
 import {
   StyledSwitch,
   StyledSpan,
@@ -66,12 +66,11 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: 0,
+    defaultPage: Math.ceil(attendanceChartData.length / sheetSize) - 1,
     data: attendanceChartData,
     lookbackCount: 1,
-    pageSize: 8,
+    pageSize: sheetSize,
     backFillLastPage: true,
-    startFromLastPage: true,
   })
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1

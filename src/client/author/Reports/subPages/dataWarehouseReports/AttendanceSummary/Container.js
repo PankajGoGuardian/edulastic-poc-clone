@@ -32,7 +32,7 @@ const Container = ({ userRole, settings, toggleFilter }) => {
   const [compareBy, setCompareBy] = useState(defaultCompareBy)
   const [sortOrder, setSortOrder] = useState('')
   const [sortKey, setSortKey] = useState('')
-  const [pageNo, setPageNo] = useState(1)
+  const [page, setPage] = useState(1)
   const [attendanceData, loading] = useAttendanceSummaryFetch({
     settings,
     groupBy,
@@ -51,7 +51,7 @@ const Container = ({ userRole, settings, toggleFilter }) => {
     compareBy,
     sortOrder,
     sortKey,
-    pageNo,
+    page,
     pageSize,
   })
   const onSetGroupBy = (checked) => {
@@ -102,11 +102,11 @@ const Container = ({ userRole, settings, toggleFilter }) => {
                 loading={atDetailsLoading}
                 sortOrder={sortOrder}
                 sortKey={sortKey}
-                pageNo={pageNo}
+                page={page}
                 compareBy={compareBy}
                 setSortOrder={setSortOrder}
                 setSortKey={setSortKey}
-                setPageNo={setPageNo}
+                setPage={setPage}
                 setCompareBy={setCompareBy}
               />
             </div>

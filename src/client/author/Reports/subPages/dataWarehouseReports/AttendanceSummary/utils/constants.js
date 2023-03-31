@@ -21,7 +21,9 @@ export const sortKeys = {
   TARDIES: 'tardies',
 }
 
-export const pageSize = 25
+export const pageSize = 200
+
+export const sheetSize = 8
 
 export const compareByEnums = {
   CLASS: 'class',

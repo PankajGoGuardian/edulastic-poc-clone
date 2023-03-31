@@ -1,6 +1,10 @@
 import { reportsApi } from '@edulastic/api'
 import { useEffect, useState } from 'react'
-import { sortKeys, sortOrderMap } from '../utils/constants'
+import {
+  pageSize as defaultPageSize,
+  sortKeys,
+  sortOrderMap,
+} from '../utils/constants'
 
 const {
   fetchAttendanceReportDetails,
@@ -15,8 +19,8 @@ export const useAttendanceDetailsFetch = ({
   compareBy,
   sortOrder,
   sortKey,
-  pageNo = 1,
-  pageSize = 25,
+  page = 1,
+  pageSize = defaultPageSize,
 }) => {
   const [data, setData] = useState([])
   const [totalRows, setTotalRows] = useState(1)
@@ -31,7 +35,7 @@ export const useAttendanceDetailsFetch = ({
           compareBy,
           sortKey: sortOrder ? sortKey : sortKeys.DIMENSION,
           sortOrder: sortOrderMap[sortOrder] || sortOrderMap.ascend,
-          pageNo,
+          page,
           pageSize,
           recompute: true,
         }
@@ -51,7 +55,7 @@ export const useAttendanceDetailsFetch = ({
     return () => {
       clearTimeout(timeout)
     }
-  }, [settings.requestFilters, compareBy, pageNo, pageSize, sortKey, sortOrder])
+  }, [settings.requestFilters, compareBy, page, pageSize, sortKey, sortOrder])
   return [data, totalRows, loading, error]
 }
 

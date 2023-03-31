@@ -21,6 +21,7 @@ import {
 } from './utils'
 import { CustomDot } from '../../../../common/chart-utils'
 import DynamicChartTooltip from '../../../../common/components/DynamicChartTooltip'
+import { sheetSize } from '../utils/constants'
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {
@@ -39,12 +40,11 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: 0,
+    defaultPage: Math.ceil(attendanceChartData.length / sheetSize) - 1,
     data: attendanceChartData,
     lookbackCount: 1,
-    pageSize: 8,
+    pageSize: sheetSize,
     backFillLastPage: true,
-    startFromLastPage: true,
   })
 
   const hasPreviousPage = page !== 0

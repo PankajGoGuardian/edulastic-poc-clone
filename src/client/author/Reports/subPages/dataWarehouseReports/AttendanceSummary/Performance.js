@@ -118,13 +118,13 @@ const PerformanceTable = ({
   setSortOrder,
   sortKey,
   setSortKey,
-  pageNo,
-  setPageNo,
+  page,
+  setPage,
   compareBy,
   setCompareBy,
 }) => {
   useEffect(() => {
-    setPageNo(1)
+    setPage(1)
     setSortOrder('')
     setSortKey('')
   }, [settings.requestFilters])
@@ -136,7 +136,7 @@ const PerformanceTable = ({
     setCompareBy(value)
     setSortOrder('')
     setSortKey('')
-    setPageNo(1)
+    setPage(1)
   }
 
   return (
@@ -167,8 +167,8 @@ const PerformanceTable = ({
         <EduIf condition={totalRows > pageSize}>
           <Pagination
             style={{ marginTop: '10px' }}
-            onChange={setPageNo}
-            current={pageNo}
+            onChange={setPage}
+            current={page}
             pageSize={pageSize}
             total={totalRows}
           />

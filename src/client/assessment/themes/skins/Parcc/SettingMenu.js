@@ -87,8 +87,8 @@ const SettingMenu = ({
   return (
     <StyledDropdown
       overlay={menu}
-      getPopupContainer={(triggerNode) => triggerNode.parentNode}
       trigger={['hover', 'click']}
+      overlayStyle={{ zIndex: 1003 }}
     >
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />

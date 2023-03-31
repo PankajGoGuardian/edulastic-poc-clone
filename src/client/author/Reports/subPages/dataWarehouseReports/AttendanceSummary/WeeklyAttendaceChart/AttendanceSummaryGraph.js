@@ -1,5 +1,5 @@
 import { useOfflinePagination } from '@edulastic/common'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef } from 'react'
 import {
   CartesianGrid,
   Line,
@@ -10,10 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
-import {
-  StyledChartNavButton,
-  StyledCustomChartTooltipDark,
-} from '../../../../common/styled'
+import { StyledChartNavButton } from '../../../../common/styled'
 import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
 import { CustomizedLabel, yAxisTick } from './CustomElements'
@@ -22,11 +19,8 @@ import {
   getXTickText,
   transformDataForChart,
 } from './utils'
-import {
-  CustomDot,
-  getTooltipJSX,
-  updateTooltipPos,
-} from '../../../../common/chart-utils'
+import { CustomDot } from '../../../../common/chart-utils'
+import DynamicChartTooltip from '../../../../common/components/DynamicChartTooltip'
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {
@@ -34,7 +28,6 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
     return _attendanceChartData
   }, [attendanceData])
 
-  const [tooltipType, setTooltipType] = useState('right')
   const parentContainerRef = useRef(null)
   const chartRef = useRef(null)
   const tooltipRef = useRef(null)
@@ -56,12 +49,10 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
 
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
-  const renderData = transformDataForChart(page, pagedData, groupBy)
-
-  const getTooltipContent = (payload) => {
-    updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-    return getTooltipJSX(payload)
-  }
+  const renderData = useMemo(
+    () => transformDataForChart(page, pagedData, groupBy),
+    [page, pagedData, groupBy]
+  )
 
   return (
     <StyledAttendanceChartContainer
@@ -131,6 +122,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
             type="number"
             domain={[0, 100]}
             tick={yAxisTick}
+            padding={{ top: 10 }}
             tickCount={6}
             tickLine={false}
             axisLine={false}
@@ -147,11 +139,10 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           <Tooltip
             cursor={false}
             content={
-              <StyledCustomChartTooltipDark
-                ref={tooltipRef}
-                getJSX={getTooltipContent}
-                useBarIndex={false}
-                tooltipType={tooltipType}
+              <DynamicChartTooltip
+                tooltipRef={tooltipRef}
+                parentContainerRef={parentContainerRef}
+                chartRef={chartRef}
               />
             }
           />
@@ -169,4 +160,4 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   )
 }
 
-export default AttendanceSummaryGraph
+export default React.memo(AttendanceSummaryGraph)

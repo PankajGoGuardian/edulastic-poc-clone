@@ -75,7 +75,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
 }
 
 export const onCsvConvert = (data) =>
-  downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
+  downloadCSV(`Attendance Summary.csv`, data)
 
 const PerformanceTable = ({
   isCsvDownloading = false,

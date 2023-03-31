@@ -1,14 +1,13 @@
-import { white } from '@edulastic/colors'
+import { greyThemeDark7, white } from '@edulastic/colors'
 import { EduIf, SpinLoader } from '@edulastic/common'
 import { Col } from 'antd'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
 
-const greyThemeDark7 = '#ADADAD'
-
+const DEG_HALF_CIRCLE = 180
 const getAcademicSummaryChartLabelJSX = (props) => {
-  const RADIAN = Math.PI / 180
+  const RADIAN = Math.PI / DEG_HALF_CIRCLE
   const { cx, cy, midAngle, outerRadius, value, color, textColor } = props
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
@@ -21,7 +20,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 40
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
-  const textX1 = mx + (cos >= 0 ? 1 : -1) * 21
+  const textX = mx + (cos >= 0 ? 1 : -1) * 21
   const textY = my - 5
   const labelWidth = 30
   const labelHeight = 15
@@ -52,7 +51,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
       />
       <text
         className="label-text"
-        x={textX1}
+        x={textX}
         y={textY}
         textAnchor={textAnchor}
         fill={textColor}

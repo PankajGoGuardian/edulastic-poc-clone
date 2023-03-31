@@ -15,8 +15,8 @@ const IconAttendanceReport = (props) => (
         id="Rectangle_3862"
         x="0"
         y="24.252"
-        width="146"
-        height="115"
+        width="194"
+        height="174"
         filterUnits="userSpaceOnUse"
       >
         <feOffset dy="10" input="SourceAlpha" />
@@ -64,8 +64,8 @@ const IconAttendanceReport = (props) => (
       <rect
         id="Rectangle_1634"
         data-name="Rectangle 1634"
-        width="160"
-        height="143.505"
+        width="194"
+        height="174"
         rx="10"
         transform="translate(301 524.495)"
         fill="#f5f5f5"
@@ -73,7 +73,7 @@ const IconAttendanceReport = (props) => (
       <g
         id="Group_11063"
         data-name="Group 11063"
-        transform="translate(316.926 561.248)"
+        transform="translate(336.926 575.248)"
       >
         <g
           transform="matrix(1, 0, 0, 1, -22.5, -36.75)"

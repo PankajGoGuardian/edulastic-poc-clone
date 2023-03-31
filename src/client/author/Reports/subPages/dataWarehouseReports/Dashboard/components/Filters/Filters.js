@@ -22,8 +22,8 @@ import {
 } from '../../../../../../src/selectors/user'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
-import useFiltersPreload from './hooks/useFiltersPreload'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
+import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
 
 const Filters = ({
   showFilter,

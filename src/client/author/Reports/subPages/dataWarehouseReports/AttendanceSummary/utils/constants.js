@@ -4,6 +4,8 @@ import {
   PERIOD_TYPES,
   SUBJECT_OPTIONS,
 } from '@edulastic/constants/reportUtils/common'
+import { capitalize } from 'lodash'
+import { allFilterValue } from '../../../../common/constants'
 
 export const sortOrderMap = {
   ascend: 'asc',
@@ -106,16 +108,16 @@ export const staticDropDownData = {
     teacherIds: '',
     grades: '',
     subjects: '',
-    courseId: 'All',
+    courseId: capitalize(allFilterValue),
     classIds: '',
     groupIds: '',
 
-    race: 'all',
-    gender: 'all',
-    iepStatus: 'all',
-    frlStatus: 'all',
-    ellStatus: 'all',
-    hispanicEthnicity: 'all',
+    race: allFilterValue,
+    gender: allFilterValue,
+    iepStatus: allFilterValue,
+    frlStatus: allFilterValue,
+    ellStatus: allFilterValue,
+    hispanicEthnicity: allFilterValue,
     customDemographicKey: '',
     customDemographicValue: '',
 

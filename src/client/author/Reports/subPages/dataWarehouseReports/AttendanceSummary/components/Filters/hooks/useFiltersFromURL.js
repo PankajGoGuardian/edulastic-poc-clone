@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { isEmpty, reject } from 'lodash'
+import { capitalize, isEmpty, reject } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
 import { staticDropDownData } from '../../../utils/constants'
+import { allFilterValue } from '../../../../../../common/constants'
 
 function useFiltersFromURL({
   _onGoClick,
@@ -51,16 +52,16 @@ function useFiltersFromURL({
         teacherIds: search.teacherIds || '',
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         grades: urlGrades.map((item) => item.key).join(',') || '',
-        courseId: search.courseId || 'All',
+        courseId: search.courseId || capitalize(allFilterValue),
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
 
-        race: search.race || 'all',
-        gender: search.gender || 'all',
-        iepStatus: search.iepStatus || 'all',
-        frlStatus: search.frlStatus || 'all',
-        ellStatus: search.ellStatus || 'all',
-        hispanicEthnicity: search.hispanicEthnicity || 'all',
+        race: search.race || allFilterValue,
+        gender: search.gender || allFilterValue,
+        iepStatus: search.iepStatus || allFilterValue,
+        frlStatus: search.frlStatus || allFilterValue,
+        ellStatus: search.ellStatus || allFilterValue,
+        hispanicEthnicity: search.hispanicEthnicity || allFilterValue,
         periodType: urlPeriod.key,
         customPeriodStart: search.customPeriodStart,
         customPeriodEnd: search.customPeriodEnd,

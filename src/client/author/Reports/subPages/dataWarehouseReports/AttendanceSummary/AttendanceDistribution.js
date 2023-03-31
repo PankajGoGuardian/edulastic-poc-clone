@@ -1,6 +1,7 @@
 import { greyThemeDark7, white } from '@edulastic/colors'
 import { EduIf, SpinLoader } from '@edulastic/common'
 import { Col } from 'antd'
+import { round } from 'lodash'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
@@ -58,7 +59,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         fontWeight="bold"
         fontSize="10px"
       >
-        {value}%
+        {round(value)}%
       </text>
     </g>
   )

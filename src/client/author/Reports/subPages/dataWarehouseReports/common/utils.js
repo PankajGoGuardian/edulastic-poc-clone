@@ -1,11 +1,11 @@
 import { isEmpty } from 'lodash'
+import { allFilterValue } from '../../../common/constants'
 
 export function buildRequestFilters(_settings) {
   const _requestFilters = {}
   Object.keys(_settings.requestFilters).forEach((filterType) => {
     _requestFilters[filterType] =
-      _settings.requestFilters[filterType] === 'All' ||
-      _settings.requestFilters[filterType] === 'all'
+      _settings.requestFilters[filterType]?.toLowerCase() === allFilterValue
         ? ''
         : _settings.requestFilters[filterType]
   })

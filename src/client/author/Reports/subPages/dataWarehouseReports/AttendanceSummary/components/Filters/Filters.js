@@ -21,6 +21,7 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
+import { allFilterValue } from '../../../../../common/constants'
 
 const Filters = ({
   showFilter,
@@ -138,7 +139,7 @@ const Filters = ({
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
     if (
       !multiple &&
-      (!selected.key || selected.key === 'All' || selected.key === 'all')
+      (!selected.key || selected.key.toLowerCase() === allFilterValue)
     ) {
       delete _filterTagsData[keyName]
     }

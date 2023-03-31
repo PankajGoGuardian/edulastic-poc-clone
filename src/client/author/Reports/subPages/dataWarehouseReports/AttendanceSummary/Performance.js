@@ -2,7 +2,8 @@ import React, { useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import { reportUtils } from '@edulastic/constants'
-import { EduIf, SpinLoader } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { Link } from 'react-router-dom'
 import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
@@ -18,6 +19,10 @@ import {
   pageSize,
   sortKeys,
 } from './utils/constants'
+import {
+  compareByFilterFieldKeys,
+  nextCompareByOptionsMap,
+} from '../Dashboard/utils'
 
 const { downloadCSV } = reportUtils.common
 
@@ -49,6 +54,32 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       dataIndex: 'dimension.name',
       align: 'left',
       sorter: true,
+      render: (value, record) => {
+        const canDrillDown =
+          [compareByEnums.CLASS, compareByEnums.SCHOOL].includes(compareBy) ||
+          (compareBy === compareByEnums.TEACHER && record.students < 100)
+        let url = null
+        if (canDrillDown) {
+          const filterField = compareByFilterFieldKeys[compareBy]
+          url = new URL(window.location.href)
+          url.searchParams.set(filterField, record.dimension._id)
+          url.searchParams.set(
+            'selectedCompareBy',
+            nextCompareByOptionsMap[compareBy]
+          )
+        }
+        const text = value || '-'
+        return (
+          <EduIf condition={!!url}>
+            <EduThen>
+              <Link to={url} target={url?.href}>
+                {text}
+              </Link>
+            </EduThen>
+            <EduElse>{text}</EduElse>
+          </EduIf>
+        )
+      },
     },
     {
       title: 'AVG ATTENDANCE',

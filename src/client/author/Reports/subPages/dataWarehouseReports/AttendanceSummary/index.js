@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { getOrgDataSelector, getUserRole } from '../../../../src/selectors/user'
+import { getOrgDataSelector } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
@@ -8,7 +8,6 @@ import {
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
-import { compareByOptions as compareByOptionsRaw } from './utils/constants'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { buildRequestFilters } from '../common/utils'
@@ -16,14 +15,12 @@ import { selectors, actions } from './ducks'
 import Filters from './components/Filters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import Container from './Container'
-import { getSelectedCompareBy } from '../../../common/util'
 
 const AttendanceReport = (props) => {
   const {
     loc,
     breadcrumbData,
     isCliUser,
-    userRole,
     onRefineResultsCB,
     showFilter,
     location,
@@ -43,17 +40,8 @@ const AttendanceReport = (props) => {
     }
   }
 
-  const compareByOptions = compareByOptionsRaw.filter(
-    (option) => !option.hiddenFromRole?.includes(userRole)
-  )
-
   const search = useUrlSearchParams(location)
   const reportId = search.reportId
-  const selectedCompareBy = getSelectedCompareBy(
-    search,
-    settings,
-    compareByOptions
-  )
 
   const onApplyFilter = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
@@ -65,7 +53,6 @@ const AttendanceReport = (props) => {
         groupIds: _requestFilters.groupIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy,
     })
     setShowApply(false)
   }
@@ -117,7 +104,6 @@ const enhance = connect(
     isBeingShared: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
     settings: settings(state),
     firstLoad: firstLoad(state),

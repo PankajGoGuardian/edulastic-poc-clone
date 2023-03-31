@@ -99,11 +99,11 @@ const Dashboard = ({
   )?.performanceBand
 
   const search = useUrlSearchParams(location)
-  const selectedCompareBy = getSelectedCompareBy(
+  const selectedCompareBy = getSelectedCompareBy({
     search,
     settings,
-    compareByOptions
-  )
+    compareByOptions,
+  })
 
   const onGoClick = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)

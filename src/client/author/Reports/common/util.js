@@ -618,7 +618,11 @@ export const getHeaderSettings = (
   }
 }
 
-export const getSelectedCompareBy = (search, settings, compareByOptions) => {
+export const getSelectedCompareBy = ({
+  search = qs.parse(window.location.search),
+  settings = {},
+  compareByOptions,
+}) => {
   let [selectedCompareBy] = compareByOptions
   if (search.selectedCompareBy) {
     selectedCompareBy =

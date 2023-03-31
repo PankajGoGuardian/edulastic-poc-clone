@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
-import { getUserRole } from '../../../../src/selectors/user'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
@@ -13,16 +11,25 @@ import {
   useAttendanceDistributionFetch,
   useAttendanceSummaryFetch,
 } from './hooks/useFetch'
-import { groupByConstants, compareByEnums, pageSize } from './utils/constants'
+import {
+  groupByConstants,
+  pageSize,
+  compareByOptions as compareByOptionsRaw,
+} from './utils/constants'
 
 import { selectors } from './ducks'
 import { NoDataContainer } from '../../../common/styled'
+import { getSelectedCompareBy } from '../../../common/util'
 
 const Container = ({ userRole, settings, toggleFilter }) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
-  const [compareBy, setCompareBy] = useState(
-    userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
+  const compareByOptions = compareByOptionsRaw.filter(
+    (option) => !option.hiddenFromRole?.includes(userRole)
   )
+  const defaultCompareBy = getSelectedCompareBy({
+    compareByOptions,
+  }).key
+  const [compareBy, setCompareBy] = useState(defaultCompareBy)
   const [sortOrder, setSortOrder] = useState('')
   const [sortKey, setSortKey] = useState('')
   const [pageNo, setPageNo] = useState(1)
@@ -112,7 +119,6 @@ const Container = ({ userRole, settings, toggleFilter }) => {
 
 const { settings } = selectors
 const enhance = connect((state) => ({
-  userRole: getUserRole(state),
   settings: settings(state),
 }))
 

@@ -20,11 +20,11 @@ const getAcademicSummaryChartLabelJSX = (props) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 40
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
-  const textX = mx + (cos >= 0 ? 1 : -1) * 21
-  const textY = my - 5
-  const labelWidth = 30
-  const labelHeight = 15
-  const rectx = cos >= 0 ? ex - labelWidth + 5 : ex - 5
+  const textX = mx + (cos >= 0 ? 1 : -1) * 12
+  const textY = my - 10
+  const labelWidth = 36
+  const labelHeight = 22
+  const rectx = cos >= 0 ? ex - labelWidth : ex
   const recty = ey - labelHeight - 2
   return (
     <g>

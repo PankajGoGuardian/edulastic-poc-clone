@@ -76,7 +76,7 @@ const Container = ({ userRole, settings, toggleFilter }) => {
               setGroupBy={onSetGroupBy}
             />
             <div>
-              <Row gutter={[4, 4]}>
+              <Row gutter={[16, 16]}>
                 <AttendanceDistribution
                   data={attDistributionData}
                   loading={attDistrDataLoading}

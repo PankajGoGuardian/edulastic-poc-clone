@@ -6,13 +6,14 @@ export const CustomizedLabel = (props) => {
 
   if (index === 0) return null
 
-  const labelWidth = 40
-  const labelHeight = 15
+  const labelWidth = 36
+  const labelHeight = 22
   const isLabelOverFlowing = y - labelHeight - 10 < 10
 
   const rectx = x - labelWidth + 20
   const recty = isLabelOverFlowing ? y + labelHeight : y - labelHeight - 10
   const newY = isLabelOverFlowing ? y + 30 : y - 10
+  const textX = x + 2
 
   return (
     <g>
@@ -22,11 +23,12 @@ export const CustomizedLabel = (props) => {
         width={labelWidth}
         height={labelHeight}
         fill={stroke}
+        rx="5px"
       />
       <text
-        x={x}
+        x={textX}
         y={newY}
-        dy={-4}
+        dy={-7}
         fill="#5D5D5D"
         fontSize={10}
         fontWeight="bold"

@@ -31,7 +31,7 @@ function useTabNavigation({
     const navigationItems = computeChartNavigationLinks({
       requestFilters: settings.requestFilters,
       loc,
-      hideOtherTabs: !reportId,
+      hideOtherTabs: !!reportId,
     })
     updateNavigation(navigationItems)
   }, [settings])

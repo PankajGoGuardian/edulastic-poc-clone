@@ -24,6 +24,7 @@ import {
   StyledIconPlayButton,
   StyledIconQuestionCircle,
   NoResultWrapper,
+  StyledAnchor,
 } from './styled-components'
 import {
   getAdvancedSearchFilterSelector,
@@ -157,9 +158,13 @@ const _QueryBuilder = ({
       title={
         <HelpArticleWrapper>
           <span>Advanced Search</span>
-          <a href={advancedSearchHelpArtical} target="_blank" rel="noreferrer">
+          <StyledAnchor
+            href={advancedSearchHelpArtical}
+            target="_blank"
+            rel="noreferrer"
+          >
             <StyledIconQuestionCircle width="16px" height="16px" />
-          </a>
+          </StyledAnchor>
           <StyledIconPlayButton
             onClick={() => {
               setShowHelpVideo((state) => !state)

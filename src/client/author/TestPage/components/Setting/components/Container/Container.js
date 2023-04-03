@@ -25,6 +25,8 @@ import {
   TextInputStyled,
   withWindowSizes,
   EduButton,
+  EduIf,
+  EduThen,
 } from '@edulastic/common'
 import {
   roleuser,
@@ -34,6 +36,7 @@ import {
 import { IconInfo, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 
+import { SHOW_IMMERSIVE_READER } from '@edulastic/constants/const/test'
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
@@ -110,6 +113,7 @@ import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
+import { BetaTag } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const {
   settingCategories,
@@ -1768,6 +1772,15 @@ class Setting extends Component {
                                 }}
                               >
                                 {accessibilities[o.key]}
+                                <EduIf
+                                  condition={o.key === SHOW_IMMERSIVE_READER}
+                                >
+                                  <EduThen>
+                                    <BetaTag top="-50%" left="125.55px">
+                                      BETA
+                                    </BetaTag>
+                                  </EduThen>
+                                </EduIf>
                               </span>
                             </Col>
                             <Col span={12}>

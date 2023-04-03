@@ -20,12 +20,8 @@ const {
 
 const GetCellContents = (props) => {
   const { score } = props
-  const bgColor = getHSLFromRange1(score)
-  return (
-    <ColoredCell bgColor={bgColor}>
-      {!Number.isNaN(score) ? `${score}%` : '0%'}
-    </ColoredCell>
-  )
+  const bgColor = getHSLFromRange1(parseInt(score, 10))
+  return <ColoredCell bgColor={bgColor}>{score}</ColoredCell>
 }
 
 const getTableColumnsWrapper = (
@@ -52,9 +48,7 @@ const getTableColumnsWrapper = (
       key: question.questionId,
       children: [
         {
-          title: !Number.isNaN(question.districtAvgPerf)
-            ? `${Math.round(question.districtAvgPerf)}%`
-            : '0%',
+          title: question.districtAvgPerf,
           dataIndex: `scorePercentByQId.${question.questionId}`,
           key: question.questionId,
           render: (text, record) => (
@@ -72,15 +66,16 @@ const getTableColumnsWrapper = (
 
   const compareColumn = {
     title: compareByToPluralName[compareBy],
-    width: 150,
     dataIndex: 'dimension',
     sorter: true,
-    sortOrder: sortOrder ? 'ascend' : 'descend',
+    sortOrder,
+    align: 'left',
     children: [
       {
         title: 'District Avg.',
         dataIndex: 'dimension',
         key: `dimension`,
+        align: 'left',
       },
     ],
   }
@@ -168,8 +163,8 @@ export const QuestionAnalysisTable = ({
       rowKey="questionId"
       colorCellStart={2}
       flexWrap="unset"
-      onChange={() => {
-        setSortByDimension((prevState) => !prevState)
+      onChange={(_, __, sort) => {
+        setSortByDimension(sort.order)
       }}
     />
   )

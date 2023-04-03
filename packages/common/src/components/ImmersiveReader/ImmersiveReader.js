@@ -3,12 +3,15 @@ import { launchAsync } from '@microsoft/immersive-reader-sdk'
 import { fetchIRtokenAndSubDomain } from '@edulastic/api'
 import { isUndefined } from 'lodash'
 import IconImmersiveReader from '@edulastic/icons/src/IconImmersiveReader'
+import { question } from '@edulastic/constants'
 
 import { Tooltip } from 'antd'
 import { notification, captureSentryException } from '@edulastic/common'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { StyledButton } from '../../../../../src/client/assessment/themes/common/styledCompoenents'
+
+const { IR_CONTENT_SELECTOR, IR_MCQ_LABEL_SELECTOR } = question
 
 const ImmersiveReader = ({ t: i18translate, title }) => {
   const getImmersiveReaderArgs = async () => {
@@ -17,9 +20,19 @@ const ImmersiveReader = ({ t: i18translate, title }) => {
 
       const chunks = []
       // eslint-disable-next-line func-names
-      $('.immersive-reader-content').each(function () {
+      $(`.${IR_CONTENT_SELECTOR}`).each(function () {
+        /** cloning jquery object to prevent modification in assessment player content, here we are manipulating html content. */
+        const cloned = $(this).clone()
+        $(cloned)
+          .find(`.${IR_MCQ_LABEL_SELECTOR}`)
+          // eslint-disable-next-line func-names
+          .each(function () {
+            const labelText = $(this).text()
+            $(this).text(`${labelText} `)
+          })
+        const content = $(cloned).html()
         chunks.push({
-          content: $(this).html(),
+          content,
           mimeType: 'text/html',
         })
       })

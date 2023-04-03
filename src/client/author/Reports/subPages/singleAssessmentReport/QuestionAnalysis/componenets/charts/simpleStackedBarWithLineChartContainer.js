@@ -3,6 +3,7 @@ import { Row, Col } from 'antd'
 import { maxBy } from 'lodash'
 import { ticks } from 'd3-array'
 import { themeColor } from '@edulastic/colors'
+import { reportUtils } from '@edulastic/constants'
 import { getHSLFromRange1 } from '../../../../../common/util'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { CustomChartCursor } from '../../../../../common/components/charts/chartUtils/customChartCursor'
@@ -23,7 +24,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
   const getTooltipJSX = (payload) => {
     if (payload && payload.length) {
       const {
-        qLabel,
+        questionLabel,
         avgPerformance,
         avgTimeSecs,
         districtAvg,
@@ -32,7 +33,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{qLabel}</Col>
+            <Col className="tooltip-key">{questionLabel}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">Avg. Performance: </Col>
@@ -54,6 +55,8 @@ export const SimpleStackedBarWithLineChartContainer = ({
     return false
   }
 
+  const { sortByOptions } = reportUtils.questionAnalysis
+
   const lineYDomain = useMemo(() => {
     let m = maxBy(chartData, 'avgTimeSecs')
     m = m ? m.avgTimeSecs : 0
@@ -63,7 +66,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
 
   const len = Object.keys(filter).length
   for (const item of chartData) {
-    if (filter[item.qLabel] || len === 0) {
+    if (filter[item.questionLabel] || len === 0) {
       item.fill = getHSLFromRange1(item.avgPerformance)
     } else {
       item.fill = '#cccccc'
@@ -75,7 +78,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
       margin={{ top: 0, right: 60, left: 60, bottom: 0 }}
       pageSize={10}
       data={chartData}
-      xAxisDataKey="qLabel"
+      xAxisDataKey={sortByOptions.Q_LABEL}
       bottomStackDataKey="avgPerformance"
       bottomStackDataUnit="%"
       topStackDataKey="avgIncorrect"
@@ -86,7 +89,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
       setVisibleIndices={setVisibleIndices}
       yAxisLabel="Avg.Score (%)"
       filter={filter}
-      lineXAxisDataKey="qLabel"
+      lineXAxisDataKey={sortByOptions.Q_LABEL}
       lineYAxisLabel="Time (mins)"
       lineYTickFormatter={lineYTickFormatter}
       lineYDomain={lineYDomain}

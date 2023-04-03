@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
-import { EduButton } from '@edulastic/common'
+import { EduButton, EduIf, EduThen } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { SHOW_IMMERSIVE_READER } from '@edulastic/constants/const/test'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -21,6 +22,7 @@ import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const { accessibilities, accessibilitySettings } = test
 const {
@@ -257,8 +259,16 @@ const MiscellaneousGroupContainer = ({
                         <Col span={10}>
                           <span style={{ fontSize: 12, fontWeight: 600 }}>
                             {accessibilities[key]}
+                            <EduIf condition={key === SHOW_IMMERSIVE_READER}>
+                              <EduThen>
+                                <BetaTag top="-50%" left="116px">
+                                  BETA
+                                </BetaTag>
+                              </EduThen>
+                            </EduIf>
                           </span>
                         </Col>
+
                         <Col span={14}>
                           <StyledRadioGroup
                             disabled={

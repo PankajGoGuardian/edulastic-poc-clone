@@ -269,7 +269,7 @@ const StandardsGradebook = ({
   if (some(isReportLoading, Boolean)) {
     return (
       <SpinLoader
-        tip="Please wait while we gather the required information..."
+        tip="Please wait while we gather the required information, it may take a while..."
         position="fixed"
       />
     )

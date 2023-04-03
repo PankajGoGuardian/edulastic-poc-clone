@@ -22,7 +22,6 @@ const {
 
 // common utils
 const roundUpto = 2 // Rounding off a decimal value upto 2 decimal places
-const scorePerRoundUpto = 0 // Rounding off ScorePercentage to Integer value
 
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
@@ -124,17 +123,21 @@ const getAllAnalyseByPerformanceData = ({
   const avgScorePercent = `${round(
     typeof scorePercent === 'number'
       ? scorePercent * 100
-      : percentage(avgScore, totalScore),
-    scorePerRoundUpto
+      : percentage(avgScore, totalScore)
   )}%`
   return {
     [analyseByKeys.SCORE_PERCENT]: avgScore != null ? avgScorePercent : null,
     [analyseByKeys.RAW_SCORE]:
       avgScore != null
-        ? `${round(avgScore, roundUpto)} / ${round(totalScore, roundUpto)}`
+        ? `${round(avgScore, roundUpto).toFixed(roundUpto)} / ${round(
+            totalScore,
+            roundUpto
+          )}`
         : null,
     [analyseByKeys.MASTERY_SCORE]:
-      masteryScore != null ? round(masteryScore, roundUpto) : null,
+      masteryScore != null
+        ? round(masteryScore, roundUpto).toFixed(roundUpto)
+        : null,
     [analyseByKeys.MASTERY_LEVEL]:
       masteryScore != null ? masteryLevelLabel : null,
     color: masteryScore != null ? masteryLevel.color : null,

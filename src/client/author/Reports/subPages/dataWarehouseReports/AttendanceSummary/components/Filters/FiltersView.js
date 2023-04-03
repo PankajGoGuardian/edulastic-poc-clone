@@ -12,11 +12,10 @@ import {
   StyledEduButton,
 } from '../../../../../common/styled'
 
-import { staticDropDownData } from '../../utils'
-import FilterTestFields from '../../../../../common/components/FilterTestFields'
-import FilterClassFields from '../../../../../common/components/FilterClassFields'
+import { staticDropDownData } from '../../utils/constants'
 import FilterPeriodFields from '../../../../../common/components/FilterPeriodFields'
 import FilterActions from '../../../../../common/components/FilterActions'
+import FilterClassFields from '../../../../../common/components/FilterClassFields'
 
 function FiltersView({
   isPrinting,
@@ -33,8 +32,6 @@ function FiltersView({
   setFilters,
   updateFilterDropdownCB,
   schoolYears,
-  assessmentTypesRef,
-  availableAssessmentType,
   userRole,
   demographics,
   terms,
@@ -77,22 +74,6 @@ function FiltersView({
                     onChange={setFiltersTabKey}
                   >
                     <Tabs.TabPane
-                      key={staticDropDownData.filterSections.TEST_FILTERS.key}
-                      tab={staticDropDownData.filterSections.TEST_FILTERS.title}
-                    >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <FilterTestFields
-                          filters={filters}
-                          updateFilterDropdownCB={updateFilterDropdownCB}
-                          schoolYears={schoolYears}
-                          assessmentTypesRef={assessmentTypesRef}
-                          availableAssessmentType={availableAssessmentType}
-                          dropdownData={staticDropDownData}
-                        />
-                      </Row>
-                    </Tabs.TabPane>
-
-                    <Tabs.TabPane
                       key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                       tab={
                         staticDropDownData.filterSections.CLASS_FILTERS.title
@@ -100,6 +81,20 @@ function FiltersView({
                       forceRender
                     >
                       <Row type="flex" gutter={[5, 10]}>
+                        <Col span={6}>
+                          <FilterLabel data-cy="schoolYear">
+                            School Year
+                          </FilterLabel>
+                          <ControlDropDown
+                            by={filters.termId}
+                            selectCB={(e, selected) =>
+                              updateFilterDropdownCB(selected, 'termId')
+                            }
+                            data={schoolYears}
+                            prefix="School Year"
+                            showPrefixOnSelected={false}
+                          />
+                        </Col>
                         <FilterClassFields
                           userRole={userRole}
                           filters={filters}

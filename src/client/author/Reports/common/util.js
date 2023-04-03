@@ -11,6 +11,7 @@ import {
   indexOf,
   keyBy,
   pullAllBy,
+  capitalize,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -20,6 +21,10 @@ import {
   reportGroupType,
 } from '@edulastic/constants/const/report'
 import calcMethod from './static/json/calcMethod.json'
+import navigation from './static/json/navigation.json'
+import { allFilterValue } from './constants'
+
+// TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
 const studentFiltersDefaultValues = [
   {
@@ -58,13 +63,6 @@ export const DemographicCompareByOptions = [
   'iepStatus',
   'hispanicEthnicity',
 ]
-
-const tableHeaderFields = {
-  question: 'Question',
-  standards: 'STANDARDS',
-  points: 'POINTS',
-  districtAvg: 'District Avg.',
-}
 
 export const percentage = (
   numerator = 0,
@@ -136,22 +134,22 @@ export const filterData = (data, filter) => {
   const filteredData = data.filter(
     (item) =>
       (!filter.gender ||
-        filter.gender === 'all' ||
+        filter.gender === allFilterValue ||
         item.gender.toLowerCase() === filter.gender.toLowerCase()) &&
       (!filter.frlStatus ||
-        filter.frlStatus === 'all' ||
+        filter.frlStatus === allFilterValue ||
         item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase()) &&
       (!filter.ellStatus ||
-        filter.ellStatus === 'all' ||
+        filter.ellStatus === allFilterValue ||
         item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase()) &&
       (!filter.iepStatus ||
-        filter.iepStatus === 'all' ||
+        filter.iepStatus === allFilterValue ||
         item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
       (!filter.race ||
-        filter.race === 'all' ||
+        filter.race === allFilterValue ||
         item.race.toLowerCase() === filter.race.toLowerCase()) &&
       (!filter.hispanicEthnicity ||
-        filter.hispanicEthnicity === 'all' ||
+        filter.hispanicEthnicity === allFilterValue ||
         item.hispanicEthnicity.toLowerCase() ===
           filter.hispanicEthnicity.toLowerCase())
   )
@@ -165,19 +163,20 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
         (item.grades || '')
           .split(',')
           .filter((g) => g.length)
-          .includes(currentFilter.grade) || currentFilter.grade === 'All'
+          .includes(currentFilter.grade) ||
+        currentFilter.grade?.toLowerCase() === allFilterValue
       const checkForSchool =
         !currentFilter.schoolId ||
-        currentFilter.schoolId === 'All' ||
+        currentFilter.schoolId.toLowerCase() === allFilterValue ||
         (item.groupType === 'class' && item.schoolId === currentFilter.schoolId)
       if (
         item.groupId &&
         checkForGrades &&
         checkForSchool &&
         (item.subject === currentFilter.subject ||
-          currentFilter.subject === 'All') &&
+          currentFilter.subject?.toLowerCase() === allFilterValue) &&
         (item.courseId === currentFilter.courseId ||
-          currentFilter.courseId === 'All')
+          currentFilter.courseId?.toLowerCase() === allFilterValue)
       ) {
         return true
       }
@@ -525,9 +524,38 @@ export const tooltipParams = {
   xAxisHeight: 100,
 }
 
+export const computeChartNavigationLinks = ({
+  requestFilters,
+  loc,
+  hideOtherTabs = false,
+}) => {
+  if (navigation.locToData[loc]) {
+    requestFilters = requestFilters || {}
+    const requestFilterKeys = Object.keys(requestFilters)
+    const _filters = {}
+    requestFilterKeys.forEach((item) => {
+      const val =
+        requestFilters[item] === ''
+          ? capitalize(allFilterValue)
+          : requestFilters[item]
+      _filters[item] = val
+    })
+    const _navigationItems = navigation.navigation[
+      navigation.locToData[loc].group
+    ].filter((item) => {
+      if (hideOtherTabs) return item.key === loc
+      return true
+    })
+    return next(_navigationItems, (draft) => {
+      const _currentItem = draft.find((t) => t.key === loc)
+      _currentItem.location += `?${qs.stringify(_filters)}`
+    })
+  }
+  return []
+}
+
 export const getHeaderSettings = (
   loc,
-  navigation,
   navigationItems,
   location,
   dynamicBreadcrumb,
@@ -575,7 +603,9 @@ export const getHeaderSettings = (
   const reportId = qs.parse(location.search, {
     ignoreQueryPrefix: true,
   }).reportId
-  const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
+  const isSharedReport = !!(
+    reportId && reportId.toLowerCase() !== allFilterValue
+  )
   if (isSharedReport) {
     breadcrumbInfo[0] = navigation.locToData[SHARED_REPORT].breadcrumb[0]
   }
@@ -596,8 +626,12 @@ export const getHeaderSettings = (
   }
 }
 
-export const getSelectedCompareBy = (search, settings, compareByOptions) => {
-  let selectedCompareBy = compareByOptions[0]
+export const getSelectedCompareBy = ({
+  search = qs.parse(window.location.search),
+  settings = {},
+  compareByOptions,
+}) => {
+  let [selectedCompareBy] = compareByOptions
   if (search.selectedCompareBy) {
     selectedCompareBy =
       compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
@@ -606,4 +640,29 @@ export const getSelectedCompareBy = (search, settings, compareByOptions) => {
     selectedCompareBy = settings.selectedCompareBy
   }
   return selectedCompareBy
+}
+
+export function removeFilter(
+  filterTagsData,
+  filters,
+  initialFilters,
+  type,
+  key
+) {
+  const _filterTagsData = { ...filterTagsData }
+  const _filters = { ...filters }
+  resetStudentFilters(_filterTagsData, _filters, type, '')
+  if (filters[type] === key) {
+    // handles single selection filters
+    _filters[type] = initialFilters[type]
+    delete _filterTagsData[type]
+  } else if (filters[type].includes(key)) {
+    // handles multiple selection filters
+    _filters[type] = filters[type]
+      .split(',')
+      .filter((d) => d !== key)
+      .join(',')
+    _filterTagsData[type] = filterTagsData[type].filter((d) => d.key !== key)
+  }
+  return { _filters, _filterTagsData }
 }

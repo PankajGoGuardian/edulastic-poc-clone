@@ -13,9 +13,7 @@ import {
   availableTestTypes,
   filterDetailsFields,
   sharedDetailsFields,
-  staticDropDownData,
 } from './constants'
-import { resetStudentFilters as resetFilters } from '../../../../common/util'
 
 const MAX_TITLE_LENGTH = 14
 
@@ -163,25 +161,6 @@ export function buildAcademicSummaryFilters(
     ? academicSummaryFilters[TEST_TYPE]
     : availableTestTypes[0]
   return { performanceBand, testType }
-}
-
-export function removeFilter(filterTagsData, filters, type, key) {
-  const _filterTagsData = { ...filterTagsData }
-  const _filters = { ...filters }
-  resetFilters(_filterTagsData, _filters, type, '')
-  if (filters[type] === key) {
-    // handles single selection filters
-    _filters[type] = staticDropDownData.initialFilters[type]
-    delete _filterTagsData[type]
-  } else if (filters[type].includes(key)) {
-    // handles multiple selection filters
-    _filters[type] = filters[type]
-      .split(',')
-      .filter((d) => d !== key)
-      .join(',')
-    _filterTagsData[type] = filterTagsData[type].filter((d) => d.key !== key)
-  }
-  return { _filters, _filterTagsData }
 }
 
 export const getFilteredAcademicSummaryTestTypes = (

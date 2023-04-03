@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import qs from 'qs'
 import { get, mapValues } from 'lodash'
 
@@ -9,10 +9,7 @@ import {
   resetStudentFilters as resetFilters,
 } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
-import {
-  staticDropDownData,
-  availableTestTypes as availableAssessmentType,
-} from '../../utils'
+import { staticDropDownData } from '../../utils/constants'
 
 import { actions, selectors } from '../../ducks'
 import {
@@ -24,6 +21,7 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
+import { allFilterValue } from '../../../../../common/constants'
 
 const Filters = ({
   showFilter,
@@ -40,6 +38,7 @@ const Filters = ({
   filtersData,
   filtersTabKey,
   filters,
+  setFilters,
   filterTagsData,
   settings,
   selectedFilterTagsData = settings.selectedFilterTagsData || {},
@@ -49,14 +48,11 @@ const Filters = ({
   setFirstLoad,
   fetchFiltersDataRequest,
   setFiltersTabKey,
-  setFilters,
   setFilterTagsData,
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
   history,
 }) => {
-  const assessmentTypesRef = useRef()
-
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
@@ -64,6 +60,10 @@ const Filters = ({
 
   const { demographics = [] } = get(filtersData, 'data.result', {})
 
+  const termId =
+    search.termId ||
+    defaultTermId ||
+    (schoolYears.length ? schoolYears[0].key : '')
   useFiltersPreload({
     reportId,
     fetchFiltersDataRequest,
@@ -73,15 +73,11 @@ const Filters = ({
     firstLoad,
     userRole,
     institutionIds,
-    termId:
-      search.termId ||
-      defaultTermId ||
-      (schoolYears.length ? schoolYears[0].key : ''),
+    termId,
   })
 
   useFiltersFromURL({
     _onGoClick,
-    availableAssessmentType,
     defaultTermId,
     fetchUpdateTagsData,
     filters,
@@ -124,10 +120,10 @@ const Filters = ({
   }
 
   const handleTagClick = (filterKey) => {
-    const _filtersTabKey = staticDropDownData.tagTypes.find(
-      (filter) => filter.key === filterKey
-    )?.tabKey
-    if (typeof _filtersTabKey !== 'undefined') {
+    const _filtersTabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (_filtersTabKey !== -1) {
       toggleFilter(null, true)
       setFiltersTabKey(_filtersTabKey)
     }
@@ -141,7 +137,10 @@ const Filters = ({
   ) => {
     // update tags data
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
-    if (!multiple && (!selected.key || selected.key?.toLowerCase() === 'all')) {
+    if (
+      !multiple &&
+      (!selected.key || selected.key.toLowerCase() === allFilterValue)
+    ) {
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
@@ -184,8 +183,6 @@ const Filters = ({
       setFilters={setFilters}
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
-      assessmentTypesRef={assessmentTypesRef}
-      availableAssessmentType={availableAssessmentType}
       userRole={userRole}
       demographics={demographics}
       terms={terms}

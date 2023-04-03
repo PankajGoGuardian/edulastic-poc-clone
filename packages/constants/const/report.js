@@ -1,6 +1,7 @@
 // TODO use consistent names, like `ds-whole-learner-report` ?
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+const DW_ATTENDANCE_SUMMARY_REPORT = 'attendance-summary'
 const DW_DASHBOARD_REPORT = 'dashboard-report'
 
 const reportGroupType = {
@@ -15,6 +16,7 @@ const reportGroupType = {
   ENGAGEMENT_REPORT: 'engagement-report',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_ATTENDANCE_SUMMARY_REPORT,
   DW_DASHBOARD_REPORT,
 }
 
@@ -39,6 +41,7 @@ const reportNavType = {
   ENGAGEMENT_SUMMARY: 'engagement-summary',
   ACTIVITY_BY_SCHOOL: 'activity-by-school',
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
+  DW_ATTENDANCE_SUMMARY_REPORT,
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT,
@@ -61,4 +64,5 @@ module.exports = {
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT,
+  DW_ATTENDANCE_SUMMARY_REPORT,
 }

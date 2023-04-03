@@ -38,7 +38,6 @@ const tableToDBSortOrderMap = {
   [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
   [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
 }
-const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 
 const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 

@@ -1,10 +1,9 @@
-import { Col, Row } from 'antd'
+import { Col } from 'antd'
 import React from 'react'
-import TagFilter from '../../../../../../src/components/common/TagFilter'
-import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
-import { FilterLabel } from '../../../../../common/styled'
-import { staticDropDownData } from '../../utils'
+import TagFilter from '../../../src/components/common/TagFilter'
+import { ControlDropDown } from './widgets/controlDropDown'
+import MultiSelectDropdown from './widgets/MultiSelectDropdown'
+import { FilterLabel } from '../styled'
 
 function FilterTestFields({
   filters,
@@ -12,9 +11,11 @@ function FilterTestFields({
   schoolYears,
   assessmentTypesRef,
   availableAssessmentType,
+  // TODO dropDownData hardly changes. Better provide a default
+  dropdownData,
 }) {
   return (
-    <Row type="flex" gutter={[5, 10]}>
+    <>
       <Col span={6}>
         <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
         <ControlDropDown
@@ -30,7 +31,7 @@ function FilterTestFields({
           dataCy="testGrade"
           label="Test Grade"
           onChange={(e) => {
-            const selected = staticDropDownData.grades.filter((a) =>
+            const selected = dropdownData.grades.filter((a) =>
               e.includes(a.key)
             )
             updateFilterDropdownCB(selected, 'testGrades', true)
@@ -40,7 +41,7 @@ function FilterTestFields({
               ? filters.testGrades.split(',')
               : []
           }
-          options={staticDropDownData.grades}
+          options={dropdownData.grades}
         />
       </Col>
       <Col span={6}>
@@ -48,7 +49,7 @@ function FilterTestFields({
           dataCy="testSubject"
           label="Test Subject"
           onChange={(e) => {
-            const selected = staticDropDownData.subjects.filter((a) =>
+            const selected = dropdownData.subjects.filter((a) =>
               e.includes(a.key)
             )
             updateFilterDropdownCB(selected, 'testSubjects', true)
@@ -59,7 +60,7 @@ function FilterTestFields({
               ? filters.testSubjects.split(',')
               : []
           }
-          options={staticDropDownData.subjects}
+          options={dropdownData.subjects}
         />
       </Col>
       <Col span={6}>
@@ -92,7 +93,7 @@ function FilterTestFields({
           selectedTagIds={filters.tagIds ? filters.tagIds.split(',') : []}
         />
       </Col>
-    </Row>
+    </>
   )
 }
 

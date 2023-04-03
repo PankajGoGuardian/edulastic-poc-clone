@@ -335,6 +335,30 @@ const fetchPreVsPostReportTableData = (params) =>
     })
     .then((res) => res.data)
 
+const fetchAttendanceReportDetails = (params) =>
+  api
+    .callApi({
+      url: '/data-warehouse/attendance/report/details',
+      params,
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceSummaryReport = (params) =>
+  api
+    .callApi({
+      url: `/data-warehouse/attendance/report`,
+      params,
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceDistributionReport = (params) =>
+  api
+    .callApi({
+      url: `/data-warehouse/attendance/distribution`,
+      params,
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -377,4 +401,7 @@ export default {
   fetchPerformanceByRubricsCriteriaTableData,
   fetchPreVsPostReportSummaryData,
   fetchPreVsPostReportTableData,
+  fetchAttendanceReportDetails,
+  fetchAttendanceSummaryReport,
+  fetchAttendanceDistributionReport,
 }

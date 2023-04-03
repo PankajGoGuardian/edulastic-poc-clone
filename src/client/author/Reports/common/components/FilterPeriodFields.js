@@ -1,4 +1,4 @@
-import { Col, DatePicker, Row } from 'antd'
+import { Col, DatePicker } from 'antd'
 import React from 'react'
 import { EduIf } from '@edulastic/common'
 import moment from 'moment'
@@ -36,7 +36,7 @@ function FilterPeriodFields({
   }
 
   return (
-    <Row type="flex" gutter={[5, 10]}>
+    <>
       <Col span={6}>
         <FilterLabel data-cy="periodType">Period</FilterLabel>
         <ControlDropDown
@@ -83,7 +83,7 @@ function FilterPeriodFields({
           />
         </Col>
       </EduIf>
-    </Row>
+    </>
   )
 }
 

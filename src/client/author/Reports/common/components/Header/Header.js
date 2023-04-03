@@ -89,7 +89,8 @@ const CustomizedHeaderWrapper = ({
 
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
-    : dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
+    : // TODO remove bottom checks and use only `filterNavigationItems` as not required & approach is misleading/wrong.
+    dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
       filterNavigationItems.length > 1
     ? filterNavigationItems
     : []
@@ -113,6 +114,7 @@ const CustomizedHeaderWrapper = ({
     ACTIVITY_BY_TEACHER,
     PERFORMANCE_BY_RUBRICS_CRITERIA,
     PRE_VS_POST,
+    DW_ATTENDANCE_SUMMARY_REPORT,
     DW_DASHBOARD_REPORT,
   } = reportNavType
 
@@ -123,11 +125,13 @@ const CustomizedHeaderWrapper = ({
     reportTypes[ACTIVITY_BY_SCHOOL].title,
     reportTypes[ACTIVITY_BY_TEACHER].title,
     reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
     reportTypes[DW_DASHBOARD_REPORT].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
     reportTypes[ENGAGEMENT_SUMMARY].title,
     reportTypes[PRE_VS_POST].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
   ]
   const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
   const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)

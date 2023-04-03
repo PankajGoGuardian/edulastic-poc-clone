@@ -7,10 +7,12 @@ import WholeLearnerReport from './wholeLearnerReport'
 import MultipleAssessmentReport from './MultipleAssessmentReport'
 import Dashboard from './Dashboard'
 import {
+  DW_ATTENDANCE_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
 } from '../../common/constants/dataWarehouseReports'
+import AttendanceReport from './AttendanceSummary'
 
 const DataWarehouseReportsContainer = ({
   breadcrumbData,
@@ -76,6 +78,27 @@ const DataWarehouseReportsContainer = ({
           setShowHeader(true)
           return (
             <Dashboard
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              setShowApply={setShowApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={DW_ATTENDANCE_REPORT_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <AttendanceReport
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}

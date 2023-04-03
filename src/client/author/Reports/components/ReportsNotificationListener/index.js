@@ -30,6 +30,11 @@ import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks
 
 const reportCSVCollectionName = 'ReportCSV'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
+const REPORT_NOTIFICATION_STATUS = {
+  INITIATED: 'initiated',
+  COMPLETED: 'completed',
+  DONE: 'done',
+}
 
 const ReportsNotificationListener = ({
   user,
@@ -115,8 +120,9 @@ const ReportsNotificationListener = ({
         // delete documents older than 15 days
         deleteNotificationDocument(doc.__id)
       } else if (
-        status === 'initiated' &&
-        (processStatus === 'done' || downloadLinkStatus === 'done') &&
+        status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+        (processStatus === REPORT_NOTIFICATION_STATUS.DONE ||
+          downloadLinkStatus === REPORT_NOTIFICATION_STATUS.DONE) &&
         !notificationIds.includes(doc.__id)
       ) {
         setNotificationIds([...notificationIds, doc.__id])
@@ -184,7 +190,15 @@ const ReportsNotificationListener = ({
         (d) => d.downloadLink && d.reportType !== DOWNLOAD_GRADES_AND_RESPONSE
       )
       setHasCsvDocs(!!filteredUserNotifications.length)
-      showUserNotifications(userNotifications)
+      if (
+        userNotifications.some(
+          (d) =>
+            d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+            d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
+            d.downloadLink
+        )
+      )
+        showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 
@@ -192,14 +206,14 @@ const ReportsNotificationListener = ({
     if (isNotificationClicked) {
       const docsToUpdate = userNotifications.filter(
         (d) =>
-          d.status === 'initiated' &&
-          d.processStatus === 'done' &&
+          d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+          d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
           d.downloadLink
       )
       // bulk update docs for which the notification has been clicked
       updateNotificationDocuments(
         docsToUpdate,
-        { status: 'completed' },
+        { status: REPORT_NOTIFICATION_STATUS.COMPLETED },
         updateCallback
       )
       setIsNotificationClicked(false)

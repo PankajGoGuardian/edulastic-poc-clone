@@ -3,7 +3,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
-import { report as reportTypes, roleuser } from '@edulastic/constants'
+import {
+  report as reportTypes,
+  roleuser,
+  reportUtils,
+} from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -27,12 +31,7 @@ import {
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
 import TableContainer from './componenets/TableContainer'
-import {
-  compareByEnums,
-  pageSize,
-  sortByLabels,
-  sortByOptions,
-} from './constants'
+import { compareByEnums, pageSize, sortOrderMap } from './constants'
 import TableTitleAndFilter from './componenets/TableTitleAndFilter'
 import {
   useQAnalysisDetailsFetch,
@@ -41,6 +40,8 @@ import {
 
 //! FIXME Have better null-value handling than using memoized empty value
 const EMPTY_ARRAY = []
+
+const { sortByOptions, sortByLabels } = reportUtils.questionAnalysis
 
 const QuestionAnalysis = ({
   isCsvDownloading,
@@ -66,7 +67,7 @@ const QuestionAnalysis = ({
     endIndex: 9,
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
-  const [sortOrder, setSortOrder] = useState(false)
+  const [sortOrder, setSortOrder] = useState(undefined)
   const { selectedTest } = settings
   if (testList) {
     const currentTest = testList.find((item) => item._id === selectedTest?.key)
@@ -123,7 +124,7 @@ const QuestionAnalysis = ({
           visibleIndices,
           compareBy,
           sortKey,
-          sortOrder: !sortOrder ? 'asc' : 'desc',
+          sortOrder: sortOrderMap[sortOrder],
           testId: settings.selectedTest.key,
         },
         reportExtras: {},
@@ -157,7 +158,7 @@ const QuestionAnalysis = ({
   const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
     setpageNo(1)
-    setSortOrder(false)
+    setSortOrder(undefined)
     setSortKey(sortByOptions.AVG_PERFORMANCE)
   }
 

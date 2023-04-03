@@ -43,7 +43,7 @@ export const StyledTable = styled(Table)`
   .ant-table-thead > tr:nth-child(2) > th {
     background-color: ${fadedGrey};
     color: black;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
   }
   .ant-table-body {
@@ -70,6 +70,11 @@ export const StyledTable = styled(Table)`
     }
   }
 
+  table tbody tr td:first-child {
+    max-width: 250px;
+    min-width: 150px;
+  }
+
   @media print {
     table tbody tr td {
       padding: 0;
@@ -77,6 +82,12 @@ export const StyledTable = styled(Table)`
     table tbody tr td:before,
     table tbody tr td:after {
       height: 0px;
+    }
+    table thead tr:first-child th:first-child {
+      min-width: 200px;
+    }
+    table thead tr th:first-child {
+      padding-left: 0;
     }
   }
 `
@@ -108,6 +119,7 @@ export const QLabelSpan = styled.span`
   margin-bottom: 10px;
   display: inline-block;
   font-size: 12px;
+  text-transform: initial;
 `
 export const StyledSwitch = styled(Switch)`
   margin-left: 10px;

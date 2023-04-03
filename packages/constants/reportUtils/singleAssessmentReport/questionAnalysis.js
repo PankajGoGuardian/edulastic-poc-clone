@@ -1,5 +1,17 @@
 const { groupBy, orderBy, uniqBy } = require('lodash')
 
+const base_10 = 10
+
+const sortByOptions = {
+  AVG_PERFORMANCE: 'avgPerformance',
+  Q_LABEL: 'questionLabel',
+}
+
+const sortByLabels = {
+  [sortByOptions.AVG_PERFORMANCE]: 'PERFORMANCE',
+  [sortByOptions.Q_LABEL]: 'QUESTION',
+}
+
 const compareByToPluralName = {
   school: 'Schools',
   teacher: 'Teachers',
@@ -19,8 +31,8 @@ const createRows = (districtAverage, groupDetailsByDomainId) => (item) => {
   const averageScoreByQId = {}
   const scorePercentByQId = {}
   groupedItem.forEach(({ questionId, dimensionPercentage, scorePercent }) => {
-    averageScoreByQId[questionId] = Math.round(dimensionPercentage)
-    scorePercentByQId[questionId] = Math.round(scorePercent)
+    averageScoreByQId[questionId] = `${Math.round(dimensionPercentage)}%`
+    scorePercentByQId[questionId] = `${Math.round(scorePercent)}%`
   })
   const { dimensionName: dimension } = firstItem
   return {
@@ -41,24 +53,45 @@ const getOrderedQuestions = (questions) => {
   })
 }
 
-const sortByAvgPerformanceAndLabel = (arr, sortKey) =>
-  orderBy(
+const sortByQuesNum = (item) =>
+  parseInt((item.questionLabel || '').substring(1), base_10)
+
+const sortByAvgPerformanceAndLabel = (arr, sortKey) => {
+  const sortByPerf = [
+    sortKey,
+    sortByQuesNum, // sort by question number when the perfomance avg is same
+    (item) => item.questionLabel,
+  ]
+
+  const sortByQuestion = [
+    sortByQuesNum,
+    sortKey, // in order to compare the question label string value for multipart
+  ]
+
+  return orderBy(
     arr,
-    sortKey === 'qLabel'
-      ? [(item) => Number((item.qLabel || '').substring(1))]
-      : [sortKey, (item) => Number((item.qLabel || '').substring(1))],
+    sortKey === sortByOptions.Q_LABEL ? sortByQuestion : sortByPerf,
     ['asc']
   )
+}
 
 const getTableColumns = (qSummary, filter = {}, visibleIndices, sortKey) => {
   const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')?.map((item) => {
-    const { avgPerformance: _avgPerformance, ...rest } = item
+    const {
+      avgPerformance: _avgPerformance,
+      districtAvgPerf: _districtAvgPerf,
+      ...rest
+    } = item
     const avgPerformance = !Number.isNaN(_avgPerformance)
       ? Math.round(_avgPerformance)
+      : 0
+    const districtAvgPerf = !Number.isNaN(_districtAvgPerf)
+      ? Math.round(_districtAvgPerf)
       : 0
     return {
       ...rest,
       avgPerformance,
+      districtAvgPerf,
     }
   })
   const qLabelsToFilter = Object.keys(filter)
@@ -76,7 +109,11 @@ const getTableColumns = (qSummary, filter = {}, visibleIndices, sortKey) => {
     )
   })
 
-  return orderedQuestions
+  return orderedQuestions.map((item) => ({
+    ...item,
+    avgPerformance: `${item.avgPerformance}%`,
+    districtAvgPerf: `${item.districtAvgPerf}%`,
+  }))
 }
 
 const getTableData = (
@@ -91,7 +128,7 @@ const getTableData = (
   const orderedQuestions = getOrderedQuestions(qSummary)
   const districtAverage = orderedQuestions.reduce(
     (acc, { questionId, districtAvgPerf }) => {
-      acc[questionId] = Math.round(districtAvgPerf)
+      acc[questionId] = `${Math.round(districtAvgPerf)}%`
       return acc
     },
     {}
@@ -121,7 +158,7 @@ const prepareHeaderRow = (questions) => {
 const prepareDistrictHeaderRow = (questions) => {
   const districtHeaderRow = [tableHeaderFields.districtAvg]
   questions.forEach((question) => {
-    districtHeaderRow.push(Math.round(question.districtAvgPerf))
+    districtHeaderRow.push(`${Math.round(question.districtAvgPerf)}%`)
   })
   return districtHeaderRow
 }
@@ -203,4 +240,6 @@ module.exports = {
   sortByAvgPerformanceAndLabel,
   getOrderedAndSelectedQuestions,
   getTableColumns,
+  sortByOptions,
+  sortByLabels,
 }

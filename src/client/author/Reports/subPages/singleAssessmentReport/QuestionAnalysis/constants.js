@@ -37,16 +37,6 @@ export const compareByEnums = {
   TEACHER: 'teacher',
 }
 
-export const sortByOptions = {
-  AVG_PERFORMANCE: 'avgPerformance',
-  Q_LABEL: 'qLabel',
-}
-
-export const sortByLabels = {
-  avgPerformance: 'PERFORMANCE',
-  qLabel: 'QUESTION',
-}
-
 export const comparedByToToolTipLabel = {
   [compareByEnums.SCHOOL]: {
     name: 'School Name',
@@ -78,4 +68,9 @@ export const dropDownKeyToLabel = {
   school: 'School',
   teacher: 'Teacher',
   class: 'Class',
+}
+
+export const sortOrderMap = {
+  ascend: 'asc',
+  descend: 'desc',
 }

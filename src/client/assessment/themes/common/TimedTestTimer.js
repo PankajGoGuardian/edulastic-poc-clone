@@ -100,10 +100,6 @@ const TimedTestTimer = ({
 
     if (isModified && !isAuthorPreview) {
       setUtaDoc(upstreamUta)
-      const pausedByStudent =
-        upstreamUta &&
-        upstreamUta.status === UTA_STATUS.PAUSED &&
-        !upstreamUta?.byTeacher
       const initialUtaUpdate =
         upstreamUta &&
         upstreamUta.status === UTA_STATUS.ACTIVE &&
@@ -111,7 +107,7 @@ const TimedTestTimer = ({
       const isPasswordProtected =
         isPasswordValidated && updateUtaTimeType === TIME_UPDATE_TYPE.RESUME
       const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
-      if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
+      if (initialUtaUpdate || isPasswordProtected) {
         let data = { startTime: timeStamp, status: UTA_STATUS.ACTIVE }
         if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
           const timeStampType =

@@ -27,7 +27,9 @@ const TableContainer = ({
   return (
     <Col className="bottom-table-container">
       <EduIf condition={performanceByDimensionLoading}>
-        <SpinLoader tip={`Loading ${compareByToPluralName[compareBy]} data`} />
+        <SpinLoader
+          tip={`Loading ${compareByToPluralName[compareBy]} data, it may take a while`}
+        />
       </EduIf>
       <EduIf condition={!performanceByDimensionLoading}>
         <QuestionAnalysisTable

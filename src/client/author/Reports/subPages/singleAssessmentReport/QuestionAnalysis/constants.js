@@ -29,7 +29,7 @@ export const pickDataForDetails = [
   'sortOrder',
 ]
 
-export const pageSize = 25
+export const pageSize = 200
 
 export const compareByEnums = {
   CLASS: 'class',

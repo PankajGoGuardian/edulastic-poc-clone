@@ -249,7 +249,11 @@ const MiscellaneousGroupContainer = ({
                         width={tootltipWidth}
                         title={accessibilities[key]}
                         content={description}
-                        premium={featuresAvailable[key]}
+                        premium={
+                          key === SHOW_IMMERSIVE_READER
+                            ? canUseImmersiveReader
+                            : featuresAvailable[key]
+                        }
                         placement="rightTop"
                       />
                       <StyledRow

@@ -1,7 +1,7 @@
 const LEAST_MASTERY_SCORE = 1
 const MASTERY_SCORE_MULTIPLIER = 1
 const CHART_PAGE_SIZE = 10
-const TABLE_PAGE_SIZE = 50
+const TABLE_PAGE_SIZE = 200
 const CHART_X_AXIS_DATA_KEY = 'standardId'
 
 const comDataForDropDown = {

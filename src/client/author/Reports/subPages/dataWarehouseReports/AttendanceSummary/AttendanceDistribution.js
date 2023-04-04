@@ -5,28 +5,31 @@ import { round } from 'lodash'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
+import { useResetAnimation } from '../../../common/hooks/useResetAnimation'
+import { sortDistributionBand } from '../common/utils'
 
 const DEG_HALF_CIRCLE = 180
 const getAcademicSummaryChartLabelJSX = (props) => {
   const RADIAN = Math.PI / DEG_HALF_CIRCLE
-  const { cx, cy, midAngle, outerRadius, value, color, textColor } = props
+  const { y, cx, cy, midAngle, outerRadius, value, color, textColor } = props
+  const labelWidth = 36
+  const labelHeight = 22
+  const isLabelOverFlowing = y - labelHeight < 10
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
   const sx = cx + (outerRadius + 4) * cos
   const sy = cy + (outerRadius + 4) * sin
   const circleX = cx + outerRadius * cos
   const circleY = cy + outerRadius * sin
-  const mx = cx + (outerRadius + 20) * cos
-  const my = cy + (outerRadius + 20) * sin
+  const mx = cx + (outerRadius + 30) * cos
+  const my = cy + (outerRadius + 30) * sin
   const ex = mx + (cos >= 0 ? 1 : -1) * 40
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
   const textX = mx + (cos >= 0 ? 1 : -1) * 12
-  const textY = my - 10
-  const labelWidth = 36
-  const labelHeight = 22
+  const textY = isLabelOverFlowing ? my + 16 : my - 10
   const rectx = cos >= 0 ? ex - labelWidth : ex
-  const recty = ey - labelHeight - 2
+  const recty = isLabelOverFlowing ? ey + 2 : ey - labelHeight - 2
   return (
     <g>
       <circle
@@ -48,6 +51,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         width={labelWidth}
         height={labelHeight}
         fill={color}
+        opacity={0.75}
         rx="5px"
       />
       <text
@@ -56,6 +60,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         y={textY}
         textAnchor={textAnchor}
         fill={textColor}
+        opacity={0.5}
         fontWeight="bold"
         fontSize="10px"
       >
@@ -66,6 +71,8 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 }
 
 const AttendanceDistribution = ({ data, loading }) => {
+  const sortedLegendsData = sortDistributionBand(data)
+  const [animate, onAnimationStart] = useResetAnimation()
   return (
     <Col span={10}>
       <PieWrapper>
@@ -76,7 +83,9 @@ const AttendanceDistribution = ({ data, loading }) => {
         <EduIf condition={!loading}>
           <PieChart width={400} height={280}>
             <Pie
-              data={data}
+              isAnimationActive={animate}
+              onAnimationStart={onAnimationStart}
+              data={sortedLegendsData}
               cx="50%"
               cy="50%"
               innerRadius={80}
@@ -85,15 +94,15 @@ const AttendanceDistribution = ({ data, loading }) => {
               dataKey="value"
               label={getAcademicSummaryChartLabelJSX}
             >
-              {data.map((entry) => (
+              {sortedLegendsData.map((entry) => (
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
               ))}
             </Pie>
           </PieChart>
           <LegendWrap>
-            {data.map((entry) => {
+            {sortedLegendsData.map((entry) => {
               return (
-                <CustomLegend>
+                <CustomLegend key={`legend-${entry.name}`}>
                   <LegendSymbol color={entry.color} />
                   <LegendName>{entry.name}</LegendName>
                 </CustomLegend>

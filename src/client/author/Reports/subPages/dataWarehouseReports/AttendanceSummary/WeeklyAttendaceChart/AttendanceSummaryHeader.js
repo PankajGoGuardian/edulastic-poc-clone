@@ -20,7 +20,7 @@ const AttendanceSummaryHeader = ({ groupBy, setGroupBy }) => {
         <LegendWrap>
           {AttendanceSummaryLegends.map((entry) => {
             return (
-              <CustomLegend>
+              <CustomLegend key={`legend-${entry.name}`}>
                 <LegendSymbol color={entry.color} />
                 <LegendName>{entry.name}</LegendName>
               </CustomLegend>

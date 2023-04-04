@@ -21,7 +21,7 @@ const IconDashboardReport = (props) => (
         data-name="Rectangle 1633"
         width="160"
         height="142.564"
-        rx="10"
+        rx="17"
         transform="translate(-24.685 -30.782)"
         fill="#f5f5f5"
       />

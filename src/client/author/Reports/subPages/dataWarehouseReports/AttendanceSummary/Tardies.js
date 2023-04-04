@@ -4,12 +4,10 @@ import React, { useMemo } from 'react'
 import { maxBy } from 'lodash'
 import {
   ResponsiveContainer,
-  Tooltip,
   XAxis,
   YAxis,
   BarChart,
   Bar,
-  LabelList,
   CartesianGrid,
 } from 'recharts'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
@@ -29,8 +27,9 @@ import {
   TardiesWrapper,
 } from './styled-component'
 import { CustomChartXTick } from '../../../common/components/charts/chartUtils/customChartXTick'
+import { useResetAnimation } from '../../../common/hooks/useResetAnimation'
 
-const renderCustomizedLabel = (props) => {
+const RenderCustomizedLabel = (props) => {
   const { x, y, width, value } = props
   const radius = 10
   if (!value) {
@@ -58,6 +57,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
     const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
     return _attendanceChartData.filter((item) => !!item.tardies)
   }, [attendanceData])
+  const [animate, onAnimationStart, setAnimate] = useResetAnimation()
 
   const {
     next: nextPage,
@@ -107,35 +107,41 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
             </Col>
           </Row>
         </EduIf>
-        <StyledChartNavButton
-          type="primary"
-          shape="circle"
-          icon="caret-left"
-          IconBtn
-          className="navigator navigator-left"
-          onClick={prevPage}
-          style={{
-            marginLeft: '10px',
-            visibility: hasPreviousPage ? 'visible' : 'hidden',
-          }}
-        />
-        <StyledChartNavButton
-          type="primary"
-          shape="circle"
-          icon="caret-right"
-          IconBtn
-          className="navigator navigator-right"
-          onClick={nextPage}
-          style={{
-            marginRight: '10px',
-            visibility: hasNextPage ? 'visible' : 'hidden',
-          }}
-        />
         <EduIf condition={loading}>
           <SpinLoader />
         </EduIf>
         <EduIf condition={!loading}>
           <EduIf condition={renderData.length}>
+            <StyledChartNavButton
+              type="primary"
+              shape="circle"
+              icon="caret-left"
+              IconBtn
+              className="navigator navigator-left"
+              onClick={() => {
+                prevPage()
+                setAnimate(true)
+              }}
+              style={{
+                marginLeft: '10px',
+                visibility: hasPreviousPage ? 'visible' : 'hidden',
+              }}
+            />
+            <StyledChartNavButton
+              type="primary"
+              shape="circle"
+              icon="caret-right"
+              IconBtn
+              className="navigator navigator-right"
+              onClick={() => {
+                nextPage()
+                setAnimate(true)
+              }}
+              style={{
+                marginRight: '10px',
+                visibility: hasNextPage ? 'visible' : 'hidden',
+              }}
+            />
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 width={730}
@@ -179,7 +185,7 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
                   tickLine={false}
                   axisLine={false}
                   dx={-18}
-                  domain={[0, yMax + 1]}
+                  domain={[0, yMax * 1.1]}
                   ticks={[0, yMax + 1]}
                   opacity={0.5}
                   label={
@@ -193,19 +199,16 @@ const Tardies = ({ attendanceData, loading, groupBy, setGroupBy }) => {
                     />
                   }
                 />
-                <Tooltip />
                 <Bar
                   dataKey="tardies"
                   fill="#74B2E2"
                   barSize={32}
                   fillOpacity={0.5}
                   radius={[5, 5, 0, 0]}
-                >
-                  <LabelList
-                    dataKey="tardies"
-                    content={renderCustomizedLabel}
-                  />
-                </Bar>
+                  label={<RenderCustomizedLabel />}
+                  isAnimationActive={animate}
+                  onAnimationStart={onAnimationStart}
+                />
                 <CartesianGrid
                   strokeOpacity={0.4}
                   horizontal={false}

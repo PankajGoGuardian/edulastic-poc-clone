@@ -66,14 +66,14 @@ const IconAttendanceReport = (props) => (
         data-name="Rectangle 1634"
         width="194"
         height="174"
-        rx="10"
-        transform="translate(301 524.495)"
+        rx="17"
+        transform="translate(312 524.495)"
         fill="#f5f5f5"
       />
       <g
         id="Group_11063"
         data-name="Group 11063"
-        transform="translate(336.926 575.248)"
+        transform="translate(350 575.248)"
       >
         <g
           transform="matrix(1, 0, 0, 1, -22.5, -36.75)"

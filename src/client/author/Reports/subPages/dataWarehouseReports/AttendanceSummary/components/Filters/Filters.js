@@ -137,10 +137,12 @@ const Filters = ({
   ) => {
     // update tags data
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
-    if (
-      !multiple &&
-      (!selected.key || selected.key.toLowerCase() === allFilterValue)
-    ) {
+    const isSelectedKeyInvalid =
+      !selected.key ||
+      (typeof selected.key === 'string' &&
+        selected.key.toLowerCase() === allFilterValue)
+
+    if (!multiple && isSelectedKeyInvalid) {
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }

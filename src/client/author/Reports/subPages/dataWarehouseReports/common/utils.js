@@ -5,6 +5,7 @@ export function buildRequestFilters(_settings) {
   const _requestFilters = {}
   Object.keys(_settings.requestFilters).forEach((filterType) => {
     _requestFilters[filterType] =
+      typeof _settings.requestFilters[filterType] === 'string' &&
       _settings.requestFilters[filterType]?.toLowerCase() === allFilterValue
         ? ''
         : _settings.requestFilters[filterType]
@@ -24,3 +25,5 @@ export const filterPopupFilterSelectedTestTypes = (
         testTypesSelectedInPopupFilters.includes(key)
       )
 }
+
+export const sortDistributionBand = (data) => data.sort((a, b) => b.max - a.max)

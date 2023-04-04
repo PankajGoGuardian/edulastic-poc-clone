@@ -54,7 +54,7 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
 
 const StyledCardsContainer = styled.div`
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 `
 
 export default DataWarehoureReportCardsWrapper

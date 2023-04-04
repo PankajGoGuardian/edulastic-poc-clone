@@ -158,6 +158,7 @@ const PerformanceTable = ({
           columns={columns}
           tableToRender={StyledTable}
           onCsvConvert={onCsvConvert}
+          pagination={false}
           isCsvDownloading={isCsvDownloading}
           onChange={(_, __, column) => {
             setSortKey(column.columnKey)

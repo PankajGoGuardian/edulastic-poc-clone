@@ -22,6 +22,7 @@ import {
 import { CustomDot } from '../../../../common/chart-utils'
 import DynamicChartTooltip from '../../../../common/components/DynamicChartTooltip'
 import { sheetSize } from '../utils/constants'
+import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {
@@ -32,6 +33,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const parentContainerRef = useRef(null)
   const chartRef = useRef(null)
   const tooltipRef = useRef(null)
+  const [animate, onAnimationStart, setAnimate] = useResetAnimation()
 
   const {
     next: nextPage,
@@ -66,7 +68,10 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
         icon="caret-left"
         IconBtn
         className="navigator navigator-left"
-        onClick={prevPage}
+        onClick={() => {
+          prevPage()
+          setAnimate(true)
+        }}
         style={{
           visibility: hasPreviousPage ? 'visible' : 'hidden',
         }}
@@ -77,7 +82,10 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
         icon="caret-right"
         IconBtn
         className="navigator navigator-right"
-        onClick={nextPage}
+        onClick={() => {
+          nextPage()
+          setAnimate(true)
+        }}
         style={{
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
@@ -153,6 +161,8 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
             label={<CustomizedLabel stroke="#9FC6D2" />}
             dot={<CustomDot />}
             activeDot={<CustomDot active />}
+            isAnimationActive={animate}
+            onAnimationStart={onAnimationStart}
           />
         </LineChart>
       </ResponsiveContainer>

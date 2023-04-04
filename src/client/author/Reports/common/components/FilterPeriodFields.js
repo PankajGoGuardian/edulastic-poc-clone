@@ -62,7 +62,10 @@ function FilterPeriodFields({
             }}
             value={moment(filters.customPeriodStart)}
             onChange={(date) => {
-              updateFilterDropdownCB({ key: +date }, 'customPeriodStart')
+              updateFilterDropdownCB(
+                { key: +moment.utc(date.format('YYYY-MM-DD')) },
+                'customPeriodStart'
+              )
             }}
           />
         </Col>
@@ -78,7 +81,10 @@ function FilterPeriodFields({
             }}
             value={moment(filters.customPeriodEnd)}
             onChange={(date) =>
-              updateFilterDropdownCB({ key: +date }, 'customPeriodEnd')
+              updateFilterDropdownCB(
+                { key: +moment.utc(date.format('YYYY-MM-DD')) },
+                'customPeriodEnd'
+              )
             }
           />
         </Col>

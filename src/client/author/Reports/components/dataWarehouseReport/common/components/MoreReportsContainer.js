@@ -16,7 +16,7 @@ const StyledCard = styled(Card)`
   border-radius: 10px;
   height: 600px;
   margin: 0 10px;
-  width: -webkit-fill-available;
+  max-width: 275px
   align-items: center;
   justify-content: center;
 `

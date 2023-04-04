@@ -1,15 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
+import { sortDistributionBand } from '../common/utils'
 
 const chartWrapWidth = 300
 
 export const HorizontalStackedBarChart = ({ data = [] }) => {
+  const sortedCellData = sortDistributionBand(data)
   return (
     <CellWrap>
       <ChartWrap>
-        {data.map((item) => (
-          <ChartBar bgColor={item.color} width={item.value}>
-            {Math.round(item.value)}%
+        {sortedCellData.map((item) => (
+          <ChartBar
+            bgColor={item.color}
+            width={item.value}
+            key={item.name}
+            opacity={0.75}
+          >
+            <span>{Math.round(item.value)}%</span>
           </ChartBar>
         ))}
       </ChartWrap>
@@ -19,9 +26,13 @@ export const HorizontalStackedBarChart = ({ data = [] }) => {
 
 export const StudentBand = ({ data = {} }) => {
   return (
-    <Band color={data.color}>
-      {data.name} {data.value ? `${data.value}%` : ''}
-    </Band>
+    <CellWrap>
+      <ChartWrap>
+        <ChartBar bgColor={data.color} width={chartWrapWidth} opacity={0.75}>
+          {data.name} {data.value ? `${data.value}%` : ''}
+        </ChartBar>
+      </ChartWrap>
+    </CellWrap>
   )
 }
 
@@ -37,21 +48,10 @@ const ChartWrap = styled.div`
 const ChartBar = styled.div`
   width: ${(props) => (chartWrapWidth / 100) * props.width + 35}px;
   background-color: ${(props) => props.bgColor};
+  opacity: ${(props) => props.opacity};
   height: 35px;
   text-align: center;
   padding: 10px 0px;
-  @media print {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-`
-
-const Band = styled.div`
-  background: ${(props) => props.color};
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   @media print {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;

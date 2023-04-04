@@ -72,7 +72,7 @@ function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
     reason =
       'Test is paused due to inactivity.  To reset, place a check mark in student card, go to More, select Resume'
   } else if (pauseReason === 'exiting') {
-    reason = 'Paused due to browser exiting before submiting'
+    reason = 'Paused due to browser exiting before submitting'
   } else if (pauseReason === 'out-of-navigation') {
     // reason = `Paused because of navigating outside asssessment ${outNavigationCounter>1?`${outNavigationCounter} times`: `${outNavigationCounter} time`}`
     reason =

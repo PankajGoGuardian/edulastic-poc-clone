@@ -41,15 +41,13 @@ const PlayerFooter = ({
             : 'Previous'
         }
       >
-        <span>
-          <PrevButton
-            data-cy="prev"
-            disabled={isFirst() || blockNavigationToAnsweredQuestions}
-            onClick={moveToPrev}
-          >
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </PrevButton>
-        </span>
+        <PrevButton
+          data-cy="prev"
+          disabled={isFirst() || blockNavigationToAnsweredQuestions}
+          onClick={moveToPrev}
+        >
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </PrevButton>
       </Tooltip>
       <Tooltip placement="right" title="Next">
         <NextButton data-cy="next" onClick={moveToNext}>

@@ -663,6 +663,14 @@ const AssessmentContainer = ({
     blurTimeAlreadySaved,
   })
 
+  const preventContextMenuCallback = (event) => event.preventDefault()
+  useEffect(() => {
+    document.addEventListener('contextmenu', preventContextMenuCallback)
+    return () => {
+      document.removeEventListener('contextmenu', preventContextMenuCallback)
+    }
+  }, [enteredIntoFullScreen])
+
   useEffect(() => {
     if (document && window) {
       document.onkeydown = function (e) {

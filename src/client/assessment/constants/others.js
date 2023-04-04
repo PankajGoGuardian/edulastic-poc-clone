@@ -44,3 +44,4 @@ export const headerOffsetHashMap = {
   lg: 150,
   xl: 200,
 }
+export const CONTEXTMENU_EVENT_NAME = 'contextmenu'

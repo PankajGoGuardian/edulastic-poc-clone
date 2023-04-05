@@ -194,7 +194,8 @@ const ReportsNotificationListener = ({
         userNotifications.some(
           (d) =>
             d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
-            d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
+            (d.processStatus === REPORT_NOTIFICATION_STATUS.DONE ||
+              d.downloadLinkStatus === REPORT_NOTIFICATION_STATUS.DONE) &&
             d.downloadLink
         )
       )

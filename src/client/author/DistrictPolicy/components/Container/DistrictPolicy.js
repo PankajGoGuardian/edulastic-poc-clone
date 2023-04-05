@@ -1,71 +1,56 @@
+import { EduIf } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { get } from 'lodash'
-import React, { Component } from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import {
-  SpinContainer,
-  StyledSpin,
-} from '../../../../admin/Common/StyledComponents'
-import {
-  ContentWrapper,
   SettingsWrapper,
   StyledContent,
-  StyledLayout,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
-import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
-import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
 import { getUserRole } from '../../../src/selectors/user'
 import { getSchoolAdminSettingsAccess } from '../../ducks'
-import DistrictPolicyForm from '../DistrictPolicyForm/DistrictPolicyForm'
 
 const title = 'Manage District'
 
-class DistrictPolicy extends Component {
-  render() {
-    const {
-      loading,
-      updating,
-      creating,
-      history,
-      schoolLevelAdminSettings,
-      role,
-    } = this.props
-    const showSpin = loading || updating || creating
-    const showSettings =
-      (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ||
+const DistrictPolicy = ({ history, role, schoolLevelAdminSettings }) => {
+  const menuActive = {
+    mainMenu: 'Settings',
+    subMenu:
       role === roleuser.DISTRICT_ADMIN
-    const menuActive = {
-      mainMenu: 'Settings',
-      subMenu:
-        role === roleuser.DISTRICT_ADMIN
-          ? 'District Policies'
-          : 'School Policies',
-    }
-
-    return (
-      <SettingsWrapper>
-        <AdminHeader title={title} active={menuActive} history={history} />
-        <StyledContent>
-          {showSettings && (
-            <StyledLayout showSpin={loading ? 'true' : 'false'}>
-              <AdminSubHeader active={menuActive} history={history} />
-              {showSpin && (
-                <SpinContainer loading={showSpin}>
-                  <StyledSpin size="large" />
-                </SpinContainer>
-              )}
-              <ContentWrapper>
-                <SaSchoolSelect />
-                <DistrictPolicyForm />
-              </ContentWrapper>
-            </StyledLayout>
-          )}
-        </StyledContent>
-      </SettingsWrapper>
-    )
+        ? 'District Policies'
+        : 'School Policies',
   }
+
+  const showSettings =
+    (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ||
+    role === roleuser.DISTRICT_ADMIN
+
+  const frameRef = useRef()
+
+  return (
+    <SettingsWrapper>
+      <AdminHeader title={title} active={menuActive} history={history} />
+      <StyledContent>
+        <EduIf condition={showSettings}>
+          <iframe
+            width="1366"
+            height="768"
+            ref={frameRef}
+            id=""
+            frameBorder="0"
+            allowtransparency="true"
+            allowFullScreen="true"
+            marginHeight="0"
+            marginWidth="0"
+            src="https://xd.adobe.com/embed/20d55e1d-76ec-4bb1-b3e8-fb10928ee59c-7586/"
+            title={title}
+          />
+        </EduIf>
+      </StyledContent>
+    </SettingsWrapper>
+  )
 }
 
 const enhance = compose(

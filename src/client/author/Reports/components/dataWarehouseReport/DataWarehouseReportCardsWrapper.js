@@ -60,14 +60,14 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
           <ReportLinkCard
             IconThumbnail={IconAttendanceSummaryReport}
             title="Attendance"
-            description="Get a complete understanding of a learner's academic and behavioural profiles and take necessary actions for learner's growth"
+            description="Monitor attendance and tardies, identify students at risk of chronic absenteeism, and intervene."
             url={DW_ATTENDANCE_REPORT_URL}
             loc={loc}
           />
           <ReportLinkCard
             IconThumbnail={IconSurveyInsightsReport}
             title="Survey Insights"
-            description="Get Insights into student's responses to Skill Surveys and view competency trends"
+            description="Get Insights into student's responses to Skill Surveys and view competency trends."
             url={DW_SURVEY_INSIGHTS_URL}
             loc={loc}
           />
@@ -78,22 +78,22 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         <SectionContent>
           <ReportLinkCard
             IconThumbnail={IconGoalsAndInterventionsReport}
-            title="Set Goals / Interventions"
-            description="Set Goals and Interventions and track improvement"
+            title="Set Goals & Interventions"
+            description="Set Goals and Interventions and track improvement."
             url={DW_GOALS_AND_INTERVENTIONS_URL}
             loc={loc}
           />
           <ReportLinkCard
             IconThumbnail={IconEarlyWarningReport}
             title="Early Warning"
-            description="Get a complete understanding of a learner's academic and behavioural profiles and take necessary actions for learner's growth"
+            description="View students at risk based on their academic and attendance performance and plan interventions."
             url={DW_EARLY_WARNING_REPORT_URL}
             loc={loc}
           />
           <ReportLinkCard
             IconThumbnail={IconEfficacyReport}
             title="Efficacy"
-            description="Compare student performance across two assessments to analyze the change in scores and the movement of students across performance bands to assign an appropriate intervention."
+            description="Compare student performance across tests pre and post-intervention."
             url={DW_EFFICACY_REPORT_URL}
             loc={loc}
           />

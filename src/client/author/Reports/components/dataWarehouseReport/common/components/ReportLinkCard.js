@@ -78,7 +78,7 @@ const StyledCard = styled(Card)`
   margin: 0 10px 20px;
   border-radius: 10px;
   height: 280px;
-  width: 500px;
+  aspect-ratio: 1.8 / 1;
   border-radius: 30px;
 `
 

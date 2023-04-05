@@ -781,18 +781,17 @@ class ClassHeader extends Component {
             View Password
           </MenuItems>
         )}
-        {showSyncGradesWithCanvasOption &&
-          assignmentStatusForDisplay !== 'NOT OPEN' && (
-            <MenuItems
-              data-cy="shareOnCanvas"
-              key="key6"
-              onClick={() =>
-                canvasSyncAssignment({ assignmentId, groupId: classId })
-              }
-            >
-              Share on Canvas
-            </MenuItems>
-          )}
+        {showSyncGradesWithCanvasOption && (
+          <MenuItems
+            data-cy="shareOnCanvas"
+            key="key6"
+            onClick={() =>
+              canvasSyncAssignment({ assignmentId, groupId: classId })
+            }
+          >
+            Share on Canvas
+          </MenuItems>
+        )}
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems

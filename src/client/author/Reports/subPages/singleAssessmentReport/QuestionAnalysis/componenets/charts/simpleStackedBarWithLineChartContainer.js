@@ -13,6 +13,10 @@ import { getSecondsFormattedTimeInMins } from '../../utils/helpers'
 const lineYTickFormatter = (val) => {
   return getSecondsFormattedTimeInMins(val)
 }
+const lineYTickMaxAllowedValue = (val) => {
+  const DIVISIBILTY_CUTOFF = 10 // This is because the Avg.Score (%) Y Axis Max Value is fixed to 100
+  return val - (val % DIVISIBILTY_CUTOFF)
+}
 
 export const SimpleStackedBarWithLineChartContainer = ({
   chartData,
@@ -59,8 +63,11 @@ export const SimpleStackedBarWithLineChartContainer = ({
 
   const lineYDomain = useMemo(() => {
     let m = maxBy(chartData, 'avgTimeSecs')
-    m = m ? m.avgTimeSecs : 0
-    m += (20 / 100) * m
+    const Y_AXIS_TICKS = 11
+    const [DEFAULT_SECONDS, DEFAULT_TICKS] = [0, 0]
+    m = m ? m.avgTimeSecs : DEFAULT_SECONDS
+    m +=
+      m % Y_AXIS_TICKS == 0 ? DEFAULT_TICKS : Y_AXIS_TICKS - (m % Y_AXIS_TICKS)
     return [0, m]
   }, [chartData])
 
@@ -72,6 +79,8 @@ export const SimpleStackedBarWithLineChartContainer = ({
       item.fill = '#cccccc'
     }
   }
+  const [start, end] = lineYDomain
+  const stepCount = 10
 
   return (
     <SimpleStackedBarChart
@@ -93,7 +102,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
       lineYAxisLabel="Time (mins)"
       lineYTickFormatter={lineYTickFormatter}
       lineYDomain={lineYDomain}
-      lineTicks={ticks(0, lineYDomain[1], 10)}
+      lineTicks={ticks(start, lineYTickMaxAllowedValue(end), stepCount)}
       lineChartDataKey="avgTimeSecs"
       lineProps={{ stroke: themeColor, strokeWidth: 3 }}
       lineDotProps={{ stroke: '#ffffff', strokeWidth: 4 }}

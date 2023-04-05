@@ -84,7 +84,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
-import { CONTEXTMENU_EVENT_NAME } from '../constants/others'
+import useContextMenuBlocker from '../../../utils/anticheating/useContextMenuBlocker'
 
 const { playerSkinValues } = testConstants
 
@@ -664,16 +664,7 @@ const AssessmentContainer = ({
     blurTimeAlreadySaved,
   })
 
-  const contextmenuEventCallback = (event) => event.preventDefault()
-  useEffect(() => {
-    document.addEventListener(CONTEXTMENU_EVENT_NAME, contextmenuEventCallback)
-    return () => {
-      document.removeEventListener(
-        CONTEXTMENU_EVENT_NAME,
-        contextmenuEventCallback
-      )
-    }
-  }, [enteredIntoFullScreen])
+  useContextMenuBlocker(enteredIntoFullScreen)
 
   useEffect(() => {
     if (document && window) {

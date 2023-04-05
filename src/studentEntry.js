@@ -20,7 +20,7 @@ import { studentsSagas } from './client/studentSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { isMobileDevice, isIOS } from './client/platform'
 import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
-import { extensionBlocker } from './extension-blocker/extensionBlocker'
+import { extensionBlocker } from './utils/anticheating/extensionBlocker/extensionBlocker'
 
 if (AppConfig.sentryURI) {
   SentryInit({

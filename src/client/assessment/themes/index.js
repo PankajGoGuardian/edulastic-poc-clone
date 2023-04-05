@@ -84,6 +84,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import { extensionBlocker } from '../../../utils/anticheating/extensionBlocker/extensionBlocker'
 
 const { playerSkinValues } = testConstants
 
@@ -258,7 +259,6 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
-
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
@@ -662,6 +662,13 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useEffect(() => {
+    extensionBlocker.toggleExtensionBlocker(enteredIntoFullScreen)
+    return () => {
+      extensionBlocker.toggleExtensionBlocker(false)
+    }
+  }, [enteredIntoFullScreen])
 
   useEffect(() => {
     if (document && window) {

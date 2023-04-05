@@ -85,6 +85,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import useContextMenuBlocker from '../../../utils/anticheating/useContextMenuBlocker'
 import BlockScreenOnCtrlPress from '../../../utils/anticheating/keypressEventBlocker/BlockScreenOnCtrlPress'
 import AppConfig from '../../../app-config'
 import { extensionBlocker } from '../../../utils/anticheating/extensionBlocker/extensionBlocker'
@@ -665,6 +666,8 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useContextMenuBlocker(enteredIntoFullScreen)
 
   useEffect(() => {
     extensionBlocker.toggleExtensionBlocker(enteredIntoFullScreen)

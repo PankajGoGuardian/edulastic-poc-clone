@@ -330,7 +330,7 @@ const MainFooter = styled.div`
   right: 0;
   display: flex;
   padding: 0 15px;
-  z-index: 9999;
+  z-index: 505;
   background: ${footer.background};
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};

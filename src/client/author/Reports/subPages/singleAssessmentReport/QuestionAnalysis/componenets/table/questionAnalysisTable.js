@@ -159,6 +159,7 @@ export const QuestionAnalysisTable = ({
       tableToRender={StyledTable}
       columns={columns}
       dataSource={tableData}
+      pagination={false}
       onCsvConvert={onCsvConvert}
       rowKey="questionId"
       colorCellStart={2}

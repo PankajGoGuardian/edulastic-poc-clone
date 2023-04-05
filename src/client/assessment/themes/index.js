@@ -28,6 +28,7 @@ import {
   handleChromeOsSEB,
   FireBaseService,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
@@ -84,6 +85,8 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import BlockScreenOnCtrlPress from '../../../utils/anticheating/keypressEventBlocker/BlockScreenOnCtrlPress'
+import AppConfig from '../../../app-config'
 import { extensionBlocker } from '../../../utils/anticheating/extensionBlocker/extensionBlocker'
 
 const { playerSkinValues } = testConstants
@@ -1398,13 +1401,18 @@ const AssessmentContainer = ({
       <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
-
+  const isAntiScreenshotEnabled = AppConfig.isAntiScreenshotEnabled(
+    assignmentObj?.districtId
+  )
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
       {restrictNavigationOut && (
         <>
+          <EduIf condition={isAntiScreenshotEnabled}>
+            <BlockScreenOnCtrlPress />
+          </EduIf>
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
             history={history}

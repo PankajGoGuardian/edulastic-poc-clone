@@ -158,12 +158,20 @@ export const compareByFilterFieldKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
+  [compareByKeys.GROUP]: 'groupIds',
+  [compareByKeys.RACE]: 'race',
+  [compareByKeys.GENDER]: 'gender',
+  [compareByKeys.FRL_STATUS]: 'frlStatus',
+  [compareByKeys.ELL_STATUS]: 'ellStatus',
+  [compareByKeys.IEP_STATUS]: 'iepStatus',
+  [compareByKeys.HISPANIC_ETHNICITY]: 'hispanicEthnicity',
 }
 
 export const nextCompareByOptionsMap = {
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,
+  [compareByKeys.GROUP]: compareByKeys.STUDENT,
 }
 
 const filterFields = [

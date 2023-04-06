@@ -32,24 +32,76 @@ export const compareByEnums = {
   SCHOOL: 'school',
   TEACHER: 'teacher',
   STUDENT: 'student',
+  GROUP: 'group',
+  RACE: 'race',
+  GENDER: 'gender',
+  FRL_STATUS: 'frlStatus',
+  ELL_STATUS: 'ellStatus',
+  IEP_STATUS: 'iepStatus',
+  HISPANIC_ETHNICITY: 'hispanicEthnicity',
 }
 
 export const compareByToPluralName = {
-  school: 'Schools',
-  teacher: 'Teachers',
-  class: 'Classes',
-  student: 'Student',
+  [compareByEnums.SCHOOL]: 'School',
+  [compareByEnums.TEACHER]: 'Teacher',
+  [compareByEnums.CLASS]: 'Class',
+  [compareByEnums.STUDENT]: 'Student',
+  [compareByEnums.GROUP]: 'Student Group',
+  [compareByEnums.RACE]: 'Race',
+  [compareByEnums.GENDER]: 'Gender',
+  [compareByEnums.FRL_STATUS]: 'FRL Status',
+  [compareByEnums.ELL_STATUS]: 'ELL Status',
+  [compareByEnums.IEP_STATUS]: 'IEP Status',
+  [compareByEnums.HISPANIC_ETHNICITY]: 'Hispanic Ethnicity',
 }
 
 export const compareByOptions = [
-  { key: compareByEnums.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
   {
-    key: compareByEnums.TEACHER,
-    title: 'Teacher',
+    key: compareByEnums.SCHOOL,
+    title: compareByToPluralName[compareByEnums.SCHOOL],
     hiddenFromRole: ['teacher'],
   },
-  { key: compareByEnums.CLASS, title: 'Class' },
-  { key: compareByEnums.STUDENT, title: 'Student' },
+  {
+    key: compareByEnums.TEACHER,
+    title: compareByToPluralName[compareByEnums.TEACHER],
+    hiddenFromRole: ['teacher'],
+  },
+  {
+    key: compareByEnums.CLASS,
+    title: compareByToPluralName[compareByEnums.CLASS],
+  },
+  {
+    key: compareByEnums.GROUP,
+    title: compareByToPluralName[compareByEnums.GROUP],
+  },
+  {
+    key: compareByEnums.STUDENT,
+    title: compareByToPluralName[compareByEnums.STUDENT],
+  },
+  {
+    key: compareByEnums.RACE,
+    title: compareByToPluralName[compareByEnums.RACE],
+  },
+  {
+    key: compareByEnums.GENDER,
+    title: compareByToPluralName[compareByEnums.GENDER],
+  },
+  {
+    key: compareByEnums.FRL_STATUS,
+    title: compareByToPluralName[compareByEnums.FRL_STATUS],
+  },
+  {
+    key: compareByEnums.ELL_STATUS,
+    title: compareByToPluralName[compareByEnums.ELL_STATUS],
+  },
+  {
+    key: compareByEnums.IEP_STATUS,
+    title: compareByToPluralName[compareByEnums.IEP_STATUS],
+  },
+  {
+    key: compareByEnums.HISPANIC_ETHNICITY,
+    title: compareByToPluralName[compareByEnums.HISPANIC_ETHNICITY],
+  },
 ]
 
 export const AttendanceSummaryLegends = [

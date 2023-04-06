@@ -56,7 +56,11 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       sorter: true,
       render: (value, record) => {
         const canDrillDown =
-          [compareByEnums.CLASS, compareByEnums.SCHOOL].includes(compareBy) ||
+          [
+            compareByEnums.CLASS,
+            compareByEnums.SCHOOL,
+            compareByEnums.GROUP,
+          ].includes(compareBy) ||
           (compareBy === compareByEnums.TEACHER && record.students < 100)
         let url = null
         if (canDrillDown) {
@@ -67,6 +71,16 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
             'selectedCompareBy',
             nextCompareByOptionsMap[compareBy]
           )
+        } else if (compareBy === compareByEnums.STUDENT) {
+          const { search } = window.location
+          url = new URL(
+            `${window.location.origin}/author/reports/whole-learner-report/student/${record.dimension._id}?${search}`
+          )
+        } else if (value) {
+          const filterField = compareByFilterFieldKeys[compareBy]
+          url = new URL(window.location.href)
+          url.searchParams.set(filterField, record.dimension._id)
+          url.searchParams.set('selectedCompareBy', compareByEnums.STUDENT)
         }
         const text = value || '-'
         return (

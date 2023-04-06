@@ -21,7 +21,7 @@ import { selectors } from './ducks'
 import { NoDataContainer } from '../../../common/styled'
 import { getSelectedCompareBy } from '../../../common/util'
 
-const Container = ({ userRole, settings, toggleFilter, profileId }) => {
+const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport }) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -63,6 +63,7 @@ const Container = ({ userRole, settings, toggleFilter, profileId }) => {
     return setGroupBy(groupByConstants.WEEK)
   }
   const showNoData = !loading && !attendanceData.length
+  const isSharedReport = !!sharedReport?._id
 
   return (
     <EduIf condition={loading}>
@@ -110,6 +111,7 @@ const Container = ({ userRole, settings, toggleFilter, profileId }) => {
                 setSortKey={setSortKey}
                 setPage={setPage}
                 setCompareBy={setCompareBy}
+                isSharedReport={isSharedReport}
                 totalStudents={attDistrTotalStudents}
               />
             </div>

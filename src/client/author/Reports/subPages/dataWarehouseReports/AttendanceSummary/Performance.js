@@ -1,8 +1,14 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import { reportUtils } from '@edulastic/constants'
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  SpinLoader,
+  notification,
+} from '@edulastic/common'
 import { Link } from 'react-router-dom'
 import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledCard } from '../../../common/styled'
@@ -24,6 +30,7 @@ import {
   compareByFilterFieldKeys,
   nextCompareByOptionsMap,
 } from '../Dashboard/utils'
+import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 
 const { downloadCSV } = reportUtils.common
 
@@ -137,8 +144,43 @@ const PerformanceTable = ({
   setPage,
   compareBy,
   setCompareBy,
+  isSharedReport = false,
   totalStudents,
 }) => {
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
+  const [selectedRowKeys, onSelectChange] = useState([])
+  const [checkedStudents, setCheckedStudents] = useState([])
+  const [rowSelection, checkedStudentsForModal] = useMemo(() => {
+    const _rowSelection = {
+      selectedRowKeys,
+      onChange: onSelectChange,
+      onSelect: (props) => {
+        const {
+          dimension: { _id: studentId },
+        } = props
+        setCheckedStudents(
+          checkedStudents.includes(studentId)
+            ? checkedStudents.filter((i) => i !== studentId)
+            : [...checkedStudents, studentId]
+        )
+      },
+      onSelectAll: (flag) =>
+        setCheckedStudents(flag ? data.map((d) => d.dimension?._id) : []),
+    }
+
+    const _checkedStudentsForModal = data
+      .filter((d) => checkedStudents.includes(d.dimension?._id))
+      .map(({ dimension: { _id, name } }) => {
+        const [lastName, firstName] = name.split(', ')
+        return {
+          _id,
+          firstName,
+          lastName,
+        }
+      })
+    return [_rowSelection, _checkedStudentsForModal]
+  }, [data, compareBy, sortOrder, sortKey, checkedStudents, selectedRowKeys])
+
   useEffect(() => {
     setPage(1)
     setSortOrder('')
@@ -154,6 +196,17 @@ const PerformanceTable = ({
     setSortKey('')
     setPage(1)
   }
+  const handleAddToGroup = () => {
+    if (checkedStudentsForModal.length < 1) {
+      notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
+    } else {
+      setShowAddToGroupModal(true)
+    }
+  }
+  const _rowSelection =
+    compareBy === compareByEnums.STUDENT && !isSharedReport
+      ? rowSelection
+      : null
   const _compareByOptions = compareByOptions.map((item) => {
     if (
       item.key === compareByEnums.STUDENT &&
@@ -170,10 +223,17 @@ const PerformanceTable = ({
 
   return (
     <StyledCard>
+      <AddToGroupModal
+        groupType="custom"
+        visible={showAddToGroupModal}
+        onCancel={() => setShowAddToGroupModal(false)}
+        checkedStudents={checkedStudentsForModal}
+      />
       <TableFilters
         compareByOptions={_compareByOptions}
         setCompareBy={_setCompareBy}
         compareBy={compareBy}
+        handleAddToGroup={handleAddToGroup}
       />
       <EduIf condition={loading}>
         <SpinLoader
@@ -186,6 +246,7 @@ const PerformanceTable = ({
           dataSource={data}
           columns={columns}
           tableToRender={StyledTable}
+          rowSelection={_rowSelection}
           onCsvConvert={onCsvConvert}
           pagination={false}
           isCsvDownloading={isCsvDownloading}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+
+import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getOrgDataSelector } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
@@ -17,6 +18,7 @@ import { resetAllReportsAction } from '../../../common/reportsRedux'
 import Container from './Container'
 
 const AttendanceReport = (props) => {
+  //
   const {
     loc,
     breadcrumbData,
@@ -32,6 +34,7 @@ const AttendanceReport = (props) => {
     setShowApply,
     resetAllReports,
     updateNavigation,
+    sharedReportList,
   } = props
 
   const toggleFilter = (e, status) => {
@@ -57,6 +60,10 @@ const AttendanceReport = (props) => {
     setShowApply(false)
   }
 
+  const sharedReport = useMemo(
+    () => sharedReportList.find((s) => s._id === reportId),
+    [reportId, sharedReportList]
+  )
   useEffect(
     () => () => {
       resetAllReports()
@@ -94,7 +101,7 @@ const AttendanceReport = (props) => {
           profileId={profileId}
         />
       </SubHeader>
-      <Container toggleFilter={toggleFilter} profileId={profileId} />
+      <Container toggleFilter={toggleFilter} profileId={profileId} sharedReport={sharedReport}/>
     </>
   )
 }

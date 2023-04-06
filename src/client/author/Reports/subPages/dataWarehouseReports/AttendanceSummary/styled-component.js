@@ -1,6 +1,7 @@
 import { greyLight1, lightGrey9, secondaryTextColor } from '@edulastic/colors'
 import { Switch } from 'antd'
 import styled from 'styled-components'
+import { EduButton } from '@edulastic/common'
 
 export const ChartWrapper = styled.div`
   border: 1px solid #dedede;
@@ -109,5 +110,12 @@ export const TardiesWrapper = styled.div`
   }
   .navigator-right {
     right: 10px;
+  }
+`
+export const StyledEduButton = styled(EduButton)`
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
   }
 `

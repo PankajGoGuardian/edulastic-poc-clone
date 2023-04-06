@@ -40,6 +40,7 @@ const Container = ({ userRole, settings, toggleFilter, profileId }) => {
   })
   const [
     attDistributionData,
+    attDistrTotalStudents,
     attDistrDataLoading,
   ] = useAttendanceDistributionFetch(settings, profileId)
   const [
@@ -109,6 +110,7 @@ const Container = ({ userRole, settings, toggleFilter, profileId }) => {
                 setSortKey={setSortKey}
                 setPage={setPage}
                 setCompareBy={setCompareBy}
+                totalStudents={attDistrTotalStudents}
               />
             </div>
           </EduElse>

@@ -18,6 +18,7 @@ import {
   compareByToPluralName,
   pageSize,
   sortKeys,
+  compareByStudentsLimit_500,
 } from './utils/constants'
 import {
   compareByFilterFieldKeys,
@@ -136,6 +137,7 @@ const PerformanceTable = ({
   setPage,
   compareBy,
   setCompareBy,
+  totalStudents,
 }) => {
   useEffect(() => {
     setPage(1)
@@ -152,11 +154,24 @@ const PerformanceTable = ({
     setSortKey('')
     setPage(1)
   }
+  const _compareByOptions = compareByOptions.map((item) => {
+    if (
+      item.key === compareByEnums.STUDENT &&
+      totalStudents > compareByStudentsLimit_500
+    ) {
+      return {
+        ...item,
+        disabled: true,
+        disableMessage: `Students count is more than ${compareByStudentsLimit_500}`,
+      }
+    }
+    return item
+  })
 
   return (
     <StyledCard>
       <TableFilters
-        compareByOptions={compareByOptions}
+        compareByOptions={_compareByOptions}
         setCompareBy={_setCompareBy}
         compareBy={compareBy}
       />

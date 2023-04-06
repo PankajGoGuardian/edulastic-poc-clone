@@ -27,6 +27,8 @@ export const pageSize = 200
 
 export const sheetSize = 8
 
+export const compareByStudentsLimit_500 = 500
+
 export const compareByEnums = {
   CLASS: 'class',
   SCHOOL: 'school',

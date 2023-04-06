@@ -41,13 +41,15 @@ const PlayerFooter = ({
             : 'Previous'
         }
       >
-        <PrevButton
-          data-cy="prev"
-          disabled={isFirst() || blockNavigationToAnsweredQuestions}
-          onClick={moveToPrev}
-        >
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </PrevButton>
+        <span>
+          <PrevButton
+            data-cy="prev"
+            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            onClick={moveToPrev}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </PrevButton>
+        </span>
       </Tooltip>
       <Tooltip placement="right" title="Next">
         <NextButton data-cy="next" onClick={moveToNext}>
@@ -114,6 +116,7 @@ const ControlBtn = styled.button`
   &[disabled] {
     background-color: ${(props) => props.theme.btnDisabled};
     cursor: not-allowed;
+    pointer-events: none;
   }
   .fa {
     position: absolute;

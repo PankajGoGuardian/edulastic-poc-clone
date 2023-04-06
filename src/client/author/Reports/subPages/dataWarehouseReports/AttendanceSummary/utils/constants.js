@@ -63,6 +63,10 @@ export const groupByConstants = {
   MONTH: 'month',
 }
 
+export const filterKeys = {
+  ATTENDANCE_BAND: 'profileId',
+}
+
 export const staticDropDownData = {
   filterSections: {
     CLASS_FILTERS: {

@@ -3,6 +3,7 @@ import React from 'react'
 
 import { IconFilter } from '@edulastic/icons'
 
+import { EduIf, FlexContainer } from '@edulastic/common'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
@@ -12,7 +13,7 @@ import {
   StyledEduButton,
 } from '../../../../../common/styled'
 
-import { staticDropDownData } from '../../utils/constants'
+import { filterKeys, staticDropDownData } from '../../utils/constants'
 import FilterPeriodFields from '../../../../../common/components/FilterPeriodFields'
 import FilterActions from '../../../../../common/components/FilterActions'
 import FilterClassFields from '../../../../../common/components/FilterClassFields'
@@ -38,6 +39,8 @@ function FiltersView({
   showApply,
   loadingFiltersData,
   onGoClick,
+  attendanceBandInfo,
+  profileId,
 }) {
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -51,16 +54,28 @@ function FiltersView({
           handleTagClick={handleTagClick}
         />
         <ReportFiltersContainer visible={!reportId}>
-          <StyledEduButton
-            data-cy="filters"
-            data-testid="filters"
-            isGhost={!showFilter}
-            onClick={toggleFilter}
-            style={{ height: '24px' }}
-          >
-            <IconFilter width={15} height={15} />
-            FILTERS
-          </StyledEduButton>
+          <FlexContainer style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <EduIf condition={attendanceBandInfo.length}>
+              <ControlDropDown
+                style={{ margin: '0 10px' }}
+                by={profileId}
+                data={attendanceBandInfo}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, filterKeys.ATTENDANCE_BAND)
+                }
+              />
+            </EduIf>
+            <StyledEduButton
+              data-cy="filters"
+              data-testid="filters"
+              isGhost={!showFilter}
+              onClick={toggleFilter}
+              style={{ height: '24px' }}
+            >
+              <IconFilter width={15} height={15} />
+              FILTERS
+            </StyledEduButton>
+          </FlexContainer>
           <ReportFiltersWrapper
             visible={showFilter}
             style={{ paddingTop: '25px' }}

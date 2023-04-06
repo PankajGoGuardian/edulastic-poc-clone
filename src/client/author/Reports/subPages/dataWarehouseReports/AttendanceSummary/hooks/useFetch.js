@@ -21,6 +21,7 @@ export const useAttendanceDetailsFetch = ({
   sortKey,
   page = 1,
   pageSize = defaultPageSize,
+  profileId,
 }) => {
   const [data, setData] = useState([])
   const [totalRows, setTotalRows] = useState(1)
@@ -38,6 +39,7 @@ export const useAttendanceDetailsFetch = ({
           page,
           pageSize,
           recompute: true,
+          profileId,
         }
         fetchAttendanceReportDetails(params)
           .then((response) => {
@@ -55,7 +57,15 @@ export const useAttendanceDetailsFetch = ({
     return () => {
       clearTimeout(timeout)
     }
-  }, [settings.requestFilters, compareBy, page, pageSize, sortKey, sortOrder])
+  }, [
+    settings.requestFilters,
+    compareBy,
+    page,
+    pageSize,
+    sortKey,
+    sortOrder,
+    profileId,
+  ])
   return [data, totalRows, loading, error]
 }
 
@@ -100,7 +110,7 @@ export const useAttendanceSummaryFetch = ({
   return [data, loading, error]
 }
 
-export const useAttendanceDistributionFetch = (settings) => {
+export const useAttendanceDistributionFetch = (settings, profileId) => {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -110,10 +120,11 @@ export const useAttendanceDistributionFetch = (settings) => {
         setLoading(true)
         const params = {
           ...settings.requestFilters,
+          profileId,
         }
         fetchAttendanceDistributionReport(params)
           .then((response) => {
-            setData(response || [])
+            setData(response.metrics || [])
             setLoading(false)
           })
           .catch((e) => {
@@ -126,7 +137,7 @@ export const useAttendanceDistributionFetch = (settings) => {
     return () => {
       clearTimeout(timeout)
     }
-  }, [settings.requestFilters])
+  }, [settings.requestFilters, profileId])
 
   return [data, loading, error]
 }

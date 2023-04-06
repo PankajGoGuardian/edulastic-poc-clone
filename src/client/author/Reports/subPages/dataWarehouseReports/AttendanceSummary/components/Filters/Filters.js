@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, mapValues } from 'lodash'
 
@@ -9,7 +9,7 @@ import {
   resetStudentFilters as resetFilters,
 } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
-import { staticDropDownData } from '../../utils/constants'
+import { filterKeys, staticDropDownData } from '../../utils/constants'
 
 import { actions, selectors } from '../../ducks'
 import {
@@ -52,13 +52,24 @@ const Filters = ({
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
   history,
+  profileId,
+  setProfileId,
 }) => {
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
-  const { demographics = [] } = get(filtersData, 'data.result', {})
+  const { demographics = [], attendanceBandInfo = [] } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+
+  const _attendanceBandInfo = attendanceBandInfo.map((item) => ({
+    key: item._id,
+    title: item.name,
+  }))
 
   const termId =
     search.termId ||
@@ -93,6 +104,12 @@ const Filters = ({
     toggleFilter,
     userRole,
   })
+
+  useEffect(() => {
+    if (attendanceBandInfo && attendanceBandInfo.length) {
+      setProfileId(attendanceBandInfo[0]?._id || null)
+    }
+  }, [attendanceBandInfo])
 
   const onGoClick = (_settings = {}) => {
     const newSettings = {
@@ -135,6 +152,9 @@ const Filters = ({
     multiple = false,
     isPageLevelFilter = false
   ) => {
+    if (keyName === filterKeys.ATTENDANCE_BAND) {
+      return setProfileId(selected.key)
+    }
     // update tags data
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
     const isSelectedKeyInvalid =
@@ -154,13 +174,6 @@ const Filters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    if (keyName === 'profileId') {
-      setFiltersTabKey(
-        staticDropDownData.filterSections.PERFORMANCE_FILTERS.key
-      )
-      setFilters({ ..._filters, showApply: true })
-      setShowApply(true)
-    }
     if (isPageLevelFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {
@@ -191,6 +204,8 @@ const Filters = ({
       showApply={showApply}
       loadingFiltersData={loadingFiltersData}
       onGoClick={onGoClick}
+      attendanceBandInfo={_attendanceBandInfo}
+      profileId={profileId}
     />
   )
 }

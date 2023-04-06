@@ -36,6 +36,15 @@ const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
   </Menu>
 )
 
+const findSelectedItem = (by, selected) => (item) => {
+  if (typeof selected === 'string' && item.key === selected) {
+    return true
+  }
+  if (by && typeof selected === 'object' && item.key === selected.key) {
+    return true
+  }
+}
+
 const ControlDropDown = ({
   className,
   containerClassName = '',
@@ -56,14 +65,7 @@ const ControlDropDown = ({
   useInternalEffect(() => {
     let item = null
     if (data.length) {
-      item = data.find((_item) => {
-        if (typeof selected === 'string' && _item.key === selected) {
-          return true
-        }
-        if (typeof selected === 'object' && _item.key === selected.key) {
-          return true
-        }
-      })
+      item = data.find(findSelectedItem(by, selected))
       if (!item) {
         item = data[0]
       }
@@ -75,21 +77,12 @@ const ControlDropDown = ({
   }, [data])
 
   useInternalEffect(() => {
-    let item = data.find((_item) => {
-      if (typeof by === 'string' && _item.key === by) {
-        return true
-      }
-      if (typeof by === 'object' && _item.key === by.key) {
-        return true
-      }
-    })
-
+    let item = data.find(findSelectedItem(by, selected))
     if (!item && data.length) {
       item = data[0]
     } else if (!item && !data.length) {
       item = { key: '', title: '' }
     }
-
     setSelected(item)
   }, [by])
 

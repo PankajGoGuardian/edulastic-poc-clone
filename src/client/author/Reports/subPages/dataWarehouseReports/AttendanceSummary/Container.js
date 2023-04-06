@@ -21,7 +21,7 @@ import { selectors } from './ducks'
 import { NoDataContainer } from '../../../common/styled'
 import { getSelectedCompareBy } from '../../../common/util'
 
-const Container = ({ userRole, settings, toggleFilter }) => {
+const Container = ({ userRole, settings, toggleFilter, profileId }) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -41,7 +41,7 @@ const Container = ({ userRole, settings, toggleFilter }) => {
   const [
     attDistributionData,
     attDistrDataLoading,
-  ] = useAttendanceDistributionFetch(settings)
+  ] = useAttendanceDistributionFetch(settings, profileId)
   const [
     atDetailsData,
     totalRows,
@@ -53,6 +53,7 @@ const Container = ({ userRole, settings, toggleFilter }) => {
     sortKey,
     page,
     pageSize,
+    profileId,
   })
   const onSetGroupBy = (checked) => {
     if (checked) {

@@ -5,7 +5,10 @@ import { actions } from './actionReducers'
 
 function* fetchFiltersDataRequestSaga({ payload }) {
   try {
-    const filtersData = yield call(reportsApi.fetchMARFilterData, payload)
+    const filtersData = yield call(reportsApi.fetchMARFilterData, {
+      ...payload,
+      attendanceBandInfo: true,
+    })
     yield put(actions.fetchFiltersDataRequestSuccess({ filtersData }))
   } catch (error) {
     const msg =

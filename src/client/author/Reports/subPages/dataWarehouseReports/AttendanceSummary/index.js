@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { getOrgDataSelector } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
@@ -42,7 +42,7 @@ const AttendanceReport = (props) => {
 
   const search = useUrlSearchParams(location)
   const reportId = search.reportId
-
+  const [profileId, setProfileId] = useState(null)
   const onApplyFilter = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
     setSettings({
@@ -90,9 +90,11 @@ const AttendanceReport = (props) => {
           setShowApply={setShowApply}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
+          setProfileId={setProfileId}
+          profileId={profileId}
         />
       </SubHeader>
-      <Container toggleFilter={toggleFilter} />
+      <Container toggleFilter={toggleFilter} profileId={profileId} />
     </>
   )
 }

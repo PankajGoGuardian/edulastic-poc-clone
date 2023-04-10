@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Row, Spin } from 'antd'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
@@ -15,6 +16,7 @@ import {
   groupByConstants,
   pageSize,
   compareByOptions as compareByOptionsRaw,
+  compareByEnums,
 } from './utils/constants'
 
 import { selectors } from './ducks'
@@ -22,8 +24,14 @@ import { NoDataContainer } from '../../../common/styled'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
 
-
-const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, firstLoad }) => {
+const Container = ({
+  userRole,
+  settings,
+  toggleFilter,
+  profileId,
+  sharedReport,
+  firstLoad,
+}) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -31,7 +39,11 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, 
   const defaultCompareBy = getSelectedCompareBy({
     compareByOptions,
   }).key
-  const [compareBy, setCompareBy] = useState(defaultCompareBy)
+  const [compareBy, setCompareBy] = useState(
+    defaultCompareBy || userRole === roleuser.TEACHER
+      ? compareByEnums.CLASS
+      : compareByEnums.SCHOOL
+  )
   const [sortOrder, setSortOrder] = useState('')
   const [sortKey, setSortKey] = useState('')
   const [page, setPage] = useState(1)
@@ -120,6 +132,7 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, 
                 setPage={setPage}
                 setCompareBy={setCompareBy}
                 isSharedReport={isSharedReport}
+                compareByOptions={compareByOptions}
               />
             </div>
           </EduElse>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Row } from 'antd'
+import { Row, Spin } from 'antd'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable from './Performance'
@@ -20,8 +20,9 @@ import {
 import { selectors } from './ducks'
 import { NoDataContainer } from '../../../common/styled'
 import { getSelectedCompareBy } from '../../../common/util'
+import { getUserRole } from '../../../../src/selectors/user'
 
-const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport }) => {
+const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, firstLoad }) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -76,7 +77,14 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport }
       <EduElse>
         <EduIf condition={showNoData}>
           <EduThen>
-            <NoDataContainer>No data available currently.</NoDataContainer>
+            <EduIf condition={firstLoad}>
+              <EduThen>
+                <Spin size="large" />
+              </EduThen>
+              <EduElse>
+                <NoDataContainer>No data available currently.</NoDataContainer>
+              </EduElse>
+            </EduIf>
           </EduThen>
           <EduElse>
             <AttendanceSummaryChart
@@ -122,9 +130,11 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport }
   )
 }
 
-const { settings } = selectors
+const { settings, firstLoad } = selectors
 const enhance = connect((state) => ({
   settings: settings(state),
+  firstLoad: firstLoad(state),
+  userRole: getUserRole(state),
 }))
 
 export default enhance(Container)

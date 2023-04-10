@@ -22,6 +22,7 @@ import { NoDataContainer } from '../../../common/styled'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
 
+
 const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, firstLoad }) => {
   const [groupBy, setGroupBy] = useState(groupByConstants.MONTH)
   const compareByOptions = compareByOptionsRaw.filter(
@@ -41,7 +42,6 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, 
   })
   const [
     attDistributionData,
-    attDistrTotalStudents,
     attDistrDataLoading,
   ] = useAttendanceDistributionFetch(settings, profileId)
   const [
@@ -120,7 +120,6 @@ const Container = ({ userRole, settings, toggleFilter, profileId, sharedReport, 
                 setPage={setPage}
                 setCompareBy={setCompareBy}
                 isSharedReport={isSharedReport}
-                totalStudents={attDistrTotalStudents}
               />
             </div>
           </EduElse>

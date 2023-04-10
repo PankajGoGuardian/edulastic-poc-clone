@@ -112,7 +112,6 @@ export const useAttendanceSummaryFetch = ({
 
 export const useAttendanceDistributionFetch = (settings, profileId) => {
   const [data, setData] = useState([])
-  const [totalStudents, setTotalStudents] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   useEffect(() => {
@@ -126,7 +125,6 @@ export const useAttendanceDistributionFetch = (settings, profileId) => {
         fetchAttendanceDistributionReport(params)
           .then((response) => {
             setData(response.metrics || [])
-            setTotalStudents(response.totalStudents || 0)
             setLoading(false)
           })
           .catch((e) => {
@@ -141,5 +139,5 @@ export const useAttendanceDistributionFetch = (settings, profileId) => {
     }
   }, [settings.requestFilters, profileId])
 
-  return [data, totalStudents, loading, error]
+  return [data, loading, error]
 }

@@ -24,7 +24,6 @@ import {
   compareByToPluralName,
   pageSize,
   sortKeys,
-  compareByStudentsLimit_500,
 } from './utils/constants'
 import {
   compareByFilterFieldKeys,
@@ -145,7 +144,6 @@ const PerformanceTable = ({
   compareBy,
   setCompareBy,
   isSharedReport = false,
-  totalStudents,
 }) => {
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -207,19 +205,6 @@ const PerformanceTable = ({
     compareBy === compareByEnums.STUDENT && !isSharedReport
       ? rowSelection
       : null
-  const _compareByOptions = compareByOptions.map((item) => {
-    if (
-      item.key === compareByEnums.STUDENT &&
-      totalStudents > compareByStudentsLimit_500
-    ) {
-      return {
-        ...item,
-        disabled: true,
-        disableMessage: `Students count is more than ${compareByStudentsLimit_500}`,
-      }
-    }
-    return item
-  })
 
   return (
     <StyledCard>
@@ -230,7 +215,7 @@ const PerformanceTable = ({
         checkedStudents={checkedStudentsForModal}
       />
       <TableFilters
-        compareByOptions={_compareByOptions}
+        compareByOptions={compareByOptions}
         setCompareBy={_setCompareBy}
         compareBy={compareBy}
         handleAddToGroup={handleAddToGroup}

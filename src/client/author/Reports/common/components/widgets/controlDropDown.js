@@ -29,11 +29,7 @@ const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
       )}
     </Menu.Item>
     {data.map((item) => (
-      <Menu.Item
-        key={item.key}
-        title={item.disabled ? item.disableMessage || item.title : item.title}
-        disabled={item.disabled}
-      >
+      <Menu.Item key={item.key} title={item.title}>
         {item.title}
       </Menu.Item>
     ))}

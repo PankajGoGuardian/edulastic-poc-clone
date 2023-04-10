@@ -20,7 +20,6 @@ import {
 import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
 import {
   compareByEnums,
-  compareByOptions,
   compareByToPluralName,
   pageSize,
   sortKeys,
@@ -144,6 +143,7 @@ const PerformanceTable = ({
   compareBy,
   setCompareBy,
   isSharedReport = false,
+  compareByOptions,
 }) => {
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])

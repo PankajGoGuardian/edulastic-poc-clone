@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Row, Spin } from 'antd'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable from './Performance'
 import AttendanceSummaryChart from './WeeklyAttendaceChart/AttendanceSummaryChart'
@@ -16,7 +15,6 @@ import {
   groupByConstants,
   pageSize,
   compareByOptions as compareByOptionsRaw,
-  compareByEnums,
 } from './utils/constants'
 
 import { selectors } from './ducks'
@@ -39,11 +37,7 @@ const Container = ({
   const defaultCompareBy = getSelectedCompareBy({
     compareByOptions,
   }).key
-  const [compareBy, setCompareBy] = useState(
-    defaultCompareBy || userRole === roleuser.TEACHER
-      ? compareByEnums.CLASS
-      : compareByEnums.SCHOOL
-  )
+  const [compareBy, setCompareBy] = useState(defaultCompareBy)
   const [sortOrder, setSortOrder] = useState('')
   const [sortKey, setSortKey] = useState('')
   const [page, setPage] = useState(1)

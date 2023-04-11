@@ -73,7 +73,7 @@ const Container = ({
   const isSharedReport = !!sharedReport?._id
 
   return (
-    <EduIf condition={loading}>
+    <EduIf condition={loading && attDistrDataLoading && atDetailsLoading}>
       <EduThen>
         <SpinLoader
           tip="Please wait while we gather the required information..."

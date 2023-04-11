@@ -124,6 +124,7 @@ import {
   setSelectedThemeAction,
   setZoomLevelAction,
 } from '../../student/Sidebar/ducks'
+import { unblockAntiCheatingFeature } from '../../../utils/anticheating/antiCheatingHelper'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -1203,6 +1204,8 @@ function* submitTest({ payload }) {
       yield put(resetStudentAttemptAction())
     }
     Fscreen.safeExitfullScreen()
+    // unblock anti cheating feature
+    unblockAntiCheatingFeature()
   }
 }
 

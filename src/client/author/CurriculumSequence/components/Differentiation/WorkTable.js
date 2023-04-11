@@ -503,7 +503,7 @@ const InnerWorkTable = ({
   )
 
   const userCountComponent = (count) => (
-    <FlexContainer>
+    <FlexContainer data-cy="studentCount">
       <IconUser data-cy="student" />
       &nbsp;&nbsp;{count}
     </FlexContainer>

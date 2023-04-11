@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { CONTEXTMENU_EVENT_NAME } from './constants'
+import { CONTEXTMENU_EVENT_NAME } from './constants/index'
 
 const useContextMenuBlocker = (changeField) => {
   const contextmenuEventCallback = (event) => event.preventDefault()

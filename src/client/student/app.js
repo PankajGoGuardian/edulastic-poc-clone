@@ -32,6 +32,9 @@ import {
 import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 import PrivacyPolicyModal from '../privacyPolicy'
 import FeaturesSwitch from '../features/components/FeaturesSwitch'
+import { unblockAntiCheatingFeature } from '../../utils/anticheating/antiCheatingHelper'
+import { setIsAntiCheatingEnabled } from '../assessment/actions/test'
+import { getIsAntiCheatingEnabled } from '../assessment/selectors/test'
 
 const StudentApp = ({
   match,
@@ -40,6 +43,8 @@ const StudentApp = ({
   updateCliUser,
   isCliUser,
   user,
+  isAntiCheatingEnabled,
+  setAntiCheatingEnabled,
 }) => {
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
@@ -48,6 +53,10 @@ const StudentApp = ({
     const searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     if (searchParams.cliUser) {
       updateCliUser(true)
+    }
+    if (isAntiCheatingEnabled) {
+      unblockAntiCheatingFeature()
+      setAntiCheatingEnabled(false)
     }
   }, [])
 
@@ -126,14 +135,16 @@ const StudentApp = ({
 }
 
 export default connect(
-  ({ ui, user }) => ({
+  ({ ui, user, test }) => ({
     user,
     zoomLevel: ui.zoomLevel,
     isProxyUser: isProxyUserSelector({ user }),
     isCliUser: user?.isCliUser,
+    isAntiCheatingEnabled: getIsAntiCheatingEnabled({ test }),
   }),
   {
     updateCliUser: updateCliUserAction,
+    setAntiCheatingEnabled: setIsAntiCheatingEnabled,
   }
 )(StudentApp)
 

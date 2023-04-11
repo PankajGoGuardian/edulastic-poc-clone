@@ -8,7 +8,7 @@ import {
   IconDashboardReport,
 } from '@edulastic/icons'
 import ReportLinkCard from './common/components/ReportLinkCard'
-import MoreReportsContainer from './common/components/MoreReportsContainer'
+// import MoreReportsContainer from './common/components/MoreReportsContainer'
 import {
   DW_ATTENDANCE_REPORT_URL,
   DW_MAR_REPORT_URL,
@@ -47,14 +47,15 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         url={DW_ATTENDANCE_REPORT_URL}
         loc={loc}
       />
-      <MoreReportsContainer />
+      {/* <MoreReportsContainer /> */}
     </StyledCardsContainer>
   )
 }
 
 const StyledCardsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 42px;
 `
 
 export default DataWarehoureReportCardsWrapper

@@ -18,54 +18,66 @@ const ReportLinkCard = ({
 
   return (
     <StyledCard onClick={navigateToReport}>
-      <HeaderContainer>
-        <h2>{title}</h2>
-        <Icon
-          type="right"
-          theme="outlined"
-          style={{
-            marginTop: '6px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            color: themeColor,
-          }}
-        />
-      </HeaderContainer>
-      <ImageContainer>
-        <IconThumbnail />
-      </ImageContainer>
-      <p style={{ padding: '0 20px' }}>{description}</p>
+      <h2>{title}</h2>
+      <Description>
+        <Content>
+          <p>{description}</p>
+          <IconWrapper>
+            <Icon
+              type="right"
+              theme="outlined"
+              style={{
+                fontSize: '10px',
+                fontWeight: 'bold',
+                color: themeColor,
+              }}
+            />
+          </IconWrapper>
+        </Content>
+        <ImageContainer>
+          <IconThumbnail />
+        </ImageContainer>
+      </Description>
     </StyledCard>
   )
 }
 
-const HeaderContainer = styled.div`
+const Content = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: start;
-  height: 64px;
-  h2 {
-    margin-right: 10px;
-    margin-bottom: 0px;
-    font-weight: bold;
-    color: ${greyThemeDark3};
-  }
+`
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 5px;
+  width: 20px;
+  height: 20px;
+`
+
+const Description = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
 `
 
 const ImageContainer = styled.div`
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: center;
-  height: 250px;
-  margin: 50px 0px 50px;
 `
 
 const StyledCard = styled(Card)`
   cursor: pointer;
-  margin: 0 10px 20px;
-  border-radius: 10px;
-  height: 600px;
-  width: 275px;
+  border-radius: 20px;
+  h2 {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: ${greyThemeDark3};
+  }
 `
 
 export default withRouter(ReportLinkCard)

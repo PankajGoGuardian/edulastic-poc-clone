@@ -18,6 +18,10 @@ import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
+  DW_SURVEY_INSIGHTS_URL,
+  DW_GOALS_AND_INTERVENTIONS_URL,
+  DW_EARLY_WARNING_URL,
+  DW_EFFICACY_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 const reports = [
@@ -69,7 +73,7 @@ const reports = [
         title: 'Survey Insights',
         description:
           'Get insights into student’s responses to Skill Surveys and view competency trends.',
-        url: DW_MAR_REPORT_URL,
+        url: DW_SURVEY_INSIGHTS_URL,
       },
     ],
   },
@@ -82,7 +86,7 @@ const reports = [
         IconThumbnail: IconSetGoals,
         title: 'Set Goals & Interventions',
         description: 'Set Goals and Interventions and track improvement.',
-        url: DW_DASHBOARD_URL,
+        url: DW_GOALS_AND_INTERVENTIONS_URL,
       },
       {
         id: 2,
@@ -90,7 +94,7 @@ const reports = [
         title: 'Early Warning',
         description:
           'View students at risk based on their academic and attendance performance and plan interventions.',
-        url: DW_MAR_REPORT_URL,
+        url: DW_EARLY_WARNING_URL,
       },
       {
         id: 3,
@@ -98,7 +102,7 @@ const reports = [
         title: 'Efficacy',
         description:
           'Compare student performance across tests pre and post-intervention.',
-        url: DW_WLR_REPORT_URL,
+        url: DW_EFFICACY_URL,
       },
     ],
   },

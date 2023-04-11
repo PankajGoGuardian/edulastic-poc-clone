@@ -42,7 +42,7 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
       />
       <ReportLinkCard
         IconThumbnail={IconAttendanceReport}
-        title="Attendance Report"
+        title="Attendance Summary"
         description="Monitor attendance and tardies, identify students at risk of chronic absenteeism, and intervene."
         url={DW_ATTENDANCE_REPORT_URL}
         loc={loc}

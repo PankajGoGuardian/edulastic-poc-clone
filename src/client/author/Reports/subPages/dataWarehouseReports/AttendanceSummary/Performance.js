@@ -92,7 +92,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
         return (
           <EduIf condition={!!url}>
             <EduThen>
-              <Link to={url} target={url?.href}>
+              <Link to={url} target="_blank">
                 {text}
               </Link>
             </EduThen>

@@ -355,7 +355,7 @@
       "groupTitle": "Data Studio Reports"
     },
     "attendance-summary": {
-      "title": "Attendance Report",
+      "title": "Attendance Summary",
       "breadcrumb": [
         {
           "title": "DATA WAREHOUSE REPORTS",
@@ -549,7 +549,7 @@
       },
       {
         "key": "attendance-summary",
-        "title": "ATTENDANCE SUMMARY REPORT",
+        "title": "ATTENDANCE SUMMARY",
         "location": "/author/reports/attendance-summary"
       }
     ]

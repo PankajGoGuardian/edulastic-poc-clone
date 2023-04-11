@@ -4,13 +4,12 @@ import { sortKeys } from '../utils/constants'
 
 export const getAttendanceChartData = (attendanceData, groupBy) => {
   const _attendanceData = sortBy(attendanceData, 'minDate')
-  let relativeToPeriodStart = 0
   const attendanceChartData = _attendanceData
     .map((item) => {
       if (item.fromTermStart < 0) return
 
       return {
-        [groupBy]: relativeToPeriodStart++,
+        [groupBy]: item.fromTermStart,
         startDate: moment(item.minDate).format('DD MMM'),
         presents: item.presentEvents,
         absents: item.absentEvents,

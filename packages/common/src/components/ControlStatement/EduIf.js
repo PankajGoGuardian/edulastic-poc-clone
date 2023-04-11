@@ -12,7 +12,7 @@ const hasThenOrElse = (children) => {
 /**
  *
  * @example
- * import {EduIf, EduThen, EduElse} from "@edulastic/comon"
+ * import {EduIf, EduThen, EduElse} from "@edulastic/common"
  * // usages 1
  * <EduIf condition={value}>
  *     <EduThen>

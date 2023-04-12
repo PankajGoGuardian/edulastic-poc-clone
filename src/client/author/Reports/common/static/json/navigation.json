@@ -391,6 +391,20 @@
         }
       ],
       "group": "mainReport"
+    },
+    "goals-and-interventions": {
+      "title": "Set Goals & Interventions",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Goals And Interventions"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
     }
   },
   "navigation": {

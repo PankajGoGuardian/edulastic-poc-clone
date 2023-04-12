@@ -11,8 +11,10 @@ import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
+  DW_GOALS_AND_INTERVENTIONS_URL,
 } from '../../common/constants/dataWarehouseReports'
 import AttendanceReport from './AttendanceSummary'
+import GoalsAndInterventions from './GoalsAndInterventions'
 
 const DataWarehouseReportsContainer = ({
   breadcrumbData,
@@ -109,6 +111,20 @@ const DataWarehouseReportsContainer = ({
               onRefineResultsCB={onRefineResultsCB}
               loc={loc}
               updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={DW_GOALS_AND_INTERVENTIONS_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <GoalsAndInterventions
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
             />
           )
         }}

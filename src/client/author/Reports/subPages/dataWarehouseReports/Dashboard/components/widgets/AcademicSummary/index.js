@@ -8,19 +8,19 @@ import React, { useMemo } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
+import PieChartLabel from '../../../../common/components/PieChartLabel'
+import { StyledEmptyContainer } from '../../../../common/components/styledComponents'
+import { getDateLabel } from '../../../../common/utils'
 import {
   getCellColor,
   getAcademicSummaryPieChartData,
-  getAcademicSummaryChartLabelJSX,
   academicSummaryFiltersTypes,
   getAcademicSummaryMetrics,
   getFilteredAcademicSummaryTestTypes,
-  getDateLabel,
 } from '../../../utils'
 import {
   ContentWrapper,
   DataSizeExceededContainer,
-  StyledEmptyContainer,
   Widget,
 } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
@@ -140,7 +140,7 @@ const AcademicSummary = ({
                   />
                   <SimplePieChart
                     data={PieChartData}
-                    getChartLabelJSX={getAcademicSummaryChartLabelJSX}
+                    getChartLabelJSX={PieChartLabel}
                   />
                 </ContentWrapper>
               </EduThen>

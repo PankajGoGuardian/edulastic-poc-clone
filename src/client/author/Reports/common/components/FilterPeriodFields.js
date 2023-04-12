@@ -51,7 +51,7 @@ function FilterPeriodFields({
       </Col>
       <EduIf condition={filters.periodType === PERIOD_TYPES.CUSTOM}>
         <Col span={6}>
-          <FilterLabel data-cy="customPeriodStart">Start Date</FilterLabel>
+          <FilterLabel data-cy="customPeriodStart">Start Month</FilterLabel>
           <DatePicker.MonthPicker
             style={{ width: '100%' }}
             disabledDate={(date) => {
@@ -70,7 +70,7 @@ function FilterPeriodFields({
           />
         </Col>
         <Col span={6}>
-          <FilterLabel data-cy="customPeriodEnd">End Date</FilterLabel>
+          <FilterLabel data-cy="customPeriodEnd">End Month</FilterLabel>
           <DatePicker.MonthPicker
             style={{ width: '100%' }}
             disabledDate={(date) => {

@@ -1,4 +1,4 @@
-import { lightRed5, lightGreen12 } from '@edulastic/colors'
+import { lightRed7, lightGreen12 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { Row } from 'antd'
 import React from 'react'
@@ -20,7 +20,7 @@ const WidgetCell = ({
   cellType = 'medium',
 }) => {
   const headerClassName = subHeader ? 'small-header' : ''
-  const footerFontColor = footer >= 0 ? lightGreen12 : lightRed5
+  const footerFontColor = footer >= 0 ? lightGreen12 : lightRed7
   return (
     <div>
       <div className={headerClassName}>
@@ -44,7 +44,7 @@ const WidgetCell = ({
             <StyledIconCaretUp color={lightGreen12} />
           </EduIf>
           <EduIf condition={footer < 0}>
-            <StyledIconCaretDown color={lightRed5} />
+            <StyledIconCaretDown color={lightRed7} />
           </EduIf>
         </StyledText>
       </EduIf>

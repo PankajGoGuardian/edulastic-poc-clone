@@ -10,7 +10,7 @@ import {
   CustomStyledTable,
   TableContainer,
   AssessmentName,
-} from '../../common/styled'
+} from '../../common/components/styledComponents'
 import {
   AssessmentNameContainer,
   StyledSpan,
@@ -24,7 +24,7 @@ import {
   ColorCircle,
   ColorBandRow,
 } from '../../../../common/styled'
-import LargeTag from '../../common/LargeTag'
+import LargeTag from '../../common/components/LargeTag'
 
 import { tableColumnsData, compareByMap } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'

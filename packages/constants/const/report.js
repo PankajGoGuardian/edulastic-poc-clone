@@ -3,6 +3,7 @@ const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
 const DW_ATTENDANCE_SUMMARY_REPORT = 'attendance-summary'
 const DW_DASHBOARD_REPORT = 'dashboard-report'
+const DW_EARLY_WARNING_REPORT = 'early-warning-report'
 
 const reportGroupType = {
   STANDARD_REPORT: 'standard-reports',
@@ -18,6 +19,7 @@ const reportGroupType = {
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_ATTENDANCE_SUMMARY_REPORT,
   DW_DASHBOARD_REPORT,
+  DW_EARLY_WARNING_REPORT,
 }
 
 const reportNavType = {
@@ -45,6 +47,7 @@ const reportNavType = {
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT,
+  DW_EARLY_WARNING_REPORT,
 }
 
 const ReportPaths = {

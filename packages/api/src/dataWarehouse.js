@@ -7,7 +7,7 @@ const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
 
-const { DW_DASHBOARD_REPORT } = reportNavType
+const { DW_DASHBOARD_REPORT, DW_EARLY_WARNING_REPORT } = reportNavType
 
 const getSignedUrl = (
   filename,
@@ -128,6 +128,36 @@ const getDashboardTableMatrics = (data) => {
   })
 }
 
+const getEarlyWarningRiskSummary = (params) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_EARLY_WARNING_REPORT}/summary`,
+      params,
+    })
+    .then((result) => result)
+}
+
+const getRiskTimeline = (params) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_EARLY_WARNING_REPORT}/timeline`,
+      params,
+    })
+    .then((result) => result)
+}
+
+const getEarlyWarningDetails = (params) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_EARLY_WARNING_REPORT}/details`,
+      params,
+    })
+    .then((result) => result.data)
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -139,4 +169,7 @@ export default {
   getDashboardAcademicSummary,
   getDashboardAttendanceSummary,
   getDashboardTableMatrics,
+  getEarlyWarningRiskSummary,
+  getRiskTimeline,
+  getEarlyWarningDetails,
 }

@@ -17,12 +17,14 @@ const {
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
+const { lightRed7, yellow3, lightGreen14 } = require('@edulastic/colors')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 const DECIMAL_BASE = 10
+const DEGREE_TO_RADIAN = Math.PI / 180
 
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
@@ -503,6 +505,12 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
   return [csvHeadings, ...csvData]
 }
 
+const getDropdownOptions = (keysObj, namesObj) =>
+  Object.values(keysObj).map((key) => ({
+    key,
+    title: namesObj[key],
+  }))
+
 const SUBJECTS = [
   'Mathematics',
   'ELA',
@@ -550,10 +558,7 @@ const GRADES = {
   [GRADE_KEYS.OTHER]: 'Other',
 }
 
-const GRADE_OPTIONS = Object.values(GRADE_KEYS).map((key) => ({
-  key,
-  title: GRADES[key],
-}))
+const GRADE_OPTIONS = getDropdownOptions(GRADE_KEYS, GRADES)
 
 const PERIOD_TYPES = {
   TILL_DATE: 'TILL_DATE',
@@ -572,12 +577,39 @@ const PERIOD_NAMES = {
   [PERIOD_TYPES.CUSTOM]: 'Custom',
 }
 
+const RISK_TYPE_KEYS = {
+  OVERALL: 'overall',
+  ACADEMIC: 'academic',
+  ATTENDANCE: 'attendance',
+}
+
+const RISK_TYPE_NAMES = {
+  [RISK_TYPE_KEYS.OVERALL]: 'Overall Risk',
+  [RISK_TYPE_KEYS.ACADEMIC]: 'Academic Risk',
+  [RISK_TYPE_KEYS.ATTENDANCE]: 'Attendance Risk',
+}
+
+const RISK_TYPE_OPTIONS = getDropdownOptions(RISK_TYPE_KEYS, RISK_TYPE_NAMES)
+
+const RISK_BAND_LEVELS = {
+  HIGH: 'High',
+  MEDIUM: 'Medium',
+  LOW: 'Low',
+}
+
+const RISK_BAND_COLOR_INFO = {
+  [RISK_BAND_LEVELS.HIGH]: lightRed7,
+  [RISK_BAND_LEVELS.MEDIUM]: yellow3,
+  [RISK_BAND_LEVELS.LOW]: lightGreen14,
+}
+
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
   DECIMAL_BASE,
+  DEGREE_TO_RADIAN,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
@@ -619,4 +651,8 @@ module.exports = {
   GRADE_KEYS,
   GRADES,
   GRADE_OPTIONS,
+  RISK_TYPE_KEYS,
+  RISK_TYPE_OPTIONS,
+  RISK_BAND_LEVELS,
+  RISK_BAND_COLOR_INFO,
 }

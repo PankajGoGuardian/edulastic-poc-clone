@@ -3,7 +3,7 @@ import { lightGreen13, lightRed6 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { StyledTag } from '../../../common/styled'
+import { StyledTag } from '../../../common/components/styledComponents'
 import {
   StyledRow,
   StyledText,

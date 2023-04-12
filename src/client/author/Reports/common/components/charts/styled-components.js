@@ -69,3 +69,19 @@ export const ChartPreLabelWrapper = styled.div`
   position: relative;
   z-index: 1;
 `
+
+export const ChartLegendPill = styled.div`
+  width: 20px;
+  height: 8px;
+  border-radius: 10px;
+  background: ${({ color }) => color};
+  margin-right: 10px;
+`
+
+export const ChartLegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  margin-top: 20px;
+  font-weight: bold;
+`

@@ -14,11 +14,11 @@ import {
 import BackendPagination from '../../../../common/components/BackendPagination'
 import {
   DataSizeExceededContainer,
-  StyledEmptyContainer,
   TableContainer,
 } from './common/styledComponents'
 import AddToGroupModal from '../../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../../features/components/FeaturesSwitch'
+import { StyledEmptyContainer } from '../../common/components/styledComponents'
 
 function TableSection({
   location,

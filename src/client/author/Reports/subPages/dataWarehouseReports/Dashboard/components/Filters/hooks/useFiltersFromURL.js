@@ -116,6 +116,7 @@ function useFiltersFromURL({
           courseIds: reject([search.courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+          teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
           options: {
             termId: _filters.termId,
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),

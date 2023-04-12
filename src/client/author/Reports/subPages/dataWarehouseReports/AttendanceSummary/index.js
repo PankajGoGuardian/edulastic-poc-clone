@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { getOrgDataSelector } from '../../../../src/selectors/user'
@@ -101,7 +100,11 @@ const AttendanceReport = (props) => {
           profileId={profileId}
         />
       </SubHeader>
-      <Container toggleFilter={toggleFilter} profileId={profileId} sharedReport={sharedReport}/>
+      <Container
+        toggleFilter={toggleFilter}
+        profileId={profileId}
+        sharedReport={sharedReport}
+      />
     </>
   )
 }

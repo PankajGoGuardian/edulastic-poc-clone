@@ -10,7 +10,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconCarets } from '@edulastic/icons'
-import { Empty, Row } from 'antd'
+import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
 
@@ -227,9 +227,6 @@ export const DataSizeExceededContainer = styled.div`
   font-size: 25px;
   font-weight: bold;
   color: ${fadedBlack};
-`
-export const StyledEmptyContainer = styled(Empty)`
-  margin-block: 60px;
 `
 export const StyledDiv = styled.div`
   display: flex;

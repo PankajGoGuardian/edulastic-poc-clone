@@ -33,7 +33,12 @@ import _ from 'lodash'
  * @returns {useApiQueryOptionsParsed}
  */
 function parseOptions(_options, params) {
-  const options = { enabled: true, debounceTimeout: 200, ..._options }
+  const options = {
+    enabled: true,
+    deDuplicate: true,
+    debounceTimeout: 200,
+    ..._options,
+  }
   options.enabled =
     typeof options.enabled === 'function'
       ? options.enabled(params)
@@ -61,10 +66,16 @@ function useApiQuery(api, params, options = {}) {
   const [result, _setResult] = useState(initialState)
 
   const parsedOptions = parseOptions(options, params)
+  const resetCBRef = useRef(() => {})
 
   useEffect(() => {
     if (!parsedOptions.enabled) return
-    if (_.isEqual(previousParamsRef.current, params)) return
+    if (
+      parsedOptions.deDuplicate &&
+      _.isEqual(previousParamsRef.current, params)
+    )
+      return
+    resetCBRef.current()
     let cancelled = false
     const setResult = (value) => {
       if (cancelled) return
@@ -96,12 +107,12 @@ function useApiQuery(api, params, options = {}) {
     }
 
     const timeout = setTimeout(fetchData, parsedOptions.debounceTimeout)
-    return () => {
+    resetCBRef.current = () => {
       clearTimeout(timeout)
       cancelled = true
     }
   }, [parsedOptions.enabled, parsedOptions.debounceTimeout, ...params])
-
+  useEffect(() => resetCBRef.current, [])
   return result
 }
 

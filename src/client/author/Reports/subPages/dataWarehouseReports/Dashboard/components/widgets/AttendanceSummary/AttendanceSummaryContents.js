@@ -4,7 +4,7 @@ import {
   lightGreen12,
   lightGrey8,
   lightGrey9,
-  lightRed5,
+  lightRed7,
   lightRed6,
 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
@@ -16,14 +16,14 @@ import {
   StyledIconCaretDown,
 } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
-import { getDateLabel } from '../../../utils'
+import { getDateLabel } from '../../../../common/utils'
 
 function AttendanceSummaryContents({ data }) {
   const { result } = data
   const attendanceAvgIncrease = Math.round(
     result.postPeriod.avg - result.prePeriod.avg
   )
-  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed5
+  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed7
   const prePeriodStartDate = getDateLabel(result.prePeriod)
   return (
     <ContentWrapper>
@@ -40,7 +40,7 @@ function AttendanceSummaryContents({ data }) {
             <StyledIconCaretUp color={lightGreen12} />
           </EduIf>
           <EduIf condition={attendanceAvgIncrease < 0}>
-            <StyledIconCaretDown color={lightRed5} />
+            <StyledIconCaretDown color={lightRed7} />
           </EduIf>
         </StyledText>
         <StyledText fontSize="13px" color={lightGrey9}>

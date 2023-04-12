@@ -372,7 +372,7 @@
       "title": "Dashboard",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
@@ -381,6 +381,20 @@
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
+    },
+    "early-warning-report": {
+      "title": "Early Warning",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports"
+        },
+        {
+          "title": "Early Warning"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
     },
     "shared-reports": {
       "title": "Shared Reports",
@@ -551,6 +565,11 @@
         "key": "attendance-summary",
         "title": "ATTENDANCE SUMMARY",
         "location": "/author/reports/attendance-summary"
+      },
+      {
+        "key": "early-warning-report",
+        "title": "Early Warning",
+        "location": "/author/reports/early-warning-report"
       }
     ]
   }

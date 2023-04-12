@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { reportGroupType } from '@edulastic/constants/const/report'
 import { get, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
 
@@ -16,11 +15,10 @@ import {
 import {
   compareByOptions as compareByOptionsRaw,
   academicSummaryFiltersTypes,
-  buildRequestFilters,
   buildAcademicSummaryFilters,
 } from './utils'
+import { buildRequestFilters } from '../common/utils'
 import {
-  fetchUpdateTagsDataAction,
   getCsvDownloadingState,
   getSharingState,
   setSharingStateAction,
@@ -220,10 +218,5 @@ export default connect(
     ...actions,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
-    fetchUpdateTagsData: (opts) =>
-      fetchUpdateTagsDataAction({
-        type: reportGroupType.DW_DASHBOARD_REPORT,
-        ...opts,
-      }),
   }
 )(Dashboard)

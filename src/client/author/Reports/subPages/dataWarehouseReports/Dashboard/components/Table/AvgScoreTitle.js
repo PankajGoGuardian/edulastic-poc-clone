@@ -1,7 +1,7 @@
 import { EduIf } from '@edulastic/common'
 import { EDULASTIC } from '@edulastic/constants/const/testTypes'
 import React from 'react'
-import { StyledTag } from '../../../common/styled'
+import { StyledTag } from '../../../common/components/styledComponents'
 
 const AvgScoreTitle = ({ testType }) => {
   const isEdulastic = testType.toLowerCase() === EDULASTIC

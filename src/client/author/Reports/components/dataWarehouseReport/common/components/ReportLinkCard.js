@@ -1,8 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Card, Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { greyThemeDark3, themeColor } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import {
+  CustomStyledCard,
+  HeaderContainer,
+  ImageContainer,
+  StyledIcon,
+  StyledParagraph,
+} from '../../../../common/styled'
 
 const ReportLinkCard = ({
   IconThumbnail,
@@ -17,55 +22,21 @@ const ReportLinkCard = ({
   }
 
   return (
-    <StyledCard onClick={navigateToReport}>
+    <CustomStyledCard onClick={navigateToReport}>
       <HeaderContainer>
-        <h2>{title}</h2>
-        <Icon
-          type="right"
-          theme="outlined"
-          style={{
-            marginTop: '6px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            color: themeColor,
-          }}
-        />
+        <h3>{title}</h3>
       </HeaderContainer>
-      <ImageContainer>
-        <IconThumbnail />
-      </ImageContainer>
-      <p style={{ padding: '0 20px' }}>{description}</p>
-    </StyledCard>
+      <FlexContainer>
+        <div>
+          <StyledParagraph>{description}</StyledParagraph>
+          <StyledIcon type="right" theme="outlined" />
+        </div>
+        <ImageContainer>
+          <IconThumbnail />
+        </ImageContainer>
+      </FlexContainer>
+    </CustomStyledCard>
   )
 }
-
-const HeaderContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  height: 64px;
-  h2 {
-    margin-right: 10px;
-    margin-bottom: 0px;
-    font-weight: bold;
-    color: ${greyThemeDark3};
-  }
-`
-
-const ImageContainer = styled.div`
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  height: 250px;
-  margin: 50px 0px 50px;
-`
-
-const StyledCard = styled(Card)`
-  cursor: pointer;
-  margin: 0 10px 20px;
-  border-radius: 10px;
-  height: 600px;
-  width: 275px;
-`
 
 export default withRouter(ReportLinkCard)

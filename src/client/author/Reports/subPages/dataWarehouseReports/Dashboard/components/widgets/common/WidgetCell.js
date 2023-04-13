@@ -1,5 +1,5 @@
 import { lightRed7, lightGreen12 } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
+import { EduIf, EduElse, EduThen } from '@edulastic/common'
 import { Row } from 'antd'
 import React from 'react'
 import {
@@ -18,9 +18,11 @@ const WidgetCell = ({
   subFooter,
   color,
   cellType = 'medium',
+  isGrowthPositive = true,
 }) => {
   const headerClassName = subHeader ? 'small-header' : ''
-  const footerFontColor = footer >= 0 ? lightGreen12 : lightRed7
+  const isPositiveTrend = isGrowthPositive && footer >= 0
+  const footerFontColor = isPositiveTrend ? lightGreen12 : lightRed7
   return (
     <div>
       <div className={headerClassName}>
@@ -41,10 +43,12 @@ const WidgetCell = ({
         <StyledText color={footerFontColor}>
           {Math.abs(footer)}%{' '}
           <EduIf condition={footer >= 0}>
-            <StyledIconCaretUp color={lightGreen12} />
-          </EduIf>
-          <EduIf condition={footer < 0}>
-            <StyledIconCaretDown color={lightRed7} />
+            <EduThen>
+              <StyledIconCaretUp color={footerFontColor} />
+            </EduThen>
+            <EduElse>
+              <StyledIconCaretDown color={footerFontColor} />
+            </EduElse>
           </EduIf>
         </StyledText>
       </EduIf>

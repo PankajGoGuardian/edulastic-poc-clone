@@ -66,6 +66,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         footer={Math.round(
           result.postPeriod.tardiesPerc - result.prePeriod.tardiesPerc
         )}
+        isGrowthPositive={false}
         color={lightBrown}
         cellType="small"
       />
@@ -77,6 +78,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
           result.postPeriod.chronicAbsentPerc -
             result.prePeriod.chronicAbsentPerc
         )}
+        isGrowthPositive={false}
         color={lightRed6}
         cellType="small"
       />

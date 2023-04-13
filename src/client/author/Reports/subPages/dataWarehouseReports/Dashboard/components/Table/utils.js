@@ -36,7 +36,7 @@ const tableColumnsData = [
     align: 'center',
     width: 200,
     className: 'avg-attendance-column-header',
-    render: (value) => `${value}%`,
+    render: (value) => (typeof value === 'number' ? `${value}%` : '-'),
     sorter: true,
   },
   // next up are dynamic columns for each assessment type

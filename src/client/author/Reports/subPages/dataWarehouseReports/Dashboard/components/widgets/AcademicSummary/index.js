@@ -10,13 +10,15 @@ import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWareho
 import { DashedLine } from '../../../../../../common/styled'
 import PieChartLabel from '../../../../common/components/PieChartLabel'
 import { StyledEmptyContainer } from '../../../../common/components/styledComponents'
-import { getDateLabel } from '../../../../common/utils'
+import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
   getCellColor,
   getAcademicSummaryPieChartData,
   academicSummaryFiltersTypes,
   getAcademicSummaryMetrics,
   getFilteredAcademicSummaryTestTypes,
+  trendPeriodDateFormat,
+  trendPeriodPrefix,
 } from '../../../utils'
 import {
   ContentWrapper,
@@ -84,7 +86,7 @@ const AcademicSummary = ({
     return getCellColor(avgScore, selectedPerformanceBand)
   }, [data, selectedPerformanceBand])
 
-  const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
+  const { result: { bandDistribution = [], postPeriod } = {} } = data || {}
 
   const _filters = {
     ...settings.requestFilters,
@@ -94,7 +96,12 @@ const AcademicSummary = ({
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
 
-  const prePeriodDateLabel = getDateLabel(prePeriod)
+  const trendPeriodLabel = getTrendPeriodLabel(
+    settings.requestFilters.periodType,
+    postPeriod,
+    trendPeriodPrefix,
+    trendPeriodDateFormat
+  )
 
   return (
     <Widget>
@@ -116,7 +123,7 @@ const AcademicSummary = ({
                       header="AVG. SCORE"
                       value={`${avgScorePercentage}%`}
                       footer={scoreTrendPercentage}
-                      subFooter={`since ${prePeriodDateLabel}`}
+                      subFooter={trendPeriodLabel}
                       color={avgScoreCellColor}
                     />
                     <DashedLine

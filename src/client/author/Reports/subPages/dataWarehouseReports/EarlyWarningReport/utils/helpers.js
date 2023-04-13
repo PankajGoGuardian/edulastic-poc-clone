@@ -1,13 +1,10 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy, isEmpty } from 'lodash'
+import { sumBy, get, groupBy } from 'lodash'
 import React from 'react'
 import moment from 'moment'
-import {
-  RISK_TYPE_KEYS,
-  PERIOD_TYPES,
-} from '@edulastic/constants/reportUtils/common'
+import { RISK_TYPE_KEYS } from '@edulastic/constants/reportUtils/common'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import CompareByTitle from '../../common/components/CompareByTitle'
 import LargeTag from '../../common/components/LargeTag'
@@ -235,47 +232,4 @@ export const getTimelineChartData = (rawData, filters) => {
     })
   })
   return finalData
-}
-
-export const getRiskSummaryWidgetTitle = (selectedPeriodType, period) => {
-  if (isEmpty(period)) return ''
-  const {
-    start: { year: periodStartYear, month: periodStartMonth },
-    end: { year: periodEndYear, month: periodEndMonth },
-  } = period
-  const dateFormat = `MMM YYYY`
-  const periodStartLabel = moment([
-    periodStartYear,
-    periodStartMonth - 1,
-  ]).format(dateFormat)
-  const periodEndLabel = moment([periodEndYear, periodEndMonth - 1]).format(
-    dateFormat
-  )
-  const [periodStartMonthLabel, periodStartYearLabel] = periodStartLabel.split(
-    ' '
-  )
-  const hasSameYear = periodStartYear === periodEndYear
-  const periodStartYearLabelText = hasSameYear ? '' : periodStartYearLabel
-
-  const rangeLabel = [
-    periodStartMonthLabel,
-    periodStartYearLabelText,
-    '-',
-    periodEndLabel,
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  switch (selectedPeriodType) {
-    case PERIOD_TYPES.TILL_DATE:
-    case PERIOD_TYPES.THIS_QUARTER:
-    case PERIOD_TYPES.LAST_QUARTER:
-    case PERIOD_TYPES.CUSTOM:
-      return rangeLabel
-    case PERIOD_TYPES.THIS_MONTH:
-    case PERIOD_TYPES.LAST_MONTH:
-      return periodEndLabel
-    default:
-      return ''
-  }
 }

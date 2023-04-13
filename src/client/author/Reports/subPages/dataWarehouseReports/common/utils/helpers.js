@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { isEmpty } from 'lodash'
+import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { allFilterValue } from '../../../../common/constants'
 
@@ -63,3 +64,51 @@ export const filterPopupFilterSelectedTestTypes = (
 }
 
 export const sortDistributionBand = (data) => data.sort((a, b) => b.max - a.max)
+
+export const getTrendPeriodLabel = (
+  selectedPeriodType,
+  period,
+  prefix = '',
+  dateFormat = `MMM YYYY`
+) => {
+  if (isEmpty(period)) return ''
+
+  const {
+    start: { year: periodStartYear, month: periodStartMonth },
+    end: { year: periodEndYear, month: periodEndMonth },
+  } = period
+  const periodStartLabel = moment([
+    periodStartYear,
+    periodStartMonth - 1,
+  ]).format(dateFormat)
+  const periodEndLabel = moment([periodEndYear, periodEndMonth - 1]).format(
+    dateFormat
+  )
+  const [periodStartMonthLabel, periodStartYearLabel] = periodStartLabel.split(
+    ' '
+  )
+  const hasSameYear = periodStartYear === periodEndYear
+  const periodStartYearLabelText = hasSameYear ? '' : periodStartYearLabel
+
+  const rangeLabel = [
+    periodStartMonthLabel,
+    periodStartYearLabelText,
+    '-',
+    periodEndLabel,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  switch (selectedPeriodType) {
+    case PERIOD_TYPES.TILL_DATE:
+    case PERIOD_TYPES.THIS_QUARTER:
+    case PERIOD_TYPES.LAST_QUARTER:
+    case PERIOD_TYPES.CUSTOM:
+      return `${prefix}${rangeLabel}`
+    case PERIOD_TYPES.THIS_MONTH:
+    case PERIOD_TYPES.LAST_MONTH:
+      return `${prefix}${periodEndLabel}`
+    default:
+      return ''
+  }
+}

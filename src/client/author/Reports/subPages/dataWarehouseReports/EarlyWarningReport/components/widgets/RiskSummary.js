@@ -22,12 +22,8 @@ import {
 } from '../../../common/components/styledComponents'
 import WidgetCell from '../../../common/components/WidgetCell'
 import WidgetHeader from '../../../common/components/WidgetHeader'
-import { getDateLabel } from '../../../common/utils'
-import {
-  getWidgetCellFooterInfo,
-  transformRiskSummaryData,
-  getRiskSummaryWidgetTitle,
-} from '../../utils'
+import { getDateLabel, getTrendPeriodLabel } from '../../../common/utils'
+import { getWidgetCellFooterInfo, transformRiskSummaryData } from '../../utils'
 
 const {
   RISK_BAND_COLOR_INFO,
@@ -68,7 +64,7 @@ const RiskSummary = ({ settings }) => {
       (riskType) => riskType.key === settings.requestFilters.riskType
     )?.title || RISK_TYPE_OPTIONS[0].title
 
-  const periodLabel = getRiskSummaryWidgetTitle(
+  const periodLabel = getTrendPeriodLabel(
     settings.requestFilters.periodType,
     postPeriod
   )

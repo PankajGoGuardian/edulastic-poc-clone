@@ -33,7 +33,10 @@ const AttendanceSummary = ({ settings }) => {
       <Spin spinning={loading}>
         <EduIf condition={data?.result && !error && hasContent}>
           <EduThen>
-            <AttendanceSummaryContents data={data} />
+            <AttendanceSummaryContents
+              data={data}
+              selectedPeriodType={settings.requestFilters.periodType}
+            />
           </EduThen>
           <EduElse>
             <Empty />

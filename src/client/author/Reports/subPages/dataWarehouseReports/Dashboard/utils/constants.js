@@ -28,6 +28,9 @@ export const tableFilterTypes = {
 
 export const TABLE_PAGE_SIZE = 50
 
+export const trendPeriodDateFormat = `MMM'YY`
+export const trendPeriodPrefix = 'vs '
+
 export const compareByKeys = {
   SCHOOL: 'school',
   TEACHER: 'teacher',

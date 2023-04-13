@@ -16,15 +16,21 @@ import {
   StyledIconCaretDown,
 } from '../../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
-import { getDateLabel } from '../../../../common/utils'
+import { getTrendPeriodLabel } from '../../../../common/utils'
+import { trendPeriodDateFormat, trendPeriodPrefix } from '../../../utils'
 
-function AttendanceSummaryContents({ data }) {
+function AttendanceSummaryContents({ data, selectedPeriodType }) {
   const { result } = data
   const attendanceAvgIncrease = Math.round(
     result.postPeriod.avg - result.prePeriod.avg
   )
   const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed7
-  const prePeriodStartDate = getDateLabel(result.prePeriod)
+  const trendPeriodLabel = getTrendPeriodLabel(
+    selectedPeriodType,
+    result.postPeriod,
+    trendPeriodPrefix,
+    trendPeriodDateFormat
+  )
   return (
     <ContentWrapper>
       <WidgetCell
@@ -44,7 +50,7 @@ function AttendanceSummaryContents({ data }) {
           </EduIf>
         </StyledText>
         <StyledText fontSize="13px" color={lightGrey9}>
-          since {prePeriodStartDate}
+          {trendPeriodLabel}
         </StyledText>
       </div>
       <DashedLine

@@ -16,6 +16,7 @@ import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 import UploadStandard from '../Components/StandardUpload'
+import UploadMultiStandardMapping from '../Components/MultiStandardMappingUpload'
 import { emailRegex } from '../../common/utils/helpers'
 
 const CREATE_ADMIN = 'create-admin'
@@ -28,6 +29,7 @@ const API_OPTIONS = {
   manageClass: 'manageClass',
 }
 const UPLOAD_STANDARD = 'upload-standard'
+const UPLOAD_MULTI_STANDARD_MAPPING = 'upload-multi-standard-mapping'
 
 const ApiForm = () => {
   const [id, setId] = useState()
@@ -291,6 +293,12 @@ const ApiForm = () => {
             <UploadStandard
               standardData={fileUploadData.data}
               subject={fileUploadData.subject}
+              clearStandardData={clearStandardData}
+            />
+          )}
+          {fileUploadData && id === UPLOAD_MULTI_STANDARD_MAPPING && (
+            <UploadMultiStandardMapping
+              multiStandardMappingData={fileUploadData.data}
               clearStandardData={clearStandardData}
             />
           )}

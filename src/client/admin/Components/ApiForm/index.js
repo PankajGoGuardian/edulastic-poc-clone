@@ -113,7 +113,9 @@ const ApiFormsMain = ({
                 />
               ))}
               <ActionWrapper>
-                {id !== 'upload-standard' && (
+                {!['upload-standard', 'upload-multi-standard-mapping'].includes(
+                  id
+                ) && (
                   <Button type="primary" htmlType="submit" onClick={onSave}>
                     Submit
                   </Button>

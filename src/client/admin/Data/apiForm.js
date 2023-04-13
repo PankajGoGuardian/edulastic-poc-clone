@@ -1067,4 +1067,20 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'upload-multi-standard-mapping',
+    name: 'Upload Multi Standard Mapping',
+    endPoint: 'admin-tool/multi-standards-mapping-xls',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'path',
+        type: 'upload',
+        accept: '.xlsx',
+        multiple: false,
+        required: true,
+      },
+    ],
+  },
 ]

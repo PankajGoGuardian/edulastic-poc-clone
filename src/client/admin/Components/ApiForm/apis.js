@@ -61,3 +61,10 @@ export const saveStandard = (subject, standardData) =>
     method: 'post',
     data: { subject, standardData },
   })
+
+export const saveMultiStandardMapping = (multiStandardMappingData) =>
+  api.callApi({
+    url: `admin-tool/multi-standard-mapping`,
+    method: 'post',
+    data: { multiStandardMappingData },
+  })

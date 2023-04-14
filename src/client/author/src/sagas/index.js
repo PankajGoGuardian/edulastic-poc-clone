@@ -59,6 +59,7 @@ import { languageSaga } from '../../../common/components/LanguageSelector/duck'
 import { dataWarehouseSaga } from '../../sharedDucks/dataWarehouse'
 import { rosterImportSaga } from '../../RosterImport'
 import { advanceSearchSaga } from '../../AdvanceSearch'
+import { goalsAndInterventionsSaga } from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks'
 
 const authorSagas = [
   itemsSaga(),
@@ -122,6 +123,7 @@ const authorSagas = [
   dataWarehouseSaga(),
   rosterImportSaga(),
   advanceSearchSaga(),
+  goalsAndInterventionsSaga(),
 ]
 
 export default authorSagas

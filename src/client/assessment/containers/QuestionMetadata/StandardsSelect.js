@@ -122,6 +122,7 @@ function StandardsSelect(props) {
     disabled,
     standardDetails,
     previouslyUsedOrDefaultInterests,
+    placeholder,
   } = props
 
   const {
@@ -241,6 +242,7 @@ function StandardsSelect(props) {
         value={standardIds}
         onChange={handleSelectChange}
         disabled={disabled}
+        placeholder={placeholder}
         {...extraProps}
       />
     </>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import Tabs from 'antd/lib/tabs'
 import styled from 'styled-components'
+import { SAVE_GOAL, SAVE_INTERVENTION } from './constants/form'
 import { StyledReportContainer } from '../../../common/styled'
 import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
+import DataForm from './component/DataForm'
 
 const { TabPane } = Tabs
 
@@ -42,7 +44,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW GOAL`,
-        children: `ADD NEW GOAL`,
+        children: <DataForm view={SAVE_GOAL} />,
       },
     ],
     2: [
@@ -54,7 +56,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW INTERVENTION`,
-        children: `ADD NEW INTERVENTION`,
+        children: <DataForm view={SAVE_INTERVENTION} />,
       },
     ],
   }

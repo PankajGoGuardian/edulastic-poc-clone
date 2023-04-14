@@ -1,0 +1,33 @@
+.gi-table {
+  .ant-table-thead > tr > th {
+    background: transparent;
+    border-bottom: none;
+  }
+  .ant-table-expanded-row {
+    background: transparent;
+  }
+  .ant-table-row {
+    .ant-table-row-collapsed,
+    .ant-table-row-expanded {
+      border: none;
+      &::after {
+        font-size: 24px;
+        color: #1ab395;
+        line-height: initial;
+      }
+    }
+    td {
+      border-bottom: 1px solid #eeeeee;
+    }
+    &:hover {
+      td {
+        background: transparent !important;
+      }
+    }
+  }
+  .not-expandible {
+    .ant-table-row-expand-icon-cell {
+      visibility: hidden;
+    }
+  }
+}

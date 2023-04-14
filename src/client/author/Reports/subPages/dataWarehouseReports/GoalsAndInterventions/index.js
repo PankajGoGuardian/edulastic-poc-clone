@@ -5,11 +5,14 @@ import { StyledReportContainer } from '../../../common/styled'
 import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
+import GITable from './component/GITable'
 
 const { TabPane } = Tabs
 
 const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const [activeKey, setActiveKey] = useState('1')
+  const [isSetGoal, setGoal] = useState(false)
+  const [isSetIntervention, setIntervention] = useState(false)
 
   const firstScreenContent = {
     1: {
@@ -37,7 +40,14 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `GOAL LIST`,
-        children: <FirstScreen content={firstScreenContent[activeKey]} />,
+        children: isSetGoal ? (
+          <GITable />
+        ) : (
+          <FirstScreen
+            content={firstScreenContent[activeKey]}
+            handleSet={setGoal}
+          />
+        ),
       },
       {
         key: '2',
@@ -49,7 +59,14 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `INTERVENTION LIST`,
-        children: <FirstScreen content={firstScreenContent[activeKey]} />,
+        children: isSetIntervention ? (
+          <GITable />
+        ) : (
+          <FirstScreen
+            content={firstScreenContent[activeKey]}
+            handleSet={setIntervention}
+          />
+        ),
       },
       {
         key: '2',
@@ -58,6 +75,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       },
     ],
   }
+
   const items = [
     {
       key: '1',

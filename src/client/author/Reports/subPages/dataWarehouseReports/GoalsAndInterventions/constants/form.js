@@ -11,7 +11,7 @@ export const SAVE_GOAL = 'SAVE_GOAL'
 export const SAVE_INTERVENTION = 'SAVE_INTERVENTION'
 export const GOAL = 'goal'
 export const INTERVENTION = 'intervention'
-export const BAND = 'band'
+export const BAND = 'performanceBandId'
 export const METRIC = 'metric'
 export const STRING_INPUT = 'STRING_INPUT'
 export const NUMBER_INPUT = 'NUMBER_INPUT'
@@ -50,7 +50,7 @@ export const saveGoalFormFields = {
       optionsData: dropdownData.goalOrInterventionTypes,
     },
     studentGroup: {
-      field: 'studentGroup',
+      field: 'studentGroupIds',
       label: 'For Whom',
       fieldType: DROPDOWN,
       isRequired: true,
@@ -187,7 +187,7 @@ export const saveInterventionFormFields = {
       optionsData: dropdownData.goalOrInterventionTypes,
     },
     studentGroup: {
-      field: 'studentGroup',
+      field: 'studentGroupIds',
       label: 'Who needs it',
       fieldType: DROPDOWN,
       isRequired: true,

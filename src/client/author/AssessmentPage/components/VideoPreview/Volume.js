@@ -1,23 +1,22 @@
 import React from 'react'
-import { withMediaProps } from 'react-media-player'
 
 import { Slider } from 'antd'
 
-const Volume = ({ style, media }) => {
+const Volume = ({ style, volume, volumeTo }) => {
   const _handleChange = (value) => {
-    media.setVolume((+value).toFixed(4))
+    volumeTo(value)
   }
   return (
     <Slider
       min={0}
       max={1}
       step={0.01}
-      value={media.volume}
-      style={{ width: '100px', ...style }}
+      value={volume}
+      style={{ width: 100, ...style }}
       onChange={_handleChange}
       tooltipVisible={false}
     />
   )
 }
 
-export default withMediaProps(Volume)
+export default Volume

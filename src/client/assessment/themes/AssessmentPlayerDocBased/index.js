@@ -22,6 +22,7 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
+    videoUrl: PropTypes.string,
     docUrl: PropTypes.string,
     annotations: PropTypes.array,
     theme: PropTypes.object,
@@ -37,6 +38,7 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   static defaultProps = {
+    videoUrl: undefined,
     docUrl: '',
     annotations: [],
     theme: themes,
@@ -118,6 +120,7 @@ class AssessmentPlayerDocBased extends React.Component {
       theme,
       items,
       t,
+      videoUrl,
       docUrl,
       annotations,
       questionsById: _questionsById,
@@ -179,6 +182,7 @@ class AssessmentPlayerDocBased extends React.Component {
           >
             {!loading && (
               <WorksheetComponent
+                videoUrl={videoUrl}
                 docUrl={docUrl}
                 isAssessmentPlayer
                 item={item}

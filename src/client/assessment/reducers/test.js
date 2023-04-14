@@ -78,6 +78,7 @@ const test = (state = initialState, { payload, type }) => {
         passages: payload.passages,
         title: payload.title,
         annotations: payload.annotations,
+        videoUrl: payload.videoUrl,
         docUrl: payload.docUrl,
         answerCheckByItemId: payload.answerCheckByItemId,
         pageStructure: payload.pageStructure,

@@ -335,6 +335,11 @@ const Author = ({
                 />
                 <Route
                   exact
+                  path={`${match.url}/tests/snapquizvideo`}
+                  component={AssessmentCreate}
+                />
+                <Route
+                  exact
                   path={`${match.url}/tests/snapquiz/add`}
                   render={(props) => <AssessmentCreate {...props} isAddPdf />}
                 />

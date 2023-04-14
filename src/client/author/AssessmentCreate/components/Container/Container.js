@@ -7,7 +7,12 @@ import qs from 'qs'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { debounce } from 'lodash'
-import { MainHeader, MainContentWrapper, notification } from '@edulastic/common'
+import {
+  MainHeader,
+  MainContentWrapper,
+  notification,
+  EduIf,
+} from '@edulastic/common'
 
 import { withNamespaces } from 'react-i18next'
 import Breadcrumb from '../../../src/components/Breadcrumb'
@@ -25,6 +30,7 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction,
 } from '../../ducks'
+import CreateLink from '../CreateLink/CreateLink'
 
 const breadcrumbStyle = {
   position: 'static',
@@ -41,6 +47,11 @@ const testBreadcrumbs = [
   },
 ]
 
+const snapquizVideoBreadcrumb = {
+  title: 'SnapquizVideo',
+  to: '',
+}
+
 const snapquizBreadcrumb = {
   title: 'Snapquiz',
   to: '',
@@ -49,6 +60,7 @@ const creationMethods = {
   SCRATCH: 'scratch',
   LIBRARY: 'library',
   PDF: 'pdf',
+  VIDEO: 'video',
 }
 
 class Container extends React.Component {
@@ -114,6 +126,18 @@ class Container extends React.Component {
     })
   }, 1000)
 
+  handleNext = (videoUrl) => {
+    const { location, createAssessment } = this.props
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+
+    createAssessment({
+      videoUrl,
+      assessmentId,
+    })
+  }
+
   handleCreateBlankAssessment = (event) => {
     event.stopPropagation()
 
@@ -139,6 +163,13 @@ class Container extends React.Component {
       t,
     } = this.props
     if (
+      location &&
+      location.pathname &&
+      location.pathname.includes('snapquizvideo')
+    ) {
+      method = creationMethods.VIDEO
+      newBreadcrumb.push(snapquizVideoBreadcrumb)
+    } else if (
       location &&
       location.pathname &&
       location.pathname.includes('snapquiz')
@@ -180,6 +211,9 @@ class Container extends React.Component {
               uploadToDrive={uploadToDrive}
             />
           )}
+          <EduIf condition={method === creationMethods.VIDEO}>
+            <CreateLink next={this.handleNext} />
+          </EduIf>
         </MainContentWrapper>
       </>
     )

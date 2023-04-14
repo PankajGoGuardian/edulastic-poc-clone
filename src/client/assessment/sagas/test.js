@@ -860,6 +860,7 @@ function* loadTest({ payload }) {
         playerSkinType: settings.playerSkinType || test.playerSkinType,
         testletConfig: test.testletConfig,
         annotations: test.annotations,
+        videoUrl: test.videoUrl,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,
         pageStructure: test.pageStructure,

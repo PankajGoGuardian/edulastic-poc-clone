@@ -543,6 +543,7 @@ const AssessmentContainer = ({
   match,
   url,
   gotoItem,
+  videoUrl,
   docUrl,
   annotations,
   questionsById,
@@ -1375,9 +1376,10 @@ const AssessmentContainer = ({
   }
 
   let playerComponent = null
-  if (!isUndefined(docUrl)) {
+  if (!isUndefined(docUrl || videoUrl)) {
     playerComponent = (
       <AssessmentPlayerDocBased
+        videoUrl={videoUrl}
         docUrl={docUrl}
         hidePause={hidePause}
         annotations={annotations}
@@ -1506,6 +1508,7 @@ AssessmentContainer.propTypes = {
   items: PropTypes.array.isRequired,
   title: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
+  videoUrl: PropTypes.string,
   docUrl: PropTypes.string,
   annotations: PropTypes.array,
   answers: PropTypes.array.isRequired,
@@ -1521,6 +1524,7 @@ AssessmentContainer.propTypes = {
 }
 
 AssessmentContainer.defaultProps = {
+  videoUrl: undefined,
   docUrl: undefined,
   annotations: [],
   test: {},
@@ -1537,6 +1541,7 @@ const enhance = compose(
       passages: state.test.passages || ownProps.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
+      videoUrl: state.test.videoUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
       originalSkinName: originalPlayerSkinName(state),

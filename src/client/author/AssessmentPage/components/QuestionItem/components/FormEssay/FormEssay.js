@@ -9,9 +9,11 @@ export default class FormEssay extends React.Component {
     mode: PropTypes.oneOf(['edit', 'review', 'report']).isRequired,
     question: PropTypes.object.isRequired,
     answer: PropTypes.string,
+    disableAutoHightlight: PropTypes.bool,
   }
 
   static defaultProps = {
+    disableAutoHightlight: false,
     answer: '',
   }
 
@@ -35,7 +37,7 @@ export default class FormEssay extends React.Component {
     // preventing blur event when relatedTarget is submit button
     if (!isSubmitButton(ev)) {
       const { clearHighlighted, saveQuestionResponse } = this.props
-      clearHighlighted()
+      clearHighlighted && clearHighlighted()
       saveQuestionResponse()
     }
   }
@@ -48,6 +50,7 @@ export default class FormEssay extends React.Component {
       },
       mode,
       highlighted,
+      disableAutoHightlight,
     } = this.props
     return (
       <Input.TextArea
@@ -58,7 +61,7 @@ export default class FormEssay extends React.Component {
         onBlur={this.handleBlur}
         disabled={mode === 'report'}
         rows={numberOfRows} // textarea number of rows
-        ref={(el) => highlighted && el?.focus()}
+        ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
       />
     )
   }

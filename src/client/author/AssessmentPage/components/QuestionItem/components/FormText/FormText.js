@@ -12,9 +12,11 @@ export default class FormText extends React.Component {
     question: PropTypes.object.isRequired,
     onCreateAnswer: PropTypes.func.isRequired,
     answer: PropTypes.string,
+    disableAutoHightlight: PropTypes.bool,
   }
 
   static defaultProps = {
+    disableAutoHightlight: false,
     answer: '',
   }
 
@@ -43,13 +45,17 @@ export default class FormText extends React.Component {
     // preventing blur event when relatedTarget is submit button
     if (!isSubmitButton(ev)) {
       const { clearHighlighted, saveQuestionResponse } = this.props
-      clearHighlighted()
+      clearHighlighted && clearHighlighted()
       saveQuestionResponse()
     }
   }
 
   renderForm = () => {
-    const { answer, highlighted = false } = this.props
+    const {
+      answer = false,
+      highlighted = false,
+      disableAutoHightlight = false,
+    } = this.props
     return (
       <Input
         size="large"
@@ -57,7 +63,7 @@ export default class FormText extends React.Component {
         data-cy="textInput"
         onChange={this.handleChange}
         onBlur={this.handleBlur}
-        ref={(el) => highlighted && el?.focus()}
+        ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
       />
     )
   }

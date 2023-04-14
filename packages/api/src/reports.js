@@ -377,6 +377,14 @@ const createIntervention = (data) =>
     })
     .then((response) => response?.data?.result)
 
+const fetchAttendanceBands = () =>
+  api
+    .callApi({
+      url: `report/attendance-band`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -424,4 +432,5 @@ export default {
   fetchAttendanceDistributionReport,
   createGoal,
   createIntervention,
+  fetchAttendanceBands,
 }

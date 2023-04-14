@@ -84,6 +84,11 @@ const ActivityTable = ({
     rawColumns[3].sorter = sortNumbers('studentCount')
   })
 
+  console.log({
+    dataSource: { tableData },
+    columns: { _columns },
+    tableToRender: { StyledTable },
+  })
   return (
     <CsvTable
       isCsvDownloading={isCsvDownloading}

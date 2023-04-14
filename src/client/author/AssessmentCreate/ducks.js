@@ -63,7 +63,7 @@ const createAssessmentRequest = (
   state,
   {
     payload: {
-      file: { name: fileName = null, size: fileSize = 0 },
+      file: { name: fileName = null, size: fileSize = 0 } = {},
       videoUrl,
     },
   }

@@ -12,6 +12,9 @@ import {
   notification,
   helpers,
   toggleChatDisplay,
+  EduIf,
+  EduElse,
+  EduThen,
 } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -51,6 +54,7 @@ import PDFAnnotationTools from '../PDFAnnotationTools'
 import AppConfig from '../../../../../app-config'
 import { isImagesBlockedByBrowser } from '../../../../common/utils/helpers'
 import { toggleImageBlockNotificationAction } from '../../../../student/Login/ducks'
+import VideoPreview from '../VideoPreview/VideoPreview'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -94,6 +98,7 @@ class WorksheetComponent extends React.Component {
   constructor(props) {
     super(props)
     this.pdfRef = React.createRef()
+    this.videoRef = React.createRef()
     this.state = {
       currentPage: 0,
       highlightedQuestion: undefined,
@@ -188,7 +193,7 @@ class WorksheetComponent extends React.Component {
     }
   }
 
-  handleAddAnnotation = (question) => {
+  handleAddAnnotation = (question, type = 'pdf') => {
     const { annotations, setTestData } = this.props
     const annotation = {
       uuid: helpers.uuid(),
@@ -200,9 +205,18 @@ class WorksheetComponent extends React.Component {
 
     const newAnnotations = [...annotations]
 
-    const annotationIndex = newAnnotations.findIndex(
-      (item) => `${item.questionId}` === `${question.questionId}`
-    )
+    let annotationIndex = -1
+    if (type === 'video') {
+      annotationIndex = newAnnotations.findIndex((item) =>
+        item.questionId
+          ? `${item.questionId}` === `${question.questionId}`
+          : Math.floor(question.time) === Math.floor(item.time)
+      )
+    } else {
+      annotationIndex = newAnnotations.findIndex(
+        (item) => `${item.questionId}` === `${question.questionId}`
+      )
+    }
 
     if (annotationIndex > -1) {
       newAnnotations.splice(annotationIndex, 1)
@@ -595,7 +609,7 @@ class WorksheetComponent extends React.Component {
       fileInfo,
       pageStructure,
       windowWidth,
-      test: { isDocBased, _id: assessmentId },
+      test: { isDocBased, _id: assessmentId, videoUrl: entityLink },
       testMode = false,
       studentWorkAnswersById,
       studentWork,
@@ -618,7 +632,10 @@ class WorksheetComponent extends React.Component {
       undoUserWork,
       redoUserWork,
       stdAnnotations,
+      videoUrl,
     } = this.props
+
+    const finalvideoUrl = videoUrl || entityLink
     const {
       uploadModal,
       highlightedQuestion,
@@ -654,7 +671,7 @@ class WorksheetComponent extends React.Component {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {showAnnotationTools && (
+        <EduIf condition={showAnnotationTools && !finalvideoUrl}>
           <PDFAnnotationToolsWrapper>
             <PDFAnnotationTools
               setCurrentTool={setCurrentAnnotationTool}
@@ -672,7 +689,7 @@ class WorksheetComponent extends React.Component {
               redoUserWork={redoUserWork}
             />
           </PDFAnnotationToolsWrapper>
-        )}
+        </EduIf>
 
         <WorksheetWrapper
           showTools={showAnnotationTools}
@@ -680,115 +697,145 @@ class WorksheetComponent extends React.Component {
           testMode={testMode}
           extraPaddingTop={extraPaddingTop}
         >
-          <Modal
-            visible={deleteConfirmation}
-            title="Confirm Page Deletion"
-            onCancel={() => this.setDeleteConfirmation(false)}
-            footer={[
-              <StyledCancelBtn
-                onClick={() => this.setDeleteConfirmation(false)}
-                data-cy="no"
+          <EduIf condition={!finalvideoUrl}>
+            <>
+              <Modal
+                visible={deleteConfirmation}
+                title="Confirm Page Deletion"
+                onCancel={() => this.setDeleteConfirmation(false)}
+                footer={[
+                  <StyledCancelBtn
+                    onClick={() => this.setDeleteConfirmation(false)}
+                    data-cy="no"
+                  >
+                    No
+                  </StyledCancelBtn>,
+                  <StyledSubmitBtn
+                    key="back"
+                    onClick={() => {
+                      this.handleDeletePage(selected)
+                      this.setDeleteConfirmation(false)
+                    }}
+                    data-cy="yes"
+                  >
+                    Yes
+                  </StyledSubmitBtn>,
+                ]}
               >
-                No
-              </StyledCancelBtn>,
-              <StyledSubmitBtn
-                key="back"
-                onClick={() => {
-                  this.handleDeletePage(selected)
-                  this.setDeleteConfirmation(false)
-                }}
-                data-cy="yes"
+                Are you sure that you want to delete this page?
+              </Modal>
+              <Modal
+                width={700}
+                visible={uploadModal}
+                onCancel={() =>
+                  this.setState({
+                    uploadModal: false,
+                    isAddPdf: false,
+                  })
+                }
+                footer={null}
               >
-                Yes
-              </StyledSubmitBtn>,
-            ]}
-          >
-            Are you sure that you want to delete this page?
-          </Modal>
-          <Modal
-            width={700}
-            visible={uploadModal}
-            onCancel={() =>
-              this.setState({
-                uploadModal: false,
-                isAddPdf: false,
-              })
-            }
-            footer={null}
-          >
-            <DropArea
-              loading={creating}
-              onUpload={this.handleUploadPDF}
-              onCreateBlank={this.handleCreateBlankAssessment}
-              percent={percentageUploaded}
-              fileInfo={fileInfo}
-              isAddPdf={isAddPdf}
-              cancelUpload={this.cancelUpload}
-              uploadToDrive={uploadToDrive}
-              assesmentMetadata={assesmentMetadata}
-            />
-          </Modal>
-
-          <Thumbnails
-            annotations={annotations}
-            list={pageStructure}
-            currentPage={currentPage}
-            onReupload={this.handleReupload}
-            onAddPdf={this.handleAddPdf}
-            onPageChange={this.handleChangePage}
-            onAddBlankPage={this.handleAppendBlankPage}
-            onDeletePage={this.handleDeletePage}
-            setDeleteConfirmation={this.setDeleteConfirmation}
-            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
-            onClearAnnotations={this.handleClearAnnotations}
-            onMovePageUp={this.handleMovePageUp}
-            onMovePageDown={this.handleMovePageDown}
-            onInsertBlankPage={this.handleInsertBlankPage}
-            onRotate={this.handleRotate}
-            viewMode={viewMode}
-            review={review}
-            testMode={testMode}
-            reportMode={reportMode}
-            isToolBarVisible={isToolBarVisible}
-            toggleToolBarVisiblity={this.toggleToolBarVisiblity}
-            noCheck={noCheck}
-            minimized={minimized}
-            toggleMinimized={this.toggleMinimized}
-          />
+                <DropArea
+                  loading={creating}
+                  onUpload={this.handleUploadPDF}
+                  onCreateBlank={this.handleCreateBlankAssessment}
+                  percent={percentageUploaded}
+                  fileInfo={fileInfo}
+                  isAddPdf={isAddPdf}
+                  cancelUpload={this.cancelUpload}
+                  uploadToDrive={uploadToDrive}
+                  assesmentMetadata={assesmentMetadata}
+                />
+              </Modal>
+              <Thumbnails
+                annotations={annotations}
+                list={pageStructure}
+                currentPage={currentPage}
+                onReupload={this.handleReupload}
+                onAddPdf={this.handleAddPdf}
+                onPageChange={this.handleChangePage}
+                onAddBlankPage={this.handleAppendBlankPage}
+                onDeletePage={this.handleDeletePage}
+                setDeleteConfirmation={this.setDeleteConfirmation}
+                onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+                onClearAnnotations={this.handleClearAnnotations}
+                onMovePageUp={this.handleMovePageUp}
+                onMovePageDown={this.handleMovePageDown}
+                onInsertBlankPage={this.handleInsertBlankPage}
+                onRotate={this.handleRotate}
+                viewMode={viewMode}
+                review={review}
+                testMode={testMode}
+                reportMode={reportMode}
+                isToolBarVisible={isToolBarVisible}
+                toggleToolBarVisiblity={this.toggleToolBarVisiblity}
+                noCheck={noCheck}
+                minimized={minimized}
+                toggleMinimized={this.toggleMinimized}
+              />
+            </>
+          </EduIf>
 
           <PDFViewerContainer width={pdfWidth}>
-            <PDFPreview
-              page={selectedPage}
-              currentPage={currentPage + 1}
-              annotations={annotations}
-              stdAnnotations={stdAnnotations}
-              annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
-              onDragStart={this.onDragStart}
-              toggleMinimized={this.toggleMinimized}
-              onDropAnnotation={this.handleAddAnnotation}
-              onHighlightQuestion={this.handleHighlightQuestion}
-              questions={questions}
-              questionsById={questionsById}
-              answersById={answersById}
-              viewMode={viewMode}
-              isEditable={isEditable}
-              reportMode={reportMode}
-              isToolBarVisible={isToolBarVisible}
-              pdfWidth={pdfWidth - 100}
-              minimized={minimized}
-              pageChange={this.handleChangePage}
-              testMode={testMode}
-              studentWork={studentWork}
-              highlighted={highlightedQuestion}
-              forwardedRef={this.pdfRef}
-              review={review}
-              currentAnnotationTool={currentAnnotationTool}
-              setCurrentAnnotationTool={setCurrentAnnotationTool}
-              annotationToolsProperties={annotationToolsProperties}
-              itemId={itemDetail?._id || testItemId}
-            />
+            <EduIf condition={finalvideoUrl}>
+              <EduThen>
+                <VideoPreview
+                  onHighlightQuestion={this.handleHighlightQuestion}
+                  currentAnnotationTool={currentAnnotationTool}
+                  annotations={annotations}
+                  stdAnnotations={stdAnnotations}
+                  annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
+                  onDragStart={this.onDragStart}
+                  onDropAnnotation={this.handleAddAnnotation}
+                  questions={questions}
+                  questionsById={questionsById}
+                  answersById={answersById}
+                  viewMode={viewMode}
+                  isEditable={isEditable}
+                  reportMode={reportMode}
+                  testMode={testMode}
+                  studentWork={studentWork}
+                  highlighted={highlightedQuestion}
+                  forwardedRef={this.videoRef}
+                  review={review}
+                  videoUrl={finalvideoUrl}
+                  itemId={itemDetail?._id || testItemId}
+                />
+              </EduThen>
+              <EduElse>
+                <PDFPreview
+                  page={selectedPage}
+                  currentPage={currentPage + 1}
+                  annotations={annotations}
+                  stdAnnotations={stdAnnotations}
+                  annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
+                  onDragStart={this.onDragStart}
+                  toggleMinimized={this.toggleMinimized}
+                  onDropAnnotation={this.handleAddAnnotation}
+                  onHighlightQuestion={this.handleHighlightQuestion}
+                  questions={questions}
+                  questionsById={questionsById}
+                  answersById={answersById}
+                  viewMode={viewMode}
+                  isEditable={isEditable}
+                  reportMode={reportMode}
+                  isToolBarVisible={isToolBarVisible}
+                  pdfWidth={pdfWidth - 100}
+                  minimized={minimized}
+                  pageChange={this.handleChangePage}
+                  testMode={testMode}
+                  studentWork={studentWork}
+                  highlighted={highlightedQuestion}
+                  forwardedRef={this.pdfRef}
+                  review={review}
+                  currentAnnotationTool={currentAnnotationTool}
+                  setCurrentAnnotationTool={setCurrentAnnotationTool}
+                  annotationToolsProperties={annotationToolsProperties}
+                  itemId={itemDetail?._id || testItemId}
+                />
+              </EduElse>
+            </EduIf>
           </PDFViewerContainer>
-
           <Questions
             noCheck={noCheck}
             list={questions}
@@ -812,6 +859,7 @@ class WorksheetComponent extends React.Component {
             qId={0} // For doc based qid (question index) can always be 0
             clearHighlighted={this.clearHighlighted}
             itemId={itemDetail?._id}
+            disableAutoHightlight={!!finalvideoUrl}
           />
         </WorksheetWrapper>
       </div>

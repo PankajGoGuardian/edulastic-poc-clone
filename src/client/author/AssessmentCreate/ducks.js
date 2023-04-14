@@ -59,11 +59,23 @@ const initialState = {
 
 const initialTestState = createBlankTest()
 
-const createAssessmentRequest = (state, { payload: { file = {} } }) => {
+const createAssessmentRequest = (
+  state,
+  {
+    payload: {
+      file: { name: fileName = null, size: fileSize = 0 },
+      videoUrl,
+    },
+  }
+) => {
   state.creating = true
   state.error = undefined
-  state.fileName = file.name || null
-  state.fileSize = file.size || 0
+  if (videoUrl) {
+    state.videoUrl = videoUrl
+  } else {
+    state.fileName = fileName
+    state.fileSize = fileSize
+  }
 }
 
 const createAssessmentSuccess = (state) => {
@@ -296,12 +308,8 @@ function* createAssessmentSaga({ payload }) {
         },
         isDocBased: true,
         itemGroups: [{ ...NewGroup, _id: nanoid(), items: [item] }],
-        docUrl: fileURI,
         releaseScore,
         assignments: undefined,
-        pageStructure: pageStructure.length
-          ? pageStructure
-          : defaultPageStructure,
         ...(isAdmin
           ? {
               testType:
@@ -309,6 +317,16 @@ function* createAssessmentSaga({ payload }) {
             }
           : {}),
       }
+
+      if (payload.videoUrl) {
+        newAssessment.videoUrl = payload.videoUrl
+      } else {
+        newAssessment.docUrl = fileURI
+        newAssessment.pageStructure = pageStructure.length
+          ? pageStructure
+          : defaultPageStructure
+      }
+
       if (
         newAssessment.passwordPolicy !==
         testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC

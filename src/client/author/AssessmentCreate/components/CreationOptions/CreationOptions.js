@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import OptionPDF from '../OptionPDF/OptionPDF'
+import OptionVideo from '../OptionVideo/OptionVideo'
 import OptionScratch from '../OptionScratch/OptionScratch'
 import OptionDynamicTest from '../OptionDynamicTest/OptionDynamicTest'
 import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
@@ -17,6 +18,13 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
+      <FeaturesSwitch
+        inputFeatures="videoQuizEnabled"
+        actionOnInaccessible="hidden"
+      >
+        <OptionVideo />
+      </FeaturesSwitch>
+
       <FeaturesSwitch
         inputFeatures="enableDynamicTests"
         actionOnInaccessible="hidden"

@@ -84,6 +84,7 @@ const SortableQuestionItem = SortableElement(
     clearHighlighted,
     resetTimeSpentOnQuestion,
     itemId,
+    disableAutoHightlight,
   }) => (
     <div
       onClick={() => {
@@ -128,6 +129,7 @@ const SortableQuestionItem = SortableElement(
         clearHighlighted={clearHighlighted}
         resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
         itemId={itemId}
+        disableAutoHightlight={disableAutoHightlight}
       />
     </div>
   )
@@ -527,6 +529,7 @@ class Questions extends React.Component {
       qId,
       clearHighlighted,
       itemId,
+      disableAutoHightlight,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -586,6 +589,7 @@ class Questions extends React.Component {
                     qId={qId}
                     resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
                     itemId={itemId}
+                    disableAutoHightlight={disableAutoHightlight}
                   />
                 )
               )}

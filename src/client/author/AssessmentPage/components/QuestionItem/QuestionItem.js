@@ -10,7 +10,7 @@ import {
   get,
   round,
 } from 'lodash'
-import { MathSpan, DragDrop } from '@edulastic/common'
+import { MathSpan, DragDrop, EduIf } from '@edulastic/common'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 
 import {
@@ -207,6 +207,7 @@ class QuestionItem extends React.Component {
       clearHighlighted,
       resetTimeSpentOnQuestion,
       itemId,
+      disableAutoHightlight,
     } = this.props
 
     if (!evaluation) {
@@ -243,6 +244,7 @@ class QuestionItem extends React.Component {
       boundingRect,
       testItemId: itemId,
     }
+
     switch (data.type) {
       case MULTIPLE_CHOICE:
         return (
@@ -254,13 +256,21 @@ class QuestionItem extends React.Component {
           />
         )
       case SHORT_TEXT:
-        return <FormText onCreateAnswer={onCreateOptions} {...props} />
+        return (
+          <FormText
+            onCreateAnswer={onCreateOptions}
+            {...props}
+            disableAutoHightlight={disableAutoHightlight}
+          />
+        )
       case CLOZE_DROP_DOWN:
         return <FormDropdown {...props} />
       case MATH:
         return <FormMath {...props} />
       case ESSAY_PLAIN_TEXT:
-        return <FormEssay {...props} />
+        return (
+          <FormEssay {...props} disableAutoHightlight={disableAutoHightlight} />
+        )
       case TRUE_OR_FALSE:
         return (
           <FormChoice
@@ -397,6 +407,7 @@ class QuestionItem extends React.Component {
       annotations,
       reportActivity,
       zoom,
+      draggble,
     } = this.props
 
     const check =
@@ -424,6 +435,8 @@ class QuestionItem extends React.Component {
       }
     }
 
+    const disableDrag = draggble ? false : review || testMode
+
     return (
       <QuestionItemWrapper
         className={`doc-based-question-item-for-scroll-${id}`}
@@ -438,10 +451,7 @@ class QuestionItem extends React.Component {
         <AnswerForm
           style={{ justifyContent: review ? 'flex-start' : 'space-between' }}
         >
-          <DragItem
-            data={{ id, index: questionIndex }}
-            disabled={review || testMode}
-          >
+          <DragItem data={{ id, index: questionIndex }} disabled={disableDrag}>
             <QuestionNumber
               viewMode={viewMode === 'edit'}
               dragging={dragging}
@@ -452,15 +462,14 @@ class QuestionItem extends React.Component {
               {questionIndex}
             </QuestionNumber>
           </DragItem>
-          {!annotations && (
+          <EduIf condition={!annotations || draggble}>
             <QuestionForm review={review} ref={this.qFormRef}>
               {this.renderContent(
                 highlighted,
                 this.qFormRef?.current?.getBoundingClientRect()
               )}
             </QuestionForm>
-          )}
-
+          </EduIf>
           {!review && !pdfPreview && !testMode && this.renderEditButton()}
           {showAnswerIndicator && this.renderAnswerIndicator(type)}
         </AnswerForm>

@@ -3,8 +3,19 @@ import Table from 'antd/lib/table'
 import styled from 'styled-components'
 import './index.scss'
 import StatusBox from '../StatusBox'
+import ColoredCell from '../ColoredCell'
+import { statusColors } from '../../constants'
 
 const GITable = () => {
+  const getCurrentStatusColor = (record) => {
+    switch (true) {
+      case record.current >= record.target:
+        return statusColors.GREEN
+      default:
+        return statusColors.RED
+    }
+  }
+
   const columns = [
     {
       title: 'Name',
@@ -35,6 +46,9 @@ const GITable = () => {
       dataIndex: 'current',
       key: 'current',
       sorter: true,
+      render: (text, record) => (
+        <ColoredCell value={text} bgColor={getCurrentStatusColor(record)} />
+      ),
     },
     {
       title: 'Target',
@@ -74,7 +88,7 @@ const GITable = () => {
       type: 'Academic',
       target_students: 1024,
       baseline: 80,
-      current: 80,
+      current: 70,
       target: 80,
       time: '30/180',
       isExpandable: false,
@@ -180,8 +194,14 @@ const GITable = () => {
         }
       }}
       expandedRowRender={() => (
-        <Table className="gi-table" columns={columns} dataSource={expandData} />
+        <Table
+          className="gi-table"
+          columns={columns}
+          dataSource={expandData}
+          pagination={false}
+        />
       )}
+      pagination={false}
       dataSource={data}
     />
   )

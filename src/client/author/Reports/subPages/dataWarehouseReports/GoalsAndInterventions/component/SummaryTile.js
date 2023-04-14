@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const ColorStatusButton = ({ id, text, unit, color, border }) => {
+const SummaryTile = ({ id, text, unit, color, border }) => {
   return (
     <StyleButton
       key={id}
@@ -30,4 +30,4 @@ const StyleButton = styled.div`
   }
 `
 
-export default ColorStatusButton
+export default SummaryTile

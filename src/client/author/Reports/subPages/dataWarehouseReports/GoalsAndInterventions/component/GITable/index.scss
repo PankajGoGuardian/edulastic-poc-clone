@@ -1,7 +1,26 @@
 .gi-table {
-  .ant-table-thead > tr > th {
-    background: transparent;
-    border-bottom: none;
+  .ant-table-thead {
+    tr {
+      th {
+        background: transparent;
+        border-bottom: none;
+        text-align: center;
+        color: #999999;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        &:hover {
+          background: transparent !important;
+        }
+        .ant-table-column-sorters {
+          &:hover {
+            &::before {
+              background: transparent;
+            }
+          }
+        }
+      }
+    }
   }
   .ant-table-expanded-row {
     background: transparent;
@@ -18,6 +37,8 @@
     }
     td {
       border-bottom: 1px solid #eeeeee;
+      padding: 2px;
+      text-align: center;
     }
     &:hover {
       td {

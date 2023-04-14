@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import ColorStatusButton from './ColorStatusButton'
+import SummaryTile from './SummaryTile'
 
 const StatusBox = ({ items }) => {
   return (
     <Container>
       {items.map((ele) => (
-        <ColorStatusButton {...ele} />
+        <SummaryTile {...ele} />
       ))}
     </Container>
   )

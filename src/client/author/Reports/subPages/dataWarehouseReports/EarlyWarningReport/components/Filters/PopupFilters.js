@@ -30,6 +30,8 @@ function PopupFilters({
   setFiltersTabKey,
   filters,
   setFilters,
+  filterTagsData,
+  setFilterTagsData,
   updateFilterDropdownCB,
   schoolYears,
   userRole,
@@ -126,6 +128,8 @@ function PopupFilters({
                         terms={terms}
                         allPeriodTypes={staticDropDownData.periodTypes}
                         setFilters={setFilters}
+                        filterTagsData={filterTagsData}
+                        setFilterTagsData={setFilterTagsData}
                       />
                     </Tabs.TabPane>
                   </Tabs>

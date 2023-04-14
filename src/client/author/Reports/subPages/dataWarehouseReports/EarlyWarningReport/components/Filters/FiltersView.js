@@ -16,6 +16,8 @@ const FiltersView = ({
   setFiltersTabKey,
   filters,
   setFilters,
+  filterTagsData,
+  setFilterTagsData,
   updateFilterDropdownCB,
   schoolYears,
   userRole,
@@ -42,6 +44,8 @@ const FiltersView = ({
           setFiltersTabKey={setFiltersTabKey}
           filters={filters}
           setFilters={setFilters}
+          filterTagsData={filterTagsData}
+          setFilterTagsData={setFilterTagsData}
           updateFilterDropdownCB={updateFilterDropdownCB}
           schoolYears={schoolYears}
           userRole={userRole}

@@ -7,14 +7,24 @@ import { ControlDropDown } from './widgets/controlDropDown'
 import { FilterLabel } from '../styled'
 import usePeriodFilters from '../hooks/usePeriodFilters'
 
+const formatYYYYMMDD = 'YYYY-MM-DD'
+
 function FilterPeriodFields({
   filters,
   setFilters,
   updateFilterDropdownCB,
   terms,
   allPeriodTypes,
+  filterTagsData,
+  setFilterTagsData,
 }) {
-  usePeriodFilters(terms, filters, setFilters)
+  usePeriodFilters({
+    terms,
+    filters,
+    setFilters,
+    filterTagsData,
+    setFilterTagsData,
+  })
 
   const presentTerms = terms.filter(
     (term) => term.startDate <= Date.now() && term.endDate >= Date.now()
@@ -60,10 +70,10 @@ function FilterPeriodFields({
               if (maxDate && maxDate < date) return true
               return false
             }}
-            value={moment(filters.customPeriodStart)}
+            value={moment(+filters.customPeriodStart)}
             onChange={(date) => {
               updateFilterDropdownCB(
-                { key: +moment.utc(date.format('YYYY-MM-DD')) },
+                { key: `${+moment.utc(date.format(formatYYYYMMDD))}` },
                 'customPeriodStart'
               )
             }}
@@ -79,10 +89,10 @@ function FilterPeriodFields({
               if (minDate && minDate > date) return true
               return false
             }}
-            value={moment(filters.customPeriodEnd)}
+            value={moment(+filters.customPeriodEnd)}
             onChange={(date) =>
               updateFilterDropdownCB(
-                { key: +moment.utc(date.format('YYYY-MM-DD')) },
+                { key: `${+moment.utc(date.format(formatYYYYMMDD))}` },
                 'customPeriodEnd'
               )
             }

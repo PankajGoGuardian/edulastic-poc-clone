@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import './index.scss'
 import StatusBox from '../StatusBox'
 import ColoredCell from '../ColoredCell'
-import { statusColors } from '../../constants'
+import { statusColors, summaryTileColors } from '../../constants'
 
 const GITable = () => {
   const getCurrentStatusColor = (record) => {
@@ -13,6 +13,49 @@ const GITable = () => {
         return statusColors.GREEN
       default:
         return statusColors.RED
+    }
+  }
+
+  const getTimeLeftColor = (record) => {
+    switch (true) {
+      case record.time_left / record.total_time <= 0.3:
+        return statusColors.RED
+      case record.time_left / record.total_time > 0.3 &&
+        record.time_left / record.total_time <= 0.5:
+        return statusColors.YELLOW
+      default:
+        return statusColors.GREEN
+    }
+  }
+
+  const getSummaryStatusCount = (key, data) => {
+    switch (key) {
+      case 'met': {
+        return data.filter((record) => record.current >= record.target).length
+      }
+      case 'not-met': {
+        return data.filter((record) => record.current < record.target).length
+      }
+      case 'off-track': {
+        return data.filter(
+          (record) => record.time_left / record.total_time < 0.2
+        ).length
+      }
+      case 'rest': {
+        return data.filter(
+          (record) => record.time_left / record.total_time > 0.2
+        ).length
+      }
+      case 'fully-executed':
+      case 'done': {
+        return data.filter((record) => record.time_left === 0).length
+      }
+      case 'on-going':
+      case 'in-progress': {
+        return data.filter((record) => record.time_left > 0).length
+      }
+      default:
+        return 0
     }
   }
 
@@ -46,6 +89,7 @@ const GITable = () => {
       dataIndex: 'current',
       key: 'current',
       sorter: true,
+      width: 150,
       render: (text, record) => (
         <ColoredCell value={text} bgColor={getCurrentStatusColor(record)} />
       ),
@@ -58,9 +102,16 @@ const GITable = () => {
     },
     {
       title: 'TIME LEFT (DAYS)',
-      dataIndex: 'time',
-      key: 'time',
+      dataIndex: 'time_left',
+      key: 'time_left',
       sorter: true,
+      width: 160,
+      render: (text, record) => (
+        <ColoredCell
+          value={`${text}/${record.total_time}`}
+          bgColor={getTimeLeftColor(record)}
+        />
+      ),
     },
     {
       title: 'Status',
@@ -73,6 +124,7 @@ const GITable = () => {
       dataIndex: 'comments',
       key: 'comments',
       sorter: true,
+      width: 450,
     },
     {
       title: 'Action',
@@ -90,7 +142,8 @@ const GITable = () => {
       baseline: 80,
       current: 70,
       target: 80,
-      time: '30/180',
+      time_left: 30,
+      total_time: 180,
       isExpandable: false,
       status: 'In progress',
       comments: 'Requires some modification',
@@ -103,7 +156,8 @@ const GITable = () => {
       baseline: 80,
       current: 80,
       target: 80,
-      time: '100/180',
+      time_left: 100,
+      total_time: 180,
       status: 'Completed',
       isExpandable: true,
       comments: 'Requires some modification',
@@ -119,7 +173,8 @@ const GITable = () => {
       baseline: 80,
       current: 80,
       target: 80,
-      time: '30/180',
+      time_left: 30,
+      total_time: 180,
       isExpandable: false,
       status: 'In progress',
       comments: 'Requires some modification',
@@ -133,21 +188,21 @@ const GITable = () => {
         {
           id: 1,
           text: 'Done',
-          color: '#F9F9F9',
+          color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: 4,
+          unit: getSummaryStatusCount('done', data),
         },
         {
           id: 2,
           text: 'Not met',
-          color: '#FBBFBA',
-          unit: 2,
+          color: summaryTileColors.RED,
+          unit: getSummaryStatusCount('not-met', data),
         },
         {
           id: 3,
           text: 'Met',
-          color: '#D3FCD5',
-          unit: 2,
+          color: summaryTileColors.GREEN,
+          unit: getSummaryStatusCount('met', data),
         },
       ],
     },
@@ -157,21 +212,21 @@ const GITable = () => {
         {
           id: 1,
           text: 'Ongoing',
-          color: '#F9F9F9',
+          color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: 4,
+          unit: getSummaryStatusCount('on-going', data),
         },
         {
           id: 2,
           text: 'Off-track',
-          color: '#FBBFBA',
-          unit: 2,
+          color: summaryTileColors.RED,
+          unit: getSummaryStatusCount('off-track', data),
         },
         {
           id: 3,
           text: 'Rest',
-          color: '#D3FCD5',
-          unit: 2,
+          color: summaryTileColors.GREEN,
+          unit: getSummaryStatusCount('rest', data),
         },
       ],
     },

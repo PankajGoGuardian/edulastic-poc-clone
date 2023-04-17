@@ -6,6 +6,7 @@ const api = new API()
 const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
+const GOALS_INTERVENTIONS = 'goals-interventions'
 
 const { DW_DASHBOARD_REPORT, DW_EARLY_WARNING_REPORT } = reportNavType
 
@@ -158,6 +159,15 @@ const getEarlyWarningDetails = (params) => {
     .then((result) => result.data)
 }
 
+const goalsAndInterventionsAdvanceSearchStudents = (advanceSearchQuery) => {
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${GOALS_INTERVENTIONS}/advance-search-students`,
+    method: 'post',
+    data: advanceSearchQuery,
+  })
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -172,4 +182,5 @@ export default {
   getEarlyWarningRiskSummary,
   getRiskTimeline,
   getEarlyWarningDetails,
+  goalsAndInterventionsAdvanceSearchStudents,
 }

@@ -1,14 +1,19 @@
 import { takeEvery } from 'redux-saga'
 import { all, call, put, select } from 'redux-saga/effects'
-import { courseApi, groupApi, reportsApi, schoolApi } from '@edulastic/api'
+import {
+  courseApi,
+  dataWarehouseApi,
+  groupApi,
+  reportsApi,
+  schoolApi,
+} from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { database } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
 import { createSelector } from 'reselect'
-import { isEmpty, uniqBy } from 'lodash'
+import { get, isEmpty, uniqBy } from 'lodash'
 import { getUserOrgId } from '../../../../src/selectors/user'
 import { fieldKey } from './component/AdvancedSearch/config/constants'
-import { sampleStudents } from './component/AdvancedSearch/config/qb-config'
 
 const ADVANCED_SEARCH_DETAILS = 'advancedSearchDetails'
 const ADVANCED_SEARCH_QUERY = 'advancedSearchQuery'
@@ -327,9 +332,13 @@ function* setAdvancedSearchData({ payload }) {
   try {
     const { query } = payload
     console.log({ query })
-    // Will make a post request with generated query, replace once api is available
 
-    yield put(setAdvancedSearchDataSuccess(sampleStudents))
+    const response = yield call(
+      dataWarehouseApi.goalsAndInterventionsAdvanceSearchStudents,
+      query
+    )
+
+    yield put(setAdvancedSearchDataSuccess(get(response, 'data.result', [])))
   } catch (error) {
     const errorMessage = 'Unable to fetch studentsList.'
     notification({ type: 'error', msg: errorMessage })

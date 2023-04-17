@@ -42,6 +42,17 @@
       padding: 2px;
       text-align: center;
       color: $filterIconColor;
+      .ant-dropdown-trigger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        svg {
+          width: 5px;
+          height: 5px;
+          margin-left: 10px;
+          fill: #11a084;
+        }
+      }
     }
     &:hover {
       td {
@@ -77,6 +88,19 @@
         line-height: 16px;
         color: #ffffff;
       }
+    }
+  }
+}
+
+.action-menu {
+  ul {
+    li {
+      font-weight: 600;
+      font-size: 10px;
+      line-height: 30px;
+      text-align: center;
+      color: #000000;
+      padding: 0 25px;
     }
   }
 }

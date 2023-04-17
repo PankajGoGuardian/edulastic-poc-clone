@@ -3,6 +3,7 @@ import moment from 'moment'
 import ColoredCell from './ColoredCell'
 import { statusColors, timeLeftColors } from '../constants'
 import Tooltip from './Tooltip'
+import ActionMenu from './ActionMenu'
 
 const getCurrentStatusColor = (record) => {
   switch (true) {
@@ -103,7 +104,7 @@ const columns = [
     title: 'Action',
     dataIndex: '',
     key: 'x',
-    render: () => <a>Delete</a>,
+    render: () => <ActionMenu />,
   },
 ]
 

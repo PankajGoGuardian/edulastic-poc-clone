@@ -70,6 +70,7 @@ const AcademicSummary = ({
     [query],
     {
       enabled: !isEmpty(settings.requestFilters) && !isEmpty(widgetFilters),
+      deDuplicate: false,
     }
   )
 

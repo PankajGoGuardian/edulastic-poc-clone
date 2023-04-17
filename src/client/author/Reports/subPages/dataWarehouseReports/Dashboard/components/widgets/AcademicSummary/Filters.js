@@ -1,5 +1,5 @@
 import { FlexContainer } from '@edulastic/common'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
 import { StyledDropDownContainer } from '../../../../../../common/styled'
 import { StyledText } from '../../../../common/components/styledComponents'
@@ -17,6 +17,19 @@ const AcademicSummaryWidgetFilters = ({
       [comData]: selected,
     })
   }
+
+  useEffect(() => {
+    const [defaultTestType] = availableTestTypes
+    const selectedTestType = availableTestTypes.find(
+      ({ key }) => filters[academicSummaryFiltersTypes.TEST_TYPE].key === key
+    )
+    setFilters({
+      ...filters,
+      [academicSummaryFiltersTypes.TEST_TYPE]:
+        selectedTestType || defaultTestType,
+    })
+  }, [availableTestTypes])
+
   return (
     <FlexContainer
       padding="50px 40px"

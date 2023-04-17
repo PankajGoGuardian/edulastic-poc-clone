@@ -29,6 +29,7 @@ const AttendanceSummary = ({ settings }) => {
     [query],
     {
       enabled: !isEmpty(query),
+      deDuplicate: false,
     }
   )
 

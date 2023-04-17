@@ -152,6 +152,7 @@ const EarlyWarningReport = ({
             </p>
           </ReportDescription>
           <ReportView
+            loc={loc}
             location={location}
             selectedCompareBy={selectedCompareBy}
             compareByOptions={compareByOptions}

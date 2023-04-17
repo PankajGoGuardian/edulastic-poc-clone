@@ -4,37 +4,42 @@ import {
   EduElse,
   EduIf,
   EduThen,
+  FlexContainer,
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
+import { reportNavType } from '@edulastic/constants/const/report'
 import { get, isEmpty } from 'lodash'
 import React, { useMemo } from 'react'
-import SimplePieChart from '../../../../../common/components/charts/SimplePieChart'
-import useErrorNotification from '../../../../../common/hooks/useErrorNotification'
-import { DashedLine } from '../../../../../common/styled'
-import Footer from '../../../common/components/Footer'
-import PieChartLabel from '../../../common/components/PieChartLabel'
+import SimplePieChart from '../../../../common/components/charts/SimplePieChart'
+import useErrorNotification from '../../../../common/hooks/useErrorNotification'
+import { DashedLine } from '../../../../common/styled'
+import Footer from './Footer'
+import PieChartLabel from './PieChartLabel'
 import {
   Widget,
   ContentWrapper,
   StyledEmptyContainer,
-} from '../../../common/components/styledComponents'
-import WidgetCell from '../../../common/components/WidgetCell'
-import WidgetHeader from '../../../common/components/WidgetHeader'
-import { getDateLabel, getTrendPeriodLabel } from '../../../common/utils'
-import { getWidgetCellFooterInfo, transformRiskSummaryData } from '../../utils'
+  StyledText,
+} from './styledComponents'
+import WidgetCell from './WidgetCell'
+import WidgetHeader from './WidgetHeader'
+import { getDateLabel, getTrendPeriodLabel } from '../utils'
+import { transformRiskSummaryData } from '../../EarlyWarningReport/utils'
 
 const {
   RISK_BAND_COLOR_INFO,
   RISK_BAND_LEVELS,
   RISK_TYPE_OPTIONS,
+  RISK_TYPE_KEYS,
 } = reportUtils.common
 
-const RiskSummary = ({ settings }) => {
+const RiskSummary = ({ settings, loc = '' }) => {
   const query = useMemo(
     () => ({
       ...settings.requestFilters,
+      riskType: settings.requestFilters.riskType || RISK_TYPE_KEYS.OVERALL,
     }),
     [settings.requestFilters]
   )
@@ -48,7 +53,6 @@ const RiskSummary = ({ settings }) => {
   )
 
   const { prePeriod = {}, postPeriod = {} } = get(data, 'data.result', {})
-
   const {
     postPeriodhighRisk,
     highRiskChange,
@@ -58,26 +62,30 @@ const RiskSummary = ({ settings }) => {
   } = transformRiskSummaryData(prePeriod, postPeriod)
 
   const prePeriodDateLabel = getDateLabel(prePeriod)
+  const periodLabel = getTrendPeriodLabel(
+    settings.requestFilters.periodType,
+    postPeriod
+  )
 
   const title =
     RISK_TYPE_OPTIONS.find(
       (riskType) => riskType.key === settings.requestFilters.riskType
     )?.title || RISK_TYPE_OPTIONS[0].title
 
-  const periodLabel = getTrendPeriodLabel(
-    settings.requestFilters.periodType,
-    postPeriod
-  )
-
   const hasContent = !loading && !error && postPeriod?.distribution?.length
   const errorMsg = 'Error fetching Risk Summary data.'
-
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
+  const widgetWidth =
+    loc === reportNavType.DW_EARLY_WARNING_REPORT ? '40%' : '100%'
+
   return (
-    <Widget>
-      <WidgetHeader title={title} date={periodLabel} loading={loading} />
+    <Widget width={widgetWidth}>
+      <FlexContainer justifyContent="left" alignItems="center">
+        <WidgetHeader title={title} date={periodLabel} loading={loading} />
+        <StyledText>{periodLabel}</StyledText>
+      </FlexContainer>
       <EduIf condition={loading}>
         <EduThen>
           <SpinLoader
@@ -99,7 +107,7 @@ const RiskSummary = ({ settings }) => {
                       <Footer
                         value={highRiskChange}
                         period={`vs ${prePeriodDateLabel}`}
-                        getFooter={getWidgetCellFooterInfo}
+                        showReverseTrend
                       />
                     }
                   />
@@ -117,7 +125,7 @@ const RiskSummary = ({ settings }) => {
                       <Footer
                         value={mediumRiskChange}
                         period={`vs ${prePeriodDateLabel}`}
-                        getFooter={getWidgetCellFooterInfo}
+                        showReverseTrend
                       />
                     }
                   />

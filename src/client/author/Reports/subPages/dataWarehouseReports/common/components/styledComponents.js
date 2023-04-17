@@ -12,14 +12,12 @@ import { IconCarets } from '@edulastic/icons'
 import { StyledTable } from '../../../../common/styled'
 
 const { IconCaretUp, IconCaretDown } = IconCarets
-
 export const StyledIconCaretUp = styled(IconCaretUp)`
   color: ${(props) => props.color};
 `
 export const StyledIconCaretDown = styled(IconCaretDown)`
   color: ${(props) => props.color};
 `
-
 export const StyledTag = styled(Tag)`
   text-tranform: uppercase;
   border-radius: 20px;
@@ -29,7 +27,6 @@ export const StyledTag = styled(Tag)`
   font-size: 0.6rem;
   font-weight: bold;
 `
-
 export const CustomStyledTable = styled(StyledTable)`
   table {
     tbody {
@@ -77,7 +74,8 @@ export const AssessmentName = styled.div`
 export const TableContainer = styled.div`
   margin-top: 20px;
 `
-export const MasonGrid = styled.div`
+
+export const WidgetsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -87,9 +85,10 @@ export const MasonGrid = styled.div`
 `
 export const Widget = styled.div`
   border-radius: 20px;
-  width: 40%;
+  width: ${(p) => p.width || '40%'};
   aspect-ratio: ${(p) => p.aspectRatio || '16 / 9'};
-  min-width: 650px;
+  margin: ${(p) => p.margin || '0 auto'};
+  min-width: ${(p) => p.minWidth || '650px'};
   max-width: 850px;
   flex-grow: 1;
   background-color: ${white};
@@ -98,6 +97,8 @@ export const Widget = styled.div`
 export const WidgetHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding-right: 20px;
   .title {
     font-size: 15px;
     font-weight: bold;
@@ -106,18 +107,15 @@ export const WidgetHeaderWrapper = styled.div`
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
   }
-  .external-link {
-    float: right;
-    padding-inline: 11px 16px;
-  }
 `
 export const ContentWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  height: 100%;
+  height: auto;
   justify-content: space-between;
   align-items: center;
-  padding-inline: 50px;
+  padding: 30px 50px;
+  margin: ${(p) => p.margin};
   font-weight: bold;
   font-size: 13px;
   text-align: center;
@@ -143,6 +141,7 @@ export const StyledCell = styled.div`
 export const StyledText = styled.div`
   font-size: ${(props) => props.fontSize || '12px'};
   font-weight: 600;
+  white-space: nowrap;
   margin: ${(props) => props.margin};
   color: ${(props) => props.color || lightGrey9};
   text-transform: ${(props) => props.textTransform};
@@ -181,4 +180,7 @@ export const ReportDescription = styled.div`
     font-weight: bold;
     align-items: center;
   }
+`
+export const StyledDiv = styled.div`
+  flex-grow: 1;
 `

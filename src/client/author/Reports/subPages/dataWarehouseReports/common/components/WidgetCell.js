@@ -12,7 +12,7 @@ const WidgetCell = ({
 }) => {
   const headerClassName = subHeader ? 'small-header' : ''
   return (
-    <>
+    <div>
       <Row className={headerClassName}>
         <div>{header}</div>
         <div>{subHeader}</div>
@@ -23,7 +23,7 @@ const WidgetCell = ({
         </StyledCell>
       </Row>
       <Row>{footer}</Row>
-    </>
+    </div>
   )
 }
 

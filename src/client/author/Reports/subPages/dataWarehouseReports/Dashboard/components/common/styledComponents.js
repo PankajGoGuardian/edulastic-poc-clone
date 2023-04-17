@@ -1,96 +1,33 @@
 import {
   greyThemeLighter,
   lightGrey9,
-  themeColorLighter1,
   white,
   extraDesktopWidthMax,
-  themeColor,
   lightGrey8,
   fadedBlack,
+  themeColor,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
-import { IconCarets } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
 
-const { IconCaretUp, IconCaretDown } = IconCarets
-
-export const StyledIconCaretUp = styled(IconCaretUp)`
-  color: ${(props) => props.color};
-`
-export const StyledIconCaretDown = styled(IconCaretDown)`
-  color: ${(props) => props.color};
-`
-
-export const MasonGrid = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 30px 10px;
-  gap: 30px;
-  flex-wrap: wrap;
-  background-color: ${greyThemeLighter};
-  & > div {
-    width: 700px;
-  }
-`
-export const Widget = styled.div`
-  height: ${({ small }) => (small ? '200px' : '450px')};
-  border-radius: 20px;
-  background-color: ${white};
-  padding-top: 10px;
-  box-shadow: 0px 3px 8px #00000029;
-`
-export const ContentWrapper = styled.div`
-  display: flex;
-  margin-block: 10px;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  align-items: center;
-  padding-inline: 50px 80px;
-  font-weight: bold;
-  font-size: 13px;
-  text-align: center;
-  .small-header {
-    margin-top: -14px;
-    font-size: 11px;
-  }
-`
-const cellStyles = {
-  large: { padding: '18px 30px', font: '24px' },
-  medium: { padding: '10px 15px', font: '18px' },
-  small: { padding: '12px 17px', font: '14px' },
-}
-
-export const StyledCell = styled.div`
-  padding: ${(props) => cellStyles[props.cellType].padding};
-  width: fit-content;
-  font-size: ${(props) => cellStyles[props.cellType].font};
-  margin: 10px auto;
-  background-color: ${(props) => (props.fill ? props.color : '')};
-  border: ${(props) => (!props.fill ? `2px solid ${props.color}` : '')};
-  border-radius: 10px;
-`
 export const StyledRow = styled(Row)`
-  justify-content: ${(props) => props.justifyContent || 'center'};
-  align-items: ${(props) => props.alignItems || 'center'};
-  flex-wrap: ${(props) => (props.wrap ? 'wrap' : 'nowrap')};
-  align-items: center;
+  justify-content: ${(p) => p.justifyContent || 'center'};
+  align-items: ${(p) => p.alignItems || 'center'};
+  flex-wrap: ${(p) => (p.wrap ? 'wrap' : 'nowrap')};
+  flex-grow: ${(p) => p.flexGrow};
   padding-inline: 20px;
-  margin: ${(props) => props.margin || '20px'};
+  margin: ${(p) => p.margin || '20px'};
 `
-export const StyledLabel = styled.div`
-  font-size: 11px;
-  font-color: #6a737f;
-  margin-inline: 20px;
-`
+
 export const StyledText = styled.div`
   font-size: ${(props) => props.fontSize || '12px'};
   margin: ${(props) => props.margin};
   color: ${(props) => props.color || lightGrey9};
   text-transform: ${(props) => props.textTransform};
 `
+
 export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};
   min-height: 300px;
@@ -99,6 +36,7 @@ export const TableContainer = styled.div`
   padding-block: 15px 40px;
   border-radius: 25px;
 `
+
 export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
@@ -125,6 +63,7 @@ export const TableHeaderCellWrapper = styled.div`
     }
   }
 `
+
 export const CustomStyledTable = styled(StyledTable)`
   .ant-table-bordered .ant-table-tbody > tr > td {
     border-right: 1px dashed ${lightGrey8};
@@ -196,6 +135,7 @@ export const CustomStyledTable = styled(StyledTable)`
     }
   }
 `
+
 export const CompareByContainer = styled.div`
   color: ${themeColor};
   margin-bottom: 4px;
@@ -213,6 +153,7 @@ export const CompareByContainer = styled.div`
   }
 }
 `
+
 export const StyledEduButton = styled(EduButton)`
   &.ant-btn {
     height: 32px;
@@ -220,6 +161,7 @@ export const StyledEduButton = styled(EduButton)`
     margin-right: 10px;
   }
 `
+
 export const DataSizeExceededContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -228,6 +170,7 @@ export const DataSizeExceededContainer = styled.div`
   font-weight: bold;
   color: ${fadedBlack};
 `
+
 export const StyledDiv = styled.div`
   display: flex;
   width: fit-content;
@@ -237,18 +180,5 @@ export const StyledDiv = styled.div`
   border-radius: 5px;
   .link {
     font-size: 20px;
-  }
-`
-export const WidgetHeaderWrapper = styled.div`
-  .title {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 11px 16px;
-    background-color: ${themeColorLighter1};
-    border-radius: 20px 0px;
-  }
-  .external-link {
-    float: right;
-    padding-inline: 11px 16px;
   }
 `

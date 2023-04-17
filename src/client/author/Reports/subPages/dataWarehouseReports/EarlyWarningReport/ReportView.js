@@ -1,10 +1,11 @@
 import React from 'react'
-import { MasonGrid } from '../common/components/styledComponents'
+import { WidgetsContainer } from '../common/components/styledComponents'
 import { EarlyWarningTable } from './components/Table'
-import RiskSummary from './components/widgets/RiskSummary'
+import RiskSummary from '../common/components/RiskSummaryWidget'
 import { RiskTimeline } from './components/widgets/RiskTimeline'
 
 const ReportView = ({
+  loc,
   location,
   settings,
   selectedCompareBy,
@@ -14,14 +15,14 @@ const ReportView = ({
   const { riskTimelineFilters } = settings
   return (
     <>
-      <MasonGrid>
-        <RiskSummary settings={settings} />
+      <WidgetsContainer>
+        <RiskSummary loc={loc} settings={settings} />
         <RiskTimeline
           settings={settings}
           setWidgetFilters={setRiskTimelineFilters}
           widgetFilters={riskTimelineFilters}
         />
-      </MasonGrid>
+      </WidgetsContainer>
       <EarlyWarningTable
         location={location}
         settings={settings}

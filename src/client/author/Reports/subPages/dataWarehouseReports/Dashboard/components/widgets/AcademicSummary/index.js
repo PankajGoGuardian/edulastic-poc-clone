@@ -1,7 +1,12 @@
 import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8 } from '@edulastic/colors'
-import { EduElse, EduIf, EduThen, useApiQuery } from '@edulastic/common'
-import { Spin } from 'antd'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  SpinLoader,
+  useApiQuery,
+} from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import qs from 'qs'
 import React, { useMemo } from 'react'
@@ -9,7 +14,6 @@ import SimplePieChart from '../../../../../../common/components/charts/SimplePie
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
 import PieChartLabel from '../../../../common/components/PieChartLabel'
-import { StyledEmptyContainer } from '../../../../common/components/styledComponents'
 import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
   getCellColor,
@@ -21,13 +25,15 @@ import {
   trendPeriodPrefix,
 } from '../../../utils'
 import {
-  ContentWrapper,
-  DataSizeExceededContainer,
   Widget,
-} from '../../common/styledComponents'
-import WidgetCell from '../common/WidgetCell'
-import WidgetHeader from '../common/WidgetHeader'
+  ContentWrapper,
+  StyledEmptyContainer,
+} from '../../../../common/components/styledComponents'
+import WidgetCell from '../../../../common/components/WidgetCell'
+import WidgetHeader from '../../../../common/components/WidgetHeader'
 import AcademicSummaryWidgetFilters from './Filters'
+import Footer from '../../../../common/components/Footer'
+import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 
 const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
@@ -103,8 +109,14 @@ const AcademicSummary = ({
     trendPeriodDateFormat
   )
 
+  const hasContent = !isEmpty(bandDistribution)
+  const errorMsg = 'Error fetching Academic Summary data.'
+
+  const emptyContainerDesc = error ? errorMsg : 'No Data Available'
+  useErrorNotification(errorMsg, error)
+
   return (
-    <Widget>
+    <Widget aspectRatio="16 / 13" minWidth="680px">
       <WidgetHeader title={title} url={externalUrl} />
       <AcademicSummaryWidgetFilters
         filters={widgetFilters}
@@ -112,64 +124,69 @@ const AcademicSummary = ({
         performanceBandsList={performanceBandList}
         availableTestTypes={filteredAvailableTestTypes}
       />
-      <Spin spinning={loading}>
-        <EduIf condition={!loading}>
-          <EduThen>
-            <EduIf condition={!error && !isEmpty(bandDistribution)}>
-              <EduThen>
-                <ContentWrapper>
-                  <div>
-                    <WidgetCell
-                      header="AVG. SCORE"
-                      value={`${avgScorePercentage}%`}
-                      footer={scoreTrendPercentage}
-                      subFooter={trendPeriodLabel}
-                      color={avgScoreCellColor}
-                    />
-                    <DashedLine
-                      dashWidth="1px"
-                      height="1px"
-                      margin="20px 5px"
-                      dashColor={lightGrey8}
-                    />
-                    <WidgetCell
-                      header="ABOVE STANDARD"
-                      value={`${aboveStandardPercentage}%`}
-                      color={lightGreen13}
-                    />
-                  </div>
+      <EduIf condition={loading}>
+        <EduThen>
+          <SpinLoader
+            tip="Loading Academic Summary Data"
+            height="60%"
+            position="relative"
+          />
+        </EduThen>
+        <EduElse>
+          <EduIf condition={hasContent}>
+            <EduThen>
+              <ContentWrapper>
+                <div>
+                  <WidgetCell
+                    header="AVG. SCORE"
+                    value={`${avgScorePercentage}%`}
+                    footer={
+                      <Footer
+                        value={scoreTrendPercentage}
+                        period={`${trendPeriodLabel}`}
+                        showPercentage
+                      />
+                    }
+                    color={avgScoreCellColor}
+                    cellType="large"
+                  />
                   <DashedLine
                     dashWidth="1px"
-                    height="250px"
-                    maxWidth="1px"
+                    height="1px"
+                    margin="70px 5px"
                     dashColor={lightGrey8}
-                    margin="0 10px"
                   />
-                  <SimplePieChart
-                    data={PieChartData}
-                    getChartLabelJSX={PieChartLabel}
+                  <WidgetCell
+                    header="ABOVE STANDARD"
+                    value={`${aboveStandardPercentage}%`}
+                    color={lightGreen13}
+                    cellType="large"
                   />
-                </ContentWrapper>
-              </EduThen>
-              <EduElse>
-                <EduIf condition={data?.dataSizeExceeded}>
-                  <EduThen>
-                    <DataSizeExceededContainer>
-                      {data?.message}
-                    </DataSizeExceededContainer>
-                  </EduThen>
-                  <EduElse>
-                    <StyledEmptyContainer />
-                  </EduElse>
-                </EduIf>
-              </EduElse>
-            </EduIf>
-          </EduThen>
-          <EduElse>
-            <StyledEmptyContainer />
-          </EduElse>
-        </EduIf>
-      </Spin>
+                </div>
+                <DashedLine
+                  dashWidth="1px"
+                  height="400px"
+                  maxWidth="1px"
+                  dashColor={lightGrey8}
+                  margin="0"
+                />
+                <SimplePieChart
+                  innerRadius={40}
+                  outerRadius={85}
+                  data={PieChartData}
+                  getChartLabelJSX={PieChartLabel}
+                />
+              </ContentWrapper>
+            </EduThen>
+            <EduElse>
+              <StyledEmptyContainer
+                margin="25% 0"
+                description={emptyContainerDesc}
+              />
+            </EduElse>
+          </EduIf>
+        </EduElse>
+      </EduIf>
     </Widget>
   )
 }

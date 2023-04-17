@@ -1,10 +1,19 @@
 import { EduIf } from '@edulastic/common'
+import { round } from 'lodash'
 import React from 'react'
+import { getWidgetCellFooterInfo } from '../utils'
 import { StyledText } from './styledComponents'
 
-const Footer = ({ value, period = '', getFooter }) => {
-  const [Icon, color] = getFooter(value)
-  const footerText = value === 0 ? 'No Change' : Math.abs(value)
+const Footer = ({
+  value,
+  period = '',
+  showReverseTrend = false,
+  showPercentage = false,
+}) => {
+  const [color, Icon] = getWidgetCellFooterInfo(value, showReverseTrend)
+  const footerValue = round(Math.abs(value))
+  const valueToShow = showPercentage ? `${footerValue}%` : footerValue
+  const footerText = value === 0 ? 'No Change' : valueToShow
   return (
     <>
       <StyledText color={color}>

@@ -1,8 +1,15 @@
+import { lightGreen12, lightGrey9, lightRed5 } from '@edulastic/colors'
 import moment from 'moment'
 import { isEmpty } from 'lodash'
 import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { allFilterValue } from '../../../../common/constants'
+import {
+  StyledIconCaretDown,
+  StyledIconCaretUp,
+} from '../components/styledComponents'
+
+StyledIconCaretDown
 
 export function buildRequestFilters(_settings) {
   const _requestFilters = {}
@@ -111,4 +118,17 @@ export const getTrendPeriodLabel = (
     default:
       return ''
   }
+}
+
+export const getWidgetCellFooterInfo = (value, showReverseTrend) => {
+  let color = lightGrey9
+  let Icon = null
+  if (value > 0) {
+    color = showReverseTrend ? lightRed5 : lightGreen12
+    Icon = StyledIconCaretUp
+  } else if (value < 0) {
+    color = showReverseTrend ? lightGreen12 : lightRed5
+    Icon = StyledIconCaretDown
+  }
+  return [color, Icon]
 }

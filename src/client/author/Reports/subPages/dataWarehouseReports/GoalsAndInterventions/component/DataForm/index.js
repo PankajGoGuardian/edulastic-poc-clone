@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import {
   GOAL,
   INTERVENTION,
@@ -26,6 +27,8 @@ import {
   receivePerformanceBandAction,
   getPerformanceBandProfilesSelector,
 } from '../../../../../../PerformanceBand/ducks'
+import { isFormDataSaving } from '../../ducks/selectors'
+import { actions } from '../../ducks/actionReducers'
 import Form from './Form'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
 import useSaveFormData from '../../hooks/useSaveFormData'
@@ -41,6 +44,8 @@ const {
   },
 } = formSectionExtraData
 
+const { saveFormDataRequest } = actions
+
 const {
   goal: goalFormNavigationLabels,
   intervention: interventionFormNavigationLabels,
@@ -52,6 +57,8 @@ const DataForm = ({
   fetchPerformanceBandData,
   groupsData,
   performanceBandData,
+  saveFormData,
+  isSaveInProgress,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
@@ -73,6 +80,7 @@ const DataForm = ({
     fetchPerformanceBandData,
     groupsData,
     performanceBandData,
+    saveFormData,
   })
 
   const allFormFields = isSaveGoalView ? goalFormFields : interventionFormFields
@@ -98,8 +106,13 @@ const DataForm = ({
         </StyledFormTitle>
         <StyledFormButtonsContainer>
           <StyledButton isGhost>Cancel</StyledButton>
-          <StyledButton onClick={handleSaveForm}>
-            Save {view === SAVE_GOAL ? 'Goal' : 'Intervention'}
+          <StyledButton onClick={handleSaveForm} disabled={isSaveInProgress}>
+            <EduIf condition={isSaveInProgress}>
+              <EduThen>Saving...</EduThen>
+              <EduElse>
+                Save {view === SAVE_GOAL ? 'Goal' : 'Intervention'}
+              </EduElse>
+            </EduIf>
           </StyledButton>
         </StyledFormButtonsContainer>
       </StyledFormHeader>
@@ -144,9 +157,11 @@ export default connect(
   (state) => ({
     groupsData: getGroupsSelector(state),
     performanceBandData: getPerformanceBandProfilesSelector(state),
+    isSaveInProgress: isFormDataSaving(state),
   }),
   {
     fetchGroupsData: fetchGroupsAction,
     fetchPerformanceBandData: receivePerformanceBandAction,
+    saveFormData: saveFormDataRequest,
   }
 )(DataForm)

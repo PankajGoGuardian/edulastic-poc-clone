@@ -77,20 +77,16 @@ const getFormattedFormData = ({ formType, updatedFormData }) => {
   const criteriaKey = formType === GOAL ? GOAL_CRITERIA : INTERVENTION_CRITERIA
 
   Object.keys(updatedFormData).forEach((field) => {
+    let value = updatedFormData[field]
     if (applicableTo.includes(field)) {
-      set(
-        formattedFormData,
-        `${criteriaKey}.${APPLICABLE_TO}.${field}`,
-        updatedFormData[field]
-      )
+      set(formattedFormData, `${criteriaKey}.${APPLICABLE_TO}.${field}`, value)
     } else if (target.includes(field)) {
-      set(
-        formattedFormData,
-        `${criteriaKey}.${TARGET}.${field}`,
-        updatedFormData[field]
-      )
+      if (field === METRIC && typeof value === 'number') {
+        value = value.toString()
+      }
+      set(formattedFormData, `${criteriaKey}.${TARGET}.${field}`, value)
     } else {
-      set(formattedFormData, field, updatedFormData[field])
+      set(formattedFormData, field, value)
     }
   })
 

@@ -359,6 +359,24 @@ const fetchAttendanceDistributionReport = (params) =>
     })
     .then((response) => response?.data?.result)
 
+const createGoal = (data) =>
+  api
+    .callApi({
+      url: `/data-warehouse/goals-interventions/goals`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const createIntervention = (data) =>
+  api
+    .callApi({
+      url: `/data-warehouse/goals-interventions/interventions`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -404,4 +422,6 @@ export default {
   fetchAttendanceReportDetails,
   fetchAttendanceSummaryReport,
   fetchAttendanceDistributionReport,
+  createGoal,
+  createIntervention,
 }

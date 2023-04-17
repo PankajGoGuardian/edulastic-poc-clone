@@ -24,6 +24,7 @@ const useSaveFormData = ({
   fetchPerformanceBandData,
   groupsData = [],
   performanceBandData = [],
+  saveFormData,
 }) => {
   const formContainerRef = useRef()
   const [scrollContainer, setScrollContainer] = useState(null)
@@ -75,8 +76,9 @@ const useSaveFormData = ({
 
   const handleFieldDataChange = (field, value) => {
     let updatedFormData = { ...formData }
-    if (field === STUDENT_GROUP_IDS) {
-      value = [value] // TODO: remove when studentGroupIds field is made multiselect
+    if (field === STUDENT_GROUP_IDS || field === TEST_TYPES) {
+      // TODO: remove when studentGroupIds, TEST_TYPES field is made multiselect
+      value = [value]
     }
     if (field === PERFORMANCE_BAND_ID) {
       setTargetPerformanceBandOptions(
@@ -114,13 +116,13 @@ const useSaveFormData = ({
 
     if (error) {
       notification({
-        type: 'info',
+        type: 'warning',
         msg: errorMessage,
       })
       return
     }
 
-    // TODO call save action
+    saveFormData(formattedFormData)
   }
 
   return {

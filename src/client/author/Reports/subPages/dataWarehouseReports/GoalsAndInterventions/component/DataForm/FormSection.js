@@ -22,6 +22,7 @@ const FormSection = ({
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
+  goalsOptions,
 }) => {
   const { measureType = '' } = formData
   const hideBandField = measureType !== PERFORMANCE_BAND
@@ -51,6 +52,7 @@ const FormSection = ({
             groupOptions,
             performanceBandOptions,
             targetPerformanceBandOptions,
+            goalsOptions,
           })
           return (
             <Col span={colSpan} key={field}>

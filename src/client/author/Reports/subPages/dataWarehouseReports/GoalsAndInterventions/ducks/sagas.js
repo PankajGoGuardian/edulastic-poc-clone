@@ -21,10 +21,25 @@ function* saveFormDataRequestSaga({ payload }) {
     const msg = `Error creating ${formType}.`
     notification({ msg: error?.response?.data?.message || msg })
   } finally {
-    yield put(actions.saveFormDataComplete(false))
+    yield put(actions.saveFormDataComplete())
+  }
+}
+
+function* getGoalsListSaga() {
+  try {
+    const goalsList = yield call(reportsApi.getGoals)
+    yield put(actions.setGoalsList(goalsList))
+  } catch (error) {
+    const msg = `Failed to fetch goals.`
+    notification({ msg: error?.response?.data?.message || msg })
+  } finally {
+    yield put(actions.getGoalsListComplete())
   }
 }
 
 export default function* watcherSaga() {
-  yield all([takeLatest(actions.saveFormDataRequest, saveFormDataRequestSaga)])
+  yield all([
+    takeLatest(actions.saveFormDataRequest, saveFormDataRequestSaga),
+    takeLatest(actions.getGoalsList, getGoalsListSaga),
+  ])
 }

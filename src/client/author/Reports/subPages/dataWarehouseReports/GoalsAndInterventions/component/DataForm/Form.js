@@ -20,6 +20,7 @@ const Form = ({
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
+  goalsOptions,
   setNavigationOptions,
   formNavigationLabelOptions,
 }) => {
@@ -32,6 +33,7 @@ const Form = ({
         groupOptions={groupOptions}
         performanceBandOptions={performanceBandOptions}
         targetPerformanceBandOptions={targetPerformanceBandOptions}
+        goalsOptions={goalsOptions}
       />
     )
   }

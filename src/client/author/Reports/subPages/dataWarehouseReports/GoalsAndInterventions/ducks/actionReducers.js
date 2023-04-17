@@ -6,6 +6,10 @@ const initialState = {
   form: {
     isSaving: false,
   },
+  goals: {
+    isLoading: false,
+    list: [],
+  },
 }
 
 const slice = createSlice({
@@ -18,14 +22,32 @@ const slice = createSlice({
     saveFormDataComplete: (state) => {
       state.form.isSaving = false
     },
+    getGoalsList: (state) => {
+      state.goals.isLoading = true
+    },
+    getGoalsListComplete: (state) => {
+      state.goals.isLoading = false
+    },
+    setGoalsList: (state, { payload }) => {
+      state.goals.list = payload
+    },
   },
 })
 
-const { saveFormDataRequest, saveFormDataComplete } = slice.actions
+const {
+  saveFormDataRequest,
+  saveFormDataComplete,
+  getGoalsList,
+  getGoalsListComplete,
+  setGoalsList,
+} = slice.actions
 
 export const actions = {
   saveFormDataRequest,
   saveFormDataComplete,
+  getGoalsList,
+  getGoalsListComplete,
+  setGoalsList,
 }
 
 export const { reducer } = slice

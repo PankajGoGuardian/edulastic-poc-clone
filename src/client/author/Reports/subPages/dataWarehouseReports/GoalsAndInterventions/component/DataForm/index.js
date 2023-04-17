@@ -27,7 +27,7 @@ import {
   receivePerformanceBandAction,
   getPerformanceBandProfilesSelector,
 } from '../../../../../../PerformanceBand/ducks'
-import { isFormDataSaving } from '../../ducks/selectors'
+import { isFormDataSaving, goalsList } from '../../ducks/selectors'
 import { actions } from '../../ducks/actionReducers'
 import Form from './Form'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
@@ -44,8 +44,6 @@ const {
   },
 } = formSectionExtraData
 
-const { saveFormDataRequest } = actions
-
 const {
   goal: goalFormNavigationLabels,
   intervention: interventionFormNavigationLabels,
@@ -55,8 +53,10 @@ const DataForm = ({
   view,
   fetchGroupsData,
   fetchPerformanceBandData,
+  fetchGoalsList,
   groupsData,
   performanceBandData,
+  goalsOptionsData,
   saveFormData,
   isSaveInProgress,
 }) => {
@@ -68,6 +68,7 @@ const DataForm = ({
     groupOptions,
     performanceBandOptions,
     targetPerformanceBandOptions,
+    goalsOptions,
     scrollContainer,
     formNavigationOptions,
     formContainerRef,
@@ -78,8 +79,10 @@ const DataForm = ({
     formType,
     fetchGroupsData,
     fetchPerformanceBandData,
+    fetchGoalsList,
     groupsData,
     performanceBandData,
+    goalsOptionsData,
     saveFormData,
   })
 
@@ -144,6 +147,7 @@ const DataForm = ({
             groupOptions={groupOptions}
             performanceBandOptions={performanceBandOptions}
             targetPerformanceBandOptions={targetPerformanceBandOptions}
+            goalsOptions={goalsOptions}
             setNavigationOptions={setFormNavigationOptions}
             formNavigationLabelOptions={formNavigationLabelOptions}
           />
@@ -157,11 +161,13 @@ export default connect(
   (state) => ({
     groupsData: getGroupsSelector(state),
     performanceBandData: getPerformanceBandProfilesSelector(state),
+    goalsOptionsData: goalsList(state),
     isSaveInProgress: isFormDataSaving(state),
   }),
   {
     fetchGroupsData: fetchGroupsAction,
     fetchPerformanceBandData: receivePerformanceBandAction,
-    saveFormData: saveFormDataRequest,
+    fetchGoalsList: actions.getGoalsList,
+    saveFormData: actions.saveFormDataRequest,
   }
 )(DataForm)

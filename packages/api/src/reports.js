@@ -377,6 +377,14 @@ const createIntervention = (data) =>
     })
     .then((response) => response?.data?.result)
 
+const getGoals = () =>
+  api
+    .callApi({
+      url: `/data-warehouse/goals-interventions/goals`,
+      method: 'get',
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -424,4 +432,5 @@ export default {
   fetchAttendanceDistributionReport,
   createGoal,
   createIntervention,
+  getGoals,
 }

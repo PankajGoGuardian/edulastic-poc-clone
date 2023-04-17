@@ -37,7 +37,7 @@ const FormField = ({
       : {}
 
   const disableStartDates = (date) => {
-    date = +moment.utc(date.format('YYYY-MM-DD'))
+    date = +moment.utc(date.format())
     const endDate = formData.endDate
     if (
       date <= Date.now() - oneDayInMilliseconds ||
@@ -49,7 +49,7 @@ const FormField = ({
   }
 
   const disableEndDates = (date) => {
-    date = +moment.utc(date.format('YYYY-MM-DD'))
+    date = +moment.utc(date.format())
     const startDate = formData.startDate
     if (date <= Date.now() || (startDate && startDate >= date)) {
       return true
@@ -122,7 +122,7 @@ const FormField = ({
           }}
           showToday={false}
           allowClear={false}
-          // TODO check how much duration can user select.
+          // TODO check how much duration can user select (termid).
         />
       </EduIf>
     </>

@@ -24,6 +24,7 @@ const {
     TEST_TYPES,
     MEASURE_TYPE,
   },
+  intervention: { RELATED_GOALS_IDS },
 } = formFieldNames
 
 export const getOptionsData = ({
@@ -32,6 +33,7 @@ export const getOptionsData = ({
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
+  goalsOptions,
 }) => {
   let selectOptions = optionsData
   switch (field) {
@@ -43,6 +45,9 @@ export const getOptionsData = ({
       break
     case METRIC:
       selectOptions = targetPerformanceBandOptions
+      break
+    case RELATED_GOALS_IDS:
+      selectOptions = goalsOptions
       break
     default:
       break

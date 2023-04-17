@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { keyBy, omit } from 'lodash'
 import { notification } from '@edulastic/common'
-import { formFieldNames, ATTENDANCE } from '../constants/form'
+import { formFieldNames, ATTENDANCE, INTERVENTION } from '../constants/form'
 import { validateAndGetFormattedFormData } from '../utils'
 
 const {
@@ -16,14 +16,17 @@ const {
     STANDARD_DETAILS,
     THRESHOLD,
   },
+  intervention: { RELATED_GOALS_IDS },
 } = formFieldNames
 
 const useSaveFormData = ({
   formType,
   fetchGroupsData,
   fetchPerformanceBandData,
+  fetchGoalsList,
   groupsData = [],
   performanceBandData = [],
+  goalsOptionsData = [],
   saveFormData,
 }) => {
   const formContainerRef = useRef()
@@ -36,20 +39,22 @@ const useSaveFormData = ({
     targetPerformanceBandOptions,
     setTargetPerformanceBandOptions,
   ] = useState([])
+  const [goalsOptions, setGoalsOptions] = useState([])
 
   const performanceBandOptionsByKey = useMemo(() => {
-    console.log('useMemo')
     return keyBy(performanceBandOptions, 'key')
   }, [performanceBandOptions])
 
   useEffect(() => {
+    setScrollContainer(formContainerRef?.current)
     fetchGroupsData()
     fetchPerformanceBandData()
-    setScrollContainer(formContainerRef?.current)
+    if (formType === INTERVENTION) {
+      fetchGoalsList()
+    }
   }, [])
 
   useEffect(() => {
-    console.log('groupsData', groupsData)
     const groupsDataOptions = (groupsData || []).map(({ _id, name }) => ({
       key: _id,
       title: name,
@@ -71,12 +76,23 @@ const useSaveFormData = ({
       })
     )
     setPerformanceBandOptions(performanceBandDataOptions)
-    console.log('performanceBandData', performanceBandData)
   }, [performanceBandData])
+
+  useEffect(() => {
+    const goalsDataOptions = (goalsOptionsData || []).map(({ _id, name }) => ({
+      key: _id,
+      title: name,
+    }))
+    setGoalsOptions(goalsDataOptions)
+  }, [goalsOptionsData])
 
   const handleFieldDataChange = (field, value) => {
     let updatedFormData = { ...formData }
-    if (field === STUDENT_GROUP_IDS || field === TEST_TYPES) {
+    if (
+      field === STUDENT_GROUP_IDS ||
+      field === TEST_TYPES ||
+      field === RELATED_GOALS_IDS
+    ) {
       // TODO: remove when studentGroupIds, TEST_TYPES field is made multiselect
       value = [value]
     }
@@ -130,6 +146,7 @@ const useSaveFormData = ({
     groupOptions,
     performanceBandOptions,
     targetPerformanceBandOptions,
+    goalsOptions,
     scrollContainer,
     formNavigationOptions,
     formContainerRef,

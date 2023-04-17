@@ -21,13 +21,14 @@ export const getAcademicSummaryPieChartData = (
   selectedPerformanceBand
 ) => {
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
+  const totalStudents = sumBy(bandDistribution, ({ students }) => students)
   return selectedPerformanceBand.map((pb) => {
-    const totalStudents = bandDistribution.find(
+    const studentsPerBand = bandDistribution.find(
       (bd) => bd.bandThreshold === pb.threshold
     )?.students
     return {
       name: pb.name,
-      value: totalStudents || 0,
+      value: percentage(studentsPerBand, totalStudents, true),
       fill: pb.color,
     }
   })

@@ -2,11 +2,27 @@ import React from 'react'
 import { Col, Row } from 'antd'
 import { lightRed2 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
-import { PERFORMANCE_BAND, BAND, METRIC, DROPDOWN } from '../../constants/form'
+import {
+  PERFORMANCE_BAND,
+  DROPDOWN,
+  formFieldNames,
+} from '../../constants/form'
+import { getOptionsData } from '../../utils'
 import { StyledFilterLabel } from './styled-components'
 import FormField from './FormField'
 
-const FormSection = ({ formFields, formData, handleFieldDataChange }) => {
+const {
+  goal: { PERFORMANCE_BAND_ID, METRIC },
+} = formFieldNames
+
+const FormSection = ({
+  formFields,
+  formData,
+  handleFieldDataChange,
+  groupOptions,
+  performanceBandOptions,
+  targetPerformanceBandOptions,
+}) => {
   const { measureType = '' } = formData
   const hideBandField = measureType !== PERFORMANCE_BAND
   const isMeasureTypePerformanceBand = measureType === PERFORMANCE_BAND
@@ -23,12 +39,19 @@ const FormSection = ({ formFields, formData, handleFieldDataChange }) => {
           optionsData = [],
           colSpan = 7,
         }) => {
-          if (field === BAND && hideBandField) {
+          if (field === PERFORMANCE_BAND_ID && hideBandField) {
             return null
           }
           if (field === METRIC && isMeasureTypePerformanceBand) {
             fieldType = DROPDOWN
           }
+          optionsData = getOptionsData({
+            field,
+            optionsData,
+            groupOptions,
+            performanceBandOptions,
+            targetPerformanceBandOptions,
+          })
           return (
             <Col span={colSpan} key={field}>
               <StyledFilterLabel>

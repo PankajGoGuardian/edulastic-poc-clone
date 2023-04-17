@@ -1,56 +1,152 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import {
   GOAL,
   INTERVENTION,
   SAVE_GOAL,
-  saveGoalFormFields,
-  saveInterventionFormFields,
-  goalFormSectionHeaders,
-  interventionFormSectionHeaders,
+  goalFormFields,
+  interventionFormFields,
+  formSectionExtraData,
+  formNavigationLabels,
 } from '../../constants/form'
 import {
   StyledFormTitle,
   StyledNavContainer,
-  StyledFormWrapper,
   StyledNavWrapper,
   StyledFormContainer,
-  StyledNav,
+  StyledFormHeader,
+  StyledFormButtonsContainer,
+  StyledButton,
 } from './styled-components'
+import {
+  fetchGroupsAction,
+  getGroupsSelector,
+} from '../../../../../../sharedDucks/groups'
+import {
+  receivePerformanceBandAction,
+  getPerformanceBandProfilesSelector,
+} from '../../../../../../PerformanceBand/ducks'
 import Form from './Form'
+import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
 import useSaveFormData from '../../hooks/useSaveFormData'
 
-const DataForm = ({ view }) => {
-  const formType = view === SAVE_GOAL ? GOAL : INTERVENTION
-  const { formData, handleFieldDataChange } = useSaveFormData({ formType })
+const {
+  [GOAL]: {
+    sectionHeader: goalFormSectionHeaders,
+    sectionTitle: goalFormSectionTitles,
+  },
+  [INTERVENTION]: {
+    sectionHeader: interventionFormSectionHeaders,
+    sectionTitle: interventionFormSectionTitles,
+  },
+} = formSectionExtraData
 
-  const allFormFields =
-    view === SAVE_GOAL ? saveGoalFormFields : saveInterventionFormFields
+const {
+  goal: goalFormNavigationLabels,
+  intervention: interventionFormNavigationLabels,
+} = formNavigationLabels
 
-  const sectionHeaders =
-    view === SAVE_GOAL ? goalFormSectionHeaders : interventionFormSectionHeaders
+const DataForm = ({
+  view,
+  fetchGroupsData,
+  fetchPerformanceBandData,
+  groupsData,
+  performanceBandData,
+}) => {
+  const isSaveGoalView = view === SAVE_GOAL
+  const formType = isSaveGoalView ? GOAL : INTERVENTION
+
+  const {
+    formData,
+    groupOptions,
+    performanceBandOptions,
+    targetPerformanceBandOptions,
+    scrollContainer,
+    formNavigationOptions,
+    formContainerRef,
+    handleFieldDataChange,
+    handleSaveForm,
+    setFormNavigationOptions,
+  } = useSaveFormData({
+    formType,
+    fetchGroupsData,
+    fetchPerformanceBandData,
+    groupsData,
+    performanceBandData,
+  })
+
+  const allFormFields = isSaveGoalView ? goalFormFields : interventionFormFields
+
+  const sectionHeaders = isSaveGoalView
+    ? goalFormSectionHeaders
+    : interventionFormSectionHeaders
+
+  const sectionTitles = isSaveGoalView
+    ? goalFormSectionTitles
+    : interventionFormSectionTitles
+
+  const formNavigationLabelOptions = isSaveGoalView
+    ? goalFormNavigationLabels
+    : interventionFormNavigationLabels
 
   return (
-    <>
-      <StyledFormWrapper>
+    <div>
+      <StyledFormHeader>
+        <StyledFormTitle>
+          {' '}
+          Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
+        </StyledFormTitle>
+        <StyledFormButtonsContainer>
+          <StyledButton isGhost>Cancel</StyledButton>
+          <StyledButton onClick={handleSaveForm}>
+            Save {view === SAVE_GOAL ? 'Goal' : 'Intervention'}
+          </StyledButton>
+        </StyledFormButtonsContainer>
+      </StyledFormHeader>
+      <div
+        ref={formContainerRef}
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          height: '50vh',
+          overflow: 'auto',
+        }}
+      >
         <StyledNavWrapper>
           <StyledNavContainer>
-            <StyledFormTitle>
-              Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
-            </StyledFormTitle>
-            <StyledNav />
+            <VerticalScrollNavigation
+              sections={formNavigationOptions}
+              scrollContainer={scrollContainer}
+              headerHeight={70}
+            />
           </StyledNavContainer>
         </StyledNavWrapper>
-        <StyledFormContainer span={18}>
+        <StyledFormContainer>
           <Form
             allFormFields={allFormFields}
             sectionHeaders={sectionHeaders}
+            sectionTitles={sectionTitles}
             formData={formData}
             handleFieldDataChange={handleFieldDataChange}
+            groupOptions={groupOptions}
+            performanceBandOptions={performanceBandOptions}
+            targetPerformanceBandOptions={targetPerformanceBandOptions}
+            setNavigationOptions={setFormNavigationOptions}
+            formNavigationLabelOptions={formNavigationLabelOptions}
           />
         </StyledFormContainer>
-      </StyledFormWrapper>
-    </>
+      </div>
+    </div>
   )
 }
 
-export default DataForm
+export default connect(
+  (state) => ({
+    groupsData: getGroupsSelector(state),
+    performanceBandData: getPerformanceBandProfilesSelector(state),
+  }),
+  {
+    fetchGroupsData: fetchGroupsAction,
+    fetchPerformanceBandData: receivePerformanceBandAction,
+  }
+)(DataForm)

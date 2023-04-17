@@ -110,6 +110,11 @@ export const getPerformanceBandList = createSelector(
   }
 )
 
+export const getPerformanceBandProfilesSelector = createSelector(
+  statePerformanceBandSelector,
+  (state) => state.profiles || []
+)
+
 // reducers
 const initialState = {
   data: {},

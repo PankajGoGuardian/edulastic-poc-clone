@@ -9,7 +9,8 @@ import {
   STANDARDS_POPUP,
   NUMBER_INPUT,
   DATEPICKER,
-  START_DATE,
+  formFieldNames,
+  oneDayInMilliseconds,
 } from '../../constants/form'
 import {
   StyledDatePicker,
@@ -17,6 +18,10 @@ import {
   SelectWrapper,
 } from './styled-components'
 import StandardsSelect from '../../../../../../../assessment/containers/QuestionMetadata/StandardsSelect'
+
+const {
+  goal: { START_DATE },
+} = formFieldNames
 
 const FormField = ({
   formData,
@@ -32,14 +37,23 @@ const FormField = ({
       : {}
 
   const disableStartDates = (date) => {
+    date = +moment.utc(date.format('YYYY-MM-DD'))
     const endDate = formData.endDate
-    if (endDate && endDate <= date) return true
+    if (
+      date <= Date.now() - oneDayInMilliseconds ||
+      (endDate && endDate <= date)
+    ) {
+      return true
+    }
     return false
   }
 
   const disableEndDates = (date) => {
+    date = +moment.utc(date.format('YYYY-MM-DD'))
     const startDate = formData.startDate
-    if (startDate && startDate >= date) return true
+    if (date <= Date.now() || (startDate && startDate >= date)) {
+      return true
+    }
     return false
   }
 
@@ -81,7 +95,6 @@ const FormField = ({
             preventInput
             standardDetails={formData[field]}
             placeholder={placeholder}
-            // TODO check how standards need to be saved and standards can be chosen for only 1 subject
           />
         </SelectWrapper>
       </EduIf>
@@ -97,14 +110,19 @@ const FormField = ({
       <EduIf condition={fieldType === DATEPICKER}>
         <StyledDatePicker
           placeholder={placeholder}
-          value={moment(formData[field])}
+          value={formData[field] ? moment(formData[field]) : undefined}
           disabledDate={
             field === START_DATE ? disableStartDates : disableEndDates
           }
           onChange={(date) => {
-            handleFieldDataChange(field, +moment.utc(date.format('YYYY-MM-DD')))
+            handleFieldDataChange(
+              field,
+              +moment.utc(date?.format('YYYY-MM-DD'))
+            )
           }}
-          // TODO check how much duration can user select
+          showToday={false}
+          allowClear={false}
+          // TODO check how much duration can user select.
         />
       </EduIf>
     </>

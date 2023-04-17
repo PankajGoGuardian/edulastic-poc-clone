@@ -12,6 +12,7 @@ import {
   SelectInputStyled,
   DatePickerStyled,
   FieldLabel,
+  EduButton,
 } from '@edulastic/common'
 
 export const StyledFormTitle = styled.div`
@@ -27,22 +28,6 @@ export const StyledNavContainer = styled.div`
   height: 100%;
 `
 
-export const StyledNav = styled.div`
-  border: 1px solid #bbbbbb;
-  border-radius: 17px;
-  width: 100%;
-  height: 318px;
-  margin-top: 26px;
-`
-
-export const StyledFormWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 60vh;
-  overflow: auto;
-  width: 100%;
-`
-
 export const StyledNavWrapper = styled.div`
   position: relative;
   width: 270px;
@@ -54,6 +39,7 @@ export const StyledFormContainer = styled.div`
   flex-direction: column;
   box-shadow: none;
 `
+
 export const StyledDropDown = styled(SelectInputStyled)`
   .ant-select-selection__placeholder {
     display: initial;
@@ -123,4 +109,31 @@ export const StyledSectionDescription = styled.div`
   font-size: 13px;
   line-height: 33px;
   color: ${black};
+`
+
+export const StyledButton = styled(EduButton)`
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 14px;
+  margin-left: 12px;
+  &.ant-btn.ant-btn-primary {
+    &.focus-visible,
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+`
+
+export const StyledFormHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+export const StyledFormButtonsContainer = styled.div`
+  display: flex;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
 `

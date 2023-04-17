@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Col, Row } from 'antd'
 import { EduIf } from '@edulastic/common'
-import { ACADEMIC } from '../../constants/form'
+import {
+  ACADEMIC,
+  DETAILS_SECTION,
+  TARGET_PROFICIENCY_SECTION,
+  THRESHOLD_DEADLINE_SECTION,
+  RELATED_GOALS_COMMENTS_SECTION,
+} from '../../constants/form'
 import { StyledTitle, StyledSectionDescription } from './styled-components'
 import FormSection from './FormSection'
 
 const Form = ({
   allFormFields,
   sectionHeaders,
+  sectionTitles,
   formData,
   handleFieldDataChange,
+  groupOptions,
+  performanceBandOptions,
+  targetPerformanceBandOptions,
+  setNavigationOptions,
+  formNavigationLabelOptions,
 }) => {
   const EnhancedComponent = (formFields) => {
     return (
@@ -17,6 +29,9 @@ const Form = ({
         formFields={formFields}
         formData={formData}
         handleFieldDataChange={handleFieldDataChange}
+        groupOptions={groupOptions}
+        performanceBandOptions={performanceBandOptions}
+        targetPerformanceBandOptions={targetPerformanceBandOptions}
       />
     )
   }
@@ -24,19 +39,10 @@ const Form = ({
   const {
     nameAndType,
     ownerAndDescription,
-    testTypeSubjectAndStandards: {
-      fields: testTypeSubjectAndStandardsFields,
-      sectionTitle: testTypeSubjectAndStandardsSectionTitle,
-    },
-    typeBandAndMetric: {
-      fields: typeBandAndMetricFields,
-      sectionTitle: typeBandAndMetricSectionTitle,
-    },
+    testTypeSubjectAndStandards,
+    typeBandAndMetric,
     thresholdStartAndEndDate,
-    relatedGoalsAndComment: {
-      fields: relatedGoalsAndCommentFields,
-      sectionTitle: relatedGoalsAndCommentSectionTitle,
-    },
+    relatedGoalsAndComment,
   } = allFormFields
 
   const {
@@ -45,22 +51,54 @@ const Form = ({
     thresholdSectionHeader,
   } = sectionHeaders
 
+  const {
+    testTypeSubjectAndStandardsSectionTitle,
+    typeBandAndMetricSectionTitle,
+    relatedGoalsAndCommentSectionTitle,
+  } = sectionTitles
+
   const { type = '' } = formData
   const showTestTypeSubjectAndStandardsSection = type === ACADEMIC
 
+  const detailsSectionRef = useRef()
+  const targetProficiencySectionRef = useRef()
+  const thresholdDeadlineSectionRef = useRef()
+  const relatedGoalsCommentsSectionRef = useRef()
+
+  const allSectionRefs = {
+    [DETAILS_SECTION]: detailsSectionRef,
+    [TARGET_PROFICIENCY_SECTION]: targetProficiencySectionRef,
+    [THRESHOLD_DEADLINE_SECTION]: thresholdDeadlineSectionRef,
+    [RELATED_GOALS_COMMENTS_SECTION]: relatedGoalsCommentsSectionRef,
+  }
+
+  useEffect(() => {
+    const navigationOptions = Object.keys(formNavigationLabelOptions).map(
+      (section) => ({
+        element: allSectionRefs[section]?.current,
+        label: formNavigationLabelOptions[section],
+      })
+    )
+    setNavigationOptions(navigationOptions)
+  }, [])
+
   return (
-    <>
-      <Row>
-        <StyledSectionDescription>{typeSectionHeader}</StyledSectionDescription>
-        <Col
-          style={{
-            paddingBottom: 20,
-          }}
-          span={24}
-        >
-          {EnhancedComponent(nameAndType)}
-        </Col>
-      </Row>
+    <div>
+      <div ref={detailsSectionRef}>
+        <Row>
+          <StyledSectionDescription>
+            {typeSectionHeader}
+          </StyledSectionDescription>
+          <Col
+            style={{
+              paddingBottom: 20,
+            }}
+            span={24}
+          >
+            {EnhancedComponent(nameAndType)}
+          </Col>
+        </Row>
+      </div>
       <Row
         style={{
           paddingBottom: 30,
@@ -68,49 +106,56 @@ const Form = ({
       >
         <Col span={24}>{EnhancedComponent(ownerAndDescription)}</Col>
       </Row>
-      <Row>
-        <StyledSectionDescription>
-          {targetSectionHeader}
-        </StyledSectionDescription>
-        <StyledSectionDescription content={targetSectionHeader} />
-        <EduIf condition={showTestTypeSubjectAndStandardsSection}>
+      <div ref={targetProficiencySectionRef}>
+        <Row>
+          <StyledSectionDescription>
+            {targetSectionHeader}
+          </StyledSectionDescription>
+          <StyledSectionDescription content={targetSectionHeader} />
+          <EduIf condition={showTestTypeSubjectAndStandardsSection}>
+            <Col
+              style={{
+                paddingBottom: 20,
+              }}
+              span={24}
+            >
+              <StyledTitle>
+                {testTypeSubjectAndStandardsSectionTitle}
+              </StyledTitle>
+              {EnhancedComponent(testTypeSubjectAndStandards)}
+            </Col>
+          </EduIf>
           <Col
             style={{
-              paddingBottom: 20,
+              paddingBottom: 30,
             }}
             span={24}
           >
-            <StyledTitle>{testTypeSubjectAndStandardsSectionTitle}</StyledTitle>
-            {EnhancedComponent(testTypeSubjectAndStandardsFields)}
+            <StyledTitle>{typeBandAndMetricSectionTitle}</StyledTitle>
+            {EnhancedComponent(typeBandAndMetric)}
           </Col>
-        </EduIf>
-        <Col
+        </Row>
+      </div>
+      <div ref={thresholdDeadlineSectionRef}>
+        <Row style={{ borderBottom: '1px solid #D8D8D8', paddingBottom: 28 }}>
+          <StyledSectionDescription>
+            {thresholdSectionHeader}
+          </StyledSectionDescription>
+          <Col span={24}>{EnhancedComponent(thresholdStartAndEndDate)}</Col>
+        </Row>
+      </div>
+      <div ref={relatedGoalsCommentsSectionRef}>
+        <Row
           style={{
-            paddingBottom: 30,
+            paddingTop: 30,
+            paddingBottom: 28,
           }}
-          span={24}
         >
-          <StyledTitle>{typeBandAndMetricSectionTitle}</StyledTitle>
-          {EnhancedComponent(typeBandAndMetricFields)}
-        </Col>
-      </Row>
-      <Row style={{ borderBottom: '1px solid #D8D8D8', paddingBottom: 28 }}>
-        <StyledSectionDescription>
-          {thresholdSectionHeader}
-        </StyledSectionDescription>
-        <Col span={24}>{EnhancedComponent(thresholdStartAndEndDate)}</Col>
-      </Row>
-      <Row
-        style={{
-          paddingTop: 30,
-          paddingBottom: 28,
-          borderBottom: '1px solid #D8D8D8',
-        }}
-      >
-        <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
-        <Col span={24}>{EnhancedComponent(relatedGoalsAndCommentFields)}</Col>
-      </Row>
-    </>
+          <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
+          <Col span={24}>{EnhancedComponent(relatedGoalsAndComment)}</Col>
+        </Row>
+      </div>
+    </div>
   )
 }
 

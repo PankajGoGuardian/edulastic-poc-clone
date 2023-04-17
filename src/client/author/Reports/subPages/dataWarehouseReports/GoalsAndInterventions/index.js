@@ -7,6 +7,8 @@ import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
 import DataForm from './component/DataForm'
+import AdvancedSearch from './component/AdvancedSearch/AdvancedSearch'
+import GroupsList from './component/GroupsList/GroupsList'
 
 const { TabPane } = Tabs
 
@@ -38,6 +40,18 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     1: [
       {
         key: '1',
+        label: `STUDENT GROUP LIST`,
+        children: <GroupsList />,
+      },
+      {
+        key: '2',
+        label: `ADD NEW STUDENT GROUP`,
+        children: <AdvancedSearch />,
+      },
+    ],
+    2: [
+      {
+        key: '1',
         label: `GOAL LIST`,
         children: <FirstScreen content={firstScreenContent[activeKey]} />,
       },
@@ -47,7 +61,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         children: <DataForm view={SAVE_GOAL} />,
       },
     ],
-    2: [
+    3: [
       {
         key: '1',
         label: `INTERVENTION LIST`,
@@ -63,11 +77,16 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const items = [
     {
       key: '1',
-      label: `GOALS`,
+      label: `STUDENT GROUPS`,
       children: <MainContainer tabs={content[activeKey]} />,
     },
     {
       key: '2',
+      label: `GOALS`,
+      children: <MainContainer tabs={content[activeKey]} />,
+    },
+    {
+      key: '3',
       label: `INTERVENTION`,
       children: <MainContainer tabs={content[activeKey]} />,
     },

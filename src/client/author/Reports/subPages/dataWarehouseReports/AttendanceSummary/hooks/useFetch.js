@@ -34,7 +34,7 @@ export const useAttendanceDetailsFetch = ({
         const params = {
           ...settings.requestFilters,
           compareBy,
-          sortKey: sortOrder ? sortKey : sortKeys.DIMENSION,
+          sortKey: sortOrder ? sortKey : sortKeys.ATTENDANCE,
           sortOrder: sortOrderMap[sortOrder] || sortOrderMap.ascend,
           page,
           pageSize,

@@ -73,6 +73,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           setAnimate(true)
         }}
         style={{
+          marginLeft: 0,
           visibility: hasPreviousPage ? 'visible' : 'hidden',
         }}
       />
@@ -87,6 +88,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           setAnimate(true)
         }}
         style={{
+          marginRight: 0,
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
       />
@@ -129,6 +131,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           <YAxis
             type="number"
             domain={[0, 100]}
+            ticks={[0, 20, 40, 60, 80, 100]}
             tick={yAxisTick}
             padding={{ top: 10 }}
             tickCount={6}

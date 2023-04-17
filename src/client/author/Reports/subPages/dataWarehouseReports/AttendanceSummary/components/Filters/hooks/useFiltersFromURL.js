@@ -65,6 +65,8 @@ function useFiltersFromURL({
         periodType: urlPeriod.key,
         customPeriodStart: search.customPeriodStart,
         customPeriodEnd: search.customPeriodEnd,
+        groupBy: search.groupBy,
+        profileId: search.profileId,
       }
       if (userRole === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -93,6 +95,7 @@ function useFiltersFromURL({
           courseIds: reject([search.courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+          teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
           options: {
             termId: _filters.termId,
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),

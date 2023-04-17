@@ -42,7 +42,7 @@ const RenderCustomizedLabel = (props) => {
         fontWeight="bold"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={12}
+        fontSize={14}
       >
         {value}
       </text>
@@ -163,7 +163,8 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
               dx={-18}
               domain={[0, yMax * 1.1]}
               ticks={[0, yMax + 1]}
-              opacity={0.5}
+              fontSize={16}
+              fontWeight="bold"
               label={
                 <YAxisLabel
                   data={{

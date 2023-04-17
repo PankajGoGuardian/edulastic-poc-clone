@@ -23,6 +23,10 @@ import {
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import { allFilterValue } from './constants'
+import {
+  groupByConstants,
+  groupByOptions,
+} from '../subPages/dataWarehouseReports/AttendanceSummary/utils/constants'
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
@@ -640,6 +644,13 @@ export const getSelectedCompareBy = ({
     selectedCompareBy = settings.selectedCompareBy
   }
   return selectedCompareBy
+}
+
+export const getSelectedGroupBy = (search) => {
+  if (groupByOptions.includes(search.groupBy)) {
+    return search.groupBy
+  }
+  return groupByConstants.MONTH
 }
 
 export function removeFilter(

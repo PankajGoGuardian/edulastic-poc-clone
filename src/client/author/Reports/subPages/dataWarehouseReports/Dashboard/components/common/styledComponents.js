@@ -41,9 +41,9 @@ export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin: 12px 25px;
-  box-shadow: ${(props) =>
-    props.isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
-  opacity: ${(props) => (props.isSelected ? '1' : '0.5')};
+  box-shadow: ${({ isSelected }) =>
+    isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
+  opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
   span {
     &:first-child {
       padding: 13px 32px;
@@ -58,7 +58,7 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
-      cursor: pointer;
+      cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'not-allowed')};
       border-radius: 0px 10px 10px 0px;
     }
   }

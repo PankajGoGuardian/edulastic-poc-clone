@@ -74,7 +74,10 @@ const DashboardTable = ({
           value={aboveOrAtStandardCount}
           color={lightGreen13}
           tableHeaderCellClick={() => {
-            onTableHeaderCellClick(tableFilterTypes.ABOVE_EQUAL_TO_AVG)
+            onTableHeaderCellClick(
+              tableFilterTypes.ABOVE_EQUAL_TO_AVG,
+              aboveOrAtStandardCount
+            )
           }}
           isSelected={tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG]}
         />
@@ -83,7 +86,10 @@ const DashboardTable = ({
           value={belowStandardCount}
           color={lightRed6}
           tableHeaderCellClick={() => {
-            onTableHeaderCellClick(tableFilterTypes.BELOW_AVG)
+            onTableHeaderCellClick(
+              tableFilterTypes.BELOW_AVG,
+              belowStandardCount
+            )
           }}
           isSelected={tableFilters[tableFilterTypes.BELOW_AVG]}
         />

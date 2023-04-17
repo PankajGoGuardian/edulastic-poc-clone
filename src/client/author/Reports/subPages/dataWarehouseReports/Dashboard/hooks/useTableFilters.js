@@ -48,7 +48,8 @@ const useTableFilters = ({
     }
   }
 
-  const onTableHeaderCellClick = (cellKey) => {
+  const onTableHeaderCellClick = (cellKey, value) => {
+    if (!value) return
     const filters = { ...tableFilters }
     if (cellKey === tableFilterTypes.ABOVE_EQUAL_TO_AVG) {
       const keyName = tableFilterTypes.BELOW_AVG

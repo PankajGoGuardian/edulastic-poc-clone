@@ -21,7 +21,7 @@ const AcademicSummaryWidgetFilters = ({
   useEffect(() => {
     const [defaultTestType] = availableTestTypes
     const selectedTestType = availableTestTypes.find(
-      ({ key }) => filters[academicSummaryFiltersTypes.TEST_TYPE].key === key
+      ({ key }) => filters[academicSummaryFiltersTypes.TEST_TYPE]?.key === key
     )
     setFilters({
       ...filters,

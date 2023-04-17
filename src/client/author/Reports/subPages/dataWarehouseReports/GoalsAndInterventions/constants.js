@@ -13,3 +13,9 @@ export const summaryTileColors = {
   GRAY_TEXT: '#777777',
   GREEN_TEXT: '#2A7A2F',
 }
+
+export const timeLeftColors = {
+  GREEN: '#2A7A2F',
+  RED: '#982B22',
+  YELLOW: '#F5E19A',
+}

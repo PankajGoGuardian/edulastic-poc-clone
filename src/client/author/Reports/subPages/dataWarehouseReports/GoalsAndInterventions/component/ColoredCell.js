@@ -1,9 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
+import { filterIconColor } from '@edulastic/colors'
 
-const ColoredCell = ({ value, bgColor }) => {
-  console.log(value)
-  return <Container style={{ background: bgColor }}>{value}</Container>
+const ColoredCell = ({ value, bgColor, color }) => {
+  return (
+    <Container
+      style={{
+        background: bgColor || 'transparent',
+        color: color || filterIconColor,
+      }}
+    >
+      {value}
+    </Container>
+  )
 }
 
 const Container = styled.div`

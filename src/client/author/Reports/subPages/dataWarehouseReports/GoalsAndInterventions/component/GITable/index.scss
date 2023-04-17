@@ -1,3 +1,5 @@
+@import '@edulastic/colors/variables';
+
 .gi-table {
   .ant-table-thead {
     tr {
@@ -39,6 +41,7 @@
       border-bottom: 1px solid #eeeeee;
       padding: 2px;
       text-align: center;
+      color: $filterIconColor;
     }
     &:hover {
       td {
@@ -49,6 +52,31 @@
   .not-expandible {
     .ant-table-row-expand-icon-cell {
       visibility: hidden;
+    }
+  }
+}
+
+.gi-popover {
+  .ant-popover-inner {
+    background: #343434;
+    border-radius: 10px;
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      justify-content: center;
+      p {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 16px;
+        color: #ffffff;
+      }
+      b {
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 16px;
+        color: #ffffff;
+      }
     }
   }
 }

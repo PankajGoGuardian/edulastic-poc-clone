@@ -3,31 +3,10 @@ import Table from 'antd/lib/table'
 import styled from 'styled-components'
 import './index.scss'
 import StatusBox from '../StatusBox'
-import ColoredCell from '../ColoredCell'
-import { statusColors, summaryTileColors } from '../../constants'
+import TableRow from '../TableRow'
+import { summaryTileColors } from '../../constants'
 
 const GITable = () => {
-  const getCurrentStatusColor = (record) => {
-    switch (true) {
-      case record.current >= record.target:
-        return statusColors.GREEN
-      default:
-        return statusColors.RED
-    }
-  }
-
-  const getTimeLeftColor = (record) => {
-    switch (true) {
-      case record.time_left / record.total_time <= 0.3:
-        return statusColors.RED
-      case record.time_left / record.total_time > 0.3 &&
-        record.time_left / record.total_time <= 0.5:
-        return statusColors.YELLOW
-      default:
-        return statusColors.GREEN
-    }
-  }
-
   const getSummaryStatusCount = (key, data) => {
     switch (key) {
       case 'met': {
@@ -59,108 +38,78 @@ const GITable = () => {
     }
   }
 
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      sorter: true,
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
-      sorter: true,
-    },
-    {
-      title: 'Target Students',
-      dataIndex: 'target_students',
-      key: 'target_students',
-      sorter: true,
-    },
-    {
-      title: 'Baseline',
-      dataIndex: 'baseline',
-      key: 'baseline',
-      sorter: true,
-    },
-    {
-      title: 'Current',
-      dataIndex: 'current',
-      key: 'current',
-      sorter: true,
-      width: 150,
-      render: (text, record) => (
-        <ColoredCell value={text} bgColor={getCurrentStatusColor(record)} />
-      ),
-    },
-    {
-      title: 'Target',
-      dataIndex: 'target',
-      key: 'target',
-      sorter: true,
-    },
-    {
-      title: 'TIME LEFT (DAYS)',
-      dataIndex: 'time_left',
-      key: 'time_left',
-      sorter: true,
-      width: 160,
-      render: (text, record) => (
-        <ColoredCell
-          value={`${text}/${record.total_time}`}
-          bgColor={getTimeLeftColor(record)}
-        />
-      ),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      sorter: true,
-    },
-    {
-      title: 'Comments',
-      dataIndex: 'comments',
-      key: 'comments',
-      sorter: true,
-      width: 450,
-    },
-    {
-      title: 'Action',
-      dataIndex: '',
-      key: 'x',
-      render: () => <a>Delete</a>,
-    },
-  ]
   const data = [
     {
       key: 1,
       name: 'Goal 1',
       type: 'Academic',
       target_students: 1024,
-      baseline: 80,
-      current: 70,
-      target: 80,
-      time_left: 30,
-      total_time: 180,
       isExpandable: false,
       status: 'In progress',
       comments: 'Requires some modification',
+      studentGroupIds: ['1', '2'],
+      owner: 'ABC',
+      description:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+      goalCriteria: {
+        applicableTo: {
+          testTypes: ['T1', 'T2'],
+          subjects: ['Math', 'Science'],
+          standardDetails: null,
+        },
+        target: {
+          measureType: 'Average',
+          performanceBandId: '1234',
+          metric: 'Average',
+        },
+      },
+      baseline: 60,
+      current: 70,
+      threshold: 80,
+      startDate: 1681084800000,
+      endDate: 1682553600000,
+      relatedInterventionIds: [1],
+      createdBy: '5eee2a6b1f8f0b73355a0db3',
+      userRole: 'teacher',
+      districtId: '6eee2a6b1f8f0b73355a0db3',
+      createdAt: 1681084800000,
+      updatedAt: 1681689600000,
     },
     {
       key: 2,
       name: 'Goal 2',
-      type: 'Academic',
+      type: 'Attendance',
       target_students: 1024,
-      baseline: 80,
-      current: 80,
-      target: 80,
-      time_left: 100,
-      total_time: 180,
-      status: 'Completed',
-      isExpandable: true,
+      isExpandable: false,
+      status: 'In progress',
       comments: 'Requires some modification',
+      studentGroupIds: ['1', '2'],
+      owner: 'ABC',
+      description:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+      goalCriteria: {
+        applicableTo: {
+          testTypes: ['T1', 'T2'],
+          subjects: ['Math', 'Science'],
+          standardDetails: null,
+        },
+        target: {
+          measureType: 'Average',
+          performanceBandId: '1234',
+          metric: 'Average',
+        },
+      },
+      baseline: 60,
+      current: 80,
+      threshold: 80,
+      startDate: 1681084800000,
+      endDate: 1682553600000,
+      relatedInterventionIds: [1],
+      createdBy: '5eee2a6b1f8f0b73355a0db3',
+      userRole: 'teacher',
+      districtId: '6eee2a6b1f8f0b73355a0db3',
+      createdAt: 1681084800000,
+      updatedAt: 1681689600000,
     },
   ]
 
@@ -242,7 +191,7 @@ const GITable = () => {
           ))}
         </Header>
       )}
-      columns={columns}
+      columns={TableRow}
       rowClassName={(record) => {
         if (!record.isExpandable) {
           return 'not-expandible'
@@ -251,7 +200,7 @@ const GITable = () => {
       expandedRowRender={() => (
         <Table
           className="gi-table"
-          columns={columns}
+          columns={TableRow}
           dataSource={expandData}
           pagination={false}
         />

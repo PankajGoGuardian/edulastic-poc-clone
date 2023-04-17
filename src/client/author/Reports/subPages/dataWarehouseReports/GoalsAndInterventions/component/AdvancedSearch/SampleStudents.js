@@ -8,50 +8,25 @@ const SampleStudents = ({ studentsData }) => {
 
   const columns = [
     {
-      title: 'First Name',
-      dataIndex: 'firstname',
-      key: 'firstName',
+      title: 'Student',
+      dataIndex: 'studentName',
+      key: 'studentName',
       align: 'left',
     },
     {
-      title: 'Last Name',
-      dataIndex: 'lastname',
-      key: 'lastName',
-    },
-    {
-      title: 'Class',
-      dataIndex: 'class',
-      key: 'class',
-    },
-    {
-      title: 'Class',
-      dataIndex: 'class',
-      key: 'class',
-    },
-    {
-      title: 'Teacher',
-      dataIndex: 'teacher',
-      key: 'teacher',
+      title: 'Grades',
+      dataIndex: 'grades',
+      key: 'grades',
     },
     {
       title: 'School',
-      dataIndex: 'school',
-      key: 'school',
+      dataIndex: 'schoolNames',
+      key: 'schoolNames',
     },
     {
       title: 'Average Academic Edulastic',
-      dataIndex: 'avg_academic_edulastic',
-      key: 'avg_academic_edulastic',
-    },
-    {
-      title: 'Average Academic NWEA',
-      dataIndex: 'avg_academic_nwea',
-      key: 'avg_academic_nwea',
-    },
-    {
-      title: 'Average Attendance',
-      dataIndex: 'avg_attendance',
-      key: 'avg_attendance',
+      dataIndex: 'avgAttendance',
+      key: 'avgAttendance',
     },
   ]
   return (

@@ -75,36 +75,3 @@ export const allowedFields = ({
     values: attendanceBandData,
   },
 ]
-
-export const sampleStudents = [
-  {
-    firstname: 'James',
-    lastname: 'Smith',
-    class: 'Lorem Ipsum',
-    teacher: 'Mathew Oliver',
-    school: 'Orlando school',
-    avg_academic_edulastic: '90',
-    avg_academic_nwea: '80',
-    avg_attendance: '70',
-  },
-  {
-    firstname: 'John',
-    lastname: 'Doe',
-    class: 'Lorem Ipsum',
-    teacher: 'Mathew Oliver',
-    school: 'Orlando school',
-    avg_academic_edulastic: '90',
-    avg_academic_nwea: '90',
-    avg_attendance: '90',
-  },
-  {
-    firstname: 'Jenny',
-    lastname: 'Doe',
-    class: 'Lorem Ipsum',
-    teacher: 'Mathew Oliver',
-    school: 'Orlando school',
-    avg_academic_edulastic: '100',
-    avg_academic_nwea: '100',
-    avg_attendance: '80',
-  },
-]

@@ -9,6 +9,7 @@ import { useResetAnimation } from '../../../common/hooks/useResetAnimation'
 import { sortDistributionBand } from '../common/utils'
 
 const DEG_HALF_CIRCLE = 180
+const ROUNDING_PRECISION = 1
 const getAcademicSummaryChartLabelJSX = (props) => {
   const RADIAN = Math.PI / DEG_HALF_CIRCLE
   const { y, cx, cy, midAngle, outerRadius, value, name, color } = props
@@ -52,7 +53,10 @@ const getAcademicSummaryChartLabelJSX = (props) => {
           fontWeight="bold"
           fontSize="14px"
         >
-          <tspan className="label-value"> {round(value)}%</tspan>
+          <tspan className="label-value">
+            {' '}
+            {round(value, ROUNDING_PRECISION)}%
+          </tspan>
         </text>
       </Tooltip>
     </g>

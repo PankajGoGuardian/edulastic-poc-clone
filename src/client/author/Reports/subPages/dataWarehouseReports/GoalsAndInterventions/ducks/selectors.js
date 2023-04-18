@@ -5,6 +5,7 @@ const stateSelector = (state) => state.reportReducer[reduxNamespaceKey]
 
 // form selectors
 const formSelector = createSelector(stateSelector, (state) => state.form)
+const formStatus = createSelector(formSelector, (state) => state.status)
 const isFormDataSaving = createSelector(formSelector, (state) => state.isSaving)
 
 // goals selectors
@@ -22,6 +23,7 @@ const groupList = createSelector(groupSelector, (state) => state.groups)
 
 export {
   isFormDataSaving,
+  formStatus,
   isGoalsDataLoading,
   goalsList,
   groupSelector,

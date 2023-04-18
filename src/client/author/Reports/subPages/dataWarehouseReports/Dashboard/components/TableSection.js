@@ -101,9 +101,9 @@ function TableSection({
 
   const handleAddToGroupClick = () => {
     if (checkedStudentsForModal.length) {
-      notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
-    } else {
       setShowAddToGroupModal(true)
+    } else {
+      notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
     }
   }
 

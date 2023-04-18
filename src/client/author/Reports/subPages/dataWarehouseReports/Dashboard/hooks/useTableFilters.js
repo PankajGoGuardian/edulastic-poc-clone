@@ -5,6 +5,7 @@ import {
   tableFilterTypes,
   TABLE_PAGE_SIZE,
   compareByFilterFieldKeys,
+  compareByKeys,
   compareByOptions,
   nextCompareByOptionsMap,
   academicSummaryFiltersTypes,
@@ -83,8 +84,11 @@ const useTableFilters = ({
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key,
     })
-    const url = `${baseUrl}?${qs.stringify(_filters)}`
-    return url
+    if (selectedCompareBy === compareByKeys.STUDENT) {
+      delete _filters[filterField]
+      return `${baseUrl}${key}?${qs.stringify(_filters)}`
+    }
+    return `${baseUrl}?${qs.stringify(_filters)}`
   }
 
   return {

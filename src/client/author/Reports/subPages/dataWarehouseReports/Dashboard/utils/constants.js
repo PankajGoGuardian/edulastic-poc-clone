@@ -169,6 +169,7 @@ export const compareByFilterFieldKeys = {
   [compareByKeys.ELL_STATUS]: 'ellStatus',
   [compareByKeys.IEP_STATUS]: 'iepStatus',
   [compareByKeys.HISPANIC_ETHNICITY]: 'hispanicEthnicity',
+  [compareByKeys.STUDENT]: 'studentId',
 }
 
 export const nextCompareByOptionsMap = {

@@ -8,11 +8,15 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
+import { compareByKeys } from '@edulastic/constants/reportUtils/standardsMasteryReport/standardsGradebook'
 import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
-import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
+import {
+  DW_MAR_REPORT_URL,
+  DW_WLR_REPORT_URL,
+} from '../../../../../common/constants/dataWarehouseReports'
 import { StyledDiv } from '../common/styledComponents'
 
 const tableColumnKeys = {
@@ -145,7 +149,11 @@ export const getTableColumns = ({
     fixed: 'right',
     width: 200,
     render: (value) => {
-      const url = getTableDrillDownUrl(value._id, DW_MAR_REPORT_URL)
+      const reportUrl =
+        selectedCompareBy === compareByKeys.STUDENT
+          ? DW_WLR_REPORT_URL
+          : DW_MAR_REPORT_URL
+      const url = getTableDrillDownUrl(value._id, reportUrl)
       return (
         <Link to={url} target={url}>
           <StyledDiv>

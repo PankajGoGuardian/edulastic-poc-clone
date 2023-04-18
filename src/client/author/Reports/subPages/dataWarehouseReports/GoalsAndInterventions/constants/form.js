@@ -51,9 +51,14 @@ export const dropdownData = {
     { key: ACADEMIC, title: 'Academic' },
     { key: ATTENDANCE, title: 'Attendance' },
   ],
-  measureTypes: [
+  academicMeasureTypes: [
     { key: AVERAGE_SCORE, title: 'Average score' },
     { key: MINIMUM_SCORE, title: 'Minimum score' },
+    { key: PERFORMANCE_BAND, title: 'Performance band' },
+  ],
+  attendanceMeasureTypes: [
+    { key: AVERAGE_SCORE, title: 'Average attendance' },
+    { key: MINIMUM_SCORE, title: 'Minimum attendance' },
     { key: PERFORMANCE_BAND, title: 'Performance band' },
   ],
 }
@@ -91,7 +96,13 @@ export const formFieldNames = {
   },
 }
 
-export const goalFormFields = {
+const getMeasureTypes = (type) => {
+  return type === 'academic'
+    ? dropdownData.academicMeasureTypes
+    : dropdownData.attendanceMeasureTypes
+}
+
+export const goalFormFields = (type = 'academic') => ({
   nameAndType: {
     name: {
       field: NAME,
@@ -166,7 +177,7 @@ export const goalFormFields = {
       isRequired: true,
       fieldType: DROPDOWN,
       placeholder: 'Select metric type',
-      optionsData: dropdownData.measureTypes,
+      optionsData: getMeasureTypes(type),
     },
     band: {
       field: PERFORMANCE_BAND_ID,
@@ -185,13 +196,13 @@ export const goalFormFields = {
     },
   },
   thresholdStartAndEndDate: {
-    threshold: {
-      field: THRESHOLD,
-      label: 'Threshold',
-      fieldType: NUMBER_INPUT,
-      isRequired: true,
-      placeholder: 'Enter %students who must improve',
-    },
+    // threshold: {
+    //   field: THRESHOLD,
+    //   label: 'Threshold',
+    //   fieldType: NUMBER_INPUT,
+    //   isRequired: true,
+    //   placeholder: 'Enter %students who must improve',
+    // },
     startDate: {
       field: START_DATE,
       label: 'Start date',
@@ -217,9 +228,9 @@ export const goalFormFields = {
       colSpan: 7,
     },
   },
-}
+})
 
-export const interventionFormFields = {
+export const interventionFormFields = (type = 'academic') => ({
   nameAndType: {
     name: {
       field: NAME,
@@ -254,7 +265,7 @@ export const interventionFormFields = {
       fieldType: DROPDOWN,
       isRequired: true,
       placeholder: 'Select outcome type',
-      optionsData: dropdownData.measureTypes,
+      optionsData: getMeasureTypes(type),
     },
     band: {
       field: PERFORMANCE_BAND_ID,
@@ -291,7 +302,7 @@ export const interventionFormFields = {
       colSpan: 7,
     },
   },
-}
+})
 
 export const formSectionExtraData = {
   [GOAL]: {

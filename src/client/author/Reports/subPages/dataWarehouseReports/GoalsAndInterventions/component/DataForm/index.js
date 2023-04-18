@@ -97,7 +97,9 @@ const DataForm = ({
     saveFormData,
   })
 
-  const allFormFields = isSaveGoalView ? goalFormFields : interventionFormFields
+  const allFormFields = isSaveGoalView
+    ? goalFormFields(formData.type)
+    : interventionFormFields(formData.type)
 
   if (group) {
     if (!formData.studentGroupIds) {

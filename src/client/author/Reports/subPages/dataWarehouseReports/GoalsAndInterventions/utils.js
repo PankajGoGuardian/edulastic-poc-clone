@@ -107,8 +107,9 @@ export const validateAndGetFormattedFormData = (formData) => {
   const fieldsToOmit = []
   let error = false
   let errorMessage = ''
-  const { formType } = formData
-  const formFields = formType === GOAL ? goalFormFields : interventionFormFields
+  const { formType, type } = formData
+  const formFields =
+    formType === GOAL ? goalFormFields(type) : interventionFormFields(type)
   const formSections = Object.keys(formFields)
   formSections.forEach((formSection) => {
     if (error) {

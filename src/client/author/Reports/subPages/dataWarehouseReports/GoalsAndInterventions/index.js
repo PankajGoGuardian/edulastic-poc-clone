@@ -7,6 +7,7 @@ import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
 import DataForm from './component/DataForm'
+import GroupList from './component/GroupList/GroupList'
 
 const { TabPane } = Tabs
 
@@ -16,6 +17,15 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const firstScreenContent = {
     1: {
       list: [
+        'Create Student Group',
+        'Set Goals/Interventions',
+        'Measure progress',
+      ],
+      description: 'No group exists. Please create first group',
+      buttonText: 'CREATE STUDENT GROUP',
+    },
+    2: {
+      list: [
         'Select Target Students',
         'Specify Goal Criteria',
         'Monitor Performance',
@@ -23,7 +33,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       description: 'No goal set. Please set first goal',
       buttonText: 'SET GOAL',
     },
-    2: {
+    3: {
       list: [
         'Select Target Students',
         'Specify Criteria',
@@ -38,6 +48,24 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     1: [
       {
         key: '1',
+        label: `STUDENT GROUP LIST`,
+        children: (
+          <GroupList
+            noDataContent={
+              <FirstScreen content={firstScreenContent[activeKey]} />
+            }
+          />
+        ),
+      },
+      {
+        key: '2',
+        label: `ADD NEW STUDENT GROUP`,
+        children: <>Advance search</>,
+      },
+    ],
+    2: [
+      {
+        key: '1',
         label: `GOAL LIST`,
         children: <FirstScreen content={firstScreenContent[activeKey]} />,
       },
@@ -47,7 +75,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         children: <DataForm view={SAVE_GOAL} />,
       },
     ],
-    2: [
+    3: [
       {
         key: '1',
         label: `INTERVENTION LIST`,
@@ -63,11 +91,16 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const items = [
     {
       key: '1',
-      label: `GOALS`,
+      label: `STUDENT GROUPS`,
       children: <MainContainer tabs={content[activeKey]} />,
     },
     {
       key: '2',
+      label: `GOALS`,
+      children: <MainContainer tabs={content[activeKey]} />,
+    },
+    {
+      key: '3',
       label: `INTERVENTION`,
       children: <MainContainer tabs={content[activeKey]} />,
     },

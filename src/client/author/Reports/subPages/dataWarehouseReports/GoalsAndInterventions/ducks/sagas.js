@@ -1,9 +1,10 @@
 import { omit } from 'lodash'
-import { reportsApi } from '@edulastic/api'
+import { collaborationApi, reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { all, call, put, takeLatest } from 'redux-saga/effects'
 import { actions } from './actionReducers'
 import { GOAL } from '../constants/form'
+import { updateStudentCount } from './utils'
 
 function* saveFormDataRequestSaga({ payload }) {
   const { formType } = payload
@@ -37,9 +38,22 @@ function* getGoalsListSaga() {
   }
 }
 
+function* getGroupListSaga() {
+  try {
+    const response = yield call(collaborationApi.fetchGroups)
+    yield put(actions.setGroupList(updateStudentCount(response.result || [])))
+  } catch (error) {
+    const msg = `Failed to fetch group.`
+    notification({ msg: error?.response?.data?.message || msg })
+  } finally {
+    yield put(actions.getGoalsListComplete())
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     takeLatest(actions.saveFormDataRequest, saveFormDataRequestSaga),
     takeLatest(actions.getGoalsList, getGoalsListSaga),
+    takeLatest(actions.getGroupList, getGroupListSaga),
   ])
 }

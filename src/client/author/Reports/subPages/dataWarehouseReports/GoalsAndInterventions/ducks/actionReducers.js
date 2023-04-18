@@ -10,6 +10,10 @@ const initialState = {
     isLoading: false,
     list: [],
   },
+  group: {
+    isLoading: false,
+    list: [],
+  },
 }
 
 const slice = createSlice({
@@ -31,6 +35,15 @@ const slice = createSlice({
     setGoalsList: (state, { payload }) => {
       state.goals.list = payload
     },
+    getGroupList: (state) => {
+      state.goals.isLoading = true
+    },
+    getGroupListComplete: (state) => {
+      state.goals.isLoading = false
+    },
+    setGroupList: (state, { payload }) => {
+      state.group.list = payload
+    },
   },
 })
 
@@ -40,6 +53,9 @@ const {
   getGoalsList,
   getGoalsListComplete,
   setGoalsList,
+  getGroupList,
+  getGroupListComplete,
+  setGroupList,
 } = slice.actions
 
 export const actions = {
@@ -48,6 +64,9 @@ export const actions = {
   getGoalsList,
   getGoalsListComplete,
   setGoalsList,
+  getGroupList,
+  getGroupListComplete,
+  setGroupList,
 }
 
 export const { reducer } = slice

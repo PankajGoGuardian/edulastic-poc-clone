@@ -15,4 +15,16 @@ const isGoalsDataLoading = createSelector(
 )
 const goalsList = createSelector(goalsSelector, (state) => state.list)
 
-export { isFormDataSaving, isGoalsDataLoading, goalsList }
+// group selector
+const groupSelector = createSelector(stateSelector, (state) => state.group)
+const isGroupLoading = createSelector(groupSelector, (state) => state.isLoading)
+const groupList = createSelector(groupSelector, (state) => state.list)
+
+export {
+  isFormDataSaving,
+  isGoalsDataLoading,
+  goalsList,
+  groupSelector,
+  isGroupLoading,
+  groupList,
+}

@@ -256,8 +256,8 @@ export const interventionFormFields = (type = 'academic') => ({
       optionsData: [],
     },
   },
-  ownerAndDescription: goalFormFields.ownerAndDescription,
-  testTypeSubjectAndStandards: goalFormFields.testTypeSubjectAndStandards,
+  ownerAndDescription: goalFormFields(type).ownerAndDescription,
+  testTypeSubjectAndStandards: goalFormFields(type).testTypeSubjectAndStandards,
   typeBandAndMetric: {
     measureType: {
       field: MEASURE_TYPE,
@@ -283,7 +283,7 @@ export const interventionFormFields = (type = 'academic') => ({
       placeholder: 'Select target outcome',
     },
   },
-  thresholdStartAndEndDate: goalFormFields.thresholdStartAndEndDate,
+  thresholdStartAndEndDate: goalFormFields(type).thresholdStartAndEndDate,
   relatedGoalsAndComment: {
     relatedGoals: {
       field: RELATED_GOALS_IDS,

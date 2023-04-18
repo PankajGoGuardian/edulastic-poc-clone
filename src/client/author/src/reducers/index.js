@@ -67,7 +67,7 @@ import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
 import { advanceSearchReducer } from '../../AdvanceSearch'
-import { goalAndInterventionsReducer } from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks'
+import { goalAndInterventionsReducer } from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/studentAdvanceSearchDucks'
 
 const authorReducers = {
   authorUi,

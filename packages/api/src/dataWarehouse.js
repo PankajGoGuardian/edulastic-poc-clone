@@ -167,6 +167,14 @@ const goalsAndInterventionsAdvanceSearchStudents = (advanceSearchQuery) => {
     data: advanceSearchQuery,
   })
 }
+const saveGroupdDataWithAdvSearch = (data) => {
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${GOALS_INTERVENTIONS}/create-student-group`,
+    method: 'post',
+    data,
+  })
+}
 
 export default {
   getSignedUrl,
@@ -183,4 +191,5 @@ export default {
   getRiskTimeline,
   getEarlyWarningDetails,
   goalsAndInterventionsAdvanceSearchStudents,
+  saveGroupdDataWithAdvSearch,
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 import ColoredCell from './ColoredCell'
-import { statusColors, timeLeftColors } from '../constants'
+import { statusColors, timeLeftColors } from '../constants/common'
 import Tooltip from './Tooltip'
 import ActionMenu from './ActionMenu'
 

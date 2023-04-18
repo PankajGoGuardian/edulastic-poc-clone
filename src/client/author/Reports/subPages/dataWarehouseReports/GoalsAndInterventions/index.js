@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Tabs from 'antd/lib/tabs'
 import styled from 'styled-components'
+import { firstScreenContent } from './constants/common'
 import { SAVE_GOAL, SAVE_INTERVENTION } from './constants/form'
 import { StyledReportContainer } from '../../../common/styled'
 import { SubHeader } from '../../../common/components/Header'
@@ -16,36 +17,6 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const [activeKey, setActiveKey] = useState('1')
   const [isSetGoal, setGoal] = useState(false)
   const [isSetIntervention, setIntervention] = useState(false)
-
-  const firstScreenContent = {
-    1: {
-      list: [
-        'Create Student Group',
-        'Set Goals/Interventions',
-        'Measure progress',
-      ],
-      description: 'No group exists. Please create first group',
-      buttonText: 'CREATE STUDENT GROUP',
-    },
-    2: {
-      list: [
-        'Select Target Students',
-        'Specify Goal Criteria',
-        'Monitor Performance',
-      ],
-      description: 'No goal set. Please set first goal',
-      buttonText: 'SET GOAL',
-    },
-    3: {
-      list: [
-        'Select Target Students',
-        'Specify Criteria',
-        'Monitor Performance',
-      ],
-      description: 'No intervention set. Please set first intervention',
-      buttonText: 'SET INTERVENTION',
-    },
-  }
 
   const content = {
     1: [
@@ -152,7 +123,7 @@ const SwitchTabs = styled(Tabs)`
   }
   .ant-tabs-tab {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
   }
   .ant-tabs-ink-bar {
     background-color: transparent;

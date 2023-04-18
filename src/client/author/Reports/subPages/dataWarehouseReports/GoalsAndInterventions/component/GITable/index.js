@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import './index.scss'
 import StatusBox from '../StatusBox'
 import TableRow from '../TableRow'
-import { summaryTileColors } from '../../constants'
+import { summaryTileColors } from '../../constants/common'
 
 const GITable = () => {
   const getSummaryStatusCount = (key, data) => {

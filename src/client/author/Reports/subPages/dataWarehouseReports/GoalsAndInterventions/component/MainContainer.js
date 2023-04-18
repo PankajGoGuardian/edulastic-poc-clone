@@ -36,7 +36,7 @@ const SwitchTabs = styled(Tabs)`
     border-bottom: none;
   }
   .ant-tabs-tab {
-    font-size: 14px !important;
+    font-size: 12px !important;
   }
   .ant-tabs-ink-bar {
     background-color: #1ab394 !important;

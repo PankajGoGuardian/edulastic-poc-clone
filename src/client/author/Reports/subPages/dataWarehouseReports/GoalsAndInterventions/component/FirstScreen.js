@@ -1,21 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { themeColor } from '@edulastic/colors'
+import { themeColor, greyThemeDark4 } from '@edulastic/colors'
 import { StyledEduButton } from '../../../../common/styled'
 
 const FirstScreen = ({ content, handleSet }) => {
   return (
-    <Container>
-      <h2>{content.list.join('\xa0\xa0>\xa0\xa0')}</h2>
-      <p>{content.description}</p>
-      <StyledEduButton
-        data-cy="button"
-        data-testid="button"
-        onClick={() => handleSet(true)}
-      >
-        {content.buttonText}
-      </StyledEduButton>
-    </Container>
+    <>
+      <p>{content.title}</p>
+      <Container>
+        <h2>{content.list.join('\xa0\xa0>\xa0\xa0')}</h2>
+        <p>{content.description}</p>
+        <StyledEduButton
+          data-cy="button"
+          data-testid="button"
+          onClick={() => handleSet(true)}
+        >
+          {content.buttonText}
+        </StyledEduButton>
+      </Container>
+    </>
   )
 }
 
@@ -26,12 +29,16 @@ const Container = styled.div`
   align-items: center;
   height: 500px;
   h2 {
+    font-size: 16px;
     margin-bottom: 50px;
     font-weight: bold;
     color: ${themeColor};
   }
   p {
     margin-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+    color: ${greyThemeDark4};
   }
 `
 

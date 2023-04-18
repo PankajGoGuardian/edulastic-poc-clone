@@ -21,6 +21,8 @@ export const sortKeys = {
   DIMENSION: 'dimension',
   ATTENDANCE: 'attendance',
   TARDIES: 'tardies',
+  STUDENTS: 'students',
+  ATTENDANCE_EVENTS: 'attendanceEvents',
 }
 
 export const pageSize = 200
@@ -108,12 +110,14 @@ export const AttendanceSummaryLegends = [
   { name: 'Attendance', color: '#9FC6D2' },
 ]
 
-export const yAxisTickValues = [0, 100]
+export const yAxisTickValues = [0, 20, 40, 60, 80, 100]
 
 export const groupByConstants = {
   WEEK: 'week',
   MONTH: 'month',
 }
+
+export const groupByOptions = [groupByConstants.WEEK, groupByConstants.MONTH]
 
 export const filterKeys = {
   ATTENDANCE_BAND: 'profileId',

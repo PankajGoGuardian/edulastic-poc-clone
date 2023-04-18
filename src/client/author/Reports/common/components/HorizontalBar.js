@@ -3,7 +3,7 @@ import { Tooltip } from 'antd'
 import React from 'react'
 import { HorizontalBarWrapper, StyledSpan } from '../styled'
 
-const HorizontalBar = ({ data }) => {
+const HorizontalBar = ({ data = [] }) => {
   return (
     <HorizontalBarWrapper>
       {data.map(({ value, color }) => {

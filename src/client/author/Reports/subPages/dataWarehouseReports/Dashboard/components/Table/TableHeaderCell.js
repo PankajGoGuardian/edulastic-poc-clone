@@ -9,7 +9,11 @@ const TableHeaderCell = ({
   isSelected,
 }) => {
   return (
-    <TableHeaderCellWrapper color={color} isSelected={isSelected}>
+    <TableHeaderCellWrapper
+      color={color}
+      isSelected={isSelected}
+      isClickable={!!value}
+    >
       <span>{title}</span>
       <span
         onClick={() => {

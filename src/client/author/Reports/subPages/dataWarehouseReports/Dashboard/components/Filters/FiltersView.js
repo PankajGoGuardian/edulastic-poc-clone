@@ -31,6 +31,8 @@ function FiltersView({
   setFiltersTabKey,
   filters,
   setFilters,
+  filterTagsData,
+  setFilterTagsData,
   updateFilterDropdownCB,
   schoolYears,
   assessmentTypesRef,
@@ -148,6 +150,8 @@ function FiltersView({
                           terms={terms}
                           allPeriodTypes={staticDropDownData.periodTypes}
                           setFilters={setFilters}
+                          filterTagsData={filterTagsData}
+                          setFilterTagsData={setFilterTagsData}
                         />
                       </Row>
                     </Tabs.TabPane>

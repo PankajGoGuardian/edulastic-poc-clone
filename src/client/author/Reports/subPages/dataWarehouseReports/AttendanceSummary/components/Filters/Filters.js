@@ -107,7 +107,14 @@ const Filters = ({
 
   useEffect(() => {
     if (attendanceBandInfo && attendanceBandInfo.length) {
-      setProfileId(attendanceBandInfo[0]?._id || null)
+      const [onethIndexAttendanceBand] = attendanceBandInfo
+      const defalutProfileId =
+        attendanceBandInfo.find((item) => item?._id === profileId)?._id ||
+        onethIndexAttendanceBand?._id ||
+        null
+      if (profileId !== defalutProfileId) {
+        setProfileId(defalutProfileId)
+      }
     }
   }, [attendanceBandInfo])
 
@@ -196,6 +203,8 @@ const Filters = ({
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
       setFilters={setFilters}
+      filterTagsData={filterTagsData}
+      setFilterTagsData={setFilterTagsData}
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
       userRole={userRole}

@@ -1,6 +1,6 @@
 import { greyThemeDark7, white } from '@edulastic/colors'
 import { EduIf, SpinLoader } from '@edulastic/common'
-import { Col } from 'antd'
+import { Col, Tooltip } from 'antd'
 import { round } from 'lodash'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
@@ -11,25 +11,21 @@ import { sortDistributionBand } from '../common/utils'
 const DEG_HALF_CIRCLE = 180
 const getAcademicSummaryChartLabelJSX = (props) => {
   const RADIAN = Math.PI / DEG_HALF_CIRCLE
-  const { y, cx, cy, midAngle, outerRadius, value, color, textColor } = props
-  const labelWidth = 36
-  const labelHeight = 22
-  const isLabelOverFlowing = y - labelHeight < 10
+  const { y, cx, cy, midAngle, outerRadius, value, name, color } = props
+  const isLabelOverFlowing = y < 32
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
-  const sx = cx + (outerRadius + 4) * cos
-  const sy = cy + (outerRadius + 4) * sin
+  const sx = cx + (outerRadius + 2) * cos
+  const sy = cy + (outerRadius + 2) * sin
   const circleX = cx + outerRadius * cos
   const circleY = cy + outerRadius * sin
   const mx = cx + (outerRadius + 30) * cos
   const my = cy + (outerRadius + 30) * sin
-  const ex = mx + (cos >= 0 ? 1 : -1) * 40
+  const ex = mx + (cos >= 0 ? 1 : -1) * 50
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
   const textX = mx + (cos >= 0 ? 1 : -1) * 12
-  const textY = isLabelOverFlowing ? my + 16 : my - 10
-  const rectx = cos >= 0 ? ex - labelWidth : ex
-  const recty = isLabelOverFlowing ? ey + 2 : ey - labelHeight - 2
+  const textY = isLabelOverFlowing ? my + 16 : my - 6
   return (
     <g>
       <circle
@@ -45,27 +41,20 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         fill="none"
         strokeWidth={1}
       />
-      <rect
-        x={rectx}
-        y={recty}
-        width={labelWidth}
-        height={labelHeight}
-        fill={color}
-        opacity={0.75}
-        rx="5px"
-      />
-      <text
-        className="label-text"
-        x={textX}
-        y={textY}
-        textAnchor={textAnchor}
-        fill={textColor}
-        opacity={0.5}
-        fontWeight="bold"
-        fontSize="10px"
-      >
-        {round(value)}%
-      </text>
+      <Tooltip title={`${name} : ${round(value)}%`}>
+        <text
+          className="label-text"
+          x={textX}
+          y={textY}
+          textAnchor={textAnchor}
+          fill={color}
+          opacity={0.75}
+          fontWeight="bold"
+          fontSize="14px"
+        >
+          <tspan className="label-value"> {round(value)}%</tspan>
+        </text>
+      </Tooltip>
     </g>
   )
 }
@@ -88,11 +77,12 @@ const AttendanceDistribution = ({ data, loading }) => {
               data={sortedLegendsData}
               cx="50%"
               cy="50%"
-              innerRadius={80}
+              innerRadius={50}
               outerRadius={110}
               fill="#8884d8"
               dataKey="value"
               label={getAcademicSummaryChartLabelJSX}
+              style={{ filter: 'drop-shadow(10px 10px 12px #00000030)' }}
             >
               {sortedLegendsData.map((entry) => (
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
@@ -153,8 +143,8 @@ export const CustomLegend = styled.div`
 `
 
 export const LegendSymbol = styled.span`
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background: ${(props) => props.color};
   display: flex;
   border-radius: 50%;
@@ -162,6 +152,6 @@ export const LegendSymbol = styled.span`
 `
 
 export const LegendName = styled.span`
-  font-size: 11px;
+  font-size: 12px;
   color: #4b4b4b;
 `

@@ -44,7 +44,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
   }
   if (compareBy === compareByEnums.STUDENT) {
     attendanceDistributionColumn = {
-      title: 'ATTENDANCE',
+      title: 'ATTENDANCE BAND',
       key: 'studentBand',
       align: 'center',
       dataIndex: 'studentBand',
@@ -53,7 +53,14 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       },
     }
   }
-  return [
+  const studentsColumn = {
+    title: 'NO. OF STUDENTS',
+    key: sortKeys.STUDENTS,
+    align: 'center',
+    dataIndex: 'students',
+    sorter: true,
+  }
+  const tableColumns = [
     {
       title: compareByToPluralName[compareBy],
       key: sortKeys.DIMENSION,
@@ -101,6 +108,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
         )
       },
     },
+    studentsColumn,
     {
       title: 'AVG ATTENDANCE',
       key: sortKeys.ATTENDANCE,
@@ -110,6 +118,16 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       sorter: true,
     },
     {
+      title: 'TOTAL ATTENDANCE / TOTAL EVENTS',
+      key: sortKeys.ATTENDANCE_EVENTS,
+      align: 'center',
+      dataIndex: 'totalEvents',
+      sorter: true,
+      render: (_, record) => {
+        return `${record.totalAttendance} / ${record.totalEvents}`
+      },
+    },
+    {
       title: 'TARDIES',
       key: sortKeys.TARDIES,
       align: 'center',
@@ -117,12 +135,20 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       sorter: true,
     },
     attendanceDistributionColumn,
-  ].map((item) => {
-    if (item.key === sortKey) {
-      item.sortOrder = sortOrder
-    }
-    return item
-  })
+  ]
+  return tableColumns
+    .filter((item) => {
+      if (compareBy === compareByEnums.STUDENT) {
+        return item.dataIndex !== studentsColumn.dataIndex
+      }
+      return true
+    })
+    .map((item) => {
+      if (item.key === sortKey) {
+        item.sortOrder = sortOrder
+      }
+      return item
+    })
 }
 
 export const onCsvConvert = (data) =>
@@ -222,7 +248,7 @@ const PerformanceTable = ({
       />
       <EduIf condition={loading}>
         <SpinLoader
-          tip={`Loading ${compareByToPluralName[compareBy]} data`}
+          tip={`Loading ${compareByToPluralName[compareBy]} data, it may take a while`}
           height="200px"
         />
       </EduIf>

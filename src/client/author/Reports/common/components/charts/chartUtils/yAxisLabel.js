@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React from 'react'
 
-export const YAxisLabel = ({ data, viewBox, offset }) => {
+export const YAxisLabel = ({ data, viewBox }) => {
   return (
     <text
       className="recharts-text recharts-label"
@@ -13,7 +13,7 @@ export const YAxisLabel = ({ data, viewBox, offset }) => {
       }) translate(${0}, ${
         viewBox.width / 1.5 - (data.translateYDiffValue || 0)
       })`}
-      style={{ fontSize: `${data.fontSize}px` }}
+      style={{ fontSize: `${data.fontSize}px`, fill: data.fill || 'black' }}
     >
       <tspan>{data.value}</tspan>
     </text>

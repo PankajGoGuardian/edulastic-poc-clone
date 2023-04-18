@@ -1,7 +1,13 @@
-import { greyLight1, lightGrey9, secondaryTextColor } from '@edulastic/colors'
-import { Switch } from 'antd'
+import {
+  greyLight1,
+  lightGrey9,
+  secondaryTextColor,
+  themeColor,
+} from '@edulastic/colors'
+import { Switch, Button } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
+import { IconQuestionCircle } from '@edulastic/icons'
 
 export const ChartWrapper = styled.div`
   border: 1px solid #dedede;
@@ -118,4 +124,23 @@ export const StyledEduButton = styled(EduButton)`
     padding: 0 15px 0 10px;
     margin-right: 10px;
   }
+`
+export const StyledButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  height: 22px;
+  margin: 0 20px 0 20px;
+  padding: 4px;
+`
+export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
+  margin-right: 5px;
+  height: 14px;
+  width: 14px;
+  path {
+    fill: ${themeColor};
+  }
+`
+export const StyledTextSpan = styled.span`
+  color: ${themeColor};
+  font-size: 12px;
 `

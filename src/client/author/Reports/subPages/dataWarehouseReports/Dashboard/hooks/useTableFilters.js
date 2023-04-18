@@ -48,7 +48,8 @@ const useTableFilters = ({
     }
   }
 
-  const onTableHeaderCellClick = (cellKey) => {
+  const onTableHeaderCellClick = (cellKey, value) => {
+    if (!value) return
     const filters = { ...tableFilters }
     if (cellKey === tableFilterTypes.ABOVE_EQUAL_TO_AVG) {
       const keyName = tableFilterTypes.BELOW_AVG
@@ -70,18 +71,13 @@ const useTableFilters = ({
 
     const _filters = { ...settings.requestFilters }
     const { academicSummaryFilters } = settings
-
-    const updatedFilterField =
-      _filters[filterField]?.length && _filters[filterField] !== key
-        ? `${_filters[filterField]},${key}`
-        : `${key}`
     const nextCompareBy =
       compareByOptions.find(
         (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
       ) || selectedCompareBy
 
     Object.assign(_filters, {
-      [filterField]: updatedFilterField,
+      [filterField]: key,
       selectedCompareBy: nextCompareBy.key,
       profileId:
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]

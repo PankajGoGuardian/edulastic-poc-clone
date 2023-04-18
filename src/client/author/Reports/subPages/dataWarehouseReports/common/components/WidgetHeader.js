@@ -2,18 +2,18 @@ import { EduIf } from '@edulastic/common'
 import { IconExternalLink } from '@edulastic/icons'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { WidgetHeaderWrapper } from '../../common/styledComponents'
+import { WidgetHeaderWrapper } from './styledComponents'
 
-const WidgetHeader = ({ title, url = null }) => {
+const WidgetHeader = ({ title = '', url = null }) => {
   return (
     <WidgetHeaderWrapper>
-      <span className="title">{title}</span>
+      <div className="title">{title}</div>
       <EduIf condition={url}>
-        <span className="external-link">
+        <div>
           <Link to={url} target={url}>
             <IconExternalLink />
           </Link>
-        </span>
+        </div>
       </EduIf>
     </WidgetHeaderWrapper>
   )

@@ -10,10 +10,12 @@ import {
   themeColor,
   white,
   themeColorBlue,
+  greyThemeDark3,
+  lightGrey1,
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu, Row } from 'antd'
+import { Col, Slider, Table, Button, Menu, Row, Icon } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 import { CustomTooltip } from './components/charts/chartUtils/CustomTooltip'
@@ -536,7 +538,7 @@ export const StyledText = styled.text`
 
 export const PrintableScreen = styled.div`
   @media print {
-    width: 250mm;
+    width: auto;
     @page {
       margin: 0 !important;
       padding: 0 !important;
@@ -554,6 +556,16 @@ export const PrintableScreen = styled.div`
         min-width: auto !important;
       }
     }
+    .attendance-summary {
+      .recharts-wrapper,
+      .recharts-surface,
+      .recharts-legend-wrapper {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 `
 
@@ -837,6 +849,8 @@ export const SectionLabelWrapper = styled.div`
   width: 100%;
   flex-grow: 1;
   margin: ${(p) => p.$margin || '32px 0'};
+  width: ${(p) => p.width || '100%'};
+  flex-grow: 1;
   align-items: center;
 `
 
@@ -881,5 +895,62 @@ export const StyledReportContainer = styled.div`
   @media print {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
+    width: 1800px;
   }
+`
+
+export const StyledParagraph = styled.p`
+  padding: 0 10px;
+`
+
+export const StyledIcon = styled(Icon)`
+  position: absolute;
+  top: 210px;
+  left: 32px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: ${lightGrey1};
+  padding: 3px;
+  border-radius: 6px;
+  color: ${themeColor};
+`
+
+export const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-left: 8px;
+  h3 {
+    font-weight: bold;
+    color: ${greyThemeDark3};
+  }
+`
+export const ContentWrapper = styled.div`
+  display: flex;
+  margin-top: 15px;
+`
+
+export const ImageContainer = styled.div`
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  margin: 15px 0px 50px;
+`
+
+export const CustomStyledCard = styled(Card)`
+  cursor: pointer;
+  margin: 0 10px 20px;
+  height: 280px;
+  aspect-ratio: 1.8 / 1;
+  border: 1px solid ${grey};
+  border-radius: 30px;
+  box-shadow: none;
+`
+export const StyledSectionHeader = styled.div`
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 20px;
+  color: ${fadedBlack};
 `

@@ -3,11 +3,13 @@ import { Route } from 'react-router-dom'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import WholeLearnerReport from './wholeLearnerReport'
-
 import MultipleAssessmentReport from './MultipleAssessmentReport'
 import Dashboard from './Dashboard'
+import EarlyWarningReport from './EarlyWarningReport'
+
 import {
   DW_ATTENDANCE_REPORT_URL,
+  DW_EARLY_WARNING_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
@@ -117,6 +119,27 @@ const DataWarehouseReportsContainer = ({
       />
       <Route
         exact
+        path={DW_EARLY_WARNING_REPORT_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <EarlyWarningReport
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              setShowApply={setShowApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
         path={DW_GOALS_AND_INTERVENTIONS_URL}
         render={() => {
           setShowHeader(true)
@@ -125,6 +148,13 @@ const DataWarehouseReportsContainer = ({
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              setShowApply={setShowApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
             />
           )
         }}

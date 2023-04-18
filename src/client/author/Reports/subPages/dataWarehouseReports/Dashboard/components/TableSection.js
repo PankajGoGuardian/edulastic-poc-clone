@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
-import { Spin } from 'antd'
-import { EduIf, EduThen, EduElse, notification } from '@edulastic/common'
+import {
+  EduIf,
+  EduThen,
+  EduElse,
+  notification,
+  SpinLoader,
+} from '@edulastic/common'
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
@@ -12,13 +17,10 @@ import {
   tableFilterTypes,
 } from '../utils'
 import BackendPagination from '../../../../common/components/BackendPagination'
-import {
-  DataSizeExceededContainer,
-  StyledEmptyContainer,
-  TableContainer,
-} from './common/styledComponents'
+import { TableContainer } from './common/styledComponents'
 import AddToGroupModal from '../../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../../features/components/FeaturesSwitch'
+import { StyledEmptyContainer } from '../../common/components/styledComponents'
 
 function TableSection({
   location,
@@ -111,6 +113,13 @@ function TableSection({
 
   const _rowSelection = addToStudentGroupEnabled ? rowSelection : null
 
+  const hasContent = !tableDataRequestError && !isEmpty(tableData?.metricInfo)
+  const errorMsg = 'Error fetching Attendance Summary data.'
+
+  const emptyContainerDesc = tableDataRequestError
+    ? errorMsg
+    : 'No Data Available'
+
   return (
     <>
       <FeaturesSwitch
@@ -132,54 +141,43 @@ function TableSection({
         compareByOptions={compareByOptions}
       />
       <TableContainer>
-        <Spin spinning={loadingTableData}>
-          <EduIf condition={!loadingTableData}>
-            <EduThen>
-              <EduIf
-                condition={
-                  !tableDataRequestError && !isEmpty(tableData?.metricInfo)
-                }
-              >
-                <EduThen>
-                  <DashboardTable
-                    tableFilters={tableFilters}
-                    setTableFilters={setTableFilters}
-                    onTableHeaderCellClick={onTableHeaderCellClick}
-                    getTableDrillDownUrl={getTableDrillDownUrl}
-                    tableData={tableData}
-                    selectedPerformanceBand={selectedPerformanceBand}
-                    rowSelection={_rowSelection}
-                    loadingTableData={loadingTableData}
-                    isCsvDownloading={isCsvDownloading}
-                  />
-                  <BackendPagination
-                    itemsCount={tableData.dimensionCount}
-                    backendPagination={{
-                      page: tableFilters.page,
-                      pageSize: tableFilters.pageSize,
-                    }}
-                    setBackendPagination={setTablePagination}
-                  />
-                </EduThen>
-                <EduElse>
-                  <EduIf condition={tableDataRequestError?.dataSizeExceeded}>
-                    <EduThen>
-                      <DataSizeExceededContainer>
-                        {tableDataRequestError?.message}
-                      </DataSizeExceededContainer>
-                    </EduThen>
-                    <EduElse>
-                      <StyledEmptyContainer />
-                    </EduElse>
-                  </EduIf>
-                </EduElse>
-              </EduIf>
-            </EduThen>
-            <EduElse>
-              <StyledEmptyContainer />
-            </EduElse>
-          </EduIf>
-        </Spin>
+        <EduIf condition={loadingTableData}>
+          <EduThen>
+            <SpinLoader
+              tip="Loading Table Data"
+              height="250px"
+              position="relative"
+            />
+          </EduThen>
+          <EduElse>
+            <EduIf condition={hasContent}>
+              <EduThen>
+                <DashboardTable
+                  tableFilters={tableFilters}
+                  setTableFilters={setTableFilters}
+                  onTableHeaderCellClick={onTableHeaderCellClick}
+                  getTableDrillDownUrl={getTableDrillDownUrl}
+                  tableData={tableData}
+                  selectedPerformanceBand={selectedPerformanceBand}
+                  rowSelection={_rowSelection}
+                  loadingTableData={loadingTableData}
+                  isCsvDownloading={isCsvDownloading}
+                />
+                <BackendPagination
+                  itemsCount={tableData.dimensionCount}
+                  backendPagination={{
+                    page: tableFilters.page,
+                    pageSize: tableFilters.pageSize,
+                  }}
+                  setBackendPagination={setTablePagination}
+                />
+              </EduThen>
+              <EduElse>
+                <StyledEmptyContainer description={emptyContainerDesc} />
+              </EduElse>
+            </EduIf>
+          </EduElse>
+        </EduIf>
       </TableContainer>
     </>
   )

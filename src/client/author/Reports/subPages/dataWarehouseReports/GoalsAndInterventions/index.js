@@ -14,9 +14,19 @@ const { TabPane } = Tabs
 
 const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const [activeKey, setActiveKey] = useState('1')
+  const [subActiveKey, setSubActiveKey] = useState('1')
+  const [group, setGroup] = useState()
 
-  const switchTab = (key) => {
+  const switchSubTab = (key) => {
+    setSubActiveKey(key)
+  }
+
+  const switchTab = (key, _group) => {
+    setGroup(_group)
     setActiveKey(key)
+    if (_group) {
+      switchSubTab('2')
+    }
   }
 
   const firstScreenContent = {
@@ -59,8 +69,8 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
             noDataContent={
               <FirstScreen content={firstScreenContent[activeKey]} />
             }
-            onGoal={() => switchTab('2')}
-            onIntervention={() => switchTab('3')}
+            onGoal={(_group) => switchTab('2', _group)}
+            onIntervention={(_group) => switchTab('3', _group)}
           />
         ),
       },
@@ -79,7 +89,13 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW GOAL`,
-        children: <DataForm view={SAVE_GOAL} />,
+        children: (
+          <DataForm
+            view={SAVE_GOAL}
+            group={group}
+            onCancel={() => switchSubTab('1')}
+          />
+        ),
       },
     ],
     3: [
@@ -91,7 +107,13 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW INTERVENTION`,
-        children: <DataForm view={SAVE_INTERVENTION} />,
+        children: (
+          <DataForm
+            view={SAVE_INTERVENTION}
+            group={group}
+            onCancel={() => switchSubTab('1')}
+          />
+        ),
       },
     ],
   }
@@ -99,17 +121,35 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     {
       key: '1',
       label: `STUDENT GROUPS`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
     {
       key: '2',
       label: `GOALS`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
     {
       key: '3',
       label: `INTERVENTION`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
   ]
 

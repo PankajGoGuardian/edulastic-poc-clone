@@ -1,15 +1,15 @@
-import React from 'react'
-import Tabs from 'antd/lib/tabs'
-import styled from 'styled-components'
 import { IconQuestion } from '@edulastic/icons'
+import Tabs from 'antd/lib/tabs'
+import React from 'react'
+import styled from 'styled-components'
 import { StyledEduButton } from '../../../../common/styled'
 
 const { TabPane } = Tabs
 
-const MainContainer = ({ tabs }) => {
+const MainContainer = ({ tabs, activeKey, onChange }) => {
   return (
     <Header>
-      <SwitchTabs animated={false}>
+      <SwitchTabs animated={false} activeKey={activeKey} onChange={onChange}>
         {tabs.map((item) => (
           <TabPane tab={item.label} key={item.key}>
             {item.children}

@@ -30,13 +30,13 @@ const GroupList = ({
     _getGroupList()
   }, [])
 
-  const onAction = ({ key }) => {
+  const onAction = (key, record) => {
     switch (key) {
       case 'item_1':
-        onGoal()
+        onGoal(record)
         break
       case 'item_2':
-        onIntervention()
+        onIntervention(record)
         break
       default:
     }
@@ -79,9 +79,12 @@ const GroupList = ({
     // },
     {
       key: 'viewReport',
-      render: () => {
+      render: (data, record) => {
         return (
-          <ActionButton options={actionOptions} onAction={onAction}>
+          <ActionButton
+            options={actionOptions}
+            onAction={({ key }) => onAction(key, record)}
+          >
             Actions
           </ActionButton>
         )

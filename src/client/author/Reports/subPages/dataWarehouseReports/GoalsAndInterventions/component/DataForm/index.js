@@ -59,6 +59,8 @@ const DataForm = ({
   goalsOptionsData,
   saveFormData,
   isSaveInProgress,
+  group,
+  onCancel,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
@@ -88,6 +90,12 @@ const DataForm = ({
 
   const allFormFields = isSaveGoalView ? goalFormFields : interventionFormFields
 
+  if (group) {
+    if (!formData.studentGroupIds) {
+      handleFieldDataChange('studentGroupIds', group._id)
+    }
+  }
+
   const sectionHeaders = isSaveGoalView
     ? goalFormSectionHeaders
     : interventionFormSectionHeaders
@@ -108,7 +116,9 @@ const DataForm = ({
           Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
         </StyledFormTitle>
         <StyledFormButtonsContainer>
-          <StyledButton isGhost>Cancel</StyledButton>
+          <StyledButton isGhost onClick={onCancel}>
+            Cancel
+          </StyledButton>
           <StyledButton onClick={handleSaveForm} disabled={isSaveInProgress}>
             <EduIf condition={isSaveInProgress}>
               <EduThen>Saving...</EduThen>

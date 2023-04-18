@@ -16,9 +16,9 @@ const isGoalsDataLoading = createSelector(
 const goalsList = createSelector(goalsSelector, (state) => state.list)
 
 // group selector
-const groupSelector = createSelector(stateSelector, (state) => state.group)
+const groupSelector = (state) => state.authorGroups
 const isGroupLoading = createSelector(groupSelector, (state) => state.isLoading)
-const groupList = createSelector(groupSelector, (state) => state.list)
+const groupList = createSelector(groupSelector, (state) => state.groups)
 
 export {
   isFormDataSaving,

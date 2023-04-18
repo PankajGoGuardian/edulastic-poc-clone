@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 
 import connect from 'react-redux/es/connect/connect'
+import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
 import ActionButton from '../../common/components/ActionButton'
 import StyledTable from '../../common/components/Table'
-import { actions } from '../../ducks/actionReducers'
 import { groupList, isGroupLoading } from '../../ducks/selectors'
 
 // const viewReportOptions = [
@@ -18,8 +18,6 @@ const actionOptions = [
   { id: 'goal', label: 'Set Goal' },
   { id: 'trends', label: 'Set Intervention' },
 ]
-
-const { getGroupList } = actions
 
 const GroupList = ({
   _getGroupList,
@@ -95,6 +93,10 @@ const GroupList = ({
       loading={_isGroupLoading}
       dataSource={_groupList || []}
       columns={columns}
+      size="default"
+      pagination={{
+        pageSize: 7,
+      }}
     />
   )
 }
@@ -105,6 +107,6 @@ export default connect(
     _isGroupLoading: isGroupLoading(state),
   }),
   {
-    _getGroupList: getGroupList,
+    _getGroupList: fetchGroupsAction,
   }
 )(GroupList)

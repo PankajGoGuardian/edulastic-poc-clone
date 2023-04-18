@@ -1,28 +1,23 @@
 import React from 'react'
-import styled from 'styled-components'
-import { greyThemeDark3 } from '@edulastic/colors'
 import {
   IconWholeLearnerReport,
   IconMultipleAssessmentReportDW,
   IconAttendanceReport,
   IconDashboardReport,
+  IconEarlyWarningReport,
   IconSetGoals,
-  IconSurveyInsights,
-  IconEarlyWarning,
-  IconEfficacy,
 } from '@edulastic/icons'
+import { Row } from 'antd'
 import ReportLinkCard from './common/components/ReportLinkCard'
-// import MoreReportsContainer from './common/components/MoreReportsContainer'
 import {
   DW_ATTENDANCE_REPORT_URL,
+  DW_EARLY_WARNING_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
-  DW_SURVEY_INSIGHTS_URL,
   DW_GOALS_AND_INTERVENTIONS_URL,
-  DW_EARLY_WARNING_URL,
-  DW_EFFICACY_URL,
 } from '../../common/constants/dataWarehouseReports'
+import { StyledSectionHeader } from '../../common/styled'
 
 const reports = [
   {
@@ -67,14 +62,6 @@ const reports = [
           'Monitor attendance and tardies, identify students at risk of chronic absenteeism, and intervene.',
         url: DW_ATTENDANCE_REPORT_URL,
       },
-      {
-        id: 2,
-        IconThumbnail: IconSurveyInsights,
-        title: 'Survey Insights',
-        description:
-          'Get insights into student’s responses to Skill Surveys and view competency trends.',
-        url: DW_SURVEY_INSIGHTS_URL,
-      },
     ],
   },
   {
@@ -90,19 +77,11 @@ const reports = [
       },
       {
         id: 2,
-        IconThumbnail: IconEarlyWarning,
+        IconThumbnail: IconEarlyWarningReport,
         title: 'Early Warning',
         description:
           'View students at risk based on their academic and attendance performance and plan interventions.',
-        url: DW_EARLY_WARNING_URL,
-      },
-      {
-        id: 3,
-        IconThumbnail: IconEfficacy,
-        title: 'Efficacy',
-        description:
-          'Compare student performance across tests pre and post-intervention.',
-        url: DW_EFFICACY_URL,
+        url: DW_EARLY_WARNING_REPORT_URL,
       },
     ],
   },
@@ -110,34 +89,19 @@ const reports = [
 
 const DataWarehoureReportCardsWrapper = ({ loc }) => {
   return (
-    <Container>
+    <>
       {reports.map((item) => (
         <div>
-          <h2>{item.title}</h2>
-          <StyledCardsContainer>
+          <StyledSectionHeader>{item.title}</StyledSectionHeader>
+          <Row type="flex">
             {item.cards.map((card) => (
               <ReportLinkCard {...card} loc={loc} />
             ))}
-          </StyledCardsContainer>
+          </Row>
         </div>
       ))}
-    </Container>
+    </>
   )
 }
-
-const Container = styled.div`
-  h2 {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    font-weight: bold;
-    color: ${greyThemeDark3};
-  }
-`
-
-const StyledCardsContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 42px;
-`
 
 export default DataWarehoureReportCardsWrapper

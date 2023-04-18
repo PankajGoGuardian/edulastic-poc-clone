@@ -61,11 +61,11 @@ export const getTooltipJSX = (payload) => {
       <div>
         <TooltipRowItem
           title="No. of"
-          value={`Presents - ${presents}/${total}`}
+          value={`Present Events - ${presents}/${total}`}
         />
         <TooltipRowItem
           title="No. of"
-          value={`Absents - ${absents}/${total}`}
+          value={`Absent Events - ${absents}/${total}`}
         />
         <TooltipRowItem
           title="No. of"

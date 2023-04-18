@@ -23,7 +23,6 @@ const initialState = {
     requestFilters: {
       ...staticDropDownData.requestFilters,
     },
-    selectedFilterTagsData: {},
     selectedCompareBy: {},
   },
   loadingReportTableData: false,
@@ -72,9 +71,6 @@ const slice = createSlice({
     },
     setDWMARSettings: (state, { payload }) => {
       state.settings = payload
-    },
-    setDWMARSelectedFilterTagsData: (state, { payload }) => {
-      state.settings.selectedFilterTagsData = payload
     },
     fetchDWMARChartDataRequest: (state) => {
       state.loadingReportChartData = true

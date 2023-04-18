@@ -11,10 +11,10 @@ import {
   CustomStyledTable,
   TableContainer,
   AssessmentName,
-} from '../../common/styled'
+} from '../../common/components/styledComponents'
 
 import { tableColumnsData } from '../utils'
-import LargeTag from '../../common/LargeTag'
+import LargeTag from '../../common/components/LargeTag'
 import { AssessmentNameContainer } from '../common/styled'
 import SectionLabel from '../../../../common/components/SectionLabel'
 

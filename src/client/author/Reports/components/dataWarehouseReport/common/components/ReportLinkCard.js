@@ -1,8 +1,13 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Card, Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { greyThemeDark3, themeColor } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
+import {
+  CustomStyledCard,
+  HeaderContainer,
+  ImageContainer,
+  StyledIcon,
+  StyledParagraph,
+} from '../../../../common/styled'
 
 const ReportLinkCard = ({
   IconThumbnail,
@@ -17,67 +22,21 @@ const ReportLinkCard = ({
   }
 
   return (
-    <StyledCard onClick={navigateToReport}>
-      <h2>{title}</h2>
-      <Description>
-        <Content>
-          <p>{description}</p>
-          <IconWrapper>
-            <Icon
-              type="right"
-              theme="outlined"
-              style={{
-                fontSize: '10px',
-                fontWeight: 'bold',
-                color: themeColor,
-              }}
-            />
-          </IconWrapper>
-        </Content>
+    <CustomStyledCard onClick={navigateToReport}>
+      <HeaderContainer>
+        <h3>{title}</h3>
+      </HeaderContainer>
+      <FlexContainer>
+        <div>
+          <StyledParagraph>{description}</StyledParagraph>
+          <StyledIcon type="right" theme="outlined" />
+        </div>
         <ImageContainer>
           <IconThumbnail />
         </ImageContainer>
-      </Description>
-    </StyledCard>
+      </FlexContainer>
+    </CustomStyledCard>
   )
 }
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: start;
-`
-const IconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f5f5;
-  border-radius: 5px;
-  width: 20px;
-  height: 20px;
-`
-
-const Description = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-`
-
-const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const StyledCard = styled(Card)`
-  cursor: pointer;
-  border-radius: 20px;
-  h2 {
-    margin-bottom: 10px;
-    font-weight: bold;
-    color: ${greyThemeDark3};
-  }
-`
 
 export default withRouter(ReportLinkCard)

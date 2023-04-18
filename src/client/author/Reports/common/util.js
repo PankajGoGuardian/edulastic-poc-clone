@@ -23,6 +23,10 @@ import {
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import { allFilterValue } from './constants'
+import {
+  groupByConstants,
+  groupByOptions,
+} from '../subPages/dataWarehouseReports/AttendanceSummary/utils/constants'
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
@@ -555,7 +559,7 @@ export const computeChartNavigationLinks = ({
 }
 
 export const getHeaderSettings = (
-  loc,
+  reportType,
   navigationItems,
   location,
   dynamicBreadcrumb,
@@ -576,11 +580,11 @@ export const getHeaderSettings = (
     CUSTOM_REPORT,
     SHARED_REPORT,
     DATA_WAREHOUSE_REPORT,
-  ].some((group) => loc === group)
+  ].some((group) => reportType === group)
 
-  if (!loc || isReportGroup) {
-    const breadcrumbInfo = navigation.locToData[loc].breadcrumb
-    if (loc === CUSTOM_REPORT && dynamicBreadcrumb) {
+  if (!reportType || isReportGroup) {
+    const breadcrumbInfo = navigation.locToData[reportType].breadcrumb
+    if (reportType === CUSTOM_REPORT && dynamicBreadcrumb) {
       const isCustomReportLoading =
         location.pathname.split(CUSTOM_REPORT)[1].length > 1 || false
       if (isCustomReportLoading) {
@@ -592,14 +596,14 @@ export const getHeaderSettings = (
       pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
     }
     return {
-      loc,
-      group: navigation.locToData[loc].group,
-      title: navigation.locToData[loc].title,
+      loc: reportType,
+      group: navigation.locToData[reportType].group,
+      title: navigation.locToData[reportType].title,
       breadcrumbData: breadcrumbInfo,
       navigationItems,
     }
   }
-  const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+  const breadcrumbInfo = [...navigation.locToData[reportType].breadcrumb]
   const reportId = qs.parse(location.search, {
     ignoreQueryPrefix: true,
   }).reportId
@@ -609,13 +613,13 @@ export const getHeaderSettings = (
   if (isSharedReport) {
     breadcrumbInfo[0] = navigation.locToData[SHARED_REPORT].breadcrumb[0]
   }
-  if (loc === DW_DASHBOARD_REPORT) {
+  if (reportType === DW_DASHBOARD_REPORT) {
     onDownloadCSVClickCB = undefined
   }
   return {
-    loc,
-    group: navigation.locToData[loc].group,
-    title: navigation.locToData[loc].title,
+    loc: reportType,
+    group: navigation.locToData[reportType].group,
+    title: navigation.locToData[reportType].title,
     onShareClickCB,
     onPrintClickCB,
     onDownloadCSVClickCB,
@@ -640,6 +644,13 @@ export const getSelectedCompareBy = ({
     selectedCompareBy = settings.selectedCompareBy
   }
   return selectedCompareBy
+}
+
+export const getSelectedGroupBy = (search) => {
+  if (groupByOptions.includes(search.groupBy)) {
+    return search.groupBy
+  }
+  return groupByConstants.MONTH
 }
 
 export function removeFilter(

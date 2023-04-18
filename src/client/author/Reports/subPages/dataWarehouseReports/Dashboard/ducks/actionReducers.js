@@ -17,7 +17,6 @@ const initialState = {
 
   settings: {
     requestFilters: {},
-    selectedFilterTagsData: {},
     selectedCompareBy: {},
     academicSummaryFilters: {},
   },
@@ -62,9 +61,6 @@ const slice = createSlice({
     },
     setAcademicSummaryFilters: (state, { payload }) => {
       state.settings.academicSummaryFilters = payload
-    },
-    setSelectedFilterTagsData: (state, { payload }) => {
-      state.settings.selectedFilterTagsData = payload
     },
     fetchDashboardTableDataRequest: (state) => {
       state.loadingTableData = true

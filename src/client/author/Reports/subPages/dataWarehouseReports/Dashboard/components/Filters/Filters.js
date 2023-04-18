@@ -4,6 +4,7 @@ import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import {
   removeFilter,
   resetStudentFilters as resetFilters,
@@ -41,8 +42,6 @@ const Filters = ({
   filtersTabKey,
   filters,
   filterTagsData,
-  settings,
-  selectedFilterTagsData = settings.selectedFilterTagsData || {},
 
   toggleFilter,
   setShowApply,
@@ -115,7 +114,8 @@ const Filters = ({
       filterTagsData,
       filters,
       type,
-      key
+      key,
+      staticDropDownData
     )
     setFilters(_filters)
     setFilterTagsData(_filterTagsData)
@@ -141,7 +141,10 @@ const Filters = ({
   ) => {
     // update tags data
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
-    if (!multiple && (!selected.key || selected.key?.toLowerCase() === 'all')) {
+    const isInvalidSelectedKey =
+      !selected.key ||
+      (typeof selected.key === 'string' && selected.key.toLowerCase() === 'all')
+    if (!multiple && isInvalidSelectedKey) {
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
@@ -172,7 +175,7 @@ const Filters = ({
     <FiltersView
       isPrinting={isPrinting}
       reportId={reportId}
-      selectedFilterTagsData={selectedFilterTagsData}
+      selectedFilterTagsData={filterTagsData}
       tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
       handleTagClick={handleTagClick}
@@ -182,6 +185,8 @@ const Filters = ({
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
       setFilters={setFilters}
+      filterTagsData={filterTagsData}
+      setFilterTagsData={setFilterTagsData}
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
       assessmentTypesRef={assessmentTypesRef}
@@ -203,7 +208,14 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
   }),
-  { ...actions, fetchUpdateTagsData: fetchUpdateTagsDataAction }
+  {
+    ...actions,
+    fetchUpdateTagsData: (opts) =>
+      fetchUpdateTagsDataAction({
+        type: reportGroupType.DW_DASHBOARD_REPORT,
+        ...opts,
+      }),
+  }
 )
 
 export default enhance(Filters)

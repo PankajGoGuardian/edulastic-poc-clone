@@ -4,27 +4,34 @@ import {
   lightGreen12,
   lightGrey8,
   lightGrey9,
-  lightRed5,
+  lightRed7,
   lightRed6,
 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { DashedLine } from '../../../../../../common/styled'
+import { getTrendPeriodLabel } from '../../../../common/utils'
+import { trendPeriodDateFormat, trendPeriodPrefix } from '../../../utils'
 import {
   ContentWrapper,
   StyledText,
   StyledIconCaretUp,
   StyledIconCaretDown,
-} from '../../common/styledComponents'
-import WidgetCell from '../common/WidgetCell'
-import { getDateLabel } from '../../../utils'
+} from '../../../../common/components/styledComponents'
+import Footer from '../../../../common/components/Footer'
+import WidgetCell from '../../../../common/components/WidgetCell'
 
-function AttendanceSummaryContents({ data }) {
+function AttendanceSummaryContents({ data, selectedPeriodType }) {
   const { result } = data
   const attendanceAvgIncrease = Math.round(
     result.postPeriod.avg - result.prePeriod.avg
   )
-  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed5
-  const prePeriodStartDate = getDateLabel(result.prePeriod)
+  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed7
+  const trendPeriodLabel = getTrendPeriodLabel(
+    selectedPeriodType,
+    result.postPeriod,
+    trendPeriodPrefix,
+    trendPeriodDateFormat
+  )
   return (
     <ContentWrapper>
       <WidgetCell
@@ -40,11 +47,11 @@ function AttendanceSummaryContents({ data }) {
             <StyledIconCaretUp color={lightGreen12} />
           </EduIf>
           <EduIf condition={attendanceAvgIncrease < 0}>
-            <StyledIconCaretDown color={lightRed5} />
+            <StyledIconCaretDown color={lightRed7} />
           </EduIf>
         </StyledText>
         <StyledText fontSize="13px" color={lightGrey9}>
-          since {prePeriodStartDate}
+          {trendPeriodLabel}
         </StyledText>
       </div>
       <DashedLine
@@ -57,24 +64,34 @@ function AttendanceSummaryContents({ data }) {
       <WidgetCell
         header="TARDIES"
         value={`${Math.round(result.postPeriod.tardiesPerc)}%`}
-        footer={Math.round(
-          result.postPeriod.tardiesPerc - result.prePeriod.tardiesPerc
-        )}
+        footer={
+          <Footer
+            value={result.postPeriod.tardiesPerc - result.prePeriod.tardiesPerc}
+            showPercentage
+            showReverseTrend
+          />
+        }
         color={lightBrown}
-        cellType="small"
       />
       <WidgetCell
         header="CHRONIC"
         subHeader="ABSENTEEISM"
         value={`${Math.round(result.postPeriod.chronicAbsentPerc)}%`}
-        footer={Math.round(
-          result.postPeriod.chronicAbsentPerc -
-            result.prePeriod.chronicAbsentPerc
-        )}
+        footer={
+          <Footer
+            value={Math.round(
+              result.postPeriod.chronicAbsentPerc -
+                result.prePeriod.chronicAbsentPerc
+            )}
+            showPercentage
+            showReverseTrend
+          />
+        }
         color={lightRed6}
         cellType="small"
       />
     </ContentWrapper>
   )
 }
+
 export default AttendanceSummaryContents

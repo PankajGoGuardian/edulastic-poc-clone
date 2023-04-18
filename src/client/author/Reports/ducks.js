@@ -170,6 +170,7 @@ import {
 import * as dwAttendanceSummaryDucks from './subPages/dataWarehouseReports/AttendanceSummary/ducks'
 import * as dwDashboardDucks from './subPages/dataWarehouseReports/Dashboard/ducks'
 import * as dwGoalsAndInterventionsDucks from './subPages/dataWarehouseReports/GoalsAndInterventions/ducks'
+import * as dwEarlyWarningDucks from './subPages/dataWarehouseReports/EarlyWarningReport/ducks'
 import {
   customReportReducer,
   customReportSaga,
@@ -441,6 +442,7 @@ export const reportReducer = combineReducers({
   [dwDashboardDucks.reduxNamespaceKey]: dwDashboardDucks.reducer,
   [dwGoalsAndInterventionsDucks.reduxNamespaceKey]:
     dwGoalsAndInterventionsDucks.reducer,
+  [dwEarlyWarningDucks.reduxNamespaceKey]: dwEarlyWarningDucks.reducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
 
@@ -555,6 +557,12 @@ const selectorDict = {
     getSettings: dwDashboardDucks.selectors.settings,
     setTags: dwDashboardDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwDashboardDucks.actions.setFilterTagsData,
+  },
+  [reportGroupType.DW_EARLY_WARNING_REPORT]: {
+    getTempTags: dwEarlyWarningDucks.selectors.filterTagsData,
+    getSettings: dwEarlyWarningDucks.selectors.settings,
+    setTags: dwEarlyWarningDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwEarlyWarningDucks.actions.setFilterTagsData,
   },
 }
 
@@ -854,6 +862,7 @@ export function* reportSaga() {
     dwAttendanceSummaryDucks.watcherSaga(),
     dwDashboardDucks.watcherSaga(),
     dwGoalsAndInterventionsDucks.watcherSaga(),
+    dwEarlyWarningDucks.watcherSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

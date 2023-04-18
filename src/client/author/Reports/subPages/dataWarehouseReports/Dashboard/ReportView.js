@@ -3,10 +3,14 @@ import SectionLabel from '../../../common/components/SectionLabel'
 
 import { availableTestTypes } from './utils'
 
-import { MasonGrid } from './components/common/styledComponents'
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
 import TableSection from './components/TableSection'
+import RiskSummary from '../common/components/RiskSummaryWidget'
+import {
+  WidgetsContainer,
+  StyledDiv,
+} from '../common/components/styledComponents'
 
 function ReportView({
   location,
@@ -28,7 +32,7 @@ function ReportView({
   return (
     <>
       <SectionLabel>Overview</SectionLabel>
-      <MasonGrid>
+      <WidgetsContainer>
         <AcademicSummary
           selectedPerformanceBand={selectedPerformanceBand}
           performanceBandList={performanceBandList}
@@ -37,8 +41,11 @@ function ReportView({
           setWidgetFilters={setAcademicSummaryFilters}
           settings={settings}
         />
-        <AttendanceSummary settings={settings} />
-      </MasonGrid>
+        <StyledDiv>
+          <RiskSummary settings={settings} />
+          <AttendanceSummary settings={settings} />
+        </StyledDiv>
+      </WidgetsContainer>
       <TableSection
         location={location}
         academicSummaryFilters={academicSummaryFilters}

@@ -12,6 +12,7 @@ import {
   APPLICABLE_TO,
   TARGET,
 } from './constants/form'
+import { COURSES } from './constants/groupForm'
 
 const { applicableTo, target } = criteriaFields
 
@@ -29,11 +30,12 @@ const {
 
 export const getOptionsData = ({
   field,
-  optionsData,
+  optionsData = [],
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
   goalsOptions,
+  courseData,
 }) => {
   let selectOptions = optionsData
   switch (field) {
@@ -48,6 +50,9 @@ export const getOptionsData = ({
       break
     case RELATED_GOALS_IDS:
       selectOptions = goalsOptions
+      break
+    case COURSES:
+      selectOptions = courseData
       break
     default:
       break

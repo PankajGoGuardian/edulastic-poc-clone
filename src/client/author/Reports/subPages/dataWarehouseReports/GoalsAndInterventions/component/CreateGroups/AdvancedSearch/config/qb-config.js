@@ -1,4 +1,4 @@
-import { selectsData } from '../../../../../../../TestPage/components/common'
+import { selectsData } from '../../../../../../../../TestPage/components/common'
 import { fieldKey } from './constants'
 
 export const classGroup = [

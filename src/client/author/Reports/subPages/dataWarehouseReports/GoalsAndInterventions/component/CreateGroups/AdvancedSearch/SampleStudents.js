@@ -1,7 +1,7 @@
 import React from 'react'
 import { isEmpty } from 'lodash'
-import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { StyledTable } from '../../../../../common/styled'
+import CsvTable from '../../../../../../common/components/tables/CsvTable'
+import { StyledTable } from '../../../../../../common/styled'
 
 const SampleStudents = ({ studentsData }) => {
   if (isEmpty(studentsData)) return null

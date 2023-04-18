@@ -14,6 +14,10 @@ const { TabPane } = Tabs
 const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const [activeKey, setActiveKey] = useState('1')
 
+  const switchTab = (key) => {
+    setActiveKey(key)
+  }
+
   const firstScreenContent = {
     1: {
       list: [
@@ -54,6 +58,8 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
             noDataContent={
               <FirstScreen content={firstScreenContent[activeKey]} />
             }
+            onGoal={() => switchTab('2')}
+            onIntervention={() => switchTab('3')}
           />
         ),
       },
@@ -113,11 +119,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         isCliUser={isCliUser}
         alignment="baseline"
       />
-      <SwitchTabs
-        animated={false}
-        activeKey={activeKey}
-        onChange={(key) => setActiveKey(key)}
-      >
+      <SwitchTabs animated={false} activeKey={activeKey} onChange={switchTab}>
         {items.map((item) => (
           <TabPane tab={item.label} key={item.key}>
             {item.children}

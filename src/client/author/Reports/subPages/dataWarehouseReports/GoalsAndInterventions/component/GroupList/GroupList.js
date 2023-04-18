@@ -6,21 +6,42 @@ import StyledTable from '../../common/components/Table'
 import { actions } from '../../ducks/actionReducers'
 import { groupList, isGroupLoading } from '../../ducks/selectors'
 
-const options = [
-  { id: 'summary', label: 'View Summary' },
-  { id: 'trends', label: 'View Trends' },
-  { id: 'attendance', label: 'View Attendance' },
-  { id: 'earlyWarning', label: 'View Early Warning' },
-  { id: 'efficacy', label: 'View Efficacy' },
+// const viewReportOptions = [
+//   { id: 'summary', label: 'View Summary' },
+//   { id: 'trends', label: 'View Trends' },
+//   { id: 'attendance', label: 'View Attendance' },
+//   { id: 'earlyWarning', label: 'View Early Warning' },
+//   { id: 'efficacy', label: 'View Efficacy' },
+// ]
+
+const actionOptions = [
+  { id: 'goal', label: 'Set Goal' },
+  { id: 'trends', label: 'Set Intervention' },
 ]
+
 const { getGroupList } = actions
-const GroupList = ({ _getGroupList, _groupList, _isGroupLoading }) => {
+
+const GroupList = ({
+  _getGroupList,
+  _groupList,
+  _isGroupLoading,
+  onGoal,
+  onIntervention,
+}) => {
   useEffect(() => {
     _getGroupList()
   }, [])
 
   const onAction = ({ key }) => {
-    console.log(key)
+    switch (key) {
+      case 'item_1':
+        onGoal()
+        break
+      case 'item_2':
+        onIntervention()
+        break
+      default:
+    }
   }
 
   const columns = [
@@ -48,20 +69,24 @@ const GroupList = ({ _getGroupList, _groupList, _isGroupLoading }) => {
       align: 'center',
       sorter: (a, b) => a.studentCount - b.studentCount,
     },
+    // {
+    //   key: 'viewReport',
+    //   render: () => {
+    //     return (
+    //       <ActionButton options={options} onAction={onAction}>
+    //         View Reports
+    //       </ActionButton>
+    //     )
+    //   },
+    // },
     {
       key: 'viewReport',
       render: () => {
         return (
-          <ActionButton options={options} onAction={onAction}>
-            View Reports
+          <ActionButton options={actionOptions} onAction={onAction}>
+            Actions
           </ActionButton>
         )
-      },
-    },
-    {
-      key: 'viewReport',
-      render: () => {
-        return <ActionButton>Actions</ActionButton>
       },
     },
   ]

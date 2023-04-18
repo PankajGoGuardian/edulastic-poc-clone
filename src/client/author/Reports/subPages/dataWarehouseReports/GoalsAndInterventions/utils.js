@@ -12,6 +12,7 @@ import {
   APPLICABLE_TO,
   TARGET,
 } from './constants/form'
+import { COURSES, GRADES, SUBJECTS, TAGS } from './constants/groupForm'
 
 const { applicableTo, target } = criteriaFields
 
@@ -28,10 +29,11 @@ const {
 
 export const getOptionsData = ({
   field,
-  optionsData,
+  optionsData = [],
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
+  courseData,
 }) => {
   let selectOptions = optionsData
   switch (field) {
@@ -43,6 +45,9 @@ export const getOptionsData = ({
       break
     case METRIC:
       selectOptions = targetPerformanceBandOptions
+      break
+    case COURSES:
+      selectOptions = courseData
       break
     default:
       break

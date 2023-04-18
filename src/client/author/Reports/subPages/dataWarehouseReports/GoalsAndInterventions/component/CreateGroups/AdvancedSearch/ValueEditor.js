@@ -9,7 +9,7 @@ import {
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchSchoolsAction,
-} from '../../ducks'
+} from '../../../ducks'
 import { StyledSelect } from './styled-components'
 import { debounceWait } from './config/qb-config'
 import { fieldKey } from './config/constants'

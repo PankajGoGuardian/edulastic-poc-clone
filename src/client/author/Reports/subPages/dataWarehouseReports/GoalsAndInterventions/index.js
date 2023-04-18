@@ -7,8 +7,8 @@ import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
 import DataForm from './component/DataForm'
-import AdvancedSearch from './component/AdvancedSearch/AdvancedSearch'
 import GroupsList from './component/GroupsList/GroupsList'
+import CreateGroup from './component/CreateGroups'
 
 const { TabPane } = Tabs
 
@@ -46,7 +46,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW STUDENT GROUP`,
-        children: <AdvancedSearch />,
+        children: <CreateGroup />,
       },
     ],
     2: [

@@ -13,7 +13,7 @@ import { notification } from '@edulastic/common'
 import { createSelector } from 'reselect'
 import { get, isEmpty, uniqBy } from 'lodash'
 import { getUserOrgId } from '../../../../src/selectors/user'
-import { fieldKey } from './component/AdvancedSearch/config/constants'
+import { fieldKey } from './component/CreateGroups/AdvancedSearch/config/constants'
 
 const ADVANCED_SEARCH_DETAILS = 'advancedSearchDetails'
 const ADVANCED_SEARCH_QUERY = 'advancedSearchQuery'

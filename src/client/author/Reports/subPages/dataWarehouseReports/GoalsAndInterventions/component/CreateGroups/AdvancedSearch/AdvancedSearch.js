@@ -16,7 +16,7 @@ import {
   setAdvancedSearchDataRequest,
   setAdvancedSearchQueryAction,
   setAdvancedSearchSchoolsAction,
-} from '../../ducks'
+} from '../../../ducks'
 // import ValueEditor from './ValueEditor'
 import {
   AddRule,
@@ -28,9 +28,10 @@ import {
 } from './controls'
 import { allowedFields, combinators, inNotInOp } from './config/qb-config'
 import ValueEditor from './ValueEditor'
-import { CancelButton, OkButton } from '../../../../../../../common/styled'
+import { CancelButton, OkButton } from '../../../../../../../../common/styled'
 import { ButtonsContainer } from './styled-components'
 import SampleStudents from './SampleStudents'
+import SaveGroup from '../SaveGroup/SaveGroup'
 
 // The fields would be Grade, Subject, School, Course, Class, Tag, Attendance Band - <band name>, Performance Band -<band name>, Standards Band -<Band name>, Avg score, Test types
 
@@ -101,9 +102,9 @@ const AdvancedSearch = ({
       </div>
     </ButtonsContainer>
   )
-
   return (
     <>
+      <SaveGroup courseData={courseData} />
       <TitleWrapper>Select target students</TitleWrapper>
       <QueryBuilder
         fields={fields}

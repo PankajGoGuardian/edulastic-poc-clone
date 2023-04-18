@@ -26,6 +26,7 @@ const FormSection = ({
   const { measureType = '' } = formData
   const hideBandField = measureType !== PERFORMANCE_BAND
   const isMeasureTypePerformanceBand = measureType === PERFORMANCE_BAND
+  console.log({ formFields, formData })
 
   return (
     <Row gutter={[20]}>

@@ -8,6 +8,7 @@ import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
 import DataForm from './component/DataForm'
 import GroupList from './component/GroupList/GroupList'
+import CreateGroup from './component/CreateGroups'
 
 const { TabPane } = Tabs
 
@@ -66,7 +67,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '2',
         label: `ADD NEW STUDENT GROUP`,
-        children: <>Advance search</>,
+        children: <CreateGroup />,
       },
     ],
     2: [

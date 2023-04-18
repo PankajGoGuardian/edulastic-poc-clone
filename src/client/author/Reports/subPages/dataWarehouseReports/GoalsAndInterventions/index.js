@@ -67,7 +67,10 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         children: (
           <GroupList
             noDataContent={
-              <FirstScreen content={firstScreenContent[activeKey]} />
+              <FirstScreen
+                content={firstScreenContent[activeKey]}
+                onClick={() => setSubActiveKey('2')}
+              />
             }
             onGoal={(_group) => switchTab('2', _group)}
             onIntervention={(_group) => switchTab('3', _group)}
@@ -84,7 +87,12 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `GOAL LIST`,
-        children: <FirstScreen content={firstScreenContent[activeKey]} />,
+        children: (
+          <FirstScreen
+            content={firstScreenContent[activeKey]}
+            onClick={() => setSubActiveKey('2')}
+          />
+        ),
       },
       {
         key: '2',
@@ -102,7 +110,12 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `INTERVENTION LIST`,
-        children: <FirstScreen content={firstScreenContent[activeKey]} />,
+        children: (
+          <FirstScreen
+            content={firstScreenContent[activeKey]}
+            onClick={() => setSubActiveKey('2')}
+          />
+        ),
       },
       {
         key: '2',

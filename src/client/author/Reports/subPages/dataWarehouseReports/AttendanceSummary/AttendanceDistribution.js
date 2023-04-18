@@ -131,7 +131,7 @@ export const LegendWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: column;
-  margin-top: 15px;
+  margin-top: 5px;
 `
 
 export const CustomLegend = styled.div`

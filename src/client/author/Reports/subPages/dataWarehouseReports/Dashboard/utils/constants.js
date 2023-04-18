@@ -35,6 +35,7 @@ export const compareByKeys = {
   SCHOOL: 'school',
   TEACHER: 'teacher',
   CLASS: 'class',
+  GROUP: 'group',
   STUDENT: 'student',
   RACE: 'race',
   GENDER: 'gender',

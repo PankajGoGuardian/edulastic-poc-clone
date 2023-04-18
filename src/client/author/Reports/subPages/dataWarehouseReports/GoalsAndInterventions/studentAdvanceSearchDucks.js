@@ -20,6 +20,7 @@ const ADVANCED_SEARCH_QUERY = 'advancedSearchQuery'
 const ADVANCED_SEARCH_DATA = 'advancedSearchData'
 const ADVANCED_SEARCH_LOADING = 'isAdvancedSearchLoading'
 const STUDENTS = 'students'
+const GROUP = 'group'
 
 // initial values
 const initialValue = {
@@ -40,6 +41,10 @@ const initialState = {
   },
   [ADVANCED_SEARCH_LOADING]: false,
   [ADVANCED_SEARCH_DATA]: { [STUDENTS]: [] },
+  [GROUP]: {
+    groupDetails: {},
+    isLoading: false,
+  },
 }
 
 // utils
@@ -78,6 +83,14 @@ const setAdvanceSearchData = (state, { payload }) => {
   state[ADVANCED_SEARCH_DATA][STUDENTS] = payload
   state[ADVANCED_SEARCH_LOADING] = false
 }
+const setGroupDetails = (state, { payload }) => {
+  console.log({ payload })
+  if (isEmpty(payload)) {
+    state.group.groupDetails = {}
+  }
+  state.group.groupDetails = payload
+  state.group.isLoading = false
+}
 
 // 1. action names
 export const SET_ADVANCED_SEARCH_CLASSES_REQUEST =
@@ -105,6 +118,8 @@ export const SET_ADVANCED_SEARCH_DATA_REQUEST =
   '[goals & interventions] set advanced search data request'
 export const SET_ADVANCED_SEARCH_DATA_SUCCESS =
   '[goals & interventions] set advanced search data success'
+export const SAVE_GROUP_REQUEST = '[goals & interventions] saving group request'
+export const SAVE_GROUP_SUCCESS = '[goals & interventions] saving group request'
 
 // 2. actions
 export const setAdvancedSearchClassesAction = createAction(
@@ -137,6 +152,10 @@ export const setAdvancedSearchDataSuccess = createAction(
   SET_ADVANCED_SEARCH_DATA_SUCCESS
 )
 
+export const saveGroupRequest = createAction(SAVE_GROUP_REQUEST)
+
+export const saveGroupSuccess = createAction(SAVE_GROUP_SUCCESS)
+
 // 5. reducers
 export const goalAndInterventionsReducer = createReducer(initialState, {
   [SET_ADVANCED_SEARCH_CLASSES_REQUEST]: (state) => {
@@ -160,6 +179,10 @@ export const goalAndInterventionsReducer = createReducer(initialState, {
     state[ADVANCED_SEARCH_LOADING] = true
   },
   [SET_ADVANCED_SEARCH_DATA_SUCCESS]: setAdvanceSearchData,
+  [SAVE_GROUP_REQUEST]: (state) => {
+    state.group.isLoading = true
+  },
+  [SAVE_GROUP_SUCCESS]: setGroupDetails,
 })
 
 // 6. selectors
@@ -346,6 +369,23 @@ function* setAdvancedSearchData({ payload }) {
   }
 }
 
+function* saveGroup({ payload }) {
+  try {
+    const query = yield select(getAdvancedSearchFilterSelector)
+    const groupData = payload
+
+    const response = yield call(dataWarehouseApi.saveGroupdDataWithAdvSearch, {
+      groupData,
+      query,
+    })
+
+    console.log({ saved: get(response, 'data.result') })
+    yield put(saveGroupSuccess(get(response, 'data.result')))
+  } catch (error) {
+    yield put(saveGroupSuccess())
+  }
+}
+
 // 3. saga
 export function* goalsAndInterventionsSaga() {
   yield all([
@@ -370,5 +410,6 @@ export function* goalsAndInterventionsSaga() {
     //   setAdvancedSearchPerformanceBand
     // ),
     yield takeEvery(SET_ADVANCED_SEARCH_DATA_REQUEST, setAdvancedSearchData),
+    yield takeEvery(SAVE_GROUP_REQUEST, saveGroup),
   ])
 }

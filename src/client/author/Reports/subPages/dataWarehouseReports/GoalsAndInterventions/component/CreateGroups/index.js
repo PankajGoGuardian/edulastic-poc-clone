@@ -1,5 +1,5 @@
 import React from 'react'
-import AdvancedSearch from './AdvancedSearch/AdvancedSearch'
+import AdvancedSearch from './AdvancedSearch'
 
 const CreateGroup = () => {
   return (

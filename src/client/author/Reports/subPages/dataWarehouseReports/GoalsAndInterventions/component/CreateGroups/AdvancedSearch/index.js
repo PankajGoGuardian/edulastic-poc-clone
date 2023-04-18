@@ -10,13 +10,14 @@ import {
   getAdvancedSearchCoursesSelector,
   getAdvancedSearchFilterSelector,
   getAdvancedSearchSchoolsSelector,
+  saveGroupRequest,
   setAdvancedSearchAttendanceAction,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchDataRequest,
   setAdvancedSearchQueryAction,
   setAdvancedSearchSchoolsAction,
-} from '../../../ducks'
+} from '../../../studentAdvanceSearchDucks'
 // import ValueEditor from './ValueEditor'
 import {
   AddRule,
@@ -31,7 +32,7 @@ import ValueEditor from './ValueEditor'
 import { CancelButton, OkButton } from '../../../../../../../../common/styled'
 import { ButtonsContainer } from './styled-components'
 import SampleStudents from './SampleStudents'
-import SaveGroup from '../SaveGroup/SaveGroup'
+import SaveGroup from '../SaveGroup'
 
 // The fields would be Grade, Subject, School, Course, Class, Tag, Attendance Band - <band name>, Performance Band -<band name>, Standards Band -<Band name>, Avg score, Test types
 
@@ -48,7 +49,9 @@ const AdvancedSearch = ({
   loadAdvanceSearch,
   loadAttendanceBands,
   studentsData,
+  saveGroup,
 }) => {
+  console.log({ studentsData })
   // may require duplicate method
   const [query, setQuery] = useState(defaultQuery)
   const formattedQuery = formatQuery(query, 'json_without_ids')
@@ -104,7 +107,11 @@ const AdvancedSearch = ({
   )
   return (
     <>
-      <SaveGroup courseData={courseData} />
+      <SaveGroup
+        courseData={courseData}
+        studentsData={studentsData}
+        saveGroup={saveGroup}
+      />
       <TitleWrapper>Select target students</TitleWrapper>
       <QueryBuilder
         fields={fields}
@@ -150,5 +157,6 @@ export default connect(
     loadClasses: setAdvancedSearchClassesAction,
     loadAttendanceBands: setAdvancedSearchAttendanceAction,
     loadAdvanceSearch: setAdvancedSearchDataRequest,
+    saveGroup: saveGroupRequest,
   }
 )(AdvancedSearch)

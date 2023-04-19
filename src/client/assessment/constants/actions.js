@@ -157,3 +157,4 @@ export const SET_STOP_AUDIO_RECORDING_AND_UPLOAD_FOR_QID =
 export const SET_MEDIA_UPLOAD_STATUS = '[media] set media upload status'
 export const AUDIO_UPLOAD_COMPLETE_FOR_QID =
   '[audioRecording] audio upload complete for qid'
+export const SET_ANTI_CHEATING_ENABLED = '[test] set anti cheating enabled'

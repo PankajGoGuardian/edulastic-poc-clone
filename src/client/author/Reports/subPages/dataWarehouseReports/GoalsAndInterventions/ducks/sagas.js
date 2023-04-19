@@ -37,9 +37,22 @@ function* getGoalsListSaga() {
   }
 }
 
+function* getInterventionsListSaga() {
+  try {
+    const interventionsList = yield call(reportsApi.getInterventions)
+    yield put(actions.setInterventionsList(interventionsList))
+  } catch (error) {
+    const msg = `Failed to fetch interventions.`
+    notification({ msg: error?.response?.data?.message || msg })
+  } finally {
+    yield put(actions.getInterventionsListComplete())
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     takeLatest(actions.saveFormDataRequest, saveFormDataRequestSaga),
     takeLatest(actions.getGoalsList, getGoalsListSaga),
+    takeLatest(actions.getInterventionsList, getInterventionsListSaga),
   ])
 }

@@ -53,7 +53,7 @@ const columns = [
     dataIndex: 'baseline',
     key: 'baseline',
     sorter: true,
-    render: (text) => <p>{text}%</p>,
+    render: (text) => <p>{text || 60}%</p>,
   },
   {
     title: 'Current',
@@ -62,7 +62,10 @@ const columns = [
     sorter: true,
     width: 150,
     render: (text, record) => (
-      <ColoredCell value={`${text}%`} bgColor={getCurrentStatusColor(record)} />
+      <ColoredCell
+        value={`${text || 70}%`}
+        bgColor={getCurrentStatusColor(record)}
+      />
     ),
   },
   {
@@ -70,7 +73,7 @@ const columns = [
     dataIndex: 'threshold',
     key: 'threshold',
     sorter: true,
-    render: (text) => <p>{text}%</p>,
+    render: (text) => <p>{text || 80}%</p>,
   },
   {
     title: 'TIME LEFT (DAYS)',
@@ -92,6 +95,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     sorter: true,
+    render: (text) => <p>{text || 'In progress'}</p>,
   },
   {
     title: 'Comments',

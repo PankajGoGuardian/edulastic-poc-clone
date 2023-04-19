@@ -6,8 +6,8 @@ import StatusBox from '../StatusBox'
 import TableRow from '../TableRow'
 import { summaryTileColors } from '../../constants/common'
 
-const GITable = () => {
-  const getSummaryStatusCount = (key, data) => {
+const GITable = ({ loading, data }) => {
+  const getSummaryStatusCount = (key) => {
     switch (key) {
       case 'met': {
         return data.filter((record) => record.current >= record.target).length
@@ -38,80 +38,80 @@ const GITable = () => {
     }
   }
 
-  const data = [
-    {
-      key: 1,
-      name: 'Goal 1',
-      type: 'Academic',
-      target_students: 1024,
-      isExpandable: false,
-      status: 'In progress',
-      comments: 'Requires some modification',
-      studentGroupIds: ['1', '2'],
-      owner: 'ABC',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-      goalCriteria: {
-        applicableTo: {
-          testTypes: ['T1', 'T2'],
-          subjects: ['Math', 'Science'],
-          standardDetails: null,
-        },
-        target: {
-          measureType: 'Average',
-          performanceBandId: '1234',
-          metric: 'Average',
-        },
-      },
-      baseline: 60,
-      current: 70,
-      threshold: 80,
-      startDate: 1681084800000,
-      endDate: 1681776000000,
-      relatedInterventionIds: [1],
-      createdBy: '5eee2a6b1f8f0b73355a0db3',
-      userRole: 'teacher',
-      districtId: '6eee2a6b1f8f0b73355a0db3',
-      createdAt: 1681084800000,
-      updatedAt: 1681689600000,
-    },
-    {
-      key: 2,
-      name: 'Goal 2',
-      type: 'Attendance',
-      target_students: 1024,
-      isExpandable: true,
-      status: 'In progress',
-      comments: 'Requires some modification',
-      studentGroupIds: ['1', '2'],
-      owner: 'ABC',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-      goalCriteria: {
-        applicableTo: {
-          testTypes: ['T1', 'T2'],
-          subjects: ['Math', 'Science'],
-          standardDetails: null,
-        },
-        target: {
-          measureType: 'Average',
-          performanceBandId: '1234',
-          metric: 'Average',
-        },
-      },
-      baseline: 60,
-      current: 80,
-      threshold: 80,
-      startDate: 1681516800000,
-      endDate: 1682553600000,
-      relatedInterventionIds: [1],
-      createdBy: '5eee2a6b1f8f0b73355a0db3',
-      userRole: 'teacher',
-      districtId: '6eee2a6b1f8f0b73355a0db3',
-      createdAt: 1681084800000,
-      updatedAt: 1681689600000,
-    },
-  ]
+  // const data = [
+  //   {
+  //     key: 1,
+  //     name: 'Goal 1',
+  //     type: 'Academic',
+  //     target_students: 1024,
+  //     isExpandable: false,
+  //     status: 'In progress',
+  //     comments: 'Requires some modification',
+  //     studentGroupIds: ['1', '2'],
+  //     owner: 'ABC',
+  //     description:
+  //       'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+  //     goalCriteria: {
+  //       applicableTo: {
+  //         testTypes: ['T1', 'T2'],
+  //         subjects: ['Math', 'Science'],
+  //         standardDetails: null,
+  //       },
+  //       target: {
+  //         measureType: 'Average',
+  //         performanceBandId: '1234',
+  //         metric: 'Average',
+  //       },
+  //     },
+  //     baseline: 60,
+  //     current: 70,
+  //     threshold: 80,
+  //     startDate: 1681084800000,
+  //     endDate: 1681776000000,
+  //     relatedInterventionIds: [1],
+  //     createdBy: '5eee2a6b1f8f0b73355a0db3',
+  //     userRole: 'teacher',
+  //     districtId: '6eee2a6b1f8f0b73355a0db3',
+  //     createdAt: 1681084800000,
+  //     updatedAt: 1681689600000,
+  //   },
+  //   {
+  //     key: 2,
+  //     name: 'Goal 2',
+  //     type: 'Attendance',
+  //     target_students: 1024,
+  //     isExpandable: true,
+  //     status: 'In progress',
+  //     comments: 'Requires some modification',
+  //     studentGroupIds: ['1', '2'],
+  //     owner: 'ABC',
+  //     description:
+  //       'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+  //     goalCriteria: {
+  //       applicableTo: {
+  //         testTypes: ['T1', 'T2'],
+  //         subjects: ['Math', 'Science'],
+  //         standardDetails: null,
+  //       },
+  //       target: {
+  //         measureType: 'Average',
+  //         performanceBandId: '1234',
+  //         metric: 'Average',
+  //       },
+  //     },
+  //     baseline: 60,
+  //     current: 80,
+  //     threshold: 80,
+  //     startDate: 1681516800000,
+  //     endDate: 1682553600000,
+  //     relatedInterventionIds: [1],
+  //     createdBy: '5eee2a6b1f8f0b73355a0db3',
+  //     userRole: 'teacher',
+  //     districtId: '6eee2a6b1f8f0b73355a0db3',
+  //     createdAt: 1681084800000,
+  //     updatedAt: 1681689600000,
+  //   },
+  // ]
 
   const expandData = [
     {
@@ -124,7 +124,6 @@ const GITable = () => {
       target: 80,
       time_left: 30,
       total_time: 180,
-      isExpandable: false,
       status: 'In progress',
       comments: 'Requires some modification',
     },
@@ -183,6 +182,7 @@ const GITable = () => {
 
   return (
     <Table
+      loading={loading}
       className="gi-table"
       title={() => (
         <Header>
@@ -193,7 +193,10 @@ const GITable = () => {
       )}
       columns={TableRow}
       rowClassName={(record) => {
-        if (!record.isExpandable) {
+        if (
+          record.relatedInterventionIds &&
+          record.relatedInterventionIds.length > 0
+        ) {
           return 'not-expandible'
         }
       }}
@@ -205,7 +208,7 @@ const GITable = () => {
           pagination={false}
         />
       )}
-      pagination={false}
+      // pagination={false}
       dataSource={data}
     />
   )

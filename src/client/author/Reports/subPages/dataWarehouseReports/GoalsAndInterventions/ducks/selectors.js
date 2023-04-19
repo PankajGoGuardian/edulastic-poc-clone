@@ -16,6 +16,20 @@ const isGoalsDataLoading = createSelector(
 )
 const goalsList = createSelector(goalsSelector, (state) => state.list)
 
+// interventions selectors
+const interventionsSelector = createSelector(
+  stateSelector,
+  (state) => state.interventions
+)
+const isInterventionsDataLoading = createSelector(
+  interventionsSelector,
+  (state) => state.isLoading
+)
+const interventionsList = createSelector(
+  interventionsSelector,
+  (state) => state.list
+)
+
 // group selector
 const groupSelector = (state) => state.authorGroups
 const isGroupLoading = createSelector(groupSelector, (state) => state.isLoading)
@@ -29,4 +43,6 @@ export {
   groupSelector,
   isGroupLoading,
   groupList,
+  isInterventionsDataLoading,
+  interventionsList,
 }

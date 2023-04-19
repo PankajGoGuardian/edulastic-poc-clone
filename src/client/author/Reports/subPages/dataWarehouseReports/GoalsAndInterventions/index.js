@@ -1,6 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Tabs from 'antd/lib/tabs'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
+import { actions } from './ducks/actionReducers'
+import {
+  goalsList,
+  isGoalsDataLoading,
+  interventionsList,
+  isInterventionsDataLoading,
+} from './ducks/selectors'
 import { firstScreenContent } from './constants/common'
 import { SAVE_GOAL, SAVE_INTERVENTION } from './constants/form'
 import { StyledReportContainer } from '../../../common/styled'
@@ -14,7 +22,16 @@ import CreateGroup from './component/CreateGroups'
 
 const { TabPane } = Tabs
 
-const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
+const GoalsAndInterventions = ({
+  breadcrumbData,
+  isCliUser,
+  goalsData,
+  goalsDataLoading,
+  fetchGoalsList,
+  interventionsData,
+  interventionsDataLoading,
+  fetchInterventionsList,
+}) => {
   const [activeKey, setActiveKey] = useState('1')
   const [subActiveKey, setSubActiveKey] = useState('1')
   const [group, setGroup] = useState()
@@ -30,6 +47,23 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       switchSubTab('2')
     }
   }
+
+  useEffect(() => {
+    switch (Number(activeKey)) {
+      case 2:
+        if (goalsData.length === 0) {
+          fetchGoalsList()
+        }
+        break
+      case 3:
+        if (interventionsData.length === 0) {
+          fetchInterventionsList()
+        }
+        break
+      default:
+        break
+    }
+  }, [activeKey])
 
   const content = {
     1: [
@@ -59,13 +93,15 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `GOAL LIST`,
-        children: (
-          // <FirstScreen
-          //   content={firstScreenContent[activeKey]}
-          //   onClick={() => setSubActiveKey('2')}
-          // />
-          <GITable />
-        ),
+        children:
+          goalsData.length === 0 ? (
+            <FirstScreen
+              content={firstScreenContent[activeKey]}
+              onClick={() => setSubActiveKey('2')}
+            />
+          ) : (
+            <GITable loading={goalsDataLoading} data={goalsData} />
+          ),
       },
       {
         key: '2',
@@ -83,12 +119,18 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
       {
         key: '1',
         label: `INTERVENTION LIST`,
-        children: (
-          <FirstScreen
-            content={firstScreenContent[activeKey]}
-            onClick={() => setSubActiveKey('2')}
-          />
-        ),
+        children:
+          interventionsData.length === 0 ? (
+            <FirstScreen
+              content={firstScreenContent[activeKey]}
+              onClick={() => setSubActiveKey('2')}
+            />
+          ) : (
+            <GITable
+              loading={interventionsDataLoading}
+              data={interventionsData}
+            />
+          ),
       },
       {
         key: '2',
@@ -170,12 +212,21 @@ const SwitchTabs = styled(Tabs)`
     background-color: transparent;
   }
   .ant-tabs-content {
-    border: 1px solid #b8b7b7;
+    border-top: 1px solid #d8d8d8;
     padding: 10px;
-    border-radius: 12px;
-    position: relative;
     height: 600px;
   }
 `
 
-export default GoalsAndInterventions
+export default connect(
+  (state) => ({
+    goalsData: goalsList(state),
+    goalsDataLoading: isGoalsDataLoading(state),
+    interventionsData: interventionsList(state),
+    interventionsDataLoading: isInterventionsDataLoading(state),
+  }),
+  {
+    fetchGoalsList: actions.getGoalsList,
+    fetchInterventionsList: actions.getInterventionsList,
+  }
+)(GoalsAndInterventions)

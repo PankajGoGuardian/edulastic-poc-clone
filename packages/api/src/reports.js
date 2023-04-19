@@ -393,6 +393,14 @@ const fetchAttendanceBands = () =>
     })
     .then((result) => result.data.result)
 
+const getInterventions = () =>
+  api
+    .callApi({
+      url: `/data-warehouse/goals-interventions/interventions`,
+      method: 'get',
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -442,4 +450,5 @@ export default {
   createIntervention,
   getGoals,
   fetchAttendanceBands,
+  getInterventions,
 }

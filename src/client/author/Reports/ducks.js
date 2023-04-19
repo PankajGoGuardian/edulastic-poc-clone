@@ -546,6 +546,7 @@ const selectorDict = {
   [reportGroupType.DW_ATTENDANCE_SUMMARY_REPORT]: {
     getTempTags: dwAttendanceSummaryDucks.selectors.filterTagsData,
     getSettings: dwAttendanceSummaryDucks.selectors.settings,
+    getTags: dwAttendanceSummaryDucks.selectors.selectedFilterTagsData,
     setTags: dwAttendanceSummaryDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwAttendanceSummaryDucks.actions.setFilterTagsData,
   },
@@ -573,7 +574,9 @@ function* updateTags(tags, type) {
     ? selectorDict[type].remapTags(tags)
     : tags
   const tempTagsData = yield select(selectorDict[type].getTempTags)
-  const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
+  const tagsData = selectorDict[type].getTags
+    ? yield select(selectorDict[type].getTags)
+    : (yield select(selectorDict[type].getSettings)).tagsData
   yield put(
     selectorDict[type].setTempTags(
       uniqTags({ ...tempTagsData, ...remappedTags })

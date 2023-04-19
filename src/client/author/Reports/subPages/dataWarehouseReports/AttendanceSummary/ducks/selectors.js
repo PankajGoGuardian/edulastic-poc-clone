@@ -20,6 +20,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const settings = createSelector(stateSelector, (state) => state.settings)
 const error = createSelector(stateSelector, (state) => state.error)
 
@@ -46,4 +50,5 @@ export {
   loadingTableData,
   tableData,
   tableDataRequestError,
+  selectedFilterTagsData,
 }

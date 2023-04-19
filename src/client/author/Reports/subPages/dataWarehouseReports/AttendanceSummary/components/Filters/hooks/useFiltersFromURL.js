@@ -22,6 +22,11 @@ function useFiltersFromURL({
   setShowApply,
   toggleFilter,
   userRole,
+  schoolList,
+  teacherList,
+  classList,
+  groupList,
+  courseList,
 }) {
   useEffect(() => {
     if (isEmpty(filtersData)) return
@@ -45,6 +50,19 @@ function useFiltersFromURL({
         staticDropDownData.periodTypes.find(
           (a) => a.key === search.periodType
         ) || staticDropDownData.periodTypes[0]
+
+      const getFilterTagsValue = (list, data) => {
+        return !isEmpty(list)
+          ? list
+              .filter((item) => data.includes(item._id))
+              .map((itemObj) => ({ key: itemObj._id, title: itemObj.title }))
+          : { key: '', title: '' }
+      }
+      const schools = getFilterTagsValue(schoolList, search.schoolIds)
+      const teachers = getFilterTagsValue(teacherList, search.teacherIds)
+      const classes = getFilterTagsValue(classList, search.classIds)
+      const groups = getFilterTagsValue(groupList, search.groupIds)
+      const courses = getFilterTagsValue(courseList, [search.courseId])
 
       const _filters = {
         termId: urlSchoolYear.key,
@@ -77,6 +95,11 @@ function useFiltersFromURL({
         subjects: urlSubjects,
         grades: urlGrades,
         periodType: urlPeriod,
+        schoolIds: schools,
+        teacherIds: teachers,
+        classIds: classes,
+        groupIds: groups,
+        courseIds: courses,
       }
 
       // set filterTagsData, filters and testId

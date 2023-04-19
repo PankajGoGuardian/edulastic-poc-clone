@@ -4,6 +4,7 @@ import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import {
   removeFilter,
   resetStudentFilters as resetFilters,
@@ -22,6 +23,11 @@ import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
 import { allFilterValue } from '../../../../../common/constants'
+import { getSchoolsSelector } from '../../../../../../Schools/ducks'
+import { getTeachersListSelector } from '../../../../../../Teacher/ducks'
+import { getCourseListSelector } from '../../../../../../Courses/ducks'
+import { getClassListSelector } from '../../../../../../AssignTest/duck'
+import { getGroupListSelector } from '../../../../../../Groups/ducks'
 
 const Filters = ({
   showFilter,
@@ -54,6 +60,11 @@ const Filters = ({
   history,
   profileId,
   setProfileId,
+  schoolList,
+  teacherList,
+  classList,
+  groupList,
+  courseList,
 }) => {
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
@@ -103,6 +114,11 @@ const Filters = ({
     setShowApply,
     toggleFilter,
     userRole,
+    schoolList,
+    teacherList,
+    classList,
+    groupList,
+    courseList,
   })
 
   useEffect(() => {
@@ -225,8 +241,20 @@ const enhance = connect(
     userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
+    schoolList: getSchoolsSelector(state),
+    teacherList: getTeachersListSelector(state),
+    courseList: getCourseListSelector(state),
+    classList: getClassListSelector(state),
+    groupList: getGroupListSelector(state),
   }),
-  { ...actions, fetchUpdateTagsData: fetchUpdateTagsDataAction }
+  {
+    ...actions,
+    fetchUpdateTagsData: (opts) =>
+      fetchUpdateTagsDataAction({
+        type: reportGroupType.DW_ATTENDANCE_SUMMARY_REPORT,
+        ...opts,
+      }),
+  }
 )
 
 export default enhance(Filters)

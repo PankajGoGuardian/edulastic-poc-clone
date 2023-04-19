@@ -538,7 +538,7 @@ export const StyledText = styled.text`
 
 export const PrintableScreen = styled.div`
   @media print {
-    width: auto;
+    width: 250mm;
     @page {
       margin: 0 !important;
       padding: 0 !important;
@@ -558,7 +558,6 @@ export const PrintableScreen = styled.div`
     }
     .attendance-summary {
       .recharts-wrapper,
-      .recharts-surface,
       .recharts-legend-wrapper {
         width: 100% !important;
         height: 100% !important;

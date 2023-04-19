@@ -6,14 +6,7 @@ import {
 } from '@edulastic/common'
 import React, { useMemo } from 'react'
 import { maxBy } from 'lodash'
-import {
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  BarChart,
-  Bar,
-  CartesianGrid,
-} from 'recharts'
+import { XAxis, YAxis, BarChart, Bar, CartesianGrid } from 'recharts'
 
 import NoDataNotification from '../../../../../../common/components/NoDataNotification'
 import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
@@ -26,6 +19,7 @@ import {
 import { sheetSize } from '../utils/constants'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
 import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
+import { StyledResponsiveContainer } from '../styled-component'
 
 const RenderCustomizedLabel = (props) => {
   const { x, y, width, value } = props
@@ -118,7 +112,11 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
             visibility: hasNextPage ? 'visible' : 'hidden',
           }}
         />
-        <ResponsiveContainer width="100%" height="100%">
+        <StyledResponsiveContainer
+          width="100%"
+          height="100%"
+          printHeight="290px"
+        >
           <BarChart
             width={730}
             height={250}
@@ -192,7 +190,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
               verticalCoordinatesGenerator={generateVerticalCoordinates}
             />
           </BarChart>
-        </ResponsiveContainer>
+        </StyledResponsiveContainer>
       </EduThen>
       <EduElse>
         <NoDataNotification

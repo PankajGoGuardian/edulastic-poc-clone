@@ -74,7 +74,7 @@ const AttendanceDistribution = ({ data, loading }) => {
           <SpinLoader />
         </EduIf>
         <EduIf condition={!loading}>
-          <PieChart width={400} height={280}>
+          <StyledPieChart width={400} height={280}>
             <Pie
               isAnimationActive={animate}
               onAnimationStart={onAnimationStart}
@@ -92,7 +92,7 @@ const AttendanceDistribution = ({ data, loading }) => {
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
               ))}
             </Pie>
-          </PieChart>
+          </StyledPieChart>
           <LegendWrap>
             {sortedLegendsData.map((entry) => {
               return (
@@ -158,4 +158,13 @@ export const LegendSymbol = styled.span`
 export const LegendName = styled.span`
   font-size: 12px;
   color: #4b4b4b;
+`
+
+export const StyledPieChart = styled(PieChart)`
+  @media print {
+    .recharts-surface {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
 `

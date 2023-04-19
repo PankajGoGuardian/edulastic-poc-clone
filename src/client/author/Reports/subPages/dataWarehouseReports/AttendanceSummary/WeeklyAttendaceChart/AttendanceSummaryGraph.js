@@ -1,17 +1,8 @@
 import { useOfflinePagination } from '@edulastic/common'
 import React, { useMemo, useRef } from 'react'
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
 import { StyledChartNavButton } from '../../../../common/styled'
-import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
 import { CustomizedLabel, yAxisTick } from './CustomElements'
 import {
@@ -23,6 +14,27 @@ import { CustomDot } from '../../../../common/chart-utils'
 import DynamicChartTooltip from '../../../../common/components/DynamicChartTooltip'
 import { sheetSize } from '../utils/constants'
 import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
+import { StyledResponsiveContainer } from '../styled-component'
+
+const YAxisLabel = ({ data, viewBox }) => {
+  return (
+    <text
+      className="recharts-text recharts-label"
+      x={0}
+      y={viewBox.height / 2 + viewBox.y - (data.rightMargin || 0)}
+      textAnchor="middle"
+      dominantBaseline="hanging"
+      transform={`rotate(${data.angle}, ${0}, ${
+        viewBox.height / 2 + viewBox.y
+      }) translate(${0}, ${
+        viewBox.width / 1.5 - (data.translateYDiffValue || 0)
+      })`}
+      style={{ fontSize: `${data.fontSize}px`, fill: data.fill || 'black' }}
+    >
+      <tspan>{data.value}</tspan>
+    </text>
+  )
+}
 
 function AttendanceSummaryGraph({ attendanceData, groupBy }) {
   const attendanceChartData = useMemo(() => {
@@ -73,6 +85,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           setAnimate(true)
         }}
         style={{
+          marginTop: -30,
           marginLeft: 0,
           visibility: hasPreviousPage ? 'visible' : 'hidden',
         }}
@@ -88,11 +101,12 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           setAnimate(true)
         }}
         style={{
+          marginTop: -30,
           marginRight: 0,
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
       />
-      <ResponsiveContainer width="100%" height="100%">
+      <StyledResponsiveContainer width="100%" height="100%">
         <LineChart
           width={730}
           height="100%"
@@ -143,6 +157,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
                   value: 'PERCENTAGE',
                   angle: -90,
                   fontSize: 14,
+                  rightMargin: 5,
                 }}
               />
             }
@@ -168,7 +183,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
             onAnimationStart={onAnimationStart}
           />
         </LineChart>
-      </ResponsiveContainer>
+      </StyledResponsiveContainer>
     </StyledAttendanceChartContainer>
   )
 }

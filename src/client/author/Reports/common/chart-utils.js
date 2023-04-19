@@ -44,7 +44,7 @@ export const updateTooltipPos = (
 }
 
 const TooltipRowItem = ({ title = '', value = '' }) => (
-  <TooltipRow>
+  <TooltipRow style={{ flexDirection: 'column' }}>
     <TooltipRowTitle>{title}</TooltipRowTitle>
     <TooltipRowValue>{value}</TooltipRowValue>
   </TooltipRow>
@@ -60,16 +60,16 @@ export const getTooltipJSX = (payload) => {
     const tooltipText = (
       <div>
         <TooltipRowItem
-          title="No. of"
-          value={`Present Events - ${presents}/${total}`}
+          title="No. of Present events - "
+          value={`${presents}/${total}`}
         />
         <TooltipRowItem
-          title="No. of"
-          value={`Absent Events - ${absents}/${total}`}
+          title="No. of Absent events - "
+          value={`${absents}/${total}`}
         />
         <TooltipRowItem
-          title="No. of"
-          value={`Tardies - ${tardies}/${total}`}
+          title="No. of Tardies - "
+          value={`${tardies}/${total}`}
         />
       </div>
     )

@@ -8,6 +8,7 @@ import { Switch, Button } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { IconQuestionCircle } from '@edulastic/icons'
+import { ResponsiveContainer } from 'recharts'
 
 export const ChartWrapper = styled.div`
   border: 1px solid #dedede;
@@ -143,4 +144,12 @@ export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
 export const StyledTextSpan = styled.span`
   color: ${themeColor};
   font-size: 12px;
+`
+export const StyledResponsiveContainer = styled(ResponsiveContainer)`
+  @media print {
+    .recharts-surface {
+      width: 100% !important ;
+      height: ${(props) => props.printHeight || '100%'} !important;
+    }
+  }
 `

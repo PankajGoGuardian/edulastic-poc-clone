@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import {
@@ -27,7 +27,7 @@ import {
   receivePerformanceBandAction,
   getPerformanceBandProfilesSelector,
 } from '../../../../../../PerformanceBand/ducks'
-import { isFormDataSaving, goalsList } from '../../ducks/selectors'
+import { isFormDataSaving, goalsList, formStatus } from '../../ducks/selectors'
 import { actions } from '../../ducks/actionReducers'
 import Form from './Form'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
@@ -59,9 +59,20 @@ const DataForm = ({
   goalsOptionsData,
   saveFormData,
   isSaveInProgress,
+  group,
+  onCancel,
+  resetFormData,
+  currentFormStatus,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
+
+  useEffect(() => {
+    if (currentFormStatus === 'finished') {
+      resetFormData()
+      onCancel()
+    }
+  }, [currentFormStatus])
 
   const {
     formData,
@@ -86,7 +97,15 @@ const DataForm = ({
     saveFormData,
   })
 
-  const allFormFields = isSaveGoalView ? goalFormFields : interventionFormFields
+  const allFormFields = isSaveGoalView
+    ? goalFormFields(formData.type)
+    : interventionFormFields(formData.type)
+
+  if (group) {
+    if (!formData.studentGroupIds) {
+      handleFieldDataChange('studentGroupIds', group._id)
+    }
+  }
 
   const sectionHeaders = isSaveGoalView
     ? goalFormSectionHeaders
@@ -108,7 +127,9 @@ const DataForm = ({
           Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
         </StyledFormTitle>
         <StyledFormButtonsContainer>
-          <StyledButton isGhost>Cancel</StyledButton>
+          <StyledButton isGhost onClick={onCancel}>
+            Cancel
+          </StyledButton>
           <StyledButton onClick={handleSaveForm} disabled={isSaveInProgress}>
             <EduIf condition={isSaveInProgress}>
               <EduThen>Saving...</EduThen>
@@ -163,11 +184,13 @@ export default connect(
     performanceBandData: getPerformanceBandProfilesSelector(state),
     goalsOptionsData: goalsList(state),
     isSaveInProgress: isFormDataSaving(state),
+    currentFormStatus: formStatus(state),
   }),
   {
     fetchGroupsData: fetchGroupsAction,
     fetchPerformanceBandData: receivePerformanceBandAction,
     fetchGoalsList: actions.getGoalsList,
     saveFormData: actions.saveFormDataRequest,
+    resetFormData: actions.resetFormData,
   }
 )(DataForm)

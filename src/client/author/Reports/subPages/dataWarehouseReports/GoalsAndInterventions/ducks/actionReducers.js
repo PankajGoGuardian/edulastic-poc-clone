@@ -4,6 +4,7 @@ const reduxNamespaceKey = 'reportDwGoalsAndInterventions'
 
 const initialState = {
   form: {
+    status: 'init',
     isSaving: false,
   },
   goals: {
@@ -20,11 +21,15 @@ const slice = createSlice({
   slice: reduxNamespaceKey,
   initialState: { ...initialState },
   reducers: {
+    resetFormData: (state) => {
+      state.form.status = 'init'
+    },
     saveFormDataRequest: (state) => {
       state.form.isSaving = true
     },
     saveFormDataComplete: (state) => {
       state.form.isSaving = false
+      state.form.status = 'finished'
     },
     getGoalsList: (state) => {
       state.goals.isLoading = true
@@ -35,15 +40,6 @@ const slice = createSlice({
     setGoalsList: (state, { payload }) => {
       state.goals.list = payload
     },
-    getGroupList: (state) => {
-      state.goals.isLoading = true
-    },
-    getGroupListComplete: (state) => {
-      state.goals.isLoading = false
-    },
-    setGroupList: (state, { payload }) => {
-      state.group.list = payload
-    },
   },
 })
 
@@ -53,9 +49,7 @@ const {
   getGoalsList,
   getGoalsListComplete,
   setGoalsList,
-  getGroupList,
-  getGroupListComplete,
-  setGroupList,
+  resetFormData,
 } = slice.actions
 
 export const actions = {
@@ -64,9 +58,7 @@ export const actions = {
   getGoalsList,
   getGoalsListComplete,
   setGoalsList,
-  getGroupList,
-  getGroupListComplete,
-  setGroupList,
+  resetFormData,
 }
 
 export const { reducer } = slice

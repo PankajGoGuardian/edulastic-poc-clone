@@ -1,26 +1,45 @@
 import React, { useEffect } from 'react'
 
 import connect from 'react-redux/es/connect/connect'
+import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
 import ActionButton from '../../common/components/ActionButton'
 import StyledTable from '../../common/components/Table'
-import { actions } from '../../ducks/actionReducers'
 import { groupList, isGroupLoading } from '../../ducks/selectors'
 
-const options = [
-  { id: 'summary', label: 'View Summary' },
-  { id: 'trends', label: 'View Trends' },
-  { id: 'attendance', label: 'View Attendance' },
-  { id: 'earlyWarning', label: 'View Early Warning' },
-  { id: 'efficacy', label: 'View Efficacy' },
+// const viewReportOptions = [
+//   { id: 'summary', label: 'View Summary' },
+//   { id: 'trends', label: 'View Trends' },
+//   { id: 'attendance', label: 'View Attendance' },
+//   { id: 'earlyWarning', label: 'View Early Warning' },
+//   { id: 'efficacy', label: 'View Efficacy' },
+// ]
+
+const actionOptions = [
+  { id: 'goal', label: 'Set Goal' },
+  { id: 'trends', label: 'Set Intervention' },
 ]
-const { getGroupList } = actions
-const GroupList = ({ _getGroupList, _groupList, _isGroupLoading }) => {
+
+const GroupList = ({
+  _getGroupList,
+  _groupList,
+  _isGroupLoading,
+  onGoal,
+  onIntervention,
+}) => {
   useEffect(() => {
     _getGroupList()
   }, [])
 
-  const onAction = ({ key }) => {
-    console.log(key)
+  const onAction = (key, record) => {
+    switch (key) {
+      case 'item_1':
+        onGoal(record)
+        break
+      case 'item_2':
+        onIntervention(record)
+        break
+      default:
+    }
   }
 
   const columns = [
@@ -48,20 +67,27 @@ const GroupList = ({ _getGroupList, _groupList, _isGroupLoading }) => {
       align: 'center',
       sorter: (a, b) => a.studentCount - b.studentCount,
     },
+    // {
+    //   key: 'viewReport',
+    //   render: () => {
+    //     return (
+    //       <ActionButton options={options} onAction={onAction}>
+    //         View Reports
+    //       </ActionButton>
+    //     )
+    //   },
+    // },
     {
       key: 'viewReport',
-      render: () => {
+      render: (data, record) => {
         return (
-          <ActionButton options={options} onAction={onAction}>
-            View Reports
+          <ActionButton
+            options={actionOptions}
+            onAction={({ key }) => onAction(key, record)}
+          >
+            Actions
           </ActionButton>
         )
-      },
-    },
-    {
-      key: 'viewReport',
-      render: () => {
-        return <ActionButton>Actions</ActionButton>
       },
     },
   ]
@@ -70,6 +96,10 @@ const GroupList = ({ _getGroupList, _groupList, _isGroupLoading }) => {
       loading={_isGroupLoading}
       dataSource={_groupList || []}
       columns={columns}
+      size="default"
+      pagination={{
+        pageSize: 7,
+      }}
     />
   )
 }
@@ -80,6 +110,6 @@ export default connect(
     _isGroupLoading: isGroupLoading(state),
   }),
   {
-    _getGroupList: getGroupList,
+    _getGroupList: fetchGroupsAction,
   }
 )(GroupList)

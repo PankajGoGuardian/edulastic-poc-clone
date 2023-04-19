@@ -7,16 +7,29 @@ import { StyledReportContainer } from '../../../common/styled'
 import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
-import GITable from './component/GITable'
+// import GITable from './component/GITable'
 import DataForm from './component/DataForm'
 import GroupList from './component/GroupList/GroupList'
+import CreateGroup from './component/CreateGroups'
 
 const { TabPane } = Tabs
 
 const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
   const [activeKey, setActiveKey] = useState('1')
-  const [isSetGoal, setGoal] = useState(false)
-  const [isSetIntervention, setIntervention] = useState(false)
+  const [subActiveKey, setSubActiveKey] = useState('1')
+  const [group, setGroup] = useState()
+
+  const switchSubTab = (key) => {
+    setSubActiveKey(key)
+  }
+
+  const switchTab = (key, _group) => {
+    setGroup(_group)
+    setActiveKey(key)
+    if (_group) {
+      switchSubTab('2')
+    }
+  }
 
   const content = {
     1: [
@@ -26,53 +39,66 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         children: (
           <GroupList
             noDataContent={
-              <FirstScreen content={firstScreenContent[activeKey]} />
+              <FirstScreen
+                content={firstScreenContent[activeKey]}
+                onClick={() => setSubActiveKey('2')}
+              />
             }
+            onGoal={(_group) => switchTab('2', _group)}
+            onIntervention={(_group) => switchTab('3', _group)}
           />
         ),
       },
       {
         key: '2',
         label: `ADD NEW STUDENT GROUP`,
-        children: <>Advance search</>,
+        children: <CreateGroup />,
       },
     ],
     2: [
       {
         key: '1',
         label: `GOAL LIST`,
-        children: isSetGoal ? (
-          <GITable />
-        ) : (
+        children: (
           <FirstScreen
             content={firstScreenContent[activeKey]}
-            handleSet={setGoal}
+            onClick={() => setSubActiveKey('2')}
           />
         ),
       },
       {
         key: '2',
         label: `ADD NEW GOAL`,
-        children: <DataForm view={SAVE_GOAL} />,
+        children: (
+          <DataForm
+            view={SAVE_GOAL}
+            group={group}
+            onCancel={() => switchSubTab('1')}
+          />
+        ),
       },
     ],
     3: [
       {
         key: '1',
         label: `INTERVENTION LIST`,
-        children: isSetIntervention ? (
-          <GITable />
-        ) : (
+        children: (
           <FirstScreen
             content={firstScreenContent[activeKey]}
-            handleSet={setIntervention}
+            onClick={() => setSubActiveKey('2')}
           />
         ),
       },
       {
         key: '2',
         label: `ADD NEW INTERVENTION`,
-        children: <DataForm view={SAVE_INTERVENTION} />,
+        children: (
+          <DataForm
+            view={SAVE_INTERVENTION}
+            group={group}
+            onCancel={() => switchSubTab('1')}
+          />
+        ),
       },
     ],
   }
@@ -81,17 +107,35 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     {
       key: '1',
       label: `STUDENT GROUPS`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
     {
       key: '2',
       label: `GOALS`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
     {
       key: '3',
       label: `INTERVENTION`,
-      children: <MainContainer tabs={content[activeKey]} />,
+      children: (
+        <MainContainer
+          tabs={content[activeKey]}
+          activeKey={subActiveKey}
+          onChange={switchSubTab}
+        />
+      ),
     },
   ]
 
@@ -102,11 +146,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         isCliUser={isCliUser}
         alignment="baseline"
       />
-      <SwitchTabs
-        animated={false}
-        activeKey={activeKey}
-        onChange={(key) => setActiveKey(key)}
-      >
+      <SwitchTabs animated={false} activeKey={activeKey} onChange={switchTab}>
         {items.map((item) => (
           <TabPane tab={item.label} key={item.key}>
             {item.children}

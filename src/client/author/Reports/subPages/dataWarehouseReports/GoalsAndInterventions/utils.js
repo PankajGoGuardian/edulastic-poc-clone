@@ -12,6 +12,7 @@ import {
   APPLICABLE_TO,
   TARGET,
 } from './constants/form'
+import { COURSES } from './constants/groupForm'
 
 const { applicableTo, target } = criteriaFields
 
@@ -29,11 +30,12 @@ const {
 
 export const getOptionsData = ({
   field,
-  optionsData,
+  optionsData = [],
   groupOptions,
   performanceBandOptions,
   targetPerformanceBandOptions,
   goalsOptions,
+  courseData,
 }) => {
   let selectOptions = optionsData
   switch (field) {
@@ -48,6 +50,9 @@ export const getOptionsData = ({
       break
     case RELATED_GOALS_IDS:
       selectOptions = goalsOptions
+      break
+    case COURSES:
+      selectOptions = courseData
       break
     default:
       break
@@ -102,8 +107,9 @@ export const validateAndGetFormattedFormData = (formData) => {
   const fieldsToOmit = []
   let error = false
   let errorMessage = ''
-  const { formType } = formData
-  const formFields = formType === GOAL ? goalFormFields : interventionFormFields
+  const { formType, type } = formData
+  const formFields =
+    formType === GOAL ? goalFormFields(type) : interventionFormFields(type)
   const formSections = Object.keys(formFields)
   formSections.forEach((formSection) => {
     if (error) {

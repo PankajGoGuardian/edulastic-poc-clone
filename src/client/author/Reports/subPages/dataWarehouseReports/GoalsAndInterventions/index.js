@@ -7,7 +7,7 @@ import { StyledReportContainer } from '../../../common/styled'
 import { SubHeader } from '../../../common/components/Header'
 import MainContainer from './component/MainContainer'
 import FirstScreen from './component/FirstScreen'
-// import GITable from './component/GITable'
+import GITable from './component/GITable'
 import DataForm from './component/DataForm'
 import GroupList from './component/GroupList/GroupList'
 import CreateGroup from './component/CreateGroups'
@@ -60,10 +60,11 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
         key: '1',
         label: `GOAL LIST`,
         children: (
-          <FirstScreen
-            content={firstScreenContent[activeKey]}
-            onClick={() => setSubActiveKey('2')}
-          />
+          // <FirstScreen
+          //   content={firstScreenContent[activeKey]}
+          //   onClick={() => setSubActiveKey('2')}
+          // />
+          <GITable />
         ),
       },
       {

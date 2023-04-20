@@ -37,8 +37,8 @@
     "deactivateschool": "Deactivate School",
     "approveSchool": "Approve School",
     "unapproveSchool": "Un-approve School",
-    "createnewschool": "Create New School >",
-    "updateschool": "Update School >",
+    "createnewschool": "Create New School",
+    "updateschool": "Update School",
     "components": {
       "createschool": {
         "name": "Enter School Name",
@@ -51,7 +51,7 @@
       },
       "deactivateschool": {
         "deactivateschools": "Deactivate School(s)",
-        "yesdeactivate": "Yes, Deactivate >",
+        "yesdeactivate": "Yes, Deactivate",
         "schools": "school(s)?",
         "deactivate": "DEACTIVATE",
         "nocancel": "No, Cancel"
@@ -455,7 +455,7 @@
       },
       "archiveclass": {
         "title": "Archive Class(es)",
-        "yesarchive": "Yes, Archive >",
+        "yesarchive": "Yes, Archive",
         "nocancel": "No, Cancel",
         "classes": "Class(es) ?",
         "archivetext": "ARCHIVE"
@@ -475,7 +475,7 @@
     "courseid": "Course Id",
     "createcourse": "+ Create Course",
     "addcourse": "Add Course",
-    "updatecourse": "Update Course >",
+    "updatecourse": "Update Course",
     "showactivecourse": "Show active courses only",
     "deactivatecoursemodal": {
       "title": "Deactivate course(s)",

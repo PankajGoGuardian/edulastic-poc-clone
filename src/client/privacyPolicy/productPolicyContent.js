@@ -9,7 +9,7 @@ const ProductPolicyContent = () => {
         <strong> Privacy Policy for Product Users </strong>
       </StickyHeader>
       <div>
-        <p>Last Updated Date: March 15, 2023</p>
+        <p>Last Updated Date: April 24, 2023</p>
         <h2>
           <strong> Introduction </strong>
         </h2>
@@ -323,16 +323,14 @@ const ProductPolicyContent = () => {
           <li>
             <em> Activity Information: </em> Depending on a School’s currently
             selected GoGuardian Offerings, features, integrations and settings,
-            GoGuardian may collect additional information, from or about online
-            account or any activity when a user is logged on the school-managed
-            accounts and devices, including chats (within GoGuardian Teacher),
-            video conferencing recordings (including audio and videos of
-            participating Students and chats included in a video conference)
-            (within GoGuardian Teacher), a student’s browsing history, IP
-            address, online content, screenshots, and key percentage variance
-            ((but not the actual inputs or sequence of inputs) to identify
-            patterns like gaming) collected when the user is logged on to the
-            school-managed device or account.
+            GoGuardian may collect additional information, from or about
+            school-managed accounts or devices and online activity, including
+            chats (within GoGuardian Teacher), video conferencing recordings
+            (including audio and videos of participating Students and chats
+            included in a video conference) (within GoGuardian Teacher), a
+            student’s browsing history, IP address, online content, screenshots,
+            and key percentage variance ((but not the actual inputs or sequence
+            of inputs) to identify patterns like gaming).
           </li>
           <li>
             <em> Grade, Attendance, and Assignment Information: </em> Depending
@@ -477,12 +475,12 @@ const ProductPolicyContent = () => {
           <li>
             <em>
               Student’s School-Managed Account Information and Association
-              Information
-            </em>
-            : TutorMe’s Offerings collect a students’ full name, email address
-            and password. Additionally, TutorMe offerings may also need to
-            associate a student with a particular teacher’s classroom by using a
-            Google classroom identifier or other identifier.
+              Information:
+            </em>{' '}
+            TutorMe’s Offerings collect a students’ full name, email address and
+            password. Additionally, TutorMe offerings may also need to associate
+            a student with a particular teacher’s classroom by using a Google
+            classroom identifier or other identifier.
           </li>
           <li>
             <em> Activity Information: </em>TutorMe may collect additional
@@ -495,9 +493,9 @@ const ProductPolicyContent = () => {
           <li>
             <em> Device and Usage Information: </em>TutorMe collects general
             device and usage information such as IP address, device identifier,
-            operating system, browser type, non-precise geographic location
-            (country and city), technical information about device and date and
-            time stamps associated with logins.
+            operating system, browser type, non-precise geographic location,
+            technical information about device and date and time stamps
+            associated with logins.
           </li>
           <li>
             <em> Integration Information: </em>If you school chooses to
@@ -523,16 +521,16 @@ const ProductPolicyContent = () => {
           <li>
             <em>
               Student’s School-Managed Account Information and Association
-              Information
-            </em>
-            : For students who log into Giant Steps with a School-Managed
-            Account, we collect student’s name, email address, the
-            school-managed account ID (for example the Google ID or Microsoft
-            ID), as well as identifiers and associated information necessary to
-            associate a student with a certain device, account, session, teacher
-            and/or school. When a student joins a session with a code in
-            anonymous mode, we do not collect student name or email address to
-            join such session.
+              Information:
+            </em>{' '}
+            For students who log into Giant Steps with a School-Managed Account,
+            we collect student’s name, email address, the school-managed account
+            ID (for example the Google ID or Microsoft ID), as well as
+            identifiers and associated information necessary to associate a
+            student with a certain device, account, session, teacher and/or
+            school. When a student joins a session with a code in anonymous
+            mode, we do not collect student name or email address to join such
+            session.
           </li>
           <li>
             <em> Activity Information: </em>We collect additional information

@@ -134,14 +134,6 @@ class EditDistrictAdminModal extends Component {
           <Col span={24}>
             <ModalFormItem label={t('users.districtadmin.lastname')}>
               {getFieldDecorator('lastName', {
-                rules: [
-                  {
-                    required: true,
-                    message: t(
-                      'users.districtadmin.editda.validations.lastname'
-                    ),
-                  },
-                ],
                 initialValue: _source.lastName,
               })(
                 <Input

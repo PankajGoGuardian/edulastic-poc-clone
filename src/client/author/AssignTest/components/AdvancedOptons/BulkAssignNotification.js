@@ -12,6 +12,7 @@ import {
 } from '../../../../common/components/Notification'
 
 const collectionName = 'AsyncAssignmentsStatus'
+const notificationDuration_5sec = 5
 
 const NotificationListener = ({ user }) => {
   const [notificationIds, setNotificationIds] = useState([])
@@ -32,6 +33,7 @@ const NotificationListener = ({ user }) => {
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
       const { processStatus, tests, playlistModuleTitle } = doc
+      const isQAenv = process.env.REACT_APP_QA_ENV
       if (
         processStatus === assignmentStatusOptions.DONE &&
         !notificationIds.includes(doc.__id)
@@ -43,7 +45,7 @@ const NotificationListener = ({ user }) => {
         if (playlistModuleTitle && Object.values(tests)?.length > 1) {
           message = `<b>${playlistModuleTitle}</b> is assigned successfully to the class(es)`
         }
-        notificationMessage({
+        const notificationMsg = {
           title: 'Assign Assignment',
           message,
           notificationPosition: 'bottomRight',
@@ -51,7 +53,11 @@ const NotificationListener = ({ user }) => {
           onCloseNotification: () => {
             deleteNotificationDocument(doc.__id)
           },
-        })
+        }
+        if (isQAenv) {
+          notificationMsg.duration = notificationDuration_5sec
+        }
+        notificationMessage(notificationMsg)
       }
     })
   }

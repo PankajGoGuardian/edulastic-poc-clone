@@ -43,7 +43,7 @@ const AttendanceSummary = ({ settings }) => {
   useErrorNotification(errorMsg, error)
 
   return (
-    <Widget aspectRatio="32 / 9" width="100%" margin="30px auto 0 auto">
+    <Widget aspectRatio="32 / 9" width="100%">
       <WidgetHeader title={title} />
       <EduIf condition={loading}>
         <EduThen>

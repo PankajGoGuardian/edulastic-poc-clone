@@ -19,6 +19,7 @@ import RiskTimelineFilters from './RiskTimelineFilters'
 import SimpleLineChart from '../../../../../../common/components/charts/SimpleLineChart'
 import { getTimelineChartData, CHART_LABEL_KEY } from '../../../utils'
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
+import { Spacer } from '../../../../../../../../common/styled'
 
 const title = 'Risk Over Time'
 
@@ -69,11 +70,13 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   return (
     <Widget>
       <FlexContainer justifyContent="space-between">
-        <WidgetHeader title={title} />
-        <RiskTimelineFilters
-          filters={widgetFilters}
-          setWidgetFilters={setWidgetFilters}
-        />
+        <WidgetHeader title={title}>
+          <Spacer />
+          <RiskTimelineFilters
+            filters={widgetFilters}
+            setWidgetFilters={setWidgetFilters}
+          />
+        </WidgetHeader>
       </FlexContainer>
 
       <EduIf condition={loading}>

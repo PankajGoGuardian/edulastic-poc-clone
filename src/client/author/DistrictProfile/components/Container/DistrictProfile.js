@@ -9,7 +9,7 @@ import { roleuser } from '@edulastic/constants'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import DistrictProfileForm from '../DistrictProfileForm/DistrictProfileForm'
-import { Spacer, StyledLayout, SubHeader, DropdownWrapper } from './styled'
+import { StyledLayout, SubHeader, DropdownWrapper } from './styled'
 import {
   getUserRole,
   getSaSchoolsSortedSelector,
@@ -20,6 +20,7 @@ import { receiveSchoolProfileAction } from '../../ducks'
 import { getSchoolAdminSettingsAccess } from '../../../DistrictPolicy/ducks'
 import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { MainWrapper } from '../../../src/components/common/AdminHeader/styled'
+import { Spacer } from '../../../../common/styled'
 
 const title = 'Manage District'
 

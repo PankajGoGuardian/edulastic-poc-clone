@@ -87,10 +87,6 @@ export const SubHeader = styled.div`
   padding: 15px 30px;
 `
 
-export const Spacer = styled.span`
-  flex-grow: 1;
-`
-
 export const StyledButton = styled(Button)`
   margin-left: 5px;
 `

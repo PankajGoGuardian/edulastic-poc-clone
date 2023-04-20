@@ -422,3 +422,7 @@ export const StyledSelect = styled(Select)`
     }
   }
 `
+
+export const Spacer = styled.span`
+  flex-grow: 1;
+`

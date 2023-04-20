@@ -12,6 +12,7 @@ import { reportUtils } from '@edulastic/constants'
 import { reportNavType } from '@edulastic/constants/const/report'
 import { get, isEmpty } from 'lodash'
 import React, { useMemo } from 'react'
+import qs from 'qs'
 import SimplePieChart from '../../../../common/components/charts/SimplePieChart'
 import useErrorNotification from '../../../../common/hooks/useErrorNotification'
 import { DashedLine } from '../../../../common/styled'
@@ -27,6 +28,7 @@ import WidgetCell from './WidgetCell'
 import WidgetHeader from './WidgetHeader'
 import { getDateLabel, getTrendPeriodLabel } from '../utils'
 import { transformRiskSummaryData } from '../../EarlyWarningReport/utils'
+import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
 
 const {
   RISK_BAND_COLOR_INFO,
@@ -79,12 +81,21 @@ const RiskSummary = ({ settings, loc = '' }) => {
 
   const widgetWidth =
     loc === reportNavType.DW_EARLY_WARNING_REPORT ? '40%' : '100%'
+  const externalUrl = `${DW_EARLY_WARNING_REPORT_URL}?${qs.stringify(
+    settings.requestFilters
+  )}`
 
   return (
     <Widget width={widgetWidth}>
       <FlexContainer justifyContent="left" alignItems="center">
-        <WidgetHeader title={title} date={periodLabel} loading={loading} />
-        <StyledText>{periodLabel}</StyledText>
+        <WidgetHeader
+          title={title}
+          date={periodLabel}
+          loading={loading}
+          url={externalUrl}
+        >
+          <StyledText>{periodLabel}</StyledText>
+        </WidgetHeader>
       </FlexContainer>
       <EduIf condition={loading}>
         <EduThen>

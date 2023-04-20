@@ -9,7 +9,7 @@ import TableSection from './components/TableSection'
 import RiskSummary from '../common/components/RiskSummaryWidget'
 import {
   WidgetsContainer,
-  StyledDiv,
+  WidgetColumn,
 } from '../common/components/styledComponents'
 
 function ReportView({
@@ -41,10 +41,10 @@ function ReportView({
           setWidgetFilters={setAcademicSummaryFilters}
           settings={settings}
         />
-        <StyledDiv>
+        <WidgetColumn>
           <RiskSummary settings={settings} />
           <AttendanceSummary settings={settings} />
-        </StyledDiv>
+        </WidgetColumn>
       </WidgetsContainer>
       <TableSection
         location={location}

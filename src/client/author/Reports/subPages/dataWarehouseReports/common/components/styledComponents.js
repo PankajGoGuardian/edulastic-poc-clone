@@ -97,8 +97,8 @@ export const Widget = styled.div`
 export const WidgetHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding-right: 20px;
+  width: 100%;
+  gap: 20px;
   .title {
     font-size: 15px;
     font-weight: bold;
@@ -106,6 +106,9 @@ export const WidgetHeaderWrapper = styled.div`
     padding: 11px 40px;
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
+  }
+  svg {
+    margin: auto 20px;
   }
 `
 export const ContentWrapper = styled.div`
@@ -181,6 +184,9 @@ export const ReportDescription = styled.div`
     align-items: center;
   }
 `
-export const StyledDiv = styled.div`
+export const WidgetColumn = styled.div`
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: inherit;
 `

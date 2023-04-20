@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { capitalize, isEmpty, reject } from 'lodash'
+import { capitalize, isEmpty, reject, isNil, groupBy as _groupBy } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
-import { staticDropDownData } from '../../../utils/constants'
+import { staticDropDownData, compareByEnums } from '../../../utils/constants'
 import { allFilterValue } from '../../../../../../common/constants'
 
 function useFiltersFromURL({
@@ -27,6 +27,7 @@ function useFiltersFromURL({
   classList,
   groupList,
   courseList,
+  demographics,
 }) {
   useEffect(() => {
     if (isEmpty(filtersData)) return
@@ -36,55 +37,114 @@ function useFiltersFromURL({
         selectedFilterTagsData: {},
       })
     } else {
+      const {
+        termId,
+        subjects,
+        grades,
+        periodType,
+        schoolIds,
+        teacherIds,
+        classIds,
+        groupIds,
+        courseId,
+        race,
+        gender,
+        iepStatus,
+        frlStatus,
+        ellStatus,
+        hispanicEthnicity,
+        customPeriodStart,
+        customPeriodEnd,
+        groupBy,
+        profileId,
+      } = search
       const urlSchoolYear =
-        schoolYears.find((item) => item.key === search.termId) ||
+        schoolYears.find((item) => item.key === termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
         (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
       const urlSubjects = staticDropDownData.subjects.filter(
-        (item) => search.subjects && search.subjects.includes(item.key)
+        (item) => subjects && subjects.includes(item.key)
       )
       const urlGrades = staticDropDownData.grades.filter(
-        (item) => search.grades && search.grades.includes(item.key)
+        (item) => grades && grades.includes(item.key)
       )
       const urlPeriod =
-        staticDropDownData.periodTypes.find(
-          (a) => a.key === search.periodType
-        ) || staticDropDownData.periodTypes[0]
+        staticDropDownData.periodTypes.find((a) => a.key === periodType) ||
+        staticDropDownData.periodTypes[0]
 
-      const getFilterTagsValue = (list, data) => {
-        return !isEmpty(list)
+      const getClassFilterTagsValue = (list, data) => {
+        return !isEmpty(list) && !isNil(data)
           ? list
               .filter((item) => data.includes(item._id))
-              .map((itemObj) => ({ key: itemObj._id, title: itemObj.title }))
+              .map((itemObj) => ({
+                key: itemObj._id,
+                title: itemObj.title ? itemObj.title : itemObj.name,
+              }))
           : { key: '', title: '' }
       }
-      const schools = getFilterTagsValue(schoolList, search.schoolIds)
-      const teachers = getFilterTagsValue(teacherList, search.teacherIds)
-      const classes = getFilterTagsValue(classList, search.classIds)
-      const groups = getFilterTagsValue(groupList, search.groupIds)
-      const courses = getFilterTagsValue(courseList, [search.courseId])
+      const schools = getClassFilterTagsValue(schoolList, schoolIds)
+      const teachers = getClassFilterTagsValue(teacherList, teacherIds)
+      const classes = getClassFilterTagsValue(classList, classIds)
+      const groups = getClassFilterTagsValue(groupList, groupIds)
+      const courses = getClassFilterTagsValue(courseList, [courseId])
+
+      const demographicsGroupByKeys = _groupBy(demographics, 'key') || {}
+      const getDemographicsFilterTagValue = (fieldName, searchValue) => {
+        const dataList = demographicsGroupByKeys[fieldName]?.data || []
+        if (!isEmpty(dataList) && !isNil(searchValue)) {
+          return searchValue !== capitalize(allFilterValue)
+            ? dataList.find((item) => item.title === searchValue)
+            : { key: '', title: '' }
+        }
+        return { key: '', title: '' }
+      }
+
+      const raceFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.RACE,
+        race
+      )
+      const genderFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.GENDER,
+        gender
+      )
+      const iepStatusFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.IEP_STATUS,
+        iepStatus
+      )
+      const frlStatusFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.FRL_STATUS,
+        frlStatus
+      )
+      const ellStatusFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.ELL_STATUS,
+        ellStatus
+      )
+      const hispanicEthnicityFilterTag = getDemographicsFilterTagValue(
+        compareByEnums.HISPANIC_ETHNICITY,
+        hispanicEthnicity
+      )
 
       const _filters = {
         termId: urlSchoolYear.key,
-        schoolIds: search.schoolIds || '',
-        teacherIds: search.teacherIds || '',
+        schoolIds: schoolIds || '',
+        teacherIds: teacherIds || '',
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         grades: urlGrades.map((item) => item.key).join(',') || '',
-        courseId: search.courseId || capitalize(allFilterValue),
-        classIds: search.classIds || '',
-        groupIds: search.groupIds || '',
+        courseId: courseId || capitalize(allFilterValue),
+        classIds: classIds || '',
+        groupIds: groupIds || '',
 
-        race: search.race || allFilterValue,
-        gender: search.gender || allFilterValue,
-        iepStatus: search.iepStatus || allFilterValue,
-        frlStatus: search.frlStatus || allFilterValue,
-        ellStatus: search.ellStatus || allFilterValue,
-        hispanicEthnicity: search.hispanicEthnicity || allFilterValue,
+        race: race || allFilterValue,
+        gender: gender || allFilterValue,
+        iepStatus: iepStatus || allFilterValue,
+        frlStatus: frlStatus || allFilterValue,
+        ellStatus: ellStatus || allFilterValue,
+        hispanicEthnicity: hispanicEthnicity || allFilterValue,
         periodType: urlPeriod.key,
-        customPeriodStart: search.customPeriodStart,
-        customPeriodEnd: search.customPeriodEnd,
-        groupBy: search.groupBy,
-        profileId: search.profileId,
+        customPeriodStart,
+        customPeriodEnd,
+        groupBy,
+        profileId,
       }
       if (userRole === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -99,7 +159,13 @@ function useFiltersFromURL({
         teacherIds: teachers,
         classIds: classes,
         groupIds: groups,
-        courseIds: courses,
+        courseId: courses,
+        race: raceFilterTag,
+        gender: genderFilterTag,
+        iepStatus: iepStatusFilterTag,
+        frlStatus: frlStatusFilterTag,
+        ellStatus: ellStatusFilterTag,
+        hispanicEthnicity: hispanicEthnicityFilterTag,
       }
 
       // set filterTagsData, filters and testId
@@ -115,7 +181,7 @@ function useFiltersFromURL({
         })
         fetchUpdateTagsData({
           schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject([search.courseId], isEmpty),
+          courseIds: reject([courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
           teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),

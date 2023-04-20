@@ -119,6 +119,7 @@ const Filters = ({
     classList,
     groupList,
     courseList,
+    demographics,
   })
 
   useEffect(() => {

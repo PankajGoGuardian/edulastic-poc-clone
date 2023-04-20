@@ -11,7 +11,7 @@ const EulaPolicyContent = () => {
         </strong>
       </StickyHeader>
       <div>
-        <p>Last Updated Date: February 14, 2023</p>
+        <p>Last Updated Date: April 24, 2023</p>
         <p>
           <strong>Introduction </strong>
         </p>
@@ -136,7 +136,9 @@ const EulaPolicyContent = () => {
           We generally make our Offerings available on a paid subscription-based
           license. As further described in Section 4.1, from time to time and in
           its sole discretion, we may offer limited free, trial or beta
-          Offerings at no additional charge.
+          Offerings at no additional charge. For the TutorMe Offerings, we may
+          offer pre-paid tutoring hours for a subscription term, in addition to
+          the paid subscription-based licensing model.
         </p>
         <p>
           <strong> 1.1 Ordering </strong>
@@ -177,13 +179,13 @@ const EulaPolicyContent = () => {
         <p>
           Before accessing certain Offerings, you may be required to create an
           Account. When setting up your Account, you may link your Offerings
-          with your Google and/or Microsoft account for ease of sign on and, for
-          certain Offerings, to pull in a directory of Managed Accounts or
-          Devices. In linking your Account to your Google and/or Microsoft
-          account, you are granting us access to certain account information
-          from your Google and/or Microsoft account, as permitted under the
-          applicable terms and conditions that govern your use of that Google or
-          Microsoft account.
+          with your Google, Microsoft, and/or Learning Management System (“LMS”)
+          account for ease of sign on and, for certain Offerings, to pull in a
+          directory of Managed Accounts or Devices. In linking your Account to
+          your Google, Microsoft, and/or LMS account, you are granting us access
+          to certain account information from your Google, Microsoft, and/or LMS
+          account, as permitted under the applicable terms and conditions that
+          govern your use of that Google, Microsoft, or LMS account.
         </p>
         <p>
           <strong> 1.2.1 Authorized Users </strong>
@@ -278,13 +280,37 @@ const EulaPolicyContent = () => {
           >
             <strong> support@edulastic.com</strong>
           </a>
-          , or visit the the Giant Steps
+          , or visit the TutorMe
           <a
-            href="https://support.giantsteps.app/"
+            href="https://help.tutorme.com/en/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <strong> Help Center</strong>
+            <strong> Help Center </strong>
+          </a>
+          and/or contact
+          <a
+            href="mailto:support@tutorme.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong> support@tutorme.com</strong>
+          </a>
+          , or visit the Giant Steps
+          <a
+            href="https://support.giantsteps.app/s/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong> Help Center </strong>
+          </a>
+          and/or contact
+          <a
+            href="mailto:support@giantsteps.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong> support@giantsteps.app </strong>
           </a>
           .
         </p>
@@ -380,14 +406,15 @@ const EulaPolicyContent = () => {
           You acknowledge that you may experience downtime (a) as a result of
           our conducting maintenance; or (b) in connection with a force majeure
           event (as described in Section 16.5). In addition, you acknowledge
-          that we, may at our discretion, suspend your access to the Offerings
-          for your breach of this Agreement, if we have reasonable grounds to
-          suspect that any School Account Information provided by you or any
-          Authorized User is untrue, inaccurate, not current or incomplete, or
-          if we deem it reasonably necessary to avoid or mitigate harm to us,
-          you, any other of our customers or a third party if the Offerings were
-          not suspended, or to comply, in our sole discretion, with legal
-          requirements.
+          that we, may at our discretion, suspend your access, or suspend access
+          of one of your Authorized Users, to the Offerings for your breach, or
+          your Authorized Users’ breach, of this Agreement, if we have
+          reasonable grounds to suspect that any School Account Information
+          provided by you or any Authorized User is untrue, inaccurate, not
+          current or incomplete, or if we deem it reasonably necessary to avoid
+          or mitigate harm to us, you, any other of our customers or a third
+          party if the Offerings were not suspended, or to comply, in our sole
+          discretion, with legal requirements.
         </p>
         <p>
           <strong> 2.3 Integrations with Offerings. </strong>
@@ -445,7 +472,7 @@ const EulaPolicyContent = () => {
         <p>
           We hereby grant to you a limited, non-exclusive, non-transferable,
           non-sublicensable, revocable license and right to use the specific
-          Offering(s) set forth in an Order Form and the related User
+          Offering(s) as set forth in an Order Form and the related User
           Documentation, during the Subscription Term and solely for School’s
           internal business purposes.
         </p>
@@ -535,9 +562,9 @@ const EulaPolicyContent = () => {
             rightfully operated.
           </li>
           <li>
-            To do anything, including posting information that is abusive,
-            harmful, threatening, harassing, libelous, bullying, stalking, or
-            otherwise objectionable.
+            To do anything, including posting or otherwise communicating any
+            information that is abusive, harmful, threatening, harassing,
+            libelous, bullying, stalking, or otherwise objectionable.
           </li>
           <li>
             To do anything unlawful, deceptive, misleading, illegal, unethical,
@@ -972,9 +999,9 @@ const EulaPolicyContent = () => {
             This Section explains that some GoGuardian Offerings are designed to
             generate alerts and/or have other notification features, and that,
             through your settings, you have some ability to control whether to
-            receive certain alerts and/or notifications . It is important for
-            you to understand these features and settings, and to review alerts
-            and notifications carefully and promptly so that you can properly
+            receive certain alerts and/or notifications. It is important for you
+            to understand these features and settings, and to review alerts and
+            notifications carefully and promptly so that you can properly
             intervene to help students stay safe.
           </em>
         </p>
@@ -1058,18 +1085,18 @@ const EulaPolicyContent = () => {
           (“Content”) is the sole responsibility of the person from which such
           Content originated. All such Content that is uploaded into or
           generated in any Offerings by or on behalf of you or your Authorized
-          Users shall be referred to herein as “Your Content”.
+          Users shall be referred to herein as Your Content.
         </p>
         <p>
           10.1.2 You should be aware that Content, other than Your Content, made
-          available as part of any Offerings, including but not limited to third
-          party-advertisements and sponsored-Content, may be protected by
-          intellectual property rights which are owned by the third party that
-          provided that Content to us (or by other persons or companies on their
-          behalf). You may not modify, rent, lease, loan, sell, distribute or
-          create derivative works based on such Content (either in whole or in
-          part) unless you have been specifically told that you may do so by us
-          or by the owners of such Content, in a separate agreement.
+          available as part of any Offerings, including but not limited to
+          licensed and sponsored-Content, may be protected by intellectual
+          property rights which are owned by the third party that provided that
+          Content to us (or by other persons or companies on their behalf). You
+          may not modify, rent, lease, loan, sell, distribute or create
+          derivative works based on such Content (either in whole or in part)
+          unless you have been specifically told that you may do so by us or by
+          the owners of such Content, in a separate agreement.
         </p>
         <p>
           10.1.3 We reserve the right (but shall have no obligation) to
@@ -1083,7 +1110,7 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           10.1.5 You agree that you are solely responsible for (and that neither
-          Liminex nor any Liminex Parties from which you purchased anyOfferings
+          Liminex nor any Liminex Parties from which you purchased any Offerings
           have any responsibility to you or to any third party for) any Content
           that you create, transmit or display while using any Offering and for
           the consequences of your actions (including any loss or damage which
@@ -1187,7 +1214,7 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           10.4.1 The Offerings may include hyperlinks to other websites or
-          resources that are controlled, owned or operated by third parties.You
+          resources that are controlled, owned or operated by third parties. You
           acknowledge and agree that we have no control over any such websites
           or resources and you access and use such websites and resources at
           your own risk.
@@ -1240,7 +1267,7 @@ const EulaPolicyContent = () => {
           10.5.3 If you choose to submit Your Content to become part of the
           Community Galleries (“Your Gallery Submission”), you direct and
           authorize Liminex and its affiliates to host, link to, and otherwise
-          incorporate Your Gallery Submission into anyOffering, and you hereby
+          incorporate Your Gallery Submission into any Offering, and you hereby
           grant to Liminex and its Affiliates, and the Other Content Users an
           irrevocable, perpetual, worldwide, royalty-free, non-exclusive license
           to:
@@ -1272,7 +1299,7 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           10.5.5 You represent and warrant that (a) you own or have obtained the
-          necessary legal rights to provide Your Gallery Submissions, and will
+          necessary legal rights to provide Your Gallery Submissions and will
           maintain these rights for as long as Your Gallery Submission is made
           available to Other Content Users; and (b) all of Your Gallery
           Submissions abide by the posted Program Policies.
@@ -1625,16 +1652,16 @@ const EulaPolicyContent = () => {
             Exceptions: Litigation of Intellectual Property and Small Claims
             Court Claims{' '}
           </em>
-          Claims concerning patents, copyrights, moral rights, trademarks, and
-          trade secrets, and Claims of piracy or unauthorized use of any
-          Offering shall not be subject to arbitration under this Section
-          15.2.1. In addition, the parties may choose to pursue a Claim in small
-          claims court where jurisdiction and venue over the parties otherwise
-          qualify for such small claims court and where the Claim does not
-          include a request for any type of equitable relief.
+          concerning patents, copyrights, moral rights, trademarks, and trade
+          secrets, and Claims of piracy or unauthorized use of any Offering
+          shall not be subject to arbitration under this Section 15.2.1. In
+          addition, the parties may choose to pursue a Claim in small claims
+          court where jurisdiction and venue over the parties otherwise qualify
+          for such small claims court and where the Claim does not include a
+          request for any type of equitable relief.
         </p>
         <p>
-          <em> Authority of Arbitrator </em>In binding arbitration, the
+          <em> Authority of Arbitrator: </em>In binding arbitration, the
           arbitrator shall have the authority (a) to grant motions dispositive
           of all or part of any Claim; (b) to award monetary damages; and (c) to
           grant any non-monetary remedy or relief available to an individual
@@ -1648,7 +1675,7 @@ const EulaPolicyContent = () => {
           binding upon you and us.
         </p>
         <p>
-          <em> Confidentiality </em>All aspects of the arbitration proceeding,
+          <em> Confidentiality: </em>All aspects of the arbitration proceeding,
           including but not limited to the award of the arbitrator and
           compliance therewith, shall be strictly confidential. Both parties
           agree to maintain confidentiality unless otherwise required by law.
@@ -1833,17 +1860,24 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           17.2<strong> Activity Information </strong>means information about
-          online account and activity collected at the Account level, in
+          online account and activity collected at the Authorized User level, in
           connection with Managed Devices or Accounts, including, for GoGuardian
           Offerings, chats (within GoGuardian Teacher), a student’s browsing
           history, IP address automatically collected by GoGuardian, online
           content, screenshots, and key input patterns (but not the actual
-          inputs) to identify behaviors like gaming, and, for Pear Deck
-          Offerings, information about the student’s activity within a
-          presentation, including engagement with and any student content
-          generated in the session, and, Your Content that is uploaded into or
-          generated in any Offerings. This may include free text, multiple
-          choice answers, drawings, or URLs.
+          inputs) to identify behaviors like gaming, and for Pear Deck Offerings
+          and Giant Steps Offerings, information about the student’s activity
+          within a presentation or session, including engagement with and any
+          student content generated in the session, and, Your Content that is
+          uploaded into or generated in any Offerings. This may include free
+          text, multiple choice answers, drawings, or URLs. For Edulastic
+          Offerings, information from or about any activity when an Authorized
+          User is logged on, including audio recordings in an assessment may be
+          collected. TutorMe may collect additional information, from or about
+          any activity when an Authorized User is logged on including, chats,
+          audio and video recording during virtual tutoring sessions, free text
+          or drawings on the whiteboard during virtual tutoring sessions, and
+          documents submitted to the TutorMe Writing Lab.
         </p>
         <p>
           17.3<strong> Affiliate </strong>means any entity that directly or
@@ -1948,19 +1982,19 @@ const EulaPolicyContent = () => {
           Users.
         </p>
         <p>
-          17.15<strong> Liminex </strong>
-          <strong> Information </strong>means (a) all Deidentified Information;
-          and (b) any information collected by Liminex or its Affiliates
-          independently and without access to, reference to or use of any School
-          Account Information, Personal Student Information, Parent/Guardian
-          Information, School Log and Cookie Information, or Activity
-          Information.
+          17.15<strong> Liminex Information </strong>
+          means (a) all Deidentified Information; and (b) any information
+          collected by Liminex or its Affiliates independently and without
+          access to, reference to or use of any School Account Information,
+          Personal Student Information, Parent/Guardian Information, School Log
+          and Cookie Information, or Activity Information.
         </p>
         <p>
           17.16<strong> Offering </strong>mean any product or service, including
           Professional Services, made available by Liminex or its Affiliates,
           including the GoGuardian Offerings, the Pear Deck Offerings, the
-          Edulastic Offerings, and the Giant Steps Offerings.
+          Edulastic Offerings, the TutorMe Offerings, and the Giant Steps
+          Offerings.
         </p>
         <p>
           17.16.1<strong> GoGuardian Offering(s) </strong>means Liminex’s suite
@@ -1983,16 +2017,22 @@ const EulaPolicyContent = () => {
           provided under the Giant Steps brand, other than the Websites.
         </p>
         <p>
+          17.16.5 <strong> TutorMe Offering(s) </strong> means Liminex’s suite
+          of products and services, including Professional Services, provided
+          under the TutorMe brand, other than the Websites.
+        </p>
+        <p>
           17.17 <strong> Liminex Parties </strong>means Liminex, its Affiliates,
-          including Pear Deck and Edulastic, and each of their respective
+          including Pear Deck, Edulastic, TutorMe, and each of their respective
           licensors, suppliers, officers, directors, employees, shareholders,
           agents and representatives.
         </p>
         <p>
           17.18<strong> Licensed Capacity </strong>means the number of licenses
           to an Offering covered by a Subscription during a Subscription Term
-          (e.g., depending on the particular offering, the number of accounts,
-          authorized devices, installations, seats).
+          (e.g., depending on the particular offering and licensing model
+          indicated on the Order Form, the number of accounts, authorized
+          devices, installations, seats, or tutoring hours).
         </p>
         <p>
           17.19<strong> Managed Device or Account </strong>means any device
@@ -2036,7 +2076,7 @@ const EulaPolicyContent = () => {
           attendance data, and location information to the extent collected)
           that may, alone or in combination with other available information, be
           reasonably used to identify a current or former student enrolled in a
-          K-12 School, including Educational Records defined herein.
+          School, including Educational Records defined herein.
         </p>
         <p>
           17.24<strong> Professional Services </strong>means any supplemental
@@ -2048,11 +2088,11 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           17.25<strong> School </strong>means the school, school district,
-          corporation, organization or other legal entity identified on an Order
-          Form on whose behalf the individual accepts this Agreement and, and
-          any Affiliates of that school, school district, corporation,
-          organization or other legal entity have entered into Order Form(s)
-          (for so long as they remain Affiliates).
+          corporation, organization, college, university, or other legal entity
+          identified on an Order Form on whose behalf the individual accepts
+          this Agreement and, and any Affiliates of that school, school
+          district, corporation, organization or other legal entity have entered
+          into Order Form(s) (for so long as they remain Affiliates).
         </p>
         <p>
           17.26<strong> School Account Information </strong>means School Profile
@@ -2122,13 +2162,29 @@ const EulaPolicyContent = () => {
           >
             <strong> Help Center</strong>
           </a>
-          , or the Giant Steps
+          , the Giant Steps
           <a
             href="https://support.giantsteps.app/"
             target="_blank"
             rel="noopener noreferrer"
           >
             <strong> Help Center</strong>
+          </a>
+          , the TutorMe
+          <a
+            href="https://help.tutorme.com/en/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong> Help Center</strong>
+          </a>
+          , the
+          <a
+            href="https://tutorme.com/policies/code-of-conduct"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong> Code of Conduct - TutorMe</strong>
           </a>
           , or such other URL we identify from time to time, and any other
           materials we provide as part of the Offerings, all as may be updated

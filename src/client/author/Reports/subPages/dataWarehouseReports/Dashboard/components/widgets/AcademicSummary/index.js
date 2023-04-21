@@ -86,6 +86,7 @@ const AcademicSummary = ({
     avgScorePercentage,
     aboveStandardPercentage,
     scoreTrendPercentage,
+    showFooter,
   } = useMemo(() => getAcademicSummaryMetrics(data), [data])
 
   const avgScoreCellColor = useMemo(() => {
@@ -93,7 +94,7 @@ const AcademicSummary = ({
     return getCellColor(avgScore, selectedPerformanceBand)
   }, [data, selectedPerformanceBand])
 
-  const { result: { bandDistribution = [], postPeriod } = {} } = data || {}
+  const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
 
   const _filters = {
     ...settings.requestFilters,
@@ -103,12 +104,14 @@ const AcademicSummary = ({
 
   const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
 
-  const trendPeriodLabel = getTrendPeriodLabel(
-    settings.requestFilters.periodType,
-    postPeriod,
-    trendPeriodPrefix,
-    trendPeriodDateFormat
-  )
+  const trendPeriodLabel = showFooter
+    ? getTrendPeriodLabel(
+        settings.requestFilters.periodType,
+        prePeriod,
+        trendPeriodPrefix,
+        trendPeriodDateFormat
+      )
+    : ''
 
   const hasContent = !isEmpty(bandDistribution)
   const errorMsg = 'Error fetching Academic Summary data.'
@@ -143,6 +146,7 @@ const AcademicSummary = ({
                     value={`${avgScorePercentage}%`}
                     footer={
                       <Footer
+                        isVisible={showFooter}
                         value={scoreTrendPercentage}
                         period={`${trendPeriodLabel}`}
                         showPercentage

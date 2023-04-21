@@ -3,6 +3,7 @@ import {
   percentage,
   curateApiFiltersQuery,
 } from '@edulastic/constants/reportUtils/common'
+import { lightGreen12, lightRed7 } from '@edulastic/colors'
 import { isEmpty, round, sumBy } from 'lodash'
 import {
   academicSummaryFiltersTypes,
@@ -42,14 +43,15 @@ export const getAcademicSummaryMetrics = (rawData) => {
     periodAvgScore,
     aboveStandardStudents,
     bandDistribution,
+    prePeriod,
   } = rawData.result
-
+  const showFooter = !isEmpty(prePeriod)
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
   const avgScorePercentage = round(avgScore * 100)
   const periodAvgScorePercentage = round(periodAvgScore * 100)
-  const scoreTrendPercentage = round(
-    avgScorePercentage - periodAvgScorePercentage
-  )
+  const scoreTrendPercentage = showFooter
+    ? round(avgScorePercentage - periodAvgScorePercentage)
+    : 0
   const aboveStandardPercentage = percentage(
     aboveStandardStudents,
     totalStudents,
@@ -59,6 +61,27 @@ export const getAcademicSummaryMetrics = (rawData) => {
     avgScorePercentage,
     aboveStandardPercentage,
     scoreTrendPercentage,
+    showFooter,
+  }
+}
+
+export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
+  let attendanceAvgChange = 0
+  let tardiesChange = 0
+  let chronicAbsentChange = 0
+  if (!isEmpty(prePeriod.start)) {
+    attendanceAvgChange = Math.round(postPeriod.avg - prePeriod.avg)
+    tardiesChange = Math.round(postPeriod.tardiesPerc - prePeriod.tardiesPerc)
+    chronicAbsentChange = Math.round(
+      postPeriod.chronicAbsentPerc - prePeriod.chronicAbsentPerc
+    )
+  }
+  const fontColor = attendanceAvgChange >= 0 ? lightGreen12 : lightRed7
+  return {
+    attendanceAvgChange,
+    tardiesChange,
+    chronicAbsentChange,
+    fontColor,
   }
 }
 

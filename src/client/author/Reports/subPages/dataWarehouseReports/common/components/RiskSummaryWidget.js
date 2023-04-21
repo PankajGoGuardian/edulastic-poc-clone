@@ -55,15 +55,16 @@ const RiskSummary = ({ settings, loc = '' }) => {
   )
 
   const { prePeriod = {}, postPeriod = {} } = get(data, 'data.result', {})
+  const showFooter = !isEmpty(prePeriod.start)
   const {
     postPeriodhighRisk,
     highRiskChange,
     postPeriodMediumRisk,
     mediumRiskChange,
     pieChartData,
-  } = transformRiskSummaryData(prePeriod, postPeriod)
+  } = transformRiskSummaryData(prePeriod, postPeriod, showFooter)
 
-  const prePeriodDateLabel = getDateLabel(prePeriod)
+  const prePeriodDateLabel = showFooter ? getDateLabel(prePeriod) : ''
   const periodLabel = getTrendPeriodLabel(
     settings.requestFilters.periodType,
     postPeriod
@@ -94,7 +95,9 @@ const RiskSummary = ({ settings, loc = '' }) => {
           loading={loading}
           url={externalUrl}
         >
-          <StyledText>{periodLabel}</StyledText>
+          <EduIf condition={!loading && !error}>
+            <StyledText>{periodLabel}</StyledText>
+          </EduIf>
         </WidgetHeader>
       </FlexContainer>
       <EduIf condition={loading}>
@@ -116,6 +119,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH]}
                     footer={
                       <Footer
+                        isVisible={showFooter}
                         value={highRiskChange}
                         period={`vs ${prePeriodDateLabel}`}
                         showReverseTrend
@@ -134,6 +138,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM]}
                     footer={
                       <Footer
+                        isVisible={showFooter}
                         value={mediumRiskChange}
                         period={`vs ${prePeriodDateLabel}`}
                         showReverseTrend

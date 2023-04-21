@@ -153,18 +153,26 @@ const getRiskSummaryPieChartData = (distribution = []) => {
   }))
 }
 
-export const transformRiskSummaryData = (prePeriod, postPeriod) => {
+export const transformRiskSummaryData = (prePeriod, postPeriod, showFooter) => {
   if (!postPeriod?.distribution?.length) return {}
-  const [prePeriodhighRisk, prePeriodMediumRisk] = getPeriodRiskData(prePeriod)
   const [postPeriodhighRisk, postPeriodMediumRisk] = getPeriodRiskData(
     postPeriod
   )
   const pieChartData = getRiskSummaryPieChartData(postPeriod.distribution)
+  let highRiskChange = 0
+  let mediumRiskChange = 0
+  if (showFooter) {
+    const [prePeriodhighRisk, prePeriodMediumRisk] = getPeriodRiskData(
+      prePeriod
+    )
+    highRiskChange = postPeriodhighRisk - prePeriodhighRisk
+    mediumRiskChange = postPeriodMediumRisk - prePeriodMediumRisk
+  }
   return {
     postPeriodhighRisk: new Intl.NumberFormat().format(postPeriodhighRisk),
-    highRiskChange: postPeriodhighRisk - prePeriodhighRisk,
+    highRiskChange,
     postPeriodMediumRisk: new Intl.NumberFormat().format(postPeriodMediumRisk),
-    mediumRiskChange: postPeriodMediumRisk - prePeriodMediumRisk,
+    mediumRiskChange,
     pieChartData,
   }
 }

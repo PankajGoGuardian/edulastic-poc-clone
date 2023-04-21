@@ -9,7 +9,9 @@ const Footer = ({
   period = '',
   showReverseTrend = false,
   showPercentage = false,
+  isVisible = true,
 }) => {
+  if (!isVisible) return null
   const [color, Icon] = getWidgetCellFooterInfo(value, showReverseTrend)
   const footerValue = round(Math.abs(value))
   const valueToShow = showPercentage ? `${footerValue}%` : footerValue

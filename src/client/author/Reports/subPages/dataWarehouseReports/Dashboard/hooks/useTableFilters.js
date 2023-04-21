@@ -35,6 +35,10 @@ const useTableFilters = ({
         [tableFilterType]: selected,
         [tableFilterTypes.SORT_KEY]: selected.key,
       }
+      if (tableFilterType === tableFilterTypes.COMPARE_BY) {
+        nextState[tableFilterTypes.ABOVE_EQUAL_TO_AVG] = true
+        nextState[tableFilterTypes.BELOW_AVG] = true
+      }
       return nextState
     })
     setSettings({ ...settings, selectedCompareBy: selected })

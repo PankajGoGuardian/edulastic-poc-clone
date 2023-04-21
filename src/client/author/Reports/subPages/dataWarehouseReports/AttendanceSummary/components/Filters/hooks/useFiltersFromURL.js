@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { capitalize, isEmpty, reject, isNil, groupBy as _groupBy } from 'lodash'
+import { capitalize, isEmpty, reject, isNil, keyBy } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
@@ -88,7 +88,7 @@ function useFiltersFromURL({
       const groups = getClassFilterTagsValue(groupList, groupIds)
       const courses = getClassFilterTagsValue(courseList, [courseId])
 
-      const demographicsGroupByKeys = _groupBy(demographics, 'key') || {}
+      const demographicsGroupByKeys = keyBy(demographics, 'key') || {}
       const getDemographicsFilterTagValue = (fieldName, searchValue) => {
         const dataList = demographicsGroupByKeys[fieldName]?.data || []
         if (!isEmpty(dataList) && !isNil(searchValue)) {

@@ -11,13 +11,13 @@ import { IoMdLink } from 'react-icons/io'
 import { compareByKeys } from '@edulastic/constants/reportUtils/standardsMasteryReport/standardsGradebook'
 import { tableFilterTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
-import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
 import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
 } from '../../../../../common/constants/dataWarehouseReports'
 import { StyledDiv } from '../common/styledComponents'
+import LinkCell from '../../../common/components/LinkCell'
 
 const tableColumnKeys = {
   DIMENSION: 'dimension',
@@ -85,13 +85,16 @@ export const getTableColumns = ({
     )
     _columns[compareByIdx].title =
       tableFilters[tableFilterTypes.COMPARE_BY].title
-    _columns[compareByIdx].render = (value) => (
-      <CompareByTitle
-        selectedCompareBy={selectedCompareBy}
-        value={value}
-        getTableDrillDownUrl={getTableDrillDownUrl}
-      />
-    )
+    _columns[compareByIdx].render = (value) => {
+      const url = [
+        compareByKeys.SCHOOL,
+        compareByKeys.TEACHER,
+        compareByKeys.CLASS,
+      ].includes(selectedCompareBy)
+        ? getTableDrillDownUrl(value._id)
+        : null
+      return <LinkCell value={value} url={url} />
+    }
     _columns[compareByIdx].sortOrder =
       tableFilters.sortKey === tableFilters[tableFilterTypes.COMPARE_BY].key &&
       columnSortOrder

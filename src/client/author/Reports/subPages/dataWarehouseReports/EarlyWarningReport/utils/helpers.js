@@ -6,7 +6,7 @@ import React from 'react'
 import moment from 'moment'
 import { RISK_TYPE_KEYS } from '@edulastic/constants/reportUtils/common'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
-import CompareByTitle from '../../common/components/CompareByTitle'
+import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
 import {
   StyledIconCaretDown,
@@ -20,6 +20,7 @@ import {
   timeframeFilterValues,
   CHART_LABEL_KEY,
 } from './constants'
+import { compareByKeys } from '../../common/utils'
 
 const {
   percentage,
@@ -51,13 +52,14 @@ export const getTableColumns = (
       (col) => col.key === tableColumnKeys.DIMENSION
     )
     dimensionColumn.title = selectedCompareBy.title
-    dimensionColumn.render = (value) => (
-      <CompareByTitle
-        selectedCompareBy={selectedCompareBy.key}
-        value={value}
-        getTableDrillDownUrl={getTableDrillDownUrl}
-      />
-    )
+    dimensionColumn.render = (value) => {
+      const url = [compareByKeys.SCHOOL, compareByKeys.TEACHER].includes(
+        selectedCompareBy.key
+      )
+        ? getTableDrillDownUrl(value._id)
+        : null
+      return <LinkCell value={value} url={url} />
+    }
 
     const highRiskColumn = _columns.find(
       (col) => col.key === tableColumnKeys.HIGH_RISK

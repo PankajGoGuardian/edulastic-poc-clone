@@ -150,26 +150,27 @@ export const StyledText = styled.div`
   text-transform: ${(props) => props.textTransform};
 `
 export const CompareByContainer = styled.div`
-width: fit-content;
-.dimension-name {
-  color: ${(p) => p.color};
   width: fit-content;
-  margin-bottom: 4px;
-  margin: 0 15px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-@media print {
-  .test-name-container {
-    display: block;
-    -webkit-line-clamp: unset;
-    -webkit-box-orient: unset;
+  display: inline-block;
+  .dimension-name {
+    color: ${(p) => p.color};
+    width: fit-content;
+    display: inline-block;
+    margin-bottom: 4px;
+    margin: 0 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
-}
-}
+  @media print {
+    .test-name-container {
+      display: block;
+      -webkit-line-clamp: unset;
+      -webkit-box-orient: unset;
+    }
+  }
 `
 export const StyledEmptyContainer = styled(Empty)`
   margin: ${(p) => p.margin || '60px 0'};

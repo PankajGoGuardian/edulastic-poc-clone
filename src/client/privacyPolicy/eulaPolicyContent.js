@@ -828,7 +828,7 @@ const EulaPolicyContent = () => {
         <p>
           Our
           <a
-            href="https://edulastic.com/privacy-policy/html"
+            href="https://edulastic.com/privacy-policy"
             target="_blank"
             rel="noopener noreferrer"
           >

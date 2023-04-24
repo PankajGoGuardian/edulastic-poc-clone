@@ -677,3 +677,9 @@ export function removeFilter(
   }
   return { _filters, _filterTagsData }
 }
+
+export function utcMonthDate(date) {
+  const formatYYYYMMDD = 'YYYY-MM-DD'
+  const dateStringInYYYYMMDDD = moment(date).format(formatYYYYMMDD)
+  return +moment.utc(dateStringInYYYYMMDDD)
+}

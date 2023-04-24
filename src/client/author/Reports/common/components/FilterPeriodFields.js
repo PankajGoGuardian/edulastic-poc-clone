@@ -6,8 +6,7 @@ import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import { ControlDropDown } from './widgets/controlDropDown'
 import { FilterLabel } from '../styled'
 import usePeriodFilters from '../hooks/usePeriodFilters'
-
-const formatYYYYMMDD = 'YYYY-MM-DD'
+import { utcMonthDate } from '../util'
 
 function FilterPeriodFields({
   filters,
@@ -73,7 +72,7 @@ function FilterPeriodFields({
             value={moment(+filters.customPeriodStart)}
             onChange={(date) => {
               updateFilterDropdownCB(
-                { key: `${+moment.utc(date.format(formatYYYYMMDD))}` },
+                { key: `${utcMonthDate(date)}` },
                 'customPeriodStart'
               )
             }}
@@ -92,7 +91,7 @@ function FilterPeriodFields({
             value={moment(+filters.customPeriodEnd)}
             onChange={(date) =>
               updateFilterDropdownCB(
-                { key: `${+moment.utc(date.format(formatYYYYMMDD))}` },
+                { key: `${utcMonthDate(date)}` },
                 'customPeriodEnd'
               )
             }

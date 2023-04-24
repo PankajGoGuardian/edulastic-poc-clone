@@ -5,7 +5,7 @@ import {
 import next from 'immer'
 import { useEffect } from 'react'
 import moment from 'moment'
-import { clamp } from 'lodash'
+import { utcMonthDate } from '../util'
 
 function usePeriodFilters({
   terms,
@@ -39,13 +39,8 @@ function usePeriodFilters({
           _filters.periodType === PERIOD_TYPES.CUSTOM &&
           !areCustomDatesValid
         ) {
-          const customPeriodBaseDate = clamp(Date.now(), fromDate, toDate)
-          _filters.customPeriodStart = `${+moment(customPeriodBaseDate)
-            .subtract(1, 'month')
-            .startOf('month')}`
-          _filters.customPeriodEnd = `${+moment(customPeriodBaseDate).endOf(
-            'month'
-          )}`
+          _filters.customPeriodStart = `${utcMonthDate(fromDate)}`
+          _filters.customPeriodEnd = `${utcMonthDate(toDate)}`
         } else if (_filters.periodType !== PERIOD_TYPES.CUSTOM) {
           delete _filters.customPeriodStart
           delete _filters.customPeriodEnd

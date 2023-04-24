@@ -777,6 +777,7 @@ const tagGetterMap = {
   groupIds: getGroupTags,
   preTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'pre' }),
   postTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'post' }),
+  courseId: getCourseTags, // For Single Course Search Value
 }
 
 function* fetchUpdateTagsData({ payload }) {

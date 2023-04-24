@@ -86,7 +86,7 @@ function useFiltersFromURL({
       const teachers = getClassFilterTagsValue(teacherList, teacherIds)
       const classes = getClassFilterTagsValue(classList, classIds)
       const groups = getClassFilterTagsValue(groupList, groupIds)
-      const courses = getClassFilterTagsValue(courseList, [courseId])
+      const course = getClassFilterTagsValue(courseList, [courseId])
 
       const demographicsGroupByKeys = keyBy(demographics, 'key') || {}
       const getDemographicsFilterTagValue = (fieldName, searchValue) => {
@@ -159,7 +159,7 @@ function useFiltersFromURL({
         teacherIds: teachers,
         classIds: classes,
         groupIds: groups,
-        courseId: courses,
+        courseId: course,
         race: raceFilterTag,
         gender: genderFilterTag,
         iepStatus: iepStatusFilterTag,
@@ -181,7 +181,7 @@ function useFiltersFromURL({
         })
         fetchUpdateTagsData({
           schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject([courseId], isEmpty),
+          courseId: reject([courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
           teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),

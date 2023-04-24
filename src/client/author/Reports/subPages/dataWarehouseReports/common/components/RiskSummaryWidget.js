@@ -80,11 +80,12 @@ const RiskSummary = ({ settings, loc = '' }) => {
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
-  const widgetWidth =
-    loc === reportNavType.DW_EARLY_WARNING_REPORT ? '40%' : '100%'
-  const externalUrl = `${DW_EARLY_WARNING_REPORT_URL}?${qs.stringify(
-    settings.requestFilters
-  )}`
+  const isEarlyWarningReport = loc === reportNavType.DW_EARLY_WARNING_REPORT
+  const widgetWidth = isEarlyWarningReport ? '40%' : '100%'
+  const isDashboardReport = loc === reportNavType.DW_DASHBOARD_REPORT
+  const externalUrl = isDashboardReport
+    ? `${DW_EARLY_WARNING_REPORT_URL}?${qs.stringify(settings.requestFilters)}`
+    : null
 
   return (
     <Widget width={widgetWidth}>

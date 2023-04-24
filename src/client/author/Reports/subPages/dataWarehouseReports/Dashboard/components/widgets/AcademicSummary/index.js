@@ -166,11 +166,8 @@ const AcademicSummary = ({
                   <WidgetCell
                     header={
                       <FlexContainer justifyContent="center">
-                        STUDENTS IN BANDS{' '}
-                        <IconInfo
-                          fill={themeColor}
-                          style={{ marginLeft: '6px' }}
-                        />
+                        STUDENTS IN BANDS &nbsp;&nbsp;
+                        <IconInfo fill={themeColor} />
                       </FlexContainer>
                     }
                     subHeader="ABOVE OR AT STANDARD"

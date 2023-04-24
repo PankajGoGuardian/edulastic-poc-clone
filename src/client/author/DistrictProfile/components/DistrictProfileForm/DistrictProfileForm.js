@@ -220,6 +220,7 @@ class DistrictProfileForm extends React.Component {
                                 ?.name || ''
                         }
                         valueName="District Name"
+                        requiredStatus
                         maxLength={255}
                         setProfileValue={this.updateProfileValue}
                         type="text"

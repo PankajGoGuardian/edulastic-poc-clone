@@ -4,12 +4,14 @@ import { Tooltip } from 'antd'
 import React from 'react'
 
 const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
+  if (value === 0) return null
   const maxTitleLenght = 14
   const title = `${value}% ${name}`
   const label =
     title.length >= maxTitleLenght
       ? `${title.slice(0, maxTitleLenght - 3)}...`
       : title
+
   const sin = Math.sin(-DEGREE_TO_RADIAN * midAngle)
   const cos = Math.cos(-DEGREE_TO_RADIAN * midAngle)
   const sx = cx + (outerRadius + 4) * cos

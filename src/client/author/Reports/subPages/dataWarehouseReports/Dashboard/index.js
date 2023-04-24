@@ -197,6 +197,7 @@ const Dashboard = ({
             loadingTableData={loadingTableData}
             tableDataRequestError={tableDataRequestError}
             tableData={tableData}
+            loc={loc}
           />
         </EduElse>
       </EduIf>

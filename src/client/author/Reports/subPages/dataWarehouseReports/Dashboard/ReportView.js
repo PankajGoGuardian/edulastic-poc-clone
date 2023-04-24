@@ -26,6 +26,7 @@ function ReportView({
   loadingTableData,
   tableDataRequestError,
   tableData,
+  loc,
 }) {
   const { academicSummaryFilters } = settings
 
@@ -42,7 +43,7 @@ function ReportView({
           settings={settings}
         />
         <WidgetColumn>
-          <RiskSummary settings={settings} />
+          <RiskSummary loc={loc} settings={settings} />
           <AttendanceSummary settings={settings} />
         </WidgetColumn>
       </WidgetsContainer>

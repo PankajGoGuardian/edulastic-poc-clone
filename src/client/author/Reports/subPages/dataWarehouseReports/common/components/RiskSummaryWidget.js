@@ -88,7 +88,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
     : null
 
   return (
-    <Widget width={widgetWidth}>
+    <Widget width={widgetWidth} minWidth="660px">
       <FlexContainer justifyContent="left" alignItems="center">
         <WidgetHeader
           title={title}
@@ -113,7 +113,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
           <EduIf condition={hasContent}>
             <EduThen>
               <ContentWrapper>
-                <div>
+                <div className="left-content">
                   <WidgetCell
                     header="HIGH RISK"
                     value={postPeriodhighRisk}
@@ -130,7 +130,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                   <DashedLine
                     dashWidth="1px"
                     height="1px"
-                    margin="40% 0"
+                    margin="40px 10px"
                     dashColor={lightGrey8}
                   />
                   <WidgetCell
@@ -154,12 +154,14 @@ const RiskSummary = ({ settings, loc = '' }) => {
                   dashColor={lightGrey8}
                   margin="0"
                 />
-                <SimplePieChart
-                  data={pieChartData}
-                  getChartLabelJSX={PieChartLabel}
-                  innerRadius={42}
-                  outerRadius={90}
-                />
+                <div className="right-content">
+                  <SimplePieChart
+                    data={pieChartData}
+                    getChartLabelJSX={PieChartLabel}
+                    innerRadius={42}
+                    outerRadius={90}
+                  />
+                </div>
               </ContentWrapper>
             </EduThen>
             <EduElse>

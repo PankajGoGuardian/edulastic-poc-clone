@@ -114,14 +114,24 @@ export const WidgetHeaderWrapper = styled.div`
 export const ContentWrapper = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  height: auto;
-  justify-content: space-between;
   align-items: center;
-  padding: 30px 50px;
+  padding-block: 32px;
   margin: ${(p) => p.margin};
   font-weight: bold;
   font-size: 13px;
+  justify-content: space-evenly;
   text-align: center;
+  .left-content {
+    flex-basis: 38%;
+    padding-inline: 45px;
+  }
+  .right-content {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    flex-grow: 1;
+    padding-inline: 5px;
+  }
   .small-header {
     margin-top: -14px;
     font-size: 11px;

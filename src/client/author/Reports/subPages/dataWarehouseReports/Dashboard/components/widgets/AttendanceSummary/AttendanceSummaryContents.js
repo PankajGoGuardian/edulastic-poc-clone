@@ -49,7 +49,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
   return (
     <ContentWrapper>
       <WidgetCell
-        subHeader="AVG."
+        header="AVERAGE"
         value={`${Math.round(postPeriod.avg)}%`}
         cellType="large"
         color="#cef5d8"

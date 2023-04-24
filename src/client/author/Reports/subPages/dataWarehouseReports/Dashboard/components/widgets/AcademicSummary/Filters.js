@@ -33,7 +33,7 @@ const AcademicSummaryWidgetFilters = ({
   return (
     <FlexContainer
       padding="50px 40px"
-      mr="40px"
+      mr="30px"
       justifyContent="space-between"
       alignItems="center"
     >

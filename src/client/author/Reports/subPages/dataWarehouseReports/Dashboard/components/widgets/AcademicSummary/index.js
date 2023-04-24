@@ -1,15 +1,17 @@
 import { dataWarehouseApi } from '@edulastic/api'
-import { lightGreen13, lightGrey8 } from '@edulastic/colors'
+import { lightGreen13, lightGrey8, themeColor } from '@edulastic/colors'
 import {
   EduElse,
   EduIf,
   EduThen,
+  FlexContainer,
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import qs from 'qs'
 import React, { useMemo } from 'react'
+import { IconInfo } from '@edulastic/icons'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
@@ -140,7 +142,7 @@ const AcademicSummary = ({
           <EduIf condition={hasContent}>
             <EduThen>
               <ContentWrapper>
-                <div>
+                <div className="left-content">
                   <WidgetCell
                     header="AVG. SCORE"
                     value={`${avgScorePercentage}%`}
@@ -158,11 +160,20 @@ const AcademicSummary = ({
                   <DashedLine
                     dashWidth="1px"
                     height="1px"
-                    margin="70px 5px"
+                    margin="70px 15px"
                     dashColor={lightGrey8}
                   />
                   <WidgetCell
-                    header="ABOVE STANDARD"
+                    header={
+                      <FlexContainer justifyContent="center">
+                        STUDENTS IN BANDS{' '}
+                        <IconInfo
+                          fill={themeColor}
+                          style={{ marginLeft: '6px' }}
+                        />
+                      </FlexContainer>
+                    }
+                    subHeader="ABOVE OR AT STANDARD"
                     value={`${aboveStandardPercentage}%`}
                     color={lightGreen13}
                     cellType="large"
@@ -175,17 +186,19 @@ const AcademicSummary = ({
                   dashColor={lightGrey8}
                   margin="0"
                 />
-                <SimplePieChart
-                  innerRadius={40}
-                  outerRadius={85}
-                  data={PieChartData}
-                  getChartLabelJSX={PieChartLabel}
-                />
+                <div className="right-content">
+                  <SimplePieChart
+                    innerRadius={48}
+                    outerRadius={100}
+                    data={PieChartData}
+                    getChartLabelJSX={PieChartLabel}
+                  />
+                </div>
               </ContentWrapper>
             </EduThen>
             <EduElse>
               <StyledEmptyContainer
-                margin="25% 0"
+                margin="120px 0"
                 description={emptyContainerDesc}
               />
             </EduElse>

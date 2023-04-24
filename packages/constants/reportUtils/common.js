@@ -25,6 +25,8 @@ const { lightRed7, yellow3, lightGreen14 } = require('@edulastic/colors')
 
 const DECIMAL_BASE = 10
 const DEGREE_TO_RADIAN = Math.PI / 180
+const ROUND_OFF_TO_INTEGER = true
+const EMPTY_ARRAY = []
 
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
@@ -610,6 +612,8 @@ const RISK_BAND_COLOR_INFO = {
 module.exports = {
   DECIMAL_BASE,
   DEGREE_TO_RADIAN,
+  ROUND_OFF_TO_INTEGER,
+  EMPTY_ARRAY,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,

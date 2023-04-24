@@ -4,6 +4,7 @@ const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
 const DW_ATTENDANCE_SUMMARY_REPORT = 'attendance-summary'
 const DW_DASHBOARD_REPORT = 'dashboard-report'
 const DW_EARLY_WARNING_REPORT = 'early-warning-report'
+const DW_EFFICACY_REPORT = 'efficacy-report'
 
 const reportGroupType = {
   STANDARD_REPORT: 'standard-reports',
@@ -20,6 +21,7 @@ const reportGroupType = {
   DW_ATTENDANCE_SUMMARY_REPORT,
   DW_DASHBOARD_REPORT,
   DW_EARLY_WARNING_REPORT,
+  DW_EFFICACY_REPORT,
 }
 
 const reportNavType = {
@@ -48,6 +50,7 @@ const reportNavType = {
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT,
   DW_EARLY_WARNING_REPORT,
+  DW_EFFICACY_REPORT,
 }
 
 const ReportPaths = {
@@ -68,4 +71,5 @@ module.exports = {
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT,
   DW_ATTENDANCE_SUMMARY_REPORT,
+  DW_EFFICACY_REPORT,
 }

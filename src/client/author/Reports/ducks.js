@@ -170,6 +170,7 @@ import {
 import * as dwAttendanceSummaryDucks from './subPages/dataWarehouseReports/AttendanceSummary/ducks'
 import * as dwDashboardDucks from './subPages/dataWarehouseReports/Dashboard/ducks'
 import * as dwEarlyWarningDucks from './subPages/dataWarehouseReports/EarlyWarningReport/ducks'
+import * as dwEfficacyDucks from './subPages/dataWarehouseReports/EfficacyReport/ducks'
 import {
   customReportReducer,
   customReportSaga,
@@ -440,6 +441,7 @@ export const reportReducer = combineReducers({
     dwAttendanceSummaryDucks.reducer,
   [dwDashboardDucks.reduxNamespaceKey]: dwDashboardDucks.reducer,
   [dwEarlyWarningDucks.reduxNamespaceKey]: dwEarlyWarningDucks.reducer,
+  [dwEfficacyDucks.reduxNamespaceKey]: dwEfficacyDucks.reducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
 
@@ -561,6 +563,12 @@ const selectorDict = {
     getSettings: dwEarlyWarningDucks.selectors.settings,
     setTags: dwEarlyWarningDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwEarlyWarningDucks.actions.setFilterTagsData,
+  },
+  [reportGroupType.DW_EFFICACY_REPORT]: {
+    getTempTags: dwEfficacyDucks.selectors.filterTagsData,
+    getSettings: dwEfficacyDucks.selectors.settings,
+    setTags: dwEfficacyDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwEfficacyDucks.actions.setFilterTagsData,
   },
 }
 
@@ -797,8 +805,9 @@ function* fetchUpdateTagsData({ payload }) {
 }
 
 export function* receiveTestListSaga({ payload }) {
-  const { statePrefix = '', ...params } = payload
+  const { statePrefix = '', externalTests = [], ...params } = payload
   try {
+    const { testTypes = [], searchString = '' } = get(params, 'search', {})
     const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
@@ -812,9 +821,25 @@ export function* receiveTestListSaga({ payload }) {
         return { _id, title }
       })
       .filter(({ _id, title }) => _id && title)
+    const externalTestList = externalTests
+      .filter(({ testTitle, testCategory }) => {
+        const checkForTestTypes =
+          !testTypes.length || testTypes.includes(testCategory)
+        const checkForTestTitle =
+          !searchString ||
+          (testTitle || '')
+            .toLowerCase()
+            .includes((searchString || '').toLowerCase())
+        return checkForTestTitle && checkForTestTypes
+      })
+      .map(({ testTitle, testCategory }) => {
+        const _id = `${testCategory}__${testTitle}`
+        const title = `[${testCategory}] ${testTitle}`
+        return { _id, title, showId: false }
+      })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
-      payload: { testList, statePrefix },
+      payload: { testList: [...testList, ...externalTestList], statePrefix },
     })
   } catch (error) {
     const msg = 'Failed to receive tests dropdown data. Please try again...'
@@ -862,6 +887,7 @@ export function* reportSaga() {
     dwAttendanceSummaryDucks.watcherSaga(),
     dwDashboardDucks.watcherSaga(),
     dwEarlyWarningDucks.watcherSaga(),
+    dwEfficacyDucks.watcherSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

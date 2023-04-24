@@ -6,6 +6,7 @@ import {
   IconAttendanceReport,
   IconDashboardReport,
   IconEarlyWarningReport,
+  IconEfficacyReport,
 } from '@edulastic/icons'
 import { Row } from 'antd'
 import ReportLinkCard from './common/components/ReportLinkCard'
@@ -15,6 +16,7 @@ import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
+  DW_EFFICACY_REPORT_URL,
 } from '../../common/constants/dataWarehouseReports'
 import { StyledSectionHeader } from '../../common/styled'
 
@@ -67,6 +69,13 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
             title="Early Warning"
             description="View students at risk based on their academic and attendance performance and plan interventions."
             url={DW_EARLY_WARNING_REPORT_URL}
+            loc={loc}
+          />
+          <ReportLinkCard
+            IconThumbnail={IconEfficacyReport}
+            title="Efficacy"
+            description="Compare student performance across tests pre and post-intervention."
+            url={DW_EFFICACY_REPORT_URL}
             loc={loc}
           />
         </Row>

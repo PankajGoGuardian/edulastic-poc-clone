@@ -6,6 +6,7 @@ const {
   DW_DASHBOARD_REPORT,
   DW_ATTENDANCE_SUMMARY_REPORT,
   DW_EARLY_WARNING_REPORT,
+  DW_EFFICACY_REPORT,
 } = reportNavType
 const prefix = '/author/reports'
 
@@ -14,6 +15,7 @@ export const DW_WLR_REPORT_URL = `${prefix}/${WHOLE_LEARNER_REPORT}/student/`
 export const DW_DASHBOARD_URL = `${prefix}/${DW_DASHBOARD_REPORT}`
 export const DW_ATTENDANCE_REPORT_URL = `${prefix}/${DW_ATTENDANCE_SUMMARY_REPORT}`
 export const DW_EARLY_WARNING_REPORT_URL = `${prefix}/${DW_EARLY_WARNING_REPORT}`
+export const DW_EFFICACY_REPORT_URL = `${prefix}/${DW_EFFICACY_REPORT}`
 
 export const DW_REPORT_URLS = [
   DW_DASHBOARD_URL,
@@ -21,4 +23,5 @@ export const DW_REPORT_URLS = [
   DW_WLR_REPORT_URL,
   DW_ATTENDANCE_REPORT_URL,
   DW_EARLY_WARNING_REPORT_URL,
+  DW_EFFICACY_REPORT_URL,
 ]

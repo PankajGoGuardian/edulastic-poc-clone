@@ -11,6 +11,31 @@ export const compareByKeys = {
   HISPANIC_ETHNICITY: 'hispanicEthnicity',
 }
 
+export const compareByFieldKeys = {
+  [compareByKeys.SCHOOL]: 'schoolId',
+  [compareByKeys.TEACHER]: 'teacherId',
+  [compareByKeys.CLASS]: 'groupId',
+  [compareByKeys.STUDENT]: 'studentId',
+  [compareByKeys.RACE]: compareByKeys.RACE,
+  [compareByKeys.GENDER]: compareByKeys.GENDER,
+  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+}
+
+export const compareBylabels = {
+  [compareByKeys.SCHOOL]: 'schoolName',
+  [compareByKeys.TEACHER]: 'teacherName',
+  [compareByKeys.CLASS]: 'groupName',
+  [compareByKeys.RACE]: compareByKeys.RACE,
+  [compareByKeys.GENDER]: compareByKeys.GENDER,
+  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+}
+
 export const compareByFilterFieldKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',

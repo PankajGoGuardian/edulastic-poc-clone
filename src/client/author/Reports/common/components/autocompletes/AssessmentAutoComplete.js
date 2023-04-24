@@ -10,6 +10,7 @@ import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
+import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -42,6 +43,7 @@ const AssessmentAutoComplete = ({
   showApply,
   autoSelectFirstItem = true,
   institutionIds,
+  externalTests = EMPTY_ARRAY,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -163,9 +165,9 @@ const AssessmentAutoComplete = ({
       (!searchTerms.text && !searchTerms.selectedText) ||
       searchTerms.text !== searchTerms.selectedText
     ) {
-      loadTestListDebounced({ ...query, statePrefix })
+      loadTestListDebounced({ ...query, statePrefix, externalTests })
     }
-  }, [query, statePrefix])
+  }, [query, statePrefix, externalTests])
 
   // build dropdown data
   const dropdownData = useDropdownData(testList, {

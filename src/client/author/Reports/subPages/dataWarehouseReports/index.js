@@ -13,8 +13,10 @@ import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_URL,
+  DW_EFFICACY_REPORT_URL,
 } from '../../common/constants/dataWarehouseReports'
 import AttendanceReport from './AttendanceSummary'
+import EfficacyReport from './EfficacyReport'
 
 const DataWarehouseReportsContainer = ({
   breadcrumbData,
@@ -122,6 +124,27 @@ const DataWarehouseReportsContainer = ({
           setShowHeader(true)
           return (
             <EarlyWarningReport
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              setShowApply={setShowApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={DW_EFFICACY_REPORT_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <EfficacyReport
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}

@@ -7,7 +7,11 @@ const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
 
-const { DW_DASHBOARD_REPORT, DW_EARLY_WARNING_REPORT } = reportNavType
+const {
+  DW_DASHBOARD_REPORT,
+  DW_EARLY_WARNING_REPORT,
+  DW_EFFICACY_REPORT,
+} = reportNavType
 
 const getSignedUrl = (
   filename,
@@ -158,6 +162,26 @@ const getEarlyWarningDetails = (params) => {
     .then((result) => result.data)
 }
 
+const getEfficacySummary = (params) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_EFFICACY_REPORT}/summary`,
+      params,
+    })
+    .then((result) => result.data)
+}
+
+const getEfficacyDetails = (params) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/${DW_EFFICACY_REPORT}/details`,
+      params,
+    })
+    .then((result) => result.data)
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -172,4 +196,6 @@ export default {
   getEarlyWarningRiskSummary,
   getRiskTimeline,
   getEarlyWarningDetails,
+  getEfficacySummary,
+  getEfficacyDetails,
 }

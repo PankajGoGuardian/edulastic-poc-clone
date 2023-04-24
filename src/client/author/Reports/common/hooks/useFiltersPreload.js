@@ -13,20 +13,28 @@ function useFiltersPreload({
   firstLoad,
   userRole,
   institutionIds,
+  externalTestsRequired = false,
+  externalBandsRequired = false,
+  externalTestTypesRequired = true,
 }) {
   useEffect(() => {
     if (reportId) {
-      fetchFiltersDataRequest({ reportId })
+      fetchFiltersDataRequest({ reportId, externalBandsRequired })
       setFilters({ ...filters, ...search })
     } else {
-      const q = { ...search, termId }
+      const q = {
+        ...search,
+        termId,
+        externalTestsRequired,
+        externalBandsRequired,
+        externalTestTypesRequired,
+      }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
       if (userRole === roleuser.SCHOOL_ADMIN) {
         q.schoolIds = institutionIds.join(',')
       }
-      q.externalTestTypesRequired = true
       fetchFiltersDataRequest(q)
     }
   }, [])

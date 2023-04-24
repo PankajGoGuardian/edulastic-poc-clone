@@ -266,7 +266,6 @@
       "group": "engagementReport",
       "groupTitle": "Engagement Report"
     },
-
     "activity-by-school": {
       "title": "Activity by School",
       "breadcrumb": [
@@ -281,7 +280,6 @@
       "group": "engagementReport",
       "groupTitle": "Engagement Report"
     },
-
     "activity-by-teacher": {
       "title": "Activity by Teacher",
       "breadcrumb": [
@@ -391,6 +389,20 @@
         },
         {
           "title": "Early Warning"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "efficacy-report": {
+      "title": "Efficacy",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports"
+        },
+        {
+          "title": "Efficacy"
         }
       ],
       "group": "data-warehouse-reports",
@@ -570,6 +582,11 @@
         "key": "early-warning-report",
         "title": "Early Warning",
         "location": "/author/reports/early-warning-report"
+      },
+      {
+        "key": "efficacy-report",
+        "title": "Efficacy",
+        "location": "/author/reports/efficacy-report"
       }
     ]
   }

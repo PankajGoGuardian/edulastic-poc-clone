@@ -71,7 +71,12 @@ const SharedReportsContainer = ({
         break
       case report.reportNavType.MULTIPLE_ASSESSMENT_REPORT_DW:
         history.push(
-          `/author/reports/${reportType}?termId-${filters.termId}&reportId=${_id}`
+          `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
+      case report.reportNavType.DW_EFFICACY_REPORT:
+        history.push(
+          `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
         )
         break
       default:

@@ -12,6 +12,7 @@ import { isEmpty } from 'lodash'
 import qs from 'qs'
 import React, { useMemo } from 'react'
 import { IconInfo } from '@edulastic/icons'
+import { Tooltip } from 'antd'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
@@ -167,7 +168,9 @@ const AcademicSummary = ({
                     header={
                       <FlexContainer justifyContent="center">
                         STUDENTS IN BANDS &nbsp;&nbsp;
-                        <IconInfo fill={themeColor} />
+                        <Tooltip title="Total % of students who are in performance bands marked as above or at standard under manage settings.">
+                          <IconInfo fill={themeColor} />
+                        </Tooltip>
                       </FlexContainer>
                     }
                     subHeader="ABOVE OR AT STANDARD"

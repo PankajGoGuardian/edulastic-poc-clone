@@ -1085,7 +1085,7 @@ const EulaPolicyContent = () => {
           (“Content”) is the sole responsibility of the person from which such
           Content originated. All such Content that is uploaded into or
           generated in any Offerings by or on behalf of you or your Authorized
-          Users shall be referred to herein as Your Content.
+          Users shall be referred to herein as "Your Content".
         </p>
         <p>
           10.1.2 You should be aware that Content, other than Your Content, made

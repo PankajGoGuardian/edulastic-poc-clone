@@ -6,6 +6,7 @@ import {
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
+import qs from 'qs'
 import { Empty } from 'antd'
 import { isEmpty } from 'lodash'
 import React, { useMemo } from 'react'
@@ -13,6 +14,7 @@ import useErrorNotification from '../../../../../../common/hooks/useErrorNotific
 import { Widget } from '../../../../common/components/styledComponents'
 import WidgetHeader from '../../../../common/components/WidgetHeader'
 import AttendanceSummaryContents from './AttendanceSummaryContents'
+import { DW_ATTENDANCE_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 
 const title = 'ATTENDANCE SUMMARY'
 
@@ -42,9 +44,13 @@ const AttendanceSummary = ({ settings }) => {
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
+  const externalUrl = `${DW_ATTENDANCE_REPORT_URL}?${qs.stringify(
+    settings.requestFilters
+  )}`
+
   return (
     <Widget aspectRatio="32 / 9" width="100%">
-      <WidgetHeader title={title} />
+      <WidgetHeader title={title} url={externalUrl} />
       <EduIf condition={loading}>
         <EduThen>
           <SpinLoader

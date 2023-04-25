@@ -32,7 +32,8 @@ const segmentURI =
 const segmentVersion = process.env.REACT_APP_SEGMENT_VERSION || '4.2.2'
 const isSegmentEnabled = process.env.REACT_APP_ENABLE_SEGMENT === 'true'
 const isChatWidgetEnabled = process.env.REACT_APP_ENABLE_CHAT_WIDGET === 'true'
-
+const antiScreenshotEnabledDistricts =
+  process.env.REACT_APP_ANTI_SCREENSHOT_ENABLED_DISTRICTS || ''
 const googleClientSdkUrl = 'https://accounts.google.com/gsi/client'
 const googleApiSdkUrl = 'https://apis.google.com/js/api.js'
 const googleCalendarApiVersion = 'v3'
@@ -208,6 +209,11 @@ const getSentryReleaseName = () => {
 
 const kioskChromeAppId = process.env.REACT_APP_KIOSK_CHROME_APP_ID
 
+const isAntiScreenshotEnabled = (districtId = null) => {
+  const districtIds = antiScreenshotEnabledDistricts.split(',')
+  return districtIds.includes(districtId)
+}
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -241,4 +247,5 @@ export default {
   testletMathJax,
   newsela,
   kioskChromeAppId,
+  isAntiScreenshotEnabled,
 }

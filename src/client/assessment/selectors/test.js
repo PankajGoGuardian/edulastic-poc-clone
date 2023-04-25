@@ -134,3 +134,8 @@ export const checkAnswerInProgressSelector = createSelector(
   stateSelector,
   (test) => test.checkAnswerInProgress
 )
+
+export const getIsAntiCheatingEnabled = createSelector(
+  stateSelector,
+  (state) => state.isAntiCheatingEnabled
+)

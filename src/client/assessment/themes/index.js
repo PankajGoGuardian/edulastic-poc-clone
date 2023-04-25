@@ -28,6 +28,7 @@ import {
   handleChromeOsSEB,
   FireBaseService,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
@@ -43,6 +44,7 @@ import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
   loadTestAction,
+  setIsAntiCheatingEnabled,
   setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
 } from '../actions/test'
@@ -57,6 +59,7 @@ import {
   playerSkinTypeSelector,
   originalPlayerSkinName,
   getIsPreviewModalVisibleSelector,
+  getIsAntiCheatingEnabled,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -84,6 +87,12 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import BlockScreenOnCtrlPress from '../../../utils/anticheating/keypressEventBlocker/BlockScreenOnCtrlPress'
+import AppConfig from '../../../app-config'
+import {
+  blockAntiCheatingFeature,
+  unblockAntiCheatingFeature,
+} from '../../../utils/anticheating/antiCheatingHelper'
 
 const { playerSkinValues } = testConstants
 
@@ -258,7 +267,6 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
-
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
@@ -588,6 +596,8 @@ const AssessmentContainer = ({
   isTestPreviewModalVisible,
   allowReferenceMaterial,
   autoSaveInterval,
+  isAntiCheatingEnabled,
+  setAntiCheatingEnabled,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -662,6 +672,13 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useEffect(() => {
+    if (!isEmpty(restrictNavigationOut)) {
+      setAntiCheatingEnabled(true)
+      blockAntiCheatingFeature()
+    }
+  }, [restrictNavigationOut])
 
   useEffect(() => {
     if (document && window) {
@@ -1328,6 +1345,7 @@ const AssessmentContainer = ({
       !isEmpty(referenceDocAttributes) && allowReferenceMaterial,
     ...restProps,
     classLevelSettings,
+    isAntiCheatingEnabled,
   }
 
   useEffect(() => {
@@ -1391,13 +1409,18 @@ const AssessmentContainer = ({
       <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
-
+  const isAntiScreenshotEnabled =
+    AppConfig.isAntiScreenshotEnabled(assignmentObj?.districtId) &&
+    isAntiCheatingEnabled
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
       {restrictNavigationOut && (
         <>
+          <EduIf condition={isAntiScreenshotEnabled}>
+            <BlockScreenOnCtrlPress />
+          </EduIf>
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
             history={history}
@@ -1409,11 +1432,13 @@ const AssessmentContainer = ({
             takeItLaterCb={
               blockSaveAndContinue
                 ? null
-                : () =>
+                : () => {
+                    unblockAntiCheatingFeature()
                     saveCurrentAnswer({
                       pausing: true,
                       callback: () => history.push('/home/assignments'),
                     })
+                  }
             }
           />
         </>
@@ -1554,6 +1579,7 @@ const enhance = compose(
       savedBlurTime: state.test?.savedBlurTime,
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       autoSaveInterval: autoSaveIntervalSelector(state),
+      isAntiCheatingEnabled: getIsAntiCheatingEnabled(state),
     }),
     {
       saveUserResponse,
@@ -1573,6 +1599,7 @@ const enhance = compose(
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       loadTest: loadTestAction,
+      setAntiCheatingEnabled: setIsAntiCheatingEnabled,
     }
   )
 )

@@ -62,7 +62,10 @@ const RiskSummary = ({ settings, loc = '' }) => {
     postPeriodMediumRisk,
     mediumRiskChange,
     pieChartData,
-  } = transformRiskSummaryData(prePeriod, postPeriod, showFooter)
+  } = useMemo(
+    () => transformRiskSummaryData(prePeriod, postPeriod, showFooter),
+    [prePeriod, postPeriod, showFooter]
+  )
 
   const prePeriodDateLabel = showFooter ? getDateLabel(prePeriod) : ''
   const periodLabel = getTrendPeriodLabel(

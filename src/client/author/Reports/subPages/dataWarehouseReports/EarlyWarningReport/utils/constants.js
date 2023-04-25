@@ -74,7 +74,7 @@ export const timeframeFilterValues = {
   [timeframeFilterKeys.QUARTERLY]: 'quarter',
 }
 
-export const TABLE_PAGE_SIZE = 50
+export const TABLE_PAGE_SIZE = 25
 
 export const staticDropDownData = {
   filterSections: {

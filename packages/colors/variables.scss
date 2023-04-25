@@ -1,0 +1,326 @@
+$white: #fff;
+$black: #000;
+$fadedBlack: rgba(0, 0, 0, 0.65);
+$lightFadedBlack: rgba(0, 0, 0, 0.15);
+$textBlackColor: #212e3a;
+$lightBlackBoldText: #454b5b;
+
+$themeColor: #1ab394; // green;
+$themeColorLight: #42d184; // light green;
+$themeColorLight1: #3dd29f; // light green;
+$themeColorLighter: #5eb500; // light gree;
+$themeColorSecondaryLighter: #26b96a; // light green;
+$themeColorLighter1: #e8f7f4;
+$themeColorTagsBg: #d1f9eb;
+$themeColorBreadcrumb: #69727e;
+$themeLightGrayColor: #bbbfc4;
+$themeLightGrayBgColor: #f1f1f1;
+$themeColorBlue: rgba(63, 132, 229, 1);
+$themeColorHoverBlue: #1a73e8;
+$drcThemeColor: #3f85e5;
+$drcWhite: #fff;
+$parcThemeColor: #666666;
+$parcButtonColor: #eee;
+
+$greyThemeDark1: #434b5d;
+$greyThemeDark2: #878a91;
+$greyThemeDark3: #69727e;
+$greyThemeDark4: #2f4151;
+$greyThemeDark5: #8d929d;
+$greyThemeDark6: #97a4c1;
+$greyThemeDark7: #adadad;
+$greyThemeLight: #b9b9b9;
+$greyLight1: #e8e8e8;
+$greyThemeLighter: #f8f8f8;
+
+$grey: #dfdfdf;
+$fadedGrey: #e5e5e5;
+$fadedGrey1: #e4e4e4;
+$lightGreySecondary: #f8f8f8;
+$lightGrey: #f9f9f9;
+$lightGrey1: #f6f6f6;
+$lightGrey2: #888787;
+$lightGrey3: #f4f3f3;
+$lightGrey4: #dbdce0;
+$lightGrey5: #8e9aa4;
+$lightGrey6: #848993;
+$lightGrey7: #949ca4;
+$lightGrey8: #dbdbdb;
+$lightGrey9: #6a737f;
+$lightGrey10: #a6a7aa;
+$lightGrey11: #aaafb5;
+$lightGrey12: #858585;
+$lightGrey13: #607380;
+$lightGrey14: #738294;
+$lightGrey15: #d4d4d4;
+$lightGrey16: #dddddd;
+/** Light Grey for modern redesign */
+$lightGrey17: #707070;
+$darkGrey: #a3a0a0;
+$darkGrey1: #b5b5b5;
+$darkGrey2: #304050;
+$darkGrey3: #505050;
+$darkGrey4: #414141;
+$textColor: $lightGrey6;
+$greyish: #f3f3f4;
+$greyishDarker1: #a7b1c2;
+$greyishDarker2: #cccccc;
+$mainBgColor: #ffffff;
+$greyishBorder: #b6b6cc;
+$mainTextColor: #444444;
+$secondaryTextColor: #434b5d;
+$greyDarken: #979ba1;
+$tagTextColor: #676e74;
+$tagsBgColor: #b3bcc4;
+$titleColor: $darkGrey2;
+$greyScoreCardTitleColor: $lightGrey11;
+$cardTitleColor: $lightGrey11;
+$linkColor: $greyThemeDark3;
+$linkColor1: $lightGrey9;
+$someGreyColor1: #c0c0c0;
+$labelGrey: #9b9b9b;
+$labelGrey2: #a2a2a2;
+$borderGrey: #e1e1e1;
+$placeholderGray: #b1b1b1;
+$backgroundGrey: #f2f2f2;
+$borderGrey2: #cbcbcb;
+$borderGrey3: #e9e9e9;
+$borderGrey4: #dadae4;
+$borderGrey5: $borderGrey;
+$backgroundGrey2: #fbfbfb;
+
+$whiteSmoke: #f5f5f5;
+
+$separatorColor: #d6d0d0;
+$dashBorderColor: #e6e6e6;
+$dashBorderColorOpacity: #e6e6e633;
+$dropZoneTitleColor: #b1b1b1;
+$skippedBarColor: #6a737f;
+$premiumBg: #feb63a;
+
+$svgMapFillColor: rgba(0, 176, 255, 0.19);
+$svgMapStrokeColor: rgba(0, 176, 255, 1);
+$svgDisabledColor: #80838b;
+
+$red: #ff0057;
+$lightRed: #fbdfe7;
+$lightRed2: #f58888;
+$lightRed3: #ec0149;
+$ligthRed4: #f7cccb;
+$lightRed5: #e55c5c;
+$lightRed6: #efbbbb;
+$darkRed: #f35f5f;
+$darkRed1: #f25782;
+$darkRed2: #eb4032;
+$redDark: #dd2e44;
+$fadedRed: #fce0e8;
+$deleteRed: #ff0080;
+$deleteRed2: #ef3863;
+$strikeOutHover: #f7cbcc;
+$fieldRequiredColor: #e82a83;
+
+$mainBlueColor: #00b0ff;
+$blue: #1774f0;
+$blue1: #1f72bf;
+$lightBlue: #93d8f7;
+$lightBlue1: #82cafa;
+$lightBlue2: #e6f7ff;
+$lightBlue3: #3793dc;
+$lightBlue4: #40a1ee;
+$lightBlue5: #91d5dc;
+$lightBlue6: #c8e8f6;
+$lightBlue7: #4e95f3;
+$lightBlue8: #5faef3;
+$lightBlue9: #00b2ff;
+$lightBlue10: #3f85e5;
+$lightBlue11: #97a4c1;
+$darkBlue: #0080b9;
+$darkBlue1: #157ad8;
+$darkBlue2: #3896be;
+$darkBlueSecondary: #0288d1;
+$blueButton: #0e93dc;
+$blueBorder: #40a9ff;
+$alertColor: #faad14;
+$dangerColor: #f5222d;
+$fadeBlue: #9bc5ff80;
+
+$green: #1ab394;
+$lightGreen: #f5f9fe;
+$lightGreen1: #62ebbd;
+$lightGreen2: #94df5e;
+$lightGreen3: #d2fca5;
+$lightGreen4: #e1fbed;
+$lightGreen5: #00ad50;
+$lightGreen6: #d7faee;
+$lightGreen7: #6ec88c;
+$lightGreen8: #74e27a;
+$lightGreen9: #3dd29f;
+$lightGreen10: #1ab395;
+$lightGreen11: #53b095;
+$lightGreen12: #5fad5a;
+$lightGreen13: #cef5d8;
+$greenDark: #4aac8b;
+$greenDark1: #00b373;
+$greenDark2: #1fb58b;
+$greenDark3: #27947a;
+$greenDark4: #5eb400;
+$greenDark5: #00803b;
+$greenDark6: #11987d;
+$greenDark7: #64c4ae;
+$greenDarkSecondary: #057750;
+$greenSecondary: #4cd43b;
+$fadedGreen: #c7ead9;
+$fadedGreen1: #d8eee2;
+
+$greenPrimary: #0eb08d;
+$greenThird: #5eb500;
+
+$greenSomeWhatDark: #17a67d;
+
+$yellow: #febe00;
+$yellow1: #fdcc3b;
+$yellow2: #ffd500;
+
+$orange: #ffa200;
+$darkOrange: #f9942d;
+$darkOrange1: #eb954b;
+
+$btnBg: #277df1;
+$btnBgActive: #5196f3;
+$btnColor: #bed8fa;
+
+$title: #434b5d;
+$darkTitle: #292f3c;
+
+$sectionBorder: #e6e6e6;
+
+$tabGrey: #7c848e;
+
+$inputBgGrey: #f8f8fb;
+$redHeart: #e35783;
+$inputBorder: #d9d9d9;
+$inputBorder1: #b9b9b9;
+$selectColor: #5a6171;
+$dragDropUploadText: #b2b2b2;
+$dragDropHighlightText: #1766ce;
+
+$cardBg: #f8f8fb;
+$cardBorder: #e6e6e6;
+
+// shadows
+$boxShadowDefault: 0px 2px 5px 0px rgba(0, 0, 0, 0.7);
+
+$boxShadowColor: #c9d0db80;
+$boxShadowColor2: #0000001a;
+$boxShadowColor3: #00000029;
+$boxShadowColor4: #51586829;
+$paginationBoxShadowColor: #a3a0a033;
+
+// Graph colors
+$greyGraphstroke: #999;
+$barGrapColor1: #1fe3a0;
+$barGrapColor2: #ee1b82;
+$incorrect: $darkRed;
+$pCorrect: #ebaa28;
+$graded: #7bc0df;
+$pointColor: #4a4a4a;
+$notStarted: #bfbfbf;
+
+// numberPad button color
+%numBtnColors {
+  color: #707070;
+  border-color: #d9d9d9;
+  background-color: #fff;
+}
+
+// Sizes
+$smallMobileWidth: 325px;
+$middleMobileWidth: 476px;
+$mobileWidth: 480px;
+$mobileWidthLarge: 575px;
+$mobileWidthMax: 767px;
+$tabletWidth: 768px;
+$desktopWidth: 992px;
+$smallDesktopWidth: 1024px;
+$largeDesktopWidth: 1200px;
+$mediumDesktopExactWidth: 1366px;
+$extraDesktopWidth: 1440px;
+$extraDesktopWidthMax: 1600px;
+
+$testTypeColor: (
+  assessment: #5eb500,
+  common: #ff9100,
+  practice: #00a8ff,
+  'common assessment': #ff9100,
+  homework: #e82a83,
+  quiz: #873fe5,
+);
+
+$authorAssignment: (
+  assignmentStatusBg: (
+    'NOT_OPEN': #95b0cd,
+    'IN_PROGRESS': #5aabeb,
+    'IN_GRADING': #f9942d,
+    'NOT_GRADED': #e06666,
+    'GRADES_HELD': #00ad50,
+    'SUBMITTED': #f9942d,
+    'NOT_STARTED': #aaafb5,
+    'DONE': #00ad50,
+  ),
+  lightBlue: #12a6e8,
+);
+
+$fadedWhite: #5196f3;
+$fadedBlue: #bed8fa;
+
+$eastBaycolor: #51596a;
+
+$draftColor: #f8ac59;
+$publishedColor: #1ab394;
+$publishStatusColor: #e8f2ff;
+
+$backgrounds: (
+  default: #f3f3f3,
+  primary: #f8f8f8,
+);
+
+$borders: (
+  default: #f2f2f2,
+  primary: #b1b1b1,
+  secondary: #e6e6e6,
+  tag: #e2e2e2,
+);
+
+$highlightColors: (
+  blue: #99c2ff,
+  green: #99ff99,
+  orange: #ff8533,
+  yellow: #ffff80,
+  pink: #ff99bb,
+);
+
+$publisherFont1: #8080a7;
+$publisherFont2: #434b5d;
+$publisherFont3: #8888a4;
+$publisherCollectionBg: #f3f3f8;
+$publisherItemBankIcon: #7e3ec4;
+$publisherTestsIcon: #13cecf;
+$publisherPlaylistIcon: #1487db;
+$publisherBorder1: #d4d4e5;
+$filterIconColor: #2f4151;
+
+$playlistTabLink: #989ba4;
+
+$graphTickColor: #435b5d;
+
+// evaluation colors
+$correctBgColor: #e2fcf3;
+$correctIconColor: #36d29c;
+$wrongBgColor: #fde0e9;
+$wrongIconColor: #f25783;
+$skippedBgColor: #f5f5f5;
+$skippedIconColor: #a7a7a7;
+$partialBgColor: #fbfae0;
+$partialIconColor: #bdb956;
+
+$lightBrown: #efe3bb;

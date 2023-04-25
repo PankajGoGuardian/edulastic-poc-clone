@@ -122,13 +122,17 @@ function StandardsSelect(props) {
     disabled,
     standardDetails,
     previouslyUsedOrDefaultInterests,
+    placeholder,
+    selectedSubject,
   } = props
-
+  if (selectedSubject)
+    previouslyUsedOrDefaultInterests.subject = selectedSubject
   const {
     subject: defaultSubject,
     grades: defaultGrades,
     curriculum: defaultCurriculum,
   } = previouslyUsedOrDefaultInterests
+
   const defaultCurriculumId = defaultCurriculum?.id || ''
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -241,6 +245,7 @@ function StandardsSelect(props) {
         value={standardIds}
         onChange={handleSelectChange}
         disabled={disabled}
+        placeholder={placeholder}
         {...extraProps}
       />
     </>

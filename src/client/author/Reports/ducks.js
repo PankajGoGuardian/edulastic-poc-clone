@@ -169,6 +169,7 @@ import {
 } from './subPages/dataWarehouseReports/MultipleAssessmentReport/ducks'
 import * as dwAttendanceSummaryDucks from './subPages/dataWarehouseReports/AttendanceSummary/ducks'
 import * as dwDashboardDucks from './subPages/dataWarehouseReports/Dashboard/ducks'
+import * as dwGoalsAndInterventionsDucks from './subPages/dataWarehouseReports/GoalsAndInterventions/ducks'
 import * as dwEarlyWarningDucks from './subPages/dataWarehouseReports/EarlyWarningReport/ducks'
 import * as dwEfficacyDucks from './subPages/dataWarehouseReports/EfficacyReport/ducks'
 import {
@@ -440,6 +441,8 @@ export const reportReducer = combineReducers({
   [dwAttendanceSummaryDucks.reduxNamespaceKey]:
     dwAttendanceSummaryDucks.reducer,
   [dwDashboardDucks.reduxNamespaceKey]: dwDashboardDucks.reducer,
+  [dwGoalsAndInterventionsDucks.reduxNamespaceKey]:
+    dwGoalsAndInterventionsDucks.reducer,
   [dwEarlyWarningDucks.reduxNamespaceKey]: dwEarlyWarningDucks.reducer,
   [dwEfficacyDucks.reduxNamespaceKey]: dwEfficacyDucks.reducer,
   reportPerformanceByRubricsCriteriaReducer,
@@ -887,6 +890,7 @@ export function* reportSaga() {
     reportMultipleAssessmentDwSaga(),
     dwAttendanceSummaryDucks.watcherSaga(),
     dwDashboardDucks.watcherSaga(),
+    dwGoalsAndInterventionsDucks.watcherSaga(),
     dwEarlyWarningDucks.watcherSaga(),
     dwEfficacyDucks.watcherSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),

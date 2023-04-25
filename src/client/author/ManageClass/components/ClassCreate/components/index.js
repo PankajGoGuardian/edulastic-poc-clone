@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
+import { EduIf } from '@edulastic/common'
 import { Form } from 'antd'
 import { Field, Optional, Label } from './styled'
 
@@ -13,6 +14,8 @@ export const FieldLabel = ({
   initialValue,
   getFieldValue,
   style = {},
+  fieldSetLineHeight,
+  showLabel = true,
 }) => {
   const checkStartDate = (rule, value, callback) => {
     const diff = moment().diff(value, 'days')
@@ -52,11 +55,15 @@ export const FieldLabel = ({
   }
 
   return (
-    <Field style={style}>
-      <Label>
-        {label}
-        {optional && <Optional>(Optional)</Optional>}
-      </Label>
+    <Field style={style} fieldSetLineHeight={fieldSetLineHeight}>
+      <EduIf condition={showLabel}>
+        <Label>
+          {label}
+          <EduIf condition={optional}>
+            <Optional>(Optional)</Optional>
+          </EduIf>
+        </Label>
+      </EduIf>
       <Form.Item>
         {getFieldDecorator(fiedlName, {
           rules: validations[fiedlName],

@@ -117,6 +117,7 @@ const CustomizedHeaderWrapper = ({
     DW_ATTENDANCE_SUMMARY_REPORT,
     DW_DASHBOARD_REPORT,
     DW_EARLY_WARNING_REPORT,
+    DW_GOALS_AND_INTERVENTIONS_REPORT,
   } = reportNavType
 
   const reportTypes = navigation.locToData
@@ -129,12 +130,14 @@ const CustomizedHeaderWrapper = ({
     reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
     reportTypes[DW_DASHBOARD_REPORT].title,
     reportTypes[DW_EARLY_WARNING_REPORT].title,
+    reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
     reportTypes[ENGAGEMENT_SUMMARY].title,
     reportTypes[PRE_VS_POST].title,
     reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
     reportTypes[DW_EARLY_WARNING_REPORT].title,
+    reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
   ]
   const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
   const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)

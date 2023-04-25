@@ -13,6 +13,9 @@ const Tags = (props) => {
     addNewTag,
     setFieldsValue,
     getFieldValue,
+    showLabel,
+    fieldSetLineHeight,
+    selectorHeight,
   } = props
   const [searchValue, setSearchValue] = useState('')
   const selectTags = async (id) => {
@@ -69,6 +72,8 @@ const Tags = (props) => {
         {...props}
         fiedlName="tags"
         initialValue={tags.map((tag) => tag._id)}
+        showLabel={showLabel}
+        fieldSetLineHeight={fieldSetLineHeight}
       >
         <StyledSelectInput
           showArrow
@@ -85,6 +90,7 @@ const Tags = (props) => {
               .includes(input.trim().toLowerCase())
           }
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          selectorHeight={selectorHeight}
         >
           {searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
@@ -115,6 +121,11 @@ const StyledSelectInput = styled(SelectInputStyled)`
           content: none;
         }
       }
+    }
+  }
+  &.ant-select {
+    .ant-select-selection {
+      height: ${({ selectorHeight }) => selectorHeight};
     }
   }
 `

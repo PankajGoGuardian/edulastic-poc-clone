@@ -13,6 +13,10 @@ export const Field = styled.fieldset`
   .ant-select {
     width: 100%;
   }
+
+  .ant-form-item-control {
+    line-height: ${({ fieldSetLineHeight }) => fieldSetLineHeight};
+  }
 `
 
 export const Label = styled(FieldLabel)`

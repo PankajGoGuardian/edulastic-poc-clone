@@ -3,6 +3,8 @@ import qs from 'qs'
 
 const api = new API()
 const prefix = '/test-activity/summary'
+const dataWarehousePrefix = '/data-warehouse'
+const goalsAndInterventionsPrefix = '/goals-interventions'
 
 const fetchReports = (
   groupId = '',
@@ -359,6 +361,50 @@ const fetchAttendanceDistributionReport = (params) =>
     })
     .then((response) => response?.data?.result)
 
+const createGoal = (data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const createIntervention = (data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const getGoals = () =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals`,
+      method: 'get',
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceBands = () =>
+  api
+    .callApi({
+      url: `report/attendance-band`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
+const getInterventions = (params) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions`,
+      method: 'get',
+      params,
+      paramsSerializer: (param) => qs.stringify(param),
+    })
+    .then((response) => response?.data?.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -404,4 +450,9 @@ export default {
   fetchAttendanceReportDetails,
   fetchAttendanceSummaryReport,
   fetchAttendanceDistributionReport,
+  createGoal,
+  createIntervention,
+  getGoals,
+  fetchAttendanceBands,
+  getInterventions,
 }

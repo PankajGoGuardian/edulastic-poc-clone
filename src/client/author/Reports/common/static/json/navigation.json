@@ -417,6 +417,20 @@
         }
       ],
       "group": "mainReport"
+    },
+    "goals-and-interventions": {
+      "title": "Set Goals & Interventions",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Goals And Interventions"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
     }
   },
   "navigation": {
@@ -577,6 +591,11 @@
         "key": "attendance-summary",
         "title": "ATTENDANCE SUMMARY",
         "location": "/author/reports/attendance-summary"
+      },
+      {
+        "key": "goals-and-interventions",
+        "title": "GOALS AND INTERVENTIONS",
+        "location": "/author/reports/goals-and-interventions"
       },
       {
         "key": "early-warning-report",

@@ -114,7 +114,7 @@ function TableSection({
   const _rowSelection = addToStudentGroupEnabled ? rowSelection : null
 
   const hasContent = !tableDataRequestError && !isEmpty(tableData?.metricInfo)
-  const errorMsg = 'Error fetching Attendance Summary data.'
+  const errorMsg = 'Error fetching data, please try again later'
 
   const emptyContainerDesc = tableDataRequestError
     ? errorMsg

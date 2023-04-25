@@ -8,8 +8,7 @@ function* fetchFiltersDataRequestSaga({ payload }) {
     const filtersData = yield call(reportsApi.fetchMARFilterData, payload)
     yield put(actions.fetchFiltersDataRequestSuccess({ filtersData }))
   } catch (error) {
-    const msg =
-      'Error getting filter data. Please try again after a few minutes.'
+    const msg = 'Error getting filter data.'
     notification({ msg })
     yield put(actions.fetchFiltersDataRequestError({ error: msg }))
   }
@@ -38,8 +37,7 @@ function* fetchDashboardTableDataRequestSaga({ payload }) {
       })
     )
   } catch (error) {
-    const msg =
-      'Error fetching Dashboard table data. Please try again after a few minutes.'
+    const msg = 'Error fetching Dashboard table data.'
     notification({ type: 'error', msg })
     yield put(actions.fetchDashboardTableDataRequestError({ error: msg }))
   }

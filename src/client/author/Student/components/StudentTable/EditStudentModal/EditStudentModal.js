@@ -42,7 +42,7 @@ class EditStudentModal extends React.Component {
             No, Cancel
           </Button>,
           <Button type="primary" key="submit" onClick={this.onSaveStudent}>
-            Yes, Update >
+            Yes, Update
           </Button>,
         ]}
       >

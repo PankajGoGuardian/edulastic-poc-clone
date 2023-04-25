@@ -1,16 +1,32 @@
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
 import { DEGREE_TO_RADIAN } from '@edulastic/constants/reportUtils/common'
 import { Tooltip } from 'antd'
+import { max } from 'lodash'
 import React from 'react'
 
 const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
   if (value === 0) return null
-  const maxTitleLenght = 14
-  const title = `${value}% ${name}`
-  const label =
-    title.length >= maxTitleLenght
-      ? `${title.slice(0, maxTitleLenght - 3)}...`
-      : title
+  const maxFirstLineCharLength = 7
+  const maxSecondLineCharLength = 9
+  const nameArr = name.split(' ')
+  const showSecondLine =
+    nameArr[0].length > maxFirstLineCharLength || nameArr.length > 1
+  let secondLineText = ''
+  const firstLineText =
+    nameArr[0].length > maxFirstLineCharLength
+      ? `${value}%`
+      : `${value}% ${nameArr[0]}`
+  if (showSecondLine) {
+    const secondLineValues =
+      nameArr[0].length > maxFirstLineCharLength ? nameArr : nameArr.slice(1)
+    const secondLine = secondLineValues.join(' ')
+    secondLineText =
+      secondLine.length > maxSecondLineCharLength
+        ? `${secondLine.slice(0, maxSecondLineCharLength - 3)}...`
+        : secondLine
+  }
+
+  const maxLabelLength = max([firstLineText.length, secondLineText.length])
 
   const sin = Math.sin(-DEGREE_TO_RADIAN * midAngle)
   const cos = Math.cos(-DEGREE_TO_RADIAN * midAngle)
@@ -18,9 +34,9 @@ const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
   const sy = cy + (outerRadius + 4) * sin
   const circleX = cx + outerRadius * cos
   const circleY = cy + outerRadius * sin
-  const mx = cx + (outerRadius + 20) * cos
-  const my = cy + (outerRadius + 20) * sin
-  const ex = mx + (cos >= 0 ? 1 : -1) * name.length * 20
+  const mx = cx + (outerRadius + 26) * cos
+  const my = cy + (outerRadius + 26) * sin
+  const ex = mx + (cos >= 0 ? 1 : -1) * maxLabelLength * 10
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
   const textX = mx + (cos >= 0 ? 1 : -1) * 10
@@ -40,7 +56,18 @@ const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
         fill="none"
         strokeWidth={1}
       />
-      <Tooltip title={title}>
+      <Tooltip title={name}>
+        <text
+          className="label-text"
+          x={textX}
+          y={showSecondLine ? textY - 15 : textY}
+          textAnchor={textAnchor}
+          fill={lightGrey17}
+        >
+          <tspan className="label-value">{firstLineText}</tspan>
+        </text>
+      </Tooltip>
+      <Tooltip title={name}>
         <text
           className="label-text"
           x={textX}
@@ -48,7 +75,7 @@ const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
           textAnchor={textAnchor}
           fill={lightGrey17}
         >
-          <tspan className="label-value">{label}</tspan>
+          <tspan className="label-value">{secondLineText}</tspan>
         </text>
       </Tooltip>
     </g>

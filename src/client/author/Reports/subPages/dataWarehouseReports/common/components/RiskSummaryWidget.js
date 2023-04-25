@@ -88,7 +88,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
     : null
 
   return (
-    <Widget width={widgetWidth} minWidth="660px">
+    <Widget width={widgetWidth} minWidth="665px">
       <FlexContainer justifyContent="left" alignItems="center">
         <WidgetHeader
           title={title}

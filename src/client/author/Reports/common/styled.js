@@ -856,6 +856,7 @@ export const SectionLabelWrapper = styled.div`
 export const PieChartWrapper = styled.div`
   width: 400px;
   height: 300px;
+  flex-grow: 1;
   .label-name {
     font-weight: normal;
     overflow: wrap;

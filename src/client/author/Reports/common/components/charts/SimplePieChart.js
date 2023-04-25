@@ -15,7 +15,7 @@ const SimplePieChart = ({
           <Pie
             label={getChartLabelJSX}
             data={data}
-            cx="45%"
+            cx="50%"
             cy="50%"
             innerRadius={innerRadius}
             outerRadius={outerRadius}

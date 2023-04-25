@@ -147,6 +147,7 @@ export const mapCountAsType = {
 }
 
 export const CLEVER_DISTRICT_ID_REGEX = /^[0-9a-fA-F]{24}$/
+export const ATLAS_DISTRICT_ID_REGEX = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/
 
 export const DISABLE_SUBMIT_TITLE = 'Disabled since Sync Enabled'
 

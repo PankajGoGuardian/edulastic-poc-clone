@@ -8,6 +8,7 @@ import {
   DISTRICT_SYNC_STATUS,
   mapCountAsType,
   CLEVER_DISTRICT_ID_REGEX,
+  ATLAS_DISTRICT_ID_REGEX,
 } from '../Data'
 
 const { Column } = Table
@@ -144,26 +145,29 @@ export default function SearchDistrictTable({
 
   function updateThirdPartyId(districtId) {
     const cleverIdRegex = RegExp(CLEVER_DISTRICT_ID_REGEX)
+    const classLinkIdRegex = RegExp(ATLAS_DISTRICT_ID_REGEX)
 
-    if (isClasslink || cleverIdRegex.test(editValue)) {
+    if (
+      classLinkIdRegex.test(editValue) ||
+      cleverIdRegex.test(editValue) ||
+      !editValue
+    ) {
       // here editCell is set so that all fields become uneditable
       setEditCell()
       if (isClasslink) {
-        updateClasslink({
+        return updateClasslink({
           districtId,
           atlasId: editValue,
         })
-      } else {
-        updateClever({
-          districtId,
-          cleverId: editValue,
-        })
       }
-    } else {
-      notification({
-        messageKey: isClasslink ? 'invalidClasslinkId' : 'inValiedCleverId',
+      return updateClever({
+        districtId,
+        cleverId: editValue,
       })
     }
+    notification({
+      messageKey: isClasslink ? 'invalidClasslinkId' : 'inValiedCleverId',
+    })
   }
 
   function renderActions(text, record) {

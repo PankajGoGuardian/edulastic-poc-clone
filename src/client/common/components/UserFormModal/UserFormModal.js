@@ -148,10 +148,6 @@ class UserForm extends React.Component {
       width: '12px',
       height: '12px',
     }
-    const multiDistrictStudentPasswordEditErrMsg =
-      _source?.districtIds?.length > 1
-        ? t('multiDistrictStudentPasswordError.studentEdit')
-        : null
     return (
       <CustomModalStyled
         centered
@@ -290,48 +286,42 @@ class UserForm extends React.Component {
               <Field name={PASSWORD_KEY}>
                 <FieldLabel>Password</FieldLabel>
                 <Form.Item>
-                  <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
-                    {getFieldDecorator(PASSWORD_KEY)(
-                      <div>
-                        <TextInputStyled
-                          padding="0px 15px 0px 30px"
-                          prefix={<img style={iconSize} src={keyIcon} alt="" />}
-                          type={PASSWORD_KEY}
-                          autoComplete="off"
-                          placeholder="Enter Password"
-                          data-cy="passwordTextBox"
-                          disabled={_source?.districtIds?.length > 1}
-                        />
-                      </div>
-                    )}
-                  </Tooltip>
+                  {getFieldDecorator(PASSWORD_KEY)(
+                    <div>
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
+                        prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                        type={PASSWORD_KEY}
+                        autoComplete="off"
+                        placeholder="Enter Password"
+                        data-cy="passwordTextBox"
+                      />
+                    </div>
+                  )}
                 </Form.Item>
               </Field>
               <Field name="confirmPassword">
                 <FieldLabel>Confirm Password</FieldLabel>
                 <Form.Item>
-                  <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
-                    {getFieldDecorator('confirmPassword', {
-                      rules: [
-                        {
-                          validator: this.confirmPwdCheck,
-                          message: 'Retyped password do not match.',
-                        },
-                      ],
-                    })(
-                      <div>
-                        <TextInputStyled
-                          padding="0px 15px 0px 30px"
-                          prefix={<img style={iconSize} src={keyIcon} alt="" />}
-                          type={PASSWORD_KEY}
-                          autoComplete="off"
-                          placeholder="Confirm Password"
-                          data-cy="confirmPasswordTextBox"
-                          disabled={_source?.districtIds?.length > 1}
-                        />
-                      </div>
-                    )}
-                  </Tooltip>
+                  {getFieldDecorator('confirmPassword', {
+                    rules: [
+                      {
+                        validator: this.confirmPwdCheck,
+                        message: 'Retyped password do not match.',
+                      },
+                    ],
+                  })(
+                    <div>
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
+                        prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                        type={PASSWORD_KEY}
+                        autoComplete="off"
+                        placeholder="Confirm Password"
+                        data-cy="confirmPasswordTextBox"
+                      />
+                    </div>
+                  )}
                 </Form.Item>
               </Field>
             </Panel>

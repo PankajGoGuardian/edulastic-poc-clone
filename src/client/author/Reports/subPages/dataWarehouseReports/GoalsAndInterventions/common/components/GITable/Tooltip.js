@@ -83,7 +83,7 @@ const Tooltip = ({ value, record }) => {
       }
       arrow={false}
     >
-      <p style={{ color: themeColor }}>
+      <p style={{ color: themeColor, width: 'fit-content' }}>
         <EllipsisText lines={2}>{value}</EllipsisText>
       </p>
     </Popover>

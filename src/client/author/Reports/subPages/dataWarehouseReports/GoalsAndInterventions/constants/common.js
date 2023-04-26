@@ -21,7 +21,7 @@ export const timeLeftColors = {
   GREEN: '#2A7A2F',
   RED: '#982B22',
   YELLOW: '#C89600',
-  GRAY: '#59677A',
+  GRAY: '#777777',
 }
 
 export const firstScreenContent = {

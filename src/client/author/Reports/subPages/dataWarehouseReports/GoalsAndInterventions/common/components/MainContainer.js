@@ -2,7 +2,7 @@ import { IconQuestionCircle } from '@edulastic/icons'
 import Tabs from 'antd/lib/tabs'
 import React from 'react'
 import styled from 'styled-components'
-import { darkGrey, textBlackColor } from '@edulastic/colors'
+import { darkGrey, green } from '@edulastic/colors'
 import { StyledEduButton } from '../../../../../common/styled'
 
 const { TabPane } = Tabs
@@ -40,11 +40,11 @@ const SwitchTabs = styled(Tabs)`
     font-size: 12px !important;
   }
   .ant-tabs-ink-bar {
-    background-color: #1ab394 !important;
+    background-color: ${green} !important;
   }
   .ant-tabs-nav .ant-tabs-tab-active,
   .ant-tabs-nav .ant-tabs-tab:hover {
-    color: #000;
+    color: ${green};
   }
   .ant-tabs-content {
     border: none !important;
@@ -54,7 +54,7 @@ const SwitchTabs = styled(Tabs)`
     color: ${darkGrey};
   }
   .ant-tabs-tab-active.ant-tabs-tab {
-    color: ${textBlackColor};
+    color: ${green};
   }
 `
 

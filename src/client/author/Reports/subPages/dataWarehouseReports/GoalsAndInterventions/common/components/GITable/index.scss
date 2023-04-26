@@ -8,7 +8,7 @@
         border-bottom: none;
         padding: 16px 2px;
         color: #999999;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 12px;
         text-transform: uppercase;
         &.text-center {
@@ -26,7 +26,12 @@
         }
       }
     }
+    .ant-table-expand-icon-th {
+      width: 20px;
+      min-width: 20px;
+    }
   }
+
   .ant-table-expanded-row {
     background: transparent;
     td {
@@ -45,12 +50,16 @@
         line-height: initial;
       }
     }
+    .ant-table-row-expand-icon-cell {
+      width: 20px;
+      min-width: 20px;
+    }
     td {
       border-bottom: 1px solid #eeeeee;
       padding: 2px;
       height: 40px;
       text-align: left;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 12px;
       color: $filterIconColor;
       &.text-center {
@@ -114,9 +123,10 @@
       font-weight: 600;
       font-size: 10px;
       line-height: 30px;
-      text-align: center;
+      text-align: left;
       color: $black;
-      padding: 0 25px;
+      padding: 0 10px;
+      text-transform: uppercase;
       border-bottom: 1px solid #eeeeee;
       &:last-child {
         border-bottom: none;

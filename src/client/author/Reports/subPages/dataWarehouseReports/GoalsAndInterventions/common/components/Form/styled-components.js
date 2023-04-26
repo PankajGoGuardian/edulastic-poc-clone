@@ -88,7 +88,7 @@ export const StyledDatePicker = styled(DatePickerStyled)`
 export const StyledFilterLabel = styled(FieldLabel)`
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 10px;
   line-height: 14px;
   color: ${greyThemeDark4};
@@ -98,7 +98,7 @@ export const StyledTitle = styled.div`
   height: 16px;
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   line-height: 16px;
   margin-bottom: 16px;
@@ -113,7 +113,7 @@ export const StyledSectionDescription = styled.div`
   margin-bottom: 15px;
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 13px;
   line-height: 33px;
   color: ${black};

@@ -330,3 +330,4 @@ export const partialBgColor = '#fbfae0'
 export const partialIconColor = '#bdb956'
 
 export const lightBrown = '#efe3bb'
+export const lightSkyBlue = '#b9d5fa'

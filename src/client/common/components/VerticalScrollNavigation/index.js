@@ -35,7 +35,9 @@ const VerticalScrollNavigation = ({
                 <StyledListPointerContainer className="nav-list-item-pointer-container">
                   <StyledListPointer isActive={index === activeTab} />
                 </StyledListPointerContainer>
-                <StyledLabelContainer>{section.label}</StyledLabelContainer>
+                <StyledLabelContainer isActive={index === activeTab}>
+                  {section.label}
+                </StyledLabelContainer>
               </StyledSectionLabel>
             </StlyedListItem>
           ))}

@@ -18,6 +18,7 @@ const SummaryTile = ({
         border: border || 'none',
         color: textColor,
         textTransform: border ? 'uppercase' : 'initial',
+        fontSize: border ? '14px' : '12px',
       }}
     >
       <p>{text}</p>
@@ -36,7 +37,6 @@ const StyleButton = styled.div`
   border-radius: 4px;
   p {
     font-weight: 600;
-    font-size: 12px;
   }
   b {
     font-weight: 700;

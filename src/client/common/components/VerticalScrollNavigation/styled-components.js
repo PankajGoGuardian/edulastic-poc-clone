@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { themeColor, greyThemeDark4 } from '@edulastic/colors'
+import { themeColor, greyThemeDark4, lightSkyBlue } from '@edulastic/colors'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 export const Menu = styled.div`
@@ -10,6 +10,9 @@ export const Menu = styled.div`
 `
 export const StlyedListItem = styled.li`
   cursor: pointer;
+  .nav-section-label {
+    border-left: 2px solid ${lightSkyBlue};
+  }
   &:last-of-type {
     .nav-section-label {
       border-left: none;
@@ -30,12 +33,13 @@ export const StyledSectionLabel = styled.div`
 export const StyledLabelContainer = styled.div`
   font-family: 'Open Sans';
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 12px;
   line-height: 16px;
-  color: ${greyThemeDark4};
+  color: ${({ isActive }) => (isActive ? themeColor : greyThemeDark4)};
   padding-left: 25px;
   position: relative;
+  text-transform: uppercase;
   top: -3px;
 `
 
@@ -43,7 +47,7 @@ export const StyledListPointer = styled.div`
   height: 13px;
   width: 13px;
   border-radius: 50px;
-  background: ${({ isActive }) => (isActive ? themeColor : greyThemeDark4)};
+  background: ${({ isActive }) => (isActive ? themeColor : lightSkyBlue)};
 `
 export const StyledListPointerContainer = styled.div`
   position: relative;

@@ -22,7 +22,12 @@ const getCurrentStatusColor = (record) => {
 const getTimeLeftColor = (record) => {
   const timeLeft = moment().diff(record.startDate, 'days')
   const totalTime = moment(record.endDate).diff(record.startDate, 'days')
-
+  if (
+    moment().diff(record.endDate, 'days') > 0 ||
+    moment().diff(record.startDate, 'days') <= 0
+  ) {
+    return timeLeftColors.GRAY
+  }
   if (timeLeft / totalTime <= getPercentage(MULTIPLE_OF_TENS.THIRTY))
     return timeLeftColors.RED
   if (

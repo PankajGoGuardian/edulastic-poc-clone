@@ -25,7 +25,12 @@ export const StyledTable = styled(Table)`
   th .ant-table-column-title {
     text-transform: uppercase;
     color: ${darkGrey} !important;
-    font-weight: bold !important;
+    font-weight: 500 !important;
+    font-size: 12px;
+  }
+  td {
+    font-weight: 500;
+    font-size: 12px;
   }
 
   .ant-pagination-total-text {

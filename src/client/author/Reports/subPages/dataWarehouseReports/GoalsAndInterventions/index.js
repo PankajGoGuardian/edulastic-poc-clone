@@ -67,7 +67,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     2: [
       {
         key: '1',
-        label: `GOAL LIST`,
+        label: `GOALS LIST`,
         children: (
           <GoalList
             noDataContent={
@@ -188,8 +188,8 @@ const SwitchTabs = styled(Tabs)`
     border-bottom: none;
   }
   .ant-tabs-tab {
-    font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 500px;
   }
   .ant-tabs-ink-bar {
     background-color: transparent;

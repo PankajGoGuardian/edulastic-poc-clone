@@ -19,8 +19,10 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: fit-content;
+  padding: 0 10px;
   height: 34px;
+  margin: 0 auto;
 `
 
 export default ColoredCell

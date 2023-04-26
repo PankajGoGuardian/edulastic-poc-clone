@@ -351,15 +351,15 @@ export const formSectionExtraData = {
 
 export const formNavigationLabels = {
   [GOAL]: {
-    [DETAILS_SECTION]: 'Goal details with target students',
-    [TARGET_PROFICIENCY_SECTION]: 'Improvement areas & target proficiency',
+    [DETAILS_SECTION]: 'Goal type',
+    [TARGET_PROFICIENCY_SECTION]: 'Improvement areas',
     [THRESHOLD_DEADLINE_SECTION]: 'Deadline',
-    [RELATED_GOALS_COMMENTS_SECTION]: 'Notes & Goals',
+    [RELATED_GOALS_COMMENTS_SECTION]: 'Notes',
   },
   [INTERVENTION]: {
-    [DETAILS_SECTION]: 'Details with students in need',
+    [DETAILS_SECTION]: 'Intervention details',
     [TARGET_PROFICIENCY_SECTION]: 'Expected Outcome',
     [THRESHOLD_DEADLINE_SECTION]: 'Intervention period',
-    [RELATED_GOALS_COMMENTS_SECTION]: 'Notes & Goals',
+    [RELATED_GOALS_COMMENTS_SECTION]: 'Related Goals and Notes',
   },
 }

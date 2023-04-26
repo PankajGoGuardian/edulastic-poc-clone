@@ -110,7 +110,7 @@ export const AddRule = ({ handleOnClick, rules, path }) => {
         disabled={isDisabled}
         data-cy={dataCyValue}
       >
-        + ADD CRITERIA
+        + ADD CRITERION
       </RuleButton>
       <EduIf condition={isDisabled}>
         <span className="error-message">Maximum of 10 criteria allowed!</span>

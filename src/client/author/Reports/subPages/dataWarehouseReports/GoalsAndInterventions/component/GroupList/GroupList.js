@@ -114,6 +114,7 @@ const GroupList = ({
     // },
     {
       key: 'viewReport',
+      width: 150,
       render: (data, record) => {
         return (
           <ActionMenu

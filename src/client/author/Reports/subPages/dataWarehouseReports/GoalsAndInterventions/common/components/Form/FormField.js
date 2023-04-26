@@ -154,10 +154,12 @@ const FormField = ({
             field === START_DATE ? disableStartDates : disableEndDates
           }
           onChange={(date) => {
-            handleFieldDataChange(
-              field,
-              +moment.utc(date?.format('YYYY-MM-DD'))
-            )
+            if (date) {
+              handleFieldDataChange(
+                field,
+                +moment.utc(date?.format('YYYY-MM-DD'))
+              )
+            }
           }}
           showToday={false}
           allowClear={false}

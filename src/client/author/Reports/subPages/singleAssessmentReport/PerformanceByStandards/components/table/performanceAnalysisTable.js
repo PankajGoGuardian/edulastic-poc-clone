@@ -77,7 +77,7 @@ const AnalysisTable = styled(StyledTable)`
       min-width: 100px;
       padding: 0;
       &:nth-child(1) {
-        padding: 0px 8px;
+        padding: 10px 8px;
       }
     }
   }

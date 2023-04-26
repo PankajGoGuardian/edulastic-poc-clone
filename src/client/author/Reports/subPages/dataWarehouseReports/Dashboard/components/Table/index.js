@@ -67,7 +67,7 @@ const DashboardTable = ({
         </StyledTag>
         <StyledText textTransform="uppercase">
           {tableFilters[tableFilterTypes.COMPARE_BY].title} PERFORMANCE
-          ACCORDING TO DISTRICT AVERAGE
+          ACCORDING TO OVERALL AVERAGE
         </StyledText>
         <TableHeaderCell
           title="Above/Equal to avg.:"

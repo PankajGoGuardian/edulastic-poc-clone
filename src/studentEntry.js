@@ -20,6 +20,7 @@ import { studentsSagas } from './client/studentSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { isMobileDevice, isIOS } from './client/platform'
 import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
+import { extensionBlocker } from './utils/anticheating/extensionBlocker/extensionBlocker'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -37,7 +38,7 @@ if (AppConfig.sentryURI) {
 
 window.isMobileDevice = isMobileDevice()
 window.isIOS = isIOS()
-
+extensionBlocker.registerMutationObserver()
 /**
  *  In case of redirection from canvas we might get errorDescription as query param which
  *  we have to display as error message and remove it from the url.

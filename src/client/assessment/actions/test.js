@@ -16,6 +16,7 @@ import {
   RESET_TEST_ITEMS,
   SET_SUBMIT_TEST_COMPLETE,
   CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  SET_ANTI_CHEATING_ENABLED,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -99,5 +100,10 @@ export const setSubmitTestCompleteAction = (payload) => ({
 
 export const closeTestTimeoutAlertModalAction = (payload) => ({
   type: CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  payload,
+})
+
+export const setIsAntiCheatingEnabled = (payload) => ({
+  type: SET_ANTI_CHEATING_ENABLED,
   payload,
 })

@@ -153,17 +153,15 @@ function FiltersView({
                       key={staticDropDownData.filterSections.PERIOD.key}
                       tab={staticDropDownData.filterSections.PERIOD.title}
                     >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <FilterPeriodFields
-                          filters={filters}
-                          updateFilterDropdownCB={updateFilterDropdownCB}
-                          terms={terms}
-                          allPeriodTypes={staticDropDownData.periodTypes}
-                          setFilters={setFilters}
-                          filterTagsData={filterTagsData}
-                          setFilterTagsData={setFilterTagsData}
-                        />
-                      </Row>
+                      <FilterPeriodFields
+                        filters={filters}
+                        updateFilterDropdownCB={updateFilterDropdownCB}
+                        terms={terms}
+                        allPeriodTypes={staticDropDownData.periodTypes}
+                        setFilters={setFilters}
+                        filterTagsData={filterTagsData}
+                        setFilterTagsData={setFilterTagsData}
+                      />
                     </Tabs.TabPane>
                   </Tabs>
                 </Col>

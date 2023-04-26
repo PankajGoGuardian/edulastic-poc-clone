@@ -252,15 +252,13 @@ function* getAdvancedSearchCourses({ payload }) {
 function* getAdvancedSearchAttendanceBand() {
   try {
     const response = yield call(reportsApi.fetchAttendanceBands)
-    if (!isEmpty(response)) {
-      yield put(
-        actions.setAdvancedSearchDetails({
-          key: fieldKey.attendanceBands,
-          data: response,
-          isAttendanceBand: true,
-        })
-      )
-    }
+    yield put(
+      actions.setAdvancedSearchDetails({
+        key: fieldKey.attendanceBands,
+        data: !isEmpty(response) ? response : [],
+        isAttendanceBand: true,
+      })
+    )
   } catch (error) {
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
     yield put(

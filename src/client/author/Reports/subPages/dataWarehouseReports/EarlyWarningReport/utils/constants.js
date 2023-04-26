@@ -6,6 +6,7 @@ import {
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
 } from '@edulastic/constants/reportUtils/common'
+import { lightRed7, darkRed3 } from '@edulastic/colors'
 
 export const CHART_LABEL_KEY = 'chartTimeLabel'
 
@@ -46,14 +47,14 @@ export const tableColumnsData = [
     key: tableColumnKeys.ACADEMIC_RISK,
     dataIndex: 'distribution',
     title: 'ACADEMIC RISK',
-    align: 'center',
+    align: 'left',
     className: 'risk-distribution',
   },
   {
     key: tableColumnKeys.ATTENDANCE_RISK,
     dataIndex: 'distribution',
     title: 'ATTENDANCE RISK',
-    align: 'center',
+    align: 'left',
     className: 'risk-distribution',
   },
 ]
@@ -139,3 +140,15 @@ export const staticDropDownData = {
     title,
   })),
 }
+
+// Lines z-index on the chart is directly proportional to line index in below array
+export const CHART_LINES = [
+  {
+    dataKey: 'medium',
+    stroke: darkRed3,
+  },
+  {
+    dataKey: 'high',
+    stroke: lightRed7,
+  },
+]

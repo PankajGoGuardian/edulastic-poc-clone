@@ -16,7 +16,8 @@ const LargeTagParent = styled.div`
   color: ${(props) => props.color || greyThemeDark1} !important;
   div.left-text {
     font-weight: bold;
-    max-width: 135px;
+    width: 35px;
+    text-align: right;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

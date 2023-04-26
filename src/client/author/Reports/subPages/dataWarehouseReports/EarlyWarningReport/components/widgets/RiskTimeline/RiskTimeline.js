@@ -9,7 +9,6 @@ import {
   SpinLoader,
   FlexContainer,
 } from '@edulastic/common'
-import { lightRed7, darkRed3 } from '@edulastic/colors'
 import {
   Widget,
   StyledEmptyContainer,
@@ -17,22 +16,15 @@ import {
 import WidgetHeader from '../../../../common/components/WidgetHeader'
 import RiskTimelineFilters from './RiskTimelineFilters'
 import SimpleLineChart from '../../../../../../common/components/charts/SimpleLineChart'
-import { getTimelineChartData, CHART_LABEL_KEY } from '../../../utils'
+import {
+  getTimelineChartData,
+  CHART_LABEL_KEY,
+  CHART_LINES,
+} from '../../../utils'
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 import { Spacer } from '../../../../../../../../common/styled'
 
-const title = 'Risk Over Time'
-
-const CHART_LINES = [
-  {
-    dataKey: 'high',
-    stroke: lightRed7,
-  },
-  {
-    dataKey: 'medium',
-    stroke: darkRed3,
-  },
-]
+const title = 'RISK OVER Time'
 
 const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   const query = useMemo(

@@ -46,6 +46,9 @@ export const StyledEarlyWarningTable = styled(CustomStyledTable)`
       }
     }
     .risk-distribution {
+      .ant-table-header-column {
+        margin-left: 16px;
+      }
       span > div {
         margin-right: 220px;
         margin-top: 15px;
@@ -53,6 +56,9 @@ export const StyledEarlyWarningTable = styled(CustomStyledTable)`
     }
   }
   .ant-table-tbody {
+    .risk-distribution > div {
+      text-align: center;
+    }
     .risk > div {
       font-size: 12px;
       .left-text {

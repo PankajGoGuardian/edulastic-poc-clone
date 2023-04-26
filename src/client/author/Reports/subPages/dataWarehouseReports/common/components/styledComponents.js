@@ -106,6 +106,7 @@ export const WidgetHeaderWrapper = styled.div`
     padding: 11px 40px;
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
+    text-transform: uppercase;
   }
   svg {
     margin: auto 20px;

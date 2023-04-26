@@ -36,7 +36,7 @@ function parseOptions(_options, params) {
   const options = {
     enabled: true,
     deDuplicate: true,
-    debounceTimeout: 200,
+    debounceTimeout: 0,
     ..._options,
   }
   options.enabled =
@@ -105,11 +105,17 @@ function useApiQuery(api, params, options = {}) {
       }
       previousParamsRef.current = params
     }
-
-    const timeout = setTimeout(fetchData, parsedOptions.debounceTimeout)
-    resetCBRef.current = () => {
-      clearTimeout(timeout)
-      cancelled = true
+    if (parsedOptions.debounceTimeout) {
+      const timeout = setTimeout(fetchData, parsedOptions.debounceTimeout)
+      resetCBRef.current = () => {
+        clearTimeout(timeout)
+        cancelled = true
+      }
+    } else {
+      resetCBRef.current = () => {
+        cancelled = true
+      }
+      fetchData()
     }
   }, [parsedOptions.enabled, parsedOptions.debounceTimeout, ...params])
   useEffect(() => resetCBRef.current, [])

@@ -19,6 +19,7 @@ import {
   timeframeFilterKeys,
   timeframeFilterValues,
   CHART_LABEL_KEY,
+  RISK_KEYS,
 } from './constants'
 import { compareByKeys } from '../../common/utils'
 
@@ -236,6 +237,10 @@ export const getTimelineChartData = (rawData, filters) => {
         true
       )
     })
+    if (studentCounts[RISK_KEYS.LOW] === 100) {
+      studentCounts[RISK_KEYS.MEDIUM] = 0
+      studentCounts[RISK_KEYS.HIGH] = 0
+    }
     finalData.push({
       ...groupedData[0],
       ...studentCounts,

@@ -141,14 +141,20 @@ export const staticDropDownData = {
   })),
 }
 
+export const RISK_KEYS = {
+  MEDIUM: 'medium',
+  HIGH: 'high',
+  LOW: 'low',
+}
+
 // Lines z-index on the chart is directly proportional to line index in below array
 export const CHART_LINES = [
   {
-    dataKey: 'medium',
+    dataKey: RISK_KEYS.MEDIUM,
     stroke: darkRed3,
   },
   {
-    dataKey: 'high',
+    dataKey: RISK_KEYS.HIGH,
     stroke: lightRed7,
   },
 ]

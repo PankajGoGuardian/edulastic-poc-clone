@@ -26,7 +26,11 @@ import {
 } from './styledComponents'
 import WidgetCell from './WidgetCell'
 import WidgetHeader from './WidgetHeader'
-import { getDateLabel, getTrendPeriodLabel } from '../utils'
+import {
+  getTrendPeriodLabel,
+  trendPeriodDateFormat,
+  trendPeriodPrefix,
+} from '../utils'
 import { transformRiskSummaryData } from '../../EarlyWarningReport/utils'
 import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
 
@@ -67,11 +71,19 @@ const RiskSummary = ({ settings, loc = '' }) => {
     [prePeriod, postPeriod, showFooter]
   )
 
-  const prePeriodDateLabel = showFooter ? getDateLabel(prePeriod) : ''
   const periodLabel = getTrendPeriodLabel(
     settings.requestFilters.periodType,
     postPeriod
   )
+
+  const trendPeriodLabel = showFooter
+    ? getTrendPeriodLabel(
+        settings.requestFilters.periodType,
+        prePeriod,
+        trendPeriodPrefix,
+        trendPeriodDateFormat
+      )
+    : ''
 
   const title =
     RISK_TYPE_OPTIONS.find(
@@ -93,12 +105,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
   return (
     <Widget width={widgetWidth} minWidth="665px">
       <FlexContainer justifyContent="left" alignItems="center">
-        <WidgetHeader
-          title={title}
-          date={periodLabel}
-          loading={loading}
-          url={externalUrl}
-        >
+        <WidgetHeader title={title} loading={loading} url={externalUrl}>
           <EduIf condition={!loading && !error}>
             <StyledText>{periodLabel}</StyledText>
           </EduIf>
@@ -125,7 +132,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                       <Footer
                         isVisible={showFooter}
                         value={highRiskChange}
-                        period={`vs ${prePeriodDateLabel}`}
+                        period={trendPeriodLabel}
                         showReverseTrend
                       />
                     }
@@ -144,7 +151,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                       <Footer
                         isVisible={showFooter}
                         value={mediumRiskChange}
-                        period={`vs ${prePeriodDateLabel}`}
+                        period={trendPeriodLabel}
                         showReverseTrend
                       />
                     }

@@ -60,3 +60,6 @@ export const compareByOptions = [
   { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
+
+export const trendPeriodDateFormat = `MMM'YY`
+export const trendPeriodPrefix = 'vs '

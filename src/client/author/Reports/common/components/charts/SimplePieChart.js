@@ -8,13 +8,14 @@ const SimplePieChart = ({
   outerRadius = 75,
   getChartLabelJSX,
 }) => {
+  const filteredData = data.filter((d) => d.value)
   return (
     <PieChartWrapper>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             label={getChartLabelJSX}
-            data={data}
+            data={filteredData}
             cx="50%"
             cy="50%"
             innerRadius={innerRadius}

@@ -5,7 +5,7 @@ import IconArrow from '../../../../../multipleAssessmentReport/PreVsPost/compone
 
 const PerformanceChange = ({ data }) => {
   const { preTestData, postTestData } = data
-  const value = preTestData.avgScorePercentage - postTestData.avgScorePercentage
+  const value = postTestData.avgScorePercentage - preTestData.avgScorePercentage
   const valueToShow = isNaN(value) ? 'N/A' : `${Math.abs(value)}%`
   return (
     <StyledDiv>

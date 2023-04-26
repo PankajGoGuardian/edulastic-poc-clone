@@ -59,7 +59,6 @@ const getSummaryCardInfo = (
 export const getSummaryDataFromSummaryMetrics = (
   summaryMetricInfo,
   testInfo,
-  isSamePerformanceBand,
   prePerformanceBand = [],
   postPerformanceBand = []
 ) => {
@@ -85,9 +84,10 @@ export const getSummaryDataFromSummaryMetrics = (
     postPerformanceBand
   )
 
-  const change = isSamePerformanceBand
-    ? preCardInfo.score - postCardInfo.score
-    : null
+  const change =
+    preTestInfo.isExternal || postTestInfo.isExternal
+      ? null
+      : postCardInfo.score - preCardInfo.score
 
   return {
     totalStudentCount,

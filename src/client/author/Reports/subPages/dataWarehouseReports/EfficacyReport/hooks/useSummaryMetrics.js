@@ -63,10 +63,8 @@ const useSummaryMetrics = ({
     const summaryData = getSummaryDataFromSummaryMetrics(
       summaryMetricInfo,
       testInfo,
-      isSamePerformanceBand,
       prePerformanceBand,
-      postPerformanceBand,
-      externalBands
+      postPerformanceBand
     )
     const {
       performanceMatrixColumnHeaders,

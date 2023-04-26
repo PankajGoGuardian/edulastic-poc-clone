@@ -1,6 +1,7 @@
 import { getSummaryStatusCount } from '../common/utils'
 
 export const statusColors = {
+  WHITE: '#FFFFFF80',
   GREEN: '#74E27A80',
   RED: '#EA433580',
   YELLOW: '#F5E19A80',

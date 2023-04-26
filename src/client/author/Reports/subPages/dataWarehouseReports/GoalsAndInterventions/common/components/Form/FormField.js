@@ -45,9 +45,9 @@ const FormField = ({
       : {}
 
   const disableStartDates = (date) => {
-    const now = Date.now().valueOf()
+    const now = +moment(moment().format('YYYY-MM-DD'))
     const _startDate = termStartDate > now ? termStartDate : now
-    date = +moment.utc(date.format())
+    date = +moment(date.format('YYYY-MM-DD'))
     const selectedEndDate = formData.endDate
 
     const datesLessThanCurrentDate =
@@ -57,7 +57,7 @@ const FormField = ({
       termEndDate && date >= termEndDate + oneDayInMilliseconds
 
     const datesGreaterThanSelectedEndDate =
-      selectedEndDate && date >= selectedEndDate
+      selectedEndDate && date >= selectedEndDate - oneDayInMilliseconds
 
     if (
       datesLessThanCurrentDate ||
@@ -70,11 +70,10 @@ const FormField = ({
   }
 
   const disableEndDates = (date) => {
-    date = +moment.utc(date.format())
-    const now = Date.now().valueOf()
+    date = +moment(date.format('YYYY-MM-DD'))
+    const now = +moment(moment().format('YYYY-MM-DD'))
     const _startDate = termStartDate > now ? termStartDate : now
     const selectedStartDate = formData.startDate
-
     const datesLessThanTomorrowsDate =
       _startDate && date <= _startDate + oneDayInMilliseconds
 
@@ -155,10 +154,7 @@ const FormField = ({
           }
           onChange={(date) => {
             if (date) {
-              handleFieldDataChange(
-                field,
-                +moment.utc(date?.format('YYYY-MM-DD'))
-              )
+              handleFieldDataChange(field, +moment(date?.format('YYYY-MM-DD')))
             }
           }}
           showToday={false}

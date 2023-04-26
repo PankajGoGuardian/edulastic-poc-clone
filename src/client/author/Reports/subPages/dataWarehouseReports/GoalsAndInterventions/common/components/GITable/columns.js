@@ -11,11 +11,17 @@ import {
 import Tooltip from './Tooltip'
 import ActionMenu from '../ActionMenu'
 import { GOAL, INTERVENTION } from '../../../constants/form'
-import { isNumeric, ucFirst, getPercentage } from '../../utils'
+import { isNumeric, ucFirst, getPercentage, getTarget } from '../../utils'
 import EllipsisText from '../EllipsisText'
 
 const getCurrentStatusColor = (record) => {
-  if (record.current >= record.target) return statusColors.GREEN
+  if (record.current >= getTarget(record)?.metric) return statusColors.GREEN
+  if (
+    record.current < getTarget(record)?.metric &&
+    moment().diff(record.endDate, 'days') < 0
+  ) {
+    return statusColors.WHITE
+  }
   return statusColors.RED
 }
 
@@ -43,10 +49,6 @@ const parseCurrentValue = (value) => {
     return isNumeric(value) ? `${Math.ceil(parseFloat(value))}%` : value
   }
   return '-'
-}
-
-const getTarget = (record) => {
-  return record?.interventionCriteria?.target || record?.goalCriteria?.target
 }
 
 const sortingBaselineCurrentTargetValues = (x, y) => {

@@ -28,10 +28,11 @@ const tableColumnsData = [
   {
     dataIndex: 'dimension',
     key: tableColumnKeys.DIMENSION,
-    align: 'center',
+    align: 'left',
     fixed: 'left',
     width: 250,
     sorter: true,
+    className: 'dimension',
   },
   {
     dataIndex: 'avgAttendance',

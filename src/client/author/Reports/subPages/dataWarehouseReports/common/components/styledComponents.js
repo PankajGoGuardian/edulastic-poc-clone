@@ -163,18 +163,14 @@ export const StyledText = styled.div`
 export const CompareByContainer = styled.div`
   width: fit-content;
   display: inline-block;
-  .dimension-name {
-    color: ${(p) => p.color};
-    width: fit-content;
-    display: inline-block;
-    margin-bottom: 4px;
-    margin: 0 25px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
+  color: ${(p) => p.color};
+  width: fit-content;
+  margin: 0 25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   @media print {
     .test-name-container {
       display: block;

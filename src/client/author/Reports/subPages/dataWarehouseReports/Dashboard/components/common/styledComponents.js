@@ -68,12 +68,19 @@ export const CustomStyledTable = styled(StyledTable)`
   .ant-table-bordered .ant-table-tbody > tr > td {
     border-right: 1px dashed ${lightGrey8};
   }
-  .ant-table-thead .avg-attendance-column-header {
-    border-right: 1px dashed ${lightGrey8};
-  }
-  .ant-table-thead .performance-distribution-column-header {
-    padding-top: 40px;
-    padding-right: 90px;
+  .ant-table-thead {
+    .avg-attendance-column-header {
+      border-right: 1px dashed ${lightGrey8};
+    }
+    .performance-distribution-column-header {
+      padding-top: 40px;
+      padding-right: 90px;
+    }
+    .dimension {
+      span {
+        margin-inline: 20px;
+      }
+    }
   }
   table {
     tbody {

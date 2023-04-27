@@ -13,6 +13,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { v4 } from 'uuid'
+import { sanitizeForReview } from '@edulastic/common/src/helpers'
 import { CustomStyleBtn } from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
 import { setItemLevelScoreFromRubricAction } from '../../ItemDetail/ducks'
@@ -23,9 +24,12 @@ import {
 } from '../../sharedDucks/questions'
 import {
   addRubricToRecentlyUsedAction,
+  autoGenerateRubricAction,
   deleteRubricAction,
   getCurrentRubricDataSelector,
+  getGeneratedRubricInfoSelector,
   getRecentlyUsedRubricsSelector,
+  getRubricDataLoadingSelector,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
@@ -70,6 +74,7 @@ const UseExisting = ({
   recentlyUsedRubrics,
   addRubricToRecentlyUsed,
   setItemLevelScoring,
+  autoGenerateRubric,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -81,6 +86,17 @@ const UseExisting = ({
   )
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [autoGenerate, setAutoGenerate] = useState(false)
+
+  useEffect(() => {
+    if (autoGenerate) {
+      // call API
+      const stimulus = sanitizeForReview(currentQuestion?.stimulus)
+      if (stimulus) {
+        autoGenerateRubric({ stimulus })
+      }
+    }
+  }, [autoGenerate])
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
@@ -369,6 +385,12 @@ const UseExisting = ({
           <div>
             <CustomStyleBtn
               style={btnStyle}
+              onClick={() => setAutoGenerate(true)}
+            >
+              <Icon data-cy="previewButton" type="eye" /> Auto Generate Rubric
+            </CustomStyleBtn>
+            <CustomStyleBtn
+              style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}
             >
               <Icon data-cy="previewButton" type="eye" /> Preview
@@ -536,10 +558,13 @@ const enhance = compose(
       totalSearchedCount: getTotalSearchedCountSelector(state),
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
+      generatedRubric: getGeneratedRubricInfoSelector(state),
+      isRubricLoading: getRubricDataLoadingSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,
       saveRubric: saveRubricAction,
+      autoGenerateRubric: autoGenerateRubricAction,
       updateRubric: updateRubricAction,
       searchRubricsRequest: searchRubricsRequestAction,
       associateRubricWithQuestion: setRubricIdAction,

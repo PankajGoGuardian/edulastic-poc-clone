@@ -13,6 +13,17 @@ const createRubrics = (payload) =>
     })
     .then((result) => result.data.result)
 
+const generateRubrics = (payload) =>
+  api
+    .callApi({
+      method: 'post',
+      url: '/rubrics/generate-rubric-criteria',
+      data: {
+        ...payload,
+      },
+    })
+    .then((result) => result.data.result)
+
 const getSerchedRubrics = (data) =>
   api
     .callApi({ url: '/rubrics/search', method: 'post', data: { ...data } })
@@ -43,4 +54,5 @@ export default {
   deleteRuricsById,
   updateRubricsById,
   getRubricsUsedByDistrict,
+  generateRubrics,
 }

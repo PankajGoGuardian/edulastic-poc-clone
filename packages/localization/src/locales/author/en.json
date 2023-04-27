@@ -175,6 +175,9 @@
   "showRubricToStudents": {
     "info": "Choose if the students should be able to view the grading rubric while attempting any question which has grading rubric associated. This setting will only be enabled if any of the question in the test has rubric attached to it."
   },
+  "allowAutoEssayEvaluation": {
+    "info": "Choose if you want to evaluate student response of essay type question using AI. Note that the manual evaluation can be done by teacher on top of it."
+  },
   "allowTeacherToRedirect": {
     "info": "When allow teachers to redirect is set to ON, teachers are allowed to redirect a common test for their class. Set to OFF to prevent teachers from using the redirect test feature."
   },

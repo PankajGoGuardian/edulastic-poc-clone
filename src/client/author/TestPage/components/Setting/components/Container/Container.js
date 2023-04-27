@@ -798,6 +798,7 @@ class Setting extends Component {
       showHintsToStudents = true,
       penaltyOnUsingHints = 0,
       showTtsForPassages = true,
+      allowAutoEssayEvaluation = false,
     } = entity
 
     const { canUseImmersiveReader } = features
@@ -1715,7 +1716,47 @@ class Setting extends Component {
                       </SettingContainer>
                     </Block>
                   )}
-
+                  {!isDocBased && (
+                    <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>Enable Auto Essay Response Evaluation</span>
+                          <DollarPremiumSymbol premium={premium} />
+                          <Tooltip
+                            title={i18translate(
+                              'allowAutoEssayEvaluation.info'
+                            )}
+                          >
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                          <EduSwitchStyled
+                            disabled={
+                              !isShowRubricToStudentsSettingVisible ||
+                              !owner ||
+                              !isEditable ||
+                              !premium
+                            }
+                            checked={allowAutoEssayEvaluation}
+                            data-cy="auto-essay-evaluation"
+                            onChange={this.updateTestData(
+                              'allowAutoEssayEvaluation'
+                            )}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description
+                            style={{ marginTop: '10px' }}
+                            data-cy="show-rubric-to-students-switch"
+                          >
+                            {i18translate('allowAutoEssayEvaluation.info')}
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
                   <HintsToStudents
                     premium={premium}
                     isSmallSize={isSmallSize}

@@ -82,6 +82,7 @@ const TestBehaviorGroupContainer = ({
     playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    allowAutoEssayEvaluation = testSettings.allowAutoEssayEvaluation,
     allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
@@ -502,7 +503,43 @@ const TestBehaviorGroupContainer = ({
           </StyledRow>
         </SettingContainer>
       )}
-
+      {!testSettings?.isDocBased && (
+        <SettingContainer id="auto-essay-evaluation">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Enable Auto Essay Response Evaluation"
+            content={i18translate('allowAutoEssayEvaluation.info')}
+            premium={premium}
+            placement="rightTop"
+          />
+          <StyledRow gutter={16} mb="15px" height="40">
+            <Col span={10}>
+              <Label>
+                <span>Enable Auto Essay Response Evaluation</span>
+                <DollarPremiumSymbol premium={premium} />
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="auto-essay-evaluation"
+                  size="small"
+                  defaultChecked={false}
+                  disabled={
+                    !isShowRubricToStudentsSettingVisible ||
+                    freezeSettings ||
+                    !premium
+                  }
+                  checked={allowAutoEssayEvaluation}
+                  onChange={(value) =>
+                    overRideSettings('allowAutoEssayEvaluation', value)
+                  }
+                />
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
       {/* Show hints to students */}
       {!(isDocBased && isTestlet) && (
         <SettingContainer id="show-hints-to-students">

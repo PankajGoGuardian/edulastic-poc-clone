@@ -439,6 +439,7 @@ module.exports = {
     'allowTeacherRedirect',
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
+    'allowAutoEssayEvaluation',
   ],
   docBasedSettingsOptions: [
     'partialScore',

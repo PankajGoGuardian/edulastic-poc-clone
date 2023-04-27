@@ -1926,6 +1926,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
+    allowAutoEssayEvaluation: entity.allowAutoEssayEvaluation,
     showHintsToStudents,
     penaltyOnUsingHints,
     allowTeacherRedirect,
@@ -1977,6 +1978,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
     settings.showRubricToStudents = false
+    settings.allowAutoEssayEvaluation = false
     settings.showHintsToStudents = true
     settings.penaltyOnUsingHints = 0
     settings.showTtsForPassages = true
@@ -2385,6 +2387,7 @@ const updateTestSettings = (testItemGroups, testData) => {
     testData.showRubricToStudents
   ) {
     testData.showRubricToStudents = false
+    testData.allowAutoEssayEvaluation = false
   }
 }
 

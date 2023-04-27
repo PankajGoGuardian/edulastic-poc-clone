@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { isObject } from 'lodash'
 import ColoredCell from './ColoredCell'
 import {
   statusColors,
@@ -15,9 +16,16 @@ import { isNumeric, ucFirst, getPercentage, getTarget } from '../../utils'
 import EllipsisText from '../EllipsisText'
 
 const getCurrentStatusColor = (record) => {
-  if (record.current >= getTarget(record)?.metric) return statusColors.GREEN
   if (
-    record.current < getTarget(record)?.metric &&
+    isObject(record.current)
+      ? record.current.isGreaterThanTargetBand
+      : record.current >= getTarget(record)?.metric
+  )
+    return statusColors.GREEN
+  if (
+    (isObject(record.current)
+      ? !record.current.isGreaterThanTargetBand
+      : record.current < getTarget(record)?.metric) &&
     moment().diff(record.endDate, 'days') < 0
   ) {
     return statusColors.WHITE
@@ -115,12 +123,15 @@ const columns = [
     dataIndex: 'current',
     key: 'current',
     className: 'text-center',
-    sorter: (a, b) => sortingBaselineCurrentTargetValues(a.current, b.current),
+    sorter: (a, b) =>
+      isObject(a.current)
+        ? sortingBaselineCurrentTargetValues(a.current.value, b.current.value)
+        : sortingBaselineCurrentTargetValues(a.current, b.current),
     width: 100,
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
-        value={parseCurrentValue(text)}
+        value={parseCurrentValue(isObject(text) ? text.value : text)}
         bgColor={getCurrentStatusColor(record)}
       />
     ),

@@ -21,6 +21,7 @@ const generateRubrics = (payload) =>
       data: {
         ...payload,
       },
+      useSlowApi: true,
     })
     .then((result) => result.data.result)
 

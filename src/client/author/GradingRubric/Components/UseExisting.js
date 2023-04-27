@@ -29,7 +29,6 @@ import {
   getCurrentRubricDataSelector,
   getGeneratedRubricInfoSelector,
   getRecentlyUsedRubricsSelector,
-  getRubricDataLoadingSelector,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
@@ -86,17 +85,6 @@ const UseExisting = ({
   )
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [autoGenerate, setAutoGenerate] = useState(false)
-
-  useEffect(() => {
-    if (autoGenerate) {
-      // call API
-      const stimulus = sanitizeForReview(currentQuestion?.stimulus)
-      if (stimulus) {
-        autoGenerateRubric({ stimulus })
-      }
-    }
-  }, [autoGenerate])
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
@@ -123,6 +111,13 @@ const UseExisting = ({
       searchString: searchQuery,
     })
     setCurrentMode('RUBRIC_TABLE')
+  }
+
+  const generateRubricByOpenAI = () => {
+    const stimulus = sanitizeForReview(currentQuestion?.stimulus)
+    if (stimulus) {
+      autoGenerateRubric({ stimulus })
+    }
   }
 
   const validateRubric = () => {
@@ -383,10 +378,7 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <CustomStyleBtn
-              style={btnStyle}
-              onClick={() => setAutoGenerate(true)}
-            >
+            <CustomStyleBtn style={btnStyle} onClick={generateRubricByOpenAI}>
               <Icon data-cy="previewButton" type="eye" /> Auto Generate Rubric
             </CustomStyleBtn>
             <CustomStyleBtn
@@ -559,7 +551,6 @@ const enhance = compose(
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
       generatedRubric: getGeneratedRubricInfoSelector(state),
-      isRubricLoading: getRubricDataLoadingSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

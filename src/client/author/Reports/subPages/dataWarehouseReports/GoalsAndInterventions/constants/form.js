@@ -1,5 +1,7 @@
-import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { staticDropDownData } from '../../wholeLearnerReport/utils'
+
+const { TEST_TYPE_LABELS } = testTypesConstants
 
 export const ACADEMIC = 'academic'
 export const ATTENDANCE = 'attendance'
@@ -30,6 +32,9 @@ export const RELATED_GOALS_COMMENTS_SECTION = 'relatedGoalsCommentsSection'
 export const DISTRICT_ADMIN = 'district-admin'
 export const SCHOOL_ADMIN = 'school-admin'
 export const TEACHER = 'teacher'
+
+const TEST_TYPE_COMMON_ASSESSMENT = 'common assessment'
+const TEST_TYPE_ASSESSMENT = 'assessment'
 
 export const oneDayInMilliseconds = 24 * 60 * 60 * 1000
 
@@ -64,6 +69,16 @@ export const dropdownData = {
     { key: AVERAGE_SCORE, title: 'Average attendance' },
     { key: MINIMUM_SCORE, title: 'Minimum attendance' },
     { key: PERFORMANCE_BAND, title: 'Attendance band' },
+  ],
+  testTypes: [
+    {
+      key: TEST_TYPE_COMMON_ASSESSMENT,
+      title: TEST_TYPE_LABELS[TEST_TYPE_COMMON_ASSESSMENT],
+    },
+    {
+      key: TEST_TYPE_ASSESSMENT,
+      title: TEST_TYPE_LABELS[TEST_TYPE_ASSESSMENT],
+    },
   ],
 }
 
@@ -156,7 +171,7 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       isRequired: true,
       fieldType: DROPDOWN,
       placeholder: 'Select test types',
-      optionsData: getArrayOfAllTestTypes(),
+      optionsData: dropdownData.testTypes,
     },
     subjects: {
       field: SUBJECTS,

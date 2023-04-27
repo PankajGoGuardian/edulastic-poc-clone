@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -12,11 +12,13 @@ import { withNamespaces } from '@edulastic/localization'
 import { greyThemeDark2 } from '@edulastic/colors'
 import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
+import { EduButton, EduIf } from '@edulastic/common'
 import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
 import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
+import ChatGptModal from './Hacakthon/ChatGptModal'
 
 const FeedbackWrapper = ({
   showFeedback,
@@ -39,6 +41,7 @@ const FeedbackWrapper = ({
   hintsUsed,
 }) => {
   const feedbackRef = useRef()
+  const [showGptModal, setShowGptModal] = useState(false)
   const heightOfContainer = feedbackRef.current?.clientHeight
   useLayoutEffect(() => {
     if (!isStudentReport && shouldTakeDimensionsFromStore) {
@@ -92,6 +95,11 @@ const FeedbackWrapper = ({
   if (data.type == questionType.VIDEO || data.type == questionType.TEXT) {
     return null
   }
+
+  const handleGradeWithChatgpt = () => {
+    setShowGptModal(true)
+  }
+
   return (
     <StyledFeedbackWrapper
       ref={feedbackRef}
@@ -111,22 +119,36 @@ const FeedbackWrapper = ({
         displayFeedback &&
         !studentReportFeedbackVisible &&
         !isPrintPreview && (
-          <FeedbackRight
-            data-cy="feedBackRight"
-            showCollapseBtn={showCollapseBtn}
-            disabled={disabled}
-            widget={data}
-            studentId={userId || studentId}
-            studentName={userName || studentName || t('common.anonymous')}
-            rubricDetails={rubricDetails}
-            isPracticeQuestion={isPracticeQuestion}
-            itemId={itemId}
-            isExpressGrader={isExpressGrader}
-            isQuestionView={isQuestionView}
-            isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
-            hintsUsed={hintsUsed}
-            {...presentationModeProps}
-          />
+          <>
+            <FeedbackRight
+              data-cy="feedBackRight"
+              showCollapseBtn={showCollapseBtn}
+              disabled={disabled}
+              widget={data}
+              studentId={userId || studentId}
+              studentName={userName || studentName || t('common.anonymous')}
+              rubricDetails={rubricDetails}
+              isPracticeQuestion={isPracticeQuestion}
+              itemId={itemId}
+              isExpressGrader={isExpressGrader}
+              isQuestionView={isQuestionView}
+              isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
+              hintsUsed={hintsUsed}
+              {...presentationModeProps}
+            />
+            <EduButton
+              style={{ marginLeft: '50px', marginTop: '10px' }}
+              onClick={handleGradeWithChatgpt}
+            >
+              Grade With Chatgpt
+            </EduButton>
+            <EduIf condition={showGptModal}>
+              <ChatGptModal
+                showGptModal={showGptModal}
+                setShowGptModal={setShowGptModal}
+              />
+            </EduIf>
+          </>
         )}
       {!isEmpty(prevQActivityForQuestion) &&
         displayFeedback &&

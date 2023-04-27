@@ -171,6 +171,7 @@ class TestItemPreview extends Component {
       isQuestionView,
       itemIdKey,
       testItemId,
+      questionActivityId,
       isLCBView,
     } = this.props
     const [
@@ -221,6 +222,7 @@ class TestItemPreview extends Component {
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId || itemIdKey || testItemId}
+        questionActivityId={questionActivityId}
         key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
         hintsUsed={hintsUsed}
@@ -229,7 +231,13 @@ class TestItemPreview extends Component {
   }
 
   renderFeedbacks = () => {
-    const { cols, pageNumber, isDocBased, isQuestionView } = this.props
+    const {
+      cols,
+      pageNumber,
+      isDocBased,
+      isQuestionView,
+      questionActivityId,
+    } = this.props
     const { value } = this.state
     let colIndex = 0
     return cols.map((col) => {
@@ -253,10 +261,22 @@ class TestItemPreview extends Component {
           {col.tabs &&
             !!col.tabs.length &&
             value === widget.tabIndex &&
-            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+            this.renderFeedback(
+              widget,
+              i,
+              colIndex++,
+              this.showStackedView,
+              questionActivityId
+            )}
           {col.tabs &&
             !col.tabs.length &&
-            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+            this.renderFeedback(
+              widget,
+              i,
+              colIndex++,
+              this.showStackedView,
+              questionActivityId
+            )}
         </React.Fragment>
       ))
     })
@@ -397,6 +417,7 @@ class TestItemPreview extends Component {
       isCliUser,
       showPreviousAttempt,
       testActivityId,
+      questionActivityId,
       studentData,
       currentStudent,
       selectedTheme = 'default',
@@ -548,6 +569,7 @@ class TestItemPreview extends Component {
               {!isCliUser && (
                 <RenderFeedBack
                   isExpressGrader={isExpressGrader}
+                  questionActivityId={questionActivityId}
                   isPrintPreview={isPrintPreview}
                   isStudentAttempt={isStudentAttempt}
                   className="__print-feedback-main-wrapper testtest"

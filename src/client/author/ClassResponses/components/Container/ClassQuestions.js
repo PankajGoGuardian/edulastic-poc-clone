@@ -397,6 +397,7 @@ const Preview = ({
         itemId={item._id}
         isStudentView={isStudentView}
         testActivityId={utaId}
+        questionActivityId={questionActivity?._id}
         hideCorrectAnswer={hideCorrectAnswer}
         currentStudent={currentStudent}
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}

@@ -412,7 +412,11 @@ const WholeLearnerReport = ({
                     </NoDataContainer>
                   </EduThen>
                   <EduElse>
-                    <SectionLabel $margin="30px 0px 10px 0px">
+                    <SectionLabel
+                      $margin="30px 0px 10px 0px"
+                      showHelp
+                      style={{ fontSize: '20px' }}
+                    >
                       Whole Learner
                     </SectionLabel>
                     <SectionDescription $margin="0px 0px 30px 0px">

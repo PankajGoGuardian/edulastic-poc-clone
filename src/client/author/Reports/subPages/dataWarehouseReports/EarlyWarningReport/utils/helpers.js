@@ -73,6 +73,8 @@ export const getTableColumns = (
 
     highRiskColumn.render = (_, { highRisk, totalStudents }) => (
       <LargeTag
+        width="35px"
+        textAlign="right"
         leftText={`${percentage(highRisk, totalStudents, true)}%`}
         rightText={`${highRisk} /${totalStudents}`}
       />
@@ -88,6 +90,8 @@ export const getTableColumns = (
     )
     mediumRiskColumn.render = (_, { mediumRisk, totalStudents }) => (
       <LargeTag
+        width="35px"
+        textAlign="right"
         leftText={`${percentage(mediumRisk, totalStudents, true)}%`}
         rightText={`${mediumRisk} /${totalStudents}`}
       />

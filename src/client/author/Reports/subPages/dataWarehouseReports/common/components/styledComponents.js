@@ -3,7 +3,6 @@ import { Empty, Tag } from 'antd'
 import {
   lightGrey9,
   extraDesktopWidthMax,
-  greyThemeLighter,
   themeColorLighter1,
   white,
   fadedBlack,
@@ -32,8 +31,9 @@ export const CustomStyledTable = styled(StyledTable)`
     tbody {
       tr {
         td {
-          font-weight: bold;
+          font-weight: 500;
           color: ${lightGrey9};
+          font-size: 12px !important;
         }
       }
     }
@@ -79,9 +79,7 @@ export const WidgetsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 30px;
   gap: 30px;
-  background-color: ${greyThemeLighter};
 `
 export const Widget = styled.div`
   border-radius: 20px;
@@ -106,7 +104,6 @@ export const WidgetHeaderWrapper = styled.div`
     padding: 11px 40px;
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
-    text-transform: uppercase;
   }
   svg {
     margin: auto 20px;
@@ -118,7 +115,6 @@ export const ContentWrapper = styled.div`
   align-items: center;
   padding-block: 32px;
   margin: ${(p) => p.margin};
-  font-weight: bold;
   font-size: 13px;
   justify-content: space-evenly;
   text-align: center;
@@ -139,7 +135,7 @@ export const ContentWrapper = styled.div`
   }
 `
 const cellStyles = {
-  large: { padding: '18px 30px', font: '24px' },
+  large: { padding: '18px 30px', font: '20px' },
   medium: { padding: '10px 15px', font: '18px' },
   small: { padding: '12px 17px', font: '14px' },
 }
@@ -151,6 +147,7 @@ export const StyledCell = styled.div`
   margin: 10px auto;
   background-color: ${(props) => props.color};
   border-radius: 10px;
+  font-weight: 600;
 `
 export const StyledText = styled.div`
   font-size: ${(props) => props.fontSize || '12px'};
@@ -187,7 +184,7 @@ export const ReportDescription = styled.div`
   color: ${fadedBlack};
   > div {
     display: flex;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: bold;
     align-items: center;
   }

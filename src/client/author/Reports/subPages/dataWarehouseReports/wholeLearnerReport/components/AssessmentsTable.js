@@ -174,7 +174,9 @@ const AssessmentsTable = ({
   }, [isSharedReport, claimNames])
   return (
     <TableContainer>
-      <SectionLabel>Performance deep-dive across Assessments</SectionLabel>
+      <SectionLabel style={{ fontSize: '18px' }}>
+        Performance deep-dive across Assessments
+      </SectionLabel>
       <CsvTable
         dataSource={tableData}
         columns={tableColumns}

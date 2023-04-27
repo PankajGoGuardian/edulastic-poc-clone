@@ -16,11 +16,21 @@ const DashboardTableFilters = ({
   compareByOptions,
 }) => {
   return (
-    <StyledRow type="flex" justifyContent="space-between" margin="-2px 10px">
-      <SectionLabel>
+    <StyledRow
+      type="flex"
+      justifyContent="space-between"
+      margin="0"
+      style={{ padding: 0 }}
+    >
+      <SectionLabel style={{ fontSize: '18px' }}>
         Performance By {tableFilters[tableFilterTypes.COMPARE_BY].title}
       </SectionLabel>
-      <StyledRow type="flex" justifyContent="right" margin="-2px 10px">
+      <StyledRow
+        type="flex"
+        justifyContent="right"
+        margin="0"
+        style={{ padding: 0 }}
+      >
         <EduIf condition={addToStudentGroupEnabled}>
           <StyledEduButton onClick={handleAddToGroupClick}>
             <IconPlusCircle /> Add To Student Group

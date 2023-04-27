@@ -20,7 +20,7 @@ const TableFilters = ({
 
   return (
     <Row type="flex" justify="space-between">
-      <SectionLabel margin="0" width="40%">
+      <SectionLabel margin="0" width="40%" style={{ fontSize: '18px' }}>
         Risk distribution by {tableFilters[tableFilterTypes.COMPARE_BY].title}
       </SectionLabel>
       <StyledDropDownContainer

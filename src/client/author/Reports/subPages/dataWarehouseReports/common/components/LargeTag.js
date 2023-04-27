@@ -15,9 +15,10 @@ const LargeTagParent = styled.div`
   ${(props) => (props.background ? `background: ${props.background};` : '')}
   color: ${(props) => props.color || greyThemeDark1} !important;
   div.left-text {
-    font-weight: bold;
-    width: 35px;
-    text-align: right;
+    font-weight: 500;
+    width: ${({ width }) => width || 'auto'};
+    max-width: 135px;
+    text-align: ${({ textAlign }) => textAlign || 'center'};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -26,7 +27,7 @@ const LargeTagParent = styled.div`
     }
   }
   div.right-text {
-    font-weight: bold;
+    font-weight: 500;
   }
 `
 

@@ -86,6 +86,7 @@ export const getTableColumns = ({
     )
     _columns[compareByIdx].title =
       tableFilters[tableFilterTypes.COMPARE_BY].title
+    _columns[compareByIdx].align = 'left'
     _columns[compareByIdx].render = (value) => {
       const url = [
         compareByKeys.SCHOOL,

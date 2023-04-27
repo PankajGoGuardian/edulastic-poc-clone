@@ -16,7 +16,7 @@ import WidgetHeader from '../../../../common/components/WidgetHeader'
 import AttendanceSummaryContents from './AttendanceSummaryContents'
 import { DW_ATTENDANCE_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 
-const title = 'ATTENDANCE SUMMARY'
+const title = 'Attendance Summary'
 
 const AttendanceSummary = ({ settings }) => {
   const query = useMemo(

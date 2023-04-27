@@ -49,7 +49,7 @@ export const TableHeaderCellWrapper = styled.div`
       padding: 13px 32px;
       width: 200px;
       font-weight: 600;
-      font-size: 11px;
+      font-size: 14px;
       background-color: ${white};
       border-radius: 10px 0px 0px 10px;
     }
@@ -87,7 +87,7 @@ export const CustomStyledTable = styled(StyledTable)`
       border-radius: 15px;
       tr {
         td {
-          font-weight: bold;
+          font-weight: 500;
           color: ${lightGrey9};
         }
       }

@@ -146,7 +146,7 @@ const EarlyWarningReport = ({
               </EduButton>
               <DashedLine margin="0 400px 0 20px" dashWidth="4px" />
             </div>
-            <p>
+            <p style={{ margin: '10px 0 30px 0' }}>
               View students at risk based on their academic and attendance
               performance and plan interventions.
             </p>

@@ -116,7 +116,9 @@ const AttendanceChart = ({
 
   return (
     <StyledAttendanceChartContainer ref={parentContainerRef}>
-      <SectionLabel $margin="30px 0px 10px 0px">Weekly Attendance</SectionLabel>
+      <SectionLabel $margin="30px 0px 10px 0px" style={{ fontSize: '18px' }}>
+        Weekly Attendance
+      </SectionLabel>
       <SectionDescription>
         Correlate academic performance with attendance.
       </SectionDescription>

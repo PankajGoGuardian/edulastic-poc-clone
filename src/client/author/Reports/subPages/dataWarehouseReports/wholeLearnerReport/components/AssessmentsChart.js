@@ -130,7 +130,7 @@ const AssessmentsChart = ({
 
   return (
     <div>
-      <SectionLabel $margin="32px 0 -20px 0">
+      <SectionLabel $margin="32px 0 -20px 0" style={{ fontSize: '18px' }}>
         Performance Summary across Assessments
       </SectionLabel>
       <SignedStackedBarChart

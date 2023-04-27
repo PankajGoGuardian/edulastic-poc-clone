@@ -27,6 +27,7 @@ export const StyledTable = styled(Table)`
     .ant-table-scroll {
       table tbody tr td {
         border-bottom: 1px solid ${greyLight1};
+        font-weight: 500;
       }
       .ant-table-thead {
         th {

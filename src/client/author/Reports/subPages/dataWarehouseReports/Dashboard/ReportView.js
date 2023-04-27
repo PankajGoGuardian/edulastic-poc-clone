@@ -11,6 +11,7 @@ import {
   WidgetsContainer,
   WidgetColumn,
 } from '../common/components/styledComponents'
+import SectionDescription from '../../../common/components/SectionDescription'
 
 function ReportView({
   location,
@@ -32,7 +33,18 @@ function ReportView({
 
   return (
     <>
-      <SectionLabel>Overview</SectionLabel>
+      <SectionLabel
+        style={{ fontSize: '20px' }}
+        $margin="30px 0px 10px 0px"
+        showHelp
+      >
+        Overview
+      </SectionLabel>
+      <SectionDescription $margin="0px 0px 30px 0px">
+        View key health checks for students performance. Drill down to analyze
+        and intervene.
+      </SectionDescription>
+
       <WidgetsContainer>
         <AcademicSummary
           selectedPerformanceBand={selectedPerformanceBand}

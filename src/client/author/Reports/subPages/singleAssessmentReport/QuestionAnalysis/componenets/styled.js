@@ -19,8 +19,7 @@ export const StyledTable = styled(Table)`
     border-bottom: 1px solid ${borderGrey3};
     padding: 10px;
     text-align: center;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 14px;
   }
   .ant-table-thead {
     th {

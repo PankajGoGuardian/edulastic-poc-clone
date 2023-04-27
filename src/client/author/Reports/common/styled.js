@@ -17,6 +17,7 @@ import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
 import { Col, Slider, Table, Button, Menu, Row, Icon } from 'antd'
 import styled, { css } from 'styled-components'
+import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 import { CustomTooltip } from './components/charts/chartUtils/CustomTooltip'
 import { getTooltipArrowStyles } from './util'
@@ -853,6 +854,26 @@ export const SectionLabelWrapper = styled.div`
   align-items: center;
 `
 
+export const StyledButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  height: 22px;
+  margin: 0 20px 0 20px;
+  padding: 4px;
+`
+export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
+  margin-right: 5px;
+  height: 14px;
+  width: 14px;
+  path {
+    fill: ${themeColor};
+  }
+`
+export const StyledTextSpan = styled.span`
+  color: ${themeColor};
+  font-size: 12px;
+`
+
 export const PieChartWrapper = styled.div`
   width: 400px;
   height: 300px;
@@ -860,9 +881,6 @@ export const PieChartWrapper = styled.div`
   .label-name {
     font-weight: normal;
     overflow: wrap;
-  }
-  .label-value {
-    font-weight: bold;
   }
 `
 export const HorizontalBarWrapper = styled.div`

@@ -353,7 +353,11 @@ const MultipleAssessmentReport = ({
           </NoDataContainer>
         ) : (
           <>
-            <SectionLabel $margin="30px 0px 10px 0px">
+            <SectionLabel
+              $margin="30px 0px 10px 0px"
+              style={{ fontSize: '20px' }}
+              showHelp
+            >
               Performance Trends
             </SectionLabel>
             <SectionDescription>

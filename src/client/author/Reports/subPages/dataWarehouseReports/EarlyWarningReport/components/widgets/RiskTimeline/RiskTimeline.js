@@ -24,7 +24,7 @@ import {
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 import { Spacer } from '../../../../../../../../common/styled'
 
-const title = 'RISK OVER Time'
+const title = 'Risk Over Time'
 
 const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   const query = useMemo(

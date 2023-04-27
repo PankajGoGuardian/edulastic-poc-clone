@@ -3,7 +3,11 @@ import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
 import { get, isEmpty, omitBy, mapValues, uniqBy } from 'lodash'
 
-import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
+import {
+  assignmentStatusOptions,
+  roleuser,
+  reportUtils,
+} from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
@@ -222,6 +226,8 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
+
+const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -826,20 +832,25 @@ export function* receiveTestListSaga({ payload }) {
       })
       .filter(({ _id, title }) => _id && title)
     const externalTestList = externalTests
-      .filter(({ testTitle, testCategory }) => {
-        const checkForTestTypes =
+      .filter(({ testTitle, testCategory, testName }) => {
+        const _testName = testName || ''
+        const _testTitle = testTitle ? `- ${testTitle}` : ''
+        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+        const checkForExternalTestTypes =
           !testTypes.length || testTypes.includes(testCategory)
-        const checkForTestTitle =
+        const checkForExternalTestTitle =
           !searchString ||
-          (testTitle || '')
-            .toLowerCase()
-            .includes((searchString || '').toLowerCase())
-        return checkForTestTitle && checkForTestTypes
+          externalTestTitle.toLowerCase().includes(searchString.toLowerCase())
+        return checkForExternalTestTitle && checkForExternalTestTypes
       })
-      .map(({ testTitle, testCategory }) => {
-        const _id = `${testCategory}__${testTitle}`
-        const title = `[${testCategory}] ${testTitle}`
-        return { _id, title, showId: false }
+      .map(({ testTitle, testCategory, testName }) => {
+        const _testName = testName || ''
+        const _testTitle = testTitle ? `- ${testTitle}` : ''
+        const externalTestId = [_testName, testCategory, testTitle || ''].join(
+          EXTERNAL_TEST_KEY_SEPARATOR
+        )
+        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+        return { _id: externalTestId, title: externalTestTitle, showId: false }
       })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,

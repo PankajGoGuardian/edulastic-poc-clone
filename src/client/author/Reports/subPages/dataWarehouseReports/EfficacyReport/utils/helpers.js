@@ -8,6 +8,7 @@ const {
   percentage,
   DECIMAL_BASE,
   ROUND_OFF_TO_INTEGER,
+  EXTERNAL_TEST_KEY_SEPARATOR,
 } = reportUtils.common
 
 export const getAvgValue = (metricInfo, key, totalStudentCount) => {
@@ -289,9 +290,11 @@ export const getExternalBandInfoByExternalTest = ({
   testId,
   externalBands,
 }) => {
-  const [_testCategory, ..._testTitle] = testId.split('__')
+  const testIdSplit = testId.split(EXTERNAL_TEST_KEY_SEPARATOR)
+  const [_testCategory, _testTitle] = testIdSplit.splice(-2)
+
   return externalBands.find(({ testTitle, testCategory }) => {
-    const checkForTestTitle = !testTitle || testTitle === _testTitle.join('__')
+    const checkForTestTitle = !testTitle || testTitle === _testTitle
     const checkForTestCategory = testCategory === _testCategory
     return checkForTestCategory && checkForTestTitle
   })

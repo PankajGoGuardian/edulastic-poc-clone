@@ -99,7 +99,11 @@ import KeypadDropdown from './KeypadDropdown'
 import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
-import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
+import {
+  skinTypesOrder,
+  showRubricToStudentsSetting,
+  showAutoEssayEvaluationSetting,
+} from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
@@ -838,7 +842,9 @@ class Setting extends Component {
     const isShowRubricToStudentsSettingVisible = showRubricToStudentsSetting(
       itemGroups
     )
-
+    const isShowAutoEssayEvaluationSetting = showAutoEssayEvaluationSetting(
+      itemGroups
+    )
     const isSmallSize = windowWidth < 993 ? 1 : 0
 
     let validationMessage = ''
@@ -1734,7 +1740,7 @@ class Setting extends Component {
                           </Tooltip>
                           <EduSwitchStyled
                             disabled={
-                              !isShowRubricToStudentsSettingVisible ||
+                              !isShowAutoEssayEvaluationSetting ||
                               !owner ||
                               !isEditable ||
                               !premium

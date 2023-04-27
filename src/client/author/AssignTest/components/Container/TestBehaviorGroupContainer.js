@@ -24,7 +24,10 @@ import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
-import { showRubricToStudentsSetting } from '../../../TestPage/utils'
+import {
+  showRubricToStudentsSetting,
+  showAutoEssayEvaluationSetting,
+} from '../../../TestPage/utils'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
@@ -111,6 +114,9 @@ const TestBehaviorGroupContainer = ({
     testSettings.itemGroups
   )
 
+  const isShowAutoEssayEvaluationSetting = showAutoEssayEvaluationSetting(
+    testSettings.itemGroups
+  )
   const scoringType =
     assignmentSettings?.scoringType ||
     testSettings?.scoringType ||
@@ -526,7 +532,7 @@ const TestBehaviorGroupContainer = ({
                   size="small"
                   defaultChecked={false}
                   disabled={
-                    !isShowRubricToStudentsSettingVisible ||
+                    !isShowAutoEssayEvaluationSetting ||
                     freezeSettings ||
                     !premium
                   }

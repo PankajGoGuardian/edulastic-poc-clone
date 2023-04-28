@@ -37,6 +37,7 @@ const TEST_TYPE_COMMON_ASSESSMENT = 'common assessment'
 const TEST_TYPE_ASSESSMENT = 'assessment'
 
 export const oneDayInMilliseconds = 24 * 60 * 60 * 1000
+export const oneDayInhours = 24
 
 const NAME = 'name'
 const TYPE = 'type'

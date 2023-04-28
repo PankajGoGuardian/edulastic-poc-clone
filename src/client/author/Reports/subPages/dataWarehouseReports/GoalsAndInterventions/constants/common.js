@@ -155,7 +155,9 @@ export const statusList = (data) => ({
           id: 3,
           text: 'Rest',
           color: summaryTileColors.GREEN,
-          unit: getSummaryStatusCount({ key: 'rest', data }),
+          unit:
+            getSummaryStatusCount({ key: 'on-going', data }) -
+            getSummaryStatusCount({ key: 'off-track', data }),
         },
       ],
     },

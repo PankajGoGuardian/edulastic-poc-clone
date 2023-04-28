@@ -1,6 +1,4 @@
 import React from 'react'
-import moment from 'moment'
-import { isObject } from 'lodash'
 import ColoredCell from './ColoredCell'
 import {
   statusColors,
@@ -8,47 +6,72 @@ import {
   MULTIPLE_OF_TENS,
   statusTextColors,
   GIActionOptions,
+  GI_STATUS,
 } from '../../../constants/common'
 import Tooltip from './Tooltip'
 import ActionMenu from '../ActionMenu'
 import { GOAL, INTERVENTION } from '../../../constants/form'
-import { isNumeric, ucFirst, getPercentage, getTarget } from '../../utils'
+import {
+  isNumeric,
+  ucFirst,
+  getTarget,
+  isCurrentValueInValid,
+  getDaysLeft,
+  getTotalDaysBetweenTwoDates,
+  hasCurrentReachedTarget,
+  isTimeLeftWithinCertainPercent,
+  isTimeLeftOverCertainPercent,
+} from '../../utils'
 import EllipsisText from '../EllipsisText'
 
 const getCurrentStatusColor = (record) => {
-  if (
-    isObject(record.current)
-      ? record.current.isGreaterThanTargetBand
-      : record.current >= getTarget(record)?.metric
-  )
-    return statusColors.GREEN
-  if (
-    (isObject(record.current)
-      ? !record.current.isGreaterThanTargetBand
-      : record.current < getTarget(record)?.metric) &&
-    moment().diff(record.endDate, 'days') < 0
-  ) {
+  if (isCurrentValueInValid(record)) {
     return statusColors.WHITE
   }
+
+  const isTargetAchieved = hasCurrentReachedTarget(record)
+
+  if (isTargetAchieved) {
+    return statusColors.GREEN
+  }
+
+  if (!isTargetAchieved && getDaysLeft(record.startDate, record.endDate) > 0) {
+    return statusColors.WHITE
+  }
+
   return statusColors.RED
 }
 
 const getTimeLeftColor = (record) => {
-  const timeLeft = moment().diff(record.startDate, 'days')
-  const totalTime = moment(record.endDate).diff(record.startDate, 'days')
+  const { status = '' } = record
+  const timeLeft = getDaysLeft(record.startDate, record.endDate)
+  const totalTime = getTotalDaysBetweenTwoDates(
+    record.startDate,
+    record.endDate
+  )
   if (
-    moment().diff(record.endDate, 'days') > 0 ||
-    moment().diff(record.startDate, 'days') <= 0
+    timeLeft === 0 ||
+    (timeLeft === totalTime && status === GI_STATUS.NOT_STARTED)
   ) {
     return timeLeftColors.GRAY
   }
-  if (timeLeft / totalTime <= getPercentage(MULTIPLE_OF_TENS.THIRTY))
-    return timeLeftColors.RED
   if (
-    timeLeft / totalTime > getPercentage(MULTIPLE_OF_TENS.THIRTY) &&
-    timeLeft / totalTime <= getPercentage(MULTIPLE_OF_TENS.FIFTY)
-  )
+    isTimeLeftWithinCertainPercent(timeLeft, totalTime, MULTIPLE_OF_TENS.THIRTY)
+  ) {
+    return timeLeftColors.RED
+  }
+
+  if (
+    isTimeLeftOverCertainPercent(
+      timeLeft,
+      totalTime,
+      MULTIPLE_OF_TENS.THIRTY
+    ) &&
+    isTimeLeftWithinCertainPercent(timeLeft, totalTime, MULTIPLE_OF_TENS.FIFTY)
+  ) {
     return timeLeftColors.YELLOW
+  }
+
   return timeLeftColors.GREEN
 }
 
@@ -124,14 +147,12 @@ const columns = [
     key: 'current',
     className: 'text-center',
     sorter: (a, b) =>
-      isObject(a.current)
-        ? sortingBaselineCurrentTargetValues(a.current.value, b.current.value)
-        : sortingBaselineCurrentTargetValues(a.current, b.current),
+      sortingBaselineCurrentTargetValues(a?.current?.value, b?.current?.value),
     width: 100,
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
-        value={parseCurrentValue(isObject(text) ? text.value : text)}
+        value={parseCurrentValue(text?.value)}
         bgColor={getCurrentStatusColor(record)}
       />
     ),
@@ -160,16 +181,14 @@ const columns = [
     className: 'text-center',
     width: 180,
     sorter: (a, b) =>
-      moment().diff(b.startDate, 'days') - moment().diff(a.startDate, 'days'),
+      getDaysLeft(b.startDate, b.endDate) - getDaysLeft(a.startDate, a.endDate),
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
-        value={`${
-          moment().diff(record.endDate, 'days') > 0 ||
-          moment().diff(record.startDate, 'days') < 0
-            ? 0
-            : moment().diff(record.startDate, 'days')
-        }/${moment(record.endDate).diff(record.startDate, 'days')}`}
+        value={`${getDaysLeft(
+          record.startDate,
+          record.endDate
+        )}/${getTotalDaysBetweenTwoDates(record.startDate, record.endDate)}`}
         color={getTimeLeftColor(record)}
       />
     ),

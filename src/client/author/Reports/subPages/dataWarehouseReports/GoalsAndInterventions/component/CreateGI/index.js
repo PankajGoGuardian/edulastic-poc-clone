@@ -181,7 +181,7 @@ const CreateGI = ({
             <VerticalScrollNavigation
               sections={formNavigationOptions}
               scrollContainer={scrollContainer}
-              headerHeight={70}
+              headerHeight={140}
             />
           </StyledNavContainer>
         </StyledNavWrapper>

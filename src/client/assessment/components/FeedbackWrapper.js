@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -9,14 +9,18 @@ import { faClock } from '@fortawesome/free-solid-svg-icons'
 
 import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
-import { greyThemeDark2 } from '@edulastic/colors'
+import { greyThemeDark2, themeColorBlue } from '@edulastic/colors'
 import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
+import { EduButton, EduIf } from '@edulastic/common'
 import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
 import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
+import ChatGptModal from './Hacakthon/ChatGptModal'
+import { getStudentQuestionSelector } from '../../author/ClassBoard/ducks'
+import gptLogo from './Hacakthon/report-3.png'
 
 const FeedbackWrapper = ({
   showFeedback,
@@ -31,6 +35,7 @@ const FeedbackWrapper = ({
   shouldTakeDimensionsFromStore,
   studentId,
   itemId,
+  studentQuestion,
   studentName,
   updatePosition,
   isExpressGrader,
@@ -39,6 +44,7 @@ const FeedbackWrapper = ({
   hintsUsed,
 }) => {
   const feedbackRef = useRef()
+  const [showGptModal, setShowGptModal] = useState(false)
   const heightOfContainer = feedbackRef.current?.clientHeight
   useLayoutEffect(() => {
     if (!isStudentReport && shouldTakeDimensionsFromStore) {
@@ -92,6 +98,11 @@ const FeedbackWrapper = ({
   if (data.type == questionType.VIDEO || data.type == questionType.TEXT) {
     return null
   }
+
+  const handleGradeWithChatgpt = () => {
+    setShowGptModal(true)
+  }
+
   return (
     <StyledFeedbackWrapper
       ref={feedbackRef}
@@ -111,22 +122,65 @@ const FeedbackWrapper = ({
         displayFeedback &&
         !studentReportFeedbackVisible &&
         !isPrintPreview && (
-          <FeedbackRight
-            data-cy="feedBackRight"
-            showCollapseBtn={showCollapseBtn}
-            disabled={disabled}
-            widget={data}
-            studentId={userId || studentId}
-            studentName={userName || studentName || t('common.anonymous')}
-            rubricDetails={rubricDetails}
-            isPracticeQuestion={isPracticeQuestion}
-            itemId={itemId}
-            isExpressGrader={isExpressGrader}
-            isQuestionView={isQuestionView}
-            isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
-            hintsUsed={hintsUsed}
-            {...presentationModeProps}
-          />
+          <>
+            <FeedbackRight
+              data-cy="feedBackRight"
+              showCollapseBtn={showCollapseBtn}
+              disabled={disabled}
+              widget={data}
+              studentId={userId || studentId}
+              studentName={userName || studentName || t('common.anonymous')}
+              rubricDetails={rubricDetails}
+              isPracticeQuestion={isPracticeQuestion}
+              itemId={itemId}
+              isExpressGrader={isExpressGrader}
+              isQuestionView={isQuestionView}
+              isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
+              hintsUsed={hintsUsed}
+              {...presentationModeProps}
+            />
+            <EduIf
+              condition={
+                studentQuestion?.[0]?.qType === 'essayRichText' ||
+                studentQuestion?.[0]?.qType === 'essayPlainText'
+              }
+            >
+              <EduButton
+                style={{
+                  marginLeft: '17px',
+                  marginTop: '10px',
+                  paddingInline: '15px',
+                  textTransform: 'unset',
+                  fontSize: '13px',
+                  fontWeight: 'bold',
+                }}
+                onClick={handleGradeWithChatgpt}
+                isGhost
+              >
+                <img src={gptLogo} alt="" width="20px" height="20px" />
+                Score with SmartGrader{' '}
+                <Tag
+                  style={{
+                    position: 'relative',
+                    left: 5,
+                    top: 0,
+                    backgroundColor: 'inherit',
+                    border: `1.5px solid ${themeColorBlue}`,
+                    color: themeColorBlue,
+                  }}
+                >
+                  BETA
+                </Tag>
+              </EduButton>
+            </EduIf>
+            <EduIf condition={showGptModal}>
+              <ChatGptModal
+                studentQuestion={studentQuestion}
+                showGptModal={showGptModal}
+                setShowGptModal={setShowGptModal}
+              />
+            </EduIf>
+          </>
         )}
       {!isEmpty(prevQActivityForQuestion) &&
         displayFeedback &&
@@ -192,6 +246,25 @@ const wrapperPosition = css`
   width: 100%;
   height: ${({ dimensions }) =>
     dimensions.height ? `${dimensions.height}px` : '100%'};
+`
+
+export const Tag = styled.div`
+  position: absolute;
+  height: 18px;
+  width: 33px;
+  font-size: 5px;
+  background-color: #80ace9;
+  color: #ffffff;
+  margin-left: -5px;
+  left: 15px;
+  top: 20px;
+  border-radius: 2px;
+  font: normal normal bold 10px/14px Open Sans;
+  letter-spacing: 0.19px;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 const StyledFeedbackWrapper = styled.div`
@@ -263,6 +336,7 @@ const enhance = compose(
         false
       ),
       dimensions: get(state, ['feedback', ownProps.data?.id], null),
+      studentQuestion: getStudentQuestionSelector(state),
     }),
     { updatePosition: updateHeightAction }
   )

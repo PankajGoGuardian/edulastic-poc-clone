@@ -896,6 +896,7 @@ export const StyledSpan = styled.span`
   background-color: ${({ color }) => color};
   padding: 5px;
   flex-wrap: nowrap;
+  white-space: nowrap;
   width: ${({ value }) => value}%;
   font-size: 11px;
 `

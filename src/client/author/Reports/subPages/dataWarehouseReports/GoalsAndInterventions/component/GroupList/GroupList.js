@@ -76,6 +76,9 @@ const GroupList = ({
       dataIndex: 'studentCount',
       align: 'center',
       sorter: (a, b) => (a.studentCount || 0) - (b.studentCount || 0),
+      render: (studentCount) => {
+        return !studentCount ? 0 : studentCount
+      },
     },
     {
       title: 'Goals',

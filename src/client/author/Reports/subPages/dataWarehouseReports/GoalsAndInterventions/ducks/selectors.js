@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import {
   ADVANCED_SEARCH_DATA,
   ADVANCED_SEARCH_DETAILS,
@@ -46,9 +47,9 @@ const interventionsList = createSelector(
 const groupSelector = (state) => state.authorGroups
 const isGroupLoading = createSelector(groupSelector, (state) => state.isLoading)
 const groupList = createSelector(groupSelector, (state) =>
-  state.groups.sort(
-    (a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt)
-  )
+  state.groups
+    .filter(({ type }) => type === GROUP_TYPE.CUSTOM)
+    .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt))
 )
 
 // attendance band selector

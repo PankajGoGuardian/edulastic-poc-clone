@@ -12,6 +12,7 @@ import {
   RELATED_GOALS_COMMENTS_SECTION,
   TARGET_PROFICIENCY_SECTION,
   THRESHOLD_DEADLINE_SECTION,
+  INTERVENTION,
 } from '../../constants/form'
 
 const Form = ({
@@ -66,7 +67,7 @@ const Form = ({
     relatedGoalsAndCommentSectionTitle,
   } = sectionTitles
 
-  const { type = '' } = formData
+  const { type = '', formType } = formData
   const showTestTypeSubjectAndStandardsSection = type === ACADEMIC
 
   const detailsSectionRef = useRef()
@@ -160,7 +161,9 @@ const Form = ({
             paddingBottom: 28,
           }}
         >
-          <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
+          <EduIf condition={formType === INTERVENTION}>
+            <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
+          </EduIf>
           <Col span={24}>{EnhancedComponent(relatedGoalsAndComment)}</Col>
         </Row>
       </div>

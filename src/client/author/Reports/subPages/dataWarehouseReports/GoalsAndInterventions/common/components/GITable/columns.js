@@ -77,7 +77,7 @@ const getTimeLeftColor = (record) => {
 
 const parseCurrentValue = (value) => {
   if (value) {
-    return isNumeric(value) ? `${Math.ceil(parseFloat(value))}%` : value
+    return isNumeric(value) ? `${Math.round(parseFloat(value))}%` : value
   }
   return '-'
 }

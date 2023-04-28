@@ -313,7 +313,7 @@ export const hasCurrentReachedTarget = (record) => {
    * The values coming from DB are of string type.
    * For measureType averageScore/minimumScore convert to number and then compare
    */
-  return +currentValue >= +targetValue
+  return Math.round(+currentValue) >= Math.round(+targetValue)
 }
 
 export const getSummaryStatusCount = ({ key, data }) => {

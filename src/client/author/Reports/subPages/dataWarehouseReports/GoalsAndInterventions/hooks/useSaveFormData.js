@@ -39,6 +39,7 @@ const useSaveFormData = ({
   const [groupOptions, setGroupOptions] = useState([])
   const [performanceBandOptions, setPerformanceBandOptions] = useState([])
   const [attendanceBandOptions, setAttendanceBandOptions] = useState([])
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
   const [
     targetPerformanceBandOptions,
     setTargetPerformanceBandOptions,
@@ -210,6 +211,8 @@ const useSaveFormData = ({
     attendanceBandOptions,
     targetAttendanceBandOptions,
     resetForm,
+    isConfirmationModalOpen,
+    setIsConfirmationModalOpen,
   }
 }
 

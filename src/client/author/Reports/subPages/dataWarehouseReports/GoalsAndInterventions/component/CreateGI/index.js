@@ -1,4 +1,10 @@
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  CustomModalStyled,
+  EduButton,
+} from '@edulastic/common'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
@@ -100,6 +106,8 @@ const CreateGI = ({
     attendanceBandOptions,
     targetAttendanceBandOptions,
     resetForm,
+    isConfirmationModalOpen,
+    setIsConfirmationModalOpen,
   } = useSaveFormData({
     formType,
     fetchGroupsData,
@@ -127,7 +135,16 @@ const CreateGI = ({
     }
   }, [currentFormStatus])
 
-  const onCancelClick = () => {
+  const handleCancelClick = () => {
+    setIsConfirmationModalOpen(true)
+  }
+
+  const handleModalCancelClick = () => {
+    setIsConfirmationModalOpen(false)
+  }
+
+  const handleModalConfirmClick = () => {
+    setIsConfirmationModalOpen(false)
     resetForm()
     onCancel()
   }
@@ -156,13 +173,40 @@ const CreateGI = ({
 
   return (
     <div>
+      <CustomModalStyled
+        visible={isConfirmationModalOpen}
+        onOk={handleModalConfirmClick}
+        onCancel={handleModalCancelClick}
+        maskClosable={false}
+        closable={false}
+        centered
+        footer={[
+          <EduButton
+            height="40px"
+            isGhost
+            key="cancelButton"
+            onClick={handleModalConfirmClick}
+          >
+            Yes
+          </EduButton>,
+          <EduButton
+            height="40px"
+            key="okButton"
+            onClick={handleModalCancelClick}
+          >
+            No
+          </EduButton>,
+        ]}
+      >
+        Are you sure you want to cancel?
+      </CustomModalStyled>
       <StyledFormHeader>
         <StyledFormTitle>
           {' '}
           Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
         </StyledFormTitle>
         <StyledFormButtonsContainer>
-          <StyledButton isGhost onClick={onCancelClick}>
+          <StyledButton isGhost onClick={handleCancelClick}>
             Cancel
           </StyledButton>
           <StyledButton onClick={handleSaveForm} disabled={isSaveInProgress}>

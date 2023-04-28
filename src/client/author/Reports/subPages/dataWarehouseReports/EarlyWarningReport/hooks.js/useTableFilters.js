@@ -22,8 +22,11 @@ const useTableFilters = ({ defaultCompareBy, location, settings }) => {
   const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
     const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
     const filterField = compareByFilterFieldKeys[selectedCompareBy]
-
-    const _filters = { ...settings.requestFilters }
+    const { requestFilters, riskTimelineFilters } = settings
+    const _filters = {
+      ...requestFilters,
+      ...riskTimelineFilters,
+    }
     const nextCompareBy =
       compareByOptions.find(
         (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]

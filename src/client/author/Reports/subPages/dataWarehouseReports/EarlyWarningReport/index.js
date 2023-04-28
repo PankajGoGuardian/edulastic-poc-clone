@@ -22,7 +22,6 @@ import {
   compareByOptions as compareByOptionsRaw,
 } from '../common/utils'
 import { selectors, actions } from './ducks'
-import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
@@ -41,10 +40,8 @@ const EarlyWarningReport = ({
   showFilter,
   onRefineResultsCB,
   setSettings,
-  setRiskTimelineFilters,
   settings,
   firstLoad,
-  updateNavigation,
   resetAllReports,
 }) => {
   const reportId = useMemo(
@@ -94,18 +91,6 @@ const EarlyWarningReport = ({
     },
     []
   )
-
-  useTabNavigation({
-    settings,
-    reportId,
-    history,
-    loc,
-    updateNavigation,
-    extraFilters: {
-      selectedCompareBy:
-        search.selectedCompareBy || settings.selectedCompareBy.key,
-    },
-  })
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
 
@@ -157,7 +142,8 @@ const EarlyWarningReport = ({
             selectedCompareBy={selectedCompareBy}
             compareByOptions={compareByOptions}
             settings={settings}
-            setRiskTimelineFilters={setRiskTimelineFilters}
+            history={history}
+            search={search}
           />
         </EduElse>
       </EduIf>

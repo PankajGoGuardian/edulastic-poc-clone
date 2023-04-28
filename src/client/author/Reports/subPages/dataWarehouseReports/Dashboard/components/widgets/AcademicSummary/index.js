@@ -191,7 +191,7 @@ const AcademicSummary = ({
                     innerRadius={48}
                     outerRadius={100}
                     data={PieChartData}
-                    getChartLabelJSX={PieChartLabel}
+                    getChartLabelJSX={<PieChartLabel />}
                   />
                 </div>
               </ContentWrapper>

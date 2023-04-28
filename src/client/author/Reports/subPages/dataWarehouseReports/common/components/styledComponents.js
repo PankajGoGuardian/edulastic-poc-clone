@@ -119,7 +119,7 @@ export const ContentWrapper = styled.div`
   justify-content: space-evenly;
   text-align: center;
   .left-content {
-    flex-basis: 38%;
+    flex-basis: 36%;
     padding-inline: 45px;
   }
   .right-content {

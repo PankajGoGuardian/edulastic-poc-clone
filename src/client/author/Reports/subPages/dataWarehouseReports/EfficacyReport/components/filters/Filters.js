@@ -21,9 +21,18 @@ import {
 import { actions, selectors } from '../../ducks'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 
-const preTestFilterKey = 'preTestId'
-const postTestFilterKey = 'postTestId'
-const profileFilterKey = 'profileId'
+const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
+  (res, ele) => ({ [ele]: ele, ...res }),
+  {}
+)
+
+const clearTestFilterKeys = [
+  FILTER_KEYS_MAP.termId,
+  FILTER_KEYS_MAP.testGrades,
+  FILTER_KEYS_MAP.testSubjects,
+  FILTER_KEYS_MAP.tagIds,
+  FILTER_KEYS_MAP.assessmentTypes,
+]
 
 const Filters = ({
   // value props
@@ -58,13 +67,6 @@ const Filters = ({
   const [showPageLevelApply, setShowPageLevelApply] = useState(false)
 
   const assessmentTypesRef = useRef()
-  const clearTestFiltersList = [
-    preTestFilterKey,
-    postTestFilterKey,
-    profileFilterKey,
-    'preProfileId',
-    'postProfileId',
-  ]
   const { terms = [], schools } = orgData
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
@@ -200,8 +202,8 @@ const Filters = ({
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
-    const clearTestFilters = !clearTestFiltersList.includes(keyName)
-    if (clearTestFilters) {
+    const isClearTestFilterKey = clearTestFilterKeys.includes(keyName)
+    if (isClearTestFilterKey) {
       _filters.preTestId = ''
       _filters.postTestId = ''
     }

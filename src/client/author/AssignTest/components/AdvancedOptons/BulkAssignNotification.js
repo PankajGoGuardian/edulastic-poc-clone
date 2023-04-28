@@ -12,7 +12,7 @@ import {
 } from '../../../../common/components/Notification'
 
 const collectionName = 'AsyncAssignmentsStatus'
-const notificationDuration_5sec = 5
+const notificationDuration_90sec = 90
 
 const NotificationListener = ({ user }) => {
   const [notificationIds, setNotificationIds] = useState([])
@@ -55,7 +55,7 @@ const NotificationListener = ({ user }) => {
           },
         }
         if (isQAenv) {
-          notificationMsg.duration = notificationDuration_5sec
+          notificationMsg.duration = notificationDuration_90sec
         }
         notificationMessage(notificationMsg)
       }

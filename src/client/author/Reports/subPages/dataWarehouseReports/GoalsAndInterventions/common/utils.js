@@ -111,7 +111,7 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
       return
     }
     Object.values(formFields[formSection]).forEach(
-      ({ field, isRequired, label }) => {
+      ({ field, isRequired, label, isRequiredCustomPromptMessage = '' }) => {
         if (error) {
           return
         }
@@ -125,7 +125,10 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
         if (isValueInvalid(value)) {
           if (updatedIsRequiredValue) {
             error = true
-            errorMessage = `${label} cannot be empty`
+            errorMessage =
+              [STUDENT_GROUP_IDS].indexOf(field) !== -1
+                ? isRequiredCustomPromptMessage
+                : `${label} cannot be empty`
           } else {
             fieldsToOmit.push(field)
           }

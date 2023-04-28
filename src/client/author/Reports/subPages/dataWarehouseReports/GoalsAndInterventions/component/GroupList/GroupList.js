@@ -16,6 +16,7 @@ import ActionMenu from '../../common/components/ActionMenu'
 import { getDataSource } from './utils'
 import StyledTable from '../../common/components/Table'
 import EllipsisText from '../../common/components/EllipsisText'
+import { StyledHeading } from './styled-components'
 
 // const viewReportOptions = [
 //   { id: 'summary', label: 'View Summary' },
@@ -139,6 +140,9 @@ const GroupList = ({
       </EduThen>
       <EduElse>
         <>
+          <StyledHeading>
+            Manage target student groups for goals and interventions.
+          </StyledHeading>
           <EduIf condition={!loading && dataSource.length > 0}>
             <StyledTable
               loading={_isGroupLoading}

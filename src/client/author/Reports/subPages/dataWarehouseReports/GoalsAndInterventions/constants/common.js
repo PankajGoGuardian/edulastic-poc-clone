@@ -43,7 +43,7 @@ export const firstScreenContent = {
       'Monitor Performance',
     ],
     title: 'Set Smart Goals, measure and monitor improvement.',
-    description: 'No goal set. Please set first goal',
+    description: 'No goal set. Please set first goal.',
     buttonText: 'SET GOAL',
   },
   3: {
@@ -54,7 +54,7 @@ export const firstScreenContent = {
     ],
     title:
       'Set outcome focussed interventions to improve the students in need. Interventions are stepping stones to achieving goals.',
-    description: 'No intervention set. Please set first intervention',
+    description: 'No intervention set. Please set first intervention.',
     buttonText: 'SET INTERVENTION',
   },
 }

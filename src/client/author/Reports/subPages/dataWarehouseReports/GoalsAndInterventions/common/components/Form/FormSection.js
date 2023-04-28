@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Row } from 'antd'
-import { lightRed2 } from '@edulastic/colors'
+import { fieldRequiredColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import {
   PERFORMANCE_BAND,
@@ -39,6 +39,7 @@ const FormSection = ({
           fieldType,
           isRequired = false,
           placeholder,
+          dropdownPlaceholder = '',
           optionsData = [],
           colSpan = 7,
           startDate,
@@ -50,6 +51,7 @@ const FormSection = ({
           }
           if (field === METRIC && isMeasureTypePerformanceBand) {
             fieldType = DROPDOWN
+            placeholder = dropdownPlaceholder
           }
           optionsData = getOptionsData({
             field,
@@ -71,7 +73,15 @@ const FormSection = ({
               <StyledFilterLabel>
                 {label}
                 <EduIf condition={isRequired}>
-                  <span style={{ color: lightRed2, marginLeft: 3 }}>*</span>
+                  <span
+                    style={{
+                      color: fieldRequiredColor,
+                      marginLeft: 3,
+                      fontSize: 14,
+                    }}
+                  >
+                    *
+                  </span>
                 </EduIf>
               </StyledFilterLabel>
               <FormField

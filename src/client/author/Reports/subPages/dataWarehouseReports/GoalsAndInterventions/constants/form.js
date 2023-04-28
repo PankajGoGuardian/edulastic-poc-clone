@@ -8,6 +8,7 @@ export const ATTENDANCE = 'attendance'
 const AVERAGE_SCORE = 'averageScore'
 const MINIMUM_SCORE = 'minimumScore'
 export const PERFORMANCE_BAND = 'performanceBand'
+export const ATTENDANCE_BAND = 'attendanceBand'
 export const SAVE_GOAL = 'SAVE_GOAL'
 export const SAVE_INTERVENTION = 'SAVE_INTERVENTION'
 export const GOAL = 'goal'
@@ -151,6 +152,7 @@ export const goalFormFields = ({
       isRequired: true,
       placeholder: 'Select student group',
       optionsData: [],
+      isRequiredCustomPromptMessage: 'Please select a Student Group',
     },
   },
   ownerAndDescription: {
@@ -218,6 +220,7 @@ export const goalFormFields = ({
       fieldType: NUMBER_INPUT,
       isRequired: true,
       placeholder: 'Enter target metric',
+      dropdownPlaceholder: 'Select target metric',
     },
   },
   thresholdStartAndEndDate: {
@@ -289,6 +292,7 @@ export const interventionFormFields = ({
       isRequired: true,
       placeholder: 'Select student group',
       optionsData: [],
+      isRequiredCustomPromptMessage: 'Please select a Student Group',
     },
   },
   ownerAndDescription: goalFormFields({ type, startDate, endDate })
@@ -317,7 +321,8 @@ export const interventionFormFields = ({
       label: 'Target outcome',
       fieldType: NUMBER_INPUT,
       isRequired: true,
-      placeholder: 'Select target outcome',
+      placeholder: 'Enter target outcome',
+      dropdownPlaceholder: 'Select target outcome',
     },
   },
   thresholdStartAndEndDate: goalFormFields({

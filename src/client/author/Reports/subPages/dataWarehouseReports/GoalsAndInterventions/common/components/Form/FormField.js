@@ -171,7 +171,9 @@ const FormField = ({
           {...tagProps}
           showLabel={false}
           fieldSetLineHeight="unset"
-          selectorHeight="32px"
+          giChoiceHeight="20px"
+          giLineHeight="unset"
+          giPadding="0px"
         />
       </EduIf>
     </>

@@ -122,7 +122,12 @@ const getMeasureTypes = (type) => {
     : dropdownData.attendanceMeasureTypes
 }
 
-export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
+export const goalFormFields = ({
+  type = 'academic',
+  startDate,
+  endDate,
+  isInterventionForm = false,
+}) => ({
   nameAndType: {
     name: {
       field: NAME,
@@ -228,7 +233,9 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       label: 'Start date',
       fieldType: DATEPICKER,
       isRequired: true,
-      placeholder: 'Enter goal start date',
+      placeholder: `Enter ${
+        isInterventionForm ? INTERVENTION : GOAL
+      } start date`,
       startDate,
       endDate,
     },
@@ -237,7 +244,7 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       label: 'End date',
       fieldType: DATEPICKER,
       isRequired: true,
-      placeholder: 'Enter goal end date',
+      placeholder: `Enter ${isInterventionForm ? INTERVENTION : GOAL} end date`,
       startDate,
       endDate,
     },
@@ -313,8 +320,12 @@ export const interventionFormFields = ({
       placeholder: 'Select target outcome',
     },
   },
-  thresholdStartAndEndDate: goalFormFields({ type, startDate, endDate })
-    .thresholdStartAndEndDate,
+  thresholdStartAndEndDate: goalFormFields({
+    type,
+    startDate,
+    endDate,
+    isInterventionForm: true,
+  }).thresholdStartAndEndDate,
   relatedGoalsAndComment: {
     relatedGoals: {
       field: RELATED_GOALS_IDS,
@@ -330,7 +341,7 @@ export const interventionFormFields = ({
       label: 'Notes',
       fieldType: STRING_INPUT,
       isRequired: false,
-      placeholder: 'Add comment',
+      placeholder: 'Add notes',
       colSpan: 7,
     },
   },

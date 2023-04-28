@@ -53,6 +53,19 @@ export const StyledDropDown = styled(SelectInputStyled)`
     display: initial;
     color: ${greyThemeDark2};
   }
+  &.ant-select {
+    .ant-select-selection {
+      padding: 0px;
+      &.ant-select-selection--multiple {
+        .ant-select-selection__rendered {
+          line-height: unset;
+          .ant-select-selection__choice {
+            height: 20px;
+          }
+        }
+      }
+    }
+  }
 `
 
 export const SelectWrapper = styled.div`

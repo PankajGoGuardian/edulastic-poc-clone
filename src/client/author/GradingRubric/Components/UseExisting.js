@@ -7,14 +7,17 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
-import { maxBy, sumBy, uniqBy, debounce } from 'lodash'
+import { maxBy, sumBy, uniqBy, debounce, isEmpty } from 'lodash'
 import { notification } from '@edulastic/common'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { v4 } from 'uuid'
 import { sanitizeForReview } from '@edulastic/common/src/helpers'
-import { CustomStyleBtn } from '../../../assessment/styled/ButtonStyles'
+import {
+  CustomStyleBtn,
+  CustomStyleBtn2,
+} from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
 import { setItemLevelScoreFromRubricAction } from '../../ItemDetail/ducks'
 import {
@@ -102,6 +105,10 @@ const UseExisting = ({
       ),
     [currentRubricData?.criteria]
   )
+
+  const autoGenerateRubricBtnTitle = isEmpty(currentQuestion?.stimulus)
+    ? 'Rubric cannot be auto generated without question.'
+    : ''
 
   const handlePaginationChange = (page) => {
     setCurrentPage(page)
@@ -378,9 +385,15 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <CustomStyleBtn style={btnStyle} onClick={generateRubricByOpenAI}>
-              <Icon data-cy="previewButton" type="eye" /> Auto Generate Rubric
-            </CustomStyleBtn>
+            <CustomStyleBtn2
+              style={btnStyle}
+              onClick={generateRubricByOpenAI}
+              disabled={isEmpty(currentQuestion?.stimulus)}
+              ghost={isEmpty(currentQuestion?.stimulus)}
+              title={autoGenerateRubricBtnTitle}
+            >
+              Auto Generate Rubric
+            </CustomStyleBtn2>
             <CustomStyleBtn
               style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}

@@ -1,8 +1,9 @@
-import { reportUtils } from '@edulastic/constants'
+import { reportUtils, testTypes } from '@edulastic/constants'
 import { sumBy, round, maxBy } from 'lodash'
 
 import { bandKeys, dataKeys } from './constants'
 
+const { EXTERNAL_TEST_TYPES } = testTypes
 const {
   getProficiencyBand,
   percentage,
@@ -297,5 +298,18 @@ export const getExternalBandInfoByExternalTest = ({
     const checkForTestTitle = !testTitle || testTitle === _testTitle
     const checkForTestCategory = testCategory === _testCategory
     return checkForTestCategory && checkForTestTitle
+  })
+}
+
+export const getExternalBandsListFromBandInfo = (externalBandInfo) => {
+  return [externalBandInfo].map(({ testTitle, testCategory }) => {
+    const _testTitle =
+      testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
+        ? `- ${testTitle}`
+        : ''
+    return {
+      key: `${testCategory}__${testTitle || ''}`,
+      title: `${testCategory} ${_testTitle}`,
+    }
   })
 }

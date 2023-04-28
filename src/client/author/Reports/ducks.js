@@ -7,6 +7,7 @@ import {
   assignmentStatusOptions,
   roleuser,
   reportUtils,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
@@ -228,6 +229,7 @@ import {
 } from '../Groups/ducks'
 
 const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
+const { EXTERNAL_TEST_TYPES } = testTypesConstants
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -834,7 +836,10 @@ export function* receiveTestListSaga({ payload }) {
     const externalTestList = externalTests
       .filter(({ testTitle, testCategory, testName }) => {
         const _testName = testName || ''
-        const _testTitle = testTitle ? `- ${testTitle}` : ''
+        const _testTitle =
+          testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
+            ? `- ${testTitle}`
+            : ''
         const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
         const checkForExternalTestTypes =
           !testTypes.length || testTypes.includes(testCategory)
@@ -845,7 +850,10 @@ export function* receiveTestListSaga({ payload }) {
       })
       .map(({ testTitle, testCategory, testName }) => {
         const _testName = testName || ''
-        const _testTitle = testTitle ? `- ${testTitle}` : ''
+        const _testTitle =
+          testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
+            ? `- ${testTitle}`
+            : ''
         const externalTestId = [_testName, testCategory, testTitle || ''].join(
           EXTERNAL_TEST_KEY_SEPARATOR
         )

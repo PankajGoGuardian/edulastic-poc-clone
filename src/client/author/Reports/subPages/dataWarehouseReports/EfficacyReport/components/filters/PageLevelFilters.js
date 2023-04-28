@@ -7,7 +7,10 @@ import {
 } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
-import { getExternalBandInfoByExternalTest } from '../../utils'
+import {
+  getExternalBandInfoByExternalTest,
+  getExternalBandsListFromBandInfo,
+} from '../../utils'
 
 const PageLevelFilters = ({
   reportId,
@@ -40,11 +43,8 @@ const PageLevelFilters = ({
         testId: filters.preTestId,
         externalBands,
       }) || {}
-    prePerformanceBandsList = [preExternalBandInfo].map(
-      ({ testTitle, testCategory }) => ({
-        key: `${testCategory}__${testTitle || ''}`,
-        title: `[${testCategory}] ${testTitle || ''}`,
-      })
+    prePerformanceBandsList = getExternalBandsListFromBandInfo(
+      preExternalBandInfo
     )
     ;[selectedPrePerformanceBand] = prePerformanceBandsList
   }
@@ -55,11 +55,8 @@ const PageLevelFilters = ({
         testId: filters.postTestId,
         externalBands,
       }) || {}
-    postPerformanceBandsList = [postExternalBandInfo].map(
-      ({ testTitle, testCategory }) => ({
-        key: `${testCategory}__${testTitle || ''}`,
-        title: `[${testCategory}] ${testTitle || ''}`,
-      })
+    postPerformanceBandsList = getExternalBandsListFromBandInfo(
+      postExternalBandInfo
     )
     ;[selectedPostPerformanceBand] = postPerformanceBandsList
   }

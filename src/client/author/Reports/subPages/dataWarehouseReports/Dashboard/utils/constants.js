@@ -125,7 +125,6 @@ export const staticDropDownData = {
     termId: '',
     testGrades: '',
     testSubjects: '',
-    tagIds: '',
     assessmentTypes: '',
     testIds: '',
     schoolIds: '',

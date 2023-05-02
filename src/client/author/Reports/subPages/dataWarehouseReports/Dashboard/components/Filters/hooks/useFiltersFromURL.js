@@ -61,7 +61,6 @@ function useFiltersFromURL({
         termId: urlSchoolYear.key,
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
-        tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         testIds: search.testIds || '',
         schoolIds: search.schoolIds || '',

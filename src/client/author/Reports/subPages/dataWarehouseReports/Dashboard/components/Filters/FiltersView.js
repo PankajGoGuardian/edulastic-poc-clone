@@ -90,6 +90,7 @@ function FiltersView({
                           assessmentTypesRef={assessmentTypesRef}
                           availableAssessmentType={availableAssessmentType}
                           dropdownData={staticDropDownData}
+                          exclude={['tagIds']}
                         />
                       </Row>
                     </Tabs.TabPane>

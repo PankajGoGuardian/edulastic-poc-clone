@@ -27,6 +27,7 @@ export const StyledTable = styled(Table)`
       background: ${white};
       text-transform: uppercase;
       font-size: 10px;
+      font-weight: bold;
     }
     tr:first-child {
       th.ant-table-column-sort,
@@ -43,7 +44,7 @@ export const StyledTable = styled(Table)`
     background-color: ${fadedGrey};
     color: black;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: bold;
   }
   .ant-table-body {
     table {

@@ -295,7 +295,7 @@ export const StyledTable = styled(Table)`
           th {
             padding: 8px;
             text-align: center;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 10px;
             border: 0px;
             color: #aaafb5;

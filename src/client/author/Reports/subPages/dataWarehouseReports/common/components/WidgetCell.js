@@ -13,7 +13,7 @@ const WidgetCell = ({
   const headerClassName = subHeader ? 'small-header' : ''
   return (
     <div>
-      <Row className={headerClassName}>
+      <Row className={headerClassName} style={{ fontWeight: 'bold' }}>
         <div>{header}</div>
         <div>{subHeader}</div>
       </Row>

@@ -115,6 +115,7 @@ const columns = [
     dataIndex: 'type',
     key: 'type',
     width: 80,
+    align: 'center',
     sorter: (a, b) =>
       (a.type || '').toLowerCase().localeCompare((b.type || '').toLowerCase()),
     render: (text) => <p>{ucFirst(text)}</p>,
@@ -127,7 +128,8 @@ const columns = [
       (a.group || '')
         .toLowerCase()
         .localeCompare((b.group || '').toLowerCase()),
-    width: 100,
+    width: 150,
+    align: 'center',
     render: (groups) => <EllipsisText lines={2}>{groups}</EllipsisText>,
   },
   {
@@ -135,7 +137,8 @@ const columns = [
     dataIndex: 'baseline',
     className: 'text-center',
     key: 'baseline',
-    width: 100,
+    width: 150,
+    align: 'center',
     sortDirections: ['descend', 'ascend'],
     sorter: (a, b) =>
       sortingBaselineCurrentTargetValues(a.baseline, b.baseline),
@@ -146,9 +149,10 @@ const columns = [
     dataIndex: 'current',
     key: 'current',
     className: 'text-center',
+    align: 'center',
     sorter: (a, b) =>
       sortingBaselineCurrentTargetValues(a?.current?.value, b?.current?.value),
-    width: 100,
+    width: 150,
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
@@ -162,8 +166,9 @@ const columns = [
     dataIndex: 'target',
     key: 'target',
     className: 'text-center',
-    width: 100,
+    width: 150,
     sortDirections: ['descend', 'ascend'],
+    align: 'center',
     sorter: (a, b) =>
       sortingBaselineCurrentTargetValues(
         getTarget(a)?.metric,
@@ -180,6 +185,7 @@ const columns = [
     key: 'time_left',
     className: 'text-center',
     width: 180,
+    align: 'center',
     sorter: (a, b) =>
       getDaysLeft(b.startDate, b.endDate) - getDaysLeft(a.startDate, a.endDate),
     sortDirections: ['descend', 'ascend'],
@@ -198,6 +204,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     width: 100,
+    align: 'center',
     sorter: (a, b) => {
       const left = ucFirst(a.status || '')
       const right = ucFirst(b.status || '')
@@ -217,6 +224,7 @@ const columns = [
     title: 'Notes',
     dataIndex: 'comment',
     key: 'comment',
+    align: 'center',
     sorter: (a, b) =>
       (a.comment || '')
         .toLowerCase()

@@ -8,7 +8,7 @@
         border-bottom: none;
         padding: 16px 2px;
         color: #999999;
-        font-weight: 500;
+        font-weight: bold;
         font-size: 12px;
         text-transform: uppercase;
         &.text-center {
@@ -60,7 +60,7 @@
       height: 40px;
       text-align: left;
       font-weight: 500;
-      font-size: 12px;
+      font-size: 14px;
       color: $filterIconColor;
       &.text-center {
         text-align: center;

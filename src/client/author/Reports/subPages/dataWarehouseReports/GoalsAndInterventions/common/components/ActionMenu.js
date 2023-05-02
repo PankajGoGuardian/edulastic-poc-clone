@@ -87,6 +87,8 @@ const Header = styled.div`
     border-bottom: 1px solid #eeeeee;
     width: fit-content;
     padding: 0 10px;
+    width: 100%;
+    text-align: left;
   }
   svg {
     cursor: pointer;

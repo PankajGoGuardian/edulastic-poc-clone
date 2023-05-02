@@ -1,4 +1,4 @@
-import Table from 'antd/lib/table'
+import { Table } from 'antd'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'

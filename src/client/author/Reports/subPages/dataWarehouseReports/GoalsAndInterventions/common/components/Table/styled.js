@@ -25,7 +25,7 @@ export const StyledTable = styled(Table)`
   th .ant-table-column-title {
     text-transform: uppercase;
     color: ${darkGrey} !important;
-    font-weight: 500 !important;
+    font-weight: bold !important;
     font-size: 12px;
   }
   td {

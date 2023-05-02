@@ -117,6 +117,21 @@
   }
 }
 
+.gi-summary-tile-info-popover {
+  .ant-popover-inner {
+    background: #343434;
+    border-radius: 10px;
+    .content {
+      p {
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 16px;
+        color: $white;
+      }
+    }
+  }
+}
+
 .action-menu {
   ul {
     li {

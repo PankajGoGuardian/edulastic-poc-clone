@@ -150,6 +150,8 @@ export const statusList = (data) => ({
           text: 'Off-track',
           color: summaryTileColors.RED,
           unit: getSummaryStatusCount({ key: 'off-track', data }),
+          infoText:
+            'Goals in progress which are not met yet and have less than 20% time left',
         },
         {
           id: 3,

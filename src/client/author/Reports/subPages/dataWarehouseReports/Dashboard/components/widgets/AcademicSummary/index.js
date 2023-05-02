@@ -38,7 +38,7 @@ import AcademicSummaryWidgetFilters from './Filters'
 import Footer from '../../../../common/components/Footer'
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 
-const title = 'Academic Summary and Performance Distribution'
+const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
 const AcademicSummary = ({
   selectedPerformanceBand,

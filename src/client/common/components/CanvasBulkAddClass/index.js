@@ -347,7 +347,7 @@ const CanvasBulkAddClass = ({
         return (
           <Select
             showSearch
-            style={{ width: '100%' }}
+            style={{ width: '250px' }}
             filterOption={(input, option) => {
               if (
                 option.props.children &&
@@ -376,6 +376,8 @@ const CanvasBulkAddClass = ({
                 value={standard.value}
                 key={standard.value}
                 disabled={standard.disabled}
+                dropdownMatchSelectWidth={false}
+                placement="topRight"
               >
                 {standard.text}
               </Select.Option>

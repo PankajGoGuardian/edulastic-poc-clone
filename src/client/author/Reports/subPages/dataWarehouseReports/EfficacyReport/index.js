@@ -71,7 +71,6 @@ const EfficacyReport = ({
   setSettings,
   fetchReportSummaryDataRequest,
   fetchReportTableDataRequest,
-  setFirstLoadHidden,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -179,9 +178,6 @@ const EfficacyReport = ({
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
-    // request not made, so set load/firstLoad to false manually
-    setFirstLoadHidden(true)
-    return () => setFirstLoadHidden(false)
   }, [settings.requestFilters])
 
   useEffect(() => {
@@ -208,7 +204,8 @@ const EfficacyReport = ({
   const noDataContainerText = getNoDataContainerText(
     settings,
     error,
-    isInvalidSharedFilters
+    isInvalidSharedFilters,
+    loc
   )
 
   return (

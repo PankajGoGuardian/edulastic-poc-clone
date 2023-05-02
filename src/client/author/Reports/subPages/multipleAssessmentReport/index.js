@@ -366,6 +366,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
                 setFirstLoadHidden={setFirstLoadHidden}
+                pageTitle={pageTitle}
               />
             )
           }}

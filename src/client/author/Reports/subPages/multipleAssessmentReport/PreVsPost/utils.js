@@ -15,6 +15,8 @@ import {
   some,
 } from 'lodash'
 
+import navigation from '../../../common/static/json/navigation.json'
+
 const { getProficiencyBand, percentage, getFormattedName } = reportUtils.common
 const { getColorsByInterpolation } = colorUtils
 
@@ -375,8 +377,10 @@ export const addStudentToGroupFeatureEnabled = (
 export function getNoDataContainerText(
   settings,
   error,
-  isInvalidSharedFilters
+  isInvalidSharedFilters,
+  reportType
 ) {
+  const reportTitle = navigation.locToData[reportType]?.title
   if (settings.requestFilters?.termId) {
     if (error.msg === 'InvalidTestIds') {
       return 'Please select the Pre and Post Assessment to generate the report.'
@@ -386,7 +390,7 @@ export function getNoDataContainerText(
   if (isInvalidSharedFilters) {
     return (
       <p>
-        Pre vs. Post report is not supported for the shared filters.
+        {reportTitle} report is not supported for the shared filters.
         <br />
         Please reach out to support at&nbsp;
         <a href="mailto:support@edulastic.com" target="_blank" rel="noreferrer">

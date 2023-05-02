@@ -376,8 +376,6 @@ const CanvasBulkAddClass = ({
                 value={standard.value}
                 key={standard.value}
                 disabled={standard.disabled}
-                dropdownMatchSelectWidth={false}
-                placement="topRight"
               >
                 {standard.text}
               </Select.Option>

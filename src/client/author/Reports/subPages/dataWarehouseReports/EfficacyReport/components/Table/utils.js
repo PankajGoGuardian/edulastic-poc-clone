@@ -4,6 +4,7 @@ import { get, groupBy, isEmpty, map, maxBy, sumBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { downloadCSV } from '../../../../../common/util'
 import {
+  analyseBykeys,
   compareByStudentColumns,
   dataKeys,
   genericColumnsForTable,
@@ -93,6 +94,26 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
         )
       }
     }
+    Object.assign(
+      _columns.find((c) => c.key === 'AvgPre'),
+      {
+        render: (value) =>
+          testInfo.preTestInfo.isExternal ||
+          analyseBy === analyseBykeys.RAW_SCORE
+            ? value.preTestData.avgScore
+            : `${value.preTestData.avgScorePercentage}%`,
+      }
+    )
+    Object.assign(
+      _columns.find((c) => c.key === 'AvgPost'),
+      {
+        render: (value) =>
+          testInfo.postTestInfo.isExternal ||
+          analyseBy === analyseBykeys.RAW_SCORE
+            ? value.postTestData.avgScore
+            : `${value.postTestData.avgScorePercentage}%`,
+      }
+    )
   })
 
   return tableColumns

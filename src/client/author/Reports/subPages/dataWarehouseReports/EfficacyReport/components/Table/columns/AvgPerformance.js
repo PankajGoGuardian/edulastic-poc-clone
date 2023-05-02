@@ -9,7 +9,7 @@ const AvgPerformance = ({ data, analyseBy }) => {
     analyseBy === analyseBykeys.RAW_SCORE
       ? preTestData.avgScore
       : `${
-          preTestData.avgScorePercentage
+          preTestData.avgScorePercentage // TODO don't rely on truthiness
             ? `${preTestData.avgScorePercentage}%`
             : preTestData.avgScore
         }`
@@ -17,7 +17,7 @@ const AvgPerformance = ({ data, analyseBy }) => {
     analyseBy === analyseBykeys.RAW_SCORE
       ? postTestData.avgScore
       : `${
-          postTestData.avgScorePercentage
+          postTestData.avgScorePercentage // TODO don't rely on truthiness
             ? `${postTestData.avgScorePercentage}%`
             : postTestData.avgScore
         }`

@@ -1,10 +1,4 @@
-import {
-  EduElse,
-  EduIf,
-  EduThen,
-  CustomModalStyled,
-  EduButton,
-} from '@edulastic/common'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
@@ -12,14 +6,21 @@ import {
   getPerformanceBandProfilesSelector,
   receivePerformanceBandAction,
 } from '../../../../../../PerformanceBand/ducks'
-import {
-  fetchGroupsAction,
-  getGroupsSelector,
-} from '../../../../../../sharedDucks/groups'
+import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
 import {
   getCurrentActiveTerms,
   getCurrentTerm,
 } from '../../../../../../src/selectors/user'
+import ConfirmModal from '../../common/components/ConfirmModal'
+import {
+  StyledButton,
+  StyledFormButtonsContainer,
+  StyledFormContainer,
+  StyledFormHeader,
+  StyledFormTitle,
+  StyledNavContainer,
+  StyledNavWrapper,
+} from '../../common/components/Form/styled-components'
 import {
   GOAL,
   INTERVENTION,
@@ -34,19 +35,11 @@ import {
   attendanceBandList,
   formStatus,
   goalsList,
+  groupList,
   isFormDataSaving,
 } from '../../ducks/selectors'
 import useSaveFormData from '../../hooks/useSaveFormData'
 import Form from './Form'
-import {
-  StyledButton,
-  StyledFormButtonsContainer,
-  StyledFormContainer,
-  StyledFormHeader,
-  StyledFormTitle,
-  StyledNavContainer,
-  StyledNavWrapper,
-} from '../../common/components/Form/styled-components'
 
 const {
   [GOAL]: {
@@ -173,33 +166,11 @@ const CreateGI = ({
 
   return (
     <div>
-      <CustomModalStyled
+      <ConfirmModal
         visible={isConfirmationModalOpen}
         onOk={handleModalConfirmClick}
         onCancel={handleModalCancelClick}
-        maskClosable={false}
-        closable={false}
-        centered
-        footer={[
-          <EduButton
-            height="40px"
-            isGhost
-            key="cancelButton"
-            onClick={handleModalConfirmClick}
-          >
-            Yes
-          </EduButton>,
-          <EduButton
-            height="40px"
-            key="okButton"
-            onClick={handleModalCancelClick}
-          >
-            No
-          </EduButton>,
-        ]}
-      >
-        Are you sure you want to cancel?
-      </CustomModalStyled>
+      />
       <StyledFormHeader>
         <StyledFormTitle>
           {' '}
@@ -253,7 +224,7 @@ const CreateGI = ({
 
 export default connect(
   (state) => ({
-    groupsData: getGroupsSelector(state),
+    groupsData: groupList(state),
     performanceBandData: getPerformanceBandProfilesSelector(state),
     attendanceBandData: attendanceBandList(state),
     goalsOptionsData: goalsList(state),

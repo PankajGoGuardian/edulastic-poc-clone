@@ -163,7 +163,7 @@ const AdvancedSearch = ({
 
     if (noCriteriaAdded) {
       return notification({
-        msg: 'Please select and apply at least one criteria',
+        msg: 'Please select and apply at least one criterion',
       })
     }
 
@@ -204,6 +204,7 @@ const AdvancedSearch = ({
         </SpinnerContainer>
       </EduIf>
       <SaveGroup
+        formattedQuery={formattedQuery}
         wrappedComponentRef={groupFormRef}
         courseData={courseData}
         studentsData={studentsData}

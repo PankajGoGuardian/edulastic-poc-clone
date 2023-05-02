@@ -1,6 +1,3 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
-import { isEmpty } from 'lodash'
-import { Col, Form, Row, Spin, Upload } from 'antd'
 import {
   EduElse,
   EduIf,
@@ -10,19 +7,23 @@ import {
   uploadToS3,
 } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
+import { Col, Form, Row, Spin, Upload } from 'antd'
+import { get, isEmpty } from 'lodash'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import {
   TAGS,
   groupFormFields,
   imageStyleAdvanceSearch,
 } from '../../../constants/groupForm'
 
-import GroupSection from './GroupSections'
-import {
-  StyledFormButtonsContainer,
-  StyledButton,
-} from '../../../common/components/Form/styled-components'
-import { defaultImage } from '../../../../../../../TestPage/ducks'
 import { SpinContainer } from '../../../../../../../DistrictProfile/components/Container/styled'
+import { defaultImage } from '../../../../../../../TestPage/ducks'
+import ConfirmModal from '../../../common/components/ConfirmModal'
+import {
+  StyledButton,
+  StyledFormButtonsContainer,
+} from '../../../common/components/Form/styled-components'
+import GroupSection from './GroupSections'
 
 const InitialGroupData = {}
 
@@ -36,9 +37,11 @@ const SaveGroup = forwardRef(
       onCancel,
       form,
       studentsData,
+      formattedQuery,
     },
     wrappedComponentRef
   ) => {
+    const [showCancelPopup, setShowCancelPopup] = useState(false)
     const [groupData, setGroupData] = useState(InitialGroupData)
     const [isImageLoading, setImageLoading] = useState(false)
     const {
@@ -66,6 +69,8 @@ const SaveGroup = forwardRef(
     }
     const saveGroupDetail = () => {
       const name = groupData?.name?.trim()
+      const searchQuery = JSON.parse(formattedQuery || {})
+      const noCriteriaAdded = isEmpty(get(searchQuery, ['rules'], []))
 
       const { allTagsData = [] } = tagProps
       const selectedTags = getFieldValue(TAGS) || []
@@ -77,6 +82,11 @@ const SaveGroup = forwardRef(
 
       if (!name) {
         return notification({ msg: 'Group name is required' })
+      }
+      if (noCriteriaAdded) {
+        return notification({
+          msg: 'Please select and apply at least one criterion',
+        })
       }
       if (isEmpty(studentsData)) {
         return notification({
@@ -126,10 +136,21 @@ const SaveGroup = forwardRef(
         notification({ msg: 'Facing issue while uploading thumbnail' })
       }
     }
+
+    const handleConfirmOk = () => {
+      setShowCancelPopup(false)
+      onCancel()
+    }
+
     return (
       <>
+        <ConfirmModal
+          visible={showCancelPopup}
+          onCancel={() => setShowCancelPopup(false)}
+          onOk={handleConfirmOk}
+        />
         <StyledFormButtonsContainer>
-          <StyledButton isGhost onClick={onCancel}>
+          <StyledButton isGhost onClick={() => setShowCancelPopup(true)}>
             Cancel
           </StyledButton>
           <StyledButton onClick={saveGroupDetail} disabled={isGroupSaving}>

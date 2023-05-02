@@ -3,6 +3,9 @@ import React, { useEffect } from 'react'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import connect from 'react-redux/es/connect/connect'
 import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
+import ActionMenu from '../../common/components/ActionMenu'
+import EllipsisText from '../../common/components/EllipsisText'
+import StyledTable from '../../common/components/Table'
 import { actions } from '../../ducks'
 import {
   goalsList,
@@ -12,11 +15,8 @@ import {
   isGroupLoading,
   isInterventionsDataLoading,
 } from '../../ducks/selectors'
-import ActionMenu from '../../common/components/ActionMenu'
-import { getDataSource } from './utils'
-import StyledTable from '../../common/components/Table'
-import EllipsisText from '../../common/components/EllipsisText'
 import { StyledHeading } from './styled-components'
+import { getDataSource } from './utils'
 
 // const viewReportOptions = [
 //   { id: 'summary', label: 'View Summary' },
@@ -143,10 +143,10 @@ const GroupList = ({
       </EduThen>
       <EduElse>
         <>
-          <StyledHeading>
-            Manage target student groups for goals and interventions.
-          </StyledHeading>
           <EduIf condition={!loading && dataSource.length > 0}>
+            <StyledHeading>
+              Manage target student groups for goals and interventions.
+            </StyledHeading>
             <StyledTable
               loading={_isGroupLoading}
               dataSource={dataSource}
@@ -154,7 +154,7 @@ const GroupList = ({
               size="middle"
               pagination={false}
               scroll={{
-                y: 500,
+                y: 450,
               }}
             />
           </EduIf>

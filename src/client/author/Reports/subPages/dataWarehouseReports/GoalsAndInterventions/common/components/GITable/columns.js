@@ -241,6 +241,7 @@ const columns = [
       <ActionMenu
         type={record.goalCriteria ? GOAL : INTERVENTION}
         options={GIActionOptions}
+        GIData={record}
       />
     ),
   },

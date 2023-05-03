@@ -103,6 +103,7 @@ const DashboardTable = ({
         rowSelection={rowSelection}
         bordered="dashed"
         isCsvDownloading={isCsvDownloading}
+        // TODO pass pagination based on tableFilters.pageSize
       />
     </>
   )

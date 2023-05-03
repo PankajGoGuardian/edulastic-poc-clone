@@ -13,7 +13,7 @@ import {
   StyledTitle,
   TooltipWrapper,
 } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
-import { TestTypeTag } from '../../common/styledComponents'
+import { GridContainer, TestTypeTag } from '../../common/styledComponents'
 
 const SummaryContainer = ({
   summary,
@@ -51,11 +51,14 @@ const SummaryContainer = ({
           <Tooltip
             title={
               <TooltipWrapper>
-                Graded in both Pre and Post: {totalStudentCount}
-                <br />
-                Total students in Pre: {preStudentCount}
-                <br />
-                Total students in Post: {postStudentCount}
+                <GridContainer>
+                  <span>Graded in both Pre and Post:</span>
+                  <span>{totalStudentCount}</span>
+                  <span>Total students in Pre:</span>
+                  <span>{preStudentCount}</span>
+                  <span>Total students in Post:</span>
+                  <span>{postStudentCount}</span>
+                </GridContainer>
               </TooltipWrapper>
             }
           >

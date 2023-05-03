@@ -1,9 +1,9 @@
-import { reportUtils, testTypes } from '@edulastic/constants'
+import { reportUtils } from '@edulastic/constants'
 import { sumBy, round, maxBy } from 'lodash'
 
 import { bandKeys, dataKeys } from './constants'
+import { getTestTitle } from '../../../../common/util'
 
-const { EXTERNAL_TEST_TYPES } = testTypes
 const {
   getProficiencyBand,
   percentage,
@@ -260,30 +260,28 @@ export const getPerformanceMatrixData = (
   return { performanceMatrixColumnHeaders, performanceMatrixRowsData }
 }
 
-const getInternalTestInfo = (testInfo, testId) => {
+const getInternalTestInfoByTestId = (testInfo, testId) => {
   const test = testInfo.find((t) => t.testId === testId) ?? {}
   const { title = '', incompleteCount = 0 } = test
   const name = `${title} ${+incompleteCount > 0 ? '*' : ''}`.trim()
   return { incompleteCount: +incompleteCount, name, isExternal: false }
 }
 
-const getExternalTestInfo = (testId) => {
-  const [category, ...title] = testId
-  const testTitle = title.join('__')
-  return { name: testTitle, category, testTitle, isExternal: true }
+const getExternalTestInfoByTestId = (testId) => {
+  const testIdSplit = testId.split(EXTERNAL_TEST_KEY_SEPARATOR)
+  const [testCategory, testTitle] = testIdSplit.splice(-2)
+  const testName = testIdSplit.join(EXTERNAL_TEST_KEY_SEPARATOR)
+  return { name: testName, category: testCategory, testTitle, isExternal: true }
 }
 
 export const transformTestInfo = (testInfo, reportFilters) => {
-  const preTestId = reportFilters.preTestId.split('__')
-  const postTestId = reportFilters.postTestId.split('__')
-  const preTestInfo =
-    preTestId.length > 1
-      ? getExternalTestInfo(preTestId)
-      : getInternalTestInfo(testInfo, preTestId[0])
-  const postTestInfo =
-    postTestId.length > 1
-      ? getExternalTestInfo(postTestId)
-      : getInternalTestInfo(testInfo, postTestId[0])
+  const { preTestId, postTestId } = reportFilters
+  const preTestInfo = preTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+    ? getExternalTestInfoByTestId(preTestId)
+    : getInternalTestInfoByTestId(testInfo, preTestId)
+  const postTestInfo = postTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+    ? getExternalTestInfoByTestId(postTestId)
+    : getInternalTestInfoByTestId(testInfo, postTestId)
   return { preTestInfo, postTestInfo }
 }
 
@@ -303,10 +301,7 @@ export const getExternalBandInfoByExternalTest = ({
 
 export const getExternalBandsListFromBandInfo = (externalBandInfo) => {
   return [externalBandInfo].map(({ testTitle, testCategory }) => {
-    const _testTitle =
-      testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
-        ? `- ${testTitle}`
-        : ''
+    const _testTitle = getTestTitle(testCategory, testTitle)
     return {
       key: `${testCategory}__${testTitle || ''}`,
       title: `${testCategory} ${_testTitle}`,

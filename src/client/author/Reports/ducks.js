@@ -7,7 +7,6 @@ import {
   assignmentStatusOptions,
   roleuser,
   reportUtils,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
@@ -203,7 +202,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames } from './common/util'
+import { combineNames, getTestTitle } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -229,7 +228,6 @@ import {
 } from '../Groups/ducks'
 
 const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
-const { EXTERNAL_TEST_TYPES } = testTypesConstants
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -819,7 +817,13 @@ function* fetchUpdateTagsData({ payload }) {
 export function* receiveTestListSaga({ payload }) {
   const { statePrefix = '', externalTests = [], ...params } = payload
   try {
-    const { testTypes = [], searchString = '' } = get(params, 'search', {})
+    const {
+      termId = '',
+      grades = [],
+      subjects = [],
+      testTypes = [],
+      searchString = '',
+    } = get(params, 'search', {})
     const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
@@ -834,30 +838,41 @@ export function* receiveTestListSaga({ payload }) {
       })
       .filter(({ _id, title }) => _id && title)
     const externalTestList = externalTests
-      .filter(({ testTitle, testCategory, testName }) => {
-        const _testName = testName || ''
-        const _testTitle =
-          testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
-            ? `- ${testTitle}`
-            : ''
-        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+      .filter((t) => {
+        const _testGrades = (t.testGrades || '').split(',')
+        const _testSubjects = (t.testSubjects || '').split(',')
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        const checkForTermId = termId === t.termId
+        const checkForGrades =
+          !grades.length ||
+          !!_testGrades.filter((g) => grades.includes(g)).length
+        const checkForSubjects =
+          !subjects.length ||
+          !!_testSubjects.filter((s) => subjects.includes(s)).length
         const checkForExternalTestTypes =
-          !testTypes.length || testTypes.includes(testCategory)
+          !testTypes.length || testTypes.includes(t.testCategory)
         const checkForExternalTestTitle =
           !searchString ||
           externalTestTitle.toLowerCase().includes(searchString.toLowerCase())
-        return checkForExternalTestTitle && checkForExternalTestTypes
+        return [
+          checkForTermId,
+          checkForGrades,
+          checkForSubjects,
+          checkForExternalTestTitle,
+          checkForExternalTestTypes,
+        ].every((o) => !!o)
       })
-      .map(({ testTitle, testCategory, testName }) => {
-        const _testName = testName || ''
-        const _testTitle =
-          testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
-            ? `- ${testTitle}`
-            : ''
-        const externalTestId = [_testName, testCategory, testTitle || ''].join(
-          EXTERNAL_TEST_KEY_SEPARATOR
-        )
-        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+      .map((t) => {
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestId = [
+          _testName,
+          t.testCategory,
+          t.testTitle || '',
+        ].join(EXTERNAL_TEST_KEY_SEPARATOR)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
         return { _id: externalTestId, title: externalTestTitle, showId: false }
       })
     yield put({

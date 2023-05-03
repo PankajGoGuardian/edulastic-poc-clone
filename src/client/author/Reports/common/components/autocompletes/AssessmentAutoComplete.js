@@ -10,7 +10,10 @@ import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
+import {
+  EMPTY_ARRAY,
+  EXTERNAL_TEST_KEY_SEPARATOR,
+} from '@edulastic/constants/reportUtils/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -25,6 +28,25 @@ import {
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
+
+function getSelectedTestLabel(selectedTest, searchTerms) {
+  if (!selectedTest?._id) return ''
+
+  const isExternal =
+    selectedTest._id.split(EXTERNAL_TEST_KEY_SEPARATOR).length > 1
+
+  let selectedTestLabel = ''
+  if (searchTerms.text === searchTerms.selectedText) {
+    selectedTestLabel = `${selectedTest.title}`
+    if (!isExternal) {
+      selectedTestLabel += ` (ID:${selectedTest._id.substring(
+        selectedTest._id.length - 5
+      )})`
+    }
+  }
+  return selectedTestLabel
+}
+
 const AssessmentAutoComplete = ({
   statePrefix = '',
   user,
@@ -175,12 +197,7 @@ const AssessmentAutoComplete = ({
     searchText: searchTerms.text || '',
   })
 
-  const selectedTestLabel =
-    searchTerms.text === searchTerms.selectedText && selectedTest._id
-      ? `${selectedTest.title} (ID:${selectedTest._id.substring(
-          selectedTest._id.length - 5
-        )})`
-      : ''
+  const selectedTestLabel = getSelectedTestLabel(selectedTest, searchTerms)
 
   const InputSuffixIcon = loading ? (
     <Icon type="loading" />

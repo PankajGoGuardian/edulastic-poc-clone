@@ -41,6 +41,8 @@ const ReportView = ({
     prePerformanceBand,
     postPerformanceBand,
     isSamePerformanceBand,
+    preStudentCount,
+    postStudentCount,
   } = useSummaryMetrics({
     reportSummaryData,
     reportFilters,
@@ -60,11 +62,13 @@ const ReportView = ({
         </Row>
         <Row type="flex">
           <StyledIconAlert fill={themeColor} />
-          <StyledSpan fontSize="13px" color={fadedBlack}>
-            This report compares the student performance on the choosen two
-            assessments.{' '}
+          <StyledSpan fontSize="12px" color={fadedBlack}>
+            This report compares the student performance on the chosen two
+            assessments.
+            <br />
             <StyledSpan font="bold" color={fadedBlack}>
-              Only students that have results for both assessments are included.
+              Only students who have been graded in both assessments are
+              included.
             </StyledSpan>
           </StyledSpan>
         </Row>
@@ -75,6 +79,8 @@ const ReportView = ({
         totalStudentCount={totalStudentCount}
         prePerformanceBand={prePerformanceBand}
         postPerformanceBand={postPerformanceBand}
+        preStudentCount={preStudentCount}
+        postStudentCount={postStudentCount}
       />
       <PerformanceMatrix
         totalStudentCount={totalStudentCount}

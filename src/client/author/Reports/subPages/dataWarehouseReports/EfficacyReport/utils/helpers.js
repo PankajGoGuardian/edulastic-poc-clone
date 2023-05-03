@@ -264,7 +264,7 @@ const getInternalTestInfo = (testInfo, testId) => {
   const test = testInfo.find((t) => t.testId === testId) ?? {}
   const { title = '', incompleteCount = 0 } = test
   const name = `${title} ${+incompleteCount > 0 ? '*' : ''}`.trim()
-  return { name, isExternal: false }
+  return { incompleteCount: +incompleteCount, name, isExternal: false }
 }
 
 const getExternalTestInfo = (testId) => {

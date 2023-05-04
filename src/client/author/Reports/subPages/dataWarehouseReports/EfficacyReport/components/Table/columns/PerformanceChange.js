@@ -1,16 +1,30 @@
 import React from 'react'
-import { isNaN } from 'lodash'
 import { StyledDiv } from '../../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import IconArrow from '../../../../../multipleAssessmentReport/PreVsPost/components/common/IconArrow'
 
-const PerformanceChange = ({ data }) => {
+const PerformanceChange = ({ data, testInfo }) => {
   const { preTestData, postTestData } = data
-  const value = postTestData.avgScorePercentage - preTestData.avgScorePercentage
-  const valueToShow = isNaN(value) ? 'N/A' : `${Math.abs(value)}%`
+  const { preTestInfo, postTestInfo } = testInfo
+  let change = 'N/A'
+  let changeSuffix = ''
+  const areBothExternalOrInternal =
+    preTestInfo.isExternal === postTestInfo.isExternal
+  if (areBothExternalOrInternal) {
+    if (
+      preTestInfo.isExternal &&
+      preTestInfo.testCategory === postTestInfo.testCategory
+    ) {
+      change = postTestData.avgScore - preTestData.avgScore
+    } else if (!preTestInfo.isExternal) {
+      change = postTestData.avgScorePercentage - preTestData.avgScorePercentage
+      changeSuffix = '%'
+    }
+  }
   return (
     <StyledDiv>
-      {valueToShow}
-      <IconArrow value={value} size="small" />
+      {change}
+      {changeSuffix}
+      <IconArrow value={change} size="small" />
     </StyledDiv>
   )
 }

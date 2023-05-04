@@ -72,7 +72,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
     // Performance change column
     const changeColumnIdx = _columns.findIndex((col) => col.key === 'change')
     _columns[changeColumnIdx].render = (value) => (
-      <PerformanceChange data={value} />
+      <PerformanceChange data={value} testInfo={testInfo} />
     )
 
     // Performance band column

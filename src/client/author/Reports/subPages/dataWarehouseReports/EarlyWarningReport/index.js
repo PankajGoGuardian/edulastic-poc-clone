@@ -2,17 +2,10 @@ import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
-import {
-  EduButton,
-  EduElse,
-  EduIf,
-  EduThen,
-  SpinLoader,
-} from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 
-import { IconQuestionCircle } from '@edulastic/icons'
 import { SubHeader } from '../../../common/components/Header'
-import { DashedLine, StyledReportContainer } from '../../../common/styled'
+import { StyledReportContainer } from '../../../common/styled'
 
 import ReportView from './ReportView'
 import Filters from './components/Filters'
@@ -25,7 +18,8 @@ import { selectors, actions } from './ducks'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
-import { ReportDescription } from '../common/components/styledComponents'
+import SectionLabel from '../../../common/components/SectionLabel'
+import SectionDescription from '../../../common/components/SectionDescription'
 
 const EarlyWarningReport = ({
   loc,
@@ -122,20 +116,17 @@ const EarlyWarningReport = ({
           />
         </EduThen>
         <EduElse>
-          <ReportDescription>
-            <div>
-              Early Warning{' '}
-              <EduButton isGhost width="70px" height="30px" ml="20px">
-                <IconQuestionCircle />
-                Help
-              </EduButton>
-              <DashedLine margin="0 400px 0 20px" dashWidth="4px" />
-            </div>
-            <p style={{ margin: '10px 0 30px 0' }}>
-              View students at risk based on their academic and attendance
-              performance and plan interventions.
-            </p>
-          </ReportDescription>
+          <SectionLabel
+            style={{ fontSize: '20px' }}
+            $margin="30px 0px 10px 0px"
+            showHelp
+          >
+            Early Warning
+          </SectionLabel>
+          <SectionDescription $margin="0px 0px 30px 0px">
+            View students at risk based on their academic and attendance
+            performance and plan interventions.
+          </SectionDescription>
           <ReportView
             loc={loc}
             location={location}

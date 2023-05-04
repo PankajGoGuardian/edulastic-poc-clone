@@ -857,12 +857,14 @@ export const SectionLabelWrapper = styled.div`
 export const StyledButton = styled(Button)`
   display: flex;
   align-items: center;
-  height: 22px;
+  height: 24px;
   margin: 0 20px 0 20px;
   padding: 4px;
+  padding-right: 10px;
+  padding-left: 10px;
 `
 export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
-  margin-right: 5px;
+  margin-right: 8px;
   height: 14px;
   width: 14px;
   path {
@@ -905,7 +907,7 @@ export const SectionDescriptionWrapper = styled.div`
   align-items: center;
   margin: ${(p) => p.$margin || '0px'};
   p {
-    font-size: 12px;
+    font-size: 14px;
     color: ${fadedBlack};
   }
 `

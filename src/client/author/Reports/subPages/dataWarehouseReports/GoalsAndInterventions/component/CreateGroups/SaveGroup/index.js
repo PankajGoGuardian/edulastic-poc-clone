@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
 import { Col, Form, Row, Spin, Upload } from 'antd'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, isArray } from 'lodash'
 import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import {
   TAGS,
@@ -38,6 +38,7 @@ const SaveGroup = forwardRef(
       form,
       studentsData,
       formattedQuery,
+      userOrgData,
     },
     wrappedComponentRef
   ) => {
@@ -79,6 +80,12 @@ const SaveGroup = forwardRef(
       })
 
       groupData.tags = tagValues
+
+      const { defaultSchool, schools: schoolList } = userOrgData
+      if (isArray(schoolList) && !isEmpty(schoolList)) {
+        const institutionId = defaultSchool || schoolList[0]._id
+        groupData.institutionId = institutionId
+      }
 
       if (!name) {
         return notification({ msg: 'Group name is required' })

@@ -46,6 +46,7 @@ import {
   isAttendanceBandLoadingSelector,
   isGroupSavingSelector,
 } from '../../../ducks/selectors'
+import { getUserOrgData } from '../../../../../../../src/selectors/user'
 import SaveGroup from '../SaveGroup'
 import StudentList from './StudentList'
 import ValueEditor from './ValueEditor'
@@ -107,6 +108,7 @@ const AdvancedSearch = ({
   isAttendanceBandLoading,
   _resetAdvancedSearchData,
   resetAdvancedSearchDetails,
+  userOrgData,
 }) => {
   // may require duplicate method
   const [query, setQuery] = useState(defaultQuery)
@@ -222,6 +224,7 @@ const AdvancedSearch = ({
         isGroupSaving={isGroupSaving}
         onCancel={onCancelClick}
         tagProps={tagProps}
+        userOrgData={userOrgData}
       />
       <Divider />
       <StyledFormHeader>
@@ -293,6 +296,7 @@ export default connect(
     allTagsData: getAllTagsSelector(state, 'group'),
     isPerformanceLoading: isPerformanceBandLoadingSelector(state),
     isAttendanceBandLoading: isAttendanceBandLoadingSelector(state),
+    userOrgData: getUserOrgData(state),
   }),
   {
     setAdvancedSearchQuery: actions.setAdvancedSearchQuery,

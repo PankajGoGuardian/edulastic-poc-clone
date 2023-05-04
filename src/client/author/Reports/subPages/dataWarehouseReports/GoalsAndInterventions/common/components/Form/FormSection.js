@@ -1,6 +1,5 @@
 import React from 'react'
 import { Col, Row } from 'antd'
-import { fieldRequiredColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import {
   PERFORMANCE_BAND,
@@ -8,7 +7,7 @@ import {
   formFieldNames,
 } from '../../../constants/form'
 import { getOptionsData } from '../../utils'
-import { StyledFilterLabel } from './styled-components'
+import { StyledFilterLabel, StyledRequired } from './styled-components'
 import FormField from './FormField'
 
 const {
@@ -73,15 +72,7 @@ const FormSection = ({
               <StyledFilterLabel>
                 {label}
                 <EduIf condition={isRequired}>
-                  <span
-                    style={{
-                      color: fieldRequiredColor,
-                      marginLeft: 3,
-                      fontSize: 14,
-                    }}
-                  >
-                    *
-                  </span>
+                  <StyledRequired>*</StyledRequired>
                 </EduIf>
               </StyledFilterLabel>
               <FormField

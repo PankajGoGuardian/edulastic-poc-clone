@@ -40,7 +40,7 @@ export const firstScreenContent = {
       'Measure progress',
     ],
     title: 'Manage target student groups for goals and interventions.',
-    description: 'No group exists. Please create first group',
+    description: 'No group exists. Please create first group.',
     buttonText: 'CREATE STUDENT GROUP',
   },
   2: {

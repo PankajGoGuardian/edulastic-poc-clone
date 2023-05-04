@@ -23,10 +23,16 @@ export const inNotInOp = [
 
 export const combinators = [{ name: 'and', label: 'Satisfy All' }]
 
+export const groupType = {
+  classes: 'class',
+  groups: 'custom',
+}
+
 export const allowedFields = ({
   schoolData,
   courseData,
   classData,
+  groupData,
   attendanceBandData,
   performanceBandData,
 }) => {
@@ -66,6 +72,12 @@ export const allowedFields = ({
       label: 'Classes',
       valueEditorType: 'multiselect',
       values: classData,
+    },
+    {
+      name: fieldKey.groups,
+      label: 'Student Groups',
+      valueEditorType: 'multiselect',
+      values: groupData,
     },
   ]
 

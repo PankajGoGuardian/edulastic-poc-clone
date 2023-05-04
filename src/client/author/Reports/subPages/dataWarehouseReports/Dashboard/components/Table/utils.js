@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
 import { compareByKeys } from '@edulastic/constants/reportUtils/standardsMasteryReport/standardsGradebook'
 import { tableFilterTypes } from '../../utils'
-import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import AvgScoreTitle from './AvgScoreTitle'
 import {
   DW_MAR_REPORT_URL,
@@ -18,6 +17,7 @@ import {
 } from '../../../../../common/constants/dataWarehouseReports'
 import { StyledDiv } from '../common/styledComponents'
 import LinkCell from '../../../common/components/LinkCell'
+import PerformanceDistribution from './PerformanceDistribution'
 
 const tableColumnKeys = {
   DIMENSION: 'dimension',
@@ -40,7 +40,7 @@ const tableColumnsData = [
     title: 'AVG. ATTENDANCE',
     align: 'center',
     width: 200,
-    className: 'avg-attendance-column-header',
+    className: 'avg-attendance',
     render: (value) => (typeof value === 'number' ? `${value}%` : '-'),
     sorter: true,
   },
@@ -50,7 +50,7 @@ const tableColumnsData = [
 export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
-const getHorizontalBarData = (data, selectedPerformanceBand) => {
+export const getHorizontalBarData = (data, selectedPerformanceBand) => {
   if (isEmpty(data) || isEmpty(selectedPerformanceBand)) return []
 
   const totalStudents = sumBy(data, 'totalStudents')
@@ -67,6 +67,7 @@ const getHorizontalBarData = (data, selectedPerformanceBand) => {
 export const getTableColumns = ({
   metricInfo,
   tableFilters,
+  isStudentCompareBy,
   getTableDrillDownUrl,
   selectedPerformanceBand,
 }) => {
@@ -78,6 +79,13 @@ export const getTableColumns = ({
   )
   const availableTestTypes = Object.keys(rowWithMaxTestTypes?.performance || {})
   const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
+
+  const PerformanceColumnTitle = isStudentCompareBy
+    ? 'PERFORMANCE BAND'
+    : 'PERFORMANCE DISTRIBUTION'
+  const externalLinkColumnTitle = isStudentCompareBy
+    ? 'WHOLE LEARNER'
+    : 'PERFORMANCE TRENDS'
 
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -118,6 +126,7 @@ export const getTableColumns = ({
           align: 'center',
           width: 150,
           visibleOn: ['browser'],
+          className: 'avg-score',
           render: (value) =>
             value[testType] ? `${value[testType].avg}%` : '-',
           sorter: true,
@@ -126,17 +135,17 @@ export const getTableColumns = ({
         },
         {
           key: `performance${testType}`,
-          title: <div>PERFORMANCE DISTRIBUTION</div>,
+          title: PerformanceColumnTitle,
           dataIndex: 'performance',
-          align: 'center',
+          align: 'left',
           visibleOn: ['browser'],
-          className: 'performance-distribution-column-header',
+          className: 'performance-distribution',
           render: (value) => (
-            <HorizontalBar
-              data={getHorizontalBarData(
-                value[testType]?.distribution,
-                selectedPerformanceBand
-              )}
+            <PerformanceDistribution
+              value={value}
+              testType={testType}
+              isStudentCompareBy={isStudentCompareBy}
+              selectedPerformanceBand={selectedPerformanceBand}
             />
           ),
         },
@@ -149,9 +158,10 @@ export const getTableColumns = ({
   const externalLinkColumn = {
     dataIndex: 'dimension',
     key: 'link',
-    title: 'PERFORMANCE TRENDS',
+    title: externalLinkColumnTitle,
     align: 'center',
     fixed: 'right',
+    className: 'external-link',
     width: 200,
     render: (value) => {
       const reportUrl =

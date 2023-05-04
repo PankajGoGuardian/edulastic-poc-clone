@@ -13,6 +13,7 @@ import TableHeaderCell from './TableHeaderCell'
 
 import { tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
+import { compareByKeys } from '../../../common/utils'
 
 const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
 
@@ -28,9 +29,13 @@ const DashboardTable = ({
 }) => {
   const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
 
+  const isStudentCompareBy =
+    tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
+
   const tableColumns = getTableColumns({
     metricInfo,
     tableFilters,
+    isStudentCompareBy,
     getTableDrillDownUrl,
     selectedPerformanceBand,
   })
@@ -101,8 +106,9 @@ const DashboardTable = ({
         onChange={handleTableChange}
         onCsvConvert={onCsvConvert}
         rowSelection={rowSelection}
-        bordered="dashed"
         isCsvDownloading={isCsvDownloading}
+        isStudentCompareBy={isStudentCompareBy}
+        // TODO pass pagination based on tableFilters.pageSize
       />
     </>
   )

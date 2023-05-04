@@ -65,72 +65,51 @@ export const TableHeaderCellWrapper = styled.div`
 `
 
 export const CustomStyledTable = styled(StyledTable)`
-  .ant-table-bordered .ant-table-tbody > tr > td {
-    border-right: 1px dashed ${lightGrey8};
+  .ant-table-column-title {
+    white-space: nowrap !important;
   }
+
   .ant-table-thead {
-    .avg-attendance-column-header {
+    th {
+      padding: 8px;
+      color: #aaafb5;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 10px;
+      .ant-table-column-sorter {
+        vertical-align: top;
+      }
+    }
+    .avg-attendance {
       border-right: 1px dashed ${lightGrey8};
     }
-    .performance-distribution-column-header {
-      padding-top: 40px;
-      padding-right: 90px;
+    .performance-distribution {
+      padding: ${(p) =>
+        p.isStudentCompareBy ? '35px 0 0 42px' : '35px 0 0 20px'};
+    }
+    .external-link {
+      border-width: 0px;
+      background-color: white;
+    }
+    .ant-table-fixed-columns-in-body.dimension {
+      border-radius: 15px;
+    }
+    .ant-table-fixed-columns-in-body.ant-table-selection-column {
+      border-radius: 15px;
     }
     .dimension {
       span {
         margin-inline: 20px;
       }
     }
-  }
-  table {
-    tbody {
-      border-radius: 15px;
-      tr {
-        td {
-          font-weight: 500;
-          color: ${lightGrey9};
-        }
-      }
-    }
-  }
-  .ant-table-column-title {
-    white-space: nowrap !important;
     .ant-tag {
-      font-size: 10px;
+      text-transform: capitalize;
     }
   }
-  .ant-table-fixed-left,
-  .ant-table-fixed-right {
-    .ant-table-thead {
-      th {
-        padding: 8px;
-        color: #aaafb5;
-        background-color: white;
-        font-weight: 900;
-        text-transform: uppercase;
-        font-size: 10px;
-        border: 0px;
-        .ant-table-column-sorter {
-          vertical-align: top;
-        }
-      }
-    }
-    .ant-table-tbody {
-      td {
-        padding: 10px 0px 10px 8px;
-        color: #434b5d;
-        font-weight: 600;
-        font-size: 12px;
-        @media (min-width: ${extraDesktopWidthMax}) {
-          font-size: 14px;
-        }
-      }
-    }
-  }
+
   .ant-table-fixed-left {
     .ant-table-fixed {
       background-color: #efefef;
-      border: 1px solid #e2e2e2;
       padding-bottom: 25px;
       border-radius: 15px;
       thead {
@@ -139,6 +118,32 @@ export const CustomStyledTable = styled(StyledTable)`
           border-radius: 15px 15px 0px 0px;
         }
       }
+    }
+  }
+
+  .ant-table-tbody {
+    td {
+      padding: 2px 0px 2px 8px;
+      color: #434b5d;
+      font-weight: 600;
+      font-size: 12px;
+      @media (min-width: ${extraDesktopWidthMax}) {
+        font-size: 14px;
+      }
+    }
+    .avg-attendance {
+      border-right: 1px dashed ${lightGrey8};
+    }
+    .avg-score {
+      border-right: 1px dashed ${lightGrey8};
+    }
+    .performance-distribution {
+      div > span {
+        text-align: center;
+      }
+    }
+    .external-link {
+      border-width: 0px;
     }
   }
 `
@@ -188,4 +193,17 @@ export const StyledDiv = styled.div`
   .link {
     font-size: 20px;
   }
+`
+
+export const CustomStyledCell = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 94px;
+  height: 25px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: ${(p) => p.color};
+  margin: 0px 40px;
+  border-radius: 8px;
 `

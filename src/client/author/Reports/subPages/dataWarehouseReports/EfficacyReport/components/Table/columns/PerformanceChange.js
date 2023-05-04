@@ -20,10 +20,11 @@ const PerformanceChange = ({ data, testInfo }) => {
       changeSuffix = '%'
     }
   }
+  const changeText =
+    typeof change === 'number' ? `${Math.abs(change)} ${changeSuffix}` : 'N/A'
   return (
     <StyledDiv>
-      {change}
-      {changeSuffix}
+      {changeText}
       <IconArrow value={change} size="small" />
     </StyledDiv>
   )

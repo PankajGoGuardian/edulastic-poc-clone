@@ -85,7 +85,7 @@ export const CustomStyledTable = styled(StyledTable)`
     }
     .performance-distribution {
       padding: ${(p) =>
-        p.isStudentCompareBy ? '35px 0 0 42px' : '35px 0 0 20px'};
+        p.isStudentCompareBy ? '35px 0 0 55px' : '35px 0 0 20px'};
     }
     .external-link {
       border-width: 0px;
@@ -140,6 +140,12 @@ export const CustomStyledTable = styled(StyledTable)`
     .performance-distribution {
       div > span {
         text-align: center;
+      }
+      .styled-cell {
+        white-space: nowrap;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
       }
     }
     .external-link {
@@ -196,11 +202,9 @@ export const StyledDiv = styled.div`
 `
 
 export const CustomStyledCell = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 94px;
-  height: 25px;
+  padding: 5px 10px;
+  width: 120px;
+  height: 30px;
   font-size: 12px;
   font-weight: bold;
   background-color: ${(p) => p.color};

@@ -112,6 +112,7 @@ const EfficacyTable = ({
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
+        cellFontWeight={500}
       />
       <StyledRow type="flex" align="middle">
         <IncompleteTestsMessage hasIncompleteTests={hasIncompleteTests} />

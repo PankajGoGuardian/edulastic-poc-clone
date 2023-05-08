@@ -181,7 +181,7 @@ const MultipleAssessmentReport = ({
     history,
     loc,
     updateNavigation,
-    extraFilters: { selectedCompareBy: selectedCompareBy.key },
+    extraFilters: { selectedCompareBy: settings.selectedCompareBy.key },
   })
 
   // get report data

@@ -83,6 +83,9 @@ const slice = createSlice({
     getAdvancedSearchClasses: (state) => {
       state[ADVANCED_SEARCH_DETAILS][fieldKey.classes].isLoading = true
     },
+    getAdvancedSearchGroups: (state) => {
+      state[ADVANCED_SEARCH_DETAILS][fieldKey.groups].isLoading = true
+    },
     getAdvancedSearchSchools: (state) => {
       state[ADVANCED_SEARCH_DETAILS][fieldKey.schools].isLoading = true
     },
@@ -129,6 +132,7 @@ const {
   setAttendanceBandList,
   setRelatedInterventions,
   getAdvancedSearchClasses,
+  getAdvancedSearchGroups,
   getAdvancedSearchSchools,
   getAdvancedSearchCourses,
   getAdvancedSearchAttendanceBands,
@@ -158,6 +162,7 @@ export const actions = {
   setAttendanceBandList,
   setRelatedInterventions,
   getAdvancedSearchClasses,
+  getAdvancedSearchGroups,
   getAdvancedSearchSchools,
   getAdvancedSearchCourses,
   getAdvancedSearchAttendanceBands,

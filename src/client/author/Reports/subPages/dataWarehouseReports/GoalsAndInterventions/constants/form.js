@@ -42,20 +42,21 @@ export const oneDayInhours = 24
 
 const NAME = 'name'
 const TYPE = 'type'
-const STUDENT_GROUP_IDS = 'studentGroupIds'
+export const STUDENT_GROUP_IDS = 'studentGroupIds'
 const OWNER = 'owner'
 const DESCRIPTION = 'description'
-const TEST_TYPES = 'testTypes'
-const SUBJECTS = 'subjects'
+export const TEST_TYPES = 'testTypes'
+export const SUBJECTS = 'subjects'
 const STANDARD_DETAILS = 'standardDetails'
 const MEASURE_TYPE = 'measureType'
-const PERFORMANCE_BAND_ID = 'performanceBandId'
+export const PERFORMANCE_BAND_ID = 'performanceBandId'
 const METRIC = 'metric'
 const THRESHOLD = 'threshold'
 const START_DATE = 'startDate'
 const END_DATE = 'endDate'
 const COMMENT = 'comment'
 const RELATED_GOALS_IDS = 'relatedGoalIds'
+export const TERM_ID = 'termId'
 
 export const dropdownData = {
   goalOrInterventionTypes: [

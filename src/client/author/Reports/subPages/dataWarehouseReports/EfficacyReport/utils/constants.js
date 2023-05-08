@@ -247,6 +247,20 @@ export const compareByStudentColumns = [
     visibleOn: ['browser'],
   },
   {
+    title: 'Avg (Pre)',
+    key: 'AvgPre',
+    dataIndex: 'data',
+    align: 'center',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Avg (Post)',
+    key: 'AvgPost',
+    dataIndex: 'data',
+    align: 'center',
+    visibleOn: ['csv'],
+  },
+  {
     title: 'Change',
     key: 'change',
     width: 70,

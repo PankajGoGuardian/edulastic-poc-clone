@@ -37,6 +37,13 @@ const StandardsGradebookTable = ({
       }),
     [summaryMetricInfo, detailsMetricInfo, scaleInfo]
   )
+  const pagination = useMemo(
+    () => ({
+      hideOnSinglePage: true,
+      pageSize: tableFilters.pageSize,
+    }),
+    [tableFilters.pageSize]
+  )
   const tableColumns = getTableColumnsFE({
     t,
     filters,
@@ -85,6 +92,7 @@ const StandardsGradebookTable = ({
       tableToRender={GradebookTable}
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
+      pagination={pagination}
       scroll={{ x: xScrollForVisibleColumns }}
     />
   )

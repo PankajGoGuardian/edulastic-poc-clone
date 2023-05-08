@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { debounce } from 'lodash'
 import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { StyledSelect } from './styled-components'
-import { debounceWait } from './config/qb-config'
+import { debounceWait, groupType } from './config/qb-config'
 import { getAdvancedSearchDetailsSelector } from '../../../ducks/selectors'
 import { actions } from '../../../ducks'
 import { fieldKey } from '../../../ducks/constants'
@@ -22,6 +22,9 @@ const ValueEditor = (props) => {
     loadSchools,
     loadClasses,
     loadCourses,
+    loadGroups,
+    attendanceBands,
+    // storeSelectedData,
     path,
   } = props
 
@@ -50,12 +53,24 @@ const ValueEditor = (props) => {
     [fieldKey.schools]: { key: fieldKey.schools, func: loadSchools },
     [fieldKey.classes]: { key: fieldKey.classes, func: loadClasses },
     [fieldKey.courses]: { key: fieldKey.courses, func: loadCourses },
+    [fieldKey.groups]: { key: 'groups', func: loadGroups },
+    [fieldKey.attendanceBands]: {
+      key: fieldKey.attendanceBands,
+      func: attendanceBands,
+    },
   }
   const { label = 'values' } = fieldData || {}
+  const groupsKey = ['classes', 'groups']
 
   const handleSearch = (searchString) => {
     if (enableSearchFields[field] && enableSearchFields[field].func) {
-      enableSearchFields[field].func({ searchString })
+      const payload = {
+        searchString,
+      }
+      if (groupsKey.includes(enableSearchFields[field].key)) {
+        payload.type = groupType[enableSearchFields[field].key]
+      }
+      enableSearchFields[field].func(payload)
     }
   }
 
@@ -167,5 +182,7 @@ export default connect(
     loadSchools: actions.getAdvancedSearchSchools,
     loadCourses: actions.getAdvancedSearchCourses,
     loadClasses: actions.getAdvancedSearchClasses,
+    loadGroups: actions.getAdvancedSearchGroups,
+    loadAttendanceBand: actions.getAdvancedSearchAttendanceBands,
   }
 )(ValueEditor)

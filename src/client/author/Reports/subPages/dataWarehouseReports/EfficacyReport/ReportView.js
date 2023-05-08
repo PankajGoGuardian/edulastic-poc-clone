@@ -1,22 +1,14 @@
-import { Row } from 'antd'
 import React from 'react'
-import { themeColor, fadedBlack } from '@edulastic/colors'
-import { EduButton } from '@edulastic/common'
-import { IconQuestionCircle } from '@edulastic/icons'
-import {
-  StyledCard,
-  StyledH3,
-  StyledReportContainer,
-} from '../../../common/styled'
-import {
-  StyledIconAlert,
-  StyledSpan,
-} from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
+import { fadedBlack } from '@edulastic/colors'
+import { StyledCard, StyledReportContainer } from '../../../common/styled'
+import { StyledSpan } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 
 import { SummaryContainer } from './components/Summary'
 import { PerformanceMatrix } from './components/Matrix'
 import EfficacyTable from './components/Table/Table'
 import useSummaryMetrics from './hooks/useSummaryMetrics'
+import SectionLabel from '../../../common/components/SectionLabel'
+import SectionDescription from '../../../common/components/SectionDescription'
 
 const ReportView = ({
   reportSummaryData,
@@ -41,6 +33,8 @@ const ReportView = ({
     prePerformanceBand,
     postPerformanceBand,
     isSamePerformanceBand,
+    preStudentCount,
+    postStudentCount,
   } = useSummaryMetrics({
     reportSummaryData,
     reportFilters,
@@ -51,23 +45,20 @@ const ReportView = ({
   return (
     <StyledReportContainer>
       <StyledCard>
-        <Row type="flex" justify="start">
-          <StyledH3 fontSize="20px">Efficacy</StyledH3>
-          <EduButton isGhost width="70px" height="30px" ml="20px">
-            <IconQuestionCircle />
-            Help
-          </EduButton>
-        </Row>
-        <Row type="flex">
-          <StyledIconAlert fill={themeColor} />
-          <StyledSpan fontSize="13px" color={fadedBlack}>
-            This report compares the student performance on the choosen two
-            assessments.{' '}
-            <StyledSpan font="bold" color={fadedBlack}>
-              Only students that have results for both assessments are included.
-            </StyledSpan>
+        <SectionLabel
+          style={{ fontSize: '20px' }}
+          $margin="30px 0px 10px 0px"
+          showHelp
+        >
+          Efficacy
+        </SectionLabel>
+        <SectionDescription $margin="0px 0px 30px 0px">
+          This report compares the student performance on the chosen two
+          assessments.{' '}
+          <StyledSpan font="bold" color={fadedBlack}>
+            Only students who have been graded in both assessments are included.
           </StyledSpan>
-        </Row>
+        </SectionDescription>
       </StyledCard>
       <SummaryContainer
         summary={summaryData}
@@ -75,6 +66,8 @@ const ReportView = ({
         totalStudentCount={totalStudentCount}
         prePerformanceBand={prePerformanceBand}
         postPerformanceBand={postPerformanceBand}
+        preStudentCount={preStudentCount}
+        postStudentCount={postStudentCount}
       />
       <PerformanceMatrix
         totalStudentCount={totalStudentCount}

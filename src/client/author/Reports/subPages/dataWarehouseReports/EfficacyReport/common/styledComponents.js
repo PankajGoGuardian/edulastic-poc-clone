@@ -181,3 +181,12 @@ export const PerformanceMatrixContainer = styled(Row)`
     }
   }
 `
+
+export const GridContainer = styled.div`
+  display: grid;
+  grid: auto-flow / 1fr auto;
+  text-align: left;
+  & > *:nth-child(even) {
+    text-align: right;
+  }
+`

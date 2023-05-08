@@ -95,7 +95,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     3: [
       {
         key: '1',
-        label: `INTERVENTION LIST`,
+        label: `INTERVENTIONS LIST`,
         children: (
           <InterventionList
             noDataContent={

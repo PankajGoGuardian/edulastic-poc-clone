@@ -7,6 +7,7 @@ import {
   greyThemeDark4,
   backgroundGrey,
   black,
+  fieldRequiredColor,
 } from '@edulastic/colors'
 import {
   SelectInputStyled,
@@ -105,6 +106,12 @@ export const StyledFilterLabel = styled(FieldLabel)`
   font-size: 10px;
   line-height: 14px;
   color: ${greyThemeDark4};
+`
+
+export const StyledRequired = styled.span`
+  color: ${fieldRequiredColor};
+  margin-left: 3px;
+  font-size: 14px;
 `
 
 export const StyledTitle = styled.div`

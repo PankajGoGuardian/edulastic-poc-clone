@@ -381,12 +381,6 @@ export function getNoDataContainerText(
   reportType
 ) {
   const reportTitle = navigation.locToData[reportType]?.title
-  if (settings.requestFilters?.termId) {
-    if (error.msg === 'InvalidTestIds') {
-      return 'Please select the Pre and Post Assessment to generate the report.'
-    }
-    return 'No data available currently.'
-  }
   if (isInvalidSharedFilters) {
     return (
       <p>
@@ -399,6 +393,12 @@ export function getNoDataContainerText(
         .
       </p>
     )
+  }
+  if (settings.requestFilters?.termId) {
+    if (error.msg === 'InvalidTestIds') {
+      return 'Please select the Pre and Post Assessment to generate the report.'
+    }
+    return 'No data available currently.'
   }
   return ''
 }

@@ -23,6 +23,9 @@
               background: $white;
             }
           }
+          .ant-table-column-sorter > .ant-table-column-sorter-inner {
+            margin-top: -0.6em;
+          }
         }
       }
     }

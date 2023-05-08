@@ -1,5 +1,6 @@
 import React from 'react'
 import { EduIf, FieldLabel } from '@edulastic/common'
+import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import {
   StyledEduButton,
   StyledDropDownContainer,
@@ -25,8 +26,10 @@ const PageLevelFilters = ({
   externalBands,
   onGoClick,
 }) => {
-  const isPreExternal = filters.preTestId.includes('__')
-  const isPostExternal = filters.postTestId.includes('__')
+  const isPreExternal = filters.preTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+  const isPostExternal = filters.postTestId.includes(
+    EXTERNAL_TEST_KEY_SEPARATOR
+  )
 
   let prePerformanceBandsList = performanceBandsList
   let postPerformanceBandsList = performanceBandsList

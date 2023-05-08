@@ -76,6 +76,11 @@ const getAdvancedSearchClassesSelector = createSelector(
   (state) => getUniqOptionsHelper(state[fieldKey.classes])
 )
 
+const getAdvancedSearchGroupsSelector = createSelector(
+  getAdvancedSearchDetailsSelector,
+  (state) => getUniqOptionsHelper(state[fieldKey.groups])
+)
+
 const getAdvancedSearchSchoolsSelector = createSelector(
   getAdvancedSearchDetailsSelector,
   (state) => getUniqOptionsHelper(state[fieldKey.schools])
@@ -133,6 +138,7 @@ export {
   relatedInterventions,
   getAdvancedSearchDetailsSelector,
   getAdvancedSearchClassesSelector,
+  getAdvancedSearchGroupsSelector,
   getAdvancedSearchSchoolsSelector,
   getAdvancedSearchCoursesSelector,
   getAdvancedSearchAttendanceBandSelector,

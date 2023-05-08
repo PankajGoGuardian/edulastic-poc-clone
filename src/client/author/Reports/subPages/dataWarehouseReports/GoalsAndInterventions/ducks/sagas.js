@@ -1,4 +1,3 @@
-import { get, isEmpty, omit, omitBy } from 'lodash'
 import {
   courseApi,
   dataWarehouseApi,
@@ -6,23 +5,25 @@ import {
   reportsApi,
   schoolApi,
 } from '@edulastic/api'
-import moment from 'moment'
-import { database } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
-import { all, call, put, select, takeLatest } from 'redux-saga/effects'
+import { database } from '@edulastic/constants'
 import { TEACHER } from '@edulastic/constants/const/roleType'
-import { actions } from './actionReducers'
-import { GOAL } from '../constants/form'
+import { get, isEmpty, omit, omitBy } from 'lodash'
+import moment from 'moment'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
+  getSchoolsByUserRoleSelector,
   getUserId,
   getUserOrgData,
   getUserOrgId,
-  getSchoolsByUserRoleSelector,
   getUserRole,
 } from '../../../../../src/selectors/user'
-import { getAdvancedSearchFilterSelector } from './selectors'
-import { fieldKey } from './constants'
 import { titleCase, ucFirst } from '../common/utils'
+import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-config'
+import { GOAL } from '../constants/form'
+import { actions } from './actionReducers'
+import { fieldKey } from './constants'
+import { getAdvancedSearchFilterSelector } from './selectors'
 
 function* saveFormDataRequestSaga({ payload }) {
   const { formType } = payload
@@ -130,6 +131,10 @@ function* saveGroup({ payload }) {
 
     yield put(actions.saveGroupComplete(get(response, 'data.result')))
     yield put(actions.setAdvancedSearchQuery())
+    notification({
+      type: 'success',
+      msg: `Student group created successfully.`,
+    })
   } catch (error) {
     const errorMessage = 'Unable to create group'
     notification({ type: 'error', msg: errorMessage })
@@ -138,6 +143,7 @@ function* saveGroup({ payload }) {
 }
 
 // 4. generator function
+
 function* getAdvancedSearchClasses({ payload }) {
   try {
     const districtId = yield select(getUserOrgId)
@@ -154,13 +160,17 @@ function* getAdvancedSearchClasses({ payload }) {
         active: [1],
         tags: [],
         name: payload.searchString,
+        type: [payload.type],
       },
     }
 
     const response = yield call(groupApi.getGroups, requestBody)
     yield put(
       actions.setAdvancedSearchDetails({
-        key: fieldKey.classes,
+        key:
+          payload.type === groupType.classes
+            ? fieldKey.classes
+            : fieldKey.groups,
         data: response?.hits || [],
       })
     )
@@ -310,6 +320,7 @@ export default function* watcherSaga() {
     takeLatest(actions.getInterventionsList, getInterventionsListSaga),
     takeLatest(actions.getAttendanceBandList, getAttendanceBandListSaga),
     takeLatest(actions.getAdvancedSearchClasses, getAdvancedSearchClasses),
+    takeLatest(actions.getAdvancedSearchGroups, getAdvancedSearchClasses),
     takeLatest(actions.getAdvancedSearchSchools, getAdvancedSearchSchools),
     takeLatest(actions.getAdvancedSearchCourses, getAdvancedSearchCourses),
     takeLatest(

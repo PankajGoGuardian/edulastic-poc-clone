@@ -1,4 +1,11 @@
 import { getSummaryStatusCount } from '../common/utils'
+import {
+  TERM_ID,
+  SUBJECTS,
+  TEST_TYPES,
+  STUDENT_GROUP_IDS,
+  PERFORMANCE_BAND_ID,
+} from './form'
 
 export const statusColors = {
   WHITE: '#FFFFFF80',
@@ -33,7 +40,7 @@ export const firstScreenContent = {
       'Measure progress',
     ],
     title: 'Manage target student groups for goals and interventions.',
-    description: 'No group exists. Please create first group',
+    description: 'No group exists. Please create first group.',
     buttonText: 'CREATE STUDENT GROUP',
   },
   2: {
@@ -94,12 +101,14 @@ export const GIActionOptions = [
   {
     id: 'summary',
     label: 'View Summary',
-    link: '/author/reports/dashboard-report',
+    link:
+      '/author/reports/dashboard-report?termId={termId}&testSubjects={subjects}&testGrades=&assessmentTypes={testTypes}&testIds=&schoolIds=&teacherIds=&subjects=&grades=&courseId=All&classIds=&groupIds={studentGroupIds}&assignedBy=anyone&race=all&gender=all&iepStatus=all&frlStatus=all&ellStatus=all&hispanicEthnicity=all&periodType=TILL_DATE',
   },
   {
     id: 'trends',
     label: 'View Trends',
-    link: '/author/reports/multiple-assessment-report-dw',
+    link:
+      '/author/reports/multiple-assessment-report-dw?termId={termId}&testSubjects={subjects}&testGrades=&tagIds=&assessmentTypes={testTypes}&testIds=&schoolIds=&teacherIds=&subjects=&grades=&courseId=All&classIds=&groupIds={studentGroupIds}&profileId={performanceBandId}',
   },
   // {
   //   id: 'edit',
@@ -241,3 +250,11 @@ export const statusList = (data) => ({
     // },
   ],
 })
+
+export const urlParamsKeys = [
+  TERM_ID,
+  SUBJECTS,
+  TEST_TYPES,
+  STUDENT_GROUP_IDS,
+  PERFORMANCE_BAND_ID,
+]

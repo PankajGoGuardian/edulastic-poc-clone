@@ -1,8 +1,10 @@
 import React from 'react'
 import { Col, Row } from 'antd'
 import { EduIf } from '@edulastic/common'
-import { lightRed2 } from '@edulastic/colors'
-import { StyledFilterLabel } from '../../../common/components/Form/styled-components'
+import {
+  StyledFilterLabel,
+  StyledRequired,
+} from '../../../common/components/Form/styled-components'
 import { getOptionsData } from '../../../common/utils'
 import FormField from '../../../common/components/Form/FormField'
 
@@ -35,7 +37,7 @@ const GroupSection = ({
               <StyledFilterLabel>
                 {label}
                 <EduIf condition={isRequired}>
-                  <span style={{ color: lightRed2, marginLeft: 3 }}>*</span>
+                  <StyledRequired>*</StyledRequired>
                 </EduIf>
               </StyledFilterLabel>
               <FormField

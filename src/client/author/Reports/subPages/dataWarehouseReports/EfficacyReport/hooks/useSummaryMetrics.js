@@ -18,6 +18,8 @@ const useSummaryMetrics = ({
   return useMemo(() => {
     const summaryMetricInfo = get(reportSummaryData, 'metricInfo', [])
     if (isEmpty(summaryMetricInfo)) return {}
+    const [common] = summaryMetricInfo
+    const { preStudentCount, postStudentCount } = common
     const _testInfo = get(reportSummaryData, 'testInfo', [])
 
     const testInfo = transformTestInfo(_testInfo, reportFilters)
@@ -89,6 +91,8 @@ const useSummaryMetrics = ({
       ),
       testInfo,
       isSamePerformanceBand,
+      preStudentCount,
+      postStudentCount,
     }
   }, [reportSummaryData, reportFilters, externalBands])
 }

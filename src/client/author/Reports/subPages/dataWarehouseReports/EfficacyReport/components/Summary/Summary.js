@@ -11,9 +11,9 @@ import {
   SummaryWrapper,
   StyledCard,
   StyledTitle,
+  TooltipWrapper,
 } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
-import TooltipText from '../../../../multipleAssessmentReport/PreVsPost/components/Summary/TooltipText'
-import { TestTypeTag } from '../../common/styledComponents'
+import { GridContainer, TestTypeTag } from '../../common/styledComponents'
 
 const SummaryContainer = ({
   summary,
@@ -21,6 +21,8 @@ const SummaryContainer = ({
   totalStudentCount,
   prePerformanceBand,
   postPerformanceBand,
+  preStudentCount,
+  postStudentCount,
 }) => {
   const { preCardInfo, postCardInfo, change } = summary
   const { preTestInfo, postTestInfo } = testInfo
@@ -44,9 +46,22 @@ const SummaryContainer = ({
         <StudentWrapper>
           <IconStudent className="icon-student" />
           <span className="student-count">
-            ATTEMPTED: <span>{totalStudentCount}</span>
+            GRADED IN BOTH PRE & POST: <span>{totalStudentCount}</span>
           </span>
-          <Tooltip title={TooltipText}>
+          <Tooltip
+            title={
+              <TooltipWrapper>
+                <GridContainer>
+                  <span>Graded in both Pre and Post:</span>
+                  <span>{totalStudentCount}</span>
+                  <span>Total students in Pre:</span>
+                  <span>{preStudentCount}</span>
+                  <span>Total students in Post:</span>
+                  <span>{postStudentCount}</span>
+                </GridContainer>
+              </TooltipWrapper>
+            }
+          >
             <IconInfo className="icon-info" />
           </Tooltip>
         </StudentWrapper>

@@ -104,6 +104,7 @@ const EarlyWarningTable = ({
                 isCsvDownloading={false}
                 bordered
                 rowKey={({ dimension }) => dimension._id}
+                // TODO pass pagination based on tableFilters.pageSize
               />
               <BackendPagination
                 itemsCount={data?.result?.totalRows || 0}

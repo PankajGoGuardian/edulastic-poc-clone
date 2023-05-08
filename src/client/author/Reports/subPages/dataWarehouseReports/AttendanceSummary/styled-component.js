@@ -1,10 +1,14 @@
 import {
+  borderGrey3,
+  fadedGrey,
   greyLight1,
+  lightGrey11,
   lightGrey9,
   secondaryTextColor,
   themeColor,
+  white,
 } from '@edulastic/colors'
-import { Switch, Button } from 'antd'
+import { Switch, Button, Table } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { IconQuestionCircle } from '@edulastic/icons'
@@ -150,6 +154,84 @@ export const StyledResponsiveContainer = styled(ResponsiveContainer)`
     .recharts-surface {
       width: 100% !important ;
       height: ${(props) => props.printHeight || '100%'} !important;
+    }
+  }
+`
+
+export const StyledTable = styled(Table)`
+  table tbody tr td {
+    border-bottom: 1px solid ${borderGrey3};
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+  }
+  .ant-table-thead {
+    th {
+      color: ${lightGrey11};
+      background: ${white};
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    tr:first-child {
+      th.ant-table-column-sort,
+      th.ant-table-column-sort:hover {
+        background: ${white} !important;
+      }
+      th:first-child span:first-child {
+        margin-top: 6px;
+        display: inline-block;
+      }
+    }
+  }
+  .ant-table-thead > tr:nth-child(2) > th {
+    background-color: ${fadedGrey};
+    color: black;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .ant-table-body {
+    table {
+      tbody {
+        tr {
+          td:nth-child(n + ${(props) => props.colorCellStart}) {
+            padding: 0px;
+            div {
+              height: 100%;
+              width: 100%;
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+  table thead tr {
+    th {
+      border-bottom: 1px solid ${borderGrey3};
+      padding: 10px;
+      text-align: center;
+    }
+  }
+
+  table tbody tr td:first-child {
+    max-width: 250px;
+    min-width: 150px;
+  }
+
+  @media print {
+    table tbody tr td {
+      padding: 0;
+    }
+    table tbody tr td:before,
+    table tbody tr td:after {
+      height: 0px;
+    }
+    table thead tr:first-child th:first-child {
+      min-width: 200px;
+    }
+    table thead tr th:first-child {
+      padding-left: 0;
     }
   }
 `

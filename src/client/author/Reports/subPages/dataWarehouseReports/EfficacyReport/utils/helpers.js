@@ -1,9 +1,9 @@
-import { reportUtils, testTypes } from '@edulastic/constants'
+import { reportUtils } from '@edulastic/constants'
 import { sumBy, round, maxBy } from 'lodash'
 
 import { bandKeys, dataKeys } from './constants'
+import { getTestTitle } from '../../../../common/util'
 
-const { EXTERNAL_TEST_TYPES } = testTypes
 const {
   getProficiencyBand,
   percentage,
@@ -86,10 +86,16 @@ export const getSummaryDataFromSummaryMetrics = (
     postPerformanceBand
   )
 
-  const change =
-    preTestInfo.isExternal || postTestInfo.isExternal
-      ? null
-      : postCardInfo.score - preCardInfo.score
+  let change = null
+  const areBothExternalOrInternal =
+    preTestInfo.isExternal === postTestInfo.isExternal
+  if (
+    areBothExternalOrInternal &&
+    (!preTestInfo.isExternal ||
+      preTestInfo.testCategory === postTestInfo.testCategory)
+  ) {
+    change = postCardInfo.score - preCardInfo.score
+  }
 
   return {
     totalStudentCount,
@@ -260,30 +266,38 @@ export const getPerformanceMatrixData = (
   return { performanceMatrixColumnHeaders, performanceMatrixRowsData }
 }
 
-const getInternalTestInfo = (testInfo, testId) => {
+const getInternalTestInfoByTestId = (testInfo, testId) => {
   const test = testInfo.find((t) => t.testId === testId) ?? {}
   const { title = '', incompleteCount = 0 } = test
   const name = `${title} ${+incompleteCount > 0 ? '*' : ''}`.trim()
-  return { name, isExternal: false }
+  return { incompleteCount: +incompleteCount, name, isExternal: false }
 }
 
-const getExternalTestInfo = (testId) => {
-  const [category, ...title] = testId
-  const testTitle = title.join('__')
-  return { name: testTitle, category, testTitle, isExternal: true }
+const getExternalTestInfoByTestId = (testId) => {
+  const testIdSplit = testId.split(EXTERNAL_TEST_KEY_SEPARATOR)
+  // `testName` (aka fileName in import history) can contain `__`.
+  // So, split everything -> Pick last 2 -> Join rest to get testName
+  const [testCategory, testTitle] = testIdSplit.splice(-2)
+  const testName = testIdSplit.join(EXTERNAL_TEST_KEY_SEPARATOR)
+  const testTitleSuffix = getTestTitle(testCategory, testTitle)
+  const testLabel = `${testName} - ${testCategory} ${testTitleSuffix}`
+  return {
+    name: testLabel,
+    testCategory,
+    testTitle,
+    isExternal: true,
+    testLabel,
+  }
 }
 
 export const transformTestInfo = (testInfo, reportFilters) => {
-  const preTestId = reportFilters.preTestId.split('__')
-  const postTestId = reportFilters.postTestId.split('__')
-  const preTestInfo =
-    preTestId.length > 1
-      ? getExternalTestInfo(preTestId)
-      : getInternalTestInfo(testInfo, preTestId[0])
-  const postTestInfo =
-    postTestId.length > 1
-      ? getExternalTestInfo(postTestId)
-      : getInternalTestInfo(testInfo, postTestId[0])
+  const { preTestId, postTestId } = reportFilters
+  const preTestInfo = preTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+    ? getExternalTestInfoByTestId(preTestId)
+    : getInternalTestInfoByTestId(testInfo, preTestId)
+  const postTestInfo = postTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+    ? getExternalTestInfoByTestId(postTestId)
+    : getInternalTestInfoByTestId(testInfo, postTestId)
   return { preTestInfo, postTestInfo }
 }
 
@@ -291,24 +305,20 @@ export const getExternalBandInfoByExternalTest = ({
   testId,
   externalBands,
 }) => {
-  const testIdSplit = testId.split(EXTERNAL_TEST_KEY_SEPARATOR)
-  const [_testCategory, _testTitle] = testIdSplit.splice(-2)
+  const { testCategory, testTitle } = getExternalTestInfoByTestId(testId)
 
-  return externalBands.find(({ testTitle, testCategory }) => {
-    const checkForTestTitle = !testTitle || testTitle === _testTitle
-    const checkForTestCategory = testCategory === _testCategory
+  return externalBands.find((item) => {
+    const checkForTestTitle = !item.testTitle || item.testTitle === testTitle
+    const checkForTestCategory = item.testCategory === testCategory
     return checkForTestCategory && checkForTestTitle
   })
 }
 
 export const getExternalBandsListFromBandInfo = (externalBandInfo) => {
   return [externalBandInfo].map(({ testTitle, testCategory }) => {
-    const _testTitle =
-      testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
-        ? `- ${testTitle}`
-        : ''
+    const _testTitle = getTestTitle(testCategory, testTitle)
     return {
-      key: `${testCategory}__${testTitle || ''}`,
+      key: [testCategory, testTitle || ''].join(EXTERNAL_TEST_KEY_SEPARATOR),
       title: `${testCategory} ${_testTitle}`,
     }
   })

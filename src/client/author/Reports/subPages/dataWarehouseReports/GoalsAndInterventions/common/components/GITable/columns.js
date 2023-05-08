@@ -121,7 +121,7 @@ const columns = [
     render: (text) => <p>{ucFirst(text)}</p>,
   },
   {
-    title: 'Target Groups',
+    title: 'Target Group',
     dataIndex: 'group',
     key: 'target_Groups',
     sorter: (a, b) =>
@@ -241,6 +241,7 @@ const columns = [
       <ActionMenu
         type={record.goalCriteria ? GOAL : INTERVENTION}
         options={GIActionOptions}
+        GIData={record}
       />
     ),
   },

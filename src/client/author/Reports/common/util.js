@@ -20,6 +20,7 @@ import {
   DW_DASHBOARD_REPORT,
   reportGroupType,
 } from '@edulastic/constants/const/report'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import { allFilterValue } from './constants'
@@ -29,6 +30,8 @@ import {
 } from '../subPages/dataWarehouseReports/AttendanceSummary/utils/constants'
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
+
+const { EXTERNAL_TEST_TYPES } = testTypesConstants
 
 const studentFiltersDefaultValues = [
   {
@@ -682,4 +685,12 @@ export function utcMonthDate(date) {
   const formatYYYYMMDD = 'YYYY-MM-DD'
   const dateStringInYYYYMMDDD = moment(date).format(formatYYYYMMDD)
   return +moment.utc(dateStringInYYYYMMDDD)
+}
+
+export function getTestTitle(testCategory, testTitle) {
+  return [EXTERNAL_TEST_TYPES.CAASPP, EXTERNAL_TEST_TYPES.NWEA].includes(
+    testCategory
+  ) && testTitle
+    ? `- ${testTitle}`
+    : ''
 }

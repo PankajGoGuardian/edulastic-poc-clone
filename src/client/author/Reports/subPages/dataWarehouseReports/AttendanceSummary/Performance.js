@@ -17,7 +17,6 @@ import {
   StudentBand,
   HorizontalStackedBarChart,
 } from './HorizontalStackedChart'
-import { StyledTable } from '../../singleAssessmentReport/QuestionAnalysis/componenets/styled'
 import {
   compareByEnums,
   compareByToPluralName,
@@ -29,6 +28,7 @@ import {
   nextCompareByOptionsMap,
 } from '../Dashboard/utils'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
+import { StyledTable } from './styled-component'
 
 const { downloadCSV } = reportUtils.common
 

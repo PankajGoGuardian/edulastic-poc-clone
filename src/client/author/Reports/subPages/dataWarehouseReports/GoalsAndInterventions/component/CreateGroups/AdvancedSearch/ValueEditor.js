@@ -22,8 +22,6 @@ const ValueEditor = (props) => {
     loadSchools,
     loadClasses,
     loadCourses,
-    attendanceBands,
-    // storeSelectedData,
     path,
   } = props
 
@@ -49,13 +47,9 @@ const ValueEditor = (props) => {
   }
 
   const enableSearchFields = {
-    [fieldKey.schools]: { key: 'schools', func: loadSchools },
-    [fieldKey.classes]: { key: 'classes', func: loadClasses },
-    [fieldKey.courses]: { key: 'courses', func: loadCourses },
-    [fieldKey.attendanceBands]: {
-      key: fieldKey.attendanceBands,
-      func: attendanceBands,
-    },
+    [fieldKey.schools]: { key: fieldKey.schools, func: loadSchools },
+    [fieldKey.classes]: { key: fieldKey.classes, func: loadClasses },
+    [fieldKey.courses]: { key: fieldKey.courses, func: loadCourses },
   }
   const { label = 'values' } = fieldData || {}
 
@@ -75,11 +69,6 @@ const ValueEditor = (props) => {
     } else {
       handleOnChange(selectedValues)
     }
-    // storeSelectedData({
-    //   key: enableSearchFields[field].key,
-    //   valueFromField: selectedValues,
-    //   values,
-    // })
   }
 
   const searchHandler = debounce(handleSearch, debounceWait)
@@ -178,6 +167,5 @@ export default connect(
     loadSchools: actions.getAdvancedSearchSchools,
     loadCourses: actions.getAdvancedSearchCourses,
     loadClasses: actions.getAdvancedSearchClasses,
-    loadAttendanceBand: actions.getAdvancedSearchAttendanceBands,
   }
 )(ValueEditor)

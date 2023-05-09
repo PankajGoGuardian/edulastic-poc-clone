@@ -14,7 +14,9 @@ import {
 import SectionDescription from '../../../common/components/SectionDescription'
 
 function ReportView({
+  history,
   location,
+  search,
   performanceBandList,
   selectedPerformanceBand,
   setAcademicSummaryFilters,
@@ -60,7 +62,9 @@ function ReportView({
         </WidgetColumn>
       </WidgetsContainer>
       <TableSection
+        history={history}
         location={location}
+        search={search}
         academicSummaryFilters={academicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}

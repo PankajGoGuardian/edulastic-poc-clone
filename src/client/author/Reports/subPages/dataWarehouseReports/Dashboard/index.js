@@ -184,7 +184,9 @@ const Dashboard = ({
         </EduThen>
         <EduElse>
           <ReportView
+            history={history}
             location={location}
+            search={search}
             selectedCompareBy={selectedCompareBy}
             selectedPerformanceBand={selectedPerformanceBand}
             performanceBandList={performanceBandList}

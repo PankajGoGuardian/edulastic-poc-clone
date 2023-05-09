@@ -73,6 +73,7 @@ const MultipleAssessmentReport = ({
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportChartData,
@@ -163,6 +164,11 @@ const MultipleAssessmentReport = ({
 
   const updateFilterDropdownCB = (selected, keyName) => {
     if (keyName === 'compareBy') {
+      if (search.selectedCompareBy) {
+        history.replace(
+          `${location.pathname}?${qs.stringify(settings.requestFilters)}`
+        )
+      }
       setDWMARSettings({ ...settings, selectedCompareBy: selected })
     }
   }
@@ -320,7 +326,7 @@ const MultipleAssessmentReport = ({
           filtersTabKey={filtersTabKey}
           filters={filters}
           filterTagsData={filterTagsData}
-          selectedFilterTagsData={settings.selectedFilterTagsData}
+          selectedFilterTagsData={selectedFilterTagsData}
           // action props (others)
           setShowApply={setShowApply}
           showFilter={showFilter}

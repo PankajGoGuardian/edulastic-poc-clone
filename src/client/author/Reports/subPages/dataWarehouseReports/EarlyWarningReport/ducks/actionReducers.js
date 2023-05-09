@@ -17,6 +17,7 @@ const initialState = {
 
   settings: {
     requestFilters: {},
+    selectedFilterTagsData: {},
     selectedCompareBy: {},
   },
   error: '',
@@ -54,6 +55,9 @@ const slice = createSlice({
     },
     setSettings: (state, { payload }) => {
       state.settings = payload
+    },
+    setSelectedFilterTagsData: (state, { payload }) => {
+      state.settings.selectedFilterTagsData = payload
     },
     resetReport: () => ({ ...initialState }),
   },

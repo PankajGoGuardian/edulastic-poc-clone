@@ -10,9 +10,12 @@ import {
   nextCompareByOptionsMap,
   academicSummaryFiltersTypes,
 } from '../utils'
+import { DW_MAR_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
 
 const useTableFilters = ({
+  history,
   location,
+  search,
   defaultCompareBy,
   settings,
   setSettings,
@@ -41,6 +44,11 @@ const useTableFilters = ({
       }
       return nextState
     })
+    if (search.selectedCompareBy) {
+      history.replace(
+        `${location.pathname}?${qs.stringify(settings.requestFilters)}`
+      )
+    }
     setSettings({ ...settings, selectedCompareBy: selected })
   }
 
@@ -76,14 +84,19 @@ const useTableFilters = ({
 
     const _filters = { ...settings.requestFilters }
     const { academicSummaryFilters } = settings
-    const nextCompareBy =
-      compareByOptions.find(
-        (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
-      ) || selectedCompareBy
+    const nextCompareBy = compareByOptions.find(
+      (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
+    )
+
+    const nextCompareByKey =
+      baseUrl === DW_MAR_REPORT_URL &&
+      selectedCompareBy === compareByKeys.TEACHER
+        ? compareByKeys.GROUP
+        : nextCompareBy?.key
 
     Object.assign(_filters, {
       [filterField]: key,
-      selectedCompareBy: nextCompareBy.key,
+      selectedCompareBy: nextCompareByKey || selectedCompareBy,
       profileId:
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key,

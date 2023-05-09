@@ -23,6 +23,7 @@ const initialState = {
     requestFilters: {
       ...staticDropDownData.requestFilters,
     },
+    selectedFilterTagsData: {},
     selectedCompareBy: {},
   },
   loadingReportTableData: false,
@@ -62,6 +63,9 @@ const slice = createSlice({
     },
     setDWMARFilterTagsData: (state, { payload }) => {
       state.filterTagsData = payload
+    },
+    setDWMARSelectedFilterTagsData: (state, { payload }) => {
+      state.settings.selectedFilterTagsData = payload
     },
     setDWMARPrevFiltersData: (state, { payload }) => {
       state.prevFiltersData = payload
@@ -225,6 +229,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const loadingReportChartData = createSelector(
   stateSelector,
   (state) => state.loadingReportChartData
@@ -253,6 +261,7 @@ export const selectors = {
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   loadingReportChartData,
   loadingReportTableData,
   settings,

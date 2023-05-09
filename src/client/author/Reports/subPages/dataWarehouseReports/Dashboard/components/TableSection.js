@@ -23,7 +23,9 @@ import FeaturesSwitch from '../../../../../../features/components/FeaturesSwitch
 import { StyledEmptyContainer } from '../../common/components/styledComponents'
 
 function TableSection({
+  history,
   location,
+  search,
   compareByOptions,
   selectedPerformanceBand,
   isCsvDownloading,
@@ -45,7 +47,9 @@ function TableSection({
     getTableDrillDownUrl,
     setTablePagination,
   } = useTableFilters({
+    history,
     location,
+    search,
     defaultCompareBy: selectedCompareBy,
     settings,
     setSettings,

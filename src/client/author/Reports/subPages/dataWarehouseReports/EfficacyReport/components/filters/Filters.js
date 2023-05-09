@@ -47,6 +47,7 @@ const Filters = ({
   reportId = '',
   loadingFiltersData,
   prevFiltersData,
+  selectedFilterTagsData,
   filtersData,
   filtersTabKey,
   filters,
@@ -126,7 +127,7 @@ const Filters = ({
   })
 
   const onGoClick = (_settings = {}) => {
-    const settings = {
+    const newSettings = {
       requestFilters: { ...filters },
       selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
@@ -134,7 +135,7 @@ const Filters = ({
     setFilters({ ...filters })
     setShowPageLevelApply(false)
     setShowApply(false)
-    _onGoClick(settings)
+    _onGoClick(newSettings)
     toggleFilter(null, false)
   }
 
@@ -235,7 +236,7 @@ const Filters = ({
       filtersTabKey={filtersTabKey}
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
-      selectedFilterTagsData={filterTagsData}
+      selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={staticDropDownData.tagTypes}
       updateFilterDropdownCB={updateFilterDropdownCB}
       onAssessmentSelect={onAssessmentSelect}

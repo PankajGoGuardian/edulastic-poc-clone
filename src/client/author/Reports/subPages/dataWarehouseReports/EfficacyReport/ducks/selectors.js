@@ -26,6 +26,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const settings = createSelector(stateSelector, (state) => state.settings)
 const loadingReportSummaryData = createSelector(
   stateSelector,
@@ -54,6 +58,7 @@ export const selectors = {
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   settings,
   loadingReportSummaryData,
   loadingReportTableData,

@@ -36,7 +36,7 @@ const Filters = ({
   filtersTabKey,
   filters,
   filterTagsData,
-
+  selectedFilterTagsData,
   toggleFilter,
   setShowApply,
   setFirstLoad,
@@ -163,7 +163,7 @@ const Filters = ({
     <FiltersView
       isPrinting={isPrinting}
       reportId={reportId}
-      selectedFilterTagsData={filterTagsData}
+      selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
       handleTagClick={handleTagClick}

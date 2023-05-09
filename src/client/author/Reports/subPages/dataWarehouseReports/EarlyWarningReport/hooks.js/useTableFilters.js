@@ -27,14 +27,13 @@ const useTableFilters = ({ defaultCompareBy, location, settings }) => {
       ...requestFilters,
       ...riskTimelineFilters,
     }
-    const nextCompareBy =
-      compareByOptions.find(
-        (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
-      ) || selectedCompareBy
+    const nextCompareBy = compareByOptions.find(
+      (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
+    )
 
     Object.assign(_filters, {
       [filterField]: key,
-      selectedCompareBy: nextCompareBy.key,
+      selectedCompareBy: nextCompareBy?.key || selectedCompareBy,
     })
     const url = `${baseUrl}?${qs.stringify(_filters)}`
     return url

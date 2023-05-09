@@ -62,6 +62,9 @@ import {
   OperatorSelector,
   RemoveRuleAction,
 } from './controls'
+import { fieldKey } from '../../../ducks/constants'
+
+const { classes, groups } = fieldKey
 
 const getAllRules = (rules = []) => {
   const allRulesByRecur = []
@@ -150,8 +153,8 @@ const AdvancedSearch = ({
   useEffect(() => {
     const searchString = ''
     loadSchools({ searchString })
-    loadClasses({ searchString, type: groupType.classes })
-    loadGroups({ searchString, type: groupType.groups })
+    loadClasses({ searchString, type: groupType[classes] })
+    loadGroups({ searchString, type: groupType[groups] })
     loadCourses({ searchString })
     if ((attendanceBandData || []).length === 0) loadAttendanceBands()
     if ((performanceBandData || []).length === 0) loadPerformanceBands()

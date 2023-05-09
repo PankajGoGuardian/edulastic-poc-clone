@@ -163,14 +163,11 @@ function* getAdvancedSearchClasses({ payload }) {
         type: [payload.type],
       },
     }
-
+    const { groups, classes } = fieldKey
     const response = yield call(groupApi.getGroups, requestBody)
     yield put(
       actions.setAdvancedSearchDetails({
-        key:
-          payload.type === groupType.classes
-            ? fieldKey.classes
-            : fieldKey.groups,
+        key: payload.type === groupType[classes] ? classes : groups,
         data: response?.hits || [],
       })
     )

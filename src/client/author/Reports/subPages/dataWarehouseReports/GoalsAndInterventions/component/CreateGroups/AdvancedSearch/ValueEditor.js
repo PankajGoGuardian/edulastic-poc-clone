@@ -9,6 +9,8 @@ import { getAdvancedSearchDetailsSelector } from '../../../ducks/selectors'
 import { actions } from '../../../ducks'
 import { fieldKey } from '../../../ducks/constants'
 
+const { classes, schools, groups, courses } = fieldKey
+
 const ValueEditor = (props) => {
   const {
     operator,
@@ -23,8 +25,6 @@ const ValueEditor = (props) => {
     loadClasses,
     loadCourses,
     loadGroups,
-    attendanceBands,
-    // storeSelectedData,
     path,
   } = props
 
@@ -50,17 +50,13 @@ const ValueEditor = (props) => {
   }
 
   const enableSearchFields = {
-    [fieldKey.schools]: { key: 'schools', func: loadSchools },
-    [fieldKey.classes]: { key: 'classes', func: loadClasses },
-    [fieldKey.groups]: { key: 'groups', func: loadGroups },
-    [fieldKey.courses]: { key: 'courses', func: loadCourses },
-    [fieldKey.attendanceBands]: {
-      key: fieldKey.attendanceBands,
-      func: attendanceBands,
-    },
+    [schools]: { key: schools, func: loadSchools },
+    [classes]: { key: classes, func: loadClasses },
+    [courses]: { key: courses, func: loadCourses },
+    [groups]: { key: groups, func: loadGroups },
   }
   const { label = 'values' } = fieldData || {}
-  const groupsKey = ['classes', 'groups']
+  const groupsKey = [classes, groups]
 
   const handleSearch = (searchString) => {
     if (enableSearchFields[field] && enableSearchFields[field].func) {
@@ -84,11 +80,6 @@ const ValueEditor = (props) => {
     } else {
       handleOnChange(selectedValues)
     }
-    // storeSelectedData({
-    //   key: enableSearchFields[field].key,
-    //   valueFromField: selectedValues,
-    //   values,
-    // })
   }
 
   const searchHandler = debounce(handleSearch, debounceWait)
@@ -188,6 +179,5 @@ export default connect(
     loadCourses: actions.getAdvancedSearchCourses,
     loadClasses: actions.getAdvancedSearchClasses,
     loadGroups: actions.getAdvancedSearchGroups,
-    loadAttendanceBand: actions.getAdvancedSearchAttendanceBands,
   }
 )(ValueEditor)

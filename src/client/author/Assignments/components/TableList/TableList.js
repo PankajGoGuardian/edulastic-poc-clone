@@ -102,6 +102,9 @@ const convertTableData = (
   action: '',
   classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
+  showViewSummary: assignments.some(
+    (item) => item.gradedCount || item.submittedCount
+  ),
   testType: data.testType,
   hasRandomQuestions: data.hasRandomQuestions,
   assignmentVisibility: assignments.map(
@@ -651,6 +654,7 @@ const TableList = ({
                 toggleTagsEditModal,
                 isDemoPlaygroundUser: isDemoPlayground,
                 isProxiedByEAAccount,
+                showViewSummary: row.showViewSummary,
               })}
               placement="bottomRight"
               trigger={['click']}

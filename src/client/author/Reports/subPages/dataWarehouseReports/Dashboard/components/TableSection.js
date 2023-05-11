@@ -12,7 +12,6 @@ import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
 import {
   academicSummaryFiltersTypes,
-  compareByKeys,
   getTableApiQuery,
   tableFilterTypes,
 } from '../utils'
@@ -21,6 +20,7 @@ import { TableContainer } from './common/styledComponents'
 import AddToGroupModal from '../../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../../features/components/FeaturesSwitch'
 import { StyledEmptyContainer } from '../../common/components/styledComponents'
+import { isAddToStudentGroupEnabled } from '../../common/utils'
 
 function TableSection({
   history,
@@ -111,11 +111,12 @@ function TableSection({
     }
   }
 
-  const addToStudentGroupEnabled =
-    !isSharedReport &&
-    tableFilters[tableFilterTypes.COMPARE_BY].key === compareByKeys.STUDENT
+  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
+    isSharedReport,
+    tableFilters[tableFilterTypes.COMPARE_BY]?.key
+  )
 
-  const _rowSelection = addToStudentGroupEnabled ? rowSelection : null
+  const _rowSelection = showAddToStudentGroupBtn ? rowSelection : null
 
   const hasContent = !tableDataRequestError && !isEmpty(tableData?.metricInfo)
   const errorMsg = 'Error fetching data, please try again later'
@@ -141,7 +142,7 @@ function TableSection({
         tableFilters={tableFilters}
         updateTableFiltersCB={updateTableFiltersCB}
         handleAddToGroupClick={handleAddToGroupClick}
-        addToStudentGroupEnabled={addToStudentGroupEnabled}
+        showAddToStudentGroupBtn={showAddToStudentGroupBtn}
         compareByOptions={compareByOptions}
       />
       <TableContainer>

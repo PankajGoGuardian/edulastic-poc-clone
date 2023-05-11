@@ -1,3 +1,5 @@
+import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
+
 export const compareByKeys = {
   SCHOOL: 'school',
   TEACHER: 'teacher',
@@ -63,3 +65,5 @@ export const compareByOptions = [
 
 export const trendPeriodDateFormat = `MMM'YY`
 export const trendPeriodPrefix = 'vs '
+
+export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiveKey=2`

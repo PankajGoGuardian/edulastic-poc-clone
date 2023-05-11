@@ -8,6 +8,7 @@ import {
   StyledIconCaretDown,
   StyledIconCaretUp,
 } from '../components/styledComponents'
+import { compareByKeys } from './constants'
 
 StyledIconCaretDown
 
@@ -142,4 +143,10 @@ export const getDemographicsFilterTagsData = (search, demographics) => {
     }
   })
   return demographicsFilterTagsData
+}
+
+export const isAddToStudentGroupEnabled = (isSharedReport, compareByKey) => {
+  return [!isSharedReport, compareByKey === compareByKeys.STUDENT].every(
+    (e) => e
+  )
 }

@@ -7,7 +7,6 @@ import {
   fadedBlack,
   themeColor,
 } from '@edulastic/colors'
-import { EduButton } from '@edulastic/common'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
@@ -170,14 +169,6 @@ export const CompareByContainer = styled.div`
     -webkit-box-orient: unset;
   }
 }
-`
-
-export const StyledEduButton = styled(EduButton)`
-  &.ant-btn {
-    height: 32px;
-    padding: 0 15px 0 10px;
-    margin-right: 10px;
-  }
 `
 
 export const DataSizeExceededContainer = styled.div`

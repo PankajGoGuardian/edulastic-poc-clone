@@ -25,6 +25,7 @@ const EarlyWarningTable = ({
   settings,
   selectedCompareBy,
   compareByOptions,
+  isSharedReport = false,
 }) => {
   const {
     tableFilters,
@@ -84,6 +85,7 @@ const EarlyWarningTable = ({
         tableFilters={tableFilters}
         setTableFilters={setTableFilters}
         compareByOptions={compareByOptions}
+        isSharedReport={isSharedReport}
       />
       <EduIf condition={loading}>
         <EduThen>

@@ -383,6 +383,7 @@ const MultipleAssessmentReport = ({
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
               selectedCompareBy={selectedCompareBy}
+              isSharedReport={isSharedReport}
             />
             <Table
               tableData={tableData}

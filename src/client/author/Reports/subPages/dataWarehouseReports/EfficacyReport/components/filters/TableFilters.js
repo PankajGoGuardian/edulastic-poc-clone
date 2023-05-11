@@ -1,10 +1,8 @@
 import React from 'react'
 import { Row } from 'antd'
-import { IconPlusCircle } from '@edulastic/icons'
-import { EduIf } from '@edulastic/common'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { StyledEduButton } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
-import { addStudentToGroupFeatureEnabled } from '../../../../multipleAssessmentReport/PreVsPost/utils'
+import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
+import { isAddToStudentGroupEnabled } from '../../../common/utils'
 
 const TableFilters = ({
   setTableFilters,
@@ -20,17 +18,16 @@ const TableFilters = ({
       [keyName]: selected,
     })
   }
-  const showAddToGroupButton = addStudentToGroupFeatureEnabled(
-    selectedTableFilters.compareBy.key,
-    isSharedReport
+  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
+    isSharedReport,
+    selectedTableFilters.compareBy?.key
   )
   return (
     <Row type="flex">
-      <EduIf condition={showAddToGroupButton}>
-        <StyledEduButton onClick={handleAddToGroupClick}>
-          <IconPlusCircle /> Add To Student Group
-        </StyledEduButton>
-      </EduIf>
+      <StudentGroupBtn
+        showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+        handleAddToGroupClick={handleAddToGroupClick}
+      />
       <ControlDropDown
         style={{ marginRight: '10px' }}
         prefix="Compare By"

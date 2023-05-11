@@ -9,6 +9,7 @@ import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
 import { maxBy, sumBy, uniqBy, debounce, isEmpty } from 'lodash'
 import { notification } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -30,8 +31,8 @@ import {
   autoGenerateRubricAction,
   deleteRubricAction,
   getCurrentRubricDataSelector,
-  getGeneratedRubricInfoSelector,
   getRecentlyUsedRubricsSelector,
+  getRubricGenerationInProgress,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
@@ -77,6 +78,8 @@ const UseExisting = ({
   addRubricToRecentlyUsed,
   setItemLevelScoring,
   autoGenerateRubric,
+  isRubricGenerationInProgress,
+  t,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -107,7 +110,7 @@ const UseExisting = ({
   )
 
   const autoGenerateRubricBtnTitle = isEmpty(currentQuestion?.stimulus)
-    ? 'Rubric cannot be auto generated without question.'
+    ? t('rubric.stimulusNotPresent')
     : ''
 
   const handlePaginationChange = (page) => {
@@ -391,6 +394,7 @@ const UseExisting = ({
               disabled={isEmpty(currentQuestion?.stimulus)}
               ghost={isEmpty(currentQuestion?.stimulus)}
               title={autoGenerateRubricBtnTitle}
+              loading={isRubricGenerationInProgress}
             >
               Auto Generate Rubric
             </CustomStyleBtn2>
@@ -554,6 +558,7 @@ const UseExisting = ({
 
 const enhance = compose(
   Form.create(),
+  withNamespaces('author'),
   connect(
     (state) => ({
       currentRubricData: getCurrentRubricDataSelector(state),
@@ -563,7 +568,7 @@ const enhance = compose(
       totalSearchedCount: getTotalSearchedCountSelector(state),
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
-      generatedRubric: getGeneratedRubricInfoSelector(state),
+      isRubricGenerationInProgress: getRubricGenerationInProgress(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

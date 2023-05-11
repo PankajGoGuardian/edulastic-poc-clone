@@ -223,5 +223,8 @@
     "magnifier": {
       "description": "This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen."
     }
+  },
+  "rubric": {
+    "stimulusNotPresent": "Rubric cannot be auto generated without question."
   }
 }

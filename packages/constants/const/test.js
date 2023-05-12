@@ -290,7 +290,7 @@ module.exports = {
     ndsa: 'NDSA (ND)',
     nscas: 'NSCAS (NE)',
     nh_sas: 'NH SAS (NH)',
-    nj_state_assesment: 'NJ State Assesment (NJ)',
+    nj_state_assesment: 'NJ State Assessment (NJ)',
     nm_mesa: 'NM MESA (NM)',
     nv_ready: 'NV Ready (NV)',
     ny_regents: 'NY Regents (NY)',

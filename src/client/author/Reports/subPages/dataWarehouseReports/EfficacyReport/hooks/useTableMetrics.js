@@ -14,6 +14,7 @@ const useTableMetrics = ({
   testInfo,
 }) => {
   return useMemo(() => {
+    const rowsCount = get(reportTableData, 'rowsCount', 0)
     const tableMetricInfo = get(reportTableData, 'metricInfo', [])
     if (isEmpty(tableMetricInfo)) return []
     const tableData = getTableData(
@@ -45,7 +46,7 @@ const useTableMetrics = ({
         lastName,
         username,
       }))
-    return [tableData, rowSelection, checkedStudentsForModal]
+    return [tableData, rowsCount, rowSelection, checkedStudentsForModal]
   }, [
     reportTableData,
     prePerformanceBand,

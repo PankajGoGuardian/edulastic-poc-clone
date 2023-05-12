@@ -14,12 +14,14 @@ const ReportView = ({
   reportSummaryData,
   reportTableData,
   tableFilters,
+  pageFilters,
   reportFilters,
   externalBands,
   selectedPrePerformanceBand,
   selectedPostPerformanceBand,
   compareByOptions,
   setTableFilters,
+  setPageFilters,
   isCsvDownloading,
   isSharedReport,
 }) => {
@@ -85,10 +87,11 @@ const ReportView = ({
         testInfo={testInfo}
         prePerformanceBand={prePerformanceBand}
         postPerformanceBand={postPerformanceBand}
-        tableFilters={tableFilters}
         compareByOptions={compareByOptions}
-        selectedTableFilters={tableFilters}
+        tableFilters={tableFilters}
         setTableFilters={setTableFilters}
+        pageFilters={pageFilters}
+        setPageFilters={setPageFilters}
         isCsvDownloading={isCsvDownloading}
         isSharedReport={isSharedReport}
         hasIncompleteTests={hasIncompleteTests}

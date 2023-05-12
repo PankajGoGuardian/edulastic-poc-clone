@@ -642,7 +642,7 @@ export const getSelectedCompareBy = ({
   if (search.selectedCompareBy) {
     selectedCompareBy =
       compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
-      compareByOptions[0]
+      selectedCompareBy
   } else if (settings.selectedCompareBy?.key) {
     selectedCompareBy = settings.selectedCompareBy
   }

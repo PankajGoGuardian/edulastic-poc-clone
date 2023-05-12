@@ -10,6 +10,7 @@ import {
   genericColumnsForTable,
   getAvgValue,
   getDataKeys,
+  sortKeys,
 } from '../../utils'
 import AvgPerformance from './columns/AvgPerformance'
 import PerformanceChange from './columns/PerformanceChange'
@@ -31,10 +32,13 @@ const {
 
 export const onCsvConvert = (data) => downloadCSV(`Efficacy Report.csv`, data)
 
-export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
-  const compareBy = selectedCompareBy.key
+export const getTableColumns = (testInfo, tableFilters) => {
+  const { compareBy, analyseBy, sortKey, sortOrder } = tableFilters
+  const { key: compareByKey } = compareBy
+  const { key: analyseByKey } = analyseBy
+
   const tableColumnsData =
-    compareBy === compareByKeys.STUDENT
+    compareByKey === compareByKeys.STUDENT
       ? compareByStudentColumns
       : genericColumnsForTable
 
@@ -43,9 +47,9 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByColumnIdx = _columns.findIndex(
-      (col) => col.key === 'compareBy'
+      (col) => col.key === sortKeys.COMPARE_BY
     )
-    _columns[compareByColumnIdx].title = selectedCompareBy.title
+    _columns[compareByColumnIdx].title = compareBy.title
     _columns[compareByColumnIdx].render = (_, record) => {
       const value = record.compareByColumnRowText
       if (isEmpty(value)) return '-'
@@ -66,7 +70,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       (col) => col.key === 'avgPerformance'
     )
     _columns[avgPerformanceColumnIdx].render = (value) => (
-      <AvgPerformance data={value} analyseBy={analyseBy} />
+      <AvgPerformance data={value} analyseBy={analyseByKey} />
     )
 
     // Performance change column
@@ -76,7 +80,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
     )
 
     // Performance band column
-    if (compareBy !== compareByKeys.STUDENT) {
+    if (compareByKey !== compareByKeys.STUDENT) {
       const performanceBandColumnIdx = _columns.findIndex(
         (col) => col.key === 'performanceBand'
       )
@@ -99,7 +103,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       {
         render: (value) =>
           testInfo.preTestInfo.isExternal ||
-          analyseBy === analyseBykeys.RAW_SCORE
+          analyseByKey === analyseBykeys.RAW_SCORE
             ? value.preTestData.avgScore
             : `${value.preTestData.avgScorePercentage}%`,
       }
@@ -109,11 +113,17 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       {
         render: (value) =>
           testInfo.postTestInfo.isExternal ||
-          analyseBy === analyseBykeys.RAW_SCORE
+          analyseByKey === analyseBykeys.RAW_SCORE
             ? value.postTestData.avgScore
             : `${value.postTestData.avgScorePercentage}%`,
       }
     )
+
+    _columns.forEach((item) => {
+      if (item.key === sortKey) {
+        Object.assign(item, { sortOrder })
+      }
+    })
   })
 
   return tableColumns
@@ -279,7 +289,9 @@ export const getTableData = (
         `${firstName || ''} ${lastName || ''}`,
         false
       )
-    } else compareByColumnRowText = data[0][compareBylabels[compareByKey]]
+    } else {
+      compareByColumnRowText = data[0][compareBylabels[compareByKey]]
+    }
     return {
       compareByColumnRowText,
       firstName,
@@ -294,8 +306,6 @@ export const getTableData = (
         postTestData,
       },
     }
-  }).sort((a, b) =>
-    a.compareByColumnRowText.localeCompare(b.compareByColumnRowText)
-  )
+  })
   return tableData
 }

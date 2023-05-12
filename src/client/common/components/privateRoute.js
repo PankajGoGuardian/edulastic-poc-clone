@@ -29,7 +29,7 @@ const PrivateRoute = ({
       render={(props) =>
         isLoggedInForPrivateRoute(user) ? (
           [
-            <Component {...props} />,
+            <Component {...props} user={user} />,
             !isEmpty(Notifications)
               ? Notifications.map((Notification) => <Notification />)
               : null,

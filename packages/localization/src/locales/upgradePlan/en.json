@@ -1,0 +1,21 @@
+{
+  "manageByUser": {
+    "userRegistration": {
+      "cancel": "cancel",
+      "checkAllText": "Check all",
+      "createUser": "create",
+      "districtField": "District",
+      "emailInputField": "Email ID",
+      "emailInputFields": "Email IDs",
+      "missingUserHeader": "The list of missing teacher(s):",
+      "modalTitle": "User Registration",
+      "placeholderEmailId": "Enter the Email Id",
+      "placeholderEmailIds": "Enter Comma separated User Email Ids...",
+      "placeholderDistrict": "Search a district with name or district Id",
+      "requestToProvedDistrict": "Please provide District",
+      "requestToProvideEmail": "Please provide Email Id",
+      "requestToProvideEmails": "Please provide Email Id(s)",
+      "requestToProvideValidEmail": "Please enter valid Email Id"
+    }
+  }
+}

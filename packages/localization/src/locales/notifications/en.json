@@ -2157,5 +2157,22 @@
   "immersiveReaderFailedApiError": {
     "message": "Error in getting the Immersive Reader",
     "description": ""
+  },
+  "multipleEmailIdError": {
+    "message": "Atleast one of the given input email Id is invalid.",
+    "description": ""
+  },
+  "multipleTeacherAddedSuccess": {
+    "message": "Given teacher account(s) are added successfully.",
+    "description": ""
+  },
+  "teacherAddedSuccess": {
+    "message": "Teacher account is added successfully.",
+    "description": ""
+  },
+  "teacherAlreadyAdded" : {
+    "message": "Teacher(s) already added.",
+    "description": ""
   }
+
 }

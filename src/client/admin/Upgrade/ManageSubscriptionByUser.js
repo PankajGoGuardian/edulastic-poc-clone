@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { Row, Col, Form, Radio, Input, Button } from 'antd'
 import moment from 'moment'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import { radioButtonUserData } from '../Data'
 import { Table } from '../Common/StyledComponents'
 import { renderSubscriptionType } from '../Common/SubTypeTag'
+import InvalidEmailIdList from './InvalidEmailIdList'
 
 const { TextArea } = Input
 const { Group: RadioGroup } = Radio
@@ -33,6 +37,7 @@ const SearchUsersByEmailIdsForm = Form.create({
     form: { getFieldDecorator, getFieldValue, validateFields },
     searchUsersByEmailIdAction,
     validEmailIdsList,
+    setEmailIds,
   }) => {
     const handleSubmit = (evt) => {
       validateFields((err, { emailIds }) => {
@@ -41,6 +46,7 @@ const SearchUsersByEmailIdsForm = Form.create({
             // here empty spaces and ↵ spaces are removed
             identifiers: getIdsStrToList(emailIds),
           })
+          setEmailIds(emailIds)
         }
       })
       evt.preventDefault()
@@ -228,16 +234,24 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
   }
 )
 
-export default function ManageSubscriptionByUser({
+function ManageSubscriptionByUser({
   manageUsersData: { validEmailIdsList },
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
+  t,
 }) {
+  const [emailIds, setEmailIds] = useState()
   return (
     <>
       <SearchUsersByEmailIdsForm
         searchUsersByEmailIdAction={searchUsersByEmailIdAction}
         validEmailIdsList={validEmailIdsList}
+        setEmailIds={setEmailIds}
+      />
+      <InvalidEmailIdList
+        validEmailIdsList={validEmailIdsList}
+        allEmailIds={emailIds}
+        t={t}
       />
       <ValidEmailIdsTable validEmailIdsList={validEmailIdsList} />
       <SubmitUserForm
@@ -247,3 +261,8 @@ export default function ManageSubscriptionByUser({
     </>
   )
 }
+ManageSubscriptionByUser.propTypes = {
+  t: PropTypes.func.isRequired,
+}
+
+export default compose(withNamespaces('upgradePlan'))(ManageSubscriptionByUser)

@@ -47,8 +47,8 @@ export const getAcademicSummaryMetrics = (rawData) => {
   } = rawData.result
   const showFooter = !isEmpty(prePeriod)
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
-  const avgScorePercentage = round(avgScore * 100)
-  const periodAvgScorePercentage = round(periodAvgScore * 100)
+  const avgScorePercentage = round(avgScore)
+  const periodAvgScorePercentage = round(periodAvgScore)
   const scoreTrendPercentage = showFooter
     ? round(avgScorePercentage - periodAvgScorePercentage)
     : 0

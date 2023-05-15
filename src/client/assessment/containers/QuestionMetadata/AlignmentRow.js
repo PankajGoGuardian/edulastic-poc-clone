@@ -271,7 +271,7 @@ const AlignmentRow = ({
     }
   }, [qId])
   const showMoreButtonEnabled =
-    curriculumStandardsLoading &&
+    !curriculumStandardsLoading &&
     curriculumStandardsELO &&
     curriculumStandardsELO.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
   return (

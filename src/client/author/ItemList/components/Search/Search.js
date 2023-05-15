@@ -6,9 +6,11 @@ import {
   roleuser,
   libraryFilters,
   folderTypes,
+  dictionaries,
 } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
 import { Select } from 'antd'
+import { get, keyBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
@@ -41,6 +43,7 @@ import {
 import { addItemToCartAction } from '../../ducks'
 import TagField from '../Fields/TagField'
 import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
+import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
 
 const { SMART_FILTERS } = libraryFilters
 const Search = ({
@@ -71,6 +74,7 @@ const Search = ({
   itemCount,
   addItemToCart,
   enableAudioResponseQuestion,
+  elosByTloId,
 }) => {
   const [showModal, setShowModalValue] = useState(false)
 
@@ -85,8 +89,23 @@ const Search = ({
     }
     setShowModalValue(value)
   }
-  const handleApply = (_standardIds) =>
-    onSearchFieldChange('standardIds')(_standardIds)
+
+  const handleShowBrowseModal = () => {
+    setShowModal(true)
+  }
+
+  const handleApply = (_standardIds) => {
+    const cachedElos = Object.values(elosByTloId).flat()
+    const _elosById = keyBy(
+      [...curriculumStandards.elo, ...standardIds, ...cachedElos],
+      '_id'
+    )
+    const values = _standardIds.map((item) => ({
+      _id: item,
+      identifier: _elosById[item]?.identifier,
+    }))
+    onSearchFieldChange('standardIds')(values)
+  }
 
   const isPublishers = !!(
     userFeatures.isPublisherAuthor || userFeatures.isCurator
@@ -178,18 +197,32 @@ const Search = ({
   const subjectRef = useRef()
   const standardsRef = useRef()
   const collectionRef = useRef()
-  // const tagsRef = useRef()
+  const dropDownElosById = keyBy(curriculumStandards.elo, '_id')
 
+  const standardsNotInDropdown = standardIds.filter(
+    (item) => !dropDownElosById[item._id]
+  )
+  const _curriculumStandards = {
+    ...curriculumStandards,
+    elo: [...curriculumStandards.elo, ...standardsNotInDropdown],
+  }
+
+  const _elosById = keyBy(_curriculumStandards.elo, '_id')
+  const showMoreButtonEnabled =
+    _curriculumStandards.elo?.length >=
+    dictionaries.STANDARD_DROPDOWN_LIMIT_1000
   return (
     <MainFilterItems>
       {showModal && (
         <StandardsSearchModal
           setShowModal={setShowModal}
           showModal={showModal}
-          standardIds={standardIds}
+          standardIds={standardIds.map((item) => item._id)}
+          standards={standardIds}
           handleApply={handleApply}
           itemCount={itemCount}
           selectedCurriculam={selectedCurriculam}
+          grades={grades}
         />
       )}
 
@@ -334,19 +367,37 @@ const Search = ({
                         .indexOf(input.toLowerCase()) >= 0
                     }
                     placeholder="All Standards"
-                    onChange={onSearchFieldChange('standardIds')}
-                    value={standardIds}
+                    onChange={(stds) => {
+                      const values = stds.map((item) => ({
+                        _id: item,
+                        identifier: _elosById[item].identifier,
+                      }))
+                      onSearchFieldChange('standardIds')(values)
+                    }}
+                    value={standardIds.map((item) => item._id)}
                     disabled={isStandardsDisabled}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     ref={standardsRef}
                     onSelect={() => standardsRef?.current?.blur()}
                     onDeselect={() => standardsRef?.current?.blur()}
                   >
-                    {curriculumStandards.elo.map((el) => (
+                    {_curriculumStandards.elo.map((el) => (
                       <Select.Option key={el._id} value={el._id}>
                         {`${el.identifier}`}
                       </Select.Option>
                     ))}
+                    {showMoreButtonEnabled && (
+                      <Select.Option
+                        title="show"
+                        value="show"
+                        style={{ display: 'block', cursor: 'pointer' }}
+                        disabled
+                      >
+                        <StyledDiv onClick={handleShowBrowseModal}>
+                          <span>Show More</span>
+                        </StyledDiv>
+                      </Select.Option>
+                    )}
                   </StandardSelectStyled>
                 </ItemBody>
               </ItemRelative>
@@ -476,6 +527,7 @@ export default connect(
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
     userRole: getUserRole(state),
     enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+    elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

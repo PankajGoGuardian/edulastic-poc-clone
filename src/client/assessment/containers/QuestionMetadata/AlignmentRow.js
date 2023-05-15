@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { IconExpandBox } from '@edulastic/icons'
+import { dictionaries } from '@edulastic/constants'
 import {
   getDefaultInterests,
   setDefaultInterests,
@@ -34,13 +35,13 @@ import RecentStandardsList from './RecentStandardsList'
 import StandardsModal from './StandardsModal'
 import { IconWrapper } from './styled/BrowseButton'
 import { ItemBody } from './styled/ItemBody'
+import { StyledDiv } from './styled/ELOList'
 
 const AlignmentRow = ({
   t,
   curriculums,
   getCurriculumStandards,
   curriculumStandardsELO,
-  curriculumStandardsTLO,
   alignment,
   alignmentIndex,
   qId,
@@ -198,7 +199,6 @@ const AlignmentRow = ({
   }
 
   const handleShowBrowseModal = () => {
-    handleStandardFocus()
     setShowModal(true)
   }
 
@@ -270,7 +270,10 @@ const AlignmentRow = ({
       }
     }
   }, [qId])
-
+  const showMoreButtonEnabled =
+    curriculumStandardsLoading &&
+    curriculumStandardsELO &&
+    curriculumStandardsELO.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
   return (
     <>
       {showModal && (
@@ -285,8 +288,6 @@ const AlignmentRow = ({
           onApply={handleApply}
           setSubject={setSubject}
           onCancel={() => setShowModal(false)}
-          curriculumStandardsELO={curriculumStandardsELO}
-          curriculumStandardsTLO={curriculumStandardsTLO}
           getCurriculumStandards={getCurriculumStandards}
           curriculumStandardsLoading={curriculumStandardsLoading}
           editAlignment={editAlignment}
@@ -405,6 +406,18 @@ const AlignmentRow = ({
                       </div>
                     </Select.Option>
                   ))}
+                {showMoreButtonEnabled && (
+                  <Select.Option
+                    title="show"
+                    value="show"
+                    style={{ display: 'block', cursor: 'pointer' }}
+                    disabled
+                  >
+                    <StyledDiv onClick={handleShowBrowseModal}>
+                      <span>Show More</span>
+                    </StyledDiv>
+                  </Select.Option>
+                )}
               </SelectInputStyled>
             </div>
             {recentStandardsList &&
@@ -458,7 +471,6 @@ AlignmentRow.propTypes = {
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculums: PropTypes.array.isRequired,
   curriculumStandardsELO: PropTypes.array.isRequired,
-  curriculumStandardsTLO: PropTypes.array.isRequired,
   alignment: PropTypes.object.isRequired,
   editAlignment: PropTypes.func.isRequired,
 }

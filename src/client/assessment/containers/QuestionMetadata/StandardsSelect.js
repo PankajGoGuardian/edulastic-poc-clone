@@ -176,6 +176,8 @@ function StandardsSelect(props) {
         standardId: elo._id,
         domainId: elo.tloId,
         identifier: elo.identifier,
+        grades: elo.grades,
+        _id: elo._id,
       })),
     }
     setIsModalVisible(false)
@@ -240,7 +242,7 @@ function StandardsSelect(props) {
       />
       <StandardsSelectButton
         mode={mode}
-        allStandards={curriculumStandards.elo}
+        allStandards={standardDetails?.standards || []}
         onIconClick={() => setIsModalVisible(true)}
         value={standardIds}
         onChange={handleSelectChange}

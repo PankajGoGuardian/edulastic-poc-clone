@@ -138,7 +138,19 @@ export const RECEIVE_DICT_STANDARDS_SUCCESS =
   '[dictionaries] receive standards success'
 export const RECEIVE_DICT_STANDARDS_ERROR =
   '[dictionaries] receive standards error'
+
+export const RECEIVE_TLO_STANDARDS_REQUEST =
+  '[dictionaries] receive tlo standards request'
+export const RECEIVE_TLO_STANDARDS_SUCCESS =
+  '[dictionaries] receive tlo standards success'
+
+export const RECEIVE_ELO_STANDARDS_REQUEST =
+  '[dictionaries] receive elo standards request'
+export const RECEIVE_ELO_STANDARDS_SUCCESS =
+  '[dictionaries] receive elo standards success'
+export const SET_ELOS_BY_TLO_ID = '[dictionaries] set elos by tloId'
 export const CLEAR_DICT_STANDARDS = '[dictionaries] clear standards'
+export const CLEAR_TLO_AND_ELO = '[dictionaries] clear TLO and ELOs'
 export const RESET_DICT_ALIGNMENTS = '[dictionaries] reset alignment standards'
 export const CLEAR_DICT_ALIGNMENTS = '[dictionaries] clear alignments'
 export const ADD_DICT_ALIGNMENT = '[dictionaries] add alignment'

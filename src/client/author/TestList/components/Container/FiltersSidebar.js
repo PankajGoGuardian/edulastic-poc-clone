@@ -4,8 +4,10 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { dictionaries } from '@edulastic/constants'
 import TagField from '../../../ItemList/components/Fields/TagField'
 import { getUserFeatures } from '../../../src/selectors/user'
+import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
 
 const FiltersSidebar = ({
   filterItem,
@@ -39,6 +41,10 @@ const FiltersSidebar = ({
     )
   }
 
+  const showMoreButtonEnabled =
+    filterItem.onChange === 'standardIds' &&
+    filterItem?.data?.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
+
   return (
     <>
       <FieldLabel>{filterItem.title}</FieldLabel>
@@ -56,7 +62,11 @@ const FiltersSidebar = ({
             ? undefined
             : filterItem.data[0] && filterItem.data[0].value
         }
-        value={search[filterItem.onChange]}
+        value={
+          filterItem.onChange === 'standardIds'
+            ? search[filterItem.onChange].map((item) => item._id)
+            : search[filterItem.onChange]
+        }
         key={filterItem.title}
         ref={selectRef}
         onChange={(value) => {
@@ -78,6 +88,18 @@ const FiltersSidebar = ({
               {text}
             </Select.Option>
           ))}
+        {showMoreButtonEnabled && (
+          <Select.Option
+            title="show"
+            value="show"
+            style={{ textAlign: 'center', display: 'block' }}
+            disabled
+          >
+            <StyledDiv onClick={filterItem.handleShowBrowseModal}>
+              <span>Show More</span>
+            </StyledDiv>
+          </Select.Option>
+        )}
         {isPublishers &&
           filterItem.title === 'Status' &&
           filterItem.publisherOptions.map(({ value, text }) => (

@@ -13,3 +13,10 @@ export const ELOList = styled.div`
 export const EloText = styled.div`
   padding-left: 15px;
 `
+
+export const StyledDiv = styled.div`
+  text-align: center;
+  font-weight: 800;
+  color: #333;
+  cursor: pointer;
+`

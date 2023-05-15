@@ -29,6 +29,7 @@ const EfficacyTable = ({
   compareByOptions,
   tableFilters,
   setTableFilters,
+  getTableDrillDownUrl,
   pageFilters,
   setPageFilters,
   isCsvDownloading,
@@ -73,7 +74,11 @@ const EfficacyTable = ({
     : null
 
   // get table columns
-  const tableColumns = getTableColumns(testInfo, tableFilters)
+  const tableColumns = getTableColumns(
+    testInfo,
+    tableFilters,
+    getTableDrillDownUrl
+  )
 
   return (
     <StyledCard>

@@ -4,10 +4,10 @@ import qs from 'qs'
 import {
   tableFilterTypes,
   TABLE_PAGE_SIZE,
-  compareByFilterFieldKeys,
+  compareByKeysToFilterKeys,
   compareByKeys,
   compareByOptions,
-  nextCompareByOptionsMap,
+  nextCompareByKeys,
   academicSummaryFiltersTypes,
 } from '../utils'
 import { DW_MAR_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
@@ -80,12 +80,12 @@ const useTableFilters = ({
 
   const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
     const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
-    const filterField = compareByFilterFieldKeys[selectedCompareBy]
+    const filterField = compareByKeysToFilterKeys[selectedCompareBy]
 
     const _filters = { ...settings.requestFilters }
     const { academicSummaryFilters } = settings
     const nextCompareBy = compareByOptions.find(
-      (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
+      (o) => o.key === nextCompareByKeys[selectedCompareBy]
     )
 
     const nextCompareByKey =

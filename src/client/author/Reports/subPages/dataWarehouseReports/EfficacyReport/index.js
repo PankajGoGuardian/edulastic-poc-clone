@@ -26,8 +26,6 @@ import {
   compareByOptions as compareByOptionsRaw,
   analyseByOptions,
   TABLE_PAGE_SIZE,
-  sortKeys,
-  sortOrders,
   sortOrdersMap,
 } from './utils'
 
@@ -41,6 +39,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import ReportView from './ReportView'
+import useTableFilters from './hooks/useTableFilters'
 
 const EfficacyReport = ({
   // value props
@@ -123,6 +122,18 @@ const EfficacyReport = ({
     }
   }
 
+  const {
+    tableFilters,
+    setTableFilters,
+    getTableDrillDownUrl,
+  } = useTableFilters({
+    location,
+    search,
+    settings,
+    selectedCompareBy,
+    defaultAnalyseBy,
+  })
+
   const onGoClick = (_settings) => {
     const _requestFilters = {}
     Object.keys(_settings.requestFilters).forEach((filterType) => {
@@ -143,18 +154,10 @@ const EfficacyReport = ({
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
     })
+    setTableFilters({ ...tableFilters, compareBy: selectedCompareBy })
     setShowApply(false)
   }
 
-  const [tableFilters, setTableFilters] = useState({
-    compareBy: selectedCompareBy,
-    analyseBy: defaultAnalyseBy,
-    preBandScore: '',
-    postBandScore: '',
-    sortKey: sortKeys.COMPARE_BY,
-    sortOrder: sortOrders.ASCEND,
-    requireTotalCount: true,
-  })
   const [pageFilters, setPageFilters] = useState({
     page: 0, // set to 0 initially to prevent multiple api request on state update
     pageSize: TABLE_PAGE_SIZE,
@@ -169,7 +172,11 @@ const EfficacyReport = ({
   )
 
   const extraNavFilters = useMemo(
-    () => ({ selectedCompareBy: tableFilters.compareBy.key }),
+    () => ({
+      selectedCompareBy: tableFilters.compareBy.key,
+      preBandScore: tableFilters.preBandScore,
+      postBandScore: tableFilters.postBandScore,
+    }),
     [tableFilters.compareBy.key]
   )
 
@@ -190,9 +197,8 @@ const EfficacyReport = ({
       setPageFilters({ ...pageFilters, page: 1 })
       setTableFilters({
         ...tableFilters,
-        preBandScore: '',
-        postBandScore: '',
-        requireTotalCount: true,
+        preBandScore: search.preBandScore || '',
+        postBandScore: search.postBandScore || '',
       })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
@@ -228,6 +234,29 @@ const EfficacyReport = ({
     bandInfo.find((x) => x._id === reportFilters.preProfileId) || bandInfo[0]
   const selectedPostPerformanceBand =
     bandInfo.find((x) => x._id === reportFilters.postProfileId) || bandInfo[0]
+
+  const onMatrixCellClick = (preBandScore = '', postBandScore = '') => () => {
+    if (search.preBandScore || search.postBandScore) {
+      const _filters = {
+        ...settings.requestFilters,
+        selectedCompareBy: selectedCompareBy.key,
+      }
+      history.replace(`${location.pathname}?${qs.stringify(_filters)}`)
+    }
+    const _tableFilters = {
+      ...tableFilters,
+      preBandScore: `${preBandScore}`,
+      postBandScore: `${postBandScore}`,
+    }
+    if (
+      tableFilters.preBandScore === _tableFilters.preBandScore &&
+      tableFilters.postBandScore === _tableFilters.postBandScore
+    ) {
+      _tableFilters.preBandScore = ''
+      _tableFilters.postBandScore = ''
+    }
+    setTableFilters(_tableFilters)
+  }
 
   const noDataContainerText = getNoDataContainerText(
     settings,
@@ -265,6 +294,7 @@ const EfficacyReport = ({
           setShowApply={setShowApply}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
+          tableFilters={tableFilters}
         />
       </SubHeader>
       <ReportContainer>
@@ -303,6 +333,8 @@ const EfficacyReport = ({
                         }
                         compareByOptions={compareByOptions}
                         setTableFilters={setTableFilters}
+                        getTableDrillDownUrl={getTableDrillDownUrl}
+                        onMatrixCellClick={onMatrixCellClick}
                         setPageFilters={setPageFilters}
                         isCsvDownloading={isCsvDownloading}
                         isSharedReport={isSharedReport}

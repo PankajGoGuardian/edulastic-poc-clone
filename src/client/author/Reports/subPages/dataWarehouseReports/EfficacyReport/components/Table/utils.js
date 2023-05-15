@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { get, groupBy, isEmpty, map, maxBy, sumBy } from 'lodash'
+import { get, groupBy, map, maxBy, sumBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { downloadCSV } from '../../../../../common/util'
 import {
@@ -19,8 +19,13 @@ import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import {
   compareByFieldKeys,
   compareByKeys,
-  compareBylabels,
+  compareByOptionsInfo,
 } from '../../../common/utils'
+import LinkCell from '../../../common/components/LinkCell'
+import {
+  DW_EFFICACY_REPORT_URL,
+  DW_WLR_REPORT_URL,
+} from '../../../../../common/constants/dataWarehouseReports'
 
 const {
   DECIMAL_BASE,
@@ -32,7 +37,21 @@ const {
 
 export const onCsvConvert = (data) => downloadCSV(`Efficacy Report.csv`, data)
 
-export const getTableColumns = (testInfo, tableFilters) => {
+const isDrillDownEnabled = (compareByKey) => {
+  return [
+    compareByKeys.SCHOOL,
+    compareByKeys.TEACHER,
+    compareByKeys.CLASS,
+    compareByKeys.GROUP,
+    compareByKeys.STUDENT,
+  ].includes(compareByKey)
+}
+
+export const getTableColumns = (
+  testInfo,
+  tableFilters,
+  getTableDrillDownUrl
+) => {
   const { compareBy, analyseBy, sortKey, sortOrder } = tableFilters
   const { key: compareByKey } = compareBy
   const { key: analyseByKey } = analyseBy
@@ -50,12 +69,16 @@ export const getTableColumns = (testInfo, tableFilters) => {
       (col) => col.key === sortKeys.COMPARE_BY
     )
     _columns[compareByColumnIdx].title = compareBy.title
-    _columns[compareByColumnIdx].render = (_, record) => {
-      const value = record.compareByColumnRowText
-      if (isEmpty(value)) return '-'
-      return value
+    _columns[compareByColumnIdx].render = (value) => {
+      const reportUrl =
+        compareBy.key === compareByKeys.STUDENT
+          ? DW_WLR_REPORT_URL
+          : DW_EFFICACY_REPORT_URL
+      const url = isDrillDownEnabled(compareBy.key)
+        ? getTableDrillDownUrl(value._id, reportUrl)
+        : null
+      return <LinkCell value={value} url={url} />
     }
-
     // Test names column
     const testColumnIdx = _columns.findIndex((col) => col.key === 'test')
     _columns[testColumnIdx].render = () => (
@@ -273,33 +296,38 @@ export const getTableData = (
       postTestInfo
     )
 
-    // field required only for compareBy student other than rowTitle
-    let compareByColumnRowText = ''
-    const {
-      firstName,
-      lastName,
-      schoolName,
-      teacherName,
-      groupName,
-      studentId,
-    } = data[0]
+    const dimension = {}
+    const extraStudentColumns = {}
     const compareByKey = tableFilters.compareBy?.key
-    if (compareByKey === compareByKeys.STUDENT) {
-      compareByColumnRowText = getFormattedName(
+    const isStudentCompareBy = compareByKey === compareByKeys.STUDENT
+    if (isStudentCompareBy) {
+      const {
+        firstName,
+        lastName,
+        schoolName,
+        teacherName,
+        groupName,
+        studentId,
+      } = data[0]
+      const name = getFormattedName(
         `${firstName || ''} ${lastName || ''}`,
         false
       )
+      Object.assign(dimension, { _id: studentId, name, firstName, lastName })
+      Object.assign(extraStudentColumns, {
+        schoolName,
+        teacherName,
+        groupName,
+      })
     } else {
-      compareByColumnRowText = data[0][compareBylabels[compareByKey]]
+      Object.assign(dimension, {
+        _id: data[0][compareByOptionsInfo[compareByKey].key],
+        name: data[0][compareByOptionsInfo[compareByKey].name],
+      })
     }
     return {
-      compareByColumnRowText,
-      firstName,
-      lastName,
-      schoolName,
-      teacherName,
-      className: groupName,
-      studentId,
+      dimension,
+      extraStudentColumns,
       studentsCount,
       data: {
         preTestData,

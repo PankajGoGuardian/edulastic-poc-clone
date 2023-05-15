@@ -1,3 +1,4 @@
+import { invert } from 'lodash'
 import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
 
 export const compareByKeys = {
@@ -28,27 +29,54 @@ export const compareByFieldKeys = {
   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
 }
 
-export const compareBylabels = {
-  [compareByKeys.SCHOOL]: 'schoolName',
-  [compareByKeys.TEACHER]: 'teacherName',
-  [compareByKeys.CLASS]: 'groupName',
-  [compareByKeys.GROUP]: 'groupName',
-  [compareByKeys.RACE]: compareByKeys.RACE,
-  [compareByKeys.GENDER]: compareByKeys.GENDER,
-  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
-  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
-  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
-  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+export const compareByOptionsInfo = {
+  [compareByKeys.SCHOOL]: { key: 'schoolId', name: 'schoolName' },
+  [compareByKeys.TEACHER]: { key: 'teacherId', name: 'teacherName' },
+  [compareByKeys.CLASS]: { key: 'groupId', name: 'groupName' },
+  [compareByKeys.GROUP]: { key: 'groupId', name: 'groupName' },
+  [compareByKeys.RACE]: {
+    key: compareByKeys.RACE,
+    name: compareByKeys.RACE,
+  },
+  [compareByKeys.GENDER]: {
+    key: compareByKeys.GENDER,
+    name: compareByKeys.GENDER,
+  },
+  [compareByKeys.FRL_STATUS]: {
+    key: compareByKeys.FRL_STATUS,
+    name: compareByKeys.FRL_STATUS,
+  },
+  [compareByKeys.ELL_STATUS]: {
+    key: compareByKeys.ELL_STATUS,
+    name: compareByKeys.ELL_STATUS,
+  },
+  [compareByKeys.IEP_STATUS]: {
+    key: compareByKeys.IEP_STATUS,
+    name: compareByKeys.IEP_STATUS,
+  },
+  [compareByKeys.HISPANIC_ETHNICITY]: {
+    key: compareByKeys.HISPANIC_ETHNICITY,
+    name: compareByKeys.HISPANIC_ETHNICITY,
+  },
 }
 
-export const compareByFilterFieldKeys = {
+export const compareByKeysToFilterKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
   [compareByKeys.GROUP]: 'groupIds',
 }
 
-export const nextCompareByOptionsMap = {
+export const filterKeysToCompareByKeys = invert(compareByKeysToFilterKeys)
+
+export const commonFilterKeys = [
+  compareByKeysToFilterKeys[compareByKeys.SCHOOL],
+  compareByKeysToFilterKeys[compareByKeys.TEACHER],
+  compareByKeysToFilterKeys[compareByKeys.CLASS],
+  compareByKeysToFilterKeys[compareByKeys.GROUP],
+]
+
+export const nextCompareByKeys = {
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,

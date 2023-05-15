@@ -2,7 +2,7 @@ import {
   GRADE_OPTIONS,
   SUBJECT_OPTIONS,
 } from '@edulastic/constants/reportUtils/common'
-import { compareByKeys } from '../../common/utils'
+import { compareByKeys, compareByOptionsInfo } from '../../common/utils'
 
 // decimal base value for parseInt()
 export const TESTIDS_COUNT_FOR_PRE_POST = 2
@@ -163,7 +163,7 @@ export const genericColumnsForTable = [
   {
     title: sortKeys.COMPARE_BY,
     key: sortKeys.COMPARE_BY,
-    dataIndex: 'compareByColumnTitle',
+    dataIndex: 'dimension',
     width: 150,
     align: 'left',
     sorter: true,
@@ -226,7 +226,7 @@ export const compareByStudentColumns = [
   {
     title: sortKeys.COMPARE_BY,
     key: sortKeys.COMPARE_BY,
-    dataIndex: 'compareByColumnTitle',
+    dataIndex: 'dimension',
     align: 'left',
     width: 100,
     sorter: true,
@@ -236,20 +236,23 @@ export const compareByStudentColumns = [
     key: 'school',
     width: 150,
     align: 'center',
-    dataIndex: 'schoolName',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.SCHOOL].name],
   },
   {
     title: 'Teacher',
     key: 'teacher',
     width: 90,
     align: 'center',
-    dataIndex: 'teacherName',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.TEACHER].name],
   },
   {
     title: 'Class',
     key: 'class',
     width: 90,
-    dataIndex: 'className',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.CLASS].name],
   },
   {
     title: 'Test',

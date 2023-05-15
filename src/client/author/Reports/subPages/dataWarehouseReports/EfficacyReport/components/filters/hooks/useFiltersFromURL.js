@@ -81,6 +81,12 @@ function useFiltersFromURL({
           postTestId: search.postTestId || '',
           preProfileId: urlPrePerformanceBand?.key || '',
           postProfileId: urlPostPerformanceBand?.key || '',
+          race: search.race || 'all',
+          gender: search.gender || 'all',
+          iepStatus: search.iepStatus || 'all',
+          frlStatus: search.frlStatus || 'all',
+          ellStatus: search.ellStatus || 'all',
+          hispanicEthnicity: search.hispanicEthnicity || 'all',
         }
         if (userRole === roleuser.TEACHER) {
           delete _filters.schoolIds

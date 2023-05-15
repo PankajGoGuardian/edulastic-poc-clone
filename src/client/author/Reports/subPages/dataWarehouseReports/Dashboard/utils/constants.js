@@ -157,7 +157,7 @@ export const staticDropDownData = {
   })),
 }
 
-export const compareByFilterFieldKeys = {
+export const compareByKeysToFilterKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
@@ -171,7 +171,7 @@ export const compareByFilterFieldKeys = {
   [compareByKeys.STUDENT]: 'studentId',
 }
 
-export const nextCompareByOptionsMap = {
+export const nextCompareByKeys = {
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,

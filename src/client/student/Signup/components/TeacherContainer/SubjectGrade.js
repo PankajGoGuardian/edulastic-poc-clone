@@ -12,7 +12,17 @@ import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { segmentApi } from '@edulastic/api'
 import { Button, Col, Form, Row, Select } from 'antd'
-import { find, get, isEmpty, keyBy, map, mapKeys, pick, isArray } from 'lodash'
+import {
+  find,
+  get,
+  isEmpty,
+  keyBy,
+  map,
+  mapKeys,
+  pick,
+  isArray,
+  uniqBy,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef } from 'react'
 import { connect } from 'react-redux'
@@ -332,7 +342,7 @@ class SubjectGrade extends React.Component {
     const selectedCurriculamStandardIds = form
       .getFieldValue('curriculumStandards')
       .map((item) => item._id)
-    const standardIds = ([...dropDownElos, ...cachedElos] || [])
+    const standardIds = uniqBy([...dropDownElos, ...cachedElos] || [], '_id')
       .filter(
         (s) =>
           selectedCurriculamStandardIds.includes(s.id) &&

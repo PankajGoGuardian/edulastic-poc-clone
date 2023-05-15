@@ -10,8 +10,6 @@ import {
   CheckboxLabel,
   EduButton,
   EduIf,
-  EduThen,
-  EduElse,
 } from '@edulastic/common'
 
 import {
@@ -180,6 +178,10 @@ const StandardsSearchModal = ({
     curriculumStandardsTLO.find((item) => item._id === selectedTLO) ||
     curriculumStandardsTLO?.[0]
 
+  const filteredELO = curriculumStandardsELO.filter(
+    (c) => c.tloId === selectedTLO
+  )
+
   return (
     <StyledModal
       title={title}
@@ -208,64 +210,52 @@ const StandardsSearchModal = ({
           </EduIf>
         </Col>
       </Row>
-      <Row type="flex" gutter={24}>
-        <EduIf condition={!curriculumStandardsTLO.length}>
-          <EduThen>
-            <Spin />
-          </EduThen>
-          <EduElse>
-            <StandardsWrapper md={8}>
-              <TLOList>
-                {curriculumStandardsTLO.map(
-                  ({ identifier, description, _id }) => (
-                    <TLOListItem
-                      title={identifier}
-                      description={description}
-                      active={_id === selectedTLO}
-                      key={_id}
-                      onClick={() => handleSelectTlo(_id)}
+      <Spin spinning={loading} size="large">
+        <Row type="flex" gutter={24}>
+          <StandardsWrapper md={8}>
+            <TLOList>
+              {curriculumStandardsTLO.map(
+                ({ identifier, description, _id }) => (
+                  <TLOListItem
+                    title={identifier}
+                    description={description}
+                    active={_id === selectedTLO}
+                    key={_id}
+                    onClick={() => handleSelectTlo(_id)}
+                  />
+                )
+              )}
+            </TLOList>
+          </StandardsWrapper>
+          <StandardsWrapper md={16}>
+            <ELOList>
+              <Container>
+                {filteredELO.map((c) => (
+                  <FlexContainer
+                    key={c._id}
+                    alignItems="flex-start"
+                    justifyContent="flex-start"
+                    marginBottom="15px"
+                  >
+                    <CheckboxLabel
+                      onChange={() => handleCheckELO(c)}
+                      checked={standardIds.some((item) => item === c._id)}
                     />
-                  )
-                )}
-              </TLOList>
-            </StandardsWrapper>
-            <StandardsWrapper md={16}>
-              <EduIf condition={loading}>
-                <EduThen>
-                  <Spin />
-                </EduThen>
-                <EduElse>
-                  <ELOList>
-                    <Container>
-                      {curriculumStandardsELO.map((c) => (
-                        <FlexContainer
-                          key={c._id}
-                          alignItems="flex-start"
-                          justifyContent="flex-start"
-                          marginBottom="15px"
-                        >
-                          <CheckboxLabel
-                            onChange={() => handleCheckELO(c)}
-                            checked={standardIds.some((item) => item === c._id)}
-                          />
-                          <EloText>
-                            <b>{c.identifier}</b>
-                            <MathFormulaDisplay
-                              dangerouslySetInnerHTML={{
-                                __html: c.description,
-                              }}
-                            />
-                          </EloText>
-                        </FlexContainer>
-                      ))}
-                    </Container>
-                  </ELOList>
-                </EduElse>
-              </EduIf>
-            </StandardsWrapper>
-          </EduElse>
-        </EduIf>
-      </Row>
+                    <EloText>
+                      <b>{c.identifier}</b>
+                      <MathFormulaDisplay
+                        dangerouslySetInnerHTML={{
+                          __html: c.description,
+                        }}
+                      />
+                    </EloText>
+                  </FlexContainer>
+                ))}
+              </Container>
+            </ELOList>
+          </StandardsWrapper>
+        </Row>
+      </Spin>
     </StyledModal>
   )
 }

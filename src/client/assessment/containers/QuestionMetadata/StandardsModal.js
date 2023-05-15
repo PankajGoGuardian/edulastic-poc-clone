@@ -106,8 +106,9 @@ const StandardsModal = ({
     if (isStandardChanged || isSubjectChanged) {
       eloStandards = []
     } else if (!isEmpty(grades)) {
-      eloStandards = eloStandards.filter((elo) =>
-        elo?.grades?.some((grade) => grades.includes(grade))
+      eloStandards = eloStandards.filter(
+        (elo) =>
+          !elo?.grades || elo?.grades?.some((grade) => grades.includes(grade))
       )
     }
     const newState = {
@@ -164,7 +165,7 @@ const StandardsModal = ({
     const tloId =
       standardDetails.standards?.[0].domainId ||
       state.eloStandards[0]?.tloId ||
-      curriculumStandardsTLO[0]._id ||
+      curriculumStandardsTLO[0]?._id ||
       ''
     setSelectedTLO(curriculumStandardsTLO.find((tlo) => tlo._id === tloId))
     getStandardElos({
@@ -351,7 +352,7 @@ const StandardsModal = ({
               </TLOList>
             </Col>
             <Col md={16} style={{ overflow: 'hidden' }}>
-              {enableSelectAll && selectedTLO && (
+              {enableSelectAll && selectedTLO && !curriculumStandardsLoading && (
                 <>
                   <Row type="flex">
                     <CheckboxLabel

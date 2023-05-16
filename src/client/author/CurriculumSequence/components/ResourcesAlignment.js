@@ -306,7 +306,7 @@ const ResourcesAlignment = ({
                 ))}
               {showMoreButtonEnabled && (
                 <Select.Option
-                  title="show"
+                  title="Show More"
                   value="show"
                   style={{ display: 'block', cursor: 'pointer' }}
                   disabled

@@ -90,7 +90,7 @@ const FiltersSidebar = ({
           ))}
         {showMoreButtonEnabled && (
           <Select.Option
-            title="show"
+            title="Show More"
             value="show"
             style={{ textAlign: 'center', display: 'block' }}
             disabled

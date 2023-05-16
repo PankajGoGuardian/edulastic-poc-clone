@@ -208,7 +208,12 @@ const TestListFilters = ({
           onChange: 'standardIds',
           optionFilterProp: 'children',
           data: formattedStandards,
-          filterOption: searchFilterOption,
+          filterOption: (input, option) => {
+            const children = option.props.children
+            if (typeof children === 'string') {
+              return children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          },
           showSearch: true,
           isStandardSelect: true,
           handleShowBrowseModal: () => {

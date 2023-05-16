@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { lightGreySecondary } from '@edulastic/colors'
+import { lightGreySecondary, themeColor } from '@edulastic/colors'
 
 export const ELOList = styled.div`
   max-height: 40vh;
@@ -17,6 +17,6 @@ export const EloText = styled.div`
 export const StyledDiv = styled.div`
   text-align: center;
   font-weight: 800;
-  color: #333;
+  color: ${themeColor};
   cursor: pointer;
 `

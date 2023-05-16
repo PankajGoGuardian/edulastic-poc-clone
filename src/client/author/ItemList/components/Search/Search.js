@@ -361,11 +361,15 @@ const Search = ({
                     mode="multiple"
                     size="large"
                     optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
+                    filterOption={(input, option) => {
+                      const children = option.props.children
+                      if (typeof children === 'string') {
+                        return (
+                          children.toLowerCase().indexOf(input.toLowerCase()) >=
+                          0
+                        )
+                      }
+                    }}
                     placeholder="All Standards"
                     onChange={(stds) => {
                       const values = stds.map((item) => ({
@@ -388,7 +392,7 @@ const Search = ({
                     ))}
                     {showMoreButtonEnabled && (
                       <Select.Option
-                        title="show"
+                        title="Show More"
                         value="show"
                         style={{ display: 'block', cursor: 'pointer' }}
                         disabled

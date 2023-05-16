@@ -626,7 +626,7 @@ class SubjectGrade extends React.Component {
                           )}
                           {showMoreButtonEnabled && (
                             <Select.Option
-                              title="show"
+                              title="Show More"
                               value="show"
                               style={{ display: 'block', cursor: 'pointer' }}
                               disabled

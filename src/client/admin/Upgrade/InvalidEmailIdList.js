@@ -27,10 +27,10 @@ export default function InvalidEmailIdList({
   const allEmailIdsList = allEmailIds
     ?.split(',')
     ?.map((email) => email.trim())
-    ?.filter((email) => email != '')
+    ?.filter(Boolean)
 
   const invalidEmailIds = allEmailIdsList?.filter(
-    (element) => !validEmailIds?.includes(element)
+    (element) => !validEmailIds?.includes(element.toLowerCase())
   )
 
   const showModal = (item) =>

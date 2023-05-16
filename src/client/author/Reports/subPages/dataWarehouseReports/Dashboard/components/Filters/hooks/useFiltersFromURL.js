@@ -9,7 +9,7 @@ import { getDemographicsFilterTagsData } from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
-  availableAssessmentType,
+  availableTestTypes,
   defaultTermId,
   fetchUpdateTagsData,
   filters,
@@ -92,7 +92,7 @@ function useFiltersFromURL({
         termId: urlSchoolYear,
         testSubjects: urlTestSubjects,
         testGrades: urlTestGrades,
-        assessmentTypes: availableAssessmentType.filter((a) =>
+        assessmentTypes: availableTestTypes.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
 

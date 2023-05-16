@@ -16,6 +16,8 @@ import {
   compareByOptions as compareByOptionsRaw,
   academicSummaryFiltersTypes,
   buildAcademicSummaryFilters,
+  getPerformanceBandList,
+  getAvailableAcademicTestTypes,
 } from './utils'
 import { buildRequestFilters } from '../common/utils'
 import {
@@ -81,19 +83,39 @@ const Dashboard = ({
   )
 
   const { academicSummaryFilters } = settings
-  const { bandInfo = [] } = get(filtersData, 'data.result', {})
+  const { bandInfo = [], externalBands = [] } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+  const availableAcademicTestTypes = useMemo(
+    () => getAvailableAcademicTestTypes(externalBands),
+    [externalBands]
+  )
+
   const performanceBandList = useMemo(
-    () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
-    [bandInfo]
+    () =>
+      getPerformanceBandList(
+        bandInfo,
+        externalBands,
+        academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
+        availableAcademicTestTypes
+      ),
+    [
+      bandInfo,
+      externalBands,
+      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE],
+      availableAcademicTestTypes,
+    ]
   )
 
   const selectedPerformanceBand = (
-    bandInfo.filter(
-      (x) =>
-        x._id ===
+    performanceBandList.filter(
+      ({ key }) =>
+        key ===
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key
-    )[0] || bandInfo[0]
+    )[0] || performanceBandList[0]
   )?.performanceBand
 
   const search = useUrlSearchParams(location)
@@ -108,7 +130,9 @@ const Dashboard = ({
     const { performanceBand, testType } = buildAcademicSummaryFilters(
       search,
       academicSummaryFilters,
-      performanceBandList
+      availableAcademicTestTypes,
+      bandInfo,
+      externalBands
     )
     setSettings({
       ...settings,
@@ -200,6 +224,7 @@ const Dashboard = ({
             tableDataRequestError={tableDataRequestError}
             tableData={tableData}
             loc={loc}
+            availableTestTypes={availableAcademicTestTypes}
           />
         </EduElse>
       </EduIf>

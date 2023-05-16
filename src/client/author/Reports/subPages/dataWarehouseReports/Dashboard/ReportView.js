@@ -1,8 +1,5 @@
 import React from 'react'
 import SectionLabel from '../../../common/components/SectionLabel'
-
-import { availableTestTypes } from './utils'
-
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
 import TableSection from './components/TableSection'
@@ -30,6 +27,7 @@ function ReportView({
   tableDataRequestError,
   tableData,
   loc,
+  availableTestTypes,
 }) {
   const { academicSummaryFilters } = settings
 

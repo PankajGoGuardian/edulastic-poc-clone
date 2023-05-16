@@ -10,10 +10,7 @@ import {
   resetStudentFilters as resetFilters,
 } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
-import {
-  staticDropDownData,
-  availableTestTypes as availableAssessmentType,
-} from '../../utils'
+import { staticDropDownData } from '../../utils'
 
 import { actions, selectors } from '../../ducks'
 import {
@@ -25,6 +22,7 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
+import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 
 const Filters = ({
   showFilter,
@@ -61,7 +59,10 @@ const Filters = ({
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
-  const { demographics = [] } = get(filtersData, 'data.result', {})
+  const {
+    demographics = [],
+    testTypes: availableTestTypes = getArrayOfAllTestTypes(),
+  } = get(filtersData, 'data.result', {})
 
   useFiltersPreload({
     reportId,
@@ -80,7 +81,7 @@ const Filters = ({
 
   useFiltersFromURL({
     _onGoClick,
-    availableAssessmentType,
+    availableTestTypes,
     defaultTermId,
     fetchUpdateTagsData,
     filters,
@@ -190,7 +191,7 @@ const Filters = ({
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
       assessmentTypesRef={assessmentTypesRef}
-      availableAssessmentType={availableAssessmentType}
+      availableTestTypes={availableTestTypes}
       userRole={userRole}
       demographics={demographics}
       terms={terms}

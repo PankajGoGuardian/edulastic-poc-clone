@@ -21,5 +21,8 @@
     "confirm": "CONFIRM ?",
     "buttonProceed": "Proceed",
     "buttonCancel": "Cancel"
+  },
+  "assessmentPlayer": {
+    "immersiveReaderToolTip": "Immersive Reader"
   }
 }

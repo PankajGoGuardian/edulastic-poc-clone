@@ -11,6 +11,7 @@ import {
   MathFormulaDisplay,
   PrintActionWrapper,
   FlexContainer,
+  EduIf,
 } from '@edulastic/common'
 import {
   roleuser,
@@ -114,22 +115,10 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
   return (
     <>
       <PrintActionWrapper />
-      <PrintAssessmentContainer className="page" ref={containerRef}>
-        <StyledHeader>
-          <StyledTitle>
-            <b>
-              <Color>Edu</Color>
-            </b>
-            lastic
-          </StyledTitle>
-          <Row type="flex" className="print-assessment-title-container">
-            <Col>
-              <span> {test.title}</span>
-            </Col>
-          </Row>
-          <span> Created By {test?.createdBy?.name} </span> <br />
-        </StyledHeader>
-        <hr />
+      <PrintAssessmentContainer
+        className="page printAssessPage"
+        ref={containerRef}
+      >
         {!isContentHidden && questions.length ? (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             {questions.map((question, index) => {
@@ -153,6 +142,26 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                   .map(({ name }) => name)
               return (
                 <div style={questionHeight}>
+                  <EduIf condition={index === 0}>
+                    <StyledHeader>
+                      <StyledTitle>
+                        <b>
+                          <Color>Edu</Color>
+                        </b>
+                        lastic
+                      </StyledTitle>
+                      <Row
+                        type="flex"
+                        className="print-assessment-title-container"
+                      >
+                        <Col>
+                          <span> {test.title}</span>
+                        </Col>
+                      </Row>
+                      <span> Created By {test?.createdBy?.name} </span> <br />
+                    </StyledHeader>
+                    <hr />
+                  </EduIf>
                   <QuestionWrapper
                     view="preview"
                     type={question.type}
@@ -313,7 +322,7 @@ const PrintAssessmentContainer = styled.div`
     }
   }
   .__print-question-main-wrapper {
-    display: inline-table;
+    display: block;
     width: 100%;
   }
   @page {
@@ -324,6 +333,12 @@ const PrintAssessmentContainer = styled.div`
   * check https://snapwiz.atlassian.net/browse/EV-24370
  */
   @media print {
+    div[data-cy='question-container'] {
+      break-inside: avoid;
+    }
+    .printAssessPage {
+      page-break-after: avoid;
+    }
     .hide-tail {
       overflow: hidden !important;
     }

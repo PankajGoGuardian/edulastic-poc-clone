@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { connect } from 'react-redux'
-import { isEmpty, get, mapValues, head, includes, filter } from 'lodash'
-import next from 'immer'
+import { isEmpty, get, mapValues, includes, filter } from 'lodash'
 import { Spin } from 'antd'
 
 import { SpinLoader } from '@edulastic/common'
@@ -10,9 +9,15 @@ import { reportUtils } from '@edulastic/constants'
 import { reportGroupType } from '@edulastic/constants/const/report'
 
 import { SubHeader } from '../../../common/components/Header'
-import { NoDataContainer, ReportContainer } from '../../../common/styled'
+import {
+  NoDataContainer,
+  ReportContainer,
+  StyledH3,
+} from '../../../common/styled'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+import SectionLabel from '../../../common/components/SectionLabel'
+import SectionDescription from '../../../common/components/SectionDescription'
 import MultipleAssessmentReportFilters from './components/Filters'
 import Chart from './components/Chart'
 import Table from './components/Table'
@@ -33,13 +38,15 @@ import {
 } from '../../../../src/selectors/user'
 import { actions, selectors } from './ducks'
 
-import navigation from '../../../common/static/json/navigation.json'
 import { getCompareByOptions, getChartData, getTableData } from './utils'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
+import { getSelectedCompareBy } from '../../../common/util'
+import useTabNavigation from '../../../common/hooks/useTabNavigation'
 
 const { downloadCSV } = reportUtils.common
 
 const onCsvConvert = (data) =>
-  downloadCSV(`Data Warehouse - Multiple Assessment Report.csv`, data)
+  downloadCSV(`Data Studio - Performance Trends.csv`, data)
 
 const MultipleAssessmentReport = ({
   // value props
@@ -66,6 +73,7 @@ const MultipleAssessmentReport = ({
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportChartData,
@@ -124,6 +132,13 @@ const MultipleAssessmentReport = ({
     }
   }
 
+  const search = useUrlSearchParams(location)
+  const selectedCompareBy = getSelectedCompareBy({
+    search,
+    settings,
+    compareByOptions,
+  })
+
   const onGoClick = (_settings) => {
     const _requestFilters = {}
     Object.keys(_settings.requestFilters).forEach((filterType) => {
@@ -142,40 +157,20 @@ const MultipleAssessmentReport = ({
         testIds: _requestFilters.testIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
-      selectedCompareBy: settings.selectedCompareBy?.key
-        ? settings.selectedCompareBy
-        : head(compareByOptions),
+      selectedCompareBy,
     })
     setShowApply(false)
   }
 
   const updateFilterDropdownCB = (selected, keyName) => {
     if (keyName === 'compareBy') {
+      if (search.selectedCompareBy) {
+        history.replace(
+          `${location.pathname}?${qs.stringify(settings.requestFilters)}`
+        )
+      }
       setDWMARSettings({ ...settings, selectedCompareBy: selected })
     }
-  }
-
-  const computeChartNavigationLinks = () => {
-    const { requestFilters } = settings
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(requestFilters)
-      const obj = {}
-      arr.forEach((item) => {
-        const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-        obj[item] = val
-      })
-      const _navigationItems = navigation.navigation[
-        navigation.locToData[loc].group
-      ].filter((item) => {
-        // if data warehouse report is shared, only that report tab should be shown
-        return !reportId || item.key === loc
-      })
-      return next(_navigationItems, (draft) => {
-        const _currentItem = draft.find((t) => t.key === loc)
-        _currentItem.location += `?${qs.stringify(obj)}`
-      })
-    }
-    return []
   }
 
   useEffect(
@@ -186,24 +181,14 @@ const MultipleAssessmentReport = ({
     []
   )
 
-  useEffect(() => {
-    if (settings.requestFilters.termId) {
-      const obj = {}
-      const arr = Object.keys(settings.requestFilters)
-      arr.forEach((item) => {
-        const val =
-          settings.requestFilters[item] === ''
-            ? 'All'
-            : settings.requestFilters[item]
-        obj[item] = val
-      })
-      obj.reportId = reportId || ''
-      const path = `?${qs.stringify(obj)}`
-      history.push(path)
-    }
-    const navigationItems = computeChartNavigationLinks()
-    updateNavigation(navigationItems)
-  }, [settings])
+  useTabNavigation({
+    settings,
+    reportId,
+    history,
+    loc,
+    updateNavigation,
+    extraFilters: { selectedCompareBy: settings.selectedCompareBy.key },
+  })
 
   // get report data
   useEffect(() => {
@@ -259,6 +244,7 @@ const MultipleAssessmentReport = ({
       internalMetricsForChart = [],
       externalMetricsForChart = [],
       incompleteTests: _incompleteTests = [],
+      externalBands = [],
     } = get(reportChartData, 'data.result', {})
     const _internalMetricsForChart = internalMetricsForChart.map((d) => ({
       ...d,
@@ -267,7 +253,8 @@ const MultipleAssessmentReport = ({
     const _chartData = getChartData(
       _internalMetricsForChart,
       externalMetricsForChart,
-      _selectedPerformanceBand
+      _selectedPerformanceBand,
+      externalBands
     )
     return {
       incompleteTests: _incompleteTests,
@@ -282,6 +269,9 @@ const MultipleAssessmentReport = ({
       externalMetricsForTable = [],
       metaInfo = [],
     } = get(reportTableData, 'data.result', {})
+    const { externalBands = [] } = get(reportChartData, 'data.result', {})
+    if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) return []
+
     const _internalMetricsForTable = internalMetricsForTable.map((d) => ({
       ...d,
       isIncomplete: incompleteTests.includes(d.testId),
@@ -291,9 +281,15 @@ const MultipleAssessmentReport = ({
       externalMetricsForTable,
       metaInfo,
       selectedPerformanceBand,
+      externalBands,
       settings.selectedCompareBy.key
     )
-  }, [reportTableData, incompleteTests, selectedPerformanceBand])
+  }, [
+    reportChartData,
+    reportTableData,
+    incompleteTests,
+    selectedPerformanceBand,
+  ])
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true
@@ -330,7 +326,7 @@ const MultipleAssessmentReport = ({
           filtersTabKey={filtersTabKey}
           filters={filters}
           filterTagsData={filterTagsData}
-          selectedFilterTagsData={settings.selectedFilterTagsData}
+          selectedFilterTagsData={selectedFilterTagsData}
           // action props (others)
           setShowApply={setShowApply}
           showFilter={showFilter}
@@ -363,6 +359,20 @@ const MultipleAssessmentReport = ({
           </NoDataContainer>
         ) : (
           <>
+            <SectionLabel
+              $margin="30px 0px 10px 0px"
+              style={{ fontSize: '20px' }}
+              showHelp
+            >
+              Performance Trends
+            </SectionLabel>
+            <SectionDescription>
+              View whether the student&apos;s performance is improving over time
+              and take necessary interventions.
+            </SectionDescription>
+            <StyledH3 margin="30px 0 0 0">
+              Performance across Assessments
+            </StyledH3>
             <Chart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
@@ -372,9 +382,8 @@ const MultipleAssessmentReport = ({
             <TableFilters
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
-              selectedCompareBy={
-                settings.selectedCompareBy || head(compareByOptions)
-              }
+              selectedCompareBy={selectedCompareBy}
+              isSharedReport={isSharedReport}
             />
             <Table
               tableData={tableData}

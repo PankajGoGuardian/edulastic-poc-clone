@@ -15,6 +15,16 @@ const create = (data) =>
     })
     .then((result) => result.data.result)
 
+const createAssignmentV2 = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/v2/assign`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data)
+
 const bulkAssign = (data) =>
   api
     .callApi({
@@ -36,6 +46,7 @@ const update = (id, data) =>
 const remove = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${assignmentId}/group/${classId}?testId=${testId}`,
       method: 'delete',
     })
@@ -313,4 +324,5 @@ export default {
   editTagsRequest,
   getBubbleSheet,
   bulkAssign,
+  createAssignmentV2,
 }

@@ -65,8 +65,12 @@ class StandardsBasedReport extends Component {
         return toggleVerifyEmailModal(true)
       }
     }
+    const { assignmentId, classId } = match.params
+    const lastClassId = additionalData.classId
+    const lastAssignmentId = additionalData.assignmentId
     if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params
+      loadTestActivity(assignmentId, classId)
+    } else if (lastAssignmentId !== assignmentId || classId !== lastClassId) {
       loadTestActivity(assignmentId, classId)
     }
   }

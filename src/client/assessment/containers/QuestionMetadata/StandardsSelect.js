@@ -6,7 +6,7 @@ import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from 'react-i18next'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { isEqual, uniq } from 'lodash'
+import { isEqual, keyBy, uniq } from 'lodash'
 import { getPreviouslyUsedOrDefaultInterestsSelector } from '../../../author/src/selectors/user'
 import StandardsModal from './StandardsModal'
 import {
@@ -122,13 +122,17 @@ function StandardsSelect(props) {
     disabled,
     standardDetails,
     previouslyUsedOrDefaultInterests,
+    placeholder,
+    selectedSubject,
   } = props
-
+  if (selectedSubject)
+    previouslyUsedOrDefaultInterests.subject = selectedSubject
   const {
     subject: defaultSubject,
     grades: defaultGrades,
     curriculum: defaultCurriculum,
   } = previouslyUsedOrDefaultInterests
+
   const defaultCurriculumId = defaultCurriculum?.id || ''
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -214,6 +218,18 @@ function StandardsSelect(props) {
     extraProps.disableDropdown = true
   }
 
+  const elosById = useMemo(() => keyBy(curriculumStandards.elo, '_id'), [
+    curriculumStandards.elo,
+  ])
+  const allStandards = useMemo(
+    () =>
+      standardDetails?.standards?.map((std) => ({
+        ...std,
+        _id: std.standardId,
+      })) || [],
+    [standardDetails?.standards]
+  )
+
   return (
     <>
       <StandardsModal
@@ -231,16 +247,26 @@ function StandardsSelect(props) {
         getCurriculumStandards={searchCurriculumStandards}
         curriculumStandardsLoading={curriculumStandardsLoading}
         singleSelect={mode !== 'multiple'}
-        standardDetails={standardDetails}
+        standardDetails={
+          standardDetails && {
+            ...standardDetails,
+            standards:
+              standardDetails?.standards?.map((std) => ({
+                ...std,
+                grades: elosById[std.standardId]?.grades,
+              })) || [],
+          }
+        }
         enableSelectAll
       />
       <StandardsSelectButton
         mode={mode}
-        allStandards={curriculumStandards.elo}
+        allStandards={allStandards}
         onIconClick={() => setIsModalVisible(true)}
         value={standardIds}
         onChange={handleSelectChange}
         disabled={disabled}
+        placeholder={placeholder}
         {...extraProps}
       />
     </>

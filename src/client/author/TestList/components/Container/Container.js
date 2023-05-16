@@ -326,7 +326,10 @@ class TestList extends Component {
       searchParams.curriculumId =
         Number(searchParams.curriculumId) || searchFilters.curriculumId || ''
       searchParams.standardIds = searchParams.standardIds
-        ? searchParams.standardIds.map((id) => parseInt(id, 10))
+        ? searchParams.standardIds.map((item) => ({
+            ...item,
+            _id: parseInt(item._id, 10),
+          }))
         : []
       Object.assign(searchFilters, pick(searchParams, Object.keys(testFilters)))
     }
@@ -1539,7 +1542,13 @@ const enhance = compose(
     {
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
-      receiveTests: receiveTestsAction,
+      receiveTests: ({ search, ...rest }) => {
+        const _search = {
+          ...search,
+          standardIds: search.standardIds.map((item) => item._id),
+        }
+        return receiveTestsAction({ search: _search, ...rest })
+      },
       addModuleToPlaylist: createNewModuleAction,
       updateModuleInPlaylist: updateModuleAction,
       deleteModuleFromPlaylist: deleteModuleAction,

@@ -14,6 +14,7 @@ import userInteractions from './userInteractions'
 import assessmentPlayer from './assessmentPlayer'
 import previewTest from '../sharedDucks/previewTest'
 import customKeypad from '../components/KeyPadOptions/ducks'
+import audioRecording from './media'
 
 const assessmentReducers = {
   userWork, // Item/Question level userWork
@@ -32,6 +33,7 @@ const assessmentReducers = {
   assessmentPlayer,
   previewTest,
   customKeypad,
+  audioRecording,
 }
 
 export default assessmentReducers

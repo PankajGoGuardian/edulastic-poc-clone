@@ -297,12 +297,12 @@ export const nameValidator = (name) => {
 
   // rules (valid name)
   // should start with alphabet
-  // should contain at least three char (eg: stu, st1 s01)
+  // should contain at least one char
   // should contain only one space between name/word
   // can contain number after initial alphabet
   // can contain special characters ' and - after initial alphabet
 
-  const namePattern = /^(?!\d)(?!-)(?!')[a-zA-Z\d-']{2,}(?: [a-zA-z\d-']+)*$/
+  const namePattern = /^(?!\d)(?!-)(?!')[a-zA-Z\d-']{1,}(?: [a-zA-z\d-']+)*$/
   if (!trimmedName || !namePattern.test(trimmedName)) {
     return false
   }

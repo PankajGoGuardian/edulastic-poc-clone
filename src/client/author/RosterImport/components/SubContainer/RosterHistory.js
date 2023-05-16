@@ -14,7 +14,7 @@ import {
   MetaDataOnTable,
   StyledButton,
   StyledDownloadIcon,
-} from './styled'
+} from './styled-components'
 import { Table } from '../../../../admin/Common/StyledComponents/index'
 
 const { Column } = Table

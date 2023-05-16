@@ -58,6 +58,19 @@ const Stimulus = withTheme(
    */
     & table {
       word-break: normal;
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-35090
+       * table cell shows all content in one line
+       */
+      @media print {
+        & td {
+          white-space: normal;
+        }
+      }
+    }
+
+    & p {
+      text-indent: 0px !important;
     }
   `)
 )

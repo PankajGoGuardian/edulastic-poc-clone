@@ -9,7 +9,11 @@ import { getUser } from '../../author/src/selectors/user'
 import { actions } from '../uploadAnswerSheets/ducks'
 import { bubbleSheetsCollectionName } from '../uploadAnswerSheets/utils'
 
-const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
+const BubbleScanNotificationsListener = ({
+  user,
+  setOmrSheetDocs,
+  updateOmrUploadSessionOnSplitPDF,
+}) => {
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
       db
@@ -28,13 +32,17 @@ const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
       ].includes(user.role)
     ) {
       const uniqDocs = uniqBy(userNotifications, '__id')
+      // TODO: find the current session's splitPDFDoc and use it to show notifications if failed
+      const splitPDFDocs = uniqDocs.filter((doc) => doc.action === 'SPLIT_PDF')
+      const scannedDocs = uniqDocs.filter((doc) => doc.action !== 'SPLIT_PDF')
       // group docs by assignmentId
-      const groupedDocs = groupBy(uniqDocs, 'assignmentId')
+      const groupedDocs = groupBy(scannedDocs, 'assignmentId')
       // created nested groups by sessionId
       Object.keys(groupedDocs).forEach((aId) => {
         groupedDocs[aId] = groupBy(groupedDocs[aId], 'sessionId')
       })
       setOmrSheetDocs(groupedDocs)
+      updateOmrUploadSessionOnSplitPDF(splitPDFDocs)
     }
   }, [userNotifications])
 
@@ -47,5 +55,7 @@ export default connect(
   }),
   {
     setOmrSheetDocs: actions.setOmrSheetDocsAction,
+    updateOmrUploadSessionOnSplitPDF:
+      actions.updateOmrUploadSessionOnSplitPDFAction,
   }
 )(BubbleScanNotificationsListener)

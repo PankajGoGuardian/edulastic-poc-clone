@@ -1,4 +1,4 @@
-import { userApi } from '@edulastic/api'
+import { userApi, manageSubscriptionsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import {
   CustomModalStyled,
@@ -157,7 +157,10 @@ const ManageSubscriptionsByLicenses = ({
     false
   )
   const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
-
+  const [
+    allLicensedUserInSelectedDistrict,
+    setAllLicensedUserInSelectedDistrict,
+  ] = useState([])
   const [usersList, setUsersList] = useState([])
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [fieldData, setFieldData] = useState({
@@ -181,9 +184,37 @@ const ManageSubscriptionsByLicenses = ({
     })
   }, [])
 
+  useEffect(() => {
+    const fetchLicensedUserInDistrict = async () => {
+      try {
+        const licensensedUsersInDistrict = await manageSubscriptionsApi.getAllLicensedUserInDistrict(
+          {
+            districtId: fieldData.districtId,
+            type: searchType,
+          }
+        )
+        const sanitizedUserData = licensensedUsersInDistrict.map((o) => ({
+          userId: o._id,
+          username: o.email,
+        }))
+        setAllLicensedUserInSelectedDistrict(sanitizedUserData)
+        setUsersList(sanitizedUserData)
+      } catch (e) {
+        setAllLicensedUserInSelectedDistrict([])
+        setUsersList([])
+      }
+    }
+    if (fieldData.districtId) {
+      fetchLicensedUserInDistrict()
+    }
+  }, [fieldData.districtId])
+
   const fetchUsers = async (searchString) => {
     try {
-      if (!searchString) return
+      if (!searchString) {
+        setUsersList(allLicensedUserInSelectedDistrict)
+        return
+      }
       const searchData = {
         districtId: fieldData?.districtId,
         search: {

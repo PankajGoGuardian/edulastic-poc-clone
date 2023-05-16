@@ -64,14 +64,19 @@ const SharedReportsContainer = ({
       // do nothing
     }
     switch (reportType) {
-      case report.reportNavType.WHOLE_CHILD_REPORT:
+      case report.reportNavType.WHOLE_LEARNER_REPORT:
         history.push(
           `/author/reports/${reportType}/student/${filters.studentId}?termId=${filters.termId}&reportId=${_id}`
         )
         break
       case report.reportNavType.MULTIPLE_ASSESSMENT_REPORT_DW:
         history.push(
-          `/author/reports/${reportType}?termId-${filters.termId}&reportId=${_id}`
+          `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
+      case report.reportNavType.DW_EFFICACY_REPORT:
+        history.push(
+          `/author/reports/${reportType}?termId=${filters.termId}&reportId=${_id}`
         )
         break
       default:

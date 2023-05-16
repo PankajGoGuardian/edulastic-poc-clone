@@ -57,6 +57,8 @@ const useDropdownData = (
           _optionProps.value = item[value_key]
         }
 
+        const showItemId = showId && item.showId !== false
+
         return (
           <OptionComponent
             {..._optionProps}
@@ -65,7 +67,7 @@ const useDropdownData = (
           >
             {typeof prefix === 'function' ? prefix(item) : prefix}
             <span style={titleStyle}>{_title}</span>
-            {showId && (
+            {showItemId && (
               <span>{` (ID:${item[id_key].substring(
                 item[id_key].length - 5
               )})`}</span>

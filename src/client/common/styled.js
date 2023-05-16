@@ -8,8 +8,8 @@ import {
   title,
   white,
 } from '@edulastic/colors'
-import { Card } from '@edulastic/common'
-import { Button, Form, Input, Modal, Pagination, Select, Table } from 'antd'
+import { Card, EduButton } from '@edulastic/common'
+import { Form, Input, Modal, Pagination, Select, Table } from 'antd'
 import styled from 'styled-components'
 
 export const StyledCard = styled(Card)`
@@ -124,7 +124,7 @@ export const StyledContentBucketSearch = styled(Input.Search)`
   }
 `
 
-export const StyledButton = styled(Button)`
+export const StyledButton = styled(EduButton)`
   &.ant-btn {
     font-size: ${(props) =>
       props.theme.manageDistrict.refineResultsButtonTextFontSize};
@@ -252,7 +252,7 @@ export const ButtonsContainer = styled.div`
   margin: 10px;
 `
 
-const CommonStyledButton = styled(Button)`
+const CommonStyledButton = styled(EduButton)`
   border-radius: 4px;
   text-transform: uppercase;
   font-size: ${(props) =>
@@ -421,4 +421,8 @@ export const StyledSelect = styled(Select)`
       fill: ${themeColor};
     }
   }
+`
+
+export const Spacer = styled.span`
+  flex-grow: 1;
 `

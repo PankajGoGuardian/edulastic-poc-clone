@@ -141,7 +141,6 @@ class ComposeQuestion extends Component {
         </Subtitle>
         <FroalaEditor
           fallback={<Progress />}
-          tag="textarea"
           placeholder={t('component.multiplechoice.questionPlaceholder')}
           value={item.stimulus}
           toolbarId={toolbarId}

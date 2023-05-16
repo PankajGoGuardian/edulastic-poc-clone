@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { get } from 'lodash'
 import styled from 'styled-components'
 import { nonAutoGradableTypes } from '@edulastic/constants'
-import { withWindowSizes } from '@edulastic/common'
+import { EduIf, withWindowSizes } from '@edulastic/common'
 import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
@@ -70,7 +70,6 @@ const PlayerHeader = ({
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
-  const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC']
   const showSettingIcon =
     windowWidth < IPAD_LANDSCAPE_WIDTH || isZoomGreator('md', theme.zoomLevel)
   let isNonAutoGradable = false
@@ -93,6 +92,8 @@ const PlayerHeader = ({
       hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
+      currentItem={currentItem}
+      options={dropdownOptions}
       isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
     />
   )
@@ -161,7 +162,7 @@ const PlayerHeader = ({
                     </Tooltip>
                   </ToolTipContainer>
                 )}
-                {!showSettingIcon && (
+                <EduIf condition={!showSettingIcon}>
                   <TestButton
                     answerChecksUsedForItem={answerChecksUsedForItem}
                     settings={settings}
@@ -179,14 +180,10 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
-                  />
-                )}
-                {!showSettingIcon && (
+                  />{' '}
                   <ToolBar
                     settings={settings}
-                    calcBrands={calcBrands}
                     tool={toolsOpenStatus}
-                    changeCaculateMode={() => {}}
                     changeTool={toggleToolsOpenStatus}
                     qType={get(
                       items,
@@ -206,9 +203,11 @@ const PlayerHeader = ({
                     isShowReferenceModal={isShowReferenceModal}
                     canShowReferenceMaterial={canShowReferenceMaterial}
                   />
-                )}
+                </EduIf>
               </MainActionWrapper>
-              {!isMobile && rightButtons}
+              <EduIf condition={!isMobile}>
+                <>{rightButtons}</>
+              </EduIf>
             </HeaderWrapper>
           </HeaderPracticePlayer>
         </HeaderMainMenu>

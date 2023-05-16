@@ -62,7 +62,6 @@ const CustomEditor = ({
   value,
   onChange,
   toolbarId,
-  tag,
   toolbarSize,
   additionalToolbarOptions,
   initOnClick,
@@ -648,7 +647,6 @@ const CustomEditor = ({
 
         {configState && (
           <Editor
-            tag={tag}
             model={content}
             ref={editorRef}
             onModelChange={setChange}
@@ -665,7 +663,6 @@ const CustomEditor = ({
 }
 
 CustomEditor.propTypes = {
-  tag: PropTypes.string,
   value: PropTypes.string.isRequired,
   toolbarId: PropTypes.string,
   onChange: PropTypes.func.isRequired,
@@ -682,7 +679,6 @@ CustomEditor.propTypes = {
 }
 
 CustomEditor.defaultProps = {
-  tag: 'textarea',
   toolbarId: null,
   initOnClick: true,
   toolbarSize: 'STD',

@@ -134,6 +134,7 @@ const UploadAnswerSheets = ({
       groupId,
       sessionId,
       fromWebcam: fromWebcam === 'true',
+      aborted: true,
     })
   }, [])
 
@@ -156,52 +157,61 @@ const UploadAnswerSheets = ({
     }
   }, [sessionId, scanInProgress])
 
+  const sessionPageComponent =
+    currentSession?.status > omrUploadSessionStatus.SCANNING ? (
+      <SessionPage
+        sessionStatus={currentSession.status}
+        sessionMessage={currentSession.message}
+        assignmentId={assignmentId}
+        groupId={groupId}
+        pages={currentSession.pages}
+        showResponses={showResponses}
+        responsePageNumber={responsePageNumber}
+        setResponsePageNumber={setResponsePageNumber}
+      />
+    ) : (
+      <SessionPage
+        assignmentId={assignmentId}
+        groupId={groupId}
+        pages={pageDocs}
+        handleAbortClick={
+          scanInProgress ? () => handleAbortClick('session') : null
+        }
+        showResponses={showResponses}
+        responsePageNumber={responsePageNumber}
+        setResponsePageNumber={setResponsePageNumber}
+      />
+    )
+
   return (
     <PageLayout
       assignmentTitle={assignmentTitle}
       classTitle={classTitle}
       breadcrumbData={breadcrumbData}
     >
-      {loading ? (
-        <Spin />
-      ) : showSessions ? (
-        <SessionsPage
-          sessions={omrUploadSessions}
-          onSessionClick={handleSessionClick}
-        />
-      ) : !sessionId || uploading ? (
-        <UploadPage
-          uploading={uploading}
-          uploadProgress={uploadProgress}
-          currentSession={currentSession}
-          handleDrop={handleDrop}
-          handleCancelUpload={
-            uploading && sessionId && cancelUpload ? handleAbortClick : null
-          }
-        />
-      ) : currentSession?.status > omrUploadSessionStatus.SCANNING &&
-        currentSession.pages?.length ? (
-        <SessionPage
-          assignmentId={assignmentId}
-          groupId={groupId}
-          pages={currentSession.pages}
-          showResponses={showResponses}
-          responsePageNumber={responsePageNumber}
-          setResponsePageNumber={setResponsePageNumber}
-        />
-      ) : (
-        <SessionPage
-          assignmentId={assignmentId}
-          groupId={groupId}
-          pages={pageDocs}
-          handleAbortClick={
-            scanInProgress ? () => handleAbortClick('session') : null
-          }
-          showResponses={showResponses}
-          responsePageNumber={responsePageNumber}
-          setResponsePageNumber={setResponsePageNumber}
-        />
-      )}
+      {
+        // TODO: refactor this waterfall ternary logic and move it out of render block
+        loading ? (
+          <Spin />
+        ) : showSessions ? (
+          <SessionsPage
+            sessions={omrUploadSessions}
+            onSessionClick={handleSessionClick}
+          />
+        ) : !sessionId || uploading ? (
+          <UploadPage
+            uploading={uploading}
+            uploadProgress={uploadProgress}
+            currentSession={currentSession}
+            handleDrop={handleDrop}
+            handleCancelUpload={
+              uploading && sessionId && cancelUpload ? handleAbortClick : null
+            }
+          />
+        ) : (
+          sessionPageComponent
+        )
+      }
     </PageLayout>
   )
 }

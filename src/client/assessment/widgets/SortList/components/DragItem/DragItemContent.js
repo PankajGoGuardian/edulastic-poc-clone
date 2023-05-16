@@ -24,6 +24,7 @@ export const DragItemContent = ({
   isReviewTab,
   stemNumeration,
   isPrintPreview,
+  hideEvaluation,
 }) => {
   const [show, toggleShow] = useState(true)
 
@@ -49,7 +50,7 @@ export const DragItemContent = ({
    * so need to reduce 10px
    */
   const showPopover = scrollWidth - 10 > style?.maxWidth
-  const checkStyle = !active && showPreview && !isReviewTab
+  const checkStyle = !active && showPreview && !isReviewTab && !hideEvaluation
 
   const content = (
     <Container

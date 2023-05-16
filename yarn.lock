@@ -2353,6 +2353,13 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@microsoft/immersive-reader-sdk@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@microsoft/immersive-reader-sdk/-/immersive-reader-sdk-1.2.0.tgz#fdd6ec7f9715f77558fb8e91c03d5fb39ad9540c"
+  integrity sha512-SRd3D8zY2r0Uun0dF0tDGdqx8wN0t7NteHVZT+cxTXvzw4jAcl9HtKMrgo39VcWyHCGCyF9Hzzk28mhT/q6vVg==
+  dependencies:
+    json-schema "^0.4.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -2477,6 +2484,16 @@
     invariant "^2.2.3"
     prop-types "^15.6.1"
     react-lifecycles-compat "^3.0.4"
+
+"@react-querybuilder/ctx@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@react-querybuilder/ctx/-/ctx-5.4.0.tgz#c87ca0783905801e86fea2847516b7ec80fdb3f7"
+  integrity sha512-o5bPmjtrMNYUss2aLuh5owoNmi0/fy9PbuWVtZ+XfBddnj3chQctTQ0x9T5icutS5eOTxmSm3rQ/HbtniaYosw==
+
+"@react-querybuilder/ts@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@react-querybuilder/ts/-/ts-5.4.0.tgz#e0a05349f9ba1055c66f49b579538897043ed292"
+  integrity sha512-wRzf3DXjyhn0brFha6jDQWO/IExdjHrmthl8KamlfyU3XkD+HwvhCYR/AIa7EbIm3kfXJTkuutl3gI3Es1s7oQ==
 
 "@rollup/plugin-node-resolve@^7.1.1":
   version "7.1.3"
@@ -6464,6 +6481,11 @@ clsx@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+
+clsx@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
 
 co@^4.6.0:
   version "4.6.0"
@@ -10819,6 +10841,11 @@ immer@^2.1, immer@^2.1.5:
   resolved "https://registry.yarnpkg.com/immer/-/immer-2.1.5.tgz#0389947455c5a2c7a47f1e6f415c9d1a62a1ebed"
   integrity sha512-xyjQyTBYIeiz6jd02Hg12jV+9QISwF1crLcwTlzHpWH4e0ryNWj1kacpTwimK3bJV5NKKXw458G2vpqoB/inFA==
 
+immer@^9.0.17:
+  version "9.0.17"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.17.tgz#7cfe8fbb8b461096444e9da7a5ec4a67c6c4adf4"
+  integrity sha512-+hBruaLSQvkPfxRiTLK/mi4vLH+/VQS6z2KJahdoxlleFOI8ARqzOF17uy12eFDlqWmPoygwc5evgwcp+dlHhg==
+
 immutable@^3.7.4, immutable@^3.8.1:
   version "3.8.2"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
@@ -12415,7 +12442,7 @@ json-schema-traverse@^1.0.0:
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
 
-json-schema@0.4.0:
+json-schema@0.4.0, json-schema@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.4.0.tgz#f7de4cf6efab838ebaeb3236474cbba5a1930ab5"
   integrity sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==
@@ -16998,14 +17025,6 @@ react-froala-wysiwyg@3.1.1:
     create-react-class "^15.5.2"
     froala-editor "3.1.1"
 
-react-google-login@^5.0.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/react-google-login/-/react-google-login-5.2.2.tgz#a20b46440c6c1610175ef75baf427118ff0e9859"
-  integrity sha512-JUngfvaSMcOuV0lFff7+SzJ2qviuNMQdqlsDJkUM145xkGPVIfqWXq9Ui+2Dr6jdJWH5KYdynz9+4CzKjI5u6g==
-  dependencies:
-    "@types/react" "*"
-    prop-types "^15.6.0"
-
 react-helmet-async@^1.0.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-1.2.3.tgz#57326a69304ea3293036eafb49475e9ba454cb37"
@@ -17173,6 +17192,16 @@ react-proptype-conditional-require@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/react-proptype-conditional-require/-/react-proptype-conditional-require-1.0.4.tgz#69c2d5741e6df5e08f230f36bbc2944ee1222555"
   integrity sha1-acLVdB5t9eCPIw82u8KUTuEiJVU=
+
+react-querybuilder@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/react-querybuilder/-/react-querybuilder-5.4.0.tgz#553feddcb9086217b637b70cafd20cc48ca4777c"
+  integrity sha512-Gom2ZJY0xs2AYbcBvtHndmT0+M+mKYGUPS1i4e5KoN/fYur27jv65GXhqRFeKIIHxE96D+1WSpkXaKjqIfGy2g==
+  dependencies:
+    "@react-querybuilder/ctx" "^5.4.0"
+    "@react-querybuilder/ts" "^5.4.0"
+    clsx "^1.2.1"
+    immer "^9.0.17"
 
 react-quill@^1.3.3:
   version "1.3.5"

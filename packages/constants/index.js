@@ -50,6 +50,8 @@ const keyboard = require('./const/keyboard')
 const testTypes = require('./const/testTypes')
 const dataWarehouse = require('./const/dataWarehouse')
 const userPermissions = require('./const/userPermissions')
+const database = require('./const/database')
+const dictionaries = require('./const/dictionaries')
 
 // helpers / utils / transformers
 const reportUtils = require('./reportUtils')
@@ -108,4 +110,6 @@ module.exports = {
   testTypes,
   dataWarehouse,
   userPermissions,
+  database,
+  dictionaries,
 }

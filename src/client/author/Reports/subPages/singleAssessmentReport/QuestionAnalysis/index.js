@@ -1,110 +1,165 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-
-import { Col, Row } from 'antd'
+import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import {
+  report as reportTypes,
+  roleuser,
+  reportUtils,
+} from '@edulastic/constants'
 import { isEmpty } from 'lodash'
-import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
   StyledCard,
   StyledP,
-  TableContainer,
+  BottomRow,
   UpperContainer,
+  StyledDiv,
+  StyledSwitch,
+  StyledSpan,
+  StyledCol,
 } from './componenets/styled'
-import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
-
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
 import {
-  getQuestionAnalysisRequestAction,
-  getReportsQuestionAnalysis,
-  getReportsQuestionAnalysisLoader,
-  getReportsQuestionAnalysisError,
-  resetQuestionAnalysisAction,
-} from './ducks'
-
-import { getChartData, getTableData } from './utils/transformers'
-
-import dropDownData from './static/json/dropDownData.json'
+  getCsvDownloadingState,
+  getTestListSelector,
+  generateCSVAction,
+} from '../../../ducks'
+import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
+import TableContainer from './componenets/TableContainer'
+import { compareByEnums, pageSize, sortOrderMap } from './constants'
+import TableTitleAndFilter from './componenets/TableTitleAndFilter'
+import {
+  useQAnalysisDetailsFetch,
+  useQAnalysisSummaryFetch,
+} from './hooks/useFetch'
+
+//! FIXME Have better null-value handling than using memoized empty value
+const EMPTY_ARRAY = []
+
+const { sortByOptions, sortByLabels } = reportUtils.questionAnalysis
 
 const QuestionAnalysis = ({
-  loading,
-  error,
   isCsvDownloading,
   role,
-  questionAnalysis,
-  getQuestionAnalysis,
-  resetQuestionAnalysis,
   settings,
   sharedReport,
   toggleFilter,
   demographicFilters,
+  testList,
+  generateCSV,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
   const [compareBy, setCompareBy] = useState(
-    userRole === roleuser.TEACHER ? 'groupId' : 'schoolId'
+    userRole === roleuser.TEACHER ? compareByEnums.CLASS : compareByEnums.SCHOOL
   )
   const [chartFilter, setChartFilter] = useState({})
-
+  const [pageNo, setpageNo] = useState(1)
+  const [visibleIndices, setVisibleIndices] = useState({
+    startIndex: 0,
+    endIndex: 9,
+  })
+  const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
+  const [sortOrder, setSortOrder] = useState(undefined)
+  const { selectedTest } = settings
+  if (testList) {
+    const currentTest = testList.find((item) => item._id === selectedTest?.key)
+    if (currentTest) {
+      const { title } = currentTest
+      selectedTest.title = title
+    }
+  }
   const assessmentName = getAssessmentName(
-    questionAnalysis?.meta?.test || settings.selectedTest
+    settings.tagsData?.testId || selectedTest
   )
 
-  useEffect(() => () => resetQuestionAnalysis(), [])
+  const [
+    qSummaryData,
+    qSummaryLoading,
+    qSummaryLoadError,
+  ] = useQAnalysisSummaryFetch({
+    settings,
+    demographicFilters,
+    toggleFilter,
+  })
+  const [
+    performanceByDimension,
+    performanceByDimensionLoading,
+    performanceLoadError,
+  ] = useQAnalysisDetailsFetch({
+    settings,
+    demographicFilters,
+    compareBy,
+    sortOrder,
+    pageNo,
+    pageSize,
+  })
+  const qSummary = qSummaryData.metricInfo || EMPTY_ARRAY
+  const isDynamicTest = qSummaryData.isRecommended
+
+  const dataSizeError =
+    (qSummaryLoadError && qSummaryLoadError.dataSizeExceeded) ||
+    (performanceLoadError && performanceLoadError.dataSizeExceeded)
+
+  const generateCSVSelectionCriteria = [
+    (performanceByDimension?.totalRows || 0) > pageSize,
+    dataSizeError,
+  ]
+  const generateCSVRequired = generateCSVSelectionCriteria.some(Boolean)
 
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {
-        requestFilters: { ...settings.requestFilters, ...demographicFilters },
-        testId: settings.selectedTest.key,
+    if (isCsvDownloading && generateCSVRequired) {
+      const params = {
+        reportType: reportTypes.reportNavType.QUESTION_ANALYSIS,
+        reportFilters: {
+          ...settings.requestFilters,
+          ...demographicFilters,
+          visibleIndices,
+          compareBy,
+          sortKey,
+          sortOrder: sortOrderMap[sortOrder],
+          testId: settings.selectedTest.key,
+        },
+        reportExtras: {},
       }
-      getQuestionAnalysis(q)
+      generateCSV(params)
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      return () => toggleFilter(null, false)
-    }
-  }, [settings.selectedTest?.key, settings.requestFilters])
+  }, [isCsvDownloading])
 
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(questionAnalysis) &&
-      !questionAnalysis.metricInfo?.length
+      !qSummaryLoading &&
+      !isEmpty(qSummaryData) &&
+      !qSummary?.length
     ) {
       toggleFilter(null, true)
     }
-  }, [questionAnalysis])
+  }, [qSummary, qSummaryLoading, performanceByDimensionLoading])
 
-  const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [
-    questionAnalysis,
+  useEffect(() => {
+    if (pageNo !== 1) {
+      setpageNo(1)
+    }
+  }, [settings])
+
+  const chartData = useMemo(() => getChartData(qSummary, sortKey), [
+    qSummary,
+    sortKey,
   ])
-
-  const tableData = useMemo(() => getTableData(questionAnalysis), [
-    questionAnalysis,
-    compareBy,
-  ])
-
-  const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
-
-  const selectedCompareByOption = useMemo(
-    () =>
-      compareByDropDownData.find(({ key }) => key === compareBy) ||
-      compareByDropDownData[0],
-    [compareBy]
-  )
 
   const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
+    setpageNo(1)
+    setSortOrder(undefined)
+    setSortKey(sortByOptions.AVG_PERFORMANCE)
   }
 
   const onBarClickCB = (key) => {
@@ -121,7 +176,7 @@ const QuestionAnalysis = ({
     setChartFilter({})
   }
 
-  if (loading) {
+  if (qSummaryLoading) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."
@@ -130,7 +185,7 @@ const QuestionAnalysis = ({
     )
   }
 
-  if (questionAnalysis.isRecommended) {
+  if (isDynamicTest) {
     return (
       <NoDataContainer fontSize="12px">
         The Questions for each student have been dynamically selected and as a
@@ -139,103 +194,100 @@ const QuestionAnalysis = ({
     )
   }
 
-  if (error && error.dataSizeExceeded) {
+  if (dataSizeError) {
     return <DataSizeExceeded />
   }
 
-  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
+  if ((!qSummary?.length && !qSummaryLoading) || !settings.selectedTest.key) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
       </NoDataContainer>
     )
   }
+  const handleSort = (checked) =>
+    setSortKey(checked ? sortByOptions.Q_LABEL : sortByOptions.AVG_PERFORMANCE)
+
   return (
     <div>
       <UpperContainer>
         <StyledCard>
-          <StyledH3 data-testid="title">
-            Question Performance Analysis | {assessmentName}
-          </StyledH3>
+          <Row type="flex" justify="space-between" align="middle">
+            <StyledH3 data-testid="title" align="middle" margin="0">
+              Question Performance Analysis | {assessmentName}
+            </StyledH3>
+            <StyledCol>
+              <StyledDiv fontWeight="600" marginRight="10px" opacity="0.65">
+                Sort By (asc.):
+              </StyledDiv>
+              <StyledDiv>
+                <StyledSpan>Performance</StyledSpan>
+                <StyledSwitch
+                  checked={sortKey === sortByOptions.Q_LABEL}
+                  onChange={handleSort}
+                />
+                <StyledSpan>Question</StyledSpan>
+              </StyledDiv>
+            </StyledCol>
+          </Row>
           <SimpleStackedBarWithLineChartContainer
             chartData={chartData}
             onBarClickCB={onBarClickCB}
             onResetClickCB={onResetClickCB}
             filter={chartFilter}
+            setVisibleIndices={setVisibleIndices}
           />
           <StyledP style={{ marginTop: '-30px' }}>
-            ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)
+            ITEMS (SORTED BY {sortByLabels[sortKey]} IN ASCENDING ORDER)
           </StyledP>
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
+      <BottomRow>
         <StyledCard>
           <Row type="flex" justify="start" className="parent-row">
-            <Col className="top-row-container">
-              <Row type="flex" justify="space-between" className="top-row">
-                <Col>
-                  <StyledH3>
-                    Detailed Performance Analysis{' '}
-                    {userRole !== roleuser.TEACHER
-                      ? `By ${dropDownKeyToLabel[compareBy]}`
-                      : ''}{' '}
-                    | {assessmentName}
-                  </StyledH3>
-                </Col>
-                <Col data-cy="compareBy" data-testid="compareBy">
-                  {userRole !== roleuser.TEACHER ? (
-                    <ControlDropDown
-                      prefix="Compare by"
-                      by={selectedCompareByOption}
-                      selectCB={updateCompareByCB}
-                      data={compareByDropDownData}
-                    />
-                  ) : null}
-                </Col>
-              </Row>
-            </Col>
-            <Col className="bottom-table-container">
-              <QuestionAnalysisTable
-                isCsvDownloading={isCsvDownloading}
-                tableData={tableData}
-                compareBy={compareBy}
-                filter={chartFilter}
-                role={userRole}
-                compareByTitle={dropDownKeyToLabel[compareBy]}
-                isSharedReport={isSharedReport}
-              />
-            </Col>
+            <TableTitleAndFilter
+              userRole={userRole}
+              compareBy={compareBy}
+              assessmentName={assessmentName}
+              updateCompareByCB={updateCompareByCB}
+            />
+            <TableContainer
+              performanceByDimensionLoading={performanceByDimensionLoading}
+              compareBy={compareBy}
+              isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
+              chartFilter={chartFilter}
+              userRole={userRole}
+              sortKey={sortKey}
+              visibleIndices={visibleIndices}
+              setSortOrder={setSortOrder}
+              sortOrder={sortOrder}
+              performanceByDimension={performanceByDimension}
+              qSummary={qSummary}
+              pageSize={pageSize}
+              setpageNo={setpageNo}
+              pageNo={pageNo}
+              isSharedReport={isSharedReport}
+            />
           </Row>
         </StyledCard>
-      </TableContainer>
+      </BottomRow>
     </div>
   )
 }
 
-const reportPropType = PropTypes.shape({
-  metaInfo: PropTypes.array,
-  metricInfo: PropTypes.array,
-})
-
 QuestionAnalysis.propTypes = {
-  loading: PropTypes.bool.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   role: PropTypes.string.isRequired,
-  questionAnalysis: reportPropType.isRequired,
-  getQuestionAnalysis: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
 }
 
 export default connect(
   (state) => ({
-    loading: getReportsQuestionAnalysisLoader(state),
-    error: getReportsQuestionAnalysisError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
-    questionAnalysis: getReportsQuestionAnalysis(state),
+    testList: getTestListSelector(state),
   }),
   {
-    getQuestionAnalysis: getQuestionAnalysisRequestAction,
-    resetQuestionAnalysis: resetQuestionAnalysisAction,
+    generateCSV: generateCSVAction,
   }
 )(QuestionAnalysis)

@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
-import { EduButton } from '@edulastic/common'
+import { EduButton, EduIf, EduThen } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { SHOW_IMMERSIVE_READER } from '@edulastic/constants/const/test'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -15,14 +16,21 @@ import {
   Title,
 } from '../SimpleOptions/styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
-import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
+import PerformanceBand from '../../../TestPage/components/Setting/components/Container/PerformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
-const { accessibilities } = test
+const { accessibilities, accessibilitySettings } = test
+const {
+  magnifier,
+  scratchPad,
+  skipAlert,
+  immersiveReader,
+} = accessibilitySettings
 
 const MiscellaneousGroupContainer = ({
   assignmentSettings,
@@ -36,7 +44,8 @@ const MiscellaneousGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   premium,
-  t,
+  canUseImmersiveReader,
+  t: translate,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -47,6 +56,7 @@ const MiscellaneousGroupContainer = ({
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
+    showImmersiveReader = !!testSettings.showImmersiveReader,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -76,27 +86,35 @@ const MiscellaneousGroupContainer = ({
 
   const accessibilityData = [
     {
-      key: 'showMagnifier',
+      key: magnifier.key,
       value: showMagnifier,
-      description:
-        'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
-      id: 'magnifier-setting',
+      description: translate('accessibilitySettings.magnifier.description'),
+      id: magnifier.id,
     },
     {
-      key: 'enableScratchpad',
+      key: scratchPad.key,
       value: enableScratchpad,
-      description:
-        'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
-      id: 'scratchpad-setting',
+      description: translate('accessibilitySettings.scratchPad.description'),
+      id: scratchPad.id,
     },
     {
-      key: 'enableSkipAlert',
+      key: skipAlert.key,
       value: enableSkipAlert,
-      description:
-        'When enabled, a student can not skip a question without confirmation.',
-      id: 'skip-alert',
+      description: translate('accessibilitySettings.skipAlert.description'),
+      id: skipAlert.id,
     },
   ]
+
+  if (canUseImmersiveReader && !isDocBased) {
+    accessibilityData.unshift({
+      key: immersiveReader.key,
+      value: showImmersiveReader,
+      description: translate(
+        'accessibilitySettings.immersiveReader.description'
+      ),
+      id: immersiveReader.id,
+    })
+  }
 
   const {
     assessmentSuperPowersAnswerOnPaper,
@@ -180,7 +198,7 @@ const MiscellaneousGroupContainer = ({
           placement="rightBottom"
         />
         <DivBlock>
-          <PeformanceBand
+          <PerformanceBand
             disabled={freezeSettings || !performanceBands}
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
             performanceBand={performanceBand || {}}
@@ -231,7 +249,11 @@ const MiscellaneousGroupContainer = ({
                         width={tootltipWidth}
                         title={accessibilities[key]}
                         content={description}
-                        premium={featuresAvailable[key]}
+                        premium={
+                          key === SHOW_IMMERSIVE_READER
+                            ? canUseImmersiveReader
+                            : featuresAvailable[key]
+                        }
                         placement="rightTop"
                       />
                       <StyledRow
@@ -241,11 +263,24 @@ const MiscellaneousGroupContainer = ({
                         <Col span={10}>
                           <span style={{ fontSize: 12, fontWeight: 600 }}>
                             {accessibilities[key]}
+                            <EduIf condition={key === SHOW_IMMERSIVE_READER}>
+                              <EduThen>
+                                <BetaTag top="-50%" left="116px">
+                                  BETA
+                                </BetaTag>
+                              </EduThen>
+                            </EduIf>
                           </span>
                         </Col>
+
                         <Col span={14}>
                           <StyledRadioGroup
-                            disabled={freezeSettings || !featuresAvailable[key]}
+                            disabled={
+                              freezeSettings ||
+                              (key === immersiveReader.key
+                                ? !canUseImmersiveReader
+                                : !featuresAvailable[key])
+                            }
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
@@ -313,7 +348,7 @@ const MiscellaneousGroupContainer = ({
                 onCancel={() => () => confirmKeypadSelection(false)}
               >
                 <p>
-                  <b>{t('keypadSettings.warning')}</b>
+                  <b>{translate('keypadSettings.warning')}</b>
                 </p>
               </ConfirmationModal>
             </StyledRow>

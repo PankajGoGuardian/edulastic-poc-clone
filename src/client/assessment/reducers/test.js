@@ -27,6 +27,8 @@ import {
   SET_IS_TEST_PREVIEW_VISIBLE,
   SAVE_BLUR_TIME,
   SET_SAVED_BLUR_TIME,
+  SET_SUBMIT_TEST_COMPLETE,
+  SET_ANTI_CHEATING_ENABLED,
 } from '../constants/actions'
 
 const initialState = {
@@ -59,6 +61,7 @@ const initialState = {
   savedBlurTime: 0,
   grades: [],
   subjects: [],
+  submitTestComplete: false,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -219,6 +222,10 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         isTestPreviewModalVisible: payload,
       }
+    case SET_SUBMIT_TEST_COMPLETE:
+      return { ...state, submitTestComplete: payload }
+    case SET_ANTI_CHEATING_ENABLED:
+      return { ...state, isAntiCheatingEnabled: payload }
     default:
       return state
   }

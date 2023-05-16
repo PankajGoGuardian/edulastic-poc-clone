@@ -9,13 +9,13 @@ import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
+import { reportNavType } from '@edulastic/constants/const/report'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
 import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 import navigation from '../../static/json/navigation.json'
-import { isPerformanceByRubricsReportEnabled } from '../../../../src/selectors/user'
 
 const dataWarehouseReportTypes = navigation.navigation[
   'data-warehouse-reports'
@@ -32,7 +32,6 @@ const CustomizedHeaderWrapper = ({
   isCliUser,
   showCustomReport,
   showDataWarehouseReport,
-  showPerformanceByRubricsReports,
   showSharedReport,
   title,
   isSharedReport,
@@ -82,7 +81,7 @@ const CustomizedHeaderWrapper = ({
       (item) => item.key !== 'data-warehouse-reports'
     )
   }
-  if (!showPerformanceByRubricsReports || isSharedReport) {
+  if (isSharedReport) {
     filterNavigationItems = filterNavigationItems.filter(
       (item) => item.key !== 'performance-by-rubric-criteria'
     )
@@ -90,7 +89,8 @@ const CustomizedHeaderWrapper = ({
 
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
-    : dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
+    : // TODO remove bottom checks and use only `filterNavigationItems` as not required & approach is misleading/wrong.
+    dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
       filterNavigationItems.length > 1
     ? filterNavigationItems
     : []
@@ -108,12 +108,39 @@ const CustomizedHeaderWrapper = ({
         ))
     : null
   // todo: replace routes titles with constant values.
-  const hideShareIcon =
-    title === 'Engagement Summary' ||
-    title === 'Activity by School' ||
-    title === 'Activity by Teacher' ||
-    title === 'Performance by Rubric Criteria'
-  const hideDownloadIcon = title === 'Engagement Summary'
+  const {
+    ENGAGEMENT_SUMMARY,
+    ACTIVITY_BY_SCHOOL,
+    ACTIVITY_BY_TEACHER,
+    PERFORMANCE_BY_RUBRICS_CRITERIA,
+    PRE_VS_POST,
+    DW_ATTENDANCE_SUMMARY_REPORT,
+    DW_DASHBOARD_REPORT,
+    DW_EARLY_WARNING_REPORT,
+    DW_GOALS_AND_INTERVENTIONS_REPORT,
+  } = reportNavType
+
+  const reportTypes = navigation.locToData
+
+  const ReportsWithHiddenShareIcon = [
+    reportTypes[ENGAGEMENT_SUMMARY].title,
+    reportTypes[ACTIVITY_BY_SCHOOL].title,
+    reportTypes[ACTIVITY_BY_TEACHER].title,
+    reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
+    reportTypes[DW_DASHBOARD_REPORT].title,
+    reportTypes[DW_EARLY_WARNING_REPORT].title,
+    reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+  ]
+  const ReportsWithHiddenDownCSVIcon = [
+    reportTypes[ENGAGEMENT_SUMMARY].title,
+    reportTypes[PRE_VS_POST].title,
+    reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
+    reportTypes[DW_EARLY_WARNING_REPORT].title,
+    reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+  ]
+  const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
+  const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 
@@ -236,7 +263,6 @@ const enhance = compose(
   withNamespaces('header'),
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
-    showPerformanceByRubricsReports: isPerformanceByRubricsReportEnabled(state),
   }))
 )
 export default enhance(CustomizedHeaderWrapper)

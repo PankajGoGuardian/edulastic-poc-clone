@@ -77,20 +77,20 @@ const colorBandsByLength = {
   ],
 }
 
-const getColorsByInterpolation = (num) => {
-  const [fromColor, toColor] = [
-    [116, 34, 52], // hsl -> #5FAD5A
-    [0, 72, 63], // hsl -> #E55C5C
-  ]
+const getColorsByInterpolation = ({
+  count = 0, // number of colors to generate
+  fromColor = [116, 34, 52], // hsl -> #5FAD5A
+  toColor = [0, 72, 63], // hsl -> #E55C5C
+}) => {
   const [h0, s0, l0] = fromColor
   const [hn, sn, ln] = toColor
 
-  const colors = Array(num)
+  const colors = Array(count)
     .fill()
     .map((_, i) => [
-      h0 + (i * (hn - h0)) / (num - 1),
-      s0 + (i * (sn - s0)) / (num - 1),
-      l0 + (i * (ln - l0)) / (num - 1),
+      h0 + (i * (hn - h0)) / (count - 1),
+      s0 + (i * (sn - s0)) / (count - 1),
+      l0 + (i * (ln - l0)) / (count - 1),
     ])
   return colors.map(([h, s, l]) => `hsl(${h}deg ${s}% ${l}%)`)
 }
@@ -98,7 +98,10 @@ const getColorsByInterpolation = (num) => {
 const getColorBandBySize = (length) => {
   if (length in colorBandsByLength) return [...colorBandsByLength[length]]
 
-  if (length > bandColorsNew.length) return getColorsByInterpolation(length)
+  if (length > bandColorsNew.length)
+    return getColorsByInterpolation({
+      count: length,
+    })
   const [start, end] =
     length > bandColorsNew.length - 3
       ? [0, bandColorsNew.length - 1]
@@ -117,4 +120,5 @@ module.exports = {
   externalPerformanceBandColors: bandColorsNew,
   standardProficiencyColors: bandColors,
   getColorBandBySize,
+  getColorsByInterpolation,
 }

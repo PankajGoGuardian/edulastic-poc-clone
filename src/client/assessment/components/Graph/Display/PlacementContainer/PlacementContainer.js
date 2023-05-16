@@ -624,7 +624,7 @@ class PlacementContainer extends PureComponent {
       <div data-cy="placement-graph-container" style={{ width: '100%' }}>
         <WithResources
           resources={[
-            `${AppConfig.jqueryPath}/jquery.min.js`,
+            AppConfig.jqueryPath,
             `${AppConfig.katexPath}/katex.min.js`,
           ]}
           fallBack={<span />}

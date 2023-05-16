@@ -4,7 +4,7 @@ import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
-  test as testContants,
+  test as testConstants,
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
@@ -33,12 +33,19 @@ import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
 import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
-
-const { completionTypes, calculatorTypes, passwordPolicy } = testContants
+import {
+  getAdvancedSearchFilterSelector,
+  getIsAdvancedSearchSelectedSelector,
+  getIsAllClassSelectedSelector,
+} from '../../../AdvanceSearch/ducks'
+const { completionTypes, passwordPolicy } = testConstants
+const assignBehaviour = {
+  async: 'ASYNCHRONOUS_ASSIGN',
+  sync: 'SYNCHRONOUS_ASSIGN',
+}
 
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
-export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
@@ -59,14 +66,12 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
-export const SET_EXCLUDE_SCHOOLS = '[assignment settings] set exclude schools'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
-export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT)
@@ -86,22 +91,15 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
-export const setExcludeSchoolsAction = (payload) => ({
-  type: SET_EXCLUDE_SCHOOLS,
-  payload,
-})
-
 const initialState = {
   isLoading: false,
   isAssigning: false,
-  isBulkAssigning: false,
   hasCommonStudents: false,
   hasDuplicateAssignments: false,
   assignments: [],
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
-  excludeSchools: false,
 }
 
 const setAssignment = (state, { payload }) => {
@@ -112,7 +110,6 @@ const setAssignment = (state, { payload }) => {
 const addAssignment = (state, { payload }) => {
   let isExisting = false
   state.isAssigning = false
-  state.isBulkAssigning = false
   state.assignments = state.assignments.map((item) => {
     if (item._id === payload._id) {
       isExisting = true
@@ -159,10 +156,6 @@ const updateSearchTermsFilter = (state, { payload }) => {
   state.searchTerms = payload
 }
 
-const setExcludeSchools = (state, { payload }) => {
-  state.excludeSchools = payload
-}
-
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
@@ -177,7 +170,6 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
-  [SET_EXCLUDE_SCHOOLS]: setExcludeSchools,
 })
 
 // selectors
@@ -235,6 +227,56 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
 )
 
 // saga
+function* deriveAssignmentPayload({
+  assignments,
+  duplicatesAndCommonStudentsSettings,
+  classesSelected,
+}) {
+  const assignmentPayload = {
+    assignments,
+    duplicatesAndCommonStudentsSettings,
+  }
+  const userRole = yield select(getUserRole)
+  const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
+  if (userRole === roleuser.TEACHER) {
+    const groups = classesSelected.map((clazz) => clazz._id)
+    const students = classesSelected.some((clazz) => clazz.students)
+      ? classesSelected.map((clazz) => {
+          return { groupId: clazz._id, studentsToAssign: clazz.students }
+        })
+      : []
+    assignmentPayload.filters = {
+      groups,
+      ...(!isEmpty(students) ? { students } : {}),
+    }
+  } else if (!isAllClassSelected) {
+    assignmentPayload.filters = {
+      groups: classesSelected.map((clazz) => clazz._id),
+    }
+  } else {
+    const isAdvancedSearchSelected = yield select(
+      getIsAdvancedSearchSelectedSelector
+    )
+    if (isAdvancedSearchSelected) {
+      assignmentPayload.query = yield select(getAdvancedSearchFilterSelector)
+    } else {
+      const searchTermsFilter = yield select(getSearchTermsFilterSelector)
+      const filters = {
+        schools: searchTermsFilter.institutionIds,
+        grades: searchTermsFilter.grades,
+        subjects: searchTermsFilter.subjects,
+        groupType:
+          searchTermsFilter.classType === 'all'
+            ? undefined
+            : searchTermsFilter.classType,
+        courses: searchTermsFilter.courseIds,
+        tags: searchTermsFilter.tags,
+      }
+      assignmentPayload.filters = filters
+    }
+  }
+  return assignmentPayload
+}
 
 function* saveAssignment({ payload }) {
   try {
@@ -242,9 +284,9 @@ function* saveAssignment({ payload }) {
     // Penalty true/false is set to determine the case
     if (
       payload.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      payload.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+      payload.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
     }
 
     let testIds
@@ -295,7 +337,9 @@ function* saveAssignment({ payload }) {
       })
       yield put(replace(`/author/tests/${entity._id}`))
     }
-    const assignedBy = yield select(getUserNameSelector)
+    const name = yield select(getUserNameSelector)
+    const _id = yield select(getUserId)
+    const assignedBy = { _id, name }
     // if no class is selected dont bother sending a request.
     if (!payload.class.length) {
       yield put(setAssignmentSavingAction(false))
@@ -317,15 +361,6 @@ function* saveAssignment({ payload }) {
       userRole !== roleuser.TEACHER && {
         testContentVisibility: payload.testContentVisibility,
       }
-    let { class: classes } = payload
-    let containsCanvasClass = false
-    classes = classes.map((c) => {
-      const { canvasData, ...rest } = c
-      if (canvasData) {
-        containsCanvasClass = true
-      }
-      return rest
-    })
     const userId = yield select(getUserId)
     const isAuthor = test.authors?.some((author) => author._id === userId)
     if (test.freezeSettings && !isAuthor) {
@@ -333,14 +368,24 @@ function* saveAssignment({ payload }) {
       delete payload.standardGradingScale
     }
     const features = yield select(getUserFeatures)
-    const assignmentSettings = { ...payload }
+    const {
+      allowCommonStudents,
+      allowDuplicates,
+      removeDuplicates,
+      class: classesSelected,
+      ...assignmentSettings
+    } = payload
+
+    const containsCanvasClass = classesSelected.some(
+      (clazz) => clazz.canvasData
+    )
+
     if (features.free && !features.premium) {
       assignmentSettings.maxAttempts = 1
       assignmentSettings.markAsDone = completionTypes.AUTOMATICALLY
       assignmentSettings.safeBrowser = false
       assignmentSettings.shuffleAnswers = false
       assignmentSettings.shuffleQuestions = false
-      assignmentSettings.calcType = calculatorTypes.NONE
       assignmentSettings.answerOnPaper = false
       assignmentSettings.maxAnswerChecks = 0
       assignmentSettings.passwordPolicy =
@@ -371,8 +416,9 @@ function* saveAssignment({ payload }) {
         scope.setExtra('assignmentPayload', { ...assignmentSettings, userId })
       })
     }
-    const data = testIds.map(({ testId, testVersionId }) =>
-      omit(
+
+    const assignments = testIds.map(({ testId, testVersionId }) => {
+      return omit(
         {
           ...assignmentSettings,
           startDate,
@@ -382,7 +428,7 @@ function* saveAssignment({ payload }) {
           ...visibility,
           testId,
           testVersionId,
-          class: classes,
+          assignedBy,
         },
         [
           '_id',
@@ -397,20 +443,31 @@ function* saveAssignment({ payload }) {
           'allowDuplicates',
         ]
       )
-    )
-    const result = yield call(assignmentApi.create, {
-      assignments: data,
-      assignedBy,
-      allowCommonStudents: !!payload.allowCommonStudents,
-      removeDuplicates: !!payload.removeDuplicates,
-      allowDuplicates: !!payload.allowDuplicates,
     })
+
+    const duplicatesAndCommonStudentsSettings = {
+      allowCommonStudents: !!allowCommonStudents,
+      removeDuplicates: !!removeDuplicates,
+      allowDuplicates: !!allowDuplicates,
+    }
+
+    const assignmentPayload = yield call(deriveAssignmentPayload, {
+      assignments,
+      duplicatesAndCommonStudentsSettings,
+      classesSelected,
+    })
+    const result = yield call(
+      assignmentApi.createAssignmentV2,
+      assignmentPayload
+    )
     const gSyncStatus = []
-    result.forEach((_data) => {
+    result.assignments?.forEach((_data) => {
       if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus)
       delete _data.gSyncStatus
     })
-    const assignment = result?.[0] ? formatAssignment(result[0]) : {}
+    const assignment = result?.assignments[0]
+      ? formatAssignment(result.assignments[0])
+      : {}
     yield put({ type: SET_ASSIGNMENT, payload: assignment })
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
@@ -419,6 +476,33 @@ function* saveAssignment({ payload }) {
     yield put(setAssignmentSavingAction(false))
     yield put(toggleHasCommonAssignmentsPopupAction(false))
     yield put(toggleHasDuplicateAssignmentPopupAction(false))
+
+    const prevLocState = yield select((state) => state.router.location.state)
+    // if there are no previous location , by default redirect to tests
+    let locationState = { fromText: 'TEST LIBRARY', toUrl: '/author/tests' }
+    if (prevLocState?.fromText && prevLocState?.toUrl) {
+      locationState = prevLocState
+    }
+
+    let navigateTo = `/author/tests/${testIds[0]?.testId}`
+    if (payload.playlistModuleId) {
+      navigateTo = `/author/playlists/${payload.playlistId}`
+    }
+
+    if (result.message === assignBehaviour.async) {
+      yield put(
+        push({
+          pathname: `${navigateTo}/async-assign`,
+          state: {
+            ...locationState,
+            assignedTestId: payload.testId,
+            playlistModuleId: payload.playlistModuleId,
+          },
+        })
+      )
+      return
+    }
+
     const assignmentId = assignment._id
     const createdAt = assignment.createdAt
     const googleId = get(assignment, 'class[0].googleId', '')
@@ -454,20 +538,9 @@ function* saveAssignment({ payload }) {
         })
     }
     if (!assignmentId && !payload.playlistModuleId) return
-
-    const prevLocState = yield select((state) => state.router.location.state)
-    // if there are no previous location , by default redirect to tests
-    let locationState = { fromText: 'TEST LIBRARY', toUrl: '/author/tests' }
-    if (prevLocState?.fromText && prevLocState?.toUrl) {
-      locationState = prevLocState
-    }
     yield put(
       push({
-        pathname: `/author/${
-          payload.playlistModuleId ? 'playlists' : 'tests'
-        }/${
-          payload.playlistModuleId ? payload.playlistId : testIds[0].testId
-        }/assign/${assignmentId}`,
+        pathname: `${navigateTo}/assign/${assignmentId}`,
         state: {
           ...locationState,
           assignedTestId: payload.testId,
@@ -530,9 +603,9 @@ function* saveBulkAssignment({ payload }) {
 
     if (
       data.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      data.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+      data.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
     }
 
     const result = yield call(assignmentApi.bulkAssign, {
@@ -573,7 +646,7 @@ function* loadAssignments({ payload }) {
       ? assignmentApi.fetchRegradeAssignments
       : assignmentApi.fetchAssignments
     const data = yield call(getAssignmentsApi, testId)
-    const assignments = data.map(formatAssignment)
+    const assignments = regradeAssignments ? data : data.map(formatAssignment)
     yield put(loadAssignmentsAction(assignments))
   } catch (e) {
     console.error(e)
@@ -595,7 +668,6 @@ function* deleteAssignment({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
-    yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
   ])

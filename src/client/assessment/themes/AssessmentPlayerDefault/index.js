@@ -12,6 +12,11 @@ import {
 } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
+import {
+  homePlaylistPath,
+  homeStudentAssignmentsPath,
+  studentSebQuitConfirmpath,
+} from '../../constants/assessmentPlayer'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -28,12 +33,7 @@ import {
 import ReportIssuePopover from '../common/ReportIssuePopover'
 import { isZoomGreator } from '../../../common/utils/helpers'
 import SettingsModal from '../../../student/sharedComponents/SettingsModal'
-import {
-  Main,
-  Container,
-  CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from '../common'
+import { Main, Container, CalculatorContainer } from '../common'
 import TestItemPreview from '../../components/TestItemPreview'
 import {
   MAX_MOBILE_WIDTH,
@@ -61,14 +61,13 @@ import ReferenceDocModal from '../common/ReferenceDocModal'
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props)
-    const { settings, attachments = [] } = props
+    const { attachments = [] } = props
     const lastUploadedFileNameExploded =
       last(attachments)?.name?.split('_') || []
     const cameraImageIndex = last(lastUploadedFileNameExploded)
       ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
       : 1
 
-    const calcType = settings.calcType
     this.state = {
       cloneCurrentItem: props.currentItem,
       testItemState: '',
@@ -76,9 +75,6 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: 0,
-      calculateMode: `${calcType}_${
-        settings.calcProvider || getDefaultCalculatorProvider(calcType)
-      }`,
       currentToolMode: [0],
       enableCrossAction: false,
       minWidth: 480,
@@ -88,6 +84,19 @@ class AssessmentPlayerDefault extends React.Component {
       cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
+  }
+
+  get getGoToUrlPath() {
+    const { history } = this.props
+    let path = ''
+    if (history?.location?.state?.playlistAssignmentFlow) {
+      path = `${homePlaylistPath}/${history?.location?.state?.playlistId}`
+    } else if (navigator.userAgent.includes('SEB')) {
+      path = studentSebQuitConfirmpath
+    } else {
+      path = homeStudentAssignmentsPath
+    }
+    return path
   }
 
   changeTool = (val) => {
@@ -178,19 +187,11 @@ class AssessmentPlayerDefault extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props
-    saveCurrentAnswer({ shouldClearUserWork: true, pausing: true })
-    if (history?.location?.state?.playlistAssignmentFlow) {
-      history.push(`/home/playlist/${history?.location?.state?.playlistId}`)
-    } else if (navigator.userAgent.includes('SEB')) {
-      history.push('/student/seb-quit-confirm')
-    } else {
-      history.push('/home/assignments')
-    }
-  }
-
-  handleModeCaculate = (calculateMode) => {
-    this.setState({
-      calculateMode,
+    saveCurrentAnswer({
+      shouldClearUserWork: true,
+      pausing: true,
+      urlToGo: this.getGoToUrlPath,
+      locState: history?.location?.state,
     })
   }
 
@@ -263,7 +264,7 @@ class AssessmentPlayerDefault extends React.Component {
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
       // coming from a different question
-      // initialise/reset state values
+      // initialize/reset state values
       const currentToolMode = []
       if (next.scratchPad && !prevState.currentToolMode) {
         currentToolMode.push(5)
@@ -292,6 +293,11 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     return null
+  }
+
+  componentDidMount() {
+    const { updateTestPlayer } = this.props
+    updateTestPlayer({ currentCalculatorType: '' })
   }
 
   componentDidUpdate(previousProps) {
@@ -380,7 +386,6 @@ class AssessmentPlayerDefault extends React.Component {
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
-      calculateMode,
       enableCrossAction,
       minWidth,
       defaultContentWidth,
@@ -389,7 +394,7 @@ class AssessmentPlayerDefault extends React.Component {
       isUserWorkUploadModalVisible,
       cameraImageIndex,
     } = this.state
-    const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
+
     const dropdownOptions = Array.isArray(items)
       ? items.map((item, index) => index)
       : []
@@ -573,9 +578,7 @@ class AssessmentPlayerDefault extends React.Component {
             onClickSetting={() => {
               this.setState({ isToolbarModalVisible: true })
             }}
-            calcBrands={calcBrands}
             tool={currentToolMode}
-            changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
             canShowReferenceMaterial={canShowReferenceMaterial}
@@ -722,8 +725,8 @@ class AssessmentPlayerDefault extends React.Component {
             {currentToolMode.indexOf(2) !== -1 && (
               <CalculatorContainer
                 changeTool={this.changeTool}
-                calculateMode={calculateMode}
-                calcBrands={calcBrands}
+                calcTypes={settings.calcTypes}
+                calcProvider={settings.calcProvider}
               />
             )}
             <UserWorkUploadModal

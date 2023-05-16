@@ -106,6 +106,11 @@ export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   return playerSkinValues[playerSkinType] || playerSkinValues.edulastic
 })
 
+export const getSubmitTestCompleteSelector = createSelector(
+  stateSelector,
+  (state) => state.submitTestComplete
+)
+
 export const getPreviewPlayerStateSelector = createSelector(
   stateSelector,
   (state) => ({
@@ -128,4 +133,9 @@ export const getIsPreviewModalVisibleSelector = createSelector(
 export const checkAnswerInProgressSelector = createSelector(
   stateSelector,
   (test) => test.checkAnswerInProgress
+)
+
+export const getIsAntiCheatingEnabled = createSelector(
+  stateSelector,
+  (state) => state.isAntiCheatingEnabled
 )

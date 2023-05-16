@@ -3,7 +3,11 @@ import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
 import { get, isEmpty, omitBy, mapValues, uniqBy } from 'lodash'
 
-import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
+import {
+  assignmentStatusOptions,
+  roleuser,
+  reportUtils,
+} from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
@@ -84,10 +88,6 @@ import {
   reportPeerPerformanceSaga,
 } from './subPages/singleAssessmentReport/PeerPerformance/ducks'
 import {
-  reportQuestionAnalysisReducer,
-  reportQuestionAnalysisSaga,
-} from './subPages/singleAssessmentReport/QuestionAnalysis/ducks'
-import {
   reportResponseFrequencyReducer,
   reportResponseFrequencySaga,
 } from './subPages/singleAssessmentReport/ResponseFrequency/ducks'
@@ -111,6 +111,10 @@ import {
   reportStudentProgressReducer,
   reportStudentProgressSaga,
 } from './subPages/multipleAssessmentReport/StudentProgress/ducks'
+import {
+  reducer as reportPreVsPostReducer,
+  watcherSaga as reportPreVsPostSaga,
+} from './subPages/multipleAssessmentReport/PreVsPost/ducks'
 import {
   reportStudentProfileSummaryReducer,
   reportStudentProfileSummarySaga,
@@ -156,17 +160,22 @@ import {
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
-  reducer as reportWholeChildReducer,
-  watcherSaga as reportWholeChildSaga,
-  selectors as reportWholeChildSelectors,
-  actions as reportWholeChildActions,
-} from './subPages/dataWarehouseReports/wholeChildReport/ducks'
+  reducer as reportWholeLearnerReducer,
+  watcherSaga as reportWholeLearnerSaga,
+  selectors as reportWholeLearnerSelectors,
+  actions as reportWholeLearnerActions,
+} from './subPages/dataWarehouseReports/wholeLearnerReport/ducks'
 import {
   reducer as reportMultipleAssessmentDwReducer,
   watcherSaga as reportMultipleAssessmentDwSaga,
   selectors as reportMultipleAssessmentDwSelectors,
   actions as reportMultipleAssessmentDwActions,
 } from './subPages/dataWarehouseReports/MultipleAssessmentReport/ducks'
+import * as dwAttendanceSummaryDucks from './subPages/dataWarehouseReports/AttendanceSummary/ducks'
+import * as dwDashboardDucks from './subPages/dataWarehouseReports/Dashboard/ducks'
+import * as dwGoalsAndInterventionsDucks from './subPages/dataWarehouseReports/GoalsAndInterventions/ducks'
+import * as dwEarlyWarningDucks from './subPages/dataWarehouseReports/EarlyWarningReport/ducks'
+import * as dwEfficacyDucks from './subPages/dataWarehouseReports/EfficacyReport/ducks'
 import {
   customReportReducer,
   customReportSaga,
@@ -193,7 +202,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames } from './common/util'
+import { combineNames, getTestTitle } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -217,6 +226,8 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
+
+const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -276,10 +287,32 @@ export const getCsvDownloadingState = createSelector(
   (state) => state.isCsvDownloading
 )
 
+const _testListSelectors = {}
+export const createTestListSelector = (statePrefix = '') => {
+  if (!(statePrefix in _testListSelectors)) {
+    _testListSelectors[statePrefix] = createSelector(
+      stateSelector,
+      (state) => state[`${statePrefix}testList`] ?? []
+    )
+  }
+  return _testListSelectors[statePrefix]
+}
+
 export const getTestListSelector = createSelector(
   stateSelector,
   (state) => state.testList
 )
+
+const _testListLoadingSelectors = {}
+export const createTestListLoadingSelector = (statePrefix = '') => {
+  if (!(statePrefix in _testListLoadingSelectors)) {
+    _testListLoadingSelectors[statePrefix] = createSelector(
+      stateSelector,
+      (state) => state[`${statePrefix}testListLoading`] ?? true
+    )
+  }
+  return _testListLoadingSelectors[statePrefix]
+}
 
 export const getTestListLoadingSelector = createSelector(
   stateSelector,
@@ -337,17 +370,20 @@ const reports = createReducer(initialState, {
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
     state.isCsvDownloading = payload
   },
-  [RECEIVE_TEST_LIST_REQUEST]: (state) => {
-    state.testListLoading = true
+  [RECEIVE_TEST_LIST_REQUEST]: (state, { payload }) => {
+    const { statePrefix = '' } = payload
+    state[`${statePrefix}testListLoading`] = true
   },
   [RECEIVE_TEST_LIST_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = payload.testList
+    const { statePrefix = '', testList } = payload
+    state[`${statePrefix}testListLoading`] = false
+    state[`${statePrefix}testList`] = testList
   },
   [RECEIVE_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = []
-    state.error = payload.error
+    const { statePrefix = '', error } = payload
+    state[`${statePrefix}testListLoading`] = false
+    state[`${statePrefix}testList`] = []
+    state.error = error
   },
   [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
     state.csvModalVisible = payload
@@ -387,13 +423,13 @@ export const reportReducer = combineReducers({
 
   reportAssessmentSummaryReducer,
   reportPeerPerformanceReducer,
-  reportQuestionAnalysisReducer,
   reportResponseFrequencyReducer,
   reportPerformanceByStandardsReducer,
   reportPerformanceByStudentsReducer,
   reportPerformanceOverTimeReducer,
   reportPeerProgressAnalysisReducer,
   reportStudentProgressReducer,
+  reportPreVsPostReducer,
   reportStudentProfileSummaryReducer,
   reportStudentMasteryProfileReducer,
   reportStudentAssessmentProfileReducer,
@@ -406,8 +442,15 @@ export const reportReducer = combineReducers({
   reportActivityByTeacherReducer,
   customReportReducer,
   sharedReportsReducer,
-  reportWholeChildReducer,
+  reportWholeLearnerReducer,
   reportMultipleAssessmentDwReducer,
+  [dwAttendanceSummaryDucks.reduxNamespaceKey]:
+    dwAttendanceSummaryDucks.reducer,
+  [dwDashboardDucks.reduxNamespaceKey]: dwDashboardDucks.reducer,
+  [dwGoalsAndInterventionsDucks.reduxNamespaceKey]:
+    dwGoalsAndInterventionsDucks.reducer,
+  [dwEarlyWarningDucks.reduxNamespaceKey]: dwEarlyWarningDucks.reducer,
+  [dwEfficacyDucks.reduxNamespaceKey]: dwEfficacyDucks.reducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
 
@@ -499,17 +542,47 @@ const selectorDict = {
     setTags: setERTagsDataAction,
     setTempTags: setERTempTagsDataAction,
   },
-  [reportGroupType.WHOLE_CHILD_REPORT]: {
-    getTempTags: reportWholeChildSelectors.filterTagsData,
-    getSettings: reportWholeChildSelectors.settings,
-    setTags: reportWholeChildActions.setSelectedFilterTagsData,
-    setTempTags: reportWholeChildActions.setFilterTagsData,
+  [reportGroupType.WHOLE_STUDENT_REPORT]: {
+    getTempTags: reportWholeLearnerSelectors.filterTagsData,
+    getSettings: reportWholeLearnerSelectors.settings,
+    getTags: reportWholeLearnerSelectors.selectedFilterTagsData,
+    setTags: reportWholeLearnerActions.setSelectedFilterTagsData,
+    setTempTags: reportWholeLearnerActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
     getSettings: reportMultipleAssessmentDwSelectors.settings,
+    getTags: reportMultipleAssessmentDwSelectors.selectedFilterTagsData,
     setTags: reportMultipleAssessmentDwActions.setDWMARSelectedFilterTagsData,
     setTempTags: reportMultipleAssessmentDwActions.setDWMARFilterTagsData,
+  },
+  [reportGroupType.DW_ATTENDANCE_SUMMARY_REPORT]: {
+    getTempTags: dwAttendanceSummaryDucks.selectors.filterTagsData,
+    getSettings: dwAttendanceSummaryDucks.selectors.settings,
+    getTags: dwAttendanceSummaryDucks.selectors.selectedFilterTagsData,
+    setTags: dwAttendanceSummaryDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwAttendanceSummaryDucks.actions.setFilterTagsData,
+  },
+  [reportGroupType.DW_DASHBOARD_REPORT]: {
+    getTempTags: dwDashboardDucks.selectors.filterTagsData,
+    getSettings: dwDashboardDucks.selectors.settings,
+    getTags: dwDashboardDucks.selectors.selectedFilterTagsData,
+    setTags: dwDashboardDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwDashboardDucks.actions.setFilterTagsData,
+  },
+  [reportGroupType.DW_EARLY_WARNING_REPORT]: {
+    getTempTags: dwEarlyWarningDucks.selectors.filterTagsData,
+    getSettings: dwEarlyWarningDucks.selectors.settings,
+    getTags: dwEarlyWarningDucks.selectors.selectedFilterTagsData,
+    setTags: dwEarlyWarningDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwEarlyWarningDucks.actions.setFilterTagsData,
+  },
+  [reportGroupType.DW_EFFICACY_REPORT]: {
+    getTempTags: dwEfficacyDucks.selectors.filterTagsData,
+    getSettings: dwEfficacyDucks.selectors.settings,
+    getTags: dwEfficacyDucks.selectors.selectedFilterTagsData,
+    setTags: dwEfficacyDucks.actions.setSelectedFilterTagsData,
+    setTempTags: dwEfficacyDucks.actions.setFilterTagsData,
   },
 }
 
@@ -523,7 +596,9 @@ function* updateTags(tags, type) {
     ? selectorDict[type].remapTags(tags)
     : tags
   const tempTagsData = yield select(selectorDict[type].getTempTags)
-  const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
+  const tagsData = selectorDict[type].getTags
+    ? yield select(selectorDict[type].getTags)
+    : (yield select(selectorDict[type].getSettings)).tagsData
   yield put(
     selectorDict[type].setTempTags(
       uniqTags({ ...tempTagsData, ...remappedTags })
@@ -579,6 +654,7 @@ function* getGroupTags(ids, options) {
 }
 function* getTestTags(ids, options) {
   let result = []
+  const { statePrefix } = options
   if (Array.isArray(ids) && ids.length) {
     const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
     const q = {
@@ -591,13 +667,15 @@ function* getTestTags(ids, options) {
         testIds: ids,
       },
       aggregate: true,
+
+      statePrefix,
     }
     yield put(receiveTestListAction(q))
     yield take([
       RECEIVE_TEST_LIST_REQUEST_SUCCESS,
       RECEIVE_TEST_LIST_REQUEST_ERROR,
     ])
-    const list = yield select(getTestListSelector)
+    const list = yield select(createTestListSelector(statePrefix))
     result = filterMapKeys(list, ids, 'title')
   }
   return result
@@ -711,6 +789,9 @@ const tagGetterMap = {
   courseIds: getCourseTags,
   classIds: getClassTags,
   groupIds: getGroupTags,
+  preTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'pre' }),
+  postTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'post' }),
+  courseId: getCourseTags, // For Single Course Search Value
 }
 
 function* fetchUpdateTagsData({ payload }) {
@@ -739,8 +820,16 @@ function* fetchUpdateTagsData({ payload }) {
 }
 
 export function* receiveTestListSaga({ payload }) {
+  const { statePrefix = '', externalTests = [], ...params } = payload
   try {
-    const searchResult = yield call(assignmentApi.searchAssignments, payload)
+    const {
+      termId = '',
+      grades = [],
+      subjects = [],
+      testTypes = [],
+      searchString = '',
+    } = get(params, 'search', {})
+    const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
       'aggregations.buckets.buckets',
@@ -753,16 +842,54 @@ export function* receiveTestListSaga({ payload }) {
         return { _id, title }
       })
       .filter(({ _id, title }) => _id && title)
+    const externalTestList = externalTests
+      .filter((t) => {
+        const _testGrades = (t.testGrades || '').split(',')
+        const _testSubjects = (t.testSubjects || '').split(',')
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        const checkForTermId = termId === t.termId
+        const checkForGrades =
+          !grades.length ||
+          !!_testGrades.filter((g) => grades.includes(g)).length
+        const checkForSubjects =
+          !subjects.length ||
+          !!_testSubjects.filter((s) => subjects.includes(s)).length
+        const checkForExternalTestTypes =
+          !testTypes.length || testTypes.includes(t.testCategory)
+        const checkForExternalTestTitle =
+          !searchString ||
+          externalTestTitle.toLowerCase().includes(searchString.toLowerCase())
+        return [
+          checkForTermId,
+          checkForGrades,
+          checkForSubjects,
+          checkForExternalTestTitle,
+          checkForExternalTestTypes,
+        ].every((o) => !!o)
+      })
+      .map((t) => {
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestId = [
+          _testName,
+          t.testCategory,
+          t.testTitle || '',
+        ].join(EXTERNAL_TEST_KEY_SEPARATOR)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        return { _id: externalTestId, title: externalTestTitle, showId: false }
+      })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
-      payload: { testList },
+      payload: { testList: [...testList, ...externalTestList], statePrefix },
     })
   } catch (error) {
     const msg = 'Failed to receive tests dropdown data. Please try again...'
     styledNotification({ msg })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_ERROR,
-      payload: { error: msg },
+      payload: { error: msg, statePrefix },
     })
   }
 }
@@ -778,13 +905,13 @@ export function* reportSaga() {
 
     reportAssessmentSummarySaga(),
     reportPeerPerformanceSaga(),
-    reportQuestionAnalysisSaga(),
     reportResponseFrequencySaga(),
     performanceByStandardsSaga(),
     reportPerformanceByStudentsSaga(),
     reportPerformanceOverTimeSaga(),
     reportPeerProgressAnalysisSaga(),
     reportStudentProgressSaga(),
+    reportPreVsPostSaga(),
     reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),
@@ -798,11 +925,16 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
-    reportWholeChildSaga(),
+    reportWholeLearnerSaga(),
     reportMultipleAssessmentDwSaga(),
+    dwAttendanceSummaryDucks.watcherSaga(),
+    dwDashboardDucks.watcherSaga(),
+    dwGoalsAndInterventionsDucks.watcherSaga(),
+    dwEarlyWarningDucks.watcherSaga(),
+    dwEfficacyDucks.watcherSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
-    yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
+    takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
     takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
   ])
 }

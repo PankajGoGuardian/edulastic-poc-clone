@@ -49,7 +49,6 @@ import {
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
-import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 import ClassBanner from './components/ClassBanner'
 
 const ItemPurchaseModal = loadable(() =>
@@ -88,7 +87,6 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
-  loadAssignments,
   interestedSubjects,
   totalAssignmentCount,
   displayText,
@@ -120,7 +118,6 @@ const MyClasses = ({
   }, [showCleverSyncModal])
   useEffect(() => {
     getTeacherDashboard()
-    loadAssignments()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
@@ -718,7 +715,9 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
-  const hideGetStartedSection = totalAssignmentCount >= 1
+  const hasAssignment = totalAssignmentCount >= 1
+
+  const hideGetStartedHeader = classData.length >= 1
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
@@ -731,7 +730,8 @@ const MyClasses = ({
           userId={user?._id}
           classData={classData}
           history={history}
-          hideGetStartedSection={hideGetStartedSection}
+          hasAssignment={hasAssignment}
+          hideGetStartedHeader={hideGetStartedHeader}
         />
       ) : (
         <ClassBanner />
@@ -882,7 +882,6 @@ export default compose(
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
       setUser: setUserAction,
-      loadAssignments: receiveAssignmentsAction,
     }
   )
 )(MyClasses)

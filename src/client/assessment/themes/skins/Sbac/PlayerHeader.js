@@ -17,7 +17,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
-import { IconBookmark } from '@edulastic/icons'
+import { IconBookmark, IconSend } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -68,8 +68,6 @@ const PlayerHeader = ({
   changeTool,
   toggleToolsOpenStatus,
   tool,
-  calcBrands,
-  changeCaculateMode,
   finishTest,
   items,
   qType,
@@ -94,7 +92,10 @@ const PlayerHeader = ({
   isBookmarked,
   bookmarks = [],
   defaultAP,
-  t,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
+  t: i18Translate,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -107,6 +108,7 @@ const PlayerHeader = ({
   const totalQuestions = options.length
   const totalAnswered = skipped.filter((s) => !s).length
   const isFirst = () => (isDocbased ? true : currentItem === 0)
+  const isLast = currentItem === items.length - 1
 
   const headerStyle = {
     borderBottom: `1px solid ${header.borderColor}`,
@@ -146,7 +148,7 @@ const PlayerHeader = ({
                   }
                   bookmarks={bookmarks}
                   skipped={skipped}
-                  t={t}
+                  i18Translate={i18Translate}
                   dropdownStyle={{ marginRight: '15px', height: '32px' }}
                   moveToNext={moveToNext}
                   utaId={utaId}
@@ -204,12 +206,12 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title="Next"
+                    title={`${isLast ? 'Submit' : 'Next'}`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      icon="right"
+                      icon={isLast ? null : 'right'}
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -226,8 +228,22 @@ const PlayerHeader = ({
                         )
                           moveToNext()
                       }}
-                      style={{ marginLeft: '5px' }}
-                    />
+                      style={{
+                        marginLeft: '5px',
+                        width: '90px',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      {isLast && (
+                        <IconSend
+                          style={{
+                            marginRight: '10px',
+                          }}
+                        />
+                      )}
+                      {isLast ? 'SUBMIT' : 'NEXT'}
+                    </ControlBtn>
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
@@ -268,8 +284,6 @@ const PlayerHeader = ({
                 changeTool={changeTool || toggleToolsOpenStatus}
                 settings={settings}
                 tool={tool || toolsOpenStatus}
-                calcBrands={calcBrands}
-                changeCaculateMode={changeCaculateMode}
                 qType={qType}
                 setZoomLevel={setZoomLevel}
                 zoomLevel={zoomLevel}
@@ -285,6 +299,10 @@ const PlayerHeader = ({
                 isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                 checkAnswer={checkAnswer}
                 answerChecksUsedForItem={answerChecksUsedForItem}
+                canShowReferenceMaterial={canShowReferenceMaterial}
+                isShowReferenceModal={isShowReferenceModal}
+                openReferenceModal={openReferenceModal}
+                i18Translate={i18Translate}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>
@@ -308,8 +326,6 @@ PlayerHeader.propTypes = {
   skipped: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
-  calcBrands: PropTypes.array.isRequired,
-  changeCaculateMode: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   qType: PropTypes.string.isRequired,

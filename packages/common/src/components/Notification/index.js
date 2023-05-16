@@ -28,7 +28,7 @@ const defaultConf = {
  * type is notification type.
  * messageKey is notification's message and description, we can get it from locales.
  * msg is custom message, if msg is passed, then will not use locales.
- * @param {{type?:String, messageKey: String, showButton?:boolean, msg?:String }} options
+ * @param {{type?:'success' | 'error' | 'info' | 'warn' | 'warning', messageKey: String, showButton?:boolean, msg?:String }} options
  */
 const notification = (options) => {
   const { messageKey, msg, exact, destroyAll, ...restOptions } = options

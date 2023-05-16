@@ -50,6 +50,7 @@ const ActionMenu = ({
   toggleTagsEditModal = () => {},
   isDemoPlaygroundUser = false,
   isProxiedByEAAccount = false,
+  showViewSummary = false,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -224,8 +225,7 @@ const ActionMenu = ({
           key="summary-report"
           disabled={
             // admin accounts do not have assignmentDetails
-            !isAdmin &&
-            !(assignmentDetails.gradedCount || assignmentDetails.submittedCount)
+            !isAdmin && !showViewSummary
           }
         >
           <Link

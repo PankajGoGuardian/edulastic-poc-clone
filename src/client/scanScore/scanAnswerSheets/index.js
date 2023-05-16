@@ -8,6 +8,7 @@ import { Progress, Row, Select, Tooltip } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
 import { round } from 'lodash'
+import * as Sentry from '@sentry/browser'
 
 import {
   EduButton,
@@ -292,18 +293,28 @@ const ScanAnswerSheetsInner = ({
                 })
                 audioRef.play()
                 if (canvasRef.current) {
-                  setUploadingToS3(true)
-                  const fileUrl = await uploadCanvasFrame(
-                    canvasRef.current,
-                    (uploadEvent) => {
-                      const percent =
-                        (uploadEvent.loaded / uploadEvent.total) * 100
-                      setScanningPercent(round(percent, 2))
-                    }
-                  )
-                  setUploadingToS3(false)
-                  fileUrls.current.push(fileUrl)
-                  setScanningPercent(0)
+                  let fileUrl
+                  try {
+                    setUploadingToS3(true)
+                    fileUrl = await uploadCanvasFrame(
+                      canvasRef.current,
+                      (uploadEvent) => {
+                        const percent =
+                          (uploadEvent.loaded / uploadEvent.total) * 100
+                        setScanningPercent(round(percent, 2))
+                      }
+                    )
+                    setUploadingToS3(false)
+                    fileUrls.current.push(fileUrl)
+                    setScanningPercent(0)
+                  } catch (error) {
+                    Sentry.withScope((scope) => {
+                      scope.setExtra('file Url', fileUrl)
+                      scope.setExtra('qr code', qrCodeData)
+                      Sentry.captureException(error)
+                    })
+                    throw error
+                  }
                 }
                 if (debugCanvasRef.current) {
                   const fileUrl = await uploadCanvasFrame(
@@ -490,19 +501,28 @@ const ScanAnswerSheetsInner = ({
       ignoreQueryPrefix: true,
     })
     setWebCamScannedDocs(arrAnswersRef.current)
-    setIsLoading(true)
-    const session = await scannerApi.generateWebCamOmrSession({
-      assignmentId,
-      groupId,
-    })
-    setIsLoading(false)
-    setAnswers(null)
-    stopCamera()
-    closeScanConfirmationModal()
-    history.push({
-      pathname: `/uploadAnswerSheets/scanProgress`,
-      search: `?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${session._id}&scanning=1`,
-    })
+    let session
+    try {
+      setIsLoading(true)
+      session = await scannerApi.generateWebCamOmrSession({
+        assignmentId,
+        groupId,
+      })
+      setIsLoading(false)
+      setAnswers(null)
+      stopCamera()
+      closeScanConfirmationModal()
+      history.push({
+        pathname: `/uploadAnswerSheets/scanProgress`,
+        search: `?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${session._id}&scanning=1`,
+      })
+    } catch (error) {
+      Sentry.withScope((scope) => {
+        scope.setExtra('assignmentInfo', { assignmentId, groupId, session })
+        Sentry.captureException(error)
+      })
+      throw error
+    }
   }
 
   const closeHelpModal = () => {

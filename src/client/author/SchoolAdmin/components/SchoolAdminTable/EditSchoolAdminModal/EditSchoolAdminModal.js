@@ -77,7 +77,7 @@ class EditSchoolAdminModal extends Component {
     }
 
     const schoolsOptions = schooleFinalList.map((row, index) => (
-      <Option key={index} value={row?._id}>
+      <Option key={index} value={row?._id} label={row?.name}>
         {row?.name}
       </Option>
     ))
@@ -230,6 +230,8 @@ class EditSchoolAdminModal extends Component {
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   data-cy="selectSchools"
                   data-testid="selectSchools"
+                  showSearch
+                  optionFilterProp="label"
                 >
                   {schoolsOptions}
                 </SelectInputStyled>

@@ -25,10 +25,10 @@ import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
-import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
+import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -40,6 +40,7 @@ const {
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
   playerSkinValues,
+  REF_MATERIAL_ALLOWED_SKIN_TYPES,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -56,7 +57,6 @@ const TestBehaviorGroupContainer = ({
   freezeSettings,
   completionTypeKeys,
   premium,
-  calculatorProvider,
   overRideSettings,
   match,
   totalItems,
@@ -64,7 +64,7 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  t,
+  t: i18translate,
   allowToUseShowHintsToStudents,
   togglePenaltyOnUsingHints,
 }) => {
@@ -72,7 +72,7 @@ const TestBehaviorGroupContainer = ({
   const {
     markAsDone = testSettings?.markAsDone,
     releaseScore = testSettings.releaseScore,
-    calcType = testSettings.calcType,
+    calcTypes = testSettings.calcTypes,
     timedAssignment = testSettings.timedAssignment,
     allowedTime = testSettings.allowedTime,
     pauseAllowed = testSettings.pauseAllowed,
@@ -91,11 +91,8 @@ const TestBehaviorGroupContainer = ({
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
-    const { quester, edulastic } = playerSkinValues
-
     return (
-      !isDocBased &&
-      (playerSkinType === edulastic || playerSkinType === quester)
+      !isDocBased && REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
     )
   }, [playerSkinType, isDocBased])
 
@@ -322,7 +319,7 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="SHOW CALCULATOR"
-          content="If students can use an on-screen calculator, select the type to make available on the test."
+          content={i18translate('calculatorTypesSettings.info')}
           premium={assessmentSuperPowersShowCalculator}
         />
         <StyledRow gutter={16} mb="15px">
@@ -335,12 +332,10 @@ const TestBehaviorGroupContainer = ({
             </Label>
           </Col>
           <Col span={14}>
-            <CalculatorSelector
+            <CalculatorSettings
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
-              calcType={calcType}
-              onChangeHanlde={(value) => overRideSettings('calcType', value)}
-              premium={premium}
-              calculatorProvider={calculatorProvider}
+              value={calcTypes}
+              onChange={(value) => overRideSettings('calcTypes', value)}
             />
           </Col>
         </StyledRow>
@@ -365,8 +360,8 @@ const TestBehaviorGroupContainer = ({
         <SettingContainer id="show-tts-for-passage">
           <DetailsTooltip
             width={tootltipWidth}
-            title={t('showTtsForPassage.title')}
-            content={t('showTtsForPassage.info')}
+            title={i18translate('showTtsForPassage.title')}
+            content={i18translate('showTtsForPassage.info')}
             premium={premium}
             placement="rightTop"
           />
@@ -376,7 +371,7 @@ const TestBehaviorGroupContainer = ({
             freezeSettings={freezeSettings}
             showTtsForPassages={showTtsForPassages}
             overRideSettings={overRideSettings}
-            t={t}
+            i18translate={i18translate}
           />
         </SettingContainer>
       )}
@@ -470,7 +465,7 @@ const TestBehaviorGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="SHOW RUBRIC TO STUDENTS"
-            content={t('showRubricToStudents.info')}
+            content={i18translate('showRubricToStudents.info')}
             premium={premium}
             placement="rightTop"
           />
@@ -575,7 +570,7 @@ const TestBehaviorGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="ALLOW TEACHERS TO REDIRECT"
-            content={t('allowTeacherToRedirect.info')}
+            content={i18translate('allowTeacherToRedirect.info')}
             premium={premium}
             placement="rightTop"
           />

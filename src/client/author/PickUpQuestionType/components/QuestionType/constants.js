@@ -21,6 +21,8 @@ import {
   defaultOptions,
 } from '../../../../assessment/constants/constantsForQuestions'
 
+import { audioResponseConfig } from '../../QuestionTypeConfig/AudioResponse'
+
 // Multiple Choice
 import MCStandard from '../../../src/assets/multiple-choice/standard-blue.svg'
 import MCMultipleResponses from '../../../src/assets/multiple-choice/multiple-response-blue.svg'
@@ -99,14 +101,18 @@ import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.s
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
 
-export const getCards = (onSelectQuestionType, isPassage = false) => {
+export const getCards = (
+  onSelectQuestionType,
+  isPassage = false,
+  enableAudioResponseQuestion = false
+) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math
   // use it for ids of MCQ, Orderlist, and Choice Matrix
   const uuids = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid()]
 
   const uuidsForFill = [uuid(), uuid(), uuid()]
 
-  const cards = [
+  let cards = [
     {
       type: 'charts',
       cardImage: BarChart,
@@ -993,6 +999,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         hints: [{ value: uuids[0], label: '' }],
       },
       onSelectQuestionType,
+    },
+    {
+      ...audioResponseConfig,
+      onSelectQuestionType,
+      isAudioResponseQuestionType: true,
     },
     {
       type: 'multiple-choice',
@@ -2757,5 +2768,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType,
     },
   ]
+  if (!enableAudioResponseQuestion) {
+    cards = cards.filter((i) => !i.isAudioResponseQuestionType)
+  }
   return isPassage ? cards.filter((i) => !i.isPassageType) : cards
 }

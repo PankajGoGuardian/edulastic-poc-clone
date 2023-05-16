@@ -1,6 +1,7 @@
 import { push } from 'react-router-redux'
 import pdfjsLib from 'pdfjs-dist'
 import { createSlice } from 'redux-starter-kit'
+import { createSelector } from 'reselect'
 import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import axios from 'axios'
 
@@ -59,7 +60,7 @@ const getTotalPdfPageCount = (file) =>
   })
 
 const slice = createSlice({
-  name: 'uploadAnswerSheets',
+  name: 'uploadAnswerSheets', //! FIXME key should be `slice` not `name`
   initialState: {
     uploading: false,
     uploadProgress: 0,
@@ -135,6 +136,9 @@ const slice = createSlice({
     createOmrUploadSession: (state) => {
       state.uploading = true
     },
+    updateOmrUploadSessionOnSplitPDFAction: () => {
+      // redux saga is sufficient, no state change required
+    },
     createOmrUploadSessionDone: (state, { payload }) => {
       state.uploading = false
       state.uploadProgress = 0
@@ -201,6 +205,10 @@ export const { actions, reducer } = slice
 
 // export state selector
 export const selector = (state) => state?.scanStore?.uploadAnswerSheets
+export const currentSessionSelector = createSelector(
+  selector,
+  (state) => state.currentSession
+)
 
 function* getOmrUploadSessionsSaga({ payload }) {
   try {
@@ -216,13 +224,11 @@ function* getOmrUploadSessionsSaga({ payload }) {
     yield put(
       slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
-    const currentSession =
-      omrUploadSessions?.find((session) => session._id === sessionId) ||
-      omrUploadSessions?.filter(
-        ({ status }) =>
-          status === omrUploadSessionStatus.SCANNING ||
-          status === omrUploadSessionStatus.DONE
-      ).lastItem
+    const currentSession = sessionId
+      ? omrUploadSessions?.find((session) => session._id === sessionId)
+      : omrUploadSessions?.filter(
+          ({ status }) => status >= omrUploadSessionStatus.SCANNING
+        ).lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
       if (!sessionId && !fromWebcam) {
@@ -260,7 +266,6 @@ function* createOmrUploadSessionSaga({
     setCancelUpload,
   },
 }) {
-  let uploadRunner
   try {
     if (!file) {
       throw new Error(
@@ -295,27 +300,17 @@ function* createOmrUploadSessionSaga({
       uploadToS3,
       file,
       aws.s3Folders.BUBBLE_SHEETS,
-      (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
+      (progressData) => handleUploadProgress({ progressData, mulFactor: 99 }),
       setCancelUpload,
       `${assignmentId}/${sessionId}`,
       true
     )
-    uploadRunner = yield call(
-      setInterval,
-      () => handleUploadProgress({ step: 8 }),
-      1000
-    )
-    yield put(slice.actions.setUploadRunner(uploadRunner))
-    const { result: sessionUpdated, error } = yield call(
-      scannerApi.splitScanOmrSheets,
-      {
-        assignmentId,
-        sessionId,
-        groupId,
-        source,
-      }
-    )
-    yield call(clearInterval, uploadRunner)
+    const { error } = yield call(scannerApi.splitScanOmrSheets, {
+      assignmentId,
+      sessionId,
+      groupId,
+      source,
+    })
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
@@ -324,7 +319,7 @@ function* createOmrUploadSessionSaga({
     }
     yield put(
       slice.actions.createOmrUploadSessionDone({
-        session: { ...session, source, ...sessionUpdated },
+        session: { ...session, source },
       })
     )
   } catch (e) {
@@ -332,7 +327,6 @@ function* createOmrUploadSessionSaga({
       const msg = e.message || 'Upload failed. Please try again.'
       notification({ msg })
     }
-    yield call(clearInterval, uploadRunner)
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
       push({
@@ -340,6 +334,40 @@ function* createOmrUploadSessionSaga({
         search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
       })
     )
+  }
+}
+
+function* updateOmrUploadSessionOnSplitPDFSaga({ payload: splitPDFDocs }) {
+  const currentSession = yield select(currentSessionSelector)
+  const currentSessionSplitPDFDoc = splitPDFDocs.find(
+    (doc) =>
+      doc.sessionId === currentSession._id &&
+      doc.processStatus !== 'in_progress'
+  )
+  if (
+    currentSessionSplitPDFDoc &&
+    currentSession.status === omrUploadSessionStatus.NOT_STARTED
+  ) {
+    if (currentSessionSplitPDFDoc.processStatus === 'failed') {
+      notification({ msg: currentSessionSplitPDFDoc.message })
+      yield put(
+        slice.actions.createOmrUploadSessionDone({
+          error: currentSessionSplitPDFDoc.message,
+        })
+      )
+      yield put(
+        push({
+          pathname: '/uploadAnswerSheets',
+          search: `?assignmentId=${currentSessionSplitPDFDoc.assignmentId}&groupId=${currentSessionSplitPDFDoc.groupId}`,
+        })
+      )
+    } else if (currentSessionSplitPDFDoc.processStatus === 'done') {
+      yield put(
+        slice.actions.createOmrUploadSessionDone({
+          session: { ...currentSession, status: omrSheetScanStatus.SCANNING },
+        })
+      )
+    }
   }
 }
 
@@ -433,21 +461,19 @@ function* abortOmrUploadSessionSaga({
 // export saga as default
 export default function* watcherSaga() {
   yield all([
-    yield takeLatest(
-      slice.actions.getOmrUploadSessions,
-      getOmrUploadSessionsSaga
-    ),
-    yield takeLatest(
+    takeLatest(slice.actions.getOmrUploadSessions, getOmrUploadSessionsSaga),
+    takeLatest(
       slice.actions.createOmrUploadSession,
       createOmrUploadSessionSaga
     ),
-    yield takeLatest(
+    takeLatest(
+      slice.actions.updateOmrUploadSessionOnSplitPDFAction,
+      updateOmrUploadSessionOnSplitPDFSaga
+    ),
+    takeLatest(
       slice.actions.updateOmrUploadSession,
       updateOmrUploadSessionSaga
     ),
-    yield takeLatest(
-      slice.actions.abortOmrUploadSession,
-      abortOmrUploadSessionSaga
-    ),
+    takeLatest(slice.actions.abortOmrUploadSession, abortOmrUploadSessionSaga),
   ])
 }

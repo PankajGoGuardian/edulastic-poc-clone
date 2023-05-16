@@ -265,23 +265,52 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
 }
 
 const findTestWithAverageBand = (tests) => {
+  const NO_RANK = 0
   const weightedAverageRank =
-    sum(tests.map((t) => get(t, 'band.rank', 0) * t.totalStudentCount || 0)) /
-    sumBy(tests, 'totalStudentCount')
-
-  const item = minBy(tests, (el) => get(el, 'band.rank') - weightedAverageRank)
+    sum(
+      tests.map((t) => get(t, 'band.rank', NO_RANK) * t.totalStudentCount || 0)
+    ) / sumBy(tests, 'totalStudentCount')
+  const item = minBy(
+    tests,
+    (el) => get(el, 'band.rank', NO_RANK) - weightedAverageRank
+  )
   return item
 }
 
-const augmentBandData = (tests, bandInfo) => {
+const getWeightedAchievementLevel = (records) => {
+  const weightedAverage =
+    sum(
+      records.map(
+        (record) => (record.achievementLevel || 0) * (record.totalGraded || 0)
+      )
+    ) / sum(records.map((record) => parseInt(record.totalGraded || 0, 10)))
+
+  return round(weightedAverage || 0, 2)
+}
+
+const getLineScoreForExternalData = (records, achievementLevel) => {
+  const lineScoreForExternalData = (records || []).reduce((acc, record) => {
+    if (record.id < achievementLevel) {
+      acc += record.totalGradedPercentage
+    } else if (record.id === achievementLevel) {
+      acc += round(record.totalGradedPercentage / 2, 2)
+    }
+    return acc
+  }, 0)
+  return lineScoreForExternalData
+}
+
+const augmentBandData = (tests, bandInfo, externalBands) => {
   const testsWithBandInfo = tests.map((t) => {
     let band = { name: '-', color: '#010101' }
     if (t.externalTestType) {
-      const achievementLevels = getAchievementLevels({
-        ...t,
-        title: t.testName,
-        score: t.totalScore,
-      })
+      const achievementLevels = getAchievementLevels(
+        {
+          ...t,
+          title: t.testName,
+        },
+        externalBands
+      )
       band = achievementLevels.find((al) => al.active)
       return {
         ...t,
@@ -346,8 +375,8 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         testName: _testName,
         isIncomplete,
         totalTotalScore: round(testData.totalTotalScore, 2),
-        averageScore: round(averageScore, 2),
-        averageScorePercentage: round(averageScorePercentage, 2),
+        averageScore: round(averageScore),
+        averageScorePercentage: round(averageScorePercentage),
       }
     })
     .sort((a, b) => b.assessmentDate - a.assessmentDate)
@@ -358,6 +387,7 @@ export const getTableData = (
   externalMetricInfo = [],
   metaInfo = [],
   bandInfo = [],
+  externalBands = [],
   compareByKey
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
@@ -368,6 +398,7 @@ export const getTableData = (
     .map((t) => ({
       ...t,
       assessmentDate: +new Date(t.assessmentDate),
+      achievementLevel: +t.achievementLevel,
     }))
   const compositeMetricInfo = [
     ..._metricInfo,
@@ -382,7 +413,8 @@ export const getTableData = (
   }))
   const compositeMetricInfoWithBandData = augmentBandData(
     compositeMetricInfo,
-    bandInfo
+    bandInfo,
+    externalBands
   )
 
   // table data for each assessment
@@ -411,7 +443,8 @@ export const getTableData = (
 export const getChartData = (
   metricInfo = [],
   externalMetricInfo = [],
-  bandInfo = []
+  bandInfo = [],
+  externalBands = []
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
   let _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
@@ -421,6 +454,7 @@ export const getChartData = (
     .map((t) => ({
       ...t,
       assessmentDate: +new Date(t.assessmentDate),
+      achievementLevel: +t.achievementLevel,
     }))
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
     return []
@@ -437,11 +471,12 @@ export const getChartData = (
   const internalChartData = Object.keys(internalGroupedByUniqId).map(
     (uniqId) => {
       const records = internalGroupedByUniqId[uniqId]
+      const [defaultTestData] = records
       const {
         testName = 'N/A',
         isIncomplete = false,
         ...testData
-      } = internalGroupedByUniqId[uniqId].reduce(
+      } = records.reduce(
         (res, ele) => {
           const _isIncomplete = ele.isIncomplete || res.isIncomplete
           const _res =
@@ -460,6 +495,7 @@ export const getChartData = (
           }
         },
         {
+          ...defaultTestData,
           assessmentDate: 0,
           totalGraded: 0,
           totalScore: 0,
@@ -548,19 +584,22 @@ export const getChartData = (
           totalMaxScore: 0,
         }
       )
+      testData.achievementLevel = getWeightedAchievementLevel(
+        externalGroupedByUniqId[uniqId]
+      )
 
-      // TODO: check with Shubhangi and determine by score range
-      const lineScore = 50
       const averageScore = testData.totalScore / testData.totalGraded || 0
 
       // curate records for each performance criteria of external test
       let _records = []
 
-      const _achievementLevels = getAchievementLevels({
-        ...testData,
-        title: testData.testName || testName,
-        score: testData.totalScore,
-      })
+      const _achievementLevels = getAchievementLevels(
+        {
+          ...testData,
+          title: testData.testName || testName,
+        },
+        externalBands
+      )
       testData.bands = _achievementLevels
       testData.band = _achievementLevels.find((al) => al.active)
       _records = _achievementLevels.map((band) => {
@@ -571,7 +610,7 @@ export const getChartData = (
           color: band.color,
           bandName: band.name,
         }
-        const _recordsWithBands = augmentBandData(records, null)
+        const _recordsWithBands = augmentBandData(records, null, externalBands)
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         if (parseInt(_record.totalGraded, 10)) {
@@ -582,6 +621,11 @@ export const getChartData = (
         }
         return { ..._default, ..._record }
       })
+
+      const lineScore = getLineScoreForExternalData(
+        _records,
+        round(testData.achievementLevel)
+      )
 
       return {
         ...testData,

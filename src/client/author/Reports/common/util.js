@@ -10,10 +10,28 @@ import {
   find,
   indexOf,
   keyBy,
+  pullAllBy,
+  capitalize,
 } from 'lodash'
+import qs from 'qs'
 import next from 'immer'
 import moment from 'moment'
+import {
+  DW_DASHBOARD_REPORT,
+  reportGroupType,
+} from '@edulastic/constants/const/report'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import calcMethod from './static/json/calcMethod.json'
+import navigation from './static/json/navigation.json'
+import { allFilterValue } from './constants'
+import {
+  groupByConstants,
+  groupByOptions,
+} from '../subPages/dataWarehouseReports/AttendanceSummary/utils/constants'
+
+// TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
+
+const { EXTERNAL_TEST_TYPES } = testTypesConstants
 
 const studentFiltersDefaultValues = [
   {
@@ -123,22 +141,22 @@ export const filterData = (data, filter) => {
   const filteredData = data.filter(
     (item) =>
       (!filter.gender ||
-        filter.gender === 'all' ||
+        filter.gender === allFilterValue ||
         item.gender.toLowerCase() === filter.gender.toLowerCase()) &&
       (!filter.frlStatus ||
-        filter.frlStatus === 'all' ||
+        filter.frlStatus === allFilterValue ||
         item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase()) &&
       (!filter.ellStatus ||
-        filter.ellStatus === 'all' ||
+        filter.ellStatus === allFilterValue ||
         item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase()) &&
       (!filter.iepStatus ||
-        filter.iepStatus === 'all' ||
+        filter.iepStatus === allFilterValue ||
         item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
       (!filter.race ||
-        filter.race === 'all' ||
+        filter.race === allFilterValue ||
         item.race.toLowerCase() === filter.race.toLowerCase()) &&
       (!filter.hispanicEthnicity ||
-        filter.hispanicEthnicity === 'all' ||
+        filter.hispanicEthnicity === allFilterValue ||
         item.hispanicEthnicity.toLowerCase() ===
           filter.hispanicEthnicity.toLowerCase())
   )
@@ -152,19 +170,20 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
         (item.grades || '')
           .split(',')
           .filter((g) => g.length)
-          .includes(currentFilter.grade) || currentFilter.grade === 'All'
+          .includes(currentFilter.grade) ||
+        currentFilter.grade?.toLowerCase() === allFilterValue
       const checkForSchool =
         !currentFilter.schoolId ||
-        currentFilter.schoolId === 'All' ||
+        currentFilter.schoolId.toLowerCase() === allFilterValue ||
         (item.groupType === 'class' && item.schoolId === currentFilter.schoolId)
       if (
         item.groupId &&
         checkForGrades &&
         checkForSchool &&
         (item.subject === currentFilter.subject ||
-          currentFilter.subject === 'All') &&
+          currentFilter.subject?.toLowerCase() === allFilterValue) &&
         (item.courseId === currentFilter.courseId ||
-          currentFilter.courseId === 'All')
+          currentFilter.courseId?.toLowerCase() === allFilterValue)
       ) {
         return true
       }
@@ -283,13 +302,32 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertTableToCSV = (refComponent) => {
+export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
   const rows = refComponent.querySelectorAll('table')[0].querySelectorAll('tr')
+  const startIndex = getColumnHeaders ? 1 : 0
   const csv = []
   const csvRawData = []
-  for (let i = 0; i < rows.length; i++) {
+  if (getColumnHeaders) {
+    const columnHeaders = getColumnHeaders()
+    const columnHeaderRows = Object.keys(columnHeaders)
+    columnHeaderRows.forEach((r) => {
+      const rw = []
+      for (let j = 0; j < columnHeaders[r].length; j++) {
+        let data = columnHeaders[r][j]
+          .replace(/(\r\n|\n|\r)/gm, ' ')
+          .replace(/(\s+)/gm, ' ')
+        data = data.replace(/"/g, '""')
+        rw.push(`"${data}"`)
+      }
+      csv.push(rw.join(','))
+      csvRawData.push(rw)
+    })
+  }
+
+  for (let i = startIndex; i < rows.length; i++) {
     const row = []
-    const cols = rows[i].querySelectorAll('td, th')
+    const selectorSet = getColumnHeaders ? 'td' : 'td, th'
+    const cols = rows[i].querySelectorAll(selectorSet)
     for (let j = 0; j < cols.length; j++) {
       if (cols[j].getElementsByClassName('ant-checkbox').length > 0) continue
       let data = (cols[j].innerText || cols[j].textContent)
@@ -419,4 +457,240 @@ export const combineNames = (list) =>
 export const getAssessmentName = (test) => {
   const [key, title] = [test._id || test.key, test.title]
   return `${title} (ID:${key.substring(key.length - 5)})`
+}
+
+export const getTooltipArrowStyles = ({ tooltipType, tooltipArrowMargin }) => {
+  let style
+  switch (tooltipType) {
+    case 'right':
+      style = {
+        left: '-15px',
+        bottom: `${
+          tooltipArrowMargin ? `calc(50% - ${tooltipArrowMargin}px)` : '50%'
+        }`,
+        transform: 'translateY(50%) rotate(90deg)',
+      }
+      break
+    case 'left':
+      style = {
+        left: '195px',
+        bottom: `${
+          tooltipArrowMargin ? `calc(50% - ${tooltipArrowMargin}px)` : '50%'
+        }`,
+        transform: 'translateY(50%) rotate(-90deg)',
+      }
+      break
+
+    case 'bottom':
+      style = {
+        left: `50%`,
+        top: `-10px`,
+        transform: 'translateX(-50%) rotate(180deg)',
+      }
+      break
+
+    default:
+      style = {
+        left: '50%',
+        bottom: '-10px',
+        transform: 'translateX(-50%)',
+      }
+  }
+  return style
+}
+
+export const setProperties = (ref, obj) => {
+  const keys = Object.keys(obj)
+  keys.forEach((key) => {
+    ref.current.style.setProperty(key, obj[key])
+  })
+}
+
+export const getHoveredBarDimensions = (event) => {
+  const attributes = event.target.parentNode.attributes
+  const width = 45
+  if (Number.isNaN(width)) return
+  const height = +attributes.height?.nodeValue
+  const x = +attributes.x?.nodeValue
+  const y = +attributes.y?.nodeValue
+  const d = {
+    x,
+    y,
+    width,
+    height,
+  }
+  return d
+}
+
+export const tooltipParams = {
+  tooltipWidth: 200,
+  maxTooltipHeight: 250,
+  spaceForLittleTriangle: 10,
+  spaceForPercentageLabel: 20,
+  navButtonMargin: 50,
+  xAxisHeight: 100,
+}
+
+export const computeChartNavigationLinks = ({
+  requestFilters,
+  loc,
+  hideOtherTabs = false,
+}) => {
+  if (navigation.locToData[loc]) {
+    requestFilters = requestFilters || {}
+    const requestFilterKeys = Object.keys(requestFilters)
+    const _filters = {}
+    requestFilterKeys.forEach((item) => {
+      const val =
+        requestFilters[item] === ''
+          ? capitalize(allFilterValue)
+          : requestFilters[item]
+      _filters[item] = val
+    })
+    const _navigationItems = navigation.navigation[
+      navigation.locToData[loc].group
+    ].filter((item) => {
+      if (hideOtherTabs) return item.key === loc
+      return true
+    })
+    return next(_navigationItems, (draft) => {
+      const _currentItem = draft.find((t) => t.key === loc)
+      _currentItem.location += `?${qs.stringify(_filters)}`
+    })
+  }
+  return []
+}
+
+export const getHeaderSettings = (
+  reportType,
+  navigationItems,
+  location,
+  dynamicBreadcrumb,
+  onShareClickCB,
+  onPrintClickCB,
+  onDownloadCSVClickCB,
+  onRefineResultsCB
+) => {
+  const {
+    STANDARD_REPORT,
+    CUSTOM_REPORT,
+    SHARED_REPORT,
+    DATA_WAREHOUSE_REPORT,
+  } = reportGroupType
+
+  const isReportGroup = [
+    STANDARD_REPORT,
+    CUSTOM_REPORT,
+    SHARED_REPORT,
+    DATA_WAREHOUSE_REPORT,
+  ].some((group) => reportType === group)
+
+  if (!reportType || isReportGroup) {
+    const breadcrumbInfo = navigation.locToData[reportType].breadcrumb
+    if (reportType === CUSTOM_REPORT && dynamicBreadcrumb) {
+      const isCustomReportLoading =
+        location.pathname.split(CUSTOM_REPORT)[1].length > 1 || false
+      if (isCustomReportLoading) {
+        breadcrumbInfo.push({
+          title: dynamicBreadcrumb,
+          to: '',
+        })
+      }
+      pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
+    }
+    return {
+      loc: reportType,
+      group: navigation.locToData[reportType].group,
+      title: navigation.locToData[reportType].title,
+      breadcrumbData: breadcrumbInfo,
+      navigationItems,
+    }
+  }
+  const breadcrumbInfo = [...navigation.locToData[reportType].breadcrumb]
+  const reportId = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  }).reportId
+  const isSharedReport = !!(
+    reportId && reportId.toLowerCase() !== allFilterValue
+  )
+  if (isSharedReport) {
+    breadcrumbInfo[0] = navigation.locToData[SHARED_REPORT].breadcrumb[0]
+  }
+  if (reportType === DW_DASHBOARD_REPORT) {
+    onDownloadCSVClickCB = undefined
+  }
+  return {
+    loc: reportType,
+    group: navigation.locToData[reportType].group,
+    title: navigation.locToData[reportType].title,
+    onShareClickCB,
+    onPrintClickCB,
+    onDownloadCSVClickCB,
+    onRefineResultsCB,
+    breadcrumbData: breadcrumbInfo,
+    navigationItems,
+    isSharedReport,
+  }
+}
+
+export const getSelectedCompareBy = ({
+  search = qs.parse(window.location.search),
+  settings = {},
+  compareByOptions,
+}) => {
+  let [selectedCompareBy] = compareByOptions
+  if (search.selectedCompareBy) {
+    selectedCompareBy =
+      compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
+      selectedCompareBy
+  } else if (settings.selectedCompareBy?.key) {
+    selectedCompareBy = settings.selectedCompareBy
+  }
+  return selectedCompareBy
+}
+
+export const getSelectedGroupBy = (search) => {
+  if (groupByOptions.includes(search.groupBy)) {
+    return search.groupBy
+  }
+  return groupByConstants.MONTH
+}
+
+export function removeFilter(
+  filterTagsData,
+  filters,
+  initialFilters,
+  type,
+  key
+) {
+  const _filterTagsData = { ...filterTagsData }
+  const _filters = { ...filters }
+  resetStudentFilters(_filterTagsData, _filters, type, '')
+  if (filters[type] === key) {
+    // handles single selection filters
+    _filters[type] = initialFilters[type]
+    delete _filterTagsData[type]
+  } else if (filters[type].includes(key)) {
+    // handles multiple selection filters
+    _filters[type] = filters[type]
+      .split(',')
+      .filter((d) => d !== key)
+      .join(',')
+    _filterTagsData[type] = filterTagsData[type].filter((d) => d.key !== key)
+  }
+  return { _filters, _filterTagsData }
+}
+
+export function utcMonthDate(date) {
+  const formatYYYYMMDD = 'YYYY-MM-DD'
+  const dateStringInYYYYMMDDD = moment(date).format(formatYYYYMMDD)
+  return +moment.utc(dateStringInYYYYMMDDD)
+}
+
+export function getTestTitle(testCategory, testTitle) {
+  return [EXTERNAL_TEST_TYPES.CAASPP, EXTERNAL_TEST_TYPES.NWEA].includes(
+    testCategory
+  ) && testTitle
+    ? `- ${testTitle}`
+    : ''
 }

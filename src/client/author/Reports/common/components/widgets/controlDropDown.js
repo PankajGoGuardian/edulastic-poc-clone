@@ -36,6 +36,30 @@ const CustomMenu = (className, data, handleMenuClick, prefix, selected) => (
   </Menu>
 )
 
+function searchItemOrDefault(data, searchItem) {
+  let item = null
+  if (data.length) {
+    item = data.find((_item) => {
+      if (typeof searchItem === 'string' && _item.key === searchItem) {
+        return true
+      }
+      if (
+        searchItem &&
+        typeof searchItem === 'object' &&
+        _item.key === searchItem.key
+      ) {
+        return true
+      }
+    })
+    if (!item) {
+      item = data[0]
+    }
+  } else {
+    item = { key: '', title: '' }
+  }
+  return item
+}
+
 const ControlDropDown = ({
   className,
   containerClassName = '',
@@ -48,47 +72,18 @@ const ControlDropDown = ({
   trigger = ['click'],
   buttonWidth,
   style,
+  height = '32px',
 }) => {
   const [selected, setSelected] = useState(by)
   const [isActive, setActive] = useState(false)
 
   useInternalEffect(() => {
-    let item = null
-    if (data.length) {
-      item = data.find((_item) => {
-        if (typeof selected === 'string' && _item.key === selected) {
-          return true
-        }
-        if (typeof selected === 'object' && _item.key === selected.key) {
-          return true
-        }
-      })
-      if (!item) {
-        item = data[0]
-      }
-    } else {
-      item = { key: '', title: '' }
-    }
-
+    const item = searchItemOrDefault(data, selected)
     setSelected(item)
   }, [data])
 
   useInternalEffect(() => {
-    let item = data.find((_item) => {
-      if (typeof by === 'string' && _item.key === by) {
-        return true
-      }
-      if (typeof by === 'object' && _item.key === by.key) {
-        return true
-      }
-    })
-
-    if (!item && data.length) {
-      item = data[0]
-    } else if (!item && !data.length) {
-      item = { key: '', title: '' }
-    }
-
+    const item = searchItemOrDefault(data, by)
     setSelected(item)
   }, [by])
 
@@ -111,6 +106,7 @@ const ControlDropDown = ({
       className={`${containerClassName} control-dropdown`}
       buttonWidth={buttonWidth}
       style={style}
+      height={height}
     >
       <Dropdown
         onVisibleChange={setActive}
@@ -135,6 +131,7 @@ const ControlDropDown = ({
 
 const StyledDiv = styled.div`
   button {
+    height: ${(props) => props.height || 'auto'};
     display: flex;
     justify-content: start;
     align-items: center;

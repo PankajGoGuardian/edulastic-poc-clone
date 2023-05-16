@@ -53,7 +53,7 @@ export const withMathFormula = (WrappedComponent) => {
     return (
       <WithResources
         resources={[
-          `${AppConfig.jqueryPath}/jquery.min.js`,
+          AppConfig.jqueryPath,
           `${AppConfig.katexPath}/katex.min.css`,
           `${AppConfig.katexPath}/katex.min.js`,
         ]}

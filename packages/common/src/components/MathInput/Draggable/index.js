@@ -83,8 +83,7 @@ class Draggable extends React.Component {
 
     // Prevent scrolling on mobile devices, like ipad/iphone.
     // Important that this is after handle/cancel.
-    if (e.type === 'touchstart') e.preventDefault()
-
+    if (e.type === 'touchstart' && !e.target.onclick) e.preventDefault()
     if (this.mounted === false) {
       return
     }

@@ -13,6 +13,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
   TextInputStyled,
+  sanitizeString,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
@@ -61,7 +62,7 @@ const ShortTextPreview = ({
        * to display already enetered user response
        */
     } else if (typeof userAnswer === 'string' && userAnswer) {
-      setText(userAnswer)
+      setText(sanitizeString(userAnswer))
     }
   }, [userAnswer])
 

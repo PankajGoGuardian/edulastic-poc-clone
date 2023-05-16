@@ -495,7 +495,6 @@ class ClassHeader extends Component {
       canCloseClass = [],
       dueDate,
       assignedBy = {},
-      answerOnPaper,
       classId: _classId,
     } = additionalData
     const dueOn = dueDate || endDate
@@ -600,11 +599,7 @@ class ClassHeader extends Component {
             isBlue
             isGhost
             data-cy="closeButton"
-            onClick={() =>
-              answerOnPaper
-                ? this.handleCloseAssignment()
-                : this.toggleCloseModal(true)
-            }
+            onClick={() => this.toggleCloseModal(true)}
           >
             CLOSE
           </EduButton>
@@ -786,18 +781,17 @@ class ClassHeader extends Component {
             View Password
           </MenuItems>
         )}
-        {showSyncGradesWithCanvasOption &&
-          assignmentStatusForDisplay !== 'NOT OPEN' && (
-            <MenuItems
-              data-cy="shareOnCanvas"
-              key="key6"
-              onClick={() =>
-                canvasSyncAssignment({ assignmentId, groupId: classId })
-              }
-            >
-              Share on Canvas
-            </MenuItems>
-          )}
+        {showSyncGradesWithCanvasOption && (
+          <MenuItems
+            data-cy="shareOnCanvas"
+            key="key6"
+            onClick={() =>
+              canvasSyncAssignment({ assignmentId, groupId: classId })
+            }
+          >
+            Share on Canvas
+          </MenuItems>
+        )}
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems

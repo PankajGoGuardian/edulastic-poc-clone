@@ -3,7 +3,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { test, questionType } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
+import { EduIf } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
 import {
   IconCalculator,
   IconClose,
@@ -12,6 +14,7 @@ import {
   IconLanguage,
   IconCloudUpload,
   IconCheck,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../../common/utils/helpers'
@@ -19,8 +22,6 @@ import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
-
-const { calculatorTypes } = test
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -45,12 +46,16 @@ const ToolBar = ({
   checkAnswerInProgress,
   checkAnswer,
   answerChecksUsedForItem,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
+  i18Translate,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     maxAnswerChecks,
@@ -101,7 +106,23 @@ const ToolBar = ({
           <IconCheck />
         </StyledButton>
       )}
-      {calcType !== calculatorTypes.NONE && (
+
+      {canShowReferenceMaterial && (
+        <Tooltip
+          placement="top"
+          title={i18Translate('common.test.referenceMaterial')}
+        >
+          <StyledButton
+            onClick={openReferenceModal}
+            active={isShowReferenceModal}
+            disabled={isPremiumContentWithoutAccess}
+          >
+            <IconEduReferenceSheet />
+          </StyledButton>
+        </Tooltip>
+      )}
+
+      <EduIf condition={!isEmpty(calcTypes)}>
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}
@@ -111,7 +132,7 @@ const ToolBar = ({
             <CaculatorIcon />
           </StyledButton>
         </Tooltip>
-      )}
+      </EduIf>
 
       {!isDocbased && (
         <Tooltip
@@ -211,6 +232,7 @@ ToolBar.propTypes = {
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
+  i18Translate: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
@@ -229,8 +251,8 @@ export default enhance(ToolBar)
 
 export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `
-    width: ${theme.default.headerCaculatorIconWidth};
-    height: ${theme.default.headerCaculatorIconHeight};
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
   `}
 `
 

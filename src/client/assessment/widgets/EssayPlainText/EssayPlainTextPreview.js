@@ -12,6 +12,7 @@ import {
   TextAreaInputStyled,
   QuestionLabelWrapper,
   QuestionContentWrapper,
+  sanitizeString,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
@@ -88,7 +89,7 @@ const EssayPlainTextPreview = ({
 
   useEffect(() => {
     if (isString(userAnswer)) {
-      setText(userAnswer)
+      setText(sanitizeString(userAnswer))
     } else {
       setText('')
       saveAnswer('')
@@ -97,16 +98,17 @@ const EssayPlainTextPreview = ({
   }, [userAnswer])
 
   useEffect(() => {
+    const _text = sanitizeString(text)
     if (!disableResponse) {
-      saveAnswer(text)
+      saveAnswer(_text)
     }
-    setWordCount(getWordCount(text))
+    setWordCount(getWordCount(_text))
   }, [text])
 
   const handleTextChange = (e) => {
     const val = e.target.value
     if (typeof val === 'string') {
-      setText(val)
+      setText(sanitizeString(val))
     }
   }
 

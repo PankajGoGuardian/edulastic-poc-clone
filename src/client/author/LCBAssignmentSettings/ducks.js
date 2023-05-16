@@ -14,6 +14,7 @@ import { updateAdditionalDataAction } from '../src/reducers/testActivity'
 const { passwordPolicy: passwordPolicyValues } = test
 
 const slice = createSlice({
+  //! FIXME must use `slice` property as namespace
   initialState: {
     assignment: null,
     loading: false,
@@ -193,13 +194,14 @@ function* loadAssignmentSaga({ payload }) {
       answerOnPaper,
       maxAttempts,
       maxAnswerChecks,
-      calcType,
+      calcTypes: classCalcTypes,
       passwordPolicy,
       passwordExpireIn,
       assignmentPassword,
       penaltyOnUsingHints,
       showHintsToStudents,
       showTtsForPassages,
+      showImmersiveReader,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -222,8 +224,11 @@ function* loadAssignmentSaga({ payload }) {
     if (maxAnswerChecks !== undefined) {
       data.maxAnswerChecks = maxAnswerChecks
     }
-    if (calcType) {
-      data.calcType = calcType
+    if (Array.isArray(classCalcTypes) && classCalcTypes.length) {
+      data.calcTypes = classCalcTypes
+    }
+    if (data.showImmersiveReader) {
+      data.showImmersiveReader = showImmersiveReader
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints
@@ -265,7 +270,7 @@ function getSettingsSelector(state) {
     releaseScore,
     startDate,
     endDate,
-    calcType,
+    calcTypes,
     dueDate,
     allowedTime,
     pauseAllowed,
@@ -287,6 +292,7 @@ function getSettingsSelector(state) {
     showHintsToStudents,
     penaltyOnUsingHints,
     showTtsForPassages,
+    showImmersiveReader,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -375,7 +381,7 @@ function getSettingsSelector(state) {
       releaseScore,
       startDate,
       endDate,
-      calcType,
+      calcTypes,
       dueDate,
       allowedTime,
       pauseAllowed,
@@ -395,6 +401,7 @@ function getSettingsSelector(state) {
       showHintsToStudents,
       penaltyOnUsingHints,
       showTtsForPassages,
+      showImmersiveReader,
     },
     isUndefined
   )

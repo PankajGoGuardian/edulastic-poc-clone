@@ -6,3 +6,15 @@ export const canEditTest = (test, userId) => {
   }
   return true
 }
+
+export const isRestrictedTimeWindowForAssignment = (
+  startDate,
+  serverTimeStamp,
+  isPaused,
+  isOutsideTimeWindow
+) => {
+  return (
+    !(Date(startDate) > new Date(serverTimeStamp) || !startDate || isPaused) &&
+    isOutsideTimeWindow
+  )
+}

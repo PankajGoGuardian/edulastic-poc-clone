@@ -4,7 +4,7 @@ import { Modal, Row, Col } from 'antd'
 import * as Sentry from '@sentry/browser'
 import { EduButton, notification } from '@edulastic/common'
 import { darkGrey2 } from '@edulastic/colors'
-import GoogleLogin from 'react-google-login'
+import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 import { scopes } from '../ClassListContainer/ClassCreatePage'
 
 const ReauthenticateModal = ({ visible, handleLoginSuccess, toggle }) => {
@@ -13,6 +13,9 @@ const ReauthenticateModal = ({ visible, handleLoginSuccess, toggle }) => {
     Sentry.captureException(err)
     toggle()
   }
+
+  const loginGoogle = (googleClient) => googleClient.requestCode()
+
   return (
     <StyledModal onCancel={toggle} visible={visible} footer={null} centered>
       <Row type="flex" align="middle" gutter={[20, 20]}>
@@ -28,19 +31,21 @@ const ReauthenticateModal = ({ visible, handleLoginSuccess, toggle }) => {
           </div>
         </StyledCol>
         <StyledCol span={24}>
-          <GoogleLogin
-            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-            buttonText="Re-authenticate"
-            render={(renderProps) => (
-              <EduButton isBlue isGhost onClick={renderProps.onClick}>
+          <GoogleLoginWrapper
+            WrappedComponent={({ googleClient }) => (
+              <EduButton
+                isBlue
+                isGhost
+                onClick={() => loginGoogle(googleClient)}
+              >
                 <span>Re-authenticate</span>
               </EduButton>
             )}
-            scope={scopes}
-            onSuccess={handleLoginSuccess}
-            onFailure={handleError}
+            scopes={scopes}
+            successCallback={handleLoginSuccess}
+            errorCallback={handleError}
             prompt="consent"
-            responseType="code"
+            flowType={AUTH_FLOW.CODE}
           />
         </StyledCol>
       </Row>

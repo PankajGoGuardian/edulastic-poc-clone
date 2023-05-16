@@ -22,8 +22,19 @@ import {
   updateCsvDocsAction,
   setHasCsvDocsAction,
 } from '../../ducks'
+import {
+  closeHangoutNotification as closeFirebaseNotification,
+  notificationMessage,
+} from '../../../../common/components/Notification'
+import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 
 const reportCSVCollectionName = 'ReportCSV'
+const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
+const REPORT_NOTIFICATION_STATUS = {
+  INITIATED: 'initiated',
+  COMPLETED: 'completed',
+  DONE: 'done',
+}
 
 const ReportsNotificationListener = ({
   user,
@@ -33,6 +44,7 @@ const ReportsNotificationListener = ({
   updateCsvDocs,
   visible,
   setVisible,
+  setBulkActionStatus,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
@@ -76,43 +88,88 @@ const ReportsNotificationListener = ({
       .catch((err) => console.error(err))
   }
 
+  const onNotificationClick = (e, docId) => {
+    /**
+     * Note: As this function gets invoked on clicking anywhere in the notification.
+     * So making sure that the user clicked on Download button in the notification by
+     * and only than the notification document is getting deleted.
+     */
+    if (e?.target?.tagName.toLowerCase() === 'a') {
+      closeFirebaseNotification(docId)
+      deleteNotificationDocument(docId)
+    }
+  }
+
   const showUserNotifications = (docs) => {
     let notificationProps = null
     uniqBy(docs, '__id').forEach((doc) => {
-      const { status, processStatus, message, statusCode, modifiedAt } = doc
+      const {
+        status,
+        processStatus,
+        message,
+        statusCode,
+        modifiedAt,
+        reportType,
+        downloadLinkStatus,
+        downloadLink,
+      } = doc
+      const isBulkDownload = reportType === DOWNLOAD_GRADES_AND_RESPONSE
+
       const daysDiff = (Date.now() - modifiedAt) / (24 * 60 * 60 * 1000)
-      if (daysDiff > 15) {
+      if (daysDiff > 15 && !isBulkDownload) {
         // delete documents older than 15 days
         deleteNotificationDocument(doc.__id)
       } else if (
-        status === 'initiated' &&
-        processStatus === 'done' &&
+        status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+        (processStatus === REPORT_NOTIFICATION_STATUS.DONE ||
+          downloadLinkStatus === REPORT_NOTIFICATION_STATUS.DONE) &&
         !notificationIds.includes(doc.__id)
       ) {
         setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
-          const _message = (
-            <>
-              {message}
-              <span
-                data-cy="download-csv-notification"
-                style={{ color: themeColor, cursor: 'pointer' }}
-                onClick={() => setIsNotificationClicked(true)}
-              >
-                {' Click here to download. '}
-              </span>
-            </>
-          )
-          notificationProps = {
-            type: 'success',
-            msg: _message,
-            duration: 10,
+          if (isBulkDownload) {
+            notificationMessage({
+              title: 'Download Grades/Responses',
+              message,
+              showButton: true,
+              buttonLink: downloadLink,
+              buttonText: 'DOWNLOAD',
+              notificationPosition: 'bottomRight',
+              notificationKey: doc.__id,
+              onCloseNotification: () => {
+                deleteNotificationDocument(doc.__id)
+              },
+              onButtonClick: (e) => {
+                onNotificationClick(e, doc.__id)
+              },
+            })
+          } else {
+            const _message = (
+              <>
+                {message}
+                <span
+                  data-cy="download-csv-notification"
+                  style={{ color: themeColor, cursor: 'pointer' }}
+                  onClick={() => setIsNotificationClicked(true)}
+                >
+                  {' Click here to download. '}
+                </span>
+              </>
+            )
+            notificationProps = {
+              type: 'success',
+              msg: _message,
+              duration: 10,
+            }
           }
         } else {
           // delete document if the csv generation failed
           styledNotification({ type: 'error', msg: message })
           deleteNotificationDocument(doc.__id)
         }
+      }
+      if (isBulkDownload) {
+        setBulkActionStatus(false)
       }
     })
     if (notificationProps && !isNotificationVisible) {
@@ -130,10 +187,19 @@ const ReportsNotificationListener = ({
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
       const filteredUserNotifications = userNotifications.filter(
-        (d) => d.downloadLink
+        (d) => d.downloadLink && d.reportType !== DOWNLOAD_GRADES_AND_RESPONSE
       )
       setHasCsvDocs(!!filteredUserNotifications.length)
-      showUserNotifications(userNotifications)
+      if (
+        userNotifications.some(
+          (d) =>
+            d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+            (d.processStatus === REPORT_NOTIFICATION_STATUS.DONE ||
+              d.downloadLinkStatus === REPORT_NOTIFICATION_STATUS.DONE) &&
+            d.downloadLink
+        )
+      )
+        showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 
@@ -141,14 +207,14 @@ const ReportsNotificationListener = ({
     if (isNotificationClicked) {
       const docsToUpdate = userNotifications.filter(
         (d) =>
-          d.status === 'initiated' &&
-          d.processStatus === 'done' &&
+          d.status === REPORT_NOTIFICATION_STATUS.INITIATED &&
+          d.processStatus === REPORT_NOTIFICATION_STATUS.DONE &&
           d.downloadLink
       )
       // bulk update docs for which the notification has been clicked
       updateNotificationDocuments(
         docsToUpdate,
-        { status: 'completed' },
+        { status: REPORT_NOTIFICATION_STATUS.COMPLETED },
         updateCallback
       )
       setIsNotificationClicked(false)
@@ -182,6 +248,7 @@ export default compose(
       setHasCsvDocs: setHasCsvDocsAction,
       updateCsvDocs: updateCsvDocsAction,
       setVisible: setCsvModalVisibleAction,
+      setBulkActionStatus: setAssignmentBulkActionStatus,
     }
   )
 )(ReportsNotificationListener)

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="305.724" height="181" viewBox="0 0 305.724 181">
+  <defs>
+    <filter id="Ellipse_601" x="123.612" y="66.5" width="56" height="56" filterUnits="userSpaceOnUse">
+      <feOffset dy="4" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feFlood flood-opacity="0.122"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_11650" data-name="Group 11650" transform="translate(-657 -542.369)">
+    <rect id="Rectangle_3754" data-name="Rectangle 3754" width="305.724" height="181" rx="6" transform="translate(657 542.369)" fill="#fff"/>
+    <circle id="Ellipse_602" data-name="Ellipse 602" cx="38" cy="38" r="38" transform="translate(770.612 594.869)" fill="#4f85de"/>
+    <g transform="matrix(1, 0, 0, 1, 657, 542.37)" filter="url(#Ellipse_601)">
+      <circle id="Ellipse_601-2" data-name="Ellipse 601" cx="22" cy="22" r="22" transform="translate(129.61 68.5)" fill="#8cade3"/>
+    </g>
+    <path id="mic_FILL1_wght400_GRAD0_opsz48" d="M17.2,15.693a2.42,2.42,0,0,1-1.842-.793,2.708,2.708,0,0,1-.742-1.919V6.559a2.45,2.45,0,0,1,.755-1.817,2.626,2.626,0,0,1,3.659,0,2.45,2.45,0,0,1,.755,1.817v6.422a2.708,2.708,0,0,1-.742,1.919A2.42,2.42,0,0,1,17.2,15.693Zm0,7.753a.744.744,0,0,1-.768-.768V19.967a7.123,7.123,0,0,1-4.286-2.009,6.717,6.717,0,0,1-2.06-4.158.637.637,0,0,1,.192-.576.817.817,0,0,1,.6-.243.664.664,0,0,1,.486.2.9.9,0,0,1,.256.486,5.4,5.4,0,0,0,1.842,3.442A5.475,5.475,0,0,0,17.2,18.483a5.475,5.475,0,0,0,3.736-1.369,5.4,5.4,0,0,0,1.842-3.442.867.867,0,0,1,.269-.486.707.707,0,0,1,.5-.2.775.775,0,0,1,.589.243.652.652,0,0,1,.179.576,6.717,6.717,0,0,1-2.06,4.158,7.123,7.123,0,0,1-4.286,2.009v2.712a.744.744,0,0,1-.768.768Z" transform="translate(791.72 619.297)" fill="#fff"/>
+    <path id="Icon_open-audio-spectrum" data-name="Icon open-audio-spectrum" d="M18,0V36h4.5V0ZM9,4.5v27h4.5V4.5ZM27,9V27h4.5V9ZM0,13.5v9H4.5v-9Z" transform="translate(729.612 615.313)" fill="#8cade3" opacity="0.184"/>
+    <path id="Icon_open-audio-spectrum-2" data-name="Icon open-audio-spectrum" d="M13.5,0V36H9V0Zm9,4.5v27H18V4.5ZM4.5,9V27H0V9Zm27,4.5v9H27v-9Z" transform="translate(858.612 615.313)" fill="#8cade3" opacity="0.184"/>
+  </g>
+</svg>

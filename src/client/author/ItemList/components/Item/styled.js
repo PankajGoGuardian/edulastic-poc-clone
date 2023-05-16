@@ -32,6 +32,9 @@ const Style = css`
   font-weight: normal !important;
   font-style: normal !important;
   text-decoration: none;
+  & p {
+    text-indent: 0px !important;
+  }
 `
 
 export const StimulusWrapper = styled.span`

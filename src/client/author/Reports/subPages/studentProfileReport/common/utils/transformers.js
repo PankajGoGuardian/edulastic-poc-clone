@@ -20,7 +20,7 @@ import gradesMap from '../static/gradesMap.json'
 const { getFormattedName } = reportUtils.common
 
 export const getFullName = (s) =>
-  getFormattedName(`${s.firstName} ${s.lastName}`, false)
+  getFormattedName(`${s.firstName || ''} ${s.lastName || ''}`, false)
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {

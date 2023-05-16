@@ -10,12 +10,17 @@ import {
   themeColor,
   white,
   themeColorBlue,
+  greyThemeDark3,
+  lightGrey1,
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu, Row } from 'antd'
+import { Col, Slider, Table, Button, Menu, Row, Icon } from 'antd'
 import styled, { css } from 'styled-components'
+import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
+import { CustomTooltip } from './components/charts/chartUtils/CustomTooltip'
+import { getTooltipArrowStyles } from './util'
 
 export const styledNotification = ({ ...props }) =>
   notification({
@@ -57,7 +62,7 @@ export const PrintablePrefix = styled.b`
 `
 
 export const FilterLabel = styled(FieldLabel)`
-  font-size: 10px;
+  font-size: ${(props) => props.fontSize || '10px'};
 `
 
 export const ReportFiltersContainer = styled.div`
@@ -290,7 +295,7 @@ export const StyledTable = styled(Table)`
           th {
             padding: 8px;
             text-align: center;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 10px;
             border: 0px;
             color: #aaafb5;
@@ -413,7 +418,7 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   }
 `
 
-export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
+export const StyledCustomChartTooltipDark = styled(CustomTooltip)`
   width: 200px;
   min-height: 75px;
   background-color: #4b4b4b;
@@ -435,10 +440,7 @@ export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
     border-style: solid;
     border-width: 10px 10px 0 10px;
     border-color: #4b4b4b transparent transparent transparent;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    ${({ style }) => ({ ...style })};
+    ${(props) => getTooltipArrowStyles(props)};
   }
 `
 
@@ -555,6 +557,15 @@ export const PrintableScreen = styled.div`
         min-width: auto !important;
       }
     }
+    .attendance-summary {
+      .recharts-wrapper,
+      .recharts-legend-wrapper {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 `
 
@@ -650,32 +661,13 @@ export const StyledP = styled.p`
 export const NoDataContainer = styled.div`
   background: white;
   color: ${fadedBlack};
-  margin-top: 290px;
+  margin-top: ${({ margin }) => margin || '290px'};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: ${({ fontSize }) => fontSize || '25px'};
   font-weight: 700;
   text-align: 'center';
-`
-
-export const CustomXAxisTickTooltipContainer = styled.div`
-  pointer-events: none;
-  visibility: ${(props) => props.visibility};
-  position: absolute;
-  top: 0px;
-  transform: translate(${(props) => props.x}, ${(props) => props.y});
-  padding: 5px;
-  min-width: ${(props) => props.width}px;
-  max-width: 250px;
-  overflow-wrap: anywhere;
-  text-align: center;
-  background: white;
-  z-index: 999;
-  background-color: #f0f0f0;
-  color: black;
-  border: solid 0.5px #bebebe;
-  box-shadow: 0 0 8px #c0c0c0;
 `
 
 export const StyledTag = styled.div`
@@ -740,8 +732,6 @@ export const StyledLabel = styled.div`
   }
 `
 
-export const InfoColumnLabel = styled(StyledLabel)``
-
 export const HideLinkLabel = styled(StyledLabel)`
   width: 80px;
   white-space: nowrap;
@@ -785,31 +775,6 @@ export const FilterButton = styled(Button)`
   }
 `
 
-export const FilterButtonClear = styled(Button)`
-  min-width: 35px;
-  min-height: 25px;
-  border: none;
-  margin-right: ${({ showFilter }) => (showFilter ? 0 : 10)}px;
-  margin-top: -4px;
-  margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
-  padding: 5px 2px 2px;
-  box-shadow: none;
-  transition: none;
-  &:focus,
-  &:hover {
-    outline: unset;
-  }
-  svg {
-    fill: ${({ showFilter }) =>
-      showFilter ? '#1AB395' : '#434b5d'} !important;
-    width: 20px;
-    height: 20px;
-  }
-  @media print {
-    display: none;
-  }
-`
-
 export const ResetButtonClear = styled(Button)`
   min-width: 35px;
   min-height: 25px;
@@ -833,13 +798,6 @@ export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;
   padding-left: 5px;
-`
-
-export const ApplyFitlerLabel = styled(FieldLabel)`
-  margin-bottom: 0px;
-  margin-right: 15px;
-  color: #434b5d;
-  font-weight: bolder;
 `
 
 export const ColoredCell = styled.div`
@@ -869,31 +827,150 @@ export const SecondaryFilterRow = styled(Row).attrs((props) => ({
   }
 `
 
-export const StyledSignedStackedBarChartContainer = styled.div`
-  padding: 10px;
+export const DashedLine = styled.div`
+  overflow: hidden !important;
   position: relative;
-  z-index: 2;
-
-  .navigator-left {
-    left: 5px;
-    top: 50%;
+  flex-grow: 1;
+  height: ${(props) => props.height ?? '0.5px'};
+  max-width: ${(props) => props.maxWidth};
+  margin: ${(props) => props.margin ?? '0 24px'};
+  &:before {
+    content: '';
+    position: absolute;
+    border: ${(props) => props.dashWidth ?? '5px'} dashed
+      ${(props) => props.dashColor ?? '#707070'};
+    inset: 0;
   }
+`
 
-  .navigator-right {
-    right: 5px;
-    top: 50%;
-  }
+export const SectionLabelWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  flex-grow: 1;
+  margin: ${(p) => p.$margin || '32px 0'};
+  width: ${(p) => p.width || '100%'};
+  flex-grow: 1;
+  align-items: center;
+`
 
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-    stroke-opacity: 0;
+export const StyledButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin: 0 20px 0 20px;
+  padding: 4px;
+  padding-right: 10px;
+  padding-left: 10px;
+`
+export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
+  margin-right: 8px;
+  height: 14px;
+  width: 14px;
+  path {
+    fill: ${themeColor};
   }
+`
+export const StyledTextSpan = styled.span`
+  color: ${themeColor};
+  font-size: 12px;
+`
 
-  .recharts-yAxis {
-    .recharts-text {
-      tspan {
-        white-space: pre;
-      }
-    }
+export const PieChartWrapper = styled.div`
+  width: 400px;
+  height: 320px;
+  flex-grow: 1;
+  .label-name {
+    font-weight: normal;
+    overflow: wrap;
   }
+`
+export const HorizontalBarWrapper = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: 300px;
+  margin-inline: 10px;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+`
+export const StyledSpan = styled.span`
+  background-color: ${({ color }) => color};
+  padding: 5px;
+  flex-wrap: nowrap;
+  width: ${({ value }) => value}%;
+  font-size: 11px;
+`
+
+export const SectionDescriptionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${(p) => p.$margin || '0px'};
+  p {
+    font-size: 14px;
+    color: ${fadedBlack};
+  }
+`
+export const StyledReportContainer = styled.div`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+    width: 1800px;
+  }
+`
+
+export const StyledParagraph = styled.p`
+  padding: 0 10px;
+`
+
+export const StyledIcon = styled(Icon)`
+  position: absolute;
+  top: 210px;
+  left: 32px;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: ${lightGrey1};
+  padding: 3px;
+  border-radius: 6px;
+  color: ${themeColor};
+`
+
+export const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-left: 8px;
+  h3 {
+    font-weight: bold;
+    color: ${greyThemeDark3};
+  }
+`
+export const ContentWrapper = styled.div`
+  display: flex;
+  margin-top: 15px;
+`
+
+export const ImageContainer = styled.div`
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  margin: 15px 0px 50px;
+`
+
+export const CustomStyledCard = styled(Card)`
+  cursor: pointer;
+  margin: 0 10px 20px;
+  height: 280px;
+  aspect-ratio: 1.8 / 1;
+  border: 1px solid ${grey};
+  border-radius: 30px;
+  box-shadow: none;
+`
+export const StyledSectionHeader = styled.div`
+  display: block;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 20px;
+  color: ${fadedBlack};
 `

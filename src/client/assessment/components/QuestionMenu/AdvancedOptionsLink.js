@@ -11,7 +11,7 @@ const AdvancedOptionsLink = ({ bottom, isPremiumUser }) => (
       <FieldLabel nowrap="normal">
         Enable
         <Link to="/author/profile" replace>
-          <span className="power-use">&nbsp;power use&nbsp;</span>
+          <span className="power-user">&nbsp;power user&nbsp;</span>
         </Link>
         mode for advanced authoring options
       </FieldLabel>
@@ -19,7 +19,7 @@ const AdvancedOptionsLink = ({ bottom, isPremiumUser }) => (
     {!isPremiumUser && (
       <FieldLabel nowrap="normal">
         <Link to="/author/subscription" replace>
-          <span className="power-use">&nbsp;Upgrade&nbsp;</span>
+          <span className="power-user">&nbsp;Upgrade&nbsp;</span>
         </Link>
         to access advanced authoring options like scoring settings, display
         options, dynamic parameters and more...
@@ -47,7 +47,7 @@ const AdvancedOptionsHeader = styled.div`
   }};
   position: relative;
 
-  .power-use {
+  .power-user {
     color: ${themeColorHoverBlue};
   }
 `

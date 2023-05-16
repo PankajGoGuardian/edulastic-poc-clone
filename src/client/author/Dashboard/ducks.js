@@ -4,7 +4,6 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
-import { uniqBy } from 'lodash'
 import { getUserDetails, setClassToUserAction } from '../../student/Login/ducks'
 import { getUserId, getUserOrgId } from '../src/selectors/user'
 
@@ -111,41 +110,14 @@ export const getShowAssignmentCreationModalSelector = createSelector(
   (state) => state.showAssignmentCreationModal
 )
 
-const getUniqConfigurableTiles = (configTiles) => {
-  const configWithoutOtherSubjects = []
-  const configWithOtherSubjects = []
-  const configWithoutItemBankId = []
-  configTiles?.forEach((tile) => {
-    const { subscriptionData, filters } = tile?.config || {}
-    if (subscriptionData?.itemBankId) {
-      if (!filters?.[0]?.subject?.includes('Other Subjects')) {
-        configWithoutOtherSubjects.push(tile)
-      } else {
-        configWithOtherSubjects.push(tile)
-      }
-    } else {
-      configWithoutItemBankId.push(tile)
-    }
-  })
-  const uniqConfigWithItemBankId = uniqBy(
-    [...configWithoutOtherSubjects, ...configWithOtherSubjects],
-    'config.subscriptionData.itemBankId'
-  )
-  const uniqConfigData = [
-    ...uniqConfigWithItemBankId,
-    ...configWithoutItemBankId,
-  ]
-  return uniqConfigData
-}
-
 const initialState = {
   data: [],
   error: null,
   loading: false,
   isLaunchHangoutOpen: false,
   isAddingTrial: false,
-  configurableTiles: getUniqConfigurableTiles(
-    JSON.parse(localStorage.getItem('author:dashboard:tiles') || '[]')
+  configurableTiles: JSON.parse(
+    localStorage.getItem('author:dashboard:tiles') || '[]'
   ),
   allAssignmentCount: 0,
   showWelcomePopup: false,
@@ -299,11 +271,10 @@ function* fetchDashboardTilesSaga() {
       user.utm_source === 'singapore' ? true : undefined
     )
     if (!version || version !== result.version) {
-      const uniqConfigurableTiles = getUniqConfigurableTiles(result?.data || [])
-      yield put(setDashboardTiles(uniqConfigurableTiles))
+      yield put(setDashboardTiles(result.data))
       localStorage.setItem(
         'author:dashboard:tiles',
-        JSON.stringify(uniqConfigurableTiles)
+        JSON.stringify(result.data)
       )
       localStorage.setItem('author:dashboard:version', +result.version)
     }

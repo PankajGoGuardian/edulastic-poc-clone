@@ -3,6 +3,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import qs from 'qs'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { keyboard as keyboardConst } from '@edulastic/constants'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
@@ -48,9 +49,7 @@ const PlayerHeader = ({
   isBookmarked,
   handletoggleHints,
   onClickSetting,
-  calcBrands,
   tool: currentToolMode,
-  changeCaculateMode,
   changeTool,
   qType,
   previewPlayer,
@@ -77,6 +76,8 @@ const PlayerHeader = ({
 
   const rightButtons = (
     <SaveAndExit
+      currentItem={currentItem}
+      options={options}
       timedAssignment={timedAssignment}
       utaId={utaId}
       hidePause={hidePause}
@@ -180,7 +181,7 @@ const PlayerHeader = ({
                     )}
                   </>
                 )}
-                {!showSettingIcon && (
+                <EduIf condition={!showSettingIcon}>
                   <TestButton
                     answerChecksUsedForItem={answerChecksUsedForItem}
                     settings={settings}
@@ -199,52 +200,54 @@ const PlayerHeader = ({
                       isPremiumContentWithoutAccess
                     }
                   />
-                )}
-                {!LCBPreviewModal && (
+                </EduIf>
+                <EduIf condition={!LCBPreviewModal}>
                   <ToolTipContainer>
-                    {showSettingIcon && (
-                      <Tooltip
-                        placement="top"
-                        title="Tool"
-                        overlayStyle={overlayStyle}
-                      >
-                        <ToolButton
-                          next
-                          skin
-                          type="primary"
-                          icon="tool"
-                          data-cy="setting"
-                          onClick={onClickSetting}
+                    <EduIf condition={showSettingIcon}>
+                      <EduThen>
+                        <Tooltip
+                          placement="top"
+                          title="Tool"
+                          overlayStyle={overlayStyle}
+                        >
+                          <ToolButton
+                            next
+                            skin
+                            type="primary"
+                            icon="tool"
+                            data-cy="setting"
+                            onClick={onClickSetting}
+                          />
+                        </Tooltip>
+                      </EduThen>
+                      <EduElse>
+                        <ToolBar
+                          settings={settings}
+                          tool={currentToolMode}
+                          changeTool={changeTool}
+                          qType={qType}
+                          handleMagnifier={handleMagnifier}
+                          enableMagnifier={enableMagnifier}
+                          toggleUserWorkUploadModal={toggleUserWorkUploadModal}
+                          timedAssignment={timedAssignment}
+                          utaId={utaId}
+                          hasDrawingResponse={hasDrawingResponse}
+                          groupId={groupId}
+                          openReferenceModal={openReferenceModal}
+                          isShowReferenceModal={isShowReferenceModal}
+                          canShowReferenceMaterial={canShowReferenceMaterial}
+                          isPremiumContentWithoutAccess={
+                            isPremiumContentWithoutAccess
+                          }
                         />
-                      </Tooltip>
-                    )}
-                    {!showSettingIcon && (
-                      <ToolBar
-                        settings={settings}
-                        calcBrands={calcBrands}
-                        tool={currentToolMode}
-                        changeCaculateMode={changeCaculateMode}
-                        changeTool={changeTool}
-                        qType={qType}
-                        handleMagnifier={handleMagnifier}
-                        enableMagnifier={enableMagnifier}
-                        toggleUserWorkUploadModal={toggleUserWorkUploadModal}
-                        timedAssignment={timedAssignment}
-                        utaId={utaId}
-                        hasDrawingResponse={hasDrawingResponse}
-                        groupId={groupId}
-                        openReferenceModal={openReferenceModal}
-                        isShowReferenceModal={isShowReferenceModal}
-                        canShowReferenceMaterial={canShowReferenceMaterial}
-                        isPremiumContentWithoutAccess={
-                          isPremiumContentWithoutAccess
-                        }
-                      />
-                    )}
+                      </EduElse>
+                    </EduIf>
                   </ToolTipContainer>
-                )}
+                </EduIf>
               </MainActionWrapper>
-              {!isMobile && rightButtons}
+              <EduIf condition={!isMobile}>
+                <>{rightButtons}</>
+              </EduIf>
             </HeaderWrapper>
           </FlexContainer>
         </HeaderMainMenu>

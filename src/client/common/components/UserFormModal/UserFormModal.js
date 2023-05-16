@@ -8,10 +8,12 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-import { Collapse, Icon, Select } from 'antd'
+import { Collapse, Icon, Select, Tooltip } from 'antd'
 import { get, identity, isEmpty, pickBy, unset } from 'lodash'
 import moment from 'moment'
 import React from 'react'
+import { withNamespaces } from '@edulastic/localization'
+import { PASSWORD_KEY } from '@edulastic/constants/const/common'
 import keyIcon from '../../../student/assets/key-icon.svg'
 import mailIcon from '../../../student/assets/mail-icon.svg'
 import userIcon from '../../../student/assets/user-icon.svg'
@@ -56,7 +58,7 @@ class UserForm extends React.Component {
 
   confirmPwdCheck = (rule, value, callback) => {
     const { form } = this.props
-    const pwd = form.getFieldValue('password')
+    const pwd = form.getFieldValue(PASSWORD_KEY)
     if (pwd !== value) {
       callback(rule.message)
     } else {
@@ -97,6 +99,7 @@ class UserForm extends React.Component {
       modalData: { _source } = {},
       buttonText,
       isStudentEdit,
+      t,
     } = this.props
     const dobValue = get(_source, 'dob')
     const contactEmails = get(_source, 'contactEmails')
@@ -145,7 +148,6 @@ class UserForm extends React.Component {
       width: '12px',
       height: '12px',
     }
-
     return (
       <CustomModalStyled
         centered
@@ -281,18 +283,20 @@ class UserForm extends React.Component {
                   </Form.Item>
                 </Field>
               )}
-              <Field name="password">
+              <Field name={PASSWORD_KEY}>
                 <FieldLabel>Password</FieldLabel>
                 <Form.Item>
-                  {getFieldDecorator('password')(
-                    <TextInputStyled
-                      padding="0px 15px 0px 30px"
-                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
-                      type="password"
-                      autoComplete="off"
-                      placeholder="Enter Password"
-                      data-cy="passwordTextBox"
-                    />
+                  {getFieldDecorator(PASSWORD_KEY)(
+                    <div>
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
+                        prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                        type={PASSWORD_KEY}
+                        autoComplete="off"
+                        placeholder="Enter Password"
+                        data-cy="passwordTextBox"
+                      />
+                    </div>
                   )}
                 </Form.Item>
               </Field>
@@ -307,14 +311,16 @@ class UserForm extends React.Component {
                       },
                     ],
                   })(
-                    <TextInputStyled
-                      padding="0px 15px 0px 30px"
-                      prefix={<img style={iconSize} src={keyIcon} alt="" />}
-                      type="password"
-                      autoComplete="off"
-                      placeholder="Confirm Password"
-                      data-cy="confirmPasswordTextBox"
-                    />
+                    <div>
+                      <TextInputStyled
+                        padding="0px 15px 0px 30px"
+                        prefix={<img style={iconSize} src={keyIcon} alt="" />}
+                        type={PASSWORD_KEY}
+                        autoComplete="off"
+                        placeholder="Confirm Password"
+                        data-cy="confirmPasswordTextBox"
+                      />
+                    </div>
                   )}
                 </Form.Item>
               </Field>
@@ -493,4 +499,6 @@ class UserForm extends React.Component {
     )
   }
 }
-export const UserFormModal = Form.create({ name: 'user_form_modal' })(UserForm)
+export const UserFormModal = withNamespaces('author')(
+  Form.create({ name: 'user_form_modal' })(UserForm)
+)

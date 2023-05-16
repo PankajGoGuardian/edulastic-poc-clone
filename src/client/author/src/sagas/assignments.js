@@ -122,9 +122,9 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       }
     }
   } catch (error) {
-    captureSentryException(error)
     let errorMessage = 'Assignments not found'
     if (error?.response?.status !== 404) {
+      captureSentryException(error)
       errorMessage = 'Unable to retrive assignment summary.'
       notification({ type: 'error', msg: errorMessage })
     }

@@ -1,39 +1,20 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { EduIf } from '@edulastic/common'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import get from 'lodash/get'
-
-import { Paper } from '@edulastic/common'
-import { white, boxShadowDefault } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+
+import PassageView from './components/PassageView'
+import PassageDetails from './components/PassageDetails'
+import { EmptyWrapper, PassageWrapper } from './components/styled-components'
+
+import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
 import { replaceVariables } from '../../utils/variables'
 
 import { ContentArea } from '../../styled/ContentArea'
-
-import PassageView from './PassageView'
-import Details from './Details'
-
-import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
-
-const EmptyWrapper = styled.div``
-
-// Do not change id here
-const PassageWrapper = styled(Paper).attrs(() => ({
-  id: 'passage-wrapper',
-  className: 'passage-wrapper',
-}))`
-  border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  background: ${(props) =>
-    props.flowLayout ? 'transparent' : props?.isDefaultTheme && white};
-  box-shadow: ${({ flowLayout }) =>
-    flowLayout ? 'unset' : `0 3px 10px 0 ${boxShadowDefault}`};
-  position: relative;
-  text-align: justify;
-  word-break: break-word;
-`
 
 const Passage = ({
   item,
@@ -48,34 +29,36 @@ const Passage = ({
   isDefaultTheme = true,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : PassageWrapper
   const itemForPreview = useMemo(() => replaceVariables(item), [item])
-  if (view === 'edit') {
-    return (
-      <ContentArea>
-        <Details
-          item={item}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          setQuestionData={setQuestionData}
-        />
-      </ContentArea>
-    )
-  }
+  const Wrapper = useMemo(() => {
+    return smallSize ? EmptyWrapper : PassageWrapper
+  }, [smallSize])
 
-  if (view === 'preview') {
-    return (
-      <Wrapper flowLayout={flowLayout} isDefaultTheme={isDefaultTheme}>
-        <PassageView
-          preview
-          item={itemForPreview}
-          flowLayout={flowLayout}
-          setQuestionData={setQuestionData}
-          {...restProps}
-        />
-      </Wrapper>
-    )
-  }
+  return (
+    <>
+      <EduIf condition={view === 'edit'}>
+        <ContentArea>
+          <PassageDetails
+            item={item}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            setQuestionData={setQuestionData}
+          />
+        </ContentArea>
+      </EduIf>
+      <EduIf condition={view === 'preview'}>
+        <Wrapper flowLayout={flowLayout} isDefaultTheme={isDefaultTheme}>
+          <PassageView
+            preview
+            item={itemForPreview}
+            flowLayout={flowLayout}
+            setQuestionData={setQuestionData}
+            {...restProps}
+          />
+        </Wrapper>
+      </EduIf>
+    </>
+  )
 }
 
 Passage.propTypes = {

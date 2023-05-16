@@ -159,10 +159,7 @@ class Assignments extends Component {
       filters.testType =
         testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
     }
-    if (
-      defaultTermId &&
-      !Object.prototype.hasOwnProperty.call(storedFilters, 'termId')
-    ) {
+    if (defaultTermId && !storedFilters.termId) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId)
       filters.termId = isTermExists ? defaultTermId : ''
     }
@@ -419,6 +416,7 @@ class Assignments extends Component {
             onCancel={this.togglePrintModal}
             currentTestId={currentTestId}
             assignmentId={currentAssignmentId}
+            showAnswerCheckbox
           />
         )}
         {showTagsEditModal && (

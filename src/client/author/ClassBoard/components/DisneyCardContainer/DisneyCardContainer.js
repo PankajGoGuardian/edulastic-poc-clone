@@ -412,7 +412,8 @@ class DisneyCardContainer extends Component {
                     <StyledFlexDiv>
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
-                        {student.status !== 'absent'
+                        {student.status !== 'absent' &&
+                        student.UTASTATUS !== NOT_STARTED
                           ? student.score > 0 &&
                             student.status !== 'redirected' &&
                             !isAllPractice

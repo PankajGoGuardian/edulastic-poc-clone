@@ -25,15 +25,18 @@ import {
   TextInputStyled,
   withWindowSizes,
   EduButton,
+  EduIf,
+  EduThen,
 } from '@edulastic/common'
 import {
   roleuser,
-  test as testContants,
+  test as testConstants,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { IconInfo, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 
+import { SHOW_IMMERSIVE_READER } from '@edulastic/constants/const/test'
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
@@ -57,7 +60,7 @@ import {
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
-import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
+import { setMaxAttemptsAction, setSafeBrowserPassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
@@ -80,7 +83,7 @@ import {
   SavedSettingsContainerStyled,
   SubHeaderContainer,
 } from './styled'
-import PeformanceBand from './PeformanceBand'
+import PerformanceBand from './PerformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
@@ -101,7 +104,6 @@ import SaveSettingsModal from '../../../../../AssignTest/components/Container/Sa
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 import { multiFind } from '../../../../../../common/utils/main'
-import CalculatorSetting from './CalculatorSetting'
 import {
   getAvailableTestTypesForUser,
   getProfileKey,
@@ -109,6 +111,9 @@ import {
 } from '../../../../../../common/utils/testTypeUtils'
 import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
+import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
+import { safeModeI18nTranslation } from '../../../../../authUtils'
+import { BetaTag } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const {
   settingCategories,
@@ -131,7 +136,16 @@ const {
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
   docBasedSettingsOptions,
-} = testContants
+  REF_MATERIAL_ALLOWED_SKIN_TYPES,
+  accessibilitySettings,
+} = testConstants
+
+const {
+  magnifier,
+  scratchPad,
+  skipAlert,
+  immersiveReader,
+} = accessibilitySettings
 
 const { Option } = Select
 
@@ -414,7 +428,7 @@ class Setting extends Component {
 
   updateFeatures = (key) => (e) => {
     const { setTestData } = this.props
-    let featVal = isObject(e) ? e.target.value : e
+    let featVal = key === 'calcTypes' ? e : isObject(e) ? e.target.value : e
     if (typeof featVal === 'undefined') {
       featVal = null
     }
@@ -523,13 +537,13 @@ class Setting extends Component {
     }
     if (
       newSettings.passwordPolicy !==
-      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+      testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
       delete newSettings.passwordExpireIn
     }
     if (
       newSettings.passwordPolicy !==
-      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
       delete newSettings.assignmentPassword
     }
@@ -596,14 +610,14 @@ class Setting extends Component {
     let isValid = true
     if (
       entity.passwordPolicy ===
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+        testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
       !entity.passwordExpireIn
     ) {
       notification({ msg: 'Please enter password expiry time' })
       isValid = false
     } else if (
       entity.passwordPolicy ===
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+        testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!entity.assignmentPassword ||
         (entity.assignmentPassword &&
           (entity?.assignmentPassword?.length < 6 ||
@@ -691,10 +705,9 @@ class Setting extends Component {
   }
 
   get isReferenceMaterialAllowedForCurrentSkin() {
-    const { quester, edulastic } = playerSkinValues
+    const { edulastic } = playerSkinValues
     const { entity: { playerSkinType = edulastic } = {} } = this.props
-    const retval = playerSkinType === edulastic || playerSkinType === quester
-
+    const retval = REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
     return retval
   }
 
@@ -725,14 +738,13 @@ class Setting extends Component {
       showCancelButton,
       disableAnswerOnPaper,
       premium,
-      calculatorProvider,
       allowedToSelectMultiLanguage,
       testAssignments,
       editEnable,
       isCurator,
       isPlaylist,
       isEtsDistrict,
-      t,
+      t: i18translate,
       testSettingsList = [],
       performanceBandsData,
       standardsData,
@@ -751,7 +763,7 @@ class Setting extends Component {
       passwordPolicy,
       maxAnswerChecks,
       testType,
-      calcType,
+      calcTypes,
       assignmentPassword,
       passwordExpireIn,
       markAsDone,
@@ -761,6 +773,7 @@ class Setting extends Component {
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
+      showImmersiveReader = false,
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
@@ -786,6 +799,8 @@ class Setting extends Component {
       penaltyOnUsingHints = 0,
       showTtsForPassages = true,
     } = entity
+
+    const { canUseImmersiveReader } = features
 
     const availableTestTypes = getAvailableTestTypesForUser({
       isPremium: premium,
@@ -871,27 +886,41 @@ class Setting extends Component {
 
     const accessibilityData = [
       {
-        key: 'showMagnifier',
+        key: magnifier.key,
         value: showMagnifier,
-        description:
-          'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
-        id: 'magnifier-setting',
+        description: i18translate(
+          'accessibilitySettings.magnifier.description'
+        ),
+        id: magnifier.id,
       },
       {
-        key: 'enableScratchpad',
+        key: scratchPad.key,
         value: enableScratchpad,
-        description:
-          'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
-        id: 'scratchpad-setting',
+        description: i18translate(
+          'accessibilitySettings.scratchPad.description'
+        ),
+        id: scratchPad.id,
       },
       {
-        key: 'enableSkipAlert',
+        key: skipAlert.key,
         value: enableSkipAlert,
-        description:
-          'When enabled, a student can not skip a question without confirmation.',
-        id: 'skip-alert',
+        description: i18translate(
+          'accessibilitySettings.skipAlert.description'
+        ),
+        id: skipAlert.id,
       },
     ]
+
+    if (canUseImmersiveReader && !isDocBased) {
+      accessibilityData.unshift({
+        key: immersiveReader.key,
+        value: showImmersiveReader,
+        description: i18translate(
+          'accessibilitySettings.immersiveReader.description'
+        ),
+        id: immersiveReader.id,
+      })
+    }
 
     const isTestlet =
       playerSkinType?.toLowerCase() === playerSkinValues.testlet.toLowerCase()
@@ -1276,7 +1305,7 @@ class Setting extends Component {
                     isTestlet={isTestlet}
                     updateTestData={this.updateTestData}
                     showTtsForPassages={showTtsForPassages}
-                    t={t}
+                    i18translate={i18translate}
                   />
                   {/* Allow TTS for Passage ends */}
 
@@ -1628,20 +1657,18 @@ class Setting extends Component {
                       <Body smallSize={isSmallSize}>
                         <Row>
                           <Col span={8}>
-                            <CalculatorSetting
-                              onChangeHandle={this.updateFeatures('calcType')}
+                            <CalculatorSettings
                               disabled={
                                 disabled || !assessmentSuperPowersShowCalculator
                               }
-                              calcType={calcType}
-                              premium={premium}
-                              calculatorProvider={calculatorProvider}
+                              isCheckBoxGroup
+                              value={calcTypes}
+                              onChange={this.updateFeatures('calcTypes')}
                             />
                           </Col>
                           <Col span={16}>
                             <Description>
-                              If students can use an on-screen calculator,
-                              select the type to make available on the test.
+                              {i18translate('calculatorTypesSettings.info')}
                             </Description>
                           </Col>
                         </Row>
@@ -1655,7 +1682,9 @@ class Setting extends Component {
                         <Title>
                           <span>Show Rubric to Students </span>
                           <DollarPremiumSymbol premium={premium} />
-                          <Tooltip title={t('showRubricToStudents.info')}>
+                          <Tooltip
+                            title={i18translate('showRubricToStudents.info')}
+                          >
                             <IconInfo
                               color={lightGrey9}
                               style={{ marginLeft: '10px', cursor: 'pointer' }}
@@ -1680,7 +1709,7 @@ class Setting extends Component {
                             style={{ marginTop: '10px' }}
                             data-cy="show-rubric-to-students-desc"
                           >
-                            {t('showRubricToStudents.info')}
+                            {i18translate('showRubricToStudents.info')}
                           </Description>
                         </Body>
                       </SettingContainer>
@@ -1743,11 +1772,25 @@ class Setting extends Component {
                                 }}
                               >
                                 {accessibilities[o.key]}
+                                <EduIf
+                                  condition={o.key === SHOW_IMMERSIVE_READER}
+                                >
+                                  <EduThen>
+                                    <BetaTag top="-50%" left="125.55px">
+                                      BETA
+                                    </BetaTag>
+                                  </EduThen>
+                                </EduIf>
                               </span>
                             </Col>
                             <Col span={12}>
                               <StyledRadioGroup
-                                disabled={disabled || !features[o.key]}
+                                disabled={
+                                  disabled ||
+                                  (o.key === immersiveReader.key
+                                    ? !canUseImmersiveReader
+                                    : !features[o.key])
+                                }
                                 onChange={(e) =>
                                   this.updateTestData(o.key)(e.target.value)
                                 }
@@ -1827,7 +1870,7 @@ class Setting extends Component {
                               this.confirmKeypadSelection(false)}
                           >
                             <p>
-                              <b>{t('keypadSettings.warning')}</b>
+                              <b>{i18translate('keypadSettings.warning')}</b>
                             </p>
                           </ConfirmationModal>
                           <Description>
@@ -2222,7 +2265,7 @@ class Setting extends Component {
                     <SettingContainer>
                       <Title>
                         <span>
-                          Require Safe Exam Browser{' '}
+                          {safeModeI18nTranslation(i18translate, 'title')}
                           <DollarPremiumSymbol
                             premium={
                               assessmentSuperPowersRequireSafeExamBrowser
@@ -2230,13 +2273,7 @@ class Setting extends Component {
                           />
                         </span>
                         <Tooltip
-                          title="Ensure a secure testing environment by using Safe Exam Browser
-                      to lockdown the student's device. To use this feature, Safe Exam Browser 
-                      (on Windows/Mac/iPad) must be installed on the student device. The quit 
-                      password can be used by teacher or proctor to safely exit Safe Exam Browser 
-                      in the middle of an assessment. The quit password should not be revealed to 
-                      the students. If you select this option, students must use devices (Windows, 
-                      Mac or iPad) with Safe Exam Browser installed."
+                          title={safeModeI18nTranslation(i18translate, 'info')}
                         >
                           <IconInfo
                             color={lightGrey9}
@@ -2285,16 +2322,7 @@ class Setting extends Component {
                           </Col>
                         </Row>
                         <Description>
-                          Ensure a secure testing environment by using Safe Exam
-                          Browser to lockdown the student&apos;s device. To use
-                          this feature, Safe Exam Browser (on Windows/Mac/iPad)
-                          must be installed on the student device. The quit
-                          password can be used by teacher or proctor to safely
-                          exit Safe Exam Browser in the middle of an assessment.
-                          The quit password should not be revealed to the
-                          students. If you select this option, students must use
-                          devices (Windows, Mac or iPad) with Safe Exam Browser
-                          installed.
+                          {safeModeI18nTranslation(i18translate, 'info')}
                         </Description>
                       </Body>
                     </SettingContainer>
@@ -2443,7 +2471,7 @@ class Setting extends Component {
                   {/* Multi language Ends */}
 
                   <Block id="performance-bands" smallSize={isSmallSize}>
-                    <PeformanceBand
+                    <PerformanceBand
                       setSettingsData={(val) =>
                         this.updateTestData('performanceBand')(val)
                       }
@@ -2548,7 +2576,6 @@ const enhance = compose(
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       premium: state?.user?.user?.features?.premium,
       allowReferenceMaterial: allowReferenceMaterialSelector(state),
-      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
@@ -2562,7 +2589,7 @@ const enhance = compose(
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,
-      setSafePassword: setSafeBroswePassword,
+      setSafePassword: setSafeBrowserPassword,
       setTestData: setTestDataAction,
       resetUpdatedState: resetUpdatedStateAction,
       fetchTestSettingsList: fetchTestSettingsListAction,

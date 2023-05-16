@@ -40,7 +40,7 @@ const AddSchoolAndGradeModal = ({
     <>
       <TitleHeader>Join your school</TitleHeader>
       <TitleParagraph>
-        and provide your curriculum details, so we can provide relevent content
+        and provide your curriculum details, so we can provide relevant content
       </TitleParagraph>
     </>
   )

@@ -6,7 +6,7 @@ import {
 } from '@edulastic/common'
 import { SortableElement } from 'react-sortable-hoc'
 import { withNamespaces } from '@edulastic/localization'
-import { appLanguages } from '@edulastic/constants'
+import { appLanguages, question } from '@edulastic/constants'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -57,6 +57,7 @@ const Option = (props) => {
     onRemoveOption,
     setFocusedOptionIndex,
     focusedOptionIndex,
+    hideEvaluation = false,
   } = props
   let className = ''
   let correctAnswers = []
@@ -106,6 +107,9 @@ const Option = (props) => {
       if (!validAnswers.includes(item.value)) {
         className = 'wrong'
       }
+    }
+    if (hideEvaluation) {
+      className = ''
     }
   } else if (checkAnswer) {
     if (!isEmpty(correct) && checkAnswer) {
@@ -187,7 +191,7 @@ const Option = (props) => {
         />
       </CheckboxContainer>
       <span
-        className="labelOnly"
+        className={`labelOnly ${question.IR_MCQ_LABEL_SELECTOR}`}
         data-cy="label"
         style={{ display: !label && 'none' }}
         onClick={fromSetAnswers && onChangeHandler}
@@ -373,6 +377,7 @@ const StyledOptionsContainer = withKeyboard(styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 1;
 
     &:hover {
       background: ${themeColorHoverBlue};
@@ -408,6 +413,7 @@ Option.propTypes = {
   fontSize: PropTypes.string.isRequired,
   setFocusedOptionIndex: PropTypes.func,
   focusedOptionIndex: PropTypes.number,
+  hideEvaluation: PropTypes.bool,
 }
 
 Option.defaultProps = {
@@ -421,6 +427,7 @@ Option.defaultProps = {
   crossAction: {},
   setFocusedOptionIndex: () => {},
   focusedOptionIndex: 0,
+  hideEvaluation: false,
 }
 const OptionComponent = withNamespaces('assessment')(Option)
 

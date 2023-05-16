@@ -489,7 +489,7 @@ Scratchpad.defaultProps = {
  */
 const ScratchpadWithResources = (props) => (
   <WithResources
-    criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+    criticalResources={[AppConfig.jqueryPath]}
     resources={[`${AppConfig.zwibbler2Path}/zwibbler2.js`]}
     fallBack={<span />}
   >

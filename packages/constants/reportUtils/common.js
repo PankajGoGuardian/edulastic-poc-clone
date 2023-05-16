@@ -11,13 +11,40 @@ const {
   indexOf,
   keyBy,
   capitalize,
+  isEmpty,
+  pick,
+  invert,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
+const { lightRed7, yellow3, lightGreen14 } = require('@edulastic/colors')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
+
+const DECIMAL_BASE = 10
+const DEGREE_TO_RADIAN = Math.PI / 180
+const ROUND_OFF_TO_INTEGER = true
+const EMPTY_ARRAY = []
+const EXTERNAL_TEST_KEY_SEPARATOR = '__'
+
+const TABLE_SORT_ORDER_TYPES = {
+  ASCEND: 'ascend',
+  DESCEND: 'descend',
+}
+
+const DB_SORT_ORDER_TYPES = {
+  ASCEND: 'asc',
+  DESCEND: 'desc',
+}
+
+const tableToDBSortOrderMap = {
+  [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
+  [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
+}
+
+const dbToTableSortOrderMap = invert(tableToDBSortOrderMap)
 
 const calcMethod = {
   MOST_RECENT: 'Most Recent',
@@ -444,6 +471,25 @@ const resetStudentFilters = (
   }
 }
 
+const curateApiFiltersQuery = (
+  rawQuery,
+  reportFilterFields,
+  sharedReportFilterFields
+) => {
+  const { reportId } = rawQuery
+  const fieldsToPick = isEmpty(reportId)
+    ? reportFilterFields
+    : sharedReportFilterFields
+  const query = pick(rawQuery, fieldsToPick)
+  const queryStr = Object.keys(query)
+    .sort((fieldKey1, fieldKey2) =>
+      String(fieldKey1).localeCompare(String(fieldKey2))
+    )
+    .map((fieldKey) => `${fieldKey}=${query[fieldKey]}`)
+    .join('&')
+  return { query, queryStr }
+}
+
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -462,11 +508,118 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
   return [csvHeadings, ...csvData]
 }
 
+const getDropdownOptions = (keysObj, namesObj) =>
+  Object.values(keysObj).map((key) => ({
+    key,
+    title: namesObj[key],
+  }))
+
+const SUBJECTS = [
+  'Mathematics',
+  'ELA',
+  'Science',
+  'Social Studies',
+  'Computer Science',
+  'Other Subjects',
+]
+
+const SUBJECT_OPTIONS = SUBJECTS.map((key) => ({ key, title: key }))
+
+const GRADE_KEYS = {
+  PRE_KG: 'TK',
+  KG: 'K',
+  GRADE_1: '1',
+  GRADE_2: '2',
+  GRADE_3: '3',
+  GRADE_4: '4',
+  GRADE_5: '5',
+  GRADE_6: '6',
+  GRADE_7: '7',
+  GRADE_8: '8',
+  GRADE_9: '9',
+  GRADE_10: '10',
+  GRADE_11: '11',
+  GRADE_12: '12',
+  OTHER: 'O',
+}
+
+const GRADES = {
+  [GRADE_KEYS.PRE_KG]: 'PreKindergarten',
+  [GRADE_KEYS.KG]: 'Kindergarten',
+  [GRADE_KEYS.GRADE_1]: 'Grade 1',
+  [GRADE_KEYS.GRADE_2]: 'Grade 2',
+  [GRADE_KEYS.GRADE_3]: 'Grade 3',
+  [GRADE_KEYS.GRADE_4]: 'Grade 4',
+  [GRADE_KEYS.GRADE_5]: 'Grade 5',
+  [GRADE_KEYS.GRADE_6]: 'Grade 6',
+  [GRADE_KEYS.GRADE_7]: 'Grade 7',
+  [GRADE_KEYS.GRADE_8]: 'Grade 8',
+  [GRADE_KEYS.GRADE_9]: 'Grade 9',
+  [GRADE_KEYS.GRADE_10]: 'Grade 10',
+  [GRADE_KEYS.GRADE_11]: 'Grade 11',
+  [GRADE_KEYS.GRADE_12]: 'Grade 12',
+  [GRADE_KEYS.OTHER]: 'Other',
+}
+
+const GRADE_OPTIONS = getDropdownOptions(GRADE_KEYS, GRADES)
+
+const PERIOD_TYPES = {
+  TILL_DATE: 'TILL_DATE',
+  THIS_MONTH: 'THIS_MONTH',
+  THIS_QUARTER: 'THIS_QUARTER',
+  LAST_MONTH: 'LAST_MONTH',
+  LAST_QUARTER: 'LAST_QUARTER',
+  CUSTOM: 'CUSTOM',
+}
+const PERIOD_NAMES = {
+  [PERIOD_TYPES.TILL_DATE]: 'Till Date',
+  [PERIOD_TYPES.THIS_MONTH]: 'This Month',
+  [PERIOD_TYPES.THIS_QUARTER]: 'This Quarter',
+  [PERIOD_TYPES.LAST_MONTH]: 'Last Month',
+  [PERIOD_TYPES.LAST_QUARTER]: 'Last Quarter',
+  [PERIOD_TYPES.CUSTOM]: 'Custom',
+}
+
+const RISK_TYPE_KEYS = {
+  OVERALL: 'overall',
+  ACADEMIC: 'academic',
+  ATTENDANCE: 'attendance',
+}
+
+const RISK_TYPE_NAMES = {
+  [RISK_TYPE_KEYS.OVERALL]: 'Overall Risk',
+  [RISK_TYPE_KEYS.ACADEMIC]: 'Academic Risk',
+  [RISK_TYPE_KEYS.ATTENDANCE]: 'Attendance Risk',
+}
+
+const RISK_TYPE_OPTIONS = getDropdownOptions(RISK_TYPE_KEYS, RISK_TYPE_NAMES)
+
+const RISK_BAND_LEVELS = {
+  HIGH: 'High',
+  MEDIUM: 'Medium',
+  LOW: 'Low',
+}
+
+const RISK_BAND_COLOR_INFO = {
+  [RISK_BAND_LEVELS.HIGH]: lightRed7,
+  [RISK_BAND_LEVELS.MEDIUM]: yellow3,
+  [RISK_BAND_LEVELS.LOW]: lightGreen14,
+}
+
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
+  DECIMAL_BASE,
+  DEGREE_TO_RADIAN,
+  ROUND_OFF_TO_INTEGER,
+  EMPTY_ARRAY,
+  EXTERNAL_TEST_KEY_SEPARATOR,
+  DB_SORT_ORDER_TYPES,
+  TABLE_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
+  dbToTableSortOrderMap,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,
@@ -495,5 +648,17 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
+  curateApiFiltersQuery,
   getCsvDataFromTableBE,
+  PERIOD_TYPES,
+  PERIOD_NAMES,
+  SUBJECTS,
+  SUBJECT_OPTIONS,
+  GRADE_KEYS,
+  GRADES,
+  GRADE_OPTIONS,
+  RISK_TYPE_KEYS,
+  RISK_TYPE_OPTIONS,
+  RISK_BAND_LEVELS,
+  RISK_BAND_COLOR_INFO,
 }

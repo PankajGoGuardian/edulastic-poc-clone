@@ -182,6 +182,20 @@
       "group": "multipleAssessmentReport",
       "groupTitle": "Multiple Assessment Report"
     },
+    "pre-vs-post": {
+      "title": "Pre vs Post",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PRE VS POST"
+        }
+      ],
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
+    },
     "student-profile-summary": {
       "title": "Student Profile Summary",
       "breadcrumb": [
@@ -252,7 +266,6 @@
       "group": "engagementReport",
       "groupTitle": "Engagement Report"
     },
-
     "activity-by-school": {
       "title": "Activity by School",
       "breadcrumb": [
@@ -267,7 +280,6 @@
       "group": "engagementReport",
       "groupTitle": "Engagement Report"
     },
-
     "activity-by-teacher": {
       "title": "Activity by Teacher",
       "breadcrumb": [
@@ -306,39 +318,95 @@
       "title": "Data Warehouse Reports",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         }
       ],
       "group": "mainReport"
     },
-    "whole-child-report": {
-      "title": "Whole Child Report",
+    "whole-learner-report": {
+      "title": "Whole Learner",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "WHOLE CHILD REPORT"
+          "title": "WHOLE LEARNER"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "multiple-assessment-report-dw": {
+      "title": "Performance Trends",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Performance Trends"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "attendance-summary": {
+      "title": "Attendance Summary",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports"
+        },
+        {
+          "title": "ATTENDANCE SUMMARY"
         }
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
     },
-    "multiple-assessment-report-dw": {
-      "title": "Multiple Assessment Report",
+    "dashboard-report": {
+      "title": "Dashboard",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "MULTIPLE ASSESSMENT REPORT"
+          "title": "DASHBOARD"
         }
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
+    },
+    "early-warning-report": {
+      "title": "Early Warning",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports"
+        },
+        {
+          "title": "Early Warning"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "efficacy-report": {
+      "title": "Efficacy",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports"
+        },
+        {
+          "title": "Efficacy"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
     },
     "shared-reports": {
       "title": "Shared Reports",
@@ -349,6 +417,20 @@
         }
       ],
       "group": "mainReport"
+    },
+    "goals-and-interventions": {
+      "title": "Set Goals & Interventions",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Goals And Interventions"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
     }
   },
   "navigation": {
@@ -421,6 +503,11 @@
         "key": "student-progress",
         "title": "Student Progress",
         "location": "/author/reports/student-progress"
+      },
+      {
+        "key": "pre-vs-post",
+        "title": "Pre vs Post",
+        "location": "/author/reports/pre-vs-post"
       }
     ],
     "studentProfileReport": [
@@ -480,20 +567,45 @@
       },
       {
         "key": "data-warehouse-reports",
-        "title": "DATA WAREHOUSE REPORTS",
+        "title": "EDULASTIC DATA STUDIO",
         "location": "/author/reports/data-warehouse-reports/"
       }
     ],
     "data-warehouse-reports": [
       {
+        "key": "dashboard-report",
+        "title": "DASHBOARD",
+        "location": "/author/reports/dashboard-report"
+      },
+      {
         "key": "multiple-assessment-report-dw",
-        "title": "MULTIPLE ASSESSMENT REPORT",
+        "title": "Performance Trends",
         "location": "/author/reports/multiple-assessment-report-dw"
       },
       {
-        "key": "whole-child-report",
-        "title": "WHOLE CHILD REPORT",
-        "location": "/author/reports/whole-child-report/student/"
+        "key": "whole-learner-report",
+        "title": "WHOLE LEARNER",
+        "location": "/author/reports/whole-learner-report/student/"
+      },
+      {
+        "key": "attendance-summary",
+        "title": "ATTENDANCE SUMMARY",
+        "location": "/author/reports/attendance-summary"
+      },
+      {
+        "key": "goals-and-interventions",
+        "title": "GOALS AND INTERVENTIONS",
+        "location": "/author/reports/goals-and-interventions"
+      },
+      {
+        "key": "early-warning-report",
+        "title": "Early Warning",
+        "location": "/author/reports/early-warning-report"
+      },
+      {
+        "key": "efficacy-report",
+        "title": "Efficacy",
+        "location": "/author/reports/efficacy-report"
       }
     ]
   }

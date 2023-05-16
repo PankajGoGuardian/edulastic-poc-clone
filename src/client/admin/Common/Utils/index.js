@@ -1,3 +1,4 @@
+import { roleuser, userPermissions } from '@edulastic/constants'
 import { useEffect, useRef } from 'react'
 
 export const getDate = () => {
@@ -20,3 +21,7 @@ export function useUpdateEffect(fn, inputs) {
     else didMountRef.current = true
   }, inputs)
 }
+
+export const isEASuperAdmin = (permissions, role) =>
+  role === roleuser.EDULASTIC_ADMIN &&
+  permissions.includes(userPermissions.SUPER_ADMIN)

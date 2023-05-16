@@ -14,6 +14,9 @@ import {
   SET_PREVIEW_LANGUAGE,
   SET_IS_TEST_PREVIEW_VISIBLE,
   RESET_TEST_ITEMS,
+  SET_SUBMIT_TEST_COMPLETE,
+  CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  SET_ANTI_CHEATING_ENABLED,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -87,5 +90,20 @@ export const setIsTestPreviewVisibleAction = (payload) => ({
 
 export const resetStudentAttemptAction = (payload) => ({
   type: RESET_TEST_ITEMS,
+  payload,
+})
+
+export const setSubmitTestCompleteAction = (payload) => ({
+  type: SET_SUBMIT_TEST_COMPLETE,
+  payload,
+})
+
+export const closeTestTimeoutAlertModalAction = (payload) => ({
+  type: CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  payload,
+})
+
+export const setIsAntiCheatingEnabled = (payload) => ({
+  type: SET_ANTI_CHEATING_ENABLED,
   payload,
 })

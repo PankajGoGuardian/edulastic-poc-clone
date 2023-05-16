@@ -15,6 +15,7 @@ const CsvTable = ({
   isCsvDownloading,
   tableToRender,
   dataSource,
+  getColumnHeaders,
   columns,
   pagination = defaultPagination,
   ...restProps
@@ -52,7 +53,10 @@ const CsvTable = ({
 
   useEffect(() => {
     if (isCsvDownloading && childrenRef.current) {
-      const { csvText, csvRawData } = convertTableToCSV(childrenRef.current)
+      const { csvText, csvRawData } = convertTableToCSV(
+        childrenRef.current,
+        getColumnHeaders
+      )
       onCsvConvert(csvText, csvRawData)
     }
   }, [isCsvDownloading])

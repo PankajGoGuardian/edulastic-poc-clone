@@ -22,48 +22,15 @@ import {
 } from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
-
-import { OrderList } from '../widgets/OrderList'
-import { SortList } from '../widgets/SortList'
-import { MatchList } from '../widgets/MatchList'
-import { Classification } from '../widgets/Classification'
-import { MultipleChoice } from '../widgets/MultipleChoice'
-import { ClozeDragDrop } from '../widgets/ClozeDragDrop'
-import { ClozeImageDragDrop } from '../widgets/ClozeImageDragDrop'
-import { ClozeImageDropDown } from '../widgets/ClozeImageDropDown'
-import { ClozeImageText } from '../widgets/ClozeImageText'
-import { ClozeEditingTask } from '../widgets/ClozeEditingTask'
-import { Graph } from './Graph'
-import { ClozeDropDown } from '../widgets/ClozeDropDown'
-import { ClozeText } from '../widgets/ClozeText'
-import { ShortText } from '../widgets/ShortText'
-import { TokenHighlight } from '../widgets/TokenHighlight'
-import { Shading } from '../widgets/Shading'
-import { Hotspot } from '../widgets/Hotspot'
-import { HighlightImage } from '../widgets/HighlightImage'
-import { Drawing } from './Drawing'
-import { EssayPlainText } from '../widgets/EssayPlainText'
-import { EssayRichText } from '../widgets/EssayRichText'
-import FractionEditor from '../widgets/FractionEditor'
-import UploadFile from '../widgets/UploadFile'
+import { questionTypeToComponent } from '../utils/questionTypeComponent'
 
 import withAnswerSave from './HOC/withAnswerSave'
-import { MatrixChoice } from '../widgets/MatrixChoice'
-import { Protractor } from '../widgets/Protractor'
-import { Passage } from '../widgets/Passage'
-import { Video } from '../widgets/Video'
-import { Text } from '../widgets/Text'
-import { MathFormula } from '../widgets/MathFormula'
-import { FormulaEssay } from '../widgets/FormulaEssay'
-import ClozeMath from '../widgets/ClozeMath'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
 import { setPassageCurrentPageAction } from '../actions/userInteractions'
-import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
 
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
-// import { Coding } from '../widgets/Coding'
 
 import Hints from './Hints'
 import { EDIT } from '../constants/constantsForQuestions'
@@ -86,91 +53,10 @@ import {
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
 import { StyledPaperWrapper } from '../styled/Widget'
-import Pictograph from '../widgets/Pictorgraph'
+import ImmersiveReaderWrapper from './ImmersiveReadeWrapper'
 
-const DummyQuestion = () => <></>
-
-const getQuestion = (type) => {
-  switch (type) {
-    case questionType.LINE_PLOT:
-    case questionType.DOT_PLOT:
-    case questionType.HISTOGRAM:
-    case questionType.LINE_CHART:
-    case questionType.BAR_CHART:
-      return Chart
-    case questionType.DRAWING:
-      return Drawing
-    case questionType.HIGHLIGHT_IMAGE:
-      return HighlightImage
-    case questionType.SHADING:
-      return Shading
-    case questionType.HOTSPOT:
-      return Hotspot
-    case questionType.TOKEN_HIGHLIGHT:
-      return TokenHighlight
-    case questionType.SHORT_TEXT:
-      return ShortText
-    case questionType.ESSAY_PLAIN_TEXT:
-      return EssayPlainText
-    case questionType.ESSAY_RICH_TEXT:
-      return EssayRichText
-    case questionType.MULTIPLE_CHOICE:
-      return MultipleChoice
-    case questionType.CHOICE_MATRIX:
-      return MatrixChoice
-    case questionType.SORT_LIST:
-      return SortList
-    case questionType.CLASSIFICATION:
-      return Classification
-    case questionType.MATCH_LIST:
-      return MatchList
-    case questionType.ORDER_LIST:
-      return OrderList
-    case questionType.CLOZE_DRAG_DROP:
-      return ClozeDragDrop
-    case questionType.CLOZE_IMAGE_DRAG_DROP:
-      return ClozeImageDragDrop
-    case questionType.PROTRACTOR:
-      return Protractor
-    case questionType.CLOZE_IMAGE_DROP_DOWN:
-      return ClozeImageDropDown
-    case questionType.CLOZE_IMAGE_TEXT:
-      return ClozeImageText
-    case questionType.CLOZE_DROP_DOWN:
-      return ClozeDropDown
-    case questionType.CLOZE_TEXT:
-      return ClozeText
-    case questionType.EDITING_TASK:
-      return ClozeEditingTask
-    case questionType.PASSAGE:
-      return Passage
-    case questionType.VIDEO:
-      return Video
-    case questionType.TEXT:
-      return Text
-    case questionType.MATH:
-      return MathFormula
-    case questionType.FORMULA_ESSAY:
-      return FormulaEssay
-    case questionType.CLOZE_MATH:
-    case questionType.EXPRESSION_MULTIPART:
-      return ClozeMath
-    case questionType.GRAPH:
-      return Graph
-    case questionType.FRACTION_EDITOR:
-      return FractionEditor
-    case questionType.SECTION_LABEL:
-      return DummyQuestion
-    // case questionType.CODING:
-    //   return Coding
-    case questionType.UPLOAD_FILE:
-      return UploadFile
-    case questionType.PICTOGRAPH:
-      return Pictograph
-    default:
-      return () => null
-  }
-}
+const getQuestion = (type) =>
+  questionTypeToComponent[type] || questionTypeToComponent.default
 
 const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser
 
@@ -477,7 +363,7 @@ class QuestionWrapper extends Component {
       premiumCollectionWithoutAccess,
       showStacked,
       isExpandedView,
-      t,
+      t: translate,
       ...restProps
     } = this.props
 
@@ -740,36 +626,41 @@ class QuestionWrapper extends Component {
                   maxWidth="100%"
                 >
                   {evaluation === 'pending' && (
-                    <Tooltip title={t('component.pendingEvaluation.tooltip')}>
+                    <Tooltip
+                      title={translate('component.pendingEvaluation.tooltip')}
+                    >
                       <EvaluationMessage>
-                        {t('component.pendingEvaluation.text')}
+                        {translate('component.pendingEvaluation.text')}
                       </EvaluationMessage>
                     </Tooltip>
                   )}
-                  <Question
-                    {...restProps}
-                    t={t}
-                    item={data}
-                    view={view}
-                    evaluation={evaluation}
-                    answerScore={answerScore}
-                    changePreviewTab={changePreviewTab}
-                    qIndex={qIndex}
-                    advancedLink={advancedLink}
-                    advancedAreOpen={this.advancedAreOpen}
-                    cleanSections={this.cleanSections}
-                    fillSections={this.fillSections}
-                    showQuestionNumber={!isPassageOrVideoType && data.qLabel}
-                    flowLayout={flowLayout}
-                    disableResponse={disableResponse}
-                    studentReport={studentReportFeedbackVisible}
-                    isPrintPreview={isPrintPreview}
-                    {...userAnswerProps}
-                    page={page}
-                    setPage={this.setPage}
-                    showAnswerScore={showAnswerScore}
-                    isDefaultTheme={selectedTheme === 'default'}
-                  />
+                  <ImmersiveReaderWrapper>
+                    <Question
+                      {...restProps}
+                      t={translate}
+                      item={data}
+                      view={view}
+                      evaluation={evaluation}
+                      answerScore={answerScore}
+                      changePreviewTab={changePreviewTab}
+                      qIndex={qIndex}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      cleanSections={this.cleanSections}
+                      fillSections={this.fillSections}
+                      showQuestionNumber={!isPassageOrVideoType && data.qLabel}
+                      flowLayout={flowLayout}
+                      disableResponse={disableResponse}
+                      studentReport={studentReportFeedbackVisible}
+                      isPrintPreview={isPrintPreview}
+                      {...userAnswerProps}
+                      page={page}
+                      setPage={this.setPage}
+                      showAnswerScore={showAnswerScore}
+                      isDefaultTheme={selectedTheme === 'default'}
+                    />
+                  </ImmersiveReaderWrapper>
+
                   {showFeedback && !isPrintPreview && (
                     <BottomAction
                       view={view}
@@ -786,7 +677,7 @@ class QuestionWrapper extends Component {
                       fillSections={() => {}}
                       cleanSections={() => {}}
                       studentId={studentId}
-                      t={t}
+                      t={translate}
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isQuestionView={isQuestionView}

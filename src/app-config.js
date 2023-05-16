@@ -9,15 +9,18 @@ const appStage = process.env.REACT_APP_STAGE || 'development'
 // using it to avoid importing json for just version
 const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
 const thirdPartyLibPath = `${cdnURI}/JS/thirdpartylib`
-const jqueryPath = `${thirdPartyLibPath}/jquery/v1.11.0`
+const jqueryPath = `${thirdPartyLibPath}/jquery/v1.11.0/jquery.min.js`
 const mathquillPath = `${thirdPartyLibPath}/mathquill/v0.10.1`
 const zwibbler2Path = `${thirdPartyLibPath}/zwibbler/v2`
 const katexPath = `${thirdPartyLibPath}/katex/v0.11.1`
 const ttsChoicesPath = `${cdnURI}/tts`
-const desmosPath = `${thirdPartyLibPath}/desmos/v1.6`
-const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`
+const desmosPath = `${thirdPartyLibPath}/desmos/v1.7.3/calculator.js`
+const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0/deployggb.js`
 const sentryWhiteListURLRegex = /edulastic\.com|snapwiz\.net/
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
+const eduScientificCalcJsPath = `${eduScientificCalcPath}/CalcSS3.js`
+const eduScientificCalcCssPath = `${eduScientificCalcPath}/CalcSS3.css`
+
 const testletMathJax =
   'https://ws-preview.nextera.questarai.com/libs/NexteraMathJax.2.7.5/MathJax.js?config=MML_HTMLorMML-full.js'
 
@@ -29,6 +32,11 @@ const segmentURI =
 const segmentVersion = process.env.REACT_APP_SEGMENT_VERSION || '4.2.2'
 const isSegmentEnabled = process.env.REACT_APP_ENABLE_SEGMENT === 'true'
 const isChatWidgetEnabled = process.env.REACT_APP_ENABLE_CHAT_WIDGET === 'true'
+const antiScreenshotEnabledDistricts =
+  process.env.REACT_APP_ANTI_SCREENSHOT_ENABLED_DISTRICTS || ''
+const googleClientSdkUrl = 'https://accounts.google.com/gsi/client'
+const googleApiSdkUrl = 'https://apis.google.com/js/api.js'
+const googleCalendarApiVersion = 'v3'
 
 const segmentHashSecret =
   process.env.REACT_APP_SEGMENT_HASH_SECRET ||
@@ -199,6 +207,13 @@ const getSentryReleaseName = () => {
   return `${appVersion}.edu-fe.${appStage}`
 }
 
+const kioskChromeAppId = process.env.REACT_APP_KIOSK_CHROME_APP_ID
+
+const isAntiScreenshotEnabled = (districtId = null) => {
+  const districtIds = antiScreenshotEnabledDistricts.split(',')
+  return districtIds.includes(districtId)
+}
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -206,6 +221,9 @@ export default {
   appStage,
   getSentryReleaseName,
   appVersion,
+  googleClientSdkUrl,
+  googleApiSdkUrl,
+  googleCalendarApiVersion,
   sentryURI,
   segmentHashSecret,
   isSegmentEnabled,
@@ -224,6 +242,10 @@ export default {
   thirdPartyLibPath,
   v1RedirectDecryptSalt,
   eduScientificCalcPath,
+  eduScientificCalcJsPath,
+  eduScientificCalcCssPath,
   testletMathJax,
   newsela,
+  kioskChromeAppId,
+  isAntiScreenshotEnabled,
 }

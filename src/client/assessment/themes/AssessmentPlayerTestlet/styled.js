@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
-
 import {
   boxShadowDefault,
   themeColor,
   lightFadedBlack,
 } from '@edulastic/colors'
+import { IconClose, IconCalculator } from '@edulastic/icons'
+
 import { Header } from '../common'
 import { IPAD_PORTRAIT_WIDTH } from '../../constants/others'
 
@@ -147,4 +148,62 @@ export const OverlayDiv = styled.div`
   right: 0px;
   z-index: 9999;
   background: transparent;
+`
+
+export const ToolBox = styled.div`
+  margin: 0px auto;
+`
+
+export const CalculatorIcon = styled(IconCalculator)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
+  `}
+`
+
+export const CloseIcon = styled(IconClose)`
+  ${({ theme }) => `
+    width: ${theme.default.headerCloseIconWidth};
+    height: ${theme.default.headerCloseIconHeight};
+  `}
+`
+
+export const ToolButton = styled(Button)`
+  border: 1px solid #ffffff;
+  margin-right: 10px;
+  border-radius: 5px;
+
+  & :hover {
+    background: ${({ theme }) => theme.default.headerButtonBgHoverColor};
+    & svg {
+      fill: ${({ theme }) => theme.header.headerButtonHoverColor};
+    }
+  }
+
+  ${({ theme, active }) => `
+    background: ${
+      active
+        ? theme.default.headerButtonBgHoverColor
+        : theme.default.headerButtonBgColor
+    };
+    height: ${theme.default.headerToolbarButtonWidth};
+    width: ${theme.default.headerToolbarButtonHeight};
+
+    svg {
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      fill: ${
+        active
+          ? theme.header.headerButtonHoverColor
+          : theme.header.headerButtonColor
+      };
+    }
+
+    :disabled {
+      opacity: 0.4;
+      background: ${theme.default.headerButtonBgColor};
+    }
+  `}
 `

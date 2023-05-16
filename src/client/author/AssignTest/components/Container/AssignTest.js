@@ -1,4 +1,4 @@
-import { EduButton, notification } from '@edulastic/common'
+import { EduButton, EduIf, notification } from '@edulastic/common'
 import {
   assignmentPolicyOptions,
   roleuser,
@@ -8,7 +8,7 @@ import {
 } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import { IconAssignment, IconTrash } from '@edulastic/icons'
-import { Spin, Select, Icon } from 'antd'
+import { Spin, Select, Icon, Tooltip } from 'antd'
 import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
@@ -18,6 +18,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -58,6 +59,8 @@ import {
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
   setTestSettingsListAction,
+  getQuestionTypesInTestSelector,
+  getIsAudioResponseQuestionEnabled,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -91,8 +94,9 @@ import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
-import ShowBulkAssignModal from './ShowBulkAssignModal'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
+import { SpinnerContainer } from '../../../src/MainStyle'
+import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
 
 const {
   ASSESSMENT,
@@ -103,6 +107,7 @@ const {
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
   docBasedSettingsOptions,
+  ATTEMPT_WINDOW_TYPE,
 } = testConst
 
 const parentMenu = {
@@ -123,7 +128,7 @@ class AssignTest extends React.Component {
       showDeleteSettingModal: false,
       showUpdateSettingModal: false,
       settingDetails: null,
-      showBulkAssignModal: false,
+      showAdvanceSearchModal: false,
     }
   }
 
@@ -230,7 +235,6 @@ class AssignTest extends React.Component {
       this.updateAssignmentNew({
         startDate: moment(),
         endDate: moment().add('days', 7),
-        dueDate: moment().add('days', 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
         testVersionId: location?.state?.testVersionId,
@@ -245,8 +249,14 @@ class AssignTest extends React.Component {
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
+        attemptWindow: {
+          type: ATTEMPT_WINDOW_TYPE.DEFAULT,
+        },
         ...additionalSettings,
       })
+      if (isEmpty(assignments) && testId) {
+        fetchAssignments(testId)
+      }
     } else {
       const premiumSettings = premium
         ? {
@@ -254,6 +264,9 @@ class AssignTest extends React.Component {
             restrictNavigationOutAttemptsThreshold:
               testSettings.restrictNavigationOutAttemptsThreshold,
             blockSaveAndContinue: testSettings.blockSaveAndContinue,
+            attemptWindow: {
+              type: ATTEMPT_WINDOW_TYPE.DEFAULT,
+            },
           }
         : {}
       this.updateAssignmentNew({
@@ -346,7 +359,27 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
       location,
+      questionTypesInTest,
+      enableAudioResponseQuestion,
+      isPlaylist,
     } = this.props
+
+    const isPlaylistModule = isPlaylist && !assignment?.testId
+    if (!isPlaylistModule) {
+      const containsAudioResponseTypeQuestion = questionTypesInTest.includes(
+        AUDIO_RESPONSE
+      )
+      const audioResponseQuestionDisabledByDA = !enableAudioResponseQuestion
+      const cannotAssignAudioResponseQuestion = [
+        containsAudioResponseTypeQuestion,
+        audioResponseQuestionDisabledByDA,
+      ].every((o) => !!o)
+
+      if (cannotAssignAudioResponseQuestion) {
+        notification({ messageKey: 'testContainsAudioResponseTypeQuestion' })
+        return
+      }
+    }
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
@@ -380,67 +413,24 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked })
   }
 
-  handleBulkAssign = () => {
-    const { searchTerms, assignmentSettings: assignment } = this.props
-    const { changeDateSelection } = this.state
-    const { subjects, grades } = searchTerms
-
-    if (!assignment.startDate) return
-    if (isEmpty(subjects)) {
-      return notification({ messageKey: 'selectSubject' })
-    }
-    if (isEmpty(grades)) {
-      return notification({ messageKey: 'selectGrade' })
-    }
-
-    if (!this.validateTimedAssignment()) return
-    if (assignment.endDate < Date.now()) {
-      notification({ messageKey: 'endDate' })
-      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-    } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
-      notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
-      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-    }
-
-    this.setState({
-      showBulkAssignModal: true,
-    })
-  }
-
-  renderHeaderButton = () => {
-    const { isBulkAssigning, isAssigning, isPlaylist, match } = this.props
-    const { testId } = match.params
-    const isPlaylistModule = isPlaylist && !testId
-    return (
-      <>
-        {!isPlaylistModule && (
-          <FeaturesSwitch
-            inputFeatures="canBulkAssign"
-            key="canBulkAssign"
-            actionOnInaccessible="hidden"
-          >
-            <EduButton
-              isBlue
-              data-cy="bulkAssignButton"
-              onClick={this.handleBulkAssign}
-              loading={isBulkAssigning}
-            >
-              {isBulkAssigning ? 'ASSIGNING...' : 'BULK ASSIGN'}
-            </EduButton>
-          </FeaturesSwitch>
-        )}
-
+  renderHeaderButton = (isAssigning, isAssignButtonDisabled) => (
+    <Tooltip
+      title={isAssignButtonDisabled ? 'Please select atleast 1 class.' : ''}
+      placement="bottom"
+    >
+      <span>
         <EduButton
           isBlue
           data-cy="assignButton"
           onClick={this.handleAssign}
           loading={isAssigning}
+          disabled={isAssignButtonDisabled}
         >
           {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
         </EduButton>
-      </>
-    )
-  }
+      </span>
+    </Tooltip>
+  )
 
   onClassFieldChange = (value, group) => {
     const { assignmentSettings: assignment } = this.props
@@ -782,6 +772,10 @@ class AssignTest extends React.Component {
       'none'
   }
 
+  setShowAdvanceSearchModal = (value) => {
+    this.setState({ showAdvanceSearchModal: value })
+  }
+
   render() {
     const {
       isAdvancedView,
@@ -791,14 +785,13 @@ class AssignTest extends React.Component {
       showDeleteSettingModal,
       settingDetails,
       showUpdateSettingModal,
-      showBulkAssignModal,
+      showAdvanceSearchModal,
     } = this.state
     const {
       assignmentSettings: assignment,
       isTestLoading,
       match,
       isAssigning,
-      isBulkAssigning,
     } = this.props
     const {
       classList,
@@ -814,6 +807,7 @@ class AssignTest extends React.Component {
       currentSettingsId,
       testSettingsList,
       userFeatures: { premium },
+      isAdvancedSearchLoading,
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
@@ -833,20 +827,14 @@ class AssignTest extends React.Component {
 
     return (
       <div>
+        <EduIf condition={isAdvancedSearchLoading}>
+          <SpinnerContainer>
+            <Spin />
+          </SpinnerContainer>
+        </EduIf>
         <CommonStudentConfirmation assignment={assignment} />
-        {showBulkAssignModal && (
-          <ShowBulkAssignModal
-            closeModal={() => {
-              this.setState({ showBulkAssignModal: false })
-            }}
-            assignmentSettings={assignment}
-            moduleTitle={moduleTitle}
-          />
-        )}
         <MultipleAssignConfirmation
-          assignment={
-            selectedDateOption ? assignment : omit(assignment, ['dueDate'])
-          }
+          assignment={assignment}
           isPlaylist={isPlaylist}
           moduleTitle={moduleTitle}
         />
@@ -880,7 +868,8 @@ class AssignTest extends React.Component {
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
-          isLoadingButtonState={isAssigning || isBulkAssigning}
+          isLoadingButtonState={isAssigning}
+          isAssignButtonDisabled={isEmpty(assignment.class)}
         />
 
         <Container>
@@ -905,8 +894,14 @@ class AssignTest extends React.Component {
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
+            <EduIf condition={showAdvanceSearchModal}>
+              <QueryBuilder
+                showAdvanceSearch={showAdvanceSearchModal}
+                setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
+              />
+            </EduIf>
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
-            {premium && (
+            <EduIf condition={premium}>
               <SavedSettingsContainer>
                 <div>SAVED SETTINGS</div>
                 <Select
@@ -935,7 +930,10 @@ class AssignTest extends React.Component {
                             e.stopPropagation()
                             this.setState({
                               showDeleteSettingModal: true,
-                              settingDetails: { _id: t._id, title: t.title },
+                              settingDetails: {
+                                _id: t._id,
+                                title: t.title,
+                              },
                             })
                           }}
                           title="Remove Setting"
@@ -966,7 +964,7 @@ class AssignTest extends React.Component {
                   </Select.Option>
                 </Select>
               </SavedSettingsContainer>
-            )}
+            </EduIf>
           </FullFlexContainer>
           {isTestLoading ? (
             <div style={{ height: '70vh' }}>
@@ -992,8 +990,9 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
-              isAssigning={isAssigning || isBulkAssigning}
+              isAssigning={isAssigning}
               isPlaylist={isPlaylist}
+              setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
             />
           )}
         </Container>
@@ -1032,8 +1031,10 @@ const enhance = compose(
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
       searchTerms: getSearchTermsFilterSelector(state),
-      isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      isAdvancedSearchLoading: isAdvancedSearchLoadingSelector(state),
+      questionTypesInTest: getQuestionTypesInTestSelector(state),
+      enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     }),
     {
       loadClassList: receiveClassListAction,

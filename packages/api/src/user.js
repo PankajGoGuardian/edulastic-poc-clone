@@ -219,12 +219,13 @@ const resetUserPassword = (data) =>
     })
     .then((result) => result.data.result)
 
-const adddBulkTeacher = ({ districtId, userDetails }) =>
+const adddBulkTeacher = ({ districtId, userDetails, userSignUpState }) =>
   api
     .callApi({
       url: `${prefix}/${districtId}/bulk-invite-teachers`,
       data: {
         userDetails,
+        userSignUpState,
       },
       method: 'POST',
     })

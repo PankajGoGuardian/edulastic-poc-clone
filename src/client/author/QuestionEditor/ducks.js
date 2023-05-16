@@ -83,6 +83,7 @@ import {
   hasImproperDynamicParamsConfig,
   getQuestionIndexFromItemData,
   validateScore,
+  isV1MultipartItem,
 } from '../questionUtils'
 import { changeViewAction } from '../src/actions/view'
 import {
@@ -536,13 +537,17 @@ function* saveQuestionSaga({
       itemLevelScoring = false,
       multipartItem = false,
       _id: itemDetailId = '',
+      rows = [],
     } = itemDetail
+
+    const isV1Multipart = isV1MultipartItem(rows)
+
     const qIndex = getQindex(question?.id, itemDetail)
 
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem,
+      multipartItem || isV1Multipart,
       itemDetailId,
       qIndex
     )
@@ -575,7 +580,7 @@ function* saveQuestionSaga({
           const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
             _question,
             itemLevelScoring,
-            multipartItem,
+            multipartItem || isV1Multipart,
             itemDetailId,
             questionIndex
           )

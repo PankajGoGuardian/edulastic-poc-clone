@@ -17,7 +17,7 @@ const Filters = ({
   const onAnalyseByChange = onDropDownChange('analyseBy')
 
   return (
-    <Row type="flex" justify="end" align="middle">
+    <Row type="flex" justify="end" align="middle" data-testid="filters">
       <ControlDropDown
         prefix="Analyze By"
         by={analyseBy}

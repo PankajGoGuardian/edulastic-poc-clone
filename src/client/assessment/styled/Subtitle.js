@@ -8,7 +8,7 @@ import {
   white,
 } from '@edulastic/colors'
 import { IconQuestion } from '@edulastic/icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, EduIf } from '@edulastic/common'
 
 const WidgetTitle = styled.h2`
   color: ${greyThemeDark1};
@@ -54,12 +54,13 @@ const StyledQuestionIcon = styled(IconQuestion)`
   }
 `
 
-export const QuestionIcon = ({ id = '', customStyle = {} }) =>
-  id && !id.includes('undefined') ? (
+export const QuestionIcon = ({ id = '', customStyle = {} }) => (
+  <EduIf condition={id && !id.includes('undefined')}>
     <FlexContainer id={id}>
       <StyledQuestionIcon width={14} height={14} style={customStyle} />
     </FlexContainer>
-  ) : null
+  </EduIf>
+)
 
 export const Subtitle = ({
   id,
@@ -78,6 +79,8 @@ export const Subtitle = ({
     <SubtitleText styles={textStyles} data-cy="headingOnPreview">
       {children}
     </SubtitleText>
-    {showIcon && <QuestionIcon id={id} />}
+    <EduIf condition={!!showIcon}>
+      <QuestionIcon id={id} />
+    </EduIf>
   </WidgetTitle>
 )

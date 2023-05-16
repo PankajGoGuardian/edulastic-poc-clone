@@ -37,7 +37,7 @@ const initialState = {
 // -----|-----|-----|-----| SLICE BEGIN |-----|-----|-----|----- //
 
 const slice = createSlice({
-  name: 'multipleAssessmentReportDw',
+  name: 'multipleAssessmentReportDw', //! FIXME key should be `slice` not `name`
   initialState: { ...initialState },
   reducers: {
     fetchDWMARFiltersDataRequest: (state) => {
@@ -64,6 +64,9 @@ const slice = createSlice({
     setDWMARFilterTagsData: (state, { payload }) => {
       state.filterTagsData = payload
     },
+    setDWMARSelectedFilterTagsData: (state, { payload }) => {
+      state.settings.selectedFilterTagsData = payload
+    },
     setDWMARPrevFiltersData: (state, { payload }) => {
       state.prevFiltersData = payload
     },
@@ -72,9 +75,6 @@ const slice = createSlice({
     },
     setDWMARSettings: (state, { payload }) => {
       state.settings = payload
-    },
-    setDWMARSelectedFilterTagsData: (state, { payload }) => {
-      state.settings.selectedFilterTagsData = payload
     },
     fetchDWMARChartDataRequest: (state) => {
       state.loadingReportChartData = true
@@ -149,7 +149,7 @@ function* fetchMARChartDataRequestSaga({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error fetching multiple assessment report data. Please try again after a few minutes.'
+      'Error fetching performance trends data. Please try again after a few minutes.'
     notification({ msg })
     yield put(actions.fetchDWMARChartDataRequestError({ error: msg }))
   }
@@ -174,7 +174,7 @@ function* fetchMARTableDataRequestSaga({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error fetching multiple assessment report data. Please try again after a few minutes.'
+      'Error fetching performance trends data. Please try again after a few minutes.'
     notification({ msg })
     yield put(actions.fetchDWMARTableDataRequestError({ error: msg }))
   }
@@ -229,6 +229,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const loadingReportChartData = createSelector(
   stateSelector,
   (state) => state.loadingReportChartData
@@ -257,6 +261,7 @@ export const selectors = {
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   loadingReportChartData,
   loadingReportTableData,
   settings,

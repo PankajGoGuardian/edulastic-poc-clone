@@ -1,15 +1,12 @@
 import {
-  extraDesktopWidthMax,
-  mediumDesktopExactWidth,
-  smallDesktopWidth,
-  themeColorBlue,
-} from '@edulastic/colors'
-import {
   EduButton,
+  EduIf,
+  EduThen,
   FireBaseService as Fbs,
   FlexContainer,
   isSEB,
 } from '@edulastic/common'
+import ImmersiveReader from '@edulastic/common/src/components/ImmersiveReader/ImmersiveReader'
 import {
   IconAccessibility,
   IconCircleLogout,
@@ -17,17 +14,25 @@ import {
   IconPlusRounded,
   IconMinusRounded,
 } from '@edulastic/icons'
-import { Button, Tooltip } from 'antd'
-import { get } from 'lodash'
+import { Tooltip } from 'antd'
+import { get, isNaN } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
+import { getUserFeatures } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
   adjustScratchpadDimensionsAction,
 } from '../../../common/components/Scratchpad/duck'
 import { setSettingsModalVisibilityAction } from '../../../student/Sidebar/ducks'
+import {
+  AdjustScratchpad,
+  SaveAndExitButton,
+  ScratchpadVisibilityToggler,
+  StyledButton,
+  StyledDiv,
+} from './styledCompoenents'
+
 import TimedTestTimer from './TimedTestTimer'
 
 export function useUtaPauseAllowed(utaId) {
@@ -50,7 +55,7 @@ const SaveAndExit = ({
   setSettingsModalVisibility,
   showZoomBtn,
   onSubmit,
-  pauseAllowed = true,
+  pauseAllowed: defaultPauseAllowed = true,
   utaId,
   groupId,
   timedAssignment,
@@ -63,10 +68,29 @@ const SaveAndExit = ({
   savingResponse,
   adjustScratchpad,
   isPremiumContentWithoutAccess = false,
+  showImmersiveReader,
+  currentItem,
+  options,
+  features,
 }) => {
-  const _pauseAllowed = useUtaPauseAllowed(utaId)
-  const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
+  const utaPauseAllowed = useUtaPauseAllowed(utaId)
+
+  const showPause =
+    utaPauseAllowed === undefined ? defaultPauseAllowed : utaPauseAllowed
+
   const currentVisibilityState = hideData ? 'show' : 'hide'
+
+  const currentItemIndex = Number(currentItem + 1)
+  const totalNumberOfItems = get(options, 'length', 0)
+
+  let immersiveReaderTitle = ''
+
+  if (!isNaN(currentItemIndex) && totalNumberOfItems) {
+    immersiveReaderTitle = `Question ${currentItemIndex}/${totalNumberOfItems}`
+  }
+
+  const { canUseImmersiveReader = false } = features
+
   return (
     <FlexContainer alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
@@ -92,6 +116,11 @@ const SaveAndExit = ({
           </ScratchpadVisibilityToggler>
         </>
       )}
+      <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+        <EduThen>
+          <ImmersiveReader title={immersiveReaderTitle} />
+        </EduThen>
+      </EduIf>
       {showZoomBtn && !LCBPreviewModal && (
         <Tooltip placement="bottom" title="Test Options">
           <StyledButton
@@ -173,6 +202,9 @@ SaveAndExit.propTypes = {
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool,
   savingResponse: PropTypes.bool,
+  options: PropTypes.array.isRequired,
+  currentItem: PropTypes.number.isRequired,
+  features: PropTypes.object,
 }
 
 SaveAndExit.defaultProps = {
@@ -181,6 +213,7 @@ SaveAndExit.defaultProps = {
   setSettingsModalVisibility: () => null,
   onSubmit: null,
   savingResponse: false,
+  features: {},
 }
 
 export default connect(
@@ -189,6 +222,8 @@ export default connect(
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
     savingResponse: get(state, 'test.savingResponse', false),
+    showImmersiveReader: get(state, 'test.settings.showImmersiveReader', false),
+    features: getUserFeatures(state),
   }),
   {
     adjustScratchpad: adjustScratchpadDimensionsAction,
@@ -196,127 +231,3 @@ export default connect(
     toggleScratchpadVisibility: toggleScratchpadVisbilityAction,
   }
 )(SaveAndExit)
-
-const StyledButton = styled(Button)`
-  border: none;
-  margin-left: 5px;
-  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
-  color: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  height: ${(props) => props.theme.default.headerToolbarButtonWidth};
-  width: ${(props) => props.theme.default.headerToolbarButtonHeight};
-  border: ${({ theme }) =>
-    `1px solid ${theme.default.headerRightButtonBgColor}`};
-
-  svg {
-    top: 50%;
-    left: 50%;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    height: ${(props) => props.theme.default.headerRightButtonFontIconHeight};
-    width: ${(props) => props.theme.default.headerRightButtonFontIconWidth};
-    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  }
-
-  &:first-child {
-    margin-left: 0px;
-  }
-
-  &:focus {
-    background: ${({ theme }) => theme.default.headerButtonBgColor};
-    svg {
-      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    }
-    outline: 0;
-    box-shadow: 0 0 0 2px ${themeColorBlue};
-  }
-
-  &:hover,
-  &:active {
-    background: ${({ theme }) => theme.default.headerRightButtonIconColor};
-    color: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    border: ${({ theme }) =>
-      `solid 1px ${theme.default.headerRightButtonBgColor}`};
-    svg {
-      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    }
-  }
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: 40px;
-    width: 40px;
-  }
-`
-
-export const SaveAndExitButton = styled(StyledButton)`
-  width: auto;
-  background: ${({ theme }) => theme.default.headerRightButtonBgColor};
-  border: ${({ theme }) =>
-    `1px solid ${theme.default.headerRightButtonBgColor}`};
-  color: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  font-size: 12px;
-  font-weight: 600;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-
-  svg {
-    position: relative;
-    transform: none;
-    top: unset;
-    left: unset;
-    fill: ${({ theme }) => theme.default.headerRightButtonIconColor};
-  }
-
-  &:hover,
-  &:focus {
-    background: ${({ theme }) => theme.default.headerRightButtonIconColor};
-    color: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    border: ${({ theme }) =>
-      `solid 1px ${theme.default.headerRightButtonBgColor}`};
-    svg {
-      fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
-    }
-  }
-
-  &:focus {
-    border: none;
-    outline: 0;
-    box-shadow: 0 0 0 2px ${themeColorBlue};
-  }
-
-  span {
-    margin-left: 8px;
-  }
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    width: auto;
-    &.ant-btn {
-      height: ${(props) => props.height};
-    }
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    margin-left: 5px;
-    width: auto;
-    &.ant-btn {
-      height: ${(props) => props.height};
-    }
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    height: ${(props) => props.height};
-  }
-`
-
-const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
-  width: auto !important;
-  text-transform: uppercase;
-`
-
-const AdjustScratchpad = styled(SaveAndExitButton)`
-  padding: 0px 12px;
-`
-const StyledDiv = styled.div`
-  height: 40px;
-`

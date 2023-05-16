@@ -41,9 +41,9 @@ import {
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
-import CalculatorSelector from './CalculatorSelector'
 import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
 import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
+import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 
 const { COMMON } = testTypes.TEST_TYPES
 
@@ -79,13 +79,12 @@ const Settings = ({
   disableAnswerOnPaper,
   premium,
   freezeSettings = false,
-  calculatorProvider,
   features,
   match,
   totalItems,
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
-  t,
+  t: i18translate,
   additionalData,
   userId,
   userRole,
@@ -266,7 +265,7 @@ const Settings = ({
 
   const {
     releaseScore = tempTestSettings.releaseScore,
-    calcType = tempTestSettings.calcType,
+    calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     passwordPolicy = tempTestSettings.passwordPolicy,
@@ -351,7 +350,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="SHOW CALCULATOR"
-            content="If students can use an on-screen calculator, select the type to make available on the test."
+            content={i18translate('calculatorTypesSettings.info')}
             premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">
@@ -359,14 +358,12 @@ const Settings = ({
               <Label>SHOW CALCULATOR</Label>
             </Col>
             <Col span={12}>
-              <CalculatorSelector
+              <CalculatorSettings
                 disabled={
                   freezeSettings || !assessmentSuperPowersShowCalculator
                 }
-                calcType={calcType}
-                onChangeHanlde={(value) => overRideSettings('calcType', value)}
-                premium={premium}
-                calculatorProvider={calculatorProvider}
+                value={calcTypes}
+                onChange={(value) => overRideSettings('calcTypes', value)}
               />
             </Col>
           </StyledRow>
@@ -474,7 +471,7 @@ const Settings = ({
           <SettingContainer>
             <DetailsTooltip
               title="Allow Teachers to Redirect"
-              content={t('allowTeacherToRedirect.info')}
+              content={i18translate('allowTeacherToRedirect.info')}
               premium={assessmentSuperPowersAutoRedirect}
             />
             <StyledRow gutter={16}>
@@ -832,13 +829,13 @@ const Settings = ({
         {!(isDocBased || isTestlet) && (
           <SettingContainer>
             <DetailsTooltip
-              title={t('showTtsForPassage.title')}
-              content={t('showTtsForPassage.info')}
+              title={i18translate('showTtsForPassage.title')}
+              content={i18translate('showTtsForPassage.info')}
               premium={premium}
             />
             <StyledRow gutter={16} mb="15px">
               <Col span={12}>
-                <Label>{t('showTtsForPassage.title')}</Label>
+                <Label>{i18translate('showTtsForPassage.title')}</Label>
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
@@ -1141,7 +1138,6 @@ const enhance = compose(
       userRole: getUserRole(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       premium: state?.user?.user?.features?.premium,
-      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,

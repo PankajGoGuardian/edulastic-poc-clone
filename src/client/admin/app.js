@@ -15,10 +15,11 @@ import CleverSearch from './Containers/CleverSearch'
 import ClasslinkSearch from './Containers/ClasslinkSearch'
 import UpgradeUser from './Containers/UpgradeUser'
 import ProfileBody from '../author/DistrictProfile/components/Container/ProfileBody'
+import { isEASuperAdmin } from './Common/Utils'
 
-function Admin({ match, history, location }) {
+function Admin({ match, history, location, user }) {
   const [state, toggleState] = useState()
-
+  const { permissions = [], role = '' } = user?.user
   return (
     <ThemeProvider theme={themes.default}>
       <Layout style={{ minHeight: '100vh' }}>
@@ -37,6 +38,10 @@ function Admin({ match, history, location }) {
                 to={`${match.path}/proxyUser`}
               />
               <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
+              {!isEASuperAdmin(permissions, role) && (
+                <Redirect to={`${match.path}/proxyUser`} />
+              )}
+
               <Route
                 path={`${match.path}/search/clever`}
                 component={CleverSearch}

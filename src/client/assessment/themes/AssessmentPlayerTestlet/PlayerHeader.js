@@ -27,7 +27,6 @@ const PlayerHeader = ({
   onOpenExitPopup,
   currentTool,
   changeTool,
-  calculateMode,
   handleMagnifier,
   enableMagnifier,
   previewPlayer,
@@ -69,7 +68,6 @@ const PlayerHeader = ({
             <Tools
               changeTool={changeTool}
               currentTool={currentTool}
-              calculateMode={calculateMode}
               handleMagnifier={handleMagnifier}
               enableMagnifier={enableMagnifier}
             />
@@ -116,8 +114,6 @@ PlayerHeader.propTypes = {
   unlockNext: PropTypes.bool,
   onOpenExitPopup: PropTypes.func.isRequired,
   changeTool: PropTypes.func.isRequired,
-  calculateMode: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
-    .isRequired,
 }
 
 PlayerHeader.defaultProps = {

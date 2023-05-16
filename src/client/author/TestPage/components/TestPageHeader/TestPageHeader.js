@@ -23,6 +23,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import {
   getUserFeatures,
   getUserId,
@@ -46,6 +47,8 @@ import {
   setShowRegradeConfirmPopupAction,
   getRegradeFirebaseDocIdSelector,
   getShowUpgradePopupSelector,
+  getQuestionTypesInTestSelector,
+  getIsAudioResponseQuestionEnabled,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -245,6 +248,8 @@ const TestPageHeader = ({
   showUpgradePopup,
   isDemoPlayground = false,
   deletePlaylist,
+  questionTypesInTest,
+  enableAudioResponseQuestion,
 }) => {
   let navButtons =
     buttons ||
@@ -362,6 +367,19 @@ const TestPageHeader = ({
         return toggleVerifyEmailModal(true)
       }
     }
+    const containsAudioResponseTypeQuestion = questionTypesInTest.includes(
+      AUDIO_RESPONSE
+    )
+    const audioResponseQuestionDisabledByDA = !enableAudioResponseQuestion
+    const cannotAssignAudioResponseQuestion = [
+      containsAudioResponseTypeQuestion,
+      audioResponseQuestionDisabledByDA,
+    ].every((o) => !!o)
+
+    if (cannotAssignAudioResponseQuestion) {
+      notification({ messageKey: 'testContainsAudioResponseTypeQuestion' })
+      return
+    }
     onAssign()
   }
 
@@ -419,10 +437,10 @@ const TestPageHeader = ({
   const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false)
 
   const handleOnClickPrintConfirm = (params) => {
-    const { type, customValue } = params
+    const { type, customValue, showAnswers } = params
     handleOnClickPrintCancel()
     window.open(
-      `/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`,
+      `/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}&showAnswers=${showAnswers}`,
       '_blank'
     )
   }
@@ -512,6 +530,7 @@ const TestPageHeader = ({
           onProceed={handleOnClickPrintConfirm}
           onCancel={handleOnClickPrintCancel}
           currentTestId={test?._id}
+          showAnswerCheckbox
         />
       )}
       {windowWidth >= parseInt(tabletWidth, 10) ? (
@@ -953,6 +972,8 @@ const enhance = compose(
       regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
       showUpgradePopup: getShowUpgradePopupSelector(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      questionTypesInTest: getQuestionTypesInTestSelector(state),
+      enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,

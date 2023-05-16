@@ -44,7 +44,8 @@ const Classes = ({
   classData,
   history,
   showBannerSlide,
-  hideGetStartedSection,
+  hideGetStartedHeader,
+  hasAssignment,
   setShowClassCreationModal,
   setShowAssignmentCreationModal,
   setCreateClassTypeDetails,
@@ -59,7 +60,7 @@ const Classes = ({
 
   const showCreateClassCard =
     classType !== 'My Favorites' &&
-    (classData.length === 0 || (hideGetStartedSection && classData.length < 5))
+    (classData.length === 0 || (hasAssignment && classData.length < 5))
 
   const isPremiumUser = user?.features?.premium
 
@@ -75,7 +76,7 @@ const Classes = ({
         lh="27px"
         color="#000000"
       >
-        {hideGetStartedSection ? 'Classes' : 'Get Started with Edulastic'}
+        {hideGetStartedHeader ? 'Classes' : 'Get Started with Edulastic'}
       </TextWrapper>
       {isPremiumUser && (
         <SelectInputStyled
@@ -142,7 +143,7 @@ const Classes = ({
             setCreateClassTypeDetails={setCreateClassTypeDetails}
           />
         )}
-        {!hideGetStartedSection && (
+        {!hasAssignment && (
           <CreateAssignmentCard
             newCreateClassCard={classData.length < 1}
             history={history}

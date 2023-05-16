@@ -40,18 +40,21 @@ const SearchFilters = Form.create({
 
     const handleSubmit = (evt) => {
       evt.preventDefault()
-      validateFields((err, { searchType, username }) => {
-        if (!err) {
-          setSearchType(searchType)
-          setPage(1)
-          fetchLicensesBySearchType({
-            type: searchType,
-            page: 1,
-            limit: 10,
-            ...(username && { userId: username }),
-          })
+      validateFields(
+        (err, { searchType, username, organisation: districtId }) => {
+          if (!err) {
+            setSearchType(searchType)
+            setPage(1)
+            fetchLicensesBySearchType({
+              type: searchType,
+              page: 1,
+              limit: 10,
+              ...(username && { userId: username }),
+              ...(districtId && { districtId }),
+            })
+          }
         }
-      })
+      )
     }
 
     const handleSelectLicense = (searchType) => {

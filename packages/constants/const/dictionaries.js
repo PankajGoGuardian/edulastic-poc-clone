@@ -1,0 +1,9 @@
+const STANDARD_DROPDOWN_LIMIT_1000 = 1000
+const TLO_LEVELS = ['TLO']
+const ELO_LEVELS = ['ELO', 'SUB_ELO']
+
+module.exports = {
+  STANDARD_DROPDOWN_LIMIT_1000,
+  TLO_LEVELS,
+  ELO_LEVELS,
+}

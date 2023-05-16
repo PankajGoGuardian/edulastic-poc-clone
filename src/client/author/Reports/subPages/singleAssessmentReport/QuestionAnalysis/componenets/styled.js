@@ -1,5 +1,12 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  borderGrey3,
+  fadedGrey,
+  lightGrey11,
+  themeColor,
+  white,
+} from '@edulastic/colors'
+import { Col, Switch } from 'antd'
 import {
   StyledTable as Table,
   StyledCard as Card,
@@ -8,60 +15,40 @@ import {
 export const StyledCard = styled(Card)``
 
 export const StyledTable = styled(Table)`
-  .ant-table-layout-fixed {
-    .ant-table-scroll {
-      table tbody tr td {
-        border-bottom: 1px solid #e9e9e9;
-      }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
-      .ant-table-body {
-        overflow-x: auto !important;
-      }
-      @media print {
-        .ant-table-body {
-          overflow-x: hidden !important;
-        }
-      }
+  table tbody tr td {
+    border-bottom: 1px solid ${borderGrey3};
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .ant-table-thead {
+    th {
+      color: ${lightGrey11};
+      background: ${white};
+      text-transform: uppercase;
+      font-size: 10px;
+      font-weight: bold;
     }
-    .ant-table-fixed-left {
-      .ant-table-thead {
-        th {
-          padding: 8px;
-          color: #aaafb5;
-          font-weight: 900;
-          text-transform: uppercase;
-          font-size: 10px;
-          border: 0px;
-          .ant-table-column-sorter {
-            vertical-align: top;
-          }
-        }
+    tr:first-child {
+      th.ant-table-column-sort,
+      th.ant-table-column-sort:hover {
+        background: ${white} !important;
       }
-      .ant-table-tbody {
-        td {
-          padding: 10px 0px 10px 8px;
-          font-size: 11px;
-          color: #434b5d;
-          font-weight: 600;
-          @media (min-width: ${extraDesktopWidthMax}) {
-            font-size: 14px;
-          }
-        }
+      th:first-child span:first-child {
+        margin-top: 6px;
+        display: inline-block;
       }
     }
   }
+  .ant-table-thead > tr:nth-child(2) > th {
+    background-color: ${fadedGrey};
+    color: black;
+    font-size: 12px;
+    font-weight: bold;
+  }
   .ant-table-body {
     table {
-      thead {
-        tr th {
-          white-space: nowrap;
-        }
-      }
-
       tbody {
         tr {
           td:nth-child(n + ${(props) => props.colorCellStart}) {
@@ -76,11 +63,39 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  table thead tr {
+    th {
+      border-bottom: 1px solid ${borderGrey3};
+      padding: 10px;
+      text-align: center;
+    }
+  }
+
+  table tbody tr td:first-child {
+    max-width: 250px;
+    min-width: 150px;
+  }
+
+  @media print {
+    table tbody tr td {
+      padding: 0;
+    }
+    table tbody tr td:before,
+    table tbody tr td:after {
+      height: 0px;
+    }
+    table thead tr:first-child th:first-child {
+      min-width: 200px;
+    }
+    table thead tr th:first-child {
+      padding-left: 0;
+    }
+  }
 `
 
 export const UpperContainer = styled.div``
 
-export const TableContainer = styled.div`
+export const BottomRow = styled.div`
   .parent-row {
     flex-direction: column;
     .top-row-container {
@@ -98,4 +113,47 @@ export const StyledP = styled.p`
   font-weight: 600;
   color: #7c848e;
   text-align: center;
+`
+
+export const QLabelSpan = styled.span`
+  color: ${themeColor};
+  margin-bottom: 10px;
+  display: inline-block;
+  font-size: 12px;
+  text-transform: initial;
+`
+export const StyledSwitch = styled(Switch)`
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 35px;
+  display: inline-block;
+  &.ant-switch-checked,
+  &.ant-switch {
+    background-color: #1890ff;
+  }
+`
+export const StyledDiv = styled.div`
+  font-size: 12px;
+  color: black;
+  opacity: ${(props) => props.opacity || 1};
+  font-weight: ${(props) => props.fontWeight || 400};
+  margin-right: ${(props) => props.marginRight || '0'};
+`
+
+export const StyledCol = styled(Col)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+export const StyledSpan = styled.span`
+  opacity: 0.65;
+`
+export const StyledHeadDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+export const FlexWrap = styled.div`
+  display: flex;
+  justify-content: center;
 `

@@ -3,8 +3,13 @@ import styled from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
 import NoDataIcon from './nodata.svg'
 
-const NoDataNotification = ({ heading, description, style }) => (
-  <Wrapper>
+const NoDataNotification = ({
+  heading,
+  description,
+  style,
+  wrapperStyle = {},
+}) => (
+  <Wrapper style={wrapperStyle}>
     <NoDataBox style={style}>
       <img src={NoDataIcon} alt="noData" />
       <h4>{heading}</h4>

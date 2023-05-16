@@ -29,6 +29,7 @@ import {
   round,
   pick,
   isUndefined,
+  findLastIndex,
 } from 'lodash'
 import {
   testsApi,
@@ -112,13 +113,12 @@ const {
   ITEM_GROUP_DELIVERY_TYPES,
   completionTypes,
   releaseGradeLabels,
-  calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
   testSettingsOptions,
   docBasedSettingsOptions,
-  calculatorKeys,
   testCategoryTypes,
+  SHOW_IMMERSIVE_READER,
 } = testConstants
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
@@ -126,6 +126,7 @@ const testItemStatusConstants = {
   PUBLISHED: 'published',
   ARCHIVED: 'archived',
 }
+const { WIDGET_TYPES } = questionType
 
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
@@ -345,6 +346,8 @@ export const SET_MAX_SHARING_LEVEL_ALLOWED =
 export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
 export const TOGGLE_PENALTY_ON_USING_HINTS =
   '[tests] toggle penalty on using hints'
+export const SET_ENABLE_AUDIO_RESONSE_QUESTION =
+  '[tests] set enable audio response question'
 // actions
 
 export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
@@ -357,6 +360,9 @@ export const updateDefaultThumbnailAction = createAction(
 )
 export const togglePenaltyOnUsingHintsAction = createAction(
   TOGGLE_PENALTY_ON_USING_HINTS
+)
+export const setEnableAudioResponseQuestionAction = createAction(
+  SET_ENABLE_AUDIO_RESONSE_QUESTION
 )
 export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS)
 export const setAndSavePassageItemsAction = createAction(
@@ -672,6 +678,11 @@ export const getCollectionNameSelector = createSelector(
   (state) => state.collectionName
 )
 
+export const getCalcTypesSelector = createSelector(
+  getTestEntitySelector,
+  (entity) => entity.calcTypes
+)
+
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,
@@ -821,6 +832,16 @@ export const getShowUpgradePopupSelector = createSelector(
   (state) => state.upgrade
 )
 
+export const getIsAudioResponseQuestionEnabled = createSelector(
+  stateSelector,
+  getUserRole,
+  (state, userRole) =>
+    [
+      state?.enableAudioResponseQuestion,
+      userRole === roleuser.EDULASTIC_CURATOR,
+    ].some((o) => !!o)
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -943,6 +964,23 @@ export const getTestItemsRowsSelector = createSelector(
       })
 )
 
+export const getQuestionTypesInTestSelector = createSelector(
+  getTestItemsRowsSelector,
+  (testItemsRows) => {
+    const questionTypes = []
+    testItemsRows.forEach((testItemRows = []) => {
+      testItemRows.forEach(({ widgets = [] }) => {
+        widgets.forEach(({ widgetType, type }) => {
+          if (widgetType === WIDGET_TYPES.QUESTION) {
+            questionTypes.push(type)
+          }
+        })
+      })
+    })
+    return questionTypes
+  }
+)
+
 // reducer
 export const createBlankTest = () => ({
   title: undefined,
@@ -958,7 +996,7 @@ export const createBlankTest = () => ({
   blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
-  calcType: calculatorKeys[0],
+  calcTypes: [],
   answerOnPaper: false,
   assignmentPassword: '',
   passwordExpireIn: 15 * 60,
@@ -1017,6 +1055,7 @@ export const createBlankTest = () => ({
   penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
   showTtsForPassages: true,
+  [SHOW_IMMERSIVE_READER]: false,
 })
 
 const initialState = {
@@ -1366,6 +1405,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           performanceBand,
           standardGradingScale,
         },
+        enableAudioResponseQuestion: payload.enableAudioResponseQuestion,
       }
     case SET_LOADING_TEST_PAGE:
       return { ...state, loading: payload }
@@ -1719,6 +1759,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         updated: true,
         hasPenaltyOnUsingHints: payload,
       }
+    case SET_ENABLE_AUDIO_RESONSE_QUESTION:
+      return {
+        ...state,
+        enableAudioResponseQuestion: payload,
+      }
     default:
       return state
   }
@@ -1882,7 +1927,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     safeBrowser: entity.safeBrowser,
     shuffleAnswers: entity.shuffleAnswers,
     shuffleQuestions: entity.shuffleQuestions,
-    calcType: entity.calcType,
+    calcTypes: entity.calcTypes,
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
@@ -1890,6 +1935,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penaltyOnUsingHints,
     allowTeacherRedirect,
     showTtsForPassages,
+    showImmersiveReader: entity.showImmersiveReader,
   }
 
   if (entity.safeBrowser) {
@@ -1923,7 +1969,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.safeBrowser = false
     settings.shuffleAnswers = false
     settings.shuffleQuestions = false
-    settings.calcType = calculatorTypes.NONE
+    settings.calcTypes = []
     settings.answerOnPaper = false
     settings.maxAnswerChecks = 0
     settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
@@ -3600,8 +3646,16 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
         (x) => x._id
       )
     } else {
+      let newItems = [...testItems]
+      const lastIdx = findLastIndex(
+        newItems,
+        (element) => element.passageId === passageId
+      )
+      if (lastIdx !== -1) {
+        newItems.splice(lastIdx + 1, 0, ...passageItems)
+      } else newItems = [...newItems, ...passageItems]
       newPayload.itemGroups[currentGroupIndex].items = uniqBy(
-        [...testItems, ...passageItems],
+        newItems,
         (x) => x._id
       )
     }

@@ -1,3 +1,6 @@
+const { AUDIO_RESPONSE: audioResponseTitleText } = require('./questionTitle')
+
+const ALL_QUESTION_TYPES = ''
 const SHORT_TEXT = 'shortText'
 const ESSAY_PLAIN_TEXT = 'essayPlainText'
 const ESSAY = 'essay'
@@ -55,9 +58,10 @@ const GRAPH_PLACEMENT = 'graphPlacement'
 const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
 const PICTOGRAPH = 'pictograph'
+const AUDIO_RESPONSE = 'audioResponse'
 
 const selectsData = [
-  { value: '', text: 'All Types' },
+  { value: ALL_QUESTION_TYPES, text: 'All Types' },
   { value: SHORT_TEXT, text: 'Short Text' },
   { value: ESSAY, text: 'Essay' },
   { value: CHOICE_MATRIX, text: 'Matching Table' },
@@ -106,6 +110,7 @@ const selectsData = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Selection' },
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
+  { value: AUDIO_RESPONSE, text: audioResponseTitleText },
 ]
 
 const manuallyGradableQn = [
@@ -114,6 +119,7 @@ const manuallyGradableQn = [
   UPLOAD_FILE,
   ESSAY_RICH_TEXT,
   ESSAY_PLAIN_TEXT,
+  AUDIO_RESPONSE,
 ]
 
 const useLanguageFeatureQn = [
@@ -137,7 +143,21 @@ const useLanguageFeatureQn = [
   ESSAY_RICH_TEXT,
 ]
 
+const disableEditResponseInEgQuestionTypes = [AUDIO_RESPONSE]
+
+const HIDE_QUESTION_TYPES = [
+  ALL_QUESTION_TYPES,
+  MULTIPLE_CHOICE,
+  MATH,
+  PASSAGE_WITH_QUESTIONS,
+]
+
+const WIDGET_TYPES = {
+  QUESTION: 'question',
+}
+
 module.exports = {
+  ALL_QUESTION_TYPES,
   SHORT_TEXT,
   DRAWING,
   LINE_CHART,
@@ -183,4 +203,8 @@ module.exports = {
   CODING,
   useLanguageFeatureQn,
   PICTOGRAPH,
+  AUDIO_RESPONSE,
+  disableEditResponseInEgQuestionTypes,
+  HIDE_QUESTION_TYPES,
+  WIDGET_TYPES,
 }

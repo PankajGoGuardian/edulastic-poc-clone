@@ -21,7 +21,6 @@ import { segmentApi, canvasApi } from '@edulastic/api'
 // components
 import { Dropdown, Select, Col, Tooltip } from 'antd'
 
-import GoogleLogin from 'react-google-login'
 import {
   IconGoogleClassroom,
   IconClever,
@@ -56,6 +55,7 @@ import SyncModal from './SyncModal'
 import { getUserOrgId } from '../../../src/selectors/user'
 import { setFilterInSession } from '../../../../common/utils/helpers'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
+import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 
 const Option = Select.Option
 
@@ -76,6 +76,7 @@ const WithTooltip = ({ title, children }) =>
     <>{children}</>
   )
 
+// TODO: Use EduIf component for conditional rendering
 const Header = ({
   user,
   onEdit,
@@ -114,6 +115,8 @@ const Header = ({
     notification({ messageKey: 'googleLoginFailed' })
     console.log('error', err)
   }
+
+  const loginGoogle = (googleClient) => googleClient.requestCode()
 
   const { _id, districtId } = entity
   const [showModal, setShowModal] = useState(false)
@@ -220,7 +223,7 @@ const Header = ({
     const filter = {
       classId,
       testType: '',
-      termId: '',
+      termId: selectedClass.termId,
     }
     setFilterInSession({
       key: 'assignments_filter',
@@ -348,22 +351,22 @@ const Header = ({
                 }
                 return (
                   <Option key={index} data-cy={`sync-option-${index}`}>
-                    <GoogleLogin
-                      clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                      buttonText="Sync with Google Classroom"
-                      render={(renderProps) => (
-                        <OptionWrapper onClick={renderProps.onClick}>
+                    <GoogleLoginWrapper
+                      WrappedComponent={({ googleClient }) => (
+                        <OptionWrapper
+                          onClick={() => loginGoogle(googleClient)}
+                        >
                           <span className="menu-label">
                             Sync with Google Classroom
                           </span>
                           <IconGoogleClassroom />
                         </OptionWrapper>
                       )}
-                      scope={scopes}
-                      onSuccess={handleLoginSuccess}
-                      onFailure={handleError}
+                      scopes={scopes}
+                      successCallback={handleLoginSuccess}
+                      errorCallback={handleError}
                       prompt="consent"
-                      responseType="code"
+                      flowType={AUTH_FLOW.CODE}
                     />
                   </Option>
                 )
@@ -433,25 +436,23 @@ const Header = ({
                   <span>SYNC WITH GOOGLE CLASSROOM</span>
                 </EduButton>
               ) : (
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                  buttonText="Sync with Google Classroom"
-                  render={(renderProps) => (
+                <GoogleLoginWrapper
+                  WrappedComponent={({ googleClient }) => (
                     <EduButton
                       isBlue
                       isGhost
-                      onClick={renderProps.onClick}
+                      onClick={() => loginGoogle(googleClient)}
                       data-cy="syncGoogleClass"
                     >
                       <IconGoogleClassroom />
                       <span>SYNC WITH GOOGLE CLASSROOM</span>
                     </EduButton>
                   )}
-                  scope={scopes}
-                  onSuccess={handleLoginSuccess}
-                  onFailure={handleError}
+                  scopes={scopes}
+                  successCallback={handleLoginSuccess}
+                  errorCallback={handleError}
                   prompt="consent"
-                  responseType="code"
+                  flowType={AUTH_FLOW.CODE}
                 />
               ))}
             {showCanvasSyncButton && (

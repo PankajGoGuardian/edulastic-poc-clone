@@ -170,6 +170,9 @@ export const assignmentSettings = createReducer(initialState, {
       delete state.autoRedirect
       delete state.autoRedirectSettings
     }
+    if (!state.dueDate) {
+      delete state.dueDate
+    }
   },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {
     return initialState

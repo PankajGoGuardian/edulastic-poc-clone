@@ -3,10 +3,10 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { withWindowSizes } from '@edulastic/common'
+import { isEmpty } from 'lodash'
+import { EduIf, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
-  test as testConstants,
   testTypes as testTypesConstants,
   questionType,
 } from '@edulastic/constants'
@@ -16,6 +16,7 @@ import {
   IconCalculator,
   IconScratchPad,
   IconCloudUpload,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Select } from 'antd'
@@ -51,7 +52,7 @@ const CROSS_BUTTON = 3
 const SCRATCHPAD = 5
 
 const PlayerHeader = ({
-  t,
+  t: i18Translate,
   title,
   currentItem,
   gotoQuestion,
@@ -79,9 +80,12 @@ const PlayerHeader = ({
   tool,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
 }) => {
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
@@ -148,6 +152,16 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions
                   }
                 />
+                {canShowReferenceMaterial && (
+                  <ButtonWrapper
+                    active={isShowReferenceModal}
+                    onClick={openReferenceModal}
+                    title={i18Translate('common.test.referenceMaterial')}
+                    disabled={isPremiumContentWithoutAccess}
+                  >
+                    <IconEduReferenceSheet color={header2.background} />
+                  </ButtonWrapper>
+                )}
                 {maxAnswerChecks > 0 && !hideCheckAnswer && (
                   <ButtonWrapper
                     hoverEffect
@@ -180,52 +194,51 @@ const PlayerHeader = ({
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
-                {calcType !== testConstants.calculatorTypes.NONE && (
+                <EduIf condition={!isEmpty(calcTypes)}>
                   <ButtonWrapper
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}
-                    title={t('common.test.calculator')}
+                    title={i18Translate('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
-                )}
-                {enableScratchpad && !hasDrawingResponse && (
+                </EduIf>
+                <EduIf condition={enableScratchpad && !hasDrawingResponse}>
                   <ButtonWrapper
                     active={tool?.includes(SCRATCHPAD)}
                     onClick={() => changeTool(SCRATCHPAD)}
-                    title={t('common.test.scratchPad')}
+                    title={i18Translate('common.test.scratchPad')}
                     data-cy="scratchPad"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
                   </ButtonWrapper>
-                )}
-                {showMagnifier && (
+                </EduIf>
+                <EduIf condition={showMagnifier}>
                   <ButtonWrapper
                     active={enableMagnifier}
                     onClick={handleMagnifier}
-                    title={t('common.test.magnify')}
+                    title={i18Translate('common.test.magnify')}
                     data-cy="magnify"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
                   </ButtonWrapper>
-                )}
-
-                {isTeacherPremium && (
+                </EduIf>
+                <EduIf condition={isTeacherPremium}>
                   <ButtonWrapper
                     onClick={toggleUserWorkUploadModal}
-                    title={t('common.test.uploadWork')}
+                    title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>
-                )}
+                </EduIf>
               </Container>
               <RightContent>
-                {timedAssignment && (
+                <EduIf condition={timedAssignment}>
                   <TimedTestTimer
                     utaId={utaId}
                     groupId={groupId}
@@ -236,7 +249,7 @@ const PlayerHeader = ({
                       fontSize: '12px',
                     }}
                   />
-                )}
+                </EduIf>
               </RightContent>
             </HeaderWrapper>
           </NavigationHeader>

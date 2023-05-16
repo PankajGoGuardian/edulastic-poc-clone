@@ -3,6 +3,8 @@ import qs from 'qs'
 
 const api = new API()
 const prefix = '/test-activity/summary'
+const dataWarehousePrefix = '/data-warehouse'
+const goalsAndInterventionsPrefix = '/goals-interventions'
 
 const fetchReports = (
   groupId = '',
@@ -102,10 +104,24 @@ const fetchStandardsProgressReport = (params) =>
     params,
   })
 
-const fetchStandardsGradebookReport = (params) =>
+const fetchStandardsGradbookSkillInfo = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `/report/standards-gradebook`,
+    url: `report/standards-gradebook/skill-info`,
+    params,
+  })
+
+const fetchStandardsGradebookSummary = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: '/report/standards-gradebook/summary',
+    params,
+  })
+
+const fetchStandardsGradebookDetails = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: '/report/standards-gradebook/details',
     params,
   })
 
@@ -142,12 +158,23 @@ const fetchStandardMasteryBrowseStandards = ({
   })
 }
 
-const fetchQuestionAnalysisReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/question-analysis`,
-    params: { ...params.requestFilters, testId: params.testId },
-  })
+const fetchQuestionAnalysisSummaryReport = (params) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/report/question-analysis/summary`,
+      params,
+    })
+    .then((response) => response.data.result)
+
+const fetchQuestionAnalysisPerformanceReport = (params) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `report/question-analysis/details`,
+      params,
+    })
+    .then((response) => response.data.result)
 
 const fetchMARFilterData = (params) =>
   api.callApi({
@@ -282,6 +309,7 @@ const fetchPerformanceByRubricsCriteriaChartData = (params) =>
       url: '/report/performance-by-rubric/chart',
       params,
     })
+    // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
 
 const fetchPerformanceByRubricsCriteriaTableData = (params) =>
@@ -290,7 +318,92 @@ const fetchPerformanceByRubricsCriteriaTableData = (params) =>
       url: '/report/performance-by-rubric/table',
       params,
     })
+    // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
+
+const fetchPreVsPostReportSummaryData = (params) =>
+  api
+    .callApi({
+      url: '/report/pre-vs-post-test/summary',
+      params,
+    })
+    .then((res) => res.data)
+
+const fetchPreVsPostReportTableData = (params) =>
+  api
+    .callApi({
+      url: '/report/pre-vs-post-test/table',
+      params,
+    })
+    .then((res) => res.data)
+
+const fetchAttendanceReportDetails = (params) =>
+  api
+    .callApi({
+      url: '/data-warehouse/attendance/report/details',
+      params,
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceSummaryReport = (params) =>
+  api
+    .callApi({
+      url: `/data-warehouse/attendance/report`,
+      params,
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceDistributionReport = (params) =>
+  api
+    .callApi({
+      url: `/data-warehouse/attendance/distribution`,
+      params,
+    })
+    .then((response) => response?.data?.result)
+
+const createGoal = (data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const createIntervention = (data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions`,
+      method: 'post',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const getGoals = () =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals`,
+      method: 'get',
+    })
+    .then((response) => response?.data?.result)
+
+const fetchAttendanceBands = () =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/attendance-band`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
+const getInterventions = (params) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions`,
+      method: 'get',
+      params,
+      paramsSerializer: (param) => qs.stringify(param),
+    })
+    .then((response) => response?.data?.result)
 
 export default {
   fetchReports,
@@ -307,11 +420,14 @@ export default {
   fetchMARFilterData,
   fetchSPRFilterData,
   fetchStandardsProgressReport,
-  fetchStandardsGradebookReport,
+  fetchStandardsGradbookSkillInfo,
+  fetchStandardsGradebookSummary,
+  fetchStandardsGradebookDetails,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
-  fetchQuestionAnalysisReport,
+  fetchQuestionAnalysisSummaryReport,
+  fetchQuestionAnalysisPerformanceReport,
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
   fetchPerformanceOverTimeReport,
@@ -329,4 +445,14 @@ export default {
   fetchGeneratedCSVs,
   fetchPerformanceByRubricsCriteriaChartData,
   fetchPerformanceByRubricsCriteriaTableData,
+  fetchPreVsPostReportSummaryData,
+  fetchPreVsPostReportTableData,
+  fetchAttendanceReportDetails,
+  fetchAttendanceSummaryReport,
+  fetchAttendanceDistributionReport,
+  createGoal,
+  createIntervention,
+  getGoals,
+  fetchAttendanceBands,
+  getInterventions,
 }

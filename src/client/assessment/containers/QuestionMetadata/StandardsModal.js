@@ -8,10 +8,29 @@ import {
   RadioBtn,
 } from '@edulastic/common'
 import { Col, Row, Spin } from 'antd'
-import { differenceBy, intersectionBy, isEqual, uniqBy } from 'lodash'
+import {
+  differenceBy,
+  get,
+  intersectionBy,
+  isEmpty,
+  isEqual,
+  uniqBy,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { setDefaultInterests } from '../../../author/dataUtils'
+import {
+  clearTloAndEloAction,
+  getElosSuccessAction,
+  getStandardElosAction,
+  getStandardTlosAction,
+  setElosByTloIdAction,
+} from '../../../author/src/actions/dictionaries'
+import {
+  getStandardsEloSelector,
+  getStandardsTloSelector,
+} from '../../../author/src/selectors/dictionaries'
 import PopupRowSelect from './PopupRowSelect'
 import { Container } from './styled/Container'
 import { ELOList } from './styled/ELOList'
@@ -28,13 +47,18 @@ const StandardsModal = ({
   defaultGrades,
   curriculumStandardsELO,
   curriculumStandardsTLO,
-  getCurriculumStandards,
   curriculumStandardsLoading,
   singleSelect = false,
   isPlaylistView = false,
   standardDetails,
   curriculums,
   enableSelectAll,
+  getStandardTlos,
+  getStandardElos,
+  getElosSuccess,
+  setElosByTloId,
+  elosByTloId,
+  clearTloAndElo,
 }) => {
   const [state, setState] = useState({
     standard: defaultStandard,
@@ -43,7 +67,9 @@ const StandardsModal = ({
     grades: defaultGrades,
   })
 
-  const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0])
+  const [selectedTLO, setSelectedTLO] = useState({})
+
+  useEffect(() => () => clearTloAndElo(), [])
 
   const reset = () => {
     setState({
@@ -72,30 +98,38 @@ const StandardsModal = ({
       curriculum: _curriculum?.curriculum,
     }
     grades = grades || []
-    eloStandards = (eloStandards || []).filter((elo) =>
-      curriculumStandardsELO.find((cElo) => cElo._id === elo._id)
-    )
+
+    const isSubjectChanged = !isEqual(subject, state.subject)
+    const isGradesChanged = !isEqual(grades, state.grades)
+    const isStandardChanged = !isEqual(standard, state.standard)
+
+    if (isStandardChanged || isSubjectChanged) {
+      eloStandards = []
+    } else if (!isEmpty(grades)) {
+      eloStandards = eloStandards.filter(
+        (elo) =>
+          !elo?.grades || elo?.grades?.some((grade) => grades.includes(grade))
+      )
+    }
     const newState = {
       subject,
       standard,
       grades,
       eloStandards,
     }
-    const isSubjectChanged = !isEqual(newState.subject, state.subject)
-    const isGradesChanged = !isEqual(newState.grades, state.grades)
-    const isStandardChanged = !isEqual(newState.standard, state.standard)
-
     setState(newState)
 
     if (!isPlaylistView) {
       if (isSubjectChanged || isGradesChanged || isStandardChanged)
-        getCurriculumStandards({
-          id: newState.standard.id,
+        getStandardTlos({
+          curriculumId: newState.standard.id,
           grades: newState.grades,
-          searchStr: '',
         })
     } else if (isGradesChanged || isStandardChanged) {
-      getCurriculumStandards(newState.standard.id, newState.grades, '')
+      getStandardTlos({
+        curriculumId: newState.standard.id,
+        grades: newState.grades,
+      })
     }
     setDefaultInterests({
       subject: newState.subject,
@@ -106,11 +140,20 @@ const StandardsModal = ({
 
   useEffect(() => {
     if (!visible) return
+    getStandardTlos({
+      curriculumId: state.standard?.id || defaultStandard?.id,
+      grades: state.grades || defaultGrades,
+    })
     if (!standardDetails) return reset()
     const subject = standardDetails.subject || state.subject
     const eloStandards =
-      standardDetails.standards?.map((std) => ({ _id: std.standardId })) ||
-      state.eloStandards
+      standardDetails.standards?.map((std) => ({
+        _id: std.standardId,
+        curriculumId: std.curriculumId,
+        tloId: std.domainId,
+        identifier: std.identifier,
+        grades: std.grades,
+      })) || state.eloStandards
     const grades = standardDetails.grades || state.grades
     const curriculumId =
       standardDetails.standards?.[0].curriculumId || state.standard.id
@@ -122,9 +165,14 @@ const StandardsModal = ({
     const tloId =
       standardDetails.standards?.[0].domainId ||
       state.eloStandards[0]?.tloId ||
-      curriculumStandardsTLO[0]._id ||
+      curriculumStandardsTLO[0]?._id ||
       ''
     setSelectedTLO(curriculumStandardsTLO.find((tlo) => tlo._id === tloId))
+    getStandardElos({
+      curriculumId,
+      grades,
+      tloIds: [tloId],
+    })
     setValidStateAndRefresh({
       subject,
       eloStandards,
@@ -134,24 +182,37 @@ const StandardsModal = ({
   }, [visible])
 
   useEffect(() => {
-    const selectedTloFound = curriculumStandardsTLO.find(
+    const selectedTloFound = curriculumStandardsTLO?.find(
       (tlo) => tlo._id === selectedTLO?._id
     )
-    if (!selectedTloFound && curriculumStandardsTLO[0])
+    if (!selectedTloFound && curriculumStandardsTLO[0]) {
       setSelectedTLO(curriculumStandardsTLO[0])
+      const grades = state.grades || defaultGrades
+      getStandardElos({
+        curriculumId: curriculumStandardsTLO[0]?.curriculumId,
+        grades,
+        tloIds: [curriculumStandardsTLO[0]?.id],
+      })
+    } else if (
+      !selectedTloFound &&
+      isEmpty(curriculumStandardsTLO) &&
+      !isEmpty(curriculumStandardsELO)
+    ) {
+      setSelectedTLO({})
+      clearTloAndElo()
+    }
   }, [curriculumStandardsTLO])
 
   useEffect(() => {
-    setState((prevState) => {
-      const newEloStandards = curriculumStandardsELO.filter(
-        (cElo) => !!prevState.eloStandards.find((pElo) => pElo._id === cElo._id)
-      )
-      return {
-        ...prevState,
-        eloStandards: newEloStandards,
-      }
-    })
-  }, [curriculumStandardsELO])
+    if (
+      selectedTLO?._id &&
+      !elosByTloId[selectedTLO._id] &&
+      curriculumStandardsELO?.[0]?.tloId === selectedTLO._id
+    ) {
+      elosByTloId[selectedTLO._id] = curriculumStandardsELO
+      setElosByTloId(elosByTloId)
+    }
+  }, [selectedTLO, curriculumStandardsELO])
 
   const filteredELO = curriculumStandardsELO
     .filter((c) => c.tloId === selectedTLO?._id)
@@ -242,6 +303,19 @@ const StandardsModal = ({
       })
   }
 
+  const handleTloClick = (tlo) => {
+    setSelectedTLO(tlo)
+    if (elosByTloId[tlo._id]) {
+      return getElosSuccess(elosByTloId[tlo._id])
+    }
+    const grades = state.grades || defaultGrades
+    getStandardElos({
+      curriculumId: tlo?.curriculumId,
+      grades,
+      tloIds: [tlo._id],
+    })
+  }
+
   return (
     <CustomModalStyled
       title="Select Standards for This Question"
@@ -262,8 +336,8 @@ const StandardsModal = ({
           t={t}
         />
         <br />
-        <Row type="flex" gutter={24}>
-          <Spin spinning={curriculumStandardsLoading} size="large">
+        <Spin spinning={curriculumStandardsLoading} size="large">
+          <Row type="flex" gutter={24}>
             <Col md={8} style={{ overflow: 'hidden' }}>
               <TLOList>
                 {curriculumStandardsTLO.map((tlo) => (
@@ -272,13 +346,13 @@ const StandardsModal = ({
                     description={tlo.description}
                     active={tlo._id === selectedTLO?._id}
                     key={tlo._id}
-                    onClick={() => setSelectedTLO(tlo)}
+                    onClick={() => handleTloClick(tlo)}
                   />
                 ))}
               </TLOList>
             </Col>
             <Col md={16} style={{ overflow: 'hidden' }}>
-              {enableSelectAll && selectedTLO && (
+              {enableSelectAll && selectedTLO && !curriculumStandardsLoading && (
                 <>
                   <Row type="flex">
                     <CheckboxLabel
@@ -286,6 +360,7 @@ const StandardsModal = ({
                       onChange={handleCheckAll}
                       checked={allChecked}
                       textTransform="none"
+                      data-cy="allStandards"
                     >
                       All {selectedTLO.identifier} Standards
                     </CheckboxLabel>
@@ -333,8 +408,8 @@ const StandardsModal = ({
                 </Container>
               </ELOList>
             </Col>
-          </Spin>
-        </Row>
+          </Row>
+        </Spin>
       </Paper>
     </CustomModalStyled>
   )
@@ -361,4 +436,17 @@ StandardsModal.defaultProps = {
   enableSelectAll: false,
 }
 
-export default StandardsModal
+export default connect(
+  (state) => ({
+    curriculumStandardsTLO: getStandardsTloSelector(state),
+    curriculumStandardsELO: getStandardsEloSelector(state),
+    elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+  }),
+  {
+    getStandardTlos: getStandardTlosAction,
+    getStandardElos: getStandardElosAction,
+    getElosSuccess: getElosSuccessAction,
+    setElosByTloId: setElosByTloIdAction,
+    clearTloAndElo: clearTloAndEloAction,
+  }
+)(StandardsModal)

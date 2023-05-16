@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 
-import { test } from '@edulastic/constants'
 import { IconSearch } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { EduIf, notification } from '@edulastic/common'
 
 import {
   Header,
@@ -17,14 +16,16 @@ import {
   MainActionWrapper,
 } from '../common'
 import { Tooltip } from '../../../common/utils/helpers'
-import { Container, ButtonWithStyle, CaculatorIcon } from '../common/ToolBar'
+import {
+  ToolBarContainer,
+  ButtonWithStyle,
+} from '../common/ToolBar/styled-components'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { StyledIconCheck } from '../../../author/ContentBuckets/components/ContentBucketsTable/styled'
-
-const { calculatorTypes } = test
+import { CalculatorIconWrapper } from '../common/ToolBar/CalculatorIconWrapper'
 
 const PlayerHeader = ({
   title,
@@ -48,7 +49,7 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
-  const { calcType } = settings
+  const { calcTypes } = settings
 
   const rightButtons = (
     <SaveAndExit
@@ -92,17 +93,19 @@ const PlayerHeader = ({
                 title={title}
               />
               <MainActionWrapper>
-                <Container>
-                  {calcType !== calculatorTypes.NONE && (
+                <ToolBarContainer>
+                  <EduIf condition={!isEmpty(calcTypes)}>
                     <Tooltip placement="top" title="Calculator">
                       <ButtonWithStyle
                         active={currentToolMode.calculator}
                         onClick={() => onChangeTool('calculator')}
                       >
-                        <CaculatorIcon />
+                        <CalculatorIconWrapper
+                          isMultiCalculators={calcTypes.length > 1}
+                        />
                       </ButtonWithStyle>
                     </Tooltip>
-                  )}
+                  </EduIf>
                   {showMagnifier && (
                     <Tooltip placement="top" title="Magnify">
                       <ButtonWithStyle
@@ -140,7 +143,7 @@ const PlayerHeader = ({
                   {timedAssignment && (
                     <TimedTestTimer utaId={utaId} groupId={groupId} />
                   )}
-                </Container>
+                </ToolBarContainer>
               </MainActionWrapper>
               {!isMobile && rightButtons}
             </HeaderWrapper>

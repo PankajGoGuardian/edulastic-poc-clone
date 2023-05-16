@@ -643,3 +643,10 @@ export const isTouchDevice = () => {
     navigator.msMaxTouchPoints > 0
   )
 }
+
+export const getUserMedia = (constraints) =>
+  navigator.mediaDevices.getUserMedia({ ...constraints })
+
+export const getItemIdQuestionIdKey = ({ itemId, questionId }) => {
+  return `${itemId}_${questionId}`
+}

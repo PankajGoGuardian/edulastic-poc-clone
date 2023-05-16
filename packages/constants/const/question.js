@@ -24,4 +24,6 @@ module.exports = {
       text: '4 - Extended Thinking',
     },
   },
+  IR_MCQ_LABEL_SELECTOR: 'mcqLabelImmersiveReader',
+  IR_CONTENT_SELECTOR: 'immersive-reader-content',
 }

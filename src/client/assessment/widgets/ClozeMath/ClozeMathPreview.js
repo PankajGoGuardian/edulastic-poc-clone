@@ -302,4 +302,15 @@ const QuestionWrapper = styled.div`
   li {
     margin: 4px 0;
   }
+  .jsx-parser {
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-35090
+     * table cell shows all content in one line
+     */
+    @media print {
+      & td {
+        white-space: normal;
+      }
+    }
+  }
 `

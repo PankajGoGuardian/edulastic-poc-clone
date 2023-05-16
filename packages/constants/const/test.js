@@ -1,3 +1,4 @@
+const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
 module.exports = {
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
@@ -58,6 +59,21 @@ module.exports = {
       type: 'settings-category',
     },
   ],
+  accessibilitySettings: {
+    magnifier: {
+      key: 'showMagnifier',
+      id: 'magnifier-setting',
+    },
+    scratchPad: {
+      key: 'enableScratchpad',
+      id: 'scratchpad-setting',
+    },
+    skipAlert: {
+      key: 'enableSkipAlert',
+      id: 'skip-alert',
+    },
+    immersiveReader: { key: SHOW_IMMERSIVE_READER, id: 'immersive-reader' },
+  },
   settingCategoriesFeatureMap: {
     'test-type': 'selectTestType',
     'player-skin-type': 'selectPlayerSkinType',
@@ -114,20 +130,20 @@ module.exports = {
     WITH_ANSWERS: 'WITH_ANSWERS',
   },
   calculators: {
-    NONE: 'None',
-    BASIC: 'Basic',
-    SCIENTIFIC: 'Scientific',
-    GRAPHING: 'Graphing (Desmos Standard Version)',
-    GRAPHING_STATE: 'Graphing (Desmos State Test Version)',
+    BASIC: { id: 'BASIC', text: 'Basic' },
+    SCIENTIFIC: { id: 'SCIENTIFIC', text: 'Scientific' },
+    GRAPHING: {
+      id: 'GRAPHING',
+      text: 'Graphing (Desmos Standard Version)',
+      homeText: 'Graphing',
+    },
+    GRAPHING_STATE: {
+      id: 'GRAPHING_STATE',
+      text: 'Graphing (Desmos State Test Version)',
+      stateVersionOnly: true,
+    },
   },
-  calculatorKeys: ['NONE', 'BASIC', 'SCIENTIFIC', 'GRAPHING', 'GRAPHING_STATE'],
-  calculatorTypes: {
-    NONE: 'NONE',
-    BASIC: 'BASIC',
-    SCIENTIFIC: 'SCIENTIFIC',
-    GRAPHING: 'GRAPHING',
-    GRAPHING_STATE: 'GRAPHING_STATE',
-  },
+  DEFAULT_CALC_TYPES: [],
   evalTypes: {
     ALL_OR_NOTHING: 'All or nothing',
     PARTIAL_CREDIT: 'Partial credit',
@@ -159,6 +175,7 @@ module.exports = {
     showMagnifier: 'MAGNIFIER',
     enableScratchpad: 'SCRATCHPAD',
     enableSkipAlert: 'SHOW SKIP ALERT TO STUDENT',
+    showImmersiveReader: 'IMMERSIVE READER',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },
@@ -236,6 +253,7 @@ module.exports = {
   playerSkinTypes: {
     edulastic: 'Edulastic',
     parcc: 'TestNav',
+    cambium: 'Cambium',
     sbac: 'SBAC',
     cmas: 'CMAS (CO)',
     casspp: 'CAASPP (CA)',
@@ -272,7 +290,7 @@ module.exports = {
     ndsa: 'NDSA (ND)',
     nscas: 'NSCAS (NE)',
     nh_sas: 'NH SAS (NH)',
-    nj_state_assesment: 'NJ State Assesment (NJ)',
+    nj_state_assesment: 'NJ State Assessment (NJ)',
     nm_mesa: 'NM MESA (NM)',
     nv_ready: 'NV Ready (NV)',
     ny_regents: 'NY Regents (NY)',
@@ -296,6 +314,7 @@ module.exports = {
     edulastic: 'edulastic',
     parcc: 'parcc',
     sbac: 'sbac',
+    cambium: 'sbac',
     cmas: 'parcc',
     casspp: 'sbac',
     testlet: 'testlet',
@@ -352,7 +371,21 @@ module.exports = {
     dc_assessments: 'parcc',
     drc: 'drc',
   },
-  TOP_ORDER_SKINS: ['edulastic', 'cmas', 'drc', 'quester', 'parcc', 'sbac'],
+  TOP_ORDER_SKINS: [
+    'edulastic',
+    'cambium',
+    'cmas',
+    'drc',
+    'quester',
+    'parcc',
+    'sbac',
+  ],
+  REF_MATERIAL_ALLOWED_SKIN_TYPES: [
+    'edulastic',
+    'quester',
+    'drc',
+    'ohio_state_tests',
+  ],
   languageCodes: {
     ENGLISH: 'en',
     SPANISH: 'es',
@@ -371,7 +404,7 @@ module.exports = {
     'scoringType',
     'penalty',
     'markAsDone',
-    'calcType',
+    'calcTypes',
     'timedAssignment',
     'pauseAllowed',
     'maxAttempts',
@@ -405,6 +438,7 @@ module.exports = {
     'penaltyOnUsingHints',
     'allowTeacherRedirect',
     'showTtsForPassages',
+    SHOW_IMMERSIVE_READER,
   ],
   docBasedSettingsOptions: [
     'partialScore',
@@ -416,7 +450,7 @@ module.exports = {
     'scoringType',
     'penalty',
     'markAsDone',
-    'calcType',
+    'calcTypes',
     'timedAssignment',
     'pauseAllowed',
     'maxAttempts',
@@ -441,4 +475,15 @@ module.exports = {
     DOC_BASED: 'doc_based',
     DYNAMIC_TEST: 'dynamic_test',
   },
+  ATTEMPT_WINDOW_TYPE: {
+    DEFAULT: 'DEFAULT',
+    WEEKDAYS: 'WEEKDAYS',
+    CUSTOM: 'CUSTOM',
+  },
+  ATTEMPT_WINDOW_VALUE: {
+    DEFAULT: 'Anytime between the Open and Close date',
+    WEEKDAYS: 'Weekdays (Mon to Fri)',
+    CUSTOM: 'Custom',
+  },
+  SHOW_IMMERSIVE_READER,
 }

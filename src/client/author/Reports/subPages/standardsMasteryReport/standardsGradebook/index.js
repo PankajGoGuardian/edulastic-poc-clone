@@ -1,62 +1,86 @@
+import { Row } from 'antd'
+import { get, isEmpty, pickBy, some } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEmpty } from 'lodash'
-import { Col, Row } from 'antd'
-
-import { reportUtils } from '@edulastic/constants'
 
 import { SpinLoader } from '@edulastic/common'
-import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
+
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
+import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import { NoDataContainer, StyledCard } from '../../../common/styled'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
-import { StandardsGradebookTable } from './components/table/standardsGradebookTable'
+import StandardsGradebookTable from './components/table'
 
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
-  getReportsStandardsGradebook,
-  getReportsStandardsGradebookLoader,
-  getStandardsGradebookRequestAction,
+  getReportsStandardsGradebookError,
+  getSkillInfoLoader,
+  getStandardsGradebookDetails,
+  getStandardsGradebookDetailsAction,
+  getStandardsGradebookDetailsLoader,
+  getStandardsGradebookSkillInfo,
+  getStandardsGradebookSkillInfoAction,
+  getStandardsGradebookSummary,
+  getStandardsGradebookSummaryAction,
+  getStandardsGradebookSummaryLoader,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
-  getReportsStandardsGradebookError,
   resetStandardsGradebookAction,
 } from './ducks'
 
+import BackendPagination from '../../../common/components/BackendPagination'
+import ChartHeader from './components/ChartHeader'
+import TableFilters from './components/TableFilters'
+import TableHeader from './components/TableHeader'
+import useSelectedStandardBars from './hooks/useSelectedStandardBars'
+import useStudentAssignmentModal from './hooks/useStudentAssignmentModal'
+import useTableFilters from './hooks/useTableFilters'
 import {
-  getDenormalizedData,
-  getFilteredDenormalizedData,
-  groupedByStandard,
+  getDetailsApiQuery,
+  getScaleInfo,
+  getSkillInfoApiQuery,
+  getSummaryApiQuery,
 } from './utils/transformers'
 
 const { getStudentAssignments } = reportUtils.common
-const { getMaxMasteryScore } = reportUtils.standardsPerformanceSummary
+const {
+  CHART_PAGE_SIZE,
+  preProcessSummaryMetrics,
+  getSummaryMetricInfoWithSkillInfo,
+} = reportUtils.standardsGradebook
 
-// -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
+//! FIXME Have better null-value handling than using memoized empty value
+const EMPTY_ARRAY = []
 
 const StandardsGradebook = ({
-  standardsGradebook,
-  getStandardsGradebookRequest,
+  skillInfo: rawSkillInfo,
+  getSkillInfoRequest,
+  getSummaryRequest,
+  getDetailsRequest,
+  summary,
+  details,
   resetStandardsGradebook,
   isCsvDownloading,
   navigationItems,
   toggleFilter,
   settings,
-  loading,
+  loadingSkillInfo,
+  loadingSummary,
+  loadingDetails,
   error,
   standardsFilters,
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
-  location,
-  pageTitle,
   ddfilter,
   userRole,
   sharedReport,
+  generateCSV,
 }) => {
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -67,120 +91,185 @@ const StandardsGradebook = ({
     ],
     [sharedReport]
   )
-  const standardsCount = get(
-    standardsGradebook,
-    'data.result.standardsCount',
-    0
-  )
-  const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
-  const selectedScale =
-    (
-      scaleInfo.find(
-        (s) =>
-          s._id === (sharedReportFilters || settings.requestFilters).profileId
-      ) || scaleInfo[0]
-    )?.scale || []
-  const studentAssignmentsData = useMemo(
-    () => getStudentAssignments(selectedScale, studentStandardData),
-    [selectedScale, studentStandardData]
-  )
 
   // support for domain filtering from backend
-  const [pageFilters, setPageFilters] = useState({
+  const [chartFilters, setChartFilters] = useState({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
-    pageSize: 10,
+    pageSize: CHART_PAGE_SIZE,
   })
-  const [chartFilter, setChartFilter] = useState({})
-  const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
-    false
+
+  const {
+    selectedStandardBars,
+    onBarClickCB,
+    onBarResetClickCB,
+  } = useSelectedStandardBars()
+
+  const {
+    tableFilters,
+    setTableFilters,
+    tableFilterDropDownCB,
+    setTablePagination,
+  } = useTableFilters({ userRole })
+
+  const {
+    showStudentAssignmentModal,
+    clickedStandardName,
+    clickedStudentName,
+    handleOnClickStandard,
+    closeStudentAssignmentModal,
+  } = useStudentAssignmentModal({
+    settings,
+    sharedReportFilters,
+    getStudentStandards,
+  })
+
+  const { skillInfo = EMPTY_ARRAY, standardIdsCount } = get(
+    rawSkillInfo,
+    'data.result',
+    {}
   )
-  const [clickedStandard, setClickedStandard] = useState(undefined)
-  const [clickedStudentName, setClickedStudentName] = useState(undefined)
+  const summaryMetricInfo = useMemo(() => {
+    const { standards: _summaryMetricInfo = [] } = get(
+      summary,
+      'data.result',
+      {}
+    )
+    return preProcessSummaryMetrics({ summaryMetricInfo: _summaryMetricInfo })
+  }, [summary])
+  const { metrics: detailsMetricInfo = EMPTY_ARRAY, totalRows } = get(
+    details,
+    'data.result',
+    {}
+  )
+
+  const scaleInfo = useMemo(
+    () =>
+      getScaleInfo({
+        settings,
+        sharedReportFilters,
+        standardsFilters,
+      }),
+    [standardsFilters, settings, sharedReportFilters]
+  )
+
+  const studentAssignmentsData = useMemo(
+    () => getStudentAssignments(scaleInfo, studentStandardData),
+    [scaleInfo, studentStandardData]
+  )
+
+  const ddRequestFilters = useMemo(
+    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
+    [ddfilter]
+  )
+
+  const summaryMetricInfoWithSkillInfo = useMemo(
+    () => getSummaryMetricInfoWithSkillInfo(summaryMetricInfo, skillInfo),
+    [summaryMetricInfo, skillInfo]
+  )
+
+  const filteredSummaryMetricInfoWithSkillInfo = isEmpty(selectedStandardBars)
+    ? summaryMetricInfoWithSkillInfo
+    : summaryMetricInfoWithSkillInfo.filter(
+        (c) => selectedStandardBars[c.standardId]
+      )
+
+  const generateCSVSelectionCriteria = [
+    chartFilters.pageSize < standardIdsCount,
+    tableFilters.pageSize < totalRows,
+    error && error.dataSizeExceeded,
+  ]
+  const generateCSVRequired = generateCSVSelectionCriteria.some((c) => c)
 
   useEffect(() => () => resetStandardsGradebook(), [])
 
-  // set initial page filters
   useEffect(() => {
-    setPageFilters({ ...pageFilters, page: 1 })
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    const q = getSkillInfoApiQuery({ settings })
+    if (q.termId || q.reportId) {
+      // reset page to trigger summary API call
+      setChartFilters({ ...chartFilters, page: 1 })
+      getSkillInfoRequest(q)
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
-  // get paginated data
-  useEffect(() => {
-    const q = {
-      ...settings.requestFilters,
-      ...pageFilters,
-    }
-    if ((q.termId || q.reportId) && pageFilters.page) {
-      getStandardsGradebookRequest(q)
-    }
-  }, [pageFilters])
 
-  const filteredDenormalizedData = useMemo(() => {
-    const denormalizedData = getDenormalizedData(standardsGradebook)
-    return getFilteredDenormalizedData(denormalizedData, ddfilter)
-  }, [standardsGradebook, ddfilter])
+  useEffect(() => {
+    const q = getSummaryApiQuery({ settings, ddRequestFilters, chartFilters })
+    if ((q.termId || q.reportId) && q.stdPage) {
+      // reset page to trigger details API call
+      setTableFilters({ ...tableFilters, page: 1 })
+      getSummaryRequest(q)
+    }
+  }, [ddRequestFilters, chartFilters])
+
+  useEffect(() => {
+    const q = getDetailsApiQuery({
+      settings,
+      ddRequestFilters,
+      chartFilters,
+      tableFilters,
+    })
+    if ((q.termId || q.reportId) && q.stdPage && q.rowPage) {
+      getDetailsRequest(q)
+    }
+  }, [tableFilters])
+
+  const isReportLoading = [loadingSummary, loadingSkillInfo, loadingDetails]
 
   // show filters section if data is empty
   useEffect(() => {
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(standardsGradebook) &&
-      !filteredDenormalizedData?.length
-    ) {
-      toggleFilter(null, true)
+    const summaryMetrics = get(summary, 'data.result.standards', [])
+    const skillInfoList = get(rawSkillInfo, 'data.result.skillInfo', [])
+    const detailsMetrics = get(details, 'data.result.metrics', [])
+    const doesReportHasMetrics = [
+      summaryMetrics.length,
+      skillInfoList.length,
+      detailsMetrics.length,
+    ]
+    const isApiResponseEmpty = [
+      isEmpty(summary),
+      isEmpty(rawSkillInfo),
+      isEmpty(details),
+    ]
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      const showFilter = [
+        ...isReportLoading,
+        ...isApiResponseEmpty,
+        ...doesReportHasMetrics,
+      ].every((e) => !e)
+      toggleFilter(null, showFilter)
     }
-  }, [filteredDenormalizedData])
+  }, [summary, rawSkillInfo, details])
 
-  const onBarClickCB = (key) => {
-    const _chartFilter = { ...chartFilter }
-    if (_chartFilter[key]) {
-      delete _chartFilter[key]
-    } else {
-      _chartFilter[key] = true
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const {
+        compareByKey: compareBy,
+        analyseByKey: analyzeBy,
+        sortKey,
+        sortOrder,
+      } = tableFilters
+
+      const params = {
+        reportType: reportTypes.reportNavType.STANDARDS_GRADEBOOK,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          analyzeBy,
+          sortKey,
+          sortOrder,
+        },
+        reportExtras: {
+          tableFilters,
+        },
+      }
+      generateCSV(params)
     }
-    setChartFilter(_chartFilter)
-  }
+  }, [isCsvDownloading])
 
-  const onBarResetClickCB = () => {
-    setChartFilter({})
-  }
-
-  const masteryScale = selectedScale || []
-  const maxMasteryScore = getMaxMasteryScore(masteryScale)
-
-  const standardsData = useMemo(
-    () =>
-      groupedByStandard(
-        filteredDenormalizedData,
-        maxMasteryScore,
-        masteryScale
-      ),
-    [filteredDenormalizedData, maxMasteryScore, masteryScale]
-  )
-
-  const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandards({
-      ...params,
-      testIds: (sharedReportFilters || settings.requestFilters).testIds,
-    })
-    setClickedStandard(standard)
-    setStudentAssignmentModal(true)
-    setClickedStudentName(studentName)
-  }
-
-  const closeStudentAssignmentModal = () => {
-    setStudentAssignmentModal(false)
-    setClickedStandard(undefined)
-    setClickedStudentName(undefined)
-  }
-
-  if (loading) {
+  if (some(isReportLoading, Boolean)) {
     return (
       <SpinLoader
-        tip="Please wait while we gather the required information..."
+        tip="Please wait while we gather the required information, it may take a while..."
         position="fixed"
       />
     )
@@ -190,7 +279,7 @@ const StandardsGradebook = ({
     return <DataSizeExceeded />
   }
 
-  if (!filteredDenormalizedData?.length) {
+  if (isEmpty(summaryMetricInfoWithSkillInfo) || isEmpty(detailsMetricInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -203,46 +292,64 @@ const StandardsGradebook = ({
       <UpperContainer>
         <StyledCard>
           <Row type="flex" justify="start">
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3 margin="0 0 10px 50px">
-                Mastery Level Distribution by Standard
-              </StyledH3>
-            </Col>
+            <ChartHeader />
           </Row>
           <Row>
             <SignedStackBarChartContainer
-              filteredDenormalizedData={filteredDenormalizedData}
-              filters={ddfilter}
-              chartFilter={chartFilter}
-              masteryScale={masteryScale}
+              summaryMetricInfoWithSkillInfo={summaryMetricInfoWithSkillInfo}
+              chartFilter={selectedStandardBars}
+              scaleInfo={scaleInfo}
               role={userRole}
               onBarClickCB={onBarClickCB}
               onBarResetClickCB={onBarResetClickCB}
               backendPagination={{
-                ...pageFilters,
+                ...chartFilters,
                 pageCount:
-                  Math.ceil(standardsCount / pageFilters.pageSize) || 1,
+                  Math.ceil(standardIdsCount / chartFilters.pageSize) || 1,
               }}
-              setBackendPagination={setPageFilters}
+              setBackendPagination={setChartFilters}
             />
           </Row>
         </StyledCard>
       </UpperContainer>
       <TableContainer>
-        <StandardsGradebookTable
-          filteredDenormalizedData={filteredDenormalizedData}
-          masteryScale={masteryScale}
-          chartFilter={chartFilter}
-          isCsvDownloading={isCsvDownloading}
-          role={userRole}
-          filters={sharedReportFilters || settings.requestFilters}
-          handleOnClickStandard={handleOnClickStandard}
-          standardsData={standardsData}
-          location={location}
-          navigationItems={navigationItems}
-          pageTitle={pageTitle}
-          isSharedReport={isSharedReport}
-        />
+        <StyledCard>
+          <Row type="flex" justify="start">
+            <TableHeader tableFilters={tableFilters} />
+            <TableFilters
+              userRole={userRole}
+              tableFilters={tableFilters}
+              tableFilterDropDownCB={tableFilterDropDownCB}
+            />
+          </Row>
+          <Row>
+            <StandardsGradebookTable
+              filters={settings.requestFilters}
+              scaleInfo={scaleInfo}
+              summaryMetricInfo={summaryMetricInfo}
+              detailsMetricInfo={detailsMetricInfo}
+              isSharedReport={isSharedReport}
+              isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
+              navigationItems={navigationItems}
+              summaryMetricInfoWithSkillInfo={
+                filteredSummaryMetricInfoWithSkillInfo
+              }
+              tableFilters={tableFilters}
+              setTableFilters={setTableFilters}
+              handleOnClickStandard={handleOnClickStandard}
+            />
+          </Row>
+          <Row>
+            <BackendPagination
+              itemsCount={totalRows}
+              backendPagination={{
+                page: tableFilters.page,
+                pageSize: tableFilters.pageSize,
+              }}
+              setBackendPagination={setTablePagination}
+            />
+          </Row>
+        </StyledCard>
       </TableContainer>
       {showStudentAssignmentModal && (
         <StudentAssignmentModal
@@ -250,7 +357,7 @@ const StandardsGradebook = ({
           closeModal={closeStudentAssignmentModal}
           studentAssignmentsData={studentAssignmentsData}
           studentName={clickedStudentName}
-          standardName={clickedStandard}
+          standardName={clickedStandardName}
           loadingStudentStandard={loadingStudentStandard}
         />
       )}
@@ -261,21 +368,27 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     (state) => ({
-      loading: getReportsStandardsGradebookLoader(state),
+      loadingSkillInfo: getSkillInfoLoader(state),
+      loadingSummary: getStandardsGradebookSummaryLoader(state),
+      loadingDetails: getStandardsGradebookDetailsLoader(state),
+      loadingStudentStandard: getStudentStandardLoader(state),
+      skillInfo: getStandardsGradebookSkillInfo(state),
+      summary: getStandardsGradebookSummary(state),
+      details: getStandardsGradebookDetails(state),
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
-      standardsGradebook: getReportsStandardsGradebook(state),
       standardsFilters: getReportsStandardsFilters(state),
       studentStandardData: getStudentStandardData(state),
-      loadingStudentStandard: getStudentStandardLoader(state),
     }),
     {
-      getStandardsGradebookRequest: getStandardsGradebookRequestAction,
+      getSkillInfoRequest: getStandardsGradebookSkillInfoAction,
+      getSummaryRequest: getStandardsGradebookSummaryAction,
+      getDetailsRequest: getStandardsGradebookDetailsAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
+      generateCSV: generateCSVAction,
     }
   )
 )
 
 export default enhance(StandardsGradebook)
-// -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

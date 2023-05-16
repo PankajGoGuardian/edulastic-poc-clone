@@ -236,7 +236,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           tloData: [],
           eloData: [],
         },
-        elosByTloId: [],
+        elosByTloId: {},
       }
     default:
       return state

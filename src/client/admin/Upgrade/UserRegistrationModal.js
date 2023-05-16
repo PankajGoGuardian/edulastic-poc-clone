@@ -90,7 +90,12 @@ const UserRegistrationModal = Form.create({
     }
 
     const handleCancel = () =>
-      setFieldData({ ...fieldData, isModal: false, isMultipleEmails: false })
+      setFieldData({
+        ...fieldData,
+        isModal: false,
+        isMultipleEmails: false,
+        username: '',
+      })
 
     return (
       <Modal

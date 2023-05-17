@@ -683,6 +683,10 @@
     "message": "At least one student should be selected to be Marked as Submitted",
     "description": ""
   },
+  "atLeastOneStudentToResetPassword": {
+    "message": "Select at least one student to Reset Password",
+    "description": ""
+  },
   "atleastOneStudentToMarkAbsent": {
     "message": "  At least one student should be selected to be Marked as Absent.",
     "description": ""

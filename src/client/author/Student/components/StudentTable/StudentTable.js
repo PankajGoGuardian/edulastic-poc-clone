@@ -93,6 +93,7 @@ import { AddStudentsToOtherClassModal } from './AddStudentToOtherClass'
 import InviteMultipleStudentModal from './InviteMultipleStudentModal/InviteMultipleStudentModal'
 import StudentsDetailsModal from './StudentsDetailsModal/StudentsDetailsModal'
 import { StyledMaskButton, StyledStudentTable } from './styled'
+import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Student' }
 
@@ -114,6 +115,7 @@ class StudentTable extends Component {
     this.state = {
       selectedRowKeys: [],
       addStudentModalVisible: false,
+      showResetPasswordModal: false,
       editStudentModaVisible: false,
       inviteStudentModalVisible: false,
       editStudentKey: '',
@@ -324,6 +326,16 @@ class StudentTable extends Component {
     } = this.props
     if (e.key === 'add student') {
       this.setState({ addStudentModalVisible: true })
+    }
+    if (e.key === 'resetPassword') {
+      if (selectedRowKeys?.length === 0) {
+        notification({
+          type: 'info',
+          messageKey: 'atLeastOneStudentToResetPassword',
+        })
+      } else {
+        this.setState({ showResetPasswordModal: true })
+      }
     }
     if (e.key === 'merge user') {
       const inactiveUsers = Object.values(adminUsersData).filter(
@@ -542,8 +554,8 @@ class StudentTable extends Component {
   }
 
   changeFilterText = (e, key, callApi) => {
-    const { location = {} } = this.props;
-    location.institutionId = '';
+    const { location = {} } = this.props
+    location.institutionId = ''
     const _filtersData = this.state.filtersData.map((item, index) => {
       const val = e?.target ? e.target?.value : e?.key
       const updatedFilterData = {
@@ -571,7 +583,7 @@ class StudentTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
@@ -640,30 +652,30 @@ class StudentTable extends Component {
     let institutionId = ''
     const search = {}
     for (const [index, item] of filtersData.entries()) {
-      if(item?.filtersColumn === 'school'){
+      if (item?.filtersColumn === 'school') {
         if (
           institutionId &&
           item?.filterStr &&
           institutionId.indexOf('item?.filterStr') < 0
         ) {
           institutionId = `${institutionId},${item?.filterStr}`
-        } else if(item?.filterStr){
+        } else if (item?.filterStr) {
           institutionId = item?.filterStr
         }
       } else {
-      const { filtersColumn, filtersValue, filterStr } = item
-      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
-        if (filtersColumn === 'status') {
-          showActive = filterStr
-          continue
-        }
-        if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
-        } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr })
+        const { filtersColumn, filtersValue, filterStr } = item
+        if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+          if (filtersColumn === 'status') {
+            showActive = filterStr
+            continue
+          }
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
+          } else {
+            search[filtersColumn].push({ type: filtersValue, value: filterStr })
+          }
         }
       }
-    }
     }
 
     if (searchByName) {
@@ -759,6 +771,9 @@ class StudentTable extends Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="add student">{t('users.student.addstudent')}</Menu.Item>
+        <Menu.Item key="resetPassword">
+          {t('users.student.resetpassword')}
+        </Menu.Item>
         <Menu.Item key="edit user">{t('users.student.updateuser')}</Menu.Item>
         <Menu.Item key="merge user">{t('users.student.mergeuser')}</Menu.Item>
         <Menu.Item key="deactivate user">
@@ -967,6 +982,11 @@ class StudentTable extends Component {
           userIds={selectedRowKeys}
           onSubmit={this.onSubmitMergeStudentsModal}
           onCancel={this.onCloseMergeStudentsModal}
+        />
+        <ResetPwd
+          isOpen={this.state.showResetPasswordModal}
+          handleCancel={() => this.setState({ showResetPasswordModal: false })}
+          resetPasswordUserIds={selectedRowKeys}
         />
       </MainContainer>
     )

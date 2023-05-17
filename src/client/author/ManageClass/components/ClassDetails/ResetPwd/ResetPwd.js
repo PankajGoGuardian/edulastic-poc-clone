@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { PASSWORD_KEY } from '@edulastic/constants/const/common'
 import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
+import { roleuser } from '@edulastic/constants'
 import { resetPasswordRequestAction } from '../../../ducks'
 import { StyledInput, Title } from './styled'
 import MultiDistStudentList from './MultiDistStudentList'
@@ -19,10 +20,12 @@ class ResetPwd extends React.Component {
     changePwd: PropTypes.func.isRequired,
     selectedStudent: PropTypes.array.isRequired,
     selectedClass: PropTypes.object.isRequired,
+    resetPasswordUserIds: PropTypes.array,
   }
 
   static defaultProps = {
     isOpen: false,
+    resetPasswordUserIds: undefined,
   }
 
   handleSubmit = (e) => {
@@ -31,16 +34,21 @@ class ResetPwd extends React.Component {
       form,
       changePwd,
       selectedStudent,
+      resetPasswordUserIds,
       handleCancel,
       selectedClass,
     } = this.props
     form.validateFields((err, values) => {
       if (!err) {
         const { code: classCode } = selectedClass
-        const userIds = selectedStudent
+        const { password: newPassword } = values
+        let userIds = selectedStudent
           .filter((student) => student.districtIds.length == 1)
           .map((std) => std._id || std.userId)
-        const { password: newPassword } = values
+
+        if (resetPasswordUserIds) {
+          userIds = resetPasswordUserIds
+        }
         changePwd({
           userIds,
           newPassword,
@@ -54,7 +62,14 @@ class ResetPwd extends React.Component {
   }
 
   render() {
-    const { isOpen, handleCancel, form, selectedStudent, t } = this.props
+    const {
+      isOpen,
+      handleCancel,
+      form,
+      selectedStudent,
+      t,
+      userRole,
+    } = this.props
     const { getFieldDecorator, getFieldValue } = form
     const title = (
       <Title>
@@ -89,10 +104,20 @@ class ResetPwd extends React.Component {
         </EduButton>
       </>
     )
-    const multiDistrictStudentPasswordEditErrMsg = hasNoStudents
-      ? t('multiDistrictStudentPasswordError.singleStudentPasswordReset')
-      : null
-    const disablePasswordEdit = !(singleDistStudents.length >= 1)
+
+    const adminRoles = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN]
+    const getTooltipMsg = () => {
+      if (!adminRoles.includes(userRole) && hasNoStudents) {
+        return t('multiDistrictStudentPasswordError.singleStudentPasswordReset')
+      }
+      return null
+    }
+
+    const disablePasswordEdit = () => {
+      if (!adminRoles.includes(userRole)) {
+        return !(singleDistStudents.length >= 1)
+      }
+    }
     const showMultiDistrictStudentPasswordModal =
       singleDistStudents.length > 0 && multiDistStudents.length > 0
     return (
@@ -113,7 +138,7 @@ class ResetPwd extends React.Component {
           }}
         >
           <Form.Item style={{ textAlign: 'center' }}>
-            <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
+            <Tooltip title={getTooltipMsg()}>
               {getFieldDecorator(PASSWORD_KEY, {
                 rules: [
                   { required: true, message: 'Please input your Password!' },
@@ -125,14 +150,14 @@ class ResetPwd extends React.Component {
                     autoComplete="off"
                     placeholder="Enter Password"
                     data-cy="passwordTextBox"
-                    disabled={disablePasswordEdit}
+                    disabled={disablePasswordEdit()}
                   />
                 </div>
               )}
             </Tooltip>
           </Form.Item>
           <Form.Item style={{ textAlign: 'center' }}>
-            <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
+            <Tooltip title={getTooltipMsg()}>
               {getFieldDecorator('confirmPwd', {
                 rules: [
                   {
@@ -147,7 +172,7 @@ class ResetPwd extends React.Component {
                     autoComplete="off"
                     placeholder="Confirm Password"
                     data-cy="confirmPasswordTextBox"
-                    disabled={disablePasswordEdit}
+                    disabled={disablePasswordEdit()}
                   />
                 </div>
               )}
@@ -170,6 +195,7 @@ const enhance = compose(
     (state) => ({
       selectedStudent: get(state, 'manageClass.selectedStudent', []),
       selectedClass: get(state, 'manageClass.entity'),
+      userRole: get(state.user, 'user.role', ''),
     }),
     {
       changePwd: resetPasswordRequestAction,

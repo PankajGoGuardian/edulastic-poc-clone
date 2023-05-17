@@ -171,10 +171,17 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score } = activity
+      let { score: _score, scoreByAI } = activity
+      if (!_score && scoreByAI) {
+        _score = scoreByAI
+      }
       const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
-      const _feedback = get(activity, 'feedback.text', '')
+      let _feedback = get(activity, 'feedback.text', '')
+      const feedbackByAI = get(activity, 'feedbackByAI.text', '')
+      if (isEmpty(_feedback) && !isEmpty(feedbackByAI)) {
+        _feedback = feedbackByAI
+      }
       newState = { ...newState, qActId: qActId || _id }
 
       if (isQuestionView && isEmpty(activity)) {
@@ -476,7 +483,10 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    const { rubricFeedback } = activity || {}
+    let { rubricFeedback, rubricFeedbackByAI } = activity || {} // origin for rubric_Feedback
+    if (isEmpty(rubricFeedback) && !isEmpty(rubricFeedbackByAI)) {
+      rubricFeedback = rubricFeedbackByAI
+    }
     const isStudentName = studentName !== undefined && studentName.length !== 0
     let title
     const showGradingRubricButton =

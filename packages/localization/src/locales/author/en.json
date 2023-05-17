@@ -225,6 +225,7 @@
     }
   },
   "rubric": {
-    "stimulusNotPresent": "Rubric cannot be auto generated without question."
+    "stimulusNotPresent": "Rubric cannot be auto generated without question.",
+    "max2AttemptForGivenStimulus": "Maximum 2 times rubric can be generated for a prompted question."
   }
 }

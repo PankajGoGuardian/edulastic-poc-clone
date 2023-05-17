@@ -1456,7 +1456,7 @@
     "description": ""
   },
   "failedToGenerateRubric": {
-    "message": "Failed to auto generate Rubric for the question",
+    "message": "Request failed, please try again",
     "description": ""
   },
   "rubricGeneratedSuccessfully": {

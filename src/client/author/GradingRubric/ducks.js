@@ -35,6 +35,11 @@ export const SET_RUBRIC_DATA_LOADING = '[rubric] set rubric data loading'
 export const GENERATE_RUBRIC = '[rubric] generate rubric'
 export const SET_IS_RUBRIC_GENERATION_IN_PROGRESS =
   '[rubric] set is rubric generation in progress'
+export const SET_RUBRIC_GENERATION_STIMULUS_METADATA =
+  '[rubric] set rubric generation stimulus metadata'
+
+export const INCREMENT_RUBRIC_GENERATION_COUNT =
+  '[rubric] increment rubric generation count'
 
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
@@ -57,6 +62,13 @@ export const setRubricDataLoadingAction = createAction(SET_RUBRIC_DATA_LOADING)
 export const autoGenerateRubricAction = createAction(GENERATE_RUBRIC)
 export const setIsRubricGenerationInProgress = createAction(
   SET_IS_RUBRIC_GENERATION_IN_PROGRESS
+)
+export const setRubricGenerationStimulusMetaDataAction = createAction(
+  SET_RUBRIC_GENERATION_STIMULUS_METADATA
+)
+
+export const incrementRubricGenerationCountAction = createAction(
+  INCREMENT_RUBRIC_GENERATION_COUNT
 )
 
 // selectors
@@ -111,6 +123,17 @@ export const getRubricGenerationInProgress = createSelector(
   (state) => state.rubricGenerationInProgress
 )
 
+export const getPreviousStimulus = createSelector(
+  getStateSelector,
+  (state) => state.rubricGenerationStimulusMetadata.stimulus
+)
+
+export const getRubricGenerationCountForGivenStimulus = createSelector(
+  getStateSelector,
+  (state) =>
+    state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus
+)
+
 // reducer
 const initialState = {
   searchedList: [],
@@ -119,6 +142,10 @@ const initialState = {
   totalSearchedCount: 0,
   rubricDataLoading: false,
   rubricGenerationInProgress: false,
+  rubricGenerationStimulusMetadata: {
+    stimulus: '',
+    rubricGenerationCountForGivenStimulus: 0,
+  },
 }
 
 export const reducer = createReducer(initialState, {
@@ -150,6 +177,12 @@ export const reducer = createReducer(initialState, {
   },
   [SET_RUBRIC_DATA_LOADING]: (state, { payload }) => {
     state.rubricDataLoading = payload
+  },
+  [SET_RUBRIC_GENERATION_STIMULUS_METADATA]: (state, { payload }) => {
+    state.rubricGenerationStimulusMetadata = payload
+  },
+  [INCREMENT_RUBRIC_GENERATION_COUNT]: (state) => {
+    state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus += 1
   },
 })
 
@@ -333,9 +366,11 @@ function* generateRubricSaga({ payload }) {
       notification({ messageKey: 'failedToGenerateRubric' })
     }
     yield put(setIsRubricGenerationInProgress(false))
+    yield put(incrementRubricGenerationCountAction())
   } catch (err) {
-    yield put(setIsRubricGenerationInProgress(false))
     notification({ messageKey: 'failedToGenerateRubric' })
+    yield put(setIsRubricGenerationInProgress(false))
+    yield put(incrementRubricGenerationCountAction())
   }
 }
 

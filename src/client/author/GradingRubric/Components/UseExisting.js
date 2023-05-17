@@ -32,6 +32,7 @@ import {
   deleteRubricAction,
   getCurrentRubricDataSelector,
   getRecentlyUsedRubricsSelector,
+  getRubricGenerationCountForGivenStimulus,
   getRubricGenerationInProgress,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
@@ -57,6 +58,8 @@ import ShareModal from './common/ShareModal'
 import CreateNew from './CreateNew'
 import RubricTable from './RubricTable'
 
+const MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI = 2
+
 const UseExisting = ({
   updateRubricData,
   currentRubricData,
@@ -79,6 +82,7 @@ const UseExisting = ({
   setItemLevelScoring,
   autoGenerateRubric,
   isRubricGenerationInProgress,
+  rubricGenerationCountForGivenStimulus,
   t,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -111,7 +115,16 @@ const UseExisting = ({
 
   const autoGenerateRubricBtnTitle = isEmpty(currentQuestion?.stimulus)
     ? t('rubric.stimulusNotPresent')
+    : rubricGenerationCountForGivenStimulus ===
+      MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI
+    ? t('rubric.max2AttemptForGivenStimulus')
     : ''
+
+  const disableAutoGenerateRubricBtn = [
+    isEmpty(currentQuestion?.stimulus),
+    rubricGenerationCountForGivenStimulus ===
+      MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI,
+  ].some((o) => !!o)
 
   const handlePaginationChange = (page) => {
     setCurrentPage(page)
@@ -391,8 +404,8 @@ const UseExisting = ({
             <CustomStyleBtn2
               style={btnStyle}
               onClick={generateRubricByOpenAI}
-              disabled={isEmpty(currentQuestion?.stimulus)}
-              ghost={isEmpty(currentQuestion?.stimulus)}
+              disabled={disableAutoGenerateRubricBtn}
+              ghost={disableAutoGenerateRubricBtn}
               title={autoGenerateRubricBtnTitle}
               loading={isRubricGenerationInProgress}
             >
@@ -569,6 +582,9 @@ const enhance = compose(
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
       isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+      rubricGenerationCountForGivenStimulus: getRubricGenerationCountForGivenStimulus(
+        state
+      ),
     }),
     {
       updateRubricData: updateRubricDataAction,

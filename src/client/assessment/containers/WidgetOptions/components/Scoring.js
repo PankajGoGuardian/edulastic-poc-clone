@@ -32,6 +32,7 @@ import {
 } from '../../../../author/QuestionEditor/ducks'
 
 import {
+  getCurrentQuestionSelector,
   getQuestionRubrics,
   removeRubricIdAction,
 } from '../../../../author/sharedDucks/questions'
@@ -43,7 +44,11 @@ import { Subtitle } from '../../../styled/Subtitle'
 import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
-import { updateRubricDataAction } from '../../../../author/GradingRubric/ducks'
+import {
+  getPreviousStimulus,
+  setRubricGenerationStimulusMetaDataAction,
+  updateRubricDataAction,
+} from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
@@ -68,6 +73,20 @@ class Scoring extends Component {
       showGradingRubricModal: true,
       rubricActionType: actionType,
     })
+  }
+
+  updateStimulusMetadata = () => {
+    const {
+      currentQuestion,
+      previousStimulus,
+      setRubricGenerationStimulusMetaData,
+    } = this.props
+    if (currentQuestion.stimulus !== previousStimulus) {
+      setRubricGenerationStimulusMetaData({
+        stimulus: currentQuestion.stimulus,
+        rubricGenerationCountForGivenStimulus: 0,
+      })
+    }
   }
 
   toggleRubricModal = () => {
@@ -415,6 +434,7 @@ class Scoring extends Component {
                 <CustomStyleBtn
                   onClick={(e) => {
                     this.handleRubricAction('CREATE NEW')
+                    this.updateStimulusMetadata()
                     e.target.blur()
                   }}
                   data-cy="createNewRubric"
@@ -570,6 +590,8 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       containsRubric: getQuestionRubrics(state),
       itemDetailQuestions: getItemDetailQuestionsSelector(state),
+      currentQuestion: getCurrentQuestionSelector(state),
+      previousStimulus: getPreviousStimulus(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -578,6 +600,7 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
+      setRubricGenerationStimulusMetaData: setRubricGenerationStimulusMetaDataAction,
     }
   )
 )

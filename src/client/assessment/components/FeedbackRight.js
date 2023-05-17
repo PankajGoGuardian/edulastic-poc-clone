@@ -172,14 +172,20 @@ class FeedbackRight extends Component {
 
     if (activity && isUndefined(changed)) {
       let { score: _score, scoreByAI } = activity
-      if (!_score && scoreByAI) {
-        _score = scoreByAI
-      }
       const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       let _feedback = get(activity, 'feedback.text', '')
       const feedbackByAI = get(activity, 'feedbackByAI.text', '')
-      if (isEmpty(_feedback) && !isEmpty(feedbackByAI)) {
+      const isTeacherEvaluationPresent = _score || !isEmpty(_feedback)
+      const isAIEvaluationPresent = scoreByAI || !isEmpty(feedbackByAI)
+      const showAIEvaluatedResult = [
+        !isTeacherEvaluationPresent,
+        isAIEvaluationPresent,
+      ].every((o) => !!o)
+      if (showAIEvaluatedResult) {
+        _score = scoreByAI
+      }
+      if (showAIEvaluatedResult) {
         _feedback = feedbackByAI
       }
       newState = { ...newState, qActId: qActId || _id }

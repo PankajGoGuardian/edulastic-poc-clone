@@ -1,13 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
+import connect from 'react-redux/es/connect/connect'
+import { EduIf } from '@edulastic/common'
 import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
 import GradingRubric from '../../../../author/GradingRubric/Components/Container'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
+import { getRubricGenerationInProgress } from '../../../../author/GradingRubric/ducks'
 
 const GradingRubricModal = ({
   visible,
   toggleModal,
   actionType,
   isRegradeFlow = false,
+  isRubricGenerationInProgress,
 }) => {
   const Title = [
     <Heading>
@@ -29,6 +37,11 @@ const GradingRubricModal = ({
       destroyOnClose
       maskClosable={false}
     >
+      <EduIf condition={isRubricGenerationInProgress}>
+        <SpinContainer loading={isRubricGenerationInProgress}>
+          <StyledSpin size="large" />
+        </SpinContainer>
+      </EduIf>
       <ModalBody>
         <GradingRubric
           actionType={actionType}
@@ -40,7 +53,9 @@ const GradingRubricModal = ({
   )
 }
 
-export default GradingRubricModal
+export default connect((state) => ({
+  isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+}))(GradingRubricModal)
 
 const ModalBody = styled.div`
   display: flex;

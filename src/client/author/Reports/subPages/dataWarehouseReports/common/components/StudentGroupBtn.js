@@ -16,11 +16,7 @@ const StudentGroupBtn = ({
         </StyledEduButton>
       </EduThen>
       <EduElse>
-        <StyledEduButton
-          isGhost
-          href={createStudentGroupUrl}
-          target={createStudentGroupUrl}
-        >
+        <StyledEduButton isGhost href={createStudentGroupUrl} target="_blank">
           <IconPlusCircle /> Create Student Group
         </StyledEduButton>
       </EduElse>

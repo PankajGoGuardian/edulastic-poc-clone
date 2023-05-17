@@ -99,7 +99,11 @@ const UserRegistrationModal = Form.create({
 
     return (
       <Modal
-        title={t('manageByUser.userRegistration.modalTitle')}
+        title={
+          fieldData.isMultipleEmails
+            ? t('manageByUser.userRegistration.modalTitles')
+            : t('manageByUser.userRegistration.modalTitle')
+        }
         visible={fieldData.isModal}
         width="570px"
         zIndex={13}

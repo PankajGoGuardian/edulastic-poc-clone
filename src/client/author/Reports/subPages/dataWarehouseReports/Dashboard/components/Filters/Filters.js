@@ -5,6 +5,7 @@ import { get, mapValues } from 'lodash'
 import { connect } from 'react-redux'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
+import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   removeFilter,
   resetStudentFilters as resetFilters,
@@ -59,10 +60,15 @@ const Filters = ({
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
-  const {
-    demographics = [],
-    testTypes: availableTestTypes = getArrayOfAllTestTypes(),
-  } = get(filtersData, 'data.result', {})
+  const { demographics = [], testTypes = getArrayOfAllTestTypes() } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+
+  const availableTestTypes = testTypes.filter(
+    ({ key }) => !TEST_TYPES.PRACTICE.includes(key)
+  )
 
   useFiltersPreload({
     reportId,

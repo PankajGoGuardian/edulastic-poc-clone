@@ -45,10 +45,13 @@ import {
   transformExtAttributeFilters,
   getFormattedName,
 } from './util/transformers'
-import { getColumns } from './util/tableColumns'
 import { getAssessmentName } from '../../../common/util'
 
-const { analyseByOptions, transformData } = reportUtils.peerPerformance
+const {
+  analyseByOptions,
+  transformData,
+  getColumns,
+} = reportUtils.peerPerformance
 
 const pageSize = 200
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //

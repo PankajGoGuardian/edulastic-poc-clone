@@ -40,6 +40,7 @@ export const SET_RUBRIC_GENERATION_STIMULUS_METADATA =
 
 export const INCREMENT_RUBRIC_GENERATION_COUNT =
   '[rubric] increment rubric generation count'
+export const SET_REMOVE_AI_TAG = '[rubric] set rubric data loading'
 
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
@@ -70,6 +71,7 @@ export const setRubricGenerationStimulusMetaDataAction = createAction(
 export const incrementRubricGenerationCountAction = createAction(
   INCREMENT_RUBRIC_GENERATION_COUNT
 )
+export const setRemoveAiTagAction = createAction(SET_REMOVE_AI_TAG)
 
 // selectors
 export const getStateSelector = (state) => state.rubricReducer
@@ -146,6 +148,7 @@ const initialState = {
     stimulus: '',
     rubricGenerationCountForGivenStimulus: 0,
   },
+  removeAiTag: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -183,6 +186,9 @@ export const reducer = createReducer(initialState, {
   },
   [INCREMENT_RUBRIC_GENERATION_COUNT]: (state) => {
     state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus += 1
+  },
+  [SET_REMOVE_AI_TAG]: (state, { payload }) => {
+    state.removeAiTag = payload
   },
 })
 

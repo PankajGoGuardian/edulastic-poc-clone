@@ -15,6 +15,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { v4 } from 'uuid'
 import { sanitizeForReview } from '@edulastic/common/src/helpers'
+import { tagsApi } from '@edulastic/api'
 import {
   CustomStyleBtn,
   CustomStyleBtn2,
@@ -41,6 +42,7 @@ import {
   searchRubricsRequestAction,
   updateRubricAction,
   updateRubricDataAction,
+  setRemoveAiTagAction,
 } from '../ducks'
 import {
   ActionBarContainer,
@@ -57,6 +59,11 @@ import PreviewRubricModal from './common/PreviewRubricModal'
 import ShareModal from './common/ShareModal'
 import CreateNew from './CreateNew'
 import RubricTable from './RubricTable'
+import {
+  getQuestionDataSelector,
+  setQuestionDataAction,
+} from '../../QuestionEditor/ducks'
+import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
 
 const MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI = 2
 
@@ -84,6 +91,11 @@ const UseExisting = ({
   isRubricGenerationInProgress,
   rubricGenerationCountForGivenStimulus,
   t,
+  questionData,
+  allTagsData,
+  setQuestionData,
+  removeAiTag,
+  addNewTag,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -95,10 +107,52 @@ const UseExisting = ({
   )
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [aIAssisted, setAIAssisted] = useState(false)
+  const [addAiTag, setAddAiTag] = useState(false)
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
   }, [currentRubricData?.status])
+
+  useEffect(() => {
+    const addTag = async () => {
+      if (addAiTag) {
+        const questionTags = questionData.tags || []
+        let aiTag = allTagsData.find(
+          (tag) => tag.tagName === 'AI - Generated Rubrics'
+        )
+
+        if (!aiTag) {
+          const { _id, tagName } = await tagsApi.create({
+            tagName: 'AI- Generated Rubrics',
+            tagType: 'testitem',
+          })
+
+          aiTag = { _id, tagName }
+          addNewTag({ tag: aiTag, tagType: 'testitem' })
+        }
+
+        const tags = [...questionTags, aiTag]
+        setQuestionData({ ...questionData, tags })
+      }
+    }
+
+    addTag()
+  }, [addAiTag])
+
+  useEffect(() => {
+    const removeTag = async () => {
+      if (removeAiTag) {
+        const questionTags = questionData.tags || []
+        const aiTag = questionTags.filter(
+          (tag) => tag.tagName !== 'AI- Generated Rubrics'
+        )
+        setQuestionData({ ...questionData, tags: aiTag })
+        setAddAiTag(false)
+      }
+    }
+    removeTag()
+  }, [removeAiTag])
 
   useEffect(() => {
     if (actionType === 'VIEW RUBRIC') setCurrentMode('PREVIEW')
@@ -140,6 +194,7 @@ const UseExisting = ({
     const stimulus = sanitizeForReview(currentQuestion?.stimulus)
     if (stimulus) {
       autoGenerateRubric({ stimulus })
+      setAIAssisted(true)
     }
   }
 
@@ -208,7 +263,7 @@ const UseExisting = ({
     return isValid
   }
 
-  const handleSaveRubric = (type) => {
+  const handleSaveRubric = async (type) => {
     const isValid = validateRubric()
     const { __v, updatedAt, modifiedBy, ...data } = currentRubricData
 
@@ -222,6 +277,7 @@ const UseExisting = ({
           rubricData: {
             ...data,
             status: type,
+            aIAssisted,
           },
           maxScore,
         })
@@ -235,10 +291,13 @@ const UseExisting = ({
           rubricData: {
             ...currentRubricData,
             status: type,
+            aIAssisted,
           },
           maxScore,
         })
-
+      if (aIAssisted) {
+        setAddAiTag(true)
+      }
       setCurrentMode('PREVIEW')
     }
   }
@@ -250,6 +309,9 @@ const UseExisting = ({
     })
     addRubricToRecentlyUsed(currentRubricData)
     setItemLevelScoring(false)
+    if (currentRubricData.aIAssisted) {
+      setAddAiTag(true)
+    }
   }
 
   const handleEditRubric = () => {
@@ -347,6 +409,7 @@ const UseExisting = ({
 
   const handleRemoveRubric = () => {
     dissociateRubricFromQuestion()
+    removeAiTag(true)
     if (isRegradeFlow) {
       notification({
         msg:
@@ -585,6 +648,8 @@ const enhance = compose(
       rubricGenerationCountForGivenStimulus: getRubricGenerationCountForGivenStimulus(
         state
       ),
+      questionData: getQuestionDataSelector(state),
+      allTagsData: getAllTagsSelector(state, 'testitem'),
     }),
     {
       updateRubricData: updateRubricDataAction,
@@ -597,6 +662,9 @@ const enhance = compose(
       deleteRubric: deleteRubricAction,
       addRubricToRecentlyUsed: addRubricToRecentlyUsedAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
+      setQuestionData: setQuestionDataAction,
+      addNewTag: addNewTagAction,
+      removeAiTag: setRemoveAiTagAction,
     }
   )
 )

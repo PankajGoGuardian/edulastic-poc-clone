@@ -48,6 +48,7 @@ import {
   getPreviousStimulus,
   setRubricGenerationStimulusMetaDataAction,
   updateRubricDataAction,
+  setRemoveAiTagAction,
 } from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
@@ -116,8 +117,9 @@ class Scoring extends Component {
   }
 
   handleRemoveRubric = () => {
-    const { dissociateRubricFromQuestion, location } = this.props
+    const { dissociateRubricFromQuestion, location, removeAiTag } = this.props
     dissociateRubricFromQuestion()
+    removeAiTag(true)
     if (
       location?.state?.regradeFlow ||
       location?.pathname?.includes('classboard') ||
@@ -601,6 +603,7 @@ const enhance = compose(
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
       setRubricGenerationStimulusMetaData: setRubricGenerationStimulusMetaDataAction,
+      removeAiTag: setRemoveAiTagAction,
     }
   )
 )

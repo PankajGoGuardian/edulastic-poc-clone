@@ -7,3 +7,13 @@ export const fieldKey = {
   classes: 'groupIds',
   tags: 'tagIds',
 }
+
+const NULL_OPERATORS = {
+  Null: 'null',
+  NotNull: 'notNull',
+}
+
+export const NULL_OPERATORS_VALUES = [
+  NULL_OPERATORS.Null,
+  NULL_OPERATORS.NotNull,
+]

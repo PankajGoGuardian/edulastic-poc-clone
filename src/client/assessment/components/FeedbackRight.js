@@ -11,9 +11,10 @@ import {
   withWindowSizes,
   notification,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Avatar, Card, Input } from 'antd'
+import { Avatar, Card, Checkbox, Input } from 'antd'
 import {
   get,
   isUndefined,
@@ -98,6 +99,8 @@ class FeedbackRight extends Component {
       isRubricDisabled: false,
       isScoreInputDisabled: false,
       showWarningToClear: false,
+      isAIEvaluated: false,
+      isApprovedByTeacher: false,
     }
 
     this.scoreInput = React.createRef()
@@ -171,7 +174,7 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score, scoreByAI } = activity
+      let { score: _score, scoreByAI, graded } = activity
       const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       let _feedback = get(activity, 'feedback.text', '')
@@ -179,6 +182,7 @@ class FeedbackRight extends Component {
       const isTeacherEvaluationPresent = _score || !isEmpty(_feedback)
       const isAIEvaluationPresent = scoreByAI || !isEmpty(feedbackByAI)
       const showAIEvaluatedResult = [
+        !graded,
         !isTeacherEvaluationPresent,
         isAIEvaluationPresent,
       ].every((o) => !!o)
@@ -188,7 +192,11 @@ class FeedbackRight extends Component {
       if (showAIEvaluatedResult) {
         _feedback = feedbackByAI
       }
-      newState = { ...newState, qActId: qActId || _id }
+      newState = {
+        ...newState,
+        qActId: qActId || _id,
+        isAIEvaluated: showAIEvaluatedResult,
+      }
 
       if (isQuestionView && isEmpty(activity)) {
         _score = 0
@@ -224,7 +232,7 @@ class FeedbackRight extends Component {
   }
 
   onScoreSubmit(rubricResponse) {
-    const { score, maxScore } = this.state
+    const { score, maxScore, isAIEvaluated, isApprovedByTeacher } = this.state
     const { currentScreen } = this.context
     const {
       user,
@@ -251,8 +259,13 @@ class FeedbackRight extends Component {
       groupId = this.props?.match?.params?.classId,
       testItemId,
     } = activity
-
-    if (!id || !user || !user.user) {
+    const cannotSubmitScore = [
+      !id,
+      !user,
+      !user.user,
+      isAIEvaluated && !isApprovedByTeacher,
+    ].some((o) => !!o)
+    if (cannotSubmitScore) {
       return
     }
 
@@ -291,7 +304,7 @@ class FeedbackRight extends Component {
   }
 
   onFeedbackSubmit() {
-    const { feedback } = this.state
+    const { feedback, isAIEvaluated } = this.state
     const {
       user,
       studentId,
@@ -328,11 +341,23 @@ class FeedbackRight extends Component {
       itemId: testItemId || itemId,
       isQuestionView,
     })
+    if (isAIEvaluated) {
+      this.setState({ isAIEvaluated: false })
+    }
   }
 
   preCheckSubmit = () => {
-    const { changed, showFeedbackSaveBtn } = this.state
-    if (changed || showFeedbackSaveBtn) {
+    const {
+      changed,
+      showFeedbackSaveBtn,
+      isAIEvaluated,
+      isApprovedByTeacher,
+    } = this.state
+    const feedbackCanBeSubmitted = [
+      changed || showFeedbackSaveBtn,
+      !isAIEvaluated || (isAIEvaluated && isApprovedByTeacher),
+    ].every((o) => !!o)
+    if (feedbackCanBeSubmitted) {
       this.onFeedbackSubmit()
     }
     this.setState({ showFeedbackSaveBtn: false })
@@ -440,8 +465,14 @@ class FeedbackRight extends Component {
 
   focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true })
 
-  blurFeedbackInput = () =>
-    this.setState({ feedbackInputHasFocus: false, isShowFeedbackInput: false })
+  blurFeedbackInput = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      this.setState({
+        feedbackInputHasFocus: false,
+        isShowFeedbackInput: false,
+      })
+    }
+  }
 
   showFeedbackInput = () => {
     this.setState(
@@ -452,6 +483,17 @@ class FeedbackRight extends Component {
         }
       }
     )
+  }
+
+  handleFeedbackApproval = (e) =>
+    this.setState({ isApprovedByTeacher: e.target.checked })
+
+  handleSave = () => {
+    const { isAIEvaluated } = this.state
+    this.preCheckSubmit()
+    if (isAIEvaluated) {
+      this.onScoreSubmit()
+    }
   }
 
   render() {
@@ -482,6 +524,8 @@ class FeedbackRight extends Component {
       isRubricDisabled,
       isScoreInputDisabled,
       showWarningToClear,
+      isAIEvaluated,
+      isApprovedByTeacher,
     } = this.state
     let rubricMaxScore = 0
     if (rubricDetails)
@@ -497,6 +541,9 @@ class FeedbackRight extends Component {
     let title
     const showGradingRubricButton =
       user.user?.features?.gradingrubrics && !!rubricDetails
+    const disableSaveBtn = [isAIEvaluated, !isApprovedByTeacher].every(
+      (o) => !!o
+    )
 
     if (isStudentName) {
       title = (
@@ -626,7 +673,11 @@ class FeedbackRight extends Component {
                   {isError ? 'Score is too large' : 'Student Feedback!'}
                 </span>
                 {showFeedbackSaveBtn && (
-                  <EduButton height="32px" onClick={this.preCheckSubmit}>
+                  <EduButton
+                    height="32px"
+                    onClick={this.handleSave}
+                    disabled={disableSaveBtn}
+                  >
                     Save
                   </EduButton>
                 )}
@@ -636,19 +687,34 @@ class FeedbackRight extends Component {
                   {feedback}
                 </FeedbackDisplay>
               )}
-              <FeedbackInput
-                tabIndex={0}
-                autoSize
-                ref={this.feedbackInputRef}
-                data-cy="feedBackInput"
-                onChange={this.onChangeFeedback}
-                value={feedback}
-                onFocus={this.focusFeedbackInput}
-                onBlur={this.blurFeedbackInput}
-                disabled={!activity || isPresentationMode}
-                onKeyDown={this.onKeyDownFeedback}
-                isShowFeedbackInput={isShowFeedbackInput}
-              />
+              <FeedbackInputInnerWrapper2 onBlur={this.blurFeedbackInput}>
+                <FeedbackInput
+                  tabIndex={0}
+                  autoSize
+                  ref={this.feedbackInputRef}
+                  data-cy="feedBackInput"
+                  onChange={this.onChangeFeedback}
+                  value={feedback}
+                  onFocus={this.focusFeedbackInput}
+                  disabled={!activity || isPresentationMode}
+                  onKeyDown={this.onKeyDownFeedback}
+                  isShowFeedbackInput={isShowFeedbackInput}
+                  paddingBottom={isAIEvaluated ? '24px' : '4px'}
+                />
+                <EduIf
+                  condition={[isShowFeedbackInput, isAIEvaluated].every(
+                    (o) => !!o
+                  )}
+                >
+                  <CustomCheckBox
+                    value="Approved"
+                    onChange={this.handleFeedbackApproval}
+                    checked={isApprovedByTeacher}
+                  >
+                    Approve
+                  </CustomCheckBox>
+                </EduIf>
+              </FeedbackInputInnerWrapper2>
             </FeedbackInputInnerWrapper>
           </FeedbaclInputWrapper>
         )}
@@ -826,6 +892,7 @@ const FeedbackInput = styled(TextArea)`
   display: inline-block;
   background: #f8f8f8;
   display: ${({ isShowFeedbackInput }) => !isShowFeedbackInput && 'none'};
+  padding-bottom: ${({ paddingBottom }) => paddingBottom || '4px'};
 `
 const FeedbackDisplay = styled.div`
   width: 100%;
@@ -866,4 +933,14 @@ const FeedbackInputInnerWrapper = styled.div`
   position: ${({ isAbsolutePos }) => isAbsolutePos && 'absolute'};
   bottom: ${({ isAbsolutePos }) => isAbsolutePos && 0};
   width: 100%;
+`
+
+const FeedbackInputInnerWrapper2 = styled.div`
+  position: relative;
+`
+
+const CustomCheckBox = styled(Checkbox)`
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
 `

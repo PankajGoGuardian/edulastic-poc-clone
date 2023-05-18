@@ -518,8 +518,9 @@ class ClassHeader extends Component {
       canvasCourseSectionCode,
       googleId: groupGoogleId,
       atlasId: groupAtlasId,
-      atlasProviderName = '',
+      atlasProviderName: providerName,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
+    let atlasProviderName = providerName || ''
     const showSyncGradesWithCanvasOption =
       !isDemoPlaygroundUser &&
       canvasCode &&
@@ -541,6 +542,9 @@ class ClassHeader extends Component {
           uta.graded === gradingStatus.GRADED ||
           uta.UTASTATUS === testActivityStatus.SUBMITTED
       )
+
+    if (districtPolicy?.providerNameToShareResourceViaEdlink)
+      atlasProviderName = districtPolicy.providerNameToShareResourceViaEdlink
 
     const showSchoologyGradeSyncOption =
       !isDemoPlaygroundUser &&

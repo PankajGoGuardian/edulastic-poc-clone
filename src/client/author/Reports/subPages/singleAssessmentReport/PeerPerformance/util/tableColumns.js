@@ -1,5 +1,7 @@
+import { reportUtils } from '@edulastic/constants'
 import { idToName } from './transformers'
 
+const { analyseByOptions } = reportUtils.peerPerformance
 // helper function to create column
 const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
   title,
@@ -76,14 +78,6 @@ const makeProficiencyBand = (title, ...extColumns) => [
   submitted,
   absent,
 ]
-
-const columns = {
-  'score(%)': {},
-  rawScore: {},
-  aboveBelowStandard: {},
-  proficiencyBand: {},
-}
-
 // mapping of analyzer Id to helper function
 const _analyzeToMake = {
   'score(%)': makeScorePc,
@@ -92,86 +86,111 @@ const _analyzeToMake = {
   proficiencyBand: makeProficiencyBand,
 }
 
-columns['score(%)'].schoolId = makeScorePc({
-  ...compareSchool,
-  align: 'left',
-})
-columns['score(%)'].teacherId = makeScorePc(
-  { ...compareTeacher, align: 'left' },
-  { ...school, align: 'left' }
-)
-columns['score(%)'].groupId = makeScorePc(
-  { ...compareClass, align: 'left', fixed: 'left' },
-  { ...teacher, align: 'left' },
-  { ...school, align: 'left' }
-)
-columns['score(%)'].group = makeScorePc(
-  { ...compareStudGroup, fixed: 'left' },
-  { ...teacher, align: 'left' },
-  { ...school, align: 'left' }
-)
-columns['score(%)'].race = makeScorePc(compareRace)
-columns['score(%)'].hispanicEthnicity = makeScorePc(compareHispanicEthnicity)
-columns['score(%)'].gender = makeScorePc(compareGender)
-columns['score(%)'].frlStatus = makeScorePc(compareFrlStatus)
-columns['score(%)'].ellStatus = makeScorePc(compareEllStatus)
-columns['score(%)'].iepStatus = makeScorePc(compareIepStatus)
-
-columns.rawScore.schoolId = makeRaw(compareSchool)
-columns.rawScore.teacherId = makeRaw(compareTeacher, school)
-columns.rawScore.groupId = makeRaw(compareClass, teacher, school)
-columns.rawScore.race = makeRaw(compareRace)
-columns.rawScore.hispanicEthnicity = makeRaw(compareHispanicEthnicity)
-columns.rawScore.gender = makeRaw(compareGender)
-columns.rawScore.frlStatus = makeRaw(compareFrlStatus)
-columns.rawScore.ellStatus = makeRaw(compareEllStatus)
-columns.rawScore.iepStatus = makeRaw(compareIepStatus)
-
-columns.aboveBelowStandard.schoolId = makeAboveBelowStd(compareSchool)
-columns.aboveBelowStandard.teacherId = makeAboveBelowStd(compareTeacher, school)
-columns.aboveBelowStandard.groupId = makeAboveBelowStd(
-  compareClass,
-  teacher,
-  school
-)
-columns.aboveBelowStandard.race = makeAboveBelowStd(compareRace)
-columns.aboveBelowStandard.hispanicEthnicity = makeAboveBelowStd(
-  compareHispanicEthnicity
-)
-columns.aboveBelowStandard.gender = makeAboveBelowStd(compareGender)
-columns.aboveBelowStandard.frlStatus = makeAboveBelowStd(compareFrlStatus)
-columns.aboveBelowStandard.ellStatus = makeAboveBelowStd(compareEllStatus)
-columns.aboveBelowStandard.iepStatus = makeAboveBelowStd(compareIepStatus)
-
-columns.proficiencyBand.schoolId = makeProficiencyBand(compareSchool)
-columns.proficiencyBand.teacherId = makeProficiencyBand(compareTeacher, school)
-columns.proficiencyBand.groupId = makeProficiencyBand(
-  compareClass,
-  teacher,
-  school
-)
-columns.proficiencyBand.race = makeProficiencyBand(compareRace)
-columns.proficiencyBand.hispanicEthnicity = makeProficiencyBand(
-  compareHispanicEthnicity
-)
-columns.proficiencyBand.gender = [
-  compareGender,
-  { ...submitted, width: 250 },
-  { ...absent, width: 250 },
-]
-columns.proficiencyBand.frlStatus = makeProficiencyBand(compareFrlStatus)
-columns.proficiencyBand.ellStatus = makeProficiencyBand(compareEllStatus)
-columns.proficiencyBand.iepStatus = makeProficiencyBand(compareIepStatus)
-
-export default columns
-
-export const getColumns = (ddfilter) => {
-  let _cols =
-    columns[ddfilter.analyseBy][
-      ddfilter.compareBy === 'group' ? 'groupId' : ddfilter.compareBy
-    ]
-  if (!_cols) {
-    _cols = _analyzeToMake[ddfilter.analyseBy](idToName(ddfilter.compareBy))
+const createColumns = () => {
+  const columns = {
+    'score(%)': {},
+    rawScore: {},
+    aboveBelowStandard: {},
+    proficiencyBand: {},
   }
+
+  columns['score(%)'].schoolId = makeScorePc({
+    ...compareSchool,
+    align: 'left',
+  })
+  columns['score(%)'].teacherId = makeScorePc(
+    { ...compareTeacher, align: 'left' },
+    { ...school, align: 'left' }
+  )
+  columns['score(%)'].groupId = makeScorePc(
+    { ...compareClass, align: 'left', fixed: 'left' },
+    { ...teacher, align: 'left' },
+    { ...school, align: 'left' }
+  )
+  columns['score(%)'].group = makeScorePc(
+    { ...compareStudGroup, fixed: 'left' },
+    { ...teacher, align: 'left' },
+    { ...school, align: 'left' }
+  )
+  columns['score(%)'].race = makeScorePc(compareRace)
+  columns['score(%)'].hispanicEthnicity = makeScorePc(compareHispanicEthnicity)
+  columns['score(%)'].gender = makeScorePc(compareGender)
+  columns['score(%)'].frlStatus = makeScorePc(compareFrlStatus)
+  columns['score(%)'].ellStatus = makeScorePc(compareEllStatus)
+  columns['score(%)'].iepStatus = makeScorePc(compareIepStatus)
+
+  columns.rawScore.schoolId = makeRaw(compareSchool)
+  columns.rawScore.teacherId = makeRaw(compareTeacher, school)
+  columns.rawScore.groupId = makeRaw(compareClass, teacher, school)
+  columns.rawScore.race = makeRaw(compareRace)
+  columns.rawScore.hispanicEthnicity = makeRaw(compareHispanicEthnicity)
+  columns.rawScore.gender = makeRaw(compareGender)
+  columns.rawScore.frlStatus = makeRaw(compareFrlStatus)
+  columns.rawScore.ellStatus = makeRaw(compareEllStatus)
+  columns.rawScore.iepStatus = makeRaw(compareIepStatus)
+
+  columns.aboveBelowStandard.schoolId = makeAboveBelowStd(compareSchool)
+  columns.aboveBelowStandard.teacherId = makeAboveBelowStd(
+    compareTeacher,
+    school
+  )
+  columns.aboveBelowStandard.groupId = makeAboveBelowStd(
+    compareClass,
+    teacher,
+    school
+  )
+  columns.aboveBelowStandard.race = makeAboveBelowStd(compareRace)
+  columns.aboveBelowStandard.hispanicEthnicity = makeAboveBelowStd(
+    compareHispanicEthnicity
+  )
+  columns.aboveBelowStandard.gender = makeAboveBelowStd(compareGender)
+  columns.aboveBelowStandard.frlStatus = makeAboveBelowStd(compareFrlStatus)
+  columns.aboveBelowStandard.ellStatus = makeAboveBelowStd(compareEllStatus)
+  columns.aboveBelowStandard.iepStatus = makeAboveBelowStd(compareIepStatus)
+
+  columns.proficiencyBand.schoolId = makeProficiencyBand(compareSchool)
+  columns.proficiencyBand.teacherId = makeProficiencyBand(
+    compareTeacher,
+    school
+  )
+  columns.proficiencyBand.groupId = makeProficiencyBand(
+    compareClass,
+    teacher,
+    school
+  )
+  columns.proficiencyBand.race = makeProficiencyBand(compareRace)
+  columns.proficiencyBand.hispanicEthnicity = makeProficiencyBand(
+    compareHispanicEthnicity
+  )
+  columns.proficiencyBand.gender = [
+    compareGender,
+    { ...submitted, width: 250 },
+    { ...absent, width: 250 },
+  ]
+  columns.proficiencyBand.frlStatus = makeProficiencyBand(compareFrlStatus)
+  columns.proficiencyBand.ellStatus = makeProficiencyBand(compareEllStatus)
+  columns.proficiencyBand.iepStatus = makeProficiencyBand(compareIepStatus)
+
+  return columns
+}
+
+export const getColumns = ({ compareBy, analyseBy }, bandInfo) => {
+  const columns = createColumns()
+  let _cols = columns[analyseBy][compareBy]
+  if (!_cols) {
+    _cols = _analyzeToMake[analyseBy](idToName(compareBy)) || []
+  }
+  const additionalColumns = []
+  if (analyseBy === analyseByOptions.proficiencyBand) {
+    for (const { name } of bandInfo) {
+      additionalColumns.push({
+        title: name,
+        dataIndex: name,
+        key: name,
+        [analyseByOptions.proficiencyBand]: true,
+      })
+    }
+  }
+  _cols.push(...additionalColumns)
   return _cols
 }

@@ -3,12 +3,15 @@ import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { reportUtils } from '@edulastic/constants'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
 import { downloadCSV } from '../../../../../common/util'
-import { idToName, analyseByOptions } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
+
+const { analyseByOptions } = reportUtils.peerPerformance
 
 const getDisplayValue = (data, record, analyseBy, columnKey) => {
   let printData = data
@@ -227,17 +230,19 @@ export const PeerPerformanceTable = ({
       }
 
       let validBandCols = 0
+      const performanceBandColumns = arr.filter(
+        (item) => item[analyseByOptions.proficiencyBand]
+      )
       for (const [index, value] of bandInfo.entries()) {
         if (!allBandCols[`${value.name}Percentage`]) {
           continue
         }
-        arr.push({
-          title: value.name,
-          dataIndex: value.name,
-          key: value.name,
-          width: 250,
-          render: colorCell(`fill_${index}`, value.name, value.name),
-        })
+        performanceBandColumns[index].width = 250
+        performanceBandColumns[index].render = colorCell(
+          `fill_${index}`,
+          value.name,
+          value.name
+        )
         validBandCols++
       }
       colouredCellsNo = validBandCols

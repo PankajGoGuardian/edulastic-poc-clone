@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { report as reportTypes } from '@edulastic/constants'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
@@ -38,9 +38,7 @@ import {
 } from './ducks'
 import {
   idToName,
-  analyseByOptions,
   compareByKeyMaps,
-  transformData,
   sortKeyMaps,
   sortOrderMap,
   transformExtAttributes,
@@ -49,6 +47,8 @@ import {
 } from './util/transformers'
 import { getColumns } from './util/tableColumns'
 import { getAssessmentName } from '../../../common/util'
+
+const { analyseByOptions, transformData } = reportUtils.peerPerformance
 
 const pageSize = 200
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
@@ -203,9 +203,9 @@ const PeerPerformance = ({
   }, [peerPerformance])
   const parsedData = useMemo(() => {
     return {
-      columns: getColumns(ddfilter),
+      columns: getColumns(ddfilter, bandInfo),
     }
-  }, [ddfilter])
+  }, [ddfilter, bandInfo])
   const updateAnalyseByCB = (event, selected) => {
     setDdFilter({
       ...ddfilter,

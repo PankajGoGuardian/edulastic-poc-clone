@@ -2,9 +2,12 @@ import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
 import { ticks } from 'd3-array'
 import { isEmpty } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
-import { idToName, analyseByOptions } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
+
+const { analyseByOptions } = reportUtils.peerPerformance
 
 export const SimpleStackedBarChartContainer = ({
   data,

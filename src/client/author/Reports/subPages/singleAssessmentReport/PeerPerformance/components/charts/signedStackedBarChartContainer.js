@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
 import { isEmpty } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
-import { idToName, analyseByOptions } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
+
+const { analyseByOptions } = reportUtils.peerPerformance
 
 export const SignedStackedBarChartContainer = ({
   data,

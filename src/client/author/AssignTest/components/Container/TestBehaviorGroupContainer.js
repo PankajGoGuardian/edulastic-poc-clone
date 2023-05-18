@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
-import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
+import {
+  CheckboxLabel,
+  EduIf,
+  RadioBtn,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import {
   roleuser,
@@ -509,7 +514,12 @@ const TestBehaviorGroupContainer = ({
           </StyledRow>
         </SettingContainer>
       )}
-      {!testSettings?.isDocBased && (
+      <EduIf
+        condition={[
+          isShowAutoEssayEvaluationSetting,
+          !testSettings?.isDocBased,
+        ].every((o) => !!o)}
+      >
         <SettingContainer id="auto-essay-evaluation">
           <DetailsTooltip
             width={tootltipWidth}
@@ -545,7 +555,7 @@ const TestBehaviorGroupContainer = ({
             </Col>
           </StyledRow>
         </SettingContainer>
-      )}
+      </EduIf>
       {/* Show hints to students */}
       {!(isDocBased && isTestlet) && (
         <SettingContainer id="show-hints-to-students">

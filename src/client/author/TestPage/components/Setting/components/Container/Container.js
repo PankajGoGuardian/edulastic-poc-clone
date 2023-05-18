@@ -1722,7 +1722,12 @@ class Setting extends Component {
                       </SettingContainer>
                     </Block>
                   )}
-                  {!isDocBased && (
+                  <EduIf
+                    condition={[
+                      !isDocBased,
+                      isShowAutoEssayEvaluationSetting,
+                    ].every((o) => !!o)}
+                  >
                     <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
                       <SettingContainer>
                         <Title>
@@ -1762,7 +1767,7 @@ class Setting extends Component {
                         </Body>
                       </SettingContainer>
                     </Block>
-                  )}
+                  </EduIf>
                   <HintsToStudents
                     premium={premium}
                     isSmallSize={isSmallSize}

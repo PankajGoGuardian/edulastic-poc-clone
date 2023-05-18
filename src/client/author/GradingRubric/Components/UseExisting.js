@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
 import { maxBy, sumBy, uniqBy, debounce, isEmpty } from 'lodash'
-import { notification } from '@edulastic/common'
+import { EduIf, notification } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -96,6 +96,7 @@ const UseExisting = ({
   setQuestionData,
   removeAiTag,
   addNewTag,
+  premium,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -464,16 +465,18 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <CustomStyleBtn2
-              style={btnStyle}
-              onClick={generateRubricByOpenAI}
-              disabled={disableAutoGenerateRubricBtn}
-              ghost={disableAutoGenerateRubricBtn}
-              title={autoGenerateRubricBtnTitle}
-              loading={isRubricGenerationInProgress}
-            >
-              Auto Generate Rubric
-            </CustomStyleBtn2>
+            <EduIf condition={premium}>
+              <CustomStyleBtn2
+                style={btnStyle}
+                onClick={generateRubricByOpenAI}
+                disabled={disableAutoGenerateRubricBtn}
+                ghost={disableAutoGenerateRubricBtn}
+                title={autoGenerateRubricBtnTitle}
+                loading={isRubricGenerationInProgress}
+              >
+                Auto Generate Rubric
+              </CustomStyleBtn2>
+            </EduIf>
             <CustomStyleBtn
               style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}
@@ -650,6 +653,7 @@ const enhance = compose(
       ),
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, 'testitem'),
+      premium: state?.user?.user?.features?.premium,
     }),
     {
       updateRubricData: updateRubricDataAction,

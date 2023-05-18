@@ -322,11 +322,24 @@ const activateUser = ({ userId, activate }) =>
     method: 'put',
   })
 
-const updateUsername = ({ username, userId, newUsername, permissions }) =>
+const updateUserAdminTool = ({
+  username,
+  userId,
+  newUsername,
+  permissions,
+  permissionsExpiry,
+}) =>
   api.callApi({
     url: `/admin-tool/user`,
     method: 'put',
-    data: { username, userId, newUsername, permissions },
+    data: { username, userId, newUsername, permissions, permissionsExpiry },
+  })
+
+const updateManyUserAdminTool = ({ users }) =>
+  api.callApi({
+    url: `/admin-tool/user/bulk`,
+    method: 'put',
+    data: { users },
   })
 
 const logout = () =>
@@ -391,7 +404,8 @@ export default {
   mergeUsers,
   updatePowerTeacherTools,
   activateUser,
-  updateUsername,
+  updateUserAdminTool,
+  updateManyUserAdminTool,
   logout,
   getDemoPlaygroundUser,
   updateCollectionVisited,

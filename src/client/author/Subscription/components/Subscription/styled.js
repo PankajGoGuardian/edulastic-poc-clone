@@ -29,7 +29,7 @@ export const CompareModal = styled(CustomModalStyled)`
 `
 
 export const PlanCard = styled.div`
-  width: 380px;
+  width: 320px;
   background: ${white};
   border-radius: 10px;
   display: flex;
@@ -38,7 +38,7 @@ export const PlanCard = styled.div`
   border: 1px solid ${borderGrey5};
 
   @media (max-width: ${largeDesktopWidth}) {
-    width: 300px;
+    width: 240px;
   }
 `
 
@@ -67,7 +67,7 @@ export const PlanHeader = styled.div`
 `
 
 export const PlanContent = styled.div`
-  width: 330px;
+  width: 270px;
   margin: 30px;
 
   @media (max-width: ${largeDesktopWidth}) {

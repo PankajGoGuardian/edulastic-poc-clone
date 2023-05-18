@@ -1,15 +1,16 @@
-import { combineReducers } from 'redux'
-import { put, takeEvery, call, all, select } from 'redux-saga/effects'
+import {
+  adminApi,
+  manageSubscriptionsApi,
+  paymentApi,
+  subscriptionApi,
+  userApi,
+} from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
-import { createSlice, createAction } from 'redux-starter-kit'
+import { combineReducers } from 'redux'
+import { all, call, put, select, takeEvery } from 'redux-saga/effects'
+import { createAction, createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import {
-  manageSubscriptionsApi,
-  adminApi,
-  subscriptionApi,
-  paymentApi,
-} from '@edulastic/api'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -315,30 +316,62 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const { isUpdate, subscriptionId, ...rest } = payload
+    const { isUpdate, subscriptionId, searchData, ...rest } = payload
+    const { districtId, permissions, permissionsExpiry } = payload.dataStudio
+
+    delete rest.dataStudio
+
     if (isUpdate) {
       const { status } = payload
       const result = yield call(updateSubscriptionApi, {
         data: { status },
         subscriptionId,
       })
-      if (result.success) {
+
+      let updateUserResult = true
+      if (payload.dataStudio) {
+        updateUserResult = false
+        updateUserResult = yield call(saveOrgPermissionsApi, {
+          districtId,
+          permissions,
+          permissionsExpiry,
+        })
+      }
+
+      if (result.success && updateUserResult) {
         notification({ type: 'success', msg: result.message })
         yield put(
           manageSubscriptionsBydistrict.actions.subscribeSuccess(
             result.subscription
           )
         )
+        if (searchData) {
+          yield put(getDistrictDataAction(searchData))
+        }
       }
     } else {
       const { result } = yield call(manageSubscriptionApi, rest)
-      if (result.success) {
+
+      let updateUserResult = true
+      if (payload.dataStudio) {
+        updateUserResult = false
+        updateUserResult = yield call(saveOrgPermissionsApi, {
+          districtId,
+          permissions,
+          permissionsExpiry,
+        })
+      }
+
+      if (result.success && updateUserResult) {
         notification({ type: 'success', msg: result.message })
         yield put(
           manageSubscriptionsBydistrict.actions.subscribeSuccess(
             result.subscriptionResult[0]
           )
         )
+        if (searchData) {
+          yield put(getDistrictDataAction(searchData))
+        }
       }
     }
   } catch (err) {
@@ -382,6 +415,10 @@ function* upgradeUserData({ payload }) {
   try {
     let result = {}
     const { subscriptionIds = [], userIds = [], identifiers, ...data } = payload
+    const { users = [] } = payload.dataStudio
+
+    delete data.dataStudio
+
     if (subscriptionIds.length) {
       result = yield call(bulkUpdateSubscriptionApi, {
         ...data,
@@ -395,7 +432,14 @@ function* upgradeUserData({ payload }) {
       })
       result = res.result.success ? res.result : result
     }
-    if (result.success) {
+
+    let updateUserResult = true
+    if (users.length > 0) {
+      updateUserResult = false
+      updateUserResult = yield call(userApi.updateManyUserAdminTool, { users })
+    }
+
+    if (result.success && updateUserResult) {
       yield put(searchUsersByEmailIdAction({ identifiers }))
       notification({ type: 'success', msg: result.message })
     } else {

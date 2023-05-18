@@ -295,13 +295,18 @@ const searchSchoolsById = (data) =>
     })
     .then(({ data: response }) => response)
 
-const saveOrgPermissionsApi = ({ permissions, districtId }) =>
+const saveOrgPermissionsApi = ({
+  permissions,
+  permissionsExpiry,
+  districtId,
+}) =>
   api
     .callApi({
       url: `districts/${districtId}`,
       method: 'put',
       data: {
         permissions,
+        permissionsExpiry,
       },
     })
     .then(({ data }) => data)

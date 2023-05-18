@@ -41,7 +41,7 @@ export const SET_RUBRIC_GENERATION_STIMULUS_METADATA =
 export const INCREMENT_RUBRIC_GENERATION_COUNT =
   '[rubric] increment rubric generation count'
 export const SET_REMOVE_AI_TAG = '[rubric] set rubric data loading'
-
+export const SET_UUID_LIST = '[rubric] set uuids'
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
 export const saveRubricAction = createAction(SAVE_RUBRIC)
@@ -72,6 +72,7 @@ export const incrementRubricGenerationCountAction = createAction(
   INCREMENT_RUBRIC_GENERATION_COUNT
 )
 export const setRemoveAiTagAction = createAction(SET_REMOVE_AI_TAG)
+export const setUUIDsAction = createAction(SET_UUID_LIST)
 
 // selectors
 export const getStateSelector = (state) => state.rubricReducer
@@ -136,6 +137,11 @@ export const getRubricGenerationCountForGivenStimulus = createSelector(
     state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus
 )
 
+export const getRubricUUIDsSelector = createSelector(
+  getStateSelector,
+  (state) => state.uuids
+)
+
 // reducer
 const initialState = {
   searchedList: [],
@@ -189,6 +195,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_REMOVE_AI_TAG]: (state, { payload }) => {
     state.removeAiTag = payload
+  },
+  [SET_UUID_LIST]: (state, { payload }) => {
+    state.uuids = payload
   },
 })
 
@@ -331,17 +340,23 @@ function* generateRubricSaga({ payload }) {
     yield put(setIsRubricGenerationInProgress(true))
     const data = yield call(rubricsApi.generateRubrics, payload)
     const generatedCriterias = JSON.parse(data)
+    const uuids = []
+    const getUUID = () => {
+      const uuid = v4()
+      uuids.push(uuid)
+      return uuid
+    }
     if (!isEmpty(generatedCriterias)) {
       const generatedCriteriasWithId = generatedCriterias.map(
         ({ performance_criteria_name, ratings }) => ({
           name: performance_criteria_name,
-          id: v4(),
+          id: getUUID(),
           ratings: ratings.map(
             ({ rating_name, rating_description, rating_points }) => ({
               name: rating_name,
               desc: rating_description,
               points: rating_points,
-              id: v4(),
+              id: getUUID(),
             })
           ),
         })
@@ -363,6 +378,7 @@ function* generateRubricSaga({ payload }) {
           criteria: generatedCriteriasWithId,
         }
       }
+      yield put(setUUIDsAction(uuids))
       yield put(updateRubricDataAction(newRubricData))
       notification({
         type: 'success',

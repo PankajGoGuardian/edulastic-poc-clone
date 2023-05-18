@@ -43,6 +43,7 @@ import {
   updateRubricAction,
   updateRubricDataAction,
   setRemoveAiTagAction,
+  getRubricUUIDsSelector,
 } from '../ducks'
 import {
   ActionBarContainer,
@@ -97,6 +98,7 @@ const UseExisting = ({
   removeAiTag,
   addNewTag,
   premium,
+  rubricUUIDs,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -110,6 +112,7 @@ const UseExisting = ({
   const [currentPage, setCurrentPage] = useState(1)
   const [aIAssisted, setAIAssisted] = useState(false)
   const [addAiTag, setAddAiTag] = useState(false)
+  const aiTagName = 'AI - Assisted Rubrics'
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
@@ -119,13 +122,11 @@ const UseExisting = ({
     const addTag = async () => {
       if (addAiTag) {
         const questionTags = questionData.tags || []
-        let aiTag = allTagsData.find(
-          (tag) => tag.tagName === 'AI - Generated Rubrics'
-        )
+        let aiTag = allTagsData.find((tag) => tag.tagName === aiTagName)
 
         if (!aiTag) {
           const { _id, tagName } = await tagsApi.create({
-            tagName: 'AI- Generated Rubrics',
+            tagName: aiTagName,
             tagType: 'testitem',
           })
 
@@ -145,9 +146,7 @@ const UseExisting = ({
     const removeTag = async () => {
       if (removeAiTag) {
         const questionTags = questionData.tags || []
-        const aiTag = questionTags.filter(
-          (tag) => tag.tagName !== 'AI- Generated Rubrics'
-        )
+        const aiTag = questionTags.filter((tag) => tag.tagName !== aiTagName)
         setQuestionData({ ...questionData, tags: aiTag })
         setAddAiTag(false)
       }
@@ -287,7 +286,7 @@ const UseExisting = ({
         //     metadata: { _id: currentRubricData._id, name: currentRubricData.name },
         //     maxScore
         //   });
-      } else
+      } else {
         saveRubric({
           rubricData: {
             ...currentRubricData,
@@ -296,7 +295,27 @@ const UseExisting = ({
           },
           maxScore,
         })
-      if (aIAssisted) {
+      }
+      // check ai criteria or rating exists in rubric
+      let isAnyUUIDExists = false
+      if (rubricUUIDs.length) {
+        for (const criteria of currentRubricData.criteria) {
+          if (rubricUUIDs.includes(criteria.id)) {
+            isAnyUUIDExists = true
+            break
+          }
+          for (const rating of criteria.ratings) {
+            if (rubricUUIDs.includes(rating.id)) {
+              isAnyUUIDExists = true
+              break
+            }
+          }
+          if (isAnyUUIDExists) {
+            break
+          }
+        }
+      }
+      if (aIAssisted && isAnyUUIDExists) {
         setAddAiTag(true)
       }
       setCurrentMode('PREVIEW')
@@ -654,6 +673,7 @@ const enhance = compose(
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, 'testitem'),
       premium: state?.user?.user?.features?.premium,
+      rubricUUIDs: getRubricUUIDsSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

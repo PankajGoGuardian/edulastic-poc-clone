@@ -95,7 +95,7 @@ export const staticDropDownData = {
     },
     PERIOD: {
       key: '3',
-      title: 'Period',
+      title: 'Duration',
     },
   },
   tagTypes: [

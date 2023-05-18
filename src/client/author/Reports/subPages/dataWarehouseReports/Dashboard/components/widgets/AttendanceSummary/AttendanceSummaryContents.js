@@ -107,7 +107,6 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
           />
         }
         color={lightRed6}
-        cellType="small"
       />
     </ContentWrapper>
   )

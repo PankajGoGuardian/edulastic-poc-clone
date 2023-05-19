@@ -1,10 +1,13 @@
 import { createSelector } from 'reselect'
 import { keyBy, isEmpty, forEach, uniqBy } from 'lodash'
+import { dictionaries } from '@edulastic/constants'
 import selectData from '../../TestPage/components/common/selectsData'
 import {
   getInterestedCurriculumsSelector,
   getShowAllCurriculumsSelector,
 } from './user'
+
+const { STANDARD_LEVELS } = dictionaries
 
 const { defaultStandards } = selectData
 export const stateSelector = (state) => state.dictionaries
@@ -112,7 +115,9 @@ export const standardsSelector = createSelector(stateSelector, (state) => {
     _id: el.id,
     ...el,
   }))
-  const elo = standardsWithId.filter((item) => item.level === 'ELO')
+  const elo = standardsWithId.filter(
+    (item) => item.level === STANDARD_LEVELS.ELO
+  )
   const tlo = uniqBy(
     standardsWithId.map((item) => ({
       identifier: item.tloIdentifier,
@@ -137,6 +142,36 @@ export const getStandardsListSelector = createSelector(
     return { elo, tlo }
   }
 )
+
+export const getStandardsEloSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const standardsWithId = state.standards.eloData.map((el) => ({
+      ...el,
+      _id: el.id,
+    }))
+    const elo = standardsWithId
+      .filter((item) => item.level === STANDARD_LEVELS.ELO)
+      ?.sort((a, b) => a.position - b.position)
+    return elo || []
+  }
+)
+
+export const getStandardsTloSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const { tloData } = state.standards
+    const tlo = uniqBy(
+      tloData.map((item) => ({
+        ...item,
+        _id: item.id,
+      })),
+      '_id'
+    )?.sort((a, b) => a.position - b.position)
+    return tlo || []
+  }
+)
+
 export const getRecentStandardsListSelector = createSelector(
   stateSelector,
   (state) => state.recentStandardsList || []

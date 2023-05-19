@@ -17,6 +17,12 @@ import {
   UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT,
   UPDATE_RECENT_COLLECTIONS,
+  RECEIVE_TLO_STANDARDS_REQUEST,
+  RECEIVE_TLO_STANDARDS_SUCCESS,
+  RECEIVE_ELO_STANDARDS_REQUEST,
+  RECEIVE_ELO_STANDARDS_SUCCESS,
+  SET_ELOS_BY_TLO_ID,
+  CLEAR_TLO_AND_ELO,
 } from '../constants/actions'
 
 export const getNewAlignmentState = () => ({
@@ -35,6 +41,8 @@ const initialItemsState = {
   },
   standards: {
     data: [],
+    tloData: [],
+    eloData: [],
     loading: false,
     error: null,
   },
@@ -46,6 +54,7 @@ const initialItemsState = {
     : [],
   alignments: [getNewAlignmentState()],
   recentCollectionsList: [],
+  elosByTloId: {},
 }
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
@@ -108,6 +117,40 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           ...state.standards,
           loading: false,
           error: payload.error,
+        },
+      }
+    case RECEIVE_TLO_STANDARDS_REQUEST:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          loading: true,
+        },
+      }
+    case RECEIVE_TLO_STANDARDS_SUCCESS:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          tloData: payload,
+          loading: false,
+        },
+      }
+    case RECEIVE_ELO_STANDARDS_REQUEST:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          loading: true,
+        },
+      }
+    case RECEIVE_ELO_STANDARDS_SUCCESS:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          eloData: payload,
+          loading: false,
         },
       }
     case CLEAR_DICT_STANDARDS:
@@ -179,6 +222,22 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         recentCollectionsList: recentCollections,
       }
     }
+    case SET_ELOS_BY_TLO_ID: {
+      return {
+        ...state,
+        elosByTloId: payload,
+      }
+    }
+    case CLEAR_TLO_AND_ELO:
+      return {
+        ...state,
+        standards: {
+          ...state.standards,
+          tloData: [],
+          eloData: [],
+        },
+        elosByTloId: {},
+      }
     default:
       return state
   }

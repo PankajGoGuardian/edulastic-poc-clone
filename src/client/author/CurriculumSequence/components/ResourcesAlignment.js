@@ -4,6 +4,7 @@ import {
 } from '@edulastic/api/src/utils/Storage'
 import { themeColor } from '@edulastic/colors'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import { dictionaries } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
 import { Col, Row, Select } from 'antd'
 import { get, pick } from 'lodash'
@@ -15,6 +16,7 @@ import styled from 'styled-components'
 import CustomTreeSelect from '../../../assessment/containers/QuestionMetadata/CustomTreeSelect'
 import RecentStandardsList from '../../../assessment/containers/QuestionMetadata/RecentStandardsList'
 import StandardsModal from '../../../assessment/containers/QuestionMetadata/StandardsModal'
+import { StyledDiv } from '../../../assessment/containers/QuestionMetadata/styled/ELOList'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
@@ -163,7 +165,6 @@ const ResourcesAlignment = ({
   }
 
   const handleShowBrowseModal = () => {
-    handleStandardFocus()
     setShowModal(true)
   }
 
@@ -216,6 +217,11 @@ const ResourcesAlignment = ({
     setSelectedStandards(data.eloStandards)
     setShowModal(false)
   }
+
+  const showMoreButtonEnabled =
+    !curriculumStandardsLoading &&
+    curriculumStandardsELO &&
+    curriculumStandardsELO.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
 
   return (
     <Row style={{ width: '100%' }}>
@@ -298,6 +304,18 @@ const ResourcesAlignment = ({
                     </div>
                   </Select.Option>
                 ))}
+              {showMoreButtonEnabled && (
+                <Select.Option
+                  title="Show More"
+                  value="show"
+                  style={{ display: 'block', cursor: 'pointer' }}
+                  disabled
+                >
+                  <StyledDiv onClick={handleShowBrowseModal}>
+                    <span>Show More</span>
+                  </StyledDiv>
+                </Select.Option>
+              )}
             </SelectInputStyled>
           </div>
           <IconWrapper className="expand-icon">

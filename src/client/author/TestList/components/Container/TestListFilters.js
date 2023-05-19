@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { get, keyBy } from 'lodash'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -34,6 +35,8 @@ import { removeTestFromCartAction } from '../../ducks'
 import filterData from './FilterData'
 import FiltersSidebar from './FiltersSidebar'
 
+const { FILTER_KEYS } = libraryFilters
+
 const filtersTitle = ['Grades', 'Subject', 'Status']
 const TestListFilters = ({
   isPlaylist,
@@ -55,6 +58,7 @@ const TestListFilters = ({
   isOrgUser,
   isDistrictUser,
   isSingaporeMath,
+  elosByTloId,
 }) => {
   const [showModal, setShowModal] = useState(false)
   const [filteredCollections, setFilteredCollections] = useState(collections)
@@ -151,8 +155,16 @@ const TestListFilters = ({
       ]
     }
 
-    const { curriculumId = '', subject = [] } = search
-    const formattedStandards = (curriculumStandards.elo || []).map((item) => ({
+    const { curriculumId = '', subject = [], standardIds = [] } = search
+    const dropDownElosById = keyBy(curriculumStandards.elo, '_id')
+    const standardsNotInDropdown = standardIds.filter(
+      (item) => !dropDownElosById[item._id]
+    )
+    const _curriculumStandards = {
+      ...curriculumStandards,
+      elo: [...curriculumStandards.elo, ...standardsNotInDropdown],
+    }
+    const formattedStandards = (_curriculumStandards.elo || []).map((item) => ({
       value: item._id,
       text: item.identifier,
     }))
@@ -195,12 +207,20 @@ const TestListFilters = ({
           placeholder: 'All Standards',
           title: 'Standards',
           disabled: isStandardsDisabled,
-          onChange: 'standardIds',
+          onChange: FILTER_KEYS.STANDARD_IDS,
           optionFilterProp: 'children',
           data: formattedStandards,
-          filterOption: searchFilterOption,
+          filterOption: (input, option) => {
+            const children = option.props.children
+            if (typeof children === 'string') {
+              return children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          },
           showSearch: true,
           isStandardSelect: true,
+          handleShowBrowseModal: () => {
+            setShowModal(true)
+          },
         },
         {
           mode: 'multiple',
@@ -252,8 +272,18 @@ const TestListFilters = ({
     userFeatures.isPublisherAuthor,
   ])
 
-  const handleApply = (standardIds) => {
-    onChange('standardIds', standardIds)
+  const handleApply = (_standardIds) => {
+    const dropDownElos = curriculumStandards.elo
+    const cachedElos = Object.values(elosByTloId).flat()
+    const _elosById = keyBy(
+      [...search.standardIds, ...dropDownElos, ...cachedElos],
+      '_id'
+    )
+    const values = _standardIds.map((item) => ({
+      _id: item,
+      identifier: _elosById[item].identifier,
+    }))
+    onChange(FILTER_KEYS.STANDARD_IDS, values)
   }
 
   const handleSetShowModal = () => {
@@ -302,9 +332,11 @@ const TestListFilters = ({
         <StandardsSearchModal
           setShowModal={setShowModal}
           showModal={showModal}
-          standardIds={search.standardIds}
+          standardIds={search.standardIds.map((item) => item._id)}
+          standards={search.standardIds}
           handleApply={handleApply}
           selectedCurriculam={selectedCurriculam}
+          grades={search.grades}
         />
       )}
       <FilerHeading justifyContent="space-between">
@@ -344,7 +376,20 @@ const TestListFilters = ({
                 )}
                 <FiltersSidebar
                   filterItem={filterItem}
-                  onChange={onChange}
+                  onChange={(key, value) => {
+                    if (key === FILTER_KEYS.STANDARD_IDS) {
+                      const _elosById = keyBy(
+                        [...curriculumStandards.elo, ...search.standardIds],
+                        '_id'
+                      )
+                      const values = value.map((item) => ({
+                        _id: item,
+                        identifier: _elosById[item].identifier,
+                      }))
+                      return onChange(key, values)
+                    }
+                    onChange(key, value)
+                  }}
                   search={search}
                   isDA={isDA}
                 />
@@ -383,6 +428,7 @@ export default connect(
     userRole: getUserRole(state),
     isOrgUser: isOrganizationDistrictSelector(state),
     isDistrictUser: isDistrictUserSelector(state),
+    elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

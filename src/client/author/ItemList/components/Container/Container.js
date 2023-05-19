@@ -112,7 +112,6 @@ class Contaier extends Component {
       getCurriculumStandards,
       match = {},
       limit,
-      selectedItems,
       setDefaultTestData,
       search: initSearch,
       getAllTags,
@@ -670,7 +669,13 @@ const enhance = compose(
       test: getTestEntitySelector(state),
     }),
     {
-      receiveItems: receiveTestItemsAction,
+      receiveItems: (search, sort, page, limit) => {
+        const _search = {
+          ...search,
+          standardIds: search.standardIds.map((item) => item._id),
+        }
+        return receiveTestItemsAction(_search, sort, page, limit)
+      },
       createItem: createTestItemAction,
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,

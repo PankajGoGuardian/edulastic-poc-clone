@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Row, Col, Modal } from 'antd'
+import { Row, Col, Modal, Spin } from 'antd'
+import { get, uniqBy } from 'lodash'
 import styled from 'styled-components'
 import {
   Paper,
@@ -8,9 +9,13 @@ import {
   MathFormulaDisplay,
   CheckboxLabel,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 
-import { getStandardsListSelector } from '../../../src/selectors/dictionaries'
+import {
+  getStandardsEloSelector,
+  getStandardsTloSelector,
+} from '../../../src/selectors/dictionaries'
 import {
   ELOList,
   EloText,
@@ -20,48 +25,87 @@ import {
   TLOListItem,
 } from '../../../../assessment/containers/QuestionMetadata/styled/TLOList'
 import StandardSearchModalHeader from './StandardSearchModalHeader'
+import {
+  getElosSuccessAction,
+  getStandardElosAction,
+  getStandardTlosAction,
+  setElosByTloIdAction,
+} from '../../../src/actions/dictionaries'
 
 const StandardsSearchModal = ({
-  standardsList,
+  curriculumStandardsTLO,
+  curriculumStandardsELO,
   showModal,
   setShowModal,
   standardIds = [],
   handleApply,
   itemCount,
   selectedCurriculam,
+  getStandardTlos,
+  getStandardElos,
+  loading,
+  getElosSuccess,
+  setElosByTloId,
+  elosByTloId,
+  grades,
+  standards = [],
 }) => {
-  const {
-    elo: curriculumStandardsELO,
-    tlo: curriculumStandardsTLO,
-  } = standardsList
   const [eloStandards, setEloStandards] = useState([])
-  const [selectedTLO, setSelectedTLO] = useState(
-    curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
-  )
+  const [selectedTLO, setSelectedTLO] = useState('')
 
   useEffect(() => {
-    if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id)
+    if (!showModal) return
+    if (selectedCurriculam?.value)
+      getStandardTlos({
+        curriculumId: selectedCurriculam?.value,
+        grades,
+      })
+  }, [showModal])
+
+  useEffect(() => {
+    const allTloIds = curriculumStandardsTLO?.map(({ _id }) => _id)
+    if (
+      curriculumStandardsTLO[0] &&
+      curriculumStandardsTLO[0]._id &&
+      (!selectedTLO || !allTloIds.includes(selectedTLO))
+    ) {
+      setSelectedTLO(curriculumStandardsTLO[0]._id)
+      getStandardElos({
+        curriculumId: selectedCurriculam?.value,
+        tloIds: [curriculumStandardsTLO[0]._id],
+        grades,
+      })
+    }
   }, [curriculumStandardsTLO])
 
-  const filteredELO = curriculumStandardsELO.filter(
-    (c) => c.tloId === selectedTLO
-  )
-  const currentEloIds = filteredELO.map((item) => item._id) || []
+  useEffect(() => {
+    if (
+      selectedTLO &&
+      !elosByTloId[selectedTLO] &&
+      curriculumStandardsELO?.[0]?.tloId === selectedTLO
+    ) {
+      elosByTloId[selectedTLO] = curriculumStandardsELO
+      setElosByTloId(elosByTloId)
+    }
+  }, [selectedTLO, curriculumStandardsELO])
+
+  const currentEloIds = curriculumStandardsELO.map((item) => item._id) || []
   const numberOfSelected =
     standardIds.filter((std) => currentEloIds.includes(std))?.length || 0
-  const isSelectAll = numberOfSelected === filteredELO.length
-  const isIndeterminate = numberOfSelected > 0 && !isSelectAll
+  const isSelectAll =
+    !loading && numberOfSelected === curriculumStandardsELO.length
+  const isIndeterminate = !loading && numberOfSelected > 0 && !isSelectAll
 
   const handleCheckELO = (c) => {
-    let standards = []
+    let _standards = []
     if (!standardIds.some((item) => item === c._id)) {
-      standards = [...standardIds, c._id]
+      _standards = [...standardIds, c._id]
       setEloStandards([...eloStandards, c._id])
     } else {
-      standards = standardIds.filter((elo) => elo !== c._id)
+      _standards = standardIds.filter((elo) => elo !== c._id)
       setEloStandards(eloStandards.filter((elo) => elo !== c._id))
     }
-    handleApply(standards)
+    handleApply(_standards)
   }
 
   const handleCancel = () => {
@@ -70,24 +114,36 @@ const StandardsSearchModal = ({
     setShowModal(false)
   }
 
+  const handleSelectTlo = (value) => {
+    setSelectedTLO(value)
+    if (elosByTloId[value]) {
+      return getElosSuccess(elosByTloId[value])
+    }
+    getStandardElos({
+      curriculumId: selectedCurriculam?.value,
+      tloIds: [value],
+      grades,
+    })
+  }
+
   const toggleSelectAll = () => {
     const selectItems = []
     const unSelectItems = []
-    for (const elo of filteredELO) {
+    for (const elo of curriculumStandardsELO) {
       if (standardIds.includes(elo._id)) {
         unSelectItems.push(elo._id)
       } else {
         selectItems.push(elo._id)
       }
     }
-    let standards = []
-    if (unSelectItems.length === filteredELO.length) {
-      standards = standardIds.filter((item) => !unSelectItems.includes(item))
+    let _standards = []
+    if (unSelectItems.length === curriculumStandardsELO.length) {
+      _standards = standardIds.filter((item) => !unSelectItems.includes(item))
     } else {
-      standards = [...standardIds, ...selectItems]
+      _standards = [...standardIds, ...selectItems]
     }
-    setEloStandards(standards)
-    handleApply(standards)
+    setEloStandards(_standards)
+    handleApply(_standards)
   }
   const footer = (
     <>
@@ -95,28 +151,37 @@ const StandardsSearchModal = ({
         <span>{itemCount}</span>&nbsp;Items found matching your criteria
       </StyledCounterWrapper>
       <FlexContainer>
-        <EduButton isGhost onClick={handleCancel}>
+        <EduButton isGhost onClick={handleCancel} disabled={loading}>
           Cancel
         </EduButton>
-        <EduButton type="primary" onClick={() => setShowModal(false)}>
+        <EduButton
+          type="primary"
+          onClick={() => setShowModal(false)}
+          disabled={loading}
+        >
           Apply
         </EduButton>
       </FlexContainer>
     </>
   )
-  const selectedStandards = curriculumStandardsELO.filter((f) =>
-    standardIds.includes(f._id)
-  )
-
+  const selectedStandards = uniqBy(
+    [...Object.values(elosByTloId).flat(), ...standards],
+    '_id'
+  ).filter((f) => standardIds.includes(f._id))
   const title = (
     <StandardSearchModalHeader
       standards={selectedStandards}
       selectedCurriculam={selectedCurriculam}
     />
   )
-  const selectedTLOData = curriculumStandardsTLO.find(
-    (item) => item._id === selectedTLO
+  const selectedTLOData =
+    curriculumStandardsTLO.find((item) => item._id === selectedTLO) ||
+    curriculumStandardsTLO?.[0]
+
+  const filteredELO = curriculumStandardsELO.filter(
+    (c) => c.tloId === selectedTLO
   )
+
   return (
     <StyledModal
       title={title}
@@ -128,68 +193,86 @@ const StandardsSearchModal = ({
       <Row type="flex" gutter={24}>
         <Col md={8} />
         <Col md={16} style={{ paddingLeft: '28px' }}>
-          <FlexContainer
-            alignItems="flex-start"
-            justifyContent="flex-start"
-            marginBottom="15px"
-            padding="0px "
-          >
-            <CheckboxLabel
-              onChange={toggleSelectAll}
-              checked={isSelectAll}
-              indeterminate={isIndeterminate}
-            />
-            <EloText>All {selectedTLOData.identifier} Standards</EloText>
-          </FlexContainer>
+          <EduIf condition={!loading}>
+            <FlexContainer
+              alignItems="flex-start"
+              justifyContent="flex-start"
+              marginBottom="15px"
+              padding="0px "
+            >
+              <CheckboxLabel
+                onChange={toggleSelectAll}
+                checked={isSelectAll}
+                indeterminate={isIndeterminate}
+              />
+              <EloText>All {selectedTLOData?.identifier} Standards</EloText>
+            </FlexContainer>
+          </EduIf>
         </Col>
       </Row>
-      <Row type="flex" gutter={24}>
-        <StandardsWrapper md={8}>
-          <TLOList>
-            {curriculumStandardsTLO.map(({ identifier, description, _id }) => (
-              <TLOListItem
-                title={identifier}
-                description={description}
-                active={_id === selectedTLO}
-                key={_id}
-                onClick={() => setSelectedTLO(_id)}
-              />
-            ))}
-          </TLOList>
-        </StandardsWrapper>
-        <StandardsWrapper md={16}>
-          <ELOList>
-            <Container>
-              {filteredELO.map((c) => (
-                <FlexContainer
-                  key={c._id}
-                  alignItems="flex-start"
-                  justifyContent="flex-start"
-                  marginBottom="15px"
-                >
-                  <CheckboxLabel
-                    onChange={() => handleCheckELO(c)}
-                    checked={standardIds.some((item) => item === c._id)}
+      <Spin spinning={loading} size="large">
+        <Row type="flex" gutter={24}>
+          <StandardsWrapper md={8}>
+            <TLOList>
+              {curriculumStandardsTLO.map(
+                ({ identifier, description, _id }) => (
+                  <TLOListItem
+                    title={identifier}
+                    description={description}
+                    active={_id === selectedTLO}
+                    key={_id}
+                    onClick={() => handleSelectTlo(_id)}
                   />
-                  <EloText>
-                    <b>{c.identifier}</b>
-                    <MathFormulaDisplay
-                      dangerouslySetInnerHTML={{ __html: c.description }}
+                )
+              )}
+            </TLOList>
+          </StandardsWrapper>
+          <StandardsWrapper md={16}>
+            <ELOList>
+              <Container>
+                {filteredELO.map((c) => (
+                  <FlexContainer
+                    key={c._id}
+                    alignItems="flex-start"
+                    justifyContent="flex-start"
+                    marginBottom="15px"
+                  >
+                    <CheckboxLabel
+                      onChange={() => handleCheckELO(c)}
+                      checked={standardIds.some((item) => item === c._id)}
                     />
-                  </EloText>
-                </FlexContainer>
-              ))}
-            </Container>
-          </ELOList>
-        </StandardsWrapper>
-      </Row>
+                    <EloText>
+                      <b>{c.identifier}</b>
+                      <MathFormulaDisplay
+                        dangerouslySetInnerHTML={{
+                          __html: c.description,
+                        }}
+                      />
+                    </EloText>
+                  </FlexContainer>
+                ))}
+              </Container>
+            </ELOList>
+          </StandardsWrapper>
+        </Row>
+      </Spin>
     </StyledModal>
   )
 }
 
 export default connect(
-  (state) => ({ standardsList: getStandardsListSelector(state) }),
-  null
+  (state) => ({
+    curriculumStandardsTLO: getStandardsTloSelector(state),
+    curriculumStandardsELO: getStandardsEloSelector(state),
+    loading: get(state, 'dictionaries.standards.loading', false),
+    elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+  }),
+  {
+    getStandardTlos: getStandardTlosAction,
+    getStandardElos: getStandardElosAction,
+    getElosSuccess: getElosSuccessAction,
+    setElosByTloId: setElosByTloIdAction,
+  }
 )(StandardsSearchModal)
 
 const StyledModal = styled(Modal)`

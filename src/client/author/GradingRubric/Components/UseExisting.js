@@ -66,7 +66,7 @@ import {
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
 
-const MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI = 2
+const MAX_ATTEMPT_FOR_RUBRIC_GENERATION = 2
 
 const UseExisting = ({
   updateRubricData,
@@ -111,47 +111,37 @@ const UseExisting = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [aIAssisted, setAIAssisted] = useState(false)
-  const [addAiTag, setAddAiTag] = useState(false)
   const aiTagName = 'AI - Assisted Rubrics'
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
   }, [currentRubricData?.status])
 
-  useEffect(() => {
-    const addTag = async () => {
-      if (addAiTag) {
-        const questionTags = questionData.tags || []
-        let aiTag = allTagsData.find((tag) => tag.tagName === aiTagName)
-
-        if (!aiTag) {
-          const { _id, tagName } = await tagsApi.create({
-            tagName: aiTagName,
-            tagType: 'testitem',
-          })
-
-          aiTag = { _id, tagName }
-          addNewTag({ tag: aiTag, tagType: 'testitem' })
-        }
-
-        const tags = [...questionTags, aiTag]
-        setQuestionData({ ...questionData, tags })
-      }
+  const addTag = async () => {
+    const questionTags = questionData.tags || []
+    let aiTag = allTagsData.find((tag) => tag.tagName === aiTagName)
+    if (!aiTag) {
+      const { _id, tagName } = await tagsApi.create({
+        tagName: aiTagName,
+        tagType: 'testitem',
+      })
+      aiTag = { _id, tagName }
+      addNewTag({ tag: aiTag, tagType: 'testitem' })
     }
+    const tags = [...questionTags, aiTag]
+    setQuestionData({ ...questionData, tags })
+  }
 
-    addTag()
-  }, [addAiTag])
+  const removeTag = async () => {
+    const questionTags = questionData.tags || []
+    const aiTag = questionTags.filter((tag) => tag.tagName !== aiTagName)
+    setQuestionData({ ...questionData, tags: aiTag })
+  }
 
   useEffect(() => {
-    const removeTag = async () => {
-      if (removeAiTag) {
-        const questionTags = questionData.tags || []
-        const aiTag = questionTags.filter((tag) => tag.tagName !== aiTagName)
-        setQuestionData({ ...questionData, tags: aiTag })
-        setAddAiTag(false)
-      }
+    if (removeAiTag) {
+      removeTag()
     }
-    removeTag()
   }, [removeAiTag])
 
   useEffect(() => {
@@ -167,17 +157,18 @@ const UseExisting = ({
     [currentRubricData?.criteria]
   )
 
-  const autoGenerateRubricBtnTitle = isEmpty(currentQuestion?.stimulus)
+  const maxAttemptExceededOrNotTooltip =
+    rubricGenerationCountForGivenStimulus === MAX_ATTEMPT_FOR_RUBRIC_GENERATION
+      ? t('rubric.max2AttemptForGivenStimulus')
+      : ''
+
+  const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
     ? t('rubric.stimulusNotPresent')
-    : rubricGenerationCountForGivenStimulus ===
-      MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI
-    ? t('rubric.max2AttemptForGivenStimulus')
-    : ''
+    : maxAttemptExceededOrNotTooltip
 
   const disableAutoGenerateRubricBtn = [
     isEmpty(currentQuestion?.stimulus),
-    rubricGenerationCountForGivenStimulus ===
-      MAX_ATTEMPT_FOR_RUBRIC_GENERATION_FOR_A_STIMULI,
+    rubricGenerationCountForGivenStimulus === MAX_ATTEMPT_FOR_RUBRIC_GENERATION,
   ].some((o) => !!o)
 
   const handlePaginationChange = (page) => {
@@ -315,14 +306,15 @@ const UseExisting = ({
           }
         }
       }
-      if (aIAssisted && isAnyUUIDExists) {
-        setAddAiTag(true)
+      const isRubricAIAssisted = aIAssisted && isAnyUUIDExists
+      if (isRubricAIAssisted) {
+        await addTag()
       }
       setCurrentMode('PREVIEW')
     }
   }
 
-  const handleUseRubric = () => {
+  const handleUseRubric = async () => {
     associateRubricWithQuestion({
       metadata: { _id: currentRubricData._id, name: currentRubricData.name },
       maxScore,
@@ -330,7 +322,7 @@ const UseExisting = ({
     addRubricToRecentlyUsed(currentRubricData)
     setItemLevelScoring(false)
     if (currentRubricData.aIAssisted) {
-      setAddAiTag(true)
+      await addTag()
     }
   }
 
@@ -490,7 +482,7 @@ const UseExisting = ({
                 onClick={generateRubricByOpenAI}
                 disabled={disableAutoGenerateRubricBtn}
                 ghost={disableAutoGenerateRubricBtn}
-                title={autoGenerateRubricBtnTitle}
+                title={autoGenerateRubricTooltip}
                 loading={isRubricGenerationInProgress}
               >
                 Auto Generate Rubric

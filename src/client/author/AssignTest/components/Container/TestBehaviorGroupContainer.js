@@ -541,11 +541,7 @@ const TestBehaviorGroupContainer = ({
                   data-cy="auto-essay-evaluation"
                   size="small"
                   defaultChecked={false}
-                  disabled={
-                    !isShowAutoEssayEvaluationSetting ||
-                    freezeSettings ||
-                    !premium
-                  }
+                  disabled={freezeSettings || !premium}
                   checked={allowAutoEssayEvaluation}
                   onChange={(value) =>
                     overRideSettings('allowAutoEssayEvaluation', value)

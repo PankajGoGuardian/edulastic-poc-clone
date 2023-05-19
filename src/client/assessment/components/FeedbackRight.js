@@ -353,9 +353,12 @@ class FeedbackRight extends Component {
       isAIEvaluated,
       isApprovedByTeacher,
     } = this.state
+    const feedbackHasChanged = changed || showFeedbackSaveBtn
+    const reviewedByTeacher =
+      !isAIEvaluated || (isAIEvaluated && isApprovedByTeacher)
     const feedbackCanBeSubmitted = [
-      changed || showFeedbackSaveBtn,
-      !isAIEvaluated || (isAIEvaluated && isApprovedByTeacher),
+      feedbackHasChanged,
+      reviewedByTeacher,
     ].every((o) => !!o)
     if (feedbackCanBeSubmitted) {
       this.onFeedbackSubmit()
@@ -533,8 +536,8 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    let { rubricFeedback, rubricFeedbackByAI } = activity || {} // origin for rubric_Feedback
-    if (isEmpty(rubricFeedback) && !isEmpty(rubricFeedbackByAI)) {
+    let { rubricFeedback, rubricFeedbackByAI } = activity || {}
+    if (isAIEvaluated) {
       rubricFeedback = rubricFeedbackByAI
     }
     const isStudentName = studentName !== undefined && studentName.length !== 0
@@ -707,7 +710,6 @@ class FeedbackRight extends Component {
                   )}
                 >
                   <CustomCheckBox
-                    value="Approved"
                     onChange={this.handleFeedbackApproval}
                     checked={isApprovedByTeacher}
                   >

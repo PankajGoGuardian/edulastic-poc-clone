@@ -11,32 +11,7 @@ import { downloadCSV } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 
-const { analyseByOptions } = reportUtils.peerPerformance
-
-const getDisplayValue = (data, record, analyseBy, columnKey) => {
-  let printData = data
-  const NA = 'N/A'
-  if (
-    printData === 0 &&
-    (analyseBy === analyseByOptions.aboveBelowStandard ||
-      analyseBy === analyseByOptions.proficiencyBand)
-  ) {
-    return NA
-  }
-  if (analyseBy === analyseByOptions.scorePerc) {
-    printData = `${record[columnKey]?.toFixed(0)}%`
-  } else if (analyseBy === analyseByOptions.rawScore) {
-    printData = record[columnKey]?.toFixed(2)
-  } else if (
-    analyseBy === analyseByOptions.proficiencyBand ||
-    analyseBy === analyseByOptions.aboveBelowStandard
-  ) {
-    printData = `${data} (${Math.abs(
-      (record[columnKey] * 100) / record.totalStudents
-    )?.toFixed(0)}%)`
-  }
-  return printData
-}
+const { analyseByOptions, getDisplayValue } = reportUtils.peerPerformance
 
 const enableSorts = {
   'dimension.name': 'dimension',

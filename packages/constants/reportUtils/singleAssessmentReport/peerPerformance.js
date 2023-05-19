@@ -1,4 +1,4 @@
-const { startCase } = require('lodash')
+const { startCase, get } = require('lodash')
 
 const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`
 
@@ -9,9 +9,41 @@ const analyseByOptions = {
   proficiencyBand: 'proficiencyBand',
 }
 
+const tableDataIndexKeys = {
+  dimensionAvg: 'dimensionAvg',
+  districtAvg: 'districtAvg',
+  aboveStandard: 'aboveStandard',
+  belowStandard: 'belowStandard',
+}
+
 const standardConst = {
   above: 1,
   below: 0,
+}
+
+const getDisplayValue = (data, record, analyseBy, columnKey) => {
+  let printData = data
+  const NA = 'N/A'
+  if (
+    printData === 0 &&
+    (analyseBy === analyseByOptions.aboveBelowStandard ||
+      analyseBy === analyseByOptions.proficiencyBand)
+  ) {
+    return NA
+  }
+  if (analyseBy === analyseByOptions.scorePerc) {
+    printData = `${record[columnKey]?.toFixed(0)}%`
+  } else if (analyseBy === analyseByOptions.rawScore) {
+    printData = record[columnKey]?.toFixed(2)
+  } else if (
+    analyseBy === analyseByOptions.proficiencyBand ||
+    analyseBy === analyseByOptions.aboveBelowStandard
+  ) {
+    printData = `${data} (${Math.abs(
+      (record[columnKey] * 100) / record.totalStudents
+    )?.toFixed(0)}%)`
+  }
+  return printData
 }
 
 const calculateStudentsInPerformanceBands = (
@@ -312,7 +344,6 @@ const createColumns = () => {
 }
 
 const getColumns = ({ compareBy, analyseBy }, bandInfo = []) => {
-  console.log(bandInfo, '<<<bandInfo')
   const columns = createColumns()
   let _cols = columns[analyseBy][compareBy]
   if (!_cols) {
@@ -333,19 +364,46 @@ const getColumns = ({ compareBy, analyseBy }, bandInfo = []) => {
   return _cols
 }
 
-const convertPeerPerformanceTableToCsv = () =>
-  // ddFilter,
-  // bandInfo = [],
-  // metricInfo = []
-  {
-    // const columns = getColumns(ddFilter, bandInfo.performanceBand)
-    // const dataSource = transformData(ddFilter, bandInfo, metricInfo)
+const columnValueTransform = [
+  tableDataIndexKeys.dimensionAvg,
+  tableDataIndexKeys.districtAvg,
+  tableDataIndexKeys.aboveStandard,
+  tableDataIndexKeys.belowStandard,
+]
+
+const prepareTableDataRow = (columns, dataSource, analyseBy) => {
+  const result = []
+  for (const data of dataSource) {
+    const row = []
+    for (const column of columns) {
+      const columnKey = column.dataIndex
+      let value = get(data, columnKey)
+      if (columnValueTransform.includes(columnKey) || column.proficiencyBand) {
+        const _columnKey = [
+          'avgStudentScorePercentUnrounded',
+          'avgStudentScoreUnrounded',
+        ].includes(columnKey)
+          ? 'dimensionAvg'
+          : columnKey
+        value = getDisplayValue(value, data, analyseBy, _columnKey)
+      }
+      row.push(value)
+    }
+    result.push(row.join(','))
   }
+  return result
+}
+
+const prepareHeaderRow = (columns) => {
+  return columns.map((item) => item.title).join(',')
+}
 
 module.exports = {
   transformData,
   analyseByOptions,
   idToName,
   getColumns,
-  convertPeerPerformanceTableToCsv,
+  prepareHeaderRow,
+  prepareTableDataRow,
+  getDisplayValue,
 }

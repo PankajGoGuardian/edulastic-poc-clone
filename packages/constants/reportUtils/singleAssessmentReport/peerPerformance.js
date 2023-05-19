@@ -14,6 +14,7 @@ const tableDataIndexKeys = {
   districtAvg: 'districtAvg',
   aboveStandard: 'aboveStandard',
   belowStandard: 'belowStandard',
+  avgSore: 'avgSore',
 }
 
 const standardConst = {
@@ -206,10 +207,7 @@ const avgStudentScorePercentUnrounded = makeColumn(
 const school = makeColumn('School', 'schoolName', 250)
 const teacher = makeColumn('Teacher', 'teacherName', 250)
 const districtAvg = makeColumn('District Avg.Score', 'districtAvg')
-const avgStudentScoreUnrounded = makeColumn(
-  'Avg.Score',
-  'avgStudentScoreUnrounded'
-)
+const avgStudentScoreUnrounded = makeColumn('Avg.Score', 'avgSore')
 const belowStandard = makeColumn('Below Standard', 'belowStandard')
 const aboveStandard = makeColumn('Above Standard', 'aboveStandard')
 
@@ -369,7 +367,12 @@ const columnValueTransform = [
   tableDataIndexKeys.districtAvg,
   tableDataIndexKeys.aboveStandard,
   tableDataIndexKeys.belowStandard,
+  tableDataIndexKeys.avgSore,
 ]
+
+const columnKeyMap = {
+  avgSore: 'dimensionAvg',
+}
 
 const prepareTableDataRow = (columns, dataSource, analyseBy) => {
   const result = []
@@ -379,11 +382,8 @@ const prepareTableDataRow = (columns, dataSource, analyseBy) => {
       const columnKey = column.dataIndex
       let value = get(data, columnKey)
       if (columnValueTransform.includes(columnKey) || column.proficiencyBand) {
-        const _columnKey = [
-          'avgStudentScorePercentUnrounded',
-          'avgStudentScoreUnrounded',
-        ].includes(columnKey)
-          ? 'dimensionAvg'
+        const _columnKey = columnKeyMap[columnKey]
+          ? columnKeyMap[columnKey]
           : columnKey
         value = getDisplayValue(value, data, analyseBy, _columnKey)
       }

@@ -88,19 +88,7 @@ export const PeerPerformanceTable = ({
                 Student Avg Score:{' '}
               </Col>
               <Col className="custom-table-tooltip-value">
-                {analyseBy === analyseByOptions.scorePerc
-                  ? getDisplayValue(
-                      rec.avgStudentScorePercentUnrounded,
-                      rec,
-                      analyseBy,
-                      'dimensionAvg'
-                    )
-                  : getDisplayValue(
-                      rec.avgStudentScoreUnrounded,
-                      rec,
-                      analyseBy,
-                      'dimensionAvg'
-                    )}
+                {getDisplayValue(rec.avgSore, rec, analyseBy, 'dimensionAvg')}
               </Col>
             </Row>
           </>

@@ -257,10 +257,14 @@ const PeerPerformance = ({
         reportFilters: {
           ...settings.requestFilters,
           ...demographicFilters,
+          externalAttributes: transformExtAttributeFilters(
+            extDemogaphicFilters
+          ),
           compareBy: ddfilter.compareBy,
           analyzeBy: ddfilter.analyseBy,
           sortKey,
           sortOrder: sortOrderMap[sortOrder],
+          testId: settings.selectedTest.key,
         },
         reportExtras: {},
       }

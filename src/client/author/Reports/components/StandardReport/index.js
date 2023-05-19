@@ -1,74 +1,52 @@
 import React from 'react'
-import styled from 'styled-components'
 
-import { MultipleAssessmentReport } from '../multipleAssessmentReport'
-import { SingleAssessmentReport } from '../singleAssessmentReport'
-import StandardsMasteryReport from '../standardsMasteryReport'
-import { StudentProfileReport } from '../studentProfileReport'
-import { SubscriptionReport } from '../subscriptionReport'
-import { EngagementReport } from '../engagementReport'
-// import SearchBox from "./SearchBox";
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { withRouter } from 'react-router'
+import { BoxHeading } from '../../common/components/boxHeading'
+import { CardsWrapper, LinkItem } from '../../common/components/linkItem'
+import { INSIGHT_REPORTS } from '../../common/constants/standard-reports'
+import SellContent from './SellContent'
 import {
+  ReportCardsWrapper,
   StandardReportWrapper,
   StyledCard,
   StyledContainer,
-  ReportCardsWrapper,
 } from './styled'
 
-const StandardReport = ({ premium, isAdmin, loc }) => (
-  <StandardReportWrapper>
-    {!premium && (
-      <NonPremiumBar>we give access to only one report now</NonPremiumBar>
-    )}
-    {/* <SearchBox /> */}
-    <StyledContainer premium={premium}>
-      <ReportCardsWrapper>
-        <StyledCard className="single-assessment-reports report">
-          <SingleAssessmentReport premium={premium} loc={loc} />
-        </StyledCard>
-
-        <StyledCard className="multiple-assessment-reports report">
-          <MultipleAssessmentReport premium={premium} loc={loc} />
-        </StyledCard>
-
-        <StyledCard className="standards-mastery-reports report">
-          <StandardsMasteryReport premium={premium} loc={loc} />
-        </StyledCard>
-
-        <StyledCard className="student-profile-reports report">
-          <StudentProfileReport premium={premium} loc={loc} />
-        </StyledCard>
-
-        {isAdmin && (
-          <StyledCard className="engagement-reports report">
-            <EngagementReport premium={premium} loc={loc} />
-          </StyledCard>
-        )}
-      </ReportCardsWrapper>
-      {!premium && (
-        <StyledCard
-          style={{ width: 412, flexShrink: 0, border: 0 }}
-          className="upgrade subscription report"
-        >
-          <SubscriptionReport premium={premium} />
-        </StyledCard>
-      )}
-    </StyledContainer>
-  </StandardReportWrapper>
+const StandardReport = ({ premium, isAdmin, loc, history }) => (
+  <EduIf condition={premium}>
+    <EduThen>
+      <StandardReportWrapper>
+        <StyledContainer premium={premium}>
+          <ReportCardsWrapper>
+            {INSIGHT_REPORTS.filter(
+              ({ adminReport }) => isAdmin || !adminReport
+            ).map(({ heading, iconType, key, cards }) => {
+              return (
+                <StyledCard key={key}>
+                  <BoxHeading heading={heading} iconType={iconType} />
+                  <CardsWrapper>
+                    {cards.map((data) => (
+                      <LinkItem
+                        history={history}
+                        key={data.title}
+                        data={data}
+                        tiles
+                        premium={premium}
+                        loc={loc}
+                      />
+                    ))}
+                  </CardsWrapper>
+                </StyledCard>
+              )
+            })}
+          </ReportCardsWrapper>
+        </StyledContainer>
+      </StandardReportWrapper>
+    </EduThen>
+    <EduElse>
+      <SellContent loc={loc} isAdmin={isAdmin} />
+    </EduElse>
+  </EduIf>
 )
-export default StandardReport
-
-const NonPremiumBar = styled.div`
-  position: absolute;
-  height: 30px;
-  background: #30404f;
-  color: white;
-  border-radius: 4px;
-  padding: 8px 28px;
-  text-transform: uppercase;
-  width: 100%;
-  font-size: 10px;
-  font-weight: 600;
-  z-index: 1;
-  top: -20px;
-`
+export default withRouter(StandardReport)

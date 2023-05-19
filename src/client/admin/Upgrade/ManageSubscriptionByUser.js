@@ -198,11 +198,22 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             const dataStudio = {
               users: [],
             }
-            validEmailIdsList.forEach(({ _source, _id }) => {
-              const { permissions = [], permissionsExpiry = [] } = _source
 
+            const seedDsData = {
+              districtData: [],
+            }
+
+            validEmailIdsList.forEach(({ _source, _id }) => {
+              const {
+                permissions = [],
+                permissionsExpiry = [],
+                districtIds = [],
+              } = _source
+
+              const [districtId] = districtIds ?? []
+              const enableDataStudio = isDataStudio || isPremiumPlusDataStudio
               const updateData = updateDataStudioPermission({
-                isDataStudio: isDataStudio || isPremiumPlusDataStudio,
+                isDataStudio: enableDataStudio,
                 permissions,
                 permissionsExpiry,
                 perStartDate: subStartDate.valueOf(),
@@ -212,6 +223,17 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               updateData._id = _id
 
               dataStudio.users.push(updateData)
+              if (districtId) {
+                const foundSeedDsData = seedDsData.districtData.find(
+                  ({ districtId: _districtId }) => _districtId === districtId
+                )
+                if (!foundSeedDsData) {
+                  seedDsData.districtData.push({
+                    districtId,
+                    status: enableDataStudio,
+                  })
+                }
+              }
             })
 
             upgradeUserSubscriptionAction({
@@ -224,6 +246,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               subscriptionIds,
               identifiers,
               dataStudio,
+              seedDsData,
             })
           }
         }

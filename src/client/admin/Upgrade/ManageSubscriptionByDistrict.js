@@ -91,7 +91,12 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const { _source = {}, _id: districtId, subscription = {} } =
       selectedDistrict || {}
-    const { location = {}, permissions = [], permissionsExpiry = [] } = _source
+    const {
+      location = {},
+      permissions = [],
+      permissionsExpiry = [],
+      name,
+    } = _source
     const {
       subType = 'free',
       subStartDate,
@@ -163,8 +168,10 @@ const ManageDistrictPrimaryForm = Form.create({
               currentSubType ===
               SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
 
+            const enableDataStudio =
+              _isDataStudio || _isEnterprisePlusDataStudio
             const dataStudio = updateDataStudioPermission({
-              isDataStudio: _isDataStudio || _isEnterprisePlusDataStudio,
+              isDataStudio: enableDataStudio,
               permissions: permissions || [],
               permissionsExpiry: permissionsExpiry || [],
               perStartDate: startDate.valueOf(),
@@ -172,6 +179,16 @@ const ManageDistrictPrimaryForm = Form.create({
             })
 
             dataStudio.districtId = districtId
+
+            const seedDsData = {
+              districtData: [
+                {
+                  districtId,
+                  name,
+                  status: enableDataStudio,
+                },
+              ],
+            }
 
             if (_isDataStudio) {
               Object.assign(rest, {
@@ -193,6 +210,7 @@ const ManageDistrictPrimaryForm = Form.create({
                 isUpdate: true,
                 subscriptionId,
                 dataStudio,
+                seedDsData,
                 searchData,
               })
             }
@@ -203,6 +221,7 @@ const ManageDistrictPrimaryForm = Form.create({
               subEndDate: endDate.valueOf(),
               ...rest,
               dataStudio,
+              seedDsData,
               searchData,
             })
           }

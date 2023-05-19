@@ -1744,12 +1744,7 @@ class Setting extends Component {
                             />
                           </Tooltip>
                           <EduSwitchStyled
-                            disabled={
-                              !isShowAutoEssayEvaluationSetting ||
-                              !owner ||
-                              !isEditable ||
-                              !premium
-                            }
+                            disabled={disabled || !premium}
                             checked={allowAutoEssayEvaluation}
                             data-cy="auto-essay-evaluation"
                             onChange={this.updateTestData(

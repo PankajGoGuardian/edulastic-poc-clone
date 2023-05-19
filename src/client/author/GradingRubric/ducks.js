@@ -387,10 +387,9 @@ function* generateRubricSaga({ payload }) {
     } else {
       notification({ messageKey: 'failedToGenerateRubric' })
     }
-    yield put(setIsRubricGenerationInProgress(false))
-    yield put(incrementRubricGenerationCountAction())
   } catch (err) {
     notification({ messageKey: 'failedToGenerateRubric' })
+  } finally {
     yield put(setIsRubricGenerationInProgress(false))
     yield put(incrementRubricGenerationCountAction())
   }

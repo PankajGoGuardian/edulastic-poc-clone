@@ -7,7 +7,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
-import { maxBy, sumBy, uniqBy, debounce, isEmpty } from 'lodash'
+import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
 import { EduIf, notification } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -290,20 +290,18 @@ const UseExisting = ({
       // check ai criteria or rating exists in rubric
       let isAnyUUIDExists = false
       if (rubricUUIDs.length) {
+        const criteriaUUIDs = []
+        const ratingUUIDs = []
         for (const criteria of currentRubricData.criteria) {
-          if (rubricUUIDs.includes(criteria.id)) {
-            isAnyUUIDExists = true
-            break
-          }
+          criteriaUUIDs.push(criteria.id)
           for (const rating of criteria.ratings) {
-            if (rubricUUIDs.includes(rating.id)) {
-              isAnyUUIDExists = true
-              break
-            }
+            ratingUUIDs.push(rating.id)
           }
-          if (isAnyUUIDExists) {
-            break
-          }
+        }
+        const matchingCriterias = intersection(rubricUUIDs, criteriaUUIDs)
+        const matchingRatings = intersection(rubricUUIDs, ratingUUIDs)
+        if (matchingCriterias.length || matchingRatings.length) {
+          isAnyUUIDExists = true
         }
       }
       const isRubricAIAssisted = aIAssisted && isAnyUUIDExists

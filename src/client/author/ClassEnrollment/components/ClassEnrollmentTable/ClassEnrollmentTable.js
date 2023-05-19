@@ -71,6 +71,7 @@ import {
 } from '../../ducks'
 import { AddNewUserModal } from '../Common/AddNewUser'
 import { StyledTable } from './styled'
+import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
 
 const { Option } = Select
 
@@ -90,6 +91,7 @@ class ClassEnrollmentTable extends React.Component {
       currentPage: 1,
       addUserFormModalVisible: false,
       removeStudentsModalVisible: false,
+      resetPasswordModalVisible: false,
       selectedUserIds: [],
       selectedUsersInfo: [],
       addStudentsModalVisible: false,
@@ -154,6 +156,12 @@ class ClassEnrollmentTable extends React.Component {
             removeStudentsModalVisible: true,
           })
         }
+      }
+    } else if (e.key === 'resetPassword') {
+      if (selectedRowKeys.length === 0) {
+        notification({ messageKey: 'atLeastOneStudentToResetPassword' })
+      } else {
+        this.setState({ resetPasswordModalVisible: true })
       }
     } else if (e.key === 'move users') {
       if (selectedRowKeys.length == 0) {
@@ -606,6 +614,9 @@ class ClassEnrollmentTable extends React.Component {
         <Menu.Item key="remove students">
           {t('classenrollment.removestudents')}
         </Menu.Item>
+        <Menu.Item key="resetPassword">
+          {t('classenrollment.resetPassword')}
+        </Menu.Item>
         <Menu.Item key="move users">{t('classenrollment.moveusers')}</Menu.Item>
         <Menu.Item key="add students to other class">
           {t('classenrollment.addstdstoanotherclass')}
@@ -943,6 +954,15 @@ class ClassEnrollmentTable extends React.Component {
             />
           </FeaturesSwitch>
         )}
+        <ResetPwd
+          isOpen={this.state.resetPasswordModalVisible}
+          handleCancel={() =>
+            this.setState({ resetPasswordModalVisible: false })
+          }
+          resetPasswordUserIds={selectedUsersInfo?.map(
+            (info) => info?.user?._id
+          )}
+        />
       </MainContainer>
     )
   }

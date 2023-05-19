@@ -617,6 +617,11 @@ export const StyledDropDownContainer = styled(Col)`
       }
     }
   }
+  .dashboard-based-on-test-type {
+    .ant-btn.ant-dropdown-trigger {
+      background-color: white;
+    }
+  }
   @media print {
     display: none;
   }
@@ -725,7 +730,7 @@ export const StyledLabel = styled.div`
   letter-spacing: ${(props) => props.spacing || '0.2px'};
   color: ${(props) => props.textColor || 'grey'};
   text-align: ${(props) => props.textAlign || 'left'};
-  font-size: 10px;
+  font-size: ${({ fontSize }) => fontSize || '10px'};
 
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 12px;

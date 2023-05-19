@@ -23,6 +23,7 @@ const initialState = {
   },
   error: '',
   loadingTableData: false,
+  districtAveragesData: {},
   tableData: {},
   tableDataRequestError: '',
 }
@@ -71,6 +72,7 @@ const slice = createSlice({
     },
     fetchDashboardTableDataRequestSuccess: (state, { payload }) => {
       state.loadingTableData = false
+      state.districtAveragesData = payload.districtAveragesData
       state.tableData = payload.tableData
       state.tableDataRequestError = ''
     },

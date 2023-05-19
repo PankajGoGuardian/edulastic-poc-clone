@@ -12,6 +12,7 @@ import DashboardTable from './Table'
 import useTableFilters from '../hooks/useTableFilters'
 import {
   academicSummaryFiltersTypes,
+  districtAvgDimension,
   getTableApiQuery,
   tableFilterTypes,
 } from '../utils'
@@ -33,11 +34,14 @@ function TableSection({
   setSettings,
   selectedCompareBy,
   academicSummaryFilters,
+  setAcademicSummaryFilters,
   fetchDashboardTableDataRequest,
+  districtAveragesData,
   tableData,
   loadingTableData,
   tableDataRequestError,
   isSharedReport = false,
+  availableTestTypes,
 }) {
   const {
     tableFilters,
@@ -53,6 +57,7 @@ function TableSection({
     defaultCompareBy: selectedCompareBy,
     settings,
     setSettings,
+    availableTestTypes,
   })
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
@@ -62,15 +67,71 @@ function TableSection({
   useEffect(() => {
     const profileId =
       academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
-    const q = getTableApiQuery(settings, tableFilters, profileId)
+    const academicTestType =
+      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
+    const q = getTableApiQuery(
+      settings,
+      tableFilters,
+      profileId,
+      academicTestType
+    )
     if ((q.termId || q.reportId) && profileId) {
-      fetchDashboardTableDataRequest(q)
+      fetchDashboardTableDataRequest({ ...q, districtAveragesRequired: true })
     }
   }, [
     settings.requestFilters,
-    tableFilters,
-    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
+    tableFilters[tableFilterTypes.COMPARE_BY]?.key,
+    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
   ])
+
+  useEffect(() => {
+    const profileId =
+      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const academicTestType =
+      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
+    const q = getTableApiQuery(
+      settings,
+      tableFilters,
+      profileId,
+      academicTestType
+    )
+    if (
+      (q.termId || q.reportId) &&
+      profileId &&
+      !isEmpty(districtAveragesData)
+    ) {
+      fetchDashboardTableDataRequest({ ...q })
+    }
+  }, [
+    tableFilters[tableFilterTypes.PAGE],
+    tableFilters[tableFilterTypes.PAGE_SIZE],
+    tableFilters[tableFilterTypes.SORT_KEY],
+    tableFilters[tableFilterTypes.SORT_ORDER],
+    tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG],
+    tableFilters[tableFilterTypes.BELOW_AVG],
+  ])
+
+  useEffect(() => {
+    const profileId =
+      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const academicTestType =
+      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
+    const q = getTableApiQuery(
+      settings,
+      tableFilters,
+      profileId,
+      academicTestType
+    )
+    if (
+      (q.termId || q.reportId) &&
+      profileId &&
+      !isEmpty(districtAveragesData) &&
+      tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG] !==
+        tableFilters[tableFilterTypes.BELOW_AVG]
+    ) {
+      fetchDashboardTableDataRequest({ ...q })
+    }
+  }, [academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key])
 
   // handle add student to group
   const rowSelection = {
@@ -87,6 +148,10 @@ function TableSection({
       setCheckedStudents(
         flag ? tableData.metricInfo.map((d) => d.dimension._id) : []
       ),
+    getCheckboxProps: ({ dimension }) => ({
+      disabled: dimension === districtAvgDimension,
+      name: dimension.name,
+    }),
   }
 
   const { metricInfo = [] } = tableData
@@ -118,9 +183,12 @@ function TableSection({
 
   const _rowSelection = showAddToStudentGroupBtn ? rowSelection : null
 
-  const hasContent = !tableDataRequestError && !isEmpty(tableData?.metricInfo)
-  const errorMsg = 'Error fetching data, please try again later'
+  const hasDistrictAveragesContent =
+    !tableDataRequestError && !isEmpty(districtAveragesData?.metricInfo)
+  const hasTableContent =
+    !tableDataRequestError && !isEmpty(tableData?.metricInfo)
 
+  const errorMsg = 'Error fetching data, please try again later'
   const emptyContainerDesc = tableDataRequestError
     ? errorMsg
     : 'No Data Available'
@@ -155,27 +223,37 @@ function TableSection({
             />
           </EduThen>
           <EduElse>
-            <EduIf condition={hasContent}>
+            <EduIf condition={hasDistrictAveragesContent}>
               <EduThen>
                 <DashboardTable
                   tableFilters={tableFilters}
                   setTableFilters={setTableFilters}
+                  academicSummaryFilters={academicSummaryFilters}
+                  setAcademicSummaryFilters={setAcademicSummaryFilters}
                   onTableHeaderCellClick={onTableHeaderCellClick}
                   getTableDrillDownUrl={getTableDrillDownUrl}
+                  districtAveragesData={districtAveragesData}
                   tableData={tableData}
                   selectedPerformanceBand={selectedPerformanceBand}
                   rowSelection={_rowSelection}
                   loadingTableData={loadingTableData}
                   isCsvDownloading={isCsvDownloading}
+                  availableTestTypes={availableTestTypes}
+                  hasTableContent={hasTableContent}
+                  emptyContainerDesc={emptyContainerDesc}
                 />
-                <BackendPagination
-                  itemsCount={tableData.dimensionCount}
-                  backendPagination={{
-                    page: tableFilters.page,
-                    pageSize: tableFilters.pageSize,
-                  }}
-                  setBackendPagination={setTablePagination}
-                />
+                <EduIf condition={hasTableContent}>
+                  <EduThen>
+                    <BackendPagination
+                      itemsCount={tableData.dimensionCount}
+                      backendPagination={{
+                        page: tableFilters.page,
+                        pageSize: tableFilters.pageSize,
+                      }}
+                      setBackendPagination={setTablePagination}
+                    />
+                  </EduThen>
+                </EduIf>
               </EduThen>
               <EduElse>
                 <StyledEmptyContainer description={emptyContainerDesc} />

@@ -201,8 +201,17 @@ const filterFields = [
   'customPeriodEnd',
 ]
 
-const detailsExtraFields = [...Object.values(tableFilterTypes), 'profileId']
+const detailsExtraFields = [
+  ...Object.values(tableFilterTypes),
+  ...Object.values(academicSummaryFiltersTypes),
+  'districtAvgScore',
+]
 
 export const filterDetailsFields = [...filterFields, ...detailsExtraFields]
 
 export const sharedDetailsFields = ['reportId', ...detailsExtraFields]
+
+export const districtAvgDimension = {
+  _id: 'districtAvg',
+  name: 'Overall Avg.',
+}

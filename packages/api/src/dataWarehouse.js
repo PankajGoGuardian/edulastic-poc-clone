@@ -123,13 +123,19 @@ const getDashboardAttendanceSummary = (data) => {
     .then((result) => result.data)
 }
 
-const getDashboardTableMatrics = (data) => {
-  const queryString = qs.stringify(data)
+const getDashboardDistrictAverages = (params) => {
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${DW_DASHBOARD_REPORT}/details?${queryString}`,
-    method: 'get',
-    data,
+    url: `${prefix}/${DW_DASHBOARD_REPORT}/district-averages`,
+    params,
+  })
+}
+
+const getDashboardTableMetrics = (params) => {
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${DW_DASHBOARD_REPORT}/details`,
+    params,
   })
 }
 
@@ -220,7 +226,8 @@ export default {
   getAttendanceMetrics,
   getDashboardAcademicSummary,
   getDashboardAttendanceSummary,
-  getDashboardTableMatrics,
+  getDashboardDistrictAverages,
+  getDashboardTableMetrics,
   getEarlyWarningRiskSummary,
   getRiskTimeline,
   getEarlyWarningDetails,

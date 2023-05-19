@@ -100,12 +100,18 @@ export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
   }
 }
 
-export const getTableApiQuery = (settings, tableFilters, profileId) => {
+export const getTableApiQuery = (
+  settings,
+  tableFilters,
+  profileId,
+  academicTestType
+) => {
   const { query } = curateApiFiltersQuery(
     {
       ...settings.requestFilters,
       ...tableFilters,
       profileId,
+      academicTestType,
       compareBy: tableFilters.compareBy.key,
     },
     filterDetailsFields,
@@ -195,16 +201,27 @@ export function buildAcademicSummaryFilters(
   return { performanceBand, testType }
 }
 
-export const getAvailableAcademicTestTypes = (externalBands) => {
-  const externalTestTypes = externalBands.map(({ testCategory, testTitle }) => {
-    const _testTitle =
-      testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
-        ? `- ${testTitle}`
-        : ''
-    return {
-      key: `${testCategory}${EXTERNAL_TEST_KEY_SEPARATOR}${testTitle || ''}`,
-      title: `${testCategory} ${_testTitle}`,
-    }
+export const getAvailableAcademicTestTypesWithBands = (
+  internalBands,
+  externalBands
+) => {
+  const internalTestTypesWithBands = availableTestTypes.map((t) => {
+    const [firstInternalBand] = internalBands || []
+    const { performanceBand: bands = [] } = firstInternalBand || {}
+    return { ...t, bands }
   })
-  return [...availableTestTypes, ...externalTestTypes]
+  const externalTestTypesWithBands = externalBands.map(
+    ({ testCategory, testTitle, bands }) => {
+      const _testTitle =
+        testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
+          ? `- ${testTitle}`
+          : ''
+      return {
+        key: `${testCategory}${EXTERNAL_TEST_KEY_SEPARATOR}${testTitle || ''}`,
+        title: `${testCategory} ${_testTitle}`,
+        bands,
+      }
+    }
+  )
+  return [...internalTestTypesWithBands, ...externalTestTypesWithBands]
 }

@@ -37,23 +37,31 @@ export const TableContainer = styled.div`
 `
 
 export const TableHeaderCellWrapper = styled.div`
-  justify-content: center;
-  align-items: center;
-  margin: 12px 25px;
+  display: flex;
+  margin-right: 30px;
   box-shadow: ${({ isSelected }) =>
     isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
   opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
-  span {
+  height: 42px;
+  align-items: center;
+  border-radius: 10px;
+  border-width: ${({ isSelected }) => (isSelected ? '1px' : '0px')};
+  border-style: solid;
+  border-color: ${({ borderColor }) => borderColor};
+  div {
+    height: 40px;
+    line-height: 14px;
     &:first-child {
       padding: 13px 32px;
-      width: 200px;
       font-weight: 600;
       font-size: 14px;
       background-color: ${white};
       border-radius: 10px 0px 0px 10px;
     }
     &:last-child {
-      padding: 10px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
@@ -82,7 +90,13 @@ export const CustomStyledTable = styled(StyledTable)`
     .avg-attendance {
       border-right: 1px dashed ${lightGrey8};
     }
+    .avg-score {
+      .ant-table-column-sorter {
+        padding-top: 32px;
+      }
+    }
     .performance-distribution {
+      border-right: 1px dashed ${lightGrey8};
       padding: ${(p) =>
         p.isStudentCompareBy ? '35px 0 0 55px' : '35px 0 0 20px'};
     }
@@ -137,6 +151,7 @@ export const CustomStyledTable = styled(StyledTable)`
       border-right: 1px dashed ${lightGrey8};
     }
     .performance-distribution {
+      border-right: 1px dashed ${lightGrey8};
       div > span {
         text-align: center;
       }

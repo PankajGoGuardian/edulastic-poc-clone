@@ -5,11 +5,12 @@ import {
   downloadCSV,
   percentage,
   dbToTableSortOrderMap,
+  EXTERNAL_TEST_KEY_SEPARATOR,
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
 import { compareByKeys } from '@edulastic/constants/reportUtils/standardsMasteryReport/standardsGradebook'
-import { tableFilterTypes } from '../../utils'
+import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import AvgScoreTitle from './AvgScoreTitle'
 import {
   DW_MAR_REPORT_URL,
@@ -50,13 +51,17 @@ const tableColumnsData = [
 export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
-export const getHorizontalBarData = (data, selectedPerformanceBand) => {
+export const getHorizontalBarData = (
+  data,
+  selectedPerformanceBand,
+  bandKey
+) => {
   if (isEmpty(data) || isEmpty(selectedPerformanceBand)) return []
 
   const totalStudents = sumBy(data, 'totalStudents')
   return data.map((d) => {
     const band = selectedPerformanceBand.find(
-      (pb) => pb.threshold === d.bandScore
+      (pb) => pb[bandKey] === d.bandScore
     )
     return {
       value: percentage(d.totalStudents, totalStudents, true),
@@ -70,6 +75,8 @@ export const getTableColumns = ({
   isStudentCompareBy,
   getTableDrillDownUrl,
   selectedPerformanceBand,
+  selectedTestType,
+  availableTestTypes,
 }) => {
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
 
@@ -77,7 +84,11 @@ export const getTableColumns = ({
     metricInfo,
     (row) => Object.keys(row.performance).length
   )
-  const availableTestTypes = Object.keys(rowWithMaxTestTypes?.performance || {})
+  const testTypesWithData = Object.keys(rowWithMaxTestTypes?.performance || {})
+  const orderedTestTypesWithData = availableTestTypes.filter(({ key }) =>
+    testTypesWithData.includes(key)
+  )
+
   const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
 
   const PerformanceColumnTitle = isStudentCompareBy
@@ -96,13 +107,15 @@ export const getTableColumns = ({
       tableFilters[tableFilterTypes.COMPARE_BY].title
     _columns[compareByIdx].align = 'left'
     _columns[compareByIdx].render = (value) => {
-      const url = [
-        compareByKeys.SCHOOL,
-        compareByKeys.TEACHER,
-        compareByKeys.CLASS,
-      ].includes(selectedCompareBy)
-        ? getTableDrillDownUrl(value._id)
-        : null
+      const url =
+        value !== districtAvgDimension &&
+        [
+          compareByKeys.SCHOOL,
+          compareByKeys.TEACHER,
+          compareByKeys.CLASS,
+        ].includes(selectedCompareBy)
+          ? getTableDrillDownUrl(value._id)
+          : null
       return <LinkCell value={value} url={url} />
     }
     _columns[compareByIdx].sortOrder =
@@ -117,40 +130,56 @@ export const getTableColumns = ({
       tableFilters.sortKey === tableColumnKeys.AVG_ATTENDANCE && columnSortOrder
 
     // dynamic columns
-    const testTypesBasedColumns = flatMap(availableTestTypes, (testType) => {
-      return [
-        {
-          key: `avgScore${testType}`,
-          title: <AvgScoreTitle testType={testType} />,
-          dataIndex: 'performance',
-          align: 'center',
-          width: 150,
-          visibleOn: ['browser'],
-          className: 'avg-score',
-          render: (value) =>
-            value[testType] ? `${value[testType].avg}%` : '-',
-          sorter: true,
-          sortOrder:
-            tableFilters.sortKey === `avgScore${testType}` && columnSortOrder,
-        },
-        {
-          key: `performance${testType}`,
-          title: PerformanceColumnTitle,
-          dataIndex: 'performance',
-          align: 'left',
-          visibleOn: ['browser'],
-          className: 'performance-distribution',
-          render: (value) => (
-            <PerformanceDistribution
-              value={value}
-              testType={testType}
-              isStudentCompareBy={isStudentCompareBy}
-              selectedPerformanceBand={selectedPerformanceBand}
-            />
-          ),
-        },
-      ]
-    })
+    const testTypesBasedColumns = flatMap(
+      orderedTestTypesWithData,
+      ({ key: testTypeKey, title: testTypeTitle, bands: testTypeBands }) => {
+        const isExternal = testTypeKey.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+        return [
+          {
+            key: `avgScore__${testTypeKey}`,
+            title: (
+              <AvgScoreTitle testType={testTypeTitle} isExternal={isExternal} />
+            ),
+            dataIndex: 'performance',
+            align: 'center',
+            width: 150,
+            visibleOn: ['browser'],
+            className: 'avg-score',
+            render: (value) =>
+              value[testTypeKey]
+                ? `${value[testTypeKey].avgScore}${
+                    testTypeKey.includes('__') ? '' : '%'
+                  }`
+                : '-',
+            sorter: true,
+            sortOrder:
+              tableFilters.sortKey === `avgScore__${testTypeKey}` &&
+              columnSortOrder,
+          },
+          {
+            key: `performance__${testTypeKey}`,
+            title: PerformanceColumnTitle,
+            dataIndex: 'performance',
+            align: 'left',
+            visibleOn: ['browser'],
+            className: 'performance-distribution',
+            render: (value) => (
+              <PerformanceDistribution
+                value={value}
+                testType={testTypeKey}
+                isStudentCompareBy={isStudentCompareBy}
+                selectedPerformanceBand={
+                  selectedTestType === testTypeKey
+                    ? selectedPerformanceBand
+                    : testTypeBands
+                }
+                isExternal={isExternal}
+              />
+            ),
+          },
+        ]
+      }
+    )
     _columns.push(...testTypesBasedColumns)
   })
 

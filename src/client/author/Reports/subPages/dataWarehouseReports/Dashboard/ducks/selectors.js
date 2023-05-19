@@ -32,6 +32,10 @@ const loadingTableData = createSelector(
   stateSelector,
   (state) => state.loadingTableData
 )
+const districtAveragesData = createSelector(
+  stateSelector,
+  (state) => state.districtAveragesData
+)
 const tableData = createSelector(stateSelector, (state) => state.tableData)
 const tableDataRequestError = createSelector(
   stateSelector,
@@ -49,6 +53,7 @@ export {
   settings,
   error,
   loadingTableData,
+  districtAveragesData,
   tableData,
   tableDataRequestError,
 }

@@ -25,6 +25,7 @@ function ReportView({
   fetchDashboardTableDataRequest,
   loadingTableData,
   tableDataRequestError,
+  districtAveragesData,
   tableData,
   loc,
   availableTestTypes,
@@ -64,6 +65,7 @@ function ReportView({
         location={location}
         search={search}
         academicSummaryFilters={academicSummaryFilters}
+        setAcademicSummaryFilters={setAcademicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
@@ -72,8 +74,10 @@ function ReportView({
         settings={settings}
         setSettings={setSettings}
         selectedCompareBy={selectedCompareBy}
+        districtAveragesData={districtAveragesData}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
+        availableTestTypes={availableTestTypes}
       />
     </>
   )

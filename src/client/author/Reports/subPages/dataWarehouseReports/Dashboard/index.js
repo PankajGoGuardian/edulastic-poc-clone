@@ -17,7 +17,7 @@ import {
   academicSummaryFiltersTypes,
   buildAcademicSummaryFilters,
   getPerformanceBandList,
-  getAvailableAcademicTestTypes,
+  getAvailableAcademicTestTypesWithBands,
 } from './utils'
 import { buildRequestFilters } from '../common/utils'
 import {
@@ -62,6 +62,7 @@ const Dashboard = ({
   updateNavigation,
   // report selectors
   loadingTableData,
+  districtAveragesData,
   tableData,
   tableDataRequestError,
   // report actions
@@ -89,8 +90,8 @@ const Dashboard = ({
     {}
   )
   const availableAcademicTestTypes = useMemo(
-    () => getAvailableAcademicTestTypes(externalBands),
-    [externalBands]
+    () => getAvailableAcademicTestTypesWithBands(bandInfo, externalBands),
+    [bandInfo, externalBands]
   )
 
   const performanceBandList = useMemo(
@@ -222,6 +223,7 @@ const Dashboard = ({
             fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
             loadingTableData={loadingTableData}
             tableDataRequestError={tableDataRequestError}
+            districtAveragesData={districtAveragesData}
             tableData={tableData}
             loc={loc}
             availableTestTypes={availableAcademicTestTypes}

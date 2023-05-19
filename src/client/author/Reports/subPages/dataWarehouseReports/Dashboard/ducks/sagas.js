@@ -1,7 +1,8 @@
 import { dataWarehouseApi, reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { actions } from './actionReducers'
+import * as selectors from './selectors'
 
 function* fetchFiltersDataRequestSaga({ payload }) {
   try {
@@ -16,11 +17,21 @@ function* fetchFiltersDataRequestSaga({ payload }) {
 
 function* fetchDashboardTableDataRequestSaga({ payload }) {
   try {
+    const { academicTestType, districtAveragesRequired } = payload
+    let districtAveragesData = yield select(selectors.districtAveragesData)
+    if (districtAveragesRequired) {
+      const reportDistrictAveragesResponse = yield call(
+        dataWarehouseApi.getDashboardDistrictAverages,
+        payload
+      )
+      districtAveragesData = reportDistrictAveragesResponse.data.result
+    }
+    const districtAvgScore =
+      districtAveragesData.metricInfo?.[academicTestType]?.avgScore || 0
     const reportTableDataResponse = yield call(
-      dataWarehouseApi.getDashboardTableMatrics,
-      payload
+      dataWarehouseApi.getDashboardTableMetrics,
+      { ...payload, districtAvgScore }
     )
-
     const dataSizeExceeded =
       reportTableDataResponse.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
@@ -33,13 +44,14 @@ function* fetchDashboardTableDataRequestSaga({ payload }) {
     }
     yield put(
       actions.fetchDashboardTableDataRequestSuccess({
+        districtAveragesData,
         tableData: reportTableDataResponse.data.result,
       })
     )
   } catch (error) {
     const msg = 'Error fetching Dashboard table data.'
     notification({ type: 'error', msg })
-    yield put(actions.fetchDashboardTableDataRequestError({ error: msg }))
+    yield put(actions.fetchDashboardTableDataRequestError({ error }))
   }
 }
 

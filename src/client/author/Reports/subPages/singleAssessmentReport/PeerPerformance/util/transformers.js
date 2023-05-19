@@ -1,20 +1,7 @@
-import {
-  groupBy,
-  minBy,
-  maxBy,
-  cloneDeep,
-  countBy,
-  uniq,
-  isEmpty,
-  orderBy,
-  startCase,
-} from 'lodash'
+import { startCase } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
 
-import { testActivityStatus, reportUtils } from '@edulastic/constants'
-
-const { getHSLFromRange1, DemographicCompareByOptions } = reportUtils.common
-
-const { transformMetricForStudentGroups } = reportUtils.singleAssessmentReport
+const { getHSLFromRange1 } = reportUtils.common
 
 const _idToLabel = {
   schoolId: 'schoolName',
@@ -31,10 +18,10 @@ const _idToLabel = {
 export const idToLabel = (id) => _idToLabel[id] || id
 
 const _idToName = {
-  schoolId: 'School',
-  groupId: 'Class',
+  school: 'School',
+  class: 'Class',
   group: 'Student Group',
-  teacherId: 'Teacher',
+  teacher: 'Teacher',
   race: 'Race',
   gender: 'Gender',
   frlStatus: 'FRL Status',
@@ -51,373 +38,179 @@ export const analyseByToName = {
   proficiencyBand: 'Proficiency Band',
 }
 
-export const parseAndNormalizeExtAttributes = (extAttributesStr) => {
-  const blackList = ['', 'null', 'undefined']
-  const extAttributes = JSON.parse(extAttributesStr || '{}')
-  Object.keys(extAttributes).forEach((k) => {
-    const v = `${extAttributes[k]}`.toLowerCase()
-    if (blackList.includes(v)) {
-      extAttributes[k] = undefined
-    }
-  })
-  return extAttributes
+export const analyseByOptions = {
+  scorePerc: 'score(%)',
+  rawScore: 'rawScore',
+  aboveBelowStandard: 'aboveBelowStandard',
+  proficiencyBand: 'proficiencyBand',
 }
 
-const filterMetricInfoByExtDemographicFilters = (metrics, filters) => {
-  if (isEmpty(filters)) {
-    return metrics
+export const compareByKeyMaps = [
+  { key: 'school', title: 'School' },
+  { key: 'teacher', title: 'Teacher' },
+  { key: 'class', title: 'Class' },
+  { key: 'group', title: 'Student Group' },
+  { key: 'race', title: 'Race' },
+  { key: 'gender', title: 'Gender' },
+  { key: 'frlStatus', title: 'FRL Status' },
+  { key: 'ellStatus', title: 'ELL Status' },
+  { key: 'iepStatus', title: 'IEP Status' },
+  { key: 'hispanicEthnicity', title: 'Hispanic Ethnicity' },
+]
+const standardConst = {
+  above: 1,
+  below: 0,
+}
+
+export const sortKeyMaps = {
+  DIMENSION: 'dimension',
+  DIM_SCORE_PERC: 'scorePerc',
+  ABOVE_STANDARD: 'aboveStandard',
+}
+export const sortOrderMap = {
+  ascend: 'asc',
+  descend: 'desc',
+}
+const calculateStudentsInPerformanceBands = (
+  performanceBandDetails,
+  performanceBand,
+  totalStudents
+) => {
+  if (!performanceBandDetails) {
+    return {}
   }
-  const transformedFilter = {}
-  filters.forEach((filter) => {
-    const parsedFilterValue = JSON.parse(filter)
-    const key = Object.keys(parsedFilterValue)[0]
-    const value = parsedFilterValue[key]
-    if (Object.prototype.hasOwnProperty.call(transformedFilter, key)) {
-      transformedFilter[key].push(value)
-    } else {
-      transformedFilter[key] = [value]
-    }
-  })
-  return metrics.filter((metric) => {
-    let isFilterValuePresent = true
-    for (const key of Object.keys(transformedFilter)) {
-      if (!isFilterValuePresent) {
-        break
-      }
-      isFilterValuePresent =
-        isFilterValuePresent &&
-        transformedFilter[key].includes(metric.extAttributes[key])
-    }
-    return isFilterValuePresent
-  })
-}
+  const studentsInPerformanceBands = performanceBand.reduce(
+    (acc, { name }) => ({ ...acc, [name]: 0, [`${name}Percentage`]: 0 }),
+    {}
+  )
 
-const filterData = (data, filter) => {
-  const filteredData = data.filter((item) => {
-    if (
-      (item.gender?.toLowerCase() === filter.gender.toLowerCase() ||
-        filter.gender === 'all') &&
-      (item.frlStatus?.toLowerCase() === filter.frlStatus.toLowerCase() ||
-        filter.frlStatus === 'all') &&
-      (item.ellStatus?.toLowerCase() === filter.ellStatus.toLowerCase() ||
-        filter.ellStatus === 'all') &&
-      (item.iepStatus?.toLowerCase() === filter.iepStatus.toLowerCase() ||
-        filter.iepStatus === 'all') &&
-      (item.race?.toLowerCase() === filter.race.toLowerCase() ||
-        filter.race === 'all') &&
-      (item.hispanicEthnicity?.toLowerCase() ===
-        filter.hispanicEthnicity.toLowerCase() ||
-        filter.hispanicEthnicity === 'all')
-    ) {
-      return true
+  performanceBand.forEach(({ threshold, name, aboveStandard }) => {
+    const band = performanceBandDetails.find((b) => b.threshold === threshold)
+    if (band) {
+      studentsInPerformanceBands[name] += band.studentsInBand
+      const perc = Number((band.studentsInBand * 100) / totalStudents).toFixed(
+        0
+      )
+      studentsInPerformanceBands[`${name}Percentage`] =
+        aboveStandard === standardConst.above ? perc : -perc
     }
-    return false
   })
-  return filteredData
-}
 
-const analyseByScorePercent = (rawData, groupedData, compareBy) => {
-  const arr = Object.keys(groupedData).map((data) => {
-    let item = groupedData[data].reduce(
-      (total, currentValue) => {
-        const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
-        return {
-          // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore:
-            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: total.totalTotalScore + totalScore,
-        }
-      },
-      { totalMaxScore: 0, totalTotalScore: 0 }
+  return studentsInPerformanceBands
+}
+function transformByProficiencyBand(data, bandInfo) {
+  const transformedData = data.map((item) => {
+    const bandDetails = calculateStudentsInPerformanceBands(
+      item?.performanceBandDetails,
+      bandInfo?.performanceBand,
+      item?.submittedStudents
     )
-
-    const avgStudentScorePercentUnrounded =
-      (item.totalTotalScore / item.totalMaxScore) * 100 || 0
-    const avgStudentScorePercent = Math.round(avgStudentScorePercentUnrounded)
-    const { teacherName, groupName: className } = groupedData[data][0]
-    const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    let absent = statusCounts[testActivityStatus.ABSENT] || 0
-    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
-    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
-    const schoolName = uniq(
-      groupedData[data]
-        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
-        .filter((txt) => txt)
-    ).join(', ')
-
-    item = {
+    return {
       ...item,
-      avgStudentScorePercentUnrounded,
-      avgStudentScorePercent,
-      correct: avgStudentScorePercent,
-      incorrect: Math.round(100 - avgStudentScorePercent),
-      districtAvg: Math.round(rawData.districtAvgPerf),
-      absent,
-      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
-      schoolName,
-      teacherName,
-      className,
-      [compareBy]: data,
-      compareBy,
-      compareBylabel: groupedData[data][0]?.[idToLabel(compareBy)] || '-',
-      fill: getHSLFromRange1(avgStudentScorePercent),
-      dFill: getHSLFromRange1(rawData.districtAvgPerf),
+      dimensionId: item.dimension._id,
+      ...bandDetails,
     }
-    return item
   })
-  return arr
+  return transformedData
 }
-
-const analyseByRawScore = (rawData, groupedData, compareBy) => {
-  const arr = Object.keys(groupedData).map((data) => {
-    let item = groupedData[data].reduce(
-      (total, currentValue) => {
-        const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
-        return {
-          // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore:
-            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: total.totalTotalScore + totalScore,
-        }
-      },
-      { totalMaxScore: 0, totalTotalScore: 0 }
+function transformByAboveBelowStandard(data) {
+  const transformedData = data.map((item) => {
+    const aboveStandardPercentage = Number(
+      ((100 * item.aboveStandard) / item.totalStudents).toFixed(0)
     )
-
-    const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    const avgStudentScoreUnrounded =
-      item.totalTotalScore / (statusCounts[1] || 1) || 0
-    const avgStudentScore = Number(avgStudentScoreUnrounded.toFixed(2))
-    // TODO prefer BE fix: https://github.com/snapwiz/edu-api/pull/8306
-    // Following is only immediate fix
-    const itemWithMaxScore =
-      maxBy(groupedData[data], 'maxScore') || groupedData[data][0]
-    const { teacherName, groupName: className } = itemWithMaxScore
-    const maxScore = Math.max(itemWithMaxScore.maxScore, avgStudentScore) || 1
-    let absent = statusCounts[testActivityStatus.ABSENT] || 0
-    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
-    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
-    const schoolName = uniq(
-      groupedData[data]
-        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
-        .filter((txt) => txt)
-    ).join(', ')
-
-    item = {
+    const belowStandardPercentage = aboveStandardPercentage - 100
+    return {
       ...item,
-      maxScore,
-      avgStudentScoreUnrounded,
-      avgStudentScore,
-      correct: avgStudentScore,
-      incorrect: Number((maxScore - avgStudentScore).toFixed(2)),
-      districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent,
-      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
-      schoolName,
-      teacherName,
-      className,
-      [compareBy]: data,
-      compareBy,
-      compareBylabel: itemWithMaxScore?.[idToLabel(compareBy)] || '-',
-      fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
-      dFill: getHSLFromRange1(rawData.districtAvgPerf),
-    }
-    return item
-  })
-  return arr
-}
-
-const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
-  const { threshold } = minBy(rawData.bandInfo, (o) => {
-    if (o.aboveStandard === 1) {
-      return o.threshold
-    }
-    return Infinity
-  })
-
-  const getStandard = (item) => {
-    if ((item.totalScore / item.maxScore) * 100 >= threshold) {
-      return 'aboveStandard'
-    }
-    return 'belowStandard'
-  }
-
-  const arr = Object.keys(groupedData).map((data) => {
-    let item = groupedData[data].reduce(
-      (total, currentValue) => {
-        const standard = getStandard(currentValue)
-        return {
-          ...total,
-          [standard]:
-            total[standard] + (currentValue.progressStatus === 2 ? 0 : 1),
-          total: total.total + (currentValue.progressStatus === 2 ? 0 : 1),
-        }
-      },
-      { belowStandard: 0, aboveStandard: 0, total: 0 }
-    )
-
-    const belowStandardPercentage = -Math.round(
-      (item.belowStandard / (item.total || 1)) * 100
-    )
-    const aboveStandardPercentage = Math.round(
-      (item.aboveStandard / (item.total || 1)) * 100
-    )
-
-    const { teacherName, groupName: className } = groupedData[data][0]
-    const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    let absent = statusCounts[testActivityStatus.ABSENT] || 0
-    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
-    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
-    const schoolName = uniq(
-      groupedData[data]
-        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
-        .filter((txt) => txt)
-    ).join(', ')
-
-    item = {
-      ...item,
+      dimensionId: item.dimension._id,
       aboveStandardPercentage,
       belowStandardPercentage,
-      districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent,
-      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
-      schoolName,
-      teacherName,
-      className,
-      [compareBy]: data,
-      compareBy,
-      compareBylabel: groupedData[data][0]?.[idToLabel(compareBy)] || '-',
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0),
     }
-
-    return item
   })
-  return arr
+  return transformedData
 }
 
-const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
-  const bandInfo = cloneDeep(rawData.bandInfo)
-  const proficiencies = {}
-  const proficienciesDetail = {}
-  for (const o of rawData.bandInfo) {
-    proficiencies[o.name] = 0
-    proficienciesDetail[o.name] = o
-  }
-
-  bandInfo.sort((a, b) => b.threshold - a.threshold)
-
-  const bandInfoAsc = [...bandInfo]
-  bandInfoAsc.reverse()
-
-  const getProficiency = (item) => {
-    for (const obj of bandInfo) {
-      if ((item.totalScore / item.maxScore) * 100 >= obj.threshold) {
-        return obj.name
-      }
-    }
-  }
-
-  const arr = Object.keys(groupedData).map((data) => {
-    let item = groupedData[data].reduce(
-      (total, currentValue) => {
-        const proficiency = getProficiency(currentValue)
-        total[proficiency] += currentValue.progressStatus === 2 ? 0 : 1
-        total.total += currentValue.progressStatus === 2 ? 0 : 1
-        return {
-          ...total,
-        }
-      },
-      { ...proficiencies, total: 0 }
+function transformByRawScore(data) {
+  const transformedData = data.map((item) => {
+    const maxScore = (item.dimensionMaxScore / item.submittedStudents)?.toFixed(
+      2
     )
-
-    const proficiencyPercentages = {}
-
-    bandInfoAsc.forEach((o, index) => {
-      const prof = Math.round((item[o.name] / (item.total || 1)) * 100)
-      const fill = Math.round((100 / (bandInfo.length - 1)) * index)
-      if (proficienciesDetail[o.name].aboveStandard !== 1) {
-        proficiencyPercentages[`${o.name}Percentage`] = -prof
-      } else {
-        proficiencyPercentages[`${o.name}Percentage`] = prof
-      }
-      proficiencyPercentages[`fill_${index}`] = getHSLFromRange1(fill)
-    })
-
-    const { teacherName, groupName: className } = groupedData[data][0]
-    const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    let absent = statusCounts[testActivityStatus.ABSENT] || 0
-    absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
-    absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
-    const schoolName = uniq(
-      groupedData[data]
-        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
-        .filter((txt) => txt)
-    ).join(', ')
-
-    item = {
+    return {
       ...item,
-      ...proficiencyPercentages,
-      districtAvg: Number(rawData.districtAvg.toFixed(2)),
-      absent,
-      graded: statusCounts[testActivityStatus.SUBMITTED] || 0,
-      schoolName,
-      teacherName,
-      className,
-      [compareBy]: data,
-      compareBy,
-      compareBylabel: groupedData[data][0]?.[idToLabel(compareBy)] || '-',
+      maxScore,
+      dimensionId: item.dimension._id,
+      correct: item.dimensionAvg?.toFixed(2),
+      incorrect: (maxScore - item.dimensionAvg)?.toFixed(2),
+      fill: getHSLFromRange1((100 * item.dimensionAvg) / maxScore),
+      dFill: getHSLFromRange1((item.districtAvg * 100) / maxScore),
     }
-
-    return item
   })
-  return arr
+  return transformedData
 }
 
-export const parseData = (rawData, filter, extDemogaphicFilters) => {
-  let compareBy = filter.compareBy
-  let data = rawData.metricInfo || []
-  if (DemographicCompareByOptions.includes(compareBy)) {
-    data = orderBy(data, compareBy, ['asc'])
-  }
-  if (filter.compareBy === 'group') {
-    data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
-    compareBy = 'groupId'
-  }
-  const filteredDataByDdFilter = filterData(data, filter)
-  const filteredDataByExtDemographicFilter = filterMetricInfoByExtDemographicFilters(
-    filteredDataByDdFilter,
-    extDemogaphicFilters
-  )
-  const groupedData = groupBy(filteredDataByExtDemographicFilter, compareBy)
-  let output = []
-  if (filter.analyseBy === 'score(%)') {
-    output = analyseByScorePercent(rawData, groupedData, compareBy)
-  } else if (filter.analyseBy === 'rawScore') {
-    output = analyseByRawScore(rawData, groupedData, compareBy)
-  } else if (filter.analyseBy === 'aboveBelowStandard') {
-    output = analyseByAboveBelowStandard(rawData, groupedData, compareBy)
-  } else if (filter.analyseBy === 'proficiencyBand') {
-    output = analyseByProficiencyBand(rawData, groupedData, compareBy)
-  }
-  return output.sort((a, b) => a.compareBylabel.localeCompare(b.compareBylabel))
+function transformScorePerc(data) {
+  const transformedData = data.map((item) => {
+    return {
+      ...item,
+      dimensionId: item.dimension._id,
+      correct: item.dimensionAvg?.toFixed(0),
+      incorrect: (100 - item.dimensionAvg).toFixed(0),
+      fill: getHSLFromRange1(item.dimensionAvg),
+      dFill: getHSLFromRange1(item.districtAvg),
+    }
+  })
+  return transformedData
 }
-
-export const createExtDemographicGroupedData = (metrics, ddfilter) => {
-  const extAttributesData = filterData(metrics, ddfilter).map(
-    (metric) => metric.extAttributes
-  )
-  return extAttributesData.reduce((prev, curr) => {
-    Object.keys(curr).forEach((key) => {
-      if (!isEmpty(curr[key])) {
-        if (Object.prototype.hasOwnProperty.call(prev, key)) {
-          if (prev[key].indexOf(curr[key]) === -1) {
-            prev[key].push(curr[key])
-          }
-        } else {
-          prev[key] = [curr[key]]
-        }
-      }
+export const transformData = (filter, bandInfo, data) => {
+  if (data?.length) {
+    switch (filter.analyseBy) {
+      case analyseByOptions.proficiencyBand:
+        return transformByProficiencyBand(data, bandInfo)
+      case analyseByOptions.aboveBelowStandard:
+        return transformByAboveBelowStandard(data)
+      case analyseByOptions.rawScore:
+        return transformByRawScore(data)
+      case analyseByOptions.scorePerc:
+        return transformScorePerc(data)
+      default:
+        return data
+    }
+  } else return []
+}
+const filterValue = (arr) => {
+  const blackList = ['', 'null', 'undefined']
+  return arr.filter((item) => !blackList.includes(item))
+}
+export const transformExtAttributes = (extAttributes) => {
+  if (extAttributes?.length) {
+    const transferredData = {}
+    extAttributes.forEach((item) => {
+      const value = filterValue(item.value)
+      if (value?.length) transferredData[item.name] = value
     })
-    return prev
-  }, {})
+    return transferredData
+  }
+  return {}
+}
+
+export const transformExtAttributeFilters = (filterData) => {
+  const _extDemogaphicFilters = filterData.map((item) => JSON.parse(item))
+  const result = {}
+  _extDemogaphicFilters.forEach((item) => {
+    const [key, value] = Object.entries(item)[0]
+    if (!result[key]) {
+      result[key] = []
+    }
+    result[key].push(value)
+  })
+  return JSON.stringify(result)
+}
+export const getFormattedName = (item) => {
+  return item
+    ? item
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    : ''
 }

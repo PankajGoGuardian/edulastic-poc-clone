@@ -90,6 +90,7 @@ export const SignedStackedBarChart = ({
   legendPayload,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  carousel,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -145,6 +146,11 @@ export const SignedStackedBarChart = ({
         startIndex: pagination.startIndex - diff,
         endIndex: pagination.endIndex - diff,
       })
+    } else if (carousel) {
+      setPagination({
+        startIndex: chartData.length - pageSize,
+        endIndex: chartData.length - 1,
+      })
     }
   }
 
@@ -159,6 +165,11 @@ export const SignedStackedBarChart = ({
       setPagination({
         startIndex: pagination.startIndex + diff,
         endIndex: pagination.endIndex + diff,
+      })
+    } else if (carousel) {
+      setPagination({
+        startIndex: 0,
+        endIndex: pageSize,
       })
     }
   }
@@ -230,6 +241,7 @@ export const SignedStackedBarChart = ({
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
     : !(chartData.length <= pagination.endIndex + 1)
+
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
@@ -265,7 +277,10 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-left"
         onClick={chartNavLeftClick}
         style={{
-          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavLeftVisibility || (carousel && chartData.length > pageSize)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -276,7 +291,10 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-right"
         onClick={chartNavRightClick}
         style={{
-          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavRightVisibility || (carousel && chartData.length > pageSize)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer

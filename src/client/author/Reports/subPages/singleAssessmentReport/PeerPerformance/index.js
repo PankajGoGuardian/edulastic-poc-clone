@@ -1,11 +1,12 @@
-import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import { SpinLoader, EduIf, EduElse, EduThen } from '@edulastic/common'
+import { Col, Row, Pagination } from 'antd'
 import next from 'immer'
+import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { isEmpty, uniq } from 'lodash'
+import { report as reportTypes } from '@edulastic/constants'
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
@@ -18,7 +19,7 @@ import {
   StyledDropDownContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   setPerformanceBandProfileAction,
@@ -36,14 +37,20 @@ import {
   resetPeerPerformanceAction,
 } from './ducks'
 import {
-  parseAndNormalizeExtAttributes,
   idToName,
-  parseData,
-  createExtDemographicGroupedData,
+  analyseByOptions,
+  compareByKeyMaps,
+  transformData,
+  sortKeyMaps,
+  sortOrderMap,
+  transformExtAttributes,
+  transformExtAttributeFilters,
+  getFormattedName,
 } from './util/transformers'
 import { getColumns } from './util/tableColumns'
 import { getAssessmentName } from '../../../common/util'
 
+const pageSize = 200
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
 const PeerPerformance = ({
@@ -56,10 +63,11 @@ const PeerPerformance = ({
   getPeerPerformance,
   resetPeerPerformance,
   settings,
-  filters,
+  demographicFilters,
   sharedReport,
   setPerformanceBandProfile,
   toggleFilter,
+  generateCSV,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -70,16 +78,84 @@ const PeerPerformance = ({
     ],
     [sharedReport]
   )
-  const peerPerformance = useMemo(() => {
-    const peerPerf = { ..._peerPerformance }
-    if (peerPerf.metricInfo) {
-      peerPerf.metricInfo = _peerPerformance.metricInfo?.map((mi) => {
-        const extAttributes = parseAndNormalizeExtAttributes(mi.extAttributes)
-        return { ...mi, extAttributes, ...extAttributes }
-      })
+  const [ddfilter, setDdFilter] = useState({
+    analyseBy: analyseByOptions.scorePerc,
+    compareBy: userRole === 'teacher' ? 'class' : 'school',
+  })
+  const [chartFilter, setChartFilter] = useState({})
+  const [pageNo, setPageNo] = useState(1)
+  const [sortKey, setSortKey] = useState(sortKeyMaps.DIM_SCORE_PERC)
+  const [sortOrder, setSortOrder] = useState(undefined)
+  const [extDemographicData, setExtDemographicData] = useState({})
+  const [extDemogaphicFilters, setExtDemographicFilters] = useState([])
+  const _firstLoadRef = useRef(true)
+
+  useEffect(() => () => resetPeerPerformance(), [])
+
+  const fetPeerPerformanceData = (recompute) => {
+    const q = {
+      requestFilters: {
+        ...settings.requestFilters,
+        ...demographicFilters,
+        externalAttributes: transformExtAttributeFilters(extDemogaphicFilters),
+        compareBy: ddfilter.compareBy,
+        analyzeBy: ddfilter.analyseBy,
+        sortKey,
+        sortOrder: sortOrderMap[sortOrder],
+        page: pageNo,
+        pageSize,
+        recompute,
+      },
+      testId: settings.selectedTest.key,
     }
-    return peerPerf
+    getPeerPerformance(q)
+    _firstLoadRef.current = false
+  }
+
+  useEffect(() => {
+    if (settings.selectedTest && settings.selectedTest.key) {
+      fetPeerPerformanceData(_firstLoadRef.current)
+    }
+  }, [ddfilter.analyseBy, pageNo, extDemogaphicFilters, sortKey, sortOrder])
+
+  useEffect(() => {
+    if (settings.selectedTest && settings.selectedTest.key) {
+      fetPeerPerformanceData(true)
+    }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedTest?.key, settings.requestFilters, ddfilter.compareBy])
+
+  useEffect(() => {
+    setPerformanceBandProfile(_peerPerformance?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(_peerPerformance) &&
+      !_peerPerformance.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [_peerPerformance])
+
+  useEffect(() => {
+    if (_peerPerformance?.extAttributes) {
+      setExtDemographicData(
+        transformExtAttributes(_peerPerformance?.extAttributes)
+      )
+    }
+  }, [_peerPerformance, ddfilter, loading])
+
+  const [peerPerformance, transformedData] = useMemo(() => {
+    const peerPerf = { ..._peerPerformance }
+    const _transformedData = transformData(
+      ddfilter,
+      _peerPerformance?.bandInfo,
+      _peerPerformance?.metricInfo
+    )
+    return [peerPerf, _transformedData]
+  }, [_peerPerformance, ddfilter, loading])
   const assessmentName = getAssessmentName(
     peerPerformance?.meta?.test || settings.selectedTest
   )
@@ -91,76 +167,29 @@ const PeerPerformance = ({
           profile._id ===
           (sharedReportFilters || settings.requestFilters).profileId
       )?.performanceBand ||
-      peerPerformance?.bandInfo?.performanceBand ||
+      _peerPerformance?.bandInfo?.performanceBand ||
       [],
-    [settings.requestFilters, peerPerformance]
+    [settings.requestFilters, _peerPerformance]
   )
 
-  const [ddfilter, setDdFilter] = useState({
-    ...filters,
-    analyseBy: 'score(%)',
-    compareBy: userRole === 'teacher' ? 'groupId' : 'schoolId',
-  })
-  const [chartFilter, setChartFilter] = useState({})
-
-  const [extDemographicData, setExtDemographicData] = useState({})
-  const [extDemogaphicFilters, setExtDemographicFilters] = useState([])
-
-  useEffect(() => () => resetPeerPerformance(), [])
-
-  useEffect(() => {
-    setDdFilter({
-      ...ddfilter,
-      ...filters,
-    })
-  }, [filters])
-
-  useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {
-        requestFilters: { ...settings.requestFilters },
-        testId: settings.selectedTest.key,
-      }
-      getPeerPerformance(q)
-    }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      return () => toggleFilter(null, false)
-    }
-  }, [settings.selectedTest?.key, settings.requestFilters])
-
-  useEffect(() => {
-    setPerformanceBandProfile(peerPerformance?.bandInfo || {})
-    setExtDemographicFilters([])
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(peerPerformance) &&
-      !peerPerformance.metricInfo.length
-    ) {
-      toggleFilter(null, true)
-    }
-  }, [peerPerformance])
-
-  let { compareByDropDownData } = dropDownFormat
-  compareByDropDownData = next(
-    dropDownFormat.compareByDropDownData,
-    (tempCompareBy) => {
-      tempCompareBy.splice(3, 0, { key: 'group', title: 'Student Group' })
+  const compareByDropDownData = useMemo(() => {
+    let _compareByDropDownData = [...compareByKeyMaps]
+    _compareByDropDownData = next(_compareByDropDownData, (tempCompareBy) => {
       if (userRole === 'teacher') {
         tempCompareBy.splice(0, 2)
       }
-      const _extAttributes = uniq(
-        peerPerformance.metricInfo
-          ?.map((mi) => Object.keys(mi.extAttributes || {}))
-          .flat()
-          .sort()
-      ).map((eA) => ({
-        key: eA,
-        title: idToName(eA),
-      }))
-      tempCompareBy.push(..._extAttributes)
-    }
-  )
+      if (_peerPerformance.extAttributes) {
+        const keysAndTitles = _peerPerformance.extAttributes.map((obj) => ({
+          key: `extAttr_${obj?.name}`,
+          title: getFormattedName(obj?.name),
+        }))
+        if (keysAndTitles?.length) {
+          tempCompareBy.push(...keysAndTitles)
+        }
+      }
+    })
+    return _compareByDropDownData
+  }, [userRole, _peerPerformance.extAttributes])
 
   useEffect(() => {
     if (
@@ -172,34 +201,17 @@ const PeerPerformance = ({
       }))
     }
   }, [peerPerformance])
-
-  const res = useMemo(() => ({ ...peerPerformance, bandInfo }), [
-    peerPerformance,
-    bandInfo,
-  ])
   const parsedData = useMemo(() => {
     return {
-      data: parseData(res, ddfilter, extDemogaphicFilters),
       columns: getColumns(ddfilter),
     }
-  }, [res, ddfilter, extDemogaphicFilters])
-
-  useEffect(() => {
-    // External Demographic Filter data should be constructed after all filters are applied.
-    if (!isEmpty(res.metricInfo)) {
-      const extDemographicGroupedData = createExtDemographicGroupedData(
-        res.metricInfo,
-        ddfilter
-      )
-      setExtDemographicData(extDemographicGroupedData)
-    }
-  }, [res, ddfilter])
-
+  }, [ddfilter])
   const updateAnalyseByCB = (event, selected) => {
     setDdFilter({
       ...ddfilter,
       analyseBy: selected.key,
     })
+    setPageNo(1)
     setChartFilter({})
   }
 
@@ -208,6 +220,7 @@ const PeerPerformance = ({
       ...ddfilter,
       compareBy: selected.key,
     })
+    setPageNo(1)
     setChartFilter({})
   }
 
@@ -228,6 +241,29 @@ const PeerPerformance = ({
   const onResetClickCB = () => {
     setChartFilter({})
   }
+
+  const generateCSVRequired = useMemo(
+    () => [(peerPerformance?.totalRows || 0) > pageSize].some(Boolean),
+    [peerPerformance.totalRows]
+  )
+
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const params = {
+        reportType: reportTypes.reportNavType.PEER_PERFORMANCE,
+        reportFilters: {
+          ...settings.requestFilters,
+          ...demographicFilters,
+          compareBy: ddfilter.compareBy,
+          analyzeBy: ddfilter.analyseBy,
+          sortKey,
+          sortOrder: sortOrderMap[sortOrder],
+        },
+        reportExtras: {},
+      }
+      generateCSV(params)
+    }
+  }, [isCsvDownloading])
 
   if (loading) {
     return (
@@ -282,6 +318,7 @@ const PeerPerformance = ({
                       <ExternalDemographicFilter
                         extDemographicData={extDemographicData}
                         updateFilters={updateExtDemographicFilters}
+                        extDemogaphicFilters={extDemogaphicFilters}
                       />
                     )}
                   </StyledDropDownContainer>
@@ -319,55 +356,84 @@ const PeerPerformance = ({
                 </Row>
               </Col>
             </Row>
-            <div>
-              {ddfilter.analyseBy === 'score(%)' ||
-              ddfilter.analyseBy === 'rawScore' ? (
-                // simple stacked bar-chart
-                <SimpleStackedBarChartContainer
-                  data={parsedData.data}
-                  analyseBy={ddfilter.analyseBy}
-                  compareBy={ddfilter.compareBy}
-                  filter={chartFilter}
-                  assessmentName={assessmentName}
-                  onBarClickCB={onBarClickCB}
-                  onResetClickCB={onResetClickCB}
-                  bandInfo={bandInfo}
-                  role={userRole}
-                />
-              ) : (
-                // signed stacked bar-chart
-                <SignedStackedBarChartContainer
-                  data={parsedData.data}
-                  analyseBy={ddfilter.analyseBy}
-                  compareBy={ddfilter.compareBy}
-                  filter={chartFilter}
-                  assessmentName={assessmentName}
-                  onBarClickCB={onBarClickCB}
-                  onResetClickCB={onResetClickCB}
-                  bandInfo={bandInfo}
-                  role={userRole}
-                />
-              )}
-            </div>
+            <EduIf condition={!loading && !error}>
+              <EduThen>
+                <div>
+                  <EduIf
+                    condition={
+                      ddfilter.analyseBy === analyseByOptions.scorePerc ||
+                      ddfilter.analyseBy === analyseByOptions.rawScore
+                    }
+                  >
+                    <EduThen>
+                      <SimpleStackedBarChartContainer
+                        data={transformedData}
+                        analyseBy={ddfilter.analyseBy}
+                        compareBy={ddfilter.compareBy}
+                        filter={chartFilter}
+                        assessmentName={assessmentName}
+                        onBarClickCB={onBarClickCB}
+                        onResetClickCB={onResetClickCB}
+                        role={userRole}
+                      />
+                    </EduThen>
+                    <EduElse>
+                      <SignedStackedBarChartContainer
+                        data={transformedData}
+                        analyseBy={ddfilter.analyseBy}
+                        compareBy={ddfilter.compareBy}
+                        filter={chartFilter}
+                        assessmentName={assessmentName}
+                        onBarClickCB={onBarClickCB}
+                        onResetClickCB={onResetClickCB}
+                        bandInfo={bandInfo}
+                        role={userRole}
+                      />
+                    </EduElse>
+                  </EduIf>
+                </div>
+              </EduThen>
+              <EduElse>
+                <NoDataContainer>
+                  No data available for selected option
+                </NoDataContainer>
+              </EduElse>
+            </EduIf>
           </StyledSignedBarContainer>
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
-        <StyledCard>
-          <PeerPerformanceTable
-            isCsvDownloading={isCsvDownloading}
-            columns={parsedData.columns}
-            dataSource={parsedData.data}
-            rowKey="compareBylabel"
-            filter={chartFilter}
-            analyseBy={ddfilter.analyseBy}
-            compareBy={ddfilter.compareBy}
-            assessmentName={assessmentName}
-            bandInfo={bandInfo}
-            role={userRole}
-          />
-        </StyledCard>
-      </TableContainer>
+      <EduIf condition={!loading && !error}>
+        <TableContainer>
+          <StyledCard>
+            <PeerPerformanceTable
+              isCsvDownloading={generateCSVRequired ? false : isCsvDownloading}
+              columns={parsedData.columns}
+              dataSource={transformedData}
+              rowKey={(_, i) => `compareBylabel-${i}`}
+              filter={chartFilter}
+              analyseBy={ddfilter.analyseBy}
+              compareBy={ddfilter.compareBy}
+              assessmentName={assessmentName}
+              bandInfo={bandInfo}
+              role={userRole}
+              setSortKey={setSortKey}
+              setSortOrder={setSortOrder}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+              setPageNo={setPageNo}
+            />
+            <EduIf condition={peerPerformance.totalRows > pageSize}>
+              <Pagination
+                style={{ marginTop: '10px' }}
+                onChange={setPageNo}
+                current={pageNo}
+                pageSize={pageSize}
+                total={peerPerformance.totalRows}
+              />
+            </EduIf>
+          </StyledCard>
+        </TableContainer>
+      </EduIf>
     </div>
   )
 }
@@ -403,6 +469,7 @@ const enhance = compose(
       getPeerPerformance: getPeerPerformanceRequestAction,
       resetPeerPerformance: resetPeerPerformanceAction,
       setPerformanceBandProfile: setPerformanceBandProfileAction,
+      generateCSV: generateCSVAction,
     }
   )
 )

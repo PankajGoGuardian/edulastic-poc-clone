@@ -103,6 +103,7 @@ const SimpleStackedBarChartComponent = ({
   setBackendPagination,
   showLegend = false,
   setVisibleIndices,
+  carousel,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -182,6 +183,10 @@ const SimpleStackedBarChartComponent = ({
       const startIndex = pagination.startIndex - diff
       const endIndex = pagination.endIndex - diff
       onSetVisibleIndices(startIndex, endIndex)
+    } else if (carousel) {
+      const startIndex = chartData.length - pageSize
+      const endIndex = chartData.length - 1
+      onSetVisibleIndices(startIndex, endIndex)
     }
   }
 
@@ -195,6 +200,10 @@ const SimpleStackedBarChartComponent = ({
       }
       const startIndex = pagination.startIndex + diff
       const endIndex = pagination.endIndex + diff
+      onSetVisibleIndices(startIndex, endIndex)
+    } else if (carousel) {
+      const startIndex = 0
+      const endIndex = pageSize
       onSetVisibleIndices(startIndex, endIndex)
     }
   }
@@ -299,7 +308,10 @@ const SimpleStackedBarChartComponent = ({
         className="navigator navigator-left"
         onClick={chartNavLeftClick}
         style={{
-          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavLeftVisibility || (carousel && chartData.length > pageSize)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -310,7 +322,10 @@ const SimpleStackedBarChartComponent = ({
         className="navigator navigator-right"
         onClick={chartNavRightClick}
         style={{
-          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavRightVisibility || (carousel && chartData.length > pageSize)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer

@@ -186,18 +186,20 @@ export const PeerPerformanceTable = ({
       }
 
       const allBandCols = {}
-      for (const band of bandInfo) {
-        const name = band.name
-        const sum = sumBy(tableData, (o) => o[`${name}Percentage`])
-        allBandCols[`${name}Percentage`] = sum !== 0
+      for (const { name } of bandInfo) {
+        const sum = sumBy(tableData, (o) => o[name])
+        allBandCols[name] = sum !== 0
       }
 
       let validBandCols = 0
       const performanceBandColumns = arr.filter(
         (item) => item[analyseByOptions.proficiencyBand]
       )
+      const removeIndex = []
       for (const [index, value] of bandInfo.entries()) {
-        if (!allBandCols[`${value.name}Percentage`]) {
+        if (!allBandCols[value.name]) {
+          const startIndex = arr.length - bandInfo.length
+          removeIndex.push(startIndex + index)
           continue
         }
         performanceBandColumns[index].width = 250
@@ -207,6 +209,9 @@ export const PeerPerformanceTable = ({
           value.name
         )
         validBandCols++
+      }
+      for (let i = removeIndex.length - 1; i >= 0; i--) {
+        arr.splice(removeIndex[i], 1)
       }
       colouredCellsNo = validBandCols
     }

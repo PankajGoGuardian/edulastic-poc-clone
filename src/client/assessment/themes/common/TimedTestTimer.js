@@ -75,9 +75,43 @@ const TimedTestTimer = ({
   const docRef = useRef(
     db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
   )
+  const currentAssignmentTimeRef = useRef(null)
+  useEffect(() => {
+    currentAssignmentTimeRef.current = currentAssignmentTime
+  }, [currentAssignmentTime])
+
   const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
   useEffect(() => {
     let unsubscribe = () => {}
+    const updateDocOnUnmount = () => {
+      if (
+        !isAuthorPreview &&
+        docRef &&
+        utaId &&
+        currentAssignmentTimeRef.current > 0
+      ) {
+        if (docRef.current) {
+          docRef.current.get().then((snapshot) => {
+            const {
+              timeSpent = 0,
+              allowedTime: allowedTestTime,
+            } = snapshot.data()
+            const _syncOffset =
+              allowedTestTime - currentAssignmentTimeRef.current || 0
+            docRef.current.update({
+              lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
+              timeSpent: Math.max(timeSpent, _syncOffset),
+            })
+          })
+        } else {
+          Sentry.captureException(
+            new Error(
+              `[Timed Assignment] Missing Doc Ref at time ${currentAssignmentTimeRef.current}ms on uta ${utaId} and group ${groupId}`
+            )
+          )
+        }
+      }
+    }
     if (!isAuthorPreview) {
       unsubscribe = db
         .collection(firestoreCollectionName)
@@ -89,7 +123,10 @@ const TimedTestTimer = ({
     if (isAuthorPreview) {
       setCurrentAssignmentTime(allowedTime)
     }
-    return () => unsubscribe()
+    return () => {
+      updateDocOnUnmount()
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {

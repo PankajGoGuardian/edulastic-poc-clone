@@ -24,6 +24,37 @@ const IconCorrect = `<svg class="drag-drop-icon drag-drop-icon-correct" ${IconCo
   5
 )}`
 
+const BOX_MIN_WIDTH = 50
+const BOX_MIN_HEIGHT = 32
+
+function onHoverMark() {
+  if (this.rendNode && window.$) {
+    const images = $(this.rendNode).find('img')
+    const content = $(this.rendNode).find('.drag-drop-content')
+    if (images.length > 0 && content.length) {
+      const dataWidth = content.attr('data-width')
+      const dataHeight = content.attr('data-height')
+      content.css('min-width', `${dataWidth}px`)
+      content.css('min-height', `${dataHeight}px`)
+      images.css('max-width', '100%')
+      this.board.fullUpdate()
+    }
+  }
+}
+
+function onLeaveMark() {
+  if (this.rendNode) {
+    const images = $(this.rendNode).find('img')
+    const content = $(this.rendNode).find('.drag-drop-content')
+    if (images.length > 0 && content.length) {
+      content.css('min-width', `${BOX_MIN_WIDTH}px`)
+      content.css('min-height', `${BOX_MIN_HEIGHT}px`)
+      images.css('max-width', '2rem')
+      this.board.fullUpdate()
+    }
+  }
+}
+
 const jxgType = 101
 
 /**
@@ -92,13 +123,13 @@ function create(board, object, settings) {
   conentClassName = `class="${conentClassName}"`
 
   const contentStyle = `style="
-    width: ${width}px;
-    height: ${height}px;
+    min-width: ${BOX_MIN_WIDTH}px;
+    min-height: ${BOX_MIN_HEIGHT}px;
   "`
 
   const triangle = "<div class='drag-drop-content-triangle'></div"
 
-  content = `<div ${contentStyle} ${conentClassName}>${content}${icon}${triangle}</div>`
+  content = `<div ${contentStyle} ${conentClassName} data-width="${width}" data-height="${height}">${content}${icon}${triangle}</div>`
 
   const mark = board.$board.create('text', [x, y, content], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
@@ -147,6 +178,9 @@ function create(board, object, settings) {
     mark.on('up', upHandler)
     mark.on('drag', dragHandler)
   }
+
+  mark.on('over', onHoverMark)
+  mark.on('out', onLeaveMark)
 
   newElement.type = jxgType
   newElement.labelHTML = text

@@ -11,10 +11,11 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { rubricsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { v4 } from 'uuid'
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqualWith } from 'lodash'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
 import { getUserOrgId } from '../src/selectors/user'
+import { getDefaultRubricData } from './Components/common/helper'
 
 // constants
 export const UPDATE_RUBRIC_DATA = '[rubric] update rubric data'
@@ -35,11 +36,9 @@ export const SET_RUBRIC_DATA_LOADING = '[rubric] set rubric data loading'
 export const GENERATE_RUBRIC = '[rubric] generate rubric'
 export const SET_IS_RUBRIC_GENERATION_IN_PROGRESS =
   '[rubric] set is rubric generation in progress'
-export const SET_RUBRIC_GENERATION_STIMULUS_METADATA =
-  '[rubric] set rubric generation stimulus metadata'
+export const SET_RUBRIC_GENERATION_STIMULUS =
+  '[rubric] set rubric generation stimulus'
 
-export const INCREMENT_RUBRIC_GENERATION_COUNT =
-  '[rubric] increment rubric generation count'
 export const SET_REMOVE_AI_TAG = '[rubric] set rubric data loading'
 export const SET_UUID_LIST = '[rubric] set uuids'
 // actions
@@ -64,13 +63,10 @@ export const autoGenerateRubricAction = createAction(GENERATE_RUBRIC)
 export const setIsRubricGenerationInProgress = createAction(
   SET_IS_RUBRIC_GENERATION_IN_PROGRESS
 )
-export const setRubricGenerationStimulusMetaDataAction = createAction(
-  SET_RUBRIC_GENERATION_STIMULUS_METADATA
+export const setRubricGenerationStimulusAction = createAction(
+  SET_RUBRIC_GENERATION_STIMULUS
 )
 
-export const incrementRubricGenerationCountAction = createAction(
-  INCREMENT_RUBRIC_GENERATION_COUNT
-)
 export const setRemoveAiTagAction = createAction(SET_REMOVE_AI_TAG)
 export const setUUIDsAction = createAction(SET_UUID_LIST)
 
@@ -126,15 +122,9 @@ export const getRubricGenerationInProgress = createSelector(
   (state) => state.rubricGenerationInProgress
 )
 
-export const getPreviousStimulus = createSelector(
+export const getPreviousRubricGeneratedStimulusSelector = createSelector(
   getStateSelector,
-  (state) => state.rubricGenerationStimulusMetadata.stimulus
-)
-
-export const getRubricGenerationCountForGivenStimulus = createSelector(
-  getStateSelector,
-  (state) =>
-    state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus
+  (state) => state.stimulusWhenRubricGenerated
 )
 
 export const getRubricUUIDsSelector = createSelector(
@@ -150,10 +140,7 @@ const initialState = {
   totalSearchedCount: 0,
   rubricDataLoading: false,
   rubricGenerationInProgress: false,
-  rubricGenerationStimulusMetadata: {
-    stimulus: '',
-    rubricGenerationCountForGivenStimulus: 0,
-  },
+  stimulusWhenRubricGenerated: '',
   removeAiTag: false,
 }
 
@@ -187,11 +174,8 @@ export const reducer = createReducer(initialState, {
   [SET_RUBRIC_DATA_LOADING]: (state, { payload }) => {
     state.rubricDataLoading = payload
   },
-  [SET_RUBRIC_GENERATION_STIMULUS_METADATA]: (state, { payload }) => {
-    state.rubricGenerationStimulusMetadata = payload
-  },
-  [INCREMENT_RUBRIC_GENERATION_COUNT]: (state) => {
-    state.rubricGenerationStimulusMetadata.rubricGenerationCountForGivenStimulus += 1
+  [SET_RUBRIC_GENERATION_STIMULUS]: (state, { payload }) => {
+    state.stimulusWhenRubricGenerated = payload
   },
   [SET_REMOVE_AI_TAG]: (state, { payload }) => {
     state.removeAiTag = payload
@@ -362,22 +346,22 @@ function* generateRubricSaga({ payload }) {
         })
       )
       const existingRubricData = yield select(getCurrentRubricDataSelector)
-      let newRubricData = {}
-      if (!isEmpty(existingRubricData)) {
-        newRubricData = {
-          ...existingRubricData,
-          criteria: [
-            ...existingRubricData.criteria,
-            ...generatedCriteriasWithId,
-          ],
+      const defaultRubricData = getDefaultRubricData()
+      const isDefaultCriteriaPresent = isEqualWith(
+        defaultRubricData.criteria,
+        existingRubricData.criteria,
+        (value1, value2, key) => {
+          return key === 'id' ? true : undefined
         }
-      } else {
-        newRubricData = {
-          name: '',
-          description: '',
-          criteria: generatedCriteriasWithId,
-        }
+      )
+      const criteria = isDefaultCriteriaPresent
+        ? generatedCriteriasWithId
+        : [...existingRubricData.criteria, ...generatedCriteriasWithId]
+      const newRubricData = {
+        ...existingRubricData,
+        criteria,
       }
+
       yield put(setUUIDsAction(uuids))
       yield put(updateRubricDataAction(newRubricData))
       notification({
@@ -391,7 +375,6 @@ function* generateRubricSaga({ payload }) {
     notification({ messageKey: 'failedToGenerateRubric' })
   } finally {
     yield put(setIsRubricGenerationInProgress(false))
-    yield put(incrementRubricGenerationCountAction())
   }
 }
 

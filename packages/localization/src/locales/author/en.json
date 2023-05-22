@@ -177,7 +177,7 @@
   },
   "allowAutoEssayEvaluation": {
     "title": "Enable auto evaluation by AI (Essay question)",
-    "info": "Choose if you want to evaluate student response of essay type question using AI. Note that the manual evaluation can be done by teacher on top of it."
+    "info": "Choose if you want to evaluate student response of essay type question with AI assistance. Note that the manual evaluation can be done by teacher on top of it."
   },
   "allowTeacherToRedirect": {
     "info": "When allow teachers to redirect is set to ON, teachers are allowed to redirect a common test for their class. Set to OFF to prevent teachers from using the redirect test feature."
@@ -227,6 +227,6 @@
   },
   "rubric": {
     "stimulusNotPresent": "Rubric cannot be auto generated without question.",
-    "max2AttemptForGivenStimulus": "Maximum 2 times rubric can be generated for a prompted question."
+    "rubricAlreadyGenerated": "Rubrics is already generated for the provided question."
   }
 }

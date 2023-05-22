@@ -32,7 +32,6 @@ import {
 } from '../../../../author/QuestionEditor/ducks'
 
 import {
-  getCurrentQuestionSelector,
   getQuestionRubrics,
   removeRubricIdAction,
 } from '../../../../author/sharedDucks/questions'
@@ -45,8 +44,6 @@ import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
 import {
-  getPreviousStimulus,
-  setRubricGenerationStimulusMetaDataAction,
   updateRubricDataAction,
   setRemoveAiTagAction,
 } from '../../../../author/GradingRubric/ducks'
@@ -74,20 +71,6 @@ class Scoring extends Component {
       showGradingRubricModal: true,
       rubricActionType: actionType,
     })
-  }
-
-  updateStimulusMetadata = () => {
-    const {
-      currentQuestion,
-      previousStimulus,
-      setRubricGenerationStimulusMetaData,
-    } = this.props
-    if (currentQuestion.stimulus !== previousStimulus) {
-      setRubricGenerationStimulusMetaData({
-        stimulus: currentQuestion.stimulus,
-        rubricGenerationCountForGivenStimulus: 0,
-      })
-    }
   }
 
   toggleRubricModal = () => {
@@ -436,7 +419,6 @@ class Scoring extends Component {
                 <CustomStyleBtn
                   onClick={(e) => {
                     this.handleRubricAction('CREATE NEW')
-                    this.updateStimulusMetadata()
                     e.target.blur()
                   }}
                   data-cy="createNewRubric"
@@ -592,8 +574,6 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       containsRubric: getQuestionRubrics(state),
       itemDetailQuestions: getItemDetailQuestionsSelector(state),
-      currentQuestion: getCurrentQuestionSelector(state),
-      previousStimulus: getPreviousStimulus(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -602,7 +582,6 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
-      setRubricGenerationStimulusMetaData: setRubricGenerationStimulusMetaDataAction,
       removeAiTag: setRemoveAiTagAction,
     }
   )

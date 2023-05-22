@@ -33,7 +33,6 @@ import {
   deleteRubricAction,
   getCurrentRubricDataSelector,
   getRecentlyUsedRubricsSelector,
-  getRubricGenerationCountForGivenStimulus,
   getRubricGenerationInProgress,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
@@ -44,6 +43,8 @@ import {
   updateRubricDataAction,
   setRemoveAiTagAction,
   getRubricUUIDsSelector,
+  setRubricGenerationStimulusAction,
+  getPreviousRubricGeneratedStimulusSelector,
 } from '../ducks'
 import {
   ActionBarContainer,
@@ -65,8 +66,6 @@ import {
   setQuestionDataAction,
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
-
-const MAX_ATTEMPT_FOR_RUBRIC_GENERATION = 2
 
 const UseExisting = ({
   updateRubricData,
@@ -90,7 +89,6 @@ const UseExisting = ({
   setItemLevelScoring,
   autoGenerateRubric,
   isRubricGenerationInProgress,
-  rubricGenerationCountForGivenStimulus,
   t,
   questionData,
   allTagsData,
@@ -99,6 +97,8 @@ const UseExisting = ({
   addNewTag,
   premium,
   rubricUUIDs,
+  setRubricGenerationStimulus,
+  previousRubricGeneratedStimulus,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -157,18 +157,18 @@ const UseExisting = ({
     [currentRubricData?.criteria]
   )
 
-  const maxAttemptExceededOrNotTooltip =
-    rubricGenerationCountForGivenStimulus === MAX_ATTEMPT_FOR_RUBRIC_GENERATION
-      ? t('rubric.max2AttemptForGivenStimulus')
+  const rubricAlreadyGeneratedOrNotMsg =
+    previousRubricGeneratedStimulus === currentQuestion?.stimulus
+      ? t('rubric.rubricAlreadyGenerated')
       : ''
 
   const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
     ? t('rubric.stimulusNotPresent')
-    : maxAttemptExceededOrNotTooltip
+    : rubricAlreadyGeneratedOrNotMsg
 
   const disableAutoGenerateRubricBtn = [
     isEmpty(currentQuestion?.stimulus),
-    rubricGenerationCountForGivenStimulus === MAX_ATTEMPT_FOR_RUBRIC_GENERATION,
+    previousRubricGeneratedStimulus === currentQuestion?.stimulus,
   ].some((o) => !!o)
 
   const handlePaginationChange = (page) => {
@@ -185,6 +185,7 @@ const UseExisting = ({
     const stimulus = sanitizeForReview(currentQuestion?.stimulus)
     if (stimulus) {
       autoGenerateRubric({ stimulus })
+      setRubricGenerationStimulus(stimulus)
       setAIAssisted(true)
     }
   }
@@ -474,7 +475,9 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <EduIf condition={premium}>
+            <EduIf
+              condition={[premium, !currentRubricData?._id].every((o) => !!o)}
+            >
               <CustomStyleBtn2
                 style={btnStyle}
                 onClick={generateRubricByOpenAI}
@@ -657,13 +660,13 @@ const enhance = compose(
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
       isRubricGenerationInProgress: getRubricGenerationInProgress(state),
-      rubricGenerationCountForGivenStimulus: getRubricGenerationCountForGivenStimulus(
-        state
-      ),
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, 'testitem'),
       premium: state?.user?.user?.features?.premium,
       rubricUUIDs: getRubricUUIDsSelector(state),
+      previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
+        state
+      ),
     }),
     {
       updateRubricData: updateRubricDataAction,
@@ -679,6 +682,7 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       addNewTag: addNewTagAction,
       removeAiTag: setRemoveAiTagAction,
+      setRubricGenerationStimulus: setRubricGenerationStimulusAction,
     }
   )
 )

@@ -54,6 +54,7 @@ const FiltersSidebar = ({
         data-cy={filterItem.title}
         showSearch={filterItem.showSearch}
         onSearch={filterItem.onSearch && filterItem.onSearch}
+        onFocus={filterItem.onFocus}
         mode={filterItem.mode}
         size={filterItem.size}
         placeholder={filterItem.placeholder}

@@ -10,7 +10,7 @@ import {
 } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
 import { Select } from 'antd'
-import { get, keyBy } from 'lodash'
+import { get, isEqual, keyBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
@@ -44,6 +44,7 @@ import { addItemToCartAction } from '../../ducks'
 import TagField from '../Fields/TagField'
 import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
 import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
+import { getDictStandardsForCurriculumAction } from '../../../src/actions/dictionaries'
 
 const { SMART_FILTERS } = libraryFilters
 const Search = ({
@@ -75,18 +76,28 @@ const Search = ({
   addItemToCart,
   enableAudioResponseQuestion,
   elosByTloId,
+  getCurriculumStandards,
 }) => {
   const [showModal, setShowModalValue] = useState(false)
+  const [searchProps, setSearchProps] = useState({
+    id: '',
+    grades: [],
+    searchStr: '',
+  })
 
   useEffect(() => {
     if (userFeatures.isCurator && !currentDistrictUsers)
       getCurrentDistrictUsers(districtId)
   }, [userFeatures, districtId, currentDistrictUsers])
 
+  const isStandardsDisabled =
+    !curriculumId ||
+    !formattedCuriculums?.some(
+      (curriculum) => curriculum.value === curriculumId
+    )
+
   const setShowModal = (value) => {
-    if (value && !curriculumStandards.elo.length) {
-      return
-    }
+    if (value && isStandardsDisabled) return
     setShowModalValue(value)
   }
 
@@ -134,10 +145,6 @@ const Search = ({
       ? !['School Library'].includes(cd.text)
       : 1
   )
-  const isStandardsDisabled =
-    !(curriculumStandards.elo && curriculumStandards.elo.length > 0) ||
-    !curriculumId
-
   const questionTypesToBeHidden = [...HIDE_QUESTION_TYPES]
   if (!enableAudioResponseQuestion) {
     questionTypesToBeHidden.push(AUDIO_RESPONSE)
@@ -211,6 +218,15 @@ const Search = ({
   const showMoreButtonEnabled =
     _curriculumStandards.elo?.length >=
     dictionaries.STANDARD_DROPDOWN_LIMIT_1000
+
+  const handleSearchStandard = (searchStr = '') => {
+    const searchObject = { id: selectedCurriculam?.value, grades, searchStr }
+    if (!isEqual(searchProps, searchObject)) {
+      setSearchProps(searchObject)
+      getCurriculumStandards(selectedCurriculam?.value, grades, searchStr)
+    }
+  }
+
   return (
     <MainFilterItems>
       {showModal && (
@@ -297,7 +313,14 @@ const Search = ({
               <SelectInputStyled
                 mode="multiple"
                 data-cy="selectSubject"
-                onChange={onSearchFieldChange('subject')}
+                onChange={(subjects) => {
+                  setSearchProps({
+                    id: '',
+                    grades: [],
+                    searchStr: '',
+                  })
+                  onSearchFieldChange('subject')(subjects)
+                }}
                 value={subject}
                 size="large"
                 placeholder="All Subjects"
@@ -361,15 +384,9 @@ const Search = ({
                     mode="multiple"
                     size="large"
                     optionFilterProp="children"
-                    filterOption={(input, option) => {
-                      const children = option.props.children
-                      if (typeof children === 'string') {
-                        return (
-                          children.toLowerCase().indexOf(input.toLowerCase()) >=
-                          0
-                        )
-                      }
-                    }}
+                    filterOption={false}
+                    onSearch={handleSearchStandard}
+                    onFocus={handleSearchStandard}
                     placeholder="All Standards"
                     onChange={(stds) => {
                       const values = stds.map((item) => ({
@@ -536,6 +553,7 @@ export default connect(
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
     addItemToCart: addItemToCartAction,
+    getCurriculumStandards: getDictStandardsForCurriculumAction,
   }
 )(Search)
 

@@ -988,7 +988,7 @@ class Container extends Component {
               total={passageTestItems.length}
               pageSize={1}
               defaultCurrent={
-                passageTestItems.findIndex((i) => i === item.versionId) + 1
+                passageTestItems.findIndex((i) => i === item._id) + 1
               }
               onChange={this.goToItem}
             />

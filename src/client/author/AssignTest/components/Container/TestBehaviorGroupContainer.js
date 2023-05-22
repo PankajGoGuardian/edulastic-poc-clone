@@ -37,6 +37,7 @@ import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
+import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -523,7 +524,7 @@ const TestBehaviorGroupContainer = ({
         <SettingContainer id="auto-essay-evaluation">
           <DetailsTooltip
             width={tootltipWidth}
-            title="Enable Auto Essay Response Evaluation"
+            title={i18translate('allowAutoEssayEvaluation.title')}
             content={i18translate('allowAutoEssayEvaluation.info')}
             premium={premium}
             placement="rightTop"
@@ -531,9 +532,12 @@ const TestBehaviorGroupContainer = ({
           <StyledRow gutter={16} mb="15px" height="40">
             <Col span={10}>
               <Label>
-                <span>Enable Auto Essay Response Evaluation</span>
+                <span>{i18translate('allowAutoEssayEvaluation.title')}</span>
                 <DollarPremiumSymbol premium={premium} />
               </Label>
+              <BetaTag top="-4%" left="254.55px">
+                BETA
+              </BetaTag>
             </Col>
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
               <Row style={{ display: 'flex', alignItems: 'center' }}>

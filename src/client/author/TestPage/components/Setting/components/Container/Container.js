@@ -1731,8 +1731,13 @@ class Setting extends Component {
                     <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
                       <SettingContainer>
                         <Title>
-                          <span>Enable Auto Essay Response Evaluation</span>
-                          <DollarPremiumSymbol premium={premium} />
+                          <span>
+                            {i18translate('allowAutoEssayEvaluation.title')}
+                            <DollarPremiumSymbol premium={premium} />
+                            <BetaTag top="1%" left="326.55px">
+                              BETA
+                            </BetaTag>
+                          </span>
                           <Tooltip
                             title={i18translate(
                               'allowAutoEssayEvaluation.info'
@@ -1740,7 +1745,7 @@ class Setting extends Component {
                           >
                             <IconInfo
                               color={lightGrey9}
-                              style={{ marginLeft: '10px', cursor: 'pointer' }}
+                              style={{ marginLeft: '60px', cursor: 'pointer' }}
                             />
                           </Tooltip>
                           <EduSwitchStyled

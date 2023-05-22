@@ -1748,7 +1748,7 @@
     "description": ""
   },
   "scoreUpdationFailed": {
-    "message": "Score updation failed",
+    "message": "Score failed to update",
     "description": ""
   },
   "dontHaveWritePermission": {

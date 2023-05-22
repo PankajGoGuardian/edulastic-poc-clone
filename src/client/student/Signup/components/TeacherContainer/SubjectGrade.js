@@ -233,6 +233,7 @@ class SubjectGrade extends React.Component {
           onSuccessCallback,
           schoolSelectedFromDropdown = false,
           setIsCompleteSignupInProgress,
+          elosByTloId,
         } = this.props
 
         const { email, firstName, middleName, lastName } = userInfo
@@ -293,10 +294,10 @@ class SubjectGrade extends React.Component {
         map(
           values.curriculumStandards.map((item) => item._id),
           (id) => {
-            const standard = find(
-              curriculumStandards.elo || [],
-              (x) => x._id === id
-            )
+            const { elo: dropDownElos } = curriculumStandards || {}
+            const cachedElos = Object.values(elosByTloId).flat()
+            const allElos = uniqBy([...dropDownElos, ...cachedElos], '_id')
+            const standard = find(allElos || [], (x) => x._id === id) || {}
             data.curriculumStandards[standard.curriculumId] = (
               data.curriculumStandards[standard.curriculumId] || []
             ).concat(id)

@@ -111,7 +111,7 @@ const UseExisting = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [aIAssisted, setAIAssisted] = useState(false)
-  const aiTagName = 'AI - Assisted Rubrics'
+  const aiTagName = 'AI assisted Rubrics'
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)

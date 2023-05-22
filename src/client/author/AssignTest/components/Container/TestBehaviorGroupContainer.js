@@ -535,7 +535,7 @@ const TestBehaviorGroupContainer = ({
                 <span>{i18translate('allowAutoEssayEvaluation.title')}</span>
                 <DollarPremiumSymbol premium={premium} />
               </Label>
-              <BetaTag top="-4%" left="254.55px">
+              <BetaTag top="-20%" left="290px">
                 BETA
               </BetaTag>
             </Col>

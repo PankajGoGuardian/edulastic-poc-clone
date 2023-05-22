@@ -40,6 +40,10 @@ const GradingRubricModal = ({
       <EduIf condition={isRubricGenerationInProgress}>
         <SpinContainer loading={isRubricGenerationInProgress}>
           <StyledSpin size="large" />
+          <DivModal>
+            It usually takes around 60 seconds to generate. Please stay on the
+            page, do not press back button.
+          </DivModal>
         </SpinContainer>
       </EduIf>
       <ModalBody>
@@ -78,4 +82,19 @@ const StyledModal = styled(ConfirmationModal)`
     background: inherit !important;
     box-shadow: unset !important;
   }
+`
+
+const DivModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f0eeeb;
+  font-size: 24px;
+  z-index: -10;
 `

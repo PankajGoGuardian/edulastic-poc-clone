@@ -18,6 +18,7 @@ export const SimpleStackedBarChartContainer = ({
   onResetClickCB,
   assessmentName,
   role,
+  chartProps,
 }) => {
   const dataParser = () => {
     for (const item of data) {
@@ -137,7 +138,7 @@ export const SimpleStackedBarChartContainer = ({
       filter={filter}
       referenceLineY={chartSpecifics.referenceLineY}
       pageSize={10}
-      carousel
+      {...chartProps}
     />
   )
 }

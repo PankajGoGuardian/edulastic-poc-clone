@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -91,6 +91,12 @@ export const SignedStackedBarChart = ({
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
   carousel,
+  setPageNo,
+  pageNo,
+  tablePageSize,
+  totalRows,
+  chartBackNavigation,
+  setChartBackNavigation,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -134,6 +140,15 @@ export const SignedStackedBarChart = ({
     [pagination, data]
   )
 
+  useEffect(() => {
+    if (carousel && chartBackNavigation) {
+      setChartBackNavigation(false)
+      const startIndex = chartData.length - pageSize
+      const endIndex = chartData.length - 1
+      setPagination({ startIndex, endIndex })
+    }
+  }, [])
+
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {
@@ -146,11 +161,9 @@ export const SignedStackedBarChart = ({
         startIndex: pagination.startIndex - diff,
         endIndex: pagination.endIndex - diff,
       })
-    } else if (carousel) {
-      setPagination({
-        startIndex: chartData.length - pageSize,
-        endIndex: chartData.length - 1,
-      })
+    } else if (carousel && pageNo > 1) {
+      setChartBackNavigation(true)
+      setPageNo((_pageNo) => --_pageNo)
     }
   }
 
@@ -166,11 +179,8 @@ export const SignedStackedBarChart = ({
         startIndex: pagination.startIndex + diff,
         endIndex: pagination.endIndex + diff,
       })
-    } else if (carousel) {
-      setPagination({
-        startIndex: 0,
-        endIndex: pageSize,
-      })
+    } else if (carousel && totalRows > tablePageSize * pageNo) {
+      setPageNo((_pageNo) => ++_pageNo)
     }
   }
 
@@ -278,7 +288,7 @@ export const SignedStackedBarChart = ({
         onClick={chartNavLeftClick}
         style={{
           visibility:
-            chartNavLeftVisibility || (carousel && chartData.length > pageSize)
+            chartNavLeftVisibility || (carousel && pageNo > 1)
               ? 'visible'
               : 'hidden',
         }}
@@ -292,7 +302,8 @@ export const SignedStackedBarChart = ({
         onClick={chartNavRightClick}
         style={{
           visibility:
-            chartNavRightVisibility || (carousel && chartData.length > pageSize)
+            chartNavRightVisibility ||
+            (carousel && totalRows > tablePageSize * pageNo)
               ? 'visible'
               : 'hidden',
         }}

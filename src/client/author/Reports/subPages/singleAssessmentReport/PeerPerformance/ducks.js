@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash'
-import { takeLatest, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
@@ -104,7 +104,14 @@ function* getReportsPeerPerformanceRequest({ payload }) {
     const { result } = data
 
     const peerPerformance = isEmpty(result) ? defaultReport : result
-
+    const oldPeerPerformance = yield select(getReportsPeerPerformance)
+    if (
+      !payload.requestFilters.recompute &&
+      oldPeerPerformance.totalRows &&
+      !peerPerformance.totalRows
+    ) {
+      peerPerformance.totalRows = oldPeerPerformance.totalRows
+    }
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS,
       payload: { peerPerformance },

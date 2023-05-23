@@ -16,6 +16,7 @@ export const SignedStackedBarChartContainer = ({
   onBarClickCB,
   onResetClickCB,
   bandInfo = [],
+  chartProps,
 }) => {
   const sortBandInfo = (sortForLegend) =>
     [...bandInfo].sort((a, b) =>
@@ -183,7 +184,7 @@ export const SignedStackedBarChartContainer = ({
       filter={filter}
       legendPayload={legendPayload}
       pageSize={10}
-      carousel
+      {...chartProps}
     />
   )
 }

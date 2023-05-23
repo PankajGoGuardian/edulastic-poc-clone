@@ -91,6 +91,7 @@ const PeerPerformance = ({
   const [sortOrder, setSortOrder] = useState(undefined)
   const [extDemographicData, setExtDemographicData] = useState({})
   const [extDemogaphicFilters, setExtDemographicFilters] = useState([])
+  const [chartBackNavigation, setChartBackNavigation] = useState(false)
   const _firstLoadRef = useRef(true)
 
   useEffect(() => () => resetPeerPerformance(), [])
@@ -292,6 +293,16 @@ const PeerPerformance = ({
       </NoDataContainer>
     )
   }
+  const chartProps = {
+    setPageNo,
+    pageNo,
+    tablePageSize: pageSize,
+    totalRows: peerPerformance.totalRows,
+    chartBackNavigation,
+    setChartBackNavigation,
+    carousel: true,
+  }
+
   return (
     <div>
       <UpperContainer>
@@ -382,6 +393,7 @@ const PeerPerformance = ({
                         onBarClickCB={onBarClickCB}
                         onResetClickCB={onResetClickCB}
                         role={userRole}
+                        chartProps={chartProps}
                       />
                     </EduThen>
                     <EduElse>
@@ -395,6 +407,7 @@ const PeerPerformance = ({
                         onResetClickCB={onResetClickCB}
                         bandInfo={bandInfo}
                         role={userRole}
+                        chartProps={chartProps}
                       />
                     </EduElse>
                   </EduIf>

@@ -3,37 +3,15 @@ import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { reportUtils } from '@edulastic/constants'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
 import { downloadCSV } from '../../../../../common/util'
-import { idToName, analyseByOptions } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 
-const getDisplayValue = (data, record, analyseBy, columnKey) => {
-  let printData = data
-  const NA = 'N/A'
-  if (
-    printData === 0 &&
-    (analyseBy === analyseByOptions.aboveBelowStandard ||
-      analyseBy === analyseByOptions.proficiencyBand)
-  ) {
-    return NA
-  }
-  if (analyseBy === analyseByOptions.scorePerc) {
-    printData = `${record[columnKey]?.toFixed(0)}%`
-  } else if (analyseBy === analyseByOptions.rawScore) {
-    printData = record[columnKey]?.toFixed(2)
-  } else if (
-    analyseBy === analyseByOptions.proficiencyBand ||
-    analyseBy === analyseByOptions.aboveBelowStandard
-  ) {
-    printData = `${data} (${Math.abs(
-      (record[columnKey] * 100) / record.totalStudents
-    )?.toFixed(0)}%)`
-  }
-  return printData
-}
+const { analyseByOptions, getDisplayValue } = reportUtils.peerPerformance
 
 const enableSorts = {
   'dimension.name': 'dimension',
@@ -110,19 +88,7 @@ export const PeerPerformanceTable = ({
                 Student Avg Score:{' '}
               </Col>
               <Col className="custom-table-tooltip-value">
-                {analyseBy === analyseByOptions.scorePerc
-                  ? getDisplayValue(
-                      rec.avgStudentScorePercentUnrounded,
-                      rec,
-                      analyseBy,
-                      'dimensionAvg'
-                    )
-                  : getDisplayValue(
-                      rec.avgStudentScoreUnrounded,
-                      rec,
-                      analyseBy,
-                      'dimensionAvg'
-                    )}
+                {getDisplayValue(rec.avgSore, rec, analyseBy, 'dimensionAvg')}
               </Col>
             </Row>
           </>
@@ -220,25 +186,32 @@ export const PeerPerformanceTable = ({
       }
 
       const allBandCols = {}
-      for (const band of bandInfo) {
-        const name = band.name
-        const sum = sumBy(tableData, (o) => o[`${name}Percentage`])
-        allBandCols[`${name}Percentage`] = sum !== 0
+      for (const { name } of bandInfo) {
+        const sum = sumBy(tableData, (o) => o[name])
+        allBandCols[name] = sum !== 0
       }
 
       let validBandCols = 0
+      const performanceBandColumns = arr.filter(
+        (item) => item[analyseByOptions.proficiencyBand]
+      )
+      const removeIndex = []
       for (const [index, value] of bandInfo.entries()) {
-        if (!allBandCols[`${value.name}Percentage`]) {
+        if (!allBandCols[value.name]) {
+          const startIndex = arr.length - bandInfo.length
+          removeIndex.push(startIndex + index)
           continue
         }
-        arr.push({
-          title: value.name,
-          dataIndex: value.name,
-          key: value.name,
-          width: 250,
-          render: colorCell(`fill_${index}`, value.name, value.name),
-        })
+        performanceBandColumns[index].width = 250
+        performanceBandColumns[index].render = colorCell(
+          `fill_${index}`,
+          value.name,
+          value.name
+        )
         validBandCols++
+      }
+      for (let i = removeIndex.length - 1; i >= 0; i--) {
+        arr.splice(removeIndex[i], 1)
       }
       colouredCellsNo = validBandCols
     }

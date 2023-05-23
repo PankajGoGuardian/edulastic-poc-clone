@@ -1459,6 +1459,14 @@
     "message": "Failed to save Rubric",
     "description": ""
   },
+  "failedToGenerateRubric": {
+    "message": "Request failed, please try again",
+    "description": ""
+  },
+  "rubricGeneratedSuccessfully": {
+    "message": "Successfully auto generated the rubric for the question",
+    "description": ""
+  },
   "failedToUpdateRubric": {
     "message": "Failed to update Rubric",
     "description": ""

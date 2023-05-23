@@ -57,6 +57,17 @@ export const CustomStyleBtn = styled(Button)`
   }
 `
 
+export const CustomStyleBtn2 = styled(CustomStyleBtn)`
+  &:disabled {
+    &:hover,
+    &:focus {
+      box-shadow: none;
+      color: ${(props) =>
+        props.ghost ? greyThemeLight : props.color || white};
+    }
+  }
+`
+
 export const AddAlternative = styled.div`
   width: 100%;
   /* float: right; */

@@ -99,7 +99,11 @@ import KeypadDropdown from './KeypadDropdown'
 import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
-import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
+import {
+  skinTypesOrder,
+  showRubricToStudentsSetting,
+  showAutoEssayEvaluationSetting,
+} from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
@@ -798,6 +802,7 @@ class Setting extends Component {
       showHintsToStudents = true,
       penaltyOnUsingHints = 0,
       showTtsForPassages = true,
+      allowAutoEssayEvaluation = false,
     } = entity
 
     const { canUseImmersiveReader } = features
@@ -837,7 +842,9 @@ class Setting extends Component {
     const isShowRubricToStudentsSettingVisible = showRubricToStudentsSetting(
       itemGroups
     )
-
+    const isShowAutoEssayEvaluationSetting = showAutoEssayEvaluationSetting(
+      itemGroups
+    )
     const isSmallSize = windowWidth < 993 ? 1 : 0
 
     let validationMessage = ''
@@ -1715,7 +1722,52 @@ class Setting extends Component {
                       </SettingContainer>
                     </Block>
                   )}
-
+                  <EduIf
+                    condition={[
+                      !isDocBased,
+                      isShowAutoEssayEvaluationSetting,
+                    ].every((o) => !!o)}
+                  >
+                    <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>
+                            {i18translate('allowAutoEssayEvaluation.title')}
+                            <DollarPremiumSymbol premium={premium} />
+                            <BetaTag top="1%" left="326.55px">
+                              BETA
+                            </BetaTag>
+                          </span>
+                          <Tooltip
+                            title={i18translate(
+                              'allowAutoEssayEvaluation.info'
+                            )}
+                          >
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '60px', cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                          <EduSwitchStyled
+                            disabled={disabled || !premium}
+                            checked={allowAutoEssayEvaluation}
+                            data-cy="auto-essay-evaluation"
+                            onChange={this.updateTestData(
+                              'allowAutoEssayEvaluation'
+                            )}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description
+                            style={{ marginTop: '10px' }}
+                            data-cy="show-rubric-to-students-switch"
+                          >
+                            {i18translate('allowAutoEssayEvaluation.info')}
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  </EduIf>
                   <HintsToStudents
                     premium={premium}
                     isSmallSize={isSmallSize}

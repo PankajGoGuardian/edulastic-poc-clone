@@ -11,6 +11,9 @@ import {
   mobileWidthMax,
   smallDesktopWidth,
   borderGrey2,
+  darkOrange1,
+  red,
+  themeColor,
 } from '@edulastic/colors'
 import {
   withWindowSizes,
@@ -19,7 +22,9 @@ import {
   FieldLabel,
   FlexContainer,
   PremiumItemBanner,
+  EduIf,
 } from '@edulastic/common'
+import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -364,6 +369,7 @@ class QuestionWrapper extends Component {
       showStacked,
       isExpandedView,
       t: translate,
+      aiEvaluationStatus,
       ...restProps
     } = this.props
 
@@ -534,6 +540,18 @@ class QuestionWrapper extends Component {
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
 
+    const aiEvaluationMsg = {
+      [AI_EVALUATION_STATUS.PENDING]: translate(
+        'component.aiEvaluationStatus.pending'
+      ),
+      [AI_EVALUATION_STATUS.FAILED]: translate(
+        'component.aiEvaluationStatus.failed'
+      ),
+      [AI_EVALUATION_STATUS.DONE]: translate(
+        'component.aiEvaluationStatus.done'
+      ),
+    }[aiEvaluationStatus]
+
     return (
       <ThemeProvider
         theme={{
@@ -625,7 +643,12 @@ class QuestionWrapper extends Component {
                   flexDirection="column"
                   maxWidth="100%"
                 >
-                  {evaluation === 'pending' && (
+                  <EduIf
+                    condition={[
+                      evaluation === 'pending',
+                      isEmpty(aiEvaluationStatus),
+                    ].every((o) => !!o)}
+                  >
                     <Tooltip
                       title={translate('component.pendingEvaluation.tooltip')}
                     >
@@ -633,7 +656,25 @@ class QuestionWrapper extends Component {
                         {translate('component.pendingEvaluation.text')}
                       </EvaluationMessage>
                     </Tooltip>
-                  )}
+                  </EduIf>
+                  <EduIf
+                    condition={[
+                      !isEmpty(evaluation),
+                      !isEmpty(aiEvaluationStatus),
+                    ].every((o) => !!o)}
+                  >
+                    <AiEvaluationWrapper
+                      aiEvaluationStatus={aiEvaluationStatus}
+                    >
+                      <Tooltip
+                        title={translate('component.pendingEvaluation.tooltip')}
+                      >
+                        <AiEvaluationMessage>
+                          {aiEvaluationMsg}
+                        </AiEvaluationMessage>
+                      </Tooltip>
+                    </AiEvaluationWrapper>
+                  </EduIf>
                   <ImmersiveReaderWrapper>
                     <Question
                       {...restProps}
@@ -1003,6 +1044,31 @@ export const EvaluationMessage = styled.div`
   text-align: center;
 `
 
+const getBgColor = ({ aiEvaluationStatus }) => {
+  switch (aiEvaluationStatus) {
+    case AI_EVALUATION_STATUS.PENDING:
+      return darkOrange1
+    case AI_EVALUATION_STATUS.FAILED:
+      return red
+    default:
+      return themeColor
+  }
+}
+
+const AiEvaluationWrapper = styled.div`
+  height: 24px;
+  width: content-width;
+  background: ${getBgColor};
+  margin-left: auto;
+  border-radius: 3px;
+  padding: 2px 7px;
+`
+
+export const AiEvaluationMessage = styled.div`
+  color: white;
+  width: 100%;
+  text-align: center;
+`
 const getPadding = ({
   flowLayout,
   isV1Multipart,

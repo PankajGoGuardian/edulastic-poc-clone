@@ -66,6 +66,20 @@
       "text": "Evaluation is pending",
       "tooltip": " App failed to evaluate due to unexpected input format"
     },
+    "aiEvaluationStatus": {
+      "pending": {
+        "text": "AI Evaluation is still pending",
+        "tooltip": ""
+      },
+      "failed": {
+        "text": "AI Evaluation failed",
+        "tooltip": ""
+      },
+      "done": {
+        "text": "AI Evaluation Done",
+        "tooltip": ""
+      }
+    },
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",

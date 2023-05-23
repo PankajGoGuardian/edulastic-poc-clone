@@ -313,6 +313,7 @@ const Preview = ({
   currentStudent,
   isExpandedView = false,
   saveScratchPadData,
+  aiEvaluationStatus,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -402,6 +403,7 @@ const Preview = ({
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         isExpandedView={isExpandedView}
+        aiEvaluationStatus={aiEvaluationStatus}
       />
     </StyledFlexContainer>
   )
@@ -603,6 +605,13 @@ class ClassQuestions extends Component {
       return acc
     }, {})
 
+    const aiEvaluationStatus = questionActivities.reduce((acc, curr) => {
+      if (curr.aiEvaluationStatus) {
+        acc[`${curr.testItemId}_${curr.qid}`] = curr.aiEvaluationStatus
+      }
+      return acc
+    }, {})
+
     const test = showTestletPlayer
       ? {
           testType: classResponse.testType,
@@ -778,6 +787,7 @@ class ClassQuestions extends Component {
               currentStudent={currentStudent}
               isExpandedView={isExpandedView}
               saveScratchPadData={this.saveScratchPadData}
+              aiEvaluationStatus={aiEvaluationStatus}
             />
           )
         })}

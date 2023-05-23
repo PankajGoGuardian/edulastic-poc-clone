@@ -92,6 +92,19 @@ export const getEvaluationByIdSelector = createSelector(
     evaluation[`${itemId}_${getQuestionId(questionId)}`]
 )
 
+export const getAIEvaluationSelector = (state, props) =>
+  props.aiEvaluationStatus || state.aiEvaluationStatus
+
+export const getAIEvaluationByIdSelector = createSelector(
+  [
+    getAIEvaluationSelector,
+    getQuestionIdFromPropsSelector,
+    getTestItemIdFromPropsSelector,
+  ],
+  (aiEvaluationStatus, questionId, itemId) =>
+    aiEvaluationStatus?.[`${itemId}_${getQuestionId(questionId)}`]
+)
+
 // selectors
 const itemsSelector = (state) => state.test.items
 const answersSelector = (state) => state.answers

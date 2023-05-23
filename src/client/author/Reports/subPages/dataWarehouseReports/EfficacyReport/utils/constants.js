@@ -2,11 +2,11 @@ import {
   GRADE_OPTIONS,
   SUBJECT_OPTIONS,
 } from '@edulastic/constants/reportUtils/common'
-import { compareByKeys } from '../../common/utils'
+import { compareByKeys, compareByOptionsInfo } from '../../common/utils'
 
 // decimal base value for parseInt()
 export const TESTIDS_COUNT_FOR_PRE_POST = 2
-export const TABLE_PAGE_SIZE = 25
+export const TABLE_PAGE_SIZE = 50
 
 export const staticDropDownData = {
   filterSections: {
@@ -112,10 +112,10 @@ export const compareByOptions = [
   { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.CLASS, title: 'Class' },
+  { key: compareByKeys.GROUP, title: 'Student Group' },
   {
     key: compareByKeys.STUDENT,
     title: 'Student',
-    hiddenFromRole: ['district-admin', 'school-admin'],
   },
   { key: compareByKeys.RACE, title: 'Race' },
   { key: compareByKeys.GENDER, title: 'Gender' },
@@ -130,6 +130,25 @@ export const analyseByOptions = [
   { key: 'rawScore', title: 'Raw Score' },
 ]
 
+export const tableFilterKeys = {
+  COMPARE_BY: 'compareBy',
+  ANALYSE_BY: 'analyseBy',
+}
+
+export const sortKeys = {
+  COMPARE_BY: 'compareBy',
+}
+
+export const sortOrders = {
+  ASCEND: 'ascend',
+  DESCEND: 'descend',
+}
+
+export const sortOrdersMap = {
+  [sortOrders.ASCEND]: 'asc',
+  [sortOrders.DESCEND]: 'desc',
+}
+
 export const dataKeys = {
   EXTERNAL: 'AchievementLevel',
   INTERNAL: 'BandScore',
@@ -142,11 +161,12 @@ export const bandKeys = {
 
 export const genericColumnsForTable = [
   {
-    title: 'compareBy',
-    key: 'compareBy',
-    dataIndex: 'compareByColumnTitle',
+    title: sortKeys.COMPARE_BY,
+    key: sortKeys.COMPARE_BY,
+    dataIndex: 'dimension',
     width: 150,
     align: 'left',
+    sorter: true,
   },
   {
     title: 'Students',
@@ -204,31 +224,35 @@ export const genericColumnsForTable = [
 
 export const compareByStudentColumns = [
   {
-    title: 'compareBy',
-    key: 'compareBy',
-    dataIndex: 'compareByColumnTitle',
+    title: sortKeys.COMPARE_BY,
+    key: sortKeys.COMPARE_BY,
+    dataIndex: 'dimension',
     align: 'left',
     width: 100,
+    sorter: true,
   },
   {
     title: 'School',
     key: 'school',
     width: 150,
     align: 'center',
-    dataIndex: 'schoolName',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.SCHOOL].name],
   },
   {
     title: 'Teacher',
     key: 'teacher',
     width: 90,
     align: 'center',
-    dataIndex: 'teacherName',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.TEACHER].name],
   },
   {
     title: 'Class',
     key: 'class',
     width: 90,
-    dataIndex: 'className',
+    dataIndex: 'extraStudentColumns',
+    render: (value) => value[compareByOptionsInfo[compareByKeys.CLASS].name],
   },
   {
     title: 'Test',
@@ -245,6 +269,20 @@ export const compareByStudentColumns = [
     width: 120,
     align: 'center',
     visibleOn: ['browser'],
+  },
+  {
+    title: 'Avg (Pre)',
+    key: 'AvgPre',
+    dataIndex: 'data',
+    align: 'center',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Avg (Post)',
+    key: 'AvgPost',
+    dataIndex: 'data',
+    align: 'center',
+    visibleOn: ['csv'],
   },
   {
     title: 'Change',

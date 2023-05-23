@@ -12,12 +12,23 @@ import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { segmentApi } from '@edulastic/api'
 import { Button, Col, Form, Row, Select } from 'antd'
-import { find, get, isEmpty, map, mapKeys, pick } from 'lodash'
+import {
+  find,
+  get,
+  isEmpty,
+  keyBy,
+  map,
+  mapKeys,
+  pick,
+  isArray,
+  uniqBy,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { dictionaries } from '@edulastic/constants'
 import StandardsSearchModal from '../../../../author/ItemList/components/Search/StandardsSearchModal'
 // actions
 import {
@@ -42,6 +53,7 @@ import {
   setSchoolSelectWarningAction,
 } from '../../duck'
 import { ContainerForButtonAtEnd } from '../../styled'
+import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -153,6 +165,31 @@ class SubjectGrade extends React.Component {
 
   updateSubjects = (e) => {
     this.setState({ subjects: e })
+
+    const { curriculums, userInfo, form } = this.props
+    let { interestedCurriculums } = this.props
+    const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
+    interestedCurriculums = interestedCurriculums.filter(
+      (x) => x.orgType === userInfo?.role
+    )
+
+    const formattedCurriculums = isEmpty(e)
+      ? []
+      : getFormattedCurriculums(
+          interestedCurriculums,
+          curriculums,
+          { subject: e },
+          showAllStandards
+        )
+    const standardSets = form.getFieldValue('standard') || []
+
+    if (isEmpty(standardSets)) return
+
+    const selectedCurriculumIds = formattedCurriculums
+      ?.filter((x) => standardSets.includes(x.value))
+      ?.map((x) => x.value)
+
+    this.handleCuriculumChange(selectedCurriculumIds)
   }
 
   updateGrades = (e) => {
@@ -243,15 +280,18 @@ class SubjectGrade extends React.Component {
           data.curriculums.push(newCurriculum)
         })
 
-        map(values.curriculumStandards, (id) => {
-          const standard = find(
-            curriculumStandards.elo || [],
-            (x) => x._id === id
-          )
-          data.curriculumStandards[standard.curriculumId] = (
-            data.curriculumStandards[standard.curriculumId] || []
-          ).concat(id)
-        })
+        map(
+          values.curriculumStandards.map((item) => item._id),
+          (id) => {
+            const standard = find(
+              curriculumStandards.elo || [],
+              (x) => x._id === id
+            )
+            data.curriculumStandards[standard.curriculumId] = (
+              data.curriculumStandards[standard.curriculumId] || []
+            ).concat(id)
+          }
+        )
 
         saveSubjectGrade({ ...data })
         if (!isTestRecommendationCustomizer) {
@@ -272,10 +312,15 @@ class SubjectGrade extends React.Component {
   }
 
   handleStandardsChange = (standardIds) => {
-    const { form } = this.props
-
+    const { form, elosByTloId, curriculumStandards } = this.props
+    const dropDownElos = curriculumStandards.elo
+    const cachedElos = Object.values(elosByTloId).flat()
+    const elosById = keyBy([...dropDownElos, ...cachedElos], '_id')
     form.setFieldsValue({
-      curriculumStandards: standardIds,
+      curriculumStandards: standardIds.map((item) => ({
+        _id: item,
+        identifier: elosById[item].identifier,
+      })),
     })
   }
 
@@ -284,6 +329,7 @@ class SubjectGrade extends React.Component {
       getDictStandardsForCurriculum,
       form,
       curriculumStandards,
+      elosByTloId,
     } = this.props
 
     form.setFields({
@@ -291,16 +337,18 @@ class SubjectGrade extends React.Component {
         value: curriculumIds,
       },
     })
-    const selectedCurriculamStandardIds = form.getFieldValue(
-      'curriculumStandards'
-    )
-    const standardIds = (curriculumStandards.elo || [])
+    const dropDownElos = curriculumStandards.elo
+    const cachedElos = Object.values(elosByTloId).flat()
+    const selectedCurriculamStandardIds = form
+      .getFieldValue('curriculumStandards')
+      .map((item) => item._id)
+    const standardIds = uniqBy([...dropDownElos, ...cachedElos] || [], '_id')
       .filter(
         (s) =>
           selectedCurriculamStandardIds.includes(s.id) &&
           curriculumIds.includes(s.curriculumId)
       )
-      .map((s) => s.id)
+      .map((s) => s._id)
 
     this.handleStandardsChange(standardIds)
     const grades = form.getFieldValue('grade')
@@ -326,6 +374,7 @@ class SubjectGrade extends React.Component {
       userInfo,
       onMouseDown,
       withJoinSchoolModal = false,
+      standardsLoading,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -349,14 +398,27 @@ class SubjectGrade extends React.Component {
 
     const standardSets = form.getFieldValue('standard') || []
 
+    const selectedCurriculamDetails = formattedCurriculums?.filter((x) =>
+      standardSets.includes(x.value)
+    )
     const selectedCurriculam = {
-      text:
-        formattedCurriculums
-          ?.filter((x) => standardSets.includes(x.value))
-          ?.map((x) => x.text)
-          ?.join(', ') || '',
+      text: selectedCurriculamDetails?.map((x) => x.text)?.join(', ') || '',
+      value: selectedCurriculamDetails?.map((x) => x.value),
     }
 
+    const dropDownElosById = keyBy(curriculumStandards.elo, '_id')
+    const selectedStandards = form.getFieldValue('curriculumStandards')
+    const standardsNotInDropdown = (isArray(selectedStandards)
+      ? selectedStandards
+      : []
+    ).filter((item) => !dropDownElosById[item._id])
+    const _curriculumStandards = {
+      ...curriculumStandards,
+      elo: [...curriculumStandards.elo, ...standardsNotInDropdown],
+    }
+    const showMoreButtonEnabled =
+      curriculumStandards.elo?.length >=
+      dictionaries.STANDARD_DROPDOWN_LIMIT_1000
     return (
       <>
         {!withJoinSchoolModal && (
@@ -533,7 +595,11 @@ class SubjectGrade extends React.Component {
                         </IconExpandBoxWrapper>
                         <GradeSelect
                           data-cy="standards"
-                          value={form.getFieldValue('curriculumStandards')}
+                          value={
+                            isArray(selectedStandards)
+                              ? selectedStandards.map((item) => item._id)
+                              : []
+                          }
                           optionFilterProp="children"
                           filterOption
                           size="large"
@@ -541,7 +607,8 @@ class SubjectGrade extends React.Component {
                           mode="multiple"
                           onChange={this.handleStandardsChange}
                           disabled={
-                            !(form.getFieldValue('standard') || []).length
+                            !(form.getFieldValue('standard') || []).length ||
+                            standardsLoading
                           }
                           ref={this.standardsRef}
                           onSelect={() => this.standardsRef?.current?.blur()}
@@ -550,12 +617,24 @@ class SubjectGrade extends React.Component {
                             triggerNode.parentNode
                           }
                         >
-                          {curriculumStandards.elo.map(
+                          {_curriculumStandards.elo.map(
                             ({ _id, identifier }) => (
                               <Option key={`${_id}-${identifier}`} value={_id}>
                                 {identifier}
                               </Option>
                             )
+                          )}
+                          {showMoreButtonEnabled && (
+                            <Select.Option
+                              title="Show More"
+                              value="show"
+                              style={{ display: 'block', cursor: 'pointer' }}
+                              disabled
+                            >
+                              <StyledDiv onClick={this.handleSetShowModal}>
+                                <span>Show More</span>
+                              </StyledDiv>
+                            </Select.Option>
                           )}
                         </GradeSelect>
                       </FilterItemWrapper>
@@ -581,9 +660,11 @@ class SubjectGrade extends React.Component {
           <StandardsSearchModal
             setShowModal={(x) => this.setState({ showStandardsModal: x })}
             showModal={showStandardsModal}
-            standardIds={form.getFieldValue('curriculumStandards') || []}
             handleApply={this.handleStandardsChange}
             selectedCurriculam={selectedCurriculam}
+            grades={grades}
+            standardIds={selectedStandards.map((item) => item._id)}
+            standards={selectedStandards}
           />
         )}
       </>
@@ -603,6 +684,8 @@ const enhance = compose(
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       schoolSelected: get(state, 'signup.schoolSelectedInJoinModal', {}),
+      elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+      standardsLoading: get(state, 'dictionaries.standards.loading', false),
     }),
     {
       getCurriculums: getDictCurriculumsAction,

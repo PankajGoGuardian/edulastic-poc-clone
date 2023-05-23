@@ -8,7 +8,7 @@
         border-bottom: none;
         padding: 16px 2px;
         color: #999999;
-        font-weight: 500;
+        font-weight: bold;
         font-size: 12px;
         text-transform: uppercase;
         &.text-center {
@@ -22,6 +22,9 @@
             &::before {
               background: $white;
             }
+          }
+          .ant-table-column-sorter > .ant-table-column-sorter-inner {
+            margin-top: -0.6em;
           }
         }
       }
@@ -60,7 +63,7 @@
       height: 40px;
       text-align: left;
       font-weight: 500;
-      font-size: 12px;
+      font-size: 14px;
       color: $filterIconColor;
       &.text-center {
         text-align: center;
@@ -108,6 +111,21 @@
       }
       b {
         word-break: break-word;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 16px;
+        color: $white;
+      }
+    }
+  }
+}
+
+.gi-summary-tile-info-popover {
+  .ant-popover-inner {
+    background: #343434;
+    border-radius: 10px;
+    .content {
+      p {
         font-weight: 700;
         font-size: 12px;
         line-height: 16px;

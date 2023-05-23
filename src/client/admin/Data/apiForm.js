@@ -398,6 +398,32 @@ export const apiForms = [
     ],
   },
   {
+    id: 'connect-disconnect-user',
+    name: 'Connect / Disconnect Users',
+    endPoint: '/user/connect-disconnect-user',
+    method: 'post',
+    fields: [
+      {
+        name: 'userIds',
+        displayName: 'User Ids',
+        placeholder: 'Enter comma separated User Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        key: 'connect',
+        name: 'connect',
+        placeholder: 'Connect/Disconnect',
+        type: 'radiogroup',
+        values: ['Connect', 'Disconnect'],
+        formatter: (value) => value === 'Connect',
+        defaultValue: 'Connect',
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'merge-teacher',
     name: 'Merge Teacher',
     endPoint: 'admin-tool/merge-teacher',

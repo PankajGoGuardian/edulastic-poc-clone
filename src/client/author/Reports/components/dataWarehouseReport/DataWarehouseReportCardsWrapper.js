@@ -4,7 +4,7 @@ import ReportLinkCard from './common/components/ReportLinkCard'
 import { StyledSectionHeader } from '../../common/styled'
 import { dataWarehousereportCardsData } from './contants'
 
-const DataWarehoureReportCardsWrapper = ({ loc }) => {
+const DataWarehoureReportCardsWrapper = ({ loc, allowAccess }) => {
   return (
     <>
       {dataWarehousereportCardsData.map(({ id, title, cards }) => (
@@ -12,7 +12,12 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
           <StyledSectionHeader>{title}</StyledSectionHeader>
           <Row type="flex">
             {cards.map((card) => (
-              <ReportLinkCard key={card.id} {...card} loc={loc} />
+              <ReportLinkCard
+                key={card.id}
+                {...card}
+                loc={loc}
+                allowAccess={allowAccess}
+              />
             ))}
           </Row>
         </div>

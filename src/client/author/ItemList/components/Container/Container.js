@@ -112,7 +112,6 @@ class Contaier extends Component {
       getCurriculumStandards,
       match = {},
       limit,
-      selectedItems,
       setDefaultTestData,
       search: initSearch,
       getAllTags,
@@ -125,6 +124,7 @@ class Contaier extends Component {
       districtId,
       test,
       getDefaultTestSettings,
+      userRole,
     } = this.props
 
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
@@ -167,7 +167,7 @@ class Contaier extends Component {
     }
     if (test && test._id) {
       setDefaultTestData()
-    } else {
+    } else if (userRole !== roleuser.EDULASTIC_CURATOR) {
       getDefaultTestSettings()
     }
     getAllTags({ type: 'testitem' })
@@ -670,7 +670,13 @@ const enhance = compose(
       test: getTestEntitySelector(state),
     }),
     {
-      receiveItems: receiveTestItemsAction,
+      receiveItems: (search, sort, page, limit) => {
+        const _search = {
+          ...search,
+          standardIds: search.standardIds.map((item) => item._id),
+        }
+        return receiveTestItemsAction(_search, sort, page, limit)
+      },
       createItem: createTestItemAction,
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,

@@ -65,13 +65,13 @@ export const dataWarehousereportCardsData = [
   },
   {
     id: 3,
-    title: 'Goals and Interventions',
+    title: 'Measure and Improve',
     cards: [
       {
         id: 1,
         IconThumbnail: IconSetGoals,
-        title: 'Set Goals & Interventions',
-        description: 'Set Goals and Interventions and track improvement.',
+        title: 'Goals / Interventions Management',
+        description: 'Set SMART Goals and Interventions and track improvement.',
         url: DW_GOALS_AND_INTERVENTIONS_URL,
       },
       {

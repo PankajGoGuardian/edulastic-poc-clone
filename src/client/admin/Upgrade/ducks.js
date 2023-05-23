@@ -1,15 +1,16 @@
-import { combineReducers } from 'redux'
-import { put, takeEvery, call, all, select } from 'redux-saga/effects'
+import {
+  adminApi,
+  manageSubscriptionsApi,
+  paymentApi,
+  subscriptionApi,
+  userApi,
+} from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
-import { createSlice, createAction } from 'redux-starter-kit'
+import { combineReducers } from 'redux'
+import { all, call, put, select, takeEvery } from 'redux-saga/effects'
+import { createAction, createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import {
-  manageSubscriptionsApi,
-  adminApi,
-  subscriptionApi,
-  paymentApi,
-} from '@edulastic/api'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -299,6 +300,7 @@ const {
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
   bulkUpgradeCSVSubscriptionApi,
+  seedDsDataApi,
 } = adminApi
 
 // SAGAS
@@ -315,30 +317,74 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const { isUpdate, subscriptionId, ...rest } = payload
+    const { isUpdate, subscriptionId, searchData, ...rest } = payload
+    const { districtId, permissions, permissionsExpiry } = payload.dataStudio
+    const { districtData = [] } = payload.seedDsData
+
+    delete rest.dataStudio
+    delete rest.seedDsData
+
+    let updateSeedDsData = true
+    let updateUserResult = true
+    const subscriptionResult = {
+      success: true,
+      subscription: {},
+      message: 'Success',
+    }
+
     if (isUpdate) {
       const { status } = payload
-      const result = yield call(updateSubscriptionApi, {
-        data: { status },
-        subscriptionId,
-      })
-      if (result.success) {
-        notification({ type: 'success', msg: result.message })
-        yield put(
-          manageSubscriptionsBydistrict.actions.subscribeSuccess(
-            result.subscription
-          )
-        )
-      }
+      subscriptionResult.success = false
+      const { result: { success, subscription, message } = {} } = yield call(
+        updateSubscriptionApi,
+        {
+          data: { status },
+          subscriptionId,
+        }
+      )
+      subscriptionResult.success = success
+      subscriptionResult.subscription = subscription
+      subscriptionResult.message = message
     } else {
-      const { result } = yield call(manageSubscriptionApi, rest)
-      if (result.success) {
-        notification({ type: 'success', msg: result.message })
-        yield put(
-          manageSubscriptionsBydistrict.actions.subscribeSuccess(
-            result.subscriptionResult[0]
-          )
-        )
+      subscriptionResult.success = false
+      const {
+        result: {
+          success,
+          subscriptionResult: [{ subscription }] = [{}],
+          message,
+        } = {},
+      } = yield call(manageSubscriptionApi, rest)
+      subscriptionResult.success = success
+      subscriptionResult.subscription = subscription
+      subscriptionResult.message = message
+    }
+
+    updateUserResult = true
+    if (payload.dataStudio) {
+      updateUserResult = false
+      updateUserResult = yield call(saveOrgPermissionsApi, {
+        districtId,
+        permissions,
+        permissionsExpiry,
+      })
+    }
+
+    updateSeedDsData = true
+    if (districtData.length > 0) {
+      updateSeedDsData = false
+      updateSeedDsData = yield call(seedDsDataApi, {
+        districtData,
+      })
+    }
+
+    const { success, message, subscription } = subscriptionResult
+    if (success && updateUserResult && updateSeedDsData) {
+      notification({ type: 'success', msg: message })
+      yield put(
+        manageSubscriptionsBydistrict.actions.subscribeSuccess(subscription)
+      )
+      if (searchData) {
+        yield put(getDistrictDataAction(searchData))
       }
     }
   } catch (err) {
@@ -382,6 +428,12 @@ function* upgradeUserData({ payload }) {
   try {
     let result = {}
     const { subscriptionIds = [], userIds = [], identifiers, ...data } = payload
+    const { users = [] } = payload.dataStudio
+    const { districtData = [] } = payload.seedDsData
+
+    delete data.dataStudio
+    delete data.seedDsData
+
     if (subscriptionIds.length) {
       result = yield call(bulkUpdateSubscriptionApi, {
         ...data,
@@ -395,7 +447,22 @@ function* upgradeUserData({ payload }) {
       })
       result = res.result.success ? res.result : result
     }
-    if (result.success) {
+
+    let updateUserResult = true
+    if (users.length > 0) {
+      updateUserResult = false
+      updateUserResult = yield call(userApi.updateManyUserAdminTool, { users })
+    }
+
+    let updateSeedDsData = true
+    if (districtData.length > 0) {
+      updateSeedDsData = false
+      updateSeedDsData = yield call(seedDsDataApi, {
+        districtData,
+      })
+    }
+
+    if (result.success && updateUserResult && updateSeedDsData) {
       yield put(searchUsersByEmailIdAction({ identifiers }))
       notification({ type: 'success', msg: result.message })
     } else {

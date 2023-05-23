@@ -72,7 +72,7 @@ export const getCollaborativeGroupList = createSelector(
 
 const initialState = {
   sharedReportList: [],
-  loading: false,
+  loading: true,
   collaborativeGroupList: [],
   loadingCollaborativeGroups: false,
 }

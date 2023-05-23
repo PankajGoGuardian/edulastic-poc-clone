@@ -167,7 +167,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                 <div className="right-content">
                   <SimplePieChart
                     data={pieChartData}
-                    getChartLabelJSX={PieChartLabel}
+                    getChartLabelJSX={<PieChartLabel />}
                     innerRadius={42}
                     outerRadius={90}
                   />

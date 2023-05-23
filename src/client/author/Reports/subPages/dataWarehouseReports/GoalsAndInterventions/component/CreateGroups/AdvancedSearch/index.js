@@ -37,6 +37,7 @@ import {
   getAdvanceSearchStudentsData,
   getAdvancedSearchAttendanceBandSelector,
   getAdvancedSearchClassesSelector,
+  getAdvancedSearchGroupsSelector,
   getAdvancedSearchCoursesSelector,
   getAdvancedSearchFilterSelector,
   getAdvancedSearchSchoolsSelector,
@@ -45,16 +46,25 @@ import {
   isAttendanceBandLoadingSelector,
   isGroupSavingSelector,
 } from '../../../ducks/selectors'
+import { getUserOrgData } from '../../../../../../../src/selectors/user'
 import SaveGroup from '../SaveGroup'
 import StudentList from './StudentList'
 import ValueEditor from './ValueEditor'
-import { allowedFields, combinators, inNotInOp } from './config/qb-config'
+import {
+  allowedFields,
+  combinators,
+  groupType,
+  inNotInOp,
+} from './config/qb-config'
 import {
   AddRule,
   FieldSelector,
   OperatorSelector,
   RemoveRuleAction,
 } from './controls'
+import { fieldKey } from '../../../ducks/constants'
+
+const { classes, groups } = fieldKey
 
 const getAllRules = (rules = []) => {
   const allRulesByRecur = []
@@ -73,9 +83,11 @@ const getAllRules = (rules = []) => {
 const AdvancedSearch = ({
   loadSchools,
   loadClasses,
+  loadGroups,
   loadCourses,
   schoolData,
   classData,
+  groupData,
   courseData,
   attendanceBandData,
   defaultQuery,
@@ -99,6 +111,7 @@ const AdvancedSearch = ({
   isAttendanceBandLoading,
   _resetAdvancedSearchData,
   resetAdvancedSearchDetails,
+  userOrgData,
 }) => {
   // may require duplicate method
   const [query, setQuery] = useState(defaultQuery)
@@ -131,6 +144,7 @@ const AdvancedSearch = ({
   const fields = allowedFields({
     schoolData,
     classData,
+    groupData,
     courseData,
     attendanceBandData,
     performanceBandData,
@@ -139,7 +153,8 @@ const AdvancedSearch = ({
   useEffect(() => {
     const searchString = ''
     loadSchools({ searchString })
-    loadClasses({ searchString })
+    loadClasses({ searchString, type: groupType[classes] })
+    loadGroups({ searchString, type: groupType[groups] })
     loadCourses({ searchString })
     if ((attendanceBandData || []).length === 0) loadAttendanceBands()
     if ((performanceBandData || []).length === 0) loadPerformanceBands()
@@ -163,7 +178,7 @@ const AdvancedSearch = ({
 
     if (noCriteriaAdded) {
       return notification({
-        msg: 'Please select and apply at least one criteria',
+        msg: 'Please select and apply at least one criterion',
       })
     }
 
@@ -204,6 +219,7 @@ const AdvancedSearch = ({
         </SpinnerContainer>
       </EduIf>
       <SaveGroup
+        formattedQuery={formattedQuery}
         wrappedComponentRef={groupFormRef}
         courseData={courseData}
         studentsData={studentsData}
@@ -211,6 +227,7 @@ const AdvancedSearch = ({
         isGroupSaving={isGroupSaving}
         onCancel={onCancelClick}
         tagProps={tagProps}
+        userOrgData={userOrgData}
       />
       <Divider />
       <StyledFormHeader>
@@ -271,6 +288,7 @@ export default connect(
     defaultQuery: getAdvancedSearchFilterSelector(state),
     schoolData: getAdvancedSearchSchoolsSelector(state),
     classData: getAdvancedSearchClassesSelector(state),
+    groupData: getAdvancedSearchGroupsSelector(state),
     courseData: getAdvancedSearchCoursesSelector(state),
     performanceBandData: getPerformanceBandProfilesSelector(state),
     attendanceBandData: getAdvancedSearchAttendanceBandSelector(state),
@@ -281,12 +299,14 @@ export default connect(
     allTagsData: getAllTagsSelector(state, 'group'),
     isPerformanceLoading: isPerformanceBandLoadingSelector(state),
     isAttendanceBandLoading: isAttendanceBandLoadingSelector(state),
+    userOrgData: getUserOrgData(state),
   }),
   {
     setAdvancedSearchQuery: actions.setAdvancedSearchQuery,
     loadSchools: actions.getAdvancedSearchSchools,
     loadCourses: actions.getAdvancedSearchCourses,
     loadClasses: actions.getAdvancedSearchClasses,
+    loadGroups: actions.getAdvancedSearchGroups,
     loadPerformanceBands: receivePerformanceBandAction,
     loadAttendanceBands: actions.getAdvancedSearchAttendanceBands,
     loadAdvanceSearch: actions.getAdvancedSearchData,

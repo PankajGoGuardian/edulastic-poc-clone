@@ -13,6 +13,7 @@ import {
   formFieldNames,
   goalFormFields,
   interventionFormFields,
+  oneDayInhours,
 } from '../constants/form'
 import { COURSES } from '../constants/groupForm'
 
@@ -110,7 +111,7 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
       return
     }
     Object.values(formFields[formSection]).forEach(
-      ({ field, isRequired, label }) => {
+      ({ field, isRequired, label, isRequiredCustomPromptMessage = '' }) => {
         if (error) {
           return
         }
@@ -124,7 +125,10 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
         if (isValueInvalid(value)) {
           if (updatedIsRequiredValue) {
             error = true
-            errorMessage = `${label} cannot be empty`
+            errorMessage =
+              [STUDENT_GROUP_IDS].indexOf(field) !== -1
+                ? isRequiredCustomPromptMessage
+                : `${label} cannot be empty`
           } else {
             fieldsToOmit.push(field)
           }
@@ -232,9 +236,89 @@ export const getTarget = (record) => {
   return record?.interventionCriteria?.target || record?.goalCriteria?.target
 }
 
+export const isTimeLeftWithinCertainPercent = (timeLeft, totalTime, value) =>
+  timeLeft / totalTime <= getPercentage(value)
+
+export const isTimeLeftOverCertainPercent = (timeLeft, totalTime, value) =>
+  timeLeft / totalTime > getPercentage(value)
+
+export const getTotalDaysBetweenTwoDates = (startDate, endDate) => {
+  const remainingHours = moment(endDate).diff(startDate, 'hours')
+
+  return Math.ceil(remainingHours / oneDayInhours)
+}
+
+export const getDaysLeft = (
+  goalOrInterventionStartDate,
+  goalOrInterventionEndDate
+) => {
+  let remainingHours = 0
+  if (
+    +moment() >= goalOrInterventionStartDate &&
+    +moment() <= goalOrInterventionEndDate
+  ) {
+    remainingHours = moment(goalOrInterventionEndDate).diff(+moment(), 'hours')
+  }
+
+  if (+moment() < goalOrInterventionStartDate) {
+    return getTotalDaysBetweenTwoDates(
+      goalOrInterventionStartDate,
+      goalOrInterventionEndDate
+    )
+  }
+
+  return Math.ceil(remainingHours / oneDayInhours)
+}
+
+const getTargetAndCurrentData = (record) => {
+  const { metric: targetValue = '', measureType } = getTarget(record)
+  const {
+    current: { value: currentValue, isGreaterThanTargetBand } = {},
+  } = record
+  const checkWithBandFlag = measureType === PERFORMANCE_BAND
+
+  return {
+    checkWithBandFlag,
+    isGreaterThanTargetBand,
+    currentValue,
+    targetValue,
+  }
+}
+
+export const isCurrentValueInValid = (record) => {
+  const {
+    checkWithBandFlag,
+    isGreaterThanTargetBand,
+    currentValue,
+  } = getTargetAndCurrentData(record)
+
+  return checkWithBandFlag
+    ? typeof isGreaterThanTargetBand !== 'boolean'
+    : typeof currentValue !== 'string'
+}
+
+export const hasCurrentReachedTarget = (record) => {
+  const {
+    checkWithBandFlag,
+    isGreaterThanTargetBand,
+    currentValue,
+    targetValue,
+  } = getTargetAndCurrentData(record)
+
+  if (checkWithBandFlag) {
+    return isGreaterThanTargetBand
+  }
+
+  /**
+   * The values coming from DB are of string type.
+   * For measureType averageScore/minimumScore convert to number and then compare
+   */
+  return Math.round(+currentValue) >= Math.round(+targetValue)
+}
+
 export const getSummaryStatusCount = ({ key, data }) => {
   const completedStatus = [GI_STATUS.FULLY_EXECUTED, GI_STATUS.DONE]
-  const inProfessCondition = (record) => {
+  const inProgressCondition = (record) => {
     return record.status === GI_STATUS.IN_PROGRESS
   }
   const completedCondition = (record) => completedStatus.includes(record.status)
@@ -242,33 +326,41 @@ export const getSummaryStatusCount = ({ key, data }) => {
   const summaryStatusCountMap = {
     met: (record) => {
       return (
-        record.current >= getTarget(record) &&
+        !isCurrentValueInValid(record) &&
+        hasCurrentReachedTarget(record) &&
         completedStatus.includes(record.status)
       )
     },
     'not-met': (record) => {
       return (
-        record.current < getTarget(record) &&
+        !isCurrentValueInValid(record) &&
+        !hasCurrentReachedTarget(record) &&
         completedStatus.includes(record.status)
       )
     },
     'partially-met': (record) => {
       return (
-        record.current >= getTarget(record) &&
+        !isCurrentValueInValid(record) &&
+        hasCurrentReachedTarget(record) &&
         record.status === GI_STATUS.PARTIALLY_EXECUTED
       )
     },
     'partially-not-met': (record) => {
       return (
-        record.current < getTarget(record) &&
+        !isCurrentValueInValid(record) &&
+        !hasCurrentReachedTarget(record) &&
         record.status === GI_STATUS.PARTIALLY_EXECUTED
       )
     },
     'off-track': (record) => {
       return (
-        moment().diff(record.startDate, 'days') /
-          moment(record.endDate).diff(record.startDate, 'days') <=
-          getPercentage(MULTIPLE_OF_TENS.TWENTY) &&
+        !isCurrentValueInValid(record) &&
+        !hasCurrentReachedTarget(record) &&
+        isTimeLeftWithinCertainPercent(
+          getDaysLeft(record.startDate, record.endDate),
+          getTotalDaysBetweenTwoDates(record.startDate, record.endDate),
+          MULTIPLE_OF_TENS.TWENTY
+        ) &&
         record.status === GI_STATUS.IN_PROGRESS
       )
     },
@@ -282,8 +374,8 @@ export const getSummaryStatusCount = ({ key, data }) => {
     },
     'fully-executed': completedCondition,
     done: completedCondition,
-    'on-going': inProfessCondition,
-    'in-progress': inProfessCondition,
+    'on-going': inProgressCondition,
+    'in-progress': inProgressCondition,
   }
 
   const filterMethod = summaryStatusCountMap?.[key]

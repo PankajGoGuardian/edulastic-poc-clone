@@ -417,7 +417,7 @@ function* loadTest({ payload }) {
     const isPublicUrl = window.location.href.includes(PUBLIC_URL_IDENTIFIER)
     const canLoadTestSettingWhilePreviewing = [
       preview,
-      userRole !== roleuser.STUDENT,
+      ![roleuser.STUDENT, roleuser.EDULASTIC_CURATOR].includes(userRole),
       !isPublicUrl,
       userAuthenticated,
     ].every((o) => !!o)

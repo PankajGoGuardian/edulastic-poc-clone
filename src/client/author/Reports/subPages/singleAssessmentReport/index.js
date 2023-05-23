@@ -347,9 +347,9 @@ const SingleAssessmentReportContainer = (props) => {
               <PeerPerformance
                 {..._props}
                 settings={settings}
-                filters={ddfilter}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                demographicFilters={demographicFilters2}
               />
             )}
           />

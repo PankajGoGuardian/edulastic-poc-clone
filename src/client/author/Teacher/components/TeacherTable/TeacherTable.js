@@ -74,6 +74,7 @@ import AddTeacherModal from './AddTeacherModal/AddTeacherModal'
 import EditTeacherModal from './EditTeacherModal/EditTeacherModal'
 import InviteMultipleTeacherModal from './InviteMultipleTeacherModal/InviteMultipleTeacherModal'
 import { StyledMaskButton, StyledTeacherTable } from './styled'
+import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Teacher' }
 
@@ -99,6 +100,7 @@ class TeacherTable extends Component {
       inviteTeacherModalVisible: false,
       editTeacherKey: '',
       selectedAdminsForDeactivate: [],
+      resetPasswordModalVisible: false,
       deactivateAdminModalVisible: false,
       showMergeTeachersModal: false,
       showActive: true,
@@ -314,6 +316,15 @@ class TeacherTable extends Component {
       } else if (selectedRowKeys.length > 1) {
         notification({ messageKey: 'pleaseSelectSingleUserToEdit' })
       }
+    } else if (e.key === 'resetPassword') {
+      if (selectedRowKeys?.length === 0) {
+        notification({
+          type: 'info',
+          messageKey: 'atLeastOneStudentToResetPassword',
+        })
+      } else {
+        this.setState({ resetPasswordModalVisible: true })
+      }
     } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
@@ -497,8 +508,8 @@ class TeacherTable extends Component {
   }
 
   changeFilterText = (e, key, callApi) => {
-    const { location = {} } = this.props;
-    location.institutionId = '';
+    const { location = {} } = this.props
+    location.institutionId = ''
     const _filtersData = this.state.filtersData.map((item, index) => {
       const val = e?.target ? e.target?.value : e?.key
       const updatedFilterData = {
@@ -527,7 +538,7 @@ class TeacherTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
@@ -705,6 +716,9 @@ class TeacherTable extends Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="add teacher">{t('users.teacher.addteacher')}</Menu.Item>
+        <Menu.Item key="resetPassword">
+          {t('users.teacher.resetPassword')}
+        </Menu.Item>
         <Menu.Item key="edit user">{t('users.teacher.updateuser')}</Menu.Item>
         {/* TODO: Enable merge user when required */}
         {/* <Menu.Item key="merge user">{t("users.teacher.mergeuser")}</Menu.Item> */}
@@ -898,6 +912,13 @@ class TeacherTable extends Component {
           userIds={selectedRowKeys}
           onSubmit={this.onSubmitMergeTeachersModal}
           onCancel={this.onCloseMergeTeachersModal}
+        />
+        <ResetPwd
+          isOpen={this.state.resetPasswordModalVisible}
+          handleCancel={() =>
+            this.setState({ resetPasswordModalVisible: false })
+          }
+          resetPasswordUserIds={selectedRowKeys}
         />
       </MainContainer>
     )

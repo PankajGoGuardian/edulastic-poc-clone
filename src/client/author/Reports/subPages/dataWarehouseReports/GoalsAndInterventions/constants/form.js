@@ -8,6 +8,7 @@ export const ATTENDANCE = 'attendance'
 const AVERAGE_SCORE = 'averageScore'
 const MINIMUM_SCORE = 'minimumScore'
 export const PERFORMANCE_BAND = 'performanceBand'
+export const ATTENDANCE_BAND = 'attendanceBand'
 export const SAVE_GOAL = 'SAVE_GOAL'
 export const SAVE_INTERVENTION = 'SAVE_INTERVENTION'
 export const GOAL = 'goal'
@@ -37,23 +38,25 @@ const TEST_TYPE_COMMON_ASSESSMENT = 'common assessment'
 const TEST_TYPE_ASSESSMENT = 'assessment'
 
 export const oneDayInMilliseconds = 24 * 60 * 60 * 1000
+export const oneDayInhours = 24
 
 const NAME = 'name'
 const TYPE = 'type'
-const STUDENT_GROUP_IDS = 'studentGroupIds'
+export const STUDENT_GROUP_IDS = 'studentGroupIds'
 const OWNER = 'owner'
 const DESCRIPTION = 'description'
-const TEST_TYPES = 'testTypes'
-const SUBJECTS = 'subjects'
+export const TEST_TYPES = 'testTypes'
+export const SUBJECTS = 'subjects'
 const STANDARD_DETAILS = 'standardDetails'
 const MEASURE_TYPE = 'measureType'
-const PERFORMANCE_BAND_ID = 'performanceBandId'
+export const PERFORMANCE_BAND_ID = 'performanceBandId'
 const METRIC = 'metric'
 const THRESHOLD = 'threshold'
 const START_DATE = 'startDate'
 const END_DATE = 'endDate'
 const COMMENT = 'comment'
 const RELATED_GOALS_IDS = 'relatedGoalIds'
+export const TERM_ID = 'termId'
 
 export const dropdownData = {
   goalOrInterventionTypes: [
@@ -121,7 +124,12 @@ const getMeasureTypes = (type) => {
     : dropdownData.attendanceMeasureTypes
 }
 
-export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
+export const goalFormFields = ({
+  type = 'academic',
+  startDate,
+  endDate,
+  isInterventionForm = false,
+}) => ({
   nameAndType: {
     name: {
       field: NAME,
@@ -145,6 +153,7 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       isRequired: true,
       placeholder: 'Select student group',
       optionsData: [],
+      isRequiredCustomPromptMessage: 'Please select a Student Group',
     },
   },
   ownerAndDescription: {
@@ -212,6 +221,7 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       fieldType: NUMBER_INPUT,
       isRequired: true,
       placeholder: 'Enter target metric',
+      dropdownPlaceholder: 'Select target metric',
     },
   },
   thresholdStartAndEndDate: {
@@ -227,7 +237,9 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       label: 'Start date',
       fieldType: DATEPICKER,
       isRequired: true,
-      placeholder: 'Enter goal start date',
+      placeholder: `Enter ${
+        isInterventionForm ? INTERVENTION : GOAL
+      } start date`,
       startDate,
       endDate,
     },
@@ -236,7 +248,7 @@ export const goalFormFields = ({ type = 'academic', startDate, endDate }) => ({
       label: 'End date',
       fieldType: DATEPICKER,
       isRequired: true,
-      placeholder: 'Enter goal end date',
+      placeholder: `Enter ${isInterventionForm ? INTERVENTION : GOAL} end date`,
       startDate,
       endDate,
     },
@@ -281,6 +293,7 @@ export const interventionFormFields = ({
       isRequired: true,
       placeholder: 'Select student group',
       optionsData: [],
+      isRequiredCustomPromptMessage: 'Please select a Student Group',
     },
   },
   ownerAndDescription: goalFormFields({ type, startDate, endDate })
@@ -309,11 +322,16 @@ export const interventionFormFields = ({
       label: 'Target outcome',
       fieldType: NUMBER_INPUT,
       isRequired: true,
-      placeholder: 'Select target outcome',
+      placeholder: 'Enter target outcome',
+      dropdownPlaceholder: 'Select target outcome',
     },
   },
-  thresholdStartAndEndDate: goalFormFields({ type, startDate, endDate })
-    .thresholdStartAndEndDate,
+  thresholdStartAndEndDate: goalFormFields({
+    type,
+    startDate,
+    endDate,
+    isInterventionForm: true,
+  }).thresholdStartAndEndDate,
   relatedGoalsAndComment: {
     relatedGoals: {
       field: RELATED_GOALS_IDS,
@@ -329,7 +347,7 @@ export const interventionFormFields = ({
       label: 'Notes',
       fieldType: STRING_INPUT,
       isRequired: false,
-      placeholder: 'Add comment',
+      placeholder: 'Add notes',
       colSpan: 7,
     },
   },

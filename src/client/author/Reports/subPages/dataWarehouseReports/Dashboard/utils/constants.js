@@ -95,7 +95,7 @@ export const staticDropDownData = {
     },
     PERIOD: {
       key: '3',
-      title: 'Period',
+      title: 'Duration',
     },
   },
   tagTypes: [
@@ -125,7 +125,6 @@ export const staticDropDownData = {
     termId: '',
     testGrades: '',
     testSubjects: '',
-    tagIds: '',
     assessmentTypes: '',
     testIds: '',
     schoolIds: '',
@@ -158,7 +157,7 @@ export const staticDropDownData = {
   })),
 }
 
-export const compareByFilterFieldKeys = {
+export const compareByKeysToFilterKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
@@ -172,7 +171,7 @@ export const compareByFilterFieldKeys = {
   [compareByKeys.STUDENT]: 'studentId',
 }
 
-export const nextCompareByOptionsMap = {
+export const nextCompareByKeys = {
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,
@@ -202,8 +201,17 @@ const filterFields = [
   'customPeriodEnd',
 ]
 
-const detailsExtraFields = [...Object.values(tableFilterTypes), 'profileId']
+const detailsExtraFields = [
+  ...Object.values(tableFilterTypes),
+  ...Object.values(academicSummaryFiltersTypes),
+  'districtAvgScore',
+]
 
 export const filterDetailsFields = [...filterFields, ...detailsExtraFields]
 
 export const sharedDetailsFields = ['reportId', ...detailsExtraFields]
+
+export const districtAvgDimension = {
+  _id: 'districtAvg',
+  name: 'Overall Avg.',
+}

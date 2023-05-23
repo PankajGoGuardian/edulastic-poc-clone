@@ -4,10 +4,12 @@ import { connect } from 'react-redux'
 import { debounce } from 'lodash'
 import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { StyledSelect } from './styled-components'
-import { debounceWait } from './config/qb-config'
+import { debounceWait, groupType } from './config/qb-config'
 import { getAdvancedSearchDetailsSelector } from '../../../ducks/selectors'
 import { actions } from '../../../ducks'
 import { fieldKey } from '../../../ducks/constants'
+
+const { classes, schools, groups, courses } = fieldKey
 
 const ValueEditor = (props) => {
   const {
@@ -22,8 +24,7 @@ const ValueEditor = (props) => {
     loadSchools,
     loadClasses,
     loadCourses,
-    attendanceBands,
-    // storeSelectedData,
+    loadGroups,
     path,
   } = props
 
@@ -49,19 +50,23 @@ const ValueEditor = (props) => {
   }
 
   const enableSearchFields = {
-    [fieldKey.schools]: { key: 'schools', func: loadSchools },
-    [fieldKey.classes]: { key: 'classes', func: loadClasses },
-    [fieldKey.courses]: { key: 'courses', func: loadCourses },
-    [fieldKey.attendanceBands]: {
-      key: fieldKey.attendanceBands,
-      func: attendanceBands,
-    },
+    [schools]: { key: schools, func: loadSchools },
+    [classes]: { key: classes, func: loadClasses },
+    [courses]: { key: courses, func: loadCourses },
+    [groups]: { key: groups, func: loadGroups },
   }
   const { label = 'values' } = fieldData || {}
+  const groupsKey = [classes, groups]
 
   const handleSearch = (searchString) => {
     if (enableSearchFields[field] && enableSearchFields[field].func) {
-      enableSearchFields[field].func({ searchString })
+      const payload = {
+        searchString,
+      }
+      if (groupsKey.includes(enableSearchFields[field].key)) {
+        payload.type = groupType[enableSearchFields[field].key]
+      }
+      enableSearchFields[field].func(payload)
     }
   }
 
@@ -75,11 +80,6 @@ const ValueEditor = (props) => {
     } else {
       handleOnChange(selectedValues)
     }
-    // storeSelectedData({
-    //   key: enableSearchFields[field].key,
-    //   valueFromField: selectedValues,
-    //   values,
-    // })
   }
 
   const searchHandler = debounce(handleSearch, debounceWait)
@@ -178,6 +178,6 @@ export default connect(
     loadSchools: actions.getAdvancedSearchSchools,
     loadCourses: actions.getAdvancedSearchCourses,
     loadClasses: actions.getAdvancedSearchClasses,
-    loadAttendanceBand: actions.getAdvancedSearchAttendanceBands,
+    loadGroups: actions.getAdvancedSearchGroups,
   }
 )(ValueEditor)

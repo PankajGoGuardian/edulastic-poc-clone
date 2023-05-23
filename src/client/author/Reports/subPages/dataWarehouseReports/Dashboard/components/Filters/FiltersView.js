@@ -36,7 +36,7 @@ function FiltersView({
   updateFilterDropdownCB,
   schoolYears,
   assessmentTypesRef,
-  availableAssessmentType,
+  availableTestTypes,
   userRole,
   demographics,
   terms,
@@ -88,8 +88,9 @@ function FiltersView({
                           updateFilterDropdownCB={updateFilterDropdownCB}
                           schoolYears={schoolYears}
                           assessmentTypesRef={assessmentTypesRef}
-                          availableAssessmentType={availableAssessmentType}
+                          availableAssessmentType={availableTestTypes}
                           dropdownData={staticDropDownData}
+                          exclude={['tagIds']}
                         />
                       </Row>
                     </Tabs.TabPane>

@@ -8,6 +8,7 @@ import {
   StyledIconCaretDown,
   StyledIconCaretUp,
 } from '../components/styledComponents'
+import { compareByKeys } from './constants'
 
 StyledIconCaretDown
 
@@ -131,4 +132,21 @@ export const getWidgetCellFooterInfo = (value, showReverseTrend) => {
     Icon = StyledIconCaretDown
   }
   return [color, Icon]
+}
+
+export const getDemographicsFilterTagsData = (search, demographics) => {
+  const demographicsFilterTagsData = {}
+  demographics.forEach((d) => {
+    demographicsFilterTagsData[d.key] = {
+      key: d.key,
+      title: search[d.key] || '',
+    }
+  })
+  return demographicsFilterTagsData
+}
+
+export const isAddToStudentGroupEnabled = (isSharedReport, compareByKey) => {
+  return [!isSharedReport, compareByKey === compareByKeys.STUDENT].every(
+    (e) => e
+  )
 }

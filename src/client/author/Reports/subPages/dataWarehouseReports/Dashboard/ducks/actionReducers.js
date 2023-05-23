@@ -17,11 +17,13 @@ const initialState = {
 
   settings: {
     requestFilters: {},
+    selectedFilterTagsData: {},
     selectedCompareBy: {},
     academicSummaryFilters: {},
   },
   error: '',
   loadingTableData: false,
+  districtAveragesData: {},
   tableData: {},
   tableDataRequestError: '',
 }
@@ -62,11 +64,15 @@ const slice = createSlice({
     setAcademicSummaryFilters: (state, { payload }) => {
       state.settings.academicSummaryFilters = payload
     },
+    setSelectedFilterTagsData: (state, { payload }) => {
+      state.settings.selectedFilterTagsData = payload
+    },
     fetchDashboardTableDataRequest: (state) => {
       state.loadingTableData = true
     },
     fetchDashboardTableDataRequestSuccess: (state, { payload }) => {
       state.loadingTableData = false
+      state.districtAveragesData = payload.districtAveragesData
       state.tableData = payload.tableData
       state.tableDataRequestError = ''
     },

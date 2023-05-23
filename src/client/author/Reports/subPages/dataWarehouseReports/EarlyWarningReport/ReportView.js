@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import qs from 'qs'
 import { WidgetsContainer } from '../common/components/styledComponents'
 import { EarlyWarningTable } from './components/Table'
 import RiskSummary from '../common/components/RiskSummaryWidget'
 import { RiskTimeline } from './components/widgets/RiskTimeline'
+import { timeframeFilterKeys } from './utils'
 
 const ReportView = ({
   loc,
@@ -10,9 +12,33 @@ const ReportView = ({
   settings,
   selectedCompareBy,
   compareByOptions,
-  setRiskTimelineFilters,
+  history,
+  search,
 }) => {
-  const { riskTimelineFilters } = settings
+  const { requestFilters } = settings
+  const [riskTimelineFilters, setRiskTimelineFilters] = useState({
+    showCumulativeData: search.showCumulativeData
+      ? search.showCumulativeData === String(true)
+      : false,
+    timeframe: search.timeframe ?? timeframeFilterKeys.MONTHLY,
+  })
+
+  useEffect(() => {
+    const url = `${location.pathname}?${qs.stringify({
+      ...requestFilters,
+      ...riskTimelineFilters,
+    })}`
+    history.replace(url)
+  }, [riskTimelineFilters, requestFilters])
+
+  const tableSettings = useMemo(
+    () => ({
+      ...settings,
+      riskTimelineFilters,
+    }),
+    [settings, riskTimelineFilters]
+  )
+
   return (
     <>
       <WidgetsContainer>
@@ -25,7 +51,7 @@ const ReportView = ({
       </WidgetsContainer>
       <EarlyWarningTable
         location={location}
-        settings={settings}
+        settings={tableSettings}
         selectedCompareBy={selectedCompareBy}
         compareByOptions={compareByOptions}
       />

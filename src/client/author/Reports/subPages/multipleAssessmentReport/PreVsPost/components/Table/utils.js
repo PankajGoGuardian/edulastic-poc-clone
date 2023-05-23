@@ -47,7 +47,7 @@ const genericColumnsForTable = [
     visibleOn: ['csv'],
   },
   {
-    title: 'Avg (Pre)',
+    title: 'Avg (Post)',
     key: 'AvgPost',
     dataIndex: 'postAvgScorePercentage',
     align: 'center',

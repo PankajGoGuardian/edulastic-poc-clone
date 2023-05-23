@@ -1,5 +1,6 @@
 import { Col } from 'antd'
 import React from 'react'
+import { EduIf } from '@edulastic/common'
 import TagFilter from '../../../src/components/common/TagFilter'
 import { ControlDropDown } from './widgets/controlDropDown'
 import MultiSelectDropdown from './widgets/MultiSelectDropdown'
@@ -13,6 +14,8 @@ function FilterTestFields({
   availableAssessmentType,
   // TODO dropDownData hardly changes. Better provide a default
   dropdownData,
+  // TODO implement `exclude` for other Fields as well.
+  exclude = [],
 }) {
   return (
     <>
@@ -80,19 +83,23 @@ function FilterTestFields({
           options={availableAssessmentType}
         />
       </Col>
-      <Col span={6}>
-        <FilterLabel data-cy="tags-select">Tags</FilterLabel>
-        <TagFilter
-          onChangeField={(type, selected) => {
-            const _selected = selected.map(({ _id: key, tagName: title }) => ({
-              key,
-              title,
-            }))
-            updateFilterDropdownCB(_selected, 'tagIds', true)
-          }}
-          selectedTagIds={filters.tagIds ? filters.tagIds.split(',') : []}
-        />
-      </Col>
+      <EduIf condition={!exclude.includes('tagIds')}>
+        <Col span={6}>
+          <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+          <TagFilter
+            onChangeField={(type, selected) => {
+              const _selected = selected.map(
+                ({ _id: key, tagName: title }) => ({
+                  key,
+                  title,
+                })
+              )
+              updateFilterDropdownCB(_selected, 'tagIds', true)
+            }}
+            selectedTagIds={filters.tagIds ? filters.tagIds.split(',') : []}
+          />
+        </Col>
+      </EduIf>
     </>
   )
 }

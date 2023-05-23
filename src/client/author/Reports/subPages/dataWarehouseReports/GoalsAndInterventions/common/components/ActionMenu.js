@@ -5,8 +5,9 @@ import Modal from 'antd/lib/modal'
 import styled from 'styled-components'
 import { IconCaretDown, IconClose } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { Link } from 'react-router-dom'
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { EduIf } from '@edulastic/common'
+import { ACADEMIC } from '../../constants/form'
+import ActionMenuItem from './ActionMenuItem'
 
 const DeleteModal = ({ type, showModal, setShowModal }) => (
   <Modal
@@ -29,8 +30,24 @@ const ActionMenu = ({
   onAction,
   title = 'ACTIONS',
   includeDelete = false,
+  GIData = {},
 }) => {
   const [showModal, setShowModal] = useState(false)
+
+  const { termId, studentGroupIds = [], type: GIType } = GIData
+  const {
+    applicableTo: { testTypes = [], subjects = [] } = {},
+    target: { performanceBandId = '' } = {},
+  } = GIData?.goalCriteria || GIData?.interventionCriteria || {}
+
+  const urlData = {
+    termId,
+    ...(GIType === ACADEMIC ? { performanceBandId } : {}),
+    studentGroupIds: studentGroupIds.join(),
+    testTypes: testTypes.join(),
+    subjects: subjects.join(),
+  }
+
   const menu = (
     <Menu onClick={onAction}>
       <Header>
@@ -38,14 +55,7 @@ const ActionMenu = ({
         <IconClose />
       </Header>
       {options.map((item) => (
-        <Menu.Item key={item.id}>
-          <EduIf condition={item.link}>
-            <EduThen>
-              <Link to={item.link}>{item.label}</Link>
-            </EduThen>
-            <EduElse>{item.label}</EduElse>
-          </EduIf>
-        </Menu.Item>
+        <ActionMenuItem item={item} urlData={urlData} key={item.id} />
       ))}
       <EduIf condition={includeDelete}>
         <Menu.Item key="3" onClick={() => setShowModal(true)}>
@@ -87,6 +97,8 @@ const Header = styled.div`
     border-bottom: 1px solid #eeeeee;
     width: fit-content;
     padding: 0 10px;
+    width: 100%;
+    text-align: left;
   }
   svg {
     cursor: pointer;

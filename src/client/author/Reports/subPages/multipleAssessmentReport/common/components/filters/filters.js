@@ -59,17 +59,19 @@ import AssessmentAutoComplete from '../../../../../common/components/autocomplet
 import { getReportsMARSettings } from '../../../ducks'
 import { getUpdatedFiltersAndTags } from './utils'
 
-const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
+const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
+  (res, ele) => ({ [ele]: ele, ...res }),
+  {}
+)
+const ddFilterKeys = Object.keys(staticDropDownData.initialDdFilters)
 const availableAssessmentType = getArrayOfAllTestTypes()
-
-const preTestFilterKey = 'preTestId'
-const postTestFilterKey = 'postTestId'
-const profileFilterKey = 'profileId'
-const testIdsFilterKey = 'testIds'
-const clearTestFiltersList = [
-  preTestFilterKey,
-  postTestFilterKey,
-  profileFilterKey,
+const clearTestFilterKeys = [
+  FILTER_KEYS_MAP.termId,
+  FILTER_KEYS_MAP.testGrades,
+  FILTER_KEYS_MAP.testSubjects,
+  FILTER_KEYS_MAP.tagIds,
+  FILTER_KEYS_MAP.assessmentTypes,
+  FILTER_KEYS_MAP.testIds,
 ]
 
 const MultipleAssessmentReportFilters = ({
@@ -112,9 +114,10 @@ const MultipleAssessmentReportFilters = ({
   const assessmentTypesRef = useRef()
   const isPrePostReport = loc === reportNavType.PRE_VS_POST
   const tagTypes = staticDropDownData.tagTypes.filter((t) => {
-    if (isPrePostReport && t.key === testIdsFilterKey) return false
-    if (!performanceBandRequired && t.key === profileFilterKey) return false
-    if (!demographicsRequired && ddFilterTypes.includes(t.key)) return false
+    if (isPrePostReport && t.key === FILTER_KEYS_MAP.testIds) return false
+    if (!performanceBandRequired && t.key === FILTER_KEYS_MAP.profileId)
+      return false
+    if (!demographicsRequired && ddFilterKeys.includes(t.key)) return false
     return true
   })
 
@@ -341,8 +344,8 @@ const MultipleAssessmentReportFilters = ({
     }
 
     const _filters = { ...filters }
-    const clearTestFilters = !clearTestFiltersList.includes(keyName)
-    if (clearTestFilters) {
+    const isClearTestFilterKey = clearTestFilterKeys.includes(keyName)
+    if (isClearTestFilterKey) {
       _filters.preTestId = ''
       _filters.postTestId = ''
     }
@@ -380,7 +383,7 @@ const MultipleAssessmentReportFilters = ({
   const handleCloseTag = (type, { key }) => {
     const _tempTagsData = { ...tempTagsData }
     // handle tempDdFilters
-    if (ddFilterTypes.includes(type)) {
+    if (ddFilterKeys.includes(type)) {
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = ''
@@ -564,7 +567,11 @@ const MultipleAssessmentReportFilters = ({
                               filters.testIds ? filters.testIds.split(',') : []
                             }
                             selectCB={(e) =>
-                              updateFilterDropdownCB(e, testIdsFilterKey, true)
+                              updateFilterDropdownCB(
+                                e,
+                                FILTER_KEYS_MAP.testIds,
+                                true
+                              )
                             }
                           />
                         </Col>
@@ -731,7 +738,10 @@ const MultipleAssessmentReportFilters = ({
                           <ControlDropDown
                             by={{ key: filters.profileId }}
                             selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, profileFilterKey)
+                              updateFilterDropdownCB(
+                                selected,
+                                FILTER_KEYS_MAP.profileId
+                              )
                             }
                             data={performanceBandList}
                             prefix="Performance Band"
@@ -814,7 +824,9 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.preTestId}
-                selectCB={(e) => onAssessmentSelect(e, preTestFilterKey)}
+                selectCB={(e) =>
+                  onAssessmentSelect(e, FILTER_KEYS_MAP.preTestId)
+                }
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="pre"
@@ -838,7 +850,9 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.postTestId}
-                selectCB={(e) => onAssessmentSelect(e, postTestFilterKey)}
+                selectCB={(e) =>
+                  onAssessmentSelect(e, FILTER_KEYS_MAP.postTestId)
+                }
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="post"
@@ -859,7 +873,7 @@ const MultipleAssessmentReportFilters = ({
                 selectCB={(e, selected) =>
                   updateFilterDropdownCB(
                     selected,
-                    profileFilterKey,
+                    FILTER_KEYS_MAP.profileId,
                     false,
                     true
                   )

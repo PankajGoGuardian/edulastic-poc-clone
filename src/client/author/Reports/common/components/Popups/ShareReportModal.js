@@ -77,7 +77,6 @@ const ShareReportModal = ({
         msg: 'Collaboration groups are empty. Create one to continue...',
       })
       setShowModal(false)
-      return null
     }
   }, [shownWithNoGroups])
 

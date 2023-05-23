@@ -295,13 +295,18 @@ const searchSchoolsById = (data) =>
     })
     .then(({ data: response }) => response)
 
-const saveOrgPermissionsApi = ({ permissions, districtId }) =>
+const saveOrgPermissionsApi = ({
+  permissions,
+  permissionsExpiry,
+  districtId,
+}) =>
   api
     .callApi({
       url: `districts/${districtId}`,
       method: 'put',
       data: {
         permissions,
+        permissionsExpiry,
       },
     })
     .then(({ data }) => data)
@@ -407,6 +412,16 @@ const cleverStopSyncApi = (data) => stopSyncApi({ _prefix: prefix, ...data })
 const atlasStopSyncApi = (data) =>
   stopSyncApi({ _prefix: atlasPrefix, ...data })
 
+const seedDsDataApi = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/admin-tool/seed-ds-data`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -452,4 +467,5 @@ export default {
   cleverStopSyncApi,
   stopSyncApi,
   bulkUpgradeCSVSubscriptionApi,
+  seedDsDataApi,
 }

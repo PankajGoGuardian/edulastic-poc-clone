@@ -1,5 +1,6 @@
 import React from 'react'
 import { EduIf, FieldLabel } from '@edulastic/common'
+import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import {
   StyledEduButton,
   StyledDropDownContainer,
@@ -7,7 +8,10 @@ import {
 } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
-import { getExternalBandInfoByExternalTest } from '../../utils'
+import {
+  getExternalBandInfoByExternalTest,
+  getExternalBandsListFromBandInfo,
+} from '../../utils'
 
 const PageLevelFilters = ({
   reportId,
@@ -22,8 +26,10 @@ const PageLevelFilters = ({
   externalBands,
   onGoClick,
 }) => {
-  const isPreExternal = filters.preTestId.includes('__')
-  const isPostExternal = filters.postTestId.includes('__')
+  const isPreExternal = filters.preTestId.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+  const isPostExternal = filters.postTestId.includes(
+    EXTERNAL_TEST_KEY_SEPARATOR
+  )
 
   let prePerformanceBandsList = performanceBandsList
   let postPerformanceBandsList = performanceBandsList
@@ -40,11 +46,8 @@ const PageLevelFilters = ({
         testId: filters.preTestId,
         externalBands,
       }) || {}
-    prePerformanceBandsList = [preExternalBandInfo].map(
-      ({ testTitle, testCategory }) => ({
-        key: `${testCategory}__${testTitle || ''}`,
-        title: `[${testCategory}] ${testTitle || ''}`,
-      })
+    prePerformanceBandsList = getExternalBandsListFromBandInfo(
+      preExternalBandInfo
     )
     ;[selectedPrePerformanceBand] = prePerformanceBandsList
   }
@@ -55,11 +58,8 @@ const PageLevelFilters = ({
         testId: filters.postTestId,
         externalBands,
       }) || {}
-    postPerformanceBandsList = [postExternalBandInfo].map(
-      ({ testTitle, testCategory }) => ({
-        key: `${testCategory}__${testTitle || ''}`,
-        title: `[${testCategory}] ${testTitle || ''}`,
-      })
+    postPerformanceBandsList = getExternalBandsListFromBandInfo(
+      postExternalBandInfo
     )
     ;[selectedPostPerformanceBand] = postPerformanceBandsList
   }

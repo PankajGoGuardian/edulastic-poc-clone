@@ -189,8 +189,11 @@ const BasicFields = ({
 
   const checkFirstName = (rule, value, callback) => {
     const userFirstName = value.split(' ')[0]
-    if (userFirstName.length < 3) {
-      callback('Name must contains atleast 3 characters')
+    const MIN_ALLOWED_CHAR = 1
+    if (userFirstName.length < MIN_ALLOWED_CHAR) {
+      callback(`Name must contains atleast ${MIN_ALLOWED_CHAR} character`)
+    } else if (!nameValidator(userFirstName)) {
+      callback('The input is not valid name')
     } else {
       callback()
     }

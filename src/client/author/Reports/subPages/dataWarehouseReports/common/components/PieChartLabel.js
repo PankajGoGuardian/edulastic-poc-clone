@@ -6,8 +6,8 @@ import React from 'react'
 
 const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
   if (value === 0) return null
-  const maxFirstLineCharLength = 7
-  const maxSecondLineCharLength = 9
+  const maxFirstLineCharLength = 5
+  const maxSecondLineCharLength = 10
   const nameArr = name.split(' ')
   const showSecondLine =
     nameArr[0].length > maxFirstLineCharLength || nameArr.length > 1

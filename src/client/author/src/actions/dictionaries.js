@@ -10,10 +10,35 @@ import {
   UPDATE_DEFAULT_CURRICULUM,
   RESET_DICT_ALIGNMENTS,
   UPDATE_RECENT_COLLECTIONS,
+  RECEIVE_TLO_STANDARDS_REQUEST,
+  RECEIVE_ELO_STANDARDS_REQUEST,
+  RECEIVE_ELO_STANDARDS_SUCCESS,
+  SET_ELOS_BY_TLO_ID,
+  CLEAR_TLO_AND_ELO,
 } from '../constants/actions'
 
 export const getDictCurriculumsAction = () => ({
   type: RECEIVE_DICT_CURRICULUMS_REQUEST,
+})
+
+export const getStandardTlosAction = (payload) => ({
+  type: RECEIVE_TLO_STANDARDS_REQUEST,
+  payload,
+})
+
+export const getStandardElosAction = (payload) => ({
+  type: RECEIVE_ELO_STANDARDS_REQUEST,
+  payload,
+})
+
+export const getElosSuccessAction = (payload) => ({
+  type: RECEIVE_ELO_STANDARDS_SUCCESS,
+  payload,
+})
+
+export const setElosByTloIdAction = (payload) => ({
+  type: SET_ELOS_BY_TLO_ID,
+  payload,
 })
 
 export const getDictStandardsForCurriculumAction = (
@@ -27,6 +52,10 @@ export const getDictStandardsForCurriculumAction = (
 
 export const clearDictStandardsAction = () => ({
   type: CLEAR_DICT_STANDARDS,
+})
+
+export const clearTloAndEloAction = () => ({
+  type: CLEAR_TLO_AND_ELO,
 })
 
 export const clearDictAlignmentAction = () => ({

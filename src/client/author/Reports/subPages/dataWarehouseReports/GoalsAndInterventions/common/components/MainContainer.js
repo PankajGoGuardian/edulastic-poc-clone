@@ -38,6 +38,7 @@ const SwitchTabs = styled(Tabs)`
   }
   .ant-tabs-tab {
     font-size: 12px !important;
+    font-weight: bold;
   }
   .ant-tabs-ink-bar {
     background-color: ${green} !important;

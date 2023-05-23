@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { every, get, isEmpty, mapValues, some } from 'lodash'
+import { get, isEmpty, mapValues, some } from 'lodash'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 
@@ -52,6 +52,7 @@ const PreVsPostReport = ({
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
   setFirstLoadHidden,
+  pageTitle,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -98,25 +99,6 @@ const PreVsPostReport = ({
 
   useEffect(() => () => resetPreVsPostReport(), [])
 
-  const canFetchByFilters = every([
-    settings.requestFilters.termId,
-    settings.requestFilters.preTestId,
-    settings.requestFilters.postTestId,
-  ])
-  const hasPrePostSharedFilters = every([
-    sharedReportFilters?.preTestId,
-    sharedReportFilters?.postTestId,
-  ])
-  const TESTIDS_COUNT_FOR_PRE_POST = 2
-  const canFillPrePostFromTestIds =
-    sharedReportFilters?.testIds?.split(',').length ===
-    TESTIDS_COUNT_FOR_PRE_POST
-
-  const canFetchBySharedReport = every([
-    settings.requestFilters.reportId,
-    some([hasPrePostSharedFilters, canFillPrePostFromTestIds]),
-  ])
-  const canFetchReport = some([canFetchByFilters, canFetchBySharedReport])
   // get report data
   useEffect(() => {
     const q = {
@@ -252,7 +234,8 @@ const PreVsPostReport = ({
   const noDataContainerText = getNoDataContainerText(
     settings,
     error,
-    isInvalidSharedFilters
+    isInvalidSharedFilters,
+    pageTitle
   )
 
   return (

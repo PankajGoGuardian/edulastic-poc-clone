@@ -8,6 +8,7 @@ import {
   fadedBlack,
 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
+import { EduButton } from '@edulastic/common'
 import { StyledTable } from '../../../../common/styled'
 
 const { IconCaretUp, IconCaretDown } = IconCarets
@@ -119,7 +120,7 @@ export const ContentWrapper = styled.div`
   justify-content: space-evenly;
   text-align: center;
   .left-content {
-    flex-basis: 38%;
+    flex-basis: 36%;
     padding-inline: 45px;
   }
   .right-content {
@@ -194,4 +195,11 @@ export const WidgetColumn = styled.div`
   display: flex;
   flex-direction: column;
   gap: inherit;
+`
+export const StyledEduButton = styled(EduButton)`
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
+  }
 `

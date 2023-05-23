@@ -6,14 +6,21 @@ import {
   getPerformanceBandProfilesSelector,
   receivePerformanceBandAction,
 } from '../../../../../../PerformanceBand/ducks'
-import {
-  fetchGroupsAction,
-  getGroupsSelector,
-} from '../../../../../../sharedDucks/groups'
+import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
 import {
   getCurrentActiveTerms,
   getCurrentTerm,
 } from '../../../../../../src/selectors/user'
+import ConfirmModal from '../../common/components/ConfirmModal'
+import {
+  StyledButton,
+  StyledFormButtonsContainer,
+  StyledFormContainer,
+  StyledFormHeader,
+  StyledFormTitle,
+  StyledNavContainer,
+  StyledNavWrapper,
+} from '../../common/components/Form/styled-components'
 import {
   GOAL,
   INTERVENTION,
@@ -28,19 +35,11 @@ import {
   attendanceBandList,
   formStatus,
   goalsList,
+  groupList,
   isFormDataSaving,
 } from '../../ducks/selectors'
 import useSaveFormData from '../../hooks/useSaveFormData'
 import Form from './Form'
-import {
-  StyledButton,
-  StyledFormButtonsContainer,
-  StyledFormContainer,
-  StyledFormHeader,
-  StyledFormTitle,
-  StyledNavContainer,
-  StyledNavWrapper,
-} from '../../common/components/Form/styled-components'
 
 const {
   [GOAL]: {
@@ -100,6 +99,8 @@ const CreateGI = ({
     attendanceBandOptions,
     targetAttendanceBandOptions,
     resetForm,
+    isConfirmationModalOpen,
+    setIsConfirmationModalOpen,
   } = useSaveFormData({
     formType,
     fetchGroupsData,
@@ -127,7 +128,16 @@ const CreateGI = ({
     }
   }, [currentFormStatus])
 
-  const onCancelClick = () => {
+  const handleCancelClick = () => {
+    setIsConfirmationModalOpen(true)
+  }
+
+  const handleModalCancelClick = () => {
+    setIsConfirmationModalOpen(false)
+  }
+
+  const handleModalConfirmClick = () => {
+    setIsConfirmationModalOpen(false)
     resetForm()
     onCancel()
   }
@@ -156,13 +166,18 @@ const CreateGI = ({
 
   return (
     <div>
+      <ConfirmModal
+        visible={isConfirmationModalOpen}
+        onOk={handleModalConfirmClick}
+        onCancel={handleModalCancelClick}
+      />
       <StyledFormHeader>
         <StyledFormTitle>
           {' '}
           Set {view === SAVE_GOAL ? 'Goal' : 'Intervention'} Criteria
         </StyledFormTitle>
         <StyledFormButtonsContainer>
-          <StyledButton isGhost onClick={onCancelClick}>
+          <StyledButton isGhost onClick={handleCancelClick}>
             Cancel
           </StyledButton>
           <StyledButton onClick={handleSaveForm} disabled={isSaveInProgress}>
@@ -181,7 +196,7 @@ const CreateGI = ({
             <VerticalScrollNavigation
               sections={formNavigationOptions}
               scrollContainer={scrollContainer}
-              headerHeight={70}
+              headerHeight={140}
             />
           </StyledNavContainer>
         </StyledNavWrapper>
@@ -209,7 +224,7 @@ const CreateGI = ({
 
 export default connect(
   (state) => ({
-    groupsData: getGroupsSelector(state),
+    groupsData: groupList(state),
     performanceBandData: getPerformanceBandProfilesSelector(state),
     attendanceBandData: attendanceBandList(state),
     goalsOptionsData: goalsList(state),

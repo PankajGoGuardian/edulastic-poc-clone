@@ -4,6 +4,22 @@ import Popover from 'antd/lib/popover'
 import { themeColor } from '@edulastic/colors'
 import { titleCase, ucFirst } from '../../utils'
 import EllipsisText from '../EllipsisText'
+import {
+  ATTENDANCE,
+  PERFORMANCE_BAND,
+  ATTENDANCE_BAND,
+} from '../../../constants/form'
+
+const getMetricTypeTooltipValue = (record) => {
+  const { type } = record
+  const measureType = (record?.goalCriteria || record?.interventionCriteria)
+    ?.target?.measureType
+
+  if (type === ATTENDANCE && measureType === PERFORMANCE_BAND) {
+    return ucFirst(titleCase(ATTENDANCE_BAND))
+  }
+  return ucFirst(titleCase(measureType))
+}
 
 const Tooltip = ({ value, record }) => {
   return (
@@ -22,14 +38,7 @@ const Tooltip = ({ value, record }) => {
             ?.measureType && (
             <>
               <p>Metric type:</p>
-              <b>
-                {ucFirst(
-                  titleCase(
-                    (record?.goalCriteria || record?.interventionCriteria)
-                      ?.target?.measureType
-                  )
-                )}
-              </b>
+              <b>{getMetricTypeTooltipValue(record)}</b>
             </>
           )}
           {(record?.goalCriteria || record?.interventionCriteria)?.applicableTo

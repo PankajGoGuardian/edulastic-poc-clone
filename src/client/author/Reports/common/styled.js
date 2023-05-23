@@ -295,7 +295,7 @@ export const StyledTable = styled(Table)`
           th {
             padding: 8px;
             text-align: center;
-            font-weight: 600;
+            font-weight: bold;
             font-size: 10px;
             border: 0px;
             color: #aaafb5;
@@ -617,6 +617,11 @@ export const StyledDropDownContainer = styled(Col)`
       }
     }
   }
+  .dashboard-based-on-test-type {
+    .ant-btn.ant-dropdown-trigger {
+      background-color: white;
+    }
+  }
   @media print {
     display: none;
   }
@@ -725,7 +730,7 @@ export const StyledLabel = styled.div`
   letter-spacing: ${(props) => props.spacing || '0.2px'};
   color: ${(props) => props.textColor || 'grey'};
   text-align: ${(props) => props.textAlign || 'left'};
-  font-size: 10px;
+  font-size: ${({ fontSize }) => fontSize || '10px'};
 
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
@@ -857,12 +862,14 @@ export const SectionLabelWrapper = styled.div`
 export const StyledButton = styled(Button)`
   display: flex;
   align-items: center;
-  height: 22px;
+  height: 24px;
   margin: 0 20px 0 20px;
   padding: 4px;
+  padding-right: 10px;
+  padding-left: 10px;
 `
 export const StyledIconQuestionCircle = styled(IconQuestionCircle)`
-  margin-right: 5px;
+  margin-right: 8px;
   height: 14px;
   width: 14px;
   path {
@@ -876,7 +883,7 @@ export const StyledTextSpan = styled.span`
 
 export const PieChartWrapper = styled.div`
   width: 400px;
-  height: 300px;
+  height: 320px;
   flex-grow: 1;
   .label-name {
     font-weight: normal;
@@ -905,7 +912,7 @@ export const SectionDescriptionWrapper = styled.div`
   align-items: center;
   margin: ${(p) => p.$margin || '0px'};
   p {
-    font-size: 12px;
+    font-size: 14px;
     color: ${fadedBlack};
   }
 `

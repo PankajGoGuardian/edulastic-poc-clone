@@ -390,7 +390,7 @@ const getGoals = () =>
 const fetchAttendanceBands = () =>
   api
     .callApi({
-      url: `report/attendance-band`,
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/attendance-band`,
       method: 'get',
     })
     .then((result) => result.data.result)

@@ -25,6 +25,7 @@ const EarlyWarningTable = ({
   settings,
   selectedCompareBy,
   compareByOptions,
+  isSharedReport = false,
 }) => {
   const {
     tableFilters,
@@ -84,6 +85,7 @@ const EarlyWarningTable = ({
         tableFilters={tableFilters}
         setTableFilters={setTableFilters}
         compareByOptions={compareByOptions}
+        isSharedReport={isSharedReport}
       />
       <EduIf condition={loading}>
         <EduThen>
@@ -104,6 +106,7 @@ const EarlyWarningTable = ({
                 isCsvDownloading={false}
                 bordered
                 rowKey={({ dimension }) => dimension._id}
+                // TODO pass pagination based on tableFilters.pageSize
               />
               <BackendPagination
                 itemsCount={data?.result?.totalRows || 0}

@@ -10,7 +10,7 @@ import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
 import './custom_style.css'
 import { connect } from 'react-redux'
-import { isArray, flattenDeep } from 'lodash'
+import { isArray, isEmpty } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 import { combinators, inNotInOp } from '../config/qb-config'
 import { allowedFields } from '../config/allowedFields-config'
@@ -49,17 +49,29 @@ import {
   RemoveRuleAction,
 } from '../config/control'
 import { advancedSearchHelpArtical, advancedSearchHelpVideo } from './constants'
+import { NULL_OPERATORS_VALUES } from '../config/constants'
 
-const getAllRules = (rules = []) => {
-  const allRulesByRecur = []
-  rules.forEach((rule) => {
-    if (rule.rules) {
-      allRulesByRecur.push(getAllRules(rule.rules))
-    } else {
-      allRulesByRecur.push(rule)
-    }
-  })
-  return flattenDeep(allRulesByRecur)
+const isRuleValid = (rules = []) => {
+  if (isArray(rules)) {
+    return (
+      !isEmpty(rules) &&
+      rules.every((rule) => {
+        if (rule.combinator) {
+          return (
+            !isEmpty(rule.rules) &&
+            rule.rules.every((groupRule) => isRuleValid(groupRule))
+          )
+        }
+        return isRuleValid(rule)
+      })
+    )
+  }
+
+  if (rules.value) {
+    if (isArray(rules.value)) return !isEmpty(rules.value)
+    return true
+  }
+  return NULL_OPERATORS_VALUES.includes(rules.operator)
 }
 
 const _QueryBuilder = ({
@@ -96,21 +108,11 @@ const _QueryBuilder = ({
 
   const handleQuickFilter = () => {
     const searchQuery = JSON.parse(formattedQuery)
-    const allRulesArr = getAllRules(searchQuery?.rules)
+    const isSearchQueryValid = isRuleValid(searchQuery?.rules)
 
-    const isAllowed =
-      allRulesArr.length &&
-      allRulesArr.every((rule) => {
-        if (rule.value) {
-          if (isArray(rule.value)) return rule.value.length
-          return true
-        }
-        return rule.operator === 'null' || rule.operator === 'notNull'
-      })
-
-    if (!isAllowed) {
+    if (!isSearchQueryValid) {
       return notification({
-        msg: 'Please provide atleast one value per filter',
+        msg: 'Please provide at least one search query.',
       })
     }
 

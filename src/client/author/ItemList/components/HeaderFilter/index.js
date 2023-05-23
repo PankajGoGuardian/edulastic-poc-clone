@@ -9,6 +9,7 @@ import {
 } from '@edulastic/constants'
 import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
+import { uniqBy, get } from 'lodash'
 import {
   curriculumsByIdSelector,
   standardsSelector,
@@ -49,6 +50,7 @@ const HeaderFilter = ({
   standardsList,
   collectionsList,
   allKnownTags,
+  elosByTloId,
 }) => {
   const containerRef = useRef(null)
   const {
@@ -58,15 +60,24 @@ const HeaderFilter = ({
     tags = [],
     filter,
   } = search
+  const _standardIds = standardIds.map((item) => item._id)
   const isFolderSearch = filter === libraryFilters.SMART_FILTERS.FOLDERS
   const filtersTagToBeShown =
     filter === libraryFilters.SMART_FILTERS.FAVORITES
       ? gradeAndSubjectFilters
       : allFilters
   const curriculum = curriculumById[curriculumId]
+  let extras = []
+  if (standardIds.length && !Object.keys(elosByTloId).length) {
+    extras = standardIds
+  }
   const selectedStandards = useMemo(
-    () => standardsList.elo.filter((s) => standardIds.includes(s._id)),
-    [standardsList, standardIds]
+    () =>
+      uniqBy(
+        [...standardsList.elo, ...Object.values(elosByTloId).flat(), ...extras],
+        '_id'
+      ).filter((s) => _standardIds.includes(s._id)),
+    [standardsList, _standardIds]
   )
   const selectedCollection = useMemo(
     () =>
@@ -92,10 +103,13 @@ const HeaderFilter = ({
 
     if (value) {
       const arr = search[type]
-      handleCloseFilter(
-        type,
-        arr.filter((a) => a !== value)
-      )
+      let removedResult = []
+      if (type === 'standardIds') {
+        removedResult = arr.filter((a) => a._id !== value)
+      } else {
+        removedResult = arr.filter((a) => a !== value)
+      }
+      handleCloseFilter(type, removedResult)
     }
   }
 
@@ -147,7 +161,7 @@ const HeaderFilter = ({
     if (type === 'standardIds' && selectedStandards.length) {
       selectedStandards.forEach((s) => {
         const tagTitle = s.identifier
-        getTag(type, s.id, tagTitle, bodyArr, popOverArray, containerWidthObj)
+        getTag(type, s._id, tagTitle, bodyArr, popOverArray, containerWidthObj)
       })
     }
     if (type === 'collections' && selectedCollection.length) {
@@ -250,6 +264,7 @@ export default connect((state) => ({
   standardsList: standardsSelector(state),
   collectionsList: getCollectionsSelector(state),
   allKnownTags: getKnownTagsSelector(state),
+  elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
 }))(HeaderFilter)
 
 const TagsStyle = css`

@@ -202,7 +202,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames } from './common/util'
+import { combineNames, getTestTitle } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -545,12 +545,14 @@ const selectorDict = {
   [reportGroupType.WHOLE_STUDENT_REPORT]: {
     getTempTags: reportWholeLearnerSelectors.filterTagsData,
     getSettings: reportWholeLearnerSelectors.settings,
+    getTags: reportWholeLearnerSelectors.selectedFilterTagsData,
     setTags: reportWholeLearnerActions.setSelectedFilterTagsData,
     setTempTags: reportWholeLearnerActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
     getSettings: reportMultipleAssessmentDwSelectors.settings,
+    getTags: reportMultipleAssessmentDwSelectors.selectedFilterTagsData,
     setTags: reportMultipleAssessmentDwActions.setDWMARSelectedFilterTagsData,
     setTempTags: reportMultipleAssessmentDwActions.setDWMARFilterTagsData,
   },
@@ -564,18 +566,21 @@ const selectorDict = {
   [reportGroupType.DW_DASHBOARD_REPORT]: {
     getTempTags: dwDashboardDucks.selectors.filterTagsData,
     getSettings: dwDashboardDucks.selectors.settings,
+    getTags: dwDashboardDucks.selectors.selectedFilterTagsData,
     setTags: dwDashboardDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwDashboardDucks.actions.setFilterTagsData,
   },
   [reportGroupType.DW_EARLY_WARNING_REPORT]: {
     getTempTags: dwEarlyWarningDucks.selectors.filterTagsData,
     getSettings: dwEarlyWarningDucks.selectors.settings,
+    getTags: dwEarlyWarningDucks.selectors.selectedFilterTagsData,
     setTags: dwEarlyWarningDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwEarlyWarningDucks.actions.setFilterTagsData,
   },
   [reportGroupType.DW_EFFICACY_REPORT]: {
     getTempTags: dwEfficacyDucks.selectors.filterTagsData,
     getSettings: dwEfficacyDucks.selectors.settings,
+    getTags: dwEfficacyDucks.selectors.selectedFilterTagsData,
     setTags: dwEfficacyDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwEfficacyDucks.actions.setFilterTagsData,
   },
@@ -817,7 +822,13 @@ function* fetchUpdateTagsData({ payload }) {
 export function* receiveTestListSaga({ payload }) {
   const { statePrefix = '', externalTests = [], ...params } = payload
   try {
-    const { testTypes = [], searchString = '' } = get(params, 'search', {})
+    const {
+      termId = '',
+      grades = [],
+      subjects = [],
+      testTypes = [],
+      searchString = '',
+    } = get(params, 'search', {})
     const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
@@ -832,24 +843,41 @@ export function* receiveTestListSaga({ payload }) {
       })
       .filter(({ _id, title }) => _id && title)
     const externalTestList = externalTests
-      .filter(({ testTitle, testCategory, testName }) => {
-        const _testName = testName || ''
-        const _testTitle = testTitle ? `- ${testTitle}` : ''
-        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+      .filter((t) => {
+        const _testGrades = (t.testGrades || '').split(',')
+        const _testSubjects = (t.testSubjects || '').split(',')
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        const checkForTermId = termId === t.termId
+        const checkForGrades =
+          !grades.length ||
+          !!_testGrades.filter((g) => grades.includes(g)).length
+        const checkForSubjects =
+          !subjects.length ||
+          !!_testSubjects.filter((s) => subjects.includes(s)).length
         const checkForExternalTestTypes =
-          !testTypes.length || testTypes.includes(testCategory)
+          !testTypes.length || testTypes.includes(t.testCategory)
         const checkForExternalTestTitle =
           !searchString ||
           externalTestTitle.toLowerCase().includes(searchString.toLowerCase())
-        return checkForExternalTestTitle && checkForExternalTestTypes
+        return [
+          checkForTermId,
+          checkForGrades,
+          checkForSubjects,
+          checkForExternalTestTitle,
+          checkForExternalTestTypes,
+        ].every((o) => !!o)
       })
-      .map(({ testTitle, testCategory, testName }) => {
-        const _testName = testName || ''
-        const _testTitle = testTitle ? `- ${testTitle}` : ''
-        const externalTestId = [_testName, testCategory, testTitle || ''].join(
-          EXTERNAL_TEST_KEY_SEPARATOR
-        )
-        const externalTestTitle = `${_testName} - ${testCategory} ${_testTitle}`
+      .map((t) => {
+        const _testName = t.testName || ''
+        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const externalTestId = [
+          _testName,
+          t.testCategory,
+          t.testTitle || '',
+        ].join(EXTERNAL_TEST_KEY_SEPARATOR)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
         return { _id: externalTestId, title: externalTestTitle, showId: false }
       })
     yield put({

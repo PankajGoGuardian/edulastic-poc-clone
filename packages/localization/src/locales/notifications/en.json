@@ -683,6 +683,10 @@
     "message": "At least one student should be selected to be Marked as Submitted",
     "description": ""
   },
+  "atLeastOneStudentToResetPassword": {
+    "message": "Select at least one student to Reset Password",
+    "description": ""
+  },
   "atleastOneStudentToMarkAbsent": {
     "message": "  At least one student should be selected to be Marked as Absent.",
     "description": ""
@@ -1752,7 +1756,7 @@
     "description": ""
   },
   "scoreUpdationFailed": {
-    "message": "Score updation failed",
+    "message": "Score failed to update",
     "description": ""
   },
   "dontHaveWritePermission": {
@@ -2165,5 +2169,22 @@
   "immersiveReaderFailedApiError": {
     "message": "Error in getting the Immersive Reader",
     "description": ""
+  },
+  "multipleEmailIdError": {
+    "message": "Atleast one of the given input email Id is invalid.",
+    "description": ""
+  },
+  "multipleTeacherAddedSuccess": {
+    "message": "Given teacher account(s) are added successfully.",
+    "description": ""
+  },
+  "teacherAddedSuccess": {
+    "message": "Teacher account is added successfully.",
+    "description": ""
+  },
+  "teacherAlreadyAdded" : {
+    "message": "Teacher(s) already added.",
+    "description": ""
   }
+
 }

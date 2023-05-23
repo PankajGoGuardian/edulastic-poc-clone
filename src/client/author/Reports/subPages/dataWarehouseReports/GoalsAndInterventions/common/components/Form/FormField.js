@@ -57,7 +57,7 @@ const FormField = ({
       termEndDate && date >= termEndDate + oneDayInMilliseconds
 
     const datesGreaterThanSelectedEndDate =
-      selectedEndDate && date >= selectedEndDate - oneDayInMilliseconds
+      selectedEndDate && date >= selectedEndDate - oneDayInMilliseconds * 2
 
     if (
       datesLessThanCurrentDate ||
@@ -154,12 +154,16 @@ const FormField = ({
           }
           onChange={(date) => {
             if (date) {
-              handleFieldDataChange(field, +moment(date?.format('YYYY-MM-DD')))
+              handleFieldDataChange(
+                field,
+                field === START_DATE
+                  ? +moment(date?.format('YYYY-MM-DD'))
+                  : +moment(date?.endOf('day'))
+              )
             }
           }}
           showToday={false}
           allowClear={false}
-          // TODO check how much duration can user select (termid).
         />
       </EduIf>
       <EduIf condition={fieldType === TAGS}>
@@ -167,7 +171,9 @@ const FormField = ({
           {...tagProps}
           showLabel={false}
           fieldSetLineHeight="unset"
-          selectorHeight="32px"
+          giChoiceHeight="20px"
+          giLineHeight="unset"
+          giPadding="0px"
         />
       </EduIf>
     </>

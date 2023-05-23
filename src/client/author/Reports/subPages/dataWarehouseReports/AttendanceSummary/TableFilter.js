@@ -1,13 +1,12 @@
 import React from 'react'
 import { Row, Typography } from 'antd'
 import { darkGrey } from '@edulastic/colors'
-import { IconPlusCircle } from '@edulastic/icons'
-import { EduIf } from '@edulastic/common'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledRow } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { DashedLine } from '../../../common/styled'
-import { compareByToPluralName, compareByEnums } from './utils/constants'
-import { StyledEduButton } from './styled-component'
+import { compareByToPluralName } from './utils/constants'
+import { isAddToStudentGroupEnabled } from '../common/utils'
+import StudentGroupBtn from '../common/components/StudentGroupBtn'
 
 const TableFilters = ({
   setCompareBy,
@@ -16,8 +15,10 @@ const TableFilters = ({
   handleAddToGroup,
   isSharedReport = false,
 }) => {
-  const showAddToGroupButton =
-    compareBy === compareByEnums.STUDENT && !isSharedReport
+  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
+    isSharedReport,
+    compareBy
+  )
   return (
     <StyledRow type="flex" justify="space-between" margin="20px">
       <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
@@ -25,11 +26,10 @@ const TableFilters = ({
       </Typography.Title>
       <DashedLine margin="15px 24px" dashColor={darkGrey} />
       <Row type="flex">
-        <EduIf condition={showAddToGroupButton}>
-          <StyledEduButton onClick={handleAddToGroup}>
-            <IconPlusCircle /> Add To Student Group
-          </StyledEduButton>
-        </EduIf>
+        <StudentGroupBtn
+          showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+          handleAddToGroupClick={handleAddToGroup}
+        />
         <ControlDropDown
           style={{ marginRight: '10px' }}
           prefix="Compare By"

@@ -5,15 +5,13 @@ import { get, mapValues } from 'lodash'
 import { connect } from 'react-redux'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
+import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   removeFilter,
   resetStudentFilters as resetFilters,
 } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
-import {
-  staticDropDownData,
-  availableTestTypes as availableAssessmentType,
-} from '../../utils'
+import { staticDropDownData } from '../../utils'
 
 import { actions, selectors } from '../../ducks'
 import {
@@ -25,6 +23,7 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
+import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 
 const Filters = ({
   showFilter,
@@ -42,7 +41,7 @@ const Filters = ({
   filtersTabKey,
   filters,
   filterTagsData,
-
+  selectedFilterTagsData,
   toggleFilter,
   setShowApply,
   setFirstLoad,
@@ -61,7 +60,15 @@ const Filters = ({
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
-  const { demographics = [] } = get(filtersData, 'data.result', {})
+  const { demographics = [], testTypes = getArrayOfAllTestTypes() } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+
+  const availableTestTypes = testTypes.filter(
+    ({ key }) => !TEST_TYPES.PRACTICE.includes(key)
+  )
 
   useFiltersPreload({
     reportId,
@@ -76,11 +83,12 @@ const Filters = ({
       search.termId ||
       defaultTermId ||
       (schoolYears.length ? schoolYears[0].key : ''),
+    externalBandsRequired: true,
   })
 
   useFiltersFromURL({
     _onGoClick,
-    availableAssessmentType,
+    availableTestTypes,
     defaultTermId,
     fetchUpdateTagsData,
     filters,
@@ -175,7 +183,7 @@ const Filters = ({
     <FiltersView
       isPrinting={isPrinting}
       reportId={reportId}
-      selectedFilterTagsData={filterTagsData}
+      selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={tagTypes}
       handleCloseTag={handleCloseTag}
       handleTagClick={handleTagClick}
@@ -190,7 +198,7 @@ const Filters = ({
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
       assessmentTypesRef={assessmentTypesRef}
-      availableAssessmentType={availableAssessmentType}
+      availableTestTypes={availableTestTypes}
       userRole={userRole}
       demographics={demographics}
       terms={terms}

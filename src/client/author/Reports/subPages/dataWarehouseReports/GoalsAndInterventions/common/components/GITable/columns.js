@@ -1,6 +1,4 @@
 import React from 'react'
-import moment from 'moment'
-import { isObject } from 'lodash'
 import ColoredCell from './ColoredCell'
 import {
   statusColors,
@@ -8,53 +6,78 @@ import {
   MULTIPLE_OF_TENS,
   statusTextColors,
   GIActionOptions,
+  GI_STATUS,
 } from '../../../constants/common'
 import Tooltip from './Tooltip'
 import ActionMenu from '../ActionMenu'
 import { GOAL, INTERVENTION } from '../../../constants/form'
-import { isNumeric, ucFirst, getPercentage, getTarget } from '../../utils'
+import {
+  isNumeric,
+  ucFirst,
+  getTarget,
+  isCurrentValueInValid,
+  getDaysLeft,
+  getTotalDaysBetweenTwoDates,
+  hasCurrentReachedTarget,
+  isTimeLeftWithinCertainPercent,
+  isTimeLeftOverCertainPercent,
+} from '../../utils'
 import EllipsisText from '../EllipsisText'
 
 const getCurrentStatusColor = (record) => {
-  if (
-    isObject(record.current)
-      ? record.current.isGreaterThanTargetBand
-      : record.current >= getTarget(record)?.metric
-  )
-    return statusColors.GREEN
-  if (
-    (isObject(record.current)
-      ? !record.current.isGreaterThanTargetBand
-      : record.current < getTarget(record)?.metric) &&
-    moment().diff(record.endDate, 'days') < 0
-  ) {
+  if (isCurrentValueInValid(record)) {
     return statusColors.WHITE
   }
+
+  const isTargetAchieved = hasCurrentReachedTarget(record)
+
+  if (isTargetAchieved) {
+    return statusColors.GREEN
+  }
+
+  if (!isTargetAchieved && getDaysLeft(record.startDate, record.endDate) > 0) {
+    return statusColors.WHITE
+  }
+
   return statusColors.RED
 }
 
 const getTimeLeftColor = (record) => {
-  const timeLeft = moment().diff(record.startDate, 'days')
-  const totalTime = moment(record.endDate).diff(record.startDate, 'days')
+  const { status = '' } = record
+  const timeLeft = getDaysLeft(record.startDate, record.endDate)
+  const totalTime = getTotalDaysBetweenTwoDates(
+    record.startDate,
+    record.endDate
+  )
   if (
-    moment().diff(record.endDate, 'days') > 0 ||
-    moment().diff(record.startDate, 'days') <= 0
+    timeLeft === 0 ||
+    (timeLeft === totalTime && status === GI_STATUS.NOT_STARTED)
   ) {
     return timeLeftColors.GRAY
   }
-  if (timeLeft / totalTime <= getPercentage(MULTIPLE_OF_TENS.THIRTY))
-    return timeLeftColors.RED
   if (
-    timeLeft / totalTime > getPercentage(MULTIPLE_OF_TENS.THIRTY) &&
-    timeLeft / totalTime <= getPercentage(MULTIPLE_OF_TENS.FIFTY)
-  )
+    isTimeLeftWithinCertainPercent(timeLeft, totalTime, MULTIPLE_OF_TENS.THIRTY)
+  ) {
+    return timeLeftColors.RED
+  }
+
+  if (
+    isTimeLeftOverCertainPercent(
+      timeLeft,
+      totalTime,
+      MULTIPLE_OF_TENS.THIRTY
+    ) &&
+    isTimeLeftWithinCertainPercent(timeLeft, totalTime, MULTIPLE_OF_TENS.FIFTY)
+  ) {
     return timeLeftColors.YELLOW
+  }
+
   return timeLeftColors.GREEN
 }
 
 const parseCurrentValue = (value) => {
   if (value) {
-    return isNumeric(value) ? `${Math.ceil(parseFloat(value))}%` : value
+    return isNumeric(value) ? `${Math.round(parseFloat(value))}%` : value
   }
   return '-'
 }
@@ -92,19 +115,21 @@ const columns = [
     dataIndex: 'type',
     key: 'type',
     width: 80,
+    align: 'center',
     sorter: (a, b) =>
       (a.type || '').toLowerCase().localeCompare((b.type || '').toLowerCase()),
     render: (text) => <p>{ucFirst(text)}</p>,
   },
   {
-    title: 'Target Groups',
+    title: 'Target Group',
     dataIndex: 'group',
     key: 'target_Groups',
     sorter: (a, b) =>
       (a.group || '')
         .toLowerCase()
         .localeCompare((b.group || '').toLowerCase()),
-    width: 100,
+    width: 150,
+    align: 'center',
     render: (groups) => <EllipsisText lines={2}>{groups}</EllipsisText>,
   },
   {
@@ -112,7 +137,8 @@ const columns = [
     dataIndex: 'baseline',
     className: 'text-center',
     key: 'baseline',
-    width: 100,
+    width: 150,
+    align: 'center',
     sortDirections: ['descend', 'ascend'],
     sorter: (a, b) =>
       sortingBaselineCurrentTargetValues(a.baseline, b.baseline),
@@ -123,15 +149,14 @@ const columns = [
     dataIndex: 'current',
     key: 'current',
     className: 'text-center',
+    align: 'center',
     sorter: (a, b) =>
-      isObject(a.current)
-        ? sortingBaselineCurrentTargetValues(a.current.value, b.current.value)
-        : sortingBaselineCurrentTargetValues(a.current, b.current),
-    width: 100,
+      sortingBaselineCurrentTargetValues(a?.current?.value, b?.current?.value),
+    width: 150,
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
-        value={parseCurrentValue(isObject(text) ? text.value : text)}
+        value={parseCurrentValue(text?.value)}
         bgColor={getCurrentStatusColor(record)}
       />
     ),
@@ -141,8 +166,9 @@ const columns = [
     dataIndex: 'target',
     key: 'target',
     className: 'text-center',
-    width: 100,
+    width: 150,
     sortDirections: ['descend', 'ascend'],
+    align: 'center',
     sorter: (a, b) =>
       sortingBaselineCurrentTargetValues(
         getTarget(a)?.metric,
@@ -159,17 +185,16 @@ const columns = [
     key: 'time_left',
     className: 'text-center',
     width: 180,
+    align: 'center',
     sorter: (a, b) =>
-      moment().diff(b.startDate, 'days') - moment().diff(a.startDate, 'days'),
+      getDaysLeft(b.startDate, b.endDate) - getDaysLeft(a.startDate, a.endDate),
     sortDirections: ['descend', 'ascend'],
     render: (text, record) => (
       <ColoredCell
-        value={`${
-          moment().diff(record.endDate, 'days') > 0 ||
-          moment().diff(record.startDate, 'days') < 0
-            ? 0
-            : moment().diff(record.startDate, 'days')
-        }/${moment(record.endDate).diff(record.startDate, 'days')}`}
+        value={`${getDaysLeft(
+          record.startDate,
+          record.endDate
+        )}/${getTotalDaysBetweenTwoDates(record.startDate, record.endDate)}`}
         color={getTimeLeftColor(record)}
       />
     ),
@@ -179,6 +204,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     width: 100,
+    align: 'center',
     sorter: (a, b) => {
       const left = ucFirst(a.status || '')
       const right = ucFirst(b.status || '')
@@ -198,6 +224,7 @@ const columns = [
     title: 'Notes',
     dataIndex: 'comment',
     key: 'comment',
+    align: 'center',
     sorter: (a, b) =>
       (a.comment || '')
         .toLowerCase()
@@ -214,6 +241,7 @@ const columns = [
       <ActionMenu
         type={record.goalCriteria ? GOAL : INTERVENTION}
         options={GIActionOptions}
+        GIData={record}
       />
     ),
   },

@@ -1,18 +1,29 @@
 import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useMemo, useState } from 'react'
 import loadable from '@loadable/component'
+import React, { useEffect, useMemo, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
-import { connect } from 'react-redux'
 import { roleuser, signUpState } from '@edulastic/constants'
+import { connect } from 'react-redux'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import {
+  fetchMultipleSubscriptionsAction,
+  getLoadingStateSelector,
+  getSubsLicensesSelector,
+} from '../../../ManageSubscription/ducks'
+import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
+import { resetTestFiltersAction } from '../../../TestList/ducks'
+import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
 import { slice, trialPeriodTextSelector } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
-import { Wrapper } from '../styled/commonStyled'
 import SubscriptionHeader from '../SubscriptionHeader'
 import SubscriptionMain from '../SubscriptionMain'
-import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
+import DataStudioTab from '../SubscriptionMain/DataStudioTab'
+import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
+import { Wrapper } from '../styled/commonStyled'
 import {
   CompareModal,
   PlanCard,
@@ -22,144 +33,11 @@ import {
   PlanTitle,
   SubscriptionContentWrapper,
 } from './styled'
-import { resetTestFiltersAction } from '../../../TestList/ducks'
-import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
-import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
-import {
-  fetchMultipleSubscriptionsAction,
-  getLoadingStateSelector,
-  getSubsLicensesSelector,
-} from '../../../ManageSubscription/ducks'
-import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
-import FREEIMG from '../../static/free-forever-bg.png'
-import PREMIUMIMG from '../../static/premium-teacher-bg.png'
-import ENTERPRISEIMG from '../../static/enterprise-bg.png'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { getUserFeatures } from '../../../src/selectors/user'
+import { comparePlansData } from '../../constants/subscription'
+import { navigationState } from '../../../src/constants/navigation'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
-
-const comparePlansData = [
-  {
-    cardTitle: 'Free Forever',
-    subTitle: '$0 / MONTH',
-    cardLabel: 'FREE FOREVER',
-    color: '#5EB500',
-    bgImg: FREEIMG,
-    data: [
-      {
-        title: 'Unlimited Assesments',
-        description: 'Create as many classes & students as you need.',
-      },
-      {
-        title: '80K & Growing Item Bank',
-        description: 'Edulastic CERTIFIED for Grades K-12.',
-      },
-      {
-        title: '30+ Technology-Enhanced Question Types',
-        description: 'Create your own or mix and match.',
-      },
-      {
-        title: 'Immediate Perfomance Data',
-        description: 'Real-time reports by student and class.',
-      },
-      {
-        title: 'Standards Mastery Tracking',
-        description: 'Reports by standard for students and classes.',
-      },
-      {
-        title: 'Assessment Sharing',
-        description: 'Share assessments or keep them private. Your choice.',
-      },
-      {
-        title: 'Works with Google Apps',
-        description: 'Google single sign-on and sync with Google Classroom.',
-      },
-    ],
-  },
-  {
-    cardTitle: 'Premium Teacher',
-    subTitle: '$100 / YEAR',
-    cardLabel: 'PER TEACHER PRICING',
-    color: '#4E95F3',
-    bgImg: PREMIUMIMG,
-    data: [
-      {
-        title: 'All Free Teacher Features, PLUS:',
-        description: '',
-      },
-      {
-        title: 'In-depth Reporting',
-        description:
-          'Show student growth over time. Analyze answer distractor. See complete student mastery profile.',
-      },
-      {
-        title: 'Advanced Assessment Options',
-        description:
-          'Shuffle question order for each student. Show student scores but hide correct answers.',
-      },
-      {
-        title: 'Read Aloud',
-        description:
-          'Choose students to have questions and answer choices read to them.',
-      },
-      {
-        title: 'Rubric Scoring',
-        description: 'Create and share rubrics school or district wide.',
-      },
-      {
-        title: 'Collaboration',
-        description: "Work on assessment as a team before they're published.",
-      },
-      {
-        title: 'Presentation Mode',
-        description:
-          'Review answers and common mistakes with the class without showing names.',
-      },
-    ],
-  },
-  {
-    cardTitle: 'Enterprise',
-    subTitle: 'REQUEST A QUOTE',
-    cardLabel: 'PER STUDENT PRICING',
-    color: '#FFA200',
-    bgImg: ENTERPRISEIMG,
-    data: [
-      {
-        title: 'Premium Teacher for All Teachers, PLUS:',
-        description: '',
-      },
-      {
-        title: 'Common Assessment',
-        description:
-          'Administer common assessments and control access by teachers and students.',
-      },
-      {
-        title: 'Immediate School or District-Wide Reports',
-        description:
-          'See performance, growth and standards mastery by building, grade, teacher and student.',
-      },
-      {
-        title: 'SIS & LMS Integration',
-        description:
-          'Automatic roster sync and gradebook integration (where available).',
-      },
-      {
-        title: 'Additional Item Banks',
-        description:
-          'Choose from third-party item banks, such as Inspect, Carnegie Learning or Progress Testing.',
-      },
-      {
-        title: 'Expedited Technical Support',
-        description: 'On-call support during assessment by phone or online.',
-      },
-      {
-        title: 'Custom Professional Development',
-        description:
-          'Live or online workshops to get you and your teacher up and running.',
-      },
-    ],
-  },
-]
 
 const PlanDetailsComponent = ({ title, description = '' }) => (
   <>
@@ -218,6 +96,7 @@ const Subscription = (props) => {
     proratedProducts,
     isLoading,
     displayText,
+    features,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -245,6 +124,7 @@ const Subscription = (props) => {
   )
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
+  const [showDataStudioTab, setShowDataStudioTab] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
   const [showCompleteSignupModal, setShowCompleteSignupModal] = useState(false)
   const [callFunctionAfterSignup, setCallFunctionAfterSignup] = useState(null)
@@ -272,8 +152,23 @@ const Subscription = (props) => {
       isTabShouldSwitch
     ) {
       setShowEnterpriseTab(true)
+      setShowDataStudioTab(false)
     }
   }, [subType, isPremiumUser, isFreeAdmin, isTabShouldSwitch])
+
+  useEffect(() => {
+    if (
+      history?.location?.state?.view ===
+      navigationState.SUBSCRIPTION.view.DATA_STUDIO
+    ) {
+      setShowEnterpriseTab(false)
+      setShowDataStudioTab(true)
+      history.push({
+        pathname: history.location.pathname,
+        state: undefined,
+      })
+    }
+  }, [history.location.state])
 
   /**
    *  a user is paid premium user if
@@ -416,6 +311,8 @@ const Subscription = (props) => {
         isCliUser={isCliUser}
         showEnterpriseTab={showEnterpriseTab}
         setShowEnterpriseTab={setShowEnterpriseTab}
+        showDataStudioTab={showDataStudioTab}
+        setShowDataStudioTab={setShowDataStudioTab}
         uploadPO={openSubmitPOModal}
         schoolId={schoolId}
         setCartVisible={setCartVisible}
@@ -425,6 +322,18 @@ const Subscription = (props) => {
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
           <EnterpriseTab
+            features={features}
+            isPremium={isPremium}
+            subType={subType}
+            requestQuote={openRequestQuoteModal}
+            subEndDate={subEndDate}
+            isPremiumUser={isPremiumUser}
+            signUpFlowModalHandler={signUpFlowModalHandler}
+            user={user}
+          />
+        ) : showDataStudioTab ? (
+          <DataStudioTab
+            features={features}
             isPremium={isPremium}
             subType={subType}
             requestQuote={openRequestQuoteModal}
@@ -586,6 +495,7 @@ export default compose(
       proratedProducts: state.subscription?.proratedProducts,
       isLoading: getLoadingStateSelector(state),
       displayText: trialPeriodTextSelector(state),
+      features: getUserFeatures(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

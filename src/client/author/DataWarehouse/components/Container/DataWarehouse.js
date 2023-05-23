@@ -16,7 +16,6 @@ import {
   getResetTestDataFileUploadResponseAction,
 } from '../../../sharedDucks/dataWarehouse'
 import {
-  isPremiumUserSelector,
   isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
   isDataOpsOnlyUser as checkIsDataOpsOnlyUser,
 } from '../../../src/selectors/user'
@@ -28,7 +27,6 @@ const DataWarehouse = ({
   resetUploadResponse,
   isDataWarehouseEnabled,
   isDataOpsOnlyUser,
-  isPremiumUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
 
@@ -50,7 +48,7 @@ const DataWarehouse = ({
     }
   }, [])
 
-  if (!isDataWarehouseEnabled || !isDataOpsOnlyUser || !isPremiumUser) {
+  if (!isDataWarehouseEnabled || !isDataOpsOnlyUser) {
     return (
       <NotAllowedContainer>
         Contact your district administrator to upload data.
@@ -92,7 +90,6 @@ const withConnect = connect(
     uploadsStatusList: getUploadsStatusList(state),
     isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
     isDataOpsOnlyUser: checkIsDataOpsOnlyUser(state),
-    isPremiumUser: isPremiumUserSelector(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

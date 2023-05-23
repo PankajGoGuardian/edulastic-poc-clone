@@ -834,7 +834,12 @@ export const getShowUpgradePopupSelector = createSelector(
 
 export const getIsAudioResponseQuestionEnabled = createSelector(
   stateSelector,
-  (state) => state?.enableAudioResponseQuestion || false
+  getUserRole,
+  (state, userRole) =>
+    [
+      state?.enableAudioResponseQuestion,
+      userRole === roleuser.EDULASTIC_CURATOR,
+    ].some((o) => !!o)
 )
 
 export const showGroupsPanelSelector = createSelector(

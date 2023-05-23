@@ -6,6 +6,10 @@ const DW_DASHBOARD_REPORT = 'dashboard-report'
 const DW_EARLY_WARNING_REPORT = 'early-warning-report'
 const DW_GOALS_AND_INTERVENTIONS_REPORT = 'goals-and-interventions'
 const DW_EFFICACY_REPORT = 'efficacy-report'
+const GROUP_TYPE = {
+  CUSTOM: 'custom',
+  CLASS: 'class',
+}
 
 const reportGroupType = {
   STANDARD_REPORT: 'standard-reports',
@@ -77,4 +81,5 @@ module.exports = {
   DW_GOALS_AND_INTERVENTIONS_REPORT,
   DW_EARLY_WARNING_REPORT,
   DW_EFFICACY_REPORT,
+  GROUP_TYPE,
 }

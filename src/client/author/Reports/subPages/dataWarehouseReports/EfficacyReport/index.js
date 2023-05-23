@@ -25,6 +25,8 @@ import { actions, selectors } from './ducks'
 import {
   compareByOptions as compareByOptionsRaw,
   analyseByOptions,
+  TABLE_PAGE_SIZE,
+  sortOrdersMap,
 } from './utils'
 
 import {
@@ -37,6 +39,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import ReportView from './ReportView'
+import useTableFilters from './hooks/useTableFilters'
 
 const EfficacyReport = ({
   // value props
@@ -52,7 +55,6 @@ const EfficacyReport = ({
   breadcrumbData,
   isCliUser,
   isPrinting,
-  updateNavigation,
   // value props (from report selectors)
   firstLoad,
   showFilter,
@@ -63,6 +65,7 @@ const EfficacyReport = ({
   reportSummaryData,
   reportTableData,
   error,
+  updateNavigation,
   // action props
   onRefineResultsCB,
   resetAllReports,
@@ -71,7 +74,6 @@ const EfficacyReport = ({
   setSettings,
   fetchReportSummaryDataRequest,
   fetchReportTableDataRequest,
-  setFirstLoadHidden,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -103,11 +105,15 @@ const EfficacyReport = ({
     settings.requestFilters
   )
 
+  const search = useUrlSearchParams(location)
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
-
-  const [defaultCompareBy] = compareByOptions
+  const selectedCompareBy = getSelectedCompareBy({
+    search,
+    settings,
+    compareByOptions,
+  })
   const [defaultAnalyseBy] = analyseByOptions
 
   const toggleFilter = (e, status) => {
@@ -116,11 +122,16 @@ const EfficacyReport = ({
     }
   }
 
-  const search = useUrlSearchParams(location)
-  const selectedCompareBy = getSelectedCompareBy({
+  const {
+    tableFilters,
+    setTableFilters,
+    getTableDrillDownUrl,
+  } = useTableFilters({
+    location,
     search,
     settings,
-    compareByOptions,
+    selectedCompareBy,
+    defaultAnalyseBy,
   })
 
   const onGoClick = (_settings) => {
@@ -143,14 +154,13 @@ const EfficacyReport = ({
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
     })
+    setTableFilters({ ...tableFilters, compareBy: selectedCompareBy })
     setShowApply(false)
   }
 
-  const [tableFilters, setTableFilters] = useState({
-    compareBy: defaultCompareBy,
-    analyseBy: defaultAnalyseBy,
-    preBandScore: '',
-    postBandScore: '',
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on state update
+    pageSize: TABLE_PAGE_SIZE,
   })
 
   useEffect(
@@ -161,13 +171,22 @@ const EfficacyReport = ({
     []
   )
 
+  const extraNavFilters = useMemo(
+    () => ({
+      selectedCompareBy: tableFilters.compareBy.key,
+      preBandScore: tableFilters.preBandScore,
+      postBandScore: tableFilters.postBandScore,
+    }),
+    [tableFilters.compareBy.key]
+  )
+
   useTabNavigation({
     settings,
     reportId,
     history,
     loc,
     updateNavigation,
-    extraFilters: { selectedCompareBy: selectedCompareBy.key },
+    extraFilters: extraNavFilters,
   })
 
   useEffect(() => {
@@ -175,25 +194,36 @@ const EfficacyReport = ({
       ...settings.requestFilters,
     }
     if (!isInvalidSharedFilters) {
-      setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
+      setPageFilters({ ...pageFilters, page: 1 })
+      setTableFilters({
+        ...tableFilters,
+        preBandScore: search.preBandScore || '',
+        postBandScore: search.postBandScore || '',
+      })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
-    // request not made, so set load/firstLoad to false manually
-    setFirstLoadHidden(true)
-    return () => setFirstLoadHidden(false)
   }, [settings.requestFilters])
+
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [tableFilters.compareBy.key, tableFilters.sortKey, tableFilters.sortOrder])
 
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
       compareBy: tableFilters.compareBy.key,
+      sortKey: tableFilters.sortKey,
+      sortOrder: sortOrdersMap[tableFilters.sortOrder],
+      requireTotalCount: tableFilters.requireTotalCount,
+      ...pageFilters,
     }
-    if (!isInvalidSharedFilters) {
+    if (!isInvalidSharedFilters && pageFilters.page) {
+      setTableFilters({ ...tableFilters, requireTotalCount: false })
       fetchReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, tableFilters.compareBy.key])
+  }, [pageFilters])
 
   const { bandInfo = [], externalBands = [] } = useMemo(
     () => get(filtersData, 'data.result', []),
@@ -205,10 +235,34 @@ const EfficacyReport = ({
   const selectedPostPerformanceBand =
     bandInfo.find((x) => x._id === reportFilters.postProfileId) || bandInfo[0]
 
+  const onMatrixCellClick = (preBandScore = '', postBandScore = '') => () => {
+    if (search.preBandScore || search.postBandScore) {
+      const _filters = {
+        ...settings.requestFilters,
+        selectedCompareBy: selectedCompareBy.key,
+      }
+      history.replace(`${location.pathname}?${qs.stringify(_filters)}`)
+    }
+    const _tableFilters = {
+      ...tableFilters,
+      preBandScore: `${preBandScore}`,
+      postBandScore: `${postBandScore}`,
+    }
+    if (
+      tableFilters.preBandScore === _tableFilters.preBandScore &&
+      tableFilters.postBandScore === _tableFilters.postBandScore
+    ) {
+      _tableFilters.preBandScore = ''
+      _tableFilters.postBandScore = ''
+    }
+    setTableFilters(_tableFilters)
+  }
+
   const noDataContainerText = getNoDataContainerText(
     settings,
     error,
-    isInvalidSharedFilters
+    isInvalidSharedFilters,
+    loc
   )
 
   return (
@@ -240,6 +294,7 @@ const EfficacyReport = ({
           setShowApply={setShowApply}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
+          tableFilters={tableFilters}
         />
       </SubHeader>
       <ReportContainer>
@@ -269,6 +324,7 @@ const EfficacyReport = ({
                         reportSummaryData={reportSummaryData}
                         reportTableData={reportTableData}
                         tableFilters={tableFilters}
+                        pageFilters={pageFilters}
                         reportFilters={reportFilters}
                         externalBands={externalBands}
                         selectedPrePerformanceBand={selectedPrePerformanceBand}
@@ -277,6 +333,9 @@ const EfficacyReport = ({
                         }
                         compareByOptions={compareByOptions}
                         setTableFilters={setTableFilters}
+                        getTableDrillDownUrl={getTableDrillDownUrl}
+                        onMatrixCellClick={onMatrixCellClick}
+                        setPageFilters={setPageFilters}
                         isCsvDownloading={isCsvDownloading}
                         isSharedReport={isSharedReport}
                       />

@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import Popover from 'antd/lib/popover'
+import { EduIf } from '@edulastic/common'
 import { summaryTileColors } from '../../../constants/common'
+import { StyledInfoIcon } from './styled-components'
 
 const SummaryTile = ({
   id,
@@ -9,6 +12,7 @@ const SummaryTile = ({
   color,
   border,
   textColor = summaryTileColors.BLUE_TEXT,
+  infoText = '',
 }) => {
   return (
     <StyleButton
@@ -21,7 +25,22 @@ const SummaryTile = ({
         fontSize: border ? '14px' : '12px',
       }}
     >
-      <p>{text}</p>
+      <p>
+        {text}
+        <EduIf condition={infoText?.length > 0}>
+          <Popover
+            overlayClassName="gi-summary-tile-info-popover"
+            placement="top"
+            content={
+              <div className="content">
+                <p>{infoText}</p>
+              </div>
+            }
+          >
+            <StyledInfoIcon />
+          </Popover>
+        </EduIf>
+      </p>
       <b>{unit}</b>
     </StyleButton>
   )

@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { isEmpty, reject } from 'lodash'
+import { get, isEmpty, reject } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
 import { staticDropDownData } from '../../../utils'
+import { getDemographicsFilterTagsData } from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
@@ -80,19 +81,34 @@ function useFiltersFromURL({
           postTestId: search.postTestId || '',
           preProfileId: urlPrePerformanceBand?.key || '',
           postProfileId: urlPostPerformanceBand?.key || '',
+          race: search.race || 'all',
+          gender: search.gender || 'all',
+          iepStatus: search.iepStatus || 'all',
+          frlStatus: search.frlStatus || 'all',
+          ellStatus: search.ellStatus || 'all',
+          hispanicEthnicity: search.hispanicEthnicity || 'all',
         }
         if (userRole === roleuser.TEACHER) {
           delete _filters.schoolIds
           delete _filters.teacherIds
         }
         const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+        const demographics = get(filtersData, 'data.result.demographics')
+        const demographicsFilterTagsData = getDemographicsFilterTagsData(
+          search,
+          demographics
+        )
         const _filterTagsData = {
           termId: urlSchoolYear,
+          testSubjects: urlTestSubjects,
+          testGrades: urlTestGrades,
           assessmentTypes: availableAssessmentType.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
           grades: urlGrades,
+
+          ...demographicsFilterTagsData,
         }
 
         // set filterTagsData, filters and testId
@@ -108,11 +124,12 @@ function useFiltersFromURL({
             selectedFilterTagsData: { ..._filterTagsData },
           })
           fetchUpdateTagsData({
-            testIds: reject(_filters.testIds?.split(','), isEmpty),
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            courseIds: reject([search.courseId], isEmpty),
+            teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+            courseId: reject([search.courseId], isEmpty),
             classIds: reject(_filters.classIds?.split(','), isEmpty),
             groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
             options: {
               termId: _filters.termId,
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),

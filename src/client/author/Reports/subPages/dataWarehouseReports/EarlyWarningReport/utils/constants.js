@@ -1,12 +1,18 @@
-import {
+import React from 'react'
+import { lightRed7, darkRed3 } from '@edulastic/colors'
+import { reportUtils } from '@edulastic/constants'
+import { ColoredText } from '../components/common/styledComponents'
+
+const {
   GRADE_OPTIONS,
   PERIOD_NAMES,
   PERIOD_TYPES,
   SUBJECT_OPTIONS,
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
-} from '@edulastic/constants/reportUtils/common'
-import { lightRed7, darkRed3 } from '@edulastic/colors'
+  RISK_BAND_LEVELS,
+  RISK_BAND_COLOR_INFO,
+} = reportUtils.common
 
 export const CHART_LABEL_KEY = 'chartTimeLabel'
 
@@ -17,6 +23,13 @@ export const tableColumnKeys = {
   ACADEMIC_RISK: 'academicRisk',
   ATTENDANCE_RISK: 'attendanceRisk',
   OVERALL_RISK: 'overallRisk',
+  SCHOOL: 'school',
+  GRADE: 'grade',
+  RISK: 'risk',
+  MEASURES: 'measures',
+  AVERAGE: 'average',
+  AVG_ACADEMIC: 'avgAcademic',
+  AVG_ATTENDANCE: 'avgAttendance',
 }
 
 /** @type {import('antd/lib/table').ColumnProps[]} */
@@ -59,8 +72,84 @@ export const tableColumnsData = [
   },
 ]
 
+export const compareByStudentColumns = [
+  {
+    key: tableColumnKeys.DIMENSION,
+    dataIndex: 'dimension',
+    align: 'left',
+    fixed: 'left',
+    width: 280,
+    className: 'dimension',
+  },
+  {
+    key: tableColumnKeys.SCHOOL,
+    title: 'SCHOOLS',
+    dataIndex: 'schools',
+    align: 'center',
+    width: 250,
+    className: 'school',
+  },
+  {
+    key: tableColumnKeys.GRADE,
+    title: 'GRADE',
+    dataIndex: 'grades',
+    align: 'center',
+    className: 'grade',
+  },
+  {
+    key: tableColumnKeys.RISK,
+    title: 'RISK',
+    dataIndex: 'risk',
+    align: 'center',
+    width: 200,
+    className: 'risk-name',
+  },
+  {
+    title: 'NUMBER OF MEASURES AT:',
+    align: 'left',
+    className: 'nested',
+    children: [
+      {
+        key: tableColumnKeys.HIGH_RISK,
+        title: 'HIGH RISK',
+        dataIndex: 'highRiskMeasures',
+        align: 'center',
+        render: (value) => {
+          const color =
+            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH] : ''
+          return <ColoredText color={color}>{value}</ColoredText>
+        },
+      },
+      {
+        key: tableColumnKeys.MEDIUM_RISK,
+        title: 'MEDIUM RISK',
+        dataIndex: 'mediumRiskMeasures',
+        align: 'center',
+        render: (value) => {
+          const color =
+            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM] : ''
+          return <ColoredText color={color}>{value}</ColoredText>
+        },
+      },
+    ],
+  },
+  {
+    key: tableColumnKeys.AVG_ATTENDANCE,
+    title: 'ATTENDENCE',
+    dataIndex: 'attendanceRisk',
+    render: (value) => (
+      <ColoredText color={RISK_BAND_COLOR_INFO[value?.risk] || ''}>
+        {value?.attendancePercentage >= 0
+          ? `${value.attendancePercentage}%`
+          : '-'}
+      </ColoredText>
+    ),
+  },
+]
+
 export const tableFilterTypes = {
   COMPARE_BY: 'compareBy',
+  RISK: 'riskFilter',
   PAGE: 'page',
   PAGE_SIZE: 'pageSize',
 }
@@ -74,6 +163,13 @@ export const timeframeFilterValues = {
   [timeframeFilterKeys.MONTHLY]: 'month',
   [timeframeFilterKeys.QUARTERLY]: 'quarter',
 }
+
+export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND_LEVELS).map(
+  (key) => {
+    const level = RISK_BAND_LEVELS[key]
+    return { level, color: RISK_BAND_COLOR_INFO[level] }
+  }
+)
 
 export const TABLE_PAGE_SIZE = 25
 

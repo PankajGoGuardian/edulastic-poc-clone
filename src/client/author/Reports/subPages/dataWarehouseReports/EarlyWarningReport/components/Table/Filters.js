@@ -1,17 +1,19 @@
 import React from 'react'
 import { Row } from 'antd'
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import SectionLabel from '../../../../../common/components/SectionLabel'
 import { tableFilterTypes } from '../../utils'
 import { StyledDropDownContainer } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { isAddToStudentGroupEnabled } from '../../../common/utils'
 import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
+import { isAddToStudentGroupEnabled } from '../../../common/utils'
+import RiskFilter from './RiskFilter'
 
 const TableFilters = ({
   tableFilters,
   setTableFilters,
   compareByOptions = [],
+  handleAddToGroupClick,
   isSharedReport,
 }) => {
   const updateFilterDropdownCB = (e, selected, comData) => {
@@ -33,9 +35,15 @@ const TableFilters = ({
         Risk distribution by {tableFilters[tableFilterTypes.COMPARE_BY].title}
       </SectionLabel>
       <FlexContainer mt="30px">
+        <EduIf condition={showAddToStudentGroupBtn}>
+          <RiskFilter
+            tableFilters={tableFilters}
+            setTableFilters={setTableFilters}
+          />
+        </EduIf>
         <StudentGroupBtn
           showAddToStudentGroupBtn={showAddToStudentGroupBtn}
-          handleAddToGroupClick={() => {}}
+          handleAddToGroupClick={handleAddToGroupClick}
         />
       </FlexContainer>
       <StyledDropDownContainer

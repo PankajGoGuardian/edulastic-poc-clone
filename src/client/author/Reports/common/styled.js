@@ -15,7 +15,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu, Row, Icon } from 'antd'
+import { Col, Slider, Table, Button, Menu, Row, Icon, Checkbox } from 'antd'
 import styled, { css } from 'styled-components'
 import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
@@ -978,4 +978,12 @@ export const StyledSectionHeader = styled.div`
   font-size: 18px;
   margin: 20px;
   color: ${fadedBlack};
+`
+export const StyledCheckBox = styled(Checkbox)`
+  display: flex;
+  align-items: center;
+  margin: 10px 8px;
+  .ant-checkbox {
+    margin-right: 10px;
+  }
 `

@@ -200,11 +200,11 @@ const ManageDistrictPrimaryForm = Form.create({
               })
             }
 
-            if (
-              (currentSubType === SUBSCRIPTION_TYPES.free.subType ||
-                _isDataStudio) &&
-              (subType !== SUBSCRIPTION_TYPES.free.subType || _isDataStudio)
-            ) {
+            const changedToFree =
+              currentSubType === SUBSCRIPTION_TYPES.free.subType &&
+              subType !== SUBSCRIPTION_TYPES.free.subType
+
+            if (changedToFree || (_isDataStudio && subscriptionId)) {
               Object.assign(rest, {
                 status: 0,
                 isUpdate: true,

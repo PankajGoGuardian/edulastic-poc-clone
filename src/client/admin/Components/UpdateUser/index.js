@@ -21,7 +21,7 @@ import { StyledRadioGroup } from './styled'
 
 const tooltip = {
   dataOps:
-    'This district admin can only upload data to data warehouse feature. No access is given to district menu and insights.',
+    'This district admin can only upload data to data studio feature. No access is given to district menu and insights.',
 }
 const fields = {
   _id: 'User ID',

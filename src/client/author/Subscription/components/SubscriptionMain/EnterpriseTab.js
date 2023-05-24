@@ -35,7 +35,14 @@ const EnterpriseTab = ({
   }
 
   useEffect(() => {
-    segmentApi.genericEventTrack(`Enterprise: Sell page visited`, {})
+    let eventName = 'Enterprise: Sell page visited'
+    let eventData = {}
+    if (subscribed) {
+      eventName = 'Enterprise: subscription active'
+      eventData = { ...user }
+    }
+
+    segmentApi.genericEventTrack(eventName, eventData)
   }, [])
 
   return (

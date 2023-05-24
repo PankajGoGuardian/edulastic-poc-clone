@@ -1,30 +1,56 @@
 import { segmentApi } from '@edulastic/api'
 import { userPermissions } from '@edulastic/constants'
 import React, { useEffect } from 'react'
+import moment from 'moment'
 import { subscription } from '../../constants/subscription'
 import SubscriptionContainer from './SubscriptionContainer'
 
 const DataStudioTab = ({ features, user }) => {
   const { dataWarehouseReports } = features
-  const { permissionsExpiry = [], orgData: { districts = [] } = {} } = user
+  const {
+    permissionsExpiry: userPermissionsExpiry = [],
+    orgData: { districts = [] } = {},
+  } = user
+
   const districtPermissionExpiry =
     districts?.[0]?.districtPermissionsExpiry || []
-  const _permissionExpiry =
-    permissionsExpiry.length > 0 ? permissionsExpiry : districtPermissionExpiry
-  const dataWareHouseExpiry = _permissionExpiry.find(
+
+  const districtDataWareHouseExpiryDate = districtPermissionExpiry.find(
     (item) => item.permissionKey === userPermissions.DATA_WAREHOUSE_REPORTS
-  )
+  )?.perEndDate
+
+  const userDataWareHouseExpiryDate = userPermissionsExpiry.find(
+    (item) => item.permissionKey === userPermissions.DATA_WAREHOUSE_REPORTS
+  )?.perEndDate
+
+  let permissionEndDate = districtDataWareHouseExpiryDate
+
+  if (
+    !permissionEndDate ||
+    (userDataWareHouseExpiryDate &&
+      moment(userDataWareHouseExpiryDate).isAfter(permissionEndDate))
+  ) {
+    permissionEndDate = userDataWareHouseExpiryDate
+  }
+
   const subscribed = dataWarehouseReports
 
   const showRequestOption = !subscribed
 
   const data = subscription.dataStudio({
     subscribed,
-    expiryDate: dataWareHouseExpiry?.perEndDate,
+    expiryDate: permissionEndDate,
   })
 
   useEffect(() => {
-    segmentApi.genericEventTrack(`DS: Sell page visited`, {})
+    let eventName = 'DS: Sell page visited'
+    let eventData = {}
+    if (subscribed) {
+      eventName = 'DS: subscription active'
+      eventData = { ...user }
+    }
+
+    segmentApi.genericEventTrack(eventName, eventData)
   }, [])
 
   return (

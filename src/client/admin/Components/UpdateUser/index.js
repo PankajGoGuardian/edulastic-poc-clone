@@ -150,7 +150,10 @@ const UpdateUser = (props) => {
                     )
                   }
 
-                  if (field === 'dataOpsOnly') {
+                  if (
+                    field === 'dataOpsOnly' &&
+                    data?.role === roleuser.DISTRICT_ADMIN
+                  ) {
                     return (
                       <Row>
                         <Col>

@@ -59,15 +59,19 @@ export const getHorizontalBarData = (
   if (isEmpty(data) || isEmpty(selectedPerformanceBand)) return []
 
   const totalStudents = sumBy(data, 'totalStudents')
-  return data.map((d) => {
-    const band = selectedPerformanceBand.find(
-      (pb) => pb[bandKey] === d.bandScore
-    )
-    return {
-      value: percentage(d.totalStudents, totalStudents, true),
-      color: band?.color,
-    }
-  })
+  const barData = data
+    .map((d) => {
+      const band = selectedPerformanceBand.find(
+        (pb) => pb[bandKey] === d.bandScore
+      )
+      return {
+        value: percentage(d.totalStudents, totalStudents, true),
+        color: band?.color,
+        rank: band[bandKey],
+      }
+    })
+    .sort((a, b) => a.rank - b.rank)
+  return barData
 }
 export const getTableColumns = ({
   metricInfo,

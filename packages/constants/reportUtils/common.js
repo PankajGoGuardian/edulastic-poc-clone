@@ -599,16 +599,22 @@ const RISK_TYPE_NAMES = {
 
 const RISK_TYPE_OPTIONS = getDropdownOptions(RISK_TYPE_KEYS, RISK_TYPE_NAMES)
 
-const RISK_BAND_LEVELS = {
+const RISK_BAND_LABELS = {
   HIGH: 'High',
   MEDIUM: 'Medium',
   LOW: 'Low',
 }
 
+const RISK_BAND_LEVELS = {
+  [RISK_BAND_LABELS.HIGH]: 2,
+  [RISK_BAND_LABELS.MEDIUM]: 1,
+  [RISK_BAND_LABELS.LOW]: 0,
+}
+
 const RISK_BAND_COLOR_INFO = {
-  [RISK_BAND_LEVELS.HIGH]: lightRed7,
-  [RISK_BAND_LEVELS.MEDIUM]: yellow3,
-  [RISK_BAND_LEVELS.LOW]: lightGreen14,
+  [RISK_BAND_LABELS.HIGH]: lightRed7,
+  [RISK_BAND_LABELS.MEDIUM]: yellow3,
+  [RISK_BAND_LABELS.LOW]: lightGreen14,
 }
 
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
@@ -665,6 +671,7 @@ module.exports = {
   GRADE_OPTIONS,
   RISK_TYPE_KEYS,
   RISK_TYPE_OPTIONS,
+  RISK_BAND_LABELS,
   RISK_BAND_LEVELS,
   RISK_BAND_COLOR_INFO,
 }

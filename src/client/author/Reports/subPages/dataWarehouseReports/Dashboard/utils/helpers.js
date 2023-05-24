@@ -1,18 +1,21 @@
-import {
-  getProficiencyBand,
-  percentage,
-  curateApiFiltersQuery,
-  EXTERNAL_TEST_KEY_SEPARATOR,
-} from '@edulastic/constants/reportUtils/common'
 import { lightGreen12, lightRed7 } from '@edulastic/colors'
 import { isEmpty, round, sumBy } from 'lodash'
 import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
+import { reportUtils } from '@edulastic/constants'
 import {
   academicSummaryFiltersTypes,
   availableTestTypes,
   filterDetailsFields,
   sharedDetailsFields,
 } from './constants'
+
+const {
+  getProficiencyBand,
+  percentage,
+  curateApiFiltersQuery,
+  EXTERNAL_TEST_KEY_SEPARATOR,
+  performanceBandKeys,
+} = reportUtils.common
 
 export const getCellColor = (value, selectedPerformanceBand) => {
   const band = getProficiencyBand(value, selectedPerformanceBand)
@@ -25,8 +28,14 @@ export const getAcademicSummaryPieChartData = (
   isExternalTestTypeSelected
 ) => {
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
+  const sortKey = isExternalTestTypeSelected
+    ? performanceBandKeys.EXTERNAL
+    : performanceBandKeys.INTERNAL
+  const sortedPerformanceBand = [...selectedPerformanceBand].sort(
+    (a, b) => a[sortKey] - b[sortKey]
+  )
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
-  return selectedPerformanceBand.map((pb) => {
+  return sortedPerformanceBand.map((pb) => {
     let studentsPerBand
     if (isExternalTestTypeSelected) {
       studentsPerBand = bandDistribution.find((bd) => bd.bandName === pb.name)

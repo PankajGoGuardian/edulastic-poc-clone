@@ -41,6 +41,7 @@ import {
 const {
   percentage,
   DECIMAL_BASE,
+  RISK_BAND_LABELS,
   RISK_BAND_LEVELS,
   RISK_BAND_COLOR_INFO,
 } = reportUtils.common
@@ -245,12 +246,12 @@ const getRiskBandStudentCount = (distribution = [], key) => {
 export const getPeriodRiskData = (period) => {
   const highRisk = getRiskBandStudentCount(
     period.distribution,
-    RISK_BAND_LEVELS.HIGH
+    RISK_BAND_LABELS.HIGH
   )
 
   const mediumRisk = getRiskBandStudentCount(
     period.distribution,
-    RISK_BAND_LEVELS.MEDIUM
+    RISK_BAND_LABELS.MEDIUM
   )
   return [highRisk, mediumRisk]
 }
@@ -259,15 +260,19 @@ const getRiskSummaryPieChartData = (distribution = []) => {
   const totalStudentCount = sumBy(distribution, ({ studentCount }) =>
     parseInt(studentCount, DECIMAL_BASE)
   )
-  return distribution.map(({ studentCount, bandLabel }) => ({
-    name: bandLabel,
-    value: percentage(
-      parseInt(studentCount, DECIMAL_BASE),
-      totalStudentCount,
-      true
-    ),
-    fill: RISK_BAND_COLOR_INFO[bandLabel],
-  }))
+  const pieChartData = distribution
+    .map(({ studentCount, bandLabel }) => ({
+      name: bandLabel,
+      value: percentage(
+        parseInt(studentCount, DECIMAL_BASE),
+        totalStudentCount,
+        true
+      ),
+      fill: RISK_BAND_COLOR_INFO[bandLabel],
+      bandLevel: RISK_BAND_LEVELS[bandLabel],
+    }))
+    .sort((a, b) => a.bandLevel - b.bandLevel)
+  return pieChartData
 }
 
 export const transformRiskSummaryData = (prePeriod, postPeriod, showFooter) => {

@@ -20,6 +20,8 @@ const SimplePieChart = ({
             cy="50%"
             innerRadius={innerRadius}
             outerRadius={outerRadius}
+            startAngle={90}
+            endAngle={-270}
             dataKey="value"
             style={{ filter: 'drop-shadow(5px 10px 18px #00000030)' }}
           />

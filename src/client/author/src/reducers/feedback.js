@@ -12,13 +12,17 @@ const FeedbackReducer = createReducer(initialState, {
   [UPDATE_POSITION](state, action) {
     const { payload } = action
     const { id, dimensions } = payload
-    state[id] = dimensions
+    if (id) {
+      state[id] = dimensions
+    }
   },
 
   [UPDATE_FEEDBACK_HEIGHT](state, action) {
     const { payload } = action
     const { id, height } = payload
-    state.feedbacks[id] = height
+    if (id) {
+      state.feedbacks[id] = height
+    }
   },
 })
 

@@ -9,10 +9,10 @@ function TabWrapper({
   children,
   showBorder,
   updatePositionToStore,
-  questionId,
   updatePosition,
   feedbackHeight,
   hideCorrectAnswer,
+  uqaId,
 }) {
   const containerRef = useRef(null)
   const [tabHeight, setTabHeight] = useState(null)
@@ -39,9 +39,9 @@ function TabWrapper({
       if (height < feedbackHeight && !tabHeight) {
         // use feedback height for question
         setTabHeight(feedbackHeight)
-        updatePosition({ id: questionId, dimensions: { top, height } })
+        updatePosition({ id: uqaId, dimensions: { top, height } })
       } else {
-        updatePosition({ id: questionId, dimensions: { top, height } })
+        updatePosition({ id: uqaId, dimensions: { top, height } })
       }
     }
   }, [
@@ -56,7 +56,7 @@ function TabWrapper({
     : {}
 
   useEffect(() => {
-    updatePosition({ id: questionId, dimensions: null })
+    updatePosition({ id: uqaId, dimensions: null })
   }, [])
 
   return (
@@ -84,11 +84,7 @@ const mapDispatchToProps = {
 
 const enhance = connect(
   (state, ownProps) => ({
-    feedbackHeight: get(
-      state,
-      ['feedback', 'feedbacks', ownProps.questionId],
-      null
-    ),
+    feedbackHeight: get(state, ['feedback', 'feedbacks', ownProps.uqaId], null),
   }),
   mapDispatchToProps
 )(TabWrapper)

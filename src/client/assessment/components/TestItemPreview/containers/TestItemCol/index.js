@@ -7,7 +7,7 @@ import {
   FlexContainer,
 } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
-import { isEmpty, sortBy } from 'lodash'
+import { get, isEmpty, sortBy } from 'lodash'
 
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
@@ -159,12 +159,12 @@ class TestItemCol extends Component {
             (isPassageWithQuestions && !itemLevelScoring)) &&
           widget.widgetType === 'question'
         }
-        questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         itemIndex={widgetIndex}
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
+        uqaId={get(question, 'activity._id')}
       >
         <FlexContainer
           flexDirection={isStudentReport && 'column'}

@@ -32,26 +32,27 @@ const FeedbackWrapper = ({
   studentId,
   itemId,
   studentName,
-  updatePosition,
+  updateHeight,
   isExpressGrader,
   isQuestionView,
   t,
   hintsUsed,
 }) => {
+  const uqaId = get(data, 'activity._id')
   const feedbackRef = useRef()
   const heightOfContainer = feedbackRef.current?.clientHeight
   useLayoutEffect(() => {
     if (!isStudentReport && shouldTakeDimensionsFromStore) {
-      updatePosition({
-        id: data.id,
+      updateHeight({
+        id: uqaId,
         height: heightOfContainer,
       })
     }
   }, [feedbackRef.current, heightOfContainer])
 
   useEffect(() => {
-    updatePosition({
-      id: data.id,
+    updateHeight({
+      id: uqaId,
       height: null,
     })
   }, [])
@@ -256,15 +257,18 @@ const enhance = compose(
   withNamespaces('student'),
   withTheme,
   connect(
-    (state, ownProps) => ({
-      isPresentationMode: get(
-        state,
-        ['author_classboard_testActivity', 'presentationMode'],
-        false
-      ),
-      dimensions: get(state, ['feedback', ownProps.data?.id], null),
-    }),
-    { updatePosition: updateHeightAction }
+    (state, ownProps) => {
+      const uqaId = get(ownProps, 'data.activity._id')
+      return {
+        isPresentationMode: get(
+          state,
+          ['author_classboard_testActivity', 'presentationMode'],
+          false
+        ),
+        dimensions: get(state, ['feedback', uqaId], null),
+      }
+    },
+    { updateHeight: updateHeightAction }
   )
 )
 

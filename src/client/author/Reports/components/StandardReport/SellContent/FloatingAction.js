@@ -20,12 +20,15 @@ const FloatingActionContainer = styled(Link)`
   background-color: #1ab395;
   position: fixed;
   top: 50%;
-  right: 36px;
+  right: 26px;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: top right;
   border-top-left-radius: 10px;
   border-radius: 4px 4px 0px 0px;
   padding: 8px 16px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 6px 8px;
 
   &:hover {
     color: white;

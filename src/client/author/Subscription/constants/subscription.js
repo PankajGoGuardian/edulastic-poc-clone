@@ -149,20 +149,19 @@ export const subscription = {
     description: (
       <>
         Visualize progress and drive outcomes with data-driven strategies for
-        student success
+        student success.
       </>
     ),
     header: {
       icon: <IconDataStudioSubscription />,
       title: (
         <>
-          Data Studio for Districts or Schools{' '}
-          {expiryMessage({ subscribed, expiryDate })}
+          Data Studio for Districts {expiryMessage({ subscribed, expiryDate })}
         </>
       ),
       description: (
         <>
-          Edulastic’s Data Studio gives educators a holistic view of learning to
+          Edulastic Data Studio gives educators a holistic view of learning to
           shape data-driven strategies for student success. See Edulastic
           reporting alongside third-party sources to inform MTSS planning at the
           district, school, and student level.
@@ -186,12 +185,12 @@ export const subscription = {
           icon: <IconAdminDashboardAddOn />,
           title: 'Admin Dashboard',
           description:
-            'Get insight into all attendance data, distribution of academic performance, standards mastery, and academic risk levels — all in one easily accessible dashboard.',
+            'Get insight into all attendance data, distribution of academic performance and academic risk levels — all in one easily accessible dashboard.',
         },
         {
           icon: <IconPerformanceTrendAddOn />,
           title: 'Performance Trends',
-          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time. Filter reporting by schools, demographics, specific tests, and more to optimize data-driven decision-making.`,
+          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time. Filter reporting by schools, demographics, specific test types, and more to optimize data-driven decision-making.`,
         },
         {
           icon: <IconWholeLearnerReportAddOn />,
@@ -206,7 +205,7 @@ export const subscription = {
         {
           icon: <IconGaolsAndInterventionsAddOn />,
           title: 'Goals / Interventions Management',
-          description: `Set SMART Goals and Interventions and track improvement`,
+          description: `Set SMART Goals and Interventions and track improvement.`,
         },
         {
           icon: <IconEarlyWarningAddOn />,
@@ -216,7 +215,7 @@ export const subscription = {
         {
           icon: <IconEfficacyAddOn />,
           title: 'Efficacy',
-          description: `Compare student performance across tests pre and post-intervention`,
+          description: `Compare student performance across tests pre and post-intervention.`,
         },
       ],
     },
@@ -368,11 +367,11 @@ export const comparePlansData = [
       {
         title: 'Whole Learner',
         description:
-          'Monitor attendance and tardies, identify students at risk of chronic absenteeism',
+          'Monitor attendance and tardies, identify students at risk of chronic absenteeism.',
       },
       {
         title: 'Goals/Interventions Management',
-        description: 'Set SMART Goals and Interventions and track improvement',
+        description: 'Set SMART Goals and Interventions and track improvement.',
       },
       {
         title: 'Early Warning',
@@ -382,7 +381,7 @@ export const comparePlansData = [
       {
         title: 'Efficacy',
         description:
-          'Compare student performance across tests pre and post-intervention',
+          'Compare student performance across tests pre and post-intervention.',
       },
     ],
   },

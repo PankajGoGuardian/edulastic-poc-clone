@@ -89,9 +89,9 @@ const DataWarehouseReports = ({
         <Row gutter={16}>
           <Col span={20}>
             <div className="text">
-              You don’t have an active subscription. Please upgrade subscription
-              to access Data Studio Reports and set / monitor Goals and
-              Interventions.
+              You don’t have an active subscription. Please upgrade your
+              subscription to access Data Studio Reports and set / monitor Goals
+              and Interventions.
             </div>
           </Col>
           <Col span={4}>

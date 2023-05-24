@@ -36,7 +36,7 @@ export const dataWarehousereportCardsData = [
         IconThumbnail: IconMultipleAssessmentReportDW,
         title: 'Performance Trends',
         description:
-          "View whether the student's performance is improving over time &amp; take necessary interventions.",
+          "View whether the student's performance is improving over time and take necessary interventions.",
         url: DW_MAR_REPORT_URL,
       },
       {
@@ -44,7 +44,7 @@ export const dataWarehousereportCardsData = [
         IconThumbnail: IconWholeLearnerReport,
         title: 'Whole Learner',
         description:
-          "Get a complete understanding of a learner's academic &amp; associated indicators &amp; take necessary actions for the learner’s growth.",
+          "Get a complete understanding of a learner's academic and associated indicators and take necessary actions for the learner’s growth.",
         url: DW_WLR_REPORT_URL,
       },
     ],

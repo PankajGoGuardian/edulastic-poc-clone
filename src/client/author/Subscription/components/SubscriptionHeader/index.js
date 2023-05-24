@@ -24,6 +24,7 @@ import {
   TopBanner,
   UserStatus,
 } from './styled'
+import { SUBSCRIPTION_TYPES } from '../../../../admin/Common/constants/subscription'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -70,6 +71,7 @@ const SubscriptionHeader = ({
   schoolId,
   setCartVisible,
   cartQuantities = {},
+  features,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
   const cartCount = Object.keys(cartQuantities).filter(
@@ -154,6 +156,28 @@ const SubscriptionHeader = ({
   const showAddonsTab =
     isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
 
+  const getCurrentPlan = () => {
+    const { dataWarehouseReports } = features
+    const {
+      free,
+      enterprise,
+      enterprisePlusDataStudio,
+      dataStudio,
+    } = SUBSCRIPTION_TYPES
+
+    if (isSubscribed && subType && licenseExpiryDate && isPremiumUser) {
+      if (isPartialPremiumUgradedUser) {
+        return dataWarehouseReports
+          ? enterprisePlusDataStudio.label
+          : enterprise.label
+      }
+      const type = capitalize(subType.replace(/_/g, ' '))
+      return dataWarehouseReports ? `${type} + ${dataStudio.label}` : type
+    }
+
+    return dataWarehouseReports ? dataStudio.label : free.label
+  }
+
   return (
     <TopBanner>
       <HeaderSubscription className="subscription-header">
@@ -167,13 +191,7 @@ const SubscriptionHeader = ({
               YOUR PLAN
             </PlanText>
             <PlanText data-cy="currentPlan" className="free">
-              {isSubscribed && subType && licenseExpiryDate && isPremiumUser
-                ? `${
-                    isPartialPremiumUgradedUser
-                      ? 'Enterprise'
-                      : capitalize(subType.replace(/_/g, ' '))
-                  }`
-                : 'Free'}
+              {getCurrentPlan()}
             </PlanText>
           </UserStatus>
         </Title>

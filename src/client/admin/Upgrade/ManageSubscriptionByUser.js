@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Row, Col, Form, Radio, Input, Button } from 'antd'
-import moment from 'moment'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import { Table } from '../Common/StyledComponents'
-import { renderSubscriptionType } from '../Common/SubTypeTag'
+import {
+  renderEndDate,
+  renderStartDate,
+  renderSubscriptionType,
+} from '../Common/SubTypeTag'
 import InvalidEmailIdList from './InvalidEmailIdList'
 import { radioButtonUserData } from '../Data'
 import { updateDataStudioPermission } from '../Common/Utils'
@@ -120,26 +123,12 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
     {
       title: 'Start Date',
       dataIndex: 'subscription',
-      render: (subscription) => (
-        <span data-cy="userSubscriptionStartDate">
-          {subscription?.subStartDate
-            ? moment(subscription.subStartDate).format('DD MMM, YYYY')
-            : subscription?.subRenewalDate
-            ? moment(subscription.subRenewalDate).format('DD MMM, YYYY')
-            : '-'}
-        </span>
-      ),
+      render: renderStartDate,
     },
     {
       title: 'End Date',
       dataIndex: 'subscription',
-      render: (subscription) => (
-        <span data-cy="userSubscriptionEndDate">
-          {subscription?.subEndDate
-            ? moment(subscription?.subEndDate).format('DD MMM, YYYY')
-            : '-'}
-        </span>
-      ),
+      render: renderEndDate,
     },
     {
       title: 'Email ID',

@@ -103,6 +103,16 @@ import {
 } from './styledComponents'
 import { navigationState } from '../constants/navigation'
 
+const dataStudioPattern = [
+  /\/author\/reports\/dashboard-report/,
+  /\/author\/reports\/multiple-assessment-report-dw/,
+  /\/author\/reports\/whole-learner-report\/student/,
+  /\/author\/reports\/attendance-summary/,
+  /\/author\/reports\/goals-and-interventions/,
+  /\/author\/reports\/early-warning-report/,
+  /\/author\/reports\/efficacy-report/,
+]
+
 const menuItems = [
   {
     label: 'Data Warehouse',
@@ -139,13 +149,19 @@ const menuItems = [
     label: 'Insights',
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
-    disallowedPathPattern: [/author\/reports\/data-warehouse-reports/],
+    disallowedPathPattern: [
+      /author\/reports\/data-warehouse-reports/,
+      ...dataStudioPattern,
+    ],
     path: 'author/reports',
   },
   {
     label: 'Data Studio',
     icon: IconDataStudio,
-    allowedPathPattern: [/author\/reports\/data-warehouse-reports/],
+    allowedPathPattern: [
+      /author\/reports\/data-warehouse-reports/,
+      ...dataStudioPattern,
+    ],
     path: 'author/reports/data-warehouse-reports',
   },
   {

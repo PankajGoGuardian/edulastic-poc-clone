@@ -318,6 +318,7 @@ const Subscription = (props) => {
         setCartVisible={setCartVisible}
         cartQuantities={cartQuantities}
         setIsTabShouldSwitch={setIsTabShouldSwitch}
+        features={features}
       />
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (

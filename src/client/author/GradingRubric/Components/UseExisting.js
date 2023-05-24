@@ -290,7 +290,7 @@ const UseExisting = ({
       }
       // check ai criteria or rating exists in rubric
       let isAnyUUIDExists = false
-      if (rubricUUIDs.length) {
+      if (rubricUUIDs?.length) {
         const criteriaUUIDs = []
         const ratingUUIDs = []
         for (const criteria of currentRubricData.criteria) {

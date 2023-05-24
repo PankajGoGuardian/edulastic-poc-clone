@@ -45,6 +45,10 @@ import {
 } from '@edulastic/constants'
 import { PUBLIC_URL_IDENTIFIER } from '@edulastic/constants/const/common'
 import { ORG_TYPE } from '@edulastic/constants/const/roleType'
+import {
+  EDU_CALC_PROVIDER,
+  DESMOS_CALC_PROVIDER,
+} from '../themes/common/Calculators/constants'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
 import {
@@ -111,7 +115,11 @@ import {
   setEnableAudioResponseQuestionAction,
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
-import { getUserOrgId, getUserRole } from '../../author/src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isDesmosCalculatorEnabledSelector,
+} from '../../author/src/selectors/user'
 import { getSubmitTestCompleteSelector } from '../selectors/test'
 import {
   setActiveAssignmentAction,
@@ -172,10 +180,6 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
   const calcTypes = !isTestPreview
     ? assignmentSettings.calcTypes
     : test.calcTypes
-
-  const calcProvider = isTestPreview
-    ? test.calculatorProvider || calculatorProvider
-    : testActivity?.calculatorProvider
 
   const maxAnswerChecks = isTestPreview
     ? test.maxAnswerChecks
@@ -247,7 +251,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
 
   return {
     testType,
-    calcProvider,
+    calcProvider: calculatorProvider,
     playerSkinType,
     showMagnifier,
     timedAssignment,
@@ -577,12 +581,12 @@ function* loadTest({ payload }) {
     // eslint-disable-next-line prefer-const
     let { testItems, passages } = test
 
-    const calculatorProvider = yield select((state) =>
-      get(
-        state,
-        'subscription.subscriptionData.subscription.calculatorProvider'
-      )
+    const isDesmosCalculatorEnabled = yield select(
+      isDesmosCalculatorEnabledSelector
     )
+    const calculatorProvider = isDesmosCalculatorEnabled
+      ? DESMOS_CALC_PROVIDER
+      : EDU_CALC_PROVIDER
 
     const settings = getSettings(
       test,

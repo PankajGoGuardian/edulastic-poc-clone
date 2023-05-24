@@ -218,7 +218,7 @@ export const PeerPerformanceTable = ({
 
     if (
       role === 'teacher' &&
-      (compareBy === 'groupId' || compareBy === 'group')
+      (compareBy === 'class' || compareBy === 'group')
     ) {
       arr.splice(1, 2)
     }

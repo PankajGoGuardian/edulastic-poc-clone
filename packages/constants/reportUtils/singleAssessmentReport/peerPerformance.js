@@ -80,7 +80,7 @@ const transformByProficiencyBand = (data, bandInfo) => {
     const bandDetails = calculateStudentsInPerformanceBands(
       item?.performanceBandDetails,
       bandInfo?.performanceBand,
-      item?.submittedStudents
+      item?.totalStudents
     )
     return {
       ...item,
@@ -184,11 +184,11 @@ const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
 
 // helper function to create first column i.e. column with compareByLabel
 const compareColumn = (title, ...ext) =>
-  makeColumn(title, 'dimension.name', 250, ...ext)
+  makeColumn(title, 'dimension.name', 250, 'left', ...ext)
 
 const compareSchool = compareColumn('School')
 const compareTeacher = compareColumn('Teacher')
-const compareStudGroup = compareColumn('Student Group', 'left')
+const compareStudGroup = compareColumn('Student Group')
 const compareRace = compareColumn('Race')
 const compareGender = compareColumn('Gender')
 const compareFrlStatus = compareColumn('FRL Status')
@@ -206,6 +206,7 @@ const avgStudentScorePercentUnrounded = makeColumn(
 )
 const school = makeColumn('School', 'schoolName', 250)
 const teacher = makeColumn('Teacher', 'teacherName', 250)
+const createdBy = makeColumn('Created By', 'teacherName', 250)
 const districtAvg = makeColumn('District Avg.Score', 'districtAvg')
 const avgStudentScoreUnrounded = makeColumn('Avg.Score', 'avgSore')
 const belowStandard = makeColumn('Below Standard', 'belowStandard')
@@ -261,23 +262,23 @@ const createColumns = () => {
     proficiencyBand: {},
   }
 
-  columns['score(%)'].schoolId = makeScorePc({
+  columns['score(%)'].school = makeScorePc({
     ...compareSchool,
     align: 'left',
   })
-  columns['score(%)'].teacherId = makeScorePc(
+  columns['score(%)'].teacher = makeScorePc(
     { ...compareTeacher, align: 'left' },
-    { ...school, align: 'left' }
+    { ...school }
   )
-  columns['score(%)'].groupId = makeScorePc(
+  columns['score(%)'].class = makeScorePc(
     { ...compareClass, align: 'left', fixed: 'left' },
-    { ...teacher, align: 'left' },
-    { ...school, align: 'left' }
+    { ...teacher },
+    { ...school }
   )
   columns['score(%)'].group = makeScorePc(
     { ...compareStudGroup, fixed: 'left' },
-    { ...teacher, align: 'left' },
-    { ...school, align: 'left' }
+    { ...createdBy },
+    { ...school }
   )
   columns['score(%)'].race = makeScorePc(compareRace)
   columns['score(%)'].hispanicEthnicity = makeScorePc(compareHispanicEthnicity)
@@ -286,9 +287,10 @@ const createColumns = () => {
   columns['score(%)'].ellStatus = makeScorePc(compareEllStatus)
   columns['score(%)'].iepStatus = makeScorePc(compareIepStatus)
 
-  columns.rawScore.schoolId = makeRaw(compareSchool)
-  columns.rawScore.teacherId = makeRaw(compareTeacher, school)
-  columns.rawScore.groupId = makeRaw(compareClass, teacher, school)
+  columns.rawScore.school = makeRaw(compareSchool)
+  columns.rawScore.teacher = makeRaw(compareTeacher, school)
+  columns.rawScore.group = makeRaw(compareStudGroup, createdBy, school)
+  columns.rawScore.class = makeRaw(compareClass, teacher, school)
   columns.rawScore.race = makeRaw(compareRace)
   columns.rawScore.hispanicEthnicity = makeRaw(compareHispanicEthnicity)
   columns.rawScore.gender = makeRaw(compareGender)
@@ -296,12 +298,14 @@ const createColumns = () => {
   columns.rawScore.ellStatus = makeRaw(compareEllStatus)
   columns.rawScore.iepStatus = makeRaw(compareIepStatus)
 
-  columns.aboveBelowStandard.schoolId = makeAboveBelowStd(compareSchool)
-  columns.aboveBelowStandard.teacherId = makeAboveBelowStd(
-    compareTeacher,
+  columns.aboveBelowStandard.school = makeAboveBelowStd(compareSchool)
+  columns.aboveBelowStandard.teacher = makeAboveBelowStd(compareTeacher, school)
+  columns.aboveBelowStandard.group = makeAboveBelowStd(
+    compareStudGroup,
+    createdBy,
     school
   )
-  columns.aboveBelowStandard.groupId = makeAboveBelowStd(
+  columns.aboveBelowStandard.class = makeAboveBelowStd(
     compareClass,
     teacher,
     school
@@ -315,12 +319,14 @@ const createColumns = () => {
   columns.aboveBelowStandard.ellStatus = makeAboveBelowStd(compareEllStatus)
   columns.aboveBelowStandard.iepStatus = makeAboveBelowStd(compareIepStatus)
 
-  columns.proficiencyBand.schoolId = makeProficiencyBand(compareSchool)
-  columns.proficiencyBand.teacherId = makeProficiencyBand(
-    compareTeacher,
+  columns.proficiencyBand.school = makeProficiencyBand(compareSchool)
+  columns.proficiencyBand.teacher = makeProficiencyBand(compareTeacher, school)
+  columns.proficiencyBand.group = makeProficiencyBand(
+    compareStudGroup,
+    createdBy,
     school
   )
-  columns.proficiencyBand.groupId = makeProficiencyBand(
+  columns.proficiencyBand.class = makeProficiencyBand(
     compareClass,
     teacher,
     school

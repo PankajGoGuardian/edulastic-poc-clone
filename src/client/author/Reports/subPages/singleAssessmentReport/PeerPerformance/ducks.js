@@ -105,12 +105,18 @@ function* getReportsPeerPerformanceRequest({ payload }) {
 
     const peerPerformance = isEmpty(result) ? defaultReport : result
     const oldPeerPerformance = yield select(getReportsPeerPerformance)
-    if (
-      !payload.requestFilters.recompute &&
-      oldPeerPerformance.totalRows &&
-      !peerPerformance.totalRows
-    ) {
-      peerPerformance.totalRows = oldPeerPerformance.totalRows
+    if (!payload.requestFilters.recompute) {
+      const {
+        totalRows: oldTotalRows,
+        extAttributes: oldExtAttributes,
+      } = oldPeerPerformance
+      const { totalRows, extAttributes } = peerPerformance
+      if (oldTotalRows && !totalRows) {
+        peerPerformance.totalRows = oldTotalRows
+      }
+      if (!isEmpty(oldExtAttributes) && isEmpty(extAttributes)) {
+        peerPerformance.extAttributes = oldExtAttributes
+      }
     }
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS,

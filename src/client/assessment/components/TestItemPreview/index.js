@@ -400,6 +400,7 @@ class TestItemPreview extends Component {
       studentData,
       currentStudent,
       selectedTheme = 'default',
+      aiEvaluationStatus,
       ...restProps
     } = this.props
     const {
@@ -528,6 +529,7 @@ class TestItemPreview extends Component {
                     themeBgColor={
                       selectedTheme === 'default' ? white : theme.themeColor
                     }
+                    aiEvaluationStatus={aiEvaluationStatus}
                   />
                 )
               })}

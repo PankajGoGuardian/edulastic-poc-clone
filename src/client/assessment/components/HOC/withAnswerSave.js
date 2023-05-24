@@ -10,6 +10,7 @@ import {
   getUserAnswerSelector,
   getEvaluationByIdSelector,
   getUserPrevAnswerSelector,
+  getAIEvaluationByIdSelector,
 } from '../../selectors/answers'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 
@@ -20,6 +21,7 @@ export default (WrappedComponent) => {
     setUserAnswer,
     testItemId,
     evaluation,
+    aiEvaluationStatus,
     userAnswer: _userAnswer,
     userPrevAnswer,
     changedPlayerContent,
@@ -54,6 +56,7 @@ export default (WrappedComponent) => {
         questionId={questionId}
         userAnswer={!props.isReviewTab ? userAnswer : undefined}
         evaluation={!props.isReviewTab ? evaluation : undefined}
+        aiEvaluationStatus={!props.isReviewTab ? aiEvaluationStatus : undefined}
         {...props}
       />
     )
@@ -71,6 +74,7 @@ export default (WrappedComponent) => {
           userAnswer: getUserAnswerSelector(state, props),
           userPrevAnswer: getUserPrevAnswerSelector(state, props),
           evaluation: getEvaluationByIdSelector(state, props),
+          aiEvaluationStatus: getAIEvaluationByIdSelector(state, props),
         }
       },
       {

@@ -88,6 +88,7 @@ class TestItemCol extends Component {
       toggleStudentWorkCollapse,
       colIndex,
       itemIdKey,
+      aiEvaluationStatus,
       ...restProps
     } = this.props
     const {
@@ -215,6 +216,7 @@ class TestItemCol extends Component {
               isFeedbackVisible={isFeedbackVisible}
               questions={questions}
               itemLevelScoring={itemLevelScoring}
+              aiEvaluationStatus={aiEvaluationStatus}
             />
           </FlexItem>
 

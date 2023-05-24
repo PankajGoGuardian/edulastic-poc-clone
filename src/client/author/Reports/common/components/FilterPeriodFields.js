@@ -47,7 +47,7 @@ function FilterPeriodFields({
   return (
     <Row type="flex" gutter={[5, 10]}>
       <Col span={6}>
-        <FilterLabel data-cy="periodType">Period</FilterLabel>
+        <FilterLabel data-cy="periodType">Duration</FilterLabel>
         <ControlDropDown
           by={{ key: filters.periodType }}
           selectCB={(e, selected) =>

@@ -1,8 +1,12 @@
 import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
+import { isEmpty } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
+
+const { analyseByOptions } = reportUtils.peerPerformance
 
 export const SignedStackedBarChartContainer = ({
   data,
@@ -11,11 +15,9 @@ export const SignedStackedBarChartContainer = ({
   filter,
   onBarClickCB,
   onResetClickCB,
-  bandInfo,
+  bandInfo = [],
+  chartProps,
 }) => {
-  const aboveBelowStandard = 'aboveBelowStandard'
-  const proficiencyBand = 'proficiencyBand'
-
   const sortBandInfo = (sortForLegend) =>
     [...bandInfo].sort((a, b) =>
       !a.aboveStandard && !b.aboveStandard && !sortForLegend
@@ -26,22 +28,19 @@ export const SignedStackedBarChartContainer = ({
   const dataParser = () => {
     const _bandInfo = sortBandInfo()
     const arr = data.map((item) => {
-      if (
-        filter[item[compareBy === 'group' ? 'groupId' : compareBy]] ||
-        Object.keys(filter).length === 0
-      ) {
-        if (analyseBy === aboveBelowStandard) {
+      if (filter[item?.dimension?._id] || Object.keys(filter).length === 0) {
+        if (analyseBy === analyseByOptions.aboveBelowStandard) {
           item.fill_0 = getHSLFromRange1(100)
           item.fill_1 = getHSLFromRange1(0)
-        } else if (analyseBy === proficiencyBand) {
+        } else if (analyseBy === analyseByOptions.proficiencyBand) {
           for (let i = 0; i < _bandInfo.length; i++) {
             item[`fill_${i}`] = _bandInfo[i].color
           }
         }
-      } else if (analyseBy === aboveBelowStandard) {
+      } else if (analyseBy === analyseByOptions.aboveBelowStandard) {
         item.fill_0 = '#cccccc'
         item.fill_1 = '#cccccc'
-      } else if (analyseBy === proficiencyBand) {
+      } else if (analyseBy === analyseByOptions.proficiencyBand) {
         for (let i = 0; i < _bandInfo.length; i++) {
           item[`fill_${i}`] = '#cccccc'
         }
@@ -52,13 +51,13 @@ export const SignedStackedBarChartContainer = ({
   }
 
   const getTooltipJSX = (payload, barIndex) => {
-    if (payload && payload.length && barIndex !== null) {
-      const { compareBy: _compareBy, compareBylabel } = payload[0].payload
+    if (!isEmpty(payload) && barIndex !== null && barIndex < payload.length) {
+      const { dimension } = payload[0].payload
       return (
         <div>
           <Row className="tooltip-row" type="flex" justify="start">
-            <Col className="tooltip-key">{`${idToName(_compareBy)}: `}</Col>
-            <Col className="tooltip-value">{compareBylabel}</Col>
+            <Col className="tooltip-key">{`${idToName(compareBy)}: `}</Col>
+            <Col className="tooltip-value">{dimension.name}</Col>
           </Row>
           <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">Band: </Col>
@@ -94,10 +93,8 @@ export const SignedStackedBarChartContainer = ({
 
   const getXTickText = (payload, items) => {
     for (const item of items) {
-      if (
-        item[compareBy === 'group' ? 'groupId' : compareBy] === payload.value
-      ) {
-        return item.compareBylabel
+      if (item.dimension._id === payload.value) {
+        return item.dimension.name
       }
     }
     return ''
@@ -114,7 +111,7 @@ export const SignedStackedBarChartContainer = ({
   }
 
   const getChartSpecifics = () => {
-    if (analyseBy === aboveBelowStandard) {
+    if (analyseBy === analyseByOptions.aboveBelowStandard) {
       return {
         barsData: [
           {
@@ -135,7 +132,7 @@ export const SignedStackedBarChartContainer = ({
         yAxisLabel: 'Below Standard                Above Standard',
       }
     }
-    if (analyseBy === proficiencyBand) {
+    if (analyseBy === analyseByOptions.proficiencyBand) {
       const _bandInfo = sortBandInfo()
       const barsData = _bandInfo.map((o) => ({
         key: `${o.name}Percentage`,
@@ -153,7 +150,7 @@ export const SignedStackedBarChartContainer = ({
   }
 
   const getLegendPayload = () => {
-    if (analyseBy === proficiencyBand) {
+    if (analyseBy === analyseByOptions.proficiencyBand) {
       const _bandInfo = sortBandInfo(true)
       return _bandInfo.map((o) => ({
         dataKey: `${o.name}Percentage`,
@@ -176,7 +173,7 @@ export const SignedStackedBarChartContainer = ({
       margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
       data={chartData}
       barsData={chartSpecifics.barsData}
-      xAxisDataKey={compareBy === 'group' ? 'groupId' : compareBy}
+      xAxisDataKey="dimensionId"
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
       onResetClickCB={_onResetClickCB}
@@ -187,6 +184,7 @@ export const SignedStackedBarChartContainer = ({
       filter={filter}
       legendPayload={legendPayload}
       pageSize={10}
+      {...chartProps}
     />
   )
 }

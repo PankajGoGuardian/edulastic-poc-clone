@@ -3,11 +3,11 @@ import produce from 'immer'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { v4 } from 'uuid'
 import { CustomStyleBtn } from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
 import { getCurrentRubricDataSelector, updateRubricDataAction } from '../ducks'
 import { EditRubricContainer, FormContainer, RubricFooter } from '../styled'
+import { generateCriteriaData, getDefaultRubricData } from './common/helper'
 import Criteria from './Criteria'
 
 const CreateNew = ({
@@ -16,31 +16,6 @@ const CreateNew = ({
   currentRubricData,
   isEditable,
 }) => {
-  const generateCriteriaData = (index) => ({
-    name: `Criteria Name ${index}`,
-    id: v4(),
-    ratings: [
-      {
-        name: 'Rating 1',
-        desc: '',
-        id: v4(),
-        points: 0,
-      },
-      {
-        name: 'Rating 2',
-        desc: '',
-        id: v4(),
-        points: 0,
-      },
-    ],
-  })
-
-  const getDefaultRubricData = () => ({
-    name: '',
-    description: '',
-    criteria: [generateCriteriaData(1)],
-  })
-
   const handleFieldChange = (fieldType, e) => {
     const newState = produce(currentRubricData, (draft) => {
       if (fieldType === 'rubricName') {

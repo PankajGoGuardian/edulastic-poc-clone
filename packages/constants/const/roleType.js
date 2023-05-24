@@ -17,6 +17,16 @@ const ORG_TYPE = {
   DISTRICT_ADMIN: 'district-admin',
   USER: 'user',
 }
+
+const ORGANIZATION_TYPE = {
+  DISTRICT: 'DISTRICT',
+  INSTITUTION: 'INSTITUTION',
+  TEACHER: 'TEACHER',
+  SCHOOL_ADMIN: 'SCHOOL-ADMIN',
+  DISTRICT_ADMIN: 'DISTRICT_ADMIN',
+  USER: 'USER',
+}
+
 const ROLE_LABEL = {
   [DISTRICT_ADMIN]: 'District Admin',
   [SCHOOL_ADMIN]: 'School Admin',
@@ -36,4 +46,5 @@ module.exports = {
   PARENT,
   ORG_TYPE,
   ROLE_LABEL,
+  ORGANIZATION_TYPE,
 }

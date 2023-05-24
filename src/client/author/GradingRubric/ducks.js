@@ -1,11 +1,21 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  put,
+  all,
+  select,
+  takeLatest,
+} from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { rubricsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { v4 } from 'uuid'
+import { isEmpty, isEqualWith } from 'lodash'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
 import { getUserOrgId } from '../src/selectors/user'
+import { getDefaultRubricData } from './Components/common/helper'
 
 // constants
 export const UPDATE_RUBRIC_DATA = '[rubric] update rubric data'
@@ -21,9 +31,18 @@ export const ADD_RUBRIC_TO_RECENTLY_USED =
   '[rubric] add rubric to recently used'
 export const UPDATE_RUBRIC_IN_RECENTLY_USED_LIST =
   '[rubric] update rubric in recently used list'
+export const REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST =
+  '[rubric] remove rubric from recently used list'
 export const SET_RECENTLY_USED_LIST = '[rubric] set recently used list'
 export const SET_RUBRIC_DATA_LOADING = '[rubric] set rubric data loading'
+export const GENERATE_RUBRIC = '[rubric] generate rubric'
+export const SET_IS_RUBRIC_GENERATION_IN_PROGRESS =
+  '[rubric] set is rubric generation in progress'
+export const SET_RUBRIC_GENERATION_STIMULUS =
+  '[rubric] set rubric generation stimulus'
 
+export const SET_REMOVE_AI_TAG = '[rubric] set rubric data loading'
+export const SET_UUID_LIST = '[rubric] set uuids'
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
 export const saveRubricAction = createAction(SAVE_RUBRIC)
@@ -40,8 +59,83 @@ export const addRubricToRecentlyUsedAction = createAction(
 export const updateRubricInRecentlyUsedAction = createAction(
   UPDATE_RUBRIC_IN_RECENTLY_USED_LIST
 )
+export const removeRubricFromRecentlyUsedAction = createAction(
+  REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST
+)
 export const setRecentlyUsedList = createAction(SET_RECENTLY_USED_LIST)
 export const setRubricDataLoadingAction = createAction(SET_RUBRIC_DATA_LOADING)
+export const autoGenerateRubricAction = createAction(GENERATE_RUBRIC)
+export const setIsRubricGenerationInProgress = createAction(
+  SET_IS_RUBRIC_GENERATION_IN_PROGRESS
+)
+export const setRubricGenerationStimulusAction = createAction(
+  SET_RUBRIC_GENERATION_STIMULUS
+)
+
+export const setRemoveAiTagAction = createAction(SET_REMOVE_AI_TAG)
+export const setUUIDsAction = createAction(SET_UUID_LIST)
+
+// selectors
+export const getStateSelector = (state) => state.rubricReducer
+
+export const getCurrentRubricDataSelector = createSelector(
+  getStateSelector,
+  (state) => state.currentRubric
+)
+
+export const getSearchedRubricsListSelector = createSelector(
+  getStateSelector,
+  (state) => state.searchedList
+)
+
+export const getSearchingStateSelector = createSelector(
+  getStateSelector,
+  (state) => state.searchingRubrics
+)
+
+export const getTotalSearchedCountSelector = createSelector(
+  getStateSelector,
+  (state) => state.totalSearchedCount
+)
+
+export const getRecentlyUsedRubricsSelector = createSelector(
+  getStateSelector,
+  getUserOrgId,
+  (state, userDistrictId) => {
+    const localStoredRubrics = localStorage.getItem(
+      `recentlyUsedRubrics_${userDistrictId}`
+    )
+    try {
+      if (!localStoredRubrics) {
+        return []
+      }
+      const rubrics = JSON.parse(localStoredRubrics)
+      return rubrics.filter((rubric) => rubric.status !== 'archived')
+    } catch (error) {
+      return []
+    }
+  }
+)
+
+export const getRubricDataLoadingSelector = createSelector(
+  getStateSelector,
+  (state) => state.rubricDataLoading
+)
+
+export const getRubricGenerationInProgress = createSelector(
+  getStateSelector,
+  (state) => state.rubricGenerationInProgress
+)
+
+export const getPreviousRubricGeneratedStimulusSelector = createSelector(
+  getStateSelector,
+  (state) => state.stimulusWhenRubricGenerated
+)
+
+export const getRubricUUIDsSelector = createSelector(
+  getStateSelector,
+  (state) => state.uuids
+)
 
 // reducer
 const initialState = {
@@ -50,6 +144,9 @@ const initialState = {
   searchingRubrics: false,
   totalSearchedCount: 0,
   rubricDataLoading: false,
+  rubricGenerationInProgress: false,
+  stimulusWhenRubricGenerated: '',
+  removeAiTag: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -69,6 +166,9 @@ export const reducer = createReducer(initialState, {
   [SEARCH_RUBRICS_FAILED]: (state) => {
     state.searchingRubrics = false
   },
+  [SET_IS_RUBRIC_GENERATION_IN_PROGRESS]: (state, { payload }) => {
+    state.rubricGenerationInProgress = payload
+  },
   [GET_RUBRIC_BY_ID_SUCCESS]: (state, { payload }) => {
     state.rubricDataLoading = false
     state.currentRubric = payload[0]
@@ -78,6 +178,15 @@ export const reducer = createReducer(initialState, {
   },
   [SET_RUBRIC_DATA_LOADING]: (state, { payload }) => {
     state.rubricDataLoading = payload
+  },
+  [SET_RUBRIC_GENERATION_STIMULUS]: (state, { payload }) => {
+    state.stimulusWhenRubricGenerated = payload
+  },
+  [SET_REMOVE_AI_TAG]: (state, { payload }) => {
+    state.removeAiTag = payload
+  },
+  [SET_UUID_LIST]: (state, { payload }) => {
+    state.uuids = payload
   },
 })
 
@@ -121,8 +230,18 @@ function* updateRubricSaga({ payload }) {
         })
       )
     }
-    yield put(addRubricToRecentlyUsedAction(payload.rubricData))
-    yield put(updateRubricInRecentlyUsedAction(data))
+    // add versioned/updated rubric and remove archived rubric from recently used list
+    if (
+      payload.rubricData._id !== data._id &&
+      data.versionId === payload.rubricData._id
+    ) {
+      yield put(addRubricToRecentlyUsedAction(data))
+      yield put(removeRubricFromRecentlyUsedAction(payload.rubricData._id))
+    } else {
+      yield put(addRubricToRecentlyUsedAction(payload.rubricData))
+      yield put(updateRubricInRecentlyUsedAction(data))
+    }
+
     if (payload.status === 'draft')
       notification({ type: 'success', messageKey: 'rubricUpdatedAsDraft' })
     else if (payload.status === 'published')
@@ -215,6 +334,83 @@ function* updateRubricInRecentlyUsedSaga({ payload }) {
   }
 }
 
+function* generateRubricSaga({ payload }) {
+  try {
+    yield put(setIsRubricGenerationInProgress(true))
+    const data = yield call(rubricsApi.generateRubrics, payload)
+    const generatedCriterias = JSON.parse(data)
+    const uuids = []
+    const getUUID = () => {
+      const uuid = v4()
+      uuids.push(uuid)
+      return uuid
+    }
+    if (!isEmpty(generatedCriterias)) {
+      const generatedCriteriasWithId = generatedCriterias.map(
+        ({ performance_criteria_name, ratings }) => ({
+          name: performance_criteria_name,
+          id: getUUID(),
+          ratings: ratings.map(
+            ({ rating_name, rating_description, rating_points }) => ({
+              name: rating_name,
+              desc: rating_description,
+              points: rating_points,
+              id: getUUID(),
+            })
+          ),
+        })
+      )
+      const existingRubricData = yield select(getCurrentRubricDataSelector)
+      const defaultRubricData = getDefaultRubricData()
+      const isDefaultCriteriaPresent = isEqualWith(
+        defaultRubricData.criteria,
+        existingRubricData.criteria,
+        (value1, value2, key) => {
+          return key === 'id' ? true : undefined
+        }
+      )
+      const criteria = isDefaultCriteriaPresent
+        ? generatedCriteriasWithId
+        : [...existingRubricData.criteria, ...generatedCriteriasWithId]
+      const newRubricData = {
+        ...existingRubricData,
+        criteria,
+      }
+
+      yield put(setUUIDsAction(uuids))
+      yield put(updateRubricDataAction(newRubricData))
+      notification({
+        type: 'success',
+        messageKey: 'rubricGeneratedSuccessfully',
+      })
+    } else {
+      notification({ messageKey: 'failedToGenerateRubric' })
+    }
+  } catch (err) {
+    notification({ messageKey: 'failedToGenerateRubric' })
+  } finally {
+    yield put(setIsRubricGenerationInProgress(false))
+  }
+}
+
+function* removeRubricFromRecentlyUsedRubric({ payload: archivedRubricId }) {
+  const userDistrictId = yield select(getUserOrgId)
+  let localStoredRubrics = localStorage.getItem(
+    `recentlyUsedRubrics_${userDistrictId}`
+  )
+  if (localStoredRubrics) {
+    localStoredRubrics = JSON.parse(localStoredRubrics)
+    const updatedList = localStoredRubrics.filter(
+      (r) => r._id !== archivedRubricId
+    )
+    localStorage.setItem(
+      `recentlyUsedRubrics_${userDistrictId}`,
+      JSON.stringify(updatedList)
+    )
+    yield put(setRecentlyUsedList(updatedList))
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SAVE_RUBRIC, saveRubricSaga),
@@ -227,52 +423,10 @@ export function* watcherSaga() {
       UPDATE_RUBRIC_IN_RECENTLY_USED_LIST,
       updateRubricInRecentlyUsedSaga
     ),
+    yield takeLatest(GENERATE_RUBRIC, generateRubricSaga),
+    yield takeEvery(
+      REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST,
+      removeRubricFromRecentlyUsedRubric
+    ),
   ])
 }
-
-// selectors
-export const getStateSelector = (state) => state.rubricReducer
-
-export const getCurrentRubricDataSelector = createSelector(
-  getStateSelector,
-  (state) => state.currentRubric
-)
-
-export const getSearchedRubricsListSelector = createSelector(
-  getStateSelector,
-  (state) => state.searchedList
-)
-
-export const getSearchingStateSelector = createSelector(
-  getStateSelector,
-  (state) => state.searchingRubrics
-)
-
-export const getTotalSearchedCountSelector = createSelector(
-  getStateSelector,
-  (state) => state.totalSearchedCount
-)
-
-export const getRecentlyUsedRubricsSelector = createSelector(
-  getStateSelector,
-  getUserOrgId,
-  (state, userDistrictId) => {
-    const localStoredRubrics = localStorage.getItem(
-      `recentlyUsedRubrics_${userDistrictId}`
-    )
-    try {
-      if (!localStoredRubrics) {
-        return []
-      }
-      const rubrics = JSON.parse(localStoredRubrics)
-      return rubrics.filter((rubric) => rubric.status !== 'archived')
-    } catch (error) {
-      return []
-    }
-  }
-)
-
-export const getRubricDataLoadingSelector = createSelector(
-  getStateSelector,
-  (state) => state.rubricDataLoading
-)

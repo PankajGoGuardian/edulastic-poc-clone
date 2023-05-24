@@ -3,33 +3,20 @@ import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { reportUtils } from '@edulastic/constants'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
-import { downloadCSV, getHSLFromRange1 } from '../../../../../common/util'
+import { downloadCSV } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 
-const getDisplayValue = (data, record, analyseBy, columnKey) => {
-  let printData = data
-  const NA = 'N/A'
-  if (
-    printData === 0 &&
-    (analyseBy === 'aboveBelowStandard' || analyseBy === 'proficiencyBand')
-  ) {
-    return NA
-  }
-  if (analyseBy === 'score(%)') {
-    printData = `${record[columnKey]}%`
-  } else if (analyseBy === 'rawScore') {
-    printData = record[columnKey].toFixed(2)
-  } else if (
-    analyseBy === 'proficiencyBand' ||
-    analyseBy === 'aboveBelowStandard'
-  ) {
-    printData = `${data} (${Math.abs(record[`${columnKey}Percentage`])}%)`
-  }
-  return printData
+const { analyseByOptions, getDisplayValue } = reportUtils.peerPerformance
+
+const enableSorts = {
+  'dimension.name': 'dimension',
+  aboveStandard: 'aboveStandard',
+  avgSore: 'scorePerc',
 }
 
 export const PeerPerformanceTable = ({
@@ -43,14 +30,12 @@ export const PeerPerformanceTable = ({
   bandInfo,
   role,
   isCsvDownloading = false,
+  setSortKey,
+  setSortOrder,
+  sortOrder,
+  sortKey,
+  setPageNo,
 }) => {
-  const sortNumbers = (key) => (a, b) => {
-    const _a = a[key] || 0
-    const _b = b[key] || 0
-
-    return _a - _b
-  }
-
   let _columns = []
 
   const colorCell = (colorkey, columnKey, columnTitle) => (data, record) => {
@@ -64,23 +49,28 @@ export const PeerPerformanceTable = ({
           <Col className="custom-table-tooltip-key">{`${idToName(
             compareBy
           )}: `}</Col>
-          <Col className="custom-table-tooltip-value">{rec.compareBylabel}</Col>
+          <Col className="custom-table-tooltip-value">{rec.dimension.name}</Col>
         </Row>
-        {analyseBy === 'score(%)' || analyseBy === 'rawScore' ? (
+        {analyseBy === analyseByOptions.scorePerc ||
+        analyseBy === analyseByOptions.rawScore ? (
           <>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Assigned: </Col>
               <Col className="custom-table-tooltip-value">
-                {rec.graded + rec.absent}
+                {rec.absentStudents + rec.submittedStudents}
               </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Submitted: </Col>
-              <Col className="custom-table-tooltip-value">{rec.graded}</Col>
+              <Col className="custom-table-tooltip-value">
+                {rec.submittedStudents}
+              </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Absent: </Col>
-              <Col className="custom-table-tooltip-value">{rec.absent}</Col>
+              <Col className="custom-table-tooltip-value">
+                {rec.absentStudents}
+              </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">District Avg: </Col>
@@ -98,19 +88,7 @@ export const PeerPerformanceTable = ({
                 Student Avg Score:{' '}
               </Col>
               <Col className="custom-table-tooltip-value">
-                {analyseBy === 'score(%)'
-                  ? getDisplayValue(
-                      rec.avgStudentScorePercentUnrounded,
-                      rec,
-                      analyseBy,
-                      'avgStudentScorePercent'
-                    )
-                  : getDisplayValue(
-                      rec.avgStudentScoreUnrounded,
-                      rec,
-                      analyseBy,
-                      'avgStudentScore'
-                    )}
+                {getDisplayValue(rec.avgSore, rec, analyseBy, 'dimensionAvg')}
               </Col>
             </Row>
           </>
@@ -131,7 +109,9 @@ export const PeerPerformanceTable = ({
               <Col className="custom-table-tooltip-value">
                 {rec[columnKey] === 0
                   ? 'N/A'
-                  : `${Math.abs(rec[`${columnKey}Percentage`])}%`}
+                  : `${Math.abs(
+                      (rec[columnKey] * 100) / rec.totalStudents
+                    ).toFixed(0)}%`}
               </Col>
             </Row>
           </>
@@ -157,25 +137,36 @@ export const PeerPerformanceTable = ({
     )
   }
 
-  const tableData = useMemo(() => {
-    const arr = dataSource.filter(
-      (item) => filter[item[compareBy]] || Object.keys(filter).length === 0
-    )
-    return arr
-  }, [dataSource, filter])
+  const tableData = useMemo(
+    () =>
+      dataSource.filter((item) => {
+        return filter[item.dimension._id] || Object.keys(filter).length === 0
+      }),
+    [dataSource, filter]
+  )
 
   let colouredCellsNo = 0
 
   _columns = next(columns, (arr) => {
-    if (analyseBy === 'score(%)') {
-      arr[arr.length - 1].render = colorCell('fill', 'avgStudentScorePercent')
+    arr.forEach((item) => {
+      if (enableSorts[item.dataIndex]) {
+        item.sorter = true
+        item.key = enableSorts[item.dataIndex]
+      }
+      if (item.key === sortKey) {
+        item.sortOrder = sortOrder
+      }
+    })
+
+    if (analyseBy === analyseByOptions.scorePerc) {
+      arr[arr.length - 1].render = colorCell('fill', 'dimensionAvg')
       arr[arr.length - 2].render = colorCell('dFill', 'districtAvg')
       colouredCellsNo = 2
-    } else if (analyseBy === 'rawScore') {
-      arr[arr.length - 1].render = colorCell('fill', 'avgStudentScore')
+    } else if (analyseBy === analyseByOptions.rawScore) {
+      arr[arr.length - 1].render = colorCell('fill', 'dimensionAvg')
       arr[arr.length - 2].render = colorCell('dFill', 'districtAvg')
       colouredCellsNo = 2
-    } else if (analyseBy === 'aboveBelowStandard') {
+    } else if (analyseBy === analyseByOptions.aboveBelowStandard) {
       arr[arr.length - 1].render = colorCell(
         'fill_0',
         'aboveStandard',
@@ -186,10 +177,8 @@ export const PeerPerformanceTable = ({
         'belowStandard',
         'Below Standard'
       )
-      arr[arr.length - 2].sorter = sortNumbers(arr[arr.length - 2].key)
       colouredCellsNo = 2
     } else {
-      bandInfo.sort((a, b) => a.threshold - b.threshold)
       for (let i = 0; i < bandInfo.length; i++) {
         dataSource.forEach((d) => {
           d[`fill_${i}`] = bandInfo[i].color
@@ -197,29 +186,36 @@ export const PeerPerformanceTable = ({
       }
 
       const allBandCols = {}
-      for (const band of bandInfo) {
-        const name = band.name
-        const sum = sumBy(tableData, (o) => o[`${name}Percentage`])
-        allBandCols[`${name}Percentage`] = sum !== 0
+      for (const { name } of bandInfo) {
+        const sum = sumBy(tableData, (o) => o[name])
+        allBandCols[name] = sum !== 0
       }
 
       let validBandCols = 0
+      const performanceBandColumns = arr.filter(
+        (item) => item[analyseByOptions.proficiencyBand]
+      )
+      const removeIndex = []
       for (const [index, value] of bandInfo.entries()) {
-        if (!allBandCols[`${value.name}Percentage`]) {
+        if (!allBandCols[value.name]) {
+          const startIndex = arr.length - bandInfo.length
+          removeIndex.push(startIndex + index)
           continue
         }
-        arr.push({
-          title: value.name,
-          dataIndex: value.name,
-          key: value.name,
-          width: 250,
-          render: colorCell(`fill_${index}`, value.name, value.name),
-        })
+        performanceBandColumns[index].width = 250
+        performanceBandColumns[index].render = colorCell(
+          `fill_${index}`,
+          value.name,
+          value.name
+        )
         validBandCols++
+      }
+      for (let i = removeIndex.length - 1; i >= 0; i--) {
+        arr.splice(removeIndex[i], 1)
       }
       colouredCellsNo = validBandCols
     }
-    arr[arr.length - 1].sorter = sortNumbers(arr[arr.length - 1].key)
+
     if (
       role === 'teacher' &&
       (compareBy === 'groupId' || compareBy === 'group')
@@ -230,6 +226,12 @@ export const PeerPerformanceTable = ({
 
   const onCsvConvert = (data) =>
     downloadCSV(`Sub-group Performance School Report.csv`, data)
+
+  const onChange = (_, __, column) => {
+    setSortKey(column.columnKey)
+    setSortOrder(column.order)
+    setPageNo(1)
+  }
 
   return (
     <div>
@@ -245,8 +247,10 @@ export const PeerPerformanceTable = ({
         columns={_columns}
         dataSource={tableData}
         rowKey={rowKey}
+        pagination={false}
         tableToRender={StyledTable}
         scroll={{ x: '100%' }}
+        onChange={onChange}
       />
     </div>
   )

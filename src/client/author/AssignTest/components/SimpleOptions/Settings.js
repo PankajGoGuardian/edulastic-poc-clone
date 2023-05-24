@@ -44,6 +44,8 @@ import SettingContainer from '../Container/SettingsContainer'
 import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
 import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
+import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { COMMON } = testTypes.TEST_TYPES
 
@@ -289,6 +291,7 @@ const Settings = ({
     penaltyOnUsingHints = tempTestSettings.penaltyOnUsingHints,
     playerSkinType = testSettings.playerSkinType,
     showTtsForPassages = tempTestSettings.showTtsForPassages,
+    allowAutoEssayEvaluation = tempTestSettings.allowAutoEssayEvaluation,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -824,7 +827,36 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
-
+        {!(isDocBased || isTestlet) && (
+          <SettingContainer>
+            <DetailsTooltip
+              title={i18translate('allowAutoEssayEvaluation.title')}
+              content={i18translate('allowAutoEssayEvaluation.info')}
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>{i18translate('allowAutoEssayEvaluation.title')}</Label>
+                <DollarPremiumSymbol premium={premium} />
+                <BetaTag top="-9%" left="255.55px">
+                  BETA
+                </BetaTag>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  data-cy="auto-essay-evaluation"
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  defaultChecked={false}
+                  checked={allowAutoEssayEvaluation}
+                  onChange={(value) =>
+                    overRideSettings('allowAutoEssayEvaluation', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
         {/* Show TTS for passage */}
         {!(isDocBased || isTestlet) && (
           <SettingContainer>

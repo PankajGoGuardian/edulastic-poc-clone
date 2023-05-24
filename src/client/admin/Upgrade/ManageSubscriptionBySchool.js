@@ -186,9 +186,10 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       const { schoolId, subscription = {} } = record
 
       const handleClick = (subTypeParam) => {
+        const currentTimeInMilliSec = new Date().getTime()
         bulkSchoolsSubscribeAction({
-          subStartDate: editedStartDate,
-          subEndDate: editedEndDate,
+          subStartDate: editedStartDate || currentTimeInMilliSec,
+          subEndDate: editedEndDate || currentTimeInMilliSec,
           notes: editedNotes,
           schoolIds: [schoolId],
           subType: subTypeParam,

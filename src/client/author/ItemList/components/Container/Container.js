@@ -124,6 +124,7 @@ class Contaier extends Component {
       districtId,
       test,
       getDefaultTestSettings,
+      userRole,
     } = this.props
 
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
@@ -166,7 +167,7 @@ class Contaier extends Component {
     }
     if (test && test._id) {
       setDefaultTestData()
-    } else {
+    } else if (userRole !== roleuser.EDULASTIC_CURATOR) {
       getDefaultTestSettings()
     }
     getAllTags({ type: 'testitem' })

@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react'
 import qs from 'qs'
-import { get, mapValues } from 'lodash'
+import { get, isEmpty, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
@@ -20,6 +20,11 @@ import {
 } from '../../../../../../src/selectors/user'
 import { actions, selectors } from '../../ducks'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+import {
+  commonFilterKeys,
+  filterKeysToCompareByKeys,
+} from '../../../common/utils'
+import { nextCompareByKeys } from '../../../Dashboard/utils'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   (res, ele) => ({ [ele]: ele, ...res }),
@@ -47,9 +52,11 @@ const Filters = ({
   reportId = '',
   loadingFiltersData,
   prevFiltersData,
+  selectedFilterTagsData,
   filtersData,
   filtersTabKey,
   filters,
+  tableFilters,
   filterTagsData,
   // action props
   toggleFilter,
@@ -126,7 +133,7 @@ const Filters = ({
   })
 
   const onGoClick = (_settings = {}) => {
-    const settings = {
+    const newSettings = {
       requestFilters: { ...filters },
       selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
@@ -134,7 +141,7 @@ const Filters = ({
     setFilters({ ...filters })
     setShowPageLevelApply(false)
     setShowApply(false)
-    _onGoClick(settings)
+    _onGoClick(newSettings)
     toggleFilter(null, false)
   }
 
@@ -214,6 +221,16 @@ const Filters = ({
     setFilterTagsData(_filterTagsData)
     // update filters
     _filters[keyName] = _selected
+    if (commonFilterKeys.includes(keyName)) {
+      if (isEmpty(_selected)) {
+        _filters.selectedCompareBy = filterKeysToCompareByKeys[keyName]
+      } else {
+        _filters.selectedCompareBy =
+          nextCompareByKeys[filterKeysToCompareByKeys[keyName]]
+      }
+    } else if (!_filters.selectedCompareBy) {
+      _filters.selectedCompareBy = tableFilters.compareBy.key
+    }
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     if (isPageLevelFilter) {
       setFilters({ ..._filters })
@@ -235,7 +252,7 @@ const Filters = ({
       filtersTabKey={filtersTabKey}
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
-      selectedFilterTagsData={filterTagsData}
+      selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={staticDropDownData.tagTypes}
       updateFilterDropdownCB={updateFilterDropdownCB}
       onAssessmentSelect={onAssessmentSelect}

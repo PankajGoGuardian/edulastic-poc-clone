@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   ComposedChart,
   Bar as _Bar,
@@ -103,6 +103,13 @@ const SimpleStackedBarChartComponent = ({
   setBackendPagination,
   showLegend = false,
   setVisibleIndices,
+  carousel,
+  setPageNo,
+  pageNo,
+  tablePageSize,
+  totalRows,
+  chartBackNavigation,
+  setChartBackNavigation,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -171,6 +178,15 @@ const SimpleStackedBarChartComponent = ({
 
   const chartData = useMemo(() => [...data], [pagination])
 
+  useEffect(() => {
+    if (carousel && chartBackNavigation) {
+      setChartBackNavigation(false)
+      const startIndex = chartData.length - pageSize
+      const endIndex = chartData.length - 1
+      onSetVisibleIndices(startIndex, endIndex)
+    }
+  }, [])
+
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {
@@ -182,6 +198,9 @@ const SimpleStackedBarChartComponent = ({
       const startIndex = pagination.startIndex - diff
       const endIndex = pagination.endIndex - diff
       onSetVisibleIndices(startIndex, endIndex)
+    } else if (carousel && pageNo > 1) {
+      setChartBackNavigation(true)
+      setPageNo((_pageNo) => --_pageNo)
     }
   }
 
@@ -196,6 +215,8 @@ const SimpleStackedBarChartComponent = ({
       const startIndex = pagination.startIndex + diff
       const endIndex = pagination.endIndex + diff
       onSetVisibleIndices(startIndex, endIndex)
+    } else if (carousel && totalRows > tablePageSize * pageNo) {
+      setPageNo((_pageNo) => ++_pageNo)
     }
   }
 
@@ -299,7 +320,10 @@ const SimpleStackedBarChartComponent = ({
         className="navigator navigator-left"
         onClick={chartNavLeftClick}
         style={{
-          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavLeftVisibility || (carousel && pageNo > 1)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -310,7 +334,11 @@ const SimpleStackedBarChartComponent = ({
         className="navigator navigator-right"
         onClick={chartNavRightClick}
         style={{
-          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavRightVisibility ||
+            (carousel && totalRows > tablePageSize * pageNo)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer

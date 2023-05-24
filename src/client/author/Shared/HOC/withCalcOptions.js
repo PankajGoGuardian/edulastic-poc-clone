@@ -6,6 +6,7 @@ import { getCalcTypesSelector } from '../../TestPage/ducks'
 import {
   getCurrentSchoolState,
   isHomeSchoolSelector,
+  isDesmosCalculatorEnabledSelector,
 } from '../../src/selectors/user'
 
 const { calculators } = testConstants
@@ -13,11 +14,10 @@ const { calculators } = testConstants
 export const withCalcOptions = (WrappedComponent) => {
   const hocComponent = ({
     value,
-    calculatorProvider,
     isHomeSchool,
-    premium,
     schoolState,
     setTestData,
+    isDesmosCalculatorEnabled,
     ...hocProps
   }) => {
     const calcOptions = useMemo(() => {
@@ -34,9 +34,7 @@ export const withCalcOptions = (WrappedComponent) => {
           // @see EV-34375
           const disableOption =
             hasPopover ||
-            (premium &&
-              calculatorProvider !== 'DESMOS' &&
-              item.id !== calculators.BASIC.id)
+            (item.id !== calculators.BASIC.id && !isDesmosCalculatorEnabled)
 
           return {
             disabled: disableOption,
@@ -45,7 +43,7 @@ export const withCalcOptions = (WrappedComponent) => {
             text: isHomeSchool ? item.homeText ?? item.text : item.text,
           }
         })
-    }, [calculatorProvider, isHomeSchool, premium, schoolState])
+    }, [isHomeSchool, schoolState])
 
     return (
       <WrappedComponent
@@ -60,7 +58,6 @@ export const withCalcOptions = (WrappedComponent) => {
     calcTypes: getCalcTypesSelector(state),
     schoolState: getCurrentSchoolState(state),
     isHomeSchool: isHomeSchoolSelector(state),
-    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
-    premium: state?.user?.user?.features?.premium,
+    isDesmosCalculatorEnabled: isDesmosCalculatorEnabledSelector(state),
   }))(hocComponent)
 }

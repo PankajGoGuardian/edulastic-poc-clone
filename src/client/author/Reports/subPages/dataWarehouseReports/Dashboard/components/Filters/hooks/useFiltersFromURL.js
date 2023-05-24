@@ -1,14 +1,15 @@
 import { useEffect } from 'react'
-import { isEmpty, reject } from 'lodash'
+import { get, isEmpty, reject } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { staticDropDownData } from '../../../utils'
+import { getDemographicsFilterTagsData } from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
-  availableAssessmentType,
+  availableTestTypes,
   defaultTermId,
   fetchUpdateTagsData,
   filters,
@@ -48,10 +49,6 @@ function useFiltersFromURL({
       const urlGrades = staticDropDownData.grades.filter(
         (item) => search.grades && search.grades.includes(item.key)
       )
-      const urlAssignedBy =
-        staticDropDownData.assignedBy.find(
-          (a) => a.key === search.assignedBy
-        ) || staticDropDownData.assignedBy[0]
       const urlPeriod =
         staticDropDownData.periodTypes.find(
           (a) => a.key === search.periodType
@@ -71,7 +68,6 @@ function useFiltersFromURL({
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
 
-        assignedBy: urlAssignedBy.key,
         race: search.race || 'all',
         gender: search.gender || 'all',
         iepStatus: search.iepStatus || 'all',
@@ -87,15 +83,24 @@ function useFiltersFromURL({
         delete _filters.teacherIds
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const demographics = get(filtersData, 'data.result.demographics')
+      const demographicsFilterTagsData = getDemographicsFilterTagsData(
+        search,
+        demographics
+      )
       const _filterTagsData = {
         termId: urlSchoolYear,
-        assessmentTypes: availableAssessmentType.filter((a) =>
+        testSubjects: urlTestSubjects,
+        testGrades: urlTestGrades,
+        assessmentTypes: availableTestTypes.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
+
         subjects: urlSubjects,
         grades: urlGrades,
-        assignedBy: urlAssignedBy,
+
         periodType: urlPeriod,
+        ...demographicsFilterTagsData,
       }
 
       // set filterTagsData, filters and testId
@@ -110,9 +115,8 @@ function useFiltersFromURL({
           selectedFilterTagsData: { ..._filterTagsData },
         })
         fetchUpdateTagsData({
-          testIds: reject(_filters.testIds?.split(','), isEmpty),
           schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject([search.courseId], isEmpty),
+          courseId: reject([search.courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
           teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),

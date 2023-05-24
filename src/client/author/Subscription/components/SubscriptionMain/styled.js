@@ -84,7 +84,7 @@ export const AddonCard = styled.div`
   }
 `
 export const AddonImg = styled.div`
-  height: 40px;
+  height: ${(props) => (props.$type === 'enterprise' ? '40px' : '80px')};
 `
 export const AddonDescription = styled.div`
   font-size: 13px;
@@ -145,9 +145,7 @@ export const ExpiryMsg = styled(PremiumRequiredMsg)`
 `
 
 export const IconWrapper = styled.div`
-  min-width: 52px;
   margin-right: 30px;
-  margin-top: 5px;
 `
 export const CardDetails = styled.div`
   display: flex;

@@ -202,6 +202,7 @@ function* loadAssignmentSaga({ payload }) {
       showHintsToStudents,
       showTtsForPassages,
       showImmersiveReader,
+      allowAutoEssayEvaluation,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -238,6 +239,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (typeof showTtsForPassages === 'boolean') {
       data.showTtsForPassages = showTtsForPassages
+    }
+    if (typeof allowAutoEssayEvaluation === 'boolean') {
+      data.allowAutoEssayEvaluation = allowAutoEssayEvaluation
     }
     if (passwordPolicy !== undefined) {
       data.passwordPolicy = passwordPolicy
@@ -293,6 +297,7 @@ function getSettingsSelector(state) {
     penaltyOnUsingHints,
     showTtsForPassages,
     showImmersiveReader,
+    allowAutoEssayEvaluation,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -402,6 +407,7 @@ function getSettingsSelector(state) {
       penaltyOnUsingHints,
       showTtsForPassages,
       showImmersiveReader,
+      allowAutoEssayEvaluation,
     },
     isUndefined
   )

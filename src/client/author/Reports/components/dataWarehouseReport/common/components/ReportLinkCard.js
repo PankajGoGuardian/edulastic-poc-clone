@@ -8,6 +8,7 @@ import {
   StyledIcon,
   StyledParagraph,
 } from '../../../../common/styled'
+import { navigationState } from '../../../../../src/constants/navigation'
 
 const ReportLinkCard = ({
   IconThumbnail,
@@ -16,9 +17,16 @@ const ReportLinkCard = ({
   url,
   loc,
   history,
+  allowAccess,
 }) => {
   const navigateToReport = () => {
-    history.push({ pathname: url, state: { source: loc } })
+    if (allowAccess) {
+      return history.push({ pathname: url, state: { source: loc } })
+    }
+    return history.push({
+      pathname: '/author/subscription',
+      state: { view: navigationState.SUBSCRIPTION.view.DATA_STUDIO },
+    })
   }
 
   return (

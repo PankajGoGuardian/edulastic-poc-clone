@@ -31,6 +31,7 @@ import { Container } from '../RequestQuoteModal/styled'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import { StyledDragger, StyledInputNumber } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { licenseTypes, licenseTypeRadios } from '../../constants/subscription'
 
 const getFooterComponent = ({ handleSubmit, isSubmitPOActionPending }) => (
   <AuthorCompleteSignupButton
@@ -60,7 +61,7 @@ const SubmitPOModal = ({
   userFullname,
   userDetails,
 }) => {
-  const [licenseType, setLicenseType] = useState('Enterprise')
+  const [licenseType, setLicenseType] = useState(licenseTypes.ENTERPRISE)
   const [otherInfo, setOtherInfo] = useState()
   const [studentLicenseCount, setStudentLicenseCount] = useState()
   const [teacherLicenseCount, setTeacherLicenseCount] = useState()
@@ -70,7 +71,11 @@ const SubmitPOModal = ({
 
   const onLicenseTypeChange = (e) => {
     setLicenseType(e.target.value)
-    if (e.target.value === 'Enterprise') {
+    if (
+      [licenseTypes.ENTERPRISE, licenseTypes.DATA_STUDIO].includes(
+        e.target.value
+      )
+    ) {
       setTeacherLicenseCount(undefined)
     } else {
       setStudentLicenseCount(undefined)
@@ -81,7 +86,9 @@ const SubmitPOModal = ({
     if (!re.test(value)) {
       return
     }
-    if (licenseType === 'Enterprise') {
+    if (
+      [licenseTypes.ENTERPRISE, licenseTypes.DATA_STUDIO].includes(licenseType)
+    ) {
       setStudentLicenseCount(value)
     } else {
       setTeacherLicenseCount(value)
@@ -108,7 +115,7 @@ const SubmitPOModal = ({
   }
 
   const resetFields = () => {
-    setLicenseType('Enterprise')
+    setLicenseType(licenseTypes.ENTERPRISE)
     setOtherInfo(undefined)
     setStudentLicenseCount(undefined)
     setTeacherLicenseCount(undefined)
@@ -260,16 +267,17 @@ const SubmitPOModal = ({
         <Label mb="-2px">PO For</Label>
         <FlexContainer width="330px" flexDirection="column">
           <Radio.Group onChange={onLicenseTypeChange} value={licenseType}>
-            <Radio data-cy="enterpriseRadio" value="Enterprise">
-              Enterprise
-            </Radio>
-            <Radio data-cy="teacherPremiumRadio" value="Teacher Premium">
-              Teacher Premium
-            </Radio>
+            {licenseTypeRadios.map(({ key, label, value }) => (
+              <Radio data-cy={key} key={key} value={value}>
+                {label}
+              </Radio>
+            ))}
           </Radio.Group>
         </FlexContainer>
 
-        {licenseType === 'Enterprise' ? (
+        {[licenseTypes.ENTERPRISE, licenseTypes.DATA_STUDIO].includes(
+          licenseType
+        ) ? (
           <>
             <FlexContainer
               width="100%"

@@ -64,6 +64,8 @@ const SubscriptionHeader = ({
   isManageSubscriptionView = false,
   setShowEnterpriseTab,
   showEnterpriseTab,
+  setShowDataStudioTab,
+  showDataStudioTab,
   uploadPO,
   schoolId,
   setCartVisible,
@@ -181,25 +183,44 @@ const SubscriptionHeader = ({
               {!showAddonsTab && (
                 <HeaderTabs
                   dataCy="premiumTab"
-                  isActive={!showEnterpriseTab}
+                  isActive={!showEnterpriseTab && !showDataStudioTab}
                   linkLabel="Premium (Teacher)"
-                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  onClickHandler={() => {
+                    setShowEnterpriseTab(false)
+                    setShowDataStudioTab(false)
+                  }}
                   activeStyle={tabsCustomStyle}
                 />
               )}
               <HeaderTabs
                 dataCy="EnterpriseTab"
-                isActive={showEnterpriseTab}
+                isActive={showEnterpriseTab && !showDataStudioTab}
                 linkLabel={`Enterprise ${schoolId ? '(School)' : '(District)'}`}
-                onClickHandler={() => setShowEnterpriseTab(true)}
+                onClickHandler={() => {
+                  setShowEnterpriseTab(true)
+                  setShowDataStudioTab(false)
+                }}
+                activeStyle={tabsCustomStyle}
+              />
+              <HeaderTabs
+                dataCy="DataStudioTab"
+                isActive={showDataStudioTab && !showEnterpriseTab}
+                linkLabel="Data Studio"
+                onClickHandler={() => {
+                  setShowEnterpriseTab(false)
+                  setShowDataStudioTab(true)
+                }}
                 activeStyle={tabsCustomStyle}
               />
               {showAddonsTab && (
                 <HeaderTabs
                   dataCy="addonsTab"
-                  isActive={!showEnterpriseTab}
+                  isActive={!showEnterpriseTab && !showDataStudioTab}
                   linkLabel="Add ons"
-                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  onClickHandler={() => {
+                    setShowDataStudioTab(false)
+                    setShowEnterpriseTab(false)
+                  }}
                   activeStyle={tabsCustomStyle}
                 />
               )}

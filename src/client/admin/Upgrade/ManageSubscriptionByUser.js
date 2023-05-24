@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import { Row, Col, Form, Radio, Input, Button } from 'antd'
 import moment from 'moment'
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
-import { radioButtonUserData } from '../Data'
 import { Table } from '../Common/StyledComponents'
 import { renderSubscriptionType } from '../Common/SubTypeTag'
+import InvalidEmailIdList from './InvalidEmailIdList'
+import { radioButtonUserData } from '../Data'
+import { updateDataStudioPermission } from '../Common/Utils'
 
 const { TextArea } = Input
 const { Group: RadioGroup } = Radio
@@ -33,6 +38,7 @@ const SearchUsersByEmailIdsForm = Form.create({
     form: { getFieldDecorator, getFieldValue, validateFields },
     searchUsersByEmailIdAction,
     validEmailIdsList,
+    setEmailIds,
   }) => {
     const handleSubmit = (evt) => {
       validateFields((err, { emailIds }) => {
@@ -41,6 +47,7 @@ const SearchUsersByEmailIdsForm = Form.create({
             // here empty spaces and ↵ spaces are removed
             identifiers: getIdsStrToList(emailIds),
           })
+          setEmailIds(emailIds)
         }
       })
       evt.preventDefault()
@@ -169,6 +176,12 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
       validateFields(
         (err, { subStartDate, subEndDate, notes, subscriptionAction }) => {
           if (!err) {
+            const isDataStudio =
+              subscriptionAction === radioButtonUserData.DATA_STUDIO
+            const isPremiumPlusDataStudio =
+              subscriptionAction ===
+              radioButtonUserData.PREMIUM_PLUS_DATA_STUDIO
+
             const userIds = []
             const subscriptionIds = []
             const identifiers = validEmailIdsList.map(({ _id }) => _id)
@@ -180,7 +193,49 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               }
             })
             const isRevokeAccess =
-              subscriptionAction === radioButtonUserData.REVOKE
+              subscriptionAction === radioButtonUserData.FREE || isDataStudio
+
+            const dataStudio = {
+              users: [],
+            }
+
+            const seedDsData = {
+              districtData: [],
+            }
+
+            validEmailIdsList.forEach(({ _source, _id }) => {
+              const {
+                permissions = [],
+                permissionsExpiry = [],
+                districtIds = [],
+              } = _source
+
+              const [districtId] = districtIds ?? []
+              const enableDataStudio = isDataStudio || isPremiumPlusDataStudio
+              const updateData = updateDataStudioPermission({
+                isDataStudio: enableDataStudio,
+                permissions,
+                permissionsExpiry,
+                perStartDate: subStartDate.valueOf(),
+                perEndDate: subEndDate.valueOf(),
+              })
+
+              updateData._id = _id
+
+              dataStudio.users.push(updateData)
+              if (districtId) {
+                const foundSeedDsData = seedDsData.districtData.find(
+                  ({ districtId: _districtId }) => _districtId === districtId
+                )
+                if (!foundSeedDsData) {
+                  seedDsData.districtData.push({
+                    districtId,
+                    status: enableDataStudio,
+                  })
+                }
+              }
+            })
+
             upgradeUserSubscriptionAction({
               ...(isRevokeAccess && { status: 0 }),
               ...(!isRevokeAccess && { subType: 'premium' }),
@@ -190,6 +245,8 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               userIds,
               subscriptionIds,
               identifiers,
+              dataStudio,
+              seedDsData,
             })
           }
         }
@@ -202,7 +259,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
         <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
 
         <Row>
-          <Col span={8}>
+          <Col span={24}>
             <Form.Item>
               {getFieldDecorator('subscriptionAction', {
                 initialValue: radioButtonUserData.list[0],
@@ -228,16 +285,24 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
   }
 )
 
-export default function ManageSubscriptionByUser({
+function ManageSubscriptionByUser({
   manageUsersData: { validEmailIdsList },
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
+  t,
 }) {
+  const [emailIds, setEmailIds] = useState()
   return (
     <>
       <SearchUsersByEmailIdsForm
         searchUsersByEmailIdAction={searchUsersByEmailIdAction}
         validEmailIdsList={validEmailIdsList}
+        setEmailIds={setEmailIds}
+      />
+      <InvalidEmailIdList
+        validEmailIdsList={validEmailIdsList}
+        allEmailIds={emailIds}
+        t={t}
       />
       <ValidEmailIdsTable validEmailIdsList={validEmailIdsList} />
       <SubmitUserForm
@@ -247,3 +312,8 @@ export default function ManageSubscriptionByUser({
     </>
   )
 }
+ManageSubscriptionByUser.propTypes = {
+  t: PropTypes.func.isRequired,
+}
+
+export default compose(withNamespaces('upgradePlan'))(ManageSubscriptionByUser)

@@ -29,6 +29,11 @@ const ROUND_OFF_TO_INTEGER = true
 const EMPTY_ARRAY = []
 const EXTERNAL_TEST_KEY_SEPARATOR = '__'
 
+const performanceBandKeys = {
+  INTERNAL: 'threshold',
+  EXTERNAL: 'rank',
+}
+
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
   DESCEND: 'descend',
@@ -620,6 +625,7 @@ module.exports = {
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
   dbToTableSortOrderMap,
+  performanceBandKeys,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,

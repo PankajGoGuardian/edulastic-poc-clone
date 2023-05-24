@@ -600,3 +600,8 @@ export const isDataOpsUser = createSelector(getUserFeatures, (features) =>
 export const isDataOpsOnlyUser = createSelector(getUserFeatures, (features) =>
   _get(features, 'isDataOpsOnlyUser', false)
 )
+
+export const isDesmosCalculatorEnabledSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'isDesmosCalculatorEnabled', false)
+)

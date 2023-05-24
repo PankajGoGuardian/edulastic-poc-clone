@@ -1,8 +1,5 @@
 import React from 'react'
 import SectionLabel from '../../../common/components/SectionLabel'
-
-import { availableTestTypes } from './utils'
-
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
 import TableSection from './components/TableSection'
@@ -14,7 +11,9 @@ import {
 import SectionDescription from '../../../common/components/SectionDescription'
 
 function ReportView({
+  history,
   location,
+  search,
   performanceBandList,
   selectedPerformanceBand,
   setAcademicSummaryFilters,
@@ -26,8 +25,10 @@ function ReportView({
   fetchDashboardTableDataRequest,
   loadingTableData,
   tableDataRequestError,
+  districtAveragesData,
   tableData,
   loc,
+  availableTestTypes,
 }) {
   const { academicSummaryFilters } = settings
 
@@ -60,8 +61,11 @@ function ReportView({
         </WidgetColumn>
       </WidgetsContainer>
       <TableSection
+        history={history}
         location={location}
+        search={search}
         academicSummaryFilters={academicSummaryFilters}
+        setAcademicSummaryFilters={setAcademicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
@@ -70,8 +74,10 @@ function ReportView({
         settings={settings}
         setSettings={setSettings}
         selectedCompareBy={selectedCompareBy}
+        districtAveragesData={districtAveragesData}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
+        availableTestTypes={availableTestTypes}
       />
     </>
   )

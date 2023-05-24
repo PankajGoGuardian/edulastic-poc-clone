@@ -24,8 +24,8 @@ import {
   sortKeys,
 } from './utils/constants'
 import {
-  compareByFilterFieldKeys,
-  nextCompareByOptionsMap,
+  compareByKeysToFilterKeys,
+  nextCompareByKeys,
 } from '../Dashboard/utils'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { StyledTable } from './styled-component'
@@ -77,12 +77,12 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
           (compareBy === compareByEnums.TEACHER && record.students < 100)
         let url = null
         if (canDrillDown) {
-          const filterField = compareByFilterFieldKeys[compareBy]
+          const filterField = compareByKeysToFilterKeys[compareBy]
           url = new URL(window.location.href)
           url.searchParams.set(filterField, record.dimension._id)
           url.searchParams.set(
             'selectedCompareBy',
-            nextCompareByOptionsMap[compareBy]
+            nextCompareByKeys[compareBy]
           )
         } else if (compareBy === compareByEnums.STUDENT) {
           const { search } = window.location
@@ -90,7 +90,7 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
             `${window.location.origin}/author/reports/whole-learner-report/student/${record.dimension._id}?${search}`
           )
         } else if (value) {
-          const filterField = compareByFilterFieldKeys[compareBy]
+          const filterField = compareByKeysToFilterKeys[compareBy]
           url = new URL(window.location.href)
           url.searchParams.set(filterField, record.dimension._id)
           url.searchParams.set('selectedCompareBy', compareByEnums.STUDENT)

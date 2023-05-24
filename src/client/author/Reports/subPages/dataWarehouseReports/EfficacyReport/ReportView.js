@@ -14,12 +14,16 @@ const ReportView = ({
   reportSummaryData,
   reportTableData,
   tableFilters,
+  pageFilters,
   reportFilters,
   externalBands,
   selectedPrePerformanceBand,
   selectedPostPerformanceBand,
   compareByOptions,
   setTableFilters,
+  getTableDrillDownUrl,
+  onMatrixCellClick,
+  setPageFilters,
   isCsvDownloading,
   isSharedReport,
 }) => {
@@ -78,17 +82,19 @@ const ReportView = ({
         prePerformanceBand={prePerformanceBand}
         postPerformanceBand={postPerformanceBand}
         tableFilters={tableFilters}
-        setTableFilters={setTableFilters}
+        onMatrixCellClick={onMatrixCellClick}
       />
       <EfficacyTable
         reportTableData={reportTableData}
         testInfo={testInfo}
         prePerformanceBand={prePerformanceBand}
         postPerformanceBand={postPerformanceBand}
-        tableFilters={tableFilters}
         compareByOptions={compareByOptions}
-        selectedTableFilters={tableFilters}
+        tableFilters={tableFilters}
         setTableFilters={setTableFilters}
+        getTableDrillDownUrl={getTableDrillDownUrl}
+        pageFilters={pageFilters}
+        setPageFilters={setPageFilters}
         isCsvDownloading={isCsvDownloading}
         isSharedReport={isSharedReport}
         hasIncompleteTests={hasIncompleteTests}

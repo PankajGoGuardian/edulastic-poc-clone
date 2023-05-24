@@ -2,9 +2,11 @@ import {
   getProficiencyBand,
   percentage,
   curateApiFiltersQuery,
+  EXTERNAL_TEST_KEY_SEPARATOR,
 } from '@edulastic/constants/reportUtils/common'
 import { lightGreen12, lightRed7 } from '@edulastic/colors'
 import { isEmpty, round, sumBy } from 'lodash'
+import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   academicSummaryFiltersTypes,
   availableTestTypes,
@@ -19,14 +21,21 @@ export const getCellColor = (value, selectedPerformanceBand) => {
 
 export const getAcademicSummaryPieChartData = (
   bandDistribution,
-  selectedPerformanceBand
+  selectedPerformanceBand,
+  isExternalTestTypeSelected
 ) => {
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
   return selectedPerformanceBand.map((pb) => {
-    const studentsPerBand = bandDistribution.find(
-      (bd) => bd.bandThreshold === pb.threshold
-    )?.students
+    let studentsPerBand
+    if (isExternalTestTypeSelected) {
+      studentsPerBand = bandDistribution.find((bd) => bd.bandName === pb.name)
+        ?.students
+    } else {
+      studentsPerBand = bandDistribution.find(
+        (bd) => bd.bandThreshold === pb.threshold
+      )?.students
+    }
     return {
       name: pb.name,
       value: percentage(studentsPerBand, totalStudents, true),
@@ -35,7 +44,10 @@ export const getAcademicSummaryPieChartData = (
   })
 }
 
-export const getAcademicSummaryMetrics = (rawData) => {
+export const getAcademicSummaryMetrics = (
+  rawData,
+  isExternalTestTypeSelected
+) => {
   if (isEmpty(rawData?.result)) return {}
 
   const {
@@ -47,16 +59,19 @@ export const getAcademicSummaryMetrics = (rawData) => {
   } = rawData.result
   const showFooter = !isEmpty(prePeriod)
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
-  const avgScorePercentage = round(avgScore * 100)
-  const periodAvgScorePercentage = round(periodAvgScore * 100)
+  let aboveStandardPercentage = 0
+  const avgScorePercentage = round(avgScore)
+  const periodAvgScorePercentage = round(periodAvgScore)
   const scoreTrendPercentage = showFooter
     ? round(avgScorePercentage - periodAvgScorePercentage)
     : 0
-  const aboveStandardPercentage = percentage(
-    aboveStandardStudents,
-    totalStudents,
-    true
-  )
+  if (!isExternalTestTypeSelected) {
+    aboveStandardPercentage = percentage(
+      aboveStandardStudents,
+      totalStudents,
+      true
+    )
+  }
   return {
     avgScorePercentage,
     aboveStandardPercentage,
@@ -85,12 +100,18 @@ export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
   }
 }
 
-export const getTableApiQuery = (settings, tableFilters, profileId) => {
+export const getTableApiQuery = (
+  settings,
+  tableFilters,
+  profileId,
+  academicTestType
+) => {
   const { query } = curateApiFiltersQuery(
     {
       ...settings.requestFilters,
       ...tableFilters,
       profileId,
+      academicTestType,
       compareBy: tableFilters.compareBy.key,
     },
     filterDetailsFields,
@@ -99,34 +120,108 @@ export const getTableApiQuery = (settings, tableFilters, profileId) => {
   return query
 }
 
-export function buildAcademicSummaryFilters(
-  search,
-  academicSummaryFilters,
-  performanceBandList
-) {
-  const { TEST_TYPE } = academicSummaryFiltersTypes
-  const selectedperformanceBandId =
-    search.profileId ||
-    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
-  const performanceBand =
-    performanceBandList.find((p) => p.key === selectedperformanceBandId) ||
-    performanceBandList[0]
-  const testType = availableTestTypes.find(
-    ({ key }) => key === academicSummaryFilters[TEST_TYPE]?.key
-  )
-    ? academicSummaryFilters[TEST_TYPE]
-    : availableTestTypes[0]
-  return { performanceBand, testType }
-}
-
 export const getFilteredAcademicSummaryTestTypes = (
   selectedAssessmentTypes,
   _availableTestTypes
 ) => {
   if (isEmpty(selectedAssessmentTypes)) return _availableTestTypes
   const selectedAssessmentTypesArray = selectedAssessmentTypes.split(',')
+  return _availableTestTypes.filter(({ key }) => {
+    return selectedAssessmentTypesArray.includes(
+      key.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
+    )
+  })
+}
 
-  return _availableTestTypes.filter(({ key }) =>
-    selectedAssessmentTypesArray.includes(key)
+export const getPerformanceBandList = (
+  internalBands,
+  externalBands,
+  selectedTestType = '',
+  testTypes
+) => {
+  const isInternalTest =
+    isEmpty(selectedTestType) ||
+    availableTestTypes.map(({ key }) => key).includes(selectedTestType)
+  if (isInternalTest) {
+    return internalBands.map(({ _id, name, performanceBand }) => ({
+      key: _id,
+      title: name,
+      performanceBand,
+    }))
+  }
+  const [testCategory, testTitle] = selectedTestType.split(
+    EXTERNAL_TEST_KEY_SEPARATOR
   )
+  const externalBand = externalBands.find(
+    ({ testTitle: _testTitle, testCategory: _testCategory }) => {
+      const isTestTitleFound = !testTitle || testTitle === _testTitle
+      const isTestCategoryFound = testCategory === _testCategory
+      return isTestCategoryFound && isTestTitleFound
+    }
+  )
+  return testTypes
+    .filter(({ key }) => key === selectedTestType)
+    .map(({ key, title }) => ({
+      key,
+      title,
+      performanceBand: externalBand.bands,
+    }))
+}
+
+export function buildAcademicSummaryFilters(
+  search,
+  academicSummaryFilters,
+  availableAcademicTestTypes,
+  internalBands,
+  externalBands
+) {
+  const { TEST_TYPE } = academicSummaryFiltersTypes
+  const { assessmentTypes } = search
+  const filteredTestTypes = getFilteredAcademicSummaryTestTypes(
+    assessmentTypes,
+    availableAcademicTestTypes
+  )
+  const testType = filteredTestTypes.find(
+    ({ key }) => key === academicSummaryFilters[TEST_TYPE]?.key
+  )
+    ? academicSummaryFilters[TEST_TYPE]
+    : filteredTestTypes[0]
+  const performanceBandList = getPerformanceBandList(
+    internalBands,
+    externalBands,
+    testType.key,
+    filteredTestTypes
+  )
+  const selectedperformanceBandId =
+    search.profileId ||
+    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+  const performanceBand =
+    performanceBandList.find((p) => p.key === selectedperformanceBandId) ||
+    performanceBandList[0]
+  return { performanceBand, testType }
+}
+
+export const getAvailableAcademicTestTypesWithBands = (
+  internalBands,
+  externalBands
+) => {
+  const internalTestTypesWithBands = availableTestTypes.map((t) => {
+    const [firstInternalBand] = internalBands || []
+    const { performanceBand: bands = [] } = firstInternalBand || {}
+    return { ...t, bands }
+  })
+  const externalTestTypesWithBands = externalBands.map(
+    ({ testCategory, testTitle, bands }) => {
+      const _testTitle =
+        testCategory === EXTERNAL_TEST_TYPES.CAASPP && testTitle
+          ? `- ${testTitle}`
+          : ''
+      return {
+        key: `${testCategory}${EXTERNAL_TEST_KEY_SEPARATOR}${testTitle || ''}`,
+        title: `${testCategory} ${_testTitle}`,
+        bands,
+      }
+    }
+  )
+  return [...internalTestTypesWithBands, ...externalTestTypesWithBands]
 }

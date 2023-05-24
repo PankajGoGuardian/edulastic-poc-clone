@@ -7,13 +7,19 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
-import { maxBy, sumBy, uniqBy, debounce } from 'lodash'
-import { notification } from '@edulastic/common'
+import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
+import { EduIf, notification } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { v4 } from 'uuid'
-import { CustomStyleBtn } from '../../../assessment/styled/ButtonStyles'
+import { sanitizeForReview } from '@edulastic/common/src/helpers'
+import { tagsApi } from '@edulastic/api'
+import {
+  CustomStyleBtn,
+  CustomStyleBtn2,
+} from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
 import { setItemLevelScoreFromRubricAction } from '../../ItemDetail/ducks'
 import {
@@ -23,9 +29,11 @@ import {
 } from '../../sharedDucks/questions'
 import {
   addRubricToRecentlyUsedAction,
+  autoGenerateRubricAction,
   deleteRubricAction,
   getCurrentRubricDataSelector,
   getRecentlyUsedRubricsSelector,
+  getRubricGenerationInProgress,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
@@ -33,6 +41,10 @@ import {
   searchRubricsRequestAction,
   updateRubricAction,
   updateRubricDataAction,
+  setRemoveAiTagAction,
+  getRubricUUIDsSelector,
+  setRubricGenerationStimulusAction,
+  getPreviousRubricGeneratedStimulusSelector,
 } from '../ducks'
 import {
   ActionBarContainer,
@@ -49,6 +61,11 @@ import PreviewRubricModal from './common/PreviewRubricModal'
 import ShareModal from './common/ShareModal'
 import CreateNew from './CreateNew'
 import RubricTable from './RubricTable'
+import {
+  getQuestionDataSelector,
+  setQuestionDataAction,
+} from '../../QuestionEditor/ducks'
+import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
 
 const UseExisting = ({
   updateRubricData,
@@ -70,6 +87,18 @@ const UseExisting = ({
   recentlyUsedRubrics,
   addRubricToRecentlyUsed,
   setItemLevelScoring,
+  autoGenerateRubric,
+  isRubricGenerationInProgress,
+  t,
+  questionData,
+  allTagsData,
+  setQuestionData,
+  removeAiTag,
+  addNewTag,
+  premium,
+  rubricUUIDs,
+  setRubricGenerationStimulus,
+  previousRubricGeneratedStimulus,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -81,10 +110,39 @@ const UseExisting = ({
   )
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [aIAssisted, setAIAssisted] = useState(false)
+  const aiTagName = 'AI assisted Rubrics'
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
   }, [currentRubricData?.status])
+
+  const addTag = async () => {
+    const questionTags = questionData.tags || []
+    let aiTag = allTagsData.find((tag) => tag.tagName === aiTagName)
+    if (!aiTag) {
+      const { _id, tagName } = await tagsApi.create({
+        tagName: aiTagName,
+        tagType: 'testitem',
+      })
+      aiTag = { _id, tagName }
+      addNewTag({ tag: aiTag, tagType: 'testitem' })
+    }
+    const tags = [...questionTags, aiTag]
+    setQuestionData({ ...questionData, tags })
+  }
+
+  const removeTag = async () => {
+    const questionTags = questionData.tags || []
+    const aiTag = questionTags.filter((tag) => tag.tagName !== aiTagName)
+    setQuestionData({ ...questionData, tags: aiTag })
+  }
+
+  useEffect(() => {
+    if (removeAiTag) {
+      removeTag()
+    }
+  }, [removeAiTag])
 
   useEffect(() => {
     if (actionType === 'VIEW RUBRIC') setCurrentMode('PREVIEW')
@@ -99,6 +157,20 @@ const UseExisting = ({
     [currentRubricData?.criteria]
   )
 
+  const rubricAlreadyGeneratedOrNotMsg =
+    previousRubricGeneratedStimulus === currentQuestion?.stimulus
+      ? t('rubric.rubricAlreadyGenerated')
+      : ''
+
+  const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
+    ? t('rubric.stimulusNotPresent')
+    : rubricAlreadyGeneratedOrNotMsg
+
+  const disableAutoGenerateRubricBtn = [
+    isEmpty(currentQuestion?.stimulus),
+    previousRubricGeneratedStimulus === currentQuestion?.stimulus,
+  ].some((o) => !!o)
+
   const handlePaginationChange = (page) => {
     setCurrentPage(page)
     searchRubricsRequest({
@@ -107,6 +179,15 @@ const UseExisting = ({
       searchString: searchQuery,
     })
     setCurrentMode('RUBRIC_TABLE')
+  }
+
+  const generateRubricByOpenAI = () => {
+    const stimulus = sanitizeForReview(currentQuestion?.stimulus)
+    if (stimulus) {
+      autoGenerateRubric({ stimulus })
+      setRubricGenerationStimulus(stimulus)
+      setAIAssisted(true)
+    }
   }
 
   const validateRubric = () => {
@@ -174,7 +255,7 @@ const UseExisting = ({
     return isValid
   }
 
-  const handleSaveRubric = (type) => {
+  const handleSaveRubric = async (type) => {
     const isValid = validateRubric()
     const { __v, updatedAt, modifiedBy, ...data } = currentRubricData
 
@@ -188,6 +269,7 @@ const UseExisting = ({
           rubricData: {
             ...data,
             status: type,
+            aIAssisted,
           },
           maxScore,
         })
@@ -196,26 +278,51 @@ const UseExisting = ({
         //     metadata: { _id: currentRubricData._id, name: currentRubricData.name },
         //     maxScore
         //   });
-      } else
+      } else {
         saveRubric({
           rubricData: {
             ...currentRubricData,
             status: type,
+            aIAssisted,
           },
           maxScore,
         })
-
+      }
+      // check ai criteria or rating exists in rubric
+      let isAnyUUIDExists = false
+      if (rubricUUIDs.length) {
+        const criteriaUUIDs = []
+        const ratingUUIDs = []
+        for (const criteria of currentRubricData.criteria) {
+          criteriaUUIDs.push(criteria.id)
+          for (const rating of criteria.ratings) {
+            ratingUUIDs.push(rating.id)
+          }
+        }
+        const matchingCriterias = intersection(rubricUUIDs, criteriaUUIDs)
+        const matchingRatings = intersection(rubricUUIDs, ratingUUIDs)
+        if (matchingCriterias.length || matchingRatings.length) {
+          isAnyUUIDExists = true
+        }
+      }
+      const isRubricAIAssisted = aIAssisted && isAnyUUIDExists
+      if (isRubricAIAssisted) {
+        await addTag()
+      }
       setCurrentMode('PREVIEW')
     }
   }
 
-  const handleUseRubric = () => {
+  const handleUseRubric = async () => {
     associateRubricWithQuestion({
       metadata: { _id: currentRubricData._id, name: currentRubricData.name },
       maxScore,
     })
     addRubricToRecentlyUsed(currentRubricData)
     setItemLevelScoring(false)
+    if (currentRubricData.aIAssisted) {
+      await addTag()
+    }
   }
 
   const handleEditRubric = () => {
@@ -313,6 +420,7 @@ const UseExisting = ({
 
   const handleRemoveRubric = () => {
     dissociateRubricFromQuestion()
+    removeAiTag(true)
     if (isRegradeFlow) {
       notification({
         msg:
@@ -367,6 +475,20 @@ const UseExisting = ({
             )}
           </div>
           <div>
+            <EduIf
+              condition={[premium, !currentRubricData?._id].every((o) => !!o)}
+            >
+              <CustomStyleBtn2
+                style={btnStyle}
+                onClick={generateRubricByOpenAI}
+                disabled={disableAutoGenerateRubricBtn}
+                ghost={disableAutoGenerateRubricBtn}
+                title={autoGenerateRubricTooltip}
+                loading={isRubricGenerationInProgress}
+              >
+                Auto Generate Rubric
+              </CustomStyleBtn2>
+            </EduIf>
             <CustomStyleBtn
               style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}
@@ -527,6 +649,7 @@ const UseExisting = ({
 
 const enhance = compose(
   Form.create(),
+  withNamespaces('author'),
   connect(
     (state) => ({
       currentRubricData: getCurrentRubricDataSelector(state),
@@ -536,10 +659,19 @@ const enhance = compose(
       totalSearchedCount: getTotalSearchedCountSelector(state),
       currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
+      isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+      questionData: getQuestionDataSelector(state),
+      allTagsData: getAllTagsSelector(state, 'testitem'),
+      premium: state?.user?.user?.features?.premium,
+      rubricUUIDs: getRubricUUIDsSelector(state),
+      previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
+        state
+      ),
     }),
     {
       updateRubricData: updateRubricDataAction,
       saveRubric: saveRubricAction,
+      autoGenerateRubric: autoGenerateRubricAction,
       updateRubric: updateRubricAction,
       searchRubricsRequest: searchRubricsRequestAction,
       associateRubricWithQuestion: setRubricIdAction,
@@ -547,6 +679,10 @@ const enhance = compose(
       deleteRubric: deleteRubricAction,
       addRubricToRecentlyUsed: addRubricToRecentlyUsedAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
+      setQuestionData: setQuestionDataAction,
+      addNewTag: addNewTagAction,
+      removeAiTag: setRemoveAiTagAction,
+      setRubricGenerationStimulus: setRubricGenerationStimulusAction,
     }
   )
 )

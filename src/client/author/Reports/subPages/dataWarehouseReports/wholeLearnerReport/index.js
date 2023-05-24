@@ -75,6 +75,7 @@ const WholeLearnerReport = ({
   filtersData,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportData,
@@ -367,7 +368,7 @@ const WholeLearnerReport = ({
           student={student}
           filters={filters}
           filterTagsData={filterTagsData}
-          selectedFilterTagsData={settings.selectedFilterTagsData}
+          selectedFilterTagsData={selectedFilterTagsData}
           // action props (others)
           setShowApply={setShowApply}
           showFilter={showFilter}

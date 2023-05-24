@@ -1,9 +1,10 @@
 import {
   greyThemeLighter,
-  lightGrey8,
   darkGrey5,
   lightGrey17,
   green,
+  dashBorderColor,
+  dashBorderColor1,
 } from '@edulastic/colors'
 import { Divider } from 'antd'
 import styled from 'styled-components'
@@ -18,21 +19,25 @@ export const TableContainer = styled.div`
   border-radius: 25px;
 `
 export const CustomStyledCell = styled.div`
-  padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${(p) => p.width || '90px'};
+  aspect-ratio: 8 / 3;
   color: black;
-  font-size: 12px;
+  font-size: ${(p) => p.fontSize || '13px'};
   font-weight: 800;
-  box-shadow: 0px 10px 11px #0000000f;
+  box-shadow: ${(p) => (p.showBoxShadow ? '0px 10px 11px #0000000f' : '')};
   background-color: ${(p) => p.color};
 `
 export const StyledEarlyWarningTable = styled(CustomStyledTable)`
   .ant-table-bordered .ant-table-tbody > tr > td {
-    border-right: 1px dashed ${lightGrey8};
+    border-right: 1px dashed ${dashBorderColor1};
     font-size: 15px;
   }
   .ant-table-bordered .ant-table-thead > tr > th {
-    border-right: 1px dashed ${lightGrey8};
+    border-right: 1px dashed ${dashBorderColor1};
   }
   .ant-table-thead {
     .risk {
@@ -71,6 +76,30 @@ export const StyledEarlyWarningTable = styled(CustomStyledTable)`
     }
   }
 `
+export const StyledStudentTable = styled(StyledEarlyWarningTable)`
+  .ant-table-scroll .ant-table-thead {
+    th {
+      background-color: ${dashBorderColor};
+    }
+    .nested {
+      border-bottom: 1px solid ${dashBorderColor1};
+      padding: 15px;
+    }
+    .risk-name {
+      padding-inline: 10px;
+    }
+  }
+  .ant-table-scroll .ant-table-tbody {
+    .risk-name {
+      padding-inline: 60px;
+    }
+  }
+  .ant-table-fixed-left .ant-table-thead {
+    th {
+      background-color: ${dashBorderColor};
+    }
+  }
+`
 
 export const StyledDivider = styled(Divider)`
   height: 100%;
@@ -97,4 +126,8 @@ export const TimeframeText = styled.span`
   font-size: 0.8rem;
   font-weight: bold;
   color: ${({ checked }) => (checked ? green : darkGrey5)};
+`
+export const ColoredText = styled.div`
+  font-weight: bold;
+  color: ${(p) => p.color};
 `

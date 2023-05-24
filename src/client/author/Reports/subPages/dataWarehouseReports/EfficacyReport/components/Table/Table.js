@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Typography } from 'antd'
+import { Col, Typography } from 'antd'
 import { darkGrey } from '@edulastic/colors'
 
 import { notification } from '@edulastic/common'
@@ -14,21 +14,24 @@ import {
 } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { getTableColumns, onCsvConvert } from './utils'
 import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
-import { TABLE_PAGE_SIZE, analyseByOptions } from '../../utils'
+import { analyseByOptions } from '../../utils'
 import FeaturesSwitch from '../../../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../../../common/components/Popups/AddToGroupModal'
 import useTableMetrics from '../../hooks/useTableMetrics'
 import { addStudentToGroupFeatureEnabled } from '../../../../multipleAssessmentReport/PreVsPost/utils'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 
 const EfficacyTable = ({
   reportTableData,
   testInfo,
   prePerformanceBand,
   postPerformanceBand,
-  tableFilters,
   compareByOptions,
-  selectedTableFilters,
+  tableFilters,
   setTableFilters,
+  getTableDrillDownUrl,
+  pageFilters,
+  setPageFilters,
   isCsvDownloading,
   isSharedReport = false,
   hasIncompleteTests,
@@ -39,6 +42,7 @@ const EfficacyTable = ({
 
   const [
     tableData = [],
+    rowsCount = 0,
     rowSelection = [],
     checkedStudentsForModal = [],
   ] = useTableMetrics({
@@ -63,7 +67,7 @@ const EfficacyTable = ({
   }
 
   const _rowSelection = addStudentToGroupFeatureEnabled(
-    selectedTableFilters.compareBy.key,
+    tableFilters.compareBy.key,
     isSharedReport
   )
     ? rowSelection
@@ -71,9 +75,9 @@ const EfficacyTable = ({
 
   // get table columns
   const tableColumns = getTableColumns(
-    selectedTableFilters.compareBy,
-    selectedTableFilters.analyseBy.key,
-    testInfo
+    testInfo,
+    tableFilters,
+    getTableDrillDownUrl
   )
 
   return (
@@ -91,15 +95,15 @@ const EfficacyTable = ({
       </FeaturesSwitch>
       <StyledRow type="flex" justify="space-between" margin="20px">
         <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
-          Performance Change By {selectedTableFilters.compareBy.title}
+          Performance Change By {tableFilters.compareBy.title}
         </Typography.Title>
         <DashedLine margin="15px 24px" dashColor={darkGrey} />
         <TableFilters
+          tableFilters={tableFilters}
           setTableFilters={setTableFilters}
           compareByOptions={compareByOptions}
           analyseByOptions={analyseByOptions}
           handleAddToGroupClick={handleAddToGroupClick}
-          selectedTableFilters={selectedTableFilters}
           isSharedReport={isSharedReport}
         />
       </StyledRow>
@@ -108,14 +112,30 @@ const EfficacyTable = ({
         columns={tableColumns}
         rowSelection={_rowSelection}
         tableToRender={StyledTable}
-        pagination={{ hideOnSinglePage: true, pageSize: TABLE_PAGE_SIZE }}
+        pagination={false}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
         cellFontWeight={500}
+        onChange={(_, __, column) => {
+          setTableFilters({
+            ...tableFilters,
+            sortKey: column.columnKey,
+            sortOrder: column.order,
+          })
+        }}
       />
       <StyledRow type="flex" align="middle">
-        <IncompleteTestsMessage hasIncompleteTests={hasIncompleteTests} />
+        <Col span={14}>
+          <IncompleteTestsMessage hasIncompleteTests={hasIncompleteTests} />
+        </Col>
+        <Col span={10}>
+          <BackendPagination
+            itemsCount={rowsCount}
+            backendPagination={pageFilters}
+            setBackendPagination={setPageFilters}
+          />
+        </Col>
       </StyledRow>
     </StyledCard>
   )

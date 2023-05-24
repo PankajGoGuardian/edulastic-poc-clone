@@ -218,6 +218,10 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     ? test.showRubricToStudents
     : assignmentSettings.showRubricToStudents
 
+  const allowAutoEssayEvaluation = isTestPreview
+    ? test.allowAutoEssayEvaluation
+    : assignmentSettings.allowAutoEssayEvaluation
+
   const referenceDocAttributes = isTestPreview
     ? test.referenceDocAttributes
     : assignmentSettings.referenceDocAttributes
@@ -252,6 +256,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     enableScratchpad,
     enableSkipAlert,
     showRubricToStudents,
+    allowAutoEssayEvaluation,
     allowTeacherRedirect,
     calcTypes: calcTypes || DEFAULT_CALC_TYPES,
     maxAnswerChecks: maxAnswerChecks || 0,
@@ -412,7 +417,7 @@ function* loadTest({ payload }) {
     const isPublicUrl = window.location.href.includes(PUBLIC_URL_IDENTIFIER)
     const canLoadTestSettingWhilePreviewing = [
       preview,
-      userRole !== roleuser.STUDENT,
+      ![roleuser.STUDENT, roleuser.EDULASTIC_CURATOR].includes(userRole),
       !isPublicUrl,
       userAuthenticated,
     ].every((o) => !!o)

@@ -1,9 +1,13 @@
 import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
 import { ticks } from 'd3-array'
+import { isEmpty } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
+
+const { analyseByOptions } = reportUtils.peerPerformance
 
 export const SimpleStackedBarChartContainer = ({
   data,
@@ -14,18 +18,16 @@ export const SimpleStackedBarChartContainer = ({
   onResetClickCB,
   assessmentName,
   role,
+  chartProps,
 }) => {
   const dataParser = () => {
     for (const item of data) {
-      if (
-        filter[item[compareBy === 'group' ? 'groupId' : compareBy]] ||
-        Object.keys(filter).length === 0
-      ) {
-        if (analyseBy === 'score(%)') {
-          item.fill = getHSLFromRange1(item.avgStudentScorePercent)
-        } else if (analyseBy === 'rawScore') {
+      if (filter[item?.dimension?._id] || Object.keys(filter).length === 0) {
+        if (analyseBy === analyseByOptions.scorePerc) {
+          item.fill = getHSLFromRange1(item.dimensionAvg)
+        } else if (analyseBy === analyseByOptions.rawScore) {
           item.fill = getHSLFromRange1(
-            (item.avgStudentScore / item.maxScore) * 100
+            (100 * item.dimensionAvg) / item.maxScore
           )
         }
       } else {
@@ -36,8 +38,13 @@ export const SimpleStackedBarChartContainer = ({
   }
 
   const getTooltipJSX = (payload) => {
-    if (payload && payload.length) {
-      const { districtAvg, compareBy, compareBylabel } = payload[0].payload
+    if (!isEmpty(payload)) {
+      const { districtAvg, dimension } = payload[0].payload
+      const districtValue =
+        analyseBy === analyseByOptions.scorePerc
+          ? `${districtAvg.toFixed(0)}%`
+          : districtAvg.toFixed(2)
+
       return (
         <div>
           <Row className="tooltip-row" type="flex" justify="start">
@@ -46,13 +53,11 @@ export const SimpleStackedBarChartContainer = ({
           </Row>
           <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{`${idToName(compareBy)}: `}</Col>
-            <Col className="tooltip-value">{compareBylabel}</Col>
+            <Col className="tooltip-value">{dimension.name}</Col>
           </Row>
           <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'District Average: '}</Col>
-            <Col className="tooltip-value">
-              {analyseBy === 'score(%)' ? `${districtAvg}%` : districtAvg}
-            </Col>
+            <Col className="tooltip-value">{districtValue}</Col>
           </Row>
         </div>
       )
@@ -62,10 +67,8 @@ export const SimpleStackedBarChartContainer = ({
 
   const getXTickText = (payload, items) => {
     for (const item of items) {
-      if (
-        item[compareBy === 'group' ? 'groupId' : compareBy] === payload.value
-      ) {
-        return item.compareBylabel
+      if (item.dimension._id === payload.value) {
+        return item.dimension.name
       }
     }
     return ''
@@ -86,7 +89,7 @@ export const SimpleStackedBarChartContainer = ({
     if (chartData.length) {
       referenceLineY = chartData[0].districtAvg
     }
-    if (analyseBy === 'score(%)') {
+    if (analyseBy === analyseByOptions.scorePerc) {
       let yAxisLabel = 'Avg. Score %'
       if (role === 'teacher') {
         yAxisLabel = 'Avg. Class Performance %'
@@ -99,7 +102,7 @@ export const SimpleStackedBarChartContainer = ({
         referenceLineY,
       }
     }
-    if (analyseBy === 'rawScore') {
+    if (analyseBy === analyseByOptions.rawScore) {
       const maxScore = chartData.length ? chartData[0].maxScore : 50
       const arr = ticks(0, maxScore, 10)
       const max = arr[arr.length - 1]
@@ -123,7 +126,7 @@ export const SimpleStackedBarChartContainer = ({
       ticks={chartSpecifics.ticks}
       yTickFormatter={chartSpecifics.formatter}
       barsLabelFormatter={chartSpecifics.formatter}
-      xAxisDataKey={compareBy === 'group' ? 'groupId' : compareBy}
+      xAxisDataKey="dimensionId"
       bottomStackDataKey="correct"
       topStackDataKey="incorrect"
       getTooltipJSX={getTooltipJSX}
@@ -135,6 +138,7 @@ export const SimpleStackedBarChartContainer = ({
       filter={filter}
       referenceLineY={chartSpecifics.referenceLineY}
       pageSize={10}
+      {...chartProps}
     />
   )
 }

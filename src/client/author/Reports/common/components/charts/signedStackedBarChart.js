@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -90,6 +90,13 @@ export const SignedStackedBarChart = ({
   legendPayload,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  carousel,
+  setPageNo,
+  pageNo,
+  tablePageSize,
+  totalRows,
+  chartBackNavigation,
+  setChartBackNavigation,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -133,6 +140,15 @@ export const SignedStackedBarChart = ({
     [pagination, data]
   )
 
+  useEffect(() => {
+    if (carousel && chartBackNavigation) {
+      setChartBackNavigation(false)
+      const startIndex = chartData.length - pageSize
+      const endIndex = chartData.length - 1
+      setPagination({ startIndex, endIndex })
+    }
+  }, [])
+
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {
@@ -145,6 +161,9 @@ export const SignedStackedBarChart = ({
         startIndex: pagination.startIndex - diff,
         endIndex: pagination.endIndex - diff,
       })
+    } else if (carousel && pageNo > 1) {
+      setChartBackNavigation(true)
+      setPageNo((_pageNo) => --_pageNo)
     }
   }
 
@@ -160,6 +179,8 @@ export const SignedStackedBarChart = ({
         startIndex: pagination.startIndex + diff,
         endIndex: pagination.endIndex + diff,
       })
+    } else if (carousel && totalRows > tablePageSize * pageNo) {
+      setPageNo((_pageNo) => ++_pageNo)
     }
   }
 
@@ -230,6 +251,7 @@ export const SignedStackedBarChart = ({
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
     : !(chartData.length <= pagination.endIndex + 1)
+
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
@@ -265,7 +287,10 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-left"
         onClick={chartNavLeftClick}
         style={{
-          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavLeftVisibility || (carousel && pageNo > 1)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -276,7 +301,11 @@ export const SignedStackedBarChart = ({
         className="navigator navigator-right"
         onClick={chartNavRightClick}
         style={{
-          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+          visibility:
+            chartNavRightVisibility ||
+            (carousel && totalRows > tablePageSize * pageNo)
+              ? 'visible'
+              : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer

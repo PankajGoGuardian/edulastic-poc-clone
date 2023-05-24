@@ -8,4 +8,8 @@ const SMART_FILTERS = {
   FOLDERS: 'FOLDERS',
 }
 
-module.exports = { SMART_FILTERS }
+const FILTER_KEYS = {
+  STANDARD_IDS: 'standardIds',
+}
+
+module.exports = { SMART_FILTERS, FILTER_KEYS }

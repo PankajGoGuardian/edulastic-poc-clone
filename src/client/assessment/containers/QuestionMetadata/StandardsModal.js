@@ -106,6 +106,7 @@ const StandardsModal = ({
     }
     grades = grades || []
 
+
     const formattedCurriculums = getFormattedCurriculums(
       interestedCurriculums,
       curriculums,
@@ -122,7 +123,6 @@ const StandardsModal = ({
         curriculum: firstCurriculum?.text,
       }
     }
-
     const isGradesChanged = !isEqual(grades, state.grades)
     const isStandardChanged = !isEqual(standard, state.standard)
 

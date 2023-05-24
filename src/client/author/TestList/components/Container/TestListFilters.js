@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { get, keyBy } from 'lodash'
+import { get, isEqual, keyBy } from 'lodash'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -34,6 +34,9 @@ import {
 import { removeTestFromCartAction } from '../../ducks'
 import filterData from './FilterData'
 import FiltersSidebar from './FiltersSidebar'
+import { getDictStandardsForCurriculumAction } from '../../../src/actions/dictionaries'
+
+const { FILTER_KEYS } = libraryFilters
 
 const filtersTitle = ['Grades', 'Subject', 'Status']
 const TestListFilters = ({
@@ -57,8 +60,14 @@ const TestListFilters = ({
   isDistrictUser,
   isSingaporeMath,
   elosByTloId,
+  getCurriculumStandards,
 }) => {
   const [showModal, setShowModal] = useState(false)
+  const [searchProps, setSearchProps] = useState({
+    id: '',
+    grades: [],
+    searchStr: '',
+  })
   const [filteredCollections, setFilteredCollections] = useState(collections)
   const isPublishers = !!(
     userFeatures.isPublisherAuthor || userFeatures.isCurator
@@ -167,9 +176,14 @@ const TestListFilters = ({
       text: item.identifier,
     }))
 
-    const isStandardsDisabled =
-      !(curriculumStandards.elo && curriculumStandards.elo.length > 0) ||
-      !curriculumId
+    const handleSearchStandard = (searchStr = '') => {
+      const { grades = [], curriculumId: selectedCurriculumId } = search || {}
+      const searchObject = { id: selectedCurriculumId, grades, searchStr }
+      if (!isEqual(searchProps, searchObject)) {
+        setSearchProps(searchObject)
+        getCurriculumStandards(selectedCurriculumId, grades, searchStr)
+      }
+    }
     const showStatusFilter =
       ((userFeatures.isPublisherAuthor || isOrgUser || isDistrictUser) &&
         filter !== filterMenuItems[0].filter) ||
@@ -204,16 +218,13 @@ const TestListFilters = ({
           mode: 'multiple',
           placeholder: 'All Standards',
           title: 'Standards',
-          disabled: isStandardsDisabled,
-          onChange: 'standardIds',
+          disabled: !curriculumId,
+          onChange: FILTER_KEYS.STANDARD_IDS,
           optionFilterProp: 'children',
           data: formattedStandards,
-          filterOption: (input, option) => {
-            const children = option.props.children
-            if (typeof children === 'string') {
-              return children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          },
+          filterOption: false,
+          onSearch: handleSearchStandard,
+          onFocus: handleSearchStandard,
           showSearch: true,
           isStandardSelect: true,
           handleShowBrowseModal: () => {
@@ -281,11 +292,11 @@ const TestListFilters = ({
       _id: item,
       identifier: _elosById[item].identifier,
     }))
-    onChange('standardIds', values)
+    onChange(FILTER_KEYS.STANDARD_IDS, values)
   }
 
   const handleSetShowModal = () => {
-    if (!search.curriculumId || !curriculumStandards.elo.length) return
+    if (!search.curriculumId) return
     setShowModal(true)
   }
 
@@ -375,7 +386,7 @@ const TestListFilters = ({
                 <FiltersSidebar
                   filterItem={filterItem}
                   onChange={(key, value) => {
-                    if (key === 'standardIds') {
+                    if (key === FILTER_KEYS.STANDARD_IDS) {
                       const _elosById = keyBy(
                         [...curriculumStandards.elo, ...search.standardIds],
                         '_id'
@@ -431,6 +442,7 @@ export default connect(
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,
     removeTestFromCart: removeTestFromCartAction,
+    getCurriculumStandards: getDictStandardsForCurriculumAction,
   }
 )(TestListFilters)
 

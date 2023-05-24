@@ -22,6 +22,7 @@ import {
   pick,
   isArray,
   uniqBy,
+  isEqual,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef } from 'react'
@@ -86,6 +87,11 @@ class SubjectGrade extends React.Component {
       standards: (interestedCurriculums || []).map((x) => x._id),
       curriculumStandard: [],
       showStandardsModal: false,
+      searchProps: {
+        id: '',
+        grades: [],
+        searchStr: '',
+      },
     }
   }
 
@@ -163,9 +169,7 @@ class SubjectGrade extends React.Component {
     }
   }
 
-  updateSubjects = (e) => {
-    this.setState({ subjects: e })
-
+  getSelectedCurriculumIds = (subject) => {
     const { curriculums, userInfo, form } = this.props
     let { interestedCurriculums } = this.props
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
@@ -173,12 +177,12 @@ class SubjectGrade extends React.Component {
       (x) => x.orgType === userInfo?.role
     )
 
-    const formattedCurriculums = isEmpty(e)
+    const formattedCurriculums = isEmpty(subject)
       ? []
       : getFormattedCurriculums(
           interestedCurriculums,
           curriculums,
-          { subject: e },
+          { subject },
           showAllStandards
         )
     const standardSets = form.getFieldValue('standard') || []
@@ -189,6 +193,12 @@ class SubjectGrade extends React.Component {
       ?.filter((x) => standardSets.includes(x.value))
       ?.map((x) => x.value)
 
+    return selectedCurriculumIds
+  }
+
+  updateSubjects = (e) => {
+    this.setState({ subjects: e })
+    const selectedCurriculumIds = this.getSelectedCurriculumIds(e)
     this.handleCuriculumChange(selectedCurriculumIds)
   }
 
@@ -223,6 +233,7 @@ class SubjectGrade extends React.Component {
           onSuccessCallback,
           schoolSelectedFromDropdown = false,
           setIsCompleteSignupInProgress,
+          elosByTloId,
         } = this.props
 
         const { email, firstName, middleName, lastName } = userInfo
@@ -283,10 +294,10 @@ class SubjectGrade extends React.Component {
         map(
           values.curriculumStandards.map((item) => item._id),
           (id) => {
-            const standard = find(
-              curriculumStandards.elo || [],
-              (x) => x._id === id
-            )
+            const { elo: dropDownElos } = curriculumStandards || {}
+            const cachedElos = Object.values(elosByTloId).flat()
+            const allElos = uniqBy([...dropDownElos, ...cachedElos], '_id')
+            const standard = find(allElos || [], (x) => x._id === id) || {}
             data.curriculumStandards[standard.curriculumId] = (
               data.curriculumStandards[standard.curriculumId] || []
             ).concat(id)
@@ -302,12 +313,8 @@ class SubjectGrade extends React.Component {
   }
 
   handleSetShowModal = () => {
-    const { form, curriculumStandards } = this.props
-    if (
-      !(form.getFieldValue('standard') || []).length ||
-      !curriculumStandards.elo.length
-    )
-      return
+    const { form } = this.props
+    if (!(form.getFieldValue('standard') || []).length) return
     this.setState({ showStandardsModal: true })
   }
 
@@ -339,9 +346,11 @@ class SubjectGrade extends React.Component {
     })
     const dropDownElos = curriculumStandards.elo
     const cachedElos = Object.values(elosByTloId).flat()
-    const selectedCurriculamStandardIds = form
-      .getFieldValue('curriculumStandards')
-      .map((item) => item._id)
+    const selectedStandards = form.getFieldValue('curriculumStandards')
+    const selectedCurriculamStandardIds = (isArray(selectedStandards)
+      ? selectedStandards
+      : []
+    ).map((item) => item._id)
     const standardIds = uniqBy([...dropDownElos, ...cachedElos] || [], '_id')
       .filter(
         (s) =>
@@ -353,6 +362,22 @@ class SubjectGrade extends React.Component {
     this.handleStandardsChange(standardIds)
     const grades = form.getFieldValue('grade')
     getDictStandardsForCurriculum(curriculumIds, grades, '')
+  }
+
+  handleSearchStandard = (searchStr = '') => {
+    const { grades, subjects } = this.state
+    const selectedCurriculumIds = this.getSelectedCurriculumIds(subjects)
+    const searchObject = {
+      id: selectedCurriculumIds,
+      grades,
+      searchStr,
+    }
+    const { getDictStandardsForCurriculum } = this.props
+    const { searchProps } = this.state
+    if (!isEqual(searchProps, searchObject)) {
+      this.setState({ searchProps: searchObject })
+      getDictStandardsForCurriculum(selectedCurriculumIds, grades, searchStr)
+    }
   }
 
   render() {
@@ -601,7 +626,9 @@ class SubjectGrade extends React.Component {
                               : []
                           }
                           optionFilterProp="children"
-                          filterOption
+                          filterOption={false}
+                          onSearch={this.handleSearchStandard}
+                          onFocus={this.handleSearchStandard}
                           size="large"
                           placeholder="Select topic / standard"
                           mode="multiple"
@@ -663,7 +690,11 @@ class SubjectGrade extends React.Component {
             handleApply={this.handleStandardsChange}
             selectedCurriculam={selectedCurriculam}
             grades={grades}
-            standardIds={selectedStandards.map((item) => item._id)}
+            standardIds={
+              isArray(selectedStandards)
+                ? selectedStandards.map((item) => item._id)
+                : []
+            }
             standards={selectedStandards}
           />
         )}

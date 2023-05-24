@@ -4,10 +4,13 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { dictionaries } from '@edulastic/constants'
+import { dictionaries, libraryFilters } from '@edulastic/constants'
 import TagField from '../../../ItemList/components/Fields/TagField'
 import { getUserFeatures } from '../../../src/selectors/user'
 import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
+
+const { FILTER_KEYS } = libraryFilters
+
 
 const FiltersSidebar = ({
   filterItem,
@@ -42,7 +45,7 @@ const FiltersSidebar = ({
   }
 
   const showMoreButtonEnabled =
-    filterItem.onChange === 'standardIds' &&
+    filterItem.onChange === FILTER_KEYS.STANDARD_IDS &&
     filterItem?.data?.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
 
   return (
@@ -52,6 +55,7 @@ const FiltersSidebar = ({
         data-cy={filterItem.title}
         showSearch={filterItem.showSearch}
         onSearch={filterItem.onSearch && filterItem.onSearch}
+        onFocus={filterItem.onFocus}
         mode={filterItem.mode}
         size={filterItem.size}
         placeholder={filterItem.placeholder}
@@ -63,7 +67,7 @@ const FiltersSidebar = ({
             : filterItem.data[0] && filterItem.data[0].value
         }
         value={
-          filterItem.onChange === 'standardIds'
+          filterItem.onChange === FILTER_KEYS.STANDARD_IDS
             ? search[filterItem.onChange].map((item) => item._id)
             : search[filterItem.onChange]
         }

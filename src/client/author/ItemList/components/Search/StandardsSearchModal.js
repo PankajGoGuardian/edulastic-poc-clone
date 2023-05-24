@@ -92,9 +92,11 @@ const StandardsSearchModal = ({
   const currentEloIds = curriculumStandardsELO.map((item) => item._id) || []
   const numberOfSelected =
     standardIds.filter((std) => currentEloIds.includes(std))?.length || 0
+  const atleastOneEloLoaded = !loading && curriculumStandardsELO.length > 0
   const isSelectAll =
-    !loading && numberOfSelected === curriculumStandardsELO.length
-  const isIndeterminate = !loading && numberOfSelected > 0 && !isSelectAll
+    atleastOneEloLoaded && numberOfSelected === curriculumStandardsELO.length
+  const isIndeterminate =
+    atleastOneEloLoaded && numberOfSelected > 0 && !isSelectAll
 
   const handleCheckELO = (c) => {
     let _standards = []
@@ -193,7 +195,7 @@ const StandardsSearchModal = ({
       <Row type="flex" gutter={24}>
         <Col md={8} />
         <Col md={16} style={{ paddingLeft: '28px' }}>
-          <EduIf condition={!loading}>
+          <EduIf condition={atleastOneEloLoaded}>
             <FlexContainer
               alignItems="flex-start"
               justifyContent="flex-start"

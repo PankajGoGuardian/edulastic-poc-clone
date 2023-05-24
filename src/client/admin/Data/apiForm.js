@@ -1093,4 +1093,11 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'refresh-data-studio-materialized-view',
+    name: 'Refresh Data Studio Materialized View',
+    endPoint: '/admin-tool/refresh-ds-materialized-view',
+    method: 'post',
+    fields: [],
+  },
 ]

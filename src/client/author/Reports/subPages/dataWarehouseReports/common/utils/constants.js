@@ -15,25 +15,12 @@ export const compareByKeys = {
   HISPANIC_ETHNICITY: 'hispanicEthnicity',
 }
 
-export const compareByFieldKeys = {
-  [compareByKeys.SCHOOL]: 'schoolId',
-  [compareByKeys.TEACHER]: 'teacherId',
-  [compareByKeys.CLASS]: 'groupId',
-  [compareByKeys.GROUP]: 'groupId',
-  [compareByKeys.STUDENT]: 'studentId',
-  [compareByKeys.RACE]: compareByKeys.RACE,
-  [compareByKeys.GENDER]: compareByKeys.GENDER,
-  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
-  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
-  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
-  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
-}
-
 export const compareByOptionsInfo = {
   [compareByKeys.SCHOOL]: { key: 'schoolId', name: 'schoolName' },
   [compareByKeys.TEACHER]: { key: 'teacherId', name: 'teacherName' },
   [compareByKeys.CLASS]: { key: 'groupId', name: 'groupName' },
   [compareByKeys.GROUP]: { key: 'groupId', name: 'groupName' },
+  [compareByKeys.STUDENT]: { key: 'studentId', name: 'studentName' },
   [compareByKeys.RACE]: {
     key: compareByKeys.RACE,
     name: compareByKeys.RACE,
@@ -59,6 +46,13 @@ export const compareByOptionsInfo = {
     name: compareByKeys.HISPANIC_ETHNICITY,
   },
 }
+
+export const compareByFieldKeys = Object.keys(compareByOptionsInfo).reduce(
+  (res, ele) => {
+    return { ...res, [ele]: compareByOptionsInfo[ele].key }
+  },
+  {}
+)
 
 export const compareByKeysToFilterKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',

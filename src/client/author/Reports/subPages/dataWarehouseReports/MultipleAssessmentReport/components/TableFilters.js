@@ -4,19 +4,15 @@ import { Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { StyledH3 } from '../../../../common/styled'
-import { isAddToStudentGroupEnabled } from '../../common/utils'
 import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
 const TableFilters = ({
   updateFilterDropdownCB,
   compareByOptions = [],
   selectedCompareBy,
-  isSharedReport,
+  handleAddToGroupClick,
+  showAddToStudentGroupBtn,
 }) => {
-  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
-    isSharedReport,
-    selectedCompareBy?.key
-  )
   return (
     <Row
       type="flex"
@@ -31,7 +27,7 @@ const TableFilters = ({
       <FlexContainer>
         <StudentGroupBtn
           showAddToStudentGroupBtn={showAddToStudentGroupBtn}
-          handleAddToGroupClick={() => {}}
+          handleAddToGroupClick={handleAddToGroupClick}
         />
         <ControlDropDown
           prefix="Compare By"

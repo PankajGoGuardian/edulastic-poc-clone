@@ -227,19 +227,6 @@ const Search = ({
     }
   }
 
-
-  const standardsNotInDropdown = standardIds.filter(
-    (item) => !dropDownElosById[item._id]
-  )
-  const _curriculumStandards = {
-    ...curriculumStandards,
-    elo: [...curriculumStandards.elo, ...standardsNotInDropdown],
-  }
-
-  const _elosById = keyBy(_curriculumStandards.elo, '_id')
-  const showMoreButtonEnabled =
-    _curriculumStandards.elo?.length >=
-    dictionaries.STANDARD_DROPDOWN_LIMIT_1000
   return (
     <MainFilterItems>
       {showModal && (

@@ -277,6 +277,11 @@ const TableList = ({
           'The test is being updated by another user, please wait for a few minutes and try again.',
       })
     }
+    if (!selectedRows.length) {
+      return notification({
+        msg: 'At least one class should be selected.',
+      })
+    }
     let selectedRowsGroupByAssignment = {}
     if (rowData.length > selectedRows.length) {
       const selectedRowsData = rowData.filter((_, i) =>
@@ -375,7 +380,7 @@ const TableList = ({
       <div>
         <span data-cy="totalSelected">
           {rowData.length > selectedRows.length
-            ? selectedRows.length
+            ? selectedRows.length || 0
             : totalAssignmentsClasses}
         </span>
         <span>Class(es) Selected</span>
@@ -438,7 +443,7 @@ const TableList = ({
 
   return (
     <Container>
-      {selectedRows.length > 0 && renderBulkActions()}
+      {renderBulkActions()}
       <TableData
         columns={columns}
         dataSource={rowData}

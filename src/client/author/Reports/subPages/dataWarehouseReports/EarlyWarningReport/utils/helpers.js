@@ -32,11 +32,6 @@ import {
   CHART_LABEL_KEY,
   RISK_KEYS,
 } from './constants'
-import { compareByKeys } from '../../common/utils'
-import {
-  DW_EARLY_WARNING_REPORT_URL,
-  DW_WLR_REPORT_URL,
-} from '../../../../common/constants/dataWarehouseReports'
 
 const {
   percentage,
@@ -73,19 +68,10 @@ export const getTableColumns = ({
     )
     dimensionColumn.title = compareBy.title
     dimensionColumn.render = (value) => {
-      const reportUrl = isStudentCompareBy
-        ? DW_WLR_REPORT_URL
-        : DW_EARLY_WARNING_REPORT_URL
-      const url = [
-        compareByKeys.SCHOOL,
-        compareByKeys.TEACHER,
-        compareByKeys.CLASS,
-        compareByKeys.STUDENT,
-        compareByKeys.GROUP,
-      ].includes(compareBy.key)
-        ? getTableDrillDownUrl(value._id, reportUrl)
-        : null
-      return <LinkCell value={value} url={url} />
+      const url = getTableDrillDownUrl(value._id)
+      return (
+        <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
+      )
     }
 
     if (isStudentCompareBy) {

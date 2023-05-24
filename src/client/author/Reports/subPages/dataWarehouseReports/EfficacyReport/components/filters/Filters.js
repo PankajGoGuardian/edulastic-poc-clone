@@ -23,8 +23,8 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import {
   commonFilterKeys,
   filterKeysToCompareByKeys,
+  nextCompareByKeys,
 } from '../../../common/utils'
-import { nextCompareByKeys } from '../../../Dashboard/utils'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   (res, ele) => ({ [ele]: ele, ...res }),
@@ -232,6 +232,7 @@ const Filters = ({
       _filters.selectedCompareBy = tableFilters.compareBy.key
     }
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
+    delete _filters.selectedCompareBy
     if (isPageLevelFilter) {
       setFilters({ ..._filters })
       setShowPageLevelApply(true)

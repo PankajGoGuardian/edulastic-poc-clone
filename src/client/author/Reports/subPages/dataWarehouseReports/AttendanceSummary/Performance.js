@@ -2,14 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import { reportUtils } from '@edulastic/constants'
-import {
-  EduElse,
-  EduIf,
-  EduThen,
-  SpinLoader,
-  notification,
-} from '@edulastic/common'
-import { Link } from 'react-router-dom'
+import { EduIf, SpinLoader, notification } from '@edulastic/common'
 import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledCard } from '../../../common/styled'
 import TableFilters from './TableFilter'
@@ -23,12 +16,11 @@ import {
   pageSize,
   sortKeys,
 } from './utils/constants'
-import {
-  compareByKeysToFilterKeys,
-  nextCompareByKeys,
-} from '../Dashboard/utils'
+import { compareByKeysToFilterKeys, nextCompareByKeys } from '../common/utils'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { StyledTable } from './styled-component'
+import LinkCell from '../common/components/LinkCell'
+import { DW_WLR_REPORT_URL } from '../../../common/constants/dataWarehouseReports'
 
 const { downloadCSV } = reportUtils.common
 
@@ -68,43 +60,32 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       align: 'left',
       sorter: true,
       render: (value, record) => {
-        const canDrillDown =
-          [
-            compareByEnums.CLASS,
-            compareByEnums.SCHOOL,
-            compareByEnums.GROUP,
-          ].includes(compareBy) ||
-          (compareBy === compareByEnums.TEACHER && record.students < 100)
+        const disableDrillDown =
+          compareBy === compareByEnums.TEACHER && record.students > 100
         let url = null
-        if (canDrillDown) {
-          const filterField = compareByKeysToFilterKeys[compareBy]
-          url = new URL(window.location.href)
-          url.searchParams.set(filterField, record.dimension._id)
-          url.searchParams.set(
-            'selectedCompareBy',
-            nextCompareByKeys[compareBy]
-          )
-        } else if (compareBy === compareByEnums.STUDENT) {
-          const { search } = window.location
-          url = new URL(
-            `${window.location.origin}/author/reports/whole-learner-report/student/${record.dimension._id}?${search}`
-          )
-        } else if (value) {
-          const filterField = compareByKeysToFilterKeys[compareBy]
-          url = new URL(window.location.href)
-          url.searchParams.set(filterField, record.dimension._id)
-          url.searchParams.set('selectedCompareBy', compareByEnums.STUDENT)
+        const isStudentCompareBy = compareBy === compareByEnums.STUDENT
+        if (!disableDrillDown) {
+          if (isStudentCompareBy) {
+            const { search } = window.location
+            url = new URL(
+              `${window.location.origin}${DW_WLR_REPORT_URL}${record.dimension._id}?${search}`
+            )
+          } else {
+            const filterField = compareByKeysToFilterKeys[compareBy]
+            url = new URL(window.location.href)
+            url.searchParams.set(filterField, record.dimension._id)
+            url.searchParams.set(
+              'selectedCompareBy',
+              nextCompareByKeys[compareBy]
+            )
+          }
         }
-        const text = value || '-'
         return (
-          <EduIf condition={!!url}>
-            <EduThen>
-              <Link to={url} target="_blank">
-                {text}
-              </Link>
-            </EduThen>
-            <EduElse>{text}</EduElse>
-          </EduIf>
+          <LinkCell
+            value={{ _id: record.dimension._id, name: value }}
+            url={url}
+            openNewTab={isStudentCompareBy}
+          />
         )
       },
     },

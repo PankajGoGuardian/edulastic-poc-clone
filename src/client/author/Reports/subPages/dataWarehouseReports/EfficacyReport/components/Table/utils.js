@@ -22,10 +22,6 @@ import {
   compareByOptionsInfo,
 } from '../../../common/utils'
 import LinkCell from '../../../common/components/LinkCell'
-import {
-  DW_EFFICACY_REPORT_URL,
-  DW_WLR_REPORT_URL,
-} from '../../../../../common/constants/dataWarehouseReports'
 
 const {
   DECIMAL_BASE,
@@ -37,16 +33,6 @@ const {
 
 export const onCsvConvert = (data) => downloadCSV(`Efficacy Report.csv`, data)
 
-const isDrillDownEnabled = (compareByKey) => {
-  return [
-    compareByKeys.SCHOOL,
-    compareByKeys.TEACHER,
-    compareByKeys.CLASS,
-    compareByKeys.GROUP,
-    compareByKeys.STUDENT,
-  ].includes(compareByKey)
-}
-
 export const getTableColumns = (
   testInfo,
   tableFilters,
@@ -56,10 +42,11 @@ export const getTableColumns = (
   const { key: compareByKey } = compareBy
   const { key: analyseByKey } = analyseBy
 
-  const tableColumnsData =
-    compareByKey === compareByKeys.STUDENT
-      ? compareByStudentColumns
-      : genericColumnsForTable
+  const isStudentCompareBy = compareByKey === compareByKeys.STUDENT
+
+  const tableColumnsData = isStudentCompareBy
+    ? compareByStudentColumns
+    : genericColumnsForTable
 
   const { preTestInfo, postTestInfo } = testInfo
 
@@ -70,14 +57,10 @@ export const getTableColumns = (
     )
     _columns[compareByColumnIdx].title = compareBy.title
     _columns[compareByColumnIdx].render = (value) => {
-      const reportUrl =
-        compareBy.key === compareByKeys.STUDENT
-          ? DW_WLR_REPORT_URL
-          : DW_EFFICACY_REPORT_URL
-      const url = isDrillDownEnabled(compareBy.key)
-        ? getTableDrillDownUrl(value._id, reportUrl)
-        : null
-      return <LinkCell value={value} url={url} />
+      const url = getTableDrillDownUrl(value._id)
+      return (
+        <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
+      )
     }
     // Test names column
     const testColumnIdx = _columns.findIndex((col) => col.key === 'test')

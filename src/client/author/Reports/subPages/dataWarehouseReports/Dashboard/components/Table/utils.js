@@ -9,13 +9,10 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
-import { compareByKeys } from '@edulastic/constants/reportUtils/standardsMasteryReport/standardsGradebook'
+import { EduIf } from '@edulastic/common'
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import AvgScoreTitle from './AvgScoreTitle'
-import {
-  DW_MAR_REPORT_URL,
-  DW_WLR_REPORT_URL,
-} from '../../../../../common/constants/dataWarehouseReports'
+import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
 import { StyledDiv } from '../common/styledComponents'
 import LinkCell from '../../../common/components/LinkCell'
 import PerformanceDistribution from './PerformanceDistribution'
@@ -93,8 +90,6 @@ export const getTableColumns = ({
     testTypesWithData.includes(key)
   )
 
-  const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
-
   const PerformanceColumnTitle = isStudentCompareBy
     ? 'PERFORMANCE BAND'
     : 'PERFORMANCE DISTRIBUTION'
@@ -112,15 +107,10 @@ export const getTableColumns = ({
     _columns[compareByIdx].align = 'left'
     _columns[compareByIdx].render = (value) => {
       const url =
-        value !== districtAvgDimension &&
-        [
-          compareByKeys.SCHOOL,
-          compareByKeys.TEACHER,
-          compareByKeys.CLASS,
-        ].includes(selectedCompareBy)
-          ? getTableDrillDownUrl(value._id)
-          : null
-      return <LinkCell value={value} url={url} />
+        value !== districtAvgDimension ? getTableDrillDownUrl(value._id) : null
+      return (
+        <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
+      )
     }
     _columns[compareByIdx].sortOrder =
       tableFilters.sortKey === tableFilters[tableFilterTypes.COMPARE_BY].key &&
@@ -197,17 +187,20 @@ export const getTableColumns = ({
     className: 'external-link',
     width: 200,
     render: (value) => {
-      const reportUrl =
-        selectedCompareBy === compareByKeys.STUDENT
-          ? DW_WLR_REPORT_URL
-          : DW_MAR_REPORT_URL
-      const url = getTableDrillDownUrl(value._id, reportUrl)
+      const isDistrictAvgDimension = value === districtAvgDimension
+      const url = getTableDrillDownUrl(
+        value._id,
+        DW_MAR_REPORT_URL,
+        isDistrictAvgDimension
+      )
       return (
-        <Link to={url} target={url}>
-          <StyledDiv>
-            <IoMdLink className="link" />
-          </StyledDiv>
-        </Link>
+        <EduIf condition={!!url}>
+          <Link to={url} target="_blank">
+            <StyledDiv>
+              <IoMdLink className="link" />
+            </StyledDiv>
+          </Link>
+        </EduIf>
       )
     },
   }

@@ -4,13 +4,9 @@ import qs from 'qs'
 import {
   tableFilterTypes,
   TABLE_PAGE_SIZE,
-  compareByKeysToFilterKeys,
-  compareByKeys,
-  compareByOptions,
-  nextCompareByKeys,
   academicSummaryFiltersTypes,
 } from '../utils'
-import { DW_MAR_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
+import { buildDrillDownUrl } from '../../common/utils'
 
 const useTableFilters = ({
   history,
@@ -78,34 +74,30 @@ const useTableFilters = ({
     setTableFilters((prevState) => ({ ...prevState, page }))
   }
 
-  const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
+  const getTableDrillDownUrl = (
+    key,
+    reportUrl = location.pathname,
+    isDistrictAvgDimension = false
+  ) => {
     const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
-    const filterField = compareByKeysToFilterKeys[selectedCompareBy]
-
-    const _filters = { ...settings.requestFilters }
     const { academicSummaryFilters } = settings
-    const nextCompareBy = compareByOptions.find(
-      (o) => o.key === nextCompareByKeys[selectedCompareBy]
-    )
-
-    const nextCompareByKey =
-      baseUrl === DW_MAR_REPORT_URL &&
-      selectedCompareBy === compareByKeys.TEACHER
-        ? compareByKeys.GROUP
-        : nextCompareBy?.key
-
-    Object.assign(_filters, {
-      [filterField]: key,
-      selectedCompareBy: nextCompareByKey || selectedCompareBy,
+    const reportFilters = {
+      ...settings.requestFilters,
       profileId:
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key,
-    })
-    if (selectedCompareBy === compareByKeys.STUDENT) {
-      delete _filters[filterField]
-      return `${baseUrl}${key}?${qs.stringify(_filters)}`
     }
-    return `${baseUrl}?${qs.stringify(_filters)}`
+    if (isDistrictAvgDimension) {
+      Object.assign(reportFilters, { selectedCompareBy })
+      return `${reportUrl}?${qs.stringify(reportFilters)}`
+    }
+    return buildDrillDownUrl({
+      key,
+      selectedCompareBy,
+      reportUrl,
+      reportFilters,
+      history,
+    })
   }
 
   return {

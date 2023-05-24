@@ -15,6 +15,15 @@ export const compareByKeys = {
   HISPANIC_ETHNICITY: 'hispanicEthnicity',
 }
 
+const demographicFilterFields = {
+  [compareByKeys.RACE]: compareByKeys.RACE,
+  [compareByKeys.GENDER]: compareByKeys.GENDER,
+  [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+  [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+  [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+}
+
 export const compareByOptionsInfo = {
   [compareByKeys.SCHOOL]: { key: 'schoolId', name: 'schoolName' },
   [compareByKeys.TEACHER]: { key: 'teacherId', name: 'teacherName' },
@@ -59,6 +68,7 @@ export const compareByKeysToFilterKeys = {
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
   [compareByKeys.GROUP]: 'groupIds',
+  ...demographicFilterFields,
 }
 
 export const filterKeysToCompareByKeys = invert(compareByKeysToFilterKeys)
@@ -68,6 +78,12 @@ export const commonFilterKeys = [
   compareByKeysToFilterKeys[compareByKeys.TEACHER],
   compareByKeysToFilterKeys[compareByKeys.CLASS],
   compareByKeysToFilterKeys[compareByKeys.GROUP],
+  compareByKeys.RACE,
+  compareByKeys.GENDER,
+  compareByKeys.FRL_STATUS,
+  compareByKeys.ELL_STATUS,
+  compareByKeys.IEP_STATUS,
+  compareByKeys.HISPANIC_ETHNICITY,
 ]
 
 export const nextCompareByKeys = {
@@ -75,6 +91,12 @@ export const nextCompareByKeys = {
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,
   [compareByKeys.GROUP]: compareByKeys.STUDENT,
+  [compareByKeys.RACE]: compareByKeys.STUDENT,
+  [compareByKeys.GENDER]: compareByKeys.STUDENT,
+  [compareByKeys.FRL_STATUS]: compareByKeys.STUDENT,
+  [compareByKeys.ELL_STATUS]: compareByKeys.STUDENT,
+  [compareByKeys.IEP_STATUS]: compareByKeys.STUDENT,
+  [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.STUDENT,
 }
 
 export const compareByOptions = [

@@ -35,7 +35,9 @@ const useTableMetrics = ({
         )
       },
       onSelectAll: (flag) =>
-        setCheckedStudents(flag ? tableData.map((d) => d.studentId) : []),
+        setCheckedStudents(
+          flag ? tableData.map(({ dimension }) => dimension._id) : []
+        ),
     }
 
     const checkedStudentsForModal = tableData

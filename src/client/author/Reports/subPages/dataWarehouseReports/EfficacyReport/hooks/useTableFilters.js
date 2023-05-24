@@ -1,11 +1,6 @@
 import { useState } from 'react'
-import qs from 'qs'
 import { sortKeys, sortOrders } from '../utils'
-import {
-  compareByKeysToFilterKeys,
-  compareByKeys,
-  nextCompareByKeys,
-} from '../../common/utils'
+import { buildDrillDownUrl } from '../../common/utils'
 
 const useTableFilters = ({
   location,
@@ -23,23 +18,19 @@ const useTableFilters = ({
     sortOrder: sortOrders.ASCEND,
   })
 
-  const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
-    const selectedCompareByKey = tableFilters.compareBy.key
-    const filterField = compareByKeysToFilterKeys[selectedCompareByKey]
-
-    const _filters = {
+  const getTableDrillDownUrl = (key, reportUrl = location.pathname) => {
+    const compareByKey = tableFilters.compareBy.key
+    const reportFilters = {
       ...settings.requestFilters,
-      [filterField]: key,
-      selectedCompareBy: nextCompareByKeys[selectedCompareByKey],
       preBandScore: tableFilters.preBandScore,
       postBandScore: tableFilters.postBandScore,
     }
-
-    if (selectedCompareByKey === compareByKeys.STUDENT) {
-      delete _filters[filterField]
-      return `${baseUrl}${key}?${qs.stringify(_filters)}`
-    }
-    return `${baseUrl}?${qs.stringify(_filters)}`
+    return buildDrillDownUrl({
+      key,
+      selectedCompareBy: compareByKey,
+      reportUrl,
+      reportFilters,
+    })
   }
 
   return {

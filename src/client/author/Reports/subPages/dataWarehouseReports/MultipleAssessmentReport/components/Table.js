@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
 import { round } from 'lodash'
@@ -29,6 +29,8 @@ import LargeTag from '../../common/components/LargeTag'
 import { tableColumnsData, compareByMap, sortKeys } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
+import LinkCell from '../../common/components/LinkCell'
+import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
 
 const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 
@@ -66,6 +68,7 @@ const getTableColumns = (
   sortFilters
 ) => {
   const compareBy = settings.selectedCompareBy
+  const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByIdx = _columns.findIndex(
@@ -73,9 +76,30 @@ const getTableColumns = (
     )
     _columns[compareByIdx].title = compareBy.title
     _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
-    _columns[compareByIdx].render = (data) => data || '-'
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
+    _columns[compareByIdx].render = (data, record) => {
+      const url = buildDrillDownUrl({
+        key: record.id,
+        selectedCompareBy: compareBy.key,
+        reportFilters: settings.requestFilters,
+        reportUrl: window.location.pathname,
+      })
+      return (
+        <LinkCell
+          value={{ _id: record.id, name: data }}
+          url={url}
+          openNewTab={isStudentCompareBy}
+        />
+      )
+    }
+    _columns[compareByIdx].sorter = (a, b) => {
+      const dataIndex = compareByMap[compareBy.key]
+      return (a[dataIndex] || '')
+        .toLowerCase()
+        .localeCompare((b[dataIndex] || '').toLowerCase())
+    }
+    _columns[compareByIdx].defaultSortOrder = 'ascend'
 
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
@@ -266,13 +290,18 @@ const AssessmentsTable = ({
   setPageFilters,
   rowSelection,
 }) => {
-  const tableColumns = getTableColumns(
-    overallAssessmentsData,
-    isSharedReport,
-    settings,
-    isPrinting,
-    sortFilters
+  const tableColumns = useMemo(
+    () =>
+      getTableColumns(
+        overallAssessmentsData,
+        isSharedReport,
+        settings,
+        isPrinting,
+        sortFilters
+      ),
+    [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   )
+
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {
       setSortFilters({

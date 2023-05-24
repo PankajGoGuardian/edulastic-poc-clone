@@ -190,15 +190,8 @@ const MultipleAssessmentReport = ({
     setShowApply(false)
   }
 
-  const updateFilterDropdownCB = (selected, keyName) => {
-    if (keyName === 'compareBy') {
-      if (search.selectedCompareBy) {
-        history.replace(
-          `${location.pathname}?${qs.stringify(settings.requestFilters)}`
-        )
-      }
-      setDWMARSettings({ ...settings, selectedCompareBy: selected })
-    }
+  const updateFilterDropdownCB = (selected) => {
+    setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
 
   useEffect(

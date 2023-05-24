@@ -1,13 +1,8 @@
 // import { DB_SORT_ORDER_TYPES } from '@edulastic/constants/reportUtils/common'
 import { useState } from 'react'
-import qs from 'qs'
 import { RISK_BAND_LEVELS } from '@edulastic/constants/reportUtils/common'
 import { tableFilterTypes, TABLE_PAGE_SIZE } from '../utils'
-import {
-  compareByKeysToFilterKeys,
-  compareByKeys,
-  nextCompareByKeys,
-} from '../../common/utils'
+import { buildDrillDownUrl } from '../../common/utils'
 
 const useTableFilters = ({ defaultCompareBy, location, settings }) => {
   const [tableFilters, setTableFilters] = useState({
@@ -21,24 +16,19 @@ const useTableFilters = ({ defaultCompareBy, location, settings }) => {
     setTableFilters((prevState) => ({ ...prevState, page }))
   }
 
-  const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
+  const getTableDrillDownUrl = (key, reportUrl = location.pathname) => {
     const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
-    const filterField = compareByKeysToFilterKeys[selectedCompareBy]
     const { requestFilters, riskTimelineFilters } = settings
-
-    const _filters = {
+    const reportFilters = {
       ...requestFilters,
       ...riskTimelineFilters,
-      [filterField]: key,
-      selectedCompareBy: nextCompareByKeys[selectedCompareBy],
     }
-
-    if (selectedCompareBy === compareByKeys.STUDENT) {
-      delete _filters[filterField]
-      return `${baseUrl}${key}?${qs.stringify(_filters)}`
-    }
-    const url = `${baseUrl}?${qs.stringify(_filters)}`
-    return url
+    return buildDrillDownUrl({
+      key,
+      selectedCompareBy,
+      reportUrl,
+      reportFilters,
+    })
   }
 
   return {

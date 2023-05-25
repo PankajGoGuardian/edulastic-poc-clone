@@ -20,8 +20,10 @@ import {
 import { StyledRadioGroup } from './styled'
 
 const tooltip = {
-  dataOps:
+  dataOpsOnly:
     'This district admin can only upload data to data studio feature. No access is given to district menu and insights.',
+  dataOps:
+    'This district admin user has full access to data studio upload and insight feature.',
 }
 const fields = {
   _id: 'User ID',
@@ -39,6 +41,7 @@ const fields = {
   cli: 'cliId',
   openIdProvider: 'Open ID Provider',
   isSuperAdmin: 'super admin',
+  dataOps: 'Data Operations',
   dataOpsOnly: 'Data Operations Only',
 }
 
@@ -47,6 +50,7 @@ const UpdateUser = (props) => {
   const [isEdit, setIsEdit] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [isDataOps, setIsDataOps] = useState(false)
   const [isDataOpsOnly, setIsDataOpsOnly] = useState(false)
   const [newUsername, setNewUsername] = useState('')
   const { userData, clearUserData } = props
@@ -56,6 +60,9 @@ const UpdateUser = (props) => {
   useEffect(() => {
     if ((user?.permissions || []).includes(userPermissions.SUPER_ADMIN)) {
       setIsSuperAdmin(true)
+    }
+    if ((user?.permissions || []).includes(userPermissions.DATA_OPS)) {
+      setIsDataOps(true)
     }
     if ((user?.permissions || []).includes(userPermissions.DATA_OPS_ONLY)) {
       setIsDataOpsOnly(true)
@@ -82,6 +89,15 @@ const UpdateUser = (props) => {
           : updateData.permissions.filter((item) => item !== 'super_admin')
       }
 
+      if (isDataOps) {
+        if (!updateData.permissions.includes(userPermissions.DATA_OPS)) {
+          updateData.permissions.push(userPermissions.DATA_OPS)
+        }
+      } else {
+        updateData.permissions = updateData.permissions.filter(
+          (item) => item !== userPermissions.DATA_OPS
+        )
+      }
       if (isDataOpsOnly) {
         if (!updateData.permissions.includes(userPermissions.DATA_OPS_ONLY)) {
           updateData.permissions.push(userPermissions.DATA_OPS_ONLY)
@@ -109,6 +125,12 @@ const UpdateUser = (props) => {
     setSelected(e.target.value)
     setIsEdit(false)
   }
+
+  useEffect(() => {
+    if (isDataOps || isSuperAdmin) {
+      setIsDataOpsOnly(false)
+    }
+  }, [isDataOps, isSuperAdmin])
 
   return (
     <SecondDiv>
@@ -151,7 +173,7 @@ const UpdateUser = (props) => {
                   }
 
                   if (
-                    field === 'dataOpsOnly' &&
+                    field === 'dataOps' &&
                     data?.role === roleuser.DISTRICT_ADMIN
                   ) {
                     return (
@@ -159,10 +181,10 @@ const UpdateUser = (props) => {
                         <Col>
                           <CheckboxLabel
                             disabled={!isEdit}
-                            checked={isDataOpsOnly}
-                            onChange={(e) => setIsDataOpsOnly(e.target.checked)}
+                            checked={isDataOps}
+                            onChange={(e) => setIsDataOps(e.target.checked)}
                           >
-                            Data Operations Only
+                            Data Operations
                           </CheckboxLabel>{' '}
                           <Tooltip title={tooltip.dataOps}>
                             <IconInfo height={10} />
@@ -171,6 +193,29 @@ const UpdateUser = (props) => {
                       </Row>
                     )
                   }
+
+                  if (
+                    field === 'dataOpsOnly' &&
+                    data?.role === roleuser.DISTRICT_ADMIN
+                  ) {
+                    return (
+                      <Row>
+                        <Col>
+                          <CheckboxLabel
+                            disabled={!isEdit || isDataOps || isSuperAdmin}
+                            checked={isDataOpsOnly}
+                            onChange={(e) => setIsDataOpsOnly(e.target.checked)}
+                          >
+                            Data Operations Only
+                          </CheckboxLabel>{' '}
+                          <Tooltip title={tooltip.dataOpsOnly}>
+                            <IconInfo height={10} />
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    )
+                  }
+
                   return (
                     <Row>
                       {isEdit &&

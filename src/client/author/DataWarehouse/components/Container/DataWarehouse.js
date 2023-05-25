@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import { compose } from 'redux'
-import { FlexContainer, MainHeader, EduButton } from '@edulastic/common'
+import {
+  FlexContainer,
+  MainHeader,
+  EduButton,
+  EduIf,
+  EduElse,
+  EduThen,
+} from '@edulastic/common'
 import { fadedBlack } from '@edulastic/colors'
 import styled from 'styled-components'
 import { IconCloudUpload, IconUpload } from '@edulastic/icons'
@@ -16,7 +23,7 @@ import {
   getResetTestDataFileUploadResponseAction,
 } from '../../../sharedDucks/dataWarehouse'
 import {
-  isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
+  isDataOpsUser as checkIsDataOpsUser,
   isDataOpsOnlyUser as checkIsDataOpsOnlyUser,
 } from '../../../src/selectors/user'
 
@@ -25,9 +32,10 @@ const DataWarehouse = ({
   uploadsStatusList,
   fetchUploadsStatusList,
   resetUploadResponse,
-  isDataWarehouseEnabled,
+  isDataOpsUser,
   isDataOpsOnlyUser,
 }) => {
+  const dataOpsEnabled = isDataOpsUser || isDataOpsOnlyUser
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
 
   const closeModal = (shouldFetchStatusList) => {
@@ -43,44 +51,45 @@ const DataWarehouse = ({
   }
 
   useEffect(() => {
-    if (isDataWarehouseEnabled) {
+    if (dataOpsEnabled) {
       fetchUploadsStatusList()
     }
   }, [])
 
-  if (!isDataWarehouseEnabled || !isDataOpsOnlyUser) {
-    return (
-      <NotAllowedContainer>
-        Contact your district administrator to upload data.
-      </NotAllowedContainer>
-    )
-  }
-
   return (
-    <div>
-      <MainHeader Icon={IconCloudUpload} headingText="Data Warehouse" />
-      <FlexContainer justifyContent="right" padding="10px">
-        <EduButton height="40px" onClick={showModal}>
-          <IconUpload /> Upload External Data Files
-        </EduButton>
-      </FlexContainer>
-      <TableContainer>
-        {loading ? (
-          <Spin />
-        ) : (
-          <DataWarehoureUploadsTable
-            loading={loading}
-            uploadsStatusList={uploadsStatusList}
-          />
-        )}
-      </TableContainer>
-      {showTestDataUploadModal && (
-        <DataWarehoureUploadModal
-          isVisible={showTestDataUploadModal}
-          closeModal={closeModal}
-        />
-      )}
-    </div>
+    <EduIf condition={dataOpsEnabled}>
+      <EduThen>
+        <div>
+          <MainHeader Icon={IconCloudUpload} headingText="Data Warehouse" />
+          <FlexContainer justifyContent="right" padding="10px">
+            <EduButton height="40px" onClick={showModal}>
+              <IconUpload /> Upload External Data Files
+            </EduButton>
+          </FlexContainer>
+          <TableContainer>
+            {loading ? (
+              <Spin />
+            ) : (
+              <DataWarehoureUploadsTable
+                loading={loading}
+                uploadsStatusList={uploadsStatusList}
+              />
+            )}
+          </TableContainer>
+          {showTestDataUploadModal && (
+            <DataWarehoureUploadModal
+              isVisible={showTestDataUploadModal}
+              closeModal={closeModal}
+            />
+          )}
+        </div>
+      </EduThen>
+      <EduElse>
+        <NotAllowedContainer>
+          Contact your district administrator to upload data.
+        </NotAllowedContainer>
+      </EduElse>
+    </EduIf>
   )
 }
 
@@ -88,7 +97,7 @@ const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
-    isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
+    isDataOpsUser: checkIsDataOpsUser(state),
     isDataOpsOnlyUser: checkIsDataOpsOnlyUser(state),
   }),
   {

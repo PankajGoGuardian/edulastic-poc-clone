@@ -213,7 +213,7 @@ class CreateDistrictAdminModal extends React.Component {
           </Col>
         </Row>
         <FeaturesSwitch
-          inputFeatures="isDataWarehouseEnabled"
+          inputFeatures="isDataOpsUser"
           actionOnInaccessible="hidden"
         >
           <Row>

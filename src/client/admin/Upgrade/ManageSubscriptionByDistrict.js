@@ -111,6 +111,21 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const savedDate = useRef()
 
+    const getSubTypeLabel = (_subType, _permissions) => {
+      let label = _subType || SUBSCRIPTION_TYPES.free.subType
+      if (
+        (_permissions || []).includes(userPermissions.DATA_WAREHOUSE_REPORTS)
+      ) {
+        if (_subType === SUBSCRIPTION_TYPES.free.subType) {
+          label = SUBSCRIPTION_TYPES.dataStudio.label
+        } else if (_subType === SUBSCRIPTION_TYPES.enterprise.subType) {
+          label = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label
+        }
+      }
+
+      return label
+    }
+
     // here once component is mounted, the current date is calculated just once, and stored in a ref
     useEffect(() => {
       savedDate.current = getDate()
@@ -256,7 +271,7 @@ const ManageDistrictPrimaryForm = Form.create({
         </Row>
         <Row>
           <HeadingSpan>Existing Plan:</HeadingSpan>
-          <ValueSpan>{subType}</ValueSpan>
+          <ValueSpan>{getSubTypeLabel(subType, permissions)}</ValueSpan>
         </Row>
         <Row>
           <HeadingSpan>District Name:</HeadingSpan>

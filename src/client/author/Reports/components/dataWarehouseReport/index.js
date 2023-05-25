@@ -16,7 +16,6 @@ import DataWarehoureReportCardsWrapper from './DataWarehouseReportCardsWrapper'
 
 import {
   isDataOpsUser as checkIsDataOpsUser,
-  isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
   getUserFeatures,
 } from '../../../src/selectors/user'
 
@@ -46,17 +45,15 @@ const DataWarehouseReports = ({
   uploadsStatusList,
   fetchUploadsStatusList,
   resetUploadResponse,
-  isDataWarehouseEnabled,
   isDataOpsUser,
   features,
   history,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState(REPORTS_TAB.key)
-  const isDataWarehouseEnabledForUser = isDataWarehouseEnabled && isDataOpsUser
 
   useEffect(() => {
-    if (isDataWarehouseEnabledForUser) {
+    if (isDataOpsUser) {
       fetchUploadsStatusList()
     }
   }, [])
@@ -127,7 +124,7 @@ const DataWarehouseReports = ({
     <>
       <FlexContainer justifyContent="space-between" marginBottom="10px">
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
-        <EduIf condition={isDataWarehouseEnabledForUser}>
+        <EduIf condition={isDataOpsUser}>
           <EduButton height="40px" onClick={showModal}>
             <IconUpload /> Upload External Data Files
           </EduButton>
@@ -135,7 +132,7 @@ const DataWarehouseReports = ({
       </FlexContainer>
 
       <StyledContainer>
-        <EduIf condition={isDataWarehouseEnabledForUser}>
+        <EduIf condition={isDataOpsUser}>
           <StyledTabs
             mode="horizontal"
             activeKey={activeTabKey}
@@ -163,7 +160,7 @@ const DataWarehouseReports = ({
             </TabPane>
           </StyledTabs>
         </EduIf>
-        <EduIf condition={!isDataWarehouseEnabledForUser}>
+        <EduIf condition={!isDataOpsUser}>
           <UpgradeBanner />
           <DataWarehoureReportCardsWrapper
             allowAccess={allowAccess}
@@ -224,7 +221,6 @@ const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
-    isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
     isDataOpsUser: checkIsDataOpsUser(state),
     features: getUserFeatures(state),
   }),

@@ -20,7 +20,7 @@ describe('Test TrialModal with new trial expiry day', () => {
       />
     )
     const moduleTitleElement = screen.getByText(
-      'Experience the additional features of Edulastic Teacher Premium for 60 days: OMR exams, read-loud for students, extra test security settings, easier collaboration, in-depth reports and more.'
+      'Experience the additional features of Edulastic Teacher Premium for 60 days: OMR exams, read-aloud for students, extra test security settings, easier collaboration, in-depth reports and more.'
     )
     expect(moduleTitleElement).toBeInTheDocument()
   })

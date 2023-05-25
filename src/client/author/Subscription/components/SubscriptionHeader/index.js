@@ -157,7 +157,7 @@ const SubscriptionHeader = ({
     isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
 
   const getCurrentPlan = () => {
-    const { dataWarehouseReports } = features
+    const { dataWarehouseReports } = features || {}
     const {
       free,
       enterprise,

@@ -66,7 +66,7 @@ const userWithDataWarehouseEnabled = {
     user: {
       features: {
         premium: true,
-        isDataWarehouseEnabled: true,
+        isDataOpsUser: true,
         isDataOpsOnlyUser: true,
       },
     },
@@ -78,7 +78,7 @@ const userWithOutDataWarehouseDisabled = {
     user: {
       features: {
         premium: true,
-        isDataWarehouseEnabled: false,
+        isDataOpsUser: false,
         isDataOpsOnlyUser: false,
       },
     },

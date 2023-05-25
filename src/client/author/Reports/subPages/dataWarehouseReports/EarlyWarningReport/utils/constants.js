@@ -10,7 +10,7 @@ const {
   SUBJECT_OPTIONS,
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
-  RISK_BAND_LEVELS,
+  RISK_BAND_LABELS,
   RISK_BAND_COLOR_INFO,
 } = reportUtils.common
 
@@ -116,7 +116,7 @@ export const compareByStudentColumns = [
         align: 'center',
         render: (value) => {
           const color =
-            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH] : ''
+            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH] : ''
           return <ColoredText color={color}>{value}</ColoredText>
         },
       },
@@ -127,7 +127,7 @@ export const compareByStudentColumns = [
         align: 'center',
         render: (value) => {
           const color =
-            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM] : ''
+            value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM] : ''
           return <ColoredText color={color}>{value}</ColoredText>
         },
       },
@@ -164,9 +164,9 @@ export const timeframeFilterValues = {
   [timeframeFilterKeys.QUARTERLY]: 'quarter',
 }
 
-export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND_LEVELS).map(
+export const riskCheckBoxDropdownOptions = Object.keys(RISK_BAND_LABELS).map(
   (key) => {
-    const level = RISK_BAND_LEVELS[key]
+    const level = RISK_BAND_LABELS[key]
     return { level, color: RISK_BAND_COLOR_INFO[level] }
   }
 )

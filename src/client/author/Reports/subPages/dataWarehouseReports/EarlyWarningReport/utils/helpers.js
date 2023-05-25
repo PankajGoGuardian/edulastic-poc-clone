@@ -95,7 +95,7 @@ export const getTableColumns = ({
       )
       highRiskColumn.title = (
         <CustomStyledCell
-          color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH]}
+          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
           showBoxShadow
         >
           HIGH
@@ -116,7 +116,7 @@ export const getTableColumns = ({
       )
       mediumRiskColumn.title = (
         <CustomStyledCell
-          color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM]}
+          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
           showBoxShadow
         >
           MEDIUM
@@ -359,9 +359,9 @@ export const transformTableData = (tableMetrics) => {
     const { attendanceRisk = {}, academicRisk = {} } = m
     const overallRisk = [attendanceRisk, ...Object.values(academicRisk)]
     const highRiskMeasures =
-      overallRisk.filter((r) => r.risk === RISK_BAND_LEVELS.HIGH).length || 0
+      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.HIGH).length || 0
     const mediumRiskMeasures =
-      overallRisk.filter((r) => r.risk === RISK_BAND_LEVELS.MEDIUM).length || 0
+      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.MEDIUM).length || 0
     return {
       ...m,
       highRiskMeasures,

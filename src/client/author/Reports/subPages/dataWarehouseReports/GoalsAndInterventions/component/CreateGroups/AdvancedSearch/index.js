@@ -25,7 +25,6 @@ import {
 } from '../../../../../../../TestPage/ducks'
 import { fetchGroupsAction } from '../../../../../../../sharedDucks/groups'
 import { SpinnerContainer } from '../../../../../../../src/MainStyle'
-import { getUserOrgData } from '../../../../../../../src/selectors/user'
 import {
   StyledButton,
   StyledFormButtonsContainer,
@@ -41,7 +40,6 @@ import {
   getAdvancedSearchGroupsSelector,
   getAdvancedSearchCoursesSelector,
   getAdvancedSearchFilterSelector,
-  getAdvancedSearchGroupsSelector,
   getAdvancedSearchSchoolsSelector,
   groupStatusSelector,
   isAdvancedSearchLoading,

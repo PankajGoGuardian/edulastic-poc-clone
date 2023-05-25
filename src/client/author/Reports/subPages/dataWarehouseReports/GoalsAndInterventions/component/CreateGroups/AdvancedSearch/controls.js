@@ -1,7 +1,7 @@
 import { drcThemeColor } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
-import { Button, Select } from 'antd'
+import { Button, Select, Tooltip } from 'antd'
 import React from 'react'
 import { ruleLimit } from './config/qb-config'
 import { GroupButton, RuleButton, StyledSelect } from './styled-components'
@@ -16,7 +16,7 @@ const getDataCyValue = (pathLevel = [], selectorName) => {
 }
 
 export const FieldSelector = (props) => {
-  const { handleOnChange, options, value, id, path } = props
+  const { handleOnChange, options, value, id, path, pendingFields } = props
 
   return (
     <StyledSelect
@@ -27,13 +27,26 @@ export const FieldSelector = (props) => {
       data-cy={getDataCyValue(path, 'fieldSelector')}
     >
       {options.map((item) => {
+        const disabled =
+          !pendingFields.includes(item.name) && item.name !== value
         return (
           <Select.Option
             value={item.name}
             key={item.name}
+            disabled={disabled}
             data-cy={getDataCyValue(path, 'fieldOptions')}
           >
-            {item.label}
+            <EduIf condition={disabled}>
+              <EduThen>
+                <Tooltip
+                  placement="bottomLeft"
+                  title="This field has already been used as a criterion."
+                >
+                  <div style={{ width: '100%' }}>{item.label}</div>
+                </Tooltip>
+              </EduThen>
+              <EduElse>{item.label}</EduElse>
+            </EduIf>
           </Select.Option>
         )
       })}
@@ -95,8 +108,9 @@ export const OperatorSelector = (props) => {
   )
 }
 
-export const AddRule = ({ handleOnClick, rules, path }) => {
+export const AddRule = ({ handleOnClick, rules, path, pendingFields }) => {
   const isDisabled = rules.length >= ruleLimit
+  const noFieldLeft = pendingFields.length === 0
   const dataCyValue = path.length
     ? `addGroupRuleButton-${path[0]}`
     : 'addRuleButton'
@@ -107,13 +121,22 @@ export const AddRule = ({ handleOnClick, rules, path }) => {
         isBlue
         isGhost
         onClick={handleOnClick}
-        disabled={isDisabled}
+        disabled={isDisabled || noFieldLeft}
         data-cy={dataCyValue}
       >
         + ADD CRITERION
       </RuleButton>
       <EduIf condition={isDisabled}>
-        <span className="error-message">Maximum of 10 criteria allowed!</span>
+        <EduThen>
+          <span className="error-message">Maximum of 10 criteria allowed!</span>
+        </EduThen>
+        <EduElse>
+          <EduIf condition={noFieldLeft}>
+            <span className="error-message">
+              All fields has already been used as a criterion!
+            </span>
+          </EduIf>
+        </EduElse>
       </EduIf>
     </>
   )

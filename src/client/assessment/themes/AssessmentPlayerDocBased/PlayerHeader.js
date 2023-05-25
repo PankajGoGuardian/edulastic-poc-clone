@@ -47,6 +47,7 @@ const PlayerHeader = ({
   checkAnswer,
   checkAnswerInProgress,
   isPremiumContentWithoutAccess = false,
+  showCalculator,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcTypes } = settings
@@ -94,7 +95,7 @@ const PlayerHeader = ({
               />
               <MainActionWrapper>
                 <ToolBarContainer>
-                  <EduIf condition={!isEmpty(calcTypes)}>
+                  <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
                     <Tooltip placement="top" title="Calculator">
                       <ButtonWithStyle
                         active={currentToolMode.calculator}

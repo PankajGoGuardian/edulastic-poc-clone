@@ -378,6 +378,7 @@ class AssessmentPlayerDefault extends React.Component {
       canShowReferenceMaterial,
       classLevelSettings,
       viewAsStudent,
+      showCalculator,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -618,6 +619,7 @@ class AssessmentPlayerDefault extends React.Component {
             }}
             passage={passage}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
+            showCalculator={showCalculator}
           >
             <ToolbarModal
               isVisible={isToolbarModalVisible}

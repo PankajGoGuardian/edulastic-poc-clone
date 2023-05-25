@@ -32,6 +32,7 @@ const PlayerHeader = ({
   previewPlayer,
   hasSubmitButton,
   savingResponse,
+  showCalculator,
 }) => {
   let buttonText = 'Next'
   let showButton = true
@@ -70,6 +71,7 @@ const PlayerHeader = ({
               currentTool={currentTool}
               handleMagnifier={handleMagnifier}
               enableMagnifier={enableMagnifier}
+              showCalculator={showCalculator}
             />
             <ProgressContainer
               questions={dropdownOptions}

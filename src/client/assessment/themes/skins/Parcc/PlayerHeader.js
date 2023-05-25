@@ -87,6 +87,7 @@ const PlayerHeader = ({
   checkAnswer,
   answerChecksUsedForItem,
   canShowPlaybackOptionTTS,
+  showCalculator,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -256,6 +257,7 @@ const PlayerHeader = ({
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                   answerChecksUsedForItem={answerChecksUsedForItem}
                   checkAnswer={checkAnswer}
+                  showCalculator={showCalculator}
                 />
               </FlexContainer>
               <FlexContainer>

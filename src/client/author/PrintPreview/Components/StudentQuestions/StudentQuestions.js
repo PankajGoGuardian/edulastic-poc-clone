@@ -62,6 +62,7 @@ function Preview({ item, passages, evaluation }) {
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         itemIdKey={item._id}
+        isDocBased={item.isDocBased}
       />
     </Content>
   )

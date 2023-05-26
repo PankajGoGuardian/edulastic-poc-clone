@@ -39,44 +39,52 @@ const RedirectToTest = ({
     }
   }
 
+  const redirectToTest = (testId) => {
+    if (!testId) {
+      handleFailed('no test found')
+    }
+    if (!user?.authenticating || !TokenStorage.getAccessToken()) {
+      // not authenticated user flow
+      if (
+        window.location.pathname.includes('demo/assessmentPreview') ||
+        window.location.host.startsWith('preview')
+      ) {
+        redirectToUrl(`/public/test/${testId}`)
+      } else {
+        redirectToUrl(`/public/view-test/${testId}`)
+      }
+    } else {
+      redirectToUrl(`/author/tests/${testId}`)
+    }
+  }
+
   useEffect(() => {
     const { eAId, aId } = qs.parse(search, { ignoreQueryPrefix: true })
-    const v1Id = eAId || aId || v1IdFromProps
-    let testId = v1Id
+    let v1Id = aId || v1IdFromProps
 
-    if (isNaN(v1Id)) {
-      const decodedData = decodeURIComponent(v1Id)
-      testId = decrypt(atob(decodedData))
+    if (eAId) {
+      try {
+        const decodedData = decodeURIComponent(eAId)
+        v1Id = decrypt(atob(decodedData))
+      } catch (e) {
+        v1Id = eAId
+      }
     }
 
-    if (testId) {
+    if (!isNaN(v1Id)) {
       try {
         testsApi
-          .getByV1Id(testId)
-          .then((data) => {
-            const { _id: id } = data
-            if (!id) {
-              handleFailed('no test found')
-            }
-            if (!user?.authenticating || !TokenStorage.getAccessToken()) {
-              // not authenticated user flow
-              if (
-                window.location.pathname.includes('demo/assessmentPreview') ||
-                window.location.host.startsWith('preview')
-              ) {
-                redirectToUrl(`/public/test/${id}`)
-              } else {
-                redirectToUrl(`/public/view-test/${id}`)
-              }
-            } else {
-              redirectToUrl(`/author/tests/${id}`)
-            }
+          .getByV1Id(v1Id)
+          .then(({ _id } = {}) => {
+            redirectToTest(_id)
           })
           .catch(handleFailed)
       } catch (e) {
         console.warn('TestId cannot be null ', e)
         handleFailed()
       }
+    } else {
+      redirectToTest(v1Id)
     }
   }, [])
 

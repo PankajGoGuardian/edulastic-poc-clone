@@ -48,6 +48,7 @@ import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 import {
   markQuestionLabel,
   transformGradeBookResponse,
+  transformTestItems,
 } from '../ClassBoard/Transformer'
 import { setTeacherEditedScore } from '../ExpressGrader/ducks'
 import { setCurrentTestActivityIdAction } from '../src/actions/classBoard'
@@ -228,6 +229,10 @@ function* receiveStudentResponseSaga({ payload }) {
         items: studentResponse.itemGroups[group._id] || [],
       }))
       const testItems = itemGroups.flatMap((itemGroup) => itemGroup.items || [])
+      transformTestItems({
+        testItemsData: testItems,
+        passageData: passages,
+      })
       markQuestionLabel(testItems)
       originalData.test.itemGroups = itemGroups
       originalData.test.testItems = testItems

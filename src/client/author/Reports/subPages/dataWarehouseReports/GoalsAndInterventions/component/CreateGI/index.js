@@ -76,6 +76,7 @@ const CreateGI = ({
   attendanceBandData,
   activeTerms,
   currentTermId,
+  onClickCreateGroup,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
@@ -140,6 +141,11 @@ const CreateGI = ({
     setIsConfirmationModalOpen(false)
     resetForm()
     onCancel()
+  }
+
+  const handleCreateGroupClick = () => {
+    resetForm()
+    onClickCreateGroup()
   }
 
   const allFormFields = isSaveGoalView
@@ -215,6 +221,7 @@ const CreateGI = ({
             goalsOptions={goalsOptions}
             setNavigationOptions={setFormNavigationOptions}
             formNavigationLabelOptions={formNavigationLabelOptions}
+            handleCreateGroupClick={handleCreateGroupClick}
           />
         </StyledFormContainer>
       </div>

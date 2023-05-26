@@ -51,6 +51,11 @@ const GoalsAndInterventions = ({
     }
   }
 
+  const switchToTabAndSubTab = (tab, subTab) => {
+    setActiveKey(tab)
+    setSubActiveKey(subTab)
+  }
+
   const content = {
     1: [
       {
@@ -99,6 +104,7 @@ const GoalsAndInterventions = ({
             view={SAVE_GOAL}
             group={group}
             onCancel={() => switchSubTab('1')}
+            onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),
       },
@@ -127,6 +133,7 @@ const GoalsAndInterventions = ({
             view={SAVE_INTERVENTION}
             group={group}
             onCancel={() => switchSubTab('1')}
+            onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),
       },

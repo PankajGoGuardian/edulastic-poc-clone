@@ -5,10 +5,13 @@ import FormSection from '../../common/components/Form/FormSection'
 import {
   StyledSectionDescription,
   StyledTitle,
+  StyledButton,
+  StyledSectionContainer,
 } from '../../common/components/Form/styled-components'
 import {
   ACADEMIC,
   DETAILS_SECTION,
+  TARGET_GROUPS_SECTION,
   RELATED_GOALS_COMMENTS_SECTION,
   TARGET_PROFICIENCY_SECTION,
   THRESHOLD_DEADLINE_SECTION,
@@ -29,6 +32,7 @@ const Form = ({
   formNavigationLabelOptions,
   attendanceBandOptions,
   targetAttendanceBandOptions,
+  handleCreateGroupClick,
 }) => {
   const EnhancedComponent = (formFields) => {
     return (
@@ -49,6 +53,7 @@ const Form = ({
   const {
     nameAndType,
     ownerAndDescription,
+    targetGroup,
     testTypeSubjectAndStandards,
     typeBandAndMetric,
     thresholdStartAndEndDate,
@@ -59,6 +64,7 @@ const Form = ({
     typeSectionHeader,
     targetSectionHeader,
     thresholdSectionHeader,
+    targetGroupsSectionHeader,
   } = sectionHeaders
 
   const {
@@ -71,6 +77,7 @@ const Form = ({
   const showTestTypeSubjectAndStandardsSection = type === ACADEMIC
 
   const detailsSectionRef = useRef()
+  const targetGroupsSectionRef = useRef()
   const targetProficiencySectionRef = useRef()
   const thresholdDeadlineSectionRef = useRef()
   const relatedGoalsCommentsSectionRef = useRef()
@@ -80,6 +87,7 @@ const Form = ({
     [TARGET_PROFICIENCY_SECTION]: targetProficiencySectionRef,
     [THRESHOLD_DEADLINE_SECTION]: thresholdDeadlineSectionRef,
     [RELATED_GOALS_COMMENTS_SECTION]: relatedGoalsCommentsSectionRef,
+    [TARGET_GROUPS_SECTION]: targetGroupsSectionRef,
   }
 
   useEffect(() => {
@@ -116,6 +124,31 @@ const Form = ({
       >
         <Col span={24}>{EnhancedComponent(ownerAndDescription)}</Col>
       </Row>
+      <div ref={targetGroupsSectionRef}>
+        <Row>
+          <StyledSectionContainer>
+            <StyledSectionDescription>
+              {targetGroupsSectionHeader}
+            </StyledSectionDescription>
+            <StyledButton
+              isGhost
+              onClick={handleCreateGroupClick}
+              ml={35}
+              height={30}
+            >
+              Create new group
+            </StyledButton>
+          </StyledSectionContainer>
+          <Col
+            style={{
+              paddingBottom: 30,
+            }}
+            span={24}
+          >
+            {EnhancedComponent(targetGroup)}
+          </Col>
+        </Row>
+      </div>
       <div ref={targetProficiencySectionRef}>
         <Row>
           <StyledSectionDescription>

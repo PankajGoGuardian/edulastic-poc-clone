@@ -26,6 +26,7 @@ export const APPLICABLE_TO = 'applicableTo'
 export const TARGET = 'target'
 
 export const DETAILS_SECTION = 'detailsSection'
+export const TARGET_GROUPS_SECTION = 'targetGroupsSection'
 export const TARGET_PROFICIENCY_SECTION = 'targetProficiencySection'
 export const THRESHOLD_DEADLINE_SECTION = 'thresholdDeadlineSection'
 export const RELATED_GOALS_COMMENTS_SECTION = 'relatedGoalsCommentsSection'
@@ -146,15 +147,6 @@ export const goalFormFields = ({
       placeholder: 'Select goal type',
       optionsData: dropdownData.goalOrInterventionTypes,
     },
-    studentGroup: {
-      field: STUDENT_GROUP_IDS,
-      label: 'For Whom',
-      fieldType: DROPDOWN,
-      isRequired: true,
-      placeholder: 'Select student group',
-      optionsData: [],
-      isRequiredCustomPromptMessage: 'Please select a Student Group',
-    },
   },
   ownerAndDescription: {
     owner: {
@@ -171,6 +163,17 @@ export const goalFormFields = ({
       isRequired: false,
       placeholder: 'Enter description',
       colSpan: 7,
+    },
+  },
+  targetGroup: {
+    studentGroup: {
+      field: STUDENT_GROUP_IDS,
+      label: 'Class/group',
+      fieldType: DROPDOWN,
+      isRequired: true,
+      placeholder: 'Select student group',
+      optionsData: [],
+      isRequiredCustomPromptMessage: 'Please select a Student Group',
     },
   },
   testTypeSubjectAndStandards: {
@@ -286,18 +289,10 @@ export const interventionFormFields = ({
       placeholder: 'Select intervention type',
       optionsData: dropdownData.goalOrInterventionTypes,
     },
-    studentGroup: {
-      field: STUDENT_GROUP_IDS,
-      label: 'Who needs it',
-      fieldType: DROPDOWN,
-      isRequired: true,
-      placeholder: 'Select student group',
-      optionsData: [],
-      isRequiredCustomPromptMessage: 'Please select a Student Group',
-    },
   },
   ownerAndDescription: goalFormFields({ type, startDate, endDate })
     .ownerAndDescription,
+  targetGroup: goalFormFields({ type, startDate, endDate }).targetGroup,
   testTypeSubjectAndStandards: goalFormFields({ type, startDate, endDate })
     .testTypeSubjectAndStandards,
   typeBandAndMetric: {
@@ -356,7 +351,8 @@ export const interventionFormFields = ({
 export const formSectionExtraData = {
   [GOAL]: {
     sectionHeader: {
-      typeSectionHeader: 'What Type of goal and for Whom it is meant',
+      typeSectionHeader: 'What Type of goal',
+      targetGroupsSectionHeader: 'Who needs it',
       targetSectionHeader:
         'What are the Improvement areas and Target proficiency',
       thresholdSectionHeader: 'When the above should be achieved',
@@ -369,7 +365,8 @@ export const formSectionExtraData = {
   },
   [INTERVENTION]: {
     sectionHeader: {
-      typeSectionHeader: 'What Type of intervention and Who needs it',
+      typeSectionHeader: 'What Type of intervention',
+      targetGroupsSectionHeader: 'Who needs it',
       targetSectionHeader:
         'What are the Improvement areas and expected Outcome of intervention',
       thresholdSectionHeader: 'When the intervention will be conducted',
@@ -385,12 +382,14 @@ export const formSectionExtraData = {
 export const formNavigationLabels = {
   [GOAL]: {
     [DETAILS_SECTION]: 'Goal type',
+    [TARGET_GROUPS_SECTION]: 'Target students',
     [TARGET_PROFICIENCY_SECTION]: 'Improvement areas',
     [THRESHOLD_DEADLINE_SECTION]: 'Deadline',
     [RELATED_GOALS_COMMENTS_SECTION]: 'Notes',
   },
   [INTERVENTION]: {
     [DETAILS_SECTION]: 'Intervention details',
+    [TARGET_GROUPS_SECTION]: 'Target students',
     [TARGET_PROFICIENCY_SECTION]: 'Expected Outcome',
     [THRESHOLD_DEADLINE_SECTION]: 'Intervention period',
     [RELATED_GOALS_COMMENTS_SECTION]: 'Related Goals and Notes',

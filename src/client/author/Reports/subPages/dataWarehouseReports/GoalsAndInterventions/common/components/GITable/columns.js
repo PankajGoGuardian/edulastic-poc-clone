@@ -130,7 +130,7 @@ const columns = [
         .localeCompare((b.group || '').toLowerCase()),
     width: 150,
     align: 'center',
-    render: (groups) => <EllipsisText lines={2}>{groups}</EllipsisText>,
+    render: (groups) => <EllipsisText lines={1}>{groups}</EllipsisText>,
   },
   {
     title: 'Baseline',

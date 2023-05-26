@@ -113,13 +113,19 @@ const AcademicSummary = ({
 
   const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
 
-  const _filters = {
+  const assessmentTypesForExternalUrl = (
+    widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key || ''
+  ).split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
+
+  const filtersForExternalUrl = {
     ...settings.requestFilters,
     profileId: widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
-    assessmentTypes: widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
+    assessmentTypes: assessmentTypesForExternalUrl,
   }
 
-  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
+  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(
+    filtersForExternalUrl
+  )}`
 
   const trendPeriodLabel = showFooter
     ? getTrendPeriodLabel(

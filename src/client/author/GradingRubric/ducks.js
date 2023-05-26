@@ -12,10 +12,17 @@ import { rubricsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { v4 } from 'uuid'
 import { isEmpty, isEqualWith } from 'lodash'
+import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
 import { getUserOrgId } from '../src/selectors/user'
 import { getDefaultRubricData } from './Components/common/helper'
+import {
+  getQuestionDataSelector,
+  setQuestionDataAction,
+} from '../QuestionEditor/ducks'
+
+const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
 // constants
 export const UPDATE_RUBRIC_DATA = '[rubric] update rubric data'
@@ -41,7 +48,8 @@ export const SET_IS_RUBRIC_GENERATION_IN_PROGRESS =
 export const SET_RUBRIC_GENERATION_STIMULUS =
   '[rubric] set rubric generation stimulus'
 
-export const SET_REMOVE_AI_TAG = '[rubric] set rubric data loading'
+export const REMOVE_AI_TAG_FROM_QUESTION =
+  '[rubric] remove ai tag from question'
 export const SET_UUID_LIST = '[rubric] set uuids'
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
@@ -72,7 +80,9 @@ export const setRubricGenerationStimulusAction = createAction(
   SET_RUBRIC_GENERATION_STIMULUS
 )
 
-export const setRemoveAiTagAction = createAction(SET_REMOVE_AI_TAG)
+export const removeAiTagFromQuestionAction = createAction(
+  REMOVE_AI_TAG_FROM_QUESTION
+)
 export const setUUIDsAction = createAction(SET_UUID_LIST)
 
 // selectors
@@ -146,7 +156,6 @@ const initialState = {
   rubricDataLoading: false,
   rubricGenerationInProgress: false,
   stimulusWhenRubricGenerated: '',
-  removeAiTag: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -181,9 +190,6 @@ export const reducer = createReducer(initialState, {
   },
   [SET_RUBRIC_GENERATION_STIMULUS]: (state, { payload }) => {
     state.stimulusWhenRubricGenerated = payload
-  },
-  [SET_REMOVE_AI_TAG]: (state, { payload }) => {
-    state.removeAiTag = payload
   },
   [SET_UUID_LIST]: (state, { payload }) => {
     state.uuids = payload
@@ -411,6 +417,15 @@ function* removeRubricFromRecentlyUsedRubric({ payload: archivedRubricId }) {
   }
 }
 
+function* removeAiTag() {
+  const questionData = yield select(getQuestionDataSelector)
+  const questionTags = questionData.tags || []
+  const filteredTags = questionTags.filter(
+    (tag) => tag.tagName !== AI_ASSISTED_RUBRICS
+  )
+  yield put(setQuestionDataAction({ ...questionData, tags: filteredTags }))
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SAVE_RUBRIC, saveRubricSaga),
@@ -428,5 +443,6 @@ export function* watcherSaga() {
       REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST,
       removeRubricFromRecentlyUsedRubric
     ),
+    yield takeEvery(REMOVE_AI_TAG_FROM_QUESTION, removeAiTag),
   ])
 }

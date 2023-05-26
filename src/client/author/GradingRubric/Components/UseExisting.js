@@ -9,6 +9,7 @@ import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
 import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
 import { EduIf, notification } from '@edulastic/common'
+import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -41,7 +42,7 @@ import {
   searchRubricsRequestAction,
   updateRubricAction,
   updateRubricDataAction,
-  setRemoveAiTagAction,
+  removeAiTagFromQuestionAction,
   getRubricUUIDsSelector,
   setRubricGenerationStimulusAction,
   getPreviousRubricGeneratedStimulusSelector,
@@ -66,6 +67,8 @@ import {
   setQuestionDataAction,
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
+
+const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
 const UseExisting = ({
   updateRubricData,
@@ -111,7 +114,6 @@ const UseExisting = ({
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [aIAssisted, setAIAssisted] = useState(false)
-  const aiTagName = 'AI assisted Rubrics'
 
   useEffect(() => {
     if (currentRubricData?.status) setIsEditable(false)
@@ -119,10 +121,10 @@ const UseExisting = ({
 
   const addTag = async () => {
     const questionTags = questionData.tags || []
-    let aiTag = allTagsData.find((tag) => tag.tagName === aiTagName)
+    let aiTag = allTagsData.find((tag) => tag.tagName === AI_ASSISTED_RUBRICS)
     if (!aiTag) {
       const { _id, tagName } = await tagsApi.create({
-        tagName: aiTagName,
+        tagName: AI_ASSISTED_RUBRICS,
         tagType: 'testitem',
       })
       aiTag = { _id, tagName }
@@ -131,18 +133,6 @@ const UseExisting = ({
     const tags = [...questionTags, aiTag]
     setQuestionData({ ...questionData, tags })
   }
-
-  const removeTag = async () => {
-    const questionTags = questionData.tags || []
-    const aiTag = questionTags.filter((tag) => tag.tagName !== aiTagName)
-    setQuestionData({ ...questionData, tags: aiTag })
-  }
-
-  useEffect(() => {
-    if (removeAiTag) {
-      removeTag()
-    }
-  }, [removeAiTag])
 
   useEffect(() => {
     if (actionType === 'VIEW RUBRIC') setCurrentMode('PREVIEW')
@@ -420,7 +410,7 @@ const UseExisting = ({
 
   const handleRemoveRubric = () => {
     dissociateRubricFromQuestion()
-    removeAiTag(true)
+    removeAiTag()
     if (isRegradeFlow) {
       notification({
         msg:
@@ -681,7 +671,7 @@ const enhance = compose(
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       setQuestionData: setQuestionDataAction,
       addNewTag: addNewTagAction,
-      removeAiTag: setRemoveAiTagAction,
+      removeAiTag: removeAiTagFromQuestionAction,
       setRubricGenerationStimulus: setRubricGenerationStimulusAction,
     }
   )

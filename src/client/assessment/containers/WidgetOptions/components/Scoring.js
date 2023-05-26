@@ -45,7 +45,7 @@ import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
 import {
   updateRubricDataAction,
-  setRemoveAiTagAction,
+  removeAiTagFromQuestionAction,
 } from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
@@ -102,7 +102,7 @@ class Scoring extends Component {
   handleRemoveRubric = () => {
     const { dissociateRubricFromQuestion, location, removeAiTag } = this.props
     dissociateRubricFromQuestion()
-    removeAiTag(true)
+    removeAiTag()
     if (
       location?.state?.regradeFlow ||
       location?.pathname?.includes('classboard') ||
@@ -582,7 +582,7 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
-      removeAiTag: setRemoveAiTagAction,
+      removeAiTag: removeAiTagFromQuestionAction,
     }
   )
 )

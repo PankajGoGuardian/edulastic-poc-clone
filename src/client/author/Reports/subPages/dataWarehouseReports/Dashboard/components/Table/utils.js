@@ -157,19 +157,24 @@ export const getTableColumns = ({
             align: 'left',
             visibleOn: ['browser'],
             className: 'performance-distribution',
-            render: (value) => (
-              <PerformanceDistribution
-                value={value}
-                testType={testTypeKey}
-                isStudentCompareBy={isStudentCompareBy}
-                selectedPerformanceBand={
-                  selectedTestType === testTypeKey
-                    ? selectedPerformanceBand
-                    : testTypeBands
-                }
-                isExternal={isExternal}
-              />
-            ),
+            render: (value, record) => {
+              const isDistrictAvgDimension =
+                record[tableColumnKeys.DIMENSION] === districtAvgDimension
+              return (
+                <PerformanceDistribution
+                  value={value}
+                  testType={testTypeKey}
+                  isStudentCompareBy={isStudentCompareBy}
+                  isDistrictAvgDimension={isDistrictAvgDimension}
+                  selectedPerformanceBand={
+                    selectedTestType === testTypeKey
+                      ? selectedPerformanceBand
+                      : testTypeBands
+                  }
+                  isExternal={isExternal}
+                />
+              )
+            },
           },
         ]
       }

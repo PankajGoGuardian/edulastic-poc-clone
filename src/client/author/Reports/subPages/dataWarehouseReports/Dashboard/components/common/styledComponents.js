@@ -214,6 +214,6 @@ export const CustomStyledCell = styled.div`
   font-size: 12px;
   font-weight: bold;
   background-color: ${(p) => p.color};
-  margin: 0px 40px;
+  margin: 0px auto;
   border-radius: 8px;
 `

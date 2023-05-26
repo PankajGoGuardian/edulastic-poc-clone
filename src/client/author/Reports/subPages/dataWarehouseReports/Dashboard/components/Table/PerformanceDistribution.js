@@ -6,16 +6,16 @@ import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import { getHorizontalBarData } from './utils'
 import { CustomStyledCell } from '../common/styledComponents'
 
-const { getProficiencyBand, performanceBandKeys } = reportUtils.common
+const { performanceBandKeys } = reportUtils.common
 
 const PerformanceDistribution = ({
   value,
   testType,
   isStudentCompareBy,
+  isDistrictAvgDimension,
   selectedPerformanceBand,
   isExternal,
 }) => {
-  const avg = value[testType]?.avgScore || 0
   let band = {}
   let barData = []
 
@@ -23,27 +23,33 @@ const PerformanceDistribution = ({
     ? performanceBandKeys.EXTERNAL
     : performanceBandKeys.INTERNAL
 
-  if (isStudentCompareBy) {
-    band = getProficiencyBand(avg, selectedPerformanceBand, bandKey)
-  } else {
+  const showDistribution = !isStudentCompareBy || isDistrictAvgDimension
+  const distribution = value[testType]?.distribution || []
+
+  if (showDistribution) {
     barData = getHorizontalBarData(
-      value[testType]?.distribution,
+      distribution,
       selectedPerformanceBand,
       bandKey
     )
+  } else {
+    band =
+      selectedPerformanceBand.find(
+        (pb) => pb[bandKey] === distribution[0]?.bandScore
+      ) || {}
   }
 
   return (
-    <EduIf condition={isStudentCompareBy}>
+    <EduIf condition={showDistribution}>
       <EduThen>
-        <Tooltip title={band?.name || ''}>
-          <CustomStyledCell color={band?.color} className="styled-cell">
-            {band?.name || ''}
-          </CustomStyledCell>
-        </Tooltip>
+        <HorizontalBar data={barData} />
       </EduThen>
       <EduElse>
-        <HorizontalBar data={barData} />
+        <Tooltip title={band.name || ''}>
+          <CustomStyledCell color={band.color} className="styled-cell">
+            {band.name || ''}
+          </CustomStyledCell>
+        </Tooltip>
       </EduElse>
     </EduIf>
   )

@@ -195,7 +195,7 @@ const DashboardTable = ({
             rowSelection={rowSelection}
             isCsvDownloading={isCsvDownloading}
             isStudentCompareBy={isStudentCompareBy}
-            // TODO pass pagination based on tableFilters.pageSize
+            pagination={false}
           />
         </EduThen>
         <EduElse>

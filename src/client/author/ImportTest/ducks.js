@@ -138,9 +138,9 @@ export function* uploadTestStaga({ payload }) {
 
 function* getImportProgressSaga({ payload: jobIds }) {
   try {
-    const response = yield call(contentImportApi.contentImportProgress, {
-      jobIds,
-    })
+    const response = yield all(
+      jobIds.map((jobId) => call(contentImportApi.qtiImportStatus, jobId))
+    )
     yield put(setJobsDataAction(response))
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))

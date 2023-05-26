@@ -1,7 +1,7 @@
 import API from './utils/API'
 
 const api = new API()
-const prefix = '/content'
+let prefix = '/content'
 
 const contentImport = (data) => {
   return api
@@ -23,7 +23,30 @@ const contentImportProgress = (data) => {
     .then(({ data: response }) => response)
 }
 
+const qtiImport = (data) => {
+  prefix = 'qti'
+  return api
+    .callApi({
+      url: `${prefix}/import`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+}
+
+const qtiImportStatus = (data) => {
+  prefix = 'qti'
+  return api
+    .callApi({
+      url: `${prefix}/import/${data.jobId}`,
+      method: 'get',
+    })
+    .then(({ data: response }) => response)
+}
+
 export default {
   contentImport,
   contentImportProgress,
+  qtiImport,
+  qtiImportStatus,
 }

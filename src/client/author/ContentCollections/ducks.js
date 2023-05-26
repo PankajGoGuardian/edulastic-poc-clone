@@ -406,14 +406,21 @@ export function* importTestToCollectionSaga({ payload }) {
     yield put(setCISuccessMessageAction('Started creating the items'))
     yield put(setIsContentImportingAction(true))
 
-    const response = yield call(contentImportApi.contentImport, {
+    const payloadData = {
       files: [signedUrl],
       type,
       collectionName: selectedCollectionName,
       createTest,
       testItemStatus,
       testItemTags: selectedTags,
-    })
+    }
+    let endpoint = contentImportApi.contentImport
+    if (type === 'qti') {
+      endpoint = contentImportApi.qtiImport
+      payloadData.file = signedUrl
+      delete payloadData.files
+    }
+    const response = yield call(endpoint, payloadData)
     if (response?.jobIds?.length) {
       yield put(importTestToCollectionSuccessAction(response.jobIds))
       yield put(setImportContentJobIdsAction(response.jobIds))

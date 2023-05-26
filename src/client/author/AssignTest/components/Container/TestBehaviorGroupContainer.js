@@ -37,7 +37,7 @@ import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
-import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -533,11 +533,9 @@ const TestBehaviorGroupContainer = ({
             <Col span={10}>
               <Label>
                 <span>{i18translate('allowAutoEssayEvaluation.title')}</span>
+                <BetaTag2>BETA</BetaTag2>
                 <DollarPremiumSymbol premium={premium} />
               </Label>
-              <BetaTag top="-20%" left="290px">
-                BETA
-              </BetaTag>
             </Col>
             <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
               <Row style={{ display: 'flex', alignItems: 'center' }}>

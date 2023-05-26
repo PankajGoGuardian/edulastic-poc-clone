@@ -44,7 +44,7 @@ import SettingContainer from '../Container/SettingsContainer'
 import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
 import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
-import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
 
 const { COMMON } = testTypes.TEST_TYPES
@@ -836,11 +836,11 @@ const Settings = ({
             />
             <StyledRow gutter={16} mb="15px">
               <Col span={12}>
-                <Label>{i18translate('allowAutoEssayEvaluation.title')}</Label>
-                <DollarPremiumSymbol premium={premium} />
-                <BetaTag top="-9%" left="255.55px">
-                  BETA
-                </BetaTag>
+                <Label>
+                  {i18translate('allowAutoEssayEvaluation.title')}
+                  <BetaTag2>BETA</BetaTag2>
+                  <DollarPremiumSymbol premium={premium} />
+                </Label>
               </Col>
               <Col span={12}>
                 <AlignSwitchRight

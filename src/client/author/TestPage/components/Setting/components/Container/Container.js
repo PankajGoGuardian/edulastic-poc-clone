@@ -27,6 +27,7 @@ import {
   EduButton,
   EduIf,
   EduThen,
+  FlexContainer,
 } from '@edulastic/common'
 import {
   roleuser,
@@ -117,7 +118,10 @@ import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
-import { BetaTag } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import {
+  BetaTag,
+  BetaTag2,
+} from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const {
   settingCategories,
@@ -1731,13 +1735,11 @@ class Setting extends Component {
                     <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
                       <SettingContainer>
                         <Title>
-                          <span>
+                          <FlexContainer>
                             {i18translate('allowAutoEssayEvaluation.title')}
+                            <BetaTag2>BETA</BetaTag2>
                             <DollarPremiumSymbol premium={premium} />
-                            <BetaTag top="1%" left="326.55px">
-                              BETA
-                            </BetaTag>
-                          </span>
+                          </FlexContainer>
                           <Tooltip
                             title={i18translate(
                               'allowAutoEssayEvaluation.info'
@@ -1745,7 +1747,7 @@ class Setting extends Component {
                           >
                             <IconInfo
                               color={lightGrey9}
-                              style={{ marginLeft: '60px', cursor: 'pointer' }}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
                             />
                           </Tooltip>
                           <EduSwitchStyled

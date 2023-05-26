@@ -347,7 +347,7 @@ const CanvasBulkAddClass = ({
         return (
           <Select
             showSearch
-            style={{ width: '100%' }}
+            style={{ width: '250px' }}
             filterOption={(input, option) => {
               if (
                 option.props.children &&

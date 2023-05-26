@@ -169,7 +169,7 @@ export const goalFormFields = ({
     studentGroup: {
       field: STUDENT_GROUP_IDS,
       label: 'Class/group',
-      fieldType: DROPDOWN,
+      fieldType: MULTISELECT_DROPDOWN,
       isRequired: true,
       placeholder: 'Select student group',
       optionsData: [],

@@ -68,7 +68,6 @@ const CreateGI = ({
   goalsOptionsData,
   saveFormData,
   isSaveInProgress,
-  group,
   onCancel,
   resetFormData,
   currentFormStatus,
@@ -151,12 +150,6 @@ const CreateGI = ({
   const allFormFields = isSaveGoalView
     ? goalFormFields({ type: formData.type, startDate, endDate })
     : interventionFormFields({ type: formData.type, startDate, endDate })
-
-  if (group) {
-    if (!formData.studentGroupIds) {
-      handleFieldDataChange('studentGroupIds', group._id)
-    }
-  }
 
   const sectionHeaders = isSaveGoalView
     ? goalFormSectionHeaders

@@ -912,7 +912,7 @@ class PreviewModal extends React.Component {
                 >
                   {this.isAddOrRemove
                     ? 'Add To Test'
-                    : `Remove from ${groupName.toUpperCase()}`}
+                    : `Remove from ${groupName}`}
                 </EduButton>
               ))}
             <ButtonsWrapper

@@ -57,6 +57,7 @@ import {
   showScoreSelector,
   getIsShowUnAssignSelector,
   testActivtyLoadingSelector,
+  getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
@@ -475,6 +476,7 @@ class ClassHeader extends Component {
       schoologySyncAssignment,
       syncWithSchoologyClassroomInProgress,
       isProxiedByEAAccount,
+      testContentVisibility,
     } = this.props
     const {
       visible,
@@ -1032,12 +1034,20 @@ class ClassHeader extends Component {
                 </FeaturesSwitch>
 
                 <WithDisableMessage
-                  disabled={!isItemsVisible}
+                  disabled={
+                    !isItemsVisible &&
+                    testContentVisibility !==
+                      testContants.testContentVisibility.HIDDEN
+                  }
                   errMessage={t('common.testHidden')}
                 >
                   <HeaderTabs
                     to={`/author/standardsBasedReport/${assignmentId}/${classId}`}
-                    disabled={!isItemsVisible}
+                    disabled={
+                      !isItemsVisible &&
+                      testContentVisibility !==
+                        testContants.testContentVisibility.HIDDEN
+                    }
                     dataCy="StandardsBasedReport"
                     isActive={active === 'standard_report'}
                     icon={<IconNotes left={0} />}
@@ -1232,6 +1242,8 @@ const enhance = compose(
         state
       ),
       userRole: getUserRole(state),
+      testContentVisibility:
+        getAdditionalDataSelector(state)?.testContentVisibility || '',
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

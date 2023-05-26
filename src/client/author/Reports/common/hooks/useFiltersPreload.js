@@ -16,10 +16,15 @@ function useFiltersPreload({
   externalTestsRequired = false,
   externalBandsRequired = false,
   externalTestTypesRequired = true,
+  testSettingsRequired = false,
 }) {
   useEffect(() => {
     if (reportId) {
-      fetchFiltersDataRequest({ reportId, externalBandsRequired })
+      fetchFiltersDataRequest({
+        reportId,
+        externalBandsRequired,
+        testSettingsRequired,
+      })
       setFilters({ ...filters, ...search })
     } else {
       const q = {
@@ -28,6 +33,7 @@ function useFiltersPreload({
         externalTestsRequired,
         externalBandsRequired,
         externalTestTypesRequired,
+        testSettingsRequired,
       }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true

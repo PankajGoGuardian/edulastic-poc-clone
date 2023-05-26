@@ -50,7 +50,10 @@ import {
   getUser,
   currentDistrictInstitutionIds,
 } from '../../../../../../src/selectors/user'
-import { resetStudentFilters } from '../../../../../common/util'
+import {
+  getPerformanceBandsListByTestType,
+  resetStudentFilters,
+} from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
@@ -58,6 +61,7 @@ import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTy
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
 import { getReportsMARSettings } from '../../../ducks'
 import { getUpdatedFiltersAndTags } from './utils'
+import usePerformanceBandsList from '../../../../../common/hooks/usePerformanceBandsList'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   (res, ele) => ({ [ele]: ele, ...res }),
@@ -111,6 +115,7 @@ const MultipleAssessmentReportFilters = ({
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
+
   const assessmentTypesRef = useRef()
   const isPrePostReport = loc === reportNavType.PRE_VS_POST
   const tagTypes = staticDropDownData.tagTypes.filter((t) => {
@@ -121,11 +126,19 @@ const MultipleAssessmentReportFilters = ({
     return true
   })
 
-  const performanceBandProfiles = get(MARFilterData, 'data.result.bandInfo', [])
-  const performanceBandList = useMemo(
-    () => performanceBandProfiles.map((p) => ({ key: p._id, title: p.name })),
-    [performanceBandProfiles]
+  const bandInfo = get(MARFilterData, 'data.result.bandInfo', [])
+  const defaultPBIdToTTMap = get(
+    MARFilterData,
+    'data.result.testSettings.testTypesProfile.performanceBand',
+    {}
   )
+
+  const [
+    performanceBandList,
+    defaultPerformanceBandList,
+    setPerformanceBandListToUse,
+  ] = usePerformanceBandsList(bandInfo)
+
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
 
@@ -139,15 +152,16 @@ const MultipleAssessmentReportFilters = ({
   )
 
   useEffect(() => {
+    const testSettingsRequired = true
     if (reportId) {
-      getMARFilterDataRequest({ reportId })
+      getMARFilterDataRequest({ reportId, testSettingsRequired })
       setFilters({ ...filters, ...search })
     } else if (MARFilterData !== prevMARFilterData) {
       const termId =
         search.termId ||
         defaultTermId ||
         (schoolYears.length ? schoolYears[0].key : '')
-      const q = { ...search, termId }
+      const q = { ...search, termId, testSettingsRequired }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
@@ -348,6 +362,18 @@ const MultipleAssessmentReportFilters = ({
     if (isClearTestFilterKey) {
       _filters.preTestId = ''
       _filters.postTestId = ''
+    }
+    if (keyName === FILTER_KEYS_MAP.assessmentTypes && isPrePostReport) {
+      const _performanceBandListToUse = getPerformanceBandsListByTestType(
+        defaultPerformanceBandList,
+        selected,
+        defaultPBIdToTTMap
+      )
+      if (_performanceBandListToUse.length) {
+        setPerformanceBandListToUse(_performanceBandListToUse)
+        const _profileId = _performanceBandListToUse[0].key
+        Object.assign(_filters, { profileId: _profileId })
+      }
     }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')

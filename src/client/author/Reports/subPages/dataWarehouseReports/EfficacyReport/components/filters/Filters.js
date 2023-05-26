@@ -4,7 +4,10 @@ import { get, isEmpty, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+import {
+  getPerformanceBandsListByTestType,
+  resetStudentFilters as resetFilters,
+} from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import { staticDropDownData } from '../../utils'
 
@@ -25,6 +28,7 @@ import {
   filterKeysToCompareByKeys,
   nextCompareByKeys,
 } from '../../../common/utils'
+import usePerformanceBandsList from '../../../../../common/hooks/usePerformanceBandsList'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   (res, ele) => ({ [ele]: ele, ...res }),
@@ -85,11 +89,17 @@ const Filters = ({
     externalTests = [],
     externalBands = [],
   } = get(filtersData, 'data.result', {})
-
-  const performanceBandsList = useMemo(
-    () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
-    [bandInfo]
+  const defaultPBIdToTTMap = get(
+    filtersData,
+    'data.result.testSettings.testTypesProfile.performanceBand',
+    {}
   )
+
+  const [
+    performanceBandsList,
+    defaultPerformanceBandsList,
+    setPerformanceBandsListToUse,
+  ] = usePerformanceBandsList(bandInfo)
 
   const search = useUrlSearchParams(location)
 
@@ -108,6 +118,7 @@ const Filters = ({
       (schoolYears.length ? schoolYears[0].key : ''),
     externalTestsRequired: true,
     externalBandsRequired: true,
+    testSettingsRequired: true,
   })
 
   useFiltersFromURL({
@@ -213,6 +224,21 @@ const Filters = ({
     if (isClearTestFilterKey) {
       _filters.preTestId = ''
       _filters.postTestId = ''
+    }
+    if (keyName === FILTER_KEYS_MAP.assessmentTypes) {
+      const _performanceBandsListToUse = getPerformanceBandsListByTestType(
+        defaultPerformanceBandsList,
+        selected,
+        defaultPBIdToTTMap
+      )
+      if (_performanceBandsListToUse.length) {
+        setPerformanceBandsListToUse(_performanceBandsListToUse)
+        const _profileId = _performanceBandsListToUse[0].key
+        Object.assign(_filters, {
+          preProfileId: _profileId,
+          postProfileId: _profileId,
+        })
+      }
     }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')

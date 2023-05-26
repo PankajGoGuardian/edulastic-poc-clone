@@ -1,5 +1,6 @@
 import { SpinLoader, EduIf, EduElse, EduThen } from '@edulastic/common'
 import { Col, Row, Pagination } from 'antd'
+import qs from 'qs'
 import next from 'immer'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -66,12 +67,18 @@ const PeerPerformance = ({
   getPeerPerformance,
   resetPeerPerformance,
   settings,
+  location,
   demographicFilters,
+  setAdditionalUrlParams,
   sharedReport,
   setPerformanceBandProfile,
   toggleFilter,
   generateCSV,
 }) => {
+  const urlSearch = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
+  })
   const [userRole, sharedReportFilters] = useMemo(
     () => [
       sharedReport?.sharedBy?.role || role,
@@ -82,19 +89,44 @@ const PeerPerformance = ({
     [sharedReport]
   )
   const [ddfilter, setDdFilter] = useState({
-    analyseBy: analyseByOptions.scorePerc,
-    compareBy: userRole === 'teacher' ? 'class' : 'school',
+    analyseBy: urlSearch.analyseBy || analyseByOptions.scorePerc,
+    compareBy:
+      urlSearch.compareBy || userRole === 'teacher' ? 'class' : 'school',
   })
   const [chartFilter, setChartFilter] = useState({})
-  const [pageNo, setPageNo] = useState(1)
-  const [sortKey, setSortKey] = useState(sortKeyMaps.DIM_SCORE_PERC)
-  const [sortOrder, setSortOrder] = useState(undefined)
+  const [pageNo, setPageNo] = useState(Number(urlSearch.pageNo) || 1)
+  const [sortKey, setSortKey] = useState(
+    urlSearch.sortKey || sortKeyMaps.DIM_SCORE_PERC
+  )
+  const [sortOrder, setSortOrder] = useState(urlSearch.sortOrder || undefined)
   const [extDemographicData, setExtDemographicData] = useState({})
   const [extDemogaphicFilters, setExtDemographicFilters] = useState([])
   const [chartBackNavigation, setChartBackNavigation] = useState(false)
   const _firstLoadRef = useRef(true)
 
   useEffect(() => () => resetPeerPerformance(), [])
+
+  const onSetPageNo = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      pageNo: value,
+    }))
+    setPageNo(value)
+  }
+  const onSetSortKey = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortKey: value,
+    }))
+    setSortKey(value)
+  }
+  const onSetSortOrder = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortOrder: value,
+    }))
+    setSortOrder(value)
+  }
 
   const fetPeerPerformanceData = (recompute) => {
     const q = {
@@ -199,6 +231,10 @@ const PeerPerformance = ({
     if (
       !compareByDropDownData.map((dd) => dd.key).includes(ddfilter.compareBy)
     ) {
+      setAdditionalUrlParams((prevDdFilter) => ({
+        ...prevDdFilter,
+        compareBy: compareByDropDownData[0].key,
+      }))
       setDdFilter((prevDdFilter) => ({
         ...prevDdFilter,
         compareBy: compareByDropDownData[0].key,
@@ -211,20 +247,28 @@ const PeerPerformance = ({
     }
   }, [ddfilter, bandInfo])
   const updateAnalyseByCB = (event, selected) => {
+    setAdditionalUrlParams((prevDdFilter) => ({
+      ...prevDdFilter,
+      analyseBy: selected.key,
+    }))
     setDdFilter({
       ...ddfilter,
       analyseBy: selected.key,
     })
-    setPageNo(1)
+    onSetPageNo(1)
     setChartFilter({})
   }
 
   const updateCompareByCB = (event, selected) => {
+    setAdditionalUrlParams((prevDdFilter) => ({
+      ...prevDdFilter,
+      compareBy: selected.key,
+    }))
     setDdFilter({
       ...ddfilter,
       compareBy: selected.key,
     })
-    setPageNo(1)
+    onSetPageNo(1)
     setChartFilter({})
   }
 
@@ -294,7 +338,7 @@ const PeerPerformance = ({
     )
   }
   const chartProps = {
-    setPageNo,
+    setPageNo: onSetPageNo,
     pageNo,
     tablePageSize: pageSize,
     totalRows: peerPerformance.totalRows,
@@ -436,16 +480,16 @@ const PeerPerformance = ({
               assessmentName={assessmentName}
               bandInfo={bandInfo}
               role={userRole}
-              setSortKey={setSortKey}
-              setSortOrder={setSortOrder}
+              setSortKey={onSetSortKey}
+              setSortOrder={onSetSortOrder}
               sortKey={sortKey}
               sortOrder={sortOrder}
-              setPageNo={setPageNo}
+              setPageNo={onSetPageNo}
             />
             <EduIf condition={peerPerformance.totalRows > pageSize}>
               <Pagination
                 style={{ marginTop: '10px' }}
-                onChange={setPageNo}
+                onChange={onSetPageNo}
                 current={pageNo}
                 pageSize={pageSize}
                 total={peerPerformance.totalRows}

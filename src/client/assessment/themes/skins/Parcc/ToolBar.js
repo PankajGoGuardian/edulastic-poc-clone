@@ -40,7 +40,6 @@ const ToolBar = ({
   checkAnswerInProgress,
   answerChecksUsedForItem,
   checkAnswer,
-  showCalculator,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -77,7 +76,7 @@ const ToolBar = ({
           <IconCheck />
         </StyledButton>
       )}
-      <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+      <EduIf condition={!isEmpty(calcTypes)}>
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}

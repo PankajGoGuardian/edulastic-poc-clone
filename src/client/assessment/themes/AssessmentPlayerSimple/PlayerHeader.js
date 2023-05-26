@@ -67,7 +67,6 @@ const PlayerHeader = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
-  showCalculator,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -203,7 +202,6 @@ const PlayerHeader = ({
                     openReferenceModal={openReferenceModal}
                     isShowReferenceModal={isShowReferenceModal}
                     canShowReferenceMaterial={canShowReferenceMaterial}
-                    showCalculator={showCalculator}
                   />
                 </EduIf>
               </MainActionWrapper>

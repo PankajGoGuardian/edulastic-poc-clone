@@ -96,7 +96,6 @@ const PlayerHeader = ({
   isShowReferenceModal,
   openReferenceModal,
   t: i18Translate,
-  showCalculator,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -304,7 +303,6 @@ const PlayerHeader = ({
                 isShowReferenceModal={isShowReferenceModal}
                 openReferenceModal={openReferenceModal}
                 i18Translate={i18Translate}
-                showCalculator={showCalculator}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

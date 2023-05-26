@@ -69,7 +69,6 @@ const PlayerHeader = ({
   openReferenceModal,
   isShowReferenceModal,
   canShowReferenceMaterial,
-  showCalculator,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -240,7 +239,6 @@ const PlayerHeader = ({
                           isPremiumContentWithoutAccess={
                             isPremiumContentWithoutAccess
                           }
-                          showCalculator={showCalculator}
                         />
                       </EduElse>
                     </EduIf>

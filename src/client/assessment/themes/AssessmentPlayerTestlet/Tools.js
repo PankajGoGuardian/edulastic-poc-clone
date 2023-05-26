@@ -12,10 +12,9 @@ const Tools = ({
   calcTypes,
   handleMagnifier,
   enableMagnifier,
-  showCalculator,
 }) => (
   <ToolBox>
-    <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+    <EduIf condition={!isEmpty(calcTypes)}>
       <Tooltip title="Calculator">
         <ToolButton
           active={currentTool === 1}

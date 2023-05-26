@@ -67,7 +67,6 @@ const PlayerFooter = ({
   passage,
   openReferenceModal,
   canShowReferenceMaterial,
-  showCalculator,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -214,7 +213,7 @@ const PlayerFooter = ({
 
         <span>{t('common.test.answerEliminator')}</span>
       </ActionContainer>
-      <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+      <EduIf condition={!isEmpty(calcTypes)}>
         <ActionContainer
           hoverEffect
           active={tool?.includes(CALC)}

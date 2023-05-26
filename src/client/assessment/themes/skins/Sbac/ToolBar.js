@@ -50,7 +50,6 @@ const ToolBar = ({
   isShowReferenceModal,
   openReferenceModal,
   i18Translate,
-  showCalculator,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -123,7 +122,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+      <EduIf condition={!isEmpty(calcTypes)}>
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}

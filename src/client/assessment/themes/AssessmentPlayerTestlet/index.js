@@ -17,8 +17,6 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { finishTestAcitivityAction } from '../../actions/test'
 import { saveTestletUserResponse } from '../../actions/items'
 
-import { isDesmosCalculatorEnabledSelector } from '../../../author/src/selectors/user'
-
 // components
 import { Container, CalculatorContainer } from '../common'
 import PlayerContent from './PlayerContent'
@@ -186,7 +184,6 @@ export default connect(
     currentAssignmentTime: state.test?.currentAssignmentTime,
     savingResponse: state?.test?.savingResponse,
     stopTimerFlag: state.test?.stopTimerFlag,
-    showCalculator: isDesmosCalculatorEnabledSelector(state),
   }),
   {
     checkAnswer: checkAnswerEvaluation,

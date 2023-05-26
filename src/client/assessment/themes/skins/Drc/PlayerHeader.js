@@ -83,7 +83,6 @@ const PlayerHeader = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
-  showCalculator,
 }) => {
   const {
     calcTypes,
@@ -195,7 +194,7 @@ const PlayerHeader = ({
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
-                <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+                <EduIf condition={!isEmpty(calcTypes)}>
                   <ButtonWrapper
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}

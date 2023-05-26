@@ -41,7 +41,6 @@ const ToolBar = ({
   hasDrawingResponse,
   isPremiumContentWithoutAccess = false,
   t: translate,
-  showCalculator,
 }) => {
   const {
     calcTypes,
@@ -76,7 +75,7 @@ const ToolBar = ({
         onClick={toolbarHandler(1)}
         hidden
       />
-      <EduIf condition={showCalculator && !isEmpty(calcTypes)}>
+      <EduIf condition={!isEmpty(calcTypes)}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.calculator')}

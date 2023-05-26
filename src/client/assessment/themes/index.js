@@ -86,10 +86,7 @@ import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
-import {
-  allowReferenceMaterialSelector,
-  isDesmosCalculatorEnabledSelector,
-} from '../../author/src/selectors/user'
+import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
 import BlockScreenOnCtrlPress from '../../../utils/anticheating/keypressEventBlocker/BlockScreenOnCtrlPress'
 import AppConfig from '../../../app-config'
 import {
@@ -601,7 +598,6 @@ const AssessmentContainer = ({
   autoSaveInterval,
   isAntiCheatingEnabled,
   setAntiCheatingEnabled,
-  showCalculator,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -1350,7 +1346,6 @@ const AssessmentContainer = ({
     ...restProps,
     classLevelSettings,
     isAntiCheatingEnabled,
-    showCalculator,
   }
 
   useEffect(() => {
@@ -1585,7 +1580,6 @@ const enhance = compose(
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       autoSaveInterval: autoSaveIntervalSelector(state),
       isAntiCheatingEnabled: getIsAntiCheatingEnabled(state),
-      showCalculator: isDesmosCalculatorEnabledSelector(state),
     }),
     {
       saveUserResponse,

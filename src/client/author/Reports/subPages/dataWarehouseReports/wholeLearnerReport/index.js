@@ -7,7 +7,11 @@ import next from 'immer'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  helpLinks,
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import StudentDetails from './components/StudentDetails'
@@ -416,6 +420,7 @@ const WholeLearnerReport = ({
                     <SectionLabel
                       $margin="30px 0px 10px 0px"
                       showHelp
+                      url={helpLinks[reportNavType.WHOLE_LEARNER_REPORT]}
                       style={{ fontSize: '20px' }}
                     >
                       Whole Learner

@@ -1,4 +1,5 @@
 import React from 'react'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import SectionLabel from '../../../common/components/SectionLabel'
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
@@ -38,6 +39,7 @@ function ReportView({
         style={{ fontSize: '20px' }}
         $margin="30px 0px 10px 0px"
         showHelp
+        url={helpLinks[reportNavType.DW_DASHBOARD_REPORT]}
       >
         Overview
       </SectionLabel>

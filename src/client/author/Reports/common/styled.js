@@ -864,7 +864,6 @@ export const StyledButton = styled(Button)`
   align-items: center;
   height: 24px;
   margin: 0 20px 0 20px;
-  padding: 4px;
   padding-right: 10px;
   padding-left: 10px;
 `

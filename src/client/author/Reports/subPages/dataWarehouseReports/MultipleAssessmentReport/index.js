@@ -6,7 +6,11 @@ import { Spin } from 'antd'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  helpLinks,
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
 import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   TABLE_SORT_ORDER_TYPES,
@@ -436,6 +440,7 @@ const MultipleAssessmentReport = ({
               $margin="30px 0px 10px 0px"
               style={{ fontSize: '20px' }}
               showHelp
+              url={helpLinks[reportNavType.MULTIPLE_ASSESSMENT_REPORT_DW]}
             >
               Performance Trends
             </SectionLabel>

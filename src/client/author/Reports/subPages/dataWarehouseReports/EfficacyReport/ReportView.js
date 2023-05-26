@@ -1,5 +1,6 @@
 import React from 'react'
 import { fadedBlack } from '@edulastic/colors'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import { StyledCard, StyledReportContainer } from '../../../common/styled'
 import { StyledSpan } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 
@@ -53,6 +54,7 @@ const ReportView = ({
           style={{ fontSize: '20px' }}
           $margin="30px 0px 10px 0px"
           showHelp
+          url={helpLinks[reportNavType.DW_EFFICACY_REPORT]}
         >
           Efficacy
         </SectionLabel>

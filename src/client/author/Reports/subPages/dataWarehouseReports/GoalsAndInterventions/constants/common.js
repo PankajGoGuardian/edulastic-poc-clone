@@ -116,6 +116,39 @@ export const GIActionOptions = [
   // },
 ]
 
+export const GroupListReportMenu = [
+  {
+    id: 'summary',
+    label: 'View Summary',
+    link:
+      '/author/reports/dashboard-report?termId={termId}&testSubjects={subject}&testGrades={grades}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}All&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&periodType=TILL_DATE&reportId=&selectedCompareBy=school',
+  },
+  {
+    id: 'trends',
+    label: 'View Trends',
+    link:
+      '/author/reports/multiple-assessment-report-dw?termId={termId}&testSubjects={subject}&testGrades={grades}&tagIds={tagIds}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&reportId=&selectedCompareBy=school',
+  },
+  {
+    id: 'attendance',
+    label: 'View Attendance',
+    link:
+      '/author/reports/attendance-summary?termId={termId}&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&periodType=TILL_DATE&reportId=',
+  },
+  {
+    id: 'early',
+    label: 'View Early Warning',
+    link:
+      '/author/reports/early-warning-report?termId={termId}&schoolIds=&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=&groupIds={groupId}&race=&gender=&iepStatus=&frlStatus=&ellStatus=&hispanicEthnicity=&periodType=TILL_DATE&riskType=overall&showCumulativeData=false&timeframe=monthly&selectedCompareBy=school',
+  },
+  {
+    id: 'efficacy',
+    label: 'View Efficacy',
+    link:
+      '/author/reports/efficacy-report?termId={termId}&testSubjects={subject}&testGrades=All&tagIds={tagIds}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&preTestId=All&postTestId=All&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&reportId=&selectedCompareBy=school&preBandScore=&postBandScore=',
+  },
+]
+
 export const statusList = (data) => ({
   goal: [
     {

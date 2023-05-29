@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import Menu from 'antd/lib/menu'
 import { Link } from 'react-router-dom'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
-import { urlParamsKeys } from '../../constants/common'
+// import { urlParamsKeys } from '../../constants/common'
 
 const ActionMenuItem = ({ item, urlData, ...restProps }) => {
   const { link = '', id, label } = item
@@ -11,10 +11,10 @@ const ActionMenuItem = ({ item, urlData, ...restProps }) => {
     if (link?.length) {
       let updatedUrl = link
 
-      urlParamsKeys.forEach((param) => {
+      Object.keys(urlData).forEach((param) => {
         updatedUrl = urlData[param]?.length
-          ? updatedUrl.replace(`{${param}}`, urlData[param])
-          : updatedUrl.replace(`{${param}}`, '')
+          ? updatedUrl.replace(new RegExp(`{${param}}`, 'g'), urlData[param])
+          : updatedUrl.replace(new RegExp(`{${param}}`, 'g'), '')
       })
       return updatedUrl
     }

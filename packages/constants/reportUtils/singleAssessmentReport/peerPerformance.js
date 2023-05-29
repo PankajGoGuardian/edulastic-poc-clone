@@ -1,4 +1,4 @@
-const { startCase, get } = require('lodash')
+const { startCase, get, isNil } = require('lodash')
 
 const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`
 
@@ -110,15 +110,23 @@ const transformByAboveBelowStandard = (data) => {
 }
 
 const transformByRawScore = (data) => {
+  const firstItemMax = (
+    data[0].dimensionMaxScore / data[0].submittedStudents
+  )?.toFixed(2)
+  const lastItemMax = (
+    data[data.length - 1].dimensionMaxScore /
+    data[data.length - 1].submittedStudents
+  )?.toFixed(2)
+  const maxScore = Number.isNaN(firstItemMax) ? lastItemMax : firstItemMax
   const transformedData = data.map((item) => {
-    const maxScore = (item.dimensionMaxScore / item.submittedStudents)?.toFixed(
-      2
-    )
     return {
       ...item,
       maxScore,
+      dimensionAvg: isNil(item.dimensionAvg) ? 0 : item.dimensionAvg,
       dimensionId: item.dimension._id,
-      correct: item.dimensionAvg?.toFixed(2),
+      correct: isNil(item.dimensionAvg?.toFixed(2))
+        ? 0
+        : item.dimensionAvg?.toFixed(2),
       incorrect: (maxScore - item.dimensionAvg)?.toFixed(2),
       fill: getHSLFromRange1((100 * item.dimensionAvg) / maxScore),
       dFill: getHSLFromRange1((item.districtAvg * 100) / maxScore),

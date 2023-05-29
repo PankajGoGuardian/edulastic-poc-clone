@@ -1,6 +1,7 @@
 import {
   faClone,
   faMinus,
+  faMagic,
   faPencilAlt,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
@@ -476,6 +477,7 @@ const UseExisting = ({
                 title={autoGenerateRubricTooltip}
                 loading={isRubricGenerationInProgress}
               >
+                <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
                 Auto Generate Rubric
               </CustomStyleBtn2>
             </EduIf>

@@ -21,9 +21,9 @@ const useRowSelection = (data, showRowSelection) => {
       ),
   }
 
-  const checkedStudentsForModal = data.filter(({ dimension }) =>
-    checkedStudents.includes(dimension._id)
-  )
+  const checkedStudentsForModal = data
+    .filter(({ dimension }) => checkedStudents.includes(dimension._id))
+    .map(({ dimension }) => dimension)
 
   const handleAddToGroupClick = () => {
     if (checkedStudentsForModal.length) {

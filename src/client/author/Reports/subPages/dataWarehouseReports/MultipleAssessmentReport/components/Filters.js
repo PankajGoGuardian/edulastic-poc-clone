@@ -111,6 +111,7 @@ const MultipleAssessmentReportFilters = ({
         q.schoolIds = institutionIds.join(',')
       }
       q.externalTestTypesRequired = true
+      q.externalTestsRequired = true
       fetchFiltersDataRequest(q)
     }
   }, [])

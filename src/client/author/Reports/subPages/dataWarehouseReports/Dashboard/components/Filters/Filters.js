@@ -84,6 +84,7 @@ const Filters = ({
       defaultTermId ||
       (schoolYears.length ? schoolYears[0].key : ''),
     externalBandsRequired: true,
+    externalTestsRequired: true,
   })
 
   useFiltersFromURL({

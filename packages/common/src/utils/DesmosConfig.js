@@ -277,7 +277,6 @@ const stateConfig = {
     images: true,
     folders: true,
     notes: true,
-    degreeMode: false,
   },
   washington: {
     ...standard,

@@ -304,15 +304,15 @@ const UseExisting = ({
   }
 
   const handleUseRubric = async () => {
+    if (currentRubricData.aIAssisted) {
+      await addTag()
+    }
     associateRubricWithQuestion({
       metadata: { _id: currentRubricData._id, name: currentRubricData.name },
       maxScore,
     })
     addRubricToRecentlyUsed(currentRubricData)
     setItemLevelScoring(false)
-    if (currentRubricData.aIAssisted) {
-      await addTag()
-    }
   }
 
   const handleEditRubric = () => {

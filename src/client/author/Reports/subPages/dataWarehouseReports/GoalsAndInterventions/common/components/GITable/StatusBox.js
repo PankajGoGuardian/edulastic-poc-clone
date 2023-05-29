@@ -2,11 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import SummaryTile from './SummaryTile'
 
-const StatusBox = ({ items }) => {
+const StatusBox = ({ items, handleClick, selectedStatus }) => {
   return (
     <Container className="status-box">
       {items.map((ele, index) => (
-        <SummaryTile key={index} {...ele} />
+        <SummaryTile
+          key={index}
+          {...ele}
+          handleClick={handleClick}
+          selectedStatus={selectedStatus}
+        />
       ))}
     </Container>
   )

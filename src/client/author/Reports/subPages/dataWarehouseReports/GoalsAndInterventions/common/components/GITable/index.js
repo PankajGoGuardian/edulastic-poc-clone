@@ -8,7 +8,7 @@ import {
   isInterventionsDataLoading,
   relatedInterventions,
 } from '../../../ducks/selectors'
-import { getDataSourceForGI } from '../../utils'
+import { getDataSourceForGI, getSummaryStatusRecords } from '../../utils'
 import StatusBox from './StatusBox'
 import SummaryTile from './SummaryTile'
 import GITableColumns from './columns'
@@ -25,6 +25,8 @@ const GITable = ({
   groupList,
 }) => {
   const [expandedKey, setExpandedKey] = useState([])
+  const [tableData, setTableData] = useState(data)
+  const [selectedStatus, setSelectedStatus] = useState('')
 
   const _statusList = statusList(data || [])
 
@@ -50,13 +52,28 @@ const GITable = ({
     }
   }
 
+  const filterTableData = (status) => {
+    const records = getSummaryStatusRecords({ key: status, data, count: false })
+    setSelectedStatus(status)
+    setTableData(records)
+  }
+
   const TableTitle = () => (
     <Header>
       {_statusList[type].map((ele) =>
         ele.items ? (
-          <StatusBox key={ele.key} items={ele.items} />
+          <StatusBox
+            key={ele.key}
+            items={ele.items}
+            handleClick={filterTableData}
+            selectedStatus={selectedStatus}
+          />
         ) : (
-          <SummaryTile {...ele} />
+          <SummaryTile
+            {...ele}
+            handleClick={filterTableData}
+            selectedStatus={selectedStatus}
+          />
         )
       )}
     </Header>
@@ -88,7 +105,7 @@ const GITable = ({
       expandedRowKeys={expandedKey}
       onChange={onChange}
       pagination={false}
-      dataSource={data}
+      dataSource={tableData}
       scroll={{ y: 390, x: 'max-content' }}
     />
   )

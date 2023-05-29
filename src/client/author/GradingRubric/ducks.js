@@ -21,6 +21,8 @@ export const ADD_RUBRIC_TO_RECENTLY_USED =
   '[rubric] add rubric to recently used'
 export const UPDATE_RUBRIC_IN_RECENTLY_USED_LIST =
   '[rubric] update rubric in recently used list'
+export const REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST =
+  '[rubric] remove rubric from recently used list'
 export const SET_RECENTLY_USED_LIST = '[rubric] set recently used list'
 export const SET_RUBRIC_DATA_LOADING = '[rubric] set rubric data loading'
 
@@ -39,6 +41,9 @@ export const addRubricToRecentlyUsedAction = createAction(
 )
 export const updateRubricInRecentlyUsedAction = createAction(
   UPDATE_RUBRIC_IN_RECENTLY_USED_LIST
+)
+export const removeRubricFromRecentlyUsedAction = createAction(
+  REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST
 )
 export const setRecentlyUsedList = createAction(SET_RECENTLY_USED_LIST)
 export const setRubricDataLoadingAction = createAction(SET_RUBRIC_DATA_LOADING)
@@ -121,8 +126,18 @@ function* updateRubricSaga({ payload }) {
         })
       )
     }
-    yield put(addRubricToRecentlyUsedAction(payload.rubricData))
-    yield put(updateRubricInRecentlyUsedAction(data))
+    // add versioned/updated rubric and remove archived rubric from recently used list
+    if (
+      payload.rubricData._id !== data._id &&
+      data.versionId === payload.rubricData._id
+    ) {
+      yield put(addRubricToRecentlyUsedAction(data))
+      yield put(removeRubricFromRecentlyUsedAction(payload.rubricData._id))
+    } else {
+      yield put(addRubricToRecentlyUsedAction(payload.rubricData))
+      yield put(updateRubricInRecentlyUsedAction(data))
+    }
+
     if (payload.status === 'draft')
       notification({ type: 'success', messageKey: 'rubricUpdatedAsDraft' })
     else if (payload.status === 'published')
@@ -215,6 +230,24 @@ function* updateRubricInRecentlyUsedSaga({ payload }) {
   }
 }
 
+function* removeRubricFromRecentlyUsedRubric({ payload: archivedRubricId }) {
+  const userDistrictId = yield select(getUserOrgId)
+  let localStoredRubrics = localStorage.getItem(
+    `recentlyUsedRubrics_${userDistrictId}`
+  )
+  if (localStoredRubrics) {
+    localStoredRubrics = JSON.parse(localStoredRubrics)
+    const updatedList = localStoredRubrics.filter(
+      (r) => r._id !== archivedRubricId
+    )
+    localStorage.setItem(
+      `recentlyUsedRubrics_${userDistrictId}`,
+      JSON.stringify(updatedList)
+    )
+    yield put(setRecentlyUsedList(updatedList))
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SAVE_RUBRIC, saveRubricSaga),
@@ -226,6 +259,10 @@ export function* watcherSaga() {
     yield takeEvery(
       UPDATE_RUBRIC_IN_RECENTLY_USED_LIST,
       updateRubricInRecentlyUsedSaga
+    ),
+    yield takeEvery(
+      REMOVE_RUBRIC_FROM_RECENTLY_USED_LIST,
+      removeRubricFromRecentlyUsedRubric
     ),
   ])
 }

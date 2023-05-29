@@ -708,7 +708,7 @@ class FeedbackRight extends Component {
                   disabled={!activity || isPresentationMode}
                   onKeyDown={this.onKeyDownFeedback}
                   isShowFeedbackInput={isShowFeedbackInput}
-                  paddingBottom={isAIEvaluated ? '24px' : '4px'}
+                  paddingBottom={isAIEvaluated ? '35px' : '4px'}
                 />
                 <EduIf
                   condition={[isShowFeedbackInput, isAIEvaluated].every(
@@ -719,7 +719,7 @@ class FeedbackRight extends Component {
                     onChange={this.handleFeedbackApproval}
                     checked={isApprovedByTeacher}
                   >
-                    Approve
+                    FEEDBACK IS REVIEWED
                   </CustomCheckBox>
                 </EduIf>
               </FeedbackInputInnerWrapper2>

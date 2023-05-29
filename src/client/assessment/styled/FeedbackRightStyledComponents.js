@@ -183,4 +183,6 @@ export const CustomCheckBox = styled(Checkbox)`
   position: absolute;
   bottom: 5px;
   left: 10px;
+  font-size: 10px;
+  font-weight: 600;
 `

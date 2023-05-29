@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
 import { ticks } from 'd3-array'
-import { isEmpty } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
@@ -24,7 +24,7 @@ export const SimpleStackedBarChartContainer = ({
     for (const item of data) {
       if (filter[item?.dimension?._id] || Object.keys(filter).length === 0) {
         if (analyseBy === analyseByOptions.scorePerc) {
-          item.fill = getHSLFromRange1(item.dimensionAvg)
+          item.fill = getHSLFromRange1(item.dimensionAvg || 0)
         } else if (analyseBy === analyseByOptions.rawScore) {
           item.fill = getHSLFromRange1(
             (100 * item.dimensionAvg) / item.maxScore
@@ -97,7 +97,7 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        formatter: (val) => `${val}%`,
+        formatter: (val) => (!isNil(val) ? `${val}%` : val),
         yAxisLabel,
         referenceLineY,
       }

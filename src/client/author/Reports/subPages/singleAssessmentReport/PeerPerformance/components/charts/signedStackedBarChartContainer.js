@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, isNaN } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
@@ -86,7 +86,7 @@ export const SignedStackedBarChartContainer = ({
 
   const barsLabelFormatter = (val) => {
     if (val !== 0) {
-      return `${Math.abs(val)}%`
+      return !isNaN(val) ? `${Math.abs(val)}%` : null
     }
     return ''
   }

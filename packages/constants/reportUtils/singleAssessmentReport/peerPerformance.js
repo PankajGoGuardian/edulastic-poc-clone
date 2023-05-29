@@ -1,4 +1,4 @@
-const { startCase, get } = require('lodash')
+const { startCase, get, isNil } = require('lodash')
 
 const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`
 
@@ -33,9 +33,11 @@ const getDisplayValue = (data, record, analyseBy, columnKey) => {
     return NA
   }
   if (analyseBy === analyseByOptions.scorePerc) {
-    printData = `${record[columnKey]?.toFixed(0)}%`
+    printData = !isNil(record[columnKey])
+      ? `${record[columnKey]?.toFixed(0)}%`
+      : NA
   } else if (analyseBy === analyseByOptions.rawScore) {
-    printData = record[columnKey]?.toFixed(2)
+    printData = !isNil(record[columnKey]) ? record[columnKey]?.toFixed(2) : NA
   } else if (
     analyseBy === analyseByOptions.proficiencyBand ||
     analyseBy === analyseByOptions.aboveBelowStandard
@@ -94,7 +96,7 @@ const transformByProficiencyBand = (data, bandInfo) => {
 const transformByAboveBelowStandard = (data) => {
   const transformedData = data.map((item) => {
     const aboveStandardPercentage = Number(
-      ((100 * item.aboveStandard) / item.totalStudents).toFixed(0)
+      ((100 * item.aboveStandard) / item.submittedStudents).toFixed(0)
     )
     const belowStandardPercentage = aboveStandardPercentage - 100
     return {
@@ -111,9 +113,9 @@ const transformByAboveBelowStandard = (data) => {
 
 const transformByRawScore = (data) => {
   const transformedData = data.map((item) => {
-    const maxScore = (item.dimensionMaxScore / item.submittedStudents)?.toFixed(
-      2
-    )
+    const maxScore = item.submittedStudents
+      ? (item.dimensionMaxScore / item.submittedStudents)?.toFixed(2)
+      : 1
     return {
       ...item,
       maxScore,
@@ -134,7 +136,7 @@ const transformScorePerc = (data) => {
       dimensionId: item.dimension._id,
       correct: item.dimensionAvg?.toFixed(0),
       incorrect: (100 - item.dimensionAvg).toFixed(0),
-      fill: getHSLFromRange1(item.dimensionAvg),
+      fill: getHSLFromRange1(item.dimensionAvg || 0),
       dFill: getHSLFromRange1(item.districtAvg),
     }
   })
@@ -197,7 +199,7 @@ const compareIepStatus = compareColumn('IEP Status')
 const compareClass = compareColumn('Class')
 const compareHispanicEthnicity = compareColumn('Hispanic Ethnicity')
 
-const submitted = makeColumn('#Submitted', 'totalStudents', 70)
+const submitted = makeColumn('#Submitted', 'submittedStudents', 70)
 const absent = makeColumn('#Absent', 'absentStudents', 70)
 const districtAvgPc = makeColumn('District(Score%)', 'districtAvg')
 const avgStudentScorePercentUnrounded = makeColumn(

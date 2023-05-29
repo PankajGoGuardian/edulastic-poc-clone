@@ -175,8 +175,20 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
-const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
+const getSettings = (
+  test,
+  testActivity,
+  isTestPreview,
+  isDesmosCalculatorEnabled
+) => {
   const { assignmentSettings = {} } = testActivity || {}
+  const { isTeacherPremium } = assignmentSettings
+
+  const calculatorProvider =
+    isDesmosCalculatorEnabled || isTeacherPremium
+      ? DESMOS_CALC_PROVIDER
+      : EDU_CALC_PROVIDER
+
   const calcTypes = !isTestPreview
     ? assignmentSettings.calcTypes
     : test.calcTypes
@@ -584,15 +596,12 @@ function* loadTest({ payload }) {
     const isDesmosCalculatorEnabled = yield select(
       isDesmosCalculatorEnabledSelector
     )
-    const calculatorProvider = isDesmosCalculatorEnabled
-      ? DESMOS_CALC_PROVIDER
-      : EDU_CALC_PROVIDER
 
     const settings = getSettings(
       test,
       testActivity,
       preview,
-      calculatorProvider
+      isDesmosCalculatorEnabled
     )
 
     const testType = settings.testType || test.testType

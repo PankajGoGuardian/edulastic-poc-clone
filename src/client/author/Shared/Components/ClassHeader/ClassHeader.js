@@ -15,6 +15,7 @@ import {
   test as testContants,
   testActivityStatus,
   testActivity as testActivityConstants,
+  roleuser,
 } from '@edulastic/constants'
 import {
   IconBookMarkButton,
@@ -58,6 +59,8 @@ import {
   getIsShowUnAssignSelector,
   testActivtyLoadingSelector,
   getAdditionalDataSelector,
+  getAssignedBySelector,
+  getTestDataSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
@@ -477,6 +480,10 @@ class ClassHeader extends Component {
       syncWithSchoologyClassroomInProgress,
       isProxiedByEAAccount,
       testContentVisibility,
+      isActivityLoading,
+      userRole,
+      getAssignedBy,
+      getTestData,
     } = this.props
     const {
       visible,
@@ -572,6 +579,12 @@ class ClassHeader extends Component {
       )
 
     const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
+    const adminRoles = ['district-admin', 'school-admin']
+    const isReleaseScorereRestricted = isActivityLoading
+      ? true
+      : adminRoles.includes(getAssignedBy?.role) &&
+        userRole === roleuser.TEACHER &&
+        getTestData?.freezeSettings
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -695,10 +708,20 @@ class ClassHeader extends Component {
         </FeaturesSwitch>
         <MenuItems
           data-cy="releaseScore"
+          disabled={isReleaseScorereRestricted}
           key="key2"
           onClick={() => toggleReleaseGradePopUp(true)}
         >
-          Release Score
+          <Tooltip
+            title={
+              isReleaseScorereRestricted
+                ? 'Release Score policy is restricted by admin for this assignment.'
+                : null
+            }
+            placement="left"
+          >
+            Release Score
+          </Tooltip>
         </MenuItems>
         <FeaturesSwitch
           inputFeatures="enableOmrSheets"
@@ -1205,6 +1228,9 @@ const enhance = compose(
   connect(
     (state) => ({
       releaseScore: showScoreSelector(state),
+      getAssignedBy: getAssignedBySelector(state),
+      getTestData: getTestDataSelector(state),
+      testActivtyLoading: testActivtyLoadingSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       canClose: getCanCloseAssignmentSelector(state),
       canOpen: getCanOpenAssignmentSelector(state),

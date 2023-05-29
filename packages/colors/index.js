@@ -1,6 +1,7 @@
 export const white = '#fff'
 export const black = '#000'
 export const fadedBlack = 'rgba(0, 0, 0, 0.65)'
+export const fadedBlack1 = '#4b4b4b'
 export const lightFadedBlack = 'rgba(0, 0, 0, 0.15)'
 export const textBlackColor = '#212E3A'
 export const lightBlackBoldText = '#454B5B'

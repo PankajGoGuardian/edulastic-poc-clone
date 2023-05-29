@@ -1,6 +1,7 @@
 import React from 'react'
-import { PieChart, Pie, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, ResponsiveContainer, Tooltip } from 'recharts'
 import { PieChartWrapper } from '../../styled'
+import { PieChartTooltip } from '../../../subPages/dataWarehouseReports/common/components/PieChartTooltip'
 
 const SimplePieChart = ({
   data,
@@ -15,6 +16,7 @@ const SimplePieChart = ({
         <PieChart>
           <Pie
             label={getChartLabelJSX}
+            labelLine={null}
             data={filteredData}
             cx="50%"
             cy="50%"
@@ -25,6 +27,7 @@ const SimplePieChart = ({
             dataKey="value"
             style={{ filter: 'drop-shadow(5px 10px 18px #00000030)' }}
           />
+          <Tooltip content={<PieChartTooltip />} />
         </PieChart>
       </ResponsiveContainer>
     </PieChartWrapper>

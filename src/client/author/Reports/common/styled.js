@@ -884,10 +884,6 @@ export const PieChartWrapper = styled.div`
   width: 400px;
   height: 320px;
   flex-grow: 1;
-  .label-name {
-    font-weight: normal;
-    overflow: wrap;
-  }
 `
 export const HorizontalBarWrapper = styled.div`
   display: flex;

@@ -6,6 +6,7 @@ import {
   themeColorLighter1,
   white,
   fadedBlack,
+  fadedBlack1,
 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
@@ -202,4 +203,11 @@ export const StyledEduButton = styled(EduButton)`
     padding: 0 15px 0 10px;
     margin-right: 10px;
   }
+`
+export const TooltipContainer = styled.div`
+  background-color: ${fadedBlack1};
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-align: left;
 `

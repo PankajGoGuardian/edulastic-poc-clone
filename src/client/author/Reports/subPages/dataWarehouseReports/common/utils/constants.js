@@ -117,3 +117,5 @@ export const trendPeriodDateFormat = `MMM'YY`
 export const trendPeriodPrefix = 'vs '
 
 export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiveKey=2`
+
+export const PIE_CHART_LABEL_THRESHOLD = 5

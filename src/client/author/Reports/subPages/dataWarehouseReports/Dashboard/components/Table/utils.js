@@ -64,7 +64,7 @@ export const getHorizontalBarData = (
       return {
         value: percentage(d.totalStudents, totalStudents, true),
         color: band?.color,
-        rank: band[bandKey],
+        rank: band?.[bandKey],
       }
     })
     .sort((a, b) => a.rank - b.rank)

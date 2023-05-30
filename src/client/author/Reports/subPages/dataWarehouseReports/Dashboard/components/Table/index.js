@@ -25,10 +25,7 @@ import {
 import { getTableColumns, onCsvConvert } from './utils'
 import { compareByKeys } from '../../../common/utils'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import {
-  StyledDropDownContainer,
-  StyledLabel,
-} from '../../../../../common/styled'
+import { StyledLabel } from '../../../../../common/styled'
 import { StyledEmptyContainer } from '../../../common/components/styledComponents'
 
 const {
@@ -121,8 +118,10 @@ const DashboardTable = ({
         justifyContent="space-between"
         padding="0px 10px 10px 10px"
         flexWrap="wrap"
+        mt="16px"
+        marginBottom="20px"
       >
-        <FlexContainer alignItems="center" justifyContent="left">
+        <FlexContainer alignItems="center">
           <TableHeaderCell
             title={`Above/Equal to Overall Avg.: ${districtAvgScoreStr}`}
             value={aboveAvgCount}
@@ -150,38 +149,31 @@ const DashboardTable = ({
             <IconInfo fill={themeColor} />
           </Tooltip>
         </FlexContainer>
-        <FlexContainer alignItems="center">
+        <FlexContainer alignItems="center" marginLeft="20px">
           <StyledLabel
-            fontWeight="bold"
+            fontWeight={600}
             fontSize="12px"
             textColor={black}
             padding="0 10px 0 0"
           >
             BASED ON TEST TYPE
           </StyledLabel>
-          <StyledDropDownContainer
-            flex="0 0 210px"
-            xs={24}
-            sm={12}
-            lg={6}
-            padding="25px 0"
-          >
-            <ControlDropDown
-              height="40px"
-              by={academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]}
-              selectCB={(e, selected, comData) =>
-                setAcademicSummaryFilters({
-                  ...academicSummaryFilters,
-                  [comData]: selected,
-                })
-              }
-              data={availableTestTypes}
-              comData={academicSummaryFiltersTypes.TEST_TYPE}
-              prefix="Test Type"
-              showPrefixOnSelected={false}
-              containerClassName="dashboard-based-on-test-type"
-            />
-          </StyledDropDownContainer>
+          <ControlDropDown
+            height="40px"
+            buttonWidth="224px"
+            by={academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]}
+            selectCB={(e, selected, comData) =>
+              setAcademicSummaryFilters({
+                ...academicSummaryFilters,
+                [comData]: selected,
+              })
+            }
+            data={availableTestTypes}
+            comData={academicSummaryFiltersTypes.TEST_TYPE}
+            prefix="Test Type"
+            showPrefixOnSelected={false}
+            containerClassName="based-on-test-type"
+          />
         </FlexContainer>
       </FlexContainer>
       <EduIf condition={hasTableContent}>

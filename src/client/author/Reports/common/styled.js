@@ -617,11 +617,6 @@ export const StyledDropDownContainer = styled(Col)`
       }
     }
   }
-  .dashboard-based-on-test-type {
-    .ant-btn.ant-dropdown-trigger {
-      background-color: white;
-    }
-  }
   @media print {
     display: none;
   }

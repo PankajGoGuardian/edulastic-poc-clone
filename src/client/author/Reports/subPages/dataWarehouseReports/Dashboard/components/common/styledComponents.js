@@ -34,6 +34,14 @@ export const TableContainer = styled.div`
   padding-inline: 15px;
   padding-block: 15px 40px;
   border-radius: 25px;
+  .based-on-test-type {
+    .ant-btn.ant-dropdown-trigger {
+      background-color: white;
+      @media (max-width: 1309px) {
+        margin-top: 10px;
+      }
+    }
+  }
 `
 
 export const TableHeaderCellWrapper = styled.div`

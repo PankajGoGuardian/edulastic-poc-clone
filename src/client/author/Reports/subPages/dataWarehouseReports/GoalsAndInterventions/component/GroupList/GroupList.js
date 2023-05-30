@@ -17,6 +17,7 @@ import {
 } from '../../ducks/selectors'
 import { StyledHeading } from './styled-components'
 import { getDataSource } from './utils'
+import { GroupListReportMenu } from '../../constants/common'
 
 // const viewReportOptions = [
 //   { id: 'summary', label: 'View Summary' },
@@ -102,22 +103,24 @@ const GroupList = ({
         <EllipsisText lines={2}>{interventions}</EllipsisText>
       ),
     },
-    // {
-    //   key: 'viewReport',
-    //   render: () => {
-    //     return (
-    //       <ActionMenu
-    //         type="group"
-    //         includeDelete={false}
-    //         title="VIEW REPORTS"
-    //         options={viewReportOptions}
-    //         onAction={() => {}}
-    //       />
-    //     )
-    //   },
-    // },
     {
       key: 'viewReport',
+      width: 150,
+      render: (text, record) => {
+        return (
+          <ActionMenu
+            type="group"
+            includeDelete={false}
+            title="VIEW REPORTS"
+            options={GroupListReportMenu}
+            onAction={() => {}}
+            GIData={record}
+          />
+        )
+      },
+    },
+    {
+      key: 'actions',
       width: 150,
       render: (data, record) => {
         return (

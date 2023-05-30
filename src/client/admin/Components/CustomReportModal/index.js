@@ -12,7 +12,7 @@ import {
   StyledModal,
 } from '../../../common/styled'
 
-const EMAIL_PATTERN_FORMAT = /^[_A-Za-z0-9-'\+]+(\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\-\.]+)*(\.[A-Za-z]{1,25})$/
+export const EMAIL_PATTERN_FORMAT = /^[_A-Za-z0-9-'\+]+(\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\-\.]+)*(\.[A-Za-z]{1,25})$/
 const Option = Select.Option
 class CustomReportModal extends React.Component {
   constructor(props) {

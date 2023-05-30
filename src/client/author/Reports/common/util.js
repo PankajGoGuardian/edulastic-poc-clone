@@ -12,6 +12,7 @@ import {
   keyBy,
   pullAllBy,
   capitalize,
+  uniqBy,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -31,7 +32,19 @@ import {
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
-const { EXTERNAL_TEST_TYPES } = testTypesConstants
+const { EXTERNAL_TEST_TYPES, TEST_TYPES } = testTypesConstants
+
+const testTypeKeyToCategoryMap = {
+  ...TEST_TYPES.COMMON.reduce((res, ele) => ({ ...res, [ele]: 'common' }), {}),
+  ...TEST_TYPES.ASSESSMENT.reduce(
+    (res, ele) => ({ ...res, [ele]: 'assessment' }),
+    {}
+  ),
+  ...TEST_TYPES.PRACTICE.reduce(
+    (res, ele) => ({ ...res, [ele]: 'practice' }),
+    {}
+  ),
+}
 
 const studentFiltersDefaultValues = [
   {
@@ -642,7 +655,7 @@ export const getSelectedCompareBy = ({
   if (search.selectedCompareBy) {
     selectedCompareBy =
       compareByOptions.find((o) => o.key === search.selectedCompareBy) ||
-      compareByOptions[0]
+      selectedCompareBy
   } else if (settings.selectedCompareBy?.key) {
     selectedCompareBy = settings.selectedCompareBy
   }
@@ -693,4 +706,25 @@ export function getTestTitle(testCategory, testTitle) {
   ) && testTitle
     ? `- ${testTitle}`
     : ''
+}
+
+export const getPerformanceBandsListByTestType = (
+  prevPerformanceBandsList,
+  testTypes,
+  defaultPBIdToTTMap
+) => {
+  const testTypeKeys = testTypes.map(({ key }) => key)
+  const _performanceBandsList = (testTypeKeys || [])
+    .map((ttk) => {
+      const pbId = defaultPBIdToTTMap[testTypeKeyToCategoryMap[ttk]]
+      const pb = prevPerformanceBandsList.find((p) => p.key === pbId)
+      return pbId && pb ? pb : null
+    })
+    .filter((t) => !!t)
+  const performanceBandsList = uniqBy(
+    [..._performanceBandsList, ...prevPerformanceBandsList],
+    'key'
+  )
+
+  return performanceBandsList
 }

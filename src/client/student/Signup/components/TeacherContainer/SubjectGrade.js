@@ -399,6 +399,7 @@ class SubjectGrade extends React.Component {
       userInfo,
       onMouseDown,
       withJoinSchoolModal = false,
+      standardsLoading,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -633,7 +634,8 @@ class SubjectGrade extends React.Component {
                           mode="multiple"
                           onChange={this.handleStandardsChange}
                           disabled={
-                            !(form.getFieldValue('standard') || []).length
+                            !(form.getFieldValue('standard') || []).length ||
+                            standardsLoading
                           }
                           ref={this.standardsRef}
                           onSelect={() => this.standardsRef?.current?.blur()}

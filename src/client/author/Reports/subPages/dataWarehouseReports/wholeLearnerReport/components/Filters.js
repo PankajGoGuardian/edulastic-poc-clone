@@ -220,7 +220,7 @@ const WholeLearnerReportFilters = ({
         // TODO: add mapping and support to enable this feature
         fetchUpdateTagsData({
           schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject([search.courseId], isEmpty),
+          courseId: reject([search.courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           options: {
             termId: _filters.termId,

@@ -35,6 +35,10 @@
   border-radius: 5px;
 }
 
+.drag-drop .drag-drop-content img {
+  max-width: 2rem;
+}
+
 .drag-drop .drag-drop-icon {
   width: 10px;
   height: 10px;
@@ -49,7 +53,7 @@
 }
 
 .drag-drop .drag-drop-content .drag-drop-content-triangle::before {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: 0px;
@@ -61,7 +65,7 @@
   border-bottom: 0px;
 }
 .drag-drop .drag-drop-content .drag-drop-content-triangle::after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: 0px;

@@ -57,6 +57,18 @@ export const CustomStyleBtn = styled(Button)`
   }
 `
 
+export const CustomStyleBtn2 = styled(CustomStyleBtn)`
+  background: linear-gradient(to right, #1568c6, #027c6c) !important;
+  &:disabled {
+    &:hover,
+    &:focus {
+      box-shadow: none;
+      color: ${(props) =>
+        props.ghost ? greyThemeLight : props.color || white};
+    }
+  }
+`
+
 export const AddAlternative = styled.div`
   width: 100%;
   /* float: right; */

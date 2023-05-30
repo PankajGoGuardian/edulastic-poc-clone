@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Select } from 'antd'
-import _ from 'lodash'
-import { notification } from '@edulastic/common'
+import { Alert, Select } from 'antd'
+import { EduIf, notification } from '@edulastic/common'
 import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
 import { flatten } from 'mathjs/src/utils/array'
@@ -24,6 +23,7 @@ const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
 const UPDATE_USER = 'update-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
 const INVITE_TEACHER = 'invite-teacher'
+const CONNECT_DISCONNECT_USER = 'connect-disconnect-user'
 const API_OPTIONS = {
   manageClass: 'manageClass',
 }
@@ -37,6 +37,7 @@ const ApiForm = () => {
   const [showUpdateCoTeacher, setShowUpdateCoTeacher] = useState(false)
   const [selectedClass, setSelectedClass] = useState([])
   const [fileUploadData, setFileUploadData] = useState([])
+  const [invalidIds, setInvalidIds] = useState([])
   const handleOnChange = (_id) => setId(_id)
   const getFormattedData = (arr) => {
     return arr.length > 1
@@ -167,6 +168,20 @@ const ApiForm = () => {
                 notification({
                   type: 'warning',
                   msg: 'Sorry, No user(s) found for this username',
+                })
+              }
+            } else if (option.id === CONNECT_DISCONNECT_USER) {
+              const invalidUserIds = res?.data?.invalidUsers
+              setInvalidIds(invalidUserIds)
+              if (invalidUserIds?.length) {
+                notification({
+                  type: 'warning',
+                  msg: res?.result,
+                })
+              } else {
+                notification({
+                  type: 'success',
+                  msg: res?.result,
                 })
               }
             } else if (option.id === APPROVE_SCHOOL_DISTRICT) {
@@ -303,6 +318,22 @@ const ApiForm = () => {
           handleCancel={() => setShowUpdateCoTeacher(false)}
         />
       )}
+
+      <EduIf condition={invalidIds?.length > 0}>
+        <Alert
+          type="error"
+          message={
+            <>
+              <h2>Invalid User ids:</h2>
+              <ul>
+                {invalidIds?.map((invalidId, i) => (
+                  <li key={i}>{invalidId}</li>
+                ))}
+              </ul>
+            </>
+          }
+        />
+      </EduIf>
     </div>
   )
 }

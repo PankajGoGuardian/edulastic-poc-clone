@@ -76,17 +76,29 @@ const ImportContentModal = ({
   const [testItemStatus, setItemStatus] = useState(TestItemStatus.PUBLISHED)
   const [searchValue, setSearchValue] = useState('')
   const [tags, setSelectedTags] = useState([])
+  const [uploadError, setUploadError] = useState('')
   const handleUpload = ({ fileList }) => {
     // TODO: Please uncoment after checking file type for windows
     // if (file.type !== "application/zip") {
     //   return;
     // }
+    if (uploadError.length === 0)
+      getSignedUrl({ file: fileList[0], selectedFormat })
+  }
 
-    getSignedUrl({ file: fileList[0], selectedFormat })
+  const beforeUpload = (file) => {
+    const size = file.size / 1024 / 1024
+    let isInvalid = false
+    setUploadError('')
+    if (size > 15) {
+      isInvalid = true
+      setUploadError('Please upload file size less than 15MB')
+    }
+    return isInvalid
   }
 
   const uploadProps = {
-    beforeUpload: () => false,
+    beforeUpload,
     onChange: handleUpload,
     accept: '.zip, zip, application/zip',
     multiple: false,
@@ -341,6 +353,9 @@ const ImportContentModal = ({
               onChange={(e) => setSignedUrl(e.target.value)}
               placeholder="Enter aws s3 bucket url"
             />
+          )}
+          {uploadError.length > 0 && (
+            <p style={{ color: 'red' }}>{uploadError}</p>
           )}
         </FieldRow>
       </ModalBody>

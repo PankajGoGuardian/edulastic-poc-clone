@@ -1,8 +1,6 @@
 import React from 'react'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import SectionLabel from '../../../common/components/SectionLabel'
-
-import { availableTestTypes } from './utils'
-
 import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary/AttendanceSummary'
 import TableSection from './components/TableSection'
@@ -14,7 +12,9 @@ import {
 import SectionDescription from '../../../common/components/SectionDescription'
 
 function ReportView({
+  history,
   location,
+  search,
   performanceBandList,
   selectedPerformanceBand,
   setAcademicSummaryFilters,
@@ -26,8 +26,10 @@ function ReportView({
   fetchDashboardTableDataRequest,
   loadingTableData,
   tableDataRequestError,
+  districtAveragesData,
   tableData,
   loc,
+  availableTestTypes,
 }) {
   const { academicSummaryFilters } = settings
 
@@ -37,6 +39,7 @@ function ReportView({
         style={{ fontSize: '20px' }}
         $margin="30px 0px 10px 0px"
         showHelp
+        url={helpLinks[reportNavType.DW_DASHBOARD_REPORT]}
       >
         Overview
       </SectionLabel>
@@ -60,8 +63,11 @@ function ReportView({
         </WidgetColumn>
       </WidgetsContainer>
       <TableSection
+        history={history}
         location={location}
+        search={search}
         academicSummaryFilters={academicSummaryFilters}
+        setAcademicSummaryFilters={setAcademicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
@@ -70,8 +76,10 @@ function ReportView({
         settings={settings}
         setSettings={setSettings}
         selectedCompareBy={selectedCompareBy}
+        districtAveragesData={districtAveragesData}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}
+        availableTestTypes={availableTestTypes}
       />
     </>
   )

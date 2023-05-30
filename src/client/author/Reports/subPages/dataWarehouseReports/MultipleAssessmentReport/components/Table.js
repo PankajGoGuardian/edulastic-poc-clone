@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useMemo, useCallback } from 'react'
 import next from 'immer'
-import { Row, Tooltip } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import { round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
@@ -26,10 +26,13 @@ import {
 } from '../../../../common/styled'
 import LargeTag from '../../common/components/LargeTag'
 
-import { tableColumnsData, compareByMap } from '../utils'
+import { tableColumnsData, compareByMap, sortKeys } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
+import BackendPagination from '../../../../common/components/BackendPagination'
+import LinkCell from '../../common/components/LinkCell'
+import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
 
-const { formatDate } = reportUtils.common
+const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 
 const CustomTooltip = (props) => (
   <TableTooltipWrapper>
@@ -61,15 +64,35 @@ const getTableColumns = (
   overallAssessmentsData,
   isSharedReport,
   settings,
-  isPrinting
+  isPrinting,
+  sortFilters
 ) => {
   const compareBy = settings.selectedCompareBy
+  const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
     // compareBy column
-    const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
+    const compareByIdx = _columns.findIndex(
+      (col) => col.key === sortKeys.COMPARE_BY
+    )
     _columns[compareByIdx].title = compareBy.title
     _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
-    _columns[compareByIdx].render = (data) => data || '-'
+    _columns[compareByIdx].sortOrder =
+      sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
+    _columns[compareByIdx].render = (data, record) => {
+      const url = buildDrillDownUrl({
+        key: record.id,
+        selectedCompareBy: compareBy.key,
+        reportFilters: settings.requestFilters,
+        reportUrl: window.location.pathname,
+      })
+      return (
+        <LinkCell
+          value={{ _id: record.id, name: data }}
+          url={url}
+          openNewTab={isStudentCompareBy}
+        />
+      )
+    }
     _columns[compareByIdx].sorter = (a, b) => {
       const dataIndex = compareByMap[compareBy.key]
       return (a[dataIndex] || '')
@@ -114,6 +137,7 @@ const getTableColumns = (
           ),
           align: 'center',
           dataIndex: 'tests',
+          width: 200,
           visibleOn: ['browser'],
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
@@ -259,16 +283,35 @@ const AssessmentsTable = ({
   isCsvDownloading,
   isSharedReport,
   isPrinting,
+  rowsCount,
+  sortFilters,
+  setSortFilters,
+  pageFilters,
+  setPageFilters,
+  rowSelection,
 }) => {
-  const tableColumns = getTableColumns(
-    overallAssessmentsData,
-    isSharedReport,
-    settings,
-    isPrinting
+  const tableColumns = useMemo(
+    () =>
+      getTableColumns(
+        overallAssessmentsData,
+        isSharedReport,
+        settings,
+        isPrinting,
+        sortFilters
+      ),
+    [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   )
-  // show message closer to table if tableData length is greater than 50 (default pagination size)
-  const incompleteTestsMessageMargin =
-    tableData.length > 50 ? '-40px 0 0 0' : '20px 0 0 0'
+
+  const handleTableChange = useCallback(
+    (_pagination, _filters, sorter) => {
+      setSortFilters({
+        sortKey: sorter.columnKey,
+        sortOrder: sorter.order || TABLE_SORT_ORDER_TYPES.ASCEND,
+      })
+    },
+    [setSortFilters]
+  )
+
   return (
     <TableContainer>
       <CsvTable
@@ -279,13 +322,28 @@ const AssessmentsTable = ({
           overallAssessmentsData
         )}
         tableToRender={CustomStyledTable}
+        onChange={handleTableChange}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
+        rowSelection={rowSelection}
+        scroll={{ x: '100%' }}
+        pagination={false}
       />
-      <IncompleteTestsMessage
-        hasIncompleteTests={showIncompleteTestsMessage}
-        incompleteTestsMessageMargin={incompleteTestsMessageMargin}
-      />
+      <Row type="flex" align="middle">
+        <Col span={14}>
+          <IncompleteTestsMessage
+            hasIncompleteTests={showIncompleteTestsMessage}
+            incompleteTestsMessageMargin="20px 0 0 0"
+          />
+        </Col>
+        <Col span={10}>
+          <BackendPagination
+            itemsCount={rowsCount}
+            backendPagination={pageFilters}
+            setBackendPagination={setPageFilters}
+          />
+        </Col>
+      </Row>
     </TableContainer>
   )
 }

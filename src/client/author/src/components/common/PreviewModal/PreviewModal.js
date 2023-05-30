@@ -2,6 +2,7 @@
 import { passageApi, testItemsApi } from '@edulastic/api'
 import { red, themeColor, white, title } from '@edulastic/colors'
 import {
+  EduIf,
   EduButton,
   FlexContainer,
   notification,
@@ -33,6 +34,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled, { css } from 'styled-components'
+import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
@@ -57,6 +59,7 @@ import {
   updateTestAndNavigateAction,
   setPassageItemsAction,
   setAndSavePassageItemsAction,
+  setCurrentGroupIndexAction,
 } from '../../../../TestPage/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { changePreviewAction, changeViewAction } from '../../../actions/view'
@@ -86,7 +89,19 @@ import {
 import ReportIssue from './ReportIssue'
 import { ButtonsWrapper, RejectButton } from './styled'
 
-const { testCategoryTypes } = testConstants
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  testCategoryTypes,
+} = testConstants
+
+const pageType = {
+  itemList: 'itemList',
+  addItems: 'addItems',
+  review: 'review',
+  itemAuthoring: 'itemAuthoring',
+}
+
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props)
@@ -98,7 +113,16 @@ class PreviewModal extends React.Component {
       showReportIssueField: false,
       fullModal: false,
       isRejectMode: false,
+      showSelectGroupModal: false,
     }
+  }
+
+  notificationStringConst = {
+    enterValidPassword: 'enterValidPassword',
+    itemCantBeAdded: 'itemCantBeAdded',
+    nameShouldNotEmpty: 'nameShouldNotEmpty',
+    itemAddedTest: 'itemAddedTest',
+    itemRemovedTest: 'itemRemovedTest',
   }
 
   componentDidMount() {
@@ -402,6 +426,113 @@ class PreviewModal extends React.Component {
     })
   }
 
+  handleSelectGroupModalResponse = (index) => {
+    const { setCurrentGroupIndex } = this.props
+    if (index || index === 0) {
+      setCurrentGroupIndex(index)
+      this.handleDynamicTestSelection()
+    }
+    this.setState({ showSelectGroupModal: false })
+  }
+
+  handleDynamicTestSelection = async () => {
+    const {
+      setTestItems,
+      setDataAndSave,
+      selectedRows,
+      test,
+      gotoSummary,
+      item,
+      page,
+      current,
+    } = this.props
+    if (!test.title?.trim().length && page !== pageType.itemList) {
+      gotoSummary()
+      return notification({
+        messageKey: this.notificationStringConst.nameShouldNotEmpty,
+      })
+    }
+
+    let keys = []
+    if (test.safeBrowser && !test.sebPassword) {
+      return notification({
+        messageKey: this.notificationStringConst.enterValidPassword,
+      })
+    }
+
+    if (selectedRows !== undefined) {
+      ;(selectedRows || []).forEach((selectedRow, index) => {
+        keys[index] = selectedRow
+      })
+    }
+    if (!keys.includes(item._id)) {
+      keys[keys.length] = item._id
+      setDataAndSave({ addToTest: true, item, current })
+      notification({
+        type: 'success',
+        messageKey: this.notificationStringConst.itemAddedTest,
+      })
+    } else {
+      keys = keys.filter((_item) => _item !== item._id)
+      setDataAndSave({ addToTest: false, item: { _id: item._id }, current })
+      notification({
+        type: 'success',
+        messageKey: this.notificationStringConst.itemRemovedTest,
+      })
+    }
+    setTestItems(keys)
+  }
+
+  handleAddToSection = (staticGroups, item) => {
+    const {
+      test: { itemGroups },
+      setCurrentGroupIndex,
+    } = this.props
+    if (staticGroups?.length === 1) {
+      const index = itemGroups.findIndex(
+        (g) => g.groupName === staticGroups[0].groupName
+      )
+      if (
+        itemGroups[index]?.deliveryType ===
+          ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        item.itemLevelScoring === false
+      ) {
+        return notification({ type: 'warn', messageKey: 'itemCantBeAdded' })
+      }
+      setCurrentGroupIndex(index)
+      this.handleSelection()
+    } else if (staticGroups.length > 1) {
+      this.setState({ showSelectGroupModal: true })
+    } else {
+      return notification({
+        type: 'warn',
+        messageKey: 'noStaticGroupFound',
+      })
+    }
+  }
+
+  handleAddOrRemove = () => {
+    const {
+      item,
+      test,
+      test: { itemGroups },
+    } = this.props
+    const staticGroups = (itemGroups || []).filter(
+      (g) => g.type === ITEM_GROUP_TYPES.STATIC
+    )
+
+    if (
+      test.testCategory !== testCategoryTypes.DYNAMIC_TEST ||
+      item.passageId
+    ) {
+      this.handleSelection()
+    } else if (this.isAddOrRemove) {
+      this.handleAddToSection(staticGroups, item)
+    } else {
+      this.handleDynamicTestSelection()
+    }
+  }
+
   handleSelection = () => {
     const {
       setDataAndSave,
@@ -591,6 +722,7 @@ class PreviewModal extends React.Component {
       onlySratchpad,
       changePreviewMode,
       test,
+      test: { itemGroups },
       testAssignments,
       userRole,
       deleting,
@@ -607,7 +739,7 @@ class PreviewModal extends React.Component {
       item?.collections
         ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
         .map(({ name }) => name)
-
+    const uniSectionTestLength = 1
     const { testItems = [] } = passage || {}
     const hasMultipleTestItems = testItems.length > 1
     const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
@@ -618,6 +750,7 @@ class PreviewModal extends React.Component {
       showReportIssueField,
       fullModal,
       isRejectMode,
+      showSelectGroupModal,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -686,6 +819,15 @@ class PreviewModal extends React.Component {
       itemHasAtleastOneQuestion && testStatus !== 'published'
     const isLoading = loading || item === null || passageLoading
     const isMobile = isSmallSize || fullModal
+    const staticGroups = (itemGroups || []).filter(
+      (g) => g.type === ITEM_GROUP_TYPES.STATIC
+    )
+    const groupName =
+      staticGroups.length === uniSectionTestLength
+        ? 'Test'
+        : test?.itemGroups?.find(
+            (grp) => !!grp.items.find((i) => i._id === item._id)
+          )?.groupName || 'Test'
 
     return (
       <PreviewModalWrapper
@@ -705,6 +847,13 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
           <FlexContainer justifyContent="flex-end" width="100%">
+            <EduIf condition={showSelectGroupModal}>
+              <SelectGroupModal
+                visible={showSelectGroupModal}
+                test={test}
+                handleResponse={this.handleSelectGroupModalResponse}
+              />
+            </EduIf>
             <ScoreBlock
               customStyle={{
                 position: 'relative',
@@ -726,7 +875,7 @@ class PreviewModal extends React.Component {
                     isBlue
                     height="28px"
                     justifyContent="center"
-                    onClick={this.handleSelection}
+                    onClick={this.handleAddOrRemove}
                     dataCy={
                       this.isAddOrRemove
                         ? 'addCurrentItem'
@@ -735,7 +884,7 @@ class PreviewModal extends React.Component {
                   >
                     {this.isAddOrRemove
                       ? 'ADD CURRENT ITEM'
-                      : 'REMOVE CURRENT ITEM'}
+                      : `REMOVE CURRENT ITEM FROM ${groupName.toUpperCase()}`}
                   </EduButton>
                   {isPassage > 1 && (
                     <EduButton
@@ -758,10 +907,12 @@ class PreviewModal extends React.Component {
                   isBlue
                   height="28px"
                   justifyContent="center"
-                  onClick={this.handleSelection}
+                  onClick={this.handleAddOrRemove}
                   data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
                 >
-                  {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                  {this.isAddOrRemove
+                    ? 'Add To Test'
+                    : `Remove from ${groupName}`}
                 </EduButton>
               ))}
             <ButtonsWrapper
@@ -1115,6 +1266,7 @@ const enhance = compose(
       setPassageTestItems: setPassageItemsAction,
       setAndSavePassageItems: setAndSavePassageItemsAction,
       editNonAuthoredItem: editNonAuthoredItemAction,
+      setCurrentGroupIndex: setCurrentGroupIndexAction,
     }
   )
 )

@@ -33,19 +33,40 @@ const ActionMenu = ({
   GIData = {},
 }) => {
   const [showModal, setShowModal] = useState(false)
+  let urlData
+  if (type !== 'group') {
+    const { termId, studentGroupIds = [], type: GIType } = GIData
+    const {
+      applicableTo: { testTypes = [], subjects = [] } = {},
+      target: { performanceBandId = '' } = {},
+    } = GIData?.goalCriteria || GIData?.interventionCriteria || {}
 
-  const { termId, studentGroupIds = [], type: GIType } = GIData
-  const {
-    applicableTo: { testTypes = [], subjects = [] } = {},
-    target: { performanceBandId = '' } = {},
-  } = GIData?.goalCriteria || GIData?.interventionCriteria || {}
-
-  const urlData = {
-    termId,
-    ...(GIType === ACADEMIC ? { performanceBandId } : {}),
-    studentGroupIds: studentGroupIds.join(),
-    testTypes: testTypes.join(),
-    subjects: subjects.join(),
+    urlData = {
+      termId,
+      ...(GIType === ACADEMIC ? { performanceBandId } : {}),
+      studentGroupIds: studentGroupIds.join(),
+      testTypes: testTypes.join(),
+      subjects: subjects.join(),
+    }
+  } else {
+    const {
+      termId,
+      subject,
+      tags,
+      _id: groupId,
+      primaryTeacherId,
+      grades,
+      course,
+    } = GIData
+    urlData = {
+      termId,
+      subject,
+      groupId,
+      tagIds: tags?.map((ele) => ele._id).join(),
+      courseId: course ? course._id : '',
+      teacherId: primaryTeacherId,
+      grades: grades?.join(),
+    }
   }
 
   const menu = (

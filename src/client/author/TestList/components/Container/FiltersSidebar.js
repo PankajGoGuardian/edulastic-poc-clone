@@ -11,6 +11,7 @@ import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/st
 
 const { FILTER_KEYS } = libraryFilters
 
+
 const FiltersSidebar = ({
   filterItem,
   onChange,

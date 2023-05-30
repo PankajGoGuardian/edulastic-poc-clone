@@ -20,6 +20,8 @@ import {
   setJobIdsAction,
   uploadTestStatusAction,
   getIsImportingselector,
+  JOB_STATUS,
+  getJobsDataSelector,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -31,6 +33,7 @@ import {
   isContentImportSuccess,
   uploadContentStatusAction,
   setImportContentJobIdsAction,
+  importTypeSelector,
 } from '../../ContentCollections/ducks'
 
 const ImportInprogress = ({
@@ -49,14 +52,20 @@ const ImportInprogress = ({
   setUploadContnentStatus,
   setImportContentJobIds,
   history,
+  importType,
+  jobsData,
 }) => {
   const checkProgress = () => {
-    if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
-      if (path === '/author/import-content') {
-        contentImportProgress(jobIds)
-      } else {
+    if (importType === 'qti' && jobIds.length) {
+      if (
+        jobsData.length === 0 ||
+        jobsData.some((job) =>
+          [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
+        )
+      )
         qtiImportProgress(jobIds)
-      }
+    } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
+      contentImportProgress(jobIds)
     }
   }
 
@@ -125,6 +134,8 @@ const mapStateToProps = (state) => {
       isSuccess: isContentImportSuccess(state),
       errorDetails: contentImportError(state),
       isImporting: importingLoaderSelector(state),
+      jobsData: getJobsDataSelector(state),
+      importType: importTypeSelector(state),
     }
   }
 
@@ -135,6 +146,8 @@ const mapStateToProps = (state) => {
     isSuccess: getIsSuccessSelector(state),
     errorDetails: getErrorDetailsSelector(state),
     isImporting: getIsImportingselector(state),
+    jobsData: getJobsDataSelector(state),
+    importType: importTypeSelector(state),
   }
 }
 

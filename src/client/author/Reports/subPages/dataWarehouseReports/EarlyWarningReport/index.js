@@ -4,6 +4,7 @@ import { isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../../common/components/Header'
 import { StyledReportContainer } from '../../../common/styled'
 
@@ -120,6 +121,7 @@ const EarlyWarningReport = ({
             style={{ fontSize: '20px' }}
             $margin="30px 0px 10px 0px"
             showHelp
+            url={helpLinks[reportNavType.DW_EARLY_WARNING_REPORT]}
           >
             Early Warning
           </SectionLabel>

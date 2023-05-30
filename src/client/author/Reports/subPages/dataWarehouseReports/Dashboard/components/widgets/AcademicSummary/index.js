@@ -8,6 +8,7 @@ import {
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
+import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import { isEmpty } from 'lodash'
 import qs from 'qs'
 import React, { useMemo } from 'react'
@@ -65,7 +66,15 @@ const AcademicSummary = ({
       [academicSummaryFiltersTypes.TEST_TYPE]:
         widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
     }),
-    [widgetFilters, settings.requestFilters]
+    [widgetFilters]
+  )
+
+  const isExternalTestTypeSelected = useMemo(
+    () =>
+      widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key.includes(
+        EXTERNAL_TEST_KEY_SEPARATOR
+      ),
+    [widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]]
   )
 
   const { data, loading, error } = useApiQuery(
@@ -81,7 +90,8 @@ const AcademicSummary = ({
     const { result: { bandDistribution = [] } = {} } = data || {}
     return getAcademicSummaryPieChartData(
       bandDistribution,
-      selectedPerformanceBand
+      selectedPerformanceBand,
+      isExternalTestTypeSelected
     )
   }, [data, selectedPerformanceBand])
 
@@ -90,7 +100,11 @@ const AcademicSummary = ({
     aboveStandardPercentage,
     scoreTrendPercentage,
     showFooter,
-  } = useMemo(() => getAcademicSummaryMetrics(data), [data])
+  } = useMemo(
+    () => getAcademicSummaryMetrics(data, isExternalTestTypeSelected),
+    [data]
+  )
+  const scorePrefix = !isExternalTestTypeSelected ? '%' : ''
 
   const avgScoreCellColor = useMemo(() => {
     const { result: { avgScore } = {} } = data || {}
@@ -99,13 +113,19 @@ const AcademicSummary = ({
 
   const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
 
-  const _filters = {
+  const assessmentTypesForExternalUrl = (
+    widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key || ''
+  ).split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
+
+  const filtersForExternalUrl = {
     ...settings.requestFilters,
     profileId: widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
-    assessmentTypes: widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
+    assessmentTypes: assessmentTypesForExternalUrl,
   }
 
-  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(_filters)}`
+  const externalUrl = `${DW_MAR_REPORT_URL}?${qs.stringify(
+    filtersForExternalUrl
+  )}`
 
   const trendPeriodLabel = showFooter
     ? getTrendPeriodLabel(
@@ -146,7 +166,7 @@ const AcademicSummary = ({
                 <div className="left-content">
                   <WidgetCell
                     header="AVG. SCORE"
-                    value={`${avgScorePercentage}%`}
+                    value={`${avgScorePercentage}${scorePrefix}`}
                     footer={
                       <Footer
                         isVisible={showFooter}
@@ -158,26 +178,31 @@ const AcademicSummary = ({
                     color={avgScoreCellColor}
                     cellType="large"
                   />
-                  <DashedLine
-                    dashWidth="1px"
-                    height="1px"
-                    margin="70px 15px"
-                    dashColor={lightGrey8}
-                  />
-                  <WidgetCell
-                    header={
-                      <FlexContainer justifyContent="center">
-                        STUDENTS IN BANDS &nbsp;&nbsp;
-                        <Tooltip title="Total % of students who are in performance bands marked as above or at standard under manage settings.">
-                          <IconInfo fill={themeColor} />
-                        </Tooltip>
-                      </FlexContainer>
-                    }
-                    subHeader="ABOVE OR AT STANDARD"
-                    value={`${aboveStandardPercentage}%`}
-                    color={lightGreen13}
-                    cellType="large"
-                  />
+
+                  <EduIf condition={!isExternalTestTypeSelected}>
+                    <EduThen>
+                      <DashedLine
+                        dashWidth="1px"
+                        height="1px"
+                        margin="70px 15px"
+                        dashColor={lightGrey8}
+                      />
+                      <WidgetCell
+                        header={
+                          <FlexContainer justifyContent="center">
+                            STUDENTS IN BANDS &nbsp;&nbsp;
+                            <Tooltip title="Total % of students who are in performance bands marked as above or at standard under manage settings.">
+                              <IconInfo fill={themeColor} />
+                            </Tooltip>
+                          </FlexContainer>
+                        }
+                        subHeader="ABOVE OR AT STANDARD"
+                        value={`${aboveStandardPercentage}${scorePrefix}`}
+                        color={lightGreen13}
+                        cellType="large"
+                      />
+                    </EduThen>
+                  </EduIf>
                 </div>
                 <DashedLine
                   dashWidth="1px"

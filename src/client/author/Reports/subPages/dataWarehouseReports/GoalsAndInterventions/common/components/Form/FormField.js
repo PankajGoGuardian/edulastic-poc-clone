@@ -3,6 +3,8 @@ import { Select } from 'antd'
 import moment from 'moment'
 import React from 'react'
 
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 import StandardsSelect from '../../../../../../../../assessment/containers/QuestionMetadata/StandardsSelect'
 import Tags from '../../../../../../../ManageClass/components/ClassCreate/components/Tags'
 import {
@@ -12,6 +14,7 @@ import {
   NUMBER_INPUT,
   STANDARDS_POPUP,
   STRING_INPUT,
+  FROALA_EDITOR,
   formFieldNames,
   oneDayInMilliseconds,
 } from '../../../constants/form'
@@ -21,6 +24,12 @@ import {
   StyledDatePicker,
   StyledDropDown,
 } from './styled-components'
+
+const FroalaEditor = loadable(() =>
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
+)
 
 const {
   goal: { START_DATE },
@@ -174,6 +183,17 @@ const FormField = ({
           giChoiceHeight="20px"
           giLineHeight="unset"
           giPadding="0px"
+        />
+      </EduIf>
+      <EduIf condition={fieldType === FROALA_EDITOR}>
+        <FroalaEditor
+          fallback={<Progress />}
+          placeholder={placeholder}
+          onChange={(value) => handleFieldDataChange(field, value)}
+          value={formData[field]}
+          border="border"
+          toolbarId="gi-comments-toolbar"
+          data-cy="gi-comments-toolbar-input"
         />
       </EduIf>
     </>

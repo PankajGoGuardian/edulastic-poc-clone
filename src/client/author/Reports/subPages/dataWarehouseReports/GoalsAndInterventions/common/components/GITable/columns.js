@@ -23,6 +23,7 @@ import {
   isTimeLeftOverCertainPercent,
 } from '../../utils'
 import EllipsisText from '../EllipsisText'
+import Notes from './Notes'
 
 const getCurrentStatusColor = (record) => {
   if (isCurrentValueInValid(record)) {
@@ -130,7 +131,7 @@ const columns = [
         .localeCompare((b.group || '').toLowerCase()),
     width: 150,
     align: 'center',
-    render: (groups) => <EllipsisText lines={2}>{groups}</EllipsisText>,
+    render: (groups) => <EllipsisText lines={1}>{groups}</EllipsisText>,
   },
   {
     title: 'Baseline',
@@ -230,7 +231,7 @@ const columns = [
         .toLowerCase()
         .localeCompare((b.comment || '').toLowerCase()),
     width: 200,
-    render: (comment) => <EllipsisText lines={2}>{comment}</EllipsisText>,
+    render: (comment) => <Notes comment={comment} />,
   },
   {
     title: '',

@@ -86,6 +86,7 @@ const SingleAssessmentReportContainer = (props) => {
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
+  const [additionalUrlParams, setAdditionalUrlParams] = useState({})
 
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
@@ -132,7 +133,7 @@ const SingleAssessmentReportContainer = (props) => {
     if (settings.selectedTest.key) {
       const arr = Object.keys(settings.requestFilters)
 
-      const obj = {}
+      let obj = {}
       // eslint-disable-next-line array-callback-return
       arr.map((item) => {
         const val =
@@ -148,6 +149,9 @@ const SingleAssessmentReportContainer = (props) => {
       if (customStudentUserId) {
         obj.customStudentUserId = customStudentUserId
       }
+      if (!isEmpty(additionalUrlParams)) {
+        obj = { ...obj, ...additionalUrlParams }
+      }
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`
       history.push(path)
     }
@@ -157,7 +161,7 @@ const SingleAssessmentReportContainer = (props) => {
       settings.cliUser
     )
     updateNavigation(navigationItems)
-  }, [settings])
+  }, [settings, additionalUrlParams])
 
   const onGoClick = (_settings) => {
     const _requestFilters = {}
@@ -347,9 +351,10 @@ const SingleAssessmentReportContainer = (props) => {
               <PeerPerformance
                 {..._props}
                 settings={settings}
-                filters={ddfilter}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                demographicFilters={demographicFilters2}
+                setAdditionalUrlParams={setAdditionalUrlParams}
               />
             )}
           />

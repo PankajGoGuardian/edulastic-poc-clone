@@ -1,4 +1,4 @@
-import { getSummaryStatusCount } from '../common/utils'
+import { getSummaryStatusRecords } from '../common/utils'
 import {
   TERM_ID,
   SUBJECTS,
@@ -116,6 +116,39 @@ export const GIActionOptions = [
   // },
 ]
 
+export const GroupListReportMenu = [
+  {
+    id: 'summary',
+    label: 'View Summary',
+    link:
+      '/author/reports/dashboard-report?termId={termId}&testSubjects={subject}&testGrades={grades}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}All&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&periodType=TILL_DATE&reportId=&selectedCompareBy=school',
+  },
+  {
+    id: 'trends',
+    label: 'View Trends',
+    link:
+      '/author/reports/multiple-assessment-report-dw?termId={termId}&testSubjects={subject}&testGrades={grades}&tagIds={tagIds}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&reportId=&selectedCompareBy=school',
+  },
+  {
+    id: 'attendance',
+    label: 'View Attendance',
+    link:
+      '/author/reports/attendance-summary?termId={termId}&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&periodType=TILL_DATE&reportId=',
+  },
+  {
+    id: 'early',
+    label: 'View Early Warning',
+    link:
+      '/author/reports/early-warning-report?termId={termId}&schoolIds=&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=&groupIds={groupId}&race=&gender=&iepStatus=&frlStatus=&ellStatus=&hispanicEthnicity=&periodType=TILL_DATE&riskType=overall&showCumulativeData=false&timeframe=monthly&selectedCompareBy=school',
+  },
+  {
+    id: 'efficacy',
+    label: 'View Efficacy',
+    link:
+      '/author/reports/efficacy-report?termId={termId}&testSubjects={subject}&testGrades=All&tagIds={tagIds}&assessmentTypes=All&testIds=All&schoolIds=All&teacherIds={teacherId}&subjects={subject}&grades={grades}&courseId={courseId}&classIds=All&groupIds={groupId}&preTestId=All&postTestId=All&race=All&gender=All&iepStatus=All&frlStatus=All&ellStatus=All&hispanicEthnicity=All&reportId=&selectedCompareBy=school&preBandScore=&postBandScore=',
+  },
+]
+
 export const statusList = (data) => ({
   goal: [
     {
@@ -123,23 +156,26 @@ export const statusList = (data) => ({
       items: [
         {
           id: 1,
+          status_code: 'done',
           text: 'Done',
           color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: getSummaryStatusCount({ key: 'done', data }),
+          unit: getSummaryStatusRecords({ key: 'done', data }),
           textColor: summaryTileColors.GREEN_TEXT,
         },
         {
           id: 2,
+          status_code: 'not-met',
           text: 'Not met',
           color: summaryTileColors.RED,
-          unit: getSummaryStatusCount({ key: 'not-met', data }),
+          unit: getSummaryStatusRecords({ key: 'not-met', data }),
         },
         {
           id: 3,
+          status_code: 'met',
           text: 'Met',
           color: summaryTileColors.GREEN,
-          unit: getSummaryStatusCount({ key: 'met', data }),
+          unit: getSummaryStatusRecords({ key: 'met', data }),
         },
       ],
     },
@@ -148,36 +184,40 @@ export const statusList = (data) => ({
       items: [
         {
           id: 1,
+          status_code: 'on-going',
           text: 'In Progress',
           color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: getSummaryStatusCount({ key: 'on-going', data }),
+          unit: getSummaryStatusRecords({ key: 'on-going', data }),
           textColor: summaryTileColors.GRAY_TEXT,
         },
         {
           id: 2,
+          status_code: 'off-track',
           text: 'Off-track',
           color: summaryTileColors.RED,
-          unit: getSummaryStatusCount({ key: 'off-track', data }),
+          unit: getSummaryStatusRecords({ key: 'off-track', data }),
           infoText:
             'Goals in progress which are not met yet and have less than 20% time left',
         },
         {
           id: 3,
+          status_code: 'rest',
           text: 'Rest',
           color: summaryTileColors.GREEN,
           unit:
-            getSummaryStatusCount({ key: 'on-going', data }) -
-            getSummaryStatusCount({ key: 'off-track', data }),
+            getSummaryStatusRecords({ key: 'on-going', data }) -
+            getSummaryStatusRecords({ key: 'off-track', data }),
         },
       ],
     },
     // {
     //   key: 3,
     //   text: 'Aborted',
+    //   status_code: 'aborted',
     //   color: summaryTileColors.GRAY,
     //   border: '1px solid #D8D8D8',
-    //   unit: getSummaryStatusCount({key:'aborted', data}),
+    //   unit: getSummaryStatusRecords({key:'aborted', data}),
     //   textColor: summaryTileColors.RED_TEXT,
     // },
   ],
@@ -188,22 +228,25 @@ export const statusList = (data) => ({
         {
           id: 1,
           text: 'Fully Executed',
+          status_code: 'fully-executed',
           color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: getSummaryStatusCount({ key: 'fully-executed', data }),
+          unit: getSummaryStatusRecords({ key: 'fully-executed', data }),
           textColor: summaryTileColors.GREEN_TEXT,
         },
         {
           id: 2,
+          status_code: 'not-met',
           text: 'Not met',
           color: summaryTileColors.RED,
-          unit: getSummaryStatusCount({ key: 'not-met', data }),
+          unit: getSummaryStatusRecords({ key: 'not-met', data }),
         },
         {
           id: 3,
+          status_code: 'met',
           text: 'Met',
           color: summaryTileColors.GREEN,
-          unit: getSummaryStatusCount({ key: 'met', data }),
+          unit: getSummaryStatusRecords({ key: 'met', data }),
         },
       ],
     },
@@ -213,39 +256,44 @@ export const statusList = (data) => ({
         {
           id: 1,
           text: 'Partially Executed',
+          status_code: 'partially-executed',
           color: summaryTileColors.GRAY,
           border: '1px solid #D8D8D8',
-          unit: getSummaryStatusCount({ key: 'partially-executed', data }),
+          unit: getSummaryStatusRecords({ key: 'partially-executed', data }),
           textColor: summaryTileColors.BROWN_TEXT,
         },
         {
           id: 2,
+          status_code: 'partially-not-met',
           text: 'Not met',
           color: summaryTileColors.RED,
-          unit: getSummaryStatusCount({ key: 'partially-not-met', data }),
+          unit: getSummaryStatusRecords({ key: 'partially-not-met', data }),
         },
         {
           id: 3,
+          status_code: 'partially-met',
           text: 'Met',
           color: summaryTileColors.GREEN,
-          unit: getSummaryStatusCount({ key: 'partially-met', data }),
+          unit: getSummaryStatusRecords({ key: 'partially-met', data }),
         },
       ],
     },
     {
       key: 3,
       text: 'In progress',
+      status_code: 'in-progress',
       color: summaryTileColors.GRAY,
       border: '1px solid #D8D8D8',
-      unit: getSummaryStatusCount({ key: 'in-progress', data }),
+      unit: getSummaryStatusRecords({ key: 'in-progress', data }),
       textColor: summaryTileColors.GRAY_TEXT,
     },
     // {
     //   key: 4,
     //   text: 'Aborted',
+    //   status_code: 'aborted',
     //   color: summaryTileColors.GRAY,
     //   border: '1px solid #D8D8D8',
-    //   unit: getSummaryStatusCount({key:'aborted', data}),
+    //   unit: getSummaryStatusRecords({ key: 'aborted', data }),
     //   textColor: summaryTileColors.RED_TEXT,
     // },
   ],

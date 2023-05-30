@@ -1,9 +1,5 @@
 import {
-  find,
-  map,
-  head,
   groupBy,
-  values,
   sumBy,
   isEmpty,
   maxBy,
@@ -11,19 +7,27 @@ import {
   minBy,
   round,
   sum,
+  mapValues,
 } from 'lodash'
 
 import {
   reportUtils,
   dataWarehouse as dataWarehouseConstants,
 } from '@edulastic/constants'
+import { compareByOptions, compareByOptionsInfo } from '../common/utils'
 
-const { getProficiencyBand, percentage } = reportUtils.common
+const {
+  getProficiencyBand,
+  percentage,
+  TABLE_SORT_ORDER_TYPES,
+} = reportUtils.common
 const { getAchievementLevels } = dataWarehouseConstants
 
 /**
  * NOTE: the constants declared here affects only the Multiple Assessment Report in Data Warehouse
  */
+
+export const TABLE_PAGE_SIZE = 25
 
 export const staticDropDownData = {
   filterSections: {
@@ -145,45 +149,26 @@ export const staticDropDownData = {
   ],
 }
 
-export const compareByMap = {
-  school: 'schoolName',
-  teacher: 'teacherName',
-  group: 'groupName',
-  student: 'studentName',
-  race: 'race',
-  gender: 'gender',
-  ellStatus: 'ellStatus',
-  iepStatus: 'iepStatus',
-  frlStatus: 'frlStatus',
-  standard: 'standard',
-  hispanicEthnicity: 'hispanicEthnicity',
+export const sortKeys = {
+  COMPARE_BY: 'compareBy',
 }
 
-const compareByData = [
-  { key: 'school', title: 'School', hiddenFromRole: ['teacher'] },
-  { key: 'teacher', title: 'Teacher', hiddenFromRole: ['teacher'] },
-  { key: 'group', title: 'Class' },
-  { key: 'race', title: 'Race' },
-  { key: 'gender', title: 'Gender' },
-  { key: 'ellStatus', title: 'ELL Status' },
-  { key: 'iepStatus', title: 'IEP Status' },
-  { key: 'frlStatus', title: 'FRL Status' },
-  { key: 'hispanicEthnicity', title: 'Hispanic Ethnicity' },
-]
+export const compareByMap = mapValues(compareByOptionsInfo, ({ name }) => name)
 
 export const tableColumnsData = [
   {
-    dataIndex: 'compareBy',
-    key: 'compareBy',
+    dataIndex: sortKeys.COMPARE_BY,
+    key: sortKeys.COMPARE_BY,
     align: 'left',
     fixed: 'left',
     width: 200,
+    sorter: true,
   },
   // next up are dynamic columns for each assessment
 ]
 
 export const getCompareByOptions = (userRole) => {
-  return compareByData.filter(
+  return compareByOptions.filter(
     (d) => !d.hiddenFromRole || !d.hiddenFromRole.includes(userRole)
   )
 }
@@ -194,6 +179,7 @@ const groupByCompareByKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'schoolId')
     case 'student':
       return groupBy(metricInfo, 'studentId')
+    case 'class':
     case 'group':
       return groupBy(metricInfo, 'groupId')
     case 'teacher':
@@ -214,53 +200,6 @@ const groupByCompareByKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'standardId')
     default:
       return {}
-  }
-}
-
-const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
-  switch (compareBy) {
-    case 'school':
-      return map(metricInfo, (metric) => {
-        const relatedSchool =
-          find(metaInfo, (school) => metric.id === school.schoolId) || {}
-        return { ...metric, ...relatedSchool }
-      })
-    case 'group':
-      return map(metricInfo, (metric) => {
-        const relatedGroup =
-          find(metaInfo, (school) => metric.id === school.groupId) || {}
-
-        return { ...metric, ...relatedGroup }
-      })
-    case 'teacher':
-      return map(metricInfo, (metric) => {
-        const relatedTeacher =
-          find(metaInfo, (school) => metric.id === school.teacherId) || {}
-
-        return { ...metric, ...relatedTeacher }
-      })
-    case 'student':
-      return map(metricInfo, (metric) => {
-        const firstTest = head(values(metric.tests)) || {}
-        const firstRecord = head(firstTest.records || []) || {}
-        const { firstName = '', lastName = '', groupId = '' } = firstRecord
-        return {
-          ...metric,
-          firstName,
-          lastName,
-          studentName: `${firstName} ${lastName}`,
-          groupId,
-        }
-      })
-    case 'race':
-    case 'gender':
-    case 'ellStatus':
-    case 'iepStatus':
-    case 'frlStatus':
-    case 'hispanicEthnicity':
-      return metricInfo
-    default:
-      return []
   }
 }
 
@@ -385,10 +324,10 @@ const getAggregatedDataByUniqId = (metricInfo) => {
 export const getTableData = (
   metricInfo = [],
   externalMetricInfo = [],
-  metaInfo = [],
   bandInfo = [],
   externalBands = [],
-  compareByKey
+  compareByKey,
+  sortFilters
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
   const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
@@ -397,7 +336,7 @@ export const getTableData = (
     .filter((t) => t.externalTestType && t.achievementLevel)
     .map((t) => ({
       ...t,
-      assessmentDate: +new Date(t.assessmentDate),
+      assessmentDate: +t.assessmentDate,
       achievementLevel: +t.achievementLevel,
     }))
   const compositeMetricInfo = [
@@ -422,20 +361,28 @@ export const getTableData = (
     compositeMetricInfoWithBandData,
     compareByKey
   )
-  const _tableData = Object.keys(groupedByCompareByKey).map(
-    (compareByValue) => {
-      const _data = groupedByCompareByKey[compareByValue]
-      const tests = getAggregatedDataByUniqId(_data)
-      const totalStudentCount = sumBy(Object.values(tests), 'totalStudentCount')
-      return {
-        id: compareByValue,
-        [compareByKey]: compareByValue,
-        totalStudentCount,
-        tests,
-      }
+  const compareByLabelKey = compareByMap[compareByKey]
+  let tableData = Object.keys(groupedByCompareByKey).map((compareByValue) => {
+    const _data = groupedByCompareByKey[compareByValue]
+    const tests = getAggregatedDataByUniqId(_data)
+    const totalStudentCount = sumBy(Object.values(tests), 'totalStudentCount')
+    const [firstTest] = tests
+    const compareByLabelValue = firstTest[compareByLabelKey]
+    return {
+      id: compareByValue,
+      [compareByKey]: compareByValue,
+      [compareByLabelKey]: compareByLabelValue,
+      totalStudentCount,
+      tests,
     }
-  )
-  const tableData = augmentMetaData(_tableData, compareByKey, metaInfo)
+  })
+  if (sortFilters.sortKey === sortKeys.COMPARE_BY) {
+    tableData = tableData.sort((a, b) => {
+      return sortFilters.sortOrder === TABLE_SORT_ORDER_TYPES.ASCEND
+        ? a[compareByLabelKey].localeCompare(b[compareByLabelKey])
+        : b[compareByLabelKey].localeCompare(a[compareByLabelKey])
+    })
+  }
 
   return tableData
 }
@@ -642,7 +589,7 @@ export const getChartData = (
   )
 
   const chartData = [...internalChartData, ...externalChartData].sort(
-    (a, b) => b.assessmentDate - a.assessmentDate
+    (a, b) => a.assessmentDate - b.assessmentDate
   )
 
   return chartData

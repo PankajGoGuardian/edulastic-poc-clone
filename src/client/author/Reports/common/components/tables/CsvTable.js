@@ -30,7 +30,7 @@ const CsvTable = ({
     const __pagination = pagination ? { ...pagination } : pagination
 
     if (isCsvDownloading) {
-      __pagination.pageSize = dataSource.length
+      if (__pagination) __pagination.pageSize = dataSource.length
       __columns = filter(__columns, (column) =>
         column.visibleOn ? includes(column.visibleOn, 'csv') : true
       )

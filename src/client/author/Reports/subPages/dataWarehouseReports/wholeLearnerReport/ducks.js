@@ -274,6 +274,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const selectedPerformanceBandProfileId = createSelector(
   stateSelector,
   (state) => state?.filters?.performanceBandProfileId || ''
@@ -335,6 +339,7 @@ export const selectors = {
   filtersData,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   selectedPerformanceBandProfileId,
   selectedStandardsProficiencyProfileId,
   selectedPerformanceBand,

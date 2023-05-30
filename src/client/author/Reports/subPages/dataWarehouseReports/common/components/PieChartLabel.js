@@ -3,9 +3,19 @@ import { DEGREE_TO_RADIAN } from '@edulastic/constants/reportUtils/common'
 import { Tooltip } from 'antd'
 import { max } from 'lodash'
 import React from 'react'
+import { PIE_CHART_LABEL_THRESHOLD } from '../utils'
+import { TooltipContent } from './PieChartTooltip'
 
-const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
-  if (value === 0) return null
+const PieChartLabel = ({
+  cx,
+  cy,
+  midAngle,
+  outerRadius,
+  name,
+  value,
+  fill,
+}) => {
+  if (value <= PIE_CHART_LABEL_THRESHOLD) return null
   const maxFirstLineCharLength = 5
   const maxSecondLineCharLength = 10
   const nameArr = name.split(' ')
@@ -56,26 +66,23 @@ const PieChartLabel = ({ cx, cy, midAngle, outerRadius, name, value }) => {
         fill="none"
         strokeWidth={1}
       />
-      <Tooltip title={name}>
+      <Tooltip
+        title={<TooltipContent value={value} name={name} color={fill} />}
+      >
         <text
-          className="label-text"
           x={textX}
           y={showSecondLine ? textY - 15 : textY}
           textAnchor={textAnchor}
           fill={lightGrey17}
         >
-          <tspan className="label-value">{firstLineText}</tspan>
+          <tspan>{firstLineText}</tspan>
         </text>
       </Tooltip>
-      <Tooltip title={name}>
-        <text
-          className="label-text"
-          x={textX}
-          y={textY}
-          textAnchor={textAnchor}
-          fill={lightGrey17}
-        >
-          <tspan className="label-value">{secondLineText}</tspan>
+      <Tooltip
+        title={<TooltipContent value={value} name={name} color={fill} />}
+      >
+        <text x={textX} y={textY} textAnchor={textAnchor} fill={lightGrey17}>
+          <tspan>{secondLineText}</tspan>
         </text>
       </Tooltip>
     </g>

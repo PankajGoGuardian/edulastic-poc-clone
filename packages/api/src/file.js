@@ -21,7 +21,7 @@ const upload = ({ file }) => {
     .then((result) => result.data.result)
 }
 
-const getSignedUrl = (filename, folder, subFolder) =>
+const getSignedUrl = (filename, folder, subFolder, type) =>
   api
     .callApi({
       url: `${prefix}/signed-url`,
@@ -30,6 +30,7 @@ const getSignedUrl = (filename, folder, subFolder) =>
         filename,
         subFolder,
         folder,
+        type,
       },
     })
     .then((result) => result.data.result)

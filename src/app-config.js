@@ -214,6 +214,14 @@ const isAntiScreenshotEnabled = (districtId = null) => {
   return districtIds.includes(districtId)
 }
 
+const getCDNOrigin = () => {
+  try {
+    return new URL(cdnURI).origin
+  } catch (e) {
+    return cdnURI
+  }
+}
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -248,4 +256,5 @@ export default {
   newsela,
   kioskChromeAppId,
   isAntiScreenshotEnabled,
+  getCDNOrigin,
 }

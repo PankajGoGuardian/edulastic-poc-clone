@@ -11,6 +11,12 @@ const multipartEvaluationTypes = {
   ANY_CORRECT: 'anyCorrect',
 }
 
+const AI_EVALUATION_STATUS = {
+  PENDING: 'pending',
+  FAILED: 'failed',
+  DONE: 'done',
+}
+
 module.exports = {
   EXACT_MATCH,
   PARTIAL_MATCH,
@@ -40,4 +46,5 @@ module.exports = {
     ],
     [multipartEvaluationTypes.PART_SCORING_TYPE]: 'assignPartialCredit',
   },
+  AI_EVALUATION_STATUS,
 }

@@ -1,31 +1,42 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy } from 'lodash'
+import { sumBy, get, groupBy, maxBy } from 'lodash'
 import React from 'react'
 import moment from 'moment'
-import { RISK_TYPE_KEYS } from '@edulastic/constants/reportUtils/common'
+import {
+  EXTERNAL_TEST_KEY_SEPARATOR,
+  RISK_TYPE_KEYS,
+} from '@edulastic/constants/reportUtils/common'
+import {
+  EXTERNAL_TEST_TYPES,
+  TEST_TYPE_LABELS,
+} from '@edulastic/constants/const/testTypes'
+import { EduIf } from '@edulastic/common'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
 import {
   StyledIconCaretDown,
   StyledIconCaretUp,
+  StyledTag,
 } from '../../common/components/styledComponents'
-import { CustomStyledCell } from '../components/common/styledComponents'
+import {
+  ColoredText,
+  CustomStyledCell,
+} from '../components/common/styledComponents'
 import {
   tableColumnKeys,
-  tableColumnsData,
   timeframeFilterKeys,
   timeframeFilterValues,
   CHART_LABEL_KEY,
   RISK_KEYS,
 } from './constants'
-import { compareByKeys } from '../../common/utils'
 
 const {
   percentage,
   DECIMAL_BASE,
+  RISK_BAND_LABELS,
   RISK_BAND_LEVELS,
   RISK_BAND_COLOR_INFO,
 } = reportUtils.common
@@ -43,89 +54,175 @@ export const getWidgetCellFooterInfo = (change) => {
   return [Icon, color]
 }
 
-export const getTableColumns = (
-  selectedCompareBy,
+export const getTableColumns = ({
+  compareBy,
   getTableDrillDownUrl,
-  filters
-) => {
-  return next(tableColumnsData, (_columns) => {
+  filters,
+  tableColumnsData,
+  isStudentCompareBy,
+  tableData,
+}) => {
+  const tableColumns = next(tableColumnsData, (_columns) => {
     const dimensionColumn = _columns.find(
       (col) => col.key === tableColumnKeys.DIMENSION
     )
-    dimensionColumn.title = selectedCompareBy.title
+    dimensionColumn.title = compareBy.title
     dimensionColumn.render = (value) => {
-      const url = [compareByKeys.SCHOOL, compareByKeys.TEACHER].includes(
-        selectedCompareBy.key
+      const url = getTableDrillDownUrl(value._id)
+      return (
+        <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
       )
-        ? getTableDrillDownUrl(value._id)
-        : null
-      return <LinkCell value={value} url={url} />
     }
 
-    const highRiskColumn = _columns.find(
-      (col) => col.key === tableColumnKeys.HIGH_RISK
-    )
-    highRiskColumn.title = (
-      <CustomStyledCell color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH]}>
-        HIGH
-      </CustomStyledCell>
-    )
+    if (isStudentCompareBy) {
+      const attendanceColumnIdx = _columns.findIndex(
+        ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
+      )
+      if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
+        _columns.splice(attendanceColumnIdx, 1)
+      }
+      const riskColumn = _columns.find(
+        (col) => col.key === tableColumnKeys.RISK
+      )
+      riskColumn.render = (value) => (
+        <CustomStyledCell color={RISK_BAND_COLOR_INFO[value]}>
+          {value}
+        </CustomStyledCell>
+      )
+    } else {
+      const highRiskColumn = _columns.find(
+        (col) => col.key === tableColumnKeys.HIGH_RISK
+      )
+      highRiskColumn.title = (
+        <CustomStyledCell
+          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
+          showBoxShadow
+        >
+          HIGH
+        </CustomStyledCell>
+      )
 
-    highRiskColumn.render = (_, { highRisk, totalStudents }) => (
-      <LargeTag
-        width="35px"
-        textAlign="right"
-        leftText={`${percentage(highRisk, totalStudents, true)}%`}
-        rightText={`${highRisk} /${totalStudents}`}
-      />
-    )
+      highRiskColumn.render = (_, { highRisk, totalStudents }) => (
+        <LargeTag
+          width="35px"
+          textAlign="right"
+          leftText={`${percentage(highRisk, totalStudents, true)}%`}
+          rightText={`${highRisk} /${totalStudents}`}
+        />
+      )
 
-    const mediumRiskColumn = _columns.find(
-      (col) => col.key === tableColumnKeys.MEDIUM_RISK
-    )
-    mediumRiskColumn.title = (
-      <CustomStyledCell color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM]}>
-        MEDIUM
-      </CustomStyledCell>
-    )
-    mediumRiskColumn.render = (_, { mediumRisk, totalStudents }) => (
-      <LargeTag
-        width="35px"
-        textAlign="right"
-        leftText={`${percentage(mediumRisk, totalStudents, true)}%`}
-        rightText={`${mediumRisk} /${totalStudents}`}
-      />
-    )
+      const mediumRiskColumn = _columns.find(
+        (col) => col.key === tableColumnKeys.MEDIUM_RISK
+      )
+      mediumRiskColumn.title = (
+        <CustomStyledCell
+          color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
+          showBoxShadow
+        >
+          MEDIUM
+        </CustomStyledCell>
+      )
+      mediumRiskColumn.render = (_, { mediumRisk, totalStudents }) => (
+        <LargeTag
+          width="35px"
+          textAlign="right"
+          leftText={`${percentage(mediumRisk, totalStudents, true)}%`}
+          rightText={`${mediumRisk} /${totalStudents}`}
+        />
+      )
 
-    const academicRiskColumnIdx = _columns.findIndex(
-      (col) => col.key === tableColumnKeys.ACADEMIC_RISK
-    )
-    _columns[academicRiskColumnIdx].render = (value) => {
-      const academicRisk = value.academicRisk.map((b) => ({
-        ...b,
-        color: RISK_BAND_COLOR_INFO[b.bandLabel],
-      }))
-      return <HorizontalBar data={academicRisk} />
-    }
+      const academicRiskColumnIdx = _columns.findIndex(
+        (col) => col.key === tableColumnKeys.ACADEMIC_RISK
+      )
+      _columns[academicRiskColumnIdx].render = (value) => {
+        const academicRisk =
+          value?.academicRisk?.map((b) => ({
+            ...b,
+            color: RISK_BAND_COLOR_INFO[b.bandLabel],
+          })) || []
+        return <HorizontalBar data={academicRisk} />
+      }
 
-    const attendanceRiskColumnIdx = _columns.findIndex(
-      (col) => col.key === tableColumnKeys.ATTENDANCE_RISK
-    )
-    _columns[attendanceRiskColumnIdx].render = (value) => {
-      const attendanceRisk = value.attendanceRisk.map((b) => ({
-        ...b,
-        color: RISK_BAND_COLOR_INFO[b.bandLabel],
-      }))
-      return <HorizontalBar data={attendanceRisk} />
-    }
+      const attendanceRiskColumnIdx = _columns.findIndex(
+        (col) => col.key === tableColumnKeys.ATTENDANCE_RISK
+      )
+      _columns[attendanceRiskColumnIdx].render = (value) => {
+        const attendanceRisk =
+          value?.attendanceRisk?.map((b) => ({
+            ...b,
+            color: RISK_BAND_COLOR_INFO[b.bandLabel],
+          })) || []
+        return <HorizontalBar data={attendanceRisk} />
+      }
 
-    if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
-      _columns.splice(attendanceRiskColumnIdx, 1)
-    }
-    if (filters.riskType === RISK_TYPE_KEYS.ATTENDANCE) {
-      _columns.splice(academicRiskColumnIdx, 1)
+      if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
+        _columns.splice(attendanceRiskColumnIdx, 1)
+      }
+      if (filters.riskType === RISK_TYPE_KEYS.ATTENDANCE) {
+        _columns.splice(academicRiskColumnIdx, 1)
+      }
     }
   })
+  if (
+    isStudentCompareBy &&
+    [RISK_TYPE_KEYS.ACADEMIC, RISK_TYPE_KEYS.OVERALL].includes(filters.riskType)
+  ) {
+    const rowWithMaxTestTypes = maxBy(
+      tableData,
+      (row) => Object.keys(row.academicRisk).length
+    )
+    const availableTestTypes = Object.keys(
+      rowWithMaxTestTypes?.academicRisk || {}
+    )
+    const academicSubColumns = availableTestTypes.map((testType) => {
+      const isExternal =
+        EXTERNAL_TEST_TYPES[testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]]
+      const scoreSuffix = isExternal ? '' : '%'
+      const testTypeText = isExternal
+        ? testType.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
+        : TEST_TYPE_LABELS[testType]
+
+      return {
+        key: testType,
+        title: (
+          <>
+            <EduIf condition={!isExternal}>
+              <StyledTag
+                border="1.5px solid black"
+                font="bold"
+                marginBlock="5px"
+              >
+                {testTypeText}
+              </StyledTag>
+            </EduIf>
+            <EduIf condition={isExternal}>
+              <StyledTag color="black" marginBlock="5px">
+                {testTypeText}
+              </StyledTag>
+            </EduIf>
+          </>
+        ),
+        dataIndex: 'academicRisk',
+        render: (value) => {
+          const scoreValue =
+            value[testType]?.score >= 0
+              ? `${value[testType].score}${scoreSuffix}`
+              : '-'
+          const riskBandColor =
+            RISK_BAND_COLOR_INFO[value[testType]?.risk] || ''
+          return <ColoredText color={riskBandColor}>{scoreValue}</ColoredText>
+        },
+      }
+    })
+    const academicColumn = {
+      title: 'ACADEMICS',
+      align: 'left',
+      className: 'nested',
+      children: academicSubColumns,
+    }
+    tableColumns.push(academicColumn)
+  }
+  return tableColumns
 }
 
 const getRiskBandStudentCount = (distribution = [], key) => {
@@ -135,12 +232,12 @@ const getRiskBandStudentCount = (distribution = [], key) => {
 export const getPeriodRiskData = (period) => {
   const highRisk = getRiskBandStudentCount(
     period.distribution,
-    RISK_BAND_LEVELS.HIGH
+    RISK_BAND_LABELS.HIGH
   )
 
   const mediumRisk = getRiskBandStudentCount(
     period.distribution,
-    RISK_BAND_LEVELS.MEDIUM
+    RISK_BAND_LABELS.MEDIUM
   )
   return [highRisk, mediumRisk]
 }
@@ -149,15 +246,19 @@ const getRiskSummaryPieChartData = (distribution = []) => {
   const totalStudentCount = sumBy(distribution, ({ studentCount }) =>
     parseInt(studentCount, DECIMAL_BASE)
   )
-  return distribution.map(({ studentCount, bandLabel }) => ({
-    name: bandLabel,
-    value: percentage(
-      parseInt(studentCount, DECIMAL_BASE),
-      totalStudentCount,
-      true
-    ),
-    fill: RISK_BAND_COLOR_INFO[bandLabel],
-  }))
+  const pieChartData = distribution
+    .map(({ studentCount, bandLabel }) => ({
+      name: bandLabel,
+      value: percentage(
+        parseInt(studentCount, DECIMAL_BASE),
+        totalStudentCount,
+        true
+      ),
+      fill: RISK_BAND_COLOR_INFO[bandLabel],
+      bandLevel: RISK_BAND_LEVELS[bandLabel],
+    }))
+    .sort((a, b) => a.bandLevel - b.bandLevel)
+  return pieChartData
 }
 
 export const transformRiskSummaryData = (prePeriod, postPeriod, showFooter) => {
@@ -251,4 +352,22 @@ export const getTimelineChartData = (rawData, filters) => {
     })
   })
   return finalData
+}
+
+export const transformTableData = (tableMetrics) => {
+  const tableData = tableMetrics.map((m) => {
+    const { attendanceRisk = {}, academicRisk = {} } = m
+    const overallRisk = [attendanceRisk, ...Object.values(academicRisk)]
+    const highRiskMeasures =
+      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.HIGH).length || 0
+    const mediumRiskMeasures =
+      overallRisk.filter((r) => r.risk === RISK_BAND_LABELS.MEDIUM).length || 0
+    return {
+      ...m,
+      highRiskMeasures,
+      mediumRiskMeasures,
+      academicRisk,
+    }
+  })
+  return tableData
 }

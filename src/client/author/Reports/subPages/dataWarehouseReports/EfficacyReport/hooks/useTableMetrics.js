@@ -14,6 +14,7 @@ const useTableMetrics = ({
   testInfo,
 }) => {
   return useMemo(() => {
+    const rowsCount = get(reportTableData, 'rowsCount', 0)
     const tableMetricInfo = get(reportTableData, 'metricInfo', [])
     if (isEmpty(tableMetricInfo)) return []
     const tableData = getTableData(
@@ -26,26 +27,23 @@ const useTableMetrics = ({
     const rowSelection = {
       selectedRowKeys,
       onChange: onSelectChange,
-      onSelect: ({ studentId }) => {
+      onSelect: ({ dimension }) => {
         return setCheckedStudents(
-          checkedStudents.includes(studentId)
-            ? checkedStudents.filter((i) => i !== studentId)
-            : [...checkedStudents, studentId]
+          checkedStudents.includes(dimension._id)
+            ? checkedStudents.filter((i) => i !== dimension._id)
+            : [...checkedStudents, dimension._id]
         )
       },
       onSelectAll: (flag) =>
-        setCheckedStudents(flag ? tableData.map((d) => d.studentId) : []),
+        setCheckedStudents(
+          flag ? tableData.map(({ dimension }) => dimension._id) : []
+        ),
     }
 
     const checkedStudentsForModal = tableData
-      .filter((d) => checkedStudents.includes(d.studentId))
-      .map(({ studentId, firstName, lastName, username }) => ({
-        _id: studentId,
-        firstName,
-        lastName,
-        username,
-      }))
-    return [tableData, rowSelection, checkedStudentsForModal]
+      .filter(({ dimension }) => checkedStudents.includes(dimension._id))
+      .map(({ dimension }) => dimension)
+    return [tableData, rowsCount, rowSelection, checkedStudentsForModal]
   }, [
     reportTableData,
     prePerformanceBand,

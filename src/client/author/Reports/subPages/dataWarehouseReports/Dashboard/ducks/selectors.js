@@ -20,6 +20,10 @@ const filterTagsData = createSelector(
   stateSelector,
   (state) => state.filterTagsData
 )
+const selectedFilterTagsData = createSelector(
+  stateSelector,
+  (state) => state.settings.selectedFilterTagsData
+)
 const settings = createSelector(stateSelector, (state) => state.settings)
 const error = createSelector(stateSelector, (state) => state.error)
 
@@ -27,6 +31,10 @@ const error = createSelector(stateSelector, (state) => state.error)
 const loadingTableData = createSelector(
   stateSelector,
   (state) => state.loadingTableData
+)
+const districtAveragesData = createSelector(
+  stateSelector,
+  (state) => state.districtAveragesData
 )
 const tableData = createSelector(stateSelector, (state) => state.tableData)
 const tableDataRequestError = createSelector(
@@ -41,9 +49,11 @@ export {
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   settings,
   error,
   loadingTableData,
+  districtAveragesData,
   tableData,
   tableDataRequestError,
 }

@@ -1,10 +1,13 @@
 import React, { useMemo, useRef, useState } from 'react'
 import qs from 'qs'
-import { get, mapValues } from 'lodash'
+import { get, isEmpty, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+import {
+  getPerformanceBandsListByTestType,
+  resetStudentFilters as resetFilters,
+} from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import { staticDropDownData } from '../../utils'
 
@@ -20,6 +23,12 @@ import {
 } from '../../../../../../src/selectors/user'
 import { actions, selectors } from '../../ducks'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+import {
+  commonFilterKeys,
+  filterKeysToCompareByKeys,
+  nextCompareByKeys,
+} from '../../../common/utils'
+import usePerformanceBandsList from '../../../../../common/hooks/usePerformanceBandsList'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   (res, ele) => ({ [ele]: ele, ...res }),
@@ -47,9 +56,11 @@ const Filters = ({
   reportId = '',
   loadingFiltersData,
   prevFiltersData,
+  selectedFilterTagsData,
   filtersData,
   filtersTabKey,
   filters,
+  tableFilters,
   filterTagsData,
   // action props
   toggleFilter,
@@ -78,11 +89,17 @@ const Filters = ({
     externalTests = [],
     externalBands = [],
   } = get(filtersData, 'data.result', {})
-
-  const performanceBandsList = useMemo(
-    () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
-    [bandInfo]
+  const defaultPBIdToTTMap = get(
+    filtersData,
+    'data.result.testSettings.testTypesProfile.performanceBand',
+    {}
   )
+
+  const [
+    performanceBandsList,
+    defaultPerformanceBandsList,
+    setPerformanceBandsListToUse,
+  ] = usePerformanceBandsList(bandInfo)
 
   const search = useUrlSearchParams(location)
 
@@ -101,6 +118,7 @@ const Filters = ({
       (schoolYears.length ? schoolYears[0].key : ''),
     externalTestsRequired: true,
     externalBandsRequired: true,
+    testSettingsRequired: true,
   })
 
   useFiltersFromURL({
@@ -126,7 +144,7 @@ const Filters = ({
   })
 
   const onGoClick = (_settings = {}) => {
-    const settings = {
+    const newSettings = {
       requestFilters: { ...filters },
       selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
@@ -134,7 +152,7 @@ const Filters = ({
     setFilters({ ...filters })
     setShowPageLevelApply(false)
     setShowApply(false)
-    _onGoClick(settings)
+    _onGoClick(newSettings)
     toggleFilter(null, false)
   }
 
@@ -207,6 +225,21 @@ const Filters = ({
       _filters.preTestId = ''
       _filters.postTestId = ''
     }
+    if (keyName === FILTER_KEYS_MAP.assessmentTypes) {
+      const _performanceBandsListToUse = getPerformanceBandsListByTestType(
+        defaultPerformanceBandsList,
+        selected,
+        defaultPBIdToTTMap
+      )
+      if (_performanceBandsListToUse.length) {
+        setPerformanceBandsListToUse(_performanceBandsListToUse)
+        const _profileId = _performanceBandsListToUse[0].key
+        Object.assign(_filters, {
+          preProfileId: _profileId,
+          postProfileId: _profileId,
+        })
+      }
+    }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
@@ -214,7 +247,18 @@ const Filters = ({
     setFilterTagsData(_filterTagsData)
     // update filters
     _filters[keyName] = _selected
+    if (commonFilterKeys.includes(keyName)) {
+      if (isEmpty(_selected)) {
+        _filters.selectedCompareBy = filterKeysToCompareByKeys[keyName]
+      } else {
+        _filters.selectedCompareBy =
+          nextCompareByKeys[filterKeysToCompareByKeys[keyName]]
+      }
+    } else if (!_filters.selectedCompareBy) {
+      _filters.selectedCompareBy = tableFilters.compareBy.key
+    }
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
+    delete _filters.selectedCompareBy
     if (isPageLevelFilter) {
       setFilters({ ..._filters })
       setShowPageLevelApply(true)
@@ -235,7 +279,7 @@ const Filters = ({
       filtersTabKey={filtersTabKey}
       setFiltersTabKey={setFiltersTabKey}
       filters={filters}
-      selectedFilterTagsData={filterTagsData}
+      selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={staticDropDownData.tagTypes}
       updateFilterDropdownCB={updateFilterDropdownCB}
       onAssessmentSelect={onAssessmentSelect}

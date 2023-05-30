@@ -43,7 +43,10 @@ import { Subtitle } from '../../../styled/Subtitle'
 import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
-import { updateRubricDataAction } from '../../../../author/GradingRubric/ducks'
+import {
+  updateRubricDataAction,
+  removeAiTagFromQuestionAction,
+} from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
@@ -97,8 +100,9 @@ class Scoring extends Component {
   }
 
   handleRemoveRubric = () => {
-    const { dissociateRubricFromQuestion, location } = this.props
+    const { dissociateRubricFromQuestion, location, removeAiTag } = this.props
     dissociateRubricFromQuestion()
+    removeAiTag()
     if (
       location?.state?.regradeFlow ||
       location?.pathname?.includes('classboard') ||
@@ -578,6 +582,7 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
+      removeAiTag: removeAiTagFromQuestionAction,
     }
   )
 )

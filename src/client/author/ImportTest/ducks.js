@@ -16,6 +16,8 @@ export const JOB_STATUS = {
   PROGRESS: 'progress',
   FAILED: 'failed',
   SUCCESS: 'success',
+  INITIATED: 'initiated',
+  IN_PROGRESS: 'in_progress',
 }
 
 const contentFolders = {
@@ -136,11 +138,9 @@ export function* uploadTestStaga({ payload }) {
   }
 }
 
-function* getImportProgressSaga({ payload: jobIds }) {
+function* getImportProgressSaga({ payload: jobId }) {
   try {
-    const response = yield call(contentImportApi.contentImportProgress, {
-      jobIds,
-    })
+    const response = yield call(contentImportApi.qtiImportStatus, jobId)
     yield put(setJobsDataAction(response))
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))

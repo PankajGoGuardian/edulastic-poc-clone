@@ -24,6 +24,7 @@ import { LogoCompact } from './StyledComponents'
 import { toggleSideBarAction } from '../../author/src/actions/toggleMenu'
 import SwitchUserModal from '../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../author/authUtils'
+import { isEASuperAdmin } from './Utils'
 import {
   getAccountSwitchDetails,
   getUserOrgId,
@@ -83,6 +84,7 @@ const SideMenu = ({
   toggleState,
   toggleSideBar,
   userId,
+  permissions,
   switchDetails,
   orgId,
 }) => {
@@ -117,6 +119,21 @@ const SideMenu = ({
 
   const personId = get(switchDetails, 'personId')
 
+  const menuItem = (item) => (
+    <Menu.Item
+      data-cy={item.label}
+      onClick={() => {
+        toggleState(false)
+        if (item.href) {
+          history.push(item.href)
+        }
+      }}
+      key={item.href}
+    >
+      <Icon title={item.label} type={item.icon} />
+      <span>{item.label}</span>
+    </Menu.Item>
+  )
   const footerDropdownMenu = (
     <FooterDropDown
       data-cy="footer-dropdown"
@@ -200,21 +217,10 @@ const SideMenu = ({
             : null
         }
       >
-        {siderMenuData.map((item) => (
-          <Menu.Item
-            data-cy={item.label}
-            onClick={() => {
-              toggleState(false)
-              if (item.href) {
-                history.push(item.href)
-              }
-            }}
-            key={item.href}
-          >
-            <Icon title={item.label} type={item.icon} />
-            <span>{item.label}</span>
-          </Menu.Item>
-        ))}
+        {siderMenuData.slice(0, 1).map((item) => menuItem(item))}
+
+        {isEASuperAdmin(permissions, userRole) &&
+          siderMenuData.slice(1).map((item) => menuItem(item))}
       </Menu>
       <MenuFooter>
         <UserInfoButton
@@ -286,6 +292,7 @@ const enhance = compose(
       lastName: get(state.user, 'user.lastName', ''),
       userRole: get(state.user, 'user.role', ''),
       userId: get(state.user, 'user._id', ''),
+      permissions: get(state.user, 'user.permissions', []),
       orgId: getUserOrgId(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),

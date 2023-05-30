@@ -392,6 +392,7 @@ function* saveAssignment({ payload }) {
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
       assignmentSettings.timedAssignment = false
       assignmentSettings.showRubricToStudents = false
+      assignmentSettings.allowAutoEssayEvaluation = false
     }
 
     const referenceDocAttributes =

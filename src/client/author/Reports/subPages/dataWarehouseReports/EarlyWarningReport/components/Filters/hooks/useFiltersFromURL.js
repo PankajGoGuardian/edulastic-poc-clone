@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
-import { isEmpty, reject } from 'lodash'
+import { get, isEmpty, reject } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { staticDropDownData } from '../../../utils'
+import { getDemographicsFilterTagsData } from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
@@ -70,11 +71,18 @@ function useFiltersFromURL({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
+      const demographics = get(filtersData, 'data.result.demographics')
+      const demographicsFilterTagsData = getDemographicsFilterTagsData(
+        search,
+        demographics
+      )
       const _filterTagsData = {
         termId: urlSchoolYear,
         subjects: urlSubjects,
         grades: urlGrades,
         periodType: urlPeriod,
+
+        ...demographicsFilterTagsData,
       }
 
       // set filterTagsData and filters
@@ -90,7 +98,7 @@ function useFiltersFromURL({
         })
         fetchUpdateTagsData({
           schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject([search.courseId], isEmpty),
+          courseId: reject([search.courseId], isEmpty),
           classIds: reject(_filters.classIds?.split(','), isEmpty),
           groupIds: reject(_filters.groupIds?.split(','), isEmpty),
           teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),

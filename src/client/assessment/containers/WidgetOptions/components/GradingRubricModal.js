@@ -1,13 +1,21 @@
 import React from 'react'
 import styled from 'styled-components'
+import connect from 'react-redux/es/connect/connect'
+import { EduIf } from '@edulastic/common'
 import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
 import GradingRubric from '../../../../author/GradingRubric/Components/Container'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
+import { getRubricGenerationInProgress } from '../../../../author/GradingRubric/ducks'
 
 const GradingRubricModal = ({
   visible,
   toggleModal,
   actionType,
   isRegradeFlow = false,
+  isRubricGenerationInProgress,
 }) => {
   const Title = [
     <Heading>
@@ -29,6 +37,15 @@ const GradingRubricModal = ({
       destroyOnClose
       maskClosable={false}
     >
+      <EduIf condition={isRubricGenerationInProgress}>
+        <SpinContainer loading={isRubricGenerationInProgress}>
+          <StyledSpin size="large" />
+          <DivModal>
+            It usually takes around 60 seconds to generate. Please stay on the
+            page, do not press back button.
+          </DivModal>
+        </SpinContainer>
+      </EduIf>
       <ModalBody>
         <GradingRubric
           actionType={actionType}
@@ -40,7 +57,9 @@ const GradingRubricModal = ({
   )
 }
 
-export default GradingRubricModal
+export default connect((state) => ({
+  isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+}))(GradingRubricModal)
 
 const ModalBody = styled.div`
   display: flex;
@@ -63,4 +82,19 @@ const StyledModal = styled(ConfirmationModal)`
     background: inherit !important;
     box-shadow: unset !important;
   }
+`
+
+const DivModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f0eeeb;
+  font-size: 24px;
+  z-index: -10;
 `

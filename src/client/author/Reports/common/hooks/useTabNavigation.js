@@ -34,6 +34,6 @@ function useTabNavigation({
       hideOtherTabs: !!reportId,
     })
     updateNavigation(navigationItems)
-  }, [settings])
+  }, [settings, extraFilters.selectedCompareBy])
 }
 export default useTabNavigation

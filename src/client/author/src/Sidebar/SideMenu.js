@@ -1,105 +1,117 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { compose } from 'redux'
-import ReactOutsideEvent from 'react-outside-event'
-import { white, tabletWidth, mobileWidthLarge } from '@edulastic/colors'
-import { get, cloneDeep, some, every } from 'lodash'
-import { withRouter, Link } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { Dropdown, Icon as AntIcon, Popover, Popconfirm, Tooltip } from 'antd'
-import styled from 'styled-components'
+import { segmentApi } from '@edulastic/api'
+import { mobileWidthLarge, tabletWidth, white } from '@edulastic/colors'
 import {
-  IconClockDashboard,
-  IconAssignment,
-  IconBarChart,
-  IconManage,
-  IconItemLibrary,
-  IconTestBank,
-  IconPlaylist,
-  IconPlaylist2,
-  IconSettings,
-  IconSubscriptionHighlight,
-  IconProfileHighlight,
-  IconSignoutHighlight,
-  IconInterface,
-  IconSwitchUser,
-  IconUsers,
-  IconExclamationMark,
-  IconClose,
-  IconDemoAccNav,
-  IconCloudUpload,
-} from '@edulastic/icons'
-import {
-  withWindowSizes,
-  OnDarkBgLogo,
+  EduElse,
   EduIf,
   EduThen,
-  EduElse,
+  OnDarkBgLogo,
+  withWindowSizes,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { helpCenterUrl } from '@edulastic/constants/const/common'
-import { segmentApi } from '@edulastic/api'
-import { getLastPlayListSelector } from '../../Playlist/ducks'
-import { logoutAction } from '../actions/auth'
-import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
-  getUserFeatures,
-  isProxyUser as isProxyUserSelector,
-  toggleAdminAlertModalAction,
-  toggleVerifyEmailModalAction,
+  IconAssignment,
+  IconBarChart,
+  IconClockDashboard,
+  IconClose,
+  IconCloudUpload,
+  IconDataStudio,
+  IconDemoAccNav,
+  IconExclamationMark,
+  IconInterface,
+  IconItemLibrary,
+  IconManage,
+  IconPlaylist,
+  IconPlaylist2,
+  IconProfileHighlight,
+  IconSettings,
+  IconSignoutHighlight,
+  IconSubscriptionHighlight,
+  IconSwitchUser,
+  IconTestBank,
+  IconUsers,
+} from '@edulastic/icons'
+import { Icon as AntIcon, Dropdown, Popconfirm, Popover, Tooltip } from 'antd'
+import { cloneDeep, every, get, some } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import ReactOutsideEvent from 'react-outside-event'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import styled from 'styled-components'
+import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
+import {
   getEmailVerified,
+  getUserFeatures,
   getVerificationTS,
   isDefaultDASelector,
-  setIsUserSignedUpUsingUsernameAndPassword,
-  isSignupUsingUNAndPassSelector,
   isDemoPlaygroundUser,
+  isProxyUser as isProxyUserSelector,
+  isSignupUsingUNAndPassSelector,
   setIsUserOnProfilePageAction,
+  setIsUserSignedUpUsingUsernameAndPassword,
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
 } from '../../../student/Login/ducks'
+import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import { getLastPlayListSelector } from '../../Playlist/ducks'
+import { slice } from '../../Subscription/ducks'
+import { proxyDemoPlaygroundUser, switchUser } from '../../authUtils'
+import { logoutAction } from '../actions/auth'
+import { toggleSideBarAction } from '../actions/toggleMenu'
+import PurchaseFlowModals from '../components/common/PurchaseModals'
 import {
-  isOrganizationDistrictSelector,
   getAccountSwitchDetails,
-  isFreeAdminSelector,
-  isSAWithoutSchoolsSelector,
   getUserOrgId,
+  isFreeAdminSelector,
+  isOrganizationDistrictSelector,
+  isSAWithoutSchoolsSelector,
   isSuperAdminSelector,
 } from '../selectors/user'
-import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
-import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
-import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
-import PurchaseFlowModals from '../components/common/PurchaseModals'
-import { slice } from '../../Subscription/ducks'
 import {
-  FooterDropDown,
-  Menu,
-  FixedSidebar,
-  SideBar,
-  ToggleSidemenu,
-  LogoWrapper,
-  LogoCompact,
-  MenuWrapper,
-  Overlay,
-  MenuItem,
-  LabelMenuItem,
-  MenuFooter,
-  DemoPlaygroundButtonContainer,
+  CheckCircleIcon,
+  CloseIconWrapper,
   DemoPlaygroundButton,
-  IconContainer,
-  QuestionButton,
+  DemoPlaygroundButtonContainer,
+  ExclamationIcon,
+  FixedSidebar,
+  FooterDropDown,
   HelpIcon,
   HelpText,
-  UserInfoButton,
+  Hr,
+  IconContainer,
   IconContainerDiv,
-  CheckCircleIcon,
-  ExclamationIcon,
-  UserImg,
+  IconDropdown,
+  LabelMenuItem,
+  LogoCompact,
+  LogoWrapper,
+  Menu,
+  MenuFooter,
+  MenuItem,
+  MenuWrapper,
+  Overlay,
   PopConfirmWrapper,
-  CloseIconWrapper,
   PseudoDiv,
+  QuestionButton,
+  SideBar,
+  ToggleSidemenu,
+  UserImg,
+  UserInfoButton,
   UserName,
   UserType,
-  IconDropdown,
-  Hr,
 } from './styledComponents'
+import { navigationState } from '../constants/navigation'
+
+const dataStudioPattern = [
+  /\/author\/reports\/dashboard-report/,
+  /\/author\/reports\/multiple-assessment-report-dw/,
+  /\/author\/reports\/whole-learner-report\/student/,
+  /\/author\/reports\/attendance-summary/,
+  /\/author\/reports\/goals-and-interventions/,
+  /\/author\/reports\/early-warning-report/,
+  /\/author\/reports\/efficacy-report/,
+]
 
 const menuItems = [
   {
@@ -137,7 +149,20 @@ const menuItems = [
     label: 'Insights',
     icon: IconBarChart,
     allowedPathPattern: [/author\/reports/],
+    disallowedPathPattern: [
+      /author\/reports\/data-warehouse-reports/,
+      ...dataStudioPattern,
+    ],
     path: 'author/reports',
+  },
+  {
+    label: 'Data Studio',
+    icon: IconDataStudio,
+    allowedPathPattern: [
+      /author\/reports\/data-warehouse-reports/,
+      ...dataStudioPattern,
+    ],
+    path: 'author/reports/data-warehouse-reports',
   },
   {
     label: 'library',
@@ -244,7 +269,6 @@ class SideMenu extends Component {
     } = features
 
     let _menuItems = cloneDeep(menuItems)
-
     if (isInsightsOnlyUser) {
       return menuItems.filter((i) => i.label === 'Insights')
     }
@@ -403,6 +427,11 @@ class SideMenu extends Component {
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
+        } else if (path.match(/author\/subscription/)) {
+          history.push({
+            pathname: `/${path}`,
+            state: { view: navigationState.SUBSCRIPTION.view.DATA_STUDIO },
+          })
         } else {
           history.push(`/${path}`)
         }
@@ -564,12 +593,19 @@ class SideMenu extends Component {
       ) {
         return true
       }
+      const matchedAllowedPathPattern = menuItem.allowedPathPattern?.some(
+        (path) => !!history.location.pathname.match(path)
+      )
+
+      const matchedDisallowed = menuItem.disallowedPathPattern?.some(
+        (path) => !!history.location.pathname.match(path)
+      )
+
       return (
         menuItem &&
         !menuItem.divider &&
-        menuItem.allowedPathPattern.some(
-          (path) => !!history.location.pathname.match(path)
-        )
+        matchedAllowedPathPattern &&
+        !matchedDisallowed
       )
     })
 

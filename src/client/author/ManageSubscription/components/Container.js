@@ -228,6 +228,7 @@ const ManageSubscriptionContainer = ({
           isPremiumUser={isPremiumUser}
           userRole={userRole}
           orgData={orgData}
+          features={userFeature}
         />
       )}
 

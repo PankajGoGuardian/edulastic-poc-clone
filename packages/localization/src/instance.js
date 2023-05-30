@@ -57,6 +57,7 @@ i18n
         customReports: require('./locales/customReport/en'),
         qtiimport: require('./locales/qtiImport/en'),
         notifications: require('./locales/notifications/en'),
+        upgradePlan: require('./locales/upgradePlan/en'),
       },
     },
   })

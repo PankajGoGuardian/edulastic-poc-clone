@@ -211,6 +211,12 @@ const AdvancedSearch = ({
     allTagsData,
   }
 
+  const pendingFields = (fields || [])
+    .filter(({ name }) => {
+      return !query?.rules?.some((rule) => rule.field === name)
+    })
+    .map((item) => item.name)
+
   return (
     <>
       <EduIf condition={isGroupSaving}>
@@ -253,6 +259,7 @@ const AdvancedSearch = ({
           query={query}
           controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
           enableDragAndDropProp={false}
+          getDefaultField={pendingFields?.[0] || fields?.[0].name}
           operators={inNotInOp}
           resetOnFieldChange
           listsAsArrays
@@ -261,10 +268,14 @@ const AdvancedSearch = ({
           // Reusable(s)
           controlElements={{
             valueEditor: ValueEditor,
-            fieldSelector: FieldSelector,
+            fieldSelector: (props) => (
+              <FieldSelector {...props} pendingFields={pendingFields} />
+            ),
             combinatorSelector: () => null,
             operatorSelector: OperatorSelector,
-            addRuleAction: AddRule,
+            addRuleAction: (props) => (
+              <AddRule {...props} pendingFields={pendingFields} />
+            ),
             addGroupAction: () => null,
             removeRuleAction: RemoveRuleAction,
             removeGroupAction: RemoveRuleAction,

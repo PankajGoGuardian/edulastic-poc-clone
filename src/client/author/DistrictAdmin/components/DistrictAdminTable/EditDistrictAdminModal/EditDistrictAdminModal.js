@@ -223,7 +223,7 @@ class EditDistrictAdminModal extends Component {
           </Col>
         </Row>
         <FeaturesSwitch
-          inputFeatures="isDataWarehouseEnabled"
+          inputFeatures="isDataOpsUser"
           actionOnInaccessible="hidden"
         >
           <Row>

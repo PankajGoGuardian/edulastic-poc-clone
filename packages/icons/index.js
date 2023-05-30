@@ -342,6 +342,7 @@ export { default as IconLesson } from './src/IconLesson'
 export { default as IconTestLibrary } from './src/IconTestLibrary'
 export { default as IconTimer } from './src/IconTimer'
 export { default as IconVideoCamera } from './src/IconVideoCamera'
+export { default as IconDataStudio } from './src/IconDataStudio'
 
 // data warehouse reports
 export { default as IconMoreReports } from './src/IconMoreReports'
@@ -355,3 +356,25 @@ export { default as IconExternalLink } from './src/IconExternalLink'
 export { default as IconEarlyWarningReport } from './src/IconEarlyWarningReport'
 export { default as IconSetGoals } from './src/IconSetGoals'
 export { default as IconEfficacyReport } from './src/IconEfficacyReport'
+
+// data studio subscription
+export { default as IconDataStudioSubscription } from './src/IconDataStudioSubscription'
+export { default as IconAdminDashboardAddOn } from './src/IconAdminDashboardAddOn'
+export { default as IconAttendanceAddOn } from './src/IconAttendanceAddOn'
+export { default as IconEarlyWarningAddOn } from './src/IconEarlyWarningAddOn'
+export { default as IconEfficacyAddOn } from './src/IconEfficacyAddOn'
+export { default as IconGaolsAndInterventionsAddOn } from './src/IconGaolsAndInterventionsAddOn'
+export { default as IconPerformanceTrendAddOn } from './src/IconPerformanceTrendAddOn'
+export { default as IconWholeLearnerReportAddOn } from './src/IconWholeLearnerReportAddOn'
+
+// Insights Report Icons
+export { default as IconClock } from './src/IconClock'
+export { default as IconUsersGroup } from './src/IconUsersGroup'
+export { default as IconChartLineUp } from './src/IconChartLineUp'
+export { default as IconGears } from './src/IconGears'
+export { default as IconRightTriangle } from './src/IconRightTriangle'
+export { default as IconSingleFile } from './src/IconSingleFile'
+export { default as IconMultipleFile } from './src/IconMultipleFile'
+export { default as IconMultipleLayers } from './src/IconMultipleLayers'
+export { default as IconGraduationCapAlt } from './src/IconGraduationCapAlt'
+export { default as IconLinkHorizontal } from './src/IconLinkHorizontal'

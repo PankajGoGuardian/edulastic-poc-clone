@@ -45,7 +45,6 @@ const PDFPreview = ({
   removeAnswers,
   testMode,
   reportMode,
-  studentWork = false,
   highlighted,
   forwardedRef,
   onDragStart,
@@ -229,21 +228,17 @@ const PDFPreview = ({
           )}
         </Droppable>
 
-        {!studentWork ? (
-          <ZoomControlCotainer>
-            {viewMode !== 'edit' && (
-              <PDFZoomControl onClick={toggleMinimized} data-cy="pdfList">
-                {minimized ? <IconGraphRightArrow /> : <IconChevronLeft />}
-              </PDFZoomControl>
-            )}
-            <PDFZoomControl onClick={() => PDFScaleUp(0.1)}>
-              &#43;
+        <ZoomControlCotainer>
+          {viewMode !== 'edit' && (
+            <PDFZoomControl onClick={toggleMinimized} data-cy="pdfList">
+              {minimized ? <IconGraphRightArrow /> : <IconChevronLeft />}
             </PDFZoomControl>
-            <PDFZoomControl onClick={() => PDFScaleDown(0.1)}>
-              &minus;
-            </PDFZoomControl>
-          </ZoomControlCotainer>
-        ) : null}
+          )}
+          <PDFZoomControl onClick={() => PDFScaleUp(0.1)}>&#43;</PDFZoomControl>
+          <PDFZoomControl onClick={() => PDFScaleDown(0.1)}>
+            &minus;
+          </PDFZoomControl>
+        </ZoomControlCotainer>
       </PerfectScrollbar>
       <DragPreview />
     </PDFPreviewWrapper>

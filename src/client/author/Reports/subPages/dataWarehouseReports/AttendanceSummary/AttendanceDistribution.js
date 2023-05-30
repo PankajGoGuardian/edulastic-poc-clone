@@ -65,6 +65,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 
 const AttendanceDistribution = ({ data, loading }) => {
   const sortedLegendsData = sortDistributionBand(data)
+  const pieChartData = [...sortedLegendsData].reverse()
   const [animate, onAnimationStart] = useResetAnimation()
   return (
     <Col span={10}>
@@ -86,6 +87,8 @@ const AttendanceDistribution = ({ data, loading }) => {
               fill="#8884d8"
               dataKey="value"
               label={getAcademicSummaryChartLabelJSX}
+              startAngle={90}
+              endAngle={-270}
               style={{ filter: 'drop-shadow(10px 10px 12px #00000030)' }}
             >
               {sortedLegendsData.map((entry) => (
@@ -94,7 +97,7 @@ const AttendanceDistribution = ({ data, loading }) => {
             </Pie>
           </StyledPieChart>
           <LegendWrap>
-            {sortedLegendsData.map((entry) => {
+            {pieChartData.map((entry) => {
               return (
                 <CustomLegend key={`legend-${entry.name}`}>
                   <LegendSymbol color={entry.color} />

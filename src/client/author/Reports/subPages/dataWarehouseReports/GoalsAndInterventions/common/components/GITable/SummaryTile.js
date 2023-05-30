@@ -13,6 +13,9 @@ const SummaryTile = ({
   border,
   textColor = summaryTileColors.BLUE_TEXT,
   infoText = '',
+  status_code,
+  handleClick,
+  selectedStatus,
 }) => {
   return (
     <StyleButton
@@ -23,7 +26,9 @@ const SummaryTile = ({
         color: textColor,
         textTransform: border ? 'uppercase' : 'initial',
         fontSize: border ? '14px' : '12px',
+        boxShadow: selectedStatus === status_code ? `0 0 8px #ccc` : 'none',
       }}
+      onClick={() => handleClick(status_code)}
     >
       <p>
         {text}
@@ -54,6 +59,7 @@ const StyleButton = styled.div`
   height: 60px;
   min-width: 10vw;
   border-radius: 4px;
+  cursor: pointer;
   p {
     font-weight: 600;
   }

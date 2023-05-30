@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { black } from '@edulastic/colors'
+import { black, themeColor } from '@edulastic/colors'
 import { IconCharInfo } from '@edulastic/icons'
 
 export const StyledInfoIcon = styled(IconCharInfo)`
@@ -12,4 +12,8 @@ export const StyledInfoIcon = styled(IconCharInfo)`
   & path {
     fill: ${black};
   }
+`
+export const StyledViewButton = styled.div`
+  color: ${themeColor};
+  cursor: pointer;
 `

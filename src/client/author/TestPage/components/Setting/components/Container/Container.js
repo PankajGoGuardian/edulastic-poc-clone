@@ -1753,7 +1753,7 @@ class Setting extends Component {
                           <EduSwitchStyled
                             disabled={disabled || !premium}
                             checked={allowAutoEssayEvaluation}
-                            data-cy="auto-essay-evaluation"
+                            data-cy="update-auto-essay-evaluation"
                             onChange={this.updateTestData(
                               'allowAutoEssayEvaluation'
                             )}

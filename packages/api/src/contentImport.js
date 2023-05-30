@@ -34,11 +34,11 @@ const qtiImport = (data) => {
     .then(({ data: response }) => response)
 }
 
-const qtiImportStatus = (data) => {
+const qtiImportStatus = (jobId) => {
   prefix = 'qti'
   return api
     .callApi({
-      url: `${prefix}/import/${data.jobId}`,
+      url: `${prefix}/import/${jobId}`,
       method: 'get',
     })
     .then(({ data: response }) => response)

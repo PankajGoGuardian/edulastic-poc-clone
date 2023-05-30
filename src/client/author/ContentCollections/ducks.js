@@ -55,6 +55,7 @@ const SET_UPLOAD_CONTENT_STATUS = '[collection] set upload test status'
 const SET_CI_JOBS_DATA = '[collection] set jobs response data'
 const GET_CONTENT_IMPORT_PROGRESS = '[collection] get import progress action'
 const SET_IS_CONTENT_IMPORTING = '[collection] is content getting imported'
+const SET_IMPORT_TYPE = '[collection] set import type'
 
 // actions
 export const createCollectionRequestAction = createAction(
@@ -125,6 +126,8 @@ export const contentImportProgressAction = createAction(
 export const setIsContentImportingAction = createAction(
   SET_IS_CONTENT_IMPORTING
 )
+export const setImportTypeSelectorAction = createAction(SET_IMPORT_TYPE)
+
 export const initialState = {
   creating: false,
   fetchingCollections: false,
@@ -144,6 +147,7 @@ export const initialState = {
   jobIds: [],
   error: {},
   permissionsTotalCount: 0,
+  type: '',
 }
 
 // reducer
@@ -223,7 +227,7 @@ export const reducer = createReducer(initialState, {
     state.importing = true
   },
   [IMPORT_TEST_SUCCESS]: (state, { payload }) => {
-    state.importStatus = payload
+    state.importStatus = payload.jobIds
   },
   [GET_SIGNED_URL_ERROR]: (state) => {
     state.importing = false
@@ -247,6 +251,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_IS_CONTENT_IMPORTING]: (state, { payload }) => {
     state.importing = payload
+  },
+  [SET_IMPORT_TYPE]: (state, { payload }) => {
+    state.type = payload
   },
 })
 
@@ -405,6 +412,7 @@ export function* importTestToCollectionSaga({ payload }) {
     sessionStorage.setItem('testUploadStatus', UPLOAD_STATUS.INITIATE)
     yield put(setCISuccessMessageAction('Started creating the items'))
     yield put(setIsContentImportingAction(true))
+    yield put(setImportTypeSelectorAction(type))
 
     const payloadData = {
       files: [signedUrl],
@@ -421,10 +429,18 @@ export function* importTestToCollectionSaga({ payload }) {
       delete payloadData.files
     }
     const response = yield call(endpoint, payloadData)
-    if (response?.jobIds?.length) {
-      yield put(importTestToCollectionSuccessAction(response.jobIds))
-      yield put(setImportContentJobIdsAction(response.jobIds))
-      sessionStorage.setItem('jobIds', JSON.stringify(response.jobIds))
+    if (response?.jobIds?.length || response.jobId) {
+      const data = type !== 'qti' ? response.jobIds : response.jobId
+      yield put(
+        importTestToCollectionSuccessAction({
+          jobIds: data,
+        })
+      )
+      yield put(setImportContentJobIdsAction(data))
+      sessionStorage.setItem(
+        'jobIds',
+        JSON.stringify(type !== 'qti' ? response.jobIds : [response.jobId])
+      )
       yield put(setCISuccessMessageAction('Completed creating the items'))
     } else {
       yield put(importTestToCollectionFailedAction('Failed uploading'))
@@ -591,4 +607,9 @@ export const signedUrlFetchingSelector = createSelector(
 export const getPermissionsTotalCountSelector = createSelector(
   stateSelector,
   (state) => state.permissionsTotalCount
+)
+
+export const importTypeSelector = createSelector(
+  stateSelector,
+  (state) => state.type
 )

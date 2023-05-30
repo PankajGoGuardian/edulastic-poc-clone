@@ -844,7 +844,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
-                  data-cy="auto-essay-evaluation"
+                  data-cy="allow-auto-essay-evaluation"
                   disabled={freezeSettings || !premium}
                   size="small"
                   defaultChecked={false}

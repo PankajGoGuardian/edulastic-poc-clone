@@ -137,7 +137,6 @@ const getTableColumns = (
           ),
           align: 'center',
           dataIndex: 'tests',
-          width: 200,
           visibleOn: ['browser'],
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
@@ -326,7 +325,7 @@ const AssessmentsTable = ({
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         rowSelection={rowSelection}
-        scroll={{ x: '100%' }}
+        scroll={{ x: true }}
         pagination={false}
       />
       <Row type="flex" align="middle">

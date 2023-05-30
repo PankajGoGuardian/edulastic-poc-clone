@@ -79,7 +79,7 @@ const AttendanceDistribution = ({ data, loading }) => {
             <Pie
               isAnimationActive={animate}
               onAnimationStart={onAnimationStart}
-              data={sortedLegendsData}
+              data={pieChartData}
               cx="50%"
               cy="50%"
               innerRadius={50}
@@ -91,13 +91,13 @@ const AttendanceDistribution = ({ data, loading }) => {
               endAngle={-270}
               style={{ filter: 'drop-shadow(10px 10px 12px #00000030)' }}
             >
-              {sortedLegendsData.map((entry) => (
+              {pieChartData.map((entry) => (
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
               ))}
             </Pie>
           </StyledPieChart>
           <LegendWrap>
-            {pieChartData.map((entry) => {
+            {sortedLegendsData.map((entry) => {
               return (
                 <CustomLegend key={`legend-${entry.name}`}>
                   <LegendSymbol color={entry.color} />

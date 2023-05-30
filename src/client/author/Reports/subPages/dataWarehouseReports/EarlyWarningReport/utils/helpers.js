@@ -257,7 +257,7 @@ const getRiskSummaryPieChartData = (distribution = []) => {
       fill: RISK_BAND_COLOR_INFO[bandLabel],
       bandLevel: RISK_BAND_LEVELS[bandLabel],
     }))
-    .sort((a, b) => a.bandLevel - b.bandLevel)
+    .sort((a, b) => b.bandLevel - a.bandLevel)
   return pieChartData
 }
 

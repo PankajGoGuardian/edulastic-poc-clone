@@ -1709,7 +1709,7 @@ class Setting extends Component {
                               !premium
                             }
                             checked={showRubricToStudents}
-                            data-cy="show-rubric-to-students-switch"
+                            data-cy="update-show-rubric-to-students-switch"
                             onChange={this.updateTestData(
                               'showRubricToStudents'
                             )}

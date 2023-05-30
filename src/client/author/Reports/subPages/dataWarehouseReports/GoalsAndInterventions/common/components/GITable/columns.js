@@ -23,6 +23,7 @@ import {
   isTimeLeftOverCertainPercent,
 } from '../../utils'
 import EllipsisText from '../EllipsisText'
+import Notes from './Notes'
 
 const getCurrentStatusColor = (record) => {
   if (isCurrentValueInValid(record)) {
@@ -230,7 +231,7 @@ const columns = [
         .toLowerCase()
         .localeCompare((b.comment || '').toLowerCase()),
     width: 200,
-    render: (comment) => <EllipsisText lines={2}>{comment}</EllipsisText>,
+    render: (comment) => <Notes comment={comment} />,
   },
   {
     title: '',

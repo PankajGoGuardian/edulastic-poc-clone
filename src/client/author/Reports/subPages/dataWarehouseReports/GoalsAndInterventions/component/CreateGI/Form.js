@@ -57,7 +57,8 @@ const Form = ({
     testTypeSubjectAndStandards,
     typeBandAndMetric,
     thresholdStartAndEndDate,
-    relatedGoalsAndComment,
+    relatedGoalIds,
+    notes,
   } = allFormFields
 
   const {
@@ -191,13 +192,22 @@ const Form = ({
         <Row
           style={{
             paddingTop: 30,
-            paddingBottom: 28,
           }}
         >
           <EduIf condition={formType === INTERVENTION}>
             <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
+            <Col
+              span={24}
+              style={{
+                paddingBottom: 25,
+              }}
+            >
+              {EnhancedComponent(relatedGoalIds)}
+            </Col>
           </EduIf>
-          <Col span={24}>{EnhancedComponent(relatedGoalsAndComment)}</Col>
+        </Row>
+        <Row>
+          <Col span={24}>{EnhancedComponent(notes)}</Col>
         </Row>
       </div>
     </div>

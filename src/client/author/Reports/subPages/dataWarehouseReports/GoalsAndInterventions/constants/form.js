@@ -19,6 +19,7 @@ export const DATEPICKER = 'DATEPICKER'
 export const DROPDOWN = 'DROPDOWN'
 export const MULTISELECT_DROPDOWN = 'MULTISELECT_DROPDOWN'
 export const STANDARDS_POPUP = 'STANDARDS_POPUP'
+export const FROALA_EDITOR = 'FROALA_EDITOR'
 
 export const GOAL_CRITERIA = 'goalCriteria'
 export const INTERVENTION_CRITERIA = 'interventionCriteria'
@@ -256,14 +257,14 @@ export const goalFormFields = ({
       endDate,
     },
   },
-  relatedGoalsAndComment: {
+  notes: {
     comment: {
       field: COMMENT,
       label: 'Notes',
-      fieldType: STRING_INPUT,
+      fieldType: FROALA_EDITOR,
       isRequired: false,
       placeholder: 'Add notes',
-      colSpan: 7,
+      colSpan: 24,
     },
   },
 })
@@ -327,7 +328,7 @@ export const interventionFormFields = ({
     endDate,
     isInterventionForm: true,
   }).thresholdStartAndEndDate,
-  relatedGoalsAndComment: {
+  relatedGoalIds: {
     relatedGoals: {
       field: RELATED_GOALS_IDS,
       label: 'Related goal(s)',
@@ -337,15 +338,8 @@ export const interventionFormFields = ({
       allowClear: true,
       optionsData: [], // TODO
     },
-    comment: {
-      field: 'comment',
-      label: 'Notes',
-      fieldType: STRING_INPUT,
-      isRequired: false,
-      placeholder: 'Add notes',
-      colSpan: 7,
-    },
   },
+  notes: goalFormFields({ type, startDate, endDate }).notes,
 })
 
 export const formSectionExtraData = {

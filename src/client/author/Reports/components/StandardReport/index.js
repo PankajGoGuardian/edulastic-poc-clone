@@ -21,9 +21,9 @@ const StandardReport = ({ premium, isAdmin, loc, history }) => (
           <ReportCardsWrapper>
             {INSIGHT_REPORTS.filter(
               ({ adminReport }) => isAdmin || !adminReport
-            ).map(({ heading, iconType, key, cards }) => {
+            ).map(({ heading, iconType, key, className, cards }) => {
               return (
-                <StyledCard key={key}>
+                <StyledCard key={key} className={className}>
                   <BoxHeading heading={heading} iconType={iconType} />
                   <CardsWrapper>
                     {cards.map((data) => (

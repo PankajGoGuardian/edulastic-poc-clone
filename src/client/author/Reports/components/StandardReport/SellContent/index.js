@@ -22,9 +22,9 @@ const SellContent = ({ isAdmin, loc, history }) => {
       <PremiumBanner />
       <br />
       {INSIGHT_REPORTS.filter(({ adminReport }) => isAdmin || !adminReport).map(
-        ({ heading, icon, key, cards }) => {
+        ({ heading, icon, key, className, cards }) => {
           return (
-            <div key={key}>
+            <div key={key} className={className}>
               <HeadingContainer heading={heading} icon={icon} />
               <Row gutter={16}>
                 {cards

@@ -75,6 +75,7 @@ export const FREE_REPORT = {
 export const INSIGHT_REPORTS = [
   {
     key: 'singleAssessmentReport',
+    className: 'single-assessment-reports',
     heading: 'Single Assessment Report',
     icon: <IconSingleFile />,
     cards: [
@@ -147,6 +148,7 @@ export const INSIGHT_REPORTS = [
   },
   {
     key: 'multipleAssessmentReport',
+    className: 'multiple-assessment-reports',
     heading: 'Multiple Assessment Report',
     icon: <IconMultipleFile />,
     cards: [
@@ -198,6 +200,7 @@ export const INSIGHT_REPORTS = [
   },
   {
     key: 'standardMasteryReport',
+    className: 'standards-mastery-reports',
     heading: 'Standards Mastery Report',
     icon: <IconMultipleLayers />,
     cards: [
@@ -238,6 +241,7 @@ export const INSIGHT_REPORTS = [
   },
   {
     key: 'studentProfileReport',
+    className: 'student-profile-reports',
     heading: 'Student Profile Report',
     icon: <IconGraduationCapAlt />,
     cards: [
@@ -287,6 +291,7 @@ export const INSIGHT_REPORTS = [
   },
   {
     key: 'engagementReport',
+    className: 'engagement-reports',
     adminReport: true,
     heading: 'Engagement Report',
     icon: <IconLinkHorizontal />,

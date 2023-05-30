@@ -65,7 +65,7 @@ const RedirectToTest = ({
     if (eAId) {
       try {
         const decodedData = decodeURIComponent(eAId)
-        v1Id = decrypt(atob(decodedData))
+        v1Id = Number(decrypt(atob(decodedData)))
       } catch (e) {
         v1Id = eAId
       }

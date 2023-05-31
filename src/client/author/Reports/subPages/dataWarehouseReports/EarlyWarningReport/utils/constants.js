@@ -135,7 +135,7 @@ export const compareByStudentColumns = [
   },
   {
     key: tableColumnKeys.AVG_ATTENDANCE,
-    title: 'ATTENDENCE',
+    title: 'ATTENDANCE',
     dataIndex: 'attendanceRisk',
     render: (value) => (
       <ColoredText color={RISK_BAND_COLOR_INFO[value?.risk] || ''}>

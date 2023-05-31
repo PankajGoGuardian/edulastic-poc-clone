@@ -135,7 +135,7 @@ const UseExisting = ({
       aiTag = { _id, tagName }
       addNewTag({ tag: aiTag, tagType: 'testitem' })
     }
-    const tags = [...questionTags, aiTag]
+    const tags = uniqBy([...questionTags, aiTag], '_id')
     setQuestionData({ ...questionData, tags })
   }
 
@@ -313,6 +313,8 @@ const UseExisting = ({
       const isRubricAIAssisted = aIAssisted && isAnyUUIDExists
       if (isRubricAIAssisted) {
         await addTag()
+      } else {
+        removeAiTag()
       }
       setCurrentMode('PREVIEW')
     }
@@ -321,6 +323,8 @@ const UseExisting = ({
   const handleUseRubric = async () => {
     if (currentRubricData.aIAssisted) {
       await addTag()
+    } else {
+      removeAiTag()
     }
     associateRubricWithQuestion({
       metadata: { _id: currentRubricData._id, name: currentRubricData.name },

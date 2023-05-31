@@ -532,8 +532,14 @@ const TestBehaviorGroupContainer = ({
           <StyledRow gutter={16} mb="15px" height="40">
             <Col span={10}>
               <Label>
-                <span>{i18translate('allowAutoEssayEvaluation.title')}</span>
-                <BetaTag2>BETA</BetaTag2>
+                <span>
+                  {i18translate('allowAutoEssayEvaluation.autoEssayEvaluation')}
+                  <br />
+                  {i18translate('allowAutoEssayEvaluation.essayQuestion')}
+                </span>
+                <BetaTag2 mt="-35px" ml="4px">
+                  BETA
+                </BetaTag2>
                 <DollarPremiumSymbol premium={premium} />
               </Label>
             </Col>

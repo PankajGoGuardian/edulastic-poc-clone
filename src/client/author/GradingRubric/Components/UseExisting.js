@@ -12,6 +12,10 @@ import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
 import { EduIf, notification } from '@edulastic/common'
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import { withNamespaces } from '@edulastic/localization'
+import {
+  ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
+} from '@edulastic/constants/const/questionType'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -161,6 +165,16 @@ const UseExisting = ({
     isEmpty(currentQuestion?.stimulus),
     previousRubricGeneratedStimulus === currentQuestion?.stimulus,
   ].some((o) => !!o)
+
+  const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
+    questionData?.type
+  )
+
+  const showAutoGenerateRubricBtn = [
+    isEssayTypeQuestion,
+    premium,
+    !currentRubricData?._id,
+  ].every((o) => !!o)
 
   const handlePaginationChange = (page) => {
     setCurrentPage(page)
@@ -466,9 +480,7 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <EduIf
-              condition={[premium, !currentRubricData?._id].every((o) => !!o)}
-            >
+            <EduIf condition={showAutoGenerateRubricBtn}>
               <CustomStyleBtn2
                 style={btnStyle}
                 onClick={generateRubricByOpenAI}

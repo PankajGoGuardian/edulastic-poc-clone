@@ -107,6 +107,7 @@ class FeedbackRight extends Component {
       showWarningToClear: false,
       isAIEvaluated: false,
       isApprovedByTeacher: false,
+      editedRubricResponse: {},
     }
 
     this.scoreInput = React.createRef()
@@ -265,11 +266,19 @@ class FeedbackRight extends Component {
       groupId = this.props?.match?.params?.classId,
       testItemId,
     } = activity
+
+    const teacherReviewPending = [isAIEvaluated, !isApprovedByTeacher].every(
+      (o) => !!o
+    )
+    if (teacherReviewPending && !isEmpty(rubricResponse)) {
+      this.setState({ editedRubricResponse: rubricResponse })
+    }
+
     const cannotSubmitScore = [
       !id,
       !user,
       !user.user,
-      isAIEvaluated && !isApprovedByTeacher,
+      teacherReviewPending,
     ].some((o) => !!o)
     if (cannotSubmitScore) {
       return
@@ -497,11 +506,36 @@ class FeedbackRight extends Component {
   handleFeedbackApproval = (e) =>
     this.setState({ isApprovedByTeacher: e.target.checked })
 
+  getRubricResponse = () => {
+    const { editedRubricResponse, clearRubricFeedback } = this.state
+    const {
+      widget: { activity },
+      rubricDetails,
+    } = this.props
+    const { rubricFeedbackByAI, scoreByAI } = activity
+
+    if (clearRubricFeedback) {
+      return
+    }
+    let rubricResponse
+    if (!isEmpty(editedRubricResponse)) {
+      rubricResponse = editedRubricResponse
+    } else if (!isEmpty(rubricFeedbackByAI)) {
+      rubricResponse = {
+        score: scoreByAI,
+        rubricFeedback: rubricFeedbackByAI,
+        rubricId: rubricDetails?._id,
+      }
+    }
+    return rubricResponse
+  }
+
   handleSave = () => {
     const { isAIEvaluated } = this.state
     this.preCheckSubmit()
     if (isAIEvaluated) {
-      this.onScoreSubmit()
+      const rubricResponse = this.getRubricResponse()
+      this.onScoreSubmit(rubricResponse)
     }
   }
 

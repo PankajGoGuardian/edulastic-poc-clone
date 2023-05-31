@@ -2,15 +2,19 @@ import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { Spin } from 'antd'
-import qs from 'qs'
 import { notification } from '@edulastic/common'
 
-if (
-  window.location.hash.includes('#renderResource/close/') ||
-  window.location.hash.includes('#assessmentQuestions/close/')
-) {
+const isEncryptedV1Redirection = window.location.hash.includes(
+  '#renderResource/close/'
+)
+const isNormalV1Redirection = window.location.hash.includes(
+  '#assessmentQuestions/close/'
+)
+if (isNormalV1Redirection || isEncryptedV1Redirection) {
   const v1Id = window.location.hash.split('/')[2]
-  window.location.href = `/d/ap?eAId=${v1Id}`
+  window.location.href = `/d/ap?${
+    isNormalV1Redirection ? `aId` : `eAId`
+  }=${v1Id}`
 }
 
 const Loading = () => (

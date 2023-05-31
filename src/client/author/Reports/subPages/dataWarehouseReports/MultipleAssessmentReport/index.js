@@ -244,16 +244,23 @@ const MultipleAssessmentReport = ({
   }, [pageFilters])
 
   useEffect(() => {
-    const { metricInfo = [] } = get(reportTableData, 'data.result', {})
+    const { internalMetricsForChart, externalMetricsForChart } = get(
+      reportChartData,
+      'data.result',
+      {}
+    )
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loadingReportChartData &&
       !loadingReportTableData &&
+      !isEmpty(reportChartData) &&
       !isEmpty(reportTableData) &&
-      !metricInfo.length
+      isEmpty(internalMetricsForChart) &&
+      isEmpty(externalMetricsForChart)
     ) {
       toggleFilter(null, true)
     }
-  }, [reportTableData])
+  }, [reportChartData, reportTableData])
 
   const {
     incompleteTests,

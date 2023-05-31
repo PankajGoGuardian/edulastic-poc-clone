@@ -115,15 +115,18 @@ const transformByRawScore = (data) => {
   const transformedData = data.map((item) => {
     const maxScore = item.submittedStudents
       ? (item.dimensionMaxScore / item.submittedStudents)?.toFixed(2)
-      : 1
+      : undefined
+    const dimensionRange = (100 * item.dimensionAvg) / item.maxScore || 0
     return {
       ...item,
       maxScore,
       dimensionId: item.dimension._id,
       correct: item.dimensionAvg?.toFixed(2),
-      incorrect: (maxScore - item.dimensionAvg)?.toFixed(2),
-      fill: getHSLFromRange1((100 * item.dimensionAvg) / maxScore),
-      dFill: getHSLFromRange1((item.districtAvg * 100) / maxScore),
+      incorrect: item.submittedStudents
+        ? (maxScore - item.dimensionAvg)?.toFixed(2)
+        : 0,
+      fill: getHSLFromRange1(dimensionRange),
+      dFill: getHSLFromRange1((item.districtAvg * 100) / (maxScore || 1)),
     }
   })
   return transformedData
@@ -135,7 +138,9 @@ const transformScorePerc = (data) => {
       ...item,
       dimensionId: item.dimension._id,
       correct: item.dimensionAvg?.toFixed(0),
-      incorrect: (100 - item.dimensionAvg).toFixed(0),
+      incorrect: item.submittedStudents
+        ? (100 - item.dimensionAvg).toFixed(0)
+        : 0,
       fill: getHSLFromRange1(item.dimensionAvg || 0),
       dFill: getHSLFromRange1(item.districtAvg),
     }

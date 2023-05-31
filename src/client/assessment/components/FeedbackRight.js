@@ -504,7 +504,10 @@ class FeedbackRight extends Component {
   }
 
   handleFeedbackApproval = (e) =>
-    this.setState({ isApprovedByTeacher: e.target.checked })
+    this.setState({
+      isApprovedByTeacher: e.target.checked,
+      showFeedbackSaveBtn: e.target.checked,
+    })
 
   getRubricResponse = () => {
     const { editedRubricResponse, clearRubricFeedback } = this.state

@@ -92,6 +92,7 @@ const Filters = ({
   const onGoClick = (_settings = {}) => {
     const newSettings = {
       requestFilters: { ...filters },
+      selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
     }
     setFilters({ ...filters })

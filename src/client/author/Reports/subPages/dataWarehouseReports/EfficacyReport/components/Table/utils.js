@@ -292,10 +292,7 @@ export const getTableData = (
         groupName,
         studentId,
       } = data[0]
-      const name = getFormattedName(
-        `${lastName || ''} ${firstName || ''}`,
-        false
-      )
+      const name = getFormattedName(`${firstName || ''} ${lastName || ''}`)
       Object.assign(dimension, { _id: studentId, name, firstName, lastName })
       Object.assign(extraStudentColumns, {
         schoolName,

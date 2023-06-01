@@ -75,7 +75,7 @@ export const filterPopupFilterSelectedTestTypes = (
       )
 }
 
-export const sortDistributionBand = (data) => data.sort((a, b) => b.max - a.max)
+export const sortDistributionBand = (data) => data.sort((a, b) => a.max - b.max)
 
 export const getTrendPeriodLabel = (
   selectedPeriodType,

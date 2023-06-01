@@ -1,5 +1,5 @@
 import { segmentApi } from '@edulastic/api'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
 import React, { useEffect, useState } from 'react'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import RequestModal from './RequestModals'
@@ -14,6 +14,7 @@ import {
   SectionContainer,
   SectionDescription,
   SectionTitle,
+  StyledTag,
   TopSection,
 } from './styled'
 
@@ -88,13 +89,20 @@ const SubscriptionContainer = ({
         <SectionTitle>{data.addOn.title}</SectionTitle>
         <SectionDescription>{data.addOn.description}</SectionDescription>
         <CardContainer>
-          {data.addOn.data.map((x, index) => (
-            <AddonCard key={index}>
-              <AddonImg $type={type}>{x.icon}</AddonImg>
-              <h3>{x.title}</h3>
-              <AddonDescription>{x.description}</AddonDescription>
-            </AddonCard>
-          ))}
+          {data.addOn.data.map(
+            ({ icon, title, description, comingSoon }, index) => (
+              <AddonCard key={index}>
+                <AddonImg $type={type}>{icon}</AddonImg>
+                <h3>
+                  {title}
+                  <EduIf condition={comingSoon}>
+                    <StyledTag>COMING SOON</StyledTag>
+                  </EduIf>
+                </h3>
+                <AddonDescription>{description}</AddonDescription>
+              </AddonCard>
+            )
+          )}
         </CardContainer>
       </AddonSection>
       <CalendlyScheduleModal

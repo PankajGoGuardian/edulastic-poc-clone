@@ -1,11 +1,13 @@
 import {
-  IconWholeLearnerReport,
-  IconMultipleAssessmentReportDW,
-  IconAttendanceReport,
-  IconDashboardReport,
-  IconEarlyWarningReport,
-  IconSetGoals,
-  IconEfficacyReport,
+  IconAdminDashboardAddOn,
+  IconPerformanceTrendAddOn,
+  IconWholeLearnerReportAddOn,
+  IconAttendanceAddOn,
+  IconGaolsAndInterventionsAddOn,
+  IconEfficacyAddOn,
+  IconEarlyWarningAddOn,
+  IconBehaviourReportAddOn,
+  IconSurveyInsightsAddOn,
 } from '@edulastic/icons'
 
 import {
@@ -25,7 +27,7 @@ export const dataWarehousereportCardsData = [
     cards: [
       {
         id: 1,
-        IconThumbnail: IconDashboardReport,
+        IconThumbnail: IconAdminDashboardAddOn,
         title: 'Dashboard',
         description:
           "View key health checks for students' performance. Drill down to analyze and intervene.",
@@ -33,7 +35,7 @@ export const dataWarehousereportCardsData = [
       },
       {
         id: 2,
-        IconThumbnail: IconMultipleAssessmentReportDW,
+        IconThumbnail: IconPerformanceTrendAddOn,
         title: 'Performance Trends',
         description:
           "View whether the student's performance is improving over time and take necessary interventions.",
@@ -41,7 +43,7 @@ export const dataWarehousereportCardsData = [
       },
       {
         id: 3,
-        IconThumbnail: IconWholeLearnerReport,
+        IconThumbnail: IconWholeLearnerReportAddOn,
         title: 'Whole Learner',
         description:
           "Get a complete understanding of a learner's academic and associated indicators and take necessary actions for the learner’s growth.",
@@ -55,11 +57,29 @@ export const dataWarehousereportCardsData = [
     cards: [
       {
         id: 1,
-        IconThumbnail: IconAttendanceReport,
+        IconThumbnail: IconAttendanceAddOn,
         title: 'Attendance Summary',
         description:
           'Monitor attendance and tardies, identify students at risk of chronic absenteeism, and intervene.',
         url: DW_ATTENDANCE_REPORT_URL,
+      },
+      {
+        id: 2,
+        comingSoon: true,
+        IconThumbnail: IconBehaviourReportAddOn,
+        title: 'Behaviour',
+        description:
+          'Understand student behavior trends, reduce suspensions and referrals and support the whole student.',
+        url: '',
+      },
+      {
+        id: 3,
+        comingSoon: true,
+        IconThumbnail: IconSurveyInsightsAddOn,
+        title: 'Survey Insights',
+        description:
+          'Get insights from responses in Skill Surveys and build a positive school culture.',
+        url: '',
       },
     ],
   },
@@ -69,14 +89,14 @@ export const dataWarehousereportCardsData = [
     cards: [
       {
         id: 1,
-        IconThumbnail: IconSetGoals,
+        IconThumbnail: IconGaolsAndInterventionsAddOn,
         title: 'Goals / Interventions Management',
         description: 'Set SMART Goals and Interventions and track improvement.',
         url: DW_GOALS_AND_INTERVENTIONS_URL,
       },
       {
         id: 2,
-        IconThumbnail: IconEarlyWarningReport,
+        IconThumbnail: IconEarlyWarningAddOn,
         title: 'Early Warning',
         description:
           'View students at risk based on their academic and attendance performance and plan interventions.',
@@ -84,7 +104,7 @@ export const dataWarehousereportCardsData = [
       },
       {
         id: 3,
-        IconThumbnail: IconEfficacyReport,
+        IconThumbnail: IconEfficacyAddOn,
         title: 'Efficacy',
         description:
           'Compare student performance across tests pre and post-intervention.',

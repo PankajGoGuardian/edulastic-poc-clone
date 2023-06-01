@@ -1,6 +1,7 @@
 import {
   IconAdminDashboardAddOn,
   IconAttendanceAddOn,
+  IconBehaviourReportAddOn,
   IconCPM,
   IconDataStudioSubscription,
   IconEarlyWarningAddOn,
@@ -19,6 +20,7 @@ import {
   IconSparkWriting,
   IconSpecs,
   IconStemCross,
+  IconSurveyInsightsAddOn,
   IconWholeLearnerReportAddOn,
 } from '@edulastic/icons'
 import React from 'react'
@@ -176,8 +178,8 @@ export const subscription = {
           straightforward, with easy-to-read visuals and graphs to help you
           glean critical information at a <br /> glance. See how students are
           moving toward mastery and how your assessments lead to student
-          achievements with data available by district, school, grade level, and
-          even subject.
+          achievements with data available by district, school, class, grade,
+          subject, student groups, demographics and many more.
         </>
       ),
       data: [
@@ -185,17 +187,17 @@ export const subscription = {
           icon: <IconAdminDashboardAddOn />,
           title: 'Admin Dashboard',
           description:
-            'Get insight into all attendance data, distribution of academic performance and academic risk levels — all in one easily accessible dashboard.',
+            'Get a bird’s eye view of key academic and non-academic performance and risk indicators— all in one easily accessible dashboard.',
         },
         {
-          icon: <IconPerformanceTrendAddOn />,
-          title: 'Performance Trends',
-          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time. Filter reporting by schools, demographics, specific test types, and more to optimize data-driven decision-making.`,
+          icon: <IconEarlyWarningAddOn />,
+          title: 'Early Warning',
+          description: `View students at risk based on their academic and attendance performance and plan interventions.`,
         },
         {
           icon: <IconWholeLearnerReportAddOn />,
           title: 'Whole Learner Report',
-          description: `Get a complete picture of a student's learning journey with the Whole Learner Report. View academic data, attendance, and other markers, so you can provide proactive support to students who need it.`,
+          description: `Get a complete picture of a student's learning journey with the Whole Learner Report. View academic and non academic indicators so you can provide proactive support to students who need it.`,
         },
         {
           icon: <IconAttendanceAddOn />,
@@ -208,14 +210,26 @@ export const subscription = {
           description: `Set SMART Goals and Interventions and track improvement.`,
         },
         {
-          icon: <IconEarlyWarningAddOn />,
-          title: 'Early Warning',
-          description: `View students at risk based on their academic and attendance performance and plan interventions.`,
-        },
-        {
           icon: <IconEfficacyAddOn />,
           title: 'Efficacy',
           description: `Compare student performance across tests pre and post-intervention.`,
+        },
+        {
+          icon: <IconPerformanceTrendAddOn />,
+          title: 'Performance Trends',
+          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time.`,
+        },
+        {
+          icon: <IconBehaviourReportAddOn />,
+          comingSoon: true,
+          title: 'Behaviour',
+          description: `Understand student behavior trends, reduce suspensions , referrals etc. and support the whole student.`,
+        },
+        {
+          icon: <IconSurveyInsightsAddOn />,
+          comingSoon: true,
+          title: 'Survey Insights',
+          description: `Get insights from responses in Skill Surveys and build a positive school culture.`,
         },
       ],
     },
@@ -367,7 +381,22 @@ export const comparePlansData = [
       {
         title: 'Whole Learner',
         description:
-          'Get a complete understanding of a learner’s academic and behavioural profiles.',
+          'Get a complete understanding of a learner’s academic and behavioural profiles .',
+      },
+      {
+        title: 'Attendance',
+        description:
+          'Monitor attendance and tardies, identify students at risk of chronic absenteeism.',
+      },
+      {
+        title: 'Behavior',
+        description:
+          'Understand student behavior trends, reduce suspensions, referrals etc.',
+      },
+      {
+        title: 'Survey Insights',
+        description:
+          'Get insights from responses in Skill Surveys and build a positive school culture.',
       },
       {
         title: 'Goals/Interventions Management',

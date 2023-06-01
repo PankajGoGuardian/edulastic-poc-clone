@@ -914,10 +914,6 @@ export const StyledReportContainer = styled.div`
   }
 `
 
-export const StyledParagraph = styled.p`
-  padding: 0 10px;
-`
-
 export const StyledIcon = styled(Icon)`
   position: absolute;
   top: 210px;
@@ -934,7 +930,6 @@ export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: start;
-  margin-left: 8px;
   h3 {
     font-weight: bold;
     color: ${greyThemeDark3};
@@ -956,8 +951,6 @@ export const ImageContainer = styled.div`
 export const CustomStyledCard = styled(Card)`
   cursor: pointer;
   margin: 0 10px 20px;
-  height: 280px;
-  aspect-ratio: 1.8 / 1;
   border: 1px solid ${grey};
   border-radius: 30px;
   box-shadow: none;

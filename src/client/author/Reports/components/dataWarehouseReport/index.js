@@ -26,6 +26,7 @@ import {
   getUploadsStatusLoader,
 } from '../../../sharedDucks/dataWarehouse'
 import { navigationState } from '../../../src/constants/navigation'
+import { FloatingAction } from '../StandardReport/SellContent/FloatingAction'
 
 const TabPane = Tabs.TabPane
 const IMPORTS_HISTORY_TAB = {
@@ -130,7 +131,6 @@ const DataWarehouseReports = ({
           </EduButton>
         </EduIf>
       </FlexContainer>
-
       <StyledContainer>
         <EduIf condition={isDataOpsUser}>
           <StyledTabs
@@ -174,6 +174,9 @@ const DataWarehouseReports = ({
           />
         </EduIf>
       </StyledContainer>
+      <EduIf condition={!allowAccess}>
+        <FloatingAction title="UPGRADE NOW" onUpgrade={onUpgradeNowClicked} />
+      </EduIf>
     </>
   )
 }

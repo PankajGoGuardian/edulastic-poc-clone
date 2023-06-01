@@ -346,16 +346,9 @@ export { default as IconDataStudio } from './src/IconDataStudio'
 
 // data warehouse reports
 export { default as IconMoreReports } from './src/IconMoreReports'
-export { default as IconMultipleAssessmentReportDW } from './src/IconMultipleAssessmentReportDW'
-export { default as IconWholeLearnerReport } from './src/IconWholeLearnerReport'
-export { default as IconAttendanceReport } from './src/IconAttendanceReport'
 export { default as IconCheckMark } from './src/IconCheckMark'
 export { default as IconStudent } from './src/IconStudent'
-export { default as IconDashboardReport } from './src/IconDashboardReport'
 export { default as IconExternalLink } from './src/IconExternalLink'
-export { default as IconEarlyWarningReport } from './src/IconEarlyWarningReport'
-export { default as IconSetGoals } from './src/IconSetGoals'
-export { default as IconEfficacyReport } from './src/IconEfficacyReport'
 
 // data studio subscription
 export { default as IconDataStudioSubscription } from './src/IconDataStudioSubscription'
@@ -366,6 +359,8 @@ export { default as IconEfficacyAddOn } from './src/IconEfficacyAddOn'
 export { default as IconGaolsAndInterventionsAddOn } from './src/IconGaolsAndInterventionsAddOn'
 export { default as IconPerformanceTrendAddOn } from './src/IconPerformanceTrendAddOn'
 export { default as IconWholeLearnerReportAddOn } from './src/IconWholeLearnerReportAddOn'
+export { default as IconBehaviourReportAddOn } from './src/IconBehaviourReportAddOn'
+export { default as IconSurveyInsightsAddOn } from './src/IconSurveyInsightsAddOn'
 
 // Insights Report Icons
 export { default as IconClock } from './src/IconClock'

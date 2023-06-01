@@ -1,21 +1,28 @@
 import { segmentApi } from '@edulastic/api'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
-export const FloatingAction = () => {
-  const upgradeNow = () => {
-    segmentApi.genericEventTrack(`Insights: Upgrade now clicked`, {})
+export const FloatingAction = withRouter(
+  ({ title = 'UPGRADE TO PREMIUM', onUpgrade, history }) => {
+    const upgradeNow = () => {
+      if (onUpgrade) {
+        return onUpgrade()
+      }
+      history.push('/author/subscription')
+      segmentApi.genericEventTrack(`Insights: Upgrade now clicked`, {})
+    }
+
+    return (
+      <FloatingActionContainer onClick={upgradeNow}>
+        {title}
+      </FloatingActionContainer>
+    )
   }
+)
 
-  return (
-    <FloatingActionContainer onClick={upgradeNow} to="/author/subscription">
-      UPGRADE TO PREMIUM
-    </FloatingActionContainer>
-  )
-}
-
-const FloatingActionContainer = styled(Link)`
+const FloatingActionContainer = styled.span`
+  cursor: pointer;
   color: white;
   background-color: #1ab395;
   position: fixed;

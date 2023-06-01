@@ -84,7 +84,7 @@ export const AddonCard = styled.div`
   }
 `
 export const AddonImg = styled.div`
-  height: ${(props) => (props.$type === 'enterprise' ? '40px' : '80px')};
+  height: ${(props) => (props.$type === 'enterprise' ? '40px' : '95px')};
 `
 export const AddonDescription = styled.div`
   font-size: 13px;
@@ -439,4 +439,12 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+`
+
+export const StyledTag = styled.span`
+  font-size: 9px;
+  top: -4px;
+  padding-left: 6px;
+  position: relative;
+  color: ${themeColor};
 `

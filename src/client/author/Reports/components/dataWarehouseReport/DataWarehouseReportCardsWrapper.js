@@ -10,15 +10,17 @@ const DataWarehoureReportCardsWrapper = ({ loc, allowAccess }) => {
       {dataWarehousereportCardsData.map(({ id, title, cards }) => (
         <div key={id}>
           <StyledSectionHeader>{title}</StyledSectionHeader>
-          <Row type="flex">
-            {cards.map((card) => (
-              <ReportLinkCard
-                key={card.id}
-                {...card}
-                loc={loc}
-                allowAccess={allowAccess}
-              />
-            ))}
+          <Row gutter={32}>
+            {cards
+              .filter(({ comingSoon }) => !allowAccess || !comingSoon)
+              .map((card) => (
+                <ReportLinkCard
+                  key={card.id}
+                  {...card}
+                  loc={loc}
+                  allowAccess={allowAccess}
+                />
+              ))}
           </Row>
         </div>
       ))}

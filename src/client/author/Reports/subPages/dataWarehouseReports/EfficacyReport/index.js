@@ -197,6 +197,7 @@ const EfficacyReport = ({
       setPageFilters({ ...pageFilters, page: 1 })
       setTableFilters({
         ...tableFilters,
+        requireTotalCount: true,
         preBandScore: search.preBandScore || '',
         postBandScore: search.postBandScore || '',
       })

@@ -4,7 +4,12 @@ import { IconClose } from '@edulastic/icons'
 import { Button, Select, Tooltip } from 'antd'
 import React from 'react'
 import { ruleLimit } from './config/qb-config'
-import { GroupButton, RuleButton, StyledSelect } from './styled-components'
+import {
+  CombinatorLabel,
+  GroupButton,
+  RuleButton,
+  StyledSelect,
+} from './styled-components'
 
 const getDataCyValue = (pathLevel = [], selectorName) => {
   if (pathLevel.length) {
@@ -54,33 +59,8 @@ export const FieldSelector = (props) => {
   )
 }
 
-export const CombinatorSelector = (props) => {
-  const { handleOnChange, options, value, path } = props
-  const dataCyValue = path.length
-    ? `groupCombinatorSelector-${path[0]}`
-    : 'combinatorSelector'
-  return (
-    <StyledSelect
-      getPopupContainer={(triggerNode) => triggerNode.parentElement}
-      onChange={handleOnChange}
-      value={value}
-      data-cy={dataCyValue}
-      disabled
-      style={{ width: '27%', maxWidth: '27%' }}
-    >
-      {options.map((item) => {
-        return (
-          <Select.Option
-            value={item.name}
-            key={item.name}
-            data-cy={getDataCyValue(path, 'combinatorOptions')}
-          >
-            {item.label}
-          </Select.Option>
-        )
-      })}
-    </StyledSelect>
-  )
+export const CombinatorSelector = () => {
+  return <CombinatorLabel>And</CombinatorLabel>
 }
 
 export const OperatorSelector = (props) => {

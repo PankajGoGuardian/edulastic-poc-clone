@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { PropTypes } from 'prop-types'
 import { compose } from 'redux'
 import { isEmpty } from 'lodash'
-import { Menu, Dropdown } from 'antd'
+import { Menu, Dropdown, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -15,6 +15,7 @@ import {
 import { themeColorBlue, white, mainTextColor, title } from '@edulastic/colors'
 
 import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
+import { isItemDerivedFromPremiumSelector } from '../../../TestPage/ducks'
 import {
   getUserRole,
   isPublisherUserSelector,
@@ -25,7 +26,10 @@ import {
   toggleMoveItemsFolderAction,
 } from '../../../src/actions/folder'
 import { createTestFromCartAction } from '../../ducks'
-import { getSelectedTestsSelector } from '../../../TestList/ducks'
+import {
+  getSelectedTestsSelector,
+  isTestsDerivedFromPremiumSelector,
+} from '../../../TestList/ducks'
 import { setAddCollectionModalVisibleAction } from '../../../ContentBuckets/ducks'
 import { getSelectedPlaylistSelector } from '../../../Playlist/ducks'
 
@@ -40,10 +44,15 @@ const Actions = ({
   type,
   t,
   collectionsToWrite,
+  isItemDerivedFromPremiumBank,
+  isTestDerivedFromPremiumBank,
 }) => {
   let numberOfSelectedItems = selectedItems?.length
+  let isActionButtonDisabled = isItemDerivedFromPremiumBank
+
   if (type === 'TEST') {
     numberOfSelectedItems = selectedTests?.length
+    isActionButtonDisabled = isTestDerivedFromPremiumBank
   }
   if (type === 'PLAYLIST') {
     numberOfSelectedItems = selectedPlaylists?.length
@@ -137,15 +146,31 @@ const Actions = ({
         <span>{numberOfSelectedItems || 0} </span>
         {t('component.item.itemCount')}
       </Label>
-      <Dropdown overlay={menu} placement="bottomCenter">
-        <EduButton
-          data-cy="assignmentActions"
-          height="30px"
-          width="145px"
-          isGhost
+      <Dropdown
+        overlay={menu}
+        placement="bottomCenter"
+        disabled={isActionButtonDisabled}
+      >
+        <Tooltip
+          title={
+            isActionButtonDisabled
+              ? 'Actions not permitted on cloned premium content'
+              : ''
+          }
+          placement="bottom"
         >
-          {t('component.item.actions')}
-        </EduButton>
+          <span>
+            <EduButton
+              data-cy="assignmentActions"
+              height="30px"
+              width="145px"
+              isGhost
+              disabled={isActionButtonDisabled}
+            >
+              {t('component.item.actions')}
+            </EduButton>
+          </span>
+        </Tooltip>
       </Dropdown>
     </FlexContainer>
   )
@@ -163,6 +188,8 @@ const mapStateToProps = (state) => ({
   selectedTests: getSelectedTestsSelector(state),
   selectedPlaylists: getSelectedPlaylistSelector(state),
   collectionsToWrite: getCollectionsToAddContent(state),
+  isItemDerivedFromPremiumBank: isItemDerivedFromPremiumSelector(state),
+  isTestDerivedFromPremiumBank: isTestsDerivedFromPremiumSelector(state),
 })
 
 const withConnect = connect(mapStateToProps, {

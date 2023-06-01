@@ -690,6 +690,11 @@ export const getSelectedTestItemsSelector = createSelector(
     _test.itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
 )
 
+export const isItemDerivedFromPremiumSelector = createSelector(
+  getSelectedTestItemsSelector,
+  (items) => items.some((item) => !!item.derivedFromPremiumBankId)
+)
+
 export const getItemGroupsSelector = createSelector(
   getTestEntitySelector,
   (_test) => _test.itemGroups || []

@@ -600,3 +600,8 @@ export const isDesmosCalculatorEnabledSelector = createSelector(
   getUserFeatures,
   (features) => _get(features, 'isDesmosCalculatorEnabled', false)
 )
+
+export const canAccessPublicContentSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'canAccessPublicContent', true)
+)

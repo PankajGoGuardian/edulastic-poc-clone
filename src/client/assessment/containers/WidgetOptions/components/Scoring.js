@@ -23,6 +23,7 @@ import {
 } from '@edulastic/common'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 
+import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -57,6 +58,8 @@ import {
   setItemLevelScoreFromRubricAction,
   getItemDetailQuestionsSelector,
 } from '../../../../author/ItemDetail/ducks'
+
+const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -213,6 +216,12 @@ class Scoring extends Component {
             (itemDetailQuestionsLength === 0 || itemDetailQuestionsLength === 1)
           ) {
             setItemLevelScoring(true)
+          }
+          if (newData?.tags?.length) {
+            const filteredTags = newData?.tags.filter(
+              (tag) => tag.tagName !== AI_ASSISTED_RUBRICS
+            )
+            newData.tags = filteredTags
           }
         }
         newData.validation[param] = value

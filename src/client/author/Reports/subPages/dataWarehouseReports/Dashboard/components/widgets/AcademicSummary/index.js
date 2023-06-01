@@ -107,9 +107,14 @@ const AcademicSummary = ({
   const scorePrefix = !isExternalTestTypeSelected ? '%' : ''
 
   const avgScoreCellColor = useMemo(() => {
-    const { result: { avgScore } = {} } = data || {}
-    return getCellColor(avgScore, selectedPerformanceBand)
-  }, [data, selectedPerformanceBand])
+    const { result: { avgScore, achievementLevel } = {} } = data || {}
+    return getCellColor(
+      avgScore,
+      achievementLevel,
+      selectedPerformanceBand,
+      isExternalTestTypeSelected
+    )
+  }, [data, selectedPerformanceBand, isExternalTestTypeSelected])
 
   const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
 
@@ -172,7 +177,7 @@ const AcademicSummary = ({
                         isVisible={showFooter}
                         value={scoreTrendPercentage}
                         period={`${trendPeriodLabel}`}
-                        showPercentage
+                        showPercentage={!isExternalTestTypeSelected}
                       />
                     }
                     color={avgScoreCellColor}

@@ -17,9 +17,19 @@ const {
   performanceBandKeys,
 } = reportUtils.common
 
-export const getCellColor = (value, selectedPerformanceBand) => {
-  const band = getProficiencyBand(value, selectedPerformanceBand)
-  return band.color
+export const getCellColor = (
+  avgScore,
+  achievementLevel,
+  selectedPerformanceBand,
+  isExternalTestTypeSelected
+) => {
+  let band
+  if (isExternalTestTypeSelected) {
+    band = selectedPerformanceBand.find((pb) => pb.rank === achievementLevel)
+  } else {
+    band = getProficiencyBand(avgScore, selectedPerformanceBand)
+  }
+  return band?.color
 }
 
 export const getAcademicSummaryPieChartData = (

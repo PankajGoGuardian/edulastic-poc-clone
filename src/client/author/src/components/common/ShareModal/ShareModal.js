@@ -524,6 +524,7 @@ class ShareModal extends React.Component {
       notificationMessage,
       loadingSharedUsers,
       maxSharingLevelAllowed = shareLevel[sharedKeysObj.PUBLIC],
+      derivedFromPremiumBankId = false,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -662,7 +663,11 @@ class ShareModal extends React.Component {
                         !hasPlaylistEditAccess ||
                         (userSignupStatus ===
                           signUpState.ACCESS_WITHOUT_SCHOOL &&
-                          item !== sharedKeysObj.INDIVIDUAL)
+                          item !== sharedKeysObj.INDIVIDUAL) ||
+                        (derivedFromPremiumBankId &&
+                          [sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(
+                            item
+                          ))
                       }
                     >
                       {shareTypes[item]}

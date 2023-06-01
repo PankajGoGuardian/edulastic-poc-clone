@@ -473,6 +473,7 @@ class SuccessPage extends React.Component {
             onClose={this.onShareModalChange}
             gradeSubject={gradeSubject}
             testVersionId={test?.versionId}
+            derivedFromPremiumBankId={test?.derivedFromPremiumBankId}
           />
         </EduIf>
 

@@ -385,6 +385,7 @@ class Container extends React.Component {
         title,
         status,
         isUsed,
+        derivedFromPremiumBankId = false,
       },
       userId,
       windowWidth,
@@ -444,6 +445,7 @@ class Container extends React.Component {
             isPublished={status === statusConstants.PUBLISHED}
             onClose={this.onShareModalChange}
             gradeSubject={gradeSubject}
+            derivedFromPremiumBankId={derivedFromPremiumBankId}
           />
         )}
         <WarningModal

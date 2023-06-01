@@ -772,8 +772,11 @@ class PreviewModal extends React.Component {
       item?.collections,
       writableCollections
     )
+    const { derivedFromPremiumBankId = false } = item || {}
     let allowDuplicate =
-      allowDuplicateCheck(item?.collections, collections, 'item') || isOwner
+      (allowDuplicateCheck(item?.collections, collections, 'item') ||
+        isOwner) &&
+      !derivedFromPremiumBankId
     if (
       item?.sharedWith?.filter(
         (s) =>

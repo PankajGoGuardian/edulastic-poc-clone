@@ -11,6 +11,7 @@ import {
   TextAreaInputStyled,
   TextInputStyled,
   RadioBtn,
+  EduIf,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { Col, Row, Select, Spin, Radio } from 'antd'
@@ -66,6 +67,7 @@ const AddPermissionModal = ({
     role: [],
     itemBankName,
     accessLevel: '',
+    clonePermitted: false,
   })
 
   useEffect(() => {
@@ -84,6 +86,7 @@ const AddPermissionModal = ({
         opportunityId = '',
         notes = '',
         accessLevel = 'read',
+        clonePermitted,
       } = selectedPermission
       setFieldData({
         districtId,
@@ -96,6 +99,7 @@ const AddPermissionModal = ({
         ...(user.role === roleuser.EDULASTIC_ADMIN
           ? { startDate, endDate, csManager, opportunityId, notes }
           : {}),
+        clonePermitted,
       })
       if (['SCHOOL', 'USER'].includes(orgType)) {
         searchRequest({
@@ -148,6 +152,7 @@ const AddPermissionModal = ({
     if (_permissionDetails.orgType !== 'USER') {
       permissionDetails = orgDetails.map((d) => {
         delete _permissionDetails.accessLevel
+        delete _permissionDetails.clonePermitted
         return { ...d, ..._permissionDetails, role }
       })
     } else {
@@ -447,6 +452,24 @@ const AddPermissionModal = ({
             </Radio.Group>
           </StyledFieldRow>
         )}
+        <EduIf
+          condition={
+            user.role === roleuser.EDULASTIC_ADMIN &&
+            fieldData.orgType === roleuser.ORGANIZATION_TYPE.USER
+          }
+        >
+          <StyledFieldRow>
+            <FieldLabel>Clone Permission</FieldLabel>
+            <CheckboxLabel
+              onChange={(e) =>
+                handleFieldChange('clonePermitted', e.target.checked)
+              }
+              checked={fieldData.clonePermitted}
+            >
+              Allow users to clone items
+            </CheckboxLabel>
+          </StyledFieldRow>
+        </EduIf>
         {user.role === 'edulastic-admin' && (
           <>
             <StyledFieldRow>

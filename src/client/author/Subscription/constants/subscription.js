@@ -367,7 +367,7 @@ export const comparePlansData = [
       {
         title: 'Whole Learner',
         description:
-          'Monitor attendance and tardies, identify students at risk of chronic absenteeism.',
+          'Get a complete understanding of a learner’s academic and behavioural profiles.',
       },
       {
         title: 'Goals/Interventions Management',

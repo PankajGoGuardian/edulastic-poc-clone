@@ -75,10 +75,10 @@ export const getTableColumns = ({
     }
 
     if (isStudentCompareBy) {
-      const attendanceColumnIdx = _columns.findIndex(
-        ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
-      )
       if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {
+        const attendanceColumnIdx = _columns.findIndex(
+          ({ key }) => key === tableColumnKeys.AVG_ATTENDANCE
+        )
         _columns.splice(attendanceColumnIdx, 1)
       }
       const riskColumn = _columns.find(
@@ -208,9 +208,7 @@ export const getTableColumns = ({
             value[testType]?.score >= 0
               ? `${value[testType].score}${scoreSuffix}`
               : '-'
-          const riskBandColor =
-            RISK_BAND_COLOR_INFO[value[testType]?.risk] || ''
-          return <ColoredText color={riskBandColor}>{scoreValue}</ColoredText>
+          return <ColoredText>{scoreValue}</ColoredText>
         },
       }
     })

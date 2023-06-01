@@ -138,7 +138,7 @@ export const compareByStudentColumns = [
     title: 'ATTENDANCE',
     dataIndex: 'attendanceRisk',
     render: (value) => (
-      <ColoredText color={RISK_BAND_COLOR_INFO[value?.risk] || ''}>
+      <ColoredText>
         {value?.attendancePercentage >= 0
           ? `${value.attendancePercentage}%`
           : '-'}

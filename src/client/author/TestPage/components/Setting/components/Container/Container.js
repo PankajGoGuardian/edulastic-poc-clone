@@ -1709,7 +1709,7 @@ class Setting extends Component {
                               !premium
                             }
                             checked={showRubricToStudents}
-                            data-cy="update-show-rubric-to-students-switch"
+                            data-cy="show-rubric-to-students-switch"
                             onChange={this.updateTestData(
                               'showRubricToStudents'
                             )}
@@ -1753,7 +1753,7 @@ class Setting extends Component {
                           <EduSwitchStyled
                             disabled={disabled || !premium}
                             checked={allowAutoEssayEvaluation}
-                            data-cy="update-auto-essay-evaluation"
+                            data-cy="auto-essay-evaluation"
                             onChange={this.updateTestData(
                               'allowAutoEssayEvaluation'
                             )}
@@ -1762,7 +1762,7 @@ class Setting extends Component {
                         <Body smallSize={isSmallSize}>
                           <Description
                             style={{ marginTop: '10px' }}
-                            data-cy="show-rubric-to-students-switch"
+                            data-cy="auto-essay-evaluation-switch"
                           >
                             {i18translate('allowAutoEssayEvaluation.info')}
                           </Description>

@@ -2,6 +2,7 @@ import {
   EduElse,
   EduIf,
   EduThen,
+  FlexContainer,
   SpinLoader,
   notification,
 } from '@edulastic/common'
@@ -58,6 +59,7 @@ import {
 } from './config/qb-config'
 import {
   AddRule,
+  CombinatorSelector,
   FieldSelector,
   OperatorSelector,
   RemoveRuleAction,
@@ -241,23 +243,29 @@ const AdvancedSearch = ({
           Select students for the Group{' '}
           <span style={{ color: lightRed2, marginLeft: 3 }}>*</span>
         </StyledFormTitle>
-        <StyledFormButtonsContainer>
-          <StyledButton isGhost onClick={onClearFilter}>
-            Clear All
-          </StyledButton>
-          <StyledButton onClick={handleQuickFilter} disabled={isStudentLoading}>
-            <EduIf condition={isStudentLoading}>
-              <EduThen>Searching...</EduThen>
-              <EduElse>Apply Criteria</EduElse>
-            </EduIf>
-          </StyledButton>
-        </StyledFormButtonsContainer>
       </StyledFormHeader>
+      <FlexContainer justifyContent="flex-start">
+        <FlexContainer width="90%" justifyContent="flex-end">
+          <StyledFormButtonsContainer>
+            <StyledButton isGhost onClick={onClearFilter}>
+              Clear All
+            </StyledButton>
+            <StyledButton
+              onClick={handleQuickFilter}
+              disabled={isStudentLoading}
+            >
+              <EduIf condition={isStudentLoading}>
+                <EduThen>Searching...</EduThen>
+                <EduElse>Apply Criteria</EduElse>
+              </EduIf>
+            </StyledButton>
+          </StyledFormButtonsContainer>
+        </FlexContainer>
+      </FlexContainer>
       <Spin spinning={isPerformanceLoading || isAttendanceBandLoading}>
         <QueryBuilder
           fields={fields}
           query={query}
-          controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
           enableDragAndDropProp={false}
           getDefaultField={pendingFields?.[0] || fields?.[0].name}
           operators={inNotInOp}
@@ -265,13 +273,14 @@ const AdvancedSearch = ({
           listsAsArrays
           onQueryChange={(q) => setQuery(q)}
           combinators={combinators}
+          showCombinatorsBetweenRules
           // Reusable(s)
           controlElements={{
             valueEditor: ValueEditor,
             fieldSelector: (props) => (
               <FieldSelector {...props} pendingFields={pendingFields} />
             ),
-            combinatorSelector: () => null,
+            combinatorSelector: CombinatorSelector,
             operatorSelector: OperatorSelector,
             addRuleAction: (props) => (
               <AddRule {...props} pendingFields={pendingFields} />

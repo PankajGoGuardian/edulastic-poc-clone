@@ -8,3 +8,28 @@
   color: #febe00;
   font-weight: bold;
 }
+
+.betweenRules {
+  position: relative;
+  left: -4rem;
+  top: 15px;
+  height: 0px;
+}
+
+.ruleGroup .ruleGroup-body {
+  width: 80%;
+  align-self: flex-end;
+}
+.ruleGroup .ruleGroup-header {
+  width: 80%;
+  align-self: flex-end;
+}
+
+.ruleGroup {
+  width: 90%;
+  align-self: center;
+}
+
+.ruleGroup .rule {
+  align-items: flex-start;
+}

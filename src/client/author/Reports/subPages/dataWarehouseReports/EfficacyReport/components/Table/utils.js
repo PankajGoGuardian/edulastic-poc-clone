@@ -293,7 +293,7 @@ export const getTableData = (
         studentId,
       } = data[0]
       const name = getFormattedName(
-        `${firstName || ''} ${lastName || ''}`,
+        `${lastName || ''} ${firstName || ''}`,
         false
       )
       Object.assign(dimension, { _id: studentId, name, firstName, lastName })

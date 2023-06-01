@@ -1,7 +1,7 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy, maxBy } from 'lodash'
+import { sumBy, get, groupBy } from 'lodash'
 import React from 'react'
 import moment from 'moment'
 import {
@@ -167,14 +167,13 @@ export const getTableColumns = ({
     isStudentCompareBy &&
     [RISK_TYPE_KEYS.ACADEMIC, RISK_TYPE_KEYS.OVERALL].includes(filters.riskType)
   ) {
-    const rowWithMaxTestTypes = maxBy(
-      tableData,
-      (row) => Object.keys(row.academicRisk).length
+    const availableTestTypes = new Set()
+    tableData.forEach((row) =>
+      Object.keys(row.academicRisk).forEach((testType) =>
+        availableTestTypes.add(testType)
+      )
     )
-    const availableTestTypes = Object.keys(
-      rowWithMaxTestTypes?.academicRisk || {}
-    )
-    const academicSubColumns = availableTestTypes.map((testType) => {
+    const academicSubColumns = [...availableTestTypes].map((testType) => {
       const isExternal =
         EXTERNAL_TEST_TYPES[testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]]
       const scoreSuffix = isExternal ? '' : '%'

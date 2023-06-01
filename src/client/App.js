@@ -362,16 +362,12 @@ class App extends Component {
       showClassCreationModal,
       showAssignmentCreationModal,
     } = this.props
-
-    const isEncryptedV1Redirection = location.hash.includes(
-      '#renderResource/close/'
-    )
-    const isNormalV1Redirection = location.hash.includes(
-      '#assessmentQuestions/close/'
-    )
-    if (isNormalV1Redirection || isEncryptedV1Redirection) {
+    if (
+      location.hash.includes('#renderResource/close/') ||
+      location.hash.includes('#assessmentQuestions/close/')
+    ) {
       const v1Id = location.hash.split('/')[2]
-      history.push(`/d/ap?${isNormalV1Redirection ? `aId` : `eAId`}=${v1Id}`)
+      history.push(`/d/ap?eAId=${v1Id}`)
       return <Loading />
     }
 

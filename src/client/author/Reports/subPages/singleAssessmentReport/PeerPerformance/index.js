@@ -90,8 +90,11 @@ const PeerPerformance = ({
   )
   const [ddfilter, setDdFilter] = useState({
     analyseBy: urlSearch.analyseBy || analyseByOptions.scorePerc,
-    compareBy:
-      urlSearch.compareBy || userRole === 'teacher' ? 'class' : 'school',
+    compareBy: urlSearch?.compareBy
+      ? urlSearch.compareBy
+      : userRole === 'teacher'
+      ? 'class'
+      : 'school',
   })
   const [chartFilter, setChartFilter] = useState({})
   const [pageNo, setPageNo] = useState(Number(urlSearch.pageNo) || 1)

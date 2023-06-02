@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy, reject } from 'lodash'
+import { get, isEmpty, pick, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -102,6 +102,7 @@ const SingleAssessmentReportFilters = ({
   toggleFilter,
   testList,
   fetchUpdateTagsData,
+  pickAddionalFilters,
 }) => {
   const { TEST_TYPES_VALUES_MAP } = testTypesConstants
   const availableAssessmentType = getArrayOfAllTestTypes()
@@ -383,11 +384,15 @@ const SingleAssessmentReportFilters = ({
       firstLoad &&
       (isCliUser || (!reportId && !isCliUser && source !== 'standard-reports'))
     ) {
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: { ...selected },
-        tagsData: { ..._tempTagsData },
-      })
+      const additionalUrlParams = pick(search, pickAddionalFilters[loc])
+      _onGoClick(
+        {
+          filters: { ...filters },
+          selectedTest: { ...selected },
+          tagsData: { ..._tempTagsData },
+        },
+        additionalUrlParams
+      )
     } else if (!reportId && !isCliUser) {
       toggleFilter(null, true)
       setShowApply(true)
@@ -411,7 +416,13 @@ const SingleAssessmentReportFilters = ({
     setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
+    let urlFilter = { ..._filters }
+
+    if (pickAddionalFilters[loc]) {
+      const additionalUrlParams = pick(search, pickAddionalFilters[loc])
+      urlFilter = { ...urlFilter, ...additionalUrlParams }
+    }
+    history.push(`${getNewPathname()}?${qs.stringify(urlFilter)}`)
     const _testId = keyName === 'tagIds' ? '' : testId
     setFiltersOrTestId({ filters: _filters, testId: _testId })
     setShowApply(true)

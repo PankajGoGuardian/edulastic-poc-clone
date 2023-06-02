@@ -123,6 +123,10 @@ const FormField = ({
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           placeholder={placeholder}
           {...multiSelectExtraProps}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
         >
           {optionsData.map(({ key, title }) => (
             <Select.Option data-cy={key} key={key} value={key}>

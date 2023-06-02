@@ -277,7 +277,7 @@ module.exports = {
     iar: 'IAR (IL)',
     ilearn: 'iLearn (IN)',
     kap: 'KAP (KS)',
-    k_prep: 'K-Prep (KY)',
+    k_prep: 'KSA (KY)',
     leap: 'LEAP (LA)',
     mcas: 'MCAS (MA)',
     mcap: 'MCAP (MD)',

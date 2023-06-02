@@ -733,7 +733,10 @@ class FeedbackRight extends Component {
                   {feedback}
                 </FeedbackDisplay>
               )}
-              <FeedbackInputInnerWrapper2 onBlur={this.blurFeedbackInput}>
+              <FeedbackInputInnerWrapper2
+                onBlur={this.blurFeedbackInput}
+                tabIndex={0}
+              >
                 <FeedbackInput
                   tabIndex={0}
                   autoSize

@@ -620,6 +620,9 @@ class FeedbackRight extends Component {
       (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
+      if (isAIEvaluated && activity?.scoreByAI === 0) {
+        _score = 0
+      }
     }
 
     const _maxScore =

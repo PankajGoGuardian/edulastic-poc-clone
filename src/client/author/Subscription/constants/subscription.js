@@ -222,8 +222,8 @@ export const subscription = {
         {
           icon: <IconBehaviourReportAddOn />,
           comingSoon: true,
-          title: 'Behaviour',
-          description: `Understand student behavior trends, reduce suspensions , referrals etc. and support the whole student.`,
+          title: 'Behavior',
+          description: `Understand student behavior trends, reduce suspensions, referrals etc. and support the whole student.`,
         },
         {
           icon: <IconSurveyInsightsAddOn />,
@@ -381,7 +381,7 @@ export const comparePlansData = [
       {
         title: 'Whole Learner',
         description:
-          'Get a complete understanding of a learner’s academic and behavioural profiles .',
+          'Get a complete understanding of a learner’s academic and behavioral profiles.',
       },
       {
         title: 'Attendance',

@@ -116,7 +116,7 @@ const transformByRawScore = (data) => {
     const maxScore = item.submittedStudents
       ? (item.dimensionMaxScore / item.submittedStudents)?.toFixed(2)
       : undefined
-    const dimensionRange = (100 * item.dimensionAvg) / item.maxScore || 0
+    const dimensionRange = (100 * item.dimensionAvg) / maxScore || 0
     return {
       ...item,
       maxScore,

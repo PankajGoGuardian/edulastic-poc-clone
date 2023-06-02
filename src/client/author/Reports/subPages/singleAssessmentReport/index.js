@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 
 import { Spin, Col } from 'antd'
+import { reportNavType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../common/components/Header'
 
 import SingleAssessmentReportFilters from './common/components/filters'
@@ -42,6 +43,16 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContainer, FilterLabel } from '../../common/styled'
+
+const pickAddionalFilters = {
+  [reportNavType.PEER_PERFORMANCE]: [
+    'analyseBy',
+    'compareBy',
+    'pageNo',
+    'sortOrder',
+    'sortKey',
+  ],
+}
 
 const SingleAssessmentReportContainer = (props) => {
   const {
@@ -163,7 +174,7 @@ const SingleAssessmentReportContainer = (props) => {
     updateNavigation(navigationItems)
   }, [settings, additionalUrlParams])
 
-  const onGoClick = (_settings) => {
+  const onGoClick = (_settings, _additionalUrlParams) => {
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
       _requestFilters[filterType] =
@@ -182,6 +193,9 @@ const SingleAssessmentReportContainer = (props) => {
       cliUser: isCliUser,
     })
     setSARTagsData({ ..._settings.tagsData })
+    if (!isEmpty(_additionalUrlParams)) {
+      setAdditionalUrlParams(_additionalUrlParams)
+    }
   }
 
   const toggleFilter = (e, status) => {
@@ -236,6 +250,9 @@ const SingleAssessmentReportContainer = (props) => {
         ...settings.tagsData,
         ...staticDropDownData.initialDdFilterTags,
       })
+      if (!isEmpty(additionalUrlParams)) {
+        setAdditionalUrlParams({})
+      }
     }
   }, [loc])
 
@@ -326,6 +343,7 @@ const SingleAssessmentReportContainer = (props) => {
             toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
+            pickAddionalFilters={pickAddionalFilters}
           />
         </SubHeader>
         <ReportContainer>

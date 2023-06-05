@@ -47,10 +47,8 @@ export const TableContainer = styled.div`
 export const TableHeaderCellWrapper = styled.div`
   display: flex;
   margin-right: 30px;
-  box-shadow: ${({ isSelected }) =>
-    isSelected ? '0px 10px 13px #0000000f' : 'inherit'};
-  opacity: ${({ isSelected }) => (isSelected ? '1' : '0.5')};
-  height: 42px;
+  box-shadow: 0px 10px 13px #0000000f;
+  height: ${({ isSelected }) => (isSelected ? '42px' : '40px')};
   align-items: center;
   border-radius: 10px;
   border-width: ${({ isSelected }) => (isSelected ? '1px' : '0px')};
@@ -60,11 +58,17 @@ export const TableHeaderCellWrapper = styled.div`
     height: 40px;
     line-height: 14px;
     &:first-child {
-      padding: 13px 32px;
+      display: flex;
+      align-items: center;
+      padding: 13px 15px 13px 20px;
       font-weight: 600;
       font-size: 14px;
       background-color: ${white};
       border-radius: 10px 0px 0px 10px;
+      svg {
+        margin-right: 15px;
+        display: ${({ isSelected }) => (isSelected ? 'block' : 'none')};
+      }
     }
     &:last-child {
       display: flex;

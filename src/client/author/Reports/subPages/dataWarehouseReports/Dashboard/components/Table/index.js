@@ -112,6 +112,14 @@ const DashboardTable = ({
     [setTableFilters]
   )
 
+  const aboveEqualToAvgFilter =
+    tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG]
+  const belowAvgFilter = tableFilters[tableFilterTypes.BELOW_AVG]
+  const isAboveEqualToAvgSelected =
+    aboveEqualToAvgFilter !== belowAvgFilter && aboveEqualToAvgFilter
+  const isBelowAvgSelected =
+    aboveEqualToAvgFilter !== belowAvgFilter && belowAvgFilter
+
   return (
     <>
       <FlexContainer
@@ -133,7 +141,7 @@ const DashboardTable = ({
               )
             }}
             borderColor={lightGreen10}
-            isSelected={tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG]}
+            isSelected={isAboveEqualToAvgSelected}
           />
           <TableHeaderCell
             title={`Below Overall Avg.: ${districtAvgScoreStr}`}
@@ -143,7 +151,7 @@ const DashboardTable = ({
               onTableHeaderCellClick(tableFilterTypes.BELOW_AVG, belowAvgCount)
             }}
             borderColor={darkRed4}
-            isSelected={tableFilters[tableFilterTypes.BELOW_AVG]}
+            isSelected={isBelowAvgSelected}
           />
           <Tooltip title="Click on the tiles to filter the table">
             <IconInfo fill={themeColor} />

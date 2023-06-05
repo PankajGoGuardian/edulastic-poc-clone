@@ -580,7 +580,12 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    let { rubricFeedback, rubricFeedbackByAI } = activity || {}
+    let {
+      rubricFeedback,
+      rubricFeedbackByAI,
+      isGradedExternally,
+      aiEvaluationStatus,
+    } = activity || {}
     if (isAIEvaluated) {
       rubricFeedback = rubricFeedbackByAI
     }
@@ -713,6 +718,8 @@ class FeedbackRight extends Component {
             inputScore={_score}
             showWarningToClear={showWarningToClear}
             enableScoreInput={this.enableScoreInput}
+            isGradedExternally={isGradedExternally}
+            aiEvaluationStatus={aiEvaluationStatus}
           />
         )}
         {!isError && (

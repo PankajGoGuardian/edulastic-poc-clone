@@ -19,6 +19,8 @@ const RubricGrading = ({
   inputScore,
   showWarningToClear,
   enableScoreInput,
+  isGradedExternally,
+  aiEvaluationStatus,
 }) => {
   const [showPreviewRubric, setShowRubricModal] = useState(false)
 
@@ -73,6 +75,8 @@ const RubricGrading = ({
           toggleModal={submitRubricResponse}
           maxScore={maxScore}
           rubricFeedback={rubricFeedback}
+          isGradedExternally={isGradedExternally}
+          aiEvaluationStatus={aiEvaluationStatus}
         />
       )}
     </RubricsWrapper>

@@ -80,6 +80,10 @@
         "tooltip": "You can make changes to the AI evaluation provided and then approve it."
       }
     },
+    "manualEvaluationNeeded": {
+      "text": "Please Evaluate Manually"
+    },
+    "feedbackGradeHaveToBeSaved": "The feedback and grade have to be saved to reflect the grade here",
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",

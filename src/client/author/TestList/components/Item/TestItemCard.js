@@ -68,7 +68,6 @@ const TestItemCard = ({
   isTestRecommendation,
   videoUrl,
 }) => {
-  console.log()
   const [height, setHeight] = useState(0)
   const ref = useRef(null)
   useEffect(() => {

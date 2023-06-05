@@ -49,24 +49,8 @@ const ActionMenu = ({
       subjects: subjects.join(),
     }
   } else {
-    const {
-      termId,
-      subject,
-      tags,
-      _id: groupId,
-      primaryTeacherId,
-      grades,
-      course,
-    } = GIData
-    urlData = {
-      termId,
-      subject,
-      groupId,
-      tagIds: tags?.map((ele) => ele._id).join(),
-      courseId: course ? course._id : '',
-      teacherId: primaryTeacherId,
-      grades: grades?.join(),
-    }
+    const { termId, _id: groupId } = GIData
+    urlData = { termId, groupId }
   }
 
   const menu = (

@@ -26,6 +26,7 @@ import {
   getCollectionsSelector,
   setCollectionsAction,
   getHighlightCollectionSelector,
+  isDerivedFromPremiumBankSelector,
 } from '../../../author/ItemDetail/ducks'
 
 import {
@@ -78,6 +79,7 @@ const QuestionMetadata = ({
   recentCollectionsList,
   authorQuestionStatus = false,
   collectionsToShow,
+  isDerivedFromPremiumBank,
 }) => {
   const [searchProps, setSearchProps] = useState({
     id: '',
@@ -238,6 +240,7 @@ const QuestionMetadata = ({
           showAdditionalMeta={
             type === questionType.GRAPH || type === questionType.MULTIPLE_CHOICE
           }
+          isDerivedFromPremiumBank={isDerivedFromPremiumBank}
         />
       </div>
     </ThemeProvider>
@@ -302,6 +305,7 @@ const enhance = compose(
       recentCollectionsList: getRecentCollectionsListSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
       authorQuestionStatus: getAuthorQuestionStatus(state),
+      isDerivedFromPremiumBank: isDerivedFromPremiumBankSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,

@@ -172,11 +172,6 @@ export const getSelectedTestsSelector = createSelector(
   (state) => state.selectedTests
 )
 
-export const isTestsDerivedFromPremiumSelector = createSelector(
-  getSelectedTestsSelector,
-  (tests) => tests.some((test) => !!test.derivedFromPremiumBankId)
-)
-
 export const getSortFilterStateSelector = createSelector(
   stateSelector,
   (state) => state.sort

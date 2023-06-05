@@ -434,6 +434,11 @@ export const getItemSelector = createSelector(
   (state) => state.item
 )
 
+export const isDerivedFromPremiumBankSelector = createSelector(
+  getItemSelector,
+  (state) => !!state?.derivedFromPremiumBankId
+)
+
 export const getCollectionsSelector = createSelector(
   getItemDetailSelector,
   (state) => state.collections || []

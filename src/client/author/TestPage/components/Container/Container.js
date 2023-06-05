@@ -1591,7 +1591,6 @@ class Container extends PureComponent {
             isPublished={status === statusConstants.PUBLISHED}
             onClose={this.onShareModalChange}
             gradeSubject={gradeSubject}
-            derivedFromPremiumBankId={derivedFromPremiumBankId}
           />
         )}
 
@@ -1630,6 +1629,7 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
+          derivedFromPremiumBankId={derivedFromPremiumBankId}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {creating && !(isTestLoading && !test._id) && (

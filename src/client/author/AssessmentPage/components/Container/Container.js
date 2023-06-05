@@ -445,7 +445,6 @@ class Container extends React.Component {
             isPublished={status === statusConstants.PUBLISHED}
             onClose={this.onShareModalChange}
             gradeSubject={gradeSubject}
-            derivedFromPremiumBankId={derivedFromPremiumBankId}
           />
         )}
         <WarningModal
@@ -475,6 +474,7 @@ class Container extends React.Component {
           onAssign={this.handleAssign}
           updated={updated}
           validateTest={this.validateTest}
+          derivedFromPremiumBankId={derivedFromPremiumBankId}
         />
         {this.renderContent()}
       </>

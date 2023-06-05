@@ -337,9 +337,15 @@ class SuccessPage extends React.Component {
     } = this.props
 
     const { isShareModalVisible, shareWithGCEnable } = this.state
-    const { title, _id, status, grades, subjects, authors = [] } = isPlaylist
-      ? playlist
-      : test
+    const {
+      title,
+      _id,
+      status,
+      grades,
+      subjects,
+      authors = [],
+      derivedFromPremiumBankId = false,
+    } = isPlaylist ? playlist : test
     let shareUrl = ''
     if (this.getHighPriorityShared === 'Public' && !isPlaylist) {
       shareUrl = `${window.location.origin}/public/view-test/${_id}`
@@ -354,7 +360,8 @@ class SuccessPage extends React.Component {
         ? 'In-Progress'
         : 'Not-Open'
     const isOwner = authors.some((o) => o._id === userId)
-    const isOwnerAndNotAsyncAssign = isOwner && !isAsyncAssign
+    const isShareAllowed =
+      isOwner && !isAsyncAssign && !derivedFromPremiumBankId
     const breadCrumbTitleForAssignFlow = `${
       isAssignSuccess || isAsyncAssign ? 'ASSIGN' : 'PUBLISH'
     }`
@@ -473,7 +480,6 @@ class SuccessPage extends React.Component {
             onClose={this.onShareModalChange}
             gradeSubject={gradeSubject}
             testVersionId={test?.versionId}
-            derivedFromPremiumBankId={test?.derivedFromPremiumBankId}
           />
         </EduIf>
 
@@ -613,7 +619,7 @@ class SuccessPage extends React.Component {
                 </FlexText>
                 <Divider />
               </EduIf>
-              <EduIf condition={isOwnerAndNotAsyncAssign}>
+              <EduIf condition={isShareAllowed}>
                 <FlexTitle>Share With Others</FlexTitle>
                 <FlexTextWrapper>
                   {title}&nbsp;has been added to your&nbsp;
@@ -621,7 +627,7 @@ class SuccessPage extends React.Component {
                 </FlexTextWrapper>
               </EduIf>
               <FlexShareContainer>
-                <EduIf condition={isOwnerAndNotAsyncAssign}>
+                <EduIf condition={isShareAllowed}>
                   <FlexShareTitle>Shared With</FlexShareTitle>
                   <FlexShareWithBox
                     style={{
@@ -654,7 +660,7 @@ class SuccessPage extends React.Component {
                     </IconWrapper>
                   </FlexShareWithBox>
                 </EduIf>
-                <EduIf condition={isOwnerAndNotAsyncAssign}>
+                <EduIf condition={isShareAllowed}>
                   <FlexText
                     style={{
                       fontSize: '13px',

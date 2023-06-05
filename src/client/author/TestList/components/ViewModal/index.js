@@ -301,7 +301,13 @@ class ViewModal extends React.Component {
                 </TestStatus>
               )}
             </TestStatusWrapper>
-            {(owner || isCurator) && !isEdulasticCurator && (
+            <EduIf
+              condition={
+                (owner || isCurator) &&
+                !isEdulasticCurator &&
+                !derivedFromPremiumBankId
+              }
+            >
               <EduButton
                 ml="5px"
                 isGhost
@@ -318,7 +324,7 @@ class ViewModal extends React.Component {
               >
                 <IconShare />
               </EduButton>
-            )}
+            </EduIf>
           </ModalTitle>
           {modalView && (
             <>
@@ -720,7 +726,6 @@ class ViewModal extends React.Component {
               isVisible={showShareModal}
               testId={item._id}
               testVersionId={item.versionId}
-              derivedFromPremiumBankId={derivedFromPremiumBankId}
               hasPremiumQuestion={hasPremiumQuestion}
               isPublished={status === statusConstants.PUBLISHED}
               onClose={this.onShareModalChange}

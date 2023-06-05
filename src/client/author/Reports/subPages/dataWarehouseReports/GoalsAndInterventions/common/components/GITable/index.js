@@ -54,8 +54,13 @@ const GITable = ({
 
   const filterTableData = (status) => {
     const records = getSummaryStatusRecords({ key: status, data, count: false })
-    setSelectedStatus(status)
-    setTableData(records)
+    if (selectedStatus !== status) {
+      setSelectedStatus(status)
+      setTableData(records)
+    } else {
+      setSelectedStatus('')
+      setTableData(data)
+    }
   }
 
   const TableTitle = () => (

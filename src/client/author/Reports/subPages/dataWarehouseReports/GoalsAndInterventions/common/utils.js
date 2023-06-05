@@ -366,9 +366,13 @@ export const getSummaryStatusRecords = ({ key, data, count = true }) => {
     },
     rest: (record) => {
       return (
-        moment().diff(record.startDate, 'days') /
-          moment(record.endDate).diff(record.startDate, 'days') >
-          getPercentage(MULTIPLE_OF_TENS.TWENTY) &&
+        (isCurrentValueInValid(record) ||
+          hasCurrentReachedTarget(record) ||
+          !isTimeLeftWithinCertainPercent(
+            getDaysLeft(record.startDate, record.endDate),
+            getTotalDaysBetweenTwoDates(record.startDate, record.endDate),
+            MULTIPLE_OF_TENS.TWENTY
+          )) &&
         record.status === GI_STATUS.IN_PROGRESS
       )
     },

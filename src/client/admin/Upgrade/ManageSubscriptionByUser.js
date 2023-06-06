@@ -23,7 +23,8 @@ const getValidatedIdsStr = (ids, validIdsList) => {
   const validEmailIds = validIdsList.map((el) => el._source.email)
   // calculate valid count str
   const validCount = ids.filter(
-    (id) => validUserIds.includes(id) || validEmailIds.includes(id)
+    (id) =>
+      validUserIds.includes(id) || validEmailIds.includes(id.toLowerCase())
   ).length
   return ids.length ? `${validCount} out of ${ids.length} validated` : ''
 }

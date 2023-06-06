@@ -182,9 +182,9 @@ module.exports = {
     { text: 'Private Library', value: 'INDIVIDUAL' },
     { text: 'School Library', value: 'SCHOOL' },
     { text: 'District Library', value: 'DISTRICT' },
-    { text: 'Public Library', value: 'PUBLIC' },
     // { text: "Edulastic Certified", value: "edulastic_certified" }
   ],
+  collectionPublicFilter: [{ text: 'Public Library', value: 'PUBLIC' }],
   statusConstants: {
     DRAFT: 'draft',
     ARCHIVED: 'archived',
@@ -277,7 +277,7 @@ module.exports = {
     iar: 'IAR (IL)',
     ilearn: 'iLearn (IN)',
     kap: 'KAP (KS)',
-    k_prep: 'K-Prep (KY)',
+    k_prep: 'KSA (KY)',
     leap: 'LEAP (LA)',
     mcas: 'MCAS (MA)',
     mcap: 'MCAP (MD)',
@@ -439,6 +439,7 @@ module.exports = {
     'allowTeacherRedirect',
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
+    'allowAutoEssayEvaluation',
   ],
   docBasedSettingsOptions: [
     'partialScore',

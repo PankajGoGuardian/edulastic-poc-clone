@@ -4,15 +4,14 @@ import qs from 'qs'
 import {
   tableFilterTypes,
   TABLE_PAGE_SIZE,
-  compareByFilterFieldKeys,
-  compareByKeys,
-  compareByOptions,
-  nextCompareByOptionsMap,
   academicSummaryFiltersTypes,
 } from '../utils'
+import { buildDrillDownUrl } from '../../common/utils'
 
 const useTableFilters = ({
+  history,
   location,
+  search,
   defaultCompareBy,
   settings,
   setSettings,
@@ -41,6 +40,11 @@ const useTableFilters = ({
       }
       return nextState
     })
+    if (search.selectedCompareBy) {
+      history.replace(
+        `${location.pathname}?${qs.stringify(settings.requestFilters)}`
+      )
+    }
     setSettings({ ...settings, selectedCompareBy: selected })
   }
 
@@ -70,29 +74,30 @@ const useTableFilters = ({
     setTableFilters((prevState) => ({ ...prevState, page }))
   }
 
-  const getTableDrillDownUrl = (key, baseUrl = location.pathname) => {
+  const getTableDrillDownUrl = (
+    key,
+    reportUrl = location.pathname,
+    isDistrictAvgDimension = false
+  ) => {
     const selectedCompareBy = tableFilters[tableFilterTypes.COMPARE_BY].key
-    const filterField = compareByFilterFieldKeys[selectedCompareBy]
-
-    const _filters = { ...settings.requestFilters }
     const { academicSummaryFilters } = settings
-    const nextCompareBy =
-      compareByOptions.find(
-        (o) => o.key === nextCompareByOptionsMap[selectedCompareBy]
-      ) || selectedCompareBy
-
-    Object.assign(_filters, {
-      [filterField]: key,
-      selectedCompareBy: nextCompareBy.key,
+    const reportFilters = {
+      ...settings.requestFilters,
       profileId:
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key,
-    })
-    if (selectedCompareBy === compareByKeys.STUDENT) {
-      delete _filters[filterField]
-      return `${baseUrl}${key}?${qs.stringify(_filters)}`
     }
-    return `${baseUrl}?${qs.stringify(_filters)}`
+    if (isDistrictAvgDimension) {
+      Object.assign(reportFilters, { selectedCompareBy })
+      return `${reportUrl}?${qs.stringify(reportFilters)}`
+    }
+    return buildDrillDownUrl({
+      key,
+      selectedCompareBy,
+      reportUrl,
+      reportFilters,
+      history,
+    })
   }
 
   return {

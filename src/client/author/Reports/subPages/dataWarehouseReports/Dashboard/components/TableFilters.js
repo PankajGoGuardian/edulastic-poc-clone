@@ -1,18 +1,17 @@
 import React from 'react'
 
-import { EduIf } from '@edulastic/common'
-import { IconPlusCircle } from '@edulastic/icons'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import SectionLabel from '../../../../common/components/SectionLabel'
-import { StyledRow, StyledEduButton } from './common/styledComponents'
+import { StyledRow } from './common/styledComponents'
 
 import { tableFilterTypes } from '../utils'
+import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
 const DashboardTableFilters = ({
   tableFilters,
   updateTableFiltersCB,
   handleAddToGroupClick,
-  addToStudentGroupEnabled,
+  showAddToStudentGroupBtn,
   compareByOptions,
 }) => {
   return (
@@ -31,11 +30,10 @@ const DashboardTableFilters = ({
         margin="0"
         style={{ padding: 0 }}
       >
-        <EduIf condition={addToStudentGroupEnabled}>
-          <StyledEduButton onClick={handleAddToGroupClick}>
-            <IconPlusCircle /> Add To Student Group
-          </StyledEduButton>
-        </EduIf>
+        <StudentGroupBtn
+          showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+          handleAddToGroupClick={handleAddToGroupClick}
+        />
         <ControlDropDown
           height="35px"
           prefix="Compare By"

@@ -1,47 +1,51 @@
 import React from 'react'
 import { Row } from 'antd'
-import { IconPlusCircle } from '@edulastic/icons'
-import { EduIf } from '@edulastic/common'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { StyledEduButton } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
-import { addStudentToGroupFeatureEnabled } from '../../../../multipleAssessmentReport/PreVsPost/utils'
+import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
+import { isAddToStudentGroupEnabled } from '../../../common/utils'
+import { tableFilterKeys } from '../../utils'
 
 const TableFilters = ({
+  tableFilters,
   setTableFilters,
   handleAddToGroupClick,
   compareByOptions = [],
   analyseByOptions = [],
-  selectedTableFilters = {},
   isSharedReport = false,
 }) => {
   const updateTableFilters = (e, selected, keyName) => {
+    const requireTotalCount = keyName === tableFilterKeys.COMPARE_BY
     setTableFilters({
-      ...selectedTableFilters,
+      ...tableFilters,
       [keyName]: selected,
+      requireTotalCount,
     })
   }
-  const showAddToGroupButton = addStudentToGroupFeatureEnabled(
-    selectedTableFilters.compareBy.key,
-    isSharedReport
+  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
+    isSharedReport,
+    tableFilters.compareBy?.key
   )
   return (
     <Row type="flex">
-      <EduIf condition={showAddToGroupButton}>
-        <StyledEduButton onClick={handleAddToGroupClick}>
-          <IconPlusCircle /> Add To Student Group
-        </StyledEduButton>
-      </EduIf>
+      <StudentGroupBtn
+        showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+        handleAddToGroupClick={handleAddToGroupClick}
+      />
       <ControlDropDown
         style={{ marginRight: '10px' }}
         prefix="Compare By"
-        by={selectedTableFilters.compareBy}
-        selectCB={(e, selected) => updateTableFilters(e, selected, 'compareBy')}
+        by={tableFilters.compareBy}
+        selectCB={(e, selected) =>
+          updateTableFilters(e, selected, tableFilterKeys.COMPARE_BY)
+        }
         data={compareByOptions}
       />
       <ControlDropDown
         prefix="Analyse By"
-        by={selectedTableFilters.analyseBy}
-        selectCB={(e, selected) => updateTableFilters(e, selected, 'analyseBy')}
+        by={tableFilters.analyseBy}
+        selectCB={(e, selected) =>
+          updateTableFilters(e, selected, tableFilterKeys.ANALYSE_BY)
+        }
         data={analyseByOptions}
       />
     </Row>

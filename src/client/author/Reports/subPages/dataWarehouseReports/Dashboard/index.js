@@ -16,6 +16,8 @@ import {
   compareByOptions as compareByOptionsRaw,
   academicSummaryFiltersTypes,
   buildAcademicSummaryFilters,
+  getPerformanceBandList,
+  getAvailableAcademicTestTypesWithBands,
 } from './utils'
 import { buildRequestFilters } from '../common/utils'
 import {
@@ -60,6 +62,7 @@ const Dashboard = ({
   updateNavigation,
   // report selectors
   loadingTableData,
+  districtAveragesData,
   tableData,
   tableDataRequestError,
   // report actions
@@ -81,19 +84,39 @@ const Dashboard = ({
   )
 
   const { academicSummaryFilters } = settings
-  const { bandInfo = [] } = get(filtersData, 'data.result', {})
+  const { bandInfo = [], externalBands = [] } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+  const availableAcademicTestTypes = useMemo(
+    () => getAvailableAcademicTestTypesWithBands(bandInfo, externalBands),
+    [bandInfo, externalBands]
+  )
+
   const performanceBandList = useMemo(
-    () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
-    [bandInfo]
+    () =>
+      getPerformanceBandList(
+        bandInfo,
+        externalBands,
+        academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
+        availableAcademicTestTypes
+      ),
+    [
+      bandInfo,
+      externalBands,
+      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE],
+      availableAcademicTestTypes,
+    ]
   )
 
   const selectedPerformanceBand = (
-    bandInfo.filter(
-      (x) =>
-        x._id ===
+    performanceBandList.filter(
+      ({ key }) =>
+        key ===
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key
-    )[0] || bandInfo[0]
+    )[0] || performanceBandList[0]
   )?.performanceBand
 
   const search = useUrlSearchParams(location)
@@ -108,7 +131,9 @@ const Dashboard = ({
     const { performanceBand, testType } = buildAcademicSummaryFilters(
       search,
       academicSummaryFilters,
-      performanceBandList
+      availableAcademicTestTypes,
+      bandInfo,
+      externalBands
     )
     setSettings({
       ...settings,
@@ -184,7 +209,9 @@ const Dashboard = ({
         </EduThen>
         <EduElse>
           <ReportView
+            history={history}
             location={location}
+            search={search}
             selectedCompareBy={selectedCompareBy}
             selectedPerformanceBand={selectedPerformanceBand}
             performanceBandList={performanceBandList}
@@ -196,8 +223,10 @@ const Dashboard = ({
             fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
             loadingTableData={loadingTableData}
             tableDataRequestError={tableDataRequestError}
+            districtAveragesData={districtAveragesData}
             tableData={tableData}
             loc={loc}
+            availableTestTypes={availableAcademicTestTypes}
           />
         </EduElse>
       </EduIf>

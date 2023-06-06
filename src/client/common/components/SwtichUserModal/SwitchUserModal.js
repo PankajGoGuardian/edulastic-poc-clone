@@ -20,6 +20,7 @@ const roles = {
   teacher: 'Teacher',
   student: 'Student',
   parent: 'Parent',
+  'edulastic-curator': 'edulastic-curator',
 }
 const roleOrder = Object.fromEntries(
   Object.entries(roles).map(([key], i) => [key, i])
@@ -31,6 +32,7 @@ const color = {
   'school-admin': '#C33EC3',
   'district-admin': '#B82ECE',
   parent: '#D0A20D',
+  'edulastic-curator': '#D0A20D',
 }
 
 const StyledDiv = styled.div.attrs((props) => ({

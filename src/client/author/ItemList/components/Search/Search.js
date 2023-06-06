@@ -130,8 +130,12 @@ const Search = ({
         (c) => !['SCHOOL', 'DISTRICT', 'PUBLIC', 'INDIVIDUAL'].includes(c.value)
       )
     }
-    return testsConstants.collectionDefaultFilter
-  }, [testsConstants.collectionDefaultFilter, userRole])
+    return userFeatures.canAccessPublicContent
+      ? testsConstants.collectionDefaultFilter.concat(
+          testsConstants.collectionPublicFilter
+        )
+      : testsConstants.collectionDefaultFilter
+  }, [testsConstants.collectionDefaultFilter, userRole, userFeatures])
 
   const collectionData = [
     ...collectionDefaultFilter.filter((c) => c.value),

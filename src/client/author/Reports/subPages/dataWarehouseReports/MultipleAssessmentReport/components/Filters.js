@@ -31,6 +31,8 @@ import { getTermOptions } from '../../../../../utils/reports'
 import { staticDropDownData } from '../utils'
 
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
+import { allFilterValue } from '../../../../common/constants'
+import { getDemographicsFilterTagsData } from '../../common/utils'
 
 const MultipleAssessmentReportFilters = ({
   // value props
@@ -49,6 +51,7 @@ const MultipleAssessmentReportFilters = ({
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData = {},
   // action props
   toggleFilter,
   setShowApply,
@@ -108,6 +111,7 @@ const MultipleAssessmentReportFilters = ({
         q.schoolIds = institutionIds.join(',')
       }
       q.externalTestTypesRequired = true
+      q.externalTestsRequired = true
       fetchFiltersDataRequest(q)
     }
   }, [])
@@ -156,20 +160,35 @@ const MultipleAssessmentReportFilters = ({
           classIds: search.classIds || '',
           groupIds: search.groupIds || '',
           profileId: urlPerformanceBand?.key || '',
+          race: search.race || allFilterValue,
+          gender: search.gender || allFilterValue,
+          iepStatus: search.iepStatus || allFilterValue,
+          frlStatus: search.frlStatus || allFilterValue,
+          ellStatus: search.ellStatus || allFilterValue,
+          hispanicEthnicity: search.hispanicEthnicity || allFilterValue,
         }
         if (userRole === roleuser.TEACHER) {
           delete _filters.schoolIds
           delete _filters.teacherIds
         }
         const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+        const demographicsData = get(filtersData, 'data.result.demographics')
+        const demographicsFilterTagsData = getDemographicsFilterTagsData(
+          search,
+          demographicsData
+        )
         const _filterTagsData = {
           termId: urlSchoolYear,
+          testSubjects: urlTestSubjects,
+          testGrades: urlTestGrades,
           assessmentTypes: availableAssessmentType.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
           grades: urlGrades,
           profileId: urlPerformanceBand,
+
+          ...demographicsFilterTagsData,
         }
 
         // set filterTagsData, filters and testId
@@ -185,12 +204,12 @@ const MultipleAssessmentReportFilters = ({
             selectedFilterTagsData: { ..._filterTagsData },
           })
           fetchUpdateTagsData({
-            testIds: reject(_filters.testIds?.split(','), isEmpty),
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            courseIds: reject([search.courseId], isEmpty),
+            courseId: reject([search.courseId], isEmpty),
             classIds: reject(_filters.classIds?.split(','), isEmpty),
             groupIds: reject(_filters.groupIds?.split(','), isEmpty),
             teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
             options: {
               termId: _filters.termId,
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
@@ -293,7 +312,7 @@ const MultipleAssessmentReportFilters = ({
         <FilterTags
           isPrinting={isPrinting}
           visible={!reportId}
-          tagsData={filterTagsData}
+          tagsData={selectedFilterTagsData}
           tagTypes={tagTypes}
           handleCloseTag={handleCloseTag}
           handleTagClick={handleTagClick}

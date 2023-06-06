@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { get, groupBy, isEmpty, map, maxBy, sumBy } from 'lodash'
+import { get, groupBy, map, maxBy, sumBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { downloadCSV } from '../../../../../common/util'
 import {
@@ -10,6 +10,7 @@ import {
   genericColumnsForTable,
   getAvgValue,
   getDataKeys,
+  sortKeys,
 } from '../../utils'
 import AvgPerformance from './columns/AvgPerformance'
 import PerformanceChange from './columns/PerformanceChange'
@@ -18,8 +19,9 @@ import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import {
   compareByFieldKeys,
   compareByKeys,
-  compareBylabels,
+  compareByOptionsInfo,
 } from '../../../common/utils'
+import LinkCell from '../../../common/components/LinkCell'
 
 const {
   DECIMAL_BASE,
@@ -31,27 +33,35 @@ const {
 
 export const onCsvConvert = (data) => downloadCSV(`Efficacy Report.csv`, data)
 
-export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
-  const compareBy = selectedCompareBy.key
-  const tableColumnsData =
-    compareBy === compareByKeys.STUDENT
-      ? compareByStudentColumns
-      : genericColumnsForTable
+export const getTableColumns = (
+  testInfo,
+  tableFilters,
+  getTableDrillDownUrl
+) => {
+  const { compareBy, analyseBy, sortKey, sortOrder } = tableFilters
+  const { key: compareByKey } = compareBy
+  const { key: analyseByKey } = analyseBy
+
+  const isStudentCompareBy = compareByKey === compareByKeys.STUDENT
+
+  const tableColumnsData = isStudentCompareBy
+    ? compareByStudentColumns
+    : genericColumnsForTable
 
   const { preTestInfo, postTestInfo } = testInfo
 
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByColumnIdx = _columns.findIndex(
-      (col) => col.key === 'compareBy'
+      (col) => col.key === sortKeys.COMPARE_BY
     )
-    _columns[compareByColumnIdx].title = selectedCompareBy.title
-    _columns[compareByColumnIdx].render = (_, record) => {
-      const value = record.compareByColumnRowText
-      if (isEmpty(value)) return '-'
-      return value
+    _columns[compareByColumnIdx].title = compareBy.title
+    _columns[compareByColumnIdx].render = (value) => {
+      const url = getTableDrillDownUrl(value._id)
+      return (
+        <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
+      )
     }
-
     // Test names column
     const testColumnIdx = _columns.findIndex((col) => col.key === 'test')
     _columns[testColumnIdx].render = () => (
@@ -66,7 +76,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       (col) => col.key === 'avgPerformance'
     )
     _columns[avgPerformanceColumnIdx].render = (value) => (
-      <AvgPerformance data={value} analyseBy={analyseBy} />
+      <AvgPerformance data={value} analyseBy={analyseByKey} />
     )
 
     // Performance change column
@@ -76,7 +86,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
     )
 
     // Performance band column
-    if (compareBy !== compareByKeys.STUDENT) {
+    if (compareByKey !== compareByKeys.STUDENT) {
       const performanceBandColumnIdx = _columns.findIndex(
         (col) => col.key === 'performanceBand'
       )
@@ -99,7 +109,7 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       {
         render: (value) =>
           testInfo.preTestInfo.isExternal ||
-          analyseBy === analyseBykeys.RAW_SCORE
+          analyseByKey === analyseBykeys.RAW_SCORE
             ? value.preTestData.avgScore
             : `${value.preTestData.avgScorePercentage}%`,
       }
@@ -109,11 +119,17 @@ export const getTableColumns = (selectedCompareBy, analyseBy, testInfo) => {
       {
         render: (value) =>
           testInfo.postTestInfo.isExternal ||
-          analyseBy === analyseBykeys.RAW_SCORE
+          analyseByKey === analyseBykeys.RAW_SCORE
             ? value.postTestData.avgScore
             : `${value.postTestData.avgScorePercentage}%`,
       }
     )
+
+    _columns.forEach((item) => {
+      if (item.key === sortKey) {
+        Object.assign(item, { sortOrder })
+      }
+    })
   })
 
   return tableColumns
@@ -263,39 +279,41 @@ export const getTableData = (
       postTestInfo
     )
 
-    // field required only for compareBy student other than rowTitle
-    let compareByColumnRowText = ''
-    const {
-      firstName,
-      lastName,
-      schoolName,
-      teacherName,
-      groupName,
-      studentId,
-    } = data[0]
+    const dimension = {}
+    const extraStudentColumns = {}
     const compareByKey = tableFilters.compareBy?.key
-    if (compareByKey === compareByKeys.STUDENT) {
-      compareByColumnRowText = getFormattedName(
-        `${firstName || ''} ${lastName || ''}`,
-        false
-      )
-    } else compareByColumnRowText = data[0][compareBylabels[compareByKey]]
+    const isStudentCompareBy = compareByKey === compareByKeys.STUDENT
+    if (isStudentCompareBy) {
+      const {
+        firstName,
+        lastName,
+        schoolName,
+        teacherName,
+        groupName,
+        studentId,
+      } = data[0]
+      const name = getFormattedName(`${firstName || ''} ${lastName || ''}`)
+      Object.assign(dimension, { _id: studentId, name, firstName, lastName })
+      Object.assign(extraStudentColumns, {
+        schoolName,
+        teacherName,
+        groupName,
+      })
+    } else {
+      Object.assign(dimension, {
+        _id: data[0][compareByOptionsInfo[compareByKey].key],
+        name: data[0][compareByOptionsInfo[compareByKey].name],
+      })
+    }
     return {
-      compareByColumnRowText,
-      firstName,
-      lastName,
-      schoolName,
-      teacherName,
-      className: groupName,
-      studentId,
+      dimension,
+      extraStudentColumns,
       studentsCount,
       data: {
         preTestData,
         postTestData,
       },
     }
-  }).sort((a, b) =>
-    a.compareByColumnRowText.localeCompare(b.compareByColumnRowText)
-  )
+  })
   return tableData
 }

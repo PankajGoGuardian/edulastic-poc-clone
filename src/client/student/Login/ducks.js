@@ -251,6 +251,7 @@ export const GET_EXTERNAL_AUTH_USER_SUCCESS =
   '[user] get external auth user success'
 export const GET_EXTERNAL_AUTH_USER_FAILED =
   '[user] get external auth user failed'
+export const SET_USER_ACCESS_PUBLIC_CONTENT = '[user] set access public content'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -392,6 +393,10 @@ export const fetchOrgInterestedStandardsAction = createAction(
 
 export const getExternalAuthUserAction = createAction(
   GET_EXTERNAL_AUTH_USER_REQUEST
+)
+
+export const setUserAccessPublicContent = createAction(
+  SET_USER_ACCESS_PUBLIC_CONTENT
 )
 
 const initialState = {
@@ -598,6 +603,12 @@ const getCurrentPath = () => {
 
 export default createReducer(initialState, {
   [SET_USER]: setUser,
+  [SET_USER_ACCESS_PUBLIC_CONTENT]: (state, { payload }) => {
+    if (!(state.user && state.user && state.user.features && payload)) {
+      return state
+    }
+    state.user.features.canAccessPublicContent = !!payload.canAccessPublicContent
+  },
   [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
     state.saSettingsSchool = payload
   },

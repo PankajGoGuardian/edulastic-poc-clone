@@ -65,6 +65,7 @@ class TestSetting extends Component {
         timer: true,
         isLinkSharingEnabled: false,
         enableAudioResponseQuestion: false,
+        canAccessPublicContent: true,
       },
     }
   }
@@ -155,6 +156,7 @@ class TestSetting extends Component {
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
       enableAudioResponseQuestion: testSetting.enableAudioResponseQuestion,
+      canAccessPublicContent: !!testSetting.canAccessPublicContent,
     }
     if (updateData.isLinkSharingEnabled) {
       Object.assign(updateData, {
@@ -202,9 +204,10 @@ class TestSetting extends Component {
 
     const showSpin = updating || loading || creating
     const enableAudioResponseQuestions = !!testSetting.enableAudioResponseQuestion
+    const canAccessPublicContent = !!testSetting.canAccessPublicContent
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const isUserDa = role === roleuser.DISTRICT_ADMIN
-    const showAudioResponseSetting = [isEnterprise, isUserDa].every((o) => !!o)
+    const showEnterpriseSettings = [isEnterprise, isUserDa].every((o) => !!o)
     return (
       <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -268,7 +271,7 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
-                <EduIf condition={showAudioResponseSetting}>
+                <EduIf condition={showEnterpriseSettings}>
                   <StyledCol data-cy="allowAudioResponseType">
                     <InputLabel>
                       ENABLE AUDIO RESPONSE QUESTION TYPE{' '}
@@ -288,6 +291,23 @@ class TestSetting extends Component {
                         Student record their voice to respond{' '}
                       </InputLabel>
                     </EduIf>
+                  </StyledCol>
+                </EduIf>
+                <EduIf condition={showEnterpriseSettings}>
+                  <StyledCol data-cy="canAccessPublicContent">
+                    <InputLabel>
+                      Allow teachers to access Public Library{' '}
+                    </InputLabel>
+                    <StyledRadioGrp
+                      defaultValue={canAccessPublicContent}
+                      onChange={(e) =>
+                        this.changeSetting(e, 'canAccessPublicContent')
+                      }
+                      value={canAccessPublicContent}
+                    >
+                      <RadioBtn value>Yes</RadioBtn>
+                      <RadioBtn value={false}>No</RadioBtn>
+                    </StyledRadioGrp>
                   </StyledCol>
                 </EduIf>
               </StyledRow>

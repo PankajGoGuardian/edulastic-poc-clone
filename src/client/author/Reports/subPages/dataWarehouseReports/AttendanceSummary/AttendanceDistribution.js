@@ -65,6 +65,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 
 const AttendanceDistribution = ({ data, loading }) => {
   const sortedLegendsData = sortDistributionBand(data)
+  const pieChartData = [...sortedLegendsData].reverse()
   const [animate, onAnimationStart] = useResetAnimation()
   return (
     <Col span={10}>
@@ -78,7 +79,7 @@ const AttendanceDistribution = ({ data, loading }) => {
             <Pie
               isAnimationActive={animate}
               onAnimationStart={onAnimationStart}
-              data={sortedLegendsData}
+              data={pieChartData}
               cx="50%"
               cy="50%"
               innerRadius={50}
@@ -86,9 +87,11 @@ const AttendanceDistribution = ({ data, loading }) => {
               fill="#8884d8"
               dataKey="value"
               label={getAcademicSummaryChartLabelJSX}
+              startAngle={90}
+              endAngle={-270}
               style={{ filter: 'drop-shadow(10px 10px 12px #00000030)' }}
             >
-              {sortedLegendsData.map((entry) => (
+              {pieChartData.map((entry) => (
                 <Cell key={`cell-${entry.id}`} fill={entry.color} />
               ))}
             </Pie>

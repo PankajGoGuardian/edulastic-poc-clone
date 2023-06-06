@@ -1,12 +1,21 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty, get, mapValues, includes, filter } from 'lodash'
 import { Spin } from 'antd'
 
-import { SpinLoader } from '@edulastic/common'
+import { SpinLoader, notification } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  helpLinks,
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
+import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
+import {
+  TABLE_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
+} from '@edulastic/constants/reportUtils/common'
 
 import { SubHeader } from '../../../common/components/Header'
 import {
@@ -38,10 +47,21 @@ import {
 } from '../../../../src/selectors/user'
 import { actions, selectors } from './ducks'
 
-import { getCompareByOptions, getChartData, getTableData } from './utils'
+import {
+  getCompareByOptions,
+  getChartData,
+  getTableData,
+  sortKeys,
+  TABLE_PAGE_SIZE,
+} from './utils'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
+import { isAddToStudentGroupEnabled } from '../common/utils'
+
+const externalTestTypes = Object.keys(EXTERNAL_TEST_TYPES)
 
 const { downloadCSV } = reportUtils.common
 
@@ -73,6 +93,7 @@ const MultipleAssessmentReport = ({
   filtersTabKey,
   filters,
   filterTagsData,
+  selectedFilterTagsData,
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportChartData,
@@ -100,6 +121,18 @@ const MultipleAssessmentReport = ({
   selectedTests,
   setSelectedTests,
 }) => {
+  const [sortFilters, setSortFilters] = useState({
+    sortKey: sortKeys.COMPARE_BY,
+    sortOrder: TABLE_SORT_ORDER_TYPES.ASCEND,
+  })
+  const [pageFilters, setPageFilters] = useState({
+    page: 0,
+    pageSize: TABLE_PAGE_SIZE,
+  })
+  const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
+  const [selectedRowKeys, onSelectChange] = useState([])
+  const [checkedStudents, setCheckedStudents] = useState([])
+
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
@@ -161,10 +194,8 @@ const MultipleAssessmentReport = ({
     setShowApply(false)
   }
 
-  const updateFilterDropdownCB = (selected, keyName) => {
-    if (keyName === 'compareBy') {
-      setDWMARSettings({ ...settings, selectedCompareBy: selected })
-    }
+  const updateFilterDropdownCB = (selected) => {
+    setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
 
   useEffect(
@@ -187,38 +218,49 @@ const MultipleAssessmentReport = ({
   // get report data
   useEffect(() => {
     const q = { ...settings.requestFilters }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if (q.termId || q.reportId) {
       fetchDWMARChartDataRequest(q)
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
 
   useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings.requestFilters, settings.selectedCompareBy.key, sortFilters])
+
+  useEffect(() => {
     const q = {
       ...settings.requestFilters,
       compareBy: settings.selectedCompareBy.key,
+      sortKey: sortFilters.sortKey,
+      sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
+      ...pageFilters,
+      requireTotalCount: pageFilters.page === 1,
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if ((q.termId || q.reportId) && pageFilters.page) {
       fetchDWMARTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, settings.selectedCompareBy.key])
+  }, [pageFilters])
 
   useEffect(() => {
-    const { internalMetricsForTable = [], externalMetricsForTable = [] } = get(
-      reportTableData,
+    const { internalMetricsForChart, externalMetricsForChart } = get(
+      reportChartData,
       'data.result',
       {}
     )
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loadingReportChartData &&
       !loadingReportTableData &&
+      !isEmpty(reportChartData) &&
       !isEmpty(reportTableData) &&
-      !(internalMetricsForTable.length || externalMetricsForTable.length)
+      isEmpty(internalMetricsForChart) &&
+      isEmpty(externalMetricsForChart)
     ) {
       toggleFilter(null, true)
     }
-  }, [reportTableData])
+  }, [reportChartData, reportTableData])
 
   const {
     incompleteTests,
@@ -257,26 +299,33 @@ const MultipleAssessmentReport = ({
     }
   }, [reportChartData])
 
-  const tableData = useMemo(() => {
-    const {
-      internalMetricsForTable = [],
-      externalMetricsForTable = [],
-      metaInfo = [],
-    } = get(reportTableData, 'data.result', {})
-    const { externalBands = [] } = get(reportChartData, 'data.result', {})
-    if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) return []
+  const { rowsCount = 0 } = get(reportTableData, 'data.result', {})
 
-    const _internalMetricsForTable = internalMetricsForTable.map((d) => ({
-      ...d,
-      isIncomplete: incompleteTests.includes(d.testId),
-    }))
+  const tableData = useMemo(() => {
+    const { metricInfo = [] } = get(reportTableData, 'data.result', {})
+    const { externalBands = [] } = get(reportChartData, 'data.result', {})
+    let externalMetricsForTable = metricInfo
+      .filter(({ testType }) => externalTestTypes.includes(testType))
+      .map(({ testType: externalTestType, ...t }) => ({
+        ...t,
+        externalTestType,
+      }))
+    const internalMetricsForTable = metricInfo
+      .filter(({ testType }) => !externalTestTypes.includes(testType))
+      .map((t) => ({
+        ...t,
+        isIncomplete: incompleteTests.includes(t.testId),
+      }))
+    if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) {
+      externalMetricsForTable = []
+    }
     return getTableData(
-      _internalMetricsForTable,
+      internalMetricsForTable,
       externalMetricsForTable,
-      metaInfo,
       selectedPerformanceBand,
       externalBands,
-      settings.selectedCompareBy.key
+      settings.selectedCompareBy.key,
+      sortFilters
     )
   }, [
     reportChartData,
@@ -288,6 +337,47 @@ const MultipleAssessmentReport = ({
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true
   )
+
+  // handle add student to group
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+    onSelect: ({ id }) => {
+      return setCheckedStudents(
+        checkedStudents.includes(id)
+          ? checkedStudents.filter((i) => i !== id)
+          : [...checkedStudents, id]
+      )
+    },
+    onSelectAll: (flag) =>
+      setCheckedStudents(flag ? tableData.map(({ id }) => id) : []),
+  }
+
+  const checkedStudentsForModal = tableData
+    .filter(({ id }) => checkedStudents.includes(id))
+    .map(({ id, studentName }) => {
+      const name = studentName.split(',')
+      return {
+        _id: id,
+        firstName: name[0],
+        lastName: name?.[1],
+      }
+    })
+
+  const handleAddToGroupClick = () => {
+    if (checkedStudentsForModal.length) {
+      setShowAddToGroupModal(true)
+    } else {
+      notification({ messageKey: 'selectOneOrMoreStudentsForGroup' })
+    }
+  }
+
+  const showAddToStudentGroupBtn = isAddToStudentGroupEnabled(
+    isSharedReport,
+    selectedCompareBy?.key
+  )
+
+  const _rowSelection = showAddToStudentGroupBtn ? rowSelection : null
 
   return (
     <>
@@ -320,7 +410,7 @@ const MultipleAssessmentReport = ({
           filtersTabKey={filtersTabKey}
           filters={filters}
           filterTagsData={filterTagsData}
-          selectedFilterTagsData={settings.selectedFilterTagsData}
+          selectedFilterTagsData={selectedFilterTagsData}
           // action props (others)
           setShowApply={setShowApply}
           showFilter={showFilter}
@@ -357,6 +447,7 @@ const MultipleAssessmentReport = ({
               $margin="30px 0px 10px 0px"
               style={{ fontSize: '20px' }}
               showHelp
+              url={helpLinks[reportNavType.MULTIPLE_ASSESSMENT_REPORT_DW]}
             >
               Performance Trends
             </SectionLabel>
@@ -373,10 +464,23 @@ const MultipleAssessmentReport = ({
               selectedTests={selectedTests}
               setSelectedTests={setSelectedTests}
             />
+            <FeaturesSwitch
+              inputFeatures="studentGroups"
+              actionOnInaccessible="hidden"
+            >
+              <AddToGroupModal
+                groupType="custom"
+                visible={showAddToGroupModal}
+                onCancel={() => setShowAddToGroupModal(false)}
+                checkedStudents={checkedStudentsForModal}
+              />
+            </FeaturesSwitch>
             <TableFilters
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
               selectedCompareBy={selectedCompareBy}
+              handleAddToGroupClick={handleAddToGroupClick}
+              showAddToStudentGroupBtn={showAddToStudentGroupBtn}
             />
             <Table
               tableData={tableData}
@@ -387,6 +491,12 @@ const MultipleAssessmentReport = ({
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
               isPrinting={isPrinting}
+              rowsCount={rowsCount}
+              sortFilters={sortFilters}
+              setSortFilters={setSortFilters}
+              pageFilters={pageFilters}
+              setPageFilters={setPageFilters}
+              rowSelection={_rowSelection}
             />
           </>
         )}

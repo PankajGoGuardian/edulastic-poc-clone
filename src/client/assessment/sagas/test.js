@@ -45,6 +45,10 @@ import {
 } from '@edulastic/constants'
 import { PUBLIC_URL_IDENTIFIER } from '@edulastic/constants/const/common'
 import { ORG_TYPE } from '@edulastic/constants/const/roleType'
+import {
+  EDU_CALC_PROVIDER,
+  DESMOS_CALC_PROVIDER,
+} from '../themes/common/Calculators/constants'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
 import {
@@ -111,7 +115,11 @@ import {
   setEnableAudioResponseQuestionAction,
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
-import { getUserOrgId, getUserRole } from '../../author/src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isDesmosCalculatorEnabledSelector,
+} from '../../author/src/selectors/user'
 import { getSubmitTestCompleteSelector } from '../selectors/test'
 import {
   setActiveAssignmentAction,
@@ -167,15 +175,23 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
-const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
+const getSettings = (
+  test,
+  testActivity,
+  isTestPreview,
+  isDesmosCalculatorEnabled
+) => {
   const { assignmentSettings = {} } = testActivity || {}
+  const { isTeacherPremium } = assignmentSettings
+
+  const calculatorProvider =
+    isDesmosCalculatorEnabled || isTeacherPremium
+      ? DESMOS_CALC_PROVIDER
+      : EDU_CALC_PROVIDER
+
   const calcTypes = !isTestPreview
     ? assignmentSettings.calcTypes
     : test.calcTypes
-
-  const calcProvider = isTestPreview
-    ? test.calculatorProvider || calculatorProvider
-    : testActivity?.calculatorProvider
 
   const maxAnswerChecks = isTestPreview
     ? test.maxAnswerChecks
@@ -218,6 +234,10 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     ? test.showRubricToStudents
     : assignmentSettings.showRubricToStudents
 
+  const allowAutoEssayEvaluation = isTestPreview
+    ? test.allowAutoEssayEvaluation
+    : assignmentSettings.allowAutoEssayEvaluation
+
   const referenceDocAttributes = isTestPreview
     ? test.referenceDocAttributes
     : assignmentSettings.referenceDocAttributes
@@ -243,7 +263,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
 
   return {
     testType,
-    calcProvider,
+    calcProvider: calculatorProvider,
     playerSkinType,
     showMagnifier,
     timedAssignment,
@@ -252,6 +272,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     enableScratchpad,
     enableSkipAlert,
     showRubricToStudents,
+    allowAutoEssayEvaluation,
     allowTeacherRedirect,
     calcTypes: calcTypes || DEFAULT_CALC_TYPES,
     maxAnswerChecks: maxAnswerChecks || 0,
@@ -572,18 +593,15 @@ function* loadTest({ payload }) {
     // eslint-disable-next-line prefer-const
     let { testItems, passages } = test
 
-    const calculatorProvider = yield select((state) =>
-      get(
-        state,
-        'subscription.subscriptionData.subscription.calculatorProvider'
-      )
+    const isDesmosCalculatorEnabled = yield select(
+      isDesmosCalculatorEnabledSelector
     )
 
     const settings = getSettings(
       test,
       testActivity,
       preview,
-      calculatorProvider
+      isDesmosCalculatorEnabled
     )
 
     const testType = settings.testType || test.testType

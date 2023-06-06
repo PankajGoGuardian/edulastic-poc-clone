@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col, Select } from 'antd'
+import { Row, Col, Select, Tooltip } from 'antd'
 import { uniqBy } from 'lodash'
 import {
   notification,
@@ -46,6 +46,7 @@ const SecondBlock = ({
   recentCollectionsList,
   collectionsToShow,
   showAdditionalMeta,
+  isDerivedFromPremiumBank = false,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], 'tagName')
   const [searchValue, setSearchValue] = useState('')
@@ -234,38 +235,46 @@ const SecondBlock = ({
             {collectionsToShow.length > 0 && (
               <ItemBody>
                 <FieldLabel>Collections</FieldLabel>
-                <SelectInputStyled
-                  mode="multiple"
-                  className="tagsSelect"
-                  data-cy="collectionsSelect"
-                  bg="white"
-                  placeholder="Please select"
-                  dropdownClassName="custom-antd-select"
-                  value={filteredCollections.flatMap((c) => c.bucketIds)}
-                  onChange={(value, options) =>
-                    handleCollectionsSelect(value, options, collectionsToShow)
+                <Tooltip
+                  title={
+                    isDerivedFromPremiumBank &&
+                    'Action not permitted on clone of a premium content'
                   }
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  suffixIcon={<SelectSuffixIcon type="caret-down" />}
-                  autoFocus={highlightCollection}
                 >
-                  {collectionsToShow.map((o) => (
-                    <Select.Option
-                      key={o.bucketId}
-                      value={o.bucketId}
-                      _id={o._id}
-                      type={o.type}
-                      collectionName={o.collectionName}
-                    >
-                      {`${o.collectionName} - ${o.name}`}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
+                  <SelectInputStyled
+                    mode="multiple"
+                    className="tagsSelect"
+                    data-cy="collectionsSelect"
+                    bg="white"
+                    placeholder="Please select"
+                    dropdownClassName="custom-antd-select"
+                    value={filteredCollections.flatMap((c) => c.bucketIds)}
+                    onChange={(value, options) =>
+                      handleCollectionsSelect(value, options, collectionsToShow)
+                    }
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    disabled={isDerivedFromPremiumBank}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    suffixIcon={<SelectSuffixIcon type="caret-down" />}
+                    autoFocus={highlightCollection}
+                  >
+                    {collectionsToShow.map((o) => (
+                      <Select.Option
+                        key={o.bucketId}
+                        value={o.bucketId}
+                        _id={o._id}
+                        type={o.type}
+                        collectionName={o.collectionName}
+                      >
+                        {`${o.collectionName} - ${o.name}`}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Tooltip>
               </ItemBody>
             )}
             {recentCollectionsListAccessible?.length > 0 && (
@@ -273,6 +282,7 @@ const SecondBlock = ({
                 recentCollectionsList={recentCollectionsListAccessible}
                 collections={collections || []}
                 handleCollectionsSelect={handleRecentCollectionsSelect}
+                isDerivedFromPremiumBank={isDerivedFromPremiumBank}
               />
             )}
           </Col>

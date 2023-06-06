@@ -145,7 +145,8 @@ export const StyledButton = styled(EduButton)`
   font-weight: 700;
   font-size: 10px;
   line-height: 14px;
-  margin-left: 12px;
+  margin-left: ${(props) => props.ml || 12}px;
+  height: ${(props) => props.height || 36}px;
   &.ant-btn.ant-btn-primary {
     &.focus-visible,
     &:focus {
@@ -162,6 +163,10 @@ export const StyledFormHeader = styled.div`
 export const StyledFormButtonsContainer = styled.div`
   display: flex;
   padding-bottom: 20px;
+  display: flex;
+  justify-content: flex-end;
+`
+export const StyledSectionContainer = styled.div`
   display: flex;
   justify-content: flex-end;
 `

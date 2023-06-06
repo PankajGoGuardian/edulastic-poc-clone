@@ -1503,6 +1503,7 @@ class Container extends PureComponent {
       itemGroups,
       isDocBased,
       versionId,
+      derivedFromPremiumBankId = false,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
       test.collections,
@@ -1519,7 +1520,8 @@ class Container extends PureComponent {
       editEnable
     const hasTestId = !!testId
     const allowDuplicate =
-      allowDuplicateCheck(test.collections, collections, 'test') || isOwner
+      (allowDuplicateCheck(test.collections, collections, 'test') || isOwner) &&
+      !derivedFromPremiumBankId
     const showDuplicateButton =
       testStatus === statusConstants.PUBLISHED &&
       !editEnable &&
@@ -1627,6 +1629,7 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
+          derivedFromPremiumBankId={derivedFromPremiumBankId}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {creating && !(isTestLoading && !test._id) && (

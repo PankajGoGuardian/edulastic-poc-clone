@@ -1,7 +1,7 @@
 import React from 'react'
 import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
-import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
+import { EduButton, EduIf, LikeIconStyled, Progress } from '@edulastic/common'
 import {
   roleuser,
   collections as collectionsConstant,
@@ -217,6 +217,7 @@ class ViewModal extends React.Component {
       sharedWith,
       collections: _collections = [],
       isDocBased,
+      derivedFromPremiumBankId = false,
     } = item
     let { summary = {} } = item
     if (this.state.summary) {
@@ -300,7 +301,13 @@ class ViewModal extends React.Component {
                 </TestStatus>
               )}
             </TestStatusWrapper>
-            {(owner || isCurator) && !isEdulasticCurator && (
+            <EduIf
+              condition={
+                (owner || isCurator) &&
+                !isEdulasticCurator &&
+                !derivedFromPremiumBankId
+              }
+            >
               <EduButton
                 ml="5px"
                 isGhost
@@ -317,7 +324,7 @@ class ViewModal extends React.Component {
               >
                 <IconShare />
               </EduButton>
-            )}
+            </EduIf>
           </ModalTitle>
           {modalView && (
             <>
@@ -363,7 +370,13 @@ class ViewModal extends React.Component {
                       <IconDescription />
                       <span>DETAILS</span>
                     </EduButton>
-                    {allowDuplicate && !isEdulasticCurator && (
+                    <EduIf
+                      condition={
+                        allowDuplicate &&
+                        !derivedFromPremiumBankId &&
+                        !isEdulasticCurator
+                      }
+                    >
                       <EduButton
                         isGhost
                         height="40px"
@@ -383,7 +396,7 @@ class ViewModal extends React.Component {
                         <IconCopy />
                         <span>CLONE</span>
                       </EduButton>
-                    )}
+                    </EduIf>
 
                     {status === 'inreview' && hasCollectionAccess ? (
                       <FeaturesSwitch

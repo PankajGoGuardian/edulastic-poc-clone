@@ -69,6 +69,16 @@ const sharedWithType = {
   USER: 'user',
 }
 
+const helpLinks = {
+  [DW_DASHBOARD_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Dashboard`,
+  [MULTIPLE_ASSESSMENT_REPORT_DW]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Performance-Trends`,
+  [WHOLE_LEARNER_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Whole-Learner`,
+  [DW_ATTENDANCE_SUMMARY_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Attendance`,
+  [DW_GOALS_AND_INTERVENTIONS_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Goals-and-Interventions`,
+  [DW_EARLY_WARNING_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Early-Warning`,
+  [DW_EFFICACY_REPORT]: `https://support.goguardian.com/s/article/Insights-Data-Studio-Efficacy`,
+}
+
 module.exports = {
   reportGroupType,
   reportNavType,
@@ -82,4 +92,5 @@ module.exports = {
   DW_EARLY_WARNING_REPORT,
   DW_EFFICACY_REPORT,
   GROUP_TYPE,
+  helpLinks,
 }

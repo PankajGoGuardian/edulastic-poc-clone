@@ -27,8 +27,12 @@ const getSelectedValuesTagWidths = (selectedValues) => {
   return [tagWidths, tagWidthsSum]
 }
 
-const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
-  const [selectedValues, setSelectedValues] = useState([])
+const ExternalDemographicFilter = ({
+  extDemographicData,
+  updateFilters,
+  extDemogaphicFilters,
+}) => {
+  const [selectedValues, setSelectedValues] = useState(extDemogaphicFilters)
   const [maxTagCount, setMaxTagCount] = useState(2)
   const [inputBoxWidth, setInputBoxWidth] = useState(250)
 

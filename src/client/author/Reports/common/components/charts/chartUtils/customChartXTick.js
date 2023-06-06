@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { StyledAxisTickText } from '../../../styled'
+
+const EXTERNAL_TAG_PADDING = 2
 
 export const CustomChartXTick = (props) => {
   const {
@@ -21,7 +23,16 @@ export const CustomChartXTick = (props) => {
   const fill = getXTickFill ? getXTickFill(payload, data) : 'black'
 
   const tagText = getXTickTagText ? getXTickTagText(payload, data) : ''
-  const tagWidth = (tagText?.length || 0) * 10
+
+  const tagTextRef = useRef(null)
+  const [tagWidth, setTagWidth] = useState(0)
+
+  useLayoutEffect(() => {
+    if (tagTextRef.current) {
+      const tagRectWidth = tagTextRef.current.wordsWithComputedWidth[0].width
+      setTagWidth(tagRectWidth + EXTERNAL_TAG_PADDING)
+    }
+  }, [tagText])
 
   if (text && text.length > 25 && tickWidth < 80) {
     if (text[19] === ' ') text = text.substr(0, 24)
@@ -55,19 +66,20 @@ export const CustomChartXTick = (props) => {
             y={24}
             rx={10}
             width={tagWidth}
-            height={17}
+            height={20}
             fill="black"
           />
           <StyledAxisTickText
+            ref={tagTextRef}
             y={30}
             textAnchor="middle"
             verticalAnchor="start"
             width={tickWidth}
-            fontSize="8px"
-            fontWeight={fontWeight}
+            fontSize="12px"
+            fontWeight="bold"
             fill="white"
           >
-            {tagText}
+            {tagText.toUpperCase()}
           </StyledAxisTickText>
         </>
       ) : null}

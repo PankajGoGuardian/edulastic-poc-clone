@@ -84,7 +84,7 @@ export const AddonCard = styled.div`
   }
 `
 export const AddonImg = styled.div`
-  height: 40px;
+  height: ${(props) => (props.$type === 'enterprise' ? '40px' : '95px')};
 `
 export const AddonDescription = styled.div`
   font-size: 13px;
@@ -145,9 +145,7 @@ export const ExpiryMsg = styled(PremiumRequiredMsg)`
 `
 
 export const IconWrapper = styled.div`
-  min-width: 52px;
   margin-right: 30px;
-  margin-top: 5px;
 `
 export const CardDetails = styled.div`
   display: flex;
@@ -441,4 +439,12 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+`
+
+export const StyledTag = styled.span`
+  font-size: 9px;
+  top: -4px;
+  padding-left: 6px;
+  position: relative;
+  color: ${themeColor};
 `

@@ -1,23 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import { Col, Input, Radio, Tooltip } from 'antd'
 import moment from 'moment'
-import { Col, Input, Radio } from 'antd'
+import React, { useEffect, useState } from 'react'
 
-import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'
-import { roleuser } from '@edulastic/constants'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
+import { roleuser, userPermissions } from '@edulastic/constants'
 
+import { IconInfo } from '@edulastic/icons'
 import {
   HeadingSpan,
   ValueSpan,
 } from '../../Common/StyledComponents/upgradePlan'
 import {
+  LeftButtonsContainer,
   Row,
   SecondDiv,
   ThirdDiv,
-  LeftButtonsContainer,
 } from '../CreateAdmin/styled'
 import { StyledRadioGroup } from './styled'
 
+const tooltip = {
+  dataOpsOnly:
+    'This district admin can only upload data to data studio feature. No access is given to district menu and insights.',
+  dataOps:
+    'This district admin user has full access to data studio upload and insight feature.',
+}
 const fields = {
   _id: 'User ID',
   firstName: 'First Name',
@@ -34,6 +41,8 @@ const fields = {
   cli: 'cliId',
   openIdProvider: 'Open ID Provider',
   isSuperAdmin: 'super admin',
+  dataOps: 'Data Operations',
+  dataOpsOnly: 'Data Operations Only',
 }
 
 const UpdateUser = (props) => {
@@ -41,18 +50,22 @@ const UpdateUser = (props) => {
   const [isEdit, setIsEdit] = useState(false)
   const [loading, setLoading] = useState(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState(false)
+  const [isDataOps, setIsDataOps] = useState(false)
+  const [isDataOpsOnly, setIsDataOpsOnly] = useState(false)
   const [newUsername, setNewUsername] = useState('')
   const { userData, clearUserData } = props
 
   const user = userData[selected]
 
   useEffect(() => {
-    if (
-      user.permissions &&
-      user.permissions.length &&
-      user.permissions.includes('super_admin')
-    ) {
+    if ((user?.permissions || []).includes(userPermissions.SUPER_ADMIN)) {
       setIsSuperAdmin(true)
+    }
+    if ((user?.permissions || []).includes(userPermissions.DATA_OPS)) {
+      setIsDataOps(true)
+    }
+    if ((user?.permissions || []).includes(userPermissions.DATA_OPS_ONLY)) {
+      setIsDataOpsOnly(true)
     }
   }, [user])
 
@@ -65,17 +78,37 @@ const UpdateUser = (props) => {
         username: user.username,
         userId: user._id,
         newUsername,
+        permissions: user.permissions || [],
       }
       if (
         user.role === roleuser.DISTRICT_ADMIN ||
         user.role === roleuser.SCHOOL_ADMIN
       ) {
-        const userPermissions = user.permissions || []
         updateData.permissions = isSuperAdmin
-          ? [...new Set([...userPermissions, 'super_admin'])]
-          : userPermissions.filter((item) => item !== 'super_admin')
+          ? [...new Set([...updateData.permissions, 'super_admin'])]
+          : updateData.permissions.filter((item) => item !== 'super_admin')
       }
-      await userApi.updateUsername(updateData)
+
+      if (isDataOps) {
+        if (!updateData.permissions.includes(userPermissions.DATA_OPS)) {
+          updateData.permissions.push(userPermissions.DATA_OPS)
+        }
+      } else {
+        updateData.permissions = updateData.permissions.filter(
+          (item) => item !== userPermissions.DATA_OPS
+        )
+      }
+      if (isDataOpsOnly) {
+        if (!updateData.permissions.includes(userPermissions.DATA_OPS_ONLY)) {
+          updateData.permissions.push(userPermissions.DATA_OPS_ONLY)
+        }
+      } else {
+        updateData.permissions = updateData.permissions.filter(
+          (item) => item !== userPermissions.DATA_OPS_ONLY
+        )
+      }
+
+      await userApi.updateUserAdminTool(updateData)
       notification({
         type: 'success',
         msg: `User has been Updated successfully`,
@@ -92,6 +125,12 @@ const UpdateUser = (props) => {
     setSelected(e.target.value)
     setIsEdit(false)
   }
+
+  useEffect(() => {
+    if (isDataOps || isSuperAdmin) {
+      setIsDataOpsOnly(false)
+    }
+  }, [isDataOps, isSuperAdmin])
 
   return (
     <SecondDiv>
@@ -132,6 +171,51 @@ const UpdateUser = (props) => {
                       </Row>
                     )
                   }
+
+                  if (
+                    field === 'dataOps' &&
+                    data?.role === roleuser.DISTRICT_ADMIN
+                  ) {
+                    return (
+                      <Row>
+                        <Col>
+                          <CheckboxLabel
+                            disabled={!isEdit}
+                            checked={isDataOps}
+                            onChange={(e) => setIsDataOps(e.target.checked)}
+                          >
+                            Data Operations
+                          </CheckboxLabel>{' '}
+                          <Tooltip title={tooltip.dataOps}>
+                            <IconInfo height={10} />
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    )
+                  }
+
+                  if (
+                    field === 'dataOpsOnly' &&
+                    data?.role === roleuser.DISTRICT_ADMIN
+                  ) {
+                    return (
+                      <Row>
+                        <Col>
+                          <CheckboxLabel
+                            disabled={!isEdit || isDataOps || isSuperAdmin}
+                            checked={isDataOpsOnly}
+                            onChange={(e) => setIsDataOpsOnly(e.target.checked)}
+                          >
+                            Data Operations Only
+                          </CheckboxLabel>{' '}
+                          <Tooltip title={tooltip.dataOpsOnly}>
+                            <IconInfo height={10} />
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    )
+                  }
+
                   return (
                     <Row>
                       {isEdit &&

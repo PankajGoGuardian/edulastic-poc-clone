@@ -24,6 +24,7 @@ import {
   TopBanner,
   UserStatus,
 } from './styled'
+import { SUBSCRIPTION_TYPES } from '../../../../admin/Common/constants/subscription'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -64,10 +65,13 @@ const SubscriptionHeader = ({
   isManageSubscriptionView = false,
   setShowEnterpriseTab,
   showEnterpriseTab,
+  setShowDataStudioTab,
+  showDataStudioTab,
   uploadPO,
   schoolId,
   setCartVisible,
   cartQuantities = {},
+  features,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
   const cartCount = Object.keys(cartQuantities).filter(
@@ -152,6 +156,28 @@ const SubscriptionHeader = ({
   const showAddonsTab =
     isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
 
+  const getCurrentPlan = () => {
+    const { dataWarehouseReports } = features || {}
+    const {
+      free,
+      enterprise,
+      enterprisePlusDataStudio,
+      dataStudio,
+    } = SUBSCRIPTION_TYPES
+
+    if (isSubscribed && subType && licenseExpiryDate && isPremiumUser) {
+      if (isPartialPremiumUgradedUser) {
+        return dataWarehouseReports
+          ? enterprisePlusDataStudio.label
+          : enterprise.label
+      }
+      const type = capitalize(subType.replace(/_/g, ' '))
+      return dataWarehouseReports ? `${type} + ${dataStudio.label}` : type
+    }
+
+    return dataWarehouseReports ? dataStudio.label : free.label
+  }
+
   return (
     <TopBanner>
       <HeaderSubscription className="subscription-header">
@@ -165,13 +191,7 @@ const SubscriptionHeader = ({
               YOUR PLAN
             </PlanText>
             <PlanText data-cy="currentPlan" className="free">
-              {isSubscribed && subType && licenseExpiryDate && isPremiumUser
-                ? `${
-                    isPartialPremiumUgradedUser
-                      ? 'Enterprise'
-                      : capitalize(subType.replace(/_/g, ' '))
-                  }`
-                : 'Free'}
+              {getCurrentPlan()}
             </PlanText>
           </UserStatus>
         </Title>
@@ -181,25 +201,44 @@ const SubscriptionHeader = ({
               {!showAddonsTab && (
                 <HeaderTabs
                   dataCy="premiumTab"
-                  isActive={!showEnterpriseTab}
+                  isActive={!showEnterpriseTab && !showDataStudioTab}
                   linkLabel="Premium (Teacher)"
-                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  onClickHandler={() => {
+                    setShowEnterpriseTab(false)
+                    setShowDataStudioTab(false)
+                  }}
                   activeStyle={tabsCustomStyle}
                 />
               )}
               <HeaderTabs
                 dataCy="EnterpriseTab"
-                isActive={showEnterpriseTab}
+                isActive={showEnterpriseTab && !showDataStudioTab}
                 linkLabel={`Enterprise ${schoolId ? '(School)' : '(District)'}`}
-                onClickHandler={() => setShowEnterpriseTab(true)}
+                onClickHandler={() => {
+                  setShowEnterpriseTab(true)
+                  setShowDataStudioTab(false)
+                }}
+                activeStyle={tabsCustomStyle}
+              />
+              <HeaderTabs
+                dataCy="DataStudioTab"
+                isActive={showDataStudioTab && !showEnterpriseTab}
+                linkLabel="Data Studio"
+                onClickHandler={() => {
+                  setShowEnterpriseTab(false)
+                  setShowDataStudioTab(true)
+                }}
                 activeStyle={tabsCustomStyle}
               />
               {showAddonsTab && (
                 <HeaderTabs
                   dataCy="addonsTab"
-                  isActive={!showEnterpriseTab}
+                  isActive={!showEnterpriseTab && !showDataStudioTab}
                   linkLabel="Add ons"
-                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  onClickHandler={() => {
+                    setShowDataStudioTab(false)
+                    setShowEnterpriseTab(false)
+                  }}
                   activeStyle={tabsCustomStyle}
                 />
               )}

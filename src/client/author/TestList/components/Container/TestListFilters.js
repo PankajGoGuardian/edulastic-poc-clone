@@ -24,6 +24,7 @@ import {
   getStandardsListSelector,
 } from '../../../src/selectors/dictionaries'
 import {
+  canAccessPublicContentSelector,
   getCollectionsSelector,
   getUserFeatures,
   getUserOrgId,
@@ -61,6 +62,7 @@ const TestListFilters = ({
   isSingaporeMath,
   elosByTloId,
   getCurriculumStandards,
+  canAccessPublicContent,
 }) => {
   const [showModal, setShowModal] = useState(false)
   const [searchProps, setSearchProps] = useState({
@@ -94,8 +96,12 @@ const TestListFilters = ({
         (c) => !['SCHOOL', 'DISTRICT', 'PUBLIC', 'INDIVIDUAL'].includes(c.value)
       )
     }
-    return testsConstants.collectionDefaultFilter
-  }, [testsConstants.collectionDefaultFilter, userRole])
+    return canAccessPublicContent
+      ? testsConstants.collectionDefaultFilter.concat(
+          testsConstants.collectionPublicFilter
+        )
+      : testsConstants.collectionDefaultFilter
+  }, [testsConstants.collectionDefaultFilter, userRole, canAccessPublicContent])
 
   const getAuthoredByFilterData = useCallback(() => {
     if (!userFeatures.isCurator) return []
@@ -438,6 +444,7 @@ export default connect(
     isOrgUser: isOrganizationDistrictSelector(state),
     isDistrictUser: isDistrictUserSelector(state),
     elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+    canAccessPublicContent: canAccessPublicContentSelector(state),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

@@ -1,7 +1,13 @@
+const entity = {
+  ITEM: 'item',
+  TEST: 'test',
+  PLAYLIST: 'playlist',
+}
+
 const entityPermissionMap = {
-  item: 'canDuplicateItem',
-  test: 'canDuplicateTest',
-  playlist: 'canDuplicatePlayList',
+  [entity.ITEM]: 'canDuplicateItem',
+  [entity.TEST]: 'canDuplicateTest',
+  [entity.PLAYLIST]: 'canDuplicatePlayList',
 }
 
 export const allowDuplicateCheck = (
@@ -17,8 +23,13 @@ export const allowDuplicateCheck = (
   )
   const bucketIdsWithDuplicatePermission = collectionsData.reduce(
     (arr, cur) => {
-      const bucketIds = cur.buckets
-        .filter((b) => b[entityPermissionMap[entityType]])
+      const { clonePermitted = false, buckets = [] } = cur || {}
+      const bucketIds = buckets
+        .filter(
+          (b) =>
+            (clonePermitted && entityType !== entity.PLAYLIST) ||
+            b[entityPermissionMap[entityType]]
+        )
         .map((bu) => bu._id)
       arr = [...arr, ...bucketIds]
       return arr

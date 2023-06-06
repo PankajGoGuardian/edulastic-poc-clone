@@ -316,7 +316,7 @@ export const hasCurrentReachedTarget = (record) => {
   return Math.round(+currentValue) >= Math.round(+targetValue)
 }
 
-export const getSummaryStatusCount = ({ key, data }) => {
+export const getSummaryStatusRecords = ({ key, data, count = true }) => {
   const completedStatus = [GI_STATUS.FULLY_EXECUTED, GI_STATUS.DONE]
   const inProgressCondition = (record) => {
     return record.status === GI_STATUS.IN_PROGRESS
@@ -366,9 +366,13 @@ export const getSummaryStatusCount = ({ key, data }) => {
     },
     rest: (record) => {
       return (
-        moment().diff(record.startDate, 'days') /
-          moment(record.endDate).diff(record.startDate, 'days') >
-          getPercentage(MULTIPLE_OF_TENS.TWENTY) &&
+        (isCurrentValueInValid(record) ||
+          hasCurrentReachedTarget(record) ||
+          !isTimeLeftWithinCertainPercent(
+            getDaysLeft(record.startDate, record.endDate),
+            getTotalDaysBetweenTwoDates(record.startDate, record.endDate),
+            MULTIPLE_OF_TENS.TWENTY
+          )) &&
         record.status === GI_STATUS.IN_PROGRESS
       )
     },
@@ -379,8 +383,9 @@ export const getSummaryStatusCount = ({ key, data }) => {
   }
 
   const filterMethod = summaryStatusCountMap?.[key]
-  if (filterMethod) {
-    return (data.filter(filterMethod) || []).length
+  const result = filterMethod ? data.filter(filterMethod) : []
+  if (!count) {
+    return result
   }
-  return 0
+  return result.length
 }

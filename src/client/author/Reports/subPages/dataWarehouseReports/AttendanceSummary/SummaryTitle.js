@@ -1,4 +1,5 @@
 import React from 'react'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import SectionDescription from '../../../common/components/SectionDescription'
 import SectionLabel from '../../../common/components/SectionLabel'
 
@@ -9,6 +10,7 @@ const SummaryTitle = () => {
         style={{ fontSize: '20px' }}
         $margin="30px 0px 10px 0px"
         showHelp
+        url={helpLinks[reportNavType.DW_ATTENDANCE_SUMMARY_REPORT]}
       >
         Attendance Summary
       </SectionLabel>

@@ -66,6 +66,24 @@
       "text": "Evaluation is pending",
       "tooltip": " App failed to evaluate due to unexpected input format"
     },
+    "aiEvaluationStatus": {
+      "pending": {
+        "text": "AI Evaluation is still pending",
+        "tooltip": "It is taking longer for AI to evaluate, you may manually provide the grade and feedback."
+      },
+      "failed": {
+        "text": "AI Evaluation failed",
+        "tooltip": "AI couldn't evaluate, please provide your evaluation to the student."
+      },
+      "done": {
+        "text": "AI Evaluation Done",
+        "tooltip": "You can make changes to the AI evaluation provided and then approve it."
+      }
+    },
+    "manualEvaluationNeeded": {
+      "text": "Please Evaluate Manually"
+    },
+    "feedbackGradeHaveToBeSaved": "The feedback and grade have to be saved to reflect the grade here",
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",

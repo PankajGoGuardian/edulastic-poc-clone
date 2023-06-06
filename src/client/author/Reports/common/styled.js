@@ -15,7 +15,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu, Row, Icon } from 'antd'
+import { Col, Slider, Table, Button, Menu, Row, Icon, Checkbox } from 'antd'
 import styled, { css } from 'styled-components'
 import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
@@ -725,7 +725,7 @@ export const StyledLabel = styled.div`
   letter-spacing: ${(props) => props.spacing || '0.2px'};
   color: ${(props) => props.textColor || 'grey'};
   text-align: ${(props) => props.textAlign || 'left'};
-  font-size: 10px;
+  font-size: ${({ fontSize }) => fontSize || '10px'};
 
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 12px;
@@ -859,7 +859,6 @@ export const StyledButton = styled(Button)`
   align-items: center;
   height: 24px;
   margin: 0 20px 0 20px;
-  padding: 4px;
   padding-right: 10px;
   padding-left: 10px;
 `
@@ -880,10 +879,6 @@ export const PieChartWrapper = styled.div`
   width: 400px;
   height: 320px;
   flex-grow: 1;
-  .label-name {
-    font-weight: normal;
-    overflow: wrap;
-  }
 `
 export const HorizontalBarWrapper = styled.div`
   display: flex;
@@ -919,10 +914,6 @@ export const StyledReportContainer = styled.div`
   }
 `
 
-export const StyledParagraph = styled.p`
-  padding: 0 10px;
-`
-
 export const StyledIcon = styled(Icon)`
   position: absolute;
   top: 210px;
@@ -939,7 +930,6 @@ export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: start;
-  margin-left: 8px;
   h3 {
     font-weight: bold;
     color: ${greyThemeDark3};
@@ -961,8 +951,6 @@ export const ImageContainer = styled.div`
 export const CustomStyledCard = styled(Card)`
   cursor: pointer;
   margin: 0 10px 20px;
-  height: 280px;
-  aspect-ratio: 1.8 / 1;
   border: 1px solid ${grey};
   border-radius: 30px;
   box-shadow: none;
@@ -973,4 +961,12 @@ export const StyledSectionHeader = styled.div`
   font-size: 18px;
   margin: 20px;
   color: ${fadedBlack};
+`
+export const StyledCheckBox = styled(Checkbox)`
+  display: flex;
+  align-items: center;
+  margin: 10px 8px;
+  .ant-checkbox {
+    margin-right: 10px;
+  }
 `

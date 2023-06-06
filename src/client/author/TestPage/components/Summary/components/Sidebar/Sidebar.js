@@ -7,7 +7,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { red } from '@edulastic/colors'
-import { Select } from 'antd'
+import { Select, Tooltip } from 'antd'
 import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -106,6 +106,7 @@ const Sidebar = ({
   }
 
   const selectedTags = useMemo(() => tags.map((t) => t._id), [tags])
+  const { derivedFromPremiumBankId = false } = test
 
   return (
     <FlexContainer padding="30px" flexDirection="column">
@@ -195,35 +196,45 @@ const Sidebar = ({
         {collectionsToShow.length > 0 && (
           <>
             <FieldLabel>Collections</FieldLabel>
-            <SelectInputStyled
-              showArrow
-              data-cy="collectionsSelect"
-              mode="multiple"
-              size="large"
-              margin="0px 0px 15px"
-              placeholder="Please select"
-              value={filteredCollections.flatMap((c) => c.bucketIds)}
-              onChange={(value, options) => onChangeCollection(value, options)}
-              optionFilterProp="children"
-              getPopupContainer={(trigger) => trigger.parentNode}
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+            <Tooltip
+              title={
+                derivedFromPremiumBankId &&
+                'Action not permitted on clone of a premium content'
               }
             >
-              {collectionsToShow.map((o) => (
-                <Select.Option
-                  key={o.bucketId}
-                  value={o.bucketId}
-                  _id={o._id}
-                  type={o.type}
-                  collectionName={o.collectionName}
-                >
-                  {`${o.collectionName} - ${o.name}`}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
+              <SelectInputStyled
+                showArrow
+                data-cy="collectionsSelect"
+                mode="multiple"
+                size="large"
+                margin="0px 0px 15px"
+                placeholder="Please select"
+                disabled={derivedFromPremiumBankId}
+                value={filteredCollections.flatMap((c) => c.bucketIds)}
+                onChange={(value, options) =>
+                  onChangeCollection(value, options)
+                }
+                optionFilterProp="children"
+                getPopupContainer={(trigger) => trigger.parentNode}
+                filterOption={(input, option) =>
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {collectionsToShow.map((o) => (
+                  <Select.Option
+                    key={o.bucketId}
+                    value={o.bucketId}
+                    _id={o._id}
+                    type={o.type}
+                    collectionName={o.collectionName}
+                  >
+                    {`${o.collectionName} - ${o.name}`}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Tooltip>
           </>
         )}
 

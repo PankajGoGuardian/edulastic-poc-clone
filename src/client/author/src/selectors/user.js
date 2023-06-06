@@ -588,15 +588,20 @@ export const allowReferenceMaterialSelector = createSelector(
     role === roleuser.STUDENT || _get(features, 'allowReferenceMaterial', false)
 )
 
-export const isDataWarehouseEnabled = createSelector(
-  getUserFeatures,
-  (features) => _get(features, 'isDataWarehouseEnabled', false)
-)
-
 export const isDataOpsUser = createSelector(getUserFeatures, (features) =>
   _get(features, 'isDataOpsUser', false)
 )
 
 export const isDataOpsOnlyUser = createSelector(getUserFeatures, (features) =>
   _get(features, 'isDataOpsOnlyUser', false)
+)
+
+export const isDesmosCalculatorEnabledSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'isDesmosCalculatorEnabled', false)
+)
+
+export const canAccessPublicContentSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'canAccessPublicContent', true)
 )

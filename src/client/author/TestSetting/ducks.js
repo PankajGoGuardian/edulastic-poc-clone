@@ -1,10 +1,9 @@
-import { createSelector } from 'reselect'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { set } from 'lodash'
 import { createAction, createReducer } from 'redux-starter-kit'
+import { setUserAccessPublicContent } from '../../student/Login/ducks'
 
 const RECEIVE_TEST_SETTING_REQUEST = '[testSetting] receive data request'
 const RECEIVE_TEST_SETTING_SUCCESS = '[testSetting] receive data success'
@@ -70,7 +69,8 @@ export const reducer = createReducer(initialState, {
     state.data = payload
   },
   [RECEIVE_TEST_SETTING_ERROR]: (state, { payload }) => {
-    ;(state.loading = false), (state.error = payload.error)
+    state.loading = false
+    state.error = payload.error
   },
   [UPDATE_TEST_SETTING_REQUEST]: (state) => {
     state.updating = true
@@ -119,6 +119,15 @@ function* updateTestSettingSaga({ payload }) {
   try {
     const updateTestSetting = yield call(settingsApi.updateTestSetting, payload)
     yield put(updateTestSettingSuccessAction(updateTestSetting))
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        updateTestSetting,
+        'canAccessPublicContent'
+      )
+    )
+      yield put(setUserAccessPublicContent(updateTestSetting))
+
     notification({ type: 'success', messageKey: 'testSettingsSaved' })
   } catch (err) {
     const errorMessage = 'Unable to update test settings.'

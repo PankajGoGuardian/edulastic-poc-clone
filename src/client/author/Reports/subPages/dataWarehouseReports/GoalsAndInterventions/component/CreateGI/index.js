@@ -68,7 +68,6 @@ const CreateGI = ({
   goalsOptionsData,
   saveFormData,
   isSaveInProgress,
-  group,
   onCancel,
   resetFormData,
   currentFormStatus,
@@ -76,6 +75,7 @@ const CreateGI = ({
   attendanceBandData,
   activeTerms,
   currentTermId,
+  onClickCreateGroup,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
@@ -142,15 +142,14 @@ const CreateGI = ({
     onCancel()
   }
 
+  const handleCreateGroupClick = () => {
+    resetForm()
+    onClickCreateGroup()
+  }
+
   const allFormFields = isSaveGoalView
     ? goalFormFields({ type: formData.type, startDate, endDate })
     : interventionFormFields({ type: formData.type, startDate, endDate })
-
-  if (group) {
-    if (!formData.studentGroupIds) {
-      handleFieldDataChange('studentGroupIds', group._id)
-    }
-  }
 
   const sectionHeaders = isSaveGoalView
     ? goalFormSectionHeaders
@@ -215,6 +214,7 @@ const CreateGI = ({
             goalsOptions={goalsOptions}
             setNavigationOptions={setFormNavigationOptions}
             formNavigationLabelOptions={formNavigationLabelOptions}
+            handleCreateGroupClick={handleCreateGroupClick}
           />
         </StyledFormContainer>
       </div>

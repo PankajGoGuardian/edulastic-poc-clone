@@ -17,17 +17,28 @@ import {
   SAVE_GOAL,
   SAVE_INTERVENTION,
 } from './constants/form'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
+import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../common/constants/dataWarehouseReports'
 
 const { TabPane } = Tabs
 
-const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
+const GoalsAndInterventions = ({
+  history,
+  location,
+  breadcrumbData,
+  isCliUser,
+}) => {
+  const search = useUrlSearchParams(location)
   const [activeKey, setActiveKey] = useState('1')
-  const [subActiveKey, setSubActiveKey] = useState('1')
+  const [subActiveKey, setSubActiveKey] = useState(search.subActiveKey || '1')
   const [group, setGroup] = useState()
 
   const switchSubTab = (key, _group) => {
     setGroup(_group)
     setSubActiveKey(key)
+    if (search.subActiveKey) {
+      history.replace(DW_GOALS_AND_INTERVENTIONS_URL)
+    }
   }
 
   const switchTab = (key, _group) => {
@@ -38,6 +49,11 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
     } else {
       switchSubTab('1', _group)
     }
+  }
+
+  const switchToTabAndSubTab = (tab, subTab) => {
+    setActiveKey(tab)
+    setSubActiveKey(subTab)
   }
 
   const content = {
@@ -88,6 +104,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
             view={SAVE_GOAL}
             group={group}
             onCancel={() => switchSubTab('1')}
+            onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),
       },
@@ -116,6 +133,7 @@ const GoalsAndInterventions = ({ breadcrumbData, isCliUser }) => {
             view={SAVE_INTERVENTION}
             group={group}
             onCancel={() => switchSubTab('1')}
+            onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),
       },

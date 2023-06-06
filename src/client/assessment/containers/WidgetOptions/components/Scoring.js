@@ -23,6 +23,7 @@ import {
 } from '@edulastic/common'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 
+import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -43,7 +44,10 @@ import { Subtitle } from '../../../styled/Subtitle'
 import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
-import { updateRubricDataAction } from '../../../../author/GradingRubric/ducks'
+import {
+  updateRubricDataAction,
+  removeAiTagFromQuestionAction,
+} from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
@@ -54,6 +58,8 @@ import {
   setItemLevelScoreFromRubricAction,
   getItemDetailQuestionsSelector,
 } from '../../../../author/ItemDetail/ducks'
+
+const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -97,8 +103,9 @@ class Scoring extends Component {
   }
 
   handleRemoveRubric = () => {
-    const { dissociateRubricFromQuestion, location } = this.props
+    const { dissociateRubricFromQuestion, location, removeAiTag } = this.props
     dissociateRubricFromQuestion()
+    removeAiTag()
     if (
       location?.state?.regradeFlow ||
       location?.pathname?.includes('classboard') ||
@@ -209,6 +216,12 @@ class Scoring extends Component {
             (itemDetailQuestionsLength === 0 || itemDetailQuestionsLength === 1)
           ) {
             setItemLevelScoring(true)
+          }
+          if (newData?.tags?.length) {
+            const filteredTags = newData?.tags.filter(
+              (tag) => tag.tagName !== AI_ASSISTED_RUBRICS
+            )
+            newData.tags = filteredTags
           }
         }
         newData.validation[param] = value
@@ -578,6 +591,7 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
+      removeAiTag: removeAiTagFromQuestionAction,
     }
   )
 )

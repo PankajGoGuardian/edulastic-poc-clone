@@ -1,19 +1,11 @@
 import {
-  desktopWidth,
-  mobileWidthMax,
-  tabGrey,
-  themeColor,
-  themeColorTagsBg,
-  white,
-} from '@edulastic/colors'
-import {
   AnswerContext,
   withWindowSizes,
   notification,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Avatar, Card, Input } from 'antd'
 import {
   get,
   isUndefined,
@@ -30,7 +22,6 @@ import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
 import UnScored from '@edulastic/common/src/components/Unscored'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
@@ -48,8 +39,24 @@ import {
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
 import RubricGrading from './RubricGrading'
-
-const { TextArea } = Input
+import {
+  StyledCardTwo,
+  StyledDivSec,
+  ScoreInputWrapper,
+  ScoreInput,
+  TextPara,
+  GradingPolicyWrapper,
+  GradingPolicy,
+  LeaveDiv,
+  TitleDiv,
+  FeedbackInput,
+  FeedbackDisplay,
+  UserAvatar,
+  FeedbaclInputWrapper,
+  FeedbackInputInnerWrapper,
+  FeedbackInputInnerWrapper2,
+  CustomCheckBox,
+} from '../styled/FeedbackRightStyledComponents'
 
 const adaptiveRound = (x) =>
   x && x.endsWith ? (x.endsWith('.') ? x : round(x, 2)) : round(x, 2)
@@ -98,6 +105,9 @@ class FeedbackRight extends Component {
       isRubricDisabled: false,
       isScoreInputDisabled: false,
       showWarningToClear: false,
+      isAIEvaluated: false,
+      isApprovedByTeacher: false,
+      editedRubricResponse: {},
     }
 
     this.scoreInput = React.createRef()
@@ -171,11 +181,29 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score } = activity
+      let { score: _score, scoreByAI, graded } = activity
       const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
-      const _feedback = get(activity, 'feedback.text', '')
-      newState = { ...newState, qActId: qActId || _id }
+      let _feedback = get(activity, 'feedback.text', '')
+      const feedbackByAI = get(activity, 'feedbackByAI.text', '')
+      const isTeacherEvaluationPresent = _score || !isEmpty(_feedback)
+      const isAIEvaluationPresent = scoreByAI || !isEmpty(feedbackByAI)
+      const showAIEvaluatedResult = [
+        !graded,
+        !isTeacherEvaluationPresent,
+        isAIEvaluationPresent,
+      ].every((o) => !!o)
+      if (showAIEvaluatedResult) {
+        _score = scoreByAI
+      }
+      if (showAIEvaluatedResult) {
+        _feedback = feedbackByAI
+      }
+      newState = {
+        ...newState,
+        qActId: qActId || _id,
+        isAIEvaluated: showAIEvaluatedResult,
+      }
 
       if (isQuestionView && isEmpty(activity)) {
         _score = 0
@@ -211,7 +239,7 @@ class FeedbackRight extends Component {
   }
 
   onScoreSubmit(rubricResponse) {
-    const { score, maxScore } = this.state
+    const { score, maxScore, isAIEvaluated, isApprovedByTeacher } = this.state
     const { currentScreen } = this.context
     const {
       user,
@@ -239,7 +267,20 @@ class FeedbackRight extends Component {
       testItemId,
     } = activity
 
-    if (!id || !user || !user.user) {
+    const teacherReviewPending = [isAIEvaluated, !isApprovedByTeacher].every(
+      (o) => !!o
+    )
+    if (teacherReviewPending && !isEmpty(rubricResponse)) {
+      this.setState({ editedRubricResponse: rubricResponse })
+    }
+
+    const cannotSubmitScore = [
+      !id,
+      !user,
+      !user.user,
+      teacherReviewPending,
+    ].some((o) => !!o)
+    if (cannotSubmitScore) {
       return
     }
 
@@ -278,7 +319,7 @@ class FeedbackRight extends Component {
   }
 
   onFeedbackSubmit() {
-    const { feedback } = this.state
+    const { feedback, isAIEvaluated } = this.state
     const {
       user,
       studentId,
@@ -315,11 +356,26 @@ class FeedbackRight extends Component {
       itemId: testItemId || itemId,
       isQuestionView,
     })
+    if (isAIEvaluated) {
+      this.setState({ isAIEvaluated: false })
+    }
   }
 
   preCheckSubmit = () => {
-    const { changed, showFeedbackSaveBtn } = this.state
-    if (changed || showFeedbackSaveBtn) {
+    const {
+      changed,
+      showFeedbackSaveBtn,
+      isAIEvaluated,
+      isApprovedByTeacher,
+    } = this.state
+    const feedbackHasChanged = changed || showFeedbackSaveBtn
+    const reviewedByTeacher =
+      !isAIEvaluated || (isAIEvaluated && isApprovedByTeacher)
+    const feedbackCanBeSubmitted = [
+      feedbackHasChanged,
+      reviewedByTeacher,
+    ].every((o) => !!o)
+    if (feedbackCanBeSubmitted) {
       this.onFeedbackSubmit()
     }
     this.setState({ showFeedbackSaveBtn: false })
@@ -427,8 +483,14 @@ class FeedbackRight extends Component {
 
   focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true })
 
-  blurFeedbackInput = () =>
-    this.setState({ feedbackInputHasFocus: false, isShowFeedbackInput: false })
+  blurFeedbackInput = (event) => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      this.setState({
+        feedbackInputHasFocus: false,
+        isShowFeedbackInput: false,
+      })
+    }
+  }
 
   showFeedbackInput = () => {
     this.setState(
@@ -439,6 +501,46 @@ class FeedbackRight extends Component {
         }
       }
     )
+  }
+
+  handleFeedbackApproval = (e) =>
+    this.setState({
+      isApprovedByTeacher: e.target.checked,
+      showFeedbackSaveBtn: e.target.checked,
+      changed: true,
+    })
+
+  getRubricResponse = () => {
+    const { editedRubricResponse, clearRubricFeedback } = this.state
+    const {
+      widget: { activity },
+      rubricDetails,
+    } = this.props
+    const { rubricFeedbackByAI, scoreByAI } = activity
+
+    if (clearRubricFeedback) {
+      return
+    }
+    let rubricResponse
+    if (!isEmpty(editedRubricResponse)) {
+      rubricResponse = editedRubricResponse
+    } else if (!isEmpty(rubricFeedbackByAI)) {
+      rubricResponse = {
+        score: scoreByAI,
+        rubricFeedback: rubricFeedbackByAI,
+        rubricId: rubricDetails?._id,
+      }
+    }
+    return rubricResponse
+  }
+
+  handleSave = () => {
+    const { isAIEvaluated } = this.state
+    this.preCheckSubmit()
+    if (isAIEvaluated) {
+      const rubricResponse = this.getRubricResponse()
+      this.onScoreSubmit(rubricResponse)
+    }
   }
 
   render() {
@@ -469,6 +571,8 @@ class FeedbackRight extends Component {
       isRubricDisabled,
       isScoreInputDisabled,
       showWarningToClear,
+      isAIEvaluated,
+      isApprovedByTeacher,
     } = this.state
     let rubricMaxScore = 0
     if (rubricDetails)
@@ -476,11 +580,22 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    const { rubricFeedback } = activity || {}
+    let {
+      rubricFeedback,
+      rubricFeedbackByAI,
+      isGradedExternally,
+      aiEvaluationStatus,
+    } = activity || {}
+    if (isAIEvaluated) {
+      rubricFeedback = rubricFeedbackByAI
+    }
     const isStudentName = studentName !== undefined && studentName.length !== 0
     let title
     const showGradingRubricButton =
       user.user?.features?.gradingrubrics && !!rubricDetails
+    const disableSaveBtn = [isAIEvaluated, !isApprovedByTeacher].every(
+      (o) => !!o
+    )
 
     if (isStudentName) {
       title = (
@@ -511,6 +626,9 @@ class FeedbackRight extends Component {
       (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
+      if (isAIEvaluated && activity?.scoreByAI === 0) {
+        _score = 0
+      }
     }
 
     const _maxScore =
@@ -600,6 +718,8 @@ class FeedbackRight extends Component {
             inputScore={_score}
             showWarningToClear={showWarningToClear}
             enableScoreInput={this.enableScoreInput}
+            isGradedExternally={isGradedExternally}
+            aiEvaluationStatus={aiEvaluationStatus}
           />
         )}
         {!isError && (
@@ -610,7 +730,11 @@ class FeedbackRight extends Component {
                   {isError ? 'Score is too large' : 'Student Feedback!'}
                 </span>
                 {showFeedbackSaveBtn && (
-                  <EduButton height="32px" onClick={this.preCheckSubmit}>
+                  <EduButton
+                    height="32px"
+                    onClick={this.handleSave}
+                    disabled={disableSaveBtn}
+                  >
                     Save
                   </EduButton>
                 )}
@@ -620,19 +744,36 @@ class FeedbackRight extends Component {
                   {feedback}
                 </FeedbackDisplay>
               )}
-              <FeedbackInput
-                tabIndex={0}
-                autoSize
-                ref={this.feedbackInputRef}
-                data-cy="feedBackInput"
-                onChange={this.onChangeFeedback}
-                value={feedback}
-                onFocus={this.focusFeedbackInput}
+              <FeedbackInputInnerWrapper2
                 onBlur={this.blurFeedbackInput}
-                disabled={!activity || isPresentationMode}
-                onKeyDown={this.onKeyDownFeedback}
-                isShowFeedbackInput={isShowFeedbackInput}
-              />
+                tabIndex={0}
+              >
+                <FeedbackInput
+                  tabIndex={0}
+                  autoSize
+                  ref={this.feedbackInputRef}
+                  data-cy="feedBackInput"
+                  onChange={this.onChangeFeedback}
+                  value={feedback}
+                  onFocus={this.focusFeedbackInput}
+                  disabled={!activity || isPresentationMode}
+                  onKeyDown={this.onKeyDownFeedback}
+                  isShowFeedbackInput={isShowFeedbackInput}
+                  paddingBottom={isAIEvaluated ? '35px' : '4px'}
+                />
+                <EduIf
+                  condition={[isShowFeedbackInput, isAIEvaluated].every(
+                    (o) => !!o
+                  )}
+                >
+                  <CustomCheckBox
+                    onChange={this.handleFeedbackApproval}
+                    checked={isApprovedByTeacher}
+                  >
+                    FEEDBACK IS REVIEWED
+                  </CustomCheckBox>
+                </EduIf>
+              </FeedbackInputInnerWrapper2>
             </FeedbackInputInnerWrapper>
           </FeedbaclInputWrapper>
         )}
@@ -688,166 +829,3 @@ const enhance = compose(
   )
 )
 export default enhance(FeedbackRight)
-
-const StyledCardTwo = styled(Card)`
-  display: ${(props) => (props.disabled ? 'none' : 'flex')};
-  border-radius: 10px;
-  border: 1px solid #dadae4;
-  flex-direction: column;
-  flex: 3;
-  margin: 0px 0px 0px 15px;
-  min-height: 100%;
-  max-width: 250px;
-  .ant-card-head {
-    height: 60px;
-  }
-  .ant-card-head-title {
-    padding: 13px 0px;
-  }
-  .ant-card-body {
-    position: relative;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
-    height: calc(100% - 60px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    .ant-input-disabled {
-      padding: 4px 22px;
-    }
-  }
-
-  @media screen and (min-width: ${desktopWidth}) {
-    width: ${({ twoColLayout, showCollapseBtn }) =>
-      showCollapseBtn ? 'auto' : twoColLayout?.second || '250px'};
-    min-width: 250px;
-  }
-  @media (max-width: ${mobileWidthMax}) {
-    margin-left: 0px;
-    min-width: 100%;
-    .ant-card-body {
-      height: 200px;
-    }
-  }
-`
-
-const StyledDivSec = styled.div`
-  height: 50px;
-  margin: 0px auto;
-  display: flex;
-  justify-content: center;
-`
-
-const ScoreInputWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  text-align: center;
-`
-
-const ScoreInput = styled(Input)`
-  width: 70%;
-  height: 47px;
-  border: 0px;
-  background-color: #f8f8f8;
-  border-radius: 2px;
-  font-size: 28px;
-  font-weight: 600;
-  text-align: center;
-  display: inline-block;
-`
-
-const TextPara = styled.p`
-  padding-left: 10px;
-  padding-right: 15px;
-  font-size: 28px;
-  font-weight: 600;
-  line-height: 47px;
-  background-color: #ececec;
-  height: 47px;
-  width: 30%;
-  border-radius: 0px 2px 2px 0px;
-  display: inline-block;
-`
-const GradingPolicyWrapper = styled.p`
-  text-transform: uppercase;
-  margin-top: 10px;
-  font-size: 9px;
-  font-weight: 600;
-  width: 100%;
-  display: inline-block;
-`
-
-const GradingPolicy = styled.span`
-  color: ${tabGrey};
-`
-
-const LeaveDiv = styled.div`
-  margin: 0px 0px 10px;
-  font-weight: 600;
-  color: ${tabGrey};
-  font-size: 13px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 32px;
-`
-
-const TitleDiv = styled.div`
-  font-weight: 400;
-  color: ${tabGrey};
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-`
-
-const FeedbackInput = styled(TextArea)`
-  width: 100%;
-  border: 0;
-  border-radius: 2px;
-  display: inline-block;
-  background: #f8f8f8;
-  display: ${({ isShowFeedbackInput }) => !isShowFeedbackInput && 'none'};
-`
-const FeedbackDisplay = styled.div`
-  width: 100%;
-  padding: 4px 11px;
-  overflow: hidden;
-  background: #f8f8f8;
-  border-radius: 2px;
-  line-height: 1.5;
-  max-height: 32px;
-  min-height: 32px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  cursor: pointer;
-`
-
-const UserAvatar = styled(Avatar)`
-  background-color: ${themeColorTagsBg};
-  width: 34px;
-  height: 34px;
-  line-height: 34px;
-  text-align: center;
-  border-radius: 50%;
-  color: ${themeColor};
-  font-weight: 600;
-  margin-right: 10px;
-  font-size: 14px;
-  text-transform: uppercase;
-`
-
-const FeedbaclInputWrapper = styled.div`
-  min-height: 74px;
-  margin-top: 12px;
-  position: relative;
-`
-
-const FeedbackInputInnerWrapper = styled.div`
-  background: ${white};
-  position: ${({ isAbsolutePos }) => isAbsolutePos && 'absolute'};
-  bottom: ${({ isAbsolutePos }) => isAbsolutePos && 0};
-  width: 100%;
-`

@@ -7,7 +7,6 @@ import { ATTENDANCE, INTERVENTION, formFieldNames } from '../constants/form'
 const {
   goal: {
     PERFORMANCE_BAND_ID,
-    STUDENT_GROUP_IDS,
     MEASURE_TYPE,
     METRIC,
     TYPE,
@@ -120,7 +119,7 @@ const useSaveFormData = ({
 
   const handleFieldDataChange = (field, value) => {
     let updatedFormData = { ...formData }
-    if (field === STUDENT_GROUP_IDS || field === TEST_TYPES) {
+    if (field === TEST_TYPES) {
       // TODO: remove when studentGroupIds, TEST_TYPES field is made multiselect
       if (value) {
         value = [value]

@@ -75,7 +75,7 @@ const AddToGroupModal = ({
   fetchGroups,
   groupList,
   enrollStudentsToGroup,
-  match,
+  location,
   windowWidth,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
@@ -207,7 +207,7 @@ const AddToGroupModal = ({
       setCreateClassTypeDetails({
         type: groupTypeText,
         studentIds: checkedStudents.map((s) => s._id),
-        exitPath: match.url,
+        exitPath: location.pathname + location.search,
       })
     } else {
       notification({

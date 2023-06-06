@@ -28,9 +28,14 @@ import {
   setElosByTloIdAction,
 } from '../../../author/src/actions/dictionaries'
 import {
+  getFormattedCurriculums,
   getStandardsEloSelector,
   getStandardsTloSelector,
 } from '../../../author/src/selectors/dictionaries'
+import {
+  getInterestedCurriculumsSelector,
+  getShowAllCurriculumsSelector,
+} from '../../../author/src/selectors/user'
 import PopupRowSelect from './PopupRowSelect'
 import { Container } from './styled/Container'
 import { ELOList } from './styled/ELOList'
@@ -59,6 +64,8 @@ const StandardsModal = ({
   setElosByTloId,
   elosByTloId,
   clearTloAndElo,
+  showAllStandards = true,
+  interestedCurriculums = [],
 }) => {
   const [state, setState] = useState({
     standard: defaultStandard,
@@ -99,7 +106,23 @@ const StandardsModal = ({
     }
     grades = grades || []
 
+
+    const formattedCurriculums = getFormattedCurriculums(
+      interestedCurriculums,
+      curriculums,
+      { subject },
+      showAllStandards
+    )
+    const firstCurriculum =
+      formattedCurriculums?.find((curr) => !curr.disabled) || {}
+
     const isSubjectChanged = !isEqual(subject, state.subject)
+    if (isSubjectChanged && !isEmpty(firstCurriculum)) {
+      standard = {
+        id: firstCurriculum?.value,
+        curriculum: firstCurriculum?.text,
+      }
+    }
     const isGradesChanged = !isEqual(grades, state.grades)
     const isStandardChanged = !isEqual(standard, state.standard)
 
@@ -441,6 +464,8 @@ export default connect(
     curriculumStandardsTLO: getStandardsTloSelector(state),
     curriculumStandardsELO: getStandardsEloSelector(state),
     elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+    showAllStandards: getShowAllCurriculumsSelector(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     getStandardTlos: getStandardTlosAction,

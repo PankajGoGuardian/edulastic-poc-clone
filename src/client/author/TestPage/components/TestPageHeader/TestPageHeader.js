@@ -1,5 +1,5 @@
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
-import { MainHeader, EduButton, notification } from '@edulastic/common'
+import { MainHeader, EduButton, notification, EduIf } from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
 import {
   IconAddItems,
@@ -250,6 +250,7 @@ const TestPageHeader = ({
   deletePlaylist,
   questionTypesInTest,
   enableAudioResponseQuestion,
+  derivedFromPremiumBankId = false,
 }) => {
   let navButtons =
     buttons ||
@@ -575,7 +576,14 @@ const TestPageHeader = ({
                 <IconPrint />
               </EduButton>
             )}
-            {hasTestId && (owner || features.isCurator) && !isEdulasticCurator && (
+            <EduIf
+              condition={
+                hasTestId &&
+                (owner || features.isCurator) &&
+                !isEdulasticCurator &&
+                !derivedFromPremiumBankId
+              }
+            >
               <EduButton
                 isBlue
                 isGhost
@@ -591,7 +599,7 @@ const TestPageHeader = ({
               >
                 <IconShare />
               </EduButton>
-            )}
+            </EduIf>
             {hasTestId && owner && test.status === 'draft' && (
               <EduButton
                 isBlue
@@ -796,7 +804,13 @@ const TestPageHeader = ({
                 />
               </MobileHeaderFilterIcon>
             )}
-            {(owner || features.isCurator) && !isEdulasticCurator && (
+            <EduIf
+              condition={
+                (owner || features.isCurator) &&
+                !isEdulasticCurator &&
+                !derivedFromPremiumBankId
+              }
+            >
               <EduButton
                 isBlue
                 isGhost
@@ -812,7 +826,7 @@ const TestPageHeader = ({
               >
                 <ShareIcon />
               </EduButton>
-            )}
+            </EduIf>
             {hasTestId && owner && test.status === 'draft' && (
               <EduButton
                 isBlue

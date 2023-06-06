@@ -32,27 +32,11 @@ const PerformanceMatrix = ({
   prePerformanceBand = [],
   postPerformanceBand = [],
   tableFilters,
-  setTableFilters,
+  onMatrixCellClick,
 }) => {
   const [matrixDisplayKey, setMatrixDisplayKey] = useState(
     matrixDisplayOptionTypes.NUMBER
   )
-
-  const onMatrixCellClick = (preBandScore = '', postBandScore = '') => () => {
-    const _tableFilters = {
-      ...tableFilters,
-      preBandScore: `${preBandScore}`,
-      postBandScore: `${postBandScore}`,
-    }
-    if (
-      tableFilters.preBandScore === _tableFilters.preBandScore &&
-      tableFilters.postBandScore === _tableFilters.postBandScore
-    ) {
-      _tableFilters.preBandScore = ''
-      _tableFilters.postBandScore = ''
-    }
-    setTableFilters(_tableFilters)
-  }
 
   const { preTestInfo, postTestInfo } = testInfo
   const { performanceMatrixData, postTestColumnHeaders } = useMemo(() => {

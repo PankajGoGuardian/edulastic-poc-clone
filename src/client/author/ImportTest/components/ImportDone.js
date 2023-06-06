@@ -24,6 +24,7 @@ import {
   contentImportJobsData,
   uploadContentStatusAction,
   setImportContentJobIdsAction,
+  importTypeSelector,
 } from '../../ContentCollections/ducks'
 
 const ImportDone = ({
@@ -39,16 +40,15 @@ const ImportDone = ({
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
+  importType,
 }) => {
   const items = jobsData.flatMap((job) => job?.testItems || []) || []
   const testIds = jobsData.map(({ testId }) => testId)
   useEffect(() => {
-    if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
-      if (path === '/author/import-content') {
-        contentImportProgress(jobIds)
-      } else {
-        qtiImportProgress(jobIds)
-      }
+    if (importType === 'qti') {
+      qtiImportProgress(jobIds)
+    } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
+      contentImportProgress(jobIds)
     }
   }, [])
 
@@ -135,13 +135,15 @@ const mapStateToProps = (state) => {
       jobsData: contentImportJobsData(state),
       status: uploadContnentStatus(state),
       jobIds: contentImportJobIds(state),
+      importType: importTypeSelector(state),
     }
   }
 
   return {
-    jobsData: getJobsDataSelector(state),
     status: getUploadStatusSelector(state),
     jobIds: getJobIdsSelector(state),
+    jobsData: getJobsDataSelector(state),
+    importType: importTypeSelector(state),
   }
 }
 

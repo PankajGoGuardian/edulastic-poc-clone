@@ -3,11 +3,13 @@ import Tabs from 'antd/lib/tabs'
 import React from 'react'
 import styled from 'styled-components'
 import { darkGrey, green } from '@edulastic/colors'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
 import { StyledEduButton } from '../../../../../common/styled'
 
 const { TabPane } = Tabs
 
 const MainContainer = ({ tabs, activeKey, onChange }) => {
+  const helpUrl = helpLinks[reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT]
   return (
     <Header>
       <SwitchTabs animated={false} activeKey={activeKey} onChange={onChange}>
@@ -17,7 +19,14 @@ const MainContainer = ({ tabs, activeKey, onChange }) => {
           </TabPane>
         ))}
       </SwitchTabs>
-      <HelpButton data-cy="help" data-testid="help" isGhost>
+      <HelpButton
+        data-cy="help"
+        data-testid="help"
+        isGhost
+        href={helpUrl}
+        target="_black"
+        rel="noopener noreferrer"
+      >
         <IconQuestionCircle width={10} height={10} />
         HELP
       </HelpButton>

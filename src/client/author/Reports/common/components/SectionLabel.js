@@ -10,14 +10,19 @@ import {
 } from '../styled'
 
 const SectionLabel = (props) => {
-  const { children, style, showHelp, ...restProps } = props
+  const { children, style, showHelp, url = null, ...restProps } = props
   return (
     <SectionLabelWrapper {...restProps}>
       <Typography.Title style={{ margin: 0, ...style }} level={3}>
         {children}
       </Typography.Title>
-      <EduIf condition={showHelp}>
-        <StyledButton type="small">
+      <EduIf condition={showHelp && url}>
+        <StyledButton
+          type="small"
+          href={url}
+          target="_black"
+          rel="noopener noreferrer"
+        >
           <StyledIconQuestionCircle />
           <StyledTextSpan>Help</StyledTextSpan>
         </StyledButton>

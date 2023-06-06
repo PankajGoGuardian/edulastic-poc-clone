@@ -36,7 +36,7 @@ import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWa
 
 const {
   RISK_BAND_COLOR_INFO,
-  RISK_BAND_LEVELS,
+  RISK_BAND_LABELS,
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
 } = reportUtils.common
@@ -127,7 +127,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                   <WidgetCell
                     header="HIGH RISK"
                     value={postPeriodhighRisk}
-                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.HIGH]}
+                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
                     footer={
                       <Footer
                         isVisible={showFooter}
@@ -146,7 +146,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                   <WidgetCell
                     header="MEDIUM RISK"
                     value={postPeriodMediumRisk}
-                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LEVELS.MEDIUM]}
+                    color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
                     footer={
                       <Footer
                         isVisible={showFooter}

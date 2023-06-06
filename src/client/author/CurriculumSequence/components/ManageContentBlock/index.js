@@ -548,6 +548,9 @@ const ManageContentBlock = (props) => {
                 ...testsConstants.collectionDefaultFilter?.filter(
                   (c) => c?.value
                 ),
+                ...testsConstants.collectionPublicFilter?.filter(
+                  (c) => c?.value && userFeatures.canAccessPublicContent
+                ),
                 ...collections.map((o) => ({
                   value: o?._id,
                   text: o?.name,

@@ -1,13 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
+import { FlexContainer } from '@edulastic/common'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { StyledH3 } from '../../../../common/styled'
+import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
 const TableFilters = ({
   updateFilterDropdownCB,
   compareByOptions = [],
   selectedCompareBy,
+  handleAddToGroupClick,
+  showAddToStudentGroupBtn,
 }) => {
   return (
     <Row
@@ -20,14 +24,20 @@ const TableFilters = ({
         Performance Deep-dive across Assessments by{' '}
         {selectedCompareBy?.title || '-'}
       </StyledH3>
-      <ControlDropDown
-        prefix="Compare By"
-        by={selectedCompareBy}
-        selectCB={(e, selected) =>
-          updateFilterDropdownCB(selected, 'compareBy')
-        }
-        data={compareByOptions}
-      />
+      <FlexContainer>
+        <StudentGroupBtn
+          showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+          handleAddToGroupClick={handleAddToGroupClick}
+        />
+        <ControlDropDown
+          prefix="Compare By"
+          by={selectedCompareBy}
+          selectCB={(e, selected) =>
+            updateFilterDropdownCB(selected, 'compareBy')
+          }
+          data={compareByOptions}
+        />
+      </FlexContainer>
     </Row>
   )
 }

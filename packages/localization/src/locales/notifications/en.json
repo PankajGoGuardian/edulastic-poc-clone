@@ -1459,6 +1459,14 @@
     "message": "Failed to save Rubric",
     "description": ""
   },
+  "failedToGenerateRubric": {
+    "message": "Request failed, please try again",
+    "description": ""
+  },
+  "rubricGeneratedSuccessfully": {
+    "message": "Successfully auto generated the rubric for the question",
+    "description": ""
+  },
   "failedToUpdateRubric": {
     "message": "Failed to update Rubric",
     "description": ""
@@ -1748,7 +1756,7 @@
     "description": ""
   },
   "scoreUpdationFailed": {
-    "message": "Score updation failed",
+    "message": "Score failed to update",
     "description": ""
   },
   "dontHaveWritePermission": {
@@ -2161,5 +2169,22 @@
   "immersiveReaderFailedApiError": {
     "message": "Error in getting the Immersive Reader",
     "description": ""
+  },
+  "multipleEmailIdError": {
+    "message": "Atleast one of the given input email Id is invalid.",
+    "description": ""
+  },
+  "multipleTeacherAddedSuccess": {
+    "message": "Given teacher account(s) are added successfully.",
+    "description": ""
+  },
+  "teacherAddedSuccess": {
+    "message": "Teacher account is added successfully.",
+    "description": ""
+  },
+  "teacherAlreadyAdded" : {
+    "message": "Teacher(s) already added.",
+    "description": ""
   }
+
 }

@@ -272,10 +272,11 @@ export const uploadToS3 = async (
   let { name: fileName } = fileToUpload
   fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
   let result
+  const type = folder === aws.s3Folders.QTI_IMPORT ? 'qti' : ''
   if (folder === aws.s3Folders.ONEROSTER) {
     result = await onerosterApi.getSignedUrl(fileName, folder, data)
   } else {
-    result = await fileApi.getSignedUrl(fileName, folder, subFolder)
+    result = await fileApi.getSignedUrl(fileName, folder, subFolder, type)
   }
   const formData = new FormData()
   const { fields = {}, url, cdnUrl } = result
@@ -294,7 +295,7 @@ export const uploadToS3 = async (
   }
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
-  if (ignoreCDN) {
+  if (ignoreCDN || type === 'qti') {
     //expecting to return s3 url only for bubble sheet/omr uploads
     if (
       folder !== aws.s3Folders.WEBCAM_OMR_UPLOADS &&

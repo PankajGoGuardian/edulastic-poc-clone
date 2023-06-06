@@ -20,6 +20,8 @@ const PreviewRubricModal = ({
   isDisabled = false,
   hideTotalPoints = false,
   rubricDataLoading = false,
+  isGradedExternally,
+  aiEvaluationStatus,
 }) => {
   const [obtained, setObtained] = useState(0)
   const [rubricResponse, setRubricResponse] = useState({})
@@ -99,6 +101,8 @@ const PreviewRubricModal = ({
             rubricFeedback={rubricFeedback}
             validateRubricResponse={validateRubricResponse}
             isDisabled={isDisabled}
+            isGradedExternally={isGradedExternally}
+            aiEvaluationStatus={aiEvaluationStatus}
           />
         )}
       </StyledModalBody>

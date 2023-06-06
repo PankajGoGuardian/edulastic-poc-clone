@@ -14,6 +14,7 @@ const Header = ({
   isPremiumUser,
   orgData,
   userRole,
+  features,
 }) => {
   return (
     <SubscriptionHeader
@@ -32,6 +33,7 @@ const Header = ({
       orgData={orgData}
       userRole={userRole}
       isManageSubscriptionView
+      features={features}
     />
   )
 }

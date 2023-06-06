@@ -1,17 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Row as AntdRow, Col, Form, Select, Button, AutoComplete } from 'antd'
+import { userPermissions } from '@edulastic/constants'
+import { Row as AntdRow, AutoComplete, Button, Col, Form, Select } from 'antd'
 import moment from 'moment'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
+import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
 import {
   HeadingSpan,
-  ValueSpan,
-  PermissionSelect,
   PermissionSaveBtn,
+  PermissionSelect,
+  ValueSpan,
 } from '../Common/StyledComponents/upgradePlan'
-import { getDate, useUpdateEffect } from '../Common/Utils'
+import {
+  getDate,
+  updateDataStudioPermission,
+  useUpdateEffect,
+} from '../Common/Utils'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
+import {
+  DISTRICT_SUBSCRIPTION_OPTIONS,
+  SUBSCRIPTION_TYPES,
+} from '../Common/constants/subscription'
 
 const { Option } = Select
 const { Option: AutocompleteOption } = AutoComplete
@@ -28,14 +37,15 @@ const ManageDistrictSearchForm = Form.create({
     getDistrictDataAction,
     listOfDistricts,
     selectDistrictAction,
+    setSearchData,
   }) => {
     const searchDistrictData = (evt) => {
       evt.preventDefault()
       validateFields((err, { districtSearchOption, districtSearchValue }) => {
         if (!err) {
-          getDistrictDataAction({
-            [districtSearchOption]: districtSearchValue,
-          })
+          const searchData = { [districtSearchOption]: districtSearchValue }
+          setSearchData(searchData)
+          getDistrictDataAction(searchData)
         }
       })
     }
@@ -71,6 +81,7 @@ const ManageDistrictPrimaryForm = Form.create({
     selectedDistrict,
     upgradeDistrictSubscriptionAction,
     saveOrgPermissions,
+    searchData,
   }) => {
     // here button state will change according to subType from the data received
     const [ctaSubscriptionState, setCtaSubscriptionState] = useState(
@@ -80,7 +91,12 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const { _source = {}, _id: districtId, subscription = {} } =
       selectedDistrict || {}
-    const { location = {} } = _source
+    const {
+      location = {},
+      permissions = [],
+      permissionsExpiry = [],
+      name,
+    } = _source
     const {
       subType = 'free',
       subStartDate,
@@ -95,6 +111,21 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const savedDate = useRef()
 
+    const getSubTypeLabel = (_subType, _permissions) => {
+      let label = _subType || SUBSCRIPTION_TYPES.free.subType
+      if (
+        (_permissions || []).includes(userPermissions.DATA_WAREHOUSE_REPORTS)
+      ) {
+        if (_subType === SUBSCRIPTION_TYPES.free.subType) {
+          label = SUBSCRIPTION_TYPES.dataStudio.label
+        } else if (_subType === SUBSCRIPTION_TYPES.enterprise.subType) {
+          label = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label
+        }
+      }
+
+      return label
+    }
+
     // here once component is mounted, the current date is calculated just once, and stored in a ref
     useEffect(() => {
       savedDate.current = getDate()
@@ -102,8 +133,18 @@ const ManageDistrictPrimaryForm = Form.create({
 
     // when a district is searched, the form fields are populated according to the data received
     useUpdateEffect(() => {
+      let _subType = subType || SUBSCRIPTION_TYPES.free.subType
+      if (
+        (permissions || []).includes(userPermissions.DATA_WAREHOUSE_REPORTS)
+      ) {
+        if (subType === SUBSCRIPTION_TYPES.free.subType) {
+          _subType = SUBSCRIPTION_TYPES.dataStudio.subType
+        } else if (subType === SUBSCRIPTION_TYPES.enterprise.subType) {
+          _subType = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
+        }
+      }
       setFieldsValue({
-        subType,
+        subType: _subType,
         subStartDate: moment(subStartDate || savedDate.current.currentDate),
         subEndDate: moment(subEndDate || savedDate.current.oneYearDate),
         notes,
@@ -119,12 +160,13 @@ const ManageDistrictPrimaryForm = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
+      selectedDistrict,
     ])
 
     useUpdateEffect(() => {
       if (currentSubType !== subType) {
         setCtaSubscriptionState(
-          SUBSCRIPTION_TYPE_CONFIG[subType][currentSubType].label
+          SUBSCRIPTION_TYPE_CONFIG?.[subType]?.[currentSubType]?.label
         )
       } else {
         setCtaSubscriptionState('Apply Changes')
@@ -135,23 +177,90 @@ const ManageDistrictPrimaryForm = Form.create({
       validateFields(
         (err, { subStartDate: startDate, subEndDate: endDate, ...rest }) => {
           if (!err) {
-            if (currentSubType === 'free' && subType !== 'free') {
+            const _isDataStudio =
+              currentSubType === SUBSCRIPTION_TYPES.dataStudio.subType
+            const _isEnterprisePlusDataStudio =
+              currentSubType ===
+              SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
+
+            const enableDataStudio =
+              _isDataStudio || _isEnterprisePlusDataStudio
+            const dataStudio = updateDataStudioPermission({
+              isDataStudio: enableDataStudio,
+              permissions: permissions || [],
+              permissionsExpiry: permissionsExpiry || [],
+              perStartDate: startDate.valueOf(),
+              perEndDate: endDate.valueOf(),
+            })
+
+            dataStudio.districtId = districtId
+
+            const seedDsData = {
+              districtData: [
+                {
+                  districtId,
+                  name,
+                  status: enableDataStudio,
+                },
+              ],
+            }
+
+            if (_isDataStudio) {
+              Object.assign(rest, {
+                subType: SUBSCRIPTION_TYPES.free.subType,
+              })
+            } else if (_isEnterprisePlusDataStudio) {
+              Object.assign(rest, {
+                subType: SUBSCRIPTION_TYPES.enterprise.subType,
+              })
+            }
+
+            const changedToFree =
+              currentSubType === SUBSCRIPTION_TYPES.free.subType &&
+              subType !== SUBSCRIPTION_TYPES.free.subType
+
+            if (changedToFree || (_isDataStudio && subscriptionId)) {
               Object.assign(rest, {
                 status: 0,
                 isUpdate: true,
                 subscriptionId,
+                dataStudio,
+                seedDsData,
+                searchData,
               })
             }
+
             upgradeDistrictSubscriptionAction({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
               ...rest,
+              dataStudio,
+              seedDsData,
+              searchData,
             })
           }
         }
       )
       evt.preventDefault()
+    }
+
+    const savePermissions = () => {
+      const relevantPermissions = ['school-district', 'publisher']
+      const _permissions = [...(permissions || [])].filter(
+        (item) => !relevantPermissions.includes(item)
+      )
+      const permissionsToAdd =
+        orgPermission === 'both' ? relevantPermissions : [orgPermission]
+
+      permissionsToAdd.forEach((permission) => {
+        _permissions.push(permission)
+      })
+
+      saveOrgPermissions({
+        permissions: _permissions,
+        districtId,
+      })
     }
 
     return (
@@ -162,7 +271,7 @@ const ManageDistrictPrimaryForm = Form.create({
         </Row>
         <Row>
           <HeadingSpan>Existing Plan:</HeadingSpan>
-          <ValueSpan>{subType}</ValueSpan>
+          <ValueSpan>{getSubTypeLabel(subType, permissions)}</ValueSpan>
         </Row>
         <Row>
           <HeadingSpan>District Name:</HeadingSpan>
@@ -201,12 +310,7 @@ const ManageDistrictPrimaryForm = Form.create({
           </PermissionSelect>
           <PermissionSaveBtn
             type="primary"
-            onClick={() =>
-              saveOrgPermissions({
-                permissions: orgPermission,
-                districtId,
-              })
-            }
+            onClick={savePermissions}
             disabled={!orgPermission || !districtId}
           >
             Save
@@ -220,13 +324,12 @@ const ManageDistrictPrimaryForm = Form.create({
             valuePropName: 'value',
             rules: [{ required: true }],
           })(
-            <Select style={{ width: 120 }} data-cy="change-plan-select">
-              <Option value="free" data-cy="free">
-                Free
-              </Option>
-              <Option value="enterprise" data-cy="enterprise">
-                Enterprise
-              </Option>
+            <Select style={{ width: 250 }} data-cy="change-plan-select">
+              {DISTRICT_SUBSCRIPTION_OPTIONS.map(({ key, label, value }) => (
+                <Option value={value} data-cy={key} key={key}>
+                  {label}
+                </Option>
+              ))}
             </Select>
           )}
         </Form.Item>
@@ -251,6 +354,8 @@ export default function ManageSubscriptionByDistrict({
   selectDistrictAction,
   saveOrgPermissions,
 }) {
+  const [searchData, setSearchData] = useState()
+
   return (
     <>
       <ManageDistrictSearchForm
@@ -258,8 +363,10 @@ export default function ManageSubscriptionByDistrict({
         getDistrictDataAction={getDistrictDataAction}
         listOfDistricts={listOfDistricts}
         selectDistrictAction={selectDistrictAction}
+        setSearchData={setSearchData}
       />
       <ManageDistrictPrimaryForm
+        searchData={searchData}
         selectedDistrict={selectedDistrict}
         upgradeDistrictSubscriptionAction={upgradeDistrictSubscriptionAction}
         saveOrgPermissions={saveOrgPermissions}

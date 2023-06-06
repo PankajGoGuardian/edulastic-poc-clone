@@ -14,7 +14,10 @@ import {
   curriculumsByIdSelector,
   standardsSelector,
 } from '../../../src/selectors/dictionaries'
-import { getCollectionsSelector } from '../../../src/selectors/user'
+import {
+  canAccessPublicContentSelector,
+  getCollectionsSelector,
+} from '../../../src/selectors/user'
 import { getKnownTagsSelector } from '../../../TestPage/ducks'
 import selectsData from '../../../TestPage/components/common/selectsData'
 
@@ -51,6 +54,7 @@ const HeaderFilter = ({
   collectionsList,
   allKnownTags,
   elosByTloId,
+  canAccessPublicContent,
 }) => {
   const containerRef = useRef(null)
   const {
@@ -83,6 +87,9 @@ const HeaderFilter = ({
     () =>
       [
         ...testsConstants.collectionDefaultFilter.filter((c) => c.value),
+        ...testsConstants.collectionPublicFilter.filter(
+          (c) => c.value && canAccessPublicContent
+        ),
         ...collectionsList.map((o) => ({ text: o.name, value: o._id })),
       ].filter((c) => collections.includes(c.value)),
     [collections, collectionsList]
@@ -265,6 +272,7 @@ export default connect((state) => ({
   collectionsList: getCollectionsSelector(state),
   allKnownTags: getKnownTagsSelector(state),
   elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+  canAccessPublicContent: canAccessPublicContentSelector(state),
 }))(HeaderFilter)
 
 const TagsStyle = css`

@@ -164,7 +164,7 @@ const TrialModal = ({
           <p
             dangerouslySetInnerHTML={{
               __html: ` Experience the additional features of Edulastic Teacher Premium for 
-          ${displayText}: OMR exams, read-loud for students, extra test
+          ${displayText}: OMR exams, read-aloud for students, extra test
           security settings, easier collaboration, in-depth reports and more.`,
             }}
           />

@@ -545,12 +545,14 @@ const selectorDict = {
   [reportGroupType.WHOLE_STUDENT_REPORT]: {
     getTempTags: reportWholeLearnerSelectors.filterTagsData,
     getSettings: reportWholeLearnerSelectors.settings,
+    getTags: reportWholeLearnerSelectors.selectedFilterTagsData,
     setTags: reportWholeLearnerActions.setSelectedFilterTagsData,
     setTempTags: reportWholeLearnerActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
     getSettings: reportMultipleAssessmentDwSelectors.settings,
+    getTags: reportMultipleAssessmentDwSelectors.selectedFilterTagsData,
     setTags: reportMultipleAssessmentDwActions.setDWMARSelectedFilterTagsData,
     setTempTags: reportMultipleAssessmentDwActions.setDWMARFilterTagsData,
   },
@@ -564,18 +566,21 @@ const selectorDict = {
   [reportGroupType.DW_DASHBOARD_REPORT]: {
     getTempTags: dwDashboardDucks.selectors.filterTagsData,
     getSettings: dwDashboardDucks.selectors.settings,
+    getTags: dwDashboardDucks.selectors.selectedFilterTagsData,
     setTags: dwDashboardDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwDashboardDucks.actions.setFilterTagsData,
   },
   [reportGroupType.DW_EARLY_WARNING_REPORT]: {
     getTempTags: dwEarlyWarningDucks.selectors.filterTagsData,
     getSettings: dwEarlyWarningDucks.selectors.settings,
+    getTags: dwEarlyWarningDucks.selectors.selectedFilterTagsData,
     setTags: dwEarlyWarningDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwEarlyWarningDucks.actions.setFilterTagsData,
   },
   [reportGroupType.DW_EFFICACY_REPORT]: {
     getTempTags: dwEfficacyDucks.selectors.filterTagsData,
     getSettings: dwEfficacyDucks.selectors.settings,
+    getTags: dwEfficacyDucks.selectors.selectedFilterTagsData,
     setTags: dwEfficacyDucks.actions.setSelectedFilterTagsData,
     setTempTags: dwEfficacyDucks.actions.setFilterTagsData,
   },

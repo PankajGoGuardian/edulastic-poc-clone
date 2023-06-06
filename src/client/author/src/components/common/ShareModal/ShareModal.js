@@ -63,6 +63,7 @@ import {
   getUserSignupStatusSelector,
   getUserNameSelector,
   getUserOrgId,
+  canAccessPublicContentSelector,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
 
@@ -523,6 +524,7 @@ class ShareModal extends React.Component {
       showMessageBody,
       notificationMessage,
       loadingSharedUsers,
+      canAccessPublicContent,
       maxSharingLevelAllowed = shareLevel[sharedKeysObj.PUBLIC],
     } = this.props
     const filteredUserList = userList.filter(
@@ -647,27 +649,36 @@ class ShareModal extends React.Component {
                   value={sharedType}
                   onChange={(e) => this.radioHandler(e)}
                 >
-                  {shareTypeKeysToDisplay.map((item) => (
-                    <RadioBtn
-                      value={item}
-                      key={item}
-                      disabled={
-                        (!isPlaylist &&
-                          item !== sharedKeysObj.LINK &&
-                          shareLevel[item] > maxSharingLevelAllowed) ||
-                        (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
-                        (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||
-                        features.isCurator ||
-                        features.isPublisherAuthor ||
-                        !hasPlaylistEditAccess ||
-                        (userSignupStatus ===
-                          signUpState.ACCESS_WITHOUT_SCHOOL &&
-                          item !== sharedKeysObj.INDIVIDUAL)
-                      }
-                    >
-                      {shareTypes[item]}
-                    </RadioBtn>
-                  ))}
+                  {shareTypeKeysToDisplay
+                    .filter((i) => {
+                      return (
+                        (i === sharedKeysObj.PUBLIC &&
+                          canAccessPublicContent) ||
+                        i !== sharedKeysObj.PUBLIC
+                      )
+                    })
+                    .map((item) => (
+                      <RadioBtn
+                        value={item}
+                        key={item}
+                        disabled={
+                          (!isPlaylist &&
+                            item !== sharedKeysObj.LINK &&
+                            shareLevel[item] > maxSharingLevelAllowed) ||
+                          (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
+                          (hasPremiumQuestion &&
+                            item === sharedKeysObj.PUBLIC) ||
+                          features.isCurator ||
+                          features.isPublisherAuthor ||
+                          !hasPlaylistEditAccess ||
+                          (userSignupStatus ===
+                            signUpState.ACCESS_WITHOUT_SCHOOL &&
+                            item !== sharedKeysObj.INDIVIDUAL)
+                        }
+                      >
+                        {shareTypes[item]}
+                      </RadioBtn>
+                    ))}
                 </RadioGrp>
               </RadioBtnWrapper>
             )}
@@ -854,6 +865,7 @@ const enhance = compose(
       notificationMessage: getEmailNotificationMessageSelector(state),
       test: getTestEntitySelector(state),
       loadingSharedUsers: _get(state, 'tests.loadingSharedUsers', false),
+      canAccessPublicContent: canAccessPublicContentSelector(state),
       maxSharingLevelAllowed: _get(
         state,
         'tests.maxSharingLevelAllowed',

@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
-import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
+import {
+  CheckboxLabel,
+  EduIf,
+  RadioBtn,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import {
   roleuser,
@@ -24,11 +29,15 @@ import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
-import { showRubricToStudentsSetting } from '../../../TestPage/utils'
+import {
+  showRubricToStudentsSetting,
+  showAutoEssayEvaluationSetting,
+} from '../../../TestPage/utils'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
+import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -82,6 +91,7 @@ const TestBehaviorGroupContainer = ({
     playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    allowAutoEssayEvaluation = testSettings.allowAutoEssayEvaluation,
     allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
@@ -110,6 +120,9 @@ const TestBehaviorGroupContainer = ({
     testSettings.itemGroups
   )
 
+  const isShowAutoEssayEvaluationSetting = showAutoEssayEvaluationSetting(
+    testSettings.itemGroups
+  )
   const scoringType =
     assignmentSettings?.scoringType ||
     testSettings?.scoringType ||
@@ -502,7 +515,51 @@ const TestBehaviorGroupContainer = ({
           </StyledRow>
         </SettingContainer>
       )}
-
+      <EduIf
+        condition={[
+          isShowAutoEssayEvaluationSetting,
+          !testSettings?.isDocBased,
+        ].every((o) => !!o)}
+      >
+        <SettingContainer id="auto-essay-evaluation">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title={i18translate('allowAutoEssayEvaluation.title')}
+            content={i18translate('allowAutoEssayEvaluation.info')}
+            premium={premium}
+            placement="rightTop"
+          />
+          <StyledRow gutter={16} mb="15px" height="40">
+            <Col span={10}>
+              <Label>
+                <span>
+                  {i18translate('allowAutoEssayEvaluation.autoEssayEvaluation')}
+                  <br />
+                  {i18translate('allowAutoEssayEvaluation.essayQuestion')}
+                </span>
+                <BetaTag2 mt="-35px" ml="4px">
+                  BETA
+                </BetaTag2>
+                <DollarPremiumSymbol premium={premium} />
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="auto-essay-evaluation"
+                  size="small"
+                  defaultChecked={false}
+                  disabled={freezeSettings || !premium}
+                  checked={allowAutoEssayEvaluation}
+                  onChange={(value) =>
+                    overRideSettings('allowAutoEssayEvaluation', value)
+                  }
+                />
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      </EduIf>
       {/* Show hints to students */}
       {!(isDocBased && isTestlet) && (
         <SettingContainer id="show-hints-to-students">

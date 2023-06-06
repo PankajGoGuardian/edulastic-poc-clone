@@ -33,19 +33,24 @@ const ActionMenu = ({
   GIData = {},
 }) => {
   const [showModal, setShowModal] = useState(false)
+  let urlData
+  if (type !== 'group') {
+    const { termId, studentGroupIds = [], type: GIType } = GIData
+    const {
+      applicableTo: { testTypes = [], subjects = [] } = {},
+      target: { performanceBandId = '' } = {},
+    } = GIData?.goalCriteria || GIData?.interventionCriteria || {}
 
-  const { termId, studentGroupIds = [], type: GIType } = GIData
-  const {
-    applicableTo: { testTypes = [], subjects = [] } = {},
-    target: { performanceBandId = '' } = {},
-  } = GIData?.goalCriteria || GIData?.interventionCriteria || {}
-
-  const urlData = {
-    termId,
-    ...(GIType === ACADEMIC ? { performanceBandId } : {}),
-    studentGroupIds: studentGroupIds.join(),
-    testTypes: testTypes.join(),
-    subjects: subjects.join(),
+    urlData = {
+      termId,
+      ...(GIType === ACADEMIC ? { performanceBandId } : {}),
+      studentGroupIds: studentGroupIds.join(),
+      testTypes: testTypes.join(),
+      subjects: subjects.join(),
+    }
+  } else {
+    const { termId, _id: groupId } = GIData
+    urlData = { termId, groupId }
   }
 
   const menu = (

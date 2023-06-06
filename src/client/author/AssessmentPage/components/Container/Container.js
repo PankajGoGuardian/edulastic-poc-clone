@@ -385,6 +385,7 @@ class Container extends React.Component {
         title,
         status,
         isUsed,
+        derivedFromPremiumBankId = false,
       },
       userId,
       windowWidth,
@@ -473,6 +474,7 @@ class Container extends React.Component {
           onAssign={this.handleAssign}
           updated={updated}
           validateTest={this.validateTest}
+          derivedFromPremiumBankId={derivedFromPremiumBankId}
         />
         {this.renderContent()}
       </>

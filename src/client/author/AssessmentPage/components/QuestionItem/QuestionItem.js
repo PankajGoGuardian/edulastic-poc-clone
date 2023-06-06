@@ -20,6 +20,7 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
+  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import { IconPencilEdit, IconCheck, IconClose } from '@edulastic/icons'
 import { FeedbackByQIdSelector } from '../../../../student/sharedDucks/TestItem'
@@ -44,6 +45,7 @@ import {
   ButtonWrapper,
   DetailAlternateContainer,
 } from './styled'
+import FormAudio from './components/FormAudio/FormAudio'
 
 const { DragItem } = DragDrop
 
@@ -280,6 +282,14 @@ class QuestionItem extends React.Component {
             {...props}
           />
         )
+      case AUDIO_RESPONSE:
+        return (
+          <FormAudio
+            onCreateAnswer={onCreateOptions}
+            {...props}
+            disableAutoHightlight={disableAutoHightlight}
+          />
+        )
       default:
         return null
     }
@@ -449,7 +459,10 @@ class QuestionItem extends React.Component {
         data-cy="questionItem"
       >
         <AnswerForm
-          style={{ justifyContent: review ? 'flex-start' : 'space-between' }}
+          style={{
+            justifyContent: review ? 'flex-start' : 'space-between',
+            minWidth: 200,
+          }}
         >
           <DragItem data={{ id, index: questionIndex }} disabled={disableDrag}>
             <QuestionNumber

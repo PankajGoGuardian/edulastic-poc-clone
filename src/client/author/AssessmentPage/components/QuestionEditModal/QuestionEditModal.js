@@ -11,6 +11,7 @@ import {
   MULTIPLE_CHOICE,
   SHORT_TEXT,
   TRUE_OR_FALSE,
+  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
@@ -26,6 +27,7 @@ import QuestionDropdown from './components/QuestionDropdown/QuestionDropdown'
 import QuestionEssay from './components/QuestionEssay/QuestionEssay'
 import QuestionMath from './components/QuestionMath/QuestionMath'
 import QuestionText from './components/QuestionText/QuestionText'
+import QuestionAudio from './components/QuestionAudio/QuestionAudio'
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: 'Multiple Choice',
@@ -74,6 +76,8 @@ export default class QuestionEditModal extends React.Component {
         return <QuestionMath {...props} />
       case ESSAY_PLAIN_TEXT:
         return <QuestionEssay {...props} />
+      case AUDIO_RESPONSE:
+        return <QuestionAudio {...props} />
       default:
         return null
     }

@@ -7,6 +7,7 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
+  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import {
   IconNewList,
@@ -15,6 +16,7 @@ import {
   IconPencilHollow,
   IconTextEntry,
   IconDropDown,
+  IconWhiteMic,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 
@@ -115,6 +117,14 @@ class AddQuestion extends React.Component {
                 data-cy={ESSAY_PLAIN_TEXT}
               >
                 <IconPencilHollow />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Audio">
+              <AddQuestionIcon
+                onClick={onAddQuestion(AUDIO_RESPONSE)}
+                data-cy={AUDIO_RESPONSE}
+              >
+                <IconWhiteMic />
               </AddQuestionIcon>
             </Tooltip>
           </QuestionTypes>

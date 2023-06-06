@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import VoiceRecorder from '../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
-import { isSubmitButton } from '../../../../common/helpers'
-import AudioRecorder from './AudioRecorder'
-import { StyledAudioElement } from '../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import VoiceRecorder from '../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
+import { StyledAudioElement } from '../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
+import AudioRecorder from './AudioRecorder'
 
 export default class FormAudio extends React.Component {
   static propTypes = {

@@ -4,6 +4,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { EduIf } from '@edulastic/common'
+import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { calculateScore } from './helper'
 import {
   CriteriaSection,
@@ -125,6 +126,11 @@ const PreviewRubricTable = ({
     })
   }
 
+  const aiEvaluationIsNotFailed = [
+    AI_EVALUATION_STATUS.PENDING,
+    AI_EVALUATION_STATUS.DONE,
+  ].includes(aiEvaluationStatus)
+
   useEffect(() => {
     if (rubricFeedback) {
       setSelectedRatings(rubricFeedback)
@@ -156,7 +162,9 @@ const PreviewRubricTable = ({
   return (
     <>
       <EduIf
-        condition={[aiEvaluationStatus, !isGradedExternally].every((o) => !!o)}
+        condition={[aiEvaluationIsNotFailed, !isGradedExternally].every(
+          (o) => !!o
+        )}
       >
         <MessageContainer>
           {i18translate('component.feedbackGradeHaveToBeSaved')}

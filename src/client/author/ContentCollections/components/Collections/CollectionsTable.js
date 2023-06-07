@@ -49,8 +49,8 @@ const CollectionsTable = ({
   useEffect(() => {
     if (collectionTableRef) {
       const offsetTopValue = caluculateOffset(collectionTableRef._container)
-      const tableMaxHeight = window.innerHeight - offsetTopValue - 40
-      setTableMaxHeight(tableMaxHeight)
+      const _tableMaxHeight = window.innerHeight - offsetTopValue - 40
+      setTableMaxHeight(_tableMaxHeight)
     }
   }, [collectionTableRef?._container?.offsetTop])
 
@@ -186,6 +186,7 @@ const CollectionsTable = ({
                   bankId: record._id,
                   buckets: record.buckets,
                   districtId: record.districtId,
+                  itemBankType: record.type,
                 })
               }
             >

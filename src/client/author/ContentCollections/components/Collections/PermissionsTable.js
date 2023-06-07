@@ -277,6 +277,7 @@ const PermissionsTable = ({
           visible={showPermissionModal}
           handleResponse={handlePermissionModalResponse}
           itemBankName={selectedCollection.itemBankName}
+          itemBankType={selectedCollection.itemBankType}
           selectedPermission={selectedPermission}
           isEditPermission={!!selectedPermission}
         />

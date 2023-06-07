@@ -13,7 +13,7 @@ import {
   RadioBtn,
   EduIf,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, collections as ITEM_BANK } from '@edulastic/constants'
 import { Col, Row, Select, Spin, Radio } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -37,6 +37,15 @@ import { FieldRow, Heading, ModalBody } from './ImportContentModal'
 
 const { roleOptions, permissionLevelOptions } = staticData
 
+const ROLE_OPTION_VALUES = {
+  NONE: 'none',
+}
+
+const FIELD_KEYS = {
+  ORG_TYPE: 'orgType',
+  ROLE: 'role',
+}
+
 const AddPermissionModal = ({
   visible,
   handleResponse,
@@ -51,6 +60,7 @@ const AddPermissionModal = ({
   isEditPermission,
   isFetchingOrganization,
   isOrganizationDistrict,
+  itemBankType,
 }) => {
   // for any role except student will have only one Object in districts
   const [fieldData, setFieldData] = useState({
@@ -93,7 +103,7 @@ const AddPermissionModal = ({
         districtName,
         orgType,
         orgDetails: [{ orgId, orgName, role }],
-        role,
+        role: role.length ? role : [ROLE_OPTION_VALUES.NONE],
         itemBankName: collectionName,
         accessLevel,
         ...(user.role === roleuser.EDULASTIC_ADMIN
@@ -153,7 +163,11 @@ const AddPermissionModal = ({
       permissionDetails = orgDetails.map((d) => {
         delete _permissionDetails.accessLevel
         delete _permissionDetails.clonePermitted
-        return { ...d, ..._permissionDetails, role }
+        return {
+          ...d,
+          ..._permissionDetails,
+          role: role.filter((item) => item !== ROLE_OPTION_VALUES.NONE),
+        }
       })
     } else {
       permissionDetails = orgDetails.map((d) => ({
@@ -195,8 +209,23 @@ const AddPermissionModal = ({
     if (user.role === 'edulastic-admin' && !fieldData.districtId) {
       return notification({ messageKey: 'pleaseSelectAnOrganization' })
     }
-
     const updatedFieldData = { ...fieldData, [fieldName]: value }
+    const isNoneRoleSelection =
+      fieldName === FIELD_KEYS.ROLE && value.includes(ROLE_OPTION_VALUES.NONE)
+    if (
+      isNoneRoleSelection &&
+      fieldData[fieldName].includes(ROLE_OPTION_VALUES.NONE)
+    ) {
+      updatedFieldData[fieldName] = updatedFieldData[fieldName].filter(
+        (r) => r !== ROLE_OPTION_VALUES.NONE
+      )
+    }
+    if (
+      isNoneRoleSelection &&
+      !fieldData[fieldName].includes(ROLE_OPTION_VALUES.NONE)
+    ) {
+      updatedFieldData[fieldName] = [ROLE_OPTION_VALUES.NONE]
+    }
     if (fieldName === 'orgType') {
       if (value === 'DISTRICT') {
         updatedFieldData.orgDetails = [
@@ -421,7 +450,7 @@ const AddPermissionModal = ({
         <StyledFieldRow>
           <FieldLabel>Role</FieldLabel>
           <CheckBoxGrp
-            onChange={(value) => handleFieldChange('role', value)}
+            onChange={(value) => handleFieldChange(FIELD_KEYS.ROLE, value)}
             value={fieldData.role}
           >
             {roleOptions.map((checkbox) => (
@@ -437,6 +466,16 @@ const AddPermissionModal = ({
                 {checkbox.label}
               </CheckboxLabel>
             ))}
+            {user.role === roleuser.EDULASTIC_ADMIN &&
+              itemBankType === ITEM_BANK.types.PREMIUM && (
+                <CheckboxLabel
+                  style={{ width: '50%', marginLeft: '0px' }}
+                  value={ROLE_OPTION_VALUES.NONE}
+                  disabled={fieldData.orgType === 'USER'}
+                >
+                  None
+                </CheckboxLabel>
+              )}
           </CheckBoxGrp>
         </StyledFieldRow>
         {fieldData.orgType === 'USER' && (

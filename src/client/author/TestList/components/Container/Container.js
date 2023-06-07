@@ -1545,7 +1545,7 @@ const enhance = compose(
       receiveTests: ({ search, ...rest }) => {
         const _search = {
           ...search,
-          standardIds: search.standardIds.map((item) => item._id),
+          standardIds: search?.standardIds?.map((item) => item._id) || [],
         }
         return receiveTestsAction({ search: _search, ...rest })
       },

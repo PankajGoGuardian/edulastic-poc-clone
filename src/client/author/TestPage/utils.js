@@ -238,8 +238,9 @@ export const showRubricToStudentsSetting = (itemGroups = []) =>
   (getQuestions(itemGroups) || []).some((question) => question?.rubrics)
 
 export const showAutoEssayEvaluationSetting = (itemGroups = []) =>
-  (getQuestions(itemGroups) || []).some((question) =>
-    question?.title.toLowerCase().includes('essay')
+  (getQuestions(itemGroups) || []).some(
+    (question) =>
+      question?.title.toLowerCase().includes('essay') && question?.rubrics
   )
 
 export default {

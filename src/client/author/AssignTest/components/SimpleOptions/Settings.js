@@ -13,6 +13,7 @@ import {
   CheckboxLabel,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
+import { get, isEmpty } from 'lodash'
 import {
   AlignSwitchRight,
   SettingsWrapper,
@@ -91,6 +92,7 @@ const Settings = ({
   userId,
   userRole,
   togglePenaltyOnUsingHints,
+  testItemsData,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -309,6 +311,25 @@ const Settings = ({
     userRole === roleuser.TEACHER
   ) {
     isAssignedTeacher = false
+  }
+  let isEssayWithRubricQuestion = false
+  if (!isEmpty(testItemsData)) {
+    for (const item of testItemsData) {
+      if (item?.data?.questions) {
+        for (const question of item?.data?.questions) {
+          if (
+            question?.rubrics &&
+            question?.title?.toLowerCase().includes('essay')
+          ) {
+            isEssayWithRubricQuestion = true
+            break
+          }
+        }
+      }
+      if (isEssayWithRubricQuestion) {
+        break
+      }
+    }
   }
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -827,7 +848,7 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
-        {!(isDocBased || isTestlet) && (
+        {!(isDocBased || isTestlet) && isEssayWithRubricQuestion && (
           <SettingContainer>
             <DetailsTooltip
               title={i18translate('allowAutoEssayEvaluation.title')}
@@ -1175,6 +1196,11 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       freezeSettings: getIsOverrideFreezeSelector(state),
       features: state?.user?.user?.features,
+      testItemsData: get(
+        state,
+        ['author_classboard_testActivity', 'data', 'testItemsData'],
+        []
+      ),
       userId: getUserIdSelector(state),
       lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),

@@ -27,15 +27,15 @@ const FloatingActionContainer = styled.span`
   background-color: #1ab395;
   position: fixed;
   top: 50%;
-  right: 26px;
+  right: 38px;
   transform: translateY(-50%) rotate(-90deg);
   transform-origin: top right;
   border-top-left-radius: 10px;
   border-radius: 4px 4px 0px 0px;
   padding: 8px 16px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
-  padding: 6px 8px;
+  padding: 10px 18px;
 
   &:hover {
     color: white;

@@ -147,6 +147,18 @@ export const subscription = {
     },
   }),
   dataStudio: ({ subscribed, expiryDate }) => ({
+    isNew: true,
+    links: [
+      {
+        label: 'LEARN MORE',
+        url: 'https://edulastic.com/data-studio/',
+      },
+      {
+        label: 'VIEW PRESS RELEASE',
+        url:
+          'https://www.prnewswire.com/news-releases/edulastic-data-studio-gives-educators-an-accessible-view-of-learning-to-shape-data-driven-strategies-for-student-success-301815434.html',
+      },
+    ],
     title: 'Data Studio',
     description: (
       <>

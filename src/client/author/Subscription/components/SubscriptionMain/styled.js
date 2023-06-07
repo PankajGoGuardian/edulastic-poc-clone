@@ -23,7 +23,7 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
-import { Spin } from 'antd'
+import { Spin, Tag } from 'antd'
 
 export const Img = styled.img`
   height: 35px;
@@ -447,4 +447,26 @@ export const StyledTag = styled.span`
   padding-left: 6px;
   position: relative;
   color: ${themeColor};
+`
+
+export const StyledNewTag = styled(Tag)`
+  border: 2px solid #b4065a;
+  border-radius: 50px;
+  color: #b4065a;
+  background: transparent;
+  line-height: 18px;
+  font-size: 10px;
+  font-weight: bold;
+  top: -18px;
+  position: relative;
+  letter-spacing: 1px;
+`
+
+export const StyledLinkWrapper = styled.div`
+  padding-top: 12px;
+`
+
+export const StyledLinkItem = styled.a`
+  font-weight: bold;
+  padding-right: 32px;
 `

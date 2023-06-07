@@ -155,3 +155,9 @@ export const IconWrapper = styled.div`
     font-size: 11px;
   }
 `
+
+export const StyledSup = styled.sup`
+  color: #e20d2d;
+  font-size: 8px;
+  font-weight: bold;
+`

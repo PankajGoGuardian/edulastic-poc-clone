@@ -7,6 +7,7 @@ const RequestModal = ({
   showSubscriptionsForms = false,
   setShowSubscriptionsForms = () => {},
   formType = 'request',
+  category = 'enterprise',
 }) => {
   useEffect(() => {
     if (window.hbspt) {
@@ -31,6 +32,7 @@ const RequestModal = ({
           },
         })
       }
+
       if (
         !document?.getElementById('requestDemoForm') ||
         document?.getElementById('requestDemoForm')?.innerHTML === ''
@@ -38,7 +40,10 @@ const RequestModal = ({
         window.hbspt.forms.create({
           region: 'na1',
           portalId: '5258344',
-          formId: '2b0a8ad3-4608-4cb1-b0d6-4aaa75eb6d5b',
+          formId:
+            category === 'data-studio'
+              ? '84ef26e3-9307-410c-995e-c9fb4e182282'
+              : '2b0a8ad3-4608-4cb1-b0d6-4aaa75eb6d5b',
           target: '#requestDemoForm',
           onFormSubmit() {
             segmentApi.genericEventTrack('demoFormSubmit', {})

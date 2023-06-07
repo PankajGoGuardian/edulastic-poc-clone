@@ -56,6 +56,7 @@ export const TableHeaderCellWrapper = styled.div`
   border-width: ${({ isSelected }) => (isSelected ? '1px' : '0px')};
   border-style: solid;
   border-color: ${({ borderColor }) => borderColor};
+  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'not-allowed')};
   div {
     height: 40px;
     line-height: 14px;
@@ -73,7 +74,6 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
-      cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'not-allowed')};
       border-radius: 0px 10px 10px 0px;
     }
   }

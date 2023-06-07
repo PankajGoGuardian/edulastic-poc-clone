@@ -15,15 +15,12 @@ const TableHeaderCell = ({
       isSelected={isSelected}
       isClickable={!!value}
       borderColor={borderColor}
+      onClick={() => {
+        tableHeaderCellClick()
+      }}
     >
       <div>{title}</div>
-      <div
-        onClick={() => {
-          tableHeaderCellClick()
-        }}
-      >
-        {value}
-      </div>
+      <div>{value}</div>
     </TableHeaderCellWrapper>
   )
 }

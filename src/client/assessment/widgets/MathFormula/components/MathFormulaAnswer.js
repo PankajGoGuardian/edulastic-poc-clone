@@ -50,6 +50,7 @@ class MathFormulaAnswer extends Component {
         onChange={changeOptions}
         unit={unit}
         keypadMode={keypadMode}
+        view={view}
       />
     )
     return (

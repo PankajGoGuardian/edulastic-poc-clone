@@ -22,6 +22,7 @@ const ClozeMathUnitAnswer = ({
   toggleAdditional,
   extraOptions,
   tabIndex,
+  view,
 }) => {
   const [collapseHeight, setCollapseHeight] = useState('auto')
   const { responseContainers = [], uiStyle } = item
@@ -68,6 +69,7 @@ const ClozeMathUnitAnswer = ({
         keypadMode={answer.keypadMode}
         onDropdownVisibleChange={dropdownVisibleChange}
         forwardedRef={unitDropdownRef}
+        view={view}
       />
     </div>
   )
@@ -120,6 +122,7 @@ ClozeMathUnitAnswer.propTypes = {
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   tabIndex: PropTypes.number.isRequired,
+  view: PropTypes.string.isRequired,
 }
 
 export default withNamespaces('assessment')(ClozeMathUnitAnswer)

@@ -104,12 +104,13 @@ class MathInput extends React.PureComponent {
     /**
      * keep redux store in sync with sanitized latex value
      * Mathinput is rendered in Template section of question. saveAnswer need not to be called for template section on mount
+     * Update the answer in redux only when user inputs a value. Avoid updating in redux if the value is null or undefined
      */
-    const mathFieldValue = this.sanitizeLatex(value)
-    if (!isTemplate) {
+    if (value !== null && value !== undefined && !isTemplate) {
+      const mathFieldValue = this.sanitizeLatex(value)
       saveAnswer(mathFieldValue)
+      mathField.write(mathFieldValue)
     }
-    mathField.write(mathFieldValue)
     this.mathField1 = mathField
     if (defaultFocus) {
       mathField.focus()
@@ -569,7 +570,7 @@ MathInput.propTypes = {
   onInnerFieldClick: PropTypes.func,
   showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
-  value: PropTypes.string,
+  value: PropTypes.string.isRequired,
   style: PropTypes.object,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
@@ -593,7 +594,6 @@ MathInput.defaultProps = {
   alwaysShowKeyboard: false,
   alwaysHideKeyboard: false,
   defaultFocus: false,
-  value: '',
   allowNumericOnly: false,
   showDropdown: false,
   showResponse: false,

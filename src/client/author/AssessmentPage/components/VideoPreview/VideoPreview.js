@@ -21,6 +21,7 @@ import {
   StyledTypographyText,
 } from './styled'
 import {
+  formateSecondsToMMSS,
   getCurrentTime,
   getMarks,
   getNumberStyles,
@@ -92,13 +93,12 @@ const VideoPreview = ({
   }
 
   const onProgress = (state) => {
-    const _currentTime = state.playedSeconds
+    const _currentTime = Math.round(state.playedSeconds)
     setCurrentTime(_currentTime)
 
     const newVisibleAnnotations = annotations.filter(
       (annotation) =>
-        annotation.time &&
-        Math.floor(_currentTime) === Math.floor(annotation.time)
+        annotation.time && _currentTime === Math.floor(annotation.time)
     )
 
     if (
@@ -269,36 +269,36 @@ const VideoPreview = ({
               </div>
             ))}
         </AnnotationsContainer>
-        <StyledPlayerContainer type="flex" gutter={16}>
-          <Col>
-            <PlayPause isPlaying={playing} onPlay={onPlay} onPause={onPause} />
-          </Col>
-          <Col>
-            <StyledTypographyText strong>
-              {currentTime.toFixed(0)} / {duration.toFixed(0)}
-            </StyledTypographyText>
-          </Col>
-          <Col>
-            <SeekBar
-              marks={marks}
-              duration={duration}
-              currentTime={currentTime}
-              seekTo={seekTo}
-              style={{ width: '300px' }}
-            />
-          </Col>
-          <Col>
-            <MuteUnmute
-              volume={muted ? 0 : volumne}
-              muted={muted}
-              setMuted={setMuted}
-            />
-          </Col>
-          <Col>
-            <Volume volume={muted ? 0 : volumne} volumeTo={volumeTo} />
-          </Col>
-        </StyledPlayerContainer>
       </Droppable>
+      <StyledPlayerContainer viewMode={viewMode} type="flex" gutter={16}>
+        <Col>
+          <PlayPause isPlaying={playing} onPlay={onPlay} onPause={onPause} />
+        </Col>
+        <Col>
+          <StyledTypographyText strong>
+            {formateSecondsToMMSS(currentTime)}/{formateSecondsToMMSS(duration)}
+          </StyledTypographyText>
+        </Col>
+        <Col>
+          <SeekBar
+            marks={marks}
+            duration={duration}
+            currentTime={currentTime}
+            seekTo={seekTo}
+            style={{ width: '300px' }}
+          />
+        </Col>
+        <Col>
+          <MuteUnmute
+            volume={muted ? 0 : volumne}
+            muted={muted}
+            setMuted={setMuted}
+          />
+        </Col>
+        <Col>
+          <Volume volume={muted ? 0 : volumne} volumeTo={volumeTo} />
+        </Col>
+      </StyledPlayerContainer>
       <br />
       <DragPreview />
     </PDFPreviewWrapper>

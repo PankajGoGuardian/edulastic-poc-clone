@@ -72,8 +72,8 @@ export const showMarkerArea = (
       markerArea.current.addEventListener('render', (event) => {
         onDropAnnotation(
           {
-            x: event.state.markers[0].left,
-            y: event.state.markers[0].top,
+            x: event.state.markers?.[0]?.left,
+            y: event.state.markers?.[0]?.top,
             markerJsData: event.state.markers,
             time: Math.floor(videoRef.current?.getCurrentTime?.()),
             toolbarMode: 'markerJs',
@@ -113,4 +113,11 @@ export const extractVideoId = (url) => {
     /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=|.+\/embed\/)([^&?/]+)/
   )
   return match && match[1]
+}
+
+export const formateSecondsToMMSS = (totalSeconds) => {
+  totalSeconds = totalSeconds.toFixed(0)
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes}:${seconds}`
 }

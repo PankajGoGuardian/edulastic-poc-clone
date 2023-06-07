@@ -212,7 +212,11 @@ class WorksheetComponent extends React.Component {
         if (item.questionId || question.questionId) {
           return `${item.questionId}` === `${question.questionId}`
         }
-        return Math.floor(question.time) === Math.floor(item.time)
+        return (
+          Math.floor(question.time) === Math.floor(item.time) ||
+          !item.x ||
+          !item.y
+        )
       })
     } else {
       annotationIndex = newAnnotations.findIndex(
@@ -224,7 +228,12 @@ class WorksheetComponent extends React.Component {
       newAnnotations.splice(annotationIndex, 1)
     }
 
-    newAnnotations.push(annotation)
+    if (
+      (type === 'video' && annotation.x && annotation.y) ||
+      type !== 'video'
+    ) {
+      newAnnotations.push(annotation)
+    }
 
     const updatedAssessment = {
       annotations: newAnnotations,

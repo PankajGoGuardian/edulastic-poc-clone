@@ -144,7 +144,7 @@ export const AnnotationsContainer = styled.div`
 
 export const Droppable = styled(DropContainer)`
   top: 0;
-  height: 100%;
+  height: calc(100% - 60px);
   width: 100%;
   display: block;
   margin: auto;
@@ -161,11 +161,12 @@ export const StyledYouTubePlayer = styled.div`
 `
 
 export const StyledPlayerContainer = styled(Row)`
-  position: absolute;
+  position: ${({ viewMode }) =>
+    viewMode === 'edit' ? 'absolute' : 'relative'};
   bottom: 0px;
   width: 100%;
   padding: 6px 16px;
-  margin: 0px 1px;
+  margin: 0px !important;
   z-index: 5;
   background: #000000a3;
 `

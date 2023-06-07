@@ -221,7 +221,8 @@ const getCDNOrigin = () => {
     return cdnURI
   }
 }
-const edYouTubePlayerKey = process.env.ED_YOUTUBE_PLAYER_KEY
+
+const edYouTubePlayerKey = process.env.REACT_APP_ED_YOUTUBE_PLAYER_KEY
 
 export default {
   initEmbeddedServiceCloudWidget,

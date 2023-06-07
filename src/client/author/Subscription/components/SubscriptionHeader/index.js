@@ -20,7 +20,6 @@ import {
   HeaderSubscription,
   IconWrapper,
   PlanText,
-  StyledSup,
   Title,
   TopBanner,
   UserStatus,
@@ -224,11 +223,8 @@ const SubscriptionHeader = ({
               <HeaderTabs
                 dataCy="DataStudioTab"
                 isActive={showDataStudioTab && !showEnterpriseTab}
-                linkLabel={
-                  <>
-                    Data Studio <StyledSup>NEW</StyledSup>
-                  </>
-                }
+                linkLabel="Data Studio"
+                isNew
                 onClickHandler={() => {
                   setShowEnterpriseTab(false)
                   setShowDataStudioTab(true)

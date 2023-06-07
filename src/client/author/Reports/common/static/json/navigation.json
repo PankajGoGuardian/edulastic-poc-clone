@@ -568,6 +568,7 @@
       {
         "key": "data-warehouse-reports",
         "title": "EDULASTIC DATA STUDIO",
+        "isNew": true,
         "location": "/author/reports/data-warehouse-reports/"
       }
     ],

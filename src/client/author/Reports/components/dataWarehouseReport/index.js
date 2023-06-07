@@ -87,9 +87,9 @@ const DataWarehouseReports = ({
         <Row type="flex">
           <Col>
             <div className="text">
-              You don’t have an active Data Studio subscription. Please upgrade
-              your subscription to access Data Studio Reports and set / monitor
-              Goals and Interventions.
+              You don’t have an active Data Studio Subscription. Please upgrade
+              to access Data Studio Reports and set/monitor Goals and
+              Interventions.
             </div>
           </Col>
           <Col>

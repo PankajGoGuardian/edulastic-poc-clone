@@ -15,6 +15,7 @@ const HeaderNavigation = ({ navigationItems, activeItemKey }) => (
           isActive={isActive}
           to={item.location}
           linkLabel={item.title}
+          isNew={item.isNew}
         />
       )
     })}

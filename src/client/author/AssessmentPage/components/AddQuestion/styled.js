@@ -41,8 +41,8 @@ export const AddQuestionIcon = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 5px;
   background: ${themeColor};
   cursor: pointer;

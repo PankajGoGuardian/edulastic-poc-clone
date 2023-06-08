@@ -9,11 +9,10 @@ const MainWrapper = styled.section`
   overflow: ${({ hasCollapseButtons }) =>
     hasCollapseButtons ? 'hidden' : 'auto'};
   display: flex;
-  flex-direction: column;
-  margin: auto;
+  flex-direction: ${({ isStudentAttempt }) =>
+    isStudentAttempt ? 'row' : 'column'};
   height: 100%;
   width: 100%;
-
   & * {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -31,17 +30,10 @@ const MainWrapper = styled.section`
     border-radius: 10px;
   }
 
-  ${({ hasCollapseButtons, theme }) => {
+  ${({ theme }) => {
     return `
-      background-color: ${
-        hasCollapseButtons
-          ? 'transparent'
-          : theme.widgets.assessmentPlayers.mainContentBgColor
-      };
+      background-color: ${theme.widgets.assessmentPlayers.mainContentBgColor};
       color: ${theme.widgets.assessmentPlayers.mainContentTextColor};
-      box-shadow: ${
-        hasCollapseButtons ? 'none' : '0 3px 10px 0 rgba(0, 0, 0, 0.1)'
-      };
     `
   }}
 `

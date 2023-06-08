@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { themeColor, greyDarken, boxShadowColor } from '@edulastic/colors'
 import { SMALL_DESKTOP_WIDTH } from '../../../constants/others'
 
@@ -11,8 +11,10 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   padding: 0;
-  min-width: ${({ responsiveWidth }) =>
-    responsiveWidth && `${responsiveWidth}px`};
+  min-width: ${({ responsiveWidth, isFeedBackVisibleInAttempt }) =>
+    responsiveWidth && isFeedBackVisibleInAttempt
+      ? ''
+      : `${responsiveWidth}px`};
 `
 
 export const Divider = styled.div`
@@ -90,17 +92,11 @@ export const Dividerlines = styled.span`
   transform: scaley(1.5);
   text-align: center;
 `
-const feedbackWrapperAlignment = css`
-  position: absolute;
-  right: 60px;
-  top: 30px;
-  width: 140px;
-`
 export const RenderFeedBack = styled.div`
   position: relative;
-  min-width: ${(props) =>
-    !props.isPrintPreview && !props.isStudentAttempt && '265px'};
-  overflow-y: ${(props) => props.isExpressGrader && 'auto'};
-  overflow-x: ${(props) => props.isExpressGrader && 'hidden'};
-  ${(props) => props.isStudentAttempt && feedbackWrapperAlignment}
+  min-width: ${({ isStudentAttempt, isPrintPreview }) =>
+    !isPrintPreview && !isStudentAttempt && '265px'};
+  overflow-y: ${({ isExpressGrader }) => isExpressGrader && 'auto'};
+  overflow-x: ${({ isExpressGrader }) => isExpressGrader && 'hidden'};
+  padding: ${({ isStudentAttempt }) => isStudentAttempt && '32px 16px 8px 0px'};
 `

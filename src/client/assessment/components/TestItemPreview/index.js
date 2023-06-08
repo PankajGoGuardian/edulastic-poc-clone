@@ -7,13 +7,18 @@ import { ThemeProvider, withTheme } from 'styled-components'
 
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
+import {
+  AssessmentPlayerContext,
+  EduIf,
+  EduThen,
+  withWindowSizes,
+} from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
 import { connect } from 'react-redux'
 import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
-import { Container, RenderFeedBack } from './styled/Container'
+import { Container } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
@@ -25,6 +30,7 @@ import {
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
 import PassageDivider from '../../../common/components/PassageDivider'
+import FeedBackBlock from './components/FeedBack'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -454,6 +460,20 @@ class TestItemPreview extends Component {
         }
       : {}
 
+    const feedBackInStudentView =
+      (isStudentReport || isStudentAttempt) && itemLevelScoring
+
+    const feedBackInTeacherView = (isLCBView || isExpressGrader) && showFeedback
+
+    const showFeedBackBlock = [
+      !isShowStudentWork,
+      !isReviewTab,
+      !isCliUser,
+      feedBackInStudentView || feedBackInTeacherView || isPrintPreview,
+      showPreviousAttempt !== 'NONE' || showFeedback,
+    ].every((x) => x)
+
+    const isFeedBackVisibleInAttempt = showFeedBackBlock && isStudentAttempt
     return (
       <ThemeProvider theme={{ ...themes.default }}>
         <div
@@ -463,7 +483,6 @@ class TestItemPreview extends Component {
             flexDirection: 'column',
             alignSelf: !LCBPreviewModal && 'stretch',
             flexGrow: 1,
-            width: '100%',
             overflow: !isStudentAttempt && !isPrintPreview && 'auto', // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && hasDrawingResponse ? white : null,
           }}
@@ -476,6 +495,7 @@ class TestItemPreview extends Component {
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"
+            isFeedBackVisibleInAttempt={isFeedBackVisibleInAttempt}
           >
             <div
               style={{
@@ -538,27 +558,16 @@ class TestItemPreview extends Component {
           </Container>
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {((itemLevelScoring && isStudentReport) ||
-          (!isStudentReport && !isReviewTab)) &&
-          (showFeedback ||
-            (showPreviousAttempt !== 'NONE' &&
-              isStudentAttempt &&
-              !isStudentReport)) &&
-          !isShowStudentWork &&
-          !(isStudentAttempt && !itemLevelScoring) && (
-            <>
-              {!isCliUser && (
-                <RenderFeedBack
-                  isExpressGrader={isExpressGrader}
-                  isPrintPreview={isPrintPreview}
-                  isStudentAttempt={isStudentAttempt}
-                  className="__print-feedback-main-wrapper testtest"
-                >
-                  {this.renderFeedbacks()}
-                </RenderFeedBack>
-              )}
-            </>
-          )}
+        <EduIf condition={showFeedBackBlock}>
+          <EduThen>
+            <FeedBackBlock
+              isExpressGrader={isExpressGrader}
+              isStudentAttempt={isStudentAttempt}
+              isPrintPreview={isPrintPreview}
+              renderFeedBacks={this.renderFeedbacks()}
+            />
+          </EduThen>
+        </EduIf>
       </ThemeProvider>
     )
   }

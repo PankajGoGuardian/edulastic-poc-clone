@@ -8,10 +8,7 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 import TableFilters from '../filters/TableFilters'
 
 import { StyledCard, DashedLine } from '../../../../../common/styled'
-import {
-  StyledTable,
-  StyledRow,
-} from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
+import { StyledRow } from '../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { getTableColumns, onCsvConvert } from './utils'
 import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
 import { analyseByOptions } from '../../utils'
@@ -20,6 +17,7 @@ import AddToGroupModal from '../../../../../common/components/Popups/AddToGroupM
 import useTableMetrics from '../../hooks/useTableMetrics'
 import { addStudentToGroupFeatureEnabled } from '../../../../multipleAssessmentReport/PreVsPost/utils'
 import BackendPagination from '../../../../../common/components/BackendPagination'
+import { CustomStyledTable } from '../../common/styledComponents'
 
 const EfficacyTable = ({
   reportTableData,
@@ -111,7 +109,7 @@ const EfficacyTable = ({
         dataSource={tableData}
         columns={tableColumns}
         rowSelection={_rowSelection}
-        tableToRender={StyledTable}
+        tableToRender={CustomStyledTable}
         pagination={false}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}

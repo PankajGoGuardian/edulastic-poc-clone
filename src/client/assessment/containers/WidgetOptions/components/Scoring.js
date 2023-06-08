@@ -25,6 +25,10 @@ import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperT
 
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import {
+  ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
+} from '@edulastic/constants/const/questionType'
+import {
   getQuestionDataSelector,
   setQuestionDataAction,
   updateScoreAndValidationAction,
@@ -267,6 +271,13 @@ class Scoring extends Component {
       </CheckboxLabel>
     )
 
+    const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
+      questionData?.type
+    )
+    const gradingRubricHelpText = isEssayTypeQuestion
+      ? ` (${t('component.options.gradingRubricHelpText')})`
+      : ''
+
     return (
       <div
         section="advanced"
@@ -416,7 +427,9 @@ class Scoring extends Component {
                 disabled={!isCorrectAnsTab || questionData.validation.unscored}
                 size="large"
               >
-                {t('component.options.gradingRubric')}
+                {`${t(
+                  'component.options.gradingRubric'
+                )}${gradingRubricHelpText}`}
               </CheckboxLabel>
             </Col>
           </Row>

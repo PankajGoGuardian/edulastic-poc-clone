@@ -203,6 +203,7 @@
       "automarkable": "Enable auto scoring",
       "unscored": "Zero Point / Practice usage",
       "gradingRubric": "Grading Rubric",
+      "gradingRubricHelpText": "Try out AI assisted Auto rubric generator",
       "penalty": "Penalty Point(s)",
       "stimulusreviewonly": "Stimulus (review only)",
       "instructorstimulus": "Instructor stimulus",

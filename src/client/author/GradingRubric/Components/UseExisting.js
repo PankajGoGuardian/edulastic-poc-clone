@@ -72,6 +72,7 @@ import {
   setQuestionDataAction,
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
+import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -107,6 +108,7 @@ const UseExisting = ({
   rubricUUIDs,
   setRubricGenerationStimulus,
   previousRubricGeneratedStimulus,
+  isAiEvaulationDistrict,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -484,7 +486,9 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <EduIf condition={showAutoGenerateRubricBtn}>
+            <EduIf
+              condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
+            >
               <CustomStyleBtn2
                 style={btnStyle}
                 onClick={generateRubricByOpenAI}
@@ -675,6 +679,7 @@ const enhance = compose(
       previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
         state
       ),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

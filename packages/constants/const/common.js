@@ -37,7 +37,11 @@ const POST_MERIDIEM = 'PM'
 const PASSWORD_KEY = 'password'
 
 const PUBLIC_URL_IDENTIFIER = '/public/'
-
+const AUTO_RUBRIC_ENABLED_DISTRICT = [
+  '5f1d2b5f5dd16ded176b6b98',
+  '61824414a8d6b600096ed825',
+  '5dce7e3f3d12210006256c58',
+]
 module.exports = {
   helpCenterUrl,
   sessionFilters,
@@ -55,4 +59,5 @@ module.exports = {
   POST_MERIDIEM,
   PASSWORD_KEY,
   PUBLIC_URL_IDENTIFIER,
+  AUTO_RUBRIC_ENABLED_DISTRICT,
 }

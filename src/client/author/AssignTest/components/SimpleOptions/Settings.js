@@ -33,6 +33,7 @@ import {
   getUserRole,
   allowedToSelectMultiLanguageInTest,
   getUserIdSelector,
+  getIsAiEvaulationDistrictSelector,
 } from '../../../src/selectors/user'
 import { getDisableAnswerOnPaperSelector } from '../../../TestPage/ducks'
 import {
@@ -93,6 +94,7 @@ const Settings = ({
   userRole,
   togglePenaltyOnUsingHints,
   testItemsData,
+  isAiEvaulationDistrict,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -848,36 +850,38 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
-        {!(isDocBased || isTestlet) && isEssayWithRubricQuestion && (
-          <SettingContainer>
-            <DetailsTooltip
-              title={i18translate('allowAutoEssayEvaluation.title')}
-              content={i18translate('allowAutoEssayEvaluation.info')}
-              premium={premium}
-            />
-            <StyledRow gutter={16} mb="15px">
-              <Col span={12}>
-                <Label>
-                  {i18translate('allowAutoEssayEvaluation.title')}
-                  <BetaTag2>BETA</BetaTag2>
-                  <DollarPremiumSymbol premium={premium} />
-                </Label>
-              </Col>
-              <Col span={12}>
-                <AlignSwitchRight
-                  data-cy="auto-essay-evaluation"
-                  disabled={freezeSettings || !premium}
-                  size="small"
-                  defaultChecked={false}
-                  checked={allowAutoEssayEvaluation}
-                  onChange={(value) =>
-                    overRideSettings('allowAutoEssayEvaluation', value)
-                  }
-                />
-              </Col>
-            </StyledRow>
-          </SettingContainer>
-        )}
+        {!(isDocBased || isTestlet) &&
+          isEssayWithRubricQuestion &&
+          isAiEvaulationDistrict && (
+            <SettingContainer>
+              <DetailsTooltip
+                title={i18translate('allowAutoEssayEvaluation.title')}
+                content={i18translate('allowAutoEssayEvaluation.info')}
+                premium={premium}
+              />
+              <StyledRow gutter={16} mb="15px">
+                <Col span={12}>
+                  <Label>
+                    {i18translate('allowAutoEssayEvaluation.title')}
+                    <BetaTag2>BETA</BetaTag2>
+                    <DollarPremiumSymbol premium={premium} />
+                  </Label>
+                </Col>
+                <Col span={12}>
+                  <AlignSwitchRight
+                    data-cy="auto-essay-evaluation"
+                    disabled={freezeSettings || !premium}
+                    size="small"
+                    defaultChecked={false}
+                    checked={allowAutoEssayEvaluation}
+                    onChange={(value) =>
+                      overRideSettings('allowAutoEssayEvaluation', value)
+                    }
+                  />
+                </Col>
+              </StyledRow>
+            </SettingContainer>
+          )}
         {/* Show TTS for passage */}
         {!(isDocBased || isTestlet) && (
           <SettingContainer>
@@ -1205,6 +1209,7 @@ const enhance = compose(
       lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       additionalData: getAdditionalDataSelector(state),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     null
   )

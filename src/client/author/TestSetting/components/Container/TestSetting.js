@@ -305,8 +305,8 @@ class TestSetting extends Component {
                       }
                       value={canAccessPublicContent}
                     >
-                      <RadioBtn value>Yes</RadioBtn>
-                      <RadioBtn value={false}>No</RadioBtn>
+                      <RadioBtn value={false}>Yes</RadioBtn>
+                      <RadioBtn value>No</RadioBtn>
                     </StyledRadioGrp>
                   </StyledCol>
                 </EduIf>

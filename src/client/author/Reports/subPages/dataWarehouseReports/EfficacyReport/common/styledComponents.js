@@ -195,9 +195,7 @@ export const CustomStyledTable = styled(StyledTable)`
   .ant-table-thead .dimension .ant-table-column-sorters {
     margin-left: 10px;
   }
-  .ant-table-tbody .dimension {
-    a > div {
-      margin-left: 10px;
-    }
+  .ant-table-tbody .dimension-name {
+    margin-left: 10px;
   }
 `

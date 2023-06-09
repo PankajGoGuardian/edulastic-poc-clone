@@ -75,7 +75,8 @@ const EfficacyTable = ({
   const tableColumns = getTableColumns(
     testInfo,
     tableFilters,
-    getTableDrillDownUrl
+    getTableDrillDownUrl,
+    isSharedReport
   )
 
   return (

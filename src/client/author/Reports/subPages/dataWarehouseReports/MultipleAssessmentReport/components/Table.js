@@ -79,12 +79,14 @@ const getTableColumns = (
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
     _columns[compareByIdx].render = (data, record) => {
-      const url = buildDrillDownUrl({
-        key: record.id,
-        selectedCompareBy: compareBy.key,
-        reportFilters: settings.requestFilters,
-        reportUrl: window.location.pathname,
-      })
+      const url = isSharedReport
+        ? null
+        : buildDrillDownUrl({
+            key: record.id,
+            selectedCompareBy: compareBy.key,
+            reportFilters: settings.requestFilters,
+            reportUrl: window.location.pathname,
+          })
       return (
         <LinkCell
           value={{ _id: record.id, name: data }}

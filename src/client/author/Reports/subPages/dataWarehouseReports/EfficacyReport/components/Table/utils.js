@@ -36,7 +36,8 @@ export const onCsvConvert = (data) => downloadCSV(`Efficacy Report.csv`, data)
 export const getTableColumns = (
   testInfo,
   tableFilters,
-  getTableDrillDownUrl
+  getTableDrillDownUrl,
+  isSharedReport
 ) => {
   const { compareBy, analyseBy, sortKey, sortOrder } = tableFilters
   const { key: compareByKey } = compareBy
@@ -57,7 +58,7 @@ export const getTableColumns = (
     )
     _columns[compareByColumnIdx].title = compareBy.title
     _columns[compareByColumnIdx].render = (value) => {
-      const url = getTableDrillDownUrl(value._id)
+      const url = isSharedReport ? null : getTableDrillDownUrl(value._id)
       return (
         <LinkCell value={value} url={url} openNewTab={isStudentCompareBy} />
       )

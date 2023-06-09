@@ -62,6 +62,7 @@ import {
   setItemLevelScoreFromRubricAction,
   getItemDetailQuestionsSelector,
 } from '../../../../author/ItemDetail/ducks'
+import { getIsAiEvaulationDistrictSelector } from '../../../../author/src/selectors/user'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -170,6 +171,7 @@ class Scoring extends Component {
       setItemLevelScoring,
       location,
       itemDetailQuestions,
+      isAiEvaulationDistrict,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
@@ -274,9 +276,10 @@ class Scoring extends Component {
     const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
       questionData?.type
     )
-    const gradingRubricHelpText = isEssayTypeQuestion
-      ? ` (${t('component.options.gradingRubricHelpText')})`
-      : ''
+    const gradingRubricHelpText =
+      isEssayTypeQuestion && isAiEvaulationDistrict
+        ? ` (${t('component.options.gradingRubricHelpText')})`
+        : ''
 
     return (
       <div
@@ -596,6 +599,7 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       containsRubric: getQuestionRubrics(state),
       itemDetailQuestions: getItemDetailQuestionsSelector(state),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -66,6 +66,7 @@ import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
   allowReferenceMaterialSelector,
+  getIsAiEvaulationDistrictSelector,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -758,6 +759,7 @@ class Setting extends Component {
       standardsData,
       defaultTestTypeProfiles,
       togglePenaltyOnUsingHints,
+      isAiEvaulationDistrict,
     } = this.props
     const {
       isDocBased,
@@ -1730,6 +1732,7 @@ class Setting extends Component {
                     condition={[
                       !isDocBased,
                       isShowAutoEssayEvaluationSetting,
+                      isAiEvaulationDistrict,
                     ].every((o) => !!o)}
                   >
                     <Block id="auto-essay-evaluation" smallSize={isSmallSize}>
@@ -2640,6 +2643,7 @@ const enhance = compose(
       testSettingsList: getTestSettingsListSelector(state),
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
 import { EduIf } from '@edulastic/common'
+import { ALL_TEST_TYPES_VALUES } from '@edulastic/constants/const/testTypes'
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import AvgScoreTitle from './AvgScoreTitle'
 import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
@@ -80,6 +81,9 @@ export const getTableColumns = ({
   availableTestTypes,
 }) => {
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
+  const isSelectedTestTypeExternal = !ALL_TEST_TYPES_VALUES.includes(
+    selectedTestType
+  )
 
   const rowWithMaxTestTypes = maxBy(
     metricInfo,
@@ -126,8 +130,19 @@ export const getTableColumns = ({
     // dynamic columns
     const testTypesBasedColumns = flatMap(
       orderedTestTypesWithData,
-      ({ key: testTypeKey, title: testTypeTitle, bands: testTypeBands }) => {
+      ({
+        key: testTypeKey,
+        title: testTypeTitle,
+        bands: columnPerformanceBand,
+      }) => {
         const isExternal = testTypeKey.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+        const testBand =
+          (!isSelectedTestTypeExternal && !isExternal) ||
+          (isSelectedTestTypeExternal &&
+            isExternal &&
+            selectedTestType === testTypeKey)
+            ? selectedPerformanceBand
+            : columnPerformanceBand
         return [
           {
             key: `avgScore__${testTypeKey}`,
@@ -166,11 +181,7 @@ export const getTableColumns = ({
                   testType={testTypeKey}
                   isStudentCompareBy={isStudentCompareBy}
                   isDistrictAvgDimension={isDistrictAvgDimension}
-                  selectedPerformanceBand={
-                    selectedTestType === testTypeKey
-                      ? selectedPerformanceBand
-                      : testTypeBands
-                  }
+                  selectedPerformanceBand={testBand}
                   isExternal={isExternal}
                 />
               )

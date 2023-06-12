@@ -1,7 +1,7 @@
 import { EduButton, FlexContainer } from '@edulastic/common'
 import React from 'react'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { TopSection } from './styled'
+import ManageSubscriptionButton from './ManageSubscriptionButton'
 
 const TabHeaderContent = ({
   history,
@@ -10,10 +10,6 @@ const TabHeaderContent = ({
   setShowMultiplePurchaseModal,
   signUpFlowModalHandler,
 }) => {
-  const handleManageSubscription = () => {
-    history.push('/author/manage-subscriptions')
-  }
-
   const openMultiplePurchaseModal = (subType) => {
     if (!['enterprise'].includes(subType)) {
       setShowMultiplePurchaseModal(true)
@@ -22,23 +18,12 @@ const TabHeaderContent = ({
 
   return (
     <>
-      <FlexContainer justifyContent="flex-end">
-        {showMultipleSubscriptions && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <EduButton
-                data-cy="manageSubscriptionButton"
-                isGhost
-                height="28px"
-                onClick={handleClick}
-              >
-                MANAGE SUBSCRIPTIONS
-              </EduButton>
-            )}
-            onClick={handleManageSubscription}
-          />
-        )}
-      </FlexContainer>
+      {/* This button will only be visible when showMultipleSubscription is true
+      or the license type is multiple */}
+      <ManageSubscriptionButton
+        history={history}
+        showMultipleSubscriptions={showMultipleSubscriptions}
+      />
       <TopSection>
         <h1>Edulastic Premium & Add-ons to supercharge instruction.</h1>
         <p>

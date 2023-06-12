@@ -325,6 +325,8 @@ const Subscription = (props) => {
           <EnterpriseTab
             features={features}
             isPremium={isPremium}
+            history={history}
+            showMultipleSubscriptions={showMultipleSubscriptions}
             subType={subType}
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}

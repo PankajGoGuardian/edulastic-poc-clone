@@ -53,6 +53,9 @@ export const EmailWrapper = styled.div`
   margin-top: 25px;
   margin-bottom: 15px;
 `
+export const LabelIconWrapper = styled.div`
+  display: flex;
+`
 
 export const ModalTitle = styled.div`
   display: flex;

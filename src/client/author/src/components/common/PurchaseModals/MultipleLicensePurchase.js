@@ -5,10 +5,11 @@ import {
   notification,
   TextInputStyled,
 } from '@edulastic/common'
+import { IconInfo } from '@edulastic/icons'
 import SubscriptionAddonModal from './SubscriptionAddonModal'
 import ProductsList from './ProductsList'
-import { EmailWrapper } from './styled'
-import { emailRegex } from '../../../../../common/utils/helpers'
+import { EmailWrapper, LabelIconWrapper } from './styled'
+import { Tooltip, emailRegex } from '../../../../../common/utils/helpers'
 
 const MultipleLicensePurchase = ({
   isVisible,
@@ -87,6 +88,8 @@ const MultipleLicensePurchase = ({
     })
   }
 
+  const tooltipMessage = 'This user(s) will get manage subscription permission.'
+
   const footer = [
     <EduButton
       isGhost
@@ -125,9 +128,20 @@ const MultipleLicensePurchase = ({
         setSelectedProductIds={setSelectedProductIds}
         selectedProductIds={selectedProductIds}
       />
-
       <EmailWrapper>
-        <FieldLabel>Bookkeeper Email</FieldLabel>
+        <LabelIconWrapper>
+          <FieldLabel>Bookkeeper Email</FieldLabel>
+          <Tooltip title={tooltipMessage}>
+            <IconInfo
+              width={16}
+              height={16}
+              style={{
+                marginLeft: '5px',
+                marginBottom: '5px',
+              }}
+            />
+          </Tooltip>
+        </LabelIconWrapper>
         <TextInputStyled
           value={emailValues}
           onChange={handleInputEmailAddress}

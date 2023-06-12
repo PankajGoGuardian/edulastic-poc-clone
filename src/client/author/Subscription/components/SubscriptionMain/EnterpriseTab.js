@@ -2,12 +2,15 @@ import { segmentApi } from '@edulastic/api'
 import React, { useEffect } from 'react'
 import { subscription } from '../../constants/subscription'
 import SubscriptionContainer from './SubscriptionContainer'
+import ManageSubscriptionButton from './ManageSubscriptionButton'
 
 const EnterpriseTab = ({
   isPremium,
   subType,
   subEndDate,
   isPremiumUser,
+  history,
+  showMultipleSubscriptions,
   user,
 }) => {
   const { utm_source, openIdProvider } = user
@@ -44,13 +47,20 @@ const EnterpriseTab = ({
 
     segmentApi.genericEventTrack(eventName, eventData)
   }, [])
-
   return (
-    <SubscriptionContainer
-      showRequestOption={showRequestOption}
-      data={data}
-      type="enterprise"
-    />
+    <>
+      {/* This button will only be visible when showMultipleSubscription is true
+      or the license type is multiple */}
+      <ManageSubscriptionButton
+        history={history}
+        showMultipleSubscriptions={showMultipleSubscriptions}
+      />
+      <SubscriptionContainer
+        showRequestOption={showRequestOption}
+        data={data}
+        type="enterprise"
+      />
+    </>
   )
 }
 

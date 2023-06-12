@@ -38,6 +38,8 @@ import { getHasRandomQuestionselector } from '../../../src/selectors/assignments
 
 export const testTypeToolTip = getAllTestTypesMap()
 
+const missingSelectionTostMessage = 'Please select atleast one class'
+
 const columns = [
   {
     title: 'Class',
@@ -271,6 +273,12 @@ const TableList = ({
   }
 
   const handleBulkAction = (type, releaseScoreResponse) => {
+    if (selectedRows.length === 0) {
+      return notification({
+        msg: missingSelectionTostMessage,
+      })
+    }
+
     if (bulkActionStatus) {
       return notification({
         msg:
@@ -323,7 +331,16 @@ const TableList = ({
 
   const moreOptions = () => (
     <MoreOptionsContainer>
-      <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>
+      <MoreOption
+        onClick={() => {
+          if (selectedRows.length === 0) {
+            return notification({
+              msg: missingSelectionTostMessage,
+            })
+          }
+          setReleaseScoreModalVisibility(true)
+        }}
+      >
         Release Score
       </MoreOption>
       <Tooltip
@@ -364,7 +381,16 @@ const TableList = ({
           </MoreOption>
         </div>
       </Tooltip>
-      <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>
+      <MoreOption
+        onClick={() => {
+          if (selectedRows.length === 0) {
+            return notification({
+              msg: missingSelectionTostMessage,
+            })
+          }
+          toggleDeleteAssignmentModal(true)
+        }}
+      >
         Unassign
       </MoreOption>
     </MoreOptionsContainer>
@@ -438,7 +464,7 @@ const TableList = ({
 
   return (
     <Container>
-      {selectedRows.length > 0 && renderBulkActions()}
+      {renderBulkActions()}
       <TableData
         columns={columns}
         dataSource={rowData}

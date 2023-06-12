@@ -11,6 +11,7 @@ import {
   MathFormulaDisplay,
 } from '@edulastic/common'
 import { darkBlue } from '@edulastic/colors'
+import { EDIT } from '../../../../constants/constantsForQuestions'
 import { getStemNumeration } from '../../../../utils/helpers'
 
 const { Option } = Select
@@ -36,6 +37,7 @@ const SelectUnit = ({
   fontWeight,
   noBorder,
   background,
+  view,
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
     btn.types.includes(keypadMode)
@@ -55,7 +57,7 @@ const SelectUnit = ({
   }
 
   useEffect(() => {
-    if (allBtns.length > 0) {
+    if (allBtns.length > 0 && (view === EDIT || unit)) {
       // set unit option when changing dropdown mode
       onChange('unit', unit || allBtns[0]?.handler)
     }
@@ -147,6 +149,7 @@ SelectUnit.propTypes = {
   disabled: PropTypes.bool.isRequired,
   getPopupContainer: PropTypes.func,
   handleEvent: PropTypes.func,
+  view: PropTypes.string,
 }
 
 SelectUnit.defaultProps = {
@@ -158,6 +161,7 @@ SelectUnit.defaultProps = {
   width: '120px',
   getPopupContainer: (trigger) => trigger.parentNode,
   handleEvent: () => {},
+  view: '',
 }
 
 export default SelectUnit

@@ -1,4 +1,6 @@
 import React from 'react'
+import { greyThemeDark1, white } from '@edulastic/colors'
+import { IconCircleCheck } from '@edulastic/icons'
 import { TableHeaderCellWrapper } from '../common/styledComponents'
 
 const TableHeaderCell = ({
@@ -19,7 +21,10 @@ const TableHeaderCell = ({
         tableHeaderCellClick()
       }}
     >
-      <div>{title}</div>
+      <div>
+        <IconCircleCheck width={18} color={greyThemeDark1} checkColor={white} />
+        <span>{title}</span>
+      </div>
       <div>{value}</div>
     </TableHeaderCellWrapper>
   )

@@ -37,6 +37,7 @@ const ClozeMathAnswers = ({
   fillSections,
   cleanSections,
   onChangeKeypad,
+  view,
   t,
 }) => {
   const [correctTab, setCorrectTab] = useState(0)
@@ -726,6 +727,7 @@ const ClozeMathAnswers = ({
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
                       tabIndex={correctTab}
+                      view={view}
                     />
                   )
                 }
@@ -754,6 +756,7 @@ const ClozeMathAnswers = ({
                       onChangeKeypad={onChangeKeypad}
                       extraOptions={extraOpts}
                       tabIndex={correctTab}
+                      view={view}
                     />
                   )
                 }
@@ -810,6 +813,7 @@ ClozeMathAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  view: PropTypes.string.isRequired,
 }
 
 ClozeMathAnswers.defaultProps = {

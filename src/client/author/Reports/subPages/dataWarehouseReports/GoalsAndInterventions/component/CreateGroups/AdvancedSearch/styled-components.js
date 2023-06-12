@@ -1,8 +1,8 @@
 import Styled from 'styled-components'
 import { Select } from 'antd'
-import { EduButton, CustomModalStyled } from '@edulastic/common'
+import { EduButton, CustomModalStyled, Label } from '@edulastic/common'
 import { IconPlayButton, IconQuestionCircle } from '@edulastic/icons'
-import { greyThemeDark1, lightGrey11 } from '@edulastic/colors'
+import { darkGrey, greyThemeDark1, lightGrey11 } from '@edulastic/colors'
 
 export const ModalBody = Styled.div`
   .ant-select-selection {
@@ -121,3 +121,8 @@ export const SpinContainer = Styled.div`
   background: rgba(68, 68, 68, 0.1);
   z-index: 999;
  `
+export const CombinatorLabel = Styled(Label)`
+  color: ${darkGrey};
+  font-weight: bold;
+  font-size: 12px;
+`

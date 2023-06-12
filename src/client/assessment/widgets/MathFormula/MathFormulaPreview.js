@@ -405,7 +405,7 @@ class MathFormulaPreview extends Component {
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')
-                            : ''
+                            : null
                         }
                         onInput={(latexv) => this.onUserResponse(latexv)}
                         onBlur={(latexv) => this.onBlur(latexv)}

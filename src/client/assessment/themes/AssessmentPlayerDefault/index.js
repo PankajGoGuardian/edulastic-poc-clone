@@ -5,7 +5,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
-import { withWindowSizes, notification } from '@edulastic/common'
+import {
+  withWindowSizes,
+  notification,
+  AssessmentPlayerContext,
+} from '@edulastic/common'
 import {
   nonAutoGradableTypes,
   collections as collectionConst,
@@ -527,7 +531,7 @@ class AssessmentPlayerDefault extends React.Component {
             userWork: LCBPreviewModal ? scratchpadActivity.data : scratchPad,
             changePreviewTab: changePreview,
           }
-
+    const { isStudentAttempt } = this.context
     return (
       /**
        * zoom only in student side, otherwise not
@@ -667,6 +671,7 @@ class AssessmentPlayerDefault extends React.Component {
               <MainWrapper
                 ref={this.scrollContainer}
                 hasCollapseButtons={hasCollapseButtons}
+                isStudentAttempt={isStudentAttempt}
               >
                 <TestItemPreview
                   showCollapseBtn
@@ -981,5 +986,5 @@ const enhance = compose(
     }
   )
 )
-
+AssessmentPlayerDefault.contextType = AssessmentPlayerContext
 export default enhance(AssessmentPlayerDefault)

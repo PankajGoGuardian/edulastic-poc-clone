@@ -218,6 +218,7 @@ const ClozeMath = ({
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                     onChangeKeypad={handleKeypadMode}
+                    view={view}
                     t={t}
                   />
                 </Question>

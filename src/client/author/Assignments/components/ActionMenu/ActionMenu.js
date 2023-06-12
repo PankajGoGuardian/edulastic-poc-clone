@@ -128,7 +128,7 @@ const ActionMenu = ({
   }
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
-  const isReleaseScorereRestricted =
+  const isReleaseScoreRestricted =
     [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
       currentAssignment?.assignedBy?.role
     ) &&
@@ -215,7 +215,7 @@ const ActionMenu = ({
         )}
         <Menu.Item
           data-cy="release-grades"
-          disabled={isReleaseScorereRestricted}
+          disabled={isReleaseScoreRestricted}
           key="release-grades"
           onClick={() =>
             onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)
@@ -223,7 +223,7 @@ const ActionMenu = ({
         >
           <Tooltip
             title={
-              isReleaseScorereRestricted
+              isReleaseScoreRestricted
                 ? 'Release Score policy is restricted by admin for this assignment.'
                 : null
             }

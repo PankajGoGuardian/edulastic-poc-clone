@@ -482,8 +482,8 @@ class ClassHeader extends Component {
       testContentVisibility,
       isActivityLoading,
       userRole,
-      getAssignedBy,
-      getTestData,
+      assignedBy,
+      testData,
     } = this.props
     const {
       visible,
@@ -503,7 +503,6 @@ class ClassHeader extends Component {
       closed,
       canCloseClass = [],
       dueDate,
-      assignedBy = {},
       classId: _classId,
     } = additionalData
     const dueOn = dueDate || endDate
@@ -580,11 +579,11 @@ class ClassHeader extends Component {
 
     const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
     const adminRoles = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN]
-    const isReleaseScorereRestricted = isActivityLoading
+    const isReleaseScoreRestricted = isActivityLoading
       ? true
-      : adminRoles.includes(getAssignedBy?.role) &&
+      : adminRoles.includes(assignedBy?.role) &&
         userRole === roleuser.TEACHER &&
-        getTestData?.freezeSettings
+        testData?.freezeSettings
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -708,13 +707,13 @@ class ClassHeader extends Component {
         </FeaturesSwitch>
         <MenuItems
           data-cy="releaseScore"
-          disabled={isReleaseScorereRestricted}
+          disabled={isReleaseScoreRestricted}
           key="key2"
           onClick={() => toggleReleaseGradePopUp(true)}
         >
           <Tooltip
             title={
-              isReleaseScorereRestricted
+              isReleaseScoreRestricted
                 ? 'Release Score policy is restricted by admin for this assignment.'
                 : null
             }
@@ -1228,8 +1227,8 @@ const enhance = compose(
   connect(
     (state) => ({
       releaseScore: showScoreSelector(state),
-      getAssignedBy: getAssignedBySelector(state),
-      getTestData: getTestDataSelector(state),
+      assignedBy: getAssignedBySelector(state),
+      testData: getTestDataSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       canClose: getCanCloseAssignmentSelector(state),
       canOpen: getCanOpenAssignmentSelector(state),

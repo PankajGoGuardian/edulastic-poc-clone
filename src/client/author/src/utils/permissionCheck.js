@@ -1,3 +1,5 @@
+import { collections as collectionsConst } from '@edulastic/constants'
+
 const entity = {
   ITEM: 'item',
   TEST: 'test',
@@ -9,6 +11,8 @@ const entityPermissionMap = {
   [entity.TEST]: 'canDuplicateTest',
   [entity.PLAYLIST]: 'canDuplicatePlayList',
 }
+
+const { PREMIUM } = collectionsConst.types
 
 export const allowDuplicateCheck = (
   entityCollections = [],
@@ -57,4 +61,17 @@ export const allowContentEditCheck = (
   return entityCollections.every((cl) =>
     writableCollections.some((item) => cl._id === item._id)
   )
+}
+
+export const isContentOfCollectionEditable = (
+  entityCollections = [],
+  userCollections = []
+) => {
+  const writableCollections = userCollections
+    .filter(
+      ({ type = '', editPermitted = false, status }) =>
+        type === PREMIUM && editPermitted && status === 1
+    )
+    .map((item) => item._id)
+  return entityCollections.some((cl) => writableCollections.includes(cl._id))
 }

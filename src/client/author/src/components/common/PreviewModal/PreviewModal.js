@@ -71,6 +71,7 @@ import {
 import {
   allowDuplicateCheck,
   allowContentEditCheck,
+  isContentOfCollectionEditable,
 } from '../../../utils/permissionCheck'
 import ScoreBlock from '../ScoreBlock'
 import AuthorTestItemPreview from './AuthorTestItemPreview'
@@ -342,6 +343,10 @@ class PreviewModal extends React.Component {
       item?.collections,
       writableCollections
     )
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      item?.collections,
+      writableCollections
+    )
     const allowDuplicate = allowDuplicateCheck(
       item?.collections,
       collections,
@@ -350,7 +355,8 @@ class PreviewModal extends React.Component {
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
-      (hasCollectionAccess && userFeatures.isCurator)
+      (hasCollectionAccess && userFeatures.isCurator) ||
+      isCollectionContentEditable
     )
 
     // change the question editor view to "edit"
@@ -663,13 +669,18 @@ class PreviewModal extends React.Component {
 
   handleDeleteItem = () => {
     const {
-      item: { _id, isPassageWithQuestions = false },
+      item: { _id, isPassageWithQuestions = false, collections = [] },
       deleteItem,
       isEditable,
       page,
       closeModal,
+      writableCollections = [],
     } = this.props
-    if (!isEditable) {
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      collections,
+      writableCollections
+    )
+    if (!(isEditable || isCollectionContentEditable)) {
       notification({ messageKey: 'dontHaveWritePermission' })
       return
     }
@@ -773,6 +784,10 @@ class PreviewModal extends React.Component {
       writableCollections
     )
     const { derivedFromPremiumBankId = false } = item || {}
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      item?.collections,
+      writableCollections
+    )
     let allowDuplicate =
       (allowDuplicateCheck(item?.collections, collections, 'item') ||
         isOwner) &&
@@ -811,7 +826,8 @@ class PreviewModal extends React.Component {
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (hasCollectionAccess && userFeatures.isCurator) ||
-      (isTestInRegrade && allowDuplicate && isEditable)
+      (isTestInRegrade && allowDuplicate && isEditable) ||
+      isCollectionContentEditable
     )
     const isDisableDuplicate = !(
       allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
@@ -1043,7 +1059,7 @@ class PreviewModal extends React.Component {
                   </EduButton>
                 </span>
               </Tooltip>
-              {isOwner &&
+              {(isOwner || isCollectionContentEditable) &&
                 !(
                   userFeatures?.isPublisherAuthor && item.status === 'published'
                 ) &&
@@ -1154,7 +1170,8 @@ class PreviewModal extends React.Component {
               isEditable={
                 (isEditable && isOwner) ||
                 userFeatures.isCurator ||
-                userRole === roleuser.EDULASTIC_CURATOR
+                userRole === roleuser.EDULASTIC_CURATOR ||
+                isCollectionContentEditable
               }
               isPassage={isPassage}
               passageTestItems={passageTestItems}

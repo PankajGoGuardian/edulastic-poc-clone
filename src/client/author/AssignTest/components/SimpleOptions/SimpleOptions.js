@@ -29,6 +29,7 @@ import {
   getCollectionsSelector,
   getUserRole,
   allowReferenceMaterialSelector,
+  getIsAiEvaulationDistrictSelector,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -492,6 +493,7 @@ class SimpleOptions extends React.Component {
       setCreateClassTypeDetails,
       togglePenaltyOnUsingHints,
       setShowAdvanceSearchModal,
+      isAiEvaulationDistrict,
     } = this.props
 
     const { collections } = testSettings
@@ -659,6 +661,7 @@ class SimpleOptions extends React.Component {
                 allowReferenceMaterial={allowReferenceMaterial}
                 allowToUseShowHintsToStudents={features?.showHintsToStudents}
                 togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
+                isAiEvaulationDistrict={isAiEvaulationDistrict}
               />
             </TabContentContainer>
           </TabPane>
@@ -790,6 +793,7 @@ const enhance = compose(
         'standardsProficiencyReducer.data',
         []
       ),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

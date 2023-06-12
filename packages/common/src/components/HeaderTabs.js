@@ -11,6 +11,7 @@ import { PropTypes } from 'prop-types'
 import React from 'react'
 import { withRouter } from 'react-router'
 import styled from 'styled-components'
+import { EduIf } from './ControlStatement/EduIf'
 
 const HeaderTabs = ({
   id,
@@ -25,6 +26,7 @@ const HeaderTabs = ({
   history,
   hideIcon,
   activeStyle,
+  isNew,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -55,7 +57,15 @@ const HeaderTabs = ({
         hideIcon={hideIcon}
       >
         {icon}
-        <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
+        <LinkLabel hasIcon={!!icon}>
+          {linkLabel}
+          <EduIf condition={isNew}>
+            <>
+              {' '}
+              <StyledSup>NEW</StyledSup>
+            </>
+          </EduIf>
+        </LinkLabel>
       </StyledAnchor>
     </StyledLink>
   )
@@ -71,12 +81,14 @@ HeaderTabs.propTypes = {
   icon: PropTypes.any.isRequired,
   onClickHandler: PropTypes.func,
   activeStyle: PropTypes.object,
+  isNew: PropTypes.bool,
 }
 
 HeaderTabs.defaultProps = {
   to: '#',
   onClickHandler: () => {},
   activeStyle: {},
+  isNew: false,
 }
 
 export default withRouter(HeaderTabs)
@@ -173,4 +185,10 @@ export const LinkLabel = styled.div`
   @media (max-width: ${desktopWidth}) {
     white-space: wrap;
   }
+`
+
+export const StyledSup = styled.sup`
+  color: #e20d2d;
+  font-size: 8px;
+  font-weight: bold;
 `

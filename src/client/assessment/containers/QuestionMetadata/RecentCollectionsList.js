@@ -8,6 +8,7 @@ const RecentCollectionsList = ({
   collections,
   handleCollectionsSelect,
   isDocBased,
+  isDerivedFromPremiumBank = false,
 }) => {
   return (
     <StandardsWrapper isDocBased={isDocBased}>
@@ -16,11 +17,13 @@ const RecentCollectionsList = ({
         {recentCollectionsList.map((recentCollection) => (
           <StandardTags
             color={
-              collections.find((o) => o._id === recentCollection._id)
+              collections.find((o) => o._id === recentCollection._id) ||
+              isDerivedFromPremiumBank
                 ? grey
                 : themeColor
             }
             onClick={() => {
+              if (isDerivedFromPremiumBank) return
               if (!collections.find((o) => o._id === recentCollection._id)) {
                 handleCollectionsSelect(recentCollection)
               }

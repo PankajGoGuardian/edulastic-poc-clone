@@ -67,7 +67,7 @@ export const dataWarehousereportCardsData = [
         id: 2,
         comingSoon: true,
         IconThumbnail: IconBehaviourReportAddOn,
-        title: 'Behaviour',
+        title: 'Behavior',
         description:
           'Understand student behavior trends, reduce suspensions and referrals and support the whole student.',
         url: '',

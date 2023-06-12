@@ -14,6 +14,9 @@ import {
   SectionContainer,
   SectionDescription,
   SectionTitle,
+  StyledLinkItem,
+  StyledLinkWrapper,
+  StyledNewTag,
   StyledTag,
   TopSection,
 } from './styled'
@@ -46,9 +49,15 @@ const SubscriptionContainer = ({
         showSubscriptionsForms={showSubscriptionsForms}
         setShowSubscriptionsForms={setShowSubscriptionsForms}
         formType={subscriptionFormType}
+        category={type}
       />
       <TopSection>
-        <h1>{data.title}</h1>
+        <h1>
+          {data.title}{' '}
+          <EduIf condition={data.isNew}>
+            <StyledNewTag>NEW</StyledNewTag>
+          </EduIf>
+        </h1>
         <p>{data.description}</p>
       </TopSection>
       <EnterpriseSection data-cy="enterpriseCard">
@@ -56,7 +65,23 @@ const SubscriptionContainer = ({
           <IconWrapper>{data.header.icon}</IconWrapper>
           <div>
             <SectionTitle>{data.header.title}</SectionTitle>
-            <SectionDescription>{data.header.description}</SectionDescription>
+            <SectionDescription>
+              {data.header.description}
+              <EduIf condition={(data.links || []).length > 0}>
+                <StyledLinkWrapper>
+                  {data.links?.map(({ label, url }, index) => (
+                    <StyledLinkItem
+                      href={url}
+                      target="_blank"
+                      key={index}
+                      rel="noreferrer"
+                    >
+                      {label}
+                    </StyledLinkItem>
+                  ))}
+                </StyledLinkWrapper>
+              </EduIf>
+            </SectionDescription>
           </div>
         </FlexContainer>
         {showRequestOption && (

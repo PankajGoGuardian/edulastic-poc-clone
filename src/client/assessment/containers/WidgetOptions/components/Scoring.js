@@ -25,6 +25,10 @@ import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperT
 
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import {
+  ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
+} from '@edulastic/constants/const/questionType'
+import {
   getQuestionDataSelector,
   setQuestionDataAction,
   updateScoreAndValidationAction,
@@ -58,6 +62,7 @@ import {
   setItemLevelScoreFromRubricAction,
   getItemDetailQuestionsSelector,
 } from '../../../../author/ItemDetail/ducks'
+import { getIsAiEvaulationDistrictSelector } from '../../../../author/src/selectors/user'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -166,6 +171,7 @@ class Scoring extends Component {
       setItemLevelScoring,
       location,
       itemDetailQuestions,
+      isAiEvaulationDistrict,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
@@ -266,6 +272,14 @@ class Scoring extends Component {
         {t('component.options.unscored')}
       </CheckboxLabel>
     )
+
+    const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
+      questionData?.type
+    )
+    const gradingRubricHelpText =
+      isEssayTypeQuestion && isAiEvaulationDistrict
+        ? ` (${t('component.options.gradingRubricHelpText')})`
+        : ''
 
     return (
       <div
@@ -416,7 +430,9 @@ class Scoring extends Component {
                 disabled={!isCorrectAnsTab || questionData.validation.unscored}
                 size="large"
               >
-                {t('component.options.gradingRubric')}
+                {`${t(
+                  'component.options.gradingRubric'
+                )}${gradingRubricHelpText}`}
               </CheckboxLabel>
             </Col>
           </Row>
@@ -583,6 +599,7 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       containsRubric: getQuestionRubrics(state),
       itemDetailQuestions: getItemDetailQuestionsSelector(state),
+      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

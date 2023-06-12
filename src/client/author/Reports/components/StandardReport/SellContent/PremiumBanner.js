@@ -24,7 +24,7 @@ export const PremiumBanner = () => (
       </Col>
     </Row>
     <br />
-    <Row gutter={32} justify="center">
+    <Row gutter={48} justify="center">
       <Col span={5}>
         <Row type="flex">
           <Col span={2}>
@@ -44,7 +44,7 @@ export const PremiumBanner = () => (
           </Col>
         </Row>
       </Col>
-      <Col span={6}>
+      <Col span={5}>
         <Row type="flex">
           <Col span={2}>
             <IconUsersGroup />
@@ -52,7 +52,7 @@ export const PremiumBanner = () => (
           <Col span={22}>Holistic student view for parents</Col>
         </Row>
       </Col>
-      <Col span={6}>
+      <Col span={7}>
         <Row type="flex">
           <Col span={2}>
             <IconGears />

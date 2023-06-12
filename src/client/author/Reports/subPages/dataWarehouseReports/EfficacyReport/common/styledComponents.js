@@ -1,6 +1,7 @@
 import { grey, greyLight1, white, darkGrey4 } from '@edulastic/colors'
 import { Row } from 'antd'
 import styled from 'styled-components'
+import { StyledTable } from '../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 
 export const LegendWrapper = styled.div`
   display: flex;
@@ -188,5 +189,13 @@ export const GridContainer = styled.div`
   text-align: left;
   & > *:nth-child(even) {
     text-align: right;
+  }
+`
+export const CustomStyledTable = styled(StyledTable)`
+  .ant-table-thead .dimension .ant-table-column-sorters {
+    margin-left: 10px;
+  }
+  .ant-table-tbody .dimension-name {
+    margin-left: 10px;
   }
 `

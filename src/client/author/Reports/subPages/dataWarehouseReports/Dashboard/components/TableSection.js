@@ -28,7 +28,7 @@ function TableSection({
   location,
   search,
   compareByOptions,
-  selectedPerformanceBand,
+  selectedPerformanceBandOption,
   isCsvDownloading,
   settings,
   setSettings,
@@ -63,10 +63,9 @@ function TableSection({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
-
+  const selectedPerformanceBand = selectedPerformanceBandOption?.performanceBand
   useEffect(() => {
-    const profileId =
-      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const profileId = selectedPerformanceBandOption?.key
     const academicTestType =
       academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
     const q = getTableApiQuery(
@@ -81,12 +80,11 @@ function TableSection({
   }, [
     settings.requestFilters,
     tableFilters[tableFilterTypes.COMPARE_BY]?.key,
-    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key,
+    selectedPerformanceBandOption?.key,
   ])
 
   useEffect(() => {
-    const profileId =
-      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const profileId = selectedPerformanceBandOption?.key
     const academicTestType =
       academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
     const q = getTableApiQuery(
@@ -112,8 +110,7 @@ function TableSection({
   ])
 
   useEffect(() => {
-    const profileId =
-      academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    const profileId = selectedPerformanceBandOption?.key
     const academicTestType =
       academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
     const q = getTableApiQuery(

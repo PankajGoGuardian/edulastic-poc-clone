@@ -16,7 +16,7 @@ function ReportView({
   location,
   search,
   performanceBandList,
-  selectedPerformanceBand,
+  selectedPerformanceBandOption,
   setAcademicSummaryFilters,
   compareByOptions,
   isCsvDownloading,
@@ -32,6 +32,8 @@ function ReportView({
   availableTestTypes,
 }) {
   const { academicSummaryFilters } = settings
+
+  const selectedPerformanceBand = selectedPerformanceBandOption?.performanceBand
 
   return (
     <>
@@ -72,7 +74,7 @@ function ReportView({
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
         loadingTableData={loadingTableData}
-        selectedPerformanceBand={selectedPerformanceBand}
+        selectedPerformanceBandOption={selectedPerformanceBandOption}
         settings={settings}
         setSettings={setSettings}
         selectedCompareBy={selectedCompareBy}

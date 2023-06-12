@@ -224,6 +224,7 @@ const SubscriptionHeader = ({
                 dataCy="DataStudioTab"
                 isActive={showDataStudioTab && !showEnterpriseTab}
                 linkLabel="Data Studio"
+                isNew
                 onClickHandler={() => {
                   setShowEnterpriseTab(false)
                   setShowDataStudioTab(true)

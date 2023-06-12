@@ -56,6 +56,10 @@ const linkSharingPermissions = {
 
 const { PARTIAL_PREMIUM, ENTERPRISE } = subscriptions.SUBSCRIPTION_SUB_TYPES
 
+const checkIsUndefinedOrNull = (value) => {
+  return value === undefined || value === null
+}
+
 class TestSetting extends Component {
   constructor(props) {
     super(props)
@@ -156,7 +160,11 @@ class TestSetting extends Component {
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
       enableAudioResponseQuestion: testSetting.enableAudioResponseQuestion,
-      canAccessPublicContent: !!testSetting.canAccessPublicContent,
+      canAccessPublicContent: checkIsUndefinedOrNull(
+        testSetting.canAccessPublicContent
+      )
+        ? true
+        : testSetting.canAccessPublicContent,
     }
     if (updateData.isLinkSharingEnabled) {
       Object.assign(updateData, {
@@ -204,10 +212,15 @@ class TestSetting extends Component {
 
     const showSpin = updating || loading || creating
     const enableAudioResponseQuestions = !!testSetting.enableAudioResponseQuestion
-    const canAccessPublicContent = !!testSetting.canAccessPublicContent
+    const canAccessPublicContent = checkIsUndefinedOrNull(
+      testSetting.canAccessPublicContent
+    )
+      ? true
+      : testSetting.canAccessPublicContent
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const isUserDa = role === roleuser.DISTRICT_ADMIN
     const showEnterpriseSettings = [isEnterprise, isUserDa].every((o) => !!o)
+
     return (
       <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />

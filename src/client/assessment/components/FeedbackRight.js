@@ -507,6 +507,7 @@ class FeedbackRight extends Component {
     this.setState({
       isApprovedByTeacher: e.target.checked,
       showFeedbackSaveBtn: e.target.checked,
+      changed: true,
     })
 
   getRubricResponse = () => {
@@ -579,7 +580,12 @@ class FeedbackRight extends Component {
         rubricDetails.criteria,
         (c) => maxBy(c.ratings, 'points').points
       )
-    let { rubricFeedback, rubricFeedbackByAI } = activity || {}
+    let {
+      rubricFeedback,
+      rubricFeedbackByAI,
+      isGradedExternally,
+      aiEvaluationStatus,
+    } = activity || {}
     if (isAIEvaluated) {
       rubricFeedback = rubricFeedbackByAI
     }
@@ -620,6 +626,9 @@ class FeedbackRight extends Component {
       (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
+      if (isAIEvaluated && activity?.scoreByAI === 0) {
+        _score = 0
+      }
     }
 
     const _maxScore =
@@ -709,6 +718,8 @@ class FeedbackRight extends Component {
             inputScore={_score}
             showWarningToClear={showWarningToClear}
             enableScoreInput={this.enableScoreInput}
+            isGradedExternally={isGradedExternally}
+            aiEvaluationStatus={aiEvaluationStatus}
           />
         )}
         {!isError && (
@@ -733,7 +744,10 @@ class FeedbackRight extends Component {
                   {feedback}
                 </FeedbackDisplay>
               )}
-              <FeedbackInputInnerWrapper2 onBlur={this.blurFeedbackInput}>
+              <FeedbackInputInnerWrapper2
+                onBlur={this.blurFeedbackInput}
+                tabIndex={0}
+              >
                 <FeedbackInput
                   tabIndex={0}
                   autoSize

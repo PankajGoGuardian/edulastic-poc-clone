@@ -77,7 +77,11 @@ const ControlDropDown = ({
   const [selected, setSelected] = useState(by)
   const [isActive, setActive] = useState(false)
 
+  // FIXME: WHY Internal Effect ??
+  // (setState synchronously in render fn is wrong.)
+  // Moreover, setState is asynchronous, so it'll take effect in next render anyways.
   useInternalEffect(() => {
+    // FIXME: `selected` should be `by`. Otherwise, when both `by` and `data` change, `selected` will be `data[0]` instead of `by`.
     const item = searchItemOrDefault(data, selected)
     setSelected(item)
   }, [data])

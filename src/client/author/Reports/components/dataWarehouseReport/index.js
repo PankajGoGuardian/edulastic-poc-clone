@@ -84,17 +84,17 @@ const DataWarehouseReports = ({
   const UpgradeBanner = () => (
     <EduIf condition={!allowAccess}>
       <BannerContainer>
-        <Row gutter={16}>
-          <Col span={20}>
+        <Row type="flex">
+          <Col>
             <div className="text">
-              You don’t have an active subscription. Please upgrade your
-              subscription to access Data Studio Reports and set / monitor Goals
-              and Interventions.
+              You don’t have an active Data Studio Subscription. Please upgrade
+              to access Data Studio Reports and set/monitor Goals and
+              Interventions.
             </div>
           </Col>
-          <Col span={4}>
+          <Col>
             <div className="button">
-              <EduButton height="30px" isGhost onClick={onUpgradeNowClicked}>
+              <EduButton height="36px" isGhost onClick={onUpgradeNowClicked}>
                 UPGRADE NOW
               </EduButton>
             </div>
@@ -198,8 +198,7 @@ const StyledTabs = styled(Tabs)`
 
 const BannerContainer = styled.div`
   .button {
-    text-align: right;
-    padding: 10px 24px;
+    line-height: 58px;
 
     button {
       display: inline;
@@ -208,11 +207,11 @@ const BannerContainer = styled.div`
 
   .text {
     color: white;
-    padding: 16px 24px;
+    padding: 20px 24px;
   }
 
   border-radius: 4px;
-  height: 50px;
+  height: 60px;
   background: #313d50;
 `
 

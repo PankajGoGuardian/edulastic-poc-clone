@@ -19,13 +19,17 @@ const LinkCell = ({ value, url, openNewTab = false }) => {
         <EduThen>
           <Tooltip title={value.name}>
             <Link to={url} {...linkProps}>
-              <CompareByContainer>{cellValue}</CompareByContainer>
+              <CompareByContainer className="dimension-name">
+                {cellValue}
+              </CompareByContainer>
             </Link>
           </Tooltip>
         </EduThen>
         <EduElse>
           <Tooltip title={value.name}>
-            <CompareByContainer>{cellValue}</CompareByContainer>
+            <CompareByContainer className="dimension-name">
+              {cellValue}
+            </CompareByContainer>
           </Tooltip>
         </EduElse>
       </EduIf>

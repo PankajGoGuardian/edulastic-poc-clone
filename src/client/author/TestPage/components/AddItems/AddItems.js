@@ -686,7 +686,7 @@ const enhance = compose(
       receiveTestItems: (search, sort, page, limit) => {
         const _search = {
           ...search,
-          standardIds: search.standardIds.map((item) => item._id),
+          standardIds: search?.standardIds?.map((item) => item._id) || [],
         }
         return receiveTestItemsAction(_search, sort, page, limit)
       },

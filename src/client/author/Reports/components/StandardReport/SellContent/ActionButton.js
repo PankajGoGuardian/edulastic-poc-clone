@@ -44,7 +44,7 @@ const ActionButton = ({
           <>
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (
-                <SecondaryButton height="30px" isGhost onClick={handleClick}>
+                <SecondaryButton height="36px" isGhost onClick={handleClick}>
                   TAKE FREE TRIAL
                 </SecondaryButton>
               )}
@@ -53,7 +53,7 @@ const ActionButton = ({
           </>
         </EduIf>
         <Link to="/author/subscription">
-          <PrimaryButton height="30px" isGhost onClick={upgradeNow}>
+          <PrimaryButton height="36px" isGhost onClick={upgradeNow}>
             UPGRADE NOW
           </PrimaryButton>
         </Link>

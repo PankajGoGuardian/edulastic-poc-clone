@@ -76,6 +76,7 @@ const TestBehaviorGroupContainer = ({
   t: i18translate,
   allowToUseShowHintsToStudents,
   togglePenaltyOnUsingHints,
+  isAiEvaulationDistrict,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -519,6 +520,7 @@ const TestBehaviorGroupContainer = ({
         condition={[
           isShowAutoEssayEvaluationSetting,
           !testSettings?.isDocBased,
+          isAiEvaulationDistrict,
         ].every((o) => !!o)}
       >
         <SettingContainer id="auto-essay-evaluation">

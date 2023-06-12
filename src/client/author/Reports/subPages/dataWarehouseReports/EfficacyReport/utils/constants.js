@@ -167,6 +167,7 @@ export const genericColumnsForTable = [
     width: 150,
     align: 'left',
     sorter: true,
+    className: 'dimension',
   },
   {
     title: 'Students',
@@ -230,6 +231,7 @@ export const compareByStudentColumns = [
     align: 'left',
     width: 100,
     sorter: true,
+    className: 'dimension',
   },
   {
     title: 'School',

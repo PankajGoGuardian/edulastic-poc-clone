@@ -80,6 +80,10 @@
         "tooltip": "You can make changes to the AI evaluation provided and then approve it."
       }
     },
+    "manualEvaluationNeeded": {
+      "text": "Please Evaluate Manually"
+    },
+    "feedbackGradeHaveToBeSaved": "The feedback and grade have to be saved to reflect the grade here",
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",
@@ -199,6 +203,7 @@
       "automarkable": "Enable auto scoring",
       "unscored": "Zero Point / Practice usage",
       "gradingRubric": "Grading Rubric",
+      "gradingRubricHelpText": "Try out AI assisted Auto rubric generator",
       "penalty": "Penalty Point(s)",
       "stimulusreviewonly": "Stimulus (review only)",
       "instructorstimulus": "Instructor stimulus",

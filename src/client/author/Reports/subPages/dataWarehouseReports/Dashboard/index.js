@@ -110,14 +110,13 @@ const Dashboard = ({
     ]
   )
 
-  const selectedPerformanceBand = (
+  const selectedPerformanceBandOption =
     performanceBandList.filter(
       ({ key }) =>
         key ===
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key
     )[0] || performanceBandList[0]
-  )?.performanceBand
 
   const search = useUrlSearchParams(location)
   const selectedCompareBy = getSelectedCompareBy({
@@ -213,7 +212,7 @@ const Dashboard = ({
             location={location}
             search={search}
             selectedCompareBy={selectedCompareBy}
-            selectedPerformanceBand={selectedPerformanceBand}
+            selectedPerformanceBandOption={selectedPerformanceBandOption}
             performanceBandList={performanceBandList}
             setAcademicSummaryFilters={setAcademicSummaryFilters}
             compareByOptions={compareByOptions}

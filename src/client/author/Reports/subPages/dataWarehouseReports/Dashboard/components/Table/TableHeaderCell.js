@@ -17,18 +17,15 @@ const TableHeaderCell = ({
       isSelected={isSelected}
       isClickable={!!value}
       borderColor={borderColor}
+      onClick={() => {
+        tableHeaderCellClick()
+      }}
     >
       <div>
         <IconCircleCheck width={18} color={greyThemeDark1} checkColor={white} />
         <span>{title}</span>
       </div>
-      <div
-        onClick={() => {
-          tableHeaderCellClick()
-        }}
-      >
-        {value}
-      </div>
+      <div>{value}</div>
     </TableHeaderCellWrapper>
   )
 }

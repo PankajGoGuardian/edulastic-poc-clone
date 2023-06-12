@@ -1,9 +1,10 @@
 import { FieldLabel, FlexContainer, SelectInputStyled } from '@edulastic/common'
-import { Row, Select, Input } from 'antd'
+import { Row, Select, Input, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
 import { test as testConstants } from '@edulastic/constants'
+import { get } from 'lodash'
 import { getInterestedStandards } from '../../../../../dataUtils'
 import Tags from '../../../../../src/components/common/Tags'
 import {
@@ -48,13 +49,14 @@ const ReviewSummary = ({
   collections = [],
   interestedCurriculums,
   windowWidth,
-  test: { itemGroups, metadata, alignment },
+  test: { itemGroups, metadata, alignment, derivedFromPremiumBankId = false },
   testCategory,
   summary,
   hasRandomQuestions,
   isPublishers,
   collectionsToShow,
   allCollectionsList,
+  editEnable,
 }) => {
   const questionsCount = summary?.totalItems || 0
   const totalPoints = summary?.totalPoints || 0
@@ -75,6 +77,9 @@ const ReviewSummary = ({
     alignment,
     interestedCurriculums
   )
+  const isCollectionSelectDisabled =
+    !owner || !isEditable || derivedFromPremiumBankId
+
   return (
     <Container>
       <FlexBoxOne>
@@ -130,32 +135,42 @@ const ReviewSummary = ({
 
         <InnerFlex>
           <FieldLabel data-cy="collection-review">Collections</FieldLabel>
-          <SelectInputStyled
-            showArrow
-            mode="multiple"
-            data-cy="collectionsSelect"
-            size="medium"
-            disabled={!owner || !isEditable}
-            placeholder="Please select"
-            value={filteredCollections.flatMap((c) => c.bucketIds)}
-            onChange={(value, options) => onChangeCollection(value, options)}
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().includes(input.toLowerCase())
+          <Tooltip
+            title={
+              editEnable &&
+              isCollectionSelectDisabled &&
+              'Action not permitted on clone of a premium content'
             }
-            margin="0px 0px 15px"
           >
-            {collectionListToUse?.map((o) => (
-              <Select.Option
-                key={o.bucketId}
-                value={o.bucketId}
-                _id={o._id}
-                type={o.type}
-                collectionName={o.collectionName}
-              >
-                {`${o.collectionName} - ${o.name}`}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
+            <SelectInputStyled
+              showArrow
+              mode="multiple"
+              data-cy="collectionsSelect"
+              size="medium"
+              disabled={isCollectionSelectDisabled}
+              placeholder="Please select"
+              value={filteredCollections.flatMap((c) => c.bucketIds)}
+              onChange={(value, options) => onChangeCollection(value, options)}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              margin="0px 0px 15px"
+            >
+              {collectionListToUse?.map((o) => (
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  _id={o._id}
+                  type={o.type}
+                  collectionName={o.collectionName}
+                >
+                  {`${o.collectionName} - ${o.name}`}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </Tooltip>
         </InnerFlex>
       </FlexBoxTwo>
 
@@ -287,6 +302,7 @@ export default connect(
     summary: getTestSummarySelector(state),
     collectionsToShow: getCollectionsToAddContent(state),
     allCollectionsList: getItemBucketsForAllCollectionsSelector(state),
+    editEnable: get(state, 'tests.editEnable'),
   }),
   null
 )(ReviewSummary)

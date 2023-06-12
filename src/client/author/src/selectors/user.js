@@ -1,6 +1,7 @@
 import { get as _get, pick, groupBy, isEmpty } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
+import { AUTO_RUBRIC_ENABLED_DISTRICT } from '@edulastic/constants/const/common'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
@@ -44,6 +45,14 @@ export const getUserFullNameSelector = createSelector(
 export const getOrgDataSelector = createSelector(
   stateSelector,
   (state) => state?.user?.orgData || {}
+)
+
+export const getIsAiEvaulationDistrictSelector = createSelector(
+  getOrgDataSelector,
+  (orgData) =>
+    (orgData?.districtIds || [])?.find((id) =>
+      AUTO_RUBRIC_ENABLED_DISTRICT?.includes(id)
+    )
 )
 
 export const getCurrentGroup = createSelector(

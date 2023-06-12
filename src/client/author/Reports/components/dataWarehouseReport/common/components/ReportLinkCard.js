@@ -32,14 +32,16 @@ const ReportLinkCard = ({
       <CustomStyledCard onClick={navigateToReport}>
         <HeaderContainer>
           <TitleContainer>
-            <Col span={comingSoon ? 16 : 24}>
-              <h3>{title}</h3>
+            <Col span={24}>
+              <h3>
+                {title}{' '}
+                <EduIf condition={comingSoon}>
+                  <TagContainer>
+                    <Tag>Coming soon</Tag>
+                  </TagContainer>
+                </EduIf>
+              </h3>
             </Col>
-            <EduIf condition={comingSoon}>
-              <TagContainer span={8}>
-                <Tag>Coming soon</Tag>
-              </TagContainer>
-            </EduIf>
           </TitleContainer>
         </HeaderContainer>
         <Row gutter={16}>
@@ -81,10 +83,10 @@ export const StyledIcon = styled(Icon)`
   color: ${themeColor};
 `
 
-export const TagContainer = styled(Col)`
-  text-align: right;
-
+export const TagContainer = styled.span`
   .ant-tag {
+    position: relative;
+    top: -8px;
     font-weight: bold;
     margin: 0px;
     border: 1px solid ${themeColor};

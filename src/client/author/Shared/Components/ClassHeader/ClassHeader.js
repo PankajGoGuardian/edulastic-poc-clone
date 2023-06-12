@@ -1230,7 +1230,6 @@ const enhance = compose(
       releaseScore: showScoreSelector(state),
       getAssignedBy: getAssignedBySelector(state),
       getTestData: getTestDataSelector(state),
-      testActivtyLoading: testActivtyLoadingSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       canClose: getCanCloseAssignmentSelector(state),
       canOpen: getCanOpenAssignmentSelector(state),

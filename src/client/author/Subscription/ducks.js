@@ -11,6 +11,7 @@ import {
 } from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import { push } from 'react-router-redux'
 import {
   fetchUserAction,
   getUserId as getUserIdSelector,
@@ -571,6 +572,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         setPaymentServiceModal(false)
         yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
         yield put(fetchUserAction({ background: true }))
+        yield put(push('/author/manage-subscriptions'))
         notification({
           type: 'success',
           msg: `Payment successful.`,

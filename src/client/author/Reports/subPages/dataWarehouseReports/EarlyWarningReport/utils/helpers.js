@@ -32,6 +32,7 @@ import {
   CHART_LABEL_KEY,
   RISK_KEYS,
 } from './constants'
+import { sortTestTypes } from '../../common/utils'
 
 const {
   percentage,
@@ -173,7 +174,8 @@ export const getTableColumns = ({
         availableTestTypes.add(testType)
       )
     )
-    const academicSubColumns = [...availableTestTypes].map((testType) => {
+    const sortedAvailableTestTypes = sortTestTypes([...availableTestTypes])
+    const academicSubColumns = sortedAvailableTestTypes.map((testType) => {
       const isExternal =
         EXTERNAL_TEST_TYPES[testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]]
       const scoreSuffix = isExternal ? '' : '%'

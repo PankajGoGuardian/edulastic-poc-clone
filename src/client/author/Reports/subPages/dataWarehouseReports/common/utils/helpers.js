@@ -3,6 +3,7 @@ import moment from 'moment'
 import qs from 'qs'
 import { isEmpty } from 'lodash'
 import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
+import { ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { allFilterValue } from '../../../../common/constants'
 import {
@@ -10,6 +11,7 @@ import {
   StyledIconCaretUp,
 } from '../components/styledComponents'
 import {
+  INTERNAL_TEST_TYPES_ORDER,
   compareByKeys,
   compareByKeysToFilterKeys,
   nextCompareByKeys,
@@ -175,4 +177,21 @@ export const buildDrillDownUrl = ({
     return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters)}`
   }
   return `${reportUrl}?${qs.stringify(_filters)}`
+}
+
+export const sortTestTypes = (testTypes) => {
+  const internalTestTypes = []
+  const externalTestTypes = []
+  testTypes.forEach((testType) => {
+    if (INTERNAL_TEST_TYPES.includes(testType)) {
+      internalTestTypes.push(testType)
+    } else {
+      externalTestTypes.push(testType)
+    }
+  })
+  internalTestTypes.sort(
+    (a, b) => INTERNAL_TEST_TYPES_ORDER[a] - INTERNAL_TEST_TYPES_ORDER[b]
+  )
+  externalTestTypes.sort()
+  return [...internalTestTypes, ...externalTestTypes]
 }

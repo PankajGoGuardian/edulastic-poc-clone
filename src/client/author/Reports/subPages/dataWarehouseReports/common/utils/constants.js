@@ -1,4 +1,8 @@
 import { invert } from 'lodash'
+import {
+  TEST_TYPES_VALUES_MAP,
+  ALL_TEST_TYPES_VALUES,
+} from '@edulastic/constants/const/testTypes'
 import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
 
 export const compareByKeys = {
@@ -112,6 +116,16 @@ export const compareByOptions = [
   { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
+
+export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
+  (acc, curr, currIndex) => {
+    if (curr === TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT) acc[curr] = 0
+    else if (curr === TEST_TYPES_VALUES_MAP.ASSESSMENT) acc[curr] = 1
+    else acc[curr] = currIndex
+    return acc
+  },
+  {}
+)
 
 export const trendPeriodDateFormat = `MMM'YY`
 export const trendPeriodPrefix = 'vs '

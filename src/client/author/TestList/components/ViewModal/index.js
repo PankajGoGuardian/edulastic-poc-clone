@@ -81,7 +81,10 @@ import {
   CloseButton,
   RightButtonContainer,
 } from './styled'
-import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
+import {
+  allowContentEditCheck,
+  isContentOfCollectionEditable,
+} from '../../../src/utils/permissionCheck'
 import {
   getInterestedStandards,
   hasUserGotAccessToPremiumItem,
@@ -271,10 +274,15 @@ class ViewModal extends React.Component {
     const hasPremiumQuestion = !!testItems.find((i) =>
       hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
     )
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      _collections,
+      writableCollections
+    )
     const isDeleteAllowed =
       !!find(authors, (o) => o._id === userId) ||
       (sharedWith?.find((x) => x._id === userId) && permission === 'EDIT') ||
-      isEdulasticCurator
+      isEdulasticCurator ||
+      isCollectionContentEditable
 
     const hasCollectionAccess = allowContentEditCheck(
       _collections,

@@ -579,7 +579,7 @@ class ClassHeader extends Component {
       )
 
     const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
-    const adminRoles = ['district-admin', 'school-admin']
+    const adminRoles = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN]
     const isReleaseScorereRestricted = isActivityLoading
       ? true
       : adminRoles.includes(getAssignedBy?.role) &&

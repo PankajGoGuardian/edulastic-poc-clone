@@ -902,12 +902,17 @@ class Container extends PureComponent {
       pageStructure,
       freeFormNotes = {},
     } = test
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      test.collections,
+      writableCollections
+    )
     const isOwner =
       (authors && authors.some((x) => x._id === userId)) ||
       !params.id ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (userFeatures.isCurator &&
-        allowContentEditCheck(test.collections, collections))
+        allowContentEditCheck(test.collections, collections)) ||
+      isCollectionContentEditable
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
     const hasCollectionAccess = allowContentEditCheck(

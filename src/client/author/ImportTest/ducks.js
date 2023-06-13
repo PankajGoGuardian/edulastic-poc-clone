@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { all, call, takeLatest, put, select } from 'redux-saga/effects'
+import { all, call, takeLatest, put } from 'redux-saga/effects'
 import { contentImportApi } from '@edulastic/api'
 import { uploadToS3, notification } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
@@ -81,6 +81,7 @@ const setJobIds = (state, { payload }) => {
 
 const setJobsData = (state, { payload }) => {
   state.jobsData = payload
+  state.qtiFileStatus = payload.length === 0 ? {} : state.qtiFileStatus
 }
 
 const setSuccessMessage = (state, { payload }) => {
@@ -152,41 +153,37 @@ export function* uploadTestStaga({ payload }) {
 function* getImportProgressSaga({ payload }) {
   try {
     const { jobId, interval } = payload
-    const importStatus = yield select((state) => state.admin.importTest.status)
-    if (importStatus === UPLOAD_STATUS.DONE && interval) {
-      clearInterval(interval)
-    } else {
-      const response = yield call(contentImportApi.qtiImportStatus, jobId)
-      const manifestResponse = response.find(
-        (ele) => ele.type === 'manifestation'
-      )
-      if (manifestResponse.status === JOB_STATUS.COMPLETED) {
-        yield put(setJobsDataAction(response))
-        const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
-        const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
-          if (!acc[curr.status]) {
-            acc[curr.status] = 1
-          } else {
-            acc[curr.status] += 1
-          }
-          return acc
-        }, {})
-        yield put(setQtiFileStatusesAction(qtiFilesStatus))
-        if (
-          qtiFiles.every(
-            ({ status }) =>
-              ![JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(status)
-          )
-        ) {
-          yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
+    const response = yield call(contentImportApi.qtiImportStatus, jobId)
+    const manifestResponse = response.find(
+      (ele) => ele.type === 'manifestation'
+    )
+    if (manifestResponse.status === JOB_STATUS.COMPLETED) {
+      yield put(setJobsDataAction(response))
+      const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
+      const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
+        if (!acc[curr.status]) {
+          acc[curr.status] = 1
+        } else {
+          acc[curr.status] += 1
         }
-      } else if (manifestResponse.status === JOB_STATUS.ERROR) {
-        yield put(uploadTestErrorAction(`${manifestResponse.error}`))
-        notification({
-          type: 'error',
-          msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
-        })
+        return acc
+      }, {})
+      yield put(setQtiFileStatusesAction(qtiFilesStatus))
+      if (
+        qtiFiles.every(
+          ({ status }) =>
+            ![JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(status)
+        )
+      ) {
+        yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
+        clearInterval(interval)
       }
+    } else if (manifestResponse.status === JOB_STATUS.ERROR) {
+      yield put(uploadTestErrorAction(`${manifestResponse.error}`))
+      notification({
+        type: 'error',
+        msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
+      })
     }
   } catch (e) {
     return notification({ messageKey: 'failedToFetchProgress' })

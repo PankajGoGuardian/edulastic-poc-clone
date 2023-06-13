@@ -18,6 +18,7 @@ import {
   qtiImportProgressAction,
   getQtiFileStatusSelector,
   JOB_STATUS,
+  setJobsDataAction,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -41,6 +42,7 @@ const ImportDone = ({
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
+  setJobsData,
   qtiFileStatus = {},
 }) => {
   const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
@@ -65,6 +67,7 @@ const ImportDone = ({
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
       uploadTestStatus(UPLOAD_STATUS.INITIATE)
+      setJobsData([])
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -80,6 +83,7 @@ const ImportDone = ({
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
       uploadTestStatus(UPLOAD_STATUS.INITIATE)
+      setJobsData([])
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -189,5 +193,6 @@ export default compose(
     contentImportProgress: contentImportProgressAction,
     setUploadContnentStatus: uploadContentStatusAction,
     setImportContentJobIds: setImportContentJobIdsAction,
+    setJobsData: setJobsDataAction,
   })
 )(ImportDone)

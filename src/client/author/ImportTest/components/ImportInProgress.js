@@ -23,6 +23,7 @@ import {
   JOB_STATUS,
   getJobsDataSelector,
   getQtiFileStatusSelector,
+  setJobsDataAction,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -54,20 +55,23 @@ const ImportInprogress = ({
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
+  setJobsData,
   history,
   importType,
   jobsData,
-  qtiFileStatus,
+  qtiFileStatus = {},
 }) => {
   const checkProgress = () => {
-    if (importType === 'qti' && jobIds.length) {
+    const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
+    if (jobId.includes('qti') && jobIds.length) {
       if (
         jobsData.length === 0 ||
         jobsData.some((job) =>
           [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
         )
-      )
+      ) {
         qtiImportProgress({ jobId: jobIds, interval })
+      }
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       contentImportProgress(jobIds)
     }
@@ -78,6 +82,7 @@ const ImportInprogress = ({
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
       uploadTestStatus(UPLOAD_STATUS.INITIATE)
+      setJobsData([])
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -117,14 +122,15 @@ const ImportInprogress = ({
         )}
       </TextWrapper>
       <TextWrapper>
-        {!isQtiImport && path === '/author/import-test'
+        {isQtiImport
+          ? jobIds.length
+            ? `Import reference: ${jobIds}`
+            : ''
+          : path === '/author/import-test'
           ? isImporting
             ? t('qtiimport.importinprogress.description')
             : 'Please stay on the screen while we are unzipping your files'
-          : isImporting
-          ? 'Files are being processed'
           : 'Files are being processed'}
-        {isQtiImport && jobIds.length && `Import reference: ${jobIds}`}
       </TextWrapper>
       {isQtiImport && (
         <List itemLayout="horizontal">
@@ -168,10 +174,9 @@ ImportInprogress.propTypes = {
 
 const mapStateToProps = (state) => {
   const path = state?.router?.location?.pathname || ''
-  if (
-    path === '/author/import-content' &&
-    importTypeSelector(state) !== 'qti'
-  ) {
+  const jobIds = contentImportJobIds(state)
+  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
+  if (path === '/author/import-content' && !jobId.includes('qti')) {
     return {
       status: uploadContnentStatus(state),
       jobIds: contentImportJobIds(state),
@@ -208,6 +213,7 @@ const enhancedComponent = compose(
     contentImportProgress: contentImportProgressAction,
     setUploadContnentStatus: uploadContentStatusAction,
     setImportContentJobIds: setImportContentJobIdsAction,
+    setJobsData: setJobsDataAction,
   })
 )
 

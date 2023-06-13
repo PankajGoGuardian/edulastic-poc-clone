@@ -4,7 +4,7 @@
     { "key": "domain", "title": "Domains" }
   ],
   "analyzeByDropDownData": [
-    { "key": "score", "title": "Score (%)" },
+    { "key": "score(%)", "title": "Score (%)" },
     { "key": "rawScore", "title": "Raw Score" },
     { "key": "masteryLevel", "title": "Mastery Level" },
     { "key": "masteryScore", "title": "Mastery Score" }

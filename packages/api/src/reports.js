@@ -76,10 +76,17 @@ const fetchPeerPerformanceReport = (params) =>
     params: { ...params.requestFilters, testId: params.testId },
   })
 
-const fetchPerformanceByStandard = (params) =>
+const fetchPerformanceByStandardSummary = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `/report/performance-by-standards`,
+    url: `/report/performance-by-standards/summary`,
+    params: { ...params.requestFilters, testId: params.testId },
+  })
+
+const fetchPerformanceByStandardDetails = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/performance-by-standards/details`,
     params: { ...params.requestFilters, testId: params.testId },
   })
 
@@ -414,7 +421,8 @@ export default {
   fetchResponseFrequency,
   fetchAssessmentSummaryReport,
   fetchPeerPerformanceReport,
-  fetchPerformanceByStandard,
+  fetchPerformanceByStandardSummary,
+  fetchPerformanceByStandardDetails,
   fetchPerformanceByStudentsReport,
   fetchSARFilterData,
   fetchMARFilterData,

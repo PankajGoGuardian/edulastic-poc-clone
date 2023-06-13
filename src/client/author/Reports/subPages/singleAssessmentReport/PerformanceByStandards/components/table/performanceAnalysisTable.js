@@ -1,28 +1,29 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-
+import next from 'immer'
 import { Tooltip } from 'antd'
 import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 
+import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+import { sortKeysMap } from '@edulastic/constants/reportUtils/singleAssessmentReport/performanceByStandards'
 import { StyledTable } from '../../../../../common/styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
-const { downloadCSV } = reportUtils.common
-
 const {
   viewByMode,
   analyzeByMode,
-  compareByColumns,
+  makeCompareByColumn,
   compareByStudentsColumns,
   getAnalyzedTableData,
   formatScore,
   getAnalyzeByConfig,
   getStandardColumnsData,
+  makeOverallColumn: makeOverallColumnUtil,
 } = reportUtils.performanceByStandards
 
 const AnalysisTable = styled(StyledTable)`
@@ -93,24 +94,12 @@ const ScoreCell = styled.div`
   }
 `
 
-const columnHashMap = {
-  teacher: 'teacherName',
-  class: 'groupName',
-  school: 'schoolName',
-}
-
-/**
- * converts table header string starting from 4th column
- * From
- * "1-ESS1-2 POINTS - 1 50%"
- * TO
- * "1-ESS1-2 (POINTS - 1) (50%)"
- */
 const onCsvConvert = (data) => {
   const splittedData = data.split('\n')
   const header = splittedData[0]
   const columns = header.split(',')
-  for (let i = 3; i < columns.length; i++) {
+  const startColumn = JSON.parse(columns[0]) === 'Students' ? 4 : 2
+  for (let i = startColumn; i < columns.length; i++) {
     const str = columns[i]
     const _str = str.toLocaleLowerCase()
     const indexOfPoints = _str.lastIndexOf('points')
@@ -141,6 +130,12 @@ const PerformanceAnalysisTable = ({
   selectedStandards,
   selectedDomains,
   isCsvDownloading,
+  sortKey,
+  setSortKey,
+  sortOrder,
+  setSortOrder,
+  setPageNo,
+  setRecompute,
 }) => {
   const { scaleInfo, skillInfo } = report
   const [tableData, aggSummaryStats] = getAnalyzedTableData(
@@ -157,19 +152,8 @@ const PerformanceAnalysisTable = ({
   const analyzeByConfig = getAnalyzeByConfig(analyzeBy, scaleInfo)
 
   const makeOverallColumn = () => {
-    const { selected, dataField } = standardColumnsData
-
-    const getAverage = (student) => {
-      const standardMetrics = Object.values(student.standardMetrics).filter(
-        (metric) => selected.includes(metric[dataField]) || !selected.length
-      )
-      const field = analyzeByConfig.field
-      const sumTotal = (total, metric) => total + metric[field]
-      const overall = standardMetrics.reduce(sumTotal, 0)
-      return overall / (standardMetrics.length || 1)
-    }
-
     return {
+      ...makeOverallColumnUtil(viewBy),
       title: (
         <div
           style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
@@ -182,12 +166,10 @@ const PerformanceAnalysisTable = ({
           </Tooltip>
         </div>
       ),
-      dataIndex: 'overall',
-      key: 'overall',
       fixed: 'left',
-      width: 160,
       align: 'center',
-      sorter: (a, b) => getAverage(a) - getAverage(b),
+      width: 160,
+      sorter: true,
       render: (data, record) =>
         analyzeByConfig.getOverall(record.standardMetrics),
     }
@@ -216,13 +198,8 @@ const PerformanceAnalysisTable = ({
           return <ScoreCell color="white">N/A</ScoreCell>
         }
         const color = analyzeByConfig.getColor(standard)
-        const compareByColumn = compareByColumns[compareBy]
-        const compareByColumnValue =
-          compareBy === 'students'
-            ? `${record.firstName} ${record.lastName}`
-            : record[columnHashMap[compareBy]]
-            ? record[columnHashMap[compareBy]]
-            : record[compareBy]
+        const compareByColumn = makeCompareByColumn(compareBy)
+        const compareByColumnValue = record.dimensionName
         const lastTooltipRow =
           analyzeBy === analyzeByMode.MASTERY_LEVEL
             ? {
@@ -290,8 +267,8 @@ const PerformanceAnalysisTable = ({
      * compareByColumn is destructured to create a new object everytime
      * so that change detection can detect and return correct fixed columns
      */
-    const _columns = [
-      { ...compareByColumns[compareBy] },
+    let _columns = [
+      { ...makeCompareByColumn(compareBy) },
       makeOverallColumn(standardColumnsData, analyzeByConfig),
       ...makeStandardColumns(),
     ]
@@ -301,6 +278,17 @@ const PerformanceAnalysisTable = ({
         _columns.splice(index++, 0, column)
       }
     }
+    _columns = next(_columns, (arr) => {
+      arr.forEach((item) => {
+        if (sortKeysMap[item.dataIndex]) {
+          item.sorter = true
+          item.key = sortKeysMap[item.dataIndex]
+        }
+        if (item.key === sortKey) {
+          item.sortOrder = sortOrder
+        }
+      })
+    })
     return _columns
   }
 
@@ -309,6 +297,13 @@ const PerformanceAnalysisTable = ({
   const scrollX = useMemo(() => columns?.length * 160 || '100%', [
     columns?.length,
   ])
+
+  const onChange = (_, __, column) => {
+    setSortKey(column.columnKey)
+    setSortOrder(column.order)
+    setPageNo(1)
+    setRecompute(false)
+  }
 
   return (
     <CsvTable
@@ -319,6 +314,8 @@ const PerformanceAnalysisTable = ({
       dataSource={tableData}
       scroll={{ x: scrollX }}
       columns={columns}
+      pagination={false}
+      onChange={onChange}
     />
   )
 }
@@ -336,8 +333,6 @@ PerformanceAnalysisTable.defaultProps = {
   report: {
     metricInfo: [],
     skillInfo: [],
-    studInfo: [],
-    teacherInfo: [],
   },
   selectedStandards: [],
   selectedDomains: [],

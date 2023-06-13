@@ -15,14 +15,7 @@ const {
 } = require('lodash')
 const { produce: next } = require('immer')
 
-const {
-  percentage,
-  getOverallScore,
-  getHSLFromRange1,
-  DemographicCompareByOptions,
-  getCsvDataFromTableBE,
-  getFormattedName,
-} = require('../common')
+const { percentage, getOverallScore, getHSLFromRange1 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
@@ -32,9 +25,13 @@ const viewByMode = {
   STANDARDS: 'standard',
   DOMAINS: 'domain',
 }
+const sortKeysMap = {
+  dimensionId: 'dimension',
+  overall: 'average',
+}
 
 const analyzeByMode = {
-  SCORE: 'score',
+  SCORE: 'score(%)',
   RAW_SCORE: 'rawScore',
   MASTERY_LEVEL: 'masteryLevel',
   MASTERY_SCORE: 'masteryScore',
@@ -53,110 +50,48 @@ const compareByMode = {
   IEP_STATUS: 'iepStatus',
   HISPANIC_ETHINCITY: 'hispanicEthnicity',
 }
+const compareByModeToName = {
+  school: 'School',
+  teacher: 'Teacher',
+  class: 'Class',
+  group: 'Group',
+  students: 'Students',
+  race: 'Race',
+  gender: 'Gender',
+  frlStatus: 'FRL Status',
+  ellStatus: 'ELL Status',
+  iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
+}
 
-const lexicSort = (field) => (a, b) =>
-  a[field] >= b[field] ? (a[field] === b[field] ? 0 : 1) : -1
-
-const compareByColumns = {
-  [compareByMode.SCHOOL]: {
-    title: 'School',
-    dataIndex: 'schoolId',
-    key: 'schoolId',
-    align: 'left',
+const makeCompareByColumn = (value) => {
+  const demographics = {
+    race: 'race',
+    gender: 'gender',
+    frlStatus: 'frlStatus',
+    ellStatus: 'ellStatus',
+    iepStatus: 'iepStatus',
+    hispanicEthnicity: 'hispanicEthnicity',
+  }
+  const returnObj = {
+    title: compareByModeToName[value],
+    dataIndex: 'dimensionId',
+    key: 'dimensionId',
     fixed: 'left',
     width: 160,
-    sorter: lexicSort('schoolName'),
-    render: (schoolId, school) => school.schoolName || '-',
-  },
-  [compareByMode.TEACHER]: {
-    title: 'Teacher',
-    dataIndex: 'teacherId',
-    key: 'teacherId',
-    align: 'left',
-    fixed: 'left',
-    width: 160,
-    sorter: lexicSort('teacherName'),
-    render: (teacherId, teacher) => teacher.teacherName,
-  },
-  [compareByMode.CLASS]: {
-    title: 'Class',
-    dataIndex: 'groupId',
-    key: 'groupId',
-    align: 'left',
-    fixed: 'left',
-    width: 160,
-    sorter: lexicSort('groupName'),
-    render: (groupId, studentClass) => studentClass.groupName,
-  },
-  [compareByMode.GROUP]: {
-    title: 'Student Group',
-    dataIndex: 'groupId',
-    key: 'groupId',
-    align: 'left',
-    fixed: 'left',
-    width: 160,
-    sorter: lexicSort('groupName'),
-    render: (groupId, studentClass) => studentClass.groupName,
-  },
-  [compareByMode.STUDENTS]: {
-    title: 'Student',
-    dataIndex: 'studentName',
-    key: 'studentId',
-    align: 'left',
-    fixed: 'left',
-    width: 160,
-    sorter: (a, b) =>
-      a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase()),
-  },
-  [compareByMode.RACE]: {
-    title: 'Race',
-    dataIndex: 'race',
-    key: 'race',
-    fixed: 'left',
-    width: 160,
-    sorter: lexicSort('race'),
-    render: (race) => (race ? capitalize(race) : '-'),
-  },
-  [compareByMode.GENDER]: {
-    title: 'Gender',
-    dataIndex: 'gender',
-    key: 'gender',
-    fixed: 'left',
-    width: 160,
-    render: (gender) => (gender ? capitalize(gender) : '-'),
-  },
-  [compareByMode.FRL_STATUS]: {
-    title: 'FRL Status',
-    dataIndex: 'frlStatus',
-    key: 'frlStatus',
-    fixed: 'left',
-    width: 160,
-    render: (status) => (status ? capitalize(status) : '-'),
-  },
-  [compareByMode.ELL_STATUS]: {
-    title: 'ELL Status',
-    dataIndex: 'ellStatus',
-    key: 'ellStatus',
-    fixed: 'left',
-    width: 160,
-    render: (status) => (status ? capitalize(status) : '-'),
-  },
-  [compareByMode.IEP_STATUS]: {
-    title: 'IEP Status',
-    dataIndex: 'iepStatus',
-    key: 'iepStatus',
-    fixed: 'left',
-    width: 160,
-    render: (status) => (status ? capitalize(status) : '-'),
-  },
-  [compareByMode.HISPANIC_ETHINCITY]: {
-    title: 'Hispanic Ethnicity',
-    dataIndex: 'hispanicEthnicity',
-    key: 'hispanicEthnicity',
-    fixed: 'left',
-    width: 160,
-    render: (he) => (he ? capitalize(he) : '-'),
-  },
+    sorter: true,
+  }
+  return demographics[value]
+    ? {
+        ...returnObj,
+        render: (dimensionId, item) =>
+          item.dimensionName ? capitalize(item.dimensionName) : '-',
+      }
+    : {
+        ...returnObj,
+        align: 'left',
+        render: (dimensionId, item) => item.dimensionName || '-',
+      }
 }
 
 const compareByStudentsColumns = [
@@ -203,34 +138,6 @@ const getMasteryLevel = (score, scaleInfo, field = 'threshold') => {
   )
 }
 
-const augmentMetricInfoWithStudentInfo = (
-  studInfo,
-  teacherInfo,
-  metricInfo
-) => {
-  const normalizedStudInfo = studInfo.reduce(
-    (total, student) => ({
-      ...total,
-      [student.studentId]: student,
-    }),
-    {}
-  )
-
-  const normalizedTeacherInfo = teacherInfo.reduce(
-    (total, teacher) => ({
-      ...total,
-      [teacher.groupId]: teacher,
-    }),
-    {}
-  )
-
-  return metricInfo.map((metric) => ({
-    ...metric,
-    ...normalizedStudInfo[metric.studentId],
-    ...normalizedTeacherInfo[metric.groupId],
-  }))
-}
-
 const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
   map(metricInfo, (metric) => {
     const masteryPercentage = percentage(metric.totalScore, metric.maxScore)
@@ -243,19 +150,9 @@ const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
     }
   })
 
-const getAugmentedMetricInfo = (
-  studInfo,
-  metricInfo,
-  teacherInfo,
-  scaleInfo = []
-) => {
-  const metricsWithStudent = augmentMetricInfoWithStudentInfo(
-    studInfo,
-    teacherInfo,
-    metricInfo
-  )
+const getAugmentedMetricInfo = (metricInfo, scaleInfo = []) => {
   const metricsWithScale = augmentMetricInfoWithMasteryScore(
-    metricsWithStudent,
+    metricInfo,
     scaleInfo
   )
   return metricsWithScale
@@ -463,7 +360,7 @@ const analysisStandardsData = (
   if (!metricInfo.length) {
     return []
   }
-  const groupingField = compareByColumns[compareBy].key
+  const groupingField = makeCompareByColumn(compareBy).key
   const grouped = groupBy(metricInfo, groupingField)
 
   const data = Object.keys(grouped).map((groupId) => {
@@ -496,7 +393,7 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
     }))
     .filter((item) => item.domainId)
 
-  const groupingField = compareByColumns[compareBy].key
+  const groupingField = makeCompareByColumn(compareBy).key
   const grouped = groupBy(_metricInfo, groupingField)
 
   const data = Object.keys(grouped).map((groupId) => {
@@ -511,47 +408,22 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
 }
 
 const getAnalyzedTableData = (report, viewBy, compareBy) => {
-  const {
-    studInfo = [],
-    teacherInfo = [],
-    skillInfo = [],
-    scaleInfo = [],
-    metricInfo = [],
-  } = report
+  const { skillInfo = [], scaleInfo = [], metricInfo = [] } = report
 
   const filteredMetrics = filter(metricInfo, (metric) =>
     find(skillInfo, (skill) => skill.standardId === metric.standardId)
   )
 
-  let augmentedMetrics = getAugmentedMetricInfo(
-    studInfo,
-    filteredMetrics,
-    teacherInfo,
-    scaleInfo
-  )
-
-  if (DemographicCompareByOptions.includes(compareBy)) {
-    augmentedMetrics = orderBy(augmentedMetrics, compareBy, ['asc'])
-  }
+  const augmentedMetrics = getAugmentedMetricInfo(filteredMetrics, scaleInfo)
 
   const _analyzedTableData =
     viewBy === viewByMode.STANDARDS
       ? analysisStandardsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
       : analysisDomainsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
 
-  // format student names in the data & sort in ascending order
-  const analyzedTableData = _analyzedTableData
-    .map((d) => ({
-      ...d,
-      studentName: getFormattedName(`${d.firstName || ''} ${d.lastName || ''}`),
-    }))
-    .sort((a, b) =>
-      a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
-    )
-
   const aggSummaryStats = getAggregatedSummaryStats(report, viewBy)
 
-  return [analyzedTableData, aggSummaryStats]
+  return [_analyzedTableData, aggSummaryStats]
 }
 
 const formatScore = (score, analyzeBy) => {
@@ -663,32 +535,15 @@ const getStandardColumnsData = (
 
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
-const makeOverallColumnBE = (standardColumnsData, analyzeByConfig, viewBy) => {
-  const { selected, dataField } = standardColumnsData
-
-  const getAverage = (student) => {
-    const standardMetrics = Object.values(student.standardMetrics).filter(
-      (metric) => selected.includes(metric[dataField]) || !selected.length
-    )
-    const field = analyzeByConfig.field
-    const sumTotal = (total, metric) => total + metric[field]
-    const overall = standardMetrics.reduce(sumTotal, 0)
-    return overall / (standardMetrics.length || 1)
-  }
-
+const makeOverallColumn = (viewBy) => {
   return {
     title: `Avg. ${viewBy} Performance`,
     dataIndex: 'overall',
     key: 'overall',
-    fixed: 'left',
-    width: 160,
-    sorter: (a, b) => getAverage(a) - getAverage(b),
-    render: (data, record) =>
-      analyzeByConfig.getOverall(record.standardMetrics),
   }
 }
 
-const makeStandardColumnsBE = (
+const makeStandardColumns = (
   aggSummaryStats,
   standardColumnsData,
   analyzeByConfig
@@ -725,7 +580,48 @@ const makeStandardColumnsBE = (
     .map(_makeStandardColumnBE)
 }
 
-const populateBackendCSV = ({
+const getTableColumns = ({
+  standardColumnsData,
+  aggSummaryStats,
+  compareBy,
+  analyzeBy,
+  scaleInfo,
+  viewBy,
+}) => {
+  const analyzeByConfig = {
+    ...getAnalyzeByConfig(analyzeBy, scaleInfo),
+    formatScore: (score) => formatScore(score, analyzeBy),
+  }
+  const _tableColumns = [
+    makeCompareByColumn(compareBy),
+    makeOverallColumn(viewBy),
+    ...makeStandardColumns(
+      aggSummaryStats,
+      standardColumnsData,
+      analyzeByConfig
+    ),
+  ]
+  if (compareBy === 'students') {
+    let index = 1
+    for (const column of compareByStudentsColumns) {
+      _tableColumns.splice(index++, 0, column)
+    }
+  }
+  return _tableColumns
+}
+const getCsvDataFromTable = (tableData, tableColumns) => {
+  const csvHeadings = tableColumns.map((col) => col.title || '')
+  const csvData = tableData.map((record) =>
+    tableColumns.map((col) => {
+      const dataKey = col.dataIndex || col.key
+      const data = record[dataKey] || ''
+      return `${col.render ? col.render(data, record) : data}`
+    })
+  )
+  return [csvHeadings, ...csvData]
+}
+
+const perfByStandardDownloadCSV = ({
   result: _report,
   compareBy,
   viewBy,
@@ -734,10 +630,9 @@ const populateBackendCSV = ({
   selectedStandards,
   selectedDomains,
 }) => {
+  // Get columns and tableData
   const report = getReportWithFilteredSkills(_report, curriculumId)
-
   const { scaleInfo, skillInfo } = report
-
   const [tableData, aggSummaryStats] = getAnalyzedTableData(
     report,
     viewBy,
@@ -749,32 +644,16 @@ const populateBackendCSV = ({
     selectedStandards,
     selectedDomains
   )
-  const analyzeByConfig = {
-    ...getAnalyzeByConfig(analyzeBy, scaleInfo),
-    formatScore: (score) => formatScore(score, analyzeBy),
-  }
-
-  const _getTableColumnsBE = () => {
-    const _tableColumns = [
-      compareByColumns[compareBy],
-      makeOverallColumnBE(standardColumnsData, analyzeByConfig, viewBy),
-      ...makeStandardColumnsBE(
-        aggSummaryStats,
-        standardColumnsData,
-        analyzeByConfig
-      ),
-    ]
-    if (compareBy === 'students') {
-      let index = 1
-      for (const column of compareByStudentsColumns) {
-        _tableColumns.splice(index++, 0, column)
-      }
-    }
-    return _tableColumns
-  }
-  const tableColumns = _getTableColumnsBE()
-
-  return getCsvDataFromTableBE(tableData, tableColumns)
+  const tableColumns = getTableColumns({
+    standardColumnsData,
+    aggSummaryStats,
+    compareBy,
+    analyzeBy,
+    scaleInfo,
+    viewBy,
+  })
+  // tranforming to the arrayCSV
+  return getCsvDataFromTable(tableData, tableColumns)
 }
 
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
@@ -784,11 +663,12 @@ const populateBackendCSV = ({
 module.exports = {
   // common transformers
   viewByMode,
+  sortKeysMap,
   analyzeByMode,
   compareByMode,
-  compareByColumns,
   compareByStudentsColumns,
   getReportWithFilteredSkills,
+  perfByStandardDownloadCSV,
   // chart transformers
   getYLabelString,
   getChartMasteryData,
@@ -798,6 +678,8 @@ module.exports = {
   formatScore,
   getAnalyzeByConfig,
   getStandardColumnsData,
+  makeOverallColumn,
+  makeCompareByColumn,
+  compareByModeToName,
   // backend transformers
-  populateBackendCSV,
 }

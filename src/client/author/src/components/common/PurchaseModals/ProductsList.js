@@ -1,7 +1,7 @@
-import { NumberInputStyled, notification } from '@edulastic/common'
+import { NumberInputStyled, notification, EduIf } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import produce from 'immer'
-import { camelCase, isNumber, keyBy } from 'lodash'
+import { camelCase, isNumber, isUndefined, keyBy } from 'lodash'
 import { roleuser } from '@edulastic/constants'
 import React, { useEffect, useMemo } from 'react'
 import {
@@ -10,6 +10,7 @@ import {
   NumberInputWrapper,
   StyledCheckbox,
   Total,
+  StyledDiv,
 } from './SubscriptionAddonModal/styled'
 
 const TooltipComponent = (props) =>
@@ -36,7 +37,9 @@ const ProductsList = ({
   itemBankSubscriptions,
   subType,
   allProducts,
-  shouldbeMultipleLicenses,
+  isRenewLicense,
+  selectedLicenseId,
+  i18Translate = () => {},
 }) => {
   const allProductsKeyed = useMemo(() => {
     if (allProducts) {
@@ -44,14 +47,18 @@ const ProductsList = ({
     }
     return {}
   }, [allProducts])
-  const licenseMapKeyByProductId = useMemo(() => {
+  const [licenseMapKeyByProductId, licenseMapKeyByLicenseId] = useMemo(() => {
     if (subsLicenses) {
-      return keyBy(subsLicenses, 'productId')
+      return [
+        keyBy(subsLicenses, 'productId'),
+        keyBy(subsLicenses, 'licenseId'),
+      ]
     }
     return {}
   }, [subsLicenses])
 
   const premiumProductId = teacherPremium?.id
+  const isBuyMoreOrRenewLicense = isBuyMore || isRenewLicense
 
   const _totalPrice = useMemo(() => {
     return productsToshow.reduce((a, c) => {
@@ -107,7 +114,7 @@ const ProductsList = ({
   ) => {
     const _licensesKeyed = keyBy(_licenses, 'linkedProductId')
     const quant = { ..._quant }
-    let {
+    const {
       totalCount: totalTeacherPremium = 0,
       usedCount: totalTeacherPremiumUsedCount = 0,
     } = _licenses?.find((x) => x.productId === premiumProductId) || {}
@@ -180,6 +187,17 @@ const ProductsList = ({
   ])
 
   const handleQuantityChange = (itemId) => (value) => {
+    if (isRenewLicense) {
+      const productCount =
+        licenseMapKeyByLicenseId[selectedLicenseId]?.totalCount || 0
+      const currentCount = isUndefined(value) ? productCount : Math.floor(value)
+      const _quantities = {
+        ...quantities,
+        [itemId]: currentCount,
+      }
+      setQuantities(_quantities)
+      return
+    }
     if (isBuyMore && !isCart) {
       const tpCount =
         licenseMapKeyByProductId[premiumProductId]?.totalCount || 0
@@ -202,7 +220,7 @@ const ProductsList = ({
     }
 
     if (isCart) {
-      let _quantities = {
+      const _quantities = {
         ...quantities,
         [itemId]: Math.floor(value),
       }
@@ -248,9 +266,50 @@ const ProductsList = ({
 
   useEffect(() => {
     if (!isCart) {
-      handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1)
+      const _quantity = isRenewLicense ? undefined : 1
+      handleQuantityChange(
+        isBuyMoreOrRenewLicense ? currentItemId : premiumProductId
+      )(_quantity)
     }
-  }, [premiumProductId, currentItemId, isBuyMore, isCart])
+  }, [premiumProductId, currentItemId, isBuyMore, isCart, isRenewLicense])
+
+  const getMaxValue = (product) => {
+    if (isCart && teacherPremiumCountTOAdd <= 0) {
+      return Infinity
+    }
+
+    const showTotalCountOfProduct = [
+      isRenewLicense,
+      licenseMapKeyByLicenseId[selectedLicenseId]?.productId === product.id,
+    ].every((o) => !!o)
+    if (showTotalCountOfProduct) {
+      return licenseMapKeyByLicenseId[selectedLicenseId].totalCount
+    }
+
+    if (premiumProductId === product.id) {
+      return Infinity
+    }
+    if (quantities[premiumProductId]) {
+      return quantities[premiumProductId]
+    }
+
+    const teacherPremiumTotalCount =
+      licenseMapKeyByProductId[premiumProductId]?.totalCount
+    const currentProductTotalCount =
+      licenseMapKeyByProductId[product.id]?.totalCount
+    return Math.max(teacherPremiumTotalCount - currentProductTotalCount, 1)
+  }
+
+  const showManuallyAssingText = (product) => {
+    const selectedQuantityLessThanExisting =
+      quantities[product.id] <
+      licenseMapKeyByLicenseId[selectedLicenseId]?.totalCount
+    return [(isRenewLicense, selectedQuantityLessThanExisting)].every(
+      (o) => !!o
+    )
+  }
+
+  const showTotalPrice = [!isBuyMore, !isRenewLicense, isCart].some((o) => !!o)
 
   return (
     <>
@@ -260,81 +319,85 @@ const ProductsList = ({
         pr={isRequestingQuote && '30px'}
       >
         {productsToshow.map((product) => (
-          <FlexRow key={product.id} alignItems={isBuyMore && 'center'}>
-            <TooltipComponent
-              title="Premium subscription is mandatory for Spark content"
-              isTeacherPremium={premiumProductId === product.id}
+          <>
+            <FlexRow
+              key={product.id}
+              alignItems={isBuyMoreOrRenewLicense && 'center'}
             >
-              <StyledCheckbox
-                data-cy={`${camelCase(product.name)}Checkbox`}
-                value={product.price}
-                onChange={(e) => handleOnChange(e, product.id)}
-                checked={
-                  selectedProductIds.includes(product.id) ||
-                  premiumProductId === product.id
-                }
-                disabled={premiumProductId === product.id && !isCart}
-                textTransform="none"
-                fontSize={isRequestingQuote && '14px'}
+              <TooltipComponent
+                title="Premium subscription is mandatory for Spark content"
+                isTeacherPremium={premiumProductId === product.id}
               >
-                {product.name}
-              </StyledCheckbox>
-            </TooltipComponent>
-            {(showMultiplePurchaseModal || isBuyMore) && (
-              <NumberInputWrapper>
-                <NumberInputStyled
-                  type="number"
-                  value={quantities[product.id]}
-                  onChange={handleQuantityChange(product.id)}
-                  height="28px"
-                  width="80px"
-                  data-cy={product.type}
-                  min={
-                    isCart &&
-                    premiumProductId === product.id &&
-                    teacherPremiumCountTOAdd < 0
-                      ? Math.abs(teacherPremiumCountTOAdd)
-                      : 1
+                <StyledCheckbox
+                  data-cy={`${camelCase(product.name)}Checkbox`}
+                  value={product.price}
+                  onChange={(e) => handleOnChange(e, product.id)}
+                  checked={
+                    selectedProductIds.includes(product.id) ||
+                    premiumProductId === product.id
                   }
-                  max={
-                    isCart && teacherPremiumCountTOAdd <= 0
-                      ? Infinity
-                      : premiumProductId === product.id
-                      ? Infinity
-                      : quantities[premiumProductId] ||
-                        Math.max(
-                          licenseMapKeyByProductId[premiumProductId]
-                            ?.totalCount -
-                            licenseMapKeyByProductId[product.id]?.totalCount,
-                          1
-                        )
-                  }
-                  disabled={
-                    isBuyMore && !isCart
-                      ? false
-                      : quantities[product.id] === undefined
-                  }
-                  onKeyDown={handleKeyPress}
-                />
-              </NumberInputWrapper>
-            )}
-            {!isRequestingQuote && (
-              <span
-                className="priceCol"
-                data-cy={`${camelCase(product.name)}Price`}
+                  disabled={premiumProductId === product.id && !isCart}
+                  textTransform="none"
+                  fontSize={isRequestingQuote && '14px'}
+                >
+                  {product.name}
+                </StyledCheckbox>
+              </TooltipComponent>
+              <EduIf
+                condition={showMultiplePurchaseModal || isBuyMoreOrRenewLicense}
               >
-                $
-                {product.price *
-                  (isNumber(quantities[product.id])
-                    ? quantities[product.id]
-                    : 1)}
-              </span>
-            )}
-          </FlexRow>
+                <NumberInputWrapper>
+                  <NumberInputStyled
+                    type="number"
+                    value={quantities[product.id]}
+                    onChange={handleQuantityChange(product.id)}
+                    height="28px"
+                    width="80px"
+                    data-cy={product.type}
+                    min={
+                      isCart &&
+                      premiumProductId === product.id &&
+                      teacherPremiumCountTOAdd < 0
+                        ? Math.abs(teacherPremiumCountTOAdd)
+                        : 1
+                    }
+                    max={getMaxValue(product)}
+                    disabled={
+                      isBuyMoreOrRenewLicense && !isCart
+                        ? false
+                        : quantities[product.id] === undefined
+                    }
+                    onKeyDown={handleKeyPress}
+                  />
+                </NumberInputWrapper>
+              </EduIf>
+              <EduIf condition={!isRequestingQuote}>
+                <span
+                  className="priceCol"
+                  data-cy={`${camelCase(product.name)}Price`}
+                >
+                  $
+                  {product.price *
+                    (isNumber(quantities[product.id])
+                      ? quantities[product.id]
+                      : 1)}
+                </span>
+              </EduIf>
+            </FlexRow>
+            <EduIf condition={showManuallyAssingText(product)}>
+              <FlexRow>
+                <StyledDiv>
+                  {i18Translate(
+                    'manageSubscriptions.MANUALLY_ASSIGN_ONCE_EXPIRED'
+                  )}
+                </StyledDiv>
+              </FlexRow>
+            </EduIf>
+          </>
         ))}
       </AddonList>
 
-      {(!isBuyMore || isCart) && !isRequestingQuote && (
+      <EduIf condition={showTotalPrice && !isRequestingQuote}>
         <Total>
           <FlexRow>
             <label>Total</label>
@@ -343,7 +406,7 @@ const ProductsList = ({
             </span>
           </FlexRow>
         </Total>
-      )}
+      </EduIf>
     </>
   )
 }

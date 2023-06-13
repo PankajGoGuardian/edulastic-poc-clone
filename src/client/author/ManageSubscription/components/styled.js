@@ -1,4 +1,10 @@
-import { greenThird, title } from '@edulastic/colors'
+import {
+  greenThird,
+  red,
+  themeColorHoverBlue,
+  title,
+  white,
+} from '@edulastic/colors'
 import { Icon, Spin } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
@@ -90,4 +96,16 @@ export const StyledSpin = styled(Spin)`
 
 export const SaveButton = styled(EduButton)`
   margin-top: 10px;
+`
+
+export const StyledButton = styled(EduButton)`
+  border-color: ${red} !important;
+  color: ${red} !important;
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${themeColorHoverBlue} !important;
+      border-color: ${themeColorHoverBlue} !important;
+      color: ${white} !important;
+    }
+  }
 `

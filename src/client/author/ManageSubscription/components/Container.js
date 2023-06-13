@@ -78,8 +78,10 @@ const ManageSubscriptionContainer = ({
   saveButtonState,
   setSaveButtonState,
   fetchUserSubscriptionStatus,
+  setQuantities,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
+  const [showRenewLicenseModal, setShowRenewLicenseModal] = useState(false)
   const [selectedLicenseId, setSelectedLicenseId] = useState(false)
   const [showAddUsersModal, setShowAddUsersModal] = useState(false)
   const [dataSource, setDataSource] = useState(users)
@@ -236,9 +238,11 @@ const ManageSubscriptionContainer = ({
         <LicenseCountSection
           subsLicenses={subsLicenses}
           setShowBuyMoreModal={setShowBuyMoreModal}
+          setShowRenewLicenseModal={setShowRenewLicenseModal}
           setCurrentItemId={setCurrentItemId}
           isEdulasticAdminView={isEdulasticAdminView}
           setSelectedLicenseId={setSelectedLicenseId}
+          setQuantities={setQuantities}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -272,6 +276,8 @@ const ManageSubscriptionContainer = ({
         setProductData={() => {}}
         showBuyMoreModal={showBuyMoreModal}
         setShowBuyMoreModal={setShowBuyMoreModal}
+        showRenewLicenseModal={showRenewLicenseModal}
+        setShowRenewLicenseModal={setShowRenewLicenseModal}
         isEdulasticAdminView={isEdulasticAdminView}
         showRenewalOptions={showRenewalOptions}
         currentItemId={currentItemId}
@@ -335,6 +341,7 @@ const enhance = compose(
       bulkEditUsersPermission: bulkEditUsersPermissionAction,
       setSaveButtonState: updateSaveButtonState,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
+      setQuantities: slice.actions.setCartQuantities,
     }
   )
 )

@@ -369,7 +369,8 @@
     "ALREADY_PREMIUM": "Already Has Premium",
     "UPGRADED_TO_PREMIUM": "Upgraded To Premium",
     "ITEMBANK_ACCESS_GRANTED": "Itembank Access Granted",
-    "ALREADY_HAS_ITEMBANK_ACCESS": "Already Has Itembank Access"
+    "ALREADY_HAS_ITEMBANK_ACCESS": "Already Has Itembank Access",
+    "MANUALLY_ASSIGN_ONCE_EXPIRED": "Note: You will have to manually assign these renewed license once existing licenses gets expired"
   },
   "class": {
     "title": "Classes",

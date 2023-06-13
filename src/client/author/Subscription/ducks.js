@@ -546,6 +546,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       licenseIds,
       licenseOwnerId,
       setPaymentServiceModal,
+      renewLicense,
     } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
@@ -561,6 +562,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         products,
         userEmailIds,
         licenseIds,
+        renewLicense,
       })
       if (apiPaymentResponse.licenseKeys) {
         yield put(slice.actions.setCartQuantities({}))

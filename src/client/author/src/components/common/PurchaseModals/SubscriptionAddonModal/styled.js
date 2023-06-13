@@ -99,3 +99,7 @@ export const StyledCheckbox = styled(CheckboxLabel)`
     font-size: ${({ fontSize }) => fontSize};
   }
 `
+
+export const StyledDiv = styled.div`
+  margin-top: 10px;
+`

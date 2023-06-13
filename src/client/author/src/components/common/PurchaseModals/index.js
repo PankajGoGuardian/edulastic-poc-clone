@@ -7,6 +7,7 @@ import { compose } from 'redux'
 import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
 import { roleuser } from '@edulastic/constants'
+import { EduIf } from '@edulastic/common'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -45,6 +46,7 @@ const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
 const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
+const RenewLicenseModal = loadable(() => import('./RenewLicenseModal'))
 const SubmitPOModal = loadable(() =>
   import('../../../../Subscription/components/SubmitPOModal')
 )
@@ -118,6 +120,8 @@ const PurchaseFlowModals = (props) => {
     setIsTabShouldSwitch,
     isCpm = false,
     interestedSubjects = [],
+    showRenewLicenseModal,
+    setShowRenewLicenseModal,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -131,7 +135,7 @@ const PurchaseFlowModals = (props) => {
   )
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
-
+  const [isRenewLicenseFlow, setIsRenewLicenseFlow] = useState(false)
   const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
     ? showTrialConfirmationMessage
     : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
@@ -163,6 +167,10 @@ const PurchaseFlowModals = (props) => {
     const remainingDaysForPremiumExpiry = Math.round(
       (new Date(endDate).getTime() - new Date().getTime()) / oneDay
     )
+
+    if (showBuyMoreModal && remainingDaysForPremiumExpiry > 0) {
+      return true
+    }
     return remainingDaysForPremiumExpiry > 90
   }
   const shouldProrateMultiplePurchase = useMemo(() => {
@@ -170,15 +178,21 @@ const PurchaseFlowModals = (props) => {
       (showMultiplePurchaseModal || showBuyMoreModal) &&
       subsLicenses.length
     ) {
-      // taking the first licesne end data because all the licesnes will have the same end date
-      const endDate = subsLicenses[0]?.expiresOn
+      const selectedLicense = subsLicenses.find(
+        (l) => l.licenseId === selectedLicenseId
+      )
+      const endDate = selectedLicense?.expiresOn
       return getShouldProrate(endDate)
     }
     return false
   }, [subsLicenses, showMultiplePurchaseModal, showBuyMoreModal])
 
   const shouldProrate = useMemo(() => {
-    if (showMultiplePurchaseModal || showBuyMoreModal) {
+    if (
+      [showMultiplePurchaseModal, showBuyMoreModal, showRenewLicenseModal].some(
+        (o) => !!o
+      )
+    ) {
       return false
     }
     if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
@@ -188,7 +202,13 @@ const PurchaseFlowModals = (props) => {
       return getShouldProrate(subEndDate)
     }
     return false
-  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal, cartQuantities])
+  }, [
+    subEndDate,
+    showMultiplePurchaseModal,
+    showBuyMoreModal,
+    cartQuantities,
+    showRenewLicenseModal,
+  ])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
@@ -196,7 +216,8 @@ const PurchaseFlowModals = (props) => {
       .map((x) => x.itemBankId)
     // for individual purchase have to filttered products
     // for multiples or renew show all products
-    const purchasableProducts = shouldProrate
+    const needToFilterProduct = shouldProrate && !showRenewLicenseModal
+    const purchasableProducts = needToFilterProduct
       ? products.filter(
           (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
         )
@@ -223,10 +244,16 @@ const PurchaseFlowModals = (props) => {
       let dynamicPeriodInDays = product.period
       let endDate = subEndDate
       if (shouldProrateMultiplePurchase) {
-        // taking the first licesne end data because all the licesnes will have the same end date
-        endDate = subsLicenses[0]?.expiresOn
+        const selectedLicense = subsLicenses.find(
+          (l) => l.licenseId === selectedLicenseId
+        )
+        endDate = selectedLicense?.expiresOn
       }
-      if (shouldProrate || shouldProrateMultiplePurchase) {
+      const isPriceToBeCalculatedDynamically = [
+        shouldProrate || shouldProrateMultiplePurchase,
+        !showRenewLicenseModal,
+      ].every((o) => !!o)
+      if (isPriceToBeCalculatedDynamically) {
         let currentDate = new Date()
         const itemBankSubEndDate = new Date(
           currentDate.setDate(currentDate.getDate() + product.period)
@@ -253,7 +280,13 @@ const PurchaseFlowModals = (props) => {
       teacherPremium: result[0],
       itemBankPremium: result.slice(1),
     }
-  }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
+  }, [
+    subEndDate,
+    products,
+    subsLicenses,
+    shouldProrateMultiplePurchase,
+    showRenewLicenseModal,
+  ])
   const proratedItemBankPremiumKeyed = keyBy(itemBankPremium, 'id')
   const proratedProducts = products.map((p) => {
     if (proratedItemBankPremiumKeyed[p.id]) {
@@ -302,6 +335,13 @@ const PurchaseFlowModals = (props) => {
     setShowBuyMoreModal(false)
   }
 
+  const handleRenewLicenseModalClose = () => {
+    setProductData({})
+    setShowSubscriptionAddonModal(false)
+    setShowMultiplePurchaseModal(false)
+    setShowRenewLicenseModal(false)
+  }
+
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
       handleStripePayment({
@@ -318,6 +358,7 @@ const PurchaseFlowModals = (props) => {
         licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
         setPaymentServiceModal,
+        renewLicense: isRenewLicenseFlow,
       })
       if (selectedLicenseId) {
         setSelectedLicenseId(null)
@@ -357,6 +398,7 @@ const PurchaseFlowModals = (props) => {
     productsToshow = products,
     shouldPayWithCC = false,
   }) => {
+    setIsRenewLicenseFlow(false)
     if (showMultiplePurchaseModal) {
       const productQuantities = products.map((product) => ({
         ...product,
@@ -399,12 +441,32 @@ const PurchaseFlowModals = (props) => {
         return
       }
       setProductsCart(productQuantities)
+    } else if (showRenewLicenseModal) {
+      setIsRenewLicenseFlow(true)
+      const productQuantities = productsToshow.map((product) => ({
+        ...product,
+        quantity: quantities[product.id],
+      }))
+      if (isEdulasticAdminView) {
+        handleEdulasticAdminProductLicense({
+          products: productQuantities,
+          emailIds,
+          licenseIds: [selectedLicenseId],
+          licenseOwnerId,
+        })
+        handleSubscriptionAddonModalClose()
+        setCartVisible(false)
+        setSelectedLicenseId(null)
+        return
+      }
+      setProductsCart(productQuantities)
     } else {
       setAddOnProductIds(selectedProductIds)
     }
 
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
+    handleRenewLicenseModalClose()
     setCartVisible(false)
     if (shouldPayWithCC) {
       openPaymentServiceModal(true)
@@ -421,7 +483,7 @@ const PurchaseFlowModals = (props) => {
 
   return (
     <>
-      {showSubscriptionAddonModal && (
+      <EduIf condition={showSubscriptionAddonModal}>
         <IndividualSubscriptionModal
           isVisible={showSubscriptionAddonModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
@@ -445,8 +507,8 @@ const PurchaseFlowModals = (props) => {
           productsMetaData={productsMetaData}
           interestedSubjects={interestedSubjects}
         />
-      )}
-      {showMultiplePurchaseModal && (
+      </EduIf>
+      <EduIf condition={showMultiplePurchaseModal}>
         <MultipleLicensePurchase
           isVisible={showMultiplePurchaseModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
@@ -464,8 +526,8 @@ const PurchaseFlowModals = (props) => {
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
           handleOpenRequestInvoiceModal={openRequestInvoiceModal}
         />
-      )}
-      {cartVisible && !fromSideMenu && (
+      </EduIf>
+      <EduIf condition={cartVisible && !fromSideMenu}>
         <CartModal
           visible={cartVisible}
           products={proratedProducts}
@@ -488,8 +550,8 @@ const PurchaseFlowModals = (props) => {
           shouldbeMultipleLicenses={shouldbeMultipleLicenses}
           setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
-      )}
-      {showUpgradeModal && (
+      </EduIf>
+      <EduIf condition={showUpgradeModal}>
         <UpgradeModal
           visible={showUpgradeModal}
           setShowModal={setShowUpgradeModal}
@@ -497,8 +559,8 @@ const PurchaseFlowModals = (props) => {
           openPoServiceModal={openPoServiceModal}
           openSubmitPOModal={handleOpenSubmitPOModal}
         />
-      )}
-      {isPaymentServiceModalVisible && (
+      </EduIf>
+      <EduIf condition={isPaymentServiceModalVisible}>
         <PaymentServiceModal
           visible={isPaymentServiceModalVisible}
           closeModal={closePaymentServiceModal}
@@ -508,14 +570,14 @@ const PurchaseFlowModals = (props) => {
           reason="Premium Upgrade"
           totalPurchaseAmount={totalAmount}
         />
-      )}
-      {payWithPoModal && (
+      </EduIf>
+      <EduIf condition={payWithPoModal}>
         <PayWithPoModal
           visible={payWithPoModal}
           setShowModal={setPayWithPoModal}
         />
-      )}
-      {showBuyMoreModal && (
+      </EduIf>
+      <EduIf condition={showBuyMoreModal}>
         <BuyMoreLicensesModal
           isVisible={showBuyMoreModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
@@ -532,8 +594,27 @@ const PurchaseFlowModals = (props) => {
           teacherPremium={teacherPremium}
           setSelectedLicenseId={setSelectedLicenseId}
         />
-      )}
-      {isConfirmationModalVisible && (
+      </EduIf>
+      <EduIf condition={showRenewLicenseModal}>
+        <RenewLicenseModal
+          isVisible={showRenewLicenseModal}
+          handleCloseModal={handleRenewLicenseModalClose}
+          handleClick={handleClick}
+          products={[teacherPremium, ...itemBankPremium]}
+          currentItemId={currentItemId}
+          setTotalAmount={setTotalAmount}
+          setQuantities={setQuantities}
+          quantities={quantities}
+          setSelectedProductIds={setSelectedProductIds}
+          selectedProductIds={selectedProductIds}
+          totalAmount={totalAmount}
+          isEdulasticAdminView={isEdulasticAdminView}
+          teacherPremium={teacherPremium}
+          selectedLicenseId={selectedLicenseId}
+          setSelectedLicenseId={setSelectedLicenseId}
+        />
+      </EduIf>
+      <EduIf condition={isConfirmationModalVisible}>
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={setShowTrialSubsConfirmation}
@@ -550,14 +631,15 @@ const PurchaseFlowModals = (props) => {
           clickedBundleId={clickedBundleId}
           setClickedBundleId={setClickedBundleId}
         />
-      )}
-
-      {(isSubmitPOModalVisible || isExternalSubmitPOModalVisible) && (
+      </EduIf>
+      <EduIf
+        condition={isSubmitPOModalVisible || isExternalSubmitPOModalVisible}
+      >
         <SubmitPOModal
           visible={isSubmitPOModalVisible || isExternalSubmitPOModalVisible}
           onCancel={handleCloseSubmitPOModal}
         />
-      )}
+      </EduIf>
     </>
   )
 }

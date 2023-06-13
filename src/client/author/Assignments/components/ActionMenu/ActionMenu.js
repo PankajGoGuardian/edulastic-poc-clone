@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu } from 'antd'
+import { Menu, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 
@@ -128,6 +128,12 @@ const ActionMenu = ({
   }
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
+  const isReleaseScoreRestricted =
+    [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+      currentAssignment?.assignedBy?.role
+    ) &&
+    userRole === roleuser.TEACHER &&
+    assignmentTest?.freezeSettings
   return (
     <Container>
       <StyledMenu>
@@ -209,16 +215,24 @@ const ActionMenu = ({
         )}
         <Menu.Item
           data-cy="release-grades"
+          disabled={isReleaseScoreRestricted}
           key="release-grades"
           onClick={() =>
             onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)
           }
         >
-          <StyledLink target="_blank" rel="noopener noreferrer">
+          <Tooltip
+            title={
+              isReleaseScoreRestricted
+                ? 'Release Score policy is restricted by admin for this assignment.'
+                : null
+            }
+            placement="left"
+          >
             <img alt="icon" src={responsiveIcon} />
             <SpaceElement />
             Release Scores
-          </StyledLink>
+          </Tooltip>
         </Menu.Item>
         <Menu.Item
           data-cy="summary-grades"

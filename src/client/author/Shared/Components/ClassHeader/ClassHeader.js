@@ -15,6 +15,7 @@ import {
   test as testContants,
   testActivityStatus,
   testActivity as testActivityConstants,
+  roleuser,
 } from '@edulastic/constants'
 import {
   IconBookMarkButton,
@@ -58,6 +59,8 @@ import {
   getIsShowUnAssignSelector,
   testActivtyLoadingSelector,
   getAdditionalDataSelector,
+  getAssignedBySelector,
+  getTestDataSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
@@ -477,6 +480,10 @@ class ClassHeader extends Component {
       syncWithSchoologyClassroomInProgress,
       isProxiedByEAAccount,
       testContentVisibility,
+      isActivityLoading,
+      userRole,
+      assignedBy,
+      testData,
     } = this.props
     const {
       visible,
@@ -496,7 +503,6 @@ class ClassHeader extends Component {
       closed,
       canCloseClass = [],
       dueDate,
-      assignedBy = {},
       classId: _classId,
     } = additionalData
     const dueOn = dueDate || endDate
@@ -572,6 +578,12 @@ class ClassHeader extends Component {
       )
 
     const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
+    const adminRoles = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN]
+    const isReleaseScoreRestricted = isActivityLoading
+      ? true
+      : adminRoles.includes(assignedBy?.role) &&
+        userRole === roleuser.TEACHER &&
+        testData?.freezeSettings
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -695,10 +707,20 @@ class ClassHeader extends Component {
         </FeaturesSwitch>
         <MenuItems
           data-cy="releaseScore"
+          disabled={isReleaseScoreRestricted}
           key="key2"
           onClick={() => toggleReleaseGradePopUp(true)}
         >
-          Release Score
+          <Tooltip
+            title={
+              isReleaseScoreRestricted
+                ? 'Release Score policy is restricted by admin for this assignment.'
+                : null
+            }
+            placement="left"
+          >
+            Release Score
+          </Tooltip>
         </MenuItems>
         <FeaturesSwitch
           inputFeatures="enableOmrSheets"
@@ -1205,6 +1227,8 @@ const enhance = compose(
   connect(
     (state) => ({
       releaseScore: showScoreSelector(state),
+      assignedBy: getAssignedBySelector(state),
+      testData: getTestDataSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       canClose: getCanCloseAssignmentSelector(state),
       canOpen: getCanOpenAssignmentSelector(state),

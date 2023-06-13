@@ -34,6 +34,7 @@ const UPLOAD_TEST_SUSSESS = '[import test] upload test success'
 const UPLOAD_TEST_ERROR = '[import test] upload test error'
 const SET_UPLOAD_TEST_STATUS = '[import test] set upload test status'
 const SET_JOB_IDS = '[import test] test job ids'
+const SET_QTI_FILE_STATUS = '[import test] qti file status'
 const GET_IMPORT_PROGRESS = '[import test] get import progress action'
 const SET_JOBS_DATA = '[import test] set jobs response data'
 const SET_SUCCESS_MESSAGE = '[import test] set success message'
@@ -44,6 +45,7 @@ export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS)
 export const uploadTestErrorAction = createAction(UPLOAD_TEST_ERROR)
 export const uploadTestStatusAction = createAction(SET_UPLOAD_TEST_STATUS)
 export const setJobIdsAction = createAction(SET_JOB_IDS)
+export const setQtiFileStatusesAction = createAction(SET_QTI_FILE_STATUS)
 export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS)
 export const setJobsDataAction = createAction(SET_JOBS_DATA)
 export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE)
@@ -52,12 +54,13 @@ export const setIsImportingAction = createAction(SET_IS_IMPORTING)
 const initialState = {
   testDetail: {},
   error: {},
-  status: 'STANDBY',
+  status: 'INITIATE',
   jobIds: [],
   jobsData: [],
   successMessage: '',
   isSuccess: true,
   importing: false,
+  qtiFileStatus: {},
 }
 
 const testUploadStatus = (state, { payload }) => {
@@ -73,7 +76,6 @@ const uploadTestError = (state, { payload }) => {
 }
 
 const setJobIds = (state, { payload }) => {
-  sessionStorage.setItem('jobIds', JSON.stringify(payload))
   state.jobIds = payload
 }
 
@@ -87,8 +89,11 @@ const setSuccessMessage = (state, { payload }) => {
 }
 
 const setIsImporting = (state, { payload }) => {
-  console.log('setIsImporting', payload, state.importing)
   state.importing = payload
+}
+
+const setQtiFileStatuses = (state, { payload }) => {
+  state.qtiFileStatus = payload
 }
 
 export const reducers = createReducer(initialState, {
@@ -99,6 +104,7 @@ export const reducers = createReducer(initialState, {
   [SET_JOBS_DATA]: setJobsData,
   [SET_SUCCESS_MESSAGE]: setSuccessMessage,
   [SET_IS_IMPORTING]: setIsImporting,
+  [SET_QTI_FILE_STATUS]: setQtiFileStatuses,
 })
 
 export function* uploadTestStaga({ payload }) {
@@ -146,8 +152,8 @@ export function* uploadTestStaga({ payload }) {
 function* getImportProgressSaga({ payload }) {
   try {
     const { jobId, interval } = payload
-    const isSuccess = yield select((state) => state.admin.importTest.isSuccess)
-    if (!isSuccess) {
+    const importStatus = yield select((state) => state.admin.importTest.status)
+    if (importStatus === UPLOAD_STATUS.DONE && interval) {
       clearInterval(interval)
     } else {
       const response = yield call(contentImportApi.qtiImportStatus, jobId)
@@ -157,21 +163,24 @@ function* getImportProgressSaga({ payload }) {
       if (manifestResponse.status === JOB_STATUS.COMPLETED) {
         yield put(setJobsDataAction(response))
         const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
-        if (qtiFiles.every(({ status }) => status === JOB_STATUS.COMPLETED)) {
-          yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-        } else {
-          notification({
-            type: 'error',
-            msg: `Failed to process some files for jobId: ${jobId}`,
-          })
-          yield put(
-            uploadTestErrorAction(
-              `Failed to process some files for jobId: ${jobId}`
-            )
+        const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
+          if (!acc[curr.status]) {
+            acc[curr.status] = 1
+          } else {
+            acc[curr.status] += 1
+          }
+          return acc
+        }, {})
+        yield put(setQtiFileStatusesAction(qtiFilesStatus))
+        if (
+          qtiFiles.every(
+            ({ status }) =>
+              ![JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(status)
           )
+        ) {
+          yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
         }
-      } else {
-        console.log('upload error')
+      } else if (manifestResponse.status === JOB_STATUS.ERROR) {
         yield put(uploadTestErrorAction(`${manifestResponse.error}`))
         notification({
           type: 'error',
@@ -230,4 +239,9 @@ export const getErrorDetailsSelector = createSelector(
 export const getIsImportingselector = createSelector(
   stateSelector,
   (state) => state.importing
+)
+
+export const getQtiFileStatusSelector = createSelector(
+  stateSelector,
+  (state) => state.qtiFileStatus
 )

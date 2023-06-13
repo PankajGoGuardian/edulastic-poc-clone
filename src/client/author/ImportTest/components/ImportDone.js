@@ -16,6 +16,8 @@ import {
   getUploadStatusSelector,
   getJobIdsSelector,
   qtiImportProgressAction,
+  getQtiFileStatusSelector,
+  JOB_STATUS,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -24,29 +26,36 @@ import {
   contentImportJobsData,
   uploadContentStatusAction,
   setImportContentJobIdsAction,
-  importTypeSelector,
 } from '../../ContentCollections/ducks'
 
 const ImportDone = ({
   t,
-  jobsData,
+  jobsData = [],
   setJobIds,
   uploadTestStatus,
   status,
-  jobIds,
+  jobIds = [],
   qtiImportProgress,
   contentImportProgress,
   history,
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
-  importType,
+  qtiFileStatus = {},
 }) => {
-  const items = jobsData.flatMap((job) => job?.testItems || []) || []
+  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
+  const items = jobsData.flatMap((job) => job?.testItems || [])
   const testIds = jobsData.map(({ testId }) => testId)
+  const isQtiImport = jobId.includes('qti')
+  const totalQtiFiles = jobsData.filter((ele) => ele.type !== 'manifestation')
+    .length
+  const completedQtiFiles = qtiFileStatus
+    ? qtiFileStatus[JOB_STATUS.COMPLETED]
+    : 0
+
   useEffect(() => {
-    if (importType === 'qti') {
-      qtiImportProgress({ jobId: jobIds })
+    if (jobId.includes('qti')) {
+      qtiImportProgress({ jobId })
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       contentImportProgress(jobIds)
     }
@@ -55,7 +64,9 @@ const ImportDone = ({
   const continueToTest = () => {
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
+      uploadTestStatus(UPLOAD_STATUS.INITIATE)
       setImportContentJobIds([])
+      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
       uploadTestStatus(UPLOAD_STATUS.STANDBY)
@@ -68,7 +79,9 @@ const ImportDone = ({
   const handleRetry = () => {
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
+      uploadTestStatus(UPLOAD_STATUS.INITIATE)
       setImportContentJobIds([])
+      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
       setJobIds([])
@@ -86,7 +99,7 @@ const ImportDone = ({
         lineHeight: '32px',
       }}
     >
-      {items.length ? (
+      {items.length || completedQtiFiles === totalQtiFiles ? (
         <StyledButton onClick={continueToTest}>Continue</StyledButton>
       ) : (
         <StyledButton onClick={handleRetry}>Retry</StyledButton>
@@ -97,28 +110,46 @@ const ImportDone = ({
   return (
     <FlexContainer flexDirection="column" width="65%">
       <TitleWrapper>{t('qtiimport.done.title')}</TitleWrapper>
-      <List itemLayout="horizontal" loadMore={ContinueBtn}>
-        <List.Item>
-          <FlexContainer justifyContent="space-between" width="100%">
-            <div>No of questions imported</div>
-            <div>{items.length}</div>
-          </FlexContainer>
-        </List.Item>
-        <List.Item>
-          <FlexContainer justifyContent="space-between" width="100%">
-            <div>No of questions skipped due to unsupported type</div>
-            <div>0</div>
-          </FlexContainer>
-        </List.Item>
-        <List.Item>
-          <FlexContainer justifyContent="space-between" width="100%">
-            <div>
-              No of questions skipped due to incomplete question content
-            </div>
-            <div>0</div>
-          </FlexContainer>
-        </List.Item>
-      </List>
+      {isQtiImport && (
+        <p style={{ textAlign: 'center', marginBottom: 30 }}>
+          Import reference: <b>{jobId}</b>
+        </p>
+      )}
+      {jobsData.length > 0 && (
+        <List itemLayout="horizontal" loadMore={ContinueBtn}>
+          <List.Item>
+            <FlexContainer justifyContent="space-between" width="100%">
+              <div>No of questions imported</div>
+              <div>
+                {isQtiImport
+                  ? qtiFileStatus[JOB_STATUS.COMPLETED] || 0
+                  : items.length}
+              </div>
+            </FlexContainer>
+          </List.Item>
+          <List.Item>
+            <FlexContainer justifyContent="space-between" width="100%">
+              <div>No of questions skipped due to unsupported type</div>
+              <div>
+                {isQtiImport ? qtiFileStatus[JOB_STATUS.UNSUPPORTED] || 0 : '0'}
+              </div>
+            </FlexContainer>
+          </List.Item>
+          <List.Item>
+            <FlexContainer justifyContent="space-between" width="100%">
+              <div>
+                No of questions skipped due to incomplete question content
+              </div>
+              <div>
+                {isQtiImport
+                  ? (qtiFileStatus[JOB_STATUS.INVALID] || 0) +
+                    (qtiFileStatus[JOB_STATUS.ERROR] || 0)
+                  : '0'}
+              </div>
+            </FlexContainer>
+          </List.Item>
+        </List>
+      )}
     </FlexContainer>
   )
 }
@@ -130,12 +161,13 @@ ImportDone.propTypes = {
 
 const mapStateToProps = (state) => {
   const path = state?.router?.location?.pathname
-  if (path === '/author/import-content') {
+  const jobIds = contentImportJobIds(state)
+  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
+  if (path === '/author/import-content' && !jobId.includes('qti')) {
     return {
       jobsData: contentImportJobsData(state),
       status: uploadContnentStatus(state),
       jobIds: contentImportJobIds(state),
-      importType: importTypeSelector(state),
     }
   }
 
@@ -143,7 +175,7 @@ const mapStateToProps = (state) => {
     status: getUploadStatusSelector(state),
     jobIds: getJobIdsSelector(state),
     jobsData: getJobsDataSelector(state),
-    importType: importTypeSelector(state),
+    qtiFileStatus: getQtiFileStatusSelector(state),
   }
 }
 

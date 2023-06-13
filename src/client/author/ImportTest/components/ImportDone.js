@@ -46,7 +46,7 @@ const ImportDone = ({
   const testIds = jobsData.map(({ testId }) => testId)
   useEffect(() => {
     if (importType === 'qti') {
-      qtiImportProgress(jobIds)
+      qtiImportProgress({ jobId: jobIds })
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       contentImportProgress(jobIds)
     }

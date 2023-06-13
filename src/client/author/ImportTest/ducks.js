@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { all, call, takeLatest, put } from 'redux-saga/effects'
+import { all, call, takeLatest, put, select } from 'redux-saga/effects'
 import { contentImportApi } from '@edulastic/api'
 import { uploadToS3, notification } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
@@ -18,6 +18,10 @@ export const JOB_STATUS = {
   SUCCESS: 'success',
   INITIATED: 'initiated',
   IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+  INVALID: 'invalid',
+  UNSUPPORTED: 'unsupported',
+  ERROR: 'error',
 }
 
 const contentFolders = {
@@ -83,6 +87,7 @@ const setSuccessMessage = (state, { payload }) => {
 }
 
 const setIsImporting = (state, { payload }) => {
+  console.log('setIsImporting', payload, state.importing)
   state.importing = payload
 }
 
@@ -138,16 +143,43 @@ export function* uploadTestStaga({ payload }) {
   }
 }
 
-function* getImportProgressSaga({ payload: jobId }) {
+function* getImportProgressSaga({ payload }) {
   try {
-    const response = yield call(contentImportApi.qtiImportStatus, jobId)
-    yield put(setJobsDataAction(response))
-    if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
-      yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-      yield put(setIsImportingAction(false))
+    const { jobId, interval } = payload
+    const isSuccess = yield select((state) => state.admin.importTest.isSuccess)
+    if (!isSuccess) {
+      clearInterval(interval)
+    } else {
+      const response = yield call(contentImportApi.qtiImportStatus, jobId)
+      const manifestResponse = response.find(
+        (ele) => ele.type === 'manifestation'
+      )
+      if (manifestResponse.status === JOB_STATUS.COMPLETED) {
+        yield put(setJobsDataAction(response))
+        const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
+        if (qtiFiles.every(({ status }) => status === JOB_STATUS.COMPLETED)) {
+          yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
+        } else {
+          notification({
+            type: 'error',
+            msg: `Failed to process some files for jobId: ${jobId}`,
+          })
+          yield put(
+            uploadTestErrorAction(
+              `Failed to process some files for jobId: ${jobId}`
+            )
+          )
+        }
+      } else {
+        console.log('upload error')
+        yield put(uploadTestErrorAction(`${manifestResponse.error}`))
+        notification({
+          type: 'error',
+          msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
+        })
+      }
     }
   } catch (e) {
-    console.log({ e })
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }

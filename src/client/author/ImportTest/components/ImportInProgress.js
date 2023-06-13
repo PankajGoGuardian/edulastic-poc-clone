@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
-import useInterval from '@use-it/interval'
+// import useInterval from '@use-it/interval'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
@@ -36,6 +36,8 @@ import {
   importTypeSelector,
 } from '../../ContentCollections/ducks'
 
+let interval
+
 const ImportInprogress = ({
   t,
   qtiImportProgress,
@@ -63,7 +65,7 @@ const ImportInprogress = ({
           [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
         )
       )
-        qtiImportProgress(jobIds)
+        qtiImportProgress({ jobId: jobIds, interval })
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       contentImportProgress(jobIds)
     }
@@ -83,12 +85,11 @@ const ImportInprogress = ({
   }
 
   useEffect(() => {
-    checkProgress()
-  }, [])
+    interval = setInterval(() => {
+      checkProgress()
+    }, 1000 * 5)
+  }, [jobIds])
 
-  useInterval(() => {
-    checkProgress()
-  }, 1000 * 5)
   return (
     <FlexContainer flexDirection="column" alignItems="column" width="50%">
       <Spin size="large" style={{ top: '40%' }} />
@@ -115,6 +116,7 @@ const ImportInprogress = ({
           : isImporting
           ? 'Files are being processed'
           : 'Files are being processed'}
+        {importType === 'qti' && `for jobId: ${jobIds}`}
       </TextWrapper>
     </FlexContainer>
   )

@@ -7,11 +7,11 @@ import { Label } from '../AdvancedOptons/styled-components'
 import TimeSelector from './TimeSelector'
 import DaySelector from './DaySelector'
 import AttemptWindowTypeInputSelector from './AttemptWindowTypeInputSelector'
-import useAttempWindowChangeHandler from './useAttempWindowChangeHandler'
+import useAttemptWindowChangeHandler from './useAttempWindowChangeHandler'
 
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
-const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
+const AttemptWindowTypeSelector = ({ changeField, isAdvancedView, value }) => {
   const {
     handleStartTimeChange,
     handleEndTimeChange,
@@ -21,14 +21,14 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
     selectedDays,
     assignmentStartTime,
     assignmentEndTime,
-  } = useAttempWindowChangeHandler(changeField)
+  } = useAttemptWindowChangeHandler(changeField, value)
   return (
     <>
       <EduIf condition={!isAdvancedView}>
-        <Col span={10}>
+        <Col span={value ? 12 : 10}>
           <FieldLabel>STUDENT ATTEMPT WINDOW</FieldLabel>
         </Col>
-        <Col span={14}>
+        <Col span={value ? 12 : 14}>
           <AttemptWindowTypeInputSelector
             selectedAttemptWindowType={selectedAttemptWindowType}
             handleChange={handleChange}

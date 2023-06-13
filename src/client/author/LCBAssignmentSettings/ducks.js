@@ -53,7 +53,13 @@ const slice = createSlice({
       let { key, value } = payload
       const { isAdmin, status } = payload
       if (
-        ['startDate', 'endDate', 'dueDate', 'allowedOpenDate'].includes(key)
+        [
+          'startDate',
+          'endDate',
+          'dueDate',
+          'allowedOpenDate',
+          'attemptWindow',
+        ].includes(key)
       ) {
         state.assignment = state.assignment || {}
         state.assignment.class = state.assignment.class || []
@@ -203,6 +209,7 @@ function* loadAssignmentSaga({ payload }) {
       showTtsForPassages,
       showImmersiveReader,
       allowAutoEssayEvaluation,
+      attemptWindow,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -218,6 +225,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (answerOnPaper !== undefined) {
       data.answerOnPaper = answerOnPaper
+    }
+    if (attemptWindow) {
+      data.attemptWindow = attemptWindow
     }
     if (maxAttempts) {
       data.maxAttempts = maxAttempts
@@ -252,6 +262,7 @@ function* loadAssignmentSaga({ payload }) {
         data.assignmentPassword = assignmentPassword
       }
     }
+
     yield call(receiveTestActivitySaga, { payload })
     yield put(slice.actions.loadAssignmentSucess(data))
   } catch (err) {
@@ -298,6 +309,7 @@ function getSettingsSelector(state) {
     showTtsForPassages,
     showImmersiveReader,
     allowAutoEssayEvaluation,
+    attemptWindow,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -408,6 +420,7 @@ function getSettingsSelector(state) {
       showTtsForPassages,
       showImmersiveReader,
       allowAutoEssayEvaluation,
+      attemptWindow,
     },
     isUndefined
   )

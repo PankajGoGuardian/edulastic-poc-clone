@@ -1,4 +1,4 @@
-import { Card, Checkbox, Button, Menu, Col } from 'antd'
+import { Card, Checkbox, Button, Menu, Col, Tag } from 'antd'
 import styled from 'styled-components'
 import { FlexContainer, SelectInputStyled } from '@edulastic/common'
 import {
@@ -382,4 +382,9 @@ export const FilterSpan = styled.span`
   padding-right: 15px;
   font-size: 12px;
   font-weight: 600;
+`
+
+export const InfoMessage = styled(Tag)`
+  color: ${themeColor};
+  text-align: center;
 `

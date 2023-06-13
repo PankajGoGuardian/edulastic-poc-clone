@@ -135,7 +135,7 @@ const {
   },
 } = testActivity
 
-const { testContentVisibility } = test
+const { testContentVisibility, ATTEMPT_WINDOW_TYPE } = test
 
 export const LCB_LIMIT_QUESTION_PER_VIEW = 20
 export const SCROLL_SHOW_LIMIT = 30
@@ -1056,6 +1056,29 @@ export const getAssignmentPasswordDetailsSelector = createSelector(
     passwordExpireTime: state?.additionalData?.passwordExpireTime,
     passwordExpireIn: state?.additionalData?.passwordExpireIn,
   })
+)
+
+export const getAttemptWindowSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => {
+    const attemptWindow = state?.additionalData?.attemptWindow
+
+    if (!attemptWindow) return
+
+    if (attemptWindow.type === ATTEMPT_WINDOW_TYPE.DEFAULT) return
+
+    const start = attemptWindow.startTime
+    const end = attemptWindow.endTime
+
+    const text = `Student can attempt between ${start} to ${end}`
+
+    const res =
+      attemptWindow.type === ATTEMPT_WINDOW_TYPE.WEEKDAYS
+        ? text
+        : text.concat(` on ${attemptWindow.days.join(', ')}`)
+
+    return res
+  }
 )
 
 export const getStudentsPrevSubmittedUtasSelector = createSelector(

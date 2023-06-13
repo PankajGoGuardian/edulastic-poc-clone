@@ -10,15 +10,23 @@ import { isEmpty } from 'lodash'
 
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
-const useAttempWindowChangeHandler = (changeField) => {
+const useAttemptWindowChangeHandler = (changeField, payload) => {
   const initialRender = useRef(true)
   const [selectedAttemptWindowType, setSelectedAttemptWindowType] = useState(
-    ATTEMPT_WINDOW_TYPE.DEFAULT
+    payload?.type || ATTEMPT_WINDOW_TYPE.DEFAULT
   )
   const [todaysDay] = new Date().toString().split(' ')
-  const [selectedDays, setSelectedDays] = useState({
-    [todaysDay.toUpperCase()]: true,
-  })
+  const [selectedDays, setSelectedDays] = useState(
+    payload?.days?.reduce(
+      (obj, item) =>
+        Object.assign(obj, {
+          [item]: true,
+        }),
+      {}
+    ) || {
+      [todaysDay.toUpperCase()]: true,
+    }
+  )
 
   const getMilliSeconds = (time = undefined) => {
     const [timeStr, amPm] = time?.split(' ')
@@ -32,10 +40,10 @@ const useAttempWindowChangeHandler = (changeField) => {
   }
 
   const [assignmentStartTime, setAssignmentStartTime] = useState(
-    getMilliSeconds(ATTEMPT_WINDOW_DEFAULT_START_TIME)
+    payload?.startTime || getMilliSeconds(ATTEMPT_WINDOW_DEFAULT_START_TIME)
   )
   const [assignmentEndTime, setAssignmentEndTime] = useState(
-    getMilliSeconds(ATTEMPT_WINDOW_DEFAULT_END_TIME)
+    payload?.endTime || getMilliSeconds(ATTEMPT_WINDOW_DEFAULT_END_TIME)
   )
 
   const anyOfTheDaysSelected = Object.keys(selectedDays).some(
@@ -106,4 +114,4 @@ const useAttempWindowChangeHandler = (changeField) => {
   }
 }
 
-export default useAttempWindowChangeHandler
+export default useAttemptWindowChangeHandler

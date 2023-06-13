@@ -291,7 +291,13 @@ const AssignmentCard = memo(
     }
 
     const { activityReview = true } = data
-    let { releaseScore } = data.class.find((item) => item._id === classId) || {}
+
+    let { releaseScore, attemptWindow } =
+      data.class.find((item) => item._id === classId) || {}
+
+    if (!attemptWindow) {
+      attemptWindow = data?.attemptWindow
+    }
 
     if (!releaseScore) {
       releaseScore = data.releaseScore
@@ -301,16 +307,12 @@ const AssignmentCard = memo(
       startDate,
       serverTimeStamp,
       isPaused,
-      data?.attemptWindow?.isRestrictedTimeWindow
+      attemptWindow?.isRestrictedTimeWindow
     )
     let restrictedButtonTooltip
     let restrictedButtonText
     if (isRestrictedTimeWindow) {
-      const {
-        startTime = '',
-        endTime = '',
-        attemptWindowDay,
-      } = data?.attemptWindow
+      const { startTime = '', endTime = '', attemptWindowDay } = attemptWindow
       restrictedButtonTooltip = `It can be attempted between ${startTime} to ${endTime} on ${attemptWindowDay} only.`
       restrictedButtonText = ` (UNTIL ${startTime})`
     }

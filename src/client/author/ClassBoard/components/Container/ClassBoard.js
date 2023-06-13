@@ -1,10 +1,11 @@
-import { black, lightFadedBlack } from '@edulastic/colors'
+import { black, lightFadedBlack, green, lightGreen4 } from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
   notification,
   LCBScrollContext,
   BackTop,
+  EduIf,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -96,6 +97,7 @@ import {
   getAllStudentsList,
   getStudentsPrevSubmittedUtasSelector,
   getIsDocBasedTestSelector,
+  getAttemptWindowSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -129,6 +131,7 @@ import {
   SwitchBox,
   FilterSelect,
   FilterSpan,
+  InfoMessage,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -1110,6 +1113,7 @@ class ClassBoard extends Component {
       isProxiedByEAAccount,
       userRole,
       userId,
+      attemptWindow,
     } = this.props
 
     const {
@@ -1557,6 +1561,11 @@ class ClassBoard extends Component {
                       </FilterSelect>
                     </SwitchBox>
                   </div>
+                  <EduIf condition={attemptWindow}>
+                    <InfoMessage color={lightGreen4}>
+                      <IconInfo fill={green} /> {attemptWindow}
+                    </InfoMessage>
+                  </EduIf>
                   <ClassBoardFeats>
                     <RedirectButton
                       disabled={!isItemsVisible}
@@ -2140,6 +2149,7 @@ const enhance = compose(
       regradeModalState: getRegradeModalStateSelector(state),
       isDocBasedTest: getIsDocBasedTestSelector(state),
       userId: getUserId(state),
+      attemptWindow: getAttemptWindowSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

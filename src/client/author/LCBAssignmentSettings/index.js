@@ -13,7 +13,10 @@ import {
   notification,
   EduButton,
   SelectInputStyled,
+  EduIf,
 } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { compose } from 'redux'
 import {
   getAdditionalDataSelector,
   getIsDocBasedTestSelector,
@@ -34,6 +37,7 @@ import Settings from '../AssignTest/components/SimpleOptions/Settings'
 import selectsData from '../TestPage/components/common/selectsData'
 import DetailsTooltip from '../AssignTest/components/Container/DetailsTooltip'
 import SettingContainer from '../AssignTest/components/Container/SettingsContainer'
+import AttemptWindowTypeSelector from '../AssignTest/components/SimpleOptions/AttemptWindowTypeSelector'
 
 /**
  * Imports related to testSettings
@@ -45,7 +49,7 @@ import {
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { InputLabel, InputLabelContainer, ClassHeading } from './styled'
 import { allowedSettingPageToDisplay } from '../Shared/Components/ClassHeader/utils/transformers'
-import { getUserRole } from '../src/selectors/user'
+import { getUserRole, isPremiumUserSelector } from '../src/selectors/user'
 
 export const releaseGradeKeys = [
   'DONT_RELEASE',
@@ -71,6 +75,8 @@ function LCBAssignmentSettings({
   loading,
   userRole,
   togglePenaltyOnUsingHints,
+  isPremiumUser,
+  t,
 }) {
   const { openPolicy, closePolicy, openPolicyForAdmin } = selectsData
   const { assignmentId, classId } = match.params || {}
@@ -100,7 +106,7 @@ function LCBAssignmentSettings({
   }, [isAdmin, openPolicy, openPolicyForAdmin])
 
   const { startDate, endDate, status, dueDate, allowedOpenDate } =
-    assignment?.['class']?.[0] || {}
+    assignment?.class?.[0] || {}
 
   const showAllowedOpenDate =
     status === assignmentStatusOptions.NOT_OPEN &&
@@ -272,6 +278,27 @@ function LCBAssignmentSettings({
                   </Col>
                 </StyledRow>
               </SettingContainer>
+              <EduIf condition={isPremiumUser}>
+                <SettingContainer id="student-attempt-window-setting">
+                  <DetailsTooltip
+                    title={t('studentAttemptTimeWindow.title')}
+                    content={t('studentAttemptTimeWindow.toolTipMsg')}
+                    premium
+                    placement="rightTop"
+                  />
+                  <StyledRow gutter={16}>
+                    <AttemptWindowTypeSelector
+                      value={
+                        assignment?.class[0]?.attemptWindow ||
+                        assignment?.attemptWindow
+                      }
+                      changeField={(key, value) => {
+                        changeField(key)(value)
+                      }}
+                    />
+                  </StyledRow>
+                </SettingContainer>
+              </EduIf>
               <Settings
                 assignmentSettings={assignment || {}}
                 updateAssignmentSettings={() => {}}
@@ -282,7 +309,6 @@ function LCBAssignmentSettings({
                 isDocBased={isDocBased}
                 togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
               />
-
               <Row gutter={0} style={{ marginTop: '15px' }}>
                 <Col offset={12}>
                   <Col span={12} style={{ paddingLeft: '16px' }}>
@@ -317,23 +343,29 @@ function LCBAssignmentSettings({
   )
 }
 
-export default connect(
-  (state) => ({
-    additionalData: getAdditionalDataSelector(state),
-    assignment: state?.LCBAssignmentSettings?.assignment,
-    loading: state?.LCBAssignmentSettings?.loading,
-    testSettings: getTestEntitySelector(state),
-    testActivity: getTestActivitySelector(state),
-    userId: state?.user?.user?._id,
-    isDocBased: getIsDocBasedTestSelector(state),
-    userRole: getUserRole(state),
-  }),
-  {
-    loadAssignment: slice.actions.loadAssignment,
-    updateAssignmentSettings: slice.actions.updateAssignmentClassSettings,
-    changeAttrs: slice.actions.changeAttribute,
-    updateLocally: slice.actions.updateAssignment,
-    loadTestSettings: getDefaultTestSettingsAction,
-    togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
-  }
-)(LCBAssignmentSettings)
+const enhance = compose(
+  withNamespaces('author'),
+  connect(
+    (state) => ({
+      additionalData: getAdditionalDataSelector(state),
+      assignment: state?.LCBAssignmentSettings?.assignment,
+      loading: state?.LCBAssignmentSettings?.loading,
+      testSettings: getTestEntitySelector(state),
+      testActivity: getTestActivitySelector(state),
+      userId: state?.user?.user?._id,
+      isDocBased: getIsDocBasedTestSelector(state),
+      userRole: getUserRole(state),
+      isPremiumUser: isPremiumUserSelector(state),
+    }),
+    {
+      loadAssignment: slice.actions.loadAssignment,
+      updateAssignmentSettings: slice.actions.updateAssignmentClassSettings,
+      changeAttrs: slice.actions.changeAttribute,
+      updateLocally: slice.actions.updateAssignment,
+      loadTestSettings: getDefaultTestSettingsAction,
+      togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
+    }
+  )
+)
+
+export default enhance(LCBAssignmentSettings)

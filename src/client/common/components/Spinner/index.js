@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import StyledSpinner from './style'
 
 export default function Spinner(props) {
-  const { className, style, isVisible, size, color } = props
+  const { className, style, isVisible, size, color, zIndex } = props
 
   if (isVisible) {
     return (
@@ -12,6 +12,7 @@ export default function Spinner(props) {
         size={size}
         style={style}
         color={color}
+        zIndex={zIndex}
       >
         <div />
         <div />

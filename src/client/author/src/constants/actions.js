@@ -435,3 +435,6 @@ export const SET_CURRENT_STUDENT_ID = '[edit question] set current student id'
 
 export const RELOAD_LCB_DATA_IN_STUDENT_VIEW =
   '[lcb] reload lcb data in student view'
+
+export const BULK_UPDATE_ASSIGNMENT_SETTINGS =
+  '[assignments] bulk update assignment settings'

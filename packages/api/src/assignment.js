@@ -298,6 +298,14 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
+const bulkEditSettings = (payload) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/bulk-settings-edit`,
+    method: 'post',
+    data: payload,
+  })
+
 export default {
   create,
   update,
@@ -325,4 +333,5 @@ export default {
   getBubbleSheet,
   bulkAssign,
   createAssignmentV2,
+  bulkEditSettings,
 }

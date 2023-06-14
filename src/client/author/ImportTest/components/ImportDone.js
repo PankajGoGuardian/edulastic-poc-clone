@@ -18,7 +18,7 @@ import {
   qtiImportProgressAction,
   getQtiFileStatusSelector,
   JOB_STATUS,
-  setJobsDataAction,
+  resetStateAction,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -42,7 +42,7 @@ const ImportDone = ({
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
-  setJobsData,
+  resetData,
   qtiFileStatus = {},
 }) => {
   const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
@@ -56,9 +56,9 @@ const ImportDone = ({
     : 0
 
   useEffect(() => {
-    if (jobId.includes('qti')) {
+    if (jobId.includes('qti') && status !== UPLOAD_STATUS.DONE) {
       qtiImportProgress({ jobId })
-    } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
+    } else if (status !== UPLOAD_STATUS.INITIATE && jobsData.length === 0) {
       contentImportProgress(jobIds)
     }
   }, [])
@@ -66,8 +66,7 @@ const ImportDone = ({
   const continueToTest = () => {
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      uploadTestStatus(UPLOAD_STATUS.INITIATE)
-      setJobsData([])
+      resetData()
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -82,8 +81,7 @@ const ImportDone = ({
   const handleRetry = () => {
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      uploadTestStatus(UPLOAD_STATUS.INITIATE)
-      setJobsData([])
+      resetData()
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -119,41 +117,39 @@ const ImportDone = ({
           Import reference: <b>{jobId}</b>
         </p>
       )}
-      {jobsData.length > 0 && (
-        <List itemLayout="horizontal" loadMore={ContinueBtn}>
-          <List.Item>
-            <FlexContainer justifyContent="space-between" width="100%">
-              <div>No of questions imported</div>
-              <div>
-                {isQtiImport
-                  ? qtiFileStatus[JOB_STATUS.COMPLETED] || 0
-                  : items.length}
-              </div>
-            </FlexContainer>
-          </List.Item>
-          <List.Item>
-            <FlexContainer justifyContent="space-between" width="100%">
-              <div>No of questions skipped due to unsupported type</div>
-              <div>
-                {isQtiImport ? qtiFileStatus[JOB_STATUS.UNSUPPORTED] || 0 : '0'}
-              </div>
-            </FlexContainer>
-          </List.Item>
-          <List.Item>
-            <FlexContainer justifyContent="space-between" width="100%">
-              <div>
-                No of questions skipped due to incomplete question content
-              </div>
-              <div>
-                {isQtiImport
-                  ? (qtiFileStatus[JOB_STATUS.INVALID] || 0) +
-                    (qtiFileStatus[JOB_STATUS.ERROR] || 0)
-                  : '0'}
-              </div>
-            </FlexContainer>
-          </List.Item>
-        </List>
-      )}
+      <List itemLayout="horizontal" loadMore={ContinueBtn}>
+        <List.Item>
+          <FlexContainer justifyContent="space-between" width="100%">
+            <div>No of questions imported</div>
+            <div>
+              {isQtiImport
+                ? qtiFileStatus[JOB_STATUS.COMPLETED] || 0
+                : items.length}
+            </div>
+          </FlexContainer>
+        </List.Item>
+        <List.Item>
+          <FlexContainer justifyContent="space-between" width="100%">
+            <div>No of questions skipped due to unsupported type</div>
+            <div>
+              {isQtiImport ? qtiFileStatus[JOB_STATUS.UNSUPPORTED] || 0 : '0'}
+            </div>
+          </FlexContainer>
+        </List.Item>
+        <List.Item>
+          <FlexContainer justifyContent="space-between" width="100%">
+            <div>
+              No of questions skipped due to incomplete question content
+            </div>
+            <div>
+              {isQtiImport
+                ? (qtiFileStatus[JOB_STATUS.INVALID] || 0) +
+                  (qtiFileStatus[JOB_STATUS.ERROR] || 0)
+                : '0'}
+            </div>
+          </FlexContainer>
+        </List.Item>
+      </List>
     </FlexContainer>
   )
 }
@@ -193,6 +189,6 @@ export default compose(
     contentImportProgress: contentImportProgressAction,
     setUploadContnentStatus: uploadContentStatusAction,
     setImportContentJobIds: setImportContentJobIdsAction,
-    setJobsData: setJobsDataAction,
+    resetData: resetStateAction,
   })
 )(ImportDone)

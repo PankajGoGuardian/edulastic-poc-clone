@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { Spin, List } from 'antd'
 import PropTypes from 'prop-types'
-// import useInterval from '@use-it/interval'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
@@ -23,7 +22,7 @@ import {
   JOB_STATUS,
   getJobsDataSelector,
   getQtiFileStatusSelector,
-  setJobsDataAction,
+  resetStateAction,
 } from '../ducks'
 import {
   contentImportJobIds,
@@ -55,7 +54,7 @@ const ImportInprogress = ({
   location: { pathname: path },
   setUploadContnentStatus,
   setImportContentJobIds,
-  setJobsData,
+  resetData,
   history,
   importType,
   jobsData,
@@ -81,8 +80,7 @@ const ImportInprogress = ({
   const handleRetry = () => {
     if (path === '/author/import-content') {
       setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      uploadTestStatus(UPLOAD_STATUS.INITIATE)
-      setJobsData([])
+      resetData()
       setImportContentJobIds([])
       sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
@@ -94,9 +92,11 @@ const ImportInprogress = ({
   }
 
   useEffect(() => {
-    interval = setInterval(() => {
-      checkProgress()
-    }, 1000 * 5)
+    if (jobIds.length && interval === undefined) {
+      interval = setInterval(() => {
+        checkProgress()
+      }, 1000 * 5)
+    }
   }, [jobIds])
 
   const isQtiImport = importType === 'qti'
@@ -213,7 +213,7 @@ const enhancedComponent = compose(
     contentImportProgress: contentImportProgressAction,
     setUploadContnentStatus: uploadContentStatusAction,
     setImportContentJobIds: setImportContentJobIdsAction,
-    setJobsData: setJobsDataAction,
+    resetData: resetStateAction,
   })
 )
 

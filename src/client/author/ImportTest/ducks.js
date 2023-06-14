@@ -39,6 +39,7 @@ const GET_IMPORT_PROGRESS = '[import test] get import progress action'
 const SET_JOBS_DATA = '[import test] set jobs response data'
 const SET_SUCCESS_MESSAGE = '[import test] set success message'
 const SET_IS_IMPORTING = '[import test] set is importing'
+const RESET_STATE = '[import test] reset state'
 
 export const uploadTestRequestAction = createAction(UPLOAD_TEST_REQUEST)
 export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS)
@@ -50,6 +51,7 @@ export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS)
 export const setJobsDataAction = createAction(SET_JOBS_DATA)
 export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE)
 export const setIsImportingAction = createAction(SET_IS_IMPORTING)
+export const resetStateAction = createAction(RESET_STATE)
 
 const initialState = {
   testDetail: {},
@@ -97,6 +99,17 @@ const setQtiFileStatuses = (state, { payload }) => {
   state.qtiFileStatus = payload
 }
 
+const resetQtiState = (state) => {
+  state.jobsData = []
+  state.qtiFileStatus = {}
+  state.error = {}
+  state.status = 'INITIATE'
+  state.jobIds = []
+  state.successMessage = ''
+  state.isSuccess = true
+  state.importing = false
+}
+
 export const reducers = createReducer(initialState, {
   [SET_UPLOAD_TEST_STATUS]: testUploadStatus,
   [UPLOAD_TEST_SUSSESS]: uploadTestSuccess,
@@ -106,6 +119,7 @@ export const reducers = createReducer(initialState, {
   [SET_SUCCESS_MESSAGE]: setSuccessMessage,
   [SET_IS_IMPORTING]: setIsImporting,
   [SET_QTI_FILE_STATUS]: setQtiFileStatuses,
+  [RESET_STATE]: resetQtiState,
 })
 
 export function* uploadTestStaga({ payload }) {
@@ -179,7 +193,9 @@ function* getImportProgressSaga({ payload }) {
         clearInterval(interval)
       }
     } else if (manifestResponse.status === JOB_STATUS.ERROR) {
+      yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
       yield put(uploadTestErrorAction(`${manifestResponse.error}`))
+      clearInterval(interval)
       notification({
         type: 'error',
         msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,

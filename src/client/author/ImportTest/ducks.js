@@ -18,6 +18,10 @@ export const JOB_STATUS = {
   SUCCESS: 'success',
   INITIATED: 'initiated',
   IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+  INVALID: 'invalid',
+  UNSUPPORTED: 'unsupported',
+  ERROR: 'error',
 }
 
 const contentFolders = {
@@ -30,30 +34,35 @@ const UPLOAD_TEST_SUSSESS = '[import test] upload test success'
 const UPLOAD_TEST_ERROR = '[import test] upload test error'
 const SET_UPLOAD_TEST_STATUS = '[import test] set upload test status'
 const SET_JOB_IDS = '[import test] test job ids'
+const SET_QTI_FILE_STATUS = '[import test] qti file status'
 const GET_IMPORT_PROGRESS = '[import test] get import progress action'
 const SET_JOBS_DATA = '[import test] set jobs response data'
 const SET_SUCCESS_MESSAGE = '[import test] set success message'
 const SET_IS_IMPORTING = '[import test] set is importing'
+const RESET_STATE = '[import test] reset state'
 
 export const uploadTestRequestAction = createAction(UPLOAD_TEST_REQUEST)
 export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS)
 export const uploadTestErrorAction = createAction(UPLOAD_TEST_ERROR)
 export const uploadTestStatusAction = createAction(SET_UPLOAD_TEST_STATUS)
 export const setJobIdsAction = createAction(SET_JOB_IDS)
+export const setQtiFileStatusesAction = createAction(SET_QTI_FILE_STATUS)
 export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS)
 export const setJobsDataAction = createAction(SET_JOBS_DATA)
 export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE)
 export const setIsImportingAction = createAction(SET_IS_IMPORTING)
+export const resetStateAction = createAction(RESET_STATE)
 
 const initialState = {
   testDetail: {},
   error: {},
-  status: 'STANDBY',
+  status: 'INITIATE',
   jobIds: [],
   jobsData: [],
   successMessage: '',
   isSuccess: true,
   importing: false,
+  qtiFileStatus: {},
 }
 
 const testUploadStatus = (state, { payload }) => {
@@ -69,12 +78,12 @@ const uploadTestError = (state, { payload }) => {
 }
 
 const setJobIds = (state, { payload }) => {
-  sessionStorage.setItem('jobIds', JSON.stringify(payload))
   state.jobIds = payload
 }
 
 const setJobsData = (state, { payload }) => {
   state.jobsData = payload
+  state.qtiFileStatus = payload.length === 0 ? {} : state.qtiFileStatus
 }
 
 const setSuccessMessage = (state, { payload }) => {
@@ -86,6 +95,21 @@ const setIsImporting = (state, { payload }) => {
   state.importing = payload
 }
 
+const setQtiFileStatuses = (state, { payload }) => {
+  state.qtiFileStatus = payload
+}
+
+const resetQtiState = (state) => {
+  state.jobsData = []
+  state.qtiFileStatus = {}
+  state.error = {}
+  state.status = 'INITIATE'
+  state.jobIds = []
+  state.successMessage = ''
+  state.isSuccess = true
+  state.importing = false
+}
+
 export const reducers = createReducer(initialState, {
   [SET_UPLOAD_TEST_STATUS]: testUploadStatus,
   [UPLOAD_TEST_SUSSESS]: uploadTestSuccess,
@@ -94,6 +118,8 @@ export const reducers = createReducer(initialState, {
   [SET_JOBS_DATA]: setJobsData,
   [SET_SUCCESS_MESSAGE]: setSuccessMessage,
   [SET_IS_IMPORTING]: setIsImporting,
+  [SET_QTI_FILE_STATUS]: setQtiFileStatuses,
+  [RESET_STATE]: resetQtiState,
 })
 
 export function* uploadTestStaga({ payload }) {
@@ -138,16 +164,44 @@ export function* uploadTestStaga({ payload }) {
   }
 }
 
-function* getImportProgressSaga({ payload: jobId }) {
+function* getImportProgressSaga({ payload }) {
   try {
+    const { jobId, interval } = payload
     const response = yield call(contentImportApi.qtiImportStatus, jobId)
-    yield put(setJobsDataAction(response))
-    if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
+    const manifestResponse = response.find(
+      (ele) => ele.type === 'manifestation'
+    )
+    if (manifestResponse.status === JOB_STATUS.COMPLETED) {
+      yield put(setJobsDataAction(response))
+      const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
+      const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
+        if (!acc[curr.status]) {
+          acc[curr.status] = 1
+        } else {
+          acc[curr.status] += 1
+        }
+        return acc
+      }, {})
+      yield put(setQtiFileStatusesAction(qtiFilesStatus))
+      if (
+        qtiFiles.every(
+          ({ status }) =>
+            ![JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(status)
+        )
+      ) {
+        yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
+        clearInterval(interval)
+      }
+    } else if (manifestResponse.status === JOB_STATUS.ERROR) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-      yield put(setIsImportingAction(false))
+      yield put(uploadTestErrorAction(`${manifestResponse.error}`))
+      clearInterval(interval)
+      notification({
+        type: 'error',
+        msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
+      })
     }
   } catch (e) {
-    console.log({ e })
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }
@@ -198,4 +252,9 @@ export const getErrorDetailsSelector = createSelector(
 export const getIsImportingselector = createSelector(
   stateSelector,
   (state) => state.importing
+)
+
+export const getQtiFileStatusSelector = createSelector(
+  stateSelector,
+  (state) => state.qtiFileStatus
 )

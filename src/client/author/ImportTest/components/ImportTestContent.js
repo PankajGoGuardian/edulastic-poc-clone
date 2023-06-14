@@ -36,6 +36,7 @@ const ImportTestContent = ({
       if (pathname === '/author/import-content') {
         setContentImportJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
         uploadContnentStatus(currentStatus)
+        setJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
       } else {
         uploadTestStatus(currentStatus) // upload progress
         setJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
@@ -104,7 +105,10 @@ ImportTestContent.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  if (state?.router?.location?.pathname === '/author/import-content') {
+  if (
+    state?.router?.location?.pathname === '/author/import-content' &&
+    state.collectionsReducer.type !== 'qti'
+  ) {
     const { collectionsReducer } = state
     return { status: collectionsReducer?.status || '' }
   }

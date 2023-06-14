@@ -119,6 +119,7 @@ import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import {
   allowDuplicateCheck,
   allowContentEditCheck,
+  isContentOfCollectionEditable,
 } from '../../../src/utils/permissionCheck'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import {
@@ -901,12 +902,17 @@ class Container extends PureComponent {
       pageStructure,
       freeFormNotes = {},
     } = test
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      test.collections,
+      writableCollections
+    )
     const isOwner =
       (authors && authors.some((x) => x._id === userId)) ||
       !params.id ||
       userRole === roleuser.EDULASTIC_CURATOR ||
       (userFeatures.isCurator &&
-        allowContentEditCheck(test.collections, collections))
+        allowContentEditCheck(test.collections, collections)) ||
+      isCollectionContentEditable
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
     const hasCollectionAccess = allowContentEditCheck(
@@ -1381,8 +1387,14 @@ class Container extends PureComponent {
       (allowContentEditCheck(test.collections, collections) &&
         userFeatures.isCurator) ||
       userRole === roleuser.EDULASTIC_CURATOR
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      test?.collections,
+      collections
+    )
     const canEdit =
-      (authors && authors.some((x) => x._id === userId)) || isCurator
+      (authors && authors.some((x) => x._id === userId)) ||
+      isCurator ||
+      isCollectionContentEditable
     const isArchivedInactiveTest =
       test.status === statusConstants.ARCHIVED && test.active === 0
     // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
@@ -1509,6 +1521,10 @@ class Container extends PureComponent {
       test.collections,
       writableCollections
     )
+    const isCollectionContentEditable = isContentOfCollectionEditable(
+      test?.collections,
+      collections
+    )
     const isCurator =
       (hasCollectionAccess && userFeatures.isCurator) ||
       userRole === roleuser.EDULASTIC_CURATOR
@@ -1516,7 +1532,7 @@ class Container extends PureComponent {
     const showPublishButton =
       (testStatus !== statusConstants.PUBLISHED &&
         testId &&
-        (isOwner || isCurator)) ||
+        (isOwner || isCurator || isCollectionContentEditable)) ||
       editEnable
     const hasTestId = !!testId
     const allowDuplicate =
@@ -1530,7 +1546,7 @@ class Container extends PureComponent {
     const showEditButton =
       testStatus === statusConstants.PUBLISHED &&
       !editEnable &&
-      (isOwner || isCurator)
+      (isOwner || isCurator || isCollectionContentEditable)
     const showCancelButton =
       test.isUsed &&
       !!testAssignments.length &&
@@ -1608,7 +1624,7 @@ class Container extends PureComponent {
           title={test?.title || ''}
           creating={creating}
           showEditButton={showEditButton}
-          owner={isOwner || isCurator || !testId}
+          owner={isOwner || isCurator || !testId || isCollectionContentEditable}
           isUsed={test.isUsed}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}

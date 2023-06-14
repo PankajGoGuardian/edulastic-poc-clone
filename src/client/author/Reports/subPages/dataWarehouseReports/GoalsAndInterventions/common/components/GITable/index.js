@@ -1,5 +1,5 @@
 import { Table } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { GOAL } from '../../../constants/form'
@@ -27,6 +27,10 @@ const GITable = ({
   const [expandedKey, setExpandedKey] = useState([])
   const [tableData, setTableData] = useState(data)
   const [selectedStatus, setSelectedStatus] = useState('')
+
+  useEffect(() => {
+    setTableData(data)
+  }, [data])
 
   const _statusList = statusList(data || [])
 

@@ -7,6 +7,9 @@ import {
   PERFORMANCE_BAND_ID,
 } from './form'
 
+const DELETE = 'delete'
+const EDIT = 'edit'
+
 export const statusColors = {
   WHITE: '#FFFFFF80',
   GREEN: '#74E27A80',
@@ -97,6 +100,11 @@ export const statusTextColors = {
   [GI_STATUS.PARTIALLY_EXECUTED]: summaryTileColors.BROWN_TEXT,
 }
 
+export const GIListActions = {
+  DELETE,
+  EDIT,
+}
+
 export const GIActionOptions = [
   {
     id: 'summary',
@@ -109,6 +117,10 @@ export const GIActionOptions = [
     label: 'View Trends',
     link:
       '/author/reports/multiple-assessment-report-dw?termId={termId}&testSubjects={subjects}&testGrades=&tagIds=&assessmentTypes={testTypes}&testIds=&schoolIds=&teacherIds=&subjects=&grades=&courseId=All&classIds=&groupIds={studentGroupIds}&profileId={performanceBandId}',
+  },
+  {
+    id: GIListActions.DELETE,
+    label: 'Delete',
   },
   // {
   //   id: 'edit',

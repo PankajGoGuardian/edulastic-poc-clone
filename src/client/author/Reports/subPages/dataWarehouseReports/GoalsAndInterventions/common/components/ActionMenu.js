@@ -1,28 +1,14 @@
 import React, { useState } from 'react'
 import Dropdown from 'antd/lib/dropdown'
 import Menu from 'antd/lib/menu'
-import Modal from 'antd/lib/modal'
 import styled from 'styled-components'
 import { IconCaretDown, IconClose } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { ACADEMIC } from '../../constants/form'
+import { GIListActions } from '../../constants/common'
 import ActionMenuItem from './ActionMenuItem'
-
-const DeleteModal = ({ type, showModal, setShowModal }) => (
-  <Modal
-    className="delete-popup"
-    title="Confirm"
-    centered
-    width={300}
-    visible={showModal}
-    closeIcon={<IconClose />}
-    onOk={() => setShowModal(false)}
-    onCancel={() => setShowModal(false)}
-  >
-    <p>Are you sure you’d like to delete this {type.toLowerCase()}?</p>
-  </Modal>
-)
+import DeleteModal from './GITable/DeleteModal'
 
 const ActionMenu = ({
   type,
@@ -53,8 +39,19 @@ const ActionMenu = ({
     urlData = { termId, groupId }
   }
 
+  const handleClick = (event) => {
+    const { key } = event
+    if ([GIListActions.DELETE, GIListActions.EDIT].indexOf(key) !== -1) {
+      if (key === GIListActions.DELETE) {
+        setShowModal(true)
+      }
+      return
+    }
+    onAction(event)
+  }
+
   const menu = (
-    <Menu onClick={onAction}>
+    <Menu onClick={handleClick}>
       <Header>
         <h2>Actions</h2>
         <IconClose />
@@ -72,7 +69,12 @@ const ActionMenu = ({
   return (
     <>
       <EduIf condition={showModal}>
-        <DeleteModal showModal setShowModal={setShowModal} type={type} />
+        <DeleteModal
+          showModal
+          setShowModal={setShowModal}
+          type={type}
+          GIData={GIData}
+        />
       </EduIf>
       <Dropdown
         overlayClassName="action-menu"

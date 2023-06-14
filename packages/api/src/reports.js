@@ -386,6 +386,22 @@ const createIntervention = (data) =>
     })
     .then((response) => response?.data?.result)
 
+const deleteGoal = (id) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals/${id}`,
+      method: 'delete',
+    })
+    .then((response) => response?.data?.result)
+
+const deleteIntervention = (id) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions/${id}`,
+      method: 'delete',
+    })
+    .then((response) => response?.data?.result)
+
 const getGoals = () =>
   api
     .callApi({
@@ -463,4 +479,6 @@ export default {
   getGoals,
   fetchAttendanceBands,
   getInterventions,
+  deleteGoal,
+  deleteIntervention,
 }

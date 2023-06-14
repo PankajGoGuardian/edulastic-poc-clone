@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import Menu from 'antd/lib/menu'
 import { Link } from 'react-router-dom'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
-// import { urlParamsKeys } from '../../constants/common'
 
 const ActionMenuItem = ({ item, urlData, ...restProps }) => {
   const { link = '', id, label } = item

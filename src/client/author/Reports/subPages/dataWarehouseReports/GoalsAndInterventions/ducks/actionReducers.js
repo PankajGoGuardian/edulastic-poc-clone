@@ -114,6 +114,7 @@ const slice = createSlice({
     setAdvancedSearchQuery: setAdvancedSearchQueryHelper,
     saveGroupComplete: setGroupDetailsHelper,
     resetAdvancedSearchDetails: resetAdvancedSearchDetailsHelper,
+    deleteGI: () => {},
   },
 })
 
@@ -145,6 +146,7 @@ const {
   saveGroupComplete,
   resetAdvancedSearchData,
   resetAdvancedSearchDetails,
+  deleteGI,
 } = slice.actions
 
 export const actions = {
@@ -175,6 +177,7 @@ export const actions = {
   saveGroupComplete,
   resetAdvancedSearchData,
   resetAdvancedSearchDetails,
+  deleteGI,
 }
 
 export const { reducer } = slice

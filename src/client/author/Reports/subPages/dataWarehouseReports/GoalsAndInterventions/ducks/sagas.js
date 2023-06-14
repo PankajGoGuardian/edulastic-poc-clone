@@ -23,7 +23,11 @@ import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-co
 import { GOAL } from '../constants/form'
 import { actions } from './actionReducers'
 import { fieldKey } from './constants'
-import { getAdvancedSearchFilterSelector } from './selectors'
+import {
+  getAdvancedSearchFilterSelector,
+  goalsList as goalsListSelector,
+  interventionsList as interventionsListSelector,
+} from './selectors'
 
 function* saveFormDataRequestSaga({ payload }) {
   const { formType } = payload
@@ -76,6 +80,36 @@ function* getInterventionsListSaga({ payload }) {
     notification({ msg: error?.response?.data?.message || msg })
   } finally {
     yield put(actions.getInterventionsListComplete())
+  }
+}
+
+function* deleteGISaga({ payload }) {
+  const { type, id } = payload
+  const isGoal = type === GOAL
+  try {
+    const apiToCall = isGoal
+      ? reportsApi.deleteGoal
+      : reportsApi.deleteIntervention
+    yield call(apiToCall, id)
+
+    const GISelector = isGoal ? goalsListSelector : interventionsListSelector
+    const GIList = yield select(GISelector)
+
+    const updatedGIList = GIList.filter(({ _id: GIDataId }) => GIDataId !== id)
+
+    const targetList = isGoal
+      ? actions.setGoalsList
+      : actions.setInterventionsList
+
+    yield put(targetList(updatedGIList))
+
+    notification({
+      type: 'success',
+      msg: `${ucFirst(titleCase(type))} deleted successfully`,
+    })
+  } catch (error) {
+    const msg = `Error deleting ${ucFirst(titleCase(type))}.`
+    notification({ msg: error?.response?.data?.message || msg })
   }
 }
 
@@ -326,5 +360,6 @@ export default function* watcherSaga() {
     ),
     takeLatest(actions.getAdvancedSearchData, getAdvancedSearchData),
     takeLatest(actions.saveGroup, saveGroup),
+    takeLatest(actions.deleteGI, deleteGISaga),
   ])
 }

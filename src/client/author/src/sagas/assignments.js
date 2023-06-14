@@ -44,6 +44,7 @@ import {
   MQTT_CLIENT_SAVE_REQUEST,
   MQTT_CLIENT_REMOVE_REQUEST,
   EDIT_TAGS_REQUEST,
+  BULK_UPDATE_ASSIGNMENT_SETTINGS,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
 import { setTagsUpdatingStateAction } from '../actions/assignments'
@@ -475,6 +476,19 @@ function* editTagsRequestSaga({ payload }) {
   }
 }
 
+function* bulkUpdateAssignmentSettingsSaga({ payload }) {
+  try {
+    const response = yield call(assignmentApi.bulkEditSettings, payload)
+    const successMessage =
+      response?.data?.result || 'Starting Bulk Action Request'
+    notification({ type: 'info', msg: successMessage })
+  } catch (err) {
+    const errorMessage =
+      err.response.data?.message || 'Failed to bulk update assignment settings.'
+    notification({ msg: errorMessage })
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
@@ -516,5 +530,9 @@ export default function* watcherSaga() {
       syncAssignmentWithSchoologyClassroomSaga
     ),
     yield takeEvery(EDIT_TAGS_REQUEST, editTagsRequestSaga),
+    yield takeEvery(
+      BULK_UPDATE_ASSIGNMENT_SETTINGS,
+      bulkUpdateAssignmentSettingsSaga
+    ),
   ])
 }

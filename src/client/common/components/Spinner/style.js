@@ -6,7 +6,7 @@ const StyledSpinner = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 5000;
+  z-index: ${({ zIndex }) => zIndex || '5000'};
   transform: translate(-50%, -50%) rotate(90deg);
   display: block;
   font-size: 0;

@@ -3,6 +3,7 @@ import {
   FlexContainer,
   CheckboxLabel,
   TestTypeIcon,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Dropdown, Spin, Tooltip, Menu } from 'antd'
@@ -13,6 +14,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { roleuser } from '@edulastic/constants'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import { receiveAssignmentsSummaryAction } from '../../../src/actions/assignments'
 import {
@@ -45,9 +47,13 @@ import {
   isDemoPlaygroundUser,
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
+import BulkEditTestModal from '../BulkEditTestModal'
 
 class AdvancedTable extends Component {
-  // eslint-disable-next-line react/state-in-constructor
+  isAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    this.props.userRole
+  )
+
   state = {
     enableRowClick: true,
     perPage: 20,
@@ -119,7 +125,7 @@ class AdvancedTable extends Component {
             return (
               <Tooltip placement="top" title="Assigning In Progress">
                 <div style={{ position: 'relative' }}>
-                  <Spinner size="18px" />
+                  <Spinner size="18px" zIndex={1} />
                 </div>
               </Tooltip>
             )
@@ -180,6 +186,11 @@ class AdvancedTable extends Component {
               <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>
                 Remove from Folder
               </Menu.Item>
+              {this.isAdmin && (
+                <Menu.Item onClick={() => this.toggleBulkEditModal()}>
+                  Edit Tests
+                </Menu.Item>
+              )}
             </Menu>
           )
           return (
@@ -305,6 +316,7 @@ class AdvancedTable extends Component {
         ),
       },
     ],
+    showBulkEditTestModal: false,
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -383,7 +395,7 @@ class AdvancedTable extends Component {
     if (e.target && e.target.checked && selectedIndex === -1) {
       setItemsToFolder([
         ...selectedRows,
-        { itemId: row.testId, name: row.title },
+        { itemId: row.testId, name: row.title, testType: row.testType },
       ])
     } else if (e.target && selectedIndex !== -1) {
       selectedRows.splice(selectedIndex, 1)
@@ -424,6 +436,12 @@ class AdvancedTable extends Component {
     }
   }
 
+  toggleBulkEditModal = () => {
+    this.setState((prevState) => ({
+      showBulkEditTestModal: !prevState.showBulkEditTestModal,
+    }))
+  }
+
   toggleMoveFolderModal = () => {
     const { toggleAddItemFolderModal, selectedRows } = this.props
     if (toggleAddItemFolderModal) {
@@ -449,8 +467,8 @@ class AdvancedTable extends Component {
   }
 
   render() {
-    const { assignmentsSummary, totalData, loading } = this.props
-    const { perPage, current, columns } = this.state
+    const { assignmentsSummary, totalData, loading, selectedRows } = this.props
+    const { perPage, current, columns, showBulkEditTestModal } = this.state
 
     if (loading) {
       return <Spin size="large" />
@@ -493,6 +511,13 @@ class AdvancedTable extends Component {
             current,
           }}
         />
+        <EduIf condition={showBulkEditTestModal}>
+          <BulkEditTestModal
+            visible={showBulkEditTestModal}
+            toggleModal={this.toggleBulkEditModal}
+            selectedRows={selectedRows}
+          />
+        </EduIf>
       </Container>
     )
   }

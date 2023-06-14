@@ -42,6 +42,11 @@ const columns = [
       a.name.localeCompare(b.name, undefined, { numeric: true }),
   },
   {
+    title: 'Standard Set',
+    key: 'curriculumName',
+    dataIndex: 'curriculumName',
+  },
+  {
     title: 'Domain Description',
     key: 'description',
     align: 'center',

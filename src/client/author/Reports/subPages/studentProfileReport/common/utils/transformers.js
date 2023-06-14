@@ -196,8 +196,14 @@ export const getDomains = (
   const scales = getScaleForMasteryCalculation(scaleInfo)
   const domains = map(keys(groupedByDomain), (domainId) => {
     const standards = groupedByDomain[domainId]
-    const { domainName = '', domain = '', grades = [], subject } =
-      standards[0] || {}
+    const {
+      domainName = '',
+      domain = '',
+      grades = [],
+      subject,
+      curriculumName,
+      curriculumId,
+    } = standards[0] || {}
     const masteryScore = getOverallDomainMasteryPercentage(standards, scales)
     const masterySummary = getMasterySummary(masteryScore, scaleInfo)
 
@@ -212,6 +218,8 @@ export const getDomains = (
       subject,
       standardSet: studentClassInfo?.standardSet,
       assessmentCount: asessmentMetricInfo?.length || 0,
+      curriculumName,
+      curriculumId,
     }
   })
 
@@ -223,19 +231,30 @@ export const getGrades = (studInfo = []) =>
     .map((grade) => gradesMap[grade])
     .join()
 
-export const getDomainOptions = (skillInfo = []) => [
+export const getDomainOptions = (skillInfo = [], curriculumId = 'All') => [
   { key: 'All', title: 'All Domains' },
-  ...uniqBy(skillInfo, 'domainId').map((x) => ({
+  ...uniqBy(
+    skillInfo.filter(
+      (x) => `${x.curriculumId}` === `${curriculumId}` || curriculumId === 'All'
+    ),
+    'domainId'
+  ).map((x) => ({
     key: `${x.domainId}`,
     title: x.domain,
   })),
 ]
 
-export const getStandardOptions = (skillInfo = [], domainId = 'All') => [
+export const getStandardOptions = (
+  skillInfo = [],
+  domainId = 'All',
+  curriculumId = 'All'
+) => [
   { key: 'All', title: 'All Standards' },
   ...uniqBy(
     skillInfo.filter(
-      (x) => `${x.domainId}` === `${domainId}` || domainId === 'All'
+      (x) =>
+        (`${x.domainId}` === `${domainId}` || domainId === 'All') &&
+        (`${x.curriculumId}` === `${curriculumId}` || curriculumId === 'All')
     ),
     'standardId'
   ).map((x) => ({
@@ -258,4 +277,17 @@ export const getDomainOptionsByGradeSubject = (domains, grade, subject) => {
         title: domain.name,
       })),
   ]
+}
+
+export const getCurriculumsList = (interestedCurriculums) => {
+  const curriculums = [{ key: 'All', title: 'All Standard Sets' }]
+  if (interestedCurriculums?.length) {
+    interestedCurriculums.forEach((item) => {
+      curriculums.push({
+        key: `${item._id}`,
+        title: item.name,
+      })
+    })
+  }
+  return curriculums
 }

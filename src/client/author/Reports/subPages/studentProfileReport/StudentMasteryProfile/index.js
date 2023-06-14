@@ -5,7 +5,7 @@ import {
   themeColorBlue,
   white,
 } from '@edulastic/colors'
-import { SpinLoader, FlexContainer } from '@edulastic/common'
+import { SpinLoader, FlexContainer, EduIf } from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
 import { Avatar, Button } from 'antd'
 import { filter, get, isEmpty } from 'lodash'
@@ -33,6 +33,7 @@ import {
   getGrades,
   getStudentName,
   getDomainOptionsByGradeSubject,
+  getCurriculumsList,
 } from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
 import {
@@ -47,9 +48,12 @@ import {
 } from './ducks'
 
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
-import { getUserRole } from '../../../../src/selectors/user'
+import {
+  getUserRole,
+  getInterestedCurriculumsSelector,
+} from '../../../../src/selectors/user'
 
-const usefilterRecords = (records, domain, grade, subject) =>
+const usefilterRecords = (records, domain, grade, subject, curriculumId) =>
   // Note: record.domainId could be integer or string
   useMemo(
     () =>
@@ -58,9 +62,10 @@ const usefilterRecords = (records, domain, grade, subject) =>
         (record) =>
           (domain === 'All' || String(record.domainId) === String(domain)) &&
           (grade === 'All' || record.grades.includes(grade)) &&
-          (subject === 'All' || record.subject === subject)
+          (subject === 'All' || record.subject === subject) &&
+          (curriculumId === 'All' || `${record.curriculumId}` === curriculumId)
       ),
-    [records, domain, grade, subject]
+    [records, domain, grade, subject, curriculumId]
   )
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -99,6 +104,7 @@ const StudentMasteryProfile = ({
   t,
   toggleFilter,
   userRole,
+  interestedCurriculums,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -140,6 +146,10 @@ const StudentMasteryProfile = ({
     key: 'All',
     title: 'All Subjects',
   })
+  const [selectedCurriculum, setSelectedCurriculum] = useState({
+    key: 'All',
+    title: 'All Standard Sets',
+  })
   const [selectedMastery, setSelectedMastery] = useState([])
   const [expandRows, setExpandRows] = useState(false)
 
@@ -158,13 +168,15 @@ const StudentMasteryProfile = ({
     studentStandards,
     selectedDomain.key,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
   const filteredDomains = usefilterRecords(
     studentDomains,
     selectedDomain.key,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
   const domainOptions = getDomainOptionsByGradeSubject(
     studentDomains,
@@ -176,6 +188,10 @@ const StudentMasteryProfile = ({
     false
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
+
+  const curriculumsOptions = useMemo(() => {
+    return getCurriculumsList(interestedCurriculums)
+  }, [interestedCurriculums])
 
   useEffect(() => () => resetStudentMasteryProfile(), [])
 
@@ -211,9 +227,19 @@ const StudentMasteryProfile = ({
     }
   }, [studentMasteryProfile])
 
+  useEffect(() => {
+    if (curriculumsOptions?.length) {
+      setSelectedCurriculum({
+        key: curriculumsOptions[0].key,
+        title: curriculumsOptions[0].title,
+      })
+    }
+  }, [curriculumsOptions])
+
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)
+  const onCurriculumSelect = (_, selected) => setSelectedCurriculum(selected)
   const onSectionClick = (item) =>
     setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel))
 
@@ -307,7 +333,14 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
-            {!isStudentOrParent && (
+            <ControlDropDown
+              by={selectedCurriculum}
+              selectCB={onCurriculumSelect}
+              data={curriculumsOptions}
+              prefix="Standard Set"
+              showPrefixOnSelected={false}
+            />
+            <EduIf condition={!isStudentOrParent}>
               <ControlDropDown
                 by={selectedGrade}
                 selectCB={onGradeSelect}
@@ -315,7 +348,7 @@ const StudentMasteryProfile = ({
                 prefix="Standard Grade"
                 showPrefixOnSelected={false}
               />
-            )}
+            </EduIf>
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
@@ -381,6 +414,7 @@ const withConnect = connect(
     studentStandardData: getStudentStandardData(state),
     loadingStudentStandard: getStudentStandardLoader(state),
     userRole: getUserRole(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,

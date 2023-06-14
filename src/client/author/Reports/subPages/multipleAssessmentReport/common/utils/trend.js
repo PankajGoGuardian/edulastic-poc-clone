@@ -135,7 +135,12 @@ export const augmentWithData = (
       return metricInfo
     case 'standard':
       return map(metricInfo, (metric) => {
-        const { standard = '', domain = '', curriculumId = '' } =
+        const {
+          standard = '',
+          domain = '',
+          curriculumId = '',
+          curriculumName = '',
+        } =
           find(
             metaInfo,
             (standardInfo) =>
@@ -147,6 +152,7 @@ export const augmentWithData = (
           standard,
           domain,
           curriculumId,
+          curriculumName,
         }
       })
     default:

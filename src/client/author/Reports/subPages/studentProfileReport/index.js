@@ -127,6 +127,7 @@ const StudentProfileReportContainer = (props) => {
       'reportId',
       'performanceBandProfileId',
       'assignedBy',
+      'curriculumId',
     ]
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {

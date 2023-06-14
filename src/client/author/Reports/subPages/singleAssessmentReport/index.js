@@ -52,6 +52,14 @@ const pickAddionalFilters = {
     'sortOrder',
     'sortKey',
   ],
+  [reportNavType.PERFORMANCE_BY_STANDARDS]: [
+    'analyzeBy',
+    'compareBy',
+    'page',
+    'sortOrder',
+    'sortKey',
+    'viewBy',
+  ],
 }
 
 const SingleAssessmentReportContainer = (props) => {
@@ -250,9 +258,9 @@ const SingleAssessmentReportContainer = (props) => {
         ...settings.tagsData,
         ...staticDropDownData.initialDdFilterTags,
       })
-      if (!isEmpty(additionalUrlParams)) {
-        setAdditionalUrlParams({})
-      }
+    }
+    if (!isEmpty(additionalUrlParams)) {
+      setAdditionalUrlParams({})
     }
   }, [loc])
 
@@ -413,6 +421,7 @@ const SingleAssessmentReportContainer = (props) => {
                 demographicFilters={demographicFilters}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                setAdditionalUrlParams={setAdditionalUrlParams}
               />
             )}
           />

@@ -135,7 +135,6 @@ const PerformanceAnalysisTable = ({
   sortOrder,
   setSortOrder,
   setPageNo,
-  setRecompute,
 }) => {
   const { scaleInfo, skillInfo } = report
   const [tableData, aggSummaryStats] = getAnalyzedTableData(
@@ -302,7 +301,6 @@ const PerformanceAnalysisTable = ({
     setSortKey(column.columnKey)
     setSortOrder(column.order)
     setPageNo(1)
-    setRecompute(false)
   }
 
   return (

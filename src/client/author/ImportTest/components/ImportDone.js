@@ -58,7 +58,7 @@ const ImportDone = ({
   useEffect(() => {
     if (jobId.includes('qti') && status !== UPLOAD_STATUS.DONE) {
       qtiImportProgress({ jobId })
-    } else if (status !== UPLOAD_STATUS.INITIATE && jobsData.length === 0) {
+    } else if (!jobId.includes('qti') && status !== UPLOAD_STATUS.INITIATE) {
       contentImportProgress(jobIds)
     }
   }, [])

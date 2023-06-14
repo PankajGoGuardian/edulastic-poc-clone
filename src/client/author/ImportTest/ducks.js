@@ -166,7 +166,7 @@ export function* uploadTestStaga({ payload }) {
 
 function* getImportProgressSaga({ payload }) {
   try {
-    const { jobId, interval } = payload
+    const { jobId } = payload
     const response = yield call(contentImportApi.qtiImportStatus, jobId)
     const manifestResponse = response.find(
       (ele) => ele.type === 'manifestation'
@@ -190,12 +190,10 @@ function* getImportProgressSaga({ payload }) {
         )
       ) {
         yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-        clearInterval(interval)
       }
     } else if (manifestResponse.status === JOB_STATUS.ERROR) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
       yield put(uploadTestErrorAction(`${manifestResponse.error}`))
-      clearInterval(interval)
       notification({
         type: 'error',
         msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,

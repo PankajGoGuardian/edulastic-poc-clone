@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { Spin, List } from 'antd'
 import PropTypes from 'prop-types'
@@ -37,8 +37,6 @@ import {
   importTypeSelector,
 } from '../../ContentCollections/ducks'
 
-let interval
-
 const ImportInprogress = ({
   t,
   qtiImportProgress,
@@ -60,6 +58,7 @@ const ImportInprogress = ({
   jobsData,
   qtiFileStatus = {},
 }) => {
+  const intervalRef = useRef()
   const checkProgress = () => {
     const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
     if (jobId.includes('qti') && jobIds.length) {
@@ -69,7 +68,7 @@ const ImportInprogress = ({
           [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
         )
       ) {
-        qtiImportProgress({ jobId: jobIds, interval })
+        qtiImportProgress({ jobId: jobIds })
       }
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
       contentImportProgress(jobIds)
@@ -92,10 +91,13 @@ const ImportInprogress = ({
   }
 
   useEffect(() => {
-    if (jobIds.length && interval === undefined) {
-      interval = setInterval(() => {
+    if (jobIds.length) {
+      intervalRef.current = setInterval(() => {
         checkProgress()
       }, 1000 * 5)
+    }
+    return () => {
+      clearInterval(intervalRef.current)
     }
   }, [jobIds])
 

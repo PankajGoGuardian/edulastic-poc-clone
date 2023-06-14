@@ -358,6 +358,14 @@ const getColumns = (
                 })
             },
           },
+          {
+            key: 'curriculumName',
+            title: 'Standard Set',
+            align: 'left',
+            fixed: 'left',
+            width: 120,
+            dataIndex: 'curriculumName',
+          },
         ]
       : [
           {

@@ -26,6 +26,7 @@ import {
   getUserRole,
   getOrgDataSelector,
   getCurrentTerm,
+  getInterestedCurriculumsSelector,
 } from '../../../../../../src/selectors/user'
 import {
   getFiltersSelector,
@@ -46,6 +47,7 @@ import {
   getTermOptions,
   getDomainOptions,
   getStandardOptions,
+  getCurriculumsList,
 } from '../../utils/transformers'
 import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
@@ -109,6 +111,7 @@ const StudentProfileReportFilters = ({
   loading,
   studentProgressProfile,
   fetchUpdateTagsData,
+  interestedCurriculums,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -152,8 +155,17 @@ const StudentProfileReportFilters = ({
     () => get(studentProgressProfile, 'data.result.skillInfo', []),
     [studentProgressProfile]
   )
-  const domainOptions = getDomainOptions(skillInfo)
-  const standardOptions = getStandardOptions(skillInfo, filters.domainId)
+
+  const domainOptions = getDomainOptions(skillInfo, filters.curriculumId)
+  const standardOptions = getStandardOptions(
+    skillInfo,
+    filters.domainId,
+    filters.curriculumId
+  )
+
+  const curriculumsOptions = useMemo(() => {
+    return getCurriculumsList(interestedCurriculums)
+  }, [interestedCurriculums])
 
   const search = useMemo(
     () =>
@@ -398,7 +410,7 @@ const StudentProfileReportFilters = ({
     setTempTagsData(_tempTagsData)
   }
 
-  const topFilterColSpan = standardFiltersRequired && filters.showApply ? 5 : 6
+  const topFilterColSpan = standardFiltersRequired && filters.showApply ? 3 : 4
 
   const handleTagClick = (filterKey) => {
     const tabKey =
@@ -651,6 +663,27 @@ const StudentProfileReportFilters = ({
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
+                data-cy="selectCurriculumId"
+              >
+                <ControlDropDown
+                  by={filters.curriculumId}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(
+                      selected,
+                      'curriculumId',
+                      false,
+                      true
+                    )
+                  }
+                  data={curriculumsOptions}
+                  prefix="Standard Set"
+                  showPrefixOnSelected={false}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
                 <ControlDropDown
@@ -710,6 +743,7 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
     studentProgressProfile: getReportsStudentProgressProfile(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,

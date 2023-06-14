@@ -22,6 +22,7 @@ import {
   getGrades,
   getStudentName,
   getDomainOptionsByGradeSubject,
+  getCurriculumsList,
 } from '../common/utils/transformers'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import StandardMasteryDetailsTable from './common/components/table/StandardMasteryDetailsTable'
@@ -36,6 +37,7 @@ import {
   getReportsStudentProfileSummaryError,
   resetStudentProfileSummaryAction,
 } from './ducks'
+import { getInterestedCurriculumsSelector } from '../../../../src/selectors/user'
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
 
 const getTooltip = (payload) => {
@@ -81,6 +83,7 @@ const StudentProfileSummary = ({
   sharedReport,
   t,
   toggleFilter,
+  interestedCurriculums = [],
 }) => {
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -94,6 +97,14 @@ const StudentProfileSummary = ({
     key: 'All',
     title: 'All Subjects',
   })
+  const [selectedCurriculum, setSelectedCurriculum] = useState({
+    key: 'All',
+    title: 'All Standard Sets',
+  })
+
+  const curriculumsOptions = useMemo(() => {
+    return getCurriculumsList(interestedCurriculums)
+  }, [interestedCurriculums])
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -162,18 +173,21 @@ const StudentProfileSummary = ({
     scaleInfo,
     selectedDomain.key,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
   const filteredStandards = filterStandards(
     standards,
     selectedDomain.key,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
 
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)
+  const onCurriculumSelect = (_, selected) => setSelectedCurriculum(selected)
 
   useEffect(() => () => resetStudentProfileSummary(), [])
 
@@ -204,6 +218,15 @@ const StudentProfileSummary = ({
       toggleFilter(null, true)
     }
   }, [studentProfileSummary])
+
+  useEffect(() => {
+    if (curriculumsOptions?.length) {
+      setSelectedCurriculum({
+        key: curriculumsOptions[0].key,
+        title: curriculumsOptions[0].title,
+      })
+    }
+  }, [curriculumsOptions])
 
   const _onBarClickCB = (key, args) => {
     !isSharedReport &&
@@ -316,6 +339,13 @@ const StudentProfileSummary = ({
             <FilterRow justifyContent="space-between">
               <DropdownContainer>
                 <ControlDropDown
+                  by={selectedCurriculum}
+                  selectCB={onCurriculumSelect}
+                  data={curriculumsOptions}
+                  prefix="Standard Set"
+                  showPrefixOnSelected={false}
+                />
+                <ControlDropDown
                   by={selectedGrade}
                   selectCB={onGradeSelect}
                   data={allGrades}
@@ -357,6 +387,7 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,

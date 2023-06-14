@@ -104,6 +104,11 @@ const columns = [
     width: 90,
   },
   {
+    title: 'Standard Set',
+    key: 'curriculumName',
+    dataIndex: 'curriculumName',
+  },
+  {
     title: 'Domain Description',
     key: 'description',
     dataIndex: 'description',

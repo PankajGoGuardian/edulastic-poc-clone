@@ -30,7 +30,8 @@
     "domainId": "All",
     "standardId": "All",
     "showApply": false,
-    "assignedBy": "anyone"
+    "assignedBy": "anyone",
+    "curriculumId": ""
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },

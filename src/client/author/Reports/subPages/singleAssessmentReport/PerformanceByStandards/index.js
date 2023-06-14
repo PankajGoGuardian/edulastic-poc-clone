@@ -1,6 +1,7 @@
 import { SpinLoader, EduIf, EduThen, EduElse } from '@edulastic/common'
 import { Col, Row, Pagination } from 'antd'
 import next from 'immer'
+import qs from 'qs'
 import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -65,27 +66,45 @@ const PerformanceByStandards = ({
   setStandardMasteryProfile,
   toggleFilter,
   generateCSV,
+  setAdditionalUrlParams,
 }) => {
+  const urlSearch = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
+  })
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
   ])
 
   const { selectedTest, requestFilters } = settings
-  const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
-  const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
+  const [viewBy, setViewBy] = useState(urlSearch.viewBy || viewByMode.STANDARDS)
+  const [analyzeBy, setAnalyzeBy] = useState(
+    urlSearch.analyzeBy || analyzeByMode.SCORE
+  )
   const [compareBy, setCompareBy] = useState(
-    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+    urlSearch.compareBy
+      ? urlSearch?.compareBy
+      : userRole === 'teacher'
+      ? compareByMode.STUDENTS
+      : compareByMode.SCHOOL
   )
   const [curriculumId, setCurriculumId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])
-  const [page, setPage] = useState(1)
-  const [sortOrder, setSortOrder] = useState(undefined)
-  const [sortKey, setSortKey] = useState(sortKeysMap.overall)
+  const [page, setPage] = useState(Number(urlSearch.page) || 1)
+  const [sortOrder, setSortOrder] = useState(urlSearch.sortOrder || undefined)
+  const [sortKey, setSortKey] = useState(
+    urlSearch.sortKey || sortKeysMap.overall
+  )
   const [recompute, setRecompute] = useState(true)
 
   useEffect(() => {
     setRecompute(true)
+    setPage(1)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      page: 1,
+    }))
   }, [demographicFilters, settings])
   const [
     details,
@@ -229,24 +248,56 @@ const PerformanceByStandards = ({
   }, [isCsvDownloading])
 
   const handleViewByChange = (event, selected) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      viewBy: selected.key,
+    }))
     setViewBy(selected.key)
   }
 
   const handleAnalyzeByChange = (event, selected) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      analyzeBy: selected.key,
+    }))
     setAnalyzeBy(selected.key)
   }
 
   const handleCompareByChange = (event, selected) => {
     setRecompute(true)
+    setPage(1)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      compareBy: selected.key,
+      page: 1,
+    }))
     setCompareBy(selected.key)
   }
 
   const handleCurriculumIdChange = (selected) => {
     setCurriculumId(selected.key)
   }
-  const onSetPage = () => {
+  const onSetSortKey = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortKey: value,
+    }))
+    setSortKey(value)
+  }
+  const onSetSortOrder = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortOrder: value,
+    }))
+    setSortOrder(value)
+  }
+  const onSetPage = (value) => {
     setRecompute(false)
-    setPage(page)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      page: value,
+    }))
+    setPage(value)
   }
 
   const selectedCurriculumId = standardsDropdownData.find(
@@ -368,11 +419,10 @@ const PerformanceByStandards = ({
                       location={location}
                       pageTitle={pageTitle}
                       sortKey={sortKey}
-                      setSortKey={setSortKey}
+                      setSortKey={onSetSortKey}
                       sortOrder={sortOrder}
-                      setSortOrder={setSortOrder}
-                      setPageNo={setPage}
-                      setRecompute={setRecompute}
+                      setSortOrder={onSetSortOrder}
+                      setPageNo={onSetPage}
                     />
                     <EduIf condition={itemsCount > pageSize}>
                       <Pagination

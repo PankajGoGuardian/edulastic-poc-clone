@@ -71,6 +71,7 @@ export const usePerformanceByStandardDetailsFetch = ({
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [totalRows, setTotalRows] = useState(0)
   useEffect(() => {
     const fetchData = async () => {
       if (settings.selectedTest && settings.selectedTest.key) {
@@ -91,7 +92,13 @@ export const usePerformanceByStandardDetailsFetch = ({
           }
 
           const response = await fetchPerformanceByStandardDetails(params)
-          setData(response?.data?.result || {})
+          const result = response?.data?.result || {}
+          if (result?.totalRows) {
+            setTotalRows(result.totalRows)
+          } else {
+            result.totalRows = totalRows
+          }
+          setData(result)
           setLoading(false)
         } catch (e) {
           setError(e)

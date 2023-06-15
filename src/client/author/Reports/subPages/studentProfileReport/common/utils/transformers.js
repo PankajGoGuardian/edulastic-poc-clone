@@ -8,14 +8,12 @@ import {
   orderBy,
   filter,
   keys,
-  uniq,
   uniqBy,
   isEmpty,
 } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import { percentage, getProficiencyBand } from '../../../../common/util'
-import gradesMap from '../static/gradesMap.json'
 
 const { getFormattedName } = reportUtils.common
 
@@ -225,11 +223,6 @@ export const getDomains = (
 
   return domains
 }
-
-export const getGrades = (studInfo = []) =>
-  uniq(studInfo.flatMap((s = {}) => (s.grades ? s.grades.split(',') : [])))
-    .map((grade) => gradesMap[grade])
-    .join()
 
 export const getDomainOptions = (skillInfo = [], curriculumId = 'All') => [
   { key: 'All', title: 'All Domains' },

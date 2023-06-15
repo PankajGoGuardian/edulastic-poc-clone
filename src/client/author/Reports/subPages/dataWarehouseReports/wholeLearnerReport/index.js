@@ -432,6 +432,7 @@ const WholeLearnerReport = ({
                     </SectionDescription>
                     <StudentDetails
                       studentInformation={settings.selectedStudentInformation}
+                      studentClassData={studentClassData}
                     />
                     <EduIf condition={!isEmpty(chartData)}>
                       <EduThen>

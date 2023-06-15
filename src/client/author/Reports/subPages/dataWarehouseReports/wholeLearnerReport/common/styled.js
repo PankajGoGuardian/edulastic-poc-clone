@@ -92,6 +92,13 @@ export const StudentMetaData = styled.div`
       letter-spacing: 0px;
     }
   }
+  .schools-name,
+  .grades-name {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `
 
 export const StyledLine = styled.div`

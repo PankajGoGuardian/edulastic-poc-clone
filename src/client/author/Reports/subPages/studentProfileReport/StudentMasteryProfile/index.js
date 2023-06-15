@@ -24,13 +24,13 @@ import {
   downloadCSV,
   getStudentAssignments,
   toggleItem,
+  getGrades,
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
 import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
-  getGrades,
   getStudentName,
   getDomainOptionsByGradeSubject,
   getCurriculumsList,
@@ -119,7 +119,11 @@ const StudentMasteryProfile = ({
     [userRole]
   )
 
-  const { scaleInfo: scales = [] } = get(SPRFilterData, 'data.result', {})
+  const { scaleInfo: scales = [], studentClassData = [] } = get(
+    SPRFilterData,
+    'data.result',
+    {}
+  )
 
   const scaleInfo = (
     scales.find(
@@ -313,7 +317,7 @@ const StudentMasteryProfile = ({
               </StyledP>
               <StyledP marginTop="12px">
                 <StyledText weight="Bold"> Grade: </StyledText>
-                <StyledText>{getGrades(studInfo)}</StyledText>
+                <StyledText>{getGrades(studentClassData)}</StyledText>
               </StyledP>
             </FlexContainer>
           </FlexContainer>

@@ -333,12 +333,6 @@ const PurchaseFlowModals = (props) => {
     setShowSubscriptionAddonModal(false)
     setShowMultiplePurchaseModal(false)
     setShowBuyMoreModal(false)
-  }
-
-  const handleRenewLicenseModalClose = () => {
-    setProductData({})
-    setShowSubscriptionAddonModal(false)
-    setShowMultiplePurchaseModal(false)
     setShowRenewLicenseModal(false)
   }
 
@@ -466,7 +460,6 @@ const PurchaseFlowModals = (props) => {
 
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
-    handleRenewLicenseModalClose()
     setCartVisible(false)
     if (shouldPayWithCC) {
       openPaymentServiceModal(true)
@@ -598,7 +591,7 @@ const PurchaseFlowModals = (props) => {
       <EduIf condition={showRenewLicenseModal}>
         <RenewLicenseModal
           isVisible={showRenewLicenseModal}
-          handleCloseModal={handleRenewLicenseModalClose}
+          handleCloseModal={handleSubscriptionAddonModalClose}
           handleClick={handleClick}
           products={[teacherPremium, ...itemBankPremium]}
           currentItemId={currentItemId}
@@ -648,6 +641,7 @@ PurchaseFlowModals.defaultProps = {
   setShowMultiplePurchaseModal: () => {},
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
+  setShowRenewLicenseModal: () => {},
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},

@@ -33,6 +33,7 @@ import {
 } from '../utils'
 import { transformRiskSummaryData } from '../../EarlyWarningReport/utils'
 import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
+import { Spacer } from '../../../../../../common/styled'
 
 const {
   RISK_BAND_COLOR_INFO,
@@ -109,6 +110,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
           <EduIf condition={!loading && !error}>
             <StyledText>{periodLabel}</StyledText>
           </EduIf>
+          <Spacer />
         </WidgetHeader>
       </FlexContainer>
       <EduIf condition={loading}>

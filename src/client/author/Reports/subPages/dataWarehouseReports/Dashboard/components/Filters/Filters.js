@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react'
-import qs from 'qs'
 import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
@@ -51,7 +50,6 @@ const Filters = ({
   setFilterTagsData,
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
-  history,
 }) => {
   const assessmentTypesRef = useRef()
 
@@ -84,6 +82,7 @@ const Filters = ({
       defaultTermId ||
       (schoolYears.length ? schoolYears[0].key : ''),
     externalBandsRequired: true,
+    attendanceBandInfoRequired: true,
     externalTestsRequired: true,
   })
 
@@ -164,7 +163,6 @@ const Filters = ({
     setFilterTagsData(_filterTagsData)
     // update filters
     _filters[keyName] = _selected
-    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     if (keyName === 'profileId') {
       setFiltersTabKey(
         staticDropDownData.filterSections.PERFORMANCE_FILTERS.key

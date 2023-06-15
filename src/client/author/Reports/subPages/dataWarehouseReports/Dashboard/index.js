@@ -89,6 +89,14 @@ const Dashboard = ({
     'data.result',
     {}
   )
+  const attendanceBandInfo = useMemo(
+    () =>
+      (filtersData?.data?.result.attendanceBandInfo || []).map((it) => ({
+        key: it._id,
+        title: it.name,
+      })),
+    [filtersData]
+  )
   const availableAcademicTestTypes = useMemo(
     () => getAvailableAcademicTestTypesWithBands(bandInfo, externalBands),
     [bandInfo, externalBands]
@@ -124,6 +132,15 @@ const Dashboard = ({
     settings,
     compareByOptions,
   })
+  const attendanceProfileId = useMemo(
+    () =>
+      (
+        attendanceBandInfo.find(
+          (it) => it._id === search.attendanceProfileId
+        ) || attendanceBandInfo[0]
+      )?.key,
+    [attendanceBandInfo, search.attendanceProfileId]
+  )
 
   const onGoClick = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
@@ -148,8 +165,15 @@ const Dashboard = ({
         [PERFORMANCE_BAND]: performanceBand,
         [TEST_TYPE]: testType,
       },
+      attendanceProfileId,
     })
     setShowApply(false)
+    history.push(
+      `${location.pathname}?${qs.stringify({
+        ...settings.requestFilters,
+        attendanceProfileId,
+      })}`
+    )
   }
 
   useEffect(
@@ -190,7 +214,6 @@ const Dashboard = ({
           reportId={reportId}
           isPrinting={isPrinting}
           onGoClick={onGoClick}
-          history={history}
           location={location}
           search={search}
           showApply={showApply}
@@ -226,6 +249,7 @@ const Dashboard = ({
             tableData={tableData}
             loc={loc}
             availableTestTypes={availableAcademicTestTypes}
+            attendanceBandInfo={attendanceBandInfo}
           />
         </EduElse>
       </EduIf>

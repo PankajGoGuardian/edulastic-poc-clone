@@ -15,25 +15,46 @@ import { Widget } from '../../../../common/components/styledComponents'
 import WidgetHeader from '../../../../common/components/WidgetHeader'
 import AttendanceSummaryContents from './AttendanceSummaryContents'
 import { DW_ATTENDANCE_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
+import { Spacer } from '../../../../../../../../common/styled'
+import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
 
 const title = 'Attendance Summary'
 
-const AttendanceSummary = ({ settings }) => {
+const AttendanceSummary = ({
+  settings,
+  setSettings,
+  attendanceBandInfo,
+  location,
+  history,
+}) => {
   const query = useMemo(
     () => ({
       ...settings.requestFilters,
+      attendanceProfileId: settings.attendanceProfileId,
     }),
-    [settings.requestFilters]
+    [settings.requestFilters, settings.attendanceProfileId]
   )
 
   const { data, loading, error } = useApiQuery(
     dataWarehouseApi.getDashboardAttendanceSummary,
     [query],
     {
-      enabled: !isEmpty(query),
+      enabled: !isEmpty(settings.requestFilters),
       deDuplicate: false,
     }
   )
+  const onAttendanceBandChange = (e, selected) => {
+    setSettings({
+      ...settings,
+      attendanceProfileId: selected.key,
+    })
+    const newSearchParams = {
+      ...settings.requestFilters,
+      profileId: settings.academicSummaryFilters.profileId?.key,
+      attendanceProfileId: selected.key,
+    }
+    history.replace(`${location.pathname}?${qs.stringify(newSearchParams)}`)
+  }
 
   const hasContent =
     !error &&
@@ -44,13 +65,24 @@ const AttendanceSummary = ({ settings }) => {
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
-  const externalUrl = `${DW_ATTENDANCE_REPORT_URL}?${qs.stringify(
-    settings.requestFilters
-  )}`
+  const externalUrl = `${DW_ATTENDANCE_REPORT_URL}?${qs.stringify({
+    ...settings.requestFilters,
+    profileId: settings.attendanceProfileId,
+  })}`
 
   return (
     <Widget aspectRatio="32 / 9" width="100%">
-      <WidgetHeader title={title} url={externalUrl} />
+      <WidgetHeader title={title} url={externalUrl}>
+        <Spacer />
+        <EduIf condition={attendanceBandInfo.length}>
+          <ControlDropDown
+            style={{ margin: '0 10px' }}
+            by={settings.attendanceProfileId}
+            data={attendanceBandInfo}
+            selectCB={onAttendanceBandChange}
+          />
+        </EduIf>
+      </WidgetHeader>
       <EduIf condition={loading}>
         <EduThen>
           <SpinLoader

@@ -41,9 +41,12 @@ const useTableFilters = ({
       return nextState
     })
     if (search.selectedCompareBy) {
-      history.replace(
-        `${location.pathname}?${qs.stringify(settings.requestFilters)}`
-      )
+      const newSearchParams = {
+        ...settings.requestFilters,
+        profileId: settings.academicSummaryFilters.profileId?.key,
+        attendanceProfileId: settings.attendanceProfileId,
+      }
+      history.replace(`${location.pathname}?${qs.stringify(newSearchParams)}`)
     }
     setSettings({ ...settings, selectedCompareBy: selected })
   }
@@ -86,6 +89,7 @@ const useTableFilters = ({
       profileId:
         academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
           ?.key,
+      attendanceProfileId: settings.attendanceProfileId,
     }
     if (isDistrictAvgDimension) {
       Object.assign(reportFilters, { selectedCompareBy })

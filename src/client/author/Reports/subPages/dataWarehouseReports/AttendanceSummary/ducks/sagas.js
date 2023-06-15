@@ -7,7 +7,7 @@ function* fetchFiltersDataRequestSaga({ payload }) {
   try {
     const filtersData = yield call(reportsApi.fetchMARFilterData, {
       ...payload,
-      attendanceBandInfo: true,
+      attendanceBandInfoRequired: true,
     })
     yield put(actions.fetchFiltersDataRequestSuccess({ filtersData }))
   } catch (error) {

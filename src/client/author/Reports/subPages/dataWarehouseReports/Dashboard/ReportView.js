@@ -30,6 +30,7 @@ function ReportView({
   tableData,
   loc,
   availableTestTypes,
+  attendanceBandInfo,
 }) {
   const { academicSummaryFilters } = settings
 
@@ -61,7 +62,13 @@ function ReportView({
         />
         <WidgetColumn>
           <RiskSummary loc={loc} settings={settings} />
-          <AttendanceSummary settings={settings} />
+          <AttendanceSummary
+            location={location}
+            history={history}
+            settings={settings}
+            setSettings={setSettings}
+            attendanceBandInfo={attendanceBandInfo}
+          />
         </WidgetColumn>
       </WidgetsContainer>
       <TableSection

@@ -107,9 +107,6 @@ export const WidgetHeaderWrapper = styled.div`
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
   }
-  svg {
-    margin: auto 20px;
-  }
 `
 export const ContentWrapper = styled.div`
   display: flex;

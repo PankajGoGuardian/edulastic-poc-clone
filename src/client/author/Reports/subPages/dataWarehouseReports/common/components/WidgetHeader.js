@@ -11,10 +11,12 @@ const WidgetHeader = ({ title = '', url = null, children }) => {
       <div className="title">{title}</div>
       {children}
       <EduIf condition={url}>
-        <Spacer />
+        <EduIf condition={!React.Children.count(children)}>
+          <Spacer />
+        </EduIf>
         <div>
           <Link to={url} target={url}>
-            <IconExternalLink />
+            <IconExternalLink style={{ margin: 'auto 20px' }} />
           </Link>
         </div>
       </EduIf>

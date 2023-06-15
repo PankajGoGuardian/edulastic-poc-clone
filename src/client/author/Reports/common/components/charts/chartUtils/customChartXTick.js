@@ -1,4 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
+import { IconInfo } from '@edulastic/icons'
+import { blueButton } from '@edulastic/colors'
 import { StyledAxisTickText } from '../../../styled'
 
 const EXTERNAL_TAG_PADDING = 2
@@ -26,6 +28,22 @@ export const CustomChartXTick = (props) => {
 
   const tagTextRef = useRef(null)
   const [tagWidth, setTagWidth] = useState(0)
+  const InformationIcon = () => {
+    const componentWidth = 14
+    const componentHeight = 14
+    const infoIconPosX = x + tickWidth / 2 - componentWidth / 2
+    const infoIconPosy = y - componentHeight * 2.5
+    console.log({ x, infoIconPosX, y, infoIconPosy, tickWidth })
+    return (
+      <g transform={`translate(${infoIconPosX},${infoIconPosy})`}>
+        <IconInfo
+          fill={blueButton}
+          width={componentWidth}
+          height={componentHeight}
+        />
+      </g>
+    )
+  }
 
   useLayoutEffect(() => {
     if (tagTextRef.current) {
@@ -49,41 +67,50 @@ export const CustomChartXTick = (props) => {
   }
 
   return (
-    <g transform={`translate(${x},${y})`}>
-      <StyledAxisTickText
-        textAnchor="middle"
-        verticalAnchor="start"
-        width={tickWidth}
-        fontWeight={fontWeight}
-        fill={fill}
-      >
-        {text}
-      </StyledAxisTickText>
-      {tagText ? (
-        <>
-          <rect
-            x={-(tagWidth / 2)}
-            y={24}
-            rx={10}
-            width={tagWidth}
-            height={20}
-            fill="black"
-          />
-          <StyledAxisTickText
-            ref={tagTextRef}
-            y={30}
-            textAnchor="middle"
-            verticalAnchor="start"
-            width={tickWidth}
-            fontSize="12px"
-            fontWeight="bold"
-            fill="white"
-          >
-            {tagText.toUpperCase()}
-          </StyledAxisTickText>
-        </>
-      ) : null}
-    </g>
+    <>
+      {/**
+       * Todos:
+       * Show only when the intervention is available between range
+       * Show all the interventions in tooltip
+       */}
+      <InformationIcon />
+
+      <g transform={`translate(${x},${y})`}>
+        <StyledAxisTickText
+          textAnchor="middle"
+          verticalAnchor="start"
+          width={tickWidth}
+          fontWeight={fontWeight}
+          fill={fill}
+        >
+          {text}
+        </StyledAxisTickText>
+        {tagText ? (
+          <>
+            <rect
+              x={-(tagWidth / 2)}
+              y={24}
+              rx={10}
+              width={tagWidth}
+              height={20}
+              fill="black"
+            />
+            <StyledAxisTickText
+              ref={tagTextRef}
+              y={30}
+              textAnchor="middle"
+              verticalAnchor="start"
+              width={tickWidth}
+              fontSize="12px"
+              fontWeight="bold"
+              fill="white"
+            >
+              {tagText.toUpperCase()}
+            </StyledAxisTickText>
+          </>
+        ) : null}
+      </g>
+    </>
   )
 }
 

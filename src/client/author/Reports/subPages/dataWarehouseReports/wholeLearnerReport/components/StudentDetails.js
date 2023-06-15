@@ -1,9 +1,10 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Icon, Tooltip } from 'antd'
 
 import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { IconCheckMark } from '@edulastic/icons'
+import { getGrades, getSchools } from '../../../../common/util'
 import {
   DetailsWrapper,
   Details,
@@ -22,8 +23,6 @@ const StudentDetails = ({
     firstName = '',
     middleName = '',
     lastName = '',
-    schoolName,
-    grades,
     race,
     gender,
     iepStatus,
@@ -32,12 +31,16 @@ const StudentDetails = ({
     hispanicEthnicity,
     thumbnail,
   },
+  studentClassData,
 }) => {
   const studentName = getFormattedName(
     `${firstName} ${middleName} ${lastName}`,
     false,
     true
   )
+
+  const schoolName = getSchools(studentClassData)
+  const grades = getGrades(studentClassData)
 
   return (
     <div>
@@ -53,13 +56,17 @@ const StudentDetails = ({
           </StudentName>
           <StyledLine />
           <StudentMetaData>
-            <div>
+            <div className="schools-name">
               <span>School : </span>
-              <span data-testid="schoolName">{schoolName || '-'}</span>
+              <Tooltip title={schoolName}>
+                <span data-testid="schoolName">{schoolName || '-'}</span>
+              </Tooltip>
             </div>
-            <div>
+            <div className="grades-name">
               <span>Grade : </span>
-              <span data-testid="grade">{grades || '-'}</span>
+              <Tooltip title={grades}>
+                <span data-testid="grade">{grades || '-'}</span>
+              </Tooltip>
             </div>
             <div>
               <span>Race : </span>

@@ -13,6 +13,7 @@ import {
   pullAllBy,
   capitalize,
   uniqBy,
+  uniq,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -24,6 +25,7 @@ import {
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
+import gradesMap from './static/json/gradesMap.json'
 import { allFilterValue } from './constants'
 import {
   groupByConstants,
@@ -728,3 +730,11 @@ export const getPerformanceBandsListByTestType = (
 
   return performanceBandsList
 }
+
+export const getGrades = (studInfo = []) =>
+  uniq(studInfo.flatMap((s = {}) => (s.grades ? s.grades.split(',') : [])))
+    .map((grade) => gradesMap[grade])
+    .join(', ')
+
+export const getSchools = (studInfo = []) =>
+  uniq(studInfo.flatMap((s = {}) => s.schoolName || [])).join(', ')

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon, Avatar } from 'antd'
+import { Icon, Avatar, Tooltip } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -11,7 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { downloadCSV } from '../../../common/util'
+import { downloadCSV, getGrades, getSchools } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
@@ -19,7 +19,6 @@ import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   augementAssessmentChartData,
-  getGrades,
   getStudentName,
   getDomainOptionsByGradeSubject,
   getCurriculumsList,
@@ -291,6 +290,8 @@ const StudentProfileSummary = ({
       _data
     )
 
+  const schoolName = getSchools(studentClassData)
+
   return (
     <>
       <FlexContainer marginBottom="20px" alignItems="stretch">
@@ -308,9 +309,11 @@ const StudentProfileSummary = ({
             <span>NAME</span>
             <p>{studentName || anonymousString}</p>
             <span>GRADE</span>
-            <p>{getGrades(studInfo)}</p>
+            <p>{getGrades(studentClassData)}</p>
             <span>SCHOOL</span>
-            <p>{studentClassInfo.schoolName || 'N/A'}</p>
+            <Tooltip title={schoolName}>
+              <p className="school-name">{schoolName}</p>
+            </Tooltip>
           </StudentDetailsContainer>
         </StudentDetailsCard>
         <Card width="calc(100% - 300px)">
@@ -462,6 +465,12 @@ const StudentDetailsContainer = styled.div`
   p {
     color: ${secondaryTextColor};
     margin-bottom: 15px;
+  }
+  .school-name {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `
 const FilterRow = styled(FlexContainer)`

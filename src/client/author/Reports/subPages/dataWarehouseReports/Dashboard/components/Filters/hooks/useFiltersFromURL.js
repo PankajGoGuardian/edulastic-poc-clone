@@ -5,7 +5,10 @@ import { roleuser } from '@edulastic/constants'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { staticDropDownData } from '../../../utils'
-import { getDemographicsFilterTagsData } from '../../../../common/utils'
+import {
+  getDefaultTestTypes,
+  getDemographicsFilterTagsData,
+} from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
@@ -54,11 +57,14 @@ function useFiltersFromURL({
           (a) => a.key === search.periodType
         ) || staticDropDownData.periodTypes[0]
 
+      const testTypes = get(filtersData, 'data.result.testTypes')
+      const defaultTestTypes = getDefaultTestTypes(testTypes)
+
       const _filters = {
         termId: urlSchoolYear.key,
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
-        assessmentTypes: search.assessmentTypes || '',
+        assessmentTypes: search.assessmentTypes || defaultTestTypes,
         testIds: search.testIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
@@ -82,7 +88,9 @@ function useFiltersFromURL({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
-      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+      const assessmentTypesArr = (
+        search.assessmentTypes || defaultTestTypes
+      ).split(',')
       const demographics = get(filtersData, 'data.result.demographics')
       const demographicsFilterTagsData = getDemographicsFilterTagsData(
         search,

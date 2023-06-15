@@ -3,7 +3,10 @@ import moment from 'moment'
 import qs from 'qs'
 import { isEmpty } from 'lodash'
 import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
-import { ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
+import {
+  ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
+  TEST_TYPES_VALUES_MAP,
+} from '@edulastic/constants/const/testTypes'
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { allFilterValue } from '../../../../common/constants'
 import {
@@ -177,6 +180,16 @@ export const buildDrillDownUrl = ({
     return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters)}`
   }
   return `${reportUrl}?${qs.stringify(_filters)}`
+}
+
+export const getDefaultTestTypes = (testTypes = []) => {
+  const availableExternalTestTypes = testTypes
+    .filter((testType) => !INTERNAL_TEST_TYPES.includes(testType.key))
+    .map((t) => t.key)
+  return [
+    TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+    ...availableExternalTestTypes,
+  ].join(',')
 }
 
 export const sortTestTypes = (testTypes) => {

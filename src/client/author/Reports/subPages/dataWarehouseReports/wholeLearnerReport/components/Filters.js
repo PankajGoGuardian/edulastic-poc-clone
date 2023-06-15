@@ -30,6 +30,7 @@ import {
   staticDropDownData,
 } from '../utils'
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
+import { getDefaultTestTypes } from '../../common/utils'
 
 const filtersDefaultValues = [
   {
@@ -140,6 +141,10 @@ const WholeLearnerReportFilters = ({
     const urlGrades = staticDropDownData.grades.filter(
       (item) => search.grades && search.grades.includes(item.key)
     )
+
+    const testTypes = get(filtersData, 'data.result.testTypes')
+    const defaultTestTypes = getDefaultTestTypes(testTypes)
+
     const _filters = {
       reportId: reportId || '',
       termId: urlSchoolYear.key,
@@ -149,16 +154,19 @@ const WholeLearnerReportFilters = ({
       classIds: search.classIds || '',
       courseIds: search.courseIds || '',
       performanceBandProfileId: '',
-      testTypes: search.testTypes || '',
+      testTypes: search.testTypes || defaultTestTypes,
     }
     if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
       delete _filters.schoolIds
     }
-    const testTypes = getTestTypesFromUrl(search.testTypes, availableTestTypes)
+    const testTypesTags = getTestTypesFromUrl(
+      search.testTypes || defaultTestTypes,
+      availableTestTypes
+    )
     const _filterTagsData = {
       ...filterTagsData,
       termId: urlSchoolYear,
-      testTypes,
+      testTypes: testTypesTags,
       grades: urlGrades,
       subjects: urlSubjects,
     }
@@ -170,7 +178,7 @@ const WholeLearnerReportFilters = ({
     if (urlStudentId) {
       setStudent({ key: urlStudentId })
     }
-  }, [])
+  }, [filtersData])
 
   if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {
     const _student = { ...student }

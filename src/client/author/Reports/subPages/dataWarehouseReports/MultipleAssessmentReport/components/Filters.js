@@ -32,7 +32,10 @@ import { staticDropDownData } from '../utils'
 
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 import { allFilterValue } from '../../../../common/constants'
-import { getDemographicsFilterTagsData } from '../../common/utils'
+import {
+  getDefaultTestTypes,
+  getDemographicsFilterTagsData,
+} from '../../common/utils'
 
 const MultipleAssessmentReportFilters = ({
   // value props
@@ -145,12 +148,15 @@ const MultipleAssessmentReportFilters = ({
           performanceBandsList.find((item) => item.key === search.profileId) ||
           performanceBandsList[0]
 
+        const testTypes = get(filtersData, 'data.result.testTypes')
+        const defaultTestTypes = getDefaultTestTypes(testTypes)
+
         const _filters = {
           termId: urlSchoolYear.key,
           testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
           testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
           tagIds: search.tagIds || '',
-          assessmentTypes: search.assessmentTypes || '',
+          assessmentTypes: search.assessmentTypes || defaultTestTypes,
           testIds: search.testIds || '',
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
@@ -171,7 +177,9 @@ const MultipleAssessmentReportFilters = ({
           delete _filters.schoolIds
           delete _filters.teacherIds
         }
-        const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+        const assessmentTypesArr = (
+          search.assessmentTypes || defaultTestTypes
+        ).split(',')
         const demographicsData = get(filtersData, 'data.result.demographics')
         const demographicsFilterTagsData = getDemographicsFilterTagsData(
           search,

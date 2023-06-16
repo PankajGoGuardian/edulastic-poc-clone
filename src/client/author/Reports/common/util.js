@@ -21,6 +21,7 @@ import moment from 'moment'
 import {
   DW_DASHBOARD_REPORT,
   reportGroupType,
+  reportNavType,
 } from '@edulastic/constants/const/report'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import calcMethod from './static/json/calcMethod.json'
@@ -551,13 +552,14 @@ export const computeChartNavigationLinks = ({
   loc,
   hideOtherTabs = false,
 }) => {
+  let navigationItems = []
   if (navigation.locToData[loc]) {
     requestFilters = requestFilters || {}
     const requestFilterKeys = Object.keys(requestFilters)
     const _filters = {}
     requestFilterKeys.forEach((item) => {
       const val =
-        requestFilters[item] === ''
+        requestFilters[item] === '' && item !== 'reportId'
           ? capitalize(allFilterValue)
           : requestFilters[item]
       _filters[item] = val
@@ -568,12 +570,16 @@ export const computeChartNavigationLinks = ({
       if (hideOtherTabs) return item.key === loc
       return true
     })
-    return next(_navigationItems, (draft) => {
-      const _currentItem = draft.find((t) => t.key === loc)
-      _currentItem.location += `?${qs.stringify(_filters)}`
+    navigationItems = next(_navigationItems, (draft) => {
+      draft.forEach((item) => {
+        if (item.key !== reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT) {
+          item.location += `?${qs.stringify(_filters)}`
+        }
+      })
+      return draft
     })
   }
-  return []
+  return navigationItems
 }
 
 export const getHeaderSettings = (

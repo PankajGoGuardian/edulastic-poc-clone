@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
 import { Spin, Checkbox } from 'antd'
-import next from 'immer'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
@@ -49,8 +48,8 @@ import {
   mergeTestMetrics,
   getAttendanceChartData,
 } from './utils'
-import navigation from '../../../common/static/json/navigation.json'
 import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-components'
+import { computeChartNavigationLinks } from '../../../common/util'
 
 const { downloadCSV } = reportUtils.common
 
@@ -195,40 +194,26 @@ const WholeLearnerReport = ({
     []
   )
 
-  const computeChartNavigationLinks = () => {
-    const { selectedStudent, requestFilters, frontEndFilters } = settings
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys({ ...requestFilters, ...frontEndFilters })
-      const obj = {}
-      arr.forEach((item) => {
-        const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
-        obj[item] = val
-      })
-      obj.reportId = reportId || ''
-      const _navigationItems = navigation.navigation[
-        navigation.locToData[loc].group
-      ].filter((item) => {
-        // if data warehouse report is shared, only that report tab should be shown
-        return !reportId || item.key === loc
-      })
-      return next(_navigationItems, (draft) => {
-        const _currentItem = draft.find((t) => t.key === loc)
-        _currentItem.location += `${selectedStudent.key}?${qs.stringify(obj)}`
-      })
-    }
-    return []
-  }
-
   useEffect(() => {
+    // settings.requestFilters is missing class filters
+    const _requestFilters = {
+      ...filters,
+      assessmentTypes: filters.testTypes,
+      profileId: filters.performanceBandProfileId,
+      reportId: reportId || '',
+    }
     if (settings.selectedStudent.key) {
-      const path = `${settings.selectedStudent.key}?${qs.stringify({
-        ...settings.requestFilters,
-        ...settings.frontEndFilters,
-      })}`
+      const path = `${settings.selectedStudent.key}?${qs.stringify(
+        _requestFilters
+      )}`
       history.push(path)
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks()
-    updateNavigation(computedChartNavigatorLinks)
+    const navigationItems = computeChartNavigationLinks({
+      requestFilters: _requestFilters,
+      loc,
+      hideOtherTabs: !!reportId,
+    })
+    updateNavigation(navigationItems)
   }, [settings])
 
   useEffect(() => {

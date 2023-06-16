@@ -30,7 +30,6 @@ export const usePerformanceByStandardSummaryFetch = ({
             requestFilters: {
               ...pick(settings.requestFilters, pickDataForSummary),
               ...demographicFilters,
-              profileId: settings?.requestFilters?.standardsProficiencyProfile,
             },
             testId: settings.selectedTest.key,
           }

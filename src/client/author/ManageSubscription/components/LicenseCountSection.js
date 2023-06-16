@@ -1,7 +1,12 @@
 import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
+import {
+  ONE_MONTH_IN_MILLISECONDS,
+  TEN_DAYS_IN_MILLISECONDS,
+} from '@edulastic/constants/const/common'
+import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
 import {
   Count,
   Countbox,
@@ -13,6 +18,7 @@ import {
 import { SUBSCRIPTION_DEFINITION_TYPES } from '../../../admin/Data'
 
 const { PREMIUM } = SUBSCRIPTION_DEFINITION_TYPES
+const { PARTIAL_PREMIUM, ENTERPRISE } = SUBSCRIPTION_SUB_TYPES
 
 const LicenseCountSection = ({
   subsLicenses,
@@ -22,6 +28,9 @@ const LicenseCountSection = ({
   setSelectedLicenseId,
   setShowRenewLicenseModal,
   setQuantities,
+  isSubscriptionExpired,
+  isPaidPremium,
+  subType,
 }) => {
   const openBuyMoreModal = (itemId, licenseId) => {
     setShowBuyMoreModal(true)
@@ -45,6 +54,30 @@ const LicenseCountSection = ({
       license.totalCount >= totalTpLicenseCount,
     ].every((o) => !!o)
 
+  const canShowRenewLicenseButton = (licenseExpiryDate) => {
+    let isAboutToExpire = false
+    if (licenseExpiryDate) {
+      const licenseExpiryDateInTS = new Date(licenseExpiryDate).getTime()
+      const expiresWithinAMonth =
+        Date.now() + ONE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
+      const canShowRenewalBtn =
+        Date.now() < licenseExpiryDateInTS + TEN_DAYS_IN_MILLISECONDS
+      isAboutToExpire = expiresWithinAMonth && canShowRenewalBtn
+    }
+
+    const IsPaidPremiumSubscriptionExpired = isPaidPremium && isAboutToExpire
+    const IsNotPaidPremiumSubscriptionExpired =
+      !isPaidPremium && isSubscriptionExpired
+    const isSubscriptionGettingORIsExpired =
+      IsPaidPremiumSubscriptionExpired || IsNotPaidPremiumSubscriptionExpired
+    const needsRenewal = [
+      isSubscriptionGettingORIsExpired,
+      ![ENTERPRISE, PARTIAL_PREMIUM].includes(subType),
+    ].every((o) => !!o)
+
+    return needsRenewal
+  }
+
   const LicenseCountContainer =
     subsLicenses &&
     subsLicenses.map((license) => (
@@ -55,23 +88,25 @@ const LicenseCountSection = ({
           </span>
           <h4>{license.productName}</h4>
           <FlexContainer justifyContent="flex-start">
-            <StyledButton
-              key={`renew-${license.productId}`}
-              disabled={checkIsBtnDisabled(license)}
-              isGhost
-              height="24px"
-              mr="10px"
-              onClick={() =>
-                openRenewModal(
-                  license.productId,
-                  license.licenseId,
-                  license.totalCount
-                )
-              }
-              data-cy="renewLicences"
-            >
-              Renew Licenses
-            </StyledButton>
+            <EduIf condition={canShowRenewLicenseButton(license.expiresOn)}>
+              <StyledButton
+                key={`renew-${license.productId}`}
+                disabled={checkIsBtnDisabled(license)}
+                isGhost
+                height="24px"
+                mr="10px"
+                onClick={() =>
+                  openRenewModal(
+                    license.productId,
+                    license.licenseId,
+                    license.totalCount
+                  )
+                }
+                data-cy="renewLicences"
+              >
+                Renew Licenses
+              </StyledButton>
+            </EduIf>
             <EduButton
               disabled={checkIsBtnDisabled(license)}
               key={license.productId}
@@ -113,9 +148,11 @@ const LicenseCountSection = ({
 
 LicenseCountSection.propTypes = {
   setShowBuyMoreModal: PropTypes.func,
+  setShowRenewLicenseModal: PropTypes.func,
 }
 LicenseCountSection.defaultProps = {
   setShowBuyMoreModal: () => {},
+  setShowRenewLicenseModal: () => {},
 }
 
 export default LicenseCountSection

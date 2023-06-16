@@ -1,5 +1,7 @@
 import { useOfflinePagination } from '@edulastic/common'
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useEffect, useState } from 'react'
+import { IconInfo } from '@edulastic/icons'
+import { blueButton } from '@edulastic/colors'
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
 import { StyledChartNavButton } from '../../../../common/styled'
@@ -36,11 +38,54 @@ const YAxisLabel = ({ data, viewBox }) => {
   )
 }
 
-function AttendanceSummaryGraph({ attendanceData, groupBy }) {
+const CustomizedDot = (props: any) => {
+  const { cx, cy } = props
+
+  return (
+    <IconInfo
+      fill={blueButton}
+      x={cx - 10}
+      y={cy - 10}
+      width={20}
+      height={20}
+    />
+  )
+}
+
+function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
+  const [interventionsData, setInterventionsData] = useState([])
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
     return _attendanceChartData
   }, [attendanceData])
+
+  useEffect(() => {
+    let current = 0
+    let interventions = interventionList
+    attendanceChartData.forEach((data) => {
+      if (data.index === 1) {
+        current = data.assessmentDate
+      } else {
+        interventions = interventions.reduce((acc, ele) => {
+          if (
+            ele.endDate >= current &&
+            ele.endDate <= data.assessmentDate &&
+            !ele.index
+          ) {
+            acc.push({
+              ...ele,
+              index: data.index - 0.5,
+            })
+          } else {
+            acc.push(ele)
+          }
+          return acc
+        }, [])
+        current = data.assessmentDate
+      }
+    })
+    setInterventionsData(interventions)
+  }, [attendanceChartData, interventionList])
 
   const parentContainerRef = useRef(null)
   const chartRef = useRef(null)
@@ -109,12 +154,13 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
       <StyledResponsiveContainer width="100%" height="100%">
         <LineChart
           width={730}
-          height="100%"
-          data={renderData}
+          // height="100%"
+          height={300}
           margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
           ref={chartRef}
         >
           <CartesianGrid stroke="#EFEFEF" />
+          <XAxis type="number" dataKey="index" hide />
           <XAxis
             xAxisId="0"
             dataKey={groupBy}
@@ -169,11 +215,13 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
                 tooltipRef={tooltipRef}
                 parentContainerRef={parentContainerRef}
                 chartRef={chartRef}
+                interventionList={interventionsData}
               />
             }
           />
           <Line
             type="monotone"
+            data={renderData}
             dataKey="value"
             stroke="#9FC6D2"
             label={<CustomizedLabel stroke="#9FC6D2" />}
@@ -181,6 +229,13 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
             activeDot={<CustomDot active />}
             isAnimationActive={animate}
             onAnimationStart={onAnimationStart}
+          />
+          <Line
+            type="monotone"
+            data={interventionsData}
+            dataKey="__v"
+            dot={<CustomizedDot />}
+            stroke="#efefef"
           />
         </LineChart>
       </StyledResponsiveContainer>

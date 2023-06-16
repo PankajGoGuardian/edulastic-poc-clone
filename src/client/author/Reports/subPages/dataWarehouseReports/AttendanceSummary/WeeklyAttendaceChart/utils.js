@@ -5,7 +5,7 @@ import { sortKeys } from '../utils/constants'
 export const getAttendanceChartData = (attendanceData, groupBy) => {
   const _attendanceData = sortBy(attendanceData, 'minDate')
   const attendanceChartData = _attendanceData
-    .map((item) => {
+    .map((item, i) => {
       if (item.fromTermStart < 0) return
 
       return {
@@ -16,6 +16,8 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
         tardies: item.tardyEvents,
         total: item.totalEvents,
         value: round(item.attendanceRatio),
+        assessmentDate: item.minDate,
+        index: i + 1,
       }
     })
     .filter((item) => !!item)
@@ -42,6 +44,7 @@ export const transformDataForChart = (page, pagedData, groupBy, type) => {
         tardies: 0,
         total: 0,
         value: 0,
+        index: 0,
       },
       ...pagedData,
     ]

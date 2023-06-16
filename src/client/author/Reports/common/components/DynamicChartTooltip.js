@@ -6,13 +6,14 @@ export default function DynamicChartTooltip({
   tooltipRef,
   parentContainerRef,
   chartRef,
+  interventionList = [],
   ...restProps
 }) {
   const [tooltipType, setTooltipType] = useState('right')
   const getTooltipContent = useCallback(
     (payload) => {
       updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-      return getTooltipJSX(payload)
+      return getTooltipJSX(payload, interventionList)
     },
     [parentContainerRef, chartRef, tooltipRef, setTooltipType]
   )

@@ -50,14 +50,14 @@ const TooltipRowItem = ({ title = '', value = '' }) => (
   </TooltipRow>
 )
 
-export const getTooltipJSX = (payload) => {
+export const getTooltipJSX = (payload, interventionList) => {
   if (payload && payload.length) {
     const tooltipData = payload[0].payload
     if (!tooltipData || tooltipData.week === -1 || tooltipData.month === -1)
       return null
 
-    const { presents, absents, tardies, total } = tooltipData
-    const tooltipText = (
+    const { presents, absents, tardies, total, index } = tooltipData
+    let tooltipText = (
       <div>
         <TooltipRowItem
           title="No. of Present events - "
@@ -73,6 +73,18 @@ export const getTooltipJSX = (payload) => {
         />
       </div>
     )
+    if (!Number.isInteger(index)) {
+      tooltipText = (
+        <div>
+          {interventionList
+            .filter((a) => a.index === index)
+            .map((item) => (
+              <TooltipRowItem title="Intervention Name - " value={item.name} />
+            ))}
+        </div>
+      )
+    }
+
     return tooltipText
   }
   return null

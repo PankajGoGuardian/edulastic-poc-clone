@@ -18,13 +18,15 @@ const useTableFilters = ({
 }) => {
   const [tableFilters, setTableFilters] = useState({
     [tableFilterTypes.COMPARE_BY]: defaultCompareBy,
-    [tableFilterTypes.PAGE]: 1,
-    [tableFilterTypes.PAGE_SIZE]: TABLE_PAGE_SIZE,
     [tableFilterTypes.SORT_KEY]: defaultCompareBy.key,
     [tableFilterTypes.SORT_ORDER]: DB_SORT_ORDER_TYPES.ASCEND,
     [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
     [tableFilterTypes.BELOW_AVG]: true,
-    // requireTotalCount: true,
+  })
+
+  const [pageFilters, setPageFilters] = useState({
+    [tableFilterTypes.PAGE]: 0, // prevent multiple api requests on first load
+    [tableFilterTypes.PAGE_SIZE]: TABLE_PAGE_SIZE,
   })
 
   const updateTableFiltersCB = (selected, tableFilterType) => {
@@ -73,10 +75,6 @@ const useTableFilters = ({
     setTableFilters({ ...filters })
   }
 
-  const setTablePagination = ({ page }) => {
-    setTableFilters((prevState) => ({ ...prevState, page }))
-  }
-
   const getTableDrillDownUrl = (
     key,
     reportUrl = location.pathname,
@@ -107,10 +105,11 @@ const useTableFilters = ({
   return {
     tableFilters,
     setTableFilters,
+    pageFilters,
+    setPageFilters,
     updateTableFiltersCB,
     onTableHeaderCellClick,
     getTableDrillDownUrl,
-    setTablePagination,
   }
 }
 

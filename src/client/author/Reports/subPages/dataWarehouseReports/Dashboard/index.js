@@ -62,6 +62,7 @@ const Dashboard = ({
   updateNavigation,
   // report selectors
   loadingTableData,
+  loadingTableDataWithFilters,
   districtAveragesData,
   tableData,
   tableDataRequestError,
@@ -244,6 +245,7 @@ const Dashboard = ({
             setSettings={setSettings}
             fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
             loadingTableData={loadingTableData}
+            loadingTableDataWithFilters={loadingTableDataWithFilters}
             tableDataRequestError={tableDataRequestError}
             districtAveragesData={districtAveragesData}
             tableData={tableData}

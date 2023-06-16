@@ -11,7 +11,13 @@ import {
 import { reportUtils } from '@edulastic/constants'
 import { Tooltip } from 'antd'
 
-import { FlexContainer, EduIf, EduThen, EduElse } from '@edulastic/common'
+import {
+  FlexContainer,
+  EduIf,
+  EduThen,
+  EduElse,
+  SpinLoader,
+} from '@edulastic/common'
 import { IconInfo } from '@edulastic/icons'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { CustomStyledTable } from '../common/styledComponents'
@@ -45,6 +51,7 @@ const DashboardTable = ({
   tableData,
   selectedPerformanceBand,
   isCsvDownloading,
+  loadingTableData,
   rowSelection,
   availableTestTypes,
   hasTableContent,
@@ -184,22 +191,33 @@ const DashboardTable = ({
           />
         </FlexContainer>
       </FlexContainer>
-      <EduIf condition={hasTableContent}>
+      <EduIf condition={loadingTableData}>
         <EduThen>
-          <CsvTable
-            dataSource={metricInfo}
-            columns={tableColumns}
-            tableToRender={CustomStyledTable}
-            onChange={handleTableChange}
-            onCsvConvert={onCsvConvert}
-            rowSelection={rowSelection}
-            isCsvDownloading={isCsvDownloading}
-            isStudentCompareBy={isStudentCompareBy}
-            pagination={false}
+          <SpinLoader
+            tip="Loading Table Data"
+            height="250px"
+            position="relative"
           />
         </EduThen>
         <EduElse>
-          <StyledEmptyContainer description={emptyContainerDesc} />
+          <EduIf condition={hasTableContent}>
+            <EduThen>
+              <CsvTable
+                dataSource={metricInfo}
+                columns={tableColumns}
+                tableToRender={CustomStyledTable}
+                onChange={handleTableChange}
+                onCsvConvert={onCsvConvert}
+                rowSelection={rowSelection}
+                isCsvDownloading={isCsvDownloading}
+                isStudentCompareBy={isStudentCompareBy}
+                pagination={false}
+              />
+            </EduThen>
+            <EduElse>
+              <StyledEmptyContainer description={emptyContainerDesc} />
+            </EduElse>
+          </EduIf>
         </EduElse>
       </EduIf>
     </>

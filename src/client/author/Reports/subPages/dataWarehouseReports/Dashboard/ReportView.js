@@ -25,6 +25,7 @@ function ReportView({
   selectedCompareBy,
   fetchDashboardTableDataRequest,
   loadingTableData,
+  loadingTableDataWithFilters,
   tableDataRequestError,
   districtAveragesData,
   tableData,
@@ -82,6 +83,7 @@ function ReportView({
         isCsvDownloading={isCsvDownloading}
         loadingTableData={loadingTableData}
         selectedPerformanceBandOption={selectedPerformanceBandOption}
+        loadingTableDataWithFilters={loadingTableDataWithFilters}
         settings={settings}
         setSettings={setSettings}
         selectedCompareBy={selectedCompareBy}

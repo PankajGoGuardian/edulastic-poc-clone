@@ -38,6 +38,7 @@ function TableSection({
   fetchDashboardTableDataRequest,
   districtAveragesData,
   tableData,
+  loadingTableDataWithFilters,
   loadingTableData,
   tableDataRequestError,
   isSharedReport = false,
@@ -46,10 +47,11 @@ function TableSection({
   const {
     tableFilters,
     setTableFilters,
+    pageFilters,
+    setPageFilters,
     updateTableFiltersCB,
     onTableHeaderCellClick,
     getTableDrillDownUrl,
-    setTablePagination,
   } = useTableFilters({
     history,
     location,
@@ -63,19 +65,29 @@ function TableSection({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
+  const [districtAveragesRequired, setDistrictAveragesRequired] = useState(
+    false
+  )
+  const [loadTableDataWithFilters, setLoadTableDataWithFilters] = useState(
+    false
+  )
+
   const selectedPerformanceBand = selectedPerformanceBandOption?.performanceBand
+  const profileId = selectedPerformanceBandOption?.key
+  const academicTestType =
+    academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
+  const q = getTableApiQuery(
+    settings,
+    tableFilters,
+    profileId,
+    academicTestType
+  )
+
   useEffect(() => {
-    const profileId = selectedPerformanceBandOption?.key
-    const academicTestType =
-      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
-    const q = getTableApiQuery(
-      settings,
-      tableFilters,
-      profileId,
-      academicTestType
-    )
     if ((q.termId || q.reportId) && profileId) {
-      fetchDashboardTableDataRequest({ ...q, districtAveragesRequired: true })
+      setDistrictAveragesRequired(true)
+      setLoadTableDataWithFilters(true)
+      setPageFilters({ ...pageFilters, [tableFilterTypes.PAGE]: 1 })
     }
   }, [
     settings.requestFilters,
@@ -84,25 +96,15 @@ function TableSection({
   ])
 
   useEffect(() => {
-    const profileId = selectedPerformanceBandOption?.key
-    const academicTestType =
-      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
-    const q = getTableApiQuery(
-      settings,
-      tableFilters,
-      profileId,
-      academicTestType
-    )
     if (
       (q.termId || q.reportId) &&
       profileId &&
-      !isEmpty(districtAveragesData)
+      !isEmpty(districtAveragesData) &&
+      pageFilters[tableFilterTypes.PAGE]
     ) {
-      fetchDashboardTableDataRequest({ ...q })
+      setPageFilters({ ...pageFilters, [tableFilterTypes.PAGE]: 1 })
     }
   }, [
-    tableFilters[tableFilterTypes.PAGE],
-    tableFilters[tableFilterTypes.PAGE_SIZE],
     tableFilters[tableFilterTypes.SORT_KEY],
     tableFilters[tableFilterTypes.SORT_ORDER],
     tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG],
@@ -110,25 +112,31 @@ function TableSection({
   ])
 
   useEffect(() => {
-    const profileId = selectedPerformanceBandOption?.key
-    const academicTestType =
-      academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key
-    const q = getTableApiQuery(
-      settings,
-      tableFilters,
-      profileId,
-      academicTestType
-    )
     if (
       (q.termId || q.reportId) &&
       profileId &&
+      pageFilters[tableFilterTypes.PAGE] &&
       !isEmpty(districtAveragesData) &&
       tableFilters[tableFilterTypes.ABOVE_EQUAL_TO_AVG] !==
         tableFilters[tableFilterTypes.BELOW_AVG]
     ) {
-      fetchDashboardTableDataRequest({ ...q })
+      setLoadTableDataWithFilters(true)
+      setPageFilters({ ...pageFilters, [tableFilterTypes.PAGE]: 1 })
     }
   }, [academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key])
+
+  useEffect(() => {
+    if (pageFilters[tableFilterTypes.PAGE]) {
+      fetchDashboardTableDataRequest({
+        ...q,
+        ...pageFilters,
+        districtAveragesRequired,
+        loadingTableDataWithFilters: loadTableDataWithFilters,
+      })
+      setDistrictAveragesRequired(false)
+      setLoadTableDataWithFilters(false)
+    }
+  }, [pageFilters])
 
   // handle add student to group
   const rowSelection = {
@@ -211,7 +219,7 @@ function TableSection({
         compareByOptions={compareByOptions}
       />
       <TableContainer>
-        <EduIf condition={loadingTableData}>
+        <EduIf condition={loadingTableDataWithFilters}>
           <EduThen>
             <SpinLoader
               tip="Loading Table Data"
@@ -243,11 +251,8 @@ function TableSection({
                   <EduThen>
                     <BackendPagination
                       itemsCount={tableData.dimensionCount}
-                      backendPagination={{
-                        page: tableFilters.page,
-                        pageSize: tableFilters.pageSize,
-                      }}
-                      setBackendPagination={setTablePagination}
+                      backendPagination={pageFilters}
+                      setBackendPagination={setPageFilters}
                     />
                   </EduThen>
                 </EduIf>

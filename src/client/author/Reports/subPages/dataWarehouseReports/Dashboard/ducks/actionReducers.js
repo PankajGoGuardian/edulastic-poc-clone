@@ -23,6 +23,7 @@ const initialState = {
   },
   error: '',
   loadingTableData: false,
+  loadingTableDataWithFilters: false,
   districtAveragesData: {},
   tableData: {},
   tableDataRequestError: '',
@@ -67,16 +68,19 @@ const slice = createSlice({
     setSelectedFilterTagsData: (state, { payload }) => {
       state.settings.selectedFilterTagsData = payload
     },
-    fetchDashboardTableDataRequest: (state) => {
+    fetchDashboardTableDataRequest: (state, { payload }) => {
+      state.loadingTableDataWithFilters = payload.loadingTableDataWithFilters
       state.loadingTableData = true
     },
     fetchDashboardTableDataRequestSuccess: (state, { payload }) => {
+      state.loadingTableDataWithFilters = false
       state.loadingTableData = false
       state.districtAveragesData = payload.districtAveragesData
       state.tableData = payload.tableData
       state.tableDataRequestError = ''
     },
     fetchDashboardTableDataRequestError: (state, { payload }) => {
+      state.loadingTableDataWithFilters = false
       state.loadingTableData = false
       state.tableDataRequestError = payload.error
       state.tableData = {}

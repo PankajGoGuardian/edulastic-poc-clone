@@ -412,6 +412,16 @@ const getInterventions = (params) =>
     })
     .then((response) => response?.data?.result)
 
+const getInterventionsByGroups = (params) => {
+  const queryString = qs.stringify(params)
+  return api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/report-interventions?${queryString}`,
+      method: 'get',
+    })
+    .then((response) => response?.data?.result?.responseData)
+}
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -463,4 +473,5 @@ export default {
   getGoals,
   fetchAttendanceBands,
   getInterventions,
+  getInterventionsByGroups,
 }

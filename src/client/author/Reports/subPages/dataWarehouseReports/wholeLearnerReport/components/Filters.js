@@ -153,7 +153,7 @@ const WholeLearnerReportFilters = ({
       schoolIds: search.schoolIds || '',
       classIds: search.classIds || '',
       courseIds: search.courseIds || '',
-      performanceBandProfileId: '',
+      performanceBandProfileId: search.performanceBandProfileId || '',
       testTypes: search.testTypes || defaultTestTypes,
     }
     if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {

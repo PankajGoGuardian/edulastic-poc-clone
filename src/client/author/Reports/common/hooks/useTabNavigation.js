@@ -11,10 +11,10 @@ function useTabNavigation({
   extraFilters = {},
 }) {
   useEffect(() => {
-    if (settings.requestFilters.termId) {
-      const _filters = {}
-      const requestFilterKeys = Object.keys(settings.requestFilters)
-      requestFilterKeys.forEach((item) => {
+    const _filters = { ...settings.requestFilters }
+    if (_filters.termId) {
+      const _filterKeys = Object.keys(_filters)
+      _filterKeys.forEach((item) => {
         const val =
           settings.requestFilters[item] === ''
             ? 'All'
@@ -22,14 +22,18 @@ function useTabNavigation({
         _filters[item] = val
       })
       Object.assign(_filters, {
-        reportId: reportId || '',
+        reportId: reportId && reportId !== 'All' ? reportId : '',
+        testTypes: _filters.assessmentTypes,
+        performanceBandProfileId: _filters.profileId,
+        preProfileId: _filters.profileId,
+        postProfileId: _filters.profileId,
         ...extraFilters,
       })
       const path = `?${qs.stringify(_filters)}`
       history.push(path)
     }
     const navigationItems = computeChartNavigationLinks({
-      requestFilters: settings.requestFilters,
+      requestFilters: _filters,
       loc,
       hideOtherTabs: !!reportId,
     })

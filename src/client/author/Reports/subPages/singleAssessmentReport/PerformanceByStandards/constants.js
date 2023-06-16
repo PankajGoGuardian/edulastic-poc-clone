@@ -1,4 +1,4 @@
-export const pickDataForSummary = [
+const pickCommonData = [
   'reportId',
   'termId',
   'assessmentTypes',
@@ -18,11 +18,14 @@ export const pickDataForSummary = [
   'frlStatus',
   'ellStatus',
   'hispanicEthnicity',
-  'profileId',
+]
+export const pickDataForSummary = [
+  ...pickCommonData,
+  'standardsProficiencyProfile',
 ]
 
 export const pickDataForDetails = [
-  ...pickDataForSummary,
+  ...pickCommonData,
   'compareBy',
   'analyseBy',
   'page',

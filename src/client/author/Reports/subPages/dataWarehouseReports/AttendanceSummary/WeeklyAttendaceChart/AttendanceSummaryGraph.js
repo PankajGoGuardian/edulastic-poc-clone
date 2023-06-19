@@ -59,34 +59,6 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
     return _attendanceChartData
   }, [attendanceData])
 
-  useEffect(() => {
-    let current = 0
-    let interventions = interventionList
-    attendanceChartData.forEach((data) => {
-      if (data.index === 1) {
-        current = data.assessmentDate
-      } else {
-        interventions = interventions.reduce((acc, ele) => {
-          if (
-            ele.endDate >= current &&
-            ele.endDate <= data.assessmentDate &&
-            !ele.index
-          ) {
-            acc.push({
-              ...ele,
-              index: data.index - 0.5,
-            })
-          } else {
-            acc.push(ele)
-          }
-          return acc
-        }, [])
-        current = data.assessmentDate
-      }
-    })
-    setInterventionsData(interventions)
-  }, [attendanceChartData, interventionList])
-
   const parentContainerRef = useRef(null)
   const chartRef = useRef(null)
   const tooltipRef = useRef(null)
@@ -112,6 +84,34 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
     () => transformDataForChart(page, pagedData, groupBy),
     [page, pagedData, groupBy]
   )
+
+  useEffect(() => {
+    let current = 0
+    let interventions = interventionList
+    renderData.forEach((data) => {
+      if (data.index === 0) {
+        current = data.assessmentDate
+      } else {
+        interventions = interventions.reduce((acc, ele) => {
+          if (
+            ele.endDate >= current &&
+            ele.endDate <= data.assessmentDate &&
+            !ele.index
+          ) {
+            acc.push({
+              ...ele,
+              index: data.index - 0.5,
+            })
+          } else {
+            acc.push(ele)
+          }
+          return acc
+        }, [])
+        current = data.assessmentDate
+      }
+    })
+    setInterventionsData(interventions)
+  }, [renderData, interventionList])
 
   return (
     <StyledAttendanceChartContainer

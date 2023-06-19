@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
-// import { IconInfo } from '@edulastic/icons'
-// import { blueButton } from '@edulastic/colors'
-// import { get, isArray } from 'lodash'
-// import { Tooltip } from 'recharts'
+import { IconInfo } from '@edulastic/icons'
+import { blueButton } from '@edulastic/colors'
+import { isArray } from 'lodash'
+import { Tooltip } from 'recharts'
 import { StyledAxisTickText } from '../../../styled'
 
 const EXTERNAL_TAG_PADDING = 2
@@ -19,73 +19,55 @@ export const CustomChartXTick = (props) => {
     width,
     fontWeight,
     visibleTicksCount,
+    showInterventions,
   } = props
 
-  // const [tooltipVisible, setTooltipVisible] = useState(false)
+  const [tooltipVisible, setTooltipVisible] = useState(false)
 
   const tickWidth = Math.floor(width / visibleTicksCount)
-
-  // const { assessmentDate: currentAssessmentDate } = get(
-  //   data,
-  //   [payload.index],
-  //   {}
-  // )
-
-  // const { assessmentDate: aheadAssessmentDate } = get(
-  //   data,
-  //   [payload.index + 1],
-  //   {}
-  // )
-
-  // const interventionsGroup = getInterventionsGroup(
-  //   currentAssessmentDate,
-  //   aheadAssessmentDate,
-  //   interventionsData
-  // )
 
   let text = getXTickText ? getXTickText(payload, data) : payload.value
   const fill = getXTickFill ? getXTickFill(payload, data) : 'black'
 
   const tagText = getXTickTagText ? getXTickTagText(payload, data) : ''
 
-  // const handleMouseEnter = () => {
-  //   setTooltipVisible(true)
-  // }
+  const handleMouseEnter = () => {
+    setTooltipVisible(true)
+  }
 
-  // const handleMouseLeave = () => {
-  //   setTooltipVisible(false)
-  // }
+  const handleMouseLeave = () => {
+    setTooltipVisible(false)
+  }
 
   const tagTextRef = useRef(null)
   const [tagWidth, setTagWidth] = useState(0)
 
-  // const InformationIcon = () => {
-  //   const componentWidth = 14
-  //   const componentHeight = 14
-  //   const widthBtwCoord = Math.floor(width / (visibleTicksCount - 1))
-  //   const infoIconPosX = x + widthBtwCoord / 2 - componentWidth / 2
-  //   const infoIconPosy = y - componentHeight * 2.5
-
-  //   return isArray(interventionsGroup) && interventionsGroup.length ? (
-  //     <g
-  //       transform={`translate(${infoIconPosX},${infoIconPosy})`}
-  //       onMouseEnter={handleMouseEnter}
-  //       onMouseLeave={handleMouseLeave}
-  //     >
-  //       {/* Tooltip */}
-  //       <IconInfo
-  //         fill={blueButton}
-  //         width={componentWidth}
-  //         height={componentHeight}
-  //       />
-  //       {/* {tooltipVisible && ( */}
-  //       <Tooltip textAnchor="middle" fill="blue">
-  //         {interventionsGroup.map(({ name }) => name).join('\n')}
-  //       </Tooltip>
-  //       {/*  )} */}
-  //     </g>
-  //   ) : null
-  // }
+  const InformationIcon = () => {
+    const componentWidth = 14
+    const componentHeight = 14
+    const widthBtwCoord = Math.floor(width / (visibleTicksCount - 1))
+    const infoIconPosX = x + widthBtwCoord / 2 - componentWidth / 2
+    const infoIconPosy = y - componentHeight * 2.5
+    const { interventionsGroup } = data[payload.index] || {}
+    return isArray(interventionsGroup) && interventionsGroup.length ? (
+      <g
+        transform={`translate(${infoIconPosX},${infoIconPosy})`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <IconInfo
+          fill={blueButton}
+          width={componentWidth}
+          height={componentHeight}
+        />
+        {tooltipVisible && (
+          <Tooltip textAnchor="middle" fill="blue">
+            {interventionsGroup.map(({ name }) => name).join('\n')}
+          </Tooltip>
+        )}
+      </g>
+    ) : null
+  }
 
   useLayoutEffect(() => {
     if (tagTextRef.current) {
@@ -115,7 +97,7 @@ export const CustomChartXTick = (props) => {
        * Show only when the intervention is available between range
        * Show all the interventions in tooltip
        */}
-      {/* <InformationIcon /> */}
+      {showInterventions && <InformationIcon />}
 
       <g transform={`translate(${x},${y})`}>
         <StyledAxisTickText

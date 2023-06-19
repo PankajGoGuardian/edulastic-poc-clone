@@ -7,11 +7,13 @@ import next from 'immer'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
+import { IconInfo } from '@edulastic/icons'
 import {
   helpLinks,
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
+import { blueButton } from '@edulastic/colors'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import StudentDetails from './components/StudentDetails'
@@ -27,6 +29,7 @@ import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
+  fetchInterventionsByGroupsRequest,
   fetchUpdateTagsDataAction,
   getCsvDownloadingState,
   getSharingState,
@@ -105,12 +108,14 @@ const WholeLearnerReport = ({
   loadingAttendanceData,
   attendanceData,
   fetchAttendanceDataRequest,
+  fetchInterventionsByGroups,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
   )
   const [isAttendanceChartVisible, setIsAttendanceChartVisible] = useState(true)
+  const [showInterventions, setShowInterventions] = useState(true)
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -250,6 +255,11 @@ const WholeLearnerReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
+      fetchInterventionsByGroups({
+        type: ['academic', 'attendance'],
+        studentId: settings.selectedStudent.key,
+        termId: settings.requestFilters.termId,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
@@ -326,6 +336,10 @@ const WholeLearnerReport = ({
   )
   const toggleAttendanceChart = () => {
     setIsAttendanceChartVisible((v) => !v)
+  }
+
+  const toggleInterventionInfo = () => {
+    setShowInterventions((v) => !v)
   }
 
   // const onTestSelect = (item) =>
@@ -438,6 +452,7 @@ const WholeLearnerReport = ({
                         <AssessmentsChart
                           chartData={chartData}
                           selectedPerformanceBand={selectedPerformanceBand}
+                          showInterventions={showInterventions}
                           preLabelContent={
                             <ChartPreLabelWrapper>
                               <Checkbox
@@ -445,6 +460,17 @@ const WholeLearnerReport = ({
                                 onChange={toggleAttendanceChart}
                               >
                                 Show Attendance Chart
+                              </Checkbox>
+                              <Checkbox
+                                checked={showInterventions}
+                                onChange={toggleInterventionInfo}
+                              >
+                                Show Intervention{' '}
+                                <IconInfo
+                                  fill={blueButton}
+                                  width={15}
+                                  height={15}
+                                />
                               </Checkbox>
                             </ChartPreLabelWrapper>
                           }
@@ -459,6 +485,7 @@ const WholeLearnerReport = ({
                     <EduIf condition={isAttendanceChartVisible}>
                       <AttendanceChart
                         attendanceChartData={attendanceChartData}
+                        showInterventions={showInterventions}
                       />
                     </EduIf>
                     <EduIf condition={!isEmpty(tableData)}>
@@ -494,6 +521,7 @@ const enhance = connect(
     ...actions,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.WHOLE_LEARNER_REPORT,

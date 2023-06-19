@@ -73,7 +73,7 @@ export const getTooltipJSX = (payload, interventionList) => {
         />
       </div>
     )
-    if (!Number.isInteger(index)) {
+    if (!Number.isInteger(index) && interventionList?.length) {
       tooltipText = (
         <div>
           {interventionList

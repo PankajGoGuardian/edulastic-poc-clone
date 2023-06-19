@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 import React, { useMemo, useRef, useState } from 'react'
+import { get, isArray } from 'lodash'
 import {
   XAxis,
   YAxis,
@@ -51,10 +52,87 @@ const CustomizedLabel = (props) => {
   )
 }
 
+const interventionsData = [
+  {
+    _id: '6442caecfd8f7451449779e5',
+    interventionCriteria: {
+      applicableTo: {
+        testTypes: ['homework'],
+        subjects: ['Computer Science'],
+      },
+      target: {
+        measureType: 'averageScore',
+        metric: '10',
+      },
+    },
+    studentGroupIds: ['6440f9b3f469bb458ffe6f98'],
+    relatedGoalIds: ['6442bc6dfd8f7451449779e4'],
+    termId: '6380b568070dd1000810a161',
+    name: 'Test 111',
+    type: 'academic',
+    owner: 'Test 111',
+    description: 'Test 111',
+    startDate: 1682035200000,
+    endDate: 1658169000000,
+    comment: 'Test 111',
+    createdBy: '6380b641c7c5680008011311',
+    districtId: '6380b567070dd1000810a15b',
+    userRole: 'district-admin',
+    status: 'IN_PROGRESS',
+    createdAt: 1682098924540,
+    updatedAt: 1682098924540,
+    __v: 0,
+    active: 1,
+  },
+]
+
+const convertDate = (dateStr) => {
+  if (!dateStr) {
+    return
+  }
+  const [day, month, year] = dateStr.split('/')
+  const timeStamp = new Date(year, month - 1, day).getTime()
+  return timeStamp
+}
+
+const getInterventionsGroup = (
+  currentAssessmentDate,
+  aheadAssessmentDate,
+  interventions
+) => {
+  if (
+    isArray(interventions) &&
+    interventions.length &&
+    currentAssessmentDate &&
+    aheadAssessmentDate
+  ) {
+    return interventions.filter(({ endDate }) => {
+      return endDate < aheadAssessmentDate && endDate > currentAssessmentDate
+    })
+  }
+  return []
+}
+
+const withHasInterventions = (data) => {
+  return data.map((item, index) => {
+    const { startDate: currentAssessmentDate } = item || {}
+    const { startDate: aheadAssessmentDate } = get(data, [index + 1], {})
+    return {
+      ...item,
+      interventionsGroup: getInterventionsGroup(
+        convertDate(currentAssessmentDate),
+        convertDate(aheadAssessmentDate),
+        interventionsData
+      ),
+    }
+  })
+}
+
 const AttendanceChart = ({
   attendanceChartData,
   onResetClick = () => {},
   filter = {},
+  showInterventions,
 }) => {
   const parentContainerRef = useRef(null)
   const tooltipRef = useRef(null)
@@ -108,12 +186,12 @@ const AttendanceChart = ({
 
   const getTooltipContent = (payload) => {
     updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-    // console.log(chartRef)
+
     return getTooltipJSX(payload)
   }
 
   const hasFilters = Object.keys(filter).length > 0
-
+  const data = withHasInterventions(renderData)
   return (
     <StyledAttendanceChartContainer ref={parentContainerRef}>
       <SectionLabel $margin="30px 0px 10px 0px" style={{ fontSize: '18px' }}>
@@ -154,7 +232,7 @@ const AttendanceChart = ({
         <LineChart
           width={730}
           height={250}
-          data={renderData}
+          data={data}
           margin={{ top: 10, right: 50, left: 20, bottom: 10 }}
           ref={chartRef}
         >
@@ -168,9 +246,10 @@ const AttendanceChart = ({
             xAxisId="0"
             tick={
               <CustomChartXTick
-                data={renderData}
+                data={data}
                 getXTickText={getXTickText}
                 fontWeight={600}
+                showInterventions={showInterventions}
               />
             }
             tickMargin={20}

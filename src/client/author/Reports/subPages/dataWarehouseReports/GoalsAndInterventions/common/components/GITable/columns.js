@@ -1,4 +1,5 @@
 import React from 'react'
+import { Tooltip } from 'antd'
 import ColoredCell from './ColoredCell'
 import {
   statusColors,
@@ -7,7 +8,7 @@ import {
   GIActionOptions,
   GI_STATUS,
 } from '../../../constants/common'
-import Tooltip from './Tooltip'
+import GITooltip from './Tooltip'
 import ActionMenu from '../ActionMenu'
 import { GOAL, INTERVENTION } from '../../../constants/form'
 import {
@@ -80,7 +81,11 @@ const parseCurrentValue = (value) => {
   if (value) {
     return isNumeric(value) ? `${Math.round(parseFloat(value))}%` : value
   }
-  return '-'
+  return (
+    <Tooltip placement="top" title="No data is available">
+      <span>-</span>
+    </Tooltip>
+  )
 }
 
 const sortingBaselineCurrentTargetValues = (x, y) => {
@@ -108,7 +113,7 @@ const getGITableColumns = ({ onEdit, updateGIData }) => [
       (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()),
     sortDirections: ['descend', 'ascend'],
     render: (value, record) => (
-      <Tooltip value={ucFirst(value)} record={record} />
+      <GITooltip value={ucFirst(value)} record={record} />
     ),
   },
   {

@@ -1,52 +1,45 @@
 import React, { useState } from 'react'
-import { Select, Tooltip } from 'antd'
+import { Select } from 'antd'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { StyledDropDown } from './styled-components'
 import {
-  NOT_STARTED,
   statusTextColors,
   goalStatusOptions,
   interventionStatusOptions,
   IN_PROGRESS,
 } from '../../../constants/common'
 import { GOAL, INTERVENTION } from '../../../constants/form'
-import { ucFirst, getDaysLeft, titleCase } from '../../utils'
+import { ucFirst, titleCase } from '../../utils'
 import ConfirmModal from '../ConfirmModal'
 
-const OptionLabel = ({ label, statusKey, isEnded, isDropDownOpen, type }) => {
+const OptionLabel = ({ label }) => {
   return (
-    <Tooltip
-      placement="top"
-      title={
-        isDropDownOpen && statusKey === IN_PROGRESS && isEnded
-          ? `The status cannot be changed to In progress as the duration of ${ucFirst(
-              titleCase(type)
-            )} is over`
-          : null
-      }
+    <span
+      style={{
+        color: statusTextColors[label],
+      }}
     >
-      <p
-        style={{
-          color: statusTextColors[label],
-        }}
-      >
-        {ucFirst((label || '').replace('_', ' '))}
-      </p>
-    </Tooltip>
+      {ucFirst((label || '').replace('_', ' '))}
+    </span>
   )
 }
 
 const GIStatus = ({ status, GIData, updateGIData }) => {
-  const { startDate, endDate } = GIData
   const type = GIData.goalCriteria ? GOAL : INTERVENTION
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false)
-  const [statusValue, setStatusValue] = useState(status)
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false)
+  const [selectedStatusValue, setSelectedStatusValue] = useState({
+    key: status,
+    label: ucFirst((status || '').replace('_', ' ')),
+  })
+  const [toUpdateStatusValue, setToUpdateStatusValue] = useState({
+    key: status,
+    label: ucFirst((status || '').replace('_', ' ')),
+  })
 
+  const { key: updateStatuskey } = toUpdateStatusValue
+  const { key: selectedStatusKey } = selectedStatusValue
   const statusOptions =
     type === GOAL ? goalStatusOptions : interventionStatusOptions
-
-  const isEnded = getDaysLeft(startDate, endDate) <= 0
 
   const handleModalCancelClick = () => {
     setIsConfirmationModalOpen(false)
@@ -54,21 +47,30 @@ const GIStatus = ({ status, GIData, updateGIData }) => {
 
   const handleModalConfirmClick = () => {
     setIsConfirmationModalOpen(false)
+    const {
+      key: toUpdateStatusKey,
+      label: toUpdateStatusLabel,
+    } = toUpdateStatusValue
+    setSelectedStatusValue({
+      toUpdateStatusKey,
+      label: ucFirst((toUpdateStatusLabel || '').replace('_', ' ')),
+    })
+
     updateGIData({
       formType: type,
       ...GIData,
-      status: statusValue,
+      status: toUpdateStatusKey,
       isStatusUpdate: true,
     })
   }
 
   const handleStatusChange = (value) => {
-    setStatusValue(value)
+    const { key, label } = value
+    setToUpdateStatusValue({
+      key,
+      label: ucFirst((label || '').replace('_', ' ')),
+    })
     setIsConfirmationModalOpen(true)
-  }
-
-  const handleDropDownVisibleChange = (value) => {
-    setIsDropDownOpen(value)
   }
 
   return (
@@ -77,35 +79,40 @@ const GIStatus = ({ status, GIData, updateGIData }) => {
         visible={isConfirmationModalOpen}
         onOk={handleModalConfirmClick}
         onCancel={handleModalCancelClick}
-        message="Are you sure you want to change the status?"
+        message={
+          <>
+            Are you sure you want to change the status to{' '}
+            {<OptionLabel label={updateStatuskey} />}?
+            <br />
+            You will not be able to edit this {ucFirst(titleCase(type))}{' '}
+            further!
+          </>
+        }
       />
-      <EduIf condition={status === NOT_STARTED}>
+      <EduIf condition={selectedStatusKey === IN_PROGRESS}>
         <EduThen>
-          <OptionLabel label={status} />
+          <StyledDropDown
+            value={selectedStatusValue}
+            onChange={handleStatusChange}
+            optionLabelProp="label"
+            labelInValue
+          >
+            {statusOptions.map(({ key, label }) => {
+              return (
+                <Select.Option
+                  data-cy={key}
+                  key={key}
+                  value={key}
+                  label={label}
+                >
+                  <OptionLabel label={label} />
+                </Select.Option>
+              )
+            })}
+          </StyledDropDown>
         </EduThen>
         <EduElse>
-          <StyledDropDown
-            value={status}
-            onChange={handleStatusChange}
-            onDropdownVisibleChange={handleDropDownVisibleChange}
-          >
-            {statusOptions.map(({ key, label }) => (
-              <Select.Option
-                data-cy={key}
-                key={key}
-                value={key}
-                disabled={key === IN_PROGRESS && isEnded}
-              >
-                <OptionLabel
-                  label={label}
-                  statusKey={key}
-                  isEnded={isEnded}
-                  isDropDownOpen={isDropDownOpen}
-                  type={type}
-                />
-              </Select.Option>
-            ))}
-          </StyledDropDown>
+          <OptionLabel label={status} />
         </EduElse>
       </EduIf>
     </>

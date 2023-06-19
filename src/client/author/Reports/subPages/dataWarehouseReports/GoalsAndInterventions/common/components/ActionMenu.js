@@ -7,7 +7,7 @@ import { themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { flattenFormData } from '../utils'
 import { ACADEMIC } from '../../constants/form'
-import { GIListActions } from '../../constants/common'
+import { GIListActions, IN_PROGRESS } from '../../constants/common'
 import ActionMenuItem from './ActionMenuItem'
 import DeleteModal from './GITable/DeleteModal'
 
@@ -40,6 +40,9 @@ const ActionMenu = ({
     urlData = { termId, groupId }
   }
 
+  const { status } = GIData
+  const isEditDisabled = status !== IN_PROGRESS
+
   const handleClick = (event) => {
     const { key } = event
     if ([GIListActions.DELETE, GIListActions.EDIT].indexOf(key) !== -1) {
@@ -65,7 +68,13 @@ const ActionMenu = ({
         <IconClose />
       </Header>
       {options.map((item) => (
-        <ActionMenuItem item={item} urlData={urlData} key={item.id} />
+        <ActionMenuItem
+          item={item}
+          urlData={urlData}
+          key={item.id}
+          isEditDisabled={isEditDisabled}
+          GIType={type}
+        />
       ))}
       <EduIf condition={includeDelete}>
         <Menu.Item key="3" onClick={() => setShowModal(true)}>

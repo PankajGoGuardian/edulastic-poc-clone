@@ -120,6 +120,7 @@ const GITable = ({
       pagination={false}
       dataSource={tableData}
       scroll={{ y: 390, x: 'max-content' }}
+      rowKey={(record) => record._id}
     />
   )
 }

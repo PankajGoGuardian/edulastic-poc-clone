@@ -8,7 +8,7 @@ import {
 } from './form'
 
 const DELETE = 'delete'
-const EDIT = 'edit'
+export const EDIT = 'edit'
 
 export const IN_PROGRESS = 'IN_PROGRESS'
 export const NOT_STARTED = 'NOT_STARTED'
@@ -18,10 +18,6 @@ const FULLY_EXECUTED = 'FULLY_EXECUTED'
 const PARTIALLY_EXECUTED = 'PARTIALLY_EXECUTED'
 
 export const goalStatusOptions = [
-  {
-    key: IN_PROGRESS,
-    label: IN_PROGRESS,
-  },
   {
     key: DONE,
     label: DONE,
@@ -33,10 +29,6 @@ export const goalStatusOptions = [
 ]
 
 export const interventionStatusOptions = [
-  {
-    key: IN_PROGRESS,
-    label: IN_PROGRESS,
-  },
   {
     key: PARTIALLY_EXECUTED,
     label: PARTIALLY_EXECUTED,
@@ -221,7 +213,9 @@ export const statusList = (data) => ({
           status_code: 'not-met',
           text: 'Not met',
           color: summaryTileColors.RED,
-          unit: getSummaryStatusRecords({ key: 'not-met', data }),
+          unit:
+            getSummaryStatusRecords({ key: 'done', data }) -
+            getSummaryStatusRecords({ key: 'met', data }),
         },
         {
           id: 3,
@@ -340,15 +334,15 @@ export const statusList = (data) => ({
       unit: getSummaryStatusRecords({ key: 'in-progress', data }),
       textColor: summaryTileColors.GRAY_TEXT,
     },
-    // {
-    //   key: 4,
-    //   text: 'Aborted',
-    //   status_code: 'aborted',
-    //   color: summaryTileColors.GRAY,
-    //   border: '1px solid #D8D8D8',
-    //   unit: getSummaryStatusRecords({ key: 'aborted', data }),
-    //   textColor: summaryTileColors.RED_TEXT,
-    // },
+    {
+      key: 4,
+      text: 'Aborted',
+      status_code: 'aborted',
+      color: summaryTileColors.GRAY,
+      border: '1px solid #D8D8D8',
+      unit: getSummaryStatusRecords({ key: 'aborted', data }),
+      textColor: summaryTileColors.RED_TEXT,
+    },
   ],
 })
 

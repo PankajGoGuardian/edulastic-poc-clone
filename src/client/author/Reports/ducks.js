@@ -371,29 +371,7 @@ const initialState = {
   csvDocs: [],
   csvDocsLoading: false,
   interventionLoading: false,
-  interventionsByGroups: [
-    {
-      name: 'Test Intervention',
-      type: 'attendance',
-      __v: 0,
-      startDate: 1681257600000,
-      endDate: 1672035200000,
-    },
-    {
-      name: 'Test Intervention 2',
-      type: 'attendance',
-      __v: 0,
-      startDate: 1681257600000,
-      endDate: 1672035200000,
-    },
-    {
-      name: 'Goal but created as intervention',
-      type: 'attendance',
-      __v: 0,
-      startDate: 1680307200000,
-      endDate: 1673208000000,
-    },
-  ],
+  interventionsByGroups: [],
   interventionError: '',
 }
 

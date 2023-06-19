@@ -118,6 +118,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
       strokeOpacity={1}
       height="420px"
       ref={parentContainerRef}
+      noTooltipStyle
     >
       <StyledChartNavButton
         type="primary"

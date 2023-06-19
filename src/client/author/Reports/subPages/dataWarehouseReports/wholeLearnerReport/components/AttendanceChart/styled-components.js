@@ -26,11 +26,15 @@ export const StyledAttendanceChartContainer = styled.div`
       }
     }
   }
-  // & .recharts-tooltip-wrapper {
-  //   transform: var(--tooltip-transform) !important;
-  //   top: var(--tooltip-top) !important;
-  //   left: var(--tooltip-left) !important;
-  //   visibility: visible !important;
-  //   transition: all 400ms ease 0s;
-  // }
+  ${(props) =>
+    !props.noTooltipStyle
+      ? `
+  & .recharts-tooltip-wrapper {
+    transform: var(--tooltip-transform) !important;
+    top: var(--tooltip-top) !important;
+    left: var(--tooltip-left) !important;
+    visibility: visible !important;
+    transition: all 400ms ease 0s;
+  }`
+      : ''}
 `

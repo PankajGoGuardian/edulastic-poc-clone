@@ -8,7 +8,7 @@ import {
 import { notification } from '@edulastic/common'
 import { database } from '@edulastic/constants'
 import { TEACHER } from '@edulastic/constants/const/roleType'
-import { get, isEmpty, omit, omitBy } from 'lodash'
+import { get, isEmpty, omit, omitBy, pick } from 'lodash'
 import moment from 'moment'
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
@@ -20,7 +20,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { titleCase, ucFirst } from '../common/utils'
 import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-config'
-import { GOAL } from '../constants/form'
+import { GOAL, editFormFields } from '../constants/form'
 import { actions } from './actionReducers'
 import { fieldKey } from './constants'
 import {
@@ -46,6 +46,63 @@ function* saveFormDataRequestSaga({ payload }) {
     notification({ msg: error?.response?.data?.message || msg })
   } finally {
     yield put(actions.saveFormDataComplete())
+  }
+}
+
+function* updateGIDataRequestSaga({ payload }) {
+  const { formType, _id, status = '', isStatusUpdate = false } = payload
+  const isGoalFormType = formType === GOAL
+
+  try {
+    const apiToCall = isGoalFormType
+      ? reportsApi.updateGoal
+      : reportsApi.updateIntervention
+
+    const updateData = pick(payload, editFormFields)
+    const response = yield call(
+      apiToCall,
+      _id,
+      omit(updateData, 'isStatusUpdate')
+    )
+
+    if (isStatusUpdate) {
+      const GISelector = isGoalFormType
+        ? goalsListSelector
+        : interventionsListSelector
+
+      const GIList = yield select(GISelector)
+
+      const updatedGIList = (GIList || []).map((GIData) => {
+        if (GIData._id === _id) {
+          GIData.status = status
+        }
+        return GIData
+      })
+
+      const targetList = isGoalFormType
+        ? actions.setGoalsList
+        : actions.setInterventionsList
+
+      yield put(targetList(updatedGIList))
+      notification({
+        type: 'success',
+        msg: 'Status updated successfully',
+      })
+      return
+    }
+
+    notification({
+      type: 'success',
+      msg: response || `${ucFirst(titleCase(formType))} updated successfully`,
+    })
+  } catch (error) {
+    const msg = `Error updating ${ucFirst(titleCase(formType))}.`
+    notification({ msg: error?.response?.data?.message || msg })
+  } finally {
+    yield put(actions.saveFormDataComplete())
+    if (isStatusUpdate) {
+      yield put(actions.resetFormData())
+    }
   }
 }
 
@@ -102,11 +159,13 @@ function* deleteGISaga({ payload }) {
       : actions.setInterventionsList
 
     yield put(targetList(updatedGIList))
-
     notification({
       type: 'success',
       msg: `${ucFirst(titleCase(type))} deleted successfully`,
     })
+    if (!isGoal) {
+      yield put(actions.getGoalsList())
+    }
   } catch (error) {
     const msg = `Error deleting ${ucFirst(titleCase(type))}.`
     notification({ msg: error?.response?.data?.message || msg })
@@ -361,5 +420,6 @@ export default function* watcherSaga() {
     takeLatest(actions.getAdvancedSearchData, getAdvancedSearchData),
     takeLatest(actions.saveGroup, saveGroup),
     takeLatest(actions.deleteGI, deleteGISaga),
+    takeLatest(actions.updateGIDataRequest, updateGIDataRequestSaga),
   ])
 }

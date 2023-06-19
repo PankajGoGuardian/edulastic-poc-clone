@@ -45,6 +45,9 @@ const slice = createSlice({
     saveFormDataRequest: (state) => {
       state.form.isSaving = true
     },
+    updateGIDataRequest: (state) => {
+      state.form.isSaving = true
+    },
     saveFormDataComplete: (state) => {
       state.form.isSaving = false
       state.form.status = 'finished'
@@ -147,6 +150,7 @@ const {
   resetAdvancedSearchData,
   resetAdvancedSearchDetails,
   deleteGI,
+  updateGIDataRequest,
 } = slice.actions
 
 export const actions = {
@@ -178,6 +182,7 @@ export const actions = {
   resetAdvancedSearchData,
   resetAdvancedSearchDetails,
   deleteGI,
+  updateGIDataRequest,
 }
 
 export const { reducer } = slice

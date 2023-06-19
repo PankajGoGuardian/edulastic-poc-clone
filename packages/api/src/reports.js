@@ -386,6 +386,24 @@ const createIntervention = (data) =>
     })
     .then((response) => response?.data?.result)
 
+const updateGoal = (id, data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals/${id}`,
+      method: 'put',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
+const updateIntervention = (id, data) =>
+  api
+    .callApi({
+      url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/interventions/${id}`,
+      method: 'put',
+      data,
+    })
+    .then((response) => response?.data?.result)
+
 const deleteGoal = (id) =>
   api
     .callApi({
@@ -481,4 +499,6 @@ export default {
   getInterventions,
   deleteGoal,
   deleteIntervention,
+  updateGoal,
+  updateIntervention,
 }

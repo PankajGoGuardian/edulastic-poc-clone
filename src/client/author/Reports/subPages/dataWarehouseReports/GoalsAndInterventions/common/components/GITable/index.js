@@ -11,7 +11,7 @@ import {
 import { getDataSourceForGI, getSummaryStatusRecords } from '../../utils'
 import StatusBox from './StatusBox'
 import SummaryTile from './SummaryTile'
-import GITableColumns from './columns'
+import getGITableColumns from './columns'
 import './index.scss'
 import { statusList } from '../../../constants/common'
 
@@ -23,6 +23,8 @@ const GITable = ({
   expandedData,
   expandDataLoading,
   groupList,
+  onEdit,
+  updateGIData,
 }) => {
   const [expandedKey, setExpandedKey] = useState([])
   const [tableData, setTableData] = useState(data)
@@ -31,6 +33,8 @@ const GITable = ({
   useEffect(() => {
     setTableData(data)
   }, [data])
+
+  const GITableColumns = getGITableColumns({ onEdit, updateGIData })
 
   const _statusList = statusList(data || [])
 

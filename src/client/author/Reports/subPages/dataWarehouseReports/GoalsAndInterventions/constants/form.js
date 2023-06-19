@@ -59,6 +59,7 @@ const END_DATE = 'endDate'
 const COMMENT = 'comment'
 const RELATED_GOALS_IDS = 'relatedGoalIds'
 export const TERM_ID = 'termId'
+const STATUS = 'status'
 
 export const dropdownData = {
   goalOrInterventionTypes: [
@@ -119,6 +120,21 @@ export const formFieldNames = {
     RELATED_GOALS_IDS,
   },
 }
+
+export const editFormFields = [
+  NAME,
+  TYPE,
+  STUDENT_GROUP_IDS,
+  OWNER,
+  DESCRIPTION,
+  START_DATE,
+  END_DATE,
+  COMMENT,
+  GOAL_CRITERIA,
+  INTERVENTION_CRITERIA,
+  RELATED_GOALS_IDS,
+  STATUS,
+]
 
 const getMeasureTypes = (type) => {
   return type === 'academic'

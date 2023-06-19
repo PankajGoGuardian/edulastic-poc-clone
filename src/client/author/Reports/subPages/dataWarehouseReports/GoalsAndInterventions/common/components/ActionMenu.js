@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { IconCaretDown, IconClose } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
+import { flattenFormData } from '../utils'
 import { ACADEMIC } from '../../constants/form'
 import { GIListActions } from '../../constants/common'
 import ActionMenuItem from './ActionMenuItem'
@@ -44,6 +45,13 @@ const ActionMenu = ({
     if ([GIListActions.DELETE, GIListActions.EDIT].indexOf(key) !== -1) {
       if (key === GIListActions.DELETE) {
         setShowModal(true)
+      }
+      if (key === GIListActions.EDIT) {
+        onAction({
+          ...flattenFormData(GIData),
+          formType: type,
+          isEditFlow: true,
+        })
       }
       return
     }

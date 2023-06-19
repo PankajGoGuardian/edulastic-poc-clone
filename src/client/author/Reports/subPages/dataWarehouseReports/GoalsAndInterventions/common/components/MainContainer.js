@@ -12,7 +12,12 @@ const MainContainer = ({ tabs, activeKey, onChange }) => {
   const helpUrl = helpLinks[reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT]
   return (
     <Header>
-      <SwitchTabs animated={false} activeKey={activeKey} onChange={onChange}>
+      <SwitchTabs
+        destroyInactiveTabPane
+        animated={false}
+        activeKey={activeKey}
+        onChange={onChange}
+      >
         {tabs.map((item) => (
           <TabPane tab={item.label} key={item.key}>
             {item.children}

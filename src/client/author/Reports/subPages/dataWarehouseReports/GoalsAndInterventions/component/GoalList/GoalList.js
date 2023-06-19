@@ -12,6 +12,7 @@ import {
   groupList,
   isGoalsDataLoading,
   isGroupLoading,
+  isFormDataSaving,
 } from '../../ducks/selectors'
 
 const GoalList = ({
@@ -22,6 +23,9 @@ const GoalList = ({
   _groupList,
   _isGroupLoading,
   noDataContent,
+  onEdit,
+  updateGIData,
+  isSaveInProgress,
 }) => {
   useEffect(() => {
     if ((goalsData || []).length === 0) fetchGoalsList()
@@ -39,7 +43,14 @@ const GoalList = ({
       <EduElse>
         <>
           <EduIf condition={dataSource.length > 0}>
-            <GITable groupList={_groupList} data={dataSource} type={GOAL} />
+            <GITable
+              groupList={_groupList}
+              data={dataSource}
+              type={GOAL}
+              onEdit={onEdit}
+              updateGIData={updateGIData}
+              loading={isSaveInProgress}
+            />
           </EduIf>
           <EduIf condition={dataSource.length === 0}>{noDataContent}</EduIf>
         </>
@@ -53,9 +64,11 @@ export default connect(
     _isGroupLoading: isGroupLoading(state),
     goalsData: goalsList(state),
     goalsDataLoading: isGoalsDataLoading(state),
+    isSaveInProgress: isFormDataSaving(state),
   }),
   {
     _getGroupList: fetchGroupsAction,
     fetchGoalsList: actions.getGoalsList,
+    updateGIData: actions.updateGIDataRequest,
   }
 )(GoalList)

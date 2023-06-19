@@ -10,6 +10,47 @@ import {
 const DELETE = 'delete'
 const EDIT = 'edit'
 
+export const IN_PROGRESS = 'IN_PROGRESS'
+export const NOT_STARTED = 'NOT_STARTED'
+const DONE = 'DONE'
+const ABORTED = 'ABORTED'
+const FULLY_EXECUTED = 'FULLY_EXECUTED'
+const PARTIALLY_EXECUTED = 'PARTIALLY_EXECUTED'
+
+export const goalStatusOptions = [
+  {
+    key: IN_PROGRESS,
+    label: IN_PROGRESS,
+  },
+  {
+    key: DONE,
+    label: DONE,
+  },
+  {
+    key: ABORTED,
+    label: ABORTED,
+  },
+]
+
+export const interventionStatusOptions = [
+  {
+    key: IN_PROGRESS,
+    label: IN_PROGRESS,
+  },
+  {
+    key: PARTIALLY_EXECUTED,
+    label: PARTIALLY_EXECUTED,
+  },
+  {
+    key: FULLY_EXECUTED,
+    label: FULLY_EXECUTED,
+  },
+  {
+    key: ABORTED,
+    label: ABORTED,
+  },
+]
+
 export const statusColors = {
   WHITE: '#FFFFFF80',
   GREEN: '#74E27A80',
@@ -119,13 +160,13 @@ export const GIActionOptions = [
       '/author/reports/multiple-assessment-report-dw?termId={termId}&testSubjects={subjects}&testGrades=&tagIds=&assessmentTypes={testTypes}&testIds=&schoolIds=&teacherIds=&subjects=&grades=&courseId=All&classIds=&groupIds={studentGroupIds}&profileId={performanceBandId}',
   },
   {
+    id: GIListActions.EDIT,
+    label: 'Edit',
+  },
+  {
     id: GIListActions.DELETE,
     label: 'Delete',
   },
-  // {
-  //   id: 'edit',
-  //   label: 'Edit',
-  // },
 ]
 
 export const GroupListReportMenu = [
@@ -223,15 +264,15 @@ export const statusList = (data) => ({
         },
       ],
     },
-    // {
-    //   key: 3,
-    //   text: 'Aborted',
-    //   status_code: 'aborted',
-    //   color: summaryTileColors.GRAY,
-    //   border: '1px solid #D8D8D8',
-    //   unit: getSummaryStatusRecords({key:'aborted', data}),
-    //   textColor: summaryTileColors.RED_TEXT,
-    // },
+    {
+      key: 3,
+      text: 'Aborted',
+      status_code: 'aborted',
+      color: summaryTileColors.GRAY,
+      border: '1px solid #D8D8D8',
+      unit: getSummaryStatusRecords({ key: 'aborted', data }),
+      textColor: summaryTileColors.RED_TEXT,
+    },
   ],
   intervention: [
     {

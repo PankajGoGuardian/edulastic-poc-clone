@@ -67,6 +67,7 @@ const CreateGI = ({
   performanceBandData,
   goalsOptionsData,
   saveFormData,
+  updateGIData,
   isSaveInProgress,
   onCancel,
   resetFormData,
@@ -76,9 +77,13 @@ const CreateGI = ({
   activeTerms,
   currentTermId,
   onClickCreateGroup,
+  group,
+  GIData,
+  setGIData,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
+  const { isEditFlow } = GIData
 
   const termDetails = activeTerms.find(({ _id }) => _id === currentTermId) || {}
 
@@ -110,9 +115,13 @@ const CreateGI = ({
     performanceBandData,
     goalsOptionsData,
     saveFormData,
+    updateGIData,
     fetchAttendanceBandData,
     attendanceBandData,
     termDetails,
+    group,
+    GIData,
+    setGIData,
   })
 
   useEffect(() => {
@@ -183,7 +192,12 @@ const CreateGI = ({
             <EduIf condition={isSaveInProgress}>
               <EduThen>Saving...</EduThen>
               <EduElse>
-                Save {view === SAVE_GOAL ? 'Goal' : 'Intervention'}
+                <EduIf condition={isEditFlow}>
+                  <EduThen>Save</EduThen>
+                  <EduElse>
+                    Save {view === SAVE_GOAL ? 'Goal' : 'Intervention'}
+                  </EduElse>
+                </EduIf>
               </EduElse>
             </EduIf>
           </StyledButton>
@@ -241,5 +255,6 @@ export default connect(
     saveFormData: actions.saveFormDataRequest,
     resetFormData: actions.resetFormData,
     fetchInterventionsList: actions.getInterventionsList,
+    updateGIData: actions.updateGIDataRequest,
   }
 )(CreateGI)

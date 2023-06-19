@@ -26,6 +26,7 @@ export const usePerformanceByStandardSummaryFetch = ({
       if (settings.selectedTest && settings.selectedTest.key) {
         try {
           setLoading(true)
+          setError(null)
           const params = {
             requestFilters: {
               ...pick(settings.requestFilters, pickDataForSummary),
@@ -76,6 +77,7 @@ export const usePerformanceByStandardDetailsFetch = ({
       if (settings.selectedTest && settings.selectedTest.key) {
         try {
           setLoading(true)
+          setError(null)
           const params = {
             requestFilters: {
               ...pick(settings.requestFilters, pickDataForDetails),

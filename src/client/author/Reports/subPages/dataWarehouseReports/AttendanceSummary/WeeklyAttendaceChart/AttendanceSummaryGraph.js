@@ -154,14 +154,30 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
       <StyledResponsiveContainer width="100%" height="100%">
         <LineChart
           width={730}
-          // height="100%"
-          height={300}
+          height="100%"
           margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
           ref={chartRef}
         >
           <CartesianGrid stroke="#EFEFEF" />
-          <XAxis type="number" dataKey="index" hide />
           <XAxis
+            type="number"
+            tick={
+              <CustomChartXTick
+                data={renderData}
+                getXTickText={(payload, _data) =>
+                  getXTickText(payload, _data, groupBy)
+                }
+                fontWeight={600}
+                subTickKey="startDate"
+              />
+            }
+            tickCount={renderData.length}
+            tickMargin={20}
+            dataKey="index"
+            tickLine={false}
+            axisLine={false}
+          />
+          {/* <XAxis
             xAxisId="0"
             dataKey={groupBy}
             tick={
@@ -177,8 +193,8 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
             interval={0}
             tickLine={false}
             axisLine={false}
-          />
-          <XAxis
+          /> */}
+          {/* <XAxis
             dataKey="startDate"
             xAxisId="1"
             dy={-7}
@@ -187,7 +203,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
             interval={0}
             axisLine={false}
             label={{ fill: 'red', fontSize: 20 }}
-          />
+          /> */}
           <YAxis
             type="number"
             domain={[0, 100]}

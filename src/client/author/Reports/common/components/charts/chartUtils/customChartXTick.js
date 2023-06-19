@@ -19,6 +19,7 @@ export const CustomChartXTick = (props) => {
     width,
     fontWeight,
     visibleTicksCount,
+    subTickKey = '',
   } = props
 
   // const [tooltipVisible, setTooltipVisible] = useState(false)
@@ -44,9 +45,19 @@ export const CustomChartXTick = (props) => {
   // )
 
   let text = getXTickText ? getXTickText(payload, data) : payload.value
-  const fill = getXTickFill ? getXTickFill(payload, data) : 'black'
+  let fill = getXTickFill ? getXTickFill(payload, data) : 'black'
 
   const tagText = getXTickTagText ? getXTickTagText(payload, data) : ''
+
+  let subText = ''
+  if (
+    subTickKey.length > 0 &&
+    data[payload.value] &&
+    data[payload.value][subTickKey]
+  ) {
+    subText = data[payload.value][subTickKey]
+    fill = '#666'
+  }
 
   // const handleMouseEnter = () => {
   //   setTooltipVisible(true)
@@ -152,6 +163,18 @@ export const CustomChartXTick = (props) => {
           </>
         ) : null}
       </g>
+      {subTickKey.length > 0 && (
+        <g transform={`translate(${x},${y + 20})`}>
+          <StyledAxisTickText
+            textAnchor="middle"
+            verticalAnchor="start"
+            fontSize={14}
+            fill={fill}
+          >
+            {subText}
+          </StyledAxisTickText>
+        </g>
+      )}
     </>
   )
 }

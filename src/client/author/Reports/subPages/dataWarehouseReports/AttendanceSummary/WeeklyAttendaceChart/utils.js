@@ -5,7 +5,7 @@ import { sortKeys } from '../utils/constants'
 export const getAttendanceChartData = (attendanceData, groupBy) => {
   const _attendanceData = sortBy(attendanceData, 'minDate')
   const attendanceChartData = _attendanceData
-    .map((item, i) => {
+    .map((item) => {
       if (item.fromTermStart < 0) return
 
       return {
@@ -17,7 +17,7 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
         total: item.totalEvents,
         value: round(item.attendanceRatio),
         assessmentDate: item.minDate,
-        index: i + 1,
+        index: item.fromTermStart + 1,
       }
     })
     .filter((item) => !!item)
@@ -49,7 +49,10 @@ export const transformDataForChart = (page, pagedData, groupBy, type) => {
       ...pagedData,
     ]
   }
+
   const first = pagedData[0]
+  const startIndex = first.index
+
   if (isTardies) {
     return [...pagedData.slice(1)]
   }
@@ -58,12 +61,13 @@ export const transformDataForChart = (page, pagedData, groupBy, type) => {
       ...first,
       [groupBy]: START_X_VALUE,
       startDate: START_X_LABEL,
+      index: 0,
     },
-    ...pagedData.slice(1),
+    ...pagedData.slice(1).map((a) => ({ ...a, index: a.index - startIndex })),
   ]
 }
 
 export const getXTickText = (payload, _data, groupBy) => {
-  const data = _data[payload.index]?.[groupBy] + 1
+  const data = _data[payload.index || payload.value]?.[groupBy] + 1
   return data ? `${groupBy.toUpperCase()} ${data}` : ``
 }

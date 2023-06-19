@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { groupBy, get as _get } from 'lodash'
+import { groupBy } from 'lodash'
 import { getUserRole } from './user'
 import { hasRandomQuestions } from '../../ClassBoard/utils'
 
@@ -133,4 +133,9 @@ export const getTagsUpdatingStateSelector = createSelector(
 export const getHasRandomQuestionselector = createSelector(
   getCurrentTestSelector,
   (test) => hasRandomQuestions(test || {})
+)
+
+export const getBulkUpdateAssignmentSettingsCallStateSelector = createSelector(
+  stateSelector,
+  (state) => state.bulkUpdateAssignmentSettingsCallState
 )

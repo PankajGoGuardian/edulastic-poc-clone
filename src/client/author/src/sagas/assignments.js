@@ -47,7 +47,10 @@ import {
   BULK_UPDATE_ASSIGNMENT_SETTINGS,
 } from '../constants/actions'
 import { getUserRole } from '../selectors/user'
-import { setTagsUpdatingStateAction } from '../actions/assignments'
+import {
+  setBulkUpdateAssignmentSettingState,
+  setTagsUpdatingStateAction,
+} from '../actions/assignments'
 
 function* receiveAssignmentClassList({ payload = {} }) {
   try {
@@ -478,11 +481,14 @@ function* editTagsRequestSaga({ payload }) {
 
 function* bulkUpdateAssignmentSettingsSaga({ payload }) {
   try {
+    yield put(setBulkUpdateAssignmentSettingState('INITIATED'))
     const response = yield call(assignmentApi.bulkEditSettings, payload)
+    yield put(setBulkUpdateAssignmentSettingState('SUCCESS'))
     const successMessage =
       response?.data?.result || 'Starting Bulk Action Request'
     notification({ type: 'info', msg: successMessage })
   } catch (err) {
+    yield put(setBulkUpdateAssignmentSettingState('FAILED'))
     const errorMessage =
       err.response.data?.message || 'Failed to bulk update assignment settings.'
     notification({ msg: errorMessage })

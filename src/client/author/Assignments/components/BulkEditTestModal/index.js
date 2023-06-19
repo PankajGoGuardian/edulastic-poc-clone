@@ -18,13 +18,17 @@ import {
 } from '@edulastic/constants/const/test'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { DatePicker, Row } from 'antd'
+import { DatePicker, Icon, Row } from 'antd'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { getUserFeatures } from '../../../../student/Login/ducks'
-import { bulkUpdateAssignmentSettingsAction } from '../../../src/actions/assignments'
+import {
+  bulkUpdateAssignmentSettingsAction,
+  setBulkUpdateAssignmentSettingState,
+} from '../../../src/actions/assignments'
+import { getBulkUpdateAssignmentSettingsCallStateSelector } from '../../../src/selectors/assignments'
 
 const VIEWS = {
   CLOSE_DATE: 'CLOSE DATE',
@@ -40,6 +44,8 @@ const BulkEditTestModal = ({
   selectedRows,
   features,
   bulkUpdateAssignmentSettings,
+  apiCallStatus,
+  setAPICallStatus,
 }) => {
   const [selectedView, setSelectedView] = useState()
   const [data, setData] = useState({})
@@ -71,8 +77,22 @@ const BulkEditTestModal = ({
     }
 
     bulkUpdateAssignmentSettings(updateData)
-    toggleModal()
   }
+
+  const loading = apiCallStatus === 'INITIATED'
+
+  useEffect(() => {
+    if (apiCallStatus && !loading) {
+      setAPICallStatus(false)
+      toggleModal()
+    }
+  }, [apiCallStatus])
+
+  useEffect(() => {
+    if (apiCallStatus) {
+      setAPICallStatus(false)
+    }
+  }, [])
 
   return (
     <StyledModal
@@ -82,19 +102,32 @@ const BulkEditTestModal = ({
       onCancel={toggleModal}
       title={
         <div>
-          Edit Tests
+          Bulk Update
           <p style={{ fontSize: '12px' }}>
-            Select the option that need to be updated for the tests.
+            Select the option that need to be updated for the selected tests.
           </p>
         </div>
       }
       destroyOnClose
       footer={[
-        <EduButton isGhost key="cancel" onClick={toggleModal}>
+        <EduButton
+          disabled={loading}
+          isGhost
+          key="cancel"
+          onClick={toggleModal}
+        >
           CANCEL
         </EduButton>,
-        <EduButton data-cy="apply" key="update" onClick={handleUpdate}>
+        <EduButton
+          disabled={loading}
+          data-cy="update"
+          key="update"
+          onClick={handleUpdate}
+        >
           Update
+          <EduIf condition={loading}>
+            <Icon type="loading" spin />
+          </EduIf>
         </EduButton>,
       ]}
     >
@@ -133,6 +166,13 @@ const BulkEditTestModal = ({
             setData({ ...data, endDate: moment(value).valueOf() })
           }
         />
+        <Info>
+          <StyledFontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
+          <InfoText>
+            Close Date will not be applied to assignments that are already
+            closed or have a close policy as close by admin or teacher.
+          </InfoText>
+        </Info>
       </EduIf>
       <EduIf condition={selectedView === VIEWS.RELEASE_SCORE_POLICY}>
         <div>
@@ -176,7 +216,7 @@ const BulkEditTestModal = ({
       </EduIf>
       <EduIf condition={selectedView === VIEWS.ALLOW_TEACHER_REDIRECT}>
         <Label>Allow Teachers to Redirect</Label>{' '}
-        <EduSwitchStyled
+        <CustomEduSwitchStyled
           size="large"
           disabled={!features.premium}
           checked={data.allowTeacherRedirect}
@@ -189,9 +229,16 @@ const BulkEditTestModal = ({
   )
 }
 
-export default connect((state) => ({ features: getUserFeatures(state) }), {
-  bulkUpdateAssignmentSettings: bulkUpdateAssignmentSettingsAction,
-})(BulkEditTestModal)
+export default connect(
+  (state) => ({
+    features: getUserFeatures(state),
+    apiCallStatus: getBulkUpdateAssignmentSettingsCallStateSelector(state),
+  }),
+  {
+    setAPICallStatus: setBulkUpdateAssignmentSettingState,
+    bulkUpdateAssignmentSettings: bulkUpdateAssignmentSettingsAction,
+  }
+)(BulkEditTestModal)
 
 export const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
   margin-left: 2px;
@@ -226,4 +273,8 @@ export const InfoText = styled.span`
 export const Label = styled.label`
   width: 100%;
   font-weight: bold;
+`
+
+export const CustomEduSwitchStyled = styled(EduSwitchStyled)`
+  width: 46px;
 `

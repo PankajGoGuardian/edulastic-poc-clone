@@ -18,6 +18,7 @@ import {
   SET_TAGS_UPDATING_STATE,
   SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
   BULK_UPDATE_ASSIGNMENT_SETTINGS,
+  SET_BULK_UPDATE_ASSIGNMENT_SETTINGS_CALL_STATE,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
@@ -106,6 +107,11 @@ export const editTagsRequestAction = (payload) => ({
 
 export const setTagsUpdatingStateAction = (payload) => ({
   type: SET_TAGS_UPDATING_STATE,
+  payload,
+})
+
+export const setBulkUpdateAssignmentSettingState = (payload) => ({
+  type: SET_BULK_UPDATE_ASSIGNMENT_SETTINGS_CALL_STATE,
   payload,
 })
 

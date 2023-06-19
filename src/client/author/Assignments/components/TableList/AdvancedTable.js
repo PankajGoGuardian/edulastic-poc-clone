@@ -188,7 +188,7 @@ class AdvancedTable extends Component {
               </Menu.Item>
               {this.isAdmin && (
                 <Menu.Item onClick={() => this.toggleBulkEditModal()}>
-                  Edit Tests
+                  Bulk Update
                 </Menu.Item>
               )}
             </Menu>

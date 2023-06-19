@@ -27,6 +27,7 @@ import {
   MQTT_CLIENT_REMOVE_REQUEST,
   MQTT_CLIENT_SAVE_REQUEST,
   SET_TAGS_UPDATING_STATE,
+  SET_BULK_UPDATE_ASSIGNMENT_SETTINGS_CALL_STATE,
 } from '../constants/actions'
 
 import {
@@ -60,6 +61,7 @@ const initialState = {
   syncWithSchoologyClassroomInProgress: false,
   mqttClient: null,
   tagsUpdatingState: false,
+  bulkUpdateAssignmentSettingsCallState: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -241,6 +243,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         tagsUpdatingState: payload,
+      }
+    case SET_BULK_UPDATE_ASSIGNMENT_SETTINGS_CALL_STATE:
+      return {
+        ...state,
+        bulkUpdateAssignmentSettingsCallState: payload,
       }
     default:
       return state

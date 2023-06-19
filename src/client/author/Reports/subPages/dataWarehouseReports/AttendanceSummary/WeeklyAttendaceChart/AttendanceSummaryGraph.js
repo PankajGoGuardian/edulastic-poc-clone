@@ -155,7 +155,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy, interventionList }) {
         <LineChart
           width={730}
           height="100%"
-          margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
+          margin={{ top: 0, right: 50, left: 20, bottom: 30 }}
           ref={chartRef}
         >
           <CartesianGrid stroke="#EFEFEF" />

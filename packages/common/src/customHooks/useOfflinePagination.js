@@ -29,13 +29,20 @@ function useOfflinePagination(options = {}) {
     lookaheadCount = 0,
     backFillLastPage = false,
   } = options
-  const [page, _setPage] = useState(defaultPage)
   const totalPages = Math.ceil(data.length / pageSize)
+  let defaultPageToUse = Math.min(defaultPage, totalPages - 1)
+
+  if (defaultPage < 0) {
+    defaultPageToUse = Math.max(0, totalPages + defaultPage) // (totalPages + defaultPage) -> equivalent to (totalPages - abs(defaultPage))
+  }
+  const [page, _setPage] = useState(defaultPageToUse)
 
   const setPage = useCallback(
-    (newPage) => {
+    (newPageArg) => {
       _setPage((curPage) => {
-        newPage = typeof newPage === 'function' ? newPage(curPage) : newPage
+        newPageArg =
+          typeof newPageArg === 'function' ? newPageArg(curPage) : newPageArg
+        const newPage = newPageArg < 0 ? totalPages + newPageArg : newPageArg
         return Math.max(0, Math.min(newPage, totalPages - 1))
       })
     },

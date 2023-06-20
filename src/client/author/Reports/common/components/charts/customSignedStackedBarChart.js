@@ -16,6 +16,7 @@ import {
 import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
+import { useOfflinePagination } from '@edulastic/common'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
@@ -114,10 +115,6 @@ export const SignedStackedBarChart = ({
   preLabelContent = null,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
-  const [pagination, setPagination] = useState({
-    startIndex: 0,
-    endIndex: pageSize - 1,
-  })
   const parentContainerRef = useRef(null)
   const tooltipRef = useRef(null)
   const [activeLegend, setActiveLegend] = useState(null)
@@ -126,6 +123,20 @@ export const SignedStackedBarChart = ({
     x: null,
     y: null,
     content: null,
+  })
+
+  const {
+    next: nextPage,
+    prev: prevPage,
+    pagedData,
+    page,
+    totalPages,
+  } = useOfflinePagination({
+    defaultPage: -1,
+    data,
+    lookbackCount: 0,
+    pageSize,
+    backFillLastPage: true,
   })
 
   const constants = {
@@ -137,41 +148,6 @@ export const SignedStackedBarChart = ({
       dx: 25,
       fontSize: 14,
     },
-  }
-
-  const renderData = useMemo(
-    () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
-    [pagination, data]
-  )
-
-  const scrollLeft = () => {
-    let diff
-    if (pagination.startIndex > 0) {
-      if (pagination.startIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = pagination.startIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex - diff,
-        endIndex: pagination.endIndex - diff,
-      })
-    }
-  }
-
-  const scrollRight = () => {
-    let diff
-    if (pagination.endIndex < data.length - 1) {
-      if (data.length - 1 - pagination.endIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = data.length - 1 - pagination.endIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex + diff,
-        endIndex: pagination.endIndex + diff,
-      })
-    }
   }
 
   const onBarClick = (args) => {
@@ -227,7 +203,7 @@ export const SignedStackedBarChart = ({
     const { coordinate } = payload
     let content
     if (getXTickText) {
-      content = getXTickText(payload, renderData)
+      content = getXTickText(payload, pagedData)
     } else {
       content = payload.value
     }
@@ -269,26 +245,29 @@ export const SignedStackedBarChart = ({
   }
 
   // chart navigation visibility and control
+  const hasPreviousPage = page !== 0
+  const hasNextPage = page < totalPages - 1
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
-    : !(pagination.startIndex == 0)
+    : hasPreviousPage
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : !(data.length <= pagination.endIndex + 1)
+    : hasNextPage
+
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
           ...backendPagination,
           page: backendPagination.page - 1,
         })
-      : scrollLeft()
+      : prevPage()
   const chartNavRightClick = () =>
     backendPagination
       ? setBackendPagination({
           ...backendPagination,
           page: backendPagination.page + 1,
         })
-      : scrollRight()
+      : nextPage()
 
   return (
     <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
@@ -338,7 +317,7 @@ export const SignedStackedBarChart = ({
         <BarChart
           width={730}
           height={400}
-          data={renderData}
+          data={pagedData}
           stackOffset="sign"
           margin={margin}
         >
@@ -349,7 +328,7 @@ export const SignedStackedBarChart = ({
             dataKey={xAxisDataKey}
             tick={
               <CustomChartXTick
-                data={renderData}
+                data={pagedData}
                 getXTickText={getXTickText}
                 getXTickTagText={getXTickTagText}
                 fontWeight={600}
@@ -443,7 +422,7 @@ export const SignedStackedBarChart = ({
                     }
                   />
                 ) : null}
-                {renderData.map((cdItem) =>
+                {pagedData.map((cdItem) =>
                   filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
                       radius={

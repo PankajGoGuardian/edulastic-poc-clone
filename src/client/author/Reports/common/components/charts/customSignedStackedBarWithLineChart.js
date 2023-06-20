@@ -17,6 +17,7 @@ import {
 import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
+import { useOfflinePagination } from '@edulastic/common'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
@@ -121,7 +122,6 @@ export const SignedStackedBarWithLineChart = ({
   barsData,
   data = [],
   yDomain = [-100, 110],
-  ticks = [-100, -81, -54, -27, 27, 54, 81, 110],
   xAxisDataKey,
   lineDataKey,
   lineProps = {},
@@ -147,10 +147,6 @@ export const SignedStackedBarWithLineChart = ({
   setBackendPagination,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
-  const [pagination, setPagination] = useState({
-    startIndex: 0,
-    endIndex: pageSize - 1,
-  })
   const parentContainerRef = useRef(null)
   const tooltipPayload = useRef(0)
   const topTooltipRef = useRef(null)
@@ -179,43 +175,19 @@ export const SignedStackedBarWithLineChart = ({
     },
   }
 
-  const chartData = useMemo(() => [...data], [pagination])
-
-  const renderData = useMemo(
-    () =>
-      chartData.slice(pagination.startIndex, pagination.startIndex + pageSize),
-    [pagination, data]
-  )
-
-  const scrollLeft = () => {
-    let diff
-    if (pagination.startIndex > 0) {
-      if (pagination.startIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = pagination.startIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex - diff,
-        endIndex: pagination.endIndex - diff,
-      })
-    }
-  }
-
-  const scrollRight = () => {
-    let diff
-    if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = chartData.length - 1 - pagination.endIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex + diff,
-        endIndex: pagination.endIndex + diff,
-      })
-    }
-  }
+  const {
+    next: nextPage,
+    prev: prevPage,
+    pagedData,
+    page,
+    totalPages,
+  } = useOfflinePagination({
+    defaultPage: -1,
+    data,
+    lookbackCount: 0,
+    pageSize,
+    backFillLastPage: true,
+  })
 
   const onBarClick = (args) => {
     onBarClickCB(args[xAxisDataKey])
@@ -330,7 +302,7 @@ export const SignedStackedBarWithLineChart = ({
     const { coordinate } = payload
     let content
     if (getXTickText) {
-      content = getXTickText(payload, renderData)
+      content = getXTickText(payload, pagedData)
     } else {
       content = payload.value
     }
@@ -372,26 +344,29 @@ export const SignedStackedBarWithLineChart = ({
   }
 
   // chart navigation visibility and control
+  const hasPreviousPage = page !== 0
+  const hasNextPage = page < totalPages - 1
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
-    : !(pagination.startIndex == 0)
+    : hasPreviousPage
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : !(chartData.length <= pagination.endIndex + 1)
+    : hasNextPage
+
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
           ...backendPagination,
           page: backendPagination.page - 1,
         })
-      : scrollLeft()
+      : prevPage()
   const chartNavRightClick = () =>
     backendPagination
       ? setBackendPagination({
           ...backendPagination,
           page: backendPagination.page + 1,
         })
-      : scrollRight()
+      : nextPage()
 
   return (
     <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
@@ -440,7 +415,7 @@ export const SignedStackedBarWithLineChart = ({
         <ComposedChart
           width={730}
           height={400}
-          data={renderData}
+          data={pagedData}
           stackOffset="sign"
           margin={margin}
         >
@@ -451,7 +426,7 @@ export const SignedStackedBarWithLineChart = ({
             dataKey={xAxisDataKey}
             tick={
               <CustomChartXTick
-                data={renderData}
+                data={pagedData}
                 getXTickText={getXTickText}
                 getXTickTagText={getXTickTagText}
                 fontWeight={600}
@@ -556,7 +531,7 @@ export const SignedStackedBarWithLineChart = ({
                     }
                   />
                 ) : null}
-                {renderData.map((cdItem) =>
+                {pagedData.map((cdItem) =>
                   filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
                       radius={

@@ -319,7 +319,7 @@ export const getChartData = ({
       })
     }
     return assessmentData
-  }).sort((a, b) => Number(b.assignmentDate) - Number(a.assignmentDate))
+  }).sort((a, b) => Number(a.assignmentDate) - Number(b.assignmentDate))
   return parsedData
 }
 
@@ -332,7 +332,8 @@ export const getTableData = ({
   if (!chartData.length) {
     return []
   }
-  const parsedData = map(chartData, (assessment) => {
+  const chartDataToUse = [...chartData].reverse()
+  const parsedData = map(chartDataToUse, (assessment) => {
     const { testId, assignmentDate, externalTestType, schoolCode } = assessment
     const testDistrictAvg = round(
       get(

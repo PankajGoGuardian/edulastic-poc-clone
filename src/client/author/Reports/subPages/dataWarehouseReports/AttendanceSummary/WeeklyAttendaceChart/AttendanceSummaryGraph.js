@@ -54,7 +54,7 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: Math.ceil(attendanceChartData.length / sheetSize) - 1,
+    defaultPage: -1,
     data: attendanceChartData,
     lookbackCount: 1,
     pageSize: sheetSize,

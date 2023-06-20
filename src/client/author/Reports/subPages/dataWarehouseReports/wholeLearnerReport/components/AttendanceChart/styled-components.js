@@ -5,7 +5,7 @@ export const StyledAttendanceChartContainer = styled.div`
   position: relative;
   height: ${(props) => props.height};
   .navigator-left {
-    left: 5px;
+    left: -15px;
     top: 50%;
   }
 

@@ -54,6 +54,7 @@ const CustomizedLabel = (props) => {
 const AttendanceChart = ({
   attendanceChartData,
   onResetClick = () => {},
+  pageSize = 8,
   filter = {},
 }) => {
   const parentContainerRef = useRef(null)
@@ -67,10 +68,10 @@ const AttendanceChart = ({
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: 0,
+    defaultPage: -1,
     data: attendanceChartData,
     lookbackCount: 1,
-    pageSize: 8,
+    pageSize,
     backFillLastPage: true,
   })
   const chartRef = useRef(null)

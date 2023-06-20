@@ -88,7 +88,7 @@ const MultipleLicensePurchase = ({
     })
   }
 
-  const tooltipMessage = 'This user(s) will get manage subscription permission.'
+  const tooltipMessage = 'This user(s) will get manage subscriptions permission'
 
   const footer = [
     <EduButton

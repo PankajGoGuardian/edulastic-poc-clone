@@ -98,12 +98,16 @@ export const WidgetHeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
+  min-height: 42px;
   gap: 20px;
   .title {
     font-size: 15px;
     font-weight: bold;
     width: fit-content;
-    padding: 11px 40px;
+    padding-inline: 40px;
+    align-self: stretch;
+    display: flex;
+    place-items: center;
     background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
   }

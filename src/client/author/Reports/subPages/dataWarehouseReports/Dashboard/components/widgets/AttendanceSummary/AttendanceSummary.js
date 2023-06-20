@@ -76,7 +76,7 @@ const AttendanceSummary = ({
         <Spacer />
         <EduIf condition={attendanceBandInfo.length}>
           <ControlDropDown
-            style={{ margin: '0 10px' }}
+            style={{ margin: '8px 10px 0 0' }}
             by={settings.attendanceProfileId}
             data={attendanceBandInfo}
             selectCB={onAttendanceBandChange}

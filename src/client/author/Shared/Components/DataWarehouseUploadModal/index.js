@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
-import { Icon, Select, Spin, Input } from 'antd'
+import { Select, Spin, Input, Alert } from 'antd'
 import { isEmpty, get } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -10,12 +10,13 @@ import {
   FlexContainer,
   EduButton,
   notification,
+  EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
-import { greyThemeDark3 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
-import { testTypes, dataWarehouse } from '@edulastic/constants'
+import { dataWarehouse } from '@edulastic/constants'
 
-import config from '../../../../../app-config'
 import {
   uploadTestDataFileAction,
   getTestDataFileUploadLoader,
@@ -24,6 +25,7 @@ import {
   getFileUploadProgress,
   getSetCancelUploadAction,
   getAbortUploadAction,
+  getUploadsStatusList,
 } from '../../../sharedDucks/dataWarehouse'
 import { getOrgDataSelector } from '../../../src/selectors/user'
 import {
@@ -32,7 +34,7 @@ import {
   NON_ACADEMIC_DATA_TYPE_KEY,
 } from './utils'
 import { getTermOptions } from '../../../utils/reports'
-import DownloadTemplateContainer from './DownloadTemplateContainer'
+import DownloadTemplate from './DownloadTemplate'
 import {
   Container,
   DropzoneContentContainer,
@@ -44,16 +46,17 @@ import {
   StyledSelect,
   StyledTreeSelect,
 } from './styledComponents'
+import FileNameTag from '../../../Reports/components/dataWarehouseReport/common/components/FileNameTag'
+import { getTemplateFilePath } from '../../../Reports/components/dataWarehouseReport/importHistory/utils/helpers'
 
-const { cdnURI } = config
 const { Option } = Select
-const { ATTENDANCE } = testTypes
 const { MAX_UPLOAD_FILE_SIZE } = dataWarehouse
 
 const DataWarehouseUploadModal = ({
   uploadFile,
   isVisible,
   closeModal,
+  uploadsStatusList,
   loading,
   uploadResponse,
   handleUploadProgress,
@@ -66,12 +69,21 @@ const DataWarehouseUploadModal = ({
   const [category, setCategory] = useState('')
   const [testName, setTestName] = useState('')
   const [termId, setTermId] = useState('')
+  const [isInvalidTestName, setIsInvalidTestName] = useState(false)
 
   useEffect(() => {
     if (!isEmpty(uploadResponse)) {
       closeModal(true)
     }
   }, [uploadResponse])
+
+  useEffect(() => {
+    const isExistingRecord = uploadsStatusList.some(
+      ({ reportType, testName: _testName }) =>
+        reportType === category && _testName === testName
+    )
+    setIsInvalidTestName(isExistingRecord)
+  }, [category, testName])
 
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
@@ -93,7 +105,9 @@ const DataWarehouseUploadModal = ({
   }, [category])
 
   const isUploadBtnDisabled =
-    loading || [file, category, testName, termId].some(isEmpty)
+    loading ||
+    [file, category, testName, termId].some(isEmpty) ||
+    isInvalidTestName
 
   const handleFileUpload = () => {
     const termEndDate = schoolYearOptions.find(({ key }) => key === termId)
@@ -101,7 +115,7 @@ const DataWarehouseUploadModal = ({
     const versionYear = getYear(termEndDate)
     uploadFile({
       file,
-      category,
+      reportType: category,
       handleUploadProgress,
       setCancelUpload,
       termId,
@@ -112,11 +126,12 @@ const DataWarehouseUploadModal = ({
 
   return (
     <CustomModalStyled
-      modalWidth="800px"
-      style={{ height: '800px' }}
+      modalWidth="853px"
+      style={{ height: '549px' }}
+      padding="25px"
       visible={isVisible}
       maskClosable={false}
-      title="Upload External Data"
+      title="Add new external data"
       onCancel={() => {
         closeModal(false)
       }}
@@ -154,7 +169,7 @@ const DataWarehouseUploadModal = ({
           </StyledCol>
           <StyledCol span={12}>
             <StyledSelect
-              placeholder="Select School Term"
+              placeholder="Select School Year"
               onChange={setTermId}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
@@ -166,22 +181,27 @@ const DataWarehouseUploadModal = ({
             </StyledSelect>
           </StyledCol>
         </StyledRow>
-        {!isEmpty(category) && (
-          <StyledRow>
-            <StyledCol span={12}>
-              <Input
-                placeholder={testTitlePlaceholder}
-                value={testName}
-                onChange={(e) => setTestName(e.target.value)}
+        <EduIf condition={!isEmpty(category)}>
+          <>
+            <EduIf condition={isInvalidTestName}>
+              <Alert
+                message="Filename already exists, please give another name or go to Edit to edit the existing record"
+                type="error"
+                banner
               />
-            </StyledCol>
-          </StyledRow>
-        )}
-        {category === ATTENDANCE && (
-          <DownloadTemplateContainer
-            url={`${cdnURI}/templates/AttendanceSampleFile.csv`}
-          />
-        )}
+            </EduIf>
+            <StyledRow>
+              <StyledCol span={12}>
+                <Input
+                  placeholder={testTitlePlaceholder}
+                  value={testName}
+                  onChange={(e) => setTestName(e.target.value)}
+                />
+              </StyledCol>
+            </StyledRow>
+            <DownloadTemplate url={getTemplateFilePath(category)} />
+          </>
+        </EduIf>
         <Dropzone
           maxSize={MAX_UPLOAD_FILE_SIZE}
           onDropRejected={(f) => {
@@ -219,13 +239,23 @@ const DataWarehouseUploadModal = ({
                       justifyContent="center"
                       alignItems="center"
                     >
-                      <IconUpload />
-                      <StyledText>Drag & Drop</StyledText>
-                      <StyledText isComment>
-                        {`or `}
-                        <Underlined>browse</Underlined>
-                        {` : CSV (30MB Max)`}
-                      </StyledText>
+                      <EduIf condition={file}>
+                        <EduThen>
+                          <FileNameTag
+                            fileName={file?.name}
+                            onClose={() => setFile(null)}
+                          />
+                        </EduThen>
+                        <EduElse>
+                          <IconUpload />
+                          <StyledText>Drag & Drop</StyledText>
+                          <StyledText isComment>
+                            {`or `}
+                            <Underlined>browse</Underlined>
+                            {` : CSV (30MB Max)`}
+                          </StyledText>
+                        </EduElse>
+                      </EduIf>
                     </FlexContainer>
                   </>
                 )}
@@ -233,20 +263,6 @@ const DataWarehouseUploadModal = ({
             )
           }}
         </Dropzone>
-        <FlexContainer alignItems="center" justifyContent="center">
-          {file && (
-            <>
-              <Icon
-                type="file-text"
-                theme="filled"
-                style={{ fill: greyThemeDark3, fontSize: '18px' }}
-              />
-              <StyledText style={{ color: greyThemeDark3, marginLeft: '10px' }}>
-                {file.name}
-              </StyledText>
-            </>
-          )}
-        </FlexContainer>
       </Container>
     </CustomModalStyled>
   )
@@ -258,6 +274,7 @@ const withConnect = connect(
     uploadResponse: getTestDataFileUploadResponse(state),
     uploadProgress: getFileUploadProgress(state),
     terms: get(getOrgDataSelector(state), 'terms', []),
+    uploadsStatusList: getUploadsStatusList(state),
   }),
   {
     uploadFile: uploadTestDataFileAction,

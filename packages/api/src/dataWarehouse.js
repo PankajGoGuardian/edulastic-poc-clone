@@ -14,28 +14,21 @@ const {
   DW_EFFICACY_REPORT,
 } = reportNavType
 
-const getSignedUrl = (
-  filename,
-  category,
-  versionYear,
-  termId,
-  testName,
-  folder,
-  subFolder
-) =>
+const getSignedUrl = (params) =>
   api
     .callApi({
       url: `${prefix}/signed-url`,
       method: 'get',
-      params: {
-        filename,
-        category,
-        versionYear,
-        termId,
-        testName,
-        subFolder,
-        folder,
-      },
+      params,
+    })
+    .then((result) => result.data.result)
+
+const deleteUploadLog = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/upload-log`,
+      method: 'delete',
+      params,
     })
     .then((result) => result.data.result)
 
@@ -218,6 +211,7 @@ const saveGroupdDataWithAdvSearch = (data) => {
 
 export default {
   getSignedUrl,
+  deleteUploadLog,
   getDataWarehouseLogs,
   updateDatawarehouseLogsStatus,
   getWholeLearnerReport,

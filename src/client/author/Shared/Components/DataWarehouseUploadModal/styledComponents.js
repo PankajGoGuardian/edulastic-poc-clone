@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Select, TreeSelect, Row, Col, Progress } from 'antd'
+import { Select, TreeSelect, Row, Col, Progress, Divider } from 'antd'
 import {
   dashBorderColor,
   dragDropUploadText,
@@ -7,6 +7,7 @@ import {
   greyThemeLighter,
   themeColorBlue,
   borderGrey,
+  greenPrimary,
 } from '@edulastic/colors'
 
 export const Container = styled.div`
@@ -16,14 +17,15 @@ export const Container = styled.div`
 export const DropzoneContentContainer = styled.div`
   margin: 20px 0;
   padding: 50px;
-  border-radius: 2px;
-  height: 400px;
+  border-radius: 8px;
+  height: 251px;
+  width: 783px;
   display: flex;
   justify-content: center;
   border: ${({ isDragActive }) =>
     isDragActive
       ? `2px solid ${themeColorBlue}`
-      : `1px dashed ${dashBorderColor}`};
+      : `2px dashed ${dashBorderColor}`};
   background: ${greyThemeLighter};
   svg {
     margin-bottom: 12px;
@@ -57,11 +59,11 @@ export const StyledProgress = styled(Progress)`
 `
 
 export const StyledText = styled.div`
-  font-size: ${({ isComment }) => (isComment ? 11 : 14)}px;
+  font-size: ${({ $isComment }) => ($isComment ? 11 : 14)}px;
   font-weight: bold;
   text-transform: uppercase;
   color: ${dragDropUploadText};
-  margin-top: ${({ isComment }) => (isComment ? 10 : 0)}px;
+  margin-top: ${({ $isComment }) => ($isComment ? 10 : 0)}px;
   word-break: break-word;
 `
 
@@ -84,4 +86,21 @@ export const StyledSelect = styled(Select)`
 `
 export const StyledTreeSelect = styled(TreeSelect)`
   width: 100%;
+`
+
+export const DownloadTemplateDivider = styled(Divider)`
+  width: 853px;
+  margin-left: -35px;
+  margin-block: 30px 20px;
+`
+
+export const DownloadTemplateContainer = styled.div`
+  text-align: left;
+  font-weight: bold;
+  font-size: 10px;
+  a {
+    border-bottom: 1px solid ${greenPrimary};
+    padding-bottom: 2px;
+    border-bottom-style: dashed;
+  }
 `

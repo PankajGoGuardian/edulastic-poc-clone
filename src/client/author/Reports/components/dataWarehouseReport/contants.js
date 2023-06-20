@@ -20,6 +20,12 @@ import {
   DW_EFFICACY_REPORT_URL,
 } from '../../common/constants/dataWarehouseReports'
 
+export const DATA_WAREHOUSE_MODAL_MODES = {
+  UPLOAD: 'upload',
+  EDIT: 'edit',
+  DELETE: 'delete',
+}
+
 export const dataWarehousereportCardsData = [
   {
     id: 1,

@@ -2,16 +2,23 @@ import { dataWarehouse } from '@edulastic/constants'
 import { dataWarehouseApi } from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 
 import { uploadToS3 } from '../utils/uploadToS3'
+import { getUserOrgId } from '../src/selectors/user'
 
 const UPLOAD_TEST_DATA_FILE_REQUEST = '[reports] upload test data file request'
 const UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS =
   '[reports] upload test data file request success'
 const UPLOAD_TEST_DATA_FILE_REQUEST_ERROR =
   '[reports] upload test data file request error'
+
+const DELETE_TEST_DATA_FILE_REQUEST = '[reports] delete test data file request'
+const DELETE_TEST_DATA_FILE_REQUEST_SUCCESS =
+  '[reports] delete test data file request success'
+const DELETE_TEST_DATA_FILE_REQUEST_ERROR =
+  '[reports] delete test data file request error'
 
 const GET_UPLOADS_STATUS_LIST_REQUEST =
   '[reports] get uploads status list request'
@@ -36,6 +43,10 @@ const GET_ABORT_UPLOAD_REQUEST = '[reports] get abort upload request'
 
 export const uploadTestDataFileAction = createAction(
   UPLOAD_TEST_DATA_FILE_REQUEST
+)
+
+export const deleteTestDataFileAction = createAction(
+  DELETE_TEST_DATA_FILE_REQUEST
 )
 
 export const getUploadsStatusListAction = createAction(
@@ -100,6 +111,7 @@ const initialState = {
   cancelUpload: null,
   uploadProgress: 0,
   testDataFileUploadError: null,
+  testDataFileDeleteError: null,
   testDataFileUploadResponse: null,
   uploadsStatusList: [],
   uploadsStatusListLoader: false,
@@ -112,13 +124,25 @@ export const dataWarehouseReducer = createReducer(initialState, {
     state.testDataFileUploadResponse = null
   },
   [UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS]: (state, { payload }) => {
+    const filteredUploadsStatusList = state.uploadsStatusList.filter(
+      (item) => item.feedId !== payload.uploadLog.feedId
+    )
     state.testDataFileUploadLoading = false
-    state.testDataFileUploadResponse = payload
+    state.testDataFileUploadResponse = payload.uploadResponse
     state.uploadProgress = 0
+    state.uploadsStatusList = [payload.uploadLog, ...filteredUploadsStatusList]
   },
   [UPLOAD_TEST_DATA_FILE_REQUEST_ERROR]: (state, { payload }) => {
     state.testDataFileUploadLoading = false
     state.testDataFileUploadError = payload.error
+  },
+  [DELETE_TEST_DATA_FILE_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.uploadsStatusList = state.uploadsStatusList.filter(
+      (item) => item.feedId !== payload.feedId
+    )
+  },
+  [DELETE_TEST_DATA_FILE_REQUEST_ERROR]: (state, { payload }) => {
+    state.testDataFileDeleteError = payload.error
   },
   [GET_UPLOADS_STATUS_LIST_REQUEST]: (state) => {
     state.uploadsStatusListLoader = true
@@ -156,7 +180,7 @@ export const dataWarehouseReducer = createReducer(initialState, {
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
-export function* fetchUploadsStatusList() {
+export function* fetchUploadsStatusListSaga() {
   try {
     const uploadsStatusList = yield call(dataWarehouseApi.getDataWarehouseLogs)
     yield put({
@@ -174,54 +198,58 @@ export function* fetchUploadsStatusList() {
   }
 }
 
-export function* uploadTestDataFile({
+export function* uploadTestDataFileSaga({
   payload: {
     file,
-    category,
+    reportType,
     handleUploadProgress,
     setCancelUpload,
     termId,
     testName,
     versionYear,
+    feedId,
+    _id,
   },
 }) {
+  const districtId = yield select(getUserOrgId)
   try {
     notification({
       msg: 'File upload in progress.',
       type: 'info',
     })
-    const response = yield uploadToS3({
+    const result = yield uploadToS3({
       file,
       folder: dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
-      subFolder: 'raw_data',
-      category,
+      subFolder: `${districtId}/input`,
+      reportType,
       progressCallback: (progressData) =>
         handleUploadProgress({ progressData }),
       cancelUpload: setCancelUpload,
       termId,
       testName,
       versionYear,
+      feedId,
+      _id,
     })
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS,
-      payload: response,
+      payload: result,
     })
     notification({
       msg: 'Import Successful.',
-      destroyAll: true,
       type: 'success',
     })
   } catch (error) {
     let msg = ''
     if (error?.message) {
       msg = error.message
-      notification({ type: 'error', exact: true, msg, destroyAll: true })
+      notification({ type: 'error', exact: true, msg })
     } else {
       msg = 'Error uploading the file. Please try again after a few minutes.'
-      notification({ type: 'error', msg, destroyAll: true })
+      notification({ type: 'error', msg })
     }
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_ERROR,
@@ -230,7 +258,41 @@ export function* uploadTestDataFile({
   }
 }
 
-export function* resetUploadResponse() {
+export function* deleteTestDataFileSaga({ payload: { feedId } }) {
+  try {
+    notification({
+      msg: 'File delete in progress.',
+      type: 'info',
+    })
+    const response = yield call(dataWarehouseApi.deleteUploadLog, { feedId })
+    if (response.error) {
+      throw new Error(response.message)
+    }
+    yield put({
+      type: DELETE_TEST_DATA_FILE_REQUEST_SUCCESS,
+      payload: { feedId },
+    })
+    notification({
+      msg: 'File deleted successfully.',
+      type: 'success',
+    })
+  } catch (error) {
+    let msg = ''
+    if (error?.message) {
+      msg = error.message
+      notification({ type: 'error', exact: true, msg })
+    } else {
+      msg = 'Error deleting the file. Please try again after a few minutes.'
+      notification({ type: 'error', msg })
+    }
+    yield put({
+      type: DELETE_TEST_DATA_FILE_REQUEST_ERROR,
+      payload: { error: msg },
+    })
+  }
+}
+
+export function* resetUploadResponseSaga() {
   yield put({
     type: GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS,
   })
@@ -240,8 +302,9 @@ export function* resetUploadResponse() {
 
 export function* dataWarehouseSaga() {
   yield all([
-    yield takeLatest(UPLOAD_TEST_DATA_FILE_REQUEST, uploadTestDataFile),
-    yield takeLatest(GET_UPLOADS_STATUS_LIST_REQUEST, fetchUploadsStatusList),
-    yield takeLatest(GET_RESET_TEST_DATA_UPLOAD_RESPONSE, resetUploadResponse),
+    takeLatest(UPLOAD_TEST_DATA_FILE_REQUEST, uploadTestDataFileSaga),
+    takeLatest(DELETE_TEST_DATA_FILE_REQUEST, deleteTestDataFileSaga),
+    takeLatest(GET_UPLOADS_STATUS_LIST_REQUEST, fetchUploadsStatusListSaga),
+    takeLatest(GET_RESET_TEST_DATA_UPLOAD_RESPONSE, resetUploadResponseSaga),
   ])
 }

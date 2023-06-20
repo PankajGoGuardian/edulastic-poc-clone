@@ -1,29 +1,42 @@
-import { Col, Row, Spin, Tabs } from 'antd'
+import { Col, Divider, Row, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import styled from 'styled-components'
+import { get } from 'lodash'
 
 import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
 import { IconUpload } from '@edulastic/icons'
 import { withRouter } from 'react-router'
 import { segmentApi } from '@edulastic/api'
 import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
-import DataWarehoureUploadsTable from '../../../Shared/Components/DataWarehouseUploadsTable'
 import { SubHeader } from '../../common/components/Header'
 import { StyledContainer } from '../../common/styled'
 import DataWarehoureReportCardsWrapper from './DataWarehouseReportCardsWrapper'
+import ImportHistory from './importHistory'
+import {
+  StyledTabs,
+  BannerContainer,
+} from './common/components/StyledComponents'
 
 import {
   isDataOpsUser as checkIsDataOpsUser,
+  getOrgDataSelector,
   getUserFeatures,
 } from '../../../src/selectors/user'
 
 import {
+  getAbortUploadAction,
+  getFileUploadProgress,
   getResetTestDataFileUploadResponseAction,
+  getSetCancelUploadAction,
+  getTestDataFileUploadLoader,
+  getTestDataFileUploadResponse,
+  getUpdateUploadProgressAction,
   getUploadsStatusList,
   getUploadsStatusListAction,
   getUploadsStatusLoader,
+  uploadTestDataFileAction,
+  deleteTestDataFileAction,
 } from '../../../sharedDucks/dataWarehouse'
 import { navigationState } from '../../../src/constants/navigation'
 import { FloatingAction } from '../StandardReport/SellContent/FloatingAction'
@@ -47,8 +60,17 @@ const DataWarehouseReports = ({
   fetchUploadsStatusList,
   resetUploadResponse,
   isDataOpsUser,
+  terms,
   features,
   history,
+  uploadResponse,
+  uploadProgress,
+  uploading,
+  uploadFile,
+  deleteFile,
+  handleUploadProgress,
+  setCancelUpload,
+  abortUpload,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState(REPORTS_TAB.key)
@@ -149,14 +171,20 @@ const DataWarehouseReports = ({
               tab={IMPORTS_HISTORY_TAB.label}
               key={IMPORTS_HISTORY_TAB.key}
             >
-              <TableContainer>
-                <Spin spinning={loading}>
-                  <DataWarehoureUploadsTable
-                    loading={loading}
-                    uploadsStatusList={uploadsStatusList}
-                  />
-                </Spin>
-              </TableContainer>
+              <Divider style={{ marginBlock: '8px' }} />
+              <ImportHistory
+                loading={loading}
+                uploadsStatusList={uploadsStatusList}
+                terms={terms}
+                uploadResponse={uploadResponse}
+                uploadProgress={uploadProgress}
+                uploading={uploading}
+                uploadFile={uploadFile}
+                deleteFile={deleteFile}
+                handleUploadProgress={handleUploadProgress}
+                setCancelUpload={setCancelUpload}
+                abortUpload={abortUpload}
+              />
             </TabPane>
           </StyledTabs>
         </EduIf>
@@ -181,54 +209,25 @@ const DataWarehouseReports = ({
   )
 }
 
-const StyledTabs = styled(Tabs)`
-  width: 100%;
-  margin-left: 0;
-  .ant-tabs-bar {
-    margin-bottom: 0;
-    border-color: transparent;
-  }
-  .ant-tabs-nav-scroll {
-    margin-bottom: 20px;
-  }
-  .ant-tabs-tab {
-    font-weight: bold;
-  }
-`
-
-const BannerContainer = styled.div`
-  .button {
-    line-height: 58px;
-
-    button {
-      display: inline;
-    }
-  }
-
-  .text {
-    color: white;
-    padding: 20px 24px;
-  }
-
-  border-radius: 4px;
-  height: 60px;
-  background: #313d50;
-`
-
-const TableContainer = styled.div`
-  min-height: 500px;
-`
-
 const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
     isDataOpsUser: checkIsDataOpsUser(state),
     features: getUserFeatures(state),
+    terms: get(getOrgDataSelector(state), 'terms', []),
+    uploadResponse: getTestDataFileUploadResponse(state),
+    uploadProgress: getFileUploadProgress(state),
+    uploading: getTestDataFileUploadLoader(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,
     resetUploadResponse: getResetTestDataFileUploadResponseAction,
+    uploadFile: uploadTestDataFileAction,
+    deleteFile: deleteTestDataFileAction,
+    handleUploadProgress: getUpdateUploadProgressAction,
+    setCancelUpload: getSetCancelUploadAction,
+    abortUpload: getAbortUploadAction,
   }
 )
 

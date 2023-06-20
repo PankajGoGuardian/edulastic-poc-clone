@@ -231,8 +231,6 @@ const PerformanceByStandards = ({
           ...requestFilters,
           compareBy,
           analyzeBy,
-          page,
-          pageSize,
           sortKey,
           sortOrder,
           ...demographicFilters,

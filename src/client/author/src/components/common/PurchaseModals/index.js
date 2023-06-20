@@ -7,6 +7,7 @@ import { compose } from 'redux'
 import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
 import { roleuser } from '@edulastic/constants'
+import { THREE_MONTH_IN_MILLISECONDS } from '@edulastic/constants/const/common'
 import { EduIf } from '@edulastic/common'
 import {
   getItemBankSubscriptions,
@@ -369,10 +370,13 @@ const PurchaseFlowModals = (props) => {
       (x) =>
         cartQuantities[x] > 1 ||
         itemBankSubscriptions.some((permission) => {
+          const isPremiumExpiryInThreeMonth =
+            Date.now() + THREE_MONTH_IN_MILLISECONDS > permission.endDate
           return (
             permission.itemBankId ===
               products.find((p) => p.id === x)?.linkedProductId &&
-            !permission.isTrial
+            !permission.isTrial &&
+            !isPremiumExpiryInThreeMonth
           )
         })
     )

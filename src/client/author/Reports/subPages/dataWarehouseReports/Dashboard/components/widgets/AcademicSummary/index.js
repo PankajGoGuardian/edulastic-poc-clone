@@ -157,6 +157,7 @@ const AcademicSummary = ({
                     }
                     color={avgScoreCellColor}
                     cellType="large"
+                    dataCy="getAvgScorePercentage"
                   />
                   <DashedLine
                     dashWidth="1px"
@@ -177,6 +178,7 @@ const AcademicSummary = ({
                     value={`${aboveStandardPercentage}%`}
                     color={lightGreen13}
                     cellType="large"
+                    dataCy="getstudentsInBandPercentage"
                   />
                 </div>
                 <DashedLine

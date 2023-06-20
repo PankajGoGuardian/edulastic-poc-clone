@@ -156,7 +156,7 @@ const AttendanceChart = ({
           width={730}
           height={250}
           data={renderData}
-          margin={{ top: 10, right: 50, left: 20, bottom: 10 }}
+          margin={{ top: 20, right: 50, left: 20, bottom: 10 }}
           ref={chartRef}
         >
           <CartesianGrid

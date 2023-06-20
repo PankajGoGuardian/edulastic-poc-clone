@@ -1,19 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import {
-  CustomModalStyled,
-  EduButton,
-  FieldLabel,
-  notification,
-  TextInputStyled,
-} from '@edulastic/common'
+import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { connect } from 'react-redux'
 import Styled from 'styled-components'
 import { emailRegex } from '../../../common/utils/helpers'
 import ProductsList from '../../src/components/common/PurchaseModals/ProductsList'
-import { EmailWrapper } from '../../src/components/common/PurchaseModals/styled'
 import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
 import { getSubscriptionSelector, slice as subscriptionSlice } from '../ducks'
 import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
+import BookkeeperInfoIconWrapper from '../../src/components/common/PurchaseModals/BookkeeperInfoIconWrapper'
 
 function CartModal({
   products,
@@ -132,6 +126,8 @@ function CartModal({
     (x) => quantities[x]
   )
 
+  const tooltipMessage = 'This user(s) will get manage subscriptions permission'
+
   return (
     <CustomModalStyled
       visible={visible}
@@ -170,16 +166,11 @@ function CartModal({
           allProducts={products}
         />
         {shouldbeMultipleLicenses && (
-          <EmailWrapper>
-            <FieldLabel>Bookkeeper Email</FieldLabel>
-            <TextInputStyled
-              value={emailValues}
-              onChange={handleInputEmailAddress}
-              placeholder="Type the emails"
-              height="40px"
-              data-cy="bookKeeperEmailField"
-            />
-          </EmailWrapper>
+          <BookkeeperInfoIconWrapper
+            tooltipMessage={tooltipMessage}
+            emailValues={emailValues}
+            handleInputEmailAddress={handleInputEmailAddress}
+          />
         )}
       </ModalBody>
     </CustomModalStyled>

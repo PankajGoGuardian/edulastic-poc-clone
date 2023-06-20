@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import {
-  EduButton,
-  FieldLabel,
-  notification,
-  TextInputStyled,
-} from '@edulastic/common'
-import { IconInfo } from '@edulastic/icons'
+import { EduButton, notification } from '@edulastic/common'
 import SubscriptionAddonModal from './SubscriptionAddonModal'
 import ProductsList from './ProductsList'
-import { EmailWrapper, LabelIconWrapper } from './styled'
-import { Tooltip, emailRegex } from '../../../../../common/utils/helpers'
+import { emailRegex } from '../../../../../common/utils/helpers'
+import BookkeeperInfoIconWrapper from './BookkeeperInfoIconWrapper'
 
 const MultipleLicensePurchase = ({
   isVisible,
@@ -128,28 +122,11 @@ const MultipleLicensePurchase = ({
         setSelectedProductIds={setSelectedProductIds}
         selectedProductIds={selectedProductIds}
       />
-      <EmailWrapper>
-        <LabelIconWrapper>
-          <FieldLabel>Bookkeeper Email</FieldLabel>
-          <Tooltip title={tooltipMessage}>
-            <IconInfo
-              width={16}
-              height={16}
-              style={{
-                marginLeft: '5px',
-                marginBottom: '5px',
-              }}
-            />
-          </Tooltip>
-        </LabelIconWrapper>
-        <TextInputStyled
-          value={emailValues}
-          onChange={handleInputEmailAddress}
-          placeholder="Type the emails"
-          height="40px"
-          data-cy="bookKeeperEmailField"
-        />
-      </EmailWrapper>
+      <BookkeeperInfoIconWrapper
+        tooltipMessage={tooltipMessage}
+        emailValues={emailValues}
+        handleInputEmailAddress={handleInputEmailAddress}
+      />
     </SubscriptionAddonModal>
   )
 }

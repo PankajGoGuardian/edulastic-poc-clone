@@ -1,5 +1,5 @@
 import { notification } from '@edulastic/common'
-import { keyBy, omit } from 'lodash'
+import { keyBy, omit, isEmpty } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { validateAndGetFormattedFormData } from '../common/utils'
 import { ATTENDANCE, INTERVENTION, formFieldNames } from '../constants/form'
@@ -26,9 +26,13 @@ const useSaveFormData = ({
   performanceBandData = [],
   goalsOptionsData = [],
   saveFormData,
+  updateGIData,
   fetchAttendanceBandData,
   attendanceBandData = [],
   termDetails,
+  group,
+  GIData,
+  setGIData,
 }) => {
   const { _id: termId } = termDetails
   const formContainerRef = useRef()
@@ -43,6 +47,7 @@ const useSaveFormData = ({
     targetPerformanceBandOptions,
     setTargetPerformanceBandOptions,
   ] = useState([])
+  const [GIDataBandId, setGIDataBandId] = useState('')
 
   const [
     targetAttendanceBandOptions,
@@ -58,64 +63,6 @@ const useSaveFormData = ({
   const attendanceBandOptionsByKey = useMemo(() => {
     return keyBy(attendanceBandOptions, 'key')
   }, [attendanceBandOptions])
-
-  useEffect(() => {
-    setScrollContainer(formContainerRef?.current)
-    fetchGroupsData()
-    fetchPerformanceBandData()
-    fetchAttendanceBandData()
-    if (formType === INTERVENTION) {
-      fetchGoalsList()
-    }
-  }, [])
-
-  useEffect(() => {
-    const groupsDataOptions = (groupsData || []).map(({ _id, name }) => ({
-      key: _id,
-      title: name,
-    }))
-    setGroupOptions(groupsDataOptions)
-  }, [groupsData])
-
-  useEffect(() => {
-    const performanceBandDataOptions = (performanceBandData || []).map(
-      ({ _id, name, performanceBand }) => ({
-        key: _id,
-        title: name,
-        performanceBand: (performanceBand || [])
-          .sort((a, b) => a.to - b.to)
-          .map(({ name: performanceBandName, from, to }) => ({
-            key: performanceBandName,
-            title: `${performanceBandName} (${to}-${from})`,
-          })),
-      })
-    )
-    setPerformanceBandOptions(performanceBandDataOptions)
-  }, [performanceBandData])
-
-  useEffect(() => {
-    const attendanceBandDataOptions = (attendanceBandData || []).map(
-      ({ _id, name, bands }) => ({
-        key: _id,
-        title: name,
-        performanceBand: (bands || [])
-          .sort((a, b) => a.min - b.min)
-          .map(({ name: performanceBandName, min, max }) => ({
-            key: performanceBandName,
-            title: `${performanceBandName} (${min}-${max})`,
-          })),
-      })
-    )
-    setAttendanceBandOptions(attendanceBandDataOptions)
-  }, [attendanceBandData])
-
-  useEffect(() => {
-    const goalsDataOptions = (goalsOptionsData || []).map(({ _id, name }) => ({
-      key: _id,
-      title: name,
-    }))
-    setGoalsOptions(goalsDataOptions)
-  }, [goalsOptionsData])
 
   const handleFieldDataChange = (field, value) => {
     let updatedFormData = { ...formData }
@@ -173,7 +120,105 @@ const useSaveFormData = ({
     setFormData(updatedFormData)
   }
 
+  useEffect(() => {
+    setScrollContainer(formContainerRef?.current)
+    fetchGroupsData()
+    fetchPerformanceBandData()
+    fetchAttendanceBandData()
+    if (formType === INTERVENTION) {
+      fetchGoalsList()
+    }
+
+    return () => {
+      setGIData({})
+      setGIDataBandId('')
+    }
+  }, [])
+
+  useEffect(() => {
+    const groupsDataOptions = (groupsData || []).map(({ _id, name }) => ({
+      key: _id,
+      title: name,
+    }))
+    setGroupOptions(groupsDataOptions)
+  }, [groupsData])
+
+  useEffect(() => {
+    const performanceBandDataOptions = (performanceBandData || []).map(
+      ({ _id, name, performanceBand }) => ({
+        key: _id,
+        title: name,
+        performanceBand: (performanceBand || [])
+          .sort((a, b) => a.to - b.to)
+          .map(({ name: performanceBandName, from, to }) => ({
+            key: performanceBandName,
+            title: `${performanceBandName} (${to}-${from})`,
+          })),
+      })
+    )
+    setPerformanceBandOptions(performanceBandDataOptions)
+  }, [performanceBandData])
+
+  useEffect(() => {
+    const attendanceBandDataOptions = (attendanceBandData || []).map(
+      ({ _id, name, bands }) => ({
+        key: _id,
+        title: name,
+        performanceBand: (bands || [])
+          .sort((a, b) => a.min - b.min)
+          .map(({ name: performanceBandName, min, max }) => ({
+            key: performanceBandName,
+            title: `${performanceBandName} (${min}-${max})`,
+          })),
+      })
+    )
+    setAttendanceBandOptions(attendanceBandDataOptions)
+  }, [attendanceBandData])
+
+  useEffect(() => {
+    const goalsDataOptions = (goalsOptionsData || []).map(({ _id, name }) => ({
+      key: _id,
+      title: name,
+    }))
+    setGoalsOptions(goalsDataOptions)
+  }, [goalsOptionsData])
+
+  useEffect(() => {
+    if (!isEmpty(GIData)) {
+      setFormData(GIData)
+      const { performanceBandId = '' } = GIData
+      if (performanceBandId.length) {
+        setGIDataBandId(performanceBandId)
+      }
+    }
+  }, [GIData])
+
+  useEffect(() => {
+    if (group) {
+      if (!formData.studentGroupIds) {
+        handleFieldDataChange('studentGroupIds', [group._id])
+      }
+    }
+  }, [group])
+
+  useEffect(() => {
+    if (GIDataBandId.length) {
+      setTargetPerformanceBandOptions(
+        performanceBandOptionsByKey[GIDataBandId]?.performanceBand || []
+      )
+    }
+  }, [performanceBandOptionsByKey, GIDataBandId])
+
+  useEffect(() => {
+    if (GIDataBandId.length) {
+      setTargetAttendanceBandOptions(
+        attendanceBandOptionsByKey[GIDataBandId]?.performanceBand || []
+      )
+    }
+  }, [attendanceBandOptionsByKey, GIDataBandId])
+
   const handleSaveForm = () => {
+    const { isEditFlow = false } = GIData
     const {
       formattedFormData,
       error,
@@ -185,6 +230,11 @@ const useSaveFormData = ({
         type: 'warning',
         msg: errorMessage,
       })
+      return
+    }
+
+    if (isEditFlow) {
+      updateGIData(formattedFormData)
       return
     }
 
@@ -212,6 +262,7 @@ const useSaveFormData = ({
     resetForm,
     isConfirmationModalOpen,
     setIsConfirmationModalOpen,
+    setFormData,
   }
 }
 

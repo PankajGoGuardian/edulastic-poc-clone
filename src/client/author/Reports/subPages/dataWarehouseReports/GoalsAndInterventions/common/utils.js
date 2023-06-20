@@ -1,4 +1,4 @@
-import { isNaN, omit, set } from 'lodash'
+import { isNaN, omit, set, isObject } from 'lodash'
 import moment from 'moment'
 import { GI_STATUS, MULTIPLE_OF_TENS } from '../constants/common'
 import {
@@ -19,17 +19,18 @@ import { COURSES } from '../constants/groupForm'
 
 const { applicableTo, target } = criteriaFields
 
+const { goal: goalFields, intervention: interventionFields } = formFieldNames
+
 const {
-  goal: {
-    STUDENT_GROUP_IDS,
-    PERFORMANCE_BAND_ID,
-    METRIC,
-    TYPE,
-    TEST_TYPES,
-    MEASURE_TYPE,
-  },
-  intervention: { RELATED_GOALS_IDS },
-} = formFieldNames
+  STUDENT_GROUP_IDS,
+  PERFORMANCE_BAND_ID,
+  METRIC,
+  TYPE,
+  TEST_TYPES,
+  MEASURE_TYPE,
+} = goalFields
+
+const { RELATED_GOALS_IDS } = interventionFields
 
 export const getOptionsData = ({
   field,
@@ -72,6 +73,15 @@ const isValueInvalid = (value) => {
   )
 }
 
+export const flattenFormData = (formData) =>
+  Object.keys(formData).reduce(
+    (acc, cur) =>
+      isObject(formData[cur]) && !Array.isArray(formData[cur])
+        ? { ...acc, ...flattenFormData(formData[cur]) }
+        : { ...acc, [cur]: formData[cur] },
+    {}
+  )
+
 const getFormattedFormData = ({ formType, updatedFormData }) => {
   const formattedFormData = {}
   const criteriaKey = formType === GOAL ? GOAL_CRITERIA : INTERVENTION_CRITERIA
@@ -97,7 +107,7 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
   const fieldsToOmit = []
   let error = false
   let errorMessage = ''
-  const { formType, type } = formData
+  const { formType, type, isEditFlow = false } = formData
 
   const { startData, endDate } = termDetails
 
@@ -141,7 +151,7 @@ export const validateAndGetFormattedFormData = (formData, termDetails) => {
     return { error, errorMessage }
   }
 
-  const updatedFormData = omit(formData, fieldsToOmit)
+  const updatedFormData = isEditFlow ? formData : omit(formData, fieldsToOmit)
   const formattedFormData = getFormattedFormData({ formType, updatedFormData })
 
   return { formattedFormData, error: false, errorMessage: '' }
@@ -376,10 +386,16 @@ export const getSummaryStatusRecords = ({ key, data, count = true }) => {
         record.status === GI_STATUS.IN_PROGRESS
       )
     },
+    'partially-executed': (record) => {
+      return record.status === GI_STATUS.PARTIALLY_EXECUTED
+    },
     'fully-executed': completedCondition,
     done: completedCondition,
     'on-going': inProgressCondition,
     'in-progress': inProgressCondition,
+    aborted: (record) => {
+      return record.status === GI_STATUS.ABORTED
+    },
   }
 
   const filterMethod = summaryStatusCountMap?.[key]

@@ -32,6 +32,9 @@ const GoalsAndInterventions = ({
   const [activeKey, setActiveKey] = useState('1')
   const [subActiveKey, setSubActiveKey] = useState(search.subActiveKey || '1')
   const [group, setGroup] = useState()
+  const [GIData, setGIData] = useState({})
+
+  const { isEditFlow = false } = GIData
 
   const switchSubTab = (key, _group) => {
     setGroup(_group)
@@ -51,9 +54,12 @@ const GoalsAndInterventions = ({
     }
   }
 
-  const switchToTabAndSubTab = (tab, subTab) => {
+  const switchToTabAndSubTab = (tab, subTab, GIFormData) => {
     setActiveKey(tab)
     setSubActiveKey(subTab)
+    if (GIFormData) {
+      setGIData(GIFormData)
+    }
   }
 
   const content = {
@@ -92,17 +98,20 @@ const GoalsAndInterventions = ({
                 onClick={() => setSubActiveKey('2')}
               />
             }
+            onEdit={(GIFormData) => switchToTabAndSubTab('2', '2', GIFormData)}
           />
         ),
       },
       {
         key: '2',
-        label: `+ ADD NEW GOAL`,
+        label: isEditFlow ? 'EDIT GOAL' : '+ ADD NEW GOAL',
         children: (
           <CreateGI
             key="gaols"
             view={SAVE_GOAL}
             group={group}
+            GIData={GIData}
+            setGIData={setGIData}
             onCancel={() => switchSubTab('1')}
             onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
@@ -121,17 +130,20 @@ const GoalsAndInterventions = ({
                 onClick={() => setSubActiveKey('2')}
               />
             }
+            onEdit={(GIFormData) => switchToTabAndSubTab('3', '2', GIFormData)}
           />
         ),
       },
       {
         key: '2',
-        label: `+ ADD NEW INTERVENTION`,
+        label: isEditFlow ? 'EDIT INTERVENTION' : '+ ADD NEW INTERVENTION',
         children: (
           <CreateGI
             key="intervention"
             view={SAVE_INTERVENTION}
             group={group}
+            GIData={GIData}
+            setGIData={setGIData}
             onCancel={() => switchSubTab('1')}
             onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />

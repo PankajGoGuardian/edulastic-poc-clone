@@ -22,6 +22,8 @@ const InterventionList = ({
   _groupList,
   _isGroupLoading,
   noDataContent,
+  onEdit,
+  updateGIData,
 }) => {
   useEffect(() => {
     if ((interventionsData || []).length === 0) fetchInterventionsList()
@@ -39,7 +41,12 @@ const InterventionList = ({
       <EduElse>
         <>
           <EduIf condition={dataSource.length > 0}>
-            <GITable data={dataSource} type={INTERVENTION} />
+            <GITable
+              data={dataSource}
+              type={INTERVENTION}
+              onEdit={onEdit}
+              updateGIData={updateGIData}
+            />
           </EduIf>
           <EduIf condition={dataSource.length === 0}>{noDataContent}</EduIf>
         </>
@@ -57,5 +64,6 @@ export default connect(
   {
     _getGroupList: fetchGroupsAction,
     fetchInterventionsList: actions.getInterventionsList,
+    updateGIData: actions.updateGIDataRequest,
   }
 )(InterventionList)

@@ -1,14 +1,14 @@
 import React from 'react'
+import { Tooltip } from 'antd'
 import ColoredCell from './ColoredCell'
 import {
   statusColors,
   timeLeftColors,
   MULTIPLE_OF_TENS,
-  statusTextColors,
   GIActionOptions,
   GI_STATUS,
 } from '../../../constants/common'
-import Tooltip from './Tooltip'
+import GITooltip from './Tooltip'
 import ActionMenu from '../ActionMenu'
 import { GOAL, INTERVENTION } from '../../../constants/form'
 import {
@@ -24,6 +24,7 @@ import {
 } from '../../utils'
 import EllipsisText from '../EllipsisText'
 import Notes from './Notes'
+import GIStatus from './GIStatus'
 
 const getCurrentStatusColor = (record) => {
   if (isCurrentValueInValid(record)) {
@@ -80,7 +81,11 @@ const parseCurrentValue = (value) => {
   if (value) {
     return isNumeric(value) ? `${Math.round(parseFloat(value))}%` : value
   }
-  return '-'
+  return (
+    <Tooltip placement="top" title="No data is available">
+      <span>-</span>
+    </Tooltip>
+  )
 }
 
 const sortingBaselineCurrentTargetValues = (x, y) => {
@@ -98,7 +103,7 @@ const sortingBaselineCurrentTargetValues = (x, y) => {
   }
 }
 
-const columns = [
+const getGITableColumns = ({ onEdit, updateGIData }) => [
   {
     title: 'Name',
     dataIndex: 'name',
@@ -108,7 +113,7 @@ const columns = [
       (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase()),
     sortDirections: ['descend', 'ascend'],
     render: (value, record) => (
-      <Tooltip value={ucFirst(value)} record={record} />
+      <GITooltip value={ucFirst(value)} record={record} />
     ),
   },
   {
@@ -204,21 +209,15 @@ const columns = [
     title: 'Status',
     dataIndex: 'status',
     key: 'status',
-    width: 100,
+    width: 120,
     align: 'center',
     sorter: (a, b) => {
       const left = ucFirst(a.status || '')
       const right = ucFirst(b.status || '')
       return left.toLowerCase().localeCompare(right.toLowerCase())
     },
-    render: (text) => (
-      <p
-        style={{
-          color: statusTextColors[text],
-        }}
-      >
-        {ucFirst((text || '').replace('_', ' '))}
-      </p>
+    render: (status, record) => (
+      <GIStatus status={status} GIData={record} updateGIData={updateGIData} />
     ),
   },
   {
@@ -243,9 +242,10 @@ const columns = [
         type={record.goalCriteria ? GOAL : INTERVENTION}
         options={GIActionOptions}
         GIData={record}
+        onAction={onEdit}
       />
     ),
   },
 ]
 
-export default columns
+export default getGITableColumns

@@ -1070,12 +1070,12 @@ export const getAttemptWindowSelector = createSelector(
     const start = attemptWindow.startTime
     const end = attemptWindow.endTime
 
-    const text = `Student can attempt between ${start} to ${end}`
+    const text = `Student can attempt between`
 
     const res =
       attemptWindow.type === ATTEMPT_WINDOW_TYPE.WEEKDAYS
-        ? text
-        : text.concat(` on ${attemptWindow.days.join(', ')}`)
+        ? text.concat(` Weekdays(Mon to Fri) ${start} to ${end}}`)
+        : text.concat(` ${start} to ${end} on ${attemptWindow.days.join(', ')}`)
 
     return res
   }

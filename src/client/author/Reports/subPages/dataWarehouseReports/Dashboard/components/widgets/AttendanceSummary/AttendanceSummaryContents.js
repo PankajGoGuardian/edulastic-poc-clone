@@ -8,7 +8,7 @@ import {
   lightRed6,
 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
-import { isEmpty } from 'lodash'
+import { isEmpty, isNull } from 'lodash'
 import { DashedLine } from '../../../../../../common/styled'
 import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
@@ -30,6 +30,9 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
     result: { postPeriod, prePeriod },
   } = data
   const showTrend = !isEmpty(prePeriod.start)
+  const showAvgTrend = showTrend && !isNull(prePeriod.avg)
+  const showTardiesTrend = showTrend && !isNull(prePeriod.tardiesPerc)
+  const showChronicTrend = showTrend && !isNull(prePeriod.chronicAbsentPerc)
 
   const trendPeriodLabel = showTrend
     ? getTrendPeriodLabel(
@@ -54,7 +57,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         cellType="large"
         color="#cef5d8"
       />
-      <EduIf condition={showTrend}>
+      <EduIf condition={showAvgTrend}>
         <div>
           <StyledText
             margin="0 10px 5px 10px"
@@ -86,7 +89,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         value={`${Math.round(postPeriod.tardiesPerc)}%`}
         footer={
           <Footer
-            isVisible={showTrend}
+            isVisible={showTardiesTrend}
             value={tardiesChange}
             showPercentage
             showReverseTrend
@@ -100,7 +103,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         value={`${Math.round(postPeriod.chronicAbsentPerc)}%`}
         footer={
           <Footer
-            isVisible={showTrend}
+            isVisible={showChronicTrend}
             value={chronicAbsentChange}
             showPercentage
             showReverseTrend

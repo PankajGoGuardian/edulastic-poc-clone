@@ -60,7 +60,8 @@ const RiskSummary = ({ settings, loc = '' }) => {
   )
 
   const { prePeriod = {}, postPeriod = {} } = get(data, 'data.result', {})
-  const showFooter = !isEmpty(prePeriod.start)
+  const showFooter =
+    !isEmpty(prePeriod.start) && !isEmpty(prePeriod.distribution)
   const {
     postPeriodhighRisk,
     highRiskChange,

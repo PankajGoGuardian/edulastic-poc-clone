@@ -1,5 +1,5 @@
 import { lightGreen12, lightRed7 } from '@edulastic/colors'
-import { isEmpty, round, sumBy } from 'lodash'
+import { isEmpty, isNull, round, sumBy } from 'lodash'
 import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import { reportUtils } from '@edulastic/constants'
 import {
@@ -76,7 +76,7 @@ export const getAcademicSummaryMetrics = (
     bandDistribution,
     prePeriod,
   } = rawData.result
-  const showFooter = !isEmpty(prePeriod)
+  const showFooter = !isEmpty(prePeriod) && !isNull(periodAvgScore)
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
   let aboveStandardPercentage = 0
   const avgScorePercentage = round(avgScore)

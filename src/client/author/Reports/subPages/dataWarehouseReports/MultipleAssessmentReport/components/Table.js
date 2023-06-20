@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useMemo, useCallback, useEffect } from 'react'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
 import { round } from 'lodash'
@@ -7,9 +7,9 @@ import { reportUtils } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
-  CustomStyledTable,
   TableContainer,
   AssessmentName,
+  CustomStyledTable,
 } from '../../common/components/styledComponents'
 import {
   AssessmentNameContainer,
@@ -302,6 +302,11 @@ const AssessmentsTable = ({
       ),
     [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   )
+
+  useEffect(() => {
+    const table = document.querySelector('.ant-table-body')
+    table.scrollLeft = table.scrollWidth - table.clientWidth
+  }, [])
 
   const handleTableChange = useCallback(
     (_pagination, _filters, sorter) => {

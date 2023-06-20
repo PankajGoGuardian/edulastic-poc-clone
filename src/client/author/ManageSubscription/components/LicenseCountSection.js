@@ -3,7 +3,7 @@ import moment from 'moment'
 import PropTypes from 'prop-types'
 import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
 import {
-  ONE_MONTH_IN_MILLISECONDS,
+  THREE_MONTH_IN_MILLISECONDS,
   TEN_DAYS_IN_MILLISECONDS,
 } from '@edulastic/constants/const/common'
 import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
@@ -28,8 +28,6 @@ const LicenseCountSection = ({
   setSelectedLicenseId,
   setShowRenewLicenseModal,
   setQuantities,
-  isSubscriptionExpired,
-  isPaidPremium,
   subType,
 }) => {
   const openBuyMoreModal = (itemId, licenseId) => {
@@ -59,19 +57,14 @@ const LicenseCountSection = ({
     if (licenseExpiryDate) {
       const licenseExpiryDateInTS = new Date(licenseExpiryDate).getTime()
       const expiresWithinAMonth =
-        Date.now() + ONE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
+        Date.now() + THREE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
       const canShowRenewalBtn =
         Date.now() < licenseExpiryDateInTS + TEN_DAYS_IN_MILLISECONDS
       isAboutToExpire = expiresWithinAMonth && canShowRenewalBtn
     }
 
-    const IsPaidPremiumSubscriptionExpired = isPaidPremium && isAboutToExpire
-    const IsNotPaidPremiumSubscriptionExpired =
-      !isPaidPremium && isSubscriptionExpired
-    const isSubscriptionGettingORIsExpired =
-      IsPaidPremiumSubscriptionExpired || IsNotPaidPremiumSubscriptionExpired
     const needsRenewal = [
-      isSubscriptionGettingORIsExpired,
+      isAboutToExpire,
       ![ENTERPRISE, PARTIAL_PREMIUM].includes(subType),
     ].every((o) => !!o)
 
@@ -95,6 +88,7 @@ const LicenseCountSection = ({
                 isGhost
                 height="24px"
                 mr="10px"
+                ml="0px"
                 onClick={() =>
                   openRenewModal(
                     license.productId,

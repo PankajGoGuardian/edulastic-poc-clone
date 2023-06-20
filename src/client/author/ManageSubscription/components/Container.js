@@ -243,8 +243,6 @@ const ManageSubscriptionContainer = ({
           isEdulasticAdminView={isEdulasticAdminView}
           setSelectedLicenseId={setSelectedLicenseId}
           setQuantities={setQuantities}
-          isSubscriptionExpired={isSubscriptionExpired}
-          isPaidPremium={isPaidPremium}
           subType={subType}
         />
         <AddUsersSection

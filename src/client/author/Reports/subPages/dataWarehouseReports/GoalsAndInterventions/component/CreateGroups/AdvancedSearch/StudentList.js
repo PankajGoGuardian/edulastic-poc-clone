@@ -60,18 +60,21 @@ const StudentList = ({ studentsData, isStudentLoading, handleQuickFilter }) => {
       dataIndex: 'username',
       key: 'username',
       align: 'left',
+      sorter: true,
     },
     {
       title: 'Grades',
       dataIndex: 'grades',
       key: 'grades',
       align: 'left',
+      sorter: true,
       render: (grades) => getUniqueSortedGrades(grades),
     },
     {
       title: 'School',
       dataIndex: 'schoolNames',
-      key: 'schoolNames',
+      key: 'school',
+      sorter: true,
       align: 'center',
     },
     {

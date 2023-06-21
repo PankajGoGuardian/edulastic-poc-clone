@@ -47,10 +47,14 @@ const GoalsAndInterventions = ({
   const switchTab = (key, _group) => {
     setGroup(_group)
     setActiveKey(key)
-    if (_group) {
-      switchSubTab('2', _group)
+    if (key != 1) {
+      if (_group) {
+        switchSubTab('2', _group)
+      } else {
+        switchSubTab('1', _group)
+      }
     } else {
-      switchSubTab('1', _group)
+      switchSubTab('2', _group)
     }
   }
 
@@ -77,13 +81,16 @@ const GoalsAndInterventions = ({
             }
             onGoal={(_group) => switchTab('2', _group)}
             onIntervention={(_group) => switchTab('3', _group)}
+            onEdit={(_group) => switchSubTab('2', _group)}
           />
         ),
       },
       {
         key: '2',
-        label: `+ ADD NEW STUDENT GROUP`,
-        children: <AdvancedSearch onCancel={() => switchSubTab('1')} />,
+        label: group ? `EDIT STUDENT GROUP` : `+ ADD NEW STUDENT GROUP`,
+        children: (
+          <AdvancedSearch group={group} onCancel={() => switchSubTab('1')} />
+        ),
       },
     ],
     2: [

@@ -9,7 +9,12 @@ import {
 import { aws } from '@edulastic/constants'
 import { Col, Form, Row, Spin, Upload } from 'antd'
 import { get, isEmpty, isArray } from 'lodash'
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState,
+  useEffect,
+} from 'react'
 import {
   TAGS,
   groupFormFields,
@@ -39,11 +44,12 @@ const SaveGroup = forwardRef(
       studentsData,
       formattedQuery,
       userOrgData,
+      group,
     },
     wrappedComponentRef
   ) => {
     const [showCancelPopup, setShowCancelPopup] = useState(false)
-    const [groupData, setGroupData] = useState(InitialGroupData)
+    const [groupData, setGroupData] = useState(group || InitialGroupData)
     const [isImageLoading, setImageLoading] = useState(false)
     const {
       getFieldDecorator,
@@ -102,6 +108,15 @@ const SaveGroup = forwardRef(
       }
       saveGroup(groupData)
     }
+
+    useEffect(() => {
+      if (!isEmpty(groupData) && courseData?.length) {
+        const { course: { id: courseId = '' } = {} } = groupData
+        if (courseId.length) {
+          handleFieldDataChange('courseId', courseId)
+        }
+      }
+    }, [courseData, tagProps])
 
     const { nameGradesCourse, descriptionSubjectTags } = groupFormFields
 

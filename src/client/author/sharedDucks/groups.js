@@ -22,6 +22,7 @@ export const SET_MULTIPLE_GROUP_MEMBERS =
 export const SET_LOADED_GROUPS = '[author groups] set loaded groups'
 export const ADD_GROUP = '[author groups] add group'
 export const RESET_STUDENTS = '[author groups] reset students list'
+export const SET_GROUP_LOADING = '[author groups] set group loading'
 
 // actions
 export const fetchGroupsAction = createAction(FETCH_GROUPS)
@@ -36,6 +37,7 @@ export const fetchMultipleGroupMembersAction = createAction(
 export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS)
 export const addGroupAction = createAction(ADD_GROUP)
 export const resetStudentAction = createAction(RESET_STUDENTS)
+export const setGroupLoadingAction = createAction(SET_GROUP_LOADING)
 
 // initial state
 const initialState = {
@@ -110,6 +112,7 @@ export default createReducer(initialState, {
   [SET_LOADED_GROUPS]: setLoadedGroups,
   [ADD_GROUP]: addGroup,
   [RESET_STUDENTS]: resetStudents,
+  [SET_GROUP_LOADING]: setLoading,
 })
 
 // selectors

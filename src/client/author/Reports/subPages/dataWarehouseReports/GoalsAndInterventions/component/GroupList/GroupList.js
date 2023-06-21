@@ -30,7 +30,8 @@ import { GroupListReportMenu } from '../../constants/common'
 const actionOptions = [
   { id: 'goal', label: 'Set Goal' },
   { id: 'intervention', label: 'Set Intervention' },
-  // { id: 'edit', label: 'Edit' },
+  { id: 'group-edit', label: 'Edit' },
+  { id: 'delete', label: 'Delete' },
 ]
 
 const GroupList = ({
@@ -39,6 +40,7 @@ const GroupList = ({
   _isGroupLoading,
   onGoal,
   onIntervention,
+  onEdit,
   noDataContent,
   _goalsList,
   _interventionList,
@@ -60,6 +62,9 @@ const GroupList = ({
         break
       case 'intervention':
         onIntervention(record)
+        break
+      case 'group-edit':
+        onEdit(record)
         break
       default:
     }
@@ -129,6 +134,7 @@ const GroupList = ({
             title="ACTIONS"
             options={actionOptions}
             onAction={({ key }) => onAction(key, record)}
+            GIData={record}
           />
         )
       },

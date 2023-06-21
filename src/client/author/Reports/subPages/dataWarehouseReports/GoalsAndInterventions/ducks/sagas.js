@@ -22,11 +22,16 @@ import { titleCase, ucFirst } from '../common/utils'
 import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-config'
 import { GOAL, editFormFields } from '../constants/form'
 import { actions } from './actionReducers'
+import {
+  setGroupsAction,
+  setGroupLoadingAction,
+} from '../../../../../sharedDucks/groups'
 import { fieldKey } from './constants'
 import {
   getAdvancedSearchFilterSelector,
   goalsList as goalsListSelector,
   interventionsList as interventionsListSelector,
+  groupList as groupListSelector,
 } from './selectors'
 
 function* saveFormDataRequestSaga({ payload }) {
@@ -159,6 +164,7 @@ function* deleteGISaga({ payload }) {
       : actions.setInterventionsList
 
     yield put(targetList(updatedGIList))
+
     notification({
       type: 'success',
       msg: `${ucFirst(titleCase(type))} deleted successfully`,
@@ -168,6 +174,30 @@ function* deleteGISaga({ payload }) {
     }
   } catch (error) {
     const msg = `Error deleting ${ucFirst(titleCase(type))}.`
+    notification({ msg: error?.response?.data?.message || msg })
+  }
+}
+
+function* deleteGroupSaga({ payload }) {
+  const { id } = payload
+
+  try {
+    yield put(setGroupLoadingAction())
+    const apiToCall = dataWarehouseApi.deleteGroup
+    yield call(apiToCall, id)
+
+    const groupList = yield select(groupListSelector)
+    const updatedGroupList = groupList.filter(
+      ({ _id: groupId }) => groupId !== id
+    )
+    yield put(setGroupsAction(updatedGroupList))
+
+    notification({
+      type: 'success',
+      msg: `group deleted successfully`,
+    })
+  } catch (error) {
+    const msg = `Error deleting group.`
     notification({ msg: error?.response?.data?.message || msg })
   }
 }
@@ -186,11 +216,13 @@ function* getAttendanceBandListSaga() {
 
 function* saveGroup({ payload }) {
   try {
-    const query = yield select(getAdvancedSearchFilterSelector)
+    const filters = yield select(getAdvancedSearchFilterSelector)
     const userId = yield select(getUserId)
     const districtId = yield select(getUserOrgId)
     const userOrgData = yield select(getUserOrgData)
     const groupData = payload
+    const isUpdateAction = !!groupData._id
+
     // default start and end date
     groupData.parent = { id: userId }
     groupData.owners = [userId]
@@ -217,19 +249,37 @@ function* saveGroup({ payload }) {
       return false
     })
 
-    const response = yield call(dataWarehouseApi.saveGroupdDataWithAdvSearch, {
-      groupData: requestBody,
-      query,
-    })
+    let response
+    if (isUpdateAction) {
+      const id = groupData._id
+      delete requestBody._id
+      response = yield call(dataWarehouseApi.updateGroupWithAdvSearch, id, {
+        ...requestBody,
+        filters,
+      })
+    } else {
+      response = yield call(dataWarehouseApi.saveGroupdDataWithAdvSearch, {
+        ...requestBody,
+        filters,
+      })
+    }
 
-    yield put(actions.saveGroupComplete(get(response, 'data.result')))
+    yield put(
+      actions.saveGroupComplete(
+        get(response, groupData._id ? 'data.result.data' : 'data.result')
+      )
+    )
     yield put(actions.setAdvancedSearchQuery())
     notification({
       type: 'success',
-      msg: `Student group created successfully.`,
+      msg: isUpdateAction
+        ? `Student group updated successfully.`
+        : `Student group created successfully.`,
     })
   } catch (error) {
-    const errorMessage = 'Unable to create group'
+    const errorMessage = payload._id
+      ? 'Unable to update group'
+      : 'Unable to create group'
     notification({ type: 'error', msg: errorMessage })
     yield put(actions.saveGroupComplete())
   }
@@ -308,6 +358,7 @@ function* getAdvancedSearchSchools({ payload }) {
     yield put(actions.setAdvancedSearchDetails({ key: 'schools', data: [] }))
   }
 }
+
 function* getAdvancedSearchCourses({ payload }) {
   try {
     const districtId = yield select(getUserOrgId)
@@ -421,5 +472,6 @@ export default function* watcherSaga() {
     takeLatest(actions.saveGroup, saveGroup),
     takeLatest(actions.deleteGI, deleteGISaga),
     takeLatest(actions.updateGIDataRequest, updateGIDataRequestSaga),
+    takeLatest(actions.deleteGroup, deleteGroupSaga),
   ])
 }

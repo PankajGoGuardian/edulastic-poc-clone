@@ -203,8 +203,25 @@ const goalsAndInterventionsAdvanceSearchStudents = (
 const saveGroupdDataWithAdvSearch = (data) => {
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${GOALS_INTERVENTIONS}/create-student-group`,
+    url: `${prefix}/${GOALS_INTERVENTIONS}/student-group`,
     method: 'post',
+    data,
+  })
+}
+
+const deleteGroup = (id) => {
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${GOALS_INTERVENTIONS}/student-group/${id}`,
+    method: 'delete',
+  })
+}
+
+const updateGroupWithAdvSearch = (id, data) => {
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/${GOALS_INTERVENTIONS}/student-group/${id}`,
+    method: 'put',
     data,
   })
 }
@@ -227,6 +244,8 @@ export default {
   getEarlyWarningDetails,
   goalsAndInterventionsAdvanceSearchStudents,
   saveGroupdDataWithAdvSearch,
+  updateGroupWithAdvSearch,
+  deleteGroup,
   getEfficacySummary,
   getEfficacyDetails,
 }

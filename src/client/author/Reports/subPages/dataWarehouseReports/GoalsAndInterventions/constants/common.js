@@ -19,6 +19,10 @@ const PARTIALLY_EXECUTED = 'PARTIALLY_EXECUTED'
 
 export const goalStatusOptions = [
   {
+    key: IN_PROGRESS,
+    label: IN_PROGRESS,
+  },
+  {
     key: DONE,
     label: DONE,
   },
@@ -29,6 +33,10 @@ export const goalStatusOptions = [
 ]
 
 export const interventionStatusOptions = [
+  {
+    key: IN_PROGRESS,
+    label: IN_PROGRESS,
+  },
   {
     key: PARTIALLY_EXECUTED,
     label: PARTIALLY_EXECUTED,

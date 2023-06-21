@@ -118,6 +118,7 @@ const slice = createSlice({
     saveGroupComplete: setGroupDetailsHelper,
     resetAdvancedSearchDetails: resetAdvancedSearchDetailsHelper,
     deleteGI: () => {},
+    deleteGroup: () => {},
   },
 })
 
@@ -151,6 +152,7 @@ const {
   resetAdvancedSearchDetails,
   deleteGI,
   updateGIDataRequest,
+  deleteGroup,
 } = slice.actions
 
 export const actions = {
@@ -183,6 +185,7 @@ export const actions = {
   resetAdvancedSearchDetails,
   deleteGI,
   updateGIDataRequest,
+  deleteGroup,
 }
 
 export const { reducer } = slice

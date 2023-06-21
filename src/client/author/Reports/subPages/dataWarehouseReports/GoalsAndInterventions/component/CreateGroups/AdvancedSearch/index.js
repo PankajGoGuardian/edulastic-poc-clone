@@ -114,9 +114,11 @@ const AdvancedSearch = ({
   _resetAdvancedSearchData,
   resetAdvancedSearchDetails,
   userOrgData,
+  group,
 }) => {
   // may require duplicate method
-  const [query, setQuery] = useState(defaultQuery)
+  const [query, setQuery] = useState(group?.filters || defaultQuery)
+  const [intialTagsData, setInitialTagsData] = useState([])
   const formattedQuery = parsedBandData(formatQuery(query, 'json_without_ids'))
   const groupFormRef = useRef()
 
@@ -163,6 +165,13 @@ const AdvancedSearch = ({
     getAllTags({ type: 'group' })
   }, [])
 
+  useEffect(() => {
+    if (!isEmpty(group) && allTagsData?.length) {
+      const { tags = [] } = group
+      setInitialTagsData(tags)
+    }
+  }, [allTagsData])
+
   // cleanup
   useEffect(
     () => () => {
@@ -208,7 +217,7 @@ const AdvancedSearch = ({
   }
 
   const tagProps = {
-    tags: [], // while edit
+    tags: intialTagsData,
     addNewTag,
     allTagsData,
   }
@@ -236,6 +245,7 @@ const AdvancedSearch = ({
         onCancel={onCancelClick}
         tagProps={tagProps}
         userOrgData={userOrgData}
+        group={group}
       />
       <Divider />
       <StyledFormHeader>

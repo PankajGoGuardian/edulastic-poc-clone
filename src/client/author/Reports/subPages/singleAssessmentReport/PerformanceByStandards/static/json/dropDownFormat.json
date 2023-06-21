@@ -22,7 +22,7 @@
     },
     { "key": "class", "title": "Class" },
     { "key": "group", "title": "Student Group" },
-    { "key": "students", "title": "Students" },
+    { "key": "student", "title": "Student" },
     { "key": "race", "title": "Race" },
     { "key": "gender", "title": "Gender" },
     { "key": "frlStatus", "title": "FRL Status" },

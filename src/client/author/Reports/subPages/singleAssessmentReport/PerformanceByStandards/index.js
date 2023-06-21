@@ -85,7 +85,7 @@ const PerformanceByStandards = ({
     urlSearch.compareBy
       ? urlSearch?.compareBy
       : userRole === 'teacher'
-      ? compareByMode.STUDENTS
+      ? compareByMode.STUDENT
       : compareByMode.SCHOOL
   )
   const [curriculumId, setCurriculumId] = useState('')
@@ -113,7 +113,7 @@ const PerformanceByStandards = ({
   ] = usePerformanceByStandardDetailsFetch({
     demographicFilters,
     settings,
-    compareBy: compareBy === compareByMode.STUDENTS ? 'student' : compareBy,
+    compareBy,
     sortKey,
     sortOrder,
     pageSize,

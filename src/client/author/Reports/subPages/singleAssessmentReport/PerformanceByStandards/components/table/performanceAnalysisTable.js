@@ -17,6 +17,8 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 const {
   viewByMode,
   analyzeByMode,
+  compareByMode,
+  compareByModeToName,
   makeCompareByColumn,
   compareByStudentsColumns,
   getAnalyzedTableData,
@@ -98,7 +100,8 @@ const onCsvConvert = (data) => {
   const splittedData = data.split('\n')
   const header = splittedData[0]
   const columns = header.split(',')
-  const startColumn = JSON.parse(columns[0]) === 'Students' ? 4 : 2
+  const startColumn =
+    JSON.parse(columns[0]) === compareByModeToName.student ? 4 : 2
   for (let i = startColumn; i < columns.length; i++) {
     const str = columns[i]
     const _str = str.toLocaleLowerCase()
@@ -152,7 +155,7 @@ const PerformanceAnalysisTable = ({
 
   const makeOverallColumn = () => {
     return {
-      ...makeOverallColumnUtil(viewBy),
+      ...makeOverallColumnUtil(viewBy, analyzeByConfig),
       title: (
         <div
           style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
@@ -271,7 +274,7 @@ const PerformanceAnalysisTable = ({
       makeOverallColumn(standardColumnsData, analyzeByConfig),
       ...makeStandardColumns(),
     ]
-    if (compareBy === 'students') {
+    if (compareBy === compareByMode.STUDENT) {
       let index = 1
       for (const column of compareByStudentsColumns) {
         _columns.splice(index++, 0, column)

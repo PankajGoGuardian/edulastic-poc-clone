@@ -42,7 +42,7 @@ const compareByMode = {
   TEACHER: 'teacher',
   CLASS: 'class',
   GROUP: 'group',
-  STUDENTS: 'students',
+  STUDENT: 'student',
   RACE: 'race',
   GENDER: 'gender',
   FRL_STATUS: 'frlStatus',
@@ -51,17 +51,17 @@ const compareByMode = {
   HISPANIC_ETHINCITY: 'hispanicEthnicity',
 }
 const compareByModeToName = {
-  school: 'School',
-  teacher: 'Teacher',
-  class: 'Class',
-  group: 'Group',
-  students: 'Students',
-  race: 'Race',
-  gender: 'Gender',
-  frlStatus: 'FRL Status',
-  ellStatus: 'ELL Status',
-  iepStatus: 'IEP Status',
-  hispanicEthnicity: 'Hispanic Ethnicity',
+  [compareByMode.SCHOOL]: 'School',
+  [compareByMode.TEACHER]: 'Teacher',
+  [compareByMode.CLASS]: 'Class',
+  [compareByMode.GROUP]: 'Group',
+  [compareByMode.STUDENT]: 'Student',
+  [compareByMode.RACE]: 'Race',
+  [compareByMode.GENDER]: 'Gender',
+  [compareByMode.FRL_STATUS]: 'FRL Status',
+  [compareByMode.ELL_STATUS]: 'ELL Status',
+  [compareByMode.IEP_STATUS]: 'IEP Status',
+  [compareByMode.HISPANIC_ETHINCITY]: 'Hispanic Ethnicity',
 }
 
 const makeCompareByColumn = (value) => {
@@ -535,11 +535,13 @@ const getStandardColumnsData = (
 
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
-const makeOverallColumn = (viewBy) => {
+const makeOverallColumn = (viewBy, analyzeByConfig) => {
   return {
     title: `Avg. ${viewBy} Performance`,
     dataIndex: 'overall',
     key: 'overall',
+    render: (data, record) =>
+      analyzeByConfig.getOverall(record.standardMetrics),
   }
 }
 
@@ -594,14 +596,14 @@ const getTableColumns = ({
   }
   const _tableColumns = [
     makeCompareByColumn(compareBy),
-    makeOverallColumn(viewBy),
+    makeOverallColumn(viewBy, analyzeByConfig),
     ...makeStandardColumns(
       aggSummaryStats,
       standardColumnsData,
       analyzeByConfig
     ),
   ]
-  if (compareBy === 'students') {
+  if (compareBy === compareByMode.STUDENT) {
     let index = 1
     for (const column of compareByStudentsColumns) {
       _tableColumns.splice(index++, 0, column)

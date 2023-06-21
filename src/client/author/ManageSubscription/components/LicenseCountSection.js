@@ -2,10 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
-import {
-  THREE_MONTH_IN_MILLISECONDS,
-  TEN_DAYS_IN_MILLISECONDS,
-} from '@edulastic/constants/const/common'
+import { ONE_MONTH_IN_MILLISECONDS } from '@edulastic/constants/const/common'
 import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
 import {
   Count,
@@ -57,10 +54,9 @@ const LicenseCountSection = ({
     if (licenseExpiryDate) {
       const licenseExpiryDateInTS = new Date(licenseExpiryDate).getTime()
       const expiresWithinAMonth =
-        Date.now() + THREE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
-      const canShowRenewalBtn =
-        Date.now() < licenseExpiryDateInTS + TEN_DAYS_IN_MILLISECONDS
-      isAboutToExpire = expiresWithinAMonth && canShowRenewalBtn
+        Date.now() + ONE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
+      const isNotExpired = Date.now() < licenseExpiryDateInTS
+      isAboutToExpire = expiresWithinAMonth && isNotExpired
     }
 
     const needsRenewal = [

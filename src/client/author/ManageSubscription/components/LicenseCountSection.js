@@ -49,20 +49,26 @@ const LicenseCountSection = ({
       license.totalCount >= totalTpLicenseCount,
     ].every((o) => !!o)
 
-  const canShowRenewLicenseButton = (licenseExpiryDate) => {
-    let isAboutToExpire = false
-    if (licenseExpiryDate) {
-      const licenseExpiryDateInTS = new Date(licenseExpiryDate).getTime()
-      const expiresWithinAMonth =
-        Date.now() + ONE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
-      const isNotExpired = Date.now() < licenseExpiryDateInTS
-      isAboutToExpire = expiresWithinAMonth && isNotExpired
-    }
+  const canShowRenewLicenseButton = (license) => {
+    const { expiresOn: licenseExpiryDate, productType } = license
+    const licenseExpiryDateInTS = new Date(licenseExpiryDate).getTime()
+    const expiresWithinAMonth =
+      Date.now() + ONE_MONTH_IN_MILLISECONDS > licenseExpiryDateInTS
+    const isNotExpired = Date.now() < licenseExpiryDateInTS
+    const isAboutToExpire = expiresWithinAMonth && isNotExpired
 
     const needsRenewal = [
       isAboutToExpire,
       ![ENTERPRISE, PARTIAL_PREMIUM].includes(subType),
     ].every((o) => !!o)
+
+    if (needsRenewal && productType !== PREMIUM) {
+      const tpLicense = subsLicenses.find((o) => o.productType === PREMIUM)
+      const tpLicenseExpiryDateInTS = new Date(tpLicense.expiresOn).getTime()
+      const isTeacherPremiumRenewed =
+        Date.now() + ONE_MONTH_IN_MILLISECONDS < tpLicenseExpiryDateInTS
+      return isTeacherPremiumRenewed
+    }
 
     return needsRenewal
   }
@@ -77,10 +83,9 @@ const LicenseCountSection = ({
           </span>
           <h4>{license.productName}</h4>
           <FlexContainer justifyContent="flex-start">
-            <EduIf condition={canShowRenewLicenseButton(license.expiresOn)}>
+            <EduIf condition={canShowRenewLicenseButton(license)}>
               <StyledButton
                 key={`renew-${license.productId}`}
-                disabled={checkIsBtnDisabled(license)}
                 isGhost
                 height="24px"
                 mr="10px"

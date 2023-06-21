@@ -25,6 +25,7 @@ import {
   getUserIdSelector,
   getUserRole,
   getGroupList,
+  getUserFeatures,
 } from '../../../src/selectors/user'
 import {
   toggleRemoveItemsFolderAction,
@@ -50,6 +51,8 @@ import {
 import BulkEditTestModal from '../BulkEditTestModal'
 
 class AdvancedTable extends Component {
+  isPremiumUser = this.props?.features?.premium
+
   isAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
     this.props.userRole
   )
@@ -186,7 +189,7 @@ class AdvancedTable extends Component {
               <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>
                 Remove from Folder
               </Menu.Item>
-              {this.isAdmin && (
+              {this.isAdmin && this.isPremiumUser && (
                 <Menu.Item onClick={() => this.toggleBulkEditModal()}>
                   Bulk Update
                 </Menu.Item>
@@ -414,7 +417,11 @@ class AdvancedTable extends Component {
     const { assignmentsSummary, setItemsToFolder } = this.props
     if (e.target.checked) {
       setItemsToFolder(
-        assignmentsSummary.map((r) => ({ itemId: r.testId, title: r.title }))
+        assignmentsSummary.map((r) => ({
+          itemId: r.testId,
+          title: r.title,
+          testType: r.testType,
+        }))
       )
     } else {
       setItemsToFolder([])
@@ -553,6 +560,7 @@ const enhance = compose(
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+      features: getUserFeatures(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

@@ -241,6 +241,7 @@ export default connect(
 )(BulkEditTestModal)
 
 export const StyledFontAwesomeIcon = styled(FontAwesomeIcon)`
+  margin-top: 4px;
   margin-left: 2px;
 `
 

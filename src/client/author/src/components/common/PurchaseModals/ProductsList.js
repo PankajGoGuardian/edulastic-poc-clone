@@ -247,7 +247,16 @@ const ProductsList = ({
       setQuantities(_quantities)
       return
     }
-
+    if (showMultiplePurchaseModal && itemId === premiumProductId) {
+      const _value = Math.floor(value)
+      const _quantities = Object.keys(quantities).reduce((acc, key) => {
+        acc[key] = Math.min(_value, quantities[key])
+        return acc
+      }, {})
+      _quantities[premiumProductId] = _value
+      setQuantities(_quantities)
+      return
+    }
     const _quantities = {
       ...quantities,
       [itemId]: Math.floor(value),

@@ -273,17 +273,32 @@ const ProductsList = ({
     }
   }, [premiumProductId, currentItemId, isBuyMore, isCart, isRenewLicense])
 
+  const getClosetDateFromCurrentDate = (licenses) => {
+    const currentDate = new Date()
+
+    const closestDate = licenses.reduce(
+      (closest, current) => {
+        const expiresOn = new Date(current.expiresOn)
+        const timeDifference = expiresOn - currentDate
+
+        if (timeDifference >= 0 && timeDifference < closest.timeDifference) {
+          return {
+            license: current,
+            timeDifference,
+          }
+        }
+
+        return closest
+      },
+      { license: null, timeDifference: Infinity }
+    ).license
+
+    return closestDate
+  }
+
   const getMaxValue = (product) => {
     if (isCart && teacherPremiumCountTOAdd <= 0) {
       return Infinity
-    }
-
-    const showTotalCountOfProduct = [
-      isRenewLicense,
-      licenseMapKeyByLicenseId[selectedLicenseId]?.productId === product.id,
-    ].every((o) => !!o)
-    if (showTotalCountOfProduct) {
-      return licenseMapKeyByLicenseId[selectedLicenseId].totalCount
     }
 
     if (premiumProductId === product.id) {
@@ -293,10 +308,24 @@ const ProductsList = ({
       return quantities[premiumProductId]
     }
 
+    if (isRenewLicense) {
+      const teacherPremiumLicenses = Object.values(
+        licenseMapKeyByLicenseId
+      ).filter((license) => premiumProductId === license.productId)
+
+      const tpLicenseCount = getClosetDateFromCurrentDate(
+        teacherPremiumLicenses
+      ).totalCount
+      const selectedProductCount =
+        licenseMapKeyByLicenseId[selectedLicenseId].totalCount
+      return Math.max(tpLicenseCount - selectedProductCount, 1)
+    }
+
     const teacherPremiumTotalCount =
       licenseMapKeyByProductId[premiumProductId]?.totalCount
     const currentProductTotalCount =
       licenseMapKeyByProductId[product.id]?.totalCount
+
     return Math.max(teacherPremiumTotalCount - currentProductTotalCount, 1)
   }
 

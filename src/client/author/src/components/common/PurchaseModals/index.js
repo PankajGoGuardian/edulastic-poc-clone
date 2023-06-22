@@ -168,9 +168,8 @@ const PurchaseFlowModals = (props) => {
     const remainingDaysForPremiumExpiry = Math.round(
       (new Date(endDate).getTime() - new Date().getTime()) / oneDay
     )
-
-    if (showBuyMoreModal && remainingDaysForPremiumExpiry > 0) {
-      return true
+    if (showBuyMoreModal || showMultiplePurchaseModal) {
+      return remainingDaysForPremiumExpiry > 0
     }
     return remainingDaysForPremiumExpiry > 90
   }
@@ -179,10 +178,7 @@ const PurchaseFlowModals = (props) => {
       (showMultiplePurchaseModal || showBuyMoreModal) &&
       subsLicenses.length
     ) {
-      const selectedLicense = subsLicenses.find(
-        (l) => l.licenseId === selectedLicenseId
-      )
-      const endDate = selectedLicense?.expiresOn
+      const endDate = subsLicenses[0]?.expiresOn
       return getShouldProrate(endDate)
     }
     return false
@@ -245,10 +241,7 @@ const PurchaseFlowModals = (props) => {
       let dynamicPeriodInDays = product.period
       let endDate = subEndDate
       if (shouldProrateMultiplePurchase) {
-        const selectedLicense = subsLicenses.find(
-          (l) => l.licenseId === selectedLicenseId
-        )
-        endDate = selectedLicense?.expiresOn
+        endDate = subsLicenses[0]?.expiresOn
       }
       const isPriceToBeCalculatedDynamically = [
         shouldProrate || shouldProrateMultiplePurchase,

@@ -49,7 +49,7 @@ const SimpleStackedBarChartContainer = ({
     }
   }
 
-  const barsLabelFormatter = (value, index, startIndex = 0, x, y) => {
+  const barsLabelFormatter = (value, index, startIndex = 0, x) => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return yTickformatLabel(value)
@@ -63,7 +63,7 @@ const SimpleStackedBarChartContainer = ({
               _____
             </tspan>
             <tspan x={x + 20} dy="15">
-              {formattedData[startIndex + index].maxScore}
+              {round(formattedData[startIndex + index].maxScore, 2)}
             </tspan>
           </>
         )
@@ -71,7 +71,7 @@ const SimpleStackedBarChartContainer = ({
     }
   }
 
-  const getXTickText = (payload, data) => {
+  const getXTickText = (payload) => {
     const currentBarData =
       find(data, (item) => item[xDataKey] === payload.value) || {}
     return currentBarData.name || ''

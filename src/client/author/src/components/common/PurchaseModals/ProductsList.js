@@ -287,7 +287,7 @@ const ProductsList = ({
       return Infinity
     }
 
-    if (premiumProductId === product.id) {
+    if (premiumProductId === product.id || isRenewLicense) {
       return Infinity
     }
     if (quantities[premiumProductId]) {

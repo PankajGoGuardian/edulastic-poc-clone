@@ -35,7 +35,6 @@ function FiltersView({
   setFilterTagsData,
   updateFilterDropdownCB,
   schoolYears,
-  assessmentTypesRef,
   availableTestTypes,
   userRole,
   demographics,
@@ -87,7 +86,6 @@ function FiltersView({
                           filters={filters}
                           updateFilterDropdownCB={updateFilterDropdownCB}
                           schoolYears={schoolYears}
-                          assessmentTypesRef={assessmentTypesRef}
                           availableAssessmentType={availableTestTypes}
                           dropdownData={staticDropDownData}
                           exclude={['tagIds']}

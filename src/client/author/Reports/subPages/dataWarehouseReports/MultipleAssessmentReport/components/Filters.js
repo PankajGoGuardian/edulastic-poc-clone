@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
 import { Row, Col, Tabs } from 'antd'
@@ -68,8 +68,6 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   history,
 }) => {
-  const assessmentTypesRef = useRef()
-
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
@@ -411,7 +409,6 @@ const MultipleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testTypes"
                           label="Test Type"
-                          el={assessmentTypesRef}
                           onChange={(e) => {
                             const selected = availableAssessmentType.filter(
                               (a) => e.includes(a.key)

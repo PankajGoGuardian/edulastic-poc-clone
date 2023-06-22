@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { get, mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
@@ -51,8 +51,6 @@ const Filters = ({
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
 }) => {
-  const assessmentTypesRef = useRef()
-
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
@@ -196,7 +194,6 @@ const Filters = ({
       setFilterTagsData={setFilterTagsData}
       updateFilterDropdownCB={updateFilterDropdownCB}
       schoolYears={schoolYears}
-      assessmentTypesRef={assessmentTypesRef}
       availableTestTypes={availableTestTypes}
       userRole={userRole}
       demographics={demographics}

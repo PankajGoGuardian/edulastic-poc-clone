@@ -10,7 +10,6 @@ function FilterTestFields({
   filters,
   updateFilterDropdownCB,
   schoolYears,
-  assessmentTypesRef,
   availableAssessmentType,
   // TODO dropDownData hardly changes. Better provide a default
   dropdownData,
@@ -70,7 +69,6 @@ function FilterTestFields({
         <MultiSelectDropdown
           dataCy="testTypes"
           label="Test Type"
-          el={assessmentTypesRef}
           onChange={(e) => {
             const selected = availableAssessmentType.filter((a) =>
               e.includes(a.key)

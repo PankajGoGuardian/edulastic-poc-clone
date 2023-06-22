@@ -88,6 +88,7 @@ export const manageExternalDataColumns = [
     title: 'No. Of Records',
     dataIndex: MANAGE_EXTERNAL_DATA_KEYS.RECORDS,
     key: MANAGE_EXTERNAL_DATA_KEYS.RECORDS,
+    align: 'center',
     render: (value, record) =>
       record.status === dwLogStatus.IN_PROGRESS ? '-' : value,
     sorter: (a, b) => {
@@ -147,7 +148,7 @@ export const uploadLogColumns = [
     dataIndex: UPLOAD_LOG_KEYS.STATUS,
     key: UPLOAD_LOG_KEYS.STATUS,
     render: (value, record) => getTagRender(value, record?.statusReason),
-    sorter: (a, b) => sortText(a, b, UPLOAD_LOG_KEYS.STATUS),
+    sorter: (a, b) => a[UPLOAD_LOG_KEYS.STATUS] - b[UPLOAD_LOG_KEYS.STATUS],
   },
   {
     title: 'Added',

@@ -118,7 +118,7 @@ export const IconWrapper = styled.div`
   width: fit-content;
   padding: 2px;
   border: 1px solid;
-  margin-left: 60px;
+  margin-inline: auto;
   border-radius: 5px;
   border-color: ${themeColor};
   opacity: ${({ $disabled }) => ($disabled ? 0.3 : 1)};

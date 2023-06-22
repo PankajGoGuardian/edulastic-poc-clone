@@ -282,29 +282,6 @@ const ProductsList = ({
     }
   }, [premiumProductId, currentItemId, isBuyMore, isCart, isRenewLicense])
 
-  const getClosetDateFromCurrentDate = (licenses) => {
-    const currentDate = new Date()
-
-    const closestDate = licenses.reduce(
-      (closest, current) => {
-        const expiresOn = new Date(current.expiresOn)
-        const timeDifference = expiresOn - currentDate
-
-        if (timeDifference >= 0 && timeDifference < closest.timeDifference) {
-          return {
-            license: current,
-            timeDifference,
-          }
-        }
-
-        return closest
-      },
-      { license: null, timeDifference: Infinity }
-    ).license
-
-    return closestDate
-  }
-
   const getMaxValue = (product) => {
     if (isCart && teacherPremiumCountTOAdd <= 0) {
       return Infinity
@@ -317,19 +294,6 @@ const ProductsList = ({
       return quantities[premiumProductId]
     }
 
-    if (isRenewLicense) {
-      const teacherPremiumLicenses = Object.values(
-        licenseMapKeyByLicenseId
-      ).filter((license) => premiumProductId === license.productId)
-
-      const tpLicenseCount = getClosetDateFromCurrentDate(
-        teacherPremiumLicenses
-      ).totalCount
-      const selectedProductCount =
-        licenseMapKeyByLicenseId[selectedLicenseId].totalCount
-      return Math.max(tpLicenseCount - selectedProductCount, 1)
-    }
-
     const teacherPremiumTotalCount =
       licenseMapKeyByProductId[premiumProductId]?.totalCount
     const currentProductTotalCount =
@@ -338,17 +302,13 @@ const ProductsList = ({
     return Math.max(teacherPremiumTotalCount - currentProductTotalCount, 1)
   }
 
-  const showManuallyAssingText = (product) => {
-    const selectedQuantityLessThanExisting =
-      quantities[product.id] <
-      licenseMapKeyByLicenseId[selectedLicenseId]?.totalCount
-    return [(isRenewLicense, selectedQuantityLessThanExisting)].every(
-      (o) => !!o
-    )
-  }
-
   const showTotalPrice = [!isBuyMore, !isRenewLicense, isCart].some((o) => !!o)
-
+  const isNumberInputDisable = (product) => {
+    if (isRenewLicense) return true
+    return isBuyMoreOrRenewLicense && !isCart
+      ? false
+      : quantities[product.id] === undefined
+  }
   return (
     <>
       <AddonList
@@ -400,11 +360,7 @@ const ProductsList = ({
                         : 1
                     }
                     max={getMaxValue(product)}
-                    disabled={
-                      isBuyMoreOrRenewLicense && !isCart
-                        ? false
-                        : quantities[product.id] === undefined
-                    }
+                    disabled={isNumberInputDisable(product)}
                     onKeyDown={handleKeyPress}
                   />
                 </NumberInputWrapper>
@@ -422,15 +378,6 @@ const ProductsList = ({
                 </span>
               </EduIf>
             </FlexRow>
-            <EduIf condition={showManuallyAssingText(product)}>
-              <FlexRow>
-                <StyledDiv>
-                  {i18Translate(
-                    'manageSubscriptions.MANUALLY_ASSIGN_ONCE_EXPIRED'
-                  )}
-                </StyledDiv>
-              </FlexRow>
-            </EduIf>
           </>
         ))}
       </AddonList>

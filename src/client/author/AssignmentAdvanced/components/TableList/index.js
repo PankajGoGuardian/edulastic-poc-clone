@@ -6,16 +6,21 @@ import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
-import { testTypes as testTypesConstants, roleuser } from '@edulastic/constants'
-import { EduButton, notification, TestTypeIcon } from '@edulastic/common'
+import {
+  testTypes as testTypesConstants,
+  test as testConst,
+  roleuser,
+} from '@edulastic/constants'
+import { EduButton, notification, TestTypeIcon, EduIf } from '@edulastic/common'
 import {
   IconMoreHorizontal,
   IconPresentation,
   IconAddItem,
   IconPieChartIcon,
   IconHourGlass,
+  IconInfo,
 } from '@edulastic/icons'
-import { greyThemeLight } from '@edulastic/colors'
+import { greyThemeLight, lightGreen4, green } from '@edulastic/colors'
 import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import {
@@ -30,11 +35,14 @@ import {
   ClassNameCell,
   StyledLink,
 } from './styled'
+import { InfoMessage } from '../../../../common/styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
 import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
 import { getAllTestTypesMap } from '../../../../common/utils/testTypeUtils'
 import { getHasRandomQuestionselector } from '../../../src/selectors/assignments'
+
+const { ATTEMPT_WINDOW_TYPE } = testConst
 
 export const testTypeToolTip = getAllTestTypesMap()
 
@@ -238,6 +246,33 @@ const TableList = ({
     () => classList.map((data, index) => convertRowData(data, index)),
     [classList]
   )
+
+  const attemptWindowNotification = useMemo(() => {
+    if (!classList || classList.length === 0) return ''
+
+    const classListAttemptWindow = classList.filter((c) => {
+      return c.attemptWindow
+    })
+
+    if (classListAttemptWindow.length === 0) {
+      const attemptWindow = classList[0].defaultAttemptWindow
+      const start = attemptWindow.startTime
+      const end = attemptWindow.endTime
+
+      if (attemptWindow.type === ATTEMPT_WINDOW_TYPE.DEFAULT) return ''
+
+      const text = `Student can attempt between `
+      const res =
+        attemptWindow.type === ATTEMPT_WINDOW_TYPE.WEEKDAYS
+          ? text.concat(`Weekdays (Mon to Fri) ${start} to ${end}`)
+          : text.concat(
+              `${start} to ${end} on ${attemptWindow.days.join(', ')}`
+            )
+      return res
+    }
+
+    return 'Please refer to Live Class Board for student attempt window details'
+  }, [classList])
 
   /**
    * Here we are resetting the selected rows to unselect whenever thre is a change in rows.
@@ -458,6 +493,11 @@ const TableList = ({
             <IconMoreHorizontal /> More
           </EduButton>
         </Dropdown>
+        <EduIf condition={attemptWindowNotification}>
+          <InfoMessage color={lightGreen4} style={{ 'margin-left': '22.5%' }}>
+            <IconInfo fill={green} height={10} /> {attemptWindowNotification}
+          </InfoMessage>
+        </EduIf>
       </BulkActionsButtonContainer>
     </BulkActionsWrapper>
   )

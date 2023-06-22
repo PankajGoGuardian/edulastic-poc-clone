@@ -62,6 +62,7 @@ import {
 } from '../../../src/actions/classBoard'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
+import { InfoMessage } from '../../../../common/styled'
 import {
   gradebookSelectStudentAction,
   gradebookSetSelectedAction,
@@ -131,7 +132,6 @@ import {
   SwitchBox,
   FilterSelect,
   FilterSpan,
-  InfoMessage,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -1563,7 +1563,7 @@ class ClassBoard extends Component {
                   </div>
                   <EduIf condition={attemptWindow}>
                     <InfoMessage color={lightGreen4}>
-                      <IconInfo fill={green} /> {attemptWindow}
+                      <IconInfo fill={green} height={10} /> {attemptWindow}
                     </InfoMessage>
                   </EduIf>
                   <ClassBoardFeats>

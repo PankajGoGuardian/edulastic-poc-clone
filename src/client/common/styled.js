@@ -9,7 +9,7 @@ import {
   white,
 } from '@edulastic/colors'
 import { Card, EduButton } from '@edulastic/common'
-import { Form, Input, Modal, Pagination, Select, Table } from 'antd'
+import { Form, Input, Modal, Pagination, Select, Table, Tag } from 'antd'
 import styled from 'styled-components'
 
 export const StyledCard = styled(Card)`
@@ -425,4 +425,12 @@ export const StyledSelect = styled(Select)`
 
 export const Spacer = styled.span`
   flex-grow: 1;
+`
+
+export const InfoMessage = styled(Tag)`
+  color: ${themeColor};
+  text-align: center;
+  align-items: center;
+  padding: 4px 4px;
+  vertical-align: middle;
 `

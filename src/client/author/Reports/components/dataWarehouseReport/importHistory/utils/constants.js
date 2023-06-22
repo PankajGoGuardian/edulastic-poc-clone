@@ -53,6 +53,7 @@ const commonColumns = [
     title: 'Name',
     dataIndex: COMMON_KEYS.FILE_NAME,
     key: COMMON_KEYS.FILE_NAME,
+    width: 300,
     render: (value) => value || '-',
     sorter: (a, b) => sortText(a, b, COMMON_KEYS.FILE_NAME),
   },

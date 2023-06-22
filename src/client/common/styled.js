@@ -230,6 +230,9 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  .ant-table-pagination {
+    margin: 16px 5px;
+  }
 `
 
 export const StyledTableButton = styled.a`

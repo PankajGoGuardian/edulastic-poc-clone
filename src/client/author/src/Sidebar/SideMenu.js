@@ -40,6 +40,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { getTokens } from '@edulastic/api/src/utils/Storage'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -658,11 +659,12 @@ class SideMenu extends Component {
         [!isDemoPlaygroundUserProxy, !isDataOpsOnlyUser, !isInsightsOnlyUser],
         Boolean
       ) && ['district-admin', 'school-admin', 'teacher'].includes(userRole)
-    const isSwitchAccountDisable = (isDemoAccount) => {
-      if (isProxyUser && userRole !== 'edulastic-admin') return true
 
-      return isDemoAccount || (!emailVerified && verificationTS && !isDefaultDA)
-    }
+    const parentUser = getTokens()[0]
+    const parentRole = parentUser.split(':')[3]
+    const isProxyUserAndNotEA =
+      isProxyUser && parentRole !== roleuser.EDULASTIC_ADMIN
+
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
         data-cy="footer-dropdown"
@@ -707,7 +709,11 @@ class SideMenu extends Component {
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
-              disabled={isSwitchAccountDisable(isDemoAccount)}
+              disabled={
+                isDemoAccount ||
+                (!emailVerified && verificationTS && !isDefaultDA) ||
+                isProxyUserAndNotEA
+              }
               title={
                 !emailVerified && verificationTS && !isDefaultDA
                   ? 'Please verify your email address to access this feature.'
@@ -717,7 +723,7 @@ class SideMenu extends Component {
               <a>
                 <IconSwitchUser />
                 <span data-cy="switch-user">
-                  {isCollapsed ? '' : 'Switch Account'}
+                  {isCollapsed ? '' : 'Switch Account'}{' '}
                 </span>
               </a>
             </Menu.Item>

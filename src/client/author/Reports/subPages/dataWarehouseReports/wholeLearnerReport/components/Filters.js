@@ -130,6 +130,8 @@ const WholeLearnerReportFilters = ({
     [filters.testTypes]
   )
 
+  const defaultTestTypes = getDefaultTestTypes(availableTestTypes)
+
   useEffect(() => {
     const urlSchoolYear =
       termOptions.find((item) => item.key === search.termId) ||
@@ -141,9 +143,6 @@ const WholeLearnerReportFilters = ({
     const urlGrades = staticDropDownData.grades.filter(
       (item) => search.grades && search.grades.includes(item.key)
     )
-
-    const testTypes = get(filtersData, 'data.result.testTypes')
-    const defaultTestTypes = getDefaultTestTypes(testTypes)
 
     const _filters = {
       reportId: reportId || '',
@@ -178,7 +177,7 @@ const WholeLearnerReportFilters = ({
     if (urlStudentId) {
       setStudent({ key: urlStudentId })
     }
-  }, [filtersData])
+  }, [defaultTestTypes])
 
   if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {
     const _student = { ...student }

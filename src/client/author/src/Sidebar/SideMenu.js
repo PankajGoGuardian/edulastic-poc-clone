@@ -658,7 +658,11 @@ class SideMenu extends Component {
         [!isDemoPlaygroundUserProxy, !isDataOpsOnlyUser, !isInsightsOnlyUser],
         Boolean
       ) && ['district-admin', 'school-admin', 'teacher'].includes(userRole)
+    const isSwitchAccountDisable = (isDemoAccount) => {
+      if (isProxyUser && userRole !== 'edulastic-admin') return true
 
+      return isDemoAccount || (!emailVerified && verificationTS && !isDefaultDA)
+    }
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
         data-cy="footer-dropdown"
@@ -703,10 +707,7 @@ class SideMenu extends Component {
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
-              disabled={
-                isDemoAccount ||
-                (!emailVerified && verificationTS && !isDefaultDA)
-              }
+              disabled={isSwitchAccountDisable(isDemoAccount)}
               title={
                 !emailVerified && verificationTS && !isDefaultDA
                   ? 'Please verify your email address to access this feature.'
@@ -716,7 +717,7 @@ class SideMenu extends Component {
               <a>
                 <IconSwitchUser />
                 <span data-cy="switch-user">
-                  {isCollapsed ? '' : 'Switch Account'}{' '}
+                  {isCollapsed ? '' : 'Switch Account'}
                 </span>
               </a>
             </Menu.Item>

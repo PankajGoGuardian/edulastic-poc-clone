@@ -2,9 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty, get, mapValues, includes, filter } from 'lodash'
-import { Spin } from 'antd'
+import { Checkbox, Spin } from 'antd'
+import { IconInfo } from '@edulastic/icons'
+import { blueButton } from '@edulastic/colors'
 
-import { SpinLoader, notification } from '@edulastic/common'
+import {
+  EduIf,
+  FlexContainer,
+  SpinLoader,
+  notification,
+} from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import {
   helpLinks,
@@ -34,8 +41,10 @@ import TableFilters from './components/TableFilters'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
+  fetchInterventionsByGroupsRequest,
   fetchUpdateTagsDataAction,
   getCsvDownloadingState,
+  getInterventionsByGroup,
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
@@ -54,6 +63,7 @@ import {
   sortKeys,
   TABLE_PAGE_SIZE,
 } from './utils'
+
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
@@ -120,6 +130,8 @@ const MultipleAssessmentReport = ({
   fetchUpdateTagsData,
   selectedTests,
   setSelectedTests,
+  fetchInterventionsByGroups,
+  interventionsData,
 }) => {
   const [sortFilters, setSortFilters] = useState({
     sortKey: sortKeys.COMPARE_BY,
@@ -379,6 +391,38 @@ const MultipleAssessmentReport = ({
 
   const _rowSelection = showAddToStudentGroupBtn ? rowSelection : null
 
+  const [showInterventions, setShowInterventions] = useState(false)
+
+  const onShowInterventionClick = () => {
+    setShowInterventions((val) => !val)
+  }
+
+  useEffect(() => {
+    const startDate = Math.min(...chartData.map((ele) => ele.assessmentDate))
+    const endDate = Math.max(...chartData.map((ele) => ele.assessmentDate))
+    let groupIds = ''
+    const termId = settings.requestFilters?.termId
+    if (settings.requestFilters.groupIds.length)
+      groupIds += settings.requestFilters.groupIds
+    if (settings.requestFilters.classIds.length)
+      groupIds =
+        (groupIds.length ? `${groupIds},` : groupIds) +
+        settings.requestFilters.classIds
+    if (
+      groupIds.length &&
+      termId &&
+      Number.isInteger(startDate) &&
+      Number.isInteger(endDate)
+    )
+      fetchInterventionsByGroups({
+        type: ['academic'],
+        groupIds,
+        startDate,
+        endDate,
+        termId,
+      })
+  }, [chartData])
+
   return (
     <>
       {sharingState && (
@@ -455,14 +499,38 @@ const MultipleAssessmentReport = ({
               View whether the student&apos;s performance is improving over time
               and take necessary interventions.
             </SectionDescription>
-            <StyledH3 margin="30px 0 0 0">
-              Performance across Assessments
-            </StyledH3>
+            <FlexContainer justifyContent="flex-start" alignItems="center">
+              <StyledH3 margin="30px 0 0 0">
+                Performance across Assessments
+              </StyledH3>
+              <EduIf
+                condition={
+                  interventionsData.length &&
+                  (filterTagsData?.groupIds?.length ||
+                    filterTagsData?.classIds?.length)
+                }
+              >
+                <Checkbox
+                  style={{ margin: '30px 0 0 16px' }}
+                  onChange={onShowInterventionClick}
+                >
+                  Show Interventions{' '}
+                </Checkbox>
+                <IconInfo
+                  style={{ marginTop: '30px' }}
+                  fill={blueButton}
+                  width={16}
+                  height={16}
+                />
+              </EduIf>
+            </FlexContainer>
             <Chart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
               selectedTests={selectedTests}
               setSelectedTests={setSelectedTests}
+              showInterventions={showInterventions}
+              interventionsData={interventionsData}
             />
             <FeaturesSwitch
               inputFeatures="studentGroups"
@@ -514,11 +582,13 @@ const enhance = connect(
     userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
+    interventionsData: getInterventionsByGroup(state),
   }),
   {
     ...actions,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

@@ -1,3 +1,4 @@
+import { FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 
 export const StyledSignedStackedBarChartContainer = styled.div`
@@ -84,4 +85,7 @@ export const ChartLegendItem = styled.div`
   margin-right: 20px;
   margin-top: 20px;
   font-weight: bold;
+`
+export const InterventionTooltipContainer = styled(FlexContainer)`
+  text-align: start;
 `

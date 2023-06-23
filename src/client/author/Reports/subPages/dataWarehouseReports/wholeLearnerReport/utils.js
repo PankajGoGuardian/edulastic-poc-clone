@@ -308,6 +308,7 @@ export const getChartData = ({
       totalMaxScore,
       standardSet,
       subject,
+      assessmentDate: +assignment.assignmentDate,
     }
     if (!externalTestType) {
       const averageScore = percentage(totalScore, totalMaxScore, true)
@@ -377,6 +378,7 @@ export const getAttendanceChartData = (attendanceData) => {
       .add(1, 'day')
       .format('D/M/YYYY'),
     presents: item.presentDays,
+    assessmentDate: item.minDate,
     absents: item.absentDays,
     tardies: item.tardyDays,
     total: item.totalDays,

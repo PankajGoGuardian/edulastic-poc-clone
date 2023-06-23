@@ -7,6 +7,7 @@ import {
   themeColor,
   themeLightGrayColor,
 } from '@edulastic/colors'
+import { Checkbox } from 'antd'
 
 export const AssessmentNameContainer = styled.div`
   .test-name-container {
@@ -121,4 +122,15 @@ export const UserIcon = styled.div`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+`
+
+export const StyleCheckBox = styled(Checkbox)`
+  span {
+    position: relative;
+    svg {
+      position: absolute;
+      right: -12px;
+      top: 4px;
+    }
+  }
 `

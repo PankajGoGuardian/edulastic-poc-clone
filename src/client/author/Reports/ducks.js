@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
-import { get, isEmpty, omitBy, mapValues, uniqBy } from 'lodash'
+import { get, isEmpty, omitBy, mapValues, uniqBy, sortBy } from 'lodash'
 
 import {
   assignmentStatusOptions,
@@ -244,6 +244,13 @@ const RECEIVE_TEST_LIST_REQUEST_ERROR =
 
 const FETCH_UPDATE_TAGS_DATA = '[reports] fetch & update tagsData'
 
+const FETCH_INTERVENTIONS_BY_GROUPS_REQUEST =
+  '[reports] fetch interventions by groups request'
+const FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS =
+  '[reports] fetch interventions by groups success'
+const FETCH_INTERVENTIONS_BY_GROUPS_ERROR =
+  '[reports] fetch interventions by groups  error'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setSharingStateAction = createAction(SET_SHARING_STATE)
@@ -260,6 +267,9 @@ export const setHasCsvDocsAction = createAction(SET_HAS_CSV_DOCS)
 export const updateCsvDocsAction = createAction(UPDATE_CSV_DOCS)
 
 export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
+export const fetchInterventionsByGroupsRequest = createAction(
+  FETCH_INTERVENTIONS_BY_GROUPS_REQUEST
+)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -335,6 +345,15 @@ export const getCsvDocsLoading = createSelector(
   (state) => state.csvDocsLoading
 )
 
+export const getInterventionsByGroup = createSelector(stateSelector, (state) =>
+  sortBy(state.interventionsByGroups, 'endDate')
+)
+
+export const getInterventionsLoading = createSelector(
+  stateSelector,
+  (state) => state.interventionLoading
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -350,6 +369,9 @@ const initialState = {
   hasCsvDocs: false,
   csvDocs: [],
   csvDocsLoading: false,
+  interventionLoading: false,
+  interventionsByGroups: [],
+  interventionError: '',
 }
 
 const reports = createReducer(initialState, {
@@ -398,6 +420,17 @@ const reports = createReducer(initialState, {
   [UPDATE_CSV_DOCS_ERROR]: (state, { payload }) => {
     state.error = payload.error
     state.csvDocsLoading = false
+  },
+  [FETCH_INTERVENTIONS_BY_GROUPS_REQUEST]: (state) => {
+    state.interventionLoading = true
+  },
+  [FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS]: (state, { payload }) => {
+    state.interventionLoading = false
+    state.interventionsByGroups = payload
+  },
+  [FETCH_INTERVENTIONS_BY_GROUPS_ERROR]: (state, { payload }) => {
+    state.interventionLoading = false
+    state.interventionError = payload
   },
 })
 
@@ -889,6 +922,27 @@ export function* receiveTestListSaga({ payload }) {
   }
 }
 
+function* fetchInterventionByGroupsSaga({ payload }) {
+  try {
+    const responseData = yield call(
+      reportsApi.getInterventionsByGroups,
+      payload
+    )
+    yield put({
+      type: FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS,
+      payload: responseData,
+    })
+  } catch (error) {
+    const msg =
+      'Error getting interventions data. Please try again after a few minutes.'
+    styledNotification({ msg })
+    yield put({
+      type: FETCH_INTERVENTIONS_BY_GROUPS_ERROR,
+      payload: error,
+    })
+  }
+}
+
 export function* reportSaga() {
   yield all([
     reportAssignmentsSaga(),
@@ -930,6 +984,10 @@ export function* reportSaga() {
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
     takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
+    takeEvery(
+      FETCH_INTERVENTIONS_BY_GROUPS_REQUEST,
+      fetchInterventionByGroupsSaga
+    ),
   ])
 }
 

@@ -4,13 +4,21 @@ import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
 import { Spin, Checkbox } from 'antd'
 
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+  SpinLoader,
+} from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import {
   helpLinks,
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
+import { IconInfo } from '@edulastic/icons'
+import { blueButton } from '@edulastic/colors'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import StudentDetails from './components/StudentDetails'
@@ -26,8 +34,10 @@ import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
+  fetchInterventionsByGroupsRequest,
   fetchUpdateTagsDataAction,
   getCsvDownloadingState,
+  getInterventionsByGroup,
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
@@ -49,6 +59,7 @@ import {
   getAttendanceChartData,
 } from './utils'
 import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-components'
+import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
 
 const { downloadCSV } = reportUtils.common
@@ -104,6 +115,9 @@ const WholeLearnerReport = ({
   loadingAttendanceData,
   attendanceData,
   fetchAttendanceDataRequest,
+  fetchInterventionsByGroups,
+  interventionsData,
+  termsData,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -114,6 +128,7 @@ const WholeLearnerReport = ({
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
   )
+  const [showInterventions, setShowInterventions] = useState(false)
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
       sharedReport?._id
@@ -235,6 +250,16 @@ const WholeLearnerReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
+      const { termId } = settings.requestFilters
+      const { startDate, endDate } =
+        termsData.find((term) => term._id === termId) || {}
+      fetchInterventionsByGroups({
+        type: [ACADEMIC, ATTENDANCE],
+        studentId: settings.selectedStudent.key,
+        termId,
+        startDate,
+        endDate,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
@@ -311,6 +336,10 @@ const WholeLearnerReport = ({
   )
   const toggleAttendanceChart = () => {
     setIsAttendanceChartVisible((v) => !v)
+  }
+
+  const toggleInterventionInfo = () => {
+    setShowInterventions((v) => !v)
   }
 
   // const onTestSelect = (item) =>
@@ -424,14 +453,34 @@ const WholeLearnerReport = ({
                         <AssessmentsChart
                           chartData={chartData}
                           selectedPerformanceBand={selectedPerformanceBand}
+                          showInterventions={showInterventions}
+                          interventionsData={interventionsData}
                           preLabelContent={
                             <ChartPreLabelWrapper>
-                              <Checkbox
-                                checked={isAttendanceChartVisible}
-                                onChange={toggleAttendanceChart}
+                              <FlexContainer
+                                alignItems="center"
+                                justifyContent="flex-start"
                               >
-                                Show Attendance Chart
-                              </Checkbox>
+                                <Checkbox
+                                  checked={isAttendanceChartVisible}
+                                  onChange={toggleAttendanceChart}
+                                >
+                                  Show Attendance Chart
+                                </Checkbox>
+                                <EduIf condition={interventionsData.length}>
+                                  <Checkbox
+                                    checked={showInterventions}
+                                    onChange={toggleInterventionInfo}
+                                  >
+                                    Show Intervention{' '}
+                                  </Checkbox>
+                                  <IconInfo
+                                    fill={blueButton}
+                                    width={16}
+                                    height={16}
+                                  />
+                                </EduIf>
+                              </FlexContainer>
                             </ChartPreLabelWrapper>
                           }
                         />
@@ -445,6 +494,8 @@ const WholeLearnerReport = ({
                     <EduIf condition={isAttendanceChartVisible}>
                       <AttendanceChart
                         attendanceChartData={attendanceChartData}
+                        showInterventions={showInterventions}
+                        interventionsData={interventionsData}
                       />
                     </EduIf>
                     <EduIf condition={!isEmpty(tableData)}>
@@ -475,11 +526,14 @@ const enhance = connect(
     userRole: getUserRole(state),
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
+    interventionsData: getInterventionsByGroup(state),
+    termsData: get(state, 'user.user.orgData.terms', []),
   }),
   {
     ...actions,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.WHOLE_LEARNER_REPORT,

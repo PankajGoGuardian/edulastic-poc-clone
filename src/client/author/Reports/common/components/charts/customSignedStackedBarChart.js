@@ -113,6 +113,8 @@ export const SignedStackedBarChart = ({
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
   preLabelContent = null,
+  interventionsData,
+  showInterventions,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -332,6 +334,9 @@ export const SignedStackedBarChart = ({
                 getXTickText={getXTickText}
                 getXTickTagText={getXTickTagText}
                 fontWeight={600}
+                interventionsData={interventionsData}
+                showInterventions={showInterventions}
+                setXAxisTickTooltipData={setXAxisTickTooltipData}
               />
             }
             tickLine={false}

@@ -46,7 +46,7 @@ const initialState = {
     //   },
     selectedFilterTagsData: {},
     selectedStudentInformation: {},
-    selectedStudentClassData: {},
+    selectedStudentClassData: [],
   },
   loadingReportData: false,
   reportData: {},

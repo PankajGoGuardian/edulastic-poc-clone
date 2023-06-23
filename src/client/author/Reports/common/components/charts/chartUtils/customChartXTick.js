@@ -1,5 +1,8 @@
+import { EduIf } from '@edulastic/common'
 import React, { useLayoutEffect, useRef, useState } from 'react'
+
 import { StyledAxisTickText } from '../../../styled'
+import InformationIcon from './InformationIcon'
 
 const EXTERNAL_TAG_PADDING = 2
 
@@ -15,6 +18,10 @@ export const CustomChartXTick = (props) => {
     width,
     fontWeight,
     visibleTicksCount,
+    setXAxisTickTooltipData,
+    showInterventions,
+    interventionsData,
+    isAttendanceSummary,
   } = props
 
   const tickWidth = Math.floor(width / visibleTicksCount)
@@ -49,41 +56,57 @@ export const CustomChartXTick = (props) => {
   }
 
   return (
-    <g transform={`translate(${x},${y})`}>
-      <StyledAxisTickText
-        textAnchor="middle"
-        verticalAnchor="start"
-        width={tickWidth}
-        fontWeight={fontWeight}
-        fill={fill}
-      >
-        {text}
-      </StyledAxisTickText>
-      {tagText ? (
-        <>
-          <rect
-            x={-(tagWidth / 2)}
-            y={24}
-            rx={10}
-            width={tagWidth}
-            height={20}
-            fill="black"
-          />
-          <StyledAxisTickText
-            ref={tagTextRef}
-            y={30}
-            textAnchor="middle"
-            verticalAnchor="start"
-            width={tickWidth}
-            fontSize="12px"
-            fontWeight="bold"
-            fill="white"
-          >
-            {tagText.toUpperCase()}
-          </StyledAxisTickText>
-        </>
-      ) : null}
-    </g>
+    <>
+      <EduIf condition={showInterventions}>
+        <InformationIcon
+          x={x}
+          y={y}
+          setXAxisTickTooltipData={setXAxisTickTooltipData}
+          data={data}
+          payload={payload}
+          interventionsData={interventionsData}
+          width={width}
+          visibleTicksCount={visibleTicksCount}
+          isAttendanceSummary={isAttendanceSummary}
+        />
+      </EduIf>
+
+      <g transform={`translate(${x},${y})`}>
+        <StyledAxisTickText
+          textAnchor="middle"
+          verticalAnchor="start"
+          width={tickWidth}
+          fontWeight={fontWeight}
+          fill={fill}
+        >
+          {text}
+        </StyledAxisTickText>
+        {tagText ? (
+          <>
+            <rect
+              x={-(tagWidth / 2)}
+              y={24}
+              rx={10}
+              width={tagWidth}
+              height={20}
+              fill="black"
+            />
+            <StyledAxisTickText
+              ref={tagTextRef}
+              y={30}
+              textAnchor="middle"
+              verticalAnchor="start"
+              width={tickWidth}
+              fontSize="12px"
+              fontWeight="bold"
+              fill="white"
+            >
+              {tagText.toUpperCase()}
+            </StyledAxisTickText>
+          </>
+        ) : null}
+      </g>
+    </>
   )
 }
 

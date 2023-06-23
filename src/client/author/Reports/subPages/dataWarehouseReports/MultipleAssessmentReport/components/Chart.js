@@ -154,6 +154,8 @@ const Chart = ({
   selectedPerformanceBand,
   selectedTests,
   setSelectedTests,
+  showInterventions,
+  interventionsData,
 }) => {
   const achievementLevels = chartData.flatMap((cdItem) =>
     cdItem.externalTestType ? cdItem.bands : []
@@ -313,6 +315,8 @@ const Chart = ({
       hideCartesianGrid
       hasBarInsideLabels
       hasBarTopLabels
+      showInterventions={showInterventions}
+      interventionsData={interventionsData}
     />
   )
 }

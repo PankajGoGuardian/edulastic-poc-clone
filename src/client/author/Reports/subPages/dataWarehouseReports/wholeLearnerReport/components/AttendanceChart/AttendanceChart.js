@@ -26,6 +26,7 @@ import {
   getTooltipJSX,
   updateTooltipPos,
 } from '../../../../../common/chart-utils'
+import { CustomXAxisTickTooltipContainer } from '../../../../../common/components/charts/styled-components'
 
 const getXTickText = (payload, _data) => {
   const week = _data[payload.index]?.week + 1
@@ -56,6 +57,8 @@ const AttendanceChart = ({
   onResetClick = () => {},
   pageSize = 8,
   filter = {},
+  showInterventions,
+  interventionsData,
 }) => {
   const parentContainerRef = useRef(null)
   const tooltipRef = useRef(null)
@@ -106,10 +109,17 @@ const AttendanceChart = ({
       ...pagedData.slice(1),
     ]
   }, [page, pagedData])
+  const xTickToolTipWidth = 200
+
+  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+    visibility: 'hidden',
+    x: null,
+    y: null,
+    content: null,
+  })
 
   const getTooltipContent = (payload) => {
     updateTooltipPos(parentContainerRef, chartRef, tooltipRef, setTooltipType)
-    // console.log(chartRef)
     return getTooltipJSX(payload)
   }
 
@@ -151,6 +161,15 @@ const AttendanceChart = ({
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
       />
+      <CustomXAxisTickTooltipContainer
+        x={xAxisTickTooltipData.x}
+        y={xAxisTickTooltipData.y}
+        visibility={xAxisTickTooltipData.visibility}
+        color={xAxisTickTooltipData.color}
+        width={xTickToolTipWidth}
+      >
+        {xAxisTickTooltipData.content}
+      </CustomXAxisTickTooltipContainer>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
           width={730}
@@ -172,6 +191,9 @@ const AttendanceChart = ({
                 data={renderData}
                 getXTickText={getXTickText}
                 fontWeight={600}
+                interventionsData={interventionsData}
+                showInterventions={showInterventions}
+                setXAxisTickTooltipData={setXAxisTickTooltipData}
               />
             }
             tickMargin={20}

@@ -16,6 +16,7 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
         tardies: item.tardyEvents,
         total: item.totalEvents,
         value: round(item.attendanceRatio),
+        assessmentDate: item.minDate,
       }
     })
     .filter((item) => !!item)

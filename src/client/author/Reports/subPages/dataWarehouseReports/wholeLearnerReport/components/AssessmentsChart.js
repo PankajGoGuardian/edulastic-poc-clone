@@ -109,6 +109,8 @@ const AssessmentsChart = ({
   onBarClickCB,
   onResetClickCB,
   preLabelContent,
+  showInterventions,
+  interventionsData,
 }) => {
   const [legendPayload, barsDataForInternal] = useMemo(
     () => [
@@ -166,6 +168,8 @@ const AssessmentsChart = ({
         hasBarInsideLabels
         hasBarTopLabels
         preLabelContent={preLabelContent}
+        interventionsData={interventionsData}
+        showInterventions={showInterventions}
       />
     </div>
   )

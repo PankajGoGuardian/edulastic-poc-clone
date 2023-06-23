@@ -1,5 +1,5 @@
 import { useOfflinePagination } from '@edulastic/common'
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
 import { StyledChartNavButton } from '../../../../common/styled'
@@ -15,6 +15,7 @@ import DynamicChartTooltip from '../../../../common/components/DynamicChartToolt
 import { sheetSize } from '../utils/constants'
 import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
 import { StyledResponsiveContainer } from '../styled-component'
+import { CustomXAxisTickTooltipContainer } from '../../../../common/components/charts/styled-components'
 
 const YAxisLabel = ({ data, viewBox }) => {
   return (
@@ -36,16 +37,28 @@ const YAxisLabel = ({ data, viewBox }) => {
   )
 }
 
-function AttendanceSummaryGraph({ attendanceData, groupBy }) {
+function AttendanceSummaryGraph({
+  attendanceData,
+  groupBy,
+  showInterventions,
+  interventionList,
+}) {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
     return _attendanceChartData
   }, [attendanceData])
 
+  const xTickToolTipWidth = 200
   const parentContainerRef = useRef(null)
   const chartRef = useRef(null)
   const tooltipRef = useRef(null)
   const [animate, onAnimationStart, setAnimate] = useResetAnimation()
+  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+    visibility: 'hidden',
+    x: null,
+    y: null,
+    content: null,
+  })
 
   const {
     next: nextPage,
@@ -106,6 +119,15 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
       />
+      <CustomXAxisTickTooltipContainer
+        x={xAxisTickTooltipData.x}
+        y={xAxisTickTooltipData.y}
+        visibility={xAxisTickTooltipData.visibility}
+        color={xAxisTickTooltipData.color}
+        width={xTickToolTipWidth}
+      >
+        {xAxisTickTooltipData.content}
+      </CustomXAxisTickTooltipContainer>
       <StyledResponsiveContainer width="100%" height="100%">
         <LineChart
           width={730}
@@ -125,6 +147,10 @@ function AttendanceSummaryGraph({ attendanceData, groupBy }) {
                   getXTickText(payload, _data, groupBy)
                 }
                 fontWeight={600}
+                showInterventions={showInterventions}
+                interventionsData={interventionList}
+                setXAxisTickTooltipData={setXAxisTickTooltipData}
+                isAttendanceSummary
               />
             }
             tickMargin={20}

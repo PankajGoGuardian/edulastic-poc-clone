@@ -1,19 +1,53 @@
 import { FlexContainer } from '@edulastic/common'
-import React from 'react'
+import React, { useMemo } from 'react'
+import { connect } from 'react-redux'
+import { get } from 'lodash'
 import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
 import { StyledText } from '../../../../common/components/styledComponents'
-import { academicSummaryFiltersTypes } from '../../../utils'
+import {
+  academicSummaryFiltersTypes,
+  getPerformanceBandList,
+  getAvailableAcademicTestTypesWithBands,
+} from '../../../utils'
+import { filtersData } from '../../../ducks/selectors'
 
 const AcademicSummaryWidgetFilters = ({
   filters,
   setFilters,
   performanceBandsList,
   availableTestTypes,
+  dataFilters,
 }) => {
+  const { bandInfo = [], externalBands = [] } = get(
+    dataFilters,
+    'data.result',
+    {}
+  )
+  const availableAcademicTestTypes = useMemo(
+    () => getAvailableAcademicTestTypesWithBands(bandInfo, externalBands),
+    [bandInfo, externalBands]
+  )
+
   const updateFilterDropdownCB = (e, selected, comData) => {
+    const additionalData = {}
+    if (comData === academicSummaryFiltersTypes.TEST_TYPE) {
+      const performanceBandList = getPerformanceBandList(
+        bandInfo,
+        externalBands,
+        selected.key,
+        availableAcademicTestTypes
+      )
+      if (performanceBandList?.length) {
+        additionalData[academicSummaryFiltersTypes.PERFORMANCE_BAND] = {
+          key: performanceBandList[0].key,
+          title: performanceBandList[0].title,
+        }
+      }
+    }
     setFilters({
       ...filters,
       [comData]: selected,
+      ...additionalData,
     })
   }
 
@@ -58,4 +92,6 @@ const AcademicSummaryWidgetFilters = ({
   )
 }
 
-export default AcademicSummaryWidgetFilters
+export default connect((state) => ({
+  dataFilters: filtersData(state),
+}))(AcademicSummaryWidgetFilters)

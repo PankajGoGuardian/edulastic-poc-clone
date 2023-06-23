@@ -178,7 +178,7 @@ export const StyledTable = styled(Table)`
       th.ant-table-column-sort:hover {
         background: ${white} !important;
       }
-      th:first-child span:first-child {
+      th span:first-child {
         margin-top: 6px;
         display: inline-block;
       }
@@ -201,6 +201,9 @@ export const StyledTable = styled(Table)`
               width: 100%;
               padding: 10px;
             }
+          }
+          .dimension-name {
+            margin: 0;
           }
         }
       }

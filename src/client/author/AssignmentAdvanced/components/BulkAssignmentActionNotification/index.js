@@ -14,6 +14,7 @@ import { setAssignmentBulkActionStatus } from '../../ducks'
 import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const collectionName = 'AssignmentBulkActionEvents'
+const bulkSettingsCollectionName = 'BulkAssignmentsSettings'
 
 const NotificationListener = ({
   user,
@@ -44,32 +45,76 @@ const NotificationListener = ({
     [user?._id]
   )
 
-  const deleteNotificationDocument = (docId) => {
+  const bulkSettingsUpdateNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(bulkSettingsCollectionName)
+        .where('userId', '==', `${user?._id}`)
+        .where('processStatus', '==', 'done'),
+    [user?._id]
+  )
+
+  const deleteNotificationDocument = (docId, collection) => {
     Fbs.db
-      .collection(collectionName)
+      .collection(collection)
       .doc(docId)
       .delete()
       .catch((err) => console.error(err))
   }
 
-  const showUserNotifications = (docs) => {
+  const showUserNotifications = (docs, collection) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      const { processStatus, message, statusCode, isBulkAction, status } = doc
+      const {
+        processStatus,
+        message,
+        statusCode,
+        isBulkAction,
+        successCount, // how many test has been process successfully
+        totalCount, // how many total test should be processed
+        status,
+        assignmentSettings,
+      } = doc
+
       if (
         isBulkAction &&
         status === 'initiated' &&
         processStatus === 'done' &&
         !notificationIds.includes(doc.__id)
       ) {
+        let _message = message
+
+        // updating message based upon notification document for bulk update assignment settings
+        if (collection === bulkSettingsCollectionName) {
+          const {
+            allowTeacherRedirect,
+            releaseScore,
+            endDate,
+          } = assignmentSettings
+          let label = ''
+
+          if (allowTeacherRedirect) {
+            label = 'Allow Teachers to Redirect'
+          } else if (releaseScore) {
+            label = 'Release Score Policy'
+          } else if (endDate) {
+            label = 'Close date'
+          }
+          if (successCount === 0) {
+            _message = `${label} failed for ${totalCount} assignments. Please try again.`
+          } else {
+            _message = `${label} updated for ${successCount} out of ${totalCount} assignments.`
+          }
+        }
+
         setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
-          antdNotification({ type: 'success', msg: message, key: doc.__id })
+          antdNotification({ type: 'success', msg: _message, key: doc.__id })
         } else {
-          antdNotification({ msg: message, key: doc.__id })
+          antdNotification({ msg: _message, key: doc.__id })
         }
 
         // if status is initiated and we are displaying, delete the notification document from firebase
-        deleteNotificationDocument(doc.__id)
+        deleteNotificationDocument(doc.__id, collection)
         if (districtId && testId && testType) {
           fetchAssignmentClassList({
             districtId,
@@ -101,9 +146,18 @@ const NotificationListener = ({
 
   useEffect(() => {
     if (user && roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
-      showUserNotifications(userNotifications)
+      showUserNotifications(userNotifications, collectionName)
     }
   }, [userNotifications])
+
+  useEffect(() => {
+    if (user && roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
+      showUserNotifications(
+        bulkSettingsUpdateNotifications,
+        bulkSettingsCollectionName
+      )
+    }
+  }, [bulkSettingsUpdateNotifications])
 
   useEffect(
     () => () => {

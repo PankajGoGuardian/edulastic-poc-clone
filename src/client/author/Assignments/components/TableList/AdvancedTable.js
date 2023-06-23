@@ -51,11 +51,9 @@ import {
 import BulkEditTestModal from '../BulkEditTestModal'
 
 class AdvancedTable extends Component {
-  isPremiumUser = this.props?.features?.premium
-
-  isAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
-    this.props.userRole
-  )
+  showBulkUpdate =
+    this.props?.features?.premium &&
+    this.props.userRole === roleuser.DISTRICT_ADMIN
 
   state = {
     enableRowClick: true,
@@ -189,7 +187,7 @@ class AdvancedTable extends Component {
               <Menu.Item onClick={() => this.handleRemoveItemsFromFolder()}>
                 Remove from Folder
               </Menu.Item>
-              {this.isAdmin && this.isPremiumUser && (
+              {this.showBulkUpdate && (
                 <Menu.Item onClick={() => this.toggleBulkEditModal()}>
                   Bulk Update
                 </Menu.Item>

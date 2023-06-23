@@ -8,6 +8,7 @@ import { withRouter } from 'react-router'
 import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
+import CombinedPlayer from './CombinedPlayer'
 import MuteUnmute from './MuteUnmute'
 import PlayPause from './PlayPause'
 import SeekBar from './SeekBar'
@@ -17,7 +18,6 @@ import {
   Droppable,
   PDFPreviewWrapper,
   StyledPlayerContainer,
-  StyledReactPlayer,
   StyledTypographyText,
 } from './styled'
 import {
@@ -29,6 +29,7 @@ import {
   showMarkerArea,
   useStateRef,
 } from './utils'
+import appConfig from '../../../../../app-config'
 
 const { DragPreview } = DragDrop
 
@@ -125,7 +126,7 @@ const VideoPreview = ({
 
   const seekTo = (time) => {
     if (videoRef) {
-      videoRef.current.seekTo(time)
+      videoRef.current?.seekTo?.(time)
     }
   }
 
@@ -146,7 +147,7 @@ const VideoPreview = ({
           y,
           questionId: data.id,
           qIndex: data.index,
-          time: Math.floor(videoRef.current.getCurrentTime()),
+          time: Math.floor(videoRef.current?.getCurrentTime?.()),
         },
         'video'
       )
@@ -203,7 +204,7 @@ const VideoPreview = ({
         drop={handleDropQuestion}
         className={`${currentAnnotationTool}-tool-selected`}
       >
-        <StyledReactPlayer
+        <CombinedPlayer
           url={videoUrl}
           playing={playing}
           controls={false}
@@ -212,7 +213,15 @@ const VideoPreview = ({
           width="100%"
           config={{
             youtube: {
-              playerVars: { iv_load_policy: 3, rel: 0 },
+              playerVars: {
+                iv_load_policy: 3,
+                rel: 0,
+                autoplay: playing ? 1 : 0,
+                controls: 0,
+                playsinline: 1,
+                api_key: appConfig.edYouTubePlayerKey,
+              },
+              embedConfig: { contentFilter: 2 },
             },
           }}
           onPause={onPause}

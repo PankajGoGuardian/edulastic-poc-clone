@@ -15,11 +15,11 @@ export const useStateRef = (initialValue) => {
 }
 
 export const getVideoDuration = (videoRef) => {
-  return videoRef?.current?.getDuration() || 0
+  return videoRef?.current?.getDuration?.() || 0
 }
 
 export const getCurrentTime = (videoRef) => {
-  return videoRef?.current?.getCurrentTime() || 0
+  return videoRef?.current?.getCurrentTime?.() || 0
 }
 
 export const getMarks = (annotations) => {
@@ -75,7 +75,7 @@ export const showMarkerArea = (
             x: event.state.markers[0].left,
             y: event.state.markers[0].top,
             markerJsData: event.state.markers,
-            time: Math.floor(videoRef.current.getCurrentTime()),
+            time: Math.floor(videoRef.current?.getCurrentTime?.()),
             toolbarMode: 'markerJs',
           },
           'video'
@@ -106,4 +106,11 @@ export const getVisibleAnnotation = (annotations, currentTime) => {
     (annotation) =>
       annotation.time && Math.floor(currentTime) === Math.floor(annotation.time)
   )
+}
+
+export const extractVideoId = (url) => {
+  const match = url.match(
+    /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=|.+\/embed\/)([^&?/]+)/
+  )
+  return match && match[1]
 }

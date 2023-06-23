@@ -751,7 +751,7 @@ class ClassQuestions extends Component {
           if (scractchPadUsed) {
             showStudentWork = () => this.showStudentWork(item)
           }
-          if (testData.isDocBased) {
+          if (testData.isDocBased && !testData.videoUrl) {
             showStudentWork = () => this.setState({ showDocBasedPlayer: true })
           }
           const questionActivity =

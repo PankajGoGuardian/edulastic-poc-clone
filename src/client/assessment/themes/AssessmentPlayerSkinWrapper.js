@@ -29,6 +29,7 @@ const AssessmentPlayerSkinWrapper = ({
   handleMagnifier,
   enableMagnifier = false,
   themeForHeader = {},
+  videoUrl,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -347,6 +348,7 @@ const AssessmentPlayerSkinWrapper = ({
           test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
           !isShowStudentWork &&
+          !videoUrl &&
           navigationBtns()}
         <ThemeProvider theme={themeForHeader}>{footer()}</ThemeProvider>
       </FlexContainer>

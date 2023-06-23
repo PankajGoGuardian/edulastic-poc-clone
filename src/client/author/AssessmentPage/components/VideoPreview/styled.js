@@ -154,15 +154,11 @@ export const Droppable = styled(DropContainer)`
 export const StyledReactPlayer = styled(ReactPlayer)`
   pointer-events: none !important;
 `
-
-// export const StyledPlayer = styled(Player)`
-//   .video-react-big-play-button {
-//     z-index: 9;
-//   }
-//   .my-control-bar {
-//     z-index: 9;
-//   }
-// `
+export const StyledYouTubePlayer = styled.div`
+  pointer-events: none !important;
+  height: 100%;
+  width: 100%;
+`
 
 export const StyledPlayerContainer = styled(Row)`
   position: absolute;

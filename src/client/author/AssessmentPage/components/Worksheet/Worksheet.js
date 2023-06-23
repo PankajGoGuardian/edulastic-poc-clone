@@ -207,11 +207,13 @@ class WorksheetComponent extends React.Component {
 
     let annotationIndex = -1
     if (type === 'video') {
-      annotationIndex = newAnnotations.findIndex((item) =>
-        item.questionId
-          ? `${item.questionId}` === `${question.questionId}`
-          : Math.floor(question.time) === Math.floor(item.time)
-      )
+      // UI annotation get clubbed to if you find any UI annotation remove previous one and push new
+      annotationIndex = newAnnotations.findIndex((item) => {
+        if (item.questionId || question.questionId) {
+          return `${item.questionId}` === `${question.questionId}`
+        }
+        return Math.floor(question.time) === Math.floor(item.time)
+      })
     } else {
       annotationIndex = newAnnotations.findIndex(
         (item) => `${item.questionId}` === `${question.questionId}`

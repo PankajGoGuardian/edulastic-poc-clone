@@ -26,16 +26,29 @@ export const sortText = (a, b, key) =>
 
 export const sortByDate = (a = '', b = '') => new Date(a) - new Date(b)
 
-export const getTagRender = (status, statusReason = '') => {
+export const getTagRender = (status, statusReason = '', failedCount = 0) => {
   const tag = (
     <StyledTag $color={dwLogStatusColorMap[status]}>
       {dwLogStatusLabel[status]}
     </StyledTag>
   )
+  const isFailed = status === dwLogStatus.FAILED
+  const isPartiallyFailed = status === dwLogStatus.PARTIALLY_FAILED
+
+  let tooltipSubText1 = 'rows have'
+  let tooltipSubText2 = 'errors'
+  if (failedCount === 1) {
+    tooltipSubText1 = 'row has'
+    tooltipSubText2 = 'error'
+  }
+  const tooltipText = isFailed
+    ? statusReason
+    : `${failedCount} ${tooltipSubText1} ${tooltipSubText2}, please fix the ${tooltipSubText2} and re-upload the entire file.`
+
   return (
-    <EduIf condition={status === dwLogStatus.FAILED}>
+    <EduIf condition={isFailed || isPartiallyFailed}>
       <EduThen>
-        <Tooltip title={statusReason} placement="right">
+        <Tooltip title={tooltipText} placement="right">
           {tag}
         </Tooltip>
       </EduThen>

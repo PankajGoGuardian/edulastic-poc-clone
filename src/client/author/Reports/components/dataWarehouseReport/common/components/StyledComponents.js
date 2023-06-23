@@ -11,6 +11,7 @@ import {
 } from '@edulastic/colors'
 import { Col, Tabs } from 'antd'
 import styled from 'styled-components'
+import { StyledTable } from '../../../../../../common/styled'
 
 export const StyledTabs = styled(Tabs)`
   width: 100%;
@@ -67,6 +68,9 @@ export const StyledText = styled(Col)`
   color: ${(p) => p.color};
   margin-right: 30px;
   text-align: ${(p) => p.textAlign};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 export const Header = styled.div`
   margin: ${({ $margin }) => $margin || '15px 15px 0 15px'};
@@ -168,4 +172,15 @@ export const StyledTag = styled.span`
   padding: 6px 9px 6px 6px;
   font-size: 11px;
   border-radius: 8px;
+`
+export const CustomStyledTable = styled(StyledTable)`
+  .ant-table-pagination {
+    margin: 16px 5px;
+  }
+  .test-name {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `

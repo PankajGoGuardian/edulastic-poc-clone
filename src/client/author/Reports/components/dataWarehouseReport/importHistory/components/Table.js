@@ -1,9 +1,11 @@
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import React from 'react'
 import { isEmpty } from 'lodash'
-import { NoDataContainer } from '../../common/components/StyledComponents'
+import {
+  CustomStyledTable,
+  NoDataContainer,
+} from '../../common/components/StyledComponents'
 import CsvTable from '../../../../../Shared/Components/DataWarehouseUploadsTable/CsvTable'
-import { StyledTable } from '../../../../../../common/styled'
 
 const Table = ({ data, columns }) => {
   return (
@@ -17,7 +19,7 @@ const Table = ({ data, columns }) => {
         <CsvTable
           dataSource={data}
           columns={columns}
-          tableToRender={StyledTable}
+          tableToRender={CustomStyledTable}
           pagination={{
             pageSize: 10,
           }}

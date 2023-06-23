@@ -1,6 +1,7 @@
 import React from 'react'
 import { formatDate } from '@edulastic/constants/reportUtils/common'
 import { MdFileDownload } from 'react-icons/md'
+import { Tooltip } from 'antd'
 
 import { EduIf, EduThen } from '@edulastic/common'
 import {
@@ -53,7 +54,14 @@ const commonColumns = [
     title: 'Name',
     dataIndex: COMMON_KEYS.FILE_NAME,
     key: COMMON_KEYS.FILE_NAME,
-    render: (value) => value || '-',
+    render: (value) => {
+      const testName = value || '-'
+      return (
+        <div className="test-name">
+          <Tooltip title={value}>{testName} </Tooltip>
+        </div>
+      )
+    },
     sorter: (a, b) => sortText(a, b, COMMON_KEYS.FILE_NAME),
   },
   {
@@ -147,19 +155,22 @@ export const uploadLogColumns = [
     title: 'Status',
     dataIndex: UPLOAD_LOG_KEYS.STATUS,
     key: UPLOAD_LOG_KEYS.STATUS,
-    render: (value, record) => getTagRender(value, record?.statusReason),
+    render: (value, record) =>
+      getTagRender(value, record?.statusReason, record.failedCount),
     sorter: (a, b) => a[UPLOAD_LOG_KEYS.STATUS] - b[UPLOAD_LOG_KEYS.STATUS],
   },
   {
     title: 'Added',
     dataIndex: UPLOAD_LOG_KEYS.ADDED,
     key: UPLOAD_LOG_KEYS.ADDED,
+    align: 'center',
     sorter: (a, b) => a[UPLOAD_LOG_KEYS.ADDED] - b[UPLOAD_LOG_KEYS.ADDED],
   },
   {
     title: 'Failed',
     dataIndex: UPLOAD_LOG_KEYS.FAILED,
     key: UPLOAD_LOG_KEYS.FAILED,
+    align: 'center',
     sorter: (a, b) => a[UPLOAD_LOG_KEYS.FAILED] - b[UPLOAD_LOG_KEYS.FAILED],
   },
   {

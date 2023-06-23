@@ -20,7 +20,7 @@ const LeftContent = ({ data, termsMap, isEditModal }) => {
       </Header>
       <div style={{ padding: '60px 100px' }}>
         <ContentRow title="DATA TYPE" value={reportType} />
-        <ContentRow title="NAME" value={testName} />
+        <ContentRow title="NAME" value={testName} showTooltip />
         <ContentRow
           title="SCHOOL YEAR"
           value={termsMap.get(termId)?.name || '-'}

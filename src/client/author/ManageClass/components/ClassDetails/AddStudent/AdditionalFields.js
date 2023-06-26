@@ -33,7 +33,6 @@ const AdditionalFields = ({
     race,
     dob,
     gender,
-    tts,
     contactEmails = foundUserContactEmails,
   } = isEditMode ? studentDetails : std
 
@@ -156,12 +155,7 @@ const AdditionalFields = ({
       </Field>
 
       {showTtsField && (
-        <Field
-          label="Enable Text to Speech"
-          {...restProps}
-          fiedlName="tts"
-          initialValue={tts}
-        >
+        <Field label="Enable Text to Speech" {...restProps} fiedlName="tts">
           <SelectInputStyled
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >

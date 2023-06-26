@@ -240,8 +240,13 @@ const PurchaseFlowModals = (props) => {
       let dynamicPeriodInDays = product.period
       let endDate = subEndDate
       if (shouldProrateMultiplePurchase) {
-        endDate = subsLicenses.filter((doc) => doc.productId === product.id)[0]
-          ?.expiresOn
+        const currentProductEndDate = subsLicenses.filter(
+          (doc) => doc.productId === product.id
+        )[0]?.expiresOn
+        const tpEndDate = subsLicenses.find(
+          (doc) => doc.productId === premiumProductId
+        )?.expiresOn
+        endDate = currentProductEndDate || tpEndDate
       }
       const isPriceToBeCalculatedDynamically = [
         shouldProrate || shouldProrateMultiplePurchase,

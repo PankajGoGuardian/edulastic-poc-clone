@@ -256,8 +256,12 @@ const TableList = ({
 
     if (classListAttemptWindow.length === 0) {
       const attemptWindow = classList[0].defaultAttemptWindow
-      const start = attemptWindow.startTime
-      const end = attemptWindow.endTime
+      if (!attemptWindow) return ''
+
+      let start
+      let end
+      if (attemptWindow.startTime) start = attemptWindow.startTime
+      if (attemptWindow.endTime) end = attemptWindow.endTime
 
       if (attemptWindow.type === ATTEMPT_WINDOW_TYPE.DEFAULT) return ''
 

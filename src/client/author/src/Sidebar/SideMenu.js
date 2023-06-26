@@ -660,10 +660,13 @@ class SideMenu extends Component {
         Boolean
       ) && ['district-admin', 'school-admin', 'teacher'].includes(userRole)
 
-    const parentUser = getTokens()[0]
-    const parentRole = parentUser.split(':')[3]
-    const isProxyUserAndNotEA =
-      isProxyUser && parentRole !== roleuser.EDULASTIC_ADMIN
+    const tokens = getTokens()
+
+    const isEA = tokens.find((token) =>
+      token.includes(roleuser.EDULASTIC_ADMIN)
+    )
+
+    const isProxyUserAndNotEA = isProxyUser && !isEA
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown

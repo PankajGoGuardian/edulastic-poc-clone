@@ -1,7 +1,7 @@
 import { dataWarehouseApi, fileApi } from '@edulastic/api'
 import { aws } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
-import { dwLogStatus } from '../Reports/components/dataWarehouseReport/ImportHistory/utils'
+import { dwLogStatus } from '../Reports/components/dataWarehouseReport/importHistory/utils'
 
 const s3Folders = Object.values(aws.s3Folders)
 

@@ -35,7 +35,7 @@ import {
   isDataOpsOnlyUser as checkIsDataOpsOnlyUser,
   getOrgDataSelector,
 } from '../../../src/selectors/user'
-import ImportHistory from '../../../Reports/components/dataWarehouseReport/ImportHistory'
+import ImportHistory from '../../../Reports/components/dataWarehouseReport/importHistory'
 
 const DataWarehouse = ({
   loading,

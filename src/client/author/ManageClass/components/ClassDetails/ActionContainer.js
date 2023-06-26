@@ -170,6 +170,7 @@ const ActionContainer = ({
               'username',
               'password',
               'contactEmails',
+              'tts',
             ])
             // contactEmails field is in csv of multiple emails
             const contactEmailsString = get(stdData, 'contactEmails', '')

@@ -126,6 +126,11 @@ const ReviewItem = ({
   }, [item])
 
   const showAltScoreInfo = useMemo(() => {
+    const isMultipartItem = item?.data?.questions?.length > 1
+    const itemLevelScoring = item?.itemLevelScoring
+    if (isMultipartItem && itemLevelScoring) {
+      return false
+    }
     return item?.data?.questions?.some((q) => {
       if (q?.validation?.unscored) {
         return false

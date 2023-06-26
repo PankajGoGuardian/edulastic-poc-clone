@@ -194,17 +194,19 @@ const WholeLearnerReportFilters = ({
       _onGoClick({
         filters: { ...filters },
         selectedStudent: _student,
-        tagsData: { ...filterTagsData },
+        selectedFilterTagsData: { ...filterTagsData },
       })
       setShowApply(false)
       setFirstLoad(false)
     } else if (firstLoad && !reportId && filters.termId) {
+      const selectedTestTypes = search.testTypes || defaultTestTypes
       const _filters = {
         ...filters,
+        testTypes: selectedTestTypes,
         performanceBandProfileId: selectedPerformanceBand?.key || '',
       }
       const testTypes = getTestTypesFromUrl(
-        search.testTypes,
+        selectedTestTypes,
         availableTestTypes
       )
       const _filterTagsData = {

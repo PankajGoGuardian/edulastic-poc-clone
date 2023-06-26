@@ -570,7 +570,7 @@ const selectorDict = {
     setTags: setERTagsDataAction,
     setTempTags: setERTempTagsDataAction,
   },
-  [reportGroupType.WHOLE_STUDENT_REPORT]: {
+  [reportGroupType.WHOLE_LEARNER_REPORT]: {
     getTempTags: reportWholeLearnerSelectors.filterTagsData,
     getSettings: reportWholeLearnerSelectors.settings,
     getTags: reportWholeLearnerSelectors.selectedFilterTagsData,

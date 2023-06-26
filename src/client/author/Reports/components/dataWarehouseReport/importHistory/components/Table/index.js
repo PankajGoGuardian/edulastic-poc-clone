@@ -4,8 +4,8 @@ import { isEmpty } from 'lodash'
 import {
   CustomStyledTable,
   NoDataContainer,
-} from '../../common/components/StyledComponents'
-import CsvTable from '../../../../../Shared/Components/DataWarehouseUploadsTable/CsvTable'
+} from '../../../common/components/StyledComponents'
+import CsvTable from './CsvTable'
 
 const Table = ({ data, columns }) => {
   return (

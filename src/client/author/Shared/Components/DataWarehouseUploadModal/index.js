@@ -47,7 +47,7 @@ import {
   StyledTreeSelect,
 } from './styledComponents'
 import FileNameTag from '../../../Reports/components/dataWarehouseReport/common/components/FileNameTag'
-import { getTemplateFilePath } from '../../../Reports/components/dataWarehouseReport/importHistory/utils/helpers'
+import { getTemplateFilePath } from '../../../Reports/components/dataWarehouseReport/ImportHistory/utils/helpers'
 
 const { Option } = Select
 const { MAX_UPLOAD_FILE_SIZE } = dataWarehouse

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Spin } from 'antd'
 import { compose } from 'redux'
+import { get } from 'lodash'
+
 import {
   FlexContainer,
   MainHeader,
@@ -13,7 +14,6 @@ import {
 import { fadedBlack } from '@edulastic/colors'
 import styled from 'styled-components'
 import { IconCloudUpload, IconUpload } from '@edulastic/icons'
-import DataWarehoureUploadsTable from '../../../Shared/Components/DataWarehouseUploadsTable'
 import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 
 import {
@@ -21,11 +21,21 @@ import {
   getUploadsStatusLoader,
   getUploadsStatusList,
   getResetTestDataFileUploadResponseAction,
+  getTestDataFileUploadLoader,
+  getFileUploadProgress,
+  getTestDataFileUploadResponse,
+  uploadTestDataFileAction,
+  deleteTestDataFileAction,
+  getUpdateUploadProgressAction,
+  getSetCancelUploadAction,
+  getAbortUploadAction,
 } from '../../../sharedDucks/dataWarehouse'
 import {
   isDataOpsUser as checkIsDataOpsUser,
   isDataOpsOnlyUser as checkIsDataOpsOnlyUser,
+  getOrgDataSelector,
 } from '../../../src/selectors/user'
+import ImportHistory from '../../../Reports/components/dataWarehouseReport/ImportHistory'
 
 const DataWarehouse = ({
   loading,
@@ -34,6 +44,15 @@ const DataWarehouse = ({
   resetUploadResponse,
   isDataOpsUser,
   isDataOpsOnlyUser,
+  terms,
+  uploadResponse,
+  uploadProgress,
+  uploading,
+  uploadFile,
+  deleteFile,
+  handleUploadProgress,
+  setCancelUpload,
+  abortUpload,
 }) => {
   const dataOpsEnabled = isDataOpsUser || isDataOpsOnlyUser
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
@@ -67,14 +86,19 @@ const DataWarehouse = ({
             </EduButton>
           </FlexContainer>
           <TableContainer>
-            {loading ? (
-              <Spin />
-            ) : (
-              <DataWarehoureUploadsTable
-                loading={loading}
-                uploadsStatusList={uploadsStatusList}
-              />
-            )}
+            <ImportHistory
+              loading={loading}
+              uploadsStatusList={uploadsStatusList}
+              terms={terms}
+              uploadResponse={uploadResponse}
+              uploadProgress={uploadProgress}
+              uploading={uploading}
+              uploadFile={uploadFile}
+              deleteFile={deleteFile}
+              handleUploadProgress={handleUploadProgress}
+              setCancelUpload={setCancelUpload}
+              abortUpload={abortUpload}
+            />
           </TableContainer>
           {showTestDataUploadModal && (
             <DataWarehoureUploadModal
@@ -97,12 +121,21 @@ const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
+    uploadResponse: getTestDataFileUploadResponse(state),
+    uploadProgress: getFileUploadProgress(state),
+    uploading: getTestDataFileUploadLoader(state),
     isDataOpsUser: checkIsDataOpsUser(state),
     isDataOpsOnlyUser: checkIsDataOpsOnlyUser(state),
+    terms: get(getOrgDataSelector(state), 'terms', []),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,
     resetUploadResponse: getResetTestDataFileUploadResponseAction,
+    uploadFile: uploadTestDataFileAction,
+    deleteFile: deleteTestDataFileAction,
+    handleUploadProgress: getUpdateUploadProgressAction,
+    setCancelUpload: getSetCancelUploadAction,
+    abortUpload: getAbortUploadAction,
   }
 )
 

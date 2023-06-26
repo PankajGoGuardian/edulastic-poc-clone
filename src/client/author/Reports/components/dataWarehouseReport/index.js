@@ -12,7 +12,7 @@ import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUp
 import { SubHeader } from '../../common/components/Header'
 import { StyledContainer } from '../../common/styled'
 import DataWarehoureReportCardsWrapper from './DataWarehouseReportCardsWrapper'
-import ImportHistory from './importHistory'
+import ImportHistory from './ImportHistory'
 import {
   StyledTabs,
   BannerContainer,

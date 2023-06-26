@@ -57,13 +57,15 @@ const RenewLicenseModal = ({
     </EduButton>,
   ]
 
+  const modalDescription = `The number of ${
+    productsToshow?.[0]?.name || ''
+  } license you need to renew.`
+
   return (
     <SubscriptionAddonModal
       isVisible={isVisible}
       title="Renew Licenses"
-      modalDescription={`Please enter the number of ${
-        productsToshow?.[0]?.name || ''
-      } license you need to renew.`}
+      modalDescription={modalDescription}
       handleCloseModal={handleCloseModal}
       footer={Footer}
     >

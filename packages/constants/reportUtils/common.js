@@ -28,6 +28,7 @@ const DEGREE_TO_RADIAN = Math.PI / 180
 const ROUND_OFF_TO_INTEGER = true
 const EMPTY_ARRAY = []
 const EXTERNAL_TEST_KEY_SEPARATOR = '__'
+const LAST_PAGE_INDEX = -1
 
 const performanceBandKeys = {
   INTERNAL: 'threshold',
@@ -627,6 +628,7 @@ module.exports = {
   ROUND_OFF_TO_INTEGER,
   EMPTY_ARRAY,
   EXTERNAL_TEST_KEY_SEPARATOR,
+  LAST_PAGE_INDEX,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,

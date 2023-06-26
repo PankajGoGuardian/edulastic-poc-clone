@@ -1,6 +1,7 @@
 import { useOfflinePagination } from '@edulastic/common'
 import React, { useMemo, useRef, useState } from 'react'
 import { CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
+import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import { StyledAttendanceChartContainer } from '../../wholeLearnerReport/components/AttendanceChart/styled-components'
 import { StyledChartNavButton } from '../../../../common/styled'
 import { CustomChartXTick } from '../../../../common/components/charts/chartUtils/customChartXTick'
@@ -67,7 +68,7 @@ function AttendanceSummaryGraph({
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: -1,
+    defaultPage: LAST_PAGE_INDEX,
     data: attendanceChartData,
     lookbackCount: 1,
     pageSize: sheetSize,

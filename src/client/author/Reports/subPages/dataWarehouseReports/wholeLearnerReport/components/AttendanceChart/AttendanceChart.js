@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 
 import { useOfflinePagination } from '@edulastic/common'
+import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import { YAxisLabel } from '../../../../../common/components/charts/chartUtils/yAxisLabel'
 import { CustomChartXTick } from '../../../../../common/components/charts/chartUtils/customChartXTick'
 import {
@@ -71,7 +72,7 @@ const AttendanceChart = ({
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: -1,
+    defaultPage: LAST_PAGE_INDEX,
     data: attendanceChartData,
     lookbackCount: 1,
     pageSize,

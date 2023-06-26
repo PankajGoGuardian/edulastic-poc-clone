@@ -8,6 +8,7 @@ import React, { useMemo } from 'react'
 import { maxBy } from 'lodash'
 import { XAxis, YAxis, BarChart, Bar, CartesianGrid } from 'recharts'
 
+import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import NoDataNotification from '../../../../../../common/components/NoDataNotification'
 import { YAxisLabel } from '../../../../common/components/charts/chartUtils/yAxisLabel'
 import { StyledChartNavButton } from '../../../../common/styled'
@@ -58,7 +59,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: -1,
+    defaultPage: LAST_PAGE_INDEX,
     data: attendanceChartData,
     lookbackCount: 1,
     pageSize: sheetSize,

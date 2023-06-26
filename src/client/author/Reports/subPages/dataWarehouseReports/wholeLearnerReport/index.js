@@ -455,6 +455,7 @@ const WholeLearnerReport = ({
                           selectedPerformanceBand={selectedPerformanceBand}
                           showInterventions={showInterventions}
                           interventionsData={interventionsData}
+                          settings={settings}
                           preLabelContent={
                             <ChartPreLabelWrapper>
                               <FlexContainer

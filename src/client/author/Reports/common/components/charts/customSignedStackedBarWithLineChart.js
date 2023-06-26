@@ -18,6 +18,7 @@ import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
 import { useOfflinePagination } from '@edulastic/common'
+import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
@@ -184,7 +185,7 @@ export const SignedStackedBarWithLineChart = ({
     page,
     totalPages,
   } = useOfflinePagination({
-    defaultPage: -1,
+    defaultPage: LAST_PAGE_INDEX,
     data,
     lookbackCount: 0,
     pageSize,

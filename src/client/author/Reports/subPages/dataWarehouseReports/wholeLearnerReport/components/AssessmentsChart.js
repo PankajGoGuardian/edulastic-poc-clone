@@ -105,6 +105,7 @@ const getXTickTagText = (payload, _data) => {
 
 const AssessmentsChart = ({
   chartData,
+  settings,
   selectedPerformanceBand,
   onBarClickCB,
   onResetClickCB,
@@ -137,6 +138,7 @@ const AssessmentsChart = ({
       </SectionLabel>
       <SignedStackedBarChart
         data={data}
+        settings={settings}
         barsData={
           barsDataForExternal.length >= 1
             ? barsDataForExternal

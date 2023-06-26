@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -17,6 +17,7 @@ import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
 import { useOfflinePagination } from '@edulastic/common'
+import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
@@ -90,6 +91,7 @@ export const SignedStackedBarChart = ({
   pageSize: _pageSize,
   barsData,
   data = [],
+  settings,
   yDomain = [-100, 110],
   ticks = [-100, -81, -54, -27, 27, 54, 81, 110],
   xAxisDataKey,
@@ -133,13 +135,18 @@ export const SignedStackedBarChart = ({
     pagedData,
     page,
     totalPages,
+    setPage,
   } = useOfflinePagination({
-    defaultPage: -1,
+    defaultPage: LAST_PAGE_INDEX,
     data,
     lookbackCount: 0,
     pageSize,
     backFillLastPage: true,
   })
+
+  useEffect(() => {
+    setPage(LAST_PAGE_INDEX)
+  }, [settings.frontEndFilters.testTypes])
 
   const constants = {
     COLOR_BLACK: '#010101',

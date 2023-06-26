@@ -92,7 +92,7 @@ const NotificationListener = ({
           } = assignmentSettings
           let label = ''
 
-          if (allowTeacherRedirect) {
+          if (allowTeacherRedirect !== undefined) {
             label = 'Allow Teachers to Redirect'
           } else if (releaseScore) {
             label = 'Release Score Policy'

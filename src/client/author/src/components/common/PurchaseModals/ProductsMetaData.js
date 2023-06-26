@@ -55,7 +55,7 @@ export const productsMetaData = {
     filters: 'COMPUTER SCIENCE',
   },
   CPM: {
-    icon: <IconCPM />,
+    icon: <IconCPM width={90} height={90} />,
     subject: 'math & cs',
     grades: 'Grades 6-12',
     learnMoreLinks: 'https://edulastic.com/CPM',

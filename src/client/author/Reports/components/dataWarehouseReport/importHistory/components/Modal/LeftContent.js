@@ -8,7 +8,7 @@ import {
 } from '../../../common/components/StyledComponents'
 
 const LeftContent = ({ data, termsMap, isEditModal }) => {
-  const { reportType, testName, termId, records } = data
+  const { reportType, testName, termId, addedCount } = data
 
   const leftHeaderText = isEditModal
     ? 'Edit External Data'
@@ -26,7 +26,7 @@ const LeftContent = ({ data, termsMap, isEditModal }) => {
           value={termsMap.get(termId)?.name || '-'}
         />
         <Divider dashed />
-        <ContentRow title="NO. OF RECORDS" value={records || 'N/A'} />
+        <ContentRow title="NO. OF RECORDS" value={addedCount || 'N/A'} />
       </div>
     </ModalContentWrapper>
   )

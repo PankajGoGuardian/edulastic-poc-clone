@@ -196,6 +196,7 @@ const DataWarehouseUploadModal = ({
                   placeholder={testTitlePlaceholder}
                   value={testName}
                   onChange={(e) => setTestName(e.target.value)}
+                  maxLength={150}
                 />
               </StyledCol>
             </StyledRow>

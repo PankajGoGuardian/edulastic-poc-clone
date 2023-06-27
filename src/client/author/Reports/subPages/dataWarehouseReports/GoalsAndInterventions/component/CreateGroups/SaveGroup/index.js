@@ -116,7 +116,7 @@ const SaveGroup = forwardRef(
           handleFieldDataChange('courseId', courseId)
         }
       }
-    }, [courseData, tagProps])
+    }, [courseData])
 
     const { nameGradesCourse, descriptionSubjectTags } = groupFormFields
 

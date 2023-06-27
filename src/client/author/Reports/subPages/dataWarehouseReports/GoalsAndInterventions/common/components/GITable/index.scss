@@ -191,16 +191,26 @@
     }
   }
   .ant-modal-body {
-    padding: 24px 24px 17px 24px;
+    padding: 24px 0px 17px 24px;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     p {
-      width: 70%;
+      width: 90%;
       text-align: center;
       font-weight: 600;
       font-size: 10px;
       line-height: 15px;
       color: $black;
+    }
+    .delete-modal-note {
+      font-family: Open Sans;
+      font-size: 7px;
+      font-weight: 600;
+      line-height: 15px;
+      letter-spacing: 0em;
+      text-align: center;
+      color: #8092a5;
     }
   }
   .ant-modal-footer {
@@ -221,6 +231,14 @@
       border-radius: 4px;
       color: $white;
       border: none;
+    }
+  }
+}
+
+.ant-select-dropdown > div > ul {
+  .ant-select-dropdown-menu-item:hover {
+    span {
+      color: $white !important;
     }
   }
 }

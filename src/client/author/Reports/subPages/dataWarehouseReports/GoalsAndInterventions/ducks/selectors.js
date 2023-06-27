@@ -122,6 +122,10 @@ const isAdvancedSearchLoading = createSelector(
   stateSelector,
   (state) => state[ADVANCED_SEARCH_DATA].isLoading
 )
+const isLoadingOnGroupEdit = createSelector(
+  stateSelector,
+  (state) => state[ADVANCED_SEARCH_DATA].isLoadingOnGroupEdit
+)
 
 export {
   isFormDataSaving,
@@ -148,4 +152,5 @@ export {
   isGroupSavingSelector,
   groupStatusSelector,
   isAdvancedSearchLoading,
+  isLoadingOnGroupEdit,
 }

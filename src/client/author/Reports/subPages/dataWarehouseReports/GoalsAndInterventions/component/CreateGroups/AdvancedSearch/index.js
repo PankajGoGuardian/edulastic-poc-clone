@@ -46,6 +46,7 @@ import {
   isAdvancedSearchLoading,
   isAttendanceBandLoadingSelector,
   isGroupSavingSelector,
+  isLoadingOnGroupEdit,
 } from '../../../ducks/selectors'
 import { getUserOrgData } from '../../../../../../../src/selectors/user'
 import SaveGroup from '../SaveGroup'
@@ -65,6 +66,7 @@ import {
   RemoveRuleAction,
 } from './controls'
 import { fieldKey } from '../../../ducks/constants'
+import { getFormattedQueryData } from './utils'
 
 const { classes, groups } = fieldKey
 
@@ -115,10 +117,16 @@ const AdvancedSearch = ({
   resetAdvancedSearchDetails,
   userOrgData,
   group,
+  setOnGroupEditIsLoading,
+  _isLoadingOnGroupEdit,
 }) => {
   // may require duplicate method
+  const isFilterDataAvailable = !!group?.filters
   const [query, setQuery] = useState(group?.filters || defaultQuery)
   const [intialTagsData, setInitialTagsData] = useState([])
+  const [loadStudentsData, setLoadStudentsData] = useState(
+    isFilterDataAvailable
+  )
   const formattedQuery = parsedBandData(formatQuery(query, 'json_without_ids'))
   const groupFormRef = useRef()
 
@@ -171,6 +179,28 @@ const AdvancedSearch = ({
       setInitialTagsData(tags)
     }
   }, [allTagsData])
+
+  useEffect(() => {
+    if (
+      loadStudentsData &&
+      attendanceBandData?.length &&
+      performanceBandData?.length
+    ) {
+      setLoadStudentsData(false)
+      const formattedQueryData = getFormattedQueryData({
+        filterQuery: { ...query },
+        attendanceBandData,
+        performanceBandData,
+      })
+      setQuery(formattedQueryData)
+      setOnGroupEditIsLoading(true)
+      const searchQuery = JSON.parse(
+        parsedBandData(formatQuery(formattedQueryData, 'json_without_ids'))
+      )
+      setAdvancedSearchQuery(searchQuery)
+      loadAdvanceSearch({ query: searchQuery, paginationDetails: {} })
+    }
+  }, [attendanceBandData, performanceBandData])
 
   // cleanup
   useEffect(
@@ -302,7 +332,11 @@ const AdvancedSearch = ({
         />
       </Spin>
       <Divider />
-      <Spin spinning={isStudentLoading && isEmpty(studentsData)}>
+      <Spin
+        spinning={
+          (_isLoadingOnGroupEdit || isStudentLoading) && isEmpty(studentsData)
+        }
+      >
         <StudentList
           studentsData={studentsData}
           isStudentLoading={isStudentLoading}
@@ -330,6 +364,7 @@ export default connect(
     isPerformanceLoading: isPerformanceBandLoadingSelector(state),
     isAttendanceBandLoading: isAttendanceBandLoadingSelector(state),
     userOrgData: getUserOrgData(state),
+    _isLoadingOnGroupEdit: isLoadingOnGroupEdit(state),
   }),
   {
     setAdvancedSearchQuery: actions.setAdvancedSearchQuery,
@@ -347,5 +382,6 @@ export default connect(
     addNewTag: addNewTagAction,
     _getGroupList: fetchGroupsAction,
     resetAdvancedSearchDetails: actions.resetAdvancedSearchDetails,
+    setOnGroupEditIsLoading: actions.setOnGroupEditIsLoading,
   }
 )(AdvancedSearch)

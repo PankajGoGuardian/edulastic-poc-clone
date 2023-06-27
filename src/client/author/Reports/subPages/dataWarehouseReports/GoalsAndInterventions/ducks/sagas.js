@@ -194,7 +194,7 @@ function* deleteGroupSaga({ payload }) {
 
     notification({
       type: 'success',
-      msg: `group deleted successfully`,
+      msg: `Group deleted successfully`,
     })
   } catch (error) {
     const msg = `Error deleting group.`
@@ -451,6 +451,8 @@ function* getAdvancedSearchData({ payload }) {
     const errorMessage = `Unable to fetch students's list`
     notification({ type: 'error', msg: errorMessage })
     yield put(actions.setAdvancedSearchDataComplete())
+  } finally {
+    yield put(actions.setOnGroupEditIsLoading(false))
   }
 }
 

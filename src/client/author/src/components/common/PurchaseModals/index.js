@@ -8,6 +8,7 @@ import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
 import { roleuser } from '@edulastic/constants'
 import { EduIf } from '@edulastic/common'
+import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -50,6 +51,8 @@ const RenewLicenseModal = loadable(() => import('./RenewLicenseModal'))
 const SubmitPOModal = loadable(() =>
   import('../../../../Subscription/components/SubmitPOModal')
 )
+
+const { PARTIAL_PREMIUM, ENTERPRISE } = SUBSCRIPTION_SUB_TYPES
 
 const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
@@ -160,28 +163,56 @@ const PurchaseFlowModals = (props) => {
     })
   )
 
+  const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
+
+  const shouldbeMultipleLicenses = useMemo(() => {
+    const hasMoreThanOne = Object.keys(cartQuantities).some(
+      (x) =>
+        cartQuantities[x] > 1 ||
+        itemBankSubscriptions.some((permission) => {
+          return (
+            permission.itemBankId ===
+              products.find((p) => p.id === x)?.linkedProductId &&
+            !permission.isTrial
+          )
+        })
+    )
+    if (isEnterprise) {
+      return hasMoreThanOne
+    }
+    return hasMoreThanOne || user?.role != roleuser.TEACHER
+  }, [cartQuantities, itemBankSubscriptions, user?.role, isEnterprise])
+
   const defaultSelectedProductIdsRef = useRef()
+
+  const multipleLicensesPurchaseFlow = [
+    showBuyMoreModal,
+    showMultiplePurchaseModal,
+    shouldbeMultipleLicenses,
+  ].some((o) => !!o)
 
   const getShouldProrate = (endDate) => {
     const oneDay = 1000 * 60 * 60 * 24
     const remainingDaysForPremiumExpiry = Math.round(
       (new Date(endDate).getTime() - new Date().getTime()) / oneDay
     )
-    if (showBuyMoreModal || showMultiplePurchaseModal) {
+    if (multipleLicensesPurchaseFlow) {
       return remainingDaysForPremiumExpiry > 0
     }
     return remainingDaysForPremiumExpiry > 90
   }
   const shouldProrateMultiplePurchase = useMemo(() => {
-    if (
-      (showMultiplePurchaseModal || showBuyMoreModal) &&
-      subsLicenses.length
-    ) {
+    if (multipleLicensesPurchaseFlow && subsLicenses.length) {
       const endDate = subsLicenses[0]?.expiresOn
       return getShouldProrate(endDate)
     }
     return false
-  }, [subsLicenses, showMultiplePurchaseModal, showBuyMoreModal])
+  }, [
+    subsLicenses,
+    showMultiplePurchaseModal,
+    showBuyMoreModal,
+    shouldbeMultipleLicenses,
+  ])
 
   const shouldProrate = useMemo(() => {
     if (
@@ -362,25 +393,6 @@ const PurchaseFlowModals = (props) => {
     }
   }
 
-  const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
-  const shouldbeMultipleLicenses = useMemo(() => {
-    const hasMoreThanOne = Object.keys(cartQuantities).some(
-      (x) =>
-        cartQuantities[x] > 1 ||
-        itemBankSubscriptions.some((permission) => {
-          return (
-            permission.itemBankId ===
-              products.find((p) => p.id === x)?.linkedProductId &&
-            !permission.isTrial
-          )
-        })
-    )
-    if (isEnterprise) {
-      return hasMoreThanOne
-    }
-    return hasMoreThanOne || user?.role != roleuser.TEACHER
-  }, [cartQuantities, itemBankSubscriptions, user?.role, isEnterprise])
-
   const hideCcButton =
     (shouldbeMultipleLicenses || cartQuantities[teacherPremium.id]) &&
     isEnterprise &&
@@ -522,7 +534,7 @@ const PurchaseFlowModals = (props) => {
       <EduIf condition={cartVisible && !fromSideMenu}>
         <CartModal
           visible={cartVisible}
-          products={proratedProducts}
+          products={[teacherPremium, ...itemBankPremium]}
           teacherPremium={teacherPremium}
           setTotalAmount={setTotalAmount}
           bulkInviteBookKeepers={bulkInviteBookKeepers}

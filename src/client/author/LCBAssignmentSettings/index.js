@@ -292,6 +292,7 @@ function LCBAssignmentSettings({
                         assignment?.class[0]?.attemptWindow ||
                         assignment?.attemptWindow
                       }
+                      savedValue={assignment?.attemptWindow}
                       changeField={(key, value) => {
                         changeField(key)(value)
                       }}

@@ -9,6 +9,7 @@ import {
   getInterventionsByGroup,
 } from '../../../../ducks'
 import { selectedFilterTagsData, settings } from '../ducks/selectors'
+import { ATTENDANCE } from '../../GoalsAndInterventions/constants/form'
 
 const AttendanceSummaryChart = ({
   attendanceData,
@@ -43,14 +44,17 @@ const AttendanceSummaryChart = ({
       termId &&
       Number.isInteger(startDate) &&
       Number.isInteger(endDate)
-    )
+    ) {
+      const groupIdsArr =
+        typeof groupIds === 'string' ? groupIds.split(',') : undefined
       fetchInterventionsByGroups({
-        type: ['attendance'],
-        groupIds,
+        type: [ATTENDANCE],
+        groupIds: groupIdsArr,
         startDate,
         endDate,
         termId,
       })
+    }
   }, [attendanceData])
 
   return (

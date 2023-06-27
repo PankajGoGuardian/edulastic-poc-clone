@@ -451,7 +451,7 @@ const getInterventionsByGroups = (params) => {
     .callApi({
       url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/report-interventions`,
       method: 'get',
-      params,
+      params: { jsonQuery: JSON.stringify(params) },
     })
     .then((response) => response?.data?.result?.responseData)
 }

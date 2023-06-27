@@ -70,6 +70,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { isAddToStudentGroupEnabled } from '../common/utils'
+import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
 
 const externalTestTypes = Object.keys(EXTERNAL_TEST_TYPES)
 
@@ -413,14 +414,17 @@ const MultipleAssessmentReport = ({
       termId &&
       Number.isInteger(startDate) &&
       Number.isInteger(endDate)
-    )
+    ) {
+      const groupIdsArr =
+        typeof groupIds === 'string' ? groupIds.split(',') : undefined
       fetchInterventionsByGroups({
-        type: ['academic'],
-        groupIds,
+        type: [ACADEMIC],
+        groupIds: groupIdsArr,
         startDate,
         endDate,
         termId,
       })
+    }
   }, [chartData])
 
   return (

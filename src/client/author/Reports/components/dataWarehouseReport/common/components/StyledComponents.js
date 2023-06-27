@@ -179,6 +179,7 @@ export const CustomStyledTable = styled(StyledTable)`
   }
   .test-name {
     max-width: 300px;
+    width: fit-content;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -57,9 +57,9 @@ const commonColumns = [
     render: (value) => {
       const testName = value || '-'
       return (
-        <div className="test-name">
-          <Tooltip title={value}>{testName} </Tooltip>
-        </div>
+        <Tooltip title={value}>
+          <div className="test-name">{testName}</div>
+        </Tooltip>
       )
     },
     sorter: (a, b) => sortText(a, b, COMMON_KEYS.FILE_NAME),

@@ -95,10 +95,10 @@ const ProductsList = ({
           })
         }
       } else {
-        _quantities = {
-          ...quantities,
-          [id]: undefined,
-        }
+        _quantities = produce(quantities, (draft) => {
+          delete draft[id]
+          return draft
+        })
       }
       setQuantities(_quantities)
       setSelectedProductIds((x) => x.filter((y) => y !== id))
@@ -305,9 +305,7 @@ const ProductsList = ({
   const showTotalPrice = [!isBuyMore, !isRenewLicense, isCart].some((o) => !!o)
   const isNumberInputDisable = (product) => {
     if (isRenewLicense) return true
-    return isBuyMoreOrRenewLicense && !isCart
-      ? false
-      : quantities[product.id] === undefined
+    return isBuyMore && !isCart ? false : quantities[product.id] === undefined
   }
   return (
     <>

@@ -3,10 +3,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
+import {
+  EduIf,
+  FlexContainer,
+  PointBlockContext,
+  notification,
+} from '@edulastic/common'
 import { Select, Icon } from 'antd'
 import styled, { withTheme } from 'styled-components'
-
 import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -16,18 +21,27 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import {
-  FlexContainer,
-  PointBlockContext,
-  notification,
-} from '@edulastic/common'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
-
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import {
   ESSAY_PLAIN_TEXT,
   ESSAY_RICH_TEXT,
 } from '@edulastic/constants/const/questionType'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagic } from '@fortawesome/free-solid-svg-icons'
+import {
+  getCurrentRubricDataSelector,
+  getPreviousRubricGeneratedStimulusSelector,
+  getRubricGenerationInProgress,
+  updateRubricDataAction,
+  removeAiTagFromQuestionAction,
+} from '../../../../author/GradingRubric/ducks'
+import {
+  getCurrentQuestionSelector,
+  getQuestionRubrics,
+  removeRubricIdAction,
+} from '../../../../author/sharedDucks/questions'
+
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -36,22 +50,14 @@ import {
   getIsGradingCheckboxState,
 } from '../../../../author/QuestionEditor/ducks'
 
-import {
-  getQuestionRubrics,
-  removeRubricIdAction,
-} from '../../../../author/sharedDucks/questions'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import { SectionHeading } from '../../../styled/WidgetOptions/SectionHeading'
 import { Subtitle } from '../../../styled/Subtitle'
-import { CustomStyleBtn } from '../../../styled/ButtonStyles'
+import { CustomStyleBtn, CustomStyleBtn2 } from '../../../styled/ButtonStyles'
 import { FormGroup } from '../styled/FormGroup'
 import GradingRubricModal from './GradingRubricModal'
-import {
-  updateRubricDataAction,
-  removeAiTagFromQuestionAction,
-} from '../../../../author/GradingRubric/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
@@ -74,10 +80,11 @@ class Scoring extends Component {
     rubricActionType: '',
   }
 
-  handleRubricAction = (actionType) => {
+  handleRubricAction = (actionType, byAI) => {
     this.setState({
       showGradingRubricModal: true,
       rubricActionType: actionType,
+      generateAutoRubrics: byAI || false,
     })
   }
 
@@ -172,9 +179,23 @@ class Scoring extends Component {
       location,
       itemDetailQuestions,
       isAiEvaulationDistrict,
+      isRubricGenerationInProgress,
+      currentQuestion,
+      premium,
+      previousRubricGeneratedStimulus,
+      currentRubricData,
     } = this.props
-    const { showGradingRubricModal, rubricActionType } = this.state
+    const {
+      showGradingRubricModal,
+      rubricActionType,
+      generateAutoRubrics,
+    } = this.state
     const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
+
+    const btnStyle = {
+      width: 'auto',
+      margin: '0px 0px 0px 10px',
+    }
 
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData)
@@ -280,6 +301,26 @@ class Scoring extends Component {
       isEssayTypeQuestion && isAiEvaulationDistrict
         ? ` (${t('component.options.gradingRubricHelpText')})`
         : ''
+
+    const rubricAlreadyGeneratedOrNotMsg =
+      previousRubricGeneratedStimulus === currentQuestion?.stimulus
+        ? t('author:rubric.rubricAlreadyGenerated')
+        : ''
+
+    const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
+      ? t('author:rubric.stimulusNotPresent')
+      : rubricAlreadyGeneratedOrNotMsg
+
+    const disableAutoGenerateRubricBtn = [
+      isEmpty(currentQuestion?.stimulus),
+      previousRubricGeneratedStimulus === currentQuestion?.stimulus,
+    ].some((o) => !!o)
+
+    const showAutoGenerateRubricBtn = [
+      isEssayTypeQuestion,
+      premium,
+      !currentRubricData?._id,
+    ].every((o) => !!o)
 
     return (
       <div
@@ -471,6 +512,27 @@ class Scoring extends Component {
                 >
                   Use Existing Rubric
                 </CustomStyleBtn>
+                <EduIf
+                  condition={
+                    showAutoGenerateRubricBtn && isAiEvaulationDistrict
+                  }
+                >
+                  <CustomStyleBtn2
+                    style={btnStyle}
+                    display="inline-block"
+                    onClick={(e) => {
+                      this.handleRubricAction('CREATE NEW', true)
+                      e.target.blur()
+                    }}
+                    disabled={disableAutoGenerateRubricBtn}
+                    ghost={disableAutoGenerateRubricBtn}
+                    title={autoGenerateRubricTooltip}
+                    loading={isRubricGenerationInProgress}
+                  >
+                    <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+                    Auto Generate Rubric
+                  </CustomStyleBtn2>
+                </EduIf>
               </Col>
             </Row>
           )}
@@ -542,6 +604,7 @@ class Scoring extends Component {
             data-cy="GradingRubricModal"
             visible={showGradingRubricModal}
             actionType={rubricActionType}
+            generateAutoRubrics={generateAutoRubrics}
             isRegradeFlow={
               location?.state?.regradeFlow ||
               location?.pathname?.includes('classboard') ||
@@ -551,6 +614,9 @@ class Scoring extends Component {
               this.toggleRubricModal()
               setIsGradingRubric(false)
             }}
+            isRubricGenerationInProgress={isRubricGenerationInProgress}
+            currentQuestion={currentQuestion}
+            currentRubricData={currentRubricData}
           />
         )}
       </div>
@@ -589,7 +655,7 @@ Scoring.defaultProps = {
 Scoring.contextType = PointBlockContext
 
 const enhance = compose(
-  withNamespaces('assessment'),
+  withNamespaces(['assessment', 'author']),
   withTheme,
   withRouter,
   connect(
@@ -600,6 +666,13 @@ const enhance = compose(
       containsRubric: getQuestionRubrics(state),
       itemDetailQuestions: getItemDetailQuestionsSelector(state),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+      currentQuestion: getCurrentQuestionSelector(state),
+      previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
+        state
+      ),
+      premium: state?.user?.user?.features?.premium,
+      currentRubricData: getCurrentRubricDataSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

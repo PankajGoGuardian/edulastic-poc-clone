@@ -1,21 +1,21 @@
 import {
   faClone,
   faMinus,
-  faMagic,
+  // faMagic,
   faPencilAlt,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
-import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
-import { EduIf, notification } from '@edulastic/common'
+import { maxBy, sumBy, uniqBy, debounce, intersection } from 'lodash'
+import { notification } from '@edulastic/common'
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
 import { withNamespaces } from '@edulastic/localization'
-import {
-  ESSAY_PLAIN_TEXT,
-  ESSAY_RICH_TEXT,
-} from '@edulastic/constants/const/questionType'
+// import {
+//   ESSAY_PLAIN_TEXT,
+//   ESSAY_RICH_TEXT,
+// } from '@edulastic/constants/const/questionType'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -24,12 +24,12 @@ import { sanitizeForReview } from '@edulastic/common/src/helpers'
 import { tagsApi } from '@edulastic/api'
 import {
   CustomStyleBtn,
-  CustomStyleBtn2,
+  // CustomStyleBtn2,
 } from '../../../assessment/styled/ButtonStyles'
 import { getUserDetails } from '../../../student/Login/ducks'
 import { setItemLevelScoreFromRubricAction } from '../../ItemDetail/ducks'
 import {
-  getCurrentQuestionSelector,
+  // getCurrentQuestionSelector,
   removeRubricIdAction,
   setRubricIdAction,
 } from '../../sharedDucks/questions'
@@ -37,9 +37,9 @@ import {
   addRubricToRecentlyUsedAction,
   autoGenerateRubricAction,
   deleteRubricAction,
-  getCurrentRubricDataSelector,
+  // getCurrentRubricDataSelector,
   getRecentlyUsedRubricsSelector,
-  getRubricGenerationInProgress,
+  // getRubricGenerationInProgress,
   getSearchedRubricsListSelector,
   getSearchingStateSelector,
   getTotalSearchedCountSelector,
@@ -50,7 +50,7 @@ import {
   removeAiTagFromQuestionAction,
   getRubricUUIDsSelector,
   setRubricGenerationStimulusAction,
-  getPreviousRubricGeneratedStimulusSelector,
+  // getPreviousRubricGeneratedStimulusSelector,
 } from '../ducks'
 import {
   ActionBarContainer,
@@ -72,7 +72,7 @@ import {
   setQuestionDataAction,
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
-import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
+// import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -97,18 +97,19 @@ const UseExisting = ({
   addRubricToRecentlyUsed,
   setItemLevelScoring,
   autoGenerateRubric,
-  isRubricGenerationInProgress,
-  t,
+  // isRubricGenerationInProgress,
+  // t,
   questionData,
   allTagsData,
   setQuestionData,
   removeAiTag,
   addNewTag,
-  premium,
+  // premium,
   rubricUUIDs,
   setRubricGenerationStimulus,
-  previousRubricGeneratedStimulus,
-  isAiEvaulationDistrict,
+  generateAutoRubrics,
+  // previousRubricGeneratedStimulus,
+  // isAiEvaulationDistrict,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -154,30 +155,6 @@ const UseExisting = ({
     [currentRubricData?.criteria]
   )
 
-  const rubricAlreadyGeneratedOrNotMsg =
-    previousRubricGeneratedStimulus === currentQuestion?.stimulus
-      ? t('rubric.rubricAlreadyGenerated')
-      : ''
-
-  const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
-    ? t('rubric.stimulusNotPresent')
-    : rubricAlreadyGeneratedOrNotMsg
-
-  const disableAutoGenerateRubricBtn = [
-    isEmpty(currentQuestion?.stimulus),
-    previousRubricGeneratedStimulus === currentQuestion?.stimulus,
-  ].some((o) => !!o)
-
-  const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
-    questionData?.type
-  )
-
-  const showAutoGenerateRubricBtn = [
-    isEssayTypeQuestion,
-    premium,
-    !currentRubricData?._id,
-  ].every((o) => !!o)
-
   const handlePaginationChange = (page) => {
     setCurrentPage(page)
     searchRubricsRequest({
@@ -196,7 +173,11 @@ const UseExisting = ({
       setAIAssisted(true)
     }
   }
-
+  useEffect(() => {
+    if (generateAutoRubrics) {
+      generateRubricByOpenAI()
+    }
+  }, [])
   const validateRubric = () => {
     let isValid = true
     if (currentRubricData.name && isValid) {
@@ -486,7 +467,7 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <EduIf
+            {/* <EduIf
               condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
             >
               <CustomStyleBtn2
@@ -500,7 +481,7 @@ const UseExisting = ({
                 <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
                 Auto Generate Rubric
               </CustomStyleBtn2>
-            </EduIf>
+            </EduIf> */}
             <CustomStyleBtn
               style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}
@@ -664,22 +645,22 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     (state) => ({
-      currentRubricData: getCurrentRubricDataSelector(state),
+      // currentRubricData: getCurrentRubricDataSelector(state),
       user: getUserDetails(state),
       searchedRubricList: getSearchedRubricsListSelector(state),
       searchingState: getSearchingStateSelector(state),
       totalSearchedCount: getTotalSearchedCountSelector(state),
-      currentQuestion: getCurrentQuestionSelector(state),
+      // currentQuestion: getCurrentQuestionSelector(state),
       recentlyUsedRubrics: getRecentlyUsedRubricsSelector(state),
-      isRubricGenerationInProgress: getRubricGenerationInProgress(state),
+      // isRubricGenerationInProgress: getRubricGenerationInProgress(state),
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, 'testitem'),
-      premium: state?.user?.user?.features?.premium,
+      // premium: state?.user?.user?.features?.premium,
       rubricUUIDs: getRubricUUIDsSelector(state),
-      previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
-        state
-      ),
-      isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      // previousRubricGeneratedStimulus: getPreviousRubricGeneratedStimulusSelector(
+      //   state
+      // ),
+      // isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

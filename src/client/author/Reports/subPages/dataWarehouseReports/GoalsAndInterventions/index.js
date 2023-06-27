@@ -54,7 +54,7 @@ const GoalsAndInterventions = ({
         switchSubTab('1', _group)
       }
     } else {
-      switchSubTab('2', _group)
+      switchSubTab('1', _group)
     }
   }
 

@@ -72,6 +72,15 @@ const DataWarehouseUploadModal = ({
   const [isInvalidTestName, setIsInvalidTestName] = useState(false)
 
   useEffect(() => {
+    if (!isVisible) {
+      setFile(null)
+      setCategory('')
+      setTestName('')
+      setTermId('')
+    }
+  }, [isVisible])
+
+  useEffect(() => {
     if (!isEmpty(uploadResponse)) {
       closeModal(true)
     }
@@ -165,6 +174,7 @@ const DataWarehouseUploadModal = ({
               onChange={setCategory}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               treeData={dataFormatTreeOptions}
+              value={category}
             />
           </StyledCol>
           <StyledCol span={12}>
@@ -172,6 +182,7 @@ const DataWarehouseUploadModal = ({
               placeholder="Select School Year"
               onChange={setTermId}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              value={termId}
             >
               {schoolYearOptions.map(({ key, title }) => (
                 <Option key={key} value={key}>

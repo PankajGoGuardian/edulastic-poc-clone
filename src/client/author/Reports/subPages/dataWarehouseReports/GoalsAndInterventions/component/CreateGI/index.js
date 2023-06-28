@@ -1,12 +1,16 @@
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import { get } from 'lodash'
 import VerticalScrollNavigation from '../../../../../../../common/components/VerticalScrollNavigation'
 import {
   getPerformanceBandProfilesSelector,
   receivePerformanceBandAction,
 } from '../../../../../../PerformanceBand/ducks'
-import { fetchGroupsAction } from '../../../../../../sharedDucks/groups'
+import {
+  fetchArchiveGroupsAction,
+  fetchGroupsAction,
+} from '../../../../../../sharedDucks/groups'
 import {
   getCurrentActiveTerms,
   getCurrentTerm,
@@ -32,10 +36,10 @@ import {
 } from '../../constants/form'
 import { actions } from '../../ducks/actionReducers'
 import {
+  allGroupsSelector,
   attendanceBandList,
   formStatus,
   goalsList,
-  groupList,
   isFormDataSaving,
 } from '../../ducks/selectors'
 import useSaveFormData from '../../hooks/useSaveFormData'
@@ -80,6 +84,7 @@ const CreateGI = ({
   group,
   GIData,
   setGIData,
+  fetchArchivedGroups,
 }) => {
   const isSaveGoalView = view === SAVE_GOAL
   const formType = isSaveGoalView ? GOAL : INTERVENTION
@@ -127,6 +132,7 @@ const CreateGI = ({
   useEffect(() => {
     if (currentFormStatus === 'finished') {
       fetchGroupsData()
+      fetchArchivedGroups()
       fetchGoalsList()
       if (formType === INTERVENTION) {
         fetchInterventionsList()
@@ -237,8 +243,11 @@ const CreateGI = ({
 }
 
 export default connect(
-  (state) => ({
-    groupsData: groupList(state),
+  (state, ownProps) => ({
+    groupsData: allGroupsSelector(state, {
+      isEditFlow: get(ownProps, 'GIData.isEditFlow', false),
+      studentGroupIds: get(ownProps, 'GIData.studentGroupIds', []),
+    }),
     performanceBandData: getPerformanceBandProfilesSelector(state),
     attendanceBandData: attendanceBandList(state),
     goalsOptionsData: goalsList(state),
@@ -249,6 +258,7 @@ export default connect(
   }),
   {
     fetchGroupsData: fetchGroupsAction,
+    fetchArchivedGroups: fetchArchiveGroupsAction,
     fetchPerformanceBandData: receivePerformanceBandAction,
     fetchAttendanceBandData: actions.getAttendanceBandList,
     fetchGoalsList: actions.getGoalsList,

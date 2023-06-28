@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { uniqBy } from 'lodash'
 import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import {
   ADVANCED_SEARCH_DATA,
@@ -43,13 +44,48 @@ const interventionsList = createSelector(
   (state) => state.list
 )
 
+const getCustomGroups = (groups) => {
+  if (groups && !groups.length) return []
+  return groups
+    .filter(({ type }) => type === GROUP_TYPE.CUSTOM)
+    .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt))
+}
+
 // group selector
 const groupSelector = (state) => state.authorGroups
 const isGroupLoading = createSelector(groupSelector, (state) => state.isLoading)
 const groupList = createSelector(groupSelector, (state) =>
-  state.groups
-    .filter(({ type }) => type === GROUP_TYPE.CUSTOM)
-    .sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt))
+  getCustomGroups(state.groups)
+)
+
+const archivedGroupList = createSelector(groupSelector, (state) =>
+  state.archiveGroups.map((group) => ({
+    ...group,
+    name: `${group.name || ''}_archived`,
+  }))
+)
+
+const allGroupsSelector = createSelector(
+  groupList,
+  archivedGroupList,
+  (state, ownProps) => ownProps.isEditFlow,
+  (state, ownProps) => ownProps.GITable,
+  (state, ownProps) => ownProps.studentGroupIds,
+  (activeGroups, archivedGroups, isEditFlow, GITables, studentGroupIds) => {
+    if (GITables) {
+      return uniqBy(getCustomGroups(activeGroups.concat(archivedGroups)), '_id')
+    }
+    if (isEditFlow && Array.isArray(studentGroupIds)) {
+      const archivedGroupsInEditFlow = archivedGroups.filter(({ _id }) =>
+        studentGroupIds.includes(_id)
+      )
+      return uniqBy(
+        getCustomGroups(activeGroups.concat(archivedGroupsInEditFlow)),
+        '_id'
+      )
+    }
+    return uniqBy(activeGroups, '_id')
+  }
 )
 
 // attendance band selector
@@ -153,4 +189,5 @@ export {
   groupStatusSelector,
   isAdvancedSearchLoading,
   isLoadingOnGroupEdit,
+  allGroupsSelector,
 }

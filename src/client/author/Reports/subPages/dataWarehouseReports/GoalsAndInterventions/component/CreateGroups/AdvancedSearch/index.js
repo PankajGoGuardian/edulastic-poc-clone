@@ -13,7 +13,9 @@ import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import connect from 'react-redux/es/connect/connect'
 import './queryBuilderStyles.scss'
 
-import { lightRed2 } from '@edulastic/colors'
+import { lightRed2, lightGreen4, green } from '@edulastic/colors'
+import { IconInfo } from '@edulastic/icons'
+import { roleuser } from '@edulastic/constants'
 import {
   getPerformanceBandProfilesSelector,
   isPerformanceBandLoadingSelector,
@@ -48,7 +50,10 @@ import {
   isGroupSavingSelector,
   isLoadingOnGroupEdit,
 } from '../../../ducks/selectors'
-import { getUserOrgData } from '../../../../../../../src/selectors/user'
+import {
+  getUserOrgData,
+  getUserRole,
+} from '../../../../../../../src/selectors/user'
 import SaveGroup from '../SaveGroup'
 import StudentList from './StudentList'
 import ValueEditor from './ValueEditor'
@@ -67,6 +72,7 @@ import {
 } from './controls'
 import { fieldKey } from '../../../ducks/constants'
 import { getFormattedQueryData } from './utils'
+import { InfoMessage } from '../../../../../../../../common/styled'
 
 const { classes, groups } = fieldKey
 
@@ -80,6 +86,19 @@ const getAllRules = (rules = []) => {
     }
   })
   return flattenDeep(allRulesByRecur)
+}
+
+const getNotifyMessageCriteria = (role) => {
+  switch (role) {
+    case roleuser.DISTRICT_ADMIN:
+      return 'district'
+    case roleuser.SCHOOL_ADMIN:
+      return 'school'
+    case roleuser.TEACHER:
+      return 'class'
+    default:
+      return ''
+  }
 }
 
 // The fields would be Grade, Subject, School, Course, Class, Tag, Attendance Band - <band name>, Performance Band -<band name>, Standards Band -<Band name>, Avg score, Test types
@@ -119,6 +138,7 @@ const AdvancedSearch = ({
   group,
   setOnGroupEditIsLoading,
   _isLoadingOnGroupEdit,
+  userRole,
 }) => {
   // may require duplicate method
   const isFilterDataAvailable = !!group?.filters
@@ -127,6 +147,8 @@ const AdvancedSearch = ({
   const [loadStudentsData, setLoadStudentsData] = useState(
     isFilterDataAvailable
   )
+  const [notifyMessageCriteria] = useState(getNotifyMessageCriteria(userRole))
+
   const formattedQuery = parsedBandData(formatQuery(query, 'json_without_ids'))
   const groupFormRef = useRef()
 
@@ -265,6 +287,19 @@ const AdvancedSearch = ({
           <SpinLoader />
         </SpinnerContainer>
       </EduIf>
+      <EduIf condition={!!group}>
+        <div
+          style={{
+            display: 'flex',
+            'justify-content': 'center',
+          }}
+        >
+          <InfoMessage color={lightGreen4}>
+            <IconInfo fill={green} height={10} />{' '}
+            {`To modify individual students please visit Manage ${notifyMessageCriteria} section`}
+          </InfoMessage>
+        </div>
+      </EduIf>
       <SaveGroup
         formattedQuery={formattedQuery}
         wrappedComponentRef={groupFormRef}
@@ -365,6 +400,7 @@ export default connect(
     isAttendanceBandLoading: isAttendanceBandLoadingSelector(state),
     userOrgData: getUserOrgData(state),
     _isLoadingOnGroupEdit: isLoadingOnGroupEdit(state),
+    userRole: getUserRole(state),
   }),
   {
     setAdvancedSearchQuery: actions.setAdvancedSearchQuery,

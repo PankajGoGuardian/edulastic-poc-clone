@@ -213,6 +213,7 @@ const WholeLearnerReport = ({
     // settings.requestFilters is missing class filters
     const _requestFilters = {
       ...filters,
+      courseId: filters.courseIds.split(',')[0],
       assessmentTypes: filters.testTypes,
       profileId: filters.performanceBandProfileId,
       reportId: reportId || '',

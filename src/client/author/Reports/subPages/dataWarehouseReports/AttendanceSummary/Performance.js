@@ -67,6 +67,11 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
         if (!disableDrillDown) {
           if (isStudentCompareBy) {
             const { search } = window.location
+            Object.assign(search, {
+              courseIds: search.courseId,
+              testTypes: search.assessmentTypes,
+              performanceBandProfileId: search.profileId,
+            })
             url = new URL(
               `${window.location.origin}${DW_WLR_REPORT_URL}${record.dimension._id}?${search}`
             )

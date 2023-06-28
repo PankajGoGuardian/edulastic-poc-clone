@@ -31,7 +31,7 @@ const initialState = {
     requestFilters: {
       termId: '',
       reportId: '',
-      courseId: '',
+      courseIds: '',
       grade: '',
       subject: '',
       standardsProficiencyProfileId: '',

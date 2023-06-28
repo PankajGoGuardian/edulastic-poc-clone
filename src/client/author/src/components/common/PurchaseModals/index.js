@@ -243,7 +243,11 @@ const PurchaseFlowModals = (props) => {
       .map((x) => x.itemBankId)
     // for individual purchase have to filttered products
     // for multiples or renew show all products
-    const needToFilterProduct = shouldProrate && !showRenewLicenseModal
+    const needToFilterProduct = [
+      shouldProrate,
+      !showRenewLicenseModal,
+      !cartVisible,
+    ].every((o) => !!o)
     const purchasableProducts = needToFilterProduct
       ? products.filter(
           (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
@@ -316,6 +320,7 @@ const PurchaseFlowModals = (props) => {
     subsLicenses,
     shouldProrateMultiplePurchase,
     showRenewLicenseModal,
+    cartVisible,
   ])
   const proratedItemBankPremiumKeyed = keyBy(itemBankPremium, 'id')
   const proratedProducts = products.map((p) => {

@@ -66,17 +66,17 @@ const DataWarehouseUploadModal = ({
   terms,
 }) => {
   const [file, setFile] = useState(null)
-  const [category, setCategory] = useState('')
+  const [termId, setTermId] = useState(undefined)
+  const [category, setCategory] = useState(undefined)
   const [testName, setTestName] = useState('')
-  const [termId, setTermId] = useState('')
   const [isInvalidTestName, setIsInvalidTestName] = useState(false)
 
   useEffect(() => {
     if (!isVisible) {
       setFile(null)
-      setCategory('')
+      setTermId(undefined)
+      setCategory(undefined)
       setTestName('')
-      setTermId('')
     }
   }, [isVisible])
 

@@ -169,7 +169,7 @@ const ManageSubscriptionsByLicenses = ({
     orgType: 'user',
     managerEmail: [],
     subStartDate: moment().valueOf(),
-    subEndDate: moment().add(1, 'years').valueOf(),
+    subEndDate: moment().add(365, 'days').valueOf(),
     customerSuccessManager: '',
     opportunityId: '',
     notes: '',

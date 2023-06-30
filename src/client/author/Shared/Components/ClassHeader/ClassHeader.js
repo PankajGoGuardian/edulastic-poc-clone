@@ -655,6 +655,7 @@ class ClassHeader extends Component {
             search: `?assignmentId=${assignmentId}&groupId=${classId}`,
           }}
           target="_blank"
+          rel="opener"
         >
           {menuText}
         </Link>

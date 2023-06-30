@@ -288,7 +288,7 @@ export const comparePlansData = [
   },
   {
     cardTitle: 'Premium Teacher',
-    subTitle: '$100 / YEAR',
+    subTitle: ' / YEAR',
     cardLabel: 'PER TEACHER PRICING',
     color: '#4E95F3',
     bgImg: PREMIUMIMG,

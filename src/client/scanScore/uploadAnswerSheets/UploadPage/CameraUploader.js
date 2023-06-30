@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import { Tag } from 'antd'
 
 import {
   themeColor,
@@ -10,6 +11,7 @@ import {
   notStarted,
   white,
   cardBg,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { IconQRCode } from '@edulastic/icons'
@@ -39,7 +41,9 @@ const CameraUploader = ({ history, hasNonMcq }) => {
       <IconWrapper>
         <IconQRCode />
       </IconWrapper>
-      <Title>Scan Using Camera</Title>
+      <Title>
+        Scan Using Camera <StyledTag alignItems="left">BETA</StyledTag>
+      </Title>
       <SubTitle>Scan bubble sheet forms using desktop/laptop camera</SubTitle>
       <EduButton
         data-cy="startCameraButton"
@@ -105,4 +109,10 @@ const IconWrapper = styled.div`
     height: 32px;
     fill: ${white};
   }
+`
+const StyledTag = styled(Tag)`
+  position: relative;
+  top: -15px;
+  border-color: ${themeColorBlue};
+  color: ${themeColorBlue};
 `

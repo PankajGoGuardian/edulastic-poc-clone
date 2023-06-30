@@ -222,6 +222,10 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
+import {
+  ACADEMIC,
+  ATTENDANCE,
+} from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 
 const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
 
@@ -347,6 +351,16 @@ export const getCsvDocsLoading = createSelector(
 
 export const getInterventionsByGroup = createSelector(stateSelector, (state) =>
   sortBy(state.interventionsByGroups, 'endDate')
+)
+
+export const getAcademicInterventions = createSelector(
+  getInterventionsByGroup,
+  (state) => state.filter(({ type }) => type === ACADEMIC)
+)
+
+export const getAttendanceInterventions = createSelector(
+  getInterventionsByGroup,
+  (state) => state.filter(({ type }) => type === ATTENDANCE)
 )
 
 export const getInterventionsLoading = createSelector(

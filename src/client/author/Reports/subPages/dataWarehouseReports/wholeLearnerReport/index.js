@@ -36,6 +36,8 @@ import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
   fetchInterventionsByGroupsRequest,
   fetchUpdateTagsDataAction,
+  getAcademicInterventions,
+  getAttendanceInterventions,
   getCsvDownloadingState,
   getInterventionsByGroup,
   getSharingState,
@@ -118,6 +120,8 @@ const WholeLearnerReport = ({
   fetchInterventionsByGroups,
   interventionsData,
   termsData,
+  attendanceInterventions,
+  academicInterventions,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -455,7 +459,7 @@ const WholeLearnerReport = ({
                           chartData={chartData}
                           selectedPerformanceBand={selectedPerformanceBand}
                           showInterventions={showInterventions}
-                          interventionsData={interventionsData}
+                          interventionsData={academicInterventions}
                           settings={settings}
                           preLabelContent={
                             <ChartPreLabelWrapper>
@@ -497,7 +501,7 @@ const WholeLearnerReport = ({
                       <AttendanceChart
                         attendanceChartData={attendanceChartData}
                         showInterventions={showInterventions}
-                        interventionsData={interventionsData}
+                        interventionsData={attendanceInterventions}
                       />
                     </EduIf>
                     <EduIf condition={!isEmpty(tableData)}>
@@ -529,6 +533,8 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
     interventionsData: getInterventionsByGroup(state),
+    academicInterventions: getAcademicInterventions(state),
+    attendanceInterventions: getAttendanceInterventions(state),
     termsData: get(state, 'user.user.orgData.terms', []),
   }),
   {

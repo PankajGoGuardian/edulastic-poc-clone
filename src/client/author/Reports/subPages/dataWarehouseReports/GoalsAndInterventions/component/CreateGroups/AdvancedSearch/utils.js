@@ -72,6 +72,5 @@ export const getFormattedQueryData = ({
       return rule
     })
   }
-  console.log('filterData', { ...filterQuery, rules: updatedRules })
   return { ...filterQuery, rules: updatedRules }
 }

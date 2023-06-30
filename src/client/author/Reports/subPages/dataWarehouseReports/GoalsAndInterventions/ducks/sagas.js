@@ -270,11 +270,18 @@ function* saveGroup({ payload }) {
       )
     )
     yield put(actions.setAdvancedSearchQuery())
+    if (groupData._id) {
+      notification({
+        type: 'success',
+        msg:
+          response?.data?.result?.message ||
+          'Student group updated successfully.',
+      })
+      return
+    }
     notification({
       type: 'success',
-      msg: isUpdateAction
-        ? `Student group updated successfully.`
-        : `Student group created successfully.`,
+      msg: `Student group created successfully.`,
     })
   } catch (error) {
     const errorMessage = payload._id

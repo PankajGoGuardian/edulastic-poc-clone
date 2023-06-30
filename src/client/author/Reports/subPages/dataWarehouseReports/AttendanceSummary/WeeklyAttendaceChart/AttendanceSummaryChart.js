@@ -6,6 +6,7 @@ import AttendanceSummaryGraph from './AttendanceSummaryGraph'
 import AttendanceSummaryHeader from './AttendanceSummaryHeader'
 import {
   fetchInterventionsByGroupsRequest,
+  fetchInterventionsByGroupsSuccess,
   getInterventionsByGroup,
 } from '../../../../ducks'
 import { selectedFilterTagsData, settings } from '../ducks/selectors'
@@ -20,12 +21,12 @@ const AttendanceSummaryChart = ({
   fetchInterventionsByGroups,
   filterTagsData,
   settingsData,
+  setInterventionsByGroup,
 }) => {
   const [showInterventions, setShowInterventions] = useState(false)
 
-  const onShowInterventionClick = (e) => {
-    const checked = e.target.checked
-    setShowInterventions(checked)
+  const onShowInterventionClick = () => {
+    setShowInterventions((val) => !val)
   }
 
   useEffect(() => {
@@ -54,6 +55,8 @@ const AttendanceSummaryChart = ({
         endDate,
         termId,
       })
+    } else {
+      setInterventionsByGroup([])
     }
   }, [attendanceData])
 
@@ -64,6 +67,7 @@ const AttendanceSummaryChart = ({
         setGroupBy={setGroupBy}
         filterTagsData={filterTagsData}
         interventionData={interventionData}
+        showInterventions={showInterventions}
         onShowInterventionClick={onShowInterventionClick}
       />
       <EduIf condition={loading}>
@@ -89,6 +93,7 @@ const enhance = connect(
   }),
   {
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
+    setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
   }
 )
 

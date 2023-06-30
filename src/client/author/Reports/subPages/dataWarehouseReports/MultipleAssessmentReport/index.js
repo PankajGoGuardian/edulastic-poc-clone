@@ -42,6 +42,7 @@ import TableFilters from './components/TableFilters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
   fetchInterventionsByGroupsRequest,
+  fetchInterventionsByGroupsSuccess,
   fetchUpdateTagsDataAction,
   getCsvDownloadingState,
   getInterventionsByGroup,
@@ -132,6 +133,7 @@ const MultipleAssessmentReport = ({
   selectedTests,
   setSelectedTests,
   fetchInterventionsByGroups,
+  setInterventionsByGroup,
   interventionsData,
 }) => {
   const [sortFilters, setSortFilters] = useState({
@@ -424,6 +426,8 @@ const MultipleAssessmentReport = ({
         endDate,
         termId,
       })
+    } else {
+      setInterventionsByGroup([])
     }
   }, [chartData])
 
@@ -507,16 +511,11 @@ const MultipleAssessmentReport = ({
               <StyledH3 margin="30px 0 0 0">
                 Performance across Assessments
               </StyledH3>
-              <EduIf
-                condition={
-                  interventionsData.length &&
-                  (filterTagsData?.groupIds?.length ||
-                    filterTagsData?.classIds?.length)
-                }
-              >
+              <EduIf condition={interventionsData.length}>
                 <Checkbox
                   style={{ margin: '30px 0 0 16px' }}
                   onChange={onShowInterventionClick}
+                  checked={showInterventions}
                 >
                   Show Interventions{' '}
                 </Checkbox>
@@ -593,6 +592,7 @@ const enhance = connect(
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
+    setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

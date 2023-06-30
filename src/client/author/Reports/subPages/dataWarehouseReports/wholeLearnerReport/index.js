@@ -478,7 +478,7 @@ const WholeLearnerReport = ({
                                     checked={showInterventions}
                                     onChange={toggleInterventionInfo}
                                   >
-                                    Show Intervention{' '}
+                                    Show Interventions{' '}
                                   </Checkbox>
                                   <IconInfo
                                     fill={blueButton}
@@ -542,6 +542,7 @@ const enhance = connect(
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
+
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.WHOLE_LEARNER_REPORT,

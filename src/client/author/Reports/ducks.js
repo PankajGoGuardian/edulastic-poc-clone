@@ -274,6 +274,9 @@ export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
 export const fetchInterventionsByGroupsRequest = createAction(
   FETCH_INTERVENTIONS_BY_GROUPS_REQUEST
 )
+export const fetchInterventionsByGroupsSuccess = createAction(
+  FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS
+)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -942,10 +945,7 @@ function* fetchInterventionByGroupsSaga({ payload }) {
       reportsApi.getInterventionsByGroups,
       payload
     )
-    yield put({
-      type: FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS,
-      payload: responseData,
-    })
+    yield put(fetchInterventionsByGroupsSuccess(responseData))
   } catch (error) {
     const msg =
       'Error getting interventions data. Please try again after a few minutes.'

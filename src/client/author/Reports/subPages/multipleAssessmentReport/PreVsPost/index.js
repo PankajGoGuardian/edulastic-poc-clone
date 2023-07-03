@@ -142,6 +142,8 @@ const PreVsPostReport = ({
     preTestName,
     postTestName,
     totalStudentCount,
+    preStudentCount,
+    postStudentCount,
     summaryData,
     hasIncompleteTests,
   } = useMemo(() => {
@@ -306,6 +308,8 @@ const PreVsPostReport = ({
             summary={summaryData}
             preTestName={preTestName}
             postTestName={postTestName}
+            preStudentCount={preStudentCount}
+            postStudentCount={postStudentCount}
             totalStudentCount={totalStudentCount}
             selectedPerformanceBand={selectedPerformanceBand}
           />

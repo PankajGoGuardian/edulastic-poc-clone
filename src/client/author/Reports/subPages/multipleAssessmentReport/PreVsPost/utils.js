@@ -128,6 +128,8 @@ export const getSummaryDataFromSummaryMetrics = (summaryMetricInfo) => {
     summaryMetricInfo,
     (s) => parseInt(s.totalStudentCount, DECIMAL_BASE) || 0
   )
+  const { preStudentCount = 0, postStudentCount = 0 } =
+    summaryMetricInfo[0] || {}
   // get average and max scores
   const preTestAverageScore = round(
     sumBy(summaryMetricInfo, 'preTestScore') / totalStudentCount
@@ -141,6 +143,8 @@ export const getSummaryDataFromSummaryMetrics = (summaryMetricInfo) => {
     get(maxBy(summaryMetricInfo, 'postTestMaxScore'), 'postTestMaxScore') || 0
   return {
     totalStudentCount,
+    preStudentCount,
+    postStudentCount,
     summaryData: {
       preTestAverageScore,
       postTestAverageScore,

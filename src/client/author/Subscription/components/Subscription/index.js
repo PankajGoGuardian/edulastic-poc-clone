@@ -36,6 +36,7 @@ import {
 import { getUserFeatures } from '../../../src/selectors/user'
 import { comparePlansData } from '../../constants/subscription'
 import { navigationState } from '../../../src/constants/navigation'
+import { SUBSCRIPTION_DEFINITION_TYPES } from '../../../../admin/Data'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
@@ -46,19 +47,22 @@ const PlanDetailsComponent = ({ title, description = '' }) => (
   </>
 )
 
-const Plans = ({ cardTitle, subTitle, data, color, bgImg }) => (
-  <PlanCard>
-    <PlanHeader bgImg={bgImg} color={color}>
-      <h2>{cardTitle}</h2>
-      <span>{subTitle}</span>
-    </PlanHeader>
-    <PlanContent>
-      {data.map((item) => (
-        <PlanDetailsComponent {...item} />
-      ))}
-    </PlanContent>
-  </PlanCard>
-)
+const Plans = ({ cardTitle, subTitle, data, color, bgImg, price }) => {
+  subTitle = cardTitle === 'Premium Teacher' ? `$${price}${subTitle}` : subTitle
+  return (
+    <PlanCard>
+      <PlanHeader bgImg={bgImg} color={color}>
+        <h2>{cardTitle}</h2>
+        <span>{subTitle}</span>
+      </PlanHeader>
+      <PlanContent>
+        {data.map((item) => (
+          <PlanDetailsComponent {...item} />
+        ))}
+      </PlanContent>
+    </PlanCard>
+  )
+}
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
@@ -288,7 +292,9 @@ const Subscription = (props) => {
       afterSignup()
     }
   }
-
+  const premiumTeacherPrice =
+    products?.find((o) => o.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM)
+      ?.price || 125
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -405,7 +411,7 @@ const Subscription = (props) => {
         style={{ top: 25 }}
       >
         {comparePlansData.map((plan) => (
-          <Plans {...plan} />
+          <Plans {...plan} price={premiumTeacherPrice} />
         ))}
       </CompareModal>
 

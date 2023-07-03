@@ -33,32 +33,20 @@ export function handleChromeOsSEB({
   testActivityId,
   groupId,
 }) {
-  const isChromeOs = checkIsChromeOs()
-  if (isChromeOs) {
-    const extensionAppId = AppConfig.kioskChromeAppId
-    if (window?.chrome?.runtime && extensionAppId) {
-      const redirectUrl = getKioskAppUrl({
-        testId,
-        assignmentId,
-        testActivityId,
-        userId,
-        role,
-        groupId,
-      })
-      triggerKioskApp(extensionAppId, redirectUrl)
-    } else {
-      let msg = `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
-      if (isKioskAppEnabled()) {
-        msg = `This Assignment has been assigned with Kiosk mode which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device.`
-      }
-      notification({
-        msg,
-        duration: 7,
-      })
+  if (checkIsChromeOs() && !isSEB()) {
+    let msg = `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
+    if (isKioskAppEnabled()) {
+      msg = `This Assignment has been assigned with Kiosk mode. Please contact your instructor to update the settings for the assignment or use Kiosk app.`
     }
+    notification({
+      msg,
+      duration: 7,
+    })
+
+    return true
   }
 
-  return isChromeOs
+  return false
 }
 
 export const ALPHABET = [
@@ -172,37 +160,6 @@ const getNumeration = (index, type) => {
 const isEmpty = (str) => {
   str = typeof str === 'string' ? str.trim() : ''
   return str === '<p><br></p>' || str === ''
-}
-
-const getKioskAppUrl = ({
-  testId,
-  assignmentId,
-  testActivityId,
-  userId,
-  role,
-  groupId,
-}) => {
-  const key = tokenKey(userId, role)
-  const tokenValue = window.localStorage.getItem(`${key}`)
-  return `${window.location.origin}/home/seb/test/${testId}/type/assessment/assignment/${assignmentId}/testActivity/${testActivityId}?token=${tokenValue}&userId=${userId}&role=${role}&groupId=${groupId}`
-}
-
-const triggerKioskApp = (extensionAppId, redirectUrl) => {
-  try {
-    window.chrome.runtime.sendMessage(
-      extensionAppId,
-      { redirectUrl },
-      (message) => {
-        console.log(message || '** kiosk app callback **')
-      }
-    )
-  } catch (e) {
-    notification({
-      type: 'error',
-      msg: 'There is a problem launching the assignment in kiosk mode.',
-      duration: 7,
-    })
-  }
 }
 
 function isBlobData(file) {

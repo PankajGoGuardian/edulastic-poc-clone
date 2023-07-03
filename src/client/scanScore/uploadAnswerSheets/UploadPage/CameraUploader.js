@@ -6,12 +6,10 @@ import { Tag } from 'antd'
 import {
   themeColor,
   greyThemeLight,
-  title,
   dragDropUploadText,
   notStarted,
   white,
   cardBg,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { IconQRCode } from '@edulastic/icons'
@@ -85,7 +83,7 @@ const Title = styled.h3`
   text-align: center;
   font: normal normal bold 18px Open Sans;
   letter-spacing: -0.9px;
-  color: ${title};
+  color: ${dragDropUploadText};
   opacity: 1;
   margin-bottom: -20px;
 `
@@ -113,6 +111,6 @@ const IconWrapper = styled.div`
 const StyledTag = styled(Tag)`
   position: relative;
   top: -15px;
-  border-color: ${themeColorBlue};
-  color: ${themeColorBlue};
+  border-color: ${dragDropUploadText};
+  color: ${dragDropUploadText};
 `

@@ -40,6 +40,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { getTokens } from '@edulastic/api/src/utils/Storage'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -659,6 +660,14 @@ class SideMenu extends Component {
         Boolean
       ) && ['district-admin', 'school-admin', 'teacher'].includes(userRole)
 
+    const tokens = getTokens()
+
+    const isEA = tokens.find((token) =>
+      token.includes(roleuser.EDULASTIC_ADMIN)
+    )
+
+    const isProxyUserAndNotEA = isProxyUser && !isEA
+
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
         data-cy="footer-dropdown"
@@ -705,7 +714,8 @@ class SideMenu extends Component {
               className="removeSelectedBorder"
               disabled={
                 isDemoAccount ||
-                (!emailVerified && verificationTS && !isDefaultDA)
+                (!emailVerified && verificationTS && !isDefaultDA) ||
+                isProxyUserAndNotEA
               }
               title={
                 !emailVerified && verificationTS && !isDefaultDA

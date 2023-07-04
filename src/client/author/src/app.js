@@ -160,6 +160,9 @@ const PerformanceBand = loadable(() => import('../PerformanceBand'), {
 const StandardsProficiency = loadable(() => import('../StandardsProficiency'), {
   fallback: <Progress />,
 })
+const EarlyWarningBands = loadable(() => import('../EarlyWarningBands'), {
+  fallback: <Progress />,
+})
 const Schools = loadable(() => import('../Schools'), {
   fallback: <Progress />,
 })
@@ -791,6 +794,11 @@ const Author = ({
                   exact
                   path="/author/settings/standards-proficiency"
                   component={StandardsProficiency}
+                />
+                <Route
+                  exact
+                  path="/author/settings/early-warning-bands"
+                  component={EarlyWarningBands}
                 />
                 <Route
                   exact

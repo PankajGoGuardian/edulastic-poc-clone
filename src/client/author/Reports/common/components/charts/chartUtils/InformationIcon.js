@@ -119,7 +119,12 @@ const InformationIcon = ({
       onMouseOut={handleMouseLeave}
     >
       <foreignObject width={iconWidth} height={iconHeight} pointerEvents="auto">
-        <IconInfo fill={blueButton} width={iconWidth} height={iconHeight} />
+        <IconInfo
+          fill={blueButton}
+          width={iconWidth}
+          height={iconHeight}
+          style={{ backgroundColor: '#fff' }}
+        />
       </foreignObject>
     </g>
   ) : null

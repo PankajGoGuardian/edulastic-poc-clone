@@ -14,6 +14,7 @@ import {
   ColorBandRow,
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
+import { getScoreSuffix } from '../../common/utils'
 
 const { formatDate } = reportUtils.common
 
@@ -80,11 +81,9 @@ const getTooltipJSX = (payload, barIndex) => {
         <TooltipRowItem title="Students:" value={barData.totalGraded} />
         <TooltipRowItem
           title="Score:"
-          value={
+          value={`${round(barData.averageScore)}${getScoreSuffix(
             barData.externalTestType
-              ? barData.averageScore
-              : `${barData.totalScore}/${barData.totalMaxScore}`
-          }
+          )}`}
         />
         <DashedHr />
         {colorBandComponent}

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { capitalize, isEmpty, reject, isNil, keyBy } from 'lodash'
+import { capitalize, isEmpty, reject, isNil, keyBy, isArray } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
 
@@ -73,7 +73,7 @@ function useFiltersFromURL({
         staticDropDownData.periodTypes[0]
 
       const getClassFilterTagsValue = (list, data) => {
-        return !isEmpty(list) && !isNil(data)
+        return !isEmpty(list) && !isNil(data) && isArray(list)
           ? list
               .filter((item) => data.includes(item._id))
               .map((itemObj) => ({

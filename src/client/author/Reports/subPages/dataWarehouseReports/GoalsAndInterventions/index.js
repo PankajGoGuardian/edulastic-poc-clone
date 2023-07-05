@@ -105,7 +105,10 @@ const GoalsAndInterventions = ({
                 onClick={() => setSubActiveKey('2')}
               />
             }
-            onEdit={(GIFormData) => switchToTabAndSubTab('2', '2', GIFormData)}
+            onEdit={(GIFormData) => {
+              if (GIFormData?.isEditFlow)
+                switchToTabAndSubTab('2', '2', GIFormData)
+            }}
           />
         ),
       },
@@ -137,7 +140,10 @@ const GoalsAndInterventions = ({
                 onClick={() => setSubActiveKey('2')}
               />
             }
-            onEdit={(GIFormData) => switchToTabAndSubTab('3', '2', GIFormData)}
+            onEdit={(GIFormData) => {
+              if (GIFormData?.isEditFlow)
+                switchToTabAndSubTab('3', '2', GIFormData)
+            }}
           />
         ),
       },

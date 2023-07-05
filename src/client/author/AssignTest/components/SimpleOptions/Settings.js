@@ -903,6 +903,7 @@ const Settings = ({
                   onChange={(value) =>
                     overRideSettings('showTtsForPassages', value)
                   }
+                  switchTextYesNo
                 />
               </Col>
             </StyledRow>

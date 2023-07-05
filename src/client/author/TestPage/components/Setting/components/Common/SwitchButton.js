@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import { EduSwitchStyled } from '@edulastic/common'
 import { settingSwitchButtonTestId } from './constants'
 
-const SwitchButton = ({ disabled, checked, onChangeHandler }) => {
+const SwitchButton = ({
+  disabled,
+  checked,
+  onChangeHandler,
+  switchTextYesNo,
+}) => {
   return (
     <EduSwitchStyled
       disabled={disabled}
@@ -11,6 +16,7 @@ const SwitchButton = ({ disabled, checked, onChangeHandler }) => {
       onChange={onChangeHandler}
       data-testid={settingSwitchButtonTestId}
       data-cy="allowTtsForPassage"
+      switchTextYesNo={switchTextYesNo}
     />
   )
 }

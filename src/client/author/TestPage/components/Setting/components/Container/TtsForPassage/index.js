@@ -39,6 +39,7 @@ const ShowTtsForPassage = ({
             disabled={isDisabled}
             checked={showTtsForPassages}
             onChangeHandler={updateShowTtsForPassage}
+            switchTextYesNo
           />
         </Title>
         <SettingDescription

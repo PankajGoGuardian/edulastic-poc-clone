@@ -35,6 +35,7 @@ const ShowTtsForPassage = ({
           onChangeHandler={(value) =>
             overRideSettings('showTtsForPassages', value)
           }
+          switchTextYesNo
         />
       </Col>
     </StyledRow>

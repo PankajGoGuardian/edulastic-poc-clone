@@ -9,7 +9,8 @@ export const EduSwitchStyled = styled(Switch)`
     min-width: ${(props) => props.width || '40'}px !important;
     .ant-switch-inner {
       &:after {
-        content: 'OFF';
+        content: ${({ switchTextYesNo }) =>
+          switchTextYesNo ? "'NO'" : "'OFF'"};
         font-size: 9px;
         color: #606060;
         position: absolute;
@@ -23,7 +24,8 @@ export const EduSwitchStyled = styled(Switch)`
       background: ${themeColorBlue};
       .ant-switch-inner {
         &:after {
-          content: 'ON';
+          content: ${({ switchTextYesNo }) =>
+            switchTextYesNo ? "'YES'" : "'ON'"};
           color: ${white};
           top: 50%;
           right: auto;

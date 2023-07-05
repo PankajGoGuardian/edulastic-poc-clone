@@ -190,3 +190,6 @@ export const TitleWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
 `
+export const StimulusContainer = styled.div`
+  margin-bottom: 10px;
+`

@@ -210,6 +210,8 @@ class QuestionItem extends React.Component {
       resetTimeSpentOnQuestion,
       itemId,
       disableAutoHightlight,
+      isSnapQuizVideo = false,
+      isSnapQuizVideoPlayer = false,
     } = this.props
 
     if (!evaluation) {
@@ -245,6 +247,8 @@ class QuestionItem extends React.Component {
       highlighted,
       boundingRect,
       testItemId: itemId,
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer,
     }
 
     switch (data.type) {

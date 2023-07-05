@@ -4,6 +4,7 @@ import { Input, InputNumber, Radio } from 'antd'
 import { throttle, isArray } from 'lodash'
 
 import { inputBgGrey, inputBorder } from '@edulastic/colors'
+import { EduIf, EduElse, EduThen } from '@edulastic/common'
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
 import {
   QuestionFormWrapper,
@@ -12,6 +13,7 @@ import {
   Points,
   CheckboxGroupStyled,
 } from '../../common/QuestionForm'
+import VideoQuizQuestionChoice from './VideoQuizQuestionChoice'
 
 const { Group: RadioGroup } = Radio
 
@@ -121,53 +123,63 @@ export default class QuestionChoice extends React.Component {
 
   render() {
     const { optionsValue, correctAnswers, score } = this.state
-    const {
-      question: { options, title },
-    } = this.props
+    const { question, isSnapQuizVideo, onUpdate } = this.props
+    const { options, title } = question
     const trueOrFalse = title === 'True or false'
+
     return (
       <QuestionFormWrapper>
-        {!trueOrFalse && (
-          <FormGroup>
-            <FormLabel>Options</FormLabel>
-            <Input
-              value={optionsValue}
-              onChange={throttle(this.handleSetOptions, 2000)}
-              autoFocus
-              style={{
-                letterSpacing: '8px',
-                background: inputBgGrey,
-                border: `1px solid ${inputBorder}`,
-                borderRadius: '0px',
-              }}
-              data-cy="options"
+        <EduIf condition={isSnapQuizVideo && !trueOrFalse}>
+          <EduThen>
+            <VideoQuizQuestionChoice
+              question={question}
+              updateQuestionData={onUpdate}
             />
-          </FormGroup>
-        )}
-        <FormGroup>
-          <FormLabel>Correct Answers</FormLabel>
-          {trueOrFalse ? (
-            <RadioGroup
-              options={options}
-              value={correctAnswers[0]}
-              onChange={this.handleSetCorrectAnswers}
-            />
-          ) : (
-            <CheckboxGroupStyled
-              options={options}
-              value={correctAnswers}
-              onChange={this.handleSetCorrectAnswers}
-              data-cy="answerLabels"
-            />
-          )}
-          <InputNumber
-            min={0}
-            value={score}
-            onChange={this.handleSetScore}
-            data-cy="points"
-          />
-          <Points>Points</Points>
-        </FormGroup>
+          </EduThen>
+          <EduElse>
+            {!trueOrFalse && (
+              <FormGroup>
+                <FormLabel>Options</FormLabel>
+                <Input
+                  value={optionsValue}
+                  onChange={throttle(this.handleSetOptions, 2000)}
+                  autoFocus
+                  style={{
+                    letterSpacing: '8px',
+                    background: inputBgGrey,
+                    border: `1px solid ${inputBorder}`,
+                    borderRadius: '0px',
+                  }}
+                  data-cy="options"
+                />
+              </FormGroup>
+            )}
+            <FormGroup>
+              <FormLabel>Correct Answers</FormLabel>
+              {trueOrFalse ? (
+                <RadioGroup
+                  options={options}
+                  value={correctAnswers[0]}
+                  onChange={this.handleSetCorrectAnswers}
+                />
+              ) : (
+                <CheckboxGroupStyled
+                  options={options}
+                  value={correctAnswers}
+                  onChange={this.handleSetCorrectAnswers}
+                  data-cy="answerLabels"
+                />
+              )}
+              <InputNumber
+                min={0}
+                value={score}
+                onChange={this.handleSetScore}
+                data-cy="points"
+              />
+              <Points>Points</Points>
+            </FormGroup>
+          </EduElse>
+        </EduIf>
       </QuestionFormWrapper>
     )
   }

@@ -2,8 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Input, Radio } from 'antd'
 import { isUndefined } from 'lodash'
+import { EduIf, helpers } from '@edulastic/common'
 
 import { QuestionOption, QuestionChunk } from '../../common/Form'
+import { StimulusContainer } from '../../styled'
+import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
 
 export default class FormChoice extends React.Component {
   static propTypes = {
@@ -52,6 +55,32 @@ export default class FormChoice extends React.Component {
     saveAnswer(currentValue)
   }
 
+  getOptionLabel = (index) => helpers.getNumeration(index, 'uppercase')
+
+  get showStimulus() {
+    const {
+      question: { stimulus = '', type },
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer = false,
+    } = this.props
+
+    return (
+      !isSnapQuizVideoPlayer &&
+      isSnapQuizVideo &&
+      videoQuizStimulusSupportedQtypes.includes(type) &&
+      stimulus?.length
+    )
+  }
+
+  get shouldModifyLabel() {
+    const {
+      question: { type },
+      isSnapQuizVideo,
+    } = this.props
+
+    return isSnapQuizVideo && videoQuizStimulusSupportedQtypes.includes(type)
+  }
+
   renderRadioForm = (chosenValue, handleChange = () => {}) => {
     const {
       question: { options },
@@ -88,6 +117,7 @@ export default class FormChoice extends React.Component {
         validation: {
           validResponse: { value },
         },
+        stimulus = '',
       },
       isTrueOrFalse,
     } = this.props
@@ -98,13 +128,16 @@ export default class FormChoice extends React.Component {
 
     return (
       <QuestionChunk>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
         {options.map(({ label, value: v }, key) => (
           <QuestionOption
             key={label + key}
             selected={value.includes(v)}
             multipleResponses={multipleResponses}
           >
-            {label}
+            {this.shouldModifyLabel ? this.getOptionLabel(key) : label}
           </QuestionOption>
         ))}
       </QuestionChunk>
@@ -113,7 +146,7 @@ export default class FormChoice extends React.Component {
 
   renderForm = (mode) => {
     const {
-      question: { options, multipleResponses },
+      question: { options, multipleResponses, stimulus = '' },
       evaluation,
       view,
       answer,
@@ -140,31 +173,39 @@ export default class FormChoice extends React.Component {
 
     return (
       <QuestionChunk data-cy="mcqChoice">
-        {options.map(({ label, value }, key) => (
-          <QuestionOption
-            tabIndex="0"
-            mode={mode}
-            data-cy="choiceOption"
-            key={`form-${label}-${key}`}
-            selected={answer.includes(value)}
-            correct={evaluation && getCorrect(value)}
-            checked={!isUndefined(evaluation) && view !== 'clear'}
-            onClick={mode === 'report' ? '' : this.handleSelect(value)}
-            review
-            multipleResponses={multipleResponses}
-            onMouseDown={(e) => e && e.preventDefault()}
-            onKeyDown={(e) => {
-              const code = e.which
-              if (code === 13 || code === 32) {
-                if (mode !== 'report') {
-                  this.handleSelect(value)()
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        {options.map(({ label, value }, key) => {
+          const _label = this.shouldModifyLabel
+            ? this.getOptionLabel(key)
+            : label
+          return (
+            <QuestionOption
+              tabIndex="0"
+              mode={mode}
+              data-cy="choiceOption"
+              key={`form-${_label}-${key}`}
+              selected={answer.includes(value)}
+              correct={evaluation && getCorrect(value)}
+              checked={!isUndefined(evaluation) && view !== 'clear'}
+              onClick={mode === 'report' ? '' : this.handleSelect(value)}
+              review
+              multipleResponses={multipleResponses}
+              onMouseDown={(e) => e && e.preventDefault()}
+              onKeyDown={(e) => {
+                const code = e.which
+                if (code === 13 || code === 32) {
+                  if (mode !== 'report') {
+                    this.handleSelect(value)()
+                  }
                 }
-              }
-            }}
-          >
-            {label}
-          </QuestionOption>
-        ))}
+              }}
+            >
+              {_label}
+            </QuestionOption>
+          )
+        })}
       </QuestionChunk>
     )
   }

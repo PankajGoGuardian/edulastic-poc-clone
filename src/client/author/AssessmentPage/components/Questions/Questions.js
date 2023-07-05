@@ -50,6 +50,10 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
+import {
+  videoQuizDefaultQuestionOptions,
+  videoQuizStimulusSupportedQtypes,
+} from './constants'
 
 const { methods, defaultNumberPad } = math
 
@@ -85,6 +89,7 @@ const SortableQuestionItem = SortableElement(
     resetTimeSpentOnQuestion,
     itemId,
     disableAutoHightlight,
+    isSnapQuizVideo,
   }) => (
     <div
       onClick={() => {
@@ -130,6 +135,7 @@ const SortableQuestionItem = SortableElement(
         resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
         itemId={itemId}
         disableAutoHightlight={disableAutoHightlight}
+        isSnapQuizVideo={isSnapQuizVideo}
       />
     </div>
   )
@@ -221,33 +227,42 @@ const createQuestion = (
   type,
   index,
   isDocBased = false,
-  docBasedCommonData = {}
-) => ({
-  id: uuid(),
-  qIndex: index,
-  title: typeTitleHash[type],
-  type,
-  isDocBased,
-  options: defaultQuestionOptions[type],
-  validation: {
-    scoringType: 'exactMatch',
-    validResponse: {
-      score: 1,
-      value: defaultQuestionValue[type],
+  docBasedCommonData = {},
+  isSnapQuizVideo
+) => {
+  const staticQuestionData = {
+    id: uuid(),
+    qIndex: index,
+    title: typeTitleHash[type],
+    type,
+    isDocBased,
+    options: defaultQuestionOptions[type],
+    validation: {
+      scoringType: 'exactMatch',
+      validResponse: {
+        score: 1,
+        value: defaultQuestionValue[type],
+      },
+      altResponses: [],
     },
-    altResponses: [],
-  },
-  multipleResponses: false,
-  stimulus: '',
-  smallSize: true,
-  alignment: [],
-  ...docBasedCommonData,
-  ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
-  ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
-  ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
-  ...(type === MATH ? mathData : {}),
-  ...(type === ESSAY_PLAIN_TEXT ? essayData : {}),
-})
+    multipleResponses: false,
+    stimulus: '',
+    smallSize: true,
+    alignment: [],
+    ...docBasedCommonData,
+    ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
+    ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
+    ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
+    ...(type === MATH ? mathData : {}),
+    ...(type === ESSAY_PLAIN_TEXT ? essayData : {}),
+  }
+
+  if (isSnapQuizVideo && videoQuizStimulusSupportedQtypes.includes(type)) {
+    staticQuestionData.options = videoQuizDefaultQuestionOptions[type]
+  }
+
+  return staticQuestionData
+}
 
 const createSection = (qIndex = 0, title = '') => ({
   id: uuid(),
@@ -332,7 +347,12 @@ class Questions extends React.Component {
     modalQuestionId,
     docBasedCommonData = {}
   ) => () => {
-    const { addQuestion, list, isDocBased = false } = this.props
+    const {
+      addQuestion,
+      list,
+      isDocBased = false,
+      isSnapQuizVideo = false,
+    } = this.props
     const questions = list.filter((q) => q.type !== 'sectionLabel')
 
     const lastQuestion = maxBy(questions, 'qIndex')
@@ -347,7 +367,8 @@ class Questions extends React.Component {
       type,
       questionIndex,
       isDocBased,
-      docBasedCommonData
+      docBasedCommonData,
+      isSnapQuizVideo
     )
     addQuestion(question)
 
@@ -530,6 +551,7 @@ class Questions extends React.Component {
       clearHighlighted,
       itemId,
       disableAutoHightlight,
+      isSnapQuizVideo,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -590,6 +612,7 @@ class Questions extends React.Component {
                     resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
                     itemId={itemId}
                     disableAutoHightlight={disableAutoHightlight}
+                    isSnapQuizVideo={isSnapQuizVideo}
                   />
                 )
               )}
@@ -634,6 +657,7 @@ class Questions extends React.Component {
             onClose={this.handleCloseEditModal}
             onUpdate={this.handleUpdateData}
             onCurrentChange={this.handleOpenEditModal}
+            isSnapQuizVideo={isSnapQuizVideo}
           />
         )}
       </>

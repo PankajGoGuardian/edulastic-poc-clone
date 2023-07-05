@@ -265,6 +265,8 @@ const VideoPreview = ({
                   itemId={itemId}
                   draggble
                   disableAutoHightlight
+                  isSnapQuizVideo
+                  isSnapQuizVideoPlayer
                 />
               </div>
             ))}

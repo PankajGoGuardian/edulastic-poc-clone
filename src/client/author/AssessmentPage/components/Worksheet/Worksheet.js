@@ -871,6 +871,7 @@ class WorksheetComponent extends React.Component {
             clearHighlighted={this.clearHighlighted}
             itemId={itemDetail?._id}
             disableAutoHightlight={!!finalvideoUrl}
+            isSnapQuizVideo={!!finalvideoUrl}
           />
         </WorksheetWrapper>
       </div>

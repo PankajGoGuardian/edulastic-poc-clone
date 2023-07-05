@@ -57,11 +57,12 @@ export default class QuestionEditModal extends React.Component {
   }
 
   renderForm = (type) => {
-    const { question, onUpdate } = this.props
+    const { question, onUpdate, isSnapQuizVideo } = this.props
 
     const props = {
       question,
       onUpdate,
+      isSnapQuizVideo,
     }
 
     switch (type) {

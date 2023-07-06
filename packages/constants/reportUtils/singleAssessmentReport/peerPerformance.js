@@ -1,4 +1,7 @@
-const { startCase, get, isNil } = require('lodash')
+const { get, isNil } = require('lodash')
+const {
+  idToName,
+} = require('../../../../src/client/author/Reports/subPages/singleAssessmentReport/PeerPerformance/util/transformers')
 
 const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`
 
@@ -164,20 +167,6 @@ const transformData = (filter, bandInfo, data) => {
     }
   } else return []
 }
-
-const _idToName = {
-  school: 'School',
-  class: 'Class',
-  group: 'Student Group',
-  teacher: 'Teacher',
-  race: 'Race',
-  gender: 'Gender',
-  frlStatus: 'FRL Status',
-  ellStatus: 'ELL Status',
-  iepStatus: 'IEP Status',
-  hispanicEthnicity: 'Hispanic Ethnicity',
-}
-const idToName = (id) => _idToName[id] || startCase(id)
 
 // helper function to create column
 const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
@@ -414,7 +403,6 @@ const prepareHeaderRow = (columns) => {
 module.exports = {
   transformData,
   analyseByOptions,
-  idToName,
   getColumns,
   prepareHeaderRow,
   prepareTableDataRow,

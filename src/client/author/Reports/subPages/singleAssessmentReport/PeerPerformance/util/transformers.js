@@ -26,7 +26,14 @@ const _idToName = {
   iepStatus: 'IEP Status',
   hispanicEthnicity: 'Hispanic Ethnicity',
 }
-export const idToName = (id) => _idToName[id] || startCase(id)
+export const extAttributeIdToName = {
+  extAttr_eip_status: 'Ext Attr EIP Status',
+  eip_status: 'EIP Status',
+  extAttr_status_504: 'Ext Attr 504 Status',
+  status_504: '504 Status',
+}
+export const idToName = (id) =>
+  _idToName[id] || extAttributeIdToName[id] || startCase(id)
 
 export const analyseByToName = {
   'score(%)': 'Score (%)',

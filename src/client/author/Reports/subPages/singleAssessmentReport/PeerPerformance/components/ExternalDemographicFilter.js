@@ -4,6 +4,7 @@ import { startCase, isEmpty } from 'lodash'
 import styled from 'styled-components'
 import { SelectInputStyled } from '@edulastic/common'
 import { greyThemeLight, title } from '@edulastic/colors'
+import { extAttributeIdToName } from '../util/transformers'
 
 // approx space each character will take.
 const CHARACTER_WIDTH_OFFSET = 7
@@ -38,10 +39,15 @@ const ExternalDemographicFilter = ({
 
   const FilterContainerRef = useRef(null)
 
+  const getModifiedFilterKey = (key) =>
+    extAttributeIdToName[key] || startCase(key)
+
   const [treeData, allFilterValues] = useMemo(() => {
     const treeDataValues = Object.keys(extDemographicData).map((filterKey) => {
       const parent = {
-        title: <SelectTextInline>{startCase(filterKey)}</SelectTextInline>,
+        title: (
+          <SelectTextInline>{getModifiedFilterKey(filterKey)}</SelectTextInline>
+        ),
         value: filterKey,
         disableCheckbox: true,
         disabled: true,

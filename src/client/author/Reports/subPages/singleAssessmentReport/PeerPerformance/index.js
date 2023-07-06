@@ -45,6 +45,7 @@ import {
   transformExtAttributes,
   transformExtAttributeFilters,
   getFormattedName,
+  extAttributeIdToName,
 } from './util/transformers'
 import { getAssessmentName } from '../../../common/util'
 
@@ -220,7 +221,7 @@ const PeerPerformance = ({
       if (_peerPerformance.extAttributes) {
         const keysAndTitles = _peerPerformance.extAttributes.map((obj) => ({
           key: `extAttr_${obj?.name}`,
-          title: getFormattedName(obj?.name),
+          title: extAttributeIdToName[obj?.name] || getFormattedName(obj?.name),
         }))
         if (keysAndTitles?.length) {
           tempCompareBy.push(...keysAndTitles)

@@ -847,6 +847,7 @@ export const transformGradeBookResponse = (
           tabNavigationCounter: outNavigationCounter = 0,
           pauseReason,
           languagePreference = 'en',
+          archived,
         } = testActivity
         return {
           studentId,
@@ -861,6 +862,7 @@ export const transformGradeBookResponse = (
               ? 'redirected'
               : displayStatus,
           UTASTATUS: testActivity.status,
+          archived,
           isEnrolled,
           isAssigned,
           present,

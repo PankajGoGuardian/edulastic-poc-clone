@@ -154,6 +154,10 @@ import {
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
+import {
+  studentIsEnrolled,
+  studentIsUnEnrolled,
+} from '../../../utils/userEnrollment'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -176,6 +180,15 @@ function capitalizeIt(str) {
 }
 
 function getStudentFilterCategory(x) {
+  if (
+    studentIsUnEnrolled({
+      isEnrolled: x.isEnrolled,
+      enrollmentStatus: x.enrollmentStatus,
+      archived: x.archived,
+    })
+  ) {
+    return 'NOT ENROLLED'
+  }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
   }
@@ -1543,6 +1556,7 @@ class ClassBoard extends Component {
                           'PAUSED',
                           'REDIRECTED',
                           'UNASSIGNED',
+                          'NOT ENROLLED',
                         ].map((x) => (
                           <FilterSelect.Option
                             className="student-status-filter-item"
@@ -1552,8 +1566,15 @@ class ClassBoard extends Component {
                           >
                             {capitalizeIt(x)} (
                             {x === 'ALL ASSIGNED'
-                              ? testActivity.filter((_x) => _x.isAssigned)
-                                  .length
+                              ? testActivity.filter(
+                                  ({ isAssigned, isEnrolled, archived }) =>
+                                    isAssigned &&
+                                    studentIsEnrolled({
+                                      isEnrolled,
+                                      enrollmentStatus,
+                                      archived,
+                                    })
+                                ).length
                               : studentFilterCategoryCounts[x] || 0}
                             )
                           </FilterSelect.Option>

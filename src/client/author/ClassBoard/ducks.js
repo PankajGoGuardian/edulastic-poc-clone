@@ -128,6 +128,7 @@ import {
   setRegradeFirestoreDocId,
 } from '../TestPage/ducks'
 import { getQindex } from '../QuestionEditor/ducks'
+import { studentIsEnrolled } from '../utils/userEnrollment'
 
 const {
   authorAssignmentConstants: {
@@ -1226,9 +1227,15 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
     return {}
   }
-  const total = entities.filter((x) => x.isAssigned).length
+  const total = entities.filter(
+    ({ isAssigned, isEnrolled, enrollmentStatus, archived }) =>
+      isAssigned &&
+      studentIsEnrolled({ isEnrolled, enrollmentStatus, archived })
+  ).length
   const submittedEntities = entities.filter(
-    (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
+    ({ UTASTATUS, isEnrolled, enrollmentStatus, archived }) =>
+      UTASTATUS === testActivityStatus.SUBMITTED &&
+      studentIsEnrolled({ isEnrolled, enrollmentStatus, archived })
   )
   const activeEntities = entities.filter(
     (x) =>

@@ -158,6 +158,7 @@
 
 .delete-popup {
   .ant-modal-content {
+    padding: 25px;
     border-radius: 6px;
   }
   .ant-modal-header {
@@ -168,7 +169,7 @@
     border-radius: 6px;
     .ant-modal-title {
       font-weight: 700;
-      font-size: 10px;
+      font-size: 14px;
       color: $black;
       line-height: 30px;
       text-align: center;
@@ -198,15 +199,13 @@
     p {
       width: 90%;
       text-align: center;
-      font-weight: 600;
-      font-size: 10px;
-      line-height: 15px;
+      font-size: 14px;
+      line-height: 30px;
       color: $black;
     }
     .delete-modal-note {
       font-family: Open Sans;
-      font-size: 9px;
-      font-weight: 600;
+      font-size: 12px;
       line-height: 15px;
       letter-spacing: 0em;
       text-align: center;

@@ -28,9 +28,9 @@ const DeleteModal = ({
   return (
     <Modal
       className="delete-popup"
-      title="Confirm"
+      // title="Confirm"
       centered
-      width={300}
+      width={500}
       visible={showModal}
       closeIcon={<IconClose />}
       onOk={handleConfirmGIDelete}

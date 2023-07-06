@@ -18,6 +18,7 @@ import {
   IconDropDown,
   IconWhiteMic,
 } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import AddBulkModal from '../AddBulkModal/AddBulkModal'
@@ -143,12 +144,14 @@ class AddQuestion extends React.Component {
               Add Section
             </AddButton>
           </QuestionTypes>
-          <AddBulkModal
-            visible={bulkModalVisible}
-            onCancel={this.toggleBulkModal}
-            onApply={this.handleApply}
-            minAvailableQuestionIndex={minAvailableQuestionIndex}
-          />
+          <EduIf condition={bulkModalVisible}>
+            <AddBulkModal
+              visible={bulkModalVisible}
+              onCancel={this.toggleBulkModal}
+              onApply={this.handleApply}
+              minAvailableQuestionIndex={minAvailableQuestionIndex}
+            />
+          </EduIf>
         </ContentWrapper>
       </AddQuestionWrapper>
     )

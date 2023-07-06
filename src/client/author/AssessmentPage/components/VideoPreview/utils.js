@@ -65,9 +65,16 @@ export const showMarkerArea = (
       }
 
       markerArea.current = new markerjs2.MarkerArea(annotationContainer.current)
+      markerArea.current.availableMarkerTypes =
+        markerArea.current.ALL_MARKER_TYPES
+
+      // enable redo and clear buttons (hidden by default)
+      markerArea.current.uiStyleSettings.redoButtonVisible = true
+      markerArea.current.uiStyleSettings.clearButtonVisible = true
 
       markerArea.current.settings.displayMode = 'inline'
       markerArea.current.targetRoot = annotationContainer.current
+
       // attach an event handler to assign annotated image back to our image element
       markerArea.current.addEventListener('render', (event) => {
         onDropAnnotation(

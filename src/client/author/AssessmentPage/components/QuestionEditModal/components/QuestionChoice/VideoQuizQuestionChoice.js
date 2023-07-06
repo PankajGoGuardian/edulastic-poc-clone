@@ -2,7 +2,7 @@ import React from 'react'
 import { Input, InputNumber } from 'antd'
 import { arrayMove } from 'react-sortable-hoc'
 import uuid from 'uuid/v4'
-import { EduButton } from '@edulastic/common'
+import { EduButton, helpers } from '@edulastic/common'
 import { FormGroup, FormLabel } from '../../common/QuestionForm'
 import Options from './Components/Options'
 
@@ -21,10 +21,18 @@ const VideoQuizQuestionChoice = ({ question, updateQuestionData }) => {
     updateQuestionData(updateData)
   }
 
-  const handleOptionChange = (optionId, value) => {
+  const handleOptionChange = (
+    optionId,
+    value,
+    optionIndex,
+    isBlurEvent = false
+  ) => {
     const updateData = {
       options: options.map((option) => {
         if (option?.value === optionId) {
+          if (isBlurEvent && !value?.length) {
+            value = helpers.getNumeration(optionIndex, 'uppercase')
+          }
           return {
             value: option.value,
             label: value,
@@ -103,8 +111,12 @@ const VideoQuizQuestionChoice = ({ question, updateQuestionData }) => {
   }
 
   const handleAddOption = () => {
+    const defaultOptionLabel = helpers.getNumeration(
+      options?.length || 0,
+      'uppercase'
+    )
     const updateData = {
-      options: [...options, { value: uuid(), label: '' }],
+      options: [...options, { value: uuid(), label: defaultOptionLabel }],
     }
     updateQuestionData(updateData)
   }

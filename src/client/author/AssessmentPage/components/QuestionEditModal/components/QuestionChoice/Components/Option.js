@@ -37,6 +37,14 @@ const Option = ({
         onChange={(e) =>
           handleOptionChange(option.value, e?.target?.value || '')
         }
+        onBlur={(e) =>
+          handleOptionChange(
+            option.value,
+            e?.target?.value || '',
+            optionIdx,
+            true
+          )
+        }
         placeholder={`Option #${optionIdx + 1}`}
       />
       <IconTrash onClick={() => handleDeleteOption(option.value)} />

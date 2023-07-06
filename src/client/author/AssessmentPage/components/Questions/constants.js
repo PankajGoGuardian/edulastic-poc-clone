@@ -5,10 +5,10 @@ const uuids = [uuid(), uuid(), uuid(), uuid()]
 
 export const videoQuizDefaultQuestionOptions = {
   [MULTIPLE_CHOICE]: [
-    { label: '', value: uuids[0] },
-    { label: '', value: uuids[1] },
-    { label: '', value: uuids[2] },
-    { label: '', value: uuids[3] },
+    { label: 'A', value: uuids[0] },
+    { label: 'B', value: uuids[1] },
+    { label: 'C', value: uuids[2] },
+    { label: 'D', value: uuids[3] },
   ],
 }
 

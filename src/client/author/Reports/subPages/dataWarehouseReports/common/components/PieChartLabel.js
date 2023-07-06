@@ -45,7 +45,7 @@ const PieChartLabel = ({
   const circleX = cx + outerRadius * cos
   const circleY = cy + outerRadius * sin
   const mx = cx + (outerRadius + 26) * cos
-  const my = cy + (outerRadius + 26) * sin
+  const my = cy + (outerRadius + 26) * sin + (sin > 0 ? 10 : 0)
   const ex = mx + (cos >= 0 ? 1 : -1) * maxLabelLength * 10
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'

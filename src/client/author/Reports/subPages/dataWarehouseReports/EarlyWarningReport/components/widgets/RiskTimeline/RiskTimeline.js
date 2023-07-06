@@ -54,7 +54,7 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   )
 
   const hasContent = !loading && !error && !!chartData.length
-  const errorMsg = 'Error fetching Risk Timeline data.'
+  const errorMsg = error?.message || 'Error fetching Risk Timeline data.'
 
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)

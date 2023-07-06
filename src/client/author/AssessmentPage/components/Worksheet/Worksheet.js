@@ -20,6 +20,7 @@ import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Modal, Button } from 'antd'
 
+import { roleuser } from '@edulastic/constants'
 import {
   setTestDataAction,
   setCurrentAnnotationToolAction,
@@ -41,6 +42,7 @@ import { loadQuestionsAction } from '../../../sharedDucks/questions'
 
 import { saveUserWorkAction } from '../../../../assessment/actions/userWork'
 import { getTestEntitySelector } from '../../../AssignTest/duck'
+import { getUserRole } from '../../../src/selectors/user'
 import DropArea from '../../../AssessmentCreate/components/DropArea/DropArea'
 import {
   getAssessmentCreatingSelector,
@@ -644,6 +646,8 @@ class WorksheetComponent extends React.Component {
       redoUserWork,
       stdAnnotations,
       videoUrl,
+      previewPlayer,
+      userRole,
     } = this.props
 
     const finalvideoUrl = videoUrl || entityLink
@@ -679,6 +683,8 @@ class WorksheetComponent extends React.Component {
       isAddPdf,
       merge: true,
     }
+    const showStimulusInQuestionItem =
+      !previewPlayer && userRole !== roleuser.STUDENT
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -872,6 +878,7 @@ class WorksheetComponent extends React.Component {
             itemId={itemDetail?._id}
             disableAutoHightlight={!!finalvideoUrl}
             isSnapQuizVideo={!!finalvideoUrl}
+            showStimulusInQuestionItem={showStimulusInQuestionItem}
           />
         </WorksheetWrapper>
       </div>
@@ -975,6 +982,7 @@ const enhance = compose(
       isAnnotationsStackEmpty: isAnnotationsStackEmptySelector(state, ownProps),
       annotationsStack: annotationsStackSelector(state, ownProps),
       isImageBlockNotification: state.user.isImageBlockNotification,
+      userRole: getUserRole(state),
     }),
     {
       saveUserWork: saveUserWorkAction,

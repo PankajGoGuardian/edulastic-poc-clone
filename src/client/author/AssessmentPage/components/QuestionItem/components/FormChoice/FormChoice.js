@@ -62,9 +62,11 @@ export default class FormChoice extends React.Component {
       question: { stimulus = '', type },
       isSnapQuizVideo,
       isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
     } = this.props
 
     return (
+      showStimulusInQuestionItem &&
       !isSnapQuizVideoPlayer &&
       isSnapQuizVideo &&
       videoQuizStimulusSupportedQtypes.includes(type) &&

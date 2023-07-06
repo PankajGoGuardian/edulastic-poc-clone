@@ -212,6 +212,7 @@ class QuestionItem extends React.Component {
       disableAutoHightlight,
       isSnapQuizVideo = false,
       isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
     } = this.props
 
     if (!evaluation) {
@@ -249,6 +250,7 @@ class QuestionItem extends React.Component {
       testItemId: itemId,
       isSnapQuizVideo,
       isSnapQuizVideoPlayer,
+      showStimulusInQuestionItem,
     }
 
     switch (data.type) {

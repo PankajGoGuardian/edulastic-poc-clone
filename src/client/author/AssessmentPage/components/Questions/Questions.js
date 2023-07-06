@@ -90,6 +90,7 @@ const SortableQuestionItem = SortableElement(
     itemId,
     disableAutoHightlight,
     isSnapQuizVideo,
+    showStimulusInQuestionItem,
   }) => (
     <div
       onClick={() => {
@@ -136,6 +137,7 @@ const SortableQuestionItem = SortableElement(
         itemId={itemId}
         disableAutoHightlight={disableAutoHightlight}
         isSnapQuizVideo={isSnapQuizVideo}
+        showStimulusInQuestionItem={showStimulusInQuestionItem}
       />
     </div>
   )
@@ -552,6 +554,7 @@ class Questions extends React.Component {
       itemId,
       disableAutoHightlight,
       isSnapQuizVideo,
+      showStimulusInQuestionItem,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -613,6 +616,7 @@ class Questions extends React.Component {
                     itemId={itemId}
                     disableAutoHightlight={disableAutoHightlight}
                     isSnapQuizVideo={isSnapQuizVideo}
+                    showStimulusInQuestionItem={showStimulusInQuestionItem}
                   />
                 )
               )}

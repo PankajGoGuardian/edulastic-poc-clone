@@ -200,6 +200,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 onPageChange={(cpage) => this.setState({ currentPage: cpage })}
                 currentPage={currentPage}
                 groupId={groupId}
+                previewPlayer={previewPlayer}
               />
             )}
             {!previewPlayer && (

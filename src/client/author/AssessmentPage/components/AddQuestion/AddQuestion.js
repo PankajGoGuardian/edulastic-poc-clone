@@ -47,16 +47,23 @@ class AddQuestion extends React.Component {
     alignment,
     authorDifficulty,
     depthOfKnowledge,
+    aiQuestions,
   }) => {
     const { onAddQuestion, scrollToBottom } = this.props
 
     for (let i = 0; i < number; i++) {
       const index = startingIndex + i
-      onAddQuestion(type, index, startingIndex, {
-        alignment,
-        authorDifficulty,
-        depthOfKnowledge,
-      })()
+      onAddQuestion(
+        type,
+        index,
+        startingIndex,
+        {
+          alignment,
+          authorDifficulty,
+          depthOfKnowledge,
+        },
+        aiQuestions?.[i]
+      )()
     }
 
     this.toggleBulkModal()

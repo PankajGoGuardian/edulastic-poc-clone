@@ -230,7 +230,8 @@ const createQuestion = (
   index,
   isDocBased = false,
   docBasedCommonData = {},
-  isSnapQuizVideo
+  isSnapQuizVideo,
+  aiQuestion
 ) => {
   const staticQuestionData = {
     id: uuid(),
@@ -261,6 +262,36 @@ const createQuestion = (
 
   if (isSnapQuizVideo && videoQuizStimulusSupportedQtypes.includes(type)) {
     staticQuestionData.options = videoQuizDefaultQuestionOptions[type]
+
+    if (aiQuestion) {
+      const {
+        options,
+        name,
+        correctAnswerIndex,
+        correctAnswersIndex,
+      } = aiQuestion
+
+      staticQuestionData.stimulus = name || ''
+      staticQuestionData.options = (options || []).map((option) => ({
+        label: option.name,
+        value: uuid(),
+      }))
+
+      if (type === MULTIPLE_CHOICE) {
+        if (correctAnswerIndex !== undefined) {
+          staticQuestionData.validation.validResponse.value = [
+            staticQuestionData.options[correctAnswerIndex].value,
+          ]
+        } else if (correctAnswersIndex) {
+          staticQuestionData.validation.validResponse.value = []
+          correctAnswersIndex.forEach((item) => {
+            staticQuestionData.validation.validResponse.value.push(
+              staticQuestionData.options[item].value
+            )
+          })
+        }
+      }
+    }
   }
 
   return staticQuestionData
@@ -347,7 +378,8 @@ class Questions extends React.Component {
     type,
     index,
     modalQuestionId,
-    docBasedCommonData = {}
+    docBasedCommonData = {},
+    aiQuestion
   ) => () => {
     const {
       addQuestion,
@@ -370,7 +402,8 @@ class Questions extends React.Component {
       questionIndex,
       isDocBased,
       docBasedCommonData,
-      isSnapQuizVideo
+      isSnapQuizVideo,
+      aiQuestion
     )
     addQuestion(question)
 

@@ -212,3 +212,16 @@ export const TooltipContainer = styled.div`
   border-radius: 5px;
   text-align: left;
 `
+export const CustomStyledCell = styled.div`
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: ${(p) => p.$width || '90px'};
+  aspect-ratio: 8 / 3;
+  color: black;
+  font-size: ${(p) => p.$fontSize || '13px'};
+  font-weight: 800;
+  box-shadow: ${(p) => (p.$showBoxShadow ? '0px 10px 11px #0000000f' : '')};
+  background-color: ${(p) => p.$backgroundColor};
+`

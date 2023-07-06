@@ -18,6 +18,7 @@ import useErrorNotification from '../../../../common/hooks/useErrorNotification'
 import { DashedLine } from '../../../../common/styled'
 import Footer from './Footer'
 import PieChartLabel from './PieChartLabel'
+import { PieChartTooltip } from './PieChartTooltip'
 import {
   Widget,
   ContentWrapper,
@@ -170,7 +171,8 @@ const RiskSummary = ({ settings, loc = '' }) => {
                 <div className="right-content">
                   <SimplePieChart
                     data={pieChartData}
-                    getChartLabelJSX={<PieChartLabel />}
+                    label={<PieChartLabel />}
+                    tooltip={<PieChartTooltip />}
                     innerRadius={42}
                     outerRadius={90}
                   />

@@ -18,6 +18,7 @@ import SimplePieChart from '../../../../../../common/components/charts/SimplePie
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
 import PieChartLabel from '../../../../common/components/PieChartLabel'
+import { PieChartTooltip } from '../../../../common/components/PieChartTooltip'
 import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
   getCellColor,
@@ -221,7 +222,8 @@ const AcademicSummary = ({
                     innerRadius={48}
                     outerRadius={100}
                     data={PieChartData}
-                    getChartLabelJSX={<PieChartLabel />}
+                    label={<PieChartLabel />}
+                    tooltip={<PieChartTooltip />}
                   />
                 </div>
               </ContentWrapper>

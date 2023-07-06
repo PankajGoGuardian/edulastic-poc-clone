@@ -92,6 +92,15 @@ const getAttendanceMetrics = (data) => {
   })
 }
 
+const getRiskMetrics = (data) =>
+  api.callApi({
+    url: `${prefix}/${WHOLE_LEARNER_REPORT}/risk`,
+    method: 'get',
+    params: data,
+    paramsSerializer: (params) =>
+      qs.stringify(params, { arrayFormat: 'comma' }),
+  })
+
 const getDashboardAcademicSummary = (data) => {
   const queryString = qs.stringify(data)
   return api
@@ -248,4 +257,5 @@ export default {
   deleteGroup,
   getEfficacySummary,
   getEfficacyDetails,
+  getRiskMetrics,
 }

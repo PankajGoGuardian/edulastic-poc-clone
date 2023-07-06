@@ -14,9 +14,16 @@ import {
   isEmpty,
 } from 'lodash'
 import moment from 'moment'
-import { reportUtils, colors as colorConstants } from '@edulastic/constants'
+import {
+  reportUtils,
+  colors as colorConstants,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
+import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
+
+const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
 
 const EXTERNAL_ASSESSMENTS = 'External Assessment'
 
@@ -481,3 +488,68 @@ export const getAssessmentChartData = (
       }
     })
     .filter((d) => d)
+
+export const getStudentRiskData = (rawData) => {
+  const riskData = get(rawData, 'data.result', {})
+
+  if (isEmpty(riskData)) return {}
+
+  const { overallRisk, assessmentRisk, attendanceRisk } = riskData
+  const internalAssessmentRisk = []
+  const externalAssessmentRisk = []
+  assessmentRisk.forEach((testTypeRisk) => {
+    if (
+      [...TEST_TYPES.COMMON, ...TEST_TYPES.ASSESSMENT].includes(
+        testTypeRisk.type
+      )
+    ) {
+      internalAssessmentRisk.push({ ...testTypeRisk, isExternalTest: false })
+    } else {
+      externalAssessmentRisk.push({ ...testTypeRisk, isExternalTest: true })
+    }
+  })
+  return {
+    overallRisk,
+    internalAssessmentRisk,
+    externalAssessmentRisk,
+    attendanceRisk,
+  }
+}
+
+export const getSubjectRiskText = (subjectData, isExternalTest, prefix = '') =>
+  subjectData.map(
+    ({ subject, riskBandLabel: subjectRiskBandLabel, score: subjectScore }) =>
+      `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore}${
+        isExternalTest ? '' : '%'
+      })`
+  )
+
+export const getTestRiskTableData = (riskData) => {
+  return riskData.map(
+    ({
+      type,
+      score,
+      riskBandLabel,
+      riskBandLevel,
+      subjectData,
+      isExternalTest,
+    }) => {
+      const subjectRiskTexts = getSubjectRiskText(
+        subjectData,
+        isExternalTest,
+        'Avg Score - '
+      )
+      const testTypeTitle = !isExternalTest
+        ? `EDULASTIC - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
+        : type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
+      return {
+        testTypeTitle,
+        subjectRiskTexts,
+        score,
+        riskBandLabel,
+        riskBandLevel,
+        isExternalTest,
+      }
+    }
+  )
+}

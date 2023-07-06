@@ -1,10 +1,11 @@
-import { EduButton, EduIf, helpers } from '@edulastic/common'
+import { EduButton, EduIf, helpers, notification } from '@edulastic/common'
 import { Col, Icon, Input, InputNumber, Row, Spin } from 'antd'
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
 import { compose } from 'redux'
 import uuid from 'uuid/v4'
+import { isEmpty } from 'lodash'
 import {
   fetchAIGeneratedQuestionAction,
   setAIGeneratedQuestionStateAction,
@@ -135,6 +136,57 @@ const VideoQuizQuestionChoice = ({
     updateQuestionData(updateData)
   }
 
+  const updateQuestionWithAIData = (aiGeneratedQuestion = {}) => {
+    if (isEmpty(aiGeneratedQuestion)) {
+      return notification({
+        type: 'error',
+        msg: 'Error generating question via AI',
+      })
+    }
+    const {
+      name = '',
+      options: questionOptions = [],
+      correctAnswerIndex = null,
+    } = aiGeneratedQuestion
+
+    const _options = (questionOptions || []).map((option) => {
+      const { name: optionLabel = '' } = option || {}
+      return {
+        value: uuid(),
+        label: optionLabel,
+      }
+    })
+
+    const questionCorrectAnswers = []
+    if (typeof correctAnswerIndex === 'number') {
+      const optionIndexUUID = _options[correctAnswerIndex]?.value || ''
+      if (optionIndexUUID?.length) {
+        questionCorrectAnswers.push(optionIndexUUID)
+      }
+    } else if (Array.isArray(correctAnswerIndex) && correctAnswerIndex.length) {
+      correctAnswerIndex.forEach((index) => {
+        const optionIndexUUID = _options[index]?.value || ''
+        if (optionIndexUUID?.length) {
+          questionCorrectAnswers.push(optionIndexUUID)
+        }
+      })
+    }
+
+    const updateData = {
+      stimulus: name,
+      options: _options,
+      validation: {
+        ...validation,
+        validResponse: {
+          ...validation.validResponse,
+          value: questionCorrectAnswers,
+        },
+      },
+      multipleResponses: questionCorrectAnswers.length > 1,
+    }
+    updateQuestionData(updateData)
+  }
+
   const generateViaAI = () => {
     fetchAIGeneratedQuestion({
       videoUrl,
@@ -166,7 +218,9 @@ const VideoQuizQuestionChoice = ({
   }, [])
 
   useEffect(() => {
-    console.log(result)
+    if (result?.length) {
+      updateQuestionWithAIData(result[0])
+    }
   }, [result])
 
   return (

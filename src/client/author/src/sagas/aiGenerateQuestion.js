@@ -4,7 +4,7 @@ import { all, call, put, takeEvery } from 'redux-saga/effects'
 import { setAIGeneratedQuestionStateAction } from '../actions/aiGenerateQuestion'
 import { FETCH_AI_GENERATE_QUESTION } from '../constants/actions'
 
-function* bulkUpdateAssignmentSettingsSaga({ payload }) {
+function* fetchAIGeneratedQuestionSaga({ payload }) {
   try {
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'INITIATED', result: [] })
@@ -48,9 +48,6 @@ function* bulkUpdateAssignmentSettingsSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(
-      FETCH_AI_GENERATE_QUESTION,
-      bulkUpdateAssignmentSettingsSaga
-    ),
+    yield takeEvery(FETCH_AI_GENERATE_QUESTION, fetchAIGeneratedQuestionSaga),
   ])
 }

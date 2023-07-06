@@ -256,14 +256,20 @@ export const getStandardOptions = (
   })),
 ]
 
-export const getDomainOptionsByGradeSubject = (domains, grade, subject) => {
+export const getDomainOptionsByGradeSubject = (
+  domains,
+  grade,
+  subject,
+  curriculumId
+) => {
   return [
     { key: 'All', title: 'All' },
     ...domains
       .filter(
         (domain) =>
           (grade === 'All' || domain.grades.includes(grade)) &&
-          (subject === 'All' || domain.subject === subject)
+          (subject === 'All' || domain.subject === subject) &&
+          (curriculumId === 'All' || `${domain.curriculumId}` === curriculumId)
       )
       .map((domain) => ({
         key: domain.domainId,

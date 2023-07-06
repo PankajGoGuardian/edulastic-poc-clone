@@ -1,10 +1,11 @@
 import React from 'react'
-import { Input, InputNumber } from 'antd'
+import { Col, Input, InputNumber, Row } from 'antd'
 import { arrayMove } from 'react-sortable-hoc'
 import uuid from 'uuid/v4'
 import { EduButton, helpers } from '@edulastic/common'
 import { FormGroup, FormLabel } from '../../common/QuestionForm'
 import Options from './Components/Options'
+import { RightAlignedCol } from './styled-components'
 
 const { TextArea } = Input
 
@@ -121,10 +122,19 @@ const VideoQuizQuestionChoice = ({ question, updateQuestionData }) => {
     updateQuestionData(updateData)
   }
 
+  const generateViaAI = () => {}
+
   return (
     <>
       <FormGroup>
-        <FormLabel>Stimulus</FormLabel>
+        <Row gutter={16}>
+          <Col span={12}>
+            <FormLabel>Stimulus</FormLabel>
+          </Col>
+          <RightAlignedCol span={12}>
+            <a onClick={() => generateViaAI()}>Generate via AI</a>
+          </RightAlignedCol>
+        </Row>
         <TextArea
           style={{ height: 120, resize: 'none' }}
           onChange={(e) => handleStimulusChange(e?.target?.value || '')}

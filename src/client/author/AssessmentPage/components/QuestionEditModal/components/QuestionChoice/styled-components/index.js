@@ -6,7 +6,7 @@ import {
   black,
 } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Input } from 'antd'
+import { Col, Input } from 'antd'
 import { IconTrash as Icon } from '@edulastic/icons'
 
 export const TextInputStyled = styled(Input)`
@@ -67,4 +67,7 @@ export const IconTrash = styled(Icon)`
   height: 14px;
   cursor: pointer;
   margin: 0px -22px 0px 10px;
+`
+export const RightAlignedCol = styled(Col)`
+  text-align: right;
 `

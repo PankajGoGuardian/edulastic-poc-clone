@@ -11,11 +11,7 @@ import { reportLinkColor } from '../../../multipleAssessmentReport/common/utils/
 
 const { getHSLFromRange1, filterAccordingToRole } = reportUtils.common
 
-const {
-  tableColumns,
-  getDisplayValue,
-  getSorter,
-} = reportUtils.performanceByStudents
+const { tableColumns, getDisplayValue } = reportUtils.performanceByStudents
 
 // =====|=====|=====|=====| ================== |=====|=====|=====|===== //
 
@@ -172,7 +168,7 @@ export const getColumns = (
         )
       }
       if (column.sortable) {
-        column.sorter = getSorter(column.type, column.dataIndex)
+        column.sorter = true
       }
     })
   })

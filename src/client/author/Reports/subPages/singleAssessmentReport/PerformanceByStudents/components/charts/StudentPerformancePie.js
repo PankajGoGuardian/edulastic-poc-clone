@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react'
-import { groupBy } from 'lodash'
+import React from 'react'
 import { PieChart, Pie, Cell, Tooltip } from 'recharts'
 import { Row, Col } from 'antd'
 import styled from 'styled-components'
+import { reportUtils } from '@edulastic/constants'
 import { StyledCustomChartTooltip } from '../../../AssessmentSummary/components/styled'
+
+const { getThresholdFromBandName } = reportUtils.performanceByStudents
 
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({
@@ -53,17 +55,12 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
     return null
   }
 
-  const bandData = useMemo(() => {
-    const groupByBand = groupBy(data, 'proficiencyBand')
-    return bands.map((band) => ({
-      name: band.name,
-      value: groupByBand[band.name]?.length || 0,
-      sum: data.length,
-    }))
-  }, [data, bands])
-
   const handleOnSelect = ({ name }) => {
-    const selected = { key: name, title: name }
+    const selected = {
+      key: name,
+      title: name,
+      threshold: getThresholdFromBandName(bands, name),
+    }
     onSelect(selected)
   }
 
@@ -76,7 +73,7 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
         />
         <Pie
           name="name"
-          data={bandData}
+          data={data}
           cx={200}
           cy={200}
           labelLine={false}
@@ -88,7 +85,7 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
           isAnimationActive={false}
           isUpdateAnimationActive
         >
-          {bands.map((entry, index) => (
+          {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>

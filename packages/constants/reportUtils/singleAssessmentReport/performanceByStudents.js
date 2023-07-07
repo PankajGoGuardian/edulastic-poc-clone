@@ -1,13 +1,8 @@
 const {
-  max,
   min,
-  filter,
   map,
-  find,
   orderBy,
   ceil,
-  groupBy,
-  sumBy,
   floor,
   forEach,
   maxBy,
@@ -15,19 +10,30 @@ const {
   round,
   upperFirst,
 } = require('lodash')
-const moment = require('moment')
 
 const {
   filterAccordingToRole,
-  filterData,
   formatDate,
-  getCsvDataFromTableBE,
   getFormattedName,
 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
+const sortKeysMap = {
+  PERFORMANCE_BAND: 'proficiencyBand',
+  STUDENT: 'student',
+  SCHOOL: 'school',
+  TEACHER: 'teacher',
+  GROUP: 'groupName',
+  DUE_DATE: 'dueDate',
+  SUBMITTED_DATE: 'submittedDate',
+  SCORE: 'score',
+  DISTRICT_AVERAGE: 'districtAvg',
+  SCHOOL_AVERAGE: 'schoolAvg',
+  GROUP_AVERAGE: 'groupAvg',
+  STUDENT_SCORE: 'studentScore',
+}
 
 const tableColumns = [
   {
@@ -167,13 +173,14 @@ const tableColumns = [
 ]
 
 const getProficiencyBandData = (bandInfo) => {
-  let proficiencyBandOptions = [{ key: 'All', title: 'All' }]
+  let proficiencyBandOptions = [{ key: 'All', title: 'All', threshold: '' }]
 
   if (bandInfo) {
     proficiencyBandOptions = proficiencyBandOptions.concat(
       map(bandInfo, (band) => ({
         key: band.name,
         title: band.name,
+        threshold: band.threshold,
       }))
     )
   }
@@ -182,7 +189,7 @@ const getProficiencyBandData = (bandInfo) => {
 }
 
 const groupData = (data) => {
-  const maxTotalScore = get(maxBy(data, 'totalScore'), 'totalScore', 0)
+  const maxTotalScore = get(maxBy(data, 'score'), 'score', 0)
 
   const dataToPlotHashMap = {}
   let i = 0
@@ -195,11 +202,11 @@ const groupData = (data) => {
     i++
   }
 
-  forEach(data, ({ totalScore }) => {
-    if (totalScore || totalScore === 0) {
-      const floorValue = floor(totalScore)
+  forEach(data, ({ score, studentCount }) => {
+    if (score || score === 0) {
+      const floorValue = floor(score)
       if (dataToPlotHashMap[floorValue]) {
-        dataToPlotHashMap[floorValue].studentCount++
+        dataToPlotHashMap[floorValue].studentCount += +studentCount
       }
     }
   })
@@ -207,11 +214,32 @@ const groupData = (data) => {
   return map(dataToPlotHashMap, (dataItem) => dataItem)
 }
 
-const parseData = ({ studentMetricInfo = [] }, _filter) => {
-  const filteredData = filterData(studentMetricInfo, _filter)
-  const groupedData = groupData(filteredData)
+const getBarChartData = ({ scoreDistribution = [] }) => {
+  const groupedData = groupData(scoreDistribution)
 
   return groupedData.length ? groupedData : [{ name: 0, studentCount: 0 }]
+}
+
+const getBandInfoFromThreshold = (bands, threshold) => {
+  return bands.find((band) => band.threshold === threshold) || {}
+}
+
+const getPieChartData = ({ bandDistribution = [], bandInfo = [] }) => {
+  if (bandDistribution.length && bandInfo.length) {
+    return bandDistribution.map((obj) => {
+      const { name = '', color = '' } = getBandInfoFromThreshold(
+        bandInfo,
+        obj.threshold
+      )
+      return {
+        name,
+        value: +obj.studentCount || 0,
+        sum: +obj.totalStudents,
+        color,
+      }
+    })
+  }
+  return []
 }
 
 const getLeastProficiency = (bandInfo = []) =>
@@ -225,129 +253,63 @@ const getProficiency = (item, bandInfo) => {
   }
 }
 
-const normaliseTableData = (rawData, data) => {
-  const {
-    bandInfo = [],
-    metaInfo = [],
-    schoolMetricInfo = [],
-    studentMetricInfo = [],
-    districtAvgPerf = 0,
-  } = rawData
-
-  const classes = groupBy(studentMetricInfo, 'groupId')
-
-  return map(data, (studentMetric) => {
-    const relatedGroup =
-      find(metaInfo, (meta) => studentMetric.groupId === meta.groupId) || {}
-
-    const relatedSchool =
-      find(
-        schoolMetricInfo,
-        (school) => relatedGroup.schoolId === school.schoolId
-      ) || {}
-
-    // progressStatus = 2 is for absent student, needs to be excluded
-    const classAvg =
-      round(
-        (sumBy(classes[studentMetric.groupId], 'totalScore') /
-          sumBy(classes[studentMetric.groupId], (o) =>
-            o.progressStatus === 2 ? 0 : o.maxScore
-          )) *
-          100
-      ) || 0
-    let studentScore = 'Absent'
-    let assessmentScore = 'Absent'
-    let proficiencyBand = 'Absent'
-    if (studentMetric.progressStatus === 1) {
-      studentScore = round(
-        ((studentMetric.totalScore || 0) / (studentMetric.maxScore || 1)) * 100
-      )
-      assessmentScore = `${(studentMetric.totalScore || 0).toFixed(2)} / ${(
-        studentMetric.maxScore || 1
-      ).toFixed(2)}`
-      proficiencyBand = getProficiency(studentMetric, bandInfo)
-    }
+const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
+  return map(studentMetricInfo, (studentMetric) => {
+    const {
+      studentId,
+      firstName,
+      lastName,
+      username,
+      externalId,
+      assignmentId,
+      testActivityId,
+      schoolName,
+      teacherName,
+      groupName,
+      groupId,
+      grades,
+      schoolAvg,
+      districtAvg,
+      classAvg,
+      submittedDate,
+      dueDate,
+      endDate,
+      totalScore,
+      maxScore,
+    } = studentMetric
+    const studentScore = round(((totalScore || 0) / (maxScore || 1)) * 100)
+    const assessmentScore = `${(totalScore || 0).toFixed(2)} / ${(
+      maxScore || 1
+    ).toFixed(2)}`
+    const proficiencyBand = getProficiency(studentMetric, bandInfo)
 
     return {
-      ...studentMetric,
       student: getFormattedName(
-        `${upperFirst(studentMetric.firstName || '')} ${upperFirst(
-          studentMetric.lastName || ''
-        )}`
+        `${upperFirst(firstName || '')} ${upperFirst(lastName || '')}`
       ),
+      studentId,
+      firstName,
+      lastName,
+      username,
+      externalId,
       proficiencyBand,
-      school: relatedGroup.schoolName || '-',
-      teacher: relatedGroup.teacherName,
-      groupName: relatedGroup.groupName,
-      grades: relatedGroup.grades,
-      schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
-      districtAvg: round(districtAvgPerf || 0),
+      assignmentId,
+      testActivityId,
+      school: schoolName || '-',
+      teacher: teacherName,
+      groupName,
+      groupId,
+      grades,
+      schoolAvg: round(schoolAvg || 0),
+      districtAvg: round(districtAvg || 0),
       studentScore,
-      classAvg,
+      classAvg: round(classAvg || 0),
       assessmentScore,
-      submittedDate: formatDate(studentMetric.submittedDate),
-      dueDate: formatDate(studentMetric.dueDate || studentMetric.endDate),
+      submittedDate: formatDate(submittedDate),
+      dueDate: formatDate(dueDate || endDate),
+      totalScore,
     }
   })
-}
-
-const filterStudents = (
-  rawData,
-  appliedFilters,
-  range,
-  selectedProficiency
-) => {
-  const { bandInfo = {}, studentMetricInfo = [] } = rawData
-  // filter according to Filters applied by user
-  let filteredData = filterData(studentMetricInfo, appliedFilters)
-
-  // filter according to proficiency
-  if (selectedProficiency !== 'All') {
-    filteredData = filter(
-      filteredData,
-      (item) => getProficiency(item, bandInfo) === selectedProficiency
-    )
-  }
-
-  let dataBetweenRange = filteredData
-
-  const rangeMax = max([range.left, range.right])
-  const rangeMin = min([range.left, range.right])
-
-  // filter according to range
-  if (rangeMax && range.left !== '' && range.right !== '') {
-    dataBetweenRange = filter(
-      filteredData,
-      (studentMetric) =>
-        rangeMax > studentMetric.totalScore &&
-        studentMetric.totalScore >= rangeMin
-    )
-  }
-
-  return dataBetweenRange
-}
-
-const getTableData = (
-  rawData,
-  appliedFilters,
-  range,
-  selectedProficiency = 'All'
-) => {
-  const filteredData = filterStudents(
-    rawData,
-    appliedFilters,
-    range,
-    selectedProficiency
-  )
-  const normalisedData = normaliseTableData(rawData, filteredData)
-  const sortedData = orderBy(
-    normalisedData,
-    ['totalScore'],
-    ['desc']
-  ).sort((a, b) =>
-    a.student.toLowerCase().localeCompare(b.student.toLowerCase())
-  )
-  return sortedData
 }
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
@@ -373,6 +335,11 @@ const createTicks = (maxValue, interval) => {
   return ticks
 }
 
+const getThresholdFromBandName = (bands, name) => {
+  const { threshold = '' } = bands.find((band) => band.name === name) || {}
+  return threshold
+}
+
 // -----|-----|-----|-----| CHART TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -388,33 +355,13 @@ const getDisplayValue = (columnType, text) => {
   }
 }
 
-const getSorter = (columnType, columnKey) => {
-  switch (columnType) {
-    case 'percentage':
-    case 'number':
-      return (a, b) => a[columnKey] - b[columnKey]
-    case 'string':
-      return (a, b) => a[columnKey].localeCompare(b[columnKey])
-    case 'name':
-      // primary sort is on lastName & secondary sort is on firstName
-      return (a, b) =>
-        a[columnKey].toLowerCase().localeCompare(b[columnKey].toLowerCase())
-    case 'date':
-      return (a, b) => (moment(a[columnKey]).isBefore(b[columnKey]) ? -1 : 1)
-    case 'score':
-      return (a, b) => a.totalScore / a.maxScore - b.totalScore / b.maxScore
-    default:
-      return null
-  }
-}
-
 // -----|-----|-----|-----| TABLE TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
-const getColumnsBE = (role) => {
+const getColumns = (role) => {
   const filteredColumns = filterAccordingToRole(tableColumns, role)
   return filteredColumns.map((column) => {
     if (column.key === 'student') {
@@ -427,38 +374,24 @@ const getColumnsBE = (role) => {
   })
 }
 
-const populateBackendCSV = ({
-  result,
-  userRole,
-  demographicFilters,
-  isCliUser,
-}) => {
-  const bandInfo = get(result, 'bandInfo.performanceBand', [])
-  const res = { ...result, bandInfo }
-  const range = { left: '', right: '' }
-  const tableData = getTableData(res, demographicFilters, range)
-  const tableColumnsBE = getColumnsBE(userRole).filter(
-    (col) => !(isCliUser && col.title === 'Due Date')
-  )
-  return getCsvDataFromTableBE(tableData, tableColumnsBE)
-}
-
 // -----|-----|-----|-----| BACKEND SPECIFIC TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
   // common transformers
+  sortKeysMap,
   tableColumns,
   getProficiencyBandData,
-  parseData,
+  getBarChartData,
+  getPieChartData,
   getTableData,
   // chart transformers
   createTicks,
   getInterval,
+  getThresholdFromBandName,
   // table transformers
   getDisplayValue,
-  getSorter,
   // backend transformers
-  populateBackendCSV,
+  getColumns,
 }

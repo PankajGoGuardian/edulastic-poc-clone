@@ -3,65 +3,63 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { Row, Col } from 'antd'
+import { Row, Col, Pagination } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
 
 // components
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
-import { EduButton, SpinLoader, notification } from '@edulastic/common'
+import {
+  EduButton,
+  SpinLoader,
+  notification,
+  EduIf,
+  EduElse,
+  EduThen,
+} from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
-import { ABSENT } from '@edulastic/constants/const/testActivityStatus'
-import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledH3, StyledCard, NoDataContainer } from '../../../common/styled'
 import {
   UpperContainer,
   StyledDropDownContainer,
-  StyledTable,
   StyledCharWrapper,
 } from './components/styled'
-import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import SimpleBarChartContainer from './components/charts/SimpleBarChartContainer'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import PerformanceBandPieChart from './components/charts/StudentPerformancePie'
+import StudentPerformanceTable from './components/table/studentPerformanceTable'
 
 // ducks & helpers
-import {
-  getPerformanceByStudentsRequestAction,
-  getReportsPerformanceByStudents,
-  getReportsPerformanceByStudentsLoader,
-  getReportsPerformanceByStudentsError,
-  resetPerformanceByStudentsAction,
-} from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
-import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
 import { getColumns } from './util/transformers'
 import { getAssessmentName } from '../../../common/util'
 
-const { downloadCSV } = reportUtils.common
+import {
+  usePerformanceByStudentsDetailsFetch,
+  usePerformanceByStudentsSummaryFetch,
+} from './hooks/useFetch'
+
+import { sortOrderMap } from './constants'
 
 const {
   getProficiencyBandData,
-  parseData,
+  getBarChartData,
+  getPieChartData,
   getTableData,
+  getThresholdFromBandName,
+  sortKeysMap,
 } = reportUtils.performanceByStudents
-
-const onCsvConvert = (data) => downloadCSV(`Performance by Students.csv`, data)
+const PAGE_SIZE = 200
 
 const PerformanceByStudents = ({
-  loading,
-  error,
   isCsvDownloading,
   role,
-  performanceByStudents,
-  getPerformanceByStudents,
-  resetPerformanceByStudents,
   settings,
   location = { pathname: '' },
   pageTitle,
@@ -70,30 +68,20 @@ const PerformanceByStudents = ({
   customStudentUserId,
   isCliUser,
   sharedReport,
-  setPerformanceBandProfile,
   toggleFilter,
   generateCSV,
+  setAdditionalUrlParams,
 }) => {
+  const urlSearch = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
+  })
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
-  const assessmentName = getAssessmentName(
-    performanceByStudents?.meta?.test || settings.selectedTest
-  )
-
-  const { res, proficiencyBandData } = useMemo(() => {
-    const bandInfo = get(performanceByStudents, 'bandInfo.performanceBand', [])
-    return {
-      res: { ...performanceByStudents, bandInfo },
-      proficiencyBandData: getProficiencyBandData(bandInfo),
-    }
-  }, [performanceByStudents])
-
-  const generateCSVRequired = error && error.dataSizeExceeded
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
-  const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0])
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState({})
   const [range, setRange] = useState({
@@ -104,38 +92,90 @@ const PerformanceByStudents = ({
     defaultPageSize: 50,
     current: 0,
   })
-
-  useEffect(() => () => resetPerformanceByStudents(), [])
+  const [page, setPage] = useState(Number(urlSearch.page) || 1)
+  const [sortOrder, setSortOrder] = useState(urlSearch.sortOrder || 'ascend')
+  const [sortKey, setSortKey] = useState(
+    urlSearch.sortKey || sortKeysMap.STUDENT_SCORE
+  )
+  const [selectedProficiency, setProficiency] = useState()
+  const [recompute, setRecompute] = useState(true)
+  const [totalRowCount, setTotalRowCount] = useState(0)
 
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {
-        requestFilters: { ...settings.requestFilters },
-        testId: settings.selectedTest.key,
-      }
-      getPerformanceByStudents(q)
+    setRecompute(true)
+    setPage(1)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      page: 1,
+    }))
+  }, [demographicFilters, settings])
+
+  const [
+    details,
+    detailsLoading,
+    detailsError,
+  ] = usePerformanceByStudentsDetailsFetch({
+    settings,
+    demographicFilters,
+    sortKey,
+    sortOrder,
+    page,
+    pageSize: PAGE_SIZE,
+    recompute,
+    selectedProficiency,
+    range,
+  })
+
+  const [
+    summary,
+    summaryLoading,
+    summaryError,
+  ] = usePerformanceByStudentsSummaryFetch({
+    settings,
+    demographicFilters,
+    toggleFilter,
+  })
+  const itemsCount = get(details, 'totalRows', totalRowCount)
+  const performanceByStudents = useMemo(() => {
+    return { ...summary, ...details }
+  }, [details, summary])
+  const generateCSVRequired = useMemo(
+    () => [(itemsCount || 0) > PAGE_SIZE].some(Boolean),
+    [itemsCount]
+  )
+
+  const assessmentName = getAssessmentName(
+    performanceByStudents?.meta?.test || settings.selectedTest
+  )
+  const { res, proficiencyBandData } = useMemo(() => {
+    const bandInfo = get(performanceByStudents, 'bandInfo.performanceBand', [])
+    return {
+      res: { ...performanceByStudents, bandInfo },
+      proficiencyBandData: getProficiencyBandData(bandInfo),
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      return () => toggleFilter(null, false)
-    }
-  }, [settings.selectedTest?.key, settings.requestFilters])
+  }, [performanceByStudents])
 
   useEffect(() => {
     if (
-      isCsvDownloading &&
-      generateCSVRequired &&
-      settings.selectedTest &&
-      settings.selectedTest.key
+      [isCsvDownloading, generateCSVRequired, settings.selectedTest?.key].every(
+        Boolean
+      )
     ) {
       const q = {
         reportType: reportTypes.reportNavType.PERFORMANCE_BY_STUDENTS,
         reportFilters: {
           ...settings.requestFilters,
+          ...demographicFilters,
+          page,
+          pageSize: PAGE_SIZE,
+          sortKey,
+          sortOrder: sortOrderMap[sortOrder],
           testId: settings.selectedTest.key,
+          bandThreshold: selectedProficiency?.threshold,
+          range,
         },
         reportExtras: {
           isCliUser,
-          demographicFilters,
         },
       }
       generateCSV(q)
@@ -146,37 +186,13 @@ const PerformanceByStudents = ({
     setPagination({ ...pagination, current: 0 })
   }, [range.left, range.right])
 
-  useEffect(() => {
-    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(performanceByStudents) &&
-      !performanceByStudents.studentMetricInfo.length
-    ) {
-      toggleFilter(null, true)
-    }
-  }, [performanceByStudents])
-
-  const barChartData = useMemo(() => parseData(res, demographicFilters), [
-    res,
-    demographicFilters,
-  ])
+  const barChartData = useMemo(() => getBarChartData(res), [res])
 
   // Ref: https://snapwiz.atlassian.net/browse/EV-32647
   // We need to filter absent students data for pie chart calculation based on proficiency bands.
-  const pieChartData = useMemo(
-    () =>
-      getTableData(res, demographicFilters, range).filter(
-        (d) => d.progressStatus !== ABSENT
-      ),
-    [res, demographicFilters]
-  )
+  const pieChartData = useMemo(() => getPieChartData(res), [res])
 
-  const tableData = useMemo(
-    () => getTableData(res, demographicFilters, range, selectedProficiency.key),
-    [res, demographicFilters, range, selectedProficiency.key]
-  )
+  const tableData = useMemo(() => getTableData(res), [res])
 
   const rowSelection = {
     selectedRowKeys,
@@ -251,7 +267,7 @@ const PerformanceByStudents = ({
   // it will check if student have assignment for this test
   // then redirect to lcb student veiw
   // or show notification
-  if (customStudentUserId && !loading && !isSharedReport) {
+  if (customStudentUserId && !detailsLoading && !isSharedReport) {
     const studentData = tableData.find(
       (d) => d.externalId === customStudentUserId
     )
@@ -271,178 +287,212 @@ const PerformanceByStudents = ({
     }
   }
 
-  if (loading) {
-    return (
-      <SpinLoader
-        tip="Please wait while we gather the required information..."
-        position="fixed"
-      />
-    )
+  const onSetSortKey = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortKey: value,
+    }))
+    setSortKey(value)
+  }
+  const onSetSortOrder = (value) => {
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      sortOrder: value,
+    }))
+    setSortOrder(value)
+  }
+  const onSetPage = (value) => {
+    setRecompute(false)
+    setTotalRowCount(itemsCount)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      page: value,
+    }))
+    setPage(value)
+  }
+  const onSetProficiency = (_selected) => {
+    const selected = {
+      key: _selected.key,
+      title: _selected.title,
+      threshold: getThresholdFromBandName(res.bandInfo, _selected.key),
+    }
+    setProficiency(selected)
   }
 
-  if (error && error.dataSizeExceeded) {
-    return <DataSizeExceeded isDownloadable />
-  }
-
-  if (
-    !performanceByStudents.studentMetricInfo?.length ||
-    !settings.selectedTest.key
-  ) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
-  }
+  const hasNoData =
+    !summary.bandDistribution?.length ||
+    !summary.scoreDistribution?.length ||
+    detailsError ||
+    summaryError
 
   return (
     <>
-      <UpperContainer>
-        <FeaturesSwitch
-          inputFeatures="studentGroups"
-          actionOnInaccessible="hidden"
-        >
-          <AddToGroupModal
-            groupType="custom"
-            visible={showAddToGroupModal}
-            onCancel={() => setShowAddToGroupModal(false)}
-            checkedStudents={checkedStudentsForModal}
-          />
-        </FeaturesSwitch>
-        <StyledCharWrapper>
-          <StyledCard>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <StyledH3>Students in Performance Bands(%)</StyledH3>
-              </Col>
-            </Row>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <PerformanceBandPieChart
-                  bands={res.bandInfo}
-                  data={pieChartData}
-                  onSelect={setProficiency}
-                />
-              </Col>
-            </Row>
-          </StyledCard>
-          <StyledCard style={{ width: '100%' }}>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>
-                  Student score distribution | {assessmentName}
-                </StyledH3>
-              </Col>
-            </Row>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <SimpleBarChartContainer
-                  data={barChartData}
-                  setRange={setRange}
-                  range={range}
-                />
-              </Col>
-            </Row>
-          </StyledCard>
-        </StyledCharWrapper>
-        <StyledCard>
-          <Row type="flex" justify="start">
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3>Student Performance | {assessmentName}</StyledH3>
-            </Col>
-            <Col
-              xs={24}
-              sm={24}
-              md={12}
-              lg={12}
-              xl={12}
-              className="dropdown-container"
-            >
-              {!isCliUser && !isSharedReport && (
+      <EduIf condition={!summaryLoading}>
+        <EduThen>
+          <EduIf condition={!hasNoData}>
+            <EduThen>
+              <UpperContainer>
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
                   actionOnInaccessible="hidden"
                 >
-                  <StyledDropDownContainer>
-                    <EduButton
-                      style={{
-                        height: '31px',
-                        padding: '0 15px 0 10px',
-                        marginRight: '5px',
-                      }}
-                      onClick={handleAddToGroupClick}
-                    >
-                      <IconPlusCircle /> Add To Student Group
-                    </EduButton>
-                  </StyledDropDownContainer>
+                  <AddToGroupModal
+                    groupType="custom"
+                    visible={showAddToGroupModal}
+                    onCancel={() => setShowAddToGroupModal(false)}
+                    checkedStudents={checkedStudentsForModal}
+                  />
                 </FeaturesSwitch>
-              )}
-              <StyledDropDownContainer>
-                <ControlDropDown
-                  prefix="Performance Band - "
-                  data={proficiencyBandData}
-                  by={selectedProficiency}
-                  selectCB={(e, selected) => setProficiency(selected)}
-                />
-              </StyledDropDownContainer>
-            </Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-              <CsvTable
-                isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
-                onCsvConvert={onCsvConvert}
-                columns={columns}
-                dataSource={tableData}
-                rowSelection={rowSelection}
-                colouredCellsNo={4}
-                rightAligned={6}
-                pagination={pagination}
-                onChange={setPagination}
-                tableToRender={StyledTable}
-                location={location}
-                scroll={{ x: '100%' }}
-                pageTitle={pageTitle}
-              />
-            </Col>
-          </Row>
-        </StyledCard>
-      </UpperContainer>
+                <StyledCharWrapper>
+                  <StyledCard>
+                    <Row type="flex" justify="start">
+                      <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        <StyledH3>Students in Performance Bands(%)</StyledH3>
+                      </Col>
+                    </Row>
+                    <Row type="flex" justify="start">
+                      <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        <PerformanceBandPieChart
+                          bands={res.bandInfo}
+                          data={pieChartData}
+                          onSelect={setProficiency}
+                        />
+                      </Col>
+                    </Row>
+                  </StyledCard>
+                  <StyledCard style={{ width: '100%' }}>
+                    <Row type="flex" justify="start">
+                      <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                        <StyledH3>
+                          Student score distribution | {assessmentName}
+                        </StyledH3>
+                      </Col>
+                    </Row>
+                    <Row type="flex" justify="start">
+                      <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                        <SimpleBarChartContainer
+                          data={barChartData}
+                          setRange={setRange}
+                          range={range}
+                        />
+                      </Col>
+                    </Row>
+                  </StyledCard>
+                </StyledCharWrapper>
+                <StyledCard>
+                  <Row type="flex" justify="start">
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                      <StyledH3>
+                        Student Performance | {assessmentName}
+                      </StyledH3>
+                    </Col>
+                    <Col
+                      xs={24}
+                      sm={24}
+                      md={12}
+                      lg={12}
+                      xl={12}
+                      className="dropdown-container"
+                    >
+                      <EduIf condition={!isCliUser && !isSharedReport}>
+                        <EduThen>
+                          <FeaturesSwitch
+                            inputFeatures="studentGroups"
+                            actionOnInaccessible="hidden"
+                          >
+                            <StyledDropDownContainer>
+                              <EduButton
+                                style={{
+                                  height: '31px',
+                                  padding: '0 15px 0 10px',
+                                  marginRight: '5px',
+                                }}
+                                onClick={handleAddToGroupClick}
+                              >
+                                <IconPlusCircle /> Add To Student Group
+                              </EduButton>
+                            </StyledDropDownContainer>
+                          </FeaturesSwitch>
+                        </EduThen>
+                      </EduIf>
+                      <StyledDropDownContainer>
+                        <ControlDropDown
+                          prefix="Performance Band - "
+                          data={proficiencyBandData}
+                          by={selectedProficiency}
+                          selectCB={(e, selected) => onSetProficiency(selected)}
+                        />
+                      </StyledDropDownContainer>
+                    </Col>
+                  </Row>
+                  <EduIf condition={!detailsLoading}>
+                    <EduThen>
+                      <Row type="flex" justify="start">
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                          <StudentPerformanceTable
+                            report={tableData}
+                            isCsvDownloading={
+                              generateCSVRequired ? null : isCsvDownloading
+                            }
+                            columns={columns}
+                            rowSelection={rowSelection}
+                            location={location}
+                            pageTitle={pageTitle}
+                            setSortKey={onSetSortKey}
+                            setSortOrder={onSetSortOrder}
+                            setPageNo={onSetPage}
+                          />
+                        </Col>
+                      </Row>
+                      <EduIf condition={itemsCount > PAGE_SIZE}>
+                        <Pagination
+                          style={{ marginTop: '10px' }}
+                          onChange={onSetPage}
+                          current={page}
+                          pageSize={PAGE_SIZE}
+                          total={itemsCount}
+                        />
+                      </EduIf>
+                    </EduThen>
+                    <EduElse>
+                      <SpinLoader tip="Loading Students data, it may take a while..." />
+                    </EduElse>
+                  </EduIf>
+                </StyledCard>
+              </UpperContainer>
+            </EduThen>
+            <EduElse>
+              <NoDataContainer>
+                {settings.requestFilters?.termId
+                  ? 'No data available currently.'
+                  : ''}
+              </NoDataContainer>
+            </EduElse>
+          </EduIf>
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Please wait while we gather the required information..."
+            position="fixed"
+          />
+        </EduElse>
+      </EduIf>
     </>
   )
 }
 
-const reportPropType = PropTypes.shape({
-  districtAvg: PropTypes.number,
-  districtAvgPerf: PropTypes.number,
-  schoolMetricInfo: PropTypes.array,
-  studentMetricInfo: PropTypes.array,
-  metaInfo: PropTypes.array,
-  metricInfo: PropTypes.array,
-  bandInfo: PropTypes.object,
-})
-
 PerformanceByStudents.propTypes = {
-  loading: PropTypes.bool.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   role: PropTypes.string.isRequired,
-  performanceByStudents: reportPropType.isRequired,
-  getPerformanceByStudents: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
 }
 
 const withConnect = connect(
   (state) => ({
-    loading: getReportsPerformanceByStudentsLoader(state),
-    error: getReportsPerformanceByStudentsError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
-    performanceByStudents: getReportsPerformanceByStudents(state),
   }),
   {
-    getPerformanceByStudents: getPerformanceByStudentsRequestAction,
-    setPerformanceBandProfile: setPerformanceBandProfileAction,
-    resetPerformanceByStudents: resetPerformanceByStudentsAction,
     generateCSV: generateCSVAction,
   }
 )

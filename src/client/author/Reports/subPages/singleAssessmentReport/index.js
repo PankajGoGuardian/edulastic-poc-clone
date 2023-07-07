@@ -439,6 +439,7 @@ const SingleAssessmentReportContainer = (props) => {
                 isCliUser={isCliUser}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                setAdditionalUrlParams={setAdditionalUrlParams}
               />
             )}
           />

@@ -55,13 +55,13 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
       // reset the selected range
       setRange(() => ({ left: '', right: '' }))
       setSelecting(true)
-      setRange((range) => ({ ...range, left: e.activeLabel }))
+      setRange((prevRange) => ({ ...prevRange, left: e.activeLabel }))
     }
   }
 
   const onMouseMove = (e) => {
     if (selecting && e) {
-      setRange((range) => ({ ...range, right: e.activeLabel }))
+      setRange((prevRange) => ({ ...prevRange, right: e.activeLabel }))
     }
   }
 

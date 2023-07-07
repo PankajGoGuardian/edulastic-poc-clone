@@ -92,11 +92,17 @@ export const getManageExternalDataColumns = (
       <TableActionIcon
         IconComponent={MdEdit}
         onClick={() => handleEditClick(record)}
-        disabled={record.status === dwLogStatus.IN_PROGRESS}
+        disabled={
+          // termId and feedType may be empty when uploaded via sftp
+          !record.termId ||
+          !record.feedType ||
+          record.status === dwLogStatus.IN_PROGRESS
+        }
         onDisabledClick={() =>
           notification({
             type: 'info',
-            msg: 'Edit is disabled as upload is currently processing.',
+            msg:
+              'Edit is disabled as upload is currently processing or has invalid feed data. For invalid feed data, delete and reupload.',
           })
         }
       />

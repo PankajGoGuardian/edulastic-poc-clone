@@ -67,9 +67,9 @@ const DataWarehouseUploadModal = ({
 }) => {
   const [file, setFile] = useState(null)
   const [category, setCategory] = useState('')
-  const [testName, setTestName] = useState('')
+  const [feedName, setFeedName] = useState('')
   const [termId, setTermId] = useState('')
-  const [isInvalidTestName, setIsInvalidTestName] = useState(false)
+  const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
 
   useEffect(() => {
     if (!isEmpty(uploadResponse)) {
@@ -79,11 +79,11 @@ const DataWarehouseUploadModal = ({
 
   useEffect(() => {
     const isExistingRecord = uploadsStatusList.some(
-      ({ reportType, testName: _testName }) =>
-        reportType === category && _testName === testName
+      ({ feedType, feedName: _feedName }) =>
+        feedType === category && _feedName === feedName
     )
-    setIsInvalidTestName(isExistingRecord)
-  }, [category, testName])
+    setIsInvalidFeedName(isExistingRecord)
+  }, [category, feedName])
 
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
@@ -106,8 +106,8 @@ const DataWarehouseUploadModal = ({
 
   const isUploadBtnDisabled =
     loading ||
-    [file, category, testName, termId].some(isEmpty) ||
-    isInvalidTestName
+    [file, category, feedName, termId].some(isEmpty) ||
+    isInvalidFeedName
 
   const handleFileUpload = () => {
     const termEndDate = schoolYearOptions.find(({ key }) => key === termId)
@@ -115,11 +115,11 @@ const DataWarehouseUploadModal = ({
     const versionYear = getYear(termEndDate)
     uploadFile({
       file,
-      reportType: category,
+      feedType: category,
       handleUploadProgress,
       setCancelUpload,
       termId,
-      testName,
+      feedName,
       versionYear,
     })
   }
@@ -183,7 +183,7 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
         <EduIf condition={!isEmpty(category)}>
           <>
-            <EduIf condition={isInvalidTestName}>
+            <EduIf condition={isInvalidFeedName}>
               <Alert
                 message="Filename already exists, please give another name or go to Edit to edit the existing record"
                 type="error"
@@ -194,8 +194,8 @@ const DataWarehouseUploadModal = ({
               <StyledCol span={12}>
                 <Input
                   placeholder={testTitlePlaceholder}
-                  value={testName}
-                  onChange={(e) => setTestName(e.target.value)}
+                  value={feedName}
+                  onChange={(e) => setFeedName(e.target.value)}
                   maxLength={150}
                 />
               </StyledCol>

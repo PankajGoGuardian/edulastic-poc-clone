@@ -201,11 +201,11 @@ export function* fetchUploadsStatusListSaga() {
 export function* uploadTestDataFileSaga({
   payload: {
     file,
-    reportType,
+    feedType,
     handleUploadProgress,
     setCancelUpload,
     termId,
-    testName,
+    feedName,
     versionYear,
     feedId,
     _id,
@@ -221,12 +221,12 @@ export function* uploadTestDataFileSaga({
       file,
       folder: dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
       subFolder: `${districtId}/input`,
-      reportType,
+      feedType,
       progressCallback: (progressData) =>
         handleUploadProgress({ progressData }),
       cancelUpload: setCancelUpload,
       termId,
-      testName,
+      feedName,
       versionYear,
       feedId,
       _id,

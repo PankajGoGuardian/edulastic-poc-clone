@@ -79,7 +79,7 @@ const Modal = ({
             uploadProgress={uploadProgress}
             file={file}
             setFile={setFile}
-            reportType={data.reportType}
+            feedType={data.feedType}
           />
         </EduIf>
       </FlexContainer>

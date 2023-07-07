@@ -38,27 +38,27 @@ export const dwLogStatusColorMap = {
 }
 
 export const COMMON_KEYS = {
-  FILE_TYPE: 'reportType',
-  FILE_NAME: 'testName',
+  FILE_NAME: 'feedName',
+  FILE_TYPE: 'feedType',
   SCHOOL_TERM: 'termId',
 }
 
 const commonColumns = [
   {
-    title: 'File Type',
+    title: 'Feed Type',
     dataIndex: COMMON_KEYS.FILE_TYPE,
     key: COMMON_KEYS.FILE_TYPE,
     sorter: (a, b) => sortText(a, b, COMMON_KEYS.FILE_TYPE),
   },
   {
-    title: 'Name',
+    title: 'Feed Name',
     dataIndex: COMMON_KEYS.FILE_NAME,
     key: COMMON_KEYS.FILE_NAME,
     render: (value) => {
-      const testName = value || '-'
+      const feedName = value || '-'
       return (
         <Tooltip title={value}>
-          <div className="test-name">{testName}</div>
+          <div className="test-name">{feedName}</div>
         </Tooltip>
       )
     },

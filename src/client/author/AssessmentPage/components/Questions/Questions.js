@@ -52,6 +52,7 @@ import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 import { videoQuizStimulusSupportedQtypes } from './constants'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../assessment/utils/timeUtils'
 
 const { methods, defaultNumberPad } = math
 
@@ -270,9 +271,12 @@ const createQuestion = (
         correctAnswer,
         correctAnswerIndex,
         correctAnswersIndex,
+        displayAtSecond,
       } = aiQuestion
 
-      staticQuestionData.stimulus = name || ''
+      staticQuestionData.stimulus = `[At ${getFormattedTimeInMinutesAndSeconds(
+        displayAtSecond * 1000
+      )}] ${name}`
 
       if (
         type === MULTIPLE_CHOICE &&

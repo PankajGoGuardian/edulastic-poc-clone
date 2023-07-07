@@ -85,16 +85,16 @@ class AddBulkModal extends React.Component {
         aiQuestions,
       })
     } else {
-      this.generateViaAI()
+      this.generateViaAI({ questionCount: number, questionType: type })
     }
   }
 
-  generateViaAI = () => {
+  generateViaAI = ({ questionCount, questionType }) => {
     const { fetchAIGeneratedQuestion, videoUrl } = this.props
     fetchAIGeneratedQuestion({
       videoUrl,
-      studentGrade: 5,
-      questionCount: 1,
+      questionCount,
+      questionType,
     })
   }
 

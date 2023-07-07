@@ -267,29 +267,58 @@ const createQuestion = (
       const {
         options,
         name,
+        correctAnswer,
         correctAnswerIndex,
         correctAnswersIndex,
       } = aiQuestion
 
       staticQuestionData.stimulus = name || ''
-      staticQuestionData.options = (options || []).map((option) => ({
-        label: option.name,
-        value: uuid(),
-      }))
 
-      if (type === MULTIPLE_CHOICE) {
-        if (correctAnswerIndex !== undefined) {
-          staticQuestionData.validation.validResponse.value = [
-            staticQuestionData.options[correctAnswerIndex].value,
-          ]
-        } else if (correctAnswersIndex) {
-          staticQuestionData.validation.validResponse.value = []
-          correctAnswersIndex.forEach((item) => {
-            staticQuestionData.validation.validResponse.value.push(
-              staticQuestionData.options[item].value
-            )
-          })
+      if (
+        type === MULTIPLE_CHOICE &&
+        correctAnswersIndex &&
+        correctAnswersIndex !== undefined
+      ) {
+        staticQuestionData.options = (options || []).map((option) => ({
+          label: option.name,
+          value: uuid(),
+        }))
+
+        staticQuestionData.validation.validResponse.value = []
+        correctAnswersIndex.forEach((item) => {
+          staticQuestionData.validation.validResponse.value.push(
+            staticQuestionData.options[item].value
+          )
+        })
+      } else if (type === CLOZE_DROP_DOWN && correctAnswerIndex !== undefined) {
+        staticQuestionData.options = {
+          0: (options || []).map((option) => option.name),
         }
+        staticQuestionData.validation.validResponse.value = [
+          {
+            id: 0,
+            value: staticQuestionData.options['0'][correctAnswerIndex],
+          },
+        ]
+      } else if (type === TRUE_OR_FALSE && correctAnswer !== undefined) {
+        const correctBooleanOption =
+          staticQuestionData.options[correctAnswer ? 0 : 1]
+
+        staticQuestionData.validation.validResponse.value = [
+          correctBooleanOption.value,
+        ]
+      } else if (type === MATH && correctAnswer !== undefined) {
+        staticQuestionData.validation.validResponse.value = [
+          {
+            method: methods.EQUIV_SYMBOLIC,
+            options: {
+              inverseResult: false,
+            },
+            value: correctAnswer.toString(),
+          },
+        ]
+      } else if (type === SHORT_TEXT && correctAnswer !== undefined) {
+        staticQuestionData.validation.validResponse.value = correctAnswer
       }
     }
   }

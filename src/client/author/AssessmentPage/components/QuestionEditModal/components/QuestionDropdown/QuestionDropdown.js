@@ -153,15 +153,8 @@ export default class QuestionDropdown extends React.Component {
       .map((option) => option?.name || '')
       .filter((option) => option?.length)
 
-    const correctAnswerIndex = (options || []).findIndex(
-      (option) => option?.value === correctAnswer
-    )
-
-    if (
-      correctAnswerIndex !== -1 &&
-      options?.[correctAnswerIndex]?.name?.length
-    ) {
-      this.handleValueChange(options[correctAnswerIndex].name)
+    if (options?.[correctAnswer]?.name?.length) {
+      this.handleValueChange(options[correctAnswer].name)
     } else {
       this.handleValueChange('')
     }

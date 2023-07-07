@@ -16,6 +16,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 const { methods, simplifiedOptions } = math
 
@@ -123,7 +124,7 @@ const QuestionMath = ({
   }
 
   const updateQuestionWithAIData = () => {
-    const { correctAnswer, name = '' } = aiGeneratedQuestion
+    const { correctAnswer, name = '', displayAtSecond } = aiGeneratedQuestion
     // TODO: correct answer not loading in math input
     if (correctAnswer) {
       handleAnswerChange('value', `${correctAnswer}`)
@@ -132,7 +133,12 @@ const QuestionMath = ({
     }
 
     const updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
     }
     onUpdate(updateData)
   }

@@ -4,6 +4,7 @@ import {
   white,
   themeColorHoverBlue,
   black,
+  themeColor,
 } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Col, Input } from 'antd'
@@ -70,4 +71,12 @@ export const IconTrash = styled(Icon)`
 `
 export const RightAlignedCol = styled(Col)`
   text-align: right;
+`
+export const TimeStampContainer = styled.label`
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.38;
+  font-weight: 600;
+  color: ${themeColor};
 `

@@ -11,6 +11,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 const getDefaultState = (question) => {
   const { validation, uiStyle, id: qId } = question
@@ -103,9 +104,14 @@ export default class QuestionEssay extends React.Component {
 
   updateQuestionWithAIData = () => {
     const { aiGeneratedQuestion, onUpdate } = this.props
-    const { name = '' } = aiGeneratedQuestion
+    const { name = '', displayAtSecond } = aiGeneratedQuestion
     const updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
     }
     onUpdate(updateData)
   }

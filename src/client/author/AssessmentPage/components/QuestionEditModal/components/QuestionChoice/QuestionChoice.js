@@ -16,6 +16,8 @@ import {
 } from '../../common/QuestionForm'
 import VideoQuizQuestionChoice from './VideoQuizQuestionChoice'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
+import { TimeStampContainer } from './styled-components'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 const { Group: RadioGroup } = Radio
 
@@ -142,9 +144,14 @@ export default class QuestionChoice extends React.Component {
   updateQuestionWithAIData = () => {
     const { question, aiGeneratedQuestion, onUpdate } = this.props
     const { options = [], validation } = question
-    const { correctAnswer, name = '' } = aiGeneratedQuestion
+    const { correctAnswer, name = '', displayAtSecond } = aiGeneratedQuestion
     let updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
     }
     let validAnswer = []
     if (typeof correctAnswer === 'boolean') {
@@ -187,10 +194,20 @@ export default class QuestionChoice extends React.Component {
     } = this.props
     const { options, title, stimulus = '' } = question
     const trueOrFalse = title === 'True or false'
+    const { displayAtSecond } = aiGeneratedQuestion
 
     return (
       <QuestionFormWrapper>
         <EduIf condition={isSnapQuizVideo}>
+          <EduIf condition={typeof displayAtSecond === 'number'}>
+            <FormGroup>
+              <TimeStampContainer>
+                Suggested Timestamp -{' '}
+                {getFormattedTimeInMinutesAndSeconds(displayAtSecond * 1000)}
+              </TimeStampContainer>
+            </FormGroup>
+          </EduIf>
+
           <FormGroup>
             <VideoQuizStimulus
               stimulus={stimulus}

@@ -6,6 +6,7 @@ import uuid from 'uuid/v4'
 import { isEmpty } from 'lodash'
 import { FormGroup, FormLabel } from '../../common/QuestionForm'
 import Options from './Components/Options'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 const VideoQuizQuestionChoice = ({
   question,
@@ -126,6 +127,7 @@ const VideoQuizQuestionChoice = ({
       name = '',
       options: questionOptions = [],
       correctAnswersIndex = [],
+      displayAtSecond,
     } = _aiGeneratedQuestion
 
     const _options = (questionOptions || []).map((option) => {
@@ -147,7 +149,12 @@ const VideoQuizQuestionChoice = ({
     }
 
     const updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
       options: _options,
       validation: {
         ...validation,

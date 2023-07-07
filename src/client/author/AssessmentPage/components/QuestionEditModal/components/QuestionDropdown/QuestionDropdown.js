@@ -16,6 +16,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 export default class QuestionDropdown extends React.Component {
   static propTypes = {
@@ -147,7 +148,12 @@ export default class QuestionDropdown extends React.Component {
 
   updateQuestionWithAIData = () => {
     const { aiGeneratedQuestion, onUpdate } = this.props
-    const { correctAnswer, name = '', options = [] } = aiGeneratedQuestion
+    const {
+      correctAnswer,
+      name = '',
+      options = [],
+      displayAtSecond,
+    } = aiGeneratedQuestion
 
     const questionOptions = (options || [])
       .map((option) => option?.name || '')
@@ -160,7 +166,12 @@ export default class QuestionDropdown extends React.Component {
     }
 
     const updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
       options: { 0: questionOptions },
     }
     onUpdate(updateData)

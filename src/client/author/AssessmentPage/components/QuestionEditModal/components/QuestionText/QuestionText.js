@@ -24,6 +24,7 @@ import {
   FormGroup,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
+import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
 
 export default class QuestionText extends React.Component {
   constructor(props) {
@@ -238,7 +239,7 @@ export default class QuestionText extends React.Component {
 
   updateQuestionWithAIData = () => {
     const { aiGeneratedQuestion, onUpdate } = this.props
-    const { correctAnswer, name = '' } = aiGeneratedQuestion
+    const { correctAnswer, name = '', displayAtSecond } = aiGeneratedQuestion
 
     if (typeof correctAnswer === 'string' && correctAnswer.length) {
       this.handleSetAnswer({ target: { value: correctAnswer } })
@@ -246,7 +247,12 @@ export default class QuestionText extends React.Component {
       this.handleSetAnswer({ target: { value: '' } })
     }
     const updateData = {
-      stimulus: name,
+      stimulus:
+        typeof displayAtSecond === 'number'
+          ? `[At ${getFormattedTimeInMinutesAndSeconds(
+              displayAtSecond * 1000
+            )}] ${name}`
+          : name,
     }
     onUpdate(updateData)
   }

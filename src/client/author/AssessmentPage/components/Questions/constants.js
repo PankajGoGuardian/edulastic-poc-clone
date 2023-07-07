@@ -1,15 +1,19 @@
-import { MULTIPLE_CHOICE } from '@edulastic/constants/const/questionType'
-import uuid from 'uuid/v4'
+import {
+  MULTIPLE_CHOICE,
+  TRUE_OR_FALSE,
+  SHORT_TEXT,
+  ESSAY_PLAIN_TEXT,
+  MATH,
+  CLOZE_DROP_DOWN,
+  AUDIO_RESPONSE,
+} from '@edulastic/constants/const/questionType'
 
-const uuids = [uuid(), uuid(), uuid(), uuid()]
-
-export const videoQuizDefaultQuestionOptions = {
-  [MULTIPLE_CHOICE]: [
-    { label: 'A', value: uuids[0] },
-    { label: 'B', value: uuids[1] },
-    { label: 'C', value: uuids[2] },
-    { label: 'D', value: uuids[3] },
-  ],
-}
-
-export const videoQuizStimulusSupportedQtypes = [MULTIPLE_CHOICE]
+export const videoQuizStimulusSupportedQtypes = [
+  MULTIPLE_CHOICE,
+  TRUE_OR_FALSE,
+  SHORT_TEXT,
+  ESSAY_PLAIN_TEXT,
+  MATH,
+  CLOZE_DROP_DOWN,
+  AUDIO_RESPONSE,
+]

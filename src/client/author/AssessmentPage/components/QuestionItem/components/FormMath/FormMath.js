@@ -2,10 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ThemeProvider } from 'styled-components'
 
-import { MathSpan, MathInput } from '@edulastic/common'
+import { MathSpan, MathInput, EduIf } from '@edulastic/common'
 import { themes } from '../../../../../../theme'
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
+import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
+import { StimulusContainer } from '../../styled'
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -17,6 +19,23 @@ export default class FormMath extends React.Component {
 
   static defaultProps = {
     answer: '',
+  }
+
+  get showStimulus() {
+    const {
+      question: { stimulus = '', type },
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
+    } = this.props
+
+    return (
+      showStimulusInQuestionItem &&
+      !isSnapQuizVideoPlayer &&
+      isSnapQuizVideo &&
+      videoQuizStimulusSupportedQtypes.includes(type) &&
+      stimulus?.length
+    )
   }
 
   handleChange = (value, resetHighlighted = false) => {
@@ -33,7 +52,7 @@ export default class FormMath extends React.Component {
 
   renderView = () => {
     const {
-      question: { validation },
+      question: { validation, stimulus = '' },
     } = this.props
 
     if (!validation) return this.renderForm()
@@ -43,16 +62,27 @@ export default class FormMath extends React.Component {
     } = validation
     const answer = value[0]
 
-    if (!answer || !answer.value) return null
+    if (!answer || !answer.value) {
+      return (
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+      )
+    }
 
     return (
-      <QuestionText>
-        <MathSpan
-          dangerouslySetInnerHTML={{
-            __html: `<span class="input__math" data-latex="${answer.value}"></span>`,
-          }}
-        />
-      </QuestionText>
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <QuestionText>
+          <MathSpan
+            dangerouslySetInnerHTML={{
+              __html: `<span class="input__math" data-latex="${answer.value}"></span>`,
+            }}
+          />
+        </QuestionText>
+      </div>
     )
   }
 
@@ -72,6 +102,7 @@ export default class FormMath extends React.Component {
         symbols,
         allowedVariables = '',
         allowNumericOnly = false,
+        stimulus = '',
       },
       answer,
       view,
@@ -88,21 +119,26 @@ export default class FormMath extends React.Component {
       return <QuestionText>{answer}</QuestionText>
     }
     return (
-      <ThemeProvider theme={themes.default}>
-        <MathInput
-          onInput={this.handleChange}
-          numberPad={numberPad}
-          symbols={symbols}
-          check={['check', 'show'].includes(view)}
-          value={answer}
-          fullWidth
-          ref={(el) => highlighted && el?.setFocus()}
-          onBlur={this.handleBlur}
-          restrictKeys={restrictKeys}
-          allowNumericOnly={allowNumericOnly}
-          isFromDocBased
-        />
-      </ThemeProvider>
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <ThemeProvider theme={themes.default}>
+          <MathInput
+            onInput={this.handleChange}
+            numberPad={numberPad}
+            symbols={symbols}
+            check={['check', 'show'].includes(view)}
+            value={answer}
+            fullWidth
+            ref={(el) => highlighted && el?.setFocus()}
+            onBlur={this.handleBlur}
+            restrictKeys={restrictKeys}
+            allowNumericOnly={allowNumericOnly}
+            isFromDocBased
+          />
+        </ThemeProvider>
+      </div>
     )
   }
 

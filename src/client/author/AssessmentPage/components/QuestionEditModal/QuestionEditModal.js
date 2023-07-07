@@ -17,11 +17,17 @@ import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { selectsData } from '../../../TestPage/components/common'
 import { ModalFooter, ModalTitle } from '../../common/Modal'
 import { QuestionNumber, TitleWrapper } from '../QuestionItem/styled'
 import StandardSet from './common/StandardSet/StandardSet'
 import { StandardSelectWrapper } from './common/StandardSet/styled'
+import {
+  fetchAIGeneratedQuestionAction,
+  setAIGeneratedQuestionStateAction,
+} from '../../../src/actions/aiGenerateQuestion'
 import QuestionChoice from './components/QuestionChoice/QuestionChoice'
 import QuestionDropdown from './components/QuestionDropdown/QuestionDropdown'
 import QuestionEssay from './components/QuestionEssay/QuestionEssay'
@@ -37,7 +43,7 @@ const questionTypeTitles = {
   [SHORT_TEXT]: 'Text Entry',
 }
 
-export default class QuestionEditModal extends React.Component {
+class QuestionEditModal extends React.Component {
   static propTypes = {
     totalQuestions: PropTypes.number.isRequired,
     visible: PropTypes.bool,
@@ -56,13 +62,66 @@ export default class QuestionEditModal extends React.Component {
     visible: false,
   }
 
-  renderForm = (type) => {
-    const { question, onUpdate, isSnapQuizVideo } = this.props
+  componentDidMount() {
+    const { aiGenerateQuestionState, setAIGeneratedQuestionState } = this.props
+    const { apiStatus, result } = aiGenerateQuestionState || {}
 
-    const props = {
+    if (apiStatus) {
+      setAIGeneratedQuestionState({
+        apiStatus: false,
+        result,
+      })
+    }
+  }
+
+  componentDidUpdate() {
+    const { aiGenerateQuestionState, setAIGeneratedQuestionState } = this.props
+    const { apiStatus, result } = aiGenerateQuestionState || {}
+    const loading = apiStatus === 'INITIATED'
+
+    if (apiStatus && !loading) {
+      setAIGeneratedQuestionState({
+        apiStatus: false,
+        result,
+      })
+    }
+  }
+
+  generateViaAI = (qType) => {
+    const { fetchAIGeneratedQuestion, videoUrl } = this.props
+    fetchAIGeneratedQuestion({
+      videoUrl,
+      studentGrade: 5,
+      questionCount: 1,
+      questionType: qType,
+    })
+  }
+
+  renderForm = (type) => {
+    const {
       question,
       onUpdate,
       isSnapQuizVideo,
+      aiGenerateQuestionState = {},
+    } = this.props
+
+    const {
+      result: aiGeneratedQuestion = [],
+      apiStatus,
+    } = aiGenerateQuestionState
+    const isGeneratingAIQuestion = apiStatus === 'INITIATED'
+
+    const props = {
+      type,
+      question,
+      onUpdate,
+      isSnapQuizVideo,
+      aiGenerateQuestionState,
+      aiGeneratedQuestion: aiGeneratedQuestion?.length
+        ? aiGeneratedQuestion[0]
+        : {},
+      isGeneratingAIQuestion,
+      generateViaAI: this.generateViaAI,
     }
 
     switch (type) {
@@ -238,3 +297,17 @@ const StyledBodyContainer = styled.div`
     }
   }
 `
+const enhance = compose(
+  connect(
+    (state) => ({
+      videoUrl: state.tests.entity.videoUrl,
+      aiGenerateQuestionState: state.aiGenerateQuestionState,
+    }),
+    {
+      setAIGeneratedQuestionState: setAIGeneratedQuestionStateAction,
+      fetchAIGeneratedQuestion: fetchAIGeneratedQuestionAction,
+    }
+  )
+)
+
+export default enhance(QuestionEditModal)

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Select, InputNumber, Button } from 'antd'
+import { isEmpty, isEqual } from 'lodash'
 import { arrayMove } from 'react-sortable-hoc'
 import { ThemeProvider } from 'styled-components'
+import { EduIf } from '@edulastic/common'
 
 import { themes } from '../../../../../../theme'
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
@@ -13,6 +15,7 @@ import {
   FormLabel,
   Points,
 } from '../../common/QuestionForm'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 export default class QuestionDropdown extends React.Component {
   static propTypes = {
@@ -38,6 +41,16 @@ export default class QuestionDropdown extends React.Component {
         altResponses: [],
       },
     },
+  }
+
+  componentDidUpdate(prevProps) {
+    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
+    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
+      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
+        return
+      }
+      this.updateQuestionWithAIData()
+    }
   }
 
   get currentOptions() {
@@ -132,9 +145,42 @@ export default class QuestionDropdown extends React.Component {
     onUpdate(data)
   }
 
+  updateQuestionWithAIData = () => {
+    const { aiGeneratedQuestion, onUpdate } = this.props
+    const { correctAnswer, name = '', options = [] } = aiGeneratedQuestion
+
+    const questionOptions = (options || [])
+      .map((option) => option?.name || '')
+      .filter((option) => option?.length)
+
+    const correctAnswerIndex = (options || []).findIndex(
+      (option) => option?.value === correctAnswer
+    )
+
+    if (
+      correctAnswerIndex !== -1 &&
+      options?.[correctAnswerIndex]?.name?.length
+    ) {
+      this.handleValueChange(options[correctAnswerIndex].name)
+    } else {
+      this.handleValueChange('')
+    }
+
+    const updateData = {
+      stimulus: name,
+      options: { 0: questionOptions },
+    }
+    onUpdate(updateData)
+  }
+
   render() {
     const {
-      question: { validation },
+      question: { validation, stimulus = '' },
+      isSnapQuizVideo,
+      generateViaAI,
+      isGeneratingAIQuestion,
+      onUpdate,
+      type,
     } = this.props
     const {
       validResponse: { value, score },
@@ -143,6 +189,17 @@ export default class QuestionDropdown extends React.Component {
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionFormWrapper>
+          <EduIf condition={isSnapQuizVideo}>
+            <FormGroup>
+              <VideoQuizStimulus
+                stimulus={stimulus}
+                generateViaAI={generateViaAI}
+                loading={isGeneratingAIQuestion}
+                onUpdate={onUpdate}
+                type={type}
+              />
+            </FormGroup>
+          </EduIf>
           <FormGroup>
             <FormLabel>Choices</FormLabel>
             <SortableList

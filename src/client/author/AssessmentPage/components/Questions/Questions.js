@@ -20,6 +20,7 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
+  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import { math } from '@edulastic/constants'
 
@@ -50,10 +51,7 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
-import {
-  videoQuizDefaultQuestionOptions,
-  videoQuizStimulusSupportedQtypes,
-} from './constants'
+import { videoQuizStimulusSupportedQtypes } from './constants'
 
 const { methods, defaultNumberPad } = math
 
@@ -223,6 +221,7 @@ const typeTitleHash = {
   [MATH]: 'Math - standard',
   [TRUE_OR_FALSE]: 'True or false',
   [ESSAY_PLAIN_TEXT]: 'Essay with plain text',
+  [AUDIO_RESPONSE]: 'Audio Response',
 }
 
 const createQuestion = (
@@ -261,8 +260,9 @@ const createQuestion = (
   }
 
   if (isSnapQuizVideo && videoQuizStimulusSupportedQtypes.includes(type)) {
-    staticQuestionData.options = videoQuizDefaultQuestionOptions[type]
-
+    if (type === CLOZE_DROP_DOWN) {
+      staticQuestionData.stimulus = ''
+    }
     if (aiQuestion) {
       const {
         options,

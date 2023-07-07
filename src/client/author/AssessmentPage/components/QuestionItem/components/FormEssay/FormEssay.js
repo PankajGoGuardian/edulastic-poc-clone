@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
+import { EduIf } from '@edulastic/common'
 import { isSubmitButton } from '../../../../common/helpers'
+import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
+import { StimulusContainer } from '../../styled'
 
 export default class FormEssay extends React.Component {
   static propTypes = {
@@ -22,14 +25,36 @@ export default class FormEssay extends React.Component {
     saveAnswer(value)
   }
 
+  get showStimulus() {
+    const {
+      question: { stimulus = '', type },
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
+    } = this.props
+
+    return (
+      showStimulusInQuestionItem &&
+      !isSnapQuizVideoPlayer &&
+      isSnapQuizVideo &&
+      videoQuizStimulusSupportedQtypes.includes(type) &&
+      stimulus?.length
+    )
+  }
+
   renderView = () => {
     const {
-      question: { validation },
+      question: { validation, stimulus = '' },
     } = this.props
     if (!validation) return this.renderForm()
 
     return (
-      <Input style={{ width: '150px' }} disabled placeholder="Essay type" />
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <Input style={{ width: '150px' }} disabled placeholder="Essay type" />
+      </div>
     )
   }
 
@@ -47,22 +72,28 @@ export default class FormEssay extends React.Component {
       answer,
       question: {
         uiStyle: { numberOfRows = 10 },
+        stimulus = '',
       },
       mode,
       highlighted,
       disableAutoHightlight,
     } = this.props
     return (
-      <Input.TextArea
-        style={{ padding: '2px 11px', resize: 'none' }}
-        value={answer}
-        data-cy="essayInput"
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-        disabled={mode === 'report'}
-        rows={numberOfRows} // textarea number of rows
-        ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
-      />
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Input.TextArea
+            style={{ padding: '2px 11px', resize: 'none' }}
+            value={answer}
+            data-cy="essayInput"
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            disabled={mode === 'report'}
+            rows={numberOfRows} // textarea number of rows
+            ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
+          />
+        </EduIf>
+      </div>
     )
   }
 

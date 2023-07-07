@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input, InputNumber, Radio } from 'antd'
-import { throttle, isArray } from 'lodash'
+import { throttle, isArray, isEmpty, isEqual } from 'lodash'
+import { TRUE_OR_FALSE } from '@edulastic/constants/const/questionType'
 
 import { inputBgGrey, inputBorder } from '@edulastic/colors'
 import { EduIf, EduElse, EduThen } from '@edulastic/common'
@@ -14,6 +15,7 @@ import {
   CheckboxGroupStyled,
 } from '../../common/QuestionForm'
 import VideoQuizQuestionChoice from './VideoQuizQuestionChoice'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 const { Group: RadioGroup } = Radio
 
@@ -34,6 +36,22 @@ export default class QuestionChoice extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      aiGeneratedQuestion = {},
+      isSnapQuizVideo = false,
+      question,
+    } = this.props
+    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
+      const { title } = question
+      const trueOrFalse = title === 'True or false'
+      if (isEmpty(aiGeneratedQuestion) || !trueOrFalse || !isSnapQuizVideo) {
+        return
+      }
+      this.updateQuestionWithAIData()
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -121,19 +139,74 @@ export default class QuestionChoice extends React.Component {
     })
   }
 
+  updateQuestionWithAIData = () => {
+    const { question, aiGeneratedQuestion, onUpdate } = this.props
+    const { options = [], validation } = question
+    const { correctAnswer, name = '' } = aiGeneratedQuestion
+    let updateData = {
+      stimulus: name,
+    }
+    let validAnswer = []
+    if (typeof correctAnswer === 'boolean') {
+      options.forEach((option) => {
+        if (
+          option?.value?.length &&
+          option?.label?.toUpperCase() === `${correctAnswer}`.toUpperCase()
+        ) {
+          validAnswer = [option.value]
+        }
+      })
+      if (validAnswer?.length) {
+        updateData = {
+          ...updateData,
+          validation: {
+            ...validation,
+            validResponse: {
+              ...validation.validResponse,
+              value: validAnswer,
+            },
+          },
+        }
+      }
+    }
+    this.setState({ correctAnswers: validAnswer }, () => {
+      onUpdate(updateData)
+    })
+  }
+
   render() {
     const { optionsValue, correctAnswers, score } = this.state
-    const { question, isSnapQuizVideo, onUpdate } = this.props
-    const { options, title } = question
+    const {
+      type,
+      question,
+      isSnapQuizVideo,
+      onUpdate,
+      isGeneratingAIQuestion,
+      generateViaAI,
+      aiGeneratedQuestion,
+    } = this.props
+    const { options, title, stimulus = '' } = question
     const trueOrFalse = title === 'True or false'
 
     return (
       <QuestionFormWrapper>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup>
+            <VideoQuizStimulus
+              stimulus={stimulus}
+              generateViaAI={generateViaAI}
+              loading={isGeneratingAIQuestion}
+              onUpdate={onUpdate}
+              type={trueOrFalse ? TRUE_OR_FALSE : type}
+            />
+          </FormGroup>
+        </EduIf>
         <EduIf condition={isSnapQuizVideo && !trueOrFalse}>
           <EduThen>
             <VideoQuizQuestionChoice
               question={question}
               updateQuestionData={onUpdate}
+              aiGeneratedQuestion={aiGeneratedQuestion}
             />
           </EduThen>
           <EduElse>

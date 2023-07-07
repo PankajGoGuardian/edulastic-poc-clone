@@ -1,40 +1,21 @@
-import { EduButton, EduIf, helpers, notification } from '@edulastic/common'
-import { Col, Icon, Input, InputNumber, Row, Spin } from 'antd'
+import { EduButton, helpers } from '@edulastic/common'
+import { InputNumber } from 'antd'
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
-import { compose } from 'redux'
 import uuid from 'uuid/v4'
 import { isEmpty } from 'lodash'
-import {
-  fetchAIGeneratedQuestionAction,
-  setAIGeneratedQuestionStateAction,
-} from '../../../../../src/actions/aiGenerateQuestion'
 import { FormGroup, FormLabel } from '../../common/QuestionForm'
 import Options from './Components/Options'
-import { RightAlignedCol } from './styled-components'
-
-const { TextArea } = Input
 
 const VideoQuizQuestionChoice = ({
   question,
   updateQuestionData,
-  videoUrl,
-  fetchAIGeneratedQuestion,
-  aiGenerateQuestionState,
-  setAIGeneratedQuestionState,
+  aiGeneratedQuestion,
 }) => {
-  const { options = [], validation = {}, stimulus = '' } = question
+  const { options = [], validation = {} } = question
   const {
     validResponse: { score = 1, value: correctAnswers = [] } = {},
   } = validation
-
-  const handleStimulusChange = (value) => {
-    const updateData = {
-      stimulus: value,
-    }
-    updateQuestionData(updateData)
-  }
 
   const handleOptionChange = (
     optionId,
@@ -136,18 +117,16 @@ const VideoQuizQuestionChoice = ({
     updateQuestionData(updateData)
   }
 
-  const updateQuestionWithAIData = (aiGeneratedQuestion = {}) => {
-    if (isEmpty(aiGeneratedQuestion)) {
-      return notification({
-        type: 'error',
-        msg: 'Error generating question via AI',
-      })
+  const updateQuestionWithAIData = (_aiGeneratedQuestion = {}) => {
+    if (isEmpty(_aiGeneratedQuestion)) {
+      return
     }
+
     const {
       name = '',
       options: questionOptions = [],
-      correctAnswerIndex = null,
-    } = aiGeneratedQuestion
+      correctAnswersIndex = [],
+    } = _aiGeneratedQuestion
 
     const _options = (questionOptions || []).map((option) => {
       const { name: optionLabel = '' } = option || {}
@@ -158,13 +137,8 @@ const VideoQuizQuestionChoice = ({
     })
 
     const questionCorrectAnswers = []
-    if (typeof correctAnswerIndex === 'number') {
-      const optionIndexUUID = _options[correctAnswerIndex]?.value || ''
-      if (optionIndexUUID?.length) {
-        questionCorrectAnswers.push(optionIndexUUID)
-      }
-    } else if (Array.isArray(correctAnswerIndex) && correctAnswerIndex.length) {
-      correctAnswerIndex.forEach((index) => {
+    if (Array.isArray(correctAnswersIndex) && correctAnswersIndex.length) {
+      correctAnswersIndex.forEach((index) => {
         const optionIndexUUID = _options[index]?.value || ''
         if (optionIndexUUID?.length) {
           questionCorrectAnswers.push(optionIndexUUID)
@@ -187,63 +161,12 @@ const VideoQuizQuestionChoice = ({
     updateQuestionData(updateData)
   }
 
-  const generateViaAI = () => {
-    fetchAIGeneratedQuestion({
-      videoUrl,
-      studentGrade: 5,
-      questionCount: 1,
-    })
-  }
-
-  const { apiStatus, result } = aiGenerateQuestionState || {}
-
-  const loading = apiStatus === 'INITIATED'
-
   useEffect(() => {
-    if (apiStatus && !loading) {
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result,
-      })
-    }
-  }, [apiStatus])
-
-  useEffect(() => {
-    if (apiStatus) {
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result,
-      })
-    }
-  }, [])
-
-  useEffect(() => {
-    if (result?.length) {
-      updateQuestionWithAIData(result[0])
-    }
-  }, [result])
+    updateQuestionWithAIData(aiGeneratedQuestion)
+  }, [aiGeneratedQuestion])
 
   return (
     <>
-      <FormGroup>
-        <Row gutter={16}>
-          <Col span={12}>
-            <FormLabel>Stimulus</FormLabel>
-          </Col>
-          <RightAlignedCol span={12}>
-            <a onClick={() => generateViaAI()}>Generate via AI</a>
-            <EduIf condition={loading}>
-              <Spin size="small" indicator={<Icon type="loading" />} />
-            </EduIf>
-          </RightAlignedCol>
-        </Row>
-        <TextArea
-          style={{ height: 120, resize: 'none' }}
-          onChange={(e) => handleStimulusChange(e?.target?.value || '')}
-          placeholder="Enter your question"
-          value={stimulus}
-        />
-      </FormGroup>
       <FormGroup>
         <FormLabel>Set Correct Answer(s)</FormLabel>
         <Options
@@ -269,17 +192,4 @@ const VideoQuizQuestionChoice = ({
   )
 }
 
-const enhance = compose(
-  connect(
-    (state) => ({
-      videoUrl: state.tests.entity.videoUrl,
-      aiGenerateQuestionState: state.aiGenerateQuestionState,
-    }),
-    {
-      setAIGeneratedQuestionState: setAIGeneratedQuestionStateAction,
-      fetchAIGeneratedQuestion: fetchAIGeneratedQuestionAction,
-    }
-  )
-)
-
-export default enhance(VideoQuizQuestionChoice)
+export default VideoQuizQuestionChoice

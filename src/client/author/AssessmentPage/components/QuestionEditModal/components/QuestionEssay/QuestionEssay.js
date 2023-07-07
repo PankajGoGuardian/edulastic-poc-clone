@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
+import { isEmpty, isEqual } from 'lodash'
+import { EduIf } from '@edulastic/common'
 
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
 import {
@@ -8,6 +10,7 @@ import {
   FormGroup,
   Points,
 } from '../../common/QuestionForm'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 const getDefaultState = (question) => {
   const { validation, uiStyle, id: qId } = question
@@ -36,6 +39,16 @@ export default class QuestionEssay extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setState(getDefaultState(question))
+  }
+
+  componentDidUpdate(prevProps) {
+    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
+    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
+      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
+        return
+      }
+      this.updateQuestionWithAIData()
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -88,10 +101,39 @@ export default class QuestionEssay extends React.Component {
     })
   }
 
+  updateQuestionWithAIData = () => {
+    const { aiGeneratedQuestion, onUpdate } = this.props
+    const { name = '' } = aiGeneratedQuestion
+    const updateData = {
+      stimulus: name,
+    }
+    onUpdate(updateData)
+  }
+
   render() {
     const { score, numberOfRows = 1 } = this.state
+    const {
+      isSnapQuizVideo,
+      question: { stimulus = '' },
+      generateViaAI,
+      isGeneratingAIQuestion,
+      onUpdate,
+      type,
+    } = this.props
+
     return (
       <QuestionFormWrapper>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup>
+            <VideoQuizStimulus
+              stimulus={stimulus}
+              generateViaAI={generateViaAI}
+              loading={isGeneratingAIQuestion}
+              onUpdate={onUpdate}
+              type={type}
+            />
+          </FormGroup>
+        </EduIf>
         <FormGroup>
           <InputNumber
             min={1}

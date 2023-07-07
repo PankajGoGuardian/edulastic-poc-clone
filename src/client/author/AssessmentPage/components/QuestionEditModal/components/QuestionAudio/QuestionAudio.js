@@ -1,6 +1,7 @@
-import { FieldLabel, NumberInputStyled } from '@edulastic/common'
+import { FieldLabel, NumberInputStyled, EduIf } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { isEmpty, isEqual } from 'lodash'
 
 import { maxAudioDurationLimit } from '../../../../../../assessment/widgets/AudioResponse/constants'
 import {
@@ -8,6 +9,7 @@ import {
   FormInline,
   QuestionFormWrapper,
 } from '../../common/QuestionForm'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 export default class QuestionAudio extends React.Component {
   constructor(props) {
@@ -21,6 +23,16 @@ export default class QuestionAudio extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
+  }
+
+  componentDidUpdate(prevProps) {
+    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
+    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
+      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
+        return
+      }
+      this.updateQuestionWithAIData()
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -63,10 +75,39 @@ export default class QuestionAudio extends React.Component {
     )
   }
 
+  updateQuestionWithAIData = () => {
+    const { aiGeneratedQuestion, onUpdate } = this.props
+    const { name = '' } = aiGeneratedQuestion
+    const updateData = {
+      stimulus: name,
+    }
+    onUpdate(updateData)
+  }
+
   render() {
     const { score, audioTimeLimitInMinutes } = this.state
+    const {
+      question: { stimulus = '' },
+      generateViaAI,
+      isGeneratingAIQuestion,
+      onUpdate,
+      isSnapQuizVideo,
+      type,
+    } = this.props
+
     return (
       <QuestionFormWrapper>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup>
+            <VideoQuizStimulus
+              stimulus={stimulus}
+              generateViaAI={generateViaAI}
+              loading={isGeneratingAIQuestion}
+              onUpdate={onUpdate}
+              type={type}
+            />
+          </FormGroup>
+        </EduIf>
         <FormInline>
           <FormGroup width="50%">
             <FieldLabel>MAXIMUM RESPONSE DURATION ALLOWED</FieldLabel>

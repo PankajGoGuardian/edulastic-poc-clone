@@ -5,6 +5,8 @@ import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import VoiceRecorder from '../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
 import { StyledAudioElement } from '../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import AudioRecorder from './AudioRecorder'
+import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
+import { StimulusContainer } from '../../styled'
 
 export default class FormAudio extends React.Component {
   static propTypes = {
@@ -23,6 +25,23 @@ export default class FormAudio extends React.Component {
     answer: '',
   }
 
+  get showStimulus() {
+    const {
+      question: { stimulus = '', type },
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
+    } = this.props
+
+    return (
+      showStimulusInQuestionItem &&
+      !isSnapQuizVideoPlayer &&
+      isSnapQuizVideo &&
+      videoQuizStimulusSupportedQtypes.includes(type) &&
+      stimulus?.length
+    )
+  }
+
   handleBlur = () => {
     // preventing blur event when relatedTarget is submit button
     const { saveQuestionResponse } = this.props
@@ -36,14 +55,31 @@ export default class FormAudio extends React.Component {
   }
 
   renderView = () => {
-    return <>Audio Response</>
+    const {
+      question: { stimulus = '' },
+    } = this.props
+
+    return (
+      <div>
+        <b>Audio Response</b>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+      </div>
+    )
   }
 
   renderForm = () => {
-    const { answer } = this.props
+    const {
+      answer,
+      question: { stimulus = '' },
+    } = this.props
 
     return (
-      <>
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
         <EduIf condition={(answer || '').length > 0}>
           <EduThen>
             <StyledAudioElement
@@ -59,7 +95,7 @@ export default class FormAudio extends React.Component {
             <AudioRecorder onFinish={this.handleChange} />
           </EduElse>
         </EduIf>
-      </>
+      </div>
     )
   }
 

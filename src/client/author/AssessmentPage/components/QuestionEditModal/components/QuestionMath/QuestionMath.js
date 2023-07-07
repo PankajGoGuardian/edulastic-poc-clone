@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
 import { cloneDeep, isEmpty } from 'lodash'
 import { ThemeProvider } from 'styled-components'
+import { EduIf } from '@edulastic/common'
 
 import { math } from '@edulastic/constants'
 
@@ -14,10 +15,19 @@ import {
   FormGroup,
   Points,
 } from '../../common/QuestionForm'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 const { methods, simplifiedOptions } = math
 
-const QuestionMath = ({ onUpdate, question }) => {
+const QuestionMath = ({
+  onUpdate,
+  question,
+  aiGeneratedQuestion = {},
+  isSnapQuizVideo,
+  generateViaAI,
+  isGeneratingAIQuestion,
+  type,
+}) => {
   const toggleAdditional = (val) => {
     onUpdate({ showAdditional: val })
   }
@@ -112,6 +122,29 @@ const QuestionMath = ({ onUpdate, question }) => {
     onUpdate(data)
   }
 
+  const updateQuestionWithAIData = () => {
+    const { correctAnswer, name = '' } = aiGeneratedQuestion
+    // TODO: correct answer not loading in math input
+    if (correctAnswer) {
+      handleAnswerChange('value', `${correctAnswer}`)
+    } else {
+      handleAnswerChange('value', '')
+    }
+
+    const updateData = {
+      stimulus: name,
+    }
+    onUpdate(updateData)
+  }
+
+  useEffect(() => {
+    if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
+      return
+    }
+    updateQuestionWithAIData()
+  }, [aiGeneratedQuestion])
+
+  const { stimulus = '' } = question
   const { validResponse } = question.validation
   const { score } = validResponse
   const value = validResponse.value[0]
@@ -119,6 +152,17 @@ const QuestionMath = ({ onUpdate, question }) => {
   return (
     <ThemeProvider theme={themes.default}>
       <QuestionFormWrapper key={question.id}>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup>
+            <VideoQuizStimulus
+              stimulus={stimulus}
+              generateViaAI={generateViaAI}
+              loading={isGeneratingAIQuestion}
+              onUpdate={onUpdate}
+              type={type}
+            />
+          </FormGroup>
+        </EduIf>
         <FormGroup>
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"

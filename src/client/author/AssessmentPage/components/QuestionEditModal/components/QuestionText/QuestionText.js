@@ -8,8 +8,9 @@ import {
   CheckboxLabel,
   FieldLabel,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
-import { throttle } from 'lodash'
+import { throttle, isEqual, isEmpty } from 'lodash'
 import produce from 'immer'
 
 import { IconTrash, IconAddStudents } from '@edulastic/icons'
@@ -22,6 +23,7 @@ import {
   FormInline,
   FormGroup,
 } from '../../common/QuestionForm'
+import VideoQuizStimulus from '../common/VideoQuizStimulus'
 
 export default class QuestionText extends React.Component {
   constructor(props) {
@@ -37,6 +39,16 @@ export default class QuestionText extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
+  }
+
+  componentDidUpdate(prevProps) {
+    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
+    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
+      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
+        return
+      }
+      this.updateQuestionWithAIData()
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -224,17 +236,52 @@ export default class QuestionText extends React.Component {
     })
   }
 
+  updateQuestionWithAIData = () => {
+    const { aiGeneratedQuestion, onUpdate } = this.props
+    const { correctAnswer, name = '' } = aiGeneratedQuestion
+
+    if (typeof correctAnswer === 'string' && correctAnswer.length) {
+      this.handleSetAnswer({ target: { value: correctAnswer } })
+    } else {
+      this.handleSetAnswer({ target: { value: '' } })
+    }
+    const updateData = {
+      stimulus: name,
+    }
+    onUpdate(updateData)
+  }
+
   render() {
     const { answer, score, allow, altResponses = [], matchCase } = this.state
+    const {
+      type,
+      isSnapQuizVideo,
+      question,
+      onUpdate,
+      generateViaAI,
+      isGeneratingAIQuestion,
+    } = this.props
+    const { stimulus = '' } = question
+
     return (
       <QuestionFormWrapper>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup>
+            <VideoQuizStimulus
+              stimulus={stimulus}
+              generateViaAI={generateViaAI}
+              loading={isGeneratingAIQuestion}
+              onUpdate={onUpdate}
+              type={type}
+            />
+          </FormGroup>
+        </EduIf>
         <FormGroup>
           <FieldLabel>Correct Answer</FieldLabel>
           <FormInline>
             <TextInputStyled
               value={answer}
               onChange={throttle(this.handleSetAnswer, 2000)}
-              autoFocus
               data-cy="correctAnswer"
             />
             <EduButton

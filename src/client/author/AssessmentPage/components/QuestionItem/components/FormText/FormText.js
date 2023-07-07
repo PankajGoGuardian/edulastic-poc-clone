@@ -1,9 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
+import { EduIf } from '@edulastic/common'
 
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
+import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
+import { StimulusContainer } from '../../styled'
 
 export default class FormText extends React.Component {
   static propTypes = {
@@ -20,6 +23,23 @@ export default class FormText extends React.Component {
     answer: '',
   }
 
+  get showStimulus() {
+    const {
+      question: { stimulus = '', type },
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer = false,
+      showStimulusInQuestionItem,
+    } = this.props
+
+    return (
+      showStimulusInQuestionItem &&
+      !isSnapQuizVideoPlayer &&
+      isSnapQuizVideo &&
+      videoQuizStimulusSupportedQtypes.includes(type) &&
+      stimulus?.length
+    )
+  }
+
   handleChange = ({ target: { value } }) => {
     const { saveAnswer } = this.props
     saveAnswer(value)
@@ -27,7 +47,7 @@ export default class FormText extends React.Component {
 
   renderView = () => {
     const {
-      question: { validation },
+      question: { validation, stimulus = '' },
     } = this.props
 
     if (!validation) return this.renderForm()
@@ -38,7 +58,14 @@ export default class FormText extends React.Component {
 
     if (!value || !value.length) return this.renderAnswerCreateForm()
 
-    return <QuestionText>{value}</QuestionText>
+    return (
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <QuestionText>{value}</QuestionText>
+      </div>
+    )
   }
 
   handleBlur = (ev) => {
@@ -55,16 +82,24 @@ export default class FormText extends React.Component {
       answer = false,
       highlighted = false,
       disableAutoHightlight = false,
+      question: { stimulus = '' },
     } = this.props
+
     return (
-      <Input
-        size="large"
-        value={answer}
-        data-cy="textInput"
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-        ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
-      />
+      <div>
+        {' '}
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <Input
+          size="large"
+          value={answer}
+          data-cy="textInput"
+          onChange={this.handleChange}
+          onBlur={this.handleBlur}
+          ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
+        />
+      </div>
     )
   }
 
@@ -79,17 +114,22 @@ export default class FormText extends React.Component {
 
   renderAnswerCreateForm = () => {
     const {
-      question: { id, type },
+      question: { id, type, stimulus },
       onCreateAnswer,
       highlighted = false,
     } = this.props
 
     return (
-      <Input
-        size="large"
-        onPressEnter={onCreateAnswer(id, type)}
-        ref={(el) => highlighted && el?.focus()}
-      />
+      <div>
+        <EduIf condition={this.showStimulus}>
+          <StimulusContainer>{stimulus}</StimulusContainer>
+        </EduIf>
+        <Input
+          size="large"
+          onPressEnter={onCreateAnswer(id, type)}
+          ref={(el) => highlighted && el?.focus()}
+        />
+      </div>
     )
   }
 

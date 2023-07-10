@@ -22,7 +22,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { Modal } from 'antd'
+import { Modal, Tooltip } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import {
   getUserFeatures,
@@ -58,6 +58,7 @@ import {
   RightWrapper,
   ShareIcon,
   TestStatus,
+  StaticIdCopy,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
@@ -459,20 +460,38 @@ const TestPageHeader = ({
   }
 
   const headingSubContent = (
-    <TestStatus
-      data-cy="status"
-      className={
-        (isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
-          ? 'draft'
-          : isPlaylist
-          ? playlistStatus
-          : testStatus
-      }
-    >
-      {(isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
-        ? 'DRAFT'
-        : getStatus(isPlaylist ? playlistStatus : testStatus)}
-    </TestStatus>
+    <div style={{ display: 'inline-block', margin: '0px' }}>
+      <EduIf condition={!!test.versionId}>
+        <Tooltip title="Click to copy">
+          <StaticIdCopy
+            copyable={{
+              text: test.versionId?.slice(-8),
+              tooltips: false,
+            }}
+            onClick={(e) => {
+              document.querySelector('.ant-typography-copy').click()
+              e.stopPropagation()
+            }}
+          >
+            {test.versionId?.slice(-8)}
+          </StaticIdCopy>
+        </Tooltip>
+      </EduIf>
+      <TestStatus
+        data-cy="status"
+        className={
+          (isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
+            ? 'draft'
+            : isPlaylist
+            ? playlistStatus
+            : testStatus
+        }
+      >
+        {(isPlaylist || editEnable) && !isEdulasticCurator && !isCurator
+          ? 'DRAFT'
+          : getStatus(isPlaylist ? playlistStatus : testStatus)}
+      </TestStatus>
+    </div>
   )
 
   const isRegradeFlow =

@@ -2,6 +2,8 @@ import React from 'react'
 import Modal from 'antd/lib/modal'
 import { connect } from 'react-redux'
 import { IconClose } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
+import './index.scss'
 import { actions } from '../../../ducks/actionReducers'
 import { GROUP } from '../../../ducks/constants'
 
@@ -26,9 +28,9 @@ const DeleteModal = ({
   return (
     <Modal
       className="delete-popup"
-      title="Confirm"
+      // title="Confirm"
       centered
-      width={300}
+      width={500}
       visible={showModal}
       closeIcon={<IconClose />}
       onOk={handleConfirmGIDelete}
@@ -37,6 +39,11 @@ const DeleteModal = ({
       cancelText="CANCEL"
     >
       <p>Are you sure you’d like to delete this {type.toLowerCase()}?</p>
+      <EduIf condition={type === GROUP}>
+        <p className="delete-modal-note">
+          Note: Associated Goals / Interventions won’t be deleted.
+        </p>
+      </EduIf>
     </Modal>
   )
 }

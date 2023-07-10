@@ -66,7 +66,7 @@ const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
 
 DatesFormItem.defaultProps = {
   initialStartDate: moment(),
-  initialEndDate: moment().add(1, 'year'),
+  initialEndDate: moment().add(365, 'days'),
 }
 
 const NotesFormItem = ({

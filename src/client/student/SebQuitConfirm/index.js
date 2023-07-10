@@ -1,20 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Col } from 'antd'
 import styled from 'styled-components'
+import { withRouter } from 'react-router'
 import { checkIsChromeOs } from '@edulastic/common/src/helpers'
 
-const SebQuitConfirm = () => {
-  const isChromeOs = checkIsChromeOs()
-  let message = `Do you really want to quit SEB?`
-  let buttonTxt = `Quit SEB`
-  if (isChromeOs) {
-    message = `Do you really want to quit Kiosk?`
-    buttonTxt = `Quit Kiosk`
-  }
+const SebQuitConfirm = ({ history }) => {
+  useEffect(() => {
+    if (checkIsChromeOs()) {
+      history.push('/home/grades')
+    }
+  }, [])
+
   return (
     <MainContainer>
       <Container>
-        <p>{message}</p>
+        <p>Do you really want to quit SEB?</p>
         <Col md={24} sm={24}>
           {/* its completely fine hardcoding this url, since this is just an indication */}
           <StyledButton
@@ -23,7 +23,7 @@ const SebQuitConfirm = () => {
             type="primary"
             btnType={2}
           >
-            {buttonTxt}
+            Quit SEB
           </StyledButton>
         </Col>
       </Container>
@@ -31,7 +31,7 @@ const SebQuitConfirm = () => {
   )
 }
 
-export default SebQuitConfirm
+export default withRouter(SebQuitConfirm)
 
 const MainContainer = styled.div`
   display: flex;

@@ -5,12 +5,13 @@ import {
   ATTEMPT_WINDOW_DEFAULT_END_TIME,
   STUDENT_ATTEMPT_TIME_WINDOW,
   hour12inMiliSec,
+  WEEK_DAYS,
 } from '@edulastic/constants/const/common'
 import { isEmpty } from 'lodash'
 
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
-const useAttemptWindowChangeHandler = (changeField, payload) => {
+const useAttemptWindowChangeHandler = (changeField, payload, savedValue) => {
   const initialRender = useRef(true)
   const [selectedAttemptWindowType, setSelectedAttemptWindowType] = useState(
     payload?.type || ATTEMPT_WINDOW_TYPE.DEFAULT
@@ -101,7 +102,16 @@ const useAttemptWindowChangeHandler = (changeField, payload) => {
     }))
   }
 
-  const handleChange = (value) => setSelectedAttemptWindowType(value)
+  const handleChange = (value) => {
+    setSelectedAttemptWindowType(value)
+    if (value === 'CUSTOM' && savedValue?.type !== 'CUSTOM') {
+      const today = new Date().toLocaleString('en-us', { weekday: 'long' })
+      const selectedDay = WEEK_DAYS[today.toUpperCase()]
+      setSelectedDays(() => ({
+        [selectedDay]: true,
+      }))
+    }
+  }
   return {
     handleStartTimeChange,
     handleEndTimeChange,

@@ -11,7 +11,12 @@ import useAttemptWindowChangeHandler from './useAttempWindowChangeHandler'
 
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
-const AttemptWindowTypeSelector = ({ changeField, isAdvancedView, value }) => {
+const AttemptWindowTypeSelector = ({
+  changeField,
+  isAdvancedView,
+  value,
+  savedValue,
+}) => {
   const {
     handleStartTimeChange,
     handleEndTimeChange,
@@ -21,7 +26,7 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView, value }) => {
     selectedDays,
     assignmentStartTime,
     assignmentEndTime,
-  } = useAttemptWindowChangeHandler(changeField, value)
+  } = useAttemptWindowChangeHandler(changeField, value, savedValue)
   return (
     <>
       <EduIf condition={!isAdvancedView}>

@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import { Tag } from 'antd'
 
 import {
   themeColor,
   greyThemeLight,
-  title,
   dragDropUploadText,
   notStarted,
   white,
@@ -39,7 +39,9 @@ const CameraUploader = ({ history, hasNonMcq }) => {
       <IconWrapper>
         <IconQRCode />
       </IconWrapper>
-      <Title>Scan Using Camera</Title>
+      <Title>
+        Scan Using Camera <StyledTag alignItems="left">BETA</StyledTag>
+      </Title>
       <SubTitle>Scan bubble sheet forms using desktop/laptop camera</SubTitle>
       <EduButton
         data-cy="startCameraButton"
@@ -81,7 +83,7 @@ const Title = styled.h3`
   text-align: center;
   font: normal normal bold 18px Open Sans;
   letter-spacing: -0.9px;
-  color: ${title};
+  color: ${dragDropUploadText};
   opacity: 1;
   margin-bottom: -20px;
 `
@@ -105,4 +107,10 @@ const IconWrapper = styled.div`
     height: 32px;
     fill: ${white};
   }
+`
+const StyledTag = styled(Tag)`
+  position: relative;
+  top: -15px;
+  border-color: ${dragDropUploadText};
+  color: ${dragDropUploadText};
 `

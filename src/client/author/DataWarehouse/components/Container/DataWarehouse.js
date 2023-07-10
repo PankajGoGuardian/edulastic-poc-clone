@@ -14,7 +14,7 @@ import {
 import { fadedBlack } from '@edulastic/colors'
 import styled from 'styled-components'
 import { IconCloudUpload, IconUpload } from '@edulastic/icons'
-import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
+import DataWarehouseUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 
 import {
   getUploadsStatusListAction,
@@ -100,12 +100,10 @@ const DataWarehouse = ({
               abortUpload={abortUpload}
             />
           </TableContainer>
-          {showTestDataUploadModal && (
-            <DataWarehoureUploadModal
-              isVisible={showTestDataUploadModal}
-              closeModal={closeModal}
-            />
-          )}
+          <DataWarehouseUploadModal
+            isVisible={showTestDataUploadModal}
+            closeModal={closeModal}
+          />
         </div>
       </EduThen>
       <EduElse>

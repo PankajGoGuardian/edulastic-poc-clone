@@ -23,7 +23,8 @@ function useTabNavigation({
       })
       Object.assign(_filters, {
         reportId: reportId && reportId !== 'All' ? reportId : '',
-        testTypes: _filters.assessmentTypes,
+        courseIds: _filters.courseIds || _filters.courseId,
+        testTypes: _filters.testTypes || _filters.assessmentTypes,
         performanceBandProfileId: _filters.profileId,
         preProfileId: _filters.profileId,
         postProfileId: _filters.profileId,

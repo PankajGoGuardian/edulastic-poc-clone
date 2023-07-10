@@ -36,6 +36,8 @@ import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
   fetchInterventionsByGroupsRequest,
   fetchUpdateTagsDataAction,
+  getAcademicInterventions,
+  getAttendanceInterventions,
   getCsvDownloadingState,
   getInterventionsByGroup,
   getSharingState,
@@ -118,6 +120,8 @@ const WholeLearnerReport = ({
   fetchInterventionsByGroups,
   interventionsData,
   termsData,
+  attendanceInterventions,
+  academicInterventions,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -213,6 +217,7 @@ const WholeLearnerReport = ({
     // settings.requestFilters is missing class filters
     const _requestFilters = {
       ...filters,
+      courseId: filters.courseIds.split(',')[0],
       assessmentTypes: filters.testTypes,
       profileId: filters.performanceBandProfileId,
       reportId: reportId || '',
@@ -455,7 +460,7 @@ const WholeLearnerReport = ({
                           chartData={chartData}
                           selectedPerformanceBand={selectedPerformanceBand}
                           showInterventions={showInterventions}
-                          interventionsData={interventionsData}
+                          interventionsData={academicInterventions}
                           settings={settings}
                           preLabelContent={
                             <ChartPreLabelWrapper>
@@ -474,7 +479,7 @@ const WholeLearnerReport = ({
                                     checked={showInterventions}
                                     onChange={toggleInterventionInfo}
                                   >
-                                    Show Intervention{' '}
+                                    Show Interventions{' '}
                                   </Checkbox>
                                   <IconInfo
                                     fill={blueButton}
@@ -497,7 +502,7 @@ const WholeLearnerReport = ({
                       <AttendanceChart
                         attendanceChartData={attendanceChartData}
                         showInterventions={showInterventions}
-                        interventionsData={interventionsData}
+                        interventionsData={attendanceInterventions}
                       />
                     </EduIf>
                     <EduIf condition={!isEmpty(tableData)}>
@@ -529,6 +534,8 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
     interventionsData: getInterventionsByGroup(state),
+    academicInterventions: getAcademicInterventions(state),
+    attendanceInterventions: getAttendanceInterventions(state),
     termsData: get(state, 'user.user.orgData.terms', []),
   }),
   {
@@ -536,6 +543,7 @@ const enhance = connect(
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
+
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.WHOLE_LEARNER_REPORT,

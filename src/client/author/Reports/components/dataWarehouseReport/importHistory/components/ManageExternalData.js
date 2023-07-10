@@ -50,18 +50,18 @@ const ManageExternalData = ({
     const {
       _id,
       feedId,
-      reportType,
+      feedType,
       termId,
-      testName,
+      feedName,
       versionYear,
     } = selectedRecord
     uploadFile({
       file: editFile,
-      reportType,
+      feedType,
       handleUploadProgress,
       setCancelUpload,
       termId,
-      testName,
+      feedName,
       versionYear,
       feedId,
       _id,

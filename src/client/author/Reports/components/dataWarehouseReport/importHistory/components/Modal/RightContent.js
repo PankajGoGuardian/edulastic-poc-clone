@@ -31,7 +31,7 @@ const RightContent = ({
   setFile,
   uploading,
   uploadProgress,
-  reportType,
+  feedType,
 }) => {
   return (
     <ModalContentWrapper>
@@ -39,7 +39,7 @@ const RightContent = ({
         Upload CSV to edit current data <Divider />
       </Header>
       <Container>
-        <a href={getTemplateFilePath(reportType)} download>
+        <a href={getTemplateFilePath(feedType)} download>
           DOWNLOAD TEMPLATE <Icon type="download" />
         </a>
       </Container>

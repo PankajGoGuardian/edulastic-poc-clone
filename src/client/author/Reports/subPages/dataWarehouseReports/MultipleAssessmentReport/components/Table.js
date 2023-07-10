@@ -30,7 +30,11 @@ import { tableColumnsData, compareByMap, sortKeys } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import LinkCell from '../../common/components/LinkCell'
-import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
+import {
+  buildDrillDownUrl,
+  compareByKeys,
+  getScoreSuffix,
+} from '../../common/utils'
 
 const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 
@@ -155,11 +159,11 @@ const getTableColumns = (
                   />
                   <TooltipRowItem
                     title="Score:"
-                    value={
+                    value={`${
                       currentTest.externalTestType
                         ? currentTest.averageScore
-                        : `${currentTest.totalTotalScore}/${currentTest.totalMaxScore}`
-                    }
+                        : currentTest.averageScorePercentage
+                    }${getScoreSuffix(currentTest.externalTestType)}`}
                   />
                   <DashedHr />
                   <ColorBandItem

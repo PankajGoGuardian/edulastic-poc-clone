@@ -213,3 +213,5 @@ export const sortTestTypes = (testTypes) => {
   externalTestTypes.sort()
   return [...internalTestTypes, ...externalTestTypes]
 }
+
+export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')

@@ -177,6 +177,11 @@ export const buildDrillDownUrl = ({
 
   if (selectedCompareBy === compareByKeys.STUDENT) {
     delete _filters[filterField]
+    Object.assign(_filters, {
+      courseIds: _filters.courseId,
+      testTypes: _filters.assessmentTypes,
+      performanceBandProfileId: _filters.profileId,
+    })
     return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters)}`
   }
   return `${reportUrl}?${qs.stringify(_filters)}`

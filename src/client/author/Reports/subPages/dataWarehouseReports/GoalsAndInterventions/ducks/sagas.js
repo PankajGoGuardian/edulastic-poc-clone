@@ -194,7 +194,7 @@ function* deleteGroupSaga({ payload }) {
 
     notification({
       type: 'success',
-      msg: `group deleted successfully`,
+      msg: `Group deleted successfully`,
     })
   } catch (error) {
     const msg = `Error deleting group.`
@@ -270,11 +270,18 @@ function* saveGroup({ payload }) {
       )
     )
     yield put(actions.setAdvancedSearchQuery())
+    if (groupData._id) {
+      notification({
+        type: 'success',
+        msg:
+          response?.data?.result?.message ||
+          'Student group updated successfully.',
+      })
+      return
+    }
     notification({
       type: 'success',
-      msg: isUpdateAction
-        ? `Student group updated successfully.`
-        : `Student group created successfully.`,
+      msg: `Student group created successfully.`,
     })
   } catch (error) {
     const errorMessage = payload._id
@@ -451,6 +458,8 @@ function* getAdvancedSearchData({ payload }) {
     const errorMessage = `Unable to fetch students's list`
     notification({ type: 'error', msg: errorMessage })
     yield put(actions.setAdvancedSearchDataComplete())
+  } finally {
+    yield put(actions.setOnGroupEditIsLoading(false))
   }
 }
 

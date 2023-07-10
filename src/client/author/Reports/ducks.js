@@ -222,6 +222,10 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
+import {
+  ACADEMIC,
+  ATTENDANCE,
+} from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 
 const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
 
@@ -269,6 +273,9 @@ export const updateCsvDocsAction = createAction(UPDATE_CSV_DOCS)
 export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
 export const fetchInterventionsByGroupsRequest = createAction(
   FETCH_INTERVENTIONS_BY_GROUPS_REQUEST
+)
+export const fetchInterventionsByGroupsSuccess = createAction(
+  FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS
 )
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -347,6 +354,16 @@ export const getCsvDocsLoading = createSelector(
 
 export const getInterventionsByGroup = createSelector(stateSelector, (state) =>
   sortBy(state.interventionsByGroups, 'endDate')
+)
+
+export const getAcademicInterventions = createSelector(
+  getInterventionsByGroup,
+  (state) => state.filter(({ type }) => type === ACADEMIC)
+)
+
+export const getAttendanceInterventions = createSelector(
+  getInterventionsByGroup,
+  (state) => state.filter(({ type }) => type === ATTENDANCE)
 )
 
 export const getInterventionsLoading = createSelector(
@@ -928,10 +945,7 @@ function* fetchInterventionByGroupsSaga({ payload }) {
       reportsApi.getInterventionsByGroups,
       payload
     )
-    yield put({
-      type: FETCH_INTERVENTIONS_BY_GROUPS_SUCCESS,
-      payload: responseData,
-    })
+    yield put(fetchInterventionsByGroupsSuccess(responseData))
   } catch (error) {
     const msg =
       'Error getting interventions data. Please try again after a few minutes.'

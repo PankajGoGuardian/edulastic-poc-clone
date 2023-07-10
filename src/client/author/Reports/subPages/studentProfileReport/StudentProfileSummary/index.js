@@ -165,7 +165,8 @@ const StudentProfileSummary = ({
   const domainOptions = getDomainOptionsByGradeSubject(
     domains,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
   const domainsWithMastery = augmentDomainStandardMasteryData(
     domains,

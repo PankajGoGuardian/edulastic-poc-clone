@@ -17,9 +17,9 @@ import { AttendanceSummaryLegends, groupByConstants } from '../utils/constants'
 const AttendanceSummaryHeader = ({
   groupBy,
   setGroupBy,
-  filterTagsData,
   interventionData,
   onShowInterventionClick,
+  showInterventions,
 }) => {
   return (
     <FlexWrapper flex="1">
@@ -37,15 +37,16 @@ const AttendanceSummaryHeader = ({
         </LegendWrap>
         <div style={{ display: 'flex', gap: '0 24px', alignItems: 'center' }}>
           <StyledDiv>
-            <EduIf
-              condition={
-                interventionData.length &&
-                (filterTagsData?.groupIds?.length ||
-                  filterTagsData?.classIds?.length)
-              }
-            >
-              <Checkbox onChange={onShowInterventionClick}>
-                <StyledSpan>Show Interventions</StyledSpan>
+            <EduIf condition={interventionData.length}>
+              <Checkbox
+                checked={showInterventions}
+                onChange={onShowInterventionClick}
+                style={{
+                  margin: '0 30px 0 0',
+                  fontSize: '12px',
+                }}
+              >
+                Show Interventions
               </Checkbox>
             </EduIf>
             <StyledSpan>Weekly</StyledSpan>

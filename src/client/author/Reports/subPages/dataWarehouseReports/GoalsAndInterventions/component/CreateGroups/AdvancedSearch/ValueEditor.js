@@ -39,7 +39,15 @@ const ValueEditor = (props) => {
     }
     return originalValue
   }
-  const value = getValue()
+  let value = getValue()
+  if (
+    (field.startsWith(fieldKey.attendanceBands) ||
+      field.startsWith(fieldKey.proficiencyBands)) &&
+    value?.length &&
+    typeof value[0] !== 'string'
+  ) {
+    value = undefined
+  }
   const dataCyValue = (pathLevel = [], selectorName) => {
     if (pathLevel.length) {
       if (pathLevel.length == 2)

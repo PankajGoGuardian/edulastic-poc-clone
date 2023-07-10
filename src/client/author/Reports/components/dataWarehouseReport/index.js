@@ -8,7 +8,7 @@ import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
 import { IconUpload } from '@edulastic/icons'
 import { withRouter } from 'react-router'
 import { segmentApi } from '@edulastic/api'
-import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
+import DataWarehouseUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 import { SubHeader } from '../../common/components/Header'
 import { StyledContainer } from '../../common/styled'
 import DataWarehoureReportCardsWrapper from './DataWarehouseReportCardsWrapper'
@@ -195,12 +195,10 @@ const DataWarehouseReports = ({
             loc={loc}
           />
         </EduIf>
-        <EduIf condition={showTestDataUploadModal}>
-          <DataWarehoureUploadModal
-            isVisible={showTestDataUploadModal}
-            closeModal={closeModal}
-          />
-        </EduIf>
+        <DataWarehouseUploadModal
+          isVisible={showTestDataUploadModal}
+          closeModal={closeModal}
+        />
       </StyledContainer>
       <EduIf condition={!allowAccess}>
         <FloatingAction title="UPGRADE NOW" onUpgrade={onUpgradeNowClicked} />

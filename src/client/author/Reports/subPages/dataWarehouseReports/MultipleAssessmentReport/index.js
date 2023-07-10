@@ -42,6 +42,7 @@ import TableFilters from './components/TableFilters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
   fetchInterventionsByGroupsRequest,
+  fetchInterventionsByGroupsSuccess,
   fetchUpdateTagsDataAction,
   getCsvDownloadingState,
   getInterventionsByGroup,
@@ -70,6 +71,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { isAddToStudentGroupEnabled } from '../common/utils'
+import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
 
 const externalTestTypes = Object.keys(EXTERNAL_TEST_TYPES)
 
@@ -131,6 +133,7 @@ const MultipleAssessmentReport = ({
   selectedTests,
   setSelectedTests,
   fetchInterventionsByGroups,
+  setInterventionsByGroup,
   interventionsData,
 }) => {
   const [sortFilters, setSortFilters] = useState({
@@ -413,14 +416,19 @@ const MultipleAssessmentReport = ({
       termId &&
       Number.isInteger(startDate) &&
       Number.isInteger(endDate)
-    )
+    ) {
+      const groupIdsArr =
+        typeof groupIds === 'string' ? groupIds.split(',') : undefined
       fetchInterventionsByGroups({
-        type: ['academic'],
-        groupIds,
+        type: [ACADEMIC],
+        groupIds: groupIdsArr,
         startDate,
         endDate,
         termId,
       })
+    } else {
+      setInterventionsByGroup([])
+    }
   }, [chartData])
 
   return (
@@ -503,16 +511,11 @@ const MultipleAssessmentReport = ({
               <StyledH3 margin="30px 0 0 0">
                 Performance across Assessments
               </StyledH3>
-              <EduIf
-                condition={
-                  interventionsData.length &&
-                  (filterTagsData?.groupIds?.length ||
-                    filterTagsData?.classIds?.length)
-                }
-              >
+              <EduIf condition={interventionsData.length}>
                 <Checkbox
                   style={{ margin: '30px 0 0 16px' }}
                   onChange={onShowInterventionClick}
+                  checked={showInterventions}
                 >
                   Show Interventions{' '}
                 </Checkbox>
@@ -589,6 +592,7 @@ const enhance = connect(
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
+    setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

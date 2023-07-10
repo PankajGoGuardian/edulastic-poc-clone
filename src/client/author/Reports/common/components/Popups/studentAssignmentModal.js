@@ -13,6 +13,7 @@ const columns = [
     title: 'Questions',
     key: 'questions',
     dataIndex: 'questions',
+    render: (_, record) => <span>{record.questions || 'N/A'}</span>,
   },
   {
     title: 'Standard based score',
@@ -27,7 +28,9 @@ const columns = [
     dataIndex: 'maxScore',
     render: (_, record) => (
       <span>
-        {record.obtainedScore.toFixed(2)}/{record.maxScore}
+        {(record.obtainedScore &&
+          record.obtainedScore.toFixed(2) / record.maxScore) ||
+          'N/A'}
       </span>
     ),
   },

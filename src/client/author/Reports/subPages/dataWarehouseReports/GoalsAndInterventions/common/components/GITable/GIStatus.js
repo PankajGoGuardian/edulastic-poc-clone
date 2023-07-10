@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Select } from 'antd'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { StyledDropDown } from './styled-components'
+import './index.scss'
 import {
   statusTextColors,
   goalStatusOptions,

@@ -101,6 +101,9 @@ const slice = createSlice({
     getAdvancedSearchData: (state) => {
       state[ADVANCED_SEARCH_DATA].isLoading = true
     },
+    setOnGroupEditIsLoading: (state, { payload }) => {
+      state[ADVANCED_SEARCH_DATA].isLoadingOnGroupEdit = payload
+    },
     resetGroupStatus: (state) => {
       state.group.status = 'init'
       state.advancedSearchData.data = []
@@ -153,6 +156,7 @@ const {
   deleteGI,
   updateGIDataRequest,
   deleteGroup,
+  setOnGroupEditIsLoading,
 } = slice.actions
 
 export const actions = {
@@ -186,6 +190,7 @@ export const actions = {
   deleteGI,
   updateGIDataRequest,
   deleteGroup,
+  setOnGroupEditIsLoading,
 }
 
 export const { reducer } = slice

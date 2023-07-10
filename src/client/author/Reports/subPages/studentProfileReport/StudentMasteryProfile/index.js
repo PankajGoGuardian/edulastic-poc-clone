@@ -185,7 +185,8 @@ const StudentMasteryProfile = ({
   const domainOptions = getDomainOptionsByGradeSubject(
     studentDomains,
     selectedGrade.key,
-    selectedSubject.key
+    selectedSubject.key,
+    selectedCurriculum.key
   )
 
   const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(

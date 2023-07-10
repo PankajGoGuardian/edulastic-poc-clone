@@ -21,6 +21,7 @@ export const fieldKey = {
 export const INITIAL_VALUE = {
   data: [],
   isLoading: false,
+  isLoadingOnGroupEdit: false,
 }
 
 export const DEFAULT_QUERY = { combinator: 'and', rules: [] }

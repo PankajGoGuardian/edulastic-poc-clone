@@ -93,7 +93,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
     )?.title || RISK_TYPE_OPTIONS[0].title
 
   const hasContent = !loading && !error && postPeriod?.distribution?.length
-  const errorMsg = 'Error fetching Risk Summary data.'
+  const errorMsg = error?.message || 'Error fetching Risk Summary data.'
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 

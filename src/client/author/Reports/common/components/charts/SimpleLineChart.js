@@ -65,7 +65,7 @@ const SimpleLineChart = ({
           tickLine={false}
           tick={{ strokeWidth: 0.8, stroke: fadedBlack, fill: fadedBlack }}
           tickFormatter={xAxisTickFormatter}
-          padding={{ left: 50 }}
+          padding={{ left: 50, right: 50 }}
           interval={xAxisInterval}
         />
         <YAxis

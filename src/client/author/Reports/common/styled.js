@@ -876,8 +876,8 @@ export const StyledTextSpan = styled.span`
 `
 
 export const PieChartWrapper = styled.div`
-  width: 400px;
-  height: 320px;
+  width: ${(p) => p.$width};
+  height: ${(p) => p.$height};
   flex-grow: 1;
 `
 export const HorizontalBarWrapper = styled.div`

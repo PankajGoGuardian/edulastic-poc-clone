@@ -21,7 +21,7 @@ import { IconInfo } from '@edulastic/icons'
 import { blueButton } from '@edulastic/colors'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
-import StudentDetails from './components/StudentDetails'
+import Summary from './components/Summary'
 import AssessmentsTable from './components/AssessmentsTable'
 import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
@@ -449,9 +449,10 @@ const WholeLearnerReport = ({
                       and behavioral profiles and take necessary actions for the
                       learner&apos;s growth.
                     </SectionDescription>
-                    <StudentDetails
+                    <Summary
                       studentInformation={settings.selectedStudentInformation}
                       studentClassData={studentClassData}
+                      settings={settings}
                     />
                     <EduIf condition={!isEmpty(chartData)}>
                       <EduThen>

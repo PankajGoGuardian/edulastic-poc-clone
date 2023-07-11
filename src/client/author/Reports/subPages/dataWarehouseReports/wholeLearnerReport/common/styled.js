@@ -2,12 +2,16 @@ import styled from 'styled-components'
 import { IconStudent } from '@edulastic/icons'
 import {
   fadedGrey,
+  fadedGrey2,
   themeLightGrayBgColor,
   greyThemeDark1,
   themeColor,
   themeLightGrayColor,
+  greyThemeLighter,
+  fadedBlack,
 } from '@edulastic/colors'
-import { Checkbox } from 'antd'
+import { Checkbox, Button } from 'antd'
+import { FlexContainer } from '@edulastic/common'
 
 export const AssessmentNameContainer = styled.div`
   .test-name-container {
@@ -26,30 +30,42 @@ export const AssessmentNameContainer = styled.div`
     }
   }
 `
-export const Details = styled.div`
-  width: 100%;
+export const SummaryWrapper = styled.div`
+  background-color: ${themeLightGrayBgColor};
+  display: flex;
+  min-height: 200px;
+`
+
+export const DetailsWrapper = styled.div`
+  width: 30%;
   display: flex;
   padding: 10px 5px;
   justify-content: center;
   align-items: center;
+  background: ${fadedGrey2};
 `
 
-export const DetailsWrapper = styled.div`
-  padding: 10px 5px;
-  background-color: ${themeLightGrayBgColor};
-  border-radius: 10px 10px 0px 0px;
-`
-
-export const Demographics = styled.div`
+export const RightContentWrapper = styled.div`
+  width: 70%;
   display: flex;
+  flex-direction: column;
+`
+
+export const RiskSummaryWrapper = styled(FlexContainer)`
+  height: 180px;
+  background: ${greyThemeLighter};
+`
+
+export const DemographicsWrapper = styled.div`
+  display: flex;
+  align-items: center;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 20px 5px;
+  height: 60px;
   background-color: ${fadedGrey};
-  border-radius: 0px 0px 10px 10px;
-  & > div.demographic-item {
+  .demographic-item {
     display: flex;
-    margin: 0px 30px;
+    margin: 0px 10px;
     align-items: center;
     white-space: nowrap;
     svg {
@@ -62,12 +78,13 @@ export const Demographics = styled.div`
   }
 `
 
-export const StudentName = styled.div`
+export const StudentThumbnail = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  padding-left: 20px;
-  margin-right: 20px;
+  justify-content: center;
+  width: 50%;
+  height: 100%;
   gap: 24px;
   & > span {
     text-align: left;
@@ -78,27 +95,23 @@ export const StudentName = styled.div`
 `
 export const StudentMetaData = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: center;
+  height: 100%;
+  margin-left: 10px;
   color: ${greyThemeDark1};
-  & > div {
-    padding-left: 20px;
-    & > span:first-child {
-      text-align: left;
-      font: normal normal normal 12px/17px Open Sans;
-      letter-spacing: 0px;
-    }
-    & > span:last-child {
-      text-align: left;
-      font: normal normal bold 12px/17px Open Sans;
-      letter-spacing: 0px;
-    }
+  .schools-name .grades-name {
+    margin-bottom: 10px;
+    font-size: 12px;
   }
-  .schools-name,
-  .grades-name {
-    max-width: 250px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .student-name {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  .value {
+    font-weight: bold;
   }
 `
 
@@ -109,14 +122,15 @@ export const StyledLine = styled.div`
 `
 
 export const StyledIcon = styled(IconStudent)`
-  margin-right: 10px;
+  width: 100%;
+  height: 100%;
   align-self: center;
   color: ${themeColor};
 `
 
 export const UserIcon = styled.div`
-  width: 30px;
-  height: 30px;
+  width: 150px;
+  height: 150px;
   ${({ src }) => (src ? `background-image: url(${src});` : '')}
   border-radius: 50%;
   background-position: center;
@@ -132,5 +146,55 @@ export const StyleCheckBox = styled(Checkbox)`
       right: -12px;
       top: 4px;
     }
+  }
+`
+
+export const Label = styled.div`
+  color: ${({ $color }) => $color || fadedBlack};
+  font-size: ${({ $fontSize }) => $fontSize || '13px'};
+  font-weight: bold;
+  margin: ${({ $margin }) => $margin || '0'};
+`
+export const TestLabel = styled(Label)`
+  white-space: nowrap;
+  width: 120px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-bottom: 5px;
+`
+export const RiskLabel = styled(Label)`
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  span {
+    margin-right: 8px;
+  }
+`
+
+export const TestDetailContainer = styled.div`
+  display: flex;
+  width: 70%;
+  align-items: baseline;
+  justify-content: space-between;
+`
+
+export const AcademicRiskListContainer = styled.div`
+  margin-right: ${({ $marginRight }) => $marginRight || '0'};
+`
+
+export const StyledButton = styled(Button)`
+  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
+  background: transparent;
+  font-size: 12px;
+  font-weight: bold;
+  color: ${themeColor};
+  border: 0px;
+  box-shadow: none;
+  padding: 0px;
+  :hover,
+  :active,
+  :focus {
+    color: ${themeColor};
+    background: transparent;
   }
 `

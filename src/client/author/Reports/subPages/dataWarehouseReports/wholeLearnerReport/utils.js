@@ -495,6 +495,9 @@ export const getStudentRiskData = (rawData) => {
   if (isEmpty(riskData)) return {}
 
   const { overallRisk, assessmentRisk, attendanceRisk } = riskData
+
+  if ([overallRisk, assessmentRisk, attendanceRisk].every(isEmpty)) return {}
+
   const internalAssessmentRisk = []
   const externalAssessmentRisk = []
   assessmentRisk.forEach((testTypeRisk) => {

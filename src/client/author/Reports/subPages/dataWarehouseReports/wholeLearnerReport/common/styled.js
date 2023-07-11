@@ -178,8 +178,7 @@ export const TestDetailContainer = styled.div`
   justify-content: space-between;
 `
 
-export const HalfWidthContainer = styled.div`
-  width: 50%;
+export const AcademicRiskListContainer = styled.div`
   margin-right: ${({ $marginRight }) => $marginRight || '0'};
 `
 

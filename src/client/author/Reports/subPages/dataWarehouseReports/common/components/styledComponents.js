@@ -7,6 +7,7 @@ import {
   white,
   fadedBlack,
   fadedBlack1,
+  mainTextColor,
 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
@@ -181,6 +182,7 @@ export const CompareByContainer = styled.div`
 `
 export const StyledEmptyContainer = styled(Empty)`
   margin: ${(p) => p.margin || '60px 0'};
+  color: ${mainTextColor};
 `
 export const ReportDescription = styled.div`
   margin-block: -60px 47px;

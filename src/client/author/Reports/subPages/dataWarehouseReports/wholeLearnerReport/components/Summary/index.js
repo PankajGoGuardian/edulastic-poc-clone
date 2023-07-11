@@ -42,7 +42,7 @@ const Summary = ({ studentInformation, studentClassData, settings }) => {
 
   const hasContent = !loading && !error && !isEmpty(riskData)
   const errorMsg = 'Error fetching Student Risk data.'
-  const emptyContainerDesc = error ? errorMsg : 'No Data Available'
+  const emptyContainerDesc = error ? errorMsg : 'No Student Risk Data Available'
   useErrorNotification(errorMsg, error)
 
   return (
@@ -67,7 +67,7 @@ const Summary = ({ studentInformation, studentClassData, settings }) => {
               </EduThen>
               <EduElse>
                 <StyledEmptyContainer
-                  margin="12% 0"
+                  margin="10px 0"
                   description={emptyContainerDesc}
                 />
               </EduElse>

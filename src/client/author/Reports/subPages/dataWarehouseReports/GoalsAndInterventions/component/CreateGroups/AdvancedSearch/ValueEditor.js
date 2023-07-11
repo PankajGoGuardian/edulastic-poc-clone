@@ -3,7 +3,7 @@ import { Empty, Select } from 'antd'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
 import { EduIf, EduThen, EduElse } from '@edulastic/common'
-import { StyledSelect } from './styled-components'
+import { StyledSelect, StyledInputNumber } from './styled-components'
 import { debounceWait, groupType } from './config/qb-config'
 import { getAdvancedSearchDetailsSelector } from '../../../ducks/selectors'
 import { actions } from '../../../ducks'
@@ -102,79 +102,93 @@ const ValueEditor = (props) => {
   const fetchedValues = advancedSearchDetails[key]?.data
 
   return (
-    <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
-      <EduThen>
-        <StyledSelect
-          data-cy={dataCyValue(path, 'valueEditor')}
-          getPopupContainer={(triggerNode) => triggerNode.parentElement}
-          mode="multiple"
-          autoClearSearchValue={false}
-          onChange={handleChange}
-          onFocus={() => handleSearch('')}
-          placeholder={`Select ${label}`}
-          onSearch={searchHandler}
-          value={value || undefined}
-          showSearch
-          tagsEllipsis
-          filterOption={(input, option) =>
-            fetchedValues?.some(
-              (fetchedValue) => fetchedValue.value === option.props.value
-            )
-          }
-          loading={isLoading}
-          notFoundContent={
-            !isLoading && (
-              <Empty
-                className="ant-empty-small"
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                style={{ textAlign: 'left', margin: '10px 0' }}
-                description="No match found"
+    <>
+      <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
+        <EduThen>
+          <StyledSelect
+            data-cy={dataCyValue(path, 'valueEditor')}
+            getPopupContainer={(triggerNode) => triggerNode.parentElement}
+            mode="multiple"
+            autoClearSearchValue={false}
+            onChange={handleChange}
+            onFocus={() => handleSearch('')}
+            placeholder={`Select ${label}`}
+            onSearch={searchHandler}
+            value={value || undefined}
+            showSearch
+            tagsEllipsis
+            filterOption={(input, option) =>
+              fetchedValues?.some(
+                (fetchedValue) => fetchedValue.value === option.props.value
+              )
+            }
+            loading={isLoading}
+            notFoundContent={
+              !isLoading && (
+                <Empty
+                  className="ant-empty-small"
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  style={{ textAlign: 'left', margin: '10px 0' }}
+                  description="No match found"
+                />
+              )
+            }
+          >
+            {values.map((item) => {
+              return (
+                <Select.Option
+                  value={item.value}
+                  key={item.value}
+                  data-cy={dataCyValue(path, 'valueOptions')}
+                >
+                  {item.label}
+                </Select.Option>
+              )
+            })}
+          </StyledSelect>
+        </EduThen>
+        <EduElse>
+          <EduIf condition={type === 'number'}>
+            <EduThen>
+              <StyledInputNumber
+                max={fieldData.maxValue}
+                min={fieldData.minValue}
+                onChange={handleChange}
               />
-            )
-          }
-        >
-          {values.map((item) => {
-            return (
-              <Select.Option
-                value={item.value}
-                key={item.value}
-                data-cy={dataCyValue(path, 'valueOptions')}
+            </EduThen>
+            <EduElse>
+              <StyledSelect
+                data-cy={dataCyValue(path, 'valueEditor')}
+                getPopupContainer={(triggerNode) => triggerNode.parentElement}
+                mode={type === 'multiselect' ? 'multiple' : 'default'}
+                placeholder={`Select ${label}`}
+                onChange={handleChange}
+                value={value || undefined}
+                showSearch
+                tagsEllipsis
+                filterOption={(input, option) =>
+                  option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }
               >
-                {item.label}
-              </Select.Option>
-            )
-          })}
-        </StyledSelect>
-      </EduThen>
-      <EduElse>
-        <StyledSelect
-          data-cy={dataCyValue(path, 'valueEditor')}
-          getPopupContainer={(triggerNode) => triggerNode.parentElement}
-          mode={type === 'multiselect' ? 'multiple' : 'default'}
-          placeholder={`Select ${label}`}
-          onChange={handleChange}
-          value={value || undefined}
-          showSearch
-          tagsEllipsis
-          filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-            0
-          }
-        >
-          {values.map((item) => {
-            return (
-              <Select.Option
-                value={item.value}
-                key={item.value}
-                data-cy={dataCyValue(path, 'valueOptions')}
-              >
-                {item.label}
-              </Select.Option>
-            )
-          })}
-        </StyledSelect>
-      </EduElse>
-    </EduIf>
+                {values.map((item) => {
+                  return (
+                    <Select.Option
+                      value={item.value}
+                      key={item.value}
+                      data-cy={dataCyValue(path, 'valueOptions')}
+                    >
+                      {item.label}
+                    </Select.Option>
+                  )
+                })}
+              </StyledSelect>
+            </EduElse>
+          </EduIf>
+        </EduElse>
+      </EduIf>
+    </>
   )
 }
 

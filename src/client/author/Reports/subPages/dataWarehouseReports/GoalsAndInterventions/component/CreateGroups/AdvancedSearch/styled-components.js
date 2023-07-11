@@ -1,5 +1,5 @@
 import Styled from 'styled-components'
-import { Select } from 'antd'
+import { InputNumber, Select } from 'antd'
 import { EduButton, CustomModalStyled, Label } from '@edulastic/common'
 import { IconPlayButton, IconQuestionCircle } from '@edulastic/icons'
 import { darkGrey, greyThemeDark1, lightGrey11 } from '@edulastic/colors'
@@ -125,4 +125,9 @@ export const CombinatorLabel = Styled(Label)`
   color: ${darkGrey};
   font-weight: bold;
   font-size: 12px;
+`
+
+export const StyledInputNumber = Styled(InputNumber)`
+min-width: 27%;
+max-width: 27%;
 `

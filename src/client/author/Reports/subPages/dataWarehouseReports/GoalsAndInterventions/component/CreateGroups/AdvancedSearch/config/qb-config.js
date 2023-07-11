@@ -1,3 +1,5 @@
+import { TEST_TYPES_VALUES_MAP } from '@edulastic/constants/const/testTypes'
+import { capitalize } from 'lodash'
 import { selectsData } from '../../../../../../../../TestPage/components/common'
 import { fieldKey } from '../../../../ducks/constants'
 
@@ -22,6 +24,17 @@ export const inNotInOp = [
   { name: 'in', label: 'Includes' },
   { name: 'notIn', label: 'Excludes' },
 ]
+
+export const operators = {
+  avgScore: [
+    { name: '<=', label: '<=' },
+    { name: '>=', label: '>=' },
+  ],
+  avgAttendance: [
+    { name: '<=', label: '<=' },
+    { name: '>=', label: '>=' },
+  ],
+}
 
 export const combinators = [{ name: 'and', label: 'Satisfy All' }]
 
@@ -80,6 +93,29 @@ export const allowedFields = ({
       label: 'Student Groups',
       valueEditorType: 'multiselect',
       values: groupData,
+    },
+    {
+      name: fieldKey.testType,
+      label: 'Test Types',
+      valueEditorType: 'multiselect',
+      values: Object.keys(TEST_TYPES_VALUES_MAP).map((type) => ({
+        value: TEST_TYPES_VALUES_MAP[type],
+        label: capitalize(TEST_TYPES_VALUES_MAP[type]),
+      })),
+    },
+    {
+      name: fieldKey.avgScore,
+      label: 'Average Score',
+      valueEditorType: 'number',
+      maxValue: 100,
+      minValue: 1,
+    },
+    {
+      name: fieldKey.avgAttendance,
+      label: 'Average Attendance',
+      valueEditorType: 'number',
+      maxValue: 100,
+      minValue: 1,
     },
   ]
 

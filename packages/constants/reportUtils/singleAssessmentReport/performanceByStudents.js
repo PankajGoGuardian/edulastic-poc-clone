@@ -31,7 +31,7 @@ const sortKeysMap = {
   SCORE: 'score',
   DISTRICT_AVERAGE: 'districtAvg',
   SCHOOL_AVERAGE: 'schoolAvg',
-  GROUP_AVERAGE: 'groupAvg',
+  GROUP_AVERAGE: 'classAvg',
   STUDENT_SCORE: 'studentScore',
 }
 

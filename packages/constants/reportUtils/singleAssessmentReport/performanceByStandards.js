@@ -1,10 +1,12 @@
 const {
+  keyBy,
   groupBy,
   uniqBy,
   capitalize,
   ceil,
   orderBy,
   find,
+  some,
   map,
   forEach,
   round,
@@ -15,7 +17,7 @@ const {
 } = require('lodash')
 const { produce: next } = require('immer')
 
-const { percentage, getOverallScore, getHSLFromRange1 } = require('../common')
+const { percentage, getHSLFromRange1 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
@@ -121,9 +123,6 @@ const getYLabelString = (analyzeBy) => {
   }
 }
 
-const getOverallRawScore = (metrics = []) =>
-  metrics.length ? sumBy(metrics, 'totalScore') / metrics.length : 0
-
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'threshold', ['desc'])[scaleInfo.length - 1] || {
     masteryLabel: '',
@@ -136,26 +135,6 @@ const getMasteryLevel = (score, scaleInfo, field = 'threshold') => {
     find(orderedScaleInfo, (info) => ceil(score) >= info[field]) ||
     getLeastMasteryLevel(scaleInfo)
   )
-}
-
-const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
-  map(metricInfo, (metric) => {
-    const masteryPercentage = percentage(metric.totalScore, metric.maxScore)
-    const masteryLevel = getMasteryLevel(masteryPercentage, scaleInfo)
-
-    return {
-      ...metric,
-      masteryScore: masteryLevel.score,
-      masteryLabel: masteryLevel.masteryLabel,
-    }
-  })
-
-const getAugmentedMetricInfo = (metricInfo, scaleInfo = []) => {
-  const metricsWithScale = augmentMetricInfoWithMasteryScore(
-    metricInfo,
-    scaleInfo
-  )
-  return metricsWithScale
 }
 
 const getReportWithFilteredSkills = (report, curriculumId) =>
@@ -350,12 +329,31 @@ const getAggregatedSummaryStats = (report = {}, viewBy) => {
   return aggregatedSummaryStats
 }
 
-const analysisStandardsData = (
-  compareBy,
-  skillInfo,
-  metricInfo = [],
-  scaleInfo
-) => {
+const getStandardMetrics = (data = {}, scaleInfo = []) => {
+  const metrics = {}
+  Object.keys(data).forEach((id) => {
+    const {
+      individualAverage,
+      individualRawScore,
+      maxScore,
+      totalScore,
+    } = data[id]
+    const { score: masteryScore, masteryLabel } = getMasteryLevel(
+      individualAverage,
+      scaleInfo
+    )
+    const avgScore = individualAverage || percentage(totalScore, maxScore)
+    metrics[id] = {
+      rawScore: individualRawScore,
+      avgScore,
+      masteryLabel,
+      masteryScore,
+    }
+  })
+  return metrics
+}
+
+const analysisStandardsData = (compareBy, metricInfo = [], scaleInfo) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
     return []
@@ -364,43 +362,30 @@ const analysisStandardsData = (
   const grouped = groupBy(metricInfo, groupingField)
 
   const data = Object.keys(grouped).map((groupId) => {
-    const groupedByStandard = groupBy(grouped[groupId], 'standardId')
+    const keyedByStandard = keyBy(grouped[groupId], 'standardId')
     return {
       ...grouped[groupId][0],
-      standardMetrics: getAggregatedMetrics(groupedByStandard, scaleInfo),
+      standardMetrics: getStandardMetrics(keyedByStandard, scaleInfo),
     }
   })
   return data
 }
 
-const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
+const analysisDomainsData = (compareBy, metricInfo, scaleInfo) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
     return []
   }
-  const skillsByStandardId = groupBy(skillInfo, 'standardId')
-  const domainByStandardId = skillInfo.reduce(
-    (total, skill) => ({
-      ...total,
-      [skill.standardId]: skillsByStandardId[skill.standardId][0].domainId,
-    }),
-    {}
-  )
-  const _metricInfo = metricInfo
-    .map((item) => ({
-      ...item,
-      domainId: domainByStandardId[item.standardId],
-    }))
-    .filter((item) => item.domainId)
+  const _metricInfo = metricInfo.filter((item) => item.domainId)
 
   const groupingField = makeCompareByColumn(compareBy).key
   const grouped = groupBy(_metricInfo, groupingField)
 
   const data = Object.keys(grouped).map((groupId) => {
-    const groupedByDomain = groupBy(grouped[groupId], 'domainId')
+    const keyedByDomain = keyBy(grouped[groupId], 'domainId')
     return {
       ...grouped[groupId][0],
-      standardMetrics: getAggregatedMetrics(groupedByDomain, scaleInfo),
+      standardMetrics: getStandardMetrics(keyedByDomain, scaleInfo),
     }
   })
 
@@ -409,21 +394,20 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
 
 const getAnalyzedTableData = (report, viewBy, compareBy) => {
   const { skillInfo = [], scaleInfo = [], metricInfo = [] } = report
+  const viewByKey = viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
 
   const filteredMetrics = filter(metricInfo, (metric) =>
-    find(skillInfo, (skill) => skill.standardId === metric.standardId)
+    some(skillInfo, (skill) => skill[viewByKey] === metric[viewByKey])
   )
 
-  const augmentedMetrics = getAugmentedMetricInfo(filteredMetrics, scaleInfo)
-
-  const _analyzedTableData =
+  const analyzedTableData =
     viewBy === viewByMode.STANDARDS
-      ? analysisStandardsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
-      : analysisDomainsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
+      ? analysisStandardsData(compareBy, filteredMetrics, scaleInfo)
+      : analysisDomainsData(compareBy, filteredMetrics, scaleInfo)
 
   const aggSummaryStats = getAggregatedSummaryStats(report, viewBy)
 
-  return [_analyzedTableData, aggSummaryStats]
+  return [analyzedTableData, aggSummaryStats]
 }
 
 const formatScore = (score, analyzeBy) => {
@@ -437,16 +421,6 @@ const formatScore = (score, analyzeBy) => {
   }
 }
 
-const getScoresFromRecords = (records = {}) => {
-  const scoresArr = Object.keys(records)
-    .filter((itemId) => records[itemId])
-    .map((itemId) => ({
-      totalScore: records[itemId].rawScore || records[itemId].totalScore || 0,
-      maxScore: records[itemId].maxScore || 1,
-    }))
-  return scoresArr
-}
-
 const getAnalyzeByConfig = (analyzeBy, scaleInfo) => {
   switch (analyzeBy) {
     case analyzeByMode.MASTERY_LEVEL:
@@ -454,10 +428,8 @@ const getAnalyzeByConfig = (analyzeBy, scaleInfo) => {
         field: 'masteryLabel',
         getColor: (standard) =>
           getMasteryLevel(standard.masteryScore, scaleInfo, 'score').color,
-        getOverall: (records = {}) => {
-          const scoresArr = getScoresFromRecords(records)
-          const overallScore = getOverallScore(scoresArr)
-          return getMasteryLevel(overallScore, scaleInfo).masteryLabel
+        getOverall: (record = {}) => {
+          return getMasteryLevel(record.overallAverage, scaleInfo).masteryLabel
         },
       }
     case analyzeByMode.MASTERY_SCORE:
@@ -465,20 +437,16 @@ const getAnalyzeByConfig = (analyzeBy, scaleInfo) => {
         field: 'masteryScore',
         getColor: (standard) =>
           getMasteryLevel(standard.masteryScore, scaleInfo, 'score').color,
-        getOverall: (records = {}) => {
-          const scoresArr = getScoresFromRecords(records)
-          const overallScore = getOverallScore(scoresArr)
-          return getMasteryLevel(overallScore, scaleInfo).score
+        getOverall: (record = {}) => {
+          return getMasteryLevel(record.overallAverage, scaleInfo).score
         },
       }
     case analyzeByMode.RAW_SCORE:
       return {
         field: 'rawScore',
         getColor: (standard) => getHSLFromRange1(standard.avgScore),
-        getOverall: (records = {}) => {
-          const scoresArr = getScoresFromRecords(records)
-          const overallRawScore = getOverallRawScore(scoresArr)
-          return formatScore(overallRawScore, analyzeBy)
+        getOverall: (record = {}) => {
+          return formatScore(record.overallRawScore, analyzeBy)
         },
       }
     case analyzeByMode.SCORE:
@@ -486,10 +454,8 @@ const getAnalyzeByConfig = (analyzeBy, scaleInfo) => {
       return {
         field: 'avgScore',
         getColor: (standard) => getHSLFromRange1(standard.avgScore),
-        getOverall: (records = {}) => {
-          const scoresArr = getScoresFromRecords(records)
-          const overallScore = getOverallScore(scoresArr)
-          return formatScore(overallScore, analyzeBy)
+        getOverall: (record = {}) => {
+          return formatScore(record.overallAverage, analyzeBy)
         },
       }
   }
@@ -540,8 +506,7 @@ const makeOverallColumn = (viewBy, analyzeByConfig) => {
     title: `Avg. ${viewBy} Performance`,
     dataIndex: 'overall',
     key: 'overall',
-    render: (data, record) =>
-      analyzeByConfig.getOverall(record.standardMetrics),
+    render: (data, record) => analyzeByConfig.getOverall(record),
   }
 }
 

@@ -77,10 +77,11 @@ const PerformanceByStandards = ({
   ])
 
   const { selectedTest, requestFilters } = settings
-  const [viewBy, setViewBy] = useState(urlSearch.viewBy || viewByMode.STANDARDS)
-  const [analyzeBy, setAnalyzeBy] = useState(
-    urlSearch.analyzeBy || analyzeByMode.SCORE
-  )
+  const [viewOrAnalzeByState, setViewOrAnalzeByState] = useState({
+    viewBy: urlSearch.viewBy || viewByMode.STANDARDS,
+    analyzeBy: urlSearch.analyzeBy || analyzeByMode.SCORE,
+    isViewOrAnalyzeByChanged: false,
+  })
   const [compareBy, setCompareBy] = useState(
     urlSearch.compareBy
       ? urlSearch?.compareBy
@@ -97,6 +98,8 @@ const PerformanceByStandards = ({
     urlSearch.sortKey || sortKeysMap.overall
   )
   const [recompute, setRecompute] = useState(true)
+
+  const { viewBy, analyzeBy, isViewOrAnalyzeByChanged } = viewOrAnalzeByState
 
   useEffect(() => {
     setRecompute(true)
@@ -119,6 +122,9 @@ const PerformanceByStandards = ({
     pageSize,
     page,
     recompute,
+    viewBy,
+    analyzeBy,
+    setViewOrAnalzeByState,
   })
 
   const [
@@ -246,19 +252,39 @@ const PerformanceByStandards = ({
   }, [isCsvDownloading])
 
   const handleViewByChange = (event, selected) => {
+    setRecompute(true)
+    setPage(1)
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       viewBy: selected.key,
+      page: 1,
     }))
-    setViewBy(selected.key)
+    setViewOrAnalzeByState((prevState) => {
+      const isViewByChanged = selected.key !== prevState.viewBy
+      return {
+        ...prevState,
+        viewBy: selected.key,
+        isViewOrAnalyzeByChanged: isViewByChanged,
+      }
+    })
   }
 
   const handleAnalyzeByChange = (event, selected) => {
+    setRecompute(true)
+    setPage(1)
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       analyzeBy: selected.key,
+      page: 1,
     }))
-    setAnalyzeBy(selected.key)
+    setViewOrAnalzeByState((prevState) => {
+      const isAnalyzeByChanged = selected.key !== prevState.analyzeBy
+      return {
+        ...prevState,
+        analyzeBy: selected.key,
+        isViewOrAnalyzeByChanged: isAnalyzeByChanged,
+      }
+    })
   }
 
   const handleCompareByChange = (event, selected) => {
@@ -311,6 +337,8 @@ const PerformanceByStandards = ({
 
   const noDatacondition =
     !summary.performanceSummaryStats?.length || detailsError || summaryError
+
+  const isTableLoading = isViewOrAnalyzeByChanged || detailsLoading
   return (
     <>
       <EduIf condition={!summaryLoading}>
@@ -402,7 +430,7 @@ const PerformanceByStandards = ({
                     />
                   </CardDropdownWrapper>
                 </CardHeader>
-                <EduIf condition={!detailsLoading}>
+                <EduIf condition={!isTableLoading}>
                   <EduThen>
                     <PerformanceAnalysisTable
                       report={reportWithFilteredSkills}

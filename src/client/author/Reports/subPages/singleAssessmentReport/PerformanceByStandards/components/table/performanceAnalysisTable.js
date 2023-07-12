@@ -172,8 +172,6 @@ const PerformanceAnalysisTable = ({
       align: 'center',
       width: 160,
       sorter: true,
-      render: (data, record) =>
-        analyzeByConfig.getOverall(record.standardMetrics),
     }
   }
 

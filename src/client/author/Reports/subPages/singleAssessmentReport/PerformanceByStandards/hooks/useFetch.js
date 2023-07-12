@@ -1,4 +1,8 @@
 import { reportsApi } from '@edulastic/api'
+import {
+  analyzeByMode,
+  sortKeysMap,
+} from '@edulastic/constants/reportUtils/singleAssessmentReport/performanceByStandards'
 import { isEmpty, pick } from 'lodash'
 import { useEffect, useState } from 'react'
 import {
@@ -67,6 +71,9 @@ export const usePerformanceByStandardDetailsFetch = ({
   page,
   pageSize,
   recompute,
+  viewBy,
+  analyzeBy,
+  setViewOrAnalzeByState,
 }) => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -78,16 +85,23 @@ export const usePerformanceByStandardDetailsFetch = ({
         try {
           setLoading(true)
           setError(null)
+          const sortKeyValue =
+            sortKey === sortKeysMap.overall &&
+            analyzeBy === analyzeByMode.RAW_SCORE
+              ? 'score'
+              : sortKey
           const params = {
             requestFilters: {
               ...pick(settings.requestFilters, pickDataForDetails),
               ...demographicFilters,
               compareBy,
-              sortKey,
+              sortKey: sortKeyValue,
               sortOrder: sortOrderMap[sortOrder],
               page,
               pageSize,
               recompute,
+              viewBy,
+              analyzeBy,
             },
             testId: settings.selectedTest.key,
           }
@@ -101,9 +115,17 @@ export const usePerformanceByStandardDetailsFetch = ({
           }
           setData(result)
           setLoading(false)
+          setViewOrAnalzeByState((prevState) => ({
+            ...prevState,
+            isViewOrAnalyzeByChanged: false,
+          }))
         } catch (e) {
           setError(e)
           setLoading(false)
+          setViewOrAnalzeByState((prevState) => ({
+            ...prevState,
+            isViewOrAnalyzeByChanged: false,
+          }))
         }
       }
     }
@@ -119,6 +141,8 @@ export const usePerformanceByStandardDetailsFetch = ({
     sortKey,
     compareBy,
     page,
+    viewBy,
+    analyzeBy,
   ])
   return [data, loading, error]
 }

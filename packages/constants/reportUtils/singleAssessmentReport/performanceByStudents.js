@@ -28,7 +28,7 @@ const sortKeysMap = {
   GROUP: 'groupName',
   DUE_DATE: 'dueDate',
   SUBMITTED_DATE: 'submittedDate',
-  SCORE: 'score',
+  SCORE: 'assessmentScore',
   DISTRICT_AVERAGE: 'districtAvg',
   SCHOOL_AVERAGE: 'schoolAvg',
   GROUP_AVERAGE: 'classAvg',

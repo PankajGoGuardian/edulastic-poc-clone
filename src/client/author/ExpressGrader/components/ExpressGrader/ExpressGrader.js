@@ -14,6 +14,7 @@ import {
   FlexContainer,
   toggleChatDisplay,
 } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -56,6 +57,7 @@ import {
   isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
+import { getManualContentVisibility } from '../../../questionUtils'
 
 /**
  *
@@ -78,7 +80,11 @@ const transform = (testActivities) =>
 
 const transformMemoized = memoizeOne(transform)
 
-export function getDataForTable(data) {
+export function getDataForTable(
+  data,
+  hiddenTestContentVisibilty = false,
+  userRole
+) {
   let dataSource
   if (data && data.length !== 0) {
     dataSource = data
@@ -96,6 +102,7 @@ export function getDataForTable(data) {
         const testActivityId = student.testActivityId
           ? student.testActivityId
           : null
+
         student.questionActivities.forEach((question, index1) => {
           const key = `Q${index1}`
           question.key = key
@@ -107,6 +114,14 @@ export function getDataForTable(data) {
           question.testActivityId = testActivityId
           question.score = Number.isNaN(question.score) ? 0 : question.score
         })
+        const questionActivities = student.questionActivities
+
+        if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+          student.questionActivities = questionActivities.filter(
+            (q) => !q?.autoGrade
+          )
+        }
+
         students.questions = student.questionActivities.length
         students.students = studentInfo
         students.score = {
@@ -188,8 +203,17 @@ class ExpressGrader extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { changedFeedback, testActivity } = props
-    const columnData = getDataForTable(transformMemoized(testActivity))
+    const { changedFeedback, testActivity, additionalData, userRole } = props
+
+    const hiddenTestContentVisibilty = getManualContentVisibility(
+      additionalData
+    )
+
+    const columnData = getDataForTable(
+      transformMemoized(testActivity),
+      hiddenTestContentVisibilty,
+      userRole
+    )
     const newState = { changedFeedback: !isEmpty(changedFeedback), columnData }
     return newState
   }

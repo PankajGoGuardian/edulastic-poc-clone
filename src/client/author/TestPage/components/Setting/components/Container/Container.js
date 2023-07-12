@@ -123,6 +123,7 @@ import {
   BetaTag,
   BetaTag2,
 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
 
 const {
   settingCategories,
@@ -135,8 +136,6 @@ const {
   releaseGradeLabels,
   releaseGradeKeys,
   nonPremiumReleaseGradeKeys,
-  testContentVisibility: testContentVisibilityOptions,
-  testContentVisibilityTypes,
   passwordPolicy: passwordPolicyValues,
   passwordPolicyOptions,
   playerSkinTypes,
@@ -780,7 +779,7 @@ class Setting extends Component {
       maxAttempts,
       grades,
       subjects,
-      testContentVisibility = testContentVisibilityOptions.ALWAYS,
+      testContentVisibility,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
       showImmersiveReader = false,
@@ -1621,21 +1620,23 @@ class Setting extends Component {
                   {(userRole === roleuser.DISTRICT_ADMIN ||
                     userRole === roleuser.SCHOOL_ADMIN) && (
                     <Block id="test-content-visibility" smallSize={isSmallSize}>
-                      <Title>Item content visibility to Teachers</Title>
+                      <Title>
+                        Item content visibility and grading permissions on
+                        manually gradable items for teachers
+                      </Title>
+                      <Description>
+                        Use &quot;Hide prior to grading / Always hidden&quot;
+                        option to allow teachers to grade manually gradable
+                        items with the help of rubric while keeping the question
+                        hidden.
+                      </Description>
+
                       <Body smallSize={isSmallSize}>
-                        <StyledRadioGroup
-                          disabled={disabled}
-                          onChange={this.updateFeatures(
-                            'testContentVisibility'
-                          )}
-                          value={testContentVisibility}
-                        >
-                          {testContentVisibilityTypes.map((item) => (
-                            <RadioBtn value={item.key} key={item.key}>
-                              {item.value}
-                            </RadioBtn>
-                          ))}
-                        </StyledRadioGroup>
+                        <ContentVisibilityOptions
+                          isDisabled={disabled}
+                          testContentVisibility={testContentVisibility}
+                          updateTestContentVisibility={this.updateFeatures}
+                        />
                       </Body>
                     </Block>
                   )}

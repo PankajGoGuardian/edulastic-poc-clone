@@ -215,6 +215,41 @@ module.exports = {
     ALWAYS: 'ALWAYS',
     GRADING: 'GRADING',
     HIDDEN: 'HIDDEN',
+    SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT:
+      'SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT',
+    SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT: 'SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT',
+    SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN: 'SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN',
+    SHOW_RUBRIC_CONTENT_VIS_HIDDEN: 'SHOW_RUBRIC_CONTENT_VIS_HIDDEN',
+  },
+  combinedVisibilityOptions: {
+    HIDDEN: [
+      {
+        key: 'SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN',
+        value: 'Show item, rubric and student response',
+      },
+      {
+        key: 'SHOW_RUBRIC_CONTENT_VIS_HIDDEN',
+        value: 'Show rubric and student response',
+      },
+      {
+        key: null,
+        value: 'Always hidden',
+      },
+    ],
+    GRADING: [
+      {
+        key: 'SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT',
+        value: 'Show item, rubric and student response',
+      },
+      {
+        key: 'SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT',
+        value: 'Show rubric and student response',
+      },
+      {
+        key: null,
+        value: 'Hide prior to grading',
+      },
+    ],
   },
   redirectPolicy: {
     QuestionDelivery: {

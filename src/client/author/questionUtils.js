@@ -11,6 +11,8 @@ import {
 } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
+import { testContentVisibility } from '@edulastic/constants/const/test'
+import { IN_PROGRESS } from '@edulastic/constants/const/assignmentStatus'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
@@ -875,4 +877,18 @@ export const getQuestionIndexFromItemData = (qId, item) => {
 
 export const isV1MultipartItem = (rows) => {
   return isArray(rows) ? rows.some((row) => row?.isV1Multipart) : false
+}
+
+export const getManualContentVisibility = (additionalData) => {
+  return (
+    [
+      testContentVisibility.SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+      testContentVisibility.SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+    ].includes(additionalData.testContentVisibility) ||
+    ([
+      testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+    ].includes(additionalData.testContentVisibility) &&
+      additionalData.status === IN_PROGRESS)
+  )
 }

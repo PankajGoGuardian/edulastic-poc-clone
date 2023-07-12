@@ -11,6 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import {
   questionType,
   collections as collectionConst,
+  roleuser,
 } from '@edulastic/constants'
 import produce from 'immer'
 import { Modal, Row, Col, Spin, Pagination } from 'antd'
@@ -36,6 +37,7 @@ import {
   getPageNumberSelector,
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
+  getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import Worksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
@@ -45,6 +47,7 @@ import {
   setQuestionIdToScrollAction,
 } from '../../../src/reducers/testActivity'
 import { _scrollTo } from '../../../ClassBoard/components/BarGraph/BarGraph'
+import { getManualContentVisibility } from '../../../questionUtils'
 
 const transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
   produce(testItems, (draft) => {
@@ -577,6 +580,8 @@ class ClassQuestions extends Component {
       setLcbQuestionLoaderState,
       variableSetIds,
       isExpandedView = false,
+      additionalData,
+      userRole,
     } = this.props
     const { expressGrader: isExpressGrader = false } = this.context
     const testItems = getTestItems({
@@ -752,7 +757,18 @@ class ClassQuestions extends Component {
           const questionActivity =
             questionActivitiesGroupedByItemId[item._id]?.[0]
 
-          const questionsWithItemId = item.data.questions.map((q) => ({
+          const hiddenTestContentVisibilty = getManualContentVisibility(
+            additionalData
+          )
+
+          let questions = item.data.questions
+          if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+            questions = questions.filter(
+              (q) => !isEmpty(q.activity) && !q?.activity?.autoGrade
+            )
+          }
+
+          const questionsWithItemId = questions.map((q) => ({
             ...q,
             testItemId: item._id,
           }))
@@ -840,11 +856,13 @@ const withConnect = connect(
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),
     pageNumber: getPageNumberSelector(state),
+    additionalData: getAdditionalDataSelector(state),
     isQuestionsLoading: get(state, [
       'author_classboard_testActivity',
       'isQuestionsLoading',
     ]),
     questionId: get(state, ['author_classboard_testActivity', 'questionId']),
+    userRole: get(state.user, 'user.role', null),
   }),
   {
     loadScratchPad: loadScratchPadAction,
@@ -872,6 +890,7 @@ ClassQuestions.propTypes = {
   isPresentationMode: PropTypes.bool,
   studentViewFilter: PropTypes.string,
   showTestletPlayer: PropTypes.bool,
+  userRole: PropTypes.string.isRequired,
 }
 ClassQuestions.defaultProps = {
   qIndex: null,

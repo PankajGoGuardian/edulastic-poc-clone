@@ -95,6 +95,7 @@ export const StyledRowButton = styled(Row)`
 
 export const AlignRight = styled(RadioGroup)`
   display: flex;
+  flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
   justify-content: flex-start;
   flex-wrap: wrap;
   & * {

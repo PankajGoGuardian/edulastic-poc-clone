@@ -104,8 +104,10 @@ export const Block = styled.div`
   margin-bottom: 20px;
   margin-left: 20px;
   padding: ${(props) => (props.smallSize ? '15px' : '0')};
-  background: ${white};
+  background: ${({ noBg }) => (noBg ? 'none' : white)};
   border-radius: 4px;
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
+  max-width: 800px;
 `
 
 export const Title = styled.div`
@@ -153,8 +155,8 @@ export const Description = styled.div`
 
 export const StyledRadioGroup = styled(Radio.Group)`
   display: flex;
-  flex-direction: column;
-
+  flex-direction: ${(props) => (props.isHorizontal ? 'row' : 'column')};
+  flex-wrap: wrap;
   span {
     font-size: 13px;
     font-weight: 600;
@@ -178,7 +180,9 @@ export const StyledRadioGroup = styled(Radio.Group)`
   }
 
   .ant-radio-wrapper {
-    margin-bottom: 18px;
+    flex: ${({ isHorizontal }) => (isHorizontal ? '50%' : '100%')};
+    margin-bottom: 10px;
+    margin-right: 0px;
     white-space: normal;
     &:last-child {
       margin-bottom: 0px;

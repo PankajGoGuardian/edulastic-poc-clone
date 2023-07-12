@@ -132,7 +132,7 @@ import { studentIsEnrolled } from '../utils/userEnrollment'
 
 const {
   authorAssignmentConstants: {
-    assignmentStatus: { IN_GRADING, DONE },
+    assignmentStatus: { IN_GRADING, DONE, IN_PROGRESS },
   },
 } = testActivity
 
@@ -1615,7 +1615,8 @@ export const isItemVisibiltySelector = createSelector(
   getUserId,
   getAssignedBySelector,
   getUserRole,
-  (state, additionalData, userId, assignedBy, role) => {
+  getTestQuestionActivitiesSelector,
+  (state, additionalData, userId, assignedBy, role, testQuestionActivities) => {
     const assignmentStatus = state?.data?.status
     const contentVisibility = additionalData?.testContentVisibility
     if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
@@ -1630,11 +1631,28 @@ export const isItemVisibiltySelector = createSelector(
     if (!additionalData?.hasOwnProperty('testContentVisibility')) {
       return true
     }
+
+    const containsManualGradedQuestions = !!testQuestionActivities.find(
+      (tqa) => !tqa.autoGrade
+    )
+
     // Enable for contentVisibility settings ALWAYS or settings GRADING and assignment status is grading or done.
     return (
       contentVisibility === testContentVisibility.ALWAYS ||
       ([IN_GRADING, DONE].includes(assignmentStatus) &&
-        contentVisibility === testContentVisibility.GRADING)
+        [
+          testContentVisibility.GRADING,
+          testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+        ].includes(contentVisibility)) ||
+      (containsManualGradedQuestions &&
+        [IN_PROGRESS, IN_GRADING, DONE].includes(assignmentStatus) &&
+        [
+          testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          testContentVisibility.SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+          testContentVisibility.SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+        ].includes(contentVisibility))
     )
   }
 )

@@ -38,6 +38,7 @@ import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -46,8 +47,6 @@ const {
   evalTypes,
   completionTypes,
   releaseGradeLabels,
-  testContentVisibilityTypes,
-  testContentVisibility: testContentVisibilityOptions,
   playerSkinValues,
   REF_MATERIAL_ALLOWED_SKIN_TYPES,
 } = test
@@ -86,8 +85,6 @@ const TestBehaviorGroupContainer = ({
     timedAssignment = testSettings.timedAssignment,
     allowedTime = testSettings.allowedTime,
     pauseAllowed = testSettings.pauseAllowed,
-    testContentVisibility = testSettings.testContentVisibility ||
-      testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
     playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
@@ -593,32 +590,23 @@ const TestBehaviorGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="TEST CONTENT VISIBILITY"
-            content="Should teachers see the test items? Choose Always Hidden if test security is critical and answers are auto-graded. Hide Prior to Grading allows teachers to manually grade after test is open. Always Visible gives access before and after test window."
+            content="Should teachers see the test items? Choose Always Hidden if test security is critical use Hide Prior to Grading to hide until all students submit. Use sub-options to allow teachers to grade manually gradable items with the help of rubric while keeping the question hidden."
             premium
             placement="rightTop"
           />
           <StyledRow gutter={16} mb="15px">
             <Col span={10}>
-              <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
+              <Label>
+                Item content visibility and grading permissions on manually
+                gradable items for teachers
+              </Label>
             </Col>
             <Col span={14}>
-              <AlignRight
-                disabled={freezeSettings}
-                onChange={(e) =>
-                  overRideSettings('testContentVisibility', e.target.value)
-                }
-                value={testContentVisibility}
-              >
-                {testContentVisibilityTypes.map((item) => (
-                  <RadioBtn
-                    data-cy={`item-visibility-${item.key}`}
-                    value={item.key}
-                    key={item.key}
-                  >
-                    {item.value}
-                  </RadioBtn>
-                ))}
-              </AlignRight>
+              <ContentVisibilityOptions
+                isDisabled={freezeSettings}
+                testContentVisibility={testSettings.testContentVisibility}
+                updateTestContentVisibility={overRideSettings}
+              />
             </Col>
           </StyledRow>
         </SettingContainer>

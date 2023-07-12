@@ -29,11 +29,13 @@ import {
   setBulkUpdateAssignmentSettingState,
 } from '../../../src/actions/assignments'
 import { getBulkUpdateAssignmentSettingsCallStateSelector } from '../../../src/selectors/assignments'
+import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
 
 const VIEWS = {
   CLOSE_DATE: 'CLOSE DATE',
   RELEASE_SCORE_POLICY: 'RELEASE SCORE POLICY',
   ALLOW_TEACHER_REDIRECT: 'ALLOW TEACHER REDIRECT',
+  CONTENT_VISIBILITY: 'CONTENT VISIBILITY',
 }
 
 const disableDate = (current) => current && current.valueOf() < Date.now()
@@ -74,8 +76,9 @@ const BulkEditTestModal = ({
       updateData.releaseScore = data.releaseScore
     } else if (selectedView === VIEWS.ALLOW_TEACHER_REDIRECT) {
       updateData.allowTeacherRedirect = !!data.allowTeacherRedirect
+    } else if (selectedView === VIEWS.CONTENT_VISIBILITY) {
+      updateData.testContentVisibility = data.testContentVisibility
     }
-
     bulkUpdateAssignmentSettings(updateData)
   }
 
@@ -222,6 +225,23 @@ const BulkEditTestModal = ({
           checked={data.allowTeacherRedirect}
           onChange={(value) =>
             setData({ ...data, allowTeacherRedirect: value })
+          }
+        />
+      </EduIf>
+      <EduIf condition={selectedView === VIEWS.CONTENT_VISIBILITY}>
+        <Label>Item content visibility to Teachers</Label>
+        <div>
+          <small style={{ fontSize: 12, color: '#6a737f' }}>
+            Use &quot;Hide prior to grading / Always hidden&quot; option to
+            allow teachers to grade manually gradable items with the help of
+            rubric while keeping the question hidden.
+          </small>
+        </div>
+        <br />
+        <ContentVisibilityOptions
+          testContentVisibility={data.testContentVisibility}
+          updateTestContentVisibility={(key, value) =>
+            setData({ ...data, [key]: value })
           }
         />
       </EduIf>

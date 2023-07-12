@@ -2229,6 +2229,10 @@ export function* receiveTestByIdSaga({ payload }) {
       'closePolicy',
       'resources',
     ])
+    defaultTestSettings = {
+      ...defaultTestSettings,
+      testContentVisibility: entity.testContentVisibility,
+    }
     const state = yield select((s) => ({
       performanceBands: get(s, 'performanceBandReducer.profiles', []),
       standardsProficiencies: get(s, 'standardsProficiencyReducer.data', []),

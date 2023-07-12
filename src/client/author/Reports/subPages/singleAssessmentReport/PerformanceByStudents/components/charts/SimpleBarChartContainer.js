@@ -29,7 +29,7 @@ const xAxisLabel = {
 const yAxisLabel = {
   value: 'STUDENT COUNT',
   angle: -90,
-  dx: -10,
+  dx: -24,
 }
 
 const renderLabel = ({ x, y, width, value }) => (

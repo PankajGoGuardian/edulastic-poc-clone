@@ -207,7 +207,7 @@ export function removeFromLocalStorage(key) {
 }
 
 export function getTokens() {
-  return JSON.parse(getFromLocalStorage('tokens'))
+  return JSON.parse(getFromLocalStorage('tokens')) || []
 }
 // get proxy parent
 // proxy parent is the user who initiated the proxy of another user

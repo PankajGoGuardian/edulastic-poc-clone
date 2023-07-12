@@ -3,7 +3,7 @@ import { capitalize } from 'lodash'
 import { selectsData } from '../../../../../../../../TestPage/components/common'
 import { fieldKey } from '../../../../ducks/constants'
 
-const { groups, classes } = fieldKey
+const { groups, classes, avgAcademicScore, avgAttendanceScore } = fieldKey
 
 export const classGroup = [
   {
@@ -26,11 +26,11 @@ export const inNotInOp = [
 ]
 
 export const operators = {
-  avgScore: [
+  [avgAcademicScore]: [
     { name: '<=', label: '<=' },
     { name: '>=', label: '>=' },
   ],
-  avgAttendance: [
+  [avgAttendanceScore]: [
     { name: '<=', label: '<=' },
     { name: '>=', label: '>=' },
   ],
@@ -95,7 +95,7 @@ export const allowedFields = ({
       values: groupData,
     },
     {
-      name: fieldKey.testType,
+      name: fieldKey.testTypes,
       label: 'Test Types',
       valueEditorType: 'multiselect',
       values: Object.keys(TEST_TYPES_VALUES_MAP).map((type) => ({
@@ -104,14 +104,14 @@ export const allowedFields = ({
       })),
     },
     {
-      name: fieldKey.avgScore,
+      name: fieldKey.avgAcademicScore,
       label: 'Average Score',
       valueEditorType: 'number',
       maxValue: 100,
       minValue: 1,
     },
     {
-      name: fieldKey.avgAttendance,
+      name: fieldKey.avgAttendanceScore,
       label: 'Average Attendance',
       valueEditorType: 'number',
       maxValue: 100,

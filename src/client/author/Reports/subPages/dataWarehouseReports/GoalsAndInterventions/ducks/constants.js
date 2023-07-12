@@ -15,9 +15,9 @@ export const fieldKey = {
   tags: 'tagIds',
   attendanceBands: 'attendanceBands',
   proficiencyBands: 'proficiencyBands',
-  testType: 'testType',
-  avgScore: 'avgScore',
-  avgAttendance: 'avgAttendance',
+  testTypes: 'testTypes',
+  avgAcademicScore: 'avgAcademicScore',
+  avgAttendanceScore: 'avgAttendanceScore',
 }
 
 // initial values

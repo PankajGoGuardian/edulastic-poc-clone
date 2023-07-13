@@ -765,6 +765,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        testType,
         studentRecommendationId: studentRecommendation._id,
       }
       if (languagePreference) {
@@ -786,6 +787,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        testType,
       }
       if (languagePreference) {
         playListData.languagePreference = languagePreference
@@ -800,6 +802,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        testType,
       }
       if (languagePreference) {
         testData.languagePreference = languagePreference

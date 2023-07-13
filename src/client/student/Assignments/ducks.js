@@ -677,6 +677,7 @@ function* startAssignment({ payload }) {
         institutionId,
         groupType,
         testId,
+        testType,
       }
       if (languagePreference) {
         testData.languagePreference = languagePreference

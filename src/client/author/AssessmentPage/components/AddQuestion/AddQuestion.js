@@ -1,5 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagic } from '@fortawesome/free-solid-svg-icons'
 import {
   SHORT_TEXT,
   MULTIPLE_CHOICE,
@@ -18,7 +20,7 @@ import {
   IconDropDown,
   IconWhiteMic,
 } from '@edulastic/icons'
-import { EduIf } from '@edulastic/common'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import AddBulkModal from '../AddBulkModal/AddBulkModal'
@@ -28,6 +30,7 @@ import {
   QuestionTypes,
   ContentWrapper,
   AddButton,
+  CustomStyleBtn2,
 } from './styled'
 
 class AddQuestion extends React.Component {
@@ -138,10 +141,31 @@ class AddQuestion extends React.Component {
             </Tooltip>
           </QuestionTypes>
           <QuestionTypes>
-            <AddButton onClick={this.toggleBulkModal} data-cy="addBulk">
-              {isSnapQuizVideo ? 'Auto Generate' : 'Add Bulk'}
-            </AddButton>
-            <AddButton onClick={onAddSection} data-cy="addSection">
+            <EduIf condition={isSnapQuizVideo}>
+              <EduThen>
+                <CustomStyleBtn2
+                  margin="0px"
+                  height="32px"
+                  width="154px"
+                  onClick={this.toggleBulkModal}
+                  data-cy="addBulk"
+                >
+                  <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+                  Auto Genenerate
+                </CustomStyleBtn2>
+              </EduThen>
+              <EduElse>
+                <AddButton onClick={this.toggleBulkModal} data-cy="addBulk">
+                  Add Bulk
+                </AddButton>
+              </EduElse>
+            </EduIf>
+
+            <AddButton
+              onClick={onAddSection}
+              data-cy="addSection"
+              width={isSnapQuizVideo ? '40%' : '48%'}
+            >
               Add Section
             </AddButton>
           </QuestionTypes>

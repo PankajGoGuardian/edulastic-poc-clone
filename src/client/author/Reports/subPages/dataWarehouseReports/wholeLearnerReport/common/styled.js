@@ -169,6 +169,10 @@ export const RiskLabel = styled(Label)`
   span {
     margin-right: 8px;
   }
+  p {
+    color: ${({ $color }) => $color || fadedBlack} !important;
+    font-weight: bold !important;
+  }
 `
 
 export const TestDetailContainer = styled.div`

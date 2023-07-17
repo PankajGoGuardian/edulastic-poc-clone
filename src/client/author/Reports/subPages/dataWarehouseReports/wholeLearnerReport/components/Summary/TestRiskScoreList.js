@@ -37,16 +37,20 @@ const TestRiskScoreList = ({ riskData }) => (
           : `${TEST_TYPE_LABELS[testType].split(' ')[0]}`
         const scoreText = isExternalTest ? score : `${score}%`
         return (
-          <FlexContainer justifyContent="space-between" key={testName}>
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="baseline"
+            key={testName}
+          >
             <Tooltip title={tooltipTitle}>
               <TestDetailContainer>
-                <TestLabel>{testName}</TestLabel>
+                <TestLabel fontSize="14px">{testName}</TestLabel>
                 <span>{scoreText}</span>
               </TestDetailContainer>
             </Tooltip>
             <RiskLabel
-              color={RISK_BAND_COLOR_INFO[riskBandLabel]}
-              fontSize="10px"
+              $color={RISK_BAND_COLOR_INFO[riskBandLabel]}
+              fontSize="14px"
             >
               <span>{riskBandLabel}</span>
               <Tooltip title={renderTooltip(tooltipTexts)}>

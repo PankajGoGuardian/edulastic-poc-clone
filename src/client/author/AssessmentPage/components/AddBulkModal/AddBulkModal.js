@@ -90,7 +90,11 @@ class AddBulkModal extends React.Component {
   generateViaAI = ({ questionCount, questionType }) => {
     const { alignment, authorDifficulty, depthOfKnowledge } = this.state
 
-    const { grades = [] } = alignment?.[0] || {}
+    const { grades = [], standards = [] } = alignment?.[0] || {}
+    let standardsDescription = ''
+    ;(standards || []).forEach((standard) => {
+      standardsDescription += standard?.description || ''
+    })
 
     const { fetchAIGeneratedQuestion, videoUrl } = this.props
     fetchAIGeneratedQuestion({
@@ -100,6 +104,7 @@ class AddBulkModal extends React.Component {
       questionComplexity: authorDifficulty,
       depthOfKnowledge,
       grades,
+      standardsDescription,
     })
   }
 

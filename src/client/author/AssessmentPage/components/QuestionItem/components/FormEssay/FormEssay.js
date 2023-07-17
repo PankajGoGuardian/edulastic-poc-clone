@@ -1,10 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
-import { EduIf } from '@edulastic/common'
+import { EduIf, Stimulus } from '@edulastic/common'
 import { isSubmitButton } from '../../../../common/helpers'
-import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
-import { StimulusContainer } from '../../styled'
 
 export default class FormEssay extends React.Component {
   static propTypes = {
@@ -26,20 +24,8 @@ export default class FormEssay extends React.Component {
   }
 
   get showStimulus() {
-    const {
-      question: { stimulus = '', type },
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer = false,
-      showStimulusInQuestionItem,
-    } = this.props
-
-    return (
-      showStimulusInQuestionItem &&
-      !isSnapQuizVideoPlayer &&
-      isSnapQuizVideo &&
-      videoQuizStimulusSupportedQtypes.includes(type) &&
-      stimulus?.length
-    )
+    const { isSnapQuizVideo } = this.props
+    return isSnapQuizVideo
   }
 
   renderView = () => {
@@ -51,9 +37,12 @@ export default class FormEssay extends React.Component {
     return (
       <div>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
-        <Input style={{ width: '150px' }} disabled placeholder="Essay type" />
+        <Input disabled placeholder="Essay type" />
       </div>
     )
   }
@@ -81,7 +70,10 @@ export default class FormEssay extends React.Component {
     return (
       <div>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
           <Input.TextArea
             style={{ padding: '2px 11px', resize: 'none' }}
             value={answer}

@@ -20,7 +20,6 @@ import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Modal, Button } from 'antd'
 
-import { roleuser } from '@edulastic/constants'
 import {
   setTestDataAction,
   setCurrentAnnotationToolAction,
@@ -38,11 +37,13 @@ import {
   PDFViewerContainer,
 } from './styled'
 
-import { loadQuestionsAction } from '../../../sharedDucks/questions'
+import {
+  loadQuestionsAction,
+  updateQuestionAction,
+} from '../../../sharedDucks/questions'
 
 import { saveUserWorkAction } from '../../../../assessment/actions/userWork'
 import { getTestEntitySelector } from '../../../AssignTest/duck'
-import { getUserRole } from '../../../src/selectors/user'
 import DropArea from '../../../AssessmentCreate/components/DropArea/DropArea'
 import {
   getAssessmentCreatingSelector,
@@ -111,6 +112,7 @@ class WorksheetComponent extends React.Component {
       deleteConfirmation: false,
       minimized: true,
       isToolBarVisible: true,
+      videoQuizQuestionIdsToDisplay: [],
     }
   }
 
@@ -184,6 +186,10 @@ class WorksheetComponent extends React.Component {
     }
   }
 
+  updateVideoQuizQuestionIdsToDisplay = (questionIds = []) => {
+    this.setState({ videoQuizQuestionIdsToDisplay: questionIds })
+  }
+
   handleChangePage = (nextPage) => {
     const { pageStructure } = this.props
     if (nextPage >= 0 && nextPage < pageStructure.length) {
@@ -195,8 +201,56 @@ class WorksheetComponent extends React.Component {
     }
   }
 
-  handleAddAnnotation = (question, type = 'pdf') => {
+  handleRemoveAnnotation = (questionId) => {
+    const {
+      annotations = [],
+      setTestData,
+      questions,
+      updateQuestion,
+    } = this.props
+    const newAnnotations = (annotations || []).filter(
+      (annotation) => annotation?.questionId !== questionId
+    )
+    const updatedAssessment = {
+      annotations: newAnnotations,
+    }
+    setTestData(updatedAssessment)
+
+    const questionIndex = (questions || []).findIndex(
+      (_question) => _question?.id === questionId
+    )
+    if (questionIndex !== -1) {
+      const questionData = questions[questionIndex] || {}
+      updateQuestion({
+        ...questionData,
+        questionDisplayTimestamp: null,
+      })
+    }
+  }
+
+  handleAddBulkQuestionAnnotations = (annotationsData) => {
     const { annotations, setTestData } = this.props
+    const newAnnotations = [...annotations]
+
+    ;(annotationsData || []).forEach((annotationData) => {
+      const annotation = {
+        uuid: helpers.uuid(),
+        type: 'point',
+        class: 'Annotation',
+        toolbarMode: 'question',
+        ...annotationData,
+      }
+      newAnnotations.push(annotation)
+    })
+
+    const updatedAssessment = {
+      annotations: newAnnotations,
+    }
+    setTestData(updatedAssessment)
+  }
+
+  handleAddAnnotation = (question, type = 'pdf') => {
+    const { annotations, setTestData, questions, updateQuestion } = this.props
     const annotation = {
       uuid: helpers.uuid(),
       type: 'point',
@@ -235,6 +289,23 @@ class WorksheetComponent extends React.Component {
       type !== 'video'
     ) {
       newAnnotations.push(annotation)
+    }
+
+    if (type === 'video' && annotation.toolbarMode === 'question') {
+      const questionIndex = (questions || []).findIndex(
+        (_question) => _question?.id === question.questionId
+      )
+      if (questionIndex !== -1) {
+        const questionData = questions[questionIndex] || {}
+        if (question.time === null) {
+          this.handleRemoveAnnotation(question.questionId)
+          return
+        }
+        updateQuestion({
+          ...questionData,
+          questionDisplayTimestamp: question.time,
+        })
+      }
     }
 
     const updatedAssessment = {
@@ -646,8 +717,6 @@ class WorksheetComponent extends React.Component {
       redoUserWork,
       stdAnnotations,
       videoUrl,
-      previewPlayer,
-      userRole,
     } = this.props
 
     const finalvideoUrl = videoUrl || entityLink
@@ -660,6 +729,7 @@ class WorksheetComponent extends React.Component {
       minimized,
       isToolBarVisible,
       currentPage: _currentPageInState,
+      videoQuizQuestionIdsToDisplay,
     } = this.state
 
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState
@@ -683,8 +753,6 @@ class WorksheetComponent extends React.Component {
       isAddPdf,
       merge: true,
     }
-    const showStimulusInQuestionItem =
-      !previewPlayer && userRole !== roleuser.STUDENT
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -817,6 +885,11 @@ class WorksheetComponent extends React.Component {
                   review={review}
                   videoUrl={finalvideoUrl}
                   itemId={itemDetail?._id || testItemId}
+                  handleRemoveAnnotation={this.handleRemoveAnnotation}
+                  editMode={editMode}
+                  updateVideoQuizQuestionIdsToDisplay={
+                    this.updateVideoQuizQuestionIdsToDisplay
+                  }
                 />
               </EduThen>
               <EduElse>
@@ -878,7 +951,14 @@ class WorksheetComponent extends React.Component {
             itemId={itemDetail?._id}
             disableAutoHightlight={!!finalvideoUrl}
             isSnapQuizVideo={!!finalvideoUrl}
-            showStimulusInQuestionItem={showStimulusInQuestionItem}
+            editMode={editMode}
+            onDropAnnotation={this.handleAddAnnotation}
+            annotations={annotations}
+            isSnapQuizVideoPlayer={false}
+            handleAddBulkQuestionAnnotations={
+              this.handleAddBulkQuestionAnnotations
+            }
+            videoQuizQuestionIdsToDisplay={videoQuizQuestionIdsToDisplay}
           />
         </WorksheetWrapper>
       </div>
@@ -982,7 +1062,6 @@ const enhance = compose(
       isAnnotationsStackEmpty: isAnnotationsStackEmptySelector(state, ownProps),
       annotationsStack: annotationsStackSelector(state, ownProps),
       isImageBlockNotification: state.user.isImageBlockNotification,
-      userRole: getUserRole(state),
     }),
     {
       saveUserWork: saveUserWorkAction,
@@ -998,6 +1077,7 @@ const enhance = compose(
       undoAnnotationsOperation: undoAnnotationsAction,
       redoAnnotationsOperation: redoAnnotationsAction,
       toggleImageBlockNotification: toggleImageBlockNotificationAction,
+      updateQuestion: updateQuestionAction,
     }
   )
 )

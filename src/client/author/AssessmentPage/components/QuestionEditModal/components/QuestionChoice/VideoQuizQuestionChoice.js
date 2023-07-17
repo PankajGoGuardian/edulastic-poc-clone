@@ -1,19 +1,23 @@
 import { EduButton, helpers } from '@edulastic/common'
 import { InputNumber } from 'antd'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { arrayMove } from 'react-sortable-hoc'
 import uuid from 'uuid/v4'
-import { isEmpty } from 'lodash'
 import { FormGroup, FormLabel } from '../../common/QuestionForm'
 import Options from './Components/Options'
-import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
+import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 const VideoQuizQuestionChoice = ({
   question,
   updateQuestionData,
-  aiGeneratedQuestion,
+  updateAnnotationTime,
 }) => {
-  const { options = [], validation = {} } = question
+  const {
+    options = [],
+    validation = {},
+    questionDisplayTimestamp = null,
+    id,
+  } = question
   const {
     validResponse: { score = 1, value: correctAnswers = [] } = {},
   } = validation
@@ -118,60 +122,6 @@ const VideoQuizQuestionChoice = ({
     updateQuestionData(updateData)
   }
 
-  const updateQuestionWithAIData = (_aiGeneratedQuestion = {}) => {
-    if (isEmpty(_aiGeneratedQuestion)) {
-      return
-    }
-
-    const {
-      name = '',
-      options: questionOptions = [],
-      correctAnswersIndex = [],
-      displayAtSecond,
-    } = _aiGeneratedQuestion
-
-    const _options = (questionOptions || []).map((option) => {
-      const { name: optionLabel = '' } = option || {}
-      return {
-        value: uuid(),
-        label: optionLabel,
-      }
-    })
-
-    const questionCorrectAnswers = []
-    if (Array.isArray(correctAnswersIndex) && correctAnswersIndex.length) {
-      correctAnswersIndex.forEach((index) => {
-        const optionIndexUUID = _options[index]?.value || ''
-        if (optionIndexUUID?.length) {
-          questionCorrectAnswers.push(optionIndexUUID)
-        }
-      })
-    }
-
-    const updateData = {
-      stimulus:
-        typeof displayAtSecond === 'number'
-          ? `[At ${getFormattedTimeInMinutesAndSeconds(
-              displayAtSecond * 1000
-            )}] ${name}`
-          : name,
-      options: _options,
-      validation: {
-        ...validation,
-        validResponse: {
-          ...validation.validResponse,
-          value: questionCorrectAnswers,
-        },
-      },
-      multipleResponses: questionCorrectAnswers.length > 1,
-    }
-    updateQuestionData(updateData)
-  }
-
-  useEffect(() => {
-    updateQuestionWithAIData(aiGeneratedQuestion)
-  }, [aiGeneratedQuestion])
-
   return (
     <>
       <FormGroup>
@@ -194,6 +144,15 @@ const VideoQuizQuestionChoice = ({
       <FormGroup>
         <FormLabel>Points</FormLabel>
         <InputNumber min={1} value={score} onChange={handleChangeScore} />
+      </FormGroup>
+      <FormGroup>
+        <FormLabel>Timestamp (mm:ss)</FormLabel>
+        <VideoQuizTimePicker
+          updateQuestionData={updateQuestionData}
+          questionDisplayTimestamp={questionDisplayTimestamp}
+          updateAnnotationTime={updateAnnotationTime}
+          questionId={id}
+        />
       </FormGroup>
     </>
   )

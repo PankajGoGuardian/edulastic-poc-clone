@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Input, Radio } from 'antd'
 import { isUndefined } from 'lodash'
-import { EduIf, helpers } from '@edulastic/common'
+import { EduIf, helpers, Stimulus, MathFormulaDisplay } from '@edulastic/common'
 
 import { QuestionOption, QuestionChunk } from '../../common/Form'
-import { StimulusContainer } from '../../styled'
-import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
+import { StyledOptionsContainer } from '../../styled'
 
 export default class FormChoice extends React.Component {
   static propTypes = {
@@ -58,34 +57,33 @@ export default class FormChoice extends React.Component {
   getOptionLabel = (index) => helpers.getNumeration(index, 'uppercase')
 
   get showStimulus() {
-    const {
-      question: { stimulus = '', type },
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer = false,
-      showStimulusInQuestionItem,
-    } = this.props
-
-    return (
-      showStimulusInQuestionItem &&
-      !isSnapQuizVideoPlayer &&
-      isSnapQuizVideo &&
-      videoQuizStimulusSupportedQtypes.includes(type) &&
-      stimulus?.length
-    )
+    const { isSnapQuizVideo } = this.props
+    return isSnapQuizVideo
   }
 
-  get shouldModifyLabel() {
+  getCorrect = (value) => {
     const {
-      question: { type },
-      isSnapQuizVideo,
+      question: { multipleResponses },
+      evaluation,
+      answer,
     } = this.props
 
-    return isSnapQuizVideo && videoQuizStimulusSupportedQtypes.includes(type)
+    if (!multipleResponses) {
+      return answer.includes(value) && evaluation[0]
+    }
+
+    const valueIndex = answer.findIndex((item) => item === value)
+
+    if (valueIndex > -1) {
+      return evaluation[valueIndex]
+    }
+
+    return false
   }
 
   renderRadioForm = (chosenValue, handleChange = () => {}) => {
     const {
-      question: { options },
+      question: { options, stimulus = '' },
     } = this.props
 
     const radioStyle = {
@@ -99,6 +97,12 @@ export default class FormChoice extends React.Component {
         tabIndex="0"
         onMouseDown={(e) => e && e.preventDefault()}
       >
+        <EduIf condition={this.showStimulus}>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
+        </EduIf>
         <Radio.Group onChange={handleChange} value={chosenValue[0]}>
           <Radio style={radioStyle} value={options[0].value}>
             {options[0].label}
@@ -111,7 +115,7 @@ export default class FormChoice extends React.Component {
     )
   }
 
-  renderView = () => {
+  renderVideoQuizView = () => {
     const {
       question: {
         options,
@@ -121,25 +125,122 @@ export default class FormChoice extends React.Component {
         },
         stimulus = '',
       },
+    } = this.props
+
+    return (
+      <QuestionChunk>
+        <EduIf condition={this.showStimulus}>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
+        </EduIf>
+        {options.map(({ label, value: v }, key) => (
+          <StyledOptionsContainer>
+            <QuestionOption
+              key={label + key}
+              styleProps={{
+                marginTop: '4px',
+                minWidth: '25px',
+                height: '25px',
+                lineHeight: '23px',
+              }}
+              selected={value.includes(v)}
+              multipleResponses={multipleResponses}
+            >
+              {this.getOptionLabel(key)}
+            </QuestionOption>
+            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+          </StyledOptionsContainer>
+        ))}
+      </QuestionChunk>
+    )
+  }
+
+  renderVideoQuizForm = (mode) => {
+    const {
+      question: { options, multipleResponses, stimulus = '' },
+      evaluation,
+      view,
+      answer,
+    } = this.props
+
+    return (
+      <QuestionChunk>
+        <EduIf condition={this.showStimulus}>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
+        </EduIf>
+        {options.map(({ label, value }, key) => {
+          return (
+            <StyledOptionsContainer>
+              <QuestionOption
+                tabIndex="0"
+                mode={mode}
+                data-cy="choiceOption"
+                key={`form-${label}-${key}`}
+                selected={answer.includes(value)}
+                correct={evaluation && this.getCorrect(value)}
+                checked={!isUndefined(evaluation) && view !== 'clear'}
+                onClick={mode === 'report' ? '' : this.handleSelect(value)}
+                review
+                multipleResponses={multipleResponses}
+                onMouseDown={(e) => e && e.preventDefault()}
+                onKeyDown={(e) => {
+                  const code = e.which
+                  if (code === 13 || code === 32) {
+                    if (mode !== 'report') {
+                      this.handleSelect(value)()
+                    }
+                  }
+                }}
+                styleProps={{
+                  marginTop: '4px',
+                  minWidth: '25px',
+                  height: '25px',
+                  lineHeight: '23px',
+                }}
+              >
+                {this.getOptionLabel(key)}
+              </QuestionOption>
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+            </StyledOptionsContainer>
+          )
+        })}
+      </QuestionChunk>
+    )
+  }
+
+  renderView = () => {
+    const {
+      question: {
+        options,
+        multipleResponses,
+        validation: {
+          validResponse: { value },
+        },
+      },
       isTrueOrFalse,
+      isSnapQuizVideo,
     } = this.props
 
     if (isTrueOrFalse) return this.renderRadioForm(value)
 
     if (!options.length) return this.renderOptionsCreateForm()
 
+    if (isSnapQuizVideo) return this.renderVideoQuizView()
+
     return (
       <QuestionChunk>
-        <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
-        </EduIf>
         {options.map(({ label, value: v }, key) => (
           <QuestionOption
             key={label + key}
             selected={value.includes(v)}
             multipleResponses={multipleResponses}
           >
-            {this.shouldModifyLabel ? this.getOptionLabel(key) : label}
+            {label}
           </QuestionOption>
         ))}
       </QuestionChunk>
@@ -148,48 +249,31 @@ export default class FormChoice extends React.Component {
 
   renderForm = (mode) => {
     const {
-      question: { options, multipleResponses, stimulus = '' },
+      question: { options, multipleResponses },
       evaluation,
       view,
       answer,
       isTrueOrFalse,
+      isSnapQuizVideo,
     } = this.props
 
     const onChangeHandler = (e) => this.handleSelect(e.target.value)()
 
     if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler)
 
-    const getCorrect = (value) => {
-      if (!multipleResponses) {
-        return answer.includes(value) && evaluation[0]
-      }
-
-      const valueIndex = answer.findIndex((item) => item === value)
-
-      if (valueIndex > -1) {
-        return evaluation[valueIndex]
-      }
-
-      return false
-    }
+    if (isSnapQuizVideo) return this.renderVideoQuizForm(mode)
 
     return (
       <QuestionChunk data-cy="mcqChoice">
-        <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
-        </EduIf>
         {options.map(({ label, value }, key) => {
-          const _label = this.shouldModifyLabel
-            ? this.getOptionLabel(key)
-            : label
           return (
             <QuestionOption
               tabIndex="0"
               mode={mode}
               data-cy="choiceOption"
-              key={`form-${_label}-${key}`}
+              key={`form-${label}-${key}`}
               selected={answer.includes(value)}
-              correct={evaluation && getCorrect(value)}
+              correct={evaluation && this.getCorrect(value)}
               checked={!isUndefined(evaluation) && view !== 'clear'}
               onClick={mode === 'report' ? '' : this.handleSelect(value)}
               review
@@ -204,7 +288,7 @@ export default class FormChoice extends React.Component {
                 }
               }}
             >
-              {_label}
+              {label}
             </QuestionOption>
           )
         })}

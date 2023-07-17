@@ -1,18 +1,9 @@
-import React from 'react'
-import { Row, Col, Spin, Icon, Input } from 'antd'
-import { EduIf } from '@edulastic/common'
-import { FormLabel } from '../../common/QuestionForm'
-import { RightAlignedCol } from '../QuestionChoice/styled-components'
+import React, { useState } from 'react'
+import { FormLabel, StyledStimulusContainer } from '../../common/QuestionForm'
+import QuestionTextArea from '../../../../../../assessment/components/QuestionTextArea'
 
-const { TextArea } = Input
-
-const VideoQuizStimulus = ({
-  type,
-  stimulus,
-  generateViaAI,
-  loading,
-  onUpdate,
-}) => {
+const VideoQuizStimulus = ({ stimulus, onUpdate }) => {
+  const [isStimulusFocussed, setIsStimulusFocussed] = useState(false)
   const handleStimulusChange = (value) => {
     const updateData = {
       stimulus: value,
@@ -20,25 +11,26 @@ const VideoQuizStimulus = ({
     onUpdate(updateData)
   }
 
+  const handleFocusBlurEvent = (event) => {
+    setIsStimulusFocussed(event === 'focus')
+  }
+
   return (
     <>
-      <Row gutter={16}>
-        <Col span={12}>
-          <FormLabel>Stimulus</FormLabel>
-        </Col>
-        <RightAlignedCol span={12}>
-          <a onClick={() => generateViaAI(type)}>Generate via AI</a>
-          <EduIf condition={loading}>
-            <Spin size="small" indicator={<Icon type="loading" />} />
-          </EduIf>
-        </RightAlignedCol>
-      </Row>
-      <TextArea
-        style={{ height: 120, resize: 'none' }}
-        onChange={(e) => handleStimulusChange(e?.target?.value || '')}
-        placeholder="Enter your question"
-        value={stimulus}
-      />
+      <FormLabel>Stimulus</FormLabel>
+      <StyledStimulusContainer
+        onFocus={() => handleFocusBlurEvent('focus')}
+        onBlur={() => handleFocusBlurEvent('blur')}
+        isStimulusFocussed={isStimulusFocussed}
+      >
+        <QuestionTextArea
+          onChange={(value) => handleStimulusChange(value || '')}
+          value={stimulus}
+          border="border"
+          toolbarId="compose-video-quiz-question"
+          backgroundColor
+        />
+      </StyledStimulusContainer>
     </>
   )
 }

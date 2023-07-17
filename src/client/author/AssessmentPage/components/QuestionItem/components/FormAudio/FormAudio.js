@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, Stimulus } from '@edulastic/common'
 import VoiceRecorder from '../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
 import { StyledAudioElement } from '../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import AudioRecorder from './AudioRecorder'
-import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
-import { StimulusContainer } from '../../styled'
 
 export default class FormAudio extends React.Component {
   static propTypes = {
@@ -26,20 +24,8 @@ export default class FormAudio extends React.Component {
   }
 
   get showStimulus() {
-    const {
-      question: { stimulus = '', type },
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer = false,
-      showStimulusInQuestionItem,
-    } = this.props
-
-    return (
-      showStimulusInQuestionItem &&
-      !isSnapQuizVideoPlayer &&
-      isSnapQuizVideo &&
-      videoQuizStimulusSupportedQtypes.includes(type) &&
-      stimulus?.length
-    )
+    const { isSnapQuizVideo } = this.props
+    return isSnapQuizVideo
   }
 
   handleBlur = () => {
@@ -63,7 +49,10 @@ export default class FormAudio extends React.Component {
       <div>
         <b>Audio Response</b>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
       </div>
     )
@@ -78,7 +67,10 @@ export default class FormAudio extends React.Component {
     return (
       <div>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <EduIf condition={(answer || '').length > 0}>
           <EduThen>

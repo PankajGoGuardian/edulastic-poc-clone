@@ -77,6 +77,7 @@ class AddQuestion extends React.Component {
       onAddQuestion,
       onAddSection,
       minAvailableQuestionIndex,
+      isSnapQuizVideo,
     } = this.props
     return (
       <AddQuestionWrapper>
@@ -138,7 +139,7 @@ class AddQuestion extends React.Component {
           </QuestionTypes>
           <QuestionTypes>
             <AddButton onClick={this.toggleBulkModal} data-cy="addBulk">
-              Add Bulk
+              {isSnapQuizVideo ? 'Auto Generate' : 'Add Bulk'}
             </AddButton>
             <AddButton onClick={onAddSection} data-cy="addSection">
               Add Section
@@ -150,6 +151,7 @@ class AddQuestion extends React.Component {
               onCancel={this.toggleBulkModal}
               onApply={this.handleApply}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
+              isSnapQuizVideo={isSnapQuizVideo}
             />
           </EduIf>
         </ContentWrapper>

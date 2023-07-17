@@ -62,3 +62,7 @@ export const CheckboxGroupStyled = styled(Checkbox.Group)`
     font-weight: bold;
   }
 `
+export const StyledStimulusContainer = styled.div`
+  margin-top: ${({ isStimulusFocussed }) =>
+    isStimulusFocussed ? '70px' : '0px'};
+`

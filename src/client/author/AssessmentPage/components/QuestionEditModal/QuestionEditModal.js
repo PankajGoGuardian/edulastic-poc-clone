@@ -17,23 +17,18 @@ import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
 import { selectsData } from '../../../TestPage/components/common'
 import { ModalFooter, ModalTitle } from '../../common/Modal'
 import { QuestionNumber, TitleWrapper } from '../QuestionItem/styled'
 import StandardSet from './common/StandardSet/StandardSet'
 import { StandardSelectWrapper } from './common/StandardSet/styled'
-import {
-  fetchAIGeneratedQuestionAction,
-  setAIGeneratedQuestionStateAction,
-} from '../../../src/actions/aiGenerateQuestion'
 import QuestionChoice from './components/QuestionChoice/QuestionChoice'
 import QuestionDropdown from './components/QuestionDropdown/QuestionDropdown'
 import QuestionEssay from './components/QuestionEssay/QuestionEssay'
 import QuestionMath from './components/QuestionMath/QuestionMath'
 import QuestionText from './components/QuestionText/QuestionText'
 import QuestionAudio from './components/QuestionAudio/QuestionAudio'
+import { getUpdatedAnnotation } from '../../common/helpers'
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: 'Multiple Choice',
@@ -41,9 +36,10 @@ const questionTypeTitles = {
   [CLOZE_DROP_DOWN]: 'Question Dropdown',
   [ESSAY_PLAIN_TEXT]: 'Question Essay',
   [SHORT_TEXT]: 'Text Entry',
+  [AUDIO_RESPONSE]: 'Audio Response',
 }
 
-class QuestionEditModal extends React.Component {
+export default class QuestionEditModal extends React.Component {
   static propTypes = {
     totalQuestions: PropTypes.number.isRequired,
     visible: PropTypes.bool,
@@ -62,66 +58,30 @@ class QuestionEditModal extends React.Component {
     visible: false,
   }
 
-  componentDidMount() {
-    const { aiGenerateQuestionState, setAIGeneratedQuestionState } = this.props
-    const { apiStatus, result } = aiGenerateQuestionState || {}
-
-    if (apiStatus) {
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result,
-      })
-    }
-  }
-
-  componentDidUpdate() {
-    const { aiGenerateQuestionState, setAIGeneratedQuestionState } = this.props
-    const { apiStatus, result } = aiGenerateQuestionState || {}
-    const loading = apiStatus === 'INITIATED'
-
-    if (apiStatus && !loading) {
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result,
-      })
-    }
-  }
-
-  generateViaAI = (qType) => {
-    const { fetchAIGeneratedQuestion, videoUrl } = this.props
-    fetchAIGeneratedQuestion({
-      videoUrl,
-      studentGrade: 5,
-      questionCount: 1,
-      questionType: qType,
-    })
-  }
-
   renderForm = (type) => {
     const {
       question,
       onUpdate,
       isSnapQuizVideo,
-      aiGenerateQuestionState = {},
+      onDropAnnotation,
+      annotations = [],
     } = this.props
 
-    const {
-      result: aiGeneratedQuestion = [],
-      apiStatus,
-    } = aiGenerateQuestionState
-    const isGeneratingAIQuestion = apiStatus === 'INITIATED'
+    const updateAnnotationTime = (questionId, timestamp) => {
+      const updatedAnnotation = getUpdatedAnnotation({
+        annotations,
+        question,
+        questionId,
+        timestamp,
+      })
+      onDropAnnotation(updatedAnnotation, 'video')
+    }
 
     const props = {
-      type,
       question,
       onUpdate,
       isSnapQuizVideo,
-      aiGenerateQuestionState,
-      aiGeneratedQuestion: aiGeneratedQuestion?.length
-        ? aiGeneratedQuestion[0]
-        : {},
-      isGeneratingAIQuestion,
-      generateViaAI: this.generateViaAI,
+      updateAnnotationTime,
     }
 
     switch (type) {
@@ -152,6 +112,7 @@ class QuestionEditModal extends React.Component {
       onUpdate,
       totalQuestions = 1,
       qNumber,
+      isSnapQuizVideo,
     } = this.props
 
     if (!question) {
@@ -177,12 +138,22 @@ class QuestionEditModal extends React.Component {
       </TitleWrapper>
     )
 
+    const videoQuizStyleProps = isSnapQuizVideo
+      ? {
+          padding: '15px 0px',
+          closeRightAlign: '10px',
+          modalWidth: '720px',
+          headerPadding: '0px 0px 0px 10px',
+        }
+      : {}
+
     return (
       <CustomModalStyled
         centered
         visible={visible}
         title={QuestionTitle}
         onCancel={onClose}
+        {...videoQuizStyleProps}
         footer={[
           <ModalFooter>
             <EduButton
@@ -205,7 +176,7 @@ class QuestionEditModal extends React.Component {
         ]}
         overlayId="docBasedModalOverlay"
       >
-        <StyledBodyContainer>
+        <StyledBodyContainer isSnapQuizVideo={isSnapQuizVideo}>
           {this.renderForm(type)}
           <StandardSelectWrapper>
             <StandardSet
@@ -267,8 +238,9 @@ class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  max-height: 350px;
-  padding: 0px 0px 10px;
+  max-height: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '520px' : '350px')};
+  padding: ${({ isSnapQuizVideo }) =>
+    isSnapQuizVideo ? '10px' : '0px 0px 10px'};
   overflow: auto;
 
   &::-webkit-scrollbar {
@@ -297,17 +269,3 @@ const StyledBodyContainer = styled.div`
     }
   }
 `
-const enhance = compose(
-  connect(
-    (state) => ({
-      videoUrl: state.tests.entity.videoUrl,
-      aiGenerateQuestionState: state.aiGenerateQuestionState,
-    }),
-    {
-      setAIGeneratedQuestionState: setAIGeneratedQuestionStateAction,
-      fetchAIGeneratedQuestion: fetchAIGeneratedQuestionAction,
-    }
-  )
-)
-
-export default enhance(QuestionEditModal)

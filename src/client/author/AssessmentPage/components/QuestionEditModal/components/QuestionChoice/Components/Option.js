@@ -4,10 +4,11 @@ import { helpers } from '@edulastic/common'
 import {
   OptionContainer,
   LabelContainer,
-  TextInputStyled,
+  StyledInputContainer,
   IconTrash,
 } from '../styled-components'
 import DragHandle from '../../../../../../../assessment/widgets/MultipleChoice/components/Display/components/DragHandle'
+import QuestionTextArea from '../../../../../../../assessment/components/QuestionTextArea'
 
 const Option = ({
   optionIdx,
@@ -32,21 +33,20 @@ const Option = ({
       >
         {optionLabel}
       </LabelContainer>
-      <TextInputStyled
-        value={option.label}
-        onChange={(e) =>
-          handleOptionChange(option.value, e?.target?.value || '')
+      <StyledInputContainer
+        onBlur={() =>
+          handleOptionChange(option.value, option.label || '', optionIdx, true)
         }
-        onBlur={(e) =>
-          handleOptionChange(
-            option.value,
-            e?.target?.value || '',
-            optionIdx,
-            true
-          )
-        }
-        placeholder={`Option #${optionIdx + 1}`}
-      />
+      >
+        <QuestionTextArea
+          fontSize="16px"
+          value={option.label}
+          placeholder={`Option #${optionIdx + 1}`}
+          toolbarId={`mcq-option-${optionIdx}`}
+          onChange={(value) => handleOptionChange(option.value, value || '')}
+          backgroundColor
+        />
+      </StyledInputContainer>
       <IconTrash onClick={() => handleDeleteOption(option.value)} />
     </OptionContainer>
   )

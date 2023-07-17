@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input, InputNumber, Radio } from 'antd'
-import { throttle, isArray, isEmpty, isEqual } from 'lodash'
-import { TRUE_OR_FALSE } from '@edulastic/constants/const/questionType'
+import { throttle, isArray } from 'lodash'
 
 import { inputBgGrey, inputBorder } from '@edulastic/colors'
 import { EduIf, EduElse, EduThen } from '@edulastic/common'
@@ -16,8 +15,7 @@ import {
 } from '../../common/QuestionForm'
 import VideoQuizQuestionChoice from './VideoQuizQuestionChoice'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import { TimeStampContainer } from './styled-components'
-import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
+import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 const { Group: RadioGroup } = Radio
 
@@ -38,22 +36,6 @@ export default class QuestionChoice extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      aiGeneratedQuestion = {},
-      isSnapQuizVideo = false,
-      question,
-    } = this.props
-    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
-      const { title } = question
-      const trueOrFalse = title === 'True or false'
-      if (isEmpty(aiGeneratedQuestion) || !trueOrFalse || !isSnapQuizVideo) {
-        return
-      }
-      this.updateQuestionWithAIData()
-    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -141,81 +123,28 @@ export default class QuestionChoice extends React.Component {
     })
   }
 
-  updateQuestionWithAIData = () => {
-    const { question, aiGeneratedQuestion, onUpdate } = this.props
-    const { options = [], validation } = question
-    const { correctAnswer, name = '', displayAtSecond } = aiGeneratedQuestion
-    let updateData = {
-      stimulus:
-        typeof displayAtSecond === 'number'
-          ? `[At ${getFormattedTimeInMinutesAndSeconds(
-              displayAtSecond * 1000
-            )}] ${name}`
-          : name,
-    }
-    let validAnswer = []
-    if (typeof correctAnswer === 'boolean') {
-      options.forEach((option) => {
-        if (
-          option?.value?.length &&
-          option?.label?.toUpperCase() === `${correctAnswer}`.toUpperCase()
-        ) {
-          validAnswer = [option.value]
-        }
-      })
-      if (validAnswer?.length) {
-        updateData = {
-          ...updateData,
-          validation: {
-            ...validation,
-            validResponse: {
-              ...validation.validResponse,
-              value: validAnswer,
-            },
-          },
-        }
-      }
-    }
-    this.setState({ correctAnswers: validAnswer }, () => {
-      onUpdate(updateData)
-    })
-  }
-
   render() {
     const { optionsValue, correctAnswers, score } = this.state
     const {
-      type,
       question,
       isSnapQuizVideo,
       onUpdate,
-      isGeneratingAIQuestion,
-      generateViaAI,
-      aiGeneratedQuestion,
+      updateAnnotationTime,
     } = this.props
-    const { options, title, stimulus = '' } = question
+    const {
+      options,
+      title,
+      stimulus = '',
+      questionDisplayTimestamp = null,
+      id,
+    } = question
     const trueOrFalse = title === 'True or false'
-    const { displayAtSecond } = aiGeneratedQuestion
 
     return (
       <QuestionFormWrapper>
         <EduIf condition={isSnapQuizVideo}>
-          <EduIf condition={typeof displayAtSecond === 'number'}>
-            <FormGroup>
-              <TimeStampContainer>
-                Suggested Timestamp -{' '}
-                {getFormattedTimeInMinutesAndSeconds(displayAtSecond * 1000)}
-              </TimeStampContainer>
-            </FormGroup>
-          </EduIf>
-
           <FormGroup>
-            <VideoQuizStimulus
-              stimulus={stimulus}
-              generateViaAI={generateViaAI}
-              loading={isGeneratingAIQuestion}
-              onUpdate={onUpdate}
-              type={trueOrFalse ? TRUE_OR_FALSE : type}
-            />
+            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
           </FormGroup>
         </EduIf>
         <EduIf condition={isSnapQuizVideo && !trueOrFalse}>
@@ -223,7 +152,7 @@ export default class QuestionChoice extends React.Component {
             <VideoQuizQuestionChoice
               question={question}
               updateQuestionData={onUpdate}
-              aiGeneratedQuestion={aiGeneratedQuestion}
+              updateAnnotationTime={updateAnnotationTime}
             />
           </EduThen>
           <EduElse>
@@ -267,6 +196,17 @@ export default class QuestionChoice extends React.Component {
                 data-cy="points"
               />
               <Points>Points</Points>
+              <EduIf condition={isSnapQuizVideo && trueOrFalse}>
+                <FormGroup style={{ marginTop: 9 }}>
+                  <FormLabel>Timestamp (mm:ss)</FormLabel>
+                  <VideoQuizTimePicker
+                    questionId={id}
+                    questionDisplayTimestamp={questionDisplayTimestamp}
+                    updateQuestionData={onUpdate}
+                    updateAnnotationTime={updateAnnotationTime}
+                  />
+                </FormGroup>
+              </EduIf>
             </FormGroup>
           </EduElse>
         </EduIf>

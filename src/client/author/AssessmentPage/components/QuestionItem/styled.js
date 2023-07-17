@@ -13,12 +13,24 @@ import {
   greyThemeDark4,
 } from '@edulastic/colors'
 
+const getQuestionItemWrapperWidth = ({
+  isSnapQuizVideo,
+  review,
+  annotations,
+}) => {
+  if (isSnapQuizVideo) {
+    return '98%'
+  }
+  return annotations ? 'auto' : review ? '100%' : '265px'
+}
+
 export const QuestionItemWrapper = styled.div`
-  width: ${({ review, annotations }) =>
-    annotations ? 'auto' : review ? '100%' : '265px'};
+  width: ${({ isSnapQuizVideo, review, annotations }) =>
+    getQuestionItemWrapperWidth({ isSnapQuizVideo, review, annotations })};
   padding: ${({ pdfPreview }) => !pdfPreview && '10px'};
   background: ${({ pdfPreview }) => (pdfPreview ? 'transparent' : white)};
-  border-radius: ${({ review }) => (review ? '10px' : '0 10px 10px 0')};
+  border-radius: ${({ review, isSnapQuizVideo }) =>
+    review || isSnapQuizVideo ? '10px' : '0 10px 10px 0'};
   border: ${({ pdfPreview }) => !pdfPreview && `1px solid ${sectionBorder}`};
   box-shadow: ${({ highlighted, pdfPreview }) =>
     !pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : 'none'};
@@ -86,11 +98,41 @@ export const QuestionForm = styled.div`
     width: calc(100% - 40px);
   }
 `
+export const VideoQuizQuestionForm = styled.div`
+  .ant-select-selection,
+  .input__math,
+  .ant-input {
+    width: 100%;
+  }
+  .input__math {
+    & + .input__absolute__keyboard {
+      position: absolute;
+      overflow: auto;
+      right: 0px;
+    }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: calc(100% - 40px);
+  }
+`
+
+export const VideoQuizItemWrapper = styled.div`
+  display: flex;
+  max-width: ${({ isSnapQuizVideoPlayer }) =>
+    isSnapQuizVideoPlayer ? '400px' : ''};
+`
+
+export const VideoQuizItemContainer = styled.div`
+  width: 100%;
+`
 
 export const EditButton = styled.span`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ isSnapQuizVideo }) =>
+    isSnapQuizVideo ? 'flex-end' : 'space-between'};
+  margin-top: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '5px' : '')};
   margin-left: 5px;
   position: relative;
 
@@ -139,6 +181,7 @@ export const ButtonWrapper = styled.span`
 export const AnswerIndicator = styled.span`
   display: inline-block;
   padding: 8px;
+  margin: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? 'auto' : '')};
 
   svg {
     fill: ${({ correct }) => (correct ? green : red)};
@@ -190,6 +233,24 @@ export const TitleWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
 `
-export const StimulusContainer = styled.div`
-  margin-bottom: 10px;
+export const StyledOptionsContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px 0px;
+`
+export const StyledTimeStampContainer = styled.div`
+  padding-top: 5px;
+  font-size: 13px;
+  span {
+    color: ${themeColor};
+    font-weight: bold;
+  }
+`
+export const StyledRemoveQuestion = styled.div`
+  margin-top: 10px;
+  color: ${red};
+  font-weight: bold;
+  font-size: 10px;
+  cursor: pointer;
 `

@@ -10,7 +10,7 @@ import {
   EduButton,
   EduIf,
 } from '@edulastic/common'
-import { throttle, isEqual, isEmpty } from 'lodash'
+import { throttle } from 'lodash'
 import produce from 'immer'
 
 import { IconTrash, IconAddStudents } from '@edulastic/icons'
@@ -24,7 +24,7 @@ import {
   FormGroup,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
+import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 export default class QuestionText extends React.Component {
   constructor(props) {
@@ -40,16 +40,6 @@ export default class QuestionText extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
-  }
-
-  componentDidUpdate(prevProps) {
-    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
-    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
-      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
-        return
-      }
-      this.updateQuestionWithAIData()
-    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -237,49 +227,21 @@ export default class QuestionText extends React.Component {
     })
   }
 
-  updateQuestionWithAIData = () => {
-    const { aiGeneratedQuestion, onUpdate } = this.props
-    const { correctAnswer, name = '', displayAtSecond } = aiGeneratedQuestion
-
-    if (typeof correctAnswer === 'string' && correctAnswer.length) {
-      this.handleSetAnswer({ target: { value: correctAnswer } })
-    } else {
-      this.handleSetAnswer({ target: { value: '' } })
-    }
-    const updateData = {
-      stimulus:
-        typeof displayAtSecond === 'number'
-          ? `[At ${getFormattedTimeInMinutesAndSeconds(
-              displayAtSecond * 1000
-            )}] ${name}`
-          : name,
-    }
-    onUpdate(updateData)
-  }
-
   render() {
     const { answer, score, allow, altResponses = [], matchCase } = this.state
     const {
-      type,
       isSnapQuizVideo,
       question,
       onUpdate,
-      generateViaAI,
-      isGeneratingAIQuestion,
+      updateAnnotationTime,
     } = this.props
-    const { stimulus = '' } = question
+    const { stimulus = '', questionDisplayTimestamp = null, id } = question
 
     return (
       <QuestionFormWrapper>
         <EduIf condition={isSnapQuizVideo}>
           <FormGroup>
-            <VideoQuizStimulus
-              stimulus={stimulus}
-              generateViaAI={generateViaAI}
-              loading={isGeneratingAIQuestion}
-              onUpdate={onUpdate}
-              type={type}
-            />
+            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
           </FormGroup>
         </EduIf>
         <FormGroup>
@@ -362,6 +324,17 @@ export default class QuestionText extends React.Component {
             data-cy="matchCase"
           />
         </FormGroup>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup style={{ marginTop: 13 }}>
+            <FieldLabel>Timestamp (mm:ss)</FieldLabel>
+            <VideoQuizTimePicker
+              questionDisplayTimestamp={questionDisplayTimestamp}
+              updateQuestionData={onUpdate}
+              updateAnnotationTime={updateAnnotationTime}
+              questionId={id}
+            />
+          </FormGroup>
+        </EduIf>
       </QuestionFormWrapper>
     )
   }

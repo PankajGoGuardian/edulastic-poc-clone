@@ -52,6 +52,9 @@ const VideoPreview = ({
   isEditable,
   videoUrl,
   pathname,
+  handleRemoveAnnotation,
+  editMode,
+  updateVideoQuizQuestionIdsToDisplay,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -68,6 +71,9 @@ const VideoPreview = ({
   const [volumne, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
+
+  const getQuestionIds = (questionAnnotations = []) =>
+    (questionAnnotations || []).map((annotation) => annotation?.questionId)
 
   const onPlay = () => {
     setPlaying(true)
@@ -96,9 +102,21 @@ const VideoPreview = ({
     const _currentTime = Math.round(state.playedSeconds)
     setCurrentTime(_currentTime)
 
-    const newVisibleAnnotations = annotations.filter(
+    let newVisibleAnnotations = annotations.filter(
       (annotation) =>
         annotation.time && _currentTime === Math.floor(annotation.time)
+    )
+
+    newVisibleAnnotations = newVisibleAnnotations?.length
+      ? newVisibleAnnotations
+      : []
+
+    const questionAnnotations = newVisibleAnnotations.filter(
+      (annotation) => annotation.toolbarMode === 'question'
+    )
+
+    updateVideoQuizQuestionIdsToDisplay(
+      getQuestionIds(questionAnnotations || [])
     )
 
     if (
@@ -106,9 +124,6 @@ const VideoPreview = ({
       visibleAnnotationRef.current.length === 0
     ) {
       onPause()
-      const questionAnnotations = newVisibleAnnotations.filter(
-        (annotation) => annotation.toolbarMode === 'question'
-      )
       if (questionAnnotations.length > 0) {
         onHighlightQuestion(questionAnnotations[0].questionId, true)
       }
@@ -154,12 +169,27 @@ const VideoPreview = ({
     }
   }
 
+  const removeQuestionAnnotation = (questionId) => {
+    const updatedVisibleAnnotations = visibleAnnotation.filter(
+      (annotation) => annotation?.questionId !== questionId
+    )
+    handleRemoveAnnotation(questionId)
+    setVisibleAnnotation(updatedVisibleAnnotations)
+  }
+
   useEffect(() => {
     const _currentTime = getCurrentTime(videoRef)
 
-    const newVisibleAnnotations = getVisibleAnnotation(
-      annotations,
-      _currentTime
+    let newVisibleAnnotations = getVisibleAnnotation(annotations, _currentTime)
+
+    newVisibleAnnotations = newVisibleAnnotations?.length
+      ? newVisibleAnnotations
+      : []
+    const questionAnnotations = newVisibleAnnotations.filter(
+      (annotation) => annotation.toolbarMode === 'question'
+    )
+    updateVideoQuizQuestionIdsToDisplay(
+      getQuestionIds(questionAnnotations || [])
     )
 
     if (newVisibleAnnotations.length > 0) {
@@ -237,7 +267,7 @@ const VideoPreview = ({
           enableDrag={viewMode === 'edit' && isEditable && !testMode}
         >
           {visibleAnnotation
-            .filter((item) => item.toolbarMode === 'question')
+            .filter((item) => item.toolbarMode === 'question' && item.x !== -1)
             .map(({ uuid, qIndex, x, y, questionId }) => (
               <div
                 key={uuid}
@@ -263,6 +293,8 @@ const VideoPreview = ({
                   review
                   qId={0}
                   itemId={itemId}
+                  handleRemoveAnnotation={removeQuestionAnnotation}
+                  editMode={editMode}
                   draggble
                   disableAutoHightlight
                   isSnapQuizVideo

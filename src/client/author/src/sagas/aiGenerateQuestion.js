@@ -6,6 +6,7 @@ import { FETCH_AI_GENERATE_QUESTION } from '../constants/actions'
 
 function* fetchAIGeneratedQuestionSaga({ payload }) {
   try {
+    notification({ type: 'info', msg: 'Generating AI-Powered questions!' })
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'INITIATED', result: [] })
     )
@@ -36,6 +37,17 @@ function* fetchAIGeneratedQuestionSaga({ payload }) {
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'SUCCESS', result })
     )
+    if (result?.length) {
+      notification({
+        type: 'success',
+        msg: 'Successfully generated AI-Powered questions!',
+      })
+    } else {
+      notification({
+        type: 'error',
+        msg: 'Failed to generate AI-Powered questions.',
+      })
+    }
   } catch (err) {
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'FAILED', result: [] })

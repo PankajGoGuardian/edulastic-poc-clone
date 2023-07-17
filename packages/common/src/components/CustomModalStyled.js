@@ -31,7 +31,8 @@ const StyledModal = styled(Modal)`
       }
     }
     .ant-modal-header {
-      padding: 0px;
+      padding: ${(props) =>
+        props.headerPadding ? props.headerPadding : '0px'};
       background: transparent;
       border: none;
       .ant-modal-title {

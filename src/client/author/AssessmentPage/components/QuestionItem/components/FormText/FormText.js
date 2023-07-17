@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
-import { EduIf } from '@edulastic/common'
+import { EduIf, Stimulus } from '@edulastic/common'
 
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
-import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
-import { StimulusContainer } from '../../styled'
 
 export default class FormText extends React.Component {
   static propTypes = {
@@ -24,20 +22,8 @@ export default class FormText extends React.Component {
   }
 
   get showStimulus() {
-    const {
-      question: { stimulus = '', type },
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer = false,
-      showStimulusInQuestionItem,
-    } = this.props
-
-    return (
-      showStimulusInQuestionItem &&
-      !isSnapQuizVideoPlayer &&
-      isSnapQuizVideo &&
-      videoQuizStimulusSupportedQtypes.includes(type) &&
-      stimulus?.length
-    )
+    const { isSnapQuizVideo } = this.props
+    return isSnapQuizVideo
   }
 
   handleChange = ({ target: { value } }) => {
@@ -61,7 +47,10 @@ export default class FormText extends React.Component {
     return (
       <div>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <QuestionText>{value}</QuestionText>
       </div>
@@ -89,7 +78,10 @@ export default class FormText extends React.Component {
       <div>
         {' '}
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <Input
           size="large"
@@ -122,7 +114,10 @@ export default class FormText extends React.Component {
     return (
       <div>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <Input
           size="large"

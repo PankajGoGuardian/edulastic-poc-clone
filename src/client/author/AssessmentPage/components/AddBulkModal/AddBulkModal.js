@@ -2,7 +2,6 @@ import {
   CustomModalStyled,
   EduButton,
   EduIf,
-  EduSwitchStyled,
   FieldLabel,
   NumberInputStyled,
   SelectInputStyled,
@@ -29,7 +28,6 @@ import { ModalFooter, ModalWrapper } from '../../common/Modal'
 import { QuestionFormWrapper } from '../QuestionEditModal/common/QuestionForm'
 import StandardSet from '../QuestionEditModal/common/StandardSet/StandardSet'
 import { StandardSelectWrapper } from './styled'
-import { videoQuizStimulusSupportedQtypes } from '../Questions/constants'
 
 class AddBulkModal extends React.Component {
   static propTypes = {
@@ -90,11 +88,18 @@ class AddBulkModal extends React.Component {
   }
 
   generateViaAI = ({ questionCount, questionType }) => {
+    const { alignment, authorDifficulty, depthOfKnowledge } = this.state
+
+    const { grades = [] } = alignment?.[0] || {}
+
     const { fetchAIGeneratedQuestion, videoUrl } = this.props
     fetchAIGeneratedQuestion({
       videoUrl,
       questionCount,
       questionType,
+      questionComplexity: authorDifficulty,
+      depthOfKnowledge,
+      grades,
     })
   }
 
@@ -120,12 +125,16 @@ class AddBulkModal extends React.Component {
     const {
       aiGenerateQuestionState: { apiStatus } = {},
       setAIGeneratedQuestionState,
+      isSnapQuizVideo,
     } = this.props
     if (apiStatus) {
       setAIGeneratedQuestionState({
         apiStatus: false,
         result: [],
       })
+    }
+    if (isSnapQuizVideo) {
+      this.setState({ generateViaAi: true })
     }
   }
 
@@ -136,12 +145,12 @@ class AddBulkModal extends React.Component {
       alignment,
       authorDifficulty,
       depthOfKnowledge,
-      generateViaAi,
     } = this.state
     const {
       onCancel,
       visible,
       aiGenerateQuestionState: { apiStatus } = {},
+      isSnapQuizVideo,
     } = this.props
 
     const loading = apiStatus === 'INITIATED'
@@ -149,7 +158,7 @@ class AddBulkModal extends React.Component {
     return (
       <CustomModalStyled
         visible={visible}
-        title="Add Bulk"
+        title={isSnapQuizVideo ? 'Auto Genenerate' : 'Add Bulk'}
         onCancel={onCancel}
         footer={[
           <ModalFooter marginTop="35px">
@@ -161,7 +170,7 @@ class AddBulkModal extends React.Component {
               onClick={() => this.handleApply()}
               data-cy="apply"
             >
-              Apply
+              {isSnapQuizVideo ? 'Generate Questions' : 'Apply'}
               <EduIf condition={loading}>
                 <Spin size="small" indicator={<Icon type="loading" />} />
               </EduIf>
@@ -258,15 +267,6 @@ class AddBulkModal extends React.Component {
               </Col>
             </Row>
           </StandardSelectWrapper>
-          <EduIf condition={videoQuizStimulusSupportedQtypes.includes(type)}>
-            <div>
-              <FieldLabel>Generate question via AI</FieldLabel>
-              <EduSwitchStyled
-                defaultChecked={generateViaAi}
-                onChange={() => this.setState({ generateViaAi: true })}
-              />
-            </div>
-          </EduIf>
         </ModalWrapper>
       </CustomModalStyled>
     )

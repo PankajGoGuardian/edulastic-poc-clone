@@ -1,7 +1,6 @@
 import { FieldLabel, NumberInputStyled, EduIf } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { isEmpty, isEqual } from 'lodash'
 
 import { maxAudioDurationLimit } from '../../../../../../assessment/widgets/AudioResponse/constants'
 import {
@@ -10,7 +9,7 @@ import {
   QuestionFormWrapper,
 } from '../../common/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../assessment/utils/timeUtils'
+import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 export default class QuestionAudio extends React.Component {
   constructor(props) {
@@ -24,16 +23,6 @@ export default class QuestionAudio extends React.Component {
   componentDidMount() {
     const { question } = this.props
     this.setDefaultState(question)
-  }
-
-  componentDidUpdate(prevProps) {
-    const { aiGeneratedQuestion = {}, isSnapQuizVideo = false } = this.props
-    if (!isEqual(aiGeneratedQuestion, prevProps.aiGeneratedQuestion)) {
-      if (isEmpty(aiGeneratedQuestion) || !isSnapQuizVideo) {
-        return
-      }
-      this.updateQuestionWithAIData()
-    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -76,42 +65,20 @@ export default class QuestionAudio extends React.Component {
     )
   }
 
-  updateQuestionWithAIData = () => {
-    const { aiGeneratedQuestion, onUpdate } = this.props
-    const { name = '', displayAtSecond } = aiGeneratedQuestion
-    const updateData = {
-      stimulus:
-        typeof displayAtSecond === 'number'
-          ? `[At ${getFormattedTimeInMinutesAndSeconds(
-              displayAtSecond * 1000
-            )}] ${name}`
-          : name,
-    }
-    onUpdate(updateData)
-  }
-
   render() {
     const { score, audioTimeLimitInMinutes } = this.state
     const {
-      question: { stimulus = '' },
-      generateViaAI,
-      isGeneratingAIQuestion,
+      question: { stimulus = '', questionDisplayTimestamp = null, id },
       onUpdate,
       isSnapQuizVideo,
-      type,
+      updateAnnotationTime,
     } = this.props
 
     return (
       <QuestionFormWrapper>
         <EduIf condition={isSnapQuizVideo}>
           <FormGroup>
-            <VideoQuizStimulus
-              stimulus={stimulus}
-              generateViaAI={generateViaAI}
-              loading={isGeneratingAIQuestion}
-              onUpdate={onUpdate}
-              type={type}
-            />
+            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
           </FormGroup>
         </EduIf>
         <FormInline>
@@ -141,6 +108,17 @@ export default class QuestionAudio extends React.Component {
             />
           </FormGroup>
         </FormInline>
+        <EduIf condition={isSnapQuizVideo}>
+          <FormGroup style={{ marginTop: 9 }}>
+            <FieldLabel>Timestamp (mm:ss)</FieldLabel>
+            <VideoQuizTimePicker
+              questionDisplayTimestamp={questionDisplayTimestamp}
+              updateQuestionData={onUpdate}
+              updateAnnotationTime={updateAnnotationTime}
+              questionId={id}
+            />
+          </FormGroup>
+        </EduIf>
       </QuestionFormWrapper>
     )
   }

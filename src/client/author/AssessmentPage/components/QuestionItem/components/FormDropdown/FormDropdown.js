@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
-import { EduIf } from '@edulastic/common'
-import { videoQuizStimulusSupportedQtypes } from '../../../Questions/constants'
-import { StimulusContainer } from '../../styled'
+import { EduIf, Stimulus } from '@edulastic/common'
 
 import { Dropdown } from './styled'
 
@@ -20,20 +18,8 @@ export default class FormDropdown extends React.Component {
   }
 
   get showStimulus() {
-    const {
-      question: { stimulus = '', type },
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer = false,
-      showStimulusInQuestionItem,
-    } = this.props
-
-    return (
-      showStimulusInQuestionItem &&
-      !isSnapQuizVideoPlayer &&
-      isSnapQuizVideo &&
-      videoQuizStimulusSupportedQtypes.includes(type) &&
-      stimulus?.length
-    )
+    const { isSnapQuizVideo } = this.props
+    return isSnapQuizVideo
   }
 
   handleChange = (value) => {
@@ -55,15 +41,17 @@ export default class FormDropdown extends React.Component {
     } = this.props
 
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         <EduIf condition={this.showStimulus}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <Dropdown
           value={(value[0] && value[0].value) || ''}
           check={['check', 'show'].includes(view)}
           onChange={this.handleChange}
-          style={{ width: '150px' }}
           disabled
         >
           {options[0].map((option, key) => (
@@ -87,9 +75,12 @@ export default class FormDropdown extends React.Component {
     } = this.props
 
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         <EduIf condition={this.showStimulus && mode !== 'report'}>
-          <StimulusContainer>{stimulus}</StimulusContainer>
+          <Stimulus
+            style={{ marginBottom: 10, minHeight: 32 }}
+            dangerouslySetInnerHTML={{ __html: stimulus }}
+          />
         </EduIf>
         <Dropdown
           disabled={mode === 'report'}

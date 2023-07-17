@@ -7,29 +7,36 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Col, Input } from 'antd'
+import { Col } from 'antd'
 import { IconTrash as Icon } from '@edulastic/icons'
 
-export const TextInputStyled = styled(Input)`
-  margin-left: 12px;
-  &.ant-input {
-    border: none;
-    padding: 0px;
-    text-align: left;
-    &:focus,
-    &:hover {
-      border: none !important;
-      box-shadow: none;
+export const StyledInputContainer = styled.div`
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  margin-left: 8px;
+  position: relative;
+  height: 21px;
+  .froala-wrapper {
+    height: 100%;
+    [id^='froalaToolbarContainer-mcq-option'] {
+      bottom: 131%;
+      left: -7px;
     }
   }
 `
 
 export const OptionContainer = styled.div`
   display: flex;
+  flex-direction: row;
+  flex: 1 1 0%;
+  justify-content: flex-start;
   align-items: center;
+  min-height: 35px;
   border: 1px solid ${greyThemeLight};
-  padding: 2px 0px;
-  width: 95%;
+  width: 97%;
   z-index: 9999;
   &:not(:last-child) {
     margin-bottom: 5px;

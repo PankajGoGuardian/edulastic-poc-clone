@@ -1,4 +1,5 @@
 import { get } from 'lodash'
+import qs from 'qs'
 import API from './utils/API'
 import AttchmentApi from './attachment'
 
@@ -209,8 +210,10 @@ const generateQuestionViaAI = (data) =>
     .callApi({
       useSlowApi: true,
       method: 'get',
-      url: `${prefix}/create-ai-question`,
-      params: data,
+      url: `${prefix}/create-ai-question?${qs.stringify(data, {
+        arrayFormat: 'repeat',
+        encode: false,
+      })}`,
     })
     .then((result) => result.data)
 

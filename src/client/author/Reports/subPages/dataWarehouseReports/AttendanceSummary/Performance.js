@@ -114,10 +114,10 @@ const getTableColumns = (sortOrder, sortKey, compareBy) => {
       },
     },
     {
-      title: 'TARDIES',
-      key: sortKeys.TARDIES,
+      title: 'ATTENDANCE DISRUPTIONS',
+      key: sortKeys.ATTENDANCE_DISRUPTIONS,
       align: 'center',
-      dataIndex: 'tardyEventCount',
+      dataIndex: 'attendanceDisruptionsCount',
       sorter: true,
     },
     attendanceDistributionColumn,

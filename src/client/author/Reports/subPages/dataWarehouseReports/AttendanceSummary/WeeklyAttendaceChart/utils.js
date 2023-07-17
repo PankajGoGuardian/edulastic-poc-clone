@@ -9,12 +9,11 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
       if (item.fromTermStart < 0) return
 
       return {
+        ...item,
+        attendanceDisruptions:
+          item.tardyDays + item.earlyDepartureDays + item.partialDays,
         [groupBy]: item.fromTermStart,
         startDate: moment(item.minDate).format('DD MMM'),
-        presents: item.presentEvents,
-        absents: item.absentEvents,
-        tardies: item.tardyEvents,
-        total: item.totalEvents,
         value: round(item.attendanceRatio),
         assessmentDate: item.minDate,
       }
@@ -26,29 +25,26 @@ export const getAttendanceChartData = (attendanceData, groupBy) => {
 export const transformDataForChart = (page, pagedData, groupBy, type) => {
   const START_X_LABEL = 'START DATE'
   const START_X_VALUE = -1
-  const isTardies = type === sortKeys.TARDIES
+  const isAttendanceDisruptions = type === sortKeys.ATTENDANCE_DISRUPTIONS
   if (!pagedData.length) {
     return []
   }
   if (page === 0) {
-    if (isTardies) {
+    if (isAttendanceDisruptions) {
       return [...pagedData]
     }
     return [
       {
         [groupBy]: START_X_VALUE,
         startDate: START_X_LABEL,
-        presents: 0,
-        absents: 0,
-        tardies: 0,
-        total: 0,
+        attendanceDisruptions: 0,
         value: 0,
       },
       ...pagedData,
     ]
   }
   const first = pagedData[0]
-  if (isTardies) {
+  if (isAttendanceDisruptions) {
     return [...pagedData.slice(1)]
   }
   return [

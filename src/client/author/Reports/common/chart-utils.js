@@ -1,7 +1,11 @@
 import React from 'react'
 import { Dot } from 'recharts'
+import { EduIf } from '@edulastic/common'
+import { isNull } from 'lodash'
+import { percentage } from '@edulastic/constants/reportUtils/common'
 import { TooltipRow, TooltipRowTitle, TooltipRowValue } from './styled'
 import { setProperties, tooltipParams } from './util'
+import { ATTENDANCE_EVENT_CATEGORY_LABELS } from '../subPages/dataWarehouseReports/common/utils'
 
 const { spaceForLittleTriangle } = tooltipParams
 
@@ -46,7 +50,7 @@ export const updateTooltipPos = (
 const TooltipRowItem = ({ title = '', value = '' }) => (
   <TooltipRow style={{ flexDirection: 'column' }}>
     <TooltipRowTitle>{title}</TooltipRowTitle>
-    <TooltipRowValue>{value}</TooltipRowValue>
+    <TooltipRowValue>{value}%</TooltipRowValue>
   </TooltipRow>
 )
 
@@ -56,21 +60,20 @@ export const getTooltipJSX = (payload) => {
     if (!tooltipData || tooltipData.week === -1 || tooltipData.month === -1)
       return null
 
-    const { presents, absents, tardies, total } = tooltipData
     const tooltipText = (
       <div>
-        <TooltipRowItem
-          title="No. of Present events - "
-          value={`${presents}/${total}`}
-        />
-        <TooltipRowItem
-          title="No. of Absent events - "
-          value={`${absents}/${total}`}
-        />
-        <TooltipRowItem
-          title="No. of Tardies - "
-          value={`${tardies}/${total}`}
-        />
+        {Object.keys(ATTENDANCE_EVENT_CATEGORY_LABELS).map((category) => (
+          <EduIf condition={!isNull(tooltipData[category])} key={category}>
+            <TooltipRowItem
+              title={`${ATTENDANCE_EVENT_CATEGORY_LABELS[category]} - `}
+              value={percentage(
+                tooltipData[category],
+                tooltipData.totalDays,
+                true
+              )}
+            />
+          </EduIf>
+        ))}
       </div>
     )
     return tooltipText

@@ -20,7 +20,7 @@ export const sortOrders = {
 export const sortKeys = {
   DIMENSION: 'dimension',
   ATTENDANCE: 'attendance',
-  TARDIES: 'tardies',
+  ATTENDANCE_DISRUPTIONS: 'attendanceDisruptions',
   STUDENTS: 'students',
   ATTENDANCE_EVENTS: 'attendanceEvents',
 }

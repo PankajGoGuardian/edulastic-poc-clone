@@ -48,7 +48,7 @@ const RenderCustomizedLabel = (props) => {
 const TardiesGraph = ({ attendanceData, groupBy }) => {
   const attendanceChartData = useMemo(() => {
     const _attendanceChartData = getAttendanceChartData(attendanceData, groupBy)
-    return _attendanceChartData.filter((item) => !!item.tardies)
+    return _attendanceChartData.filter((item) => !!item.attendanceDisruptions)
   }, [attendanceData])
   const [animate, onAnimationStart, setAnimate] = useResetAnimation()
 
@@ -67,8 +67,13 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
   })
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
-  const renderData = transformDataForChart(page, pagedData, groupBy, 'tardies')
-  const yMax = maxBy(renderData, 'tardies')?.tardies
+  const renderData = transformDataForChart(
+    page,
+    pagedData,
+    groupBy,
+    'attendanceDisruptions'
+  )
+  const yMax = maxBy(renderData, 'attendanceDisruptions')?.attendanceDisruptions
 
   const generateVerticalCoordinates = ({ width }) => {
     const numVerticalLines = renderData.length
@@ -156,7 +161,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
               label={{ fill: 'red', fontSize: 20 }}
             />
             <YAxis
-              dataKey="tardies"
+              dataKey="attendanceDisruptions"
               tickLine={false}
               axisLine={false}
               dx={-18}
@@ -168,7 +173,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
                 <YAxisLabel
                   data={{
                     opacity: 0.5,
-                    value: 'NO OF TARDIES',
+                    value: 'ATTENDANCE DISRUPTIONS',
                     angle: -90,
                     fontSize: 12,
                   }}
@@ -176,7 +181,7 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
               }
             />
             <Bar
-              dataKey="tardies"
+              dataKey="attendanceDisruptions"
               fill="#74B2E2"
               barSize={32}
               fillOpacity={0.5}
@@ -195,8 +200,8 @@ const TardiesGraph = ({ attendanceData, groupBy }) => {
       </EduThen>
       <EduElse>
         <NoDataNotification
-          heading="No Tardies data available"
-          description="Please include Tardies in attendance data to view the trends"
+          heading="No Attendance Disruptions data available"
+          description="Please include Attendance Disruptions in attendance data to view the trends"
           style={{ height: '100%' }}
           wrapperStyle={{ minHeight: '100%' }}
         />

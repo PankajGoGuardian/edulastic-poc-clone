@@ -379,16 +379,13 @@ export const getTableData = ({
 export const getAttendanceChartData = (attendanceData) => {
   attendanceData = sortBy(attendanceData, 'minDate')
   const attendanceChartData = map(attendanceData, (item) => ({
+    ...item,
     week: item.weekFromTermStart,
     startDate: moment(item.minDate)
       .startOf('week')
       .add(1, 'day')
       .format('D/M/YYYY'),
-    presents: item.presentDays,
     assessmentDate: item.minDate,
-    absents: item.absentDays,
-    tardies: item.tardyDays,
-    total: item.totalDays,
     value: percentage(item.attendanceValue, item.totalDays, true),
   }))
   return attendanceChartData

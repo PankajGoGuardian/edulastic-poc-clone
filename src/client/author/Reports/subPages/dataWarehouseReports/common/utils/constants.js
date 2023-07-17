@@ -133,3 +133,12 @@ export const trendPeriodPrefix = 'vs '
 export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiveKey=2`
 
 export const PIE_CHART_LABEL_THRESHOLD = 5
+
+export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
+  inAttendanceDays: 'In Attendance',
+  excusedAbsenceDays: 'Excused Absences',
+  unexcusedAbsenceDays: 'Unexcused Absences',
+  tardyDays: 'Tardy',
+  earlyDepartureDays: 'Early Departure',
+  partialDays: 'Partial',
+}

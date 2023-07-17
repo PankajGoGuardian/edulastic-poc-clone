@@ -31,7 +31,8 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
   } = data
   const showTrend = !isEmpty(prePeriod.start)
   const showAvgTrend = showTrend && !isNull(prePeriod.avg)
-  const showTardiesTrend = showTrend && !isNull(prePeriod.tardiesPerc)
+  const showAttendanceDisruptionsTrend =
+    showTrend && !isNull(prePeriod.attendanceDisruptionsPerc)
   const showChronicTrend = showTrend && !isNull(prePeriod.chronicAbsentPerc)
 
   const trendPeriodLabel = showTrend
@@ -44,7 +45,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
     : 0
   const {
     attendanceAvgChange,
-    tardiesChange,
+    attendanceDisruptionsChange,
     chronicAbsentChange,
     fontColor,
   } = getAttendanceSummaryMetrics(prePeriod, postPeriod)
@@ -85,12 +86,13 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         margin="0 10px"
       />
       <WidgetCell
-        header="TARDIES"
-        value={`${Math.round(postPeriod.tardiesPerc)}%`}
+        header="ATTENDANCE"
+        subHeader="DISRUPTIONS"
+        value={`${Math.round(postPeriod.attendanceDisruptionsPerc)}%`}
         footer={
           <Footer
-            isVisible={showTardiesTrend}
-            value={tardiesChange}
+            isVisible={showAttendanceDisruptionsTrend}
+            value={attendanceDisruptionsChange}
             showPercentage
             showReverseTrend
           />

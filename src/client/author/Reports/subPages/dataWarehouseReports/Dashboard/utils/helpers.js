@@ -101,11 +101,13 @@ export const getAcademicSummaryMetrics = (
 
 export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
   let attendanceAvgChange = 0
-  let tardiesChange = 0
+  let attendanceDisruptionsChange = 0
   let chronicAbsentChange = 0
   if (!isEmpty(prePeriod.start)) {
     attendanceAvgChange = Math.round(postPeriod.avg - prePeriod.avg)
-    tardiesChange = Math.round(postPeriod.tardiesPerc - prePeriod.tardiesPerc)
+    attendanceDisruptionsChange = Math.round(
+      postPeriod.attendanceDisruptionsPerc - prePeriod.attendanceDisruptionsPerc
+    )
     chronicAbsentChange = Math.round(
       postPeriod.chronicAbsentPerc - prePeriod.chronicAbsentPerc
     )
@@ -113,7 +115,7 @@ export const getAttendanceSummaryMetrics = (prePeriod, postPeriod) => {
   const fontColor = attendanceAvgChange >= 0 ? lightGreen12 : lightRed7
   return {
     attendanceAvgChange,
-    tardiesChange,
+    attendanceDisruptionsChange,
     chronicAbsentChange,
     fontColor,
   }

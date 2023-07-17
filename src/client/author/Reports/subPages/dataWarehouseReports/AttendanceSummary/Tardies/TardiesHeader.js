@@ -12,7 +12,7 @@ const TardiesHeader = ({ groupBy, setGroupBy }) => {
   return (
     <Row type="flex" justify="space-between">
       <Col>
-        <TardiesTitle>Tardies</TardiesTitle>
+        <TardiesTitle>ATTENDANCE DISRUPTIONS</TardiesTitle>
       </Col>
       <Col>
         <StyledDiv>

@@ -62,6 +62,7 @@ import {
   combinators,
   groupType,
   inNotInOp,
+  operators,
 } from './config/qb-config'
 import {
   AddRule,
@@ -343,9 +344,9 @@ const AdvancedSearch = ({
           query={query}
           enableDragAndDropProp={false}
           getDefaultField={pendingFields?.[0] || fields?.[0].name}
-          operators={inNotInOp}
           resetOnFieldChange
           listsAsArrays
+          getOperators={(field) => operators[field] || inNotInOp}
           onQueryChange={(q) => setQuery(q)}
           combinators={combinators}
           showCombinatorsBetweenRules

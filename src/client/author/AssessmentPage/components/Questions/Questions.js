@@ -288,7 +288,9 @@ const createQuestion = (
 
       staticQuestionData.stimulus = name
       if (typeof displayAtSecond === 'number') {
-        staticQuestionData.questionDisplayTimestamp = displayAtSecond
+        const updatedDisplayAtSecond =
+          displayAtSecond === 0 ? 4 : displayAtSecond
+        staticQuestionData.questionDisplayTimestamp = updatedDisplayAtSecond
       }
 
       if (
@@ -524,7 +526,9 @@ class Questions extends React.Component {
     addQuestion(question)
 
     const questionIdToOpen = modalQuestionId - 1 || list.length
-    this.handleOpenEditModal(questionIdToOpen)()
+    if (!isSnapQuizVideo) {
+      this.handleOpenEditModal(questionIdToOpen)()
+    }
   }
 
   handleDeleteQuestion = (questionId) => () => {

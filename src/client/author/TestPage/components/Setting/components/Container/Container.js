@@ -37,7 +37,10 @@ import {
 import { IconInfo, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 
-import { SHOW_IMMERSIVE_READER } from '@edulastic/constants/const/test'
+import {
+  SHOW_IMMERSIVE_READER,
+  TEST_CONTENT_VISIBILITY,
+} from '@edulastic/constants/const/test'
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
@@ -1635,7 +1638,9 @@ class Setting extends Component {
                         <ContentVisibilityOptions
                           isDisabled={disabled}
                           testContentVisibility={testContentVisibility}
-                          updateTestContentVisibility={this.updateFeatures}
+                          updateTestContentVisibility={this.updateFeatures(
+                            TEST_CONTENT_VISIBILITY
+                          )}
                         />
                       </Body>
                     </Block>

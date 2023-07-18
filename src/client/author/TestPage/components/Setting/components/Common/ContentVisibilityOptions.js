@@ -40,6 +40,7 @@ const ContentVisibilityOptions = ({
   const handleContentVisibility = (e) => {
     const value = e.target.value
     if (
+      value !== null &&
       Object.keys(combinedVisibilityOptions).some((i) =>
         combinedVisibilityOptions[i].some((a) => a.key === value)
       )
@@ -52,9 +53,9 @@ const ContentVisibilityOptions = ({
       )
     } else {
       setCombinedVisibilityKey(null)
-      setContentVisibility(value)
+      setContentVisibility((prev) => (value !== null ? value : prev))
     }
-    updateTestContentVisibility('testContentVisibility', value)
+    updateTestContentVisibility(value)
   }
 
   return (
@@ -65,7 +66,11 @@ const ContentVisibilityOptions = ({
     >
       {testContentVisibilityTypes.map((item) => (
         <>
-          <RadioBtn value={item.key} key={item.key}>
+          <RadioBtn
+            data-cy={`item-visibility-${item.key}`}
+            value={item.key}
+            key={item.key}
+          >
             {item.value}
           </RadioBtn>
           {item.key === contentVisibility &&
@@ -85,7 +90,11 @@ const ContentVisibilityOptions = ({
                   value={combinedVisibilityKey}
                 >
                   {combinedVisibilityOptions[contentVisibility].map((ele) => (
-                    <RadioBtn value={ele.key} key={ele.key}>
+                    <RadioBtn
+                      data-cy={`item-visibility-${ele.key}`}
+                      value={ele.key}
+                      key={ele.key}
+                    >
                       {ele.value}
                     </RadioBtn>
                   ))}

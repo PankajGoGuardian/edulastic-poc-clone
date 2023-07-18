@@ -13,6 +13,7 @@ import {
   RadioGrp,
 } from '@edulastic/common'
 import {
+  TEST_CONTENT_VISIBILITY,
   releaseGradeLabels,
   releaseGradeTypes,
 } from '@edulastic/constants/const/test'
@@ -240,8 +241,8 @@ const BulkEditTestModal = ({
         <br />
         <ContentVisibilityOptions
           testContentVisibility={data.testContentVisibility}
-          updateTestContentVisibility={(key, value) =>
-            setData({ ...data, [key]: value })
+          updateTestContentVisibility={(value) =>
+            setData({ ...data, [TEST_CONTENT_VISIBILITY]: value })
           }
         />
       </EduIf>

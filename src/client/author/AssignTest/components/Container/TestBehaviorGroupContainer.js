@@ -14,7 +14,10 @@ import {
   test,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { evalTypeLabels } from '@edulastic/constants/const/test'
+import {
+  TEST_CONTENT_VISIBILITY,
+  evalTypeLabels,
+} from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
   AlignRight,
@@ -605,7 +608,9 @@ const TestBehaviorGroupContainer = ({
               <ContentVisibilityOptions
                 isDisabled={freezeSettings}
                 testContentVisibility={testSettings.testContentVisibility}
-                updateTestContentVisibility={overRideSettings}
+                updateTestContentVisibility={(value) =>
+                  overRideSettings(TEST_CONTENT_VISIBILITY, value)
+                }
               />
             </Col>
           </StyledRow>

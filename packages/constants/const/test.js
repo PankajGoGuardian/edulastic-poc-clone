@@ -1,4 +1,5 @@
 const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
+const TEST_CONTENT_VISIBILITY = 'testContentVisibility'
 module.exports = {
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
@@ -522,4 +523,5 @@ module.exports = {
     CUSTOM: 'Custom',
   },
   SHOW_IMMERSIVE_READER,
+  TEST_CONTENT_VISIBILITY,
 }

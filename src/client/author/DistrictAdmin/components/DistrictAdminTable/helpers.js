@@ -20,3 +20,11 @@ export const daRoleList = [
       'This district admin user has full access to data studio upload and insight feature.',
   },
 ]
+
+export const daPermissionsMap = {
+  'super-admin': 'Super Admin',
+  'data-ops': 'Data Operations',
+  data_ops_only: 'Data Operations Only',
+  data_warehouse_reports: 'Data Studio Reports',
+  insights_only: 'Insights Only',
+}

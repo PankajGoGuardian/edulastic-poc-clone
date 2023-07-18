@@ -7,7 +7,7 @@ import {
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, sortBy } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -55,12 +55,15 @@ import TableFiltersView from '../../../src/components/common/TableFilters'
 import {
   getUserId,
   getUserOrgId,
+  isDistrictAdminSelector,
+  isOrganizationDistrictUserSelector,
   isSuperAdminSelector,
 } from '../../../src/selectors/user'
 import CreateDistrictAdminModal from './CreateDistrictAdminModal/CreateDistrictAdminModal'
 import EditDistrictAdminModal from './EditDistrictAdminModal/EditDistrictAdminModal'
 import { StyledDistrictAdminTable } from './styled'
-import { daRoleList } from './helpers'
+import { daPermissionsMap, daRoleList } from './helpers'
+import Tags from '../../../src/components/common/Tags'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'District Admin' }
 
@@ -79,6 +82,16 @@ const filterStrDD = {
       ...daRoleList.map((item) => ({
         title: item.label,
         value: item.value,
+        disabled: false,
+      })),
+    ],
+  },
+  permission: {
+    list: [
+      { title: 'Select a value', value: undefined, disabled: true },
+      ...Object.keys(daPermissionsMap).map((key) => ({
+        title: daPermissionsMap[key],
+        value: key,
         disabled: false,
       })),
     ],
@@ -110,7 +123,35 @@ class DistrictAdminTable extends Component {
       refineButtonActive: false,
     }
 
-    const { t, isSuperAdmin, userId } = this.props
+    const {
+      t,
+      isSuperAdmin,
+      userId,
+      isOrganization,
+      isDistrictAdmin,
+    } = this.props
+
+    const showPermissionColumn = !isOrganization && isDistrictAdmin
+
+    const permissionColumn = {
+      title: t('users.districtadmin.permissions'),
+      dataIndex: '_source.permissions',
+      render: (permissions = []) => {
+        if (Array.isArray(permissions)) {
+          const sortedPermissions = sortBy(permissions, (p) => p.toLowerCase())
+          const mappedPermissions = sortedPermissions
+            .map((permission) => daPermissionsMap[permission])
+            .filter((x) => x)
+          if (mappedPermissions.length) {
+            return <Tags tags={mappedPermissions} show={1} />
+          }
+          return <Tags tags={['Admin']} show={1} />
+        }
+        return <Tags tags={['Admin']} show={1} />
+      },
+      width: 200,
+    }
+
     this.columns = [
       {
         title: t('users.districtadmin.name'),
@@ -157,6 +198,7 @@ class DistrictAdminTable extends Component {
         },
         width: 200,
       },
+      ...(showPermissionColumn ? [permissionColumn] : []),
       {
         title: t('users.districtadmin.sso'),
         dataIndex: '_source.lastSigninSSO',
@@ -396,7 +438,7 @@ class DistrictAdminTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status') _item.filtersValue = 'eq'
@@ -484,6 +526,11 @@ class DistrictAdminTable extends Component {
           }
           continue
         }
+        if (filtersColumn === 'permission') {
+          permissions = filterStr
+          permissionsToOmit = []
+          continue
+        }
         if (!search[filtersColumn]) {
           search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
         } else {
@@ -541,9 +588,12 @@ class DistrictAdminTable extends Component {
       userOrgId,
       updateAdminUser,
       history,
-      pageNo,
+      isOrganization,
+      isDistrictAdmin,
       t,
     } = this.props
+
+    const showPermissionColumn = !isOrganization && isDistrictAdmin
 
     const breadcrumbData = [
       {
@@ -561,6 +611,7 @@ class DistrictAdminTable extends Component {
       t('users.districtadmin.email'),
       t('users.districtadmin.status'),
       t('users.districtadmin.role'),
+      ...(showPermissionColumn ? [t('users.districtadmin.permission')] : []),
     ]
 
     return (
@@ -705,6 +756,8 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       isSuperAdmin: isSuperAdminSelector(state),
+      isOrganization: isOrganizationDistrictUserSelector(state),
+      isDistrictAdmin: isDistrictAdminSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -740,6 +793,8 @@ DistrictAdminTable.propTypes = {
   userOrgId: PropTypes.string.isRequired,
   pageNo: PropTypes.number.isRequired,
   isSuperAdmin: PropTypes.bool.isRequired,
+  isDistrictAdmin: PropTypes.bool.isRequired,
+  isOrganization: PropTypes.bool.isRequired,
 }
 
 const ActionContainer = styled.div`

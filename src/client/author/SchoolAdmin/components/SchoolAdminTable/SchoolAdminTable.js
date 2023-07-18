@@ -10,7 +10,7 @@ import { roleuser } from '@edulastic/constants'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
-import { get, debounce } from 'lodash'
+import { get, debounce, sortBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
@@ -49,6 +49,9 @@ import {
   getUserId,
   getUserOrgId,
   getUserRole,
+  isDistrictAdminSelector,
+  isOrganizationDistrictUserSelector,
+  isSchoolAdminSelector,
   isSuperAdminSelector,
 } from '../../../src/selectors/user'
 import {
@@ -80,6 +83,8 @@ import {
   searchSchoolByDistrictRequestAction,
   getSchoolsSelector as getSchoolsSelectorFromSignup,
 } from '../../../../student/Signup/duck'
+import { daPermissionsMap } from '../../../DistrictAdmin/components/DistrictAdminTable/helpers'
+import Tags from '../../../src/components/common/Tags'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
 
@@ -93,6 +98,16 @@ const filterStrDD = {
     placeholder: 'Select a value',
   },
   school: { list: [], placeholder: 'Search and select a school' }, // Added to hide contains filter
+  permission: {
+    list: [
+      { title: 'Select a value', value: undefined, disabled: true },
+      ...Object.keys(daPermissionsMap).map((key) => ({
+        title: daPermissionsMap[key],
+        value: key,
+        disabled: false,
+      })),
+    ],
+  },
 }
 
 class SchoolAdminTable extends Component {
@@ -372,7 +387,7 @@ class SchoolAdminTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
@@ -437,6 +452,8 @@ class SchoolAdminTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props
     const { filtersData, searchByName, currentPage } = this.state
+    let permissions = ''
+    let permissionsToOmit = []
     let { showActive } = this.state
     let institutionId = ''
     const search = {}
@@ -448,9 +465,13 @@ class SchoolAdminTable extends Component {
           institutionId.indexOf('item?.filterStr') < 0
         ) {
           institutionId = `${institutionId},${item?.filterStr}`
-        } else if(item?.filterStr){
+        } else if (item?.filterStr) {
           institutionId = item?.filterStr
         }
+      } else if (item?.filtersColumn === 'permission') {
+        permissions = item?.filterStr
+        permissionsToOmit = []
+        continue
       } else {
         const { filtersColumn, filtersValue, filterStr } = item
         if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
@@ -477,6 +498,7 @@ class SchoolAdminTable extends Component {
       role: 'school-admin',
       limit: 25,
       page: currentPage,
+      ...(permissions ? { permissions } : { permissionsToOmit }),
       // uncomment after elastic search is fixed
       // sortField,
       // order
@@ -541,7 +563,33 @@ class SchoolAdminTable extends Component {
       t,
       isSuperAdmin,
       currentUserId,
+      isOrganization,
+      isDistrictAdmin,
+      isSchoolAdmin,
     } = this.props
+
+    const showPermissionColumn =
+      !isOrganization && (isSchoolAdmin || isDistrictAdmin)
+
+    const permissionColumn = {
+      title: t('users.schooladmin.permissions'),
+      dataIndex: '_source.permissions',
+      render: (permissions = []) => {
+        if (Array.isArray(permissions)) {
+          const sortedPermissions = sortBy(permissions, (p) => p.toLowerCase())
+          const mappedPermissions = sortedPermissions
+            .map((permission) => daPermissionsMap[permission])
+            .filter((x) => x)
+
+          if (mappedPermissions.length) {
+            return <Tags tags={mappedPermissions} show={1} />
+          }
+          return <Tags tags={['Admin']} show={1} />
+        }
+        return <Tags tags={['Admin']} show={1} />
+      },
+      width: 200,
+    }
 
     const columns = [
       {
@@ -572,6 +620,7 @@ class SchoolAdminTable extends Component {
         },
         width: 200,
       },
+      ...(showPermissionColumn ? [permissionColumn] : []),
       {
         title: t('users.schooladmin.sso'),
         dataIndex: '_source.lastSigninSSO',
@@ -661,6 +710,7 @@ class SchoolAdminTable extends Component {
       t('users.schooladmin.username'),
       t('users.schooladmin.email'),
       t('users.schooladmin.status'),
+      ...(showPermissionColumn ? [t('users.schooladmin.permission')] : []),
     ]
     return (
       <MainContainer>
@@ -823,6 +873,9 @@ const enhance = compose(
       isSuperAdmin: isSuperAdminSelector(state),
       isSchoolSearching: isSchoolSearchingSelector(state),
       getSchools: getSchoolsSelectorFromSignup(state),
+      isOrganization: isOrganizationDistrictUserSelector(state),
+      isDistrictAdmin: isDistrictAdminSelector(state),
+      isSchoolAdmin: isSchoolAdminSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -863,6 +916,9 @@ SchoolAdminTable.propTypes = {
   pageNo: PropTypes.number.isRequired,
   setPageNo: PropTypes.func.isRequired,
   isSuperAdmin: PropTypes.bool.isRequired,
+  isOrganization: PropTypes.bool.isRequired,
+  isDistrictAdmin: PropTypes.bool.isRequired,
+  isSchoolAdmin: PropTypes.bool.isRequired,
 }
 
 const ActionContainer = styled.div`

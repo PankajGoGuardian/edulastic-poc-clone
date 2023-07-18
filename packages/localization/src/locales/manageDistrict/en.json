@@ -77,6 +77,8 @@
       "password": "Password",
       "superAdmin": "Super Admin",
       "role": "Role",
+      "permission": "Permission",
+      "permissions": "Permissions",
       "createdistrictadmin": "+ Create District Admin",
       "createda": {
         "title": "Create district admin",
@@ -135,6 +137,8 @@
       "disablePowerTools": "Disable Power Tools",
       "powertools": "Enable Power Tools",
       "superAdmin": "Super Admin",
+      "permission": "Permission",
+      "permissions": "Permissions",
       "createsa": {
         "title": "Create school admin",
         "entername": "Enter name",

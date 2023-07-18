@@ -5,6 +5,10 @@ import { AUTO_RUBRIC_ENABLED_DISTRICT } from '@edulastic/constants/const/common'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
+import {
+  DISTRICT_ADMIN,
+  SCHOOL_ADMIN,
+} from '@edulastic/constants/const/roleType'
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
 
@@ -613,4 +617,14 @@ export const isDesmosCalculatorEnabledSelector = createSelector(
 export const canAccessPublicContentSelector = createSelector(
   getUserFeatures,
   (features) => _get(features, 'canAccessPublicContent', true)
+)
+
+export const isDistrictAdminSelector = createSelector(
+  getUserRole,
+  (userRole) => DISTRICT_ADMIN === userRole
+)
+
+export const isSchoolAdminSelector = createSelector(
+  getUserRole,
+  (userRole) => SCHOOL_ADMIN === userRole
 )

@@ -55,6 +55,8 @@ const VideoPreview = ({
   handleRemoveAnnotation,
   editMode,
   updateVideoQuizQuestionIdsToDisplay,
+  questionClickSeekTime,
+  handleUpdateSeektime,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -218,6 +220,14 @@ const VideoPreview = ({
       )
     }
   }, [visibleAnnotation])
+
+  useEffect(() => {
+    if (typeof questionClickSeekTime === 'number') {
+      setCurrentTime(questionClickSeekTime)
+      seekTo(questionClickSeekTime)
+      handleUpdateSeektime(null)
+    }
+  }, [questionClickSeekTime])
 
   const duration = getVideoDuration(videoRef)
   const marks = getMarks(annotations)

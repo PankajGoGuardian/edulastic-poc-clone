@@ -113,6 +113,7 @@ class WorksheetComponent extends React.Component {
       minimized: true,
       isToolBarVisible: true,
       videoQuizQuestionIdsToDisplay: [],
+      questionClickSeekTime: null,
     }
   }
 
@@ -162,6 +163,12 @@ class WorksheetComponent extends React.Component {
 
   componentWillUnmount() {
     toggleChatDisplay('show')
+  }
+
+  handleUpdateSeektime = (time = null) => {
+    if (time) {
+      this.setState({ questionClickSeekTime: time })
+    }
   }
 
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
@@ -730,6 +737,7 @@ class WorksheetComponent extends React.Component {
       isToolBarVisible,
       currentPage: _currentPageInState,
       videoQuizQuestionIdsToDisplay,
+      questionClickSeekTime,
     } = this.state
 
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState
@@ -890,6 +898,8 @@ class WorksheetComponent extends React.Component {
                   updateVideoQuizQuestionIdsToDisplay={
                     this.updateVideoQuizQuestionIdsToDisplay
                   }
+                  questionClickSeekTime={questionClickSeekTime}
+                  handleUpdateSeektime={this.handleUpdateSeektime}
                 />
               </EduThen>
               <EduElse>
@@ -959,6 +969,7 @@ class WorksheetComponent extends React.Component {
               this.handleAddBulkQuestionAnnotations
             }
             videoQuizQuestionIdsToDisplay={videoQuizQuestionIdsToDisplay}
+            handleUpdateSeektime={this.handleUpdateSeektime}
           />
         </WorksheetWrapper>
       </div>

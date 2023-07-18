@@ -504,6 +504,7 @@ class QuestionItem extends React.Component {
       isSnapQuizVideo,
       handleRemoveAnnotation,
       isSnapQuizVideoPlayer = false,
+      handleOnClick,
     } = this.props
 
     const check =
@@ -544,6 +545,7 @@ class QuestionItem extends React.Component {
         pdfPreview={pdfPreview}
         isSnapQuizVideo={isSnapQuizVideo}
         data-cy="questionItem"
+        onClick={handleOnClick}
       >
         <EduIf condition={isSnapQuizVideo}>
           <EduThen>
@@ -620,6 +622,7 @@ QuestionItem.propTypes = {
   highlighted: PropTypes.bool.isRequired,
   answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
   handleRemoveAnnotation: PropTypes.func,
+  handleOnClick: PropTypes.func,
 }
 
 QuestionItem.defaultProps = {
@@ -627,6 +630,7 @@ QuestionItem.defaultProps = {
   userAnswer: undefined,
   answer: undefined,
   handleRemoveAnnotation: () => {},
+  handleOnClick: () => {},
 }
 
 export default withAnswerSave(

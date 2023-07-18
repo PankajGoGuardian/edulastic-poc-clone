@@ -74,6 +74,7 @@ const SortableQuestionItem = SortableElement(
   ({
     key,
     index,
+    handleOnClick,
     data,
     review,
     onCreateOptions,
@@ -124,6 +125,7 @@ const SortableQuestionItem = SortableElement(
       <QuestionItem
         key={key}
         index={index}
+        handleOnClick={handleOnClick}
         questionIndex={questionIndex}
         data={data}
         review={review}
@@ -664,6 +666,25 @@ class Questions extends React.Component {
     removeUserAnswer()
   }
 
+  handleQuestionItemClick = (question) => {
+    const {
+      handleUpdateSeektime,
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer,
+      editMode,
+    } = this.props
+    const { questionDisplayTimestamp = null } = question
+    if (
+      isSnapQuizVideo &&
+      editMode &&
+      !isSnapQuizVideoPlayer &&
+      questionDisplayTimestamp &&
+      typeof handleUpdateSeektime === 'function'
+    ) {
+      handleUpdateSeektime(questionDisplayTimestamp)
+    }
+  }
+
   get currentQuestion() {
     const { currentEditQuestionIndex } = this.state
     return this.questionList[currentEditQuestionIndex]
@@ -755,6 +776,9 @@ class Questions extends React.Component {
                     <SortableQuestionItem
                       key={question.id}
                       index={i}
+                      handleOnClick={() =>
+                        this.handleQuestionItemClick(question)
+                      }
                       questionIndex={questionIndex[i]}
                       data={question}
                       review={review}

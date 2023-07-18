@@ -166,9 +166,12 @@ export const RiskLabel = styled(Label)`
   text-transform: uppercase;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  margin-left: 10px;
   span {
     margin-right: 8px;
   }
+  width: 80px;
   p {
     color: ${({ $color }) => $color || fadedBlack} !important;
     font-weight: bold !important;
@@ -177,13 +180,14 @@ export const RiskLabel = styled(Label)`
 
 export const TestDetailContainer = styled.div`
   display: flex;
-  width: 70%;
+  width: 60%;
   align-items: baseline;
   justify-content: space-between;
 `
 
 export const AcademicRiskListContainer = styled.div`
   margin-right: ${({ $marginRight }) => $marginRight || '0'};
+  width: ${({ $width }) => $width || '50%'};
 `
 
 export const StyledButton = styled(Button)`

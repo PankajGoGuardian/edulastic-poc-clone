@@ -48,11 +48,11 @@ const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
         <EduIf condition={hasContent}>
           <EduThen>
             <FlexContainer justifyContent="space-between">
-              <AcademicRiskListContainer $marginRight="20px">
-                <Label $fontSize="16px">EDULASTIC</Label>
+              <AcademicRiskListContainer $marginRight="20px" $width="40%">
+                <Label $fontSize="14px">EDULASTIC</Label>
                 <TestRiskScoreList riskData={internalAssessmentRisk} />
               </AcademicRiskListContainer>
-              <AcademicRiskListContainer>
+              <AcademicRiskListContainer $width="60%">
                 <TestRiskScoreList
                   riskData={externalAssessmentRisk.slice(0, 3)}
                 />

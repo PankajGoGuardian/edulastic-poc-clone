@@ -116,10 +116,13 @@ export const getVisibleAnnotation = (annotations, currentTime) => {
 }
 
 export const extractVideoId = (url) => {
-  const match = url.match(
-    /^(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|.+\?v=|.+\/embed\/)([^&?/]+)/
-  )
-  return match && match[1]
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+  const match = url.match(regExp)
+  if (match && match[2].length == 11) {
+    return match[2]
+  }
+
+  return false
 }
 
 export const getThumbnailUrl = (videoId) => {

@@ -99,6 +99,7 @@ export const QuestionForm = styled.div`
   }
 `
 export const VideoQuizQuestionForm = styled.div`
+  cursor: ${(props) => (props?.isSnapQuizVideo ? 'pointer' : '')};
   .ant-select-selection,
   .input__math,
   .ant-input {

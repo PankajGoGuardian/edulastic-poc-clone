@@ -424,6 +424,7 @@ class QuestionItem extends React.Component {
       draggble,
       isSnapQuizVideoPlayer,
       editMode,
+      handleOnClick,
     } = this.props
 
     return (
@@ -452,7 +453,12 @@ class QuestionItem extends React.Component {
             </QuestionNumber>
           </DragItem>
           <EduIf condition={!annotations || draggble}>
-            <VideoQuizQuestionForm review={review} ref={this.qFormRef}>
+            <VideoQuizQuestionForm
+              review={review}
+              ref={this.qFormRef}
+              onClick={handleOnClick}
+              isSnapQuizVideo
+            >
               {this.renderContent(
                 highlighted,
                 this.qFormRef?.current?.getBoundingClientRect()
@@ -504,7 +510,6 @@ class QuestionItem extends React.Component {
       isSnapQuizVideo,
       handleRemoveAnnotation,
       isSnapQuizVideoPlayer = false,
-      handleOnClick,
     } = this.props
 
     const check =
@@ -545,7 +550,6 @@ class QuestionItem extends React.Component {
         pdfPreview={pdfPreview}
         isSnapQuizVideo={isSnapQuizVideo}
         data-cy="questionItem"
-        onClick={handleOnClick}
       >
         <EduIf condition={isSnapQuizVideo}>
           <EduThen>

@@ -33,6 +33,7 @@ import {
   TableBodyCol,
   TableBodyRow,
   TableHeaderCol,
+  TestIdCopy,
 } from './styled'
 
 const ReviewSummary = ({
@@ -49,7 +50,13 @@ const ReviewSummary = ({
   collections = [],
   interestedCurriculums,
   windowWidth,
-  test: { itemGroups, metadata, alignment, derivedFromPremiumBankId = false },
+  test: {
+    versionId,
+    itemGroups,
+    metadata,
+    alignment,
+    derivedFromPremiumBankId = false,
+  },
   testCategory,
   summary,
   hasRandomQuestions,
@@ -90,6 +97,16 @@ const ReviewSummary = ({
           isEditable={isEditable}
           height={120}
         />
+        <InnerFlex>
+          <FieldLabel display="inline-block">Test Id: </FieldLabel>
+          <TestIdCopy
+            copyable={{
+              text: versionId?.slice(-8),
+            }}
+          >
+            {versionId?.slice(-8)}
+          </TestIdCopy>
+        </InnerFlex>
       </FlexBoxOne>
       <FlexBoxTwo>
         <InnerFlex>

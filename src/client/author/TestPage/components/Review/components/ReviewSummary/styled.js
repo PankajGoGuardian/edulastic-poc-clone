@@ -8,10 +8,12 @@ import {
   smallDesktopWidth,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { Col, Row } from 'antd'
+import { Col, Row, Typography } from 'antd'
 import styled from 'styled-components'
 import { SummarySelect } from '../../../Summary/common/SummaryForm'
 import { MainTitle } from '../../../Summary/components/Sidebar/styled'
+
+const { Paragraph } = Typography
 
 export const Container = styled(Paper)`
   padding: 15px 0px;
@@ -160,5 +162,22 @@ export const Standard = styled.span`
 
   @media (max-width: 1199px) {
     padding: 4px 20px;
+  }
+`
+
+export const TestIdCopy = styled(Paragraph)`
+  &.ant-typography {
+    display: inline-block;
+    margin-left: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: open sans;
+    color: dimgrey;
+  }
+  .ant-typography-copy {
+    margin-left: 3px;
+  }
+  svg {
+    opacity: 0.8;
   }
 `

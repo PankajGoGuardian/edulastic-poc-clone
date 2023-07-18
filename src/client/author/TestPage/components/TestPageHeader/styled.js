@@ -13,9 +13,6 @@ import {
   greyDarken,
 } from '@edulastic/colors'
 import { IconShare } from '@edulastic/icons'
-import { Typography } from 'antd'
-
-const { Paragraph } = Typography
 
 export const RightFlexContainer = styled(FlexContainer)`
   /* flex-basis: 30%; */
@@ -109,36 +106,5 @@ export const MobileHeaderFilterIcon = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     display: block;
-  }
-`
-export const StaticIdCopy = styled(Paragraph)`
-  &.ant-typography {
-    border-radius: 4px
-    margin: 0px;
-    margin-right: 5px;
-    font-size: 9px;
-    text-transform: uppercase;
-    border-radius: 4px
-    margin-top: 0;
-    font-weight: 600;
-    padding: 3px 5px;
-    text-align: center;
-    margin-bottom: 0px;
-    border-width: thin;
-    border-style: solid;
-    padding: 2px 4px;
-    text-align: center;
-    border-radius: 4px;
-    background-color: ${white};
-    display: inline-block;
-    color: ${greyDarken};
-  }
-  .ant-typography-copy {
-    margin-left: 3px;
-  }
-  svg {
-    width: 10px;
-    height: 10px;
-    color: ${greyDarken};
   }
 `

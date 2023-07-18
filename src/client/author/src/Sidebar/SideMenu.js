@@ -101,7 +101,8 @@ import {
   UserName,
   UserType,
 } from './styledComponents'
-import { navigationState } from '../constants/navigation'
+import { navigationItemLabels, navigationState } from '../constants/navigation'
+import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -156,7 +157,7 @@ const menuItems = [
     path: 'author/reports',
   },
   {
-    label: 'Data Studio',
+    label: navigationItemLabels.DATA_STUDIO,
     icon: IconDataStudio,
     allowedPathPattern: [
       /author\/reports\/data-warehouse-reports/,
@@ -255,6 +256,7 @@ class SideMenu extends Component {
       lastPlayList,
       features,
       isOrganizationDistrict,
+      orgId,
       userRole,
       isSidebarCollapsed,
       isSuperAdmin,
@@ -312,6 +314,27 @@ class SideMenu extends Component {
     //   const [, ...rest] = _menuItems;
     //   _menuItems = [...rest];
     // }
+
+    if (!features.dataWarehouseReports) {
+      const dataStudioMenuItemIdx = _menuItems.findIndex(
+        (item) => item.label === navigationItemLabels.DATA_STUDIO
+      )
+      _menuItems[dataStudioMenuItemIdx].allowedPathPattern.push(
+        /author\/subscription/
+      )
+      _menuItems[dataStudioMenuItemIdx].path = 'author/subscription'
+    }
+
+    if (
+      DATA_STUDIO_DISABLED_DISTRICTS.some(
+        (districtId) => districtId === orgId
+      ) &&
+      userRole === roleuser.TEACHER
+    ) {
+      _menuItems = _menuItems.filter(
+        (item) => item.label !== navigationItemLabels.DATA_STUDIO
+      )
+    }
 
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       _menuItems = _menuItems.filter((i) => libraryItems.includes(i.label))

@@ -39,3 +39,8 @@ export const NORMAL_MONITOR_WIDTH = 1366
 export const MAX_XGA_WIDTH = 1024
 export const MAX_TAB_WIDTH = 768
 export const MAX_MOBILE_WIDTH = 468
+
+export const DATA_STUDIO_DISABLED_DISTRICTS = [
+  '635918f1559a0f00082f0694',
+  '64929037eec3b3a15fb8dac8',
+]

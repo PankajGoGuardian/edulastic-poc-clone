@@ -118,7 +118,8 @@ const EarlyWarningTable = ({
   const hasContent = !loading && !error && tableDataToUse.length
 
   const errorMsg = error?.message || 'Error fetching Table data.'
-  const emptyContainerDesc = error ? errorMsg : 'No Data Available'
+  const emptyContainerDesc =
+    error?.response?.status === 400 ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
   return (

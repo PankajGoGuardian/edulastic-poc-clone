@@ -276,6 +276,9 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       endDate,
       totalScore,
       maxScore,
+      studentNumber,
+      sisId,
+      hispanicEthnicity,
     } = studentMetric
     const studentScore = round(((totalScore || 0) / (maxScore || 1)) * 100)
     const assessmentScore = `${(totalScore || 0).toFixed(2)} / ${(
@@ -308,6 +311,9 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       submittedDate: formatDate(submittedDate),
       dueDate: formatDate(dueDate || endDate),
       totalScore,
+      studentNumber,
+      sisId,
+      hispanicEthnicity,
     }
   })
 }

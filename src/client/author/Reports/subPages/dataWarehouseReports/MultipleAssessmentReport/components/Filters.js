@@ -33,6 +33,8 @@ import { staticDropDownData } from '../utils'
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 import { allFilterValue } from '../../../../common/constants'
 import {
+  EXTERNAL_SCORE_TYPES,
+  EXTERNAL_SCORE_TYPES_LIST,
   getDefaultTestTypes,
   getDemographicsFilterTagsData,
 } from '../../common/utils'
@@ -85,6 +87,14 @@ const MultipleAssessmentReportFilters = ({
   const selectedPerformanceBand =
     performanceBandsList.find((p) => p.key === filters.profileId) ||
     performanceBandsList[0]
+
+  const selectedExternalScoreType =
+    EXTERNAL_SCORE_TYPES_LIST.find(
+      (item) => item.key === filters.externalScoreType
+    ) ||
+    EXTERNAL_SCORE_TYPES_LIST.find(
+      (item) => item.key === EXTERNAL_SCORE_TYPES.SCALED_SCORE
+    )
 
   const search = useMemo(
     () =>
@@ -164,6 +174,8 @@ const MultipleAssessmentReportFilters = ({
           classIds: search.classIds || '',
           groupIds: search.groupIds || '',
           profileId: urlPerformanceBand?.key || '',
+          externalScoreType:
+            search.externalScoreType || EXTERNAL_SCORE_TYPES.SCALED_SCORE,
           race: search.race || allFilterValue,
           gender: search.gender || allFilterValue,
           iepStatus: search.iepStatus || allFilterValue,
@@ -296,6 +308,9 @@ const MultipleAssessmentReportFilters = ({
     setFilterTagsData(_filterTagsData)
     // update filters
     _filters[keyName] = _selected
+    if (keyName === 'assessmentTypes') {
+      _filters.externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE
+    }
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
     if (keyName === 'profileId') {
       setFiltersTabKey(
@@ -685,6 +700,32 @@ const MultipleAssessmentReportFilters = ({
       </Col>
       <Col span={24}>
         <SecondaryFilterRow hidden={!!reportId} width="100%" fieldHeight="40px">
+          <StyledDropDownContainer
+            flex="0 0 300px"
+            xs={24}
+            sm={12}
+            lg={6}
+            data-cy="externalScoreType"
+            data-testid="externalScoreType"
+          >
+            <FieldLabel fs=".7rem" data-cy="schoolYear">
+              EXTERNAL SCORE
+            </FieldLabel>
+            <ControlDropDown
+              by={selectedExternalScoreType}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(
+                  selected,
+                  'externalScoreType',
+                  false,
+                  true
+                )
+              }
+              data={EXTERNAL_SCORE_TYPES_LIST}
+              prefix="External Score"
+              showPrefixOnSelected={false}
+            />
+          </StyledDropDownContainer>
           <StyledDropDownContainer
             flex="0 0 300px"
             xs={24}

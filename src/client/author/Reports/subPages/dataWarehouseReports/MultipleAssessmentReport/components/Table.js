@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect } from 'react'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
-import { round } from 'lodash'
+import { isNumber, round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
@@ -117,6 +117,9 @@ const getTableColumns = (
         averageScore,
       } = assessment
       const _testName = isIncomplete ? `${testName} *` : testName
+      const averageScoreForTitle = isNumber(averageScore)
+        ? round(averageScore)
+        : averageScore
       return [
         // assessment column to be rendered in browser
         {
@@ -134,7 +137,7 @@ const getTableColumns = (
                     ) : null}
                   </StyledSpan>
                   <StyledSpan float="right">
-                    {round(averageScore)}
+                    {averageScoreForTitle}
                     {!externalTestType && '%'}
                   </StyledSpan>
                 </div>

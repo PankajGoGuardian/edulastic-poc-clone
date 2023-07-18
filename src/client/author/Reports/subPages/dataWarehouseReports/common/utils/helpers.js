@@ -1,7 +1,7 @@
 import { lightGreen12, lightGrey9, lightRed5 } from '@edulastic/colors'
 import moment from 'moment'
 import qs from 'qs'
-import { isEmpty } from 'lodash'
+import { isEmpty, round } from 'lodash'
 import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import {
   ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
@@ -14,6 +14,8 @@ import {
   StyledIconCaretUp,
 } from '../components/styledComponents'
 import {
+  EXTERNAL_SCORE_PREFIX,
+  EXTERNAL_SCORE_SUFFIX,
   INTERNAL_TEST_TYPES_ORDER,
   compareByKeys,
   compareByKeysToFilterKeys,
@@ -215,3 +217,15 @@ export const sortTestTypes = (testTypes) => {
 }
 
 export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')
+
+export const getExternalScoreFormattedByType = (
+  externalScore,
+  externalScoreType
+) => {
+  const score = round(externalScore, 0)
+  const absScore = Math.abs(score)
+  const externalScorePrefix =
+    score < 0 ? EXTERNAL_SCORE_PREFIX[externalScoreType] : ''
+  const externalScoreSuffix = EXTERNAL_SCORE_SUFFIX[externalScoreType] || ''
+  return `${externalScorePrefix || ''}${absScore}${externalScoreSuffix}`
+}

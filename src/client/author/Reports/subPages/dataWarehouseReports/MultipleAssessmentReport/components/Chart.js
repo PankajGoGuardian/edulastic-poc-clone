@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty, round } from 'lodash'
+import { isEmpty, isNumber, round } from 'lodash'
 
 import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
@@ -72,6 +72,10 @@ const getTooltipJSX = (payload, barIndex) => {
         <ColorBandItem color={barData.color} name={barData.bandName} />
       )
     }
+    const score = isNumber(barData.averageScore)
+      ? round(barData.averageScore)
+      : barData.averageScore
+    const scoreSuffix = getScoreSuffix(barData.externalTestType)
     return (
       <div>
         <TooltipRowItem
@@ -79,12 +83,7 @@ const getTooltipJSX = (payload, barIndex) => {
           value={formatDate(barData.assessmentDate)}
         />
         <TooltipRowItem title="Students:" value={barData.totalGraded} />
-        <TooltipRowItem
-          title="Score:"
-          value={`${round(barData.averageScore)}${getScoreSuffix(
-            barData.externalTestType
-          )}`}
-        />
+        <TooltipRowItem title="Score:" value={`${score}${scoreSuffix}`} />
         <DashedHr />
         {colorBandComponent}
       </div>
@@ -239,7 +238,9 @@ const Chart = ({
       return {
         ...d,
         ...barsCellDataForExternal,
-        [_topLabelKey]: round(d.averageScore || 0),
+        [_topLabelKey]: isNumber(d.averageScore)
+          ? round(d.averageScore || 0)
+          : d.averageScore,
         additionalData: barsCellAdditionalDataForExternal,
       }
     }

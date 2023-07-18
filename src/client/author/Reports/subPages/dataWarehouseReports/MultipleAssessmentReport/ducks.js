@@ -8,6 +8,7 @@ import { reportsApi, dataWarehouseApi } from '@edulastic/api'
 
 import { staticDropDownData } from './utils'
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 
 const initialState = {
   firstLoad: true,
@@ -22,6 +23,9 @@ const initialState = {
   settings: {
     requestFilters: {
       ...staticDropDownData.requestFilters,
+    },
+    frontEndFilters: {
+      externalScoretype: EXTERNAL_SCORE_TYPES.SCALED_SCORE,
     },
     selectedFilterTagsData: {},
     selectedCompareBy: {},

@@ -8,13 +8,19 @@ import {
   round,
   sum,
   mapValues,
+  isNaN,
 } from 'lodash'
 
 import {
   reportUtils,
   dataWarehouse as dataWarehouseConstants,
 } from '@edulastic/constants'
-import { compareByOptions, compareByOptionsInfo } from '../common/utils'
+import {
+  EXTERNAL_SCORE_TYPES,
+  compareByOptions,
+  compareByOptionsInfo,
+  getExternalScoreFormattedByType,
+} from '../common/utils'
 
 const {
   getProficiencyBand,
@@ -87,6 +93,7 @@ export const staticDropDownData = {
     classIds: '',
     groupIds: '',
     profileId: '',
+    externalScoreType: 'scaledScore',
     assignedBy: 'anyone',
     race: 'all',
     gender: 'all',
@@ -263,7 +270,8 @@ const augmentBandData = (tests, bandInfo, externalBands) => {
   return testsWithBandInfo
 }
 
-const getAggregatedDataByUniqId = (metricInfo) => {
+const getAggregatedDataByUniqId = (metricInfo, filters = {}) => {
+  const { externalScoreType } = filters
   const groupedByUniqId = groupBy(metricInfo, 'uniqId')
   return Object.keys(groupedByUniqId)
     .map((uniqId) => {
@@ -281,6 +289,11 @@ const getAggregatedDataByUniqId = (metricInfo) => {
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalTotalScore:
               (parseFloat(ele.totalScore, 10) || 0) + res.totalTotalScore,
+            totalTotalLexileScore:
+              parseFloat(ele.totalLexileScore, 10) + res.totalTotalLexileScore,
+            totalTotalQuantileScore:
+              parseFloat(ele.totalQuantileScore, 10) +
+              res.totalTotalQuantileScore,
             totalMaxScore:
               (parseFloat(ele.maxScore, 10) || 0) + res.totalMaxScore,
             totalStudentCount:
@@ -292,6 +305,8 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         {
           assessmentDate: 0,
           totalTotalScore: 0,
+          totalTotalLexileScore: 0,
+          totalTotalQuantileScore: 0,
           totalMaxScore: 0,
           totalStudentCount: 0,
         }
@@ -299,13 +314,47 @@ const getAggregatedDataByUniqId = (metricInfo) => {
       const { band, bands } = findTestWithAverageBand(groupedByUniqId[uniqId])
       testData.band = band
       if (bands) testData.bands = bands
-      const averageScore =
+      let totalTotalScore = round(testData.totalTotalScore, 2)
+      let averageScore =
         testData.totalTotalScore /
           (testData.externalTestType
             ? testData.totalStudentCount
             : testData.totalMaxScore) || 0
+      let averageScorePercentage = averageScore * 100
+      if (
+        testData.externalTestType &&
+        externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+        !isNaN(testData.totalTotalLexileScore)
+      ) {
+        totalTotalScore = getExternalScoreFormattedByType(
+          testData.totalTotalLexileScore,
+          externalScoreType
+        )
+        const _averageScore =
+          testData.totalTotalLexileScore / testData.totalStudentCount
+        averageScore = getExternalScoreFormattedByType(
+          _averageScore,
+          externalScoreType
+        )
+        averageScorePercentage = _averageScore * 100
+      } else if (
+        testData.externalTestType &&
+        externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+        !isNaN(testData.totalTotalQuantileScore)
+      ) {
+        totalTotalScore = getExternalScoreFormattedByType(
+          testData.totalTotalQuantileScore,
+          externalScoreType
+        )
+        const _averageScore =
+          testData.totalTotalQuantileScore / testData.totalStudentCount
+        averageScore = getExternalScoreFormattedByType(
+          _averageScore,
+          externalScoreType
+        )
+        averageScorePercentage = _averageScore * 100
+      }
       // mix of averageScore(total/count) & averageFractionalScore(total/max)
-      const averageScorePercentage = averageScore * 100
       const _testName = testData.externalTestType
         ? testName
         : `${testName} (${testData.testType})`
@@ -313,8 +362,8 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         ...testData,
         testName: _testName,
         isIncomplete,
-        totalTotalScore: round(testData.totalTotalScore, 2),
-        averageScore: round(averageScore),
+        totalTotalScore,
+        averageScore,
         averageScorePercentage: round(averageScorePercentage),
       }
     })
@@ -327,7 +376,8 @@ export const getTableData = (
   bandInfo = [],
   externalBands = [],
   compareByKey,
-  sortFilters
+  sortFilters,
+  filters = {}
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
   const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
@@ -364,7 +414,7 @@ export const getTableData = (
   const compareByLabelKey = compareByMap[compareByKey]
   let tableData = Object.keys(groupedByCompareByKey).map((compareByValue) => {
     const _data = groupedByCompareByKey[compareByValue]
-    const tests = getAggregatedDataByUniqId(_data)
+    const tests = getAggregatedDataByUniqId(_data, filters)
     const totalStudentCount = sumBy(Object.values(tests), 'totalStudentCount')
     const [firstTest] = tests
     const compareByLabelValue = firstTest[compareByLabelKey]
@@ -391,8 +441,10 @@ export const getChartData = (
   metricInfo = [],
   externalMetricInfo = [],
   bandInfo = [],
-  externalBands = []
+  externalBands = [],
+  filters = {}
 ) => {
+  const { externalScoreType } = filters
   // fallback to prevent intermittent crashes when bandInfo is empty
   let _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
@@ -515,27 +567,86 @@ export const getChartData = (
             parseInt(ele.assessmentDate, 10) > res.assessmentDate ? ele : res
           const _totalGraded = parseInt(ele.totalGraded || 0, 10) || 0
           const _totalScore = parseFloat(ele.totalScore || 0, 10) || 0
+          const _totalLexileScore = parseFloat(ele.totalLexileScore, 10)
+          const _totalQuantileScore = parseFloat(ele.totalQuantileScore, 10)
           const _totalMaxScore = parseFloat(ele.maxScore || 0) * _totalGraded
+          const _totalLexileMaxScore =
+            parseFloat(ele.totalLexileMaxScore) * _totalGraded
+          const _totalQuantileMaxScore =
+            parseFloat(ele.totalQuantileMaxScore) * _totalGraded
           return {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalGraded: res.totalGraded + _totalGraded,
             totalScore: res.totalScore + _totalScore,
+            totalLexileScore: res.totalLexileScore + _totalLexileScore,
+            totalQuantileScore: res.totalQuantileScore + _totalQuantileScore,
             totalMaxScore: res.totalMaxScore + _totalMaxScore,
+            totalLexileMaxScore: res.totalLexileMaxScore + _totalLexileMaxScore,
+            totalQuantileMaxScore:
+              res.totalQuantileMaxScore + _totalQuantileMaxScore,
           }
         },
         {
           assessmentDate: 0,
           totalGraded: 0,
           totalScore: 0,
+          totalLexileScore: 0,
+          totalQuantileScore: 0,
           totalMaxScore: 0,
+          totalLexileMaxScore: 0,
+          totalQuantileMaxScore: 0,
         }
       )
       testData.achievementLevel = getWeightedAchievementLevel(
         externalGroupedByUniqId[uniqId]
       )
 
-      const averageScore = testData.totalScore / testData.totalGraded || 0
+      let totalScore = testData.totalScore
+      let minScore = get(maxBy(records, 'minScore'), 'minScore', 0)
+      let maxScore = get(maxBy(records, 'maxScore'), 'maxScore', 0)
+      let averageScore = testData.totalScore / testData.totalGraded || 0
+      if (
+        externalScoreType == EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+        !isNaN(testData.totalLexileScore)
+      ) {
+        totalScore = getExternalScoreFormattedByType(
+          testData.totalLexileScore,
+          externalScoreType
+        )
+        minScore = getExternalScoreFormattedByType(
+          get(maxBy(records, 'minLexileScore'), 'minLexileScore', 0),
+          externalScoreType
+        )
+        maxScore = getExternalScoreFormattedByType(
+          get(maxBy(records, 'maxLexileScore'), 'maxLexileScore', 0),
+          externalScoreType
+        )
+        averageScore = getExternalScoreFormattedByType(
+          testData.totalLexileScore / testData.totalGraded,
+          externalScoreType
+        )
+      } else if (
+        externalScoreType == EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+        !isNaN(testData.totalQuantileScore)
+      ) {
+        totalScore = getExternalScoreFormattedByType(
+          testData.totalQuantileScore,
+          externalScoreType
+        )
+        minScore = getExternalScoreFormattedByType(
+          get(maxBy(records, 'minQuantileScore'), 'minQuantileScore', 0),
+          externalScoreType
+        )
+        maxScore = getExternalScoreFormattedByType(
+          get(maxBy(records, 'maxLexileScore'), 'maxQuantileScore', 0),
+          externalScoreType
+        )
+        averageScore = getExternalScoreFormattedByType(
+          testData.totalQuantileScore / testData.totalGraded,
+          externalScoreType
+        )
+      }
 
       // curate records for each performance criteria of external test
       let _records = []
@@ -578,11 +689,11 @@ export const getChartData = (
         ...testData,
         uniqId,
         testName,
-        totalScore: round(testData.totalScore, 2),
+        totalScore,
         lineScore,
-        averageScore: round(averageScore, 2),
-        maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
-        minScore: get(minBy(records, 'minScore'), 'minScore', 0),
+        averageScore,
+        minScore,
+        maxScore,
         records: _records,
       }
     }

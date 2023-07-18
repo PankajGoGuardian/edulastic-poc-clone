@@ -134,6 +134,28 @@ export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiv
 
 export const PIE_CHART_LABEL_THRESHOLD = 5
 
+export const EXTERNAL_SCORE_TYPES = {
+  SCALED_SCORE: 'score',
+  LEXILE_SCORE: 'lexileScore',
+  QUANTILE_SCORE: 'quantileScore',
+}
+
+export const EXTERNAL_SCORE_TYPES_LIST = [
+  { key: EXTERNAL_SCORE_TYPES.SCALED_SCORE, title: 'Scaled Score' },
+  { key: EXTERNAL_SCORE_TYPES.LEXILE_SCORE, title: 'Lexile Score' },
+  { key: EXTERNAL_SCORE_TYPES.QUANTILE_SCORE, title: 'Quantile Score' },
+]
+
+export const EXTERNAL_SCORE_PREFIX = {
+  [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: 'BR',
+  [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: 'EM',
+}
+
+export const EXTERNAL_SCORE_SUFFIX = {
+  [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: 'L',
+  [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: 'Q',
+}
+
 export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
   inAttendanceDays: 'In Attendance',
   excusedAbsenceDays: 'Excused Absences',

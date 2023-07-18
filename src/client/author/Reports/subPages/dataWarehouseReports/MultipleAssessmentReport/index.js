@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import qs from 'qs'
 import { connect } from 'react-redux'
-import { isEmpty, get, mapValues, includes, filter } from 'lodash'
+import { isEmpty, get, mapValues, includes, filter, pick } from 'lodash'
 import { Checkbox, Spin } from 'antd'
 import { IconInfo } from '@edulastic/icons'
 import { blueButton } from '@edulastic/colors'
@@ -63,6 +63,7 @@ import {
   getTableData,
   sortKeys,
   TABLE_PAGE_SIZE,
+  staticDropDownData,
 } from './utils'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
@@ -195,14 +196,15 @@ const MultipleAssessmentReport = ({
           ? ''
           : _settings.requestFilters[filterType]
     })
+    const requestFilterKeys = Object.keys(staticDropDownData.requestFilters)
     setDWMARSettings({
-      ...settings,
       requestFilters: {
-        ..._requestFilters,
+        ...pick(_requestFilters, requestFilterKeys),
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
       },
+      frontEndFilters: { externalScoreType: _requestFilters.externalScoreType },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
     })
@@ -227,7 +229,9 @@ const MultipleAssessmentReport = ({
     history,
     loc,
     updateNavigation,
-    extraFilters: { selectedCompareBy: settings.selectedCompareBy.key },
+    extraFilters: {
+      selectedCompareBy: settings.selectedCompareBy.key,
+    },
   })
 
   // get report data
@@ -305,7 +309,8 @@ const MultipleAssessmentReport = ({
       _internalMetricsForChart,
       externalMetricsForChart,
       _selectedPerformanceBand,
-      externalBands
+      externalBands,
+      settings.frontEndFilters
     )
     return {
       incompleteTests: _incompleteTests,
@@ -340,7 +345,8 @@ const MultipleAssessmentReport = ({
       selectedPerformanceBand,
       externalBands,
       settings.selectedCompareBy.key,
-      sortFilters
+      sortFilters,
+      settings.frontEndFilters
     )
   }, [
     reportChartData,

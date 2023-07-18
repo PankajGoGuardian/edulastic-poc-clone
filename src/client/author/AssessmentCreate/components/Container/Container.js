@@ -30,7 +30,6 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction,
 } from '../../ducks'
-import CreateLink from '../CreateLink/CreateLink'
 
 const breadcrumbStyle = {
   position: 'static',
@@ -79,7 +78,7 @@ class Container extends React.Component {
   cancelUpload
 
   componentDidMount() {
-    const { location, receiveTestById } = this.props
+    const { location, receiveTestById, createAssessment } = this.props
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -87,6 +86,31 @@ class Container extends React.Component {
     if (assessmentId) {
       receiveTestById(assessmentId)
       this.handleSetMethod(creationMethods.PDF)()
+    }
+
+    if (location?.pathname?.includes('snapquizvideo')) {
+      createAssessment({
+        videoUrl: 'https://www.youtube.com/watch?v=',
+        assessmentId,
+      })
+    }
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { location, createAssessment } = this.props
+
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+
+    if (
+      prevProps.location.pathname !== location?.pathname &&
+      location?.pathname?.includes('snapquizvideo')
+    ) {
+      createAssessment({
+        videoUrl: 'https://www.youtube.com/watch?v=',
+        assessmentId,
+      })
     }
   }
 
@@ -131,7 +155,6 @@ class Container extends React.Component {
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-
     createAssessment({
       videoUrl,
       assessmentId,
@@ -212,7 +235,8 @@ class Container extends React.Component {
             />
           )}
           <EduIf condition={method === creationMethods.VIDEO}>
-            <CreateLink next={this.handleNext} />
+            <Spin />
+            {/* <CreateLink next={this.handleNext} /> */}
           </EduIf>
         </MainContentWrapper>
       </>

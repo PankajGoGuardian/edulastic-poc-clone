@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, Tooltip } from 'antd'
 
-import { FieldLabel } from '@edulastic/common'
+import { EduIf, FieldLabel, FlexContainer } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconInfo } from '@edulastic/icons'
 
+import { themeColor } from '@edulastic/colors'
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -35,6 +36,7 @@ import { allFilterValue } from '../../../../common/constants'
 import {
   EXTERNAL_SCORE_TYPES,
   EXTERNAL_SCORE_TYPES_LIST,
+  EXTERNAL_SCORE_TOOLTIP_TEXT,
   getDefaultTestTypes,
   getDemographicsFilterTagsData,
 } from '../../common/utils'
@@ -709,7 +711,26 @@ const MultipleAssessmentReportFilters = ({
             data-testid="externalScoreType"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
-              EXTERNAL SCORE
+              <FlexContainer alignItems="center" justifyContent="left">
+                EXTERNAL SCORE
+                <EduIf
+                  condition={
+                    filters.externalScoreType !==
+                    EXTERNAL_SCORE_TYPES.SCALED_SCORE
+                  }
+                >
+                  <Tooltip
+                    title={
+                      EXTERNAL_SCORE_TOOLTIP_TEXT[filters.externalScoreType]
+                    }
+                  >
+                    <IconInfo
+                      fill={themeColor}
+                      style={{ marginLeft: '20px' }}
+                    />
+                  </Tooltip>
+                </EduIf>
+              </FlexContainer>
             </FieldLabel>
             <ControlDropDown
               by={selectedExternalScoreType}

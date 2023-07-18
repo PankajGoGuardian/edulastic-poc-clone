@@ -156,6 +156,14 @@ export const EXTERNAL_SCORE_SUFFIX = {
   [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: 'Q',
 }
 
+export const EXTERNAL_SCORE_TOOLTIP_TEXT = {
+  [EXTERNAL_SCORE_TYPES.SCALED_SCORE]: '',
+  [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]:
+    'Lexile score is applicable for ELA assessments only',
+  [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]:
+    'Quantile score is applicable for Math assessments only',
+}
+
 export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
   inAttendanceDays: 'In Attendance',
   excusedAbsenceDays: 'Excused Absences',

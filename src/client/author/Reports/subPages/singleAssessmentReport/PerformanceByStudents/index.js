@@ -108,7 +108,7 @@ const PerformanceByStudents = ({
       ...oldState,
       page: 1,
     }))
-  }, [demographicFilters, settings, selectedProficiency])
+  }, [demographicFilters, settings, selectedProficiency, range])
 
   const [
     details,

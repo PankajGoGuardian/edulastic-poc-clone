@@ -55,7 +55,11 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
       // reset the selected range
       setRange(() => ({ left: '', right: '' }))
       setSelecting(true)
-      setRange((prevRange) => ({ ...prevRange, left: e.activeLabel }))
+      setRange((prevRange) => ({
+        ...prevRange,
+        left: e.activeLabel,
+        right: e.activeLabel + 1,
+      }))
     }
   }
 
@@ -67,6 +71,10 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
 
   const onMouseUp = () => {
     setSelecting(false)
+  }
+
+  const onResetClick = () => {
+    setRange((prevRange) => ({ ...prevRange, left: '', right: '' }))
   }
 
   const scrollLeft = () => {
@@ -87,6 +95,16 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <a
+        onClick={onResetClick}
+        style={
+          showSelectedArea
+            ? { visibility: 'visible', textAlign: 'right' }
+            : { visibility: 'hidden' }
+        }
+      >
+        Reset
+      </a>
       <StyledChartNavButton
         type="primary"
         shape="circle"

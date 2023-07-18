@@ -41,8 +41,11 @@ const Summary = ({ studentInformation, studentClassData, settings }) => {
   const riskData = useMemo(() => getStudentRiskData(data), [data])
 
   const hasContent = !loading && !error && !isEmpty(riskData)
-  const errorMsg = 'Error fetching Student Risk data.'
-  const emptyContainerDesc = error ? errorMsg : 'No Student Risk Data Available'
+  const errorMsg = error?.message || 'Error fetching Student Risk data.'
+  const emptyContainerDesc =
+    error?.response?.status === 400
+      ? errorMsg
+      : 'No Student Risk Data Available'
   useErrorNotification(errorMsg, error)
 
   return (

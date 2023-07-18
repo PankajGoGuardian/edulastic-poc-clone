@@ -95,7 +95,8 @@ const RiskSummary = ({ settings, loc = '' }) => {
 
   const hasContent = !loading && !error && postPeriod?.distribution?.length
   const errorMsg = error?.message || 'Error fetching Risk Summary data.'
-  const emptyContainerDesc = error ? errorMsg : 'No Data Available'
+  const emptyContainerDesc =
+    error?.response?.status === 400 ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 
   const isEarlyWarningReport = loc === reportNavType.DW_EARLY_WARNING_REPORT

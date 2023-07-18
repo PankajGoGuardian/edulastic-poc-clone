@@ -62,6 +62,7 @@ const VideoPreview = ({
   const annotationContainer = useRef()
   const videoRef = useRef()
   const markerArea = useRef()
+  const annotationsRef = useRef()
 
   const [
     visibleAnnotation,
@@ -104,7 +105,12 @@ const VideoPreview = ({
     const _currentTime = Math.round(state.playedSeconds)
     setCurrentTime(_currentTime)
 
-    let newVisibleAnnotations = annotations.filter(
+    let annotationsValue = []
+    if (annotationsRef?.current) {
+      annotationsValue = annotationsRef.current
+    }
+
+    let newVisibleAnnotations = annotationsValue.filter(
       (annotation) =>
         annotation.time && _currentTime === Math.floor(annotation.time)
     )
@@ -180,6 +186,7 @@ const VideoPreview = ({
   }
 
   useEffect(() => {
+    annotationsRef.current = annotations
     const _currentTime = getCurrentTime(videoRef)
 
     let newVisibleAnnotations = getVisibleAnnotation(annotations, _currentTime)

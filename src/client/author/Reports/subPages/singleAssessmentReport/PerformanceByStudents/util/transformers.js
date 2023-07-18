@@ -135,7 +135,9 @@ export const getColumns = (
   location,
   pageTitle,
   isSharedReport,
-  t
+  t,
+  sortKey,
+  sortOrder
 ) => {
   const filteredColumns = filterAccordingToRole(tableColumns, role)
   const anonymousString = t('common.anonymous')
@@ -169,6 +171,9 @@ export const getColumns = (
       }
       if (column.sortable) {
         column.sorter = true
+      }
+      if (column.key === sortKey) {
+        column.sortOrder = sortOrder
       }
     })
   })

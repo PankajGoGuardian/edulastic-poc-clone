@@ -239,7 +239,9 @@ const PerformanceByStudents = ({
     location,
     pageTitle,
     isSharedReport,
-    t
+    t,
+    sortKey,
+    sortOrder
   ).filter((col) => !(isCliUser && col.title === 'Due Date'))
 
   const checkedStudentsForModal = tableData

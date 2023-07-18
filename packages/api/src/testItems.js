@@ -211,7 +211,7 @@ const generateQuestionViaAI = (data) =>
       useSlowApi: true,
       method: 'get',
       url: `${prefix}/create-ai-question?${qs.stringify(data, {
-        arrayFormat: 'repeat',
+        arrayFormat: 'comma',
         encode: false,
       })}`,
     })

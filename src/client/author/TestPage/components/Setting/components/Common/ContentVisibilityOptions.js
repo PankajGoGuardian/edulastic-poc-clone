@@ -55,7 +55,7 @@ const ContentVisibilityOptions = ({
       setCombinedVisibilityKey(null)
       setContentVisibility((prev) => (value !== null ? value : prev))
     }
-    updateTestContentVisibility(value)
+    updateTestContentVisibility(value === null ? contentVisibility : value)
   }
 
   return (

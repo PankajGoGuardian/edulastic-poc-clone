@@ -122,6 +122,7 @@ export const usePerformanceByStudentsDetailsFetch = ({
     sortOrder,
     sortKey,
     selectedProficiency,
+    recompute,
     range,
     page,
   ])

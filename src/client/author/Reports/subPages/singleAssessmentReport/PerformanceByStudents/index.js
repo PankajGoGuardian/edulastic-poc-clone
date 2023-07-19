@@ -104,11 +104,25 @@ const PerformanceByStudents = ({
   useEffect(() => {
     setRecompute(true)
     setPage(1)
+    setRange({
+      left: '',
+      right: '',
+    })
+    setProficiency()
     setAdditionalUrlParams((oldState) => ({
       ...oldState,
       page: 1,
     }))
-  }, [demographicFilters, settings, selectedProficiency, range])
+  }, [demographicFilters, settings])
+
+  useEffect(() => {
+    setRecompute(true)
+    setPage(1)
+    setAdditionalUrlParams((oldState) => ({
+      ...oldState,
+      page: 1,
+    }))
+  }, [selectedProficiency, range])
 
   const [
     details,

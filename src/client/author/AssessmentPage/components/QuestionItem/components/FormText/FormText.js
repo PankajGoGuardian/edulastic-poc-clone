@@ -109,6 +109,8 @@ export default class FormText extends React.Component {
       question: { id, type, stimulus },
       onCreateAnswer,
       highlighted = false,
+      isSnapQuizVideo = false,
+      isSnapQuizVideoPlayer = false,
     } = this.props
 
     return (
@@ -119,11 +121,13 @@ export default class FormText extends React.Component {
             dangerouslySetInnerHTML={{ __html: stimulus }}
           />
         </EduIf>
-        <Input
-          size="large"
-          onPressEnter={onCreateAnswer(id, type)}
-          ref={(el) => highlighted && el?.focus()}
-        />
+        <EduIf condition={isSnapQuizVideo && !isSnapQuizVideoPlayer}>
+          <Input
+            size="large"
+            onPressEnter={onCreateAnswer(id, type)}
+            ref={(el) => highlighted && el?.focus()}
+          />
+        </EduIf>
       </div>
     )
   }

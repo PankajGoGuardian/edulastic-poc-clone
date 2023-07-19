@@ -1,6 +1,7 @@
 import { DragDrop } from '@edulastic/common'
 import { Col } from 'antd'
-import { round } from 'lodash'
+import { Rnd } from 'react-rnd'
+import { round, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
@@ -101,6 +102,29 @@ const VideoPreview = ({
     }
   }
 
+  const handleResize = ({ ref, questionId }) => {
+    const targetAnnotation = (annotations || []).find(
+      (annotation) =>
+        annotation?.toolbarMode === 'question' &&
+        annotation?.questionId === questionId
+    )
+
+    if (targetAnnotation) {
+      onDropAnnotation(
+        {
+          ...targetAnnotation,
+          ...(typeof ref?.offsetWidth === 'number'
+            ? { width: ref.offsetWidth }
+            : {}),
+          ...(typeof ref?.offsetHeight === 'number'
+            ? { height: ref.offsetHeight }
+            : {}),
+        },
+        'video'
+      )
+    }
+  }
+
   const onProgress = (state) => {
     const _currentTime = Math.round(state.playedSeconds)
     setCurrentTime(_currentTime)
@@ -169,6 +193,23 @@ const VideoPreview = ({
       y = round(y / 1, 2)
 
       onPause()
+
+      const targetAnnotation = (annotations || []).find(
+        (annotation) =>
+          annotation?.toolbarMode === 'question' &&
+          annotation?.questionId === data.id
+      )
+      let width = null
+      let height = null
+      if (!isEmpty(targetAnnotation)) {
+        const {
+          width: originalWidth = null,
+          height: originalHeight = null,
+        } = targetAnnotation
+        width = originalWidth
+        height = originalHeight
+      }
+
       onDropAnnotation(
         {
           x,
@@ -176,6 +217,8 @@ const VideoPreview = ({
           questionId: data.id,
           qIndex: data.index,
           time: Math.floor(videoRef.current?.getCurrentTime?.()),
+          ...(typeof width === 'number' ? { width } : {}),
+          ...(typeof height === 'number' ? { height } : {}),
         },
         'video'
       )
@@ -292,10 +335,10 @@ const VideoPreview = ({
         >
           {visibleAnnotation
             .filter((item) => item.toolbarMode === 'question' && item.x !== -1)
-            .map(({ uuid, qIndex, x, y, questionId }) => (
+            .map(({ uuid, qIndex, x, y, questionId, width, height }) => (
               <div
                 key={uuid}
-                className="annotation-item"
+                className="annotation-item unselectable-text-container"
                 onClick={handleHighlight(questionId)}
                 style={getNumberStyles(
                   (containerRect.width * x) / 100,
@@ -303,31 +346,60 @@ const VideoPreview = ({
                   1
                 )}
               >
-                <QuestionItem
-                  key={questionId}
-                  index={qIndex}
-                  questionIndex={qIndex}
-                  data={questionsById[questionId]}
-                  answer={answersById[`${itemId}_${questionId}`]}
-                  previewMode={viewMode === 'edit' ? 'clear' : previewMode}
-                  onDragStart={() => {
-                    onDragStart(questionId)
+                <Rnd
+                  size={{
+                    ...(typeof width === 'number' ? { width } : {}),
+                    ...(typeof height === 'number' ? { height } : {}),
                   }}
-                  groupId={pathname.split('/')[5]}
-                  testMode={testMode}
-                  highlighted={highlighted === questionId}
-                  viewMode={viewMode}
-                  zoom={1}
-                  review
-                  qId={0}
-                  itemId={itemId}
-                  handleRemoveAnnotation={removeQuestionAnnotation}
-                  editMode={editMode}
-                  draggble
-                  disableAutoHightlight
-                  isSnapQuizVideo
-                  isSnapQuizVideoPlayer
-                />
+                  minWidth={300}
+                  enableResizing={
+                    viewMode === 'edit' && isEditable && !testMode
+                      ? {
+                          bottomLeft: false,
+                          bottomRight: true,
+                          topLeft: false,
+                          topRight: false,
+                          bottom: true,
+                          left: false,
+                          right: true,
+                          top: false,
+                        }
+                      : false
+                  }
+                  onResizeStop={(e, direction, ref, delta, position) =>
+                    handleResize({ ref, questionId, position })
+                  }
+                  bounds=".annotations-container"
+                  disableDragging
+                  dis
+                >
+                  <QuestionItem
+                    key={questionId}
+                    index={qIndex}
+                    questionIndex={qIndex}
+                    data={questionsById[questionId]}
+                    answer={answersById[`${itemId}_${questionId}`]}
+                    previewMode={viewMode === 'edit' ? 'clear' : previewMode}
+                    onDragStart={() => {
+                      onDragStart(questionId)
+                    }}
+                    groupId={pathname.split('/')[5]}
+                    testMode={testMode}
+                    highlighted={highlighted === questionId}
+                    viewMode={viewMode}
+                    zoom={1}
+                    review
+                    qId={0}
+                    itemId={itemId}
+                    handleRemoveAnnotation={removeQuestionAnnotation}
+                    editMode={editMode}
+                    onCreateOptions={() => {}}
+                    draggble
+                    disableAutoHightlight
+                    isSnapQuizVideo
+                    isSnapQuizVideoPlayer
+                  />
+                </Rnd>
               </div>
             ))}
         </AnnotationsContainer>

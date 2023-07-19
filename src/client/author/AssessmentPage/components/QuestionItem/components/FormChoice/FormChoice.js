@@ -300,9 +300,15 @@ export default class FormChoice extends React.Component {
     const {
       question: { id, type },
       onCreateOptions,
+      isSnapQuizVideo = false,
+      isSnapQuizVideoPlayer = false,
     } = this.props
 
-    return <Input size="large" onPressEnter={onCreateOptions(id, type)} />
+    return (
+      <EduIf condition={isSnapQuizVideo && !isSnapQuizVideoPlayer}>
+        <Input size="large" onPressEnter={onCreateOptions(id, type)} />
+      </EduIf>
+    )
   }
 
   render() {

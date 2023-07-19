@@ -15,18 +15,29 @@ import {
 
 const getQuestionItemWrapperWidth = ({
   isSnapQuizVideo,
+  isSnapQuizVideoPlayer,
   review,
   annotations,
 }) => {
-  if (isSnapQuizVideo) {
+  if (isSnapQuizVideo && !isSnapQuizVideoPlayer) {
     return '98%'
+  }
+  if (isSnapQuizVideo && isSnapQuizVideoPlayer) {
+    return '100%'
   }
   return annotations ? 'auto' : review ? '100%' : '265px'
 }
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ isSnapQuizVideo, review, annotations }) =>
-    getQuestionItemWrapperWidth({ isSnapQuizVideo, review, annotations })};
+  width: ${({ isSnapQuizVideo, isSnapQuizVideoPlayer, review, annotations }) =>
+    getQuestionItemWrapperWidth({
+      isSnapQuizVideo,
+      isSnapQuizVideoPlayer,
+      review,
+      annotations,
+    })};
+  height: ${({ isSnapQuizVideo, isSnapQuizVideoPlayer }) =>
+    isSnapQuizVideo && isSnapQuizVideoPlayer ? '100%' : ''};
   padding: ${({ pdfPreview }) => !pdfPreview && '10px'};
   background: ${({ pdfPreview }) => (pdfPreview ? 'transparent' : white)};
   border-radius: ${({ review, isSnapQuizVideo }) =>
@@ -37,7 +48,7 @@ export const QuestionItemWrapper = styled.div`
   border-left: ${({ review }) => !review && 0};
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: 225px;
+    width: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '' : '225px')};
   }
 `
 
@@ -99,7 +110,8 @@ export const QuestionForm = styled.div`
   }
 `
 export const VideoQuizQuestionForm = styled.div`
-  cursor: ${(props) => (props?.isSnapQuizVideo ? 'pointer' : '')};
+  cursor: ${(props) =>
+    props?.isSnapQuizVideo && !props?.isSnapQuizVideoPlayer ? 'pointer' : ''};
   .ant-select-selection,
   .input__math,
   .ant-input {
@@ -120,8 +132,6 @@ export const VideoQuizQuestionForm = styled.div`
 
 export const VideoQuizItemWrapper = styled.div`
   display: flex;
-  max-width: ${({ isSnapQuizVideoPlayer }) =>
-    isSnapQuizVideoPlayer ? '400px' : ''};
 `
 
 export const VideoQuizItemContainer = styled.div`

@@ -457,6 +457,7 @@ class QuestionItem extends React.Component {
               review={review}
               ref={this.qFormRef}
               onClick={handleOnClick}
+              isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
               isSnapQuizVideo
             >
               {this.renderContent(
@@ -549,6 +550,7 @@ class QuestionItem extends React.Component {
         annotations={annotations}
         pdfPreview={pdfPreview}
         isSnapQuizVideo={isSnapQuizVideo}
+        isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
         data-cy="questionItem"
       >
         <EduIf condition={isSnapQuizVideo}>
@@ -600,8 +602,11 @@ class QuestionItem extends React.Component {
             typeof handleRemoveAnnotation === 'function'
           }
         >
-          <StyledRemoveQuestion onClick={() => handleRemoveAnnotation(id)}>
-            REMOVE QUESTION FROM VIDEO
+          <StyledRemoveQuestion
+            className="unselectable-text-container"
+            onClick={() => handleRemoveAnnotation(id)}
+          >
+            <p>REMOVE QUESTION FROM VIDEO</p>
           </StyledRemoveQuestion>
         </EduIf>
         {canShowAnswer() && !annotations && this.renderCorrectAnswer()}

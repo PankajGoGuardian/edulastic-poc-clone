@@ -117,6 +117,7 @@ const PerformanceByStudents = ({
   ] = usePerformanceByStudentsDetailsFetch({
     settings,
     demographicFilters,
+    toggleFilter,
     sortKey,
     sortOrder,
     page,
@@ -133,7 +134,6 @@ const PerformanceByStudents = ({
   ] = usePerformanceByStudentsSummaryFetch({
     settings,
     demographicFilters,
-    toggleFilter,
   })
   const itemsCount = get(details, 'totalRows', totalRowCount)
   const performanceByStudents = useMemo(() => {
@@ -322,10 +322,7 @@ const PerformanceByStudents = ({
   }
 
   const hasNoData =
-    !summary.bandDistribution?.length ||
-    !summary.scoreDistribution?.length ||
-    detailsError ||
-    summaryError
+    !details.studentMetricInfo?.length || detailsError || summaryError
 
   return (
     <>

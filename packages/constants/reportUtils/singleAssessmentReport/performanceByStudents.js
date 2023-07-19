@@ -281,9 +281,9 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       hispanicEthnicity,
     } = studentMetric
     const studentScore = round(((totalScore || 0) / (maxScore || 1)) * 100)
-    const assessmentScore = `${(totalScore || 0).toFixed(2)} / ${(
-      maxScore || 1
-    ).toFixed(2)}`
+    const assessmentScore = maxScore
+      ? `${(totalScore || 0).toFixed(2)} / ${(maxScore || 1).toFixed(2)}`
+      : 'Absent'
     const proficiencyBand = getProficiency(studentMetric, bandInfo)
 
     return {
@@ -295,7 +295,7 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
       lastName,
       username,
       externalId,
-      proficiencyBand,
+      proficiencyBand: proficiencyBand || 'Absent',
       assignmentId,
       testActivityId,
       school: schoolName || '-',

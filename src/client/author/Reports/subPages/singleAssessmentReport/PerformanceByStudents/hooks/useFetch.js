@@ -16,7 +16,6 @@ const timeout_100ms = 100
 export const usePerformanceByStudentsSummaryFetch = ({
   settings,
   demographicFilters,
-  toggleFilter,
 }) => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -39,14 +38,6 @@ export const usePerformanceByStudentsSummaryFetch = ({
           const response = await fetchPerformanceByStudentsSummary(params)
           setData(response?.data?.result || {})
           setLoading(false)
-          if (
-            response?.data?.result?.bandDistribution?.length ||
-            response?.data?.result?.scoreDistribution?.length
-          ) {
-            toggleFilter(null, false)
-          } else {
-            toggleFilter(null, true)
-          }
         } catch (e) {
           setError(e)
           setLoading(false)
@@ -65,6 +56,7 @@ export const usePerformanceByStudentsSummaryFetch = ({
 export const usePerformanceByStudentsDetailsFetch = ({
   settings,
   demographicFilters,
+  toggleFilter,
   sortKey,
   sortOrder,
   page,
@@ -108,6 +100,11 @@ export const usePerformanceByStudentsDetailsFetch = ({
           }
           setData(result)
           setLoading(false)
+          if (response?.data?.result?.studentMetricInfo?.length) {
+            toggleFilter(null, false)
+          } else {
+            toggleFilter(null, true)
+          }
         } catch (e) {
           setError(e)
           setLoading(false)

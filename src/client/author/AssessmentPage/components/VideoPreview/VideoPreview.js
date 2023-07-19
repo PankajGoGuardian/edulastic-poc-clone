@@ -158,8 +158,13 @@ const VideoPreview = ({
       const { x: clientX, y: clientY } = itemRect
 
       const containerRect = annotationContainer.current.getBoundingClientRect()
+
       let x = clientX - containerRect.x - 10
       let y = clientY - containerRect.y - 10
+
+      x = (x * 100) / containerRect.width
+      y = (y * 100) / containerRect.height
+
       x = round(x / 1, 2)
       y = round(y / 1, 2)
 
@@ -239,6 +244,8 @@ const VideoPreview = ({
   const duration = getVideoDuration(videoRef)
   const marks = getMarks(annotations)
 
+  const containerRect = annotationContainer?.current?.getBoundingClientRect()
+
   return (
     <PDFPreviewWrapper
       review={review}
@@ -290,7 +297,11 @@ const VideoPreview = ({
                 key={uuid}
                 className="annotation-item"
                 onClick={handleHighlight(questionId)}
-                style={getNumberStyles(x, y, 1)}
+                style={getNumberStyles(
+                  (containerRect.width * x) / 100,
+                  (containerRect.height * y) / 100,
+                  1
+                )}
               >
                 <QuestionItem
                   key={questionId}

@@ -335,7 +335,7 @@ const Author = ({
                 />
                 <Route
                   exact
-                  path={`${match.url}/tests/snapquizvideo`}
+                  path={`${match.url}/tests/videoquiz`}
                   component={AssessmentCreate}
                 />
                 <Route

@@ -47,7 +47,7 @@ const testBreadcrumbs = [
 ]
 
 const snapquizVideoBreadcrumb = {
-  title: 'SnapquizVideo',
+  title: 'VideoQuiz',
   to: '',
 }
 
@@ -88,7 +88,7 @@ class Container extends React.Component {
       this.handleSetMethod(creationMethods.PDF)()
     }
 
-    if (location?.pathname?.includes('snapquizvideo')) {
+    if (location?.pathname?.includes('videoquiz')) {
       createAssessment({
         videoUrl: 'https://www.youtube.com/watch?v=',
         assessmentId,
@@ -105,7 +105,7 @@ class Container extends React.Component {
 
     if (
       prevProps.location.pathname !== location?.pathname &&
-      location?.pathname?.includes('snapquizvideo')
+      location?.pathname?.includes('videoquiz')
     ) {
       createAssessment({
         videoUrl: 'https://www.youtube.com/watch?v=',
@@ -188,7 +188,7 @@ class Container extends React.Component {
     if (
       location &&
       location.pathname &&
-      location.pathname.includes('snapquizvideo')
+      location.pathname.includes('videoquiz')
     ) {
       method = creationMethods.VIDEO
       newBreadcrumb.push(snapquizVideoBreadcrumb)

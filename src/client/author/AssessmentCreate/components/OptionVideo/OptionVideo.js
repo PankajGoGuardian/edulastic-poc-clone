@@ -15,12 +15,12 @@ const OptionVideo = () => (
   <CardComponent>
     <Tag style={{ backgroundColor: darkOrange1 }}>New</Tag>
     <SnapQuiz>
-      <span>Snap</span>Quiz (Video)
+      <span>Video</span>Quiz
     </SnapQuiz>
     <TitleWrapper>Create from Video</TitleWrapper>
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
-    <Link to="/author/tests/snapquizvideo">
+    <Link to="/author/tests/videoquiz">
       <EduButton data-cy="createTest" isGhost width="180px">
         Create test
       </EduButton>

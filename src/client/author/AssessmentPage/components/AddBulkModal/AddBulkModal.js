@@ -165,6 +165,7 @@ class AddBulkModal extends React.Component {
         visible={visible}
         title={isSnapQuizVideo ? 'Auto Genenerate' : 'Add Bulk'}
         onCancel={onCancel}
+        maskClosable={!isSnapQuizVideo}
         footer={[
           <ModalFooter marginTop="35px">
             <EduButton isGhost onClick={onCancel}>

@@ -437,8 +437,7 @@ template {
 }
 @import '~antd/dist/antd.css';
 
-.unselectable-text-container p,
-.unselectable-text-container span {
+.unselectable-text-container * {
   user-select: none !important;
 }
 

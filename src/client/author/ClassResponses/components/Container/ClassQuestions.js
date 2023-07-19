@@ -764,7 +764,10 @@ class ClassQuestions extends Component {
           let questions = item.data.questions
           if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
             questions = questions.filter(
-              (q) => !isEmpty(q.activity) && !q?.activity?.autoGrade
+              (q) =>
+                !isEmpty(q.activity) &&
+                !q?.activity?.autoGrade &&
+                !q?.activity?.notStarted
             )
           }
 

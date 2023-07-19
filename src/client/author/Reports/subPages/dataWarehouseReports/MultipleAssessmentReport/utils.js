@@ -386,7 +386,7 @@ export const getTableData = (
     .filter((t) => t.externalTestType && t.achievementLevel)
     .map((t) => ({
       ...t,
-      assessmentDate: +t.assessmentDate,
+      assessmentDate: +new Date(t.assessmentDate),
       achievementLevel: +t.achievementLevel,
     }))
   const compositeMetricInfo = [

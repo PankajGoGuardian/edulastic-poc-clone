@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import {
   white,
@@ -147,10 +147,14 @@ export const EditButton = styled.span`
   margin-left: 5px;
   position: relative;
 
-  @media (max-width: ${smallDesktopWidth}) {
-    position: absolute;
-    right: -85px;
-  }
+  ${({ isSnapQuizVideo }) =>
+    !isSnapQuizVideo &&
+    css`
+      @media (max-width: ${smallDesktopWidth}) {
+        position: absolute;
+        right: -85px;
+      }
+    `}
 `
 
 export const ButtonWrapper = styled.span`

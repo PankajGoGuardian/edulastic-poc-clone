@@ -126,7 +126,7 @@ export const extractVideoId = (url) => {
 }
 
 export const getThumbnailUrl = (videoId) => {
-  return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+  return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`
 }
 
 export const formateSecondsToMMSS = (totalSeconds) => {

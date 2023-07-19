@@ -55,7 +55,7 @@ const VideoPreview = ({
   pathname,
   handleRemoveAnnotation,
   editMode,
-  updateVideoQuizQuestionIdsToDisplay,
+  updateVideoQuizQuestionsToDisplay,
   questionClickSeekTime,
   handleUpdateSeektime,
 }) => {
@@ -75,9 +75,6 @@ const VideoPreview = ({
   const [volumne, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
-
-  const getQuestionIds = (questionAnnotations = []) =>
-    (questionAnnotations || []).map((annotation) => annotation?.questionId)
 
   const onPlay = () => {
     setPlaying(true)
@@ -147,9 +144,7 @@ const VideoPreview = ({
       (annotation) => annotation.toolbarMode === 'question'
     )
 
-    updateVideoQuizQuestionIdsToDisplay(
-      getQuestionIds(questionAnnotations || [])
-    )
+    updateVideoQuizQuestionsToDisplay(questionAnnotations || [])
 
     if (
       newVisibleAnnotations.length > 0 &&
@@ -245,9 +240,7 @@ const VideoPreview = ({
     const questionAnnotations = newVisibleAnnotations.filter(
       (annotation) => annotation.toolbarMode === 'question'
     )
-    updateVideoQuizQuestionIdsToDisplay(
-      getQuestionIds(questionAnnotations || [])
-    )
+    updateVideoQuizQuestionsToDisplay(questionAnnotations || [])
 
     if (newVisibleAnnotations.length > 0) {
       onPause()
@@ -334,7 +327,12 @@ const VideoPreview = ({
           enableDrag={viewMode === 'edit' && isEditable && !testMode}
         >
           {visibleAnnotation
-            .filter((item) => item.toolbarMode === 'question' && item.x !== -1)
+            .filter(
+              (item) =>
+                item.toolbarMode === 'question' &&
+                item.x !== -1 &&
+                item.y !== -1
+            )
             .map(({ uuid, qIndex, x, y, questionId, width, height }) => (
               <div
                 key={uuid}

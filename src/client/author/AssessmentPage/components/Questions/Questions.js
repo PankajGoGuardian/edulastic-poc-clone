@@ -469,15 +469,17 @@ class Questions extends React.Component {
 
   isQuestionVisible = (questionId = '') => {
     const {
-      videoQuizQuestionIdsToDisplay = [],
+      videoQuizQuestionsToDisplay = [],
       editMode,
       isSnapQuizVideo,
     } = this.props
-    return (
-      editMode ||
-      !isSnapQuizVideo ||
-      videoQuizQuestionIdsToDisplay.includes(questionId)
+    const visibleQuestionIndex = (videoQuizQuestionsToDisplay || []).findIndex(
+      (questionAnnotation) =>
+        questionAnnotation?.questionId === questionId &&
+        questionAnnotation?.x === -1 &&
+        questionAnnotation?.y === -1
     )
+    return editMode || !isSnapQuizVideo || visibleQuestionIndex !== -1
   }
 
   scrollToBottom = () => {

@@ -112,7 +112,7 @@ class WorksheetComponent extends React.Component {
       deleteConfirmation: false,
       minimized: true,
       isToolBarVisible: true,
-      videoQuizQuestionIdsToDisplay: [],
+      videoQuizQuestionsToDisplay: [],
       questionClickSeekTime: null,
     }
   }
@@ -193,8 +193,8 @@ class WorksheetComponent extends React.Component {
     }
   }
 
-  updateVideoQuizQuestionIdsToDisplay = (questionIds = []) => {
-    this.setState({ videoQuizQuestionIdsToDisplay: questionIds })
+  updateVideoQuizQuestionsToDisplay = (questionAnnotations = []) => {
+    this.setState({ videoQuizQuestionsToDisplay: questionAnnotations })
   }
 
   handleChangePage = (nextPage) => {
@@ -737,7 +737,7 @@ class WorksheetComponent extends React.Component {
       minimized,
       isToolBarVisible,
       currentPage: _currentPageInState,
-      videoQuizQuestionIdsToDisplay,
+      videoQuizQuestionsToDisplay,
       questionClickSeekTime,
     } = this.state
 
@@ -896,8 +896,8 @@ class WorksheetComponent extends React.Component {
                   itemId={itemDetail?._id || testItemId}
                   handleRemoveAnnotation={this.handleRemoveAnnotation}
                   editMode={editMode}
-                  updateVideoQuizQuestionIdsToDisplay={
-                    this.updateVideoQuizQuestionIdsToDisplay
+                  updateVideoQuizQuestionsToDisplay={
+                    this.updateVideoQuizQuestionsToDisplay
                   }
                   questionClickSeekTime={questionClickSeekTime}
                   handleUpdateSeektime={this.handleUpdateSeektime}
@@ -969,7 +969,7 @@ class WorksheetComponent extends React.Component {
             handleAddBulkQuestionAnnotations={
               this.handleAddBulkQuestionAnnotations
             }
-            videoQuizQuestionIdsToDisplay={videoQuizQuestionIdsToDisplay}
+            videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
             handleUpdateSeektime={this.handleUpdateSeektime}
           />
         </WorksheetWrapper>

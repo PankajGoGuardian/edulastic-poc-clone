@@ -88,6 +88,7 @@ const ContentVisibilityOptions = ({
                 <br />
                 <StyledRadioGroup
                   isHorizontal
+                  isWrap
                   disabled={isDisabled}
                   onChange={handleContentVisibility}
                   value={combinedVisibilityKey}

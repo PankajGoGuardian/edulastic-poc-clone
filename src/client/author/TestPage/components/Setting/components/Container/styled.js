@@ -156,7 +156,7 @@ export const Description = styled.div`
 export const StyledRadioGroup = styled(Radio.Group)`
   display: flex;
   flex-direction: ${(props) => (props.isHorizontal ? 'row' : 'column')};
-  flex-wrap: wrap;
+  flex-wrap: ${(props) => (props.isWrap ? 'wrap' : 'nowrap')};
   span {
     font-size: 13px;
     font-weight: 600;

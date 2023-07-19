@@ -114,12 +114,13 @@ export function getDataForTable(
           question.testActivityId = testActivityId
           question.score = Number.isNaN(question.score) ? 0 : question.score
         })
-        const questionActivities = student.questionActivities
 
         if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
-          student.questionActivities = questionActivities.filter(
-            (q) => !q?.autoGrade
-          )
+          student.questionActivities.forEach((q) => {
+            if (q?.autoGrade) {
+              delete students[q.key]
+            }
+          })
         }
 
         students.questions = student.questionActivities.length

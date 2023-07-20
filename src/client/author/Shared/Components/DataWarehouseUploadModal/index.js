@@ -26,12 +26,14 @@ import {
   getSetCancelUploadAction,
   getAbortUploadAction,
   getUploadsStatusList,
+  getFeedTypes,
 } from '../../../sharedDucks/dataWarehouse'
 import { getOrgDataSelector } from '../../../src/selectors/user'
 import {
   getYear,
   dataFormatTreeOptions,
   NON_ACADEMIC_DATA_TYPE_KEY,
+  getDataFormatOptionsWithFeedTypes,
 } from './utils'
 import { getTermOptions } from '../../../utils/reports'
 import DownloadTemplate from './DownloadTemplate'
@@ -64,6 +66,7 @@ const DataWarehouseUploadModal = ({
   setCancelUpload,
   abortUpload,
   terms,
+  feedTypes,
 }) => {
   const [file, setFile] = useState(null)
   const [feedName, setFeedName] = useState('')
@@ -94,13 +97,18 @@ const DataWarehouseUploadModal = ({
     setIsInvalidFeedName(isExistingRecord)
   }, [category, feedName])
 
+  const dataFomatDropdownOptions = useMemo(
+    () => getDataFormatOptionsWithFeedTypes(dataFormatTreeOptions, feedTypes),
+    [feedTypes]
+  )
+
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
   const testTitlePlaceholder = useMemo(() => {
     let isNonAcademicFormatSelected = false
     if (!isEmpty(category)) {
       const nonAcademicDataOptions =
-        dataFormatTreeOptions.find(
+        dataFomatDropdownOptions.find(
           (node) => node.key === NON_ACADEMIC_DATA_TYPE_KEY
         )?.children || []
       if (!isEmpty(nonAcademicDataOptions)) {
@@ -175,7 +183,7 @@ const DataWarehouseUploadModal = ({
               treeDefaultExpandAll
               onChange={setCategory}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              treeData={dataFormatTreeOptions}
+              treeData={dataFomatDropdownOptions}
               value={category}
             />
           </StyledCol>
@@ -213,7 +221,7 @@ const DataWarehouseUploadModal = ({
                 />
               </StyledCol>
             </StyledRow>
-            <DownloadTemplate url={getTemplateFilePath(category)} />
+            <DownloadTemplate url={getTemplateFilePath(category, feedTypes)} />
           </>
         </EduIf>
         <Dropzone
@@ -289,6 +297,7 @@ const withConnect = connect(
     uploadProgress: getFileUploadProgress(state),
     terms: get(getOrgDataSelector(state), 'terms', []),
     uploadsStatusList: getUploadsStatusList(state),
+    feedTypes: getFeedTypes(state),
   }),
   {
     uploadFile: uploadTestDataFileAction,

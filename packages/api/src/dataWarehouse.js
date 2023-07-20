@@ -235,6 +235,14 @@ const updateGroupWithAdvSearch = (id, data) => {
   })
 }
 
+const getFeedTypes = () =>
+  api
+    .callApi({
+      url: `${prefix}/feed-types`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 export default {
   getSignedUrl,
   deleteUploadLog,
@@ -258,4 +266,5 @@ export default {
   getEfficacySummary,
   getEfficacyDetails,
   getRiskMetrics,
+  getFeedTypes,
 }

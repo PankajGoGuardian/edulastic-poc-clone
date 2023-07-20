@@ -2,7 +2,7 @@ import React from 'react'
 import next from 'immer'
 import { Tooltip } from 'antd'
 import { MdEdit, MdDelete } from 'react-icons/md'
-import { capitalize } from 'lodash'
+import { capitalize, isEmpty } from 'lodash'
 import { ATTENDANCE } from '@edulastic/constants/const/testTypes'
 
 import { EduElse, EduIf, EduThen, notification } from '@edulastic/common'
@@ -127,7 +127,11 @@ export const getManageExternalDataColumns = (
   })
 }
 
-export const getTemplateFilePath = (type) => {
+export const getTemplateFilePath = (type, feedTypes) => {
+  const selectedFeedType = feedTypes.find(({ key }) => key === type)
+  if (!isEmpty(selectedFeedType)) {
+    return `${cdnURI}${selectedFeedType.templateLink}`
+  }
   const name = type === ATTENDANCE ? capitalize(type) : type
   return `${cdnURI}/JS/webresources/csv/${name}_Template.csv`
 }

@@ -1,5 +1,6 @@
 import { testTypes } from '@edulastic/constants'
 import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
+import { cloneDeep, isEmpty } from 'lodash'
 
 export const getYear = (timestamp) => new Date(timestamp).getFullYear()
 
@@ -14,8 +15,8 @@ const {
   EXTERNAL_TEST_TYPES: ACADEMIC_TEST_TYPES,
   NON_ACADEMIC_DATA_TYPES,
 } = testTypes
-export const NON_ACADEMIC_DATA_TYPE_KEY = 'nonAcademicData'
-export const ACADEMIC_DATA_TYPE_KEY = 'academicData'
+export const NON_ACADEMIC_DATA_TYPE_KEY = 'non-academic'
+export const ACADEMIC_DATA_TYPE_KEY = 'academic'
 
 const getOptionValues = ([key, title]) => ({
   key,
@@ -47,3 +48,34 @@ export const dataFormatTreeOptions = [
     children: academicDataChildren,
   },
 ]
+
+export const getDataFormatOptionsWithFeedTypes = (
+  dataFormatOptions,
+  feedTypes
+) => {
+  if (isEmpty(feedTypes)) return dataFormatOptions
+  const academicFeedTypes = []
+  const nonAcademicFeedTypes = []
+  feedTypes.forEach(({ key, title, category }) => {
+    const obj = {
+      key,
+      value: key,
+      title,
+    }
+    if (category === ACADEMIC_DATA_TYPE_KEY) {
+      academicFeedTypes.push(obj)
+    } else {
+      nonAcademicFeedTypes.push(obj)
+    }
+  })
+  const dataFormatOptionsClone = cloneDeep(dataFormatOptions)
+  return dataFormatOptionsClone.map((option) => {
+    const { key, children } = option
+    if (key === ACADEMIC_DATA_TYPE_KEY) {
+      children.push(...academicFeedTypes)
+    } else {
+      children.push(...nonAcademicFeedTypes)
+    }
+    return option
+  })
+}

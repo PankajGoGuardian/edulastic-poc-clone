@@ -101,9 +101,19 @@ const YouTubePlayer = React.forwardRef(
       }
     }, [playing])
 
+    const videoId = extractVideoId(url)
+
     return (
       <StyledYouTubePlayer>
-        <div id={PLAYER_ID} />
+        <iframe
+          height="100%"
+          width="100%"
+          title="Youtube Player"
+          id={PLAYER_ID}
+          type="text/html"
+          src={`https://www.youtubeeducation.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`}
+          frameBorder="0"
+        />
       </StyledYouTubePlayer>
     )
   }

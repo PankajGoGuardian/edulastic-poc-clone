@@ -403,31 +403,30 @@ const VideoPreview = ({
         </AnnotationsContainer>
       </Droppable>
       <StyledPlayerContainer viewMode={viewMode} type="flex" gutter={16}>
-        <Col>
+        <Col span={1}>
           <PlayPause isPlaying={playing} onPlay={onPlay} onPause={onPause} />
         </Col>
-        <Col>
+        <Col span={1}>
           <StyledTypographyText strong>
             {formateSecondsToMMSS(currentTime)}/{formateSecondsToMMSS(duration)}
           </StyledTypographyText>
         </Col>
-        <Col>
+        <Col span={18}>
           <SeekBar
             marks={marks}
             duration={duration}
             currentTime={currentTime}
             seekTo={seekTo}
-            style={{ width: '300px' }}
           />
         </Col>
-        <Col>
+        <Col span={1}>
           <MuteUnmute
             volume={muted ? 0 : volumne}
             muted={muted}
             setMuted={setMuted}
           />
         </Col>
-        <Col>
+        <Col span={3}>
           <Volume volume={muted ? 0 : volumne} volumeTo={volumeTo} />
         </Col>
       </StyledPlayerContainer>

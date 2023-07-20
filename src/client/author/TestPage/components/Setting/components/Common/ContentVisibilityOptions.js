@@ -36,7 +36,9 @@ const ContentVisibilityOptions = ({
       )
     } else {
       setCombinedVisibilityKey(null)
-      setContentVisibility(testContentVisibility)
+      setContentVisibility(
+        testContentVisibility || contentVisibilityOptions.ALWAYS
+      )
     }
   }, [testContentVisibility])
 

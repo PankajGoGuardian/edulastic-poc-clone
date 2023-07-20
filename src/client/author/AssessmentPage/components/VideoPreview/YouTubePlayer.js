@@ -111,7 +111,8 @@ const YouTubePlayer = React.forwardRef(
           title="Youtube Player"
           id={PLAYER_ID}
           type="text/html"
-          src={`https://www.youtubeeducation.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}`}
+          allow="autoplay"
+          src={`https://www.youtubeeducation.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}&controls=0`}
           frameBorder="0"
         />
       </StyledYouTubePlayer>

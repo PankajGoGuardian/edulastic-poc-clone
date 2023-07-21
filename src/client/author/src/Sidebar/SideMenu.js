@@ -319,10 +319,12 @@ class SideMenu extends Component {
       const dataStudioMenuItemIdx = _menuItems.findIndex(
         (item) => item.label === navigationItemLabels.DATA_STUDIO
       )
-      _menuItems[dataStudioMenuItemIdx].allowedPathPattern.push(
-        /author\/subscription/
-      )
-      _menuItems[dataStudioMenuItemIdx].path = 'author/subscription'
+      if (_menuItems[dataStudioMenuItemIdx]) {
+        _menuItems[dataStudioMenuItemIdx].allowedPathPattern.push(
+          /author\/subscription/
+        )
+        _menuItems[dataStudioMenuItemIdx].path = 'author/subscription'
+      }
     }
 
     if (

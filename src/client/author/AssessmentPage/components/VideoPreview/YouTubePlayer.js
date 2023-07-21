@@ -52,6 +52,7 @@ const YouTubePlayer = React.forwardRef(
         videoId,
         height,
         width,
+        host: 'https://www.youtubeeducation.com',
         events: {
           onStateChange,
         },
@@ -101,20 +102,21 @@ const YouTubePlayer = React.forwardRef(
       }
     }, [playing])
 
-    const videoId = extractVideoId(url)
+    // const videoId = extractVideoId(url)
 
     return (
       <StyledYouTubePlayer>
-        <iframe
+        {/* <iframe
           height="100%"
           width="100%"
           title="Youtube Player"
           id={PLAYER_ID}
           type="text/html"
           allow="autoplay"
-          src={`https://www.youtubeeducation.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}&controls=0`}
+          src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${window.location.origin}&controls=0`}
           frameBorder="0"
-        />
+        /> */}
+        <div id={PLAYER_ID} />
       </StyledYouTubePlayer>
     )
   }

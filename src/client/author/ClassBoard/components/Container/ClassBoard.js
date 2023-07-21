@@ -32,7 +32,16 @@ import {
   notification as antNotification,
   Tooltip,
 } from 'antd'
-import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
+import {
+  get,
+  isEmpty,
+  isEqual,
+  keyBy,
+  last,
+  round,
+  sortBy,
+  uniqBy,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -360,8 +369,18 @@ class ClassBoard extends Component {
       match,
       testActivity,
       getAllTestActivitiesForStudent,
+      loadTestActivity,
     } = this.props
     const { assignmentId, classId } = match.params
+    if (
+      !isEqual(
+        testActivity?.map((t) => t.status),
+        prevProps.testActivity?.map((t) => t.status)
+      ) &&
+      testActivity.every((t) => t.status === 'submitted')
+    ) {
+      loadTestActivity(assignmentId, classId, true)
+    }
     const filterCriteria = (activity) => activity?.testActivityId
     const { selectedStudentId } = this.state
     if (

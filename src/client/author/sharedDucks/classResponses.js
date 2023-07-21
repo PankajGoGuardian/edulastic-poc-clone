@@ -15,7 +15,7 @@ import {
   testActivityApi,
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
-import { questionType } from '@edulastic/constants'
+import { questionType, roleuser } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
 import { get, isEmpty, groupBy, isPlainObject, isNil, isArray } from 'lodash'
@@ -58,7 +58,10 @@ import {
   getEBSRSelector,
   getScoringTypeSelector,
   getClassQuestionSelector,
+  getAdditionalDataSelector,
 } from '../ClassBoard/ducks'
+import { getManualContentVisibility } from '../questionUtils'
+import { getUserRole } from '../../student/Login/ducks'
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE =
@@ -159,6 +162,15 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
 }
 
 function* loadPassagesForItems({ testActivityId, passages }) {
+  const additionalData = yield select(getAdditionalDataSelector)
+  const userRole = yield select(getUserRole)
+
+  if (
+    userRole === roleuser.TEACHER &&
+    getManualContentVisibility(additionalData)
+  )
+    return
+
   yield all(
     passages.map((passage) =>
       call(loadPassageHighlightFromServer, {

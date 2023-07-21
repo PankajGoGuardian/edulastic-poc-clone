@@ -2,7 +2,11 @@ import React, { useState, useMemo } from 'react'
 import { isEmpty } from 'lodash'
 import { Empty } from 'antd'
 import { FlexContainer, EduIf, EduElse, EduThen } from '@edulastic/common'
-import { Label, AcademicRiskListContainer, StyledButton } from '../../common/styled'
+import {
+  Label,
+  AcademicRiskListContainer,
+  StyledButton,
+} from '../../common/styled'
 import TestRiskScoreList from './TestRiskScoreList'
 import TestRiskListPopup from './TestRiskListPopup'
 import { getTestRiskTableData } from '../../utils'
@@ -49,7 +53,9 @@ const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
           <EduThen>
             <FlexContainer justifyContent="space-between">
               <AcademicRiskListContainer $marginRight="20px" $width="40%">
-                <Label $fontSize="14px">EDULASTIC</Label>
+                <Label $fontSize="14px" $margin="0px 0 5px 0">
+                  EDULASTIC
+                </Label>
                 <TestRiskScoreList riskData={internalAssessmentRisk} />
               </AcademicRiskListContainer>
               <AcademicRiskListContainer $width="60%">

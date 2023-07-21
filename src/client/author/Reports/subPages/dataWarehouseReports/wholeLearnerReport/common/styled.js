@@ -60,7 +60,8 @@ export const DemographicsWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
+  font-weight: bold;
   height: 60px;
   background-color: ${fadedGrey};
   .demographic-item {
@@ -72,8 +73,8 @@ export const DemographicsWrapper = styled.div`
       font-size: 16px;
       margin-right: 10px;
     }
-    span {
-      font-weight: bold;
+    .title {
+      font-weight: normal;
     }
   }
 `
@@ -96,19 +97,19 @@ export const StudentThumbnail = styled.div`
 export const StudentMetaData = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
   align-items: baseline;
   justify-content: center;
   height: 100%;
   margin-left: 10px;
   color: ${greyThemeDark1};
-  .schools-name .grades-name {
-    margin-bottom: 10px;
-    font-size: 12px;
+  .schools-name,
+  .grades-name {
+    font-size: 13px;
   }
   .student-name {
     font-weight: bold;
     font-size: 16px;
-    margin-bottom: 10px;
   }
   .value {
     font-weight: bold;

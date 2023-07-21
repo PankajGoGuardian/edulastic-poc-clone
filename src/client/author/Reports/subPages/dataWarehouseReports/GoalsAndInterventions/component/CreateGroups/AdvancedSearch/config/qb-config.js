@@ -1,5 +1,7 @@
-import { TEST_TYPES_VALUES_MAP } from '@edulastic/constants/const/testTypes'
-import { capitalize } from 'lodash'
+import {
+  TEST_TYPES_VALUES_MAP,
+  TEST_TYPE_LABELS,
+} from '@edulastic/constants/const/testTypes'
 import { selectsData } from '../../../../../../../../TestPage/components/common'
 import { fieldKey } from '../../../../ducks/constants'
 
@@ -98,10 +100,12 @@ export const allowedFields = ({
       name: fieldKey.testTypes,
       label: 'Test Types',
       valueEditorType: 'multiselect',
-      values: Object.keys(TEST_TYPES_VALUES_MAP).map((type) => ({
-        value: TEST_TYPES_VALUES_MAP[type],
-        label: capitalize(TEST_TYPES_VALUES_MAP[type]),
-      })),
+      values: Object.keys(TEST_TYPES_VALUES_MAP)
+        .filter((t) => t !== 'TESTLET')
+        .map((type) => ({
+          value: TEST_TYPES_VALUES_MAP[type],
+          label: TEST_TYPE_LABELS[TEST_TYPES_VALUES_MAP[type]],
+        })),
     },
     {
       name: fieldKey.avgAcademicScore,

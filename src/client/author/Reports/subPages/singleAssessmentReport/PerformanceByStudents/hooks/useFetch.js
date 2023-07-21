@@ -56,7 +56,6 @@ export const usePerformanceByStudentsSummaryFetch = ({
 export const usePerformanceByStudentsDetailsFetch = ({
   settings,
   demographicFilters,
-  toggleFilter,
   sortKey,
   sortOrder,
   page,
@@ -100,11 +99,6 @@ export const usePerformanceByStudentsDetailsFetch = ({
           }
           setData(result)
           setLoading(false)
-          if (response?.data?.result?.studentMetricInfo?.length) {
-            toggleFilter(null, false)
-          } else {
-            toggleFilter(null, true)
-          }
         } catch (e) {
           setError(e)
           setLoading(false)

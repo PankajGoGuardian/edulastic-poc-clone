@@ -131,7 +131,6 @@ const PerformanceByStudents = ({
   ] = usePerformanceByStudentsDetailsFetch({
     settings,
     demographicFilters,
-    toggleFilter,
     sortKey,
     sortOrder,
     page,
@@ -199,6 +198,19 @@ const PerformanceByStudents = ({
   useEffect(() => {
     setPagination({ ...pagination, current: 0 })
   }, [range.left, range.right])
+
+  useEffect(() => {
+    if (
+      settings.selectedTest?.key &&
+      !res?.studentMetricInfo?.length &&
+      !res?.bandDistribution?.length &&
+      !res?.scoreDistribution?.length
+    ) {
+      toggleFilter(null, true)
+    } else {
+      toggleFilter(null, false)
+    }
+  }, [res])
 
   const barChartData = useMemo(() => getBarChartData(res), [res])
 
@@ -336,14 +348,25 @@ const PerformanceByStudents = ({
   }
 
   const hasNoData =
-    !details.studentMetricInfo?.length || detailsError || summaryError
+    (!summary.bandDistribution?.length &&
+      !summary.scoreDistribution?.length &&
+      !details.studentMetricInfo?.length) ||
+    detailsError ||
+    summaryError
 
   return (
     <>
       <EduIf condition={!summaryLoading}>
         <EduThen>
-          <EduIf condition={!hasNoData}>
+          <EduIf condition={hasNoData}>
             <EduThen>
+              <NoDataContainer>
+                {settings.requestFilters?.termId
+                  ? 'No data available currently.'
+                  : ''}
+              </NoDataContainer>
+            </EduThen>
+            <EduElse>
               <UpperContainer>
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
@@ -457,7 +480,12 @@ const PerformanceByStudents = ({
                           />
                         </Col>
                       </Row>
-                      <EduIf condition={itemsCount > PAGE_SIZE}>
+                      <EduIf
+                        condition={
+                          details.studentMetricInfo?.length &&
+                          itemsCount > PAGE_SIZE
+                        }
+                      >
                         <Pagination
                           style={{ marginTop: '10px' }}
                           onChange={onSetPage}
@@ -473,13 +501,6 @@ const PerformanceByStudents = ({
                   </EduIf>
                 </StyledCard>
               </UpperContainer>
-            </EduThen>
-            <EduElse>
-              <NoDataContainer>
-                {settings.requestFilters?.termId
-                  ? 'No data available currently.'
-                  : ''}
-              </NoDataContainer>
             </EduElse>
           </EduIf>
         </EduThen>

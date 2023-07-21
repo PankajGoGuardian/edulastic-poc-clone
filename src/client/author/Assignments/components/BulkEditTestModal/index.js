@@ -244,6 +244,7 @@ const BulkEditTestModal = ({
           updateTestContentVisibility={(value) =>
             setData({ ...data, [TEST_CONTENT_VISIBILITY]: value })
           }
+          isBulkUpdate
         />
       </EduIf>
     </StyledModal>

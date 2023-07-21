@@ -11,6 +11,7 @@ const ContentVisibilityOptions = ({
   isDisabled = false,
   testContentVisibility,
   updateTestContentVisibility,
+  isBulkUpdate = false,
 }) => {
   const [combinedVisibilityKey, setCombinedVisibilityKey] = useState(null)
   const [contentVisibility, setContentVisibility] = useState(
@@ -37,7 +38,9 @@ const ContentVisibilityOptions = ({
     } else {
       setCombinedVisibilityKey(null)
       setContentVisibility(
-        testContentVisibility || contentVisibilityOptions.ALWAYS
+        isBulkUpdate
+          ? testContentVisibility
+          : testContentVisibility || contentVisibilityOptions.ALWAYS
       )
     }
   }, [testContentVisibility])

@@ -263,7 +263,8 @@ class WorksheetComponent extends React.Component {
       type: 'point',
       class: 'Annotation',
       toolbarMode: 'question',
-      width: 300,
+      initialWidth: 400,
+      initialHeight: 300,
       ...question,
     }
 

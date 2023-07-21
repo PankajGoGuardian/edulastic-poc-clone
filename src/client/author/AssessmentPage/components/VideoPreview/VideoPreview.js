@@ -106,10 +106,24 @@ const VideoPreview = ({
         annotation?.questionId === questionId
     )
 
+    let updatedMinHeight = null
     if (targetAnnotation) {
+      const targetElement = document.getElementById(
+        `video-player-question-item-${questionId}`
+      )
+      if (!isEmpty(targetElement)) {
+        updatedMinHeight =
+          typeof targetElement?.offsetHeight === 'number'
+            ? targetElement.offsetHeight + 45 // remove video from question height + padding
+            : null
+      }
+
       onDropAnnotation(
         {
           ...targetAnnotation,
+          ...(typeof updatedMinHeight === 'number'
+            ? { initialHeight: updatedMinHeight }
+            : {}),
           ...(typeof ref?.offsetWidth === 'number'
             ? { width: ref.offsetWidth }
             : {}),
@@ -196,6 +210,23 @@ const VideoPreview = ({
       )
       let width = null
       let height = null
+      let initialWidth = null
+      let initialHeight = null
+
+      const targetElement = document.getElementById(
+        `video-quiz-question-item-${data.id}`
+      )
+      if (!isEmpty(targetElement)) {
+        initialWidth =
+          typeof targetElement?.offsetWidth === 'number'
+            ? targetElement.offsetWidth + 20 // padding
+            : null
+        initialHeight =
+          typeof targetElement?.offsetHeight === 'number'
+            ? targetElement.offsetHeight + 45 // remove video from question height + padding
+            : null
+      }
+
       if (!isEmpty(targetAnnotation)) {
         const {
           width: originalWidth = null,
@@ -212,6 +243,8 @@ const VideoPreview = ({
           questionId: data.id,
           qIndex: data.index,
           time: Math.floor(videoRef.current?.getCurrentTime?.()),
+          ...(typeof initialWidth === 'number' ? { initialWidth } : {}),
+          ...(typeof initialHeight === 'number' ? { initialHeight } : {}),
           ...(typeof width === 'number' ? { width } : {}),
           ...(typeof height === 'number' ? { height } : {}),
         },
@@ -333,73 +366,85 @@ const VideoPreview = ({
                 item.x !== -1 &&
                 item.y !== -1
             )
-            .map(({ uuid, qIndex, x, y, questionId, width, height }) => (
-              <div
-                key={uuid}
-                className="annotation-item unselectable-text-container"
-                onClick={handleHighlight(questionId)}
-                style={getNumberStyles(
-                  (containerRect.width * x) / 100,
-                  (containerRect.height * y) / 100,
-                  1
-                )}
-              >
-                <Rnd
-                  size={{
-                    ...(typeof width === 'number' ? { width } : {}),
-                    ...(typeof height === 'number' ? { height } : {}),
-                  }}
-                  minWidth={300}
-                  enableResizing={
-                    viewMode === 'edit' && isEditable && !testMode
-                      ? {
-                          bottomLeft: false,
-                          bottomRight: true,
-                          topLeft: false,
-                          topRight: false,
-                          bottom: true,
-                          left: false,
-                          right: true,
-                          top: false,
-                        }
-                      : false
-                  }
-                  onResizeStop={(e, direction, ref, delta, position) =>
-                    handleResize({ ref, questionId, position })
-                  }
-                  bounds=".annotations-container"
-                  disableDragging
-                  dis
+            .map(
+              ({
+                uuid,
+                qIndex,
+                x,
+                y,
+                questionId,
+                width,
+                height,
+                initialWidth,
+                initialHeight,
+              }) => (
+                <div
+                  key={uuid}
+                  className="annotation-item unselectable-text-container"
+                  onClick={handleHighlight(questionId)}
+                  style={getNumberStyles(
+                    (containerRect.width * x) / 100,
+                    (containerRect.height * y) / 100,
+                    1
+                  )}
                 >
-                  <QuestionItem
-                    key={questionId}
-                    index={qIndex}
-                    questionIndex={qIndex}
-                    data={questionsById[questionId]}
-                    answer={answersById[`${itemId}_${questionId}`]}
-                    previewMode={viewMode === 'edit' ? 'clear' : previewMode}
-                    onDragStart={() => {
-                      onDragStart(questionId)
+                  <Rnd
+                    size={{
+                      ...(typeof width === 'number' ? { width } : {}),
+                      ...(typeof height === 'number' ? { height } : {}),
                     }}
-                    groupId={pathname.split('/')[5]}
-                    testMode={testMode}
-                    highlighted={highlighted === questionId}
-                    viewMode={viewMode}
-                    zoom={1}
-                    review
-                    qId={0}
-                    itemId={itemId}
-                    handleRemoveAnnotation={removeQuestionAnnotation}
-                    editMode={editMode}
-                    onCreateOptions={() => {}}
-                    draggble
-                    disableAutoHightlight
-                    isSnapQuizVideo
-                    isSnapQuizVideoPlayer
-                  />
-                </Rnd>
-              </div>
-            ))}
+                    minWidth={initialWidth}
+                    minHeight={initialHeight}
+                    enableResizing={
+                      viewMode === 'edit' && isEditable && !testMode
+                        ? {
+                            bottomLeft: false,
+                            bottomRight: true,
+                            topLeft: false,
+                            topRight: false,
+                            bottom: true,
+                            left: false,
+                            right: true,
+                            top: false,
+                          }
+                        : false
+                    }
+                    onResizeStop={(e, direction, ref) =>
+                      handleResize({ ref, questionId })
+                    }
+                    bounds=".annotations-container"
+                    disableDragging
+                  >
+                    <QuestionItem
+                      key={questionId}
+                      index={qIndex}
+                      questionIndex={qIndex}
+                      data={questionsById[questionId]}
+                      answer={answersById[`${itemId}_${questionId}`]}
+                      previewMode={viewMode === 'edit' ? 'clear' : previewMode}
+                      onDragStart={() => {
+                        onDragStart(questionId)
+                      }}
+                      groupId={pathname.split('/')[5]}
+                      testMode={testMode}
+                      highlighted={highlighted === questionId}
+                      viewMode={viewMode}
+                      zoom={1}
+                      review
+                      qId={0}
+                      itemId={itemId}
+                      handleRemoveAnnotation={removeQuestionAnnotation}
+                      editMode={editMode}
+                      onCreateOptions={() => {}}
+                      draggble
+                      disableAutoHightlight
+                      isSnapQuizVideo
+                      isSnapQuizVideoPlayer
+                    />
+                  </Rnd>
+                </div>
+              )
+            )}
         </AnnotationsContainer>
       </Droppable>
       <StyledPlayerContainer viewMode={viewMode} type="flex" gutter={16}>

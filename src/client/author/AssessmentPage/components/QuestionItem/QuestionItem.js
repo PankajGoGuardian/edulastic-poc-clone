@@ -428,7 +428,7 @@ class QuestionItem extends React.Component {
     } = this.props
 
     return (
-      <VideoQuizItemWrapper isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}>
+      <VideoQuizItemWrapper>
         <VideoQuizItemContainer>
           <EduIf condition={!testMode && !review}>
             <DragHandle
@@ -454,6 +454,9 @@ class QuestionItem extends React.Component {
           </DragItem>
           <EduIf condition={!annotations || draggble}>
             <VideoQuizQuestionForm
+              id={`${
+                isSnapQuizVideoPlayer ? 'video-player' : 'video-quiz'
+              }-question-item-${id}`}
               review={review}
               ref={this.qFormRef}
               onClick={handleOnClick}

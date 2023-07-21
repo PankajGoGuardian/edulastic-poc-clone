@@ -212,7 +212,7 @@ export const mergeTestMetrics = (
         getClaimInfo(value, name, metric, allExternalBands)
       return {
         title: metric.testTitle,
-        assignmentDate: +new Date(metric.testStartDate),
+        assignmentDate: +new Date(metric.testDate),
         testType: 'External Assessment',
         externalTestType: metric.testCategory,
         groupId: '',

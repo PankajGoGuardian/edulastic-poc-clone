@@ -42,7 +42,6 @@ const {
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
 } = reportUtils.common
-
 const RiskSummary = ({ settings, loc = '' }) => {
   const query = useMemo(
     () => ({
@@ -59,7 +58,6 @@ const RiskSummary = ({ settings, loc = '' }) => {
       deDuplicate: false,
     }
   )
-
   const { prePeriod = {}, postPeriod = {} } = get(data, 'data.result', {})
   const showFooter =
     !isEmpty(prePeriod.start) && !isEmpty(prePeriod.distribution)
@@ -73,12 +71,10 @@ const RiskSummary = ({ settings, loc = '' }) => {
     () => transformRiskSummaryData(prePeriod, postPeriod, showFooter),
     [prePeriod, postPeriod, showFooter]
   )
-
   const periodLabel = getTrendPeriodLabel(
     settings.requestFilters.periodType,
     postPeriod
   )
-
   const trendPeriodLabel = showFooter
     ? getTrendPeriodLabel(
         settings.requestFilters.periodType,
@@ -87,24 +83,20 @@ const RiskSummary = ({ settings, loc = '' }) => {
         trendPeriodDateFormat
       )
     : ''
-
   const title =
     RISK_TYPE_OPTIONS.find(
       (riskType) => riskType.key === settings.requestFilters.riskType
     )?.title || RISK_TYPE_OPTIONS[0].title
-
   const hasContent = !loading && !error && postPeriod?.distribution?.length
   const errorMsg = error?.message || 'Error fetching Risk Summary data.'
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
-
   const isEarlyWarningReport = loc === reportNavType.DW_EARLY_WARNING_REPORT
   const widgetWidth = isEarlyWarningReport ? '40%' : '100%'
   const isDashboardReport = loc === reportNavType.DW_DASHBOARD_REPORT
   const externalUrl = isDashboardReport
     ? `${DW_EARLY_WARNING_REPORT_URL}?${qs.stringify(settings.requestFilters)}`
     : null
-
   return (
     <Widget width={widgetWidth} minWidth="665px">
       <FlexContainer justifyContent="left" alignItems="center">
@@ -132,6 +124,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     header="HIGH RISK"
                     value={postPeriodhighRisk}
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH]}
+                    dataCy="highRiskValue"
                     footer={
                       <Footer
                         isVisible={showFooter}
@@ -151,6 +144,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                     header="MEDIUM RISK"
                     value={postPeriodMediumRisk}
                     color={RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM]}
+                    dataCy="mediumRiskValue"
                     footer={
                       <Footer
                         isVisible={showFooter}
@@ -168,7 +162,7 @@ const RiskSummary = ({ settings, loc = '' }) => {
                   dashColor={lightGrey8}
                   margin="0"
                 />
-                <div className="right-content">
+                <div className="right-content" data-cy="riskPieChart">
                   <SimplePieChart
                     data={pieChartData}
                     label={<PieChartLabel />}
@@ -191,5 +185,4 @@ const RiskSummary = ({ settings, loc = '' }) => {
     </Widget>
   )
 }
-
 export default RiskSummary

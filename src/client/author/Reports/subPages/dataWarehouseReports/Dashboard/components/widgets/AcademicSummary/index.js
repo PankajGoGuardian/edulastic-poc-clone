@@ -183,6 +183,7 @@ const AcademicSummary = ({
                     }
                     color={avgScoreCellColor}
                     cellType="large"
+                    dataCy="avgScorePercentage"
                   />
 
                   <EduIf condition={!isExternalTestTypeSelected}>
@@ -206,6 +207,7 @@ const AcademicSummary = ({
                         value={`${aboveStandardPercentage}${scorePrefix}`}
                         color={lightGreen13}
                         cellType="large"
+                        dataCy="studentsInBandPercentage"
                       />
                     </EduThen>
                   </EduIf>
@@ -217,7 +219,7 @@ const AcademicSummary = ({
                   dashColor={lightGrey8}
                   margin="0"
                 />
-                <div className="right-content">
+                <div className="right-content" data-cy="academicPieChart">
                   <SimplePieChart
                     innerRadius={48}
                     outerRadius={100}

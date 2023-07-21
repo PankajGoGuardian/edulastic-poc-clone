@@ -9,6 +9,7 @@ const WidgetCell = ({
   footer,
   color,
   cellType = 'medium',
+  dataCy,
 }) => {
   const headerClassName = subHeader ? 'small-header' : ''
   return (
@@ -18,7 +19,7 @@ const WidgetCell = ({
         <div>{subHeader}</div>
       </Row>
       <Row>
-        <StyledCell cellType={cellType} color={color}>
+        <StyledCell data-cy={dataCy} cellType={cellType} color={color}>
           {value}
         </StyledCell>
       </Row>

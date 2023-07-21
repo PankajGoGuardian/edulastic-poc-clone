@@ -29,7 +29,10 @@ const ReportLinkCard = ({
 
   return (
     <Col xxl={8} xl={9} lg={10}>
-      <CustomStyledCard onClick={navigateToReport}>
+      <CustomStyledCard
+        onClick={navigateToReport}
+        data-cy={`dataStudio-card-${title}`}
+      >
         <HeaderContainer>
           <TitleContainer>
             <Col span={24}>

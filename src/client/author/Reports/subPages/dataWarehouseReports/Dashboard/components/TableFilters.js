@@ -38,6 +38,7 @@ const DashboardTableFilters = ({
           height="35px"
           prefix="Compare By"
           by={tableFilters.compareBy}
+          dataCy="performanceCompareBy"
           selectCB={(e, selected, comData) =>
             updateTableFiltersCB(selected, comData)
           }

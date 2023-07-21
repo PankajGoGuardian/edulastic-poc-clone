@@ -55,6 +55,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
       <WidgetCell
         header="AVERAGE"
         value={`${Math.round(postPeriod.avg)}%`}
+        dataCy="avgergeAttendancePercentage"
         cellType="large"
         color="#cef5d8"
       />
@@ -89,6 +90,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         header="ATTENDANCE"
         subHeader="DISRUPTIONS"
         value={`${Math.round(postPeriod.attendanceDisruptionsPerc)}%`}
+        dataCy="attendanceDisruptionsPercentage"
         footer={
           <Footer
             isVisible={showAttendanceDisruptionsTrend}
@@ -103,6 +105,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
         header="CHRONIC"
         subHeader="ABSENTEEISM"
         value={`${Math.round(postPeriod.chronicAbsentPerc)}%`}
+        dataCy="chronicAbsenteeismPercentage"
         footer={
           <Footer
             isVisible={showChronicTrend}

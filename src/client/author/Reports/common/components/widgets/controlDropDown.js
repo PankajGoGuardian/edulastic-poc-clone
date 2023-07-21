@@ -62,6 +62,7 @@ function searchItemOrDefault(data, searchItem) {
 
 const ControlDropDown = ({
   className,
+  dataCy = '',
   containerClassName = '',
   prefix = '',
   showPrefixOnSelected = true,
@@ -108,6 +109,7 @@ const ControlDropDown = ({
   return (
     <StyledDiv
       className={`${containerClassName} control-dropdown`}
+      data-cy={dataCy}
       buttonWidth={buttonWidth}
       style={style}
       height={height}

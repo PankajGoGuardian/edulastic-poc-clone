@@ -1,5 +1,5 @@
 import React from 'react'
-import { Circle, Polygon, G, Svg } from './styledSVG'
+import { Circle, Polygon, G, Svg } from '../../styled-components/styledSVG'
 
 const PlayPause = ({ isPlaying, style, onPlay, onPause }) => {
   const _handlePlayPause = () => {

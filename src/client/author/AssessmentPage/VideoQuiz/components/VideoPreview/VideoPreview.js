@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
-import { getPreviewSelector } from '../../../src/selectors/view'
+import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
+import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
 import CombinedPlayer from './CombinedPlayer'
 import MuteUnmute from './MuteUnmute'
@@ -20,7 +20,7 @@ import {
   PDFPreviewWrapper,
   StyledPlayerContainer,
   StyledTypographyText,
-} from './styled'
+} from '../../styled-components/VideoPreview'
 import {
   formateSecondsToMMSS,
   getCurrentTime,
@@ -31,7 +31,7 @@ import {
   showMarkerArea,
   useStateRef,
 } from './utils'
-import appConfig from '../../../../../app-config'
+import appConfig from '../../../../../../app-config'
 
 const { DragPreview } = DragDrop
 

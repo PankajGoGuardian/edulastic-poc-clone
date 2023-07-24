@@ -1,5 +1,5 @@
 import React from 'react'
-import { Circle, Polygon, Path, Svg } from './styledSVG'
+import { Circle, Polygon, Path, Svg } from '../../styled-components/styledSVG'
 
 const MuteUnmute = ({ volume, style, muted, setMuted }) => {
   const _handleMuteUnmute = () => {

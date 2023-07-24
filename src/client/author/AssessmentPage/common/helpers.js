@@ -10,29 +10,3 @@ export const isSubmitButton = (ev) => {
   }
   return false
 }
-
-export const getUpdatedAnnotation = ({
-  annotations,
-  question,
-  questionId,
-  timestamp,
-}) => {
-  timestamp = timestamp === 0 ? null : timestamp
-  const annotationIndex = (annotations || []).findIndex(
-    (annotation) => annotation?.questionId === questionId
-  )
-  if (annotationIndex === -1) {
-    return {
-      x: -1,
-      y: -1,
-      questionId: question.id,
-      qIndex: question.qIndex,
-      time: timestamp,
-    }
-  }
-  const existingAnnotation = annotations[annotationIndex]
-  return {
-    ...existingAnnotation,
-    time: timestamp,
-  }
-}

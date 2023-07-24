@@ -9,10 +9,10 @@ import ReactPlayer from 'react-player'
 import styled from 'styled-components'
 // import { Player } from 'video-react'
 import { Row, Typography } from 'antd'
-import MessageIcon from '../PDFAnnotationTools/static/cursor-comment.svg'
-import ImageIcon from '../PDFAnnotationTools/static/cursor-image.svg'
-import EditIcon from '../PDFAnnotationTools/static/cursor-pencil.svg'
-import VideoIcon from '../PDFAnnotationTools/static/cursor-video.svg'
+import MessageIcon from '../../components/PDFAnnotationTools/static/cursor-comment.svg'
+import ImageIcon from '../../components/PDFAnnotationTools/static/cursor-image.svg'
+import EditIcon from '../../components/PDFAnnotationTools/static/cursor-pencil.svg'
+import VideoIcon from '../../components/PDFAnnotationTools/static/cursor-video.svg'
 
 const { DropContainer } = DragDrop
 

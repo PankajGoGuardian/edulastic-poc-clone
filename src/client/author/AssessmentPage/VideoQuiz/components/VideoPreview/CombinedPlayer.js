@@ -1,9 +1,9 @@
 import React from 'react'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
-import { StyledReactPlayer } from './styled'
+import { StyledReactPlayer } from '../../styled-components/VideoPreview'
 import { extractVideoId } from './utils'
 import YouTubePlayer from './YouTubePlayer'
-import appConfig from '../../../../../app-config'
+import appConfig from '../../../../../../app-config'
 
 const CombinedPlayer = React.forwardRef(({ url, ...props }, ref) => {
   const showTYEducational = appConfig.edYouTubePlayerKey && extractVideoId(url)

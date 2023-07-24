@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { extractVideoId } from './utils'
-import { StyledYouTubePlayer } from './styled'
+import { StyledYouTubePlayer } from '../../styled-components/VideoPreview'
 
 const PLAYER_ID = 'youtube-player'
 const TAG_ID = 'iframe_api'

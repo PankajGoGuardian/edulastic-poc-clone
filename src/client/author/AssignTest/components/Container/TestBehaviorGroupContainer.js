@@ -587,35 +587,36 @@ const TestBehaviorGroupContainer = ({
       {/* Show hints to students */}
 
       {/* Test Content visibility */}
-      {(userRole === roleuser.DISTRICT_ADMIN ||
-        userRole === roleuser.SCHOOL_ADMIN) && (
-        <SettingContainer id="content-visibility">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title="TEST CONTENT VISIBILITY"
-            content="Should teachers see the test items? Choose Always Hidden if test security is critical use Hide Prior to Grading to hide until all students submit. Use sub-options to allow teachers to grade manually gradable items with the help of rubric while keeping the question hidden."
-            premium
-            placement="rightTop"
-          />
-          <StyledRow gutter={16} mb="15px">
-            <Col span={10}>
-              <Label>
-                Item content visibility and grading permissions on manually
-                gradable items for teachers
-              </Label>
-            </Col>
-            <Col span={14}>
-              <ContentVisibilityOptions
-                isDisabled={freezeSettings}
-                testContentVisibility={testSettings.testContentVisibility}
-                updateTestContentVisibility={(value) =>
-                  overRideSettings(TEST_CONTENT_VISIBILITY, value)
-                }
-              />
-            </Col>
-          </StyledRow>
-        </SettingContainer>
-      )}
+      {COMMON.includes(testType) &&
+        (userRole === roleuser.DISTRICT_ADMIN ||
+          userRole === roleuser.SCHOOL_ADMIN) && (
+          <SettingContainer id="content-visibility">
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="TEST CONTENT VISIBILITY"
+              content="Should teachers see the test items? Choose Always Hidden if test security is critical use Hide Prior to Grading to hide until all students submit. Use sub-options to allow teachers to grade manually gradable items with the help of rubric while keeping the question hidden."
+              premium
+              placement="rightTop"
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={10}>
+                <Label>
+                  Item content visibility and grading permissions on manually
+                  gradable items for teachers
+                </Label>
+              </Col>
+              <Col span={14}>
+                <ContentVisibilityOptions
+                  isDisabled={freezeSettings}
+                  testContentVisibility={testSettings.testContentVisibility}
+                  updateTestContentVisibility={(value) =>
+                    overRideSettings(TEST_CONTENT_VISIBILITY, value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
       {/* Test Content visibility */}
       {COMMON.includes(testType) && (
         <SettingContainer id="allow-teachers-to-redirect">

@@ -1620,31 +1620,35 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {(userRole === roleuser.DISTRICT_ADMIN ||
-                    userRole === roleuser.SCHOOL_ADMIN) && (
-                    <Block id="test-content-visibility" smallSize={isSmallSize}>
-                      <Title>
-                        Item content visibility and grading permissions on
-                        manually gradable items for teachers
-                      </Title>
-                      <Description>
-                        Use &quot;Hide prior to grading / Always hidden&quot;
-                        option to allow teachers to grade manually gradable
-                        items with the help of rubric while keeping the question
-                        hidden.
-                      </Description>
+                  {COMMON.includes(testType) &&
+                    (userRole === roleuser.DISTRICT_ADMIN ||
+                      userRole === roleuser.SCHOOL_ADMIN) && (
+                      <Block
+                        id="test-content-visibility"
+                        smallSize={isSmallSize}
+                      >
+                        <Title>
+                          Item content visibility and grading permissions on
+                          manually gradable items for teachers
+                        </Title>
+                        <Description>
+                          Use &quot;Hide prior to grading / Always hidden&quot;
+                          option to allow teachers to grade manually gradable
+                          items with the help of rubric while keeping the
+                          question hidden.
+                        </Description>
 
-                      <Body smallSize={isSmallSize}>
-                        <ContentVisibilityOptions
-                          isDisabled={disabled}
-                          testContentVisibility={testContentVisibility}
-                          updateTestContentVisibility={this.updateFeatures(
-                            TEST_CONTENT_VISIBILITY
-                          )}
-                        />
-                      </Body>
-                    </Block>
-                  )}
+                        <Body smallSize={isSmallSize}>
+                          <ContentVisibilityOptions
+                            isDisabled={disabled}
+                            testContentVisibility={testContentVisibility}
+                            updateTestContentVisibility={this.updateFeatures(
+                              TEST_CONTENT_VISIBILITY
+                            )}
+                          />
+                        </Body>
+                      </Block>
+                    )}
                 </>
               )}
 

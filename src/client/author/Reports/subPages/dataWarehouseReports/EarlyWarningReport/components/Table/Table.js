@@ -42,6 +42,7 @@ const EarlyWarningTable = ({
   setTablePagination,
   compareByOptions,
   isSharedReport = false,
+  feedTypes,
 }) => {
   const query = useMemo(
     () => ({
@@ -88,6 +89,7 @@ const EarlyWarningTable = ({
           ? compareByStudentColumns
           : tableColumnsData,
         tableData: tableDataToUse,
+        feedTypes,
       }),
     [
       tableFilters[tableFilterTypes.COMPARE_BY],

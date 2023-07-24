@@ -16,6 +16,7 @@ import {
   compareByOptions as compareByOptionsRaw,
 } from '../common/utils'
 import { selectors, actions } from './ducks'
+import { getFeedTypes } from '../../../../sharedDucks/dataWarehouse'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
@@ -38,6 +39,7 @@ const EarlyWarningReport = ({
   settings,
   firstLoad,
   resetAllReports,
+  feedTypes,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -137,6 +139,7 @@ const EarlyWarningReport = ({
             settings={settings}
             history={history}
             search={search}
+            feedTypes={feedTypes}
           />
         </EduElse>
       </EduIf>
@@ -148,6 +151,7 @@ export default connect(
   (state) => ({
     ...mapValues(selectors, (selector) => selector(state)),
     userRole: getUserRole(state),
+    feedTypes: getFeedTypes(state),
   }),
   {
     ...actions,

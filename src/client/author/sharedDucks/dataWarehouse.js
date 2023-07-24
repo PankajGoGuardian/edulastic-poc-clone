@@ -333,7 +333,7 @@ export function* fetchFeedTypes() {
     const feedTypes = yield call(dataWarehouseApi.getFeedTypes)
     yield put({
       type: GET_FEED_TYPES_REQUEST_SUCCESS,
-      payload: feedTypes,
+      payload: feedTypes.result,
     })
   } catch (error) {
     const msg =

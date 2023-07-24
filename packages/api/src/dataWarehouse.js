@@ -241,7 +241,7 @@ const getFeedTypes = () =>
       url: `${prefix}/feed-types`,
       method: 'get',
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 export default {
   getSignedUrl,

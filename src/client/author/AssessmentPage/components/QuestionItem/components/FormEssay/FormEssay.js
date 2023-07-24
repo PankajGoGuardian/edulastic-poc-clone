@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
-import { EduIf, Stimulus } from '@edulastic/common'
 import { isSubmitButton } from '../../../../common/helpers'
 
 export default class FormEssay extends React.Component {
@@ -10,11 +9,9 @@ export default class FormEssay extends React.Component {
     mode: PropTypes.oneOf(['edit', 'review', 'report']).isRequired,
     question: PropTypes.object.isRequired,
     answer: PropTypes.string,
-    disableAutoHightlight: PropTypes.bool,
   }
 
   static defaultProps = {
-    disableAutoHightlight: false,
     answer: '',
   }
 
@@ -23,27 +20,14 @@ export default class FormEssay extends React.Component {
     saveAnswer(value)
   }
 
-  get showStimulus() {
-    const { isSnapQuizVideo } = this.props
-    return isSnapQuizVideo
-  }
-
   renderView = () => {
     const {
-      question: { validation, stimulus = '' },
+      question: { validation },
     } = this.props
     if (!validation) return this.renderForm()
 
     return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <Input disabled placeholder="Essay type" />
-      </div>
+      <Input style={{ width: '150px' }} disabled placeholder="Essay type" />
     )
   }
 
@@ -51,7 +35,7 @@ export default class FormEssay extends React.Component {
     // preventing blur event when relatedTarget is submit button
     if (!isSubmitButton(ev)) {
       const { clearHighlighted, saveQuestionResponse } = this.props
-      clearHighlighted && clearHighlighted()
+      clearHighlighted()
       saveQuestionResponse()
     }
   }
@@ -61,31 +45,21 @@ export default class FormEssay extends React.Component {
       answer,
       question: {
         uiStyle: { numberOfRows = 10 },
-        stimulus = '',
       },
       mode,
       highlighted,
-      disableAutoHightlight,
     } = this.props
     return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-          <Input.TextArea
-            style={{ padding: '2px 11px', resize: 'none' }}
-            value={answer}
-            data-cy="essayInput"
-            onChange={this.handleChange}
-            onBlur={this.handleBlur}
-            disabled={mode === 'report'}
-            rows={numberOfRows} // textarea number of rows
-            ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
-          />
-        </EduIf>
-      </div>
+      <Input.TextArea
+        style={{ padding: '2px 11px', resize: 'none' }}
+        value={answer}
+        data-cy="essayInput"
+        onChange={this.handleChange}
+        onBlur={this.handleBlur}
+        disabled={mode === 'report'}
+        rows={numberOfRows} // textarea number of rows
+        ref={(el) => highlighted && el?.focus()}
+      />
     )
   }
 

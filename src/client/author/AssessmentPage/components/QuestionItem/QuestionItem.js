@@ -10,7 +10,7 @@ import {
   get,
   round,
 } from 'lodash'
-import { MathSpan, DragDrop, EduIf, EduThen, EduElse } from '@edulastic/common'
+import { MathSpan, DragDrop } from '@edulastic/common'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 
 import {
@@ -20,7 +20,6 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
-  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import { IconPencilEdit, IconCheck, IconClose } from '@edulastic/icons'
 import { FeedbackByQIdSelector } from '../../../../student/sharedDucks/TestItem'
@@ -31,12 +30,10 @@ import FormText from './components/FormText/FormText'
 import FormDropdown from './components/FormDropdown/FormDropdown'
 import FormMath from './components/FormMath/FormMath'
 import FormEssay from './components/FormEssay/FormEssay'
-import DisplayTimestamp from './components/common/DisplayTimestamp'
 import {
   QuestionItemWrapper,
   QuestionNumber,
   QuestionForm,
-  VideoQuizQuestionForm,
   EditButton,
   AnswerForm,
   AnswerIndicator,
@@ -46,13 +43,7 @@ import {
   DetailContentsAlternate,
   ButtonWrapper,
   DetailAlternateContainer,
-  StyledRemoveQuestion,
-  VideoQuizItemWrapper,
-  VideoQuizItemContainer,
 } from './styled'
-import FormAudio from './components/FormAudio/FormAudio'
-import { getFormattedTimeInMinutesAndSeconds } from '../../../../assessment/utils/timeUtils'
-import { DragHandle } from '../Questions/Questions'
 
 const { DragItem } = DragDrop
 
@@ -216,9 +207,6 @@ class QuestionItem extends React.Component {
       clearHighlighted,
       resetTimeSpentOnQuestion,
       itemId,
-      disableAutoHightlight,
-      isSnapQuizVideo = false,
-      isSnapQuizVideoPlayer = false,
     } = this.props
 
     if (!evaluation) {
@@ -254,10 +242,7 @@ class QuestionItem extends React.Component {
       highlighted,
       boundingRect,
       testItemId: itemId,
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer,
     }
-
     switch (data.type) {
       case MULTIPLE_CHOICE:
         return (
@@ -269,21 +254,13 @@ class QuestionItem extends React.Component {
           />
         )
       case SHORT_TEXT:
-        return (
-          <FormText
-            onCreateAnswer={onCreateOptions}
-            {...props}
-            disableAutoHightlight={disableAutoHightlight}
-          />
-        )
+        return <FormText onCreateAnswer={onCreateOptions} {...props} />
       case CLOZE_DROP_DOWN:
         return <FormDropdown {...props} />
       case MATH:
         return <FormMath {...props} />
       case ESSAY_PLAIN_TEXT:
-        return (
-          <FormEssay {...props} disableAutoHightlight={disableAutoHightlight} />
-        )
+        return <FormEssay {...props} />
       case TRUE_OR_FALSE:
         return (
           <FormChoice
@@ -293,23 +270,15 @@ class QuestionItem extends React.Component {
             {...props}
           />
         )
-      case AUDIO_RESPONSE:
-        return (
-          <FormAudio
-            onCreateAnswer={onCreateOptions}
-            {...props}
-            disableAutoHightlight={disableAutoHightlight}
-          />
-        )
       default:
         return null
     }
   }
 
   renderEditButton = () => {
-    const { onOpenEdit, onDelete, isSnapQuizVideo } = this.props
+    const { onOpenEdit, onDelete } = this.props
     return (
-      <EditButton isSnapQuizVideo={isSnapQuizVideo}>
+      <EditButton>
         <ButtonWrapper>
           <IconPencilEdit onClick={onOpenEdit} className="edit" title="Edit" />
         </ButtonWrapper>
@@ -332,7 +301,6 @@ class QuestionItem extends React.Component {
 
   renderAnswerIndicator = (type) => {
     let { evaluation } = this.props
-    const { isSnapQuizVideo } = this.props
 
     if (isUndefined(evaluation)) {
       evaluation = get(this.props, 'data.activity.evaluation')
@@ -350,7 +318,7 @@ class QuestionItem extends React.Component {
       correct = evaluation && evaluation['0']
     }
     return (
-      <AnswerIndicator correct={correct} isSnapQuizVideo={isSnapQuizVideo}>
+      <AnswerIndicator correct={correct}>
         {correct ? <IconCheck /> : <IconClose />}
       </AnswerIndicator>
     )
@@ -409,86 +377,6 @@ class QuestionItem extends React.Component {
     )
   }
 
-  renderVideoQuizQuestionItem = ({ disableDrag, showAnswerIndicator }) => {
-    const { dragging } = this.state
-    const {
-      data: { id, type = null, questionDisplayTimestamp = null } = {},
-      questionIndex,
-      review,
-      viewMode,
-      highlighted,
-      testMode,
-      pdfPreview,
-      annotations,
-      zoom,
-      draggble,
-      isSnapQuizVideoPlayer,
-      editMode,
-      handleOnClick,
-    } = this.props
-
-    return (
-      <VideoQuizItemWrapper>
-        <VideoQuizItemContainer>
-          <EduIf condition={!testMode && !review}>
-            <DragHandle
-              review={review}
-              questionIndex={questionIndex}
-              isSnapQuizVideo
-            />
-          </EduIf>
-          <DragItem
-            data={{ id, index: questionIndex }}
-            disabled={disableDrag}
-            style={{ float: 'left', margin: '0px 10px 5px 0px' }}
-          >
-            <QuestionNumber
-              viewMode={viewMode === 'edit'}
-              dragging={dragging}
-              highlighted={highlighted}
-              pdfPreview={pdfPreview}
-              zoom={zoom}
-            >
-              {questionIndex}
-            </QuestionNumber>
-          </DragItem>
-          <EduIf condition={!annotations || draggble}>
-            <VideoQuizQuestionForm
-              id={`${
-                isSnapQuizVideoPlayer ? 'video-player' : 'video-quiz'
-              }-question-item-${id}`}
-              review={review}
-              ref={this.qFormRef}
-              onClick={handleOnClick}
-              isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
-              isSnapQuizVideo
-            >
-              {this.renderContent(
-                highlighted,
-                this.qFormRef?.current?.getBoundingClientRect()
-              )}
-            </VideoQuizQuestionForm>
-          </EduIf>
-          <EduIf
-            condition={
-              !isSnapQuizVideoPlayer &&
-              editMode &&
-              typeof questionDisplayTimestamp === 'number'
-            }
-          >
-            <DisplayTimestamp
-              timestamp={getFormattedTimeInMinutesAndSeconds(
-                questionDisplayTimestamp * 1000
-              )}
-            />
-          </EduIf>
-          {!review && !pdfPreview && !testMode && this.renderEditButton()}
-        </VideoQuizItemContainer>
-        {showAnswerIndicator && this.renderAnswerIndicator(type)}
-      </VideoQuizItemWrapper>
-    )
-  }
-
   render() {
     const { dragging } = this.state
     if (!this.props?.data?.id) {
@@ -509,11 +397,6 @@ class QuestionItem extends React.Component {
       annotations,
       reportActivity,
       zoom,
-      draggble,
-      editMode,
-      isSnapQuizVideo,
-      handleRemoveAnnotation,
-      isSnapQuizVideoPlayer = false,
     } = this.props
 
     const check =
@@ -541,8 +424,6 @@ class QuestionItem extends React.Component {
       }
     }
 
-    const disableDrag = draggble ? false : review || testMode
-
     return (
       <QuestionItemWrapper
         className={`doc-based-question-item-for-scroll-${id}`}
@@ -552,66 +433,37 @@ class QuestionItem extends React.Component {
         review={testMode || review}
         annotations={annotations}
         pdfPreview={pdfPreview}
-        isSnapQuizVideo={isSnapQuizVideo}
-        isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
         data-cy="questionItem"
       >
-        <EduIf condition={isSnapQuizVideo}>
-          <EduThen>
-            {this.renderVideoQuizQuestionItem({
-              disableDrag,
-              showAnswerIndicator,
-            })}
-          </EduThen>
-          <EduElse>
-            <AnswerForm
-              style={{
-                justifyContent: review ? 'flex-start' : 'space-between',
-                minWidth: 200,
-              }}
-            >
-              <DragItem
-                data={{ id, index: questionIndex }}
-                disabled={disableDrag}
-              >
-                <QuestionNumber
-                  viewMode={viewMode === 'edit'}
-                  dragging={dragging}
-                  highlighted={highlighted}
-                  pdfPreview={pdfPreview}
-                  zoom={zoom}
-                >
-                  {questionIndex}
-                </QuestionNumber>
-              </DragItem>
-              <EduIf condition={!annotations || draggble}>
-                <QuestionForm review={review} ref={this.qFormRef}>
-                  {this.renderContent(
-                    highlighted,
-                    this.qFormRef?.current?.getBoundingClientRect()
-                  )}
-                </QuestionForm>
-              </EduIf>
-              {!review && !pdfPreview && !testMode && this.renderEditButton()}
-              {showAnswerIndicator && this.renderAnswerIndicator(type)}
-            </AnswerForm>
-          </EduElse>
-        </EduIf>
-        <EduIf
-          condition={
-            isSnapQuizVideo &&
-            isSnapQuizVideoPlayer &&
-            editMode &&
-            typeof handleRemoveAnnotation === 'function'
-          }
+        <AnswerForm
+          style={{ justifyContent: review ? 'flex-start' : 'space-between' }}
         >
-          <StyledRemoveQuestion
-            className="unselectable-text-container"
-            onClick={() => handleRemoveAnnotation(id)}
+          <DragItem
+            data={{ id, index: questionIndex }}
+            disabled={review || testMode}
           >
-            <p>REMOVE QUESTION FROM VIDEO</p>
-          </StyledRemoveQuestion>
-        </EduIf>
+            <QuestionNumber
+              viewMode={viewMode === 'edit'}
+              dragging={dragging}
+              highlighted={highlighted}
+              pdfPreview={pdfPreview}
+              zoom={zoom}
+            >
+              {questionIndex}
+            </QuestionNumber>
+          </DragItem>
+          {!annotations && (
+            <QuestionForm review={review} ref={this.qFormRef}>
+              {this.renderContent(
+                highlighted,
+                this.qFormRef?.current?.getBoundingClientRect()
+              )}
+            </QuestionForm>
+          )}
+
+          {!review && !pdfPreview && !testMode && this.renderEditButton()}
+          {showAnswerIndicator && this.renderAnswerIndicator(type)}
+        </AnswerForm>
         {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
         {!pdfPreview &&
           (check ? this.renderScore(id) : this.renderComments(id))}
@@ -633,16 +485,12 @@ QuestionItem.propTypes = {
   viewMode: PropTypes.string.isRequired,
   highlighted: PropTypes.bool.isRequired,
   answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
-  handleRemoveAnnotation: PropTypes.func,
-  handleOnClick: PropTypes.func,
 }
 
 QuestionItem.defaultProps = {
   evaluation: undefined,
   userAnswer: undefined,
   answer: undefined,
-  handleRemoveAnnotation: () => {},
-  handleOnClick: () => {},
 }
 
 export default withAnswerSave(

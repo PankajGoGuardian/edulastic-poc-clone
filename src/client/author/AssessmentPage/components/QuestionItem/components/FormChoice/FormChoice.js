@@ -2,10 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Input, Radio } from 'antd'
 import { isUndefined } from 'lodash'
-import { EduIf, helpers, Stimulus, MathFormulaDisplay } from '@edulastic/common'
 
 import { QuestionOption, QuestionChunk } from '../../common/Form'
-import { StyledOptionsContainer } from '../../styled'
 
 export default class FormChoice extends React.Component {
   static propTypes = {
@@ -54,36 +52,9 @@ export default class FormChoice extends React.Component {
     saveAnswer(currentValue)
   }
 
-  getOptionLabel = (index) => helpers.getNumeration(index, 'uppercase')
-
-  get showStimulus() {
-    const { isSnapQuizVideo } = this.props
-    return isSnapQuizVideo
-  }
-
-  getCorrect = (value) => {
-    const {
-      question: { multipleResponses },
-      evaluation,
-      answer,
-    } = this.props
-
-    if (!multipleResponses) {
-      return answer.includes(value) && evaluation[0]
-    }
-
-    const valueIndex = answer.findIndex((item) => item === value)
-
-    if (valueIndex > -1) {
-      return evaluation[valueIndex]
-    }
-
-    return false
-  }
-
   renderRadioForm = (chosenValue, handleChange = () => {}) => {
     const {
-      question: { options, stimulus = '' },
+      question: { options },
     } = this.props
 
     const radioStyle = {
@@ -97,12 +68,6 @@ export default class FormChoice extends React.Component {
         tabIndex="0"
         onMouseDown={(e) => e && e.preventDefault()}
       >
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
         <Radio.Group onChange={handleChange} value={chosenValue[0]}>
           <Radio style={radioStyle} value={options[0].value}>
             {options[0].label}
@@ -111,104 +76,6 @@ export default class FormChoice extends React.Component {
             {options[1].label}
           </Radio>
         </Radio.Group>
-      </QuestionChunk>
-    )
-  }
-
-  renderVideoQuizView = () => {
-    const {
-      question: {
-        options,
-        multipleResponses,
-        validation: {
-          validResponse: { value },
-        },
-        stimulus = '',
-      },
-    } = this.props
-
-    return (
-      <QuestionChunk>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        {options.map(({ label, value: v }, key) => (
-          <StyledOptionsContainer>
-            <QuestionOption
-              key={label + key}
-              styleProps={{
-                marginTop: '4px',
-                minWidth: '25px',
-                height: '25px',
-                lineHeight: '23px',
-              }}
-              selected={value.includes(v)}
-              multipleResponses={multipleResponses}
-            >
-              {this.getOptionLabel(key)}
-            </QuestionOption>
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
-          </StyledOptionsContainer>
-        ))}
-      </QuestionChunk>
-    )
-  }
-
-  renderVideoQuizForm = (mode) => {
-    const {
-      question: { options, multipleResponses, stimulus = '' },
-      evaluation,
-      view,
-      answer,
-    } = this.props
-
-    return (
-      <QuestionChunk>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        {options.map(({ label, value }, key) => {
-          return (
-            <StyledOptionsContainer>
-              <QuestionOption
-                tabIndex="0"
-                mode={mode}
-                data-cy="choiceOption"
-                key={`form-${label}-${key}`}
-                selected={answer.includes(value)}
-                correct={evaluation && this.getCorrect(value)}
-                checked={!isUndefined(evaluation) && view !== 'clear'}
-                onClick={mode === 'report' ? '' : this.handleSelect(value)}
-                review
-                multipleResponses={multipleResponses}
-                onMouseDown={(e) => e && e.preventDefault()}
-                onKeyDown={(e) => {
-                  const code = e.which
-                  if (code === 13 || code === 32) {
-                    if (mode !== 'report') {
-                      this.handleSelect(value)()
-                    }
-                  }
-                }}
-                styleProps={{
-                  marginTop: '4px',
-                  minWidth: '25px',
-                  height: '25px',
-                  lineHeight: '23px',
-                }}
-              >
-                {this.getOptionLabel(key)}
-              </QuestionOption>
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
-            </StyledOptionsContainer>
-          )
-        })}
       </QuestionChunk>
     )
   }
@@ -223,14 +90,11 @@ export default class FormChoice extends React.Component {
         },
       },
       isTrueOrFalse,
-      isSnapQuizVideo,
     } = this.props
 
     if (isTrueOrFalse) return this.renderRadioForm(value)
 
     if (!options.length) return this.renderOptionsCreateForm()
-
-    if (isSnapQuizVideo) return this.renderVideoQuizView()
 
     return (
       <QuestionChunk>
@@ -254,44 +118,53 @@ export default class FormChoice extends React.Component {
       view,
       answer,
       isTrueOrFalse,
-      isSnapQuizVideo,
     } = this.props
 
     const onChangeHandler = (e) => this.handleSelect(e.target.value)()
 
     if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler)
 
-    if (isSnapQuizVideo) return this.renderVideoQuizForm(mode)
+    const getCorrect = (value) => {
+      if (!multipleResponses) {
+        return answer.includes(value) && evaluation[0]
+      }
+
+      const valueIndex = answer.findIndex((item) => item === value)
+
+      if (valueIndex > -1) {
+        return evaluation[valueIndex]
+      }
+
+      return false
+    }
 
     return (
       <QuestionChunk data-cy="mcqChoice">
-        {options.map(({ label, value }, key) => {
-          return (
-            <QuestionOption
-              tabIndex="0"
-              mode={mode}
-              data-cy="choiceOption"
-              key={`form-${label}-${key}`}
-              selected={answer.includes(value)}
-              correct={evaluation && this.getCorrect(value)}
-              checked={!isUndefined(evaluation) && view !== 'clear'}
-              onClick={mode === 'report' ? '' : this.handleSelect(value)}
-              review
-              multipleResponses={multipleResponses}
-              onMouseDown={(e) => e && e.preventDefault()}
-              onKeyDown={(e) => {
-                const code = e.which
-                if (code === 13 || code === 32) {
-                  if (mode !== 'report') {
-                    this.handleSelect(value)()
-                  }
+        {options.map(({ label, value }, key) => (
+          <QuestionOption
+            tabIndex="0"
+            mode={mode}
+            data-cy="choiceOption"
+            key={`form-${label}-${key}`}
+            selected={answer.includes(value)}
+            correct={evaluation && getCorrect(value)}
+            checked={!isUndefined(evaluation) && view !== 'clear'}
+            onClick={mode === 'report' ? '' : this.handleSelect(value)}
+            review
+            multipleResponses={multipleResponses}
+            onMouseDown={(e) => e && e.preventDefault()}
+            onKeyDown={(e) => {
+              const code = e.which
+              if (code === 13 || code === 32) {
+                if (mode !== 'report') {
+                  this.handleSelect(value)()
                 }
-              }}
-            >
-              {label}
-            </QuestionOption>
-          )
-        })}
+              }
+            }}
+          >
+            {label}
+          </QuestionOption>
+        ))}
       </QuestionChunk>
     )
   }
@@ -300,15 +173,9 @@ export default class FormChoice extends React.Component {
     const {
       question: { id, type },
       onCreateOptions,
-      isSnapQuizVideo = false,
-      isSnapQuizVideoPlayer = false,
     } = this.props
 
-    return (
-      <EduIf condition={isSnapQuizVideo && !isSnapQuizVideoPlayer}>
-        <Input size="large" onPressEnter={onCreateOptions(id, type)} />
-      </EduIf>
-    )
+    return <Input size="large" onPressEnter={onCreateOptions(id, type)} />
   }
 
   render() {

@@ -1,12 +1,12 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
+
 import {
   white,
   themeColor,
   sectionBorder,
   smallDesktopWidth,
 } from '@edulastic/colors'
-import { CustomStyleBtn } from '../../../../assessment/styled/ButtonStyles'
 
 export const AddQuestionWrapper = styled.div`
   position: fixed;
@@ -41,8 +41,8 @@ export const AddQuestionIcon = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 5px;
   background: ${themeColor};
   cursor: pointer;
@@ -67,13 +67,10 @@ export const AddQuestionIcon = styled.span`
 export const AddButton = styled(Button)`
   border-radius: 5px;
   border: 1px solid ${themeColor};
-  width: ${(props) => props?.width || '48%'};
+  width: 48%;
   height: 32px;
   color: ${themeColor};
   font-size: 11px;
   text-transform: uppercase;
   font-weight: 600;
-`
-export const CustomStyleBtn2 = styled(CustomStyleBtn)`
-  background: linear-gradient(to right, #1568c6, #027c6c) !important;
 `

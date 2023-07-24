@@ -110,7 +110,3 @@ export const StyledHandleSpan = styled.span`
   padding-left: 6px;
   cursor: grab;
 `
-export const StyledVideoQuizHandleSpan = styled.span`
-  float: right;
-  cursor: grab;
-`

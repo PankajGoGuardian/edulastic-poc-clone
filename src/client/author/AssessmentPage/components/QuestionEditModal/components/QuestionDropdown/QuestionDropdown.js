@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { Select, InputNumber, Button } from 'antd'
 import { arrayMove } from 'react-sortable-hoc'
 import { ThemeProvider } from 'styled-components'
-import { EduIf } from '@edulastic/common'
 
 import { themes } from '../../../../../../theme'
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
@@ -14,8 +13,6 @@ import {
   FormLabel,
   Points,
 } from '../../common/QuestionForm'
-import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 export default class QuestionDropdown extends React.Component {
   static propTypes = {
@@ -137,15 +134,7 @@ export default class QuestionDropdown extends React.Component {
 
   render() {
     const {
-      question: {
-        validation,
-        stimulus = '',
-        questionDisplayTimestamp = null,
-        id,
-      },
-      isSnapQuizVideo,
-      onUpdate,
-      updateAnnotationTime,
+      question: { validation },
     } = this.props
     const {
       validResponse: { value, score },
@@ -154,11 +143,6 @@ export default class QuestionDropdown extends React.Component {
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionFormWrapper>
-          <EduIf condition={isSnapQuizVideo}>
-            <FormGroup>
-              <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
-            </FormGroup>
-          </EduIf>
           <FormGroup>
             <FormLabel>Choices</FormLabel>
             <SortableList
@@ -196,17 +180,6 @@ export default class QuestionDropdown extends React.Component {
             />
             <Points>Points</Points>
           </FormGroup>
-          <EduIf condition={isSnapQuizVideo}>
-            <FormGroup style={{ marginTop: 9 }}>
-              <FormLabel>Timestamp (mm:ss)</FormLabel>
-              <VideoQuizTimePicker
-                questionDisplayTimestamp={questionDisplayTimestamp}
-                updateQuestionData={onUpdate}
-                updateAnnotationTime={updateAnnotationTime}
-                questionId={id}
-              />
-            </FormGroup>
-          </EduIf>
         </QuestionFormWrapper>
       </ThemeProvider>
     )

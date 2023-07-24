@@ -1,7 +1,6 @@
 import {
   CustomModalStyled,
   EduButton,
-  EduIf,
   FieldLabel,
   NumberInputStyled,
   SelectInputStyled,
@@ -14,22 +13,16 @@ import {
   SHORT_TEXT,
   TRUE_OR_FALSE,
 } from '@edulastic/constants/const/questionType'
-import { Col, Icon, Row, Select, Spin } from 'antd'
+import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { selectsData } from '../../../TestPage/components/common'
-import {
-  fetchAIGeneratedQuestionAction,
-  setAIGeneratedQuestionStateAction,
-} from '../../../src/actions/aiGenerateQuestion'
 import { ModalFooter, ModalWrapper } from '../../common/Modal'
 import { QuestionFormWrapper } from '../QuestionEditModal/common/QuestionForm'
 import StandardSet from '../QuestionEditModal/common/StandardSet/StandardSet'
 import { StandardSelectWrapper } from './styled'
 
-class AddBulkModal extends React.Component {
+export default class AddBulkModal extends React.Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
     minAvailableQuestionIndex: PropTypes.number.isRequired,
@@ -42,7 +35,6 @@ class AddBulkModal extends React.Component {
     type: MULTIPLE_CHOICE,
     authorDifficulty: '',
     depthOfKnowledge: '',
-    generateViaAi: false,
     alignment: [
       {
         curriculum: '',
@@ -60,87 +52,24 @@ class AddBulkModal extends React.Component {
       [field]: value,
     })
 
-  handleApply = (aiQuestions) => {
+  handleApply = () => {
     const {
       number,
       type,
       alignment,
       authorDifficulty,
       depthOfKnowledge,
-      generateViaAi,
     } = this.state
-
     const { onApply, minAvailableQuestionIndex } = this.props
 
-    if (!generateViaAi || aiQuestions) {
-      onApply({
-        number,
-        type,
-        startingIndex: minAvailableQuestionIndex,
-        alignment,
-        authorDifficulty,
-        depthOfKnowledge,
-        aiQuestions,
-      })
-    } else {
-      this.generateViaAI({ questionCount: number, questionType: type })
-    }
-  }
-
-  generateViaAI = ({ questionCount, questionType }) => {
-    const { alignment, authorDifficulty, depthOfKnowledge } = this.state
-
-    const { grades = [], standards = [] } = alignment?.[0] || {}
-    let standardsDescription = ''
-    ;(standards || []).forEach((standard) => {
-      standardsDescription += standard?.description || ''
-    })
-
-    const { fetchAIGeneratedQuestion, videoUrl } = this.props
-    fetchAIGeneratedQuestion({
-      videoUrl,
-      questionCount,
-      questionType,
-      questionComplexity: authorDifficulty,
+    onApply({
+      number,
+      type,
+      startingIndex: minAvailableQuestionIndex,
+      alignment,
+      authorDifficulty,
       depthOfKnowledge,
-      grades,
-      standardsDescription,
     })
-  }
-
-  componentDidUpdate = () => {
-    const {
-      aiGenerateQuestionState: { result, apiStatus } = {},
-      setAIGeneratedQuestionState,
-    } = this.props
-
-    if (
-      (result || []).length > 0 &&
-      ['SUCCESS', 'FAILED'].includes(apiStatus)
-    ) {
-      this.handleApply(result || [])
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result: [],
-      })
-    }
-  }
-
-  componentDidMount = () => {
-    const {
-      aiGenerateQuestionState: { apiStatus } = {},
-      setAIGeneratedQuestionState,
-      isSnapQuizVideo,
-    } = this.props
-    if (apiStatus) {
-      setAIGeneratedQuestionState({
-        apiStatus: false,
-        result: [],
-      })
-    }
-    if (isSnapQuizVideo) {
-      this.setState({ generateViaAi: true })
-    }
   }
 
   render() {
@@ -151,35 +80,20 @@ class AddBulkModal extends React.Component {
       authorDifficulty,
       depthOfKnowledge,
     } = this.state
-    const {
-      onCancel,
-      visible,
-      aiGenerateQuestionState: { apiStatus } = {},
-      isSnapQuizVideo,
-    } = this.props
-
-    const loading = apiStatus === 'INITIATED'
+    const { onCancel, visible } = this.props
 
     return (
       <CustomModalStyled
         visible={visible}
-        title={isSnapQuizVideo ? 'Auto Genenerate' : 'Add Bulk'}
+        title="Add Bulk"
         onCancel={onCancel}
-        maskClosable={!isSnapQuizVideo}
         footer={[
           <ModalFooter marginTop="35px">
             <EduButton isGhost onClick={onCancel}>
               Cancel
             </EduButton>
-            <EduButton
-              disabled={loading}
-              onClick={() => this.handleApply()}
-              data-cy="apply"
-            >
-              {isSnapQuizVideo ? 'Generate Questions' : 'Apply'}
-              <EduIf condition={loading}>
-                <Spin size="small" indicator={<Icon type="loading" />} />
-              </EduIf>
+            <EduButton onClick={this.handleApply} data-cy="apply">
+              Apply
             </EduButton>
           </ModalFooter>,
         ]}
@@ -278,18 +192,3 @@ class AddBulkModal extends React.Component {
     )
   }
 }
-
-const enhance = compose(
-  connect(
-    (state) => ({
-      videoUrl: state.tests.entity.videoUrl,
-      aiGenerateQuestionState: state.aiGenerateQuestionState,
-    }),
-    {
-      setAIGeneratedQuestionState: setAIGeneratedQuestionStateAction,
-      fetchAIGeneratedQuestion: fetchAIGeneratedQuestionAction,
-    }
-  )
-)
-
-export default enhance(AddBulkModal)

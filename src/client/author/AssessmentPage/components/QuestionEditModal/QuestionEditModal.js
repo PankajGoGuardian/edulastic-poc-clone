@@ -11,7 +11,6 @@ import {
   MULTIPLE_CHOICE,
   SHORT_TEXT,
   TRUE_OR_FALSE,
-  AUDIO_RESPONSE,
 } from '@edulastic/constants/const/questionType'
 import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
@@ -27,8 +26,6 @@ import QuestionDropdown from './components/QuestionDropdown/QuestionDropdown'
 import QuestionEssay from './components/QuestionEssay/QuestionEssay'
 import QuestionMath from './components/QuestionMath/QuestionMath'
 import QuestionText from './components/QuestionText/QuestionText'
-import QuestionAudio from './components/QuestionAudio/QuestionAudio'
-import { getUpdatedAnnotation } from '../../common/helpers'
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: 'Multiple Choice',
@@ -36,7 +33,6 @@ const questionTypeTitles = {
   [CLOZE_DROP_DOWN]: 'Question Dropdown',
   [ESSAY_PLAIN_TEXT]: 'Question Essay',
   [SHORT_TEXT]: 'Text Entry',
-  [AUDIO_RESPONSE]: 'Audio Response',
 }
 
 export default class QuestionEditModal extends React.Component {
@@ -59,29 +55,11 @@ export default class QuestionEditModal extends React.Component {
   }
 
   renderForm = (type) => {
-    const {
-      question,
-      onUpdate,
-      isSnapQuizVideo,
-      onDropAnnotation,
-      annotations = [],
-    } = this.props
-
-    const updateAnnotationTime = (questionId, timestamp) => {
-      const updatedAnnotation = getUpdatedAnnotation({
-        annotations,
-        question,
-        questionId,
-        timestamp,
-      })
-      onDropAnnotation(updatedAnnotation, 'video')
-    }
+    const { question, onUpdate } = this.props
 
     const props = {
       question,
       onUpdate,
-      isSnapQuizVideo,
-      updateAnnotationTime,
     }
 
     switch (type) {
@@ -96,8 +74,6 @@ export default class QuestionEditModal extends React.Component {
         return <QuestionMath {...props} />
       case ESSAY_PLAIN_TEXT:
         return <QuestionEssay {...props} />
-      case AUDIO_RESPONSE:
-        return <QuestionAudio {...props} />
       default:
         return null
     }
@@ -112,7 +88,6 @@ export default class QuestionEditModal extends React.Component {
       onUpdate,
       totalQuestions = 1,
       qNumber,
-      isSnapQuizVideo,
     } = this.props
 
     if (!question) {
@@ -138,22 +113,12 @@ export default class QuestionEditModal extends React.Component {
       </TitleWrapper>
     )
 
-    const videoQuizStyleProps = isSnapQuizVideo
-      ? {
-          padding: '15px 0px',
-          closeRightAlign: '10px',
-          modalWidth: '720px',
-          headerPadding: '0px 0px 0px 10px',
-        }
-      : {}
-
     return (
       <CustomModalStyled
         centered
         visible={visible}
         title={QuestionTitle}
         onCancel={onClose}
-        {...videoQuizStyleProps}
         footer={[
           <ModalFooter>
             <EduButton
@@ -176,7 +141,7 @@ export default class QuestionEditModal extends React.Component {
         ]}
         overlayId="docBasedModalOverlay"
       >
-        <StyledBodyContainer isSnapQuizVideo={isSnapQuizVideo}>
+        <StyledBodyContainer>
           {this.renderForm(type)}
           <StandardSelectWrapper>
             <StandardSet
@@ -238,9 +203,8 @@ export default class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  max-height: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '520px' : '350px')};
-  padding: ${({ isSnapQuizVideo }) =>
-    isSnapQuizVideo ? '10px' : '0px 0px 10px'};
+  max-height: 350px;
+  padding: 0px 0px 10px;
   overflow: auto;
 
   &::-webkit-scrollbar {

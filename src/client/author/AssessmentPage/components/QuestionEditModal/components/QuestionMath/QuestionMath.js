@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import { ThemeProvider } from 'styled-components'
-import { EduIf } from '@edulastic/common'
 
 import { math } from '@edulastic/constants'
 
@@ -14,19 +13,11 @@ import {
   QuestionFormWrapper,
   FormGroup,
   Points,
-  FormLabel,
 } from '../../common/QuestionForm'
-import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 const { methods, simplifiedOptions } = math
 
-const QuestionMath = ({
-  onUpdate,
-  question,
-  isSnapQuizVideo,
-  updateAnnotationTime,
-}) => {
+const QuestionMath = ({ onUpdate, question }) => {
   const toggleAdditional = (val) => {
     onUpdate({ showAdditional: val })
   }
@@ -121,7 +112,6 @@ const QuestionMath = ({
     onUpdate(data)
   }
 
-  const { stimulus = '', questionDisplayTimestamp = null, id } = question
   const { validResponse } = question.validation
   const { score } = validResponse
   const value = validResponse.value[0]
@@ -129,11 +119,6 @@ const QuestionMath = ({
   return (
     <ThemeProvider theme={themes.default}>
       <QuestionFormWrapper key={question.id}>
-        <EduIf condition={isSnapQuizVideo}>
-          <FormGroup>
-            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
-          </FormGroup>
-        </EduIf>
         <FormGroup>
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"
@@ -160,17 +145,6 @@ const QuestionMath = ({
           />
           <Points>Points</Points>
         </FormGroup>
-        <EduIf condition={isSnapQuizVideo}>
-          <FormGroup style={{ marginTop: 9 }}>
-            <FormLabel>Timestamp (mm:ss)</FormLabel>
-            <VideoQuizTimePicker
-              questionDisplayTimestamp={questionDisplayTimestamp}
-              updateQuestionData={onUpdate}
-              updateAnnotationTime={updateAnnotationTime}
-              questionId={id}
-            />
-          </FormGroup>
-        </EduIf>
       </QuestionFormWrapper>
     </ThemeProvider>
   )

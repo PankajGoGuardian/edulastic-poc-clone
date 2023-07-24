@@ -43,13 +43,13 @@ export const QuestionChunk = styled.div`
 
 export const QuestionOption = styled.span`
   display: inline-block;
-  min-width: ${({ styleProps }) => styleProps?.minWidth || '32px'};
-  height: ${({ styleProps }) => styleProps?.height || '32px'};
+  min-width: 32px;
+  height: 32px;
   border: 1px solid ${getBorder};
   font-size: 13px;
   margin-bottom: 2px;
   text-align: center;
-  line-height: ${({ styleProps }) => styleProps?.lineHeight || '30px'};
+  line-height: 30px;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};
   cursor: ${({ review, mode }) =>
@@ -60,7 +60,6 @@ export const QuestionOption = styled.span`
     margin-right: 4px;
   }
   font-weight: bold;
-  margin-top: ${({ styleProps }) => styleProps?.marginTop || ''};
   &:focus {
     outline: 3px solid ${themeColorBlue};
     outline-style: dashed;

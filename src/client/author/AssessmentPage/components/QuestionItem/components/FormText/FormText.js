@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
-import { EduIf, Stimulus } from '@edulastic/common'
 
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
@@ -13,17 +12,10 @@ export default class FormText extends React.Component {
     question: PropTypes.object.isRequired,
     onCreateAnswer: PropTypes.func.isRequired,
     answer: PropTypes.string,
-    disableAutoHightlight: PropTypes.bool,
   }
 
   static defaultProps = {
-    disableAutoHightlight: false,
     answer: '',
-  }
-
-  get showStimulus() {
-    const { isSnapQuizVideo } = this.props
-    return isSnapQuizVideo
   }
 
   handleChange = ({ target: { value } }) => {
@@ -33,7 +25,7 @@ export default class FormText extends React.Component {
 
   renderView = () => {
     const {
-      question: { validation, stimulus = '' },
+      question: { validation },
     } = this.props
 
     if (!validation) return this.renderForm()
@@ -44,54 +36,29 @@ export default class FormText extends React.Component {
 
     if (!value || !value.length) return this.renderAnswerCreateForm()
 
-    return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <QuestionText>{value}</QuestionText>
-      </div>
-    )
+    return <QuestionText>{value}</QuestionText>
   }
 
   handleBlur = (ev) => {
     // preventing blur event when relatedTarget is submit button
     if (!isSubmitButton(ev)) {
       const { clearHighlighted, saveQuestionResponse } = this.props
-      clearHighlighted && clearHighlighted()
+      clearHighlighted()
       saveQuestionResponse()
     }
   }
 
   renderForm = () => {
-    const {
-      answer = false,
-      highlighted = false,
-      disableAutoHightlight = false,
-      question: { stimulus = '' },
-    } = this.props
-
+    const { answer, highlighted = false } = this.props
     return (
-      <div>
-        {' '}
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <Input
-          size="large"
-          value={answer}
-          data-cy="textInput"
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
-          ref={(el) => highlighted && !disableAutoHightlight && el?.focus()}
-        />
-      </div>
+      <Input
+        size="large"
+        value={answer}
+        data-cy="textInput"
+        onChange={this.handleChange}
+        onBlur={this.handleBlur}
+        ref={(el) => highlighted && el?.focus()}
+      />
     )
   }
 
@@ -106,29 +73,17 @@ export default class FormText extends React.Component {
 
   renderAnswerCreateForm = () => {
     const {
-      question: { id, type, stimulus },
+      question: { id, type },
       onCreateAnswer,
       highlighted = false,
-      isSnapQuizVideo = false,
-      isSnapQuizVideoPlayer = false,
     } = this.props
 
     return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <EduIf condition={isSnapQuizVideo && !isSnapQuizVideoPlayer}>
-          <Input
-            size="large"
-            onPressEnter={onCreateAnswer(id, type)}
-            ref={(el) => highlighted && el?.focus()}
-          />
-        </EduIf>
-      </div>
+      <Input
+        size="large"
+        onPressEnter={onCreateAnswer(id, type)}
+        ref={(el) => highlighted && el?.focus()}
+      />
     )
   }
 

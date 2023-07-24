@@ -4,7 +4,6 @@ import { Input, InputNumber, Radio } from 'antd'
 import { throttle, isArray } from 'lodash'
 
 import { inputBgGrey, inputBorder } from '@edulastic/colors'
-import { EduIf, EduElse, EduThen } from '@edulastic/common'
 import { EXACT_MATCH } from '../../../../../../assessment/constants/constantsForQuestions'
 import {
   QuestionFormWrapper,
@@ -13,9 +12,6 @@ import {
   Points,
   CheckboxGroupStyled,
 } from '../../common/QuestionForm'
-import VideoQuizQuestionChoice from './VideoQuizQuestionChoice'
-import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 const { Group: RadioGroup } = Radio
 
@@ -126,90 +122,52 @@ export default class QuestionChoice extends React.Component {
   render() {
     const { optionsValue, correctAnswers, score } = this.state
     const {
-      question,
-      isSnapQuizVideo,
-      onUpdate,
-      updateAnnotationTime,
+      question: { options, title },
     } = this.props
-    const {
-      options,
-      title,
-      stimulus = '',
-      questionDisplayTimestamp = null,
-      id,
-    } = question
     const trueOrFalse = title === 'True or false'
-
     return (
       <QuestionFormWrapper>
-        <EduIf condition={isSnapQuizVideo}>
+        {!trueOrFalse && (
           <FormGroup>
-            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
-          </FormGroup>
-        </EduIf>
-        <EduIf condition={isSnapQuizVideo && !trueOrFalse}>
-          <EduThen>
-            <VideoQuizQuestionChoice
-              question={question}
-              updateQuestionData={onUpdate}
-              updateAnnotationTime={updateAnnotationTime}
+            <FormLabel>Options</FormLabel>
+            <Input
+              value={optionsValue}
+              onChange={throttle(this.handleSetOptions, 2000)}
+              autoFocus
+              style={{
+                letterSpacing: '8px',
+                background: inputBgGrey,
+                border: `1px solid ${inputBorder}`,
+                borderRadius: '0px',
+              }}
+              data-cy="options"
             />
-          </EduThen>
-          <EduElse>
-            {!trueOrFalse && (
-              <FormGroup>
-                <FormLabel>Options</FormLabel>
-                <Input
-                  value={optionsValue}
-                  onChange={throttle(this.handleSetOptions, 2000)}
-                  autoFocus
-                  style={{
-                    letterSpacing: '8px',
-                    background: inputBgGrey,
-                    border: `1px solid ${inputBorder}`,
-                    borderRadius: '0px',
-                  }}
-                  data-cy="options"
-                />
-              </FormGroup>
-            )}
-            <FormGroup>
-              <FormLabel>Correct Answers</FormLabel>
-              {trueOrFalse ? (
-                <RadioGroup
-                  options={options}
-                  value={correctAnswers[0]}
-                  onChange={this.handleSetCorrectAnswers}
-                />
-              ) : (
-                <CheckboxGroupStyled
-                  options={options}
-                  value={correctAnswers}
-                  onChange={this.handleSetCorrectAnswers}
-                  data-cy="answerLabels"
-                />
-              )}
-              <InputNumber
-                min={0}
-                value={score}
-                onChange={this.handleSetScore}
-                data-cy="points"
-              />
-              <Points>Points</Points>
-              <EduIf condition={isSnapQuizVideo && trueOrFalse}>
-                <FormGroup style={{ marginTop: 9 }}>
-                  <FormLabel>Timestamp (mm:ss)</FormLabel>
-                  <VideoQuizTimePicker
-                    questionId={id}
-                    questionDisplayTimestamp={questionDisplayTimestamp}
-                    updateQuestionData={onUpdate}
-                    updateAnnotationTime={updateAnnotationTime}
-                  />
-                </FormGroup>
-              </EduIf>
-            </FormGroup>
-          </EduElse>
-        </EduIf>
+          </FormGroup>
+        )}
+        <FormGroup>
+          <FormLabel>Correct Answers</FormLabel>
+          {trueOrFalse ? (
+            <RadioGroup
+              options={options}
+              value={correctAnswers[0]}
+              onChange={this.handleSetCorrectAnswers}
+            />
+          ) : (
+            <CheckboxGroupStyled
+              options={options}
+              value={correctAnswers}
+              onChange={this.handleSetCorrectAnswers}
+              data-cy="answerLabels"
+            />
+          )}
+          <InputNumber
+            min={0}
+            value={score}
+            onChange={this.handleSetScore}
+            data-cy="points"
+          />
+          <Points>Points</Points>
+        </FormGroup>
       </QuestionFormWrapper>
     )
   }

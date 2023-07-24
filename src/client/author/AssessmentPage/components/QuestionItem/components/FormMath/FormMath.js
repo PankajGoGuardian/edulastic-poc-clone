@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { ThemeProvider } from 'styled-components'
 
-import { MathSpan, MathInput, EduIf, Stimulus } from '@edulastic/common'
+import { MathSpan, MathInput } from '@edulastic/common'
 import { themes } from '../../../../../../theme'
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
@@ -19,11 +19,6 @@ export default class FormMath extends React.Component {
     answer: '',
   }
 
-  get showStimulus() {
-    const { isSnapQuizVideo } = this.props
-    return isSnapQuizVideo
-  }
-
   handleChange = (value, resetHighlighted = false) => {
     const { saveAnswer, clearHighlighted } = this.props
     /**
@@ -38,7 +33,7 @@ export default class FormMath extends React.Component {
 
   renderView = () => {
     const {
-      question: { validation, stimulus = '' },
+      question: { validation },
     } = this.props
 
     if (!validation) return this.renderForm()
@@ -48,33 +43,16 @@ export default class FormMath extends React.Component {
     } = validation
     const answer = value[0]
 
-    if (!answer || !answer.value) {
-      return (
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-      )
-    }
+    if (!answer || !answer.value) return null
 
     return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10, minHeight: 32 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <QuestionText>
-          <MathSpan
-            dangerouslySetInnerHTML={{
-              __html: `<span class="input__math" data-latex="${answer.value}"></span>`,
-            }}
-          />
-        </QuestionText>
-      </div>
+      <QuestionText>
+        <MathSpan
+          dangerouslySetInnerHTML={{
+            __html: `<span class="input__math" data-latex="${answer.value}"></span>`,
+          }}
+        />
+      </QuestionText>
     )
   }
 
@@ -94,7 +72,6 @@ export default class FormMath extends React.Component {
         symbols,
         allowedVariables = '',
         allowNumericOnly = false,
-        stimulus = '',
       },
       answer,
       view,
@@ -111,29 +88,21 @@ export default class FormMath extends React.Component {
       return <QuestionText>{answer}</QuestionText>
     }
     return (
-      <div>
-        <EduIf condition={this.showStimulus}>
-          <Stimulus
-            style={{ marginBottom: 10 }}
-            dangerouslySetInnerHTML={{ __html: stimulus }}
-          />
-        </EduIf>
-        <ThemeProvider theme={themes.default}>
-          <MathInput
-            onInput={this.handleChange}
-            numberPad={numberPad}
-            symbols={symbols}
-            check={['check', 'show'].includes(view)}
-            value={answer}
-            fullWidth
-            ref={(el) => highlighted && el?.setFocus()}
-            onBlur={this.handleBlur}
-            restrictKeys={restrictKeys}
-            allowNumericOnly={allowNumericOnly}
-            isFromDocBased
-          />
-        </ThemeProvider>
-      </div>
+      <ThemeProvider theme={themes.default}>
+        <MathInput
+          onInput={this.handleChange}
+          numberPad={numberPad}
+          symbols={symbols}
+          check={['check', 'show'].includes(view)}
+          value={answer}
+          fullWidth
+          ref={(el) => highlighted && el?.setFocus()}
+          onBlur={this.handleBlur}
+          restrictKeys={restrictKeys}
+          allowNumericOnly={allowNumericOnly}
+          isFromDocBased
+        />
+      </ThemeProvider>
     )
   }
 

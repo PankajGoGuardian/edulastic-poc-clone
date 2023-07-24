@@ -8,7 +8,6 @@ import {
   CheckboxLabel,
   FieldLabel,
   EduButton,
-  EduIf,
 } from '@edulastic/common'
 import { throttle } from 'lodash'
 import produce from 'immer'
@@ -23,8 +22,6 @@ import {
   FormInline,
   FormGroup,
 } from '../../common/QuestionForm'
-import VideoQuizStimulus from '../common/VideoQuizStimulus'
-import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 export default class QuestionText extends React.Component {
   constructor(props) {
@@ -229,27 +226,15 @@ export default class QuestionText extends React.Component {
 
   render() {
     const { answer, score, allow, altResponses = [], matchCase } = this.state
-    const {
-      isSnapQuizVideo,
-      question,
-      onUpdate,
-      updateAnnotationTime,
-    } = this.props
-    const { stimulus = '', questionDisplayTimestamp = null, id } = question
-
     return (
       <QuestionFormWrapper>
-        <EduIf condition={isSnapQuizVideo}>
-          <FormGroup>
-            <VideoQuizStimulus stimulus={stimulus} onUpdate={onUpdate} />
-          </FormGroup>
-        </EduIf>
         <FormGroup>
           <FieldLabel>Correct Answer</FieldLabel>
           <FormInline>
             <TextInputStyled
               value={answer}
               onChange={throttle(this.handleSetAnswer, 2000)}
+              autoFocus
               data-cy="correctAnswer"
             />
             <EduButton
@@ -324,17 +309,6 @@ export default class QuestionText extends React.Component {
             data-cy="matchCase"
           />
         </FormGroup>
-        <EduIf condition={isSnapQuizVideo}>
-          <FormGroup style={{ marginTop: 13 }}>
-            <FieldLabel>Timestamp (mm:ss)</FieldLabel>
-            <VideoQuizTimePicker
-              questionDisplayTimestamp={questionDisplayTimestamp}
-              updateQuestionData={onUpdate}
-              updateAnnotationTime={updateAnnotationTime}
-              questionId={id}
-            />
-          </FormGroup>
-        </EduIf>
       </QuestionFormWrapper>
     )
   }

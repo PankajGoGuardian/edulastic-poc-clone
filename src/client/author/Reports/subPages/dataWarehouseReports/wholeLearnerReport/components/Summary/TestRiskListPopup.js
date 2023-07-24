@@ -35,8 +35,8 @@ const tableColumns = [
     key: 'riskBandLabel',
     sorter: (a, b) => a.riskBandLevel - b.riskBandLevel,
     render: (riskBandLabel) => (
-      <RiskLabel color={RISK_BAND_COLOR_INFO[riskBandLabel]} fontSize="14px">
-        {riskBandLabel}
+      <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]} fontSize="14px">
+        <p>{riskBandLabel}</p>
       </RiskLabel>
     ),
   },

@@ -13,7 +13,7 @@ import { StyledEmptyContainer } from '../../../common/components/styledComponent
 const { RISK_BAND_COLOR_INFO } = reportUtils.common
 
 const AttendanceRisk = ({ attendanceRisk }) => {
-  const { riskBandLabel, score } = attendanceRisk
+  const { riskBandLabel = '', score } = attendanceRisk
   const pieData = useMemo(
     () => [
       {
@@ -36,9 +36,9 @@ const AttendanceRisk = ({ attendanceRisk }) => {
             <Label
               $margin="10px 30px 0 0"
               $color={RISK_BAND_COLOR_INFO[riskBandLabel]}
-              $fontSize="10px"
+              $fontSize="14px"
             >
-              {riskBandLabel} RISK
+              {riskBandLabel.toUpperCase()} RISK
             </Label>
             <SimplePieChart
               data={pieData}

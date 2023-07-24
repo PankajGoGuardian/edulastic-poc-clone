@@ -5,3 +5,7 @@ export const navigationState = {
     },
   },
 }
+
+export const navigationItemLabels = {
+  DATA_STUDIO: 'Data Studio',
+}

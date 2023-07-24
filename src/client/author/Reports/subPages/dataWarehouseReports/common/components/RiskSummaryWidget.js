@@ -88,7 +88,10 @@ const RiskSummary = ({ settings, loc = '' }) => {
       (riskType) => riskType.key === settings.requestFilters.riskType
     )?.title || RISK_TYPE_OPTIONS[0].title
   const hasContent = !loading && !error && postPeriod?.distribution?.length
-  const errorMsg = error?.message || 'Error fetching Risk Summary data.'
+  const errorMsg =
+    error?.response?.status === 400
+      ? error?.message
+      : 'Sorry, you have hit an unexpected error.'
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
   const isEarlyWarningReport = loc === reportNavType.DW_EARLY_WARNING_REPORT

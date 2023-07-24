@@ -1,4 +1,5 @@
 import React from 'react'
+import { capitalize } from 'lodash'
 import { DemographicsWrapper } from '../../common/styled'
 import DemographicItem from './DemographicItem'
 
@@ -14,12 +15,15 @@ const Demographics = ({ data }) => {
   return (
     <DemographicsWrapper>
       <div className="demographic-item">
-        <span>Race :&nbsp;</span>
+        <span>DEMOGRAPHICS</span>
+      </div>
+      <div className="demographic-item">
+        <span className="title">Race :&nbsp;</span>
         <span data-testid="race">{race}</span>
       </div>
       <div className="demographic-item">
-        <span>Gender :&nbsp;</span>
-        <span data-testid="gender">{gender}</span>
+        <span className="title">Gender :&nbsp;</span>
+        <span data-testid="gender">{capitalize(gender)}</span>
       </div>
       <DemographicItem type={frlStatus} value="FRL Status" />
       <DemographicItem type={iepStatus} value="IEP Status" />

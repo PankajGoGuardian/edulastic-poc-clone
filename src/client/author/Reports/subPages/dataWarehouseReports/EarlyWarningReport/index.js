@@ -16,7 +16,10 @@ import {
   compareByOptions as compareByOptionsRaw,
 } from '../common/utils'
 import { selectors, actions } from './ducks'
-import { getFeedTypes } from '../../../../sharedDucks/dataWarehouse'
+import {
+  getFeedTypes,
+  getFeedTypesAction,
+} from '../../../../sharedDucks/dataWarehouse'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
@@ -40,6 +43,7 @@ const EarlyWarningReport = ({
   firstLoad,
   resetAllReports,
   feedTypes,
+  fetchFeedTypes,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -81,13 +85,13 @@ const EarlyWarningReport = ({
     setShowApply(false)
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    fetchFeedTypes()
+    return () => {
       console.log('Early Warning Report Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
 
@@ -156,5 +160,6 @@ export default connect(
   {
     ...actions,
     resetAllReports: resetAllReportsAction,
+    fetchFeedTypes: getFeedTypesAction,
   }
 )(EarlyWarningReport)

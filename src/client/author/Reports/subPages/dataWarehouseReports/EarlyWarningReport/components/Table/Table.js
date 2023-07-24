@@ -97,6 +97,7 @@ const EarlyWarningTable = ({
       settings.requestFilters,
       isStudentCompareBy,
       tableDataToUse,
+      feedTypes,
     ]
   )
 

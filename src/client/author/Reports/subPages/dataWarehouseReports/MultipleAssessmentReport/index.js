@@ -18,7 +18,6 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
-import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import {
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
@@ -49,6 +48,10 @@ import {
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
+import {
+  getFeedTypes,
+  getFeedTypesAction,
+} from '../../../../sharedDucks/dataWarehouse'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
   getUserRole,
@@ -73,8 +76,6 @@ import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { isAddToStudentGroupEnabled } from '../common/utils'
 import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
-
-const externalTestTypes = Object.keys(EXTERNAL_TEST_TYPES)
 
 const { downloadCSV } = reportUtils.common
 
@@ -136,6 +137,8 @@ const MultipleAssessmentReport = ({
   fetchInterventionsByGroups,
   setInterventionsByGroup,
   interventionsData,
+  feedTypes,
+  fetchFeedTypes,
 }) => {
   const [sortFilters, setSortFilters] = useState({
     sortKey: sortKeys.COMPARE_BY,
@@ -215,13 +218,13 @@ const MultipleAssessmentReport = ({
     setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    fetchFeedTypes()
+    return () => {
       console.log('Multiple Assessment Report Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   useTabNavigation({
     settings,
@@ -324,14 +327,15 @@ const MultipleAssessmentReport = ({
   const tableData = useMemo(() => {
     const { metricInfo = [] } = get(reportTableData, 'data.result', {})
     const { externalBands = [] } = get(reportChartData, 'data.result', {})
+    const feedTypeKeys = feedTypes.map(({ key }) => key)
     let externalMetricsForTable = metricInfo
-      .filter(({ testType }) => externalTestTypes.includes(testType))
+      .filter(({ testType }) => feedTypeKeys.includes(testType))
       .map(({ testType: externalTestType, ...t }) => ({
         ...t,
         externalTestType,
       }))
     const internalMetricsForTable = metricInfo
-      .filter(({ testType }) => !externalTestTypes.includes(testType))
+      .filter(({ testType }) => !feedTypeKeys.includes(testType))
       .map((t) => ({
         ...t,
         isIncomplete: incompleteTests.includes(t.testId),
@@ -353,6 +357,7 @@ const MultipleAssessmentReport = ({
     reportTableData,
     incompleteTests,
     selectedPerformanceBand,
+    feedTypes,
   ])
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
@@ -592,6 +597,7 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
     interventionsData: getInterventionsByGroup(state),
+    feedTypes: getFeedTypes(state),
   }),
   {
     ...actions,
@@ -599,6 +605,7 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
+    fetchFeedTypes: getFeedTypesAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

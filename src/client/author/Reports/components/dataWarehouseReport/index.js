@@ -117,7 +117,7 @@ const DataWarehouseReports = ({
           <Col>
             <div className="button">
               <EduButton height="36px" isGhost onClick={onUpgradeNowClicked}>
-                UPGRADE NOW
+                LEARN MORE
               </EduButton>
             </div>
           </Col>
@@ -201,7 +201,7 @@ const DataWarehouseReports = ({
         />
       </StyledContainer>
       <EduIf condition={!allowAccess}>
-        <FloatingAction title="UPGRADE NOW" onUpgrade={onUpgradeNowClicked} />
+        <FloatingAction title="LEARN MORE" onUpgrade={onUpgradeNowClicked} />
       </EduIf>
     </>
   )

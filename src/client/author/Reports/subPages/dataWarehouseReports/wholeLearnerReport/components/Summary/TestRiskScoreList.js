@@ -37,16 +37,32 @@ const TestRiskScoreList = ({ riskData }) => (
           : `${TEST_TYPE_LABELS[testType].split(' ')[0]}`
         const scoreText = isExternalTest ? score : `${score}%`
         return (
+<<<<<<< HEAD
           <FlexContainer justifyContent="space-between" key={testName}>
             <Tooltip title={tooltipTitle}>
               <TestDetailContainer>
                 <TestLabel>{testName}</TestLabel>
+=======
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="baseline"
+            key={testName}
+          >
+            <Tooltip title={tooltipTitle}>
+              <TestDetailContainer>
+                <TestLabel fontSize="14px">{testName}</TestLabel>
+>>>>>>> edulasticv2-e34.1.0
                 <span>{scoreText}</span>
               </TestDetailContainer>
             </Tooltip>
             <RiskLabel
+<<<<<<< HEAD
               color={RISK_BAND_COLOR_INFO[riskBandLabel]}
               fontSize="10px"
+=======
+              $color={RISK_BAND_COLOR_INFO[riskBandLabel]}
+              fontSize="14px"
+>>>>>>> edulasticv2-e34.1.0
             >
               <span>{riskBandLabel}</span>
               <Tooltip title={renderTooltip(tooltipTexts)}>

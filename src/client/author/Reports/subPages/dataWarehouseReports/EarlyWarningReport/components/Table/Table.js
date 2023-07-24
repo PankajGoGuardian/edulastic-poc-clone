@@ -117,7 +117,14 @@ const EarlyWarningTable = ({
 
   const hasContent = !loading && !error && tableDataToUse.length
 
+<<<<<<< HEAD
   const errorMsg = error?.message || 'Error fetching Table data.'
+=======
+  const errorMsg =
+    error?.response?.status === 400
+      ? error?.message
+      : 'Sorry, you have hit an unexpected error.'
+>>>>>>> edulasticv2-e34.1.0
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 

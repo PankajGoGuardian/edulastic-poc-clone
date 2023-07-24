@@ -9,13 +9,19 @@ import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
-import { reportNavType } from '@edulastic/constants/const/report'
+import {
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
+import { roleuser } from '@edulastic/constants'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
 import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 import navigation from '../../static/json/navigation.json'
+import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
+import { DATA_STUDIO_DISABLED_DISTRICTS } from '../../../../src/constants/others'
 
 const dataWarehouseReportTypes = navigation.navigation[
   'data-warehouse-reports'
@@ -29,6 +35,8 @@ const CustomizedHeaderWrapper = ({
   navigationItems = [],
   activeNavigationKey = '',
   hideSideMenu,
+  orgId,
+  userRole,
   isCliUser,
   showCustomReport,
   showSharedReport,
@@ -75,6 +83,15 @@ const CustomizedHeaderWrapper = ({
   if (isSharedReport) {
     filterNavigationItems = filterNavigationItems.filter(
       (item) => item.key !== 'performance-by-rubric-criteria'
+    )
+  }
+
+  if (
+    DATA_STUDIO_DISABLED_DISTRICTS.some((districtId) => districtId === orgId) &&
+    userRole === roleuser.TEACHER
+  ) {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== reportGroupType.DATA_WAREHOUSE_REPORT
     )
   }
 
@@ -254,6 +271,8 @@ const enhance = compose(
   withNamespaces('header'),
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+    userRole: getUserRole(state),
+    orgId: getUserOrgId(state),
   }))
 )
 export default enhance(CustomizedHeaderWrapper)

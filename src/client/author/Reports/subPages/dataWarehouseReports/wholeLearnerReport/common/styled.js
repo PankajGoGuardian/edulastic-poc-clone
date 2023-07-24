@@ -60,7 +60,12 @@ export const DemographicsWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+<<<<<<< HEAD
   justify-content: center;
+=======
+  justify-content: space-around;
+  font-weight: bold;
+>>>>>>> edulasticv2-e34.1.0
   height: 60px;
   background-color: ${fadedGrey};
   .demographic-item {
@@ -72,8 +77,8 @@ export const DemographicsWrapper = styled.div`
       font-size: 16px;
       margin-right: 10px;
     }
-    span {
-      font-weight: bold;
+    .title {
+      font-weight: normal;
     }
   }
 `
@@ -96,19 +101,32 @@ export const StudentThumbnail = styled.div`
 export const StudentMetaData = styled.div`
   display: flex;
   flex-direction: column;
+<<<<<<< HEAD
+=======
+  gap: 8px;
+>>>>>>> edulasticv2-e34.1.0
   align-items: baseline;
   justify-content: center;
   height: 100%;
   margin-left: 10px;
   color: ${greyThemeDark1};
+<<<<<<< HEAD
   .schools-name .grades-name {
     margin-bottom: 10px;
     font-size: 12px;
+=======
+  .schools-name,
+  .grades-name {
+    font-size: 13px;
+>>>>>>> edulasticv2-e34.1.0
   }
   .student-name {
     font-weight: bold;
     font-size: 16px;
+<<<<<<< HEAD
     margin-bottom: 10px;
+=======
+>>>>>>> edulasticv2-e34.1.0
   }
   .value {
     font-weight: bold;
@@ -166,20 +184,41 @@ export const RiskLabel = styled(Label)`
   text-transform: uppercase;
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   span {
     margin-right: 8px;
   }
+=======
+  justify-content: flex-start;
+  margin-left: 10px;
+  span {
+    margin-right: 8px;
+  }
+  width: 80px;
+  p {
+    color: ${({ $color }) => $color || fadedBlack} !important;
+    font-weight: bold !important;
+  }
+>>>>>>> edulasticv2-e34.1.0
 `
 
 export const TestDetailContainer = styled.div`
   display: flex;
+<<<<<<< HEAD
   width: 70%;
+=======
+  width: 60%;
+>>>>>>> edulasticv2-e34.1.0
   align-items: baseline;
   justify-content: space-between;
 `
 
 export const AcademicRiskListContainer = styled.div`
   margin-right: ${({ $marginRight }) => $marginRight || '0'};
+<<<<<<< HEAD
+=======
+  width: ${({ $width }) => $width || '50%'};
+>>>>>>> edulasticv2-e34.1.0
 `
 
 export const StyledButton = styled(Button)`

@@ -70,14 +70,19 @@ const DataWarehouseUploadModal = ({
   const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
   const [termId, setTermId] = useState(undefined)
   const [category, setCategory] = useState(undefined)
+<<<<<<< HEAD
   const [testName, setTestName] = useState('')
+=======
+  const [feedName, setFeedName] = useState('')
+  const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
+>>>>>>> edulasticv2-e34.1.0
 
   useEffect(() => {
     if (!isVisible) {
       setFile(null)
       setTermId(undefined)
       setCategory(undefined)
-      setTestName('')
+      setFeedName('')
     }
   }, [isVisible])
 
@@ -111,7 +116,9 @@ const DataWarehouseUploadModal = ({
         isNonAcademicFormatSelected = !isEmpty(matchingCategory)
       }
     }
-    return isNonAcademicFormatSelected ? 'Enter File Name' : 'Enter Test Title'
+    return isNonAcademicFormatSelected
+      ? 'Enter Feed Name'
+      : 'Enter Feed Name (Test Title)'
   }, [category])
 
   const isUploadBtnDisabled =
@@ -170,7 +177,7 @@ const DataWarehouseUploadModal = ({
         <StyledRow>
           <StyledCol span={12}>
             <StyledTreeSelect
-              placeholder="Select Data Type"
+              placeholder="Select Feed Type"
               treeDefaultExpandAll
               onChange={setCategory}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -197,7 +204,7 @@ const DataWarehouseUploadModal = ({
           <>
             <EduIf condition={isInvalidFeedName}>
               <Alert
-                message="Filename already exists, please give another name or go to Edit to edit the existing record"
+                message="Feed name already exists, please give another name or go to Edit to edit the existing record"
                 type="error"
                 banner
               />

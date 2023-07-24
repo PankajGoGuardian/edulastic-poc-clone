@@ -217,6 +217,7 @@ export const sortTestTypes = (testTypes) => {
 }
 
 export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')
+<<<<<<< HEAD
 
 export const getExternalScoreFormattedByType = (
   externalScore,
@@ -229,3 +230,5 @@ export const getExternalScoreFormattedByType = (
   const externalScoreSuffix = EXTERNAL_SCORE_SUFFIX[externalScoreType] || ''
   return `${externalScorePrefix || ''}${absScore}${externalScoreSuffix}`
 }
+=======
+>>>>>>> edulasticv2-e34.1.0

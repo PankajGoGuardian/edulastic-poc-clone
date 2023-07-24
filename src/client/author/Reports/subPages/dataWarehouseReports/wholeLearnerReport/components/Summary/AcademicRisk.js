@@ -2,7 +2,15 @@ import React, { useState, useMemo } from 'react'
 import { isEmpty } from 'lodash'
 import { Empty } from 'antd'
 import { FlexContainer, EduIf, EduElse, EduThen } from '@edulastic/common'
+<<<<<<< HEAD
 import { Label, AcademicRiskListContainer, StyledButton } from '../../common/styled'
+=======
+import {
+  Label,
+  AcademicRiskListContainer,
+  StyledButton,
+} from '../../common/styled'
+>>>>>>> edulasticv2-e34.1.0
 import TestRiskScoreList from './TestRiskScoreList'
 import TestRiskListPopup from './TestRiskListPopup'
 import { getTestRiskTableData } from '../../utils'
@@ -48,11 +56,21 @@ const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
         <EduIf condition={hasContent}>
           <EduThen>
             <FlexContainer justifyContent="space-between">
+<<<<<<< HEAD
               <AcademicRiskListContainer $marginRight="20px">
                 <Label $fontSize="16px">EDULASTIC</Label>
                 <TestRiskScoreList riskData={internalAssessmentRisk} />
               </AcademicRiskListContainer>
               <AcademicRiskListContainer>
+=======
+              <AcademicRiskListContainer $marginRight="20px" $width="40%">
+                <Label $fontSize="14px" $margin="0px 0 5px 0">
+                  EDULASTIC
+                </Label>
+                <TestRiskScoreList riskData={internalAssessmentRisk} />
+              </AcademicRiskListContainer>
+              <AcademicRiskListContainer $width="60%">
+>>>>>>> edulasticv2-e34.1.0
                 <TestRiskScoreList
                   riskData={externalAssessmentRisk.slice(0, 3)}
                 />

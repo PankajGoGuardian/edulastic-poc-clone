@@ -132,6 +132,5 @@ export const getTemplateFilePath = (type, feedTypes) => {
   if (!isEmpty(selectedFeedType)) {
     return `${cdnURI}${selectedFeedType.templateLink}`
   }
-  const name = type === ATTENDANCE ? capitalize(type) : type
-  return `${cdnURI}/JS/webresources/csv/${name}_Template.csv`
+  return null
 }

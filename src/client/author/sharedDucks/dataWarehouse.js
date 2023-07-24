@@ -338,7 +338,7 @@ export function* fetchFeedTypes() {
   } catch (error) {
     const msg =
       'Error getting feed types. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ type: 'error', msg })
     yield put({
       type: GET_FEED_TYPES_REQUEST_ERROR,
       payload: { error: msg },

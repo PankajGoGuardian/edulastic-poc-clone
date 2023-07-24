@@ -82,7 +82,7 @@ const DataWarehouseReports = ({
       fetchUploadsStatusList()
       fetchFeedTypes()
     }
-  }, [])
+  }, [isDataOpsUser])
 
   const closeModal = (shouldChangeTab) => {
     setShowTestDataUploadModal(false)

@@ -76,7 +76,7 @@ const DataWarehouse = ({
       fetchUploadsStatusList()
       fetchFeedTypes()
     }
-  }, [])
+  }, [dataOpsEnabled])
 
   return (
     <EduIf condition={dataOpsEnabled}>

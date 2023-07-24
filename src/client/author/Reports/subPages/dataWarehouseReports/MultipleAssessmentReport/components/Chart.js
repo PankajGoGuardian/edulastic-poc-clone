@@ -83,16 +83,7 @@ const getTooltipJSX = (payload, barIndex) => {
           value={formatDate(barData.assessmentDate)}
         />
         <TooltipRowItem title="Students:" value={barData.totalGraded} />
-<<<<<<< HEAD
         <TooltipRowItem title="Score:" value={`${score}${scoreSuffix}`} />
-=======
-        <TooltipRowItem
-          title="Score:"
-          value={`${round(barData.averageScore)}${getScoreSuffix(
-            barData.externalTestType
-          )}`}
-        />
->>>>>>> edulasticv2-e34.1.0
         <DashedHr />
         {colorBandComponent}
       </div>

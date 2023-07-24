@@ -21,11 +21,7 @@ const OverallRisk = ({ overallRisk }) => {
       <EduIf condition={!isEmpty(overallRisk)}>
         <EduThen>
           <CustomStyledCell $backgroundColor={RISK_BAND_COLOR_INFO[bandLabel]}>
-<<<<<<< HEAD
-            {bandLabel}
-=======
             {bandLabel.toUpperCase()}
->>>>>>> edulasticv2-e34.1.0
           </CustomStyledCell>
         </EduThen>
         <EduElse>

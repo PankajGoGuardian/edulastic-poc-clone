@@ -41,16 +41,11 @@ const Summary = ({ studentInformation, studentClassData, settings }) => {
   const riskData = useMemo(() => getStudentRiskData(data), [data])
 
   const hasContent = !loading && !error && !isEmpty(riskData)
-<<<<<<< HEAD
-  const errorMsg = 'Error fetching Student Risk data.'
-  const emptyContainerDesc = error ? errorMsg : 'No Student Risk Data Available'
-=======
   const errorMsg =
     error?.response?.status === 400
       ? error?.message
       : 'Sorry, you have hit an unexpected error.'
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
->>>>>>> edulasticv2-e34.1.0
   useErrorNotification(errorMsg, error)
 
   return (

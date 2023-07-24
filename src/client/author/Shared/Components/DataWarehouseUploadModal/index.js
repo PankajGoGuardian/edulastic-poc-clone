@@ -70,12 +70,6 @@ const DataWarehouseUploadModal = ({
   const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
   const [termId, setTermId] = useState(undefined)
   const [category, setCategory] = useState(undefined)
-<<<<<<< HEAD
-  const [testName, setTestName] = useState('')
-=======
-  const [feedName, setFeedName] = useState('')
-  const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
->>>>>>> edulasticv2-e34.1.0
 
   useEffect(() => {
     if (!isVisible) {

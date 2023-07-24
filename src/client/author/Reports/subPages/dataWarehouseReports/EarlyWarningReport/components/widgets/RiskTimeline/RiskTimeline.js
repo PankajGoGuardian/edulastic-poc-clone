@@ -54,15 +54,10 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   )
 
   const hasContent = !loading && !error && !!chartData.length
-<<<<<<< HEAD
-  const errorMsg = error?.message || 'Error fetching Risk Timeline data.'
-
-=======
   const errorMsg =
     error?.response?.status === 400
       ? error?.message
       : 'Sorry, you have hit an unexpected error.'
->>>>>>> edulasticv2-e34.1.0
   const emptyContainerDesc = error ? errorMsg : 'No Data Available'
   useErrorNotification(errorMsg, error)
 

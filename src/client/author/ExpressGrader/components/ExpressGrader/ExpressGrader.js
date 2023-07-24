@@ -14,7 +14,6 @@ import {
   FlexContainer,
   toggleChatDisplay,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -57,7 +56,6 @@ import {
   isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
-import { getManualContentVisibility } from '../../../questionUtils'
 
 /**
  *
@@ -80,11 +78,7 @@ const transform = (testActivities) =>
 
 const transformMemoized = memoizeOne(transform)
 
-export function getDataForTable(
-  data,
-  hiddenTestContentVisibilty = false,
-  userRole
-) {
+export function getDataForTable(data) {
   let dataSource
   if (data && data.length !== 0) {
     dataSource = data
@@ -114,14 +108,6 @@ export function getDataForTable(
           question.testActivityId = testActivityId
           question.score = Number.isNaN(question.score) ? 0 : question.score
         })
-
-        if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
-          student.questionActivities.forEach((q) => {
-            if (q?.autoGrade) {
-              delete students[q.key]
-            }
-          })
-        }
 
         students.questions = student.questionActivities.length
         students.students = studentInfo
@@ -204,17 +190,9 @@ class ExpressGrader extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { changedFeedback, testActivity, additionalData, userRole } = props
+    const { changedFeedback, testActivity } = props
 
-    const hiddenTestContentVisibilty = getManualContentVisibility(
-      additionalData
-    )
-
-    const columnData = getDataForTable(
-      transformMemoized(testActivity),
-      hiddenTestContentVisibilty,
-      userRole
-    )
+    const columnData = getDataForTable(transformMemoized(testActivity))
     const newState = { changedFeedback: !isEmpty(changedFeedback), columnData }
     return newState
   }

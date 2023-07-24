@@ -122,6 +122,7 @@ import {
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
   isV1MultipartItem,
+  getManualContentVisibility,
 } from '../questionUtils'
 import {
   setFreezeTestSettings,
@@ -241,9 +242,17 @@ export function* receiveTestActivitySaga({ payload }) {
     yield put(setFreezeTestSettings(classResponse.freezeSettings))
     const students = get(gradebookData, 'students', [])
     // the below methods mutates the gradebookData
+    const userRole = yield select(getUserRole)
+    const hiddenTestContentVisibilty = getManualContentVisibility(
+      additionalData
+    )
+    let filterTestItems = testItems
+    if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+      filterTestItems = testItems.filter((t) => !t?.autoGrade && !t?.notStarted)
+    }
     gradebookData.passageData = classResponse.passages
-    gradebookData.testItemsData = testItems
-    gradebookData.testItemsDataKeyed = keyBy(testItems, '_id')
+    gradebookData.testItemsData = filterTestItems
+    gradebookData.testItemsDataKeyed = keyBy(filterTestItems, '_id')
     gradebookData.test = classResponse
     gradebookData.endDate = additionalData.endDate
     transformTestItems(gradebookData)

@@ -333,7 +333,7 @@ const MultipleAssessmentReport = ({
   const tableData = useMemo(() => {
     const { metricInfo = [] } = get(reportTableData, 'data.result', {})
     const { externalBands = [] } = get(reportChartData, 'data.result', {})
-    const feedTypeKeys = feedTypes.map(({ key }) => key)
+    const feedTypeKeys = (feedTypes || []).map(({ key }) => key)
     let externalMetricsForTable = metricInfo
       .filter(({ testType }) => feedTypeKeys.includes(testType))
       .map(({ testType: externalTestType, ...t }) => ({

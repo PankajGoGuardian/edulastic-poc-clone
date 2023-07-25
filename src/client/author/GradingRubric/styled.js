@@ -461,11 +461,11 @@ export const InfoIconWrapper = styled.div`
 `
 
 export const InfoIconInsideWrapper = styled.div`
-  margin-left: ${(props) => props.ml};
-  margin-top: ${(props) => props.mt};
-  margin-right: ${(props) => props.mr};
-  display: ${(props) => props.display};
-  font-size: ${(props) => props.fontSize};
+  margin-left: ${(props) => props.ml || ''};
+  margin-top: ${(props) => props.mt || ''};
+  margin-right: ${(props) => props.mr || ''};
+  display: ${(props) => props.display || ''};
+  font-size: ${(props) => props.fontSize || ''};
 `
 
 export const ActionBarContainer = styled.div`

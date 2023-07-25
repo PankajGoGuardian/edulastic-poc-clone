@@ -338,6 +338,13 @@ export function* receiveTestActivitySaga({ payload }) {
       })
     }
 
+    if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+      entities = entities.map((e) => ({
+        ...e,
+        questionActivities: e.questionActivities.filter((t) => !t?.autoGrade),
+      }))
+    }
+
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData, entities },

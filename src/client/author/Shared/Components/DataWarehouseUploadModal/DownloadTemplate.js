@@ -1,5 +1,6 @@
 import React from 'react'
 import { Icon } from 'antd'
+import { EduIf, EduThen } from '@edulastic/common'
 import {
   DownloadTemplateContainer,
   DownloadTemplateDivider,
@@ -7,14 +8,16 @@ import {
 
 const DownloadTemplate = ({ url }) => {
   return (
-    <>
-      <DownloadTemplateDivider />
-      <DownloadTemplateContainer>
-        <a href={url} download>
-          DOWNLOAD TEMPLATE <Icon type="download" />
-        </a>
-      </DownloadTemplateContainer>
-    </>
+    <EduIf condition={url}>
+      <EduThen>
+        <DownloadTemplateDivider />
+        <DownloadTemplateContainer>
+          <a href={url} download>
+            DOWNLOAD TEMPLATE <Icon type="download" />
+          </a>
+        </DownloadTemplateContainer>
+      </EduThen>
+    </EduIf>
   )
 }
 

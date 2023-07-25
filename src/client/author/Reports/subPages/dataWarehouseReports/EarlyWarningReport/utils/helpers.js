@@ -8,10 +8,7 @@ import {
   EXTERNAL_TEST_KEY_SEPARATOR,
   RISK_TYPE_KEYS,
 } from '@edulastic/constants/reportUtils/common'
-import {
-  EXTERNAL_TEST_TYPES,
-  TEST_TYPE_LABELS,
-} from '@edulastic/constants/const/testTypes'
+import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import { EduIf } from '@edulastic/common'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
@@ -62,6 +59,7 @@ export const getTableColumns = ({
   tableColumnsData,
   isStudentCompareBy,
   tableData,
+  feedTypes,
 }) => {
   const tableColumns = next(tableColumnsData, (_columns) => {
     const dimensionColumn = _columns.find(
@@ -176,8 +174,9 @@ export const getTableColumns = ({
     )
     const sortedAvailableTestTypes = sortTestTypes([...availableTestTypes])
     const academicSubColumns = sortedAvailableTestTypes.map((testType) => {
-      const isExternal =
-        EXTERNAL_TEST_TYPES[testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]]
+      const isExternal = feedTypes.find(
+        ({ key }) => key === testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
+      )
       const scoreSuffix = isExternal ? '' : '%'
       const testTypeText = isExternal
         ? testType.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')

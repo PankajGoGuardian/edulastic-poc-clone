@@ -37,6 +37,8 @@ import {
   getUploadsStatusLoader,
   uploadTestDataFileAction,
   deleteTestDataFileAction,
+  getFeedTypesAction,
+  getFeedTypes,
 } from '../../../sharedDucks/dataWarehouse'
 import { navigationState } from '../../../src/constants/navigation'
 import { FloatingAction } from '../StandardReport/SellContent/FloatingAction'
@@ -71,6 +73,8 @@ const DataWarehouseReports = ({
   handleUploadProgress,
   setCancelUpload,
   abortUpload,
+  fetchFeedTypes,
+  feedTypes,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState(REPORTS_TAB.key)
@@ -78,8 +82,11 @@ const DataWarehouseReports = ({
   useEffect(() => {
     if (isDataOpsUser) {
       fetchUploadsStatusList()
+      if (feedTypes === null) {
+        fetchFeedTypes()
+      }
     }
-  }, [])
+  }, [isDataOpsUser, feedTypes])
 
   const closeModal = (shouldChangeTab) => {
     setShowTestDataUploadModal(false)
@@ -217,9 +224,11 @@ const withConnect = connect(
     uploadResponse: getTestDataFileUploadResponse(state),
     uploadProgress: getFileUploadProgress(state),
     uploading: getTestDataFileUploadLoader(state),
+    feedTypes: getFeedTypes(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,
+    fetchFeedTypes: getFeedTypesAction,
     resetUploadResponse: getResetTestDataFileUploadResponseAction,
     uploadFile: uploadTestDataFileAction,
     deleteFile: deleteTestDataFileAction,

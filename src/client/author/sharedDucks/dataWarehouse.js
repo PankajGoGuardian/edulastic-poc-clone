@@ -39,6 +39,11 @@ const GET_SET_CANCEL_UPLOAD_REQUEST = '[reports] get set cancel upload request'
 
 const GET_ABORT_UPLOAD_REQUEST = '[reports] get abort upload request'
 
+const GET_FEED_TYPES_REQUEST = '[reports] get feed types request'
+const GET_FEED_TYPES_REQUEST_SUCCESS =
+  '[reports] get feed types request success'
+const GET_FEED_TYPES_REQUEST_ERROR = '[reports] get feed types request error'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const uploadTestDataFileAction = createAction(
@@ -66,6 +71,8 @@ export const getSetCancelUploadAction = createAction(
 )
 
 export const getAbortUploadAction = createAction(GET_ABORT_UPLOAD_REQUEST)
+
+export const getFeedTypesAction = createAction(GET_FEED_TYPES_REQUEST)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -100,6 +107,21 @@ export const getFileUploadProgress = createSelector(
   (state) => state.uploadProgress
 )
 
+export const getFeedTypes = createSelector(
+  stateSelector,
+  (state) => state.feedTypes
+)
+
+export const getFeedTypesLoader = createSelector(
+  stateSelector,
+  (state) => state.feedTypesLoader
+)
+
+export const getFeedTypesError = createSelector(
+  stateSelector,
+  (state) => state.feedTypesError
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -116,6 +138,9 @@ const initialState = {
   uploadsStatusList: [],
   uploadsStatusListLoader: false,
   uploadsStatusListError: null,
+  feedTypes: null,
+  feedTypesLoader: false,
+  feedTypesError: null,
 }
 
 export const dataWarehouseReducer = createReducer(initialState, {
@@ -175,6 +200,17 @@ export const dataWarehouseReducer = createReducer(initialState, {
     if (state.cancelUpload) {
       state.cancelUpload()
     }
+  },
+  [GET_FEED_TYPES_REQUEST]: (state) => {
+    state.feedTypesLoader = true
+  },
+  [GET_FEED_TYPES_REQUEST_ERROR]: (state, { payload }) => {
+    state.feedTypesLoader = false
+    state.feedTypesError = payload.error
+  },
+  [GET_FEED_TYPES_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.feedTypesLoader = false
+    state.feedTypes = payload
   },
 })
 
@@ -292,6 +328,24 @@ export function* deleteTestDataFileSaga({ payload: { feedId } }) {
   }
 }
 
+export function* fetchFeedTypes() {
+  try {
+    const feedTypes = yield call(dataWarehouseApi.getFeedTypes)
+    yield put({
+      type: GET_FEED_TYPES_REQUEST_SUCCESS,
+      payload: feedTypes.result,
+    })
+  } catch (error) {
+    const msg =
+      'Error getting feed types. Please try again after a few minutes.'
+    notification({ type: 'error', msg })
+    yield put({
+      type: GET_FEED_TYPES_REQUEST_ERROR,
+      payload: { error: msg },
+    })
+  }
+}
+
 export function* resetUploadResponseSaga() {
   yield put({
     type: GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS,
@@ -306,5 +360,6 @@ export function* dataWarehouseSaga() {
     takeLatest(DELETE_TEST_DATA_FILE_REQUEST, deleteTestDataFileSaga),
     takeLatest(GET_UPLOADS_STATUS_LIST_REQUEST, fetchUploadsStatusListSaga),
     takeLatest(GET_RESET_TEST_DATA_UPLOAD_RESPONSE, resetUploadResponseSaga),
+    takeLatest(GET_FEED_TYPES_REQUEST, fetchFeedTypes),
   ])
 }

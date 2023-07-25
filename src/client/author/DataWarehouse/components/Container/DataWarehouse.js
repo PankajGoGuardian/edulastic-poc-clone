@@ -29,6 +29,7 @@ import {
   getUpdateUploadProgressAction,
   getSetCancelUploadAction,
   getAbortUploadAction,
+  getFeedTypesAction,
 } from '../../../sharedDucks/dataWarehouse'
 import {
   isDataOpsUser as checkIsDataOpsUser,
@@ -53,6 +54,7 @@ const DataWarehouse = ({
   handleUploadProgress,
   setCancelUpload,
   abortUpload,
+  fetchFeedTypes,
 }) => {
   const dataOpsEnabled = isDataOpsUser || isDataOpsOnlyUser
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
@@ -72,8 +74,9 @@ const DataWarehouse = ({
   useEffect(() => {
     if (dataOpsEnabled) {
       fetchUploadsStatusList()
+      fetchFeedTypes()
     }
-  }, [])
+  }, [dataOpsEnabled])
 
   return (
     <EduIf condition={dataOpsEnabled}>
@@ -134,6 +137,7 @@ const withConnect = connect(
     handleUploadProgress: getUpdateUploadProgressAction,
     setCancelUpload: getSetCancelUploadAction,
     abortUpload: getAbortUploadAction,
+    fetchFeedTypes: getFeedTypesAction,
   }
 )
 

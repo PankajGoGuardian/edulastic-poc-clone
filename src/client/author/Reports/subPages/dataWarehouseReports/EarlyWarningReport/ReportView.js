@@ -15,6 +15,7 @@ const ReportView = ({
   compareByOptions,
   history,
   search,
+  feedTypes,
 }) => {
   const { requestFilters } = settings
   const [riskTimelineFilters, setRiskTimelineFilters] = useState({
@@ -75,6 +76,7 @@ const ReportView = ({
         setTablePagination={setTablePagination}
         selectedCompareBy={selectedCompareBy}
         compareByOptions={compareByOptions}
+        feedTypes={feedTypes}
       />
     </>
   )

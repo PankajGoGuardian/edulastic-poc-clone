@@ -200,7 +200,7 @@ export const genericColumnsForTable = [
     visibleOn: ['csv'],
   },
   {
-    title: 'Avg (Pre)',
+    title: 'Avg (Post)',
     key: 'AvgPost',
     dataIndex: 'data',
     align: 'center',

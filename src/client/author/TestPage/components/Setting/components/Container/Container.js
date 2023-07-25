@@ -40,6 +40,7 @@ import { withNamespaces } from '@edulastic/localization'
 import {
   SHOW_IMMERSIVE_READER,
   TEST_CONTENT_VISIBILITY,
+  testContentVisibility as contentVisiblityOptions,
 } from '@edulastic/constants/const/test'
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
@@ -296,6 +297,11 @@ class Setting extends Component {
           standardsData.find((item) => item._id === defaultStandardId) || {}
         if (COMMON.includes(value)) {
           Object.assign(extraData, { allowTeacherRedirect: true })
+        }
+        if (!COMMON.includes(value)) {
+          Object.assign(extraData, {
+            testContentVisibility: contentVisiblityOptions.ALWAYS,
+          })
         }
         if (ASSESSMENT.includes(value) || COMMON.includes(value)) {
           const releaseScore =

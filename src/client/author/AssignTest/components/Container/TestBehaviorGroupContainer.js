@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
@@ -17,6 +17,7 @@ import {
 import {
   TEST_CONTENT_VISIBILITY,
   evalTypeLabels,
+  testContentVisibility,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -128,6 +129,11 @@ const TestBehaviorGroupContainer = ({
     assignmentSettings?.scoringType ||
     testSettings?.scoringType ||
     evalTypes?.ITEM_LEVEL_EVALUATION
+
+  useEffect(() => {
+    if (!COMMON.includes(testType))
+      testSettings.testContentVisibility = testContentVisibility.ALWAYS
+  }, [testType])
 
   const updateTimedTestAttrs = (attr, value) => {
     if (

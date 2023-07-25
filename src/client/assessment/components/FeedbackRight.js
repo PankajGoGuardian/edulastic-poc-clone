@@ -564,7 +564,7 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
       hintsUsed,
-      t,
+      t: i18translate,
     } = this.props
     const {
       score,
@@ -676,7 +676,7 @@ class FeedbackRight extends Component {
                       style={{ color: 'rgb(158, 155, 149)', fontSize: '12px' }}
                     />{' '}
                     <InfoIconInsideWrapper fontSize="12px" mt="-5px" ml="5px">
-                      {t('infoText')}
+                      {i18translate('infoText')}
                     </InfoIconInsideWrapper>
                   </InfoIconWrapper>
                 </EduIf>

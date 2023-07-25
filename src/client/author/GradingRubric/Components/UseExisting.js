@@ -527,12 +527,8 @@ const UseExisting = ({
                       currentQuestion.rubrics?._id === currentRubricData?._id
                     }
                   >
-                    <CustomStyleBtn
-                      style={btnStyle}
-                      onClick={handleRemoveRubric}
-                    >
-                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" />{' '}
-                      Remove
+                    <CustomStyleBtn style={btnStyle} onClick={handleRemoveRubric}>
+                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                     </CustomStyleBtn>
                   </EduIf>
                   <EduIf

@@ -17,7 +17,7 @@ import {
 import {
   TEST_CONTENT_VISIBILITY,
   evalTypeLabels,
-  testContentVisibility,
+  testContentVisibility as testContentVisibilityOptions,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -100,6 +100,7 @@ const TestBehaviorGroupContainer = ({
     showHintsToStudents = testSettings?.showHintsToStudents,
     penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
     showTtsForPassages = testSettings?.showTtsForPassages,
+    testContentVisibility = testSettings?.testContentVisibility,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
@@ -132,7 +133,10 @@ const TestBehaviorGroupContainer = ({
 
   useEffect(() => {
     if (!COMMON.includes(testType))
-      overRideSettings(TEST_CONTENT_VISIBILITY, testContentVisibility.ALWAYS)
+      overRideSettings(
+        TEST_CONTENT_VISIBILITY,
+        testContentVisibilityOptions.ALWAYS
+      )
   }, [testType])
 
   const updateTimedTestAttrs = (attr, value) => {
@@ -614,9 +618,7 @@ const TestBehaviorGroupContainer = ({
               <Col span={14}>
                 <ContentVisibilityOptions
                   isDisabled={freezeSettings}
-                  testContentVisibility={
-                    assignmentSettings.testContentVisibility
-                  }
+                  testContentVisibility={testContentVisibility}
                   updateTestContentVisibility={(value) =>
                     overRideSettings(TEST_CONTENT_VISIBILITY, value)
                   }

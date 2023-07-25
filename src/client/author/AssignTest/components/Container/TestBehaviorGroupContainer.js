@@ -132,7 +132,7 @@ const TestBehaviorGroupContainer = ({
 
   useEffect(() => {
     if (!COMMON.includes(testType))
-      testSettings.testContentVisibility = testContentVisibility.ALWAYS
+      overRideSettings(TEST_CONTENT_VISIBILITY, testContentVisibility.ALWAYS)
   }, [testType])
 
   const updateTimedTestAttrs = (attr, value) => {

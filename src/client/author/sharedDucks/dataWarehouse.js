@@ -138,7 +138,7 @@ const initialState = {
   uploadsStatusList: [],
   uploadsStatusListLoader: false,
   uploadsStatusListError: null,
-  feedTypes: [],
+  feedTypes: null,
   feedTypesLoader: false,
   feedTypesError: null,
 }

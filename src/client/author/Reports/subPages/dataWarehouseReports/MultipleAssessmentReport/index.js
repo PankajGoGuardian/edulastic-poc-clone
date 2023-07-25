@@ -219,12 +219,18 @@ const MultipleAssessmentReport = ({
   }
 
   useEffect(() => {
-    fetchFeedTypes()
-    return () => {
+    if (feedTypes === null) {
+      fetchFeedTypes()
+    }
+  }, [feedTypes])
+
+  useEffect(
+    () => () => {
       console.log('Multiple Assessment Report Component Unmount')
       resetAllReports()
-    }
-  }, [])
+    },
+    []
+  )
 
   useTabNavigation({
     settings,

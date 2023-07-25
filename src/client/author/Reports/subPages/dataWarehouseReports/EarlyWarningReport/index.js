@@ -86,12 +86,18 @@ const EarlyWarningReport = ({
   }
 
   useEffect(() => {
-    fetchFeedTypes()
-    return () => {
+    if (feedTypes === null) {
+      fetchFeedTypes()
+    }
+  }, [feedTypes])
+
+  useEffect(
+    () => () => {
       console.log('Early Warning Report Component Unmount')
       resetAllReports()
-    }
-  }, [])
+    },
+    []
+  )
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
 

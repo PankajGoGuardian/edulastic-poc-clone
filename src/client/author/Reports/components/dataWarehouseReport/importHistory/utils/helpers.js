@@ -128,6 +128,7 @@ export const getManageExternalDataColumns = (
 }
 
 export const getTemplateFilePath = (type, feedTypes) => {
+  if (isEmpty(feedTypes)) return null
   const selectedFeedType = feedTypes.find(({ key }) => key === type)
   if (!isEmpty(selectedFeedType)) {
     return `${cdnURI}${selectedFeedType.templateLink}`

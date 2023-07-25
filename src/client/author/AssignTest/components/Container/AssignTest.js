@@ -19,6 +19,7 @@ import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+import { testContentVisibility } from '@edulastic/constants/const/test'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -539,6 +540,9 @@ class AssignTest extends React.Component {
           ...pick(testSettings, testSettingsOptions),
           ...testDefaultSettings,
           autoRedirect: !!testDefaultSettings.autoRedirect,
+          testContentVisibility:
+            testDefaultSettings.testContentVisibility ||
+            testContentVisibility.ALWAYS,
         }
       } else {
         if (isFreezeSettingsOn) {

@@ -4,7 +4,7 @@ import { Input } from 'antd'
 import { EduIf, Stimulus } from '@edulastic/common'
 
 import { QuestionText } from '../../../../styled-components/QuestionItem'
-import { isSubmitButton } from '../../../../utils/helpers'
+import { isSubmitButton } from '../../../../utils/common'
 
 export default class FormText extends React.Component {
   static propTypes = {

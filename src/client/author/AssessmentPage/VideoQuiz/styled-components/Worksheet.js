@@ -44,7 +44,7 @@ export const WorksheetWrapper = styled.div`
 
 export const VideoViewerContainer = styled.div`
   display: flex;
-  width: ${({ width }) => width}px;
+  width: 100%;
   overflow-x: auto;
   padding: 0px 15px;
 `

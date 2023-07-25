@@ -20,7 +20,7 @@ import {
   IconDropDown,
   IconWhiteMic,
 } from '@edulastic/icons'
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { EduIf } from '@edulastic/common'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import AddBulkModal from './AddBulkModal'
@@ -52,6 +52,7 @@ class AddQuestion extends React.Component {
     authorDifficulty,
     depthOfKnowledge,
     aiQuestions,
+    isFromAddBulk = false,
   }) => {
     const { onAddQuestion, scrollToBottom } = this.props
 
@@ -66,7 +67,8 @@ class AddQuestion extends React.Component {
           authorDifficulty,
           depthOfKnowledge,
         },
-        aiQuestions?.[i]
+        aiQuestions?.[i],
+        isFromAddBulk
       )()
     }
 
@@ -80,7 +82,6 @@ class AddQuestion extends React.Component {
       onAddQuestion,
       onAddSection,
       minAvailableQuestionIndex,
-      isSnapQuizVideo,
     } = this.props
     return (
       <AddQuestionWrapper>
@@ -141,31 +142,18 @@ class AddQuestion extends React.Component {
             </Tooltip>
           </QuestionTypes>
           <QuestionTypes>
-            <EduIf condition={isSnapQuizVideo}>
-              <EduThen>
-                <CustomStyleBtn2
-                  margin="0px"
-                  height="32px"
-                  width="154px"
-                  onClick={this.toggleBulkModal}
-                  data-cy="addBulk"
-                >
-                  <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
-                  Auto Genenerate
-                </CustomStyleBtn2>
-              </EduThen>
-              <EduElse>
-                <AddButton onClick={this.toggleBulkModal} data-cy="addBulk">
-                  Add Bulk
-                </AddButton>
-              </EduElse>
-            </EduIf>
-
-            <AddButton
-              onClick={onAddSection}
-              data-cy="addSection"
-              width={isSnapQuizVideo ? '40%' : '48%'}
+            <CustomStyleBtn2
+              margin="0px"
+              height="32px"
+              width="154px"
+              onClick={this.toggleBulkModal}
+              data-cy="addBulk"
             >
+              <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+              Auto Genenerate
+            </CustomStyleBtn2>
+
+            <AddButton onClick={onAddSection} data-cy="addSection" width="40%">
               Add Section
             </AddButton>
           </QuestionTypes>
@@ -175,7 +163,6 @@ class AddQuestion extends React.Component {
               onCancel={this.toggleBulkModal}
               onApply={this.handleApply}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
-              isSnapQuizVideo={isSnapQuizVideo}
             />
           </EduIf>
         </ContentWrapper>

@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import { MathSpan, MathInput, Stimulus } from '@edulastic/common'
 import { themes } from '../../../../../../../theme'
 import { QuestionText } from '../../../../styled-components/QuestionItem'
-import { isSubmitButton } from '../../../../utils/helpers'
+import { isSubmitButton } from '../../../../utils/common'
 
 export default class FormMath extends React.Component {
   static propTypes = {

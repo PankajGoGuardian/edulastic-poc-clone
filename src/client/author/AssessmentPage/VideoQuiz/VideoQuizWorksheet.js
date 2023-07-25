@@ -8,7 +8,7 @@ import { WithResources, withWindowSizes, helpers } from '@edulastic/common'
 
 import { setTestDataAction } from '../../TestPage/ducks'
 
-import Questions from '../components/Questions/Questions'
+import Questions from './components/Questions'
 import {
   WorksheetWrapper,
   VideoViewerContainer,
@@ -38,7 +38,6 @@ const VideoQuizWorksheetComponent = ({
   studentWork,
   extraPaddingTop,
   currentAnnotationTool,
-  setCurrentAnnotationTool,
   isEditable,
   groupId,
   itemDetail,
@@ -275,13 +274,11 @@ const VideoQuizWorksheetComponent = ({
           testMode={testMode}
           isDocBased={isDocBased}
           reportMode={reportMode}
-          setCurrentAnnotationTool={setCurrentAnnotationTool}
           groupId={groupId}
           qId={0}
           clearHighlighted={clearHighlighted}
           itemId={itemDetail?._id}
           disableAutoHightlight={!!finalvideoUrl}
-          isSnapQuizVideo={!!finalvideoUrl}
           editMode={editMode}
           onDropAnnotation={handleAddAnnotation}
           annotations={annotations}

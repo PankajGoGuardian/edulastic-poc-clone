@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { extractVideoId } from './utils'
+import { extractVideoId } from '../../utils/videoPreviewHelpers'
 import { StyledYouTubePlayer } from '../../styled-components/VideoPreview'
 
 const PLAYER_ID = 'youtube-player'
@@ -52,7 +52,7 @@ const YouTubePlayer = React.forwardRef(
         videoId,
         height,
         width,
-        host: 'https://www.youtubeeducation.com',
+        host: 'https://www.youtube.com',
         events: {
           onStateChange,
         },

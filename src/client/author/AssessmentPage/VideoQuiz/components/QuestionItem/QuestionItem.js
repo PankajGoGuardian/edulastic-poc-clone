@@ -10,7 +10,7 @@ import {
   get,
   round,
 } from 'lodash'
-import { MathSpan, DragDrop, EduIf, EduThen, EduElse } from '@edulastic/common'
+import { MathSpan, DragDrop, EduIf } from '@edulastic/common'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 
 import {
@@ -35,10 +35,8 @@ import DisplayTimestamp from './components/common/DisplayTimestamp'
 import {
   QuestionItemWrapper,
   QuestionNumber,
-  QuestionForm,
   VideoQuizQuestionForm,
   EditButton,
-  AnswerForm,
   AnswerIndicator,
   DetailsContainer,
   DetailTitle,
@@ -52,7 +50,7 @@ import {
 } from '../../styled-components/QuestionItem'
 import FormAudio from './components/FormAudio/FormAudio'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../assessment/utils/timeUtils'
-import { DragHandle } from '../Questions'
+import DragHandle from '../DragHandle'
 
 const { DragItem } = DragDrop
 
@@ -89,8 +87,6 @@ class QuestionItem extends React.Component {
   }
 
   handleDragEnd = () => {
-    const { setCurrentAnnotationTool } = this.props
-    if (setCurrentAnnotationTool) setCurrentAnnotationTool('cursor')
     this.setState({ dragging: false })
   }
 
@@ -217,7 +213,6 @@ class QuestionItem extends React.Component {
       resetTimeSpentOnQuestion,
       itemId,
       disableAutoHightlight,
-      isSnapQuizVideo = false,
       isSnapQuizVideoPlayer = false,
     } = this.props
 
@@ -254,7 +249,6 @@ class QuestionItem extends React.Component {
       highlighted,
       boundingRect,
       testItemId: itemId,
-      isSnapQuizVideo,
       isSnapQuizVideoPlayer,
     }
 
@@ -307,9 +301,9 @@ class QuestionItem extends React.Component {
   }
 
   renderEditButton = () => {
-    const { onOpenEdit, onDelete, isSnapQuizVideo } = this.props
+    const { onOpenEdit, onDelete } = this.props
     return (
-      <EditButton isSnapQuizVideo={isSnapQuizVideo}>
+      <EditButton>
         <ButtonWrapper>
           <IconPencilEdit onClick={onOpenEdit} className="edit" title="Edit" />
         </ButtonWrapper>
@@ -332,7 +326,6 @@ class QuestionItem extends React.Component {
 
   renderAnswerIndicator = (type) => {
     let { evaluation } = this.props
-    const { isSnapQuizVideo } = this.props
 
     if (isUndefined(evaluation)) {
       evaluation = get(this.props, 'data.activity.evaluation')
@@ -350,7 +343,7 @@ class QuestionItem extends React.Component {
       correct = evaluation && evaluation['0']
     }
     return (
-      <AnswerIndicator correct={correct} isSnapQuizVideo={isSnapQuizVideo}>
+      <AnswerIndicator correct={correct}>
         {correct ? <IconCheck /> : <IconClose />}
       </AnswerIndicator>
     )
@@ -431,11 +424,7 @@ class QuestionItem extends React.Component {
       <VideoQuizItemWrapper>
         <VideoQuizItemContainer>
           <EduIf condition={!testMode && !review}>
-            <DragHandle
-              review={review}
-              questionIndex={questionIndex}
-              isSnapQuizVideo
-            />
+            <DragHandle review={review} questionIndex={questionIndex} />
           </EduIf>
           <DragItem
             data={{ id, index: questionIndex }}
@@ -461,7 +450,6 @@ class QuestionItem extends React.Component {
               ref={this.qFormRef}
               onClick={handleOnClick}
               isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
-              isSnapQuizVideo
             >
               {this.renderContent(
                 highlighted,
@@ -490,13 +478,11 @@ class QuestionItem extends React.Component {
   }
 
   render() {
-    const { dragging } = this.state
     if (!this.props?.data?.id) {
       return null
     }
     const {
-      data: { id, type } = {},
-      questionIndex,
+      data: { id } = {},
       review,
       viewMode,
       previewTab,
@@ -508,10 +494,8 @@ class QuestionItem extends React.Component {
       pdfPreview,
       annotations,
       reportActivity,
-      zoom,
       draggble,
       editMode,
-      isSnapQuizVideo,
       handleRemoveAnnotation,
       isSnapQuizVideoPlayer = false,
     } = this.props
@@ -552,54 +536,15 @@ class QuestionItem extends React.Component {
         review={testMode || review}
         annotations={annotations}
         pdfPreview={pdfPreview}
-        isSnapQuizVideo={isSnapQuizVideo}
         isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
         data-cy="questionItem"
       >
-        <EduIf condition={isSnapQuizVideo}>
-          <EduThen>
-            {this.renderVideoQuizQuestionItem({
-              disableDrag,
-              showAnswerIndicator,
-            })}
-          </EduThen>
-          <EduElse>
-            <AnswerForm
-              style={{
-                justifyContent: review ? 'flex-start' : 'space-between',
-                minWidth: 200,
-              }}
-            >
-              <DragItem
-                data={{ id, index: questionIndex }}
-                disabled={disableDrag}
-              >
-                <QuestionNumber
-                  viewMode={viewMode === 'edit'}
-                  dragging={dragging}
-                  highlighted={highlighted}
-                  pdfPreview={pdfPreview}
-                  zoom={zoom}
-                >
-                  {questionIndex}
-                </QuestionNumber>
-              </DragItem>
-              <EduIf condition={!annotations || draggble}>
-                <QuestionForm review={review} ref={this.qFormRef}>
-                  {this.renderContent(
-                    highlighted,
-                    this.qFormRef?.current?.getBoundingClientRect()
-                  )}
-                </QuestionForm>
-              </EduIf>
-              {!review && !pdfPreview && !testMode && this.renderEditButton()}
-              {showAnswerIndicator && this.renderAnswerIndicator(type)}
-            </AnswerForm>
-          </EduElse>
-        </EduIf>
+        {this.renderVideoQuizQuestionItem({
+          disableDrag,
+          showAnswerIndicator,
+        })}
         <EduIf
           condition={
-            isSnapQuizVideo &&
             isSnapQuizVideoPlayer &&
             editMode &&
             typeof handleRemoveAnnotation === 'function'

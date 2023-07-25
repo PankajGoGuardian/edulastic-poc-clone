@@ -98,18 +98,6 @@ export const AnswerAction = styled(Button)`
     margin-right: 0;
   }
 `
-
-export const StyledHandleSpan = styled.span`
-  color: ${themeColor};
-  display: flex;
-  align-items: center;
-  border: 1px solid #e6e6e6;
-  border-radius: 10px 0 0 10px;
-  background: #fff;
-  border-right: 0;
-  padding-left: 6px;
-  cursor: grab;
-`
 export const StyledVideoQuizHandleSpan = styled.span`
   float: right;
   cursor: grab;

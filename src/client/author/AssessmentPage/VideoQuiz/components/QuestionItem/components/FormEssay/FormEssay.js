@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Input } from 'antd'
 import { Stimulus } from '@edulastic/common'
-import { isSubmitButton } from '../../../../utils/helpers'
+import { isSubmitButton } from '../../../../utils/common'
 
 export default class FormEssay extends React.Component {
   static propTypes = {

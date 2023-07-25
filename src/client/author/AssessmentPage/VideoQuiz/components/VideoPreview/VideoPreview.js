@@ -30,7 +30,7 @@ import {
   getVisibleAnnotation,
   showMarkerArea,
   useStateRef,
-} from './utils'
+} from '../../utils/videoPreviewHelpers'
 import appConfig from '../../../../../../app-config'
 
 const { DragPreview } = DragDrop
@@ -438,7 +438,6 @@ const VideoPreview = ({
                       onCreateOptions={() => {}}
                       draggble
                       disableAutoHightlight
-                      isSnapQuizVideo
                       isSnapQuizVideoPlayer
                     />
                   </Rnd>

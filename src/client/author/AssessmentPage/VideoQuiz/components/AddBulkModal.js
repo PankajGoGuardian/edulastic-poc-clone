@@ -42,7 +42,6 @@ class AddBulkModal extends React.Component {
     type: MULTIPLE_CHOICE,
     authorDifficulty: '',
     depthOfKnowledge: '',
-    generateViaAi: false,
     alignment: [
       {
         curriculum: '',
@@ -67,12 +66,11 @@ class AddBulkModal extends React.Component {
       alignment,
       authorDifficulty,
       depthOfKnowledge,
-      generateViaAi,
     } = this.state
 
     const { onApply, minAvailableQuestionIndex } = this.props
 
-    if (!generateViaAi || aiQuestions) {
+    if (aiQuestions) {
       onApply({
         number,
         type,
@@ -81,6 +79,7 @@ class AddBulkModal extends React.Component {
         authorDifficulty,
         depthOfKnowledge,
         aiQuestions,
+        isFromAddBulk: true,
       })
     } else {
       this.generateViaAI({ questionCount: number, questionType: type })
@@ -130,16 +129,12 @@ class AddBulkModal extends React.Component {
     const {
       aiGenerateQuestionState: { apiStatus } = {},
       setAIGeneratedQuestionState,
-      isSnapQuizVideo,
     } = this.props
     if (apiStatus) {
       setAIGeneratedQuestionState({
         apiStatus: false,
         result: [],
       })
-    }
-    if (isSnapQuizVideo) {
-      this.setState({ generateViaAi: true })
     }
   }
 
@@ -155,7 +150,6 @@ class AddBulkModal extends React.Component {
       onCancel,
       visible,
       aiGenerateQuestionState: { apiStatus } = {},
-      isSnapQuizVideo,
     } = this.props
 
     const loading = apiStatus === 'INITIATED'
@@ -163,9 +157,9 @@ class AddBulkModal extends React.Component {
     return (
       <CustomModalStyled
         visible={visible}
-        title={isSnapQuizVideo ? 'Auto Genenerate' : 'Add Bulk'}
+        title="Auto Genenerate"
         onCancel={onCancel}
-        maskClosable={!isSnapQuizVideo}
+        maskClosable={false}
         footer={[
           <ModalFooter marginTop="35px">
             <EduButton isGhost onClick={onCancel}>
@@ -176,7 +170,7 @@ class AddBulkModal extends React.Component {
               onClick={() => this.handleApply()}
               data-cy="apply"
             >
-              {isSnapQuizVideo ? 'Generate Questions' : 'Apply'}
+              Generate Questions
               <EduIf condition={loading}>
                 <Spin size="small" indicator={<Icon type="loading" />} />
               </EduIf>

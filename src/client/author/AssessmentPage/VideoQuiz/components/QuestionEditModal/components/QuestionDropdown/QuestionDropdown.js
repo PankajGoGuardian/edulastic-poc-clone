@@ -15,6 +15,7 @@ import {
 } from '../../../../styled-components/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
 import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
+import { SortableListContainer } from '../../../../styled-components/QuestionItem'
 
 export default class QuestionDropdown extends React.Component {
   static propTypes = {
@@ -157,14 +158,16 @@ export default class QuestionDropdown extends React.Component {
           </FormGroup>
           <FormGroup>
             <FormLabel>Choices</FormLabel>
-            <SortableList
-              items={this.currentOptions}
-              onSortEnd={this.handleSortEnd}
-              dirty
-              useDragHandle
-              onRemove={this.handleRemove}
-              onChange={this.handleOptionChange}
-            />
+            <SortableListContainer>
+              <SortableList
+                items={this.currentOptions}
+                onSortEnd={this.handleSortEnd}
+                dirty
+                useDragHandle
+                onRemove={this.handleRemove}
+                onChange={this.handleOptionChange}
+              />
+            </SortableListContainer>
             <Button onClick={this.handleAdd} data-cy="addNewChoices">
               Add choice
             </Button>

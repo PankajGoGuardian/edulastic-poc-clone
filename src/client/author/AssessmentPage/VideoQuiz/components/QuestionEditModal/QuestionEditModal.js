@@ -31,7 +31,7 @@ import QuestionEssay from './components/QuestionEssay/QuestionEssay'
 import QuestionMath from './components/QuestionMath/QuestionMath'
 import QuestionText from './components/QuestionText/QuestionText'
 import QuestionAudio from './components/QuestionAudio/QuestionAudio'
-import { getUpdatedAnnotation } from '../../utils/helpers'
+import { getUpdatedAnnotation } from '../../utils/common'
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: 'Multiple Choice',

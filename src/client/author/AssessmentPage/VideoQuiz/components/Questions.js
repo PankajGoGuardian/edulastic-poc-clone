@@ -3,35 +3,24 @@ import { findDOMNode } from 'react-dom'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import uuid from 'uuid/v4'
 import PropTypes from 'prop-types'
 import { sortBy, maxBy, uniqBy } from 'lodash'
-import {
-  SortableElement,
-  sortableHandle,
-  SortableContainer,
-} from 'react-sortable-hoc'
+import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
-import {
-  SHORT_TEXT,
-  MULTIPLE_CHOICE,
-  CLOZE_DROP_DOWN,
-  MATH,
-  TRUE_OR_FALSE,
-  ESSAY_PLAIN_TEXT,
-  AUDIO_RESPONSE,
-} from '@edulastic/constants/const/questionType'
-import { math } from '@edulastic/constants'
 import { EduIf } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { IconMoveArrows } from '@edulastic/icons'
-import { lightGrey9 } from '@edulastic/colors'
+
+import {
+  createQuestion,
+  validationCreators,
+  createSection,
+} from '../utils/questionsHelpers'
+
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
 import { changePreviewAction } from '../../../src/actions/view'
-import { EXACT_MATCH } from '../../../../assessment/constants/constantsForQuestions'
 import {
   addQuestionAction,
   updateQuestionAction,
@@ -45,30 +34,12 @@ import {
   QuestionsWrapper,
   AnswerActionsWrapper,
   AnswerAction,
-  StyledHandleSpan,
-  StyledVideoQuizHandleSpan,
   QuestionWidgetWrapper,
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
-
-const { methods, defaultNumberPad } = math
-
-export const DragHandle = sortableHandle(
-  ({ questionIndex, isSnapQuizVideo = false }) => {
-    const HandleComponent = isSnapQuizVideo
-      ? StyledVideoQuizHandleSpan
-      : StyledHandleSpan
-
-    return (
-      <HandleComponent data-cy={`handel${questionIndex}`}>
-        <IconMoveArrows color={lightGrey9} width={19} height={19} />
-      </HandleComponent>
-    )
-  }
-)
 
 const SortableQuestionItem = SortableElement(
   ({
@@ -90,38 +61,31 @@ const SortableQuestionItem = SortableElement(
     testMode,
     onHighlightQuestion,
     questionIndex,
-    setCurrentAnnotationTool,
     groupId,
     qId,
     clearHighlighted,
     resetTimeSpentOnQuestion,
     itemId,
     disableAutoHightlight,
-    isSnapQuizVideo,
     editMode,
     onDropAnnotation,
   }) => (
     <div
       onClick={() => {
-        setCurrentAnnotationTool('cursor')
         onHighlightQuestion(data.id)
       }}
       onFocus={() => {
-        setCurrentAnnotationTool('cursor')
         onHighlightQuestion(data.id)
       }}
       style={{
         display: 'flex',
         marginBottom: '6px',
         paddingRight: (testMode || review) && 12,
-        paddingLeft: (testMode || review || isSnapQuizVideo) && 4,
+        paddingLeft: (testMode || review) && 4,
         paddingTop: questionIndex === 1 && 6,
-        marginTop: (testMode || review) && isSnapQuizVideo && 5,
+        marginTop: (testMode || review) && 5,
       }}
     >
-      <EduIf condition={!isSnapQuizVideo && !testMode && !review}>
-        <DragHandle review={review} questionIndex={questionIndex} />
-      </EduIf>
       <QuestionItem
         key={key}
         index={index}
@@ -140,14 +104,12 @@ const SortableQuestionItem = SortableElement(
         onDragStart={() => onDragStart(data.id)}
         highlighted={highlighted}
         testMode={testMode}
-        setCurrentAnnotationTool={setCurrentAnnotationTool}
         groupId={groupId}
         qId={qId}
         clearHighlighted={clearHighlighted}
         resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
         itemId={itemId}
         disableAutoHightlight={disableAutoHightlight}
-        isSnapQuizVideo={isSnapQuizVideo}
         editMode={editMode}
         onDropAnnotation={onDropAnnotation}
       />
@@ -155,248 +117,10 @@ const SortableQuestionItem = SortableElement(
   )
 )
 
-const defaultQuestionValue = {
-  [MULTIPLE_CHOICE]: [],
-  [SHORT_TEXT]: '',
-  [TRUE_OR_FALSE]: [],
-  [CLOZE_DROP_DOWN]: [],
-  [MATH]: [
-    {
-      method: methods.EQUIV_SYMBOLIC,
-      options: {
-        inverseResult: false,
-      },
-      value: '',
-    },
-  ],
-}
-
-const defaultQuestionOptions = {
-  [MULTIPLE_CHOICE]: [
-    { label: 'A', value: uuid() },
-    { label: 'B', value: uuid() },
-    { label: 'C', value: uuid() },
-    { label: 'D', value: uuid() },
-  ],
-  [CLOZE_DROP_DOWN]: {
-    0: ['A', 'B'],
-  },
-  [TRUE_OR_FALSE]: [
-    { label: 'TRUE', value: uuid() },
-    { label: 'FALSE', value: uuid() },
-  ],
-}
-
-const mathData = {
-  isMath: true,
-  uiStyle: {
-    type: 'floating-keyboard',
-  },
-  numberPad: defaultNumberPad,
-  symbols: ['basic', 'units_si', 'units_us'],
-  template: '',
-}
-
-const multipleChoiceData = {
-  uiStyle: { type: 'horizontal' },
-}
-
-const clozeDropDownData = {
-  responseIds: [{ index: 0, id: '0' }],
-  stimulus: `<p><textdropdown id="0" contenteditable="false" /> </p>`,
-}
-
-const essayData = {
-  uiStyle: {
-    numberOfRows: 10, // textarea number of rows
-  },
-  showWordCount: true,
-}
-
-const trueOrFalseData = {
-  type: 'multipleChoice',
-  subType: 'trueOrFalse',
-  uiStyle: { type: 'horizontal' },
-}
-
-/**
- * SHORT_TEXT,
-  MULTIPLE_CHOICE,
-  CLOZE_DROP_DOWN,
-  MATH,
-  TRUE_OR_FALSE,
-  ESSAY_PLAIN_TEXT
- */
-
-const typeTitleHash = {
-  [SHORT_TEXT]: 'Text Entry',
-  [MULTIPLE_CHOICE]: 'Multiple choice - standard',
-  [CLOZE_DROP_DOWN]: 'Cloze with Drop Down',
-  [MATH]: 'Math - standard',
-  [TRUE_OR_FALSE]: 'True or false',
-  [ESSAY_PLAIN_TEXT]: 'Essay with plain text',
-  [AUDIO_RESPONSE]: 'Audio Response',
-}
-
-const createQuestion = (
-  type,
-  index,
-  isDocBased = false,
-  docBasedCommonData = {},
-  isSnapQuizVideo,
-  aiQuestion
-) => {
-  const staticQuestionData = {
-    id: uuid(),
-    qIndex: index,
-    title: typeTitleHash[type],
-    type,
-    isDocBased,
-    options: defaultQuestionOptions[type],
-    validation: {
-      scoringType: 'exactMatch',
-      validResponse: {
-        score: 1,
-        value: defaultQuestionValue[type],
-      },
-      altResponses: [],
-    },
-    multipleResponses: false,
-    stimulus: '',
-    smallSize: true,
-    alignment: [],
-    questionDisplayTimestamp: null,
-    ...docBasedCommonData,
-    ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
-    ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),
-    ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
-    ...(type === MATH ? mathData : {}),
-    ...(type === ESSAY_PLAIN_TEXT ? essayData : {}),
-  }
-
-  if (isSnapQuizVideo) {
-    if (type === CLOZE_DROP_DOWN) {
-      staticQuestionData.stimulus = ''
-    }
-    if (aiQuestion) {
-      const {
-        options,
-        name,
-        correctAnswer,
-        correctAnswerIndex,
-        correctAnswersIndex,
-        displayAtSecond,
-      } = aiQuestion
-
-      staticQuestionData.stimulus = name
-      if (typeof displayAtSecond === 'number') {
-        const updatedDisplayAtSecond =
-          displayAtSecond === 0 ? 4 : displayAtSecond
-        staticQuestionData.questionDisplayTimestamp = updatedDisplayAtSecond
-      }
-
-      if (
-        type === MULTIPLE_CHOICE &&
-        correctAnswersIndex &&
-        correctAnswersIndex !== undefined
-      ) {
-        staticQuestionData.options = (options || []).map((option) => ({
-          label: option.name,
-          value: uuid(),
-        }))
-
-        staticQuestionData.validation.validResponse.value = []
-        correctAnswersIndex.forEach((item) => {
-          staticQuestionData.validation.validResponse.value.push(
-            staticQuestionData.options[item]?.value
-          )
-        })
-        staticQuestionData.multipleResponses = correctAnswersIndex.length > 1
-      } else if (type === CLOZE_DROP_DOWN && correctAnswerIndex !== undefined) {
-        staticQuestionData.options = {
-          0: (options || []).map((option) => option.name),
-        }
-        staticQuestionData.validation.validResponse.value = [
-          {
-            id: 0,
-            value: staticQuestionData.options['0'][correctAnswerIndex],
-          },
-        ]
-      } else if (type === TRUE_OR_FALSE && correctAnswer !== undefined) {
-        const correctBooleanOption =
-          staticQuestionData.options[correctAnswer ? 0 : 1]
-
-        staticQuestionData.validation.validResponse.value = [
-          correctBooleanOption.value,
-        ]
-      } else if (type === MATH && correctAnswer !== undefined) {
-        staticQuestionData.validation.validResponse.value = [
-          {
-            method: methods.EQUIV_SYMBOLIC,
-            options: {
-              inverseResult: false,
-            },
-            value: correctAnswer.toString(),
-          },
-        ]
-      } else if (type === SHORT_TEXT && correctAnswer !== undefined) {
-        staticQuestionData.validation.validResponse.value = correctAnswer
-      }
-    }
-  }
-
-  return staticQuestionData
-}
-
-const createSection = (qIndex = 0, title = '') => ({
-  id: uuid(),
-  type: 'sectionLabel',
-  stimulus: 'Section Label - Text',
-  width: 0,
-  height: 0,
-  title,
-  qIndex,
-})
-
 const updateQuesionData = (question, data) => ({
   ...question,
   ...data,
 })
-
-const updateMultipleChoice = (optionsValue) => {
-  const options = optionsValue.split('')
-  return {
-    options: options.map((option, index) => ({
-      label: option,
-      value: index + 1,
-    })),
-    validation: {
-      scoringType: 'exactMatch',
-      validResponse: {
-        score: 1,
-        value: [],
-      },
-      altResponses: [],
-    },
-  }
-}
-
-const updateShortText = (value) => ({
-  validation: {
-    scoringType: EXACT_MATCH,
-    validResponse: {
-      score: 1,
-      matchingRule: EXACT_MATCH,
-      value,
-    },
-    altResponses: [],
-  },
-})
-
-const validationCreators = {
-  [MULTIPLE_CHOICE]: updateMultipleChoice,
-  [SHORT_TEXT]: updateShortText,
-}
 
 class Questions extends React.Component {
   constructor(props) {
@@ -416,14 +140,12 @@ class Questions extends React.Component {
     const {
       annotations,
       handleAddBulkQuestionAnnotations,
-      isSnapQuizVideo,
       editMode,
       isSnapQuizVideoPlayer,
       highlightedQuestion,
     } = this.props
 
     if (
-      isSnapQuizVideo &&
       !isSnapQuizVideoPlayer &&
       editMode &&
       typeof handleAddBulkQuestionAnnotations === 'function'
@@ -455,7 +177,7 @@ class Questions extends React.Component {
       }
     }
 
-    if (isSnapQuizVideo && editMode && highlightedQuestion) {
+    if (editMode && highlightedQuestion) {
       this.scrollToQuestion(highlightedQuestion)
     }
   }
@@ -468,18 +190,14 @@ class Questions extends React.Component {
   }
 
   isQuestionVisible = (questionId = '') => {
-    const {
-      videoQuizQuestionsToDisplay = [],
-      editMode,
-      isSnapQuizVideo,
-    } = this.props
+    const { videoQuizQuestionsToDisplay = [], editMode } = this.props
     const visibleQuestionIndex = (videoQuizQuestionsToDisplay || []).findIndex(
       (questionAnnotation) =>
         questionAnnotation?.questionId === questionId &&
         questionAnnotation?.x === -1 &&
         questionAnnotation?.y === -1
     )
-    return editMode || !isSnapQuizVideo || visibleQuestionIndex !== -1
+    return editMode || visibleQuestionIndex !== -1
   }
 
   scrollToBottom = () => {
@@ -501,14 +219,10 @@ class Questions extends React.Component {
     index,
     modalQuestionId,
     docBasedCommonData = {},
-    aiQuestion
+    aiQuestion,
+    isFromAddBulk
   ) => () => {
-    const {
-      addQuestion,
-      list,
-      isDocBased = false,
-      isSnapQuizVideo = false,
-    } = this.props
+    const { addQuestion, list } = this.props
     const questions = list.filter((q) => q.type !== 'sectionLabel')
 
     const lastQuestion = maxBy(questions, 'qIndex')
@@ -519,18 +233,16 @@ class Questions extends React.Component {
         ? lastQuestion.qIndex + 1
         : questions.length + 1)
 
-    const question = createQuestion(
+    const question = createQuestion({
       type,
       questionIndex,
-      isDocBased,
       docBasedCommonData,
-      isSnapQuizVideo,
-      aiQuestion
-    )
+      aiQuestion,
+    })
     addQuestion(question)
 
     const questionIdToOpen = modalQuestionId - 1 || list.length
-    if (!isSnapQuizVideo) {
+    if (!isFromAddBulk) {
       this.handleOpenEditModal(questionIdToOpen)()
     }
   }
@@ -669,15 +381,9 @@ class Questions extends React.Component {
   }
 
   handleQuestionItemClick = (question) => {
-    const {
-      handleUpdateSeektime,
-      isSnapQuizVideo,
-      isSnapQuizVideoPlayer,
-      editMode,
-    } = this.props
+    const { handleUpdateSeektime, isSnapQuizVideoPlayer, editMode } = this.props
     const { questionDisplayTimestamp = null } = question
     if (
-      isSnapQuizVideo &&
       editMode &&
       !isSnapQuizVideoPlayer &&
       questionDisplayTimestamp &&
@@ -723,13 +429,11 @@ class Questions extends React.Component {
       testMode,
       reportMode,
       onHighlightQuestion,
-      setCurrentAnnotationTool,
       groupId,
       qId,
       clearHighlighted,
       itemId,
       disableAutoHightlight,
-      isSnapQuizVideo,
       editMode,
       onDropAnnotation,
       annotations,
@@ -794,14 +498,12 @@ class Questions extends React.Component {
                       highlighted={highlighted === question.id}
                       testMode={testMode}
                       onHighlightQuestion={onHighlightQuestion}
-                      setCurrentAnnotationTool={setCurrentAnnotationTool}
                       clearHighlighted={clearHighlighted}
                       groupId={groupId}
                       qId={qId}
                       resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
                       itemId={itemId}
                       disableAutoHightlight={disableAutoHightlight}
-                      isSnapQuizVideo={isSnapQuizVideo}
                       editMode={editMode}
                       onDropAnnotation={onDropAnnotation}
                     />
@@ -816,7 +518,6 @@ class Questions extends React.Component {
               onAddSection={this.handleAddSection}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
               scrollToBottom={this.scrollToBottom}
-              isSnapQuizVideo={isSnapQuizVideo}
             />
           )}
           {review && !noCheck && !reportMode && (
@@ -850,7 +551,6 @@ class Questions extends React.Component {
             onClose={this.handleCloseEditModal}
             onUpdate={this.handleUpdateData}
             onCurrentChange={this.handleOpenEditModal}
-            isSnapQuizVideo={isSnapQuizVideo}
             onDropAnnotation={onDropAnnotation}
             annotations={annotations}
           />

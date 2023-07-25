@@ -32,7 +32,7 @@ import {
 import {
   extractVideoId,
   getThumbnailUrl,
-} from '../../../../../AssessmentPage/components/VideoPreview/utils'
+} from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
 const Summary = ({
   setData,

@@ -38,6 +38,7 @@ import {
 } from '../../../src/actions/view'
 import { getViewSelector } from '../../../src/selectors/view'
 import Worksheet from '../Worksheet/Worksheet'
+import VideoQuizWorkSheet from '../../VideoQuiz/VideoQuizWorksheet'
 import Description from '../Description/Description'
 import Setting from '../../../TestPage/components/Setting'
 import TestPageHeader from '../../../TestPage/components/TestPageHeader/TestPageHeader'
@@ -331,7 +332,7 @@ class Container extends React.Component {
 
     const { params = {} } = match
     const { docUrl, annotations, pageStructure, freeFormNotes } = assessment
-    const { authors } = assessment
+    const { authors, videoUrl = '' } = assessment
     const owner =
       (authors && authors.some((x) => x._id === userId)) || !params.id
 
@@ -346,6 +347,8 @@ class Container extends React.Component {
       isEditable: this.isEditableTest,
     }
 
+    const isVideoQuiz = videoUrl?.length > 0
+
     switch (currentTab) {
       case tabs.DESCRIPTION:
         return (
@@ -355,10 +358,20 @@ class Container extends React.Component {
             owner={owner}
           />
         )
-      case tabs.WORKSHEET:
+      case tabs.WORKSHEET: {
+        if (isVideoQuiz) {
+          return <VideoQuizWorkSheet key="worksheet" {...props} />
+        }
         return <Worksheet key="worksheet" {...props} />
-      case tabs.REVIEW:
+      }
+
+      case tabs.REVIEW: {
+        if (isVideoQuiz) {
+          return <VideoQuizWorkSheet key="review" review {...props} />
+        }
         return <Worksheet key="review" review {...props} />
+      }
+
       case tabs.SETTINGS:
         return (
           <Setting

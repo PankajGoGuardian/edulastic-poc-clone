@@ -1,7 +1,7 @@
 import React from 'react'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { StyledReactPlayer } from '../../styled-components/VideoPreview'
-import { extractVideoId } from './utils'
+import { extractVideoId } from '../../utils/videoPreviewHelpers'
 import YouTubePlayer from './YouTubePlayer'
 import appConfig from '../../../../../../app-config'
 

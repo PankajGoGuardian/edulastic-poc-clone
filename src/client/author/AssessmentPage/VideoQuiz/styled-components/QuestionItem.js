@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import {
   white,
@@ -19,49 +19,39 @@ import {
 } from '@edulastic/colors'
 
 const getQuestionItemWrapperWidth = ({
-  isSnapQuizVideo,
   isSnapQuizVideoPlayer,
   review,
   annotations,
 }) => {
-  if (isSnapQuizVideo && !isSnapQuizVideoPlayer) {
+  if (!isSnapQuizVideoPlayer) {
     return '98%'
   }
-  if (isSnapQuizVideo && isSnapQuizVideoPlayer) {
+  if (isSnapQuizVideoPlayer) {
     return '100%'
   }
   return annotations ? 'auto' : review ? '100%' : '265px'
 }
 
 export const QuestionItemWrapper = styled.div`
-  width: ${({ isSnapQuizVideo, isSnapQuizVideoPlayer, review, annotations }) =>
+  width: ${({ isSnapQuizVideoPlayer, review, annotations }) =>
     getQuestionItemWrapperWidth({
-      isSnapQuizVideo,
       isSnapQuizVideoPlayer,
       review,
       annotations,
     })};
-  height: ${({ isSnapQuizVideo, isSnapQuizVideoPlayer }) =>
-    isSnapQuizVideo && isSnapQuizVideoPlayer ? '100%' : ''};
+  height: ${({ isSnapQuizVideoPlayer }) =>
+    isSnapQuizVideoPlayer ? '100%' : ''};
   padding: ${({ pdfPreview }) => !pdfPreview && '10px'};
   background: ${({ pdfPreview }) => (pdfPreview ? 'transparent' : white)};
-  border-radius: ${({ review, isSnapQuizVideo }) =>
-    review || isSnapQuizVideo ? '10px' : '0 10px 10px 0'};
+  border-radius: 10px;
   border: ${({ pdfPreview }) => !pdfPreview && `1px solid ${sectionBorder}`};
   box-shadow: ${({ highlighted, pdfPreview }) =>
     !pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : 'none'};
   border-left: ${({ review }) => !review && 0};
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '' : '225px')};
+    width: 225px;
   }
-`
-
-export const AnswerForm = styled.div`
-  display: flex;
-  align-items: center;
-  background: transparent;
-  position: relative;
 `
 
 export const QuestionNumber = styled.span`
@@ -90,33 +80,8 @@ export const QuestionNumber = styled.span`
   }
 `
 
-export const QuestionForm = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: 10px;
-  width: 100%;
-  padding-right: 2px;
-
-  .ant-select-selection,
-  .input__math,
-  .ant-input {
-    width: 100%;
-  }
-  .input__math {
-    & + .input__absolute__keyboard {
-      position: absolute;
-      overflow: auto;
-      right: 0px;
-    }
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    width: calc(100% - 40px);
-  }
-`
 export const VideoQuizQuestionForm = styled.div`
-  cursor: ${(props) =>
-    props?.isSnapQuizVideo && !props?.isSnapQuizVideoPlayer ? 'pointer' : ''};
+  cursor: ${(props) => (!props?.isSnapQuizVideoPlayer ? 'pointer' : '')};
   .ant-select-selection,
   .input__math,
   .ant-input {
@@ -146,20 +111,10 @@ export const VideoQuizItemContainer = styled.div`
 export const EditButton = styled.span`
   display: flex;
   align-items: center;
-  justify-content: ${({ isSnapQuizVideo }) =>
-    isSnapQuizVideo ? 'flex-end' : 'space-between'};
-  margin-top: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? '5px' : '')};
+  justify-content: flex-end;
+  margin-top: 5px;
   margin-left: 5px;
   position: relative;
-
-  ${({ isSnapQuizVideo }) =>
-    !isSnapQuizVideo &&
-    css`
-      @media (max-width: ${smallDesktopWidth}) {
-        position: absolute;
-        right: -85px;
-      }
-    `}
 `
 
 export const ButtonWrapper = styled.span`
@@ -201,7 +156,7 @@ export const ButtonWrapper = styled.span`
 export const AnswerIndicator = styled.span`
   display: inline-block;
   padding: 8px;
-  margin: ${({ isSnapQuizVideo }) => (isSnapQuizVideo ? 'auto' : '')};
+  margin: auto;
 
   svg {
     fill: ${({ correct }) => (correct ? green : red)};
@@ -337,10 +292,17 @@ export const QuestionOption = styled.span`
 export const QuestionText = styled.p`
   margin: 0;
   font-size: 14px;
-  width: ${({ check }) => (check ? '210px' : '150px')};
   border: 1px solid ${inputBorder};
   border-radius: 4px;
   padding: 4px 11px;
   background: ${whiteSmoke};
   color: rgba(0, 0, 0, 0.25); /* TODO: re-visit once mockup is updated */
+`
+export const SortableListContainer = styled.div`
+  .main {
+    margin-right: 5px !important;
+  }
+  svg {
+    margin: unset;
+  }
 `

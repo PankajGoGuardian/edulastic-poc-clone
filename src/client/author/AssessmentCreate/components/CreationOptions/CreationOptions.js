@@ -18,12 +18,12 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
-      <FeaturesSwitch
+      {/* <FeaturesSwitch
         inputFeatures="videoQuizEnabled"
         actionOnInaccessible="hidden"
-      >
+      > */}
         <OptionVideo />
-      </FeaturesSwitch>
+      {/* </FeaturesSwitch> */}
 
       <FeaturesSwitch
         inputFeatures="enableDynamicTests"

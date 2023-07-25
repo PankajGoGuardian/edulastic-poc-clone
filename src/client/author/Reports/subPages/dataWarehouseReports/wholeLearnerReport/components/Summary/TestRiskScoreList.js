@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import { IconInfo } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
@@ -48,14 +48,13 @@ const TestRiskScoreList = ({ riskData }) => (
                 <span>{scoreText}</span>
               </TestDetailContainer>
             </Tooltip>
-            <RiskLabel
-              $color={RISK_BAND_COLOR_INFO[riskBandLabel]}
-              fontSize="14px"
-            >
+            <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]}>
               <span>{riskBandLabel}</span>
-              <Tooltip title={renderTooltip(tooltipTexts)}>
-                <IconInfo fill={themeColor} />
-              </Tooltip>
+              <EduIf condition={tooltipTexts.some((text) => !!text)}>
+                <Tooltip title={renderTooltip(tooltipTexts)}>
+                  <IconInfo fill={themeColor} />
+                </Tooltip>
+              </EduIf>
             </RiskLabel>
           </FlexContainer>
         )

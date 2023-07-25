@@ -20,7 +20,10 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
-import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
+import {
+  EXTERNAL_TEST_KEY_SEPARATOR,
+  RISK_BAND_LABELS,
+} from '@edulastic/constants/reportUtils/common'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
@@ -518,10 +521,18 @@ export const getStudentRiskData = (rawData) => {
 
 export const getSubjectRiskText = (subjectData, isExternalTest, prefix = '') =>
   subjectData.map(
-    ({ subject, riskBandLabel: subjectRiskBandLabel, score: subjectScore }) =>
-      `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore}${
+    ({ subject, riskBandLabel: subjectRiskBandLabel, score: subjectScore }) => {
+      const subjectsArr = subject.split(',')
+      if (
+        subjectsArr.length > 1 ||
+        subjectRiskBandLabel === RISK_BAND_LABELS.LOW
+      ) {
+        return null
+      }
+      return `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore}${
         isExternalTest ? '' : '%'
       })`
+    }
   )
 
 export const getTestRiskTableData = (riskData) => {

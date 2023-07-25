@@ -454,6 +454,10 @@ export const RubricDetailsContainer = styled.div`
     background: ${lightGrey3};
   }
 `
+export const InfoIconWrapper = styled.div`
+  margin-left: 12px;
+  font-weight: 400;
+`
 
 export const ActionBarContainer = styled.div`
   margin-bottom: 70px;

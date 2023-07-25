@@ -24,6 +24,8 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import UnScored from '@edulastic/common/src/components/Unscored'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
@@ -57,6 +59,7 @@ import {
   FeedbackInputInnerWrapper2,
   CustomCheckBox,
 } from '../styled/FeedbackRightStyledComponents'
+import { InfoIconWrapper } from '../../author/GradingRubric/styled'
 
 const adaptiveRound = (x) =>
   x && x.endsWith ? (x.endsWith('.') ? x : round(x, 2)) : round(x, 2)
@@ -660,31 +663,59 @@ class FeedbackRight extends Component {
         {!isPracticeQuestion ? (
           <>
             <StyledDivSec>
-              <ScoreInputWrapper>
-                <ScoreInput
-                  data-cy="scoreInput"
-                  onChange={(e) =>
-                    this.onChangeScore(showGradingRubricButton)(
-                      e.target.value,
-                      InputType.InputScore
-                    )
-                  }
-                  onFocus={this.handleScoreInputFocus}
-                  onBlur={this.submitScore}
-                  value={_score}
-                  disabled={
-                    isPresentationMode ||
-                    isPracticeQuestion ||
-                    isScoreInputDisabled
-                  }
-                  ref={this.scoreInput}
-                  onKeyDown={this.onKeyDownFeedback}
-                  tabIndex={0}
-                />
-                <TextPara>{_maxScore}</TextPara>
-              </ScoreInputWrapper>
+              <div>
+                {isAIEvaluated && (
+                  <InfoIconWrapper
+                    style={{
+                      display: 'flex',
+                      marginLeft: '0px',
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      icon={faInfoCircle}
+                      aria-hidden="true"
+                      style={{ color: 'rgb(158, 155, 149)', fontSize: '12px' }}
+                    />{' '}
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        marginTop: '-5px',
+                        marginLeft: '5px',
+                      }}
+                    >
+                      This feature is AI-assisted for enhanced functionality,
+                      but its accuracy may vary
+                    </div>
+                  </InfoIconWrapper>
+                )}
+                <ScoreInputWrapper>
+                  <ScoreInput
+                    data-cy="scoreInput"
+                    onChange={(e) =>
+                      this.onChangeScore(showGradingRubricButton)(
+                        e.target.value,
+                        InputType.InputScore
+                      )
+                    }
+                    onFocus={this.handleScoreInputFocus}
+                    onBlur={this.submitScore}
+                    value={_score}
+                    disabled={
+                      isPresentationMode ||
+                      isPracticeQuestion ||
+                      isScoreInputDisabled
+                    }
+                    ref={this.scoreInput}
+                    onKeyDown={this.onKeyDownFeedback}
+                    tabIndex={0}
+                  />
+                  <TextPara>{_maxScore}</TextPara>
+                </ScoreInputWrapper>
+              </div>
             </StyledDivSec>
-            <GradingPolicyWrapper>
+            <GradingPolicyWrapper
+              style={{ marginTop: isAIEvaluated ? '60px' : '10px' }}
+            >
               GRADING POLICY &nbsp;
               <GradingPolicy data-cy="gradingPolicyType">
                 {activity.scoringType}

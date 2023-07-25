@@ -19,6 +19,8 @@ import {
   evalTypeLabels,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   AlignRight,
   AlignSwitchRight,
@@ -42,6 +44,7 @@ import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
+import { InfoIconWrapper } from '../../../GradingRubric/styled'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -557,6 +560,28 @@ const TestBehaviorGroupContainer = ({
                     overRideSettings('allowAutoEssayEvaluation', value)
                   }
                 />
+                <InfoIconWrapper
+                  style={{
+                    display: 'flex',
+                    marginLeft: '80px',
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faInfoCircle}
+                    aria-hidden="true"
+                    style={{ color: 'rgb(158, 155, 149)' }}
+                  />{' '}
+                  <div
+                    style={{
+                      marginLeft: '5px',
+                      marginTop: '-5px',
+                      marginRight: '-150px',
+                    }}
+                  >
+                    This feature is AI-assisted for enhanced functionality, but
+                    its accuracy may vary
+                  </div>
+                </InfoIconWrapper>
               </Row>
             </Col>
           </StyledRow>

@@ -4,6 +4,7 @@ import {
   faMagic,
   faPencilAlt,
   faTrashAlt,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
@@ -55,6 +56,7 @@ import {
 import {
   ActionBarContainer,
   ExistingRubricContainer,
+  InfoIconWrapper,
   PaginationContainer,
   RecentlyUsedContainer,
   RubricsTag,
@@ -485,72 +487,91 @@ const UseExisting = ({
               </>
             )}
           </div>
-          <div>
+          <div style={{ display: 'inline' }}>
+            <div style={{ display: 'flex' }}>
+              <EduIf
+                condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
+              >
+                <CustomStyleBtn2
+                  style={btnStyle}
+                  onClick={generateRubricByOpenAI}
+                  disabled={disableAutoGenerateRubricBtn}
+                  ghost={disableAutoGenerateRubricBtn}
+                  title={autoGenerateRubricTooltip}
+                  loading={isRubricGenerationInProgress}
+                >
+                  <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+                  Auto Generate Rubric
+                </CustomStyleBtn2>
+              </EduIf>
+              <CustomStyleBtn
+                style={btnStyle}
+                onClick={() => setShowPreviewRubricModal(true)}
+              >
+                <Icon data-cy="previewButton" type="eye" /> Preview
+              </CustomStyleBtn>
+              {currentMode === 'PREVIEW' && !isEditable && (
+                <>
+                  {currentQuestion.rubrics?._id !== currentRubricData?._id && (
+                    <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
+                      <Icon type="check" /> <span data-cy="useButton">Use</span>
+                    </CustomStyleBtn>
+                  )}
+                  {currentQuestion.rubrics?._id === currentRubricData?._id && (
+                    <CustomStyleBtn
+                      style={btnStyle}
+                      onClick={handleRemoveRubric}
+                    >
+                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" />{' '}
+                      Remove
+                    </CustomStyleBtn>
+                  )}
+                  {currentRubricData?.createdBy?._id === user?._id && (
+                    <>
+                      <CustomStyleBtn
+                        style={btnStyle}
+                        onClick={() => setShowShareModal(true)}
+                      >
+                        <Icon type="share-alt" />{' '}
+                        <span data-cy="shareButton">Share</span>
+                      </CustomStyleBtn>
+                    </>
+                  )}
+                </>
+              )}
+              {isEditable && (
+                <>
+                  <CustomStyleBtn
+                    style={btnStyle}
+                    onClick={() => setShowConfirmModal(true)}
+                  >
+                    <Icon type="close" />
+                    <span data-cy="cancel">Cancel</span>
+                  </CustomStyleBtn>
+                  <CustomStyleBtn
+                    style={btnStyle}
+                    onClick={() => handleSaveRubric('published')}
+                  >
+                    {/* <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> */}
+                    <Icon type="save" theme="filled" />
+                    <span data-cy="saveAndUseButton">Save & Use</span>
+                  </CustomStyleBtn>
+                </>
+              )}
+            </div>
             <EduIf
               condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
             >
-              <CustomStyleBtn2
-                style={btnStyle}
-                onClick={generateRubricByOpenAI}
-                disabled={disableAutoGenerateRubricBtn}
-                ghost={disableAutoGenerateRubricBtn}
-                title={autoGenerateRubricTooltip}
-                loading={isRubricGenerationInProgress}
-              >
-                <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
-                Auto Generate Rubric
-              </CustomStyleBtn2>
+              <InfoIconWrapper>
+                <FontAwesomeIcon
+                  icon={faInfoCircle}
+                  aria-hidden="true"
+                  style={{ color: 'rgb(158, 155, 149)' }}
+                />{' '}
+                This feature is AI-assisted for enhanced functionality but its
+                accuracy may vary
+              </InfoIconWrapper>
             </EduIf>
-            <CustomStyleBtn
-              style={btnStyle}
-              onClick={() => setShowPreviewRubricModal(true)}
-            >
-              <Icon data-cy="previewButton" type="eye" /> Preview
-            </CustomStyleBtn>
-            {currentMode === 'PREVIEW' && !isEditable && (
-              <>
-                {currentQuestion.rubrics?._id !== currentRubricData?._id && (
-                  <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
-                    <Icon type="check" /> <span data-cy="useButton">Use</span>
-                  </CustomStyleBtn>
-                )}
-                {currentQuestion.rubrics?._id === currentRubricData?._id && (
-                  <CustomStyleBtn style={btnStyle} onClick={handleRemoveRubric}>
-                    <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
-                  </CustomStyleBtn>
-                )}
-                {currentRubricData?.createdBy?._id === user?._id && (
-                  <>
-                    <CustomStyleBtn
-                      style={btnStyle}
-                      onClick={() => setShowShareModal(true)}
-                    >
-                      <Icon type="share-alt" />{' '}
-                      <span data-cy="shareButton">Share</span>
-                    </CustomStyleBtn>
-                  </>
-                )}
-              </>
-            )}
-            {isEditable && (
-              <>
-                <CustomStyleBtn
-                  style={btnStyle}
-                  onClick={() => setShowConfirmModal(true)}
-                >
-                  <Icon type="close" />
-                  <span data-cy="cancel">Cancel</span>
-                </CustomStyleBtn>
-                <CustomStyleBtn
-                  style={btnStyle}
-                  onClick={() => handleSaveRubric('published')}
-                >
-                  {/* <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> */}
-                  <Icon type="save" theme="filled" />
-                  <span data-cy="saveAndUseButton">Save & Use</span>
-                </CustomStyleBtn>
-              </>
-            )}
           </div>
         </ActionBarContainer>
       )}

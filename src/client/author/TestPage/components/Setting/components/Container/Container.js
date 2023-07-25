@@ -598,6 +598,9 @@ class Setting extends Component {
       if (value === '') {
         newSettings = {
           ...testDefaultSettings,
+          testContentVisibility:
+            testDefaultSettings.testContentVisibility ||
+            contentVisiblityOptions.ALWAYS,
         }
       } else {
         const selectedSetting = testSettingsList.find((t) => t._id === value)

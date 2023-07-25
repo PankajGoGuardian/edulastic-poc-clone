@@ -614,7 +614,9 @@ const TestBehaviorGroupContainer = ({
               <Col span={14}>
                 <ContentVisibilityOptions
                   isDisabled={freezeSettings}
-                  testContentVisibility={testSettings.testContentVisibility}
+                  testContentVisibility={
+                    assignmentSettings.testContentVisibility
+                  }
                   updateTestContentVisibility={(value) =>
                     overRideSettings(TEST_CONTENT_VISIBILITY, value)
                   }

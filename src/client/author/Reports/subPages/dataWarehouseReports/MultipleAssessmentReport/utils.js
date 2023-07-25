@@ -315,12 +315,20 @@ const getAggregatedDataByUniqId = (metricInfo, filters = {}) => {
       testData.band = band
       if (bands) testData.bands = bands
       let totalTotalScore = round(testData.totalTotalScore, 2)
-      let averageScore =
+      const averageScaledScore =
         testData.totalTotalScore /
           (testData.externalTestType
             ? testData.totalStudentCount
             : testData.totalMaxScore) || 0
-      let averageScorePercentage = averageScore * 100
+      const averageScaledScorePercentage = averageScaledScore * 100
+      const averageLexileScore = !isNaN(testData.totalTotalLexileScore)
+        ? testData.totalTotalLexileScore / testData.totalStudentCount
+        : null
+      const averageQuantileScore = !isNaN(testData.totalTotalQuantileScore)
+        ? testData.totalTotalQuantileScore / testData.totalStudentCount
+        : null
+      let averageScore = averageScaledScore
+      let averageScorePercentage = averageScaledScorePercentage
       if (
         testData.externalTestType &&
         externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
@@ -330,13 +338,11 @@ const getAggregatedDataByUniqId = (metricInfo, filters = {}) => {
           testData.totalTotalLexileScore,
           externalScoreType
         )
-        const _averageScore =
-          testData.totalTotalLexileScore / testData.totalStudentCount
         averageScore = getExternalScoreFormattedByType(
-          _averageScore,
+          averageLexileScore,
           externalScoreType
         )
-        averageScorePercentage = _averageScore * 100
+        averageScorePercentage = averageLexileScore * 100
       } else if (
         testData.externalTestType &&
         externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
@@ -346,13 +352,11 @@ const getAggregatedDataByUniqId = (metricInfo, filters = {}) => {
           testData.totalTotalQuantileScore,
           externalScoreType
         )
-        const _averageScore =
-          testData.totalTotalQuantileScore / testData.totalStudentCount
         averageScore = getExternalScoreFormattedByType(
-          _averageScore,
+          averageQuantileScore,
           externalScoreType
         )
-        averageScorePercentage = _averageScore * 100
+        averageScorePercentage = averageQuantileScore * 100
       }
       // mix of averageScore(total/count) & averageFractionalScore(total/max)
       const _testName = testData.externalTestType
@@ -365,6 +369,20 @@ const getAggregatedDataByUniqId = (metricInfo, filters = {}) => {
         totalTotalScore,
         averageScore,
         averageScorePercentage: round(averageScorePercentage),
+        averageScaledScore,
+        averageScaledScorePercentage,
+        averageLexileScore: averageLexileScore
+          ? getExternalScoreFormattedByType(
+              averageLexileScore,
+              EXTERNAL_SCORE_TYPES.LEXILE_SCORE
+            )
+          : null,
+        averageQuantileScore: averageQuantileScore
+          ? getExternalScoreFormattedByType(
+              averageQuantileScore,
+              EXTERNAL_SCORE_TYPES.QUANTILE_SCORE
+            )
+          : null,
       }
     })
     .sort((a, b) => b.assessmentDate - a.assessmentDate)
@@ -421,7 +439,7 @@ export const getTableData = (
     return {
       id: compareByValue,
       [compareByKey]: compareByValue,
-      [compareByLabelKey]: compareByLabelValue,
+      [compareByLabelKey]: compareByLabelValue || '',
       totalStudentCount,
       tests,
     }
@@ -605,7 +623,20 @@ export const getChartData = (
       let totalScore = testData.totalScore
       let minScore = get(maxBy(records, 'minScore'), 'minScore', 0)
       let maxScore = get(maxBy(records, 'maxScore'), 'maxScore', 0)
-      let averageScore = testData.totalScore / testData.totalGraded || 0
+      const averageScaledScore = testData.totalScore / testData.totalGraded || 0
+      const averageLexileScore = !isNaN(testData.totalLexileScore)
+        ? getExternalScoreFormattedByType(
+            testData.totalLexileScore / testData.totalGraded,
+            EXTERNAL_SCORE_TYPES.LEXILE_SCORE
+          )
+        : null
+      const averageQuantileScore = !isNaN(testData.totalQuantileScore)
+        ? getExternalScoreFormattedByType(
+            testData.totalQuantileScore / testData.totalGraded,
+            EXTERNAL_SCORE_TYPES.QUANTILE_SCORE
+          )
+        : null
+      let averageScore = averageScaledScore
       if (
         externalScoreType == EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
         !isNaN(testData.totalLexileScore)
@@ -622,10 +653,7 @@ export const getChartData = (
           get(maxBy(records, 'maxLexileScore'), 'maxLexileScore', 0),
           externalScoreType
         )
-        averageScore = getExternalScoreFormattedByType(
-          testData.totalLexileScore / testData.totalGraded,
-          externalScoreType
-        )
+        averageScore = averageLexileScore
       } else if (
         externalScoreType == EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
         !isNaN(testData.totalQuantileScore)
@@ -642,10 +670,7 @@ export const getChartData = (
           get(maxBy(records, 'maxLexileScore'), 'maxQuantileScore', 0),
           externalScoreType
         )
-        averageScore = getExternalScoreFormattedByType(
-          testData.totalQuantileScore / testData.totalGraded,
-          externalScoreType
-        )
+        averageScore = averageQuantileScore
       }
 
       // curate records for each performance criteria of external test
@@ -692,6 +717,9 @@ export const getChartData = (
         totalScore,
         lineScore,
         averageScore,
+        averageScaledScore,
+        averageLexileScore,
+        averageQuantileScore,
         minScore,
         maxScore,
         records: _records,

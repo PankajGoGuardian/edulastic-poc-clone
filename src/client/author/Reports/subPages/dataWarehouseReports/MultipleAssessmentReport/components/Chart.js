@@ -4,6 +4,7 @@ import { isEmpty, isNumber, round } from 'lodash'
 
 import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
+import { EduIf, EduThen } from '@edulastic/common'
 import { SignedStackedBarWithLineChart } from '../../../../common/components/charts/customSignedStackedBarWithLineChart'
 import {
   TooltipRow,
@@ -52,9 +53,20 @@ const ColorBandItem = ({ name, color, highlight }) => {
 const getTooltipJSX = (payload, barIndex) => {
   if (payload && payload.length && barIndex !== null) {
     const barData = payload[0].payload
+    const {
+      externalTestType,
+      bands,
+      color,
+      bandName,
+      assessmentDate,
+      totalGraded,
+      averageScaledScore,
+      averageLexileScore,
+      averageQuantileScore,
+    } = barData
     let colorBandComponent = null
-    if (barData.externalTestType) {
-      const achievementLevels = [...barData.bands].reverse()
+    if (externalTestType) {
+      const achievementLevels = [...bands].reverse()
       colorBandComponent = (
         <>
           <TooltipRowItem title={`${achievementLevels.length} color band`} />
@@ -68,22 +80,33 @@ const getTooltipJSX = (payload, barIndex) => {
         </>
       )
     } else {
-      colorBandComponent = (
-        <ColorBandItem color={barData.color} name={barData.bandName} />
-      )
+      colorBandComponent = <ColorBandItem color={color} name={bandName} />
     }
-    const score = isNumber(barData.averageScore)
-      ? round(barData.averageScore)
-      : barData.averageScore
-    const scoreSuffix = getScoreSuffix(barData.externalTestType)
+    const scoreSuffix = getScoreSuffix(externalTestType)
     return (
       <div>
         <TooltipRowItem
           title="Date:"
-          value={formatDate(barData.assessmentDate)}
+          value={formatDate(externalTestType && assessmentDate)}
         />
-        <TooltipRowItem title="Students:" value={barData.totalGraded} />
-        <TooltipRowItem title="Score:" value={`${score}${scoreSuffix}`} />
+        <TooltipRowItem title="Students:" value={totalGraded} />
+        <TooltipRowItem
+          title="Score:"
+          value={`${round(averageScaledScore)}${scoreSuffix}`}
+        />
+        <EduIf condition={averageLexileScore}>
+          <EduThen>
+            <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />
+          </EduThen>
+        </EduIf>
+        <EduIf condition={externalTestType && averageQuantileScore}>
+          <EduThen>
+            <TooltipRowItem
+              title="Quantile Score:"
+              value={averageQuantileScore}
+            />
+          </EduThen>
+        </EduIf>
         <DashedHr />
         {colorBandComponent}
       </div>

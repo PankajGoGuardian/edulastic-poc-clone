@@ -4,6 +4,7 @@ import { Row, Col, Tooltip } from 'antd'
 import { isNumber, round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
+import { EduIf, EduThen } from '@edulastic/common'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -61,6 +62,46 @@ const ColorBandItem = ({ name, color, highlight }) => {
       <ColorCircle color={color} />
       <TooltipRowValue style={style}>{name}</TooltipRowValue>
     </ColorBandRow>
+  )
+}
+
+const getTooltipText = (currentTest) => {
+  const {
+    assessmentDate,
+    totalStudentCount,
+    externalTestType,
+    averageScaledScore,
+    averageScaledScorePercentage,
+    averageLexileScore,
+    averageQuantileScore,
+    band,
+  } = currentTest
+  return (
+    <div>
+      <TooltipRowItem title="Date:" value={formatDate(assessmentDate)} />
+      <TooltipRowItem title="Students:" value={totalStudentCount} />
+      <TooltipRowItem
+        title="Score:"
+        value={`${
+          externalTestType ? averageScaledScore : averageScaledScorePercentage
+        }${getScoreSuffix(externalTestType)}`}
+      />
+      <EduIf condition={externalTestType && averageLexileScore}>
+        <EduThen>
+          <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />
+        </EduThen>
+      </EduIf>
+      <EduIf condition={externalTestType && averageQuantileScore}>
+        <EduThen>
+          <TooltipRowItem
+            title="Quantile Score:"
+            value={averageQuantileScore}
+          />
+        </EduThen>
+      </EduIf>
+      <DashedHr />
+      <ColorBandItem color={band.color} name={band.name} />
+    </div>
   )
 }
 
@@ -150,31 +191,7 @@ const getTableColumns = (
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
             if (currentTest) {
-              const tooltipText = (
-                <div>
-                  <TooltipRowItem
-                    title="Date:"
-                    value={formatDate(currentTest.assessmentDate)}
-                  />
-                  <TooltipRowItem
-                    title="Students:"
-                    value={currentTest.totalStudentCount}
-                  />
-                  <TooltipRowItem
-                    title="Score:"
-                    value={`${
-                      currentTest.externalTestType
-                        ? currentTest.averageScore
-                        : currentTest.averageScorePercentage
-                    }${getScoreSuffix(currentTest.externalTestType)}`}
-                  />
-                  <DashedHr />
-                  <ColorBandItem
-                    color={currentTest.band.color}
-                    name={currentTest.band.name}
-                  />
-                </div>
-              )
+              const tooltipText = getTooltipText(currentTest)
               return (
                 <Row type="flex" justify="center">
                   <LargeTag

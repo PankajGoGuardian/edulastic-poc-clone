@@ -42,5 +42,6 @@
     "magnify": "Magnify",
     "uploadWork": "Upload work",
     "lineReader": "Line Reader"
-  }
+  },
+  "infoText": "This feature is AI-assisted for enhanced functionality, but its accuracy may vary"
 }

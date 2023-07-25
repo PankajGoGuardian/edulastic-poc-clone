@@ -56,6 +56,7 @@ import {
 import {
   ActionBarContainer,
   ExistingRubricContainer,
+  InfoIconInsideWrapper,
   InfoIconWrapper,
   PaginationContainer,
   RecentlyUsedContainer,
@@ -512,12 +513,20 @@ const UseExisting = ({
               </CustomStyleBtn>
               {currentMode === 'PREVIEW' && !isEditable && (
                 <>
-                  {currentQuestion.rubrics?._id !== currentRubricData?._id && (
+                  <EduIf
+                    condition={
+                      currentQuestion.rubrics?._id !== currentRubricData?._id
+                    }
+                  >
                     <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
                       <Icon type="check" /> <span data-cy="useButton">Use</span>
                     </CustomStyleBtn>
-                  )}
-                  {currentQuestion.rubrics?._id === currentRubricData?._id && (
+                  </EduIf>
+                  <EduIf
+                    condition={
+                      currentQuestion.rubrics?._id === currentRubricData?._id
+                    }
+                  >
                     <CustomStyleBtn
                       style={btnStyle}
                       onClick={handleRemoveRubric}
@@ -525,8 +534,10 @@ const UseExisting = ({
                       <FontAwesomeIcon icon={faMinus} aria-hidden="true" />{' '}
                       Remove
                     </CustomStyleBtn>
-                  )}
-                  {currentRubricData?.createdBy?._id === user?._id && (
+                  </EduIf>
+                  <EduIf
+                    condition={currentRubricData?.createdBy?._id === user?._id}
+                  >
                     <>
                       <CustomStyleBtn
                         style={btnStyle}
@@ -536,7 +547,7 @@ const UseExisting = ({
                         <span data-cy="shareButton">Share</span>
                       </CustomStyleBtn>
                     </>
-                  )}
+                  </EduIf>
                 </>
               )}
               {isEditable && (
@@ -566,10 +577,11 @@ const UseExisting = ({
                 <FontAwesomeIcon
                   icon={faInfoCircle}
                   aria-hidden="true"
-                  style={{ color: 'rgb(158, 155, 149)' }}
+                  style={{ color: 'rgb(158, 155, 149)', marginTop: '4px' }}
                 />{' '}
-                This feature is AI-assisted for enhanced functionality but its
-                accuracy may vary
+                <InfoIconInsideWrapper ml="5px">
+                  {t('infoText')}
+                </InfoIconInsideWrapper>
               </InfoIconWrapper>
             </EduIf>
           </div>

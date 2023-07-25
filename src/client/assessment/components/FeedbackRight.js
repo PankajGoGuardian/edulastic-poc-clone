@@ -59,7 +59,10 @@ import {
   FeedbackInputInnerWrapper2,
   CustomCheckBox,
 } from '../styled/FeedbackRightStyledComponents'
-import { InfoIconWrapper } from '../../author/GradingRubric/styled'
+import {
+  InfoIconInsideWrapper,
+  InfoIconWrapper,
+} from '../../author/GradingRubric/styled'
 
 const adaptiveRound = (x) =>
   x && x.endsWith ? (x.endsWith('.') ? x : round(x, 2)) : round(x, 2)
@@ -561,6 +564,7 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
       hintsUsed,
+      t,
     } = this.props
     const {
       score,
@@ -664,30 +668,18 @@ class FeedbackRight extends Component {
           <>
             <StyledDivSec>
               <div>
-                {isAIEvaluated && (
-                  <InfoIconWrapper
-                    style={{
-                      display: 'flex',
-                      marginLeft: '0px',
-                    }}
-                  >
+                <EduIf condition={isAIEvaluated}>
+                  <InfoIconWrapper ml="0px">
                     <FontAwesomeIcon
                       icon={faInfoCircle}
                       aria-hidden="true"
                       style={{ color: 'rgb(158, 155, 149)', fontSize: '12px' }}
                     />{' '}
-                    <div
-                      style={{
-                        fontSize: '12px',
-                        marginTop: '-5px',
-                        marginLeft: '5px',
-                      }}
-                    >
-                      This feature is AI-assisted for enhanced functionality,
-                      but its accuracy may vary
-                    </div>
+                    <InfoIconInsideWrapper fontSize="12px" mt="-5px" ml="5px">
+                      {t('infoText')}
+                    </InfoIconInsideWrapper>
                   </InfoIconWrapper>
-                )}
+                </EduIf>
                 <ScoreInputWrapper>
                   <ScoreInput
                     data-cy="scoreInput"
@@ -713,9 +705,7 @@ class FeedbackRight extends Component {
                 </ScoreInputWrapper>
               </div>
             </StyledDivSec>
-            <GradingPolicyWrapper
-              style={{ marginTop: isAIEvaluated ? '60px' : '10px' }}
-            >
+            <GradingPolicyWrapper mt={isAIEvaluated ? '60px' : '10px'}>
               GRADING POLICY &nbsp;
               <GradingPolicy data-cy="gradingPolicyType">
                 {activity.scoringType}

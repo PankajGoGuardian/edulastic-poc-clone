@@ -174,7 +174,7 @@ export const getTableColumns = ({
     )
     const sortedAvailableTestTypes = sortTestTypes([...availableTestTypes])
     const academicSubColumns = sortedAvailableTestTypes.map((testType) => {
-      const isExternal = feedTypes.find(
+      const isExternal = (feedTypes || []).find(
         ({ key }) => key === testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
       )
       const scoreSuffix = isExternal ? '' : '%'

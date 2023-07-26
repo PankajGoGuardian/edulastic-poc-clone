@@ -384,10 +384,7 @@ export const getAttendanceChartData = (attendanceData) => {
   const attendanceChartData = map(attendanceData, (item) => ({
     ...item,
     week: item.weekFromTermStart,
-    startDate: moment(item.minDate)
-      .startOf('week')
-      .add(1, 'day')
-      .format('D/M/YYYY'),
+    startDate: moment(item.minDate).startOf('isoWeek').format('D/M/YYYY'),
     assessmentDate: item.minDate,
     value: percentage(item.attendanceValue, item.totalDays, true),
   }))

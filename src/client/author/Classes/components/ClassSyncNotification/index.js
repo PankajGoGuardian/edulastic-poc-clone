@@ -163,10 +163,16 @@ const ClassSyncNotificationListener = ({
   const showUserNotificationOnCanvasBulkSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, message, multipleDistrictUserEmail } = doc
-      if (status === canvasSyncFireBaseStatus.INPROGRESS && !notificationIds.includes(doc.__id)) {
+      if (
+        status === canvasSyncFireBaseStatus.INPROGRESS &&
+        !notificationIds.includes(doc.__id)
+      ) {
         setCanvasBulkSyncStatus(canvasSyncStatus.INPROGRESS)
       }
-      if (status === canvasSyncFireBaseStatus.COMPLETED && !notificationIds.includes(doc.__id)) {
+      if (
+        status === canvasSyncFireBaseStatus.COMPLETED &&
+        !notificationIds.includes(doc.__id)
+      ) {
         setCanvasBulkSyncStatus(canvasSyncStatus.SUCCESS)
         sessionStorage.removeItem('signupFlow')
         setNotificationIds([...notificationIds, doc.__id])
@@ -210,9 +216,12 @@ const ClassSyncNotificationListener = ({
         groupIds,
         multipleDistrictUserEmail,
       } = doc
+      const districtWithAtlasProviderName = user?.orgData?.districts?.find(
+        (o) => !isEmpty(o?.atlasProviderName)
+      )
       const providerName =
-        user?.orgData?.districts?.find((o) => !isEmpty(o.atlasProviderName))
-          .atlasProviderName || 'Atlas'
+        districtWithAtlasProviderName?.atlasProviderName || 'Atlas'
+
       if (
         status === 'completed' &&
         counter === 0 &&
@@ -264,6 +273,12 @@ const ClassSyncNotificationListener = ({
           },
         })
         setSyncClassLoading(false)
+      }
+      if (isEmpty(districtWithAtlasProviderName)) {
+        deleteNotificationDocument(
+          doc.__id,
+          firestoreAtlasClassSyncStatusCollection
+        )
       }
     })
   }

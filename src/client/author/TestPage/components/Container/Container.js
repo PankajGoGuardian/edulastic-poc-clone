@@ -160,7 +160,7 @@ class Container extends PureComponent {
       showModal: false,
       showShareModal: false,
       isShowFilter: true,
-      showCancelButton: false,
+      // showCancelButton: false,
       testLoaded: false,
       disableAlert: false,
       showCloneModal: false,
@@ -174,39 +174,39 @@ class Container extends PureComponent {
 
   sebPasswordRef = React.createRef()
 
-  gotoTab = (tab) => {
-    const { history, match, location } = this.props
-    const { regradeFlow = false, previousTestId = '' } = location?.state || {}
-    const { showCancelButton } = this.state
+  gotoTab = () => {
+    const { match, location } = this.props
+    const { regradeFlow = false } = location?.state || {}
+    // const { showCancelButton } = this.state
     const id =
       match.params.id && match.params.id != 'undefined' && match.params.id
     const oldId =
       match.params.oldId &&
       match.params.oldId != 'undefined' &&
       match.params.oldId
-    let url = `/author/tests/create/${tab}`
+    // let url = `/author/tests/create/${tab}`
     if ((id && oldId) || regradeFlow) {
-      const newTab = previousTestId ? 'review' : tab
-      url = `/author/tests/tab/${newTab}/id/${id}/old/${
-        oldId || previousTestId
-      }`
+      // const newTab = previousTestId ? 'review' : tab
+      // url = `/author/tests/tab/${newTab}/id/${id}/old/${
+      //   oldId || previousTestId
+      // }`
     } else if (id) {
-      url = `/author/tests/tab/${tab}/id/${id}`
+      // url = `/author/tests/tab/${tab}/id/${id}`
     }
     // if (tab === "addItems") {
     //   url += `?page=${pageNumber}`;
     // }
-    history.push({
-      pathname: url,
-      state: { ...history.location.state, showCancelButton },
-    })
+    // history.push({
+    //   pathname: url,
+    //   state: { ...history.location.state, showCancelButton },
+    // })
   }
 
   componentDidMount() {
     const {
       match,
       receiveTestById,
-      setDefaultData,
+      // setDefaultData,
       history,
       history: { location },
       clearTestAssignments,
@@ -277,7 +277,7 @@ class Container extends PureComponent {
         // currently creating test do nothing
         this.gotoTab('description')
         clearTestAssignments([])
-        setDefaultData()
+        // setDefaultData()
         if (
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN
@@ -316,7 +316,7 @@ class Container extends PureComponent {
       }
       if (showCancelButton) {
         setEditEnable(true)
-        this.setState({ showCancelButton })
+        // this.setState({ showCancelButton })
       }
 
       if (editAssigned) {

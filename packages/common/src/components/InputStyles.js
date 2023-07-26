@@ -145,7 +145,7 @@ export const NumberInputStyled = styled(InputNumber)`
       box-shadow: none;
     }
     .ant-input-number-input {
-      height: ${(props) => props.height || '32px'};
+      height: ${(props) => props.height};
       text-align: ${(props) => props.textAlign || 'left'};
       padding: 0px;
     }

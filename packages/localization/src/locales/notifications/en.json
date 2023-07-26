@@ -443,6 +443,10 @@
     "message": "Subject field cannot be empty",
     "description": ""
   },
+  "itemTypesEmpty": {
+    "message": "Item Type field cannot be empty",
+    "description": ""
+  },
   "noQuestions": {
     "message": "Test has only instructions. Test must have question to be published",
     "description": ""
@@ -1587,6 +1591,10 @@
     "message": "Please provide valid test name",
     "description": ""
   },
+  "pleaseProvideValidNumberOfItems": {
+    "message": "Please provide valid number of items, Between 1-100",
+    "description": ""
+  },
   "persmissionDenied": {
     "message": "Permission denied",
     "description": ""
@@ -2182,9 +2190,12 @@
     "message": "Teacher account is added successfully.",
     "description": ""
   },
-  "teacherAlreadyAdded" : {
+  "teacherAlreadyAdded": {
     "message": "Teacher(s) already added.",
     "description": ""
+  },
+  "AiItemGeneratorEmptyField": {
+    "message": "Please fill all mandatory fields",
+    "description": ""
   }
-
 }

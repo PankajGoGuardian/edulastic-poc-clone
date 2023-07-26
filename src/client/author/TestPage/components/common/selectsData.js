@@ -88,6 +88,12 @@ const defaultStandards = {
   'Social Studies': 'Social Studies',
 }
 
+const allQuestionTypes = [
+  { value: 'mcq', text: 'Multiple Choice question' },
+  { value: 'tf', text: 'True of False' },
+  { value: 'msq', text: 'Multiple Select question' },
+]
+
 export default {
   allGrades,
   allSubjects,
@@ -102,4 +108,5 @@ export default {
   allStatus,
   defaultStandards,
   extraStatus,
+  allQuestionTypes,
 }

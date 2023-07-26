@@ -67,6 +67,10 @@ import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
 import { advanceSearchReducer } from '../../AdvanceSearch'
+import {
+  aiTestReducer,
+  reduxNamespaceKey,
+} from '../../AssessmentCreate/components/CteateAITest/ducks'
 
 const authorReducers = {
   authorUi,
@@ -138,6 +142,7 @@ const authorReducers = {
   dataWarehouseReducer,
   rosterImportReducer,
   advanceSearchReducer,
+  [reduxNamespaceKey]: aiTestReducer,
 }
 
 export default authorReducers

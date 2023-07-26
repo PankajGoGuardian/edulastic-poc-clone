@@ -339,9 +339,21 @@ export function* receiveTestActivitySaga({ payload }) {
     }
 
     if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+      const indexSet = new Set()
+
+      entities.forEach((e) => {
+        e.questionActivities.forEach((t, i) => {
+          if (t?.autoGrade) {
+            indexSet.add(i)
+          }
+        })
+      })
+
       entities = entities.map((e) => ({
         ...e,
-        questionActivities: e.questionActivities.filter((t) => !t?.autoGrade),
+        questionActivities: e.questionActivities.filter((t, i) => {
+          return !indexSet.has(i)
+        }),
       }))
     }
 

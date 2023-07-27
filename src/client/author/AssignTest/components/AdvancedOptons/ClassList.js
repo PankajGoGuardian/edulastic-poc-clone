@@ -4,7 +4,11 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select, Tooltip } from 'antd'
-import { EduIf, SelectInputStyled } from '@edulastic/common'
+import {
+  EduIf,
+  SelectInputStyled,
+  SelectWithCopyPaste,
+} from '@edulastic/common'
 import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -44,7 +48,11 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
-import { setSearchTermsFilterAction } from '../../../TestPage/components/Assign/ducks'
+import {
+  setSearchTermsFilterAction,
+  setNoSchoolIdentifiedAction,
+  getNoSchoolFoundSelector,
+} from '../../../TestPage/components/Assign/ducks'
 import {
   setIsAllClassSelectedAction,
   getIsAdvancedSearchSelectedSelector,
@@ -55,6 +63,7 @@ import {
 import { sortGrades } from '../../../TestPage/utils'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { OkButton } from '../../../../common/styled'
+import NoDataIdentified from '../Container/NoDataIdentified'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -111,6 +120,7 @@ class ClassList extends React.Component {
         tags: [],
       },
       filterClassIds: [],
+      showNoSchoolIdentifiedModal: false,
     }
   }
 
@@ -227,7 +237,12 @@ class ClassList extends React.Component {
   }
 
   changeFilter = (key, value) => {
-    const { selectClass, selectedClasses, classList } = this.props
+    const {
+      selectClass,
+      selectedClasses,
+      classList,
+      setNoSchoolIdentified,
+    } = this.props
     const { searchTerms } = this.state
     searchTerms[key] =
       key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
@@ -236,6 +251,12 @@ class ClassList extends React.Component {
       .filter(({ _id }) => selectedClasses.includes(_id))
       .map((item) => item._id)
     selectClass('class', _selectedClassIds, classList)
+    if (key === 'institutionIds') setNoSchoolIdentified({})
+  }
+
+  setNoSchoolFound = (noDataFound) => {
+    const { setNoSchoolIdentified } = this.props
+    setNoSchoolIdentified(noDataFound)
   }
 
   handleClassTypeFilter = (key) => {
@@ -331,8 +352,14 @@ class ClassList extends React.Component {
       isCoursesLoading,
       isAdvancedSearchSelected,
       setShowAdvanceSearchModal,
+      noSchoolFound,
     } = this.props
-    const { searchTerms, classType, filterClassIds } = this.state
+    const {
+      searchTerms,
+      classType,
+      filterClassIds,
+      showNoSchoolIdentifiedModal,
+    } = this.state
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -494,18 +521,42 @@ class ClassList extends React.Component {
             placement="bottomLeft"
           >
             <StyledRowLabel>
-              <div>School </div>
-              <SelectInputStyled
+              <div>
+                School
+                {!isEmpty(noSchoolFound) && (
+                  <a
+                    onClick={() => {
+                      this.setState({ showNoSchoolIdentifiedModal: true })
+                    }}
+                  >
+                    ({noSchoolFound?.total - noSchoolFound?.data?.length}/
+                    {noSchoolFound.total} identified)
+                  </a>
+                )}
+                {showNoSchoolIdentifiedModal && (
+                  <NoDataIdentified
+                    closeModal={() => {
+                      this.setState({ showNoSchoolIdentifiedModal: false })
+                    }}
+                    noDataFound={noSchoolFound}
+                  />
+                )}
+              </div>
+              <SelectWithCopyPaste
                 disabled={isAdvancedSearchSelected}
                 data-cy="schoolSelect"
                 mode="multiple"
                 placeholder="All School"
                 showSearch
                 filterOption={(input, option) =>
-                  option.props?.children
+                  option.props.children
                     ?.toLowerCase()
-                    ?.indexOf(input.toLowerCase()) >= 0
+                    .indexOf(input.toLowerCase()) >= 0 ||
+                  option.props.value
+                    ?.toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
                 }
+                searchData={schools}
                 onChange={changeField('institutionIds')}
                 value={searchTerms.institutionIds}
                 tagsEllipsis
@@ -515,7 +566,7 @@ class ClassList extends React.Component {
                     {name}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </SelectWithCopyPaste>
             </StyledRowLabel>
           </Tooltip>
           <Tooltip
@@ -766,6 +817,7 @@ const enhance = compose(
       isCoursesLoading: getCourseLoadingState(state),
       isAdvancedSearchSelected: getIsAdvancedSearchSelectedSelector(state),
       isAllClassSelected: getIsAllClassSelectedSelector(state),
+      noSchoolFound: getNoSchoolFoundSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,
@@ -776,6 +828,7 @@ const enhance = compose(
       setIsAllClassSelected: setIsAllClassSelectedAction,
       setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
       setAdvancedSearchFilter: setAdvancedSearchFilterAction,
+      setNoSchoolIdentified: setNoSchoolIdentifiedAction,
     }
   )
 )

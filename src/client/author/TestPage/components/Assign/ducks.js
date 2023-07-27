@@ -38,6 +38,7 @@ import {
   getIsAdvancedSearchSelectedSelector,
   getIsAllClassSelectedSelector,
 } from '../../../AdvanceSearch/ducks'
+
 const { completionTypes, passwordPolicy } = testConstants
 const assignBehaviour = {
   async: 'ASYNCHRONOUS_ASSIGN',
@@ -66,6 +67,8 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
+export const SET_NO_SCHOOL_IDENTIFIED_FILTER =
+  '[assignment settings] no school was found'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
@@ -90,6 +93,10 @@ export const setSearchTermsFilterAction = (payload) => ({
   type: ADD_SEARCH_TERMS_FILTER,
   payload,
 })
+export const setNoSchoolIdentifiedAction = (payload) => ({
+  type: SET_NO_SCHOOL_IDENTIFIED_FILTER,
+  payload,
+})
 
 const initialState = {
   isLoading: false,
@@ -100,6 +107,7 @@ const initialState = {
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
+  noSchoolFound: {},
 }
 
 const setAssignment = (state, { payload }) => {
@@ -156,6 +164,10 @@ const updateSearchTermsFilter = (state, { payload }) => {
   state.searchTerms = payload
 }
 
+const setNoSchoolFound = (state, { payload }) => {
+  state.noSchoolFound = payload
+}
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
@@ -170,6 +182,7 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
+  [SET_NO_SCHOOL_IDENTIFIED_FILTER]: setNoSchoolFound,
 })
 
 // selectors
@@ -224,6 +237,11 @@ export const getCommonStudentsSelector = createSelector(
 export const getHasDuplicateAssignmentsSelector = createSelector(
   stateSelector,
   (state) => state.hasDuplicateAssignments
+)
+
+export const getNoSchoolFoundSelector = createSelector(
+  stateSelector,
+  (state) => state.noSchoolFound || {}
 )
 
 // saga
@@ -575,52 +593,6 @@ function* saveAssignment({ payload }) {
     }
     const errorMessage = err.response?.data?.message || 'Something went wrong'
     notification({ msg: errorMessage })
-  }
-}
-
-function* saveBulkAssignment({ payload }) {
-  try {
-    yield put(setBulkAssignmentSavingAction(true))
-
-    const { assignmentSettings, ..._payload } = payload
-    const name = yield select(getUserNameSelector)
-    const _id = yield select(getUserId)
-    const assignedBy = { _id, name }
-
-    const startDate =
-      assignmentSettings.startDate &&
-      moment(assignmentSettings.startDate).valueOf()
-    const endDate =
-      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
-    const dueDate =
-      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
-    const data = {
-      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
-      startDate,
-      endDate,
-      dueDate,
-      assignedBy,
-    }
-
-    if (
-      data.scoringType ===
-      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
-    ) {
-      data.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
-    }
-
-    const result = yield call(assignmentApi.bulkAssign, {
-      ..._payload,
-      assignmentSettings: data,
-    })
-    notification({ type: 'info', msg: result })
-    yield put(push('/author/assignments'))
-  } catch (err) {
-    console.error('error for save assignment', err)
-    const errorMessage = err.response?.data?.message || 'Something went wrong'
-    notification({ msg: errorMessage })
-  } finally {
-    yield put(setBulkAssignmentSavingAction(false))
   }
 }
 

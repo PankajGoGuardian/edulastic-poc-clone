@@ -195,3 +195,4 @@ export { default as SimpleConfirmModal } from './src/components/SimpleConfirmMod
 export { default as PrintActionWrapper } from './src/components/PrintActionWrapper'
 export { default as PremiumItemBanner } from './src/components/Banner/PremiumItemBanner'
 export { default as showBlockerPopup } from './src/components/BlockerPopup'
+export { default as SelectWithCopyPaste } from './src/components/SelectWithCopyPaste'

@@ -207,7 +207,6 @@ const MultipleAssessmentReport = ({
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
       },
-      frontEndFilters: { externalScoreType: _requestFilters.externalScoreType },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
     })
@@ -319,7 +318,7 @@ const MultipleAssessmentReport = ({
       externalMetricsForChart,
       _selectedPerformanceBand,
       externalBands,
-      settings.frontEndFilters
+      sharedReportFilters || settings.requestFilters
     )
     return {
       incompleteTests: _incompleteTests,
@@ -356,7 +355,7 @@ const MultipleAssessmentReport = ({
       externalBands,
       settings.selectedCompareBy.key,
       sortFilters,
-      settings.frontEndFilters
+      sharedReportFilters || settings.requestFilters
     )
   }, [
     reportChartData,

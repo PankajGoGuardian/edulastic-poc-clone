@@ -124,6 +124,7 @@ export const staticDropDownData = {
     frlStatus: 'all',
     ellStatus: 'all',
     hispanicEthnicity: 'all',
+    externalScoreType: '',
   },
   subjects: [
     { key: 'Mathematics', title: 'Mathematics' },

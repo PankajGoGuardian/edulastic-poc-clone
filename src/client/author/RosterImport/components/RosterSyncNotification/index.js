@@ -49,10 +49,10 @@ const NotificationListener = ({ user, loadRosterLogs }) => {
           !inProgressNotificationIds.includes(doc.__id)
         ) {
           setInProgressNotificationIds([...inProgressNotificationIds, doc.__id])
-          antdNotification({
-            msg: `${message || 'OneRoster sync in progress.'}`,
-            exact: true,
-          })
+          // antdNotification({
+          //   msg: `${message || 'OneRoster sync in progress.'}`,
+          //   exact: true,
+          // })
         } else if (
           status === 'completed' &&
           !failedOrCompletedNotificationIds.includes(doc.__id)

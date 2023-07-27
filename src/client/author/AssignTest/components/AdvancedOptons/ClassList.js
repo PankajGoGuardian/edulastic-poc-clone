@@ -28,6 +28,7 @@ import {
   receiveCourseListAction,
   getAggregateCourseListSelector,
   getCourseLoadingState,
+  receiveAggregateCourseListSuccessAction,
 } from '../../../Courses/ducks'
 import {
   ClassListFilter,
@@ -118,6 +119,7 @@ class ClassList extends React.Component {
         grades: [],
         active: [1],
         tags: [],
+        courseIds: [],
       },
       filterClassIds: [],
       showNoSchoolIdentifiedModal: false,
@@ -244,8 +246,8 @@ class ClassList extends React.Component {
       setNoSchoolIdentified,
     } = this.props
     const { searchTerms } = this.state
-    searchTerms[key] =
-      key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
+    searchTerms[key] = value
+    // key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
     this.setState({ searchTerms }, this.loadClassList)
     const _selectedClassIds = classList
       .filter(({ _id }) => selectedClasses.includes(_id))
@@ -353,6 +355,7 @@ class ClassList extends React.Component {
       isAdvancedSearchSelected,
       setShowAdvanceSearchModal,
       noSchoolFound,
+      receiveAggregateCourseListSuccess,
     } = this.props
     const {
       searchTerms,
@@ -545,6 +548,7 @@ class ClassList extends React.Component {
               <SelectWithCopyPaste
                 disabled={isAdvancedSearchSelected}
                 data-cy="schoolSelect"
+                id="schoolSelect"
                 mode="multiple"
                 placeholder="All School"
                 showSearch
@@ -634,9 +638,10 @@ class ClassList extends React.Component {
           >
             <StyledRowLabel>
               Course
-              <SelectInputStyled
+              <SelectWithCopyPaste
                 disabled={isAdvancedSearchSelected}
                 data-cy="selectCourses"
+                id="selectCourses"
                 mode="multiple"
                 placeholder="All Course"
                 onChange={changeField('courseIds')}
@@ -644,17 +649,21 @@ class ClassList extends React.Component {
                 showSearch
                 tagsEllipsis
                 onSearch={this.handleCourseSearch}
-                onFocus={() => this.handleCourseSearch('')}
+                // onFocus={() => this.handleCourseSearch('')}
                 filterOption={false}
                 defaultActiveFirstOption={false}
                 loading={isCoursesLoading}
+                searchData={courseList}
+                value={searchTerms.courseIds}
+                receiveAggregateCourseListSuccess={receiveAggregateCourseListSuccess}
+                // setNoDataFound={setNoDataFound}
               >
                 {courseList.map(({ _id, name }) => (
                   <Select.Option key={_id} value={_id}>
                     {name}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </SelectWithCopyPaste>
             </StyledRowLabel>
           </Tooltip>
           <Tooltip
@@ -829,6 +838,7 @@ const enhance = compose(
       setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
       setAdvancedSearchFilter: setAdvancedSearchFilterAction,
       setNoSchoolIdentified: setNoSchoolIdentifiedAction,
+      receiveAggregateCourseListSuccess: receiveAggregateCourseListSuccessAction
     }
   )
 )

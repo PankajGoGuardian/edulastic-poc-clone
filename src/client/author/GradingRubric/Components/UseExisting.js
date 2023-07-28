@@ -4,7 +4,6 @@ import {
   faMagic,
   faPencilAlt,
   faTrashAlt,
-  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
@@ -74,7 +73,6 @@ import {
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
 import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
-import { Tooltip } from '../../../common/utils/helpers'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 

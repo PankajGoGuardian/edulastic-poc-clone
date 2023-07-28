@@ -19,8 +19,6 @@ import {
   evalTypeLabels,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   AlignRight,
   AlignSwitchRight,

@@ -275,9 +275,20 @@ function* receiveStudentResponseSaga({ payload }) {
       },
       true
     )
-    const transformedQuestionActivities = transformed.find(
+    let transformedQuestionActivities = transformed.find(
       (x) => x.studentId === payload.studentId
     )?.questionActivities
+
+    const userRole = yield select(getUserRole)
+    const additionalData = yield select(getAdditionalDataSelector)
+    const hiddenTestContentVisibilty = getManualContentVisibility(
+      additionalData
+    )
+    if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
+      transformedQuestionActivities = transformedQuestionActivities.filter(
+        (t) => !t?.autoGrade && !t?.notStarted
+      )
+    }
     studentResponse.questionActivities = transformedQuestionActivities
 
     const userWork = {}

@@ -156,8 +156,8 @@ export const getQuestionLabels = (testItemsData = []) => {
     }
     if (item.data.questions.length === 1) {
       result[`${item._id}_${item.data.questions[0].id}`] = {
-        qLabel: i + 1,
-        barLabel: `Q${i + 1}`,
+        qLabel: item.data.questions[0].qLabel || i + 1,
+        barLabel: item.data.questions[0].barLabel || `Q${i + 1}`,
       }
     } else {
       let qLabelCount = 1

@@ -3,6 +3,7 @@ import {
   TEST_TYPES_VALUES_MAP,
   ALL_TEST_TYPES_VALUES,
 } from '@edulastic/constants/const/testTypes'
+import { testTypes } from '@edulastic/constants'
 import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
 
 export const compareByKeys = {
@@ -145,6 +146,19 @@ export const EXTERNAL_SCORE_TYPES_LIST = [
   { key: EXTERNAL_SCORE_TYPES.LEXILE_SCORE, title: 'Lexile Score' },
   { key: EXTERNAL_SCORE_TYPES.QUANTILE_SCORE, title: 'Quantile Score' },
 ]
+
+export const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
+  [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: [
+    testTypes.CAASPP,
+    testTypes.iReady_ELA,
+    testTypes.NWEA,
+  ],
+  [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: [
+    testTypes.CAASPP,
+    testTypes.iReady_Math,
+    testTypes.NWEA,
+  ],
+}
 
 export const EXTERNAL_SCORE_PREFIX = {
   [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: 'BR',

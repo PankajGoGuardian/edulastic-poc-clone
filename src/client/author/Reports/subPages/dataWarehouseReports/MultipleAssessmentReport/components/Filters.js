@@ -35,10 +35,10 @@ import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeU
 import { allFilterValue } from '../../../../common/constants'
 import {
   EXTERNAL_SCORE_TYPES,
-  EXTERNAL_SCORE_TYPES_LIST,
   EXTERNAL_SCORE_TOOLTIP_TEXT,
   getDefaultTestTypes,
   getDemographicsFilterTagsData,
+  getExternalScoreTypesListByTestTypes,
 } from '../../common/utils'
 
 const MultipleAssessmentReportFilters = ({
@@ -90,11 +90,14 @@ const MultipleAssessmentReportFilters = ({
     performanceBandsList.find((p) => p.key === filters.profileId) ||
     performanceBandsList[0]
 
+  const externalScoreTypesList = getExternalScoreTypesListByTestTypes(
+    filters.assessmentTypes
+  )
   const selectedExternalScoreType =
-    EXTERNAL_SCORE_TYPES_LIST.find(
+    externalScoreTypesList.find(
       (item) => item.key === filters.externalScoreType
     ) ||
-    EXTERNAL_SCORE_TYPES_LIST.find(
+    externalScoreTypesList.find(
       (item) => item.key === EXTERNAL_SCORE_TYPES.SCALED_SCORE
     )
 
@@ -742,7 +745,7 @@ const MultipleAssessmentReportFilters = ({
                   true
                 )
               }
-              data={EXTERNAL_SCORE_TYPES_LIST}
+              data={externalScoreTypesList}
               prefix="External Score"
               showPrefixOnSelected={false}
             />

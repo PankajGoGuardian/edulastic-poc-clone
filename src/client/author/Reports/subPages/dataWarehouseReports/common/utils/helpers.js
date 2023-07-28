@@ -16,6 +16,8 @@ import {
 import {
   EXTERNAL_SCORE_PREFIX,
   EXTERNAL_SCORE_SUFFIX,
+  EXTERNAL_SCORE_TYPES_LIST,
+  EXTERNAL_SCORE_TYPES_TO_TEST_TYPES,
   INTERNAL_TEST_TYPES_ORDER,
   compareByKeys,
   compareByKeysToFilterKeys,
@@ -214,6 +216,15 @@ export const sortTestTypes = (testTypes) => {
   )
   externalTestTypes.sort()
   return [...internalTestTypes, ...externalTestTypes]
+}
+
+export const getExternalScoreTypesListByTestTypes = (testTypesStr) => {
+  const testTypes = (testTypesStr || '').split(',')
+  const externalScoreTypesList = EXTERNAL_SCORE_TYPES_LIST.filter(({ key }) => {
+    const _testTypes = EXTERNAL_SCORE_TYPES_TO_TEST_TYPES[key]
+    return isEmpty(_testTypes) || _testTypes.some((t) => testTypes.includes(t))
+  })
+  return externalScoreTypesList
 }
 
 export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')

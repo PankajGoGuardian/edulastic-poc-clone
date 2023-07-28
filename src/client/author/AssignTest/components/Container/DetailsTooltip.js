@@ -15,6 +15,7 @@ const DetailsTooltip = ({
   premium,
   showInsideContainer,
   width,
+  accuracyWarning,
 }) => {
   let yShift = '-32%'
   if (placement === 'rightTop') yShift = 'calc( -100% + 30px )'
@@ -40,6 +41,12 @@ const DetailsTooltip = ({
         </span>
       )}
       <span className="popover-body">{content}</span>
+      {accuracyWarning && (
+        <>
+          <br />
+          <span className="warning">({accuracyWarning})</span>
+        </>
+      )}
     </StyledPopOver>
   )
 }
@@ -88,5 +95,10 @@ const StyledPopOver = styled.div`
   > .popover-body {
     color: ${mainTextColor};
     font-weight: 500;
+  }
+  > .warning {
+    color: ${mainTextColor};
+    font-weight: 500;
+    font-style: italic;
   }
 `

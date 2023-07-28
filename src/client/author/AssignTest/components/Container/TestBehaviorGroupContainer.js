@@ -44,7 +44,6 @@ import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
-import { Tooltip } from '../../../../common/utils/helpers'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -533,6 +532,7 @@ const TestBehaviorGroupContainer = ({
             content={i18translate('allowAutoEssayEvaluation.info')}
             premium={premium}
             placement="rightTop"
+            accuracyWarning={i18translate('rubric.infoText')}
           />
           <StyledRow gutter={16} mb="15px" height="40">
             <Col span={10}>
@@ -560,17 +560,6 @@ const TestBehaviorGroupContainer = ({
                     overRideSettings('allowAutoEssayEvaluation', value)
                   }
                 />
-                <Tooltip title={i18translate('rubric.infoText')}>
-                  <FontAwesomeIcon
-                    icon={faInfoCircle}
-                    aria-hidden="true"
-                    style={{
-                      color: 'black',
-                      fontSize: '20px',
-                      marginLeft: '80px',
-                    }}
-                  />
-                </Tooltip>
               </Row>
             </Col>
           </StyledRow>

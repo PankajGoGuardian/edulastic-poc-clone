@@ -24,8 +24,6 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import UnScored from '@edulastic/common/src/components/Unscored'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
@@ -59,7 +57,6 @@ import {
   FeedbackInputInnerWrapper2,
   CustomCheckBox,
 } from '../styled/FeedbackRightStyledComponents'
-import { Tooltip } from '../../common/utils/helpers'
 
 const adaptiveRound = (x) =>
   x && x.endsWith ? (x.endsWith('.') ? x : round(x, 2)) : round(x, 2)
@@ -561,7 +558,6 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
       hintsUsed,
-      t: i18translate,
     } = this.props
     const {
       score,
@@ -600,22 +596,6 @@ class FeedbackRight extends Component {
     const disableSaveBtn = [isAIEvaluated, !isApprovedByTeacher].every(
       (o) => !!o
     )
-    const infoIcon = (
-      <Tooltip
-        title={i18translate('author:rubric.infoText')}
-        placement={isStudentName ? 'topRight' : 'top'}
-      >
-        <FontAwesomeIcon
-          icon={faInfoCircle}
-          aria-hidden="true"
-          style={{
-            color: 'black',
-            fontSize: '25px',
-            marginLeft: isStudentName ? '85px' : '0px',
-          }}
-        />
-      </Tooltip>
-    )
 
     if (isStudentName) {
       title = (
@@ -630,11 +610,10 @@ class FeedbackRight extends Component {
           )}
           &nbsp;
           {studentName}
-          {isAIEvaluated ? infoIcon : null}
         </TitleDiv>
       )
     } else {
-      title = isAIEvaluated ? infoIcon : null
+      title = null
     }
 
     let _score = adaptiveRound(score || 0)
@@ -827,7 +806,7 @@ const enhance = compose(
   React.memo,
   withRouter,
   withWindowSizes,
-  withNamespaces(['header', 'author']),
+  withNamespaces('header'),
   connect(
     (state) => ({
       user: getUserSelector(state),

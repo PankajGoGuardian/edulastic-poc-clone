@@ -454,6 +454,7 @@ export const RubricDetailsContainer = styled.div`
     background: ${lightGrey3};
   }
 `
+
 export const ActionBarContainer = styled.div`
   margin-bottom: 70px;
   position: relative;

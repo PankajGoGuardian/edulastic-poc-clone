@@ -59,10 +59,7 @@ import {
   FeedbackInputInnerWrapper2,
   CustomCheckBox,
 } from '../styled/FeedbackRightStyledComponents'
-import {
-  InfoIconInsideWrapper,
-  InfoIconWrapper,
-} from '../../author/GradingRubric/styled'
+import { Tooltip } from '../../common/utils/helpers'
 
 const adaptiveRound = (x) =>
   x && x.endsWith ? (x.endsWith('.') ? x : round(x, 2)) : round(x, 2)
@@ -603,6 +600,22 @@ class FeedbackRight extends Component {
     const disableSaveBtn = [isAIEvaluated, !isApprovedByTeacher].every(
       (o) => !!o
     )
+    const infoIcon = (
+      <Tooltip
+        title={i18translate('author:rubric.infoText')}
+        placement={isStudentName ? 'topRight' : 'top'}
+      >
+        <FontAwesomeIcon
+          icon={faInfoCircle}
+          aria-hidden="true"
+          style={{
+            color: 'black',
+            fontSize: '25px',
+            marginLeft: isStudentName ? '85px' : '0px',
+          }}
+        />
+      </Tooltip>
+    )
 
     if (isStudentName) {
       title = (
@@ -617,10 +630,11 @@ class FeedbackRight extends Component {
           )}
           &nbsp;
           {studentName}
+          {isAIEvaluated ? infoIcon : null}
         </TitleDiv>
       )
     } else {
-      title = null
+      title = isAIEvaluated ? infoIcon : null
     }
 
     let _score = adaptiveRound(score || 0)
@@ -667,45 +681,31 @@ class FeedbackRight extends Component {
         {!isPracticeQuestion ? (
           <>
             <StyledDivSec>
-              <div>
-                <EduIf condition={isAIEvaluated}>
-                  <InfoIconWrapper ml="0px">
-                    <FontAwesomeIcon
-                      icon={faInfoCircle}
-                      aria-hidden="true"
-                      style={{ color: 'rgb(158, 155, 149)', fontSize: '12px' }}
-                    />{' '}
-                    <InfoIconInsideWrapper fontSize="12px" mt="-5px" ml="5px">
-                      {i18translate('infoText')}
-                    </InfoIconInsideWrapper>
-                  </InfoIconWrapper>
-                </EduIf>
-                <ScoreInputWrapper>
-                  <ScoreInput
-                    data-cy="scoreInput"
-                    onChange={(e) =>
-                      this.onChangeScore(showGradingRubricButton)(
-                        e.target.value,
-                        InputType.InputScore
-                      )
-                    }
-                    onFocus={this.handleScoreInputFocus}
-                    onBlur={this.submitScore}
-                    value={_score}
-                    disabled={
-                      isPresentationMode ||
-                      isPracticeQuestion ||
-                      isScoreInputDisabled
-                    }
-                    ref={this.scoreInput}
-                    onKeyDown={this.onKeyDownFeedback}
-                    tabIndex={0}
-                  />
-                  <TextPara>{_maxScore}</TextPara>
-                </ScoreInputWrapper>
-              </div>
+              <ScoreInputWrapper>
+                <ScoreInput
+                  data-cy="scoreInput"
+                  onChange={(e) =>
+                    this.onChangeScore(showGradingRubricButton)(
+                      e.target.value,
+                      InputType.InputScore
+                    )
+                  }
+                  onFocus={this.handleScoreInputFocus}
+                  onBlur={this.submitScore}
+                  value={_score}
+                  disabled={
+                    isPresentationMode ||
+                    isPracticeQuestion ||
+                    isScoreInputDisabled
+                  }
+                  ref={this.scoreInput}
+                  onKeyDown={this.onKeyDownFeedback}
+                  tabIndex={0}
+                />
+                <TextPara>{_maxScore}</TextPara>
+              </ScoreInputWrapper>
             </StyledDivSec>
-            <GradingPolicyWrapper mt={isAIEvaluated ? '60px' : '10px'}>
+            <GradingPolicyWrapper>
               GRADING POLICY &nbsp;
               <GradingPolicy data-cy="gradingPolicyType">
                 {activity.scoringType}
@@ -827,7 +827,7 @@ const enhance = compose(
   React.memo,
   withRouter,
   withWindowSizes,
-  withNamespaces('header'),
+  withNamespaces(['header', 'author']),
   connect(
     (state) => ({
       user: getUserSelector(state),

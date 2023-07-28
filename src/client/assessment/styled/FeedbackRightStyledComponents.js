@@ -95,7 +95,7 @@ export const TextPara = styled.p`
 `
 export const GradingPolicyWrapper = styled.p`
   text-transform: uppercase;
-  margin-top: ${({ mt }) => mt || '10px'};
+  margin-top: 10px;
   font-size: 9px;
   font-weight: 600;
   width: 100%;

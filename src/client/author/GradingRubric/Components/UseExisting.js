@@ -56,8 +56,6 @@ import {
 import {
   ActionBarContainer,
   ExistingRubricContainer,
-  InfoIconInsideWrapper,
-  InfoIconWrapper,
   PaginationContainer,
   RecentlyUsedContainer,
   RubricsTag,
@@ -76,6 +74,7 @@ import {
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
 import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
+import { Tooltip } from '../../../common/utils/helpers'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -527,8 +526,12 @@ const UseExisting = ({
                       currentQuestion.rubrics?._id === currentRubricData?._id
                     }
                   >
-                    <CustomStyleBtn style={btnStyle} onClick={handleRemoveRubric}>
-                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
+                    <CustomStyleBtn
+                      style={btnStyle}
+                      onClick={handleRemoveRubric}
+                    >
+                      <FontAwesomeIcon icon={faMinus} aria-hidden="true" />{' '}
+                      Remove
                     </CustomStyleBtn>
                   </EduIf>
                   <EduIf
@@ -569,16 +572,18 @@ const UseExisting = ({
             <EduIf
               condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
             >
-              <InfoIconWrapper>
+              <Tooltip title={t('rubric.infoText')}>
                 <FontAwesomeIcon
                   icon={faInfoCircle}
                   aria-hidden="true"
-                  style={{ color: 'rgb(158, 155, 149)', marginTop: '4px' }}
-                />{' '}
-                <InfoIconInsideWrapper ml="5px">
-                  {t('infoText')}
-                </InfoIconInsideWrapper>
-              </InfoIconWrapper>
+                  style={{
+                    color: 'black',
+                    marginTop: '4px',
+                    fontSize: '20px',
+                    marginLeft: '10px',
+                  }}
+                />
+              </Tooltip>
             </EduIf>
           </div>
         </ActionBarContainer>

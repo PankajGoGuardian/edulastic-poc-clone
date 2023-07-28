@@ -454,20 +454,6 @@ export const RubricDetailsContainer = styled.div`
     background: ${lightGrey3};
   }
 `
-export const InfoIconWrapper = styled.div`
-  margin-left: ${(props) => props.ml || '12px'};
-  font-weight: 400;
-  display: ${(props) => props.display || 'flex'};
-`
-
-export const InfoIconInsideWrapper = styled.div`
-  margin-left: ${(props) => props.ml || ''};
-  margin-top: ${(props) => props.mt || ''};
-  margin-right: ${(props) => props.mr || ''};
-  display: ${(props) => props.display || ''};
-  font-size: ${(props) => props.fontSize || ''};
-`
-
 export const ActionBarContainer = styled.div`
   margin-bottom: 70px;
   position: relative;

@@ -44,10 +44,7 @@ import ShowTtsForPassage from './ShowTtsForPassages'
 import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 import { BetaTag2 } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../../../TestPage/components/Setting/components/Common/ContentVisibilityOptions'
-import {
-  InfoIconInsideWrapper,
-  InfoIconWrapper,
-} from '../../../GradingRubric/styled'
+import { Tooltip } from '../../../../common/utils/helpers'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -563,16 +560,17 @@ const TestBehaviorGroupContainer = ({
                     overRideSettings('allowAutoEssayEvaluation', value)
                   }
                 />
-                <InfoIconWrapper ml="80px">
+                <Tooltip title={i18translate('rubric.infoText')}>
                   <FontAwesomeIcon
                     icon={faInfoCircle}
                     aria-hidden="true"
-                    style={{ color: 'rgb(158, 155, 149)' }}
-                  />{' '}
-                  <InfoIconInsideWrapper ml="5px" mt="-4px" mr="-150px">
-                    {i18translate('infoText')}
-                  </InfoIconInsideWrapper>
-                </InfoIconWrapper>
+                    style={{
+                      color: 'black',
+                      fontSize: '20px',
+                      marginLeft: '80px',
+                    }}
+                  />
+                </Tooltip>
               </Row>
             </Col>
           </StyledRow>

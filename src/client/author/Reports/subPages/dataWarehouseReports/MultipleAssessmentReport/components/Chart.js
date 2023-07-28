@@ -60,6 +60,7 @@ const getTooltipJSX = (payload, barIndex) => {
       bandName,
       assessmentDate,
       totalGraded,
+      averageScore,
       averageScaledScore,
       averageLexileScore,
       averageQuantileScore,
@@ -82,18 +83,15 @@ const getTooltipJSX = (payload, barIndex) => {
     } else {
       colorBandComponent = <ColorBandItem color={color} name={bandName} />
     }
+    const score = externalTestType
+      ? round(averageScaledScore)
+      : round(averageScore)
     const scoreSuffix = getScoreSuffix(externalTestType)
     return (
       <div>
-        <TooltipRowItem
-          title="Date:"
-          value={formatDate(externalTestType && assessmentDate)}
-        />
+        <TooltipRowItem title="Date:" value={formatDate(assessmentDate)} />
         <TooltipRowItem title="Students:" value={totalGraded} />
-        <TooltipRowItem
-          title="Score:"
-          value={`${round(averageScaledScore)}${scoreSuffix}`}
-        />
+        <TooltipRowItem title="Score:" value={`${score}${scoreSuffix}`} />
         <EduIf condition={averageLexileScore}>
           <EduThen>
             <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />

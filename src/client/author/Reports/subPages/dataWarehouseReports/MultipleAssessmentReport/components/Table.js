@@ -83,7 +83,9 @@ const getTooltipText = (currentTest) => {
       <TooltipRowItem
         title="Score:"
         value={`${
-          externalTestType ? averageScaledScore : averageScaledScorePercentage
+          externalTestType
+            ? round(averageScaledScore)
+            : round(averageScaledScorePercentage)
         }${getScoreSuffix(externalTestType)}`}
       />
       <EduIf condition={externalTestType && averageLexileScore}>
@@ -191,6 +193,9 @@ const getTableColumns = (
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
             if (currentTest) {
+              const averageScoreRender = isNumber(currentTest.averageScore)
+                ? round(currentTest.averageScore)
+                : currentTest.averageScore
               const tooltipText = getTooltipText(currentTest)
               return (
                 <Row type="flex" justify="center">
@@ -200,7 +205,7 @@ const getTableColumns = (
                     leftText={currentTest.band.name}
                     rightText={
                       currentTest.externalTestType
-                        ? currentTest.averageScore
+                        ? averageScoreRender
                         : `${currentTest.averageScorePercentage}%`
                     }
                     background={currentTest.band.color}

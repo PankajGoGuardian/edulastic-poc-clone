@@ -163,10 +163,23 @@ export const getQuestionLabels = (testItemsData = []) => {
       let qLabelCount = 1
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
+        q.qLabel = q.qLabel
+          ? q.qLabel
+          : q.barLabel
+          ? Number(q.barLabel?.replace('Q', ''))
+          : null
         if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
           result[`${item._id}_${q.id}`] = {
             qLabel: `Q${qLabelCount}`,
             barLabel: `Q${qLabelCount++}`,
+          }
+        } else if (q.qLabel && q.barLabel) {
+          result[`${item._id}_${q.id}`] = {
+            qLabel: q.qLabel,
+            qSubLabel: alphabets[qIndex],
+            barLabel: item.itemLevelScoring
+              ? `${q.barLabel}`
+              : `${q.barLabel}.${alphabets[qIndex]}`,
           }
         } else {
           result[`${item._id}_${q.id}`] = {

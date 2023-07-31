@@ -94,11 +94,6 @@ const StyledPopOver = styled.div`
     color: ${mainTextColor};
     font-weight: 500;
   }
-  > .warning {
-    color: ${mainTextColor};
-    font-weight: 500;
-    font-style: italic;
-  }
 `
 const StyledWarning = styled.div`
   color: ${mainTextColor};

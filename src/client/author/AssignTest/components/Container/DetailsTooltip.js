@@ -16,7 +16,7 @@ const DetailsTooltip = ({
   premium,
   showInsideContainer,
   width,
-  accuracyWarning,
+  warningText,
 }) => {
   let yShift = '-32%'
   if (placement === 'rightTop') yShift = 'calc( -100% + 30px )'
@@ -42,8 +42,8 @@ const DetailsTooltip = ({
         </span>
       )}
       <span className="popover-body">{content}</span>
-      <EduIf condition={accuracyWarning}>
-        <StyledWarning>({accuracyWarning})</StyledWarning>
+      <EduIf condition={warningText}>
+        <StyledWarning>{warningText}</StyledWarning>
       </EduIf>
     </StyledPopOver>
   )

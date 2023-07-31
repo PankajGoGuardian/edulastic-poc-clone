@@ -15,6 +15,7 @@ import {
   FieldLabel,
   PremiumItemBanner,
   EduIf,
+  FlexContainer,
 } from '@edulastic/common'
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -665,7 +666,7 @@ class QuestionWrapper extends Component {
                       !aiEvaluationStatus?.isGradedExternally
                     }
                   >
-                    <div style={{ display: 'flex' }}>
+                    <FlexContainer>
                       <AiEvaluationWrapper
                         aiEvaluationStatus={aiEvaluationStatus?.status}
                       >
@@ -690,7 +691,7 @@ class QuestionWrapper extends Component {
                           }}
                         />
                       </Tooltip>
-                    </div>
+                    </FlexContainer>
                     <EduIf
                       condition={
                         aiEvaluationStatus?.status ===

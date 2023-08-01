@@ -55,6 +55,7 @@ import {
 import { sortGrades } from '../../../TestPage/utils'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { OkButton } from '../../../../common/styled'
+import { getInputIdList } from '../../utils'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -318,6 +319,14 @@ class ClassList extends React.Component {
     selectClass('class', [], classList)
   }
 
+  handleFilterOption = (input, option) => {
+    const idList = getInputIdList(input)
+    return (
+      option.props?.children?.toLowerCase()?.indexOf(input.toLowerCase()) >=
+        0 || (idList || []).includes(option.props?.value)
+    )
+  }
+
   render() {
     const {
       classList,
@@ -501,11 +510,7 @@ class ClassList extends React.Component {
                 mode="multiple"
                 placeholder="All School"
                 showSearch
-                filterOption={(input, option) =>
-                  option.props?.children
-                    ?.toLowerCase()
-                    ?.indexOf(input.toLowerCase()) >= 0
-                }
+                filterOption={this.handleFilterOption}
                 onChange={changeField('institutionIds')}
                 value={searchTerms.institutionIds}
                 tagsEllipsis
@@ -645,11 +650,7 @@ class ClassList extends React.Component {
                 onChange={this.handleClassSelectFromDropDown}
                 mode="multiple"
                 showSearch
-                filterOption={(input, option) =>
-                  option.props?.children
-                    ?.toLowerCase()
-                    ?.indexOf(input.toLowerCase()) >= 0
-                }
+                filterOption={this.handleFilterOption}
                 value={filterClassIds}
                 data-cy="selectClass"
                 tagsEllipsis

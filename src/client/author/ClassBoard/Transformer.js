@@ -177,9 +177,7 @@ export const getQuestionLabels = (testItemsData = []) => {
           result[`${item._id}_${q.id}`] = {
             qLabel: q.qLabel,
             qSubLabel: alphabets[qIndex],
-            barLabel: item.itemLevelScoring
-              ? `${q.barLabel}`
-              : `${q.barLabel}.${alphabets[qIndex]}`,
+            barLabel: `${q.barLabel}`,
           }
         } else {
           result[`${item._id}_${q.id}`] = {

@@ -223,7 +223,14 @@ function filterStudentsByStatus(selectedStatus) {
     if (selectedStatus === 'ALL') {
       return true
     }
-    if (selectedStatus === 'ALL ASSIGNED') {
+    if (
+      selectedStatus === 'ALL ASSIGNED' &&
+      !studentIsUnEnrolled({
+        isEnrolled: x.isEnrolled,
+        enrollmentStatus: x.enrollmentStatus,
+        archived: x.archived,
+      })
+    ) {
       return x.isAssigned
     }
     return getStudentFilterCategory(x) === selectedStatus

@@ -166,7 +166,7 @@ export const getQuestionLabels = (testItemsData = []) => {
         q.qLabel = q.qLabel
           ? q.qLabel
           : q.barLabel
-          ? Number(q.barLabel?.replace('Q', ''))
+          ? Number(q.barLabel?.replace(/\D/g, ''))
           : null
         if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
           result[`${item._id}_${q.id}`] = {

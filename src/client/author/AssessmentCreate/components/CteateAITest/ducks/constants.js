@@ -10,10 +10,12 @@ const formFields = {
 }
 
 const STATUS = {
+  INIT: 'init',
   INPROGRESS: 'inprogress',
   FAILED: 'failed',
   DRAFT: 'draft',
   SUCCESS: 'success',
+  SAVED: 'saved',
 }
 
 export const itemStructure = {
@@ -31,7 +33,7 @@ export const itemStructure = {
   tags: [],
   status: 'draft',
   createdBy: {},
-  maxScore: 0,
+  maxScore: 1,
   active: 1,
   grades: [],
   subjects: [],
@@ -42,6 +44,7 @@ export const itemStructure = {
     resources: [],
   },
   itemLevelScoring: true,
+  itemLevelScore: 1,
   analytics: [
     {
       usage: 0,
@@ -51,6 +54,7 @@ export const itemStructure = {
   multipartItem: false,
   isPassageWithQuestions: false,
   canAddMultipleItems: false,
+  aiGenerated: true,
 }
 
 export { formFields, STATUS }

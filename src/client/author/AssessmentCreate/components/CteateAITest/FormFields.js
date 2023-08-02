@@ -1,5 +1,6 @@
 import {
   EduButton,
+  EduIf,
   FlexContainer,
   NumberInputStyled,
   SelectInputStyled,
@@ -27,20 +28,23 @@ export const FormFields = ({
   handleFieldDataChange,
   handleAiFormSubmit,
   onCancel,
+  createItems,
 }) => {
   return (
     <Row>
       <Row gutter={30}>
-        <Col xs={24}>
-          <StyledFilterLabel>
-            Test Name<StyledRequired>*</StyledRequired>
-          </StyledFilterLabel>
-          <TextInputStyled
-            placeholder="Enter Test Name"
-            maxLength={256}
-            onChange={(e) => handleFieldDataChange(testName, e.target.value)}
-          />
-        </Col>
+        <EduIf condition={!createItems}>
+          <Col xs={24}>
+            <StyledFilterLabel>
+              Test Name<StyledRequired>*</StyledRequired>
+            </StyledFilterLabel>
+            <TextInputStyled
+              placeholder="Enter Test Name"
+              maxLength={256}
+              onChange={(e) => handleFieldDataChange(testName, e.target.value)}
+            />
+          </Col>
+        </EduIf>
       </Row>
       <Row gutter={30}>
         <Col xs={12}>

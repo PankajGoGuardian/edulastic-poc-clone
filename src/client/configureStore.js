@@ -33,12 +33,11 @@ let store
 const composeEnhancers =
   // process.env.NODE_ENV === 'development' &&
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : // window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-      //   trace: true,
-      //   traceLimit: 30,
-      // })
-      compose
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        trace: true,
+        traceLimit: 30,
+      })
+    : compose
 
 export default (initialState = {}, reducer = rootReducer, saga = rootSaga) => {
   store = createStore(

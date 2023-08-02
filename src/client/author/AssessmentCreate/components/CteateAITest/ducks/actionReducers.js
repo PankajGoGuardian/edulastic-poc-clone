@@ -4,7 +4,7 @@ import { STATUS, formFields } from './constants'
 const reduxNamespaceKey = 'aiTestDetails'
 
 const initialState = {
-  status: STATUS.DRAFT,
+  status: STATUS.INIT,
   aiGeneratedTestItems: [],
   testDetails: {
     [formFields.testName]: '',
@@ -36,7 +36,7 @@ const slice = createSlice({
       state.aiGeneratedTestItems = []
     },
     setStatus: (state, { payload }) => {
-      state.status = { payload }
+      state.status = payload
     },
   },
 })

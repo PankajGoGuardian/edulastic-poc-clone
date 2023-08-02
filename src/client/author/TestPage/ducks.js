@@ -161,14 +161,14 @@ export const getStaticGroupItemIds = (_test) =>
     }) || []
   ).filter((e) => !!e)
 
-const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
-  produce(itemGroups, (_itemGroups) => {
-    for (const itemGroup of _itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
-        const isLimitedDeliveryType =
-          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        // For delivery type:LIMITED scoring should be as how item level scoring works
-        itemGroup.items = itemGroup.items.map((o) => ({
+const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) => {
+  for (const itemGroup of itemGroups) {
+    if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      const isLimitedDeliveryType =
+        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+
+      itemGroup.items = itemGroup.items.map((o) => {
+        return {
           itemId: o._id,
           maxScore: isLimitedDeliveryType
             ? 1
@@ -181,10 +181,13 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
                 scoring[o._id]
               )
             : {},
-        }))
-      } else itemGroup.items = []
-    }
-  })
+        }
+      })
+    } else itemGroup.items = []
+  }
+
+  return itemGroups
+}
 
 export const getTestGradeAndSubject = (
   group,
@@ -2335,6 +2338,7 @@ function* createTest(data) {
   dataToSend.subjects = dataToSend.subjects?.filter((el) => !!el) || []
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
+
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -2349,9 +2353,29 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
-    const entity = yield createTest(payload.data)
-    entity.itemGroups = payload.data.itemGroups
-    yield put(createTestSuccessAction(entity))
+
+    const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
+      .filter(({ aiGenerated }) => aiGenerated)
+      .map((item) => omit(item, 'aiGenerated'))
+    const result = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+
+    const entity = yield createTest(
+      produce(payload.data, (draft) => {
+        if ((result || []).length) {
+          draft.itemGroups[0].items = result
+        }
+      })
+    )
+
+    yield put(
+      createTestSuccessAction(
+        produce(entity, (draft) => {
+          if ((result || []).length) {
+            draft.itemGroups[0].items = result
+          }
+        })
+      )
+    )
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
     const pathname = yield select((state) => state.router.location.pathname)
     const currentTabMatch = pathname?.match(
@@ -2470,6 +2494,18 @@ export function* updateTestSaga({ payload }) {
     ) {
       notification({ messageKey: 'enterValidPassword' })
       return yield put(setTestsLoadingAction(false))
+    }
+
+    const aiGeneratedTestItems = payload.data.itemGroups[0].items
+      .filter(({ aiGenerated }) => aiGenerated)
+      .map((item) => omit(item, 'aiGenerated'))
+    const newItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+
+    if ((newItems || []).length) {
+      payload.data.itemGroups[0].items = [
+        ...payload.data.itemGroups[0].items,
+        ...newItems,
+      ].filter(({ aiGenerated }) => !aiGenerated)
     }
 
     const testItemGroups = payload.data.itemGroups

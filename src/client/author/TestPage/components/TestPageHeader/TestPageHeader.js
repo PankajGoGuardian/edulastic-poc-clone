@@ -24,6 +24,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
@@ -73,6 +74,7 @@ import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 import { deletePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import { STATUS } from '../../../AssessmentCreate/components/CteateAITest/ducks/constants'
 
 /**
  *
@@ -251,6 +253,7 @@ const TestPageHeader = ({
   questionTypesInTest,
   enableAudioResponseQuestion,
   derivedFromPremiumBankId = false,
+  aiTestStatus = '',
 }) => {
   let navButtons =
     buttons ||
@@ -617,7 +620,12 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {hasTestId && owner && showPublishButton && !showPublishForEC && (
+
+            {(aiTestStatus === STATUS.DRAFT ||
+              (hasTestId &&
+                owner &&
+                showPublishButton &&
+                !showPublishForEC)) && (
               <EduButton
                 isBlue
                 isGhost
@@ -844,19 +852,19 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {owner && !showPublishForEC && (
-              <EduButton
-                isBlue
-                isGhost
-                IconBtn
-                title="Save as Draft"
-                data-cy="save"
-                onClick={onSave}
-                disabled={disableButtons}
-              >
-                <IconDiskette />
-              </EduButton>
-            )}
+            {/* {owner && !showPublishForEC && ( */}
+            <EduButton
+              isBlue
+              isGhost
+              IconBtn
+              title="Save as Draft"
+              data-cy="save"
+              onClick={onSave}
+              disabled={disableButtons}
+            >
+              <IconDiskette />
+            </EduButton>
+            {/* )} */}
             {hasTestId &&
             owner &&
             showPublishButton &&
@@ -988,6 +996,7 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
     }),
     {
       publishForRegrade: publishForRegradeAction,

@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { isEmpty } from 'lodash'
-import { notification } from '@edulastic/common'
 import OptionPDF from '../OptionPDF/OptionPDF'
 import OptionScratch from '../OptionScratch/OptionScratch'
 import OptionDynamicTest from '../OptionDynamicTest/OptionDynamicTest'
@@ -34,58 +32,8 @@ const CreationOptions = ({
     onCreateItems,
     onCancel,
     handleFieldDataChange,
-    aiFormContent,
-  } = useSaveForm()
-
-  const handleAiFormSubmit = () => {
-    const {
-      testName,
-      itemTypes,
-      numberOfItems,
-      subjects,
-      grades,
-    } = aiFormContent
-
-    if (isEmpty(testName)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'pleaseEnterName',
-      })
-    }
-
-    if (isEmpty(itemTypes)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'itemTypesEmpty',
-      })
-    }
-
-    if (
-      numberOfItems === null ||
-      (+numberOfItems < 1 && +numberOfItems > 100)
-    ) {
-      return notification({
-        type: 'warn',
-        messageKey: 'pleaseProvideValidNumberOfItems',
-      })
-    }
-
-    if (isEmpty(grades)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'gradeFieldEmpty',
-      })
-    }
-
-    if (isEmpty(subjects)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'subjectFieldEmpty',
-      })
-    }
-
-    getAiGeneratedTestItems(aiFormContent)
-  }
+    handleAiFormSubmit,
+  } = useSaveForm(getAiGeneratedTestItems)
 
   return (
     <BodyWrapper>

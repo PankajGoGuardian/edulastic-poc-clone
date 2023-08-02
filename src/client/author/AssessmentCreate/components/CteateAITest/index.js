@@ -8,6 +8,7 @@ export const CreateAiTestModal = ({
   isVisible,
   handleFieldDataChange,
   handleAiFormSubmit,
+  createItems,
 }) => {
   return (
     <CustomModalStyled
@@ -29,6 +30,7 @@ export const CreateAiTestModal = ({
           handleFieldDataChange={handleFieldDataChange}
           handleAiFormSubmit={handleAiFormSubmit}
           onCancel={onCancel}
+          createItems={createItems}
         />
       </Spin>
     </CustomModalStyled>

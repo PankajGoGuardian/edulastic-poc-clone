@@ -91,6 +91,10 @@ import {
   setFilterInSession,
 } from '../../../../common/utils/helpers'
 
+import { EduButtonAI } from '../../../AssessmentCreate/components/CreationOptions/styled'
+import withAiItemsHOC from './withAiItemsHOC'
+import { CreateAiTestModal } from '../../../AssessmentCreate/components/CteateAITest'
+
 const { testCategoryTypes } = testConstants
 
 class AddItems extends PureComponent {
@@ -517,6 +521,11 @@ class AddItems extends PureComponent {
       userRole,
       sort = {},
       gotoAddSections,
+      onCancel,
+      isVisible,
+      handleFieldDataChange,
+      handleAiFormSubmit,
+      onCreateItems,
     } = this.props
     const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -574,6 +583,13 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
+                  <EduButtonAI
+                    btnType="primary"
+                    isGhost
+                    onClick={onCreateItems}
+                  >
+                    Create Items Using AI
+                  </EduButtonAI>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
                   </Selected>
@@ -653,6 +669,13 @@ class AddItems extends PureComponent {
             </ContentWrapper>
           </Element>
         </ListItems>
+        <CreateAiTestModal
+          onCancel={onCancel}
+          isVisible={isVisible}
+          handleFieldDataChange={handleFieldDataChange}
+          handleAiFormSubmit={handleAiFormSubmit}
+          createItems
+        />
       </AddItemsContainer>
     )
   }
@@ -660,6 +683,7 @@ class AddItems extends PureComponent {
 
 const enhance = compose(
   withRouter,
+  withAiItemsHOC,
   withWindowSizes,
   withNamespaces('author'),
   connect(

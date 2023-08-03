@@ -24,6 +24,7 @@ export const CreateAiTestModal = ({
       closeTopAlign="14px"
       closeRightAlign="10px"
       closeIconColor="black"
+      destroyOnClose
     >
       <Spin spinning={false}>
         <FormFields

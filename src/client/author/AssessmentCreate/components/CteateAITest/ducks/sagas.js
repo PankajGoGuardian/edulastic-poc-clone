@@ -88,7 +88,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       yield put(
         setTestDataAction({
           ...assessment,
-          title: testName,
+          title: testName || assessment.title,
           grades,
           subjects,
           itemGroups: [

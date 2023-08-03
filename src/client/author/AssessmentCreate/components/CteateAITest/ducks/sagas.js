@@ -1,4 +1,5 @@
 import { push } from 'react-router-redux'
+import { uniq } from 'lodash'
 import uuid from 'uuid/v4'
 import { all, put, select, takeLatest } from 'redux-saga/effects'
 import { aiTestActions } from '.'
@@ -89,8 +90,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
         setTestDataAction({
           ...assessment,
           title: testName || assessment.title,
-          grades,
-          subjects,
+          grades: uniq([...assessment.grades, ...grades]),
+          subjects: uniq([...assessment.subjects, ...subjects]),
           itemGroups: [
             {
               type: 'STATIC',
@@ -114,6 +115,9 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       yield put(
         setTestDataAction({
           ...assessment,
+          title: testName || assessment.title,
+          grades: uniq([...assessment.grades, ...grades]),
+          subjects: uniq([...assessment.subjects, ...subjects]),
           itemGroups: [
             {
               type: 'STATIC',

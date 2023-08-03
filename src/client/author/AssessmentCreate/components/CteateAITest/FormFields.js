@@ -56,7 +56,6 @@ export const FormFields = ({
             showSearch
             placeholder="Select Item Types"
             optionFilterProp="children"
-            filterOption={() => {}}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             height="36px"
             onChange={(value) => handleFieldDataChange(itemTypes, value)}
@@ -94,11 +93,6 @@ export const FormFields = ({
             placeholder="Select Grades"
             optionFilterProp="children"
             mode="multiple"
-            filterOption={(input, option) =>
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(grades, value)}
           >
@@ -121,11 +115,6 @@ export const FormFields = ({
             placeholder="Select Subject"
             optionFilterProp="children"
             mode="multiple"
-            filterOption={(input, option) =>
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(subjects, value)}
           >
@@ -147,11 +136,6 @@ export const FormFields = ({
             placeholder="Select Dok"
             optionFilterProp="children"
             mode="multiple"
-            filterOption={(input, option) =>
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(dok, value)}
           >
@@ -170,11 +154,6 @@ export const FormFields = ({
             placeholder="Select Difficulty"
             optionFilterProp="children"
             mode="multiple"
-            filterOption={(input, option) =>
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(difficulty, value)}
           >

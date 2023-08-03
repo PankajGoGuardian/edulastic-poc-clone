@@ -584,8 +584,12 @@ class AddItems extends PureComponent {
                   justifyContent="space-between"
                 >
                   <EduButtonAI
-                    btnType="primary"
-                    isGhost
+                    style={{
+                      background: `linear-gradient(90deg, rgba(63, 132, 229, 1) 40%, rgba(74, 172, 139, 1) 71%)`,
+                      height: '28px',
+                      width: '100%',
+                      margin: '0 5px',
+                    }}
                     onClick={onCreateItems}
                   >
                     Create Items Using AI

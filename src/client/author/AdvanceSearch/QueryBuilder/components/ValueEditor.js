@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Empty, Select } from 'antd'
 import { connect } from 'react-redux'
-import { debounce } from 'lodash'
-import { EduIf, EduThen, EduElse } from '@edulastic/common'
+import { debounce, isEmpty } from 'lodash'
+import {
+  EduIf,
+  EduThen,
+  EduElse,
+  SelectWithPasteEnabledInput,
+} from '@edulastic/common'
 import {
   getAdvancedSearchDetailsSelector,
+  getNameToCourseIdsMapSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchSchoolsAction,
@@ -31,6 +37,7 @@ const ValueEditor = (props) => {
     loadTagListData,
     storeSelectedData,
     path,
+    nameToCourseIdsMap,
   } = props
 
   const dataCyValue = (pathLevel = [], selectorName) => {
@@ -42,21 +49,53 @@ const ValueEditor = (props) => {
     return selectorName
   }
 
+  const allOptionsIds = useMemo(() => {
+    if (field === fieldKey.courses) {
+      // 2 or more courses with same name. Thus need all courseIds from nameToCourseIdsMap object
+      if (!isEmpty(nameToCourseIdsMap)) {
+        return Object.keys(nameToCourseIdsMap)
+      }
+      return []
+    }
+    return values.map((_value) => _value?.value || null)
+  }, [values])
+
   const enableSearchFields = {
     [fieldKey.schools]: { key: 'schools', func: loadSchoolsData },
     [fieldKey.classes]: { key: 'classes', func: loadClassListData },
     [fieldKey.courses]: { key: 'courses', func: loadCourseListData },
     [fieldKey.tags]: { key: 'tags', func: loadTagListData },
   }
+  const pasteEnabledSelectFields = [
+    fieldKey.schools,
+    fieldKey.classes,
+    fieldKey.courses,
+  ]
   const { label = 'values' } = fieldData || {}
 
-  const handleSearch = (searchString) => {
+  const handleSearch = (searchString, idsList = []) => {
     if (enableSearchFields[field] && enableSearchFields[field].func) {
-      enableSearchFields[field].func({ searchString })
+      enableSearchFields[field].func({
+        searchString,
+        ...(idsList?.length ? { idsList } : {}),
+      })
     }
   }
 
-  const handleChange = (selectedValues) => {
+  const handleChange = (selectedValues, isIdsListObj = {}) => {
+    const { isPastedIdsList = false } = isIdsListObj || {}
+    if (isPastedIdsList && field === fieldKey.courses) {
+      // selectedValues is list of ids and course field requires names as selectedValues
+      const courseNames = []
+      if (!isEmpty(nameToCourseIdsMap)) {
+        Object.keys(nameToCourseIdsMap).forEach((courseId) => {
+          if (selectedValues.includes(courseId)) {
+            courseNames.push(nameToCourseIdsMap[courseId])
+          }
+        })
+      }
+      selectedValues = courseNames
+    }
     handleOnChange(selectedValues)
     storeSelectedData({
       key: enableSearchFields[field].key,
@@ -76,10 +115,14 @@ const ValueEditor = (props) => {
   const isLoading = advancedSearchDetails[key]?.isLoading
   const fetchedValues = advancedSearchDetails[key]?.data
 
+  const SelectComponent = pasteEnabledSelectFields.includes(field)
+    ? SelectWithPasteEnabledInput
+    : StyledSelect
+
   return (
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
-        <StyledSelect
+        <SelectComponent
           data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
@@ -108,6 +151,8 @@ const ValueEditor = (props) => {
               />
             )
           }
+          allOptionsIds={allOptionsIds}
+          customSelectComponent={StyledSelect}
         >
           {values.map((item) => {
             return (
@@ -120,7 +165,7 @@ const ValueEditor = (props) => {
               </Select.Option>
             )
           })}
-        </StyledSelect>
+        </SelectComponent>
       </EduThen>
       <EduElse>
         <StyledSelect
@@ -158,6 +203,7 @@ const ValueEditor = (props) => {
 export default connect(
   (state) => ({
     advancedSearchDetails: getAdvancedSearchDetailsSelector(state),
+    nameToCourseIdsMap: getNameToCourseIdsMapSelector(state),
   }),
   {
     loadSchoolsData: setAdvancedSearchSchoolsAction,

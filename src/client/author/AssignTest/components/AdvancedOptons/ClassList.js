@@ -4,7 +4,11 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select, Tooltip } from 'antd'
-import { EduIf, SelectInputStyled } from '@edulastic/common'
+import {
+  EduIf,
+  SelectInputStyled,
+  SelectWithPasteEnabledInput,
+} from '@edulastic/common'
 import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -55,7 +59,6 @@ import {
 import { sortGrades } from '../../../TestPage/utils'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { OkButton } from '../../../../common/styled'
-import { getInputIdList } from '../../utils'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -288,7 +291,7 @@ class ClassList extends React.Component {
     )
   }
 
-  courseSearch = (searchString) => {
+  courseSearch = (searchString, courseIdsList = []) => {
     const { loadCourseListData, userOrgId } = this.props
     const q = {
       limit: 25,
@@ -299,6 +302,9 @@ class ClassList extends React.Component {
       includes: ['name'],
       search: {
         name: [{ type: 'cont', value: searchString }],
+        ...(courseIdsList?.length
+          ? { courseIds: courseIdsList, name: [{ type: 'cont', value: '' }] }
+          : {}),
       },
     }
     loadCourseListData(q)
@@ -317,14 +323,6 @@ class ClassList extends React.Component {
     setAdvancedSearchFilter({})
     this.loadClassList()
     selectClass('class', [], classList)
-  }
-
-  handleFilterOption = (input, option) => {
-    const idList = getInputIdList(input)
-    return (
-      option.props?.children?.toLowerCase()?.indexOf(input.toLowerCase()) >=
-        0 || (idList || []).includes(option.props?.value)
-    )
   }
 
   render() {
@@ -504,15 +502,21 @@ class ClassList extends React.Component {
           >
             <StyledRowLabel>
               <div>School </div>
-              <SelectInputStyled
+              <SelectWithPasteEnabledInput
+                id="schoolSelect"
                 disabled={isAdvancedSearchSelected}
                 data-cy="schoolSelect"
                 mode="multiple"
                 placeholder="All School"
                 showSearch
-                filterOption={this.handleFilterOption}
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
                 onChange={changeField('institutionIds')}
                 value={searchTerms.institutionIds}
+                allOptionsIds={schools.map(({ _id }) => _id || null)}
                 tagsEllipsis
               >
                 {schools.map(({ _id, name }) => (
@@ -520,7 +524,7 @@ class ClassList extends React.Component {
                     {name}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </SelectWithPasteEnabledInput>
             </StyledRowLabel>
           </Tooltip>
           <Tooltip
@@ -588,7 +592,7 @@ class ClassList extends React.Component {
           >
             <StyledRowLabel>
               Course
-              <SelectInputStyled
+              <SelectWithPasteEnabledInput
                 disabled={isAdvancedSearchSelected}
                 data-cy="selectCourses"
                 mode="multiple"
@@ -602,13 +606,15 @@ class ClassList extends React.Component {
                 filterOption={false}
                 defaultActiveFirstOption={false}
                 loading={isCoursesLoading}
+                allOptionsIds={courseList.map(({ _id }) => _id || null)}
+                value={searchTerms.courseIds}
               >
                 {courseList.map(({ _id, name }) => (
                   <Select.Option key={_id} value={_id}>
                     {name}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </SelectWithPasteEnabledInput>
             </StyledRowLabel>
           </Tooltip>
           <Tooltip
@@ -644,13 +650,19 @@ class ClassList extends React.Component {
           >
             <StyledRowLabel>
               Search Class/Groups
-              <SelectInputStyled
+              <SelectWithPasteEnabledInput
+                id="classSelect"
                 disabled={isAdvancedSearchSelected}
                 placeholder="Search by name of class or group"
                 onChange={this.handleClassSelectFromDropDown}
                 mode="multiple"
                 showSearch
-                filterOption={this.handleFilterOption}
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+                allOptionsIds={classList.map(({ _id }) => _id || null)}
                 value={filterClassIds}
                 data-cy="selectClass"
                 tagsEllipsis
@@ -664,7 +676,7 @@ class ClassList extends React.Component {
                     {name}
                   </Select.Option>
                 ))}
-              </SelectInputStyled>
+              </SelectWithPasteEnabledInput>
             </StyledRowLabel>
           </Tooltip>
           <Tooltip

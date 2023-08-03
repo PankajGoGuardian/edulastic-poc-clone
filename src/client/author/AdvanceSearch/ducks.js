@@ -99,6 +99,7 @@ const initialState = {
     },
     courses: {
       data: [],
+      nameToCourseIdsMap: {},
       selected: [],
       isLoading: false,
     },
@@ -145,7 +146,8 @@ const storeSelectedData = (state, { payload }) => {
 }
 
 const setAdvancedSearchDetails = (state, { payload }) => {
-  const { key, data } = payload
+  const { key, data, nameToCourseIdsMap = {} } = payload
+
   const values = data.map((value) => {
     return {
       value: value._id,
@@ -154,6 +156,9 @@ const setAdvancedSearchDetails = (state, { payload }) => {
   })
   state.advancedSearchDetails[key].data = values
   state.advancedSearchDetails[key].isLoading = false
+  if (key === 'courses') {
+    state.advancedSearchDetails[key].nameToCourseIdsMap = nameToCourseIdsMap
+  }
 }
 
 export const reducer = createReducer(initialState, {
@@ -226,6 +231,11 @@ export const getAdvancedSearchCoursesSelector = createSelector(
   (state) => getUniqOptions(state.courses)
 )
 
+export const getNameToCourseIdsMapSelector = createSelector(
+  getAdvancedSearchDetailsSelector,
+  (state) => state.courses?.nameToCourseIdsMap || {}
+)
+
 export const getAdvancedSearchTagsSelector = createSelector(
   getAdvancedSearchDetailsSelector,
   (state) => getUniqOptions(state.tags)
@@ -239,6 +249,7 @@ export const isAdvancedSearchLoadingSelector = createSelector(
 // saga
 function* setAdvancedSearchSchools({ payload: _payload }) {
   try {
+    const { idsList = [] } = _payload
     const districtId = yield select(getUserOrgId)
     const payload = {
       limit: 25,
@@ -250,6 +261,14 @@ function* setAdvancedSearchSchools({ payload: _payload }) {
       },
       sortField: 'name',
       order: database.SORT_ORDER.ASC,
+      ...(idsList?.length
+        ? {
+            schoolIds: idsList,
+            search: {
+              name: [{ type: database.MATCH_TYPE.CONTAINS, value: '' }],
+            },
+          }
+        : {}),
     }
     const schools = yield call(schoolApi.getSchools, payload)
     yield put(
@@ -266,6 +285,7 @@ function* setAdvancedSearchSchools({ payload: _payload }) {
 
 function* setAdvancedSearchClasses({ payload: _payload }) {
   try {
+    const { idsList = [] } = _payload
     const districtId = yield select(getUserOrgId)
     const payload = {
       limit: 25,
@@ -280,6 +300,12 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
         active: [1],
         tags: [],
         name: _payload.searchString,
+        ...(idsList?.length
+          ? {
+              groupIds: idsList,
+              name: '',
+            }
+          : {}),
       },
     }
 
@@ -298,6 +324,7 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
 
 function* setAdvancedSearchCourses({ payload: _payload }) {
   try {
+    const { idsList = [] } = _payload
     const districtId = yield select(getUserOrgId)
     const payload = {
       limit: 25,
@@ -310,6 +337,12 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
         name: [
           { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
         ],
+        ...(idsList?.length
+          ? {
+              courseIds: idsList,
+              name: [{ type: database.MATCH_TYPE.CONTAINS, value: '' }],
+            }
+          : {}),
       },
       sortField: 'name',
       order: database.SORT_ORDER.ASC,
@@ -317,21 +350,35 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
 
     const response = yield call(courseApi.searchCourse, payload)
     const courses = []
+    const nameToCourseIdsMap = {}
     for (const key of Object.keys(response.result)) {
       courses.push({
         _id: key,
         name: key,
       })
+      const courseIds = response.result?.[key]
+      if (courseIds?.length) {
+        courseIds.forEach((courseId) => {
+          nameToCourseIdsMap[courseId] = key
+        })
+      }
     }
     yield put(
       setAdvancedSearchDetailsAction({
         key: 'courses',
         data: courses || [],
+        nameToCourseIdsMap: nameToCourseIdsMap || {},
       })
     )
   } catch (error) {
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
-    yield put(setAdvancedSearchDetailsAction({ key: 'courses', data: [] }))
+    yield put(
+      setAdvancedSearchDetailsAction({
+        key: 'courses',
+        data: [],
+        nameToCourseIdsMap: {},
+      })
+    )
   }
 }
 

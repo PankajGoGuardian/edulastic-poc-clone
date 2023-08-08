@@ -329,10 +329,7 @@ class SideMenu extends Component {
     }
 
     if (
-      DATA_STUDIO_DISABLED_DISTRICTS.some(
-        (districtId) => districtId === orgId
-      ) &&
-      userRole === roleuser.TEACHER
+      DATA_STUDIO_DISABLED_DISTRICTS.some((districtId) => districtId === orgId)
     ) {
       _menuItems = _menuItems.filter(
         (item) => item.label !== navigationItemLabels.DATA_STUDIO

@@ -191,6 +191,8 @@ const TestBehaviorGroupContainer = ({
     </>
   )
 
+  const warningText = `(${i18translate('rubric.infoText')})`
+
   const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
 
   return (
@@ -540,6 +542,7 @@ const TestBehaviorGroupContainer = ({
             content={i18translate('allowAutoEssayEvaluation.info')}
             premium={premium}
             placement="rightTop"
+            warningText={warningText}
           />
           <StyledRow gutter={16} mb="15px" height="40">
             <Col span={10}>

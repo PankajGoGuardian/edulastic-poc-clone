@@ -7,6 +7,7 @@ import {
   mainTextColor,
 } from '@edulastic/colors'
 import { IconStar } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 
 const DetailsTooltip = ({
   title,
@@ -15,6 +16,7 @@ const DetailsTooltip = ({
   premium,
   showInsideContainer,
   width,
+  warningText,
 }) => {
   let yShift = '-32%'
   if (placement === 'rightTop') yShift = 'calc( -100% + 30px )'
@@ -40,6 +42,9 @@ const DetailsTooltip = ({
         </span>
       )}
       <span className="popover-body">{content}</span>
+      <EduIf condition={warningText}>
+        <StyledWarning>{warningText}</StyledWarning>
+      </EduIf>
     </StyledPopOver>
   )
 }
@@ -89,4 +94,10 @@ const StyledPopOver = styled.div`
     color: ${mainTextColor};
     font-weight: 500;
   }
+`
+const StyledWarning = styled.div`
+  color: ${mainTextColor};
+  font-weight: 500;
+  font-style: italic;
+  margin-top: 20px;
 `

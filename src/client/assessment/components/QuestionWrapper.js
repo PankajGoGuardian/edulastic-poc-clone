@@ -15,8 +15,11 @@ import {
   FieldLabel,
   PremiumItemBanner,
   EduIf,
+  FlexContainer,
 } from '@edulastic/common'
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -663,19 +666,32 @@ class QuestionWrapper extends Component {
                       !aiEvaluationStatus?.isGradedExternally
                     }
                   >
-                    <AiEvaluationWrapper
-                      aiEvaluationStatus={aiEvaluationStatus?.status}
-                    >
-                      <Tooltip
-                        title={
-                          aiEvaluationMsg[aiEvaluationStatus?.status]?.tooltip
-                        }
+                    <FlexContainer>
+                      <AiEvaluationWrapper
+                        aiEvaluationStatus={aiEvaluationStatus?.status}
                       >
-                        <AiEvaluationMessage>
-                          {aiEvaluationMsg[aiEvaluationStatus?.status]?.text}
-                        </AiEvaluationMessage>
+                        <Tooltip
+                          title={
+                            aiEvaluationMsg[aiEvaluationStatus?.status]?.tooltip
+                          }
+                        >
+                          <AiEvaluationMessage>
+                            {aiEvaluationMsg[aiEvaluationStatus?.status]?.text}
+                          </AiEvaluationMessage>
+                        </Tooltip>
+                      </AiEvaluationWrapper>
+                      <Tooltip title={translate('author:rubric.infoText')}>
+                        <FontAwesomeIcon
+                          icon={faInfoCircle}
+                          aria-hidden="true"
+                          style={{
+                            color: 'black',
+                            fontSize: '25px',
+                            marginLeft: '10px',
+                          }}
+                        />
                       </Tooltip>
-                    </AiEvaluationWrapper>
+                    </FlexContainer>
                     <EduIf
                       condition={
                         aiEvaluationStatus?.status ===
@@ -848,7 +864,7 @@ const enhance = compose(
   withWindowSizes,
   withAnswerSave,
   withTheme,
-  withNamespaces('assessment'),
+  withNamespaces(['assessment', 'author']),
   connect(
     (state, ownProps) => ({
       isPresentationMode: get(

@@ -10,13 +10,13 @@
       "title": "YOUR ANSWER",
       "dataIndex": "yourAnswer",
       "key": "yourAnswer",
-      "width": 350
+      "width": 275
     },
     {
       "title": "CORRECT ANSWER",
       "dataIndex": "correctAnswer",
       "key": "correctAnswer",
-      "width": 350
+      "width": 275
     },
     {
       "title": "SCORE",

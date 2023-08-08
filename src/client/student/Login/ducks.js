@@ -499,6 +499,8 @@ const getRouteByGeneralRoute = (user) => {
     case roleuser.STUDENT:
     case roleuser.PARENT:
       return '/home/assignments'
+    case roleuser.EDULASTIC_CURATOR:
+      return '/author/tests'
     default:
   }
 }

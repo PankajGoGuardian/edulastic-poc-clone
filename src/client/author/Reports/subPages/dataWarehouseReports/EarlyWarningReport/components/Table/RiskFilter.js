@@ -9,7 +9,7 @@ import CheckBoxLabel from './CheckBoxLabel'
 
 const RiskFilter = ({ tableFilters, setTableFilters }) => {
   const [showPopover, setShowPopover] = useState(false)
-  const [selected, setSelected] = useState([])
+  const [selected, setSelected] = useState(tableFilters[tableFilterTypes.RISK])
   const [isApplyDisabled, setIsApplyDisabled] = useState(false)
 
   const handlePopoverChange = (newOpen) => {

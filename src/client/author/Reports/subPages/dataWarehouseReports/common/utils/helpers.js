@@ -191,6 +191,13 @@ export const buildDrillDownUrl = ({
   return `${reportUrl}?${qs.stringify(_filters)}`
 }
 
+export const getHasAvailableExternalTestTypes = (testTypes = []) => {
+  const hasAvailableExternalTestTypes = testTypes.some(
+    (testType) => !INTERNAL_TEST_TYPES.includes(testType.key)
+  )
+  return hasAvailableExternalTestTypes
+}
+
 export const getDefaultTestTypes = (testTypes = []) => {
   const availableExternalTestTypes = testTypes
     .filter((testType) => !INTERNAL_TEST_TYPES.includes(testType.key))
@@ -218,12 +225,26 @@ export const sortTestTypes = (testTypes) => {
   return [...internalTestTypes, ...externalTestTypes]
 }
 
-export const getExternalScoreTypesListByTestTypes = (testTypesStr) => {
-  const testTypes = (testTypesStr || '').split(',')
-  const externalScoreTypesList = EXTERNAL_SCORE_TYPES_LIST.filter(({ key }) => {
-    const _testTypes = EXTERNAL_SCORE_TYPES_TO_TEST_TYPES[key]
-    return isEmpty(_testTypes) || _testTypes.some((t) => testTypes.includes(t))
-  })
+export const getExternalScoreTypesListByTestTypes = (
+  testTypesStr,
+  availableTestTypes
+) => {
+  let externalScoreTypesList = []
+  const hasAvailableExternalTestTypes = getHasAvailableExternalTestTypes(
+    availableTestTypes
+  )
+  if (hasAvailableExternalTestTypes) {
+    externalScoreTypesList = EXTERNAL_SCORE_TYPES_LIST
+    if (testTypesStr) {
+      const testTypes = testTypesStr.split(',')
+      externalScoreTypesList = externalScoreTypesList.filter(({ key }) => {
+        const _testTypes = EXTERNAL_SCORE_TYPES_TO_TEST_TYPES[key]
+        return (
+          isEmpty(_testTypes) || _testTypes.some((t) => testTypes.includes(t))
+        )
+      })
+    }
+  }
   return externalScoreTypesList
 }
 

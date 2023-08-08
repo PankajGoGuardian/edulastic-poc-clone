@@ -222,6 +222,10 @@ module.exports = {
     SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN: 'SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN',
     SHOW_RUBRIC_CONTENT_VIS_HIDDEN: 'SHOW_RUBRIC_CONTENT_VIS_HIDDEN',
   },
+  rubricOnlyVisibilityOptions: [
+    'SHOW_RUBRIC_CONTENT_VIS_HIDDEN',
+    'SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT',
+  ],
   combinedVisibilityOptions: {
     HIDDEN: [
       {

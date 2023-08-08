@@ -41,6 +41,8 @@ import {
   getExternalScoreTypesListByTestTypes,
 } from '../../common/utils'
 
+const internalTestTypes = getArrayOfAllTestTypes()
+
 const MultipleAssessmentReportFilters = ({
   // value props
   showFilter,
@@ -80,7 +82,7 @@ const MultipleAssessmentReportFilters = ({
   const {
     bandInfo = [],
     demographics = [],
-    testTypes: availableAssessmentType = getArrayOfAllTestTypes(),
+    testTypes: availableAssessmentTypes = internalTestTypes,
   } = get(filtersData, 'data.result', {})
   const performanceBandsList = useMemo(
     () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
@@ -91,7 +93,8 @@ const MultipleAssessmentReportFilters = ({
     performanceBandsList[0]
 
   const externalScoreTypesList = getExternalScoreTypesListByTestTypes(
-    filters.assessmentTypes
+    filters.assessmentTypes,
+    availableAssessmentTypes
   )
   const selectedExternalScoreType =
     externalScoreTypesList.find(
@@ -204,7 +207,7 @@ const MultipleAssessmentReportFilters = ({
           termId: urlSchoolYear,
           testSubjects: urlTestSubjects,
           testGrades: urlTestGrades,
-          assessmentTypes: availableAssessmentType.filter((a) =>
+          assessmentTypes: availableAssessmentTypes.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
@@ -430,7 +433,7 @@ const MultipleAssessmentReportFilters = ({
                           dataCy="testTypes"
                           label="Test Type"
                           onChange={(e) => {
-                            const selected = availableAssessmentType.filter(
+                            const selected = availableAssessmentTypes.filter(
                               (a) => e.includes(a.key)
                             )
                             updateFilterDropdownCB(
@@ -444,7 +447,7 @@ const MultipleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={availableAssessmentType}
+                          options={availableAssessmentTypes}
                         />
                       </Col>
                       <Col span={6}>
@@ -705,51 +708,53 @@ const MultipleAssessmentReportFilters = ({
       </Col>
       <Col span={24}>
         <SecondaryFilterRow hidden={!!reportId} width="100%" fieldHeight="40px">
-          <StyledDropDownContainer
-            flex="0 0 300px"
-            xs={24}
-            sm={12}
-            lg={6}
-            data-cy="externalScoreType"
-            data-testid="externalScoreType"
-          >
-            <FieldLabel fs=".7rem" data-cy="schoolYear">
-              <FlexContainer alignItems="center" justifyContent="left">
-                EXTERNAL SCORE
-                <EduIf
-                  condition={
-                    filters.externalScoreType !==
-                    EXTERNAL_SCORE_TYPES.SCALED_SCORE
-                  }
-                >
-                  <Tooltip
-                    title={
-                      EXTERNAL_SCORE_TOOLTIP_TEXT[filters.externalScoreType]
+          <EduIf condition={externalScoreTypesList.length}>
+            <StyledDropDownContainer
+              flex="0 0 300px"
+              xs={24}
+              sm={12}
+              lg={6}
+              data-cy="externalScoreType"
+              data-testid="externalScoreType"
+            >
+              <FieldLabel fs=".7rem" data-cy="schoolYear">
+                <FlexContainer alignItems="center" justifyContent="left">
+                  EXTERNAL SCORE
+                  <EduIf
+                    condition={
+                      filters.externalScoreType !==
+                      EXTERNAL_SCORE_TYPES.SCALED_SCORE
                     }
                   >
-                    <IconInfo
-                      fill={themeColor}
-                      style={{ marginLeft: '20px' }}
-                    />
-                  </Tooltip>
-                </EduIf>
-              </FlexContainer>
-            </FieldLabel>
-            <ControlDropDown
-              by={selectedExternalScoreType}
-              selectCB={(e, selected) =>
-                updateFilterDropdownCB(
-                  selected,
-                  'externalScoreType',
-                  false,
-                  true
-                )
-              }
-              data={externalScoreTypesList}
-              prefix="External Score"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
+                    <Tooltip
+                      title={
+                        EXTERNAL_SCORE_TOOLTIP_TEXT[filters.externalScoreType]
+                      }
+                    >
+                      <IconInfo
+                        fill={themeColor}
+                        style={{ marginLeft: '20px' }}
+                      />
+                    </Tooltip>
+                  </EduIf>
+                </FlexContainer>
+              </FieldLabel>
+              <ControlDropDown
+                by={selectedExternalScoreType}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(
+                    selected,
+                    'externalScoreType',
+                    false,
+                    true
+                  )
+                }
+                data={externalScoreTypesList}
+                prefix="External Score"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          </EduIf>
           <StyledDropDownContainer
             flex="0 0 300px"
             xs={24}

@@ -5,7 +5,7 @@ import { EarlyWarningTable } from './components/Table'
 import RiskSummary from '../common/components/RiskSummaryWidget'
 import { RiskTimeline } from './components/widgets/RiskTimeline'
 import { tableFilterTypes, timeframeFilterKeys } from './utils'
-import useTableFilters from './hooks.js/useTableFilters'
+import useTableFilters from './hooks/useTableFilters'
 
 const ReportView = ({
   loc,

@@ -1,4 +1,11 @@
 import { userPermissions } from '@edulastic/constants'
+import {
+  DATA_OPS,
+  DATA_OPS_ONLY,
+  DATA_WAREHOUSE_REPORTS,
+  INSIGHTS_ONLY,
+  SUPER_ADMIN,
+} from '@edulastic/constants/const/userPermissions'
 
 export const daRoleList = [
   {
@@ -22,9 +29,9 @@ export const daRoleList = [
 ]
 
 export const daPermissionsMap = {
-  'super-admin': 'Super Admin',
-  'data-ops': 'Data Operations',
-  data_ops_only: 'Data Operations Only',
-  data_warehouse_reports: 'Data Studio Reports',
-  insights_only: 'Insights Only',
+  [SUPER_ADMIN]: 'Super Admin',
+  [DATA_OPS]: 'Data Operations',
+  [DATA_OPS_ONLY]: 'Data Operations Only',
+  [DATA_WAREHOUSE_REPORTS]: 'Data Studio Reports',
+  [INSIGHTS_ONLY]: 'Insights Only',
 }

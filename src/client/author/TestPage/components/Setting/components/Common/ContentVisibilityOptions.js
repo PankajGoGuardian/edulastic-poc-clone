@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { RadioBtn } from '@edulastic/common'
+import { EduIf, RadioBtn } from '@edulastic/common'
 import {
   testContentVisibilityTypes,
   combinedVisibilityOptions,
+  rubricOnlyVisibilityOptions,
   testContentVisibility as contentVisibilityOptions,
 } from '@edulastic/constants/const/test'
+import { IconInfo } from '@edulastic/icons'
+import { lightGrey9 } from '@edulastic/colors'
+import { Tooltip } from 'antd'
 import { Block, StyledRadioGroup, Description } from '../Container/styled'
 
 const ContentVisibilityOptions = ({
@@ -105,6 +109,22 @@ const ContentVisibilityOptions = ({
                       key={ele.key}
                     >
                       {ele.value}
+                      <EduIf
+                        condition={rubricOnlyVisibilityOptions.includes(
+                          ele.key
+                        )}
+                      >
+                        <Tooltip title="Item types with input fields within stimulus text is not supported with this setting.">
+                          <IconInfo
+                            color={lightGrey9}
+                            style={{
+                              marginLeft: '10px',
+                              position: 'relative',
+                              top: '3px',
+                            }}
+                          />
+                        </Tooltip>
+                      </EduIf>
                     </RadioBtn>
                   ))}
                 </StyledRadioGroup>

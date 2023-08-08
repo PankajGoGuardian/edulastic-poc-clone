@@ -559,6 +559,10 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
   })
 }
 
+export const disableGoogleTagManager = () => {
+  window['ga-disable-GTM-T73FP7W'] = true
+}
+
 export function storeErrorDescriptionInSessionStorage() {
   /**
    *  In case of redirection from canvas we might get errorDescription as query param which

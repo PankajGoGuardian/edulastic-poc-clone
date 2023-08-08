@@ -38,6 +38,7 @@ import {
   getStartedUrl,
   isHashAssessmentUrl,
   removeSessionValue,
+  disableGoogleTagManager,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -1540,6 +1541,9 @@ export function* fetchUser({ payload }) {
       // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
+    }
+    if (user?.role === roleuser.STUDENT) {
+      disableGoogleTagManager() // Disable GTM tracking
     }
     TokenStorage.updateKID(user || {})
     const searchParam = yield select((state) => state.router.location.search)

@@ -54,7 +54,11 @@ export default function SearchDistrictByIdName({
           aria-label="Search"
           noStyle
         >
-          {loading ? <Spin size="small" /> : <Icon type="search" />}
+          {loading ? (
+            <Spin size="small" style={{ marginTop: '10px' }} />
+          ) : (
+            <Icon type="search" />
+          )}
         </Button>
       </Form.Item>
       <Form.Item>

@@ -235,13 +235,15 @@ const updateGroupWithAdvSearch = (id, data) => {
   })
 }
 
-const getFeedTypes = () =>
-  api
-    .callApi({
-      url: `${prefix}/feed-types`,
-      method: 'get',
-    })
-    .then((result) => result.data)
+const getFeedTypes = (districtId) => {
+  const reqObj = {
+    url: `${prefix}/feed-types`,
+    method: 'get',
+  }
+  if (districtId) reqObj.params = { districtId }
+
+  return api.callApi(reqObj).then((result) => result.data)
+}
 
 export default {
   getSignedUrl,

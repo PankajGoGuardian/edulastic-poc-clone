@@ -88,7 +88,7 @@ const ApiFormsMain = ({
   }
 
   const { text, align, parentField } = note
-
+  const hideSubmit = ['upload-standard', 'enable-feed-types']
   return (
     <FormMainWrapper style={{ marginTop: '15px' }}>
       {!customSections && (
@@ -113,7 +113,7 @@ const ApiFormsMain = ({
                 />
               ))}
               <ActionWrapper>
-                {id !== 'upload-standard' && (
+                {!hideSubmit.includes(id) && (
                   <Button type="primary" htmlType="submit" onClick={onSave}>
                     Submit
                   </Button>

@@ -147,6 +147,7 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
+            aria-label="Close Icon"
           >
             <CloseIcon />
           </StyledButton>
@@ -159,6 +160,7 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="ScratchPad Icon"
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -190,6 +192,7 @@ const ToolBar = ({
             onClick={handleMagnifier}
             active={enableMagnifier}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Magnify Icon"
           >
             <IconMagnify />
           </StyledButton>
@@ -200,6 +203,7 @@ const ToolBar = ({
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Upload Icon"
           >
             <IconCloudUpload />
           </StyledButton>

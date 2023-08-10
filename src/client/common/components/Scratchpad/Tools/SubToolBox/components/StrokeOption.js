@@ -18,7 +18,12 @@ const StrokeOption = ({ lineWidth, lineColor, onChangeOption }) => {
   }
 
   return (
-    <FlexContainer id="stroke-options" marginLeft="14px" alignItems="center">
+    <FlexContainer
+      id="stroke-options"
+      aria-label="Stroke options"
+      marginLeft="14px"
+      alignItems="center"
+    >
       <Sprite pos={-1377} />
       <StyledSelect defaultValue={lineWidth} onChange={onChangeLineWidth}>
         <Option value={4}>2</Option>

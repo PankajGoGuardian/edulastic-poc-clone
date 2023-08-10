@@ -19,6 +19,7 @@ const LeftButtons = ({ onChangeTool, activeMode }) => {
           pos={btn.pos}
           onClick={onClickHandler(btn.mode)}
           selected={activeMode === btn.mode || (!activeMode && idx === 0)}
+          aria-selected={activeMode === btn.mode || (!activeMode && idx === 0)}
         >
           <span />
         </StyledButton>

@@ -191,6 +191,7 @@ const PlayerHeader = ({
                       : 'Crossout'
                   }
                   data-cy="crossButton"
+                  aria-label="Close Icon"
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
@@ -210,6 +211,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(SCRATCHPAD)}
                     title={i18Translate('common.test.scratchPad')}
                     data-cy="scratchPad"
+                    aria-label="ScratchPad Icon"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
@@ -221,6 +223,7 @@ const PlayerHeader = ({
                     onClick={handleMagnifier}
                     title={i18Translate('common.test.magnify')}
                     data-cy="magnify"
+                    aria-label="Magnify Icon"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
@@ -232,6 +235,7 @@ const PlayerHeader = ({
                     title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label="Upload Icon"
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>

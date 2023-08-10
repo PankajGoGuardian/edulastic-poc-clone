@@ -27,6 +27,7 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
           }
           onClick={onClickHandler(btn.mode)}
           selected={deleteMode && btn.mode === drawTools.DELETE_TOOL}
+          aria-selected={deleteMode && btn.mode === drawTools.DELETE_TOOL}
         >
           <span />
         </StyledButton>

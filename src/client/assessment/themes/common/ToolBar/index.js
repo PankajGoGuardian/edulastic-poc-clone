@@ -105,6 +105,7 @@ const ToolBar = ({
         active={tool.includes(3)}
         onClick={toolbarHandler(3)}
         disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
+        aria-label="Close Icon"
       />
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
@@ -118,6 +119,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.scratchPad')}
+          aria-label="ScratchPad Icon"
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
           onClick={toolbarHandler(5)}
@@ -127,6 +129,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.magnify')}
+          aria-label="Magnify Icon"
           icon={<IconMagnify />}
           active={enableMagnifier}
           onClick={handleMagnifier}
@@ -136,6 +139,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.uploadWork')}
+          aria-label="Upload Icon"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />

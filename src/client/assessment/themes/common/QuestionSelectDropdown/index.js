@@ -81,6 +81,7 @@ const QuestionSelectDropdown = ({
               data-cy="questionSelectOptions"
               key={index}
               value={item}
+              aria-label={item}
             >
               {`${t('common.layout.selectbox.question')} ${index + 1}/${
                 options.length

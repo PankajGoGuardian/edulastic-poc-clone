@@ -98,7 +98,7 @@ const Container = ({ destory }) => {
       enableResizing={{ bottomRight: true }}
       dragHandleClassName="lineReader-dragHandler"
     >
-      <CloseButton onClick={destory}>
+      <CloseButton onClick={destory} aria-label="Close button">
         <IconClose width={10} height={10} />
       </CloseButton>
 

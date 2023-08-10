@@ -45,7 +45,7 @@ const editingButtonStyle = css`
   );
 `
 
-export const StyledButton = styled.div`
+export const StyledButton = styled.button`
   height: 38px;
   width: 36px;
   flex-shrink: 0;

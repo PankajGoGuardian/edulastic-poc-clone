@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { get, isEqual, escapeRegExp } from 'lodash'
 import { connect } from 'react-redux'
 import { Icon, Tooltip } from 'antd'
 import { themeColor } from '@edulastic/colors'
 import { IconPencilEdit } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
+import { CheckboxLabel } from '@edulastic/common'
 import {
   CollectionTableContainer,
   PermissionsButton,
@@ -21,7 +22,6 @@ import {
   getCollectionListSelector,
 } from '../../ducks'
 import { getUserRole, getUserOrgId } from '../../../src/selectors/user'
-
 import { caluculateOffset } from '../../util'
 
 const CollectionsTable = ({
@@ -33,6 +33,8 @@ const CollectionsTable = ({
   searchValue,
   userRole,
   userDistrictId,
+  selectedItemBanks = [],
+  setSelectedItemBanks,
 }) => {
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(
     false
@@ -41,6 +43,10 @@ const CollectionsTable = ({
   const [filteredCollectionList, setFilteredCollectionList] = useState([])
   const [tableMaxHeight, setTableMaxHeight] = useState(200)
   const [collectionTableRef, setCollectionTableRef] = useState(null)
+  const selectedItemBanksSet = useMemo(
+    () => new Set(selectedItemBanks.map((x) => x._id)),
+    [selectedItemBanks]
+  )
 
   useEffect(() => {
     fetchCollectionListRequest()
@@ -49,8 +55,8 @@ const CollectionsTable = ({
   useEffect(() => {
     if (collectionTableRef) {
       const offsetTopValue = caluculateOffset(collectionTableRef._container)
-      const tableMaxHeight = window.innerHeight - offsetTopValue - 40
-      setTableMaxHeight(tableMaxHeight)
+      const _tableMaxHeight = window.innerHeight - offsetTopValue - 40
+      setTableMaxHeight(_tableMaxHeight)
     }
   }, [collectionTableRef?._container?.offsetTop])
 
@@ -66,6 +72,20 @@ const CollectionsTable = ({
       setFilteredCollectionList(filteredCollections)
     }
   }, [searchValue, collectionList])
+
+  const handleSelect = (key) => (e) => {
+    if (e.target.checked) {
+      setSelectedItemBanks((keys) => [...keys, key])
+    } else {
+      setSelectedItemBanks((keys) => {
+        return keys.filter((k) => k._id !== key._id)
+      })
+    }
+  }
+
+  const isRowSelected = (id) => {
+    return selectedItemBanksSet.has(id)
+  }
 
   const getExtraColumns = () => {
     if (selectedCollection) {
@@ -124,6 +144,19 @@ const CollectionsTable = ({
   }
 
   const columns = [
+    {
+      title: '',
+      dataIndex: 'checkbox',
+      key: 'checkbox',
+      render: (_, collection) => (
+        <CheckboxLabel
+          size="15px"
+          checked={isRowSelected(collection._id)}
+          onChange={handleSelect(collection)}
+          onClick={(e) => e.stopPropagation()}
+        />
+      ),
+    },
     {
       title: 'Collection Name',
       dataIndex: 'name',

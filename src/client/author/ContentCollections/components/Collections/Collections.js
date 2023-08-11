@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Icon, Spin } from 'antd'
-import { EduButton, SearchInputStyled } from '@edulastic/common'
+import { EduButton, EduIf, SearchInputStyled } from '@edulastic/common'
 import ContentSubHeader from '../../../src/components/common/AdminSubHeader/ContentSubHeader'
 import { CollectionsTable } from './CollectionsTable'
 import { PermissionsTable } from './PermissionsTable'
@@ -17,6 +17,7 @@ import AddCollectionModal from '../Modals/AddCollectionModal'
 
 import { getUser, getManageTabLabelSelector } from '../../../src/selectors/user'
 import {
+  batchAddPermissionRequestAction,
   importingLoaderSelector,
   importTestToCollectionRequestAction,
 } from '../../ducks'
@@ -25,6 +26,7 @@ import {
   TableFilters,
   TabTitle,
 } from '../../../../admin/Common/StyledComponents'
+import AddPermissionModal from '../Modals/AddPermissionModal'
 
 const menuActive = { mainMenu: 'Content', subMenu: 'Collections' }
 
@@ -34,12 +36,15 @@ const Collections = ({
   manageTabLabel,
   importDataToCollection,
   importLoader,
+  batchAddPermissionRequest,
 }) => {
+  const [showPermissionModal, setPermissionModalVisibility] = useState(false)
   const [selectedCollection, setCollection] = useState(null)
   const [showImportModal, setImportModalVisibility] = useState(false)
   const [showAddCollectionModal, setAddCollectionModalVisibility] = useState(
     false
   )
+  const [selectedItemBanks, setSelectedItemBanks] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const breadcrumbData = [
     {
@@ -65,6 +70,25 @@ const Collections = ({
     setCollection(null)
   }
 
+  const handlePermissionModalResponse = (response) => {
+    setPermissionModalVisibility(false)
+
+    const { permissionDetails } = response
+
+    const request = {
+      data: {
+        itemBanks: selectedItemBanks.map(({ _id: id, name }) => ({
+          id,
+          name,
+        })),
+        permissionDetails,
+      },
+    }
+
+    batchAddPermissionRequest(request)
+    setSelectedItemBanks([])
+  }
+
   return (
     <MainContainer>
       <SubHeaderWrapper>
@@ -75,6 +99,15 @@ const Collections = ({
           <Icon type="upload" />
           Import Content
         </EduButton>
+        <EduIf condition={selectedItemBanks.length}>
+          <EduButton
+            height="30px"
+            style={{ marginRight: '3%' }}
+            onClick={() => setPermissionModalVisibility(true)}
+          >
+            Add permissions
+          </EduButton>
+        </EduIf>
       </SubHeaderWrapper>
       <ContentSubHeader active={menuActive} history={history} />
       <StyledFilterDiv>
@@ -104,6 +137,8 @@ const Collections = ({
           handlePermissionClick={(data) => setCollection(data)}
           selectedCollection={selectedCollection}
           searchValue={searchValue}
+          selectedItemBanks={selectedItemBanks}
+          setSelectedItemBanks={setSelectedItemBanks}
         />
         {!!selectedCollection && (
           <PermissionsTable selectedCollection={selectedCollection} />
@@ -122,6 +157,15 @@ const Collections = ({
         />
       )}
       {importLoader && <Spin size="small" />}
+      {showPermissionModal && (
+        <AddPermissionModal
+          visible={showPermissionModal}
+          handleResponse={handlePermissionModalResponse}
+          itemBankName={selectedItemBanks.map((s) => s.name).join(', ')}
+          selectedPermission={null}
+          isEditPermission={false}
+        />
+      )}
     </MainContainer>
   )
 }
@@ -134,5 +178,6 @@ export default connect(
   }),
   {
     importDataToCollection: importTestToCollectionRequestAction,
+    batchAddPermissionRequest: batchAddPermissionRequestAction,
   }
 )(Collections)

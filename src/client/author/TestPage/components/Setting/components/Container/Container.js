@@ -1754,9 +1754,9 @@ class Setting extends Component {
                             <DollarPremiumSymbol premium={premium} />
                           </FlexContainer>
                           <Tooltip
-                            title={i18translate(
+                            title={`${i18translate(
                               'allowAutoEssayEvaluation.info'
-                            )}
+                            )}\n${i18translate('rubric.infoText')}`}
                           >
                             <IconInfo
                               color={lightGrey9}

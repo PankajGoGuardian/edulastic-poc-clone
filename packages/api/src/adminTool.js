@@ -26,7 +26,9 @@ const deleteFeedType = (data) =>
       method: 'delete',
       data,
     })
-    .then(() => notification({ type: 'success', msg: 'Deleted Successfully' }))
+    .then(() =>
+      notification({ type: 'success', messageKey: 'deleteFeedTypeSuccess' })
+    )
     .catch((error) => showErrorNotification(error))
 
 const insertFeedType = (data) =>
@@ -37,7 +39,7 @@ const insertFeedType = (data) =>
       data,
     })
     .then(() =>
-      notification({ type: 'success', msg: 'Feed Type Enabled Successfully' })
+      notification({ type: 'success', messageKey: 'insertFeedTypesSucess' })
     )
     .catch((error) => showErrorNotification(error))
 
@@ -48,7 +50,13 @@ const updateFeedType = (data) =>
       method: 'put',
       data,
     })
-    .then(() => notification({ type: 'success', msg: 'Updated Successfully' }))
+    .then(() =>
+      notification({
+        type: 'success',
+        messageKey: 'updateFeedTypesSuccess',
+        duration: 12,
+      })
+    )
     .catch((error) => showErrorNotification(error))
 export default {
   getDistinctFeedTypes,

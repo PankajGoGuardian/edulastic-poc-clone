@@ -2182,9 +2182,20 @@
     "message": "Teacher account is added successfully.",
     "description": ""
   },
-  "teacherAlreadyAdded" : {
+  "teacherAlreadyAdded": {
     "message": "Teacher(s) already added.",
     "description": ""
+  },
+  "deleteFeedTypeSuccess": {
+    "message": "Feed type deleted successfully",
+    "description": ""
+  },
+  "updateFeedTypesSuccess": {
+    "message": "Student identifier updated. Kindly remember to use the new identifier for editing existing uploads and for new uploads.",
+    "description": ""
+  },
+  "insertFeedTypesSucess": {
+    "message": "Feed type(s) enabled successfully.",
+    "description": ""
   }
-
 }

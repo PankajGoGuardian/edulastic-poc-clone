@@ -13,7 +13,7 @@ const Volume = ({ style, media }) => {
       max={1}
       step={0.01}
       value={media.volume}
-      style={{ width: 100, ...style }}
+      style={{ width: '100px', ...style }}
       onChange={_handleChange}
       tooltipVisible={false}
     />

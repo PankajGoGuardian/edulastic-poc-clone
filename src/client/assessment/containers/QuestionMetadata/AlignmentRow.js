@@ -2,7 +2,12 @@ import {
   removeFromLocalStorage,
   storeInLocalStorage,
 } from '@edulastic/api/src/utils/Storage'
-import { FieldLabel, SelectInputStyled, EduButton } from '@edulastic/common'
+import {
+  FieldLabel,
+  SelectInputStyled,
+  EduButton,
+  EduIf,
+} from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import { get, pick as _pick } from 'lodash'
 import PropTypes from 'prop-types'
@@ -36,6 +41,7 @@ import StandardsModal from './StandardsModal'
 import { IconWrapper } from './styled/BrowseButton'
 import { ItemBody } from './styled/ItemBody'
 import { StyledDiv } from './styled/ELOList'
+import { StyledRequired } from '../../../author/Reports/subPages/dataWarehouseReports/GoalsAndInterventions/common/components/Form/styled-components'
 
 const AlignmentRow = ({
   t,
@@ -63,6 +69,7 @@ const AlignmentRow = ({
   isDocBased = false,
   authorQuestionStatus = false,
   showIconBrowserBtn = false,
+  isStandardsDataRequired = false,
 }) => {
   const {
     subject = 'Mathematics',
@@ -221,13 +228,10 @@ const AlignmentRow = ({
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const defaultInterests = getDefaultInterests()
     /**
-     * TODO: test item subjects should not have [[]] as a value, need to fix at item level
-     * https://snapwiz.atlassian.net/browse/EV-16263
+     * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
      */
-    const _subject =
-      (Array.isArray(defaultInterests?.subject) &&
-        defaultInterests?.subject[0]) ||
-      ''
+    const _subject = defaultInterests?.subject || ''
+
     if (!alCurriculumId) {
       if (
         defaultInterests.subject ||
@@ -295,7 +299,14 @@ const AlignmentRow = ({
         />
       )}
       <Row>
-        {showIconBrowserBtn && <FieldLabel>Standards (optional)</FieldLabel>}
+        {showIconBrowserBtn && (
+          <FieldLabel>
+            {`Standards ${isStandardsDataRequired ? `` : `(optional)`}`}
+            <EduIf condition={isStandardsDataRequired}>
+              <StyledRequired>*</StyledRequired>
+            </EduIf>
+          </FieldLabel>
+        )}
         <Row gutter={24}>
           <Col md={showIconBrowserBtn ? 12 : 10}>
             <CustomTreeSelect
@@ -307,7 +318,12 @@ const AlignmentRow = ({
             >
               <>
                 <ItemBody data-cy="subjectItem">
-                  <FieldLabel>{t('component.options.subject')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.subject')}
+                    <EduIf condition={isStandardsDataRequired}>
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="subjectSelect"
                     value={subject}
@@ -326,7 +342,12 @@ const AlignmentRow = ({
                   </SelectInputStyled>
                 </ItemBody>
                 <ItemBody data-cy="standardItem">
-                  <FieldLabel>{t('component.options.standardSet')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.standardSet')}
+                    <EduIf condition={isStandardsDataRequired}>
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="standardSetSelect"
                     showSearch
@@ -348,7 +369,12 @@ const AlignmentRow = ({
                   </SelectInputStyled>
                 </ItemBody>
                 <ItemBody data-cy="gradeItem">
-                  <FieldLabel>{t('component.options.grade')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.grade')}
+                    <EduIf condition={isStandardsDataRequired}>
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="gradeSelect"
                     mode="multiple"
@@ -473,6 +499,11 @@ AlignmentRow.propTypes = {
   curriculumStandardsELO: PropTypes.array.isRequired,
   alignment: PropTypes.object.isRequired,
   editAlignment: PropTypes.func.isRequired,
+  isStandardsDataRequired: PropTypes.bool,
+}
+
+AlignmentRow.defaultProps = {
+  isStandardsDataRequired: false,
 }
 
 export default connect(

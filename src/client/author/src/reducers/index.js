@@ -67,6 +67,7 @@ import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
 import { advanceSearchReducer } from '../../AdvanceSearch'
+import aiGenerateQuestionState from './aiGenerateQuestion'
 
 const authorReducers = {
   authorUi,
@@ -138,6 +139,7 @@ const authorReducers = {
   dataWarehouseReducer,
   rosterImportReducer,
   advanceSearchReducer,
+  aiGenerateQuestionState,
 }
 
 export default authorReducers

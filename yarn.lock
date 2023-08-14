@@ -13193,6 +13193,16 @@ markdown-to-jsx@^6.11.4:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
+markerjs-live@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/markerjs-live/-/markerjs-live-1.1.0.tgz#fd84bf733482f5205cf951c0b380799515b89e50"
+  integrity sha512-DZtRmkjFkth7TZEHVoRYJVVkKJzGTAEPVAv+EtUdueps+p57ZJhNvVYiluJbFT5wUTZvkAi1oq5f1UhVC///cQ==
+
+markerjs2@^2.29.0:
+  version "2.29.0"
+  resolved "https://registry.yarnpkg.com/markerjs2/-/markerjs2-2.29.0.tgz#1421cae91a02bb302c76e24795c92f3a29dc067b"
+  integrity sha512-9l7HWm9vnpbiyeR8OVYA8/+i0pNATmDbMb+xcoxM6SxiQdPIt7qK5KJNtlT1FBO35TFWhQowUQ3oOmT2uici5w==
+
 matcher@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/matcher/-/matcher-1.1.1.tgz#51d8301e138f840982b338b116bb0c09af62c1c2"

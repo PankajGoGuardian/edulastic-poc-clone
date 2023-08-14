@@ -29,6 +29,10 @@ import {
   addNewTagAction,
   toggleTestLikeAction,
 } from '../../../../ducks'
+import {
+  extractVideoId,
+  getThumbnailUrl,
+} from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
 const Summary = ({
   setData,
@@ -107,6 +111,15 @@ const Summary = ({
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades])
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects])
 
+  useEffect(() => {
+    if (test.thumbnail) {
+      const videoId = extractVideoId(test.videoUrl || '')
+      if (videoId) {
+        handleChangeField('thumbnail', getThumbnailUrl(videoId))
+      }
+    }
+  }, [test.videoUrl])
+
   return (
     <MainContentWrapper>
       <SecondHeader>
@@ -128,6 +141,7 @@ const Summary = ({
       </SecondHeader>
       <SummaryCard
         title={test.title}
+        videoUrl={test.videoUrl}
         alignmentInfo={test.alignmentInfo}
         description={test.description}
         tags={test.tags}

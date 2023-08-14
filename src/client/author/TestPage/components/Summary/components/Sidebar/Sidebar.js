@@ -1,5 +1,8 @@
 import { tagsApi } from '@edulastic/api'
 import {
+  EduElse,
+  EduIf,
+  EduThen,
   FieldLabel,
   FlexContainer,
   SelectInputStyled,
@@ -15,6 +18,7 @@ import React, { createRef, useEffect, useMemo, useState } from 'react'
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
+import ReactPlayer from 'react-player'
 
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
@@ -45,6 +49,7 @@ const Sidebar = ({
   isEditable,
   test,
   toggleTestLikeRequest,
+  videoUrl,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
   const subjectsList = selectsData.allSubjects
@@ -108,6 +113,12 @@ const Sidebar = ({
   const selectedTags = useMemo(() => tags.map((t) => t._id), [tags])
   const { derivedFromPremiumBankId = false } = test
 
+  useEffect(() => {
+    if (test.videoUrl === 'https://www.youtube.com/watch?v=') {
+      onChangeField('videoUrl', '')
+    }
+  }, [test.videoUrl])
+
   return (
     <FlexContainer padding="30px" flexDirection="column">
       <Block>
@@ -136,6 +147,32 @@ const Sidebar = ({
         {title !== undefined && !title.trim().length ? (
           <ErrorWrapper>Please enter test title.</ErrorWrapper>
         ) : null}
+        <EduIf condition={videoUrl !== undefined}>
+          <>
+            <FieldLabel>Video URL</FieldLabel>
+            <TextInputStyled
+              showArrow
+              value={videoUrl}
+              data-cy="videoUrl"
+              onChange={(e) => onChangeField('videoUrl', e.target.value)}
+              size="large"
+              placeholder="Enter the video URL"
+              margin="0px 0px 15px"
+            />
+            <EduIf
+              condition={videoUrl !== undefined && !videoUrl.trim().length}
+            >
+              <EduThen>
+                <ErrorWrapper>Please enter video URL.</ErrorWrapper>
+              </EduThen>
+              <EduElse>
+                <EduIf condition={videoUrl && !ReactPlayer.canPlay(videoUrl)}>
+                  <ErrorWrapper>{`This link can't be played.`}</ErrorWrapper>
+                </EduIf>
+              </EduElse>
+            </EduIf>
+          </>
+        </EduIf>
         <FieldLabel>Description</FieldLabel>
         <TextAreaInputStyled
           value={description}
@@ -168,7 +205,6 @@ const Sidebar = ({
             </Select.Option>
           ))}
         </SelectInputStyled>
-
         <FieldLabel>Subject</FieldLabel>
         <SelectInputStyled
           showArrow
@@ -192,7 +228,6 @@ const Sidebar = ({
             </Select.Option>
           ))}
         </SelectInputStyled>
-
         {collectionsToShow.length > 0 && (
           <>
             <FieldLabel>Collections</FieldLabel>
@@ -237,7 +272,6 @@ const Sidebar = ({
             </Tooltip>
           </>
         )}
-
         <FieldLabel>Tags</FieldLabel>
         <SelectInputStyled
           showArrow

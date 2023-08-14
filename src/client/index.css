@@ -437,6 +437,10 @@ template {
 }
 @import '~antd/dist/antd.css';
 
+.unselectable-text-container * {
+  user-select: none !important;
+}
+
 .toolgroup {
   background: white;
   height: 24px;

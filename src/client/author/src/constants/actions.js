@@ -441,3 +441,9 @@ export const SET_BULK_UPDATE_ASSIGNMENT_SETTINGS_CALL_STATE =
 
 export const BULK_UPDATE_ASSIGNMENT_SETTINGS =
   '[assignments] bulk update assignment settings'
+
+export const SET_AI_GENERATE_QUESTION_STATE =
+  '[ai generate question] set AI generate question state'
+
+export const FETCH_AI_GENERATE_QUESTION =
+  '[ai generate question] fetch AI generate question'

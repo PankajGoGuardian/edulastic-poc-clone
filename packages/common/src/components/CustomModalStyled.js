@@ -31,7 +31,8 @@ const StyledModal = styled(Modal)`
       }
     }
     .ant-modal-header {
-      padding: 0px;
+      padding: ${(props) =>
+        props.headerPadding ? props.headerPadding : '0px'};
       background: transparent;
       border: none;
       .ant-modal-title {
@@ -62,7 +63,10 @@ const StyledModal = styled(Modal)`
         color: ${titleColor};
         font-weight: 600;
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: ${(props) =>
+          props.modalBodyPtagBottomMargin
+            ? props.modalBodyPtagBottomMargin
+            : '10px'};
         &.label {
           font-size: 11px;
           margin-bottom: 5px;

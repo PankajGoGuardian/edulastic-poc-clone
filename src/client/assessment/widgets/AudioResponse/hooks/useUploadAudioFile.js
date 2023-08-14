@@ -21,11 +21,11 @@ const useUploadAudioFile = ({
   const uploadFile = async ({ audioFile, objectAudioUrl }) => {
     if (useS3AudioUrl) {
       try {
-        handleChangeUploadStatus(AUDIO_UPLOAD_ACTIVE)
+        handleChangeUploadStatus?.(AUDIO_UPLOAD_ACTIVE)
         const uploadedUrl = await uploadToS3(audioFile, folder)
         saveUserResponse(uploadedUrl)
-        handleChangeUploadStatus(AUDIO_UPLOAD_SUCCESS)
-        recordingAndUploadCompleteForQid(AUDIO_UPLOAD_SUCCESS)
+        handleChangeUploadStatus?.(AUDIO_UPLOAD_SUCCESS)
+        recordingAndUploadCompleteForQid?.(AUDIO_UPLOAD_SUCCESS)
         return uploadedUrl
       } catch (error) {
         const errorMessage = 'Failed to upload audio'
@@ -33,9 +33,9 @@ const useUploadAudioFile = ({
           isOpen: true,
           errorMessage,
         })
-        handleChangeRecordingState(RECORDING_INACTIVE)
-        handleChangeUploadStatus(AUDIO_UPLOAD_INACTIVE)
-        recordingAndUploadCompleteForQid(AUDIO_UPLOAD_ERROR)
+        handleChangeRecordingState?.(RECORDING_INACTIVE)
+        handleChangeUploadStatus?.(AUDIO_UPLOAD_INACTIVE)
+        recordingAndUploadCompleteForQid?.(AUDIO_UPLOAD_ERROR)
         captureSentryException(error, {
           errorMessage: `Audio Response - ${errorMessage}`,
         })

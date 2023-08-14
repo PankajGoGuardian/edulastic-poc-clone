@@ -514,6 +514,7 @@ module.exports = {
   testCategoryTypes: {
     DEFAULT: 'default',
     DOC_BASED: 'doc_based',
+    VIDEO_BASED: 'video_based',
     DYNAMIC_TEST: 'dynamic_test',
   },
   ATTEMPT_WINDOW_TYPE: {

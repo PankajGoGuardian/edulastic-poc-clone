@@ -82,8 +82,9 @@ export const StyledContainer = styled.div`
 `
 
 export const StyledButton = styled.button`
-  width: 47px;
-  height: 47px;
+  width: ${({ width }) => width || '47px'};
+  height: ${({ height }) => height || '47px'};
+  line-height: ${({ lineHeight }) => lineHeight || 'unset'};
   background: ${themeColor} 0% 0% no-repeat padding-box;
   opacity: 1;
   border-radius: 50%;
@@ -212,8 +213,9 @@ export const StyledRecordingDataContainer = styled.div`
   padding: 5px;
 `
 export const StyledAudioElement = styled.audio`
-  width: 364px;
-  height: 56px;
+  min-width: 220px;
+  width: ${({ width }) => width || '364px'};
+  height: ${({ height }) => height || '56px'};
   &::-webkit-media-controls-panel {
     background-color: ${mainBgColor};
   }

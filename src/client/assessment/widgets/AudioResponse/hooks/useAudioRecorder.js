@@ -114,7 +114,7 @@ const useAudioRecorder = ({
   }, [])
 
   useEffect(() => {
-    if (stopRecordingForQid === questionId) {
+    if (stopRecordingForQid && stopRecordingForQid === questionId) {
       onClickStopRecording()
       setStopAudioRecordingAndUploadForQid({ questionId: '' })
     }

@@ -21,6 +21,9 @@ import {
   notification,
   Progress,
   CustomPrompt,
+  EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import {
   test as testConstants,
@@ -111,6 +114,7 @@ import Setting from '../Setting'
 import GroupItems from '../GroupItems'
 
 import MainWorksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
+import VideoQuizWorksheet from '../../../AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import {
   getQuestionsSelector,
   getQuestionsArraySelector,
@@ -901,6 +905,7 @@ class Container extends PureComponent {
       annotations,
       pageStructure,
       freeFormNotes = {},
+      videoUrl = '',
     } = test
     const isCollectionContentEditable = isContentOfCollectionEditable(
       test.collections,
@@ -930,6 +935,7 @@ class Container extends PureComponent {
       questionsById,
       pageStructure,
       isEditable,
+      videoUrl,
     }
 
     switch (current) {
@@ -982,7 +988,24 @@ class Container extends PureComponent {
       case 'review':
         return isDocBased ? (
           <Content>
-            <MainWorksheet key="review" review {...props} viewMode="review" />
+            <EduIf condition={videoUrl?.length > 0}>
+              <EduThen>
+                <VideoQuizWorksheet
+                  key="review"
+                  review
+                  {...props}
+                  viewMode="review"
+                />
+              </EduThen>
+              <EduElse>
+                <MainWorksheet
+                  key="review"
+                  review
+                  {...props}
+                  viewMode="review"
+                />
+              </EduElse>
+            </EduIf>
           </Content>
         ) : (
           <Review
@@ -1016,7 +1039,18 @@ class Container extends PureComponent {
       case 'worksheet':
         return (
           <Content>
-            <MainWorksheet key="worksheet" {...props} viewMode="edit" />
+            <EduIf condition={videoUrl?.length > 0}>
+              <EduThen>
+                <VideoQuizWorksheet
+                  key="worksheet"
+                  {...props}
+                  viewMode="edit"
+                />
+              </EduThen>
+              <EduElse>
+                <MainWorksheet key="worksheet" {...props} viewMode="edit" />
+              </EduElse>
+            </EduIf>
           </Content>
         )
       case 'assign':

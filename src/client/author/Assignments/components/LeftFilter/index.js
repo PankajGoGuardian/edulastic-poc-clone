@@ -360,7 +360,7 @@ class LeftFilter extends React.Component {
           selectedTagIds={tags}
         />
 
-        <FieldLabel>Test Name</FieldLabel>
+        <FieldLabel>Test Name / Id</FieldLabel>
         <SelectInputStyled
           data-cy="filter-test-name"
           mode="default"
@@ -371,7 +371,7 @@ class LeftFilter extends React.Component {
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           filterOption={(input, option) =>
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-            0
+              0 || option.props.value.slice(-5).includes(input.toLowerCase())
           }
           margin="0px 0px 15px"
         >
@@ -380,13 +380,21 @@ class LeftFilter extends React.Component {
           </Select.Option>
           {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
             assignmentTestList?.map(({ testId: _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
+              <Select.Option
+                title={`${title} (Id: ${_id.slice(-5)})`}
+                key={index}
+                value={_id}
+              >
                 {title}
               </Select.Option>
             ))}
           {userRole === roleuser.TEACHER &&
             teacherTestList.map(({ _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
+              <Select.Option
+                title={`${title} (Id: ${_id.slice(-5)})`}
+                key={index}
+                value={_id}
+              >
                 {title}
               </Select.Option>
             ))}

@@ -234,7 +234,10 @@ const AssessmentAutoComplete = ({
             />
           }
         >
-          <Input suffix={InputSuffixIcon} />
+          <Input
+            placeholder="Search and select a test using the name or last 5 digits of test ID"
+            suffix={InputSuffixIcon}
+          />
         </AutoComplete>
       </AutoCompleteContainer>
     </Tooltip>

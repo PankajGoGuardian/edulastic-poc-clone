@@ -72,7 +72,14 @@ class AdvancedTable extends Component {
         onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 0) }),
         className: 'assignment-name',
         render: (text, row) => (
-          <Tooltip placement="bottom" title={<div>{text}</div>}>
+          <Tooltip
+            placement="bottom"
+            title={
+              <div>
+                {text} (Id: {row.testId.slice(-5)})
+              </div>
+            }
+          >
             <FlexContainer style={{ marginLeft: 0, justifyContent: 'unset' }}>
               <div>
                 <TestThumbnail src={row.thumbnail} />

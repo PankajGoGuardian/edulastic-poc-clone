@@ -97,6 +97,8 @@ export const DownArrow = styled(Icon)`
 `
 
 export const StyledParaSecond = styled.p`
+  display: flex;
+  align-items: center;
   font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
@@ -104,6 +106,9 @@ export const StyledParaSecond = styled.p`
     white-space: nowrap;
     display: inline-block;
     margin-left: 3px;
+  }
+  span {
+    margin: 0 5px;
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {

@@ -128,6 +128,7 @@ import {
   BetaTag2,
 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
+import { StyledWarning } from '../../../../../AssignTest/components/Container/DetailsTooltip'
 
 const {
   settingCategories,
@@ -1788,6 +1789,9 @@ class Setting extends Component {
                           >
                             {i18translate('allowAutoEssayEvaluation.info')}
                           </Description>
+                          <StyledWarning style={{ fontWeight: 200 }}>
+                            ({i18translate('rubric.infoText')})
+                          </StyledWarning>
                         </Body>
                       </SettingContainer>
                     </Block>

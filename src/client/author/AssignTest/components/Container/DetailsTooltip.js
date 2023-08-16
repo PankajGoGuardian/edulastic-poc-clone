@@ -95,7 +95,7 @@ const StyledPopOver = styled.div`
     font-weight: 500;
   }
 `
-const StyledWarning = styled.div`
+export const StyledWarning = styled.div`
   color: ${mainTextColor};
   font-weight: 500;
   font-style: italic;

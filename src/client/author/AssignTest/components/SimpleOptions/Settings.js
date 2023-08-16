@@ -858,7 +858,7 @@ const Settings = ({
                 title={i18translate('allowAutoEssayEvaluation.title')}
                 content={i18translate('allowAutoEssayEvaluation.info')}
                 premium={premium}
-                warningText={i18translate('rubric.infoText')}
+                warningText={`(${i18translate('rubric.infoText')})`}
               />
               <StyledRow gutter={16} mb="15px">
                 <Col span={12}>

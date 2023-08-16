@@ -28,6 +28,7 @@ import {
   getAllTagsSelector,
   addNewTagAction,
   toggleTestLikeAction,
+  getTestsLoadingSelector,
 } from '../../../../ducks'
 import {
   extractVideoId,
@@ -65,6 +66,7 @@ const Summary = ({
   isEditable = true,
   showCancelButton,
   toggleTestLikeRequest,
+  isTestLoading,
 }) => {
   const handleChangeField = (field, value) => {
     if (field === 'thumbnail') {
@@ -140,6 +142,7 @@ const Summary = ({
         )}
       </SecondHeader>
       <SummaryCard
+        isTestLoading={isTestLoading}
         title={test.title}
         videoUrl={test.videoUrl}
         alignmentInfo={test.alignmentInfo}
@@ -212,6 +215,7 @@ const enhance = compose(
     (state) => ({
       summary: getSummarySelector(state),
       currentUser: getUser(state),
+      isTestLoading: getTestsLoadingSelector(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
       allTagsData: getAllTagsSelector(state, 'test'),
       allPlaylistTagsData: getAllTagsSelector(state, 'playlist'),

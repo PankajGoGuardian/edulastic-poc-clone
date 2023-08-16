@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react'
 import { extractVideoId } from '../../utils/videoPreviewHelpers'
 import { StyledYouTubePlayer } from '../../styled-components/VideoPreview'
+import appConfig from '../../../../../../app-config'
 
 const PLAYER_ID = 'youtube-player'
 const TAG_ID = 'iframe_api'
 const ED_YOUTUBE_SDK = 'https://www.youtubeeducation.com/iframe_api'
+const ED_YOUTUBE_HOST = appConfig.edYouTubePlayerKey
+  ? 'https://www.youtubeeducation.com'
+  : 'https://www.youtube.com'
 
 const YouTubePlayer = React.forwardRef(
   (
@@ -52,8 +56,7 @@ const YouTubePlayer = React.forwardRef(
         videoId,
         height,
         width,
-        // host: 'https://www.youtube.com/', // comment below line when using in localx
-        host: new URL(ED_YOUTUBE_SDK).origin,
+        host: ED_YOUTUBE_HOST,
         events: {
           onStateChange,
         },

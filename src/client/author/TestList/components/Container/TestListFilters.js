@@ -183,9 +183,6 @@ const TestListFilters = ({
           onChange: 'collections',
         },
         {
-          ...getTestCategoryFilterData(),
-        },
-        {
           mode: 'multiple',
           size: 'large',
           title: 'Tags',

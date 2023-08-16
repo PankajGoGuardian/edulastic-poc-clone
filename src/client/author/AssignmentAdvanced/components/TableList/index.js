@@ -379,6 +379,7 @@ const TableList = ({
           }
           setReleaseScoreModalVisibility(true)
         }}
+        data-cy="releaseScore"
       >
         Release Score
       </MoreOption>
@@ -396,6 +397,7 @@ const TableList = ({
               if (!isProxiedByEAAccount) handleBulkAction('downloadGrades')
             }}
             disabled={isProxiedByEAAccount}
+            data-cy="downloadGrades"
           >
             Download Grades
           </MoreOption>
@@ -415,6 +417,7 @@ const TableList = ({
               if (!isProxiedByEAAccount) handleBulkAction('downloadResponses')
             }}
             disabled={isProxiedByEAAccount}
+            data-cy="downloadResponses"
           >
             Download Responses
           </MoreOption>
@@ -429,6 +432,7 @@ const TableList = ({
           }
           toggleDeleteAssignmentModal(true)
         }}
+        data-cy="unassign"
       >
         Unassign
       </MoreOption>

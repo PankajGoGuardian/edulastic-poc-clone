@@ -128,7 +128,6 @@ import {
   BetaTag2,
 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
-import { StyledWarning } from '../../../../../AssignTest/components/Container/DetailsTooltip'
 
 const {
   settingCategories,
@@ -1764,9 +1763,9 @@ class Setting extends Component {
                             <DollarPremiumSymbol premium={premium} />
                           </FlexContainer>
                           <Tooltip
-                            title={`${i18translate(
+                            title={i18translate(
                               'allowAutoEssayEvaluation.info'
-                            )}\n${i18translate('rubric.infoText')}`}
+                            )}
                           >
                             <IconInfo
                               color={lightGrey9}
@@ -1788,10 +1787,11 @@ class Setting extends Component {
                             data-cy="auto-essay-evaluation-switch"
                           >
                             {i18translate('allowAutoEssayEvaluation.info')}
+                            <span style={{ fontStyle: 'italic' }}>
+                              {' '}
+                              ({i18translate('rubric.infoText')})
+                            </span>
                           </Description>
-                          <StyledWarning style={{ fontWeight: 200 }}>
-                            ({i18translate('rubric.infoText')})
-                          </StyledWarning>
                         </Body>
                       </SettingContainer>
                     </Block>

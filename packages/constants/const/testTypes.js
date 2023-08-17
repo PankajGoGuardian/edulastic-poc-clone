@@ -6,6 +6,11 @@ const SAT = 'SAT'
 const iReady_Math = 'iReady_Math'
 const iReady_ELA = 'iReady_ELA'
 const NWEA = 'NWEA'
+const GMAS_EOC = 'GMAS_EOC'
+const GMAS_EOG = 'GMAS_EOG'
+const ILEARN = 'ILEARN'
+const STARR = 'STARR'
+const TERM_GRADES = 'Term_Grades'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -16,6 +21,11 @@ const EXTERNAL_TEST_TYPES = {
   [iReady_Math]: 'iReady (MATH)',
   [iReady_ELA]: 'iReady (ELA)',
   [NWEA]: 'NWEA',
+  [GMAS_EOC]: 'GMAS_EOC',
+  [GMAS_EOG]: 'GMAS_EOG',
+  [ILEARN]: 'ILEARN',
+  [STARR]: 'STARR',
+  [TERM_GRADES]: 'Term_Grades',
 }
 
 const ATTENDANCE = 'ATTENDANCE'
@@ -77,5 +87,10 @@ module.exports = {
   iReady_Math,
   iReady_ELA,
   NWEA,
+  GMAS_EOC,
+  GMAS_EOG,
+  ILEARN,
+  STARR,
+  TERM_GRADES,
   ATTENDANCE,
 }

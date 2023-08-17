@@ -367,7 +367,18 @@ class ClassBoard extends Component {
       match,
       testActivity,
       getAllTestActivitiesForStudent,
+      t,
     } = this.props
+
+    if (
+      additionalData?.archiveCollection?.uqa &&
+      additionalData !== prevProps?.additionalData
+    ) {
+      notification({
+        type: 'info',
+        msg: t('common.uqaArchiveMessage'),
+      })
+    }
     const { assignmentId, classId } = match.params
     const filterCriteria = (activity) => activity?.testActivityId
     const { selectedStudentId } = this.state

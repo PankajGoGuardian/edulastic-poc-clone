@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { size, isEmpty, get } from 'lodash'
 
-import { MainContentWrapper } from '@edulastic/common'
+import { MainContentWrapper, notification } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -31,6 +32,13 @@ import {
 } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      hasShownNotification: false,
+    }
+  }
+
   componentDidMount() {
     const {
       loadTestActivity,
@@ -47,6 +55,7 @@ class StandardsBasedReport extends Component {
       toggleVerifyEmailModal,
       userRole,
     } = this.props
+
     if (isSAWithoutSchools) {
       history.push('/author/tests')
       return toggleAdminAlertModal()
@@ -73,6 +82,28 @@ class StandardsBasedReport extends Component {
     } else if (lastAssignmentId !== assignmentId || classId !== lastClassId) {
       loadTestActivity(assignmentId, classId)
     }
+  }
+
+  componentDidUpdate() {
+    const { additionalData, t } = this.props
+    if (
+      !this.state.hasShownNotification &&
+      additionalData?.archiveCollection?.uqa
+    ) {
+      notification({
+        type: 'info',
+        msg: t('common.uqaArchiveMessage'),
+      })
+      this.setState({
+        hasShownNotification: true,
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      hasShownNotification: false,
+    })
   }
 
   getTestActivity = (data) => {
@@ -135,6 +166,7 @@ class StandardsBasedReport extends Component {
 }
 
 const enhance = compose(
+  withNamespaces('classBoard'),
   connect(
     (state) => ({
       testActivity: getTestActivitySelector(state),

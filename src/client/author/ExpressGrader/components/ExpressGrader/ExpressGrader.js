@@ -13,7 +13,9 @@ import {
   WithResources,
   FlexContainer,
   toggleChatDisplay,
+  notification,
 } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -131,6 +133,7 @@ class ExpressGrader extends Component {
       record: null,
       isVisibleModal: false,
       isGridEditOn: false,
+      hasShownNotification: false,
     }
   }
 
@@ -184,9 +187,29 @@ class ExpressGrader extends Component {
     }
   }
 
+  componentDidUpdate() {
+    const { additionalData, t } = this.props
+
+    if (
+      !this.state.hasShownNotification &&
+      additionalData?.archiveCollection?.uqa
+    ) {
+      notification({
+        type: 'info',
+        msg: t('common.uqaArchiveMessage'),
+      })
+      this.setState({
+        hasShownNotification: true,
+      })
+    }
+  }
+
   componentWillUnmount() {
     const { clearEgAnswers } = this.props
     clearEgAnswers()
+    this.setState({
+      hasShownNotification: false,
+    })
   }
 
   static getDerivedStateFromProps(props) {
@@ -358,6 +381,7 @@ class ExpressGrader extends Component {
 }
 
 const enhance = compose(
+  withNamespaces('classBoard'),
   withWindowSizes,
   connect(
     (state) => ({

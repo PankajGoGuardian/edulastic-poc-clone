@@ -152,11 +152,21 @@ export const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
     testTypes.CAASPP,
     testTypes.iReady_ELA,
     testTypes.NWEA,
+    testTypes.GMAS_EOC,
+    testTypes.GMAS_EOG,
+    testTypes.ILEARN,
+    testTypes.STARR,
+    testTypes.TERM_GRADES,
   ],
   [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: [
     testTypes.CAASPP,
     testTypes.iReady_Math,
     testTypes.NWEA,
+    testTypes.GMAS_EOC,
+    testTypes.GMAS_EOG,
+    testTypes.ILEARN,
+    testTypes.STARR,
+    testTypes.TERM_GRADES,
   ],
 }
 

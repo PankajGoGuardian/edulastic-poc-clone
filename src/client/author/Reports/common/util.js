@@ -14,6 +14,7 @@ import {
   capitalize,
   uniqBy,
   uniq,
+  isEmpty,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -744,3 +745,16 @@ export const getGrades = (studInfo = []) =>
 
 export const getSchools = (studInfo = []) =>
   uniq(studInfo.flatMap((s = {}) => s.schoolName || [])).join(', ')
+
+/**
+ * Function to get error message
+ * @param {Object} error - error object
+ * @param {number} statusCode - statusCode to check for
+ * @param {string} defaultMessage - default error message if statusCode does not match
+ * @returns {string} error message to be displayed
+ */
+export const getErrorMessage = (error, statusCode, defaultMessage) => {
+  if (!isEmpty(error?.response) && error.response.status === statusCode)
+    return error.message
+  return defaultMessage
+}

@@ -136,10 +136,6 @@ import {
   reportStandardsGradebookSaga,
 } from './subPages/standardsMasteryReport/standardsGradebook/ducks'
 import {
-  reportStandardsProgressReducer,
-  reportStandardsProgressSaga,
-} from './subPages/standardsMasteryReport/standardsProgress/ducks'
-import {
   reducer as reportPerformanceByRubricsCriteriaReducer,
   watcherSaga as reportPerformanceByRubricsCriteriaSaga,
 } from './subPages/standardsMasteryReport/performanceByRubricCriteria/ducks'
@@ -481,7 +477,6 @@ export const reportReducer = combineReducers({
   reportStudentProgressProfileReducer,
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
-  reportStandardsProgressReducer,
   reportEngagementSummaryReducer,
   reportActivityBySchoolReducer,
   reportActivityByTeacherReducer,
@@ -981,7 +976,6 @@ export function* reportSaga() {
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
-    reportStandardsProgressSaga(),
     reportEngagementSummarySaga(),
     reportActivityBySchoolSaga(),
     reportActivityByTeacherSaga(),

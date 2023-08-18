@@ -32,6 +32,7 @@ const peerPerformance = require('./singleAssessmentReport/peerPerformance')
 
 const standardsPerformanceSummary = require('./standardsMasteryReport/standardsPerformanceSummary')
 const standardsGradebook = require('./standardsMasteryReport/standardsGradebook')
+const standardsProgress = require('./standardsMasteryReport/standardsProgress')
 
 // -----|-----|-----|-----| STANDARDS MASTERY REPORT |-----|-----|-----|----- //
 
@@ -48,4 +49,5 @@ module.exports = {
   // SMR
   standardsPerformanceSummary,
   standardsGradebook,
+  standardsProgress,
 }

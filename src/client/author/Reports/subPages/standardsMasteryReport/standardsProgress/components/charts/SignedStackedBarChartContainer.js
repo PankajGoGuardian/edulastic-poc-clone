@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react'
 
 import { Row, Col } from 'antd'
+import { reportUtils } from '@edulastic/constants'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 
-import { getChartData } from '../../utils/transformers'
+const { getChartData } = reportUtils.standardsProgress
 
 const SignedStackedBarChartContainer = ({
   data: rawChartData = [],

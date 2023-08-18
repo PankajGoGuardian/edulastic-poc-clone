@@ -4,42 +4,62 @@ import { compose } from 'redux'
 import { get, pickBy, isEmpty } from 'lodash'
 
 import { Row } from 'antd'
-import { SpinLoader } from '@edulastic/common'
+import { SpinLoader, useApiQuery } from '@edulastic/common'
+import { standardsProgressApi } from '@edulastic/api'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
+import { getErrorMessage } from '../../../common/util'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import { TableContainer } from './components/styled'
 import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
-import StandardsProgressTable from './components/table/StandardsProgressTable'
+import Table from './components/table'
 
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
-  getReportsStandardsProgress,
-  getReportsStandardsProgressLoader,
-  getStandardsProgressRequestAction,
-  getReportsStandardsProgressError,
-  resetStandardsProgressAction,
-} from './ducks'
+  getStandardsGradebookSkillInfoAction,
+  getStandardsGradebookSkillInfo,
+  getSkillInfoLoader,
+  getReportsStandardsGradebookError,
+} from '../standardsGradebook/ducks'
 
-import { getDenormalizedData } from './utils/transformers'
-import dropDownData from './static/dropDownData.json'
+import {
+  getSkillInfoApiQuery,
+  getSummaryApiQuery,
+  getDetailsApiQuery,
+  getTestInfoApiQuery,
+  getIsReportDataEmpty,
+  getGenerateCsvParams,
+  getPaginatedTestInfoMetrics,
+} from './utils/transformers'
+import useErrorNotification from '../../../common/hooks/useErrorNotification'
 
-const { compareByData, analyseByData } = dropDownData
+const {
+  CHART_PAGE_SIZE,
+  TABLE_PAGE_SIZE,
+  SortKeys,
+  SortOrders,
+  AnalyseByKeys,
+  CompareByDropDownData,
+  AnalyseByDropDownData,
+  getChartMetrics,
+  getTableMetrics,
+} = reportUtils.standardsProgress
 
 const StandardsProgress = ({
-  loading,
-  error,
+  errorFetchingSkillInfo,
   isCsvDownloading,
   location,
   toggleFilter,
   settings,
   standardsFilters,
-  standardsProgress,
-  getStandardsProgressRequest,
-  resetStandardsProgress,
+  skillInfo,
+  getSkillInfoRequest,
+  loadingSkillInfo,
   ddfilter,
   userRole,
   sharedReport,
+  generateCSV,
 }) => {
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -50,6 +70,7 @@ const StandardsProgress = ({
     ],
     [sharedReport]
   )
+
   const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
   const selectedScale =
     (
@@ -58,80 +79,229 @@ const StandardsProgress = ({
           s._id === (sharedReportFilters || settings.requestFilters).profileId
       ) || scaleInfo[0]
     )?.scale || []
+
   // filter compareBy options according to role
-  const compareByDataFiltered = compareByData.filter(
+  const compareByDropDownDataFiltered = CompareByDropDownData.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
   const [tableFilters, setTableFilters] = useState({
     compareBy:
-      compareByDataFiltered.find(
+      compareByDropDownDataFiltered.find(
         (o) => o.key === location?.state?.compareByKey
-      ) || compareByDataFiltered[0],
-    analyseBy: analyseByData[3],
-  })
-  // support for backend pagination of tests
-  const [pageFilters, setPageFilters] = useState({
-    barsPageNumber: 0, // set to 0 initially to prevent multiple api request on tab change
-    barsPageSize: 10,
-    tablePageNumber: 0,
-    tablePageSize: 50,
+      ) || compareByDropDownDataFiltered[0],
+    analyseBy: AnalyseByDropDownData.find(
+      (o) => o.key === AnalyseByKeys.MASTERY_SCORE
+    ),
+    rowPage: 1,
+    rowPageSize: TABLE_PAGE_SIZE,
+    sortKey: SortKeys.DIMENSION,
+    sortOrder: SortOrders.ASCEND,
   })
 
-  useEffect(() => () => resetStandardsProgress(), [])
+  const [chartFilters, setChartFilters] = useState({
+    barPage: 1,
+    barPageSize: CHART_PAGE_SIZE,
+  })
 
-  // set initial page filters
+  const ddRequestFilters = useMemo(
+    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
+    [ddfilter]
+  )
+
   useEffect(() => {
-    setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    const q = getSkillInfoApiQuery(settings.requestFilters)
+    if (q.termId || q.reportId) {
+      getSkillInfoRequest(q)
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
 
+  const testInfoQuery = useMemo(
+    () =>
+      getTestInfoApiQuery(settings.requestFilters, ddRequestFilters, skillInfo),
+    [skillInfo]
+  )
+
+  const {
+    data: testInfo,
+    loading: loadingTestInfo,
+    error: errorFetchingTestInfo,
+  } = useApiQuery(
+    standardsProgressApi.fetchStandardsProgressTestInfo,
+    [testInfoQuery],
+    {
+      enabled:
+        (testInfoQuery.termId && testInfoQuery.standardId) ||
+        testInfoQuery.reportId,
+      deDuplicate: false,
+    }
+  )
+
+  const testInfoErrorMsg = getErrorMessage(
+    errorFetchingTestInfo,
+    400,
+    'Error fetching Test Info.'
+  )
+  useErrorNotification(testInfoErrorMsg, errorFetchingTestInfo)
+
+  // reset table page number to 1 when chart filters are changed
   useEffect(() => {
-    if (pageFilters.barsPageNumber) {
-      setPageFilters({ ...pageFilters, tablePageNumber: 1 })
-    }
-  }, [tableFilters.compareBy.key])
+    setTableFilters({
+      ...tableFilters,
+      rowPage: 1,
+    })
+  }, [chartFilters])
 
-  // get paginated data
+  const { testInfo: testInfoMetrics = [], totalTestCount = 0 } = testInfo || {}
+
+  const paginatedTestInfoMetrics = useMemo(
+    () => getPaginatedTestInfoMetrics(testInfoMetrics, chartFilters),
+    [testInfoMetrics, chartFilters]
+  )
+
+  const summaryQuery = useMemo(
+    () =>
+      getSummaryApiQuery(
+        settings.requestFilters,
+        ddRequestFilters,
+        skillInfo,
+        paginatedTestInfoMetrics
+      ),
+    [paginatedTestInfoMetrics]
+  )
+
+  const {
+    data: summary,
+    loading: loadingSummary,
+    error: errorFetchingSummary,
+  } = useApiQuery(
+    standardsProgressApi.fetchStandardsProgressSummary,
+    [summaryQuery],
+    {
+      enabled:
+        (!!paginatedTestInfoMetrics.length &&
+          summaryQuery.termId &&
+          summaryQuery.standardId) ||
+        summaryQuery.reportId,
+      deDuplicate: false,
+    }
+  )
+
+  const summaryErrorMsg = getErrorMessage(
+    errorFetchingSummary,
+    400,
+    'Error fetching Summary data.'
+  )
+  useErrorNotification(summaryErrorMsg, errorFetchingSummary)
+
+  // Reset table page number when compare by, sort key or sort order is changed
   useEffect(() => {
-    const _ddfilter = pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f))
-    const q = {
-      ...settings.requestFilters,
-      ..._ddfilter,
-      compareBy: tableFilters.compareBy.key,
-      ...pageFilters,
-    }
-    if (
-      (q.termId || q.reportId) &&
-      pageFilters.barsPageNumber &&
-      pageFilters.tablePageNumber
-    ) {
-      getStandardsProgressRequest(q)
-    }
-  }, [pageFilters])
+    setTableFilters({
+      ...tableFilters,
+      rowPage: 1,
+    })
+  }, [tableFilters.compareBy.key, tableFilters.sortKey, tableFilters.sortOrder])
 
-  const testInfo = get(standardsProgress, 'data.result.testInfo', [])
-  const totalTestCount = get(standardsProgress, 'data.result.totalTestCount', 0)
-  const totalRowCount = get(standardsProgress, 'data.result.totalRowCount', 0)
+  const detailsQuery = useMemo(
+    () =>
+      getDetailsApiQuery(
+        settings.requestFilters,
+        ddRequestFilters,
+        tableFilters,
+        skillInfo,
+        paginatedTestInfoMetrics
+      ),
+    [
+      paginatedTestInfoMetrics,
+      tableFilters.rowPage,
+      tableFilters.compareBy.key,
+      tableFilters.sortKey,
+      tableFilters.sortOrder,
+    ]
+  )
 
-  const [denormalizedData, denormalizedTableData] = useMemo(
-    () => getDenormalizedData(standardsProgress, tableFilters.compareBy.key),
-    [standardsProgress, tableFilters.compareBy]
+  const {
+    data: details,
+    loading: loadingDetails,
+    error: errorFetchingDetails,
+  } = useApiQuery(
+    standardsProgressApi.fetchStandardsProgressDetails,
+    [detailsQuery],
+    {
+      enabled:
+        (!!paginatedTestInfoMetrics.length &&
+          detailsQuery.termId &&
+          detailsQuery.rowPage &&
+          detailsQuery.standardId) ||
+        detailsQuery.reportId,
+
+      deDuplicate: false,
+    }
+  )
+
+  const detailsErrorMsg = getErrorMessage(
+    errorFetchingDetails,
+    400,
+    'Error fetching Details data.'
+  )
+  useErrorNotification(detailsErrorMsg, errorFetchingDetails)
+
+  const { metrics: chartMetrics } = useMemo(
+    () => getChartMetrics(summary, paginatedTestInfoMetrics),
+    [summary, paginatedTestInfoMetrics]
+  )
+
+  const { metrics: tableMetrics, totalRowCount } = useMemo(
+    () => getTableMetrics(details),
+    [details]
+  )
+
+  const error =
+    errorFetchingSkillInfo ||
+    errorFetchingTestInfo ||
+    errorFetchingDetails ||
+    errorFetchingSummary ||
+    null
+
+  const loading = [
+    loadingSkillInfo,
+    loadingTestInfo,
+    loadingDetails,
+    loadingSummary,
+  ].some(Boolean)
+
+  const generateCSVRequired = [
+    chartFilters.barPageSize < totalTestCount,
+    tableFilters.rowPageSize < totalRowCount,
+    error && error.dataSizeExceeded,
+  ].some(Boolean)
+
+  const isReportDataEmpty = useMemo(
+    () => getIsReportDataEmpty(skillInfo, testInfoMetrics, summary, details),
+    [skillInfo, testInfoMetrics, summary, details]
   )
 
   // show filters section if data is empty
   useEffect(() => {
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(standardsProgress) &&
-      !denormalizedData?.length
-    ) {
-      toggleFilter(null, true)
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      const showFilter = !loading && isReportDataEmpty
+      toggleFilter(null, showFilter)
     }
-  }, [denormalizedData])
+  }, [loading, isReportDataEmpty])
+
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const params = getGenerateCsvParams(
+        skillInfo,
+        settings,
+        ddRequestFilters,
+        tableFilters,
+        reportTypes
+      )
+      generateCSV(params)
+    }
+  }, [isCsvDownloading])
 
   if (loading) {
     return (
@@ -146,7 +316,7 @@ const StandardsProgress = ({
     return <DataSizeExceeded />
   }
 
-  if (!denormalizedData?.length) {
+  if (isReportDataEmpty) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -164,46 +334,44 @@ const StandardsProgress = ({
         </Row>
         <Row>
           <SignedStackedBarChartContainer
-            data={denormalizedData}
+            data={chartMetrics}
             masteryScale={selectedScale}
             backendPagination={{
-              page: pageFilters.barsPageNumber,
-              pageSize: pageFilters.barsPageSize,
+              page: chartFilters.barPage,
+              pageSize: chartFilters.barPageSize,
               pageCount:
-                Math.ceil(totalTestCount / pageFilters.barsPageSize) || 1,
+                Math.ceil(totalTestCount / chartFilters.barPageSize) || 1,
             }}
             setBackendPagination={({ page }) =>
-              setPageFilters({
-                ...pageFilters,
-                barsPageNumber: page,
-                tablePageNumber: 1,
+              setChartFilters({
+                ...chartFilters,
+                barPage: page,
               })
             }
           />
         </Row>
       </StyledCard>
       <TableContainer>
-        <StandardsProgressTable
-          data={denormalizedTableData}
-          testInfo={testInfo}
+        <Table
+          tableMetrics={tableMetrics}
+          chartMetrics={chartMetrics}
           masteryScale={selectedScale}
           tableFilters={tableFilters}
           setTableFilters={setTableFilters}
-          tableFilterOptions={{
-            compareByData: compareByDataFiltered,
-            analyseByData,
+          tableFiltersDropDownData={{
+            compareByDropDownData: compareByDropDownDataFiltered,
+            analyseByDropDownData: AnalyseByDropDownData,
           }}
-          isCsvDownloading={isCsvDownloading}
+          isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
           backendPagination={{
-            page: pageFilters.tablePageNumber,
-            pageSize: pageFilters.tablePageSize,
+            page: tableFilters.rowPage,
+            pageSize: tableFilters.rowPageSize,
             itemsCount: totalRowCount || 0,
           }}
-          setBackendPagination={({ page, pageSize }) =>
-            setPageFilters({
-              ...pageFilters,
-              tablePageNumber: page,
-              tablePageSize: pageSize,
+          setBackendPagination={({ page }) =>
+            setTableFilters({
+              ...tableFilters,
+              rowPage: page,
             })
           }
           filters={settings.requestFilters}
@@ -217,15 +385,15 @@ const StandardsProgress = ({
 const enhance = compose(
   connect(
     (state) => ({
-      loading: getReportsStandardsProgressLoader(state),
-      error: getReportsStandardsProgressError(state),
+      loadingSkillInfo: getSkillInfoLoader(state),
+      errorFetchingSkillInfo: getReportsStandardsGradebookError(state),
+      skillInfo: getStandardsGradebookSkillInfo(state),
       isCsvDownloading: getCsvDownloadingState(state),
       standardsFilters: getReportsStandardsFilters(state),
-      standardsProgress: getReportsStandardsProgress(state),
     }),
     {
-      getStandardsProgressRequest: getStandardsProgressRequestAction,
-      resetStandardsProgress: resetStandardsProgressAction,
+      getSkillInfoRequest: getStandardsGradebookSkillInfoAction,
+      generateCSV: generateCSVAction,
     }
   )
 )

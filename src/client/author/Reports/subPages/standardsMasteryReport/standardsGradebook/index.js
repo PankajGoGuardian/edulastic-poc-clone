@@ -253,13 +253,11 @@ const StandardsGradebook = ({
         reportType: reportTypes.reportNavType.STANDARDS_GRADEBOOK,
         reportFilters: {
           ...settings.requestFilters,
+          ...ddRequestFilters,
           compareBy,
           analyzeBy,
           sortKey,
           sortOrder,
-        },
-        reportExtras: {
-          tableFilters,
         },
       }
       generateCSV(params)

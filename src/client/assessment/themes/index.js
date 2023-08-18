@@ -13,6 +13,8 @@ import {
   isObject,
   flatMap,
   isArray,
+  last,
+  first,
 } from 'lodash'
 import useInterval from '@use-it/interval'
 import {
@@ -60,6 +62,10 @@ import {
   originalPlayerSkinName,
   getIsPreviewModalVisibleSelector,
   getIsAntiCheatingEnabled,
+  getSectionIdSelector,
+  getItemGroupsSelector,
+  getPreventSectionNavigationSelector,
+  hasSectionsSelector,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -599,6 +605,10 @@ const AssessmentContainer = ({
   autoSaveInterval,
   isAntiCheatingEnabled,
   setAntiCheatingEnabled,
+  sectionId,
+  itemGroups,
+  hasSections,
+  preventSectionNavigation,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -636,7 +646,32 @@ const AssessmentContainer = ({
 
   const [, uploadFile] = useUploadToS3(userId)
 
-  const isLast = () => currentItem === items.length - 1
+  /* 
+    Three new variables for restrict navigation:
+      - lastItemInsection - to understand whenever user is attempting the last item in the current section. 
+        Based on this flag section summary page will be called
+      - firstItemInSectionAndRestrictNav - Whenever user is in first item in section and sectionNavigation 
+        prevented to disable back navigation from sections.
+      - lastItemInTest - to Differentiate between last item in section and last item in test.
+  */
+  const lastItemInsection = useMemo(
+    () => itemGroups?.some(({ items: _items }) => last(_items)?._id === itemId),
+    [itemId, itemGroups]
+  )
+
+  const firstItemInSectionAndRestrictNav = useMemo(
+    () =>
+      itemGroups?.some(({ items: _items }) => first(_items)?._id === itemId) &&
+      preventSectionNavigation,
+    [itemGroups, itemId, preventSectionNavigation]
+  )
+
+  const lastItemInTest = useMemo(() => currentItem === items.length - 1, [
+    currentItem,
+    items,
+  ])
+
+  const isLast = () => lastItemInTest || (lastItemInsection && hasSections)
   const isFirst = () => currentItem === 0
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
@@ -1055,8 +1090,14 @@ const AssessmentContainer = ({
     if ((isLast() || value === 'SUBMIT') && !preview) {
       const unansweredQs = getUnAnsweredQuestions()
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
+        let urlToGo = `${url}/${'test-summary'}`
+        // If user clicks on submit of the last item of the section and it is not
+        // the final submit navigate him to section summary
+        if (lastItemInsection && !lastItemInTest) {
+          urlToGo = `${url}/section/${sectionId}/${'test-summary'}`
+        }
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
-          urlToGo: `${url}/${'test-summary'}`,
+          urlToGo,
           locState: { ...history?.location?.state, fromSummary: true },
         })
       } else {
@@ -1123,7 +1164,7 @@ const AssessmentContainer = ({
       timeSpent,
       testId,
     }
-    if (isLast()) {
+    if (lastItemInTest) {
       evalArgs.isLastQuestion = true
       evalArgs.callback = submitPreviewTest
     }
@@ -1416,7 +1457,12 @@ const AssessmentContainer = ({
     isAntiCheatingEnabled
   return (
     <AssessmentPlayerContext.Provider
-      value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
+      value={{
+        isStudentAttempt: true,
+        currentItem,
+        setCurrentItem,
+        firstItemInSectionAndRestrictNav, // Adding firstItemInSectionAndRestrictNav to AssessmentPlayerContext for reducing the props passing down
+      }}
     >
       {restrictNavigationOut && (
         <>
@@ -1585,6 +1631,10 @@ const enhance = compose(
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       autoSaveInterval: autoSaveIntervalSelector(state),
       isAntiCheatingEnabled: getIsAntiCheatingEnabled(state),
+      sectionId: getSectionIdSelector(state),
+      itemGroups: getItemGroupsSelector(state),
+      hasSections: hasSectionsSelector(state),
+      preventSectionNavigation: getPreventSectionNavigationSelector(state),
     }),
     {
       saveUserResponse,

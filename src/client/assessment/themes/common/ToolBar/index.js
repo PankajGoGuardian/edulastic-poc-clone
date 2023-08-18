@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { isEmpty } from 'lodash'
 import { questionType } from '@edulastic/constants'
 import { EduIf } from '@edulastic/common'
@@ -21,6 +23,7 @@ import {
   ButtonWithStyle,
 } from './styled-components'
 import { CalculatorIconWrapper } from './CalculatorIconWrapper'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const CROSS_OUT_QUES = [
   questionType.MULTIPLE_CHOICE,
@@ -29,6 +32,7 @@ const CROSS_OUT_QUES = [
 
 const ToolBar = ({
   settings,
+  calcTypes,
   tool = [],
   qType,
   handleMagnifier,
@@ -42,12 +46,7 @@ const ToolBar = ({
   isPremiumContentWithoutAccess = false,
   t: translate,
 }) => {
-  const {
-    calcTypes,
-    showMagnifier,
-    enableScratchpad,
-    isTeacherPremium,
-  } = settings
+  const { showMagnifier, enableScratchpad, isTeacherPremium } = settings
 
   const isDisableCrossBtn = useMemo(() => {
     return !CROSS_OUT_QUES.includes(qType)
@@ -157,4 +156,10 @@ ToolBar.propTypes = {
   t: PropTypes.func.isRequired,
 }
 
-export default withNamespaces('header')(ToolBar)
+const mapStateToProps = (state) => ({
+  calcTypes: getCalcTypeSelector(state),
+})
+
+const enhance = compose(withNamespaces('header'), connect(mapStateToProps))
+
+export default enhance(ToolBar)

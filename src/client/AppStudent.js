@@ -197,8 +197,14 @@ class App extends Component {
                 notifications={[NotificationListener]}
                 redirectPath={redirectRoute}
               />
+              {/* New route is created to handle the section submit review page. It
+              renders the same component as the final submit review page. */}
               <PrivateRoute
                 path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                component={TestAttemptReview}
+              />
+              <PrivateRoute
+                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
                 component={TestAttemptReview}
               />
               <Route

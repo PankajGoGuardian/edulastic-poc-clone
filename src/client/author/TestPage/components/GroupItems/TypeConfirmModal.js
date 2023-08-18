@@ -44,7 +44,7 @@ const TypeConfirmModal = ({
   )
 }
 
-const StyledModal = styled(ConfirmationModal)`
+export const StyledModal = styled(ConfirmationModal)`
   min-width: 550px;
   .ant-modal-content {
     .ant-modal-header {
@@ -53,7 +53,7 @@ const StyledModal = styled(ConfirmationModal)`
   }
 `
 
-const ModalBody = styled.div`
+export const ModalBody = styled.div`
   display: block;
   width: 100%;
   > span {

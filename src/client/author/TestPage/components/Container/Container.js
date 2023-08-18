@@ -78,6 +78,9 @@ import {
   isEnabledRefMaterialSelector,
   getPenaltyOnUsingHintsSelector,
   NewGroupAutoselect,
+  isDynamicTestSelector,
+  hasSectionsSelector,
+  createNewStaticGroup,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -351,13 +354,10 @@ class Container extends PureComponent {
       resetPageState,
       setEditEnable,
       setTestSettingsList,
-      test,
+      isDynamicTest,
     } = this.props
     // reset test data when it's a saved test or dynamic test in creation
-    if (
-      match.params.id ||
-      test.testCategory === testCategoryTypes.DYNAMIC_TEST
-    ) {
+    if (match.params.id || isDynamicTest) {
       removeTestEntity()
     }
     // disable edit on unmount
@@ -591,6 +591,19 @@ class Container extends PureComponent {
     return false
   }
 
+  // When the user clicks on the 'Add new Sections' button for the first time and he did
+  // not select any test items, then the section should be editable
+  setCurrentGroupDetails = () => {
+    const { test } = this.props
+    const isItemPresentInGrp = test?.itemGroups?.[0]?.items || []
+    if (isEmpty(isItemPresentInGrp)) {
+      this.setState({
+        currentGroupIndex: 0,
+        currentGroupDetails: createNewStaticGroup(),
+      })
+    }
+  }
+
   handleNavChange = (value, firstFlow) => () => {
     const {
       test,
@@ -601,6 +614,8 @@ class Container extends PureComponent {
       editEnable,
       location,
       creating,
+      isDynamicTest,
+      hasSections,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
@@ -617,7 +632,7 @@ class Container extends PureComponent {
       location?.pathname?.includes('addSections') &&
       !['addItems', 'addSections'].includes(value) &&
       !(value === 'description' && groupNotEdited) &&
-      test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+      (isDynamicTest || hasSections)
     ) {
       hasValidGroups = this.validateGroups()
       if (!hasValidGroups) return
@@ -640,8 +655,7 @@ class Container extends PureComponent {
       test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
     if (
       isEditable &&
-      (hasValidGroups ||
-        test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
+      (hasValidGroups || !(isDynamicTest || hasSections)) &&
       (totalTestItems > 0 || isAutoSelectGroup) &&
       !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
@@ -651,10 +665,13 @@ class Container extends PureComponent {
     }
   }
 
-  validateGroups = () => {
-    const { test } = this.props
+  validateGroups = (isCreateNewItem = false) => {
+    const { test, isDynamicTest, hasSections } = this.props
     const { currentGroupIndex } = this.state
-    if (test?.testCategory !== testCategoryTypes.DYNAMIC_TEST) {
+    /* 
+        Apart from dynamic and sections test, it is not required to validate the item groups.
+    */
+    if (!isDynamicTest && (!hasSections || isCreateNewItem)) {
       return true
     }
     if (currentGroupIndex !== null) {
@@ -1016,6 +1033,8 @@ class Container extends PureComponent {
             onChangeSubjects={this.handleChangeSubject}
             onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
+            handleNavChange={this.handleNavChange('addSections')}
+            setCurrentGroupDetails={this.setCurrentGroupDetails}
             owner={isOwner}
             isEditable={isEditable}
             current={current}
@@ -1164,7 +1183,7 @@ class Container extends PureComponent {
       !this.validateTimedAssignment() ||
       !this.validateReferenceDocMaterial() ||
       !this.validatePenaltyOnUsingHintsValue() ||
-      !this.validateGroups() // validate groups for dynamic tests before save
+      !this.validateGroups(true) // validate groups for dynamic tests before save
     ) {
       return
     }
@@ -1811,6 +1830,8 @@ const enhance = compose(
       userSignupStatus: getUserSignupStatusSelector(state),
       enabledRefMaterial: isEnabledRefMaterialSelector(state),
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       createTest: createTestAction,

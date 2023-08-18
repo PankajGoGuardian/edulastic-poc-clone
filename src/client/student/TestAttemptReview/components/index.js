@@ -8,11 +8,14 @@ import styled, { ThemeProvider } from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
 import { WithResources } from '@edulastic/common'
+import { get } from 'lodash'
 import { themes } from '../../../theme'
 import AppConfig from '../../../../app-config'
-import SummaryHeader from './Header'
 import SummaryTest from './Content'
-import { finishTestAcitivityAction } from '../../../assessment/actions/test'
+import {
+  finishTestAcitivityAction,
+  submitSectionAction,
+} from '../../../assessment/actions/test'
 import {
   FirestorePings,
   ForceFullScreenModal,
@@ -26,8 +29,11 @@ import {
 import { fetchAssignmentsAction } from '../../Reports/ducks'
 import useUploadToS3 from '../../../assessment/hooks/useUploadToS3'
 import UserWorkUploadModal from '../../../assessment/components/UserWorkUploadModal'
-import { get } from 'lodash'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
+import {
+  getItemGroupsSelector,
+  hasSectionsSelector,
+} from '../../../assessment/selectors/test'
 
 const SummaryContainer = (props) => {
   const {
@@ -43,23 +49,21 @@ const SummaryContainer = (props) => {
     user: { firstName = '', lastName = '' },
     attachments,
     saveUserWork,
+    itemGroups,
+    submitSection,
+    hasSections,
   } = props
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [cameraImageIndex, setCameraImageIndex] = useState(1)
   const [
     isUserWorkUploadModalVisible,
     setUserWorkUploadModalVisible,
   ] = useState(false)
 
-  const [_, uploadToS3] = useUploadToS3(userId)
+  const [, uploadToS3] = useUploadToS3(userId)
 
-  const handlerConfirmationModal = () => {
-    setShowConfirmationModal(true)
-  }
-
-  const { groupId, utaId } = match.params
+  const { groupId, utaId, sectionId, assessmentType, id: testId } = match.params
 
   const currentlyFullScreen = useFullScreenListener({
     enabled: restrictNavigationOut,
@@ -104,6 +108,28 @@ const SummaryContainer = (props) => {
     closeUserWorkUploadModal()
   }
 
+  // Submit the sections of test on click of submit either from section summary or final summary
+  const submitSectionOrTest = (_groupId) => {
+    if (hasSections && sectionId && itemGroups.length) {
+      const currentSectionIndex = itemGroups.findIndex(
+        (item) => item._id === sectionId
+      )
+      const nextItemId = itemGroups[currentSectionIndex + 1].items[0]._id
+      const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/itemId/${nextItemId}`
+      const locationState = {
+        fromSummary: true,
+        ...history.location.state,
+      }
+      return submitSection({
+        testActivityId: utaId,
+        sectionId,
+        urlToGo,
+        locationState,
+      })
+    }
+    finishTest(_groupId)
+  }
+
   return (
     <ThemeProvider theme={themes.default}>
       <Header>
@@ -116,7 +142,7 @@ const SummaryContainer = (props) => {
               testActivityId={utaId}
               history={history}
               visible={!currentlyFullScreen}
-              finishTest={() => finishTest(groupId)}
+              finishTest={() => submitSectionOrTest(groupId)}
             />
           </>
         )}
@@ -130,10 +156,10 @@ const SummaryContainer = (props) => {
             assignmentId={assignmentObj?._id}
           />
         )}
-        <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
         <SummaryTest
-          finishTest={() => finishTest(groupId)}
+          finishTest={() => submitSectionOrTest(groupId)}
           openUserWorkUploadModal={openUserWorkUploadModal}
+          sectionId={sectionId}
         />
       </MainContainer>
       <UserWorkUploadModal
@@ -158,12 +184,15 @@ const enhance = compose(
       restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
       user: get(state, 'user.user', {}),
       attachments: getTestLevelUserWorkSelector(state),
+      itemGroups: getItemGroupsSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       finishTest: finishTestAcitivityAction,
       clearUserWork: clearUserWorkAction,
       fetchAssignments: fetchAssignmentsAction,
       saveUserWork: saveUserWorkAction,
+      submitSection: submitSectionAction,
     }
   )
 )

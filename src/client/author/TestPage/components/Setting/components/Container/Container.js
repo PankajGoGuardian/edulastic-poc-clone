@@ -62,6 +62,7 @@ import {
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
   togglePenaltyOnUsingHintsAction,
+  hasSectionsSelector,
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
@@ -121,6 +122,7 @@ import {
 } from '../../../../../../common/utils/testTypeUtils'
 import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
+import ShowSectionSettings from './SectionSettings'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
 import {
@@ -130,7 +132,7 @@ import {
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
 
 const {
-  settingCategories,
+  settingCategories: defaultSettingCategories,
   settingCategoriesFeatureMap,
   completionTypes,
   evalTypes,
@@ -181,6 +183,7 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded: true,
       isAntiCheatingGroupExpanded: true,
       isMiscellaneousGroupExpanded: true,
+      isSectionsGroupExpanded: true,
       warningKeypadSelection: false,
       selectedKeypad: null,
       showSaveSettingsModal: false,
@@ -453,6 +456,27 @@ class Setting extends Component {
     setTestData({
       [key]: featVal,
     })
+  }
+
+  // Section specific calc types are getting updated in the test state.
+  updateSectionCalc = (key, id) => (e) => {
+    const { setTestData, entity } = this.props
+    let featVal = key === 'calcTypes' ? e : isObject(e) ? e.target.value : e
+    if (typeof featVal === 'undefined') {
+      featVal = null
+    }
+    const newItemGroups = entity.itemGroups.map((obj) => {
+      if (obj._id === id) {
+        return {
+          ...obj,
+          settings: {
+            [key]: featVal,
+          },
+        }
+      }
+      return obj
+    })
+    setTestData({ itemGroups: newItemGroups })
   }
 
   handleBlur = () => this.setState({ inputBlur: true })
@@ -738,6 +762,7 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded,
       isAntiCheatingGroupExpanded,
       isMiscellaneousGroupExpanded,
+      isSectionsGroupExpanded,
       warningKeypadSelection,
       showSaveSettingsModal,
       showDeleteSettingModal,
@@ -771,6 +796,7 @@ class Setting extends Component {
       defaultTestTypeProfiles,
       togglePenaltyOnUsingHints,
       isAiEvaulationDistrict,
+      hasSections,
     } = this.props
     const {
       isDocBased,
@@ -801,6 +827,7 @@ class Setting extends Component {
       allowTeacherRedirect = true,
       freezeSettings = false,
       hasInstruction = false,
+      preventSectionNavigation = false,
       instruction = '',
       testletConfig = {},
       multiLanguageEnabled,
@@ -821,6 +848,18 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
     } = entity
+
+    // Updating the SettingCatogeries based on hasSections field
+    const settingCategories = hasSections
+      ? [
+          ...defaultSettingCategories,
+          {
+            id: 'section-settings',
+            title: 'Section Settings',
+            type: 'settings-category',
+          },
+        ]
+      : defaultSettingCategories
 
     const { canUseImmersiveReader } = features
 
@@ -1660,7 +1699,6 @@ class Setting extends Component {
                     )}
                 </>
               )}
-
               <SettingsCategoryBlock id="student-tools">
                 <span>
                   Student Tools <DollarPremiumSymbol premium={premium} />
@@ -1963,7 +2001,6 @@ class Setting extends Component {
                   </Block>
                 </>
               )}
-
               <SettingsCategoryBlock id="anti-cheating">
                 <span>
                   Anti-Cheating <DollarPremiumSymbol premium={premium} />
@@ -2409,7 +2446,6 @@ class Setting extends Component {
                   </Block>
                 </>
               )}
-
               <SettingsCategoryBlock id="miscellaneous">
                 <span>
                   Miscellaneous <DollarPremiumSymbol premium={premium} />
@@ -2610,6 +2646,34 @@ class Setting extends Component {
                   )}
                 </>
               )}
+              {/* Displaying the section settings header and component. */}
+              {hasSections && (
+                <SettingsCategoryBlock id="section-settings">
+                  <span>
+                    Sections <DollarPremiumSymbol premium={premium} />
+                  </span>
+                  <span
+                    onClick={() =>
+                      this.togglePanel(
+                        'isSectionsGroupExpanded',
+                        !isSectionsGroupExpanded
+                      )
+                    }
+                  >
+                    <Icon type={isSectionsGroupExpanded ? 'minus' : 'plus'} />
+                  </span>
+                </SettingsCategoryBlock>
+              )}
+              {hasSections && isSectionsGroupExpanded && (
+                <ShowSectionSettings
+                  itemGroups={itemGroups}
+                  premium={premium}
+                  isSmallSize={isSmallSize}
+                  preventSectionNavigation={preventSectionNavigation}
+                  updateSectionCalc={this.updateSectionCalc}
+                  updateTestData={this.updateTestData}
+                />
+              )}
             </Col>
           </Row>
         </Container>
@@ -2667,6 +2731,7 @@ const enhance = compose(
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

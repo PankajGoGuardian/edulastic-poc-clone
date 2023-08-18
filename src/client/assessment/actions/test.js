@@ -17,6 +17,7 @@ import {
   SET_SUBMIT_TEST_COMPLETE,
   CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
   SET_ANTI_CHEATING_ENABLED,
+  SUBMIT_SECTION,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -26,6 +27,12 @@ export const loadTestAction = (payload) => ({
 
 export const finishTestAcitivityAction = (payload) => ({
   type: FINISH_TEST,
+  payload,
+})
+
+// On this action triggered, the api to submit sections is called.
+export const submitSectionAction = (payload) => ({
+  type: SUBMIT_SECTION,
   payload,
 })
 

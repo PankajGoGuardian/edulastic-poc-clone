@@ -1,4 +1,5 @@
-import { Collapse } from 'antd'
+import { Collapse, Tooltip } from 'antd'
+import { IconCalculator } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
@@ -8,18 +9,31 @@ import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageC
 
 const { Panel } = Collapse
 
-const rightContent = (group) => {
-  const { deliverItemsCount, items } = group
+const rightContent = (group, hasSections = false) => {
+  const { deliverItemsCount, items, settings } = group
   return (
     <>
+      {/* 
+        when any calc is selected for a section, the calc Icon and tooltip 
+        will be displayed. Add a condition hasSections for the same. 
+      */}
+      {hasSections && settings?.calcTypes?.length > 0 && (
+        <Tooltip title={settings.calcTypes.join()}>
+          <span>
+            <IconCalculator />
+          </span>
+        </Tooltip>
+      )}
       <InfoDiv>
         <Text>TOTAL ITEMS</Text>
         <Count>{items.length}</Count>
       </InfoDiv>
-      <InfoDiv>
-        <Text>Item to Deliver</Text>
-        <Count>{deliverItemsCount || items.length}</Count>
-      </InfoDiv>
+      {!hasSections && (
+        <InfoDiv>
+          <Text>Item to Deliver</Text>
+          <Count>{deliverItemsCount || items.length}</Count>
+        </InfoDiv>
+      )}
     </>
   )
 }
@@ -36,6 +50,7 @@ export default SortableContainer(
     onSortGroup,
     removeSingle,
     removeMultiple,
+    hasSections,
     ...rest
   }) => {
     const [removalObj, setRemovalPassageItems] = useState()
@@ -123,7 +138,7 @@ export default SortableContainer(
               <Panel
                 header={group.groupName}
                 key={count}
-                extra={rightContent(group)}
+                extra={rightContent(group, hasSections)}
               >
                 {items.map(
                   (item, index) =>

@@ -60,6 +60,8 @@ import {
   setPassageItemsAction,
   setAndSavePassageItemsAction,
   setCurrentGroupIndexAction,
+  isDynamicTestSelector,
+  hasSectionsSelector,
 } from '../../../../TestPage/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { changePreviewAction, changeViewAction } from '../../../actions/view'
@@ -743,6 +745,8 @@ class PreviewModal extends React.Component {
       passageItemIds = [],
       isPlaylistTestReview,
       t,
+      isDynamicTest,
+      hasSections,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -753,7 +757,6 @@ class PreviewModal extends React.Component {
     const uniSectionTestLength = 1
     const { testItems = [] } = passage || {}
     const hasMultipleTestItems = testItems.length > 1
-    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
 
     const {
       passageLoading,
@@ -996,11 +999,18 @@ class PreviewModal extends React.Component {
                 </Popover>
               ) : (
                 <Tooltip
-                  title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
+                  title={
+                    isDynamicTest || hasSections
+                      ? t('authoringItemDisabled.info')
+                      : ''
+                  }
                 >
                   <span
                     style={{
-                      cursor: isDynamicTest ? 'not-allowed' : 'pointer',
+                      cursor:
+                        isDynamicTest || hasSections
+                          ? 'not-allowed'
+                          : 'pointer',
                     }}
                   >
                     <EduButton
@@ -1020,10 +1030,15 @@ class PreviewModal extends React.Component {
                         isPlaylistTestReview ||
                         isDisableEdit ||
                         !!premiumCollectionWithoutAccess ||
-                        isDynamicTest
+                        isDynamicTest ||
+                        hasSections
                       }
                       onClick={this.editTestItem}
-                      style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                      style={
+                        isDynamicTest || hasSections
+                          ? { pointerEvents: 'none' }
+                          : {}
+                      } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                     >
                       <IconPencilEdit color={themeColor} title="Edit item" />
                     </EduButton>
@@ -1031,10 +1046,17 @@ class PreviewModal extends React.Component {
                 </Tooltip>
               )}
               <Tooltip
-                title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
+                title={
+                  isDynamicTest || hasSections
+                    ? t('authoringItemDisabled.info')
+                    : ''
+                }
               >
                 <span
-                  style={{ cursor: isDynamicTest ? 'not-allowed' : 'pointer' }}
+                  style={{
+                    cursor:
+                      isDynamicTest || hasSections ? 'not-allowed' : 'pointer',
+                  }}
                 >
                   <EduButton
                     IconBtn
@@ -1050,10 +1072,15 @@ class PreviewModal extends React.Component {
                     disabled={
                       isDisableDuplicate ||
                       !!premiumCollectionWithoutAccess ||
-                      isDynamicTest
+                      isDynamicTest ||
+                      hasSections
                     }
                     onClick={this.handleDuplicateTestItem}
-                    style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                    style={
+                      isDynamicTest || hasSections
+                        ? { pointerEvents: 'none' }
+                        : {}
+                    } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                   >
                     <IconCopy color={themeColor} />
                   </EduButton>
@@ -1264,6 +1291,8 @@ const enhance = compose(
         writableCollections: getWritableCollectionsSelector(state),
         archivedItems: archivedItemsSelector(state),
         passageItemIds: passageItemIdsSelector(state),
+        isDynamicTest: isDynamicTestSelector(state),
+        hasSections: hasSectionsSelector(state),
       }
     },
     {

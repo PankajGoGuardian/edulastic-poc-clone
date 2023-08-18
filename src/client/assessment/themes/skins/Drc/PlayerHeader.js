@@ -83,9 +83,9 @@ const PlayerHeader = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
+  calcTypes,
 }) => {
   const {
-    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,

@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types'
 import React, { useRef, useEffect } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { Select, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { IconBookmark, IconSend } from '@edulastic/icons'
 import styled from 'styled-components'
 
 import SelectContainer from './SelectContainer'
+import { getDisabledQuestionDropDownIndexMapSelector } from '../../../selectors/test'
 
 const QuestionSelectDropdown = ({
   gotoQuestion,
@@ -20,6 +23,7 @@ const QuestionSelectDropdown = ({
   utaId,
   blockNavigationToAnsweredQuestions,
   zoomLevel,
+  disabledQuestionDropDownIndexMap,
 }) => {
   const dropdownWrapper = useRef(null)
 
@@ -81,6 +85,7 @@ const QuestionSelectDropdown = ({
               data-cy="questionSelectOptions"
               key={index}
               value={item}
+              disabled={disabledQuestionDropDownIndexMap[item]}
               aria-label={item}
             >
               {`${t('common.layout.selectbox.question')} ${index + 1}/${
@@ -115,7 +120,17 @@ QuestionSelectDropdown.propTypes = {
   skipped: PropTypes.array.isRequired,
 }
 
-export default withNamespaces('student')(QuestionSelectDropdown)
+const enhance = compose(
+  withNamespaces('student'),
+  connect((state) => ({
+    // Direct subscribe to disable question dropdown in common dropdown
+    disabledQuestionDropDownIndexMap: getDisabledQuestionDropDownIndexMapSelector(
+      state
+    ),
+  }))
+)
+
+export default enhance(QuestionSelectDropdown)
 
 const SkippedIcon = styled.i`
   color: #b1b1b1;

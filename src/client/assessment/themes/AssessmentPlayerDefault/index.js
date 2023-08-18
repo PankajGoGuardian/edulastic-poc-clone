@@ -48,7 +48,10 @@ import {
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { changePreviewAction } from '../../../author/src/actions/view'
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
-import { currentItemAnswerChecksSelector } from '../../selectors/test'
+import {
+  currentItemAnswerChecksSelector,
+  getCalcTypeSelector,
+} from '../../selectors/test'
 import { getCurrentGroupWithAllClasses } from '../../../student/Login/ducks'
 import { setUserAnswerAction } from '../../actions/answers'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
@@ -382,6 +385,7 @@ class AssessmentPlayerDefault extends React.Component {
       canShowReferenceMaterial,
       classLevelSettings,
       viewAsStudent,
+      calcTypes,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -398,7 +402,7 @@ class AssessmentPlayerDefault extends React.Component {
       isUserWorkUploadModalVisible,
       cameraImageIndex,
     } = this.state
-
+    const { firstItemInSectionAndRestrictNav } = this.context // To diable back navigation for prevent section navigation
     const dropdownOptions = Array.isArray(items)
       ? items.map((item, index) => index)
       : []
@@ -566,7 +570,11 @@ class AssessmentPlayerDefault extends React.Component {
             dropdownStyle={navZoomStyle}
             zoomLevel={headerZoom}
             overlayStyle={navZoomStyle}
-            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            disabled={
+              isFirst() ||
+              blockNavigationToAnsweredQuestions ||
+              firstItemInSectionAndRestrictNav
+            }
             isLast={isLast()}
             moveToPrev={moveToPrev}
             moveToNext={moveToNext}
@@ -622,6 +630,7 @@ class AssessmentPlayerDefault extends React.Component {
             }}
             passage={passage}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
+            calcTypes={calcTypes}
           >
             <ToolbarModal
               isVisible={isToolbarModalVisible}
@@ -730,7 +739,7 @@ class AssessmentPlayerDefault extends React.Component {
             {currentToolMode.indexOf(2) !== -1 && (
               <CalculatorContainer
                 changeTool={this.changeTool}
-                calcTypes={settings.calcTypes}
+                calcTypes={calcTypes}
                 calcProvider={settings.calcProvider}
               />
             )}
@@ -953,6 +962,7 @@ const enhance = compose(
         {}
       ),
       settings: state.test.settings,
+      calcTypes: getCalcTypeSelector(state),
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       isBookmarked: !!get(
         state,

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
@@ -11,6 +12,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FlexContainer, withKeyboard } from '@edulastic/common'
 import { StyledPopover, StyledButton, StyledMenu } from './styled'
 import { themes } from '../../../../theme'
+import { getDisabledQuestionDropDownIndexMapSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { parcc },
@@ -26,6 +28,7 @@ const ReviewToolbar = ({
   skipped = [],
   bookmarks,
   blockNavigationToAnsweredQuestions,
+  disabledQuestionDropDownIndexMap,
 }) => {
   const [selectedCard, setSelectedCard] = useState('all')
   const handleCardClick = (cardType) => setSelectedCard(cardType)
@@ -58,7 +61,10 @@ const ReviewToolbar = ({
           <MenuItem
             key={option}
             style={!skipped[option] && { paddingLeft: '33px' }}
-            disabled={blockNavigationToAnsweredQuestions}
+            disabled={
+              blockNavigationToAnsweredQuestions ||
+              disabledQuestionDropDownIndexMap[option]
+            }
             data-cy="questionSelectOptions"
             onClick={() => {
               handleQuestionCLick({ key: option })
@@ -122,8 +128,15 @@ ReviewToolbar.propTypes = {
   t: PropTypes.func.isRequired,
 }
 
-const enhance = compose(withNamespaces('student'))
-
+const enhance = compose(
+  withNamespaces('student'),
+  connect((state) => ({
+    // // Direct subscribe to disable question dropdown for paarc player
+    disabledQuestionDropDownIndexMap: getDisabledQuestionDropDownIndexMapSelector(
+      state
+    ),
+  }))
+)
 export default enhance(ReviewToolbar)
 
 const StyledCounter = styled.div`

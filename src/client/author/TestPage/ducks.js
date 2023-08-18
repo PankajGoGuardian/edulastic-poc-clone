@@ -151,6 +151,11 @@ export const createWidget = ({ id, type, title }) => ({
   tabIndex: 0,
 })
 
+export const createNewStaticGroup = () => ({
+  ...NewGroup,
+  _id: nanoid(),
+})
+
 export const getStaticGroupItemIds = (_test) =>
   (
     _test.itemGroups.flatMap((itemGroup = {}) => {
@@ -683,6 +688,21 @@ export const getCalcTypesSelector = createSelector(
   (entity) => entity.calcTypes
 )
 
+export const isDefaultTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testCategory === testCategoryTypes.DEFAULT
+)
+
+export const isDynamicTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+)
+
+export const hasSectionsSelector = createSelector(
+  getTestEntitySelector,
+  (test) => !!test?.hasSections
+)
+
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,
@@ -844,14 +864,16 @@ export const getIsAudioResponseQuestionEnabled = createSelector(
 
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
-  ({ itemGroups }) => {
+  hasSectionsSelector,
+  ({ itemGroups }, hasSections) => {
     if (!itemGroups?.length) {
       return false
     }
     return (
       itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT ||
       itemGroups[0].deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
-      itemGroups.length > 1
+      itemGroups.length > 1 ||
+      hasSections
     )
   }
 )
@@ -1007,12 +1029,7 @@ export const createBlankTest = () => ({
   isDocBased: false,
   status: 'draft',
   thumbnail: defaultImage,
-  itemGroups: [
-    {
-      ...NewGroup,
-      _id: nanoid(),
-    },
-  ],
+  itemGroups: [createNewStaticGroup()],
   createdBy: {
     _id: '',
     name: '',
@@ -1055,6 +1072,7 @@ export const createBlankTest = () => ({
   penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
   showTtsForPassages: true,
+  hasSections: undefined,
   [SHOW_IMMERSIVE_READER]: false,
 })
 
@@ -1342,12 +1360,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          itemGroups: [
-            {
-              ...NewGroup,
-              _id: nanoid(),
-            },
-          ],
+          itemGroups: [createNewStaticGroup()],
           grades: [],
           subjects: [],
         },

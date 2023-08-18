@@ -20,6 +20,7 @@ import { Tooltip } from '../../../../common/utils/helpers'
 import { Container } from './styled'
 import { themes } from '../../../../theme'
 import TimedTestTimer from '../../common/TimedTestTimer'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { parcc },
@@ -40,6 +41,7 @@ const ToolBar = ({
   checkAnswerInProgress,
   answerChecksUsedForItem,
   checkAnswer,
+  calcTypes,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -50,12 +52,7 @@ const ToolBar = ({
     checkAnswer()
   }
 
-  const {
-    calcTypes,
-    enableScratchpad,
-    isTeacherPremium,
-    maxAnswerChecks,
-  } = settings
+  const { enableScratchpad, isTeacherPremium, maxAnswerChecks } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
@@ -153,6 +150,7 @@ ToolBar.propTypes = {
 const enhance = compose(
   connect((state) => ({
     checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+    calcTypes: getCalcTypeSelector(state),
   }))
 )
 

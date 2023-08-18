@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { last } from 'lodash'
 import { test as testConstants } from '@edulastic/constants'
 import { getAnswersListSelector } from './answers'
 
@@ -138,4 +139,95 @@ export const checkAnswerInProgressSelector = createSelector(
 export const getIsAntiCheatingEnabled = createSelector(
   stateSelector,
   (state) => state.isAntiCheatingEnabled
+)
+
+export const getItemGroupsSelector = createSelector(
+  stateSelector,
+  (state) => state.itemGroups
+)
+
+export const getPreventSectionNavigationSelector = createSelector(
+  stateSelector,
+  (state) => state.preventSectionNavigation
+)
+
+export const getAssignmentSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.settings
+)
+
+export const hasSectionsSelector = createSelector(
+  stateSelector,
+  (state) => state.hasSections
+)
+
+export const routeSelector = (state) => state.router.location.pathname
+
+/* 
+  Always expecting itemId in url and last value in url to be the itemId. 
+  Split the url with "/" will return an array of values where last value 
+  will be the current attempting ItemId and with this it is easy to find 
+  the section being attempted. 
+*/
+export const getSectionIdSelector = createSelector(
+  getItemGroupsSelector,
+  routeSelector,
+  (itemGroups, path) => {
+    const itemId = last(path.split('/'))
+    const { _id: currentSectionId } =
+      itemGroups?.find(({ items }) => items.some((i) => i._id === itemId)) || {}
+    return currentSectionId
+  }
+)
+
+export const getCalcTypeSelector = createSelector(
+  getItemGroupsSelector,
+  hasSectionsSelector,
+  getSectionIdSelector,
+  getAssignmentSettingsSelector,
+  (itemGroups, hasSections, sectionId, assignmentSettings) => {
+    let calcTypes = assignmentSettings.calcTypes
+    if (hasSections && itemGroups.length && sectionId) {
+      const { settings: currentSectionTestSettings } =
+        itemGroups?.find((item) => item._id === sectionId) || {}
+      if (currentSectionTestSettings?.calcTypes?.length > 0)
+        calcTypes = currentSectionTestSettings.calcTypes
+    }
+    return calcTypes
+  }
+)
+
+/* 
+  To disable items in question dropdown. This creates a map of true false with item index as the key. 
+  For the section being attempted will be always false and items in other sections will be disabled true.
+  eg:
+  [0]: false
+  [1]: false
+  [2]: true
+  [3]: true
+  where 0 and 1 are from section 1 and currently attempting first question
+*/
+export const getDisabledQuestionDropDownIndexMapSelector = createSelector(
+  getSectionIdSelector,
+  getItemGroupsSelector,
+  getPreventSectionNavigationSelector,
+  (sectionId, itemGroups, preventSectionNavigation) => {
+    const disabledItems = {}
+    // TODO: In teacher preview sectionId has to be derived. As there is no itemId in url params.
+    if (!preventSectionNavigation || !sectionId) {
+      return disabledItems
+    }
+    let index = 0
+    for (const itemGroup of itemGroups) {
+      itemGroup.items.forEach(
+        // eslint-disable-next-line no-loop-func
+        () => {
+          disabledItems[index] = itemGroup._id !== sectionId
+          index++
+        }
+      )
+    }
+
+    return disabledItems
+  }
 )

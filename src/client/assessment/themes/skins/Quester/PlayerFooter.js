@@ -67,10 +67,10 @@ const PlayerFooter = ({
   passage,
   openReferenceModal,
   canShowReferenceMaterial,
+  calcTypes,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
-    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,

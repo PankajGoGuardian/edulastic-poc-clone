@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
@@ -10,6 +11,7 @@ import {
   withKeyboard,
 } from '@edulastic/common'
 import { StyledMenu, MenuItem } from './styled'
+import { getDisabledQuestionDropDownIndexMapSelector } from '../../../selectors/test'
 
 const getItemStatusColor = (selectedCard) => {
   switch (selectedCard) {
@@ -36,6 +38,7 @@ const ReviewQuestionsModal = ({
   gotoSummary,
   previewPlayer,
   finishTest,
+  disabledQuestionDropDownIndexMap,
 }) => {
   const [selectedCard, setSelectedCard] = useState('notAnswered')
   const handleCardClick = (cardType) => setSelectedCard(cardType)
@@ -131,7 +134,10 @@ const ReviewQuestionsModal = ({
           {getOptions().map((option) => (
             <MenuItem
               key={option}
-              disabled={blockNavigationToAnsweredQuestions}
+              disabled={
+                blockNavigationToAnsweredQuestions ||
+                disabledQuestionDropDownIndexMap[option]
+              }
               data-cy="questionSelectOptions"
               bg={getItemStatusColor(selectedCard)}
               onClick={() => {
@@ -161,7 +167,15 @@ const ReviewQuestionsModal = ({
   )
 }
 
-const enhance = compose(withNamespaces('student'))
+const enhance = compose(
+  withNamespaces('student'),
+  connect((state) => ({
+    // Direct subscribe to disable question dropdown for quester player
+    disabledQuestionDropDownIndexMap: getDisabledQuestionDropDownIndexMapSelector(
+      state
+    ),
+  }))
+)
 
 export default enhance(ReviewQuestionsModal)
 

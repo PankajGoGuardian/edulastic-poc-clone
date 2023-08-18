@@ -19,6 +19,8 @@ import {
   createTestAction,
   getTestEntitySelector,
   getReleaseScorePremiumSelector,
+  hasSectionsSelector,
+  getCurrentGroupIndexSelector,
 } from '../TestPage/ducks'
 import {
   getUserRole,
@@ -139,12 +141,28 @@ export const updateTestItemLikeCountAction = createAction(
   UPDATE_TEST_ITEM_LIKE_COUNT
 )
 
+// To push the newly created item into the appropriate item group
+function getItemGroupsForTest(test, updatedTestItems, currentGroupIndex) {
+  return test?.itemGroups?.map((itemGroup, index) => {
+    if (index === currentGroupIndex) {
+      return {
+        ...test.itemGroups[currentGroupIndex],
+        items: updatedTestItems,
+      }
+    }
+    return itemGroup
+  })
+}
+
 export function* addItemToCartSaga({ payload }) {
   const { item, showNotification = true } = payload
   const test = yield select(getTestEntitySelector)
-  const testItems = test?.itemGroups?.flatMap(
-    (itemGroup) => itemGroup?.items || []
-  )
+  const hasSections = yield select(hasSectionsSelector)
+  const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
+
+  const testItems = hasSections
+    ? test?.itemGroups[currentGroupIndex]?.items
+    : test?.itemGroups?.flatMap((itemGroup) => itemGroup?.items || [])
   let updatedTestItems = []
   if ((testItems || []).some((o) => o?._id === item?._id)) {
     updatedTestItems = produce(testItems, (draft) => {
@@ -198,16 +216,16 @@ export function* addItemToCartSaga({ payload }) {
       testConstant.testContentVisibility.ALWAYS
   }
 
+  const itemGroups = getItemGroupsForTest(
+    test,
+    updatedTestItems,
+    currentGroupIndex
+  )
   const updatedTest = {
     ...test,
     ...extraProperties,
     releaseScore,
-    itemGroups: [
-      {
-        ...test.itemGroups[0],
-        items: updatedTestItems,
-      },
-    ],
+    itemGroups,
   }
 
   yield put(setTestItemsAction(updatedTestItems.map((o) => o._id)))

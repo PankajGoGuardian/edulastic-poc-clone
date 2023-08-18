@@ -37,6 +37,7 @@ const PlayerFooter = ({
   setSettingsModalVisibility,
   handleReviewOrSubmit,
   isPremiumContentWithoutAccess = false,
+  firstItemInSectionAndRestrictNav,
 }) => {
   const isFirst = () => (isDocbased ? true : currentItem === 0)
   const isLast = () => currentItem === items.length - 1
@@ -142,7 +143,11 @@ const PlayerFooter = ({
             data-cy="prev"
             icon="left"
             type="primary"
-            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            disabled={
+              isFirst() ||
+              blockNavigationToAnsweredQuestions ||
+              firstItemInSectionAndRestrictNav
+            }
             onClick={(e) => {
               moveToPrev()
               e.target.blur()

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
 import { test } from '@edulastic/constants'
+import { AssessmentPlayerContext } from '@edulastic/common'
 import TestItemPreview from '../../components/TestItemPreview'
 import ReferenceDocModal from '../common/ReferenceDocModal'
 import PlayerFooter from './PlayerFooter'
@@ -57,6 +58,9 @@ const PlayerContentArea = ({
     diff: 290,
     zoomLevel,
   })
+  const { firstItemInSectionAndRestrictNav } = useContext(
+    AssessmentPlayerContext
+  )
   const extraTestItemProps =
     testItemState === 'check'
       ? {
@@ -125,6 +129,7 @@ const PlayerContentArea = ({
           blockNavigationToAnsweredQuestions={
             blockNavigationToAnsweredQuestions
           }
+          firstItemInSectionAndRestrictNav={firstItemInSectionAndRestrictNav}
         />
       )}
       {isShowReferenceModal && referenceDocAttributes && (

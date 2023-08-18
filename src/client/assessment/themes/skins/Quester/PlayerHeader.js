@@ -67,6 +67,7 @@ const PlayerHeader = ({
   subjects,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  firstItemInSectionAndRestrictNav,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -214,7 +215,11 @@ const PlayerHeader = ({
                     data-cy="prev"
                     icon="left"
                     type="primary"
-                    disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                    disabled={
+                      isFirst() ||
+                      blockNavigationToAnsweredQuestions ||
+                      firstItemInSectionAndRestrictNav
+                    }
                     onClick={(e) => {
                       moveToPrev()
                       e.target.blur()

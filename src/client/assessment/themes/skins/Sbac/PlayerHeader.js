@@ -96,6 +96,7 @@ const PlayerHeader = ({
   isShowReferenceModal,
   openReferenceModal,
   t: i18Translate,
+  firstItemInSectionAndRestrictNav,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -185,7 +186,11 @@ const PlayerHeader = ({
                     <ControlBtn
                       data-cy="prev"
                       icon="left"
-                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      disabled={
+                        isFirst() ||
+                        blockNavigationToAnsweredQuestions ||
+                        firstItemInSectionAndRestrictNav
+                      }
                       onClick={(e) => {
                         moveToPrev()
                         e.target.blur()

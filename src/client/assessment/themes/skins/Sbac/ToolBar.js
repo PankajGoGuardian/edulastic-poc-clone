@@ -22,6 +22,7 @@ import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -50,16 +51,12 @@ const ToolBar = ({
   isShowReferenceModal,
   openReferenceModal,
   i18Translate,
+  calcTypes,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const {
-    calcTypes,
-    enableScratchpad,
-    isTeacherPremium,
-    maxAnswerChecks,
-  } = settings
+  const { enableScratchpad, isTeacherPremium, maxAnswerChecks } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -244,6 +241,7 @@ const enhance = compose(
     (state) => ({
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
       checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+      calcTypes: getCalcTypeSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

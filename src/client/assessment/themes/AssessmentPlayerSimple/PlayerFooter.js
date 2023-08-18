@@ -27,6 +27,7 @@ const PlayerFooter = ({
   unansweredQuestionCount,
   isSidebarVisible,
   blockNavigationToAnsweredQuestions,
+  firstItemInSectionAndRestrictNav,
 }) => (
   <MainFooter
     isSidebarVisible={isSidebarVisible}
@@ -44,7 +45,11 @@ const PlayerFooter = ({
         <span>
           <PrevButton
             data-cy="prev"
-            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            disabled={
+              isFirst() ||
+              blockNavigationToAnsweredQuestions ||
+              firstItemInSectionAndRestrictNav
+            }
             onClick={moveToPrev}
           >
             <FontAwesomeIcon icon={faAngleLeft} />

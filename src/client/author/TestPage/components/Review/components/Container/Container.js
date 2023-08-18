@@ -42,6 +42,8 @@ import {
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
   getTestsUpdatedSelector,
+  hasSectionsSelector,
+  isDefaultTestSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -540,6 +542,11 @@ class Review extends PureComponent {
       isTestsUpdated,
       orgCollections,
       userId,
+      setData,
+      handleNavChange,
+      setCurrentGroupDetails,
+      hasSections,
+      isDefaultTest,
     } = this.props
     const {
       isCollapse,
@@ -633,6 +640,11 @@ class Review extends PureComponent {
                     onShowTestPreview={this.showTestPreviewModal}
                     hasStickyHeader={hasStickyHeader}
                     itemGroups={test.itemGroups}
+                    hasSections={hasSections}
+                    isDefaultTest={isDefaultTest}
+                    setData={setData}
+                    handleNavChange={handleNavChange}
+                    setCurrentGroupDetails={setCurrentGroupDetails}
                   />
                 </SecondHeader>
               </div>
@@ -677,6 +689,7 @@ class Review extends PureComponent {
                 isTestsUpdated={isTestsUpdated}
                 orgCollections={orgCollections}
                 userId={userId}
+                hasSections={hasSections}
               />
             </Paper>
           </ReviewLeftContainer>
@@ -790,6 +803,8 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isTestsUpdated: getTestsUpdatedSelector(state),
       orgCollections: getCollectionsSelector(state),
+      hasSections: hasSectionsSelector(state),
+      isDefaultTest: isDefaultTestSelector(state),
     }),
     {
       setData: setTestDataAction,

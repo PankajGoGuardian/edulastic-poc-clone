@@ -17,7 +17,7 @@ import assessmentPlayerTheme from '../AssessmentPlayerSimple/themeStyle.json'
 import WorksheetComponent from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
 import VideoQuizWorksheet from '../../../author/AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import { changeViewAction } from '../../../author/src/actions/view'
-import { testLoadingSelector } from '../../selectors/test'
+import { getCalcTypeSelector, testLoadingSelector } from '../../selectors/test'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 
@@ -134,6 +134,7 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme,
       previewPlayer,
       settings,
+      calcTypes,
       playerSkinType,
       groupId,
       hidePause,
@@ -180,6 +181,7 @@ class AssessmentPlayerDocBased extends React.Component {
             finishTest={this.openExitPopup}
             hidePause={hidePause}
             themeForHeader={{ ...theme.default, ...assessmentPlayerTheme }}
+            calcTypes={calcTypes}
           >
             {!loading && (
               <EduIf condition={videoUrl?.length}>
@@ -245,7 +247,7 @@ class AssessmentPlayerDocBased extends React.Component {
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool('calculator')}
-                calcTypes={settings.calcTypes}
+                calcTypes={calcTypes}
                 calcProvider={settings.calcProvider}
               />
             ) : null}
@@ -264,6 +266,7 @@ const enhance = compose(
       loading: testLoadingSelector(state),
       selectedTheme: state.ui.selectedTheme,
       settings: state.test.settings,
+      calcTypes: getCalcTypeSelector(state),
       timedAssignment: state.test?.settings?.timedAssignment,
     }),
     {

@@ -4,8 +4,8 @@ import {
   FullScreenModal,
 } from '../../../ItemList/components/Container/styled'
 
-const AddItemsContainer = ({ children, isDynamicTest }) => {
-  return isDynamicTest ? (
+const AddItemsContainer = ({ children, isFullScreenMode }) => {
+  return isFullScreenMode ? (
     <FullScreenModal
       destroyOnClose
       keyboard={false}

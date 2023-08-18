@@ -480,6 +480,8 @@ module.exports = {
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
     'allowAutoEssayEvaluation',
+    // It is required to change the test settings state in redux.
+    'preventSectionNavigation',
   ],
   docBasedSettingsOptions: [
     'partialScore',

@@ -49,6 +49,8 @@ import {
   getShowUpgradePopupSelector,
   getQuestionTypesInTestSelector,
   getIsAudioResponseQuestionEnabled,
+  isDynamicTestSelector,
+  hasSectionsSelector,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -100,7 +102,6 @@ function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
 const {
   statusConstants,
   testContentVisibility: testContentVisibilityOptions,
-  testCategoryTypes,
 } = testConstants
 
 export const navButtonsTest = [
@@ -164,7 +165,7 @@ export const docBasedButtons = [
     text: 'Settings',
   },
 ]
-export const navButtonsDynamicTest = [
+export const navButtonsDynamicAndSectionsTest = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
     value: 'description',
@@ -251,6 +252,8 @@ const TestPageHeader = ({
   questionTypesInTest,
   enableAudioResponseQuestion,
   derivedFromPremiumBankId = false,
+  isDynamicTest,
+  hasSections,
 }) => {
   let navButtons =
     buttons ||
@@ -258,8 +261,9 @@ const TestPageHeader = ({
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
-      : test?.testCategory === testCategoryTypes.DYNAMIC_TEST
-      ? [...navButtonsDynamicTest]
+      : // In order to display the Add Sections tab instead of Add Items for dynamic or a test with sections
+      isDynamicTest || hasSections
+      ? [...navButtonsDynamicAndSectionsTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
@@ -988,6 +992,8 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,

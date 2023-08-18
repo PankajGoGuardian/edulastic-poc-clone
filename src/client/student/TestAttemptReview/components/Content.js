@@ -7,7 +7,7 @@ import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { Row, Col, Button, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { get, isEmpty } from 'lodash'
+import { get, intersection, isEmpty, last } from 'lodash'
 import { EduButton, FlexContainer, withKeyboard } from '@edulastic/common'
 import { IconPhotoCamera, IconSend } from '@edulastic/icons'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -25,7 +25,11 @@ import { themes } from '../../../theme'
 import { attemptSummarySelector } from '../ducks'
 import { getAssignmentsSelector } from '../../Assignments/ducks'
 import { loadTestAction } from '../../../assessment/actions/test'
-import { testLoadingSelector } from '../../../assessment/selectors/test'
+import {
+  getItemGroupsSelector,
+  getPreventSectionNavigationSelector,
+  testLoadingSelector,
+} from '../../../assessment/selectors/test'
 import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
 import { saveUserWorkAction } from '../../../assessment/actions/userWork'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
@@ -45,7 +49,12 @@ class SummaryTest extends Component {
 
   componentDidMount() {
     const { loadTest, history, match, questionList, saveUserWork } = this.props
-    const { utaId: testActivityId, id: testId, assessmentType } = match.params
+    const {
+      utaId: testActivityId,
+      id: testId,
+      assessmentType,
+      sectionId,
+    } = match.params
     const savedUserWork = JSON.parse(localStorage.getItem(`${testId}:userWork`))
     if (
       ASSESSMENT.includes(assessmentType) ||
@@ -62,7 +71,13 @@ class SummaryTest extends Component {
           summary: true,
         })
       }
-      sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)
+      /*
+        We show submit button in the Question dropdown, when student comes from review page 
+        to a question. This is not required to set incase user visited section summary. Since 
+        we are using same summary page to display final and section summaries.
+      */
+      if (!sectionId)
+        sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)
     } else {
       history.push('/home/assignments')
     }
@@ -169,6 +184,48 @@ class SummaryTest extends Component {
     }
   }
 
+  // This method returns the array of items of the current section to display in the section summary.
+  getCurrentSectionItemIds() {
+    const {
+      itemGroups,
+      sectionId,
+      questionList: { itemWiseQids },
+    } = this.props
+    const itemIds = Object.keys(itemWiseQids)
+    let sectionItems = []
+    if (sectionId && itemGroups && itemGroups.length) {
+      const currentGroupItemIds = itemGroups
+        .find((group) => group._id === sectionId)
+        .items.map((item) => item._id)
+      sectionItems = intersection(itemIds, currentGroupItemIds)
+    }
+    return sectionItems
+  }
+
+  // This is to get the item which belong to last section and enable the click for those items in the final summary page.
+  getClickEnabledItemIds() {
+    const { itemGroups, sectionId, preventSectionNavigation } = this.props
+    const itemIdsMap = {}
+    // is it final summary page with prevent section navigation ?
+    if (
+      !sectionId &&
+      preventSectionNavigation &&
+      itemGroups &&
+      itemGroups.length > 1
+    ) {
+      const { items } = last(itemGroups)
+      for (const item of items) {
+        itemIdsMap[item._id] = true
+      }
+    } else {
+      const items = itemGroups.flatMap(({ items: _items }) => _items)
+      for (const item of items) {
+        itemIdsMap[item._id] = true
+      }
+    }
+    return itemIdsMap
+  }
+
   render() {
     const {
       questionList: questionsAndOrder,
@@ -176,6 +233,7 @@ class SummaryTest extends Component {
       test,
       finishTest,
       savingResponse,
+      isSectionSubmitting,
       testLoading,
       blockNavigationToAnsweredQuestions,
       openUserWorkUploadModal,
@@ -190,6 +248,9 @@ class SummaryTest extends Component {
       partiallyAttemptedItems = [],
     } = questionsAndOrder
     const itemIds = Object.keys(itemWiseQids)
+    const currentSectionItemIds = this.getCurrentSectionItemIds()
+    const clickEnabledItemIdsMap = this.getClickEnabledItemIds()
+
     const {
       buttonIdx,
       showAttachmentsModal,
@@ -307,8 +368,10 @@ class SummaryTest extends Component {
                             key={index * 100 + qIndex}
                             type={type}
                             isVisible={buttonIdx === null || buttonIdx === type}
+                            disabled={!clickEnabledItemIdsMap[item]}
                             onClick={
-                              blockNavigationToAnsweredQuestions
+                              blockNavigationToAnsweredQuestions ||
+                              !clickEnabledItemIdsMap[item]
                                 ? () => {}
                                 : this.goToQuestion(
                                     test?.testId,
@@ -331,6 +394,12 @@ class SummaryTest extends Component {
                         )
                       }
                     })
+                    // To restrict the rendering of other section's question blocks in the section summary page.
+                    if (currentSectionItemIds && currentSectionItemIds.length) {
+                      return currentSectionItemIds.includes(item)
+                        ? questionBlock
+                        : null
+                    }
                     return questionBlock
                   })}
                 </QuestionBlock>
@@ -355,21 +424,24 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>{t('common.nextStep')}</ShortDescription>
-              <UploadPaperWorkBtn
-                data-cy="uploadTestAttachments"
-                isGhost
-                onClick={openUserWorkUploadModal}
-              >
-                <IconPhotoCamera />{' '}
-                <span>{t('default:UPLOAD PAPER WORK')}</span>
-              </UploadPaperWorkBtn>
-              <SubmitButton
-                type="primary"
-                onClick={finishTest}
-                loading={savingResponse}
-              >
-                <IconSend /> <span>{t('default:SUBMIT')}</span>
-              </SubmitButton>
+              <ButtonWrapper>
+                <UploadPaperWorkBtn
+                  data-cy="uploadTestAttachments"
+                  isGhost
+                  onClick={openUserWorkUploadModal}
+                >
+                  <IconPhotoCamera />{' '}
+                  <span>{t('default:UPLOAD PAPER WORK')}</span>
+                </UploadPaperWorkBtn>
+                <SubmitButton
+                  type="primary"
+                  onClick={finishTest}
+                  // To disable loader on click of submit in section summary
+                  loading={savingResponse || isSectionSubmitting}
+                >
+                  <IconSend /> <span>{t('default:SUBMIT')}</span>
+                </SubmitButton>
+              </ButtonWrapper>
             </Footer>
           </Container>
         </AssignmentContentWrapperSummary>
@@ -421,10 +493,13 @@ const enhance = compose(
       userWork: getTestLevelUserWorkSelector(state),
       classId: get(state, 'author_classboard_testActivity.classId', ''),
       savingResponse: state?.test?.savingResponse,
+      isSectionSubmitting: state?.test?.isSectionSubmitting,
       testLoading: testLoadingSelector(state),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
       studentData: getUser(state),
+      itemGroups: getItemGroupsSelector(state),
+      preventSectionNavigation: getPreventSectionNavigationSelector(state),
     }),
     {
       loadTest: loadTestAction,
@@ -435,34 +510,9 @@ const enhance = compose(
 
 export default enhance(SummaryTest)
 
-const ShareWrapperCss = css`
+const AssignmentContentWrapperSummary = styled.div`
   border-radius: 10px;
-  padding: 0px 80px;
   background: ${(props) => props.theme.assignment.cardContainerBgColor};
-`
-const AssignmentContentWrapper = styled.div`
-  ${ShareWrapperCss};
-  position: absolute;
-  bottom: 20px !important;
-  @media (max-width: 767px) {
-    padding: 0px 15px;
-  }
-  @media (max-width: ${smallDesktopWidth}) {
-    margin: 30px 34px;
-    padding: 0px 45px;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    padding: 0px 25px;
-    margin: 15px 15px;
-  }
-`
-
-const AssignmentContentWrapperSummary = styled(AssignmentContentWrapper)`
-  ${ShareWrapperCss};
-  margin: 24px 43px;
-  @media (max-width: ${desktopWidth}) {
-    margin: 15px 26px;
-  }
 `
 
 const Container = styled.div`
@@ -505,6 +555,8 @@ const MainContent = styled.div`
   margin-top: 22.5px;
   width: 100%;
   padding-top: 38px;
+  padding-left: 80px;
+  padding-right: 80px;
   @media (max-width: ${tabletWidth}) {
     padding-top: 20px;
   }
@@ -671,7 +723,9 @@ const QuestionColorBlock = withKeyboard(styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 5px;
-  cursor: ${({ cursor }) => cursor || 'pointer'};
+  cursor: ${({ cursor, disabled }) =>
+    disabled ? 'not-allowed' : cursor || 'pointer'};
+  pointer-events: ${({ disabled }) => (disabled ? 'none' : 'all')};
   &:hover {
     box-shadow: 4px 6px 11px 0px rgba(0, 0, 0, 0.2);
   }
@@ -703,6 +757,10 @@ const Footer = styled(Container)`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  border-top: 1px solid #cecece;
+  padding-top: 20px;
+  height: 36px;
   @media (max-width: ${smallDesktopWidth}) {
     margin-top: 43px;
   }
@@ -723,14 +781,12 @@ const SubmitButton = styled(Button)`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  position: fixed !important;
-  right: 20px;
-  top: 10px;
-  height: 32px;
+  height: 36px;
   border-radius: 4px;
   background-color: #1a73e8;
   font-size: 10px;
   font-weight: 600;
+  margin-left: 15px;
   svg {
     fill: ${mainBgColor};
     margin-right: 10px;
@@ -741,11 +797,16 @@ const UploadPaperWorkBtn = styled(EduButton)`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  position: fixed !important;
-  right: 125px;
-  top: 10px;
-  height: 32px;
+  height: 100%;
   border-radius: 4px;
   font-size: 10px;
   font-weight: 600;
+`
+
+const ButtonWrapper = styled.div`
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin-top: 15px;
 `

@@ -69,6 +69,7 @@ const SortableQuestionItem = SortableElement(
     disableAutoHightlight,
     editMode,
     onDropAnnotation,
+    videoQuizQuestionsToDisplay,
   }) => (
     <div
       onClick={() => {
@@ -112,6 +113,7 @@ const SortableQuestionItem = SortableElement(
         disableAutoHightlight={disableAutoHightlight}
         editMode={editMode}
         onDropAnnotation={onDropAnnotation}
+        videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
       />
     </div>
   )
@@ -142,7 +144,8 @@ class Questions extends React.Component {
       handleAddBulkQuestionAnnotations,
       editMode,
       isSnapQuizVideoPlayer,
-      highlightedQuestion,
+      videoQuizQuestionsToDisplay,
+      studentWork,
     } = this.props
 
     if (
@@ -177,8 +180,11 @@ class Questions extends React.Component {
       }
     }
 
-    if (editMode && highlightedQuestion) {
-      this.scrollToQuestion(highlightedQuestion)
+    if (
+      (editMode || studentWork) &&
+      videoQuizQuestionsToDisplay?.[0]?.questionId
+    ) {
+      this.scrollToQuestion(videoQuizQuestionsToDisplay[0].questionId)
     }
   }
 
@@ -190,14 +196,20 @@ class Questions extends React.Component {
   }
 
   isQuestionVisible = (questionId = '') => {
-    const { videoQuizQuestionsToDisplay = [], editMode } = this.props
+    const {
+      videoQuizQuestionsToDisplay = [],
+      editMode,
+      studentWork = false,
+      reportMode = false,
+    } = this.props
+
     const visibleQuestionIndex = (videoQuizQuestionsToDisplay || []).findIndex(
       (questionAnnotation) =>
         questionAnnotation?.questionId === questionId &&
         questionAnnotation?.x === -1 &&
         questionAnnotation?.y === -1
     )
-    return editMode || visibleQuestionIndex !== -1
+    return editMode || reportMode || studentWork || visibleQuestionIndex !== -1
   }
 
   scrollToBottom = () => {
@@ -437,6 +449,7 @@ class Questions extends React.Component {
       editMode,
       onDropAnnotation,
       annotations,
+      videoQuizQuestionsToDisplay,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -506,6 +519,7 @@ class Questions extends React.Component {
                       disableAutoHightlight={disableAutoHightlight}
                       editMode={editMode}
                       onDropAnnotation={onDropAnnotation}
+                      videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
                     />
                   </EduIf>
                 )

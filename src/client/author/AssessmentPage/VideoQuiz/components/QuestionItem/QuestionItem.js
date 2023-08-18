@@ -482,6 +482,20 @@ class QuestionItem extends React.Component {
     )
   }
 
+  isQuestionHighlighted = (questionId) => {
+    const { videoQuizQuestionsToDisplay = [], highlighted = false } = this.props
+    if (videoQuizQuestionsToDisplay?.length) {
+      const allQids = videoQuizQuestionsToDisplay.map(
+        (annotation) => annotation?.questionId || ''
+      )
+      if (allQids?.length) {
+        return highlighted || allQids.includes(questionId)
+      }
+      return highlighted
+    }
+    return highlighted
+  }
+
   render() {
     if (!this.props?.data?.id) {
       return null
@@ -492,7 +506,6 @@ class QuestionItem extends React.Component {
       viewMode,
       previewTab,
       previewMode,
-      highlighted,
       previousFeedback,
       answer,
       testMode,
@@ -536,7 +549,7 @@ class QuestionItem extends React.Component {
       <QuestionItemWrapper
         className={`doc-based-question-item-for-scroll-${id}`}
         id={id}
-        highlighted={highlighted}
+        highlighted={this.isQuestionHighlighted(id)}
         ref={this.itemRef}
         review={testMode || review}
         annotations={annotations}

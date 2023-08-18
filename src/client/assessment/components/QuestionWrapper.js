@@ -43,6 +43,7 @@ import { assignmentLevelSettingsSelector } from '../selectors/answers'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
+  getIsVideoQuizSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
@@ -193,12 +194,13 @@ class QuestionWrapper extends Component {
   }
 
   openStudentWork = () => {
-    const { data, loadScratchPad, showStudentWork } = this.props
+    const { data, loadScratchPad, showStudentWork, isVideoQuiz } = this.props
     // load the data from server and then show
     loadScratchPad({
       testActivityId: data?.activity?.testActivityId,
       testItemId: data?.activity?.testItemId,
       qActId: data?.activity?.qActId || data?.activity?._id,
+      isVideoQuiz,
       callback: () => showStudentWork(),
     })
   }
@@ -896,6 +898,7 @@ const enhance = compose(
         ['userInteractions', 'passages'],
         {}
       ),
+      isVideoQuiz: getIsVideoQuizSelector(state),
     }),
     {
       loadScratchPad: requestScratchPadAction,

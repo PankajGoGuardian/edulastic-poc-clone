@@ -41,6 +41,9 @@ export const showMarkerArea = (
   videoRef,
   state
 ) => {
+  if (viewMode === 'report') {
+    return
+  }
   if (annotationContainer.current !== null) {
     if (viewMode === 'review') {
       if (markerArea.current) {

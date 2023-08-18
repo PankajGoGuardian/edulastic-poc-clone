@@ -87,11 +87,21 @@ export default class FormText extends React.Component {
   }
 
   renderReport = () => {
-    const { answer, view } = this.props
+    const {
+      answer,
+      view,
+      question: { stimulus = '' },
+    } = this.props
     return (
-      <QuestionText check={['check', 'show'].includes(view)}>
-        {answer}
-      </QuestionText>
+      <div>
+        <Stimulus
+          style={{ marginBottom: 10, minHeight: 32 }}
+          dangerouslySetInnerHTML={{ __html: stimulus }}
+        />
+        <QuestionText check={['check', 'show'].includes(view)}>
+          {answer}
+        </QuestionText>
+      </div>
     )
   }
 

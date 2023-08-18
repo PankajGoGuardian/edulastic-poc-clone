@@ -34,7 +34,7 @@ const VideoQuizWorksheetComponent = ({
   test: { isDocBased, videoUrl: entityLink },
   testMode = false,
   studentWorkAnswersById,
-  studentWork,
+  studentWork = false,
   extraPaddingTop,
   currentAnnotationTool,
   isEditable,
@@ -283,6 +283,7 @@ const VideoQuizWorksheetComponent = ({
           handleAddBulkQuestionAnnotations={handleAddBulkQuestionAnnotations}
           videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
           handleUpdateSeektime={handleUpdateSeektime}
+          studentWork={studentWork}
         />
       </WorksheetWrapper>
     </div>

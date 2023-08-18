@@ -175,9 +175,16 @@ function* submitResponse({ payload }) {
 
 function* scratchPadLoadSaga({ payload }) {
   try {
-    const { testActivityId, testItemId, qActId, callback } = payload
+    const {
+      testActivityId,
+      testItemId,
+      qActId,
+      callback,
+      isVideoQuiz = false,
+    } = payload
     const userWork = yield select((state) => state.userWork.present)
-    if (!userWork[qActId] && testActivityId && testItemId) {
+    // Need to show show student work button always for video quiz and need not call API to fetch attachments
+    if (!isVideoQuiz && !userWork[qActId] && testActivityId && testItemId) {
       yield put(updateScratchpadAction({ loading: true }))
       const { attachments = [] } = yield call(
         attachmentApi.loadAllAttachments,

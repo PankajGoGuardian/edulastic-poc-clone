@@ -127,16 +127,25 @@ export default class FormMath extends React.Component {
   }
 
   renderReport = () => {
-    const { answer } = this.props
+    const {
+      answer,
+      question: { stimulus = '' },
+    } = this.props
 
     return (
-      <QuestionText>
-        <MathSpan
-          dangerouslySetInnerHTML={{
-            __html: `<span class="input__math" data-latex="${answer}"></span>`,
-          }}
+      <div>
+        <Stimulus
+          style={{ marginBottom: 20 }}
+          dangerouslySetInnerHTML={{ __html: stimulus }}
         />
-      </QuestionText>
+        <QuestionText>
+          <MathSpan
+            dangerouslySetInnerHTML={{
+              __html: `<span class="input__math" data-latex="${answer}"></span>`,
+            }}
+          />
+        </QuestionText>
+      </div>
     )
   }
 

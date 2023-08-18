@@ -58,6 +58,7 @@ const VideoPreview = ({
   updateVideoQuizQuestionsToDisplay,
   questionClickSeekTime,
   handleUpdateSeektime,
+  studentWork = false,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -362,6 +363,7 @@ const VideoPreview = ({
           {visibleAnnotation
             .filter(
               (item) =>
+                !studentWork &&
                 item.toolbarMode === 'question' &&
                 item.x !== -1 &&
                 item.y !== -1

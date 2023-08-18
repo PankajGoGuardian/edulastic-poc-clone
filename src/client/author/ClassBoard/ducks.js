@@ -1063,6 +1063,11 @@ export const getIsDocBasedTestSelector = createSelector(
   (_test) => _test?.isDocBased
 )
 
+export const getIsVideoQuizSelector = createSelector(
+  getClassResponseSelector,
+  (_test) => _test?.isDocBased && _test?.videoUrl?.length > 0
+)
+
 export const getCurrentTestActivityIdSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.currentTestActivityId || ''

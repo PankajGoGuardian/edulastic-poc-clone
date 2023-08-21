@@ -57,7 +57,7 @@ const LineReader = ({
         isGhost
         IconBtn
         data-cy="lineReaderButton"
-        aria-label="Line reader button"
+        aria-label="Line Reader"
         onClick={handleClick}
       >
         {btnText || <IconLineReader />}

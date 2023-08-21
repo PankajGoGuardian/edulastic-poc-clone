@@ -86,7 +86,9 @@ const QuestionSelectDropdown = ({
               key={index}
               value={item}
               disabled={disabledQuestionDropDownIndexMap[item]}
-              aria-label={item}
+              aria-label={`${t('common.layout.selectbox.question')} ${
+                index + 1
+              }/${options.length}`}
             >
               {`${t('common.layout.selectbox.question')} ${index + 1}/${
                 options.length

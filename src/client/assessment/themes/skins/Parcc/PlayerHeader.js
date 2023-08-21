@@ -172,6 +172,7 @@ const PlayerHeader = ({
                         blockNavigationToAnsweredQuestions ||
                         firstItemInSectionAndRestrictNav
                       }
+                      aria-label="Previous"
                       onClick={(e) => {
                         moveToPrev()
                         e.target.blur()
@@ -198,6 +199,7 @@ const PlayerHeader = ({
                     <ControlBtn
                       data-cy="next"
                       icon="right"
+                      aria-label="Next"
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -240,6 +242,7 @@ const PlayerHeader = ({
                           }
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
+                          aria-label={t('common.test.bookmark')}
                         >
                           <StyledIconBookmark />
                           <span>{t('common.test.bookmark')}</span>

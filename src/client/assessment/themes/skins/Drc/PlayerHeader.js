@@ -158,6 +158,7 @@ const PlayerHeader = ({
                     onClick={openReferenceModal}
                     title={i18Translate('common.test.referenceMaterial')}
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label={i18Translate('common.test.referenceMaterial')}
                   >
                     <IconEduReferenceSheet color={header2.background} />
                   </ButtonWrapper>
@@ -174,6 +175,7 @@ const PlayerHeader = ({
                         : 'Check Answer'
                     }
                     data-cy="checkAnswer"
+                    aria-label="Check Answer"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Cursor color={header2.background} />
@@ -191,7 +193,7 @@ const PlayerHeader = ({
                       : 'Crossout'
                   }
                   data-cy="crossButton"
-                  aria-label="Close Icon"
+                  aria-label="Crossout"
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
@@ -201,6 +203,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(CALC)}
                     title={i18Translate('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label="Calculator"
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>

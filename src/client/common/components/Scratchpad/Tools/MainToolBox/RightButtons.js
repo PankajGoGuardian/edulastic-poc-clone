@@ -21,6 +21,7 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
           key={btn.mode}
           id={btn.mode}
           pos={btn.pos}
+          aria-label={btn.label}
           disabled={
             (!canRedo && btn.mode === drawTools.REDO_TOOL) ||
             (!canUndo && btn.mode === drawTools.UNDO_TOOL)

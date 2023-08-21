@@ -6,7 +6,7 @@ import SVG from './common/SVG'
 const IconLogoCompact = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
-    aria-label="Edulatic Logo"
+    aria-label="Edulastic Logo"
     viewBox="0 0 26 26"
     {...props}
   >

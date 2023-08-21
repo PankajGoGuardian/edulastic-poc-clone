@@ -68,6 +68,7 @@ const ToolBar = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label="Check Answer"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck />
@@ -79,6 +80,7 @@ const ToolBar = ({
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Calculator"
           >
             <CaculatorIcon />
           </StyledButton>
@@ -98,7 +100,7 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
-            aria-label="Close Icon"
+            aria-label="Crossout"
           >
             <CloseIcon />
           </StyledButton>

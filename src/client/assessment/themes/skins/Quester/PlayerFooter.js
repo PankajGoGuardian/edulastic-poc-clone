@@ -110,8 +110,9 @@ const PlayerFooter = ({
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer
-        data-cy="zoomIn"
+        data-cy="zoomOut"
         onClick={handleZoomOut}
+        aria-label="Zoom Out"
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
@@ -121,8 +122,9 @@ const PlayerFooter = ({
       </ActionContainer>
 
       <ActionContainer
-        data-cy="zoomOut"
+        data-cy="zoomIn"
         onClick={handleZoomIn}
+        aria-label="Zoom In"
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
@@ -141,6 +143,7 @@ const PlayerFooter = ({
           }
           title={t('common.test.bookmark')}
           data-cy="bookmark"
+          aria-label={t('common.test.bookmark')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -162,6 +165,7 @@ const PlayerFooter = ({
           title={t('common.test.referenceGuide')}
           data-cy="referenceGuide"
           disabled={isPremiumContentWithoutAccess}
+          aria-label={t('common.test.referenceGuide')}
         >
           <IconWrapper>
             <IconReferenceGuide
@@ -186,6 +190,7 @@ const PlayerFooter = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label={t('common.test.checkanswer')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck color={footer.textColor} hoverColor={button.background} />
@@ -203,7 +208,7 @@ const PlayerFooter = ({
             : 'Crossout'
         }
         data-cy="crossButton"
-        aria-label="Close Icon"
+        aria-label="Crossout"
       >
         <IconWrapper>
           <IconAnswerEliminator

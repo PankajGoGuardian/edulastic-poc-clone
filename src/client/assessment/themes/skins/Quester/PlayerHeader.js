@@ -165,6 +165,7 @@ const PlayerHeader = ({
                   data-cy="finishTest"
                   onClick={finishTest}
                   disabled={hidePause}
+                  aria-label="Save & Exit"
                 >
                   {!hidePause && (
                     <IconSignoutHighlight style={{ marginRight: '10px' }} />
@@ -180,7 +181,15 @@ const PlayerHeader = ({
             <HeaderWrapper justifyContent="space-between">
               {!isDocbased && (
                 <Container className="quester-question-list">
-                  <StyledButton data-cy="options" onClick={handleOpen}>
+                  <StyledButton
+                    data-cy="options"
+                    onClick={handleOpen}
+                    aria-label={
+                      isLast()
+                        ? t('common.test.reviewAndSubmit')
+                        : t('common.test.review')
+                    }
+                  >
                     <span>
                       {isLast()
                         ? t('common.test.reviewAndSubmit')
@@ -198,6 +207,7 @@ const PlayerHeader = ({
                   alignItems: 'center',
                 }}
                 data-cy="questionLeft"
+                aria-label={`Question ${currentItem + 1} of ${totalQuestions}`}
               >
                 Question {currentItem + 1} of {totalQuestions}
               </Container>
@@ -220,6 +230,7 @@ const PlayerHeader = ({
                       blockNavigationToAnsweredQuestions ||
                       firstItemInSectionAndRestrictNav
                     }
+                    aria-label="Previous"
                     onClick={(e) => {
                       moveToPrev()
                       e.target.blur()
@@ -249,6 +260,7 @@ const PlayerHeader = ({
                     data-cy="next"
                     type="primary"
                     icon="right"
+                    aria-label={isLast() ? 'SUBMIT' : 'NEXT'}
                     onClick={(e) => {
                       moveToNext()
                       e.target.blur()

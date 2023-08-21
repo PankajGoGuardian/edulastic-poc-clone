@@ -99,6 +99,7 @@ const ToolBar = ({
           }
           data-cy="checkAnswer"
           disabled={isPremiumContentWithoutAccess}
+          aria-label="Check Answer"
         >
           <IconCheck />
         </StyledButton>
@@ -113,6 +114,7 @@ const ToolBar = ({
             onClick={openReferenceModal}
             active={isShowReferenceModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label={i18Translate('common.test.referenceMaterial')}
           >
             <IconEduReferenceSheet />
           </StyledButton>
@@ -124,6 +126,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
+            aria-label="Calculator"
             disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
@@ -144,7 +147,7 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
-            aria-label="Close Icon"
+            aria-label="Crossout"
           >
             <CloseIcon />
           </StyledButton>
@@ -168,6 +171,7 @@ const ToolBar = ({
           <StyledButton
             onClick={handleZoomIn}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Zoom In"
           >
             <StyledIcon type="zoom-in" />
           </StyledButton>
@@ -178,6 +182,7 @@ const ToolBar = ({
           <StyledButton
             onClick={handleZoomOut}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Zoom out"
           >
             <StyledIcon type="zoom-out" />
           </StyledButton>
@@ -212,6 +217,7 @@ const ToolBar = ({
             onClick={showLangSwitchPopUp}
             data-cy="SBAC_selectLang"
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Select Language"
           >
             <IconLanguage />
           </StyledButton>

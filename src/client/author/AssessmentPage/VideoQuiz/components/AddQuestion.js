@@ -116,6 +116,7 @@ class AddQuestion extends React.Component {
       onAddQuestion,
       onAddSection,
       minAvailableQuestionIndex,
+      enableAudioResponseQuestion,
     } = this.props
     return (
       <AddQuestionWrapper>
@@ -166,14 +167,16 @@ class AddQuestion extends React.Component {
                 <IconPencilHollow />
               </AddQuestionIcon>
             </Tooltip>
-            <Tooltip placement="top" title="Audio">
-              <AddQuestionIcon
-                onClick={onAddQuestion(AUDIO_RESPONSE)}
-                data-cy={AUDIO_RESPONSE}
-              >
-                <IconWhiteMic />
-              </AddQuestionIcon>
-            </Tooltip>
+            <EduIf condition={enableAudioResponseQuestion}>
+              <Tooltip placement="top" title="Audio">
+                <AddQuestionIcon
+                  onClick={onAddQuestion(AUDIO_RESPONSE)}
+                  data-cy={AUDIO_RESPONSE}
+                >
+                  <IconWhiteMic />
+                </AddQuestionIcon>
+              </Tooltip>
+            </EduIf>
           </QuestionTypes>
           <QuestionTypes>
             <CustomStyleBtn2

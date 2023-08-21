@@ -37,7 +37,10 @@ import {
   QuestionWidgetWrapper,
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
-import { deleteAnnotationAction } from '../../../TestPage/ducks'
+import {
+  deleteAnnotationAction,
+  getIsAudioResponseQuestionEnabled,
+} from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
@@ -450,6 +453,7 @@ class Questions extends React.Component {
       onDropAnnotation,
       annotations,
       videoQuizQuestionsToDisplay,
+      enableAudioResponseQuestion,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -532,6 +536,7 @@ class Questions extends React.Component {
               onAddSection={this.handleAddSection}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
               scrollToBottom={this.scrollToBottom}
+              enableAudioResponseQuestion={enableAudioResponseQuestion}
             />
           )}
           {review && !noCheck && !reportMode && (
@@ -603,6 +608,7 @@ const enhance = compose(
     (state) => ({
       recentStandardsList: getRecentStandardsListSelector(state),
       previewMode: getPreviewSelector(state),
+      enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     }),
     {
       addQuestion: addQuestionAction,

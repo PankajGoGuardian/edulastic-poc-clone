@@ -67,6 +67,7 @@ export default class QuestionEditModal extends React.Component {
       onUpdate,
       onDropAnnotation,
       annotations = [],
+      qNumber,
     } = this.props
 
     const updateAnnotationTime = (questionId, timestamp) => {
@@ -75,6 +76,7 @@ export default class QuestionEditModal extends React.Component {
         question,
         questionId,
         timestamp,
+        qNumber,
       })
       onDropAnnotation(updatedAnnotation, 'video')
     }

@@ -3,6 +3,7 @@ export const getUpdatedAnnotation = ({
   question,
   questionId,
   timestamp,
+  qNumber,
 }) => {
   timestamp = timestamp === 0 ? null : timestamp
   const annotationIndex = (annotations || []).findIndex(
@@ -13,7 +14,7 @@ export const getUpdatedAnnotation = ({
       x: -1,
       y: -1,
       questionId: question.id,
-      qIndex: question.qIndex,
+      qIndex: qNumber,
       time: timestamp,
     }
   }

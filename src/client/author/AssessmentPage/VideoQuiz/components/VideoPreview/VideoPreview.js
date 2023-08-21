@@ -1,7 +1,7 @@
 import { DragDrop } from '@edulastic/common'
 import { Col } from 'antd'
 import { Rnd } from 'react-rnd'
-import { round, isEmpty } from 'lodash'
+import { round, isEmpty, isEqual } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
@@ -14,6 +14,7 @@ import MuteUnmute from './MuteUnmute'
 import PlayPause from './PlayPause'
 import SeekBar from './SeekBar'
 import Volume from './Volume'
+
 import {
   AnnotationsContainer,
   Droppable,
@@ -78,9 +79,37 @@ const VideoPreview = ({
   const [currentTime, setCurrentTime] = useState(0)
 
   const onPlay = () => {
-    setPlaying(true)
     if (markerArea?.current && markerArea?.current?.isOpen) {
+      // Getting any unsaved MarkerJS annotation on play and saving same
+      markerArea.current?.blur?.()
+      const markerState = markerArea.current?.getState?.()
+
+      if (markerState?.markers?.length) {
+        const foundAnnotation = annotations.find(
+          (item) =>
+            item.markerJsData && isEqual(item.markerJsData, markerState.markers)
+        )
+
+        // saving annotation on pause if not already saved
+        if (!foundAnnotation) {
+          onDropAnnotation(
+            {
+              x: markerState.markers?.[0]?.left,
+              y: markerState.markers?.[0]?.top,
+              markerJsData: markerState.markers,
+              time: Math.floor(videoRef.current?.getCurrentTime?.() - 1),
+              toolbarMode: 'markerJs',
+            },
+            'video'
+          )
+        }
+      }
+
+      // playing video and Closing markerJS toolbar
+      setPlaying(true)
       markerArea.current.close()
+    } else {
+      setPlaying(true)
     }
   }
 
@@ -185,6 +214,15 @@ const VideoPreview = ({
     if (videoRef) {
       videoRef.current?.seekTo?.(time)
     }
+    if (visibleAnnotation?.length) {
+      setVisibleAnnotation([])
+    }
+    markerArea?.current?.close?.()
+  }
+
+  const onEnded = () => {
+    seekTo(0)
+    onPause()
   }
 
   const handleDropQuestion = ({ data, itemRect }) => {
@@ -306,7 +344,8 @@ const VideoPreview = ({
   useEffect(() => {
     if (typeof questionClickSeekTime === 'number') {
       setCurrentTime(questionClickSeekTime)
-      seekTo(questionClickSeekTime)
+      seekTo(questionClickSeekTime - 1)
+      onPlay()
       handleUpdateSeektime(null)
     }
   }, [questionClickSeekTime])
@@ -335,6 +374,7 @@ const VideoPreview = ({
           ref={videoRef}
           height="100%"
           width="100%"
+          onEnded={onEnded}
           config={{
             youtube: {
               playerVars: {
@@ -457,7 +497,7 @@ const VideoPreview = ({
             {formateSecondsToMMSS(currentTime)}/{formateSecondsToMMSS(duration)}
           </StyledTypographyText>
         </Col>
-        <Col style={{ flex: '1', minWidth: '0' }}>
+        <Col style={{ flex: '1', minWidth: '0', height: '0px' }}>
           <SeekBar
             marks={marks}
             duration={duration}

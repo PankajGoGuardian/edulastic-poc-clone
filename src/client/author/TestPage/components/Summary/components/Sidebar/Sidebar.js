@@ -56,6 +56,7 @@ const Sidebar = ({
   const subjectsList = selectsData.allSubjects
   const [searchValue, setSearchValue] = useState('')
   const testTitleInput = createRef()
+  const [isVideoUrlTouched, setIsVideoUrlTouched] = useState(false)
 
   useEffect(() => {
     if (testTitleInput.current) {
@@ -156,22 +157,31 @@ const Sidebar = ({
                 showArrow
                 value={videoUrl}
                 data-cy="videoUrl"
-                onChange={(e) => onChangeField('videoUrl', e.target.value)}
+                onChange={(e) => {
+                  if (!isVideoUrlTouched) {
+                    setIsVideoUrlTouched(true)
+                  }
+                  onChangeField('videoUrl', e.target.value)
+                }}
                 size="large"
                 placeholder="Enter the video URL"
                 margin="0px 0px 15px"
               />
-              <EduIf
-                condition={videoUrl !== undefined && !videoUrl.trim().length}
-              >
-                <EduThen>
-                  <ErrorWrapper>Please enter video URL.</ErrorWrapper>
-                </EduThen>
-                <EduElse>
-                  <EduIf condition={videoUrl && !ReactPlayer.canPlay(videoUrl)}>
-                    <ErrorWrapper>{`This link can't be played.`}</ErrorWrapper>
-                  </EduIf>
-                </EduElse>
+              <EduIf condition={isVideoUrlTouched}>
+                <EduIf
+                  condition={videoUrl !== undefined && !videoUrl.trim().length}
+                >
+                  <EduThen>
+                    <ErrorWrapper>Please enter video URL.</ErrorWrapper>
+                  </EduThen>
+                  <EduElse>
+                    <EduIf
+                      condition={videoUrl && !ReactPlayer.canPlay(videoUrl)}
+                    >
+                      <ErrorWrapper>{`This link can't be played.`}</ErrorWrapper>
+                    </EduIf>
+                  </EduElse>
+                </EduIf>
               </EduIf>
             </>
           </EduIf>

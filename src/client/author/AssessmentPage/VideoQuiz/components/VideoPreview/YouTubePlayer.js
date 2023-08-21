@@ -24,12 +24,16 @@ const YouTubePlayer = React.forwardRef(
       height,
       width,
       config,
+      onEnded,
     },
     ref
   ) => {
     const { playerVars, embedConfig } = config?.youtube || {}
     const onStateChange = (event) => {
       const player = event.target
+      if (event.data === 0) {
+        onEnded()
+      }
 
       if (event.data === window.YT.PlayerState.PLAYING) {
         onPlay()

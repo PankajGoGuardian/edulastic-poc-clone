@@ -165,7 +165,7 @@ export const StyledPlayerContainer = styled(Row)`
     viewMode === 'edit' ? 'absolute' : 'relative'};
   bottom: 0px;
   width: 100%;
-  padding: 6px 16px;
+  padding: 14px 16px 10px 16px;
   margin: 0px !important;
   z-index: 5;
   background: #000000a3;

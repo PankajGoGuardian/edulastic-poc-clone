@@ -204,6 +204,16 @@ const updateCorrectItemById = ({
     .then((result) => result.data.result)
 }
 
+const addItems = (data, params = {}) =>
+  api
+    .callApi({
+      url: `${prefix}/multi`,
+      method: 'post',
+      data,
+      params,
+    })
+    .then((result) => result.data.result)
+
 const generateQuestionViaAI = (data) =>
   api
     .callApi({
@@ -230,5 +240,6 @@ export default {
   getAutoSelectedItems,
   updateCorrectItemById,
   evaluateAsStudent,
+  addItems,
   generateQuestionViaAI,
 }

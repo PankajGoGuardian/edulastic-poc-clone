@@ -383,6 +383,10 @@
     "message": "Please enter test name.",
     "description": ""
   },
+  "pleaseSaveAiGeneratedItems": {
+    "message": "Please save all AI generated items",
+    "description": ""
+  },
   "receiveItemFailing": {
     "message": "Unable to retrieve the item.",
     "description": ""
@@ -441,6 +445,19 @@
   },
   "subjectFieldEmpty": {
     "message": "Subject field cannot be empty",
+    "description": ""
+  },
+  "emptyStandardsSet": {
+    "message": "Standards set cannot be empty",
+    "description": ""
+  },
+  "emptyStandards": {
+    "message": "Please select standards",
+    "description": ""
+  },
+
+  "itemTypesEmpty": {
+    "message": "Item Type field cannot be empty",
     "description": ""
   },
   "noQuestions": {
@@ -1587,6 +1604,10 @@
     "message": "Please provide valid test name",
     "description": ""
   },
+  "pleaseProvideValidNumberOfItems": {
+    "message": "Please provide valid number of items, Between 1-20",
+    "description": ""
+  },
   "persmissionDenied": {
     "message": "Permission denied",
     "description": ""
@@ -2184,6 +2205,18 @@
   },
   "teacherAlreadyAdded": {
     "message": "Teacher(s) already added.",
+    "description": ""
+  },
+  "AiItemGeneratorEmptyField": {
+    "message": "Please fill all mandatory fields",
+    "description": ""
+  },
+  "generateAiQuestions": {
+    "message": "Generating personalized questions based on given details. This might take a moment, but we promise it'll be worth the wait!",
+    "description": ""
+  },
+  "generateAiQuestionsFailed": {
+    "message": "Apologies for the inconvenience. We encountered an issue while generating questions based on the preferences. Please try again",
     "description": ""
   },
   "deleteFeedTypeSuccess": {

@@ -144,6 +144,8 @@ import { setSelectedLanguageAction } from '../../../../student/sharedDucks/Assig
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
+import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
+import ConfirmTabChange from './ConfirmTabChange'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -176,6 +178,8 @@ class Container extends PureComponent {
       currentGroupIndex: null,
       currentGroupDetails: {},
       groupNotEdited: true,
+      goToTabProps: {},
+      showConfirmationOnTabChange: false,
     }
   }
 
@@ -200,9 +204,10 @@ class Container extends PureComponent {
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`
     }
-    // if (tab === "addItems") {
-    //   url += `?page=${pageNumber}`;
+    // if (tab === 'addItems') {
+    //   url += `?page=${pageNumber}`
     // }
+
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
@@ -237,6 +242,7 @@ class Container extends PureComponent {
       userId,
       userSignupStatus,
       test,
+      aiTestStatus,
     } = this.props
 
     const { versionId, id } = match.params
@@ -274,12 +280,15 @@ class Container extends PureComponent {
           notification({ type: 'success', msg })
         }
       }
+
       if (isVersionFlow && versionId && versionId != 'undefined') {
         this.setState({ testLoaded: false })
         getTestIdFromVersionId(versionId)
       } else if (id && id != 'undefined') {
         this.setState({ testLoaded: false })
         receiveTestById(id, true, editAssigned)
+      } else if (aiTestStatus === STATUS.SUCCESS) {
+        this.setState({ testLoaded: false })
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         this.gotoTab('description')
@@ -604,7 +613,7 @@ class Container extends PureComponent {
     }
   }
 
-  handleNavChange = (value, firstFlow) => () => {
+  handleNavChange = (value, firstFlow, checkAiItems = true) => () => {
     const {
       test,
       match: { params },
@@ -619,6 +628,7 @@ class Container extends PureComponent {
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
+
     // condition to validate if test title is not empty before navigating to other tabs
     if (!test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
@@ -643,25 +653,64 @@ class Container extends PureComponent {
       })
       return
     }
-    this.gotoTab(value)
-    const isOwner =
-      (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable =
-      isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-    const totalTestItems = itemGroups.flatMap(
-      (itemGroup) => itemGroup.items || []
-    ).length
-    const isAutoSelectGroup =
-      test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
-    if (
-      isEditable &&
-      (hasValidGroups || !(isDynamicTest || hasSections)) &&
-      (totalTestItems > 0 || isAutoSelectGroup) &&
-      !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
-      updated &&
-      !firstFlow
-    ) {
-      this.handleSave()
+
+    if (value === 'addSections') {
+      this.setState({
+        currentGroupIndex: null,
+      })
+    }
+
+    const hasUnsavedAiItems = get(itemGroups, '0.items', []).some(
+      ({ unsavedItem }) => unsavedItem
+    )
+
+    if (hasUnsavedAiItems && checkAiItems) {
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: { value, firstFlow },
+        showConfirmationOnTabChange: true,
+      }))
+    } else {
+      this.gotoTab(value)
+      const isOwner =
+        (authors && authors.some((x) => x._id === userId)) || !params.id
+      const isEditable =
+        isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+      const totalTestItems = itemGroups.flatMap(
+        (itemGroup) => itemGroup.items || []
+      ).length
+      const isAutoSelectGroup =
+        test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
+      if (
+        isEditable &&
+        (hasValidGroups ||
+          test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
+        (totalTestItems > 0 || isAutoSelectGroup) &&
+        !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
+        updated &&
+        !firstFlow
+      ) {
+        this.handleSave()
+      }
+    }
+  }
+
+  confirmChangeNav = (confirm) => () => {
+    if (confirm) {
+      const { goToTabProps } = this.state
+      const { value, firstFlow } = goToTabProps
+      this.handleNavChange(value, firstFlow, false)()
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: {},
+        showConfirmationOnTabChange: false,
+      }))
+    } else {
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: {},
+        showConfirmationOnTabChange: false,
+      }))
     }
   }
 
@@ -1557,6 +1606,7 @@ class Container extends PureComponent {
       isShowFilter,
       showCloneModal,
       showCompeleteSignUp,
+      showConfirmationOnTabChange,
     } = this.state
     const current = currentTab
     const {
@@ -1639,6 +1689,10 @@ class Container extends PureComponent {
 
             return t('component.common.modal.exitPageWarning')
           }}
+        />
+        <ConfirmTabChange
+          confirmChangeNav={this.confirmChangeNav}
+          showConfirmationOnTabChange={showConfirmationOnTabChange}
         />
         {this.renderModal()}
         {showCompeleteSignUp && !isTestLoading && (
@@ -1830,6 +1884,7 @@ const enhance = compose(
       userSignupStatus: getUserSignupStatusSelector(state),
       enabledRefMaterial: isEnabledRefMaterialSelector(state),
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
     }),

@@ -3,7 +3,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { Tooltip } from 'antd'
-import { FlexContainer, PremiumTag, LikeIconStyled } from '@edulastic/common'
+import {
+  FlexContainer,
+  PremiumTag,
+  LikeIconStyled,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { darkGrey } from '@edulastic/colors'
 import {
   IconUser,
@@ -42,6 +49,7 @@ const MetaInfo = ({
   },
   isPublisherUser,
   toggleTestItemLikeRequest,
+  isAiGeneratedItem,
 }) => {
   const isItemLiked = item?.alreadyLiked || false
 
@@ -118,26 +126,34 @@ const MetaInfo = ({
             <StyledRubricIcon />
           </Tooltip>
         )}
-        {renderAnalytics(by, IconUser, false, 'authorName')}
-        {renderAnalytics(id && id.substring(18), IconHash, false, 'itemId')}
-        <AnalyticsItem>
-          <IconShare color={darkGrey} width={15} height={15} />
-          <MetaTitle>{analytics?.[0]?.usage || 0}</MetaTitle>
-        </AnalyticsItem>
-        <LikeIconStyled
-          data-cy="like-item"
-          isLiked={isItemLiked}
-          onClick={handleItemLike}
-          height="20px"
-          ml="15px"
-        >
-          <IconHeart
-            color={isItemLiked ? '#ca481e' : darkGrey}
-            width={15}
-            height={15}
-          />
-          <MetaTitle>{analytics?.[0]?.likes || 0}</MetaTitle>
-        </LikeIconStyled>
+        <EduIf condition={isAiGeneratedItem}>
+          <EduThen>
+            <MetaTitle>AI Generated</MetaTitle>
+          </EduThen>
+          <EduElse>
+            {renderAnalytics(by, IconUser, false, 'authorName')}
+            {renderAnalytics(id && id.substring(18), IconHash, false, 'itemId')}
+            <AnalyticsItem>
+              <IconShare color={darkGrey} width={15} height={15} />
+              <MetaTitle>{analytics?.[0]?.usage || 0}</MetaTitle>
+            </AnalyticsItem>
+            <LikeIconStyled
+              data-cy="like-item"
+              isLiked={isItemLiked}
+              onClick={handleItemLike}
+              height="20px"
+              ml="15px"
+            >
+              <IconHeart
+                color={isItemLiked ? '#ca481e' : darkGrey}
+                width={15}
+                height={15}
+              />
+              <MetaTitle>{analytics?.[0]?.likes || 0}</MetaTitle>
+            </LikeIconStyled>
+          </EduElse>
+        </EduIf>
+
         {audio && Object.prototype.hasOwnProperty.call(audio, 'ttsSuccess') ? (
           audio.ttsSuccess ? (
             <IconVolumeUp margin="0px 0px 0px 20px" data-cy="iconVolumeUp" />

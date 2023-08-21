@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import PerfectScrollbar from 'react-perfect-scrollbar'

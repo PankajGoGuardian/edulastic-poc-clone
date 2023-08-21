@@ -69,6 +69,7 @@ const AlignmentRow = ({
   isDocBased = false,
   authorQuestionStatus = false,
   showIconBrowserBtn = false,
+  hideLabel = false,
   isStandardsDataRequired = false,
 }) => {
   const {
@@ -299,14 +300,15 @@ const AlignmentRow = ({
         />
       )}
       <Row>
-        {showIconBrowserBtn && (
+        <EduIf condition={!hideLabel}>
           <FieldLabel>
             {`Standards ${isStandardsDataRequired ? `` : `(optional)`}`}
             <EduIf condition={isStandardsDataRequired}>
               <StyledRequired>*</StyledRequired>
             </EduIf>
           </FieldLabel>
-        )}
+        </EduIf>
+
         <Row gutter={24}>
           <Col md={showIconBrowserBtn ? 12 : 10}>
             <CustomTreeSelect
@@ -476,7 +478,6 @@ const AlignmentRow = ({
             </Col>
           )}
         </Row>
-
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>
             <RecentStandardsList

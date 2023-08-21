@@ -11,12 +11,14 @@ import {
   FlexContainer,
   notification,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
+
 import { ItemsPagination, Selected } from './styled'
 import {
   getCurriculumsListSelector,
@@ -73,6 +75,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -88,6 +91,8 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
+import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
 
 class AddItems extends PureComponent {
@@ -548,6 +553,8 @@ class AddItems extends PureComponent {
       userRole,
       sort = {},
       gotoAddSections,
+      aiTestStatus = false,
+      isPremiumUser,
       isDynamicTest,
       hasSections,
     } = this.props
@@ -615,6 +622,9 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
+                  <EduIf condition={isPremiumUser && !isDynamicTest}>
+                    <EduAIQuiz addItems test={test} />
+                  </EduIf>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
                   </Selected>
@@ -674,22 +684,24 @@ class AddItems extends PureComponent {
               )}
 
               {this.selectedItem && (
-                <PreviewModal
-                  isVisible={!!this.selectedItem}
-                  page="itemList"
-                  showAddPassageItemToTestButton
-                  showEvaluationButtons
-                  data={this.selectedItem}
-                  isEditable={this.owner}
-                  owner={this.owner}
-                  testId={test?._id}
-                  isTest={!!test}
-                  prevItem={this.prevItem}
-                  nextItem={this.nextItem}
-                  onClose={this.closePreviewModal}
-                  checkAnswer={this.checkItemAnswer}
-                  showAnswer={this.showItemAnswer}
-                />
+                <Spin spinning={aiTestStatus === STATUS.INPROGRESS}>
+                  <PreviewModal
+                    isVisible={!!this.selectedItem}
+                    page="itemList"
+                    showAddPassageItemToTestButton
+                    showEvaluationButtons
+                    data={this.selectedItem}
+                    isEditable={this.owner}
+                    owner={this.owner}
+                    testId={test?._id}
+                    isTest={!!test}
+                    prevItem={this.prevItem}
+                    nextItem={this.nextItem}
+                    onClose={this.closePreviewModal}
+                    checkAnswer={this.checkItemAnswer}
+                    showAnswer={this.showItemAnswer}
+                  />
+                </Spin>
               )}
             </ContentWrapper>
           </Element>
@@ -722,6 +734,8 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       pageNumber: state?.testsAddItems?.page,
       needToSetFilter: state?.testsAddItems?.needToSetFilter,
+      isPremiumUser: isPremiumUserSelector(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
     }),

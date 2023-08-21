@@ -1,5 +1,12 @@
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
-import { MainHeader, EduButton, notification, EduIf } from '@edulastic/common'
+import {
+  MainHeader,
+  EduButton,
+  notification,
+  EduIf,
+  EduElse,
+  EduThen,
+} from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
 import {
   IconAddItems,
@@ -24,6 +31,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
@@ -508,6 +516,9 @@ const TestPageHeader = ({
       : isPlaylist
       ? '290px'
       : '250px'
+  const hasUnsavedAiItems = get(test, 'itemGroups.0.items', []).some(
+    ({ unsavedItem }) => unsavedItem
+  )
   return (
     <>
       <Upgrade />
@@ -621,19 +632,41 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {hasTestId && owner && showPublishButton && !showPublishForEC && (
-              <EduButton
-                isBlue
-                isGhost
-                IconBtn
-                title="Save as Draft"
-                data-cy="save"
-                onClick={onSave}
-                disabled={disableButtons}
-              >
-                <IconDiskette />
-              </EduButton>
-            )}
+
+            <EduIf
+              condition={
+                hasUnsavedAiItems ||
+                (hasTestId && owner && showPublishButton && !showPublishForEC)
+              }
+            >
+              <EduIf condition={hasUnsavedAiItems}>
+                <EduThen>
+                  <EduButton
+                    isBlue
+                    title="Save as Draft"
+                    data-cy="save"
+                    onClick={onSave}
+                    disabled={disableButtons}
+                  >
+                    Save
+                  </EduButton>
+                </EduThen>
+                <EduElse>
+                  <EduButton
+                    isBlue
+                    isGhost
+                    IconBtn
+                    title="Save as Draft"
+                    data-cy="save"
+                    onClick={onSave}
+                    disabled={disableButtons}
+                  >
+                    <IconDiskette />
+                  </EduButton>
+                </EduElse>
+              </EduIf>
+            </EduIf>
+
             {hasTestId &&
             owner &&
             showPublishButton &&
@@ -848,7 +881,10 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {owner && !showPublishForEC && (
+
+            <EduIf
+              condition={hasUnsavedAiItems || (owner && !showPublishForEC)}
+            >
               <EduButton
                 isBlue
                 isGhost
@@ -860,7 +896,7 @@ const TestPageHeader = ({
               >
                 <IconDiskette />
               </EduButton>
-            )}
+            </EduIf>
             {hasTestId &&
             owner &&
             showPublishButton &&

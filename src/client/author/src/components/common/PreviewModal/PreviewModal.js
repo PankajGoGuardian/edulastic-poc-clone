@@ -27,13 +27,15 @@ import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Icon, Modal, Spin, Popover, Tooltip } from 'antd'
-import { get, intersection, keyBy, uniq } from 'lodash'
+import { cloneDeep, get, intersection, isEmpty, keyBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled, { css } from 'styled-components'
+import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
+import { QUE_TYPE_BY_TITLE } from '@edulastic/constants/const/questionType'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -60,6 +62,7 @@ import {
   setPassageItemsAction,
   setAndSavePassageItemsAction,
   setCurrentGroupIndexAction,
+  setTestDataAction,
   isDynamicTestSelector,
   hasSectionsSelector,
 } from '../../../../TestPage/ducks'
@@ -91,6 +94,8 @@ import {
 } from './ducks'
 import ReportIssue from './ReportIssue'
 import { ButtonsWrapper, RejectButton } from './styled'
+import { aiTestActions } from '../../../../AssessmentCreate/components/CreateAITest/ducks'
+import { AiEduButton } from '../../../../AssessmentCreate/components/CreateAITest/styled'
 
 const {
   ITEM_GROUP_TYPES,
@@ -199,6 +204,57 @@ class PreviewModal extends React.Component {
     clearPreview()
     changePreviewMode('clear')
     onClose()
+  }
+
+  onRegenerateTestItem = () => {
+    const { regenerateTestItem, item, groupIndex = 0 } = this.props
+    const {
+      alignment,
+      grades,
+      subjects,
+      stimulus,
+      depthOfKnowledge,
+      authorDifficulty,
+      title: questionTitle,
+    } = item?.data?.questions[0]
+
+    const { _id } = item
+
+    if (
+      [
+        _id,
+        alignment,
+        grades,
+        subjects,
+        stimulus,
+        depthOfKnowledge,
+        authorDifficulty,
+        questionTitle,
+      ].every((x) => !isEmpty(x))
+    ) {
+      regenerateTestItem({
+        questionType: QUE_TYPE_BY_TITLE[questionTitle],
+        numberOfItems: 1,
+        dok: [depthOfKnowledge],
+        difficulty: [authorDifficulty],
+        alignment,
+        existingQidToRegenerate: _id,
+        groupIndex,
+      })
+    } else {
+      let msg
+      if (isEmpty(grades) || isEmpty(subjects) || isEmpty(alignment)) {
+        msg =
+          'Please add grades subjects and standard set to regenerate the question'
+      }
+      if (isEmpty(depthOfKnowledge)) {
+        msg = 'Please add in depth of knowledge metadata section of question'
+      }
+      if (isEmpty(authorDifficulty)) {
+        msg = 'Please add difficulty level in metadata section of question'
+      }
+      notification({ type: 'warn', msg })
+    }
   }
 
   handleDuplicateTestItem = async () => {
@@ -519,12 +575,54 @@ class PreviewModal extends React.Component {
     }
   }
 
+  handleRemoveOne = (itemId) => {
+    const { test, setTestData, setTestItems } = this.props
+    const newData = cloneDeep(test)
+
+    const itemsSelected = newData.itemGroups
+      .flatMap((itemGroup) => itemGroup.items || [])
+      .find((item) => item._id === itemId)
+
+    if (!itemsSelected) {
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectAtleastOneQuestion',
+      })
+    }
+
+    newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
+      ...itemGroup,
+      items: itemGroup.items.filter(
+        (testItem) => testItem._id !== itemsSelected._id
+      ),
+    }))
+
+    newData.scoring.testItems = newData.scoring.testItems.filter((item) =>
+      newData.itemGroups
+        .flatMap((itemGroup) => itemGroup.items || [])
+        .find(({ id }) => id === item._id && itemsSelected._id !== id)
+    )
+
+    const testItems = newData.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+
+    setTestItems(testItems.map((item) => item._id))
+    setTestData(newData)
+    this.handleSelection(false)
+  }
+
   handleAddOrRemove = () => {
     const {
       item,
       test,
       test: { itemGroups },
     } = this.props
+
+    if (item?.unsavedItem) {
+      return this.handleRemoveOne(item?._id)
+    }
+
     const staticGroups = (itemGroups || []).filter(
       (g) => g.type === ITEM_GROUP_TYPES.STATIC
     )
@@ -541,7 +639,7 @@ class PreviewModal extends React.Component {
     }
   }
 
-  handleSelection = () => {
+  handleSelection = (shouldSave = true) => {
     const {
       setDataAndSave,
       selectedRows,
@@ -587,7 +685,9 @@ class PreviewModal extends React.Component {
         }
       }
       keys = (keys || []).filter((key) => key !== item?._id)
-      setDataAndSave({ addToTest: false, item: { _id: item?._id } })
+      if (shouldSave) {
+        setDataAndSave({ addToTest: false, item: { _id: item?._id } })
+      }
       notification({ type: 'success', messageKey: 'itemRemovedTest' })
     }
     setTestItems(keys)
@@ -744,6 +844,7 @@ class PreviewModal extends React.Component {
       selectedRows,
       passageItemIds = [],
       isPlaylistTestReview,
+
       t,
       isDynamicTest,
       hasSections,
@@ -931,6 +1032,11 @@ class PreviewModal extends React.Component {
                   justifyContent="center"
                   onClick={this.handleAddOrRemove}
                   data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
+                  title={
+                    item.unsavedItem
+                      ? 'Please save the Test to edit this Ai Generated Item'
+                      : ''
+                  }
                 >
                   {this.isAddOrRemove
                     ? 'Add To Test'
@@ -968,6 +1074,18 @@ class PreviewModal extends React.Component {
                   </EduButton>
                 </>
               )}
+              <EduIf condition={item?.aiGenerated}>
+                <AiEduButton
+                  title="Regenerate"
+                  width="28px"
+                  isGhost
+                  height="28px"
+                  onClick={this.onRegenerateTestItem}
+                  aiStyle
+                >
+                  <IconMagicWand fill={`${white}`} />
+                </AiEduButton>
+              </EduIf>
               {page !== 'itemAuthoring' && (
                 <EduButton
                   title="Clear"
@@ -1019,7 +1137,9 @@ class PreviewModal extends React.Component {
                       height="28px"
                       width="28px"
                       title={
-                        isDisableEdit
+                        item.unsavedItem
+                          ? 'Please save the Test to edit this Ai Generated Item'
+                          : isDisableEdit
                           ? !allowDuplicate
                             ? 'Edit of Item is restricted by Publisher'
                             : 'Edit permission is restricted by the author'
@@ -1031,6 +1151,7 @@ class PreviewModal extends React.Component {
                         isDisableEdit ||
                         !!premiumCollectionWithoutAccess ||
                         isDynamicTest ||
+                        item.unsavedItem ||
                         hasSections
                       }
                       onClick={this.editTestItem}
@@ -1064,7 +1185,9 @@ class PreviewModal extends React.Component {
                     width="28px"
                     height="28px"
                     title={
-                      isDisableDuplicate
+                      item.unsavedItem
+                        ? 'Please save the Test to Clone this Ai Generated Item'
+                        : isDisableDuplicate
                         ? 'Clone permission is restricted by the author'
                         : 'Clone'
                     }
@@ -1073,6 +1196,7 @@ class PreviewModal extends React.Component {
                       isDisableDuplicate ||
                       !!premiumCollectionWithoutAccess ||
                       isDynamicTest ||
+                      item.unsavedItem ||
                       hasSections
                     }
                     onClick={this.handleDuplicateTestItem}
@@ -1291,6 +1415,7 @@ const enhance = compose(
         writableCollections: getWritableCollectionsSelector(state),
         archivedItems: archivedItemsSelector(state),
         passageItemIds: passageItemIdsSelector(state),
+        aiTestStatus: state?.aiTestDetails?.status,
         isDynamicTest: isDynamicTestSelector(state),
         hasSections: hasSectionsSelector(state),
       }
@@ -1316,6 +1441,8 @@ const enhance = compose(
       setAndSavePassageItems: setAndSavePassageItemsAction,
       editNonAuthoredItem: editNonAuthoredItemAction,
       setCurrentGroupIndex: setCurrentGroupIndexAction,
+      regenerateTestItem: aiTestActions.regenerateAiTestItems,
+      setTestData: setTestDataAction,
     }
   )
 )

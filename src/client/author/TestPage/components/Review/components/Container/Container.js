@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Spin } from 'antd'
 import PropTypes from 'prop-types'
 import {
   cloneDeep,
@@ -44,6 +44,7 @@ import {
   getTestsUpdatedSelector,
   hasSectionsSelector,
   isDefaultTestSelector,
+  getItemGroupsSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -73,6 +74,7 @@ import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
 import { groupTestItemsByPassageId } from '../helper'
 import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
+import { STATUS } from '../../../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -91,6 +93,7 @@ class Review extends PureComponent {
       currentTestId: '',
       hasStickyHeader: false,
       indexForPreview: 0,
+      groupIndex: 0,
     }
   }
 
@@ -423,12 +426,23 @@ class Review extends PureComponent {
     history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`)
   }
 
+  getGroupIndex = (itemId) => {
+    const { testGroups } = this.props
+
+    const groupIndex = testGroups?.findIndex((group) =>
+      group.items?.some((item) => item._id === itemId)
+    )
+    return groupIndex
+  }
+
   handlePreviewTestItem = (data) => {
     const { resetItemScore, testItems } = this.props
     const indexForPreview = findIndex(testItems, (ite) => ite._id === data)
+    const groupIndex = this.getGroupIndex(data)
     this.setState({
       item: { id: data },
       indexForPreview,
+      groupIndex,
     })
     // clear the item score in the store, if while adding item, check/show answer was clicked
     // EV-12256
@@ -444,9 +458,13 @@ class Review extends PureComponent {
       return
     }
     resetItemScore()
+    const itemId = testItems[nextItemIndex]._id
+    const groupIndex = this.getGroupIndex(itemId)
+
     this.setState({
-      item: { id: testItems[nextItemIndex]._id },
+      item: { id: itemId },
       indexForPreview: nextItemIndex,
+      groupIndex,
     })
   }
 
@@ -458,9 +476,12 @@ class Review extends PureComponent {
       return
     }
     resetItemScore()
+    const itemId = testItems?.[prevItemIndex]?._id
+    const groupIndex = this.getGroupIndex(itemId)
     this.setState({
       item: { id: testItems?.[prevItemIndex]?._id },
       indexForPreview: prevItemIndex,
+      groupIndex,
     })
   }
 
@@ -542,6 +563,7 @@ class Review extends PureComponent {
       isTestsUpdated,
       orgCollections,
       userId,
+      aiTestStatus,
       setData,
       handleNavChange,
       setCurrentGroupDetails,
@@ -555,6 +577,7 @@ class Review extends PureComponent {
       item,
       currentTestId,
       hasStickyHeader,
+      groupIndex,
     } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
@@ -715,27 +738,30 @@ class Review extends PureComponent {
           )}
         </ReviewContentWrapper>
         {isModalVisible && (
-          <PreviewModal
-            testId={test?._id || get(this.props, 'match.params.id', false)}
-            isTest={!!test}
-            isVisible={isModalVisible}
-            onClose={this.closeModal}
-            showModal
-            isEditable={isEditable || userRole === roleuser.EDULASTIC_CURATOR}
-            owner={owner}
-            addDuplicate={this.handleDuplicateItem}
-            page="review"
-            testStatus={test.status}
-            data={item}
-            questions={questions}
-            checkAnswer={() => checkAnswer(item)}
-            showAnswer={() => showAnswer(item)}
-            prevItem={this.prevItem}
-            nextItem={this.nextItem}
-            showEvaluationButtons
-            isPlaylistTestReview={isPlaylistTestReview}
-            playlistId={playlistId}
-          />
+          <Spin spinning={aiTestStatus === STATUS.INPROGRESS}>
+            <PreviewModal
+              testId={test?._id || get(this.props, 'match.params.id', false)}
+              isTest={!!test}
+              isVisible={isModalVisible}
+              onClose={this.closeModal}
+              showModal
+              isEditable={isEditable || userRole === roleuser.EDULASTIC_CURATOR}
+              owner={owner}
+              groupIndex={groupIndex}
+              addDuplicate={this.handleDuplicateItem}
+              page="review"
+              testStatus={test.status}
+              data={item}
+              questions={questions}
+              checkAnswer={() => checkAnswer(item)}
+              showAnswer={() => showAnswer(item)}
+              prevItem={this.prevItem}
+              nextItem={this.nextItem}
+              showEvaluationButtons
+              isPlaylistTestReview={isPlaylistTestReview}
+              playlistId={playlistId}
+            />
+          </Spin>
         )}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -795,6 +821,7 @@ const enhance = compose(
       defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       userFeatures: getUserFeatures(state),
+      testGroups: getItemGroupsSelector(state),
       testItems: getTestItemsSelector(state),
       isFetchingAutoselectItems: getAutoSelectItemsLoadingStatusSelector(state),
       userRole: getUserRole(state),
@@ -803,6 +830,7 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isTestsUpdated: getTestsUpdatedSelector(state),
       orgCollections: getCollectionsSelector(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
       hasSections: hasSectionsSelector(state),
       isDefaultTest: isDefaultTestSelector(state),
     }),

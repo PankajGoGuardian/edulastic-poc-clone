@@ -1,3 +1,4 @@
+const questionTitle = require('./questionTitle')
 const { AUDIO_RESPONSE: audioResponseTitleText } = require('./questionTitle')
 
 const ALL_QUESTION_TYPES = ''
@@ -113,6 +114,12 @@ const selectsData = [
   { value: AUDIO_RESPONSE, text: audioResponseTitleText },
 ]
 
+const QUE_TYPE_BY_TITLE = {
+  [questionTitle.MCQ_TRUE_OR_FALSE]: TRUE_OR_FALSE,
+  [questionTitle.MCQ_STANDARD]: MULTIPLE_CHOICE,
+  [questionTitle.MCQ_MULTIPLE_RESPONSE]: MULTIPLE_SELECTION,
+}
+
 const manuallyGradableQn = [
   FORMULA_ESSAY,
   HIGHLIGHT_IMAGE,
@@ -207,4 +214,6 @@ module.exports = {
   disableEditResponseInEgQuestionTypes,
   HIDE_QUESTION_TYPES,
   WIDGET_TYPES,
+  MULTIPLE_SELECTION,
+  QUE_TYPE_BY_TITLE,
 }

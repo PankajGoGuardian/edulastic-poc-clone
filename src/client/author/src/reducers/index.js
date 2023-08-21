@@ -67,6 +67,7 @@ import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
 import { advanceSearchReducer } from '../../AdvanceSearch'
+import { aiTestDetails } from '../../AssessmentCreate/components/CreateAITest/ducks'
 import aiGenerateQuestionState from './aiGenerateQuestion'
 
 const authorReducers = {
@@ -139,6 +140,7 @@ const authorReducers = {
   dataWarehouseReducer,
   rosterImportReducer,
   advanceSearchReducer,
+  aiTestDetails,
   aiGenerateQuestionState,
 }
 

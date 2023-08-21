@@ -1,4 +1,9 @@
 import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
+import {
+  MULTIPLE_CHOICE,
+  MULTIPLE_SELECTION,
+  TRUE_OR_FALSE,
+} from '@edulastic/constants/const/questionType'
 
 // TK instead of PK for PreKindergarten is intentional
 const allGrades = [
@@ -88,6 +93,12 @@ const defaultStandards = {
   'Social Studies': 'Social Studies',
 }
 
+const allQuestionTypes = [
+  { value: MULTIPLE_CHOICE, text: 'Multiple Choice question' },
+  { value: TRUE_OR_FALSE, text: 'True of False' },
+  { value: MULTIPLE_SELECTION, text: 'Multiple Select question' },
+]
+
 export default {
   allGrades,
   allSubjects,
@@ -102,4 +113,5 @@ export default {
   allStatus,
   defaultStandards,
   extraStatus,
+  allQuestionTypes,
 }

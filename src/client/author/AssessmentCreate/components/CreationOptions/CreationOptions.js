@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { get } from 'lodash'
+import { EduIf } from '@edulastic/common'
 import OptionPDF from '../OptionPDF/OptionPDF'
 import OptionVideo from '../OptionVideo/OptionVideo'
 import OptionScratch from '../OptionScratch/OptionScratch'
@@ -12,6 +14,7 @@ import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
 import OptionQti from '../OptionQTI/OptionQTI'
 import { QTI_DISTRICTS } from '../../../../config'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import EduAiQuiz from '../CreateAITest'
 
 const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
   <BodyWrapper>
@@ -31,8 +34,16 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
       >
         <OptionDynamicTest />
       </FeaturesSwitch>
-      {isShowQTI && <OptionQti />}
+      <EduIf condition={isShowQTI}>
+        <OptionQti />
+      </EduIf>
     </FlexWrapper>
+    <FeaturesSwitch
+      inputFeatures={['aiQuizEnabled']}
+      actionOnInaccessible="hidden"
+    >
+      <EduAiQuiz />
+    </FeaturesSwitch>
   </BodyWrapper>
 )
 
@@ -46,6 +57,7 @@ const enhance = compose(
     isShowQTI: QTI_DISTRICTS.some((qtiDistrict) =>
       (state?.user?.user?.districtIds || []).includes(qtiDistrict)
     ),
+    aiTestStatus: get(state, 'aiTestDetails.status'),
   }))
 )
 

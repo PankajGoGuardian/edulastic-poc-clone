@@ -281,7 +281,7 @@ class AuthorTestItemPreview extends Component {
   }
 
   renderLeftButtons = (showScratch, showNotification) => {
-    const { onlySratchpad, toggleReportIssue } = this.props
+    const { onlySratchpad, toggleReportIssue, item } = this.props
     const { isEnableScratchpad } = this.state
 
     const scratchpadHandler = () => this.toggleScratchpad(showNotification)
@@ -306,12 +306,17 @@ class AuthorTestItemPreview extends Component {
           }}
         >
           <ReportIssueBtn
-            title="Report Issue"
+            title={
+              item.unsavedItem
+                ? 'Please save Test to report issue for this Item'
+                : 'Report Issue'
+            }
             height="28px"
             width="30px"
             IconBtn
             isGhost
             onClick={toggleReportIssue}
+            disabled={item.unsavedItem}
           >
             <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
           </ReportIssueBtn>

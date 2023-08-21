@@ -687,7 +687,7 @@ export class PendoHelper {
    * @returns {Promise<boolean>}
    */
   static showGuide(guideId, maxCount = -1) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!window.pendo) return resolve(false)
       // Issue:
       //   pendo frequently resets pendo.onGuideDismissed

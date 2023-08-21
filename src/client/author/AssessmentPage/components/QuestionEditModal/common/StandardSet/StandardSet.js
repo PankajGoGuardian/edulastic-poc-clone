@@ -38,6 +38,7 @@ const StandardSet = ({
   curriculumStandardsLoading,
   isDocBased,
   showIconBrowserBtn,
+  hideLabel,
 }) => {
   const [searchProps, setSearchProps] = useState({
     id: '',
@@ -100,6 +101,7 @@ const StandardSet = ({
   return (
     <ThemeProvider theme={themes.default}>
       <AlignmentRow
+        hideLabel={hideLabel}
         t={t}
         alignment={questionAlignment}
         alignmentIndex={0}

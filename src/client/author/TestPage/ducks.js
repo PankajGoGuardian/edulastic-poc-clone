@@ -2348,6 +2348,7 @@ function* createTest(data) {
   dataToSend.subjects = dataToSend.subjects?.filter((el) => !!el) || []
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
+
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -2362,9 +2363,35 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
-    const entity = yield createTest(payload.data)
-    entity.itemGroups = payload.data.itemGroups
-    yield put(createTestSuccessAction(entity))
+
+    const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
+      .filter(({ unsavedItem }) => unsavedItem)
+      .map((item) =>
+        omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
+      )
+
+    let newTestItems
+    if (!isEmpty(aiGeneratedTestItems)) {
+      newTestItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+    }
+
+    const entity = yield createTest(
+      produce(payload.data, (draft) => {
+        if ((newTestItems || []).length) {
+          draft.itemGroups[0].items = newTestItems
+        }
+      })
+    )
+
+    yield put(
+      createTestSuccessAction(
+        produce(entity, (draft) => {
+          if ((newTestItems || []).length) {
+            draft.itemGroups[0].items = newTestItems
+          }
+        })
+      )
+    )
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
     const pathname = yield select((state) => state.router.location.pathname)
     const currentTabMatch = pathname?.match(
@@ -2374,6 +2401,10 @@ function* createTestSaga({ payload }) {
     // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
     const currentTab = currentTabMatch?.[1] || 'description'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+    if (entity.aiGenerated) {
+      yield put(receiveTestByIdAction(entity._id, true, false))
+    }
+
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {
     captureSentryException(err)
@@ -2483,6 +2514,33 @@ export function* updateTestSaga({ payload }) {
     ) {
       notification({ messageKey: 'enterValidPassword' })
       return yield put(setTestsLoadingAction(false))
+    }
+
+    const aiGeneratedTestItems = []
+    let selectedGroupForAI = -1
+    payload.data.itemGroups.forEach((itemGroup, index) => {
+      itemGroup.items
+        .filter(({ unsavedItem }) => unsavedItem)
+        .forEach((item) => {
+          selectedGroupForAI = index
+          aiGeneratedTestItems.push(
+            omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
+          )
+        })
+    })
+
+    let newTestItems
+    if (!isEmpty(aiGeneratedTestItems)) {
+      newTestItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+    }
+
+    if ((newTestItems || []).length) {
+      for (let index = 0; index < payload.data.itemGroups?.length; index++) {
+        payload.data.itemGroups[index].items = [
+          ...payload.data.itemGroups[index].items,
+          ...(index === selectedGroupForAI ? newTestItems : []),
+        ].filter(({ unsavedItem }) => !unsavedItem)
+      }
     }
 
     const testItemGroups = payload.data.itemGroups

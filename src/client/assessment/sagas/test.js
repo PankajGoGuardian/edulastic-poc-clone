@@ -949,12 +949,12 @@ function* loadTest({ payload }) {
     sessionStorage.setItem('submitted', 'no')
     const isBlockNavigationResume =
       settings.blockNavigationToAnsweredQuestions &&
-      testActivity.questionActivities.length &&
+      testActivity?.questionActivities?.length &&
       !summary &&
       !test.isDocBased
     const isPreventSectionNavigationResume =
       test.preventSectionNavigation &&
-      testActivity.questionActivities.length &&
+      testActivity?.questionActivities?.length &&
       !summary &&
       !isFromSummary
     /*

@@ -575,7 +575,9 @@ const GroupItems = ({
       <CreateGroupWrapper>
         <Heading>
           ITEM DELIVERY SECTIONS&nbsp;
-          <Tooltip title="Within each section, select specific instructions for what you want included. You can have one section or create multiple sections.">
+          <Tooltip
+            title={`Within each section, select specific items using "Select items button". You can have one section or create multiple sections`}
+          >
             <IconInfo data-testid="icon-info" />
           </Tooltip>
         </Heading>

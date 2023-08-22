@@ -548,6 +548,7 @@ class Setting extends Component {
     const {
       entity: { itemGroups },
       userRole,
+      hasSections,
     } = this.props
     const newSettings = omit(initialSettings, [
       'autoRedirect',
@@ -590,6 +591,9 @@ class Setting extends Component {
     }
     if (!newSettings.safeBrowser) {
       delete newSettings.sebPassword
+    }
+    if (!hasSections && 'preventSectionNavigation' in newSettings) {
+      delete newSettings.preventSectionNavigation
     }
     return newSettings
   }

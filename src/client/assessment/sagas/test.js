@@ -803,10 +803,11 @@ function* loadTest({ payload }) {
         })
       }
 
-      const itemId = testItemIds[lastAttendedQuestion]
+      let itemId = testItemIds[lastAttendedQuestion]
       const { itemsToDeliverInGroup = [] } = testActivity?.testActivity || {}
-      const isLastItemInSection =
-        itemsToDeliverInGroup.find(({ items }) => last(items) === itemId) || {}
+      const isLastItemInSection = itemsToDeliverInGroup.find(
+        ({ items }) => last(items) === itemId
+      )
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
         lastAttendedQuestion !== test.testItems.length - 1 &&
@@ -815,6 +816,7 @@ function* loadTest({ payload }) {
         !isLastItemInSection
       ) {
         lastAttendedQuestion++
+        itemId = testItemIds[lastAttendedQuestion]
       } else if (
         /* 
            If a student is in the last item of the section and exits from the test,
@@ -825,6 +827,7 @@ function* loadTest({ payload }) {
         isLastItemInSection.status === SECTION_STATUS.SUBMITTED
       ) {
         lastAttendedQuestion++
+        itemId = testItemIds[lastAttendedQuestion]
       }
 
       // load previous responses
@@ -993,10 +996,9 @@ function* loadTest({ payload }) {
         )
       } else {
         const { itemsToDeliverInGroup = [] } = testActivity?.testActivity || {}
-        const isLastItemInSection =
-          itemsToDeliverInGroup.find(
-            ({ items }) => last(items) === lastVisitedQuestion.testItemId
-          ) || {}
+        const isLastItemInSection = itemsToDeliverInGroup.find(
+          ({ items }) => last(items) === lastVisitedQuestion.testItemId
+        )
         let itemId = testItems[lastVisitedItemIndex + 1]._id
         /* 
            If a student is in the last item of the section and exits from the test,

@@ -295,9 +295,8 @@ export const getGenerateCsvParams = (
 ) => {
   const standardId = getStandardId(skillInfo, settings.requestFilters)
   const { compareBy, analyseBy, sortKey, sortOrder } = tableFilters
-  return {
-    reportType: reportTypes.reportNavType.STANDARDS_PROGRESS,
-    reportFilters: {
+  const { query } = curateApiFiltersQuery(
+    {
       ...settings.requestFilters,
       ...ddRequestFilters,
       standardId,
@@ -305,7 +304,14 @@ export const getGenerateCsvParams = (
       analyzeBy: analyseBy.key,
       sortKey,
       sortOrder: SortOrdersMap[sortOrder],
+      requireTotalCount: true,
     },
+    FilterDetailsFields,
+    SharedDetailsFields
+  )
+  return {
+    reportType: reportTypes.reportNavType.STANDARDS_PROGRESS,
+    reportFilters: query,
   }
 }
 

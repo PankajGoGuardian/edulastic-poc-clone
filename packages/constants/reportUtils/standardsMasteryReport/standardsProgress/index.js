@@ -272,8 +272,8 @@ const populateBackendCSV = ({
   analyseByKey,
   includeHeader = true,
 }) => {
-  const chartMetrics = getChartMetrics(summaryMetrics, testInfo)
-  const tableMetrics = getTableMetrics(detailsMetrics)
+  const { metrics: chartMetrics } = getChartMetrics(summaryMetrics, testInfo)
+  const { metrics: tableMetrics } = getTableMetrics(detailsMetrics)
   const tableColumns = getTableColumns(
     chartMetrics,
     masteryScale,

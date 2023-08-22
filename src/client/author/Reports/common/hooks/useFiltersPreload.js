@@ -23,8 +23,11 @@ function useFiltersPreload({
     if (reportId) {
       fetchFiltersDataRequest({
         reportId,
+        externalTestsRequired,
         externalBandsRequired,
+        externalTestTypesRequired,
         testSettingsRequired,
+        attendanceBandInfoRequired,
       })
       setFilters({ ...filters, ...search })
     } else {

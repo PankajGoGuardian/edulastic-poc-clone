@@ -274,7 +274,6 @@ const EfficacyReport = ({
           reportFilters={{
             ...settings.requestFilters,
             compareBy: tableFilters.compareBy.key,
-            externalBandsRequired: true,
           }}
           showModal={sharingState}
           setShowModal={setSharingState}

@@ -99,7 +99,7 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
         onClick={onResetClick}
         style={
           showSelectedArea
-            ? { visibility: 'visible', textAlign: 'right' }
+            ? { visibility: 'visible', textAlign: 'left' }
             : { visibility: 'hidden' }
         }
       >

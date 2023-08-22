@@ -256,6 +256,7 @@ const VideoQuizWorksheetComponent = ({
             }
             questionClickSeekTime={questionClickSeekTime}
             handleUpdateSeektime={handleUpdateSeektime}
+            clearHighlighted={clearHighlighted}
           />
         </VideoViewerContainer>
         <Questions

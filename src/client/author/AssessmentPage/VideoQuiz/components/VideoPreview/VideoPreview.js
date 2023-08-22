@@ -60,6 +60,7 @@ const VideoPreview = ({
   questionClickSeekTime,
   handleUpdateSeektime,
   studentWork = false,
+  clearHighlighted,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -478,6 +479,7 @@ const VideoPreview = ({
                       handleRemoveAnnotation={removeQuestionAnnotation}
                       editMode={editMode}
                       onCreateOptions={() => {}}
+                      clearHighlighted={clearHighlighted}
                       draggble
                       disableAutoHightlight
                       isSnapQuizVideoPlayer
@@ -526,6 +528,7 @@ VideoPreview.propTypes = {
   annotations: PropTypes.array,
   onDropAnnotation: PropTypes.func.isRequired,
   onHighlightQuestion: PropTypes.func.isRequired,
+  clearHighlighted: PropTypes.func.isRequired,
 }
 
 VideoPreview.defaultProps = {

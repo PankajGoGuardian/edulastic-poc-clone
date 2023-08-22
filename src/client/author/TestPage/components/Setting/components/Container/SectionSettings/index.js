@@ -21,7 +21,7 @@ const ShowSectionSettings = ({
 }) => {
   const sectionTabs = itemGroups.map((g) => {
     const id = g._id
-    const values = g.settings.calcTypes || []
+    const values = g?.settings?.calcTypes || []
     return {
       key: id,
       label: `${g.groupName || ''}`,

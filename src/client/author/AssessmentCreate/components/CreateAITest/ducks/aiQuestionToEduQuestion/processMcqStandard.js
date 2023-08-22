@@ -33,11 +33,11 @@ export const processMcqStandardQuestion = (
   const uuidMap = {}
   const options = []
 
-  question.options.forEach(({ name, value }) => {
-    uuidMap[value] = uuid()
+  question.options.forEach(({ name }, index) => {
+    uuidMap[index] = uuid()
     options.push({
       label: name,
-      value: uuidMap[value],
+      value: uuidMap[index],
     })
   })
 

@@ -31,7 +31,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
-import { get } from 'lodash'
+
 import {
   getUserFeatures,
   getUserId,
@@ -83,6 +83,7 @@ import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 import { deletePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 
 /**
  *
@@ -516,9 +517,8 @@ const TestPageHeader = ({
       : isPlaylist
       ? '290px'
       : '250px'
-  const hasUnsavedAiItems = get(test, 'itemGroups.0.items', []).some(
-    ({ unsavedItem }) => unsavedItem
-  )
+  const _hasUnsavedAiItems = hasUnsavedAiItems(test?.itemGroups)
+
   return (
     <>
       <Upgrade />
@@ -635,11 +635,11 @@ const TestPageHeader = ({
 
             <EduIf
               condition={
-                hasUnsavedAiItems ||
+                _hasUnsavedAiItems ||
                 (hasTestId && owner && showPublishButton && !showPublishForEC)
               }
             >
-              <EduIf condition={hasUnsavedAiItems}>
+              <EduIf condition={_hasUnsavedAiItems}>
                 <EduThen>
                   <EduButton
                     isBlue
@@ -883,7 +883,7 @@ const TestPageHeader = ({
             )}
 
             <EduIf
-              condition={hasUnsavedAiItems || (owner && !showPublishForEC)}
+              condition={_hasUnsavedAiItems || (owner && !showPublishForEC)}
             >
               <EduButton
                 isBlue

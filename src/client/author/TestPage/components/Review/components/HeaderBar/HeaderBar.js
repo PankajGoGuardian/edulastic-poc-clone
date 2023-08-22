@@ -18,13 +18,14 @@ import {
   IconPlusCircle,
   IconMinusRounded,
 } from '@edulastic/icons'
-import { get, isArray } from 'lodash'
+import { isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { createNewStaticGroup } from '../../../../ducks'
 import Prompt from '../Prompt/Prompt'
 import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
+import { hasUnsavedAiItems } from '../../../../../../assessment/utils/helpers'
 
 const { ITEM_GROUP_TYPES } = testContatns
 const HeaderBar = ({
@@ -48,9 +49,7 @@ const HeaderBar = ({
   hasSections,
   isDefaultTest,
 }) => {
-  const hasUnsavedItems = get(itemGroups, '0.items', []).some(
-    ({ unsavedItem }) => unsavedItem
-  )
+  const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
   const [showPrompt, setShowPrompt] = useState(false)
   const [showRemoveModal, setShowRemoveModal] = useState(false)
   const [minimum, setMinimum] = useState(1)
@@ -208,9 +207,9 @@ const HeaderBar = ({
           isBlue
           onClick={onShowTestPreview}
           color="primary"
-          disabled={hasUnsavedItems}
+          disabled={_hasUnsavedAiItems}
           title={
-            hasUnsavedItems ? 'Please save the Test to View as student' : ''
+            _hasUnsavedAiItems ? 'Please save the Test to View as student' : ''
           }
         >
           <IconEye width={12} height={12} />

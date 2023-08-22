@@ -146,6 +146,7 @@ import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
+import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -660,11 +661,9 @@ class Container extends PureComponent {
       })
     }
 
-    const hasUnsavedAiItems = get(itemGroups, '0.items', []).some(
-      ({ unsavedItem }) => unsavedItem
-    )
+    const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
 
-    if (hasUnsavedAiItems && checkAiItems) {
+    if (_hasUnsavedAiItems && checkAiItems) {
       this.setState((state) => ({
         ...state,
         goToTabProps: { value, firstFlow },

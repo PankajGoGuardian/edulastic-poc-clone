@@ -1417,7 +1417,7 @@ const AssessmentContainer = ({
   }
 
   let playerComponent = null
-  if (!isUndefined(docUrl || videoUrl)) {
+  if (!isUndefined(docUrl) || !isUndefined(videoUrl)) {
     playerComponent = (
       <AssessmentPlayerDocBased
         videoUrl={videoUrl}

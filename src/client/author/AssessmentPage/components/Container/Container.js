@@ -190,7 +190,7 @@ class Container extends React.Component {
       currentTab === tabs.DESCRIPTION &&
       title &&
       title.trim() &&
-      (videoUrl === undefined || ReactPlayer.canPlay(ReactPlayer))
+      (videoUrl === undefined || ReactPlayer.canPlay(videoUrl))
     ) {
       changeView(tab)
       changePreview('clear')

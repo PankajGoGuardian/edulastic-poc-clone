@@ -186,6 +186,7 @@ export default class QuestionEditModal extends React.Component {
               onUpdate={onUpdate}
               isDocBased
               showIconBrowserBtn
+              isStandardsDataRequired={false}
             />
             <Row gutter={24} style={{ marginTop: '10px' }}>
               <Col md={12}>

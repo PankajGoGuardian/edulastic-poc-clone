@@ -246,6 +246,7 @@ class AddBulkModal extends React.Component {
               onUpdate={(data) => this.setState({ alignment: data.alignment })}
               isDocBased
               showIconBrowserBtn
+              isStandardsDataRequired
             />
             <Row style={{ marginTop: '10px' }} gutter={20}>
               <Col md={12}>

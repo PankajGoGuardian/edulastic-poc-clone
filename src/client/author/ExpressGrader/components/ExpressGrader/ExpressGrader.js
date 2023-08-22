@@ -13,7 +13,11 @@ import {
   WithResources,
   FlexContainer,
   toggleChatDisplay,
+  EduIf,
 } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { red, white } from '@edulastic/colors'
+import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -56,6 +60,7 @@ import {
   isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
+import { TagWrapper } from '../../../ClassBoard/components/Container/styled'
 
 /**
  *
@@ -257,6 +262,7 @@ class ExpressGrader extends Component {
       authorClassBoard,
       regradeModalState,
       isProxyUser,
+      t,
     } = this.props
     const { isVisibleModal, record, isGridEditOn, columnData } = this.state
     const { assignmentId, classId, testActivityId } = match.params
@@ -310,6 +316,18 @@ class ExpressGrader extends Component {
                     </FlexContainer>
                   </FlexContainer>
                 </StyledFlexContainer>
+                <EduIf condition={additionalData?.archiveCollection?.uqa}>
+                  <TagWrapper>
+                    <CustomTag
+                      width="100%"
+                      textAlign="center"
+                      textColor={red}
+                      bgColor={white}
+                    >
+                      {t('common.uqaArchiveMessage')}
+                    </CustomTag>
+                  </TagWrapper>
+                </EduIf>
                 {!isMobile && (
                   <>
                     <ScoreTable
@@ -358,6 +376,7 @@ class ExpressGrader extends Component {
 }
 
 const enhance = compose(
+  withNamespaces('classBoard'),
   withWindowSizes,
   connect(
     (state) => ({

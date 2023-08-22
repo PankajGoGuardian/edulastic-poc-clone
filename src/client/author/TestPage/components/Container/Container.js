@@ -159,6 +159,7 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
   testCategoryTypes,
+  sectionTestActions,
 } = testConstants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
@@ -312,23 +313,38 @@ class Container extends PureComponent {
           })
         }
       }
-      if (location?.state?.isDynamicTest && !id) {
-        // run only when creating a new test and not during edit test
-        const defaultItemGroup = {
-          ...(test.itemGroups?.[0] || {}),
-          ...NewGroupAutoselect,
+      // run only when creating a new test and not during edit test
+      if (!id) {
+        if (location?.state?.isDynamicTest) {
+          const defaultItemGroup = {
+            ...(test.itemGroups?.[0] || {}),
+            ...NewGroupAutoselect,
+          }
+          // if create dynamic test, default item group is autoselect
+          setData({
+            testCategory: testCategoryTypes.DYNAMIC_TEST,
+            itemGroups: [defaultItemGroup],
+            testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
+          })
+          // if create dynamic test, default item group should be editable
+          this.setState({
+            currentGroupIndex: 0,
+            currentGroupDetails: defaultItemGroup,
+          })
         }
-        // if create dynamic test, default item group is autoselect
-        setData({
-          testCategory: testCategoryTypes.DYNAMIC_TEST,
-          itemGroups: [defaultItemGroup],
-          testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
-        })
-        // if create dynamic test, default item group should be editable
-        this.setState({
-          currentGroupIndex: 0,
-          currentGroupDetails: defaultItemGroup,
-        })
+        if (location?.state?.hasSections) {
+          // if create sections test, default item group is manual
+          const defaultItemGroup = createNewStaticGroup()
+          setData({
+            hasSections: true,
+            itemGroups: [defaultItemGroup],
+          })
+          // if create sections test, default item group should be editable
+          this.setState({
+            currentGroupIndex: 0,
+            currentGroupDetails: defaultItemGroup,
+          })
+        }
       }
       if (showCancelButton) {
         setEditEnable(true)
@@ -551,6 +567,13 @@ class Container extends PureComponent {
     if (!settings.restrictNavigationOut) {
       delete settings.restrictNavigationOut
     }
+  }
+
+  setSectionsState = (hasSections) => {
+    const { history } = this.props
+    history.push({
+      state: { ...history.location.state, hasSections },
+    })
   }
 
   isTestSettingsEqual = (settingId) => {
@@ -1082,7 +1105,9 @@ class Container extends PureComponent {
             onChangeSubjects={this.handleChangeSubject}
             onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
-            handleNavChange={this.handleNavChange('addSections')}
+            handleNavChange={this.handleNavChange('addSections', true)}
+            handleSave={this.handleSave}
+            setSectionsState={this.setSectionsState}
             setCurrentGroupDetails={this.setCurrentGroupDetails}
             owner={isOwner}
             isEditable={isEditable}
@@ -1211,7 +1236,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = () => {
+  handleSave = (action) => {
     const {
       test = {},
       updateTest,
@@ -1255,6 +1280,17 @@ class Container extends PureComponent {
       if (!isSettingsEqual) {
         newTest.settingId = ''
       }
+    }
+    switch (action) {
+      case sectionTestActions.ADD:
+        newTest.hasSections = true
+        break
+      case sectionTestActions.REMOVE:
+        newTest.hasSections = false
+        newTest.itemGroups = [createNewStaticGroup()]
+        break
+      default:
+        break
     }
 
     updateLastUsedCollectionList(test.collections)

@@ -566,6 +566,8 @@ class Review extends PureComponent {
       aiTestStatus,
       setData,
       handleNavChange,
+      handleSave,
+      setSectionsState,
       setCurrentGroupDetails,
       hasSections,
       isDefaultTest,
@@ -667,6 +669,11 @@ class Review extends PureComponent {
                     isDefaultTest={isDefaultTest}
                     setData={setData}
                     handleNavChange={handleNavChange}
+                    handleSave={handleSave}
+                    setSectionsState={setSectionsState}
+                    testId={
+                      test?._id || get(this.props, 'match.params.id', false)
+                    }
                     setCurrentGroupDetails={setCurrentGroupDetails}
                   />
                 </SecondHeader>

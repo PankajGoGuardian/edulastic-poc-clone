@@ -26,7 +26,7 @@ import Prompt from '../Prompt/Prompt'
 import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
 
-const { ITEM_GROUP_TYPES } = testContatns
+const { ITEM_GROUP_TYPES, sectionTestActions } = testContatns
 const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
@@ -44,6 +44,9 @@ const HeaderBar = ({
   itemGroups,
   setData,
   handleNavChange,
+  handleSave,
+  setSectionsState,
+  testId,
   setCurrentGroupDetails,
   hasSections,
   isDefaultTest,
@@ -80,6 +83,8 @@ const HeaderBar = ({
   const handleAddSections = () => {
     setData({ hasSections: true })
     handleNavChange()
+    setSectionsState(true)
+    if (testId) handleSave(sectionTestActions.ADD)
     setCurrentGroupDetails()
   }
 
@@ -94,6 +99,8 @@ const HeaderBar = ({
       hasSections: false,
       itemGroups: [createNewStaticGroup()],
     })
+    setSectionsState(false)
+    if (testId) handleSave(sectionTestActions.REMOVE)
     setShowRemoveModal(false)
   }
 
@@ -196,7 +203,7 @@ const HeaderBar = ({
                 color="primary"
               >
                 <IconMinusRounded color={themeColor} width={9} height={9} />
-                {windowWidth > 767 && <span>Remove New Sections</span>}
+                {windowWidth > 767 && <span>Remove All Sections</span>}
               </EduButton>
             </EduElse>
           </EduIf>

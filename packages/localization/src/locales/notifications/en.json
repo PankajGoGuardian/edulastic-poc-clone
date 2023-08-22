@@ -1877,7 +1877,7 @@
     "description": ""
   },
   "eachStaticGroupShouldContainAtleastOneItems": {
-    "message": "Each Static group should contain at least 1 test item",
+    "message": "Select at least one item to save the section",
     "description": ""
   },
   "eachGroupShouldHaveUniqueGroupName": {

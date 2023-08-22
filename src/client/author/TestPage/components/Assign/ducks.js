@@ -8,7 +8,7 @@ import {
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { assignmentApi, testsApi } from '@edulastic/api'
+import { assignmentApi, testsApi, curriculumSequencesApi } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import {
   all,
@@ -49,6 +49,8 @@ export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
+export const FETCH_PLAYLIST_ASSIGNMENTS =
+  '[assignments] fetch playlist assignments'
 export const LOAD_ASSIGNMENTS = '[assignments] load assignments'
 export const DELETE_ASSIGNMENT = '[assignments] delete assignment'
 export const REMOVE_ASSIGNMENT = '[assignments] remove assignment'
@@ -66,10 +68,15 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
+export const LOAD_PLAYLIST_ASSIGNMENTS =
+  '[assignments] set playlist assignments'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
+export const fetchPlaylistAssignmentsAction = createAction(
+  FETCH_PLAYLIST_ASSIGNMENTS
+)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
@@ -91,6 +98,11 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
+export const setPlaylistAssignmentsAction = (payload) => ({
+  type: LOAD_PLAYLIST_ASSIGNMENTS,
+  payload,
+})
+
 const initialState = {
   isLoading: false,
   isAssigning: false,
@@ -100,6 +112,7 @@ const initialState = {
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
+  playlistAssignments: [],
 }
 
 const setAssignment = (state, { payload }) => {
@@ -156,11 +169,16 @@ const updateSearchTermsFilter = (state, { payload }) => {
   state.searchTerms = payload
 }
 
+const setPlaylistAssignments = (state, { payload }) => {
+  state.playlistAssignments = payload
+}
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
   },
   [LOAD_ASSIGNMENTS]: setAssignment,
+  [LOAD_PLAYLIST_ASSIGNMENTS]: setPlaylistAssignments,
   [SET_ASSIGNMENT]: addAssignment,
   [SET_CURRENT_ASSIGNMENT]: setCurrent,
   [REMOVE_ASSIGNMENT]: removeAssignment,
@@ -654,6 +672,21 @@ function* loadAssignments({ payload }) {
   }
 }
 
+function* fetchPlaylistAssignmentsSaga({ payload }) {
+  try {
+    const result = yield call(
+      curriculumSequencesApi.getPlaylistAssignment,
+      payload
+    )
+    yield put(setPlaylistAssignmentsAction(result))
+  } catch (error) {
+    console.log(error)
+    notification({
+      msg: error.response?.data?.message || 'Something went wrong',
+    })
+  }
+}
+
 function* deleteAssignment({ payload }) {
   try {
     yield assignmentApi.remove(payload)
@@ -671,6 +704,7 @@ export function* watcherSaga() {
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
+    yield takeEvery(FETCH_PLAYLIST_ASSIGNMENTS, fetchPlaylistAssignmentsSaga),
   ])
 }
 

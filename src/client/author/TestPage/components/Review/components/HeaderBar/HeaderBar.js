@@ -21,10 +21,13 @@ import {
 import { get, isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { createNewStaticGroup } from '../../../../ducks'
 import Prompt from '../Prompt/Prompt'
 import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
+import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 
 const { ITEM_GROUP_TYPES, sectionTestActions } = testContatns
 const HeaderBar = ({
@@ -50,6 +53,7 @@ const HeaderBar = ({
   setCurrentGroupDetails,
   hasSections,
   isDefaultTest,
+  isPremiumUser,
 }) => {
   const hasUnsavedItems = get(itemGroups, '0.items', []).some(
     ({ unsavedItem }) => unsavedItem
@@ -174,7 +178,7 @@ const HeaderBar = ({
             Add new sections --> displayed if default test does not have section. 
             Remove new sections --> displayed if default test has sections. 
         */}
-        {owner && isEditable && isDefaultTest && (
+        {owner && isEditable && isDefaultTest && isPremiumUser && (
           <EduIf condition={!hasSections}>
             <EduThen>
               <EduButton
@@ -323,4 +327,8 @@ HeaderBar.propTypes = {
   toggleSummary: PropTypes.func.isRequired,
 }
 
-export default HeaderBar
+const enhance = compose(
+  connect((state) => ({ isPremiumUser: isPremiumUserSelector(state) }))
+)
+
+export default enhance(HeaderBar)

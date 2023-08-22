@@ -379,6 +379,14 @@
     "message": "Unable to save the question.",
     "description": ""
   },
+  "pleaseEnterVideoUrl": {
+    "message": "Please enter video URL.",
+    "description": ""
+  },
+  "linkCantPlayed": {
+    "message": "This link can't be played.",
+    "description": ""
+  },
   "pleaseEnterName": {
     "message": "Please enter test name.",
     "description": ""

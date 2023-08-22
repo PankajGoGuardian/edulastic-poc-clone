@@ -14,6 +14,7 @@ import {
 import { test as testConstants, roleuser } from '@edulastic/constants'
 import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import ReactPlayer from 'react-player'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -179,18 +180,27 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title },
+      assessment: { title, videoUrl },
       changePreview,
       authorQuestionStatus: newQuestionsAdded,
       updated,
     } = this.props
 
-    if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
+    if (
+      currentTab === tabs.DESCRIPTION &&
+      title &&
+      title.trim() &&
+      (videoUrl === undefined || ReactPlayer.canPlay(ReactPlayer))
+    ) {
       changeView(tab)
       changePreview('clear')
     } else if (currentTab !== tabs.DESCRIPTION) {
       changeView(tab)
       changePreview('clear')
+    } else if (videoUrl === '') {
+      return notification({ messageKey: 'pleaseEnterVideoUrl' })
+    } else if (!ReactPlayer.canPlay(videoUrl)) {
+      return notification({ messageKey: 'linkCantPlayed' })
     } else {
       return notification({ messageKey: 'pleaseEnterName' })
     }

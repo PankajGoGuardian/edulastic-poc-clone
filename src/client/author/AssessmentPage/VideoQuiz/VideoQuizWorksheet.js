@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { compose } from 'redux'
@@ -49,6 +49,12 @@ const VideoQuizWorksheetComponent = ({
   updateQuestion,
   setQuestionsById,
 }) => {
+  const annotationsRef = useRef()
+
+  useEffect(() => {
+    annotationsRef.current = annotations
+  }, [annotations])
+
   const videoRef = useRef(null)
   const [highlightedQuestion, setHighlightedQuestion] = useState(null)
   const [
@@ -125,8 +131,7 @@ const VideoQuizWorksheetComponent = ({
       ...question,
     }
 
-    const newAnnotations = [...annotations]
-
+    const newAnnotations = [...(annotationsRef?.current || [])]
     let annotationIndex = -1
     // UI annotation get clubbed to if you find any UI annotation remove previous one and push new
     annotationIndex = newAnnotations.findIndex((item) => {

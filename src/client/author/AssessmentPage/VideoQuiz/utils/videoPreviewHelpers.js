@@ -131,11 +131,19 @@ export const getThumbnailUrl = (videoId) => {
 
 export const formateSecondsToMMSS = (totalSeconds) => {
   totalSeconds = totalSeconds.toFixed(0)
+  const hours = Math.floor(totalSeconds / (60 * 60))
+    .toString()
+    .padStart(2, '0')
+
+  totalSeconds = (totalSeconds % (60 * 60)).toFixed(0)
   const minutes = Math.floor(totalSeconds / 60)
     .toString()
     .padStart(2, '0')
-  const seconds = Math.ceil(totalSeconds % 60)
-    .toString()
-    .padStart(2, '0')
-  return `${minutes}:${seconds}`
+
+  totalSeconds = (totalSeconds % 60).toFixed(0)
+  const seconds = Math.ceil(totalSeconds).toString().padStart(2, '0')
+
+  return hours === '00'
+    ? `${minutes}:${seconds}`
+    : `${hours}:${minutes}:${seconds}`
 }

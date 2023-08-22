@@ -2672,6 +2672,7 @@ class Setting extends Component {
                 <ShowSectionSettings
                   itemGroups={itemGroups}
                   premium={premium}
+                  disabled={disabled}
                   isSmallSize={isSmallSize}
                   preventSectionNavigation={preventSectionNavigation}
                   updateSectionCalc={this.updateSectionCalc}

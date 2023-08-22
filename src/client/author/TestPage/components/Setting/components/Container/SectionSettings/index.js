@@ -13,6 +13,7 @@ const { TabPane } = Tabs
 const ShowSectionSettings = ({
   itemGroups,
   premium,
+  disabled,
   isSmallSize,
   preventSectionNavigation,
   updateSectionCalc,
@@ -34,6 +35,7 @@ const ShowSectionSettings = ({
               <Col span={8}>
                 <CalculatorSettings
                   isCheckBoxGroup
+                  disabled={disabled}
                   value={values}
                   onChange={updateSectionCalc('calcTypes', id)}
                 />
@@ -54,6 +56,7 @@ const ShowSectionSettings = ({
             <EduSwitchStyled
               data-cy="disable-section-navigation"
               checked={preventSectionNavigation}
+              disabled={disabled}
               onChange={() =>
                 updateTestData('preventSectionNavigation')(
                   !preventSectionNavigation

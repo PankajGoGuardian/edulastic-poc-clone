@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { last } from 'lodash'
 import { test as testConstants } from '@edulastic/constants'
 import { getAnswersListSelector } from './answers'
 
@@ -21,6 +20,11 @@ export const currentItemSelector = createSelector(
   itemsSelector,
   currentItemIndexSelector,
   (items, index) => items[index]
+)
+
+export const getCurrentItemIdSelector = createSelector(
+  currentItemSelector,
+  (state) => state?._id
 )
 
 export const currentQuestions = createSelector(currentItemSelector, (item) => {
@@ -161,22 +165,13 @@ export const hasSectionsSelector = createSelector(
   (state) => state.hasSections
 )
 
-export const routeSelector = (state) => state.router.location.pathname
-
-/* 
-  Always expecting itemId in url and last value in url to be the itemId. 
-  Split the url with "/" will return an array of values where last value 
-  will be the current attempting ItemId and with this it is easy to find 
-  the section being attempted. 
-*/
 export const getSectionIdSelector = createSelector(
   getItemGroupsSelector,
-  routeSelector,
-  (itemGroups, path) => {
-    const itemId = last(path.split('/'))
-    const { _id: currentSectionId } =
+  getCurrentItemIdSelector,
+  (itemGroups, itemId) => {
+    const currentSection =
       itemGroups?.find(({ items }) => items.some((i) => i._id === itemId)) || {}
-    return currentSectionId
+    return currentSection._id
   }
 )
 

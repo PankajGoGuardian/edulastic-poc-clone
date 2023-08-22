@@ -4,8 +4,10 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { size, isEmpty, get } from 'lodash'
 
-import { MainContentWrapper, notification } from '@edulastic/common'
+import { EduIf, MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
+import { red, white } from '@edulastic/colors'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -30,15 +32,9 @@ import {
   getVerificationTS,
   isDefaultDASelector,
 } from '../../student/Login/ducks'
+import { TagWrapper } from '../ClassBoard/components/Container/styled'
 
 class StandardsBasedReport extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      hasShownNotification: false,
-    }
-  }
-
   componentDidMount() {
     const {
       loadTestActivity,
@@ -84,28 +80,6 @@ class StandardsBasedReport extends Component {
     }
   }
 
-  componentDidUpdate() {
-    const { additionalData, t } = this.props
-    if (
-      !this.state.hasShownNotification &&
-      additionalData?.archiveCollection?.uqa
-    ) {
-      notification({
-        type: 'info',
-        msg: t('common.uqaArchiveMessage'),
-      })
-      this.setState({
-        hasShownNotification: true,
-      })
-    }
-  }
-
-  componentWillUnmount() {
-    this.setState({
-      hasShownNotification: false,
-    })
-  }
-
   getTestActivity = (data) => {
     let id = null
     data.forEach((item) => {
@@ -128,6 +102,7 @@ class StandardsBasedReport extends Component {
       labels,
       testQIds,
       testStandardsLength,
+      t,
     } = this.props
     const testActivityId = this.getTestActivity(testActivity)
 
@@ -148,7 +123,18 @@ class StandardsBasedReport extends Component {
             <ClassBreadBrumb />
             <PresentationToggleSwitch groupId={classId} />
           </StyledFlexContainer>
-
+          <EduIf condition={additionalData?.archiveCollection?.uqa}>
+            <TagWrapper>
+              <CustomTag
+                width="100%"
+                textAlign="center"
+                textColor={red}
+                bgColor={white}
+              >
+                {t('common.uqaArchiveMessage')}
+              </CustomTag>
+            </TagWrapper>
+          </EduIf>
           <DivWrapper>
             <TableDisplay
               testActivities={testActivity}

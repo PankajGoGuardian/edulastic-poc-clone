@@ -1,4 +1,11 @@
-import { black, lightFadedBlack, green, lightGreen4 } from '@edulastic/colors'
+import {
+  black,
+  lightFadedBlack,
+  green,
+  lightGreen4,
+  white,
+  red,
+} from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -37,6 +44,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -132,6 +140,7 @@ import {
   SwitchBox,
   FilterSelect,
   FilterSpan,
+  TagWrapper,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -367,18 +376,8 @@ class ClassBoard extends Component {
       match,
       testActivity,
       getAllTestActivitiesForStudent,
-      t,
     } = this.props
 
-    if (
-      additionalData?.archiveCollection?.uqa &&
-      additionalData !== prevProps?.additionalData
-    ) {
-      notification({
-        type: 'info',
-        msg: t('common.uqaArchiveMessage'),
-      })
-    }
     const { assignmentId, classId } = match.params
     const filterCriteria = (activity) => activity?.testActivityId
     const { selectedStudentId } = this.state
@@ -1514,6 +1513,21 @@ class ClassBoard extends Component {
                 </StudentButtonDiv>
               )}
             </StyledFlexContainer>
+            <EduIf
+              condition={additionalData?.archiveCollection?.uqa && !isLoading}
+            >
+              <TagWrapper>
+                <CustomTag
+                  width="100%"
+                  textColor={red}
+                  bgColor={white}
+                  textAlign="center"
+                >
+                  {t('common.uqaArchiveMessage')}
+                </CustomTag>
+              </TagWrapper>
+            </EduIf>
+
             {selectedTab === 'Both' && (
               <>
                 <GraphContainer>

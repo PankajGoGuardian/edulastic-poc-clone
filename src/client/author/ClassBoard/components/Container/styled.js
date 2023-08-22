@@ -383,3 +383,6 @@ export const FilterSpan = styled.span`
   font-size: 12px;
   font-weight: 600;
 `
+export const TagWrapper = styled.div`
+  margin-bottom: 15px;
+`

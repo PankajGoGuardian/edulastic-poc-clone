@@ -26,6 +26,7 @@ import { attemptSummarySelector } from '../ducks'
 import { getAssignmentsSelector } from '../../Assignments/ducks'
 import { loadTestAction } from '../../../assessment/actions/test'
 import {
+  getItemGroupsByExcludingItemsSelector,
   getItemGroupsSelector,
   getPreventSectionNavigationSelector,
   testLoadingSelector,
@@ -204,21 +205,25 @@ class SummaryTest extends Component {
 
   // This is to get the item which belong to last section and enable the click for those items in the final summary page.
   getClickEnabledItemIds() {
-    const { itemGroups, sectionId, preventSectionNavigation } = this.props
+    const {
+      sectionId,
+      preventSectionNavigation,
+      deliveringItemGroups,
+    } = this.props
     const itemIdsMap = {}
     // is it final summary page with prevent section navigation ?
     if (
       !sectionId &&
       preventSectionNavigation &&
-      itemGroups &&
-      itemGroups.length > 1
+      deliveringItemGroups &&
+      deliveringItemGroups.length > 1
     ) {
-      const { items } = last(itemGroups)
+      const { items } = last(deliveringItemGroups)
       for (const item of items) {
         itemIdsMap[item._id] = true
       }
     } else {
-      const items = itemGroups.flatMap(({ items: _items }) => _items)
+      const items = deliveringItemGroups.flatMap(({ items: _items }) => _items)
       for (const item of items) {
         itemIdsMap[item._id] = true
       }
@@ -499,6 +504,7 @@ const enhance = compose(
         state.test?.settings?.blockNavigationToAnsweredQuestions,
       studentData: getUser(state),
       itemGroups: getItemGroupsSelector(state),
+      deliveringItemGroups: getItemGroupsByExcludingItemsSelector(state),
       preventSectionNavigation: getPreventSectionNavigationSelector(state),
     }),
     {

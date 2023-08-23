@@ -31,7 +31,8 @@ import useUploadToS3 from '../../../assessment/hooks/useUploadToS3'
 import UserWorkUploadModal from '../../../assessment/components/UserWorkUploadModal'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 import {
-  getItemGroupsSelector,
+  getItemGroupsByExcludingItemsSelector,
+  getItemsSelector,
   hasSectionsSelector,
 } from '../../../assessment/selectors/test'
 
@@ -49,7 +50,7 @@ const SummaryContainer = (props) => {
     user: { firstName = '', lastName = '' },
     attachments,
     saveUserWork,
-    itemGroups,
+    deliveringItemGroups,
     submitSection,
     hasSections,
   } = props
@@ -110,11 +111,12 @@ const SummaryContainer = (props) => {
 
   // Submit the sections of test on click of submit either from section summary or final summary
   const submitSectionOrTest = (_groupId) => {
-    if (hasSections && sectionId && itemGroups.length) {
-      const currentSectionIndex = itemGroups.findIndex(
+    if (hasSections && sectionId && deliveringItemGroups.length) {
+      const currentSectionIndex = deliveringItemGroups.findIndex(
         (item) => item._id === sectionId
       )
-      const nextItemId = itemGroups[currentSectionIndex + 1].items[0]._id
+      const nextItemId =
+        deliveringItemGroups[currentSectionIndex + 1].items[0]._id
       const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/itemId/${nextItemId}`
       const locationState = {
         fromSummary: true,
@@ -184,8 +186,9 @@ const enhance = compose(
       restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
       user: get(state, 'user.user', {}),
       attachments: getTestLevelUserWorkSelector(state),
-      itemGroups: getItemGroupsSelector(state),
       hasSections: hasSectionsSelector(state),
+      testItems: getItemsSelector(state),
+      deliveringItemGroups: getItemGroupsByExcludingItemsSelector(state),
     }),
     {
       finishTest: finishTestAcitivityAction,

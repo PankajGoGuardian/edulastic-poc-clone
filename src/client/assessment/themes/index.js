@@ -66,6 +66,7 @@ import {
   getItemGroupsSelector,
   getPreventSectionNavigationSelector,
   hasSectionsSelector,
+  getItemsSelector,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -1583,7 +1584,7 @@ const enhance = compose(
   connect(
     (state, ownProps) => ({
       view: state.view.preview,
-      items: state.test.items,
+      items: getItemsSelector(state),
       passages: state.test.passages || ownProps.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,

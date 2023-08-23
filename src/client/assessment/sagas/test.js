@@ -123,7 +123,10 @@ import {
   getUserRole,
   isDesmosCalculatorEnabledSelector,
 } from '../../author/src/selectors/user'
-import { getSubmitTestCompleteSelector } from '../selectors/test'
+import {
+  getItemGroupsByExcludingItems,
+  getSubmitTestCompleteSelector,
+} from '../selectors/test'
 import {
   setActiveAssignmentAction,
   utaStartTimeUpdateRequired,
@@ -804,9 +807,12 @@ function* loadTest({ payload }) {
       }
 
       let itemId = testItemIds[lastAttendedQuestion]
-      const { itemsToDeliverInGroup = [] } = testActivity?.testActivity || {}
-      const isLastItemInSection = itemsToDeliverInGroup.find(
-        ({ items }) => last(items) === itemId
+      const deliveringItemGroups = getItemGroupsByExcludingItems(
+        testItems,
+        itemGroups
+      )
+      const isLastItemInSection = deliveringItemGroups.find(
+        ({ items }) => last(items)._id === itemId
       )
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
@@ -995,9 +1001,12 @@ function* loadTest({ payload }) {
           )
         )
       } else {
-        const { itemsToDeliverInGroup = [] } = testActivity?.testActivity || {}
-        const isLastItemInSection = itemsToDeliverInGroup.find(
-          ({ items }) => last(items) === lastVisitedQuestion.testItemId
+        const deliveringItemGroups = getItemGroupsByExcludingItems(
+          testItems,
+          itemGroups
+        )
+        const isLastItemInSection = deliveringItemGroups.find(
+          ({ items }) => last(items)?._id === lastVisitedQuestion.testItemId
         )
         let itemId = testItems[lastVisitedItemIndex + 1]._id
         /* 

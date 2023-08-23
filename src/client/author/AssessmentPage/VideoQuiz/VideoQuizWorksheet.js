@@ -48,6 +48,7 @@ const VideoQuizWorksheetComponent = ({
   answersById,
   updateQuestion,
   setQuestionsById,
+  history,
 }) => {
   const annotationsRef = useRef()
 
@@ -72,11 +73,19 @@ const VideoQuizWorksheetComponent = ({
   ] = useState([])
   const [questionClickSeekTime, setQuestionClickSeekTime] = useState(null)
 
+  const onPlay = () => {
+    videoRef?.current.playVideo?.()
+  }
+
   const handleUpdateSeektime = (time = null) => {
     if (time) {
       setQuestionClickSeekTime(time)
     }
   }
+
+  // taking video to specific question
+  const questionKey = history?.location?.state?.question
+  const questionTime = questionsById?.[questionKey]?.questionDisplayTimestamp
 
   const handleHighlightQuestion = (questionId) => {
     setHighlightedQuestion(questionId)
@@ -238,6 +247,7 @@ const VideoQuizWorksheetComponent = ({
       >
         <VideoViewerContainer>
           <VideoPreview
+            startAt={questionTime}
             onHighlightQuestion={handleHighlightQuestion}
             currentAnnotationTool={currentAnnotationTool}
             annotations={annotations}
@@ -269,7 +279,7 @@ const VideoQuizWorksheetComponent = ({
           />
         </VideoViewerContainer>
         <Questions
-          onPlay={() => videoRef?.current.playVideo?.()}
+          onPlay={onPlay}
           noCheck={noCheck}
           list={questions}
           review={review}

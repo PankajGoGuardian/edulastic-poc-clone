@@ -64,6 +64,7 @@ const VideoPreview = ({
   studentWork = false,
   clearHighlighted,
   forwardedVideoRef,
+  startAt,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -81,6 +82,11 @@ const VideoPreview = ({
   const [volumne, setVolume] = useState(1)
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
+  const [isReady, setIsReady] = useState(0)
+
+  const onReady = () => {
+    setIsReady(true)
+  }
 
   const onPlay = () => {
     if (markerArea?.current && markerArea?.current?.isOpen) {
@@ -305,6 +311,12 @@ const VideoPreview = ({
   }
 
   useEffect(() => {
+    if (startAt > 1 && isReady) {
+      seekTo(startAt - 1)
+    }
+  }, [startAt, isReady])
+
+  useEffect(() => {
     annotationsRef.current = annotations
     const _currentTime = getCurrentTime(videoRef)
 
@@ -373,6 +385,7 @@ const VideoPreview = ({
       >
         <RelativeContainer>
           <CombinedPlayer
+            onReady={onReady}
             url={videoUrl}
             playing={playing}
             controls={false}

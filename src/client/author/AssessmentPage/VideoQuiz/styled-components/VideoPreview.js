@@ -189,6 +189,6 @@ export const BigPlayButton = styled.span`
     width: 100% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
-    z-index: 1001;
+    z-index: 6;
   }
 `

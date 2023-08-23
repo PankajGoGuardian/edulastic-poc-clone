@@ -145,8 +145,8 @@ class SummaryTest extends Component {
         }`,
         {
           fromSummary: true,
-          question: q,
           ...history.location.state,
+          question: q,
         }
       )
     } else {

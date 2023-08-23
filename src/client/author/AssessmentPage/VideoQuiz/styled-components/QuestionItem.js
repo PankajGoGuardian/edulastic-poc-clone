@@ -17,6 +17,7 @@ import {
   whiteSmoke,
   themeColorBlue,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 
 const getQuestionItemWrapperWidth = ({
   isSnapQuizVideoPlayer,
@@ -305,4 +306,8 @@ export const SortableListContainer = styled.div`
   svg {
     margin: unset;
   }
+`
+
+export const NextButton = styled(EduButton)`
+  height: 30px;
 `

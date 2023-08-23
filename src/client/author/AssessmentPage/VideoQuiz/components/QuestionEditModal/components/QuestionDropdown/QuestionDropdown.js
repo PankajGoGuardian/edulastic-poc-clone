@@ -12,6 +12,7 @@ import {
   FormGroup,
   FormLabel,
   Points,
+  FormInline,
 } from '../../../../styled-components/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
 import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
@@ -64,10 +65,10 @@ export default class QuestionDropdown extends React.Component {
   }
 
   handleRemove = (itemIndex) => {
+    const { question } = this.props
     const nextOptions = this.currentOptions
     const removingValue = nextOptions[itemIndex]
-    const validValue = this.props.question?.validation?.validResponse
-      ?.value?.[0]?.value
+    const validValue = question?.validation?.validResponse?.value?.[0]?.value
     nextOptions.splice(itemIndex, 1)
 
     this.updateOptions(nextOptions, validValue === removingValue)
@@ -172,38 +173,40 @@ export default class QuestionDropdown extends React.Component {
               Add choice
             </Button>
           </FormGroup>
-          <FormGroup>
-            <FormLabel>Correct Answer</FormLabel>
-            <Select
-              value={value[0] && value[0].value}
-              onChange={this.handleValueChange}
-              style={{ marginRight: '20px', minWidth: '200px' }}
-              getPopupContainer={(trigger) => trigger.parentNode}
-              data-cy="dropDownSelect"
-            >
-              {this.currentOptions.map((option, key) => (
-                <Select.Option key={key} value={option}>
-                  {option}
-                </Select.Option>
-              ))}
-            </Select>
-            <InputNumber
-              min={0}
-              value={score}
-              onChange={this.handleScoreChange}
-              data-cy="points"
-            />
-            <Points>Points</Points>
-          </FormGroup>
-          <FormGroup style={{ marginTop: 9 }}>
-            <FormLabel>Timestamp (mm:ss)</FormLabel>
-            <VideoQuizTimePicker
-              questionDisplayTimestamp={questionDisplayTimestamp}
-              updateQuestionData={onUpdate}
-              updateAnnotationTime={updateAnnotationTime}
-              questionId={id}
-            />
-          </FormGroup>
+          <FormInline>
+            <FormGroup width="60%">
+              <FormLabel>Correct Answer</FormLabel>
+              <Select
+                value={value[0] && value[0].value}
+                onChange={this.handleValueChange}
+                style={{ marginRight: '20px', minWidth: '200px' }}
+                getPopupContainer={(trigger) => trigger.parentNode}
+                data-cy="dropDownSelect"
+              >
+                {this.currentOptions.map((option, key) => (
+                  <Select.Option key={key} value={option}>
+                    {option}
+                  </Select.Option>
+                ))}
+              </Select>
+              <InputNumber
+                min={0}
+                value={score}
+                onChange={this.handleScoreChange}
+                data-cy="points"
+              />
+              <Points>Points</Points>
+            </FormGroup>
+            <FormGroup width="40%">
+              <FormLabel>Timestamp (mm:ss)</FormLabel>
+              <VideoQuizTimePicker
+                questionDisplayTimestamp={questionDisplayTimestamp}
+                updateQuestionData={onUpdate}
+                updateAnnotationTime={updateAnnotationTime}
+                questionId={id}
+              />
+            </FormGroup>
+          </FormInline>
         </QuestionFormWrapper>
       </ThemeProvider>
     )

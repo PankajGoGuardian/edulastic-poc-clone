@@ -40,7 +40,6 @@ export const validateStandardsData = (data) => {
     subject: 'Subject',
     grades: 'Grades',
     curriculum: 'Curriculum',
-    standards: 'Standards',
   }
   let isValid = true
   let message = ''

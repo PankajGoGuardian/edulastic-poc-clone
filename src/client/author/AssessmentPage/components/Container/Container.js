@@ -220,7 +220,9 @@ class Container extends React.Component {
       assessment,
       updateDocBasedTest,
     } = this.props
-    if (!validateQuestionsForDocBased(assessmentQuestions, true)) {
+
+    const { videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, true, !!videoUrl)) {
       return
     }
     updateDocBasedTest(assessment._id, assessment, true)
@@ -274,8 +276,8 @@ class Container extends React.Component {
       assessment,
       match,
     } = this.props
-    const { _id } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+    const { _id, videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
     if (this.validateTest(assessment)) {
@@ -297,8 +299,8 @@ class Container extends React.Component {
       match,
       updated,
     } = this.props
-    const { status } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+    const { status, videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
     if (this.validateTest(assessment)) {

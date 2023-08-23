@@ -6,6 +6,7 @@ import {
   white,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
+  greyThemeLight,
 } from '@edulastic/colors'
 
 export const QuestionsWrapper = styled.div`
@@ -101,4 +102,16 @@ export const AnswerAction = styled(Button)`
 export const StyledVideoQuizHandleSpan = styled.span`
   float: right;
   cursor: grab;
+`
+export const StyledEmptyQuestionContainer = styled.div`
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 24px 12px;
+
+  svg {
+    margin: 12px;
+    color: ${greyThemeLight};
+    font-size: 40px;
+  }
 `

@@ -1,10 +1,12 @@
-import React from 'react'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
+import i18 from '@edulastic/localization'
+import React from 'react'
 
+import { Tooltip } from 'antd'
 import {
+  AiEduButton,
   CreateAiTestTitleWrapper,
   CreateAiTestWrapper,
-  AiEduButton,
 } from './styled'
 
 const AiTestBanner = ({ onCreateItems }) => {
@@ -19,10 +21,12 @@ const AiTestBanner = ({ onCreateItems }) => {
       <CreateAiTestTitleWrapper>
         Generate AI-powered test items with a single click!
       </CreateAiTestTitleWrapper>
-      <AiEduButton isGhost onClick={onCreateItems} fontWeight={700}>
-        <IconMagicWand />
-        Create Quick Test Using AI
-      </AiEduButton>
+      <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
+        <AiEduButton isGhost onClick={onCreateItems} fontWeight={700}>
+          <IconMagicWand />
+          Create Quick Test Using AI
+        </AiEduButton>
+      </Tooltip>
     </CreateAiTestWrapper>
   )
 }

@@ -4,7 +4,7 @@ import produce from 'immer'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { withWindowSizes, helpers } from '@edulastic/common'
+import { withWindowSizes, helpers, toggleChatDisplay } from '@edulastic/common'
 
 import { setTestDataAction } from '../../TestPage/ducks'
 
@@ -50,6 +50,15 @@ const VideoQuizWorksheetComponent = ({
   setQuestionsById,
 }) => {
   const annotationsRef = useRef()
+
+  useEffect(() => {
+    // hiding and showing help chat icon for video quiz worksheet
+    toggleChatDisplay('hide')
+
+    return () => {
+      toggleChatDisplay('show')
+    }
+  }, [])
 
   useEffect(() => {
     annotationsRef.current = annotations
@@ -245,7 +254,7 @@ const VideoQuizWorksheetComponent = ({
             testMode={testMode}
             studentWork={studentWork}
             highlighted={highlightedQuestion}
-            forwardedRef={videoRef}
+            forwardedVideoRef={videoRef}
             review={review}
             videoUrl={finalvideoUrl}
             itemId={itemDetail?._id || testItemId}
@@ -260,6 +269,7 @@ const VideoQuizWorksheetComponent = ({
           />
         </VideoViewerContainer>
         <Questions
+          onPlay={() => videoRef?.current.playVideo?.()}
           noCheck={noCheck}
           list={questions}
           review={review}

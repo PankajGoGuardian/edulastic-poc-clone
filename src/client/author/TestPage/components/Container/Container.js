@@ -1317,10 +1317,9 @@ class Container extends PureComponent {
       test,
       updateDocBasedTest,
     } = this.props
-
     if (
       test.isDocBased &&
-      !validateQuestionsForDocBased(assessmentQuestions, true)
+      !validateQuestionsForDocBased(assessmentQuestions, true, !!test.videoUrl)
     ) {
       return
     }
@@ -1488,7 +1487,7 @@ class Container extends PureComponent {
     const { _id } = test
     if (
       test.isDocBased &&
-      !validateQuestionsForDocBased(assessmentQuestions, false)
+      !validateQuestionsForDocBased(assessmentQuestions, false, !!test.videoUrl)
     ) {
       return
     }

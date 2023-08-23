@@ -175,3 +175,20 @@ export const StyledTypographyText = styled(Typography.Text)`
   line-height: 40px;
   color: white;
 `
+
+export const RelativeContainer = styled.div`
+  height: 100%;
+  position: relative;
+`
+
+export const BigPlayButton = styled.span`
+  svg {
+    position: absolute !important;
+    top: 50% !important;
+    height: 100px !important;
+    width: 100% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 1001;
+  }
+`

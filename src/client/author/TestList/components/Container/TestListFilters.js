@@ -229,7 +229,7 @@ const TestListFilters = ({
     filterData1 = filterData.filter((o) => filtersTitles.includes(o.title))
 
     if (filter === libraryFilters.SMART_FILTERS.FAVORITES) {
-      return filterData1
+      return [...filterData1, ...getTestCategoryFilterData()]
     }
     let curriculumsList = []
     if (subject.length) curriculumsList = [...formattedCuriculums]

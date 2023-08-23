@@ -17,8 +17,10 @@ import Volume from './Volume'
 
 import {
   AnnotationsContainer,
+  BigPlayButton,
   Droppable,
   PDFPreviewWrapper,
+  RelativeContainer,
   StyledPlayerContainer,
   StyledTypographyText,
 } from '../../styled-components/VideoPreview'
@@ -61,10 +63,11 @@ const VideoPreview = ({
   handleUpdateSeektime,
   studentWork = false,
   clearHighlighted,
+  forwardedVideoRef,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
-  const videoRef = useRef()
+  const videoRef = forwardedVideoRef
   const markerArea = useRef()
   const annotationsRef = useRef()
 
@@ -368,34 +371,45 @@ const VideoPreview = ({
         drop={handleDropQuestion}
         className={`${currentAnnotationTool}-tool-selected`}
       >
-        <CombinedPlayer
-          url={videoUrl}
-          playing={playing}
-          controls={false}
-          ref={videoRef}
-          height="100%"
-          width="100%"
-          onEnded={onEnded}
-          config={{
-            youtube: {
-              playerVars: {
-                iv_load_policy: 3,
-                rel: 0,
-                autoplay: playing ? 1 : 0,
-                controls: 0,
-                playsinline: 1,
-                api_key: appConfig.edYouTubePlayerKey,
+        <RelativeContainer>
+          <CombinedPlayer
+            url={videoUrl}
+            playing={playing}
+            controls={false}
+            ref={videoRef}
+            height="100%"
+            width="100%"
+            onEnded={onEnded}
+            config={{
+              youtube: {
+                playerVars: {
+                  iv_load_policy: 3,
+                  rel: 0,
+                  autoplay: playing ? 1 : 0,
+                  controls: 0,
+                  playsinline: 1,
+                  api_key: appConfig.edYouTubePlayerKey,
+                },
+                embedConfig: { contentFilter: 2 },
               },
-              embedConfig: { contentFilter: 2 },
-            },
-          }}
-          onPause={onPause}
-          onPlay={onPlay}
-          progressInterval={1000}
-          onProgress={onProgress}
-          volume={volumne}
-          muted={muted}
-        />
+            }}
+            onPause={onPause}
+            onPlay={onPlay}
+            progressInterval={1000}
+            onProgress={onProgress}
+            volume={volumne}
+            muted={muted}
+          />
+          {!playing && currentTime === 0 && (
+            <BigPlayButton>
+              <PlayPause
+                isPlaying={playing}
+                onPlay={onPlay}
+                onPause={onPause}
+              />
+            </BigPlayButton>
+          )}
+        </RelativeContainer>
         <AnnotationsContainer
           className="annotations-container"
           ref={annotationContainer}
@@ -459,6 +473,7 @@ const VideoPreview = ({
                     disableDragging
                   >
                     <QuestionItem
+                      onPlay={onPlay}
                       key={questionId}
                       index={qIndex}
                       questionIndex={qIndex}

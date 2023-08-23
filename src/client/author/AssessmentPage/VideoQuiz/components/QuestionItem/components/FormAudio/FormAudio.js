@@ -5,6 +5,7 @@ import { EduElse, EduIf, EduThen, Stimulus } from '@edulastic/common'
 import VoiceRecorder from '../../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
 import { StyledAudioElement } from '../../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import AudioRecorder from './AudioRecorder'
+import { maxAudioDurationLimit } from '../../../../../../../assessment/widgets/AudioResponse/constants'
 
 export default class FormAudio extends React.Component {
   static propTypes = {
@@ -54,7 +55,10 @@ export default class FormAudio extends React.Component {
   renderForm = () => {
     const {
       answer,
-      question: { stimulus = '' },
+      question: {
+        stimulus = '',
+        audioTimeLimitInMinutes = maxAudioDurationLimit,
+      },
     } = this.props
 
     return (
@@ -75,7 +79,10 @@ export default class FormAudio extends React.Component {
             />
           </EduThen>
           <EduElse>
-            <AudioRecorder onFinish={this.handleChange} />
+            <AudioRecorder
+              onFinish={this.handleChange}
+              audioTimeLimitInMinutes={audioTimeLimitInMinutes}
+            />
           </EduElse>
         </EduIf>
       </div>

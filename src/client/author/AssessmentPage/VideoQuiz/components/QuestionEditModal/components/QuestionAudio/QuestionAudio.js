@@ -16,7 +16,7 @@ export default class QuestionAudio extends React.Component {
     super(props)
     this.state = {
       score: 1,
-      audioTimeLimitInMinutes: 5,
+      audioTimeLimitInMinutes: maxAudioDurationLimit,
     }
   }
 
@@ -35,34 +35,44 @@ export default class QuestionAudio extends React.Component {
   }
 
   setDefaultState = (question) => {
-    const { validation } = question
+    const {
+      validation,
+      audioTimeLimitInMinutes = maxAudioDurationLimit,
+    } = question
     const {
       validResponse: { score },
     } = validation
 
     this.setState({
       score,
+      audioTimeLimitInMinutes,
     })
   }
 
-  handleChange = (_score, _audioTimeLimitInMinutes) => {
+  handleScoreChange = (_score) => {
     const { onUpdate } = this.props
     _score = Number.isNaN(_score) || !_score ? 0 : _score
 
-    this.setState(
-      { score: _score, audioTimeLimitInMinutes: _audioTimeLimitInMinutes },
-      () => {
-        const data = {
-          validation: {
-            validResponse: {
-              score: _score,
-              audioTimeLimitInMinutes: _audioTimeLimitInMinutes,
-            },
+    this.setState({ score: _score }, () => {
+      const data = {
+        validation: {
+          validResponse: {
+            score: _score,
           },
-        }
-        onUpdate(data)
+        },
       }
-    )
+      onUpdate(data)
+    })
+  }
+
+  handleChangeAudioLimit = (value) => {
+    const { onUpdate } = this.props
+    this.setState({ audioTimeLimitInMinutes: value }, () => {
+      const data = {
+        audioTimeLimitInMinutes: value,
+      }
+      onUpdate(data)
+    })
   }
 
   render() {
@@ -84,7 +94,7 @@ export default class QuestionAudio extends React.Component {
             <NumberInputStyled
               value={audioTimeLimitInMinutes}
               height="32px"
-              onChange={(value) => this.handleChange(score, value)}
+              onChange={this.handleChangeAudioLimit}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               data-cy="audioTimeLimitInMinutes"
               min={1}
@@ -98,9 +108,7 @@ export default class QuestionAudio extends React.Component {
               min={0}
               value={score}
               width="100%"
-              onChange={(value) =>
-                this.handleChange(value, audioTimeLimitInMinutes)
-              }
+              onChange={this.handleScoreChange}
               data-cy="points"
             />
           </FormGroup>

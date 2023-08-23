@@ -20,7 +20,7 @@ import {
 } from '../../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import { getUserIdSelector } from '../../../../../../src/selectors/user'
 
-const AudioRecorder = ({ userId, onFinish }) => {
+const AudioRecorder = ({ userId, onFinish, audioTimeLimitInMinutes }) => {
   const [recordingState, setRecordingState] = useState(RECORDING_INACTIVE)
   const [uploadedUrl, setUploadedUrl] = useState()
   const { uploadFile } = useUploadAudioFile({
@@ -79,7 +79,7 @@ const AudioRecorder = ({ userId, onFinish }) => {
         </StyledButton>
         <StyledCountDownWrapper>
           <CountDownTimer
-            audioTimeLimitInMinutes={5}
+            audioTimeLimitInMinutes={audioTimeLimitInMinutes}
             handleStopRecording={onClickStopRecording}
           />
         </StyledCountDownWrapper>

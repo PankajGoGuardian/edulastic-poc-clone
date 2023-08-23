@@ -85,6 +85,9 @@ const QuestionList = ({
               key={index}
               value={item}
               disabled={disabledQuestionDropDownIndexMap[item]}
+              aria-label={`${i18Translate(
+                'common.layout.selectbox.question'
+              )} ${index + 1}/${options.length}`}
             >
               {`${i18Translate('common.layout.selectbox.question')} ${
                 index + 1

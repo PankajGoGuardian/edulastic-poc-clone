@@ -238,7 +238,7 @@ const PlayerHeader = ({
                     title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label="Upload Icon"
+                    aria-label="Upload Work"
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>

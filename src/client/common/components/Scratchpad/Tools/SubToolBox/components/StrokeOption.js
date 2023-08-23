@@ -26,11 +26,21 @@ const StrokeOption = ({ lineWidth, lineColor, onChangeOption }) => {
     >
       <Sprite pos={-1377} />
       <StyledSelect defaultValue={lineWidth} onChange={onChangeLineWidth}>
-        <Option value={4}>2</Option>
-        <Option value={6}>3</Option>
-        <Option value={8}>4</Option>
-        <Option value={10}>5</Option>
-        <Option value={12}>6</Option>
+        <Option value={4} aria-label="2" aria-selected={lineWidth === 4}>
+          2
+        </Option>
+        <Option value={6} aria-label="3" aria-selected={lineWidth === 6}>
+          3
+        </Option>
+        <Option value={8} aria-label="4" aria-selected={lineWidth === 8}>
+          4
+        </Option>
+        <Option value={10} aria-label="5" aria-selected={lineWidth === 10}>
+          5
+        </Option>
+        <Option value={12} aria-label="6" aria-selected={lineWidth === 12}>
+          6
+        </Option>
       </StyledSelect>
       <ColorPicker color={lineColor} onChangeColor={onChangeLineColor} />
     </FlexContainer>

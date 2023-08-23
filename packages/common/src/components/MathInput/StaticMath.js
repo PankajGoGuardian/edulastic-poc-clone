@@ -69,6 +69,7 @@ const appendIcon = (field, useMathKeyboard, onClick) => {
   field.appendChild(newIcon)
 
   const textarea = field.querySelector('.mq-textarea textarea')
+  textarea.setAttribute('aria-label', `Answer Input Math`)
   if (useMathKeyboard) {
     textarea.setAttribute('readonly', 'readonly')
   } else {
@@ -267,6 +268,7 @@ const StaticMath = ({
           })
           field.latex('')
           const textarea = field.el().querySelector('.mq-textarea textarea')
+          textarea.setAttribute('aria-label', `Answer Input Math`)
           textarea.addEventListener('blur', handleBlur, false)
         })
         iconStatus.current = getIconStatus(latex)

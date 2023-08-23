@@ -293,6 +293,7 @@ class Display extends Component {
         >
           <StyledPreviewImage
             data-cy="imageInpreviewContainer"
+            aria-label={imageAlterText}
             imageSrc={imageUrl || ''}
             width={this.getWidth()}
             height={this.getHeight()}

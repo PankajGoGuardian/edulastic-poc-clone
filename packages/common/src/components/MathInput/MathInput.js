@@ -127,7 +127,7 @@ class MathInput extends React.PureComponent {
         // const { hideKeyboardByDefault } = this.state;
         const textarea = mathField.el().querySelector('.mq-textarea textarea')
         textarea.setAttribute('data-cy', `answer-input-math-textarea`)
-        textarea.setAttribute('aria-label', `Answer Input Math Textarea`)
+        textarea.setAttribute('aria-label', `Answer Input Math`)
         // if (!hideKeyboardByDefault) {
         //   textarea.setAttribute("readonly", "readonly");
         // }
@@ -418,6 +418,7 @@ class MathInput extends React.PureComponent {
       () => {
         const { hideKeyboardByDefault } = this.state
         const textarea = this.mQuill.el().querySelector('.mq-textarea textarea')
+        textarea.setAttribute('aria-label', `Answer Input Math`)
         if (hideKeyboardByDefault) {
           textarea.removeAttribute('readonly')
           textarea.focus()

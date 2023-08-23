@@ -124,7 +124,7 @@ const ToolBar = ({
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Upload Icon"
+            aria-label="Upload Work"
           >
             <IconCloudUpload />
           </StyledButton>

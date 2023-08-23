@@ -138,7 +138,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.uploadWork')}
-          aria-label="Upload Icon"
+          aria-label="Upload Work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />

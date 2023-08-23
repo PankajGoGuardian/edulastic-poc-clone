@@ -285,7 +285,7 @@ const PlayerFooter = ({
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
-          aria-label="Upload Icon"
+          aria-label="Upload Work"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>

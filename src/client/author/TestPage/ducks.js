@@ -2180,14 +2180,14 @@ export function* receiveTestByIdSaga({ payload }) {
         }
       })
     })
-
-    const createdItemskeyedById = _keyBy(createdItems, '_id')
-    entity.itemGroups[currentGroupIndex].items = uniqBy(
-      [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-      (x) =>
-        createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
-    )
-
+    if (createdItems.length) {
+      const createdItemskeyedById = _keyBy(createdItems, '_id')
+      entity.itemGroups[currentGroupIndex].items = uniqBy(
+        [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
+        (x) =>
+          createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+      )
+    }
     const questions = getQuestions(entity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))

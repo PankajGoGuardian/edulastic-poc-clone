@@ -11,7 +11,7 @@ import { getErrorMessage } from '../../../common/util'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import { TableContainer } from './components/styled'
-import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
+import Chart from './components/chart'
 import Table from './components/table'
 
 import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
@@ -85,6 +85,18 @@ const StandardsProgress = ({
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
+  const ddRequestFilters = useMemo(
+    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
+    [ddfilter]
+  )
+
+  const [chartFilters, setChartFilters] = useState({
+    barPage: 0,
+    barPageSize: CHART_PAGE_SIZE,
+  })
+
+  const [paginatedTestInfoMetrics, setPaginatedTestInfoMetrics] = useState([])
+
   const [tableFilters, setTableFilters] = useState({
     compareBy:
       compareByDropDownDataFiltered.find(
@@ -93,36 +105,28 @@ const StandardsProgress = ({
     analyseBy: AnalyseByDropDownData.find(
       (o) => o.key === AnalyseByKeys.MASTERY_SCORE
     ),
-    rowPage: 1,
-    rowPageSize: TABLE_PAGE_SIZE,
     sortKey: SortKeys.DIMENSION,
     sortOrder: SortOrders.ASCEND,
+    rowPage: 0,
+    rowPageSize: TABLE_PAGE_SIZE,
   })
-
-  const [chartFilters, setChartFilters] = useState({
-    barPage: 1,
-    barPageSize: CHART_PAGE_SIZE,
-  })
-
-  const ddRequestFilters = useMemo(
-    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
-    [ddfilter]
-  )
 
   useEffect(() => {
     const q = getSkillInfoApiQuery(settings.requestFilters)
     if (q.termId || q.reportId) {
       getSkillInfoRequest(q)
+      setChartFilters({ ...chartFilters, barPage: 0 })
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
+
+  const skillInfoMetrics = get(skillInfo, 'data.result.skillInfo', [])
 
   const testInfoQuery = useMemo(
     () =>
       getTestInfoApiQuery(settings.requestFilters, ddRequestFilters, skillInfo),
     [skillInfo]
   )
-
   const {
     data: testInfo,
     loading: loadingTestInfo,
@@ -132,12 +136,12 @@ const StandardsProgress = ({
     [testInfoQuery],
     {
       enabled:
-        (testInfoQuery.termId && testInfoQuery.standardId) ||
-        testInfoQuery.reportId,
+        (testInfoQuery.termId || testInfoQuery.reportId) &&
+        testInfoQuery.standardId &&
+        skillInfoMetrics.length,
       deDuplicate: false,
     }
   )
-
   const testInfoErrorMsg = getErrorMessage(
     errorFetchingTestInfo,
     400,
@@ -145,20 +149,29 @@ const StandardsProgress = ({
   )
   useErrorNotification(testInfoErrorMsg, errorFetchingTestInfo)
 
-  // reset table page number to 1 when chart filters are changed
-  useEffect(() => {
-    setTableFilters({
-      ...tableFilters,
-      rowPage: 1,
-    })
-  }, [chartFilters])
-
   const { testInfo: testInfoMetrics = [], totalTestCount = 0 } = testInfo || {}
 
-  const paginatedTestInfoMetrics = useMemo(
-    () => getPaginatedTestInfoMetrics(testInfoMetrics, chartFilters),
-    [testInfoMetrics, chartFilters]
-  )
+  useEffect(() => {
+    if (testInfoMetrics.length) {
+      setChartFilters({ ...chartFilters, barPage: 1 })
+    }
+  }, [testInfoMetrics])
+
+  useEffect(() => {
+    if (testInfoMetrics.length && chartFilters.barPage) {
+      const _paginatedTestInfoMetrics = getPaginatedTestInfoMetrics(
+        testInfoMetrics,
+        chartFilters
+      )
+      setPaginatedTestInfoMetrics(_paginatedTestInfoMetrics)
+    }
+  }, [chartFilters])
+
+  useEffect(() => {
+    if (paginatedTestInfoMetrics.length) {
+      setTableFilters({ ...tableFilters, rowPage: 1 })
+    }
+  }, [paginatedTestInfoMetrics])
 
   const summaryQuery = useMemo(
     () =>
@@ -170,7 +183,6 @@ const StandardsProgress = ({
       ),
     [paginatedTestInfoMetrics]
   )
-
   const {
     data: summary,
     loading: loadingSummary,
@@ -180,28 +192,18 @@ const StandardsProgress = ({
     [summaryQuery],
     {
       enabled:
-        (!!paginatedTestInfoMetrics.length &&
-          summaryQuery.termId &&
-          summaryQuery.standardId) ||
-        summaryQuery.reportId,
+        (summaryQuery.termId || summaryQuery.reportId) &&
+        summaryQuery.standardId &&
+        paginatedTestInfoMetrics.length,
       deDuplicate: false,
     }
   )
-
   const summaryErrorMsg = getErrorMessage(
     errorFetchingSummary,
     400,
     'Error fetching Summary data.'
   )
   useErrorNotification(summaryErrorMsg, errorFetchingSummary)
-
-  // Reset table page number when compare by, sort key or sort order is changed
-  useEffect(() => {
-    setTableFilters({
-      ...tableFilters,
-      rowPage: 1,
-    })
-  }, [tableFilters.compareBy.key, tableFilters.sortKey, tableFilters.sortOrder])
 
   const detailsQuery = useMemo(
     () =>
@@ -212,15 +214,8 @@ const StandardsProgress = ({
         skillInfo,
         paginatedTestInfoMetrics
       ),
-    [
-      paginatedTestInfoMetrics,
-      tableFilters.rowPage,
-      tableFilters.compareBy.key,
-      tableFilters.sortKey,
-      tableFilters.sortOrder,
-    ]
+    [tableFilters]
   )
-
   const {
     data: details,
     loading: loadingDetails,
@@ -230,16 +225,13 @@ const StandardsProgress = ({
     [detailsQuery],
     {
       enabled:
-        (!!paginatedTestInfoMetrics.length &&
-          detailsQuery.termId &&
-          detailsQuery.rowPage &&
-          detailsQuery.standardId) ||
-        detailsQuery.reportId,
-
+        (detailsQuery.termId || detailsQuery.reportId) &&
+        detailsQuery.standardId &&
+        paginatedTestInfoMetrics.length &&
+        detailsQuery.rowPage,
       deDuplicate: false,
     }
   )
-
   const detailsErrorMsg = getErrorMessage(
     errorFetchingDetails,
     400,
@@ -333,7 +325,7 @@ const StandardsProgress = ({
           </StyledH3>
         </Row>
         <Row>
-          <SignedStackedBarChartContainer
+          <Chart
             data={chartMetrics}
             masteryScale={selectedScale}
             backendPagination={{

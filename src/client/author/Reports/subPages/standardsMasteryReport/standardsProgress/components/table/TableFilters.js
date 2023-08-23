@@ -20,6 +20,7 @@ const TableFilters = ({
       draft[prefix] =
         options.find((option) => option.key === selectedPayload.key) ||
         options[0]
+      draft.rowPage = 1
     })
     setTableFilters(modifiedState)
   }

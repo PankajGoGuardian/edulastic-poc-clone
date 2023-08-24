@@ -66,6 +66,7 @@ export const createQuestion = ({
       displayAtSecond,
     } = aiQuestion
 
+    staticQuestionData.aiGenerated = true
     staticQuestionData.stimulus = name
     if (typeof displayAtSecond === 'number') {
       const updatedDisplayAtSecond = displayAtSecond === 0 ? 4 : displayAtSecond

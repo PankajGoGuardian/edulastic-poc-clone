@@ -36,7 +36,8 @@ const StandardSet = ({
   curriculumStandardsLoading,
   isDocBased,
   showIconBrowserBtn,
-  isStandardsDataRequired,
+  standardsRequiredFields,
+  considerCustomAlignmentDataSettingPriority,
 }) => {
   const [searchProps, setSearchProps] = useState({
     id: '',
@@ -114,7 +115,10 @@ const StandardSet = ({
       createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
       isDocBased={isDocBased}
       showIconBrowserBtn={showIconBrowserBtn}
-      isStandardsDataRequired={isStandardsDataRequired}
+      standardsRequiredFields={standardsRequiredFields}
+      considerCustomAlignmentDataSettingPriority={
+        considerCustomAlignmentDataSettingPriority
+      }
     />
   )
 }
@@ -135,12 +139,14 @@ StandardSet.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   getCurriculums: PropTypes.func.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
-  isStandardsDataRequired: PropTypes.bool,
+  standardsRequiredFields: PropTypes.array,
+  considerCustomAlignmentDataSettingPriority: PropTypes.bool,
 }
 
 StandardSet.defaultProps = {
   alignment: [],
-  isStandardsDataRequired: false,
+  standardsRequiredFields: [],
+  considerCustomAlignmentDataSettingPriority: false,
 }
 
 const mapStateToProps = (state) => ({

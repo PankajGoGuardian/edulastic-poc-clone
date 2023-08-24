@@ -678,6 +678,16 @@ export const getTestEntitySelector = createSelector(
   (state) => state.entity
 )
 
+export const getTestEntitySubjectsSelector = createSelector(
+  getTestEntitySelector,
+  (state) => state?.subjects || []
+)
+
+export const getTestEntityGradesSelector = createSelector(
+  getTestEntitySelector,
+  (state) => state?.grades || []
+)
+
 export const getCollectionNameSelector = createSelector(
   getTestEntitySelector,
   (state) => state.collectionName

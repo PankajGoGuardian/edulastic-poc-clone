@@ -33,6 +33,7 @@ import {
 import StandardSet from './QuestionEditModal/common/StandardSet'
 import { StandardSelectWrapper } from '../styled-components/StandardSet'
 import { validateStandardsData } from '../utils/common'
+import { standardsFields } from '../constants'
 
 class AddBulkModal extends React.Component {
   static propTypes = {
@@ -128,7 +129,7 @@ class AddBulkModal extends React.Component {
             .filter((dokValue) => dokValue),
       grades,
       subject,
-      standardSet: curriculum,
+      ...(curriculum?.length ? { standardSet: curriculum } : {}),
       commonCoreStandards: curriculumStandardsIdsIdentifiers,
     })
   }
@@ -252,7 +253,11 @@ class AddBulkModal extends React.Component {
               onUpdate={(data) => this.setState({ alignment: data.alignment })}
               isDocBased
               showIconBrowserBtn
-              isStandardsDataRequired
+              standardsRequiredFields={[
+                standardsFields.SUBJECT,
+                standardsFields.GRADES,
+              ]}
+              considerCustomAlignmentDataSettingPriority
             />
             <Row style={{ marginTop: '10px' }} gutter={20}>
               <Col md={12}>

@@ -97,6 +97,7 @@ const PlayerHeader = ({
   openReferenceModal,
   t: i18Translate,
   firstItemInSectionAndRestrictNav,
+  isLast,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -109,7 +110,6 @@ const PlayerHeader = ({
   const totalQuestions = options.length
   const totalAnswered = skipped.filter((s) => !s).length
   const isFirst = () => (isDocbased ? true : currentItem === 0)
-  const isLast = currentItem === items.length - 1
 
   const headerStyle = {
     borderBottom: `1px solid ${header.borderColor}`,

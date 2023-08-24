@@ -62,12 +62,12 @@ const PlayerHeader = ({
   utaId,
   groupId,
   hidePause,
-  items,
   grades,
   subjects,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
+  isLast,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -87,7 +87,6 @@ const PlayerHeader = ({
   const [showReviewPopup, setShowReviewPopup] = useState(false)
 
   const isFirst = () => (isDocbased ? true : currentItem === 0)
-  const isLast = () => currentItem === items.length - 1
 
   const handleOpen = () => {
     setShowReviewPopup(true)
@@ -185,13 +184,13 @@ const PlayerHeader = ({
                     data-cy="options"
                     onClick={handleOpen}
                     aria-label={
-                      isLast()
+                      isLast
                         ? t('common.test.reviewAndSubmit')
                         : t('common.test.review')
                     }
                   >
                     <span>
-                      {isLast()
+                      {isLast
                         ? t('common.test.reviewAndSubmit')
                         : t('common.test.review')}
                     </span>
@@ -260,7 +259,7 @@ const PlayerHeader = ({
                     data-cy="next"
                     type="primary"
                     icon="right"
-                    aria-label={isLast() ? 'SUBMIT' : 'NEXT'}
+                    aria-label={isLast ? 'SUBMIT' : 'NEXT'}
                     onClick={(e) => {
                       moveToNext()
                       e.target.blur()
@@ -280,7 +279,7 @@ const PlayerHeader = ({
                     style={{ marginLeft: '15px' }}
                   >
                     <IconQuester.IconNext style={{ marginRight: '10px' }} />
-                    <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
+                    <span>{isLast ? 'SUBMIT' : 'NEXT'}</span>
                   </ControlBtn>
                 </Tooltip>
               </Container>

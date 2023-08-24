@@ -33,19 +33,18 @@ export const processMcqStandardQuestion = (
   const uuidMap = {}
   const options = []
 
-  question.options.forEach(({ name, value }) => {
-    uuidMap[value] = uuid()
+  question.options.forEach(({ name = '', label = '' }, index) => {
+    uuidMap[`mapped_${index}`] = uuid()
     options.push({
-      label: name,
-      value: uuidMap[value],
+      label: name || label,
+      value: uuidMap[`mapped_${index}`],
     })
   })
 
   const correctAnswers = []
 
-  if (question.correctAnswerIndex) {
-    correctAnswers.push(uuidMap[question.correctAnswerIndex])
-  }
+  correctAnswers.push(uuidMap[`mapped_${question.correctAnswerIndex}`])
+
   const validation = {
     scoringType: EXACT_MATCH,
     validResponse: {

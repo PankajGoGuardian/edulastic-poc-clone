@@ -107,6 +107,7 @@ import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
+import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 
 const {
   ITEM_GROUP_TYPES,
@@ -2366,9 +2367,7 @@ function* createTestSaga({ payload }) {
 
     const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
       .filter(({ unsavedItem }) => unsavedItem)
-      .map((item) =>
-        omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
-      )
+      .map((item) => pick(item, itemFields))
 
     let newTestItems
     if (!isEmpty(aiGeneratedTestItems)) {
@@ -2523,9 +2522,7 @@ export function* updateTestSaga({ payload }) {
         .filter(({ unsavedItem }) => unsavedItem)
         .forEach((item) => {
           selectedGroupForAI = index
-          aiGeneratedTestItems.push(
-            omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
-          )
+          aiGeneratedTestItems.push(pick(item, itemFields))
         })
     })
 

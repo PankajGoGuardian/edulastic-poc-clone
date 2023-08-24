@@ -95,7 +95,7 @@ const defaultStandards = {
 
 const allQuestionTypes = [
   { value: MULTIPLE_CHOICE, text: 'Multiple Choice question' },
-  { value: TRUE_OR_FALSE, text: 'True of False' },
+  { value: TRUE_OR_FALSE, text: 'True or False' },
   { value: MULTIPLE_SELECTION, text: 'Multiple Select question' },
 ]
 

@@ -123,11 +123,13 @@ const FormFields = ({
             onChange={(value) => handleFieldDataChange(DOK, value)}
             value={dok}
           >
-            {selectsData.allDepthOfKnowledge.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
-                {text}
-              </Select.Option>
-            ))}
+            {selectsData.allDepthOfKnowledge
+              .filter(({ value }) => value)
+              .map(({ value, text }) => (
+                <Select.Option key={value} value={value}>
+                  {text}
+                </Select.Option>
+              ))}
           </SelectInputStyled>
         </Col>
         <Col xs={12}>
@@ -142,11 +144,13 @@ const FormFields = ({
             onChange={(value) => handleFieldDataChange(DIFFICULTY, value)}
             value={difficulty}
           >
-            {selectsData.allAuthorDifficulty.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
-                {text}
-              </Select.Option>
-            ))}
+            {selectsData.allAuthorDifficulty
+              .filter(({ value }) => value)
+              .map(({ value, text }) => (
+                <Select.Option key={value} value={value}>
+                  {text}
+                </Select.Option>
+              ))}
           </SelectInputStyled>
         </Col>
       </Row>

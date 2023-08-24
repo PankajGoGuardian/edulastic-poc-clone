@@ -233,7 +233,7 @@ class PreviewModal extends React.Component {
       ].every((x) => !isEmpty(x))
     ) {
       regenerateTestItem({
-        questionType: QUE_TYPE_BY_TITLE[questionTitle],
+        itemType: QUE_TYPE_BY_TITLE[questionTitle],
         numberOfItems: 1,
         dok: [depthOfKnowledge],
         difficulty: [authorDifficulty],

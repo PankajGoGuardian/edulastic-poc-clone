@@ -84,9 +84,9 @@ const ReviewQuestionsModal = ({
           height="40px"
           key="okButton"
           onClick={previewPlayer ? finishTest : gotoSummary}
-          style={{ padding: '10px 40px' }}
+          style={{ padding: '10px 52px' }}
         >
-          SUBMIT TEST
+          SUBMIT
         </EduButton>,
       ]}
       title="Review"

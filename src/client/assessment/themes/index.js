@@ -67,6 +67,7 @@ import {
   getPreventSectionNavigationSelector,
   hasSectionsSelector,
   getItemsSelector,
+  getItemGroupsByExcludingItemsSelector,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -610,6 +611,7 @@ const AssessmentContainer = ({
   itemGroups,
   hasSections,
   preventSectionNavigation,
+  deliveringItemGroups,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -671,6 +673,12 @@ const AssessmentContainer = ({
     currentItem,
     items,
   ])
+
+  const lastSectionInTest = useMemo(
+    () =>
+      last(deliveringItemGroups)?.items?.some((item) => item?._id === itemId),
+    [deliveringItemGroups, itemId]
+  )
 
   const isLast = () => lastItemInTest || (lastItemInsection && hasSections)
   const isFirst = () => currentItem === 0
@@ -1134,8 +1142,15 @@ const AssessmentContainer = ({
     if (!preview) {
       if (!testletType) {
         const timeSpent = Date.now() - lastTime.current
+        let urlToGo = `${url}/${'test-summary'}`
+        // If user clicks on submit button from any item in a section and
+        // that is not the last setion then redirect user to section summary page.
+        // This scenario applicable for quester or drc players as these players allow to submit test any time
+        if (hasSections && !lastSectionInTest) {
+          urlToGo = `${url}/section/${sectionId}/${'test-summary'}`
+        }
         saveUserAnswer(currentItem, timeSpent, false, groupId, {
-          urlToGo: `${url}/${'test-summary'}`,
+          urlToGo,
           locState: { ...history?.location?.state, fromSummary: true },
         })
       }
@@ -1636,6 +1651,7 @@ const enhance = compose(
       itemGroups: getItemGroupsSelector(state),
       hasSections: hasSectionsSelector(state),
       preventSectionNavigation: getPreventSectionNavigationSelector(state),
+      deliveringItemGroups: getItemGroupsByExcludingItemsSelector(state),
     }),
     {
       saveUserResponse,

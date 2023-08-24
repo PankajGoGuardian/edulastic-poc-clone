@@ -174,6 +174,7 @@ export {
   reformatMathInputLatex,
   getMathHtml,
   removeLeadingAndTrailingNewlineChars,
+  replaceLatexWithMathQuillSupportedLatex,
 } from './src/utils/mathUtils'
 
 export {

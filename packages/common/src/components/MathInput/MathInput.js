@@ -3,6 +3,7 @@ import {
   reformatMathInputLatex,
   notification,
   removeLeadingAndTrailingNewlineChars,
+  replaceLatexWithMathQuillSupportedLatex,
 } from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -277,7 +278,8 @@ class MathInput extends React.PureComponent {
     const { onInput: saveAnswer, isFromDocBased = false } = this.props
 
     if (mathField && mathField.latex()) {
-      const mathLatex = removeLeadingAndTrailingNewlineChars(mathField.latex())
+      let mathLatex = removeLeadingAndTrailingNewlineChars(mathField.latex())
+      mathLatex = replaceLatexWithMathQuillSupportedLatex(mathLatex)
       /**
        * @see https://snapwiz.atlassian.net/browse/EV-35019
        * In FormMath component "highlighted" variable is used to set focus to math-input

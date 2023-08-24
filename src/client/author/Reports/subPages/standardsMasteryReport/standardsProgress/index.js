@@ -6,7 +6,11 @@ import { get, pickBy, isEmpty } from 'lodash'
 import { Row } from 'antd'
 import { SpinLoader, useApiQuery } from '@edulastic/common'
 import { standardsProgressApi } from '@edulastic/api'
-import { report as reportTypes, reportUtils } from '@edulastic/constants'
+import {
+  report as reportTypes,
+  reportUtils,
+  roleuser,
+} from '@edulastic/constants'
 import { getErrorMessage } from '../../../common/util'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
@@ -81,8 +85,12 @@ const StandardsProgress = ({
     )?.scale || []
 
   // filter compareBy options according to role
-  const compareByDropDownDataFiltered = CompareByDropDownData.filter(
-    (option) => !option.hiddenFromRole?.includes(userRole)
+  const compareByDropDownDataFiltered = useMemo(
+    () =>
+      userRole !== roleuser.TEACHER
+        ? CompareByDropDownData
+        : CompareByDropDownData.slice(2),
+    [userRole]
   )
 
   const ddRequestFilters = useMemo(

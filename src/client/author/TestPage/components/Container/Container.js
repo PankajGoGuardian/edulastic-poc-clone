@@ -678,7 +678,8 @@ class Container extends PureComponent {
       return
     }
 
-    if (value === 'addSections') {
+    /** For AI quiz we need to unselect section */
+    if (value === 'addSections' && test?.aiGenerated) {
       this.setState({
         currentGroupIndex: null,
       })

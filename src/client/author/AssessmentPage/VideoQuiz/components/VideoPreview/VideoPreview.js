@@ -98,7 +98,7 @@ const VideoPreview = ({
               x: markerState.markers?.[0]?.left,
               y: markerState.markers?.[0]?.top,
               markerJsData: markerState.markers,
-              time: Math.floor(videoRef.current?.getCurrentTime?.() - 1),
+              time: Math.floor(videoRef.current?.getCurrentTime?.()),
               toolbarMode: 'markerJs',
             },
             'video'
@@ -106,12 +106,10 @@ const VideoPreview = ({
         }
       }
 
-      // playing video and Closing markerJS toolbar
-      setPlaying(true)
       markerArea.current.close()
-    } else {
-      setPlaying(true)
     }
+
+    setPlaying(true)
   }
 
   const onPause = () => {
@@ -303,22 +301,27 @@ const VideoPreview = ({
 
   useEffect(() => {
     annotationsRef.current = annotations
-    const _currentTime = getCurrentTime(videoRef)
+    if (!playing) {
+      const _currentTime = getCurrentTime(videoRef)
 
-    let newVisibleAnnotations = getVisibleAnnotation(annotations, _currentTime)
+      let newVisibleAnnotations = getVisibleAnnotation(
+        annotations,
+        _currentTime
+      )
 
-    newVisibleAnnotations = newVisibleAnnotations?.length
-      ? newVisibleAnnotations
-      : []
-    const questionAnnotations = newVisibleAnnotations.filter(
-      (annotation) => annotation.toolbarMode === 'question'
-    )
-    updateVideoQuizQuestionsToDisplay(questionAnnotations || [])
+      newVisibleAnnotations = newVisibleAnnotations?.length
+        ? newVisibleAnnotations
+        : []
+      const questionAnnotations = newVisibleAnnotations.filter(
+        (annotation) => annotation.toolbarMode === 'question'
+      )
+      updateVideoQuizQuestionsToDisplay(questionAnnotations || [])
 
-    if (newVisibleAnnotations.length > 0) {
-      onPause()
-      onHighlightQuestion(newVisibleAnnotations[0].questionId, true)
-      setVisibleAnnotation(newVisibleAnnotations)
+      if (newVisibleAnnotations.length > 0) {
+        onPause()
+        onHighlightQuestion(newVisibleAnnotations[0].questionId, true)
+        setVisibleAnnotation(newVisibleAnnotations)
+      }
     }
   }, [annotations])
 

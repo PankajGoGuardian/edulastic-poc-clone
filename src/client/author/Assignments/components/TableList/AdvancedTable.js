@@ -76,7 +76,7 @@ class AdvancedTable extends Component {
             placement="bottom"
             title={
               <div>
-                {text} (Id: {row.testId.slice(-5)})
+                {text} {/* (Id: {row.testId.slice(-6)}) */}
               </div>
             }
           >

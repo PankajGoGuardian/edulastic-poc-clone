@@ -23,7 +23,7 @@ import {
   IconNotes,
   IconSettings,
   IconStar,
-  IconCircle,
+  // IconCircle,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -145,7 +145,7 @@ class ClassHeader extends Component {
       condition: true, // Whether meet the condition, if not show popconfirm.
       actionsVisible: false,
       premiumPopup: null,
-      copied: false,
+      // copied: false,
     }
     this.inputRef = React.createRef()
   }
@@ -494,7 +494,7 @@ class ClassHeader extends Component {
       modalInputVal = '',
       actionsVisible,
       premiumPopup,
-      copied,
+      // copied,
     } = this.state
     const forceActionsVisible = !!premiumPopup
     const {
@@ -1010,22 +1010,22 @@ class ClassHeader extends Component {
                 </div>
               )}
               <StyledParaSecond data-cy="assignmentStatusForDisplay">
-                <Tooltip
-                  title={`Test Id: #${additionalData.testId.slice(-5)}. ${
+                {/* <Tooltip
+                  title={`Test Id: #${additionalData.testId.slice(-6)}. ${
                     copied ? 'Copied' : 'Click to copy'
                   }`}
                   placement="bottomLeft"
                   onClick={() => {
                     navigator.clipboard
-                      .writeText(additionalData.testId.slice(-5))
+                      .writeText(additionalData.testId.slice(-6))
                       .then(() => {
                         this.setState({ copied: true })
                       })
                   }}
                 >
-                  Id: #{additionalData.testId.slice(-5)}
+                  Id: #{additionalData.testId.slice(-6)}
                 </Tooltip>
-                <IconCircle width={10} />
+                <IconCircle width={10} /> */}
                 <span>
                   {assignmentStatusForDisplay}
                   {isPaused && assignmentStatusForDisplay !== 'DONE'

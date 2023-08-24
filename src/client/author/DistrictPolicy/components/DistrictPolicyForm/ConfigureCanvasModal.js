@@ -207,10 +207,10 @@ const ConfigureCanvasModal = ({
           <TabPane tab="Edulastic app configuration" key="2">
             <ContentList>
               <p>
-                Canvas admin can instal Edulastic app following below steps:
+                Canvas admin can install Edulastic app following below steps:
               </p>
               <ol>
-                <li>Search and Install Edualstic-SSO app form app center</li>
+                <li>Search and Install Edualstic-SSO app from app center</li>
                 <li>Enter Consumer and Secret Key in the app</li>
               </ol>
             </ContentList>

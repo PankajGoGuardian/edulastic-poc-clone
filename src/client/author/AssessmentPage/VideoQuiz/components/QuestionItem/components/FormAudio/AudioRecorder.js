@@ -1,7 +1,7 @@
-import { EduIf, notification } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, notification } from '@edulastic/common'
 import { IconWhiteMic, IconWhiteStop } from '@edulastic/icons'
 import { Icon } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import CountDownTimer from '../../../../../../../assessment/widgets/AudioResponse/components/CountDownTimer'
@@ -20,7 +20,12 @@ import {
 } from '../../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import { getUserIdSelector } from '../../../../../../src/selectors/user'
 
-const AudioRecorder = ({ userId, onFinish, audioTimeLimitInMinutes }) => {
+const AudioRecorder = ({
+  userId,
+  onFinish,
+  audioTimeLimitInMinutes,
+  responseUrl,
+}) => {
   const [recordingState, setRecordingState] = useState(RECORDING_INACTIVE)
   const [uploadedUrl, setUploadedUrl] = useState()
   const { uploadFile } = useUploadAudioFile({
@@ -55,72 +60,91 @@ const AudioRecorder = ({ userId, onFinish, audioTimeLimitInMinutes }) => {
     userId,
   })
 
+  useEffect(() => {
+    if (responseUrl) {
+      setUploadedUrl(responseUrl)
+    }
+  }, [responseUrl])
+
   return (
-    <>
-      <EduIf condition={recordingState === RECORDING_INACTIVE}>
-        <StyledButton
-          height="32px"
-          width="32px"
-          lineHeight="38px"
-          onClick={onClickRecordAudio}
-        >
-          <IconWhiteMic height={16} />
-        </StyledButton>
-      </EduIf>
+    <StyledCenterContainer>
       <EduIf condition={recordingState === RECORDING_ACTIVE}>
-        <StyledButton
-          isRecording
-          height="32px"
-          width="32px"
-          lineHeight="32px"
-          onClick={onClickStopRecording}
-        >
-          <IconWhiteStop height={12} />
-        </StyledButton>
-        <StyledCountDownWrapper>
-          <CountDownTimer
-            audioTimeLimitInMinutes={audioTimeLimitInMinutes}
-            handleStopRecording={onClickStopRecording}
-          />
-        </StyledCountDownWrapper>
+        <EduThen>
+          <StyledButton
+            isRecording
+            height="32px"
+            width="32px"
+            lineHeight="32px"
+            onClick={onClickStopRecording}
+          >
+            <IconWhiteStop height={12} />
+          </StyledButton>
+          <StyledCountDownWrapper>
+            <CountDownTimer
+              audioTimeLimitInMinutes={audioTimeLimitInMinutes}
+              handleStopRecording={onClickStopRecording}
+            />
+          </StyledCountDownWrapper>
+        </EduThen>
+        <EduElse>
+          <EduIf condition={recordingState === AUDIO_UPLOAD_ACTIVE}>
+            <EduThen>
+              <StyledButton height="32px" width="32px" lineHeight="32px">
+                <StyledWhiteIcon type="sync" spin />
+              </StyledButton>
+              <StyledTextWrapper>Uploading...</StyledTextWrapper>
+            </EduThen>
+            <EduElse>
+              <StyledButton
+                height="32px"
+                width="32px"
+                lineHeight="38px"
+                onClick={onClickRecordAudio}
+              >
+                <IconWhiteMic color="white" height={16} />
+              </StyledButton>
+              <EduIf condition={recordingState === AUDIO_UPLOAD_ERROR}>
+                <StyledTextWrapper>
+                  <Icon type="warning" /> Failed
+                </StyledTextWrapper>
+              </EduIf>
+              <EduIf condition={uploadedUrl}>
+                <StyledAudioElement
+                  src={uploadedUrl}
+                  controls
+                  width="100%"
+                  height="32px"
+                  controlsList="nodownload noplaybackrate"
+                  preload="auto"
+                />
+              </EduIf>
+            </EduElse>
+          </EduIf>
+        </EduElse>
       </EduIf>
-      <EduIf condition={recordingState === AUDIO_UPLOAD_ACTIVE}>
-        <StyledButton height="32px" width="32px" lineHeight="32px">
-          <StyledWhiteIcon type="sync" spin />
-        </StyledButton>
-        <StyledCountDownWrapper>
-          <div>Uploading...</div>
-        </StyledCountDownWrapper>
-      </EduIf>
-      <EduIf condition={recordingState === AUDIO_UPLOAD_ERROR}>
-        <StyledButton height="32px" width="32px" lineHeight="32px">
-          <Icon type="warning" />
-        </StyledButton>
-        <StyledCountDownWrapper>
-          <div>Failed</div>
-        </StyledCountDownWrapper>
-      </EduIf>
-      <EduIf condition={recordingState === AUDIO_UPLOAD_SUCCESS}>
-        <StyledAudioElement
-          src={uploadedUrl}
-          controls
-          width="100%"
-          height="32px"
-          controlsList="nodownload noplaybackrate"
-          preload="auto"
-        />
-      </EduIf>
-    </>
+    </StyledCenterContainer>
   )
 }
 
-const StyledCountDownWrapper = styled.div`
+const StyledCenterContainer = styled.div`
+  text-align: center;
+`
+
+const StyledCountDownWrapper = styled.span`
   div {
+    text-align: center;
+    padding-top: 12px;
     line-height: 32px;
-    padding-left: 16px;
     font-size: 16px;
     font-weight: bold;
   }
+`
+
+const StyledTextWrapper = styled.div`
+  text-align: center;
+  line-height: 32px;
+  font-size: 16px;
+  font-weight: bold;
 `
 
 const StyledWhiteIcon = styled(Icon)`

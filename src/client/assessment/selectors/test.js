@@ -151,6 +151,11 @@ export const getItemsSelector = createSelector(
   (state) => state && state.items
 )
 
+export const getItemsToDeliverInGroupByIdSelector = createSelector(
+  stateSelector,
+  (state) => keyBy(state.itemsToDeliverInGroup, 'groupId')
+)
+
 export const getItemGroupsSelector = createSelector(
   stateSelector,
   (state) => state.itemGroups

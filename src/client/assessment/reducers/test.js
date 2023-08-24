@@ -95,6 +95,7 @@ const test = (state = initialState, { payload, type }) => {
         referenceDocAttributes: payload?.referenceDocAttributes,
         // Setting the state with the test data.
         itemGroups: payload.itemGroups,
+        itemsToDeliverInGroup: payload.itemsToDeliverInGroup,
         hasSections: payload.hasSections,
         preventSectionNavigation: payload.preventSectionNavigation,
         settings: {

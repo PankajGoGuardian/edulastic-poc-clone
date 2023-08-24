@@ -617,7 +617,7 @@ function* loadTest({ payload }) {
     ;(testActivity.questionActivities || []).forEach((item) => {
       answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem
     })
-
+    let itemsToDeliverInGroup = []
     // if testActivity is present.
     if (!preview) {
       let allAnswers = {}
@@ -635,6 +635,7 @@ function* loadTest({ payload }) {
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      itemsToDeliverInGroup = activity?.itemsToDeliverInGroup || []
       assignmentById = yield select(
         (state) => state?.studentAssignment?.byId || {}
       )
@@ -923,6 +924,7 @@ function* loadTest({ payload }) {
         subjects: test.subjects,
         referenceDocAttributes: settings.referenceDocAttributes,
         itemGroups,
+        itemsToDeliverInGroup,
         hasSections: test.hasSections,
         preventSectionNavigation: test.preventSectionNavigation,
       },

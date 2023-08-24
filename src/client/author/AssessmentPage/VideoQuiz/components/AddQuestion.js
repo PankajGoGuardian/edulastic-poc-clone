@@ -59,6 +59,7 @@ class AddQuestion extends React.Component {
     isFromAddBulk = false,
   }) => {
     const { onAddQuestion, scrollToBottom } = this.props
+    const { bulkModalVisible } = this.state
 
     for (let i = 0; i < number; i++) {
       if (isFromAddBulk && !isEmpty(aiQuestions?.[i])) {
@@ -107,7 +108,9 @@ class AddQuestion extends React.Component {
       )()
     }
 
-    this.toggleBulkModal()
+    if (bulkModalVisible) {
+      this.toggleBulkModal()
+    }
     scrollToBottom()
   }
 
@@ -196,14 +199,12 @@ class AddQuestion extends React.Component {
               Add Section
             </AddButton>
           </QuestionTypes>
-          <EduIf condition={bulkModalVisible}>
-            <AddBulkModal
-              visible={bulkModalVisible}
-              onCancel={this.toggleBulkModal}
-              onApply={this.handleApply}
-              minAvailableQuestionIndex={minAvailableQuestionIndex}
-            />
-          </EduIf>
+          <AddBulkModal
+            visible={bulkModalVisible}
+            onCancel={this.toggleBulkModal}
+            onApply={this.handleApply}
+            minAvailableQuestionIndex={minAvailableQuestionIndex}
+          />
         </ContentWrapper>
       </AddQuestionWrapper>
     )

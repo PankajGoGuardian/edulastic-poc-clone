@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { isSEB } from '@edulastic/common'
 import { useMagnifierScroll } from './useMagnifierScroll'
 import { useMagnifierEvents } from './useMagnifierEvents'
 import { normalizeTouchEvent } from './helpers'
 import { ZoomedWrapper, ZoomedContentWrapper, MagnifierOverlay } from './styled'
+import { isWindows } from '../../../platform'
 
 export const Magnifier = ({
   children,
@@ -24,23 +26,43 @@ export const Magnifier = ({
   const clickedClassName = useRef()
   const magnifierRef = useRef()
   const unzoomRef = useRef()
+  const isSEBBrowserWindows = isSEB() && isWindows()
 
-  const onMouseMove = (e) => {
-    if (!setting.dragging) {
-      return
-    }
-    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
-    if (offset.top <= e.pageY - setting.rel.y) {
+  // JIRA: EV-39387 Magnifier not working in SEB Browser
+  const onMouseMoveSEBWindows = (e) => {
+    if (offset.top <= e.pageY) {
       setSetting({
         ...setting,
         pos: {
-          x: e.pageX - setting.rel.x,
-          y: e.pageY - setting.rel.y,
+          x: e.pageX,
+          y: e.pageY,
         },
       })
     }
     e.stopPropagation()
     e.preventDefault()
+  }
+
+  const onMouseMove = (e) => {
+    if (isSEBBrowserWindows) {
+      onMouseMoveSEBWindows(e)
+    } else {
+      if (!setting.dragging) {
+        return
+      }
+      if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
+      if (offset.top <= e.pageY - setting.rel.y) {
+        setSetting({
+          ...setting,
+          pos: {
+            x: e.pageX - setting.rel.x,
+            y: e.pageY - setting.rel.y,
+          },
+        })
+      }
+      e.stopPropagation()
+      e.preventDefault()
+    }
   }
 
   const onMouseUp = (e) => {

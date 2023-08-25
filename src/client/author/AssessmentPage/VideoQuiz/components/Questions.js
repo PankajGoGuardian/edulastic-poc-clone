@@ -162,11 +162,17 @@ class Questions extends React.Component {
       typeof handleAddBulkQuestionAnnotations === 'function'
     ) {
       let questions = this.questionList
-      questions = (questions || []).filter((question) => {
+      questions = (questions || []).map((question) => {
+        if (question.type === 'sectionLabel') {
+          return null
+        }
         const annotationIndex = (annotations || []).findIndex(
           (annotation) => annotation?.questionId === question.id
         )
-        return annotationIndex === -1
+        if (annotationIndex === -1) {
+          return question
+        }
+        return null
       })
       if (questions?.length) {
         const newAnnotations = []
@@ -279,7 +285,7 @@ class Questions extends React.Component {
 
   handleAddSection = () => {
     const { addQuestion, list } = this.props
-    const sectionIndex = list.length
+    const sectionIndex = list.length + 1
     const section = createSection(sectionIndex)
 
     addQuestion(section)

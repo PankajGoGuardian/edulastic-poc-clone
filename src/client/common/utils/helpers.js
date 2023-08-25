@@ -281,14 +281,33 @@ export const validateQuestionsForDocBased = (
       return false
     }
     if (isVideoQuiz) {
-      const dontHaveTimeStamp = questions.filter(
-        ({ questionDisplayTimestamp }) => !questionDisplayTimestamp
-      )
+      let questionIndexWithoutSections = 1
+      const dontHaveTimeStamp = questions
+        .map((question) => {
+          if (question?.type === 'sectionLabel') {
+            return null
+          }
+          if (typeof question?.questionDisplayTimestamp === 'number') {
+            questionIndexWithoutSections++
+            return null
+          }
+          return {
+            ...question,
+            questionIndexWithoutSections: questionIndexWithoutSections++,
+          }
+        })
+        .filter((question) => question)
+
+      console.log('dontHaveTimeStamp', dontHaveTimeStamp)
       if (dontHaveTimeStamp?.length) {
         notification({
           type: 'warn',
           msg: `Question ${dontHaveTimeStamp
-            .map(({ qIndex }) => qIndex)
+            .map(
+              ({
+                questionIndexWithoutSections: _questionIndexWithoutSections,
+              }) => _questionIndexWithoutSections
+            )
             .join(', ')} must have timestamp or dragged on video.`,
         })
         return false

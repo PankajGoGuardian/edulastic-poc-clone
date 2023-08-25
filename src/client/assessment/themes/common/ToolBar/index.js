@@ -78,6 +78,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.calculator')}
+          aria-label={translate('toolbar.calculator')}
           icon={
             <CalculatorIconWrapper isMultiCalculators={calcTypes.length > 1} />
           }
@@ -89,6 +90,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.refMaterial')}
+          aria-label={translate('toolbar.refMaterial')}
           icon={<IconEduReferenceSheet height="22" width="20" />}
           active={isShowReferenceModal}
           onClick={openReferenceModal}
@@ -104,11 +106,16 @@ const ToolBar = ({
         active={tool.includes(3)}
         onClick={toolbarHandler(3)}
         disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
-        aria-label="Close Icon"
+        aria-label={
+          isDisableCrossBtn
+            ? translate('toolbar.crossDisabled')
+            : translate('toolbar.cross')
+        }
       />
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
         title={translate('toolbar.protactor')}
+        aria-label={translate('toolbar.protactor')}
         icon={<ProtactorIcon />}
         active={tool.includes(4)}
         onClick={toolbarHandler(4)}
@@ -118,7 +125,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.scratchPad')}
-          aria-label="ScratchPad Icon"
+          aria-label={translate('toolbar.scratchPad')}
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
           onClick={toolbarHandler(5)}
@@ -128,7 +135,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.magnify')}
-          aria-label="Magnify Icon"
+          aria-label={translate('toolbar.magnify')}
           icon={<IconMagnify />}
           active={enableMagnifier}
           onClick={handleMagnifier}
@@ -138,7 +145,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.uploadWork')}
-          aria-label="Upload Work"
+          aria-label={translate('toolbar.uploadWork')}
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />

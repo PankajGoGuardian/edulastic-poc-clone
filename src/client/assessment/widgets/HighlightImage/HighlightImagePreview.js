@@ -82,6 +82,7 @@ const HighlightImagePreview = ({
       x={image.x}
       y={image.y}
       alt={altText}
+      aria-label={altText}
       draggable="false"
     />
   )

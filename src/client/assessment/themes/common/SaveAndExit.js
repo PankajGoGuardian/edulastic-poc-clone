@@ -171,6 +171,7 @@ const SaveAndExit = ({
                 <SaveAndExitButton
                   disabled={hidePause}
                   data-cy="finishTest"
+                  aria-label="Save and exit"
                   onClick={finishTest}
                 >
                   <IconCircleLogout />

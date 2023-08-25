@@ -203,7 +203,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(CALC)}
                     title={i18Translate('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label="Calculator"
+                    aria-label={i18Translate('common.test.calculator')}
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
@@ -214,7 +214,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(SCRATCHPAD)}
                     title={i18Translate('common.test.scratchPad')}
                     data-cy="scratchPad"
-                    aria-label="ScratchPad Icon"
+                    aria-label={i18Translate('common.test.scratchPad')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
@@ -226,7 +226,7 @@ const PlayerHeader = ({
                     onClick={handleMagnifier}
                     title={i18Translate('common.test.magnify')}
                     data-cy="magnify"
-                    aria-label="Magnify Icon"
+                    aria-label={i18Translate('common.test.magnify')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
@@ -238,7 +238,7 @@ const PlayerHeader = ({
                     title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label="Upload Work"
+                    aria-label={i18Translate('common.test.uploadWork')}
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>

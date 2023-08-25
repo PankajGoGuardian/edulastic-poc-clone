@@ -160,7 +160,7 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="ScratchPad Icon"
+            aria-label="ScratchPad"
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -194,7 +194,7 @@ const ToolBar = ({
             onClick={handleMagnifier}
             active={enableMagnifier}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Magnify Icon"
+            aria-label="Magnify"
           >
             <IconMagnify />
           </StyledButton>

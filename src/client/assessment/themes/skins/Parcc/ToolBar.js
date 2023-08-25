@@ -113,7 +113,7 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="ScratchPad Icon"
+            aria-label="ScratchPad"
           >
             <ScratchPadIcon />
           </StyledButton>

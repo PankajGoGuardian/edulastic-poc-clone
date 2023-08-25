@@ -366,6 +366,7 @@ class Display extends Component {
                 >
                   {!smallSize && (
                     <AnswerDropdown
+                      altText={responseContainer.label}
                       placeholder={responseContainer.placeholder || placeholder}
                       responseIndex={dropTargetIndex}
                       style={{

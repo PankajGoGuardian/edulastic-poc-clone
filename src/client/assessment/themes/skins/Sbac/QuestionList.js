@@ -56,6 +56,7 @@ const QuestionList = ({
       style={dropdownStyle}
       skinb={skinb}
       className="question-select-dropdown"
+      aria-label="Questions Selection area"
     >
       <Tooltip
         placement="bottom"

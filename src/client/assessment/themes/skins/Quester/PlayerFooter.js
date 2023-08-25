@@ -208,7 +208,7 @@ const PlayerFooter = ({
             : 'Crossout'
         }
         data-cy="crossButton"
-        aria-label="Crossout"
+        aria-label={t('common.test.answerEliminator')}
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -226,7 +226,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
           data-cy="calculator"
-          aria-label="Calculator Icon"
+          aria-label={t('common.test.calculator')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -246,7 +246,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
           data-cy="scratchPad"
-          aria-label="ScratchPad Icon"
+          aria-label={t('common.test.scratchPad')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -267,7 +267,7 @@ const PlayerFooter = ({
           title={t('common.test.magnify')}
           data-cy="magnify"
           disabled={isPremiumContentWithoutAccess}
-          aria-label="Magnify Icon"
+          aria-label={t('common.test.magnify')}
         >
           <IconWrapper>
             <IconMagnify
@@ -285,7 +285,7 @@ const PlayerFooter = ({
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
-          aria-label="Upload Work"
+          aria-label={t('common.test.uploadWork')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>

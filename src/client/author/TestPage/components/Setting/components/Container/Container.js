@@ -368,7 +368,8 @@ class Setting extends Component {
           })
         } else {
           setTestData({
-            restrictNavigationOut: undefined,
+            restrictNavigationOut: null,
+            restrictNavigationOutAttemptsThreshold: 0,
           })
         }
         break

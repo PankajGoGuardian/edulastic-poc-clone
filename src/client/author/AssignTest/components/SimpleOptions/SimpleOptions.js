@@ -199,7 +199,8 @@ class SimpleOptions extends React.Component {
     if (field === 'safeBrowser' && value === true) {
       assignment = {
         ...assignment,
-        restrictNavigationOut: undefined,
+        restrictNavigationOut: null,
+        restrictNavigationOutAttemptsThreshold: 0,
       }
     }
     if (field === 'applyEBSR') {

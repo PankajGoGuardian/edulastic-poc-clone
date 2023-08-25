@@ -221,16 +221,9 @@ class PreviewModal extends React.Component {
     const { _id } = item
 
     if (
-      [
-        _id,
-        alignment,
-        grades,
-        subjects,
-        stimulus,
-        depthOfKnowledge,
-        authorDifficulty,
-        questionTitle,
-      ].every((x) => !isEmpty(x))
+      [_id, alignment, grades, subjects, stimulus, questionTitle].every(
+        (x) => !isEmpty(x)
+      )
     ) {
       regenerateTestItem({
         itemType: QUE_TYPE_BY_TITLE[questionTitle],
@@ -242,18 +235,10 @@ class PreviewModal extends React.Component {
         groupIndex,
       })
     } else {
-      let msg
-      if (isEmpty(grades) || isEmpty(subjects) || isEmpty(alignment)) {
-        msg =
-          'Please add grades subjects and standard set to regenerate the question'
-      }
-      if (isEmpty(depthOfKnowledge)) {
-        msg = 'Please add in depth of knowledge metadata section of question'
-      }
-      if (isEmpty(authorDifficulty)) {
-        msg = 'Please add difficulty level in metadata section of question'
-      }
-      notification({ type: 'warn', msg })
+      notification({
+        type: 'warn',
+        msg: 'Facing some issue while regenerating this Question.',
+      })
     }
   }
 
@@ -1034,7 +1019,7 @@ class PreviewModal extends React.Component {
                   data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
                   title={
                     item.unsavedItem
-                      ? 'Please save the Test to edit this Ai Generated Item'
+                      ? 'Please save the Test to delete this AI Generated Item'
                       : ''
                   }
                 >
@@ -1074,7 +1059,7 @@ class PreviewModal extends React.Component {
                   </EduButton>
                 </>
               )}
-              <EduIf condition={item?.aiGenerated}>
+              <EduIf condition={item?.unsavedItem && page === 'review'}>
                 <AiEduButton
                   title="Regenerate"
                   width="28px"
@@ -1138,7 +1123,7 @@ class PreviewModal extends React.Component {
                       width="28px"
                       title={
                         item.unsavedItem
-                          ? 'Please save the Test to edit this Ai Generated Item'
+                          ? 'Please save the Test to edit this AI Generated Item'
                           : isDisableEdit
                           ? !allowDuplicate
                             ? 'Edit of Item is restricted by Publisher'
@@ -1186,7 +1171,7 @@ class PreviewModal extends React.Component {
                     height="28px"
                     title={
                       item.unsavedItem
-                        ? 'Please save the Test to Clone this Ai Generated Item'
+                        ? 'Please save the Test to Clone this AI Generated Item'
                         : isDisableDuplicate
                         ? 'Clone permission is restricted by the author'
                         : 'Clone'

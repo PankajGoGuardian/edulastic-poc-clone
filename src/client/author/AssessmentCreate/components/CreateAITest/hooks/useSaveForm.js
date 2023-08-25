@@ -13,8 +13,8 @@ export const useSaveForm = ({
   const initialAiFormData = {
     itemTypes: '',
     numberOfItems: 5,
-    dok: [],
-    difficulty: [],
+    dok: '',
+    difficulty: '',
     preference: '',
     testName: testTitle,
     alignment: [
@@ -111,29 +111,19 @@ export const useSaveForm = ({
       })
     }
 
-    if (isEmpty(alignment[0].curriculum)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'emptyStandardsSet',
-      })
-    }
-
-    if (isEmpty(alignment[0].standards)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'emptyStandards',
-      })
-    }
-
-    if (isEmpty(dok) || dok.some((x) => !x)) {
+    if (isEmpty(dok)) {
       _aiFormContent.dok = selectsData.allDepthOfKnowledge
         .map(({ value }) => value)
         .filter((x) => x)
+    } else {
+      _aiFormContent.dok = [dok]
     }
-    if (isEmpty(difficulty) || difficulty.some((x) => !x)) {
+    if (isEmpty(difficulty)) {
       _aiFormContent.difficulty = selectsData.allAuthorDifficulty
         .map(({ value }) => value)
         .filter((x) => x)
+    } else {
+      _aiFormContent.difficulty = [difficulty]
     }
 
     getAiGeneratedTestItems({

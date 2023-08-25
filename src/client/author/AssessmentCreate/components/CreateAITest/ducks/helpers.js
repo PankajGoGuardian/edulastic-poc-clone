@@ -52,7 +52,7 @@ export const getAlignmentDataForAiQuestions = ([alignment], standardNames) => {
   return { grades, subject, standardIds, standardSet }
 }
 export const getAlignmentForEduItems = ([alignment], standardName) => {
-  const { domains, standards, ...rest } = cloneDeep(alignment)
+  const { domains = [], standards = [], ...rest } = cloneDeep(alignment)
   const _domains = domains
     .filter(({ standards: sts }) =>
       sts.some(({ name }) => name === standardName)

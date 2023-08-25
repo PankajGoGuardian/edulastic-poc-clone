@@ -122,14 +122,16 @@ export const getQuestionType = (item) => {
   const resources = get(item, ['data', 'resources'], [])
   const hasPassage =
     resources.some((_item) => _item.type === PASSAGE) || item.passageId
-
   /**
    * Trying to find the question title from questionType (used in q-type search dropdown)
    * https://snapwiz.atlassian.net/browse/EV-17163
    * */
   const _questionTypeTitle = getTitleFromQuestionType(questions[0]?.type)?.text
   const questionTitle = _questionTypeTitle || questions[0]?.title || ''
-
+  const aiGeneratedTag = []
+  if (item.aiGenerated) {
+    aiGeneratedTag.push('AI-generated item')
+  }
   if (hasPassage) {
     // All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1
@@ -141,7 +143,7 @@ export const getQuestionType = (item) => {
   if (questions.length > 1 || resources.length) {
     return ['MULTIPART']
   }
-  return questionTitle ? [questionTitle] : []
+  return questionTitle ? [questionTitle, ...aiGeneratedTag] : []
 }
 
 /**

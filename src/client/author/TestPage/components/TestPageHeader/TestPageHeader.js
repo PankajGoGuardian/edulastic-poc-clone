@@ -639,7 +639,7 @@ const TestPageHeader = ({
                 (hasTestId && owner && showPublishButton && !showPublishForEC)
               }
             >
-              <EduIf condition={_hasUnsavedAiItems}>
+              <EduIf condition={_hasUnsavedAiItems && !hasTestId}>
                 <EduThen>
                   <EduButton
                     isBlue

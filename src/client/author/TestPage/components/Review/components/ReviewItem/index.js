@@ -205,7 +205,7 @@ const ReviewItem = ({
         />
       )}
 
-      <MetaInfo data={data.meta} isAiGeneratedItem={item.unsavedItem} />
+      <MetaInfo data={data.meta} unsavedItem={item.unsavedItem} />
     </>
   )
 }

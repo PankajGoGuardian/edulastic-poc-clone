@@ -1,4 +1,9 @@
-import { FieldLabel, FlexContainer, SelectInputStyled } from '@edulastic/common'
+import {
+  EduIf,
+  FieldLabel,
+  FlexContainer,
+  SelectInputStyled,
+} from '@edulastic/common'
 import { Row, Select, Input, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useMemo } from 'react'
@@ -98,14 +103,18 @@ const ReviewSummary = ({
           height={120}
         />
         <InnerFlex>
-          <FieldLabel display="inline-block">Test Id: </FieldLabel>
-          <TestIdCopy
-            copyable={{
-              text: versionId?.slice(-8),
-            }}
-          >
-            {versionId?.slice(-8)}
-          </TestIdCopy>
+          <EduIf condition={versionId?.length}>
+            <>
+              <FieldLabel display="inline-block">Test Id: </FieldLabel>
+              <TestIdCopy
+                copyable={{
+                  text: versionId?.slice(-8),
+                }}
+              >
+                {versionId?.slice(-8)}
+              </TestIdCopy>
+            </>
+          </EduIf>
         </InnerFlex>
       </FlexBoxOne>
       <FlexBoxTwo>

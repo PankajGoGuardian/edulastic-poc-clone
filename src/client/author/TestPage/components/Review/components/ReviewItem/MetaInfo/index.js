@@ -49,7 +49,7 @@ const MetaInfo = ({
   },
   isPublisherUser,
   toggleTestItemLikeRequest,
-  isAiGeneratedItem,
+  unsavedItem,
 }) => {
   const isItemLiked = item?.alreadyLiked || false
 
@@ -126,9 +126,9 @@ const MetaInfo = ({
             <StyledRubricIcon />
           </Tooltip>
         )}
-        <EduIf condition={isAiGeneratedItem}>
+        <EduIf condition={unsavedItem}>
           <EduThen>
-            <MetaTitle>AI Generated</MetaTitle>
+            <MetaTitle>Unsaved</MetaTitle>
           </EduThen>
           <EduElse>
             {renderAnalytics(by, IconUser, false, 'authorName')}

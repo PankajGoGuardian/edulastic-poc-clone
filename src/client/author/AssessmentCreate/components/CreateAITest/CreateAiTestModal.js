@@ -2,7 +2,7 @@ import { CustomModalStyled, EduIf, FlexContainer } from '@edulastic/common'
 import React from 'react'
 import { Spin } from 'antd'
 
-import { STATUS } from './ducks/constants'
+import { STATUS, STATUS_TEXT } from './ducks/constants'
 import { StyledFilterLabel } from './styled'
 import FormFields from './FormFields'
 
@@ -19,7 +19,7 @@ export const CreateAiTestModal = ({
   return (
     <CustomModalStyled
       visible={isVisible}
-      title="Auto-generated items"
+      title="Auto-generate items"
       footer={null}
       width="50%"
       onCancel={onCancel}
@@ -43,7 +43,7 @@ export const CreateAiTestModal = ({
         />
         <EduIf condition={aiTestStatus !== STATUS.INIT}>
           <FlexContainer mt="1rem" justifyContent="center" alignItems="center">
-            <StyledFilterLabel>{aiTestStatus}</StyledFilterLabel>
+            <StyledFilterLabel>{STATUS_TEXT[aiTestStatus]}</StyledFilterLabel>
           </FlexContainer>
         </EduIf>
       </Spin>

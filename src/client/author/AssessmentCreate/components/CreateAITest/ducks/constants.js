@@ -16,6 +16,13 @@ const STATUS = {
   SUCCESS: 'success',
 }
 
+const STATUS_TEXT = {
+  [STATUS.INIT]: 'Initialized',
+  [STATUS.INPROGRESS]: 'In progress',
+  [STATUS.FAILED]: 'Failed',
+  [STATUS.SUCCESS]: 'Success',
+}
+
 export const itemStructure = {
   _id: 'new',
   rows: [
@@ -99,4 +106,4 @@ const itemFields = [
   'aiGenerated',
 ]
 
-export { formFields, STATUS, itemFields }
+export { formFields, STATUS, itemFields, STATUS_TEXT }

@@ -71,6 +71,7 @@ const AlignmentRow = ({
   showIconBrowserBtn = false,
   hideLabel = false,
   isStandardsDataRequired = false,
+  gradesSubjectMandatory = false,
 }) => {
   const {
     subject = 'Mathematics',
@@ -322,7 +323,11 @@ const AlignmentRow = ({
                 <ItemBody data-cy="subjectItem">
                   <FieldLabel>
                     {t('component.options.subject')}
-                    <EduIf condition={isStandardsDataRequired}>
+                    <EduIf
+                      condition={
+                        isStandardsDataRequired || gradesSubjectMandatory
+                      }
+                    >
                       <StyledRequired>*</StyledRequired>
                     </EduIf>
                   </FieldLabel>
@@ -373,7 +378,11 @@ const AlignmentRow = ({
                 <ItemBody data-cy="gradeItem">
                   <FieldLabel>
                     {t('component.options.grade')}
-                    <EduIf condition={isStandardsDataRequired}>
+                    <EduIf
+                      condition={
+                        isStandardsDataRequired || gradesSubjectMandatory
+                      }
+                    >
                       <StyledRequired>*</StyledRequired>
                     </EduIf>
                   </FieldLabel>

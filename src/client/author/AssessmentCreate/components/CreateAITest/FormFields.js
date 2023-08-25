@@ -105,6 +105,7 @@ const FormFields = ({
             onUpdate={(data) => updateAlignment(data.alignment)}
             showIconBrowserBtn
             hideLabel
+            gradesSubjectMandatory
             isDocBased
           />
         </Col>
@@ -118,7 +119,6 @@ const FormFields = ({
             showSearch
             placeholder="Select Dok"
             optionFilterProp="children"
-            mode="multiple"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(DOK, value)}
             value={dok}
@@ -139,7 +139,6 @@ const FormFields = ({
             showSearch
             placeholder="Select Difficulty"
             optionFilterProp="children"
-            mode="multiple"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(DIFFICULTY, value)}
             value={difficulty}

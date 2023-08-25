@@ -59,6 +59,13 @@ import { OkButton } from '../../../../common/styled'
 
 const { allGrades, allSubjects } = selectsData
 
+const moduleAssignStatus = {
+  ALL: 'ALL',
+  PARTIAL: 'PARTIAL',
+}
+const partialAssignPlaylistMessage =
+  'Some tests from this module are already assigned to this class and will not be re-assigned. Rest will be assigned.'
+
 const findTeacherName = (row) => {
   const { owners = [], primaryTeacherId, parent } = row
   const { id: teacherId } = parent || {}
@@ -282,10 +289,15 @@ class ClassList extends React.Component {
   }
 
   handleClassSelectFromDropDown = (value) => {
-    const { classList, selectClass } = this.props
+    const { classList, selectClass, moduleAssignedClassesById } = this.props
     this.setState({ classType: 'all', filterClassIds: value }, () =>
       selectClass('class', value, classList)
     )
+    if (moduleAssignedClassesById[value] === moduleAssignStatus.PARTIAL) {
+      notification({
+        msg: partialAssignPlaylistMessage,
+      })
+    }
   }
 
   courseSearch = (searchString) => {
@@ -352,11 +364,10 @@ class ClassList extends React.Component {
         if (
           selected &&
           record.key &&
-          moduleAssignedClassesById[record.key] === 'PARTIAL'
+          moduleAssignedClassesById[record.key] === moduleAssignStatus.PARTIAL
         ) {
           notification({
-            msg:
-              'Some tests from this module are already assigned to this class and will not be re-assigned. Rest will be assigned.',
+            msg: partialAssignPlaylistMessage,
           })
         }
         if (selectClass) {
@@ -376,7 +387,7 @@ class ClassList extends React.Component {
         if (
           record &&
           record.key &&
-          moduleAssignedClassesById[record.key] === 'ALL'
+          moduleAssignedClassesById[record.key] === moduleAssignStatus.ALL
         ) {
           return {
             disabled: true,
@@ -679,7 +690,10 @@ class ClassList extends React.Component {
                   <Select.Option
                     key={name}
                     value={_id}
-                    disabled={assignedClassesById[testType][_id]}
+                    disabled={
+                      assignedClassesById[testType][_id] ||
+                      moduleAssignedClassesById[_id] === moduleAssignStatus.ALL
+                    }
                   >
                     {name}
                   </Select.Option>

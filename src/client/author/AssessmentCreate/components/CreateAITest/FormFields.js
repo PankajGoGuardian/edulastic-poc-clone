@@ -14,6 +14,7 @@ import { StyledFilterLabel, StyledRequired } from './styled'
 import { formFields } from './ducks/constants'
 
 import StandardSet from '../../../AssessmentPage/components/QuestionEditModal/common/StandardSet/StandardSet'
+import { standardsFields } from '../../../AssessmentPage/VideoQuiz/constants'
 
 const {
   TEST_NAME,
@@ -105,7 +106,10 @@ const FormFields = ({
             onUpdate={(data) => updateAlignment(data.alignment)}
             showIconBrowserBtn
             hideLabel
-            gradesSubjectMandatory
+            standardsRequiredFields={[
+              standardsFields.SUBJECT,
+              standardsFields.GRADES,
+            ]}
             isDocBased
           />
         </Col>

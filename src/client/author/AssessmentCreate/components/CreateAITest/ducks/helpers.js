@@ -96,8 +96,13 @@ export const getExistingQuestionContents = (assessment) => {
   const existingQuestionContent = []
   ;(assessment.itemGroups || []).forEach((itemGroup = []) => {
     const content = (itemGroup.items || [])
-      .flatMap(({ data }) => data?.questions.map(({ stimulus }) => stimulus))
-      .filter((x) => x)
+      .flatMap(({ data }) =>
+        data?.questions.map(({ stimulus, questionDisplayTimestamp }) => ({
+          name: stimulus,
+          displayAtSecond: questionDisplayTimestamp,
+        }))
+      )
+      .filter(({ name }) => name)
     existingQuestionContent.push(...content)
   })
   return existingQuestionContent

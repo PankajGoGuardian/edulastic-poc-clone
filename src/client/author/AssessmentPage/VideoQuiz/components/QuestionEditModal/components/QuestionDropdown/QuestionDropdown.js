@@ -22,6 +22,7 @@ export default class QuestionDropdown extends React.Component {
   static propTypes = {
     question: PropTypes.object,
     onUpdate: PropTypes.func.isRequired,
+    videoRef: PropTypes.object.isRequired,
   }
 
   state = {
@@ -146,6 +147,7 @@ export default class QuestionDropdown extends React.Component {
       },
       onUpdate,
       updateAnnotationTime,
+      videoRef,
     } = this.props
     const {
       validResponse: { value, score },
@@ -200,6 +202,7 @@ export default class QuestionDropdown extends React.Component {
             <FormGroup width="40%">
               <FormLabel>Timestamp (mm:ss)</FormLabel>
               <VideoQuizTimePicker
+                videoRef={videoRef}
                 questionDisplayTimestamp={questionDisplayTimestamp}
                 updateQuestionData={onUpdate}
                 updateAnnotationTime={updateAnnotationTime}

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import * as mjslive from 'markerjs-live'
 import * as markerjs2 from 'markerjs2'
+import ReactPlayer from 'react-player'
 
 export const useStateRef = (initialValue) => {
   const [value, setValue] = useState(initialValue)
@@ -146,4 +147,12 @@ export const formateSecondsToMMSS = (totalSeconds) => {
   return hours === '00'
     ? `${minutes}:${seconds}`
     : `${hours}:${minutes}:${seconds}`
+}
+
+export const isValidVideoUrl = (url: string) => {
+  try {
+    return ReactPlayer.canPlay(new URL(url))
+  } catch (e) {
+    return false
+  }
 }

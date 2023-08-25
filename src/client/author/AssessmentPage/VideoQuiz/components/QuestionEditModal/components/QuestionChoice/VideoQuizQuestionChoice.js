@@ -14,6 +14,7 @@ const VideoQuizQuestionChoice = ({
   question,
   updateQuestionData,
   updateAnnotationTime,
+  videoRef,
 }) => {
   const {
     options = [],
@@ -155,6 +156,7 @@ const VideoQuizQuestionChoice = ({
           <FormGroup>
             <FormLabel>Timestamp (mm:ss)</FormLabel>
             <VideoQuizTimePicker
+              videoRef={videoRef}
               updateQuestionData={updateQuestionData}
               questionDisplayTimestamp={questionDisplayTimestamp}
               updateAnnotationTime={updateAnnotationTime}

@@ -29,6 +29,7 @@ export default class QuestionChoice extends React.Component {
   static propTypes = {
     question: PropTypes.object.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    videoRef: PropTypes.object.isRequired,
   }
 
   state = defaultState
@@ -125,7 +126,7 @@ export default class QuestionChoice extends React.Component {
 
   render() {
     const { optionsValue, correctAnswers, score } = this.state
-    const { question, onUpdate, updateAnnotationTime } = this.props
+    const { question, onUpdate, updateAnnotationTime, videoRef } = this.props
     const {
       options,
       title,
@@ -143,6 +144,7 @@ export default class QuestionChoice extends React.Component {
         <EduIf condition={!trueOrFalse}>
           <EduThen>
             <VideoQuizQuestionChoice
+              videoRef={videoRef}
               question={question}
               updateQuestionData={onUpdate}
               updateAnnotationTime={updateAnnotationTime}
@@ -193,6 +195,7 @@ export default class QuestionChoice extends React.Component {
                 <FormGroup style={{ marginTop: 9 }}>
                   <FormLabel>Timestamp (mm:ss)</FormLabel>
                   <VideoQuizTimePicker
+                    videoRef={videoRef}
                     questionId={id}
                     questionDisplayTimestamp={questionDisplayTimestamp}
                     updateQuestionData={onUpdate}

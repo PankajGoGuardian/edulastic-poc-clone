@@ -61,7 +61,7 @@ class AddQuestion extends React.Component {
     const { onAddQuestion, scrollToBottom } = this.props
     const { bulkModalVisible } = this.state
 
-    for (let i = 0; i < number; i++) {
+    for (let i = 0; i < number && i < aiQuestions?.length; i++) {
       if (isFromAddBulk && !isEmpty(aiQuestions?.[i])) {
         const { standards: standardsData = [] } = alignment?.[0] || {}
         const {
@@ -121,7 +121,14 @@ class AddQuestion extends React.Component {
       onAddSection,
       minAvailableQuestionIndex,
       enableAudioResponseQuestion,
+      disableAutoGenerate,
+      questions,
     } = this.props
+
+    const tooltipMessage = disableAutoGenerate
+      ? `${i18.t('author:videoQuiz.autoGenerateNotSupported')}`
+      : `${i18.t('author:rubric.infoText')}`
+
     return (
       <AddQuestionWrapper>
         <ContentWrapper>
@@ -183,13 +190,14 @@ class AddQuestion extends React.Component {
             </EduIf>
           </QuestionTypes>
           <QuestionTypes>
-            <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
+            <Tooltip title={tooltipMessage}>
               <CustomStyleBtn2
                 margin="0px"
                 height="32px"
                 width="154px"
                 onClick={this.toggleBulkModal}
                 data-cy="addBulk"
+                disabled={disableAutoGenerate}
               >
                 <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
                 Auto Generate
@@ -201,6 +209,7 @@ class AddQuestion extends React.Component {
           </QuestionTypes>
           <AddBulkModal
             visible={bulkModalVisible}
+            questions={questions}
             onCancel={this.toggleBulkModal}
             onApply={this.handleApply}
             minAvailableQuestionIndex={minAvailableQuestionIndex}
@@ -215,6 +224,8 @@ AddQuestion.propTypes = {
   minAvailableQuestionIndex: PropTypes.number.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
   onAddSection: PropTypes.func.isRequired,
+  disableAutoGenerate: PropTypes.bool.isRequired,
+  questions: PropTypes.array.isRequired,
 }
 
 export default AddQuestion

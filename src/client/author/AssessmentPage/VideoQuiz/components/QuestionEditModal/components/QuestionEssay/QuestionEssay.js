@@ -28,6 +28,7 @@ export default class QuestionEssay extends React.Component {
   static propTypes = {
     question: PropTypes.object.isRequired,
     onUpdate: PropTypes.func.isRequired,
+    videoRef: PropTypes.object.isRequired,
   }
 
   state = {
@@ -97,6 +98,7 @@ export default class QuestionEssay extends React.Component {
       question: { stimulus = '', questionDisplayTimestamp = null, id },
       onUpdate,
       updateAnnotationTime,
+      videoRef,
     } = this.props
 
     return (
@@ -125,6 +127,7 @@ export default class QuestionEssay extends React.Component {
         <FormGroup style={{ marginTop: 9 }}>
           <FormLabel>Timestamp (mm:ss)</FormLabel>
           <VideoQuizTimePicker
+            videoRef={videoRef}
             questionDisplayTimestamp={questionDisplayTimestamp}
             updateQuestionData={onUpdate}
             updateAnnotationTime={updateAnnotationTime}

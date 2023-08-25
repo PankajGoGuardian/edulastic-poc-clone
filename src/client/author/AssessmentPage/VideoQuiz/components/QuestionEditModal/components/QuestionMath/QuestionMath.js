@@ -19,7 +19,12 @@ import VideoQuizTimePicker from '../common/VideoQuizTimePicker'
 
 const { methods, simplifiedOptions } = math
 
-const QuestionMath = ({ onUpdate, question, updateAnnotationTime }) => {
+const QuestionMath = ({
+  onUpdate,
+  question,
+  updateAnnotationTime,
+  videoRef,
+}) => {
   const toggleAdditional = (val) => {
     onUpdate({ showAdditional: val })
   }
@@ -159,6 +164,7 @@ const QuestionMath = ({ onUpdate, question, updateAnnotationTime }) => {
             <FormGroup>
               <FormLabel>Timestamp (mm:ss)</FormLabel>
               <VideoQuizTimePicker
+                videoRef={videoRef}
                 questionDisplayTimestamp={questionDisplayTimestamp}
                 updateQuestionData={onUpdate}
                 updateAnnotationTime={updateAnnotationTime}
@@ -177,4 +183,5 @@ export default QuestionMath
 QuestionMath.propTypes = {
   question: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
+  videoRef: PropTypes.object.isRequired,
 }

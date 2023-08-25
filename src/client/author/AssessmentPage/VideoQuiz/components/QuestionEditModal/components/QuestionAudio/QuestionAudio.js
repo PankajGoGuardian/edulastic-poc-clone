@@ -81,6 +81,7 @@ export default class QuestionAudio extends React.Component {
       question: { stimulus = '', questionDisplayTimestamp = null, id },
       onUpdate,
       updateAnnotationTime,
+      videoRef,
     } = this.props
 
     return (
@@ -116,6 +117,7 @@ export default class QuestionAudio extends React.Component {
         <FormGroup style={{ marginTop: 9 }}>
           <FieldLabel>Timestamp (mm:ss)</FieldLabel>
           <VideoQuizTimePicker
+            videoRef={videoRef}
             questionDisplayTimestamp={questionDisplayTimestamp}
             updateQuestionData={onUpdate}
             updateAnnotationTime={updateAnnotationTime}
@@ -130,4 +132,5 @@ export default class QuestionAudio extends React.Component {
 QuestionAudio.propTypes = {
   question: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
+  videoRef: PropTypes.object.isRequired,
 }

@@ -15,10 +15,10 @@ import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyle
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef, useEffect, useMemo, useState } from 'react'
-import ReactPlayer from 'react-player'
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
+import { isValidVideoUrl } from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
@@ -175,9 +175,7 @@ const Sidebar = ({
                     <ErrorWrapper>Please enter video URL.</ErrorWrapper>
                   </EduThen>
                   <EduElse>
-                    <EduIf
-                      condition={videoUrl && !ReactPlayer.canPlay(videoUrl)}
-                    >
+                    <EduIf condition={videoUrl && !isValidVideoUrl(videoUrl)}>
                       <ErrorWrapper>{`This link can't be played.`}</ErrorWrapper>
                     </EduIf>
                   </EduElse>

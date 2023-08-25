@@ -231,5 +231,8 @@
     "stimulusNotPresent": "Rubric cannot be auto generated without question.",
     "rubricAlreadyGenerated": "Rubrics is already generated for the provided question.",
     "infoText": "This feature is AI-assisted for enhanced functionality, but its accuracy may vary."
+  },
+  "videoQuiz": {
+    "autoGenerateNotSupported": "Please use YouTube video for Auto Generate feature"
   }
 }

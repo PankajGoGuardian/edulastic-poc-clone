@@ -14,7 +14,6 @@ import {
 import { test as testConstants, roleuser } from '@edulastic/constants'
 import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import ReactPlayer from 'react-player'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -53,6 +52,7 @@ import {
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
+import { isValidVideoUrl } from '../../VideoQuiz/utils/videoPreviewHelpers'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
@@ -190,7 +190,7 @@ class Container extends React.Component {
       currentTab === tabs.DESCRIPTION &&
       title &&
       title.trim() &&
-      (videoUrl === undefined || ReactPlayer.canPlay(videoUrl))
+      (videoUrl === undefined || isValidVideoUrl(videoUrl))
     ) {
       changeView(tab)
       changePreview('clear')
@@ -199,7 +199,7 @@ class Container extends React.Component {
       changePreview('clear')
     } else if (videoUrl === '') {
       return notification({ messageKey: 'pleaseEnterVideoUrl' })
-    } else if (!ReactPlayer.canPlay(videoUrl)) {
+    } else if (!isValidVideoUrl(videoUrl)) {
       return notification({ messageKey: 'linkCantPlayed' })
     } else {
       return notification({ messageKey: 'pleaseEnterName' })

@@ -1,20 +1,36 @@
 import React, { useMemo } from 'react'
 import moment from 'moment'
-import { TimePickerStyled } from '@edulastic/common'
+import { TimePickerStyled, notification } from '@edulastic/common'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../../../assessment/utils/timeUtils'
+import {
+  formateSecondsToMMSS,
+  getVideoDuration,
+} from '../../../../utils/videoPreviewHelpers'
 
 const VideoQuizTimePicker = ({
   questionDisplayTimestamp = null,
   updateQuestionData,
   updateAnnotationTime,
   questionId,
+  videoRef,
 }) => {
   const handleTimeChange = (value) => {
+    const videoDuration = getVideoDuration(videoRef)
     const updateData = {
       questionDisplayTimestamp: value === 0 ? null : value,
     }
-    updateQuestionData(updateData)
-    updateAnnotationTime(questionId, value)
+
+    if (value > videoDuration) {
+      notification({
+        type: 'warn',
+        msg: `Question timestamp should be less than ${formateSecondsToMMSS(
+          videoDuration
+        )}`,
+      })
+    } else {
+      updateQuestionData(updateData)
+      updateAnnotationTime(questionId, value)
+    }
   }
 
   const timestampValue = useMemo(() => {

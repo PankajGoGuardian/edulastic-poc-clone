@@ -41,11 +41,12 @@ import {
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import {
-  deleteAnnotationAction,
   getIsAudioResponseQuestionEnabled,
+  getTestSelector,
 } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
+import { extractVideoId } from '../utils/videoPreviewHelpers'
 
 const SortableQuestionItem = SortableElement(
   ({
@@ -277,15 +278,20 @@ class Questions extends React.Component {
     }
   }
 
-  handleDeleteQuestion = (questionId) => () => {
-    const { deleteQuestion, deleteAnnotation } = this.props
-    deleteAnnotation(questionId)
+  handleDeleteQuestion = (questionId, type, deleteQuestionIndex) => () => {
+    const { deleteQuestion, handleDeleteAnnotationAndUpdateQIndex } = this.props
     deleteQuestion(questionId)
+    if (type !== 'sectionLabel') {
+      handleDeleteAnnotationAndUpdateQIndex({
+        questionId,
+        deleteQuestionIndex,
+      })
+    }
   }
 
   handleAddSection = () => {
     const { addQuestion, list } = this.props
-    const sectionIndex = list.length + 1
+    const sectionIndex = list.length
     const section = createSection(sectionIndex)
 
     addQuestion(section)
@@ -470,6 +476,8 @@ class Questions extends React.Component {
       videoQuizQuestionsToDisplay,
       enableAudioResponseQuestion,
       onPlay,
+      videoUrl,
+      videoRef,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -488,6 +496,8 @@ class Questions extends React.Component {
     const haveSection = this.questionList?.some(
       ({ type }) => type === 'sectionLabel'
     )
+
+    const isValidYouTubeVideo = extractVideoId(videoUrl)
 
     return (
       <>
@@ -531,13 +541,18 @@ class Questions extends React.Component {
                             viewMode={viewMode}
                             questionIndex={questionIndex[i]}
                             onUpdate={this.handleUpdateSection}
-                            onDelete={this.handleDeleteQuestion(question.id)}
+                            onDelete={this.handleDeleteQuestion(
+                              question.id,
+                              question.type,
+                              questionIndex[i]
+                            )}
                           />
                         ) : (
                           <EduIf
                             condition={this.isQuestionVisible(question.id)}
                           >
                             <SortableQuestionItem
+                              videoRef={videoRef}
                               onPlay={onPlay}
                               key={question.id}
                               index={i}
@@ -549,7 +564,11 @@ class Questions extends React.Component {
                               review={review}
                               onCreateOptions={this.handleCreateOptions}
                               onOpenEdit={this.handleOpenEditModal(i)}
-                              onDelete={this.handleDeleteQuestion(question.id)}
+                              onDelete={this.handleDeleteQuestion(
+                                question.id,
+                                question.type,
+                                questionIndex[i]
+                              )}
                               previewMode={previewMode}
                               viewMode={viewMode}
                               answer={answersById[`${itemId}_${question.id}`]}
@@ -594,6 +613,8 @@ class Questions extends React.Component {
           </QuestionWidgetWrapper>
           {!review && !testMode && (
             <AddQuestion
+              questions={this.questionList}
+              disableAutoGenerate={!isValidYouTubeVideo}
               onAddQuestion={this.handleAddQuestion}
               onAddSection={this.handleAddSection}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
@@ -625,6 +646,7 @@ class Questions extends React.Component {
         </QuestionsWrapper>
         {shouldModalBeVisibile && (
           <QuestionEditModal
+            videoRef={videoRef}
             totalQuestions={list.length}
             visible={shouldModalBeVisibile}
             question={this.currentQuestion}
@@ -668,6 +690,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
+      videoUrl: getTestSelector(state)?.videoUrl,
       recentStandardsList: getRecentStandardsListSelector(state),
       previewMode: getPreviewSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
@@ -676,7 +699,6 @@ const enhance = compose(
       addQuestion: addQuestionAction,
       updateQuestion: updateQuestionAction,
       deleteQuestion: deleteQuestionAction,
-      deleteAnnotation: deleteAnnotationAction,
       updateRecentStandards: updateRecentStandardsAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,

@@ -51,6 +51,7 @@ export default class QuestionEditModal extends React.Component {
     qNumber: PropTypes.number.isRequired,
     onUpdate: PropTypes.func.isRequired,
     onCurrentChange: PropTypes.func.isRequired,
+    videoRef: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
@@ -68,6 +69,7 @@ export default class QuestionEditModal extends React.Component {
       onDropAnnotation,
       annotations = [],
       qNumber,
+      videoRef,
     } = this.props
 
     const updateAnnotationTime = (questionId, timestamp) => {
@@ -85,6 +87,7 @@ export default class QuestionEditModal extends React.Component {
       question,
       onUpdate,
       updateAnnotationTime,
+      videoRef,
     }
 
     switch (type) {

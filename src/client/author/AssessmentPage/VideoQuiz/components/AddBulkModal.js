@@ -41,6 +41,7 @@ class AddBulkModal extends React.Component {
     minAvailableQuestionIndex: PropTypes.number.isRequired,
     onApply: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    questions: PropTypes.array.isRequired,
   }
 
   state = {
@@ -94,6 +95,7 @@ class AddBulkModal extends React.Component {
 
   generateViaAI = ({ questionCount, questionType }) => {
     const { alignment, authorDifficulty, depthOfKnowledge } = this.state
+    const { questions } = this.props
 
     const { grades = [], standards = [], subject = '', curriculum = '' } =
       alignment?.[0] || {}
@@ -131,6 +133,12 @@ class AddBulkModal extends React.Component {
       subject,
       ...(curriculum?.length ? { standardSet: curriculum } : {}),
       commonCoreStandards: curriculumStandardsIdsIdentifiers,
+      existingQuestions: questions
+        ?.map(({ stimulus, questionDisplayTimestamp }) => ({
+          name: stimulus,
+          displayAtSecond: questionDisplayTimestamp,
+        }))
+        .filter(({ name }) => name),
     })
   }
 

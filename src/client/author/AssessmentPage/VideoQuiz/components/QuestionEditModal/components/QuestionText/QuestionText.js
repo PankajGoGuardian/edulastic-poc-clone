@@ -228,7 +228,7 @@ export default class QuestionText extends React.Component {
 
   render() {
     const { answer, score, allow, altResponses = [], matchCase } = this.state
-    const { question, onUpdate, updateAnnotationTime } = this.props
+    const { question, onUpdate, updateAnnotationTime, videoRef } = this.props
     const { stimulus = '', questionDisplayTimestamp = null, id } = question
 
     return (
@@ -320,6 +320,7 @@ export default class QuestionText extends React.Component {
           <FormGroup width="50%" ml="16px">
             <FieldLabel>Timestamp (mm:ss)</FieldLabel>
             <VideoQuizTimePicker
+              videoRef={videoRef}
               questionDisplayTimestamp={questionDisplayTimestamp}
               updateQuestionData={onUpdate}
               updateAnnotationTime={updateAnnotationTime}
@@ -335,4 +336,5 @@ export default class QuestionText extends React.Component {
 QuestionText.propTypes = {
   question: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
+  videoRef: PropTypes.object.isRequired,
 }

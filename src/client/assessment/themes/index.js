@@ -706,7 +706,8 @@ const AssessmentContainer = ({
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: restrictNavigationOut && enteredIntoFullScreen,
+    enabled:
+      restrictNavigationOut && (enteredIntoFullScreen || currentlyFullScreen),
     threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,

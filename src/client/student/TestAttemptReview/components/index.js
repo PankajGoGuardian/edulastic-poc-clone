@@ -38,6 +38,7 @@ import {
   getPreventSectionNavigationSelector,
   hasSectionsSelector,
 } from '../../../assessment/selectors/test'
+import { saveBlurTimeAction } from '../../../assessment/actions/items'
 
 const SummaryContainer = (props) => {
   const {
@@ -49,6 +50,9 @@ const SummaryContainer = (props) => {
     userId,
     fetchAssignments,
     restrictNavigationOut = false,
+    restrictNavigationOutAttemptsThreshold,
+    saveBlurTime,
+    savedBlurTime: blurTimeAlreadySaved = 0,
     blockSaveAndContinue = false,
     user: { firstName = '', lastName = '' },
     attachments,
@@ -83,8 +87,16 @@ const SummaryContainer = (props) => {
 
   useTabNavigationCounterEffect({
     testActivityId: utaId,
-    enabled: restrictNavigationOut,
+    enabled: restrictNavigationOut && currentlyFullScreen,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
+    assignmentId: assignmentObj?._id,
+    classId: groupId,
+    userId,
+    onTimeInBlurChange: (v) => {
+      saveBlurTime(v)
+    },
+    blurTimeAlreadySaved,
   })
 
   useEffect(() => {
@@ -205,6 +217,9 @@ const enhance = compose(
       currentAssignment: state.studentAssignment?.current,
       blockSaveAndContinue: state.test?.settings?.blockSaveAndContinue,
       restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold:
+        state.test?.settings?.restrictNavigationOutAttemptsThreshold,
+      savedBlurTime: state.test?.savedBlurTime,
       user: get(state, 'user.user', {}),
       attachments: getTestLevelUserWorkSelector(state),
       hasSections: hasSectionsSelector(state),
@@ -219,6 +234,7 @@ const enhance = compose(
       fetchAssignments: fetchAssignmentsAction,
       saveUserWork: saveUserWorkAction,
       submitSection: submitSectionAction,
+      saveBlurTime: saveBlurTimeAction,
     }
   )
 )

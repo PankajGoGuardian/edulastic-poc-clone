@@ -40,10 +40,7 @@ import {
   StyledEmptyQuestionContainer,
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
-import {
-  deleteAnnotationAction,
-  getIsAudioResponseQuestionEnabled,
-} from '../../../TestPage/ducks'
+import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
@@ -277,15 +274,20 @@ class Questions extends React.Component {
     }
   }
 
-  handleDeleteQuestion = (questionId) => () => {
-    const { deleteQuestion, deleteAnnotation } = this.props
-    deleteAnnotation(questionId)
+  handleDeleteQuestion = (questionId, type, deleteQuestionIndex) => () => {
+    const { deleteQuestion, handleDeleteAnnotationAndUpdateQIndex } = this.props
     deleteQuestion(questionId)
+    if (type !== 'sectionLabel') {
+      handleDeleteAnnotationAndUpdateQIndex({
+        questionId,
+        deleteQuestionIndex,
+      })
+    }
   }
 
   handleAddSection = () => {
     const { addQuestion, list } = this.props
-    const sectionIndex = list.length + 1
+    const sectionIndex = list.length
     const section = createSection(sectionIndex)
 
     addQuestion(section)
@@ -531,7 +533,11 @@ class Questions extends React.Component {
                             viewMode={viewMode}
                             questionIndex={questionIndex[i]}
                             onUpdate={this.handleUpdateSection}
-                            onDelete={this.handleDeleteQuestion(question.id)}
+                            onDelete={this.handleDeleteQuestion(
+                              question.id,
+                              question.type,
+                              questionIndex[i]
+                            )}
                           />
                         ) : (
                           <EduIf
@@ -549,7 +555,11 @@ class Questions extends React.Component {
                               review={review}
                               onCreateOptions={this.handleCreateOptions}
                               onOpenEdit={this.handleOpenEditModal(i)}
-                              onDelete={this.handleDeleteQuestion(question.id)}
+                              onDelete={this.handleDeleteQuestion(
+                                question.id,
+                                question.type,
+                                questionIndex[i]
+                              )}
                               previewMode={previewMode}
                               viewMode={viewMode}
                               answer={answersById[`${itemId}_${question.id}`]}
@@ -676,7 +686,6 @@ const enhance = compose(
       addQuestion: addQuestionAction,
       updateQuestion: updateQuestionAction,
       deleteQuestion: deleteQuestionAction,
-      deleteAnnotation: deleteAnnotationAction,
       updateRecentStandards: updateRecentStandardsAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,

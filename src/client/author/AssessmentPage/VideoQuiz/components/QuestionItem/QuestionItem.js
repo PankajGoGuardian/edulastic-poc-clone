@@ -29,7 +29,7 @@ import {
   IconTrash,
 } from '@edulastic/icons'
 import { Col, Row } from 'antd'
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FeedbackByQIdSelector } from '../../../../../student/sharedDucks/TestItem'
 import withAnswerSave from '../../../../../assessment/components/HOC/withAnswerSave'
@@ -575,7 +575,11 @@ class QuestionItem extends React.Component {
                 onClick={onPlay}
                 style={{ height: '30px' }}
               >
-                Next <FontAwesomeIcon icon={faChevronRight} />
+                Resume{' '}
+                <FontAwesomeIcon
+                  style={{ height: 15, width: 15 }}
+                  icon={faPlayCircle}
+                />
               </NextButton>
             </Col>
           </Row>

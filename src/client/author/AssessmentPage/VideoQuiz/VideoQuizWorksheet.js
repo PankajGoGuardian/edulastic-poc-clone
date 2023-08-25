@@ -118,6 +118,33 @@ const VideoQuizWorksheetComponent = ({
     }
   }
 
+  const handleDeleteAnnotationAndUpdateQIndex = ({
+    questionId,
+    deleteQuestionIndex,
+  }) => {
+    let updatedAnnotations = (annotations || []).filter(
+      (annotation) => annotation?.questionId !== questionId
+    )
+
+    updatedAnnotations = (updatedAnnotations || []).map((annotation) => {
+      if (
+        annotation?.toolbarMode === 'question' &&
+        annotation?.qIndex > deleteQuestionIndex
+      ) {
+        return {
+          ...annotation,
+          qIndex: annotation.qIndex - 1,
+        }
+      }
+      return annotation
+    })
+
+    const updatedAssessment = {
+      annotations: updatedAnnotations,
+    }
+    setTestData(updatedAssessment)
+  }
+
   const handleAddBulkQuestionAnnotations = (annotationsData) => {
     const newAnnotations = [...annotations]
 
@@ -310,6 +337,9 @@ const VideoQuizWorksheetComponent = ({
           videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
           handleUpdateSeektime={handleUpdateSeektime}
           studentWork={studentWork}
+          handleDeleteAnnotationAndUpdateQIndex={
+            handleDeleteAnnotationAndUpdateQIndex
+          }
         />
       </WorksheetWrapper>
     </div>

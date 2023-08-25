@@ -289,7 +289,7 @@ export const validateQuestionsForDocBased = (
           type: 'warn',
           msg: `Question ${dontHaveTimeStamp
             .map(({ qIndex }) => qIndex)
-            .join(', ')} must have timestamp.`,
+            .join(', ')} must have timestamp or dragged on video.`,
         })
         return false
       }

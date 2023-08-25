@@ -182,19 +182,6 @@ const StandardsMasteryReportFilters = ({
       title: o.standard,
     }))
 
-  const standardIdFromPageData = useMemo(() => {
-    const _skillInfo = get(
-      standardsGradebookSkillInfo,
-      'data.result.skillInfo',
-      []
-    )
-    return loc === reportNavType.STANDARDS_PROGRESS
-      ? filters?.standardId
-        ? _skillInfo.find(({ key }) => key === filters.standardId)?.standardId
-        : first(_skillInfo)?.standardId
-      : ''
-  }, [loc, standardsGradebookSkillInfo])
-
   const search = useMemo(
     () =>
       pickBy(
@@ -203,10 +190,23 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
+
+  const standardIdFromPageData = useMemo(() => {
+    const _skillInfo = get(
+      standardsGradebookSkillInfo,
+      'data.result.skillInfo',
+      []
+    )
+    const selectedStandardId =
+      search.standardId || filters.standardId || first(_skillInfo)?.standardId
+    return loc === reportNavType.STANDARDS_PROGRESS ? selectedStandardId : ''
+  }, [loc, standardsGradebookSkillInfo])
+
   const hasOpenedPerformanceByRubricReportRef = useRef(false)
   hasOpenedPerformanceByRubricReportRef.current =
     hasOpenedPerformanceByRubricReportRef.current ||
     loc === reportNavType.PERFORMANCE_BY_RUBRICS_CRITERIA
+
   useEffect(() => {
     const params = { loc }
     if (reportId) params.reportId = reportId
@@ -269,7 +269,7 @@ const StandardsMasteryReportFilters = ({
         standardId: standardFromPageData,
       })
     }
-  }, [standardIdFromPageData])
+  }, [standardIdFromPageData, standardsGradebookSkillInfo])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     const source = location.state?.source

@@ -8,10 +8,12 @@ import { sortBy, maxBy, uniqBy } from 'lodash'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
-import { EduIf } from '@edulastic/common'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   createQuestion,
   validationCreators,
@@ -35,6 +37,7 @@ import {
   AnswerActionsWrapper,
   AnswerAction,
   QuestionWidgetWrapper,
+  StyledEmptyQuestionContainer,
 } from '../styled-components/Questions'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import {
@@ -73,6 +76,7 @@ const SortableQuestionItem = SortableElement(
     editMode,
     onDropAnnotation,
     videoQuizQuestionsToDisplay,
+    onPlay,
   }) => (
     <div
       onClick={() => {
@@ -91,6 +95,7 @@ const SortableQuestionItem = SortableElement(
       }}
     >
       <QuestionItem
+        onPlay={onPlay}
         key={key}
         index={index}
         handleOnClick={handleOnClick}
@@ -458,6 +463,7 @@ class Questions extends React.Component {
       annotations,
       videoQuizQuestionsToDisplay,
       enableAudioResponseQuestion,
+      onPlay,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -468,6 +474,14 @@ class Questions extends React.Component {
     }
 
     const questionIndex = this.getQIndexForDocBasedItems()
+
+    const isVisibleQuestion = this.questionList?.some(({ id }) =>
+      this.isQuestionVisible(id)
+    )
+
+    const haveSection = this.questionList?.some(
+      ({ type }) => type === 'sectionLabel'
+    )
 
     return (
       <>
@@ -488,50 +502,88 @@ class Questions extends React.Component {
                 this.scrollBarRef.current = el
               }}
             >
-              {this.questionList.map((question, i) =>
-                question.type === 'sectionLabel' ? (
-                  <Section
-                    key={question.id}
-                    section={question}
-                    viewMode={viewMode}
-                    questionIndex={questionIndex[i]}
-                    onUpdate={this.handleUpdateSection}
-                    onDelete={this.handleDeleteQuestion(question.id)}
-                  />
-                ) : (
-                  <EduIf condition={this.isQuestionVisible(question.id)}>
-                    <SortableQuestionItem
-                      key={question.id}
-                      index={i}
-                      handleOnClick={() =>
-                        this.handleQuestionItemClick(question)
-                      }
-                      questionIndex={questionIndex[i]}
-                      data={question}
-                      review={review}
-                      onCreateOptions={this.handleCreateOptions}
-                      onOpenEdit={this.handleOpenEditModal(i)}
-                      onDelete={this.handleDeleteQuestion(question.id)}
-                      previewMode={previewMode}
-                      viewMode={viewMode}
-                      answer={answersById[`${itemId}_${question.id}`]}
-                      onDragStart={onDragStart}
-                      highlighted={highlighted === question.id}
-                      testMode={testMode}
-                      onHighlightQuestion={onHighlightQuestion}
-                      clearHighlighted={clearHighlighted}
-                      groupId={groupId}
-                      qId={qId}
-                      resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
-                      itemId={itemId}
-                      disableAutoHightlight={disableAutoHightlight}
-                      editMode={editMode}
-                      onDropAnnotation={onDropAnnotation}
-                      videoQuizQuestionsToDisplay={videoQuizQuestionsToDisplay}
-                    />
+              <EduIf
+                condition={!this.questionList?.length && viewMode === 'edit'}
+              >
+                <EduThen>
+                  <StyledEmptyQuestionContainer>
+                    <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
+                    <br />
+                    Question will appear here.
+                    <br />
+                    You can Drag and Drop them on the video
+                  </StyledEmptyQuestionContainer>
+                </EduThen>
+                <EduElse>
+                  <EduIf condition={isVisibleQuestion || haveSection}>
+                    <EduThen>
+                      {this.questionList.map((question, i) =>
+                        question.type === 'sectionLabel' ? (
+                          <Section
+                            key={question.id}
+                            section={question}
+                            viewMode={viewMode}
+                            questionIndex={questionIndex[i]}
+                            onUpdate={this.handleUpdateSection}
+                            onDelete={this.handleDeleteQuestion(question.id)}
+                          />
+                        ) : (
+                          <EduIf
+                            condition={this.isQuestionVisible(question.id)}
+                          >
+                            <SortableQuestionItem
+                              onPlay={onPlay}
+                              key={question.id}
+                              index={i}
+                              handleOnClick={() =>
+                                this.handleQuestionItemClick(question)
+                              }
+                              questionIndex={questionIndex[i]}
+                              data={question}
+                              review={review}
+                              onCreateOptions={this.handleCreateOptions}
+                              onOpenEdit={this.handleOpenEditModal(i)}
+                              onDelete={this.handleDeleteQuestion(question.id)}
+                              previewMode={previewMode}
+                              viewMode={viewMode}
+                              answer={answersById[`${itemId}_${question.id}`]}
+                              onDragStart={onDragStart}
+                              highlighted={highlighted === question.id}
+                              testMode={testMode}
+                              onHighlightQuestion={onHighlightQuestion}
+                              clearHighlighted={clearHighlighted}
+                              groupId={groupId}
+                              qId={qId}
+                              resetTimeSpentOnQuestion={
+                                this.resetTimeSpentOnQuestion
+                              }
+                              itemId={itemId}
+                              disableAutoHightlight={disableAutoHightlight}
+                              editMode={editMode}
+                              onDropAnnotation={onDropAnnotation}
+                              videoQuizQuestionsToDisplay={
+                                videoQuizQuestionsToDisplay
+                              }
+                            />
+                          </EduIf>
+                        )
+                      )}
+                    </EduThen>
+                    <EduElse>
+                      <StyledEmptyQuestionContainer>
+                        <FontAwesomeIcon
+                          icon={faInfoCircle}
+                          aria-hidden="true"
+                        />
+                        <br />
+                        Question will appear here.
+                        <br />
+                        or on the video
+                      </StyledEmptyQuestionContainer>
+                    </EduElse>
                   </EduIf>
-                )
-              )}
+                </EduElse>
+              </EduIf>
             </PerfectScrollbar>
           </QuestionWidgetWrapper>
           {!review && !testMode && (

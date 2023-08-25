@@ -31,7 +31,7 @@ const VideoQuizTimePicker = ({
 
   return (
     <TimePickerStyled
-      width="50%"
+      width="100%"
       format="mm:ss"
       {...timestampValue}
       onChange={(value) =>

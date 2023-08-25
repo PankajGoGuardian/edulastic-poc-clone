@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { EduElse, EduIf, EduThen, Stimulus } from '@edulastic/common'
+import { Stimulus } from '@edulastic/common'
+import { maxAudioDurationLimit } from '../../../../../../../assessment/widgets/AudioResponse/constants'
 import VoiceRecorder from '../../../../../../../assessment/widgets/AudioResponse/lib/VoiceRecorder'
 import { StyledAudioElement } from '../../../../../../../assessment/widgets/AudioResponse/styledComponents/AudioRecorder'
 import AudioRecorder from './AudioRecorder'
-import { maxAudioDurationLimit } from '../../../../../../../assessment/widgets/AudioResponse/constants'
 
 export default class FormAudio extends React.Component {
   static propTypes = {
@@ -67,24 +67,11 @@ export default class FormAudio extends React.Component {
           style={{ marginBottom: 10, minHeight: 32 }}
           dangerouslySetInnerHTML={{ __html: stimulus }}
         />
-        <EduIf condition={(answer || '').length > 0}>
-          <EduThen>
-            <StyledAudioElement
-              src={answer}
-              controls
-              width="100%"
-              height="32px"
-              controlsList="nodownload noplaybackrate"
-              preload="auto"
-            />
-          </EduThen>
-          <EduElse>
-            <AudioRecorder
-              onFinish={this.handleChange}
-              audioTimeLimitInMinutes={audioTimeLimitInMinutes}
-            />
-          </EduElse>
-        </EduIf>
+        <AudioRecorder
+          responseUrl={answer}
+          onFinish={this.handleChange}
+          audioTimeLimitInMinutes={audioTimeLimitInMinutes}
+        />
       </div>
     )
   }

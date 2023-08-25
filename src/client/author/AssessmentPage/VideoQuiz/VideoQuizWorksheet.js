@@ -4,7 +4,7 @@ import produce from 'immer'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { withWindowSizes, helpers } from '@edulastic/common'
+import { withWindowSizes, helpers, toggleChatDisplay } from '@edulastic/common'
 
 import { setTestDataAction } from '../../TestPage/ducks'
 
@@ -48,8 +48,18 @@ const VideoQuizWorksheetComponent = ({
   answersById,
   updateQuestion,
   setQuestionsById,
+  history,
 }) => {
   const annotationsRef = useRef()
+
+  useEffect(() => {
+    // hiding and showing help chat icon for video quiz worksheet
+    toggleChatDisplay('hide')
+
+    return () => {
+      toggleChatDisplay('show')
+    }
+  }, [])
 
   useEffect(() => {
     annotationsRef.current = annotations
@@ -63,11 +73,19 @@ const VideoQuizWorksheetComponent = ({
   ] = useState([])
   const [questionClickSeekTime, setQuestionClickSeekTime] = useState(null)
 
+  const onPlay = () => {
+    videoRef?.current.playVideo?.()
+  }
+
   const handleUpdateSeektime = (time = null) => {
     if (time) {
       setQuestionClickSeekTime(time)
     }
   }
+
+  // taking video to specific question
+  const questionKey = history?.location?.state?.question
+  const questionTime = questionsById?.[questionKey]?.questionDisplayTimestamp
 
   const handleHighlightQuestion = (questionId) => {
     setHighlightedQuestion(questionId)
@@ -229,6 +247,7 @@ const VideoQuizWorksheetComponent = ({
       >
         <VideoViewerContainer>
           <VideoPreview
+            startAt={questionTime}
             onHighlightQuestion={handleHighlightQuestion}
             currentAnnotationTool={currentAnnotationTool}
             annotations={annotations}
@@ -245,7 +264,7 @@ const VideoQuizWorksheetComponent = ({
             testMode={testMode}
             studentWork={studentWork}
             highlighted={highlightedQuestion}
-            forwardedRef={videoRef}
+            forwardedVideoRef={videoRef}
             review={review}
             videoUrl={finalvideoUrl}
             itemId={itemDetail?._id || testItemId}
@@ -260,6 +279,7 @@ const VideoQuizWorksheetComponent = ({
           />
         </VideoViewerContainer>
         <Questions
+          onPlay={onPlay}
           noCheck={noCheck}
           list={questions}
           review={review}

@@ -5,6 +5,7 @@ import { Spin } from 'antd'
 import { STATUS, STATUS_TEXT } from './ducks/constants'
 import { StyledFilterLabel } from './styled'
 import FormFields from './FormFields'
+import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
 
 export const CreateAiTestModal = ({
   onCancel,
@@ -19,7 +20,11 @@ export const CreateAiTestModal = ({
   return (
     <CustomModalStyled
       visible={isVisible}
-      title="Auto-generate items"
+      title={
+        <>
+          Auto-generate items <StyledBetaTag>BETA</StyledBetaTag>
+        </>
+      }
       footer={null}
       width="50%"
       onCancel={onCancel}

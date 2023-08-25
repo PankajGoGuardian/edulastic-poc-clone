@@ -2373,7 +2373,8 @@ class Setting extends Component {
                           restricted from navigating back to the previous
                           question. Recommended to use along with Shuffle
                           Questions for preventing cheating among students.
-                          (This setting is not applicable for SnapQuiz)
+                          (This setting is not applicable for SnapQuiz and
+                          VideoQuiz)
                         </Description>
                       </Body>
                     </SettingContainer>

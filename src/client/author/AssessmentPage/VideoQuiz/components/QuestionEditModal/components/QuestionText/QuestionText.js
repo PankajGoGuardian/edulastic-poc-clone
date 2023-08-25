@@ -295,7 +295,19 @@ export default class QuestionText extends React.Component {
               </SelectInputStyled.Option>
             </SelectInputStyled>
           </FormGroup>
-          <FormGroup width="50%" ml="16px">
+          <FormGroup width="50%" ml="16px" pt="26px">
+            <FieldLabel display="inline" mr="16px">
+              Match Case
+            </FieldLabel>
+            <CheckboxLabel
+              checked={matchCase}
+              onChange={this.handleMatchCaseChange}
+              data-cy="matchCase"
+            />
+          </FormGroup>
+        </FormInline>
+        <FormInline>
+          <FormGroup width="50%">
             <FieldLabel>Points</FieldLabel>
             <NumberInputStyled
               min={0}
@@ -305,26 +317,16 @@ export default class QuestionText extends React.Component {
               data-cy="points"
             />
           </FormGroup>
+          <FormGroup width="50%" ml="16px">
+            <FieldLabel>Timestamp (mm:ss)</FieldLabel>
+            <VideoQuizTimePicker
+              questionDisplayTimestamp={questionDisplayTimestamp}
+              updateQuestionData={onUpdate}
+              updateAnnotationTime={updateAnnotationTime}
+              questionId={id}
+            />
+          </FormGroup>
         </FormInline>
-        <FormGroup width="50%">
-          <FieldLabel display="inline" mr="16px">
-            Match Case
-          </FieldLabel>
-          <CheckboxLabel
-            checked={matchCase}
-            onChange={this.handleMatchCaseChange}
-            data-cy="matchCase"
-          />
-        </FormGroup>
-        <FormGroup style={{ marginTop: 13 }}>
-          <FieldLabel>Timestamp (mm:ss)</FieldLabel>
-          <VideoQuizTimePicker
-            questionDisplayTimestamp={questionDisplayTimestamp}
-            updateQuestionData={onUpdate}
-            updateAnnotationTime={updateAnnotationTime}
-            questionId={id}
-          />
-        </FormGroup>
       </QuestionFormWrapper>
     )
   }

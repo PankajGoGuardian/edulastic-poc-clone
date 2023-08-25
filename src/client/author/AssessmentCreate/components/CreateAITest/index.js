@@ -4,6 +4,8 @@ import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
 import React, { useState } from 'react'
 import connect from 'react-redux/es/connect/connect'
 import { compose } from 'redux'
+import i18 from '@edulastic/localization'
+import { Tooltip } from 'antd'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
 import { getStandardsListSelector } from '../../../src/selectors/dictionaries'
 import AiTestBanner from './CreateAiTestBanner'
@@ -54,10 +56,12 @@ const EduAIQuiz = ({
     <>
       <EduIf condition={addItems}>
         <EduThen>
-          <AiEduButton margin="0 5px" aiStyle onClick={onCreateItems}>
-            <IconMagicWand fill={`${white}`} />
-            Create Items Using AI
-          </AiEduButton>
+          <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
+            <AiEduButton margin="0 5px" aiStyle onClick={onCreateItems}>
+              <IconMagicWand fill={`${white}`} />
+              Create Items Using AI
+            </AiEduButton>
+          </Tooltip>
         </EduThen>
         <EduElse>
           <AiTestBanner onCreateItems={onCreateItems} />

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { InputNumber } from 'antd'
+import { Col, InputNumber, Row } from 'antd'
 import { cloneDeep } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 
@@ -12,7 +12,6 @@ import { EXACT_MATCH } from '../../../../../../../assessment/constants/constants
 import {
   QuestionFormWrapper,
   FormGroup,
-  Points,
   FormLabel,
 } from '../../../../styled-components/QuestionForm'
 import VideoQuizStimulus from '../common/VideoQuizStimulus'
@@ -143,24 +142,31 @@ const QuestionMath = ({ onUpdate, question, updateAnnotationTime }) => {
             extraOptions={question.extraOpts}
           />
         </FormGroup>
-        <FormGroup>
-          <InputNumber
-            min={0}
-            value={score}
-            onChange={handleScoreChange}
-            data-cy="points"
-          />
-          <Points>Points</Points>
-        </FormGroup>
-        <FormGroup style={{ marginTop: 9 }}>
-          <FormLabel>Timestamp (mm:ss)</FormLabel>
-          <VideoQuizTimePicker
-            questionDisplayTimestamp={questionDisplayTimestamp}
-            updateQuestionData={onUpdate}
-            updateAnnotationTime={updateAnnotationTime}
-            questionId={id}
-          />
-        </FormGroup>
+
+        <Row type="flex" gutter={24}>
+          <Col>
+            <FormGroup>
+              <FormLabel>Points</FormLabel>
+              <InputNumber
+                min={0}
+                value={score}
+                onChange={handleScoreChange}
+                data-cy="points"
+              />
+            </FormGroup>
+          </Col>
+          <Col>
+            <FormGroup>
+              <FormLabel>Timestamp (mm:ss)</FormLabel>
+              <VideoQuizTimePicker
+                questionDisplayTimestamp={questionDisplayTimestamp}
+                updateQuestionData={onUpdate}
+                updateAnnotationTime={updateAnnotationTime}
+                questionId={id}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
       </QuestionFormWrapper>
     </ThemeProvider>
   )

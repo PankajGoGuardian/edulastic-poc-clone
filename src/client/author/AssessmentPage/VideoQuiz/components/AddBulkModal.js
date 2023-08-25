@@ -26,10 +26,14 @@ import {
   setAIGeneratedQuestionStateAction,
 } from '../../../src/actions/aiGenerateQuestion'
 import { ModalFooter, ModalWrapper } from '../../common/Modal'
-import { QuestionFormWrapper } from '../styled-components/QuestionForm'
+import {
+  QuestionFormWrapper,
+  StyledBetaTag,
+} from '../styled-components/QuestionForm'
 import StandardSet from './QuestionEditModal/common/StandardSet'
 import { StandardSelectWrapper } from '../styled-components/StandardSet'
 import { validateStandardsData } from '../utils/common'
+import { standardsFields } from '../constants'
 
 class AddBulkModal extends React.Component {
   static propTypes = {
@@ -98,7 +102,6 @@ class AddBulkModal extends React.Component {
       grades,
       subject,
       curriculum,
-      standards,
     })
     if (!isValid) {
       return notification({ type: 'warn', msg: message })
@@ -126,7 +129,7 @@ class AddBulkModal extends React.Component {
             .filter((dokValue) => dokValue),
       grades,
       subject,
-      standardSet: curriculum,
+      ...(curriculum?.length ? { standardSet: curriculum } : {}),
       commonCoreStandards: curriculumStandardsIdsIdentifiers,
     })
   }
@@ -181,7 +184,11 @@ class AddBulkModal extends React.Component {
     return (
       <CustomModalStyled
         visible={visible}
-        title="Auto Genenerate"
+        title={
+          <>
+            Auto Generate <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
+          </>
+        }
         onCancel={onCancel}
         maskClosable={false}
         footer={[
@@ -246,7 +253,11 @@ class AddBulkModal extends React.Component {
               onUpdate={(data) => this.setState({ alignment: data.alignment })}
               isDocBased
               showIconBrowserBtn
-              isStandardsDataRequired
+              standardsRequiredFields={[
+                standardsFields.SUBJECT,
+                standardsFields.GRADES,
+              ]}
+              considerCustomAlignmentDataSettingPriority
             />
             <Row style={{ marginTop: '10px' }} gutter={20}>
               <Col md={12}>

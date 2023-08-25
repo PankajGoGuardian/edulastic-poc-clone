@@ -1,5 +1,5 @@
 import { EduButton, helpers } from '@edulastic/common'
-import { InputNumber } from 'antd'
+import { Col, InputNumber, Row } from 'antd'
 import React from 'react'
 import { arrayMove } from 'react-sortable-hoc'
 import uuid from 'uuid/v4'
@@ -144,19 +144,25 @@ const VideoQuizQuestionChoice = ({
           ADD NEW CHOICE
         </EduButton>
       </FormGroup>
-      <FormGroup>
-        <FormLabel>Points</FormLabel>
-        <InputNumber min={1} value={score} onChange={handleChangeScore} />
-      </FormGroup>
-      <FormGroup>
-        <FormLabel>Timestamp (mm:ss)</FormLabel>
-        <VideoQuizTimePicker
-          updateQuestionData={updateQuestionData}
-          questionDisplayTimestamp={questionDisplayTimestamp}
-          updateAnnotationTime={updateAnnotationTime}
-          questionId={id}
-        />
-      </FormGroup>
+      <Row type="flex" gutter={24}>
+        <Col>
+          <FormGroup>
+            <FormLabel>Points</FormLabel>
+            <InputNumber min={1} value={score} onChange={handleChangeScore} />
+          </FormGroup>
+        </Col>
+        <Col>
+          <FormGroup>
+            <FormLabel>Timestamp (mm:ss)</FormLabel>
+            <VideoQuizTimePicker
+              updateQuestionData={updateQuestionData}
+              questionDisplayTimestamp={questionDisplayTimestamp}
+              updateAnnotationTime={updateAnnotationTime}
+              questionId={id}
+            />
+          </FormGroup>
+        </Col>
+      </Row>
     </>
   )
 }

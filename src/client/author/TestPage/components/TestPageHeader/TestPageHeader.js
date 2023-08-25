@@ -302,7 +302,13 @@ const TestPageHeader = ({
     if (validateTest(test)) {
       if (test.isDocBased) {
         const assessmentQuestions = Object.values(authorQuestionsById || {})
-        if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+        if (
+          !validateQuestionsForDocBased(
+            assessmentQuestions,
+            false,
+            !!test.videoUrl
+          )
+        ) {
           return
         }
       }

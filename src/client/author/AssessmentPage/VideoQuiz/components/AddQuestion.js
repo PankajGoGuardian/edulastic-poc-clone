@@ -22,6 +22,7 @@ import {
   IconWhiteMic,
 } from '@edulastic/icons'
 import { EduIf } from '@edulastic/common'
+import i18 from '@edulastic/localization'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import AddBulkModal from './AddBulkModal'
@@ -58,6 +59,7 @@ class AddQuestion extends React.Component {
     isFromAddBulk = false,
   }) => {
     const { onAddQuestion, scrollToBottom } = this.props
+    const { bulkModalVisible } = this.state
 
     for (let i = 0; i < number; i++) {
       if (isFromAddBulk && !isEmpty(aiQuestions?.[i])) {
@@ -106,7 +108,9 @@ class AddQuestion extends React.Component {
       )()
     }
 
-    this.toggleBulkModal()
+    if (bulkModalVisible) {
+      this.toggleBulkModal()
+    }
     scrollToBottom()
   }
 
@@ -179,29 +183,28 @@ class AddQuestion extends React.Component {
             </EduIf>
           </QuestionTypes>
           <QuestionTypes>
-            <CustomStyleBtn2
-              margin="0px"
-              height="32px"
-              width="154px"
-              onClick={this.toggleBulkModal}
-              data-cy="addBulk"
-            >
-              <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
-              Auto Genenerate
-            </CustomStyleBtn2>
-
+            <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
+              <CustomStyleBtn2
+                margin="0px"
+                height="32px"
+                width="154px"
+                onClick={this.toggleBulkModal}
+                data-cy="addBulk"
+              >
+                <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+                Auto Generate
+              </CustomStyleBtn2>
+            </Tooltip>
             <AddButton onClick={onAddSection} data-cy="addSection" width="40%">
               Add Section
             </AddButton>
           </QuestionTypes>
-          <EduIf condition={bulkModalVisible}>
-            <AddBulkModal
-              visible={bulkModalVisible}
-              onCancel={this.toggleBulkModal}
-              onApply={this.handleApply}
-              minAvailableQuestionIndex={minAvailableQuestionIndex}
-            />
-          </EduIf>
+          <AddBulkModal
+            visible={bulkModalVisible}
+            onCancel={this.toggleBulkModal}
+            onApply={this.handleApply}
+            minAvailableQuestionIndex={minAvailableQuestionIndex}
+          />
         </ContentWrapper>
       </AddQuestionWrapper>
     )

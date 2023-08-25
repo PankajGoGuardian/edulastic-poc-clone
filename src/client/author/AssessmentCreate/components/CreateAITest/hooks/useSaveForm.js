@@ -1,6 +1,7 @@
 import { notification } from '@edulastic/common'
 import { cloneDeep, isEmpty } from 'lodash'
 import { useState } from 'react'
+import { segmentApi } from '@edulastic/api'
 import { selectsData } from '../../../../TestPage/components/common'
 
 export const useSaveForm = ({
@@ -39,6 +40,7 @@ export const useSaveForm = ({
   }
 
   const onCreateItems = (showSelectGroup = true) => {
+    segmentApi.genericEventTrack('AIQuizCreateTestClick', {})
     resetTestDetails()
     if (addItems && showSelectGroup && hasSections) {
       setSelectSectionVisible(true)

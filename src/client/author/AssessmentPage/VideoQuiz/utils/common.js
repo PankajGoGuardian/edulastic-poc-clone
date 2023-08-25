@@ -39,8 +39,6 @@ export const validateStandardsData = (data) => {
   const requiredFieldsTitleMap = {
     subject: 'Subject',
     grades: 'Grades',
-    curriculum: 'Curriculum',
-    standards: 'Standards',
   }
   let isValid = true
   let message = ''
@@ -55,7 +53,9 @@ export const validateStandardsData = (data) => {
   })
 
   if (!isValid) {
-    message = `${inValidFieldsTitle.join(', ')} field(s) cannot be empty`
+    message = `${inValidFieldsTitle.join(
+      ', '
+    )} field(s) in standards cannot be empty`
   }
 
   return { isValid, message }

@@ -241,7 +241,11 @@ export const getStartedUrl = () => '/getStarted'
 
 export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
 
-export const validateQuestionsForDocBased = (questions, forDraft = false) => {
+export const validateQuestionsForDocBased = (
+  questions,
+  forDraft = false,
+  isVideoQuiz = false
+) => {
   if (!forDraft && !questions.filter((q) => q.type !== 'sectionLabel').length) {
     notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
     return false
@@ -271,10 +275,27 @@ export const validateQuestionsForDocBased = (questions, forDraft = false) => {
       return !isEmpty(validationValue)
     })
 
-  if (!forDraft && !correctAnswerPicked) {
-    notification({ type: 'warn', messageKey: 'correctAnswer' })
-    return false
+  if (!forDraft) {
+    if (!correctAnswerPicked) {
+      notification({ type: 'warn', messageKey: 'correctAnswer' })
+      return false
+    }
+    if (isVideoQuiz) {
+      const dontHaveTimeStamp = questions.filter(
+        ({ questionDisplayTimestamp }) => !questionDisplayTimestamp
+      )
+      if (dontHaveTimeStamp?.length) {
+        notification({
+          type: 'warn',
+          msg: `Question ${dontHaveTimeStamp
+            .map(({ qIndex }) => qIndex)
+            .join(', ')} must have timestamp.`,
+        })
+        return false
+      }
+    }
   }
+
   return true
 }
 

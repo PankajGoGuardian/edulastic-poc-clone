@@ -28,6 +28,9 @@ import {
   IconClose,
   IconTrash,
 } from '@edulastic/icons'
+import { Col, Row } from 'antd'
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { FeedbackByQIdSelector } from '../../../../../student/sharedDucks/TestItem'
 import withAnswerSave from '../../../../../assessment/components/HOC/withAnswerSave'
 import { saveUserResponse as saveUserResponseAction } from '../../../../../assessment/actions/items'
@@ -52,6 +55,7 @@ import {
   StyledRemoveQuestion,
   VideoQuizItemWrapper,
   VideoQuizItemContainer,
+  NextButton,
 } from '../../styled-components/QuestionItem'
 import FormAudio from './components/FormAudio/FormAudio'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../assessment/utils/timeUtils'
@@ -130,6 +134,7 @@ class QuestionItem extends React.Component {
       },
       evaluation,
       previewMode,
+      data,
     } = this.props
 
     let allCorrect = isObject(evaluation)
@@ -174,7 +179,7 @@ class QuestionItem extends React.Component {
         answerRenderer = () => {}
     }
 
-    const alternateResponses = this.props?.data?.validation?.altResponses || []
+    const alternateResponses = data?.validation?.altResponses || []
     let alternateResponsesDisplay = null
     if (alternateResponses.length > 0) {
       alternateResponsesDisplay = (
@@ -355,11 +360,9 @@ class QuestionItem extends React.Component {
   }
 
   renderComments = (qId) => {
-    const { feedback = {} } = this.props
+    const { feedback = {}, previousFeedback } = this.props
     const { feedback: teacherComments } =
-      this.props?.previousFeedback?.find((pf) => pf.qid === qId) ||
-      feedback[qId] ||
-      {}
+      previousFeedback?.find((pf) => pf.qid === qId) || feedback[qId] || {}
 
     return (
       !!teacherComments?.text && (
@@ -497,7 +500,9 @@ class QuestionItem extends React.Component {
   }
 
   render() {
-    if (!this.props?.data?.id) {
+    const { data } = this.props
+
+    if (!data?.id) {
       return null
     }
     const {
@@ -516,6 +521,7 @@ class QuestionItem extends React.Component {
       editMode,
       handleRemoveAnnotation,
       isSnapQuizVideoPlayer = false,
+      onPlay,
     } = this.props
 
     const check =
@@ -561,6 +567,19 @@ class QuestionItem extends React.Component {
           disableDrag,
           showAnswerIndicator,
         })}
+        <EduIf condition={!editMode}>
+          <Row type="flex" justify="end">
+            <Col>
+              <NextButton
+                size="small"
+                onClick={onPlay}
+                style={{ height: '30px' }}
+              >
+                Next <FontAwesomeIcon icon={faChevronRight} />
+              </NextButton>
+            </Col>
+          </Row>
+        </EduIf>
         <EduIf
           condition={
             isSnapQuizVideoPlayer &&

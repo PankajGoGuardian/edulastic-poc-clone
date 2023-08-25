@@ -25,6 +25,7 @@ const YouTubePlayer = React.forwardRef(
       width,
       config,
       onEnded,
+      onReady,
     },
     ref
   ) => {
@@ -63,6 +64,7 @@ const YouTubePlayer = React.forwardRef(
         host: ED_YOUTUBE_HOST,
         events: {
           onStateChange,
+          onReady,
         },
         playerVars,
         embedConfig,

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { Paper } from '@edulastic/common'
 import { secondaryTextColor, themeColor } from '@edulastic/colors'
-import { Checkbox } from 'antd'
+import { Checkbox, Tag } from 'antd'
 
 export const QuestionFormWrapper = styled(Paper)`
   border-radius: 4px;
@@ -15,6 +15,7 @@ export const QuestionFormWrapper = styled(Paper)`
 export const FormGroup = styled.div`
   width: ${({ width }) => width};
   margin-left: ${({ ml }) => ml};
+  padding-top: ${({ pt }) => pt};
   &:not(:last-child) {
     margin-bottom: 10px;
   }
@@ -65,4 +66,13 @@ export const CheckboxGroupStyled = styled(Checkbox.Group)`
 export const StyledStimulusContainer = styled.div`
   margin-top: ${({ isQuestionInputActive }) =>
     isQuestionInputActive ? '70px' : '0px'};
+`
+
+export const StyledBetaTag = styled(Tag)`
+  border-radius: 0px;
+  top: -4px;
+  background-color: #fff;
+  border: 1.5px solid rgba(63, 132, 229, 1);
+  color: rgba(63, 132, 229, 1);
+  position: relative;
 `

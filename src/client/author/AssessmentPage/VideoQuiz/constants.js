@@ -94,3 +94,15 @@ export const typeTitleHash = {
   [ESSAY_PLAIN_TEXT]: 'Essay with plain text',
   [AUDIO_RESPONSE]: 'Audio Response',
 }
+
+const SUBJECT = 'subject'
+const GRADES = 'grades'
+const STANDARD_SET = 'standardSet'
+const CURRICULUM_STANDARDS = 'curriculumStandards'
+
+export const standardsFields = {
+  SUBJECT,
+  GRADES,
+  STANDARD_SET,
+  CURRICULUM_STANDARDS,
+}

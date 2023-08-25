@@ -13,6 +13,10 @@ import { CreateAiTestModal } from './CreateAiTestModal'
 import { aiTestActions } from './ducks'
 import { useSaveForm } from './hooks/useSaveForm'
 import { AiEduButton } from './styled'
+import {
+  clearCreatedItemsAction,
+  setDefaultTestDataAction,
+} from '../../../TestPage/ducks'
 
 const EduAIQuiz = ({
   test,
@@ -21,6 +25,8 @@ const EduAIQuiz = ({
   getAiGeneratedTestItems,
   resetTestDetails,
   standardsList,
+  setDefaultTest,
+  clearCreatedItem,
 }) => {
   const {
     selectSectionVisible,
@@ -40,6 +46,8 @@ const EduAIQuiz = ({
     resetTestDetails,
     standardsList,
     addItems,
+    setDefaultTest,
+    clearCreatedItem,
   })
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)
@@ -97,6 +105,8 @@ const enhance = compose(
     {
       getAiGeneratedTestItems: aiTestActions.getAiGeneratedTestItems,
       resetTestDetails: aiTestActions.resetTestDetails,
+      setDefaultTest: setDefaultTestDataAction,
+      clearCreatedItem: clearCreatedItemsAction,
     }
   )
 )

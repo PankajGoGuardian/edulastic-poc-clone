@@ -1,6 +1,6 @@
 import { notification } from '@edulastic/common'
 import { cloneDeep, isEmpty } from 'lodash'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { segmentApi } from '@edulastic/api'
 import { selectsData } from '../../../../TestPage/components/common'
 
@@ -10,6 +10,8 @@ export const useSaveForm = ({
   addItems,
   resetTestDetails,
   testTitle = '',
+  setDefaultTest,
+  clearCreatedItem,
 }) => {
   const initialAiFormData = {
     itemTypes: '',
@@ -30,6 +32,13 @@ export const useSaveForm = ({
     ],
     standardNames: [],
   }
+
+  useEffect(() => {
+    if (!addItems) {
+      setDefaultTest()
+      clearCreatedItem()
+    }
+  }, [addItems])
 
   const [selectSectionVisible, setSelectSectionVisible] = useState(false)
   const [isVisible, setIsVisible] = useState(false)

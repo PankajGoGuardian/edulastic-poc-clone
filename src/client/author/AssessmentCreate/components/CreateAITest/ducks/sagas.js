@@ -8,10 +8,7 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { aiTestActions } from '.'
 import { STATUS } from './constants'
 import {
-  clearCreatedItemsAction,
-  clearTestDataAction,
   getTestEntitySelector,
-  setDefaultTestDataAction,
   setTestDataAction,
 } from '../../../../TestPage/ducks'
 import {
@@ -36,14 +33,9 @@ function* processAiGeneratedTestItemsSaga({
       type: 'success',
       msg: `Great news! We have successfully generated ${aiGeneratedQuestions.length} questions. We encourage you to review the questions and make any necessary adjustments to ensure they meet your learning objectives and preferences. Feel free to customize the questions further, if desired.`,
     })
-
     let existingTestItems = []
-
     /** Unsaved test */
     if ((assessment._id || '').length !== 24 && !existingQidToRegenerate) {
-      yield put(clearTestDataAction())
-      yield put(setDefaultTestDataAction)
-      yield put(clearCreatedItemsAction())
       yield put(
         setTestDataAction({
           ...assessment,

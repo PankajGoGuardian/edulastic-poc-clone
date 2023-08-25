@@ -128,10 +128,7 @@ export const getQuestionType = (item) => {
    * */
   const _questionTypeTitle = getTitleFromQuestionType(questions[0]?.type)?.text
   const questionTitle = _questionTypeTitle || questions[0]?.title || ''
-  const aiGeneratedTag = []
-  if (item.aiGenerated) {
-    aiGeneratedTag.push('AI-generated item')
-  }
+
   if (hasPassage) {
     // All questions that are linked to passage should show type as passage and question type attached to passage
     return questions.length > 1
@@ -143,7 +140,7 @@ export const getQuestionType = (item) => {
   if (questions.length > 1 || resources.length) {
     return ['MULTIPART']
   }
-  return questionTitle ? [questionTitle, ...aiGeneratedTag] : []
+  return questionTitle ? [questionTitle] : []
 }
 
 /**

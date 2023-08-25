@@ -24,7 +24,7 @@ const AiTestBanner = ({ onCreateItems }) => {
       <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
         <AiEduButton isGhost onClick={onCreateItems} fontWeight={700}>
           <IconMagicWand />
-          Create Quick Test Using AI
+          Create A Quick Test Using AI
         </AiEduButton>
       </Tooltip>
     </CreateAiTestWrapper>

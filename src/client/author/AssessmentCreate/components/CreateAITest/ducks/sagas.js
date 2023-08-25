@@ -163,7 +163,7 @@ function* regenerateAiTestItemsSaga({ payload }) {
       commonCoreStandards,
       grades,
       subject,
-      preference,
+      ...(!isEmpty(preference) && { preference }),
       existingQuestions,
     }
 
@@ -253,7 +253,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       commonCoreStandards,
       grades,
       subject,
-      preference,
+      ...(!isEmpty(preference) && { preference }),
       existingQuestions,
     }
 

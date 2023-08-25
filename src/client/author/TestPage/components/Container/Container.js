@@ -649,6 +649,7 @@ class Container extends PureComponent {
       creating,
       isDynamicTest,
       hasSections,
+      currentTab,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
@@ -687,7 +688,7 @@ class Container extends PureComponent {
 
     const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
 
-    if (_hasUnsavedAiItems && checkAiItems) {
+    if (_hasUnsavedAiItems && checkAiItems && currentTab === 'review') {
       this.setState((state) => ({
         ...state,
         goToTabProps: { value, firstFlow },

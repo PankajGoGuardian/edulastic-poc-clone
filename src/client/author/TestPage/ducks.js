@@ -2405,7 +2405,9 @@ function* createTestSaga({ payload }) {
     const currentTab = currentTabMatch?.[1] || 'description'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     if (entity.aiGenerated) {
+      yield put(setIsCreatingAction(true))
       yield put(receiveTestByIdAction(entity._id, true, false))
+      yield put(setIsCreatingAction(false))
     }
 
     notification({ type: 'success', messageKey: 'testCreated' })

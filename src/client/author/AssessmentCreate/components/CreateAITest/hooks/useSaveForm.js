@@ -81,6 +81,7 @@ export const useSaveForm = ({
       alignment,
       dok,
       difficulty,
+      preference,
     } = _aiFormContent
 
     if (isEmpty(testName) && !addItems) {
@@ -139,6 +140,8 @@ export const useSaveForm = ({
 
     getAiGeneratedTestItems({
       ..._aiFormContent,
+      testName: testName.trim(),
+      preference: preference.trim(),
       groupIndex: selectedGroupIndex,
     })
   }

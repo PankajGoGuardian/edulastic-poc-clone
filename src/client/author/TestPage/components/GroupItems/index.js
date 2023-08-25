@@ -967,29 +967,17 @@ const GroupItems = ({
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">
                     {currentGroupIndex === index && (
                       <>
-                        <Tooltip
-                          title={
-                            !itemGroup.items.length
-                              ? 'Select at least one item to save'
-                              : null
-                          }
+                        <EduButton
+                          loading={fetchingItems}
+                          disabled={fetchingItems}
+                          data-cy={`save-${itemGroup.groupName}`}
+                          onClick={(e) => {
+                            handleSaveGroup(index)
+                            e.target.blur()
+                          }}
                         >
-                          <span>
-                            <EduButton
-                              loading={fetchingItems}
-                              disabled={
-                                fetchingItems || !itemGroup.items.length
-                              }
-                              data-cy={`save-${itemGroup.groupName}`}
-                              onClick={(e) => {
-                                handleSaveGroup(index)
-                                e.target.blur()
-                              }}
-                            >
-                              Save
-                            </EduButton>
-                          </span>
-                        </Tooltip>
+                          Save
+                        </EduButton>
                         <EduButton
                           data-cy={`cancel-${itemGroup.groupName}`}
                           isGhost

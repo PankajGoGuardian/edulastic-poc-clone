@@ -590,6 +590,7 @@ class AssignTest extends React.Component {
        * */
       delete newSettings.hasInstruction
       delete newSettings.instruction
+      delete newSettings.preventSectionNavigation
 
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)

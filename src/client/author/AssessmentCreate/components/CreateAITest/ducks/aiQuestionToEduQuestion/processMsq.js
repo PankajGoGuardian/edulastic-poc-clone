@@ -8,7 +8,7 @@ import { getAlignmentForEduItems } from '../helpers'
 export const processMSQ = (
   {
     options: aiOptions,
-    correctAnswersIndex,
+    correctAnswersIndex = [],
     name,
     commonCoreStandard,
     depthOfKnowledge,
@@ -39,21 +39,19 @@ export const processMSQ = (
   const uuidMap = {}
   const options = []
 
-  aiOptions.forEach(({ name: label }, index) => {
-    uuidMap[index] = uuid()
+  aiOptions.forEach(({ name: _label, label }, index) => {
+    uuidMap[`mapped_${index}`] = uuid()
     options.push({
-      label,
-      value: uuidMap[index],
+      label: _label || label,
+      value: uuidMap[`mapped_${index}`],
     })
   })
 
   const correctAnswers = []
 
-  if (correctAnswersIndex) {
-    correctAnswersIndex.forEach((index) => {
-      correctAnswers.push(uuidMap[index])
-    })
-  }
+  correctAnswersIndex.forEach((index) => {
+    correctAnswers.push(uuidMap[`mapped_${index}`])
+  })
 
   const validation = {
     scoringType: EXACT_MATCH,

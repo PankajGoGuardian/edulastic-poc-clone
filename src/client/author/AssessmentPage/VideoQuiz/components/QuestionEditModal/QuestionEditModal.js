@@ -240,33 +240,5 @@ export default class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  max-height: 520px;
   padding: 10px;
-  overflow: auto;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-  &:hover {
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-    }
-  }
 `

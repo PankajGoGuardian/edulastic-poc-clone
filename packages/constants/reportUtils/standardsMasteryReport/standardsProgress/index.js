@@ -52,7 +52,7 @@ const getAnalyzeByRenderData = (data, analyseByKey, masteryScale) => {
     case AnalyseByKeys.RAW_SCORE:
       return `${(data.totalScore || 0).toFixed(2)} / ${data.totalMaxScore}`
     case AnalyseByKeys.MASTERY_SCORE:
-      return data.masteryScore
+      return (data.masteryScore || 0).toFixed(2)
     case AnalyseByKeys.MASTERY_LEVEL:
       return getMasteryLevel(data.masteryScore, masteryScale).masteryLabel
     default:
@@ -77,16 +77,21 @@ const getChartMetrics = (summary, testInfo) => {
   // We need to show empty bars in the chart for the selected tests that do not have metrics data
   // hence we iterate over testInfo and add metrics data to the test if present
   // otherwise only show test details with empty metrics.
-  const chartMetrics = testInfo.map(({ testId, testName }) => {
-    const metric = metricsByTestId[testId] || {
-      masteryScore: null,
-      totalScore: null,
-      totalMaxScore: null,
-      totalStudentCount: 0,
-      distribution: [],
-    }
-    return { testId, testName, ...metric }
-  })
+  // reverse is required to show tests in same order as in production (before 36.0)
+  // ref: https://goguardian.atlassian.net/browse/EV-39827
+  const chartMetrics = testInfo
+    .map(({ testId, testName }) => {
+      const metric = metricsByTestId[testId] || {
+        masteryScore: null,
+        totalScore: null,
+        totalMaxScore: null,
+        totalStudentCount: 0,
+        distribution: [],
+      }
+      return { testId, testName, ...metric }
+    })
+    .reverse()
+
   return { metrics: chartMetrics }
 }
 

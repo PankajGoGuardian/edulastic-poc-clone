@@ -27,7 +27,7 @@ const ConfirmTabChange = ({
       destroyOnClose
     >
       <FlexContainer justifyContent="center" alignItems="center" padding="2rem">
-        <span>Click proceed to save all Ai generated items to the Test</span>
+        <span>Click proceed to save all AI generated items to the Test</span>
       </FlexContainer>
     </CustomModalStyled>
   )

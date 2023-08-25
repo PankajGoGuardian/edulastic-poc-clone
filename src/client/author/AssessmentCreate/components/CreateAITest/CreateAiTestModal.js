@@ -2,7 +2,7 @@ import { CustomModalStyled, EduIf, FlexContainer } from '@edulastic/common'
 import React from 'react'
 import { Spin } from 'antd'
 
-import { STATUS } from './ducks/constants'
+import { STATUS, STATUS_TEXT } from './ducks/constants'
 import { StyledFilterLabel } from './styled'
 import FormFields from './FormFields'
 import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
@@ -22,7 +22,7 @@ export const CreateAiTestModal = ({
       visible={isVisible}
       title={
         <>
-          Auto-generated items <StyledBetaTag>BETA</StyledBetaTag>
+          Auto-generate items <StyledBetaTag>BETA</StyledBetaTag>
         </>
       }
       footer={null}
@@ -48,7 +48,7 @@ export const CreateAiTestModal = ({
         />
         <EduIf condition={aiTestStatus !== STATUS.INIT}>
           <FlexContainer mt="1rem" justifyContent="center" alignItems="center">
-            <StyledFilterLabel>{aiTestStatus}</StyledFilterLabel>
+            <StyledFilterLabel>{STATUS_TEXT[aiTestStatus]}</StyledFilterLabel>
           </FlexContainer>
         </EduIf>
       </Spin>

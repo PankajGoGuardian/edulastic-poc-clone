@@ -499,7 +499,7 @@ const TableList = ({
           placement="bottom"
           title={
             <div>
-              {text} (Id: {row.itemId.slice(-5)})
+              {text} {/* (Id: {row.itemId.slice(-6)}) */}
             </div>
           }
         >

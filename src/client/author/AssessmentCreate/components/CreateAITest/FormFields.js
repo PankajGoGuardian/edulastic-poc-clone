@@ -105,6 +105,7 @@ const FormFields = ({
             onUpdate={(data) => updateAlignment(data.alignment)}
             showIconBrowserBtn
             hideLabel
+            gradesSubjectMandatory
             isDocBased
           />
         </Col>
@@ -118,16 +119,17 @@ const FormFields = ({
             showSearch
             placeholder="Select Dok"
             optionFilterProp="children"
-            mode="multiple"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(DOK, value)}
             value={dok}
           >
-            {selectsData.allDepthOfKnowledge.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
-                {text}
-              </Select.Option>
-            ))}
+            {selectsData.allDepthOfKnowledge
+              .filter(({ value }) => value)
+              .map(({ value, text }) => (
+                <Select.Option key={value} value={value}>
+                  {text}
+                </Select.Option>
+              ))}
           </SelectInputStyled>
         </Col>
         <Col xs={12}>
@@ -137,16 +139,17 @@ const FormFields = ({
             showSearch
             placeholder="Select Difficulty"
             optionFilterProp="children"
-            mode="multiple"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleFieldDataChange(DIFFICULTY, value)}
             value={difficulty}
           >
-            {selectsData.allAuthorDifficulty.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
-                {text}
-              </Select.Option>
-            ))}
+            {selectsData.allAuthorDifficulty
+              .filter(({ value }) => value)
+              .map(({ value, text }) => (
+                <Select.Option key={value} value={value}>
+                  {text}
+                </Select.Option>
+              ))}
           </SelectInputStyled>
         </Col>
       </Row>

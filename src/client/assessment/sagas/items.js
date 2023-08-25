@@ -40,7 +40,7 @@ import {
 } from '../widgets/AudioResponse/constants'
 import { setStopAudioRecordingAndUploadForQidAction } from '../actions/media'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
-import { redirectPolicySelector } from '../selectors/test'
+import { getItemsSelector, redirectPolicySelector } from '../selectors/test'
 import { getAudioRecordingByItemIdAndQidSelector } from '../selectors/media'
 import { getServerTs } from '../../student/utils'
 import { Fscreen, getItemIdQuestionIdKey } from '../utils/helpers'
@@ -244,7 +244,7 @@ export function* saveUserResponse({ payload }) {
         return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`))
       return yield put(push('/home/assignments'))
     }
-    const items = yield select((state) => state.test && state.test.items)
+    const items = yield select(getItemsSelector)
     const currentItem = items.length && items[itemIndex]
     const questions = getQuestionIds(currentItem)
     const audioRecordingStateByItemIdAndQid = yield select(
@@ -537,7 +537,7 @@ export function* saveUserResponse({ payload }) {
 function* loadUserResponse({ payload }) {
   try {
     const itemIndex = payload.itemId
-    const items = yield select((state) => state.test && state.test.items)
+    const items = yield select(getItemsSelector)
     const item = items[itemIndex]
     const { answers } = yield call(itemsApi.getUserResponse, item._id)
     yield put({

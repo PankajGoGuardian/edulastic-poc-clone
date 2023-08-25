@@ -170,13 +170,17 @@ class Questions extends React.Component {
       })
       if (questions?.length) {
         const newAnnotations = []
-        questions.forEach((question) => {
-          if (typeof question?.questionDisplayTimestamp === 'number') {
+        const allQuestionIndexes = this.getQIndexForDocBasedItems()
+        questions.forEach((question, index) => {
+          if (
+            question?.type !== 'sectionLabel' &&
+            typeof question?.questionDisplayTimestamp === 'number'
+          ) {
             const annotation = {
               x: -1,
               y: -1,
               questionId: question.id,
-              qIndex: question.qIndex,
+              qIndex: allQuestionIndexes[index],
               time: question.questionDisplayTimestamp,
             }
             newAnnotations.push(annotation)

@@ -2224,7 +2224,7 @@
     "description": ""
   },
   "generateAiQuestionsFailed": {
-    "message": "Apologies for the inconvenience. We encountered an issue while generating questions based on the preferences. Please try again",
+    "message": "Apologies for the inconvenience. We encountered an issue while generating questions based on the preferences.",
     "description": ""
   },
   "deleteFeedTypeSuccess": {

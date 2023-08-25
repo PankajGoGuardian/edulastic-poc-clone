@@ -107,6 +107,7 @@ import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
+import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 
 const {
   ITEM_GROUP_TYPES,
@@ -2190,14 +2191,14 @@ export function* receiveTestByIdSaga({ payload }) {
         }
       })
     })
-
-    const createdItemskeyedById = _keyBy(createdItems, '_id')
-    entity.itemGroups[currentGroupIndex].items = uniqBy(
-      [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-      (x) =>
-        createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
-    )
-
+    if (createdItems.length) {
+      const createdItemskeyedById = _keyBy(createdItems, '_id')
+      entity.itemGroups[currentGroupIndex].items = uniqBy(
+        [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
+        (x) =>
+          createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+      )
+    }
     const questions = getQuestions(entity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
@@ -2376,9 +2377,7 @@ function* createTestSaga({ payload }) {
 
     const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
       .filter(({ unsavedItem }) => unsavedItem)
-      .map((item) =>
-        omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
-      )
+      .map((item) => pick(item, itemFields))
 
     let newTestItems
     if (!isEmpty(aiGeneratedTestItems)) {
@@ -2533,9 +2532,7 @@ export function* updateTestSaga({ payload }) {
         .filter(({ unsavedItem }) => unsavedItem)
         .forEach((item) => {
           selectedGroupForAI = index
-          aiGeneratedTestItems.push(
-            omit(item, ['unsavedItem', 'groupId', 'isLimitedDeliveryType'])
-          )
+          aiGeneratedTestItems.push(pick(item, itemFields))
         })
     })
 

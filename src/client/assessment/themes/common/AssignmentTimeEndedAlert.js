@@ -14,6 +14,7 @@ import {
   setIsTestPreviewVisibleAction,
   closeTestTimeoutAlertModalAction,
 } from '../../actions/test'
+import { getItemsSelector } from '../../selectors/test'
 
 const AssignmentTimeEndedAlert = ({
   isVisible,
@@ -108,7 +109,7 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      items: state.test.items,
+      items: getItemsSelector(state),
     }),
     {
       autoSubmitTest: finishTestAcitivityAction,

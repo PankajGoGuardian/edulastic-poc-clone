@@ -650,3 +650,6 @@ export const getUserMedia = (constraints) =>
 export const getItemIdQuestionIdKey = ({ itemId, questionId }) => {
   return `${itemId}_${questionId}`
 }
+
+export const hasUnsavedAiItems = (itemGroups = []) =>
+  itemGroups.some(({ items }) => items.some(({ unsavedItem }) => unsavedItem))

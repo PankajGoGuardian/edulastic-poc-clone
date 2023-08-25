@@ -36,6 +36,7 @@ const studentResponses = ({ testActivityIds, groupId }) =>
             ? `${testActivityIds}`
             : null,
         groupId,
+        sortByStudentName: true,
       },
     })
     .then((result) => result.data.result)

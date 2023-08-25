@@ -47,9 +47,9 @@ function* processAiGeneratedTestItemsSaga({
       yield put(
         setTestDataAction({
           ...assessment,
-          title: testName,
-          grades: uniq([...grades]),
-          subjects: uniq([subject]),
+          title: assessment.title || testName,
+          grades: uniq([...assessment.grades, ...grades]),
+          subjects: uniq([...assessment.subjects, subject]),
           itemGroups: [
             {
               type: 'STATIC',
@@ -165,7 +165,7 @@ function* regenerateAiTestItemsSaga({ payload }) {
     const requestBody = {
       count: numberOfItems,
       questionType: itemType,
-      standardSet, // todo: fix hard coded value
+      ...(!isEmpty(standardSet) && { standardSet }),
       depthsOfKnowledge: dok,
       difficultLevels: difficulty,
       commonCoreStandards,
@@ -197,6 +197,12 @@ function* regenerateAiTestItemsSaga({ payload }) {
         assessment,
         groupIndex,
       })
+    } else {
+      notification({
+        type: 'error',
+        messageKey: 'generateAiQuestionsFailed',
+      })
+      yield put(aiTestActions.setStatus(STATUS.FAILED))
     }
   } catch (error) {
     const errMsg = error?.response?.data?.message
@@ -249,7 +255,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
     const requestBody = {
       count: numberOfItems,
       questionType: itemType,
-      standardSet, // todo: fix hard coded value
+      ...(!isEmpty(standardSet) && { standardSet }),
       depthsOfKnowledge: dok,
       difficultLevels: difficulty,
       commonCoreStandards,

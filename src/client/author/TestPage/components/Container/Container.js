@@ -146,6 +146,7 @@ import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
+import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -677,17 +678,16 @@ class Container extends PureComponent {
       return
     }
 
-    if (value === 'addSections') {
+    /** For AI quiz we need to unselect section */
+    if (value === 'addSections' && test?.aiGenerated) {
       this.setState({
         currentGroupIndex: null,
       })
     }
 
-    const hasUnsavedAiItems = get(itemGroups, '0.items', []).some(
-      ({ unsavedItem }) => unsavedItem
-    )
+    const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
 
-    if (hasUnsavedAiItems && checkAiItems) {
+    if (_hasUnsavedAiItems && checkAiItems) {
       this.setState((state) => ({
         ...state,
         goToTabProps: { value, firstFlow },
@@ -711,7 +711,7 @@ class Container extends PureComponent {
         (totalTestItems > 0 || isAutoSelectGroup) &&
         !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
         updated &&
-        !firstFlow
+        (!firstFlow || _hasUnsavedAiItems)
       ) {
         this.handleSave()
       }

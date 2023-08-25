@@ -16,6 +16,13 @@ const STATUS = {
   SUCCESS: 'success',
 }
 
+const STATUS_TEXT = {
+  [STATUS.INIT]: 'Initialized',
+  [STATUS.INPROGRESS]: 'In progress',
+  [STATUS.FAILED]: 'Failed',
+  [STATUS.SUCCESS]: 'Success',
+}
+
 export const itemStructure = {
   _id: 'new',
   rows: [
@@ -56,4 +63,47 @@ export const itemStructure = {
   aiGenerated: true,
 }
 
-export { formFields, STATUS }
+const itemFields = [
+  'v1Id',
+  'v1Attributes',
+  'uuid',
+  'computedDifficulty',
+  'externalContentId',
+  'rows',
+  'columns',
+  'tags',
+  'metadata',
+  'data',
+  'isDocBased',
+  'maxScore',
+  'collections',
+  'scrolling',
+  'verticalDivider',
+  'status',
+  'version',
+  'active',
+  'grades',
+  'subjects',
+  'standards',
+  'curriculums',
+  'createdBy',
+  'versionId',
+  'itemLevelScoring',
+  'itemLevelScore',
+  'multipartItem',
+  'isPassageWithQuestions',
+  'canAddMultipleItems',
+  'passageId',
+  'authors',
+  'analytics',
+  'cw',
+  'mVersion',
+  'derivedFromId',
+  'language',
+  'itemGradingType',
+  'assignPartialCredit',
+  'derivedFromPremiumBankId',
+  'aiGenerated',
+]
+
+export { formFields, STATUS, itemFields, STATUS_TEXT }

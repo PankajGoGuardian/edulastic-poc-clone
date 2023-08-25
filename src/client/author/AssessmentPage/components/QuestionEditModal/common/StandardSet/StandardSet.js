@@ -39,6 +39,7 @@ const StandardSet = ({
   isDocBased,
   showIconBrowserBtn,
   hideLabel,
+  gradesSubjectMandatory,
 }) => {
   const [searchProps, setSearchProps] = useState({
     id: '',
@@ -117,6 +118,7 @@ const StandardSet = ({
         createUniqGradeAndSubjects={handleCreateGradeAndSubjects}
         isDocBased={isDocBased}
         showIconBrowserBtn={showIconBrowserBtn}
+        gradesSubjectMandatory={gradesSubjectMandatory}
       />
     </ThemeProvider>
   )

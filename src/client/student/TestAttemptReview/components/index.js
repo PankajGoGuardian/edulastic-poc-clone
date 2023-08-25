@@ -9,6 +9,7 @@ import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
 import { WithResources } from '@edulastic/common'
 import { get } from 'lodash'
+import { SECTION_STATUS } from '@edulastic/constants/const/testActivityStatus'
 import { themes } from '../../../theme'
 import AppConfig from '../../../../app-config'
 import SummaryTest from './Content'
@@ -31,7 +32,10 @@ import useUploadToS3 from '../../../assessment/hooks/useUploadToS3'
 import UserWorkUploadModal from '../../../assessment/components/UserWorkUploadModal'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 import {
-  getItemGroupsSelector,
+  getItemGroupsByExcludingItemsSelector,
+  getItemsSelector,
+  getItemsToDeliverInGroupByIdSelector,
+  getPreventSectionNavigationSelector,
   hasSectionsSelector,
 } from '../../../assessment/selectors/test'
 
@@ -49,9 +53,11 @@ const SummaryContainer = (props) => {
     user: { firstName = '', lastName = '' },
     attachments,
     saveUserWork,
-    itemGroups,
+    deliveringItemGroups,
     submitSection,
     hasSections,
+    preventSectionNavigation,
+    itemsToDeliverIngroupById,
   } = props
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
@@ -87,6 +93,22 @@ const SummaryContainer = (props) => {
     }
   }, [currentAssignment])
 
+  useEffect(() => {
+    // Teacher enabled to restrict going back to a submitted section ?
+    // There are no UI components that allows student to navigate to this page from a new section
+    // Incase if user come through browser back button or hard coded url navigate them to home screen
+    if (
+      preventSectionNavigation &&
+      sectionId &&
+      itemsToDeliverIngroupById[sectionId] &&
+      itemsToDeliverIngroupById[sectionId].status === SECTION_STATUS.SUBMITTED
+    ) {
+      // It is possible to navigate user to window.history.go(1) so that they will launch back to from where they came
+      // However that wont work for a deeplink or hard coded url navigation hence redirect them to home screen
+      history.push('/home/assignments')
+    }
+  }, [preventSectionNavigation, sectionId, itemsToDeliverIngroupById])
+
   const openUserWorkUploadModal = () => setUserWorkUploadModalVisible(true)
   const closeUserWorkUploadModal = () => setUserWorkUploadModalVisible(false)
   const cameraImageName = `${firstName}_${lastName}_${(
@@ -110,11 +132,12 @@ const SummaryContainer = (props) => {
 
   // Submit the sections of test on click of submit either from section summary or final summary
   const submitSectionOrTest = (_groupId) => {
-    if (hasSections && sectionId && itemGroups.length) {
-      const currentSectionIndex = itemGroups.findIndex(
+    if (hasSections && sectionId && deliveringItemGroups.length) {
+      const currentSectionIndex = deliveringItemGroups.findIndex(
         (item) => item._id === sectionId
       )
-      const nextItemId = itemGroups[currentSectionIndex + 1].items[0]._id
+      const nextItemId =
+        deliveringItemGroups[currentSectionIndex + 1].items[0]._id
       const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/itemId/${nextItemId}`
       const locationState = {
         fromSummary: true,
@@ -184,8 +207,11 @@ const enhance = compose(
       restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
       user: get(state, 'user.user', {}),
       attachments: getTestLevelUserWorkSelector(state),
-      itemGroups: getItemGroupsSelector(state),
       hasSections: hasSectionsSelector(state),
+      testItems: getItemsSelector(state),
+      deliveringItemGroups: getItemGroupsByExcludingItemsSelector(state),
+      itemsToDeliverIngroupById: getItemsToDeliverInGroupByIdSelector(state),
+      preventSectionNavigation: getPreventSectionNavigationSelector(state),
     }),
     {
       finishTest: finishTestAcitivityAction,

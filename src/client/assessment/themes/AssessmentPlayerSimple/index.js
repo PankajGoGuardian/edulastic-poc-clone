@@ -290,6 +290,7 @@ class AssessmentPlayerSimple extends React.Component {
       viewAsStudent,
       firstItemInSectionAndRestrictNav,
       calcTypes,
+      isLast,
     } = this.props
     const {
       showExitPopup,
@@ -363,6 +364,7 @@ class AssessmentPlayerSimple extends React.Component {
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
             firstItemInSectionAndRestrictNav={firstItemInSectionAndRestrictNav}
             calcTypes={calcTypes}
+            isLast={isLast()}
           >
             <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer

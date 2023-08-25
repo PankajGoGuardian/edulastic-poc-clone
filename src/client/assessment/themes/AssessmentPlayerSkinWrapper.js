@@ -57,10 +57,7 @@ const AssessmentPlayerSkinWrapper = ({
   }
   const handleRestrictQuestionBackNav = (e) => {
     e.preventDefault()
-    if (
-      blockNavigationToAnsweredQuestions ||
-      firstItemInSectionAndRestrictNav
-    ) {
+    if (blockNavigationToAnsweredQuestions) {
       const matched = e.target.location.pathname.match(
         new RegExp('/student/(assessment|practice)/.*/class/.*/uta/.*/.*')
       )
@@ -72,10 +69,7 @@ const AssessmentPlayerSkinWrapper = ({
   }
 
   useEffect(() => {
-    if (
-      blockNavigationToAnsweredQuestions ||
-      firstItemInSectionAndRestrictNav
-    ) {
+    if (blockNavigationToAnsweredQuestions) {
       window.addEventListener('popstate', handleRestrictQuestionBackNav)
       return () =>
         window.removeEventListener('popstate', handleRestrictQuestionBackNav)

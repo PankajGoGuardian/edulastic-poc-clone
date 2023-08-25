@@ -2382,15 +2382,9 @@ function* createTestSaga({ payload }) {
       })
     )
 
-    yield put(
-      createTestSuccessAction(
-        produce(entity, (draft) => {
-          if ((newTestItems || []).length) {
-            draft.itemGroups[0].items = newTestItems
-          }
-        })
-      )
-    )
+    entity.itemGroups = payload.data.itemGroups
+
+    yield put(createTestSuccessAction(entity))
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
     const pathname = yield select((state) => state.router.location.pathname)
     const currentTabMatch = pathname?.match(

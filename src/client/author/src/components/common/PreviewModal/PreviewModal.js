@@ -1103,8 +1103,10 @@ class PreviewModal extends React.Component {
               ) : (
                 <Tooltip
                   title={
-                    isDynamicTest || hasSections
+                    isDynamicTest
                       ? t('authoringItemDisabled.info')
+                      : hasSections
+                      ? t('sectionFeatBetaAction.info')
                       : ''
                   }
                 >
@@ -1153,8 +1155,10 @@ class PreviewModal extends React.Component {
               )}
               <Tooltip
                 title={
-                  isDynamicTest || hasSections
+                  isDynamicTest
                     ? t('authoringItemDisabled.info')
+                    : hasSections
+                    ? t('sectionFeatBetaAction.info')
                     : ''
                 }
               >

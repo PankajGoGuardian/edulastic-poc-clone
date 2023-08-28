@@ -3,7 +3,6 @@ import {
   lightFadedBlack,
   green,
   lightGreen4,
-  white,
   red,
 } from '@edulastic/colors'
 import {
@@ -44,7 +43,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
+import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -1513,18 +1512,11 @@ class ClassBoard extends Component {
                 </StudentButtonDiv>
               )}
             </StyledFlexContainer>
-            <EduIf
-              condition={additionalData?.archiveCollection?.uqa && !isLoading}
-            >
+            <EduIf condition={additionalData?.isArchived && !isLoading}>
               <TagWrapper>
-                <CustomTag
-                  width="100%"
-                  textColor={red}
-                  bgColor={white}
-                  textAlign="center"
-                >
+                <CustomNotificationBar textColor={red} textAlign="center">
                   {t('common.uqaArchiveMessage')}
-                </CustomTag>
+                </CustomNotificationBar>
               </TagWrapper>
             </EduIf>
 

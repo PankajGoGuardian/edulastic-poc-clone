@@ -6,8 +6,8 @@ import { size, isEmpty, get } from 'lodash'
 
 import { EduIf, MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
-import { red, white } from '@edulastic/colors'
+import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
+import { red } from '@edulastic/colors'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -123,16 +123,11 @@ class StandardsBasedReport extends Component {
             <ClassBreadBrumb />
             <PresentationToggleSwitch groupId={classId} />
           </StyledFlexContainer>
-          <EduIf condition={additionalData?.archiveCollection?.uqa}>
+          <EduIf condition={additionalData?.isArchived}>
             <TagWrapper>
-              <CustomTag
-                width="100%"
-                textAlign="center"
-                textColor={red}
-                bgColor={white}
-              >
+              <CustomNotificationBar textAlign="center" textColor={red}>
                 {t('common.uqaArchiveMessage')}
-              </CustomTag>
+              </CustomNotificationBar>
             </TagWrapper>
           </EduIf>
           <DivWrapper>

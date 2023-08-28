@@ -1,24 +1,29 @@
 import { black } from '@edulastic/colors'
-import { Tag } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 
-const CustomTag = ({ textColor, bgColor, width, textAlign, children }) => {
+const CustomNotificationBar = ({
+  textColor,
+  bgColor,
+  width,
+  textAlign,
+  children,
+}) => {
   return (
-    <TagCustom
+    <CustomNotification
       textColor={textColor}
       bgColor={bgColor}
       width={width}
       textAlign={textAlign}
     >
       {children}
-    </TagCustom>
+    </CustomNotification>
   )
 }
 
-export default CustomTag
+export default CustomNotificationBar
 
-const TagCustom = styled(Tag)`
+const CustomNotification = styled.div`
   background: ${({ bgColor }) => bgColor};
   color: ${({ textColor }) => textColor || black};
   border: none;

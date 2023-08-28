@@ -16,8 +16,8 @@ import {
   EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { red, white } from '@edulastic/colors'
-import CustomTag from '@edulastic/common/src/components/CustomTag/CustomTag'
+import { red } from '@edulastic/colors'
+import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
@@ -316,16 +316,11 @@ class ExpressGrader extends Component {
                     </FlexContainer>
                   </FlexContainer>
                 </StyledFlexContainer>
-                <EduIf condition={additionalData?.archiveCollection?.uqa}>
+                <EduIf condition={additionalData?.isArchived}>
                   <TagWrapper>
-                    <CustomTag
-                      width="100%"
-                      textAlign="center"
-                      textColor={red}
-                      bgColor={white}
-                    >
+                    <CustomNotificationBar textAlign="center" textColor={red}>
                       {t('common.uqaArchiveMessage')}
-                    </CustomTag>
+                    </CustomNotificationBar>
                   </TagWrapper>
                 </EduIf>
                 {!isMobile && (

@@ -400,6 +400,11 @@ export const apiForms = [
     ],
   },
   {
+    id: 'enable-feed-types',
+    name: 'Enable Feed Type',
+    fields: [],
+  },
+  {
     id: 'merge-teacher',
     name: 'Merge Teacher',
     endPoint: 'admin-tool/merge-teacher',

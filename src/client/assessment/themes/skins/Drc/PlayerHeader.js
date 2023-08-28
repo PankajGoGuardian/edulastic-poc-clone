@@ -83,9 +83,9 @@ const PlayerHeader = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
+  calcTypes,
 }) => {
   const {
-    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
@@ -158,6 +158,7 @@ const PlayerHeader = ({
                     onClick={openReferenceModal}
                     title={i18Translate('common.test.referenceMaterial')}
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label={i18Translate('common.test.referenceMaterial')}
                   >
                     <IconEduReferenceSheet color={header2.background} />
                   </ButtonWrapper>
@@ -174,6 +175,7 @@ const PlayerHeader = ({
                         : 'Check Answer'
                     }
                     data-cy="checkAnswer"
+                    aria-label="Check Answer"
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Cursor color={header2.background} />
@@ -191,6 +193,7 @@ const PlayerHeader = ({
                       : 'Crossout'
                   }
                   data-cy="crossButton"
+                  aria-label="Crossout"
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
@@ -200,6 +203,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(CALC)}
                     title={i18Translate('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label={i18Translate('common.test.calculator')}
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
@@ -210,6 +214,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(SCRATCHPAD)}
                     title={i18Translate('common.test.scratchPad')}
                     data-cy="scratchPad"
+                    aria-label={i18Translate('common.test.scratchPad')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
@@ -221,6 +226,7 @@ const PlayerHeader = ({
                     onClick={handleMagnifier}
                     title={i18Translate('common.test.magnify')}
                     data-cy="magnify"
+                    aria-label={i18Translate('common.test.magnify')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
@@ -232,6 +238,7 @@ const PlayerHeader = ({
                     title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label={i18Translate('common.test.uploadWork')}
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>

@@ -9,19 +9,21 @@ import { isEmpty, sortBy, keyBy } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 
 import { questionType } from '@edulastic/constants'
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, EduIf, EduThen, EduElse } from '@edulastic/common'
 import { Container, CalculatorContainer } from '../common'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 import { themes } from '../../../theme'
 import assessmentPlayerTheme from '../AssessmentPlayerSimple/themeStyle.json'
 import WorksheetComponent from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
+import VideoQuizWorksheet from '../../../author/AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import { changeViewAction } from '../../../author/src/actions/view'
-import { testLoadingSelector } from '../../selectors/test'
+import { getCalcTypeSelector, testLoadingSelector } from '../../selectors/test'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
+    videoUrl: PropTypes.string,
     docUrl: PropTypes.string,
     annotations: PropTypes.array,
     theme: PropTypes.object,
@@ -37,6 +39,7 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   static defaultProps = {
+    videoUrl: undefined,
     docUrl: '',
     annotations: [],
     theme: themes,
@@ -118,6 +121,7 @@ class AssessmentPlayerDocBased extends React.Component {
       theme,
       items,
       t,
+      videoUrl,
       docUrl,
       annotations,
       questionsById: _questionsById,
@@ -130,6 +134,7 @@ class AssessmentPlayerDocBased extends React.Component {
       selectedTheme,
       previewPlayer,
       settings,
+      calcTypes,
       playerSkinType,
       groupId,
       hidePause,
@@ -176,27 +181,60 @@ class AssessmentPlayerDocBased extends React.Component {
             finishTest={this.openExitPopup}
             hidePause={hidePause}
             themeForHeader={{ ...theme.default, ...assessmentPlayerTheme }}
+            calcTypes={calcTypes}
           >
             {!loading && (
-              <WorksheetComponent
-                docUrl={docUrl}
-                isAssessmentPlayer
-                item={item}
-                annotations={annotations}
-                stdAnnotations={stdWork}
-                questions={questions}
-                freeFormNotes={freeFormNotes}
-                questionsById={questionsById}
-                pageStructure={pageStructure}
-                answersById={answersById}
-                viewMode="review"
-                noCheck
-                testMode
-                extraPaddingTop={extraPaddingTop}
-                onPageChange={(cpage) => this.setState({ currentPage: cpage })}
-                currentPage={currentPage}
-                groupId={groupId}
-              />
+              <EduIf condition={videoUrl?.length}>
+                <EduThen>
+                  <VideoQuizWorksheet
+                    videoUrl={videoUrl}
+                    docUrl={docUrl}
+                    isAssessmentPlayer
+                    item={item}
+                    annotations={annotations}
+                    stdAnnotations={stdWork}
+                    questions={questions}
+                    freeFormNotes={freeFormNotes}
+                    questionsById={questionsById}
+                    pageStructure={pageStructure}
+                    answersById={answersById}
+                    viewMode="review"
+                    noCheck
+                    testMode
+                    extraPaddingTop={extraPaddingTop}
+                    onPageChange={(cpage) =>
+                      this.setState({ currentPage: cpage })
+                    }
+                    currentPage={currentPage}
+                    groupId={groupId}
+                    previewPlayer={previewPlayer}
+                  />
+                </EduThen>
+                <EduElse>
+                  <WorksheetComponent
+                    docUrl={docUrl}
+                    isAssessmentPlayer
+                    item={item}
+                    annotations={annotations}
+                    stdAnnotations={stdWork}
+                    questions={questions}
+                    freeFormNotes={freeFormNotes}
+                    questionsById={questionsById}
+                    pageStructure={pageStructure}
+                    answersById={answersById}
+                    viewMode="review"
+                    noCheck
+                    testMode
+                    extraPaddingTop={extraPaddingTop}
+                    onPageChange={(cpage) =>
+                      this.setState({ currentPage: cpage })
+                    }
+                    currentPage={currentPage}
+                    groupId={groupId}
+                    previewPlayer={previewPlayer}
+                  />
+                </EduElse>
+              </EduIf>
             )}
             {!previewPlayer && (
               <SubmitConfirmation
@@ -209,7 +247,7 @@ class AssessmentPlayerDocBased extends React.Component {
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool('calculator')}
-                calcTypes={settings.calcTypes}
+                calcTypes={calcTypes}
                 calcProvider={settings.calcProvider}
               />
             ) : null}
@@ -228,6 +266,7 @@ const enhance = compose(
       loading: testLoadingSelector(state),
       selectedTheme: state.ui.selectedTheme,
       settings: state.test.settings,
+      calcTypes: getCalcTypeSelector(state),
       timedAssignment: state.test?.settings?.timedAssignment,
     }),
     {

@@ -38,6 +38,7 @@ import {
 } from '../../../src/actions/view'
 import { getViewSelector } from '../../../src/selectors/view'
 import Worksheet from '../Worksheet/Worksheet'
+import VideoQuizWorkSheet from '../../VideoQuiz/VideoQuizWorksheet'
 import Description from '../Description/Description'
 import Setting from '../../../TestPage/components/Setting'
 import TestPageHeader from '../../../TestPage/components/TestPageHeader/TestPageHeader'
@@ -51,6 +52,7 @@ import {
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
+import { isValidVideoUrl } from '../../VideoQuiz/utils/videoPreviewHelpers'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
 
@@ -178,18 +180,27 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title },
+      assessment: { title, videoUrl },
       changePreview,
       authorQuestionStatus: newQuestionsAdded,
       updated,
     } = this.props
 
-    if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
+    if (
+      currentTab === tabs.DESCRIPTION &&
+      title &&
+      title.trim() &&
+      (videoUrl === undefined || isValidVideoUrl(videoUrl))
+    ) {
       changeView(tab)
       changePreview('clear')
     } else if (currentTab !== tabs.DESCRIPTION) {
       changeView(tab)
       changePreview('clear')
+    } else if (videoUrl === '') {
+      return notification({ messageKey: 'pleaseEnterVideoUrl' })
+    } else if (!isValidVideoUrl(videoUrl)) {
+      return notification({ messageKey: 'linkCantPlayed' })
     } else {
       return notification({ messageKey: 'pleaseEnterName' })
     }
@@ -209,7 +220,9 @@ class Container extends React.Component {
       assessment,
       updateDocBasedTest,
     } = this.props
-    if (!validateQuestionsForDocBased(assessmentQuestions, true)) {
+
+    const { videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, true, !!videoUrl)) {
       return
     }
     updateDocBasedTest(assessment._id, assessment, true)
@@ -263,8 +276,8 @@ class Container extends React.Component {
       assessment,
       match,
     } = this.props
-    const { _id } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+    const { _id, videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
     if (this.validateTest(assessment)) {
@@ -286,8 +299,8 @@ class Container extends React.Component {
       match,
       updated,
     } = this.props
-    const { status } = assessment
-    if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+    const { status, videoUrl } = assessment
+    if (!validateQuestionsForDocBased(assessmentQuestions, false, !!videoUrl)) {
       return
     }
     if (this.validateTest(assessment)) {
@@ -331,7 +344,7 @@ class Container extends React.Component {
 
     const { params = {} } = match
     const { docUrl, annotations, pageStructure, freeFormNotes } = assessment
-    const { authors } = assessment
+    const { authors, videoUrl = '' } = assessment
     const owner =
       (authors && authors.some((x) => x._id === userId)) || !params.id
 
@@ -346,6 +359,8 @@ class Container extends React.Component {
       isEditable: this.isEditableTest,
     }
 
+    const isVideoQuiz = videoUrl?.length > 0
+
     switch (currentTab) {
       case tabs.DESCRIPTION:
         return (
@@ -355,10 +370,20 @@ class Container extends React.Component {
             owner={owner}
           />
         )
-      case tabs.WORKSHEET:
+      case tabs.WORKSHEET: {
+        if (isVideoQuiz) {
+          return <VideoQuizWorkSheet key="worksheet" {...props} />
+        }
         return <Worksheet key="worksheet" {...props} />
-      case tabs.REVIEW:
+      }
+
+      case tabs.REVIEW: {
+        if (isVideoQuiz) {
+          return <VideoQuizWorkSheet key="review" review {...props} />
+        }
         return <Worksheet key="review" review {...props} />
+      }
+
       case tabs.SETTINGS:
         return (
           <Setting

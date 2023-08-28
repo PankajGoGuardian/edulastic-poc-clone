@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'
 import { test as testConstants } from '@edulastic/constants'
+import { keyBy } from 'lodash'
 import { getAnswersListSelector } from './answers'
 
 const { playerSkinValues } = testConstants
@@ -20,6 +21,11 @@ export const currentItemSelector = createSelector(
   itemsSelector,
   currentItemIndexSelector,
   (items, index) => items[index]
+)
+
+export const getCurrentItemIdSelector = createSelector(
+  currentItemSelector,
+  (state) => state?._id
 )
 
 export const currentQuestions = createSelector(currentItemSelector, (item) => {
@@ -138,4 +144,126 @@ export const checkAnswerInProgressSelector = createSelector(
 export const getIsAntiCheatingEnabled = createSelector(
   stateSelector,
   (state) => state.isAntiCheatingEnabled
+)
+
+export const getItemsSelector = createSelector(
+  stateSelector,
+  (state) => state && state.items
+)
+
+export const getItemsToDeliverInGroupByIdSelector = createSelector(
+  stateSelector,
+  (state) => keyBy(state.itemsToDeliverInGroup, 'groupId')
+)
+
+export const getItemGroupsSelector = createSelector(
+  stateSelector,
+  (state) => state.itemGroups
+)
+
+// For redirect with restricted delivery all itemGroups might not deliver based on the attempt data.
+// To handle this scneario get the itemGroups which has items for showing to student
+
+export const getItemGroupsByExcludingItems = (testItems, itemGroups) => {
+  const itemsById = keyBy(testItems, '_id')
+  const newItemGroups = []
+  for (const itemGroup of itemGroups) {
+    if (itemGroup.items?.some((item) => itemsById[item._id])) {
+      newItemGroups.push({
+        ...itemGroup,
+        items: itemGroup.items.filter((item) => itemsById[item._id]),
+      })
+    }
+  }
+  return newItemGroups
+}
+
+export const getItemGroupsByExcludingItemsSelector = createSelector(
+  getItemsSelector,
+  getItemGroupsSelector,
+  (testItems, itemGroups) => {
+    return getItemGroupsByExcludingItems(testItems, itemGroups)
+  }
+)
+
+export const getPreventSectionNavigationSelector = createSelector(
+  stateSelector,
+  (state) => state.preventSectionNavigation
+)
+
+export const getAssignmentSettingsSelector = createSelector(
+  stateSelector,
+  (state) => state.settings
+)
+
+export const hasSectionsSelector = createSelector(
+  stateSelector,
+  (state) => state.hasSections
+)
+
+export const getSectionIdSelector = createSelector(
+  getItemGroupsSelector,
+  getCurrentItemIdSelector,
+  (itemGroups, itemId) => {
+    const currentSection =
+      itemGroups?.find(({ items }) => items.some((i) => i._id === itemId)) || {}
+    return currentSection._id
+  }
+)
+
+export const getCalcTypeSelector = createSelector(
+  getItemGroupsSelector,
+  hasSectionsSelector,
+  getSectionIdSelector,
+  getAssignmentSettingsSelector,
+  (itemGroups, hasSections, sectionId, assignmentSettings) => {
+    let calcTypes = assignmentSettings.calcTypes
+    if (hasSections && itemGroups.length && sectionId) {
+      const { settings: currentSectionTestSettings } =
+        itemGroups?.find((item) => item._id === sectionId) || {}
+      if (currentSectionTestSettings?.calcTypes?.length > 0)
+        calcTypes = currentSectionTestSettings.calcTypes
+    }
+    return calcTypes
+  }
+)
+
+/* 
+  To disable items in question dropdown. This creates a map of true false with item index as the key. 
+  For the section being attempted will be always false and items in other sections will be disabled true.
+  eg:
+  [0]: false
+  [1]: false
+  [2]: true
+  [3]: true
+  where 0 and 1 are from section 1 and currently attempting first question
+*/
+export const getDisabledQuestionDropDownIndexMapSelector = createSelector(
+  getSectionIdSelector,
+  getItemGroupsSelector,
+  getPreventSectionNavigationSelector,
+  getItemsSelector,
+  (sectionId, itemGroups, preventSectionNavigation, testItems) => {
+    const disabledItems = {}
+    // TODO: In teacher preview sectionId has to be derived. As there is no itemId in url params.
+    if (!preventSectionNavigation || !sectionId) {
+      return disabledItems
+    }
+    let index = 0
+    const itemsById = keyBy(testItems, '_id')
+    for (const itemGroup of itemGroups) {
+      itemGroup.items.forEach(
+        // eslint-disable-next-line no-loop-func
+        (item) => {
+          if (!itemsById[item._id]) {
+            return
+          }
+          disabledItems[index] = itemGroup._id !== sectionId
+          index++
+        }
+      )
+    }
+
+    return disabledItems
+  }
 )

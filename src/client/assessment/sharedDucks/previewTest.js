@@ -8,7 +8,7 @@ import { questionType } from '@edulastic/constants'
 
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
-import { answersByQId } from '../selectors/test'
+import { answersByQId, getItemsSelector } from '../selectors/test'
 import { clearHintUsageAction } from '../actions/userInteractions'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 
@@ -31,7 +31,7 @@ export const finishedPreviewTestAction = createAction(FINISHED_PREVIEW_TEST)
 export const previewTestStateSelector = (state) => state.previewTest
 export const previewTestActivitySelector = createSelector(
   previewTestStateSelector,
-  (state) => state.test.items,
+  getItemsSelector,
   (previewTest, testItems) => {
     const itemScores = values(previewTest.itemScores)
     const maxScore = testItems.reduce((acc, curr) => acc + curr.maxScore, 0)
@@ -174,7 +174,7 @@ function* createTestActiviesForSkippedQuestions({
 function* evaluateTestItemSaga({ payload }) {
   try {
     const { currentItem, timeSpent, callback, isLastQuestion = false } = payload
-    const testItems = yield select((state) => state.test.items)
+    const testItems = yield select(getItemsSelector)
     const testItem = testItems[currentItem]
     const allQuestionsById = yield select(getQuestionsByIdSelector)
     const answers = yield select(getAnswersListSelector)

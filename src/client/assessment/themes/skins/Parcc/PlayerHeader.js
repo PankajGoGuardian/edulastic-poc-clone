@@ -11,7 +11,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { IconBookmark } from '@edulastic/icons'
+import { IconBookmark, IconSend } from '@edulastic/icons'
 import {
   keyboard as keyboardConst,
   testTypes as testTypesConstants,
@@ -87,6 +87,8 @@ const PlayerHeader = ({
   checkAnswer,
   answerChecksUsedForItem,
   canShowPlaybackOptionTTS,
+  firstItemInSectionAndRestrictNav,
+  isLast,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -166,7 +168,12 @@ const PlayerHeader = ({
                     <ControlBtn
                       data-cy="prev"
                       icon="left"
-                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      disabled={
+                        isFirst() ||
+                        blockNavigationToAnsweredQuestions ||
+                        firstItemInSectionAndRestrictNav
+                      }
+                      aria-label="Previous"
                       onClick={(e) => {
                         moveToPrev()
                         e.target.blur()
@@ -187,12 +194,13 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title="Next"
+                    title={`${isLast ? 'Submit' : 'Next'}`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      icon="right"
+                      icon={isLast ? null : 'right'}
+                      aria-label={isLast ? 'SUBMIT' : 'NEXT'}
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -209,8 +217,22 @@ const PlayerHeader = ({
                         )
                           moveToNext()
                       }}
-                      style={{ marginLeft: '5px' }}
-                    />
+                      style={{
+                        marginLeft: '5px',
+                        width: '90px',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      {isLast && (
+                        <IconSend
+                          style={{
+                            marginRight: '10px',
+                          }}
+                        />
+                      )}
+                      {isLast ? 'SUBMIT' : 'NEXT'}
+                    </ControlBtn>
                   </Tooltip>
                   {!isDocbased && (
                     <Container>
@@ -235,6 +257,7 @@ const PlayerHeader = ({
                           }
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
+                          aria-label={t('common.test.bookmark')}
                         >
                           <StyledIconBookmark />
                           <span>{t('common.test.bookmark')}</span>

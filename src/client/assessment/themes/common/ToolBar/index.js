@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { isEmpty } from 'lodash'
 import { questionType } from '@edulastic/constants'
 import { EduIf } from '@edulastic/common'
@@ -21,6 +23,7 @@ import {
   ButtonWithStyle,
 } from './styled-components'
 import { CalculatorIconWrapper } from './CalculatorIconWrapper'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const CROSS_OUT_QUES = [
   questionType.MULTIPLE_CHOICE,
@@ -29,6 +32,7 @@ const CROSS_OUT_QUES = [
 
 const ToolBar = ({
   settings,
+  calcTypes,
   tool = [],
   qType,
   handleMagnifier,
@@ -42,12 +46,7 @@ const ToolBar = ({
   isPremiumContentWithoutAccess = false,
   t: translate,
 }) => {
-  const {
-    calcTypes,
-    showMagnifier,
-    enableScratchpad,
-    isTeacherPremium,
-  } = settings
+  const { showMagnifier, enableScratchpad, isTeacherPremium } = settings
 
   const isDisableCrossBtn = useMemo(() => {
     return !CROSS_OUT_QUES.includes(qType)
@@ -79,6 +78,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.calculator')}
+          aria-label={translate('toolbar.calculator')}
           icon={
             <CalculatorIconWrapper isMultiCalculators={calcTypes.length > 1} />
           }
@@ -90,6 +90,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.refMaterial')}
+          aria-label={translate('toolbar.refMaterial')}
           icon={<IconEduReferenceSheet height="22" width="20" />}
           active={isShowReferenceModal}
           onClick={openReferenceModal}
@@ -105,10 +106,16 @@ const ToolBar = ({
         active={tool.includes(3)}
         onClick={toolbarHandler(3)}
         disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
+        aria-label={
+          isDisableCrossBtn
+            ? translate('toolbar.crossDisabled')
+            : translate('toolbar.cross')
+        }
       />
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
         title={translate('toolbar.protactor')}
+        aria-label={translate('toolbar.protactor')}
         icon={<ProtactorIcon />}
         active={tool.includes(4)}
         onClick={toolbarHandler(4)}
@@ -118,6 +125,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.scratchPad')}
+          aria-label={translate('toolbar.scratchPad')}
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
           onClick={toolbarHandler(5)}
@@ -127,6 +135,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.magnify')}
+          aria-label={translate('toolbar.magnify')}
           icon={<IconMagnify />}
           active={enableMagnifier}
           onClick={handleMagnifier}
@@ -136,6 +145,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.uploadWork')}
+          aria-label={translate('toolbar.uploadWork')}
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />
@@ -153,4 +163,10 @@ ToolBar.propTypes = {
   t: PropTypes.func.isRequired,
 }
 
-export default withNamespaces('header')(ToolBar)
+const mapStateToProps = (state) => ({
+  calcTypes: getCalcTypeSelector(state),
+})
+
+const enhance = compose(withNamespaces('header'), connect(mapStateToProps))
+
+export default enhance(ToolBar)

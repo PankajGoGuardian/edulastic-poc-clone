@@ -132,6 +132,7 @@ const PlayerHeader = ({
                         data-cy="prev"
                         type="primary"
                         icon="left"
+                        aria-label="Previous"
                         disabled={disabled}
                         onClick={(e) => {
                           moveToPrev(null, true)
@@ -158,6 +159,7 @@ const PlayerHeader = ({
                         type="primary"
                         data-cy="next"
                         icon={isLast ? null : 'right'}
+                        aria-label={isLast ? 'SUBMIT' : 'NEXT'}
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()

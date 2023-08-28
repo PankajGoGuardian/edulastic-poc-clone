@@ -37,9 +37,10 @@ const PlayerFooter = ({
   setSettingsModalVisibility,
   handleReviewOrSubmit,
   isPremiumContentWithoutAccess = false,
+  firstItemInSectionAndRestrictNav,
+  isLast,
 }) => {
   const isFirst = () => (isDocbased ? true : currentItem === 0)
-  const isLast = () => currentItem === items.length - 1
 
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -56,6 +57,7 @@ const PlayerFooter = ({
               isPrimary={false}
               data-cy="submit"
               onClick={handleReviewOrSubmit}
+              aria-label={t('common.test.reviewOrEnd')}
             >
               <span>{t('common.test.reviewOrEnd')}</span>
             </ButtonWrapper>
@@ -81,6 +83,7 @@ const PlayerFooter = ({
               }}
               disabled={hidePause}
               isPrimary
+              aria-label={t('common.test.pause')}
             >
               {t('common.test.pause')}
             </ButtonWrapper>
@@ -104,6 +107,7 @@ const PlayerFooter = ({
                   : () => toggleBookmark(items[currentItem]?._id))
               }
               data-cy="bookmark"
+              aria-label="Bookmark"
             >
               {t('common.test.flag')}
             </ButtonWrapper>
@@ -119,6 +123,7 @@ const PlayerFooter = ({
             <ButtonWrapper
               isPrimary
               data-cy="testOptions"
+              aria-label="Test Options"
               onClick={() => setSettingsModalVisibility(true)}
             >
               options
@@ -142,7 +147,12 @@ const PlayerFooter = ({
             data-cy="prev"
             icon="left"
             type="primary"
-            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            disabled={
+              isFirst() ||
+              blockNavigationToAnsweredQuestions ||
+              firstItemInSectionAndRestrictNav
+            }
+            aria-label="Previous"
             onClick={(e) => {
               moveToPrev()
               e.target.blur()
@@ -176,6 +186,7 @@ const PlayerFooter = ({
               moveToNext()
               e.target.blur()
             }}
+            aria-label={isLast ? 'SUBMIT' : 'NEXT'}
             // added separate keydown event handler to restrict calling on blur event for keyboard event
             onKeyDown={(e) => {
               const code = e.which || e.keyCode
@@ -190,7 +201,7 @@ const PlayerFooter = ({
             style={{ marginLeft: '5px' }}
           >
             <IconDrc.IconNext style={{ marginRight: '10px' }} />
-            <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
+            <span>{isLast ? 'SUBMIT' : 'NEXT'}</span>
           </ControlBtn>
         </Tooltip>
       </RightContent>

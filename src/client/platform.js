@@ -35,3 +35,6 @@ export const isMobileDevice = () =>
     navigator.userAgent.match(/iPod/i) ||
     'ontouchstart' in document?.documentElement
   )
+
+// Detect if user device/platform is running on Windows
+export const isWindows = () => navigator.platform.indexOf('Win') > -1

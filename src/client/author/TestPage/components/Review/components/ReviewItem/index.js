@@ -204,7 +204,8 @@ const ReviewItem = ({
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
       )}
-      <MetaInfo data={data.meta} />
+
+      <MetaInfo data={data.meta} unsavedItem={item.unsavedItem} />
     </>
   )
 }

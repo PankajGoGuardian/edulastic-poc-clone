@@ -1,5 +1,11 @@
 import { testItemsApi } from '@edulastic/api'
-import { EduButton, notification, RadioBtn, RadioGrp } from '@edulastic/common'
+import {
+  EduButton,
+  EduIf,
+  notification,
+  RadioBtn,
+  RadioGrp,
+} from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import { IconInfo, IconPencilEdit } from '@edulastic/icons'
 import { lightRed2 } from '@edulastic/colors'
@@ -18,11 +24,13 @@ import Breadcrumb from '../../../src/components/Breadcrumb'
 import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
   addNewGroupAction,
+  createNewStaticGroup,
   deleteItemsGroupAction,
   getAllTagsAction,
   getAllTagsSelector,
   getStaticGroupItemIds,
   getTestEntitySelector,
+  hasSectionsSelector,
   NewGroup,
   NewGroupAutoselect,
   setTestDataAction,
@@ -74,6 +82,7 @@ const GroupItems = ({
   setGroupNotEdited,
   validateGroups,
   handleSaveTest,
+  hasSections,
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [confirmModalCategory, setConfirmModalCategory] = useState(null)
@@ -318,12 +327,15 @@ const GroupItems = ({
     ) {
       groupName = `SECTION ${i}`
     }
-    const data = {
-      ...NewGroupAutoselect,
-      _id: nanoid(),
-      groupName,
-      index: index + 1,
-    }
+    // If it is a sections test, then we will create a new Static group.
+    const data = hasSections
+      ? { ...createNewStaticGroup(), groupName, index: index + 1 }
+      : {
+          ...NewGroupAutoselect,
+          _id: nanoid(),
+          groupName,
+          index: index + 1,
+        }
     addNewGroup(data)
     setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()])
     // make the newly created section active
@@ -563,7 +575,9 @@ const GroupItems = ({
       <CreateGroupWrapper>
         <Heading>
           ITEM DELIVERY SECTIONS&nbsp;
-          <Tooltip title="Within each section, select specific instructions for what you want included. You can have one section or create multiple sections.">
+          <Tooltip
+            title={`Within each section, select specific items using "Select items button". You can have one section or create multiple sections`}
+          >
             <IconInfo data-testid="icon-info" />
           </Tooltip>
         </Heading>
@@ -642,42 +656,46 @@ const GroupItems = ({
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
                   <GroupField>
-                    <RadioGrp
-                      name="radiogroup"
-                      value={
-                        currentGroupIndex === index
-                          ? currentGroupDetails.type
-                          : itemGroup.type
-                      }
-                      onChange={() => handleTypeSelect(index)}
-                      disabled={currentGroupIndex !== index}
-                    >
-                      <Tooltip
-                        title={
-                          <span data-testid="autoselect-tooltip">
-                            Set the parameters for what you’d like to include in
-                            this section, and <b>SmartBuild</b> will find and
-                            add the items for you.
-                          </span>
+                    {/* For test with sections, we are not expected to show the auto
+                    or manual select radio button. */}
+                    <EduIf condition={!hasSections}>
+                      <RadioGrp
+                        name="radiogroup"
+                        value={
+                          currentGroupIndex === index
+                            ? currentGroupDetails.type
+                            : itemGroup.type
                         }
+                        onChange={() => handleTypeSelect(index)}
+                        disabled={currentGroupIndex !== index}
                       >
-                        <RadioBtn
-                          data-cy={`autoSelect-${itemGroup.groupName}`}
-                          defaultChecked
-                          value={ITEM_GROUP_TYPES.AUTOSELECT}
+                        <Tooltip
+                          title={
+                            <span data-testid="autoselect-tooltip">
+                              Set the parameters for what you’d like to include
+                              in this section, and <b>SmartBuild</b> will find
+                              and add the items for you.
+                            </span>
+                          }
                         >
-                          AUTO SELECT ITEMS BASED ON STANDARDS
-                        </RadioBtn>
-                      </Tooltip>
-                      <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
-                        <RadioBtn
-                          value={ITEM_GROUP_TYPES.STATIC}
-                          data-cy={`static-${itemGroup.groupName}`}
-                        >
-                          MANUAL SELECT ITEMS FROM ITEM BANK
-                        </RadioBtn>
-                      </Tooltip>
-                    </RadioGrp>
+                          <RadioBtn
+                            data-cy={`autoSelect-${itemGroup.groupName}`}
+                            defaultChecked
+                            value={ITEM_GROUP_TYPES.AUTOSELECT}
+                          >
+                            AUTO SELECT ITEMS BASED ON STANDARDS
+                          </RadioBtn>
+                        </Tooltip>
+                        <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
+                          <RadioBtn
+                            value={ITEM_GROUP_TYPES.STATIC}
+                            data-cy={`static-${itemGroup.groupName}`}
+                          >
+                            MANUAL SELECT ITEMS FROM ITEM BANK
+                          </RadioBtn>
+                        </Tooltip>
+                      </RadioGrp>
+                    </EduIf>
                   </GroupField>
                   {(currentGroupIndex === index &&
                     currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC) ||
@@ -858,42 +876,76 @@ const GroupItems = ({
                       </SelectWrapper>
                     </AutoSelectFields>
                   )}
-                  <GroupField>
-                    <RadioGrp
-                      name="radiogroup"
-                      value={
-                        currentGroupIndex === index
-                          ? currentGroupDetails.deliveryType
-                          : itemGroup.deliveryType
-                      }
-                      onChange={(e) =>
-                        handleChange('deliveryType', e.target.value)
-                      }
-                      disabled={currentGroupIndex !== index}
-                    >
+                  {/* For test with sections, we wont be displaying the item delivery
+                  type radio button. */}
+                  <EduIf condition={!hasSections}>
+                    <GroupField>
+                      <RadioGrp
+                        name="radiogroup"
+                        value={
+                          currentGroupIndex === index
+                            ? currentGroupDetails.deliveryType
+                            : itemGroup.deliveryType
+                        }
+                        onChange={(e) =>
+                          handleChange('deliveryType', e.target.value)
+                        }
+                        disabled={currentGroupIndex !== index}
+                      >
+                        {((currentGroupIndex === index &&
+                          currentGroupDetails.type ===
+                            ITEM_GROUP_TYPES.STATIC) ||
+                          (currentGroupIndex !== index &&
+                            itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
+                          <>
+                            <RadioBtn
+                              data-cy={`check-deliver-all-${itemGroup.groupName}`}
+                              defaultChecked
+                              value={ITEM_GROUP_DELIVERY_TYPES.ALL}
+                              vertical
+                              mb="10px"
+                            >
+                              Deliver all Items in this Section
+                            </RadioBtn>
+                            <RadioBtn
+                              data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
+                              defaultChecked={false}
+                              value={
+                                currentGroupIndex === index
+                                  ? editingDeliveryType
+                                  : currentDeliveryType
+                              }
+                              vertical
+                            >
+                              <ItemCountWrapperContainer
+                                handleChange={handleChange}
+                                currentGroupDetails={currentGroupDetails}
+                                currentGroupIndex={currentGroupIndex}
+                                index={index}
+                                itemGroup={itemGroup}
+                              />
+                            </RadioBtn>
+                            <RadioMessage marginLeft="27px">
+                              Use this to deliver a specific number of randomly
+                              picked question per Section.
+                            </RadioMessage>
+                          </>
+                        )}
+                      </RadioGrp>
                       {((currentGroupIndex === index &&
-                        currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC) ||
+                        currentGroupDetails.type ===
+                          ITEM_GROUP_TYPES.AUTOSELECT) ||
                         (currentGroupIndex !== index &&
-                          itemGroup.type === ITEM_GROUP_TYPES.STATIC)) && (
+                          itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
                         <>
-                          <RadioBtn
-                            data-cy={`check-deliver-all-${itemGroup.groupName}`}
-                            defaultChecked
-                            value={ITEM_GROUP_DELIVERY_TYPES.ALL}
-                            vertical
-                            mb="10px"
-                          >
-                            Deliver all Items in this Section
-                          </RadioBtn>
-                          <RadioBtn
+                          <span
                             data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                            defaultChecked={false}
                             value={
                               currentGroupIndex === index
                                 ? editingDeliveryType
                                 : currentDeliveryType
                             }
-                            vertical
+                            style={{ disabled: true }}
                           >
                             <ItemCountWrapperContainer
                               handleChange={handleChange}
@@ -901,46 +953,17 @@ const GroupItems = ({
                               currentGroupIndex={currentGroupIndex}
                               index={index}
                               itemGroup={itemGroup}
+                              isRequired
                             />
-                          </RadioBtn>
-                          <RadioMessage marginLeft="27px">
+                          </span>
+                          <RadioMessage>
                             Use this to deliver a specific number of randomly
                             picked question per Section.
                           </RadioMessage>
                         </>
                       )}
-                    </RadioGrp>
-                    {((currentGroupIndex === index &&
-                      currentGroupDetails.type ===
-                        ITEM_GROUP_TYPES.AUTOSELECT) ||
-                      (currentGroupIndex !== index &&
-                        itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
-                      <>
-                        <span
-                          data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                          value={
-                            currentGroupIndex === index
-                              ? editingDeliveryType
-                              : currentDeliveryType
-                          }
-                          style={{ disabled: true }}
-                        >
-                          <ItemCountWrapperContainer
-                            handleChange={handleChange}
-                            currentGroupDetails={currentGroupDetails}
-                            currentGroupIndex={currentGroupIndex}
-                            index={index}
-                            itemGroup={itemGroup}
-                            isRequired
-                          />
-                        </span>
-                        <RadioMessage>
-                          Use this to deliver a specific number of randomly
-                          picked question per Section.
-                        </RadioMessage>
-                      </>
-                    )}
-                  </GroupField>
+                    </GroupField>
+                  </EduIf>
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">
                     {currentGroupIndex === index && (
                       <>
@@ -1005,6 +1028,7 @@ const enhance = compose(
       allTagsData: getAllTagsSelector(state, 'testitem'),
       collections: getCollectionsSelector(state),
       test: getTestEntitySelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       updateGroupData: updateGroupDataAction,

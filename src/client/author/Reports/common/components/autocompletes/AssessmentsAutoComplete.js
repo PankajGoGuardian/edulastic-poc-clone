@@ -146,7 +146,7 @@ const AssessmentAutoComplete = ({
     <MultiSelectSearch
       dataCy={dataCy}
       label="Test"
-      placeholder="All Tests"
+      placeholder="Search and select a test using the name or last 5 digits of test ID"
       el={assessmentFilterRef}
       onChange={onChange}
       onSearch={onSearch}

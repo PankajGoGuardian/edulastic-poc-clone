@@ -96,6 +96,8 @@ const PlayerHeader = ({
   isShowReferenceModal,
   openReferenceModal,
   t: i18Translate,
+  firstItemInSectionAndRestrictNav,
+  isLast,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -108,7 +110,6 @@ const PlayerHeader = ({
   const totalQuestions = options.length
   const totalAnswered = skipped.filter((s) => !s).length
   const isFirst = () => (isDocbased ? true : currentItem === 0)
-  const isLast = currentItem === items.length - 1
 
   const headerStyle = {
     borderBottom: `1px solid ${header.borderColor}`,
@@ -185,7 +186,12 @@ const PlayerHeader = ({
                     <ControlBtn
                       data-cy="prev"
                       icon="left"
-                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
+                      disabled={
+                        isFirst() ||
+                        blockNavigationToAnsweredQuestions ||
+                        firstItemInSectionAndRestrictNav
+                      }
+                      aria-label="Previous"
                       onClick={(e) => {
                         moveToPrev()
                         e.target.blur()
@@ -211,6 +217,7 @@ const PlayerHeader = ({
                   >
                     <ControlBtn
                       data-cy="next"
+                      aria-label={isLast ? 'SUBMIT' : 'NEXT'}
                       icon={isLast ? null : 'right'}
                       onClick={(e) => {
                         moveToNext()
@@ -251,6 +258,7 @@ const PlayerHeader = ({
                     <Tooltip placement="top" title="Bookmark">
                       <StyledButton
                         data-cy="bookmark"
+                        aria-label="Bookmark"
                         onClick={
                           defaultAP
                             ? toggleBookmark
@@ -271,6 +279,7 @@ const PlayerHeader = ({
                     >
                       <StyledButton
                         data-cy="finishTest"
+                        aria-label="Save & Exit"
                         disabled={hidePause}
                         onClick={finishTest}
                       >

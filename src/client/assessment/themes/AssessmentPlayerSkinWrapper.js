@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { test } from '@edulastic/constants'
-import { FlexContainer } from '@edulastic/common'
+import { AssessmentPlayerContext, FlexContainer } from '@edulastic/common'
 import { drcThemeColor } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -29,6 +29,8 @@ const AssessmentPlayerSkinWrapper = ({
   handleMagnifier,
   enableMagnifier = false,
   themeForHeader = {},
+  videoUrl,
+  preventSectionNavigation,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -46,10 +48,17 @@ const AssessmentPlayerSkinWrapper = ({
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
 
   const { blockNavigationToAnsweredQuestions = false } = restProps
-
+  const { firstItemInSectionAndRestrictNav } = useContext(
+    AssessmentPlayerContext
+  )
+  // Along with rest props need to add the context value for disabling back navigation in questions for first item in a section
+  const navigationProps = {
+    ...restProps,
+    firstItemInSectionAndRestrictNav,
+  }
   const handleRestrictQuestionBackNav = (e) => {
     e.preventDefault()
-    if (blockNavigationToAnsweredQuestions) {
+    if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
       const matched = e.target.location.pathname.match(
         new RegExp('/student/(assessment|practice)/.*/class/.*/uta/.*/.*')
       )
@@ -59,14 +68,16 @@ const AssessmentPlayerSkinWrapper = ({
       }
     }
   }
-
   useEffect(() => {
-    if (blockNavigationToAnsweredQuestions) {
+    if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
       window.addEventListener('popstate', handleRestrictQuestionBackNav)
-      return () =>
-        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
     }
-  }, [])
+    return () => {
+      if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
+        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
+      }
+    }
+  }, [preventSectionNavigation])
 
   useEffect(() => {
     const toolToggleFunc = toggleToolsOpenStatus || changeTool
@@ -90,7 +101,7 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType === 'parcc') {
       return (
         <ParccHeader
-          {...restProps}
+          {...navigationProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={isDocBased}
@@ -102,7 +113,7 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType == 'sbac') {
       return (
         <SbacHeader
-          {...restProps}
+          {...navigationProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={isDocBased}
@@ -114,7 +125,7 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType === 'quester') {
       return (
         <QuesterHeader
-          {...restProps}
+          {...navigationProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={isDocBased}
@@ -128,7 +139,7 @@ const AssessmentPlayerSkinWrapper = ({
       const tool = restProps.toolsOpenStatus || restProps.tool
       return (
         <DrcHeader
-          {...restProps}
+          {...navigationProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
           isDocbased={isDocBased}
@@ -142,7 +153,7 @@ const AssessmentPlayerSkinWrapper = ({
     if (docUrl || docUrl === '') {
       return (
         <DocBasedPlayerHeader
-          {...restProps}
+          {...navigationProps}
           handleMagnifier={handleMagnifier}
         />
       )
@@ -150,7 +161,7 @@ const AssessmentPlayerSkinWrapper = ({
     if (defaultAP) {
       return (
         <DefaultAssessmentPlayerHeader
-          {...restProps}
+          {...navigationProps}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
         />
@@ -158,7 +169,7 @@ const AssessmentPlayerSkinWrapper = ({
     }
     return (
       <PracticePlayerHeader
-        {...restProps}
+        {...navigationProps}
         handleMagnifier={handleMagnifier}
         enableMagnifier={enableMagnifier}
       />
@@ -171,7 +182,7 @@ const AssessmentPlayerSkinWrapper = ({
       const tool = restProps.toolsOpenStatus || restProps.tool
       return (
         <PlayerFooter
-          {...restProps}
+          {...navigationProps}
           handleMagnifier={handleMagnifier}
           enableMagnifier={enableMagnifier}
           changeTool={toolToggleFunc}
@@ -180,7 +191,7 @@ const AssessmentPlayerSkinWrapper = ({
       )
     }
     if (playerSkinType === 'drc') {
-      return <PlayerFooterDrc {...restProps} />
+      return <PlayerFooterDrc {...navigationProps} />
     }
     return null
   }
@@ -300,7 +311,10 @@ const AssessmentPlayerSkinWrapper = ({
             borderRadius="0px"
             width="30"
             onClick={blockNavigationToAnsweredQuestions ? () => {} : moveToPrev}
-            disabled={blockNavigationToAnsweredQuestions}
+            disabled={
+              blockNavigationToAnsweredQuestions ||
+              firstItemInSectionAndRestrictNav
+            }
           >
             <FontAwesomeIcon icon={faAngleLeft} />
           </Nav.BackArrow>
@@ -347,6 +361,7 @@ const AssessmentPlayerSkinWrapper = ({
           test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
           !isShowStudentWork &&
+          !videoUrl &&
           navigationBtns()}
         <ThemeProvider theme={themeForHeader}>{footer()}</ThemeProvider>
       </FlexContainer>

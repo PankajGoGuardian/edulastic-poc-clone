@@ -1,5 +1,12 @@
 import { themeColor, white } from '@edulastic/colors'
-import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
+import {
+  CheckboxLabel,
+  EduButton,
+  EduElse,
+  EduIf,
+  EduThen,
+  notification,
+} from '@edulastic/common'
 import { test as testContatns } from '@edulastic/constants'
 import {
   IconClose,
@@ -8,14 +15,22 @@ import {
   IconExpand,
   IconEye,
   IconMoveTo,
+  IconPlusCircle,
+  IconMinusRounded,
 } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { createNewStaticGroup } from '../../../../ducks'
 import Prompt from '../Prompt/Prompt'
+import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
+import { hasUnsavedAiItems } from '../../../../../../assessment/utils/helpers'
+import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 
-const { ITEM_GROUP_TYPES } = testContatns
+const { ITEM_GROUP_TYPES, sectionTestActions } = testContatns
 const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
@@ -31,8 +46,19 @@ const HeaderBar = ({
   isShowSummary,
   onShowTestPreview,
   itemGroups,
+  setData,
+  handleNavChange,
+  handleSave,
+  setSectionsState,
+  testId,
+  setCurrentGroupDetails,
+  hasSections,
+  isDefaultTest,
+  isPremiumUser,
 }) => {
+  const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
   const [showPrompt, setShowPrompt] = useState(false)
+  const [showRemoveModal, setShowRemoveModal] = useState(false)
   const [minimum, setMinimum] = useState(1)
   const [maximum, setMaximum] = useState(1)
 
@@ -50,6 +76,35 @@ const HeaderBar = ({
       onMoveTo(post)
       setShowPrompt(false)
     }
+  }
+
+  /*
+    When the Add new Sections button is clicked, we will set the hasSections flag to true. 
+    As a result, the Add Items tab will be replaced by Add Sections. Also in order to navigate 
+    to the Add Sections, we are using the handleNavChange method.
+  */
+  const handleAddSections = () => {
+    setData({ hasSections: true })
+    handleNavChange()
+    setSectionsState(true)
+    if (testId) handleSave(sectionTestActions.ADD)
+    setCurrentGroupDetails()
+  }
+
+  /*
+    This method is called when the user clicks on the Okay button in the Remove modal. As a result, 
+    the has sections flag is set to false and the previously selected items are removed and a new 
+    static group will be created. The Add Sections tab will be replaced by Add Items tab and the 
+    remove modal will be closed.
+  */
+  const handleRemoveSections = () => {
+    setData({
+      hasSections: false,
+      itemGroups: [createNewStaticGroup()],
+    })
+    setSectionsState(false)
+    if (testId) handleSave(sectionTestActions.REMOVE)
+    setShowRemoveModal(false)
   }
 
   const setMinAndMaxRange = () => {
@@ -94,6 +149,13 @@ const HeaderBar = ({
 
   return (
     <Container windowWidth={windowWidth}>
+      {showRemoveModal && (
+        <RemoveSectionsModal
+          isVisible={showRemoveModal}
+          closeModal={() => setShowRemoveModal(false)}
+          removeSections={handleRemoveSections}
+        />
+      )}
       {owner && isEditable ? (
         <Item>
           <CheckboxLabel
@@ -110,6 +172,45 @@ const HeaderBar = ({
         <span />
       )}
       <MobileButtomContainer style={{ display: 'flex' }}>
+        {/* 
+          The Add new sections and Remove New Section buttons are displayed for default test. 
+            Add new sections --> displayed if default test does not have section. 
+            Remove new sections --> displayed if default test has sections. 
+        */}
+        {owner && isEditable && isDefaultTest && isPremiumUser && (
+          <EduIf condition={!hasSections}>
+            <EduThen>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="addNewSections"
+                disabled={disableRMbtns}
+                onClick={!disableRMbtns ? handleAddSections : () => null}
+                color="primary"
+              >
+                <IconPlusCircle color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && <span>Add New Sections</span>}
+              </EduButton>
+            </EduThen>
+            <EduElse>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="removeNewSections"
+                disabled={disableRMbtns}
+                onClick={
+                  !disableRMbtns ? () => setShowRemoveModal(true) : () => null
+                }
+                color="primary"
+              >
+                <IconMinusRounded color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && <span>Remove All Sections</span>}
+              </EduButton>
+            </EduElse>
+          </EduIf>
+        )}
         <EduButton
           height="20px"
           data-cy="viewAsStudent"
@@ -117,6 +218,10 @@ const HeaderBar = ({
           isBlue
           onClick={onShowTestPreview}
           color="primary"
+          disabled={_hasUnsavedAiItems}
+          title={
+            _hasUnsavedAiItems ? 'Please save the Test to View as student' : ''
+          }
         >
           <IconEye width={12} height={12} />
           {windowWidth > 767 && <span>View as Student</span>}
@@ -177,7 +282,6 @@ const HeaderBar = ({
             <span>{setCollapse ? 'Expand Rows' : 'Collapse Rows'}</span>
           )}
         </EduButton>
-
         {windowWidth < 1200 && (
           <EduButton
             height="20px"
@@ -222,4 +326,8 @@ HeaderBar.propTypes = {
   toggleSummary: PropTypes.func.isRequired,
 }
 
-export default HeaderBar
+const enhance = compose(
+  connect((state) => ({ isPremiumUser: isPremiumUserSelector(state) }))
+)
+
+export default enhance(HeaderBar)

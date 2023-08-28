@@ -16,8 +16,10 @@ const MidButtons = ({ onChangeTool, activeMode }) => {
           key={btn.mode}
           id={btn.mode}
           pos={btn.pos}
+          aria-label={btn.label}
           onClick={onClickHandler(btn.mode)}
           selected={activeMode === btn.mode}
+          aria-selected={activeMode === btn.mode}
         >
           <span />
         </StyledButton>

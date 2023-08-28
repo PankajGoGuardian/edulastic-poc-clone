@@ -53,6 +53,7 @@ import {
   getTestSelector,
   SET_TEST_DATA,
   getCurrentGroupIndexSelector,
+  hasSectionsSelector,
 } from '../TestPage/ducks'
 import {
   setTestItemsAction,
@@ -789,10 +790,19 @@ function* saveQuestionSaga({
     // TODO: do we need redirect testId here?!
     if (itemDetail._id === 'new') {
       const reqData = omit(data, '_id')
+      const hasSections = yield select(hasSectionsSelector)
+      const sectionIndex = hasSections
+        ? yield select(getCurrentGroupIndexSelector)
+        : undefined
+
       item = yield call(
         testItemsApi.create,
         reqData,
-        ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
+        // Passing the section index to push the passage
+        // or multipart question to the specific item group
+        ...(itemDetail.multipartItem && _testId
+          ? [{ testId: _testId, sectionIndex }]
+          : [])
       )
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)

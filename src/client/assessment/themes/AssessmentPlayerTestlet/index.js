@@ -24,6 +24,7 @@ import SubmitConfirmation from '../common/SubmitConfirmation'
 
 // player theme
 import { themes } from '../../../theme'
+import { getCalcTypeSelector } from '../../selectors/test'
 
 class AssessmentPlayerTestlet extends React.Component {
   constructor(props) {
@@ -99,6 +100,7 @@ class AssessmentPlayerTestlet extends React.Component {
       currentItem,
       selectedTheme = 'default',
       settings,
+      calcTypes,
       testletConfig,
       timedAssignment = false,
       previewPlayer,
@@ -140,7 +142,7 @@ class AssessmentPlayerTestlet extends React.Component {
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}
-              calcTypes={settings.calcTypes}
+              calcTypes={calcTypes}
               calcProvider={settings.calcProvider}
             />
           )}
@@ -178,6 +180,7 @@ export default connect(
     evaluation: state.evaluation,
     testActivityId: state.test ? state.test.testActivityId : '',
     settings: state.test.settings,
+    calcTypes: getCalcTypeSelector(state),
     zoomLevel: state.ui.zoomLevel,
     selectedTheme: state.ui.selectedTheme,
     timedAssignment: state.test?.settings?.timedAssignment,

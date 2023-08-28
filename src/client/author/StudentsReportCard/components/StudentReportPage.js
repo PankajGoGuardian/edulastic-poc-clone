@@ -143,6 +143,13 @@ const StudentReportPage = ({
       (ta) => ta.userId === testActivity.studentId
     )?.feedback
     const classTitle = author_classboard_testActivity.additionalData?.className
+    const classes = author_classboard_testActivity.additionalData?.classes
+    const classId = author_classboard_testActivity.additionalData?.classId
+    const classDetails = classes.find(({ _id }) => _id === classId)
+    const classTeacherDetails = classDetails?.owners.find(
+      ({ id }) => id === classDetails?.primaryTeacherId
+    )
+
     const studentActivityStartDate = get(
       studentResponse,
       'data.testActivity.startDate'
@@ -154,6 +161,7 @@ const StudentReportPage = ({
       classResponse,
       feedback,
       classTitle,
+      classTeacherDetails,
       studentActivityStartDate,
     }
   }, [studentResponse, author_classboard_testActivity, testActivity])

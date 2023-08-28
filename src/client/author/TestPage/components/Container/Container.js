@@ -21,6 +21,9 @@ import {
   notification,
   Progress,
   CustomPrompt,
+  EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import {
   test as testConstants,
@@ -75,6 +78,9 @@ import {
   isEnabledRefMaterialSelector,
   getPenaltyOnUsingHintsSelector,
   NewGroupAutoselect,
+  isDynamicTestSelector,
+  hasSectionsSelector,
+  createNewStaticGroup,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -111,6 +117,7 @@ import Setting from '../Setting'
 import GroupItems from '../GroupItems'
 
 import MainWorksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
+import VideoQuizWorksheet from '../../../AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import {
   getQuestionsSelector,
   getQuestionsArraySelector,
@@ -137,6 +144,9 @@ import { setSelectedLanguageAction } from '../../../../student/sharedDucks/Assig
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
+import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
+import ConfirmTabChange from './ConfirmTabChange'
+import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -150,6 +160,7 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
   testCategoryTypes,
+  sectionTestActions,
 } = testConstants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
@@ -169,6 +180,8 @@ class Container extends PureComponent {
       currentGroupIndex: null,
       currentGroupDetails: {},
       groupNotEdited: true,
+      goToTabProps: {},
+      showConfirmationOnTabChange: false,
     }
   }
 
@@ -193,9 +206,10 @@ class Container extends PureComponent {
     } else if (id) {
       url = `/author/tests/tab/${tab}/id/${id}`
     }
-    // if (tab === "addItems") {
-    //   url += `?page=${pageNumber}`;
+    // if (tab === 'addItems') {
+    //   url += `?page=${pageNumber}`
     // }
+
     history.push({
       pathname: url,
       state: { ...history.location.state, showCancelButton },
@@ -230,6 +244,7 @@ class Container extends PureComponent {
       userId,
       userSignupStatus,
       test,
+      aiTestStatus,
     } = this.props
 
     const { versionId, id } = match.params
@@ -267,12 +282,15 @@ class Container extends PureComponent {
           notification({ type: 'success', msg })
         }
       }
+
       if (isVersionFlow && versionId && versionId != 'undefined') {
         this.setState({ testLoaded: false })
         getTestIdFromVersionId(versionId)
       } else if (id && id != 'undefined') {
         this.setState({ testLoaded: false })
         receiveTestById(id, true, editAssigned)
+      } else if (aiTestStatus === STATUS.SUCCESS) {
+        this.setState({ testLoaded: false })
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         this.gotoTab('description')
@@ -296,23 +314,38 @@ class Container extends PureComponent {
           })
         }
       }
-      if (location?.state?.isDynamicTest && !id) {
-        // run only when creating a new test and not during edit test
-        const defaultItemGroup = {
-          ...(test.itemGroups?.[0] || {}),
-          ...NewGroupAutoselect,
+      // run only when creating a new test and not during edit test
+      if (!id) {
+        if (location?.state?.isDynamicTest) {
+          const defaultItemGroup = {
+            ...(test.itemGroups?.[0] || {}),
+            ...NewGroupAutoselect,
+          }
+          // if create dynamic test, default item group is autoselect
+          setData({
+            testCategory: testCategoryTypes.DYNAMIC_TEST,
+            itemGroups: [defaultItemGroup],
+            testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
+          })
+          // if create dynamic test, default item group should be editable
+          this.setState({
+            currentGroupIndex: 0,
+            currentGroupDetails: defaultItemGroup,
+          })
         }
-        // if create dynamic test, default item group is autoselect
-        setData({
-          testCategory: testCategoryTypes.DYNAMIC_TEST,
-          itemGroups: [defaultItemGroup],
-          testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
-        })
-        // if create dynamic test, default item group should be editable
-        this.setState({
-          currentGroupIndex: 0,
-          currentGroupDetails: defaultItemGroup,
-        })
+        if (location?.state?.hasSections) {
+          // if create sections test, default item group is manual
+          const defaultItemGroup = createNewStaticGroup()
+          setData({
+            hasSections: true,
+            itemGroups: [defaultItemGroup],
+          })
+          // if create sections test, default item group should be editable
+          this.setState({
+            currentGroupIndex: 0,
+            currentGroupDetails: defaultItemGroup,
+          })
+        }
       }
       if (showCancelButton) {
         setEditEnable(true)
@@ -347,13 +380,10 @@ class Container extends PureComponent {
       resetPageState,
       setEditEnable,
       setTestSettingsList,
-      test,
+      isDynamicTest,
     } = this.props
     // reset test data when it's a saved test or dynamic test in creation
-    if (
-      match.params.id ||
-      test.testCategory === testCategoryTypes.DYNAMIC_TEST
-    ) {
+    if (match.params.id || isDynamicTest) {
       removeTestEntity()
     }
     // disable edit on unmount
@@ -540,6 +570,13 @@ class Container extends PureComponent {
     }
   }
 
+  setSectionsState = (hasSections) => {
+    const { history } = this.props
+    history.push({
+      state: { ...history.location.state, hasSections },
+    })
+  }
+
   isTestSettingsEqual = (settingId) => {
     const { test, testSettingsList } = this.props
 
@@ -587,7 +624,20 @@ class Container extends PureComponent {
     return false
   }
 
-  handleNavChange = (value, firstFlow) => () => {
+  // When the user clicks on the 'Add new Sections' button for the first time and he did
+  // not select any test items, then the section should be editable
+  setCurrentGroupDetails = () => {
+    const { test } = this.props
+    const isItemPresentInGrp = test?.itemGroups?.[0]?.items || []
+    if (isEmpty(isItemPresentInGrp)) {
+      this.setState({
+        currentGroupIndex: 0,
+        currentGroupDetails: createNewStaticGroup(),
+      })
+    }
+  }
+
+  handleNavChange = (value, firstFlow, checkAiItems = true) => () => {
     const {
       test,
       match: { params },
@@ -597,9 +647,13 @@ class Container extends PureComponent {
       editEnable,
       location,
       creating,
+      isDynamicTest,
+      hasSections,
+      currentTab,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
+
     // condition to validate if test title is not empty before navigating to other tabs
     if (!test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
@@ -613,7 +667,7 @@ class Container extends PureComponent {
       location?.pathname?.includes('addSections') &&
       !['addItems', 'addSections'].includes(value) &&
       !(value === 'description' && groupNotEdited) &&
-      test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+      (isDynamicTest || hasSections)
     ) {
       hasValidGroups = this.validateGroups()
       if (!hasValidGroups) return
@@ -624,33 +678,73 @@ class Container extends PureComponent {
       })
       return
     }
-    this.gotoTab(value)
-    const isOwner =
-      (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable =
-      isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-    const totalTestItems = itemGroups.flatMap(
-      (itemGroup) => itemGroup.items || []
-    ).length
-    const isAutoSelectGroup =
-      test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
-    if (
-      isEditable &&
-      (hasValidGroups ||
-        test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
-      (totalTestItems > 0 || isAutoSelectGroup) &&
-      !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
-      updated &&
-      !firstFlow
-    ) {
-      this.handleSave()
+
+    /** For AI quiz we need to unselect section */
+    if (value === 'addSections' && test?.aiGenerated) {
+      this.setState({
+        currentGroupIndex: null,
+      })
+    }
+
+    const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
+
+    if (_hasUnsavedAiItems && checkAiItems && currentTab === 'review') {
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: { value, firstFlow },
+        showConfirmationOnTabChange: true,
+      }))
+    } else {
+      this.gotoTab(value)
+      const isOwner =
+        (authors && authors.some((x) => x._id === userId)) || !params.id
+      const isEditable =
+        isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+      const totalTestItems = itemGroups.flatMap(
+        (itemGroup) => itemGroup.items || []
+      ).length
+      const isAutoSelectGroup =
+        test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
+      if (
+        isEditable &&
+        (hasValidGroups ||
+          test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
+        (totalTestItems > 0 || isAutoSelectGroup) &&
+        !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
+        updated &&
+        (!firstFlow || _hasUnsavedAiItems)
+      ) {
+        this.handleSave()
+      }
     }
   }
 
-  validateGroups = () => {
-    const { test } = this.props
+  confirmChangeNav = (confirm) => () => {
+    if (confirm) {
+      const { goToTabProps } = this.state
+      const { value, firstFlow } = goToTabProps
+      this.handleNavChange(value, firstFlow, false)()
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: {},
+        showConfirmationOnTabChange: false,
+      }))
+    } else {
+      this.setState((state) => ({
+        ...state,
+        goToTabProps: {},
+        showConfirmationOnTabChange: false,
+      }))
+    }
+  }
+
+  validateGroups = (isCreateNewItem = false) => {
+    const { test, isDynamicTest, hasSections } = this.props
     const { currentGroupIndex } = this.state
-    if (test?.testCategory !== testCategoryTypes.DYNAMIC_TEST) {
+    /* 
+        Apart from dynamic and sections test, it is not required to validate the item groups.
+    */
+    if (!isDynamicTest && (!hasSections || isCreateNewItem)) {
       return true
     }
     if (currentGroupIndex !== null) {
@@ -901,6 +995,7 @@ class Container extends PureComponent {
       annotations,
       pageStructure,
       freeFormNotes = {},
+      videoUrl = '',
     } = test
     const isCollectionContentEditable = isContentOfCollectionEditable(
       test.collections,
@@ -930,6 +1025,7 @@ class Container extends PureComponent {
       questionsById,
       pageStructure,
       isEditable,
+      videoUrl,
     }
 
     switch (current) {
@@ -982,7 +1078,24 @@ class Container extends PureComponent {
       case 'review':
         return isDocBased ? (
           <Content>
-            <MainWorksheet key="review" review {...props} viewMode="review" />
+            <EduIf condition={videoUrl?.length > 0}>
+              <EduThen>
+                <VideoQuizWorksheet
+                  key="review"
+                  review
+                  {...props}
+                  viewMode="review"
+                />
+              </EduThen>
+              <EduElse>
+                <MainWorksheet
+                  key="review"
+                  review
+                  {...props}
+                  viewMode="review"
+                />
+              </EduElse>
+            </EduIf>
           </Content>
         ) : (
           <Review
@@ -993,6 +1106,10 @@ class Container extends PureComponent {
             onChangeSubjects={this.handleChangeSubject}
             onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
+            handleNavChange={this.handleNavChange('addSections', true)}
+            handleSave={this.handleSave}
+            setSectionsState={this.setSectionsState}
+            setCurrentGroupDetails={this.setCurrentGroupDetails}
             owner={isOwner}
             isEditable={isEditable}
             current={current}
@@ -1016,7 +1133,18 @@ class Container extends PureComponent {
       case 'worksheet':
         return (
           <Content>
-            <MainWorksheet key="worksheet" {...props} viewMode="edit" />
+            <EduIf condition={videoUrl?.length > 0}>
+              <EduThen>
+                <VideoQuizWorksheet
+                  key="worksheet"
+                  {...props}
+                  viewMode="edit"
+                />
+              </EduThen>
+              <EduElse>
+                <MainWorksheet key="worksheet" {...props} viewMode="edit" />
+              </EduElse>
+            </EduIf>
           </Content>
         )
       case 'assign':
@@ -1109,7 +1237,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = () => {
+  handleSave = (action) => {
     const {
       test = {},
       updateTest,
@@ -1130,7 +1258,7 @@ class Container extends PureComponent {
       !this.validateTimedAssignment() ||
       !this.validateReferenceDocMaterial() ||
       !this.validatePenaltyOnUsingHintsValue() ||
-      !this.validateGroups() // validate groups for dynamic tests before save
+      !this.validateGroups(true) // validate groups for dynamic tests before save
     ) {
       return
     }
@@ -1153,6 +1281,17 @@ class Container extends PureComponent {
       if (!isSettingsEqual) {
         newTest.settingId = ''
       }
+    }
+    switch (action) {
+      case sectionTestActions.ADD:
+        newTest.hasSections = true
+        break
+      case sectionTestActions.REMOVE:
+        newTest.hasSections = false
+        newTest.itemGroups = [createNewStaticGroup()]
+        break
+      default:
+        break
     }
 
     updateLastUsedCollectionList(test.collections)
@@ -1179,10 +1318,9 @@ class Container extends PureComponent {
       test,
       updateDocBasedTest,
     } = this.props
-
     if (
       test.isDocBased &&
-      !validateQuestionsForDocBased(assessmentQuestions, true)
+      !validateQuestionsForDocBased(assessmentQuestions, true, !!test.videoUrl)
     ) {
       return
     }
@@ -1350,7 +1488,7 @@ class Container extends PureComponent {
     const { _id } = test
     if (
       test.isDocBased &&
-      !validateQuestionsForDocBased(assessmentQuestions, false)
+      !validateQuestionsForDocBased(assessmentQuestions, false, !!test.videoUrl)
     ) {
       return
     }
@@ -1504,6 +1642,7 @@ class Container extends PureComponent {
       isShowFilter,
       showCloneModal,
       showCompeleteSignUp,
+      showConfirmationOnTabChange,
     } = this.state
     const current = currentTab
     const {
@@ -1586,6 +1725,10 @@ class Container extends PureComponent {
 
             return t('component.common.modal.exitPageWarning')
           }}
+        />
+        <ConfirmTabChange
+          confirmChangeNav={this.confirmChangeNav}
+          showConfirmationOnTabChange={showConfirmationOnTabChange}
         />
         {this.renderModal()}
         {showCompeleteSignUp && !isTestLoading && (
@@ -1777,6 +1920,9 @@ const enhance = compose(
       userSignupStatus: getUserSignupStatusSelector(state),
       enabledRefMaterial: isEnabledRefMaterialSelector(state),
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       createTest: createTestAction,

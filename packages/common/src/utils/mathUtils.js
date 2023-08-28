@@ -257,6 +257,19 @@ export const removeLeadingAndTrailingNewlineChars = (latex) => {
   return latex
 }
 
+/**
+ * Equivalent latex for \R (symbol) in mathquill is /mathbb{R}
+ * But mathquill doesn't render /mathbb{R} as \R (symbol)
+ * To render \R (symbol) in mathquill the latex needs to updated from /mathbb{R} to \R
+ * /mathbb{R} -> \R, /mathbb{Z} -> \Z
+ * Above formatting of latex is already being done when the MathInput component is mounted.
+ * Please refer to sanitizeLatex method in packages/common/src/components/MathInput/MathInput.js
+ * @param {string} latex user response or expected answer
+ * @returns {string} returns latex which is supported by mathquill to render correct symbols
+ */
+export const replaceLatexWithMathQuillSupportedLatex = (latex) =>
+  latex.replace(/mathbb\{(.*?)\}/g, '$1')
+
 // Adding any character after '/square' box
 // mathQuill does't added extra space after '/square' key, which is needed to inerpret as square box
 // it might be a bug for MathQuill lib

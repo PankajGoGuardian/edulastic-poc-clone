@@ -18,14 +18,18 @@ const QuestionPreviewDetails = ({
   const allRubricNames = useMemo(() => {
     return getAllRubricNames(item)
   }, [item])
-
+  const { unsavedItem } = item
   return (
     <QuestionDetails>
       <FlexWrap>
         <DetailRow font={11}>
           <label>ID: </label>
           <span data-cy="item-id-on-preview">
-            {id?.length > 6 ? id.substr(id.length - 6) : id || '--'}
+            {unsavedItem
+              ? '--'
+              : id?.length > 6
+              ? id.substr(id.length - 6)
+              : id || '--'}
           </span>
         </DetailRow>
         <DetailRow>

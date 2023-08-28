@@ -9,6 +9,7 @@ import { signUpState } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
 import qs from 'qs'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
@@ -240,7 +241,11 @@ export const getStartedUrl = () => '/getStarted'
 
 export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
 
-export const validateQuestionsForDocBased = (questions, forDraft = false) => {
+export const validateQuestionsForDocBased = (
+  questions,
+  forDraft = false,
+  isVideoQuiz = false
+) => {
   if (!forDraft && !questions.filter((q) => q.type !== 'sectionLabel').length) {
     notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
     return false
@@ -258,7 +263,9 @@ export const validateQuestionsForDocBased = (questions, forDraft = false) => {
   const correctAnswerPicked = questions
     .filter(
       (question) =>
-        question.type !== 'sectionLabel' && question.type !== 'essayPlainText'
+        question.type !== 'sectionLabel' &&
+        question.type !== 'essayPlainText' &&
+        question.type !== AUDIO_RESPONSE
     )
     .every((question) => {
       const validationValue = get(question, 'validation.validResponse.value')
@@ -268,10 +275,45 @@ export const validateQuestionsForDocBased = (questions, forDraft = false) => {
       return !isEmpty(validationValue)
     })
 
-  if (!forDraft && !correctAnswerPicked) {
-    notification({ type: 'warn', messageKey: 'correctAnswer' })
-    return false
+  if (!forDraft) {
+    if (!correctAnswerPicked) {
+      notification({ type: 'warn', messageKey: 'correctAnswer' })
+      return false
+    }
+    if (isVideoQuiz) {
+      let questionIndexWithoutSections = 1
+      const dontHaveTimeStamp = questions
+        .map((question) => {
+          if (question?.type === 'sectionLabel') {
+            return null
+          }
+          if (typeof question?.questionDisplayTimestamp === 'number') {
+            questionIndexWithoutSections++
+            return null
+          }
+          return {
+            ...question,
+            questionIndexWithoutSections: questionIndexWithoutSections++,
+          }
+        })
+        .filter((question) => question)
+
+      if (dontHaveTimeStamp?.length) {
+        notification({
+          type: 'warn',
+          msg: `Question ${dontHaveTimeStamp
+            .map(
+              ({
+                questionIndexWithoutSections: _questionIndexWithoutSections,
+              }) => _questionIndexWithoutSections
+            )
+            .join(', ')} must have timestamp or dragged on video.`,
+        })
+        return false
+      }
+    }
   }
+
   return true
 }
 
@@ -559,6 +601,13 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
   })
 }
 
+export const disableGoogleTagManager = () => {
+  window['ga-disable-GTM-T73FP7W'] = true
+  window.dataLayer = [] // Clear dataLayer
+  const gtmTag = document.getElementById('ID-GTM-T73FP7W')
+  gtmTag?.parentNode?.removeChild(gtmTag)
+}
+
 export function storeErrorDescriptionInSessionStorage() {
   /**
    *  In case of redirection from canvas we might get errorDescription as query param which
@@ -680,7 +729,7 @@ export class PendoHelper {
    * @returns {Promise<boolean>}
    */
   static showGuide(guideId, maxCount = -1) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (!window.pendo) return resolve(false)
       // Issue:
       //   pendo frequently resets pendo.onGuideDismissed

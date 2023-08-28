@@ -2,7 +2,12 @@ import {
   removeFromLocalStorage,
   storeInLocalStorage,
 } from '@edulastic/api/src/utils/Storage'
-import { FieldLabel, SelectInputStyled, EduButton } from '@edulastic/common'
+import {
+  FieldLabel,
+  SelectInputStyled,
+  EduButton,
+  EduIf,
+} from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import { get, pick as _pick } from 'lodash'
 import PropTypes from 'prop-types'
@@ -36,6 +41,12 @@ import StandardsModal from './StandardsModal'
 import { IconWrapper } from './styled/BrowseButton'
 import { ItemBody } from './styled/ItemBody'
 import { StyledDiv } from './styled/ELOList'
+import { StyledRequired } from '../../../author/Reports/subPages/dataWarehouseReports/GoalsAndInterventions/common/components/Form/styled-components'
+import { standardsFields } from '../../../author/AssessmentPage/VideoQuiz/constants'
+import {
+  getTestEntityGradesSelector,
+  getTestEntitySubjectsSelector,
+} from '../../../author/TestPage/ducks'
 
 const AlignmentRow = ({
   t,
@@ -63,6 +74,11 @@ const AlignmentRow = ({
   isDocBased = false,
   authorQuestionStatus = false,
   showIconBrowserBtn = false,
+  hideLabel = false,
+  standardsRequiredFields = [],
+  testSelectedSubjects = [],
+  testSelectedGrades = [],
+  considerCustomAlignmentDataSettingPriority = false,
 }) => {
   const {
     subject = 'Mathematics',
@@ -221,13 +237,35 @@ const AlignmentRow = ({
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const defaultInterests = getDefaultInterests()
     /**
-     * TODO: test item subjects should not have [[]] as a value, need to fix at item level
-     * https://snapwiz.atlassian.net/browse/EV-16263
+     * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
      */
-    const _subject =
-      (Array.isArray(defaultInterests?.subject) &&
-        defaultInterests?.subject[0]) ||
-      ''
+    const _subject = defaultInterests?.subject || ''
+
+    if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
+      const testSubject = testSelectedSubjects?.length
+        ? testSelectedSubjects[0]
+        : ''
+      const userDefaultSubject = defaultSubject?.length ? defaultSubject : ''
+      const testGrades = testSelectedGrades?.length ? testSelectedGrades : null
+      const userDefaultGrades = defaultGrades?.length ? defaultGrades : null
+
+      editAlignment(alignmentIndex, {
+        subject: testSubject || userDefaultSubject || _subject || '',
+        grades:
+          testGrades ||
+          userDefaultGrades ||
+          (defaultInterests.grades?.length ? defaultInterests.grades : []) ||
+          [],
+        curriculum:
+          curriculums.find(
+            (item) => item._id === parseInt(defaultInterests.curriculumId, 10)
+          )?.curriculum || '',
+        curriculumId: parseInt(defaultInterests.curriculumId, 10) || '',
+      })
+
+      return
+    }
+
     if (!alCurriculumId) {
       if (
         defaultInterests.subject ||
@@ -274,6 +312,8 @@ const AlignmentRow = ({
     !curriculumStandardsLoading &&
     curriculumStandardsELO &&
     curriculumStandardsELO.length >= dictionaries.STANDARD_DROPDOWN_LIMIT_1000
+
+  const showStandardsRequiredLabel = standardsRequiredFields?.length > 0
   return (
     <>
       {showModal && (
@@ -295,7 +335,15 @@ const AlignmentRow = ({
         />
       )}
       <Row>
-        {showIconBrowserBtn && <FieldLabel>Standards (optional)</FieldLabel>}
+        <EduIf condition={!hideLabel}>
+          <FieldLabel>
+            {`Standards ${showStandardsRequiredLabel ? `` : `(optional)`}`}
+            <EduIf condition={showStandardsRequiredLabel}>
+              <StyledRequired>*</StyledRequired>
+            </EduIf>
+          </FieldLabel>
+        </EduIf>
+
         <Row gutter={24}>
           <Col md={showIconBrowserBtn ? 12 : 10}>
             <CustomTreeSelect
@@ -307,7 +355,16 @@ const AlignmentRow = ({
             >
               <>
                 <ItemBody data-cy="subjectItem">
-                  <FieldLabel>{t('component.options.subject')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.subject')}
+                    <EduIf
+                      condition={standardsRequiredFields.includes(
+                        standardsFields.SUBJECT
+                      )}
+                    >
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="subjectSelect"
                     value={subject}
@@ -326,7 +383,16 @@ const AlignmentRow = ({
                   </SelectInputStyled>
                 </ItemBody>
                 <ItemBody data-cy="standardItem">
-                  <FieldLabel>{t('component.options.standardSet')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.standardSet')}
+                    <EduIf
+                      condition={standardsRequiredFields.includes(
+                        standardsFields.STANDARD_SET
+                      )}
+                    >
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="standardSetSelect"
                     showSearch
@@ -348,7 +414,16 @@ const AlignmentRow = ({
                   </SelectInputStyled>
                 </ItemBody>
                 <ItemBody data-cy="gradeItem">
-                  <FieldLabel>{t('component.options.grade')}</FieldLabel>
+                  <FieldLabel>
+                    {t('component.options.grade')}
+                    <EduIf
+                      condition={standardsRequiredFields.includes(
+                        standardsFields.GRADES
+                      )}
+                    >
+                      <StyledRequired>*</StyledRequired>
+                    </EduIf>
+                  </FieldLabel>
                   <SelectInputStyled
                     data-cy="gradeSelect"
                     mode="multiple"
@@ -450,7 +525,6 @@ const AlignmentRow = ({
             </Col>
           )}
         </Row>
-
         {recentStandardsList && recentStandardsList.length > 0 && isDocBased && (
           <Col xs={24}>
             <RecentStandardsList
@@ -473,6 +547,17 @@ AlignmentRow.propTypes = {
   curriculumStandardsELO: PropTypes.array.isRequired,
   alignment: PropTypes.object.isRequired,
   editAlignment: PropTypes.func.isRequired,
+  standardsRequiredFields: PropTypes.array,
+  testSelectedSubjects: PropTypes.array,
+  testSelectedGrades: PropTypes.array,
+  considerCustomAlignmentDataSettingPriority: PropTypes.bool,
+}
+
+AlignmentRow.defaultProps = {
+  standardsRequiredFields: [],
+  testSelectedSubjects: [],
+  testSelectedGrades: [],
+  considerCustomAlignmentDataSettingPriority: false,
 }
 
 export default connect(
@@ -487,6 +572,8 @@ export default connect(
     interestedGrades: getInterestedGradesSelector(state),
     defaultSubject: getDefaultSubjectSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state),
+    testSelectedSubjects: getTestEntitySubjectsSelector(state),
+    testSelectedGrades: getTestEntityGradesSelector(state),
   }),
   {
     updateDefaultCurriculum: updateDefaultCurriculumAction,

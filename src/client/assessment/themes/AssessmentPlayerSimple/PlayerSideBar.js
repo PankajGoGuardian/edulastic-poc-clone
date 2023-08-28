@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -8,6 +10,7 @@ import { IconGraphRightArrow } from '@edulastic/icons'
 import { smallDesktopWidth } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
 import Circle from '../common/Circle'
+import { getDisabledQuestionDropDownIndexMapSelector } from '../../selectors/test'
 
 const SidebarQuestionList = ({
   questions,
@@ -17,6 +20,7 @@ const SidebarQuestionList = ({
   isSidebarVisible,
   toggleSideBar,
   blockNavigationToAnsweredQuestions,
+  disabledQuestionDropDownIndexMap,
 }) => (
   <SidebarWrapper>
     <MinimizeButton onClick={toggleSideBar} minimized={isSidebarVisible}>
@@ -35,7 +39,11 @@ const SidebarQuestionList = ({
                 active={active}
                 key={index}
                 onClick={() => {
-                  if (blockNavigationToAnsweredQuestions) return
+                  if (
+                    blockNavigationToAnsweredQuestions ||
+                    disabledQuestionDropDownIndexMap[item]
+                  )
+                    return
                   gotoQuestion(index)
                 }}
               >
@@ -48,7 +56,10 @@ const SidebarQuestionList = ({
                   />
                   <Content
                     active={active}
-                    disableClickEvents={blockNavigationToAnsweredQuestions}
+                    disableClickEvents={
+                      blockNavigationToAnsweredQuestions ||
+                      disabledQuestionDropDownIndexMap[item]
+                    }
                   >
                     {t('common.layout.questionlist.question')} {index + 1}
                   </Content>
@@ -67,7 +78,17 @@ SidebarQuestionList.propTypes = {
   t: PropTypes.func.isRequired,
 }
 
-export default withNamespaces('student')(SidebarQuestionList)
+const enhance = compose(
+  withNamespaces('student'),
+  connect((state) => ({
+    // Direct subscribe to disabled item index maps for disabling sidebar menu in practice player
+    disabledQuestionDropDownIndexMap: getDisabledQuestionDropDownIndexMapSelector(
+      state
+    ),
+  }))
+)
+
+export default enhance(SidebarQuestionList)
 
 const ItemContainer = withKeyboard(styled.div`
   border-left: solid 5px

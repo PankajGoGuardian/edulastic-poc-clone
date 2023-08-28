@@ -1,12 +1,12 @@
 {
   "common": {
-    "headingText": "Review and Submit",
-    "message": "If you need to review your answers, select the question number you wish to review.",
+    "headingText": "One last step before submitting",
+    "message": "Please check if all the questions have been answered. Individual questions can be accessed by clicking on them",
     "markedQuestionLineOne": "You have answered these questions.",
     "skippedQues": "Please review your skipped questions before submitting the test",
     "markedForReview": "You have bookmarked these questions. Review them before submitting the test.",
     "partiallyAttemptedQues": "Please review your partially answered questions before submitting the test",
-    "nextStep": "Next Step: When you are done reviewing your answers, select Submit test. You cannot change your answers after you submit the test",
+    "nextStep": "Completed your review?",
     "questionsLabel": "Questions"
   },
   "confirmation": {

@@ -38,6 +38,7 @@ const Tools = ({
         active={enableMagnifier}
         onClick={handleMagnifier}
         id="magnifier-icon"
+        aria-label="Magnify Icon"
       >
         <IconMagnify />
       </ToolButton>

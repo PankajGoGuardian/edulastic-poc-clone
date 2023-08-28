@@ -19,6 +19,7 @@ const AnswerDropdown = ({
   fontSize,
   isPrintPreview,
   setDropDownInUse,
+  altText,
 }) => {
   const dropdownContainerRef = useRef(null)
   const menuStyle = {
@@ -51,6 +52,7 @@ const AnswerDropdown = ({
         placeholder={placeholder}
         disabled={disabled}
         data-cy={`dropdown-res-${responseIndex}`}
+        aria-label={altText}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         value={convertToMathTemplate(defaultValue) || undefined} // placeholder doesn't work if value is empty string
         dropdownStyle={dropdownStyle}

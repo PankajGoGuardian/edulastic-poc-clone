@@ -29,6 +29,7 @@ const PerformanceBrand = (props) => {
     feedback,
     classTitle,
     studentActivityStartDate,
+    classTeacherDetails,
   } = data
 
   let perfomancePercentage = (obtainedScore / totalScore) * 100
@@ -142,7 +143,7 @@ const PerformanceBrand = (props) => {
                   data-cy="report-teacher"
                   className="student-report-card-value"
                 >
-                  {testData.createdBy?.name || ''}
+                  {classTeacherDetails?.name || ''}
                 </Col>
               </Row>
               {feedback && (

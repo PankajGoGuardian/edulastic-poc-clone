@@ -9,6 +9,7 @@ const assessmentPlayerContext = React.createContext({
   isStudentAttempt: false,
   currentItem: 0,
   setCurrentItem: () => {},
+  firstItemInSectionAndRestrictNav: false, // To track the first item in the section and disable back navigation when preventSectionNavigation is enabled
 })
 
 export default assessmentPlayerContext

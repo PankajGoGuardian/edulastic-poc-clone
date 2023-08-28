@@ -204,6 +204,26 @@ const updateCorrectItemById = ({
     .then((result) => result.data.result)
 }
 
+const addItems = (data, params = {}) =>
+  api
+    .callApi({
+      url: `${prefix}/multi`,
+      method: 'post',
+      data,
+      params,
+    })
+    .then((result) => result.data.result)
+
+const generateQuestionViaAI = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      method: 'post',
+      url: `${prefix}/ai-questions`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   getAll,
   getById,
@@ -220,4 +240,6 @@ export default {
   getAutoSelectedItems,
   updateCorrectItemById,
   evaluateAsStudent,
+  addItems,
+  generateQuestionViaAI,
 }

@@ -5,22 +5,20 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
 import { Pagination, Spin, Tooltip } from 'antd'
-import {
-  roleuser,
-  sortOptions,
-  test as testConstants,
-} from '@edulastic/constants'
+import { roleuser, sortOptions } from '@edulastic/constants'
 import {
   withWindowSizes,
   FlexContainer,
   notification,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
+
 import { ItemsPagination, Selected } from './styled'
 import {
   getCurriculumsListSelector,
@@ -57,6 +55,8 @@ import {
   setTestDataAndUpdateAction,
   getAllTagsAction,
   setCurrentGroupIndexAction,
+  isDynamicTestSelector,
+  hasSectionsSelector,
 } from '../../ducks'
 import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
@@ -75,6 +75,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -90,8 +91,9 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
-
-const { testCategoryTypes } = testConstants
+import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
+import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
+import SelectGroupModal from './SelectGroupModal'
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -127,6 +129,7 @@ class AddItems extends PureComponent {
 
   state = {
     itemIndexForPreview: null,
+    showSelectGroupModal: false,
   }
 
   componentDidMount() {
@@ -256,22 +259,13 @@ class AddItems extends PureComponent {
     setDefaultInterests({ subject: '', grades: [], curriculumId: '' })
   }
 
-  handleCreateNewItem = () => {
+  handleCreateTestItem = () => {
     const {
       onSaveTestId,
       createTestItem,
       test: { _id: testId, title },
       clearDictAlignment,
-      handleSaveTest,
-      updated,
     } = this.props
-    if (!title) {
-      notification({ messageKey: 'nameShouldNotEmpty' })
-    }
-
-    if (updated && testId) {
-      handleSaveTest()
-    }
     const defaultWidgets = {
       rows: [
         {
@@ -286,6 +280,48 @@ class AddItems extends PureComponent {
     clearDictAlignment()
     onSaveTestId()
     createTestItem(defaultWidgets, true, testId, false, title)
+  }
+
+  handleCreateNewItem = () => {
+    const {
+      test: { _id: testId, title, itemGroups },
+      handleSaveTest,
+      updated,
+      hasSections,
+    } = this.props
+    if (!title) {
+      notification({ messageKey: 'nameShouldNotEmpty' })
+    }
+
+    /* 
+      On create of new item, trigger the save test when:-
+        - the test is not having any sections and is updated or
+        - the test is having one section or
+        - If the test is having multiple sections, then the save test is called 
+          after the user selects a particular section from modal
+    */
+    if (
+      ((!hasSections && updated) || (hasSections && itemGroups.length === 1)) &&
+      testId
+    ) {
+      handleSaveTest()
+    }
+
+    if (itemGroups.length > 1) {
+      this.setState({ showSelectGroupModal: true })
+      return
+    }
+    this.handleCreateTestItem()
+  }
+
+  handleSelectGroupModalResponse = (index) => {
+    const { setCurrentGroupIndex, handleSaveTest } = this.props
+    if (index || index === 0) {
+      handleSaveTest()
+      setCurrentGroupIndex(index)
+      this.handleCreateTestItem()
+    }
+    this.setState({ showSelectGroupModal: false })
   }
 
   handleDuplicateItem = (duplicateTestItemId) => {
@@ -517,15 +553,27 @@ class AddItems extends PureComponent {
       userRole,
       sort = {},
       gotoAddSections,
+      aiTestStatus = false,
+      isPremiumUser,
+      isDynamicTest,
+      hasSections,
     } = this.props
-    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+    const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )
     const itemGroupCount = selectedItemIds?.length || 0
 
     return (
-      <AddItemsContainer isDynamicTest={isDynamicTest}>
+      // The Add item screen will be displayed in full screen mode for dynamic test and test with sections
+      <AddItemsContainer isFullScreenMode={isDynamicTest || hasSections}>
+        {showSelectGroupModal && (
+          <SelectGroupModal
+            visible={showSelectGroupModal}
+            test={test}
+            handleResponse={this.handleSelectGroupModalResponse}
+          />
+        )}
         <ItemFilter
           onSearchFieldChange={this.handleSearchFieldChange}
           onSearchInputChange={this.handleSearchInputChange}
@@ -574,6 +622,9 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
+                  <EduIf condition={isPremiumUser && !isDynamicTest}>
+                    <EduAIQuiz addItems test={test} />
+                  </EduIf>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
                   </Selected>
@@ -609,7 +660,7 @@ class AddItems extends PureComponent {
                   sortDir={sort.sortDir}
                   sortBy={sort.sortBy}
                 />
-                {isDynamicTest && (
+                {(isDynamicTest || hasSections) && (
                   <EduButton
                     style={{ height: '32px !important' }}
                     data-cy="gotoAddSections"
@@ -633,22 +684,24 @@ class AddItems extends PureComponent {
               )}
 
               {this.selectedItem && (
-                <PreviewModal
-                  isVisible={!!this.selectedItem}
-                  page="itemList"
-                  showAddPassageItemToTestButton
-                  showEvaluationButtons
-                  data={this.selectedItem}
-                  isEditable={this.owner}
-                  owner={this.owner}
-                  testId={test?._id}
-                  isTest={!!test}
-                  prevItem={this.prevItem}
-                  nextItem={this.nextItem}
-                  onClose={this.closePreviewModal}
-                  checkAnswer={this.checkItemAnswer}
-                  showAnswer={this.showItemAnswer}
-                />
+                <Spin spinning={aiTestStatus === STATUS.INPROGRESS}>
+                  <PreviewModal
+                    isVisible={!!this.selectedItem}
+                    page="itemList"
+                    showAddPassageItemToTestButton
+                    showEvaluationButtons
+                    data={this.selectedItem}
+                    isEditable={this.owner}
+                    owner={this.owner}
+                    testId={test?._id}
+                    isTest={!!test}
+                    prevItem={this.prevItem}
+                    nextItem={this.nextItem}
+                    onClose={this.closePreviewModal}
+                    checkAnswer={this.checkItemAnswer}
+                    showAnswer={this.showItemAnswer}
+                  />
+                </Spin>
               )}
             </ContentWrapper>
           </Element>
@@ -681,6 +734,10 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       pageNumber: state?.testsAddItems?.page,
       needToSetFilter: state?.testsAddItems?.needToSetFilter,
+      isPremiumUser: isPremiumUserSelector(state),
+      aiTestStatus: get(state, 'aiTestDetails.status'),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       receiveTestItems: (search, sort, page, limit) => {

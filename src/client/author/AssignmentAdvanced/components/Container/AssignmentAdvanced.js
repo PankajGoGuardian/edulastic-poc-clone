@@ -421,7 +421,7 @@ class AssignmentAdvanced extends Component {
                 Assignments&nbsp;
               </AnchorLink>
               /&nbsp;
-              <Anchor>{assingment.title}</Anchor>
+              <Anchor data-cy="assignmentTitle">{assingment.title}</Anchor>
             </PaginationInfo>
             {this.renderBreadcrumbs()}
           </StyledFlexContainer>

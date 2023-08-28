@@ -79,7 +79,7 @@ const CreateUpload = ({
           beforeUpload={() => false}
           accept=".pdf"
         >
-          <RoundedButton data-cy="uploadPdfFromFiles">
+          <RoundedButton data-cy="uploadPdfFromFiles" aria-label="Upload File">
             <IconCloudUpload color={themeColor} />
           </RoundedButton>
         </UploadDragger>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, groupBy, reject } from 'lodash'
+import { get, isEmpty, omit, pickBy, groupBy, reject, first } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -55,7 +55,6 @@ import {
 } from '../filterDataDucks'
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
 import { getStandardsGradebookSkillInfo } from '../../standardsGradebook/ducks'
-import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
@@ -96,7 +95,6 @@ const StandardsMasteryReportFilters = ({
   reportId,
   standardsPerformanceSummary,
   standardsGradebookSkillInfo,
-  standardsProgress,
   loc,
   fetchUpdateTagsData,
   institutionIds,
@@ -151,7 +149,7 @@ const StandardsMasteryReportFilters = ({
   const skillInfoOptions = {
     [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
     [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
-    [reportNavType.STANDARDS_PROGRESS]: standardsProgress,
+    [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
   }
   const skillInfo = get(skillInfoOptions[loc], 'data.result.skillInfo', [])
     .filter((o) => `${o.curriculumId}` === `${filters.curriculumId}`)
@@ -184,14 +182,6 @@ const StandardsMasteryReportFilters = ({
       title: o.standard,
     }))
 
-  const standardIdFromPageData = useMemo(
-    () =>
-      loc === reportNavType.STANDARDS_PROGRESS
-        ? get(standardsProgress, 'data.result.standardId', '')
-        : '',
-    [loc, standardsProgress]
-  )
-
   const search = useMemo(
     () =>
       pickBy(
@@ -200,10 +190,23 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
+
+  const standardIdFromPageData = useMemo(() => {
+    const _skillInfo = get(
+      standardsGradebookSkillInfo,
+      'data.result.skillInfo',
+      []
+    )
+    const selectedStandardId =
+      search.standardId || filters.standardId || first(_skillInfo)?.standardId
+    return loc === reportNavType.STANDARDS_PROGRESS ? selectedStandardId : ''
+  }, [loc, standardsGradebookSkillInfo])
+
   const hasOpenedPerformanceByRubricReportRef = useRef(false)
   hasOpenedPerformanceByRubricReportRef.current =
     hasOpenedPerformanceByRubricReportRef.current ||
     loc === reportNavType.PERFORMANCE_BY_RUBRICS_CRITERIA
+
   useEffect(() => {
     const params = { loc }
     if (reportId) params.reportId = reportId
@@ -266,7 +269,7 @@ const StandardsMasteryReportFilters = ({
         standardId: standardFromPageData,
       })
     }
-  }, [standardIdFromPageData])
+  }, [standardIdFromPageData, standardsGradebookSkillInfo])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     const source = location.state?.source
@@ -1035,7 +1038,6 @@ const enhance = compose(
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
       standardsGradebookSkillInfo: getStandardsGradebookSkillInfo(state),
-      standardsProgress: getReportsStandardsProgress(state),
       institutionIds: currentDistrictInstitutionIds(state),
       isPremium: isPremiumUserSelector(state),
       rubricsList: getSMRRubricsSelector(state),

@@ -293,6 +293,7 @@ class Display extends Component {
         >
           <StyledPreviewImage
             data-cy="imageInpreviewContainer"
+            aria-label={imageAlterText}
             imageSrc={imageUrl || ''}
             width={this.getWidth()}
             height={this.getHeight()}
@@ -365,6 +366,7 @@ class Display extends Component {
                 >
                   {!smallSize && (
                     <AnswerDropdown
+                      altText={responseContainer.label}
                       placeholder={responseContainer.placeholder || placeholder}
                       responseIndex={dropTargetIndex}
                       style={{

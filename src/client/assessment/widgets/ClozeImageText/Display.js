@@ -191,6 +191,7 @@ class Display extends Component {
             height={this.getHeight()}
             heighcanvasDimensionst={imageHeight}
             alt={imageAlterText}
+            aria-label={imageAlterText}
             setAnswers={setAnswers}
             style={{
               position: 'absolute',
@@ -241,6 +242,7 @@ class Display extends Component {
                   }
                   type={uiStyle.inputtype}
                   value={userAnswers[responseContainer.id]}
+                  altText={responseContainer.label}
                 />
               </div>
             )

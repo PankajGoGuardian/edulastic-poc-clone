@@ -13,7 +13,10 @@ import { collections as collectionConst } from '@edulastic/constants'
 // actions
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
-import { currentItemAnswerChecksSelector } from '../../selectors/test'
+import {
+  currentItemAnswerChecksSelector,
+  getCalcTypeSelector,
+} from '../../selectors/test'
 // components
 
 import { Container, CalculatorContainer } from '../common'
@@ -285,6 +288,10 @@ class AssessmentPlayerSimple extends React.Component {
       canShowPlaybackOptionTTS,
       classLevelSettings,
       viewAsStudent,
+      firstItemInSectionAndRestrictNav,
+      calcTypes,
+      isLast,
+      preventSectionNavigation,
     } = this.props
     const {
       showExitPopup,
@@ -356,11 +363,15 @@ class AssessmentPlayerSimple extends React.Component {
               playerSkinType,
             }}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
+            firstItemInSectionAndRestrictNav={firstItemInSectionAndRestrictNav}
+            preventSectionNavigation={preventSectionNavigation}
+            calcTypes={calcTypes}
+            isLast={isLast()}
           >
             <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer
                 changeTool={this.toggleToolsOpenStatus}
-                calcTypes={settings.calcTypes}
+                calcTypes={calcTypes}
                 calcProvider={settings.calcProvider}
               />
             </EduIf>
@@ -396,6 +407,9 @@ class AssessmentPlayerSimple extends React.Component {
               saveHintUsageData={saveHintUsageData}
               classLevelSettings={classLevelSettings}
               viewAsStudent={viewAsStudent}
+              firstItemInSectionAndRestrictNav={
+                firstItemInSectionAndRestrictNav
+              }
             />
             {!previewPlayer && (
               <SubmitConfirmation
@@ -451,6 +465,7 @@ const enhance = compose(
       evaluation: state.evaluation,
       preview: state.view.preview,
       settings: state.test.settings,
+      calcTypes: getCalcTypeSelector(state),
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       zoomLevel: state.ui.zoomLevel,
       selectedTheme: state.ui.selectedTheme,

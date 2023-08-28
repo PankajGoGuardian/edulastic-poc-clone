@@ -5,11 +5,12 @@ import { keyBy, get } from 'lodash'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 
-import { AnswerContext } from '@edulastic/common'
+import { AnswerContext, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import questionType from '@edulastic/constants/const/questionType'
 
 import Worksheet from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
+import VideoQuizWorksheet from '../../../author/AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import AssignmentContentWrapper from '../../styled/assignmentContentWrapper'
 import TestItemPreview from '../../../assessment/components/TestItemPreview'
 import {
@@ -54,7 +55,9 @@ const ReportListContent = ({
     annotations,
     pageStructure,
     freeFormNotes = {},
+    videoUrl = '',
   } = test
+  const isVideoQuiz = videoUrl?.length > 0
   if (isDocBased) {
     const props = {
       docUrl,
@@ -63,16 +66,22 @@ const ReportListContent = ({
       freeFormNotes,
       questionsById,
       pageStructure,
+      key: 'review',
+      review: true,
+      viewMode: 'report',
+      testItemId: item._id,
+      ...(isVideoQuiz ? { videoUrl } : {}),
     }
 
     return (
-      <Worksheet
-        key="review"
-        review
-        {...props}
-        viewMode="report"
-        testItemId={item._id}
-      />
+      <EduIf condition={isVideoQuiz}>
+        <EduThen>
+          <VideoQuizWorksheet {...props} />
+        </EduThen>
+        <EduElse>
+          <Worksheet {...props} />
+        </EduElse>
+      </EduIf>
     )
   }
 

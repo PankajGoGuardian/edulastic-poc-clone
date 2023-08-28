@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { Modal } from 'antd'
 import { get, isEmpty } from 'lodash'
@@ -8,9 +10,11 @@ import { questionType } from '@edulastic/constants'
 import { showHintButton } from '../../../utils/test'
 import LineReader from '../../../../common/components/LineReader'
 import { ToolbarModalContainer, ToolbarButton } from './styled-components'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const ToolbarModal = ({
   settings,
+  calcTypes,
   isVisible,
   onClose,
   isNonAutoGradable = false,
@@ -47,10 +51,10 @@ const ToolbarModal = ({
 
   const calcButtonText = useMemo(
     () =>
-      settings?.calcTypes?.length > 1
+      calcTypes?.length > 1
         ? translate('toolbar.calculators')
         : translate('toolbar.calculator'),
-    [settings?.calcTypes?.length]
+    [calcTypes?.length]
   )
 
   const handleReferenceMaterial = () => {
@@ -108,7 +112,7 @@ const ToolbarModal = ({
             {translate('toolbar.refMaterial')}
           </ToolbarButton>
         </EduIf>
-        <EduIf condition={!isEmpty(settings.calcTypes)}>
+        <EduIf condition={!isEmpty(calcTypes)}>
           <ToolbarButton
             disabled={isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(2)}
@@ -217,4 +221,10 @@ ToolbarModal.defaultProps = {
   handleMagnifier: () => {},
 }
 
-export default withNamespaces('header')(ToolbarModal)
+const mapStateToProps = (state) => ({
+  calcTypes: getCalcTypeSelector(state),
+})
+
+const enhance = compose(withNamespaces('header'), connect(mapStateToProps))
+
+export default enhance(ToolbarModal)

@@ -36,6 +36,7 @@ const ReviewItems = ({
   isTestsUpdated,
   orgCollections,
   userId,
+  hasSections,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -120,6 +121,7 @@ const ReviewItems = ({
           isTestsUpdated={isTestsUpdated}
           orgCollections={orgCollections}
           userId={userId}
+          hasSections={hasSections}
         />
       </Spin>
     </StyledSpinnerContainer>

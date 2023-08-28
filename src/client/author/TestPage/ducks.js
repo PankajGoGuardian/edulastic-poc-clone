@@ -107,6 +107,7 @@ import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
+import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 
 const {
   ITEM_GROUP_TYPES,
@@ -149,6 +150,11 @@ export const createWidget = ({ id, type, title }) => ({
   title,
   reference: id,
   tabIndex: 0,
+})
+
+export const createNewStaticGroup = () => ({
+  ...NewGroup,
+  _id: nanoid(),
 })
 
 export const getStaticGroupItemIds = (_test) =>
@@ -673,6 +679,16 @@ export const getTestEntitySelector = createSelector(
   (state) => state.entity
 )
 
+export const getTestEntitySubjectsSelector = createSelector(
+  getTestEntitySelector,
+  (state) => state?.subjects || []
+)
+
+export const getTestEntityGradesSelector = createSelector(
+  getTestEntitySelector,
+  (state) => state?.grades || []
+)
+
 export const getCollectionNameSelector = createSelector(
   getTestEntitySelector,
   (state) => state.collectionName
@@ -681,6 +697,21 @@ export const getCollectionNameSelector = createSelector(
 export const getCalcTypesSelector = createSelector(
   getTestEntitySelector,
   (entity) => entity.calcTypes
+)
+
+export const isDefaultTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testCategory === testCategoryTypes.DEFAULT
+)
+
+export const isDynamicTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+)
+
+export const hasSectionsSelector = createSelector(
+  getTestEntitySelector,
+  (test) => !!test?.hasSections
 )
 
 // currently present testItems in the test.
@@ -844,14 +875,16 @@ export const getIsAudioResponseQuestionEnabled = createSelector(
 
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
-  ({ itemGroups }) => {
+  hasSectionsSelector,
+  ({ itemGroups }, hasSections) => {
     if (!itemGroups?.length) {
       return false
     }
     return (
       itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT ||
       itemGroups[0].deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
-      itemGroups.length > 1
+      itemGroups.length > 1 ||
+      hasSections
     )
   }
 )
@@ -1007,12 +1040,7 @@ export const createBlankTest = () => ({
   isDocBased: false,
   status: 'draft',
   thumbnail: defaultImage,
-  itemGroups: [
-    {
-      ...NewGroup,
-      _id: nanoid(),
-    },
-  ],
+  itemGroups: [createNewStaticGroup()],
   createdBy: {
     _id: '',
     name: '',
@@ -1055,6 +1083,7 @@ export const createBlankTest = () => ({
   penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
   showTtsForPassages: true,
+  hasSections: undefined,
   [SHOW_IMMERSIVE_READER]: false,
 })
 
@@ -1342,12 +1371,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: {
           ...state.entity,
-          itemGroups: [
-            {
-              ...NewGroup,
-              _id: nanoid(),
-            },
-          ],
+          itemGroups: [createNewStaticGroup()],
           grades: [],
           subjects: [],
         },
@@ -2167,14 +2191,14 @@ export function* receiveTestByIdSaga({ payload }) {
         }
       })
     })
-
-    const createdItemskeyedById = _keyBy(createdItems, '_id')
-    entity.itemGroups[currentGroupIndex].items = uniqBy(
-      [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-      (x) =>
-        createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
-    )
-
+    if (createdItems.length) {
+      const createdItemskeyedById = _keyBy(createdItems, '_id')
+      entity.itemGroups[currentGroupIndex].items = uniqBy(
+        [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
+        (x) =>
+          createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+      )
+    }
     const questions = getQuestions(entity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
@@ -2335,6 +2359,7 @@ function* createTest(data) {
   dataToSend.subjects = dataToSend.subjects?.filter((el) => !!el) || []
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
+
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -2349,8 +2374,26 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
-    const entity = yield createTest(payload.data)
+
+    const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
+      .filter(({ unsavedItem }) => unsavedItem)
+      .map((item) => pick(item, itemFields))
+
+    let newTestItems
+    if (!isEmpty(aiGeneratedTestItems)) {
+      newTestItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+    }
+
+    const entity = yield createTest(
+      produce(payload.data, (draft) => {
+        if ((newTestItems || []).length) {
+          draft.itemGroups[0].items = newTestItems
+        }
+      })
+    )
+
     entity.itemGroups = payload.data.itemGroups
+
     yield put(createTestSuccessAction(entity))
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
     const pathname = yield select((state) => state.router.location.pathname)
@@ -2361,6 +2404,12 @@ function* createTestSaga({ payload }) {
     // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
     const currentTab = currentTabMatch?.[1] || 'description'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+    if (entity.aiGenerated) {
+      yield put(setIsCreatingAction(true))
+      yield put(receiveTestByIdAction(entity._id, true, false))
+      yield put(setIsCreatingAction(false))
+    }
+
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {
     captureSentryException(err)
@@ -2470,6 +2519,31 @@ export function* updateTestSaga({ payload }) {
     ) {
       notification({ messageKey: 'enterValidPassword' })
       return yield put(setTestsLoadingAction(false))
+    }
+
+    const aiGeneratedTestItems = []
+    let selectedGroupForAI = -1
+    payload.data.itemGroups.forEach((itemGroup, index) => {
+      itemGroup.items
+        .filter(({ unsavedItem }) => unsavedItem)
+        .forEach((item) => {
+          selectedGroupForAI = index
+          aiGeneratedTestItems.push(pick(item, itemFields))
+        })
+    })
+
+    let newTestItems
+    if (!isEmpty(aiGeneratedTestItems)) {
+      newTestItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+    }
+
+    if ((newTestItems || []).length) {
+      for (let index = 0; index < payload.data.itemGroups?.length; index++) {
+        payload.data.itemGroups[index].items = [
+          ...payload.data.itemGroups[index].items,
+          ...(index === selectedGroupForAI ? newTestItems : []),
+        ].filter(({ unsavedItem }) => !unsavedItem)
+      }
     }
 
     const testItemGroups = payload.data.itemGroups

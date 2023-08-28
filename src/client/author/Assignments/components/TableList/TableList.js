@@ -495,7 +495,14 @@ const TableList = ({
       className: 'assignment-name',
       align: 'left',
       render: (text, row) => (
-        <Tooltip placement="bottom" title={<div>{text}</div>}>
+        <Tooltip
+          placement="bottom"
+          title={
+            <div>
+              {text} {/* (Id: {row.itemId.slice(-6)}) */}
+            </div>
+          }
+        >
           <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">
             <div>
               <TestThumbnail src={row.thumbnail} />

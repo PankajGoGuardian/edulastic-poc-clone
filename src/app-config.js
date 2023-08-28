@@ -222,6 +222,8 @@ const getCDNOrigin = () => {
   }
 }
 
+const edYouTubePlayerKey = process.env.REACT_APP_ED_YOUTUBE_PLAYER_KEY
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -257,4 +259,5 @@ export default {
   kioskChromeAppId,
   isAntiScreenshotEnabled,
   getCDNOrigin,
+  edYouTubePlayerKey,
 }

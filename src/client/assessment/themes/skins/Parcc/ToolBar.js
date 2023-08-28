@@ -20,6 +20,7 @@ import { Tooltip } from '../../../../common/utils/helpers'
 import { Container } from './styled'
 import { themes } from '../../../../theme'
 import TimedTestTimer from '../../common/TimedTestTimer'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const {
   playerSkin: { parcc },
@@ -40,6 +41,7 @@ const ToolBar = ({
   checkAnswerInProgress,
   answerChecksUsedForItem,
   checkAnswer,
+  calcTypes,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -50,12 +52,7 @@ const ToolBar = ({
     checkAnswer()
   }
 
-  const {
-    calcTypes,
-    enableScratchpad,
-    isTeacherPremium,
-    maxAnswerChecks,
-  } = settings
+  const { enableScratchpad, isTeacherPremium, maxAnswerChecks } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
@@ -71,6 +68,7 @@ const ToolBar = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label="Check Answer"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck />
@@ -82,6 +80,7 @@ const ToolBar = ({
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Calculator"
           >
             <CaculatorIcon />
           </StyledButton>
@@ -101,6 +100,7 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
+            aria-label="Crossout"
           >
             <CloseIcon />
           </StyledButton>
@@ -113,6 +113,7 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="ScratchPad"
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -123,6 +124,7 @@ const ToolBar = ({
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Upload Work"
           >
             <IconCloudUpload />
           </StyledButton>
@@ -150,6 +152,7 @@ ToolBar.propTypes = {
 const enhance = compose(
   connect((state) => ({
     checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+    calcTypes: getCalcTypeSelector(state),
   }))
 )
 

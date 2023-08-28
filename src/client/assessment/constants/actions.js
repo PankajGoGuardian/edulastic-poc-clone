@@ -90,9 +90,11 @@ export const CHANGE_PREVIEW = '[view] change view'
 
 // test acitivty
 export const FINISH_TEST = '[test] finish test'
+export const SUBMIT_SECTION = '[test] submit section by id'
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id'
 export const RESET_CURRENT_TEST_ITEM = '[test] reset current item'
 export const SET_SAVE_USER_RESPONSE = '[test] set save user respose'
+export const SET_SECTION_SUBMIT = '[test] set section submit'
 export const SET_SUBMIT_TEST_COMPLETE = '[test] set sumbit test complete'
 export const CLOSE_TEST_TIMED_OUT_ALERT_MODAL =
   '[test] close test timed out alert modal'

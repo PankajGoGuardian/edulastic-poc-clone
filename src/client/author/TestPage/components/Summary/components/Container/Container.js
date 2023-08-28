@@ -28,7 +28,12 @@ import {
   getAllTagsSelector,
   addNewTagAction,
   toggleTestLikeAction,
+  getTestsLoadingSelector,
 } from '../../../../ducks'
+import {
+  extractVideoId,
+  getThumbnailUrl,
+} from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
 const Summary = ({
   setData,
@@ -61,6 +66,7 @@ const Summary = ({
   isEditable = true,
   showCancelButton,
   toggleTestLikeRequest,
+  isTestLoading,
 }) => {
   const handleChangeField = (field, value) => {
     if (field === 'thumbnail') {
@@ -107,6 +113,15 @@ const Summary = ({
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades])
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects])
 
+  useEffect(() => {
+    if (test.thumbnail) {
+      const videoId = extractVideoId(test.videoUrl || '')
+      if (videoId) {
+        handleChangeField('thumbnail', getThumbnailUrl(videoId))
+      }
+    }
+  }, [test.videoUrl])
+
   return (
     <MainContentWrapper>
       <SecondHeader>
@@ -127,7 +142,9 @@ const Summary = ({
         )}
       </SecondHeader>
       <SummaryCard
+        isTestLoading={isTestLoading}
         title={test.title}
+        videoUrl={test.videoUrl}
         alignmentInfo={test.alignmentInfo}
         description={test.description}
         tags={test.tags}
@@ -198,6 +215,7 @@ const enhance = compose(
     (state) => ({
       summary: getSummarySelector(state),
       currentUser: getUser(state),
+      isTestLoading: getTestsLoadingSelector(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
       allTagsData: getAllTagsSelector(state, 'test'),
       allPlaylistTagsData: getAllTagsSelector(state, 'playlist'),

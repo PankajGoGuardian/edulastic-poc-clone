@@ -53,7 +53,13 @@ const LineReader = ({
 
   return (
     <Tooltip placement="top" title="Line Reader">
-      <Button isGhost IconBtn data-cy="lineReaderButton" onClick={handleClick}>
+      <Button
+        isGhost
+        IconBtn
+        data-cy="lineReaderButton"
+        aria-label="Line Reader"
+        onClick={handleClick}
+      >
         {btnText || <IconLineReader />}
       </Button>
     </Tooltip>

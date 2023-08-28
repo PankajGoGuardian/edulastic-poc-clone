@@ -124,6 +124,33 @@ const TestListFilters = ({
     ]
   }, [userFeatures.isCurator, searchFilterOption, currentDistrictUsers])
 
+  const getTestCategoryFilterData = useCallback(() => {
+    const data = [
+      { value: 'default', text: 'Normal Test' },
+      { value: 'doc_based', text: 'SnapQuiz' },
+    ]
+
+    if (userFeatures.videoQuizEnabled) {
+      data.push({ value: 'video_based', text: 'VideoQuiz' })
+    }
+    if (userFeatures.enableDynamicTests) {
+      data.push({ value: 'dynamic_test', text: 'SmartBuild' })
+    }
+
+    return [
+      {
+        mode: 'multiple',
+        title: 'Test Category',
+        placeholder: 'All Test Category',
+        size: 'large',
+        optionFilterProp: 'children',
+        filterOption: searchFilterOption,
+        data,
+        onChange: 'testCategories',
+      },
+    ]
+  }, [userFeatures])
+
   const { filter } = search
   const getFilters = useCallback(() => {
     let filterData1 = []
@@ -202,7 +229,7 @@ const TestListFilters = ({
     filterData1 = filterData.filter((o) => filtersTitles.includes(o.title))
 
     if (filter === libraryFilters.SMART_FILTERS.FAVORITES) {
-      return filterData1
+      return [...filterData1, ...getTestCategoryFilterData()]
     }
     let curriculumsList = []
     if (subject.length) curriculumsList = [...formattedCuriculums]
@@ -252,8 +279,10 @@ const TestListFilters = ({
         },
       ]
     )
+
     filterData1 = [
       ...filterData1,
+      ...getTestCategoryFilterData(),
       ...getAuthoredByFilterData(),
       {
         mode: 'multiple',

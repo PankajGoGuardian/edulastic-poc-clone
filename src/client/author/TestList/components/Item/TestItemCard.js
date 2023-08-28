@@ -2,7 +2,13 @@ import React, { useRef, useState, useEffect } from 'react'
 import { IconHeart, IconUser, IconDynamic, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, themeColor, darkGrey } from '@edulastic/colors'
 // eslint-disable-next-line no-unused-vars
-import { PremiumLabel, EduButton, LikeIconStyled } from '@edulastic/common'
+import {
+  EduButton,
+  LikeIconStyled,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import {
   Container,
@@ -60,6 +66,7 @@ const TestItemCard = ({
   handleLikeTest,
   likes,
   isTestRecommendation,
+  videoUrl,
 }) => {
   const [height, setHeight] = useState(0)
   const ref = useRef(null)
@@ -127,7 +134,16 @@ const TestItemCard = ({
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {/* hiding premium tag temporarily as per CR */}
           {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
-          {isDocBased ? <StyledIcon type="file-pdf" /> : ''}
+          <EduIf condition={isDocBased}>
+            <EduIf condition={videoUrl}>
+              <EduThen>
+                <StyledIcon type="play-square" />
+              </EduThen>
+              <EduElse>
+                <StyledIcon type="file-pdf" />
+              </EduElse>
+            </EduIf>
+          </EduIf>
         </Header>
       }
     >

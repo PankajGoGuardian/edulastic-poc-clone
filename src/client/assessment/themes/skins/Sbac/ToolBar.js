@@ -22,6 +22,7 @@ import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
+import { getCalcTypeSelector } from '../../../selectors/test'
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -50,16 +51,12 @@ const ToolBar = ({
   isShowReferenceModal,
   openReferenceModal,
   i18Translate,
+  calcTypes,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const {
-    calcTypes,
-    enableScratchpad,
-    isTeacherPremium,
-    maxAnswerChecks,
-  } = settings
+  const { enableScratchpad, isTeacherPremium, maxAnswerChecks } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -102,6 +99,7 @@ const ToolBar = ({
           }
           data-cy="checkAnswer"
           disabled={isPremiumContentWithoutAccess}
+          aria-label="Check Answer"
         >
           <IconCheck />
         </StyledButton>
@@ -116,6 +114,7 @@ const ToolBar = ({
             onClick={openReferenceModal}
             active={isShowReferenceModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label={i18Translate('common.test.referenceMaterial')}
           >
             <IconEduReferenceSheet />
           </StyledButton>
@@ -127,6 +126,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
+            aria-label="Calculator"
             disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
@@ -147,6 +147,7 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
+            aria-label="Crossout"
           >
             <CloseIcon />
           </StyledButton>
@@ -159,6 +160,7 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="ScratchPad"
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -169,6 +171,7 @@ const ToolBar = ({
           <StyledButton
             onClick={handleZoomIn}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Zoom In"
           >
             <StyledIcon type="zoom-in" />
           </StyledButton>
@@ -179,6 +182,7 @@ const ToolBar = ({
           <StyledButton
             onClick={handleZoomOut}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Zoom out"
           >
             <StyledIcon type="zoom-out" />
           </StyledButton>
@@ -190,6 +194,7 @@ const ToolBar = ({
             onClick={handleMagnifier}
             active={enableMagnifier}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Magnify"
           >
             <IconMagnify />
           </StyledButton>
@@ -200,6 +205,7 @@ const ToolBar = ({
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Upload Work"
           >
             <IconCloudUpload />
           </StyledButton>
@@ -211,6 +217,7 @@ const ToolBar = ({
             onClick={showLangSwitchPopUp}
             data-cy="SBAC_selectLang"
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Select Language"
           >
             <IconLanguage />
           </StyledButton>
@@ -240,6 +247,7 @@ const enhance = compose(
     (state) => ({
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
       checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+      calcTypes: getCalcTypeSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

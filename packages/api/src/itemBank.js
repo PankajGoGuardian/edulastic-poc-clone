@@ -32,6 +32,15 @@ const addPermission = (data) =>
     })
     .then((result) => result.data.result)
 
+const batchAddPermission = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/bulk-add-permission`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const editPermission = (data) =>
   api
     .callApi({
@@ -89,6 +98,7 @@ export default {
   createNewCollection,
   editCollection,
   getCollectionList,
+  batchAddPermission,
   addPermission,
   editPermission,
   deletePermission,

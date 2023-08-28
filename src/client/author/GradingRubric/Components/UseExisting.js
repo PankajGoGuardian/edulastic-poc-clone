@@ -157,7 +157,7 @@ const UseExisting = ({
   const rubricAlreadyGeneratedOrNotMsg =
     previousRubricGeneratedStimulus === currentQuestion?.stimulus
       ? t('rubric.rubricAlreadyGenerated')
-      : ''
+      : t('rubric.infoText')
 
   const autoGenerateRubricTooltip = isEmpty(currentQuestion?.stimulus)
     ? t('rubric.stimulusNotPresent')
@@ -509,17 +509,27 @@ const UseExisting = ({
             </CustomStyleBtn>
             {currentMode === 'PREVIEW' && !isEditable && (
               <>
-                {currentQuestion.rubrics?._id !== currentRubricData?._id && (
+                <EduIf
+                  condition={
+                    currentQuestion.rubrics?._id !== currentRubricData?._id
+                  }
+                >
                   <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
                     <Icon type="check" /> <span data-cy="useButton">Use</span>
                   </CustomStyleBtn>
-                )}
-                {currentQuestion.rubrics?._id === currentRubricData?._id && (
+                </EduIf>
+                <EduIf
+                  condition={
+                    currentQuestion.rubrics?._id === currentRubricData?._id
+                  }
+                >
                   <CustomStyleBtn style={btnStyle} onClick={handleRemoveRubric}>
                     <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                   </CustomStyleBtn>
-                )}
-                {currentRubricData?.createdBy?._id === user?._id && (
+                </EduIf>
+                <EduIf
+                  condition={currentRubricData?.createdBy?._id === user?._id}
+                >
                   <>
                     <CustomStyleBtn
                       style={btnStyle}
@@ -529,7 +539,7 @@ const UseExisting = ({
                       <span data-cy="shareButton">Share</span>
                     </CustomStyleBtn>
                   </>
-                )}
+                </EduIf>
               </>
             )}
             {isEditable && (

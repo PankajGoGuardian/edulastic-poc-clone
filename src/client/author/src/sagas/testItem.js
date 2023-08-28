@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round, isEmpty, cloneDeep } from 'lodash'
+import { get as _get, round, cloneDeep } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
@@ -44,6 +44,10 @@ import {
 import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
 import { answersByQId } from '../../../assessment/selectors/test'
 import { hasValidResponse } from '../../questionUtils'
+import {
+  getCurrentGroupIndexSelector,
+  hasSectionsSelector,
+} from '../../TestPage/ducks'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -92,7 +96,14 @@ function* createTestItemSaga({
     // if its a being added from passage, create new
     if (newPassageItem) {
       const hasValidTestId = testId && testId !== 'undefined'
-      const params = { ...(hasValidTestId && { testId }) }
+      const hasSections = yield select(hasSectionsSelector)
+      const sectionIndex = hasSections
+        ? yield select(getCurrentGroupIndexSelector)
+        : undefined
+
+      // Passing the section index to push the passage
+      // or multipart question to the specific item group
+      const params = { ...(hasValidTestId && { testId, sectionIndex }) }
       item = yield call(testItemsApi.create, data, params)
     }
 

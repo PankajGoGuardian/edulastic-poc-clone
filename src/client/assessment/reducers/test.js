@@ -29,12 +29,14 @@ import {
   SET_SAVED_BLUR_TIME,
   SET_SUBMIT_TEST_COMPLETE,
   SET_ANTI_CHEATING_ENABLED,
+  SET_SECTION_SUBMIT,
 } from '../constants/actions'
 
 const initialState = {
   testActivityId: '',
   resume: false, // resume from last attempted?
   items: [],
+  itemGroups: [],
   currentItem: 0,
   title: '',
   error: false,
@@ -62,6 +64,8 @@ const initialState = {
   grades: [],
   subjects: [],
   submitTestComplete: false,
+  isSectionSubmitting: false,
+  preventSectionNavigation: false,
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -78,6 +82,7 @@ const test = (state = initialState, { payload, type }) => {
         passages: payload.passages,
         title: payload.title,
         annotations: payload.annotations,
+        videoUrl: payload.videoUrl,
         docUrl: payload.docUrl,
         answerCheckByItemId: payload.answerCheckByItemId,
         pageStructure: payload.pageStructure,
@@ -88,6 +93,11 @@ const test = (state = initialState, { payload, type }) => {
         grades: payload.grades,
         subjects: payload.subjects,
         referenceDocAttributes: payload?.referenceDocAttributes,
+        // Setting the state with the test data.
+        itemGroups: payload.itemGroups,
+        itemsToDeliverInGroup: payload.itemsToDeliverInGroup,
+        hasSections: payload.hasSections,
+        preventSectionNavigation: payload.preventSectionNavigation,
         settings: {
           ...state.settings,
           ...payload.settings,
@@ -193,6 +203,8 @@ const test = (state = initialState, { payload, type }) => {
       return { ...state, showHints: false }
     case SET_SAVE_USER_RESPONSE:
       return { ...state, savingResponse: payload }
+    case SET_SECTION_SUBMIT:
+      return { ...state, isSectionSubmitting: payload }
     case SET_CHECK_ANSWER_PROGRESS_STATUS:
       return { ...state, checkAnswerInProgress: payload }
     case LANG_CHANGE_SUCCESS:

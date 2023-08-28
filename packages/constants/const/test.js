@@ -480,6 +480,8 @@ module.exports = {
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
     'allowAutoEssayEvaluation',
+    // It is required to change the test settings state in redux.
+    'preventSectionNavigation',
   ],
   docBasedSettingsOptions: [
     'partialScore',
@@ -514,7 +516,12 @@ module.exports = {
   testCategoryTypes: {
     DEFAULT: 'default',
     DOC_BASED: 'doc_based',
+    VIDEO_BASED: 'video_based',
     DYNAMIC_TEST: 'dynamic_test',
+  },
+  sectionTestActions: {
+    ADD: 'add',
+    REMOVE: 'remove',
   },
   ATTEMPT_WINDOW_TYPE: {
     DEFAULT: 'DEFAULT',

@@ -215,7 +215,7 @@ const typeTitleHash = {
   [ESSAY_PLAIN_TEXT]: 'Essay with plain text',
 }
 
-const createQuestion = (
+export const createQuestion = (
   type,
   index,
   isDocBased = false,

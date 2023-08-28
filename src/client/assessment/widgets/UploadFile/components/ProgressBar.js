@@ -68,6 +68,7 @@ const ProgressBar = ({
             {!hideDelete && (
               <CloseIcon
                 data-cy="removeStudentAttachment"
+                aria-label="Remove student attachement"
                 onClick={handleCancel}
               />
             )}

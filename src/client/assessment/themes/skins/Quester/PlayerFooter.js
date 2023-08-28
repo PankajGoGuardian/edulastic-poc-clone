@@ -67,10 +67,10 @@ const PlayerFooter = ({
   passage,
   openReferenceModal,
   canShowReferenceMaterial,
+  calcTypes,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
-    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
@@ -110,8 +110,9 @@ const PlayerFooter = ({
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer
-        data-cy="zoomIn"
+        data-cy="zoomOut"
         onClick={handleZoomOut}
+        aria-label="Zoom Out"
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
@@ -121,8 +122,9 @@ const PlayerFooter = ({
       </ActionContainer>
 
       <ActionContainer
-        data-cy="zoomOut"
+        data-cy="zoomIn"
         onClick={handleZoomIn}
+        aria-label="Zoom In"
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
@@ -141,6 +143,7 @@ const PlayerFooter = ({
           }
           title={t('common.test.bookmark')}
           data-cy="bookmark"
+          aria-label={t('common.test.bookmark')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -162,6 +165,7 @@ const PlayerFooter = ({
           title={t('common.test.referenceGuide')}
           data-cy="referenceGuide"
           disabled={isPremiumContentWithoutAccess}
+          aria-label={t('common.test.referenceGuide')}
         >
           <IconWrapper>
             <IconReferenceGuide
@@ -186,6 +190,7 @@ const PlayerFooter = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label={t('common.test.checkanswer')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck color={footer.textColor} hoverColor={button.background} />
@@ -203,6 +208,7 @@ const PlayerFooter = ({
             : 'Crossout'
         }
         data-cy="crossButton"
+        aria-label={t('common.test.answerEliminator')}
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -220,6 +226,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
           data-cy="calculator"
+          aria-label={t('common.test.calculator')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -239,6 +246,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
           data-cy="scratchPad"
+          aria-label={t('common.test.scratchPad')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -259,6 +267,7 @@ const PlayerFooter = ({
           title={t('common.test.magnify')}
           data-cy="magnify"
           disabled={isPremiumContentWithoutAccess}
+          aria-label={t('common.test.magnify')}
         >
           <IconWrapper>
             <IconMagnify
@@ -276,6 +285,7 @@ const PlayerFooter = ({
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
+          aria-label={t('common.test.uploadWork')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>

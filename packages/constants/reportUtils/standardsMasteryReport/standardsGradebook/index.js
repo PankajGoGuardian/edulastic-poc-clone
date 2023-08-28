@@ -254,12 +254,27 @@ const getTableColumns = ({
 }
 
 // backend specific utils
-
-const populateBackendCSV = () => {
-  // @todo
-  const tableData = getTableData({})
-  const tableColumns = getTableColumns({})
-  return getCsvDataFromTableBE(tableData, tableColumns)
+const populateBackendCSV = ({
+  summaryMetricInfo,
+  detailsMetricInfo,
+  summaryMetricInfoWithSkillInfo,
+  scaleInfo,
+  compareByKey,
+  analyseByKey,
+  includeHeader = true,
+}) => {
+  const tableData = getTableData({
+    summaryMetricInfo,
+    detailsMetricInfo,
+    scaleInfo,
+  })
+  const tableColumns = getTableColumns({
+    summaryMetricInfoWithSkillInfo,
+    scaleInfo,
+    compareByKey,
+    analyseByKey,
+  })
+  return getCsvDataFromTableBE(tableData, tableColumns, includeHeader)
 }
 
 module.exports = {

@@ -35,6 +35,7 @@ import {
   set,
   isEmpty,
   isUndefined,
+  last,
 } from 'lodash'
 import produce from 'immer'
 import {
@@ -61,6 +62,7 @@ import {
   LOAD_TEST_ITEMS,
   SET_TEST_ID,
   FINISH_TEST,
+  SUBMIT_SECTION,
   LOAD_PREVIOUS_RESPONSES,
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
@@ -82,6 +84,7 @@ import {
   SAVE_USER_WORK,
   CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
   SET_SUBMIT_TEST_COMPLETE,
+  SET_SECTION_SUBMIT,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -120,7 +123,10 @@ import {
   getUserRole,
   isDesmosCalculatorEnabledSelector,
 } from '../../author/src/selectors/user'
-import { getSubmitTestCompleteSelector } from '../selectors/test'
+import {
+  getItemGroupsByExcludingItems,
+  getSubmitTestCompleteSelector,
+} from '../selectors/test'
 import {
   setActiveAssignmentAction,
   utaStartTimeUpdateRequired,
@@ -143,6 +149,7 @@ const {
   DEFAULT_CALC_TYPES,
 } = testConstants
 const { TEST_TYPES, TEST_TYPES_VALUES_MAP } = testTypesConstants
+const { SECTION_STATUS } = testActivityStatus
 
 const modifyTestDataForPreview = (test) =>
   produce(test, (draft) => {
@@ -322,6 +329,16 @@ function* loadAnnotationsToStore({ data, referrerId2 }) {
     type: SAVE_USER_WORK,
     payload: { [referrerId2]: { ...userWork, freeNotesStd: result.data } },
   })
+}
+
+function getDeliveringItemGroups(itemsToDeliverInGroup, itemGroups, testItems) {
+  const itemsToDeliverKeyByGroupId = _keyBy(itemsToDeliverInGroup, 'groupId')
+  const itemGroupsWithStatus = itemGroups.map((itemGroup) => ({
+    ...itemGroup,
+    status: itemsToDeliverKeyByGroupId[itemGroup?._id]?.status,
+  }))
+
+  return getItemGroupsByExcludingItems(testItems, itemGroupsWithStatus)
 }
 
 function* loadTest({ payload }) {
@@ -591,7 +608,7 @@ function* loadTest({ payload }) {
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages } = test
+    let { testItems, passages, itemGroups } = test
 
     const isDesmosCalculatorEnabled = yield select(
       isDesmosCalculatorEnabledSelector
@@ -610,7 +627,7 @@ function* loadTest({ payload }) {
     ;(testActivity.questionActivities || []).forEach((item) => {
       answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem
     })
-
+    let itemsToDeliverInGroup = []
     // if testActivity is present.
     if (!preview) {
       let allAnswers = {}
@@ -628,6 +645,7 @@ function* loadTest({ payload }) {
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      itemsToDeliverInGroup = activity?.itemsToDeliverInGroup || []
       assignmentById = yield select(
         (state) => state?.studentAssignment?.byId || {}
       )
@@ -799,13 +817,35 @@ function* loadTest({ payload }) {
         })
       }
 
+      let itemId = testItemIds[lastAttendedQuestion]
+      const deliveringItemGroups = getDeliveringItemGroups(
+        itemsToDeliverInGroup,
+        itemGroups,
+        testItems
+      )
+      const isLastItemInSection = deliveringItemGroups.find(
+        ({ items }) => last(items)._id === itemId
+      )
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
         lastAttendedQuestion !== test.testItems.length - 1 &&
         questionActivities.length &&
-        !lastAttemptedQuestion.skipped
+        !lastAttemptedQuestion.skipped &&
+        !isLastItemInSection
       ) {
         lastAttendedQuestion++
+        itemId = testItemIds[lastAttendedQuestion]
+      } else if (
+        /* 
+           If a student is in the last item of the section and exits from the test,
+           after resuming, we will take him to the next item of next section only if
+           the he submits the previous section. Otherwise land him on the last item of the section.
+        */
+        isLastItemInSection &&
+        isLastItemInSection.status === SECTION_STATUS.SUBMITTED
+      ) {
+        lastAttendedQuestion++
+        itemId = testItemIds[lastAttendedQuestion]
       }
 
       // load previous responses
@@ -831,7 +871,6 @@ function* loadTest({ payload }) {
         !summary
       ) {
         if (loadFromLast && !TEST_TYPES.TESTLET.includes(testType)) {
-          const itemId = testItemIds[lastAttendedQuestion]
           yield put(
             push({
               pathname: `${itemId}`,
@@ -883,6 +922,7 @@ function* loadTest({ payload }) {
         playerSkinType: settings.playerSkinType || test.playerSkinType,
         testletConfig: test.testletConfig,
         annotations: test.annotations,
+        videoUrl: test.videoUrl,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,
         pageStructure: test.pageStructure,
@@ -894,6 +934,10 @@ function* loadTest({ payload }) {
         grades: test.grades,
         subjects: test.subjects,
         referenceDocAttributes: settings.referenceDocAttributes,
+        itemGroups,
+        itemsToDeliverInGroup,
+        hasSections: test.hasSections,
+        preventSectionNavigation: test.preventSectionNavigation,
       },
     })
     if (preview) {
@@ -925,12 +969,24 @@ function* loadTest({ payload }) {
       payload: false,
     })
     sessionStorage.setItem('submitted', 'no')
-    if (
+    const isBlockNavigationResume =
       settings.blockNavigationToAnsweredQuestions &&
-      testActivity.questionActivities.length &&
+      testActivity?.questionActivities?.length &&
       !summary &&
       !test.isDocBased
-    ) {
+    const isPreventSectionNavigationResume =
+      test.preventSectionNavigation &&
+      testActivity?.questionActivities?.length &&
+      !summary &&
+      !isFromSummary
+    /*
+        Navigating from the deeplink will launch the first item of the test. 
+        In order to prevent it, we are checking the length of the UQA (which 
+        means the user has attended the test), from this we are picking the 
+        last attended item (on the basis of the item order in the test) and 
+        displaying it in the UI. 
+    */
+    if (isBlockNavigationResume || isPreventSectionNavigationResume) {
       const testItemIds = testItems.map((i) => i._id)
       let lastVisitedQuestion = testActivity.questionActivities[0]
       let lastVisitedItemIndex = 0
@@ -958,7 +1014,27 @@ function* loadTest({ payload }) {
           )
         )
       } else {
-        const itemId = testItems[lastVisitedItemIndex + 1]._id
+        const deliveringItemGroups = getDeliveringItemGroups(
+          itemsToDeliverInGroup,
+          itemGroups,
+          testItems
+        )
+        const isLastItemInSection = deliveringItemGroups.find(
+          ({ items }) => last(items)?._id === lastVisitedQuestion.testItemId
+        )
+        let itemId = testItems[lastVisitedItemIndex + 1]._id
+        /* 
+           If a student is in the last item of the section and exits from the test,
+           after resuming, we will take him to the next item of next section only if
+           the he submits the previous section. Otherwise land him on the last item of the section.
+        */
+        if (
+          test.preventSectionNavigation &&
+          !settings.blockNavigationToAnsweredQuestions &&
+          isLastItemInSection?.status !== SECTION_STATUS.SUBMITTED
+        ) {
+          itemId = lastVisitedQuestion.testItemId
+        }
         yield put(
           push(
             `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
@@ -1087,7 +1163,6 @@ function* submitTest({ payload }) {
       }
       yield call(testActivityApi.saveUserWork, reqPayload)
     }
-
     yield testActivityApi.submit(testActivityId, groupId)
     // log the details on auto submit
     // if (payload.autoSubmit) {
@@ -1285,6 +1360,35 @@ function* switchLanguage({ payload }) {
   }
 }
 
+// It is used to call the submit sections api
+function* submitSection({ payload }) {
+  try {
+    const { urlToGo, locationState, ...data } = payload
+    yield put({
+      type: SET_SECTION_SUBMIT,
+      payload: true,
+    })
+    yield call(testActivityApi.submitSection, data)
+    yield put(
+      push({
+        pathname: urlToGo,
+        state: locationState,
+      })
+    )
+  } catch (err) {
+    console.log(err)
+    captureSentryException(err)
+    notification({
+      msg: err.response?.data?.message || 'Something went wrong!',
+    })
+  } finally {
+    yield put({
+      type: SET_SECTION_SUBMIT,
+      payload: false,
+    })
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
@@ -1293,6 +1397,7 @@ export default function* watcherSaga() {
       FINISH_TEST,
       submitTest
     ),
+    yield takeEvery(SUBMIT_SECTION, submitSection),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
     yield takeLatest(CLOSE_TEST_TIMED_OUT_ALERT_MODAL, closeTestTimeOutSaga),

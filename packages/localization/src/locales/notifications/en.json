@@ -379,8 +379,20 @@
     "message": "Unable to save the question.",
     "description": ""
   },
+  "pleaseEnterVideoUrl": {
+    "message": "Please enter video URL.",
+    "description": ""
+  },
+  "linkCantPlayed": {
+    "message": "This link can't be played.",
+    "description": ""
+  },
   "pleaseEnterName": {
     "message": "Please enter test name.",
+    "description": ""
+  },
+  "pleaseSaveAiGeneratedItems": {
+    "message": "Please save all AI generated items",
     "description": ""
   },
   "receiveItemFailing": {
@@ -441,6 +453,19 @@
   },
   "subjectFieldEmpty": {
     "message": "Subject field cannot be empty",
+    "description": ""
+  },
+  "emptyStandardsSet": {
+    "message": "Standards set cannot be empty",
+    "description": ""
+  },
+  "emptyStandards": {
+    "message": "Please select standards",
+    "description": ""
+  },
+
+  "itemTypesEmpty": {
+    "message": "Item Type field cannot be empty",
     "description": ""
   },
   "noQuestions": {
@@ -1587,6 +1612,10 @@
     "message": "Please provide valid test name",
     "description": ""
   },
+  "pleaseProvideValidNumberOfItems": {
+    "message": "Please provide valid number of items, Between 1-20",
+    "description": ""
+  },
   "persmissionDenied": {
     "message": "Permission denied",
     "description": ""
@@ -1848,7 +1877,7 @@
     "description": ""
   },
   "eachStaticGroupShouldContainAtleastOneItems": {
-    "message": "Each Static group should contain at least 1 test item",
+    "message": "Select at least one item to save the section",
     "description": ""
   },
   "eachGroupShouldHaveUniqueGroupName": {
@@ -2182,9 +2211,32 @@
     "message": "Teacher account is added successfully.",
     "description": ""
   },
-  "teacherAlreadyAdded" : {
+  "teacherAlreadyAdded": {
     "message": "Teacher(s) already added.",
     "description": ""
+  },
+  "AiItemGeneratorEmptyField": {
+    "message": "Please fill all mandatory fields",
+    "description": ""
+  },
+  "generateAiQuestions": {
+    "message": "Generating personalized questions based on given details. This might take a moment, but we promise it'll be worth the wait!",
+    "description": ""
+  },
+  "generateAiQuestionsFailed": {
+    "message": "Apologies for the inconvenience. We encountered an issue while generating questions based on the preferences.",
+    "description": ""
+  },
+  "deleteFeedTypeSuccess": {
+    "message": "Feed type deleted successfully",
+    "description": ""
+  },
+  "updateFeedTypesSuccess": {
+    "message": "Student identifier updated. Kindly remember to use the new identifier for editing existing uploads and for new uploads.",
+    "description": ""
+  },
+  "insertFeedTypesSucess": {
+    "message": "Feed type(s) enabled successfully.",
+    "description": ""
   }
-
 }

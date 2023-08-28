@@ -122,7 +122,6 @@ export const getQuestionType = (item) => {
   const resources = get(item, ['data', 'resources'], [])
   const hasPassage =
     resources.some((_item) => _item.type === PASSAGE) || item.passageId
-
   /**
    * Trying to find the question title from questionType (used in q-type search dropdown)
    * https://snapwiz.atlassian.net/browse/EV-17163

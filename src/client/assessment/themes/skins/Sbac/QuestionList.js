@@ -1,10 +1,13 @@
 import React, { useRef, useEffect } from 'react'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { Select, Tooltip } from 'antd'
 import { IconBookmark, IconSend } from '@edulastic/icons'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import SelectContainer from '../../common/QuestionSelectDropdown/SelectContainer'
+import { getDisabledQuestionDropDownIndexMapSelector } from '../../../selectors/test'
 
 const QuestionList = ({
   gotoQuestion,
@@ -19,6 +22,7 @@ const QuestionList = ({
   utaId,
   blockNavigationToAnsweredQuestions,
   zoomLevel,
+  disabledQuestionDropDownIndexMap,
 }) => {
   const dropdownWrapper = useRef(null)
 
@@ -52,6 +56,7 @@ const QuestionList = ({
       style={dropdownStyle}
       skinb={skinb}
       className="question-select-dropdown"
+      aria-label="Questions Selection area"
     >
       <Tooltip
         placement="bottom"
@@ -80,6 +85,10 @@ const QuestionList = ({
               data-cy="questionSelectOptions"
               key={index}
               value={item}
+              disabled={disabledQuestionDropDownIndexMap[item]}
+              aria-label={`${i18Translate(
+                'common.layout.selectbox.question'
+              )} ${index + 1}/${options.length}`}
             >
               {`${i18Translate('common.layout.selectbox.question')} ${
                 index + 1
@@ -113,7 +122,17 @@ QuestionList.propTypes = {
   skipped: PropTypes.array.isRequired,
 }
 
-export default withNamespaces('student')(QuestionList)
+const enhance = compose(
+  withNamespaces('student'),
+  connect((state) => ({
+    // Direct subscribe to disable question dropdown for sbac player
+    disabledQuestionDropDownIndexMap: getDisabledQuestionDropDownIndexMapSelector(
+      state
+    ),
+  }))
+)
+
+export default enhance(QuestionList)
 
 const SkippedIcon = styled.i`
   color: #b1b1b1;

@@ -59,6 +59,8 @@ import { languageSaga } from '../../../common/components/LanguageSelector/duck'
 import { dataWarehouseSaga } from '../../sharedDucks/dataWarehouse'
 import { rosterImportSaga } from '../../RosterImport'
 import { advanceSearchSaga } from '../../AdvanceSearch'
+import { aiTestSaga } from '../../AssessmentCreate/components/CreateAITest/ducks'
+import aiGenerateQuestionSaga from './aiGenerateQuestion'
 
 const authorSagas = [
   itemsSaga(),
@@ -122,6 +124,8 @@ const authorSagas = [
   dataWarehouseSaga(),
   rosterImportSaga(),
   advanceSearchSaga(),
+  aiTestSaga(),
+  aiGenerateQuestionSaga(),
 ]
 
 export default authorSagas

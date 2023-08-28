@@ -76,6 +76,8 @@ import {
   setAndSavePassageItemsAction,
   getPassageItemsCountSelector,
   setPassageItemsAction,
+  isDynamicTestSelector,
+  hasSectionsSelector,
 } from '../../../TestPage/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
@@ -97,11 +99,7 @@ import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/te
 import { WithToolTip } from './AddOrRemove'
 import { getAllRubricNames } from '../../../src/utils/util'
 
-const {
-  ITEM_GROUP_TYPES,
-  ITEM_GROUP_DELIVERY_TYPES,
-  testCategoryTypes,
-} = testConstants
+const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
 // render single item
 class Item extends Component {
@@ -178,13 +176,11 @@ class Item extends Component {
       userId,
       history,
       openPreviewModal,
-      test,
+      isDynamicTest,
     } = this.props
     const owner = item.authors && item.authors.some((x) => x._id === userId)
     // Author can only edit if owner
     if (features.isPublisherAuthor && owner) {
-      const isDynamicTest =
-        test?.testCategory === testCategoryTypes.DYNAMIC_TEST
       if (isDynamicTest) {
         return notification({
           msg: 'Editing is disabled for test items in SmartBuild',
@@ -519,6 +515,8 @@ class Item extends Component {
       userRole,
       userId,
       collections,
+      isDynamicTest,
+      hasSections,
     } = this.props
     const owner = item.authors && item.authors.some((x) => x._id === userId)
     const {
@@ -527,7 +525,6 @@ class Item extends Component {
       passageConfirmModalVisible,
       showSelectGroupModal,
     } = this.state
-    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     const itemTypes = getQuestionType(item)
     const isPublisher = features.isCurator || features.isPublisherAuthor
     const staticGroups =
@@ -624,7 +621,8 @@ class Item extends Component {
                     </AddRemoveButton>
                   )}
                 </ViewButton>
-              ) : isPublisher || isDynamicTest ? (
+              ) : // to display the section name instead of remove button on selected items
+              isPublisher || isDynamicTest || hasSections ? (
                 <AddRemoveBtnPublisher
                   loading={selectedId === item._id}
                   onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
@@ -744,7 +742,8 @@ class Item extends Component {
                   >
                     <IconDown />
                   </MoreInfo>
-                  {isPublisher || isDynamicTest ? (
+                  {/* to display the section name instead of remove button on selected items */}
+                  {isPublisher || isDynamicTest || hasSections ? (
                     <AddRemoveBtnPublisher
                       loading={selectedId === item._id}
                       onClick={() => {
@@ -822,6 +821,8 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
       selectedItems: getSelectedItemSelector(state),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

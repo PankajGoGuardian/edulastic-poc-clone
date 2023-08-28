@@ -22,6 +22,7 @@ const TextInput = ({
   placeholder,
   type,
   value,
+  altText,
 }) => {
   const ref = useRef()
   const MInput = isMultiple ? TextArea : Input
@@ -71,6 +72,7 @@ const TextInput = ({
           padding: lessPadding ? '3px' : null,
         }}
         placeholder={placeholder}
+        aria-label={altText}
       />
       {characterMap && (
         <NumberPad

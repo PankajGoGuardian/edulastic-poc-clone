@@ -1,5 +1,12 @@
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
-import { MainHeader, EduButton, notification, EduIf } from '@edulastic/common'
+import {
+  MainHeader,
+  EduButton,
+  notification,
+  EduIf,
+  EduElse,
+  EduThen,
+} from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
 import {
   IconAddItems,
@@ -24,6 +31,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+
 import {
   getUserFeatures,
   getUserId,
@@ -49,6 +57,8 @@ import {
   getShowUpgradePopupSelector,
   getQuestionTypesInTestSelector,
   getIsAudioResponseQuestionEnabled,
+  isDynamicTestSelector,
+  hasSectionsSelector,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -73,6 +83,7 @@ import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 import { deletePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 
 /**
  *
@@ -100,7 +111,6 @@ function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
 const {
   statusConstants,
   testContentVisibility: testContentVisibilityOptions,
-  testCategoryTypes,
 } = testConstants
 
 export const navButtonsTest = [
@@ -164,7 +174,7 @@ export const docBasedButtons = [
     text: 'Settings',
   },
 ]
-export const navButtonsDynamicTest = [
+export const navButtonsDynamicAndSectionsTest = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
     value: 'description',
@@ -251,6 +261,8 @@ const TestPageHeader = ({
   questionTypesInTest,
   enableAudioResponseQuestion,
   derivedFromPremiumBankId = false,
+  isDynamicTest,
+  hasSections,
 }) => {
   let navButtons =
     buttons ||
@@ -258,8 +270,9 @@ const TestPageHeader = ({
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
-      : test?.testCategory === testCategoryTypes.DYNAMIC_TEST
-      ? [...navButtonsDynamicTest]
+      : // In order to display the Add Sections tab instead of Add Items for dynamic or a test with sections
+      isDynamicTest || hasSections
+      ? [...navButtonsDynamicAndSectionsTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
@@ -289,7 +302,13 @@ const TestPageHeader = ({
     if (validateTest(test)) {
       if (test.isDocBased) {
         const assessmentQuestions = Object.values(authorQuestionsById || {})
-        if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+        if (
+          !validateQuestionsForDocBased(
+            assessmentQuestions,
+            false,
+            !!test.videoUrl
+          )
+        ) {
           return
         }
       }
@@ -504,6 +523,8 @@ const TestPageHeader = ({
       : isPlaylist
       ? '290px'
       : '250px'
+  const _hasUnsavedAiItems = hasUnsavedAiItems(test?.itemGroups)
+
   return (
     <>
       <Upgrade />
@@ -617,19 +638,41 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {hasTestId && owner && showPublishButton && !showPublishForEC && (
-              <EduButton
-                isBlue
-                isGhost
-                IconBtn
-                title="Save as Draft"
-                data-cy="save"
-                onClick={onSave}
-                disabled={disableButtons}
-              >
-                <IconDiskette />
-              </EduButton>
-            )}
+
+            <EduIf
+              condition={
+                _hasUnsavedAiItems ||
+                (hasTestId && owner && showPublishButton && !showPublishForEC)
+              }
+            >
+              <EduIf condition={_hasUnsavedAiItems && !hasTestId}>
+                <EduThen>
+                  <EduButton
+                    isBlue
+                    title="Save as Draft"
+                    data-cy="save"
+                    onClick={onSave}
+                    disabled={disableButtons}
+                  >
+                    Save
+                  </EduButton>
+                </EduThen>
+                <EduElse>
+                  <EduButton
+                    isBlue
+                    isGhost
+                    IconBtn
+                    title="Save as Draft"
+                    data-cy="save"
+                    onClick={onSave}
+                    disabled={disableButtons}
+                  >
+                    <IconDiskette />
+                  </EduButton>
+                </EduElse>
+              </EduIf>
+            </EduIf>
+
             {hasTestId &&
             owner &&
             showPublishButton &&
@@ -844,7 +887,10 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {owner && !showPublishForEC && (
+
+            <EduIf
+              condition={_hasUnsavedAiItems || (owner && !showPublishForEC)}
+            >
               <EduButton
                 isBlue
                 isGhost
@@ -856,7 +902,7 @@ const TestPageHeader = ({
               >
                 <IconDiskette />
               </EduButton>
-            )}
+            </EduIf>
             {hasTestId &&
             owner &&
             showPublishButton &&
@@ -988,6 +1034,8 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isDynamicTest: isDynamicTestSelector(state),
+      hasSections: hasSectionsSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,

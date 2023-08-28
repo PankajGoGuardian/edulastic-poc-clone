@@ -15,8 +15,11 @@ import {
   FieldLabel,
   PremiumItemBanner,
   EduIf,
+  FlexContainer,
 } from '@edulastic/common'
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -40,6 +43,7 @@ import { assignmentLevelSettingsSelector } from '../selectors/answers'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
+  getIsVideoQuizSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
@@ -190,12 +194,13 @@ class QuestionWrapper extends Component {
   }
 
   openStudentWork = () => {
-    const { data, loadScratchPad, showStudentWork } = this.props
+    const { data, loadScratchPad, showStudentWork, isVideoQuiz } = this.props
     // load the data from server and then show
     loadScratchPad({
       testActivityId: data?.activity?.testActivityId,
       testItemId: data?.activity?.testItemId,
       qActId: data?.activity?.qActId || data?.activity?._id,
+      isVideoQuiz,
       callback: () => showStudentWork(),
     })
   }
@@ -663,19 +668,32 @@ class QuestionWrapper extends Component {
                       !aiEvaluationStatus?.isGradedExternally
                     }
                   >
-                    <AiEvaluationWrapper
-                      aiEvaluationStatus={aiEvaluationStatus?.status}
-                    >
-                      <Tooltip
-                        title={
-                          aiEvaluationMsg[aiEvaluationStatus?.status]?.tooltip
-                        }
+                    <FlexContainer>
+                      <AiEvaluationWrapper
+                        aiEvaluationStatus={aiEvaluationStatus?.status}
                       >
-                        <AiEvaluationMessage>
-                          {aiEvaluationMsg[aiEvaluationStatus?.status]?.text}
-                        </AiEvaluationMessage>
+                        <Tooltip
+                          title={
+                            aiEvaluationMsg[aiEvaluationStatus?.status]?.tooltip
+                          }
+                        >
+                          <AiEvaluationMessage>
+                            {aiEvaluationMsg[aiEvaluationStatus?.status]?.text}
+                          </AiEvaluationMessage>
+                        </Tooltip>
+                      </AiEvaluationWrapper>
+                      <Tooltip title={translate('author:rubric.infoText')}>
+                        <FontAwesomeIcon
+                          icon={faInfoCircle}
+                          aria-hidden="true"
+                          style={{
+                            color: 'black',
+                            fontSize: '25px',
+                            marginLeft: '10px',
+                          }}
+                        />
                       </Tooltip>
-                    </AiEvaluationWrapper>
+                    </FlexContainer>
                     <EduIf
                       condition={
                         aiEvaluationStatus?.status ===
@@ -848,7 +866,7 @@ const enhance = compose(
   withWindowSizes,
   withAnswerSave,
   withTheme,
-  withNamespaces('assessment'),
+  withNamespaces(['assessment', 'author']),
   connect(
     (state, ownProps) => ({
       isPresentationMode: get(
@@ -880,6 +898,7 @@ const enhance = compose(
         ['userInteractions', 'passages'],
         {}
       ),
+      isVideoQuiz: getIsVideoQuizSelector(state),
     }),
     {
       loadScratchPad: requestScratchPadAction,

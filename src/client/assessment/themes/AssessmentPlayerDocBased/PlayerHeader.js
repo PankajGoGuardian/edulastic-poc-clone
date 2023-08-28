@@ -22,7 +22,10 @@ import {
 } from '../common/ToolBar/styled-components'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
-import { currentItemAnswerChecksSelector } from '../../selectors/test'
+import {
+  currentItemAnswerChecksSelector,
+  getCalcTypeSelector,
+} from '../../selectors/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { StyledIconCheck } from '../../../author/ContentBuckets/components/ContentBucketsTable/styled'
 import { CalculatorIconWrapper } from '../common/ToolBar/CalculatorIconWrapper'
@@ -44,12 +47,12 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   answerChecksUsedForItem,
+  calcTypes,
   checkAnswer,
   checkAnswerInProgress,
   isPremiumContentWithoutAccess = false,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
-  const { calcTypes } = settings
 
   const rightButtons = (
     <SaveAndExit
@@ -160,6 +163,7 @@ PlayerHeader.defaultProps = {
 
 const mapStateToProps = (state) => ({
   answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+  calcTypes: getCalcTypeSelector(state),
   checkAnswerInProgress: state?.test?.checkAnswerInProgress,
 })
 

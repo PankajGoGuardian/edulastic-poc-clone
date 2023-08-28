@@ -437,7 +437,7 @@ const AntiCheatingGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="Restrict question navigation"
-            content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students. (This setting is not applicable for SnapQuiz)"
+            content="If ON, then students will be restricted from navigating back to the previous question that they have answered. It is recommended to use this along with Shuffle Questions for preventing cheating among students. (This setting is not applicable for SnapQuiz and VideoQuiz)"
             placement="rightTop"
             premium={assessmentSuperPowersRestrictQuestionBackNav}
           />

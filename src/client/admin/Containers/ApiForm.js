@@ -16,6 +16,7 @@ import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 import UploadStandard from '../Components/StandardUpload'
 import { emailRegex } from '../../common/utils/helpers'
+import EnableDataTypes from '../Components/EnableDataTypes'
 
 const CREATE_ADMIN = 'create-admin'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
@@ -24,6 +25,7 @@ const UPDATE_USER = 'update-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
 const INVITE_TEACHER = 'invite-teacher'
 const CONNECT_DISCONNECT_USER = 'connect-disconnect-user'
+const ENABLE_DATA_TYPES = 'enable-feed-types'
 const API_OPTIONS = {
   manageClass: 'manageClass',
 }
@@ -309,6 +311,7 @@ const ApiForm = () => {
               clearStandardData={clearStandardData}
             />
           )}
+          {id === ENABLE_DATA_TYPES && <EnableDataTypes />}
         </ApiFormsMain>
       )}
       {showUpdateCoTeacher && (

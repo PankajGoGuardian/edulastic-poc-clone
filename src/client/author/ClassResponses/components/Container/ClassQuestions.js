@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import memoizeOne from 'memoize-one'
 import { keyBy as _keyBy, isEmpty, get, isEqual, groupBy } from 'lodash'
 // components
-import { AnswerContext } from '@edulastic/common'
+import { AnswerContext, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   questionType,
@@ -40,6 +40,7 @@ import {
   getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import Worksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
+import VideoQuizWorksheet from '../../../AssessmentPage/VideoQuiz/VideoQuizWorksheet'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
 import {
   setPageNumberAction,
@@ -584,6 +585,8 @@ class ClassQuestions extends Component {
       userRole,
     } = this.props
     const { expressGrader: isExpressGrader = false } = this.context
+    const { videoUrl = '' } = testData
+    const isVideoQuiz = videoUrl?.length > 0
     const testItems = getTestItems({
       currentStudent,
       questionActivities,
@@ -667,6 +670,7 @@ class ClassQuestions extends Component {
         questions,
         studentWorkAnswersById,
         testItemId: testItemsData?.[0]?._id,
+        ...(isVideoQuiz ? { videoUrl } : {}),
       }
     }
 
@@ -723,6 +727,7 @@ class ClassQuestions extends Component {
             visible={showDocBasedPlayer}
             onCancel={() => this.setState({ showDocBasedPlayer: false })}
             footer={null}
+            destroyOnClose={isVideoQuiz}
           >
             <Row className="exit-btn-row">
               <Col>
@@ -739,7 +744,14 @@ class ClassQuestions extends Component {
                 </ThemeButton>
               </Col>
             </Row>
-            <Worksheet {...docBasedProps} studentWork />
+            <EduIf condition={isVideoQuiz}>
+              <EduThen>
+                <VideoQuizWorksheet {...docBasedProps} studentWork />
+              </EduThen>
+              <EduElse>
+                <Worksheet {...docBasedProps} studentWork />
+              </EduElse>
+            </EduIf>
           </StyledModal>
         ) : null}
         {itemsToRender.map((item, index) => {

@@ -29,6 +29,15 @@ const submit = (testActivityId, groupId) =>
     })
     .then((result) => result.data)
 
+// API for submitting section
+const submitSection = ({ testActivityId, sectionId }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/${sectionId}/submit`,
+      method: 'put',
+    })
+    .then((result) => result.data)
+
 const previousResponses = (testActivityId) =>
   api
     .callApi({
@@ -126,6 +135,7 @@ const saveUserWork = ({ testActivityId, groupId, userWork }) =>
 export default {
   create,
   submit,
+  submitSection,
   fetchReports,
   getById,
   getScratchpad,

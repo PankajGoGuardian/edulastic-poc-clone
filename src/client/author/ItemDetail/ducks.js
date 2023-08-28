@@ -69,6 +69,8 @@ import {
   setTestPassageAction,
   setPassageItemsAction,
   getPassageItemsSelector,
+  hasSectionsSelector,
+  getCurrentGroupIndexSelector,
 } from '../TestPage/ducks'
 import { changeViewAction } from '../src/actions/view'
 
@@ -2180,10 +2182,17 @@ function* savePassage({ payload }) {
 
     let item
     if (currentItem._id === 'new') {
+      const hasSections = yield select(hasSectionsSelector)
+      const sectionIndex = hasSections
+        ? yield select(getCurrentGroupIndexSelector)
+        : undefined
+
       item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
-        ...(testIdParam ? [{ testId: testIdParam }] : [])
+        // Passing the section index to push the passage
+        // or multipart question to the specific item group
+        ...(testIdParam ? [{ testId: testIdParam, sectionIndex }] : [])
       )
       yield put({
         type: RECEIVE_ITEM_DETAIL_SUCCESS,

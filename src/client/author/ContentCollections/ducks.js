@@ -27,6 +27,8 @@ export const FETCH_COLLECTIONS_LIST_SUCCESS =
 export const FETCH_COLLECTIONS_LIST_FAILED =
   '[collection] fetch collection list failed'
 export const ADD_PERMISSION_REQUEST = '[collection] add permission request'
+export const BATCH_ADD_PERMISSION_REQUEST =
+  '[collection] batch add permission request'
 export const EDIT_PERMISSION_REQUEST = '[collection] edit permission request'
 export const FETCH_PERMISSIONS_REQUEST =
   '[collection] fetch permissions request'
@@ -79,6 +81,9 @@ export const fetchCollectionListFailedAction = createAction(
   FETCH_COLLECTIONS_LIST_FAILED
 )
 export const addPermissionRequestAction = createAction(ADD_PERMISSION_REQUEST)
+export const batchAddPermissionRequestAction = createAction(
+  BATCH_ADD_PERMISSION_REQUEST
+)
 export const editPermissionRequestAction = createAction(EDIT_PERMISSION_REQUEST)
 export const fetchPermissionsRequestAction = createAction(
   FETCH_PERMISSIONS_REQUEST
@@ -351,6 +356,24 @@ function* addPermissionRequestSaga({ payload }) {
   }
 }
 
+function* batchAddPermissionRequestSaga({ payload }) {
+  try {
+    const { data } = payload
+    yield call(collectionsApi.batchAddPermission, data)
+
+    notification({
+      type: 'success',
+      msg: `Permission added successfully.`,
+    })
+  } catch (err) {
+    console.error(err)
+    let errorMessage = 'Error occured while adding permision.'
+    if ([403, 422].includes(err.response.data.statusCode))
+      errorMessage = err.response.data.message
+    notification({ msg: errorMessage })
+  }
+}
+
 function* editPermissionRequestSaga({ payload }) {
   try {
     const { data, paginationData } = payload
@@ -498,6 +521,10 @@ export function* watcherSaga() {
       fetchCollectionListRequestSaga
     ),
     yield takeEvery(ADD_PERMISSION_REQUEST, addPermissionRequestSaga),
+    yield takeEvery(
+      BATCH_ADD_PERMISSION_REQUEST,
+      batchAddPermissionRequestSaga
+    ),
     yield takeEvery(FETCH_PERMISSIONS_REQUEST, fetchPermissionsRequestSaga),
     yield takeEvery(SEARCH_ORGANIZATION_REQUEST, searchOrgaizationRequestSaga),
     yield takeEvery(EDIT_PERMISSION_REQUEST, editPermissionRequestSaga),

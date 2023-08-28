@@ -30,6 +30,7 @@ const AssessmentPlayerSkinWrapper = ({
   enableMagnifier = false,
   themeForHeader = {},
   videoUrl,
+  preventSectionNavigation,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -57,7 +58,7 @@ const AssessmentPlayerSkinWrapper = ({
   }
   const handleRestrictQuestionBackNav = (e) => {
     e.preventDefault()
-    if (blockNavigationToAnsweredQuestions) {
+    if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
       const matched = e.target.location.pathname.match(
         new RegExp('/student/(assessment|practice)/.*/class/.*/uta/.*/.*')
       )
@@ -67,14 +68,16 @@ const AssessmentPlayerSkinWrapper = ({
       }
     }
   }
-
   useEffect(() => {
-    if (blockNavigationToAnsweredQuestions) {
+    if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
       window.addEventListener('popstate', handleRestrictQuestionBackNav)
-      return () =>
-        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
     }
-  }, [])
+    return () => {
+      if (blockNavigationToAnsweredQuestions || preventSectionNavigation) {
+        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
+      }
+    }
+  }, [preventSectionNavigation])
 
   useEffect(() => {
     const toolToggleFunc = toggleToolsOpenStatus || changeTool

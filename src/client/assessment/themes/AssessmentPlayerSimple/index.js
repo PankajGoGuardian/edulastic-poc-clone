@@ -291,6 +291,7 @@ class AssessmentPlayerSimple extends React.Component {
       firstItemInSectionAndRestrictNav,
       calcTypes,
       isLast,
+      preventSectionNavigation,
     } = this.props
     const {
       showExitPopup,
@@ -363,6 +364,7 @@ class AssessmentPlayerSimple extends React.Component {
             }}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
             firstItemInSectionAndRestrictNav={firstItemInSectionAndRestrictNav}
+            preventSectionNavigation={preventSectionNavigation}
             calcTypes={calcTypes}
             isLast={isLast()}
           >

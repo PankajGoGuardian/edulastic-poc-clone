@@ -9,6 +9,7 @@ import {
 } from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
 import React from 'react'
+import { segmentApi } from '@edulastic/api'
 import { selectsData } from '../../../TestPage/components/common'
 import { StyledFilterLabel, StyledRequired } from './styled'
 import { formFields } from './ducks/constants'
@@ -42,6 +43,13 @@ const FormFields = ({
     preference,
     alignment,
   } = aiFormContent
+
+  const handleGenerate = (...args) => {
+    handleAiFormSubmit(...args)
+    segmentApi.genericEventTrack('GenerateAIItem', {
+      source: addItems ? 'AI Quiz: AddItem' : 'AI Quiz: CreateQuiz',
+    })
+  }
 
   return (
     <Row>
@@ -174,7 +182,7 @@ const FormFields = ({
         <EduButton btnType="primary" isGhost onClick={onCancel}>
           Cancel
         </EduButton>
-        <EduButton onClick={handleAiFormSubmit}>Generate</EduButton>
+        <EduButton onClick={handleGenerate}>Generate</EduButton>
       </FlexContainer>
     </Row>
   )

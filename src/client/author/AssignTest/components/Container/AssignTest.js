@@ -395,6 +395,8 @@ class AssignTest extends React.Component {
       }
     }
     const source = location?.state?.assessmentAssignedFrom
+    const assessmentTestCategory = location?.state?.assessmentTestCategory
+
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
     if (!this.validateTimedAssignment()) return
@@ -416,7 +418,10 @@ class AssignTest extends React.Component {
       const isValid = this.validateSettings(updatedAssignment)
       if (isValid) {
         if (source) {
-          segmentApi.genericEventTrack('AssessmentAssigned', { source })
+          segmentApi.genericEventTrack('AssessmentAssigned', {
+            source,
+            assessmentTestCategory,
+          })
         }
         saveAssignment(updatedAssignment)
       }

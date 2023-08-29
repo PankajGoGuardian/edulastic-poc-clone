@@ -42,7 +42,7 @@ const VideoQuizTimePicker = ({
         ),
       }
     }
-    return { value: null }
+    return { value: moment('00:00', 'mm:ss') }
   }, [questionDisplayTimestamp])
 
   return (

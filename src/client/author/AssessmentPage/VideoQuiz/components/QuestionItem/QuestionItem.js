@@ -575,11 +575,11 @@ class QuestionItem extends React.Component {
                 onClick={onPlay}
                 style={{ height: '30px' }}
               >
-                Resume{' '}
                 <FontAwesomeIcon
                   style={{ height: 15, width: 15 }}
                   icon={faPlayCircle}
-                />
+                />{' '}
+                Resume
               </NextButton>
             </Col>
           </Row>

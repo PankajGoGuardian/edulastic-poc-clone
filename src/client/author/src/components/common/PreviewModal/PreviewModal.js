@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { passageApi, testItemsApi } from '@edulastic/api'
+import { passageApi, segmentApi, testItemsApi } from '@edulastic/api'
 import { red, themeColor, white, title } from '@edulastic/colors'
 import {
   EduIf,
@@ -240,6 +240,10 @@ class PreviewModal extends React.Component {
         msg: 'Facing some issue while regenerating this Question.',
       })
     }
+
+    segmentApi.genericEventTrack('GenerateAIItem', {
+      source: 'AI Quiz: Regenerate',
+    })
   }
 
   handleDuplicateTestItem = async () => {

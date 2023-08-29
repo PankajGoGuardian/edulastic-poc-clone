@@ -525,9 +525,8 @@ class Questions extends React.Component {
                   <StyledEmptyQuestionContainer>
                     <FontAwesomeIcon icon={faInfoCircle} aria-hidden="true" />
                     <br />
-                    Question will appear here.
-                    <br />
-                    You can Drag and Drop them on the video
+                    Questions will appear here. Add them below, or drag and drop
+                    them over the video
                   </StyledEmptyQuestionContainer>
                 </EduThen>
                 <EduElse>
@@ -601,9 +600,7 @@ class Questions extends React.Component {
                           aria-hidden="true"
                         />
                         <br />
-                        Question will appear here.
-                        <br />
-                        or on the video
+                        Question will appear here or over the video.
                       </StyledEmptyQuestionContainer>
                     </EduElse>
                   </EduIf>

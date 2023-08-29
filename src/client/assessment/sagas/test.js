@@ -1031,6 +1031,7 @@ function* loadTest({ payload }) {
         if (
           test.preventSectionNavigation &&
           !settings.blockNavigationToAnsweredQuestions &&
+          isLastItemInSection &&
           isLastItemInSection?.status !== SECTION_STATUS.SUBMITTED
         ) {
           itemId = lastVisitedQuestion.testItemId

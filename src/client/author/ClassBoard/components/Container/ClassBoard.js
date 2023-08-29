@@ -1512,7 +1512,9 @@ class ClassBoard extends Component {
                 </StudentButtonDiv>
               )}
             </StyledFlexContainer>
-            <EduIf condition={additionalData?.isArchived && !isLoading}>
+            <EduIf
+              condition={additionalData?.isDataMovedToArchivedDB && !isLoading}
+            >
               <TagWrapper>
                 <CustomNotificationBar textColor={red} textAlign="center">
                   {t('common.uqaArchiveMessage')}

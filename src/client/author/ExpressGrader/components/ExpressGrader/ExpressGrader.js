@@ -316,7 +316,7 @@ class ExpressGrader extends Component {
                     </FlexContainer>
                   </FlexContainer>
                 </StyledFlexContainer>
-                <EduIf condition={additionalData?.isArchived}>
+                <EduIf condition={additionalData?.isDataMovedToArchivedDB}>
                   <TagWrapper>
                     <CustomNotificationBar textAlign="center" textColor={red}>
                       {t('common.uqaArchiveMessage')}

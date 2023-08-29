@@ -123,7 +123,7 @@ class StandardsBasedReport extends Component {
             <ClassBreadBrumb />
             <PresentationToggleSwitch groupId={classId} />
           </StyledFlexContainer>
-          <EduIf condition={additionalData?.isArchived}>
+          <EduIf condition={additionalData?.isDataMovedToArchivedDB}>
             <TagWrapper>
               <CustomNotificationBar textAlign="center" textColor={red}>
                 {t('common.uqaArchiveMessage')}

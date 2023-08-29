@@ -194,7 +194,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames, getTestTitle } from './common/util'
+import { combineNames, getTestTitleSuffix } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -887,8 +887,8 @@ export function* receiveTestListSaga({ payload }) {
         const _testGrades = (t.testGrades || '').split(',')
         const _testSubjects = (t.testSubjects || '').split(',')
         const _testName = t.testName || ''
-        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
-        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        const testTitleSuffix = getTestTitleSuffix(t.testTitle)
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${testTitleSuffix}`
         const checkForTermId = termId === t.termId
         const checkForGrades =
           !grades.length ||
@@ -911,13 +911,13 @@ export function* receiveTestListSaga({ payload }) {
       })
       .map((t) => {
         const _testName = t.testName || ''
-        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
+        const testTitleSuffix = getTestTitleSuffix(t.testTitle)
         const externalTestId = [
           _testName,
           t.testCategory,
           t.testTitle || '',
         ].join(EXTERNAL_TEST_KEY_SEPARATOR)
-        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
+        const externalTestTitle = `${_testName} - ${t.testCategory} ${testTitleSuffix}`
         return { _id: externalTestId, title: externalTestTitle, showId: false }
       })
     yield put({

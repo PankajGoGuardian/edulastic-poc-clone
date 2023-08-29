@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, groupBy, reject, first } from 'lodash'
+import { get, isEmpty, omit, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -62,6 +62,7 @@ import {
   getArrayOfNonPremiumTestTypes,
   getArrayOfAllTestTypes,
 } from '../../../../../../common/utils/testTypeUtils'
+import { getSkillInfoMetrics, getSelectedStandardId } from '../../utils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -145,43 +146,6 @@ const StandardsMasteryReportFilters = ({
     return _curriculums
   }, [interestedCurriculums])
 
-  // curate domainsData from page data
-  const skillInfoOptions = {
-    [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
-    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
-    [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
-  }
-  const skillInfo = get(skillInfoOptions[loc], 'data.result.skillInfo', [])
-    .filter((o) => `${o.curriculumId}` === `${filters.curriculumId}`)
-    .filter((o) =>
-      filters.standardGrade && filters.standardGrade !== 'All'
-        ? o.grades.includes(filters.standardGrade)
-        : true
-    )
-
-  const domainGroup = groupBy(skillInfo, (o) => `${o.domainId}`)
-  const allDomainIds = Object.keys(domainGroup).sort((a, b) =>
-    a.localeCompare(b)
-  )
-  const domainsList = allDomainIds.map((domainId) => ({
-    key: `${domainId}`,
-    title: domainGroup[domainId][0].domain,
-  }))
-  const selectedDomains = (domainsList || []).filter((o) =>
-    filters.domainIds?.includes(o.key)
-  )
-  const standardsList = skillInfo
-    .filter((o) =>
-      selectedDomains.length
-        ? filters.domainIds.includes(`${o.domainId}`)
-        : true
-    )
-    .sort((a, b) => a.domainId - b.domainId || a.standardId - b.standardId)
-    .map((o) => ({
-      key: `${o.standardId}`,
-      title: o.standard,
-    }))
-
   const search = useMemo(
     () =>
       pickBy(
@@ -191,16 +155,24 @@ const StandardsMasteryReportFilters = ({
     [location.search]
   )
 
-  const standardIdFromPageData = useMemo(() => {
-    const _skillInfo = get(
-      standardsGradebookSkillInfo,
-      'data.result.skillInfo',
-      []
-    )
-    const selectedStandardId =
-      search.standardId || filters.standardId || first(_skillInfo)?.standardId
-    return loc === reportNavType.STANDARDS_PROGRESS ? selectedStandardId : ''
-  }, [loc, standardsGradebookSkillInfo])
+  // curate domainsData from page data
+  const skillInfoOptions = {
+    [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
+    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
+    [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
+  }
+  const {
+    allDomainIds,
+    domainsList,
+    selectedDomains,
+    selectedDomainIds,
+    skillInfoMetrics: skillInfo,
+  } = getSkillInfoMetrics(skillInfoOptions[loc], filters)
+
+  const standardsList = skillInfo.map((o) => ({
+    key: `${o.standardId}`,
+    title: o.standard,
+  }))
 
   const hasOpenedPerformanceByRubricReportRef = useRef(false)
   hasOpenedPerformanceByRubricReportRef.current =
@@ -252,24 +224,28 @@ const StandardsMasteryReportFilters = ({
   }, [loc, showFilter])
 
   useEffect(() => {
-    if (standardIdFromPageData) {
-      const standardFromPageData = standardsList.find(
-        (o) => o.key === standardIdFromPageData
-      )
-      setFilters({
-        ...filters,
-        standardId: standardIdFromPageData,
-      })
-      setTempTagsData({
-        ...tempTagsData,
-        standardId: standardFromPageData,
-      })
-      setTagsData({
-        ...tagsData,
-        standardId: standardFromPageData,
-      })
+    const selectedStandardId = getSelectedStandardId(skillInfo, {
+      standardId: filters.standardId || search.standardId,
+    })
+    const _filtersToUpdate = {}
+    const _tagsToUpdate = {}
+    if (loc === reportNavType.STANDARDS_GRADEBOOK && selectedDomainIds.length) {
+      _filtersToUpdate.domainIds = selectedDomainIds
+      _tagsToUpdate.domainIds = selectedDomains
     }
-  }, [standardIdFromPageData, standardsGradebookSkillInfo])
+    if (loc === reportNavType.STANDARDS_PROGRESS && selectedStandardId) {
+      const selectedStandard = standardsList.find(
+        (o) => o.key === selectedStandardId
+      )
+      _filtersToUpdate.standardId = selectedStandardId
+      _tagsToUpdate.standardId = selectedStandard
+    }
+    if (!isEmpty(_filtersToUpdate)) {
+      setFilters({ ...filters, ..._filtersToUpdate })
+      setTempTagsData({ ...tempTagsData, ..._tagsToUpdate })
+      setTagsData({ ...tagsData, ..._tagsToUpdate })
+    }
+  }, [loc, standardsGradebookSkillInfo])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
     const source = location.state?.source

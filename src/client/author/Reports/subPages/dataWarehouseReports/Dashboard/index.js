@@ -146,7 +146,7 @@ const Dashboard = ({
   const onGoClick = (_settings) => {
     const _requestFilters = buildRequestFilters(_settings)
     const { performanceBand, testType } = buildAcademicSummaryFilters(
-      search,
+      { ...search, ..._requestFilters },
       academicSummaryFilters,
       availableAcademicTestTypes,
       bandInfo,

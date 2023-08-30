@@ -190,14 +190,14 @@ export const getPerformanceBandList = (
 }
 
 export function buildAcademicSummaryFilters(
-  search,
+  requestFilters,
   academicSummaryFilters,
   availableAcademicTestTypes,
   internalBands,
   externalBands
 ) {
   const { TEST_TYPE } = academicSummaryFiltersTypes
-  const { assessmentTypes } = search
+  const { assessmentTypes } = requestFilters
   const filteredTestTypes = getFilteredAcademicSummaryTestTypes(
     assessmentTypes,
     availableAcademicTestTypes
@@ -214,7 +214,7 @@ export function buildAcademicSummaryFilters(
     filteredTestTypes
   )
   const selectedperformanceBandId =
-    search.profileId ||
+    requestFilters.profileId ||
     academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
   const performanceBand =
     performanceBandList.find((p) => p.key === selectedperformanceBandId) ||

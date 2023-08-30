@@ -104,7 +104,7 @@ export const getAssignedClassesByIdSelector = createSelector(
 )
 
 export const getModuleAssignedClassesByIdSelector = (state, props) => {
-  const { moduleId } = props.match.params
+  const { moduleId, testId } = props.match.params
   const playlistAssignments = getPlaylistAssignmentsSelector(state)
   const playlist = getPlaylistSelector(state)
   const currentModule = playlist.modules?.find(
@@ -139,9 +139,11 @@ export const getModuleAssignedClassesByIdSelector = (state, props) => {
   for (const [key, value] of Object.entries(assignmentsByClassId)) {
     const assignedTestIds = value.map((item) => item.testId)
     const assignedTestIdsById = keyBy(assignedTestIds)
-    const isAllAssigned = playlistTestIds.every(
-      (testId) => !!assignedTestIdsById[testId]
-    )
+    const isAllAssigned = testId
+      ? !!assignedTestIdsById[testId]
+      : playlistTestIds.every(
+          (playlistTestId) => !!assignedTestIdsById[playlistTestId]
+        )
     const isNoneAssigned =
       !isAllAssigned &&
       !assignedTestIds.some((item) => playlistTestIdsById[item])

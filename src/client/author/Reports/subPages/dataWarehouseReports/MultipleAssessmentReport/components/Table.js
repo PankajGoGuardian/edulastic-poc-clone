@@ -291,14 +291,14 @@ const getDownloadCsvColumnHeadersFunc = (
     const { testName, externalTestType, isIncomplete = false } = assessment
     const _testName = isIncomplete ? `${testName} *` : testName
     dowloadCsvTableColumnHeaders.names.push(
-      `${_testName}${externalTestType ? ' Score' : ' Score(%)'}`
+      `${_testName}${externalTestType ? ' - Score' : ' - Score(%)'}`
     )
     addAdditionalColumns(assessment)
   })
   overallAssessmentsData.forEach((assessment) => {
     const { testName, isIncomplete = false } = assessment
     const _testName = isIncomplete ? `${testName} *` : testName
-    dowloadCsvTableColumnHeaders.names.push(`${_testName} Performance Band`)
+    dowloadCsvTableColumnHeaders.names.push(`${_testName} - Performance Band`)
     addAdditionalColumns(assessment)
   })
   return dowloadCsvTableColumnHeaders

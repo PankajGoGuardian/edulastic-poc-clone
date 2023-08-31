@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, reject } from 'lodash'
+import { get, isEmpty, isEqual, omit, pickBy, reject, sortBy } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -53,8 +53,6 @@ import {
   getReportsStandardsFiltersLoader,
   getSMRRubricsSelector,
 } from '../filterDataDucks'
-import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
-import { getStandardsGradebookSkillInfo } from '../../standardsGradebook/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
@@ -62,7 +60,6 @@ import {
   getArrayOfNonPremiumTestTypes,
   getArrayOfAllTestTypes,
 } from '../../../../../../common/utils/testTypeUtils'
-import { getSkillInfoMetrics, getSelectedStandardId } from '../../utils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -94,13 +91,18 @@ const StandardsMasteryReportFilters = ({
   toggleFilter,
   setFirstLoad,
   reportId,
-  standardsPerformanceSummary,
   standardsGradebookSkillInfo,
   loc,
   fetchUpdateTagsData,
   institutionIds,
   isPremium,
   rubricsList,
+  allDomainIds,
+  domainsList,
+  selectedDomains,
+  selectedDomainIds,
+  skillInfo,
+  selectedStandardId,
 }) => {
   const availableAssessmentType = isPremium
     ? getArrayOfAllTestTypes()
@@ -154,20 +156,6 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
-
-  // curate domainsData from page data
-  const skillInfoOptions = {
-    [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
-    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
-    [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
-  }
-  const {
-    allDomainIds,
-    domainsList,
-    selectedDomains,
-    selectedDomainIds,
-    skillInfoMetrics: skillInfo,
-  } = getSkillInfoMetrics(skillInfoOptions[loc], filters)
 
   const standardsList = skillInfo.map((o) => ({
     key: `${o.standardId}`,
@@ -224,9 +212,11 @@ const StandardsMasteryReportFilters = ({
   }, [loc, showFilter])
 
   useEffect(() => {
-    const selectedStandardId = getSelectedStandardId(skillInfo, {
-      standardId: filters.standardId || search.standardId,
-    })
+    if (
+      selectedStandardId === filters.standardId &&
+      isEqual(sortBy(selectedDomainIds), sortBy(filters.domainIds))
+    )
+      return
     const _filtersToUpdate = {}
     const _tagsToUpdate = {}
     if (loc === reportNavType.STANDARDS_GRADEBOOK && selectedDomainIds.length) {
@@ -240,10 +230,14 @@ const StandardsMasteryReportFilters = ({
       _filtersToUpdate.standardId = selectedStandardId
       _tagsToUpdate.standardId = selectedStandard
     }
-    if (!isEmpty(_filtersToUpdate)) {
-      setFilters({ ...filters, ..._filtersToUpdate })
+    const newSettings = {
+      filters: { ...filters, ..._filtersToUpdate },
+      tagsData: { ...tagsData, ..._tagsToUpdate },
+    }
+    if (!isEqual(newSettings.filters, filters)) {
+      setFilters(newSettings.filters)
       setTempTagsData({ ...tempTagsData, ..._tagsToUpdate })
-      setTagsData({ ...tagsData, ..._tagsToUpdate })
+      setTagsData(newSettings.tagsData)
     }
   }, [loc, standardsGradebookSkillInfo])
 
@@ -1012,8 +1006,6 @@ const enhance = compose(
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
-      standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
-      standardsGradebookSkillInfo: getStandardsGradebookSkillInfo(state),
       institutionIds: currentDistrictInstitutionIds(state),
       isPremium: isPremiumUserSelector(state),
       rubricsList: getSMRRubricsSelector(state),

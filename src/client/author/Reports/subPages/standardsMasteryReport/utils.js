@@ -1,6 +1,20 @@
 import { get, isEmpty, groupBy } from 'lodash'
 
 /**
+ * Function to get selected standard id / first standard in skillinfo for initial load for the standards progress report.
+ * @param skillInfoMetrics - contains standards info.
+ * @param filters - contains popup / page level filter details.
+ * @returns {string} standard id
+ */
+export function getSelectedStandardId(skillInfoMetrics, filters) {
+  const standard =
+    skillInfoMetrics.find(
+      (o) => `${o.standardId}` === `${filters.standardId}`
+    ) || skillInfoMetrics[0]
+  return get(standard, 'standardId', '')
+}
+
+/**
  * Function to get filtered standards data
  * @param {Object} skillInfo - skill info api response containing standards info
  * @param {Object} filters - contains popup / page level filter details
@@ -41,25 +55,14 @@ export const getSkillInfoMetrics = (skillInfo, filters) => {
   const sortedSkillInfoMetrics = skillInfoMetrics.sort(
     (a, b) => a.domainId - b.domainId || a.standardId - b.standardId
   )
+
+  const standardId = getSelectedStandardId(skillInfoMetrics, filters)
   return {
     allDomainIds,
     domainsList,
     selectedDomains,
     selectedDomainIds,
     skillInfoMetrics: sortedSkillInfoMetrics,
+    standardId,
   }
-}
-
-/**
- * Function to get selected standard id / first standard in skillinfo for initial load for the standards progress report.
- * @param {Object} skillInfoMetrics - contains standards info.
- * @param {Object} filters - contains popup / page level filter details.
- * @returns {string} standard id
- */
-export const getSelectedStandardId = (skillInfoMetrics, filters) => {
-  const standard =
-    skillInfoMetrics.find(
-      (o) => `${o.standardId}` === `${filters.standardId}`
-    ) || skillInfoMetrics[0]
-  return get(standard, 'standardId', '')
 }

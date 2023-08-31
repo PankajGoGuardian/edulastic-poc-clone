@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash'
 
 import { Spin, Col } from 'antd'
 
+import { reportNavType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../common/components/Header'
 
 import StandardsPerfromance from './standardsPerformance'
@@ -31,6 +32,7 @@ import {
   setTempDdFilterAction,
   getTempTagsDataSelector,
   setTempTagsDataAction,
+  getFiltersSelector,
 } from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
@@ -43,6 +45,9 @@ import { getNavigationTabLinks } from '../../common/util'
 
 import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/json/staticDropDownData.json'
+import { getReportsStandardsPerformanceSummary } from './standardsPerformance/ducks'
+import { getStandardsGradebookSkillInfo } from './standardsGradebook/ducks'
+import { getSkillInfoMetrics } from './utils'
 
 const StandardsMasteryReportContainer = (props) => {
   const {
@@ -74,6 +79,9 @@ const StandardsMasteryReportContainer = (props) => {
     breadcrumbData,
     isCliUser,
     isPrinting,
+    standardsPerformanceSummary,
+    standardsGradebookSkillInfo,
+    filters,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -273,6 +281,24 @@ const StandardsMasteryReportContainer = (props) => {
     )
   }, [ddfilter, loc])
 
+  /**
+   * curate domainsData from page data
+   * TODO Cleanup skillInfo API to have single implementation for all SMR reports and rework pageFilters logic
+   * */
+  const skillInfoOptions = {
+    [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
+    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
+    [reportNavType.STANDARDS_PROGRESS]: standardsGradebookSkillInfo,
+  }
+  const {
+    allDomainIds,
+    domainsList,
+    selectedDomains,
+    selectedDomainIds,
+    skillInfoMetrics: skillInfo,
+    standardId: selectedStandardId,
+  } = getSkillInfoMetrics(skillInfoOptions[loc], filters)
+
   return (
     <>
       {sharingState && (
@@ -280,6 +306,8 @@ const StandardsMasteryReportContainer = (props) => {
           reportType={loc}
           reportFilters={{
             ...settings.requestFilters,
+            standardId: selectedStandardId,
+            domainIds: selectedDomainIds.join(','),
             ddfilter,
           }}
           showModal={sharingState}
@@ -314,6 +342,13 @@ const StandardsMasteryReportContainer = (props) => {
           toggleFilter={toggleFilter}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
+          standardsGradebookSkillInfo={standardsGradebookSkillInfo}
+          allDomainIds={allDomainIds}
+          domainsList={domainsList}
+          selectedDomains={selectedDomains}
+          selectedDomainIds={selectedDomainIds}
+          skillInfo={skillInfo}
+          selectedStandardId={selectedStandardId}
         />
       </SubHeader>
       <ReportContainer>
@@ -406,6 +441,9 @@ const ConnectedStandardsMasteryReportContainer = connect(
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
+    standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
+    filters: getFiltersSelector(state),
+    standardsGradebookSkillInfo: getStandardsGradebookSkillInfo(state),
   }),
   {
     setSMRSettings: setSMRSettingsAction,

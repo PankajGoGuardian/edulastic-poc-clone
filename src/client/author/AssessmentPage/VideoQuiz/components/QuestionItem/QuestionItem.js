@@ -111,7 +111,7 @@ class QuestionItem extends React.Component {
     return labels.join(', ')
   }
 
-  renderShortTextAnswer = (value) => value
+  renderShortTextAnswer = (value) => (typeof value === 'string' ? value : '')
 
   renderDropDownAnswer = (value) => value?.[0]?.value && value[0].value
 
@@ -196,6 +196,7 @@ class QuestionItem extends React.Component {
         </DetailAlternateContainer>
       )
     }
+
     return (
       <DetailsContainer>
         <DetailTitle>Correct Answer:</DetailTitle>
@@ -567,23 +568,6 @@ class QuestionItem extends React.Component {
           disableDrag,
           showAnswerIndicator,
         })}
-        <EduIf condition={!editMode}>
-          <Row type="flex" justify="end">
-            <Col>
-              <NextButton
-                size="small"
-                onClick={onPlay}
-                style={{ height: '30px' }}
-              >
-                <FontAwesomeIcon
-                  style={{ height: 15, width: 15 }}
-                  icon={faPlayCircle}
-                />{' '}
-                Resume
-              </NextButton>
-            </Col>
-          </Row>
-        </EduIf>
         <EduIf
           condition={
             isSnapQuizVideoPlayer &&
@@ -601,6 +585,23 @@ class QuestionItem extends React.Component {
         {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
         {!pdfPreview &&
           (check ? this.renderScore(id) : this.renderComments(id))}
+        <EduIf condition={!editMode}>
+          <Row type="flex" justify="end">
+            <Col>
+              <NextButton
+                size="small"
+                onClick={onPlay}
+                style={{ height: '30px' }}
+              >
+                <FontAwesomeIcon
+                  style={{ height: 15, width: 15 }}
+                  icon={faPlayCircle}
+                />{' '}
+                Resume
+              </NextButton>
+            </Col>
+          </Row>
+        </EduIf>
       </QuestionItemWrapper>
     )
   }

@@ -157,16 +157,6 @@ const fetchPlaylistInsights = (data) => {
     })
     .then((result) => result.data.result)
 }
-const getPlaylistAssignment = ({ playlistId, moduleId, testIds }) =>
-  api
-    .callApi({
-      url: `${prefix}/${playlistId}/${moduleId}/module-assignments`,
-      method: 'get',
-      params: {
-        testIds,
-      },
-    })
-    .then((result) => result.data.result)
 
 const getSignedRequest = ({ playlistId, moduleId, contentId, resource }) =>
   api
@@ -190,7 +180,6 @@ const usePlaylist = (id) =>
     .then((result) => result.data.result)
 
 export default {
-  getPlaylistAssignment,
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
   searchDistinctPublishers,

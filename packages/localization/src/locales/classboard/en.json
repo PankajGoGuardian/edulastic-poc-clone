@@ -14,6 +14,6 @@
     "testHidden": "View of Items is Restricted by the Admin",
     "randomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment",
     "randomItemsBubbleScanDisableMessage": "The questions for each student have been dynamically selected and as a result, bubble sheet actions are unavailable",
-    "uqaArchiveMessage": "This assignment's user question activity is archived. Please reach out to customer support if you need this old data."
+    "uqaArchiveMessage": "Question level data for this assignment has been archived. Please contact support@edulastic.com for assistance."
   }
 }

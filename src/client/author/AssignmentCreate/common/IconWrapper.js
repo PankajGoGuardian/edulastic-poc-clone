@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 const IconWrapper = styled.div`
   margin-bottom: ${(props) => props.marginBottom || '15px'};
-  height: 44px;
-  width: 44px;
+  height: ${(props) => props.height || '44px'};
+  width: ${(props) => props.width || '44px'};
   background: #bfbfbf;
   border-radius: 50%;
   display: flex;

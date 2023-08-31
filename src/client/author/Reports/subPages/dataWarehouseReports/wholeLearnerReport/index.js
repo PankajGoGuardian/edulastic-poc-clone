@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
@@ -128,6 +128,7 @@ const WholeLearnerReport = ({
     []
   )
   const [isAttendanceChartVisible, setIsAttendanceChartVisible] = useState(true)
+  const isAttendanceChartToggled = useRef(false)
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -212,6 +213,12 @@ const WholeLearnerReport = ({
     },
     []
   )
+
+  useEffect(() => {
+    if (isEmpty(attendanceData) && !isAttendanceChartToggled.current) {
+      setIsAttendanceChartVisible(false)
+    }
+  }, [attendanceData, isAttendanceChartToggled])
 
   useEffect(() => {
     // settings.requestFilters is missing class filters
@@ -340,6 +347,7 @@ const WholeLearnerReport = ({
     settings.selectedStudent
   )
   const toggleAttendanceChart = () => {
+    isAttendanceChartToggled.current = true
     setIsAttendanceChartVisible((v) => !v)
   }
 

@@ -17,7 +17,7 @@ import {
 } from '../../../TestPage/ducks'
 import QuickTour from '../QuickTour/QuickTour'
 
-const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/5myxzhgzbl`
+const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/mcobek8kl5`
 
 const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
   const handleCreate = () => {

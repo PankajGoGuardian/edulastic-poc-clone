@@ -20,6 +20,16 @@ const UserWorkUploadModal = ({
     cameraStateSetter()
   }, [])
 
+  useEffect(() => {
+    if (isModalVisible) {
+      setTimeout(() => {
+        const x = document.querySelector('.ant-modal-content')
+        x.setAttribute('tabindex', 1)
+        x.focus()
+      }, 10)
+    }
+  }, [isModalVisible])
+
   return (
     <ConfirmationModal
       title="Upload Work"

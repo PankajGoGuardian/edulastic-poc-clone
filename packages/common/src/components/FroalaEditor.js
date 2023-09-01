@@ -614,6 +614,19 @@ const CustomEditor = ({
     }
   }, [placeholder])
 
+  useEffect(() => {
+    if (toolbarContainerRef) {
+      setTimeout(() => {
+        const ele = toolbarContainerRef.current.querySelector('.fr-btn-grp')
+        if (ele && ele.children) {
+          for (let i = 0; i < ele.children.length; i++) {
+            ele.children[i].setAttribute('tabIndex', 0)
+          }
+        }
+      }, 10)
+    }
+  }, [toolbarContainerRef])
+
   return (
     <>
       <MathModal

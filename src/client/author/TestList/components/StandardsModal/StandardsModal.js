@@ -51,6 +51,7 @@ const StandardsModal = ({
   setElosByTloId,
   elosByTloId,
   grades,
+  loading,
   standards = [],
   setAdaptiveTestId,
   setIsTestPreviewVisible,
@@ -58,7 +59,7 @@ const StandardsModal = ({
   const [eloStandards, setEloStandards] = useState([])
   const [selectedTLO, setSelectedTLO] = useState('')
   const [selectedElos, setSelectedElos] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [btnLoading, setBtnLoading] = useState(false)
 
   useEffect(() => {
     if (!showModal) return
@@ -110,13 +111,13 @@ const StandardsModal = ({
   }
 
   const handleCancel = () => {
-    const prevStandards = standardIds.filter((id) => !eloStandards.includes(id))
-    handleApply(prevStandards)
+    // const prevStandards = standardIds.filter((id) => !eloStandards.includes(id))
+    // handleApply(prevStandards)
     setShowModal(false)
   }
 
   const handleSubmit = async () => {
-    setLoading(true)
+    setBtnLoading(true)
     try {
       const data = await testsApi.createAdaptiveTest({
         curriculumId: selectedCurriculam?.value,
@@ -128,7 +129,7 @@ const StandardsModal = ({
     } catch (error) {
       console.log(error)
     } finally {
-      setLoading(false)
+      setBtnLoading(false)
     }
   }
 
@@ -154,10 +155,10 @@ const StandardsModal = ({
           Cancel
         </EduButton>
         <EduButton
-          loading={loading}
+          loading={btnLoading}
           type="primary"
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={btnLoading}
         >
           {btnText}
         </EduButton>

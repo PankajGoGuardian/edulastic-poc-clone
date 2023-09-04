@@ -19,6 +19,7 @@
     },
     "question": {
       "composeQuestion": "Question",
+      "initialCode": "Initial Code",
       "questionPlaceholder": "Enter your question"
     },
     "annotation": {

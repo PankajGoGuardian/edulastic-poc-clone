@@ -217,7 +217,7 @@ const ListHeader = ({
       <StandardsModal
         setShowModal={setStandardSearchModalVisible}
         showModal={standardSearchModalVisible}
-        standardIds={search.standardIds.map((item) => item._id)}
+        standardIds={search.standardIds?.map((item) => item._id)}
         standards={search.standardIds}
         selectedCurriculam={selectedCurriculam}
         grades={search.grades}

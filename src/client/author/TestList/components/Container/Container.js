@@ -1280,6 +1280,7 @@ class TestList extends Component {
               title={t('common.testLibrary')}
               titleIcon={IconTestBank}
               btnTitle="New Test"
+              search={search}
               renderFilter={() => (
                 <StyleChangeWrapper>
                   <IconTile

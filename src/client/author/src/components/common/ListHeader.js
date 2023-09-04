@@ -38,6 +38,12 @@ import {
 } from '../../selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
+import {
+  getFormattedCurriculumsSelector,
+  getStandardsListSelector,
+} from '../../selectors/dictionaries'
+import StandardsModal from '../../../TestList/components/StandardsModal/StandardsModal'
+// import AdaptiveTest from '../../../TestList/components/AdaptiveTest/AdaptiveTest'
 
 const ListHeader = ({
   onCreate,
@@ -60,13 +66,20 @@ const ListHeader = ({
   windowWidth,
   titleIcon,
   userFeatures = {},
+  search = {},
   newTest,
   titleWidth,
   isLoadingButtonState = false,
   isAssignButtonDisabled = false,
   setShowAssignmentCreationModal,
+  formattedCuriculums,
+  curriculumStandards,
+  elosByTloId,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
+  const [standardSearchModalVisible, setStandardSearchModalVisible] = useState(
+    false
+  )
 
   const sendInvite = (userDetails) => {
     addBulkTeacher({ addReq: userDetails })
@@ -76,11 +89,17 @@ const ListHeader = ({
     toggleInviteTeacherModal((prevState) => !prevState)
   }
 
+  const toggleStandardSearchModal = () =>
+    setStandardSearchModalVisible((prev) => !prev)
+
   const closeTeachersDetailModal = () => {
     setTeachersDetailsModalVisible(false)
   }
 
   const createNewAssignment = () => setShowAssignmentCreationModal(true)
+  const selectedCurriculam = formattedCuriculums?.find(
+    ({ value }) => value === search?.curriculumId
+  )
 
   return (
     <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
@@ -137,6 +156,14 @@ const ListHeader = ({
                 />
               )}
               {renderExtra()}
+              <EduButton
+                data-cy="createNew"
+                onClick={toggleStandardSearchModal}
+                bgColor="green"
+              >
+                <IconPlusStyled />
+                Adaptive Test
+              </EduButton>
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
                 <IconPlusStyled />
                 {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}
@@ -187,6 +214,15 @@ const ListHeader = ({
           title="Teacher Details"
         />
       )}
+      <StandardsModal
+        setShowModal={setStandardSearchModalVisible}
+        showModal={standardSearchModalVisible}
+        standardIds={search.standardIds.map((item) => item._id)}
+        standards={search.standardIds}
+        selectedCurriculam={selectedCurriculam}
+        grades={search.grades}
+        btnText="Launch Adaptive Practice Test"
+      />
     </MainHeader>
   )
 }
@@ -224,7 +260,9 @@ const enhance = compose(
   withWindowSizes,
   withRouter,
   connect(
-    (state) => ({
+    (state, { search = {} }) => ({
+      curriculumStandards: getStandardsListSelector(state),
+      formattedCuriculums: getFormattedCurriculumsSelector(state, search),
       userOrgId: getUserOrgId(state),
       userRole: getUserRole(state),
       userFeatures: getUserFeatures(state),

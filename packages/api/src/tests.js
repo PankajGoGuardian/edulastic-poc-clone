@@ -156,6 +156,13 @@ const getTestIdFromVersionId = (versionId) =>
     })
     .then((result) => result.data.result)
 
+const createAdaptiveTest = (data) =>
+  api.callApi({
+    url: `${prefix}/adaptive-test`,
+    method: 'post',
+    data,
+  })
+
 export default {
   getAll,
   getById,
@@ -173,4 +180,5 @@ export default {
   deleteTest,
   getTestIdFromVersionId,
   getSummary,
+  createAdaptiveTest,
 }

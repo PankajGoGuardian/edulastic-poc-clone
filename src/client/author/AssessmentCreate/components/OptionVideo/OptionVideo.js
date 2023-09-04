@@ -18,6 +18,11 @@ const OptionVideo = ({ history }) => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {})
     history.push({
       pathname: '/author/tests/videoquiz',
+      state: {
+        standard: 'K.CC.A.1',
+        subjects: ['Mathematics', 'ELA', 'Other Subjects'],
+        grades: ['1', 'K'],
+      },
     })
   }
   return (

@@ -25,6 +25,7 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
+import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -134,7 +135,7 @@ const defaultPageStructure = [
 ]
 
 function* createAssessmentSaga({ payload }) {
-  let { fileURI = '' } = payload
+  let { fileURI = '', routerState = null } = payload
   let testItem
   let amountOfPDFPages = 0
   let pageStructure = []
@@ -272,7 +273,6 @@ function* createAssessmentSaga({ payload }) {
         pageStructure: newPageStructure,
         version: newTest.version,
       }
-
       yield put(setTestDataAction(testData))
       yield put(createAssessmentSuccessAction())
       if (!payload?.avoidRedirect) {
@@ -342,6 +342,17 @@ function* createAssessmentSaga({ payload }) {
       ) {
         delete newAssessment.passwordExpireIn
       }
+
+      if (routerState) {
+        newAssessment.title = `Practice Set for Standards: ${routerState.standard}`
+        newAssessment.metadata = {
+          ...newAssessment.metadata,
+          grades: routerState.grades,
+          subjects: routerState.subjects,
+        }
+        newAssessment.grades = routerState.grades
+        newAssessment.subjects = routerState.subjects
+      }
       // Omit passages in doc basedtest creation flow as backend is not expecting it
       const omitedItems = ['passages']
       if (
@@ -352,6 +363,15 @@ function* createAssessmentSaga({ payload }) {
       const assesmentPayload = omit(newAssessment, omitedItems)
 
       const assessment = yield call(testsApi.create, assesmentPayload)
+      if (routerState) {
+        const assignment = yield select((state) => state.assignmentSettings)
+        const nextAssignment = produce(assignment, (state) => {
+          state.class = routerState.class
+          state.termId = routerState.termId
+        })
+        yield put(updateAssingnmentSettingsAction(nextAssignment))
+        yield put(setTestDataAction(assessment))
+      }
       yield put(createAssessmentSuccessAction())
       yield put(receiveTestByIdAction(assessment._id, true, false))
       yield put(push(`/author/assessments/${assessment._id}`))

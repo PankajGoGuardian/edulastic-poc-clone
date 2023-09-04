@@ -92,6 +92,7 @@ class Container extends React.Component {
       createAssessment({
         videoUrl: 'https://www.youtube.com/watch?v=',
         assessmentId,
+        routerState: location.state,
       })
     }
   }
@@ -110,6 +111,7 @@ class Container extends React.Component {
       createAssessment({
         videoUrl: 'https://www.youtube.com/watch?v=',
         assessmentId,
+        routerState: location.state,
       })
     }
   }

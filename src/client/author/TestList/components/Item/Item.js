@@ -356,7 +356,6 @@ class Item extends Component {
       previouslyUsedPlaylistClone,
       isTestRecommendation,
       adaptiveTestId = '',
-      setAdaptiveTestId,
     } = this.props
     const showUsedModal =
       isUsedModalVisible &&
@@ -500,7 +499,6 @@ class Item extends Component {
             closeTestPreviewModal={this.hidePreviewModal}
             resetOnClose={() => {
               this.setState({ currentTestId: '' })
-              setAdaptiveTestId('')
             }}
             unmountOnClose
           />
@@ -561,7 +559,6 @@ const enhance = compose(
       customTitleModalVisible:
         state.curriculumSequence?.customTitleModalVisible,
       adaptiveTestId: getAdaptiveTestIdSelector(state),
-      setAdaptiveTestId: setAdaptiveTestIdAction(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

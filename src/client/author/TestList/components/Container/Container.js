@@ -144,6 +144,9 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -204,6 +207,7 @@ class TestList extends Component {
     moduleModalAdd: null,
     openSidebar: false,
     isSingaporeMath: false,
+    adaptiveTestId: '',
   }
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -938,6 +942,16 @@ class TestList extends Component {
     }
   }
 
+  handleSetAdaptiveTestId = (adaptiveTestId) => {
+    this.setState({ adaptiveTestId })
+  }
+
+  hidePreviewModal = () => {
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    this.setState({ adaptiveTestId: '' })
+  }
+
   searchFilterOption = (input, option) =>
     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
 
@@ -966,7 +980,12 @@ class TestList extends Component {
       interestedCurriculums,
       playlist = {},
     } = this.props
-    const { blockstyle, selectedTests, markedTests } = this.state
+    const {
+      blockstyle,
+      selectedTests,
+      markedTests,
+      adaptiveTestId,
+    } = this.state
     const markedTestsList = markedTests.map((data) => data._id)
     const moduleTitleMap = {}
     const modulesMap =
@@ -1018,6 +1037,8 @@ class TestList extends Component {
                 item.alignment,
                 interestedCurriculums
               )}
+              adaptiveTestId={adaptiveTestId}
+              setAdaptiveTestId={this.handleSetAdaptiveTestId}
             />
           ))}
 
@@ -1200,6 +1221,7 @@ class TestList extends Component {
       isDemoAccount,
       t,
       sort = {},
+      isPreviewModalVisible,
     } = this.props
 
     const {
@@ -1214,6 +1236,7 @@ class TestList extends Component {
       moduleModalAdd,
       testAdded,
       openSidebar,
+      adaptiveTestId,
     } = this.state
     const search = {
       ...testFilters,
@@ -1303,6 +1326,7 @@ class TestList extends Component {
               )}
               renderExtra={this.renderExtra}
               toggleSidebar={this.toggleSidebar}
+              setAdaptiveTestId={this.handleSetAdaptiveTestId}
             />
             <SideContent
               onClick={this.toggleSidebar}
@@ -1343,6 +1367,19 @@ class TestList extends Component {
               />
             </SearchModalContainer>
           </MobileFilterModal>
+
+          {isPreviewModalVisible && adaptiveTestId && (
+            <TestPreviewModal
+              isModalVisible={isPreviewModalVisible}
+              testId={adaptiveTestId}
+              showStudentPerformance
+              closeTestPreviewModal={this.hidePreviewModal}
+              resetOnClose={() => {
+                this.setState({ adaptiveTestId: '' })
+              }}
+              unmountOnClose
+            />
+          )}
 
           {showManageModuleModal && (
             <Modal
@@ -1539,6 +1576,7 @@ const enhance = compose(
       selectedTests: getSelectedTestsSelector(state),
       isDemoAccount: isDemoPlaygroundUser(state),
       collections: getCollectionsSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1572,6 +1610,7 @@ const enhance = compose(
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
       clearSelectedItems: clearSelectedItemsAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

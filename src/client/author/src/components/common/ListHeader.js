@@ -75,6 +75,7 @@ const ListHeader = ({
   formattedCuriculums,
   curriculumStandards,
   elosByTloId,
+  setAdaptiveTestId,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
   const [standardSearchModalVisible, setStandardSearchModalVisible] = useState(
@@ -222,6 +223,7 @@ const ListHeader = ({
         selectedCurriculam={selectedCurriculam}
         grades={search.grades}
         btnText="Launch Adaptive Practice Test"
+        setAdaptiveTestId={setAdaptiveTestId}
       />
     </MainHeader>
   )
@@ -240,6 +242,7 @@ ListHeader.propTypes = {
   hasButton: PropTypes.bool,
   renderButton: PropTypes.func,
   midTitle: PropTypes.string,
+  setAdaptiveTestId: PropTypes.func,
 }
 
 ListHeader.defaultProps = {
@@ -253,6 +256,7 @@ ListHeader.defaultProps = {
   isAdvancedView: false,
   hasButton: true,
   midTitle: '',
+  setAdaptiveTestId: () => null,
 }
 
 const enhance = compose(

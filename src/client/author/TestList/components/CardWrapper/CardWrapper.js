@@ -48,6 +48,8 @@ class CardWrapper extends Component {
       onRemoveFromCart,
       onAddToCart,
       isTestRecommendation,
+      adaptiveTestId,
+      setAdaptiveTestId,
     } = this.props
 
     const itemId = _id?.substr(_id.length - 6)
@@ -78,6 +80,8 @@ class CardWrapper extends Component {
             standards={standards}
             isTestLiked={isTestLiked}
             isTestRecommendation={isTestRecommendation}
+            adaptiveTestId={adaptiveTestId}
+            setAdaptiveTestId={setAdaptiveTestId}
           />
         </CardBox>
       )

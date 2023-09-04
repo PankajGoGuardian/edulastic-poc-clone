@@ -33,10 +33,7 @@ import {
   setElosByTloIdAction,
 } from '../../../src/actions/dictionaries'
 import StandardSearchModalHeader from '../../../ItemList/components/Search/StandardSearchModalHeader'
-import {
-  setAdaptiveTestIdAction,
-  setIsTestPreviewVisibleAction,
-} from '../../../../assessment/actions/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 
 const StandardsModal = ({
   curriculumStandardsTLO,
@@ -126,8 +123,8 @@ const StandardsModal = ({
         standardSet: selectedCurriculam?.text,
       })
       console.log('data', data)
-      setAdaptiveTestId(data)
       setIsTestPreviewVisible(true)
+      setAdaptiveTestId(data)
     } catch (error) {
       console.log(error)
     } finally {
@@ -193,7 +190,6 @@ const StandardsModal = ({
     }
   }
 
-  console.log({ selectedTLOData, filteredELO, selectedElos })
   return (
     <StyledModal
       title={title}
@@ -290,7 +286,6 @@ export default connect(
     getStandardElos: getStandardElosAction,
     getElosSuccess: getElosSuccessAction,
     setElosByTloId: setElosByTloIdAction,
-    setAdaptiveTestId: setAdaptiveTestIdAction,
     setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )(StandardsModal)

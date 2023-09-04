@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Menu, Icon } from 'antd'
+import { Menu } from 'antd'
 import { questionType } from '@edulastic/constants'
 import {
   PaddingDiv,
@@ -409,10 +409,7 @@ class Container extends Component {
                     <IconMath />
                     Math
                   </Menu.Item>
-                  <Menu.Item
-                    key="visual-programming"
-                    onClick={this.toggleCategories}
-                  >
+                  <Menu.Item key="visual-programming">
                     <IconLayout />
                     Visual Programming
                   </Menu.Item>

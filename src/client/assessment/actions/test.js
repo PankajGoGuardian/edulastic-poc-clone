@@ -1,5 +1,6 @@
 import {
   LOAD_TEST,
+  ADD_TEST_ITEM_IN_ADAPTIVE_TEST,
   FINISH_TEST,
   LOAD_PREVIOUS_RESPONSES,
   SET_PASSWORD_VALIDATE_STATUS,
@@ -23,6 +24,11 @@ import {
 
 export const loadTestAction = (payload) => ({
   type: LOAD_TEST,
+  payload,
+})
+
+export const addTestItemInAdaptiveTest = (payload) => ({
+  type: ADD_TEST_ITEM_IN_ADAPTIVE_TEST,
   payload,
 })
 

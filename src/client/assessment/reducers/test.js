@@ -1,6 +1,7 @@
 import {
   RESET_TEST_ITEMS,
   LOAD_TEST_ITEMS,
+  LOAD_ADAPTIVE_TEST_NEW_ITEM,
   GOTO_ITEM,
   SET_TEST_ACTIVITY_ID,
   SET_TEST_ID,
@@ -104,6 +105,13 @@ const test = (state = initialState, { payload, type }) => {
           ...state.settings,
           ...payload.settings,
         },
+      }
+
+    case LOAD_ADAPTIVE_TEST_NEW_ITEM:
+      return {
+        ...state,
+        items: payload.items,
+        itemGroups: payload.itemGroups,
       }
 
     case GOTO_ITEM:

@@ -612,6 +612,7 @@ const AssessmentContainer = ({
   hasSections,
   preventSectionNavigation,
   deliveringItemGroups,
+  isAdaptiveTest,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -635,11 +636,13 @@ const AssessmentContainer = ({
     return classSettings
   }, [assignmentById, currentAssignment, groupId])
 
-  const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
-  const itemIndex =
-    itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
-  const qid = itemIndex > 0 ? itemIndex : 0
-  const [currentItem, setCurrentItem] = useState(Number(qid))
+  const [currentItem, setCurrentItem] = useState(0)
+  const [itemId, setItemId] = useState(items[0]._id)
+  const [testItem, setTestItem] = useState(items[0])
+  const [nextItemLoading, setNextItemLoading] = useState(false)
+  const [currentStandartSet, setCurrentStandardSet] = useState('')
+  const qid = currentItem
+
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
     qLabels: [],
     show: false,
@@ -680,8 +683,8 @@ const AssessmentContainer = ({
     [deliveringItemGroups, itemId]
   )
 
-  const isLast = () => lastItemInTest || (lastItemInsection && hasSections)
-  const isFirst = () => currentItem === 0
+  const isLast = () => items.length === 10
+  const isFirst = () => true
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
@@ -718,6 +721,18 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useEffect(() => {
+    const currentTestItem = items[items.length - 1]
+    setCurrentItem(items.length - 1)
+    setItemId(currentTestItem._id)
+    setTestItem(currentTestItem)
+    setNextItemLoading(false)
+    setCurrentStandardSet(
+      currentTestItem?.data?.questions?.[0]?.alignment?.[0]?.standards?.[0]
+        ?.identifier || ''
+    )
+  }, [items.length])
 
   useEffect(() => {
     if (!isEmpty(restrictNavigationOut)) {
@@ -993,13 +1008,8 @@ const AssessmentContainer = ({
   const gotoQuestion = (index, needsToProceed = false, context = '') => {
     if (preview) {
       const unansweredQs = getUnAnsweredQuestions()
-      if (
-        (unansweredQs.length && needsToProceed) ||
-        !unansweredQs.length ||
-        index < currentItem
-      ) {
+      if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
         hideHints()
-        setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
         const _item = items[currentItem]
         if (!_item.isDummyItem) {
@@ -1007,6 +1017,7 @@ const AssessmentContainer = ({
             currentItem,
             timeSpent,
             testId,
+            isAdaptiveTest: true,
           })
         }
       } else {
@@ -1057,6 +1068,7 @@ const AssessmentContainer = ({
 
   const moveToNext = async (e, needsToProceed = false, value) => {
     if (!isLast() && value !== 'SUBMIT') {
+      setNextItemLoading(true)
       gotoQuestion(Number(currentItem) + 1, needsToProceed, 'next')
     }
 
@@ -1090,6 +1102,7 @@ const AssessmentContainer = ({
           callback: submitPreviewTest,
           testId,
           isLastQuestion: true,
+          isAdaptiveTest: true,
         })
       }
       if (_item.isDummyItem) {
@@ -1180,6 +1193,7 @@ const AssessmentContainer = ({
       currentItem,
       timeSpent,
       testId,
+      isAdaptiveTest: true,
     }
     if (lastItemInTest) {
       evalArgs.isLastQuestion = true
@@ -1202,6 +1216,7 @@ const AssessmentContainer = ({
         timeSpent,
         testId,
         callback: submitPreviewTest,
+        isAdaptiveTest: true,
       }
       return evaluateForPreview(evalArgs)
     }
@@ -1239,16 +1254,6 @@ const AssessmentContainer = ({
     }
   }
 
-  const testItem = items[currentItem] || {}
-  if (items && items.length > 0 && Object.keys(testItem).length === 0) {
-    notification({
-      messageKey: 'invalidAction',
-      zIndex: 10000,
-    })
-    if (userRole === roleuser.STUDENT) {
-      history.push('/home/assignments')
-    }
-  }
   let itemRows = testItem.rows
 
   let passage = {}
@@ -1405,6 +1410,9 @@ const AssessmentContainer = ({
     ...restProps,
     classLevelSettings,
     isAntiCheatingEnabled,
+    isAdaptiveTest,
+    nextItemLoading,
+    currentStandartSet,
   }
 
   useEffect(() => {
@@ -1584,6 +1592,7 @@ AssessmentContainer.propTypes = {
   currentAssignment: PropTypes.string,
   fetchAssignments: PropTypes.func.isRequired,
   autoSaveInterval: PropTypes.number.isRequired,
+  isAdaptiveTest: PropTypes.bool,
 }
 
 AssessmentContainer.defaultProps = {
@@ -1593,6 +1602,7 @@ AssessmentContainer.defaultProps = {
   test: {},
   assignmentById: {},
   currentAssignment: '',
+  isAdaptiveTest: false,
 }
 
 const enhance = compose(

@@ -69,9 +69,11 @@ const PlayerHeader = ({
   openReferenceModal,
   isShowReferenceModal,
   canShowReferenceMaterial,
+  isAdaptiveTest,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
+  isLast = !isAdaptiveTest
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
   const rightButtons = (
@@ -102,56 +104,62 @@ const PlayerHeader = ({
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>
-                    <QuestionSelectDropdown
-                      key={currentItem}
-                      currentItem={currentItem}
-                      gotoQuestion={gotoQuestion}
-                      options={options}
-                      bookmarks={bookmarks}
-                      skipped={skipped}
-                      dropdownStyle={dropdownStyle}
-                      zoomLevel={zoomLevel}
-                      moveToNext={moveToNext}
-                      utaId={utaId}
-                      blockNavigationToAnsweredQuestions={
-                        blockNavigationToAnsweredQuestions
-                      }
-                    />
-                    <Tooltip
-                      placement="top"
-                      title={
-                        blockNavigationToAnsweredQuestions
-                          ? 'This assignment is restricted from navigating back to the previous question.'
-                          : 'Previous'
-                      }
-                      overlayStyle={overlayStyle}
-                    >
-                      <ControlBtn.Back
-                        prev
-                        skin
-                        data-cy="prev"
-                        type="primary"
-                        icon="left"
-                        aria-label="Previous"
-                        disabled={disabled}
-                        onClick={(e) => {
-                          moveToPrev(null, true)
-                          e.target.blur()
-                        }}
-                        // added separate keydown event handler to restrict calling on blur event for keyboard event
-                        onKeyDown={(e) => {
-                          const code = e.which || e.keyCode
-                          if (code !== keyboardConst.TAB_KEY) e.preventDefault()
-                          if (
-                            [
-                              keyboardConst.ENTER_KEY,
-                              keyboardConst.SPACE_KEY,
-                            ].includes(code)
-                          )
-                            moveToPrev(null, true)
-                        }}
+                    <EduIf condition={!isAdaptiveTest}>
+                      <QuestionSelectDropdown
+                        key={currentItem}
+                        currentItem={currentItem}
+                        gotoQuestion={gotoQuestion}
+                        options={options}
+                        bookmarks={bookmarks}
+                        skipped={skipped}
+                        dropdownStyle={dropdownStyle}
+                        zoomLevel={zoomLevel}
+                        moveToNext={moveToNext}
+                        utaId={utaId}
+                        blockNavigationToAnsweredQuestions={
+                          blockNavigationToAnsweredQuestions
+                        }
                       />
-                    </Tooltip>
+                    </EduIf>
+                    <EduIf condition={!isAdaptiveTest}>
+                      <Tooltip
+                        placement="top"
+                        title={
+                          blockNavigationToAnsweredQuestions
+                            ? 'This assignment is restricted from navigating back to the previous question.'
+                            : 'Previous'
+                        }
+                        overlayStyle={overlayStyle}
+                      >
+                        <ControlBtn.Back
+                          prev
+                          skin
+                          data-cy="prev"
+                          type="primary"
+                          icon="left"
+                          aria-label="Previous"
+                          disabled={disabled}
+                          onClick={(e) => {
+                            moveToPrev(null, true)
+                            e.target.blur()
+                          }}
+                          // added separate keydown event handler to restrict calling on blur event for keyboard event
+                          onKeyDown={(e) => {
+                            const code = e.which || e.keyCode
+                            if (code !== keyboardConst.TAB_KEY)
+                              e.preventDefault()
+                            if (
+                              [
+                                keyboardConst.ENTER_KEY,
+                                keyboardConst.SPACE_KEY,
+                              ].includes(code)
+                            )
+                              moveToPrev(null, true)
+                          }}
+                        />
+                      </Tooltip>
+                    </EduIf>
+
                     {!hideSubmitBtn && (
                       <ControlBtn.Next
                         next
@@ -201,6 +209,7 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
+                    isAdaptiveTest={isAdaptiveTest}
                   />
                 </EduIf>
                 <EduIf condition={!LCBPreviewModal}>

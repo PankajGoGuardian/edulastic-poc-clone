@@ -56,6 +56,7 @@ const AssessmentPlayer = ({
   testType,
   isModalVisible,
   isShowStudentWork,
+  isAdaptiveTest,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -191,6 +192,7 @@ const AssessmentPlayer = ({
         studentReportModal={studentReportModal}
         testId={testId}
         isShowStudentWork={isShowStudentWork}
+        isAdaptiveTest={isAdaptiveTest}
         {...restProps}
       />
     )
@@ -216,6 +218,7 @@ const AssessmentPlayer = ({
               url={match.url}
               groupId={groupId}
               testId={match.params.id}
+              isAdaptiveTest={isAdaptiveTest}
             />
           </WithResources>
         )}
@@ -232,6 +235,7 @@ const AssessmentPlayer = ({
               testletType
               groupId={groupId}
               testId={match.params.id}
+              isAdaptiveTest={isAdaptiveTest}
             />
           </WithResources>
         )}

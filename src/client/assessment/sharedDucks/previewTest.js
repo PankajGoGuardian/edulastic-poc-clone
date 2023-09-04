@@ -11,6 +11,7 @@ import { getAnswersListSelector } from '../selectors/answers'
 import { answersByQId, getItemsSelector } from '../selectors/test'
 import { clearHintUsageAction } from '../actions/userInteractions'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { addTestItemInAdaptiveTest } from '../actions/test'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -83,14 +84,27 @@ function* evaluateQuestionsSaga({
   timeSpent = 0,
   hintsUsedInItem,
   preferredLanguage = 'en',
+  isAdaptiveTest,
+  currentStandardSet,
+  curriculumId,
 }) {
-  const res = yield testItemsApi.evaluateAsStudent(testItemId, {
+  const {
+    result: res,
+    nextTestItem = {},
+  } = yield testItemsApi.evaluateAsStudent(testItemId, {
     answers: answersByQids,
     testId,
     replaceVariable: true,
     hintsUsedInItem,
     preferredLanguage,
+    isAdaptiveTest,
+    currentStandardSet,
+    curriculumId,
   })
+
+  if (!isEmpty(nextTestItem)) {
+    yield put(addTestItemInAdaptiveTest({ nextTestItem }))
+  }
 
   const previewUserWork = yield select(
     ({ userWork }) => userWork.present[testItemId]
@@ -173,7 +187,13 @@ function* createTestActiviesForSkippedQuestions({
 // sagas
 function* evaluateTestItemSaga({ payload }) {
   try {
-    const { currentItem, timeSpent, callback, isLastQuestion = false } = payload
+    const {
+      currentItem,
+      timeSpent,
+      callback,
+      isLastQuestion = false,
+      isAdaptiveTest,
+    } = payload
     const testItems = yield select(getItemsSelector)
     const testItem = testItems[currentItem]
     const allQuestionsById = yield select(getQuestionsByIdSelector)
@@ -187,6 +207,11 @@ function* evaluateTestItemSaga({ payload }) {
       .reduce((acc, curr) => [...acc, curr.reference], [])
       .map((qid) => allQuestionsById[`${testItem._id}_${qid}`])
     // const qById = keyBy(questions, 'id')
+    const firstQuestion = questions[0]
+    const alignmentData = firstQuestion?.alignment?.[0] || {}
+    const { standards = [] } = alignmentData || {}
+    const { identifier: currentStandardSet = '', curriculumId = null } =
+      standards?.[0] || {}
     const answersByQids = answersByQId(answers, testItem._id)
 
     const test = yield select((state) => get(state, 'tests.entity', {}))
@@ -214,6 +239,9 @@ function* evaluateTestItemSaga({ payload }) {
       timeSpent,
       hintsUsedInItem,
       preferredLanguage,
+      isAdaptiveTest,
+      currentStandardSet,
+      curriculumId,
     })
     // onSubmit preview test evaluate all skipped question
     if (isLastQuestion) {

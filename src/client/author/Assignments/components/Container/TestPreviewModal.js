@@ -39,6 +39,7 @@ const TestPreviewModal = ({
   unmountOnClose = false,
   setSelectedTheme,
   setZoomLevel,
+  isAdaptiveTest = true,
   ...restProps
 }) => {
   const [
@@ -133,6 +134,7 @@ const TestPreviewModal = ({
             defaultAP={!PRACTICE.includes(testType)}
             isModalVisible={isModalVisible}
             viewAsStudent
+            isAdaptiveTest={isAdaptiveTest}
             {...restProps}
           />
         </WithResources>

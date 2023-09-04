@@ -1378,6 +1378,7 @@ class TestList extends Component {
                 this.setState({ adaptiveTestId: '' })
               }}
               unmountOnClose
+              isAdaptiveTest
             />
           )}
 

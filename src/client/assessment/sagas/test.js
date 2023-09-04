@@ -59,7 +59,9 @@ import {
 import { markQuestionLabel } from '../Transformer'
 import {
   LOAD_TEST,
+  ADD_TEST_ITEM_IN_ADAPTIVE_TEST,
   LOAD_TEST_ITEMS,
+  LOAD_ADAPTIVE_TEST_NEW_ITEM,
   SET_TEST_ID,
   FINISH_TEST,
   SUBMIT_SECTION,
@@ -126,6 +128,7 @@ import {
 import {
   getItemGroupsByExcludingItems,
   getSubmitTestCompleteSelector,
+  testSelector,
 } from '../selectors/test'
 import {
   setActiveAssignmentAction,
@@ -1082,6 +1085,43 @@ function* loadTest({ payload }) {
   }
 }
 
+function* addTestItemInAdaptiveTestSaga({ payload }) {
+  try {
+    const { nextTestItem } = payload
+    const test = yield select(testSelector)
+    if (test?.itemGroups?.[0]?.items) {
+      test.itemGroups[0].items = [...test.itemGroups[0].items, nextTestItem]
+    }
+    const { itemGroups } = test
+    let testItems = test?.itemGroups?.flatMap?.(
+      (itemGroup) => itemGroup.items || []
+    )
+
+    testItems = markQuestionLabel(testItems)
+    const questions = getQuestions(testItems)
+
+    yield put(
+      loadQuestionsAction(
+        _keyBy(questions, (q) =>
+          q.type === 'passage' || q.type === 'video'
+            ? q.id
+            : `${q.testItemId}_${q.id}`
+        )
+      )
+    )
+
+    yield put({
+      type: LOAD_ADAPTIVE_TEST_NEW_ITEM,
+      payload: {
+        items: testItems,
+        itemGroups,
+      },
+    })
+  } catch (error) {
+    console.log('addTestItemInAdaptiveTestSaga', error)
+  }
+}
+
 // load users previous responses for a particular test
 function* loadPreviousResponses(payload) {
   try {
@@ -1389,5 +1429,9 @@ export default function* watcherSaga() {
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
     yield takeLatest(CLOSE_TEST_TIMED_OUT_ALERT_MODAL, closeTestTimeOutSaga),
+    yield takeEvery(
+      ADD_TEST_ITEM_IN_ADAPTIVE_TEST,
+      addTestItemInAdaptiveTestSaga
+    ),
   ])
 }

@@ -89,6 +89,7 @@ class TestItemCol extends Component {
       colIndex,
       itemIdKey,
       aiEvaluationStatus,
+      currentStandartSet,
       ...restProps
     } = this.props
     const {
@@ -228,6 +229,9 @@ class TestItemCol extends Component {
             </FlexItem>
           )}
         </FlexContainer>
+        <div style={{ marginLeft: 30 }}>
+          Standard set: <b>{currentStandartSet}</b>
+        </div>
         {!isStudentAttempt &&
           !isStudentReport &&
           imageAttachments.length > 0 &&

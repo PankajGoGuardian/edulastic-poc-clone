@@ -12,6 +12,8 @@ export const currentItemIndexSelector = createSelector(
   (state) => state.currentItem
 )
 
+export const testSelector = createSelector(stateSelector, (state) => state)
+
 export const itemsSelector = createSelector(
   stateSelector,
   (state) => state.items

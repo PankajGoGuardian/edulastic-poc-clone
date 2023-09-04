@@ -18,6 +18,7 @@ import {
   CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
   SET_ANTI_CHEATING_ENABLED,
   SUBMIT_SECTION,
+  SET_ADAPTIVE_TEST_ID,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -112,5 +113,10 @@ export const closeTestTimeoutAlertModalAction = (payload) => ({
 
 export const setIsAntiCheatingEnabled = (payload) => ({
   type: SET_ANTI_CHEATING_ENABLED,
+  payload,
+})
+
+export const setAdaptiveTestIdAction = (payload) => ({
+  type: SET_ADAPTIVE_TEST_ID,
   payload,
 })

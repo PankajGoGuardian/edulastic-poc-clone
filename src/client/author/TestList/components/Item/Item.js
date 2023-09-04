@@ -48,8 +48,14 @@ import {
   getVerificationTS,
   isDefaultDASelector,
 } from '../../../../student/Login/ducks'
-import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import {
+  getAdaptiveTestIdSelector,
+  getIsPreviewModalVisibleSelector,
+} from '../../../../assessment/selectors/test'
+import {
+  setAdaptiveTestIdAction,
+  setIsTestPreviewVisibleAction,
+} from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
 
 export const sharedTypeMap = {
@@ -349,6 +355,8 @@ class Item extends Component {
       customTitleModalVisible,
       previouslyUsedPlaylistClone,
       isTestRecommendation,
+      adaptiveTestId = '',
+      setAdaptiveTestId,
     } = this.props
     const showUsedModal =
       isUsedModalVisible &&
@@ -484,14 +492,15 @@ class Item extends Component {
         )}
 
         {/* Both conditions required so that preview model will trigger unmount */}
-        {isPreviewModalVisible && currentTestId && (
+        {isPreviewModalVisible && (adaptiveTestId || currentTestId) && (
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
-            testId={currentTestId}
+            testId={adaptiveTestId || currentTestId}
             showStudentPerformance
             closeTestPreviewModal={this.hidePreviewModal}
             resetOnClose={() => {
               this.setState({ currentTestId: '' })
+              setAdaptiveTestId('')
             }}
             unmountOnClose
           />
@@ -551,6 +560,8 @@ const enhance = compose(
         state.curriculumSequence?.previouslyUsedPlaylistClone,
       customTitleModalVisible:
         state.curriculumSequence?.customTitleModalVisible,
+      adaptiveTestId: getAdaptiveTestIdSelector(state),
+      setAdaptiveTestId: setAdaptiveTestIdAction(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

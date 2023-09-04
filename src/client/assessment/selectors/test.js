@@ -28,6 +28,11 @@ export const getCurrentItemIdSelector = createSelector(
   (state) => state?._id
 )
 
+export const getAdaptiveTestIdSelector = createSelector(
+  stateSelector,
+  (state) => state.adaptiveTestId
+)
+
 export const currentQuestions = createSelector(currentItemSelector, (item) => {
   const rows = Array.isArray(item.rows) ? item.rows : []
   return rows.reduce((acc, row) => {

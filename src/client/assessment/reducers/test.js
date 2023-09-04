@@ -4,6 +4,7 @@ import {
   GOTO_ITEM,
   SET_TEST_ACTIVITY_ID,
   SET_TEST_ID,
+  SET_ADAPTIVE_TEST_ID,
   RESET_CURRENT_TEST_ITEM,
   SET_RESUME_STATUS,
   SET_TEST_LOADING_STATUS,
@@ -66,6 +67,7 @@ const initialState = {
   submitTestComplete: false,
   isSectionSubmitting: false,
   preventSectionNavigation: false,
+  adaptiveTestId: '',
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -114,6 +116,12 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         testId: payload.testId,
+      }
+
+    case SET_ADAPTIVE_TEST_ID:
+      return {
+        ...state,
+        adaptiveTestId: payload,
       }
 
     case RESET_CURRENT_TEST_ITEM:

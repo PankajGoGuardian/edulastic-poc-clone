@@ -33,6 +33,10 @@ import {
   setElosByTloIdAction,
 } from '../../../src/actions/dictionaries'
 import StandardSearchModalHeader from '../../../ItemList/components/Search/StandardSearchModalHeader'
+import {
+  setAdaptiveTestIdAction,
+  setIsTestPreviewVisibleAction,
+} from '../../../../assessment/actions/test'
 
 const StandardsModal = ({
   curriculumStandardsTLO,
@@ -51,6 +55,8 @@ const StandardsModal = ({
   elosByTloId,
   grades,
   standards = [],
+  setAdaptiveTestId,
+  setIsTestPreviewVisible,
 }) => {
   const [eloStandards, setEloStandards] = useState([])
   const [selectedTLO, setSelectedTLO] = useState('')
@@ -119,6 +125,9 @@ const StandardsModal = ({
         curriculumId: selectedCurriculam?.value,
         standardSet: selectedCurriculam?.text,
       })
+      console.log('data', data)
+      setAdaptiveTestId(data)
+      setIsTestPreviewVisible(true)
     } catch (error) {
       console.log(error)
     } finally {
@@ -281,6 +290,8 @@ export default connect(
     getStandardElos: getStandardElosAction,
     getElosSuccess: getElosSuccessAction,
     setElosByTloId: setElosByTloIdAction,
+    setAdaptiveTestId: setAdaptiveTestIdAction,
+    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )(StandardsModal)
 

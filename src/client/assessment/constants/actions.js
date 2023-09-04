@@ -16,6 +16,7 @@ export const START_ASSESSMENT = '[assessment] start assessment'
 
 // test
 export const SET_TEST_ID = '[test] set test id'
+export const SET_ADAPTIVE_TEST_ID = '[test] set adaptive test id'
 export const LOAD_TEST = '[test] load test'
 export const LOAD_TEST_ITEMS = '[test] load test items'
 export const RESET_TEST_ITEMS = '[test] reset test items'

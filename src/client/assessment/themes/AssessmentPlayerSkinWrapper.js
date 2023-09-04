@@ -19,6 +19,7 @@ import PlayerFooterDrc from './skins/Drc/PlayerFooter'
 import DrcHeader from './skins/Drc/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
 import { Tooltip } from '../../common/utils/helpers'
+import SelectEmojiModal from '../../author/TestList/components/StandardsModal/SelectEmojiModal'
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -343,6 +344,7 @@ const AssessmentPlayerSkinWrapper = ({
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       <ThemeProvider theme={themeForHeader}>{header()}</ThemeProvider>
       <FlexContainer position="relative">
+        <SelectEmojiModal visible />
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}

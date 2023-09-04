@@ -33,6 +33,7 @@ import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
 import { Chart } from '../widgets/Charts'
 import Pictograph from '../widgets/Pictorgraph'
+import VisualProgramming from '../widgets/VisualProgramming'
 import { Graph } from '../components/Graph'
 import { Drawing } from '../components/Drawing'
 
@@ -77,6 +78,7 @@ const {
   UPLOAD_FILE,
   PICTOGRAPH,
   AUDIO_RESPONSE,
+  VISUAL_PROGRAMMING,
 } = questionType
 
 const DummyQuestion = () => <></>
@@ -122,5 +124,6 @@ export const questionTypeToComponent = {
   [UPLOAD_FILE]: UploadFile,
   [PICTOGRAPH]: Pictograph,
   [AUDIO_RESPONSE]: AudioResponse,
+  [VISUAL_PROGRAMMING]: VisualProgramming,
   default: () => null,
 }

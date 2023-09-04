@@ -28,5 +28,6 @@ const questionTitle = {
   MATRICES: 'Matrices',
   FORMULA_ESSAY: 'Math Essay',
   AUDIO_RESPONSE: 'Audio Response',
+  VISUAL_PROGRAMMING: 'Visual Programming',
 }
 module.exports = questionTitle

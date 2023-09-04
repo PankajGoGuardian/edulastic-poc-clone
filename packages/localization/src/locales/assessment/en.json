@@ -519,6 +519,16 @@
       "enterQuestion": "Enter your question",
       "listLabels": "Labels"
     },
+    "visualProgramming": {
+      "containerSourcePreview": "Source",
+      "containerTargetPreview": "Target",
+      "correctAnswers": "Correct Answers",
+      "alternateAnswer": "Alternate Answer",
+      "testCase": "Test Case",
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "listLabels": "Labels"
+    },
     "multiplechoice": {
       "thisisstem": "Enter your question",
       "setcorrectanswers": "Set Correct Answer(s)",

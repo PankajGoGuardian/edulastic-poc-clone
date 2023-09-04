@@ -60,6 +60,7 @@ const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
 const PICTOGRAPH = 'pictograph'
 const AUDIO_RESPONSE = 'audioResponse'
+const VISUAL_PROGRAMMING = 'visualProgramming'
 
 const selectsData = [
   { value: ALL_QUESTION_TYPES, text: 'All Types' },
@@ -211,6 +212,7 @@ module.exports = {
   useLanguageFeatureQn,
   PICTOGRAPH,
   AUDIO_RESPONSE,
+  VISUAL_PROGRAMMING,
   disableEditResponseInEgQuestionTypes,
   HIDE_QUESTION_TYPES,
   WIDGET_TYPES,

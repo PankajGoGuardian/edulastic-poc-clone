@@ -2774,6 +2774,26 @@ export const getCards = (
       },
       onSelectQuestionType,
     },
+    {
+      type: 'visual-programming',
+      cardImage: CodingImage,
+      data: {
+        title: questionTitle.VISUAL_PROGRAMMING,
+        type: questionType.VISUAL_PROGRAMMING,
+        stimulus: '',
+        testCases: [{ id: uuids[0], input: [{ name: 'v1', value: '' }] }],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [{ id: uuids[0], output: '' }],
+          },
+          altResponses: [],
+        },
+        hints: [],
+      },
+      onSelectQuestionType,
+    },
   ]
   if (!enableAudioResponseQuestion) {
     cards = cards.filter((i) => !i.isAudioResponseQuestionType)

@@ -34,6 +34,7 @@ const AssessmentPlayerSkinWrapper = ({
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
+  const [showEmotionModal, setShowEmotionModal] = useState(true)
   const {
     moveToNext,
     moveToPrev,
@@ -344,7 +345,10 @@ const AssessmentPlayerSkinWrapper = ({
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       <ThemeProvider theme={themeForHeader}>{header()}</ThemeProvider>
       <FlexContainer position="relative">
-        <SelectEmojiModal visible />
+        <SelectEmojiModal
+          showModal={showEmotionModal}
+          setShowModal={setShowEmotionModal}
+        />
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}

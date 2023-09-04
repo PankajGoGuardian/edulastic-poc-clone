@@ -105,6 +105,7 @@ export const TOGGLE_TEST_LIKE = '[tests list] toggle test like'
 export const UPDATE_LIKE_COUNT = '[tests list] update like count'
 export const RESET_TEST_FILTERS = '[tests library] reset test library filters'
 export const SET_DELETE_TEST_STATE = '[test] set delete test state'
+export const SET_ADAPTIVE_TEST_EMOTION = '[adaptiveTest] set emotion'
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST)
@@ -137,7 +138,9 @@ export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE)
 export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT)
 export const resetTestFiltersAction = createAction(RESET_TEST_FILTERS)
 export const setDeleteTestStateAction = createAction(SET_DELETE_TEST_STATE)
-
+export const setAdaptiveTestEmotionAction = createAction(
+  SET_ADAPTIVE_TEST_EMOTION
+)
 // selectors
 export const stateSelector = (state) => state.testList
 
@@ -180,6 +183,11 @@ export const getSortFilterStateSelector = createSelector(
 export const getDeleteTestStateSelector = createSelector(
   stateSelector,
   (state) => state.deletingTest
+)
+
+export const getAdaptiveTestEmotion = createSelector(
+  stateSelector,
+  (state) => state.adaptiveTestEmotion
 )
 
 export const getEquivalentStandards = ({ tests, testList }) =>
@@ -420,6 +428,7 @@ const initialState = {
   selectedTests: [],
   sort: { ...initialSortState },
   deletingTest: false,
+  adaptiveTestEmotion: null,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -552,6 +561,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         deletingTest: payload,
+      }
+    case SET_ADAPTIVE_TEST_EMOTION:
+      return {
+        ...state,
+        adaptiveTestEmotion: payload.emotion,
       }
     default:
       return state

@@ -524,7 +524,7 @@
       "containerTargetPreview": "Target",
       "correctAnswers": "Correct Answers",
       "alternateAnswer": "Alternate Answer",
-      "testCase": "Test Case",
+      "testCases": "Test Cases",
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
       "listLabels": "Labels"

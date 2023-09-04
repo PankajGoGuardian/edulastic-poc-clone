@@ -1,19 +1,57 @@
 import React from 'react'
+import { produce } from 'immer'
+import { arrayMove } from 'react-sortable-hoc'
+
 import Question from '../../../components/Question'
 import CorrectAnswers from '../../../components/CorrectAnswers'
+import QuillSortableList from '../../../components/QuillSortableList'
 
 const CorrectAnswersSection = ({
   t,
   item,
   fillSections,
   cleanSections,
-  correctTab,
-  setCorrectTab,
-  handleAddAnswer,
-  handleCloseTab,
-  renderOptions,
-  handlePointsChange,
+  setQuestionData,
 }) => {
+  const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.validation.validResponse.value = arrayMove(
+          draft.validation.validResponse.value,
+          oldIndex,
+          newIndex
+        )
+      })
+    )
+  }
+
+  const handlePointsChange = (val) => {
+    if (val < 0) {
+      return
+    }
+    const points = parseFloat(val, 10)
+    console.log(points)
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.validation.validResponse.score = points
+        // updateVariables(draft)
+      })
+    )
+  }
+
+  const renderOptions = () => (
+    <QuillSortableList
+      item={item}
+      prefix="options"
+      readOnly
+      canDelete={false}
+      items={item.validation.validResponse.value.map((v) => v.output)}
+      onSortEnd={handleCorrectSortEnd}
+      useDragHandle
+      columns={1}
+    />
+  )
+
   return (
     <Question
       section="main"
@@ -22,22 +60,13 @@ const CorrectAnswersSection = ({
       cleanSections={cleanSections}
     >
       <CorrectAnswers
-        onTabChange={setCorrectTab}
-        correctTab={correctTab}
-        readOnly
-        onAdd={handleAddAnswer}
         validation={item.validation}
         options={renderOptions()}
-        onCloseTab={handleCloseTab}
         fillSections={fillSections}
         cleanSections={cleanSections}
+        correctTab={0}
         questionType={item?.title}
-        isCorrectAnsTab={correctTab === 0}
-        points={
-          correctTab === 0
-            ? item.validation.validResponse.score
-            : item.validation.altResponses[correctTab - 1].score
-        }
+        points={item.validation.validResponse.score}
         onChangePoints={handlePointsChange}
       />
     </Question>

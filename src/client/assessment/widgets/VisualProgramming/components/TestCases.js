@@ -13,113 +13,109 @@ import QuillSortableList from '../../../components/QuillSortableList/index'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 
-const List = withAddButton(QuillSortableList)
+const ListWithAdd = withAddButton(QuillSortableList)
 
-const TestCasesList = ({
+const prefixStr = 'main('
+const middleStr = ')='
+const inputDelimiter = ','
+
+const TestCases = ({
   item,
   setQuestionData,
   t,
   fillSections,
   cleanSections,
 }) => {
-  const handleAdd = (testCaseIndex) => () => {
+  const handleAdd = () => {
     setQuestionData(
       produce(item, (draft) => {
-        const testCaseInput = draft.testCases[testCaseIndex].input
-        testCaseInput.push({
-          name: `v${testCaseInput.length + 1}`,
-          value: '',
+        const id = uuid()
+        draft.testCases.push({
+          id,
+          input: [{ name: 'v1', value: '' }],
+          str: 'main()=',
+        })
+        draft.validation.validResponse.value.push({
+          id,
+          output: '',
         })
       })
     )
   }
 
-  const handleRemove = (testCaseIndex) => (index) => {
+  const handleRemove = (index) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases[testCaseIndex].input.splice(index, 1)
+        draft.testCases.splice(index, 1)
       })
       //   updateVariables(draft)
     )
   }
 
-  const handleSortEnd = (testCaseIndex) => ({ oldIndex, newIndex }) => {
+  const handleSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases[testCaseIndex].input = arrayMove(
-          draft.testCases[testCaseIndex].input,
-          oldIndex,
-          newIndex
-        )
+        draft.testCases = arrayMove(draft.testCases, oldIndex, newIndex)
       })
     )
   }
 
-  const handleChange = (testCaseIndex) => (index, value) => {
+  const handleChange = (index, value) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases[testCaseIndex].input[index].value = value
+        draft.testCases[index].str = value
+        if (value.includes(prefixStr) && value.includes(middleStr)) {
+          const splitStr = value.split(middleStr)
+          const input = splitStr[0]
+            .split(prefixStr)[1]
+            .split(inputDelimiter)
+            .map((i, idx) => ({
+              name: `v${idx + 1}`,
+              value: parseInt(i, 10) || '',
+            }))
+          const output = parseInt(splitStr[1], 10) || ''
+          const response = { id: draft.testCases[index].id, output }
+          draft.testCases[index].input = input
+          draft.validation.validResponse.value[index] = response
+        }
         // updateVariables(draft)
       })
     )
   }
 
-  return item.testCases.map((testCase, testCaseIndex) => {
-    const inputItems = testCase.input.map((i) => i.value)
-    return (
-      <Question
-        section="main"
-        label={`${t('component.visualProgramming.testCase')} ${
-          testCaseIndex + 1
-        }`}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        key={testCase.id}
-      >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.visualProgramming.testCase')}-${
-              testCaseIndex + 1
-            }`
-          )}
-        >
-          {`${t('component.visualProgramming.testCase')} ${testCaseIndex + 1}`}
-        </Subtitle>
-        <List
-          items={inputItems}
-          buttonText="Add new Input"
-          onAdd={handleAdd(testCaseIndex)}
-          onSortEnd={handleSortEnd(testCaseIndex)}
-          onChange={handleChange(testCaseIndex)}
-          onRemove={handleRemove(testCaseIndex)}
-          placeholder="Add Input"
-          useDragHandle
-          columns={1}
-        />
-      </Question>
-    )
+  const inputItems = item.testCases.map((testCase, index) => {
+    const testCaseStr = testCase.str || ''
+    const inputStr = testCase.input.map((i) => i.value).join(inputDelimiter)
+    const outputStr = item.validation.validResponse.value[index].output
+    return testCaseStr || `${prefixStr}${inputStr}${middleStr}${outputStr}`
   })
-}
 
-const TestCasesListWithAdd = withAddButton(TestCasesList)
-
-const TestCases = (props) => {
-  const { item, setQuestionData } = props
-  const handleAddTestCase = () => {
-    setQuestionData(
-      produce(item, (draft) => {
-        const id = uuid()
-        draft.testCases.push({ id, input: [{ name: 'v1', value: '' }] })
-        draft.validation.validResponse.value.push({ id, output: '' })
-      })
-    )
-  }
   return (
-    <TestCasesListWithAdd
-      buttonText="Add new Test Case"
-      onAdd={handleAddTestCase}
-      {...props}
-    />
+    <Question
+      section="main"
+      label={`${t('component.visualProgramming.testCases')}`}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    >
+      <Subtitle
+        id={getFormattedAttrId(
+          `${item?.title}-${t('component.visualProgramming.testCases')}`
+        )}
+      >
+        {`${t('component.visualProgramming.testCases')}`}
+      </Subtitle>
+      <ListWithAdd
+        items={inputItems}
+        buttonText="Add Test Case"
+        placeholder="Test Case"
+        onAdd={handleAdd}
+        onSortEnd={handleSortEnd}
+        onChange={handleChange}
+        onRemove={handleRemove}
+        useDragHandle
+        columns={1}
+      />
+    </Question>
   )
 }
 

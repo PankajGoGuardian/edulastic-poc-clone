@@ -9,6 +9,7 @@ import { getUserConfirmation } from './common/utils/helpers'
 
 import rootReducer from './reducers'
 import rootSaga from './sagas'
+import { useSelector } from 'react-redux'
 
 export const history = createBrowserHistory({ getUserConfirmation })
 
@@ -33,7 +34,10 @@ let store
 const composeEnhancers =
   // process.env.NODE_ENV === 'development' &&
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        trace: true,
+        traceLimit: 30,
+      })
     : // window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       //   trace: true,
       //   traceLimit: 30,

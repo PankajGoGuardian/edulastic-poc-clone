@@ -113,6 +113,7 @@ const selectsData = [
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
   { value: AUDIO_RESPONSE, text: audioResponseTitleText },
+  { value: VISUAL_PROGRAMMING, text: 'Visual Programming' },
 ]
 
 const QUE_TYPE_BY_TITLE = {

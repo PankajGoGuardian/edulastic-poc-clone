@@ -8,16 +8,9 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
 // import { updateVariables } from '../../../utils/variables'
 
-import withAddButton from '../../../components/HOC/withAddButton'
-import QuillSortableList from '../../../components/QuillSortableList/index'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
-
-const ListWithAdd = withAddButton(QuillSortableList)
-
-const prefixStr = 'main('
-const middleStr = ')='
-const inputDelimiter = ','
+import TypedList from '../../../components/TypedList'
 
 const TestCases = ({
   item,
@@ -32,9 +25,9 @@ const TestCases = ({
         const id = uuid()
         draft.validation.validResponse.testCases.push({
           id,
-          input: [{ name: 'v1', value: '' }],
-          output: '',
-          str: 'main()=',
+          // input: [{ name: 'v1', value: '' }],
+          // output: '',
+          str: '',
         })
       })
     )
@@ -44,6 +37,10 @@ const TestCases = ({
     setQuestionData(
       produce(item, (draft) => {
         draft.validation.validResponse.testCases.splice(index, 1)
+        // draft.testCases[testCaseIndex].input.splice(index, 1)
+        // if (draft.testCases[testCaseIndex].input.length === 0) {
+        //   draft.testCases.splice(testCaseIndex, 1)
+        // }
       })
       //   updateVariables(draft)
     )
@@ -65,19 +62,19 @@ const TestCases = ({
     setQuestionData(
       produce(item, (draft) => {
         draft.validation.validResponse.testCases[index].str = _str
-        if (_str.includes(prefixStr) && _str.includes(middleStr)) {
-          const splitStr = _str.split(middleStr)
-          const input = splitStr[0]
-            .split(prefixStr)[1]
-            .split(inputDelimiter)
-            .map((i, idx) => ({
-              name: `v${idx + 1}`,
-              value: i.match(/\d+/g)?.[0] || '',
-            }))
-          const output = splitStr[1].match(/\d+/g)?.[0] || ''
-          draft.validation.validResponse.testCases[index].input = input
-          draft.validation.validResponse.testCases[index].output = output
-        }
+        // if (_str.includes(prefixStr) && _str.includes(middleStr)) {
+        //   const splitStr = _str.split(middleStr)
+        //   const input = splitStr[0]
+        //     .split(prefixStr)[1]
+        //     .split(inputDelimiter)
+        //     .map((i, idx) => ({
+        //       name: `v${idx + 1}`,
+        //       value: i.match(/\d+/g)?.[0] || '',
+        //     }))
+        //   const output = splitStr[1].match(/\d+/g)?.[0] || ''
+        //   draft.validation.validResponse.testCases[index].input = input
+        //   draft.validation.validResponse.testCases[index].output = output
+        // }
         // updateVariables(draft)
       })
     )
@@ -85,9 +82,7 @@ const TestCases = ({
 
   const inputItems = item.validation.validResponse.testCases.map((testCase) => {
     const testCaseStr = testCase.str || ''
-    const inputStr = testCase.input.map((i) => i.value).join(inputDelimiter)
-    const outputStr = testCase.output
-    return testCaseStr || `${prefixStr}${inputStr}${middleStr}${outputStr}`
+    return testCaseStr
   })
 
   return (
@@ -104,7 +99,7 @@ const TestCases = ({
       >
         {`${t('component.visualProgramming.testCases')}`}
       </Subtitle>
-      <ListWithAdd
+      <TypedList
         items={inputItems}
         buttonText="Add Test Case"
         placeholder="Test Case"

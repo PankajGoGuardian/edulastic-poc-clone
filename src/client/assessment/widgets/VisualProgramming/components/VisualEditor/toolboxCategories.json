@@ -1,0 +1,699 @@
+[
+	{
+			"name": "Logic",
+			"colour": "#5C81A6",
+			"blocks": [
+					{
+							"type": "controls_if"
+					},
+					{
+							"fields": {
+									"OP": "EQ"
+							},
+							"type": "logic_compare"
+					},
+					{
+							"fields": {
+									"OP": "AND"
+							},
+							"type": "logic_operation"
+					},
+					{
+							"type": "logic_negate"
+					},
+					{
+							"fields": {
+									"BOOL": "TRUE"
+							},
+							"type": "logic_boolean"
+					},
+					{
+							"type": "logic_null"
+					},
+					{
+							"type": "logic_ternary"
+					}
+			]
+	},
+	{
+			"name": "Loops",
+			"colour": "#5CA65C",
+			"blocks": [
+					{
+							"values": {
+									"TIMES": {
+											"fields": {
+													"NUM": "10"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "controls_repeat_ext"
+					},
+					{
+							"fields": {
+									"MODE": "WHILE"
+							},
+							"type": "controls_whileUntil"
+					},
+					{
+							"fields": {
+									"VAR": "i"
+							},
+							"values": {
+									"FROM": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"TO": {
+											"fields": {
+													"NUM": "10"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"BY": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "controls_for"
+					},
+					{
+							"fields": {
+									"VAR": "j"
+							},
+							"type": "controls_forEach"
+					},
+					{
+							"fields": {
+									"FLOW": "BREAK"
+							},
+							"type": "controls_flow_statements"
+					}
+			]
+	},
+	{
+			"name": "Math",
+			"colour": "#5C68A6",
+			"blocks": [
+					{
+							"fields": {
+									"OP": "ROUND"
+							},
+							"values": {
+									"NUM": {
+											"fields": {
+													"NUM": "3.1"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_round"
+					},
+					{
+							"fields": {
+									"NUM": "0"
+							},
+							"type": "math_number"
+					},
+					{
+							"fields": {
+									"OP": "ROOT"
+							},
+							"values": {
+									"NUM": {
+											"fields": {
+													"NUM": "9"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_single"
+					},
+					{
+							"fields": {
+									"OP": "SIN"
+							},
+							"values": {
+									"NUM": {
+											"fields": {
+													"NUM": "45"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_trig"
+					},
+					{
+							"fields": {
+									"CONSTANT": "PI"
+							},
+							"type": "math_constant"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"divisor_input": "false"
+									}
+							},
+							"fields": {
+									"PROPERTY": "EVEN"
+							},
+							"values": {
+									"NUMBER_TO_CHECK": {
+											"fields": {
+													"NUM": "0"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_number_property"
+					},
+					{
+							"fields": {
+									"OP": "ADD"
+							},
+							"values": {
+									"A": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"B": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_arithmetic"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"op": "SUM"
+									}
+							},
+							"fields": {
+									"OP": "SUM"
+							},
+							"type": "math_on_list"
+					},
+					{
+							"values": {
+									"DIVIDEND": {
+											"fields": {
+													"NUM": "64"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"DIVISOR": {
+											"fields": {
+													"NUM": "10"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_modulo"
+					},
+					{
+							"values": {
+									"VALUE": {
+											"fields": {
+													"NUM": "50"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"LOW": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"HIGH": {
+											"fields": {
+													"NUM": "100"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_constrain"
+					},
+					{
+							"values": {
+									"FROM": {
+											"fields": {
+													"NUM": "1"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"TO": {
+											"fields": {
+													"NUM": "100"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "math_random_int"
+					},
+					{
+							"type": "math_random_float"
+					}
+			]
+	},
+	{
+			"name": "Text",
+			"colour": "#5CA68D",
+			"blocks": [
+					{
+							"mutation": {
+									"attributes": {
+											"at": "true"
+									}
+							},
+							"fields": {
+									"WHERE": "FROM_START"
+							},
+							"values": {
+									"VALUE": {
+											"fields": {
+													"VAR": "text"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "text_charAt"
+					},
+					{
+							"fields": {},
+							"type": "text"
+					},
+					{
+							"fields": {
+									"VAR": "item"
+							},
+							"values": {
+									"TEXT": {
+											"fields": {},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_append"
+					},
+					{
+							"values": {
+									"VALUE": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_length"
+					},
+					{
+							"values": {
+									"VALUE": {
+											"fields": {},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_isEmpty"
+					},
+					{
+							"fields": {
+									"END": "FIRST"
+							},
+							"values": {
+									"VALUE": {
+											"fields": {
+													"VAR": "text"
+											},
+											"type": "variables_get",
+											"shadow": false
+									},
+									"FIND": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_indexOf"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"items": "2"
+									}
+							},
+							"type": "text_join"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"at1": "true",
+											"at2": "true"
+									}
+							},
+							"fields": {
+									"WHERE1": "FROM_START",
+									"WHERE2": "FROM_START"
+							},
+							"values": {
+									"STRING": {
+											"fields": {
+													"VAR": "text"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "text_getSubstring"
+					},
+					{
+							"fields": {
+									"CASE": "UPPERCASE"
+							},
+							"values": {
+									"TEXT": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_changeCase"
+					},
+					{
+							"fields": {
+									"MODE": "BOTH"
+							},
+							"values": {
+									"TEXT": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_trim"
+					},
+					{
+							"values": {
+									"TEXT": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_print"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"type": "TEXT"
+									}
+							},
+							"fields": {
+									"TYPE": "TEXT"
+							},
+							"values": {
+									"TEXT": {
+											"fields": {
+													"TEXT": "abc"
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "text_prompt_ext"
+					}
+			]
+	},
+	{
+			"name": "Lists",
+			"colour": "#745CA6",
+			"blocks": [
+					{
+							"fields": {
+									"END": "FIRST"
+							},
+							"values": {
+									"VALUE": {
+											"fields": {
+													"VAR": "list"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "lists_indexOf"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"items": "0"
+									}
+							},
+							"type": "lists_create_with"
+					},
+					{
+							"values": {
+									"NUM": {
+											"fields": {
+													"NUM": "5"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "lists_repeat"
+					},
+					{
+							"type": "lists_length"
+					},
+					{
+							"type": "lists_isEmpty"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"items": "3"
+									}
+							},
+							"type": "lists_create_with"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"statement": "false",
+											"at": "true"
+									}
+							},
+							"fields": {
+									"MODE": "GET",
+									"WHERE": "FROM_START"
+							},
+							"values": {
+									"VALUE": {
+											"fields": {
+													"VAR": "list"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "lists_getIndex"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"at": "true"
+									}
+							},
+							"fields": {
+									"MODE": "SET",
+									"WHERE": "FROM_START"
+							},
+							"values": {
+									"LIST": {
+											"fields": {
+													"VAR": "list"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "lists_setIndex"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"at1": "true",
+											"at2": "true"
+									}
+							},
+							"fields": {
+									"WHERE1": "FROM_START",
+									"WHERE2": "FROM_START"
+							},
+							"values": {
+									"LIST": {
+											"fields": {
+													"VAR": "list"
+											},
+											"type": "variables_get",
+											"shadow": false
+									}
+							},
+							"type": "lists_getSublist"
+					},
+					{
+							"mutation": {
+									"attributes": {
+											"mode": "SPLIT"
+									}
+							},
+							"fields": {
+									"MODE": "SPLIT"
+							},
+							"values": {
+									"DELIM": {
+											"fields": {
+													"TEXT": ","
+											},
+											"type": "text",
+											"shadow": true
+									}
+							},
+							"type": "lists_split"
+					},
+					{
+							"fields": {
+									"TYPE": "NUMERIC",
+									"DIRECTION": "1"
+							},
+							"type": "lists_sort"
+					}
+			]
+	},
+	{
+			"name": "Colour",
+			"colour": "#A6745C",
+			"blocks": [
+					{
+							"fields": {
+									"COLOUR": "#ff0000"
+							},
+							"type": "colour_picker"
+					},
+					{
+							"type": "colour_random"
+					},
+					{
+							"values": {
+									"RED": {
+											"fields": {
+													"NUM": "100"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"GREEN": {
+											"fields": {
+													"NUM": "50"
+											},
+											"type": "math_number",
+											"shadow": true
+									},
+									"BLUE": {
+											"fields": {
+													"NUM": "0"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "colour_rgb"
+					},
+					{
+							"values": {
+									"COLOUR1": {
+											"fields": {
+													"COLOUR": "#ff0000"
+											},
+											"type": "colour_picker",
+											"shadow": true
+									},
+									"COLOUR2": {
+											"fields": {
+													"COLOUR": "#3333ff"
+											},
+											"type": "colour_picker",
+											"shadow": true
+									},
+									"RATIO": {
+											"fields": {
+													"NUM": "0.5"
+											},
+											"type": "math_number",
+											"shadow": true
+									}
+							},
+							"type": "colour_blend"
+					}
+			]
+	},
+	{
+			"name": "Custom Button",
+			"colour": "#A6745C",
+			"button": [
+					{
+							"text": "A button",
+							"callbackKey": "myFirstButtonPressed"
+					}
+			]
+	},
+	{
+			"name": "Variables",
+			"colour": "#A65C81",
+			"custom": "VARIABLE"
+	},
+	{
+			"name": "Functions",
+			"colour": "#9A5CA6",
+			"custom": "PROCEDURE"
+	}
+]

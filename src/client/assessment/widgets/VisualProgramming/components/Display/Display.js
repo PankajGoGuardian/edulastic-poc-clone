@@ -9,6 +9,7 @@ import {
   QuestionSubLabel,
   CorrectAnswersContainer,
 } from '@edulastic/common'
+import { isEmpty } from 'lodash'
 import Instructions from '../../../../components/Instructions'
 import { EDIT } from '../../../../constants/constantsForQuestions'
 import VisualEditor from '../VisualEditor/VisualEditor'
@@ -94,7 +95,14 @@ const Display = ({
               onSortEnd={onSortOptions}
               {...restProps}
             />
-            <VisualEditor initialCode={item.initialCode} onChange={onChange} />
+            <VisualEditor
+              initialCode={
+                isEmpty(restProps.userSelections)
+                  ? item.initialCode
+                  : restProps.userSelections
+              }
+              onChange={onChange}
+            />
             {view !== EDIT && <Instructions item={item} />}
 
             {showAnswer &&

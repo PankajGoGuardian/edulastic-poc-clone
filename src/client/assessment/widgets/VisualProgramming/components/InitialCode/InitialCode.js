@@ -2,15 +2,14 @@ import React from 'react'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import loadable from '@loadable/component'
-import Progress from '@edulastic/common/src/components/Progress'
 import { connect } from 'react-redux'
 
+import { compose } from 'redux'
+import { withNamespaces } from '@edulastic/localization'
 import Question from '../../../../components/Question/index'
 import { Subtitle } from '../../../../styled/Subtitle'
 import { setQuestionDataAction } from '../../../../../author/src/actions/question'
 import VisualEditor from '../VisualEditor/VisualEditor'
-import { compose } from 'redux'
-import { withNamespaces } from '@edulastic/localization'
 
 const FroalaEditor = loadable(() =>
   import(
@@ -37,16 +36,16 @@ const InitialCode = ({
   return (
     <Question
       section="main"
-      label={t('common.question.composeQuestion')}
+      label={t('common.question.initialCode')}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
       <Subtitle
         id={getFormattedAttrId(
-          `${item?.title}-${t('common.question.composeQuestion')}`
+          `${item?.title}-${t('common.question.initialCode')}`
         )}
       >
-        {t('common.question.composeQuestion')}
+        {t('common.question.initialCode')}
       </Subtitle>
       <VisualEditor
         initialCode={item.initialCode}

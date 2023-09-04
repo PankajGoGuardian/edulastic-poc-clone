@@ -2781,14 +2781,18 @@ export const getCards = (
         title: questionTitle.VISUAL_PROGRAMMING,
         type: questionType.VISUAL_PROGRAMMING,
         stimulus: '',
-        testCases: [
-          { id: uuids[0], input: [{ name: 'v1', value: '', str: 'main()=' }] },
-        ],
         validation: {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [{ id: uuids[0], output: '' }],
+            testCases: [
+              {
+                id: uuids[0],
+                input: [{ name: 'v1', value: '' }],
+                output: '',
+                str: 'main()=',
+              },
+            ],
           },
           altResponses: [],
         },

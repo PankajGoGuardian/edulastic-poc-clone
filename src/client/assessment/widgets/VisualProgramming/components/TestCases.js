@@ -30,14 +30,11 @@ const TestCases = ({
     setQuestionData(
       produce(item, (draft) => {
         const id = uuid()
-        draft.testCases.push({
+        draft.validation.validResponse.testCases.push({
           id,
           input: [{ name: 'v1', value: '' }],
-          str: 'main()=',
-        })
-        draft.validation.validResponse.value.push({
-          id,
           output: '',
+          str: 'main()=',
         })
       })
     )
@@ -46,7 +43,7 @@ const TestCases = ({
   const handleRemove = (index) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases.splice(index, 1)
+        draft.validation.validResponse.testCases.splice(index, 1)
       })
       //   updateVariables(draft)
     )
@@ -55,38 +52,41 @@ const TestCases = ({
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases = arrayMove(draft.testCases, oldIndex, newIndex)
+        draft.validation.validResponse.testCases = arrayMove(
+          draft.validation.validResponse.testCases,
+          oldIndex,
+          newIndex
+        )
       })
     )
   }
 
-  const handleChange = (index, value) => {
+  const handleChange = (index, _str) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.testCases[index].str = value
-        if (value.includes(prefixStr) && value.includes(middleStr)) {
-          const splitStr = value.split(middleStr)
+        draft.validation.validResponse.testCases[index].str = _str
+        if (_str.includes(prefixStr) && _str.includes(middleStr)) {
+          const splitStr = _str.split(middleStr)
           const input = splitStr[0]
             .split(prefixStr)[1]
             .split(inputDelimiter)
             .map((i, idx) => ({
               name: `v${idx + 1}`,
-              value: parseInt(i, 10) || '',
+              value: i.match(/\d+/g)?.[0] || '',
             }))
-          const output = parseInt(splitStr[1], 10) || ''
-          const response = { id: draft.testCases[index].id, output }
-          draft.testCases[index].input = input
-          draft.validation.validResponse.value[index] = response
+          const output = splitStr[1].match(/\d+/g)?.[0] || ''
+          draft.validation.validResponse.testCases[index].input = input
+          draft.validation.validResponse.testCases[index].output = output
         }
         // updateVariables(draft)
       })
     )
   }
 
-  const inputItems = item.testCases.map((testCase, index) => {
+  const inputItems = item.validation.validResponse.testCases.map((testCase) => {
     const testCaseStr = testCase.str || ''
     const inputStr = testCase.input.map((i) => i.value).join(inputDelimiter)
-    const outputStr = item.validation.validResponse.value[index].output
+    const outputStr = testCase.output
     return testCaseStr || `${prefixStr}${inputStr}${middleStr}${outputStr}`
   })
 

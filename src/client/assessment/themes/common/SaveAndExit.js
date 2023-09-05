@@ -72,6 +72,7 @@ const SaveAndExit = ({
   currentItem,
   options,
   features,
+  setShowPerformanceTab,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 

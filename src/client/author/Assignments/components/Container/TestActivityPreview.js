@@ -1,11 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { compose } from 'redux'
 import { get, keyBy } from 'lodash'
 import { IconReport } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { MainContentWrapper, FlexContainer } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  FlexContainer,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { collections as collectionConst } from '@edulastic/constants'
 import ProgressGraph from '../../../../common/components/ProgressGraph'
 import TestAcivityHeader from '../../../../student/sharedComponents/Header'
@@ -16,6 +22,7 @@ import {
   previewTestQuestionActivities,
 } from '../../../../assessment/sharedDucks/previewTest'
 import { TestItemPreviewContainer } from './styled'
+import AdaptiveCharts from '../../../TestList/components/Container/AdaptiveCharts'
 
 const TestActivityPreview = ({
   title,
@@ -28,6 +35,7 @@ const TestActivityPreview = ({
   previewModal,
   testPreviewLanguage,
 }) => {
+  const [showPerformance, setShowPerformance] = useState(false)
   const passages = test?.passages || []
   const evaluations = questionActivities.reduce((acc, curr) => {
     acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
@@ -48,6 +56,7 @@ const TestActivityPreview = ({
       maxScore: questionActivity.maxScore,
       isGradedExternally: false,
     }
+    console.log({ score: questionActivity.score, evaluations })
 
     const { userWork } = questionActivity
     const questions = get(testItem, ['data', 'questions'], []).map((q) =>
@@ -81,7 +90,6 @@ const TestActivityPreview = ({
       testItem?.collections
         ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
         .map(({ name }) => name)
-
     return (
       <TestItemPreviewContainer
         key={testItem._id}
@@ -121,6 +129,8 @@ const TestActivityPreview = ({
         showExit
         hideSideMenu
         onExit={onClose}
+        showPerformance={showPerformance}
+        setShowPerformance={setShowPerformance}
         isDocBased={false}
         titleIcon={IconReport}
         titleText={title}
@@ -128,14 +138,21 @@ const TestActivityPreview = ({
         previewModal={previewModal}
       />
       <MainContentWrapper padding="0px 20px">
-        <StudentPerformancePreview>
-          <ProgressGraph
-            testActivity={testActivity}
-            questionActivities={questionActivities}
-            testItems={testItems}
-          />
-        </StudentPerformancePreview>
-        <div>{testItemsPreview}</div>
+        <EduIf condition={showPerformance}>
+          <EduThen>
+            <AdaptiveCharts setShowPerformance={setShowPerformance} />
+          </EduThen>
+          <EduElse>
+            <StudentPerformancePreview>
+              <ProgressGraph
+                testActivity={testActivity}
+                questionActivities={questionActivities}
+                testItems={testItems}
+              />
+            </StudentPerformancePreview>
+            <div>{testItemsPreview}</div>
+          </EduElse>
+        </EduIf>
       </MainContentWrapper>
     </FlexContainer>
   )

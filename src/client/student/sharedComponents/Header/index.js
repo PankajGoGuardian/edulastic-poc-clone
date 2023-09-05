@@ -30,6 +30,8 @@ const Header = ({
   showReviewResponses,
   reviewResponses,
   onExit,
+  showPerformance,
+  setShowPerformance,
   previewModal,
   isCliUser,
   user,
@@ -74,6 +76,19 @@ const Header = ({
                 isBlue
               >
                 Review Responses
+              </EduButton>
+            )}
+            {showExit && !showReviewResponses && !cliUser && (
+              <EduButton
+                data-cy="finishTest"
+                onClick={() => {
+                  if (showPerformance) setShowPerformance(false)
+                  else setShowPerformance(true)
+                }}
+              >
+                {showPerformance
+                  ? 'Test Activity Preview'
+                  : 'Check Performance'}
               </EduButton>
             )}
             {showExit && !showReviewResponses && !cliUser && (

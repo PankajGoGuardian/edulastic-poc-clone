@@ -331,6 +331,16 @@ function* loadAnnotationsToStore({ data, referrerId2 }) {
   })
 }
 
+function getDeliveringItemGroups(itemsToDeliverInGroup, itemGroups, testItems) {
+  const itemsToDeliverKeyByGroupId = _keyBy(itemsToDeliverInGroup, 'groupId')
+  const itemGroupsWithStatus = itemGroups.map((itemGroup) => ({
+    ...itemGroup,
+    status: itemsToDeliverKeyByGroupId[itemGroup?._id]?.status,
+  }))
+
+  return getItemGroupsByExcludingItems(testItems, itemGroupsWithStatus)
+}
+
 function* loadTest({ payload }) {
   const {
     testActivityId,
@@ -808,9 +818,10 @@ function* loadTest({ payload }) {
       }
 
       let itemId = testItemIds[lastAttendedQuestion]
-      const deliveringItemGroups = getItemGroupsByExcludingItems(
-        testItems,
-        itemGroups
+      const deliveringItemGroups = getDeliveringItemGroups(
+        itemsToDeliverInGroup,
+        itemGroups,
+        testItems
       )
       const isLastItemInSection = deliveringItemGroups.find(
         ({ items }) => last(items)._id === itemId
@@ -1003,9 +1014,10 @@ function* loadTest({ payload }) {
           )
         )
       } else {
-        const deliveringItemGroups = getItemGroupsByExcludingItems(
-          testItems,
-          itemGroups
+        const deliveringItemGroups = getDeliveringItemGroups(
+          itemsToDeliverInGroup,
+          itemGroups,
+          testItems
         )
         const isLastItemInSection = deliveringItemGroups.find(
           ({ items }) => last(items)?._id === lastVisitedQuestion.testItemId
@@ -1019,6 +1031,7 @@ function* loadTest({ payload }) {
         if (
           test.preventSectionNavigation &&
           !settings.blockNavigationToAnsweredQuestions &&
+          isLastItemInSection &&
           isLastItemInSection?.status !== SECTION_STATUS.SUBMITTED
         ) {
           itemId = lastVisitedQuestion.testItemId

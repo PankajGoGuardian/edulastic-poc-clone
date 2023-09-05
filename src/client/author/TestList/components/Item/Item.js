@@ -183,6 +183,7 @@ class Item extends Component {
           toUrl: '/author/tests',
           isSparkMathCollection: selectedCollections.includes(sparkMathId),
           assessmentAssignedFrom: source,
+          assessmentTestCategory: item?.testCategory,
         },
       })
   }

@@ -1,9 +1,10 @@
 import uuid from 'uuid/v4'
 import { EXACT_MATCH } from '@edulastic/constants/const/evaluationType'
 import { cloneDeep } from 'lodash'
-import { MCQ_STANDARD_DATA } from '../../../../../PickUpQuestionType/components/QuestionType/constants'
-import { itemStructure } from '../constants'
+
+import { Q_TYPES, itemStructure } from '../constants'
 import { getAlignmentForEduItems } from '../helpers'
+import { getDefaultDataByQuestionType } from './getQuestionDefaultData'
 
 export const processMcqStandardQuestion = (
   question,
@@ -12,7 +13,9 @@ export const processMcqStandardQuestion = (
   subjects
 ) => {
   const { commonCoreStandard, depthOfKnowledge, difficultLevel } = question
-  const { type, title, ...restData } = cloneDeep(MCQ_STANDARD_DATA)
+  const { type, title, ...restData } = cloneDeep(
+    getDefaultDataByQuestionType(Q_TYPES.MCQ_ST)
+  )
   const item = cloneDeep(itemStructure)
 
   const alignment = getAlignmentForEduItems(alignmentData, commonCoreStandard)

@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withWindowSizes } from '@edulastic/common'
-import { Tooltip } from 'antd'
+import { Button, Tooltip } from 'antd'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import { themes } from '../../../../theme'
 import { Container, ControlBtn } from './styled'
@@ -236,7 +236,7 @@ const MainFooter = styled.div`
   height: 70px;
 `
 
-const ButtonWrapper = styled.span`
+const ButtonWrapper = styled(Button)`
   border-radius: 4px;
   display: flex;
   align-items: center;

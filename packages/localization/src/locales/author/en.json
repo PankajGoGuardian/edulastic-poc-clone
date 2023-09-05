@@ -185,7 +185,10 @@
     "info": "When allow teachers to redirect is set to ON, teachers are allowed to redirect a common test for their class. Set to OFF to prevent teachers from using the redirect test feature."
   },
   "authoringItemDisabled": {
-    "info": "Authoring item is disabled for Dynamic Test."
+    "info": "Authoring item is disabled for Dynamic Test"
+  },
+  "sectionFeatBetaAction": {
+    "info": "The test section feature is in beta. This action is coming soon."
   },
   "showTtsForPassage": {
     "title": "Allow Text To Speech For Passage",

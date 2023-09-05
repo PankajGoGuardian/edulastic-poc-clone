@@ -1,4 +1,10 @@
-import { black, lightFadedBlack, green, lightGreen4 } from '@edulastic/colors'
+import {
+  black,
+  lightFadedBlack,
+  green,
+  lightGreen4,
+  red,
+} from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -37,6 +43,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -132,6 +139,7 @@ import {
   SwitchBox,
   FilterSelect,
   FilterSpan,
+  TagWrapper,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -368,6 +376,7 @@ class ClassBoard extends Component {
       testActivity,
       getAllTestActivitiesForStudent,
     } = this.props
+
     const { assignmentId, classId } = match.params
     const filterCriteria = (activity) => activity?.testActivityId
     const { selectedStudentId } = this.state
@@ -1503,6 +1512,16 @@ class ClassBoard extends Component {
                 </StudentButtonDiv>
               )}
             </StyledFlexContainer>
+            <EduIf
+              condition={additionalData?.isDataMovedToArchivedDB && !isLoading}
+            >
+              <TagWrapper>
+                <CustomNotificationBar textColor={red} textAlign="center">
+                  {t('common.uqaArchiveMessage')}
+                </CustomNotificationBar>
+              </TagWrapper>
+            </EduIf>
+
             {selectedTab === 'Both' && (
               <>
                 <GraphContainer>

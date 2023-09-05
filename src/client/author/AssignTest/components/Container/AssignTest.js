@@ -43,8 +43,6 @@ import {
   getSearchTermsFilterSelector,
   loadAssignmentsAction,
   saveAssignmentAction,
-  fetchPlaylistAssignmentsAction,
-  setPlaylistAssignmentsAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
@@ -70,7 +68,6 @@ import {
   fetchAssignmentsAction,
   getAssignmentsSelector,
   getClassListSelector,
-  getPlaylistAssignmentsSelector,
   getTestEntitySelector,
   updateAssingnmentSettingsAction,
 } from '../../duck'
@@ -141,9 +138,7 @@ class AssignTest extends React.Component {
       fetchTestByID,
       loadClassList,
       fetchAssignments,
-      fetchPlaylistAssignments,
       assignments,
-      playlistAssignments,
       match,
       userOrgId,
       isPlaylist,
@@ -168,7 +163,6 @@ class AssignTest extends React.Component {
       location,
       addRecommendedResourcesAction,
       setAssignments,
-      setPlaylistAssignments,
     } = this.props
 
     if (isSAWithoutSchools) {
@@ -193,7 +187,6 @@ class AssignTest extends React.Component {
 
     const { testId } = match.params
     setAssignments([])
-    setPlaylistAssignments([])
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -262,12 +255,8 @@ class AssignTest extends React.Component {
         },
         ...additionalSettings,
       })
-      if (isEmpty(playlistAssignments) && !testId) {
-        fetchPlaylistAssignments({
-          playlistId: match.params.playlistId,
-          moduleId: match.params.moduleId,
-          testIds: location?.state?.testIds,
-        })
+      if (isEmpty(assignments) && testId) {
+        fetchAssignments(testId)
       }
     } else {
       const premiumSettings = premium
@@ -316,12 +305,10 @@ class AssignTest extends React.Component {
     const {
       clearAssignmentSettings,
       setAssignments,
-      setPlaylistAssignments,
       setTestSettingsList,
     } = this.props
     clearAssignmentSettings()
     setAssignments([])
-    setPlaylistAssignments([])
     setTestSettingsList([])
   }
 
@@ -395,6 +382,8 @@ class AssignTest extends React.Component {
       }
     }
     const source = location?.state?.assessmentAssignedFrom
+    const assessmentTestCategory = location?.state?.assessmentTestCategory
+
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
     if (!this.validateTimedAssignment()) return
@@ -416,7 +405,10 @@ class AssignTest extends React.Component {
       const isValid = this.validateSettings(updatedAssignment)
       if (isValid) {
         if (source) {
-          segmentApi.genericEventTrack('AssessmentAssigned', { source })
+          segmentApi.genericEventTrack('AssessmentAssigned', {
+            source,
+            assessmentTestCategory,
+          })
         }
         saveAssignment(updatedAssignment)
       }
@@ -1025,7 +1017,6 @@ const enhance = compose(
     (state) => ({
       classList: getClassListSelector(state),
       assignments: getAssignmentsSelector(state),
-      playlistAssignments: getPlaylistAssignmentsSelector(state),
       students: getActiveStudentsSelector(state),
       testSettings: getTestEntitySelector(state),
       userOrgId: getUserOrgId(state),
@@ -1060,14 +1051,12 @@ const enhance = compose(
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
       setAssignments: loadAssignmentsAction,
-      setPlaylistAssignments: setPlaylistAssignmentsAction,
       saveAssignment: saveAssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
-      fetchPlaylistAssignments: fetchPlaylistAssignmentsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,

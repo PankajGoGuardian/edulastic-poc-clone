@@ -309,5 +309,6 @@ export const SortableListContainer = styled.div`
 `
 
 export const NextButton = styled(EduButton)`
+  margin-top: 8px;
   height: 30px;
 `

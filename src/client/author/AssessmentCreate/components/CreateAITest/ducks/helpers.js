@@ -99,7 +99,9 @@ export const getExistingQuestionContents = (assessment) => {
       .flatMap(({ data }) =>
         data?.questions.map(({ stimulus, questionDisplayTimestamp }) => ({
           name: stimulus,
-          displayAtSecond: questionDisplayTimestamp,
+          ...(questionDisplayTimestamp
+            ? { displayAtSecond: questionDisplayTimestamp }
+            : {}),
         }))
       )
       .filter(({ name }) => name)

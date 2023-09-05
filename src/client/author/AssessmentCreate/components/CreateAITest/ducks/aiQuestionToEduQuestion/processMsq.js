@@ -1,9 +1,10 @@
 import uuid from 'uuid/v4'
 import { EXACT_MATCH } from '@edulastic/constants/const/evaluationType'
 import { cloneDeep } from 'lodash'
-import { MCQ_MSQ_DATA } from '../../../../../PickUpQuestionType/components/QuestionType/constants'
-import { itemStructure } from '../constants'
+
+import { Q_TYPES, itemStructure } from '../constants'
 import { getAlignmentForEduItems } from '../helpers'
+import { getDefaultDataByQuestionType } from './getQuestionDefaultData'
 
 export const processMSQ = (
   {
@@ -18,7 +19,9 @@ export const processMSQ = (
   grades,
   subjects
 ) => {
-  const { type, title, ...restData } = cloneDeep(MCQ_MSQ_DATA)
+  const { type, title, ...restData } = cloneDeep(
+    getDefaultDataByQuestionType(Q_TYPES.MCQ_MS)
+  )
   const item = cloneDeep(itemStructure)
 
   const alignment = getAlignmentForEduItems(alignmentData, commonCoreStandard)

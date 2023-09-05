@@ -20,6 +20,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { segmentApi } from '@edulastic/api'
 import { selectsData } from '../../../TestPage/components/common'
 import {
   fetchAIGeneratedQuestionAction,
@@ -90,6 +91,9 @@ class AddBulkModal extends React.Component {
       })
     } else {
       this.generateViaAI({ questionCount: number, questionType: type })
+      segmentApi.genericEventTrack('GenerateAIItem', {
+        source: 'Video Quiz: Generate',
+      })
     }
   }
 
@@ -136,7 +140,9 @@ class AddBulkModal extends React.Component {
       existingQuestions: questions
         ?.map(({ stimulus, questionDisplayTimestamp }) => ({
           name: stimulus,
-          displayAtSecond: questionDisplayTimestamp,
+          ...(questionDisplayTimestamp
+            ? { displayAtSecond: questionDisplayTimestamp }
+            : {}),
         }))
         .filter(({ name }) => name),
     })
@@ -224,7 +230,7 @@ class AddBulkModal extends React.Component {
                 <FieldLabel>Number</FieldLabel>
                 <NumberInputStyled
                   min={1}
-                  max={20}
+                  max={10}
                   value={number}
                   onChange={this.handleChange('number')}
                   data-cy="questionCount"

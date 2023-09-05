@@ -13,9 +13,7 @@ import {
 } from '../../../TestPage/ducks'
 
 const descriptionBottom = (
-  <>
-    Select questions from the library or <br /> author your own.
-  </>
+  <>Select questions from the library or author your own.</>
 )
 
 const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
@@ -27,7 +25,7 @@ const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
 
   return (
     <CardComponent>
-      <IconWrapper>
+      <IconWrapper marginBottom="0px" height="39px" width="39px">
         <IconNewFile height="22" width="18" />
       </IconWrapper>
       <TitleWrapper>Create from Scratch</TitleWrapper>

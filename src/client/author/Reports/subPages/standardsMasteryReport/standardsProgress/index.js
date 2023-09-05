@@ -37,6 +37,7 @@ import {
   getPaginatedTestInfoMetrics,
 } from './utils/transformers'
 import useErrorNotification from '../../../common/hooks/useErrorNotification'
+import { getSkillInfoMetrics } from '../utils'
 
 const {
   CHART_PAGE_SIZE,
@@ -128,12 +129,22 @@ const StandardsProgress = ({
     }
   }, [settings.requestFilters])
 
-  const skillInfoMetrics = get(skillInfo, 'data.result.skillInfo', [])
+  const skillInfoMetrics = useMemo(() => {
+    const { skillInfoMetrics: _skillInfoMetrics } = getSkillInfoMetrics(
+      skillInfo,
+      sharedReportFilters || settings.requestFilters
+    )
+    return _skillInfoMetrics
+  }, [skillInfo])
 
   const testInfoQuery = useMemo(
     () =>
-      getTestInfoApiQuery(settings.requestFilters, ddRequestFilters, skillInfo),
-    [skillInfo]
+      getTestInfoApiQuery(
+        settings.requestFilters,
+        ddRequestFilters,
+        skillInfoMetrics
+      ),
+    [skillInfoMetrics]
   )
   const {
     data: testInfo,
@@ -186,7 +197,7 @@ const StandardsProgress = ({
       getSummaryApiQuery(
         settings.requestFilters,
         ddRequestFilters,
-        skillInfo,
+        skillInfoMetrics,
         paginatedTestInfoMetrics
       ),
     [paginatedTestInfoMetrics]
@@ -219,7 +230,7 @@ const StandardsProgress = ({
         settings.requestFilters,
         ddRequestFilters,
         tableFilters,
-        skillInfo,
+        skillInfoMetrics,
         paginatedTestInfoMetrics
       ),
     [tableFilters]
@@ -278,8 +289,9 @@ const StandardsProgress = ({
   ].some(Boolean)
 
   const isReportDataEmpty = useMemo(
-    () => getIsReportDataEmpty(skillInfo, testInfoMetrics, summary, details),
-    [skillInfo, testInfoMetrics, summary, details]
+    () =>
+      getIsReportDataEmpty(skillInfoMetrics, testInfoMetrics, summary, details),
+    [skillInfoMetrics, testInfoMetrics, summary, details]
   )
 
   // show filters section if data is empty
@@ -293,10 +305,10 @@ const StandardsProgress = ({
   useEffect(() => {
     if (isCsvDownloading && generateCSVRequired) {
       const params = getGenerateCsvParams(
-        skillInfo,
         settings,
         ddRequestFilters,
         tableFilters,
+        skillInfoMetrics,
         reportTypes
       )
       generateCSV(params)

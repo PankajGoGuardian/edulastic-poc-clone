@@ -101,88 +101,14 @@ import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.s
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
 
-// use it for ids of MCQ, Orderlist, and Choice Matrix
-const uuids = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid()]
-
-export const MCQ_TF_DATA = {
-  title: questionTitle.MCQ_TRUE_OR_FALSE,
-  type: questionType.MULTIPLE_CHOICE,
-  stimulus: '',
-  uiStyle: {
-    type: 'standard',
-  },
-  options: [
-    { value: uuids[0], label: 'True' },
-    { value: uuids[1], label: 'False' },
-  ],
-  validation: {
-    scoringType: EXACT_MATCH,
-    validResponse: {
-      score: 1,
-      value: [uuids[0]],
-    },
-    altResponses: [],
-  },
-  multipleResponses: false,
-  hints: [{ value: uuids[0], label: '' }],
-}
-
-export const MCQ_MSQ_DATA = {
-  title: questionTitle.MCQ_MULTIPLE_RESPONSE,
-  type: questionType.MULTIPLE_CHOICE,
-  stimulus: '',
-  uiStyle: {
-    type: 'standard',
-  },
-  options: [
-    { value: uuids[0], label: '' },
-    { value: uuids[1], label: '' },
-    { value: uuids[2], label: '' },
-    { value: uuids[3], label: '' },
-  ],
-  validation: {
-    scoringType: EXACT_MATCH,
-    validResponse: {
-      score: 1,
-      value: [uuids[1]],
-    },
-    altResponses: [],
-  },
-  multipleResponses: true,
-  hints: [{ value: uuids[0], label: '' }],
-}
-
-export const MCQ_STANDARD_DATA = {
-  title: questionTitle.MCQ_STANDARD,
-  type: questionType.MULTIPLE_CHOICE,
-  stimulus: '',
-  uiStyle: {
-    type: 'standard',
-  },
-  options: [
-    { value: uuids[0], label: '' },
-    { value: uuids[1], label: '' },
-    { value: uuids[2], label: '' },
-    { value: uuids[3], label: '' },
-  ],
-  validation: {
-    scoringType: EXACT_MATCH,
-    validResponse: {
-      score: 1,
-      value: [uuids[0]],
-    },
-    altResponses: [],
-  },
-  multipleResponses: false,
-  hints: [{ value: uuids[0], label: '' }],
-}
-
 export const getCards = (
   onSelectQuestionType,
   isPassage = false,
   enableAudioResponseQuestion = false
 ) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math
+  // use it for ids of MCQ, Orderlist, and Choice Matrix
+  const uuids = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid()]
 
   const uuidsForFill = [uuid(), uuid(), uuid()]
 
@@ -1082,19 +1008,86 @@ export const getCards = (
     {
       type: 'multiple-choice',
       cardImage: MCStandard,
-      data: MCQ_STANDARD_DATA,
+      data: {
+        title: questionTitle.MCQ_STANDARD,
+        type: questionType.MULTIPLE_CHOICE,
+        stimulus: '',
+        uiStyle: {
+          type: 'standard',
+        },
+        options: [
+          { value: uuids[0], label: '' },
+          { value: uuids[1], label: '' },
+          { value: uuids[2], label: '' },
+          { value: uuids[3], label: '' },
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [uuids[0]],
+          },
+          altResponses: [],
+        },
+        multipleResponses: false,
+        hints: [{ value: uuids[0], label: '' }],
+      },
       onSelectQuestionType,
     },
     {
       type: 'multiple-choice',
       cardImage: MCMultipleResponses,
-      data: MCQ_MSQ_DATA,
+      data: {
+        title: questionTitle.MCQ_MULTIPLE_RESPONSE,
+        type: questionType.MULTIPLE_CHOICE,
+        stimulus: '',
+        uiStyle: {
+          type: 'standard',
+        },
+        options: [
+          { value: uuids[0], label: '' },
+          { value: uuids[1], label: '' },
+          { value: uuids[2], label: '' },
+          { value: uuids[3], label: '' },
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [uuids[1]],
+          },
+          altResponses: [],
+        },
+        multipleResponses: true,
+        hints: [{ value: uuids[0], label: '' }],
+      },
       onSelectQuestionType,
     },
     {
       type: 'multiple-choice',
       cardImage: MCTrueFalse,
-      data: MCQ_TF_DATA,
+      data: {
+        title: questionTitle.MCQ_TRUE_OR_FALSE,
+        type: questionType.MULTIPLE_CHOICE,
+        stimulus: '',
+        uiStyle: {
+          type: 'standard',
+        },
+        options: [
+          { value: uuids[0], label: 'True' },
+          { value: uuids[1], label: 'False' },
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: [uuids[0]],
+          },
+          altResponses: [],
+        },
+        multipleResponses: false,
+        hints: [{ value: uuids[0], label: '' }],
+      },
       onSelectQuestionType,
     },
     {

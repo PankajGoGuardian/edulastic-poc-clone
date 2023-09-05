@@ -386,6 +386,7 @@ class AssessmentPlayerDefault extends React.Component {
       classLevelSettings,
       viewAsStudent,
       calcTypes,
+      preventSectionNavigation,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -617,6 +618,7 @@ class AssessmentPlayerDefault extends React.Component {
             blockNavigationToAnsweredQuestions={
               blockNavigationToAnsweredQuestions
             }
+            preventSectionNavigation={preventSectionNavigation}
             gotoSummary={gotoSummary}
             isShowStudentWork={isShowStudentWork}
             handleReviewOrSubmit={handleReviewOrSubmit}

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select, Tooltip } from 'antd'
-import { EduIf, notification, SelectInputStyled } from '@edulastic/common'
+import { EduIf, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -14,7 +14,6 @@ import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
   getClassListSelector,
-  getModuleAssignedClassesByIdSelector,
 } from '../../duck'
 import {
   getUserOrgId,
@@ -58,13 +57,6 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { OkButton } from '../../../../common/styled'
 
 const { allGrades, allSubjects } = selectsData
-
-const moduleAssignStatus = {
-  ALL: 'ALL',
-  PARTIAL: 'PARTIAL',
-}
-const partialAssignPlaylistMessage =
-  'Some tests from this module are already assigned to this class and will not be re-assigned. Rest will be assigned.'
 
 const findTeacherName = (row) => {
   const { owners = [], primaryTeacherId, parent } = row
@@ -289,15 +281,10 @@ class ClassList extends React.Component {
   }
 
   handleClassSelectFromDropDown = (value) => {
-    const { classList, selectClass, moduleAssignedClassesById } = this.props
+    const { classList, selectClass } = this.props
     this.setState({ classType: 'all', filterClassIds: value }, () =>
       selectClass('class', value, classList)
     )
-    if (moduleAssignedClassesById[value] === moduleAssignStatus.PARTIAL) {
-      notification({
-        msg: partialAssignPlaylistMessage,
-      })
-    }
   }
 
   courseSearch = (searchString) => {
@@ -344,7 +331,6 @@ class ClassList extends React.Component {
       isCoursesLoading,
       isAdvancedSearchSelected,
       setShowAdvanceSearchModal,
-      moduleAssignedClassesById,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -360,16 +346,7 @@ class ClassList extends React.Component {
     const rowSelection = {
       selectedRowKeys: selectedClasses,
       hideDefaultSelections: true,
-      onSelect: (record, selected, selectedRows) => {
-        if (
-          selected &&
-          record.key &&
-          moduleAssignedClassesById[record.key] === moduleAssignStatus.PARTIAL
-        ) {
-          notification({
-            msg: partialAssignPlaylistMessage,
-          })
-        }
+      onSelect: (_, __, selectedRows) => {
         if (selectClass) {
           const selectedClassIds = selectedRows.map((item) => item.key)
           selectClass('class', selectedClassIds, classList)
@@ -380,15 +357,6 @@ class ClassList extends React.Component {
       onSelectAll: this.handleSelectAll,
       getCheckboxProps: (record) => {
         if (record && record.key && assignedClassesById[testType][record.key]) {
-          return {
-            disabled: true,
-          }
-        }
-        if (
-          record &&
-          record.key &&
-          moduleAssignedClassesById[record.key] === moduleAssignStatus.ALL
-        ) {
           return {
             disabled: true,
           }
@@ -690,10 +658,7 @@ class ClassList extends React.Component {
                   <Select.Option
                     key={name}
                     value={_id}
-                    disabled={
-                      assignedClassesById[testType][_id] ||
-                      moduleAssignedClassesById[_id] === moduleAssignStatus.ALL
-                    }
+                    disabled={assignedClassesById[testType][_id]}
                   >
                     {name}
                   </Select.Option>
@@ -789,7 +754,7 @@ class ClassList extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    (state, props) => ({
+    (state) => ({
       termsData: get(state, 'user.user.orgData.terms', []),
       classList: getClassListSelector(state),
       userOrgId: getUserOrgId(state),
@@ -801,10 +766,6 @@ const enhance = compose(
       isCoursesLoading: getCourseLoadingState(state),
       isAdvancedSearchSelected: getIsAdvancedSearchSelectedSelector(state),
       isAllClassSelected: getIsAllClassSelectedSelector(state),
-      moduleAssignedClassesById: getModuleAssignedClassesByIdSelector(
-        state,
-        props
-      ),
     }),
     {
       loadClassListData: receiveClassListAction,

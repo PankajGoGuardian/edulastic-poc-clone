@@ -16,6 +16,12 @@ const STATUS = {
   SUCCESS: 'success',
 }
 
+const Q_TYPES = {
+  MCQ_TF: 'MCQ_TF', // mcq true and false question
+  MCQ_MS: 'MCQ_MS', // mcq multiple select question
+  MCQ_ST: 'MCQ_ST', // mcq multiple choice standard
+}
+
 const STATUS_TEXT = {
   [STATUS.INIT]: 'Initialized',
   [STATUS.INPROGRESS]: 'In progress',
@@ -106,4 +112,4 @@ const itemFields = [
   'aiGenerated',
 ]
 
-export { formFields, STATUS, itemFields, STATUS_TEXT }
+export { formFields, STATUS, itemFields, STATUS_TEXT, Q_TYPES }

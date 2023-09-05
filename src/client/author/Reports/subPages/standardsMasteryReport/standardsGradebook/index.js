@@ -46,6 +46,7 @@ import {
   getSkillInfoApiQuery,
   getSummaryApiQuery,
 } from './utils/transformers'
+import { getSkillInfoMetrics } from '../utils'
 
 const { getStudentAssignments } = reportUtils.common
 const {
@@ -123,11 +124,15 @@ const StandardsGradebook = ({
     getStudentStandards,
   })
 
-  const { skillInfo = EMPTY_ARRAY, standardIdsCount } = get(
-    rawSkillInfo,
-    'data.result',
-    {}
-  )
+  const [standardIdsCount, skillInfo] = useMemo(() => {
+    const _standardIdsCount = get(rawSkillInfo, 'data.result.standardIdsCount')
+    const { skillInfoMetrics } = getSkillInfoMetrics(
+      rawSkillInfo,
+      sharedReportFilters || settings.requestFilters
+    )
+    return [_standardIdsCount, skillInfoMetrics]
+  }, [rawSkillInfo])
+
   const summaryMetricInfo = useMemo(() => {
     const { standards: _summaryMetricInfo = [] } = get(
       summary,
@@ -136,6 +141,7 @@ const StandardsGradebook = ({
     )
     return preProcessSummaryMetrics({ summaryMetricInfo: _summaryMetricInfo })
   }, [summary])
+
   const { metrics: detailsMetricInfo = EMPTY_ARRAY, totalRows } = get(
     details,
     'data.result',
@@ -218,11 +224,10 @@ const StandardsGradebook = ({
   // show filters section if data is empty
   useEffect(() => {
     const summaryMetrics = get(summary, 'data.result.standards', [])
-    const skillInfoList = get(rawSkillInfo, 'data.result.skillInfo', [])
     const detailsMetrics = get(details, 'data.result.metrics', [])
     const doesReportHasMetrics = [
       summaryMetrics.length,
-      skillInfoList.length,
+      skillInfo.length,
       detailsMetrics.length,
     ]
     const isApiResponseEmpty = [
@@ -238,7 +243,7 @@ const StandardsGradebook = ({
       ].every((e) => !e)
       toggleFilter(null, showFilter)
     }
-  }, [summary, rawSkillInfo, details])
+  }, [summary, skillInfo, details])
 
   useEffect(() => {
     if (isCsvDownloading && generateCSVRequired) {

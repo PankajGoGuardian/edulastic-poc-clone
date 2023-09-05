@@ -9,11 +9,11 @@ import { signUpState } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
 import qs from 'qs'
-import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
 import { getProfileKey } from './testTypeUtils'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 
 // eslint-disable-next-line no-control-regex
 export const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
@@ -599,13 +599,6 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
       removeSessionValue({ key })
     }
   })
-}
-
-export const disableGoogleTagManager = () => {
-  window['ga-disable-GTM-T73FP7W'] = true
-  window.dataLayer = [] // Clear dataLayer
-  const gtmTag = document.getElementById('ID-GTM-T73FP7W')
-  gtmTag?.parentNode?.removeChild(gtmTag)
 }
 
 export function storeErrorDescriptionInSessionStorage() {

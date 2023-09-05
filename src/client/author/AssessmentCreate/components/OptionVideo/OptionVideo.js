@@ -8,7 +8,7 @@ import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
 import QuickTour from '../QuickTour/QuickTour'
 import { SnapQuiz } from './styled'
 
-const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/na92pypvxo`
+const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
 const descriptionBottom = `
   Provide your video link and proceed to create an Edulastic Assessment
 `

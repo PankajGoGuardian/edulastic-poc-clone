@@ -19,7 +19,7 @@ import {
   IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
-import { Select } from 'antd'
+import { Button, Select } from 'antd'
 import {
   lightGreySecondary,
   themeColorBlue,
@@ -341,7 +341,7 @@ const IconEduLogoStyled = styled(IconEduLogo)`
   left: 8px;
 `
 
-const ButtonWrapper = styled.span`
+const ButtonWrapper = styled(Button)`
   width: 32px;
   height: 32px;
   background: ${header2.textColor};

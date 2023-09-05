@@ -856,8 +856,14 @@ class Container extends PureComponent {
       location,
     } = this.props
     let source = location?.state?.assessmentAssignedFrom
+    let assessmentTestCategory = location?.state?.assessmentTestCategory
+
     if (!source) {
       source = 'Created New'
+    }
+
+    if (!assessmentTestCategory) {
+      assessmentTestCategory = test?.testCategory
     }
     const { status, collections } = test
 
@@ -886,6 +892,7 @@ class Container extends PureComponent {
               toUrl: '/author/tests',
               isSparkMathCollection,
               assessmentAssignedFrom: source,
+              assessmentTestCategory,
             },
           })
         }

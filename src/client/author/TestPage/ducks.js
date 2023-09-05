@@ -714,6 +714,16 @@ export const hasSectionsSelector = createSelector(
   (test) => !!test?.hasSections
 )
 
+export const sectionsEnabledDistrictSelector = createSelector(
+  getUserOrgId,
+  (districtId) => {
+    const sectionsEnabledDistricts = process.env.REACT_APP_SECTIONS_ENABLED_DISTRICTS?.split(
+      ','
+    )
+    return sectionsEnabledDistricts?.includes(districtId)
+  }
+)
+
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,

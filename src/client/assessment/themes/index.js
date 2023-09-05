@@ -1405,6 +1405,7 @@ const AssessmentContainer = ({
     ...restProps,
     classLevelSettings,
     isAntiCheatingEnabled,
+    preventSectionNavigation,
   }
 
   useEffect(() => {

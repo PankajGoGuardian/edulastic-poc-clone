@@ -109,7 +109,7 @@ const Emoji = styled.p`
   line-height: 1.1;
   cursor: pointer;
   transform: ${(props) => (props.clicked ? `scale(1.2)` : null)};
-  border: 1px solid grey;
+  border: 0.5px solid grey;
   border-radius: 5px;
   padding: 5px;
 `

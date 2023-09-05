@@ -683,7 +683,7 @@ const AssessmentContainer = ({
     [deliveringItemGroups, itemId]
   )
 
-  const isLast = () => items.length === 10
+  const isLast = () => items.length === 5
   const isFirst = () => true
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())

@@ -14,6 +14,7 @@ import {
   TextInputStyled,
   NumberInputStyled,
   FieldLabel,
+  Checkbox,
 } from '@edulastic/common'
 
 import {
@@ -64,9 +65,10 @@ const StandardsModal = ({
   const [selectedElos, setSelectedElos] = useState([])
   const [btnLoading, setBtnLoading] = useState(false)
   const [testTitle, setTestTitle] = useState(
-    'Science-NGSS Adaptive Practice Test'
+    'Science-NGSS Grade 6 Practice Test 5th September'
   )
   const [itemsToDeliver, setItemsToDeliver] = useState(10)
+  const [isVideoTestlet, setIsVideoTestlet] = useState(false)
 
   useEffect(() => {
     if (!showModal) return
@@ -126,6 +128,13 @@ const StandardsModal = ({
   const handleSubmit = async () => {
     setBtnLoading(true)
     try {
+      if (isVideoTestlet) {
+        window.open(
+          'http://localhost:3001/author/tests/tab/review/id/64dc7b36619fe6c0e837d89c',
+          '_self'
+        )
+        return
+      }
       const data = await testsApi.createAdaptiveTest({
         curriculumId: selectedCurriculam?.value,
         standardSet: selectedCurriculam?.text,
@@ -200,14 +209,14 @@ const StandardsModal = ({
 
   return (
     <StyledModal
-      title={title}
+      title={testTitle}
       visible={showModal}
       onCancel={() => setShowModal(false)}
       footer={footer}
       width="80%"
     >
       <Row type="flex" gutter={24}>
-        <Col md={12}>
+        <Col md={9}>
           <FieldLabel>Title</FieldLabel>
           <TextInputStyled
             value={testTitle}
@@ -220,6 +229,20 @@ const StandardsModal = ({
             value={itemsToDeliver}
             onChange={(value) => setItemsToDeliver(value)}
           />
+        </Col>
+        <Col
+          md={5}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <FieldLabel></FieldLabel>
+          <CheckboxLabel
+            checked={isVideoTestlet}
+            onChange={(e) => setIsVideoTestlet(e?.target?.checked)}
+          />
+          <StyledP>Video Testlet (Experimental)</StyledP>
         </Col>
         <Col md={8} />
         <Col md={16} style={{ paddingLeft: '28px' }}>
@@ -350,4 +373,25 @@ const Container = styled(Paper)`
 
 const StandardsWrapper = styled(Col)`
   overflow: hidden;
+`
+const StyledP = styled.p`
+  font-size: 11px;
+  font-weight: 600;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.38;
+  text-align: left;
+  white-space: nowrap;
+  color: #434b5d;
+  display: block;
+  text-transform: uppercase;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 7px;
+  margin-left: 0px;
+  padding-top: 5px;
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 5px;
 `

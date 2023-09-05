@@ -230,7 +230,7 @@ class TestItemCol extends Component {
           )}
         </FlexContainer>
         <div style={{ marginLeft: 30 }}>
-          Standard set: <b>{currentStandartSet}</b>
+          Standard set: <b>{currentStandartSet?.join(', ')}</b>
         </div>
         {!isStudentAttempt &&
           !isStudentReport &&

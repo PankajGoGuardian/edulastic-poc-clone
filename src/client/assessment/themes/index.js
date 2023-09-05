@@ -640,7 +640,7 @@ const AssessmentContainer = ({
   const [itemId, setItemId] = useState(items[0]._id)
   const [testItem, setTestItem] = useState(items[0])
   const [nextItemLoading, setNextItemLoading] = useState(false)
-  const [currentStandartSet, setCurrentStandardSet] = useState('')
+  const [currentStandartSet, setCurrentStandardSet] = useState([])
   const qid = currentItem
 
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
@@ -728,10 +728,12 @@ const AssessmentContainer = ({
     setItemId(currentTestItem._id)
     setTestItem(currentTestItem)
     setNextItemLoading(false)
-    setCurrentStandardSet(
+    setCurrentStandardSet([
       currentTestItem?.data?.questions?.[0]?.alignment?.[0]?.standards?.[0]
-        ?.identifier || ''
-    )
+        ?.identifier || '',
+      currentTestItem?.data?.questions?.[0]?.authorDifficulty || '',
+      currentTestItem?.data?.questions?.[0]?.depthOfKnowledge || '',
+    ])
   }, [items.length])
 
   useEffect(() => {
@@ -1018,6 +1020,7 @@ const AssessmentContainer = ({
             timeSpent,
             testId,
             isAdaptiveTest: true,
+            itemIdsToExclude: items.map((item) => item._id),
           })
         }
       } else {
@@ -1103,6 +1106,7 @@ const AssessmentContainer = ({
           testId,
           isLastQuestion: true,
           isAdaptiveTest: true,
+          itemIdsToExclude: items.map((item) => item._id),
         })
       }
       if (_item.isDummyItem) {
@@ -1194,6 +1198,7 @@ const AssessmentContainer = ({
       timeSpent,
       testId,
       isAdaptiveTest: true,
+      itemIdsToExclude: items.map((item) => item._id),
     }
     if (lastItemInTest) {
       evalArgs.isLastQuestion = true
@@ -1217,6 +1222,7 @@ const AssessmentContainer = ({
         testId,
         callback: submitPreviewTest,
         isAdaptiveTest: true,
+        itemIdsToExclude: items.map((item) => item._id),
       }
       return evaluateForPreview(evalArgs)
     }

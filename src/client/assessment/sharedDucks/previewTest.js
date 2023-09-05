@@ -87,6 +87,7 @@ function* evaluateQuestionsSaga({
   isAdaptiveTest,
   currentStandardSet,
   curriculumId,
+  itemIdsToExclude,
 }) {
   const {
     result: res,
@@ -100,6 +101,7 @@ function* evaluateQuestionsSaga({
     isAdaptiveTest,
     currentStandardSet,
     curriculumId,
+    itemIdsToExclude,
   })
 
   if (!isEmpty(nextTestItem)) {
@@ -193,6 +195,7 @@ function* evaluateTestItemSaga({ payload }) {
       callback,
       isLastQuestion = false,
       isAdaptiveTest,
+      itemIdsToExclude = [],
     } = payload
     const testItems = yield select(getItemsSelector)
     const testItem = testItems[currentItem]
@@ -242,6 +245,7 @@ function* evaluateTestItemSaga({ payload }) {
       isAdaptiveTest,
       currentStandardSet,
       curriculumId,
+      itemIdsToExclude,
     })
     // onSubmit preview test evaluate all skipped question
     if (isLastQuestion) {

@@ -29,7 +29,7 @@ function SelectEmojiModal({ showModal, setShowModal, setAdaptiveTestEmotion }) {
   return (
     <CustomModalStyled
       visible={showModal}
-      //   title="Select Emoji"
+      title="Click on the emoji icon and tell us how do you feel today?"
       maskStyle={{ background: '#000', opacity: 0.9 }}
       onCancel={() => setShowModal(false)}
       closable={false}
@@ -108,7 +108,10 @@ const Emoji = styled.p`
   transition: transform 0.2s;
   line-height: 1.1;
   cursor: pointer;
-  transform: ${(props) => (props.clicked ? `scale(1.2) rotate(-20deg)` : null)};
+  transform: ${(props) => (props.clicked ? `scale(1.2)` : null)};
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px;
 `
 
 const Caption = styled.p`

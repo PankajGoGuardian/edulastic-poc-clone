@@ -11,6 +11,9 @@ import {
   CheckboxLabel,
   EduButton,
   EduIf,
+  TextInputStyled,
+  NumberInputStyled,
+  FieldLabel,
 } from '@edulastic/common'
 
 import {
@@ -60,6 +63,10 @@ const StandardsModal = ({
   const [selectedTLO, setSelectedTLO] = useState('')
   const [selectedElos, setSelectedElos] = useState([])
   const [btnLoading, setBtnLoading] = useState(false)
+  const [testTitle, setTestTitle] = useState(
+    'Science-NGSS Adaptive Practice Test'
+  )
+  const [itemsToDeliver, setItemsToDeliver] = useState(10)
 
   useEffect(() => {
     if (!showModal) return
@@ -148,7 +155,7 @@ const StandardsModal = ({
   const footer = (
     <>
       <StyledCounterWrapper>
-        <span>{itemCount}</span>&nbsp;Items found matching your criteria
+        <span></span>&nbsp;
       </StyledCounterWrapper>
       <FlexContainer>
         <EduButton isGhost onClick={handleCancel} disabled={loading}>
@@ -200,6 +207,20 @@ const StandardsModal = ({
       width="80%"
     >
       <Row type="flex" gutter={24}>
+        <Col md={12}>
+          <FieldLabel>Title</FieldLabel>
+          <TextInputStyled
+            value={testTitle}
+            onChange={(e) => setTestTitle(e?.target?.value || '')}
+          />
+        </Col>
+        <Col md={7} style={{ marginBottom: 15 }}>
+          <FieldLabel>Maximum no of items to deliver</FieldLabel>
+          <NumberInputStyled
+            value={itemsToDeliver}
+            onChange={(value) => setItemsToDeliver(value)}
+          />
+        </Col>
         <Col md={8} />
         <Col md={16} style={{ paddingLeft: '28px' }}>
           <EduIf condition={atleastOneEloLoaded}>

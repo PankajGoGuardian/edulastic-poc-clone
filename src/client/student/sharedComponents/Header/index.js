@@ -86,9 +86,7 @@ const Header = ({
                   else setShowPerformance(true)
                 }}
               >
-                {showPerformance
-                  ? 'Test Activity Preview'
-                  : 'Check Performance'}
+                {showPerformance ? 'Test Activity Preview' : 'View Performance'}
               </EduButton>
             )}
             {showExit && !showReviewResponses && !cliUser && (

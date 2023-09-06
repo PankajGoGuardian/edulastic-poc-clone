@@ -237,7 +237,7 @@ const AssessmentAutoComplete = ({
           }
         >
           <Input
-            placeholder="Search and select a test using the name or last 5 digits of test ID"
+            placeholder="Search and select a test using the name or last 6 digits of test ID"
             suffix={InputSuffixIcon}
           />
         </AutoComplete>

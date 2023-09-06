@@ -16,6 +16,7 @@ import {
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
+import { shortTestIdKeyLength } from '../../../../Assignments/constants'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
@@ -48,7 +49,7 @@ const AssessmentAutoComplete = ({
   const dropdownData = testList.map((item) => ({
     key: item._id,
     title: `${item.title} (ID: ${
-      item._id?.substring(item._id.length - 5) || ''
+      item._id?.substring(item._id.length - shortTestIdKeyLength) || ''
     })`,
   }))
 

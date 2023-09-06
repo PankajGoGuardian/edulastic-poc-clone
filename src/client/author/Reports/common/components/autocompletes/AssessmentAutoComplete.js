@@ -24,6 +24,7 @@ import {
   createTestListSelector,
   receiveTestListAction,
 } from '../../../ducks'
+import { shortTestIdKeyLength } from '../../../../Assignments/constants'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
@@ -40,7 +41,7 @@ function getSelectedTestLabel(selectedTest, searchTerms) {
     selectedTestLabel = `${selectedTest.title}`
     if (!isExternal) {
       selectedTestLabel += ` (ID:${selectedTest._id.substring(
-        selectedTest._id.length - 5
+        selectedTest._id.length - shortTestIdKeyLength
       )})`
     }
   }
@@ -195,6 +196,7 @@ const AssessmentAutoComplete = ({
   const dropdownData = useDropdownData(testList, {
     showId: true,
     searchText: searchTerms.text || '',
+    idKeyLength: shortTestIdKeyLength,
   })
 
   const selectedTestLabel = getSelectedTestLabel(selectedTest, searchTerms)

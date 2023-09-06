@@ -33,6 +33,7 @@ import {
   groupByConstants,
   groupByOptions,
 } from '../subPages/dataWarehouseReports/AttendanceSummary/utils/constants'
+import { shortTestIdKeyLength } from '../../Assignments/constants'
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
@@ -473,7 +474,7 @@ export const combineNames = (list) =>
 
 export const getAssessmentName = (test) => {
   const [key, title] = [test._id || test.key, test.title]
-  return `${title} (ID:${key.substring(key.length - 5)})`
+  return `${title} (ID:${key.substring(key.length - shortTestIdKeyLength)})`
 }
 
 export const getTooltipArrowStyles = ({ tooltipType, tooltipArrowMargin }) => {

@@ -49,6 +49,7 @@ import {
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import BulkEditTestModal from '../BulkEditTestModal'
+import { shortTestIdKeyLength } from '../../constants'
 
 class AdvancedTable extends Component {
   showBulkUpdate =
@@ -76,7 +77,7 @@ class AdvancedTable extends Component {
             placement="bottom"
             title={
               <div>
-                {text} {/* (Id: {row.testId.slice(-6)}) */}
+                {text} (Id: {row.testId.slice(-shortTestIdKeyLength)})
               </div>
             }
           >

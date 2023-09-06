@@ -111,6 +111,7 @@ const AssignmentCard = memo(
       instruction = '',
       multiLanguageEnabled = false,
       studentResources = [],
+      hasSections,
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -240,6 +241,7 @@ const AssignmentCard = memo(
           assignmentId,
           testActivityId: lastAttempt._id,
           classId,
+          hasSections,
         })
       } else if (attemptCount < maxAttempts) {
         startAssignment({
@@ -249,6 +251,7 @@ const AssignmentCard = memo(
           classId,
           languagePreference,
           safeBrowser,
+          hasSections,
         })
       }
     }

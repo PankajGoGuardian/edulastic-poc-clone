@@ -661,6 +661,7 @@ function* startAssignment({ payload }) {
       studentRecommendation,
       safeBrowser,
       lastAttemptId,
+      hasSections,
     } = payload
 
     const institutionId = yield select(getCurrentSchool)
@@ -670,6 +671,31 @@ function* startAssignment({ payload }) {
     const groupType = 'class'
     let testActivityId = null
 
+    let playerTestType = testType
+
+    if (COMMON.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+    }
+    if (PRACTICE.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+    }
+    if (hasSections) {
+      const testData = {
+        assignmentId,
+        groupId: classId,
+        institutionId,
+        groupType,
+        testId,
+      }
+      const { _id } = yield testActivityApi.create(testData)
+      const pathname = `/student/${playerTestType}/${testId}/class/${classId}/uta/${_id}/sections-start`
+      yield put(
+        push({
+          pathname,
+        })
+      )
+      return
+    }
     if (safeBrowser && !isSEB()) {
       const testData = {
         assignmentId,
@@ -807,15 +833,6 @@ function* startAssignment({ payload }) {
       testActivityId = _id
     }
 
-    let playerTestType = testType
-
-    if (COMMON.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
-    }
-    if (PRACTICE.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
-    }
-
     // set Activity id
     if (!TESTLET.includes(testType)) {
       if (studentRecommendation) {
@@ -893,6 +910,7 @@ function* resumeAssignment({ payload }) {
       classId,
       isPlaylist,
       studentRecommendation,
+      hasSections,
     } = payload
 
     if (!isPlaylist && !studentRecommendation) {
@@ -908,7 +926,23 @@ function* resumeAssignment({ payload }) {
      * nothing breaking, but just cleanup
      */
     yield put(clearOrderOfOptionsInStore())
+    let playerTestType = testType
 
+    if (COMMON.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+    }
+    if (PRACTICE.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+    }
+    if (hasSections) {
+      const pathname = `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/sections-start`
+      yield put(
+        push({
+          pathname,
+        })
+      )
+      return
+    }
     if (assignmentId) {
       yield put(setActiveAssignmentAction(assignmentId))
       yield put(setResumeAssignment(true))
@@ -920,15 +954,6 @@ function* resumeAssignment({ payload }) {
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.RESUME))
       }
-    }
-
-    let playerTestType = testType
-
-    if (COMMON.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
-    }
-    if (PRACTICE.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
     }
 
     // get the class id for the assignment

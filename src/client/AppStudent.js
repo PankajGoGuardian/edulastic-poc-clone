@@ -1,15 +1,8 @@
 import React, { Component, Suspense, lazy, useEffect } from 'react'
-import { isEmpty } from 'lodash'
-import qs from 'qs'
 import queryString from 'query-string'
 import PropTypes from 'prop-types'
-import { Switch, Redirect, withRouter, Route } from 'react-router-dom'
-import {
-  test,
-  signUpState,
-  roleuser,
-  testTypes as testTypesConstants,
-} from '@edulastic/constants'
+import { Switch, withRouter, Route } from 'react-router-dom'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { DndProvider } from 'react-dnd'
 import TouchBackend from 'react-dnd-touch-backend'
@@ -18,12 +11,12 @@ import { compose } from 'redux'
 import Spin from 'antd/es/spin'
 import Joyride from 'react-joyride'
 import PrivateRoute from './common/components/privateRoute'
-import notification from '@edulastic/common/src/components/Notification'
 import OfflineNotifier from '@edulastic/common/src/components/OfflineNotifier'
 import { isMobileDevice } from '@edulastic/common/src/helpers'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import * as firebase from 'firebase/app'
 import { TestAttemptReview } from './student/TestAttemptReview'
+import { SectionsStartPage } from './student/SectionsStart'
 import SebQuitConfirm from './student/SebQuitConfirm'
 import {
   getUserNameSelector,
@@ -75,14 +68,9 @@ if (query?.itemBank?.toUpperCase() === 'CANVAS') {
   sessionStorage.setItem('signupFlow', 'canvas')
 }
 
-const getCurrentPath = () => {
-  const location = window.location
-  return `${location.pathname}${location.search}${location.hash}`
-}
-
 const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
 
-function CheckRoutePatternsEffectContainer({ role, location, history }) {
+function CheckRoutePatternsEffectContainer({ role, location }) {
   useEffect(() => {
     if (
       (role === 'student' || role == 'parent') &&
@@ -122,7 +110,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location } = this.props
+    const { fetchUser } = this.props
     fetchUser({ addAccount: query.addAccount, userId: query.userId })
     window.addEventListener('request-client-update', () => {
       this.setState({
@@ -135,16 +123,7 @@ class App extends Component {
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
-    const {
-      user,
-      tutorial,
-      location,
-      history,
-      fullName,
-      logout,
-      isProxyUser,
-      shouldWatch,
-    } = this.props
+    const { user, tutorial, location, history, shouldWatch } = this.props
 
     const publicPath = false
 
@@ -159,7 +138,7 @@ class App extends Component {
     }
     const userRole = user?.user?.role || ''
 
-    const { showAppUpdate, canShowCliBanner } = this.state
+    const { showAppUpdate } = this.state
 
     return (
       <div>
@@ -208,6 +187,10 @@ class App extends Component {
                 component={TestAttemptReview}
               />
               <Route
+                path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
+                component={SectionsStartPage}
+              />
+              <Route
                 path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
                 render={() => <AssessmentPlayer defaultAP />}
               />
@@ -240,7 +223,7 @@ class App extends Component {
         </Suspense>
       </div>
     )
-  } //render
+  } // render
 }
 
 const enhance = compose(

@@ -11,6 +11,7 @@ import {
   signupSaga,
   studentManageClassSaga,
   StudentPlaylistSaga,
+  StudentSectionsSaga,
 } from './student/sagas'
 import assessmentSagas from './assessment/sagas'
 import { reportSaga } from './author/Reports/ducks'
@@ -25,6 +26,7 @@ export function* studentsSagas() {
     signupSaga(),
     studentManageClassSaga(),
     StudentPlaylistSaga(),
+    StudentSectionsSaga(),
     dictionariesSaga(),
     expressGraderWatcherSaga(),
     ...assessmentSagas,

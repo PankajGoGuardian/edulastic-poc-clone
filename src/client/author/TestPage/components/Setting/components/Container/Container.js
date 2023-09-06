@@ -748,6 +748,24 @@ class Setting extends Component {
     }
   }
 
+  getSettingCategories = () => {
+    const { hasSections } = this.props
+    const settingCategories = [...defaultSettingCategories]
+    if (!hasSections) return settingCategories
+
+    const hasSectionsSettings = {
+      id: 'section-settings',
+      title: 'Section Settings',
+      type: 'settings-category',
+    }
+    settingCategories.splice(
+      defaultSettingCategories.length - 1,
+      0,
+      hasSectionsSettings
+    )
+    return settingCategories
+  }
+
   handleUpdateRefMaterial = (value) => {
     const { setTestData } = this.props
     setTestData({ referenceDocAttributes: value })
@@ -855,16 +873,7 @@ class Setting extends Component {
     } = entity
 
     // Updating the SettingCatogeries based on hasSections field
-    const settingCategories = hasSections
-      ? [
-          ...defaultSettingCategories,
-          {
-            id: 'section-settings',
-            title: 'Section Settings',
-            type: 'settings-category',
-          },
-        ]
-      : defaultSettingCategories
+    const settingCategories = this.getSettingCategories()
 
     const { canUseImmersiveReader } = features
 
@@ -2452,6 +2461,35 @@ class Setting extends Component {
                   </Block>
                 </>
               )}
+              {/* Displaying the section settings header and component. */}
+              {hasSections && (
+                <SettingsCategoryBlock id="section-settings">
+                  <span>
+                    Sections <DollarPremiumSymbol premium={premium} />
+                  </span>
+                  <span
+                    onClick={() =>
+                      this.togglePanel(
+                        'isSectionsGroupExpanded',
+                        !isSectionsGroupExpanded
+                      )
+                    }
+                  >
+                    <Icon type={isSectionsGroupExpanded ? 'minus' : 'plus'} />
+                  </span>
+                </SettingsCategoryBlock>
+              )}
+              {hasSections && isSectionsGroupExpanded && (
+                <ShowSectionSettings
+                  itemGroups={itemGroups}
+                  premium={premium}
+                  disabled={disabled}
+                  isSmallSize={isSmallSize}
+                  preventSectionNavigation={preventSectionNavigation}
+                  updateSectionCalc={this.updateSectionCalc}
+                  updateTestData={this.updateTestData}
+                />
+              )}
               <SettingsCategoryBlock id="miscellaneous">
                 <span>
                   Miscellaneous <DollarPremiumSymbol premium={premium} />
@@ -2651,35 +2689,6 @@ class Setting extends Component {
                     </Block>
                   )}
                 </>
-              )}
-              {/* Displaying the section settings header and component. */}
-              {hasSections && (
-                <SettingsCategoryBlock id="section-settings">
-                  <span>
-                    Sections <DollarPremiumSymbol premium={premium} />
-                  </span>
-                  <span
-                    onClick={() =>
-                      this.togglePanel(
-                        'isSectionsGroupExpanded',
-                        !isSectionsGroupExpanded
-                      )
-                    }
-                  >
-                    <Icon type={isSectionsGroupExpanded ? 'minus' : 'plus'} />
-                  </span>
-                </SettingsCategoryBlock>
-              )}
-              {hasSections && isSectionsGroupExpanded && (
-                <ShowSectionSettings
-                  itemGroups={itemGroups}
-                  premium={premium}
-                  disabled={disabled}
-                  isSmallSize={isSmallSize}
-                  preventSectionNavigation={preventSectionNavigation}
-                  updateSectionCalc={this.updateSectionCalc}
-                  updateTestData={this.updateTestData}
-                />
               )}
             </Col>
           </Row>

@@ -181,44 +181,46 @@ const HeaderBar = ({
             Add new sections --> displayed if default test does not have section. 
             Remove new sections --> displayed if default test has sections. 
         */}
-        {owner &&
-          isEditable &&
-          isDefaultTest &&
-          isPremiumUser &&
-          isSectionsEnabledDistrict && (
-            <EduIf condition={!hasSections}>
-              <EduThen>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="addNewSections"
-                  disabled={disableRMbtns}
-                  onClick={!disableRMbtns ? handleAddSections : () => null}
-                  color="primary"
-                >
-                  <IconPlusCircle color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && <span>Add New Sections</span>}
-                </EduButton>
-              </EduThen>
-              <EduElse>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="removeNewSections"
-                  disabled={disableRMbtns}
-                  onClick={
-                    !disableRMbtns ? () => setShowRemoveModal(true) : () => null
-                  }
-                  color="primary"
-                >
-                  <IconMinusRounded color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && <span>Remove All Sections</span>}
-                </EduButton>
-              </EduElse>
-            </EduIf>
-          )}
+        {owner && isEditable && isDefaultTest && isPremiumUser && isSectionsEnabledDistrict && (
+          <EduIf condition={!hasSections}>
+            <EduThen>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="addNewSections"
+                disabled={disableRMbtns}
+                onClick={!disableRMbtns ? handleAddSections : () => null}
+                color="primary"
+              >
+                <IconPlusCircle color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && (
+                  <span style={{ margin: '0 2px' }}>Add New Sections</span>
+                )}
+                <span style={{ color: '#F2717F' }}>Beta</span>
+              </EduButton>
+            </EduThen>
+            <EduElse>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="removeNewSections"
+                disabled={disableRMbtns}
+                onClick={
+                  !disableRMbtns ? () => setShowRemoveModal(true) : () => null
+                }
+                color="primary"
+              >
+                <IconMinusRounded color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && (
+                  <span style={{ margin: '0 2px' }}>Remove All Sections</span>
+                )}
+                <span style={{ color: '#F2717F' }}>(Beta)</span>
+              </EduButton>
+            </EduElse>
+          </EduIf>
+        )}
         <EduButton
           height="20px"
           data-cy="viewAsStudent"

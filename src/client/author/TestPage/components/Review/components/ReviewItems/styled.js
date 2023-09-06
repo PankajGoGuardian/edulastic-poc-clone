@@ -81,10 +81,12 @@ export const GroupCollapse = styled(Collapse)`
 
 export const InfoDiv = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: ${({ hasSections }) => (hasSections ? 'row' : 'column')};
   align-items: center;
   line-height: 16px;
   padding: 0px 10px;
+  justify-content: ${({ hasSections }) => hasSections && 'space-evenly'};
+  gap: ${({ hasSections }) => hasSections && '10px'};
 `
 
 export const Text = styled.div`

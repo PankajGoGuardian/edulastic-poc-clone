@@ -18,6 +18,7 @@ import {
   buildAcademicSummaryFilters,
   getPerformanceBandList,
   getAvailableAcademicTestTypesWithBands,
+  getFilteredAcademicSummaryTestTypes,
 } from './utils'
 import { buildRequestFilters } from '../common/utils'
 import {
@@ -103,19 +104,28 @@ const Dashboard = ({
     [bandInfo, externalBands]
   )
 
+  const filteredAvailableTestTypes = useMemo(
+    () =>
+      getFilteredAcademicSummaryTestTypes(
+        settings.requestFilters.assessmentTypes,
+        availableAcademicTestTypes
+      ),
+    [settings.requestFilters.assessmentTypes, availableAcademicTestTypes]
+  )
+
   const performanceBandList = useMemo(
     () =>
       getPerformanceBandList(
         bandInfo,
         externalBands,
         academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key,
-        availableAcademicTestTypes
+        filteredAvailableTestTypes
       ),
     [
       bandInfo,
       externalBands,
       academicSummaryFilters[academicSummaryFiltersTypes.TEST_TYPE],
-      availableAcademicTestTypes,
+      filteredAvailableTestTypes,
     ]
   )
 
@@ -250,7 +260,7 @@ const Dashboard = ({
             districtAveragesData={districtAveragesData}
             tableData={tableData}
             loc={loc}
-            availableTestTypes={availableAcademicTestTypes}
+            availableTestTypes={filteredAvailableTestTypes}
             attendanceBandInfo={attendanceBandInfo}
           />
         </EduElse>

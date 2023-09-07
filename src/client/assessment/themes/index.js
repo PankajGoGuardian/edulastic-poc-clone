@@ -658,15 +658,19 @@ const AssessmentContainer = ({
       - lastItemInTest - to Differentiate between last item in section and last item in test.
   */
   const lastItemInsection = useMemo(
-    () => itemGroups?.some(({ items: _items }) => last(_items)?._id === itemId),
-    [itemId, itemGroups]
+    () =>
+      deliveringItemGroups?.some(
+        ({ items: _items }) => last(_items)?._id === itemId
+      ),
+    [itemId, deliveringItemGroups]
   )
 
   const firstItemInSectionAndRestrictNav = useMemo(
     () =>
-      itemGroups?.some(({ items: _items }) => first(_items)?._id === itemId) &&
-      preventSectionNavigation,
-    [itemGroups, itemId, preventSectionNavigation]
+      deliveringItemGroups?.some(
+        ({ items: _items }) => first(_items)?._id === itemId
+      ) && preventSectionNavigation,
+    [deliveringItemGroups, itemId, preventSectionNavigation]
   )
 
   const lastItemInTest = useMemo(() => currentItem === items.length - 1, [

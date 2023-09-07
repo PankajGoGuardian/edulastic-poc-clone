@@ -147,6 +147,7 @@ export const showTestInfoModal = ({
   notifyCancel,
   closeTestPreviewModal,
   preview,
+  hasSections,
 }) => {
   let selectedLang = ''
   const handlChange = (value) => {
@@ -245,6 +246,7 @@ export const showTestInfoModal = ({
           testType,
           classId,
           selectedLang,
+          hasSections,
         })
       if (!preview) Modal.destroyAll()
       if (preview && multiLanguageEnabled) {
@@ -297,6 +299,7 @@ const redirectToAssessmentPlayer = (
     multiLanguageEnabled,
     hasInstruction,
     instruction,
+    hasSections,
   } = assignment
   // if assignment is graded, then redirected to assignment review page
   const activeAssignments = assignment.class.filter(
@@ -354,6 +357,7 @@ const redirectToAssessmentPlayer = (
       history,
       title,
       notifyCancel: true,
+      hasSections,
     })
   }
 
@@ -366,12 +370,13 @@ const redirectToAssessmentPlayer = (
       assignmentId,
       testActivityId: lastAttempt._id,
       classId,
+      hasSections,
     })
   } else if (
     attemptCount < maxAttempts ||
     lastAttempt.status === testActivityStatus.NOT_STARTED
   ) {
-    startAssignment({ testId, assignmentId, testType, classId })
+    startAssignment({ testId, assignmentId, testType, classId, hasSections })
   }
 }
 

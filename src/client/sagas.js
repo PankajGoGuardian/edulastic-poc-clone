@@ -9,6 +9,7 @@ import {
   studentManageClassSaga,
   signupSaga,
   StudentPlaylistSaga,
+  StudentSectionsSaga,
 } from './student/sagas'
 import authorSagas from './author/src/sagas'
 import assessmentSagas from './assessment/sagas'
@@ -39,6 +40,7 @@ export default function* () {
     ...publisherSagas,
     customReportSaga,
     StudentPlaylistSaga(),
+    StudentSectionsSaga(),
     resetPasswordSaga(),
     publicTestSaga(),
     assignmentEmbedLinkSaga(),

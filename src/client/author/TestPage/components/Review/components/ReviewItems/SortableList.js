@@ -1,5 +1,5 @@
 import { Collapse, Tooltip } from 'antd'
-import { IconCalculator } from '@edulastic/icons'
+import { IconSectionsCalculator } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
@@ -20,11 +20,11 @@ const rightContent = (group, hasSections = false) => {
       {hasSections && settings?.calcTypes?.length > 0 && (
         <Tooltip title={settings.calcTypes.join()}>
           <span>
-            <IconCalculator />
+            <IconSectionsCalculator width="30" height="44" />
           </span>
         </Tooltip>
       )}
-      <InfoDiv>
+      <InfoDiv hasSections={hasSections}>
         <Text>TOTAL ITEMS</Text>
         <Count>{items.length}</Count>
       </InfoDiv>

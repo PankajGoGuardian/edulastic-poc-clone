@@ -111,6 +111,7 @@ const AssignmentCard = memo(
       instruction = '',
       multiLanguageEnabled = false,
       studentResources = [],
+      hasSections,
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -230,6 +231,7 @@ const AssignmentCard = memo(
           history,
           title,
           notifyCancel: false,
+          hasSections,
         })
       }
 
@@ -240,6 +242,7 @@ const AssignmentCard = memo(
           assignmentId,
           testActivityId: lastAttempt._id,
           classId,
+          hasSections,
         })
       } else if (attemptCount < maxAttempts) {
         startAssignment({
@@ -249,6 +252,7 @@ const AssignmentCard = memo(
           classId,
           languagePreference,
           safeBrowser,
+          hasSections,
         })
       }
     }
@@ -269,6 +273,7 @@ const AssignmentCard = memo(
           languagePreference,
           safeBrowser,
           lastAttemptId: lastAttempt._id,
+          hasSections,
         })
       } else if (attemptCount < maxAttempts) {
         startAssignment({
@@ -278,6 +283,7 @@ const AssignmentCard = memo(
           classId,
           languagePreference,
           safeBrowser,
+          hasSections,
         })
       }
     }

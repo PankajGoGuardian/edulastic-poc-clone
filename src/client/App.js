@@ -80,6 +80,7 @@ import {
 import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
 import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
+import { SectionsStartPage } from './student/SectionsStart'
 
 const {
   ASSESSMENT,
@@ -864,6 +865,10 @@ class App extends Component {
                 <PrivateRoute
                   path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
                   component={TestAttemptReview}
+                />
+                <Route
+                  path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
+                  component={SectionsStartPage}
                 />
                 <Route
                   path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}

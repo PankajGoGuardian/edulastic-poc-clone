@@ -244,6 +244,8 @@ class SummaryTest extends Component {
       openUserWorkUploadModal,
       userWork,
       studentData,
+      sectionId,
+      itemGroups,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
@@ -265,12 +267,18 @@ class SummaryTest extends Component {
     if (testLoading) {
       return <Spin />
     }
+    const currentSection = sectionId
+      ? itemGroups.find((group) => group._id === sectionId)
+      : {}
     return (
       <ThemeProvider theme={themes.default}>
         <AssignmentContentWrapperSummary>
           <Container>
             <Header>
-              <Title>{t('common.headingText')}</Title>
+              <Title>
+                {t('common.headingText')}{' '}
+                {!isEmpty(currentSection) ? currentSection.groupName : ''}
+              </Title>
               <TitleDescription>{t('common.message')}</TitleDescription>
             </Header>
             <MainContent>
@@ -309,6 +317,7 @@ class SummaryTest extends Component {
               <Questions>
                 <Row>
                   <QuestionText lg={8} md={24}>
+                    {!isEmpty(currentSection) ? currentSection.groupName : ''}{' '}
                     {t('common.questionsLabel')}
                   </QuestionText>
                   <Col lg={16} md={24}>
@@ -444,7 +453,11 @@ class SummaryTest extends Component {
                   // To disable loader on click of submit in section summary
                   loading={savingResponse || isSectionSubmitting}
                 >
-                  <IconSend /> <span>{t('default:SUBMIT')}</span>
+                  <IconSend />{' '}
+                  <span>
+                    {t('default:SUBMIT')}{' '}
+                    {!isEmpty(currentSection) ? currentSection.groupName : ''}
+                  </span>
                 </SubmitButton>
               </ButtonWrapper>
             </Footer>

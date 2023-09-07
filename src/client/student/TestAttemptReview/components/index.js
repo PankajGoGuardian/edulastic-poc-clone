@@ -3,7 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { IconLogoCompact } from '@edulastic/icons'
+import { IconCircleLogout, IconLogoCompact } from '@edulastic/icons'
 import styled, { ThemeProvider } from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
@@ -39,6 +39,7 @@ import {
   hasSectionsSelector,
 } from '../../../assessment/selectors/test'
 import { saveBlurTimeAction } from '../../../assessment/actions/items'
+import { SaveAndExitButton } from '../../../assessment/themes/common/styledCompoenents'
 
 const SummaryContainer = (props) => {
   const {
@@ -145,12 +146,7 @@ const SummaryContainer = (props) => {
   // Submit the sections of test on click of submit either from section summary or final summary
   const submitSectionOrTest = (_groupId) => {
     if (hasSections && sectionId && deliveringItemGroups.length) {
-      const currentSectionIndex = deliveringItemGroups.findIndex(
-        (item) => item._id === sectionId
-      )
-      const nextItemId =
-        deliveringItemGroups[currentSectionIndex + 1].items[0]._id
-      const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/itemId/${nextItemId}`
+      const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/sections-start`
       const locationState = {
         fromSummary: true,
         ...history.location.state,
@@ -165,10 +161,24 @@ const SummaryContainer = (props) => {
     finishTest(_groupId)
   }
 
+  const exitSectionsPage = () => {
+    history.push('/home/assignments')
+  }
+
   return (
     <ThemeProvider theme={themes.default}>
       <Header>
         <IconLogoCompact style={{ fill: themeColor, marginLeft: '21px' }} />
+        {sectionId && (
+          <SaveAndExitButton
+            data-cy="finishTest"
+            aria-label="Save and exit"
+            onClick={exitSectionsPage}
+            style={{ border: '1px solid', marginRight: '30px' }}
+          >
+            <IconCircleLogout />
+          </SaveAndExitButton>
+        )}
       </Header>
       <MainContainer>
         {restrictNavigationOut && (

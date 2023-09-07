@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, ImmersiveReader, EduIf } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   extraDesktopWidthMax,
@@ -17,7 +17,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
-import { IconBookmark, IconSend } from '@edulastic/icons'
+import { IconBookmark, IconSend, IconImmersiveReader } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -52,6 +52,14 @@ const {
   playerSkin: { sbac },
 } = themes
 const { header } = sbac
+
+const ImmersiveReaderButton = (props) => {
+  return (
+    <StyledButton {...props} padding="8px 4px 7px 5px">
+      <IconImmersiveReader height={20} width={20} />
+    </StyledButton>
+  )
+}
 
 const PlayerHeader = ({
   title,
@@ -98,6 +106,8 @@ const PlayerHeader = ({
   t: i18Translate,
   firstItemInSectionAndRestrictNav,
   isLast,
+  immersiveReaderTitle = '',
+  canUseImmersiveReader = false,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -119,7 +129,7 @@ const PlayerHeader = ({
     zIndex: 505,
   }
 
-  const { showMagnifier } = settings
+  const { showMagnifier, showImmersiveReader = false } = settings
 
   return (
     <StyledFlexContainer>
@@ -166,7 +176,15 @@ const PlayerHeader = ({
             )}
             <StyledTitle>{title}</StyledTitle>
           </FlexContainer>
-          <StyledQuestionMark type="question-circle" theme="filled" />
+          <FlexContainer>
+            <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+              <ImmersiveReader
+                ImmersiveReaderButton={ImmersiveReaderButton}
+                title={immersiveReaderTitle}
+              />
+            </EduIf>
+            <StyledQuestionMark type="question-circle" theme="filled" />
+          </FlexContainer>
         </HeaderTopMenu>
         <HeaderMainMenu style={{ padding: '0 20px' }}>
           <HeaderSbacPlayer>

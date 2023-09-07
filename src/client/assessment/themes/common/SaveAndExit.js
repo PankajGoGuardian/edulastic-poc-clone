@@ -5,14 +5,15 @@ import {
   FireBaseService as Fbs,
   FlexContainer,
   isSEB,
+  ImmersiveReader,
 } from '@edulastic/common'
-import ImmersiveReader from '@edulastic/common/src/components/ImmersiveReader/ImmersiveReader'
 import {
   IconAccessibility,
   IconCircleLogout,
   IconSend,
   IconPlusRounded,
   IconMinusRounded,
+  IconImmersiveReader,
 } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import { get, isNaN } from 'lodash'
@@ -48,6 +49,14 @@ export function useUtaPauseAllowed(utaId) {
   return uta ? utaPauseAllowed : undefined
 }
 const inSEB = isSEB()
+
+const ImmersiveReaderButton = (props) => {
+  return (
+    <StyledButton {...props}>
+      <IconImmersiveReader />
+    </StyledButton>
+  )
+}
 
 const SaveAndExit = ({
   finishTest,
@@ -118,7 +127,10 @@ const SaveAndExit = ({
       )}
       <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
         <EduThen>
-          <ImmersiveReader title={immersiveReaderTitle} />
+          <ImmersiveReader
+            ImmersiveReaderButton={ImmersiveReaderButton}
+            title={immersiveReaderTitle}
+          />
         </EduThen>
       </EduIf>
       {showZoomBtn && !LCBPreviewModal && (

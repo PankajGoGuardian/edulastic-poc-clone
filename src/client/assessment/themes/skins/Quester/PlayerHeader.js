@@ -3,7 +3,12 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { withWindowSizes, withKeyboard } from '@edulastic/common'
+import {
+  withWindowSizes,
+  withKeyboard,
+  ImmersiveReader,
+  EduIf,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   keyboard as keyboardConst,
@@ -13,6 +18,7 @@ import {
   IconEduLogo,
   IconSignoutHighlight,
   IconQuester,
+  IconImmersiveReader,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -28,6 +34,7 @@ import {
   ControlBtn,
   StyledHeaderTitle,
   Container,
+  StyledImmersiveReaderButton,
 } from './styled'
 import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
@@ -38,7 +45,18 @@ import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 const {
   playerSkin: { quester },
 } = themes
-const { header1, header2 } = quester
+const { header1, header2, button } = quester
+
+const ImmersiveReaderButton = (props) => {
+  return (
+    <StyledImmersiveReaderButton {...props}>
+      <IconImmersiveReader
+        color={button.background}
+        hoverColor={header2.background}
+      />
+    </StyledImmersiveReaderButton>
+  )
+}
 
 const PlayerHeader = ({
   t,
@@ -68,6 +86,9 @@ const PlayerHeader = ({
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
   isLast,
+  immersiveReaderTitle = '',
+  canUseImmersiveReader = false,
+  showImmersiveReader,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -142,6 +163,13 @@ const PlayerHeader = ({
             </Title>
           </div>
           <RightContent>
+            <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+              <ImmersiveReader
+                ImmersiveReaderButton={ImmersiveReaderButton}
+                title={immersiveReaderTitle}
+              />
+            </EduIf>
+
             {timedAssignment && (
               <TimedTestTimer
                 utaId={utaId}
@@ -306,6 +334,7 @@ const enhance = compose(
       testType: state.test?.settings?.testType,
       grades: state.test?.grades,
       subjects: state.test?.subjects,
+      showImmersiveReader: state.test?.settings?.showImmersiveReader || false,
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

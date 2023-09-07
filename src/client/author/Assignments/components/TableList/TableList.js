@@ -72,6 +72,7 @@ import {
   getIsProxiedByEAAccountSelector,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
+import { shortTestIdKeyLength } from '../../constants'
 
 const convertTableData = (
   data,
@@ -499,7 +500,7 @@ const TableList = ({
           placement="bottom"
           title={
             <div>
-              {text} {/* (Id: {row.itemId.slice(-6)}) */}
+              {text} (Id: {row.itemId.slice(-shortTestIdKeyLength)})
             </div>
           }
         >

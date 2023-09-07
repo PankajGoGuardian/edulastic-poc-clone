@@ -34,6 +34,7 @@ import {
   getAllTestTypesMap,
   getNonPremiumTestTypes,
 } from '../../../../common/utils/testTypeUtils'
+import { shortTestIdKeyLength } from '../../constants'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -360,7 +361,7 @@ class LeftFilter extends React.Component {
           selectedTagIds={tags}
         />
 
-        <FieldLabel>Test Name {/* / Id */}</FieldLabel>
+        <FieldLabel>Test Name / Id</FieldLabel>
         <SelectInputStyled
           data-cy="filter-test-name"
           mode="default"
@@ -369,12 +370,12 @@ class LeftFilter extends React.Component {
           value={testId}
           onChange={this.handleChange('testId')}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          filterOption={
-            (input, option) =>
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >=
-              0 /* || option.props.value.slice(-6).includes(input.toLowerCase()) */
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+              0 ||
+            option.props.value
+              .slice(-shortTestIdKeyLength)
+              .includes(input.toLowerCase())
           }
           margin="0px 0px 15px"
         >
@@ -384,7 +385,7 @@ class LeftFilter extends React.Component {
           {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
             assignmentTestList?.map(({ testId: _id, title }, index) => (
               <Select.Option
-                // title={`${title} (Id: ${_id.slice(-6)})`}
+                title={`${title} (Id: ${_id.slice(-shortTestIdKeyLength)})`}
                 key={index}
                 value={_id}
               >
@@ -394,7 +395,7 @@ class LeftFilter extends React.Component {
           {userRole === roleuser.TEACHER &&
             teacherTestList.map(({ _id, title }, index) => (
               <Select.Option
-                // title={`${title} (Id: ${_id.slice(-6)})`}
+                title={`${title} (Id: ${_id.slice(-shortTestIdKeyLength)})`}
                 key={index}
                 value={_id}
               >

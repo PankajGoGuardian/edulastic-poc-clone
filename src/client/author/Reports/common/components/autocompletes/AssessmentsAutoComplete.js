@@ -16,6 +16,7 @@ import {
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
+import { shortTestIdKeyLength } from '../../../../Assignments/constants'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
@@ -48,7 +49,7 @@ const AssessmentAutoComplete = ({
   const dropdownData = testList.map((item) => ({
     key: item._id,
     title: `${item.title} (ID: ${
-      item._id?.substring(item._id.length - 5) || ''
+      item._id?.substring(item._id.length - shortTestIdKeyLength) || ''
     })`,
   }))
 
@@ -146,7 +147,7 @@ const AssessmentAutoComplete = ({
     <MultiSelectSearch
       dataCy={dataCy}
       label="Test"
-      placeholder="Search and select a test using the name or last 5 digits of test ID"
+      placeholder="Search and select a test using the name or last 6 digits of test ID"
       el={assessmentFilterRef}
       onChange={onChange}
       onSearch={onSearch}

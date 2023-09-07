@@ -14,6 +14,7 @@ const useDropdownData = (
     value_key,
     optionProps,
     prefix = false,
+    idKeyLength = 5,
   } = {}
 ) =>
   useMemo(
@@ -69,7 +70,7 @@ const useDropdownData = (
             <span style={titleStyle}>{_title}</span>
             {showItemId && (
               <span>{` (ID:${item[id_key].substring(
-                item[id_key].length - 5
+                item[id_key].length - idKeyLength
               )})`}</span>
             )}
           </OptionComponent>

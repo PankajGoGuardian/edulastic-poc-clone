@@ -231,6 +231,7 @@ const AssignmentCard = memo(
           history,
           title,
           notifyCancel: false,
+          hasSections,
         })
       }
 
@@ -272,6 +273,7 @@ const AssignmentCard = memo(
           languagePreference,
           safeBrowser,
           lastAttemptId: lastAttempt._id,
+          hasSections,
         })
       } else if (attemptCount < maxAttempts) {
         startAssignment({
@@ -281,6 +283,7 @@ const AssignmentCard = memo(
           classId,
           languagePreference,
           safeBrowser,
+          hasSections,
         })
       }
     }

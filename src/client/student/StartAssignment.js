@@ -52,6 +52,7 @@ const StartAssignment = ({
         safeBrowser,
         hasInstruction,
         instruction,
+        hasSections = false,
       } = timedAssignment
       let instructionContent = ''
       if (hasInstruction && instruction) {
@@ -108,6 +109,7 @@ const StartAssignment = ({
             testType,
             classId: groupId,
             safeBrowser,
+            hasSections,
           })
           console.warn('==Initiated assignment successfully==')
           Modal.destroyAll()
@@ -133,13 +135,19 @@ const StartAssignment = ({
 
   const continueToTest = () => {
     const { assignmentId, groupId } = match.params
-    const { testId, testType = 'assessment', safeBrowser } = assignment
+    const {
+      testId,
+      testType = 'assessment',
+      safeBrowser,
+      hasSections,
+    } = assignment
     startAssignment({
       testId,
       assignmentId,
       testType,
       classId: groupId,
       safeBrowser,
+      hasSections,
     })
     setShowTestInstruction({ showInstruction: false, assignment: {} })
   }

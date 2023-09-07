@@ -53,6 +53,7 @@
     "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.0.8",
     "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#149f9e459929e16da8f19f91169226af59449a45",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",

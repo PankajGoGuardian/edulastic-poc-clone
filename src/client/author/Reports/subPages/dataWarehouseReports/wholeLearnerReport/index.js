@@ -215,8 +215,9 @@ const WholeLearnerReport = ({
   )
 
   useEffect(() => {
-    if (isEmpty(attendanceData) && !isAttendanceChartToggled.current) {
-      setIsAttendanceChartVisible(false)
+    // if user did not toggle attendance checkbox and attendance data is empty - hide attendance chart
+    if (!isAttendanceChartToggled.current) {
+      setIsAttendanceChartVisible(!isEmpty(attendanceData))
     }
   }, [attendanceData, isAttendanceChartToggled])
 

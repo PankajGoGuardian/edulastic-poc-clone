@@ -23,10 +23,7 @@ import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import {
-  createNewStaticGroup,
-  sectionsEnabledDistrictSelector,
-} from '../../../../ducks'
+import { createNewStaticGroup } from '../../../../ducks'
 import Prompt from '../Prompt/Prompt'
 import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
@@ -63,7 +60,6 @@ const HeaderBar = ({
   hasSections,
   isDefaultTest,
   isPremiumUser,
-  isSectionsEnabledDistrict,
 }) => {
   const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
   const [showPrompt, setShowPrompt] = useState(false)
@@ -186,50 +182,46 @@ const HeaderBar = ({
             Add new sections --> displayed if default test does not have section. 
             Remove new sections --> displayed if default test has sections. 
         */}
-        {owner &&
-          isEditable &&
-          isDefaultTest &&
-          isPremiumUser &&
-          isSectionsEnabledDistrict && (
-            <EduIf condition={!hasSections}>
-              <EduThen>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="addNewSections"
-                  disabled={disableRMbtns}
-                  onClick={!disableRMbtns ? handleAddSections : () => null}
-                  color="primary"
-                >
-                  <IconPlusCircle color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && (
-                    <span style={{ margin: '0 2px' }}>Add New Sections</span>
-                  )}
-                  <BetaTag />
-                </EduButton>
-              </EduThen>
-              <EduElse>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="removeNewSections"
-                  disabled={disableRMbtns}
-                  onClick={
-                    !disableRMbtns ? () => setShowRemoveModal(true) : () => null
-                  }
-                  color="primary"
-                >
-                  <IconMinusRounded color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && (
-                    <span style={{ margin: '0 2px' }}>Remove All Sections</span>
-                  )}
-                  <BetaTag />
-                </EduButton>
-              </EduElse>
-            </EduIf>
-          )}
+        {owner && isEditable && isDefaultTest && isPremiumUser && (
+          <EduIf condition={!hasSections}>
+            <EduThen>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="addNewSections"
+                disabled={disableRMbtns}
+                onClick={!disableRMbtns ? handleAddSections : () => null}
+                color="primary"
+              >
+                <IconPlusCircle color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && (
+                  <span style={{ margin: '0 2px' }}>Add New Sections</span>
+                )}
+                <BetaTag />
+              </EduButton>
+            </EduThen>
+            <EduElse>
+              <EduButton
+                height="20px"
+                fontSize="9px"
+                isGhost
+                data-cy="removeNewSections"
+                disabled={disableRMbtns}
+                onClick={
+                  !disableRMbtns ? () => setShowRemoveModal(true) : () => null
+                }
+                color="primary"
+              >
+                <IconMinusRounded color={themeColor} width={9} height={9} />
+                {windowWidth > 767 && (
+                  <span style={{ margin: '0 2px' }}>Remove All Sections</span>
+                )}
+                <BetaTag />
+              </EduButton>
+            </EduElse>
+          </EduIf>
+        )}
         <EduButton
           height="20px"
           data-cy="viewAsStudent"
@@ -346,10 +338,7 @@ HeaderBar.propTypes = {
 }
 
 const enhance = compose(
-  connect((state) => ({
-    isPremiumUser: isPremiumUserSelector(state),
-    isSectionsEnabledDistrict: sectionsEnabledDistrictSelector(state),
-  }))
+  connect((state) => ({ isPremiumUser: isPremiumUserSelector(state) }))
 )
 
 export default enhance(HeaderBar)

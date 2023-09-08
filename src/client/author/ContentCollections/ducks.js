@@ -5,12 +5,7 @@ import { collectionsApi, contentImportApi } from '@edulastic/api'
 import { uploadToS3, notification } from '@edulastic/common'
 import { push } from 'react-router-redux'
 import { aws } from '@edulastic/constants'
-import {
-  UPLOAD_STATUS,
-  JOB_STATUS,
-  setJobIdsAction,
-  uploadTestStatusAction,
-} from '../ImportTest/ducks'
+import { UPLOAD_STATUS, JOB_STATUS, setJobIdsAction } from '../ImportTest/ducks'
 
 const ContentFolders = {
   qti: aws.s3Folders.QTI_IMPORT,
@@ -455,7 +450,6 @@ export function* importTestToCollectionSaga({ payload }) {
       endpoint = contentImportApi.qtiImport
       payloadData.file = signedUrl
       delete payloadData.files
-      yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
     }
     const response = yield call(endpoint, payloadData)
     if (response?.jobIds?.length || response.jobId) {
@@ -502,8 +496,7 @@ export function* getSignedUrlSaga({ payload }) {
   }
 }
 
-function* getContentImportProgressSaga({ payload }) {
-  const { jobIds, interval } = payload
+function* getContentImportProgressSaga({ payload: jobIds }) {
   try {
     const response = yield call(contentImportApi.contentImportProgress, {
       jobIds,
@@ -512,13 +505,9 @@ function* getContentImportProgressSaga({ payload }) {
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadContentStatusAction(UPLOAD_STATUS.DONE))
       yield put(setIsContentImportingAction(false))
-      clearInterval(interval?.current)
-      interval.current = null
     }
   } catch (e) {
     console.log({ e })
-    clearInterval(interval?.current)
-    interval.current = null
     return notification({ messageKey: 'failedToFetchProgressStatus' })
   }
 }

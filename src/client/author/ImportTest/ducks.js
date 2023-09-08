@@ -56,7 +56,7 @@ export const resetStateAction = createAction(RESET_STATE)
 const initialState = {
   testDetail: {},
   error: {},
-  status: UPLOAD_STATUS.STANDBY,
+  status: 'INITIATE',
   jobIds: [],
   jobsData: [],
   successMessage: '',
@@ -103,7 +103,7 @@ const resetQtiState = (state) => {
   state.jobsData = []
   state.qtiFileStatus = {}
   state.error = {}
-  state.status = UPLOAD_STATUS.STANDBY
+  state.status = 'INITIATE'
   state.jobIds = []
   state.successMessage = ''
   state.isSuccess = true
@@ -165,14 +165,13 @@ export function* uploadTestStaga({ payload }) {
 }
 
 function* getImportProgressSaga({ payload }) {
-  const { jobId, interval } = payload
   try {
+    const { jobId, interval } = payload
     const response = yield call(contentImportApi.qtiImportStatus, jobId)
     const manifestResponse = response.find(
       (ele) => ele.type === 'manifestation'
     )
     if (manifestResponse.status === JOB_STATUS.COMPLETED) {
-      yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
       yield put(setJobsDataAction(response))
       const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
       const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
@@ -191,22 +190,18 @@ function* getImportProgressSaga({ payload }) {
         )
       ) {
         yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-        clearInterval(interval?.current)
-        interval.current = null
+        clearInterval(interval)
       }
     } else if (manifestResponse.status === JOB_STATUS.ERROR) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
       yield put(uploadTestErrorAction(`${manifestResponse.error}`))
-      clearInterval(interval?.current)
-      interval.current = null
+      clearInterval(interval)
       notification({
         type: 'error',
         msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
       })
     }
   } catch (e) {
-    clearInterval(interval?.current)
-    interval.current = null
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }

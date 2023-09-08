@@ -116,6 +116,7 @@ const UploadWrapper = styled.div`
 `
 
 const Image = styled.img`
+  pointer-events: none;
   width: 100%;
   min-height: 207px;
   border-radius: 5px;

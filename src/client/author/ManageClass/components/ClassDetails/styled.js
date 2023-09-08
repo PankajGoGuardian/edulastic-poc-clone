@@ -562,6 +562,7 @@ export const CaretUp = styled.i`
 `
 
 export const ImageContainer = styled.div`
+  pointer-events: none;
   width: 250px;
 
   @media (min-width: ${extraDesktopWidthMax}) {

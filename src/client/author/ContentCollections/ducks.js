@@ -5,7 +5,12 @@ import { collectionsApi, contentImportApi } from '@edulastic/api'
 import { uploadToS3, notification } from '@edulastic/common'
 import { push } from 'react-router-redux'
 import { aws } from '@edulastic/constants'
-import { UPLOAD_STATUS, JOB_STATUS, setJobIdsAction } from '../ImportTest/ducks'
+import {
+  UPLOAD_STATUS,
+  JOB_STATUS,
+  setJobIdsAction,
+  uploadTestStatusAction,
+} from '../ImportTest/ducks'
 
 const ContentFolders = {
   qti: aws.s3Folders.QTI_IMPORT,
@@ -450,6 +455,7 @@ export function* importTestToCollectionSaga({ payload }) {
       endpoint = contentImportApi.qtiImport
       payloadData.file = signedUrl
       delete payloadData.files
+      yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
     }
     const response = yield call(endpoint, payloadData)
     if (response?.jobIds?.length || response.jobId) {

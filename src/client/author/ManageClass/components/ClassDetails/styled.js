@@ -344,6 +344,7 @@ export const DividerDiv = styled.div`
 `
 
 export const Image = styled.img`
+  pointer-events: none;
   width: 100%;
   min-width: 200px;
   min-height: 100px;
@@ -562,7 +563,6 @@ export const CaretUp = styled.i`
 `
 
 export const ImageContainer = styled.div`
-  pointer-events: none;
   width: 250px;
 
   @media (min-width: ${extraDesktopWidthMax}) {

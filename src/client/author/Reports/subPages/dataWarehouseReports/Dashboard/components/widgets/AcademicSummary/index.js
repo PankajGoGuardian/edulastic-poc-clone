@@ -25,7 +25,6 @@ import {
   getAcademicSummaryPieChartData,
   academicSummaryFiltersTypes,
   getAcademicSummaryMetrics,
-  getFilteredAcademicSummaryTestTypes,
   trendPeriodDateFormat,
   trendPeriodPrefix,
 } from '../../../utils'
@@ -50,15 +49,6 @@ const AcademicSummary = ({
   setWidgetFilters,
   settings,
 }) => {
-  const filteredAvailableTestTypes = useMemo(
-    () =>
-      getFilteredAcademicSummaryTestTypes(
-        settings.requestFilters.assessmentTypes,
-        availableTestTypes
-      ),
-    [settings.requestFilters.assessmentTypes, availableTestTypes]
-  )
-
   const query = useMemo(
     () => ({
       ...settings.requestFilters,
@@ -155,7 +145,7 @@ const AcademicSummary = ({
         filters={widgetFilters}
         setFilters={setWidgetFilters}
         performanceBandsList={performanceBandList}
-        availableTestTypes={filteredAvailableTestTypes}
+        availableTestTypes={availableTestTypes}
       />
       <EduIf condition={loading}>
         <EduThen>

@@ -24,6 +24,8 @@ import {
   slice,
 } from '../ducks'
 import { SaveAndExitButton } from '../../../assessment/themes/common/styledCompoenents'
+import { utaStartTimeUpdateRequired } from '../../sharedDucks/AssignmentModule/ducks'
+import { TIME_UPDATE_TYPE } from '../../../assessment/themes/common/TimedTestTimer'
 
 const RenderButton = ({
   attempted,
@@ -39,7 +41,9 @@ const RenderButton = ({
     return <EduButton onClick={handleStartSection(index)}>Start Test</EduButton>
   }
   if (attempted > 0 && status !== SECTION_STATUS.SUBMITTED) {
-    return <EduButton onClick={handleStartSection(index)}>Continue</EduButton>
+    return (
+      <EduButton onClick={handleStartSection(index, true)}>Continue</EduButton>
+    )
   }
   if (preventSectionNavigation && status === SECTION_STATUS.SUBMITTED) {
     return (
@@ -122,6 +126,7 @@ const SummaryContainer = (props) => {
     itemsToDeliverInGroup,
     isLoading,
     activityData,
+    utaStartTimeUpdate,
   } = props
   const { groupId, utaId, testId, assessmentType } = match.params
 
@@ -129,8 +134,11 @@ const SummaryContainer = (props) => {
     fetchSectionsData({ utaId, groupId })
   }, [])
 
-  const handleStartSection = (index) => () => {
+  const handleStartSection = (index, resume) => () => {
     const nextItemId = itemsToDeliverInGroup[index].items[0]
+    if (resume && activityData?.assignmentSettings?.timedAssignment) {
+      utaStartTimeUpdate(TIME_UPDATE_TYPE.RESUME)
+    }
     history.push({
       pathname: `/student/${assessmentType}/${testId}/class/${groupId}/uta/${utaId}/itemId/${nextItemId}`,
       state: { fromSummary: true },
@@ -212,6 +220,7 @@ const enhance = compose(
     }),
     {
       fetchSectionsData: slice.actions.fetchSectionsData,
+      utaStartTimeUpdate: utaStartTimeUpdateRequired,
     }
   )
 )

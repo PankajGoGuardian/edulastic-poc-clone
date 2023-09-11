@@ -2,7 +2,7 @@ import { reportUtils } from '@edulastic/constants'
 import { sumBy, round, maxBy } from 'lodash'
 
 import { bandKeys, dataKeys } from './constants'
-import { getTestTitle } from '../../../../common/util'
+import { getTestTitleSuffix } from '../../../../common/util'
 
 const {
   getProficiencyBand,
@@ -279,7 +279,7 @@ const getExternalTestInfoByTestId = (testId) => {
   // So, split everything -> Pick last 2 -> Join rest to get testName
   const [testCategory, testTitle] = testIdSplit.splice(-2)
   const testName = testIdSplit.join(EXTERNAL_TEST_KEY_SEPARATOR)
-  const testTitleSuffix = getTestTitle(testCategory, testTitle)
+  const testTitleSuffix = getTestTitleSuffix(testTitle)
   const testLabel = `${testName} - ${testCategory} ${testTitleSuffix}`
   return {
     name: testLabel,
@@ -316,10 +316,10 @@ export const getExternalBandInfoByExternalTest = ({
 
 export const getExternalBandsListFromBandInfo = (externalBandInfo) => {
   return [externalBandInfo].map(({ testTitle, testCategory }) => {
-    const _testTitle = getTestTitle(testCategory, testTitle)
+    const testTitleSuffix = getTestTitleSuffix(testTitle)
     return {
       key: [testCategory, testTitle || ''].join(EXTERNAL_TEST_KEY_SEPARATOR),
-      title: `${testCategory} ${_testTitle}`,
+      title: `${testCategory} ${testTitleSuffix}`,
     }
   })
 }

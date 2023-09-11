@@ -496,7 +496,8 @@ export function* getSignedUrlSaga({ payload }) {
   }
 }
 
-function* getContentImportProgressSaga({ payload: jobIds }) {
+function* getContentImportProgressSaga({ payload }) {
+  const { jobIds, interval } = payload
   try {
     const response = yield call(contentImportApi.contentImportProgress, {
       jobIds,
@@ -505,9 +506,13 @@ function* getContentImportProgressSaga({ payload: jobIds }) {
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadContentStatusAction(UPLOAD_STATUS.DONE))
       yield put(setIsContentImportingAction(false))
+      clearInterval(interval?.current)
+      interval.current = null
     }
   } catch (e) {
     console.log({ e })
+    clearInterval(interval?.current)
+    interval.current = null
     return notification({ messageKey: 'failedToFetchProgressStatus' })
   }
 }

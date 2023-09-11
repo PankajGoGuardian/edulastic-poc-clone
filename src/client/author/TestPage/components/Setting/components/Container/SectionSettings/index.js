@@ -67,9 +67,9 @@ const ShowSectionSettings = ({
           <Body smallSize={isSmallSize}>
             <Description>
               Test can be attempted in a sequential manner. Within a section,
-              you can navigate between questions using the &apos;previous&apos;
-              and &apos;next&apos; options. Once a section is submitted,
-              returning to it is not allowed.
+              you can to navigate between questions using the
+              &apos;previous&apos; and &apos;next&apos; options. Once a section
+              is submitted, returning to it is not allowed.
             </Description>
           </Body>
         </SettingContainer>

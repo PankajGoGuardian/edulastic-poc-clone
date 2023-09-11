@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -29,6 +29,7 @@ const ImportTestContent = ({
   uploadContnentStatus,
   history,
 }) => {
+  const intervalRef = useRef(null)
   useEffect(() => {
     const currentStatus = sessionStorage.getItem('testUploadStatus')
     const sessionJobs = sessionStorage.getItem('jobIds')
@@ -77,7 +78,7 @@ const ImportTestContent = ({
       case status === UPLOAD_STATUS.STANDBY:
         return <UploadTest />
       case status === UPLOAD_STATUS.INITIATE:
-        return <ImportInprogress />
+        return <ImportInprogress intervalRef={intervalRef} />
       case status === UPLOAD_STATUS.DONE:
         return <ImportDone />
       default:

@@ -83,22 +83,30 @@ export const getPreventSectionNavigationSelector = createSelector(
 export const getItemstoDeliverWithAttemptCount = createSelector(
   getActivityDataSelector,
   (activity) => {
-    const { testActivity = {}, questionActivities = [], test } = activity
+    const {
+      testActivity = {},
+      questionActivities = [],
+      test,
+      itemsToBeExcluded = [],
+    } = activity
+    const excludeItemsById = keyBy(itemsToBeExcluded)
     const { itemsToDeliverInGroup = [] } = testActivity
     const qActivitiesByTestItemId = keyBy(questionActivities, 'testItemId')
     const itemGroupsById = keyBy(test?.itemGroups, '_id')
-    return itemsToDeliverInGroup.map(({ items, ...section }) => {
-      return {
-        ...section,
-        items,
-        groupName: itemGroupsById[section.groupId]?.groupName,
-        attempted: items.reduce((acc, c) => {
-          if (qActivitiesByTestItemId[c]) {
-            return acc + 1
-          }
-          return acc + 0
-        }, 0),
-      }
-    })
+    return itemsToDeliverInGroup
+      .map(({ items, ...section }) => {
+        return {
+          ...section,
+          items: items.filter((item) => !excludeItemsById[item]),
+          groupName: itemGroupsById[section.groupId]?.groupName,
+          attempted: items.reduce((acc, c) => {
+            if (qActivitiesByTestItemId[c]) {
+              return acc + 1
+            }
+            return acc + 0
+          }, 0),
+        }
+      })
+      .filter(({ items }) => items?.length)
   }
 )

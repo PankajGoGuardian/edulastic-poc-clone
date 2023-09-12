@@ -168,11 +168,15 @@ const SettingsModal = ({
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     disabled={isPremiumContentWithoutAccess}
                   >
-                    <Select.Option value="default">Default</Select.Option>
+                    <Select.Option value="default" aria-label="Default">
+                      Default
+                    </Select.Option>
                     {Object.keys(themeColorsMap).map((key) => {
                       const item = themeColorsMap[key]
                       return (
-                        <Select.Option value={key}>{item.title}</Select.Option>
+                        <Select.Option value={key} aria-label={item.title}>
+                          {item.title}
+                        </Select.Option>
                       )
                     })}
                   </StyledSelect>
@@ -187,11 +191,21 @@ const SettingsModal = ({
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
                     disabled={isPremiumContentWithoutAccess}
                   >
-                    <Select.Option value="1">None</Select.Option>
-                    <Select.Option value="1.5">1.5X standard</Select.Option>
-                    <Select.Option value="1.75">1.75X standard</Select.Option>
-                    <Select.Option value="2.5">2.5X standard</Select.Option>
-                    <Select.Option value="3">3X standard</Select.Option>
+                    <Select.Option value="1" aria-label="None">
+                      None
+                    </Select.Option>
+                    <Select.Option value="1.5" aria-label="1.5X standard">
+                      1.5X standard
+                    </Select.Option>
+                    <Select.Option value="1.75" aria-label="1.75X standard">
+                      1.75X standard
+                    </Select.Option>
+                    <Select.Option value="2.5" aria-label="2.5X standard">
+                      2.5X standard
+                    </Select.Option>
+                    <Select.Option value="3" aria-label="3X standard">
+                      3X standard
+                    </Select.Option>
                   </StyledSelect>
                 </div>
               </>
@@ -207,13 +221,19 @@ const SettingsModal = ({
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
                   disabled={isPremiumContentWithoutAccess}
                 >
-                  <Select.Option value="" disabled>
+                  <Select.Option value="" disabled aria-label="Select Language">
                     Select Language
                   </Select.Option>
-                  <Select.Option value={languageCodes.ENGLISH}>
+                  <Select.Option
+                    value={languageCodes.ENGLISH}
+                    aria-label="English"
+                  >
                     English
                   </Select.Option>
-                  <Select.Option value={languageCodes.SPANISH}>
+                  <Select.Option
+                    value={languageCodes.SPANISH}
+                    aria-label="Spanish"
+                  >
                     Spanish
                   </Select.Option>
                 </StyledSelect>
@@ -229,11 +249,21 @@ const SettingsModal = ({
                   value={selectedPlaybackSpeed}
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
                 >
-                  <Select.Option value="0.5">0.5X</Select.Option>
-                  <Select.Option value="0.75">0.75X</Select.Option>
-                  <Select.Option value="1">Normal</Select.Option>
-                  <Select.Option value="1.5">1.5X</Select.Option>
-                  <Select.Option value="2">2X</Select.Option>
+                  <Select.Option value="0.5" aria-label="0.5X">
+                    0.5X
+                  </Select.Option>
+                  <Select.Option value="0.75" aria-label="0.75X">
+                    0.75X
+                  </Select.Option>
+                  <Select.Option value="1" aria-label="Normal">
+                    Normal
+                  </Select.Option>
+                  <Select.Option value="1.5" aria-label="1.5X">
+                    1.5X
+                  </Select.Option>
+                  <Select.Option value="2" aria-label="2X">
+                    2X
+                  </Select.Option>
                 </StyledSelect>
               </div>
             )}

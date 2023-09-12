@@ -86,6 +86,7 @@ const DragItem = ({
     <DragItemContainer
       data-cy="drag-item"
       data-dnd="edu-dragitem"
+      tabIndex="0"
       isDragging={isDragging}
       isActivated={isActivated}
       ref={attach}

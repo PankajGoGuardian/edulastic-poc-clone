@@ -29,6 +29,7 @@ import { TIME_UPDATE_TYPE } from '../../../assessment/themes/common/TimedTestTim
 
 const RenderButton = ({
   attempted,
+  skipped,
   preventSectionNavigation,
   handleReviewSection,
   handleStartSection,
@@ -37,10 +38,11 @@ const RenderButton = ({
   status,
 }) => {
   // Tried applying EduIf here but looks so much nested hence going with this approach for readability
-  if (attempted === 0 && !showLockIcon) {
+  const totalVisited = attempted + skipped
+  if (totalVisited === 0 && !showLockIcon) {
     return <EduButton onClick={handleStartSection(index)}>Start Test</EduButton>
   }
-  if (attempted > 0 && status !== SECTION_STATUS.SUBMITTED) {
+  if (totalVisited > 0 && status !== SECTION_STATUS.SUBMITTED) {
     return (
       <EduButton onClick={handleStartSection(index, true)}>Continue</EduButton>
     )
@@ -72,7 +74,7 @@ const TestSectionsContainer = ({
   return (
     <TestSections>
       {itemsToDeliverInGroup.map((section, index) => {
-        const { items, attempted, status, groupName } = section
+        const { items, attempted, skipped, status, groupName } = section
         const isLast = itemsToDeliverInGroup.length == index + 1
         const showLockIcon =
           nextSection.groupId !== section.groupId &&
@@ -102,6 +104,7 @@ const TestSectionsContainer = ({
             <SectionProgress>
               <RenderButton
                 attempted={attempted}
+                skipped={skipped}
                 preventSectionNavigation={preventSectionNavigation}
                 handleReviewSection={handleReviewSection}
                 handleStartSection={handleStartSection}

@@ -93,20 +93,30 @@ export const getItemstoDeliverWithAttemptCount = createSelector(
     const { itemsToDeliverInGroup = [] } = testActivity
     const qActivitiesByTestItemId = keyBy(questionActivities, 'testItemId')
     const itemGroupsById = keyBy(test?.itemGroups, '_id')
-    return itemsToDeliverInGroup
-      .map(({ items, ...section }) => {
-        return {
-          ...section,
-          items: items.filter((item) => !excludeItemsById[item]),
-          groupName: itemGroupsById[section.groupId]?.groupName,
-          attempted: items.reduce((acc, c) => {
-            if (qActivitiesByTestItemId[c]) {
-              return acc + 1
-            }
-            return acc + 0
-          }, 0),
-        }
-      })
-      .filter(({ items }) => items?.length)
+    return itemsToDeliverInGroup.map(({ items, ...section }) => {
+      return {
+        ...section,
+        items: items.filter((item) => !excludeItemsById[item]),
+        groupName: itemGroupsById[section.groupId]?.groupName,
+        skipped: items.reduce((acc, c) => {
+          if (
+            qActivitiesByTestItemId[c] &&
+            qActivitiesByTestItemId[c].skipped
+          ) {
+            return acc + 1
+          }
+          return acc
+        }, 0),
+        attempted: items.reduce((acc, c) => {
+          if (
+            qActivitiesByTestItemId[c] &&
+            !qActivitiesByTestItemId[c].skipped
+          ) {
+            return acc + 1
+          }
+          return acc
+        }, 0),
+      }
+    })
   }
 )

@@ -70,6 +70,11 @@ export const getActivityDataSelector = createSelector(
   (state) => state.testActivity || {}
 )
 
+export const getAssignmentSettingsSelector = createSelector(
+  getActivityDataSelector,
+  (state) => state?.assignmentSettings || {}
+)
+
 export const getTestDataSelector = createSelector(
   getActivityDataSelector,
   (activity) => activity?.test || {}

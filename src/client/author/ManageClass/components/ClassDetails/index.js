@@ -54,6 +54,7 @@ import {
 import ReauthenticateModal from './ReauthenticateModal'
 import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
+import { getManualEnrollmentAllowed } from '../../../DistrictPolicy/ducks'
 
 const ClassDetails = ({
   location,
@@ -92,6 +93,7 @@ const ClassDetails = ({
   setShowAssignmentCreationModal,
   setCreateClassTypeDetails,
   studentsLoadingStatus,
+  manualEnrollmentAllowed,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -395,6 +397,7 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
+              manualEnrollmentAllowed={manualEnrollmentAllowed}
             />
           </div>
           <MainContentWrapper>
@@ -423,6 +426,7 @@ const ClassDetails = ({
               cleverId={cleverId}
               searchAndAddStudents={searchAndAddStudents}
               districtId={districtId}
+              manualEnrollmentAllowed={manualEnrollmentAllowed}
             />
             <StudentsList
               selectStudent
@@ -470,6 +474,7 @@ const enhance = compose(
       isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
       userDistrictId: getUserOrgId(state),
       isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
+      manualEnrollmentAllowed: getManualEnrollmentAllowed(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,

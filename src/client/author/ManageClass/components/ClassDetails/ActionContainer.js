@@ -18,7 +18,7 @@ import {
   IconEclipse,
   IconInfo,
 } from '@edulastic/icons'
-import { EduButton, notification } from '@edulastic/common'
+import { EduButton, EduIf, notification } from '@edulastic/common'
 
 import DeleteConfirm from './DeleteConfirm/DeleteConfirm'
 import ResetPwd from './ResetPwd/ResetPwd'
@@ -86,6 +86,7 @@ const ActionContainer = ({
   districtId,
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
+  manualEnrollmentAllowed,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
@@ -409,6 +410,8 @@ const ActionContainer = ({
     }
   }, [isStudentListLoading])
 
+  const isAddButtonVisible = checkForAddStudent && manualEnrollmentAllowed
+
   return (
     <>
       {infoModelVisible && (
@@ -489,7 +492,7 @@ const ActionContainer = ({
         )}
 
         <ButtonsWrapper>
-          {checkForAddStudent && (
+          <EduIf condition={isAddButtonVisible}>
             <EduButton
               height="30px"
               isGhost
@@ -499,8 +502,6 @@ const ActionContainer = ({
               <IconPlusCircle />
               ADD STUDENT
             </EduButton>
-          )}
-          {checkForAddStudent && (
             <EduButton
               height="30px"
               data-cy="addMultiStu"
@@ -509,7 +510,7 @@ const ActionContainer = ({
               <IconPlusCircle />
               ADD MULTIPLE STUDENTS
             </EduButton>
-          )}
+          </EduIf>
           <EduButton
             height="30px"
             isGhost

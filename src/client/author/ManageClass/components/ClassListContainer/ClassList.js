@@ -32,6 +32,7 @@ import {
   getGoogleAllowedInstitionPoliciesSelector,
   getCanvasAllowedInstitutionPoliciesSelector,
   getCleverLibraryUserSelector,
+  getManualEnrollmentAllowedSelector,
 } from '../../../src/selectors/user'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 
@@ -63,6 +64,7 @@ const ClassList = ({
   filterClass,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  manualEnrollmentAllowed,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -326,6 +328,7 @@ const ClassList = ({
         filterClass={filterClass}
         setShowClassCreationModal={setShowClassCreationModal}
         setCreateClassTypeDetails={setCreateClassTypeDetails}
+        manualEnrollmentAllowed={manualEnrollmentAllowed}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -363,6 +366,7 @@ const ClassList = ({
                   isClassLink={isClassLink}
                   setShowClassCreationModal={setShowClassCreationModal}
                   setCreateClassTypeDetails={setCreateClassTypeDetails}
+                  manualEnrollmentAllowed={manualEnrollmentAllowed}
                 />
               )}
             </>
@@ -407,6 +411,7 @@ const enhance = compose(
       isCleverUser: getCleverLibraryUserSelector(state),
       studentsList: get(state, 'manageClass.studentsList', {}),
       filterClass: get(state, 'manageClass.filterClass', 'Active'),
+      manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
     }),
     {
       fetchClassList: fetchClassListAction,

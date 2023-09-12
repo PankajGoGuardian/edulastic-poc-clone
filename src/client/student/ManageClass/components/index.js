@@ -2,7 +2,10 @@ import { Layout, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { getUser } from '../../../author/src/selectors/user'
+import {
+  getDistrictPoliciesSelector,
+  getUser,
+} from '../../../author/src/selectors/user'
 import {
   getEnrollClassAction,
   joinClassAction,
@@ -28,6 +31,7 @@ const ManageClass = ({
   userRole,
   currentChild,
   proxyUserRole,
+  districtPolicies,
 }) => {
   useEffect(() => {
     loadAllClasses()
@@ -50,6 +54,7 @@ const ManageClass = ({
         userRole={userRole}
         currentChild={currentChild}
         proxyUserRole={proxyUserRole}
+        districtPolicies={districtPolicies}
       />
     </Wrapper>
   )
@@ -64,6 +69,7 @@ export default connect(
     userRole: state?.user?.user?.role,
     currentChild: state?.user?.currentChild,
     proxyUserRole: proxyRole(state),
+    districtPolicies: getDistrictPoliciesSelector(state),
   }),
   {
     loadAllClasses: getEnrollClassAction,

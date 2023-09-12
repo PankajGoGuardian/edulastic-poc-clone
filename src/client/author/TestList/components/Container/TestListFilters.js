@@ -130,7 +130,7 @@ const TestListFilters = ({
       { value: 'doc_based', text: 'SnapQuiz' },
     ]
 
-    if (userFeatures.videoQuizEnabled) {
+    if (userFeatures.isVideoQuizAndAIEnabled) {
       data.push({ value: 'video_based', text: 'VideoQuiz' })
     }
     if (userFeatures.enableDynamicTests) {

@@ -623,7 +623,7 @@ class AddItems extends PureComponent {
                 >
                   <EduIf condition={!isDynamicTest}>
                     <FeaturesSwitch
-                      inputFeatures={['aiQuizEnabled']}
+                      inputFeatures={['isVideoQuizAndAIEnabled']}
                       actionOnInaccessible="hidden"
                     >
                       <EduAIQuiz addItems test={test} />

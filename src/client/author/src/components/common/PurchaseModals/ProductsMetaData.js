@@ -10,6 +10,7 @@ import {
   IconSparkWriting,
   IconSparkBooks,
   IconSparkPhonics,
+  IconVideoAISuite,
 } from '@edulastic/icons'
 
 export const productsMetaData = {
@@ -17,6 +18,13 @@ export const productsMetaData = {
     icon: <IconSchool />,
     grades: 'Grades K-12',
     learnMoreLinks: 'https://edulastic.com/teacher-premium',
+    filters: 'ALL SUBJECTS',
+  },
+  'Video Quiz and AI Suite': {
+    icon: <IconVideoAISuite />,
+    grades: 'Grades K-12',
+    learnMoreLinks:
+      'https://edulastic.com/blog/introducing-video-quiz-elevate-your-classroom-engagement-and-assessment-game',
     filters: 'ALL SUBJECTS',
   },
   SparkMath: {

@@ -22,7 +22,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
       <FeaturesSwitch
-        inputFeatures={['videoQuizEnabled', 'premium']}
+        inputFeatures={['isVideoQuizAndAIEnabled']}
         actionOnInaccessible="hidden"
       >
         <OptionVideo />
@@ -39,7 +39,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
       </EduIf>
     </FlexWrapper>
     <FeaturesSwitch
-      inputFeatures={['aiQuizEnabled']}
+      inputFeatures={['isVideoQuizAndAIEnabled']}
       actionOnInaccessible="hidden"
     >
       <EduAiQuiz />

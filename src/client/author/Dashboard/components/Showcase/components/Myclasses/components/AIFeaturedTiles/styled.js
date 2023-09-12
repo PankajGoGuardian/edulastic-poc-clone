@@ -1,3 +1,4 @@
+import { lightGreen10 } from '@edulastic/colors'
 import styled from 'styled-components'
 
 export const AIFeatureContentWrapper = styled.div`
@@ -9,4 +10,12 @@ export const Image = styled.img`
   height: 169px;
   margin: 0px 8px 10px 0px;
   border-radius: 10px;
+`
+
+export const TextLink = styled.div`
+  cursor: pointer;
+  color: ${lightGreen10};
+  font-size: 12px;
+  margin-right: 8px;
+  font-weight: 700;
 `

@@ -50,6 +50,7 @@ import {
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 import ClassBanner from './components/ClassBanner'
+import AIFeaturedTiles from './components/AIFeaturedTiles'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -759,6 +760,7 @@ const MyClasses = ({
           isDemoPlaygroundUser={isDemoPlayground}
         />
       )}
+      {isPremiumUser && <AIFeaturedTiles />}
       {!isCliUser && (
         <FeaturedContentBundle
           featuredBundles={filteredBundles}

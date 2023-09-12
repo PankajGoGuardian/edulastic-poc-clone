@@ -1,7 +1,8 @@
 import { white } from '@edulastic/colors'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import qs from 'qs'
 import connect from 'react-redux/es/connect/connect'
 import { compose } from 'redux'
 import i18 from '@edulastic/localization'
@@ -49,6 +50,14 @@ const EduAIQuiz = ({
     setDefaultTest,
     clearCreatedItem,
   })
+  const { open = '' } = qs.parse(window.location.search, {
+    ignoreQueryPrefix: true,
+  })
+  useEffect(() => {
+    if (open === 'aiquiz') {
+      onCreateItems()
+    }
+  }, [])
 
   const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)
   const handleSelectGroupResponse = (groupIndex) => {

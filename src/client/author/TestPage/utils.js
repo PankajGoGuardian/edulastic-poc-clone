@@ -245,8 +245,9 @@ export const showAutoEssayEvaluationSetting = (itemGroups = []) =>
   )
 
 export const checkIsDateLessThanSep30 = () => {
-  const currentDate = moment()
+  const currentDate = moment().utc()
   const targetDate = moment()
+    .utc()
     .year(2023)
     .month(8)
     .date(30)

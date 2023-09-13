@@ -109,8 +109,10 @@ const TrialConfirmationModal = ({
     setSelectedGrades(interestedGrades)
   }, [interestedGrades])
 
-  const productsToShow = products.filter(({ linkedProductId }) =>
-    collections.find(({ _id }) => _id === linkedProductId)
+  const productsToShow = products.filter(
+    ({ linkedProductId, name: productName }) =>
+      collections.find(({ _id }) => _id === linkedProductId) &&
+      productName !== 'Video Quiz and AI Suite'
   )
 
   const hasOnlyTeacherPremium =
@@ -264,7 +266,7 @@ const TrialConfirmationModal = ({
         </SpinContainer>
       ) : (
         <CustomModalStyled
-          visible={visible}
+          visible={visible && productsToShow.length}
           title={modalTitle}
           onCancel={handleCloseModal}
           width={hasOnlyTeacherPremium ? '700px' : '950px'}

@@ -104,3 +104,8 @@ export const CreateAiTestWrapper = styled(FlexContainer)`
   border-radius: 10px;
   background: linear-gradient(225deg, #007d65 0%, #1766ce 100%);
 `
+
+export const StyledDiv = styled.div`
+  width: calc(100% - 2.5rem);
+  padding-left: 2rem;
+`

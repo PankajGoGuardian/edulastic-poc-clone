@@ -13,7 +13,7 @@ import AiTestBanner from './CreateAiTestBanner'
 import { CreateAiTestModal } from './CreateAiTestModal'
 import { aiTestActions } from './ducks'
 import { useSaveForm } from './hooks/useSaveForm'
-import { AiEduButton } from './styled'
+import { AiEduButton, StyledDiv } from './styled'
 import {
   clearCreatedItemsAction,
   setDefaultTestDataAction,
@@ -98,11 +98,13 @@ const EduAIQuiz = ({
         <EduElse>
           <AiTestBanner onCreateItems={onCreateItems} />
           {isDateLessThanSep30 && (
-            <FreeVideoQuizAnnouncement
-              title="AI Generated Quiz is free to use till September 30"
-              history={history}
-              style={{ marginTop: '10px', marginRight: '1223px' }}
-            />
+            <StyledDiv>
+              <FreeVideoQuizAnnouncement
+                title="AI Generated Quiz is free to use till September 30"
+                history={history}
+                style={{ marginTop: '10px', justifyContent: 'flex-start' }}
+              />
+            </StyledDiv>
           )}
         </EduElse>
       </EduIf>

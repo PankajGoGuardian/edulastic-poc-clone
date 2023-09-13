@@ -22,6 +22,7 @@ import {
   IconStemCross,
   IconSurveyInsightsAddOn,
   IconWholeLearnerReportAddOn,
+  IconVideoAISuite,
 } from '@edulastic/icons'
 import React from 'react'
 import DATA_STUDIO from '../static/data-studio-bg.png'
@@ -142,6 +143,12 @@ export const subscription = {
           title: 'SparkPhonics',
           description:
             'Diagnostics and weekly practice exercises to strengthen phonemic awareness for early readers',
+        },
+        {
+          icon: <IconVideoAISuite />,
+          title: 'Video Quiz and AI Suite',
+          description:
+            'Access video-based quiz formats and a suite of AI capabilities, including Question Generation and Assisted Rubrics.',
         },
       ],
     },

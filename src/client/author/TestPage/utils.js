@@ -15,6 +15,7 @@ import {
   question as questionConstants,
 } from '@edulastic/constants'
 
+import moment from 'moment'
 import { getQuestions } from './ducks'
 
 const { TOP_ORDER_SKINS } = testConstants
@@ -243,6 +244,20 @@ export const showAutoEssayEvaluationSetting = (itemGroups = []) =>
       question?.title.toLowerCase().includes('essay') && question?.rubrics
   )
 
+export const checkIsDateLessThanSep30 = () => {
+  const currentDate = moment().utc()
+  const targetDate = moment()
+    .utc()
+    .year(2023)
+    .month(8)
+    .date(30)
+    .hour(23)
+    .minute(59)
+    .second(59)
+    .millisecond(999)
+
+  return currentDate.isBefore(targetDate) || currentDate.isSame(targetDate)
+}
 export default {
   createGroupSummary,
 }

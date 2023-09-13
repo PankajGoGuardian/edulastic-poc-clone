@@ -75,7 +75,6 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
-  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -94,6 +93,7 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
+import { FeaturesSwitch } from '../../../../features/components/FeaturesSwitch'
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -554,7 +554,6 @@ class AddItems extends PureComponent {
       sort = {},
       gotoAddSections,
       aiTestStatus = false,
-      isPremiumUser,
       isDynamicTest,
       hasSections,
     } = this.props
@@ -622,8 +621,13 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <EduIf condition={isPremiumUser && !isDynamicTest}>
-                    <EduAIQuiz addItems test={test} />
+                  <EduIf condition={!isDynamicTest}>
+                    <FeaturesSwitch
+                      inputFeatures={['isVideoQuizAndAIEnabled']}
+                      actionOnInaccessible="hidden"
+                    >
+                      <EduAIQuiz addItems test={test} />
+                    </FeaturesSwitch>
                   </EduIf>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
@@ -734,7 +738,6 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       pageNumber: state?.testsAddItems?.page,
       needToSetFilter: state?.testsAddItems?.needToSetFilter,
-      isPremiumUser: isPremiumUserSelector(state),
       aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),

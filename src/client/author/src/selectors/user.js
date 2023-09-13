@@ -1,14 +1,13 @@
 import { get as _get, pick, groupBy, isEmpty } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
-import { AUTO_RUBRIC_ENABLED_DISTRICT } from '@edulastic/constants/const/common'
-import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
-import { getDefaultInterests } from '../../dataUtils'
-import { getCurriculumsListSelector } from './dictionaries'
 import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
+import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
+import { getDefaultInterests } from '../../dataUtils'
+import { getCurriculumsListSelector } from './dictionaries'
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
 
@@ -49,14 +48,6 @@ export const getUserFullNameSelector = createSelector(
 export const getOrgDataSelector = createSelector(
   stateSelector,
   (state) => state?.user?.orgData || {}
-)
-
-export const getIsAiEvaulationDistrictSelector = createSelector(
-  getOrgDataSelector,
-  (orgData) =>
-    (orgData?.districtIds || [])?.find((id) =>
-      AUTO_RUBRIC_ENABLED_DISTRICT?.includes(id)
-    )
 )
 
 export const getCurrentGroup = createSelector(
@@ -208,6 +199,11 @@ export const getUserOrgName = createSelector(
 
 export const getUserFeatures = createSelector(stateSelector, (state) =>
   _get(state, 'user.features')
+)
+
+export const getIsAiEvaulationDistrictSelector = createSelector(
+  getUserFeatures,
+  (features) => features.isVideoQuizAndAIEnabled
 )
 
 export const getUserOrgData = createSelector(stateSelector, (state) =>

@@ -22,6 +22,7 @@ export const productsMetaData = {
   },
   'Video Quiz and AI Suite': {
     icon: <IconVideoAISuite />,
+    subject: 'all',
     grades: 'Grades K-12',
     learnMoreLinks:
       'https://edulastic.com/blog/introducing-video-quiz-elevate-your-classroom-engagement-and-assessment-game',

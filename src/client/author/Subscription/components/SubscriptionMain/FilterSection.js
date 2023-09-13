@@ -8,15 +8,17 @@ const FiltersSection = ({ subjects, selected, changeSubject }) => {
       <Wrap>
         <span>Addons</span>
         <ul data-cy="addonFilters">
-          {['all', ...subjects].map((s) => (
-            <li
-              onClick={() => changeSubject(s)}
-              className={selected === s ? `active` : undefined}
-              data-cy={s}
-            >
-              {s}
-            </li>
-          ))}
+          {['all', ...subjects?.filter((subject) => subject !== 'all')].map(
+            (s) => (
+              <li
+                onClick={() => changeSubject(s)}
+                className={selected === s ? `active` : undefined}
+                data-cy={s}
+              >
+                {s}
+              </li>
+            )
+          )}
         </ul>
       </Wrap>
     </FilterSection>

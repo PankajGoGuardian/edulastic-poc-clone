@@ -14,6 +14,7 @@ import {
   IconScratchPad,
   IconCloudUpload,
   IconCheck,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { extraDesktopWidthMax, white, themeColorBlue } from '@edulastic/colors'
 import { Tooltip } from '../../../../common/utils/helpers'
@@ -42,6 +43,10 @@ const ToolBar = ({
   answerChecksUsedForItem,
   checkAnswer,
   calcTypes,
+  translate,
+  openReferenceModal = () => {},
+  canShowReferenceMaterial = false,
+  isShowReferenceModal = false,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -87,6 +92,20 @@ const ToolBar = ({
         </Tooltip>
       </EduIf>
 
+      <EduIf condition={!isDocbased && canShowReferenceMaterial}>
+        <Tooltip
+          placement="top"
+          title={translate('common.test.referenceMaterial')}
+        >
+          <StyledButton
+            onClick={openReferenceModal}
+            active={isShowReferenceModal}
+            aria-label={translate('common.test.referenceMaterial')}
+          >
+            <IconEduReferenceSheet height="22" width="20" />
+          </StyledButton>
+        </Tooltip>
+      </EduIf>
       {!isDocbased && (
         <Tooltip
           placement="top"
@@ -106,7 +125,6 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-
       {!isDocbased && enableScratchpad && (
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton
@@ -147,6 +165,9 @@ ToolBar.propTypes = {
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
+  openReferenceModal: PropTypes.func.isRequired,
+  canShowReferenceMaterial: PropTypes.bool.isRequired,
+  isShowReferenceModal: PropTypes.bool.isRequired,
 }
 
 const enhance = compose(

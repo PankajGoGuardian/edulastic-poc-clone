@@ -57,7 +57,7 @@ const ImmersiveReaderButton = (props) => {
 }
 
 const PlayerHeader = ({
-  t,
+  t: translate,
   title,
   currentItem,
   gotoQuestion,
@@ -99,6 +99,9 @@ const PlayerHeader = ({
   isLast,
   canUseImmersiveReader = false,
   immersiveReaderTitle,
+  openReferenceModal,
+  isShowReferenceModal,
+  canShowReferenceMaterial,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -267,10 +270,10 @@ const PlayerHeader = ({
                           }
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
-                          aria-label={t('common.test.bookmark')}
+                          aria-label={translate('common.test.bookmark')}
                         >
                           <StyledIconBookmark />
-                          <span>{t('common.test.bookmark')}</span>
+                          <span>{translate('common.test.bookmark')}</span>
                         </StyledButton>
                       )}
                     </Container>
@@ -289,6 +292,10 @@ const PlayerHeader = ({
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                   answerChecksUsedForItem={answerChecksUsedForItem}
                   checkAnswer={checkAnswer}
+                  translate={translate}
+                  openReferenceModal={openReferenceModal}
+                  canShowReferenceMaterial={canShowReferenceMaterial}
+                  isShowReferenceModal={isShowReferenceModal}
                 />
               </FlexContainer>
               <FlexContainer>

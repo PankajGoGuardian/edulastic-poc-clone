@@ -16,7 +16,7 @@ import { QTI_DISTRICTS } from '../../../../config'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import EduAiQuiz from '../CreateAITest'
 
-const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
+const CreationOptions = ({ onUploadPDF, isShowQTI, history }) => (
   <BodyWrapper>
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
@@ -42,7 +42,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
       inputFeatures={['isVideoQuizAndAIEnabled']}
       actionOnInaccessible="hidden"
     >
-      <EduAiQuiz />
+      <EduAiQuiz history={history} />
     </FeaturesSwitch>
   </BodyWrapper>
 )

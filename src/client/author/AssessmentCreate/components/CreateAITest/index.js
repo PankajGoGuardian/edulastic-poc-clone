@@ -18,6 +18,8 @@ import {
   clearCreatedItemsAction,
   setDefaultTestDataAction,
 } from '../../../TestPage/ducks'
+import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
+import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
 
 const EduAIQuiz = ({
   test,
@@ -28,6 +30,7 @@ const EduAIQuiz = ({
   standardsList,
   setDefaultTest,
   clearCreatedItem,
+  history,
 }) => {
   const {
     selectSectionVisible,
@@ -69,11 +72,23 @@ const EduAIQuiz = ({
     }
   }
 
+  const isDateLessThanSep30 = checkIsDateLessThanSep30()
   return (
     <>
       <EduIf condition={addItems}>
         <EduThen>
-          <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
+          <Tooltip
+            title={
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: `${i18.t('author:rubric.infoText')}${
+                    isDateLessThanSep30 &&
+                    '<br><br>Note: This is free to use till September 30'
+                  }`,
+                }}
+              />
+            }
+          >
             <AiEduButton margin="0 5px" aiStyle onClick={onCreateItems}>
               <IconMagicWand fill={`${white}`} />
               Create Items Using AI
@@ -82,6 +97,13 @@ const EduAIQuiz = ({
         </EduThen>
         <EduElse>
           <AiTestBanner onCreateItems={onCreateItems} />
+          {isDateLessThanSep30 && (
+            <FreeVideoQuizAnnouncement
+              title="AI Generated Quiz is free to use till September 30"
+              history={history}
+              style={{ marginTop: '10px', marginRight: '1223px' }}
+            />
+          )}
         </EduElse>
       </EduIf>
       <EduIf condition={addItems}>

@@ -17,7 +17,8 @@ const KeyboardHeader = ({
   onChangeKeypad,
   customKeypads,
 }) => {
-  const handleClickResponseButton = () => {
+  const handleClickResponseButton = (e) => {
+    e?.preventDefault()
     onInput(EMBED_RESPONSE)
   }
 

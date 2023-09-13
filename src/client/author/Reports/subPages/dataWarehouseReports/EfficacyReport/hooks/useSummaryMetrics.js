@@ -12,6 +12,7 @@ const useSummaryMetrics = ({
   reportSummaryData,
   reportFilters,
   externalBands,
+  externalTests,
   selectedPrePerformanceBand,
   selectedPostPerformanceBand,
 }) => {
@@ -20,9 +21,14 @@ const useSummaryMetrics = ({
     if (isEmpty(summaryMetricInfo)) return {}
     const [common] = summaryMetricInfo
     const { preStudentCount, postStudentCount } = common
-    const _testInfo = get(reportSummaryData, 'testInfo', [])
+    const testInfoFromSummaryData = get(reportSummaryData, 'testInfo', [])
 
-    const testInfo = transformTestInfo(_testInfo, reportFilters)
+    // For external tests, testInfo is not passed with summary data, we use externalTest available in filters to get testInfo
+    const rawTestInfo = isEmpty(testInfoFromSummaryData)
+      ? externalTests
+      : testInfoFromSummaryData
+
+    const testInfo = transformTestInfo(rawTestInfo, reportFilters)
     const { preTestInfo, postTestInfo } = testInfo
 
     let preBandInfo = selectedPrePerformanceBand
@@ -34,6 +40,7 @@ const useSummaryMetrics = ({
       preBandInfo = getExternalBandInfoByExternalTest({
         testId: reportFilters.preTestId,
         externalBands,
+        testInfo: externalTests,
       })
       preBandSortKey = bandKeys.EXTERNAL
     }
@@ -42,6 +49,7 @@ const useSummaryMetrics = ({
       postBandInfo = getExternalBandInfoByExternalTest({
         testId: reportFilters.postTestId,
         externalBands,
+        testInfo: externalTests,
       })
       postBandSortKey = bandKeys.EXTERNAL
     }

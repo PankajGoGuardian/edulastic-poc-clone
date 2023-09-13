@@ -62,11 +62,11 @@ import { actions, selectors } from './ducks'
 
 import {
   getCompareByOptions,
-  getChartData,
   getTableData,
   sortKeys,
   TABLE_PAGE_SIZE,
   staticDropDownData,
+  getChartSpecifics,
 } from './utils'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
@@ -289,84 +289,42 @@ const MultipleAssessmentReport = ({
     }
   }, [reportChartData, reportTableData])
 
-  const {
-    incompleteTests,
-    selectedPerformanceBand,
-    chartData,
-  } = useMemo(() => {
-    // performance band for chart should update post chart data API response
-    const { bandInfo = [] } = get(filtersData, 'data.result', {})
-    const _selectedPerformanceBand = (
-      bandInfo.find(
-        (x) =>
-          x._id === (sharedReportFilters || settings.requestFilters).profileId
-      ) || bandInfo[0]
-    )?.performanceBand
-    // curate chart data from API response
-    const {
-      internalMetricsForChart = [],
-      externalMetricsForChart = [],
-      incompleteTests: _incompleteTests = [],
-      externalBands = [],
-    } = get(reportChartData, 'data.result', {})
-    const _internalMetricsForChart = internalMetricsForChart.map((d) => ({
-      ...d,
-      isIncomplete: _incompleteTests.includes(d.testId),
-    }))
-    const _chartData = getChartData(
-      _internalMetricsForChart,
-      externalMetricsForChart,
-      _selectedPerformanceBand,
-      externalBands,
-      sharedReportFilters || settings.requestFilters
-    )
-    return {
-      incompleteTests: _incompleteTests,
-      selectedPerformanceBand: _selectedPerformanceBand,
-      chartData: _chartData,
-    }
-  }, [reportChartData])
+  const { incompleteTests, selectedPerformanceBand, chartData } = useMemo(
+    () =>
+      getChartSpecifics(
+        filtersData,
+        sharedReportFilters,
+        settings,
+        reportChartData
+      ),
+    [reportChartData]
+  )
 
   const { rowsCount = 0 } = get(reportTableData, 'data.result', {})
 
-  const tableData = useMemo(() => {
-    const { metricInfo = [] } = get(reportTableData, 'data.result', {})
-    const { externalBands = [] } = get(reportChartData, 'data.result', {})
-    const feedTypeKeys = (feedTypes || []).map(({ key }) => key)
-    let externalMetricsForTable = metricInfo
-      .filter(({ testType }) => feedTypeKeys.includes(testType))
-      .map(({ testType: externalTestType, ...t }) => ({
-        ...t,
-        externalTestType,
-      }))
-    const internalMetricsForTable = metricInfo
-      .filter(({ testType }) => !feedTypeKeys.includes(testType))
-      .map((t) => ({
-        ...t,
-        isIncomplete: incompleteTests.includes(t.testId),
-      }))
-    if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) {
-      externalMetricsForTable = []
-    }
-    return getTableData(
-      internalMetricsForTable,
-      externalMetricsForTable,
+  const tableData = useMemo(
+    () =>
+      getTableData(
+        reportTableData,
+        reportChartData,
+        feedTypes,
+        incompleteTests,
+        selectedPerformanceBand,
+        settings.selectedCompareBy.key,
+        sortFilters,
+        sharedReportFilters || settings.requestFilters
+      ),
+    [
+      reportChartData,
+      reportTableData,
+      incompleteTests,
       selectedPerformanceBand,
-      externalBands,
-      settings.selectedCompareBy.key,
-      sortFilters,
-      sharedReportFilters || settings.requestFilters
-    )
-  }, [
-    reportChartData,
-    reportTableData,
-    incompleteTests,
-    selectedPerformanceBand,
-    feedTypes,
-  ])
+      feedTypes,
+    ]
+  )
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
-    selectedTests.length ? includes(selectedTests, test.uniqId) : true
+    selectedTests.length ? includes(selectedTests, test.testId) : true
   )
 
   // handle add student to group

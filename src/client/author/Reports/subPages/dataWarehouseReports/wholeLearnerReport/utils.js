@@ -215,12 +215,14 @@ export const mergeTestMetrics = (
         getClaimInfo(value, name, metric, allExternalBands)
       return {
         title: metric.testTitle,
+        testName: metric.testName,
+        shortTestName: metric.shortTestName,
         assignmentDate: +new Date(metric.testDate),
         testType: 'External Assessment',
         externalTestType: metric.testCategory,
         groupId: '',
         testActivityId: '',
-        testId: `${metric.testCategory}:${metric.testTitle}`,
+        testId: metric.testName,
         reportKey: '',
         assignmentId: '',
         studentId: metric.studentId,
@@ -247,23 +249,27 @@ export const mergeTestMetrics = (
 }
 
 export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
-  const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testCategory}:${metric.testTitle}`,
-    districtAvg: +metric.districtAvg,
-    districtAvgPerf: undefined,
-    grade: metric.grade,
-  }))
+  const mappedExternalMetrics = externalMetrics.map(
+    ({ testName, districtAvg, grade }) => ({
+      testId: testName,
+      districtAvg: +districtAvg,
+      districtAvgPerf: undefined,
+      grade,
+    })
+  )
   return [...internalMetrics, ...mappedExternalMetrics]
 }
 
 export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
-  const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testCategory}:${metric.testTitle}`,
-    schoolCode: metric.schoolCode,
-    schoolAvg: +metric.schoolAvg,
-    schoolAvgPerf: undefined,
-    grade: metric.grade,
-  }))
+  const mappedExternalMetrics = externalMetrics.map(
+    ({ testName, schoolCode, schoolAvg, grade }) => ({
+      testId: testName,
+      schoolCode,
+      schoolAvg: +schoolAvg,
+      schoolAvgPerf: undefined,
+      grade,
+    })
+  )
   return [...internalMetrics, ...mappedExternalMetrics]
 }
 
@@ -305,18 +311,20 @@ export const getChartData = ({
   const parsedData = map(groupedTestsByType, (assignments) => {
     const assignment = assignments[0] || {}
     const {
-      title: testName,
+      title,
       testType,
       externalTestType,
+      shortTestName,
       studentId,
     } = assignment
+    const _testName = externalTestType ? shortTestName : title
     const totalMaxScore = sumBy(assignments, 'maxScore') || 0
     const totalScore = sumBy(assignments, 'score') || 0
     const { standardSet, subject } =
       studentClassData.find((s) => s.studentId === studentId) || {}
     const assessmentData = {
       ...assignment,
-      testName,
+      testName: _testName,
       totalScore,
       totalMaxScore,
       standardSet,

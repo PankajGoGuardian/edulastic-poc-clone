@@ -16,6 +16,7 @@ import {
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
 import { getScoreSuffix } from '../../common/utils'
+import { getTestName } from '../utils'
 
 const { formatDate } = reportUtils.common
 
@@ -157,11 +158,8 @@ const barsLabelFormatter = (value) => {
 // payload: { coordinate, value, index, offset }
 // _data: contains the current slice of data displayed in the chart
 const getXTickText = (payload, _data) => {
-  const _testData = _data[payload.index]
-  const _testName = _testData.isIncomplete
-    ? `${_testData.testName} *`
-    : _testData.testName
-  return _testName || '-'
+  const _testName = getTestName(_data[payload.index])
+  return _testName
 }
 
 const getXTickTagText = (payload, _data) => {
@@ -312,7 +310,7 @@ const Chart = ({
           ? barsDataForExternal
           : barsDataForInternal
       }
-      xAxisDataKey="uniqId"
+      xAxisDataKey="testId"
       lineDataKey="lineScore"
       lineProps={chartLineProps}
       getTooltipJSX={getTooltipJSX}

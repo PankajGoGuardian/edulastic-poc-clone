@@ -12,8 +12,8 @@ const ContentRow = ({ title, value, showTooltip = false }) => {
     </StyledText>
   )
   return (
-    <FlexContainer justifyContent="center" marginBottom="30px">
-      <StyledText color={lightGrey19} span={12} textAlign="right">
+    <FlexContainer justifyContent="start" marginBottom="30px">
+      <StyledText color={lightGrey19} span={8}>
         {title}
       </StyledText>
       <EduIf condition={showTooltip}>

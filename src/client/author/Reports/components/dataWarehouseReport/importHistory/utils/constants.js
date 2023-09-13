@@ -11,6 +11,7 @@ import {
   yellow4,
 } from '@edulastic/colors'
 
+import { FEED_NAME_LABEL } from '@edulastic/constants/const/dataWarehouse'
 import { getTagRender, sortByDate, sortText } from './helpers'
 import TableActionIcon from '../components/TableActionIcon'
 
@@ -51,7 +52,7 @@ const commonColumns = [
     sorter: (a, b) => sortText(a, b, COMMON_KEYS.FILE_TYPE),
   },
   {
-    title: 'Feed Name',
+    title: FEED_NAME_LABEL,
     dataIndex: COMMON_KEYS.FILE_NAME,
     key: COMMON_KEYS.FILE_NAME,
     render: (value) => {

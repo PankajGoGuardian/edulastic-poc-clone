@@ -26,8 +26,11 @@ const getAchievementLevels = (test, allExternalBands) => {
   return testBands
 }
 
+const FEED_NAME_LABEL = 'Session'
+
 module.exports = {
   S3_DATA_WAREHOUSE_FOLDER,
   MAX_UPLOAD_FILE_SIZE,
+  FEED_NAME_LABEL,
   getAchievementLevels,
 }

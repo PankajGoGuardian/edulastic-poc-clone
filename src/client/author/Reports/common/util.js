@@ -710,10 +710,6 @@ export function utcMonthDate(date) {
   return +moment.utc(dateStringInYYYYMMDDD)
 }
 
-export function getTestTitleSuffix(testTitle) {
-  return testTitle ? `- ${testTitle}` : ''
-}
-
 export const getPerformanceBandsListByTestType = (
   prevPerformanceBandsList,
   testTypes,

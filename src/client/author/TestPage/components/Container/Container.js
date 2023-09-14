@@ -147,6 +147,7 @@ import TeacherSignup from '../../../../student/Signup/components/TeacherContaine
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
 import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
+import { isValidVideoUrl } from '../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -655,6 +656,12 @@ class Container extends PureComponent {
     const { authors, itemGroups = [], _id } = test
 
     // condition to validate if test title is not empty before navigating to other tabs
+    if (test.videoUrl === '') {
+      return notification({ messageKey: 'pleaseEnterVideoUrl' })
+    }
+    if (!isValidVideoUrl(test.videoUrl)) {
+      return notification({ messageKey: 'linkCantPlayed' })
+    }
     if (!test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
       return

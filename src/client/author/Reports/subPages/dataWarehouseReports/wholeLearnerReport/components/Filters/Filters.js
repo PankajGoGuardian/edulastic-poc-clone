@@ -13,24 +13,27 @@ import {
   StyledDropDownContainer,
   FilterLabel,
   SecondaryFilterRow,
-} from '../../../../common/styled'
-import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
-import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
-import FilterTags from '../../../../common/components/FilterTags'
-import SchoolAutoComplete from '../../../../common/components/autocompletes/SchoolAutoComplete'
-import CoursesAutoComplete from '../../../../common/components/autocompletes/CoursesAutoComplete'
-import ClassAutoComplete from './ClassAutoComplete'
-import StudentAutoComplete from './StudentAutoComplete'
+} from '../../../../../common/styled'
+import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
+import FilterTags from '../../../../../common/components/FilterTags'
+import SchoolAutoComplete from '../../../../../common/components/autocompletes/SchoolAutoComplete'
+import CoursesAutoComplete from '../../../../../common/components/autocompletes/CoursesAutoComplete'
+import ClassAutoComplete from '../ClassAutoComplete'
+import StudentAutoComplete from '../StudentAutoComplete'
 
-import { resetStudentFilters as resetFilters } from '../../../../common/util'
-import { getTermOptions } from '../../../../../utils/reports'
+import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+import { getTermOptions } from '../../../../../../utils/reports'
 import {
   getStudentName,
   getTestTypesFromUrl,
   staticDropDownData,
-} from '../utils'
-import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
-import { getDefaultTestTypes } from '../../common/utils'
+} from '../../utils'
+import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
+import {
+  EXTERNAL_SCORE_TYPES,
+  getDefaultTestTypes,
+} from '../../../common/utils'
 
 const filtersDefaultValues = [
   {
@@ -154,6 +157,8 @@ const WholeLearnerReportFilters = ({
       courseIds: search.courseIds || '',
       performanceBandProfileId: search.performanceBandProfileId || '',
       testTypes: search.testTypes || defaultTestTypes,
+      externalScoreType:
+        search.externalScoreType || EXTERNAL_SCORE_TYPES.SCALED_SCORE,
     }
     if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
       delete _filters.schoolIds
@@ -337,20 +342,25 @@ const WholeLearnerReportFilters = ({
     multiple = false,
     isPageLevelFilter = false
   ) => {
-    // update tags data
+    const _selected = multiple
+      ? selected.map((o) => o.key).join(',')
+      : selected.key
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
-    const _selected = multiple
-      ? selected.map((o) => o.key).join(',')
-      : selected.key
+    // reset filters and update tags data
     resetReportFilters(_filterTagsData, _filters, keyName, _selected)
     setFilterTagsData(_filterTagsData)
-    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     // update filters
     _filters[keyName] = _selected
+    // reset externalScoreType when assessmentTypes are updated
+    if (keyName === 'assessmentTypes') {
+      _filters.externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE
+    }
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
+    // TODO combine setFilterTagsData and setFilters action into one
     if (isPageLevelFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {

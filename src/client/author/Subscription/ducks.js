@@ -19,6 +19,7 @@ import {
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
 import { getUserSelector, isPremiumUserSelector } from '../src/selectors/user'
 import { fetchDashboardTiles } from '../Dashboard/ducks'
+import { SUBSCRIPTION_DEFINITION_NAMES } from './constants/subscription'
 
 // selectors
 const subscriptionSelector = (state) => state.subscription
@@ -137,6 +138,28 @@ export const getNeedsRenewal = createSelector(
     )
   }
 )
+
+const getEmbeddedMsg = (itemBankPermissions, premiumType) => {
+  const videoQuizAndAISuite = itemBankPermissions.find(
+    (x) => x.name === SUBSCRIPTION_DEFINITION_NAMES.VIDEO_QUIZ_AND_AI_SUITE
+  )
+  const itemBankNames = itemBankPermissions
+    .filter(
+      (x) => x.name !== SUBSCRIPTION_DEFINITION_NAMES.VIDEO_QUIZ_AND_AI_SUITE
+    )
+    .map((x) => x.name)
+    .join(', ')
+  let embeddedMsg = ''
+  if (itemBankNames.length) {
+    embeddedMsg = `${itemBankNames} ${premiumType} Itembank(s)`
+  }
+  if (videoQuizAndAISuite) {
+    embeddedMsg += `${itemBankNames.length ? ' & ' : ''}${
+      SUBSCRIPTION_DEFINITION_NAMES.VIDEO_QUIZ_AND_AI_SUITE
+    }`
+  }
+  return embeddedMsg
+}
 
 const slice = createSlice({
   name: 'subscription', //! FIXME key should be `slice` not `name`
@@ -347,13 +370,15 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
     const { subEndDate } = itemBankPermissions[0]
-    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
         type: 'success',
-        msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        msg: `Congratulations! You are subscribed to ${getEmbeddedMsg(
+          itemBankPermissions,
+          premiumType
+        )} for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
         key: 'handle-payment',
       })
     }
@@ -367,14 +392,15 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
-    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
     const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
         type: 'success',
-        msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
-              Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${getEmbeddedMsg(
+          itemBankPermissions,
+          premiumType
+        )} for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
         key: 'handle-payment',
       })
     }

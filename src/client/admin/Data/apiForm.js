@@ -1081,4 +1081,33 @@ export const apiForms = [
     method: 'post',
     fields: [],
   },
+  {
+    id: 'moveTTSFromOneTestToAnother',
+    name: 'Move TTS From One Test To Another',
+    endPoint: 'admin-tool/copy-tts-from-test',
+    method: 'post',
+    fields: [
+      {
+        name: 'sourceTestId',
+        displayName: 'Source Test Id',
+        placeholder: 'Enter Source Test Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'targetTestId',
+        displayName: 'Target Test Id',
+        placeholder: 'Enter Target Test Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'mappedQids',
+        displayName: 'Mapped Qids JSON',
+        placeholder: 'Paste Mapped Qids JSON',
+        type: 'textarea',
+        required: false,
+      },
+    ],
+  },
 ]

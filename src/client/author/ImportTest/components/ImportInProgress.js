@@ -37,8 +37,6 @@ import {
   importTypeSelector,
 } from '../../ContentCollections/ducks'
 
-let interval
-
 const ImportInprogress = ({
   t,
   qtiImportProgress,
@@ -59,6 +57,7 @@ const ImportInprogress = ({
   importType,
   jobsData,
   qtiFileStatus = {},
+  intervalRef,
 }) => {
   const checkProgress = () => {
     const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
@@ -69,10 +68,10 @@ const ImportInprogress = ({
           [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
         )
       ) {
-        qtiImportProgress({ jobId: jobIds, interval })
+        qtiImportProgress({ jobId: jobIds, interval: intervalRef })
       }
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
-      contentImportProgress(jobIds)
+      contentImportProgress({ jobIds, interval: intervalRef })
     }
   }
 
@@ -92,8 +91,8 @@ const ImportInprogress = ({
   }
 
   useEffect(() => {
-    if (jobIds.length && interval === undefined) {
-      interval = setInterval(() => {
+    if (jobIds.length && !intervalRef?.current) {
+      intervalRef.current = setInterval(() => {
         checkProgress()
       }, 1000 * 5)
     }

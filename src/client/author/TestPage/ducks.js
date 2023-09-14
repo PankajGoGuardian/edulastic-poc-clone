@@ -2952,7 +2952,8 @@ function* publishTestSaga({ payload }) {
 function* publishForRegrade({ payload }) {
   try {
     yield put(setUpdatingTestForRegradeStateAction(true))
-    const _test = yield select(getTestSelector)
+    // cloning the _test as it internally mutating the itemGroups inside updateTestSaga
+    const _test = { ...(yield select(getTestSelector)) }
     const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
     if (_test.isUsed && !_test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true

@@ -244,6 +244,55 @@ function customPlugin(FroalaEditor) {
       this.undo.saveStep()
     },
   })
+
+  FroalaEditor.PLUGINS.accessibleToolbar = function (editor) {
+    // Add ARIA attributes to toolbar buttons.
+    function addAriaAttributes() {
+      editor.$tb.find('.fr-command').each(function () {
+        var $button = $(this)
+        var command = $button.data('cmd')
+        var title = $button.attr('title')
+
+        $button.attr({
+          role: 'button',
+          'aria-label': title,
+          tabindex: 0,
+        })
+      })
+    }
+
+    // Add keyboard event handlers.
+    function addKeyboardHandlers() {
+      var toolbar = editor.$tb[0]
+      toolbar.addEventListener('keydown', function (e) {
+        if (e.keyCode === FroalaEditor.KEYCODE.ENTER) {
+          e.preventDefault()
+          const $focusedButton = editor.$tb.find('.fr-command:focus')
+          if ($focusedButton.length) {
+            const command = $focusedButton[0].getAttribute('data-cmd')
+            // Execute the command.
+            if (command && editor.commands[command]) {
+              editor.commands[command]()
+            }
+          }
+        }
+      })
+    }
+
+    // Initialize the plugin when the editor is ready.
+    editor.events.on('initialized', function () {
+      addAriaAttributes()
+      addKeyboardHandlers()
+    })
+  }
+
+  // Register the plugin.
+  FroalaEditor.RegisterCommand('accessibleToolbar', {
+    title: 'Accessible Toolbar',
+    undo: true,
+    focus: true,
+    plugin: 'accessibleToolbar',
+  })
 }
 
 export default customPlugin

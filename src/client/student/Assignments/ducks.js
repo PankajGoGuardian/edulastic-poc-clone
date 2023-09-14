@@ -544,6 +544,7 @@ export function getSebUrl({
   assignmentId,
   testActivityId,
   groupId,
+  hasSections,
 }) {
   const token = TokenStorage.getAccessToken()
   // ideally a constant like testType should have been a single word not a double word
@@ -574,7 +575,7 @@ export function getSebUrl({
     url += `/testActivity/${testActivityId}`
   }
 
-  url += `/token/${token}/settings.seb?classId=${groupId}`
+  url += `/token/${token}/settings.seb?classId=${groupId}&hasSections=${hasSections}`
   return url
 }
 
@@ -679,7 +680,8 @@ function* startAssignment({ payload }) {
     if (PRACTICE.includes(testType)) {
       playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
     }
-    if (hasSections) {
+    const safeExamStart = !isSEB() && safeBrowser
+    if (hasSections && !safeExamStart) {
       const testData = {
         assignmentId,
         groupId: classId,
@@ -719,6 +721,7 @@ function* startAssignment({ payload }) {
         assignmentId,
         testActivityId,
         groupId: classId,
+        hasSections,
       })
 
       yield put(push(`/home/assignments`))
@@ -1008,7 +1011,14 @@ function* resumeAssignment({ payload }) {
  */
 function* bootstrapAssesment({ payload }) {
   try {
-    const { testType, assignmentId, testActivityId, testId, classId } = payload
+    const {
+      testType,
+      assignmentId,
+      testActivityId,
+      testId,
+      classId,
+      hasSections = false,
+    } = payload
     yield put(fetchUserAction())
     if (testActivityId) {
       yield put(
@@ -1018,11 +1028,18 @@ function* bootstrapAssesment({ payload }) {
           testActivityId,
           testId,
           classId,
+          hasSections,
         })
       )
     } else {
       yield put(
-        startAssignmentAction({ testType, assignmentId, testId, classId })
+        startAssignmentAction({
+          testType,
+          assignmentId,
+          testId,
+          classId,
+          hasSections,
+        })
       )
     }
   } catch (e) {
@@ -1076,6 +1093,18 @@ function* launchAssignment({ payload }) {
           (!c.students.length ||
             (c.students.length && c.students.includes(userId)))
       )
+
+      const {
+        hasSections = false,
+        maxAttempts: testMaxAttempts = 1,
+      } = lastActivity?._id
+        ? yield call(testsApi.getByIdMinimal, testId, {
+            groupId,
+            testActivityId: lastActivity._id,
+            assignmentId,
+          })
+        : {}
+
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
@@ -1095,6 +1124,7 @@ function* launchAssignment({ payload }) {
               testActivityId: lastActivity._id,
               assignmentId,
               groupId,
+              hasSections,
             })
             yield call(redirectToUrl, sebUrl)
           }
@@ -1106,6 +1136,7 @@ function* launchAssignment({ payload }) {
               assignmentId,
               testActivityId: lastActivity._id,
               classId: groupId,
+              hasSections,
             })
           )
         }
@@ -1114,8 +1145,7 @@ function* launchAssignment({ payload }) {
         if (assignmentClass[0].maxAttempts) {
           maxAttempt = assignmentClass[0].maxAttempts
         } else {
-          const test = yield call(testsApi.getByIdMinimal, testId)
-          maxAttempt = test.maxAttempts
+          maxAttempt = testMaxAttempts
         }
         const attempts = testActivities.filter((el) =>
           [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
@@ -1136,7 +1166,12 @@ function* launchAssignment({ payload }) {
             }
           }
           if (!resume && timedAssignment) {
-            yield put(setConfirmationForTimedAssessmentAction(assignment))
+            yield put(
+              setConfirmationForTimedAssessmentAction({
+                ...assignment,
+                hasSections,
+              })
+            )
             return
           }
           if (
@@ -1145,7 +1180,10 @@ function* launchAssignment({ payload }) {
             instruction
           ) {
             yield put(
-              showTestInstructionsAction({ showInstruction: true, assignment })
+              showTestInstructionsAction({
+                showInstruction: true,
+                assignment: { ...assignment, hasSections },
+              })
             )
             return
           }
@@ -1156,6 +1194,7 @@ function* launchAssignment({ payload }) {
               testType,
               classId: groupId,
               safeBrowser,
+              hasSections,
             })
           )
         } else {

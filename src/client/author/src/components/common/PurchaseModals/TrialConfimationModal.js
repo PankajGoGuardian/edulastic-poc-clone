@@ -267,6 +267,7 @@ const TrialConfirmationModal = ({
       ) : (
         <CustomModalStyled
           visible={visible && (productsToShow.length || hasOnlyTeacherPremium)}
+
           title={modalTitle}
           onCancel={handleCloseModal}
           width={hasOnlyTeacherPremium ? '700px' : '950px'}

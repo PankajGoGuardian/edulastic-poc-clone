@@ -4,7 +4,8 @@ import { HEADER_BUTTONS } from '../constants/headerButtons'
 import { Label } from './styled'
 
 const HeaderKeyboard = ({ onInput }) => {
-  const handleClick = (handler, command, numToMove) => () => {
+  const handleClick = (handler, command, numToMove) => (e) => {
+    e?.preventDefault()
     if (handler && command) {
       onInput(handler, command, numToMove)
     }

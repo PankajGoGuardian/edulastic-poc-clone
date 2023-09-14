@@ -52,6 +52,7 @@ import {
   currentItemAnswerChecksSelector,
   getCalcTypeSelector,
 } from '../../selectors/test'
+import { getUserFeatures } from '../../../author/src/selectors/user'
 import { getCurrentGroupWithAllClasses } from '../../../student/Login/ducks'
 import { setUserAnswerAction } from '../../actions/answers'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
@@ -386,6 +387,7 @@ class AssessmentPlayerDefault extends React.Component {
       classLevelSettings,
       viewAsStudent,
       calcTypes,
+      userFeatures = {},
       preventSectionNavigation,
     } = this.props
     const { firstName = '', lastName = '' } = user
@@ -537,6 +539,7 @@ class AssessmentPlayerDefault extends React.Component {
             changePreviewTab: changePreview,
           }
     const { isStudentAttempt } = this.context
+    const { canUseImmersiveReader = false } = userFeatures
     return (
       /**
        * zoom only in student side, otherwise not
@@ -633,6 +636,7 @@ class AssessmentPlayerDefault extends React.Component {
             passage={passage}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
             calcTypes={calcTypes}
+            canUseImmersiveReader={canUseImmersiveReader}
           >
             <ToolbarModal
               isVisible={isToolbarModalVisible}
@@ -984,6 +988,7 @@ const enhance = compose(
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
       assignmentSettings: assignmentLevelSettingsSelector(state),
+      userFeatures: getUserFeatures(state),
     }),
     {
       changePreview: changePreviewAction,

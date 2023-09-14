@@ -6,6 +6,7 @@ import {
   SimpleConfirmModal,
   captureSentryException,
   DatePickerStyled,
+  EduIf,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -104,6 +105,7 @@ const Header = ({
   setShowClassCreationModal,
   setCreateClassTypeDetails,
   createClassType,
+  manualEnrollmentAllowed,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -494,12 +496,12 @@ const Header = ({
             )}
           </>
         )}
-        {active === 1 && (
+        <EduIf condition={active === 1 && manualEnrollmentAllowed}>
           <EduButton isBlue onClick={handleActionMenuClick}>
             <IconPlusCircle />
             Add Co-Teacher
           </EduButton>
-        )}
+        </EduIf>
         {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
           <WithTooltip
             title={
@@ -604,10 +606,12 @@ const Header = ({
                     </span>
                   </MenuItems>
                 )}
-                <MenuItems onClick={handleActionMenuClick}>
-                  <IconPlusCircle />
-                  <span>Add a Co-Teacher</span>
-                </MenuItems>
+                {manualEnrollmentAllowed && (
+                  <MenuItems onClick={handleActionMenuClick}>
+                    <IconPlusCircle />
+                    <span>Add a Co-Teacher</span>
+                  </MenuItems>
+                )}
                 {coTeachers && coTeachers.length > 1 && (
                   <MenuItems onClick={() => setUpdateCoTeacherModal(true)}>
                     <IconRemove />

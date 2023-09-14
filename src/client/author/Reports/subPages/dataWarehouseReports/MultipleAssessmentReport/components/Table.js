@@ -27,7 +27,7 @@ import {
 } from '../../../../common/styled'
 import LargeTag from '../../common/components/LargeTag'
 
-import { tableColumnsData, compareByMap, sortKeys } from '../utils'
+import { tableColumnsData, compareByMap, sortKeys, getTestName } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import LinkCell from '../../common/components/LinkCell'
@@ -152,21 +152,15 @@ const getTableColumns = (
 
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
-      const {
-        uniqId,
-        testName,
-        externalTestType,
-        isIncomplete = false,
-        averageScore,
-      } = assessment
-      const _testName = isIncomplete ? `${testName} *` : testName
+      const { testId, externalTestType, averageScore } = assessment
+      const _testName = getTestName(assessment)
       const averageScoreForTitle = isNumber(averageScore)
         ? round(averageScore)
         : averageScore
       return [
         // assessment column to be rendered in browser
         {
-          key: uniqId,
+          key: testId,
           title: (
             <Tooltip title={_testName}>
               <AssessmentNameContainer isPrinting={isPrinting}>
@@ -191,7 +185,7 @@ const getTableColumns = (
           dataIndex: 'tests',
           visibleOn: ['browser'],
           render: (tests = {}) => {
-            const currentTest = tests.find((t) => t.uniqId === uniqId)
+            const currentTest = tests[testId]
             if (currentTest) {
               const averageScoreRender = isNumber(currentTest.averageScore)
                 ? round(currentTest.averageScore)
@@ -218,13 +212,13 @@ const getTableColumns = (
         },
         // assessment column to be downloaded in csv
         {
-          key: uniqId,
+          key: testId,
           title: `${_testName} Score(%)`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],
           render: (tests = {}) => {
-            const currentTest = tests.find((t) => t.uniqId === uniqId)
+            const currentTest = tests[testId]
             return currentTest
               ? `${
                   currentTest.externalTestType
@@ -238,16 +232,16 @@ const getTableColumns = (
     })
     const additionalDownloadCsvColumns = overallAssessmentsData.map(
       (assessment) => {
-        const { uniqId, testName, isIncomplete = false } = assessment
+        const { testId, testName, isIncomplete = false } = assessment
         const _testName = isIncomplete ? `${testName} *` : testName
         return {
-          key: uniqId,
+          key: testId,
           title: `${_testName} Performance Band`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],
           render: (tests = {}) => {
-            const currentTest = tests.find((t) => t.uniqId === uniqId)
+            const currentTest = tests[testId]
             return currentTest ? `${currentTest.band.name}` : '-'
           },
         }
@@ -280,7 +274,7 @@ const getDownloadCsvColumnHeadersFunc = (
       averageScore,
     } = assessment
     dowloadCsvTableColumnHeaders.dates.push(formatDate(assessmentDate))
-    dowloadCsvTableColumnHeaders.testType.push(testType || externalTestType)
+    dowloadCsvTableColumnHeaders.testType.push(externalTestType || testType)
     dowloadCsvTableColumnHeaders.totalStudents.push(`${totalGraded}`)
     dowloadCsvTableColumnHeaders.avgScore.push(
       `${averageScore}${assessment.externalTestType ? '' : '%'}`
@@ -288,17 +282,16 @@ const getDownloadCsvColumnHeadersFunc = (
   }
 
   overallAssessmentsData.forEach((assessment) => {
-    const { testName, externalTestType, isIncomplete = false } = assessment
-    const _testName = isIncomplete ? `${testName} *` : testName
+    const { externalTestType } = assessment
+    const _testName = getTestName(assessment)
     dowloadCsvTableColumnHeaders.names.push(
-      `${_testName}${externalTestType ? ' Score' : ' Score(%)'}`
+      `${_testName}${externalTestType ? ' - Score' : ' - Score(%)'}`
     )
     addAdditionalColumns(assessment)
   })
   overallAssessmentsData.forEach((assessment) => {
-    const { testName, isIncomplete = false } = assessment
-    const _testName = isIncomplete ? `${testName} *` : testName
-    dowloadCsvTableColumnHeaders.names.push(`${_testName} Performance Band`)
+    const _testName = getTestName(assessment)
+    dowloadCsvTableColumnHeaders.names.push(`${_testName} - Performance Band`)
     addAdditionalColumns(assessment)
   })
   return dowloadCsvTableColumnHeaders

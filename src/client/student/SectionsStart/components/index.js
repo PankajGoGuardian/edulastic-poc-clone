@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { keyBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { IconLock, IconTick } from '@edulastic/icons'
 import styled, { ThemeProvider } from 'styled-components'
@@ -82,6 +83,9 @@ const TestSectionsContainer = ({
           nextSection.groupId !== section.groupId &&
           section.status !== SECTION_STATUS.SUBMITTED &&
           preventSectionNavigation
+        if (!items.length) {
+          return null
+        }
         return (
           <Section noBorder={isLast} disabled={showLockIcon}>
             <FlexBox>
@@ -120,6 +124,34 @@ const TestSectionsContainer = ({
       })}
     </TestSections>
   )
+}
+
+const getLastVisitedItemId = (activityData, sectionIndex, resume) => {
+  const { questionActivities, itemsToBeExcluded, testActivity } = activityData
+  const { itemsToDeliverInGroup } = testActivity
+  const excludeItemsById = keyBy(itemsToBeExcluded)
+  const currentSectionItems = itemsToDeliverInGroup[sectionIndex].items.filter(
+    (item) => !excludeItemsById[item]
+  )
+  if (!resume) {
+    return currentSectionItems[0]
+  }
+  const currentGroupItemsById = keyBy(currentSectionItems)
+  const currentSectionActivities = questionActivities.filter(
+    (uqa) => currentGroupItemsById[uqa.testItemId]
+  )
+  let lastAttemptedItem = currentSectionItems[0]
+  if (!currentSectionActivities.length) {
+    return lastAttemptedItem
+  }
+  const activitiesByTestItemId = keyBy(currentSectionActivities, 'testItemId')
+  currentSectionItems.forEach((item, index) => {
+    const uqa = activitiesByTestItemId[item]
+    if (uqa && !uqa.skipped && index < currentSectionItems.length - 1) {
+      lastAttemptedItem = currentSectionItems[index + 1]
+    }
+  })
+  return lastAttemptedItem
 }
 
 const SummaryContainer = (props) => {
@@ -174,10 +206,10 @@ const SummaryContainer = (props) => {
   })
 
   const handleStartSection = (index, resume) => () => {
-    const nextItemId = itemsToDeliverInGroup[index].items[0]
     if (resume && activityData?.assignmentSettings?.timedAssignment) {
       utaStartTimeUpdate(TIME_UPDATE_TYPE.RESUME)
     }
+    const nextItemId = getLastVisitedItemId(activityData, index, resume)
     history.push({
       pathname: `/student/${assessmentType}/${testId}/class/${groupId}/uta/${utaId}/itemId/${nextItemId}`,
       state: { fromSummary: true },

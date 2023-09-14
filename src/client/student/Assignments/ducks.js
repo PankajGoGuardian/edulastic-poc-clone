@@ -1076,6 +1076,18 @@ function* launchAssignment({ payload }) {
           (!c.students.length ||
             (c.students.length && c.students.includes(userId)))
       )
+
+      const {
+        hasSections = false,
+        maxAttempts: testMaxAttempts = 1,
+      } = lastActivity?._id
+        ? yield call(testsApi.getByIdMinimal, testId, {
+            groupId,
+            testActivityId: lastActivity._id,
+            assignmentId,
+          })
+        : {}
+
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
@@ -1106,6 +1118,7 @@ function* launchAssignment({ payload }) {
               assignmentId,
               testActivityId: lastActivity._id,
               classId: groupId,
+              hasSections,
             })
           )
         }
@@ -1114,8 +1127,7 @@ function* launchAssignment({ payload }) {
         if (assignmentClass[0].maxAttempts) {
           maxAttempt = assignmentClass[0].maxAttempts
         } else {
-          const test = yield call(testsApi.getByIdMinimal, testId)
-          maxAttempt = test.maxAttempts
+          maxAttempt = testMaxAttempts
         }
         const attempts = testActivities.filter((el) =>
           [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
@@ -1136,7 +1148,12 @@ function* launchAssignment({ payload }) {
             }
           }
           if (!resume && timedAssignment) {
-            yield put(setConfirmationForTimedAssessmentAction(assignment))
+            yield put(
+              setConfirmationForTimedAssessmentAction({
+                ...assignment,
+                hasSections,
+              })
+            )
             return
           }
           if (
@@ -1145,7 +1162,10 @@ function* launchAssignment({ payload }) {
             instruction
           ) {
             yield put(
-              showTestInstructionsAction({ showInstruction: true, assignment })
+              showTestInstructionsAction({
+                showInstruction: true,
+                assignment: { ...assignment, hasSections },
+              })
             )
             return
           }
@@ -1156,6 +1176,7 @@ function* launchAssignment({ payload }) {
               testType,
               classId: groupId,
               safeBrowser,
+              hasSections,
             })
           )
         } else {

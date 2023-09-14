@@ -93,7 +93,7 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import { FeaturesSwitch } from '../../../../features/components/FeaturesSwitch'
 
 class AddItems extends PureComponent {
   static propTypes = {

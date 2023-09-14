@@ -83,7 +83,7 @@ const EduAIQuiz = ({
                 dangerouslySetInnerHTML={{
                   __html: `${i18.t('author:rubric.infoText')}${
                     isDateLessThanSep30 &&
-                    '<br><br>Note: This is free to use till September 30'
+                    '<br><br>Note: This is free to use until September 30'
                   }`,
                 }}
               />
@@ -100,7 +100,7 @@ const EduAIQuiz = ({
           {isDateLessThanSep30 && (
             <StyledDiv>
               <FreeVideoQuizAnnouncement
-                title="AI Generated Quiz is free to use till September 30"
+                title="AI Generated Quiz is free to use until September 30"
                 history={history}
                 style={{ marginTop: '10px', justifyContent: 'flex-start' }}
               />

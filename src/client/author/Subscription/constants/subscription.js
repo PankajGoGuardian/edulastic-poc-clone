@@ -458,3 +458,7 @@ export const licenseTypeRadios = [
     value: licenseTypes.DATA_STUDIO,
   },
 ]
+
+export const SUBSCRIPTION_DEFINITION_NAMES = {
+  VIDEO_QUIZ_AND_AI_SUITE: 'Video Quiz and AI Suite',
+}

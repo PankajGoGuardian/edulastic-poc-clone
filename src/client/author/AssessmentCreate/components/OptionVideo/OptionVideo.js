@@ -30,7 +30,7 @@ const OptionVideo = ({ history }) => {
       {isDateLessThanSep30 && (
         <ExpiryTextContainer>
           <FreeVideoQuizAnnouncement
-            title="Free to use till September 30"
+            title="Free to use until September 30"
             history={history}
             style={{ padding: '20px 10px 0px 10px' }}
           />

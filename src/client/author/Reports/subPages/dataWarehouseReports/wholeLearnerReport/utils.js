@@ -226,6 +226,7 @@ export const mergeTestMetrics = (
         studentId: metric.studentId,
         maxScore: undefined,
         score: +metric.score,
+        grade: metric.grade,
         achievementLevel: +metric.achievementLevel,
         claimsInfo: mapValues(
           omitBy(JSON.parse(metric.claims || '{}'), isNil),
@@ -250,6 +251,7 @@ export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
     testId: `${metric.testCategory}:${metric.testTitle}`,
     districtAvg: +metric.districtAvg,
     districtAvgPerf: undefined,
+    grade: metric.grade,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -260,6 +262,7 @@ export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
     schoolCode: metric.schoolCode,
     schoolAvg: +metric.schoolAvg,
     schoolAvgPerf: undefined,
+    grade: metric.grade,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -345,20 +348,28 @@ export const getTableData = ({
   }
   const chartDataToUse = [...chartData].reverse()
   const parsedData = map(chartDataToUse, (assessment) => {
-    const { testId, assignmentDate, externalTestType, schoolCode } = assessment
+    const {
+      testId,
+      assignmentDate,
+      externalTestType,
+      schoolCode,
+      grade,
+    } = assessment
     const testDistrictAvg = round(
-      get(
-        find(districtMetrics, { testId }),
-        externalTestType ? 'districtAvg' : 'districtAvgPerf',
-        0
-      )
+      externalTestType
+        ? get(find(districtMetrics, { testId, grade }), 'districtAvg', 0)
+        : get(find(districtMetrics, { testId }), 'districtAvgPerf', 0)
     )
     const testGroupAvg = externalTestType
       ? '-'
       : round(get(find(groupMetrics, { testId }), 'groupAvgPerf', 0))
     const testSchoolAvg = round(
       externalTestType
-        ? get(find(schoolMetrics, { testId, schoolCode }), 'schoolAvg', 0)
+        ? get(
+            find(schoolMetrics, { testId, schoolCode, grade }),
+            'schoolAvg',
+            0
+          )
         : get(find(schoolMetrics, { testId }), 'schoolAvgPerf', 0)
     )
     const rawScore = `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(

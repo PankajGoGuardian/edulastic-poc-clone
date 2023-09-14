@@ -404,9 +404,15 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
         key: 'handle-payment',
       })
     }
+    const hasOnlyVideoQuizAndAISuite =
+      itemBankPermissions.length === 1 &&
+      itemBankPermissions[0].name ===
+        SUBSCRIPTION_DEFINITION_NAMES.VIDEO_QUIZ_AND_AI_SUITE
     yield put(
       slice.actions.trialConfirmationMessageAction({
-        hasTrial: 'haveBothSparkAndPremiumTrial',
+        hasTrial: hasOnlyVideoQuizAndAISuite
+          ? 'onlyPremiumTrial'
+          : 'haveBothSparkAndPremiumTrial',
         subEndDate: formatSubEndDate,
         isTrial,
         defaultSelectedItemBankId,

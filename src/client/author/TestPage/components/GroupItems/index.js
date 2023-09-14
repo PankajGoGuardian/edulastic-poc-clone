@@ -573,7 +573,7 @@ const GroupItems = ({
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </BreadcrumbContainer>
       <CreateGroupWrapper>
-        <Heading>
+        <Heading data-cy="addSectionsPageHeading">
           ITEM DELIVERY SECTIONS&nbsp;
           <Tooltip
             title={`Within each section, select specific items using "Select items button". You can have one section or create multiple sections`}

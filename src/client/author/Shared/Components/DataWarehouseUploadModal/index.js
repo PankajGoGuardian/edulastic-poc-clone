@@ -100,6 +100,12 @@ const DataWarehouseUploadModal = ({
 
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
+  const selectedSchoolYear = useMemo(
+    () => schoolYearOptions.find(({ key }) => key === termId)?.title,
+
+    [schoolYearOptions, termId]
+  )
+
   const isUploadBtnDisabled =
     loading ||
     [file, category, feedName, termId].some(isEmpty) ||
@@ -187,6 +193,7 @@ const DataWarehouseUploadModal = ({
               feedName={feedName}
               dataFomatDropdownOptions={dataFomatDropdownOptions}
               setFeedName={setFeedName}
+              selectedSchoolYear={selectedSchoolYear}
             />
             <DownloadTemplate url={getTemplateFilePath(category, feedTypes)} />
           </>

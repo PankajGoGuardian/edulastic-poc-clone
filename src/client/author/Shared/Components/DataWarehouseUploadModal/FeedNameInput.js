@@ -21,6 +21,7 @@ const FeedNameInput = ({
   feedName,
   dataFomatDropdownOptions,
   setFeedName,
+  selectedSchoolYear,
   t,
 }) => {
   const feedNameInfoText = useMemo(() => {
@@ -47,6 +48,15 @@ const FeedNameInput = ({
     setFeedName(undefined)
   }, [category])
 
+  const administrationLevelDropdownOptions = useMemo(
+    () =>
+      AdministrationLevelOptions.map(({ key, title }) => ({
+        key: `${key} (${selectedSchoolYear})`,
+        title: `${title} (${selectedSchoolYear})`,
+      })),
+    [selectedSchoolYear]
+  )
+
   return (
     <>
       <EduIf condition={isInvalidFeedName}>
@@ -67,8 +77,9 @@ const FeedNameInput = ({
                 onChange={setFeedName}
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 value={feedName}
+                disabled={isEmpty(selectedSchoolYear)}
               >
-                {AdministrationLevelOptions.map(({ key, title }) => (
+                {administrationLevelDropdownOptions.map(({ key, title }) => (
                   <Option key={key} value={key}>
                     {title}
                   </Option>

@@ -56,8 +56,8 @@ export const resetStateAction = createAction(RESET_STATE)
 const initialState = {
   testDetail: {},
   error: {},
-  status: UPLOAD_STATUS.STANDBY,
-  jobIds: [],
+  status: sessionStorage.getItem('testUploadStatus') || UPLOAD_STATUS.STANDBY,
+  jobIds: JSON.parse(sessionStorage.getItem('jobIds')) || [],
   jobsData: [],
   successMessage: '',
   isSuccess: true,
@@ -143,17 +143,32 @@ export function* uploadTestStaga({ payload }) {
     try {
       yield put(setSuccessMessageAction('Started creating the items'))
       yield put(setIsImportingAction(true))
-      const response = yield call(contentImportApi.contentImport, {
+      const payloadData = {
         files: responseFiles,
         type,
         testItemTags,
-      })
-      if (response?.jobIds?.length) {
-        yield put(setJobIdsAction(response.jobIds))
+      }
+      let endpoint = contentImportApi.contentImport
+      if (type === 'qti') {
+        endpoint = contentImportApi.qtiImport
+        payloadData.file = responseFiles.shift()
+        delete payloadData.files
+      }
+      const response = yield call(endpoint, payloadData)
+      if (response?.jobIds?.length || response.jobId) {
+        if (type === 'qti') {
+          yield put(setJobIdsAction(response.jobId))
+        } else {
+          yield put(setJobIdsAction(response.jobIds))
+        }
+        sessionStorage.setItem(
+          'jobIds',
+          JSON.stringify(type !== 'qti' ? response.jobIds : [response.jobId])
+        )
+        yield put(setSuccessMessageAction('Completed creating the items'))
       } else {
         yield put(uploadTestError('Failed uploading'))
       }
-      yield put(setSuccessMessageAction('Completed creating the items'))
     } catch (e) {
       yield put(uploadTestErrorAction(e?.data || {}))
       console.log(e)

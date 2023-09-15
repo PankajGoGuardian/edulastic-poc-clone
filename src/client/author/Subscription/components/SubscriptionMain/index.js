@@ -92,9 +92,18 @@ const SubscriptionMain = ({
     productsMetaData,
     proratedProducts || products
   )
-  const productsWithoutTeacherPremium = productsDataForDisplay?.filter(
+  const productsWithoutTeacherPremiumUnSorted = productsDataForDisplay?.filter(
     (p) => p.name != 'Teacher Premium'
   )
+  const productsWithoutVideoQuizInOrder = productsWithoutTeacherPremiumUnSorted?.filter(
+    (p) => p.name != 'Video Quiz and AI Suite'
+  )
+  const productsWithoutTeacherPremium = [
+    ...productsWithoutTeacherPremiumUnSorted.filter(
+      (p) => p.name === 'Video Quiz and AI Suite'
+    ),
+    ...productsWithoutVideoQuizInOrder,
+  ]
   const teacherPremium =
     productsDataForDisplay?.find((x) => x.name === 'Teacher Premium') || {}
 

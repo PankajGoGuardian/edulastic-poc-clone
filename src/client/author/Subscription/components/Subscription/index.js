@@ -171,6 +171,18 @@ const Subscription = (props) => {
         pathname: history.location.pathname,
         state: undefined,
       })
+    } else if (
+      // FIXME: The current approach is not proper need to user routes to navigate to different tabs (JIRA for same EV-40174)
+      // Refactor tab management in subscription page
+      history?.location?.state?.view === navigationState.SUBSCRIPTION.view.ADDON
+    ) {
+      setShowEnterpriseTab(false)
+      setShowDataStudioTab(false)
+      setIsTabShouldSwitch(false)
+      history.push({
+        pathname: history.location.pathname,
+        state: undefined,
+      })
     }
   }, [history.location.state])
 

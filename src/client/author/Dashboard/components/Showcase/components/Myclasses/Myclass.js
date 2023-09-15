@@ -737,6 +737,7 @@ const MyClasses = ({
       ) : (
         <ClassBanner />
       )}
+      {isPremiumUser && <AIFeaturedTiles />}
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
@@ -760,7 +761,6 @@ const MyClasses = ({
           isDemoPlaygroundUser={isDemoPlayground}
         />
       )}
-      {isPremiumUser && <AIFeaturedTiles />}
       {!isCliUser && (
         <FeaturedContentBundle
           featuredBundles={filteredBundles}

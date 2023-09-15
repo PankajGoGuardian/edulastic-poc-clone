@@ -83,6 +83,12 @@ export const subscription = {
       ),
       data: [
         {
+          icon: <IconVideoAISuite />,
+          title: 'Video Quiz and AI Suite',
+          description:
+            'Access video-based quiz formats and a suite of AI capabilities, including Question Generation and Assisted Rubrics.',
+        },
+        {
           icon: <IconSparkMath />,
           title: 'SparkMath',
           description:
@@ -143,12 +149,6 @@ export const subscription = {
           title: 'SparkPhonics',
           description:
             'Diagnostics and weekly practice exercises to strengthen phonemic awareness for early readers',
-        },
-        {
-          icon: <IconVideoAISuite />,
-          title: 'Video Quiz and AI Suite',
-          description:
-            'Access video-based quiz formats and a suite of AI capabilities, including Question Generation and Assisted Rubrics.',
         },
       ],
     },

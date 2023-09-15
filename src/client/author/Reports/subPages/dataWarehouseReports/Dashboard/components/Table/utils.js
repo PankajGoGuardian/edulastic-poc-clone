@@ -199,7 +199,6 @@ export const getTableColumns = ({
     key: 'link',
     title: externalLinkColumnTitle,
     align: 'center',
-    fixed: 'right',
     className: 'external-link',
     width: 200,
     render: (value) => {

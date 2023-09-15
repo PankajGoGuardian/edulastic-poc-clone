@@ -17,6 +17,8 @@ const {
   performanceBandKeys,
 } = reportUtils.common
 
+const { TEST_TYPE, PERFORMANCE_BAND } = academicSummaryFiltersTypes
+
 export const getCellColor = (
   avgScore,
   achievementLevel,
@@ -190,14 +192,13 @@ export const getPerformanceBandList = (
 }
 
 export function buildAcademicSummaryFilters(
-  search,
+  requestFilters,
   academicSummaryFilters,
   availableAcademicTestTypes,
   internalBands,
   externalBands
 ) {
-  const { TEST_TYPE } = academicSummaryFiltersTypes
-  const { assessmentTypes } = search
+  const { assessmentTypes, profileId } = requestFilters
   const filteredTestTypes = getFilteredAcademicSummaryTestTypes(
     assessmentTypes,
     availableAcademicTestTypes
@@ -214,8 +215,7 @@ export function buildAcademicSummaryFilters(
     filteredTestTypes
   )
   const selectedperformanceBandId =
-    search.profileId ||
-    academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+    profileId || academicSummaryFilters[PERFORMANCE_BAND]?.key
   const performanceBand =
     performanceBandList.find((p) => p.key === selectedperformanceBandId) ||
     performanceBandList[0]

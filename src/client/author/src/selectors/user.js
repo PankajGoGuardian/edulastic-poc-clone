@@ -24,9 +24,19 @@ export const getDefaultGradesSelector = createSelector(
   (state) => state.user.orgData.selectedGrades
 )
 
+export const getUserDefaultGradesSelector = createSelector(
+  stateSelector,
+  (state) => state.user.orgData.defaultGrades
+)
+
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
   (state) => state.user.orgData.selectedSubject || ''
+)
+
+export const getUserDefaultSubjectSelector = createSelector(
+  stateSelector,
+  (state) => state.user.orgData.defaultSubjects
 )
 
 export const getUserNameSelector = createSelector(stateSelector, (state) =>

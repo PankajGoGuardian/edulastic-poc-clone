@@ -49,12 +49,12 @@ import {
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
+  getManualEnrollmentAllowedSelector,
   getUserOrgId,
 } from '../../../src/selectors/user'
 import ReauthenticateModal from './ReauthenticateModal'
 import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
-import { getManualEnrollmentAllowed } from '../../../DistrictPolicy/ducks'
 
 const ClassDetails = ({
   location,
@@ -474,7 +474,7 @@ const enhance = compose(
       isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
       userDistrictId: getUserOrgId(state),
       isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
-      manualEnrollmentAllowed: getManualEnrollmentAllowed(state),
+      manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,

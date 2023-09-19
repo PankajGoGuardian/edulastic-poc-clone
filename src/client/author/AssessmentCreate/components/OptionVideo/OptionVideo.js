@@ -12,6 +12,8 @@ import { SnapQuiz } from './styled'
 import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
 import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
 
+export const videoQuizPath = '/author/tests/videoquiz'
+
 const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
 const descriptionBottom = `
   Provide your video link and proceed to create an Edulastic Assessment
@@ -19,9 +21,11 @@ const descriptionBottom = `
 
 const OptionVideo = ({ history }) => {
   const handleCreate = () => {
-    segmentApi.genericEventTrack('VideoQuizCreateTestClick', {})
+    segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
+      source: 'Test Library',
+    })
     history.push({
-      pathname: '/author/tests/videoquiz',
+      pathname: videoQuizPath,
     })
   }
   const isDateLessThanSep30 = checkIsDateLessThanSep30()

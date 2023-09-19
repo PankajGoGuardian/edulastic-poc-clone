@@ -58,7 +58,7 @@ const EduAIQuiz = ({
   })
   useEffect(() => {
     if (open === 'aiquiz') {
-      onCreateItems()
+      onCreateItems(undefined, 'Dashboard')
     }
   }, [])
 

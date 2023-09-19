@@ -51,6 +51,7 @@ import {
 import TestRecommendations from './components/TestRecommendations'
 import ClassBanner from './components/ClassBanner'
 import AIFeaturedTiles from './components/AIFeaturedTiles'
+import { videoQuizPath } from '../../../../../AssessmentCreate/components/OptionVideo/OptionVideo'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -722,6 +723,13 @@ const MyClasses = ({
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
+  const onVideoQuizClick = () => {
+    segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
+      source: 'Dashboard',
+    })
+    history.push(videoQuizPath)
+  }
+
   return (
     <MainContentWrapper padding="15px 25px">
       {atleastOneClassPresent ? (
@@ -737,7 +745,7 @@ const MyClasses = ({
       ) : (
         <ClassBanner />
       )}
-      {isPremiumUser && <AIFeaturedTiles />}
+      {isPremiumUser && <AIFeaturedTiles onVideoQuizClick={onVideoQuizClick} />}
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}

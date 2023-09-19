@@ -28,6 +28,8 @@ import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedGradesSelector,
+  getUserDefaultGradesSelector,
+  getUserDefaultSubjectSelector,
 } from '../../../author/src/selectors/user'
 import selectsData from '../../../author/TestPage/components/common/selectsData'
 import {
@@ -79,6 +81,8 @@ const AlignmentRow = ({
   testSelectedSubjects = [],
   testSelectedGrades = [],
   considerCustomAlignmentDataSettingPriority = false,
+  userDefaultSubject,
+  userDefaultGrades,
 }) => {
   const {
     subject = 'Mathematics',
@@ -241,19 +245,28 @@ const AlignmentRow = ({
      */
     const _subject = defaultInterests?.subject || ''
 
+    const _defaultSubject = defaultSubject?.length
+      ? defaultSubject
+      : userDefaultSubject?.length
+      ? userDefaultSubject
+      : ''
+    const _defaultGrades = defaultGrades?.length
+      ? defaultGrades
+      : userDefaultGrades?.length
+      ? userDefaultGrades
+      : null
+
     if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
       const testSubject = testSelectedSubjects?.length
         ? testSelectedSubjects[0]
         : ''
-      const userDefaultSubject = defaultSubject?.length ? defaultSubject : ''
       const testGrades = testSelectedGrades?.length ? testSelectedGrades : null
-      const userDefaultGrades = defaultGrades?.length ? defaultGrades : null
 
       editAlignment(alignmentIndex, {
-        subject: testSubject || userDefaultSubject || _subject || '',
+        subject: testSubject || _defaultSubject || _subject || '',
         grades:
           testGrades ||
-          userDefaultGrades ||
+          _defaultGrades ||
           (defaultInterests.grades?.length ? defaultInterests.grades : []) ||
           [],
         curriculum:
@@ -283,19 +296,19 @@ const AlignmentRow = ({
             ? defaultInterests.grades
             : [],
         })
-      } else if (defaultSubject && defaultCurriculumId) {
+      } else if (_defaultSubject && defaultCurriculumId) {
         editAlignment(alignmentIndex, {
-          subject: defaultSubject,
+          subject: _defaultSubject,
           curriculum: defaultCurriculumName,
           curriculumId: defaultCurriculumId,
-          grades: defaultGrades || interestedGrades || [],
+          grades: _defaultGrades || interestedGrades || [],
         })
       } else if (interestedCurriculums && interestedCurriculums.length > 0) {
         editAlignment(alignmentIndex, {
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,
           curriculumId: interestedCurriculums[0]._id,
-          grades: defaultGrades || interestedGrades || [],
+          grades: _defaultGrades || interestedGrades || [],
         })
       } else {
         editAlignment(alignmentIndex, {
@@ -551,6 +564,8 @@ AlignmentRow.propTypes = {
   testSelectedSubjects: PropTypes.array,
   testSelectedGrades: PropTypes.array,
   considerCustomAlignmentDataSettingPriority: PropTypes.bool,
+  userDefaultSubject: PropTypes.array,
+  userDefaultGrades: PropTypes.array,
 }
 
 AlignmentRow.defaultProps = {
@@ -558,6 +573,8 @@ AlignmentRow.defaultProps = {
   testSelectedSubjects: [],
   testSelectedGrades: [],
   considerCustomAlignmentDataSettingPriority: false,
+  userDefaultSubject: [],
+  userDefaultGrades: [],
 }
 
 export default connect(
@@ -571,6 +588,8 @@ export default connect(
     defaultGrades: getDefaultGradesSelector(state),
     interestedGrades: getInterestedGradesSelector(state),
     defaultSubject: getDefaultSubjectSelector(state),
+    userDefaultSubject: getUserDefaultSubjectSelector(state),
+    userDefaultGrades: getUserDefaultGradesSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state),
     testSelectedSubjects: getTestEntitySubjectsSelector(state),
     testSelectedGrades: getTestEntityGradesSelector(state),

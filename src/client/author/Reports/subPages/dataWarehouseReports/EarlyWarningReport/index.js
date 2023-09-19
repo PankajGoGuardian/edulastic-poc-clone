@@ -25,6 +25,7 @@ import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
 import SectionLabel from '../../../common/components/SectionLabel'
 import SectionDescription from '../../../common/components/SectionDescription'
+import useTabNavigation from '../../../common/hooks/useTabNavigation'
 
 const EarlyWarningReport = ({
   loc,
@@ -42,6 +43,7 @@ const EarlyWarningReport = ({
   settings,
   firstLoad,
   resetAllReports,
+  updateNavigation,
   feedTypes,
   fetchFeedTypes,
 }) => {
@@ -98,6 +100,18 @@ const EarlyWarningReport = ({
     },
     []
   )
+
+  useTabNavigation({
+    settings,
+    reportId,
+    history,
+    loc,
+    updateNavigation,
+    extraFilters: {
+      selectedCompareBy:
+        search.selectedCompareBy || settings.selectedCompareBy.key,
+    },
+  })
 
   const isWithoutFilters = isEmpty(settings.requestFilters)
 

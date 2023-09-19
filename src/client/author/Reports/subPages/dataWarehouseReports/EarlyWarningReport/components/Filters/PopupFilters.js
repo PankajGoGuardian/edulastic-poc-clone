@@ -16,12 +16,14 @@ import { staticDropDownData } from '../../utils'
 import FilterClassFields from './FilterClassFields'
 import FilterPeriodFields from '../../../../../common/components/FilterPeriodFields'
 import FilterActions from '../../../../../common/components/FilterActions'
+import FilterTestFields from '../../../../../common/components/FilterTestFields'
 
 function PopupFilters({
   isPrinting,
   reportId,
   selectedFilterTagsData,
   tagTypes,
+  availableTestTypes,
   handleCloseTag,
   handleTagClick,
   showFilter,
@@ -82,12 +84,30 @@ function PopupFilters({
                       }
                       forceRender
                     >
-                      <FilterClassFields
-                        userRole={userRole}
-                        filters={filters}
-                        updateFilterDropdownCB={updateFilterDropdownCB}
-                        schoolYears={schoolYears}
-                      />
+                      <Row type="flex" gutter={[5, 10]}>
+                        <FilterClassFields
+                          userRole={userRole}
+                          filters={filters}
+                          updateFilterDropdownCB={updateFilterDropdownCB}
+                          schoolYears={schoolYears}
+                        />
+                      </Row>
+                    </Tabs.TabPane>
+
+                    <Tabs.TabPane
+                      key={staticDropDownData.filterSections.TEST_FILTERS.key}
+                      tab={staticDropDownData.filterSections.TEST_FILTERS.title}
+                    >
+                      <Row type="flex" gutter={[5, 10]}>
+                        <FilterTestFields
+                          filters={filters}
+                          updateFilterDropdownCB={updateFilterDropdownCB}
+                          schoolYears={schoolYears}
+                          availableAssessmentType={availableTestTypes}
+                          dropdownData={staticDropDownData}
+                          exclude={['termId', 'tagIds']}
+                        />
+                      </Row>
                     </Tabs.TabPane>
 
                     <Tabs.TabPane

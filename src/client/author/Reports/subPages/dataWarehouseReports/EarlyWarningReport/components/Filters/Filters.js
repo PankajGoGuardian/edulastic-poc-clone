@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import qs from 'qs'
-import { get, mapValues } from 'lodash'
+import { mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
@@ -19,6 +19,7 @@ import { removeFilter } from '../../../common/utils'
 import FiltersView from './FiltersView'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
+import useFiltersData from '../../../../../common/hooks/useFiltersData'
 
 const Filters = ({
   showFilter,
@@ -54,7 +55,7 @@ const Filters = ({
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
   const [showPageLevelApply, setShowPageLevelApply] = useState(false)
 
-  const { demographics = [] } = get(filtersData, 'data.result', {})
+  const { availableTestTypes, demographics } = useFiltersData(filtersData)
 
   useFiltersPreload({
     reportId,
@@ -77,6 +78,7 @@ const Filters = ({
     fetchUpdateTagsData,
     filters,
     filtersData,
+    availableTestTypes,
     location,
     reportId,
     schoolYears,
@@ -166,6 +168,7 @@ const Filters = ({
       reportId={reportId}
       selectedFilterTagsData={selectedFilterTagsData}
       tagTypes={tagTypes}
+      availableTestTypes={availableTestTypes}
       handleCloseTag={handleCloseTag}
       handleTagClick={handleTagClick}
       showFilter={showFilter}

@@ -23,8 +23,31 @@ import {
 } from '../../../utils'
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 import { Spacer } from '../../../../../../../../common/styled'
+import {
+  ChartLegendItem,
+  ChartLegendPill,
+} from '../../../../../../common/components/charts/styled-components'
 
 const title = 'Risk Over Time'
+
+/**
+ * function to render custom chart legend for AssessmentsChart
+ * @param {Object} payload - legend payload for chart
+ */
+const renderLegend = ({ payload }) => (
+  <FlexContainer justifyContent="flex-end">
+    {payload
+      .filter(({ inactive }) => !inactive)
+      .map(({ value, color }, index) => {
+        return (
+          <ChartLegendItem key={`item-${index}`}>
+            <ChartLegendPill color={color} />
+            {`${value} RISK`.toUpperCase()}
+          </ChartLegendItem>
+        )
+      })}
+  </FlexContainer>
+)
 
 const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   const query = useMemo(
@@ -92,6 +115,7 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
                   xAxisTicks={[0, 20, 40, 60, 80, 100]}
                   xAxisInterval={xAxisInterval}
                   yAxisLabel="PERCENTAGE OF STUDENTS"
+                  legendProps={{ content: renderLegend }}
                 />
               </FlexContainer>
             </EduThen>

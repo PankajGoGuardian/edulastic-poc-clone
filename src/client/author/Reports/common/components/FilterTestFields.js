@@ -18,16 +18,20 @@ function FilterTestFields({
 }) {
   return (
     <>
-      <Col span={6}>
-        <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
-        <ControlDropDown
-          by={filters.termId}
-          selectCB={(e, selected) => updateFilterDropdownCB(selected, 'termId')}
-          data={schoolYears}
-          prefix="School Year"
-          showPrefixOnSelected={false}
-        />
-      </Col>
+      <EduIf condition={!exclude.includes('termId')}>
+        <Col span={6}>
+          <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
+          <ControlDropDown
+            by={filters.termId}
+            selectCB={(e, selected) =>
+              updateFilterDropdownCB(selected, 'termId')
+            }
+            data={schoolYears}
+            prefix="School Year"
+            showPrefixOnSelected={false}
+          />
+        </Col>
+      </EduIf>
       <Col span={6}>
         <MultiSelectDropdown
           dataCy="testGrade"

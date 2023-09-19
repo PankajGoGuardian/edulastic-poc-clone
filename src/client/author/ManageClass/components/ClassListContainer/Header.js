@@ -50,6 +50,7 @@ const Header = ({
   filterClass,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  manualEnrollmentAllowed,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
 
@@ -147,6 +148,10 @@ const Header = ({
     [canvasAllowedInstitution]
   )
   const loginGoogle = (googleClient) => googleClient.requestCode()
+
+  const showCreateClsBtn = !(
+    manualEnrollmentAllowed === false && currentTab === 'class'
+  )
 
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
@@ -285,15 +290,17 @@ const Header = ({
             </EduButton>
           </EduIf>
         </EduIf>
-        <AuthorCompleteSignupButton
-          renderButton={(handleClick) => (
-            <EduButton data-cy="createClass" isBlue onClick={handleClick}>
-              <IconPlusCircle />
-              <span>Create {currentTab}</span>
-            </EduButton>
-          )}
-          onClick={createNewClass}
-        />
+        <EduIf condition={showCreateClsBtn}>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <EduButton data-cy="createClass" isBlue onClick={handleClick}>
+                <IconPlusCircle />
+                <span>Create {currentTab}</span>
+              </EduButton>
+            )}
+            onClick={createNewClass}
+          />
+        </EduIf>
       </ButtonsWrapper>
     </MainHeader>
   )

@@ -1,13 +1,12 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
-import { Row, Col, Tabs, Tooltip } from 'antd'
+import { Row, Col, Tabs } from 'antd'
 
-import { EduIf, FieldLabel, FlexContainer } from '@edulastic/common'
+import { EduIf, FieldLabel } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { IconFilter, IconInfo } from '@edulastic/icons'
+import { IconFilter } from '@edulastic/icons'
 
-import { themeColor } from '@edulastic/colors'
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -35,11 +34,11 @@ import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeU
 import { allFilterValue } from '../../../../common/constants'
 import {
   EXTERNAL_SCORE_TYPES,
-  EXTERNAL_SCORE_TOOLTIP_TEXT,
   getDefaultTestTypes,
   getDemographicsFilterTagsData,
   getExternalScoreTypesListByTestTypes,
 } from '../../common/utils'
+import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
 
 const internalTestTypes = getArrayOfAllTestTypes()
 
@@ -213,7 +212,6 @@ const MultipleAssessmentReportFilters = ({
           subjects: urlSubjects,
           grades: urlGrades,
           profileId: urlPerformanceBand,
-
           ...demographicsFilterTagsData,
         }
 
@@ -300,7 +298,9 @@ const MultipleAssessmentReportFilters = ({
     multiple = false,
     isPageLevelFilter = false
   ) => {
-    // update tags data
+    const _selected = multiple
+      ? selected.map((o) => o.key).join(',')
+      : selected.key
     const _filterTagsData = { ...filterTagsData, [keyName]: selected }
     if (
       !multiple &&
@@ -309,13 +309,12 @@ const MultipleAssessmentReportFilters = ({
       delete _filterTagsData[keyName]
     }
     const _filters = { ...filters }
-    const _selected = multiple
-      ? selected.map((o) => o.key).join(',')
-      : selected.key
+    // reset filters and update tags data
     resetFilters(_filterTagsData, _filters, keyName, _selected)
     setFilterTagsData(_filterTagsData)
-    // update filters
+    // update filters and filters tab
     _filters[keyName] = _selected
+    // reset externalScoreType when assessmentTypes are updated
     if (keyName === 'assessmentTypes') {
       _filters.externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE
     }
@@ -709,51 +708,13 @@ const MultipleAssessmentReportFilters = ({
       <Col span={24}>
         <SecondaryFilterRow hidden={!!reportId} width="100%" fieldHeight="40px">
           <EduIf condition={externalScoreTypesList.length}>
-            <StyledDropDownContainer
-              flex="0 0 300px"
-              xs={24}
-              sm={12}
-              lg={6}
-              data-cy="externalScoreType"
-              data-testid="externalScoreType"
-            >
-              <FieldLabel fs=".7rem" data-cy="schoolYear">
-                <FlexContainer alignItems="center" justifyContent="left">
-                  EXTERNAL SCORE
-                  <EduIf
-                    condition={
-                      filters.externalScoreType !==
-                      EXTERNAL_SCORE_TYPES.SCALED_SCORE
-                    }
-                  >
-                    <Tooltip
-                      title={
-                        EXTERNAL_SCORE_TOOLTIP_TEXT[filters.externalScoreType]
-                      }
-                    >
-                      <IconInfo
-                        fill={themeColor}
-                        style={{ marginLeft: '20px' }}
-                      />
-                    </Tooltip>
-                  </EduIf>
-                </FlexContainer>
-              </FieldLabel>
-              <ControlDropDown
-                by={selectedExternalScoreType}
-                selectCB={(e, selected) =>
-                  updateFilterDropdownCB(
-                    selected,
-                    'externalScoreType',
-                    false,
-                    true
-                  )
-                }
-                data={externalScoreTypesList}
-                prefix="External Score"
-                showPrefixOnSelected={false}
-              />
-            </StyledDropDownContainer>
+            <ExternalScoreTypeFilter
+              selectedExternalScoreType={selectedExternalScoreType}
+              externalScoreTypesList={externalScoreTypesList}
+              updateFilterDropdownCB={(selected, key) =>
+                updateFilterDropdownCB(selected, key, false, true)
+              }
+            />
           </EduIf>
           <StyledDropDownContainer
             flex="0 0 300px"
@@ -763,9 +724,7 @@ const MultipleAssessmentReportFilters = ({
             data-cy="performanceBand"
             data-testid="performanceBand"
           >
-            <FieldLabel fs=".7rem" data-cy="schoolYear">
-              EDULASTIC PERFORMANCE BAND
-            </FieldLabel>
+            <FieldLabel fs=".7rem">EDULASTIC PERFORMANCE BAND</FieldLabel>
             <ControlDropDown
               by={selectedPerformanceBand}
               selectCB={(e, selected) =>

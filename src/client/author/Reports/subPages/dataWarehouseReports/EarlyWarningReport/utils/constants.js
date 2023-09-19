@@ -1,5 +1,4 @@
 import React from 'react'
-import { lightRed7, darkRed3 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { ColoredText } from '../components/common/styledComponents'
 
@@ -179,12 +178,16 @@ export const staticDropDownData = {
       key: '0',
       title: 'Select Classes',
     },
-    DEMOGRAPHIC_FILTERS: {
+    TEST_FILTERS: {
       key: '1',
+      title: 'Select Assessments',
+    },
+    DEMOGRAPHIC_FILTERS: {
+      key: '2',
       title: 'Demographics',
     },
     PERIOD: {
-      key: '2',
+      key: '3',
       title: 'Duration',
     },
   },
@@ -197,19 +200,25 @@ export const staticDropDownData = {
     { key: 'courseId', tabKey: '0' },
     { key: 'classIds', tabKey: '0' },
     { key: 'groupIds', tabKey: '0' },
-    { key: 'race', tabKey: '1' },
-    { key: 'gender', tabKey: '1' },
-    { key: 'iepStatus', tabKey: '1' },
-    { key: 'frlStatus', tabKey: '1' },
-    { key: 'ellStatus', tabKey: '1' },
-    { key: 'hispanicEthnicity', tabKey: '1' },
-    { key: 'periodType', tabKey: '2' },
-    { key: 'customPeriodStart', tabKey: '2' },
-    { key: 'customPeriodEnd', tabKey: '2' },
+    { key: 'testGrades', subType: 'test', tabKey: '1' },
+    { key: 'testSubjects', subType: 'test', tabKey: '1' },
+    { key: 'assessmentTypes', tabKey: '1' },
+    { key: 'race', tabKey: '2' },
+    { key: 'gender', tabKey: '2' },
+    { key: 'iepStatus', tabKey: '2' },
+    { key: 'frlStatus', tabKey: '2' },
+    { key: 'ellStatus', tabKey: '2' },
+    { key: 'hispanicEthnicity', tabKey: '2' },
+    { key: 'periodType', tabKey: '3' },
+    { key: 'customPeriodStart', tabKey: '3' },
+    { key: 'customPeriodEnd', tabKey: '3' },
   ],
   initialFilters: {
     reportId: '',
     termId: '',
+    testGrades: '',
+    testSubjects: '',
+    assessmentTypes: '',
     schoolIds: '',
     teacherIds: '',
     grades: '',
@@ -237,20 +246,19 @@ export const staticDropDownData = {
   })),
 }
 
-export const RISK_KEYS = {
-  MEDIUM: 'medium',
-  HIGH: 'high',
-  LOW: 'low',
-}
-
 // Lines z-index on the chart is directly proportional to line index in below array
 export const CHART_LINES = [
   {
-    dataKey: RISK_KEYS.MEDIUM,
-    stroke: darkRed3,
+    dataKey: RISK_BAND_LABELS.HIGH,
+    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH],
   },
   {
-    dataKey: RISK_KEYS.HIGH,
-    stroke: lightRed7,
+    dataKey: RISK_BAND_LABELS.MEDIUM,
+    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM],
+  },
+  {
+    dataKey: RISK_BAND_LABELS.LOW,
+    stroke: RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.LOW],
+    hide: true,
   },
 ]

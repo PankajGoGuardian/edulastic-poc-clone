@@ -102,20 +102,23 @@ const MainKeyboard = ({
     updateCurrent(0)
   }, [type, btns, numbers])
 
-  const handleClick = (handler, command, numToMove) => () => {
+  const handleClick = (handler, command, numToMove) => (e) => {
+    e?.preventDefault()
     if (handler && command) {
       onInput(handler, command, numToMove)
     }
   }
 
-  const onClickNext = () => {
+  const onClickNext = (e) => {
+    e?.preventDefault()
     const next = current + 1
     if (next < boards.length) {
       updateCurrent(next)
     }
   }
 
-  const onClickPrev = () => {
+  const onClickPrev = (e) => {
+    e?.preventDefault()
     const prev = current - 1
     if (prev >= 0) {
       updateCurrent(prev)

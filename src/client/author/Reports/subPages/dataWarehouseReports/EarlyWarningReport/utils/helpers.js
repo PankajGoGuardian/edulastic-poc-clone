@@ -1,7 +1,7 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy } from 'lodash'
+import { sumBy, get, groupBy, omit } from 'lodash'
 import React from 'react'
 import moment from 'moment'
 import {
@@ -27,7 +27,6 @@ import {
   timeframeFilterKeys,
   timeframeFilterValues,
   CHART_LABEL_KEY,
-  RISK_KEYS,
 } from './constants'
 import { sortTestTypes } from '../../common/utils'
 
@@ -326,30 +325,24 @@ export const getTimelineChartData = (rawData, filters) => {
     timeframeFilterValues[timeframe]
   )
 
-  const finalData = []
-  sortedGroupedTimelineData.forEach((groupedData) => {
+  const timelineChartData = sortedGroupedTimelineData.map((groupedData) => {
     const totalStudents = groupedData.reduce(
       (prev, curr) => prev + curr.studentCount,
       0
     )
     const studentCounts = {}
-    groupedData.forEach((entry) => {
-      studentCounts[entry.bandLabel.toLocaleLowerCase()] = percentage(
-        entry.studentCount,
-        totalStudents,
-        true
-      )
+    Object.values(RISK_BAND_LABELS).forEach((k) => {
+      const data = groupedData.find((d) => k === d.bandLabel)
+      studentCounts[k] = data
+        ? percentage(data.studentCount, totalStudents, true)
+        : 0
     })
-    if (studentCounts[RISK_KEYS.LOW] === 100) {
-      studentCounts[RISK_KEYS.MEDIUM] = 0
-      studentCounts[RISK_KEYS.HIGH] = 0
-    }
-    finalData.push({
-      ...groupedData[0],
+    return {
+      ...omit(groupedData[0], ['bandLabel']),
       ...studentCounts,
-    })
+    }
   })
-  return finalData
+  return timelineChartData
 }
 
 export const transformTableData = (tableMetrics) => {

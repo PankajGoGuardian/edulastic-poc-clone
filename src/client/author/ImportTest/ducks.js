@@ -56,8 +56,8 @@ export const resetStateAction = createAction(RESET_STATE)
 const initialState = {
   testDetail: {},
   error: {},
-  status: 'INITIATE',
-  jobIds: [],
+  status: sessionStorage.getItem('testUploadStatus') || UPLOAD_STATUS.STANDBY,
+  jobIds: JSON.parse(sessionStorage.getItem('jobIds')) || [],
   jobsData: [],
   successMessage: '',
   isSuccess: true,
@@ -103,7 +103,7 @@ const resetQtiState = (state) => {
   state.jobsData = []
   state.qtiFileStatus = {}
   state.error = {}
-  state.status = 'INITIATE'
+  state.status = UPLOAD_STATUS.STANDBY
   state.jobIds = []
   state.successMessage = ''
   state.isSuccess = true
@@ -143,17 +143,32 @@ export function* uploadTestStaga({ payload }) {
     try {
       yield put(setSuccessMessageAction('Started creating the items'))
       yield put(setIsImportingAction(true))
-      const response = yield call(contentImportApi.contentImport, {
+      const payloadData = {
         files: responseFiles,
         type,
         testItemTags,
-      })
-      if (response?.jobIds?.length) {
-        yield put(setJobIdsAction(response.jobIds))
+      }
+      let endpoint = contentImportApi.contentImport
+      if (type === 'qti') {
+        endpoint = contentImportApi.qtiImport
+        payloadData.file = responseFiles.shift()
+        delete payloadData.files
+      }
+      const response = yield call(endpoint, payloadData)
+      if (response?.jobIds?.length || response.jobId) {
+        if (type === 'qti') {
+          yield put(setJobIdsAction(response.jobId))
+        } else {
+          yield put(setJobIdsAction(response.jobIds))
+        }
+        sessionStorage.setItem(
+          'jobIds',
+          JSON.stringify(type !== 'qti' ? response.jobIds : [response.jobId])
+        )
+        yield put(setSuccessMessageAction('Completed creating the items'))
       } else {
         yield put(uploadTestError('Failed uploading'))
       }
-      yield put(setSuccessMessageAction('Completed creating the items'))
     } catch (e) {
       yield put(uploadTestErrorAction(e?.data || {}))
       console.log(e)
@@ -165,13 +180,14 @@ export function* uploadTestStaga({ payload }) {
 }
 
 function* getImportProgressSaga({ payload }) {
+  const { jobId, interval } = payload
   try {
-    const { jobId, interval } = payload
     const response = yield call(contentImportApi.qtiImportStatus, jobId)
     const manifestResponse = response.find(
       (ele) => ele.type === 'manifestation'
     )
     if (manifestResponse.status === JOB_STATUS.COMPLETED) {
+      yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
       yield put(setJobsDataAction(response))
       const qtiFiles = response.filter((ele) => ele.type !== 'manifestation')
       const qtiFilesStatus = qtiFiles.reduce((acc, curr) => {
@@ -190,18 +206,22 @@ function* getImportProgressSaga({ payload }) {
         )
       ) {
         yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-        clearInterval(interval)
+        clearInterval(interval?.current)
+        interval.current = null
       }
     } else if (manifestResponse.status === JOB_STATUS.ERROR) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
       yield put(uploadTestErrorAction(`${manifestResponse.error}`))
-      clearInterval(interval)
+      clearInterval(interval?.current)
+      interval.current = null
       notification({
         type: 'error',
         msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
       })
     }
   } catch (e) {
+    clearInterval(interval?.current)
+    interval.current = null
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }

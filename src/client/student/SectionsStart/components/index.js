@@ -2,31 +2,37 @@ import React, { useEffect } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { keyBy } from 'lodash'
 import PropTypes from 'prop-types'
-import {
-  IconCircleLogout,
-  IconLock,
-  IconLogoCompact,
-  // IconMessage,
-  IconTick,
-} from '@edulastic/icons'
+import { IconLock, IconTick } from '@edulastic/icons'
 import styled, { ThemeProvider } from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { EduButton, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { Spin } from 'antd'
 import { SECTION_STATUS } from '@edulastic/constants/const/testActivityStatus'
+import {
+  FirestorePings,
+  ForceFullScreenModal,
+  useFullScreenListener,
+  useTabNavigationCounterEffect,
+} from '../../../assessment/themes/index'
 import { themes } from '../../../theme'
 import {
   getActivityDataSelector,
+  getAssignmentSettingsSelector,
   getIsLoadingSelector,
   getItemstoDeliverWithAttemptCount,
   getPreventSectionNavigationSelector,
   slice,
 } from '../ducks'
-import { SaveAndExitButton } from '../../../assessment/themes/common/styledCompoenents'
+import { utaStartTimeUpdateRequired } from '../../sharedDucks/AssignmentModule/ducks'
+import { TIME_UPDATE_TYPE } from '../../../assessment/themes/common/TimedTestTimer'
+import SummaryHeader from '../../TestAttemptReview/components/SummaryHeader'
+import { saveBlurTimeAction } from '../../../assessment/actions/items'
 
 const RenderButton = ({
   attempted,
+  skipped,
   preventSectionNavigation,
   handleReviewSection,
   handleStartSection,
@@ -35,11 +41,14 @@ const RenderButton = ({
   status,
 }) => {
   // Tried applying EduIf here but looks so much nested hence going with this approach for readability
-  if (attempted === 0 && !showLockIcon) {
+  const totalVisited = attempted + skipped
+  if (totalVisited === 0 && !showLockIcon) {
     return <EduButton onClick={handleStartSection(index)}>Start Test</EduButton>
   }
-  if (attempted > 0 && status !== SECTION_STATUS.SUBMITTED) {
-    return <EduButton onClick={handleStartSection(index)}>Continue</EduButton>
+  if (totalVisited > 0 && status !== SECTION_STATUS.SUBMITTED) {
+    return (
+      <EduButton onClick={handleStartSection(index, true)}>Continue</EduButton>
+    )
   }
   if (preventSectionNavigation && status === SECTION_STATUS.SUBMITTED) {
     return (
@@ -68,12 +77,15 @@ const TestSectionsContainer = ({
   return (
     <TestSections>
       {itemsToDeliverInGroup.map((section, index) => {
-        const { items, attempted, status, groupName } = section
+        const { items, attempted, skipped, status, groupName } = section
         const isLast = itemsToDeliverInGroup.length == index + 1
         const showLockIcon =
           nextSection.groupId !== section.groupId &&
           section.status !== SECTION_STATUS.SUBMITTED &&
           preventSectionNavigation
+        if (!items.length) {
+          return null
+        }
         return (
           <Section noBorder={isLast} disabled={showLockIcon}>
             <FlexBox>
@@ -98,6 +110,7 @@ const TestSectionsContainer = ({
             <SectionProgress>
               <RenderButton
                 attempted={attempted}
+                skipped={skipped}
                 preventSectionNavigation={preventSectionNavigation}
                 handleReviewSection={handleReviewSection}
                 handleStartSection={handleStartSection}
@@ -113,6 +126,34 @@ const TestSectionsContainer = ({
   )
 }
 
+const getLastVisitedItemId = (activityData, sectionIndex, resume) => {
+  const { questionActivities, itemsToBeExcluded, testActivity } = activityData
+  const { itemsToDeliverInGroup } = testActivity
+  const excludeItemsById = keyBy(itemsToBeExcluded)
+  const currentSectionItems = itemsToDeliverInGroup[sectionIndex].items.filter(
+    (item) => !excludeItemsById[item]
+  )
+  if (!resume) {
+    return currentSectionItems[0]
+  }
+  const currentGroupItemsById = keyBy(currentSectionItems)
+  const currentSectionActivities = questionActivities.filter(
+    (uqa) => currentGroupItemsById[uqa.testItemId]
+  )
+  let lastAttemptedItem = currentSectionItems[0]
+  if (!currentSectionActivities.length) {
+    return lastAttemptedItem
+  }
+  const activitiesByTestItemId = keyBy(currentSectionActivities, 'testItemId')
+  currentSectionItems.forEach((item, index) => {
+    const uqa = activitiesByTestItemId[item]
+    if (uqa && !uqa.skipped && index < currentSectionItems.length - 1) {
+      lastAttemptedItem = currentSectionItems[index + 1]
+    }
+  })
+  return lastAttemptedItem
+}
+
 const SummaryContainer = (props) => {
   const {
     history,
@@ -122,15 +163,53 @@ const SummaryContainer = (props) => {
     itemsToDeliverInGroup,
     isLoading,
     activityData,
+    utaStartTimeUpdate,
+    assignmentSettings,
+    userId,
+    saveBlurTime,
+    savedBlurTime: blurTimeAlreadySaved = 0,
   } = props
   const { groupId, utaId, testId, assessmentType } = match.params
+  const {
+    restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue,
+  } = assignmentSettings
+  const { testActivity } = activityData
 
   useEffect(() => {
     fetchSectionsData({ utaId, groupId })
   }, [])
 
-  const handleStartSection = (index) => () => {
-    const nextItemId = itemsToDeliverInGroup[index].items[0]
+  const currentlyFullScreen = useFullScreenListener({
+    enabled: restrictNavigationOut,
+    assignmentId: testActivity?.assignmentId,
+    classId: groupId,
+    testActivityId: utaId,
+    history,
+    disableSave: blockSaveAndContinue,
+    userId,
+  })
+
+  useTabNavigationCounterEffect({
+    testActivityId: utaId,
+    enabled: restrictNavigationOut && currentlyFullScreen,
+    threshold: restrictNavigationOutAttemptsThreshold,
+    history,
+    assignmentId: testActivity?.assignmentId,
+    classId: groupId,
+    userId,
+    onTimeInBlurChange: (v) => {
+      saveBlurTime(v)
+    },
+    blurTimeAlreadySaved,
+  })
+
+  const handleStartSection = (index, resume) => () => {
+    if (resume && activityData?.assignmentSettings?.timedAssignment) {
+      utaStartTimeUpdate(TIME_UPDATE_TYPE.RESUME)
+    }
+    const nextItemId = getLastVisitedItemId(activityData, index, resume)
     history.push({
       pathname: `/student/${assessmentType}/${testId}/class/${groupId}/uta/${utaId}/itemId/${nextItemId}`,
       state: { fromSummary: true },
@@ -151,17 +230,31 @@ const SummaryContainer = (props) => {
 
   return (
     <ThemeProvider theme={themes.default}>
-      <Header>
-        <IconLogoCompact style={{ fill: themeColor, marginLeft: '21px' }} />
-        <SaveAndExitButton
-          data-cy="finishTest"
-          aria-label="Save and exit"
-          onClick={exitSectionsPage}
-          style={{ border: '1px solid', marginRight: '30px' }}
-        >
-          <IconCircleLogout />
-        </SaveAndExitButton>
-      </Header>
+      {restrictNavigationOut && (
+        <>
+          <ForceFullScreenModal
+            testActivityId={utaId}
+            history={history}
+            visible={!currentlyFullScreen}
+            finishTest={exitSectionsPage}
+          />
+        </>
+      )}
+      {(blockSaveAndContinue || restrictNavigationOut) && (
+        <FirestorePings
+          testActivityId={utaId}
+          history={history}
+          blockSaveAndContinue={blockSaveAndContinue}
+          userId={userId}
+          classId={groupId}
+          assignmentId={testActivity?.assignmentId}
+        />
+      )}
+      <SummaryHeader
+        showExit={!isLoading}
+        hidePause={blockSaveAndContinue}
+        onExitClick={exitSectionsPage}
+      />
       <MainContainer>
         <ContentArea>
           <EduIf condition={isLoading}>
@@ -209,9 +302,14 @@ const enhance = compose(
       activityData: getActivityDataSelector(state),
       itemsToDeliverInGroup: getItemstoDeliverWithAttemptCount(state),
       preventSectionNavigation: getPreventSectionNavigationSelector(state),
+      assignmentSettings: getAssignmentSettingsSelector(state),
+      userId: state.user?.user?._id,
+      savedBlurTime: state.test?.savedBlurTime,
     }),
     {
       fetchSectionsData: slice.actions.fetchSectionsData,
+      utaStartTimeUpdate: utaStartTimeUpdateRequired,
+      saveBlurTime: saveBlurTimeAction,
     }
   )
 )
@@ -227,14 +325,6 @@ const FlexBox = styled.div`
 `
 const MainContainer = styled(FlexBox)`
   justify-content: center;
-`
-
-const Header = styled(FlexBox)`
-  align-items: center;
-  justify-content: space-between;
-  height: 53px;
-  border: 1px solid #dadae4;
-  opacity: 1;
 `
 
 const ContentArea = styled(FlexBox)`

@@ -11,6 +11,7 @@ const GMAS_EOG = 'GMAS_EOG'
 const ILEARN = 'ILEARN'
 const STARR = 'STARR'
 const TERM_GRADES = 'Term_Grades'
+const FP_BAS = 'FP_BAS'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -92,5 +93,6 @@ module.exports = {
   ILEARN,
   STARR,
   TERM_GRADES,
+  FP_BAS,
   ATTENDANCE,
 }

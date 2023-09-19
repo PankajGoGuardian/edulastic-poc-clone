@@ -37,7 +37,7 @@ import { shortTestIdKeyLength } from '../../Assignments/constants'
 
 // TODO break into directory like util -> {constants.js, chart.js, filters.js, index.js, etc.}
 
-const { EXTERNAL_TEST_TYPES, TEST_TYPES } = testTypesConstants
+const { TEST_TYPES } = testTypesConstants
 
 const testTypeKeyToCategoryMap = {
   ...TEST_TYPES.COMMON.reduce((res, ele) => ({ ...res, [ele]: 'common' }), {}),
@@ -708,14 +708,6 @@ export function utcMonthDate(date) {
   const formatYYYYMMDD = 'YYYY-MM-DD'
   const dateStringInYYYYMMDDD = moment(date).format(formatYYYYMMDD)
   return +moment.utc(dateStringInYYYYMMDDD)
-}
-
-export function getTestTitle(testCategory, testTitle) {
-  return [EXTERNAL_TEST_TYPES.CAASPP, EXTERNAL_TEST_TYPES.NWEA].includes(
-    testCategory
-  ) && testTitle
-    ? `- ${testTitle}`
-    : ''
 }
 
 export const getPerformanceBandsListByTestType = (

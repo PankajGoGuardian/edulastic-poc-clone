@@ -190,7 +190,7 @@ export const StyledQuestionMark = styled(Icon)`
 export const StyledButton = styled(Button)`
   width: 35px;
   height: 35px;
-  padding: 0;
+  padding: ${({ padding }) => padding || 0};
   border: 1px solid ${navigationButtons.color};
   svg {
     width: 18px;

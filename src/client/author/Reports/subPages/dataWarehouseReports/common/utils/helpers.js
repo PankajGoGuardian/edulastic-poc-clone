@@ -252,12 +252,15 @@ export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')
 
 export const getExternalScoreFormattedByType = (
   externalScore,
-  externalScoreType
+  externalScoreType,
+  formatScore = false
 ) => {
-  const score = round(externalScore, 0)
-  const absScore = Math.abs(score)
+  let score = Math.abs(round(externalScore, 0))
+  if (formatScore) {
+    score = new Intl.NumberFormat().format(score)
+  }
   const externalScorePrefix =
-    score < 0 ? EXTERNAL_SCORE_PREFIX[externalScoreType] : ''
+    externalScore < 0 ? EXTERNAL_SCORE_PREFIX[externalScoreType] : ''
   const externalScoreSuffix = EXTERNAL_SCORE_SUFFIX[externalScoreType] || ''
-  return `${externalScorePrefix || ''}${absScore}${externalScoreSuffix}`
+  return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
 }

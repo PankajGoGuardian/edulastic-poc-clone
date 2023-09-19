@@ -5,7 +5,8 @@ import { NumberBoardWrapper, Row, Button, Label } from './styled'
 const NumberKeyboard = ({ buttons, onInput }) => {
   const rows = chunk(buttons, 3)
 
-  const handleClickNumPad = (item) => () => {
+  const handleClickNumPad = (item) => (e) => {
+    e?.preventDefault()
     if (item.handler && item.command) {
       onInput(item.handler, item.command)
     } else {

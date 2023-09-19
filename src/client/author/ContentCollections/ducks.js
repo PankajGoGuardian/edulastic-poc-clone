@@ -5,7 +5,16 @@ import { collectionsApi, contentImportApi } from '@edulastic/api'
 import { uploadToS3, notification } from '@edulastic/common'
 import { push } from 'react-router-redux'
 import { aws } from '@edulastic/constants'
-import { UPLOAD_STATUS, JOB_STATUS, setJobIdsAction } from '../ImportTest/ducks'
+import {
+  UPLOAD_STATUS,
+  JOB_STATUS,
+  setJobIdsAction,
+  uploadTestStatusAction,
+  setJobsDataAction,
+  setSuccessMessageAction,
+  setIsImportingAction,
+  uploadTestErrorAction,
+} from '../ImportTest/ducks'
 
 const ContentFolders = {
   qti: aws.s3Folders.QTI_IMPORT,
@@ -431,11 +440,10 @@ export function* importTestToCollectionSaga({ payload }) {
       selectedTags = [],
     } = payload
     yield put(push('/author/import-content'))
-    yield put(uploadContentStatusAction(UPLOAD_STATUS.INITIATE))
+    yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
     sessionStorage.setItem('testUploadStatus', UPLOAD_STATUS.INITIATE)
-    yield put(setCISuccessMessageAction('Started creating the items'))
-    yield put(setIsContentImportingAction(true))
-    yield put(setImportTypeSelectorAction(type))
+    yield put(setSuccessMessageAction('Started creating the items'))
+    yield put(setIsImportingAction(true))
 
     const payloadData = {
       files: [signedUrl],
@@ -454,29 +462,21 @@ export function* importTestToCollectionSaga({ payload }) {
     const response = yield call(endpoint, payloadData)
     if (response?.jobIds?.length || response.jobId) {
       const data = type !== 'qti' ? response.jobIds : response.jobId
-      yield put(
-        importTestToCollectionSuccessAction({
-          jobIds: data,
-        })
-      )
-      yield put(setImportContentJobIdsAction(data))
-      if (type === 'qti') {
-        yield put(setJobIdsAction(data))
-      }
+      yield put(setJobIdsAction(data))
       sessionStorage.setItem(
         'jobIds',
         JSON.stringify(type !== 'qti' ? response.jobIds : [response.jobId])
       )
-      yield put(setCISuccessMessageAction('Completed creating the items'))
+      yield put(setSuccessMessageAction('Completed creating the items'))
     } else {
-      yield put(importTestToCollectionFailedAction('Failed uploading'))
-      yield put(setIsContentImportingAction(false))
+      yield put(uploadTestErrorAction('Failed uploading'))
+      yield put(setIsImportingAction(false))
       notification({ messageKey: 'uploadCsvErr' })
     }
   } catch (e) {
     console.log(e)
-    yield put(importTestToCollectionFailedAction(e?.data || {}))
-    yield put(setIsContentImportingAction(false))
+    yield put(uploadTestErrorAction(e?.data || {}))
+    yield put(setIsImportingAction(false))
     notification({ messageKey: 'errorWhileImportingCollectionData' })
   }
 }
@@ -496,18 +496,22 @@ export function* getSignedUrlSaga({ payload }) {
   }
 }
 
-function* getContentImportProgressSaga({ payload: jobIds }) {
+function* getContentImportProgressSaga({ payload }) {
+  const { jobIds, interval } = payload
   try {
     const response = yield call(contentImportApi.contentImportProgress, {
       jobIds,
     })
-    yield put(setCIJobsDataAction(response))
+    yield put(setJobsDataAction(response))
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
-      yield put(uploadContentStatusAction(UPLOAD_STATUS.DONE))
-      yield put(setIsContentImportingAction(false))
+      yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
+      clearInterval(interval?.current)
+      interval.current = null
     }
   } catch (e) {
     console.log({ e })
+    clearInterval(interval?.current)
+    interval.current = null
     return notification({ messageKey: 'failedToFetchProgressStatus' })
   }
 }

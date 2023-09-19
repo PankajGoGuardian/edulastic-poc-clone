@@ -11,8 +11,6 @@ import TitleWrapper from '../../AssignmentCreate/common/TitleWrapper'
 import {
   getJobsDataSelector,
   UPLOAD_STATUS,
-  uploadTestStatusAction,
-  setJobIdsAction,
   getUploadStatusSelector,
   getJobIdsSelector,
   qtiImportProgressAction,
@@ -20,28 +18,17 @@ import {
   JOB_STATUS,
   resetStateAction,
 } from '../ducks'
-import {
-  contentImportJobIds,
-  uploadContnentStatus,
-  contentImportProgressAction,
-  contentImportJobsData,
-  uploadContentStatusAction,
-  setImportContentJobIdsAction,
-} from '../../ContentCollections/ducks'
+import { contentImportProgressAction } from '../../ContentCollections/ducks'
 
 const ImportDone = ({
   t,
   jobsData = [],
-  setJobIds,
-  uploadTestStatus,
   status,
   jobIds = [],
   qtiImportProgress,
   contentImportProgress,
   history,
   location: { pathname: path },
-  setUploadContnentStatus,
-  setImportContentJobIds,
   resetData,
   qtiFileStatus = {},
 }) => {
@@ -58,37 +45,29 @@ const ImportDone = ({
   useEffect(() => {
     if (jobId.includes('qti') && status !== UPLOAD_STATUS.DONE) {
       qtiImportProgress({ jobId })
-    } else if (status !== UPLOAD_STATUS.INITIATE && jobsData.length === 0) {
+    } else if (status !== UPLOAD_STATUS.INITIATE && !jobIds.length) {
       contentImportProgress(jobIds)
     }
   }, [])
 
   const continueToTest = () => {
+    resetData()
+    sessionStorage.removeItem('jobIds')
     if (path === '/author/import-content') {
-      setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      resetData()
-      setImportContentJobIds([])
-      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
-      uploadTestStatus(UPLOAD_STATUS.STANDBY)
       sessionStorage.removeItem('qtiTags')
       history.push(`/author/tests/tab/review/id/${testIds[0]}`)
-      setJobIds([])
     }
   }
 
   const handleRetry = () => {
+    resetData()
+    sessionStorage.removeItem('jobIds')
     if (path === '/author/import-content') {
-      setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      resetData()
-      setImportContentJobIds([])
-      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
-      setJobIds([])
-      uploadTestStatus(UPLOAD_STATUS.STANDBY)
-      sessionStorage.removeItem('qtiTags') // TODO: what it does
+      sessionStorage.removeItem('qtiTags')
     }
   }
 
@@ -160,17 +139,6 @@ ImportDone.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  const path = state?.router?.location?.pathname
-  const jobIds = contentImportJobIds(state)
-  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
-  if (path === '/author/import-content' && !jobId.includes('qti')) {
-    return {
-      jobsData: contentImportJobsData(state),
-      status: uploadContnentStatus(state),
-      jobIds: contentImportJobIds(state),
-    }
-  }
-
   return {
     status: getUploadStatusSelector(state),
     jobIds: getJobIdsSelector(state),
@@ -183,12 +151,8 @@ export default compose(
   withNamespaces('qtiimport'),
   withRouter,
   connect(mapStateToProps, {
-    uploadTestStatus: uploadTestStatusAction,
-    setJobIds: setJobIdsAction,
     qtiImportProgress: qtiImportProgressAction,
     contentImportProgress: contentImportProgressAction,
-    setUploadContnentStatus: uploadContentStatusAction,
-    setImportContentJobIds: setImportContentJobIdsAction,
     resetData: resetStateAction,
   })
 )(ImportDone)

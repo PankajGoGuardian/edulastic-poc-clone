@@ -10,6 +10,7 @@ const tabLabel = (label, name) => <Tooltip title={name}>{label}</Tooltip>
 
 const renderTabBar = (props, DefaultTabBar) => {
   const handleTouchEnd = (node) => (e) => {
+    e?.preventDefault()
     const { onTabClick } = props
     if (typeof onTabClick === 'function') {
       onTabClick(node.key, e)

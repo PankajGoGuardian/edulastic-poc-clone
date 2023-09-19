@@ -42,6 +42,7 @@ const ProgressBar = ({
       width={`calc(${100 / cols}% - 18px)`}
       marginLeft={index % cols !== 0 ? '18px' : null}
       justifyContent="space-between"
+      tabIndex={index}
     >
       <FileIcon
         type={type}

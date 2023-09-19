@@ -25,19 +25,11 @@ import {
   resetStateAction,
 } from '../ducks'
 import {
-  contentImportJobIds,
-  importingLoaderSelector,
-  contentImportSuccessMessage,
-  contentImportError,
-  uploadContnentStatus,
   contentImportProgressAction,
-  isContentImportSuccess,
   uploadContentStatusAction,
   setImportContentJobIdsAction,
   importTypeSelector,
 } from '../../ContentCollections/ducks'
-
-let interval
 
 const ImportInprogress = ({
   t,
@@ -47,21 +39,17 @@ const ImportInprogress = ({
   successMessage,
   isSuccess,
   errorDetails,
-  uploadTestStatus,
-  setJobIds,
   isImporting,
   contentImportProgress,
   location: { pathname: path },
-  setUploadContnentStatus,
-  setImportContentJobIds,
   resetData,
   history,
-  importType,
   jobsData,
   qtiFileStatus = {},
+  intervalRef,
 }) => {
+  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
   const checkProgress = () => {
-    const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
     if (jobId.includes('qti') && jobIds.length) {
       if (
         jobsData.length === 0 ||
@@ -69,37 +57,31 @@ const ImportInprogress = ({
           [JOB_STATUS.INITIATED, JOB_STATUS.IN_PROGRESS].includes(job.status)
         )
       ) {
-        qtiImportProgress({ jobId: jobIds, interval })
+        qtiImportProgress({ jobId: jobIds, interval: intervalRef })
       }
     } else if (status !== UPLOAD_STATUS.STANDBY && jobIds.length) {
-      contentImportProgress(jobIds)
+      contentImportProgress({ jobIds, interval: intervalRef })
     }
   }
 
   // TODO: need to handle
   const handleRetry = () => {
+    resetData()
+    sessionStorage.removeItem('jobIds')
+    sessionStorage.removeItem('qtiTags')
     if (path === '/author/import-content') {
-      setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      resetData()
-      setImportContentJobIds([])
-      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
-    } else {
-      setJobIds([])
-      uploadTestStatus(UPLOAD_STATUS.STANDBY)
-      sessionStorage.removeItem('qtiTags')
     }
   }
-
   useEffect(() => {
-    if (jobIds.length && interval === undefined) {
-      interval = setInterval(() => {
+    if (jobIds.length && !intervalRef?.current) {
+      intervalRef.current = setInterval(() => {
         checkProgress()
       }, 1000 * 5)
     }
   }, [jobIds])
 
-  const isQtiImport = importType === 'qti'
+  const isQtiImport = jobId.includes('qti')
   const totalQtiFiles = jobsData.filter((ele) => ele.type !== 'manifestation')
     .length
 
@@ -173,22 +155,6 @@ ImportInprogress.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  const path = state?.router?.location?.pathname || ''
-  const jobIds = contentImportJobIds(state)
-  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
-  if (path === '/author/import-content' && !jobId.includes('qti')) {
-    return {
-      status: uploadContnentStatus(state),
-      jobIds: contentImportJobIds(state),
-      successMessage: contentImportSuccessMessage(state),
-      isSuccess: isContentImportSuccess(state),
-      errorDetails: contentImportError(state),
-      isImporting: importingLoaderSelector(state),
-      jobsData: getJobsDataSelector(state),
-      importType: importTypeSelector(state),
-    }
-  }
-
   return {
     jobIds: getJobIdsSelector(state),
     status: getUploadStatusSelector(state),

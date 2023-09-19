@@ -8,6 +8,7 @@ const FiltersView = ({
   reportId,
   selectedFilterTagsData,
   tagTypes,
+  availableTestTypes,
   handleCloseTag,
   handleTagClick,
   showFilter,
@@ -36,6 +37,7 @@ const FiltersView = ({
           reportId={reportId}
           selectedFilterTagsData={selectedFilterTagsData}
           tagTypes={tagTypes}
+          availableTestTypes={availableTestTypes}
           handleCloseTag={handleCloseTag}
           handleTagClick={handleTagClick}
           showFilter={showFilter}

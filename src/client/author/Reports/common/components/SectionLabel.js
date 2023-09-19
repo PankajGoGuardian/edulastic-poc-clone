@@ -10,7 +10,14 @@ import {
 } from '../styled'
 
 const SectionLabel = (props) => {
-  const { children, style, showHelp, url = null, ...restProps } = props
+  const {
+    children,
+    style,
+    showHelp,
+    url = null,
+    sectionLabelFilters,
+    ...restProps
+  } = props
   return (
     <SectionLabelWrapper {...restProps}>
       <Typography.Title style={{ margin: 0, ...style }} level={3}>
@@ -28,6 +35,7 @@ const SectionLabel = (props) => {
         </StyledButton>
       </EduIf>
       <DashedLine />
+      <EduIf condition={sectionLabelFilters}>{sectionLabelFilters}</EduIf>
     </SectionLabelWrapper>
   )
 }

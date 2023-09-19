@@ -5,13 +5,13 @@ import {
   values,
   sumBy,
   round,
-  get,
   find,
   isNil,
   mapValues,
   omitBy,
   sortBy,
   isEmpty,
+  isNaN,
 } from 'lodash'
 import moment from 'moment'
 import {
@@ -25,6 +25,10 @@ import {
   RISK_BAND_LABELS,
 } from '@edulastic/constants/reportUtils/common'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
+import {
+  EXTERNAL_SCORE_TYPES,
+  getExternalScoreFormattedByType,
+} from '../common/utils'
 
 const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
 
@@ -56,6 +60,7 @@ export const staticDropDownData = {
     { key: 'student' },
     { key: 'performanceBandProfileId' },
     { key: 'testTypes' },
+    { key: 'externalScoreType' },
   ],
   initialFilters: {
     reportId: '',
@@ -66,6 +71,7 @@ export const staticDropDownData = {
     subjects: '',
     classIds: '',
     performanceBandProfileId: '',
+    externalScoreType: EXTERNAL_SCORE_TYPES.SCALED_SCORE,
     showApply: false,
   },
   subjects: [
@@ -215,17 +221,21 @@ export const mergeTestMetrics = (
         getClaimInfo(value, name, metric, allExternalBands)
       return {
         title: metric.testTitle,
+        testName: metric.testName,
+        shortTestName: metric.shortTestName,
         assignmentDate: +new Date(metric.testDate),
         testType: 'External Assessment',
         externalTestType: metric.testCategory,
         groupId: '',
         testActivityId: '',
-        testId: `${metric.testCategory}:${metric.testTitle}`,
+        testId: metric.testName,
         reportKey: '',
         assignmentId: '',
         studentId: metric.studentId,
         maxScore: undefined,
         score: +metric.score,
+        lexileScore: metric.lexileScore ? +metric.lexileScore : NaN,
+        quantileScore: metric.quantileScore ? +metric.quantileScore : NaN,
         grade: metric.grade,
         achievementLevel: +metric.achievementLevel,
         claimsInfo: mapValues(
@@ -248,8 +258,14 @@ export const mergeTestMetrics = (
 
 export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testCategory}:${metric.testTitle}`,
-    districtAvg: +metric.districtAvg,
+    testId: metric.testName,
+    districtAvgScore: +metric.districtAvgScore,
+    districtAvgLexileScore: metric.districtAvgLexileScore
+      ? +metric.districtAvgLexileScore
+      : NaN,
+    districtAvgQuantileScore: metric.districtAvgQuantileScore
+      ? +metric.districtAvgQuantileScore
+      : NaN,
     districtAvgPerf: undefined,
     grade: metric.grade,
   }))
@@ -258,9 +274,15 @@ export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
 
 export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testCategory}:${metric.testTitle}`,
+    testId: metric.testName,
     schoolCode: metric.schoolCode,
-    schoolAvg: +metric.schoolAvg,
+    schoolAvgScore: +metric.schoolAvgScore,
+    schoolAvgLexileScore: metric.schoolAvgLexileScore
+      ? +metric.schoolAvgLexileScore
+      : NaN,
+    schoolAvgQuantileScore: metric.schoolAvgQuantileScore
+      ? +metric.schoolAvgQuantileScore
+      : NaN,
     schoolAvgPerf: undefined,
     grade: metric.grade,
   }))
@@ -282,6 +304,7 @@ export const getChartData = ({
   studentClassData = [],
   selectedPerformanceBand = [],
   testTypes: assessmentTypes = [],
+  externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE,
 }) => {
   if (!assignmentMetrics.length) {
     return []
@@ -305,18 +328,22 @@ export const getChartData = ({
   const parsedData = map(groupedTestsByType, (assignments) => {
     const assignment = assignments[0] || {}
     const {
-      title: testName,
+      title,
       testType,
       externalTestType,
+      shortTestName,
       studentId,
     } = assignment
+    const _testName = externalTestType ? shortTestName : title
     const totalMaxScore = sumBy(assignments, 'maxScore') || 0
     const totalScore = sumBy(assignments, 'score') || 0
+    const totalLexileScore = sumBy(assignments, 'lexileScore')
+    const totalQuantileScore = sumBy(assignments, 'quantileScore')
     const { standardSet, subject } =
       studentClassData.find((s) => s.studentId === studentId) || {}
     const assessmentData = {
       ...assignment,
-      testName,
+      testName: _testName,
       totalScore,
       totalMaxScore,
       standardSet,
@@ -331,6 +358,26 @@ export const getChartData = ({
         averageScore,
         band,
       })
+    } else if (
+      externalScoreType == EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+      !isNaN(totalLexileScore)
+    ) {
+      const externalScore = getExternalScoreFormattedByType(
+        totalLexileScore,
+        externalScoreType,
+        true
+      )
+      Object.assign(assessmentData, { totalScore: externalScore })
+    } else if (
+      externalScoreType == EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+      !isNaN(totalQuantileScore)
+    ) {
+      const externalScore = getExternalScoreFormattedByType(
+        totalQuantileScore,
+        externalScoreType,
+        true
+      )
+      Object.assign(assessmentData, { totalScore: externalScore })
     }
     return assessmentData
   }).sort((a, b) => Number(a.assignmentDate) - Number(b.assignmentDate))
@@ -342,6 +389,7 @@ export const getTableData = ({
   schoolMetrics = [],
   groupMetrics = [],
   chartData = [],
+  externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE,
 }) => {
   if (!chartData.length) {
     return []
@@ -355,27 +403,75 @@ export const getTableData = ({
       schoolCode,
       grade,
     } = assessment
-    const testDistrictAvg = round(
-      externalTestType
-        ? get(find(districtMetrics, { testId, grade }), 'districtAvg', 0)
-        : get(find(districtMetrics, { testId }), 'districtAvgPerf', 0)
+    let testDistrictAvg = round(
+      (externalTestType
+        ? find(districtMetrics, { testId, grade })?.districtAvgScore
+        : find(districtMetrics, { testId })?.districtAvgPerf) || 0
     )
+    const testDistrictAvgLexile = find(districtMetrics, { testId, grade })
+      ?.districtAvgLexileScore
+    const testDistrictAvgQuantile = find(districtMetrics, { testId, grade })
+      ?.districtAvgQuantileScore
+    if (
+      externalTestType &&
+      externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+      !isNaN(testDistrictAvgLexile)
+    ) {
+      testDistrictAvg = getExternalScoreFormattedByType(
+        testDistrictAvgLexile,
+        externalScoreType,
+        true
+      )
+    } else if (
+      externalTestType &&
+      externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+      !isNaN(testDistrictAvgQuantile)
+    ) {
+      testDistrictAvg = getExternalScoreFormattedByType(
+        testDistrictAvgQuantile,
+        externalScoreType,
+        true
+      )
+    }
     const testGroupAvg = externalTestType
       ? '-'
-      : round(get(find(groupMetrics, { testId }), 'groupAvgPerf', 0))
-    const testSchoolAvg = round(
-      externalTestType
-        ? get(
-            find(schoolMetrics, { testId, schoolCode, grade }),
-            'schoolAvg',
-            0
-          )
-        : get(find(schoolMetrics, { testId }), 'schoolAvgPerf', 0)
+      : round(find(groupMetrics, { testId })?.groupAvgPerf || 0)
+    let testSchoolAvg = round(
+      (externalTestType
+        ? find(schoolMetrics, { testId, schoolCode, grade })?.schoolAvgScore
+        : find(schoolMetrics, { testId })?.schoolAvgPerf) || 0
     )
-    const rawScore = `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(
-      assessment.totalMaxScore,
-      2
-    )}`
+    const testSchoolAvgLexile = find(schoolMetrics, { testId, grade })
+      ?.schoolAvgLexileScore
+    const testSchoolAvgQuantile = find(schoolMetrics, { testId, grade })
+      ?.schoolAvgQuantileScore
+    if (
+      externalTestType &&
+      externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+      !isNaN(testSchoolAvgLexile)
+    ) {
+      testSchoolAvg = getExternalScoreFormattedByType(
+        testSchoolAvgLexile,
+        externalScoreType,
+        true
+      )
+    } else if (
+      externalTestType &&
+      externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+      !isNaN(testSchoolAvgQuantile)
+    ) {
+      testSchoolAvg = getExternalScoreFormattedByType(
+        testSchoolAvgQuantile,
+        externalScoreType,
+        true
+      )
+    }
+    const rawScore = !externalTestType
+      ? `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(
+          assessment.totalMaxScore,
+          2
+        )}`
+      : assessment.totalScore
     const assignmentDateFormatted = formatDate(assignmentDate)
     return {
       totalQuestions: 0,
@@ -475,9 +571,9 @@ export const getAssessmentChartData = (
           ? {
               ...d,
               ...barsCellDataForExternal,
-              [barData.insideLabelKey]: new Intl.NumberFormat().format(
-                d.totalScore
-              ),
+              [barData.insideLabelKey]: Number.isInteger(d.totalScore)
+                ? new Intl.NumberFormat().format(d.totalScore)
+                : d.totalScore,
               fillOpacity: 0.2,
               additionalData: {
                 [barData.key]: {
@@ -501,7 +597,7 @@ export const getAssessmentChartData = (
     .filter((d) => d)
 
 export const getStudentRiskData = (rawData) => {
-  const riskData = get(rawData, 'data.result', {})
+  const riskData = rawData?.data?.result || {}
 
   if (isEmpty(riskData)) return {}
 

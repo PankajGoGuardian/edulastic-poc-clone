@@ -36,7 +36,7 @@ const VideoQuickGuide = () => {
           type="secondary"
         >
           <StyledIconPlayButton height={10} width={10} />
-          Get started
+          How it works?
         </StyledEduButton>
       </StyledHeading>
       <CustomModalStyled
@@ -139,6 +139,7 @@ const StyledThumbnailImage = styled(Image)`
 `
 
 const StyledEduButton = styled(EduButton)`
+  font-weight: bold;
   top: -2px;
   display: inline;
   color: ${themeColor};

@@ -202,8 +202,7 @@ export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
         ? testSelectedSubjects[0]
         : isArray(interestedSubjects) && !isEmpty(interestedSubjects)
         ? interestedSubjects[0]
-        : isArray(previousInterests.subject) &&
-          !isEmpty(previousInterests.subject)
+        : isArray(previousInterests.subject)
         ? previousInterests.subject[0]
         : previousInterests.subject || ''
 

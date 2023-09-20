@@ -59,22 +59,18 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
-  interestedGrades,
+
   updateDefaultCurriculum,
-  defaultCurriculumId,
-  defaultCurriculumName,
+
   updateDefaultGrades,
   updateDefaultSubject,
-  interestedCurriculums,
+
   recentStandardsList = [],
   isDocBased = false,
   authorQuestionStatus = false,
   showIconBrowserBtn = false,
   hideLabel = false,
   standardsRequiredFields = [],
-  testSelectedSubjects = [],
-  testSelectedGrades = [],
-  considerCustomAlignmentDataSettingPriority = false,
   defaultInterests,
 }) => {
   const {
@@ -241,64 +237,20 @@ const AlignmentRow = ({
         (item) => item._id === parseInt(_defaultCurriculumId, 10)
       )?.curriculum || ''
 
-    /**
-     * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
-     */
-
-    if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
-      const testSubject = testSelectedSubjects?.length
-        ? testSelectedSubjects[0]
-        : ''
-      const testGrades = testSelectedGrades?.length ? testSelectedGrades : null
-
-      editAlignment(alignmentIndex, {
-        subject: testSubject || _defaultSubject || '',
-        grades:
-          testGrades ||
-          _defaultGrades ||
-          (defaultInterests.grades?.length ? defaultInterests.grades : []) ||
-          [],
-        curriculum: _defaultCurriculum,
-        curriculumId: parseInt(_defaultCurriculumId, 10) || '',
-      })
-
-      return
-    }
-
     if (!alCurriculumId) {
-      if (
-        defaultInterests.subject ||
-        defaultInterests.grades?.length ||
-        _defaultCurriculumId
-      ) {
+      if (_defaultGrades?.length || _defaultSubject || _defaultCurriculumId) {
         editAlignment(alignmentIndex, {
           subject: _defaultSubject,
+          grades: _defaultGrades,
           curriculum: _defaultCurriculum,
           curriculumId: parseInt(_defaultCurriculumId, 10) || '',
-          grades: defaultInterests.grades?.length
-            ? defaultInterests.grades
-            : [],
-        })
-      } else if (_defaultSubject && defaultCurriculumId) {
-        editAlignment(alignmentIndex, {
-          subject: _defaultSubject,
-          curriculum: defaultCurriculumName,
-          curriculumId: defaultCurriculumId,
-          grades: _defaultGrades || interestedGrades || [],
-        })
-      } else if (interestedCurriculums && interestedCurriculums.length > 0) {
-        editAlignment(alignmentIndex, {
-          subject: interestedCurriculums[0].subject,
-          curriculum: interestedCurriculums[0].name,
-          curriculumId: interestedCurriculums[0]._id,
-          grades: _defaultGrades || interestedGrades || [],
         })
       } else {
         editAlignment(alignmentIndex, {
-          subject: 'Mathematics',
-          curriculumId: 212,
-          curriculum: 'Math - Common Core',
-          grades: ['7'],
+          subject: '',
+          curriculumId: '',
+          curriculum: '',
+          grades: [],
           standards: [],
         })
       }
@@ -544,16 +496,10 @@ AlignmentRow.propTypes = {
   alignment: PropTypes.object.isRequired,
   editAlignment: PropTypes.func.isRequired,
   standardsRequiredFields: PropTypes.array,
-  testSelectedSubjects: PropTypes.array,
-  testSelectedGrades: PropTypes.array,
-  considerCustomAlignmentDataSettingPriority: PropTypes.bool,
 }
 
 AlignmentRow.defaultProps = {
   standardsRequiredFields: [],
-  testSelectedSubjects: [],
-  testSelectedGrades: [],
-  considerCustomAlignmentDataSettingPriority: false,
 }
 
 export default connect(

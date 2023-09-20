@@ -1,4 +1,4 @@
-import { get as _get, pick, groupBy, isEmpty } from 'lodash'
+import { get as _get, pick, groupBy, isEmpty, isArray } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -24,9 +24,19 @@ export const getDefaultGradesSelector = createSelector(
   (state) => state.user.orgData.selectedGrades
 )
 
+export const getUserDefaultGradesSelector = createSelector(
+  stateSelector,
+  (state) => state.user.orgData.defaultGrades
+)
+
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
   (state) => state.user.orgData.selectedSubject || ''
+)
+
+export const getUserDefaultSubjectSelector = createSelector(
+  stateSelector,
+  (state) => state.user.orgData.defaultSubjects
 )
 
 export const getUserNameSelector = createSelector(stateSelector, (state) =>
@@ -160,6 +170,61 @@ export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
       grades: !isEmpty(previousInterests.grades)
         ? previousInterests.grades
         : interestedGrades || [],
+      curriculum: {
+        id: parseInt(curriculum?._id, 10) || '',
+        curriculum: curriculum?.curriculum || curriculum?.name || '',
+      },
+    }
+  }
+)
+
+export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
+  getDefaultInterests,
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector,
+  getInterestedCurriculumsSelector,
+  (s) => getCurriculumsListSelector(s),
+  (s) => s.tests.entity,
+  (
+    previousInterests,
+    interestedSubjects,
+    interestedGrades,
+    interestedCurriculums,
+    curriculums,
+    entity
+  ) => {
+    const {
+      subjects: testSelectedSubjects,
+      grades: testSelectedGrades,
+    } = entity
+    const subject =
+      isArray(testSelectedSubjects) && !isEmpty(testSelectedSubjects)
+        ? testSelectedSubjects[0]
+        : isArray(interestedSubjects) && !isEmpty(interestedSubjects)
+        ? interestedSubjects[0]
+        : isArray(previousInterests.subject)
+        ? previousInterests.subject[0]
+        : previousInterests.subject || ''
+
+    const grades = !isEmpty(testSelectedGrades)
+      ? testSelectedGrades
+      : !isEmpty(interestedGrades)
+      ? interestedGrades
+      : !isEmpty(previousInterests.grades)
+      ? previousInterests.grades
+      : []
+
+    const curriculum =
+      interestedCurriculums.find((cur) => cur.subject === subject) ||
+      curriculums?.find(
+        (curr) =>
+          curr._id === previousInterests.curriculumId &&
+          curr.subject === subject
+      )
+
+    return {
+      subject,
+      grades,
       curriculum: {
         id: parseInt(curriculum?._id, 10) || '',
         curriculum: curriculum?.curriculum || curriculum?.name || '',

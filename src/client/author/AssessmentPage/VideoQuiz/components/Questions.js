@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { sortBy, maxBy, uniqBy } from 'lodash'
+import { sortBy, maxBy, uniqBy, isEmpty } from 'lodash'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
@@ -46,7 +46,7 @@ import {
 } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
-import { extractVideoId } from '../utils/videoPreviewHelpers'
+import { extractVideoId, getCurrentTime } from '../utils/videoPreviewHelpers'
 
 const SortableQuestionItem = SortableElement(
   ({
@@ -253,7 +253,7 @@ class Questions extends React.Component {
     aiQuestion,
     isFromAddBulk
   ) => () => {
-    const { addQuestion, list } = this.props
+    const { addQuestion, list, videoRef } = this.props
     const questions = list.filter((q) => q.type !== 'sectionLabel')
 
     const lastQuestion = maxBy(questions, 'qIndex')
@@ -264,8 +264,12 @@ class Questions extends React.Component {
         ? lastQuestion.qIndex + 1
         : questions.length + 1)
 
+    const questionDisplayTimestamp =
+      !isFromAddBulk && isEmpty(aiQuestion) ? getCurrentTime(videoRef) : null
+
     const question = createQuestion({
       type,
+      questionDisplayTimestamp,
       questionIndex,
       docBasedCommonData,
       aiQuestion,

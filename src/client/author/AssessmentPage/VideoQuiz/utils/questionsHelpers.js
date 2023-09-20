@@ -25,6 +25,7 @@ const { methods } = math
 
 export const createQuestion = ({
   type,
+  questionDisplayTimestamp,
   questionIndex,
   docBasedCommonData = {},
   aiQuestion,
@@ -48,7 +49,7 @@ export const createQuestion = ({
     stimulus: '',
     smallSize: true,
     alignment: [],
-    questionDisplayTimestamp: null,
+    questionDisplayTimestamp,
     ...docBasedCommonData,
     ...(type === CLOZE_DROP_DOWN ? clozeDropDownData : {}),
     ...(type === TRUE_OR_FALSE ? trueOrFalseData : {}),

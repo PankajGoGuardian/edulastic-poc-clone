@@ -279,14 +279,18 @@ const getExternalTestInfoByTestId = (testInfo, testId) => {
   return { name, testCategory, testTitle, isExternal: true }
 }
 
-export const transformTestInfo = (testInfo, reportFilters) => {
+export const transformTestInfo = (
+  testInfoFromSummaryData,
+  externalTests,
+  reportFilters
+) => {
   const { preTestId, postTestId } = reportFilters
   const preTestInfo = preTestId.includes(EXTERNAL_TEST_NAME_SEPARATOR)
-    ? getExternalTestInfoByTestId(testInfo, preTestId)
-    : getInternalTestInfoByTestId(testInfo, preTestId)
+    ? getExternalTestInfoByTestId(externalTests, preTestId)
+    : getInternalTestInfoByTestId(testInfoFromSummaryData, preTestId)
   const postTestInfo = postTestId.includes(EXTERNAL_TEST_NAME_SEPARATOR)
-    ? getExternalTestInfoByTestId(testInfo, postTestId)
-    : getInternalTestInfoByTestId(testInfo, postTestId)
+    ? getExternalTestInfoByTestId(externalTests, postTestId)
+    : getInternalTestInfoByTestId(testInfoFromSummaryData, postTestId)
   return { preTestInfo, postTestInfo }
 }
 

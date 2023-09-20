@@ -23,12 +23,11 @@ const useSummaryMetrics = ({
     const { preStudentCount, postStudentCount } = common
     const testInfoFromSummaryData = get(reportSummaryData, 'testInfo', [])
 
-    // For external tests, testInfo is not passed with summary data, we use externalTest available in filters to get testInfo
-    const rawTestInfo = isEmpty(testInfoFromSummaryData)
-      ? externalTests
-      : testInfoFromSummaryData
-
-    const testInfo = transformTestInfo(rawTestInfo, reportFilters)
+    const testInfo = transformTestInfo(
+      testInfoFromSummaryData,
+      externalTests,
+      reportFilters
+    )
     const { preTestInfo, postTestInfo } = testInfo
 
     let preBandInfo = selectedPrePerformanceBand

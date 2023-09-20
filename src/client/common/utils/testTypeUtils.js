@@ -21,6 +21,14 @@ export const includeCommonOnTestType = (availableTestTypes, testType) => {
   return availableTestTypes
 }
 
+export const filterTestTypeLabelsForUserRole = (role, availableTestTypes) => {
+  if (role === roleuser.SCHOOL_ADMIN) {
+    const [commonAssessment] = TEST_TYPES.COMMON
+    return omit(availableTestTypes, commonAssessment)
+  }
+  return availableTestTypes
+}
+
 export const getAvailableTestTypesForUser = (userDetails = {}) => {
   const { isPremium, role } = userDetails
   const availableTestTypes = isPremium
@@ -29,7 +37,7 @@ export const getAvailableTestTypesForUser = (userDetails = {}) => {
   if (role) {
     const isAdmin = roleuser.DA_SA_ROLE_ARRAY.includes(role)
     return isAdmin
-      ? availableTestTypes
+      ? filterTestTypeLabelsForUserRole(role, availableTestTypes)
       : omit(availableTestTypes, TEST_TYPES.COMMON)
   }
   return availableTestTypes

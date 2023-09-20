@@ -1914,7 +1914,7 @@ const setTime = (userRole) => {
 
 const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const testType = entity?.testType
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
+  const { PRACTICE, COMMON } = testTypesConstants.TEST_TYPES
   const {
     ASSESSMENT,
     COMMON_ASSESSMENT,
@@ -1979,6 +1979,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
 
   if (isAdmin) {
     settings.testType = PRACTICE.includes(testType)
+      ? testType
+      : COMMON.includes(testType)
       ? testType
       : COMMON_ASSESSMENT
     settings.openPolicy =

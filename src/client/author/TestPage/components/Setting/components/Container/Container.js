@@ -558,6 +558,7 @@ class Setting extends Component {
       .map((o) => o.items)
       .flat()
       .filter((o) => o.multipartItem).length
+    const [commonAssessment, schoolCommonAssessment] = COMMON
     if (
       newSettings.applyEBSR &&
       (![
@@ -570,6 +571,13 @@ class Setting extends Component {
     }
     if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
       delete newSettings.testContentVisibility
+    }
+    // Below if block is to sanitize any legacy settings template for School Admins
+    if (
+      userRole === roleuser.SCHOOL_ADMIN &&
+      newSettings.testType === commonAssessment
+    ) {
+      newSettings.testType = schoolCommonAssessment
     }
     if (
       newSettings.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT

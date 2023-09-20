@@ -157,7 +157,7 @@ class Assignments extends Component {
       !Object.prototype.hasOwnProperty.call(storedFilters, 'testType')
     ) {
       filters.testType =
-        testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
+        testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
     }
     if (defaultTermId && !storedFilters.termId) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId)

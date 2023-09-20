@@ -314,7 +314,7 @@ function* createAssessmentSaga({ payload }) {
         ...(isAdmin
           ? {
               testType:
-                testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+                testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
             }
           : {}),
       }

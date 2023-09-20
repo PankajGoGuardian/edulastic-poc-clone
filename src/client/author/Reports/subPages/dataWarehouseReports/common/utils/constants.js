@@ -121,7 +121,9 @@ export const compareByOptions = [
 export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
   (acc, curr, currIndex) => {
     if (curr === TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT) acc[curr] = 0
-    else if (curr === TEST_TYPES_VALUES_MAP.ASSESSMENT) acc[curr] = 1
+    else if (curr === TEST_TYPES_VALUES_MAP.SCHOOL_COMMON_ASSESSMENT)
+      acc[curr] = 1
+    else if (curr === TEST_TYPES_VALUES_MAP.ASSESSMENT) acc[curr] = 2
     else acc[curr] = currIndex
     return acc
   },

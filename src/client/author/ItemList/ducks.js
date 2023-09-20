@@ -275,7 +275,7 @@ export function* createTestFromCart({ payload: { testName } }) {
     userRole === roleuser.DISTRICT_ADMIN ||
     userRole === roleuser.SCHOOL_ADMIN
   ) {
-    test.testType = testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
+    test.testType = testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
     test.freezeSettings = !isOrganizationDA
   }
   const updatedTest = {

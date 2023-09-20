@@ -188,7 +188,7 @@ const DataWarehouseUploadModal = ({
         <EduIf condition={!isEmpty(category)}>
           <>
             <FeedNameInput
-              isInvalidFeedname={isInvalidFeedName}
+              isInvalidFeedName={isInvalidFeedName}
               category={category}
               feedName={feedName}
               dataFomatDropdownOptions={dataFomatDropdownOptions}

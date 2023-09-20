@@ -178,6 +178,52 @@ export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
   }
 )
 
+export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
+  getDefaultInterests,
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector,
+  getInterestedCurriculumsSelector,
+  (s) => getCurriculumsListSelector(s),
+  (
+    previousInterests,
+    interestedSubjects,
+    interestedGrades,
+    interestedCurriculums,
+    curriculums
+  ) => {
+    let subject = interestedSubjects[0]
+    if (!subject) {
+      subject =
+        typeof previousInterests.subject === 'string'
+          ? previousInterests.subject
+          : previousInterests?.subject?.[0]
+    }
+
+    const grades = !isEmpty(interestedGrades)
+      ? interestedGrades
+      : !isEmpty(previousInterests.grades)
+      ? previousInterests.grades
+      : []
+
+    const curriculum =
+      interestedCurriculums.find((cur) => cur.subject === subject) ||
+      curriculums?.find(
+        (curr) =>
+          curr._id === previousInterests.curriculumId &&
+          curr.subject === subject
+      )
+
+    return {
+      subject,
+      grades,
+      curriculum: {
+        id: parseInt(curriculum?._id, 10) || '',
+        curriculum: curriculum?.curriculum || curriculum?.name || '',
+      },
+    }
+  }
+)
+
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district

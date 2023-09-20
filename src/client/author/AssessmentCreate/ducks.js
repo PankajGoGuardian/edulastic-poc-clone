@@ -322,6 +322,10 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
+
+        if (payload.thumbnail) {
+          newAssessment.thumbnail = payload.thumbnail
+        }
       } else {
         newAssessment.testCategory = testCategoryTypes.DOC_BASED
         newAssessment.docUrl = fileURI

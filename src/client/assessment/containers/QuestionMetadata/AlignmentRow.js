@@ -59,7 +59,6 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
-
   interestedGrades,
   updateDefaultCurriculum,
   defaultCurriculumId,
@@ -566,9 +565,7 @@ export default connect(
       state,
       props.alignment
     ),
-
     interestedGrades: getInterestedGradesSelector(state),
-
     userDefaultSubject: getUserDefaultSubjectSelector(state),
     userDefaultGrades: getUserDefaultGradesSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state),

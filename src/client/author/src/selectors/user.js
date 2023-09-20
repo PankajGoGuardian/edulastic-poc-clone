@@ -1,4 +1,4 @@
-import { get as _get, pick, groupBy, isEmpty } from 'lodash'
+import { get as _get, pick, groupBy, isEmpty, isArray } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -184,22 +184,33 @@ export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
   getInterestedGradesSelector,
   getInterestedCurriculumsSelector,
   (s) => getCurriculumsListSelector(s),
+  (s) => s.tests.entity,
   (
     previousInterests,
     interestedSubjects,
     interestedGrades,
     interestedCurriculums,
-    curriculums
+    curriculums,
+    entity
   ) => {
-    let subject = interestedSubjects[0]
-    if (!subject) {
-      subject =
-        typeof previousInterests.subject === 'string'
-          ? previousInterests.subject
-          : previousInterests?.subject?.[0]
-    }
+    const {
+      subjects: testSelectedSubjects,
+      grades: testSelectedGrades,
+    } = entity
+    console.log({ entity })
+    const subject =
+      isArray(testSelectedSubjects) && !isEmpty(testSelectedSubjects)
+        ? testSelectedSubjects[0]
+        : isArray(interestedSubjects) && !isEmpty(interestedSubjects)
+        ? interestedSubjects[0]
+        : isArray(previousInterests.subject) &&
+          !isEmpty(previousInterests.subject)
+        ? previousInterests.subject[0]
+        : previousInterests.subject || ''
 
-    const grades = !isEmpty(interestedGrades)
+    const grades = !isEmpty(testSelectedGrades)
+      ? testSelectedGrades
+      : !isEmpty(interestedGrades)
       ? interestedGrades
       : !isEmpty(previousInterests.grades)
       ? previousInterests.grades

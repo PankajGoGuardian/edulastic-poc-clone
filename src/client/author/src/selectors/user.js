@@ -197,7 +197,6 @@ export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
       subjects: testSelectedSubjects,
       grades: testSelectedGrades,
     } = entity
-    console.log({ entity })
     const subject =
       isArray(testSelectedSubjects) && !isEmpty(testSelectedSubjects)
         ? testSelectedSubjects[0]

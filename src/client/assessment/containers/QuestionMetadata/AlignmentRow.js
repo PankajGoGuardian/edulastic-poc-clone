@@ -241,7 +241,6 @@ const AlignmentRow = ({
         (item) => item._id === parseInt(_defaultCurriculumId, 10)
       )?.curriculum || ''
 
-    console.log({ defaultInterests })
     /**
      * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
      */

@@ -443,6 +443,10 @@
     "message": "select one question at a time",
     "description": ""
   },
+  "selectItemsToMove": {
+    "message": "Select questions to add to a new section",
+    "description": ""
+  },
   "selectedItemRemovedSuccessfully": {
     "message": "Selected item(s) removed successfully",
     "description": ""

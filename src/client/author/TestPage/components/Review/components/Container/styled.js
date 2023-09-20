@@ -110,3 +110,9 @@ export const SecondHeaderWrapper = styled(Row)`
   top: -30px;
   z-index: 1000;
 `
+
+export const SectionControlWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+`

@@ -6,6 +6,8 @@ import { SortableContainer } from 'react-sortable-hoc'
 import { SortableGroupItem, SortableSingleItem } from './SortableItem'
 import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageConfirmationModal'
+import { REMAINING_SECTION_NAME } from '../../../../ducks'
+import SectionControls from './SectionControls'
 
 const { Panel } = Collapse
 
@@ -38,6 +40,31 @@ const rightContent = (group, hasSections = false) => {
   )
 }
 
+const RemainingItems = ({
+  remainingSection,
+  renderItem,
+  handleAddSections,
+}) => (
+  <div style={{ marginTop: '15px' }}>
+    <p
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '10px',
+      }}
+    >
+      <b>Remaining Questions({remainingSection?.items?.length})</b>
+      <SectionControls handleAddSections={handleAddSections} />
+    </p>
+
+    <div>
+      {remainingSection?.items?.map((item, index) =>
+        renderItem({ ...item, indx: index + 9 }, index, remainingSection._id)
+      )}
+    </div>
+  </div>
+)
+
 export default SortableContainer(
   ({
     items,
@@ -51,6 +78,7 @@ export default SortableContainer(
     removeSingle,
     removeMultiple,
     hasSections,
+    handleAddSections,
     ...rest
   }) => {
     const [removalObj, setRemovalPassageItems] = useState()
@@ -130,24 +158,39 @@ export default SortableContainer(
           />
         )}
         {showGroupsPanel ? (
-          <GroupCollapse
-            defaultActiveKey={groupIndexWithoutRestrictedContent}
-            expandIconPosition="right"
-          >
-            {itemGroups.map((group, count) => (
-              <Panel
-                header={<span dataCy={group.groupName}>{group.groupName}</span>}
-                key={count}
-                extra={rightContent(group, hasSections)}
-              >
-                {items.map(
-                  (item, index) =>
-                    item.groupId == group._id &&
-                    renderItem(item, index, group._id)
-                )}
-              </Panel>
-            ))}
-          </GroupCollapse>
+          <>
+            <GroupCollapse
+              defaultActiveKey={groupIndexWithoutRestrictedContent}
+              expandIconPosition="right"
+            >
+              {itemGroups
+                .filter(
+                  (section) => section.groupName !== REMAINING_SECTION_NAME
+                )
+                .map((group, count) => (
+                  <Panel
+                    header={
+                      <span dataCy={group.groupName}>{group.groupName}</span>
+                    }
+                    key={count}
+                    extra={rightContent(group, hasSections)}
+                  >
+                    {items.map(
+                      (item, index) =>
+                        item.groupId == group._id &&
+                        renderItem(item, index, group._id)
+                    )}
+                  </Panel>
+                ))}
+            </GroupCollapse>
+            <RemainingItems
+              remainingSection={itemGroups.find(
+                (section) => section.groupName === REMAINING_SECTION_NAME
+              )}
+              renderItem={renderItem}
+              handleAddSections={handleAddSections}
+            />
+          </>
         ) : (
           items.map((item, index) => renderItem(item, index))
         )}

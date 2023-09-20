@@ -1,12 +1,5 @@
 import { themeColor, white } from '@edulastic/colors'
-import {
-  CheckboxLabel,
-  EduButton,
-  EduElse,
-  EduIf,
-  EduThen,
-  notification,
-} from '@edulastic/common'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { test as testContatns } from '@edulastic/constants'
 import {
   IconClose,
@@ -15,29 +8,17 @@ import {
   IconExpand,
   IconEye,
   IconMoveTo,
-  IconPlusCircle,
-  IconMinusRounded,
 } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import {
-  createNewStaticGroup,
-  sectionsEnabledDistrictSelector,
-} from '../../../../ducks'
+import { createNewStaticGroup } from '../../../../ducks'
 import Prompt from '../Prompt/Prompt'
 import RemoveSectionsModal from './RemoveSectionsModal'
 import { Container, Item, MobileButtomContainer } from './styled'
 import { hasUnsavedAiItems } from '../../../../../../assessment/utils/helpers'
-import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 
 const { ITEM_GROUP_TYPES, sectionTestActions } = testContatns
-
-const BetaTag = () => {
-  return <span style={{ color: '#F2717F' }}>(Beta)</span>
-}
 
 const HeaderBar = ({
   onSelectAll,
@@ -55,15 +36,9 @@ const HeaderBar = ({
   onShowTestPreview,
   itemGroups,
   setData,
-  handleNavChange,
   handleSave,
   setSectionsState,
   testId,
-  setCurrentGroupDetails,
-  hasSections,
-  isDefaultTest,
-  isPremiumUser,
-  isSectionsEnabledDistrict,
 }) => {
   const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
   const [showPrompt, setShowPrompt] = useState(false)
@@ -92,13 +67,6 @@ const HeaderBar = ({
     As a result, the Add Items tab will be replaced by Add Sections. Also in order to navigate 
     to the Add Sections, we are using the handleNavChange method.
   */
-  const handleAddSections = () => {
-    setData({ hasSections: true })
-    handleNavChange()
-    setSectionsState(true)
-    if (testId) handleSave(sectionTestActions.ADD)
-    setCurrentGroupDetails()
-  }
 
   /*
     This method is called when the user clicks on the Okay button in the Remove modal. As a result, 
@@ -155,7 +123,6 @@ const HeaderBar = ({
       setShowPrompt(false)
     }
   }
-
   return (
     <Container windowWidth={windowWidth}>
       {showRemoveModal && (
@@ -181,55 +148,6 @@ const HeaderBar = ({
         <span />
       )}
       <MobileButtomContainer style={{ display: 'flex' }}>
-        {/* 
-          The Add new sections and Remove New Section buttons are displayed for default test. 
-            Add new sections --> displayed if default test does not have section. 
-            Remove new sections --> displayed if default test has sections. 
-        */}
-        {owner &&
-          isEditable &&
-          isDefaultTest &&
-          isPremiumUser &&
-          isSectionsEnabledDistrict && (
-            <EduIf condition={!hasSections}>
-              <EduThen>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="addNewSections"
-                  disabled={disableRMbtns}
-                  onClick={!disableRMbtns ? handleAddSections : () => null}
-                  color="primary"
-                >
-                  <IconPlusCircle color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && (
-                    <span style={{ margin: '0 2px' }}>Add New Sections</span>
-                  )}
-                  <BetaTag />
-                </EduButton>
-              </EduThen>
-              <EduElse>
-                <EduButton
-                  height="20px"
-                  fontSize="9px"
-                  isGhost
-                  data-cy="removeAllSections"
-                  disabled={disableRMbtns}
-                  onClick={
-                    !disableRMbtns ? () => setShowRemoveModal(true) : () => null
-                  }
-                  color="primary"
-                >
-                  <IconMinusRounded color={themeColor} width={9} height={9} />
-                  {windowWidth > 767 && (
-                    <span style={{ margin: '0 2px' }}>Remove All Sections</span>
-                  )}
-                  <BetaTag />
-                </EduButton>
-              </EduElse>
-            </EduIf>
-          )}
         <EduButton
           height="20px"
           data-cy="viewAsStudent"
@@ -345,11 +263,4 @@ HeaderBar.propTypes = {
   toggleSummary: PropTypes.func.isRequired,
 }
 
-const enhance = compose(
-  connect((state) => ({
-    isPremiumUser: isPremiumUserSelector(state),
-    isSectionsEnabledDistrict: sectionsEnabledDistrictSelector(state),
-  }))
-)
-
-export default enhance(HeaderBar)
+export default HeaderBar

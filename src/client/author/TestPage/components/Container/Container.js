@@ -1244,7 +1244,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = (action) => {
+  handleSave = (action, newItemGroups) => {
     const {
       test = {},
       updateTest,
@@ -1292,6 +1292,7 @@ class Container extends PureComponent {
     switch (action) {
       case sectionTestActions.ADD:
         newTest.hasSections = true
+        newTest.itemGroups = newItemGroups
         break
       case sectionTestActions.REMOVE:
         newTest.hasSections = false

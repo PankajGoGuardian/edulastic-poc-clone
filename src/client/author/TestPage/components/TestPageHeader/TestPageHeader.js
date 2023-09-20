@@ -58,7 +58,6 @@ import {
   getQuestionTypesInTestSelector,
   getIsAudioResponseQuestionEnabled,
   isDynamicTestSelector,
-  hasSectionsSelector,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -262,7 +261,6 @@ const TestPageHeader = ({
   enableAudioResponseQuestion,
   derivedFromPremiumBankId = false,
   isDynamicTest,
-  hasSections,
 }) => {
   let navButtons =
     buttons ||
@@ -270,8 +268,8 @@ const TestPageHeader = ({
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
-      : // In order to display the Add Sections tab instead of Add Items for dynamic or a test with sections
-      isDynamicTest || hasSections
+      : // In order to display the Add Sections tab instead of Add Items for dynamic test
+      isDynamicTest
       ? [...navButtonsDynamicAndSectionsTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
@@ -1035,7 +1033,6 @@ const enhance = compose(
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
       isDynamicTest: isDynamicTestSelector(state),
-      hasSections: hasSectionsSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,

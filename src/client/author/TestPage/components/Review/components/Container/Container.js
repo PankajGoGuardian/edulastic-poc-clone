@@ -12,6 +12,8 @@ import {
   flatten,
   isArray,
   groupBy,
+  last,
+  maxBy,
 } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -25,6 +27,7 @@ import {
   MainContentWrapper,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { sectionTestActions } from '@edulastic/constants/const/test'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
@@ -45,6 +48,8 @@ import {
   hasSectionsSelector,
   isDefaultTestSelector,
   getItemGroupsSelector,
+  REMAINING_SECTION_NAME,
+  createNewStaticGroup,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -59,6 +64,7 @@ import {
   ReviewLeftContainer,
   TestTitle,
   SecondHeaderWrapper,
+  SectionControlWrapper,
 } from './styled'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
 import { getCreateItemModalVisibleSelector } from '../../../../../src/selectors/testItem'
@@ -75,6 +81,7 @@ import { groupTestItemsByPassageId } from '../helper'
 import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 import { STATUS } from '../../../../../AssessmentCreate/components/CreateAITest/ducks/constants'
+import SectionControls from '../ReviewItems/SectionControls'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -532,6 +539,51 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
+  handleAddSections = () => {
+    const {
+      test,
+      setSectionsState,
+      handleSave,
+      setCurrentGroupDetails,
+    } = this.props
+    const { itemGroups } = test
+    const selectedItems = itemGroups
+      ?.flatMap((itemGroup) => itemGroup?.items || [])
+      .reduce((acc, element) => {
+        if (element.selected) {
+          acc.push(element._id)
+        }
+        return acc
+      }, [])
+    if (!selectedItems.length) {
+      return notification({ type: 'info', messageKey: 'selectItemsToMove' })
+    }
+    const itemGroupsCloned = cloneDeep(itemGroups)
+    const selectedItemsById = keyBy(selectedItems)
+    const remainingItems = last(itemGroups).items.filter(
+      (item) => !selectedItemsById[item._id]
+    )
+    last(itemGroupsCloned).items = last(itemGroups).items.filter(
+      (item) => selectedItemsById[item._id]
+    )
+    const { index = 0 } = maxBy(itemGroupsCloned, 'index')
+    if (last(itemGroupsCloned).groupName === REMAINING_SECTION_NAME) {
+      last(itemGroupsCloned).groupName = `SECTION ${index + 1}`
+    }
+    itemGroupsCloned.push({
+      ...createNewStaticGroup(),
+      groupName: REMAINING_SECTION_NAME,
+      index: index + 1,
+      items: remainingItems,
+    })
+    setSectionsState(true)
+    const testId = test?._id || get(this.props, 'match.params.id', false)
+    if (testId) {
+      handleSave(sectionTestActions.ADD, itemGroupsCloned)
+    }
+    setCurrentGroupDetails()
+  }
+
   render() {
     const {
       test,
@@ -683,6 +735,11 @@ class Review extends PureComponent {
         )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
+            {isDefaultTest && test?.itemGroups?.length === 1 && (
+              <SectionControlWrapper>
+                <SectionControls handleAddSections={this.handleAddSections} />
+              </SectionControlWrapper>
+            )}
             <Paper
               padding="7px 0px"
               style={{ overflow: 'hidden' }}
@@ -720,6 +777,7 @@ class Review extends PureComponent {
                 orgCollections={orgCollections}
                 userId={userId}
                 hasSections={hasSections}
+                handleAddSections={this.handleAddSections}
               />
             </Paper>
           </ReviewLeftContainer>

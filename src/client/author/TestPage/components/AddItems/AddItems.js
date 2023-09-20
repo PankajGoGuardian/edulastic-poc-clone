@@ -555,7 +555,6 @@ class AddItems extends PureComponent {
       gotoAddSections,
       aiTestStatus = false,
       isDynamicTest,
-      hasSections,
     } = this.props
     const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -565,7 +564,7 @@ class AddItems extends PureComponent {
 
     return (
       // The Add item screen will be displayed in full screen mode for dynamic test and test with sections
-      <AddItemsContainer isFullScreenMode={isDynamicTest || hasSections}>
+      <AddItemsContainer isFullScreenMode={isDynamicTest}>
         {showSelectGroupModal && (
           <SelectGroupModal
             visible={showSelectGroupModal}
@@ -664,7 +663,7 @@ class AddItems extends PureComponent {
                   sortDir={sort.sortDir}
                   sortBy={sort.sortBy}
                 />
-                {(isDynamicTest || hasSections) && (
+                {isDynamicTest && (
                   <EduButton
                     style={{ height: '32px !important' }}
                     data-cy="gotoAddSections"

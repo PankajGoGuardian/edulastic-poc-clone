@@ -30,6 +30,7 @@ import {
   pick,
   isUndefined,
   findLastIndex,
+  last,
 } from 'lodash'
 import {
   testsApi,
@@ -128,7 +129,7 @@ const testItemStatusConstants = {
   ARCHIVED: 'archived',
 }
 const { WIDGET_TYPES } = questionType
-
+export const REMAINING_SECTION_NAME = '&default&'
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: 'SECTION 1' /* For now, auto-generated. */,
@@ -1022,6 +1023,14 @@ export const getQuestionTypesInTestSelector = createSelector(
     })
     return questionTypes
   }
+)
+
+export const remainingSectionSelector = createSelector(
+  getItemGroupsSelector,
+  (itemGroups) =>
+    last(itemGroups).groupName === REMAINING_SECTION_NAME
+      ? last(itemGroups)
+      : {}
 )
 
 // reducer

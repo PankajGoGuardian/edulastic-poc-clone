@@ -37,6 +37,7 @@ const ReviewItems = ({
   orgCollections,
   userId,
   hasSections,
+  handleAddSections,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -63,7 +64,7 @@ const ReviewItems = ({
     }
 
     return reIndexItems(items)
-  }, [items])
+  }, [items, itemGroups])
 
   const moveSingleItems = ({ oldIndex, newIndex }) => {
     const updatedItems = flatten(
@@ -122,6 +123,7 @@ const ReviewItems = ({
           orgCollections={orgCollections}
           userId={userId}
           hasSections={hasSections}
+          handleAddSections={handleAddSections}
         />
       </Spin>
     </StyledSpinnerContainer>

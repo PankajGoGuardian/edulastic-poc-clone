@@ -99,18 +99,18 @@ export const CustomStyledTable = styled(StyledTable)`
         vertical-align: top;
       }
     }
+    .test-type {
+      border-left: 1px dashed ${lightGrey8};
+    }
+    .avg-score {
+      border-right: 1px dashed ${lightGrey8};
+    }
     .avg-attendance {
       border-right: 1px dashed ${lightGrey8};
     }
-    .avg-score {
-      .ant-table-column-sorter {
-        padding-top: 32px;
-      }
-    }
     .performance-distribution {
       border-right: 1px dashed ${lightGrey8};
-      padding: ${(p) =>
-        p.isStudentCompareBy ? '35px 0 0 55px' : '35px 0 0 20px'};
+      padding: ${(p) => (p.isStudentCompareBy ? '0 0 0 55px' : '0 0 0 20px')};
     }
     .external-link {
       border-width: 0px;

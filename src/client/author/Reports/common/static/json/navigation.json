@@ -580,7 +580,7 @@
       },
       {
         "key": "multiple-assessment-report-dw",
-        "title": "Performance Trends",
+        "title": "Trends",
         "location": "/author/reports/multiple-assessment-report-dw"
       },
       {
@@ -590,12 +590,12 @@
       },
       {
         "key": "attendance-summary",
-        "title": "ATTENDANCE SUMMARY",
+        "title": "ATTENDANCE",
         "location": "/author/reports/attendance-summary"
       },
       {
         "key": "goals-and-interventions",
-        "title": "GOALS AND INTERVENTIONS",
+        "title": "GOALS & INTERVENTIONS",
         "location": "/author/reports/goals-and-interventions"
       },
       {

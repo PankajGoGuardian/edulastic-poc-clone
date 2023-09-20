@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap, isEmpty, maxBy, sumBy } from 'lodash'
+import { isEmpty, map, maxBy, sumBy } from 'lodash'
 import {
   downloadCSV,
   percentage,
@@ -12,7 +12,7 @@ import { IoMdLink } from 'react-icons/io'
 import { EduIf } from '@edulastic/common'
 import { ALL_TEST_TYPES_VALUES } from '@edulastic/constants/const/testTypes'
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
-import AvgScoreTitle from './AvgScoreTitle'
+import TestColumnTitle from './TestColumnTitle'
 import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
 import { StyledDiv } from '../common/styledComponents'
 import LinkCell from '../../../common/components/LinkCell'
@@ -128,7 +128,7 @@ export const getTableColumns = ({
       tableFilters.sortKey === tableColumnKeys.AVG_ATTENDANCE && columnSortOrder
 
     // dynamic columns
-    const testTypesBasedColumns = flatMap(
+    const testTypesBasedColumns = map(
       orderedTestTypesWithData,
       ({
         key: testTypeKey,
@@ -143,51 +143,56 @@ export const getTableColumns = ({
             selectedTestType === testTypeKey)
             ? selectedPerformanceBand
             : columnPerformanceBand
-        return [
-          {
-            key: `avgScore__${testTypeKey}`,
-            title: (
-              <AvgScoreTitle testType={testTypeTitle} isExternal={isExternal} />
-            ),
-            dataIndex: 'performance',
-            align: 'center',
-            width: 150,
-            visibleOn: ['browser'],
-            className: 'avg-score',
-            render: (value) =>
-              value[testTypeKey]
-                ? `${value[testTypeKey].avgScore}${
-                    testTypeKey.includes('__') ? '' : '%'
-                  }`
-                : '-',
-            sorter: true,
-            sortOrder:
-              tableFilters.sortKey === `avgScore__${testTypeKey}` &&
-              columnSortOrder,
-          },
-          {
-            key: `performance__${testTypeKey}`,
-            title: PerformanceColumnTitle,
-            dataIndex: 'performance',
-            align: 'left',
-            visibleOn: ['browser'],
-            className: 'performance-distribution',
-            render: (value, record) => {
-              const isDistrictAvgDimension =
-                record[tableColumnKeys.DIMENSION] === districtAvgDimension
-              return (
-                <PerformanceDistribution
-                  value={value}
-                  testType={testTypeKey}
-                  isStudentCompareBy={isStudentCompareBy}
-                  isDistrictAvgDimension={isDistrictAvgDimension}
-                  selectedPerformanceBand={testBand}
-                  isExternal={isExternal}
-                />
-              )
+        return {
+          title: (
+            <TestColumnTitle testType={testTypeTitle} isExternal={isExternal} />
+          ),
+          align: 'left',
+          className: 'test-type',
+          children: [
+            {
+              key: `avgScore__${testTypeKey}`,
+              title: 'Avg. Score',
+              dataIndex: 'performance',
+              align: 'center',
+              width: 150,
+              visibleOn: ['browser'],
+              className: 'avg-score',
+              render: (value) =>
+                value[testTypeKey]
+                  ? `${value[testTypeKey].avgScore}${
+                      testTypeKey.includes('__') ? '' : '%'
+                    }`
+                  : '-',
+              sorter: true,
+              sortOrder:
+                tableFilters.sortKey === `avgScore__${testTypeKey}` &&
+                columnSortOrder,
             },
-          },
-        ]
+            {
+              key: `performance__${testTypeKey}`,
+              title: PerformanceColumnTitle,
+              dataIndex: 'performance',
+              align: 'left',
+              visibleOn: ['browser'],
+              className: 'performance-distribution',
+              render: (value, record) => {
+                const isDistrictAvgDimension =
+                  record[tableColumnKeys.DIMENSION] === districtAvgDimension
+                return (
+                  <PerformanceDistribution
+                    value={value}
+                    testType={testTypeKey}
+                    isStudentCompareBy={isStudentCompareBy}
+                    isDistrictAvgDimension={isDistrictAvgDimension}
+                    selectedPerformanceBand={testBand}
+                    isExternal={isExternal}
+                  />
+                )
+              },
+            },
+          ],
+        }
       }
     )
     _columns.push(...testTypesBasedColumns)

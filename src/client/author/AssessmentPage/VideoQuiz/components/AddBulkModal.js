@@ -271,6 +271,7 @@ class AddBulkModal extends React.Component {
                 standardsFields.SUBJECT,
                 standardsFields.GRADES,
               ]}
+              considerCustomAlignmentDataSettingPriority
             />
             <Row style={{ marginTop: '10px' }} gutter={20}>
               <Col md={12}>

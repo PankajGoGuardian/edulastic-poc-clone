@@ -1357,9 +1357,9 @@
   dependencies:
     tslib "^2.0.0"
 
-"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#149f9e459929e16da8f19f91169226af59449a45":
+"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#3d369a0d95132fa854fa79bb13196052bf8255da":
   version "0.1.0"
-  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#149f9e459929e16da8f19f91169226af59449a45"
+  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#3d369a0d95132fa854fa79bb13196052bf8255da"
   dependencies:
     axios "^0.18.0"
     fast-levenshtein "^2.0.6"

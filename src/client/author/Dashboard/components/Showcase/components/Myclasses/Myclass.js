@@ -12,12 +12,15 @@ import {
   MainContentWrapper,
   withWindowSizes,
   CustomModalStyled,
+  EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
-import { signUpState } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
@@ -46,6 +49,7 @@ import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import {
   getCollectionsSelector,
   getInterestedSubjectsSelector,
+  getManualEnrollmentAllowedSelector,
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
@@ -92,6 +96,7 @@ const MyClasses = ({
   interestedSubjects,
   totalAssignmentCount,
   displayText,
+  manualEnrollmentAllowed = true,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -730,21 +735,29 @@ const MyClasses = ({
     history.push(videoQuizPath)
   }
 
+  const isManualEnrollmentAllowed =
+    user?.role === roleuser.TEACHER ? manualEnrollmentAllowed : true
   return (
     <MainContentWrapper padding="15px 25px">
-      {atleastOneClassPresent ? (
-        <Classes
-          showBannerSlide={showBannerSlide}
-          activeClasses={allActiveClasses}
-          userId={user?._id}
-          classData={classData}
-          history={history}
-          hasAssignment={hasAssignment}
-          hideGetStartedHeader={hideGetStartedHeader}
-        />
-      ) : (
-        <ClassBanner />
-      )}
+      <EduIf condition={atleastOneClassPresent}>
+        <EduThen>
+          <Classes
+            showBannerSlide={showBannerSlide}
+            activeClasses={allActiveClasses}
+            userId={user?._id}
+            classData={classData}
+            history={history}
+            hasAssignment={hasAssignment}
+            hideGetStartedHeader={hideGetStartedHeader}
+          />
+        </EduThen>
+        <EduElse>
+          <EduIf condition={isManualEnrollmentAllowed}>
+            <ClassBanner />
+          </EduIf>
+        </EduElse>
+      </EduIf>
+
       {isPremiumUser && <AIFeaturedTiles onVideoQuizClick={onVideoQuizClick} />}
       {showBannerSlide && (
         <BannerSlider
@@ -881,6 +894,7 @@ export default compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       displayText: trialPeriodTextSelector(state),
+      manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

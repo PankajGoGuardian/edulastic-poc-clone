@@ -19,7 +19,10 @@ import {
   colors as colorConstants,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
+import {
+  getAchievementLevels,
+  getScoreLabel,
+} from '@edulastic/constants/const/dataWarehouse'
 import {
   EXTERNAL_TEST_KEY_SEPARATOR,
   RISK_BAND_LABELS,
@@ -299,6 +302,36 @@ const filterMetricsByTestType = (metrics, assessmentTypes) => {
   })
 }
 
+function getSelectedExternalScore(
+  score,
+  lexileScore,
+  quantileScore,
+  externalScoreType,
+  externalTestType
+) {
+  let externalScore = getScoreLabel(score, { externalTestType })
+  if (
+    externalScoreType == EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
+    !isNaN(lexileScore)
+  ) {
+    externalScore = getExternalScoreFormattedByType(
+      lexileScore,
+      externalScoreType,
+      true
+    )
+  } else if (
+    externalScoreType == EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
+    !isNaN(quantileScore)
+  ) {
+    externalScore = getExternalScoreFormattedByType(
+      quantileScore,
+      externalScoreType,
+      true
+    )
+  }
+  return externalScore
+}
+
 export const getChartData = ({
   assignmentMetrics = [],
   studentClassData = [],
@@ -335,51 +368,42 @@ export const getChartData = ({
       studentId,
     } = assignment
     const _testName = externalTestType ? shortTestName : title
-    const totalMaxScore = sumBy(assignments, 'maxScore') || 0
-    const totalScore = sumBy(assignments, 'score') || 0
-    const totalLexileScore = sumBy(assignments, 'lexileScore')
-    const totalQuantileScore = sumBy(assignments, 'quantileScore')
     const { standardSet, subject } =
       studentClassData.find((s) => s.studentId === studentId) || {}
-    const assessmentData = {
+    const totalScore = sumBy(assignments, 'score') || 0
+
+    const result = {
       ...assignment,
       testName: _testName,
-      totalScore,
-      totalMaxScore,
       standardSet,
       subject,
       assessmentDate: +assignment.assignmentDate,
     }
-    if (!externalTestType) {
+
+    if (externalTestType) {
+      const totalLexileScore = sumBy(assignments, 'lexileScore')
+      const totalQuantileScore = sumBy(assignments, 'quantileScore')
+      const externalScore = getSelectedExternalScore(
+        totalScore,
+        totalLexileScore,
+        totalQuantileScore,
+        externalScoreType,
+        externalTestType
+      )
+      result.totalScore = externalScore
+    } else {
+      const totalMaxScore = sumBy(assignments, 'maxScore') || 0
       const averageScore = percentage(totalScore, totalMaxScore, true)
       const band = getProficiencyBand(averageScore, selectedPerformanceBand)
-      Object.assign(assessmentData, {
+      Object.assign(result, {
         testType: testTypes[testType.toLowerCase()],
+        totalScore,
+        totalMaxScore,
         averageScore,
         band,
       })
-    } else if (
-      externalScoreType == EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
-      !isNaN(totalLexileScore)
-    ) {
-      const externalScore = getExternalScoreFormattedByType(
-        totalLexileScore,
-        externalScoreType,
-        true
-      )
-      Object.assign(assessmentData, { totalScore: externalScore })
-    } else if (
-      externalScoreType == EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
-      !isNaN(totalQuantileScore)
-    ) {
-      const externalScore = getExternalScoreFormattedByType(
-        totalQuantileScore,
-        externalScoreType,
-        true
-      )
-      Object.assign(assessmentData, { totalScore: externalScore })
     }
-    return assessmentData
+    return result
   }).sort((a, b) => Number(a.assignmentDate) - Number(b.assignmentDate))
   return parsedData
 }
@@ -394,8 +418,8 @@ export const getTableData = ({
   if (!chartData.length) {
     return []
   }
-  const chartDataToUse = [...chartData].reverse()
-  const parsedData = map(chartDataToUse, (assessment) => {
+  const _chartData = [...chartData].reverse()
+  const parsedData = map(_chartData, (assessment) => {
     const {
       testId,
       assignmentDate,
@@ -403,85 +427,59 @@ export const getTableData = ({
       schoolCode,
       grade,
     } = assessment
-    let testDistrictAvg = round(
-      (externalTestType
-        ? find(districtMetrics, { testId, grade })?.districtAvgScore
-        : find(districtMetrics, { testId })?.districtAvgPerf) || 0
-    )
-    const testDistrictAvgLexile = find(districtMetrics, { testId, grade })
-      ?.districtAvgLexileScore
-    const testDistrictAvgQuantile = find(districtMetrics, { testId, grade })
-      ?.districtAvgQuantileScore
-    if (
-      externalTestType &&
-      externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
-      !isNaN(testDistrictAvgLexile)
-    ) {
-      testDistrictAvg = getExternalScoreFormattedByType(
-        testDistrictAvgLexile,
-        externalScoreType,
-        true
+
+    const assignmentDateFormatted = formatDate(assignmentDate)
+    const result = { totalQuestions: 0, ...assessment, assignmentDateFormatted }
+
+    if (externalTestType) {
+      const testDistrictAvg = round(
+        find(districtMetrics, { testId, grade })?.districtAvgScore
       )
-    } else if (
-      externalTestType &&
-      externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
-      !isNaN(testDistrictAvgQuantile)
-    ) {
-      testDistrictAvg = getExternalScoreFormattedByType(
+      const testDistrictAvgLexile = find(districtMetrics, { testId, grade })
+        ?.districtAvgLexileScore
+      const testDistrictAvgQuantile = find(districtMetrics, { testId, grade })
+        ?.districtAvgQuantileScore
+      const districtAvg = getSelectedExternalScore(
+        testDistrictAvg,
+        testDistrictAvgLexile,
         testDistrictAvgQuantile,
         externalScoreType,
-        true
+        externalTestType
       )
-    }
-    const testGroupAvg = externalTestType
-      ? '-'
-      : round(find(groupMetrics, { testId })?.groupAvgPerf || 0)
-    let testSchoolAvg = round(
-      (externalTestType
-        ? find(schoolMetrics, { testId, schoolCode, grade })?.schoolAvgScore
-        : find(schoolMetrics, { testId })?.schoolAvgPerf) || 0
-    )
-    const testSchoolAvgLexile = find(schoolMetrics, { testId, grade })
-      ?.schoolAvgLexileScore
-    const testSchoolAvgQuantile = find(schoolMetrics, { testId, grade })
-      ?.schoolAvgQuantileScore
-    if (
-      externalTestType &&
-      externalScoreType === EXTERNAL_SCORE_TYPES.LEXILE_SCORE &&
-      !isNaN(testSchoolAvgLexile)
-    ) {
-      testSchoolAvg = getExternalScoreFormattedByType(
+
+      const testSchoolAvg = round(
+        find(schoolMetrics, { testId, schoolCode, grade })?.schoolAvgScore
+      )
+      const testSchoolAvgLexile = find(schoolMetrics, { testId, grade })
+        ?.schoolAvgLexileScore
+      const testSchoolAvgQuantile = find(schoolMetrics, { testId, grade })
+        ?.schoolAvgQuantileScore
+      const schoolAvg = getSelectedExternalScore(
+        testSchoolAvg,
         testSchoolAvgLexile,
-        externalScoreType,
-        true
-      )
-    } else if (
-      externalTestType &&
-      externalScoreType === EXTERNAL_SCORE_TYPES.QUANTILE_SCORE &&
-      !isNaN(testSchoolAvgQuantile)
-    ) {
-      testSchoolAvg = getExternalScoreFormattedByType(
         testSchoolAvgQuantile,
         externalScoreType,
-        true
+        externalTestType
       )
+
+      Object.assign(result, {
+        districtAvg,
+        groupAvg: '-',
+        schoolAvg,
+      })
+    } else {
+      const rawScore = `${
+        assessment.totalScore?.toFixed(2) || '0.00'
+      } / ${round(assessment.totalMaxScore, 2)}`
+
+      const districtAvg =
+        round(find(districtMetrics, { testId })?.districtAvgPerf) || 0
+      const groupAvg = round(find(groupMetrics, { testId })?.groupAvgPerf || 0)
+      const schoolAvg =
+        round(find(schoolMetrics, { testId })?.schoolAvgPerf) || 0
+      Object.assign(result, { rawScore, districtAvg, groupAvg, schoolAvg })
     }
-    const rawScore = !externalTestType
-      ? `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(
-          assessment.totalMaxScore,
-          2
-        )}`
-      : assessment.totalScore
-    const assignmentDateFormatted = formatDate(assignmentDate)
-    return {
-      totalQuestions: 0,
-      ...assessment,
-      assignmentDateFormatted,
-      districtAvg: testDistrictAvg,
-      groupAvg: testGroupAvg,
-      schoolAvg: testSchoolAvg,
-      rawScore,
-    }
+    return result
   })
   return parsedData
 }
@@ -615,7 +613,13 @@ export const getStudentRiskData = (rawData) => {
     ) {
       internalAssessmentRisk.push({ ...testTypeRisk, isExternalTest: false })
     } else {
-      externalAssessmentRisk.push({ ...testTypeRisk, isExternalTest: true })
+      externalAssessmentRisk.push({
+        ...testTypeRisk,
+        isExternalTest: true,
+        externalTestType: testTypeRisk.type.split(
+          EXTERNAL_TEST_KEY_SEPARATOR
+        )[0],
+      })
     }
   })
   return {
@@ -626,9 +630,10 @@ export const getStudentRiskData = (rawData) => {
   }
 }
 
-export const getSubjectRiskText = (subjectData, isExternalTest, prefix = '') =>
-  subjectData.map(
-    ({ subject, riskBandLabel: subjectRiskBandLabel, score: subjectScore }) => {
+export const getSubjectRiskText = (test, prefix = '') =>
+  test.subjectData.map(
+    ({ subject, riskBandLabel: subjectRiskBandLabel, score }) => {
+      const subjectScore = getScoreLabel(score, test)
       const subjectsArr = subject.split(',')
       if (
         subjectsArr.length > 1 ||
@@ -637,37 +642,22 @@ export const getSubjectRiskText = (subjectData, isExternalTest, prefix = '') =>
         return null
       }
       return `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore}${
-        isExternalTest ? '' : '%'
+        test.isExternalTest ? '' : '%'
       })`
     }
   )
 
 export const getTestRiskTableData = (riskData) => {
-  return riskData.map(
-    ({
-      type,
-      score,
-      riskBandLabel,
-      riskBandLevel,
-      subjectData,
-      isExternalTest,
-    }) => {
-      const subjectRiskTexts = getSubjectRiskText(
-        subjectData,
-        isExternalTest,
-        'Avg Score - '
-      )
-      const testTypeTitle = !isExternalTest
-        ? `EDULASTIC - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
-        : type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
-      return {
-        testTypeTitle,
-        subjectRiskTexts,
-        score,
-        riskBandLabel,
-        riskBandLevel,
-        isExternalTest,
-      }
+  return riskData.map((testRisk) => {
+    const { type, isExternalTest } = testRisk
+    const subjectRiskTexts = getSubjectRiskText(testRisk, 'Avg Score - ')
+    const testTypeTitle = !isExternalTest
+      ? `EDULASTIC - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
+      : type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
+    return {
+      ...testRisk,
+      testTypeTitle,
+      subjectRiskTexts,
     }
-  )
+  })
 }

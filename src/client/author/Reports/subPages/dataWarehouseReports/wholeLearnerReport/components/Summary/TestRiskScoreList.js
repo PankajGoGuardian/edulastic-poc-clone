@@ -9,6 +9,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { Tooltip } from 'antd'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { TestLabel, RiskLabel, TestDetailContainer } from '../../common/styled'
 import { getSubjectRiskText } from '../../utils'
 
@@ -25,41 +26,40 @@ const renderTooltip = (tooltipTexts) => (
 
 const TestRiskScoreList = ({ riskData }) => (
   <>
-    {riskData.map(
-      ({ type, score, riskBandLabel, subjectData, isExternalTest }) => {
-        const tooltipTexts = getSubjectRiskText(subjectData, isExternalTest)
-        const tooltipTitle = `${type}: ${score}`
-        const testType = isExternalTest
-          ? type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
-          : type
-        const testName = isExternalTest
-          ? `${testType}`
-          : `${TEST_TYPE_LABELS[testType].split(' ')[0]}`
-        const scoreText = isExternalTest ? score : `${score}%`
-        return (
-          <FlexContainer
-            justifyContent="space-between"
-            alignItems="baseline"
-            key={testName}
-          >
-            <Tooltip title={tooltipTitle}>
-              <TestDetailContainer>
-                <TestLabel fontSize="14px">{testName}</TestLabel>
-                <span>{scoreText}</span>
-              </TestDetailContainer>
-            </Tooltip>
-            <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]}>
-              <span>{riskBandLabel}</span>
-              <EduIf condition={tooltipTexts.some((text) => !!text)}>
-                <Tooltip title={renderTooltip(tooltipTexts)}>
-                  <IconInfo fill={themeColor} />
-                </Tooltip>
-              </EduIf>
-            </RiskLabel>
-          </FlexContainer>
-        )
-      }
-    )}
+    {riskData.map((testRisk) => {
+      const { type, score, riskBandLabel, isExternalTest } = testRisk
+      const tooltipTexts = getSubjectRiskText(testRisk)
+      const scoreLabel = getScoreLabel(score, testRisk)
+      const tooltipTitle = `${type}: ${scoreLabel}`
+      const testType = isExternalTest
+        ? type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
+        : type
+      const testName = isExternalTest
+        ? `${testType}`
+        : `${TEST_TYPE_LABELS[testType].split(' ')[0]}`
+      return (
+        <FlexContainer
+          justifyContent="space-between"
+          alignItems="baseline"
+          key={testName}
+        >
+          <Tooltip title={tooltipTitle}>
+            <TestDetailContainer>
+              <TestLabel fontSize="14px">{testName}</TestLabel>
+              <span>{scoreLabel}</span>
+            </TestDetailContainer>
+          </Tooltip>
+          <RiskLabel $color={RISK_BAND_COLOR_INFO[riskBandLabel]}>
+            <span>{riskBandLabel}</span>
+            <EduIf condition={tooltipTexts.some((text) => !!text)}>
+              <Tooltip title={renderTooltip(tooltipTexts)}>
+                <IconInfo fill={themeColor} />
+              </Tooltip>
+            </EduIf>
+          </RiskLabel>
+        </FlexContainer>
+      )
+    })}
   </>
 )
 

@@ -19,6 +19,7 @@ import {
   SpinLoader,
 } from '@edulastic/common'
 import { IconInfo } from '@edulastic/icons'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { CustomStyledTable } from '../common/styledComponents'
 import TableHeaderCell from './TableHeaderCell'
@@ -64,12 +65,15 @@ const DashboardTable = ({
     metricInfo: districtAveragesMetricInfo,
     avgAttendance: districtAvgAttendance,
   } = districtAveragesData
+  const externalTestType = academicTestType.includes(
+    EXTERNAL_TEST_KEY_SEPARATOR
+  )
+    ? academicTestType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
+    : null
   const { avgScore: districtAvgScore, aboveAvgCount, belowAvgCount } =
     districtAveragesMetricInfo?.[academicTestType] || {}
   const districtAvgScoreStr = districtAvgScore
-    ? `${round(districtAvgScore)}${
-        academicTestType.includes(EXTERNAL_TEST_KEY_SEPARATOR) ? '' : '%'
-      }`
+    ? getScoreLabel(round(districtAvgScore), { externalTestType })
     : 'N/A'
   const { metricInfo: tableMetricInfo } = tableData
 

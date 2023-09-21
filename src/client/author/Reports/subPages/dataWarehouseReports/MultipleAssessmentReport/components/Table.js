@@ -5,6 +5,7 @@ import { isNumber, round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -31,11 +32,7 @@ import { tableColumnsData, compareByMap, sortKeys, getTestName } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import LinkCell from '../../common/components/LinkCell'
-import {
-  buildDrillDownUrl,
-  compareByKeys,
-  getScoreSuffix,
-} from '../../common/utils'
+import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
 
 const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 
@@ -76,18 +73,15 @@ const getTooltipText = (currentTest) => {
     averageQuantileScore,
     band,
   } = currentTest
+  const score = externalTestType
+    ? round(averageScaledScore)
+    : round(averageScaledScorePercentage)
+  const scoreLabel = getScoreLabel(score, currentTest)
   return (
     <div>
       <TooltipRowItem title="Date:" value={formatDate(assessmentDate)} />
       <TooltipRowItem title="Students:" value={totalStudentCount} />
-      <TooltipRowItem
-        title="Score:"
-        value={`${
-          externalTestType
-            ? round(averageScaledScore)
-            : round(averageScaledScorePercentage)
-        }${getScoreSuffix(externalTestType)}`}
-      />
+      <TooltipRowItem title="Score:" value={scoreLabel} />
       <EduIf condition={externalTestType && averageLexileScore}>
         <EduThen>
           <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />
@@ -154,9 +148,10 @@ const getTableColumns = (
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
       const { testId, externalTestType, averageScore } = assessment
       const _testName = getTestName(assessment)
-      const averageScoreForTitle = isNumber(averageScore)
-        ? round(averageScore)
-        : averageScore
+      const averageScoreForTitle = getScoreLabel(
+        isNumber(averageScore) ? round(averageScore) : averageScore,
+        assessment
+      )
       return [
         // assessment column to be rendered in browser
         {
@@ -173,10 +168,7 @@ const getTableColumns = (
                       <StyledTag color="black">{externalTestType}</StyledTag>
                     ) : null}
                   </StyledSpan>
-                  <StyledSpan float="right">
-                    {averageScoreForTitle}
-                    {!externalTestType && '%'}
-                  </StyledSpan>
+                  <StyledSpan float="right">{averageScoreForTitle}</StyledSpan>
                 </div>
               </AssessmentNameContainer>
             </Tooltip>
@@ -187,9 +179,13 @@ const getTableColumns = (
           render: (tests = {}) => {
             const currentTest = tests[testId]
             if (currentTest) {
-              const averageScoreRender = isNumber(currentTest.averageScore)
-                ? round(currentTest.averageScore)
-                : currentTest.averageScore
+              const normScore = currentTest.externalTestType
+                ? currentTest.averageScore
+                : currentTest.averageScorePercentage
+              let averageScoreRender = isNumber(normScore)
+                ? round(normScore)
+                : normScore
+              averageScoreRender = getScoreLabel(normScore, currentTest)
               const tooltipText = getTooltipText(currentTest)
               return (
                 <Row type="flex" justify="center">
@@ -197,11 +193,7 @@ const getTableColumns = (
                     CustomTooltip={CustomTooltip}
                     tooltipText={tooltipText}
                     leftText={currentTest.band.name}
-                    rightText={
-                      currentTest.externalTestType
-                        ? averageScoreRender
-                        : `${currentTest.averageScorePercentage}%`
-                    }
+                    rightText={averageScoreRender}
                     background={currentTest.band.color}
                   />
                 </Row>

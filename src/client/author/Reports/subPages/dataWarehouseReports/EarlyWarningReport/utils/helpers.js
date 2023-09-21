@@ -10,6 +10,7 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import { EduIf } from '@edulastic/common'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
@@ -173,11 +174,10 @@ export const getTableColumns = ({
     )
     const sortedAvailableTestTypes = sortTestTypes([...availableTestTypes])
     const academicSubColumns = sortedAvailableTestTypes.map((testType) => {
-      const isExternal = (feedTypes || []).find(
+      const externalTestDefinition = (feedTypes || []).find(
         ({ key }) => key === testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
       )
-      const scoreSuffix = isExternal ? '' : '%'
-      const testTypeText = isExternal
+      const testTypeText = externalTestDefinition
         ? testType.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
         : TEST_TYPE_LABELS[testType]
 
@@ -185,7 +185,7 @@ export const getTableColumns = ({
         key: testType,
         title: (
           <>
-            <EduIf condition={!isExternal}>
+            <EduIf condition={!externalTestDefinition}>
               <StyledTag
                 border="1.5px solid black"
                 font="bold"
@@ -194,7 +194,7 @@ export const getTableColumns = ({
                 {testTypeText}
               </StyledTag>
             </EduIf>
-            <EduIf condition={isExternal}>
+            <EduIf condition={externalTestDefinition}>
               <StyledTag color="black" marginBlock="5px">
                 {testTypeText}
               </StyledTag>
@@ -203,11 +203,13 @@ export const getTableColumns = ({
         ),
         dataIndex: 'academicRisk',
         render: (value) => {
-          const scoreValue =
+          const scoreLabel =
             value[testType]?.score >= 0
-              ? `${value[testType].score}${scoreSuffix}`
+              ? getScoreLabel(value[testType].score, {
+                  externalTestType: externalTestDefinition?.key,
+                })
               : '-'
-          return <ColoredText>{scoreValue}</ColoredText>
+          return <ColoredText>{scoreLabel}</ColoredText>
         },
       }
     })

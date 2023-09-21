@@ -5,12 +5,12 @@ import {
   downloadCSV,
   percentage,
   dbToTableSortOrderMap,
-  EXTERNAL_TEST_KEY_SEPARATOR,
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
 import { EduIf } from '@edulastic/common'
 import { ALL_TEST_TYPES_VALUES } from '@edulastic/constants/const/testTypes'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import TestColumnTitle from './TestColumnTitle'
 import { DW_MAR_REPORT_URL } from '../../../../../common/constants/dataWarehouseReports'
@@ -134,8 +134,9 @@ export const getTableColumns = ({
         key: testTypeKey,
         title: testTypeTitle,
         bands: columnPerformanceBand,
+        externalTestType,
       }) => {
-        const isExternal = testTypeKey.includes(EXTERNAL_TEST_KEY_SEPARATOR)
+        const isExternal = !!externalTestType
         const testBand =
           (!isSelectedTestTypeExternal && !isExternal) ||
           (isSelectedTestTypeExternal &&
@@ -158,12 +159,14 @@ export const getTableColumns = ({
               width: 150,
               visibleOn: ['browser'],
               className: 'avg-score',
-              render: (value) =>
-                value[testTypeKey]
-                  ? `${value[testTypeKey].avgScore}${
-                      testTypeKey.includes('__') ? '' : '%'
-                    }`
-                  : '-',
+              render: (value) => {
+                const scoreLabel = value[testTypeKey]
+                  ? getScoreLabel(value[testTypeKey].avgScore, {
+                      externalTestType,
+                    })
+                  : '-'
+                return scoreLabel
+              },
               sorter: true,
               sortOrder:
                 tableFilters.sortKey === `avgScore__${testTypeKey}` &&

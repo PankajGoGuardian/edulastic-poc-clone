@@ -1,7 +1,7 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy, omit } from 'lodash'
+import { sumBy, sortBy, groupBy, omit } from 'lodash'
 import React from 'react'
 import moment from 'moment'
 import {
@@ -284,50 +284,97 @@ export const transformRiskSummaryData = (prePeriod, postPeriod, showFooter) => {
   }
 }
 
-const sortGroupedTimelineData = (data, timeframe) =>
-  data.sort((a, b) => {
-    if (a[0].year === b[0].year) {
-      return a[0][timeframe] - b[0][timeframe]
-    }
-    return a[0].year - b[0].year
-  })
-
-export const getTimelineChartData = (rawData, filters) => {
-  const { timeframe } = filters
-  const timelineData = get(rawData, 'data.result', [])
-  if (!timelineData.length) {
-    return []
+const generateTimeframeLabel = ({ year, month, quarter }, timeframe) => {
+  let momentDate = null
+  let chartTimeLabel = ''
+  if (timeframe === timeframeFilterKeys.MONTHLY) {
+    const date = new Date(year, month - 1)
+    momentDate = moment(date)
+    chartTimeLabel = momentDate.format('MMM YYYY')
   }
+  if (timeframe === timeframeFilterKeys.QUARTERLY) {
+    chartTimeLabel = `Q${quarter} ${year}`
+  }
+  return { momentDate, chartTimeLabel }
+}
 
-  const timelineDataWithDateString = timelineData.map((timelineItem) => {
-    let chartTimeLabel = ''
-    let momentDate = null
-    const { year, month, quarter } = timelineItem
-    if (timeframe === timeframeFilterKeys.MONTHLY) {
-      const date = new Date(year, month - 1)
-      momentDate = moment(date)
-      chartTimeLabel = momentDate.format('MMM YYYY')
-    } else if (timeframe === timeframeFilterKeys.QUARTERLY) {
-      chartTimeLabel = `Q${quarter} ${year}`
-      momentDate = moment()
-    }
+const getTimelineDataWithDateString = (data, timeframe) => {
+  return data.map((timelineItem) => {
+    const { momentDate, chartTimeLabel } = generateTimeframeLabel(
+      timelineItem,
+      timeframe
+    )
     return {
       ...timelineItem,
       [CHART_LABEL_KEY]: chartTimeLabel,
       momentDate,
     }
   })
+}
 
-  const groupedTimelineData = Object.values(
-    groupBy(timelineDataWithDateString, CHART_LABEL_KEY)
+const getTimelineChartLabels = (startItem, endItem, timeframe) => {
+  const timelineChartLabels = []
+  // check if valid month data is available and timeframe is monthly
+  if (startItem.month && timeframe === timeframeFilterKeys.MONTHLY) {
+    const { momentDate: startMomentDate } = startItem
+    const { momentDate: endMomentDate } = endItem
+    const monthsDiff = endMomentDate.diff(startMomentDate, 'months')
+    for (let i = 0; i <= monthsDiff; i++) {
+      const date = moment(startMomentDate).add(i, 'month')
+      timelineChartLabels.push(date.format('MMM YYYY'))
+    }
+  }
+  // check if valid month data is available and timeframe is monthly
+  if (startItem.quarter && timeframe === timeframeFilterKeys.QUARTERLY) {
+    let { quarter, year } = startItem
+    const { quarter: endQuarter, year: endYear } = endItem
+    while (year < endYear) {
+      timelineChartLabels.push(`Q${quarter} ${year}`)
+      if (quarter === 4) {
+        quarter = 1
+        year += 1
+      } else {
+        quarter += 1
+      }
+    }
+    while (quarter <= endQuarter) {
+      timelineChartLabels.push(`Q${quarter} ${year}`)
+      quarter += 1
+    }
+  }
+  return timelineChartLabels
+}
+
+export const getTimelineChartData = (rawData, filters) => {
+  const { timeframe } = filters
+  const timelineData = rawData?.data?.result || []
+  if (!timelineData.length) {
+    return []
+  }
+  const sortedTimelineData = sortBy(timelineData, [
+    'year',
+    timeframeFilterValues[timeframe],
+  ])
+  const timelineDataWithDateString = getTimelineDataWithDateString(
+    sortedTimelineData,
+    timeframe
   )
-
-  const sortedGroupedTimelineData = sortGroupedTimelineData(
-    groupedTimelineData,
-    timeframeFilterValues[timeframe]
+  const timelineChartLabels = getTimelineChartLabels(
+    timelineDataWithDateString[0],
+    timelineDataWithDateString.slice(-1)[0],
+    timeframe
   )
-
-  const timelineChartData = sortedGroupedTimelineData.map((groupedData) => {
+  const groupedTimelineData = groupBy(
+    timelineDataWithDateString,
+    CHART_LABEL_KEY
+  )
+  const timelineChartData = timelineChartLabels.map((chartTimeLabel) => {
+    const groupedData = groupedTimelineData[chartTimeLabel]
+    if (!groupedData) {
+      return {
+        [CHART_LABEL_KEY]: chartTimeLabel,
+      }
+    }
     const totalStudents = groupedData.reduce(
       (prev, curr) => prev + curr.studentCount,
       0

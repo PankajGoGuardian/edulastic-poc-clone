@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
-import { dataWarehouseApi } from '@edulastic/api'
 import { isEmpty } from 'lodash'
+import { Row, Col } from 'antd'
+
+import { RISK_BAND_LABELS } from '@edulastic/constants/reportUtils/common'
+import { dataWarehouseApi } from '@edulastic/api'
 import {
   useApiQuery,
   EduIf,
@@ -28,8 +31,42 @@ import {
   ChartLegendItem,
   ChartLegendPill,
 } from '../../../../../../common/components/charts/styled-components'
+import { StyledCustomChartTooltip } from '../../../../../../common/styled'
 
 const title = 'Risk Over Time'
+
+const TooltipRowItem = ({ label = '', value = '' }) => (
+  <Row type="flex" justify="start">
+    <Col className="tooltip-key">{label} : </Col>
+    <Col className="tooltip-value">{value}%</Col>
+  </Row>
+)
+
+const getTooltipJSX = (payload) => {
+  if (payload && payload[0]?.payload) {
+    const tooltipData = payload[0].payload
+    return (
+      <div>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">{tooltipData[CHART_LABEL_KEY]}</Col>
+        </Row>
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.HIGH}
+          value={tooltipData[RISK_BAND_LABELS.HIGH]}
+        />
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.MEDIUM}
+          value={tooltipData[RISK_BAND_LABELS.MEDIUM]}
+        />
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.LOW}
+          value={tooltipData[RISK_BAND_LABELS.LOW]}
+        />
+      </div>
+    )
+  }
+  return false
+}
 
 /**
  * function to render custom chart legend for AssessmentsChart
@@ -118,6 +155,11 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
                   xAxisInterval={xAxisInterval}
                   yAxisLabel="PERCENTAGE OF STUDENTS"
                   legendProps={{ content: renderLegend }}
+                  tooltipProps={{
+                    content: (
+                      <StyledCustomChartTooltip getJSX={getTooltipJSX} />
+                    ),
+                  }}
                 />
               </FlexContainer>
             </EduThen>

@@ -15,17 +15,20 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { IconExpandBox } from '@edulastic/icons'
 import { dictionaries } from '@edulastic/constants'
-import { setDefaultInterests } from '../../../author/dataUtils'
+import {
+  getDefaultInterests,
+  setDefaultInterests,
+} from '../../../author/dataUtils'
 import { updateDefaultCurriculumAction } from '../../../author/src/actions/dictionaries'
 import {
   getFormattedCurriculumsSelector,
   getRecentStandardsListSelector,
 } from '../../../author/src/selectors/dictionaries'
 import {
+  getDefaultGradesSelector,
   getDefaultInterestsOrPreviouslyUsedSelector,
+  getDefaultSubjectSelector,
   getInterestedGradesSelector,
-  getUserDefaultGradesSelector,
-  getUserDefaultSubjectSelector,
 } from '../../../author/src/selectors/user'
 import selectsData from '../../../author/TestPage/components/common/selectsData'
 import {
@@ -59,19 +62,23 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
-
+  defaultGrades,
+  interestedGrades,
   updateDefaultCurriculum,
-
+  defaultSubject,
+  defaultCurriculumId,
+  defaultCurriculumName,
   updateDefaultGrades,
   updateDefaultSubject,
-
+  interestedCurriculums,
   recentStandardsList = [],
   isDocBased = false,
   authorQuestionStatus = false,
   showIconBrowserBtn = false,
   hideLabel = false,
   standardsRequiredFields = [],
-  defaultInterests,
+  considerCustomAlignmentDataSettingPriority = false,
+  defaultStandardsData,
 }) => {
   const {
     subject = 'Mathematics',
@@ -227,30 +234,69 @@ const AlignmentRow = ({
   useEffect(() => {
     const { curriculumId: alCurriculumId } = alignment
 
-    const _defaultCurriculumId = curriculums?.length
-      ? defaultInterests?.curriculum?.id || ''
-      : ''
-    const _defaultSubject = defaultInterests?.subject || ''
-    const _defaultGrades = defaultInterests?.grades || null
-    const _defaultCurriculum =
-      curriculums.find(
-        (item) => item._id === parseInt(_defaultCurriculumId, 10)
-      )?.curriculum || ''
+    // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
+    const defaultInterests = getDefaultInterests()
+    /**
+     * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
+     */
+    const _subject = defaultInterests?.subject || ''
+
+    if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
+      const _defaultCurriculumId = curriculums?.length
+        ? defaultStandardsData?.curriculum?.id || ''
+        : ''
+      const _defaultSubject = defaultStandardsData?.subject || ''
+      const _defaultGrades = defaultStandardsData?.grades || null
+      const _defaultCurriculum =
+        curriculums.find(
+          (item) => item._id === parseInt(_defaultCurriculumId, 10)
+        )?.curriculum || ''
+      editAlignment(alignmentIndex, {
+        subject: _defaultSubject,
+        grades: _defaultGrades,
+        curriculum: _defaultCurriculum,
+        curriculumId: parseInt(_defaultCurriculumId, 10) || '',
+      })
+      return
+    }
 
     if (!alCurriculumId) {
-      if (_defaultGrades?.length || _defaultSubject || _defaultCurriculumId) {
+      if (
+        defaultInterests.subject ||
+        defaultInterests.grades?.length ||
+        defaultInterests.curriculumId
+      ) {
         editAlignment(alignmentIndex, {
-          subject: _defaultSubject,
-          grades: _defaultGrades,
-          curriculum: _defaultCurriculum,
-          curriculumId: parseInt(_defaultCurriculumId, 10) || '',
+          subject: _subject,
+          curriculum:
+            curriculums.find(
+              (item) => item._id === parseInt(defaultInterests.curriculumId, 10)
+            )?.curriculum || '',
+          curriculumId: parseInt(defaultInterests.curriculumId, 10) || '',
+          grades: defaultInterests.grades?.length
+            ? defaultInterests.grades
+            : [],
+        })
+      } else if (defaultSubject && defaultCurriculumId) {
+        editAlignment(alignmentIndex, {
+          subject: defaultSubject,
+          curriculum: defaultCurriculumName,
+          curriculumId: defaultCurriculumId,
+          grades: defaultGrades || interestedGrades || [],
+        })
+      } else if (interestedCurriculums && interestedCurriculums.length > 0) {
+        editAlignment(alignmentIndex, {
+          subject: interestedCurriculums[0].subject,
+          curriculum: interestedCurriculums[0].name,
+          curriculumId: interestedCurriculums[0]._id,
+          grades: defaultGrades || interestedGrades || [],
         })
       } else {
         editAlignment(alignmentIndex, {
-          subject: '',
-          curriculumId: '',
-          curriculum: '',
-          grades: [],
+          subject: 'Mathematics',
+          curriculumId: 212,
+          curriculum: 'Math - Common Core',
+          grades: ['7'],
           standards: [],
         })
       }
@@ -510,13 +556,13 @@ export default connect(
       state,
       props.alignment
     ),
+    defaultGrades: getDefaultGradesSelector(state),
     interestedGrades: getInterestedGradesSelector(state),
-    userDefaultSubject: getUserDefaultSubjectSelector(state),
-    userDefaultGrades: getUserDefaultGradesSelector(state),
+    defaultSubject: getDefaultSubjectSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state),
     testSelectedSubjects: getTestEntitySubjectsSelector(state),
     testSelectedGrades: getTestEntityGradesSelector(state),
-    defaultInterests: getDefaultInterestsOrPreviouslyUsedSelector(state),
+    defaultStandardsData: getDefaultInterestsOrPreviouslyUsedSelector(state),
   }),
   {
     updateDefaultCurriculum: updateDefaultCurriculumAction,

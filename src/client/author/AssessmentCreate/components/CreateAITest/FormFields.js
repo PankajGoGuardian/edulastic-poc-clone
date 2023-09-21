@@ -119,6 +119,7 @@ const FormFields = ({
               standardsFields.GRADES,
             ]}
             isDocBased
+            considerCustomAlignmentDataSettingPriority
           />
         </Col>
       </Row>

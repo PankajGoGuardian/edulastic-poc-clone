@@ -24,19 +24,9 @@ export const getDefaultGradesSelector = createSelector(
   (state) => state.user.orgData.selectedGrades
 )
 
-export const getUserDefaultGradesSelector = createSelector(
-  stateSelector,
-  (state) => state.user.orgData.defaultGrades
-)
-
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
   (state) => state.user.orgData.selectedSubject || ''
-)
-
-export const getUserDefaultSubjectSelector = createSelector(
-  stateSelector,
-  (state) => state.user.orgData.defaultSubjects
 )
 
 export const getUserNameSelector = createSelector(stateSelector, (state) =>
@@ -197,11 +187,16 @@ export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
       subjects: testSelectedSubjects,
       grades: testSelectedGrades,
     } = entity
+
+    const [interestedCurriculum] = interestedCurriculums || []
+
     const subject =
       isArray(testSelectedSubjects) && !isEmpty(testSelectedSubjects)
         ? testSelectedSubjects[0]
         : isArray(interestedSubjects) && !isEmpty(interestedSubjects)
         ? interestedSubjects[0]
+        : !isEmpty(interestedCurriculum) && interestedCurriculum.subject
+        ? interestedCurriculum.subject
         : isArray(previousInterests.subject)
         ? previousInterests.subject[0]
         : previousInterests.subject || ''
@@ -210,6 +205,8 @@ export const getDefaultInterestsOrPreviouslyUsedSelector = createSelector(
       ? testSelectedGrades
       : !isEmpty(interestedGrades)
       ? interestedGrades
+      : !isEmpty(interestedCurriculum) && !isEmpty(interestedCurriculum.grades)
+      ? interestedCurriculum.grades
       : !isEmpty(previousInterests.grades)
       ? previousInterests.grades
       : []

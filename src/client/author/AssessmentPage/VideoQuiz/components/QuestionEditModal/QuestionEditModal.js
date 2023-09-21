@@ -190,6 +190,7 @@ export default class QuestionEditModal extends React.Component {
               isDocBased
               showIconBrowserBtn
               standardsRequiredFields={[]}
+              considerCustomAlignmentDataSettingPriority
             />
             <Row gutter={24} style={{ marginTop: '10px' }}>
               <Col md={12}>

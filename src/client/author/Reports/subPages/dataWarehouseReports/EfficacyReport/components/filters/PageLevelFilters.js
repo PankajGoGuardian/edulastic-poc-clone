@@ -118,7 +118,7 @@ const PageLevelFilters = ({
           />
         </StyledDropDownContainer>
       </FlexContainer>
-      <FlexContainer flex="0 0 600px">
+      <FlexContainer flex="0 0 600px" mt="8px">
         <StyledDropDownContainer
           flex="0 0 300px"
           xs={24}
@@ -167,18 +167,18 @@ const PageLevelFilters = ({
             showPrefixOnSelected={false}
           />
         </StyledDropDownContainer>
-        <EduIf condition={showPageLevelApply}>
-          <StyledEduButton
-            btnType="primary"
-            data-testid="applyRowFilter"
-            data-cy="applyRowFilter"
-            disabled={loadingFiltersData}
-            onClick={() => onGoClick()}
-          >
-            APPLY
-          </StyledEduButton>
-        </EduIf>
       </FlexContainer>
+      <EduIf condition={showPageLevelApply}>
+        <StyledEduButton
+          btnType="primary"
+          data-testid="applyRowFilter"
+          data-cy="applyRowFilter"
+          disabled={loadingFiltersData}
+          onClick={() => onGoClick()}
+        >
+          APPLY
+        </StyledEduButton>
+      </EduIf>
     </SecondaryFilterRow>
   )
 }

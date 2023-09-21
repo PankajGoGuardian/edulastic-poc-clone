@@ -30,6 +30,7 @@ import {
   setPercentUploadedAction,
   uploadToDriveAction,
 } from '../../ducks'
+import CreateVideoQuiz from '../CreateVideoQuiz/CreateVideoQuiz'
 
 const breadcrumbStyle = {
   position: 'static',
@@ -78,7 +79,7 @@ class Container extends React.Component {
   cancelUpload
 
   componentDidMount() {
-    const { location, receiveTestById, createAssessment } = this.props
+    const { location, receiveTestById } = this.props
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -86,31 +87,6 @@ class Container extends React.Component {
     if (assessmentId) {
       receiveTestById(assessmentId)
       this.handleSetMethod(creationMethods.PDF)()
-    }
-
-    if (location?.pathname?.includes('videoquiz')) {
-      createAssessment({
-        videoUrl: 'https://www.youtube.com/watch?v=',
-        assessmentId,
-      })
-    }
-  }
-
-  componentDidUpdate = (prevProps) => {
-    const { location, createAssessment } = this.props
-
-    const { assessmentId } = qs.parse(location.search, {
-      ignoreQueryPrefix: true,
-    })
-
-    if (
-      prevProps.location.pathname !== location?.pathname &&
-      location?.pathname?.includes('videoquiz')
-    ) {
-      createAssessment({
-        videoUrl: 'https://www.youtube.com/watch?v=',
-        assessmentId,
-      })
     }
   }
 
@@ -150,14 +126,16 @@ class Container extends React.Component {
     })
   }, 1000)
 
-  handleNext = (videoUrl) => {
+  handleNext = (videoUrl, thumbnail) => {
     const { location, createAssessment } = this.props
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
+
     createAssessment({
       videoUrl,
       assessmentId,
+      thumbnail,
     })
   }
 
@@ -235,7 +213,7 @@ class Container extends React.Component {
             />
           )}
           <EduIf condition={method === creationMethods.VIDEO}>
-            <Spin />
+            <CreateVideoQuiz onValidUrl={this.handleNext} />
           </EduIf>
         </MainContentWrapper>
       </>

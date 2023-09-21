@@ -575,7 +575,9 @@ export const computeChartNavigationLinks = ({
     navigationItems = next(_navigationItems, (draft) => {
       draft.forEach((item) => {
         if (item.key !== reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT) {
-          item.location += `?${qs.stringify(_filters)}`
+          item.location += `?${qs.stringify(_filters, {
+            arrayFormat: 'comma',
+          })}`
         }
       })
       return draft

@@ -49,6 +49,14 @@ function useFiltersFromURL({
 
       const testTypes = filtersData?.data?.result?.testTypes
       const defaultTestTypes = getDefaultTestTypes(testTypes)
+      const urlAssessmentTypesKeys = (
+        search.assessmentTypes || defaultTestTypes
+      )
+        .split(',')
+        .filter((t) => t)
+      const urlAssessmentTypes = availableTestTypes.filter((a) =>
+        urlAssessmentTypesKeys.includes(a.key)
+      )
 
       const urlSubjects = staticDropDownData.subjects.filter(
         (item) => search.subjects && search.subjects.includes(item.key)
@@ -63,9 +71,9 @@ function useFiltersFromURL({
 
       const _filters = {
         termId: urlSchoolYear.key,
-        testSubjects: urlTestSubjects.map((item) => item.key).join(','),
-        testGrades: urlTestGrades.map((item) => item.key).join(','),
-        assessmentTypes: search.assessmentTypes || defaultTestTypes,
+        testSubjects: urlTestSubjects.map((item) => item.key),
+        testGrades: urlTestGrades.map((item) => item.key),
+        assessmentTypes: urlAssessmentTypes.map((item) => item.key),
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         subjects: urlSubjects.map((item) => item.key).join(','),
@@ -89,9 +97,6 @@ function useFiltersFromURL({
         delete _filters.teacherIds
       }
 
-      const assessmentTypesArr = (
-        search.assessmentTypes || defaultTestTypes
-      ).split(',')
       const demographics = get(filtersData, 'data.result.demographics')
       const demographicsFilterTagsData = getDemographicsFilterTagsData(
         search,
@@ -101,10 +106,7 @@ function useFiltersFromURL({
         termId: urlSchoolYear,
         testSubjects: urlTestSubjects,
         testGrades: urlTestGrades,
-        assessmentTypes: availableTestTypes.filter((a) =>
-          assessmentTypesArr.includes(a.key)
-        ),
-
+        assessmentTypes: urlAssessmentTypes,
         subjects: urlSubjects,
         grades: urlGrades,
         periodType: urlPeriod,

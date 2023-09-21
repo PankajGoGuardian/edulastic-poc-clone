@@ -9,6 +9,7 @@ import {
   SpinLoader,
   FlexContainer,
 } from '@edulastic/common'
+import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
 import {
   Widget,
   StyledEmptyContainer,
@@ -51,10 +52,11 @@ const renderLegend = ({ payload }) => (
 
 const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   const query = useMemo(
-    () => ({
-      ...settings.requestFilters,
-      ...widgetFilters,
-    }),
+    () =>
+      stringifyArrayFilters({
+        ...settings.requestFilters,
+        ...widgetFilters,
+      }),
     [settings.requestFilters, widgetFilters]
   )
 

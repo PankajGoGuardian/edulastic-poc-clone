@@ -151,7 +151,11 @@ const Filters = ({
     setFilterTagsData(_filterTagsData)
     // update filters
     _filters[keyName] = _selected
-    history.push(`${location.pathname}?${qs.stringify(_filters)}`)
+    history.push(
+      `${location.pathname}?${qs.stringify(_filters, {
+        arrayFormat: 'comma',
+      })}`
+    )
 
     if (isPageLevelFilter) {
       setFilters({ ..._filters })

@@ -478,6 +478,12 @@ const resetStudentFilters = (
   }
 }
 
+const stringifyArrayFilters = (filters) =>
+  Object.keys(filters).reduce((res, k) => {
+    res[k] = Array.isArray(filters[k]) ? filters[k].join(',') : filters[k]
+    return res
+  }, {})
+
 const curateApiFiltersQuery = (
   rawQuery,
   reportFilterFields,
@@ -664,6 +670,7 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
+  stringifyArrayFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
   PERIOD_TYPES,

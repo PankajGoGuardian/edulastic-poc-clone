@@ -2,6 +2,7 @@ import { lightGreen12, lightGrey9, lightRed5 } from '@edulastic/colors'
 import moment from 'moment'
 import qs from 'qs'
 import { isEmpty, round } from 'lodash'
+
 import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import {
   ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
@@ -186,7 +187,9 @@ export const buildDrillDownUrl = ({
       testTypes: _filters.assessmentTypes,
       performanceBandProfileId: _filters.profileId,
     })
-    return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters)}`
+    return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters, {
+      arrayFormat: 'comma',
+    })}`
   }
   return `${reportUrl}?${qs.stringify(_filters)}`
 }

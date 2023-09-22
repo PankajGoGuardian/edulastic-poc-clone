@@ -324,6 +324,7 @@ class EditClassModal extends Component {
                   onFocus={this.fetchCoursesForDistrict}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   defaultValue={{ key: course.id }}
+                  filterOption={false}
                 >
                   {courseFinalList.map((c) => (
                     <Option key={c._id} value={c._id}>

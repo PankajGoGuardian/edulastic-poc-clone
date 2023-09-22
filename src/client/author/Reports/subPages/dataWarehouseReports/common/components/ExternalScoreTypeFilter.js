@@ -27,11 +27,12 @@ const ExternalScoreTypeFilter = ({
           EXTERNAL SCORE
           <EduIf
             condition={
-              selectedExternalScoreType !== EXTERNAL_SCORE_TYPES.SCALED_SCORE
+              selectedExternalScoreType.key !==
+              EXTERNAL_SCORE_TYPES.SCALED_SCORE
             }
           >
             <Tooltip
-              title={EXTERNAL_SCORE_TOOLTIP_TEXT[selectedExternalScoreType]}
+              title={EXTERNAL_SCORE_TOOLTIP_TEXT[selectedExternalScoreType.key]}
             >
               <IconInfo fill={themeColor} style={{ marginLeft: '20px' }} />
             </Tooltip>

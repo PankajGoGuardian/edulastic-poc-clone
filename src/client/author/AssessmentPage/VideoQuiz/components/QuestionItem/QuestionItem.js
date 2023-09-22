@@ -411,8 +411,7 @@ class QuestionItem extends React.Component {
     )
   }
 
-  renderVideoQuizQuestionItem = ({ disableDrag, showAnswerIndicator }) => {
-    const { dragging } = this.state
+  renderVideoQuizQuestionItem = ({ showAnswerIndicator }) => {
     const {
       data: { id, type = null, questionDisplayTimestamp = null } = {},
       questionIndex,
@@ -435,21 +434,16 @@ class QuestionItem extends React.Component {
           <EduIf condition={!testMode && !review}>
             <DragHandle review={review} questionIndex={questionIndex} />
           </EduIf>
-          <DragItem
-            data={{ id, index: questionIndex }}
-            disabled={disableDrag}
-            style={{ float: 'left', margin: '0px 10px 5px 0px' }}
+
+          <QuestionNumber
+            viewMode={viewMode === 'edit'}
+            highlighted={highlighted}
+            pdfPreview={pdfPreview}
+            zoom={zoom}
           >
-            <QuestionNumber
-              viewMode={viewMode === 'edit'}
-              dragging={dragging}
-              highlighted={highlighted}
-              pdfPreview={pdfPreview}
-              zoom={zoom}
-            >
-              {questionIndex}
-            </QuestionNumber>
-          </DragItem>
+            {questionIndex}
+          </QuestionNumber>
+
           <EduIf condition={!annotations || draggble}>
             <VideoQuizQuestionForm
               id={`${
@@ -523,7 +517,10 @@ class QuestionItem extends React.Component {
       handleRemoveAnnotation,
       isSnapQuizVideoPlayer = false,
       onPlay,
+      questionIndex,
     } = this.props
+
+    const { dragging } = this.state
 
     const check =
       viewMode === 'report' ||
@@ -553,56 +550,64 @@ class QuestionItem extends React.Component {
     const disableDrag = draggble ? false : review || testMode
 
     return (
-      <QuestionItemWrapper
-        className={`doc-based-question-item-for-scroll-${id}`}
-        id={id}
-        highlighted={this.isQuestionHighlighted(id)}
-        ref={this.itemRef}
-        review={testMode || review}
-        annotations={annotations}
-        pdfPreview={pdfPreview}
-        isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
-        data-cy="questionItem"
+      <DragItem
+        data={{ id, index: questionIndex }}
+        disabled={disableDrag}
+        style={{ width: '100%', height: '100%' }}
       >
-        {this.renderVideoQuizQuestionItem({
-          disableDrag,
-          showAnswerIndicator,
-        })}
-        <EduIf
-          condition={
-            isSnapQuizVideoPlayer &&
-            editMode &&
-            typeof handleRemoveAnnotation === 'function'
-          }
+        <QuestionItemWrapper
+          className={`doc-based-question-item-for-scroll-${id}`}
+          id={id}
+          highlighted={this.isQuestionHighlighted(id)}
+          ref={this.itemRef}
+          review={testMode || review}
+          annotations={annotations}
+          pdfPreview={pdfPreview}
+          isSnapQuizVideoPlayer={isSnapQuizVideoPlayer}
+          dragging={dragging}
+          isEditMode={viewMode === 'edit'}
+          data-cy="questionItem"
         >
-          <StyledRemoveQuestion
-            className="unselectable-text-container"
-            onClick={() => handleRemoveAnnotation(id)}
+          {this.renderVideoQuizQuestionItem({
+            disableDrag,
+            showAnswerIndicator,
+          })}
+          <EduIf
+            condition={
+              isSnapQuizVideoPlayer &&
+              editMode &&
+              typeof handleRemoveAnnotation === 'function'
+            }
           >
-            <p>REMOVE QUESTION FROM VIDEO</p>
-          </StyledRemoveQuestion>
-        </EduIf>
-        {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
-        {!pdfPreview &&
-          (check ? this.renderScore(id) : this.renderComments(id))}
-        <EduIf condition={!editMode}>
-          <Row type="flex" justify="end">
-            <Col>
-              <NextButton
-                size="small"
-                onClick={onPlay}
-                style={{ height: '30px' }}
-              >
-                <FontAwesomeIcon
-                  style={{ height: 15, width: 15 }}
-                  icon={faPlayCircle}
-                />{' '}
-                Resume
-              </NextButton>
-            </Col>
-          </Row>
-        </EduIf>
-      </QuestionItemWrapper>
+            <StyledRemoveQuestion
+              className="unselectable-text-container"
+              onClick={() => handleRemoveAnnotation(id)}
+            >
+              <p>REMOVE QUESTION FROM VIDEO</p>
+            </StyledRemoveQuestion>
+          </EduIf>
+          {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
+          {!pdfPreview &&
+            (check ? this.renderScore(id) : this.renderComments(id))}
+          <EduIf condition={!editMode}>
+            <Row type="flex" justify="end">
+              <Col>
+                <NextButton
+                  size="small"
+                  onClick={onPlay}
+                  style={{ height: '30px' }}
+                >
+                  <FontAwesomeIcon
+                    style={{ height: 15, width: 15 }}
+                    icon={faPlayCircle}
+                  />{' '}
+                  Resume
+                </NextButton>
+              </Col>
+            </Row>
+          </EduIf>
+        </QuestionItemWrapper>
+      </DragItem>
     )
   }
 }

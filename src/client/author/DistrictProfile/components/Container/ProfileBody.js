@@ -765,6 +765,7 @@ class ProfileBody extends React.Component {
                     onClick={() => {
                       this.setState({ showChangePassword: !showChangePassword })
                     }}
+                    data-cy="changePassword"
                   >
                     <span>Change Password</span>
                     <Icon

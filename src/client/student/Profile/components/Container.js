@@ -291,6 +291,7 @@ class ProfileContainer extends React.Component {
                 onClick={() => {
                   this.setState({ showChangePassword: !showChangePassword })
                 }}
+                data-cy="changePassword"
               >
                 <span>CHANGE PASSWORD</span>
                 <CaretIcon
@@ -340,7 +341,11 @@ class ProfileContainer extends React.Component {
                   )}
                   <FormButtonWrapper>
                     <FormButtonsWrapper>
-                      <SaveButton type="primary" htmlType="submit">
+                      <SaveButton
+                        type="primary"
+                        htmlType="submit"
+                        data-cy="saveUserInformation"
+                      >
                         {t('common.title.save')}
                       </SaveButton>
                       <CancelButton type="primary" onClick={this.handleCancel}>

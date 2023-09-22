@@ -18,10 +18,11 @@ const MultiDistStudentList = ({ multiDistStudents, t }) => {
           marginLeft: '5px',
           marginTop: '-2px',
         }}
+        data-cy="pwdResetForMultiDist"
       >
         {t('multiDistrictStudentPasswordError.multiStudentPasswordReset')}
         {multiDistStudents.map((o) => (
-          <ul style={{ color: 'black' }}>
+          <ul style={{ color: 'black' }} data-cy="multiDistStudentList">
             {`${o.lastName ? `${o.lastName},` : ''} ${
               o.firstName ? o.firstName : ''
             }`}

@@ -229,6 +229,11 @@ const Userlist = ({
         sorter: (a, b) => a.email?.localeCompare(b.email),
       },
       {
+        title: 'ROLE',
+        dataIndex: 'role',
+        key: 'role',
+      },
+      {
         title: 'EXPIRATION DATE',
         dataIndex: 'expiresOn',
         key: 'expiresOn',
@@ -326,12 +331,17 @@ const Userlist = ({
     })
   }
 
+  const usersWithoutStudent = useMemo(
+    () => currentUsers?.filter((user) => user?.role !== roleuser.STUDENT),
+    [currentUsers]
+  )
+
   return (
     <Row>
       <Col span={24}>
         <StyledAntdTable
           rowKey={(x) => x.userId}
-          dataSource={currentUsers}
+          dataSource={usersWithoutStudent}
           columns={columns}
           pagination={false}
         />

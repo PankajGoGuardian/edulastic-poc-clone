@@ -22,8 +22,14 @@ export const StyledSearch = styled(Search)`
     background: ${themeColor};
     border-color: transparent;
   }
+  .ant-input-group > .ant-input:first-child,
+  .ant-input-group-addon:first-child {
+    border: ${(props) => (props.showError ? '1px solid red' : '')};
+  }
 `
-
+export const StyledErrorText = styled.h3`
+  color: red;
+`
 export const StyledTextArea = styled(TextArea)`
   margin-top: 10px;
   min-height: 120px !important;

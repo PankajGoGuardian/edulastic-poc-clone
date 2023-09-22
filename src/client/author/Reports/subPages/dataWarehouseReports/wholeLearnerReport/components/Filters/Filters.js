@@ -32,7 +32,7 @@ import {
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import {
   EXTERNAL_SCORE_TYPES,
-  getDefaultTestTypes,
+  getDefaultTestTypesForUser,
 } from '../../../common/utils'
 
 const filtersDefaultValues = [
@@ -133,7 +133,10 @@ const WholeLearnerReportFilters = ({
     [filters.testTypes]
   )
 
-  const defaultTestTypes = getDefaultTestTypes(availableTestTypes)
+  const defaultTestTypes = getDefaultTestTypesForUser(
+    availableTestTypes,
+    userRole
+  )
 
   useEffect(() => {
     const urlSchoolYear =

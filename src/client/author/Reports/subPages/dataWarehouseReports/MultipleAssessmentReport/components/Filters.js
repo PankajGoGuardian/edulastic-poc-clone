@@ -34,9 +34,9 @@ import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeU
 import { allFilterValue } from '../../../../common/constants'
 import {
   EXTERNAL_SCORE_TYPES,
-  getDefaultTestTypes,
   getDemographicsFilterTagsData,
   getExternalScoreTypesListByTestTypes,
+  getDefaultTestTypesForUser,
 } from '../../common/utils'
 import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
 
@@ -164,7 +164,7 @@ const MultipleAssessmentReportFilters = ({
           performanceBandsList[0]
 
         const testTypes = get(filtersData, 'data.result.testTypes')
-        const defaultTestTypes = getDefaultTestTypes(testTypes)
+        const defaultTestTypes = getDefaultTestTypesForUser(testTypes, userRole)
 
         const _filters = {
           termId: urlSchoolYear.key,

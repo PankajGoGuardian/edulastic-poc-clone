@@ -7,7 +7,7 @@ import {
 import { roleuser } from '@edulastic/constants'
 import { IconCorrect } from '@edulastic/icons'
 import { Col, Form, Row, Select } from 'antd'
-import { get, keyBy } from 'lodash'
+import { debounce, get, keyBy } from 'lodash'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -34,6 +34,7 @@ import {
   StyledSearch,
   StyledTextArea,
   Text,
+  StyledErrorText,
 } from './styled'
 
 const Item = ({ item, moveItem, isEnrolled }) => {
@@ -96,6 +97,7 @@ class InviteMultipleStudentModal extends Component {
       allStudents: [],
       studentsToEnroll: [],
       searchViewVisible: searchAndAddStudents,
+      inputEvent: undefined,
     }
   }
 
@@ -183,10 +185,9 @@ class InviteMultipleStudentModal extends Component {
     }
   }
 
-  handleSearch = async (e) => {
+  searchUser = async () => {
     const { userOrgId } = this.props
-    const { studentsToEnroll } = this.state
-    const searchKey = e.target?.value.trim() || e
+    const { studentsToEnroll, inputEvent: searchKey = '' } = this.state
     const searchData = {
       districtId: userOrgId,
       limit: 1000,
@@ -201,7 +202,22 @@ class InviteMultipleStudentModal extends Component {
           name: searchKey,
         },
       })
-    if (searchKey.length > 0) {
+    let isValidEmailOrName = true
+    if (searchKey.length > 30) {
+      this.setState({
+        searchTextErrMessage: 'The text input exceeds 30 characters.',
+      })
+    } else if (searchKey.length) {
+      isValidEmailOrName = validateEmail(searchKey) || nameValidator(searchKey)
+      if (!isValidEmailOrName) {
+        this.setState({
+          searchTextErrMessage: 'The text entered is not a valid email/name',
+        })
+      }
+    }
+
+    if (searchKey.length > 0 && searchKey.length <= 30 && isValidEmailOrName) {
+      this.setState({ searchTextErrMessage: '' })
       const result = await userApi.fetchUsers(searchData)
       if (result.result.length) {
         const studentsToEnrollById = keyBy(studentsToEnroll, '_id')
@@ -219,6 +235,20 @@ class InviteMultipleStudentModal extends Component {
         studentsToEnroll: [],
       })
     }
+    if (searchKey.length === 0) {
+      this.setState({
+        searchTextErrMessage: '',
+      })
+    }
+  }
+
+  handleUserSearch = debounce(this.searchUser, 800)
+
+  handleSearch = (e) => {
+    this.setState({
+      inputEvent: e.target?.value.trim(),
+    })
+    this.handleUserSearch()
   }
 
   moveItem = (item) => {
@@ -301,6 +331,7 @@ class InviteMultipleStudentModal extends Component {
       allStudents,
       studentsToEnroll,
       searchViewVisible,
+      searchTextErrMessage,
     } = this.state
     const { schools = [] } = orgData || {}
     const studentsToEnrollById = keyBy(studentsToEnroll, '_id')
@@ -405,8 +436,12 @@ class InviteMultipleStudentModal extends Component {
                 onSearch={this.handleSearch}
                 onChange={this.handleSearch}
                 enterButton
+                showError={searchTextErrMessage}
               />
             </Row>
+            {searchTextErrMessage && (
+              <StyledErrorText>{searchTextErrMessage}</StyledErrorText>
+            )}
             {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
               <Row type="flex" justify="space-between" align="middle">
                 <ColWrapper span={11}>

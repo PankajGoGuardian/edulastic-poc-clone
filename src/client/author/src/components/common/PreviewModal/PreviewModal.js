@@ -7,6 +7,7 @@ import {
   FlexContainer,
   notification,
   withWindowSizes,
+  GeneralAnalyticsPoc as GAP,
 } from '@edulastic/common'
 import {
   questionType,
@@ -956,7 +957,12 @@ class PreviewModal extends React.Component {
         isMobile={isMobile}
       >
         {this.navigationButtonVisibile && this.navigationBtns()}
-        <HeadingWrapper>
+        <HeadingWrapper
+          {...GAP.attributes({
+            'track-test-id': test?._id,
+            'track-test-item-id': item?._id,
+          })}
+        >
           <Title>Preview</Title>
           <FlexContainer justifyContent="flex-end" width="100%">
             <EduIf condition={showSelectGroupModal}>

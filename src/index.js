@@ -18,6 +18,7 @@ import {
   updateSentryScope,
   removeAllTokens,
 } from '@edulastic/api/src/utils/Storage'
+import { GeneralAnalyticsPoc } from '@edulastic/common'
 import App from './client/App'
 import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
@@ -80,15 +81,19 @@ initializeSegment()
 // redux store
 const { store } = configureStore({})
 
-const RootComp = () => (
-  <I18nextProvider i18n={i18n}>
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <App />
-      </ConnectedRouter>
-    </Provider>
-  </I18nextProvider>
-)
+const RootComp = () => {
+  GeneralAnalyticsPoc.useGlobalAnalytics()
+
+  return (
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <App />
+        </ConnectedRouter>
+      </Provider>
+    </I18nextProvider>
+  )
+}
 ReactDOM.render(<RootComp />, document.getElementById('react-app'))
 
 if (window.Cypress) {

@@ -85,7 +85,11 @@ export const getAcademicSummaryMetrics = (rawData, externalTestType) => {
     ? round(avgScorePercentage - periodAvgScorePercentage)
     : 0
   if (!externalTestType) {
-    nStudentAboveStd = percentage(aboveStandardStudents, totalStudents, true)
+    nStudentAboveStd = `${percentage(
+      aboveStandardStudents,
+      totalStudents,
+      true
+    )}%`
   }
   return {
     avgScorePercentage: getScoreLabel(avgScorePercentage, {

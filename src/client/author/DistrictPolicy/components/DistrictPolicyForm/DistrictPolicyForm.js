@@ -4,6 +4,7 @@ import {
   notification,
   TextInputStyled,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { Form } from 'antd'
 import { produce } from 'immer'
@@ -493,23 +494,27 @@ class DistrictPolicyForm extends Component {
                   Allow Teachers to search and enroll
                 </CheckboxLabel>
               </StyledElementDiv>
-              <StyledElementDiv>
-                <div style={{ display: 'flex' }}>
-                  <CheckboxLabel
-                    data-cy="manual-enrollment-classes"
-                    checked={districtPolicy.manualEnrollmentAllowed ?? true}
-                    onChange={(e) => this.change(e, 'manualEnrollmentAllowed')}
-                  >
-                    Allow manual enrollment in classes
-                  </CheckboxLabel>
-                  <Tooltip
-                    placement="bottom"
-                    title="If checked, teachers can enroll students or co-teachers to an exiting or new class."
-                  >
-                    <IconInfo style={{ marginTop: '4px' }} />
-                  </Tooltip>
-                </div>
-              </StyledElementDiv>
+              <EduIf condition={!isSchoolLevel}>
+                <StyledElementDiv>
+                  <div style={{ display: 'flex' }}>
+                    <CheckboxLabel
+                      data-cy="manual-enrollment-classes"
+                      checked={districtPolicy.manualEnrollmentAllowed ?? true}
+                      onChange={(e) =>
+                        this.change(e, 'manualEnrollmentAllowed')
+                      }
+                    >
+                      Allow manual enrollment in classes
+                    </CheckboxLabel>
+                    <Tooltip
+                      placement="bottom"
+                      title="If checked, teachers can enroll students or co-teachers to an exiting or new class."
+                    >
+                      <IconInfo style={{ marginTop: '4px' }} />
+                    </Tooltip>
+                  </div>
+                </StyledElementDiv>
+              </EduIf>
             </StyledCol>
             <StyledCol mb="10px" sm={24} md={12} xl={6}>
               <StyledHeading1>Allow student addition with</StyledHeading1>

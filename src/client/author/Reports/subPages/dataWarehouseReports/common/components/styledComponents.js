@@ -165,7 +165,6 @@ export const CompareByContainer = styled.div`
   width: fit-content;
   display: inline-block;
   color: ${(p) => p.color};
-  width: fit-content;
   margin: 0 25px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -173,11 +172,10 @@ export const CompareByContainer = styled.div`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   @media print {
-    .test-name-container {
-      display: block;
-      -webkit-line-clamp: unset;
-      -webkit-box-orient: unset;
-    }
+    display: block;
+    margin: 0px;
+    -webkit-line-clamp: unset;
+    -webkit-box-orient: unset;
   }
 `
 export const StyledEmptyContainer = styled(Empty)`

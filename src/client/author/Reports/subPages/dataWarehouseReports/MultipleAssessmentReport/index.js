@@ -48,10 +48,6 @@ import {
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
-import {
-  getFeedTypes,
-  getFeedTypesAction,
-} from '../../../../sharedDucks/dataWarehouse'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
   getUserRole,
@@ -76,6 +72,7 @@ import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { isAddToStudentGroupEnabled } from '../common/utils'
 import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
+import useFiltersData from '../../../common/hooks/useFiltersData'
 
 const { downloadCSV } = reportUtils.common
 
@@ -137,8 +134,6 @@ const MultipleAssessmentReport = ({
   fetchInterventionsByGroups,
   setInterventionsByGroup,
   interventionsData,
-  feedTypes,
-  fetchFeedTypes,
 }) => {
   const [sortFilters, setSortFilters] = useState({
     sortKey: sortKeys.COMPARE_BY,
@@ -173,6 +168,7 @@ const MultipleAssessmentReport = ({
   const compareByOptions = useMemo(() => [...getCompareByOptions(userRole)], [
     userRole,
   ])
+  const { availableFeedTypes } = useFiltersData(filtersData)
 
   const setShowApply = (status) => {
     onRefineResultsCB(null, status, 'applyButton')
@@ -216,12 +212,6 @@ const MultipleAssessmentReport = ({
   const updateFilterDropdownCB = (selected) => {
     setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
-
-  useEffect(() => {
-    if (feedTypes === null) {
-      fetchFeedTypes()
-    }
-  }, [feedTypes])
 
   useEffect(
     () => () => {
@@ -307,7 +297,7 @@ const MultipleAssessmentReport = ({
       getTableData(
         reportTableData,
         reportChartData,
-        feedTypes,
+        availableFeedTypes,
         incompleteTests,
         selectedPerformanceBand,
         settings.selectedCompareBy.key,
@@ -319,7 +309,7 @@ const MultipleAssessmentReport = ({
       reportTableData,
       incompleteTests,
       selectedPerformanceBand,
-      feedTypes,
+      availableFeedTypes,
     ]
   )
 
@@ -560,7 +550,6 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     defaultTermId: getCurrentTerm(state),
     interventionsData: getInterventionsByGroup(state),
-    feedTypes: getFeedTypes(state),
   }),
   {
     ...actions,
@@ -568,7 +557,6 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
-    fetchFeedTypes: getFeedTypesAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

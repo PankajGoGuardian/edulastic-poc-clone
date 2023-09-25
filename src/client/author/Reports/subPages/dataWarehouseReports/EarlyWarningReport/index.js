@@ -16,16 +16,13 @@ import {
   compareByOptions as compareByOptionsRaw,
 } from '../common/utils'
 import { selectors, actions } from './ducks'
-import {
-  getFeedTypes,
-  getFeedTypesAction,
-} from '../../../../sharedDucks/dataWarehouse'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'
 import { getUserRole } from '../../../../src/selectors/user'
 import SectionLabel from '../../../common/components/SectionLabel'
 import SectionDescription from '../../../common/components/SectionDescription'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
+import useFiltersData from '../../../common/hooks/useFiltersData'
 
 const EarlyWarningReport = ({
   loc,
@@ -44,8 +41,7 @@ const EarlyWarningReport = ({
   firstLoad,
   resetAllReports,
   updateNavigation,
-  feedTypes,
-  fetchFeedTypes,
+  filtersData,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -87,11 +83,7 @@ const EarlyWarningReport = ({
     setShowApply(false)
   }
 
-  useEffect(() => {
-    if (feedTypes === null) {
-      fetchFeedTypes()
-    }
-  }, [feedTypes])
+  const { availableFeedTypes } = useFiltersData(filtersData)
 
   useEffect(
     () => () => {
@@ -163,7 +155,7 @@ const EarlyWarningReport = ({
             settings={settings}
             history={history}
             search={search}
-            feedTypes={feedTypes}
+            feedTypes={availableFeedTypes}
           />
         </EduElse>
       </EduIf>
@@ -175,11 +167,9 @@ export default connect(
   (state) => ({
     ...mapValues(selectors, (selector) => selector(state)),
     userRole: getUserRole(state),
-    feedTypes: getFeedTypes(state),
   }),
   {
     ...actions,
     resetAllReports: resetAllReportsAction,
-    fetchFeedTypes: getFeedTypesAction,
   }
 )(EarlyWarningReport)

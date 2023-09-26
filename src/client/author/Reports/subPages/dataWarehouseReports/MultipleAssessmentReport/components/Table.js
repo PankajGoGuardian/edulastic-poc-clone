@@ -185,7 +185,10 @@ const getTableColumns = (
               let averageScoreRender = isNumber(normScore)
                 ? round(normScore)
                 : normScore
-              averageScoreRender = getScoreLabel(normScore, currentTest)
+              averageScoreRender = getScoreLabel(
+                averageScoreRender,
+                currentTest
+              )
               const tooltipText = getTooltipText(currentTest)
               return (
                 <Row type="flex" justify="center">
@@ -211,13 +214,16 @@ const getTableColumns = (
           visibleOn: ['csv'],
           render: (tests = {}) => {
             const currentTest = tests[testId]
-            return currentTest
-              ? `${
-                  currentTest.externalTestType
-                    ? currentTest.averageScore
-                    : `${currentTest.averageScorePercentage}%`
-                }`
-              : '-'
+            let averageScoreRender = '-'
+            if (currentTest) {
+              const normScore = currentTest.externalTestType
+                ? currentTest.averageScore
+                : currentTest.averageScorePercentage
+              averageScoreRender = isNumber(normScore)
+                ? round(normScore)
+                : normScore
+            }
+            return `${averageScoreRender}`
           },
         },
       ]
@@ -269,7 +275,9 @@ const getDownloadCsvColumnHeadersFunc = (
     dowloadCsvTableColumnHeaders.testType.push(externalTestType || testType)
     dowloadCsvTableColumnHeaders.totalStudents.push(`${totalGraded}`)
     dowloadCsvTableColumnHeaders.avgScore.push(
-      `${averageScore}${assessment.externalTestType ? '' : '%'}`
+      `${isNumber(averageScore) ? round(averageScore) : averageScore}${
+        assessment.externalTestType ? '' : '%'
+      }`
     )
   }
 

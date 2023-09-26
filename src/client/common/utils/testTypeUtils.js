@@ -12,7 +12,10 @@ export const getNonPremiumTestTypes = () => {
 }
 
 export const includeCommonOnTestType = (availableTestTypes, testType) => {
-  if (TEST_TYPES.COMMON.includes(testType)) {
+  if (
+    TEST_TYPES.COMMON.includes(testType) &&
+    !(testType in availableTestTypes)
+  ) {
     return {
       [`${testType}`]: TEST_TYPE_LABELS[testType],
       ...availableTestTypes,

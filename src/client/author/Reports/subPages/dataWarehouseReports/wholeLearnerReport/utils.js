@@ -641,9 +641,7 @@ export const getSubjectRiskText = (test, prefix = '') =>
       ) {
         return null
       }
-      return `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore}${
-        test.isExternalTest ? '' : '%'
-      })`
+      return `${subjectRiskBandLabel} risk in ${subject} (${prefix}${subjectScore})`
     }
   )
 

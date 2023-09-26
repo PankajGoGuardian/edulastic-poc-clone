@@ -239,7 +239,7 @@ const AlignmentRow = ({
     /**
      * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
      */
-    const _subject = defaultInterests?.subject || ''
+    const _subject = defaultInterests?.subject?.[0] || ''
 
     if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
       const testSubject = testSelectedSubjects?.length

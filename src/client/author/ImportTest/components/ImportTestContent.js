@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -20,8 +20,21 @@ import {
   uploadContentStatusAction,
 } from '../../ContentCollections/ducks'
 
-const ImportTestContent = ({ status, location: { pathname }, history }) => {
+const ImportTestContent = ({
+  status,
+  location: { pathname },
+  history,
+  uploadTestStatus,
+}) => {
   const intervalRef = useRef(null)
+
+  useEffect(() => {
+    // When jobIds doesn't exist in session updating status to standby.
+    const jobIds = JSON.parse(sessionStorage.getItem('jobIds'))
+    if (!jobIds?.length) {
+      uploadTestStatus(UPLOAD_STATUS.STANDBY)
+    }
+  }, [])
 
   const breadcrumbData =
     pathname === '/author/import-content'

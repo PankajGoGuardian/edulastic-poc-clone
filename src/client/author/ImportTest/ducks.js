@@ -206,22 +206,28 @@ function* getImportProgressSaga({ payload }) {
         )
       ) {
         yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-        clearInterval(interval?.current)
-        interval.current = null
+        if (interval?.current) {
+          clearInterval(interval?.current)
+          interval.current = null
+        }
       }
     } else if (manifestResponse.status === JOB_STATUS.ERROR) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
       yield put(uploadTestErrorAction(`${manifestResponse.error}`))
-      clearInterval(interval?.current)
-      interval.current = null
+      if (interval?.current) {
+        clearInterval(interval?.current)
+        interval.current = null
+      }
       notification({
         type: 'error',
         msg: `Failed to process ${manifestResponse.identifier} file since ${manifestResponse.error}`,
       })
     }
   } catch (e) {
-    clearInterval(interval?.current)
-    interval.current = null
+    if (interval?.current) {
+      clearInterval(interval?.current)
+      interval.current = null
+    }
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }

@@ -505,13 +505,17 @@ function* getContentImportProgressSaga({ payload }) {
     yield put(setJobsDataAction(response))
     if (response.every(({ status }) => status !== JOB_STATUS.PROGRESS)) {
       yield put(uploadTestStatusAction(UPLOAD_STATUS.DONE))
-      clearInterval(interval?.current)
-      interval.current = null
+      if (interval?.current) {
+        clearInterval(interval?.current)
+        interval.current = null
+      }
     }
   } catch (e) {
     console.log({ e })
-    clearInterval(interval?.current)
-    interval.current = null
+    if (interval?.current) {
+      clearInterval(interval?.current)
+      interval.current = null
+    }
     return notification({ messageKey: 'failedToFetchProgressStatus' })
   }
 }

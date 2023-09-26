@@ -69,11 +69,13 @@ const ImportInprogress = ({
     resetData()
     sessionStorage.removeItem('jobIds')
     sessionStorage.removeItem('qtiTags')
+    sessionStorage.removeItem('testUploadStatus')
     if (path === '/author/import-content') {
       history.push('/author/content/collections')
     }
   }
   useEffect(() => {
+    // FIXME: Remove Polling and use firestore db / IOT messages to get the latest status of Import from server
     if (jobIds.length && !intervalRef?.current) {
       intervalRef.current = setInterval(() => {
         checkProgress()

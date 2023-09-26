@@ -684,7 +684,7 @@ class ClassBoard extends Component {
 
   onClickBarGraph = (data) => {
     const { isItemsVisible, match, history } = this.props
-    if (!isItemsVisible) {
+    if (!isItemsVisible || data.hiddenAttempt) {
       return
     }
     const { assignmentId, classId } = match.params
@@ -1093,6 +1093,44 @@ class ClassBoard extends Component {
     return _testActivityId
   }
 
+  handleQuestionViewClick = () => {
+    const {
+      testActivity,
+      match,
+      history,
+      setPageNumber,
+      loadTestActivity,
+    } = this.props
+    const { selectedQuestion, selectedQid, itemId } = this.state
+    const { assignmentId, classId } = match.params
+    const allUserQuestionActivities = []
+    testActivity.forEach(({ questionActivities = [] }) => {
+      allUserQuestionActivities.push(
+        ...questionActivities.filter(
+          (item) => !item.notStarted && !item.isItemContentHidden
+        )
+      )
+    })
+    const [firstQuestion] = allUserQuestionActivities
+    if (!firstQuestion) {
+      console.warn('no question activities')
+      return
+    }
+    this.setState({
+      selectedQuestion: selectedQuestion || 0,
+      selectedQid: selectedQid || firstQuestion._id,
+      itemId: itemId || firstQuestion.testItemId,
+      selectedTab: 'questionView',
+    })
+    setPageNumber(1)
+    loadTestActivity(assignmentId, classId, true)
+    history.push(
+      `/author/classboard/${assignmentId}/${classId}/question-activity/${
+        selectedQid || firstQuestion._id
+      }`
+    )
+  }
+
   render() {
     const {
       gradebook,
@@ -1126,7 +1164,6 @@ class ClassBoard extends Component {
       t,
       history,
       location,
-      loadTestActivity,
       isCliUser,
       firstQuestionEntities,
       showCanvasShare,
@@ -1137,7 +1174,6 @@ class ClassBoard extends Component {
       studentsPrevSubmittedUtas,
       studentUnselectAll,
       regradeModalState,
-      setPageNumber,
       isDocBasedTest,
       isProxiedByEAAccount,
       userRole,
@@ -1480,31 +1516,7 @@ class ClassBoard extends Component {
                         hasRandomQuestions ||
                         isLoading
                       }
-                      onClick={() => {
-                        const firstQuestion = get(this.props, [
-                          'testActivity',
-                          0,
-                          'questionActivities',
-                          0,
-                        ])
-                        if (!firstQuestion) {
-                          console.warn('no question activities')
-                          return
-                        }
-                        this.setState({
-                          selectedQuestion: selectedQuestion || 0,
-                          selectedQid: selectedQid || firstQuestion._id,
-                          itemId: itemId || firstQuestion.testItemId,
-                          selectedTab: 'questionView',
-                        })
-                        setPageNumber(1)
-                        loadTestActivity(assignmentId, classId, true)
-                        history.push(
-                          `/author/classboard/${assignmentId}/${classId}/question-activity/${
-                            selectedQid || firstQuestion._id
-                          }`
-                        )
-                      }}
+                      onClick={this.handleQuestionViewClick}
                     >
                       QUESTIONS
                     </QuestionButton>
@@ -2082,13 +2094,12 @@ class ClassBoard extends Component {
                     <GenSelect
                       dataCy="dropDownSelect"
                       classid="DI"
-                      classname={firstQuestionEntities
-                        .map((x, index) => ({
+                      classname={
+                        firstQuestionEntities.map((x, index) => ({
                           value: index,
-                          id: x._id,
-                          qLabel: `Question ${x?.barLabel?.slice(1)}`,
-                        }))
-                        .map(({ value, qLabel }) => ({ value, name: qLabel }))}
+                          name: `Question ${x?.barLabel?.slice(1)}`,
+                        })) // filtering after map to get the correct index value
+                      }
                       selected={selectedQuestion}
                       justifyContent="flex-end"
                       handleChange={(value) => {

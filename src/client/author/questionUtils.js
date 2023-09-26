@@ -879,16 +879,29 @@ export const isV1MultipartItem = (rows) => {
   return isArray(rows) ? rows.some((row) => row?.isV1Multipart) : false
 }
 
-export const getManualContentVisibility = (additionalData) => {
+export const getManualContentVisibility = ({
+  testContentVisibility: _testContentVisibility,
+  status,
+}) => {
+  const {
+    SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+    SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+    SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+    SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+    HIDDEN,
+    GRADING,
+  } = testContentVisibility
   return (
     [
-      testContentVisibility.SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
-      testContentVisibility.SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
-    ].includes(additionalData.testContentVisibility) ||
+      SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+      SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+      HIDDEN,
+    ].includes(_testContentVisibility) ||
     ([
-      testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
-      testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
-    ].includes(additionalData.testContentVisibility) &&
-      additionalData.status === IN_PROGRESS)
+      SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      GRADING,
+    ].includes(_testContentVisibility) &&
+      status === IN_PROGRESS)
   )
 }

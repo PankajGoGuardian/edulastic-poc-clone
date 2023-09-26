@@ -285,8 +285,8 @@ function* receiveStudentResponseSaga({ payload }) {
       additionalData
     )
     if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
-      transformedQuestionActivities = transformedQuestionActivities.filter(
-        (t) => !t?.autoGrade && !t?.notStarted
+      transformedQuestionActivities = transformedQuestionActivities.map(
+        (t) => ({ ...t, isItemContentHidden: t?.autoGrade })
       )
     }
     studentResponse.questionActivities = transformedQuestionActivities

@@ -1,16 +1,30 @@
-import React, { Component } from 'react'
-import { Row, Col, Card } from 'antd'
+import React from 'react'
+import { Row, Col } from 'antd'
 import { get, head } from 'lodash'
-import { TooltipContainer } from './styled'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 
 export const CustomTooltip = (props) => {
   const { label, payload, className } = props
   const firstItem = head(payload) || {}
   const timeSpent = get(firstItem, 'payload.avgTimeSpent')
-
+  const showToolTip = payload && payload.length >= 4
+  if (!showToolTip) {
+    return null
+  }
+  const hiddenAttempt = payload[0].payload?.hiddenAttempt
   return (
-    <>
-      {payload && payload.length >= 4 ? (
+    <EduIf condition={hiddenAttempt}>
+      <EduThen>
+        <div className={className}>
+          <div className="classboard-tooltip-title">{label}</div>
+          <Row type="flex" justify="start">
+            <Col className="classboard-tooltip-key">
+              View of Items is Restricted by the Admin
+            </Col>
+          </Row>
+        </div>
+      </EduThen>
+      <EduElse>
         <div className={className}>
           <div className="classboard-tooltip-title">{label}</div>
           <Row type="flex" justify="start">
@@ -34,7 +48,7 @@ export const CustomTooltip = (props) => {
             </Col>
           </Row>
         </div>
-      ) : null}
-    </>
+      </EduElse>
+    </EduIf>
   )
 }

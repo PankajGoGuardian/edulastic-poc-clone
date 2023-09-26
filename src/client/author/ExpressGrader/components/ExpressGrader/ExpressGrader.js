@@ -42,8 +42,8 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 
 // ducks
 import {
-  getSortedTestActivitySelector,
   getAdditionalDataSelector,
+  getSortedAndContentHiddenActivitySelector,
 } from '../../../ClassBoard/ducks'
 import { toggleScoreModeAction, disableScoreModeAction } from '../../ducks'
 import { getFeedbackResponseSelector } from '../../../src/selectors/feedback'
@@ -375,7 +375,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     (state) => ({
-      testActivity: getSortedTestActivitySelector(state),
+      testActivity: getSortedAndContentHiddenActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
       isPresentationMode: get(

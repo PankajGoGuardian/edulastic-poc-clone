@@ -14,6 +14,7 @@ import {
   themeColorLighter,
   darkBlue2,
   greyLight1,
+  brownDark,
 } from '@edulastic/colors'
 import {
   ComposedChart,
@@ -96,6 +97,13 @@ const bars = {
     stackId: 'a',
     dataKey: 'unscoredItems',
     fill: greyLight1,
+  },
+  hiddenAttempt: {
+    className: 'hiddenAttempt',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'hiddenAttempt',
+    fill: brownDark,
   },
 }
 
@@ -255,19 +263,36 @@ class BarGraph extends Component {
         if (item.avgTimeSpent > maxTimeSpent) {
           maxTimeSpent = item.avgTimeSpent
         }
-        return {
+        const { hiddenAttempt } = item
+        const result = {
           name: item.barLabel,
           totalAttemps: item.attemptsNum,
+          avgTimeSpent: item.avgTimeSpent || 0,
+          itemLevelScoring: item.itemLevelScoring,
+          itemId: item.itemId,
+          qid: item._id,
+        }
+        if (hiddenAttempt) {
+          return {
+            ...result,
+            correctAttemps: 0,
+            partialAttempts: 0,
+            incorrectAttemps: 0,
+            manualGradedNum: 0,
+            unscoredItems: 0,
+            skippedNum: item.skippedNum,
+            hiddenAttempt,
+          }
+        }
+        return {
+          ...result,
           correctAttemps: item.correctNum,
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
           manualGradedNum: item.manualGradedNum,
           unscoredItems: item.unscoredItems,
-          avgTimeSpent: item.avgTimeSpent || 0,
-          itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
-          itemId: item.itemId,
-          qid: item._id,
+          hiddenAttempt: 0,
         }
       })
     }

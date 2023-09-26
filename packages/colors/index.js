@@ -33,6 +33,7 @@ export const greyThemeDark7 = '#ADADAD'
 export const greyThemeLight = '#b9b9b9'
 export const greyLight1 = '#e8e8e8'
 export const greyThemeLighter = '#f8f8f8'
+export const brownDark = '#964B00'
 
 export const grey = '#dfdfdf'
 export const fadedGrey = '#e5e5e5'

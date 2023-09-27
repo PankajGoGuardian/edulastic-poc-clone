@@ -9,7 +9,7 @@ import { isEmpty, sortBy, keyBy, isEqual } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
-import { questionType } from '@edulastic/constants'
+import { questionType, roleuser } from '@edulastic/constants'
 import {
   withWindowSizes,
   EduIf,
@@ -27,6 +27,7 @@ import { changeViewAction } from '../../../author/src/actions/view'
 import { getCalcTypeSelector, testLoadingSelector } from '../../selectors/test'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
+import { getUserRole } from '../../../student/Login/ducks'
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -66,7 +67,7 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { enableMagnifier, loading } = this.props
+    const { enableMagnifier, loading, testId, userRole } = this.props
     if (
       !isEqual(prevProps.enableMagnifier, enableMagnifier) &&
       enableMagnifier &&
@@ -89,7 +90,10 @@ class AssessmentPlayerDocBased extends React.Component {
       newIframe.width = '100%'
       newIframe.height = '100%'
       newIframe.setAttribute('frameBorder', 0)
-      newIframe.src = window.location.href
+      newIframe.src =
+        userRole === roleuser.STUDENT
+          ? window.location.href
+          : `${window.location.origin}/public/test-preview/${testId}`
       magnifierEle.innerHTML = ''
       magnifierEle.appendChild(newIframe)
       newIframe.addEventListener('load', () => {
@@ -319,6 +323,8 @@ const enhance = compose(
       calcTypes: getCalcTypeSelector(state),
       timedAssignment: state.test?.settings?.timedAssignment,
       enableMagnifier: state.testPlayer.enableMagnifier,
+      testId: state.test.testId,
+      userRole: getUserRole(state),
     }),
     {
       changeView: changeViewAction,

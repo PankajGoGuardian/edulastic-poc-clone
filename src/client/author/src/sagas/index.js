@@ -29,6 +29,7 @@ import { schoolsSaga } from '../../Schools'
 import { studentSaga } from '../../Student'
 import { teacherSaga } from '../../Teacher'
 import { districtAdminSaga } from '../../DistrictAdmin'
+import { customReportsSaga } from '../../CustomReports'
 import { schoolAdminSaga } from '../../SchoolAdmin'
 import { coursesSaga } from '../../Courses'
 import { classesSaga } from '../../Classes'
@@ -93,6 +94,7 @@ const authorSagas = [
   studentSaga(),
   teacherSaga(),
   districtAdminSaga(),
+  customReportsSaga(),
   schoolAdminSaga(),
   coursesSaga(),
   classesSaga(),

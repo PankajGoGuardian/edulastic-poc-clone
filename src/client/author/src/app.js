@@ -32,6 +32,18 @@ import { updateRecentCollectionsAction } from './actions/dictionaries'
 const Dashboard = loadable(() => import('../Dashboard'), {
   fallback: <Progress />,
 })
+const CustomReports = loadable(
+  () => import('../CustomReports/components/CustomReports'),
+  {
+    fallback: <Progress />,
+  }
+)
+const ExplorePage = loadable(
+  () => import('../CustomReports/components/Explore'),
+  {
+    fallback: <Progress />,
+  }
+)
 const Assignments = loadable(() => import('../Assignments'), {
   fallback: <Progress />,
 })
@@ -322,6 +334,16 @@ const Author = ({
                   exact
                   path={`${match.url}/assignments`}
                   component={Assignments}
+                />
+                <Route
+                  exact
+                  path="/author/customReports"
+                  component={CustomReports}
+                />
+                <Route
+                  exact
+                  path="/author/customReports/explore"
+                  component={ExplorePage}
                 />
                 <Route
                   exact

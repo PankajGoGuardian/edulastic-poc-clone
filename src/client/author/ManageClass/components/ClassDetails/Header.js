@@ -34,6 +34,7 @@ import {
 import IconArchive from '@edulastic/icons/src/IconArchive'
 
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import {
   Institution,
   DropMenu,
@@ -243,6 +244,10 @@ const Header = ({
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
   const showAtlasReSyncButton = showSyncButtons && atlasId
   const showCleverReSyncButton = showSyncButtons && cleverId && isCleverDistrict
+  const isManualEnrollmentAllowed = !manualEnrollmentAllowed
+    ? type !== GROUP_TYPE.CLASS
+    : true
+  const showAddCoTeacher = active === 1 && isManualEnrollmentAllowed
 
   const options = {
     [CLEVER]: showCleverSyncButton,
@@ -496,7 +501,7 @@ const Header = ({
             )}
           </>
         )}
-        <EduIf condition={active === 1 && manualEnrollmentAllowed}>
+        <EduIf condition={showAddCoTeacher}>
           <EduButton isBlue onClick={handleActionMenuClick}>
             <IconPlusCircle />
             Add Co-Teacher
@@ -606,7 +611,7 @@ const Header = ({
                     </span>
                   </MenuItems>
                 )}
-                {manualEnrollmentAllowed && (
+                {isManualEnrollmentAllowed && (
                   <MenuItems onClick={handleActionMenuClick}>
                     <IconPlusCircle />
                     <span>Add a Co-Teacher</span>

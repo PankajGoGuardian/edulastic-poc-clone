@@ -1917,7 +1917,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const { PRACTICE, COMMON } = testTypesConstants.TEST_TYPES
   const {
     ASSESSMENT,
-    COMMON_ASSESSMENT,
     PRACTICE: _PRACTICE,
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
@@ -1982,7 +1981,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
       ? testType
       : COMMON.includes(testType)
       ? testType
-      : COMMON_ASSESSMENT
+      : testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
     settings.openPolicy =
       assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
   }

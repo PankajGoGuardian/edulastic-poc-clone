@@ -24,6 +24,9 @@ export const BackgroundStyleWrapper = styled.div.attrs({
     font-size: 13px;
   }
 
+  .fr-counter {
+    display: none !important;
+  }
   .fr-wrapper {
     ${({ centerContent }) => {
       if (centerContent) {

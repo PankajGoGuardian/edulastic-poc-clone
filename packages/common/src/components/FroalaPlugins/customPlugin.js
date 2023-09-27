@@ -245,6 +245,30 @@ function customPlugin(FroalaEditor) {
     },
   })
 
+  FroalaEditor.COMMANDS.insertVideo.title = 'Insert Video/Audio'
+
+  FroalaEditor.PLUGINS.customVideo = function (editor) {
+    const originalMethod = editor?.video?.showInsertPopup
+    if (originalMethod) {
+      editor.video.showInsertPopup = function (...args) {
+        originalMethod(args)
+        editor?.$tb
+          ?.find('[id^="videoUpload-"]')
+          ?.data('title', 'Upload Video/Audio')
+        editor?.$tb
+          ?.find('[for^="fr-video-by-url-layer-text-"]')
+          ?.html('Past in a Video/Audio URL')
+
+        const uploadLayer = editor?.$tb?.find('[id^="fr-video-upload-layer-"]')
+
+        uploadLayer?.find('strong')?.html('Drop Video/Audio')
+
+        const input = uploadLayer?.find('input')
+        input?.attr('accept', input?.attr('accept') + ', audio/mp3, audio/mpeg')
+      }
+    }
+  }
+
   FroalaEditor.PLUGINS.accessibleToolbar = function (editor) {
     // Add ARIA attributes to toolbar buttons.
     function addAriaAttributes() {

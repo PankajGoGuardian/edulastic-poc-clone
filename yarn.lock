@@ -1361,7 +1361,7 @@
   version "0.1.0"
   resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#3d369a0d95132fa854fa79bb13196052bf8255da"
   dependencies:
-    axios "^0.18.0"
+    aws-sdk "^2.355.0"
     fast-levenshtein "^2.0.6"
     immer "^2.1"
     lodash "^4.17.20"
@@ -9760,10 +9760,10 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.1.1.tgz#546f42b40b586c2811e1d70df9273203081a6e1b"
-  integrity sha512-1VYBEL5QN92Qmlvc1tgL6Ij55hMDXnkStv1c/MoNwdkTdK81W1JYmS4LaLFfUmva1Zvp5DWEM+G3G8+VyfvDEQ==
+froala-editor@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-4.1.2.tgz#97431fde2d8d530f2d92e0cb1919aed6fa36abe2"
+  integrity sha512-MVofk5cRaRfGqTgTXkS4feL2V5HbS3AtMEKn/0mgb1M9GJ0h1JxWW1n1qs/FyjT5cUUgngXX/LlcpeHFYSMv+g==
 
 from2@^2.1.0:
   version "2.3.0"
@@ -17089,13 +17089,13 @@ react-focus-lock@^2.1.0:
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
 
-react-froala-wysiwyg@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.1.1.tgz#5156558a26547fc7e3ac1e289b9f4f06357fef0f"
-  integrity sha512-gNFcRELVaMLBkYGVEu8eVLypmwoeYO1vbliquPDZbsxwcOhjJjF0D7IyW0wYwN7WPvAWbVwNFZsBzUjsPhiqAA==
+react-froala-wysiwyg@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-4.1.2.tgz#fe81ed9b3e17dde880638491b65ae57a10e9664e"
+  integrity sha512-96e1aGC6m8vhJ4ShXddIEp8txcKxdBONcPTYAgx3XrLDQBZz3t1/xjr85kF8vXT6c95E4YQzC4/0SDPKw168qQ==
   dependencies:
     create-react-class "^15.5.2"
-    froala-editor "3.1.1"
+    froala-editor "4.1.2"
 
 react-helmet-async@^1.0.2:
   version "1.2.3"

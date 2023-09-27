@@ -557,20 +557,29 @@ export const allowedFileTypes = [
   'video/mp4',
   'video/webm',
   'video/ogg',
+  'audio/mp3',
+  'audio/mpeg',
 ]
 
 export const beforeUpload = (file, type) => {
   const isVideoFile = type === 'video'
+  const isAudioFile = type === 'audio'
   const isAllowedType = allowedFileTypes.includes(file.type)
   if (!isAllowedType) {
     notification({ messageKey: 'imageTypeError' })
   }
   const withinSizeLimit = isVideoFile
     ? file.size / 1024 / 1024 < 25
+    : isAudioFile
+    ? file.size / 1024 / 1024 < 10
     : file.size / 1024 / 1024 < 2
   if (!withinSizeLimit) {
     notification({
-      messageKey: isVideoFile ? 'videoSizeError' : 'imageSizeError',
+      messageKey: isVideoFile
+        ? 'videoSizeError'
+        : isAudioFile
+        ? 'audioSizeError'
+        : 'imageSizeError',
     })
   }
   return isAllowedType && withinSizeLimit

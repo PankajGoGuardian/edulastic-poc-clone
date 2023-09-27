@@ -276,23 +276,31 @@ const CustomEditor = ({
           }
         },
         'video.beforeUpload': function (video) {
+          const extension = video[0]?.name.split('.').pop()
+          const isAudio = extension === 'mp3'
+
           if (
             !canInsert(this.selection.element()) ||
             !canInsert(this.selection.endElement()) ||
-            !beforeUpload(video[0], 'video')
+            !beforeUpload(video[0], isAudio ? 'audio' : 'video')
           ) {
             return false
           }
           this.video.showProgressBar()
+
           uploadToS3(video[0], aws.s3Folders.DEFAULT)
             .then((url) => {
-              const embedded = `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`
+              const embedded = isAudio
+                ? `<audio class="fr-draggable" src='${url}' controls>Audio is not supported on this browser.</audio>`
+                : `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`
               this.video.insert(embedded)
             })
             .catch((e) => {
               console.error(e)
               this.popups.hideAll()
-              notification({ messageKey: 'videoUploadErr' })
+              notification({
+                messageKey: isAudio ? 'audioUploadErr' : 'videoUploadErr',
+              })
             })
           return false
         },
@@ -302,7 +310,7 @@ const CustomEditor = ({
           layer
             ?.find('.fr-message')
             ?.text(
-              'The video cannot be added because the address is invalid/unsupported.'
+              'The link cannot be added because the address is invalid/unsupported.'
             )
         },
         'video.codeError': function (code) {
@@ -311,7 +319,7 @@ const CustomEditor = ({
           layer
             ?.find('.fr-message')
             ?.text(
-              'The video cannot be added because the embed code is invalid/unsupported.'
+              'The code cannot be added because the embed code is invalid/unsupported.'
             )
         },
         'edit.on': function (e, editor) {

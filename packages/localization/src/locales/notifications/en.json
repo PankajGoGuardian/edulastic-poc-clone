@@ -23,6 +23,10 @@
     "message": "Video size should be less than 25MB",
     "description": ""
   },
+  "audioSizeError": {
+    "message": "Audio size should be less than 10MB",
+    "description": ""
+  },
   "imageUploadErr": {
     "message": "image upload failed",
     "description": ""
@@ -45,6 +49,10 @@
   },
   "videoUploadErr": {
     "message": "Video upload failed",
+    "description": ""
+  },
+  "audioUploadError": {
+    "message": "Audio upload failed",
     "description": ""
   },
   "imageLoadErr": {

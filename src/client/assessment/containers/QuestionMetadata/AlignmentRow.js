@@ -110,7 +110,7 @@ const AlignmentRow = ({
       defaultCurriculumName: '',
     })
     editAlignment(alignmentIndex, { subject: val, curriculum: '' })
-    setDefaultInterests({ subject: val })
+    setDefaultInterests({ subject: [val] })
   }
 
   const setGrades = (val) => {
@@ -237,9 +237,23 @@ const AlignmentRow = ({
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const defaultInterests = getDefaultInterests()
     /**
-     * EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
+     * [OLD] EV-16395: The test subjects field data was migrated and fixed. Thus updating below line to get subjects
+     *
+     *
+     * The subject in session storage is saved as an array of subjects or a subject string.
+     * To handle this and to support backward compatibility for current users where session
+     * storage may contains a subject string, we check if the subject is an array and
+     * retrieve the value accordingly. For the fix, we will follow the plan below to
+     * fix this permanently.
+     *
+     * Plan:
+     *
+     * 1. Handle both subject arrays and subject strings. [DONE]
+     * 2. Update all places where subject occurs to use an string. Search for occurrences of setDefaultInterests. [DONE]
+     * 3. Remove the array check from below.
      */
-    const _subject = defaultInterests?.subject || ''
+    let _subject = defaultInterests?.subject
+    _subject = (Array.isArray(_subject) ? _subject[0] : _subject) || ''
 
     if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
       const testSubject = testSelectedSubjects?.length

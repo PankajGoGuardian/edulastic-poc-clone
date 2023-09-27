@@ -946,7 +946,7 @@ class Container extends PureComponent {
       grades: itemsSubjectAndGrade.grades,
       subjects: [],
     })
-    setDefaultInterests({ subject: subjects[0] || '' })
+    setDefaultInterests({ subject: subjects || [] })
   }
 
   onChangeSkillIdentifiers = (identifiers) => {

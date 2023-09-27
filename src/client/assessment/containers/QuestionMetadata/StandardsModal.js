@@ -106,7 +106,6 @@ const StandardsModal = ({
     }
     grades = grades || []
 
-
     const formattedCurriculums = getFormattedCurriculums(
       interestedCurriculums,
       curriculums,
@@ -155,7 +154,7 @@ const StandardsModal = ({
       })
     }
     setDefaultInterests({
-      subject: newState.subject,
+      subject: newState.subject ? [newState.subject] : [],
       curriculumId: newState.standard.id,
       grades: newState.grades,
     })

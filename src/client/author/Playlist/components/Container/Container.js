@@ -436,6 +436,7 @@ class TestList extends Component {
       search: emptyFilters,
       sort: initialSortState,
     })
+    setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
     history.push(`/author/playlists`)
   }
 

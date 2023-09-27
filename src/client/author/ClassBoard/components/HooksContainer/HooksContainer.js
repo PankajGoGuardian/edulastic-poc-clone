@@ -5,10 +5,8 @@ import { connect } from 'react-redux'
 import useInterval from '@use-it/interval'
 import { assignmentPolicyOptions as Policies } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
-import { keyBy } from 'lodash'
 import {
   realtimeGradebookActivityAddAction,
-  gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
   // realtimeGradebookQuestionAddMaxScoreAction,
   // realtimeGradebookQuestionsRemoveAction,
@@ -23,13 +21,10 @@ import {
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   setCurrentTestActivityIdAction,
+  setRealTimeAttemptDataAction,
   setUpdateActivityIdInEntityAction,
 } from '../../../src/actions/classBoard'
-import {
-  getIsItemContentHiddenSelector,
-  getTestItemsDataSelector,
-  testNameSelector,
-} from '../../ducks'
+import { testNameSelector } from '../../ducks'
 import { getFormattedName } from '../../../Gradebook/transformers'
 
 const needRealtimeDateTracking = ({
@@ -72,9 +67,9 @@ const Shell = ({
   addActivity,
   classId,
   assignmentId,
-  addItem,
   loadTestActivity,
   submitActivity,
+  setRealTimeAttemptData,
   // removeQuestions,
   // addQuestionsMaxScore,
   // closeAssignment,
@@ -93,8 +88,6 @@ const Shell = ({
   isEG,
   history,
   setUpdateActivityIdInEntity,
-  isItemContentHidden,
-  testItems,
 }) => {
   const reloadLCB = () => {
     loadTestActivity(assignmentId, classId)
@@ -144,25 +137,9 @@ const Shell = ({
       msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
     })
   }
-
   useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
-    addItem: (payload) => {
-      // TODO: do this from a selector by combining the isItemContentHidden variable
-      const testItemsById = keyBy(testItems, '_id')
-      return addItem(
-        payload.map((item) => {
-          const currentItem = testItemsById[item.testItemId]
-          if (currentItem && currentItem.autoGrade && isItemContentHidden) {
-            return {
-              ...item,
-              isItemContentHidden,
-            }
-          }
-          return item
-        })
-      )
-    },
+    addItem: setRealTimeAttemptData,
     submitActivity,
     redirect: () => {
       if (!isEG) {
@@ -185,12 +162,10 @@ export default compose(
   connect(
     (state) => ({
       testName: testNameSelector(state),
-      testItems: getTestItemsDataSelector(state),
-      isItemContentHidden: getIsItemContentHiddenSelector(state),
     }),
     {
       addActivity: realtimeGradebookActivityAddAction,
-      addItem: gradebookTestItemAddAction,
+      setRealTimeAttemptData: setRealTimeAttemptDataAction,
       submitActivity: realtimeGradebookActivitySubmitAction,
       // removeQuestions: realtimeGradebookQuestionsRemoveAction,
       // addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,

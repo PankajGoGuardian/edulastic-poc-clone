@@ -447,3 +447,5 @@ export const SET_AI_GENERATE_QUESTION_STATE =
 
 export const FETCH_AI_GENERATE_QUESTION =
   '[ai generate question] fetch AI generate question'
+
+export const SET_REALTIME_ATTEMPT_DATA = '[gradebook] set realtime attempt data'

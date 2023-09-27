@@ -146,7 +146,10 @@ export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
     interestedCurriculums,
     curriculums
   ) => {
-    const subject = previousInterests.subject || interestedSubjects[0] || ''
+    const _subject = Array.isArray(previousInterests?.subject)
+      ? previousInterests?.subject[0]
+      : previousInterests?.subject
+    const subject = _subject || interestedSubjects[0] || ''
 
     const curriculum =
       curriculums?.find(

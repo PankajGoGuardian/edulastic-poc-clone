@@ -5,33 +5,41 @@ import { segmentApi } from '@edulastic/api'
  * For POC the config is hard coded. Expected to be loaded dynamically from DB
  */
 const pocConfig = {
-  baseEvents: {
-    TestItemEvent: {
-      testId: 'track-test-id',
-      testItemId: 'track-test-item-id',
-    },
-  },
-  events: {
-    Dashboard: 'test.general.analytics.poc.dashboard',
-    'check-answer-btn': {
-      _extends: 'TestItemEvent',
-      name: 'test.general.analytics.poc.checkAnswer',
-    },
+  clickEvents: {
+    '[data-cy="Dashboard"]': 'test.general.analytics.poc.dashboard',
+    '[data-cy="Assignments"]': 'test.general.analytics.poc.assignments',
+    '[data-cy="Gradebook"]': 'test.general.analytics.poc.gradebook',
   },
 }
 
-export function attributes(attrs) {
-  return Object.keys(attrs).reduce(
-    (acc, k) => ({ ...acc, [`data-${k}`]: attrs[k] }),
-    {}
-  )
+function delay(ms) {
+  return new Promise((res) => setTimeout(res, ms))
 }
 
-const ANALYTIC_ATTRIBUTE = 'data-cy'
+const SELECTOR_MATCH_BATCH_SIZE = 100
 
-function extendEvent(base, event) {
-  const baseEvent = pocConfig.baseEvents[base]
-  return { ...baseEvent, ...event }
+/**
+ *
+ * @param {{[event: string]: string}} events
+ * @param { EventTarget } target
+ */
+async function findMatchingSelector(events, target) {
+  let count = 0
+  for (const [selector, event] of Object.entries(events)) {
+    count++
+    if (target?.closest(selector)) {
+      return event
+    }
+    /**
+     * Hack to split the long running task into
+     * multiple subtasks running in multiple event loops so that
+     * it doesn't block the browser event loop
+     */
+    if (count % SELECTOR_MATCH_BATCH_SIZE === 0) {
+      await delay(0)
+    }
+  }
+  return null
 }
 
 export function useGlobalAnalytics() {
@@ -42,47 +50,19 @@ export function useGlobalAnalytics() {
      */
     const clickListener = (e) => {
       if (e.target) {
-        const target = e.target
-        const trackValue = target
-          .closest(`[${ANALYTIC_ATTRIBUTE}]`)
-          ?.getAttribute(ANALYTIC_ATTRIBUTE)
-        if (trackValue && trackValue in pocConfig.events) {
-          if (typeof pocConfig.events[trackValue] === 'string') {
-            segmentApi.genericEventTrack(pocConfig.events[trackValue])
-            console.log('genericEventTrack::', pocConfig.events[trackValue])
-          } else {
-            let eventConfig = null
-            const { _extends, name, ...event } = pocConfig.events[trackValue]
-            eventConfig = event
-            if (_extends) {
-              eventConfig = extendEvent(_extends, event)
-            }
-
-            const eventDetails = Object.keys(eventConfig).reduce((acc, key) => {
-              const attribute = `[data-${eventConfig[key]}]`
-              return {
-                ...acc,
-                [key]:
-                  target
-                    .closest(attribute)
-                    ?.getAttribute(`data-${eventConfig[key]}`) || undefined,
-              }
-            }, {})
-
-            segmentApi.genericEventTrack(name, eventDetails)
-            console.log('genericEventTrack::details::', {
-              name,
-              ...eventDetails,
-            })
+        findMatchingSelector(pocConfig.clickEvents, e.target).then((event) => {
+          if (event) {
+            console.log('GeneralAnalytics Track:::', event)
+            segmentApi.genericEventTrack(event)
           }
-        }
+        })
       }
     }
 
-    document.addEventListener('click', clickListener, true)
+    document.addEventListener('click', clickListener, { passive: true })
 
     return () => {
-      document.removeEventListener('click', clickListener, true)
+      document.removeEventListener('click', clickListener, { passive: true })
     }
   }, [])
 }

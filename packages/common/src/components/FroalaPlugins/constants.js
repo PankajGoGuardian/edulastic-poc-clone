@@ -20,6 +20,7 @@ const buttons = [
   'undo',
   'redo',
   'specialCharacters',
+  'insertAudio',
 ]
 
 export const DEFAULT_TOOLBAR_BUTTONS = {

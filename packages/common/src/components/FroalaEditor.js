@@ -45,6 +45,7 @@ import {
   replaceLatexesWithMathHtml,
   replaceMathHtmlWithLatexes,
 } from '../utils/mathUtils'
+import audioPlugin from './FroalaPlugins/audioPlugin'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -96,6 +97,13 @@ const CustomEditor = ({
   const EditorRef = useRef(null)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
+
+  useEffect(() => {
+    if (window.jQuery) {
+      // add audio plugin
+      audioPlugin(FroalaEditor)
+    }
+  }, [window?.jQuery])
 
   const toolbarButtons = getToolbarButtons(
     'STD',

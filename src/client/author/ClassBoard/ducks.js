@@ -152,6 +152,11 @@ export const getTestItemsDataSelector = createSelector(
   (state) => get(state, 'data.testItemsData')
 )
 
+export const getTestItemsByIdSelector = createSelector(
+  getTestItemsDataSelector,
+  (testItems) => keyBy(testItems, '_id')
+)
+
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.additionalData
@@ -970,9 +975,8 @@ function* correctItemUpdateSaga({ payload }) {
 
 function* setRealTimeAttemptDataSaga({ payload }) {
   try {
-    const testItems = yield select(getTestItemsDataSelector)
     const isItemContentHidden = yield select(getIsItemContentHiddenSelector)
-    const testItemsById = keyBy(testItems, '_id')
+    const testItemsById = yield select(getTestItemsByIdSelector)
     const result = payload.map((item) => {
       const currentItem = testItemsById[item.testItemId]
       if (currentItem && currentItem.autoGrade && isItemContentHidden) {
@@ -1530,15 +1534,20 @@ export const getSortedTestActivitySelector = createSelector(
 
 export const getSortedAndContentHiddenActivitySelector = createSelector(
   getSortedTestActivitySelector,
-  (state) =>
-    state
-      .filter((uta) => uta.UTASTATUS === testActivityStatus.SUBMITTED)
-      ?.map((item) => ({
-        ...item,
-        questionActivities: item.questionActivities?.filter(
-          (uqa) => !uqa.isItemContentHidden
-        ),
-      }))
+  getTestItemsByIdSelector,
+  getIsItemContentHiddenSelector,
+  (testActivities, testItemsById, isItemContentHidden) => {
+    if (!isItemContentHidden) {
+      return testActivities
+    }
+    return testActivities?.map((item) => ({
+      ...item,
+      questionActivities: item.questionActivities?.filter(
+        (uqa) =>
+          !uqa.isItemContentHidden && !testItemsById[uqa.testItemId]?.autoGrade
+      ),
+    }))
+  }
 )
 
 export const getGradeBookSelector = createSelector(

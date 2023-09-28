@@ -6,9 +6,14 @@ import { compose } from 'redux'
 import { uniq as _uniq } from 'lodash'
 import { IconSource } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { withWindowSizes, MainContentWrapper } from '@edulastic/common'
+import {
+  withWindowSizes,
+  MainContentWrapper,
+  notification,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
+import ReactPlayer from 'react-player'
 import { getItemsSubjectAndGradeSelector } from '../../../AddItems/ducks'
 import { ButtonLink } from '../../../../../src/components/common'
 import SummaryCard from '../Sidebar/SideBarSwitch'
@@ -73,6 +78,14 @@ const Summary = ({
       updateDefaultThumbnail('')
     }
     setData({ ...test, [field]: value })
+  }
+
+  const handleDuration = (duration) => {
+    const maxLimit = 30 * 60 // 30 min in seconds
+    if (duration > maxLimit) {
+      notification({ messageKey: 'videoDurationExceeds30Min' })
+      setData({ ...test, videoUrl: '' })
+    }
   }
 
   useEffect(() => {
@@ -177,6 +190,11 @@ const Summary = ({
         isEditable={isEditable}
         test={test}
         toggleTestLikeRequest={toggleTestLikeRequest}
+      />
+      <ReactPlayer
+        style={{ display: 'none' }}
+        url={test.videoUrl}
+        onDuration={handleDuration}
       />
     </MainContentWrapper>
   )

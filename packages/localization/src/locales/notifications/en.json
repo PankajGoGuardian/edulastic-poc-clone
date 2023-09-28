@@ -2238,5 +2238,9 @@
   "insertFeedTypesSucess": {
     "message": "Feed type(s) enabled successfully.",
     "description": ""
+  },
+  "videoDurationExceeds30Min": {
+    "message": "Video duration allowed is less than 30 minutes.",
+    "description": ""
   }
 }

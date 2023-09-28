@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { TextWrapper } from '../../../../../styledComponents'
 import { AIFeatureContentWrapper, Image, TextLink } from './styled'
 
-const AIFeaturedTiles = ({ onVideoQuizClick }) => {
+const AIFeaturedTiles = ({ onVideoQuizClick, videoQuizPath }) => {
   const [isModelOpen, setIsModelOpen] = useState(false)
 
   const title = 'Get Started with VideoQuiz'
@@ -43,13 +43,13 @@ const AIFeaturedTiles = ({ onVideoQuizClick }) => {
         </TextWrapper>
         <FlexContainer justifyContent="flex-start" flexWrap="wrap">
           <FlexContainer flexDirection="column" alignItems="flex-end">
-            <a onClick={onVideoQuizClick}>
+            <Link onClick={onVideoQuizClick} to={videoQuizPath}>
               <Image
                 alt="videoquiz"
                 src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"
                 width="240px"
               />
-            </a>
+            </Link>
             <TextLink onClick={() => setIsModelOpen(true)}>
               WATCH QUICK TOUR
             </TextLink>

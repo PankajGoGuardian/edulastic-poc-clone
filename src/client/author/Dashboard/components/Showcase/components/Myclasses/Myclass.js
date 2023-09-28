@@ -732,7 +732,6 @@ const MyClasses = ({
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Dashboard',
     })
-    history.push(videoQuizPath)
   }
 
   const isManualEnrollmentAllowed =
@@ -758,7 +757,12 @@ const MyClasses = ({
         </EduElse>
       </EduIf>
 
-      {isPremiumUser && <AIFeaturedTiles onVideoQuizClick={onVideoQuizClick} />}
+      {isPremiumUser && (
+        <AIFeaturedTiles
+          onVideoQuizClick={onVideoQuizClick}
+          videoQuizPath={videoQuizPath}
+        />
+      )}
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}

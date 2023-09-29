@@ -82,7 +82,7 @@ initializeSegment()
 const { store } = configureStore({})
 
 const RootComp = () => {
-  GeneralAnalyticsPoc.useGlobalAnalytics()
+  GeneralAnalyticsPoc.useGlobalAnalytics({ history })
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -94,6 +94,7 @@ const RootComp = () => {
     </I18nextProvider>
   )
 }
+
 ReactDOM.render(<RootComp />, document.getElementById('react-app'))
 
 if (window.Cypress) {

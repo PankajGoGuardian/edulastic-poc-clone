@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react'
+import React, { useRef, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
@@ -14,11 +14,7 @@ import {
 } from '@edulastic/common'
 import { cardTitleColor, linkColor1, themeColor } from '@edulastic/colors'
 import { IconClose } from '@edulastic/icons'
-import {
-  toggleRefMaterialAction,
-  isEnabledRefMaterialSelector,
-  getTestsCreatingSelector,
-} from '../../TestPage/ducks'
+import { getTestsCreatingSelector } from '../../TestPage/ducks'
 
 const allowedFiles = [
   fileTypes.PDF,
@@ -29,30 +25,17 @@ const allowedFiles = [
 
 const folder = aws.s3Folders.DEFAULT
 
-const MAX_SIZE = 2 * 1024 * 1024 // 2 MB
-// const reference = {
-//   name: 'bird.png',
-//   size: 532360,
-//   source: 'file path',
-//   type: 'image/png',
-// }
+const MAX_SIZE_2MB = 2 * 1024 * 1024
 
 export const withRefMaterial = (WrappedComponent) => {
   const hocComponent = (props) => {
-    const {
-      setData,
-      enableUpload,
-      premium,
-      disabled,
-      referenceDocAttributes,
-      toggleRefMaterial,
-      creating,
-    } = props
+    const { setData, premium, disabled, referenceDocAttributes } = props
 
     const hasRefMaterial = !isEmpty(referenceDocAttributes)
 
     const inputRef = useRef()
     const [isUploading, setIsUploading] = useState(false)
+    const [enableUpload, setEnableUpload] = useState(hasRefMaterial)
 
     const onChooseFile = useCallback((evt) => {
       if (inputRef.current) {
@@ -73,7 +56,7 @@ export const withRefMaterial = (WrappedComponent) => {
             notification({ messageKey: 'fileTypeErr' })
             return
           }
-          if (size > MAX_SIZE) {
+          if (size > MAX_SIZE_2MB) {
             notification({ messageKey: 'imageSizeError' })
             return
           }
@@ -90,40 +73,21 @@ export const withRefMaterial = (WrappedComponent) => {
     }
 
     const handleToggleSwitch = (checked) => {
-      toggleRefMaterial(checked)
+      setEnableUpload(checked)
+      if (!checked) {
+        setData({})
+      }
     }
 
     const handRemoveFile = () => {
       setData({})
     }
 
-    useEffect(() => {
-      if (hasRefMaterial) {
-        toggleRefMaterial(true)
-      }
-
-      return () => {
-        if (!hasRefMaterial) {
-          toggleRefMaterial(false)
-        }
-      }
-    }, [hasRefMaterial])
-
-    useEffect(() => {
-      if (enableUpload && creating && !hasRefMaterial) {
-        toggleRefMaterial(false)
-      }
-      if (!premium && hasRefMaterial) {
-        setData({})
-        toggleRefMaterial(false)
-      }
-    }, [creating, enableUpload, premium, hasRefMaterial])
-
     return (
       <WrappedComponent
         {...props}
         onChangeSwitch={handleToggleSwitch}
-        hasRefMaterial={hasRefMaterial}
+        enableUpload={enableUpload}
       >
         {!hasRefMaterial && enableUpload && premium && (
           <FlexContainer
@@ -170,15 +134,9 @@ export const withRefMaterial = (WrappedComponent) => {
     )
   }
 
-  return connect(
-    (state) => ({
-      creating: getTestsCreatingSelector(state),
-      enableUpload: isEnabledRefMaterialSelector(state),
-    }),
-    {
-      toggleRefMaterial: toggleRefMaterialAction,
-    }
-  )(hocComponent)
+  return connect((state) => ({
+    creating: getTestsCreatingSelector(state),
+  }))(hocComponent)
 }
 
 const UploadInput = styled.input`

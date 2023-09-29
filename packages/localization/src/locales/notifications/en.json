@@ -516,10 +516,6 @@
     "message": "Please select at least one subject to bulk assign.",
     "description": ""
   },
-  "uploadReferenceMaterial": {
-    "message": "Please upload reference material.",
-    "description": ""
-  },
   "enterPenaltyOnHintsValue": {
     "message": "Please enter value for penalty% on using hint.",
     "description": ""

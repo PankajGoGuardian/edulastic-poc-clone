@@ -1,5 +1,7 @@
 /* eslint-disable func-names */
+import { aws } from '@edulastic/constants'
 import _ from 'lodash'
+import { uploadToS3 } from '../../helpers'
 
 function audioPlugin(FE) {
   console.log('audio', FE)
@@ -285,25 +287,11 @@ function audioPlugin(FE) {
         ])
       }
 
-      const parseResponse = function (response) {
-        if (
-          editor.events.trigger('audio.uploaded', [response], true) === false
-        ) {
-          editor.edit.on()
-          return false
-        }
-
-        const res = JSON.parse(response)
-        if (res.link) return res
-        throwError(MISSING_LINK, response)
-        return false
-      }
-
-      const addNewAudio = function (src, response) {
-        const data = parseResponse(response) || {}
+      const addNewAudio = function (src) {
+        const data = {}
         const $audio = $(
           '<span contenteditable="false" draggable="true" class="fr-audio fr-uploading">' +
-            '<audio controls="controls" controlsList="nodownload"></audio>' +
+            '<audio controls="controls" class="fr-draggable" controlsList="nodownload"></audio>' +
             '</span>'
         )
         $audio.toggleClass('fr-draggable', editor.opts.audioMove)
@@ -380,7 +368,7 @@ function audioPlugin(FE) {
         return $audio
       }
 
-      const insertHtmlAudio = function (link, response) {
+      const insertHtmlAudio = function (link, response = '{}') {
         editor.edit.on()
         showProgressMessage('Loading audio')
         showProgressBar('Loading audio')
@@ -647,8 +635,10 @@ function audioPlugin(FE) {
               $popup.find('.fr-audio-by-url-layer input[type="text"]').val() ||
               ''
             ).trim()
-            $popup.find('input, button').prop({ disabled: true })
+            // $popup.find('input, button').prop({ disabled: true })
           }
+
+          console.log('link', link)
 
           if (!/^http/.test(link)) link = `https://${link}`
           insertHtmlAudio(link)
@@ -675,69 +665,82 @@ function audioPlugin(FE) {
 
           if (!editor.drag_support.formdata) return false
 
-          const formData = new FormData()
-          _.each(editor.opts.audioUploadParams, (key, value) =>
-            formData.append(key, value)
-          )
-          formData.append(editor.opts.audioUploadParam, audio)
+          //   const formData = new FormData()
+          //   _.each(editor.opts.audioUploadParams, (key, value) =>
+          //     formData.append(key, value)
+          //   )
+          //   formData.append(editor.opts.audioUploadParam, audio)
 
-          const url = editor.opts.audioUploadURL
-          const xhr = editor.core.getXHR(url, editor.opts.audioUploadMethod)
+          //   const url = editor.opts.audioUploadURL
+          //   const xhr = editor.core.getXHR(url, editor.opts.audioUploadMethod)
+          showProgressMessage('Loading audio')
+          showProgressMessage('Uploading......')
+          uploadToS3(audio, aws.s3Folders.DEFAULT)
+            .then((url) => {
+              showProgressMessage('Successfully Uploaded')
+              insertHtmlAudio(url)
+            })
+            .catch((e) => {
+              console.error(e)
+              editor.edit.on()
+              editor.audio.hideProgressBar(true)
+              throwError(BAD_RESPONSE, e)
+            })
 
           // Set upload events.
-          xhr.onload = function () {
-            showProgressMessage('Loading audio')
+          //   xhr.onload = function () {
+          //     showProgressMessage('Loading audio')
 
-            const { status, response, responseText } = this
-            if (status === 415) {
-              throwError(BAD_FILE_TYPE, JSON.parse(responseText))
-              return
-            }
-            if (status < 200 || status >= 300) {
-              throwError(ERROR_DURING_UPLOAD, response || responseText)
-              return
-            }
+          //     const { status, response, responseText } = this
+          //     if (status === 415) {
+          //       throwError(BAD_FILE_TYPE, JSON.parse(responseText))
+          //       return
+          //     }
+          //     if (status < 200 || status >= 300) {
+          //       throwError(ERROR_DURING_UPLOAD, response || responseText)
+          //       return
+          //     }
 
-            try {
-              const resp = parseResponse(response)
-              if (resp) insertHtmlAudio(resp.link, responseText)
-            } catch (ex) {
-              // Bad response.
-              throwError(BAD_RESPONSE, response || responseText)
-            }
-          }
+          //     try {
+          //       const resp = parseResponse(response)
+          //       if (resp) insertHtmlAudio(resp.link, responseText)
+          //     } catch (ex) {
+          //       // Bad response.
+          //       throwError(BAD_RESPONSE, response || responseText)
+          //     }
+          //   }
 
-          xhr.onerror = function () {
-            throwError(
-              BAD_RESPONSE,
-              this.response || this.responseText || this.responseXML
-            )
-          }
+          //   xhr.onerror = function () {
+          //     throwError(
+          //       BAD_RESPONSE,
+          //       this.response || this.responseText || this.responseXML
+          //     )
+          //   }
 
-          xhr.upload.onprogress = function (e) {
-            if (e.lengthComputable)
-              showProgressMessage('Uploading', (e.loaded / e.total) * 100 || 0)
-          }
+          //   xhr.upload.onprogress = function (e) {
+          //     if (e.lengthComputable)
+          //       showProgressMessage('Uploading', (e.loaded / e.total) * 100 || 0)
+          //   }
 
-          xhr.onabort = function () {
-            editor.edit.on()
-            editor.audio.hideProgressBar(true)
-          }
+          //   xhr.onabort = function () {
+          //     editor.edit.on()
+          //     editor.audio.hideProgressBar(true)
+          //   }
 
           showProgressBar()
           editor.events.disableBlur()
           editor.edit.off()
           editor.events.enableBlur()
 
-          const $popup = $(editor.popups.get('audio.insert'))
-          if ($popup) {
-            $popup.off('abortUpload').on('abortUpload', function () {
-              if (xhr.readyState !== 4) xhr.abort()
-            })
-          }
+          //   const $popup = $(editor.popups.get('audio.insert'))
+          //   if ($popup) {
+          //     $popup.off('abortUpload').on('abortUpload', function () {
+          //       if (xhr.readyState !== 4) xhr.abort()
+          //     })
+          //   }
 
           // Send data.
-          xhr.send(formData)
+          //   xhr.send(formData)
           return true
         },
 
@@ -827,7 +830,8 @@ function audioPlugin(FE) {
     FE.RegisterCommand('audioInsertByURL', {
       undo: true,
       focus: true,
-      callback() {
+      callback(e) {
+        console.log('insert url', e)
         this.audio.insertByURL()
       },
     })
@@ -944,6 +948,7 @@ function audioPlugin(FE) {
             'Paste the URL of the audio you want to insert.'
           )
         )
+        console.log('insert url', src)
         if (src) this.audio.insertByURL(src)
       },
     })

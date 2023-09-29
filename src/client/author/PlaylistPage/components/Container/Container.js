@@ -154,7 +154,7 @@ class Container extends PureComponent {
       subject: subjects[0] || 'Other Subjects',
       standard: get(playlist, 'modules[0].data[0].standardIdentifiers[0]', ''),
     }).then((thumbnail) => updateDefaultPlaylistThumbnail(thumbnail))
-    setDefaultInterests({ subject: subjects[0] || '' })
+    setDefaultInterests({ subject: subjects || [] })
   }
 
   handleChangeCollection = (value, options) => {

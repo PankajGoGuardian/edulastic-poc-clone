@@ -256,7 +256,7 @@ class AddItems extends PureComponent {
     const { clearFilterState, receiveTestItems, limit } = this.props
     clearFilterState({ needToSetFilter: false })
     receiveTestItems(initialSearchState, initialSortState, 1, limit)
-    setDefaultInterests({ subject: '', grades: [], curriculumId: '' })
+    setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }
 
   handleCreateTestItem = () => {

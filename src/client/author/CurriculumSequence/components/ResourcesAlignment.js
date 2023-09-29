@@ -104,7 +104,7 @@ const ResourcesAlignment = ({
       defaultCurriculumName: '',
     })
     handleEditAlignment({ subject: val, curriculum: '' })
-    setDefaultInterests({ subject: val })
+    setDefaultInterests({ subject: [val] })
   }
 
   const setGrades = (val) => {

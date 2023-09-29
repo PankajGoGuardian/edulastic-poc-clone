@@ -420,12 +420,7 @@ module.exports = {
     'parcc',
     'sbac',
   ],
-  REF_MATERIAL_ALLOWED_SKIN_TYPES: [
-    'edulastic',
-    'quester',
-    'drc',
-    'ohio_state_tests',
-  ],
+
   languageCodes: {
     ENGLISH: 'en',
     SPANISH: 'es',

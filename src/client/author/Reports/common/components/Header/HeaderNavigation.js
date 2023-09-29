@@ -4,6 +4,7 @@ import { camelCase } from 'lodash'
 
 import { HeaderTabs } from '@edulastic/common'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
+import { extraDesktopWidth } from '@edulastic/colors'
 
 const HeaderNavigation = ({ navigationItems, activeItemKey }) => (
   <StyledTabs>
@@ -16,6 +17,7 @@ const HeaderNavigation = ({ navigationItems, activeItemKey }) => (
           to={item.location}
           linkLabel={item.title}
           isNew={item.isNew}
+          mediumDesktopWidth={extraDesktopWidth}
         />
       )
     })}

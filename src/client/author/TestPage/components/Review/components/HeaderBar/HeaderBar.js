@@ -214,7 +214,7 @@ const HeaderBar = ({
                   height="20px"
                   fontSize="9px"
                   isGhost
-                  data-cy="removeNewSections"
+                  data-cy="removeAllSections"
                   disabled={disableRMbtns}
                   onClick={
                     !disableRMbtns ? () => setShowRemoveModal(true) : () => null

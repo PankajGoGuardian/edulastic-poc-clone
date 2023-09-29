@@ -18,6 +18,7 @@ const ReportView = ({
   pageFilters,
   reportFilters,
   externalBands,
+  externalTests,
   selectedPrePerformanceBand,
   selectedPostPerformanceBand,
   compareByOptions,
@@ -44,6 +45,7 @@ const ReportView = ({
     reportSummaryData,
     reportFilters,
     externalBands,
+    externalTests,
     selectedPrePerformanceBand,
     selectedPostPerformanceBand,
   })

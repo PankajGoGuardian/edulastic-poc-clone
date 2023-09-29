@@ -11,9 +11,7 @@ import {
 } from 'recharts'
 import { themeLightGrayColor, fadedBlack, lightGrey18 } from '@edulastic/colors'
 import { startCase } from 'lodash'
-import { FlexContainer } from '@edulastic/common'
 import { YAxisLabel } from './chartUtils/yAxisLabel'
-import { ChartLegendPill, ChartLegendItem } from './styled-components'
 
 const SimpleLineChart = ({
   data,
@@ -22,27 +20,12 @@ const SimpleLineChart = ({
   xAxisTicks,
   xAxisInterval = 'preserveEnd',
   yAxisLabel,
+  legendProps = {},
+  tooltipProps = {},
 }) => {
   const yAxisTickFormatter = (value) => `${value}%`
   const xAxisTickFormatter = (value) => value.toUpperCase()
   const tooltipFormatter = (value, name) => [`${value}%`, startCase(name)]
-
-  const renderLegend = (props) => {
-    const { payload } = props
-
-    return (
-      <FlexContainer justifyContent="flex-end">
-        {payload.map(({ value, color }, index) => {
-          return (
-            <ChartLegendItem key={`item-${index}`}>
-              <ChartLegendPill color={color} />
-              {`${value} RISK`.toUpperCase()}
-            </ChartLegendItem>
-          )
-        })}
-      </FlexContainer>
-    )
-  }
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -58,7 +41,7 @@ const SimpleLineChart = ({
         }}
       >
         <CartesianGrid vertical={false} stroke={themeLightGrayColor} />
-        <Legend content={renderLegend} />
+        <Legend {...legendProps} />
         <XAxis
           dataKey={xAxisLabelKey}
           stroke={themeLightGrayColor}
@@ -86,14 +69,15 @@ const SimpleLineChart = ({
             />
           }
         />
-        <Tooltip formatter={tooltipFormatter} />
-        {lines.map(({ dataKey, stroke }) => (
+        <Tooltip formatter={tooltipFormatter} {...tooltipProps} />
+        {lines.map(({ dataKey, stroke, hide }) => (
           <Line
             type="monotone"
             dataKey={dataKey}
             stroke={stroke}
             dot={{ r: 5 }}
             strokeWidth={2}
+            hide={hide}
           />
         ))}
       </LineChart>

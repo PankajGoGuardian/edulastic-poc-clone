@@ -701,7 +701,9 @@ export const highlightSelectedText = (
     childNodeNames.includes(n)
   )
 
-  if (hasBlockedNode) {
+  // not allowing highlight selection if there are more than 1 tag excluding BR
+  const notOnlyBr = childNodeNames.find((item) => item !== 'BR')
+  if (hasBlockedNode || (notOnlyBr && childNodeNames.length > 1)) {
     clearSelection()
     return
   }

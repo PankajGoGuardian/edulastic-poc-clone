@@ -35,10 +35,7 @@ import {
   PaginationInfo,
 } from './styled'
 
-const {
-  ASSESSMENT,
-  COMMON_ASSESSMENT,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 
 const AssignRecommendations = ({
   userRole,
@@ -69,7 +66,7 @@ const AssignRecommendations = ({
     const testType = assignmentSettings.testType
       ? assignmentSettings.testType
       : isAdmin
-      ? COMMON_ASSESSMENT
+      ? testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
       : ASSESSMENT
 
     const updatedAssignment = {

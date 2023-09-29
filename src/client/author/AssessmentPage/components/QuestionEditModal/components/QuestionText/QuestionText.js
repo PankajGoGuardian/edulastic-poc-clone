@@ -22,6 +22,7 @@ import {
   FormInline,
   FormGroup,
 } from '../../common/QuestionForm'
+import SpecialCharacters from './SpecialCharacters'
 
 export default class QuestionText extends React.Component {
   constructor(props) {
@@ -226,6 +227,8 @@ export default class QuestionText extends React.Component {
 
   render() {
     const { answer, score, allow, altResponses = [], matchCase } = this.state
+    const { question } = this.props
+
     return (
       <QuestionFormWrapper>
         <FormGroup>
@@ -309,6 +312,8 @@ export default class QuestionText extends React.Component {
             data-cy="matchCase"
           />
         </FormGroup>
+
+        <SpecialCharacters question={question} />
       </QuestionFormWrapper>
     )
   }

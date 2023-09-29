@@ -48,8 +48,10 @@ export const useSaveForm = ({
     setAiFromContent((state) => ({ ...state, alignment }))
   }
 
-  const onCreateItems = (showSelectGroup = true) => {
-    segmentApi.genericEventTrack('AIQuizCreateTestClick', {})
+  const onCreateItems = (showSelectGroup = true, source = 'Test Library') => {
+    segmentApi.genericEventTrack('AIQuizCreateTestClick', {
+      source,
+    })
     resetTestDetails()
     if (addItems && showSelectGroup && hasSections) {
       setSelectSectionVisible(true)

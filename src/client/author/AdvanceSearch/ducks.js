@@ -299,6 +299,18 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
 function* setAdvancedSearchCourses({ payload: _payload }) {
   try {
     const districtId = yield select(getUserOrgId)
+    let search = {}
+    if (_payload.searchString) {
+      search = {
+        name: [
+          { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
+        ],
+        number: [
+          { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
+        ],
+        operator: 'or',
+      }
+    }
     const payload = {
       limit: 25,
       page: 1,
@@ -306,11 +318,7 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
       active: 1,
       includes: ['name'],
       districtId,
-      search: {
-        name: [
-          { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
-        ],
-      },
+      search,
       sortField: 'name',
       order: database.SORT_ORDER.ASC,
     }

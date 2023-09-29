@@ -272,6 +272,9 @@ export const SelectInputStyled = styled(Select)`
           .ant-select-selection__placeholder {
             margin-left: 15px;
           }
+          .ant-select-search--inline {
+            width: 90%;
+          }
         }
       }
       &.ant-select-selection--multiple {

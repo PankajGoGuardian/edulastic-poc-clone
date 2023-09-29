@@ -28,6 +28,7 @@ const DEGREE_TO_RADIAN = Math.PI / 180
 const ROUND_OFF_TO_INTEGER = true
 const EMPTY_ARRAY = []
 const EXTERNAL_TEST_KEY_SEPARATOR = '__'
+const EXTERNAL_TEST_NAME_SEPARATOR = '-'
 const LAST_PAGE_INDEX = -1
 
 const performanceBandKeys = {
@@ -477,6 +478,12 @@ const resetStudentFilters = (
   }
 }
 
+const stringifyArrayFilters = (filters) =>
+  Object.keys(filters).reduce((res, k) => {
+    res[k] = Array.isArray(filters[k]) ? filters[k].join(',') : filters[k]
+    return res
+  }, {})
+
 const curateApiFiltersQuery = (
   rawQuery,
   reportFilterFields,
@@ -628,6 +635,7 @@ module.exports = {
   ROUND_OFF_TO_INTEGER,
   EMPTY_ARRAY,
   EXTERNAL_TEST_KEY_SEPARATOR,
+  EXTERNAL_TEST_NAME_SEPARATOR,
   LAST_PAGE_INDEX,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
@@ -662,6 +670,7 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
+  stringifyArrayFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
   PERIOD_TYPES,

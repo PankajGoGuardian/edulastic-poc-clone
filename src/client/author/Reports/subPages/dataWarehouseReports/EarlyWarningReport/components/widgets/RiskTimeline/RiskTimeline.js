@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
-import { dataWarehouseApi } from '@edulastic/api'
 import { isEmpty } from 'lodash'
+import { Row, Col } from 'antd'
+
+import { RISK_BAND_LABELS } from '@edulastic/constants/reportUtils/common'
+import { dataWarehouseApi } from '@edulastic/api'
 import {
   useApiQuery,
   EduIf,
@@ -9,6 +12,7 @@ import {
   SpinLoader,
   FlexContainer,
 } from '@edulastic/common'
+import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
 import {
   Widget,
   StyledEmptyContainer,
@@ -23,15 +27,73 @@ import {
 } from '../../../utils'
 import useErrorNotification from '../../../../../../common/hooks/useErrorNotification'
 import { Spacer } from '../../../../../../../../common/styled'
+import {
+  ChartLegendItem,
+  ChartLegendPill,
+} from '../../../../../../common/components/charts/styled-components'
+import { StyledCustomChartTooltip } from '../../../../../../common/styled'
 
 const title = 'Risk Over Time'
 
+const TooltipRowItem = ({ label = '', value = '' }) => (
+  <Row type="flex" justify="start">
+    <Col className="tooltip-key">{label} : </Col>
+    <Col className="tooltip-value">{value}%</Col>
+  </Row>
+)
+
+const getTooltipJSX = (payload) => {
+  if (payload && payload[0]?.payload) {
+    const tooltipData = payload[0].payload
+    return (
+      <div>
+        <Row type="flex" justify="start">
+          <Col className="tooltip-key">{tooltipData[CHART_LABEL_KEY]}</Col>
+        </Row>
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.HIGH}
+          value={tooltipData[RISK_BAND_LABELS.HIGH]}
+        />
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.MEDIUM}
+          value={tooltipData[RISK_BAND_LABELS.MEDIUM]}
+        />
+        <TooltipRowItem
+          label={RISK_BAND_LABELS.LOW}
+          value={tooltipData[RISK_BAND_LABELS.LOW]}
+        />
+      </div>
+    )
+  }
+  return false
+}
+
+/**
+ * function to render custom chart legend for AssessmentsChart
+ * @param {Object} payload - legend payload for chart
+ */
+const renderLegend = ({ payload }) => (
+  <FlexContainer justifyContent="flex-end">
+    {payload
+      .filter(({ inactive }) => !inactive)
+      .map(({ value, color }, index) => {
+        return (
+          <ChartLegendItem key={`item-${index}`}>
+            <ChartLegendPill color={color} />
+            {`${value} RISK`.toUpperCase()}
+          </ChartLegendItem>
+        )
+      })}
+  </FlexContainer>
+)
+
 const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
   const query = useMemo(
-    () => ({
-      ...settings.requestFilters,
-      ...widgetFilters,
-    }),
+    () =>
+      stringifyArrayFilters({
+        ...settings.requestFilters,
+        ...widgetFilters,
+      }),
     [settings.requestFilters, widgetFilters]
   )
 
@@ -92,6 +154,12 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
                   xAxisTicks={[0, 20, 40, 60, 80, 100]}
                   xAxisInterval={xAxisInterval}
                   yAxisLabel="PERCENTAGE OF STUDENTS"
+                  legendProps={{ content: renderLegend }}
+                  tooltipProps={{
+                    content: (
+                      <StyledCustomChartTooltip getJSX={getTooltipJSX} />
+                    ),
+                  }}
                 />
               </FlexContainer>
             </EduThen>

@@ -1914,10 +1914,9 @@ const setTime = (userRole) => {
 
 const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const testType = entity?.testType
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
+  const { PRACTICE, COMMON } = testTypesConstants.TEST_TYPES
   const {
     ASSESSMENT,
-    COMMON_ASSESSMENT,
     PRACTICE: _PRACTICE,
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
@@ -1980,7 +1979,9 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   if (isAdmin) {
     settings.testType = PRACTICE.includes(testType)
       ? testType
-      : COMMON_ASSESSMENT
+      : COMMON.includes(testType)
+      ? testType
+      : testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
     settings.openPolicy =
       assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
   }
@@ -2952,7 +2953,8 @@ function* publishTestSaga({ payload }) {
 function* publishForRegrade({ payload }) {
   try {
     yield put(setUpdatingTestForRegradeStateAction(true))
-    const _test = yield select(getTestSelector)
+    // cloning the _test as it internally mutating the itemGroups inside updateTestSaga
+    const _test = { ...(yield select(getTestSelector)) }
     const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
     if (_test.isUsed && !_test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true

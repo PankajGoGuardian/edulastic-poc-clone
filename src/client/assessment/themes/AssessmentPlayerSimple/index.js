@@ -44,6 +44,7 @@ import {
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 import UserWorkUploadModal from '../../components/UserWorkUploadModal'
+import { getUserFeatures } from '../../../author/src/selectors/user'
 
 class AssessmentPlayerSimple extends React.Component {
   constructor(props) {
@@ -292,6 +293,7 @@ class AssessmentPlayerSimple extends React.Component {
       calcTypes,
       isLast,
       preventSectionNavigation,
+      userFeatures = {},
     } = this.props
     const {
       showExitPopup,
@@ -302,6 +304,7 @@ class AssessmentPlayerSimple extends React.Component {
       cameraImageIndex,
     } = this.state
 
+    const { canUseImmersiveReader = false } = userFeatures
     const dropdownOptions = Array.isArray(items)
       ? items.map((item, index) => index)
       : []
@@ -367,6 +370,7 @@ class AssessmentPlayerSimple extends React.Component {
             preventSectionNavigation={preventSectionNavigation}
             calcTypes={calcTypes}
             isLast={isLast()}
+            canUseImmersiveReader={canUseImmersiveReader}
           >
             <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer
@@ -513,6 +517,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
+      userFeatures: getUserFeatures(state),
     }),
     {
       checkAnswer: checkAnswerEvaluation,

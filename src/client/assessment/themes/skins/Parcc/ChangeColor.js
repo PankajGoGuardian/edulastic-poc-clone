@@ -86,10 +86,16 @@ const SettingsModal = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             autoFocus
           >
-            <Select.Option value="default">Default</Select.Option>
+            <Select.Option value="default" aria-label="Default">
+              Default
+            </Select.Option>
             {Object.keys(themeColorsMap).map((key) => {
               const item = themeColorsMap[key]
-              return <Select.Option value={key}>{item.title}</Select.Option>
+              return (
+                <Select.Option value={key} aria-label={item.title}>
+                  {item.title}
+                </Select.Option>
+              )
             })}
           </StyledSelect>
         </div>

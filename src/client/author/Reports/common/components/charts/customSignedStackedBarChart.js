@@ -117,6 +117,11 @@ export const SignedStackedBarChart = ({
   preLabelContent = null,
   interventionsData,
   showInterventions,
+  // NOTE props used for the workaround to fix labels not rendering due to interrupted animation
+  // ref: https://github.com/recharts/react-smooth/issues/44
+  animate = true,
+  onAnimationStart = () => {},
+  setAnimate = () => {},
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -146,6 +151,7 @@ export const SignedStackedBarChart = ({
 
   useEffect(() => {
     setPage(LAST_PAGE_INDEX)
+    setAnimate(true)
   }, [settings.frontEndFilters.testTypes])
 
   const constants = {
@@ -263,20 +269,28 @@ export const SignedStackedBarChart = ({
     ? backendPagination.page < backendPagination.pageCount
     : hasNextPage
 
-  const chartNavLeftClick = () =>
-    backendPagination
-      ? setBackendPagination({
-          ...backendPagination,
-          page: backendPagination.page - 1,
-        })
-      : prevPage()
-  const chartNavRightClick = () =>
-    backendPagination
-      ? setBackendPagination({
-          ...backendPagination,
-          page: backendPagination.page + 1,
-        })
-      : nextPage()
+  const chartNavLeftClick = () => {
+    if (backendPagination) {
+      setBackendPagination({
+        ...backendPagination,
+        page: backendPagination.page - 1,
+      })
+    } else {
+      prevPage()
+      setAnimate(true)
+    }
+  }
+  const chartNavRightClick = () => {
+    if (backendPagination) {
+      setBackendPagination({
+        ...backendPagination,
+        page: backendPagination.page + 1,
+      })
+    } else {
+      nextPage()
+      setAnimate(true)
+    }
+  }
 
   return (
     <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
@@ -405,6 +419,8 @@ export const SignedStackedBarChart = ({
                 barSize={45}
                 onMouseOver={onBarMouseOver(bdIndex, true)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
+                isAnimationActive={animate}
+                onAnimationStart={onAnimationStart}
               >
                 {hasBarTopLabels ? (
                   <LabelList

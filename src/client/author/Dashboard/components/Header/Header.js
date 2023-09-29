@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
-import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
+import { EduButton, EduIf, FlexContainer, MainHeader } from '@edulastic/common'
 import {
   IconClockDashboard,
   IconHangouts,
@@ -19,7 +19,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import { get } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
-import { signUpState } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import { slice } from '../../../Subscription/ducks'
 // TODO: Change to SVG
 import IMG from '../../../Subscription/static/6.png'
@@ -37,6 +37,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   currentDistrictInstitutionIds,
+  getManualEnrollmentAllowedSelector,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -150,6 +151,7 @@ const HeaderSection = ({
   setShowCanvasSyncModal,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  manualEnrollmentAllowed = true,
 }) => {
   const { subEndDate, subType } = subscription || {}
 
@@ -228,6 +230,9 @@ const HeaderSection = ({
       ? true
       : schoolPolicy?.[0]?.enableGoogleMeet === true
 
+  const isManualEnrollmentAllowed =
+    user?.user?.role === roleuser.TEACHER ? manualEnrollmentAllowed : true
+  const showCreateClass = atleastOneClassPresent && isManualEnrollmentAllowed
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
@@ -286,7 +291,8 @@ const HeaderSection = ({
           defaultGrades={defaultGrades}
           defaultSubjects={defaultSubjects}
         />
-        {atleastOneClassPresent && (
+
+        <EduIf condition={showCreateClass}>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <EduButton
@@ -301,7 +307,7 @@ const HeaderSection = ({
             onClick={createNewClass}
             trackClick={trackClick('dashboard:create-new-class:click')}
           />
-        )}
+        </EduIf>
         {showPopup && (
           <PopoverWrapper>
             <Popover
@@ -386,6 +392,7 @@ const enhance = compose(
       defaultSubjects: getInterestedSubjectsSelector(state),
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,

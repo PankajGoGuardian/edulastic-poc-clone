@@ -37,10 +37,13 @@ const ReportView = ({
   })
 
   useEffect(() => {
-    const url = `${location.pathname}?${qs.stringify({
+    const query = {
       ...requestFilters,
       ...riskTimelineFilters,
       selectedCompareBy: tableFilters[tableFilterTypes.COMPARE_BY].key,
+    }
+    const url = `${location.pathname}?${qs.stringify(query, {
+      arrayFormat: 'comma',
     })}`
     history.replace(url)
   }, [

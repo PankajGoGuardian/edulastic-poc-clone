@@ -5,15 +5,15 @@ import { debounce } from 'lodash'
 
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
-import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
+import {
+  assignmentStatusOptions,
+  reportUtils,
+  roleuser,
+} from '@edulastic/constants'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import {
-  EMPTY_ARRAY,
-  EXTERNAL_TEST_KEY_SEPARATOR,
-} from '@edulastic/constants/reportUtils/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -27,14 +27,14 @@ import {
 import { shortTestIdKeyLength } from '../../../../Assignments/constants'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+const { EMPTY_ARRAY, EXTERNAL_TEST_NAME_SEPARATOR } = reportUtils.common
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 function getSelectedTestLabel(selectedTest, searchTerms) {
   if (!selectedTest?._id) return ''
 
-  const isExternal =
-    selectedTest._id.split(EXTERNAL_TEST_KEY_SEPARATOR).length > 1
+  const isExternal = selectedTest._id.includes(EXTERNAL_TEST_NAME_SEPARATOR)
 
   let selectedTestLabel = ''
   if (searchTerms.text === searchTerms.selectedText) {

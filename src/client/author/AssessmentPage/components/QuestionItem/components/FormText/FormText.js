@@ -1,9 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'antd'
+import { Input, Popover } from 'antd'
 
+import { EduIf } from '@edulastic/common'
 import { QuestionText } from '../../common/Form'
 import { isSubmitButton } from '../../../../common/helpers'
+
+import CharacterMap from '../../../../../../assessment/components/CharacterMap'
+import { Addon, InputWrapper, TextEntryInput } from '../../styled'
 
 export default class FormText extends React.Component {
   static propTypes = {
@@ -12,6 +16,43 @@ export default class FormText extends React.Component {
     question: PropTypes.object.isRequired,
     onCreateAnswer: PropTypes.func.isRequired,
     answer: PropTypes.string,
+  }
+
+  state = {
+    selection: { start: 0, end: 0 },
+  }
+
+  setText = (text) => {
+    const { saveAnswer } = this.props
+    saveAnswer(text)
+  }
+
+  setSelection = ({ start, end }) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      selection: { start, end },
+    }))
+  }
+
+  handleSelect = (e) => {
+    const { selectionStart, selectionEnd } = e.target
+
+    if (selectionStart !== selectionEnd) {
+      this.setSelection({
+        start: selectionStart,
+        end: selectionEnd,
+      })
+    } else {
+      this.setSelection({
+        start: 0,
+        end: 0,
+      })
+    }
+
+    this.setSelection({
+      start: selectionStart,
+      end: selectionEnd,
+    })
   }
 
   static defaultProps = {
@@ -49,16 +90,45 @@ export default class FormText extends React.Component {
   }
 
   renderForm = () => {
-    const { answer, highlighted = false } = this.props
+    const { answer, highlighted = false, characterMap } = this.props
+    const {
+      selection: { start, end },
+    } = this.state
+
     return (
-      <Input
-        size="large"
-        value={answer}
-        data-cy="textInput"
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-        ref={(el) => highlighted && el?.focus()}
-      />
+      <InputWrapper>
+        <TextEntryInput
+          size="large"
+          value={answer}
+          data-cy="textInput"
+          onChange={this.handleChange}
+          onSelect={this.handleSelect}
+          onBlur={this.handleBlur}
+          ref={(el) => highlighted && el?.focus()}
+        />
+        <EduIf condition={characterMap && characterMap.length}>
+          <Popover
+            placement="bottomLeft"
+            trigger="click"
+            content={
+              <CharacterMap
+                characters={characterMap}
+                onSelect={(char) => {
+                  this.setSelection({
+                    start: start + char.length,
+                    end: start + char.length,
+                  })
+                  this.setText(
+                    answer.slice(0, start) + char + answer.slice(end)
+                  )
+                }}
+              />
+            }
+          >
+            <Addon>á</Addon>
+          </Popover>
+        </EduIf>
+      </InputWrapper>
     )
   }
 
@@ -76,13 +146,14 @@ export default class FormText extends React.Component {
       question: { id, type },
       onCreateAnswer,
       highlighted = false,
+      isEditModalVisible = false,
     } = this.props
 
     return (
       <Input
         size="large"
         onPressEnter={onCreateAnswer(id, type)}
-        ref={(el) => highlighted && el?.focus()}
+        ref={(el) => highlighted && !isEditModalVisible && el?.focus()}
       />
     )
   }

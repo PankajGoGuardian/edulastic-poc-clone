@@ -4,6 +4,7 @@ import {
   notification,
   TextInputStyled,
   EduButton,
+  EduIf,
 } from '@edulastic/common'
 import { Form } from 'antd'
 import { produce } from 'immer'
@@ -12,7 +13,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { IconSaveNew } from '@edulastic/icons'
+import { IconInfo, IconSaveNew } from '@edulastic/icons'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 // actions
 import {
@@ -37,6 +38,7 @@ import {
   StyledRadioGrp,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
 import { HeaderSaveButton } from '../../../../admin/Common/StyledComponents'
+import { Tooltip } from '../../../../common/utils/helpers'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -379,6 +381,7 @@ class DistrictPolicyForm extends Component {
       enableGoogleMeet: districtPolicyData.enableGoogleMeet || false,
       enforceDistrictSignonPolicy:
         districtPolicyData.enforceDistrictSignonPolicy || false,
+      manualEnrollmentAllowed: districtPolicyData.manualEnrollmentAllowed,
     }
     if (Object.prototype.hasOwnProperty.call(districtPolicyData, '_id')) {
       updateDistrictPolicy(updateData)
@@ -491,6 +494,27 @@ class DistrictPolicyForm extends Component {
                   Allow Teachers to search and enroll
                 </CheckboxLabel>
               </StyledElementDiv>
+              <EduIf condition={!isSchoolLevel}>
+                <StyledElementDiv>
+                  <div style={{ display: 'flex' }}>
+                    <CheckboxLabel
+                      data-cy="manual-enrollment-classes"
+                      checked={districtPolicy.manualEnrollmentAllowed ?? true}
+                      onChange={(e) =>
+                        this.change(e, 'manualEnrollmentAllowed')
+                      }
+                    >
+                      Allow manual enrollment in classes
+                    </CheckboxLabel>
+                    <Tooltip
+                      placement="bottom"
+                      title="If checked, teachers can enroll students or co-teachers to an exiting or new class."
+                    >
+                      <IconInfo style={{ marginTop: '4px' }} />
+                    </Tooltip>
+                  </div>
+                </StyledElementDiv>
+              </EduIf>
             </StyledCol>
             <StyledCol mb="10px" sm={24} md={12} xl={6}>
               <StyledHeading1>Allow student addition with</StyledHeading1>

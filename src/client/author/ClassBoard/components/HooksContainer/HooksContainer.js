@@ -7,7 +7,6 @@ import { assignmentPolicyOptions as Policies } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
 import {
   realtimeGradebookActivityAddAction,
-  gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
   // realtimeGradebookQuestionAddMaxScoreAction,
   // realtimeGradebookQuestionsRemoveAction,
@@ -22,6 +21,7 @@ import {
   receiveStudentResponseAction,
   receiveTestActivitydAction,
   setCurrentTestActivityIdAction,
+  setRealTimeAttemptDataAction,
   setUpdateActivityIdInEntityAction,
 } from '../../../src/actions/classBoard'
 import { testNameSelector } from '../../ducks'
@@ -67,9 +67,9 @@ const Shell = ({
   addActivity,
   classId,
   assignmentId,
-  addItem,
   loadTestActivity,
   submitActivity,
+  setRealTimeAttemptData,
   // removeQuestions,
   // addQuestionsMaxScore,
   // closeAssignment,
@@ -137,10 +137,9 @@ const Shell = ({
       msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
     })
   }
-
   useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
-    addItem,
+    addItem: setRealTimeAttemptData,
     submitActivity,
     redirect: () => {
       if (!isEG) {
@@ -166,7 +165,7 @@ export default compose(
     }),
     {
       addActivity: realtimeGradebookActivityAddAction,
-      addItem: gradebookTestItemAddAction,
+      setRealTimeAttemptData: setRealTimeAttemptDataAction,
       submitActivity: realtimeGradebookActivitySubmitAction,
       // removeQuestions: realtimeGradebookQuestionsRemoveAction,
       // addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,

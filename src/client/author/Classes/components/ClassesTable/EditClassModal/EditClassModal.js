@@ -82,8 +82,8 @@ class EditClassModal extends Component {
     if (value)
       Object.assign(searchTerms, {
         search: {
-          name: { type: 'cont', value },
-          number: { type: 'cont', value },
+          name: [{ type: 'cont', value }],
+          number: [{ type: 'cont', value }],
           operator: 'or',
         },
       })
@@ -323,6 +323,8 @@ class EditClassModal extends Component {
                   onSearch={this.fetchCoursesForDistrict}
                   onFocus={this.fetchCoursesForDistrict}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  defaultValue={{ key: course.id }}
+                  filterOption={false}
                 >
                   {courseFinalList.map((c) => (
                     <Option key={c._id} value={c._id}>

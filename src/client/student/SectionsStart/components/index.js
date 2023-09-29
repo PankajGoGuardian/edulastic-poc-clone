@@ -43,11 +43,23 @@ const RenderButton = ({
   // Tried applying EduIf here but looks so much nested hence going with this approach for readability
   const totalVisited = attempted + skipped
   if (totalVisited === 0 && !showLockIcon) {
-    return <EduButton onClick={handleStartSection(index)}>Start Test</EduButton>
+    return (
+      <EduButton
+        onClick={handleStartSection(index)}
+        data-cy={`startButtton-${index}`}
+      >
+        Start Test
+      </EduButton>
+    )
   }
   if (totalVisited > 0 && status !== SECTION_STATUS.SUBMITTED) {
     return (
-      <EduButton onClick={handleStartSection(index, true)}>Continue</EduButton>
+      <EduButton
+        onClick={handleStartSection(index, true)}
+        data-cy={`continueButton-${index}`}
+      >
+        Continue
+      </EduButton>
     )
   }
   if (preventSectionNavigation && status === SECTION_STATUS.SUBMITTED) {
@@ -59,7 +71,14 @@ const RenderButton = ({
     )
   }
   if (status === SECTION_STATUS.SUBMITTED) {
-    return <EduButton onClick={handleReviewSection(index)}>Review</EduButton>
+    return (
+      <EduButton
+        onClick={handleReviewSection(index)}
+        data-cy={`reviewButton-${index}`}
+      >
+        Review
+      </EduButton>
+    )
   }
   return null
 }
@@ -91,10 +110,10 @@ const TestSectionsContainer = ({
             <FlexBox>
               {showLockIcon && <IconLockStyled />}
               <SectionContent>
-                <h4>{groupName}</h4>
+                <h4 data-cy={`sectionName-${index}`}>{groupName}</h4>
                 <EduIf condition={!showLockIcon}>
                   <EduThen>
-                    <p>
+                    <p data-cy={`questionsCompleted-${index}`}>
                       {attempted}/{items.length} questions completed
                     </p>
                   </EduThen>

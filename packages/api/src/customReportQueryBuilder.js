@@ -1,22 +1,22 @@
 import API from './utils/API'
 
 const api = new API()
-const prefix = '/testing-report'
+const prefix = '/report/custom'
 
 const getAllItems = () =>
   api
     .callApi({
-      url: `${prefix}/items`,
+      url: `${prefix}/definition`,
       method: 'get',
     })
     .then((result) => result?.data?.result)
 
-const buildChartData = (data) =>
+const loadChartData = (params) =>
   api
     .callApi({
-      url: `${prefix}/chartData`,
-      method: 'post',
-      data,
+      url: `${prefix}/load`,
+      method: 'get',
+      params,
     })
     .then((result) => result?.data?.result)
 
@@ -28,21 +28,11 @@ const getDataSource = () =>
     })
     .then((result) => result?.data?.result)
 
-const getItemById = (params) =>
+const getItemById = (itemId) =>
   api
     .callApi({
-      url: `${prefix}/item`,
+      url: `${prefix}/definition/${itemId}`,
       method: 'get',
-      params,
-    })
-    .then((result) => result.data.result)
-
-const generateQuery = (data) =>
-  api
-    .callApi({
-      url: `${prefix}/query`,
-      method: 'post',
-      data,
     })
     .then((result) => result.data.result)
 
@@ -57,7 +47,7 @@ const getMetaData = () =>
 const addItem = (data) =>
   api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}/definition`,
       method: 'post',
       data,
     })
@@ -66,29 +56,27 @@ const addItem = (data) =>
 const updateItem = (data) =>
   api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}/definition`,
       method: 'put',
       data,
     })
     .then((result) => result.data.result)
 
-const deleteItemById = (data) =>
+const deleteItemById = (itemId) =>
   api
     .callApi({
-      url: `${prefix}`,
+      url: `${prefix}/definition/${itemId}`,
       method: 'delete',
-      data,
     })
     .then(({ data: response }) => response)
 
 export default {
   getAllItems,
   getItemById,
-  buildChartData,
+  loadChartData,
   getDataSource,
   addItem,
   updateItem,
   deleteItemById,
   getMetaData,
-  generateQuery,
 }

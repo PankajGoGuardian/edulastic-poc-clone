@@ -50,8 +50,9 @@ const Dashboard = ({
       if (item && toUpdate !== item.layout) {
         updateDashboardItem({
           _id: item._id,
-          updateDoc: {
-            layout: toUpdate,
+          layout: {
+            type: item.layout.type,
+            options: toUpdate,
           },
         })
       }

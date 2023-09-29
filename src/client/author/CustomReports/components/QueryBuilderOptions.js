@@ -43,29 +43,34 @@ const Empty = styled.div`
 `
 
 const QueryBuilderOptions = ({
-  selectedMeasures = [],
+  selectedFacts = [],
   selectedDimensions = [],
   selectedSegments = [],
   selectedTimeDimensions = [],
   selectedFilters = [],
   selectedDataSources = [],
-  setSelectedMeasures,
+  selectedChartType = '',
+  setSelectedFacts,
   setSelectedDimensions,
   setSelectedSegments,
   setselectedTimeDimensions,
   setSelectedFilters,
   setSelectedDataSources,
-  availableMeasures = [],
+  setSelectedChartType,
+  availableFacts = [],
   availableDimensions = [],
   availableSegments = [],
   availableTimeDimensions = [],
   availableDataSources = [],
-  finalVizState = {},
+  widgetData = {},
 }) => {
-  const [selectedChartType, setSelectedChartType] = useState('')
   const shouldFilterBeVisible =
-    selectedMeasures.length || selectedDimensions.length
-  const { query, chartType } = finalVizState
+    selectedFacts.length || selectedDimensions.length
+
+  const { query, layout: { type: chartType } = {} } = widgetData
+
+  const showChartType = selectedChartType || chartType || 'table'
+
   return (
     <>
       <ControlsRow type="flex" justify="space-around" align="top" key="1">
@@ -81,10 +86,10 @@ const QueryBuilderOptions = ({
             <StyledDivider type="vertical" />
             <MemberGroup
               title="Measures"
-              members={selectedMeasures}
-              availableMembers={availableMeasures}
+              members={selectedFacts}
+              availableMembers={availableFacts}
               addMemberName="Measure"
-              updateMethods={setSelectedMeasures}
+              updateMethods={setSelectedFacts}
             />
             <StyledDivider type="vertical" />
             <MemberGroup
@@ -123,9 +128,7 @@ const QueryBuilderOptions = ({
               <Col span={24}>
                 <FilterGroup
                   members={selectedFilters}
-                  availableMembers={availableDimensions.concat(
-                    availableMeasures
-                  )}
+                  availableMembers={availableDimensions.concat(availableFacts)}
                   addMemberName="Filter"
                   updateMethods={setSelectedFilters}
                 />
@@ -142,20 +145,18 @@ const QueryBuilderOptions = ({
         key="2"
       >
         <Col span={24}>
-          {!isEmpty(finalVizState) ? (
+          {!isEmpty(query) ? (
             [
               <Row style={{ marginTop: 15, marginBottom: 25 }}>
                 <SelectChartType
-                  chartType={selectedChartType || chartType || 'table'}
+                  chartType={showChartType}
                   updateChartType={setSelectedChartType}
                 />
               </Row>,
               <ChartCard style={{ minHeight: 420 }}>
                 <ChartRenderer
-                  vizState={{
-                    query,
-                    chartType: selectedChartType || chartType || 'table',
-                  }}
+                  query={query}
+                  chartType={showChartType}
                   chartHeight={400}
                 />
               </ChartCard>,

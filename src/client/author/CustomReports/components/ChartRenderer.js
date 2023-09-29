@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from 'react'
-import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Spin, Row, Col, Statistic, Table } from 'antd'
@@ -24,7 +23,11 @@ import { isEmpty } from 'lodash'
 import styled from 'styled-components'
 // import './recharts-theme.less' TODO: need to check the impact
 import moment from 'moment'
-import { getChartDataAction, getChartDataSelector } from '../ducks'
+import {
+  getChartDataAction,
+  getChartDataSelector,
+  getIsChartDataLoadingSelector,
+} from '../ducks'
 import { buildChartData } from '../util'
 
 const numberFormatter = (item) => (item || '').toLocaleString()
@@ -179,15 +182,16 @@ const renderChart = (Component) => ({ resultSet, error, height }) =>
 const ChartRenderer = ({
   chartData,
   getChartData,
-  vizState,
+  query,
+  chartType,
   chartHeight,
   itemId,
+  isChartDataLoading,
 }) => {
-  const { query, chartType } = vizState
   const component = TypeToMemoChartComponent[chartType]
   useEffect(() => {
-    if (!isEmpty(query)) {
-      getChartData({ query, itemId })
+    if (!isEmpty(query) && itemId) {
+      getChartData({ itemId, query })
     }
   }, [JSON.stringify(query)])
 
@@ -198,21 +202,21 @@ const ChartRenderer = ({
     return null
   }, [chartType, chartData])
 
-  return component && renderChart(component)({ height: chartHeight, resultSet })
+  if (isChartDataLoading) {
+    return <Spinner />
+  }
+
+  return component && !isEmpty(resultSet) ? (
+    renderChart(component)({ height: chartHeight, resultSet })
+  ) : (
+    <span>Click on Apply Button to load the data</span>
+  )
 }
 
-ChartRenderer.propTypes = {
-  vizState: PropTypes.object,
-  cubejsApi: PropTypes.object,
-}
-ChartRenderer.defaultProps = {
-  vizState: {},
-  chartHeight: 300,
-  cubejsApi: null,
-}
 const enhance = compose(
   connect(
     (state, props) => ({
+      isChartDataLoading: getIsChartDataLoadingSelector(state),
       chartData: getChartDataSelector(state, props),
     }),
     {

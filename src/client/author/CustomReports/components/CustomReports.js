@@ -15,15 +15,17 @@ import {
 
 const deserializeItem = (i) => ({
   ...i,
-  layout: JSON.parse(i.layout) || {},
-  vizState: JSON.parse(i.vizState),
+  layout: {
+    ...i.layout,
+    options: JSON.parse(i.layout.options) || {},
+  },
 })
 
 const defaultLayout = (i) => ({
-  x: i.layout.x || 0,
-  y: i.layout.y || 0,
-  w: i.layout.w || 4,
-  h: i.layout.h || 8,
+  x: i.options.x || 0,
+  y: i.options.y || 0,
+  w: i.options.w || 4,
+  h: i.options.h || 8,
   minW: 4,
   minH: 8,
 })
@@ -38,9 +40,13 @@ const CustomReports = ({ isLoading, dashboardItems, getDashboardItem }) => {
   }
 
   const dashboardItem = (item) => (
-    <div key={item._id} data-grid={defaultLayout(item)}>
+    <div key={item._id} data-grid={defaultLayout(item.layout)}>
       <DashboardItem key={item._id} itemId={item._id} title={item.name}>
-        <ChartRenderer vizState={item.vizState} itemId={item._id} />
+        <ChartRenderer
+          query={item.query}
+          chartType={item.layout.type}
+          itemId={item._id}
+        />
       </DashboardItem>
     </div>
   )
@@ -53,7 +59,7 @@ const CustomReports = ({ isLoading, dashboardItems, getDashboardItem }) => {
       }}
     >
       <h2>There are no charts on this dashboard</h2>
-      <Link to="/explore">
+      <Link to="/author/customReports/explore">
         <Button type="primary" size="large" icon="plus">
           Add chart
         </Button>

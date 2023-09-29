@@ -3,6 +3,7 @@ import { Modal, Input } from 'antd'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { addDashboardItemAction, updateDashboardItemAction } from '../ducks'
+import { formatQueryData } from '../util'
 
 const TitleModal = ({
   history,
@@ -10,11 +11,12 @@ const TitleModal = ({
   titleModalVisible,
   setTitleModalVisible,
   setAddingToDashboard,
-  finalVizState,
+  query,
   setTitle,
   finalTitle,
   addDashboardItem,
   updateDashboardItem,
+  selectedChartType,
 }) => {
   return (
     <Modal
@@ -27,23 +29,22 @@ const TitleModal = ({
         if (itemId) {
           updateDashboardItem({
             itemId,
-            updateDoc: {
-              vizState: JSON.stringify(finalVizState),
-              name: finalTitle,
-            },
+            query: { ...formatQueryData(query) },
+            name: finalTitle,
           })
         } else {
           addDashboardItem({
-            updateDoc: {
-              layout: JSON.stringify({
+            layout: {
+              type: selectedChartType,
+              options: JSON.stringify({
                 x: 0,
                 y: 0,
                 w: 4,
                 h: 8,
               }),
-              vizState: JSON.stringify(finalVizState),
-              name: finalTitle,
             },
+            query: { ...formatQueryData(query) },
+            name: finalTitle,
           })
         }
         setAddingToDashboard(false)
@@ -61,7 +62,7 @@ const TitleModal = ({
 }
 
 const enhance = compose(
-  connect((state) => ({}), {
+  connect(() => ({}), {
     addDashboardItem: addDashboardItemAction,
     updateDashboardItem: updateDashboardItemAction,
   })

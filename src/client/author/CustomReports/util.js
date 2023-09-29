@@ -2,27 +2,26 @@ import { groupBy, isEmpty, uniqBy } from 'lodash'
 
 export const buildChartData = (apiData, chartType) => {
   const {
-    annotation: { measures, dimensions, segments, timeDimensions },
+    annotation: { facts, dimensions, timeDimensions },
     data,
   } = apiData
   if (chartType === 'table') {
     return {
       columns: [
-        ...Object.keys(measures).map((key) => ({
-          key,
-          title: measures[key].title,
+        ...facts.map(({ name, title }) => ({
+          key: name,
+          title,
         })),
-        ...Object.keys(dimensions).map((key) => ({
-          key,
-          title: dimensions[key].title,
+        ...dimensions.map(({ name, title }) => ({
+          key: name,
+          title,
         })),
-        ...Object.keys(segments).map((key) => ({
-          key,
-          title: segments[key].title,
-        })),
-        ...Object.keys(timeDimensions)
-          .filter((key) => !(key.split('.').length > 2))
-          .map((key) => ({ key, title: timeDimensions[key].title })),
+        ...timeDimensions
+          .filter(({ name }) => !(name.split('.').length > 2))
+          .map(({ name, title }) => ({
+            key: name,
+            title,
+          })),
       ],
       table: data,
     }
@@ -33,7 +32,7 @@ export const buildChartData = (apiData, chartType) => {
   if (!isEmpty(timeDimensions)) {
     const groupedByTimeDimensions = groupBy(
       data,
-      (o) => o[Object.keys(timeDimensions)[0]]
+      (o) => o[timeDimensions[0].name]
     )
     Object.keys(groupedByTimeDimensions).forEach((timeKey) => {
       const timeGroup = groupedByTimeDimensions[timeKey]
@@ -42,28 +41,27 @@ export const buildChartData = (apiData, chartType) => {
         category: timeKey,
       }
       timeGroup.forEach((timeGroupObj) => {
-        if (!isEmpty(measures)) {
-          Object.keys(measures).forEach((measureKey) => {
-            const measure = measures[measureKey]
-            const key = Object.keys(dimensions).length
-              ? `${Object.keys(dimensions)
-                  .map((dimensionKey) => timeGroupObj[dimensionKey])
-                  .join(',')},${measureKey}`
-              : measureKey
-            const title = Object.keys(dimensions).length
-              ? `${Object.keys(dimensions)
-                  .map((dimensionKey) => dimensions[dimensionKey].title)
-                  .join(',')},${measure.title}`
-              : measure.title
-            dataPivotRow[key] = timeGroupObj[measureKey]
+        if (!isEmpty(facts)) {
+          facts.forEach(({ name: factName, title: factTitle }) => {
+            const key = !isEmpty(dimensions)
+              ? `${dimensions
+                  .map(({ name: dimensionName }) => timeGroupObj[dimensionName])
+                  .join(',')},${factName}`
+              : factName
+            const title = !isEmpty(dimensions)
+              ? `${dimensions
+                  .map(({ title: dimensionTitle }) => dimensionTitle)
+                  .join(',')},${factTitle}`
+              : factTitle
+            dataPivotRow[key] = timeGroupObj[factName]
             seriesNames.push({ title, key })
           })
         } else {
-          const key = `${Object.keys(dimensions)
-            .map((dimensionKey) => timeGroupObj[dimensionKey])
+          const key = `${dimensions
+            .map(({ name: dimensionName }) => timeGroupObj[dimensionName])
             .join(',')}`
-          const title = `${Object.keys(dimensions)
-            .map((dimensionKey) => dimensions[dimensionKey].title)
+          const title = `${dimensions
+            .map(({ title: dimensionTitle }) => dimensionTitle)
             .join(',')}`
           dataPivotRow[key] = 0
           seriesNames.push({ title, key })
@@ -73,18 +71,17 @@ export const buildChartData = (apiData, chartType) => {
     })
   } else {
     data.forEach((record) => {
-      const key = `${Object.keys(dimensions)
-        .map((dimensionKey) => record[dimensionKey])
+      const key = `${dimensions
+        .map(({ name: dimensionName }) => record[dimensionName])
         .join(',')}`
       const dataPivotRow = {
         x: key,
         category: key,
       }
-      if (!isEmpty(measures)) {
-        Object.keys(measures).forEach((measureKey) => {
-          const measure = measures[measureKey]
-          dataPivotRow[measureKey] = record[measureKey]
-          seriesNames.push({ key: measureKey, title: measure.title })
+      if (!isEmpty(facts)) {
+        facts.forEach(({ name: factName, title: factTitle }) => {
+          dataPivotRow[factName] = record[factName]
+          seriesNames.push({ key: factName, title: factTitle })
         })
       } else {
         dataPivotRow[''] = undefined
@@ -97,4 +94,42 @@ export const buildChartData = (apiData, chartType) => {
     data: dataPivot,
     seriesNames: uniqBy(seriesNames, (s) => s.key),
   }
+}
+
+export const formatQueryData = (_query) => {
+  console.log(_query)
+  const {
+    schema,
+    facts = [],
+    dimensions = [],
+    segments = [],
+    filters = [],
+  } = _query
+  const query = {}
+  if (schema) {
+    Object.assign(query, { schema: schema._id })
+  }
+  if (facts.length) {
+    Object.assign(query, { facts: facts.map((o) => o.name) })
+  }
+  if (dimensions.length) {
+    Object.assign(query, {
+      dimensions: dimensions.map((o) => o.name),
+    })
+  }
+  if (segments.length) {
+    Object.assign(query, {
+      segments: segments.map((o) => o.name),
+    })
+  }
+  if (filters.length) {
+    Object.assign(query, {
+      filters: filters.map(({ dimension, operator, values }) => ({
+        member: dimension.name,
+        operator,
+        values,
+      })),
+    })
+  }
+  return query
 }

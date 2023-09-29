@@ -384,7 +384,7 @@ const BasicFields = ({
               })(
                 <TextInputStyled
                   padding="0px 15px 0px 30px"
-                  data-cy={PASSWORD_KEY}
+                  data-cy="passwordTextBox"
                   prefix={<IconLock color={themeColor} />}
                   type={PASSWORD_KEY}
                   placeholder="Enter Password"
@@ -407,7 +407,7 @@ const BasicFields = ({
               })(
                 <TextInputStyled
                   padding="0px 15px 0px 30px"
-                  data-cy="confirmPassword"
+                  data-cy="confirmPasswordTextBox"
                   prefix={<IconLock color={themeColor} />}
                   type={PASSWORD_KEY}
                   placeholder="Confirm Password"

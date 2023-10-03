@@ -20,7 +20,6 @@ export const initializeSegment = (forceEnable = false) => {
     'trackClick',
     'trackLink',
     'trackForm',
-    'pageview',
     'identify',
     'reset',
     'group',

@@ -1,4 +1,3 @@
-import { segmentApi } from '@edulastic/api'
 import { mobileWidthLarge, tabletWidth, white } from '@edulastic/colors'
 import {
   EduElse,
@@ -422,7 +421,6 @@ class SideMenu extends Component {
         isDefaultDA,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
-      segmentApi.genericEventTrack('mainMenuClick', { label, path })
       if (
         (['Assignments', 'Insights', 'Manage School'].includes(label) &&
           isSAWithoutSchools) ||

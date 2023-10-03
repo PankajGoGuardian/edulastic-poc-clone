@@ -5,7 +5,7 @@ import { isEmpty, isNil, maxBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
-import { idToName } from '../../util/transformers'
+import { getChartYAxisReferenceValue, idToName } from '../../util/transformers'
 
 const { analyseByOptions } = reportUtils.peerPerformance
 
@@ -88,7 +88,7 @@ export const SimpleStackedBarChartContainer = ({
   const getChartSpecifics = () => {
     let referenceLineY = 0
     if (chartData.length) {
-      referenceLineY = chartData[0].districtAvg
+      referenceLineY = getChartYAxisReferenceValue(chartData)
     }
     if (analyseBy === analyseByOptions.scorePerc) {
       let yAxisLabel = 'Avg. Score %'

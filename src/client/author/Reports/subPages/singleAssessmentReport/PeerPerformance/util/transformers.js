@@ -108,3 +108,13 @@ export const getFormattedName = (item) => {
         .join(' ')
     : ''
 }
+
+export const getChartYAxisReferenceValue = (chartData) => {
+  let sumTotalScore = 0
+  let sumTotalMaxScore = 0
+  chartData.forEach(({ dimensionMaxScore, dimensionTotalScore }) => {
+    sumTotalScore += dimensionTotalScore
+    sumTotalMaxScore += dimensionMaxScore
+  })
+  return ((sumTotalScore / sumTotalMaxScore) * 100 || 0).toFixed(0)
+}

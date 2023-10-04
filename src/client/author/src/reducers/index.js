@@ -38,7 +38,7 @@ import { schoolsReducer } from '../../Schools'
 import { studentReducer } from '../../Student'
 import { teacherReducer } from '../../Teacher'
 import { districtAdminReducer } from '../../DistrictAdmin'
-import { customReportsReducer } from '../../CustomReports'
+import { reportBuilderReducer } from '../../ReportBuilder'
 import { schoolAdminReducer } from '../../SchoolAdmin'
 import { coursesReducer } from '../../Courses'
 import { classesReducer } from '../../Classes'
@@ -111,7 +111,7 @@ const authorReducers = {
   studentReducer,
   teacherReducer,
   districtAdminReducer,
-  customReportsReducer,
+  reportBuilderReducer,
   schoolAdminReducer,
   coursesReducer,
   classesReducer,

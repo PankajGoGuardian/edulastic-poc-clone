@@ -9,6 +9,8 @@ import FilterInput from './FilterInput'
 
 const operators = [
   { name: 'equals', title: 'equals', type: ['time', 'string', 'number'] },
+  { name: 'AND', title: 'AND', type: ['string', 'number'] },
+  { name: 'OR', title: 'OR', type: ['string', 'number'] },
   {
     name: 'notEquals',
     title: 'does not equal',

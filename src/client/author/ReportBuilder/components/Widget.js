@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { deleteDashboardItemAction } from '../ducks'
+import { deleteWidgetFromReportAction } from '../ducks'
 
 const StyledCard = styled(Card)`
   box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
@@ -19,11 +19,15 @@ const StyledCard = styled(Card)`
   }
 `
 
-const DashboardItemDropdown = ({ deleteDashboardItem, itemId }) => {
-  const dashboardItemDropdownMenu = (
+const WidgetDropdown = ({ deleteWidget, widgetId, report }) => {
+  const WidgetDropdownMenu = (
     <Menu>
       <Menu.Item>
-        <Link to={`/author/customReports/explore?itemId=${itemId}`}>Edit</Link>
+        <Link
+          to={`/author/reportBuilder/explore/definition/${report?._id}/widget/${widgetId}`}
+        >
+          Edit
+        </Link>
       </Menu.Item>
       <Menu.Item
         onClick={() =>
@@ -33,8 +37,8 @@ const DashboardItemDropdown = ({ deleteDashboardItem, itemId }) => {
             cancelText: 'No',
 
             onOk() {
-              deleteDashboardItem({
-                id: itemId,
+              deleteWidget({
+                id: widgetId,
               })
             },
           })
@@ -46,7 +50,7 @@ const DashboardItemDropdown = ({ deleteDashboardItem, itemId }) => {
   )
   return (
     <Dropdown
-      overlay={dashboardItemDropdownMenu}
+      overlay={WidgetDropdownMenu}
       placement="bottomLeft"
       trigger={['click']}
     >
@@ -55,7 +59,7 @@ const DashboardItemDropdown = ({ deleteDashboardItem, itemId }) => {
   )
 }
 
-const DashboardItem = ({ deleteDashboardItem, itemId, children, title }) => (
+const Widget = ({ deleteWidget, widgetId, children, title, report }) => (
   <StyledCard
     title={title}
     bordered={false}
@@ -64,9 +68,10 @@ const DashboardItem = ({ deleteDashboardItem, itemId, children, title }) => (
       width: '100%',
     }}
     extra={
-      <DashboardItemDropdown
-        deleteDashboardItem={deleteDashboardItem}
-        itemId={itemId}
+      <WidgetDropdown
+        deleteWidget={deleteWidget}
+        widgetId={widgetId}
+        report={report}
       />
     }
   >
@@ -76,8 +81,8 @@ const DashboardItem = ({ deleteDashboardItem, itemId, children, title }) => (
 
 const enhance = compose(
   connect(() => ({}), {
-    deleteDashboardItem: deleteDashboardItemAction,
+    deleteWidget: deleteWidgetFromReportAction,
   })
 )
 
-export default enhance(DashboardItem)
+export default enhance(Widget)

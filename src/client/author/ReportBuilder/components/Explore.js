@@ -12,30 +12,31 @@ import {
   getIsMetaDataLoadingSelector,
   getMetaDataAction,
   getMetaDataSelector,
-  getIsItemDataLoadingSelector,
-  getItemDataSelector,
+  getIsWidgetDataLoadingSelector,
   getDataSourceSelector,
-  getItemDataAction,
   getDataSourceAction,
   getChartDataSelector,
   getChartDataAction,
+  getActiveReportSelector,
+  getReportDataAction,
 } from '../ducks'
 
-const ExplorePage = ({
-  history,
-  location,
-  itemData,
-  isLoading,
-  getMetaData,
-  metaData,
-  isItemDataLoading,
-  getItemData,
-  getDataSource,
-  dataSources,
-  chartData,
-  getChartData,
-}) => {
-  const [addingToDashboard, setAddingToDashboard] = useState(false)
+const ExplorePage = (props) => {
+  const {
+    history,
+    getReportData,
+    isLoading,
+    getMetaData,
+    metaData,
+    isItemDataLoading,
+    report,
+    getDataSource,
+    dataSources,
+    chartData,
+    getChartData,
+    match,
+  } = props
+  const [addingToReport, setAddingToReport] = useState(false)
   const [selectedDataSources, setSelectedDataSources] = useState([])
   const [selectedFacts, setSelectedFacts] = useState([])
   const [selectedDimensions, setSelectedDimensions] = useState([])
@@ -45,18 +46,22 @@ const ExplorePage = ({
   const [selectedChartType, setSelectedChartType] = useState('table')
   const [titleModalVisible, setTitleModalVisible] = useState(false)
   const [title, setTitle] = useState(null)
+  const [reportTitle, setReportTitle] = useState(null)
+  const [reportDescription, setReportDescription] = useState(null)
+
+  const { definitionId, widgetId } = match.params
 
   useEffect(() => {
     getDataSource()
     getMetaData()
   }, [])
-  console.log({ metaData })
+
   const {
     availableFacts,
     availableDimensions,
     availableSegments,
     availableTimeDimensions,
-    schemaId,
+    sourceId,
   } = useMemo(() => {
     const _availableFacts = []
     const _availableDimensions = []
@@ -64,11 +69,11 @@ const ExplorePage = ({
     let selectedMetaData = {}
     if (!isEmpty(metaData) && !isEmpty(selectedDataSources)) {
       selectedMetaData = metaData.find(
-        (_metadata) => _metadata?.source?.name === selectedDataSources[0].name
+        (_metadata) => _metadata?._id === selectedDataSources[0]._id
       )
       ;[selectedMetaData].forEach(
-        ({ facts: m, dimensions: d, segments: s }) => {
-          _availableFacts.push(...m)
+        ({ sourceSchema: { facts: f, dimensions: d, segments: s } }) => {
+          _availableFacts.push(...f)
           _availableDimensions.push(...d)
           _availableSegments.push(...s)
         }
@@ -82,23 +87,20 @@ const ExplorePage = ({
         ..._availableFacts.filter((o) => o.type === 'time'),
         ..._availableDimensions.filter((o) => o.type === 'time'),
       ],
-      schemaId: selectedMetaData._id,
+      sourceId: selectedMetaData._id,
     }
   }, [metaData, selectedDataSources])
 
-  const params = new URLSearchParams(location.search)
-  const itemId = params.get('itemId')
-
   useEffect(() => {
-    if (itemId) {
-      getItemData(itemId)
+    if (definitionId) {
+      getReportData(definitionId)
     }
-  }, [itemId])
+  }, [definitionId])
 
   const query = useMemo(() => {
     if (selectedFacts.length || selectedDimensions.length) {
       return {
-        schema: schemaId,
+        source: sourceId,
         facts: selectedFacts,
         dimensions: selectedDimensions,
         segments: selectedSegments,
@@ -115,37 +117,49 @@ const ExplorePage = ({
     selectedFilters,
   ])
 
-  const widgetData = !isEmpty(itemData)
-    ? itemData
-    : !isEmpty(query)
-    ? { query }
-    : {}
+  const isEditWidgetFlow = definitionId && widgetId
+  const isAddWidgetToReportFlow = definitionId && !widgetId
+  const isCreateReportWithWidgetFlow = !definitionId && !widgetId
+  const widgetData =
+    isEditWidgetFlow && !isEmpty(report)
+      ? report.widgets.find((w) => w._id === widgetId)
+      : !isEmpty(query)
+      ? { query }
+      : {}
 
   useEffect(() => {
-    if (
-      itemData?._id &&
-      (availableFacts.length ||
-        availableDimensions.length ||
-        availableSegments.length)
-    ) {
+    if (report?._id && !isEmpty(widgetData)) {
       const {
         query: { facts = [], segments = [], dimensions = [] },
-      } = itemData
-      setSelectedDataSources(
-        dataSources.filter((o) => o._id === itemData.query._id)
-      )
-      setSelectedFacts(availableFacts.filter((am) => facts.includes(am.name)))
-      setSelectedDimensions(
-        availableDimensions.filter((am) => dimensions.includes(am.name))
-      )
-      setSelectedSegments(
-        availableSegments.filter((am) => segments.includes(am.name))
-      )
+      } = widgetData
+      if (isEmpty(selectedDataSources))
+        setSelectedDataSources(
+          dataSources.filter((o) => o._id === widgetData.query.source)
+        )
+
+      if (
+        (availableDimensions.length || availableFacts.length) &&
+        !(selectedDimensions.length || selectedFacts.length)
+      ) {
+        setSelectedFacts(availableFacts.filter((am) => facts.includes(am.name)))
+        setSelectedDimensions(
+          availableDimensions.filter((am) => dimensions.includes(am.name))
+        )
+        setSelectedSegments(
+          availableSegments.filter((am) => segments.includes(am.name))
+        )
+      }
     }
-  }, [itemData, availableFacts, availableDimensions, availableSegments])
+  }, [report, availableFacts, availableDimensions])
 
   const finalTitle =
-    title != null ? title : (itemId && itemData && itemData.name) || 'New Chart'
+    title || (widgetId && widgetData && widgetData.name) || 'New Chart'
+  const finalReportTitle =
+    reportTitle || (report && report.title) || 'New Report'
+  const finalReportDescription =
+    reportDescription ||
+    (report && report.description) ||
+    'New Report Description'
 
   if (isLoading || isItemDataLoading) {
     return <Spin />
@@ -157,43 +171,51 @@ const ExplorePage = ({
     <div>
       <TitleModal
         history={history}
-        itemId={itemId}
+        widgetData={widgetData}
         titleModalVisible={titleModalVisible}
         setTitleModalVisible={setTitleModalVisible}
-        setAddingToDashboard={setAddingToDashboard}
+        setAddingToReport={setAddingToReport}
         query={query}
         setTitle={setTitle}
         finalTitle={finalTitle}
+        finalReportTitle={finalReportTitle}
+        finalReportDescription={finalReportDescription}
+        setReportTitle={setReportTitle}
+        setReportDescription={setReportDescription}
         selectedChartType={selectedChartType}
+        isEditWidgetFlow={isEditWidgetFlow}
+        isAddWidgetToReportFlow={isAddWidgetToReportFlow}
+        isCreateReportWithWidgetFlow={isCreateReportWithWidgetFlow}
+        report={report}
       />
       <PageHeader
-        title={<ExploreTitle itemId={itemId} />}
+        title={<ExploreTitle widgetId={widgetId} />}
         button={
           <>
             <Button
-              key="dashboard-button"
+              key="apply-button"
               type="primary"
               onClick={() => getChartData({ query })}
             >
               Apply
             </Button>
             <Button
-              key="dashboard-button"
+              key="goto-report-button"
               type="primary"
               style={{ marginLeft: '15px' }}
-              onClick={() => history.push('/author/customReports')}
+              onClick={() => history.push('/author/reportBuilder')}
             >
-              Go to Dashboard
+              Go to Reports List
             </Button>
             <Button
               key="update-button"
               type="primary"
               style={{ marginLeft: '15px' }}
-              loading={addingToDashboard}
+              loading={addingToReport}
               disabled={!canAddOrUpdateChart}
               onClick={() => setTitleModalVisible(true)}
             >
-              {itemId ? 'Update' : 'Add to Dashboard'}
+              {widgetId ? 'Update' : 'Add to Report'}
             </Button>
           </>
         }
@@ -230,14 +252,14 @@ const enhance = compose(
     (state) => ({
       isLoading: getIsMetaDataLoadingSelector(state),
       metaData: getMetaDataSelector(state),
-      isItemDataLoading: getIsItemDataLoadingSelector(state),
-      itemData: getItemDataSelector(state),
+      isItemDataLoading: getIsWidgetDataLoadingSelector(state),
+      report: getActiveReportSelector(state),
       dataSources: getDataSourceSelector(state),
       chartData: getChartDataSelector(state),
     }),
     {
       getMetaData: getMetaDataAction,
-      getItemData: getItemDataAction,
+      getReportData: getReportDataAction,
       getDataSource: getDataSourceAction,
       getChartData: getChartDataAction,
     }

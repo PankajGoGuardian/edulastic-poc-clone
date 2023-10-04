@@ -32,14 +32,20 @@ import { updateRecentCollectionsAction } from './actions/dictionaries'
 const Dashboard = loadable(() => import('../Dashboard'), {
   fallback: <Progress />,
 })
-const CustomReports = loadable(
-  () => import('../CustomReports/components/CustomReports'),
+const ReportDefinitionWrapper = loadable(
+  () => import('../ReportBuilder/components/ReportDefinitionWrapper'),
+  {
+    fallback: <Progress />,
+  }
+)
+const ReportDefinitionList = loadable(
+  () => import('../ReportBuilder/components/ReportDefinitionList'),
   {
     fallback: <Progress />,
   }
 )
 const ExplorePage = loadable(
-  () => import('../CustomReports/components/Explore'),
+  () => import('../ReportBuilder/components/Explore'),
   {
     fallback: <Progress />,
   }
@@ -337,12 +343,27 @@ const Author = ({
                 />
                 <Route
                   exact
-                  path="/author/customReports"
-                  component={CustomReports}
+                  path="/author/reportBuilder"
+                  component={ReportDefinitionList}
                 />
                 <Route
                   exact
-                  path="/author/customReports/explore"
+                  path="/author/reportBuilder/definition/:id"
+                  component={ReportDefinitionWrapper}
+                />
+                <Route
+                  exact
+                  path="/author/reportBuilder/explore"
+                  component={ExplorePage}
+                />
+                <Route
+                  exact
+                  path="/author/reportBuilder/explore/definition/:definitionId"
+                  component={ExplorePage}
+                />
+                <Route
+                  exact
+                  path="/author/reportBuilder/explore/definition/:definitionId/widget/:widgetId"
                   component={ExplorePage}
                 />
                 <Route

@@ -97,17 +97,16 @@ export const buildChartData = (apiData, chartType) => {
 }
 
 export const formatQueryData = (_query) => {
-  console.log(_query)
   const {
-    schema,
+    source,
     facts = [],
     dimensions = [],
     segments = [],
     filters = [],
   } = _query
   const query = {}
-  if (schema) {
-    Object.assign(query, { schema: schema._id })
+  if (source) {
+    Object.assign(query, { source })
   }
   if (facts.length) {
     Object.assign(query, { facts: facts.map((o) => o.name) })

@@ -175,9 +175,10 @@ const Spinner = () => (
   </SpinContainer>
 )
 
-const renderChart = (Component) => ({ resultSet, error, height }) =>
+const renderChart = (Component) => ({ resultSet, error, height, widgetId }) =>
   (resultSet && <Component height={height} resultSet={resultSet} />) ||
-  (error && error.toString()) || <Spinner />
+  (error && error.toString()) ||
+  (!widgetId ? <span>Click on Apply Button</span> : <Spinner />)
 
 const ChartRenderer = ({
   chartData,
@@ -185,13 +186,13 @@ const ChartRenderer = ({
   query,
   chartType,
   chartHeight,
-  itemId,
+  widgetId,
   isChartDataLoading,
 }) => {
   const component = TypeToMemoChartComponent[chartType]
   useEffect(() => {
-    if (!isEmpty(query) && itemId) {
-      getChartData({ itemId, query })
+    if (!isEmpty(query) && widgetId) {
+      getChartData({ widgetId, query })
     }
   }, [JSON.stringify(query)])
 
@@ -202,14 +203,13 @@ const ChartRenderer = ({
     return null
   }, [chartType, chartData])
 
-  if (isChartDataLoading) {
+  if (isChartDataLoading && !widgetId) {
     return <Spinner />
   }
 
-  return component && !isEmpty(resultSet) ? (
-    renderChart(component)({ height: chartHeight, resultSet })
-  ) : (
-    <span>Click on Apply Button to load the data</span>
+  return (
+    component &&
+    renderChart(component)({ height: chartHeight, resultSet, widgetId })
   )
 }
 

@@ -216,6 +216,12 @@ const menuItems = [
     role: ['school-admin'],
     allowSuperAdmin: true,
   },
+  {
+    label: 'Report Builder',
+    icon: IconBarChart,
+    allowedPathPattern: [/author\/reportBuilder/],
+    path: 'author/reportBuilder',
+  },
 ]
 
 const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']

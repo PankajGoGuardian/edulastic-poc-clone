@@ -1,9 +1,9 @@
 import API from './utils/API'
 
 const api = new API()
-const prefix = '/report/custom'
+const prefix = '/report/builder'
 
-const getAllItems = () =>
+const getReportDefinitions = () =>
   api
     .callApi({
       url: `${prefix}/definition`,
@@ -23,15 +23,15 @@ const loadChartData = (params) =>
 const getDataSource = () =>
   api
     .callApi({
-      url: `${prefix}/data-source`,
+      url: `${prefix}/source`,
       method: 'get',
     })
     .then((result) => result?.data?.result)
 
-const getItemById = (itemId) =>
+const getReportDefinitionById = (id) =>
   api
     .callApi({
-      url: `${prefix}/definition/${itemId}`,
+      url: `${prefix}/definition/${id}`,
       method: 'get',
     })
     .then((result) => result.data.result)
@@ -44,7 +44,7 @@ const getMetaData = () =>
     })
     .then((result) => result.data.result)
 
-const addItem = (data) =>
+const addReportDefinition = (data) =>
   api
     .callApi({
       url: `${prefix}/definition`,
@@ -53,30 +53,30 @@ const addItem = (data) =>
     })
     .then((result) => result.data.result)
 
-const updateItem = (data) =>
+const updateReport = ({ definitionId, updateDoc }) =>
   api
     .callApi({
-      url: `${prefix}/definition`,
+      url: `${prefix}/definition/${definitionId}`,
       method: 'put',
-      data,
+      data: updateDoc,
     })
     .then((result) => result.data.result)
 
-const deleteItemById = (itemId) =>
+const deleteWidgetById = (definitionId) =>
   api
     .callApi({
-      url: `${prefix}/definition/${itemId}`,
+      url: `${prefix}/definition/${definitionId}`,
       method: 'delete',
     })
     .then(({ data: response }) => response)
 
 export default {
-  getAllItems,
-  getItemById,
+  getReportDefinitions,
+  getReportDefinitionById,
   loadChartData,
   getDataSource,
-  addItem,
-  updateItem,
-  deleteItemById,
+  addReportDefinition,
+  updateReport,
+  deleteWidgetById,
   getMetaData,
 }

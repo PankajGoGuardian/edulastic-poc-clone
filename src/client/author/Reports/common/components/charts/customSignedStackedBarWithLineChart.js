@@ -39,6 +39,7 @@ import {
   tooltipParams,
   getHoveredBarDimensions,
 } from '../../util'
+import { getFGColor } from '../../../../src/utils/util'
 
 const Bar = withAnimationInfo(_Bar)
 
@@ -514,6 +515,7 @@ export const SignedStackedBarWithLineChart = ({
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
                         offsetY={-30}
+                        style={{ fill: getFGColor(bdItem.fill) }}
                       />
                     }
                   />
@@ -532,13 +534,24 @@ export const SignedStackedBarWithLineChart = ({
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
-                        style={{ opacity: barFillOpacity }}
+                        style={{
+                          opacity: barFillOpacity,
+                          fill: getFGColor(bdItem.fill),
+                        }}
                       />
                     }
                   />
                 ) : null}
-                {pagedData.map((cdItem) =>
-                  filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
+                {pagedData.map((cdItem) => {
+                  const bgColor =
+                    cdItem.additionalData?.[bdItem.key]?.fill ||
+                    cdItem.fill ||
+                    bdItem.fill
+                  const fgColor =
+                    cdItem.additionalData?.[bdItem.key]?.stroke ||
+                    cdItem.stroke ||
+                    getFGColor(bgColor)
+                  return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
                       radius={
                         isRoundBar(cdItem, bdIndex)
@@ -546,21 +559,13 @@ export const SignedStackedBarWithLineChart = ({
                           : [0, 0, 0, 0]
                       }
                       key={cdItem[xAxisDataKey]}
-                      fill={
-                        cdItem.additionalData?.[bdItem.key]?.fill ||
-                        cdItem.fill ||
-                        bdItem.fill
-                      }
+                      fill={bgColor}
                       fillOpacity={
                         cdItem.additionalData?.[bdItem.key]?.fillOpacity ||
                         cdItem.fillOpacity ||
                         barFillOpacity
                       }
-                      stroke={
-                        cdItem.additionalData?.[bdItem.key]?.stroke ||
-                        cdItem.stroke ||
-                        null
-                      }
+                      stroke={fgColor}
                       strokeOpacity={
                         cdItem.additionalData?.[bdItem.key]?.strokeOpacity ||
                         cdItem.strokeOpacity ||
@@ -583,7 +588,7 @@ export const SignedStackedBarWithLineChart = ({
                       fill="#c0c0c0"
                     />
                   )
-                )}
+                })}
               </Bar>
             )
           })}

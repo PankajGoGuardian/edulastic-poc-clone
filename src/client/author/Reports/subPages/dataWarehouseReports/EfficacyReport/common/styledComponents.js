@@ -135,7 +135,6 @@ export const PerformanceMatrixContainer = styled(Row)`
       font-size: 13px;
       font-weight: bold;
       letter-spacing: 0.15px;
-      color: #000000;
       cursor: pointer;
     }
     .section-matrix-cell.active {

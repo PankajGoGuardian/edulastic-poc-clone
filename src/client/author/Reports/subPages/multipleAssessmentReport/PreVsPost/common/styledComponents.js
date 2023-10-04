@@ -14,6 +14,7 @@ import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledCell, StyledTable as Table } from '../../../../common/styled'
 import PerformanceMatrixCell from '../components/PerformanceMatrix/PerformanceMatrixCell'
+import { getFGColor } from '../../../../../src/utils/util'
 
 export const PreVsPostReportContainer = styled.div`
   @media print {
@@ -75,6 +76,7 @@ export const StyledTable = styled(Table)`
 
 export const CustomStyledCell = styled(StyledCell)`
   background-color: ${(props) => props.color};
+  color: ${(props) => getFGColor(props.color)};
   padding: ${(props) => props.padding};
 `
 
@@ -215,6 +217,7 @@ export const StyledTitle = styled.div`
   font-size: 12px;
   border-radius: 20px 20px 0px 0px;
   background-color: ${({ color }) => color};
+  color: ${({ color }) => getFGColor(color)};
   font-weight: bold;
   padding-inline: 10px;
   padding-top: 12px;
@@ -410,6 +413,7 @@ export const PerformanceMatrixContainer = styled(Row)`
 `
 export const StyledPerformanceMatrixCell = styled(PerformanceMatrixCell)`
   background-color: ${({ color }) => color};
+  color: ${({ color }) => getFGColor(color)};
 `
 
 export const StyledEduButton = styled(EduButton)`

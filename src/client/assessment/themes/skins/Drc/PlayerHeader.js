@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { isEmpty } from 'lodash'
-import { EduIf, withWindowSizes } from '@edulastic/common'
+import { EduIf, withWindowSizes, ImmersiveReader } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   testTypes as testTypesConstants,
@@ -17,6 +17,7 @@ import {
   IconScratchPad,
   IconCloudUpload,
   IconEduReferenceSheet,
+  IconImmersiveReader,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Button, Select } from 'antd'
@@ -51,6 +52,14 @@ const CALC = 2
 const CROSS_BUTTON = 3
 const SCRATCHPAD = 5
 
+const ImmersiveReaderButton = (props) => {
+  return (
+    <ButtonWrapper {...props}>
+      <IconImmersiveReader color={header2.background} />
+    </ButtonWrapper>
+  )
+}
+
 const PlayerHeader = ({
   t: i18Translate,
   title,
@@ -84,12 +93,15 @@ const PlayerHeader = ({
   isShowReferenceModal,
   openReferenceModal,
   calcTypes,
+  immersiveReaderTitle = '',
+  canUseImmersiveReader = false,
 }) => {
   const {
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
     maxAnswerChecks,
+    showImmersiveReader = false,
   } = settings
 
   const { PRACTICE } = testTypesConstants.TEST_TYPES
@@ -245,6 +257,14 @@ const PlayerHeader = ({
                 </EduIf>
               </Container>
               <RightContent>
+                <EduIf
+                  condition={!!showImmersiveReader && canUseImmersiveReader}
+                >
+                  <ImmersiveReader
+                    ImmersiveReaderButton={ImmersiveReaderButton}
+                    title={immersiveReaderTitle}
+                  />
+                </EduIf>
                 <EduIf condition={timedAssignment}>
                   <TimedTestTimer
                     utaId={utaId}

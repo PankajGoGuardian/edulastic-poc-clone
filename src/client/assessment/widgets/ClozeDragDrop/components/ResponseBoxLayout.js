@@ -117,6 +117,7 @@ const ResponseBoxLayout = ({
               )
             })}
         </FlexContainer>
+        <p>Note: Use CTRL+D to drag the option via keyboard</p>
       </FlexContainer>
     </DropContainer>
   )

@@ -121,7 +121,9 @@ export const compareByOptions = [
 export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
   (acc, curr, currIndex) => {
     if (curr === TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT) acc[curr] = 0
-    else if (curr === TEST_TYPES_VALUES_MAP.ASSESSMENT) acc[curr] = 1
+    else if (curr === TEST_TYPES_VALUES_MAP.SCHOOL_COMMON_ASSESSMENT)
+      acc[curr] = 1
+    else if (curr === TEST_TYPES_VALUES_MAP.ASSESSMENT) acc[curr] = 2
     else acc[curr] = currIndex
     return acc
   },
@@ -156,17 +158,12 @@ export const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
     testTypes.GMAS_EOG,
     testTypes.ILEARN,
     testTypes.STARR,
-    testTypes.TERM_GRADES,
   ],
   [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: [
     testTypes.CAASPP,
     testTypes.iReady_Math,
     testTypes.NWEA,
-    testTypes.GMAS_EOC,
-    testTypes.GMAS_EOG,
     testTypes.ILEARN,
-    testTypes.STARR,
-    testTypes.TERM_GRADES,
   ],
 }
 

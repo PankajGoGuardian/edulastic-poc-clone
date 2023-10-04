@@ -3,11 +3,7 @@ import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
 import { get, isEmpty, omitBy, mapValues, uniqBy, sortBy } from 'lodash'
 
-import {
-  assignmentStatusOptions,
-  roleuser,
-  reportUtils,
-} from '@edulastic/constants'
+import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
@@ -194,7 +190,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames, getTestTitle } from './common/util'
+import { combineNames } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -222,8 +218,6 @@ import {
   ACADEMIC,
   ATTENDANCE,
 } from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
-
-const { EXTERNAL_TEST_KEY_SEPARATOR } = reportUtils.common
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -886,9 +880,6 @@ export function* receiveTestListSaga({ payload }) {
       .filter((t) => {
         const _testGrades = (t.testGrades || '').split(',')
         const _testSubjects = (t.testSubjects || '').split(',')
-        const _testName = t.testName || ''
-        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
-        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
         const checkForTermId = termId === t.termId
         const checkForGrades =
           !grades.length ||
@@ -900,7 +891,7 @@ export function* receiveTestListSaga({ payload }) {
           !testTypes.length || testTypes.includes(t.testCategory)
         const checkForExternalTestTitle =
           !searchString ||
-          externalTestTitle.toLowerCase().includes(searchString.toLowerCase())
+          t.testName.toLowerCase().includes(searchString.toLowerCase())
         return [
           checkForTermId,
           checkForGrades,
@@ -909,16 +900,9 @@ export function* receiveTestListSaga({ payload }) {
           checkForExternalTestTypes,
         ].every((o) => !!o)
       })
-      .map((t) => {
-        const _testName = t.testName || ''
-        const _testTitle = getTestTitle(t.testCategory, t.testTitle)
-        const externalTestId = [
-          _testName,
-          t.testCategory,
-          t.testTitle || '',
-        ].join(EXTERNAL_TEST_KEY_SEPARATOR)
-        const externalTestTitle = `${_testName} - ${t.testCategory} ${_testTitle}`
-        return { _id: externalTestId, title: externalTestTitle, showId: false }
+      .map(({ testName }) => {
+        // TODO find permanent fix for issue with AssessmentAutoComplete when _id & title are same. Adding space after testName in title here to avoid it here.
+        return { _id: testName, title: `${testName} `, showId: false }
       })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,

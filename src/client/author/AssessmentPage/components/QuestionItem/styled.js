@@ -11,7 +11,13 @@ import {
   greyScoreCardTitleColor,
   smallDesktopWidth,
   greyThemeDark4,
+  lightGrey,
+  grey,
+  inputBorder,
+  inputBorder1,
 } from '@edulastic/colors'
+import { Input } from 'antd'
+import { FlexContainer } from '../../../../assessment/themes/common'
 
 export const QuestionItemWrapper = styled.div`
   width: ${({ review, annotations }) =>
@@ -26,6 +32,32 @@ export const QuestionItemWrapper = styled.div`
 
   @media (max-width: ${smallDesktopWidth}) {
     width: 225px;
+  }
+`
+
+export const Addon = styled.div`
+  background: ${lightGrey};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  width: 35px;
+  height: 100%;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  :hover {
+    background: ${grey};
+  }
+  margin-left: 0;
+`
+export const TextEntryInput = styled(Input)`
+  border: none;
+  &.ant-input {
+    &:focus,
+    &:hover {
+      box-shadow: none;
+    }
   }
 `
 
@@ -189,4 +221,13 @@ export const TitleWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+`
+export const InputWrapper = styled(FlexContainer)`
+  border: 1px solid ${inputBorder};
+  border-radius: 4px;
+  :focus,
+  :hover {
+    border-color: ${inputBorder1};
+    box-shadow: 0 0 0 1px rgba(0, 173, 80, 0.2);
+  }
 `

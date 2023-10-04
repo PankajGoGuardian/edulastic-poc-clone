@@ -66,8 +66,6 @@ export const StyledText = styled(Col)`
   font-size: 12px;
   font-weight: bold;
   color: ${(p) => p.color};
-  margin-right: 30px;
-  text-align: ${(p) => p.textAlign};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -773,6 +773,7 @@ const AssessmentContainer = ({
           assignmentId: assignmentObj._id,
           testActivityId: restProps.utaId,
           groupId,
+          hasSections,
         })
         history.push('/home/assignments')
         if (

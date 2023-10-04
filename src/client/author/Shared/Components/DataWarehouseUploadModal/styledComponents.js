@@ -9,6 +9,7 @@ import {
   borderGrey,
   greenPrimary,
 } from '@edulastic/colors'
+import { IconCharInfo } from '@edulastic/icons'
 
 export const Container = styled.div`
   padding: 10px;
@@ -103,4 +104,10 @@ export const DownloadTemplateContainer = styled.div`
     padding-bottom: 2px;
     border-bottom-style: dashed;
   }
+`
+export const InfoIcon = styled(IconCharInfo)`
+  height: 15px;
+  position: absolute;
+  top: 7px;
+  cursor: pointer;
 `

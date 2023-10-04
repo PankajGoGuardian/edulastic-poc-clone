@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   XAxis,
   YAxis,
@@ -28,6 +28,7 @@ import {
   updateTooltipPos,
 } from '../../../../../common/chart-utils'
 import { CustomXAxisTickTooltipContainer } from '../../../../../common/components/charts/styled-components'
+import { useResetAnimation } from '../../../../../common/hooks/useResetAnimation'
 
 const getXTickText = (payload, _data) => {
   const week = _data[payload.index]?.week + 1
@@ -61,9 +62,14 @@ const AttendanceChart = ({
   showInterventions,
   interventionsData,
 }) => {
+  // NOTE workaround to fix labels not rendering due to interrupted animation
+  // ref: https://github.com/recharts/react-smooth/issues/44
+  const [animate, onAnimationStart, setAnimate] = useResetAnimation()
   const parentContainerRef = useRef(null)
   const tooltipRef = useRef(null)
   const [tooltipType, setTooltipType] = useState('right')
+
+  useEffect(() => setAnimate(true), [attendanceChartData])
 
   const {
     next: nextPage,
@@ -146,7 +152,10 @@ const AttendanceChart = ({
         icon="caret-left"
         IconBtn
         className="navigator navigator-left"
-        onClick={prevPage}
+        onClick={() => {
+          prevPage()
+          setAnimate(true)
+        }}
         style={{
           visibility: hasPreviousPage ? 'visible' : 'hidden',
         }}
@@ -157,7 +166,10 @@ const AttendanceChart = ({
         icon="caret-right"
         IconBtn
         className="navigator navigator-right"
-        onClick={nextPage}
+        onClick={() => {
+          nextPage()
+          setAnimate(true)
+        }}
         style={{
           visibility: hasNextPage ? 'visible' : 'hidden',
         }}
@@ -247,6 +259,8 @@ const AttendanceChart = ({
             label={CustomizedLabel}
             dot={<CustomDot />}
             activeDot={<CustomDot active />}
+            isAnimationActive={animate}
+            onAnimationStart={onAnimationStart}
           />
         </LineChart>
       </ResponsiveContainer>

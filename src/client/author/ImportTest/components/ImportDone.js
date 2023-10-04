@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { List } from 'antd'
+import { List, Col, Row } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 
 import { FlexContainer, StyledButton } from './styled'
@@ -11,8 +11,6 @@ import TitleWrapper from '../../AssignmentCreate/common/TitleWrapper'
 import {
   getJobsDataSelector,
   UPLOAD_STATUS,
-  uploadTestStatusAction,
-  setJobIdsAction,
   getUploadStatusSelector,
   getJobIdsSelector,
   qtiImportProgressAction,
@@ -20,34 +18,23 @@ import {
   JOB_STATUS,
   resetStateAction,
 } from '../ducks'
-import {
-  contentImportJobIds,
-  uploadContnentStatus,
-  contentImportProgressAction,
-  contentImportJobsData,
-  uploadContentStatusAction,
-  setImportContentJobIdsAction,
-} from '../../ContentCollections/ducks'
+import { contentImportProgressAction } from '../../ContentCollections/ducks'
 
 const ImportDone = ({
   t,
   jobsData = [],
-  setJobIds,
-  uploadTestStatus,
   status,
   jobIds = [],
   qtiImportProgress,
   contentImportProgress,
   history,
   location: { pathname: path },
-  setUploadContnentStatus,
-  setImportContentJobIds,
   resetData,
   qtiFileStatus = {},
 }) => {
   const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
   const items = jobsData.flatMap((job) => job?.testItems || [])
-  const testIds = jobsData.map(({ testId }) => testId)
+  const manifestFileData = jobsData.find((ele) => ele.type === 'manifestation')
   const isQtiImport = jobId.includes('qti')
   const totalQtiFiles = jobsData.filter((ele) => ele.type !== 'manifestation')
     .length
@@ -56,57 +43,90 @@ const ImportDone = ({
     : 0
 
   useEffect(() => {
-    if (jobId.includes('qti') && status !== UPLOAD_STATUS.DONE) {
+    if (jobId.includes('qti') && !jobsData.length) {
       qtiImportProgress({ jobId })
-    } else if (status !== UPLOAD_STATUS.INITIATE && jobsData.length === 0) {
+    } else if (jobId && status !== UPLOAD_STATUS.STANDBY && !jobsData.length) {
       contentImportProgress(jobIds)
     }
-  }, [])
+    // FIXME: Remove Polling and use firestore db / IOT messages to get the latest status of Import from server
+    // Checking maifest file exits
+    if (manifestFileData) {
+      // Calling qti import progress in interval till it is not postprocessed.
+      const interval = setInterval(() => {
+        if (jobId.includes('qti') && !manifestFileData.postProcessed) {
+          qtiImportProgress({ jobId })
+        } else {
+          clearInterval(interval)
+        }
+      }, 1000)
+    }
+  }, [jobsData])
 
   const continueToTest = () => {
+    resetData()
+    sessionStorage.removeItem('jobIds')
+    sessionStorage.removeItem('testUploadStatus')
     if (path === '/author/import-content') {
-      setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      resetData()
-      setImportContentJobIds([])
-      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
-      uploadTestStatus(UPLOAD_STATUS.STANDBY)
       sessionStorage.removeItem('qtiTags')
-      history.push(`/author/tests/tab/review/id/${testIds[0]}`)
-      setJobIds([])
+      if (manifestFileData?.testIds?.length)
+        history.push(
+          `/author/tests/tab/review/id/${manifestFileData?.testIds[0]}`
+        )
     }
   }
 
   const handleRetry = () => {
+    resetData()
+    sessionStorage.removeItem('jobIds')
+    sessionStorage.removeItem('testUploadStatus')
     if (path === '/author/import-content') {
-      setUploadContnentStatus(UPLOAD_STATUS.INITIATE)
-      resetData()
-      setImportContentJobIds([])
-      sessionStorage.removeItem('jobIds')
       history.push('/author/content/collections')
     } else {
-      setJobIds([])
-      uploadTestStatus(UPLOAD_STATUS.STANDBY)
-      sessionStorage.removeItem('qtiTags') // TODO: what it does
+      sessionStorage.removeItem('qtiTags')
     }
   }
 
   const ContinueBtn = (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: 12,
-        height: 32,
-        lineHeight: '32px',
-      }}
+    <Row
+      type="flex"
+      align="middle"
+      gutter={[0, 20]}
+      style={{ flexDirection: 'column', marginTop: 20 }}
     >
-      {items.length || completedQtiFiles === totalQtiFiles ? (
-        <StyledButton onClick={continueToTest}>Continue</StyledButton>
-      ) : (
-        <StyledButton onClick={handleRetry}>Retry</StyledButton>
-      )}
-    </div>
+      <Col span={12}>
+        {jobId.includes('qti') ? (
+          <Row type="flex" justify="center" gutter={[20, 20]}>
+            <Col>
+              {manifestFileData?.testIds?.length && (
+                <StyledButton onClick={continueToTest}>View Test</StyledButton>
+              )}
+            </Col>
+            <Col>
+              {completedQtiFiles !== totalQtiFiles && (
+                <StyledButton onClick={handleRetry}>Retry Import</StyledButton>
+              )}
+            </Col>
+          </Row>
+        ) : items.length ? (
+          <StyledButton onClick={continueToTest}>View Test</StyledButton>
+        ) : (
+          <StyledButton onClick={handleRetry}>Retry Import</StyledButton>
+        )}
+      </Col>
+      <Col>
+        {manifestFileData?.postProcessed &&
+          completedQtiFiles > 0 &&
+          !manifestFileData?.testIds?.length && (
+            <p>
+              QTI imported items are in the{' '}
+              <a href="author/items/filter/by-me">item library</a> under
+              <b>Created by me</b> filter
+            </p>
+          )}
+      </Col>
+    </Row>
   )
 
   return (
@@ -160,17 +180,6 @@ ImportDone.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  const path = state?.router?.location?.pathname
-  const jobIds = contentImportJobIds(state)
-  const jobId = Array.isArray(jobIds) ? jobIds.join() : jobIds
-  if (path === '/author/import-content' && !jobId.includes('qti')) {
-    return {
-      jobsData: contentImportJobsData(state),
-      status: uploadContnentStatus(state),
-      jobIds: contentImportJobIds(state),
-    }
-  }
-
   return {
     status: getUploadStatusSelector(state),
     jobIds: getJobIdsSelector(state),
@@ -183,12 +192,8 @@ export default compose(
   withNamespaces('qtiimport'),
   withRouter,
   connect(mapStateToProps, {
-    uploadTestStatus: uploadTestStatusAction,
-    setJobIds: setJobIdsAction,
     qtiImportProgress: qtiImportProgressAction,
     contentImportProgress: contentImportProgressAction,
-    setUploadContnentStatus: uploadContentStatusAction,
-    setImportContentJobIds: setImportContentJobIdsAction,
     resetData: resetStateAction,
   })
 )(ImportDone)

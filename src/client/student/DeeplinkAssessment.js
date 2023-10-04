@@ -11,7 +11,9 @@ const DeepLink = ({ bootstrap, match }) => {
     const { testType, assignmentId, testActivityId, testId } = match.params
     // alert("rendering deeplink inside effect");
     const searchQuery = (window.location.search || '').replace(/&amp;/g, '&')
-    const query = qs.parse(searchQuery, { ignoreQueryPrefix: true })
+    const { groupId, hasSections } = qs.parse(searchQuery, {
+      ignoreQueryPrefix: true,
+    })
 
     bootstrap({
       // while constructing seb url "common assessment" is converted to "common_assessment"
@@ -20,7 +22,8 @@ const DeepLink = ({ bootstrap, match }) => {
       assignmentId,
       testActivityId,
       testId,
-      classId: query.groupId,
+      classId: groupId,
+      hasSections: hasSections === 'true' || hasSections === true,
     })
   }, [])
   return <h2>Redirecting...</h2>

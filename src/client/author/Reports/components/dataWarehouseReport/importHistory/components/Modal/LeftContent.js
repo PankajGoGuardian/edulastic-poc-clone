@@ -1,6 +1,8 @@
 import React from 'react'
 import { Divider } from 'antd'
+import { upperCase } from 'lodash'
 
+import { FEED_NAME_LABEL } from '@edulastic/constants/const/dataWarehouse'
 import ContentRow from './ContentRow'
 import {
   Header,
@@ -18,9 +20,13 @@ const LeftContent = ({ data, termsMap, isEditModal }) => {
       <Header>
         {leftHeaderText} <Divider />
       </Header>
-      <div style={{ padding: '60px 100px' }}>
+      <div style={{ padding: '50px' }}>
         <ContentRow title="FEED TYPE" value={feedType} />
-        <ContentRow title="FEED NAME" value={feedName} showTooltip />
+        <ContentRow
+          title={upperCase(FEED_NAME_LABEL)}
+          value={feedName}
+          showTooltip
+        />
         <ContentRow
           title="SCHOOL YEAR"
           value={termsMap.get(termId)?.name || '-'}

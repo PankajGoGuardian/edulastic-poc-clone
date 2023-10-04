@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd'
+import { Col } from 'antd'
 import { EduIf, EduThen } from '@edulastic/common'
 import React from 'react'
 import { roleuser } from '@edulastic/constants'
@@ -19,7 +19,7 @@ function FilterClassFields({
   schoolYears,
 }) {
   return (
-    <Row type="flex" gutter={[5, 10]}>
+    <>
       <Col span={6}>
         <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
         <ControlDropDown
@@ -125,7 +125,7 @@ function FilterClassFields({
           selectCB={(e) => updateFilterDropdownCB(e, 'groupIds', true)}
         />
       </Col>
-    </Row>
+    </>
   )
 }
 export default FilterClassFields

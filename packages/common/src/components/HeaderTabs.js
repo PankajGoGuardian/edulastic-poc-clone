@@ -27,6 +27,7 @@ const HeaderTabs = ({
   hideIcon,
   activeStyle,
   isNew,
+  mediumDesktopWidth = mediumDesktopExactWidth,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -57,7 +58,7 @@ const HeaderTabs = ({
         hideIcon={hideIcon}
       >
         {icon}
-        <LinkLabel hasIcon={!!icon}>
+        <LinkLabel hasIcon={!!icon} mediumDesktopWidth={mediumDesktopWidth}>
           {linkLabel}
           <EduIf condition={isNew}>
             <>
@@ -179,7 +180,7 @@ export const LinkLabel = styled.div`
     display: ${({ hasIcon }) => (hasIcon ? 'none' : '')};
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${({ mediumDesktopWidth }) => mediumDesktopWidth}) {
     padding: ${({ hasIcon }) => (hasIcon ? '0 15px 0 0' : '0 15px')};
   }
   @media (max-width: ${desktopWidth}) {

@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
 import { CustomModalStyled, FlexContainer } from '@edulastic/common'
-
 import { Link } from 'react-router-dom'
 import { TextWrapper } from '../../../../../styledComponents'
 import { AIFeatureContentWrapper, Image, TextLink } from './styled'
 
-const AIFeaturedTiles = () => {
+const AIFeaturedTiles = ({ onVideoQuizClick, videoQuizPath }) => {
   const [isModelOpen, setIsModelOpen] = useState(false)
 
   const title = 'Get Started with VideoQuiz'
@@ -44,7 +43,7 @@ const AIFeaturedTiles = () => {
         </TextWrapper>
         <FlexContainer justifyContent="flex-start" flexWrap="wrap">
           <FlexContainer flexDirection="column" alignItems="flex-end">
-            <Link to="/author/tests/videoquiz">
+            <Link onClick={onVideoQuizClick} to={videoQuizPath}>
               <Image
                 alt="videoquiz"
                 src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"

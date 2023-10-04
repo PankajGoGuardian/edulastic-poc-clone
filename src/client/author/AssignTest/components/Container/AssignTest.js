@@ -99,10 +99,7 @@ import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
 import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
 
-const {
-  ASSESSMENT,
-  COMMON_ASSESSMENT,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
   evalTypeLabels,
   TEST_SETTINGS_SAVE_LIMIT,
@@ -248,7 +245,9 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
           : assignmentSettings.closePolicy ||
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
+        testType: isAdmin
+          ? testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
+          : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
         attemptWindow: {
           type: ATTEMPT_WINDOW_TYPE.DEFAULT,
@@ -271,7 +270,9 @@ class AssignTest extends React.Component {
           }
         : {}
       this.updateAssignmentNew({
-        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
+        testType: isAdmin
+          ? testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
+          : ASSESSMENT,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,
@@ -540,6 +541,10 @@ class AssignTest extends React.Component {
       }
     } else {
       let newSettings = {}
+      const [
+        commonAssessment,
+        schoolCommonAssessment,
+      ] = testTypesConstants.TEST_TYPES.COMMON
       if (value === '') {
         newSettings = {
           ...pick(testSettings, testSettingsOptions),
@@ -575,6 +580,13 @@ class AssignTest extends React.Component {
       }
       if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
         delete newSettings.testContentVisibility
+      }
+      // Below if block is to sanitize any legacy settings template for School Admins
+      if (
+        userRole === roleuser.SCHOOL_ADMIN &&
+        newSettings.testType === commonAssessment
+      ) {
+        newSettings.testType = schoolCommonAssessment
       }
       /**
        *  Test instruction are not available on assign page so avoid sending them in assignment settings from FE,

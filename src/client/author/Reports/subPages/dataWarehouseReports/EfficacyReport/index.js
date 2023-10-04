@@ -6,6 +6,7 @@ import { Spin } from 'antd'
 
 import { SpinLoader, EduIf, EduThen, EduElse } from '@edulastic/common'
 
+import { reportUtils } from '@edulastic/constants'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -40,6 +41,8 @@ import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import ReportView from './ReportView'
 import useTableFilters from './hooks/useTableFilters'
+
+const { EMPTY_ARRAY } = reportUtils.common
 
 const EfficacyReport = ({
   // value props
@@ -226,10 +229,11 @@ const EfficacyReport = ({
     }
   }, [pageFilters])
 
-  const { bandInfo = [], externalBands = [] } = useMemo(
-    () => get(filtersData, 'data.result', []),
-    [filtersData]
-  )
+  const {
+    bandInfo = EMPTY_ARRAY,
+    externalBands = EMPTY_ARRAY,
+    externalTests = EMPTY_ARRAY,
+  } = useMemo(() => get(filtersData, 'data.result', {}), [filtersData])
 
   const selectedPrePerformanceBand =
     bandInfo.find((x) => x._id === reportFilters.preProfileId) || bandInfo[0]
@@ -327,6 +331,7 @@ const EfficacyReport = ({
                         pageFilters={pageFilters}
                         reportFilters={reportFilters}
                         externalBands={externalBands}
+                        externalTests={externalTests}
                         selectedPrePerformanceBand={selectedPrePerformanceBand}
                         selectedPostPerformanceBand={
                           selectedPostPerformanceBand

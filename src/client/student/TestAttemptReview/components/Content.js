@@ -275,11 +275,13 @@ class SummaryTest extends Component {
         <AssignmentContentWrapperSummary>
           <Container>
             <Header>
-              <Title>
+              <Title data-cy="headingText">
                 {t('common.headingText')}{' '}
                 {!isEmpty(currentSection) ? currentSection.groupName : ''}
               </Title>
-              <TitleDescription>{t('common.message')}</TitleDescription>
+              <TitleDescription data-cy="titleDescription">
+                {t('common.message')}
+              </TitleDescription>
             </Header>
             <MainContent>
               <ColorDescription>
@@ -452,6 +454,7 @@ class SummaryTest extends Component {
                   onClick={finishTest}
                   // To disable loader on click of submit in section summary
                   loading={savingResponse || isSectionSubmitting}
+                  data-cy="submitButton"
                 >
                   <IconSend />{' '}
                   <span>

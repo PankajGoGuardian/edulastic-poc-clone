@@ -2,18 +2,16 @@ import React from 'react'
 import { launchAsync } from '@microsoft/immersive-reader-sdk'
 import { fetchIRtokenAndSubDomain } from '@edulastic/api'
 import { isUndefined } from 'lodash'
-import IconImmersiveReader from '@edulastic/icons/src/IconImmersiveReader'
 import { question } from '@edulastic/constants'
 
 import { Tooltip } from 'antd'
 import { notification, captureSentryException } from '@edulastic/common'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
-import { StyledButton } from '../../../../../src/client/assessment/themes/common/styledCompoenents'
 
 const { IR_CONTENT_SELECTOR, IR_MCQ_LABEL_SELECTOR } = question
 
-const ImmersiveReader = ({ t: i18translate, title }) => {
+const ImmersiveReader = ({ t: i18translate, title, ImmersiveReaderButton }) => {
   const getImmersiveReaderArgs = async () => {
     try {
       const { token, subdomain } = await fetchIRtokenAndSubDomain()
@@ -78,12 +76,10 @@ const ImmersiveReader = ({ t: i18translate, title }) => {
       placement="bottom"
       title={i18translate('assessmentPlayer.immersiveReaderToolTip')}
     >
-      <StyledButton
+      <ImmersiveReaderButton
         data-cy="immersiveReader"
-        onClick={() => handleLaunchImmersiveReader()}
-      >
-        <IconImmersiveReader />
-      </StyledButton>
+        onClick={handleLaunchImmersiveReader}
+      />
     </Tooltip>
   )
 }

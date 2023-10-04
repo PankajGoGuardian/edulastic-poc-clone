@@ -300,8 +300,7 @@ class Container extends PureComponent {
           userRole === roleuser.SCHOOL_ADMIN
         ) {
           setData({
-            testType:
-              testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+            testType: testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
             freezeSettings: !isOrganizationDA,
             updated: false,
           })

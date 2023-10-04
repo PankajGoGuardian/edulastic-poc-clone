@@ -5,7 +5,10 @@ import { roleuser } from '@edulastic/constants'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { staticDropDownData } from '../../../utils'
-import { getDemographicsFilterTagsData } from '../../../../common/utils'
+import {
+  getDefaultTestTypes,
+  getDemographicsFilterTagsData,
+} from '../../../../common/utils'
 
 function useFiltersFromURL({
   _onGoClick,
@@ -13,6 +16,7 @@ function useFiltersFromURL({
   fetchUpdateTagsData,
   filters,
   filtersData,
+  availableTestTypes,
   location,
   reportId,
   schoolYears,
@@ -36,6 +40,24 @@ function useFiltersFromURL({
         schoolYears.find((item) => item.key === search.termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
         (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
+      const urlTestSubjects = staticDropDownData.subjects.filter(
+        (item) => search.testSubjects && search.testSubjects.includes(item.key)
+      )
+      const urlTestGrades = staticDropDownData.grades.filter(
+        (item) => search.testGrades && search.testGrades.includes(item.key)
+      )
+
+      const testTypes = filtersData?.data?.result?.testTypes
+      const defaultTestTypes = getDefaultTestTypes(testTypes)
+      const urlAssessmentTypesKeys = (
+        search.assessmentTypes || defaultTestTypes
+      )
+        .split(',')
+        .filter((t) => t)
+      const urlAssessmentTypes = availableTestTypes.filter((a) =>
+        urlAssessmentTypesKeys.includes(a.key)
+      )
+
       const urlSubjects = staticDropDownData.subjects.filter(
         (item) => search.subjects && search.subjects.includes(item.key)
       )
@@ -49,10 +71,13 @@ function useFiltersFromURL({
 
       const _filters = {
         termId: urlSchoolYear.key,
+        testSubjects: urlTestSubjects.map((item) => item.key),
+        testGrades: urlTestGrades.map((item) => item.key),
+        assessmentTypes: urlAssessmentTypes.map((item) => item.key),
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        subjects: urlSubjects.map((item) => item.key).join(',') || '',
-        grades: urlGrades.map((item) => item.key).join(',') || '',
+        subjects: urlSubjects.map((item) => item.key).join(','),
+        grades: urlGrades.map((item) => item.key).join(','),
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
@@ -71,6 +96,7 @@ function useFiltersFromURL({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
+
       const demographics = get(filtersData, 'data.result.demographics')
       const demographicsFilterTagsData = getDemographicsFilterTagsData(
         search,
@@ -78,6 +104,9 @@ function useFiltersFromURL({
       )
       const _filterTagsData = {
         termId: urlSchoolYear,
+        testSubjects: urlTestSubjects,
+        testGrades: urlTestGrades,
+        assessmentTypes: urlAssessmentTypes,
         subjects: urlSubjects,
         grades: urlGrades,
         periodType: urlPeriod,

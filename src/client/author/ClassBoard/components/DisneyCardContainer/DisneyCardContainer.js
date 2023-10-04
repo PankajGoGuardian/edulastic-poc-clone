@@ -42,6 +42,7 @@ import {
   RightAlignedCol,
   ExclamationMark,
   StatusRow,
+  SquareColorDivBrown,
 } from './styled'
 
 import {
@@ -441,6 +442,19 @@ class DisneyCardContainer extends Component {
                       .filter((x) => !x.disabled)
                       .map((questionAct, questionIndex) => {
                         const weight = questionAct.weight
+                        // TODO: clean up and create a new component by extracting below logic
+                        if (questionAct.isItemContentHidden) {
+                          if (questionAct.skipped) {
+                            return (
+                              <SquareColorDivGray
+                                title="skipped"
+                                weight={weight}
+                                key={questionIndex}
+                              />
+                            )
+                          }
+                          return <SquareColorDivBrown key={questionIndex} />
+                        }
                         if (questionAct.isPractice) {
                           return <SquareColorDivlGrey key={questionIndex} />
                         }

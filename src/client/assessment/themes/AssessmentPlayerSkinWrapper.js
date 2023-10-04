@@ -43,9 +43,15 @@ const AssessmentPlayerSkinWrapper = ({
     toggleToolsOpenStatus,
     hasDrawingResponse,
     isShowStudentWork,
+    canUseImmersiveReader = false,
   } = restProps
 
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
+  let immersiveReaderTitle = ''
+  const currentItemIndex = currentItem + 1
+  if (typeof currentItemIndex === 'number' && restProps?.options?.length > 0) {
+    immersiveReaderTitle = `Question ${currentItemIndex}/${restProps.options.length}`
+  }
 
   const { blockNavigationToAnsweredQuestions = false } = restProps
   const { firstItemInSectionAndRestrictNav } = useContext(
@@ -55,6 +61,8 @@ const AssessmentPlayerSkinWrapper = ({
   const navigationProps = {
     ...restProps,
     firstItemInSectionAndRestrictNav,
+    immersiveReaderTitle,
+    canUseImmersiveReader,
   }
   const handleRestrictQuestionBackNav = (e) => {
     e.preventDefault()

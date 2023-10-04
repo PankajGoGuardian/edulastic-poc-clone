@@ -7,7 +7,7 @@ import { Select, Tooltip } from 'antd'
 import { EduIf, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
-import { testTypes as testTypesConstants } from '@edulastic/constants'
+import { testTypes as testTypesConstants, database } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq, debounce, isArray } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 import { receiveClassListAction } from '../../../Classes/ducks'
@@ -289,6 +289,14 @@ class ClassList extends React.Component {
 
   courseSearch = (searchString) => {
     const { loadCourseListData, userOrgId } = this.props
+    let search = {}
+    if (searchString) {
+      search = {
+        name: [{ type: database.MATCH_TYPE.CONTAINS, value: searchString }],
+        number: [{ type: database.MATCH_TYPE.CONTAINS, value: searchString }],
+        operator: 'or',
+      }
+    }
     const q = {
       limit: 25,
       page: 1,
@@ -296,9 +304,7 @@ class ClassList extends React.Component {
       active: 1,
       aggregate: true,
       includes: ['name'],
-      search: {
-        name: [{ type: 'cont', value: searchString }],
-      },
+      search,
     }
     loadCourseListData(q)
   }

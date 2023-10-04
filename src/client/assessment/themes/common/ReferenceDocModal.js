@@ -16,7 +16,7 @@ import { themes } from '../../../theme'
 
 const { playerSkinValues } = test
 const {
-  playerSkin: { quester },
+  playerSkin: { quester, parcc },
 } = themes
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -213,6 +213,10 @@ const titleStyles = {
   [playerSkinValues.quester.toLowerCase()]: css`
     background: ${quester.header2.background};
     color: ${quester.footer.textColor};
+  `,
+  [playerSkinValues.parcc.toLowerCase()]: css`
+    background: ${parcc.breadcrumb.background};
+    color: ${parcc.breadcrumb.color};
   `,
   [playerSkinValues.edulastic.toLowerCase()]: css`
     background: ${darkBlueSecondary};

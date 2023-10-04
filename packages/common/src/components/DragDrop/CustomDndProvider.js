@@ -2,6 +2,15 @@ import React, { useEffect } from 'react'
 import { DndProvider } from 'react-dnd'
 import TouchBackend from 'react-dnd-touch-backend'
 import HTML5Backend from 'react-dnd-html5-backend'
+import KeyboardBackend, {
+  isKeyboardDragTrigger,
+} from 'react-dnd-accessible-backend'
+import {
+  createTransition,
+  MouseTransition,
+  TouchTransition,
+  MultiBackend,
+} from 'react-dnd-multi-backend'
 
 export const DndStateContext = React.createContext()
 
@@ -29,9 +38,41 @@ const dndState = (state, action) => {
   }
 }
 
+const KeyboardTransition = createTransition('keydown', (event) => {
+  if (!isKeyboardDragTrigger(event)) return false
+  event.preventDefault()
+  return true
+})
+
 function CustomDndProvider({ children }) {
   const [state, setItem] = React.useReducer(dndState, initState)
-  const dndBackend = window.isMobileDevice ? TouchBackend : HTML5Backend
+  // const dndBackend = window.isMobileDevice ? TouchBackend : HTML5Backend
+
+  const DND_OPTIONS = {
+    backends: [
+      {
+        id: 'html5',
+        backend: HTML5Backend,
+        transition: MouseTransition,
+      },
+      {
+        id: 'keyboard',
+        backend: KeyboardBackend,
+        context: { window, document },
+        preview: true,
+        transition: KeyboardTransition,
+      },
+    ],
+  }
+  if (window.isMobileDevice) {
+    DND_OPTIONS.backends.push({
+      id: 'touch',
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    })
+  }
 
   const handleClickOutDroparea = (e) => {
     if (window.$ && window.isMobileDevice) {
@@ -51,10 +92,11 @@ function CustomDndProvider({ children }) {
   }, [])
   return (
     <DndProvider
-      backend={dndBackend}
+      backend={MultiBackend}
       options={{
         enableTouchEvents: true,
         enableMouseEvents: true,
+        ...DND_OPTIONS,
       }}
     >
       <DndStateContext.Provider value={{ state, setItem }}>

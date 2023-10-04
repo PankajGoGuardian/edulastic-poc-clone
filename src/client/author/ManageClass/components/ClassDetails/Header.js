@@ -6,6 +6,7 @@ import {
   SimpleConfirmModal,
   captureSentryException,
   DatePickerStyled,
+  EduIf,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -33,6 +34,7 @@ import {
 import IconArchive from '@edulastic/icons/src/IconArchive'
 
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import {
   Institution,
   DropMenu,
@@ -104,6 +106,7 @@ const Header = ({
   setShowClassCreationModal,
   setCreateClassTypeDetails,
   createClassType,
+  manualEnrollmentAllowed,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -241,6 +244,10 @@ const Header = ({
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
   const showAtlasReSyncButton = showSyncButtons && atlasId
   const showCleverReSyncButton = showSyncButtons && cleverId && isCleverDistrict
+  const isManualEnrollmentAllowed = !manualEnrollmentAllowed
+    ? type !== GROUP_TYPE.CLASS
+    : true
+  const showAddCoTeacher = active === 1 && isManualEnrollmentAllowed
 
   const options = {
     [CLEVER]: showCleverSyncButton,
@@ -494,12 +501,12 @@ const Header = ({
             )}
           </>
         )}
-        {active === 1 && (
+        <EduIf condition={showAddCoTeacher}>
           <EduButton isBlue onClick={handleActionMenuClick}>
             <IconPlusCircle />
             Add Co-Teacher
           </EduButton>
-        )}
+        </EduIf>
         {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
           <WithTooltip
             title={
@@ -604,10 +611,12 @@ const Header = ({
                     </span>
                   </MenuItems>
                 )}
-                <MenuItems onClick={handleActionMenuClick}>
-                  <IconPlusCircle />
-                  <span>Add a Co-Teacher</span>
-                </MenuItems>
+                {isManualEnrollmentAllowed && (
+                  <MenuItems onClick={handleActionMenuClick}>
+                    <IconPlusCircle />
+                    <span>Add a Co-Teacher</span>
+                  </MenuItems>
+                )}
                 {coTeachers && coTeachers.length > 1 && (
                   <MenuItems onClick={() => setUpdateCoTeacherModal(true)}>
                     <IconRemove />

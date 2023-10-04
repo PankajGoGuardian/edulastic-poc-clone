@@ -67,16 +67,15 @@ const getTableColumns = (isSharedReport) => {
             rightText={`${Math.round(averageScore)}%`}
             background={record.band.color}
           />
-        ) : !(record.score === undefined || record.score === null) &&
-          record.achievementLevelInfo ? (
+        ) : record.totalScore != null && record.achievementLevelInfo ? (
           <LargeTag
             tooltipPlacement="topLeft"
             tooltipText={record.achievementLevelInfo?.name || ''}
             leftText={record.achievementLevelInfo?.name || ''}
             rightText={
-              Number.isInteger(record.score)
-                ? new Intl.NumberFormat().format(record.score)
-                : '-'
+              Number.isInteger(record.totalScore)
+                ? new Intl.NumberFormat().format(record.totalScore)
+                : record.totalScore
             }
             background={record.achievementLevelInfo?.color || ''}
           />

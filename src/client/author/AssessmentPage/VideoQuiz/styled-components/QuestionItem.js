@@ -33,6 +33,16 @@ const getQuestionItemWrapperWidth = ({
   return annotations ? 'auto' : review ? '100%' : '265px'
 }
 
+const getCursorValue = ({ dragging, isEditMode }) => {
+  if (isEditMode) {
+    if (dragging) {
+      return 'grabbing'
+    }
+    return 'grab'
+  }
+  return ''
+}
+
 export const QuestionItemWrapper = styled.div`
   width: ${({ isSnapQuizVideoPlayer, review, annotations }) =>
     getQuestionItemWrapperWidth({
@@ -49,6 +59,8 @@ export const QuestionItemWrapper = styled.div`
   box-shadow: ${({ highlighted, pdfPreview }) =>
     !pdfPreview && highlighted ? `0 0 10px 0 ${themeColor}` : 'none'};
   border-left: ${({ review }) => !review && 0};
+  cursor: ${({ dragging, isEditMode }) =>
+    getCursorValue({ dragging, isEditMode })};
 
   @media (max-width: ${smallDesktopWidth}) {
     width: 225px;
@@ -61,20 +73,19 @@ export const QuestionNumber = styled.span`
   align-items: center;
   font-size: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 16 : 18) * zoom}px;
   font-weight: bold;
-  color: ${({ dragging }) => (dragging ? '#aaafb8' : 'white')};
-  background: ${({ dragging }) => (dragging ? 'transparent' : greyThemeDark4)};
-  border: 2px ${({ dragging }) => (dragging ? 'dashed' : 'solid')}
-    ${greyThemeDark4};
+  color: white;
+  background: ${greyThemeDark4};
+  border: 2px solid ${greyThemeDark4};
   border-radius: 4px;
   width: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 25 : 32) * zoom}px;
   height: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 25 : 32) * zoom}px;
   line-height: 30px;
   text-align: center;
   transition: all 300ms;
-  cursor: ${({ dragging, viewMode }) =>
-    viewMode && (dragging ? 'grabbing' : 'grab')};
   box-shadow: ${({ highlighted, pdfPreview }) =>
     pdfPreview && highlighted && `0 0 10px 0 ${themeColor}`};
+  float: left;
+  margin: 0px 10px 5px 0px;
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: 16px;
@@ -82,7 +93,6 @@ export const QuestionNumber = styled.span`
 `
 
 export const VideoQuizQuestionForm = styled.div`
-  cursor: ${(props) => (!props?.isSnapQuizVideoPlayer ? 'pointer' : '')};
   .ant-select-selection,
   .input__math,
   .ant-input {

@@ -150,7 +150,6 @@ const {
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
   docBasedSettingsOptions,
-  REF_MATERIAL_ALLOWED_SKIN_TYPES,
   accessibilitySettings,
 } = testConstants
 
@@ -559,6 +558,7 @@ class Setting extends Component {
       .map((o) => o.items)
       .flat()
       .filter((o) => o.multipartItem).length
+    const [commonAssessment, schoolCommonAssessment] = COMMON
     if (
       newSettings.applyEBSR &&
       (![
@@ -571,6 +571,13 @@ class Setting extends Component {
     }
     if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
       delete newSettings.testContentVisibility
+    }
+    // Below if block is to sanitize any legacy settings template for School Admins
+    if (
+      userRole === roleuser.SCHOOL_ADMIN &&
+      newSettings.testType === commonAssessment
+    ) {
+      newSettings.testType = schoolCommonAssessment
     }
     if (
       newSettings.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
@@ -771,13 +778,6 @@ class Setting extends Component {
     setTestData({ referenceDocAttributes: value })
   }
 
-  get isReferenceMaterialAllowedForCurrentSkin() {
-    const { edulastic } = playerSkinValues
-    const { entity: { playerSkinType = edulastic } = {} } = this.props
-    const retval = REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
-    return retval
-  }
-
   render() {
     const {
       showPassword,
@@ -871,6 +871,8 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
     } = entity
+
+    const showRefMaterial = !isDocBased
 
     // Updating the SettingCatogeries based on hasSections field
     const settingCategories = this.getSettingCategories()
@@ -1861,21 +1863,19 @@ class Setting extends Component {
                     togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
                   />
 
-                  {this.isReferenceMaterialAllowedForCurrentSkin &&
-                    !isDocBased && (
-                      <Block id="reference-material" smallSize={isSmallSize}>
-                        <ReferenceMaterial
-                          owner={owner}
-                          isEditable={isEditable}
-                          isSmallSize={isSmallSize}
-                          premium={premium}
-                          disabled={disabled}
-                          setData={this.handleUpdateRefMaterial}
-                          referenceDocAttributes={referenceDocAttributes}
-                        />
-                      </Block>
-                    )}
-
+                  <EduIf condition={showRefMaterial}>
+                    <Block id="reference-material" smallSize={isSmallSize}>
+                      <ReferenceMaterial
+                        owner={owner}
+                        isEditable={isEditable}
+                        isSmallSize={isSmallSize}
+                        premium={premium}
+                        disabled={disabled}
+                        setData={this.handleUpdateRefMaterial}
+                        referenceDocAttributes={referenceDocAttributes}
+                      />
+                    </Block>
+                  </EduIf>
                   <Block id="accessibility" smallSize={isSmallSize}>
                     <Title>
                       Accessibility <DollarPremiumSymbol premium={premium} />

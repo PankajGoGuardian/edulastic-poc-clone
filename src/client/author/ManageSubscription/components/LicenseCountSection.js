@@ -97,7 +97,7 @@ const LicenseCountSection = ({
                     license.totalCount
                   )
                 }
-                data-cy="renewLicences"
+                data-cy={`${license.productName}-renewLicences`}
               >
                 Renew Licenses
               </StyledButton>

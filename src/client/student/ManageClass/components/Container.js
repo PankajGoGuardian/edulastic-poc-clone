@@ -13,6 +13,7 @@ import {
   EduButton,
   MainContentWrapper,
   notification,
+  EduIf,
 } from '@edulastic/common'
 import { IconPlus, IconManage } from '@edulastic/icons'
 import {
@@ -49,7 +50,11 @@ const ManageClassContainer = ({
   setShowClass,
   userRole,
   proxyUserRole,
+  districtPolicies,
 }) => {
+  const isManualEnrollmentAllowed = districtPolicies.some(
+    ({ manualEnrollmentAllowed }) => manualEnrollmentAllowed
+  )
   const activeClasses = classList.filter((c) => c.active === 1)
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false)
   const [classCode, setClassCode] = useState(null)
@@ -71,6 +76,8 @@ const ManageClassContainer = ({
     setClassCode(null)
   }
   const isParentRoleProxy = proxyUserRole === 'parent'
+
+  const isJoinClassBtnVisible = !isParentRoleProxy && isManualEnrollmentAllowed
   if (loading) return <Spin />
   return (
     <>
@@ -81,7 +88,7 @@ const ManageClassContainer = ({
         {userRole === 'parent' ? (
           <StudentSlectCommon />
         ) : (
-          !isParentRoleProxy && (
+          <EduIf condition={isJoinClassBtnVisible}>
             <JoinClassBtn
               isGhost
               isBlue
@@ -91,7 +98,7 @@ const ManageClassContainer = ({
               <IconPlus width={12} height={12} color="white" stroke="white" />
               <span>{t('common.joinClass')}</span>
             </JoinClassBtn>
-          )
+          </EduIf>
         )}
         {isJoinClassModalVisible && (
           <JoinClassModal

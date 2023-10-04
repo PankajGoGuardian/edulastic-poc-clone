@@ -83,6 +83,7 @@ const initialState = {
   studentSignUp: true,
 
   searchAndAddStudents: false,
+  manualEnrollmentAllowed: true,
 
   googleUsernames: true,
   office365Usernames: true,
@@ -292,4 +293,9 @@ export const getSchoolAdminSettingsAccess = createSelector(
 export const getEnableOneRosterSync = createSelector(
   getDistrictPolicy,
   (state) => state.enableOneRosterSync || false
+)
+
+export const getManualEnrollmentAllowed = createSelector(
+  getSchoolPolicy,
+  (state) => state.manualEnrollmentAllowed ?? true
 )

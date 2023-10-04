@@ -197,11 +197,15 @@ export const showTestInfoModal = ({
               onChange={handlChange}
               suffixIcon={<IconSelectCaretDown color={themeColor} />}
             >
-              <Option value="" disabled>
+              <Option value="" disabled aria-label="Select Language">
                 Select Language
               </Option>
-              <Option value={languageCodes.ENGLISH}>English</Option>
-              <Option value={languageCodes.SPANISH}>Spanish</Option>
+              <Option value={languageCodes.ENGLISH} aria-label="English">
+                English
+              </Option>
+              <Option value={languageCodes.SPANISH} aria-label="Spanish">
+                Spanish
+              </Option>
             </Select>
           </p>
         </>

@@ -2163,6 +2163,10 @@ span.token.active-word {
   width: max-content;
 }
 
+.dw-upload-tooltip div.ant-tooltip-inner {
+  width: 500px;
+}
+
 .ant-tooltip-inner {
   text-align: center;
 }

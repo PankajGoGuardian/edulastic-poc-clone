@@ -594,7 +594,7 @@ class AssignTest extends React.Component {
   }
 
   validateSettings = (entity) => {
-    const { isEnabledRefMaterial, hasPenaltyOnUsingHints } = this.props
+    const { hasPenaltyOnUsingHints } = this.props
     const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = entity
     let isValid = true
     if (
@@ -672,13 +672,6 @@ class AssignTest extends React.Component {
         })
         isValid = false
       }
-    } else if (isEnabledRefMaterial && isEmpty(entity.referenceDocAttributes)) {
-      this.handleTabChange(sectionContants.TEST_BEHAVIOR_SECTION)
-      notification({
-        type: 'warn',
-        messageKey: 'uploadReferenceMaterial',
-      })
-      isValid = false
     } else if (
       showHintsToStudents &&
       hasPenaltyOnUsingHints &&

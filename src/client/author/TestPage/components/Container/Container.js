@@ -75,7 +75,6 @@ import {
   fetchTestSettingsListAction,
   getTestSettingsListSelector,
   setTestSettingsListAction,
-  isEnabledRefMaterialSelector,
   getPenaltyOnUsingHintsSelector,
   NewGroupAutoselect,
   isDynamicTestSelector,
@@ -821,15 +820,6 @@ class Container extends PureComponent {
     return true
   }
 
-  validateReferenceDocMaterial = () => {
-    const { test, enabledRefMaterial } = this.props
-    if (enabledRefMaterial && isEmpty(test.referenceDocAttributes)) {
-      notification({ messageKey: 'uploadReferenceMaterial' })
-      return false
-    }
-    return true
-  }
-
   validatePenaltyOnUsingHintsValue = () => {
     const { test, hasPenaltyOnUsingHints } = this.props
     const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = test
@@ -1187,13 +1177,7 @@ class Container extends PureComponent {
   }
 
   modifyTest = () => {
-    const {
-      currentTab,
-      enabledRefMaterial,
-      user,
-      test,
-      itemsSubjectAndGrade,
-    } = this.props
+    const { user, test, itemsSubjectAndGrade } = this.props
     const { itemGroups } = test
     const newTest = cloneDeep(test)
 
@@ -1232,15 +1216,6 @@ class Container extends PureComponent {
       }
       return foundItem
     })
-
-    if (
-      !enabledRefMaterial &&
-      currentTab === 'settings' &&
-      !isEmpty(newTest.referenceDocAttributes)
-    ) {
-      newTest.referenceDocAttributes = {}
-    }
-
     return newTest
   }
 
@@ -1263,7 +1238,6 @@ class Container extends PureComponent {
     }
     if (
       !this.validateTimedAssignment() ||
-      !this.validateReferenceDocMaterial() ||
       !this.validatePenaltyOnUsingHintsValue() ||
       !this.validateGroups(true) // validate groups for dynamic tests before save
     ) {
@@ -1388,9 +1362,6 @@ class Container extends PureComponent {
     }
     if (!this.validateGroups()) {
       // validate groups for dynamic tests
-      return false
-    }
-    if (!this.validateReferenceDocMaterial()) {
       return false
     }
     if (!this.validatePenaltyOnUsingHintsValue()) {
@@ -1925,7 +1896,6 @@ const enhance = compose(
       isUpgradePopupVisible: getShowUpgradePopupSelector(state),
       testSettingsList: getTestSettingsListSelector(state),
       userSignupStatus: getUserSignupStatusSelector(state),
-      enabledRefMaterial: isEnabledRefMaterialSelector(state),
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
       aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),

@@ -56,6 +56,23 @@ class ClozeDragDrop extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (document && window) {
+      document.onkeydown = function (e) {
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
+
+        // check ctrl + d and command + d key
+        if (
+          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+          keyCode == 68
+        ) {
+          return true
+        }
+      }
+    }
+  }
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props
     const itemForPreview = replaceVariables(templateItem)

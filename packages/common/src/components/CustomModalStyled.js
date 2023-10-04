@@ -13,8 +13,8 @@ const CustomModalStyled = ({ children, ...props }) => {
     if (props.visible) {
       setTimeout(() => {
         const x = document.querySelector('.ant-modal-content')
-        x.setAttribute('tabindex', 0)
-        x.focus()
+        x?.setAttribute('tabindex', 0)
+        x?.focus()
       }, 10)
     }
   }, [props.visible])

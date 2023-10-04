@@ -19,12 +19,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
-import {
-  getTestSelector,
-  getTestIdSelector,
-  isEnabledRefMaterialSelector,
-  getTestsUpdatedSelector,
-} from '../../ducks'
+import { getTestSelector, getTestIdSelector } from '../../ducks'
 
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
@@ -397,18 +392,10 @@ function* saveAssignment({ payload }) {
     }
 
     const referenceDocAttributes =
-      assignmentSettings.referenceDocAttributes || test.referenceDocAttributes
-    const refMatOptUpdated = yield select(getTestsUpdatedSelector)
-    const isEnabledRefMaterial = yield select(isEnabledRefMaterialSelector)
-
-    if (
-      (!isEmpty(referenceDocAttributes) && isEnabledRefMaterial) ||
-      (!isEmpty(referenceDocAttributes) && !refMatOptUpdated)
-    ) {
-      assignmentSettings.referenceDocAttributes = referenceDocAttributes
-    } else {
-      assignmentSettings.referenceDocAttributes = {}
-    }
+      assignmentSettings.referenceDocAttributes ||
+      test.referenceDocAttributes ||
+      {}
+    assignmentSettings.referenceDocAttributes = referenceDocAttributes
     // Missing termId notify
     if (!assignmentSettings.termId) {
       Sentry.captureException(

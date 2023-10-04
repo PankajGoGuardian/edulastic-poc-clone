@@ -10,6 +10,7 @@ import {
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
+import { getFGColor } from '../../../../../../src/utils/util'
 
 export const StyledRow = styled(Row)`
   justify-content: ${(p) => p.justifyContent || 'center'};
@@ -78,6 +79,7 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
+      ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
       border-radius: 0px 10px 10px 0px;
     }
   }
@@ -226,6 +228,7 @@ export const CustomStyledCell = styled.div`
   font-size: 12px;
   font-weight: bold;
   background-color: ${(p) => p.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
   margin: 0px auto;
   border-radius: 8px;
 `

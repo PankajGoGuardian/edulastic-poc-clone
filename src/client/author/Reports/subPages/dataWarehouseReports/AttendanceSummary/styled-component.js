@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import { IconQuestionCircle } from '@edulastic/icons'
 import { ResponsiveContainer } from 'recharts'
+import { getFGColor } from '../../../../src/utils/util'
 
 export const ChartWrapper = styled.div`
   border: 1px solid #dedede;
@@ -49,6 +50,7 @@ export const LegendSymbol = styled.span`
   width: 10px;
   height: 10px;
   background: ${(props) => props.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
   display: flex;
   border-radius: 50%;
   margin-right: 10px;

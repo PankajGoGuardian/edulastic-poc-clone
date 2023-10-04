@@ -35,6 +35,7 @@ import {
   useStateRef,
 } from '../../utils/videoPreviewHelpers'
 import appConfig from '../../../../../../app-config'
+import { isiOS } from '../../../../../assessment/utils/helpers'
 
 const { DragPreview } = DragDrop
 
@@ -116,6 +117,20 @@ const VideoPreview = ({
       }
 
       markerArea.current.close()
+    }
+
+    /**
+     * Issue with ipad. It doesn't play video when we try to play video programatically.
+     * Following is the workaround to make it work.
+     */
+    if (isiOS()) {
+      if (muted) {
+        videoRef?.current?.unMute()
+        videoRef?.current?.mute()
+      } else {
+        videoRef?.current?.mute()
+        videoRef?.current?.unMute()
+      }
     }
 
     setPlaying(true)

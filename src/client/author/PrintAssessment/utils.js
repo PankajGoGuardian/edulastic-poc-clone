@@ -95,27 +95,31 @@ export const getOrderedQuestionsAndAnswers = (
     return acc
   }, [])
 
-  let answers = questions.map((q) => {
-    const { itemCollections, premiumContentRestriction, ...ques } = q
-    const { options, validResponse, altResponse } = formatOptions(ques)
-    const answer = formatAnswers(
-      validResponse,
-      options,
-      ques,
-      null,
-      '',
-      'printAssessment'
-    )
-    const formatedAltResponse = altResponse.map((res) =>
-      formatAnswers(res, options, ques, null, '', 'printAssessment')
-    )
-    return {
-      qLabel: `${q.qLabel || q.barLabel?.substr(1) || ''}${q.qSubLabel || ''}`,
-      answers: Array.isArray(answer)
-        ? [...answer, ...formatedAltResponse]
-        : [answer, ...formatedAltResponse],
-    }
-  })
+  let answers = questions
+    .filter((q) => q) // filtering out undefined question
+    .map((q) => {
+      const { itemCollections, premiumContentRestriction, ...ques } = q
+      const { options, validResponse, altResponse } = formatOptions(ques)
+      const answer = formatAnswers(
+        validResponse,
+        options,
+        ques,
+        null,
+        '',
+        'printAssessment'
+      )
+      const formatedAltResponse = altResponse.map((res) =>
+        formatAnswers(res, options, ques, null, '', 'printAssessment')
+      )
+      return {
+        qLabel: `${q.qLabel || q.barLabel?.substr(1) || ''}${
+          q.qSubLabel || ''
+        }`,
+        answers: Array.isArray(answer)
+          ? [...answer, ...formatedAltResponse]
+          : [answer, ...formatedAltResponse],
+      }
+    })
 
   answers = answers.reduce((acc, a) => {
     if (!a.qLabel) {

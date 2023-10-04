@@ -46,7 +46,7 @@ const ImportDone = ({
     if (jobId.includes('qti') && !jobsData.length) {
       qtiImportProgress({ jobId })
     } else if (jobId && status !== UPLOAD_STATUS.STANDBY && !jobsData.length) {
-      contentImportProgress(jobIds)
+      contentImportProgress({ jobIds })
     }
     // FIXME: Remove Polling and use firestore db / IOT messages to get the latest status of Import from server
     // Checking maifest file exits
@@ -74,6 +74,8 @@ const ImportDone = ({
         history.push(
           `/author/tests/tab/review/id/${manifestFileData?.testIds[0]}`
         )
+      else if (jobsData && jobsData?.[0].testId)
+        history.push(`/author/tests/tab/review/id/${jobsData?.[0].testId}`)
     }
   }
 
@@ -96,24 +98,30 @@ const ImportDone = ({
       style={{ flexDirection: 'column', marginTop: 20 }}
     >
       <Col span={12}>
-        {jobId.includes('qti') ? (
-          <Row type="flex" justify="center" gutter={[20, 20]}>
-            <Col>
-              {manifestFileData?.testIds?.length && (
-                <StyledButton onClick={continueToTest}>View Test</StyledButton>
-              )}
-            </Col>
-            <Col>
-              {completedQtiFiles !== totalQtiFiles && (
-                <StyledButton onClick={handleRetry}>Retry Import</StyledButton>
-              )}
-            </Col>
-          </Row>
-        ) : items.length ? (
-          <StyledButton onClick={continueToTest}>View Test</StyledButton>
-        ) : (
-          <StyledButton onClick={handleRetry}>Retry Import</StyledButton>
-        )}
+        <Row type="flex" justify="center">
+          {jobId.includes('qti') ? (
+            <Row type="flex" justify="center" gutter={[20, 20]}>
+              <Col>
+                {manifestFileData?.testIds?.length && (
+                  <StyledButton onClick={continueToTest}>
+                    View Test
+                  </StyledButton>
+                )}
+              </Col>
+              <Col>
+                {completedQtiFiles !== totalQtiFiles && (
+                  <StyledButton onClick={handleRetry}>
+                    Retry Import
+                  </StyledButton>
+                )}
+              </Col>
+            </Row>
+          ) : items.length ? (
+            <StyledButton onClick={continueToTest}>View Test</StyledButton>
+          ) : (
+            <StyledButton onClick={handleRetry}>Retry Import</StyledButton>
+          )}
+        </Row>
       </Col>
       <Col>
         {manifestFileData?.postProcessed &&

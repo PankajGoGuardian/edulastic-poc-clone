@@ -60,11 +60,15 @@ const AcademicSummary = ({
     [widgetFilters]
   )
 
-  const isExternalTestTypeSelected = useMemo(
+  const externalTestType = useMemo(
     () =>
       widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]?.key.includes(
         EXTERNAL_TEST_KEY_SEPARATOR
-      ),
+      )
+        ? widgetFilters[academicSummaryFiltersTypes.TEST_TYPE].key.split(
+            EXTERNAL_TEST_KEY_SEPARATOR
+          )[0]
+        : null,
     [widgetFilters[academicSummaryFiltersTypes.TEST_TYPE]]
   )
 
@@ -82,20 +86,16 @@ const AcademicSummary = ({
     return getAcademicSummaryPieChartData(
       bandDistribution,
       selectedPerformanceBand,
-      isExternalTestTypeSelected
+      externalTestType
     )
   }, [data, selectedPerformanceBand])
 
   const {
     avgScorePercentage,
-    aboveStandardPercentage,
+    nStudentAboveStd,
     scoreTrendPercentage,
     showFooter,
-  } = useMemo(
-    () => getAcademicSummaryMetrics(data, isExternalTestTypeSelected),
-    [data]
-  )
-  const scorePrefix = !isExternalTestTypeSelected ? '%' : ''
+  } = useMemo(() => getAcademicSummaryMetrics(data, externalTestType), [data])
 
   const avgScoreCellColor = useMemo(() => {
     const { result: { avgScore, achievementLevel } = {} } = data || {}
@@ -103,9 +103,9 @@ const AcademicSummary = ({
       avgScore,
       achievementLevel,
       selectedPerformanceBand,
-      isExternalTestTypeSelected
+      externalTestType
     )
-  }, [data, selectedPerformanceBand, isExternalTestTypeSelected])
+  }, [data, selectedPerformanceBand, externalTestType])
 
   const { result: { bandDistribution = [], prePeriod } = {} } = data || {}
 
@@ -162,13 +162,13 @@ const AcademicSummary = ({
                 <div className="left-content">
                   <WidgetCell
                     header="AVG. SCORE"
-                    value={`${avgScorePercentage}${scorePrefix}`}
+                    value={avgScorePercentage}
                     footer={
                       <Footer
                         isVisible={showFooter}
                         value={scoreTrendPercentage}
                         period={`${trendPeriodLabel}`}
-                        showPercentage={!isExternalTestTypeSelected}
+                        showPercentage={!externalTestType}
                       />
                     }
                     color={avgScoreCellColor}
@@ -176,7 +176,7 @@ const AcademicSummary = ({
                     dataCy="avgScorePercentage"
                   />
 
-                  <EduIf condition={!isExternalTestTypeSelected}>
+                  <EduIf condition={!externalTestType}>
                     <EduThen>
                       <DashedLine
                         dashWidth="1px"
@@ -194,7 +194,7 @@ const AcademicSummary = ({
                           </FlexContainer>
                         }
                         subHeader="ABOVE OR AT STANDARD"
-                        value={`${aboveStandardPercentage}${scorePrefix}`}
+                        value={nStudentAboveStd}
                         color={lightGreen13}
                         cellType="large"
                         dataCy="studentsInBandPercentage"

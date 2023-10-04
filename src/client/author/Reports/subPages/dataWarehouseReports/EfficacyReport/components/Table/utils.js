@@ -77,7 +77,11 @@ export const getTableColumns = (
       (col) => col.key === 'avgPerformance'
     )
     _columns[avgPerformanceColumnIdx].render = (value) => (
-      <AvgPerformance data={value} analyseBy={analyseByKey} />
+      <AvgPerformance
+        data={value}
+        analyseBy={analyseByKey}
+        testInfo={testInfo}
+      />
     )
 
     // Performance change column
@@ -203,7 +207,7 @@ const getTestsData = (
         color,
       }
     })
-    Object.assign(result, { band, bandDistribution })
+    Object.assign(result, { band, bandDistribution, normScore: avgScore })
   } else {
     const maxScore = get(
       maxBy(data, `${prefix}TestMaxScore`),
@@ -238,6 +242,7 @@ const getTestsData = (
       avgScorePercentage,
       band,
       bandDistribution,
+      normScore: avgScorePercentage,
     })
   }
   return result

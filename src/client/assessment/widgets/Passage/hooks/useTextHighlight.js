@@ -25,12 +25,8 @@ const useTextHighlight = ({
   const content = useMemo(() => {
     const decoded = decodeHTML(passageContent)
     if (isEmpty(highlightedContent)) {
-      return decoded
-        ?.replace(/(<div (.*?)>)/g, '')
-        ?.replace(/(<\/div>)/g, '<br/>')
-        ?.replace(/(<p>)/g, '')
-        ?.replace(/(<p (.*?)>)/g, '')
-        ?.replace(/(<\/p>)/g, '<br/>')
+      // replacing all non styled paragraph with plane text with <br /> in end for new line
+      return decoded.replace(/<p>((?:(?!<p).)*)<\/p>/g, '$1<br />')
     }
     return highlightedContent
   }, [highlightedContent, passageContent])

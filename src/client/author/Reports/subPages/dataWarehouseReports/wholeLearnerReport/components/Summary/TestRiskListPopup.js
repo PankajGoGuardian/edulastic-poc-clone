@@ -1,6 +1,7 @@
 import React from 'react'
 import { CustomModalStyled } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { CustomStyledTable } from '../../../common/components/styledComponents'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { RiskLabel } from '../../common/styled'
@@ -22,11 +23,8 @@ const tableColumns = [
     title: 'Avg. Score',
     dataIndex: 'score',
     key: 'score',
-    render: (score, { isExternalTest }) => (
-      <p>
-        {score}
-        {isExternalTest ? '' : '%'}
-      </p>
+    render: (score, { externalTestType }) => (
+      <p>{getScoreLabel(score, { externalTestType })}</p>
     ),
   },
   {

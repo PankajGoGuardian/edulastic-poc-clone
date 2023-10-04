@@ -246,13 +246,9 @@ export function* receiveTestActivitySaga({ payload }) {
     const hiddenTestContentVisibilty = getManualContentVisibility(
       additionalData
     )
-    let filterTestItems = testItems
-    if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
-      filterTestItems = testItems.filter((t) => !t?.autoGrade && !t?.notStarted)
-    }
     gradebookData.passageData = classResponse.passages
-    gradebookData.testItemsData = filterTestItems
-    gradebookData.testItemsDataKeyed = keyBy(filterTestItems, '_id')
+    gradebookData.testItemsData = testItems
+    gradebookData.testItemsDataKeyed = keyBy(testItems, '_id')
     gradebookData.test = classResponse
     gradebookData.endDate = additionalData.endDate
     transformTestItems(gradebookData)
@@ -337,26 +333,19 @@ export function* receiveTestActivitySaga({ payload }) {
         applyEBSR: additionalData.applyEBSR,
       })
     }
-
-    if (hiddenTestContentVisibilty && userRole === roleuser.TEACHER) {
-      const indexSet = new Set()
-
-      entities.forEach((e) => {
-        e.questionActivities.forEach((t, i) => {
-          if (t?.autoGrade) {
-            indexSet.add(i)
-          }
-        })
-      })
-
+    const isItemContentHidden =
+      hiddenTestContentVisibilty && userRole === roleuser.TEACHER
+    if (isItemContentHidden) {
       entities = entities.map((e) => ({
         ...e,
-        questionActivities: e.questionActivities.filter((t, i) => {
-          return !indexSet.has(i)
+        questionActivities: e.questionActivities.map((t) => {
+          return {
+            ...t,
+            isItemContentHidden: t?.autoGrade,
+          }
         }),
       }))
     }
-
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData, entities },
@@ -1185,6 +1174,7 @@ export const getItemSummary = (
         timeSpent,
         pendingEvaluation,
         isPractice,
+        isItemContentHidden,
       } = _activity
       const itemQuestionKey = `${testItemId}_${_id}`
       let { notStarted, skipped } = _activity
@@ -1207,7 +1197,12 @@ export const getItemSummary = (
           timeSpent: 0,
           manualGradedNum: 0,
           unscoredItems: 0,
+          hiddenAttempt: 0,
         }
+      }
+      const isSkipped = skipped && score === 0 && !isPractice
+      if (isItemContentHidden && !isSkipped) {
+        questionMap[itemQuestionKey].hiddenAttempt += 1
       }
       if (testItemId) {
         questionMap[itemQuestionKey].itemLevelScoring = true
@@ -1222,7 +1217,7 @@ export const getItemSummary = (
         questionMap[itemQuestionKey].notStartedNum += 1
       }
 
-      if (skipped && score === 0 && !isPractice) {
+      if (isSkipped) {
         questionMap[itemQuestionKey].skippedNum += 1
         skippedx = true
       }
@@ -1458,25 +1453,6 @@ export const getActiveAssignedStudents = createSelector(
     )
 )
 
-export const getFirstQuestionEntitiesSelector = createSelector(
-  getTestActivitySelector,
-  getTestItemsData,
-  (uta, itemsData) => {
-    const itemsKeyed = keyBy(itemsData, '_id')
-    const uqa = get(uta, [0, 'questionActivities'], [])
-    const result = uqa.filter((_uqa) => {
-      const { testItemId } = _uqa
-      const item = itemsKeyed[testItemId]
-      if (!item) return false
-      if (item.itemLevelScoring) {
-        delete itemsKeyed[testItemId]
-      }
-      return true
-    })
-    return result
-  }
-)
-
 export const getTestQuestionActivitiesSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
@@ -1509,6 +1485,19 @@ export const getSortedTestActivitySelector = createSelector(
     }
     return sortedTestActivities
   }
+)
+
+export const getSortedAndContentHiddenActivitySelector = createSelector(
+  getSortedTestActivitySelector,
+  (state) =>
+    state
+      .filter((uta) => uta.UTASTATUS === testActivityStatus.SUBMITTED)
+      ?.map((item) => ({
+        ...item,
+        questionActivities: item.questionActivities?.filter(
+          (uqa) => !uqa.isItemContentHidden
+        ),
+      }))
 )
 
 export const getGradeBookSelector = createSelector(
@@ -1670,21 +1659,29 @@ export const isItemVisibiltySelector = createSelector(
     )
 
     // Enable for contentVisibility settings ALWAYS or settings GRADING and assignment status is grading or done.
+    const {
+      ALWAYS,
+      GRADING,
+      SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+      SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+    } = testContentVisibility
     return (
-      contentVisibility === testContentVisibility.ALWAYS ||
+      contentVisibility === ALWAYS ||
       ([IN_GRADING, DONE].includes(assignmentStatus) &&
         [
-          testContentVisibility.GRADING,
-          testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
-          testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          GRADING,
+          SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
         ].includes(contentVisibility)) ||
       (containsManualGradedQuestions &&
         [IN_PROGRESS, IN_GRADING, DONE].includes(assignmentStatus) &&
         [
-          testContentVisibility.SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
-          testContentVisibility.SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
-          testContentVisibility.SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
-          testContentVisibility.SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+          SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+          SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+          SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
         ].includes(contentVisibility))
     )
   }
@@ -1946,5 +1943,49 @@ export const getShowCorrectItemButton = createSelector(
       )
     }
     return false
+  }
+)
+
+export const getIsItemContentHiddenSelector = createSelector(
+  getAdditionalDataSelector,
+  getUserRole,
+  (additionalData, userRole) => {
+    if (!additionalData) return false
+    const hiddenTestContentVisibilty = getManualContentVisibility(
+      additionalData
+    )
+    return hiddenTestContentVisibilty && userRole === roleuser.TEACHER
+  }
+)
+
+export const getFirstQuestionEntitiesSelector = createSelector(
+  getTestActivitySelector,
+  getTestItemsData,
+  getIsItemContentHiddenSelector,
+  (uta, itemsData, isItemContentHidden) => {
+    const itemsKeyed = {}
+    for (const { _id, itemLevelScoring, autoGrade } of itemsData) {
+      itemsKeyed[_id] = {
+        itemLevelScoring,
+        autoGrade,
+      }
+    }
+    const uqas = get(uta, [0, 'questionActivities'], [])
+    const result = []
+    uqas.forEach((uqa) => {
+      const { testItemId } = uqa
+      const item = itemsKeyed[testItemId]
+      if (!item) {
+        return
+      }
+      if (isItemContentHidden && item.autoGrade) {
+        return
+      }
+      if (item.itemLevelScoring) {
+        delete itemsKeyed[testItemId]
+      }
+      result.push(uqa)
+    })
+    return result
   }
 )

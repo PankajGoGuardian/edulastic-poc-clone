@@ -207,7 +207,10 @@ class QuestionItem extends React.Component {
       clearHighlighted,
       resetTimeSpentOnQuestion,
       itemId,
+      isEditModalVisible,
     } = this.props
+
+    const { characterMap } = data
 
     if (!evaluation) {
       evaluation = data?.activity?.evaluation
@@ -242,6 +245,7 @@ class QuestionItem extends React.Component {
       highlighted,
       boundingRect,
       testItemId: itemId,
+      isEditModalVisible,
     }
     switch (data.type) {
       case MULTIPLE_CHOICE:
@@ -254,7 +258,13 @@ class QuestionItem extends React.Component {
           />
         )
       case SHORT_TEXT:
-        return <FormText onCreateAnswer={onCreateOptions} {...props} />
+        return (
+          <FormText
+            onCreateAnswer={onCreateOptions}
+            {...props}
+            characterMap={characterMap}
+          />
+        )
       case CLOZE_DROP_DOWN:
         return <FormDropdown {...props} />
       case MATH:

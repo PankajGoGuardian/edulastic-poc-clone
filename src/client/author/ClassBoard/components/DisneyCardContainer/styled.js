@@ -13,6 +13,7 @@ import {
   yellow1,
   mediumDesktopExactWidth,
   title,
+  brownDark,
 } from '@edulastic/colors'
 import { IconExclamationMark, IconScratchPad } from '@edulastic/icons'
 
@@ -235,6 +236,10 @@ export const SquareColorDivYellow = styled(SquareColorDiv)`
 `
 export const SquareColorDivlGrey = styled(SquareColorDiv)`
   background-color: #e8e8e8;
+`
+
+export const SquareColorDivBrown = styled(SquareColorDiv)`
+  background-color: ${brownDark};
 `
 
 export const StyledParaF = styled.p`

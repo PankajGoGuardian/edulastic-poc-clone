@@ -5,13 +5,13 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, ImmersiveReader, EduIf } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { IconBookmark, IconSend } from '@edulastic/icons'
+import { IconBookmark, IconSend, IconImmersiveReader } from '@edulastic/icons'
 import {
   keyboard as keyboardConst,
   testTypes as testTypesConstants,
@@ -30,7 +30,7 @@ import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 
 import ReviewToolbar from './ReviewToolbar'
 import SettingMenu from './SettingMenu'
-import ToolBar from './ToolBar'
+import ToolBar, { StyledButton as StyledButtonContainer } from './ToolBar'
 import Breadcrumb from '../../../../student/sharedComponents/Breadcrumb'
 import {
   StyledButton,
@@ -48,8 +48,16 @@ const {
 } = themes
 const { header } = parcc
 
+const ImmersiveReaderButton = (props) => {
+  return (
+    <StyledButtonContainer {...props}>
+      <IconImmersiveReader />
+    </StyledButtonContainer>
+  )
+}
+
 const PlayerHeader = ({
-  t,
+  t: translate,
   title,
   currentItem,
   gotoQuestion,
@@ -89,6 +97,11 @@ const PlayerHeader = ({
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
   isLast,
+  canUseImmersiveReader = false,
+  immersiveReaderTitle,
+  openReferenceModal,
+  isShowReferenceModal,
+  canShowReferenceMaterial,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -125,7 +138,7 @@ const PlayerHeader = ({
     { title },
   ]
 
-  const { showMagnifier } = settings
+  const { showMagnifier, showImmersiveReader = false } = settings
 
   return (
     <FlexContainer>
@@ -257,10 +270,10 @@ const PlayerHeader = ({
                           }
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
-                          aria-label={t('common.test.bookmark')}
+                          aria-label={translate('common.test.bookmark')}
                         >
                           <StyledIconBookmark />
-                          <span>{t('common.test.bookmark')}</span>
+                          <span>{translate('common.test.bookmark')}</span>
                         </StyledButton>
                       )}
                     </Container>
@@ -279,9 +292,21 @@ const PlayerHeader = ({
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                   answerChecksUsedForItem={answerChecksUsedForItem}
                   checkAnswer={checkAnswer}
+                  translate={translate}
+                  openReferenceModal={openReferenceModal}
+                  canShowReferenceMaterial={canShowReferenceMaterial}
+                  isShowReferenceModal={isShowReferenceModal}
                 />
               </FlexContainer>
               <FlexContainer>
+                <EduIf
+                  condition={!!showImmersiveReader && canUseImmersiveReader}
+                >
+                  <ImmersiveReader
+                    ImmersiveReaderButton={ImmersiveReaderButton}
+                    title={immersiveReaderTitle}
+                  />
+                </EduIf>
                 <SettingMenu
                   onSettingsChange={onSettingsChange}
                   utaId={utaId}

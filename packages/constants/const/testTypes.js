@@ -11,6 +11,7 @@ const GMAS_EOG = 'GMAS_EOG'
 const ILEARN = 'ILEARN'
 const STARR = 'STARR'
 const TERM_GRADES = 'Term_Grades'
+const FP_BAS = 'FP_BAS'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -35,7 +36,7 @@ const NON_ACADEMIC_DATA_TYPES = {
 
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
-  COMMON: ['common assessment'],
+  COMMON: ['common assessment', 'school common assessment'],
   PRACTICE: ['practice', 'homework', 'quiz'],
   TESTLET: ['testlet'],
 }
@@ -58,10 +59,16 @@ const TEST_TYPES_VALUES_MAP = ALL_TEST_TYPES_VALUES.reduce((acc, curr) => {
 
 const TEST_TYPE_LABELS = {
   'common assessment': 'Common Assessment',
+  'school common assessment': 'School Common Assessment',
   assessment: 'Class Assessment',
   practice: 'Practice Assessment',
   homework: 'Homework',
   quiz: 'Quiz',
+}
+
+const DEFAULT_ADMIN_TEST_TYPE_MAP = {
+  'district-admin': TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+  'school-admin': TEST_TYPES_VALUES_MAP.SCHOOL_COMMON_ASSESSMENT,
 }
 
 const PREMIUM_TEST_TYPES = [
@@ -76,6 +83,7 @@ module.exports = {
   ALL_TEST_TYPES_KEYS_EXCLUDING_TESTLET,
   TEST_TYPES_VALUES_MAP,
   TEST_TYPE_LABELS,
+  DEFAULT_ADMIN_TEST_TYPE_MAP,
   PREMIUM_TEST_TYPES,
   EXTERNAL_TEST_TYPES,
   NON_ACADEMIC_DATA_TYPES,
@@ -92,5 +100,6 @@ module.exports = {
   ILEARN,
   STARR,
   TERM_GRADES,
+  FP_BAS,
   ATTENDANCE,
 }

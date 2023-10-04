@@ -67,6 +67,7 @@ const ResponseBoxLayout = ({
               />
             </FlexContainer>
           </DragDropInnerContainer>
+          <p>Note: Use CTRL+D to drag the option via keyboard</p>
         </FlexContainer>
       </StyledResponseDiv>
     </DropContainer>

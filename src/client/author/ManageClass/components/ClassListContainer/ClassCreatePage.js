@@ -33,6 +33,7 @@ const ClassCreatePage = ({
   isClassLink,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  manualEnrollmentAllowed,
 }) => {
   const { name } = recentInstitute
 
@@ -69,15 +70,17 @@ const ClassCreatePage = ({
             data={name}
           />
           <ButtonsContainer>
-            <AuthorCompleteSignupButton
-              renderButton={(handleClick) => (
-                <EduButton isBlue onClick={handleClick}>
-                  CREATE NEW CLASS
-                </EduButton>
-              )}
-              onClick={createNewClass}
-              triggerSource="Create Class"
-            />
+            <EduIf condition={manualEnrollmentAllowed}>
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton isBlue onClick={handleClick}>
+                    CREATE NEW CLASS
+                  </EduButton>
+                )}
+                onClick={createNewClass}
+                triggerSource="Create Class"
+              />
+            </EduIf>
             <EduIf
               condition={[
                 !isPlayground,

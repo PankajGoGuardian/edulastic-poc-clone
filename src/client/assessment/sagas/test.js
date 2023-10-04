@@ -46,6 +46,7 @@ import {
 } from '@edulastic/constants'
 import { PUBLIC_URL_IDENTIFIER } from '@edulastic/constants/const/common'
 import { ORG_TYPE } from '@edulastic/constants/const/roleType'
+import { testCategoryTypes } from '@edulastic/constants/const/test'
 import {
   EDU_CALC_PROVIDER,
   DESMOS_CALC_PROVIDER,
@@ -622,6 +623,7 @@ function* loadTest({ payload }) {
     )
 
     const testType = settings.testType || test.testType
+    const isVideoQuiz = test?.testCategory === testCategoryTypes.VIDEO_BASED
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {
@@ -692,6 +694,9 @@ function* loadTest({ payload }) {
       })
 
       let lastAttemptedQuestion = questionActivities[0] || {}
+
+      let lastAttemptedQId = ''
+
       const previousQActivitiesById = groupBy(
         previousQuestionActivities,
         'testItemId'
@@ -771,6 +776,9 @@ function* loadTest({ payload }) {
           !item.skipped
         ) {
           lastAttemptedQuestion = item
+        }
+        if (!item.skipped && isVideoQuiz) {
+          lastAttemptedQId = item.qid
         }
       })
 
@@ -874,7 +882,10 @@ function* loadTest({ payload }) {
           yield put(
             push({
               pathname: `${itemId}`,
-              state: prevLocationState,
+              state: {
+                ...prevLocationState,
+                ...(lastAttemptedQId && { question: lastAttemptedQId }),
+              },
             })
           )
           yield put({
@@ -885,7 +896,10 @@ function* loadTest({ payload }) {
           yield put(
             push({
               pathname: `${testItemIds[0]}`,
-              state: prevLocationState,
+              state: {
+                ...prevLocationState,
+                ...(lastAttemptedQId && { question: lastAttemptedQId }),
+              },
             })
           )
         }

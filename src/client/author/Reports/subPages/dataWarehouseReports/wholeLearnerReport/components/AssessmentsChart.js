@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
 import { round } from 'lodash'
@@ -18,6 +18,7 @@ import {
   getBarsDataForExternal,
   getAssessmentChartData,
 } from '../utils'
+import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
 
 const { formatDate } = reportUtils.common
 
@@ -112,7 +113,14 @@ const AssessmentsChart = ({
   preLabelContent,
   showInterventions,
   interventionsData,
+  sectionLabelFilters,
 }) => {
+  // NOTE workaround to fix labels not rendering due to interrupted animation
+  // ref: https://github.com/recharts/react-smooth/issues/44
+  const [animate, onAnimationStart, setAnimate] = useResetAnimation()
+
+  useEffect(() => setAnimate(true), [chartData])
+
   const [legendPayload, barsDataForInternal] = useMemo(
     () => [
       getLegendPayload(selectedPerformanceBand),
@@ -133,7 +141,11 @@ const AssessmentsChart = ({
 
   return (
     <div>
-      <SectionLabel $margin="32px 0 -20px 0" style={{ fontSize: '18px' }}>
+      <SectionLabel
+        $margin="32px 0 0 0"
+        style={{ fontSize: '18px' }}
+        sectionLabelFilters={sectionLabelFilters}
+      >
         Performance Summary across Assessments
       </SectionLabel>
       <SignedStackedBarChart
@@ -172,6 +184,9 @@ const AssessmentsChart = ({
         preLabelContent={preLabelContent}
         interventionsData={interventionsData}
         showInterventions={showInterventions}
+        animate={animate}
+        onAnimationStart={onAnimationStart}
+        setAnimate={setAnimate}
       />
     </div>
   )

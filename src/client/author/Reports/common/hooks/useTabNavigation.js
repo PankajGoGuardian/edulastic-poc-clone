@@ -15,10 +15,7 @@ function useTabNavigation({
     if (_filters.termId) {
       const _filterKeys = Object.keys(_filters)
       _filterKeys.forEach((item) => {
-        const val =
-          settings.requestFilters[item] === ''
-            ? 'All'
-            : settings.requestFilters[item]
+        const val = _filters[item] === '' ? 'All' : _filters[item]
         _filters[item] = val
       })
       Object.assign(_filters, {
@@ -30,7 +27,7 @@ function useTabNavigation({
         postProfileId: _filters.profileId,
         ...extraFilters,
       })
-      const path = `?${qs.stringify(_filters)}`
+      const path = `?${qs.stringify(_filters, { arrayFormat: 'comma' })}`
       history.push(path)
     }
     const navigationItems = computeChartNavigationLinks({

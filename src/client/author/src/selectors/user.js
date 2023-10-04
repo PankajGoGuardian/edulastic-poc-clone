@@ -627,3 +627,13 @@ export const isSchoolAdminSelector = createSelector(
   getUserRole,
   (userRole) => SCHOOL_ADMIN === userRole
 )
+
+export const getDistrictPoliciesSelector = createSelector(
+  getOrgDataSelector,
+  (state) => state.districtPolicies || []
+)
+
+export const getManualEnrollmentAllowedSelector = createSelector(
+  getOrgDataSelector,
+  (state) => state?.policies?.district?.manualEnrollmentAllowed ?? true
+)

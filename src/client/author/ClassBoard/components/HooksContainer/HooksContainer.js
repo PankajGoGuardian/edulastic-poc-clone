@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import useInterval from '@use-it/interval'
 import { assignmentPolicyOptions as Policies } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
+import { keyBy } from 'lodash'
 import {
   realtimeGradebookActivityAddAction,
   gradebookTestItemAddAction,
@@ -24,7 +25,11 @@ import {
   setCurrentTestActivityIdAction,
   setUpdateActivityIdInEntityAction,
 } from '../../../src/actions/classBoard'
-import { testNameSelector } from '../../ducks'
+import {
+  getIsItemContentHiddenSelector,
+  getTestItemsDataSelector,
+  testNameSelector,
+} from '../../ducks'
 import { getFormattedName } from '../../../Gradebook/transformers'
 
 const needRealtimeDateTracking = ({
@@ -88,6 +93,8 @@ const Shell = ({
   isEG,
   history,
   setUpdateActivityIdInEntity,
+  isItemContentHidden,
+  testItems,
 }) => {
   const reloadLCB = () => {
     loadTestActivity(assignmentId, classId)
@@ -140,7 +147,22 @@ const Shell = ({
 
   useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
-    addItem,
+    addItem: (payload) => {
+      // TODO: do this from a selector by combining the isItemContentHidden variable
+      const testItemsById = keyBy(testItems, '_id')
+      return addItem(
+        payload.map((item) => {
+          const currentItem = testItemsById[item.testItemId]
+          if (currentItem && currentItem.autoGrade && isItemContentHidden) {
+            return {
+              ...item,
+              isItemContentHidden,
+            }
+          }
+          return item
+        })
+      )
+    },
     submitActivity,
     redirect: () => {
       if (!isEG) {
@@ -163,6 +185,8 @@ export default compose(
   connect(
     (state) => ({
       testName: testNameSelector(state),
+      testItems: getTestItemsDataSelector(state),
+      isItemContentHidden: getIsItemContentHiddenSelector(state),
     }),
     {
       addActivity: realtimeGradebookActivityAddAction,

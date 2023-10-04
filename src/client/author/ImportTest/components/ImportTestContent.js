@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
@@ -21,28 +21,21 @@ import {
 } from '../../ContentCollections/ducks'
 
 const ImportTestContent = ({
-  uploadTestStatus,
-  setJobIds,
   status,
   location: { pathname },
-  setContentImportJobIds,
-  uploadContnentStatus,
   history,
+  uploadTestStatus,
 }) => {
+  const intervalRef = useRef(null)
+
   useEffect(() => {
-    const currentStatus = sessionStorage.getItem('testUploadStatus')
-    const sessionJobs = sessionStorage.getItem('jobIds')
-    if (currentStatus) {
-      if (pathname === '/author/import-content') {
-        setContentImportJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
-        uploadContnentStatus(currentStatus)
-        setJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
-      } else {
-        uploadTestStatus(currentStatus) // upload progress
-        setJobIds(sessionJobs ? JSON.parse(sessionJobs) : [])
-      }
+    // When jobIds doesn't exist in session updating status to standby.
+    const jobIds = JSON.parse(sessionStorage.getItem('jobIds'))
+    if (!jobIds?.length) {
+      uploadTestStatus(UPLOAD_STATUS.STANDBY)
     }
   }, [])
+
   const breadcrumbData =
     pathname === '/author/import-content'
       ? [
@@ -77,7 +70,7 @@ const ImportTestContent = ({
       case status === UPLOAD_STATUS.STANDBY:
         return <UploadTest />
       case status === UPLOAD_STATUS.INITIATE:
-        return <ImportInprogress />
+        return <ImportInprogress intervalRef={intervalRef} />
       case status === UPLOAD_STATUS.DONE:
         return <ImportDone />
       default:
@@ -105,13 +98,6 @@ ImportTestContent.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  if (
-    state?.router?.location?.pathname === '/author/import-content' &&
-    state.collectionsReducer.type !== 'qti'
-  ) {
-    const { collectionsReducer } = state
-    return { status: collectionsReducer?.status || '' }
-  }
   const {
     admin: { importTest },
   } = state

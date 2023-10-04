@@ -33,6 +33,23 @@ export const StyledButton = withKeyboard(styled.div`
   }
 `)
 
+export const StyledImmersiveReaderButton = styled.div`
+  border: 1px solid ${button.background};
+  border-radius: 5px;
+  background-color: ${header2.background};
+  cursor: pointer;
+  padding: 5px 20px 1px 20px;
+  margin-right: 25px;
+  &:hover {
+    background: ${button.background};
+    color: ${header2.background};
+    border-color: ${header2.background};
+    svg {
+      fill: ${header2.background};
+    }
+  }
+`
+
 export const ControlBtn = styled(Button)`
   border: 1px solid ${button.background};
   color: ${button.textColor};

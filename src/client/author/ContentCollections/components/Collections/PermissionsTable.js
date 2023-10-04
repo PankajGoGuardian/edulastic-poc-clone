@@ -231,6 +231,7 @@ const PermissionsTable = ({
                 <SearchInputStyled
                   height="34px"
                   placeholder="Search for District, School or User"
+                  data-cy="searchForDistrictSchoolOrUser"
                   onChange={(e) => {
                     handlePermissionSearch(e?.target?.value)
                   }}

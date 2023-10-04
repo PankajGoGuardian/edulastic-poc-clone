@@ -2,6 +2,7 @@ import { lightGreen12, lightRed7 } from '@edulastic/colors'
 import { isEmpty, isNull, round, sumBy } from 'lodash'
 import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 import { reportUtils } from '@edulastic/constants'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import {
   academicSummaryFiltersTypes,
   availableTestTypes,
@@ -23,10 +24,10 @@ export const getCellColor = (
   avgScore,
   achievementLevel,
   selectedPerformanceBand,
-  isExternalTestTypeSelected
+  externalTestType
 ) => {
   let band
-  if (isExternalTestTypeSelected) {
+  if (externalTestType) {
     band = selectedPerformanceBand.find((pb) => pb.rank === achievementLevel)
   } else {
     band = getProficiencyBand(avgScore, selectedPerformanceBand)
@@ -37,10 +38,10 @@ export const getCellColor = (
 export const getAcademicSummaryPieChartData = (
   bandDistribution,
   selectedPerformanceBand,
-  isExternalTestTypeSelected
+  externalTestType
 ) => {
   if (isEmpty(bandDistribution) || isEmpty(selectedPerformanceBand)) return []
-  const sortKey = isExternalTestTypeSelected
+  const sortKey = externalTestType
     ? performanceBandKeys.EXTERNAL
     : performanceBandKeys.INTERNAL
   const sortedPerformanceBand = [...selectedPerformanceBand].sort(
@@ -49,7 +50,7 @@ export const getAcademicSummaryPieChartData = (
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
   return sortedPerformanceBand.map((pb) => {
     let studentsPerBand
-    if (isExternalTestTypeSelected) {
+    if (externalTestType) {
       studentsPerBand = bandDistribution.find((bd) => bd.bandName === pb.name)
         ?.students
     } else {
@@ -65,10 +66,7 @@ export const getAcademicSummaryPieChartData = (
   })
 }
 
-export const getAcademicSummaryMetrics = (
-  rawData,
-  isExternalTestTypeSelected
-) => {
+export const getAcademicSummaryMetrics = (rawData, externalTestType) => {
   if (isEmpty(rawData?.result)) return {}
 
   const {
@@ -80,22 +78,24 @@ export const getAcademicSummaryMetrics = (
   } = rawData.result
   const showFooter = !isEmpty(prePeriod) && !isNull(periodAvgScore)
   const totalStudents = sumBy(bandDistribution, ({ students }) => students)
-  let aboveStandardPercentage = 0
+  let nStudentAboveStd = 0
   const avgScorePercentage = round(avgScore)
   const periodAvgScorePercentage = round(periodAvgScore)
   const scoreTrendPercentage = showFooter
     ? round(avgScorePercentage - periodAvgScorePercentage)
     : 0
-  if (!isExternalTestTypeSelected) {
-    aboveStandardPercentage = percentage(
+  if (!externalTestType) {
+    nStudentAboveStd = `${percentage(
       aboveStandardStudents,
       totalStudents,
       true
-    )
+    )}%`
   }
   return {
-    avgScorePercentage,
-    aboveStandardPercentage,
+    avgScorePercentage: getScoreLabel(avgScorePercentage, {
+      externalTestType,
+    }),
+    nStudentAboveStd,
     scoreTrendPercentage,
     showFooter,
   }
@@ -241,6 +241,7 @@ export const getAvailableAcademicTestTypesWithBands = (
         key: `${testCategory}${EXTERNAL_TEST_KEY_SEPARATOR}${testTitle || ''}`,
         title: `${testCategory} ${_testTitle}`,
         bands,
+        externalTestType: testCategory,
       }
     }
   )

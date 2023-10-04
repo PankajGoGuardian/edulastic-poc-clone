@@ -5,6 +5,7 @@ import { isEmpty, isNumber, round } from 'lodash'
 import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { SignedStackedBarWithLineChart } from '../../../../common/components/charts/customSignedStackedBarWithLineChart'
 import {
   TooltipRow,
@@ -15,7 +16,7 @@ import {
   ColorBandRow,
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
-import { getScoreSuffix } from '../../common/utils'
+import { getTestName } from '../utils'
 
 const { formatDate } = reportUtils.common
 
@@ -83,15 +84,15 @@ const getTooltipJSX = (payload, barIndex) => {
     } else {
       colorBandComponent = <ColorBandItem color={color} name={bandName} />
     }
-    const score = externalTestType
+    let score = externalTestType
       ? round(averageScaledScore)
       : round(averageScore)
-    const scoreSuffix = getScoreSuffix(externalTestType)
+    score = getScoreLabel(score, barData)
     return (
       <div>
         <TooltipRowItem title="Date:" value={formatDate(assessmentDate)} />
         <TooltipRowItem title="Students:" value={totalGraded} />
-        <TooltipRowItem title="Score:" value={`${score}${scoreSuffix}`} />
+        <TooltipRowItem title="Score:" value={score} />
         <EduIf condition={averageLexileScore}>
           <EduThen>
             <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />
@@ -157,11 +158,8 @@ const barsLabelFormatter = (value) => {
 // payload: { coordinate, value, index, offset }
 // _data: contains the current slice of data displayed in the chart
 const getXTickText = (payload, _data) => {
-  const _testData = _data[payload.index]
-  const _testName = _testData.isIncomplete
-    ? `${_testData.testName} *`
-    : _testData.testName
-  return _testName || '-'
+  const _testName = getTestName(_data[payload.index])
+  return _testName
 }
 
 const getXTickTagText = (payload, _data) => {
@@ -256,12 +254,14 @@ const Chart = ({
         {}
       )
       const _topLabelKey = `top-label-bar${barsDataForExternal.length}`
+      const score = isNumber(d.averageScore)
+        ? round(d.averageScore || 0)
+        : d.averageScore
+      const topLabelValue = getScoreLabel(score, d)
       return {
         ...d,
         ...barsCellDataForExternal,
-        [_topLabelKey]: isNumber(d.averageScore)
-          ? round(d.averageScore || 0)
-          : d.averageScore,
+        [_topLabelKey]: topLabelValue,
         additionalData: barsCellAdditionalDataForExternal,
       }
     }
@@ -312,7 +312,7 @@ const Chart = ({
           ? barsDataForExternal
           : barsDataForInternal
       }
-      xAxisDataKey="uniqId"
+      xAxisDataKey="testId"
       lineDataKey="lineScore"
       lineProps={chartLineProps}
       getTooltipJSX={getTooltipJSX}

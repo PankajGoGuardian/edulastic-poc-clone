@@ -4,6 +4,24 @@ export const getYear = (timestamp) => new Date(timestamp).getFullYear()
 
 export const NON_ACADEMIC_DATA_TYPE_KEY = 'non-academic'
 export const ACADEMIC_DATA_TYPE_KEY = 'academic'
+export const AdministrationLevelOptions = [
+  {
+    key: 'Admin 1',
+    title: 'Admin 1',
+  },
+  {
+    key: 'Admin 2',
+    title: 'Admin 2',
+  },
+  {
+    key: 'Admin 3',
+    title: 'Admin 3',
+  },
+  {
+    key: 'Admin 4',
+    title: 'Admin 4',
+  },
+]
 
 const generateDataStructure = (academicFeedTypes, nonAcademicFeedTypes) => {
   const dataStructure = []

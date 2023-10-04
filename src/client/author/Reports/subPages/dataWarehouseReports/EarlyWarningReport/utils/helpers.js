@@ -1,7 +1,7 @@
 import { lightRed5, lightGreen12, lightGrey9 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import next from 'immer'
-import { sumBy, get, groupBy } from 'lodash'
+import { sumBy, sortBy, groupBy, omit } from 'lodash'
 import React from 'react'
 import moment from 'moment'
 import {
@@ -10,6 +10,7 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import { EduIf } from '@edulastic/common'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
@@ -27,7 +28,6 @@ import {
   timeframeFilterKeys,
   timeframeFilterValues,
   CHART_LABEL_KEY,
-  RISK_KEYS,
 } from './constants'
 import { sortTestTypes } from '../../common/utils'
 
@@ -174,11 +174,10 @@ export const getTableColumns = ({
     )
     const sortedAvailableTestTypes = sortTestTypes([...availableTestTypes])
     const academicSubColumns = sortedAvailableTestTypes.map((testType) => {
-      const isExternal = (feedTypes || []).find(
+      const externalTestDefinition = (feedTypes || []).find(
         ({ key }) => key === testType.split(EXTERNAL_TEST_KEY_SEPARATOR)[0]
       )
-      const scoreSuffix = isExternal ? '' : '%'
-      const testTypeText = isExternal
+      const testTypeText = externalTestDefinition
         ? testType.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
         : TEST_TYPE_LABELS[testType]
 
@@ -186,7 +185,7 @@ export const getTableColumns = ({
         key: testType,
         title: (
           <>
-            <EduIf condition={!isExternal}>
+            <EduIf condition={!externalTestDefinition}>
               <StyledTag
                 border="1.5px solid black"
                 font="bold"
@@ -195,7 +194,7 @@ export const getTableColumns = ({
                 {testTypeText}
               </StyledTag>
             </EduIf>
-            <EduIf condition={isExternal}>
+            <EduIf condition={externalTestDefinition}>
               <StyledTag color="black" marginBlock="5px">
                 {testTypeText}
               </StyledTag>
@@ -204,11 +203,13 @@ export const getTableColumns = ({
         ),
         dataIndex: 'academicRisk',
         render: (value) => {
-          const scoreValue =
+          const scoreLabel =
             value[testType]?.score >= 0
-              ? `${value[testType].score}${scoreSuffix}`
+              ? getScoreLabel(value[testType].score, {
+                  externalTestType: externalTestDefinition?.key,
+                })
               : '-'
-          return <ColoredText>{scoreValue}</ColoredText>
+          return <ColoredText>{scoreLabel}</ColoredText>
         },
       }
     })
@@ -283,73 +284,114 @@ export const transformRiskSummaryData = (prePeriod, postPeriod, showFooter) => {
   }
 }
 
-const sortGroupedTimelineData = (data, timeframe) =>
-  data.sort((a, b) => {
-    if (a[0].year === b[0].year) {
-      return a[0][timeframe] - b[0][timeframe]
-    }
-    return a[0].year - b[0].year
-  })
-
-export const getTimelineChartData = (rawData, filters) => {
-  const { timeframe } = filters
-  const timelineData = get(rawData, 'data.result', [])
-  if (!timelineData.length) {
-    return []
+const generateTimeframeLabel = ({ year, month, quarter }, timeframe) => {
+  let momentDate = null
+  let chartTimeLabel = ''
+  if (timeframe === timeframeFilterKeys.MONTHLY) {
+    const date = new Date(year, month - 1)
+    momentDate = moment(date)
+    chartTimeLabel = momentDate.format('MMM YYYY')
   }
+  if (timeframe === timeframeFilterKeys.QUARTERLY) {
+    chartTimeLabel = `Q${quarter} ${year}`
+  }
+  return { momentDate, chartTimeLabel }
+}
 
-  const timelineDataWithDateString = timelineData.map((timelineItem) => {
-    let chartTimeLabel = ''
-    let momentDate = null
-    const { year, month, quarter } = timelineItem
-    if (timeframe === timeframeFilterKeys.MONTHLY) {
-      const date = new Date(year, month - 1)
-      momentDate = moment(date)
-      chartTimeLabel = momentDate.format('MMM YYYY')
-    } else if (timeframe === timeframeFilterKeys.QUARTERLY) {
-      chartTimeLabel = `Q${quarter} ${year}`
-      momentDate = moment()
-    }
+const getTimelineDataWithDateString = (data, timeframe) => {
+  return data.map((timelineItem) => {
+    const { momentDate, chartTimeLabel } = generateTimeframeLabel(
+      timelineItem,
+      timeframe
+    )
     return {
       ...timelineItem,
       [CHART_LABEL_KEY]: chartTimeLabel,
       momentDate,
     }
   })
+}
 
-  const groupedTimelineData = Object.values(
-    groupBy(timelineDataWithDateString, CHART_LABEL_KEY)
+const getTimelineChartLabels = (startItem, endItem, timeframe) => {
+  const timelineChartLabels = []
+  // check if valid month data is available and timeframe is monthly
+  if (startItem.month && timeframe === timeframeFilterKeys.MONTHLY) {
+    const { momentDate: startMomentDate } = startItem
+    const { momentDate: endMomentDate } = endItem
+    const monthsDiff = endMomentDate.diff(startMomentDate, 'months')
+    for (let i = 0; i <= monthsDiff; i++) {
+      const date = moment(startMomentDate).add(i, 'month')
+      timelineChartLabels.push(date.format('MMM YYYY'))
+    }
+  }
+  // check if valid month data is available and timeframe is monthly
+  if (startItem.quarter && timeframe === timeframeFilterKeys.QUARTERLY) {
+    let { quarter, year } = startItem
+    const { quarter: endQuarter, year: endYear } = endItem
+    while (year < endYear) {
+      timelineChartLabels.push(`Q${quarter} ${year}`)
+      if (quarter === 4) {
+        quarter = 1
+        year += 1
+      } else {
+        quarter += 1
+      }
+    }
+    while (quarter <= endQuarter) {
+      timelineChartLabels.push(`Q${quarter} ${year}`)
+      quarter += 1
+    }
+  }
+  return timelineChartLabels
+}
+
+export const getTimelineChartData = (rawData, filters) => {
+  const { timeframe } = filters
+  const timelineData = rawData?.data?.result || []
+  if (!timelineData.length) {
+    return []
+  }
+  const sortedTimelineData = sortBy(timelineData, [
+    'year',
+    timeframeFilterValues[timeframe],
+  ])
+  const timelineDataWithDateString = getTimelineDataWithDateString(
+    sortedTimelineData,
+    timeframe
   )
-
-  const sortedGroupedTimelineData = sortGroupedTimelineData(
-    groupedTimelineData,
-    timeframeFilterValues[timeframe]
+  const timelineChartLabels = getTimelineChartLabels(
+    timelineDataWithDateString[0],
+    timelineDataWithDateString.slice(-1)[0],
+    timeframe
   )
-
-  const finalData = []
-  sortedGroupedTimelineData.forEach((groupedData) => {
+  const groupedTimelineData = groupBy(
+    timelineDataWithDateString,
+    CHART_LABEL_KEY
+  )
+  const timelineChartData = timelineChartLabels.map((chartTimeLabel) => {
+    const groupedData = groupedTimelineData[chartTimeLabel]
+    if (!groupedData) {
+      return {
+        [CHART_LABEL_KEY]: chartTimeLabel,
+      }
+    }
     const totalStudents = groupedData.reduce(
       (prev, curr) => prev + curr.studentCount,
       0
     )
     const studentCounts = {}
-    groupedData.forEach((entry) => {
-      studentCounts[entry.bandLabel.toLocaleLowerCase()] = percentage(
-        entry.studentCount,
-        totalStudents,
-        true
-      )
+    Object.values(RISK_BAND_LABELS).forEach((k) => {
+      const data = groupedData.find((d) => k === d.bandLabel)
+      studentCounts[k] = data
+        ? percentage(data.studentCount, totalStudents, true)
+        : 0
     })
-    if (studentCounts[RISK_KEYS.LOW] === 100) {
-      studentCounts[RISK_KEYS.MEDIUM] = 0
-      studentCounts[RISK_KEYS.HIGH] = 0
-    }
-    finalData.push({
-      ...groupedData[0],
+    return {
+      ...omit(groupedData[0], ['bandLabel']),
       ...studentCounts,
-    })
+    }
   })
-  return finalData
+  return timelineChartData
 }
 
 export const transformTableData = (tableMetrics) => {

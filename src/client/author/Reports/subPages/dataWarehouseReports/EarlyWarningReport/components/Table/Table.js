@@ -6,6 +6,7 @@ import {
   SpinLoader,
   useApiQuery,
 } from '@edulastic/common'
+import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
 import { dataWarehouseApi } from '@edulastic/api'
 import { isEmpty } from 'lodash'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -45,13 +46,14 @@ const EarlyWarningTable = ({
   feedTypes,
 }) => {
   const query = useMemo(
-    () => ({
-      ...settings.requestFilters,
-      ...tableFilters,
-      [tableFilterTypes.COMPARE_BY]:
-        tableFilters[tableFilterTypes.COMPARE_BY]?.key,
-      [tableFilterTypes.RISK]: tableFilters[tableFilterTypes.RISK].join(','),
-    }),
+    () =>
+      stringifyArrayFilters({
+        ...settings.requestFilters,
+        ...tableFilters,
+        [tableFilterTypes.COMPARE_BY]:
+          tableFilters[tableFilterTypes.COMPARE_BY]?.key,
+        [tableFilterTypes.RISK]: tableFilters[tableFilterTypes.RISK],
+      }),
     [settings.requestFilters, tableFilters]
   )
 

@@ -24,7 +24,7 @@ const rightContent = (group, hasSections = false) => {
           </span>
         </Tooltip>
       )}
-      <InfoDiv hasSections={hasSections}>
+      <InfoDiv hasSections={hasSections} data-cy="sectionItemCount">
         <Text>TOTAL ITEMS</Text>
         <Count>{items.length}</Count>
       </InfoDiv>
@@ -136,7 +136,7 @@ export default SortableContainer(
           >
             {itemGroups.map((group, count) => (
               <Panel
-                header={group.groupName}
+                header={<span dataCy={group.groupName}>{group.groupName}</span>}
                 key={count}
                 extra={rightContent(group, hasSections)}
               >

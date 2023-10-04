@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
-import { Select, Spin, Input, Alert } from 'antd'
+import { Select, Spin } from 'antd'
 import { isEmpty, get } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -29,13 +29,10 @@ import {
   getFeedTypes,
 } from '../../../sharedDucks/dataWarehouse'
 import { getOrgDataSelector } from '../../../src/selectors/user'
-import {
-  getYear,
-  NON_ACADEMIC_DATA_TYPE_KEY,
-  getFeedTypeOptions,
-} from './utils'
+import { getYear, getFeedTypeOptions } from './utils'
 import { getTermOptions } from '../../../utils/reports'
 import DownloadTemplate from './DownloadTemplate'
+import FeedNameInput from './FeedNameInput'
 import {
   Container,
   DropzoneContentContainer,
@@ -68,7 +65,7 @@ const DataWarehouseUploadModal = ({
   feedTypes,
 }) => {
   const [file, setFile] = useState(null)
-  const [feedName, setFeedName] = useState('')
+  const [feedName, setFeedName] = useState(undefined)
   const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
   const [termId, setTermId] = useState(undefined)
   const [category, setCategory] = useState(undefined)
@@ -78,7 +75,7 @@ const DataWarehouseUploadModal = ({
       setFile(null)
       setTermId(undefined)
       setCategory(undefined)
-      setFeedName('')
+      setFeedName(undefined)
     }
   }, [isVisible])
 
@@ -103,24 +100,11 @@ const DataWarehouseUploadModal = ({
 
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
-  const testTitlePlaceholder = useMemo(() => {
-    let isNonAcademicFormatSelected = false
-    if (!isEmpty(category)) {
-      const nonAcademicDataOptions =
-        dataFomatDropdownOptions.find(
-          (node) => node.key === NON_ACADEMIC_DATA_TYPE_KEY
-        )?.children || []
-      if (!isEmpty(nonAcademicDataOptions)) {
-        const matchingCategory = nonAcademicDataOptions.find(
-          (option) => option.value === category
-        )
-        isNonAcademicFormatSelected = !isEmpty(matchingCategory)
-      }
-    }
-    return isNonAcademicFormatSelected
-      ? 'Enter Feed Name'
-      : 'Enter Feed Name (Test Title)'
-  }, [category])
+  const selectedSchoolYear = useMemo(
+    () => schoolYearOptions.find(({ key }) => key === termId)?.title,
+
+    [schoolYearOptions, termId]
+  )
 
   const isUploadBtnDisabled =
     loading ||
@@ -203,23 +187,14 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
         <EduIf condition={!isEmpty(category)}>
           <>
-            <EduIf condition={isInvalidFeedName}>
-              <Alert
-                message="Feed name already exists, please give another name or go to Edit to edit the existing record"
-                type="error"
-                banner
-              />
-            </EduIf>
-            <StyledRow>
-              <StyledCol span={12}>
-                <Input
-                  placeholder={testTitlePlaceholder}
-                  value={feedName}
-                  onChange={(e) => setFeedName(e.target.value)}
-                  maxLength={150}
-                />
-              </StyledCol>
-            </StyledRow>
+            <FeedNameInput
+              isInvalidFeedName={isInvalidFeedName}
+              category={category}
+              feedName={feedName}
+              dataFomatDropdownOptions={dataFomatDropdownOptions}
+              setFeedName={setFeedName}
+              selectedSchoolYear={selectedSchoolYear}
+            />
             <DownloadTemplate url={getTemplateFilePath(category, feedTypes)} />
           </>
         </EduIf>

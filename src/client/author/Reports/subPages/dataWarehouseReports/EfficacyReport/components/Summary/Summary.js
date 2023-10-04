@@ -3,6 +3,7 @@ import { EduIf, FlexContainer } from '@edulastic/common'
 import { IconInfo, IconStudent } from '@edulastic/icons'
 import { Tooltip, Typography } from 'antd'
 import React from 'react'
+import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { DashedLine } from '../../../../../common/styled'
 import Legend from './Legend'
 import IconArrow from '../../../../multipleAssessmentReport/PreVsPost/components/common/IconArrow'
@@ -27,11 +28,11 @@ const SummaryContainer = ({
   const { preCardInfo, postCardInfo, change } = summary
   const { preTestInfo, postTestInfo } = testInfo
 
-  const preCardScorePostfix = `${preCardInfo.showPercent ? '%' : ''}`
-  const postCardScorePostfix = `${postCardInfo.showPercent ? '%' : ''}`
   const changePostfix = `${
     postCardInfo.showPercent && preCardInfo.showPercent ? '%' : ''
   }`
+  preCardInfo.scoreLabel = getScoreLabel(preCardInfo.score, preTestInfo)
+  postCardInfo.scoreLabel = getScoreLabel(postCardInfo.score, postTestInfo)
 
   return (
     <>
@@ -79,10 +80,7 @@ const SummaryContainer = ({
             </StyledTitle>
           </Tooltip>
           <div className="value">
-            <span>
-              {preCardInfo.score}
-              {preCardScorePostfix}
-            </span>
+            <span>{preCardInfo.scoreLabel}</span>
             {preCardInfo.text}
           </div>
         </StyledCard>
@@ -93,10 +91,7 @@ const SummaryContainer = ({
             </StyledTitle>
           </Tooltip>
           <div className="value">
-            <span>
-              {postCardInfo.score}
-              {postCardScorePostfix}
-            </span>
+            <span>{postCardInfo.scoreLabel}</span>
             {postCardInfo.text}
           </div>
         </StyledCard>

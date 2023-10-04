@@ -12,6 +12,10 @@ export const availableTestTypes = [
     title: 'Common Assessment',
   },
   {
+    key: 'school common assessment',
+    title: 'School Common Assessment',
+  },
+  {
     key: 'assessment',
     title: 'Class Assessment',
   },

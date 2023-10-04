@@ -1,26 +1,23 @@
 import { Row } from 'antd'
 import React from 'react'
+import {
+  getScoreLabel,
+  getScoreLabelNoSuffix,
+} from '@edulastic/constants/const/dataWarehouse'
 import { CustomStyledCell } from '../../../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { analyseBykeys } from '../../../utils'
 
-const AvgPerformance = ({ data, analyseBy }) => {
+const AvgPerformance = ({ data, analyseBy, testInfo }) => {
   const { preTestData, postTestData } = data
+  const { preTestInfo, postTestInfo } = testInfo
   const preTestScore =
     analyseBy === analyseBykeys.RAW_SCORE
-      ? preTestData.avgScore
-      : `${
-          preTestData.avgScorePercentage // TODO don't rely on truthiness
-            ? `${preTestData.avgScorePercentage}%`
-            : preTestData.avgScore
-        }`
+      ? getScoreLabelNoSuffix(preTestData.avgScore, preTestData)
+      : getScoreLabel(preTestData.normScore, preTestInfo)
   const postTestScore =
     analyseBy === analyseBykeys.RAW_SCORE
-      ? postTestData.avgScore
-      : `${
-          postTestData.avgScorePercentage // TODO don't rely on truthiness
-            ? `${postTestData.avgScorePercentage}%`
-            : postTestData.avgScore
-        }`
+      ? getScoreLabelNoSuffix(postTestData.avgScore, postTestData)
+      : getScoreLabel(postTestData.normScore, postTestInfo)
   return (
     <Row type="flex" justify="center">
       <CustomStyledCell

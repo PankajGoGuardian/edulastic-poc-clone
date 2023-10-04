@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Modal } from 'antd'
 import {
@@ -8,9 +8,18 @@ import {
   titleColor,
 } from '@edulastic/colors'
 
-const CustomModalStyled = ({ children, ...props }) => (
-  <StyledModal {...props}>{children}</StyledModal>
-)
+const CustomModalStyled = ({ children, ...props }) => {
+  useEffect(() => {
+    if (props.visible) {
+      setTimeout(() => {
+        const x = document.querySelector('.ant-modal-content')
+        x?.setAttribute('tabindex', 0)
+        x?.focus()
+      }, 10)
+    }
+  }, [props.visible])
+  return <StyledModal {...props}>{children}</StyledModal>
+}
 
 export default CustomModalStyled
 

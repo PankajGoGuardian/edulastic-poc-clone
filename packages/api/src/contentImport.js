@@ -1,12 +1,11 @@
 import API from './utils/API'
 
 const api = new API()
-let prefix = '/content'
 
 const contentImport = (data) => {
   return api
     .callApi({
-      url: `${prefix}/import`,
+      url: `content/import`,
       method: 'post',
       data,
     })
@@ -16,7 +15,7 @@ const contentImport = (data) => {
 const contentImportProgress = (data) => {
   return api
     .callApi({
-      url: `${prefix}/import-progress`,
+      url: `content/import-progress`,
       method: 'post',
       data,
     })
@@ -24,10 +23,9 @@ const contentImportProgress = (data) => {
 }
 
 const qtiImport = (data) => {
-  prefix = 'qti'
   return api
     .callApi({
-      url: `${prefix}/import`,
+      url: `qti/import`,
       method: 'post',
       data,
     })
@@ -35,10 +33,9 @@ const qtiImport = (data) => {
 }
 
 const qtiImportStatus = (jobId) => {
-  prefix = 'qti'
   return api
     .callApi({
-      url: `${prefix}/import/${jobId}`,
+      url: `qti/import/${jobId}`,
       method: 'get',
     })
     .then(({ data: response }) => response)

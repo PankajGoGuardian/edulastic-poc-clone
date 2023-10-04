@@ -61,7 +61,6 @@ const Filters = ({
     'data.result',
     {}
   )
-
   const availableTestTypes = testTypes.filter(
     ({ key }) => !TEST_TYPES.PRACTICE.includes(key)
   )

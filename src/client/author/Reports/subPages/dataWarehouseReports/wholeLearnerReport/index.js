@@ -25,7 +25,7 @@ import Summary from './components/Summary'
 import AssessmentsTable from './components/AssessmentsTable'
 import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
-import WholeLearnerReportFilters from './components/Filters'
+import WholeLearnerReportFilters from './components/Filters/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { DW_WLR_REPORT_URL } from '../../../common/constants/dataWarehouseReports'
 import SectionLabel from '../../../common/components/SectionLabel'
@@ -63,6 +63,8 @@ import {
 import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-components'
 import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
+import { EXTERNAL_SCORE_TYPES } from '../common/utils'
+import SectionLabelFilters from './components/Filters/SectionLabelFilters'
 
 const { downloadCSV } = reportUtils.common
 
@@ -144,10 +146,16 @@ const WholeLearnerReport = ({
     [sharedReport]
   )
 
-  const testTypes = useMemo(() => {
-    const _testTypes = (sharedReportFilters || settings.frontEndFilters)
+  const { testTypes, externalScoreType } = useMemo(() => {
+    let _testTypes = (sharedReportFilters || settings.frontEndFilters)
       ?.testTypes
-    return isEmpty(_testTypes) ? [] : _testTypes.split(',')
+    _testTypes = isEmpty(_testTypes) ? [] : _testTypes.split(',')
+
+    const _externalScoreType =
+      (sharedReportFilters || settings.frontEndFilters)?.externalScoreType ||
+      EXTERNAL_SCORE_TYPES.SCALED_SCORE
+
+    return { testTypes: _testTypes, externalScoreType: _externalScoreType }
   }, [settings.frontEndFilters, sharedReportFilters])
 
   const setShowApply = (status) => {
@@ -168,9 +176,9 @@ const WholeLearnerReport = ({
 
   const onGoClick = (_settings) => {
     const requestFilterKeys = [
+      'reportId',
       'termId',
       'standardsProficiencyProfileId',
-      'reportId',
       'assignedBy',
     ]
     const _requestFilters = {}
@@ -202,6 +210,7 @@ const WholeLearnerReport = ({
       frontEndFilters: {
         testTypes: _requestFilters.testTypes,
         performanceBandProfileId: _requestFilters.performanceBandProfileId,
+        externalScoreType: _requestFilters.externalScoreType,
       },
     })
     setShowApply(false)
@@ -317,12 +326,14 @@ const WholeLearnerReport = ({
       studentClassData: settings.selectedStudentClassData,
       selectedPerformanceBand,
       testTypes,
+      externalScoreType,
     })
     const _tableData = getTableData({
       districtMetrics,
       schoolMetrics,
       groupMetrics,
       chartData: _chartData,
+      externalScoreType,
     })
     return [
       _chartData,
@@ -336,6 +347,7 @@ const WholeLearnerReport = ({
     settings.selectedStudentClassData,
     selectedPerformanceBand,
     testTypes,
+    externalScoreType,
   ])
 
   const attendanceChartData = useMemo(() => {
@@ -471,6 +483,22 @@ const WholeLearnerReport = ({
                           showInterventions={showInterventions}
                           interventionsData={academicInterventions}
                           settings={settings}
+                          sectionLabelFilters={
+                            <SectionLabelFilters
+                              history={history}
+                              location={location}
+                              isSharedReport={isSharedReport}
+                              filtersData={filtersData}
+                              testTypes={testTypes.join(',')}
+                              externalScoreType={externalScoreType}
+                              filters={filters}
+                              setFilters={setFilters}
+                              filterTagsData={filterTagsData}
+                              setFilterTagsData={setFilterTagsData}
+                              settings={settings}
+                              setSettings={setSettings}
+                            />
+                          }
                           preLabelContent={
                             <ChartPreLabelWrapper>
                               <FlexContainer

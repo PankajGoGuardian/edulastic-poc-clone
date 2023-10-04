@@ -1,15 +1,22 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
-import { isEmpty, sortBy, keyBy } from 'lodash'
+import { isEmpty, sortBy, keyBy, isEqual } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
 import { questionType } from '@edulastic/constants'
-import { withWindowSizes, EduIf, EduThen, EduElse } from '@edulastic/common'
+import {
+  withWindowSizes,
+  EduIf,
+  EduThen,
+  EduElse,
+  SpinLoader,
+} from '@edulastic/common'
 import { Container, CalculatorContainer } from '../common'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 import { themes } from '../../../theme'
@@ -56,6 +63,49 @@ class AssessmentPlayerDocBased extends React.Component {
   componentDidMount() {
     const { changeView } = this.props
     changeView('review')
+  }
+
+  componentDidUpdate(prevProps) {
+    const { enableMagnifier, loading } = this.props
+    if (
+      !isEqual(prevProps.enableMagnifier, enableMagnifier) &&
+      enableMagnifier &&
+      !loading
+    ) {
+      const magnifierEle = document.querySelector(
+        '#magnifier-wrapper .zoomed-container-wrapper'
+      )
+      const maginfierBox = document.querySelector(
+        '#magnifier-wrapper :nth-child(2)'
+      )
+
+      ReactDOM.render(
+        <div style={{ background: '#fff', height: '100%' }}>
+          <SpinLoader position="relative" height="100%" />
+        </div>,
+        maginfierBox
+      )
+      const newIframe = document.createElement('iframe')
+      newIframe.width = '100%'
+      newIframe.height = '100%'
+      newIframe.setAttribute('frameBorder', 0)
+      newIframe.src = window.location.href
+      magnifierEle.innerHTML = ''
+      magnifierEle.appendChild(newIframe)
+      newIframe.addEventListener('load', () => {
+        newIframe.contentWindow.document.body.addEventListener(
+          'DOMNodeInserted',
+          () => {
+            const content = newIframe.contentWindow.document.body.querySelector(
+              '.unzoom-container-wrapper'
+            )
+            if (content) {
+              maginfierBox.innerHTML = ''
+            }
+          }
+        )
+      })
+    }
   }
 
   openExitPopup = () => {
@@ -268,6 +318,7 @@ const enhance = compose(
       settings: state.test.settings,
       calcTypes: getCalcTypeSelector(state),
       timedAssignment: state.test?.settings?.timedAssignment,
+      enableMagnifier: state.testPlayer.enableMagnifier,
     }),
     {
       changeView: changeViewAction,

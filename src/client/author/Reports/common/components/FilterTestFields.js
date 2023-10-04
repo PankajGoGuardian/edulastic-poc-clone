@@ -16,18 +16,33 @@ function FilterTestFields({
   // TODO implement `exclude` for other Fields as well.
   exclude = [],
 }) {
+  const [selectedTestGrades, selectedTestSubjects, selectedAssessmentTypes] = [
+    filters.testGrades,
+    filters.testSubjects,
+    filters.assessmentTypes,
+  ].map((items) =>
+    Array.isArray(items)
+      ? items
+      : (items || '')
+          .split(',')
+          .filter((item) => item && item.toLowerCase() !== 'all')
+  )
   return (
     <>
-      <Col span={6}>
-        <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
-        <ControlDropDown
-          by={filters.termId}
-          selectCB={(e, selected) => updateFilterDropdownCB(selected, 'termId')}
-          data={schoolYears}
-          prefix="School Year"
-          showPrefixOnSelected={false}
-        />
-      </Col>
+      <EduIf condition={!exclude.includes('termId')}>
+        <Col span={6}>
+          <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
+          <ControlDropDown
+            by={filters.termId}
+            selectCB={(e, selected) =>
+              updateFilterDropdownCB(selected, 'termId')
+            }
+            data={schoolYears}
+            prefix="School Year"
+            showPrefixOnSelected={false}
+          />
+        </Col>
+      </EduIf>
       <Col span={6}>
         <MultiSelectDropdown
           dataCy="testGrade"
@@ -38,11 +53,7 @@ function FilterTestFields({
             )
             updateFilterDropdownCB(selected, 'testGrades', true)
           }}
-          value={
-            filters.testGrades && filters.testGrades?.toLowerCase() !== 'all'
-              ? filters.testGrades.split(',')
-              : []
-          }
+          value={selectedTestGrades}
           options={dropdownData.grades}
         />
       </Col>
@@ -56,12 +67,7 @@ function FilterTestFields({
             )
             updateFilterDropdownCB(selected, 'testSubjects', true)
           }}
-          value={
-            filters.testSubjects &&
-            filters.testSubjects?.toLowerCase() !== 'all'
-              ? filters.testSubjects.split(',')
-              : []
-          }
+          value={selectedTestSubjects}
           options={dropdownData.subjects}
         />
       </Col>
@@ -75,9 +81,7 @@ function FilterTestFields({
             )
             updateFilterDropdownCB(selected, 'assessmentTypes', true)
           }}
-          value={
-            filters.assessmentTypes ? filters.assessmentTypes.split(',') : []
-          }
+          value={selectedAssessmentTypes}
           options={availableAssessmentType}
         />
       </Col>

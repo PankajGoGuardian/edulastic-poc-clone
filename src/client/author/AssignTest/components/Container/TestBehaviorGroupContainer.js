@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
@@ -52,7 +52,6 @@ const {
   completionTypes,
   releaseGradeLabels,
   playerSkinValues,
-  REF_MATERIAL_ALLOWED_SKIN_TYPES,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -103,12 +102,7 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings?.testContentVisibility,
   } = assignmentSettings
 
-  const showRefMaterial = useMemo(() => {
-    return (
-      !isDocBased && REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
-    )
-  }, [playerSkinType, isDocBased])
-
+  const showRefMaterial = !isDocBased
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
     .flat()
@@ -369,7 +363,7 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
 
       {/* Reference Material */}
-      {showRefMaterial && (
+      <EduIf condition={showRefMaterial}>
         <RefMaterialFile
           premium={premium}
           disabled={freezeSettings}
@@ -378,7 +372,8 @@ const TestBehaviorGroupContainer = ({
           referenceDocAttributes={referenceDocAttributes}
           hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
         />
-      )}
+      </EduIf>
+
       {/* Reference Material */}
 
       {/* Show TTS for passage */}

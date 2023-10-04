@@ -84,6 +84,7 @@ const SortableQuestionItem = SortableElement(
     clearHighlighted,
     resetTimeSpentOnQuestion,
     itemId,
+    isEditModalVisible,
   }) => (
     <div
       onClick={() => {
@@ -128,6 +129,7 @@ const SortableQuestionItem = SortableElement(
         clearHighlighted={clearHighlighted}
         resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
         itemId={itemId}
+        isEditModalVisible={isEditModalVisible}
       />
     </div>
   )
@@ -586,6 +588,7 @@ class Questions extends React.Component {
                     qId={qId}
                     resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
                     itemId={itemId}
+                    isEditModalVisible={shouldModalBeVisibile}
                   />
                 )
               )}

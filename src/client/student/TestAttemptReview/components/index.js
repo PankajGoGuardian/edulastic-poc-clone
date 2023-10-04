@@ -3,9 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { IconCircleLogout, IconLogoCompact } from '@edulastic/icons'
 import styled, { ThemeProvider } from 'styled-components'
-import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
 import { WithResources } from '@edulastic/common'
 import { get } from 'lodash'
@@ -39,7 +37,7 @@ import {
   hasSectionsSelector,
 } from '../../../assessment/selectors/test'
 import { saveBlurTimeAction } from '../../../assessment/actions/items'
-import { SaveAndExitButton } from '../../../assessment/themes/common/styledCompoenents'
+import SummaryHeader from './SummaryHeader'
 
 const SummaryContainer = (props) => {
   const {
@@ -167,19 +165,11 @@ const SummaryContainer = (props) => {
 
   return (
     <ThemeProvider theme={themes.default}>
-      <Header>
-        <IconLogoCompact style={{ fill: themeColor, marginLeft: '21px' }} />
-        {sectionId && (
-          <SaveAndExitButton
-            data-cy="finishTest"
-            aria-label="Save and exit"
-            onClick={exitSectionsPage}
-            style={{ border: '1px solid', marginRight: '30px' }}
-          >
-            <IconCircleLogout />
-          </SaveAndExitButton>
-        )}
-      </Header>
+      <SummaryHeader
+        showExit={sectionId}
+        hidePause={blockSaveAndContinue}
+        onExitClick={exitSectionsPage}
+      />
       <MainContainer>
         {restrictNavigationOut && (
           <>
@@ -270,13 +260,4 @@ const MainContainer = styled.div`
     display: flex;
     flex-direction: column;
   }
-`
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 53px;
-  border: 1px solid #dadae4;
-  opacity: 1;
 `

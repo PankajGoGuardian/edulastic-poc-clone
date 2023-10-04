@@ -124,7 +124,7 @@ const VideoPreview = ({
      * Following is the workaround to make it work.
      */
     if (isiOS()) {
-      if (muted) {
+      if (videoRef?.current?.isMuted?.()) {
         videoRef?.current?.unMute()
         videoRef?.current?.mute()
       } else {

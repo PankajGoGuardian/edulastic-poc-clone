@@ -51,6 +51,7 @@ import {
   getInterestedSubjectsSelector,
   getManualEnrollmentAllowedSelector,
   getUserOrgId,
+  getUserFeatures,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 import ClassBanner from './components/ClassBanner'
@@ -97,6 +98,7 @@ const MyClasses = ({
   totalAssignmentCount,
   displayText,
   manualEnrollmentAllowed = true,
+  userFeatures = false,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -756,13 +758,11 @@ const MyClasses = ({
           </EduIf>
         </EduElse>
       </EduIf>
-
-      {isPremiumUser && (
-        <AIFeaturedTiles
-          onVideoQuizClick={onVideoQuizClick}
-          videoQuizPath={videoQuizPath}
-        />
-      )}
+      <AIFeaturedTiles
+        onVideoQuizClick={onVideoQuizClick}
+        videoQuizPath={videoQuizPath}
+        isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
+      />
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
@@ -899,6 +899,7 @@ export default compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       displayText: trialPeriodTextSelector(state),
       manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
+      userFeatures: getUserFeatures(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

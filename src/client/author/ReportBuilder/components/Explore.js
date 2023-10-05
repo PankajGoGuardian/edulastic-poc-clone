@@ -48,6 +48,8 @@ const ExplorePage = (props) => {
   const [title, setTitle] = useState(null)
   const [reportTitle, setReportTitle] = useState(null)
   const [reportDescription, setReportDescription] = useState(null)
+  const [selectedXCoords, setSelectedXCoords] = useState([])
+  const [selectedYCoords, setSelectedYCoords] = useState([])
 
   const { definitionId, widgetId } = match.params
 
@@ -241,6 +243,10 @@ const ExplorePage = (props) => {
         availableTimeDimensions={availableTimeDimensions}
         availableDataSources={dataSources}
         widgetData={widgetData}
+        selectedXCoords={selectedXCoords}
+        selectedYCoords={selectedYCoords}
+        setSelectedXCoords={setSelectedXCoords}
+        setSelectedYCoords={setSelectedYCoords}
       />
     </div>
   )

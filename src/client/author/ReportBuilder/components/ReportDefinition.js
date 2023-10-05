@@ -79,7 +79,7 @@ const ReportDefinition = ({ report, updateReport }) => {
               widgets: [...WidgetsNeedUpdate, ...widgetsNotNeedUpdate],
             },
           },
-          isLayoutUpdate: true,
+          isReportDefinitionPage: true,
           definitionId: report._id,
         })
       }

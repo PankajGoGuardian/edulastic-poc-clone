@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Row, Col, Card, Divider } from 'antd'
 import { isEmpty } from 'lodash'
 import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
 import MemberGroup from './MemberGroup'
 import FilterGroup from './FilterGroup'
 import SelectChartType from './SelectChartType'
 import ChartRenderer from './ChartRenderer'
 import TimeGroup from './TimeGroup'
+import CoordinatesSelector from './CoordinatesSelector'
 
 const ControlsRow = styled(Row)`
   background: #ffffff;
@@ -63,6 +65,10 @@ const QueryBuilderOptions = ({
   availableTimeDimensions = [],
   availableDataSources = [],
   widgetData = {},
+  selectedXCoords,
+  selectedYCoords,
+  setSelectedXCoords,
+  setSelectedYCoords,
 }) => {
   const shouldFilterBeVisible =
     selectedFacts.length || selectedDimensions.length
@@ -147,12 +153,23 @@ const QueryBuilderOptions = ({
         <Col span={24}>
           {!isEmpty(query) ? (
             [
-              <Row style={{ marginTop: 15, marginBottom: 25 }}>
+              <FlexContainer
+                style={{ marginTop: 15, marginBottom: 25, width: '100%' }}
+                alignItems="center"
+                justifyContent="space-between"
+              >
                 <SelectChartType
                   chartType={showChartType}
                   updateChartType={setSelectedChartType}
                 />
-              </Row>,
+                <CoordinatesSelector
+                  availableOptions={[...selectedFacts, ...selectedDimensions]}
+                  selectedXCoords={selectedXCoords}
+                  selectedYCoords={selectedYCoords}
+                  setSelectedXCoords={setSelectedXCoords}
+                  setSelectedYCoords={setSelectedYCoords}
+                />
+              </FlexContainer>,
               <ChartCard style={{ minHeight: 420 }}>
                 <ChartRenderer
                   query={query}

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import { deleteWidgetFromReportAction } from '../ducks'
+import { updateReportDefinitionAction } from '../ducks'
 
 const StyledCard = styled(Card)`
   box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
@@ -19,7 +19,7 @@ const StyledCard = styled(Card)`
   }
 `
 
-const WidgetDropdown = ({ deleteWidget, widgetId, report }) => {
+const WidgetDropdown = ({ updateReport, widgetId, report }) => {
   const WidgetDropdownMenu = (
     <Menu>
       <Menu.Item>
@@ -37,8 +37,14 @@ const WidgetDropdown = ({ deleteWidget, widgetId, report }) => {
             cancelText: 'No',
 
             onOk() {
-              deleteWidget({
-                id: widgetId,
+              updateReport({
+                definitionId: report._id,
+                updateDoc: {
+                  $set: {
+                    widgets: report.widgets.filter((o) => o._id !== widgetId),
+                  },
+                },
+                isReportDefinitionPage: true,
               })
             },
           })
@@ -59,7 +65,7 @@ const WidgetDropdown = ({ deleteWidget, widgetId, report }) => {
   )
 }
 
-const Widget = ({ deleteWidget, widgetId, children, title, report }) => (
+const Widget = ({ updateReport, widgetId, children, title, report }) => (
   <StyledCard
     title={title}
     bordered={false}
@@ -69,7 +75,7 @@ const Widget = ({ deleteWidget, widgetId, children, title, report }) => (
     }}
     extra={
       <WidgetDropdown
-        deleteWidget={deleteWidget}
+        updateReport={updateReport}
         widgetId={widgetId}
         report={report}
       />
@@ -81,7 +87,7 @@ const Widget = ({ deleteWidget, widgetId, children, title, report }) => (
 
 const enhance = compose(
   connect(() => ({}), {
-    deleteWidget: deleteWidgetFromReportAction,
+    updateReport: updateReportDefinitionAction,
   })
 )
 

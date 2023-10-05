@@ -17,8 +17,7 @@ const SET_REPORT_DATA = '[report builder] set report data'
 const GET_CHART_DATA = '[report builder] get chart data'
 const SET_CHART_DATA = '[report builder] set chart data'
 const ADD_REPORT_DEFINITION = '[report builder] add report definition'
-const DELETE_WIDGET_FROM_REPORT = '[report builder] delete report from widget'
-const UPDATE_REPORT = '[report builder] update report definition'
+const UPDATE_REPORT_DEFINITION = '[report builder] update report definition'
 const GET_META_DATA = '[report builder] get meta data'
 const SET_META_DATA = '[report builder] set meta data'
 const GET_DATA_SOURCE = '[report builder] get data source'
@@ -39,10 +38,9 @@ export const setReportDataAction = createAction(SET_REPORT_DATA)
 export const getChartDataAction = createAction(GET_CHART_DATA)
 export const setChartDataAction = createAction(SET_CHART_DATA)
 export const addReportDefinitionAction = createAction(ADD_REPORT_DEFINITION)
-export const deleteWidgetFromReportAction = createAction(
-  DELETE_WIDGET_FROM_REPORT
+export const updateReportDefinitionAction = createAction(
+  UPDATE_REPORT_DEFINITION
 )
-export const updateReportDefinitionAction = createAction(UPDATE_REPORT)
 export const getMetaDataAction = createAction(GET_META_DATA)
 export const setMetaDataAction = createAction(SET_META_DATA)
 export const getDataSourceAction = createAction(GET_DATA_SOURCE)
@@ -173,7 +171,7 @@ function* getReportDefinitionsSaga() {
 
 function* deleteReportDefinitionSaga({ payload }) {
   try {
-    const reportDefinitions = yield call(reportBuilderApi.getWidgets, payload)
+    const reportDefinitions = yield call(reportBuilderApi.deleteReport, payload)
     yield put(getReportDefinitionsSuccessAction(reportDefinitions))
   } catch (err) {
     yield put(getReportDefinitionsFailedAction(err))
@@ -208,12 +206,12 @@ function* getChartDataSaga({ payload }) {
 
 function* updateReportSaga({ payload }) {
   try {
-    const { isLayoutUpdate = false, updateDoc, definitionId } = payload
+    const { isReportDefinitionPage = false, updateDoc, definitionId } = payload
     const updatedReport = yield call(reportBuilderApi.updateReport, {
       updateDoc,
       definitionId,
     })
-    if (isLayoutUpdate) {
+    if (isReportDefinitionPage) {
       yield put(setReportDataAction(updatedReport))
     } else {
       notification({ msg: 'Successfully updated the Widget' })
@@ -239,16 +237,6 @@ function* addReportDefinitionSaga({ payload }) {
     )
   } catch (err) {
     const errorMessage = 'Unable to create report with following widget.'
-    notification({ type: 'error', msg: errorMessage })
-  }
-}
-
-function* deleteWidgetFromReport({ payload }) {
-  try {
-    yield call(reportBuilderApi.deleteWidgetById, payload)
-    yield put(getReportDataAction())
-  } catch (err) {
-    const errorMessage = 'Unable to Delete Widget.'
     notification({ type: 'error', msg: errorMessage })
   }
 }
@@ -280,8 +268,7 @@ export function* watcherSaga() {
     yield takeLatest(GET_REPORT_DATA, getReportDataSaga),
     yield takeLatest(GET_CHART_DATA, getChartDataSaga),
     yield takeLatest(ADD_REPORT_DEFINITION, addReportDefinitionSaga),
-    yield takeLatest(DELETE_WIDGET_FROM_REPORT, deleteWidgetFromReport),
-    yield takeLatest(UPDATE_REPORT, updateReportSaga),
+    yield takeLatest(UPDATE_REPORT_DEFINITION, updateReportSaga),
     yield takeLatest(GET_META_DATA, getMetaDataSaga),
     yield takeLatest(GET_DATA_SOURCE, getDataSourceSaga),
   ])

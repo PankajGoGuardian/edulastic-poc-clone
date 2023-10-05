@@ -62,7 +62,7 @@ const updateReport = ({ definitionId, updateDoc }) =>
     })
     .then((result) => result.data.result)
 
-const deleteWidgetById = (definitionId) =>
+const deleteReport = (definitionId) =>
   api
     .callApi({
       url: `${prefix}/definition/${definitionId}`,
@@ -77,6 +77,6 @@ export default {
   getDataSource,
   addReportDefinition,
   updateReport,
-  deleteWidgetById,
+  deleteReport,
   getMetaData,
 }

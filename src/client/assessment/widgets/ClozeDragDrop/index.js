@@ -27,6 +27,7 @@ import Display from './Display'
 import Options from './components/Options'
 
 import { replaceVariables, updateVariables } from '../../utils/variables'
+import { handlePreventKeyDown } from '../../utils/helpers'
 import { CheckContainer } from './styled/CheckContainer'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
@@ -37,6 +38,18 @@ const EmptyWrapper = styled.div``
 
 class ClozeDragDrop extends Component {
   static contextType = AnswerContext
+
+  componentDidMount() {
+    if (window) {
+      window.addEventListener('keydown', handlePreventKeyDown)
+    }
+  }
+
+  componentWillUnmount() {
+    if (window) {
+      window.removeEventListener('keydown', handlePreventKeyDown)
+    }
+  }
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props

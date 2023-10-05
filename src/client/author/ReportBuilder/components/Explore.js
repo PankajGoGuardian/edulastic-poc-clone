@@ -154,8 +154,9 @@ const ExplorePage = (props) => {
     }
   }, [report, availableFacts, availableDimensions])
 
+  // TODO : Don't use `||`, cannot set empty ('') value to description
   const finalTitle =
-    title || (widgetId && widgetData && widgetData.name) || 'New Chart'
+    title || (widgetId && widgetData && widgetData.name) || 'New Widget'
   const finalReportTitle =
     reportTitle || (report && report.title) || 'New Report'
   const finalReportDescription =

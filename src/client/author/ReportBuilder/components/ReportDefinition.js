@@ -8,11 +8,6 @@ import styled from 'styled-components'
 import dragBackground from '../../Dashboard/assets/svgs/drag-background.svg'
 import ChartRenderer from './ChartRenderer'
 import Widget from './Widget'
-import {
-  updateReportDefinitionAction,
-  getActiveReportSelector,
-  isReportDefinitionLoadingSelector,
-} from '../ducks'
 
 const ReactGridLayout = WidthProvider(RGL)
 
@@ -38,50 +33,31 @@ const defaultLayout = (w) => ({
   minH: 8,
 })
 
-const ReportDefinition = ({ report, updateReport }) => {
+const ReportDefinition = ({ report, setCurrentReport }) => {
   const [isDragging, setIsDragging] = useState(false)
   const { widgets } = report
-  // TODO:
-  // on layout change, do set widgets with new layout
-  // show a save button, which on click to save the report with updated widgets
-  // once report is updated, update the component state widget with report widgets
-  // use data.grid from widgets state
   const onLayoutChange = (newLayout) => {
-    const widgetsNotNeedUpdate = []
-    const WidgetsNeedUpdate = []
-    newLayout.forEach((l) => {
-      const _widget = widgets.find((i) => i._id === l.i)
-      const toUpdate = {
-        x: l.x,
-        y: l.y,
-        w: l.w,
-        h: l.h,
-      }
-      if (
-        _widget &&
-        JSON.stringify(toUpdate) !== JSON.stringify(_widget.layout.options)
-      ) {
-        WidgetsNeedUpdate.push({
-          ..._widget,
-          layout: {
-            ..._widget.layout,
-            options: toUpdate,
-          },
-        })
-      } else {
-        widgetsNotNeedUpdate.push(_widget)
-      }
-      if (WidgetsNeedUpdate) {
-        updateReport({
-          updateDoc: {
-            $set: {
-              ...report,
-              widgets: [...WidgetsNeedUpdate, ...widgetsNotNeedUpdate],
+    setCurrentReport((prevReport) => {
+      if (!prevReport) return prevReport
+      return {
+        ...prevReport,
+        widgets: prevReport.widgets.map((widget) => {
+          const widgetLayout = newLayout.find((l) => l.i === widget._id)
+          if (!widgetLayout) return widget
+          return {
+            ...widget,
+            layout: {
+              ...widget.layout,
+              options: {
+                ...widget.layout.options,
+                x: widgetLayout.x,
+                y: widgetLayout.y,
+                w: widgetLayout.w,
+                h: widgetLayout.h,
+              },
             },
-          },
-          isReportDefinitionPage: true,
-          definitionId: report._id,
-        })
+          }
+        }),
       }
     })
   }
@@ -121,14 +97,15 @@ const ReportDefinition = ({ report, updateReport }) => {
   )
 }
 
+// TODO remove connect ? if not required
 const enhance = compose(
   connect(
     (state) => ({
-      isLoading: isReportDefinitionLoadingSelector(state),
-      report: getActiveReportSelector(state),
+      // isLoading: isReportDefinitionLoadingSelector(state),
+      // report: getActiveReportSelector(state),
     }),
     {
-      updateReport: updateReportDefinitionAction,
+      // updateReport: updateReportDefinitionAction,
     }
   )
 )

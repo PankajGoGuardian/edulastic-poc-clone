@@ -40,22 +40,25 @@ const TitleModal = ({
         setTitleModalVisible(false)
         setAddingToReport(true)
         if (isEditWidgetFlow) {
+          // TODO better move this to parent, and only send form values as callback
           updateReport({
+            definitionId: report._id,
             updateDoc: {
               $set: {
                 ...report,
-                widgets: [
-                  ...report.widgets.filter((o) => o._id !== widgetData._id),
-                  {
+                widgets: report.widgets.map((widget) => {
+                  if (widget._id !== widgetData._id) return widget
+                  return {
+                    ...widget,
                     ...widgetData,
                     layout: {
                       type: selectedChartType,
                       options: widgetData.layout.options,
                     },
-                    query: { ...formatQueryData(query) },
-                    name: finalTitle,
-                  },
-                ],
+                    query: formatQueryData(query),
+                    title: finalTitle,
+                  }
+                }),
                 name: finalReportTitle,
                 description: finalReportDescription,
               },
@@ -63,11 +66,12 @@ const TitleModal = ({
           })
         } else if (isAddWidgetToReportFlow) {
           updateReport({
+            definitionId: report._id,
             updateDoc: {
               $set: {
                 ...report,
                 widgets: [
-                  report.widgets,
+                  ...report.widgets,
                   {
                     layout: {
                       type: selectedChartType,
@@ -78,8 +82,8 @@ const TitleModal = ({
                         h: 8,
                       },
                     },
-                    query: { ...formatQueryData(query) },
-                    name: finalTitle,
+                    query: formatQueryData(query),
+                    title: finalTitle,
                   },
                 ],
                 name: finalReportTitle,
@@ -100,8 +104,8 @@ const TitleModal = ({
                     h: 8,
                   },
                 },
-                query: { ...formatQueryData(query) },
-                name: finalTitle,
+                query: formatQueryData(query),
+                title: finalTitle,
               },
             ],
             name: finalReportTitle,

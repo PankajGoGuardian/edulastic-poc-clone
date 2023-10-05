@@ -73,6 +73,9 @@ const Widget = ({ updateReport, widgetId, children, title, report }) => (
       height: '100%',
       width: '100%',
     }}
+    bodyStyle={{
+      height: 'calc(100% - 53px)', // TODO `53px` is the height of the card header. Find alternative.
+    }}
     extra={
       <WidgetDropdown
         updateReport={updateReport}

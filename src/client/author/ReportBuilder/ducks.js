@@ -125,6 +125,7 @@ export const reducer = createReducer(initialState, {
     return state
   },
   [GET_REPORT_DATA]: (state) => {
+    state.report = null
     state.isReportDefinitionLoading = true
     return state
   },
@@ -263,13 +264,13 @@ function* getDataSourceSaga() {
 
 export function* watcherSaga() {
   yield all([
-    yield takeLatest(GET_REPORT_DEFINITIONS, getReportDefinitionsSaga),
-    yield takeLatest(DELETE_REPORT_DEFINITION, deleteReportDefinitionSaga),
-    yield takeLatest(GET_REPORT_DATA, getReportDataSaga),
-    yield takeLatest(GET_CHART_DATA, getChartDataSaga),
-    yield takeLatest(ADD_REPORT_DEFINITION, addReportDefinitionSaga),
-    yield takeLatest(UPDATE_REPORT_DEFINITION, updateReportSaga),
-    yield takeLatest(GET_META_DATA, getMetaDataSaga),
-    yield takeLatest(GET_DATA_SOURCE, getDataSourceSaga),
+    takeLatest(GET_REPORT_DEFINITIONS, getReportDefinitionsSaga),
+    takeLatest(DELETE_REPORT_DEFINITION, deleteReportDefinitionSaga),
+    takeLatest(GET_REPORT_DATA, getReportDataSaga),
+    takeLatest(GET_CHART_DATA, getChartDataSaga),
+    takeLatest(ADD_REPORT_DEFINITION, addReportDefinitionSaga),
+    takeLatest(UPDATE_REPORT_DEFINITION, updateReportSaga),
+    takeLatest(GET_META_DATA, getMetaDataSaga),
+    takeLatest(GET_DATA_SOURCE, getDataSourceSaga),
   ])
 }

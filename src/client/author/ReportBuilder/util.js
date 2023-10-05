@@ -106,6 +106,7 @@ export const formatQueryData = (_query) => {
   } = _query
   const query = {}
   if (source) {
+    // TODO always required for a query
     Object.assign(query, { source })
   }
   if (facts.length) {

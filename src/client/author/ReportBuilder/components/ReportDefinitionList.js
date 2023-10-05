@@ -17,6 +17,7 @@ const ReportDefinitionList = ({
   getReports,
   deleteReport,
 }) => {
+  /** @type {import('antd/lib/table').ColumnProps[]} */
   const columns = [
     {
       title: 'Report Definitions',
@@ -45,7 +46,7 @@ const ReportDefinitionList = ({
 
   const tableData = (
     <Table
-      style={{ width: '50%', marginBottom: '20px' }}
+      style={{ marginBottom: '20px' }}
       columns={columns}
       dataSource={reports}
       pagination={false}

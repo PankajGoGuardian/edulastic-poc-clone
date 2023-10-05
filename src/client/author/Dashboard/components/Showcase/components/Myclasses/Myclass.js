@@ -758,11 +758,13 @@ const MyClasses = ({
           </EduIf>
         </EduElse>
       </EduIf>
-      <AIFeaturedTiles
-        onVideoQuizClick={onVideoQuizClick}
-        videoQuizPath={videoQuizPath}
-        isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
-      />
+      <EduIf condition={!isPremiumUser}>
+        <AIFeaturedTiles
+          onVideoQuizClick={onVideoQuizClick}
+          videoQuizPath={videoQuizPath}
+          isVideoQuizAndAIEnabled={userFeatures?.isVideoQuizAndAIEnabled}
+        />
+      </EduIf>
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}

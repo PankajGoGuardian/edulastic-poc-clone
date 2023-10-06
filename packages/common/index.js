@@ -197,3 +197,4 @@ export { default as PrintActionWrapper } from './src/components/PrintActionWrapp
 export { default as PremiumItemBanner } from './src/components/Banner/PremiumItemBanner'
 export { default as showBlockerPopup } from './src/components/BlockerPopup'
 export { default as ImmersiveReader } from './src/components/ImmersiveReader/ImmersiveReader'
+export { default as RcSelect } from './src/components/RcSelect'

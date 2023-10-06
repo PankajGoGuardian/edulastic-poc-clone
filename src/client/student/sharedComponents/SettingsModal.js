@@ -6,7 +6,7 @@ import {
   drcThemeColor,
   drcWhite,
 } from '@edulastic/colors'
-import { AssessmentPlayerContext, EduButton } from '@edulastic/common'
+import { AssessmentPlayerContext, EduButton, RcSelect } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
 import { Select } from 'antd'
@@ -38,7 +38,12 @@ import {
   updateTestPlayerAction,
 } from '../../author/sharedDucks/testPlayer'
 
-const { languageCodes, playerSkinValues } = testConstants
+const {
+  playerSkinValues,
+  zoomOptions,
+  playbackSpeedOptions,
+  languageOptions,
+} = testConstants
 
 const SettingsModal = ({
   selectedTheme,
@@ -160,111 +165,59 @@ const SettingsModal = ({
                 <div>
                   {/* Color contrast switch is a seperate component for parcc skin any change here should be made for 'parcc/changecolor' component as well */}
                   <CustomColumn>COLOR CONTRAST</CustomColumn>
-                  <StyledSelect
+                  <RcSelect
                     value={selectedTheme}
                     onChange={setSelectedTheme}
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
-                    style={{ marginBottom: '10px' }}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     disabled={isPremiumContentWithoutAccess}
-                  >
-                    <Select.Option value="default" aria-label="Default">
-                      Default
-                    </Select.Option>
-                    {Object.keys(themeColorsMap).map((key) => {
-                      const item = themeColorsMap[key]
-                      return (
-                        <Select.Option value={key} aria-label={item.title}>
-                          {item.title}
-                        </Select.Option>
-                      )
-                    })}
-                  </StyledSelect>
+                    options={[
+                      { label: 'Default', value: 'default' },
+                      ...Object.keys(themeColorsMap).map((key) => {
+                        const item = themeColorsMap[key]
+                        return { label: item.title, value: key }
+                      }),
+                    ]}
+                  />
                 </div>
                 <div>
                   <CustomColumn>ZOOM</CustomColumn>
-                  <StyledSelect
+                  <RcSelect
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     value={zoomLevel}
                     onChange={setZoomLevel}
-                    style={{ marginBottom: '10px' }}
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
                     disabled={isPremiumContentWithoutAccess}
-                  >
-                    <Select.Option value="1" aria-label="None">
-                      None
-                    </Select.Option>
-                    <Select.Option value="1.5" aria-label="1.5X standard">
-                      1.5X standard
-                    </Select.Option>
-                    <Select.Option value="1.75" aria-label="1.75X standard">
-                      1.75X standard
-                    </Select.Option>
-                    <Select.Option value="2.5" aria-label="2.5X standard">
-                      2.5X standard
-                    </Select.Option>
-                    <Select.Option value="3" aria-label="3X standard">
-                      3X standard
-                    </Select.Option>
-                  </StyledSelect>
+                    options={zoomOptions}
+                  />
                 </div>
               </>
             )}
             {multiLanguageEnabled && (
               <div>
                 <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
-                <StyledSelect
+                <RcSelect
                   data-cy="langPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={setChangedLang}
                   value={selectedLang}
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
                   disabled={isPremiumContentWithoutAccess}
-                >
-                  <Select.Option value="" disabled aria-label="Select Language">
-                    Select Language
-                  </Select.Option>
-                  <Select.Option
-                    value={languageCodes.ENGLISH}
-                    aria-label="English"
-                  >
-                    English
-                  </Select.Option>
-                  <Select.Option
-                    value={languageCodes.SPANISH}
-                    aria-label="Spanish"
-                  >
-                    Spanish
-                  </Select.Option>
-                </StyledSelect>
+                  options={languageOptions}
+                />
               </div>
             )}
             {canShowPlaybackOptionTTS && (
               <div>
                 <CustomColumn>PLAYBACK SPEED (TEXT TO SPEECH)</CustomColumn>
-                <StyledSelect
+                <RcSelect
                   data-cy="playBackSpeedPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={setSelectedPlaybackSpeed}
                   value={selectedPlaybackSpeed}
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
-                >
-                  <Select.Option value="0.5" aria-label="0.5X">
-                    0.5X
-                  </Select.Option>
-                  <Select.Option value="0.75" aria-label="0.75X">
-                    0.75X
-                  </Select.Option>
-                  <Select.Option value="1" aria-label="Normal">
-                    Normal
-                  </Select.Option>
-                  <Select.Option value="1.5" aria-label="1.5X">
-                    1.5X
-                  </Select.Option>
-                  <Select.Option value="2" aria-label="2X">
-                    2X
-                  </Select.Option>
-                </StyledSelect>
+                  options={playbackSpeedOptions}
+                />
               </div>
             )}
           </>
@@ -343,6 +296,20 @@ export const StyledSelect = styled(Select)`
   }
   .ant-select-selection__rendered {
     margin: 2px 15px;
+  }
+`
+export const StyledRcSelect = styled(RcSelect)`
+  width: 100%;
+  font-size: ${(props) => props.theme.smallFontSize};
+  .rc-select-selector {
+    height: 36px;
+    border: 1px solid ${(props) => props.theme.header.settingsInputBorder};
+    background: ${lightGreySecondary};
+    color: ${title};
+    &:focus {
+      outline: 0;
+      box-shadow: 0 0 0 2px ${themeColorBlue};
+    }
   }
 `
 

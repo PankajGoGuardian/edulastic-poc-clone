@@ -113,6 +113,7 @@
     "qrcode-reader": "^1.0.4",
     "qs": "^6.7.0",
     "rc-color-picker": "^1.2.6",
+    "rc-select": "^14.9.0",
     "react": "^16.13.1",
     "react-ace": "^8.0.0",
     "react-autosize-textarea": "4.0.0",

@@ -1,5 +1,11 @@
 const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
 const TEST_CONTENT_VISIBILITY = 'testContentVisibility'
+
+const languageCodes = {
+  ENGLISH: 'en',
+  SPANISH: 'es',
+}
+
 module.exports = {
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
@@ -422,10 +428,7 @@ module.exports = {
     'sbac',
   ],
 
-  languageCodes: {
-    ENGLISH: 'en',
-    SPANISH: 'es',
-  },
+  languageCodes,
   DELETE_TYPES: {
     ROLLBACK: 'rollback',
     DELETE_TEST: 'delete',
@@ -531,4 +534,62 @@ module.exports = {
   },
   SHOW_IMMERSIVE_READER,
   TEST_CONTENT_VISIBILITY,
+  zoomOptions: [
+    {
+      label: 'None',
+      value: '1',
+    },
+    {
+      label: '1.5X standard',
+      value: '1.5',
+    },
+    {
+      label: '1.75X standard',
+      value: '1.75',
+    },
+    {
+      label: '2.5X standard',
+      value: '2.5',
+    },
+    {
+      label: '3X standard',
+      value: '3',
+    },
+  ],
+  playbackSpeedOptions: [
+    {
+      label: '0.5X',
+      value: '0.5',
+    },
+    {
+      label: '0.75X',
+      value: '0.75',
+    },
+    {
+      label: 'Normal',
+      value: '1',
+    },
+    {
+      label: '1.5X',
+      value: '1.5',
+    },
+    {
+      label: '2X',
+      value: '2',
+    },
+  ],
+  languageOptions: [
+    {
+      label: 'Select Language',
+      value: '',
+    },
+    {
+      label: 'English',
+      value: languageCodes.ENGLISH,
+    },
+    {
+      label: 'Spanish',
+      value: languageCodes.SPANISH,
+    },
+  ],
 }

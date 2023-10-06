@@ -104,6 +104,8 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
   return {
     data: dataPivot,
     seriesNames: uniqBy(seriesNames, (s) => s.key),
+    yAxesFields: facts,
+    xAxesFields: dimensions,
   }
 }
 

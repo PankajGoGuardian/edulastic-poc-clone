@@ -31,7 +31,7 @@ function CoordinatesSelector({
   return (
     <FlexContainer>
       <FlexContainer flexDirection="column" style={{ marginRight: '15px' }}>
-        <Title>X-Axis Field(s)</Title>
+        <Title>Y-Axis Field(s)</Title>
         <Select
           mode="multiple"
           style={{ width: '350px' }}
@@ -43,7 +43,7 @@ function CoordinatesSelector({
         </Select>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <Title>Y-Axis Field(s)</Title>
+        <Title>X-Axis Field(s)</Title>
         <Select
           mode="multiple"
           style={{ width: '350px' }}

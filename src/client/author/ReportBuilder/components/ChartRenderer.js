@@ -30,7 +30,7 @@ import {
 } from '../ducks'
 import { buildChartData } from '../util'
 
-const numberFormatter = (item) => (item || '').toLocaleString()
+const localeFormatter = (item) => (item || '').toLocaleString()
 const dateFormatter = (item) => moment(item).format('MMM YY')
 const colors = ['#7DB3FF', '#49457B', '#FF7C78']
 const xAxisFormatter = (item) => {
@@ -38,6 +38,24 @@ const xAxisFormatter = (item) => {
     return dateFormatter(item)
   }
   return item
+}
+
+function getYAxesType(member) {
+  switch (member.type) {
+    case 'count':
+    case 'max':
+    case 'min':
+    case 'avg':
+    case 'sum':
+    case 'count_distinct':
+    case 'number':
+      return 'number'
+    case 'boolean':
+    case 'string':
+    case 'time':
+    default:
+      return 'category'
+  }
 }
 
 const CartesianChart = ({ resultSet, children, ChartComponent, height }) => (
@@ -50,15 +68,22 @@ const CartesianChart = ({ resultSet, children, ChartComponent, height }) => (
         dataKey="x"
         minTickGap={20}
       />
-      <YAxis
-        axisLine={false}
-        tickLine={false}
-        tickFormatter={numberFormatter}
-      />
+      {resultSet.yAxesFields.map((member, i) => (
+        <YAxis
+          axisLine={false}
+          tickLine={false}
+          key={member.name}
+          // tickFormatter={localeFormatter}
+          yAxisId={member.name}
+          label={{ value: member.title ?? member.name, angle: -90 }}
+          type={getYAxesType(member)}
+          orientation={i >= resultSet.yAxesFields.length / 2 ? 'right' : 'left'}
+        />
+      ))}
       <CartesianGrid vertical={false} />
       {children}
       <Legend />
-      <Tooltip labelFormatter={dateFormatter} formatter={numberFormatter} />
+      <Tooltip labelFormatter={(a) => a} formatter={localeFormatter} />
     </ChartComponent>
   </ResponsiveContainer>
 )
@@ -73,6 +98,7 @@ const TypeToChartComponent = {
         <Line
           key={series.key}
           stackId="a"
+          yAxisId={series.key}
           dataKey={series.key}
           name={series.title}
           stroke={colors[i]}
@@ -90,6 +116,7 @@ const TypeToChartComponent = {
         <Bar
           key={series.key}
           stackId="a"
+          yAxisId={series.key}
           dataKey={series.key}
           name={series.title}
           fill={colors[i]}
@@ -107,6 +134,7 @@ const TypeToChartComponent = {
         <Area
           key={series.key}
           stackId="a"
+          yAxisId={series.key}
           dataKey={series.key}
           name={series.title}
           stroke={colors[i]}

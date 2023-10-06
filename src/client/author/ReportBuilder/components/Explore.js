@@ -52,9 +52,11 @@ const ExplorePage = (props) => {
   const [selectedFilters, setSelectedFilters] = useState([])
   const [selectedChartType, setSelectedChartType] = useState('table')
   const [titleModalVisible, setTitleModalVisible] = useState(false)
-  const [title, setTitle] = useState(null)
-  const [reportTitle, setReportTitle] = useState(null)
-  const [reportDescription, setReportDescription] = useState(null)
+  const [title, setTitle] = useState('New Widget')
+  const [reportTitle, setReportTitle] = useState('New Report Title')
+  const [reportDescription, setReportDescription] = useState(
+    'New Report Description'
+  )
   const [selectedXCoords, setSelectedXCoords] = useState([])
   const [selectedYCoords, setSelectedYCoords] = useState([])
 
@@ -156,9 +158,11 @@ const ExplorePage = (props) => {
 
   useEffect(() => {
     if (report?._id && !isEmpty(widgetData)) {
+      const { title: _reportTitle, description: _reportDescription } = report
       const {
         query: { facts = [], segments = [], dimensions = [] },
         layout: { type, options },
+        title: _title,
       } = widgetData
       if (isEmpty(selectedDataSources))
         setSelectedDataSources(
@@ -182,6 +186,9 @@ const ExplorePage = (props) => {
         setSelectedXCoords(_facts.map((o) => o.name))
         setSelectedYCoords(_dimensions.map((o) => o.name))
         setSelectedChartType(type)
+        setTitle(_title)
+        setReportTitle(_reportTitle)
+        setReportDescription(_reportDescription)
       }
       if (
         (options.coOrds?.xCoOrds?.length || options.coOrds?.xCoOrds?.length) &&
@@ -193,16 +200,6 @@ const ExplorePage = (props) => {
       }
     }
   }, [report, availableFacts, availableDimensions])
-
-  // TODO : Don't use `||`, cannot set empty ('') value to description
-  const finalTitle =
-    title || (widgetId && widgetData && widgetData.name) || 'New Widget'
-  const finalReportTitle =
-    reportTitle || (report && report.title) || 'New Report'
-  const finalReportDescription =
-    reportDescription ||
-    (report && report.description) ||
-    'New Report Description'
 
   if (isLoading || isItemDataLoading) {
     return <Spin />
@@ -236,11 +233,11 @@ const ExplorePage = (props) => {
                   },
                 },
                 query: formatQueryData(query),
-                title: finalTitle,
+                title,
               }
             }),
-            name: finalReportTitle,
-            description: finalReportDescription,
+            name: reportTitle,
+            description: reportDescription,
           },
         },
       })
@@ -264,11 +261,11 @@ const ExplorePage = (props) => {
                   },
                 },
                 query: formatQueryData(query),
-                title: finalTitle,
+                title,
               },
             ],
-            name: finalReportTitle,
-            description: finalReportDescription,
+            name: reportTitle,
+            description: reportDescription,
           },
         },
       })
@@ -287,11 +284,11 @@ const ExplorePage = (props) => {
               },
             },
             query: formatQueryData(query),
-            title: finalTitle,
+            title,
           },
         ],
-        name: finalReportTitle,
-        description: finalReportDescription,
+        name: reportTitle,
+        description: reportDescription,
       })
     }
     setAddingToReport(false)
@@ -307,9 +304,9 @@ const ExplorePage = (props) => {
         titleModalVisible={titleModalVisible}
         setTitleModalVisible={setTitleModalVisible}
         setTitle={setTitle}
-        finalTitle={finalTitle}
-        finalReportTitle={finalReportTitle}
-        finalReportDescription={finalReportDescription}
+        title={title}
+        reportTitle={reportTitle}
+        reportDescription={reportDescription}
         setReportTitle={setReportTitle}
         setReportDescription={setReportDescription}
         handleSaveOrUpdateOfReport={handleSaveOrUpdateOfReport}

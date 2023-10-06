@@ -6,11 +6,11 @@ import { themeColor } from '@edulastic/colors'
 const TitleModal = ({
   titleModalVisible,
   setTitleModalVisible,
-  finalTitle,
+  title,
   setTitle,
-  finalReportTitle,
+  reportTitle,
   setReportTitle,
-  finalReportDescription,
+  reportDescription,
   setReportDescription,
   handleSaveOrUpdateOfReport,
 }) => {
@@ -25,19 +25,19 @@ const TitleModal = ({
       <StyledDiv>Widget Name</StyledDiv>
       <Input
         placeholder="Widget Name"
-        value={finalTitle}
+        value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
       <StyledDiv>Report Name</StyledDiv>
       <Input
         placeholder="Report Name"
-        value={finalReportTitle}
+        value={reportTitle}
         onChange={(e) => setReportTitle(e.target.value)}
       />
       <StyledDiv>Report Description</StyledDiv>
       <Input
         placeholder="Report Description"
-        value={finalReportDescription}
+        value={reportDescription}
         onChange={(e) => setReportDescription(e.target.value)}
       />
     </Modal>

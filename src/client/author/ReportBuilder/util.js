@@ -101,11 +101,20 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
       dataPivot.push(dataPivotRow)
     })
   }
+  const finalSeriesNames = uniqBy(seriesNames, (s) => s.key)
+  const finalDataPivot = dataPivot.map((o) => {
+    const newObj = { ...o }
+    finalSeriesNames.forEach(({ key }) => {
+      if (key && !newObj[key]) Object.assign(newObj, { key: 0 })
+    })
+    return newObj
+  })
+
   return {
-    data: dataPivot,
-    seriesNames: uniqBy(seriesNames, (s) => s.key),
     yAxesFields: facts,
     xAxesFields: dimensions,
+    data: finalDataPivot,
+    seriesNames: finalSeriesNames,
   }
 }
 

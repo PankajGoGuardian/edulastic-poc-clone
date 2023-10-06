@@ -192,11 +192,6 @@ const TypeToMemoChartComponent = Object.keys(TypeToChartComponent)
   }))
   .reduce((a, b) => ({ ...a, ...b }))
 
-const SpinContainer = styled.div`
-  text-align: center;
-  padding: 30px 50px;
-  margin-top: 30px;
-`
 const Spinner = () => (
   <SpinContainer>
     <Spin size="large" />
@@ -206,7 +201,7 @@ const Spinner = () => (
 const renderChart = (Component) => ({ resultSet, error, height, widgetId }) =>
   (resultSet && <Component height={height} resultSet={resultSet} />) ||
   (error && error.toString()) ||
-  (!widgetId ? <span>Click on Apply Button</span> : <Spinner />)
+  (!widgetId ? <StyledDiv>Click on Apply Button</StyledDiv> : <Spinner />)
 
 const ChartRenderer = ({
   chartData,
@@ -257,3 +252,16 @@ const enhance = compose(
 )
 
 export default enhance(ChartRenderer)
+
+const StyledDiv = styled.div`
+width: '90%',
+margin: auto;
+margin-top: 8%;  
+text-align: center;
+font-size: 1.5rem;
+`
+const SpinContainer = styled.div`
+  text-align: center;
+  padding: 30px 50px;
+  margin-top: 30px;
+`

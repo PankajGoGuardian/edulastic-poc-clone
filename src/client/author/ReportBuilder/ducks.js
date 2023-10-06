@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { put, all, call, takeLatest } from 'redux-saga/effects'
+import { put, all, call, takeLatest, takeEvery } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { notification } from '@edulastic/common'
 import { reportBuilderApi } from '@edulastic/api'
@@ -126,6 +126,7 @@ export const reducer = createReducer(initialState, {
   },
   [GET_REPORT_DATA]: (state) => {
     state.report = null
+    state.chartData = {}
     state.isReportDefinitionLoading = true
     return state
   },
@@ -212,16 +213,16 @@ function* updateReportSaga({ payload }) {
       updateDoc,
       definitionId,
     })
+    notification({ type: 'success', msg: 'Successfully updated the report' })
     if (isReportDefinitionPage) {
       yield put(setReportDataAction(updatedReport))
     } else {
-      notification({ msg: 'Successfully updated the Widget' })
       return yield put(
         push(`/author/reportBuilder?reportDefinitionId=${updatedReport._id}`)
       )
     }
   } catch (err) {
-    const errorMessage = 'Unable to Update Widget.'
+    const errorMessage = 'Unable to Update Report.'
     notification({ type: 'error', msg: errorMessage })
   }
 }
@@ -232,7 +233,10 @@ function* addReportDefinitionSaga({ payload }) {
       reportBuilderApi.addReportDefinition,
       payload
     )
-    notification({ msg: 'Successfully created report with widgets' })
+    notification({
+      type: 'success',
+      msg: 'Successfully created report with widgets',
+    })
     return yield put(
       push(`/author/reportBuilder/definition/${addedReport._id}`)
     )
@@ -267,7 +271,7 @@ export function* watcherSaga() {
     takeLatest(GET_REPORT_DEFINITIONS, getReportDefinitionsSaga),
     takeLatest(DELETE_REPORT_DEFINITION, deleteReportDefinitionSaga),
     takeLatest(GET_REPORT_DATA, getReportDataSaga),
-    takeLatest(GET_CHART_DATA, getChartDataSaga),
+    takeEvery(GET_CHART_DATA, getChartDataSaga),
     takeLatest(ADD_REPORT_DEFINITION, addReportDefinitionSaga),
     takeLatest(UPDATE_REPORT_DEFINITION, updateReportSaga),
     takeLatest(GET_META_DATA, getMetaDataSaga),

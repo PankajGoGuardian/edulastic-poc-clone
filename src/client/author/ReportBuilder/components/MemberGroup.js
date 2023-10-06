@@ -13,6 +13,7 @@ const MemberGroup = ({
   addMemberName,
   updateMethods,
   title,
+  multiple = false,
 }) => {
   const updateMembers = (oldMember, newMember) => {
     const idxToReplace = members.findIndex((o) => o.name === oldMember.name)
@@ -40,11 +41,7 @@ const MemberGroup = ({
           </MemberDropdown>
         </RemoveButtonGroup>
       ))}
-      <EduIf
-        condition={
-          !members.length || (members.length && title !== 'Data Source')
-        }
-      >
+      <EduIf condition={!members.length || multiple}>
         <MemberDropdown
           type={members.length > 0 ? 'icon' : 'new'}
           onClick={(m) => updateMethods([...members, m])}

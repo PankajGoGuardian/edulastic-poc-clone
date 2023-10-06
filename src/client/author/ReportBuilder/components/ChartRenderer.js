@@ -64,7 +64,12 @@ const CartesianChart = ({ resultSet, children, ChartComponent, height }) => (
       <XAxis
         axisLine={false}
         tickLine={false}
-        tickFormatter={xAxisFormatter}
+        tickFormatter={
+          resultSet.xAxesFields.length === 1 &&
+          resultSet.xAxesFields[0].type === 'time'
+            ? xAxisFormatter
+            : undefined
+        }
         dataKey="x"
         minTickGap={20}
       />
@@ -83,7 +88,7 @@ const CartesianChart = ({ resultSet, children, ChartComponent, height }) => (
       <CartesianGrid vertical={false} />
       {children}
       <Legend />
-      <Tooltip labelFormatter={(a) => a} formatter={localeFormatter} />
+      <Tooltip formatter={localeFormatter} />
     </ChartComponent>
   </ResponsiveContainer>
 )
@@ -233,16 +238,17 @@ const ChartRenderer = ({
     return <Spinner />
   }
 
-  return (
-    component &&
+  return component ? (
     renderChart(component)({ height: chartHeight, resultSet, widgetId })
+  ) : (
+    <h1>No Layout selected !!</h1>
   )
 }
 
 const enhance = compose(
   connect(
     (state, props) => ({
-      isChartDataLoading: getIsChartDataLoadingSelector(state),
+      isChartDataLoading: getIsChartDataLoadingSelector(state, props),
       chartData: getChartDataSelector(state, props),
     }),
     {

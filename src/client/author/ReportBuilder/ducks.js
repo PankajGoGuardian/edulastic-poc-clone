@@ -4,7 +4,6 @@ import { put, all, call, takeLatest, takeEvery } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { notification } from '@edulastic/common'
 import { reportBuilderApi } from '@edulastic/api'
-import { formatQueryData } from './util'
 
 const GET_REPORT_DEFINITIONS = '[report builder] get report definitions'
 const DELETE_REPORT_DEFINITION = '[report builder] delete report definition'
@@ -42,7 +41,7 @@ export const updateReportDefinitionAction = createAction(
   UPDATE_REPORT_DEFINITION
 )
 export const getMetaDataAction = createAction(GET_META_DATA)
-export const setMetaDataAction = createAction(SET_META_DATA)
+export const setDataSourcesMetaAction = createAction(SET_META_DATA)
 export const getDataSourceAction = createAction(GET_DATA_SOURCE)
 export const setDataSourceAction = createAction(SET_DATA_SOURCE)
 
@@ -90,8 +89,8 @@ export const getDataSourceSelector = createSelector(
   (state) => state.dataSource
 )
 export const getIsChartDataLoadingSelector = createSelector(
-  reportBuiderSelector,
-  (state) => state.isChartDataLoading
+  [reportBuiderSelector, (s, props) => props.widgetId || 'draft'],
+  (state, widgetId) => !!state.isChartDataLoading?.[widgetId]
 )
 
 // reducers
@@ -101,12 +100,12 @@ const initialState = {
   dataSource: [],
   report: {},
   isReportDefinitionLoading: false,
-  meta: {},
+  meta: [],
   isMetaDataLoading: false,
   chartData: {},
   isWidgetDataLoading: false,
   widgetData: {},
-  isChartDataLoading: false,
+  isChartDataLoading: {},
 }
 
 export const reducer = createReducer(initialState, {
@@ -135,13 +134,14 @@ export const reducer = createReducer(initialState, {
     state.isReportDefinitionLoading = false
     return state
   },
-  [GET_CHART_DATA]: (state) => {
-    state.isChartDataLoading = true
+  [GET_CHART_DATA]: (state, { payload }) => {
+    state.isChartDataLoading[payload?.widgetId || 'draft'] = true
     return state
   },
   [SET_CHART_DATA]: (state, { payload }) => {
-    state.isChartDataLoading = false
-    state.chartData = { ...state.chartData, ...payload }
+    const { data, widgetId } = payload
+    state.isChartDataLoading[widgetId] = false
+    state.chartData[widgetId] = data
     return state
   },
   [GET_META_DATA]: (state) => {
@@ -195,11 +195,11 @@ function* getReportDataSaga({ payload }) {
 function* getChartDataSaga({ payload }) {
   try {
     const { widgetId = 'draft', query: _query } = payload
-    const query = widgetId === 'draft' ? formatQueryData(_query) : _query
-    const chartData = yield call(reportBuilderApi.loadChartData, {
+    const query = _query
+    const data = yield call(reportBuilderApi.loadChartData, {
       query,
     })
-    yield put(setChartDataAction({ [widgetId]: chartData }))
+    yield put(setChartDataAction({ widgetId, data }))
   } catch (err) {
     const errorMessage = 'Unable to retrieve Chart Data info.'
     notification({ type: 'error', msg: errorMessage })
@@ -246,12 +246,12 @@ function* addReportDefinitionSaga({ payload }) {
   }
 }
 
-function* getMetaDataSaga() {
+function* getDataSourcesMetaSaga() {
   try {
-    const result = yield call(reportBuilderApi.getMetaData)
-    yield put(setMetaDataAction(result?.sources || []))
+    const result = yield call(reportBuilderApi.getDataSourcesMeta)
+    yield put(setDataSourcesMetaAction(result?.sources || []))
   } catch (err) {
-    const errorMessage = 'Unable to retrive Meta data.'
+    const errorMessage = 'Unable to retrive Data Sources Meta data.'
     notification({ type: 'error', msg: errorMessage })
   }
 }
@@ -274,7 +274,7 @@ export function* watcherSaga() {
     takeEvery(GET_CHART_DATA, getChartDataSaga),
     takeLatest(ADD_REPORT_DEFINITION, addReportDefinitionSaga),
     takeLatest(UPDATE_REPORT_DEFINITION, updateReportSaga),
-    takeLatest(GET_META_DATA, getMetaDataSaga),
+    takeLatest(GET_META_DATA, getDataSourcesMetaSaga),
     takeLatest(GET_DATA_SOURCE, getDataSourceSaga),
   ])
 }

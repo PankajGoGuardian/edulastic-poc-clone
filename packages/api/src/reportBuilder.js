@@ -36,7 +36,7 @@ const getReportDefinitionById = (id) =>
     })
     .then((result) => result.data.result)
 
-const getMetaData = () =>
+const getDataSourcesMeta = () =>
   api
     .callApi({
       url: `${prefix}/meta/all`,
@@ -78,5 +78,5 @@ export default {
   addReportDefinition,
   updateReport,
   deleteReport,
-  getMetaData,
+  getDataSourcesMeta,
 }

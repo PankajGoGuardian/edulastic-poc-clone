@@ -7,9 +7,10 @@ import ButtonDropdown from './ButtonDropdown' // Can't be a Pure Component due t
 const sortByTitle = sortBy(prop('title'))
 
 const memberMenu = (onClick, availableMembers, members) => {
-  const filteredAvailableMembers = availableMembers.filter(
-    (am) => !members.find((m) => (m.name || m.dimension?.name) === am.name)
-  )
+  const filteredAvailableMembers =
+    availableMembers.filter(
+      (am) => !members.find((m) => (m.name || m.dimension?.name) === am.name)
+    ) || []
   return (
     <Menu>
       {filteredAvailableMembers.length ? (

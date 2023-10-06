@@ -7,20 +7,34 @@ import MemberDropdown from './MemberDropdown'
 import RemoveButtonGroup from './RemoveButtonGroup'
 import FilterInput from './FilterInput'
 
+const NUMBER_TYPES = [
+  'number',
+  'count',
+  'max',
+  'min',
+  'avg',
+  'sum',
+  'count_distinct',
+]
+
 const operators = [
-  { name: 'equals', title: 'equals', type: ['time', 'string', 'number'] },
-  { name: 'AND', title: 'AND', type: ['string', 'number'] },
-  { name: 'OR', title: 'OR', type: ['string', 'number'] },
+  {
+    name: 'equals',
+    title: 'equals',
+    type: ['time', 'string', ...NUMBER_TYPES],
+  },
+  { name: 'AND', title: 'AND', type: ['string', ...NUMBER_TYPES] },
+  { name: 'OR', title: 'OR', type: ['string', ...NUMBER_TYPES] },
   {
     name: 'notEquals',
     title: 'does not equal',
-    type: ['time', 'string', 'number'],
+    type: ['time', 'string', ...NUMBER_TYPES],
   },
-  { name: 'set', title: 'is set', type: ['time', 'string', 'number'] },
+  { name: 'set', title: 'is set', type: ['time', 'string', ...NUMBER_TYPES] },
   {
     name: 'notSet',
     title: 'is not set',
-    type: ['time', 'string', 'number'],
+    type: ['time', 'string', ...NUMBER_TYPES],
   },
   { name: 'contains', title: 'contains', type: ['time', 'string'] },
   {
@@ -28,10 +42,26 @@ const operators = [
     title: 'does not contain',
     type: ['time', 'string'],
   },
-  { name: 'gt', title: '>', type: ['number'] },
-  { name: 'gte', title: '>=', type: ['number'] },
-  { name: 'lt', title: '<', type: ['number'] },
-  { name: 'lte', title: '<=', type: ['number'] },
+  {
+    name: 'gt',
+    title: '>',
+    type: NUMBER_TYPES,
+  },
+  {
+    name: 'gte',
+    title: '>=',
+    type: NUMBER_TYPES,
+  },
+  {
+    name: 'lt',
+    title: '<',
+    type: NUMBER_TYPES,
+  },
+  {
+    name: 'lte',
+    title: '<=',
+    type: NUMBER_TYPES,
+  },
 ]
 
 const FilterGroup = ({
@@ -92,14 +122,16 @@ const FilterGroup = ({
             onChange={(operator) => updateValue(m, 'operator', operator)}
             style={{ width: 200, marginRight: 8 }}
           >
-            {m.operators.map((operator) => (
-              <Select.Option
-                key={`${m.dimension.name}-${operator.name}`}
-                value={operator.name}
-              >
-                {operator.title}
-              </Select.Option>
-            ))}
+            {operators
+              .filter((op) => op.type.includes(m.dimension.type))
+              .map((operator) => (
+                <Select.Option
+                  key={`${m.dimension.name}-${operator.name}`}
+                  value={operator.name}
+                >
+                  {operator.title}
+                </Select.Option>
+              ))}
           </Select>
           <FilterInput
             member={m}

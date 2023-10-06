@@ -3,6 +3,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Spin, Button, Typography } from 'antd'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 import ReportDefinition from './ReportDefinition'
 import {
   getReportDataAction,
@@ -12,8 +13,8 @@ import {
 } from '../ducks'
 import PageHeader from './PageHeader'
 
-const ReportDefinitionWrapper = (props, updateReport) => {
-  const { isLoading, report, getReportData, match } = props
+const ReportDefinitionWrapper = (props) => {
+  const { isLoading, report, getReportData, match, updateReport } = props
   const { id } = match.params
   const [currentReport, setCurrentReport] = useState(report)
   useEffect(() => {
@@ -79,13 +80,13 @@ const ReportDefinitionWrapper = (props, updateReport) => {
         }
         button={
           <>
-            <Button type="primary" onClick={saveReport}>
+            <StyledButton type="primary" onClick={saveReport}>
               Save Report
-            </Button>
+            </StyledButton>
             <Link
               to={`/author/reportBuilder/explore/definition/${currentReport._id}`}
             >
-              <Button type="primary">Add Widget to Report</Button>
+              <StyledButton type="primary">Add Widget to Report</StyledButton>
             </Link>
           </>
         }
@@ -114,3 +115,7 @@ const enhance = compose(
 )
 
 export default enhance(ReportDefinitionWrapper)
+
+const StyledButton = styled(Button)`
+  margin-left: 15px;
+`

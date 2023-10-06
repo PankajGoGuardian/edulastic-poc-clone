@@ -31,24 +31,24 @@ function CoordinatesSelector({
   return (
     <FlexContainer>
       <FlexContainer flexDirection="column" style={{ marginRight: '15px' }}>
-        <Title>Select X-Axis Field(s)</Title>
+        <Title>X-Axis Field(s)</Title>
         <Select
           mode="multiple"
           style={{ width: '350px' }}
           placeholder="Please select"
-          // defaultValue={['a10', 'c12']} should be select Facts
+          value={selectedXCoords}
           onChange={handleXChange}
         >
           {children}
         </Select>
       </FlexContainer>
       <FlexContainer flexDirection="column">
-        <Title>Select Y-Axis Field(s)</Title>
+        <Title>Y-Axis Field(s)</Title>
         <Select
           mode="multiple"
           style={{ width: '350px' }}
           placeholder="Please select"
-          // defaultValue={['a10', 'c12']} should be selected dimensions
+          value={selectedYCoords}
           onChange={handleYChange}
         >
           {children}

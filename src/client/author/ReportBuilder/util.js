@@ -1,10 +1,9 @@
 import { groupBy, isEmpty, uniqBy } from 'lodash'
 
-export const buildChartData = (apiData, chartType) => {
-  const {
-    annotation: { facts, dimensions, timeDimensions },
-    data,
-  } = apiData
+export const buildChartData = (apiData, chartType, coOrds = {}) => {
+  const { annotation, data } = apiData
+  let { facts, dimensions } = annotation
+  const { timeDimensions } = annotation
   if (chartType === 'table') {
     return {
       columns: [
@@ -27,7 +26,19 @@ export const buildChartData = (apiData, chartType) => {
     }
   }
 
-  const seriesNames = [] // TODO: HANDLE UNIQUE SERIESNAME
+  const { xCoOrds, yCoOrds } = coOrds
+  if (!isEmpty(xCoOrds) || !isEmpty(yCoOrds)) {
+    const viewLevelFacts = xCoOrds.map((name) =>
+      [...facts, ...dimensions].find((o) => o.name === name)
+    )
+    const viewLevelDimensions = yCoOrds.map((name) =>
+      [...facts, ...dimensions].find((o) => o.name === name)
+    )
+    facts = viewLevelFacts
+    dimensions = viewLevelDimensions
+  }
+
+  const seriesNames = []
   const dataPivot = []
   if (!isEmpty(timeDimensions)) {
     const groupedByTimeDimensions = groupBy(

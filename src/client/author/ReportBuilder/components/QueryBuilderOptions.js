@@ -2,7 +2,7 @@ import React from 'react'
 import { Row, Col, Card, Divider } from 'antd'
 import { isEmpty } from 'lodash'
 import styled from 'styled-components'
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import MemberGroup from './MemberGroup'
 import FilterGroup from './FilterGroup'
 import SelectChartType from './SelectChartType'
@@ -162,19 +162,24 @@ const QueryBuilderOptions = ({
                   chartType={showChartType}
                   updateChartType={setSelectedChartType}
                 />
-                <CoordinatesSelector
-                  availableOptions={[...selectedFacts, ...selectedDimensions]}
-                  selectedXCoords={selectedXCoords}
-                  selectedYCoords={selectedYCoords}
-                  setSelectedXCoords={setSelectedXCoords}
-                  setSelectedYCoords={setSelectedYCoords}
-                />
+                <EduIf
+                  condition={['bar', 'line', 'area'].includes(showChartType)}
+                >
+                  <CoordinatesSelector
+                    availableOptions={[...selectedFacts, ...selectedDimensions]}
+                    selectedXCoords={selectedXCoords}
+                    selectedYCoords={selectedYCoords}
+                    setSelectedXCoords={setSelectedXCoords}
+                    setSelectedYCoords={setSelectedYCoords}
+                  />
+                </EduIf>
               </FlexContainer>,
               <ChartCard style={{ minHeight: 420 }}>
                 <ChartRenderer
                   query={query}
                   chartType={showChartType}
                   chartHeight={400}
+                  widget={widgetData}
                 />
               </ChartCard>,
             ]

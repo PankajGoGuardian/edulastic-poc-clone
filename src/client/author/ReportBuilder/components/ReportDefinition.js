@@ -67,12 +67,12 @@ const ReportDefinition = ({ report, setCurrentReport }) => {
       <Widget
         key={widget._id}
         widgetId={widget._id}
-        title={widget.name}
+        title={widget.title}
         report={report}
       >
         <ChartRenderer
-          query={widget.query}
-          chartType={widget.layout.type || 'table'}
+          widget={widget}
+          chartType={widget.layout.type}
           widgetId={widget._id}
         />
       </Widget>

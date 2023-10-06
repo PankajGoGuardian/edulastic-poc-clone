@@ -19,7 +19,11 @@ import {
   getChartDataAction,
   getActiveReportSelector,
   getReportDataAction,
+  addReportDefinitionAction,
+  updateReportDefinitionAction,
+  setChartDataAction,
 } from '../ducks'
+import { formatQueryData } from '../util'
 
 const ExplorePage = (props) => {
   const {
@@ -35,6 +39,9 @@ const ExplorePage = (props) => {
     chartData,
     getChartData,
     match,
+    addReportDefinition,
+    updateReportDefinition,
+    setChartData,
   } = props
   const [addingToReport, setAddingToReport] = useState(false)
   const [selectedDataSources, setSelectedDataSources] = useState([])
@@ -57,6 +64,13 @@ const ExplorePage = (props) => {
     getDataSource()
     getMetaData()
   }, [])
+
+  useEffect(() => {
+    if (!isEmpty(chartData)) {
+      setSelectedXCoords(selectedFacts.map((o) => o.name))
+      setSelectedYCoords(selectedDimensions.map((o) => o.name))
+    }
+  }, [chartData])
 
   const {
     availableFacts,
@@ -119,20 +133,32 @@ const ExplorePage = (props) => {
     selectedFilters,
   ])
 
+  useEffect(() => {
+    setChartData({ draft: {} })
+  }, [query])
+
   const isEditWidgetFlow = definitionId && widgetId
   const isAddWidgetToReportFlow = definitionId && !widgetId
   const isCreateReportWithWidgetFlow = !definitionId && !widgetId
-  const widgetData =
-    isEditWidgetFlow && !isEmpty(report)
-      ? report.widgets.find((w) => w._id === widgetId)
-      : !isEmpty(query)
-      ? { query }
-      : {}
+  const widgetData = !isEmpty(query)
+    ? {
+        ...(widgetId ? { _id: widgetId } : {}),
+        query,
+        layout: {
+          options: {
+            coOrds: { xCoOrds: selectedXCoords, yCoOrds: selectedYCoords },
+          },
+        },
+      }
+    : isEditWidgetFlow && !isEmpty(report)
+    ? report.widgets.find((w) => w._id === widgetId)
+    : {}
 
   useEffect(() => {
     if (report?._id && !isEmpty(widgetData)) {
       const {
         query: { facts = [], segments = [], dimensions = [] },
+        layout: { type, options },
       } = widgetData
       if (isEmpty(selectedDataSources))
         setSelectedDataSources(
@@ -143,13 +169,27 @@ const ExplorePage = (props) => {
         (availableDimensions.length || availableFacts.length) &&
         !(selectedDimensions.length || selectedFacts.length)
       ) {
-        setSelectedFacts(availableFacts.filter((am) => facts.includes(am.name)))
-        setSelectedDimensions(
-          availableDimensions.filter((am) => dimensions.includes(am.name))
+        const _facts = availableFacts.filter((am) => facts.includes(am.name))
+        const _dimensions = availableDimensions.filter((am) =>
+          dimensions.includes(am.name)
         )
-        setSelectedSegments(
-          availableSegments.filter((am) => segments.includes(am.name))
+        const _segments = availableSegments.filter((am) =>
+          segments.includes(am.name)
         )
+        setSelectedFacts(_facts)
+        setSelectedDimensions(_dimensions)
+        setSelectedSegments(_segments)
+        setSelectedXCoords(_facts.map((o) => o.name))
+        setSelectedYCoords(_dimensions.map((o) => o.name))
+        setSelectedChartType(type)
+      }
+      if (
+        (options.coOrds?.xCoOrds?.length || options.coOrds?.xCoOrds?.length) &&
+        isEmpty(selectedXCoords) &&
+        isEmpty(selectedYCoords)
+      ) {
+        setSelectedXCoords(options.coOrds.xCoOrds)
+        setSelectedYCoords(options.coOrds.YCoOrds)
       }
     }
   }, [report, availableFacts, availableDimensions])
@@ -170,36 +210,115 @@ const ExplorePage = (props) => {
 
   const canAddOrUpdateChart = !isEmpty(widgetData) && !isEmpty(chartData)
 
+  const handleSaveOrUpdateOfReport = async () => {
+    const coOrds = {
+      xCoOrds: selectedXCoords,
+      yCoOrds: selectedYCoords,
+    }
+    setTitleModalVisible(false)
+    setAddingToReport(true)
+    if (isEditWidgetFlow) {
+      updateReportDefinition({
+        definitionId: report._id,
+        updateDoc: {
+          $set: {
+            ...report,
+            widgets: report.widgets.map((widget) => {
+              if (widget._id !== widgetData._id) return widget
+              return {
+                ...widget,
+                ...widgetData,
+                layout: {
+                  type: selectedChartType,
+                  options: {
+                    ...widgetData.layout.options,
+                    coOrds,
+                  },
+                },
+                query: formatQueryData(query),
+                title: finalTitle,
+              }
+            }),
+            name: finalReportTitle,
+            description: finalReportDescription,
+          },
+        },
+      })
+    } else if (isAddWidgetToReportFlow) {
+      updateReportDefinition({
+        definitionId: report._id,
+        updateDoc: {
+          $set: {
+            ...report,
+            widgets: [
+              ...report.widgets,
+              {
+                layout: {
+                  type: selectedChartType,
+                  options: {
+                    x: 0,
+                    y: 0,
+                    w: 8,
+                    h: 8,
+                    coOrds,
+                  },
+                },
+                query: formatQueryData(query),
+                title: finalTitle,
+              },
+            ],
+            name: finalReportTitle,
+            description: finalReportDescription,
+          },
+        },
+      })
+    } else if (isCreateReportWithWidgetFlow) {
+      addReportDefinition({
+        widgets: [
+          {
+            layout: {
+              type: selectedChartType,
+              options: {
+                x: 0,
+                y: 0,
+                w: 8,
+                h: 8,
+                coOrds,
+              },
+            },
+            query: formatQueryData(query),
+            title: finalTitle,
+          },
+        ],
+        name: finalReportTitle,
+        description: finalReportDescription,
+      })
+    }
+    setAddingToReport(false)
+  }
+
+  const handleApply = () => {
+    getChartData({ query })
+  }
+
   return (
     <div>
       <TitleModal
-        history={history}
-        widgetData={widgetData}
         titleModalVisible={titleModalVisible}
         setTitleModalVisible={setTitleModalVisible}
-        setAddingToReport={setAddingToReport}
-        query={query}
         setTitle={setTitle}
         finalTitle={finalTitle}
         finalReportTitle={finalReportTitle}
         finalReportDescription={finalReportDescription}
         setReportTitle={setReportTitle}
         setReportDescription={setReportDescription}
-        selectedChartType={selectedChartType}
-        isEditWidgetFlow={isEditWidgetFlow}
-        isAddWidgetToReportFlow={isAddWidgetToReportFlow}
-        isCreateReportWithWidgetFlow={isCreateReportWithWidgetFlow}
-        report={report}
+        handleSaveOrUpdateOfReport={handleSaveOrUpdateOfReport}
       />
       <PageHeader
         title={<ExploreTitle widgetId={widgetId} />}
         button={
           <>
-            <Button
-              key="apply-button"
-              type="primary"
-              onClick={() => getChartData({ query })}
-            >
+            <Button key="apply-button" type="primary" onClick={handleApply}>
               Apply
             </Button>
             <Button
@@ -269,6 +388,9 @@ const enhance = compose(
       getReportData: getReportDataAction,
       getDataSource: getDataSourceAction,
       getChartData: getChartDataAction,
+      addReportDefinition: addReportDefinitionAction,
+      updateReportDefinition: updateReportDefinitionAction,
+      setChartData: setChartDataAction,
     }
   )
 )

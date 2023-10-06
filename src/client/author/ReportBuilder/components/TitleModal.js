@@ -1,119 +1,25 @@
 import React from 'react'
 import { Modal, Input } from 'antd'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
-import {
-  addReportDefinitionAction,
-  updateReportDefinitionAction,
-} from '../ducks'
-import { formatQueryData } from '../util'
 
 const TitleModal = ({
-  history,
-  widgetData,
   titleModalVisible,
   setTitleModalVisible,
-  setAddingToReport,
-  query,
   finalTitle,
   setTitle,
   finalReportTitle,
   setReportTitle,
   finalReportDescription,
   setReportDescription,
-  addReportDefinition,
-  updateReport,
-  selectedChartType,
-  isEditWidgetFlow,
-  isAddWidgetToReportFlow,
-  isCreateReportWithWidgetFlow,
-  report,
+  handleSaveOrUpdateOfReport,
 }) => {
   return (
     <Modal
       key="modal"
       title="Save Report"
       visible={titleModalVisible}
-      onOk={async () => {
-        setTitleModalVisible(false)
-        setAddingToReport(true)
-        if (isEditWidgetFlow) {
-          // TODO better move this to parent, and only send form values as callback
-          updateReport({
-            definitionId: report._id,
-            updateDoc: {
-              $set: {
-                ...report,
-                widgets: report.widgets.map((widget) => {
-                  if (widget._id !== widgetData._id) return widget
-                  return {
-                    ...widget,
-                    ...widgetData,
-                    layout: {
-                      type: selectedChartType,
-                      options: widgetData.layout.options,
-                    },
-                    query: formatQueryData(query),
-                    title: finalTitle,
-                  }
-                }),
-                name: finalReportTitle,
-                description: finalReportDescription,
-              },
-            },
-          })
-        } else if (isAddWidgetToReportFlow) {
-          updateReport({
-            definitionId: report._id,
-            updateDoc: {
-              $set: {
-                ...report,
-                widgets: [
-                  ...report.widgets,
-                  {
-                    layout: {
-                      type: selectedChartType,
-                      options: {
-                        x: 0,
-                        y: 0,
-                        w: 8,
-                        h: 8,
-                      },
-                    },
-                    query: formatQueryData(query),
-                    title: finalTitle,
-                  },
-                ],
-                name: finalReportTitle,
-                description: finalReportDescription,
-              },
-            },
-          })
-        } else if (isCreateReportWithWidgetFlow) {
-          addReportDefinition({
-            widgets: [
-              {
-                layout: {
-                  type: selectedChartType,
-                  options: {
-                    x: 0,
-                    y: 0,
-                    w: 8,
-                    h: 8,
-                  },
-                },
-                query: formatQueryData(query),
-                title: finalTitle,
-              },
-            ],
-            name: finalReportTitle,
-            description: finalReportDescription,
-          })
-        }
-        setAddingToReport(false)
-      }}
+      onOk={handleSaveOrUpdateOfReport}
       onCancel={() => setTitleModalVisible(false)}
     >
       <StyledDiv>Widget Name</StyledDiv>
@@ -138,14 +44,7 @@ const TitleModal = ({
   )
 }
 
-const enhance = compose(
-  connect(() => ({}), {
-    addReportDefinition: addReportDefinitionAction,
-    updateReport: updateReportDefinitionAction,
-  })
-)
-
-export default enhance(TitleModal)
+export default TitleModal
 
 const StyledDiv = styled.div`
   margin-top: 10px;

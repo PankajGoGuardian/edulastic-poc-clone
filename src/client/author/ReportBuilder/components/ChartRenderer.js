@@ -183,12 +183,15 @@ const renderChart = (Component) => ({ resultSet, error, height, widgetId }) =>
 const ChartRenderer = ({
   chartData,
   getChartData,
-  query,
   chartType,
   chartHeight,
-  widgetId,
   isChartDataLoading,
+  widget,
+  widgetId,
 }) => {
+  const { layout, query } = widget
+  const { options } = layout
+
   const component = TypeToMemoChartComponent[chartType]
   useEffect(() => {
     if (!isEmpty(query) && widgetId) {
@@ -198,10 +201,10 @@ const ChartRenderer = ({
 
   const resultSet = useMemo(() => {
     if (!isEmpty(chartData)) {
-      return buildChartData(chartData, chartType)
+      return buildChartData(chartData, chartType, options.coOrds)
     }
     return null
-  }, [chartType, chartData])
+  }, [chartType, chartData, widget])
 
   if (isChartDataLoading && !widgetId) {
     return <Spinner />

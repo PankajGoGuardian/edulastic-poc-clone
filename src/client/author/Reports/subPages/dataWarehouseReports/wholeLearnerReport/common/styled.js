@@ -162,6 +162,13 @@ export const TestLabel = styled(Label)`
   text-overflow: ellipsis;
   overflow: hidden;
   margin-bottom: 5px;
+
+  @media print {
+    white-space: nowrap;
+    width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden !important;
+  }
 `
 export const RiskLabel = styled(Label)`
   text-transform: uppercase;

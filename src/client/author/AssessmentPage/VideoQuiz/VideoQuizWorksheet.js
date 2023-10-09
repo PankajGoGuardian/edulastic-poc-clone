@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { compose } from 'redux'
@@ -51,6 +52,7 @@ const VideoQuizWorksheetComponent = ({
   history,
 }) => {
   const annotationsRef = useRef()
+  const questionsContainerRef = useRef(null)
 
   useEffect(() => {
     // hiding and showing help chat icon for video quiz worksheet
@@ -306,7 +308,12 @@ const VideoQuizWorksheetComponent = ({
           />
         </VideoViewerContainer>
         <Questions
+          getContainer={() =>
+            ReactDOM.findDOMNode(questionsContainerRef.current)
+          }
+          transitionDuration={0}
           videoRef={videoRef}
+          questionsContainerRef={questionsContainerRef}
           onPlay={onPlay}
           noCheck={noCheck}
           list={questions}
@@ -318,7 +325,7 @@ const VideoQuizWorksheetComponent = ({
           onDragStart={onDragStart}
           onHighlightQuestion={handleHighlightQuestion}
           lockToContainerEdges
-          lockOffset={['10%', '0%']}
+          lockOffset={['15%', '10%']}
           lockAxis="y"
           useDragHandle
           onSortEnd={onSortEnd}

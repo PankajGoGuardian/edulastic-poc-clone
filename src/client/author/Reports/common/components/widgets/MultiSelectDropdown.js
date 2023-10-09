@@ -16,6 +16,7 @@ const MultiSelectDropdown = ({
   maxTagCount = 4,
   height = 'auto',
   labelFontSize = '10px',
+  displayLabel = true,
 }) => {
   const [searchText, setSearchText] = useState('')
   const handleSearch = useCallback(
@@ -47,9 +48,11 @@ const MultiSelectDropdown = ({
   })
   return (
     <>
-      <FilterLabel fontSize={labelFontSize} data-cy={dataCy}>
-        {label}
-      </FilterLabel>
+      {displayLabel && (
+        <FilterLabel fontSize={labelFontSize} data-cy={dataCy}>
+          {label}
+        </FilterLabel>
+      )}
       <SelectInputStyled
         height={height}
         showSearch={showSearch}

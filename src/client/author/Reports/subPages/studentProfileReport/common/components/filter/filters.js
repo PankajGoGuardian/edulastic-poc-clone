@@ -686,7 +686,7 @@ const StudentProfileReportFilters = ({
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                <ControlDropDown
+                {/* <ControlDropDown
                   by={filters.domainId}
                   selectCB={(e, selected) =>
                     updateFilterDropdownCB(selected, 'domainId', false, true)
@@ -694,6 +694,23 @@ const StudentProfileReportFilters = ({
                   data={domainOptions}
                   prefix="Domain(s)"
                   showPrefixOnSelected={false}
+                /> */}
+                <MultiSelectDropdown
+                  dataCy="standardProficiency"
+                  label="Domain(s)"
+                  onChange={(e) => {
+                    const selected = domainOptions.filter((a) =>
+                      e.includes(a.key)
+                    )
+                    updateFilterDropdownCB(selected, 'domainId', true, true)
+                  }}
+                  value={
+                    filters.domainId && filters.domainId !== 'All'
+                      ? filters.domainId.split(',')
+                      : []
+                  }
+                  options={domainOptions}
+                  displayLabel={false}
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
@@ -702,7 +719,7 @@ const StudentProfileReportFilters = ({
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                <ControlDropDown
+                {/* <ControlDropDown
                   by={filters.standardId}
                   selectCB={(e, selected) =>
                     updateFilterDropdownCB(selected, 'standardId', false, true)
@@ -710,6 +727,23 @@ const StudentProfileReportFilters = ({
                   data={standardOptions}
                   prefix="Standard(s)"
                   showPrefixOnSelected={false}
+                /> */}
+                <MultiSelectDropdown
+                  dataCy="standardProficiency"
+                  label="Standard(s)"
+                  onChange={(e) => {
+                    const selected = standardOptions.filter((a) =>
+                      e.includes(a.key)
+                    )
+                    updateFilterDropdownCB(selected, 'standardId', true, true)
+                  }}
+                  value={
+                    filters.standardId && filters.standardId !== 'All'
+                      ? filters.standardId.split(',')
+                      : []
+                  }
+                  options={standardOptions}
+                  displayLabel={false}
                 />
               </StyledDropDownContainer>
             </>

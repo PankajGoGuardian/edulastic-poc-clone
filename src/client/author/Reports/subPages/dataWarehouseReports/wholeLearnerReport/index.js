@@ -2,35 +2,24 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
-import { Spin, Checkbox } from 'antd'
+import { Spin } from 'antd'
 
-import {
-  EduElse,
-  EduIf,
-  EduThen,
-  FlexContainer,
-  SpinLoader,
-} from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import {
   helpLinks,
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
-import { IconInfo } from '@edulastic/icons'
-import { blueButton } from '@edulastic/colors'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import Summary from './components/Summary'
-import AssessmentsTable from './components/AssessmentsTable'
-import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import WholeLearnerReportFilters from './components/Filters/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { DW_WLR_REPORT_URL } from '../../../common/constants/dataWarehouseReports'
 import SectionLabel from '../../../common/components/SectionLabel'
 import SectionDescription from '../../../common/components/SectionDescription'
-import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
@@ -60,11 +49,10 @@ import {
   mergeTestMetrics,
   getAttendanceChartData,
 } from './utils'
-import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-components'
 import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
-import SectionLabelFilters from './components/Filters/SectionLabelFilters'
+import PerformanceAndMastery from './components/PerformanceAndMastery'
 
 const { downloadCSV } = reportUtils.common
 
@@ -121,6 +109,11 @@ const WholeLearnerReport = ({
   fetchAttendanceDataRequest,
   fetchInterventionsByGroups,
   interventionsData,
+  fetchStudentsMasteryDataRequest,
+  loadingMasteryData,
+  studentMasteryProfile,
+  fetchSPRFFilterDataRequest,
+  SPRFFilterData,
   termsData,
   attendanceInterventions,
   academicInterventions,
@@ -282,6 +275,14 @@ const WholeLearnerReport = ({
         startDate,
         endDate,
       })
+      fetchSPRFFilterDataRequest({
+        termId,
+        studentId: settings.selectedStudent.key,
+      })
+      fetchStudentsMasteryDataRequest({
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
@@ -373,7 +374,9 @@ const WholeLearnerReport = ({
   const onCsvConvert = (data) =>
     downloadCSV(`Whole Learner-${studentName}.csv`, data)
 
-  const isReportLoading = loadingReportData || loadingAttendanceData
+  const isReportLoading =
+    loadingReportData || loadingAttendanceData || loadingMasteryData
+
   return (
     <>
       {sharingState && (
@@ -475,81 +478,35 @@ const WholeLearnerReport = ({
                       studentClassData={studentClassData}
                       settings={settings}
                     />
-                    <EduIf condition={!isEmpty(chartData)}>
-                      <EduThen>
-                        <AssessmentsChart
-                          chartData={chartData}
-                          selectedPerformanceBand={selectedPerformanceBand}
-                          showInterventions={showInterventions}
-                          interventionsData={academicInterventions}
-                          settings={settings}
-                          sectionLabelFilters={
-                            <SectionLabelFilters
-                              history={history}
-                              location={location}
-                              isSharedReport={isSharedReport}
-                              filtersData={filtersData}
-                              testTypes={testTypes.join(',')}
-                              externalScoreType={externalScoreType}
-                              filters={filters}
-                              setFilters={setFilters}
-                              filterTagsData={filterTagsData}
-                              setFilterTagsData={setFilterTagsData}
-                              settings={settings}
-                              setSettings={setSettings}
-                            />
-                          }
-                          preLabelContent={
-                            <ChartPreLabelWrapper>
-                              <FlexContainer
-                                alignItems="center"
-                                justifyContent="flex-start"
-                              >
-                                <Checkbox
-                                  checked={isAttendanceChartVisible}
-                                  onChange={toggleAttendanceChart}
-                                >
-                                  Show Attendance Chart
-                                </Checkbox>
-                                <EduIf condition={interventionsData.length}>
-                                  <Checkbox
-                                    checked={showInterventions}
-                                    onChange={toggleInterventionInfo}
-                                  >
-                                    Show Interventions{' '}
-                                  </Checkbox>
-                                  <IconInfo
-                                    fill={blueButton}
-                                    width={16}
-                                    height={16}
-                                  />
-                                </EduIf>
-                              </FlexContainer>
-                            </ChartPreLabelWrapper>
-                          }
-                        />
-                      </EduThen>
-                      <EduElse>
-                        <NoDataContainer margin="50px">
-                          No academic data available.
-                        </NoDataContainer>
-                      </EduElse>
-                    </EduIf>
-                    <EduIf condition={isAttendanceChartVisible}>
-                      <AttendanceChart
-                        attendanceChartData={attendanceChartData}
-                        showInterventions={showInterventions}
-                        interventionsData={attendanceInterventions}
-                      />
-                    </EduIf>
-                    <EduIf condition={!isEmpty(tableData)}>
-                      <AssessmentsTable
-                        tableData={tableData}
-                        isSharedReport={isSharedReport}
-                        onCsvConvert={onCsvConvert}
-                        isCsvDownloading={isCsvDownloading}
-                      />
-                    </EduIf>
+                    <PerformanceAndMastery
+                      isAttendanceChartVisible={isAttendanceChartVisible}
+                      attendanceChartData={attendanceChartData}
+                      showInterventions={showInterventions}
+                      attendanceInterventions={attendanceInterventions}
+                      tableData={tableData}
+                      isSharedReport={isSharedReport}
+                      onCsvConvert={onCsvConvert}
+                      isCsvDownloading={isCsvDownloading}
+                      studentMasteryProfile={studentMasteryProfile}
+                      SPRFFilterData={SPRFFilterData}
+                      settings={settings}
+                      chartData={chartData}
+                      selectedPerformanceBand={selectedPerformanceBand}
+                      academicInterventions={academicInterventions}
+                      history={history}
+                      location={location}
+                      filtersData={filtersData}
+                      testTypes={testTypes}
+                      externalScoreType={externalScoreType}
+                      filters={filters}
+                      setFilters={setFilters}
+                      filterTagsData={filterTagsData}
+                      setFilterTagsData={setFilterTagsData}
+                      setSettings={setSettings}
+                      toggleAttendanceChart={toggleAttendanceChart}
+                      interventionsData={interventionsData}
+                      toggleInterventionInfo={toggleInterventionInfo}
+                    />
                   </EduElse>
                 </EduIf>
               </EduElse>

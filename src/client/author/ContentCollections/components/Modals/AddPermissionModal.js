@@ -461,6 +461,7 @@ const AddPermissionModal = ({
           <StyledFieldRow>
             <FieldLabel>Clone Permission</FieldLabel>
             <CheckboxLabel
+            data-cy="clonePermission"
               onChange={(e) =>
                 handleFieldChange('clonePermitted', e.target.checked)
               }
@@ -479,6 +480,7 @@ const AddPermissionModal = ({
                   <DatePickerStyled
                     style={{ width: '100%' }}
                     placeholder="Set a start date"
+                    data-cy="setStartDate"
                     format="DD-MM-YYYY"
                     showTime
                     value={
@@ -494,6 +496,7 @@ const AddPermissionModal = ({
                   <DatePickerStyled
                     style={{ width: '100%' }}
                     placeholder="Set an end date"
+                    data-cy="setEndDate"
                     format="DD-MM-YYYY"
                     showTime
                     value={
@@ -510,6 +513,7 @@ const AddPermissionModal = ({
               <FieldLabel>CS Manager</FieldLabel>
               <TextInputStyled
                 placeholder="Type the CS Manager"
+                data-cy="csManager"
                 value={fieldData.csManager || ''}
                 onChange={(e) => handleFieldChange('csManager', e.target.value)}
               />
@@ -518,6 +522,7 @@ const AddPermissionModal = ({
               <FieldLabel>Opportunity Id</FieldLabel>
               <TextInputStyled
                 placeholder="Type the ID"
+                data-cy="opportunityId"
                 value={fieldData.opportunityId || ''}
                 onChange={(e) =>
                   handleFieldChange('opportunityId', e.target.value)
@@ -529,6 +534,7 @@ const AddPermissionModal = ({
               <TextAreaInputStyled
                 height="80px"
                 placeholder="Type notes..."
+                data-cy="typeNote"
                 value={fieldData.notes || ''}
                 onChange={(e) => handleFieldChange('notes', e.target.value)}
               />

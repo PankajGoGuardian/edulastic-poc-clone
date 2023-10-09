@@ -156,6 +156,14 @@ const getTestIdFromVersionId = (versionId) =>
     })
     .then((result) => result.data.result)
 
+const getYoutubeThumbnail = (videoId) =>
+  api
+    .callApi({
+      url: `${prefix}/yt-thumb/${videoId}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 export default {
   getAll,
   getById,
@@ -173,4 +181,5 @@ export default {
   deleteTest,
   getTestIdFromVersionId,
   getSummary,
+  getYoutubeThumbnail,
 }

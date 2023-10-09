@@ -16,7 +16,6 @@ import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.p
 
 import {
   extractVideoId,
-  getThumbnailUrl,
   isValidVideoUrl,
 } from '../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 
@@ -63,23 +62,26 @@ const VideoQuickGuide = () => {
 }
 
 // Takes video url from user and validate same for creating video quiz
-const CreateVideoQuiz = ({ onValidUrl }) => {
+const CreateVideoQuiz = ({ onValidUrl, ytThumbnail, getYoutubeThumbnail }) => {
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
 
   useEffect(() => {
     if (!hasError) {
-      let newThumbnail
       const videoId = extractVideoId(linkValue || '')
       if (videoId) {
-        newThumbnail = getThumbnailUrl(videoId)
-        setThumbnail(newThumbnail)
+        getYoutubeThumbnail(videoId)
       }
-
-      onValidUrl?.(linkValue, newThumbnail)
     }
   }, [linkValue, hasError])
+
+  useEffect(() => {
+    if (ytThumbnail.length) {
+      setThumbnail(ytThumbnail)
+      onValidUrl?.(linkValue, ytThumbnail)
+    }
+  }, [ytThumbnail])
 
   const errorMessage = () => {
     if (linkValue && hasError) {

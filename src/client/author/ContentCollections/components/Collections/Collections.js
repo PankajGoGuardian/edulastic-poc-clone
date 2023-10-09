@@ -117,6 +117,7 @@ const Collections = ({
             <SearchInputStyled
               height="34px"
               placeholder="Search by collection name"
+              data-cy="searchByCollectionName"
               onChange={handleCollectionSeach}
               value={searchValue}
             />

@@ -539,8 +539,8 @@ export const StyledText = styled.text`
 
 export const PrintableScreen = styled.div`
   @media print {
-    width: 250mm;
     @page {
+      size: A4 landscape !important;
       margin: 0 !important;
       padding: 0 !important;
     }

@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import produce from 'immer'
 import { get, findIndex } from 'lodash'
 import PropTypes from 'prop-types'
-import { DndContext } from '@dnd-kit/core'
 import { helpers } from '@edulastic/common'
 import { response as responseConst, clozeImage } from '@edulastic/constants'
 
 import Draggable from './components/Draggable'
-import Droppable from './components/Droppable'
 
 const DropArea = ({
   updateData,
@@ -18,7 +16,6 @@ const DropArea = ({
   isDropDown,
   containerRef,
 }) => {
-  const [items, setItems] = useState(item.responses)
   const _dragStop = (index) => (e, d) => {
     updateData(
       produce(item.responses, (draft) => {
@@ -37,12 +34,6 @@ const DropArea = ({
     newHeight = newHeight > minHeight ? newHeight : minHeight
 
     updateData(
-      produce(item.responses, (draft) => {
-        draft[index].width = `${newWidth}px`
-        draft[index].height = `${newHeight}px`
-      })
-    )
-    setItems(
       produce(item.responses, (draft) => {
         draft[index].width = `${newWidth}px`
         draft[index].height = `${newHeight}px`
@@ -159,59 +150,39 @@ const DropArea = ({
     }
   }
 
-  const handleDragEnd = (ev) => {
-    const note = items.find((x) => x.id === ev.active.id)
-    note.left += ev.delta.x
-    note.top += ev.delta.y
-    const _notes = items.map((x) => {
-      if (x.id === note.id) return note
-      return x
-    })
-    setItems(_notes)
-  }
   const { uiStyle: uiStyles = {} } = item
 
-  return (
-    <DndContext onDragEnd={handleDragEnd}>
-      <Droppable>
-        {items.map((response, i) => {
-          const responseHeight = response.height || uiStyles.heightpx || 'auto'
-          const responseWidth = response.width || uiStyles.widthpx || 'auto'
+  return item.responses.map((response, i) => {
+    const responseHeight = response.height || uiStyles.heightpx || 'auto'
+    const responseWidth = response.width || uiStyles.widthpx || 'auto'
 
-          return (
-            <Draggable
-              response={response}
-              responseHeight={responseHeight}
-              responseWidth={responseWidth}
-              key={i}
-              index={getIndex(i)}
-              background={item.background}
-              showDashedBorder={get(
-                item,
-                'responseLayout.showdashedborder',
-                false
-              )}
-              transparentBackground={get(
-                item,
-                'responseLayout.transparentbackground',
-                false
-              )}
-              showBorder={get(item, 'responseLayout.showborder', false)}
-              onDragStop={_dragStop(i)}
-              onDrag={(evt, d) => handleDragging(d)}
-              onResize={_resize(i)}
-              onDelete={_delete(response.id)}
-              onClick={_click(i)}
-              showIndex={showIndex}
-              style={{
-                pointerEvents: disable ? 'none' : 'auto',
-              }}
-            />
-          )
-        })}
-      </Droppable>
-    </DndContext>
-  )
+    return (
+      <Draggable
+        response={response}
+        responseHeight={responseHeight}
+        responseWidth={responseWidth}
+        key={i}
+        index={getIndex(i)}
+        background={item.background}
+        showDashedBorder={get(item, 'responseLayout.showdashedborder', false)}
+        transparentBackground={get(
+          item,
+          'responseLayout.transparentbackground',
+          false
+        )}
+        showBorder={get(item, 'responseLayout.showborder', false)}
+        onDragStop={_dragStop(i)}
+        onDrag={(evt, d) => handleDragging(d)}
+        onResize={_resize(i)}
+        onDelete={_delete(response.id)}
+        onClick={_click(i)}
+        showIndex={showIndex}
+        style={{
+          pointerEvents: disable ? 'none' : 'auto',
+        }}
+      />
+    )
+  })
 }
 
 DropArea.propTypes = {

@@ -254,7 +254,6 @@ const AlignmentRow = ({
      */
     let _subject = defaultInterests?.subject
     _subject = (Array.isArray(_subject) ? _subject[0] : _subject) || ''
-
     if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
       const testSubject = testSelectedSubjects?.length
         ? testSelectedSubjects[0]

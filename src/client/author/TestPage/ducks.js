@@ -353,6 +353,11 @@ export const TOGGLE_PENALTY_ON_USING_HINTS =
   '[tests] toggle penalty on using hints'
 export const SET_ENABLE_AUDIO_RESONSE_QUESTION =
   '[tests] set enable audio response question'
+export const GET_YOUTUBE_THUMBNAIL_REQUEST =
+  '[test] get youtube thumbnail request'
+export const GET_YOUTUBE_THUMBNAIL_SUCCESS =
+  '[test] get youtube thumbnail success'
+
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -451,6 +456,9 @@ export const setShowRegradeConfirmPopupAction = createAction(
 export const setShowUpgradePopupAction = createAction(SET_SHOW_UPGRADE_POPUP)
 
 export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
+export const getYoutubeThumbnailAction = createAction(
+  GET_YOUTUBE_THUMBNAIL_REQUEST
+)
 
 export const receiveTestByIdAction = (
   id,
@@ -660,6 +668,11 @@ export const defaultTestTypeProfilesSelector = createSelector(
 export const getDefaultThumbnailSelector = createSelector(
   stateSelector,
   (state) => state.thumbnail
+)
+
+export const getYoutubeThumbnailSelector = createSelector(
+  stateSelector,
+  (state) => state.ytThumbnail
 )
 
 export const getlastUsedCollectionListSelector = createSelector(
@@ -1137,6 +1150,7 @@ const initialState = {
     isLoading: true,
   },
   hasPenaltyOnUsingHints: false,
+  ytThumbnail: '',
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1783,6 +1797,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         enableAudioResponseQuestion: payload,
+      }
+    case GET_YOUTUBE_THUMBNAIL_SUCCESS:
+      return {
+        ...state,
+        ytThumbnail: payload,
       }
     default:
       return state
@@ -4063,6 +4082,20 @@ function* updateTestSettingRequestSaga({ payload }) {
     notification({ type: 'error', msg: errorMessage })
   }
 }
+function* getYoutubeThumbnailRequestSaga({ payload }) {
+  try {
+    const result = yield call(testsApi.getYoutubeThumbnail, payload)
+    yield put({
+      type: GET_YOUTUBE_THUMBNAIL_SUCCESS,
+      payload: result.cdnLocation,
+    })
+  } catch (err) {
+    Sentry.captureException(err)
+    const errorMessage =
+      err?.response?.data?.message || 'Failed to get thumbnail'
+    notification({ type: 'error', msg: errorMessage })
+  }
+}
 
 export function* watcherSaga() {
   yield all([
@@ -4105,5 +4138,6 @@ export function* watcherSaga() {
     takeLatest(SAVE_TEST_SETTINGS, saveTestSettingsSaga),
     takeLatest(DELETE_TEST_SETTING_REQUEST, deleteTestSettingRequestSaga),
     takeLatest(UPDATE_TEST_SETTING_REQUEST, updateTestSettingRequestSaga),
+    takeLatest(GET_YOUTUBE_THUMBNAIL_REQUEST, getYoutubeThumbnailRequestSaga),
   ])
 }

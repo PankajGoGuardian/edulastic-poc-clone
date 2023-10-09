@@ -653,3 +653,15 @@ export const getItemIdQuestionIdKey = ({ itemId, questionId }) => {
 
 export const hasUnsavedAiItems = (itemGroups = []) =>
   itemGroups.some(({ items }) => items.some(({ unsavedItem }) => unsavedItem))
+
+export const handlePreventKeyDown = (e) => {
+  const keyCode = window.event ? e.which : e.keyCode
+  // check ctrl + d and command + d key
+  if (
+    (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+    keyCode == 68
+  ) {
+    e?.preventDefault()
+    return false
+  }
+}

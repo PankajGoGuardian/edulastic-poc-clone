@@ -34,12 +34,37 @@ const IconStyles = { width: '20px', cursor: 'pointer' }
 
 const paginationStyles = { margin: '15px auto' }
 
+const SORT_ORDER = {
+  ascend: 'asc',
+  descend: 'desc',
+}
+
 const LicensesInvoiceTable = ({
   licensesData,
   handleViewLicense,
   openArchiveAlert,
   searchType,
+  fetchLicensesBySearchType,
+  setPage,
+  districtId,
+  setSortingData,
 }) => {
+  const onChange = (pagination, filters, sorter) => {
+    setSortingData(() => ({
+      sortBy: sorter.field,
+      sortOrder: SORT_ORDER[sorter.order],
+    }))
+    fetchLicensesBySearchType({
+      type: searchType,
+      page: 1,
+      limit: 10,
+      sortOrder: SORT_ORDER[sorter.order],
+      sortBy: sorter.field,
+      districtId,
+    })
+    setPage(1)
+  }
+
   const columns = [
     {
       title: 'Serial No',
@@ -61,6 +86,7 @@ const LicensesInvoiceTable = ({
     {
       title: 'Start Date',
       dataIndex: 'startDate',
+      sorter: true,
       render: (startDate) => (
         <span>{moment(startDate).format('DD MMM, YYYY')}</span>
       ),
@@ -68,6 +94,7 @@ const LicensesInvoiceTable = ({
     {
       title: 'End Date',
       dataIndex: 'endDate',
+      sorter: true,
       render: (endDate) => (
         <span>{moment(endDate).format('DD MMM, YYYY')}</span>
       ),
@@ -115,6 +142,7 @@ const LicensesInvoiceTable = ({
         dataSource={licensesData.map((el, index) => ({ ...el, index }))}
         pagination={false}
         bordered
+        onChange={onChange}
       />
     </>
   ) : null
@@ -173,6 +201,11 @@ const ManageSubscriptionsByLicenses = ({
     customerSuccessManager: '',
     opportunityId: '',
     notes: '',
+  })
+
+  const [sortingData, setSortingData] = useState({
+    sortBy: '',
+    sortOrder: '',
   })
 
   useEffect(() => {
@@ -249,6 +282,9 @@ const ManageSubscriptionsByLicenses = ({
       type: searchType,
       page: pageNo,
       limit: 10,
+      sortOrder: sortingData.sortOrder,
+      sortBy: sortingData.sortBy,
+      districtId: fieldData.districtId,
     })
   }
   const handleViewLicense = (licenseIds, districtId, userId) => {
@@ -376,6 +412,10 @@ const ManageSubscriptionsByLicenses = ({
         handleDeleteLicense={handleDeleteLicense}
         openArchiveAlert={openArchiveAlert}
         searchType={searchType}
+        fetchLicensesBySearchType={fetchLicensesBySearchType}
+        setPage={setPage}
+        districtId={fieldData.districtId}
+        setSortingData={setSortingData}
       />
       <Pagination
         hideOnSinglePage

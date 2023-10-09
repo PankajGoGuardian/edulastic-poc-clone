@@ -76,44 +76,11 @@ const TimedTestTimer = ({
     db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
   )
   const currentAssignmentTimeRef = useRef(null)
-
-  const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
-  const updateFireStoreCollection = () => {
-    if (docRef && utaId && currentAssignmentTime && currentAssignmentTime > 0) {
-      if (docRef.current) {
-        docRef.current.get().then((snapshot) => {
-          const { timeSpent = 0 } = snapshot.data()
-          const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
-          docRef.current.update({
-            lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
-            timeSpent: Math.max(timeSpent, _syncOffset),
-          })
-        })
-      } else {
-        Sentry.captureException(
-          new Error(
-            `[Timed Assignment] Missing Doc Ref at time ${currentAssignmentTime}ms on uta ${utaId} and group ${groupId}`
-          )
-        )
-      }
-    } else if (currentAssignmentTime > 0 && !isAuthorPreview) {
-      Sentry.captureException(
-        new Error(
-          `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
-        )
-      )
-    }
-  }
-
   useEffect(() => {
     currentAssignmentTimeRef.current = currentAssignmentTime
-    window.addEventListener('beforeunload', updateFireStoreCollection)
-
-    return () => {
-      window.removeEventListener('beforeunload', updateFireStoreCollection)
-    }
   }, [currentAssignmentTime])
 
+  const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
   useEffect(() => {
     let unsubscribe = () => {}
     const updateDocOnUnmount = () => {
@@ -240,7 +207,30 @@ const TimedTestTimer = ({
   }, TIMER_INTERVAL)
 
   useInterval(() => {
-    updateFireStoreCollection()
+    if (docRef && utaId && currentAssignmentTime && currentAssignmentTime > 0) {
+      if (docRef.current) {
+        docRef.current.get().then((snapshot) => {
+          const { timeSpent = 0 } = snapshot.data()
+          const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
+          docRef.current.update({
+            lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
+            timeSpent: Math.max(timeSpent, _syncOffset),
+          })
+        })
+      } else {
+        Sentry.captureException(
+          new Error(
+            `[Timed Assignment] Missing Doc Ref at time ${currentAssignmentTime}ms on uta ${utaId} and group ${groupId}`
+          )
+        )
+      }
+    } else if (currentAssignmentTime > 0 && !isAuthorPreview) {
+      Sentry.captureException(
+        new Error(
+          `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
+        )
+      )
+    }
   }, SYNC_INTERVAL)
 
   return (

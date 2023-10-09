@@ -2,6 +2,10 @@ import React from 'react'
 import next from 'immer'
 import { get, groupBy, map, maxBy, sumBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
+import {
+  getScoreLabel,
+  getScoreLabelNoSuffix,
+} from '@edulastic/constants/const/dataWarehouse'
 import { downloadCSV } from '../../../../../common/util'
 import {
   analyseBykeys,
@@ -109,30 +113,23 @@ export const getTableColumns = (
         )
       }
     }
-    Object.assign(
-      _columns.find((c) => c.key === 'AvgPre'),
-      {
-        render: (value) =>
-          testInfo.preTestInfo.isExternal ||
-          analyseByKey === analyseBykeys.RAW_SCORE
-            ? value.preTestData.avgScore
-            : `${value.preTestData.avgScorePercentage}%`,
-      }
-    )
-    Object.assign(
-      _columns.find((c) => c.key === 'AvgPost'),
-      {
-        render: (value) =>
-          testInfo.postTestInfo.isExternal ||
-          analyseByKey === analyseBykeys.RAW_SCORE
-            ? value.postTestData.avgScore
-            : `${value.postTestData.avgScorePercentage}%`,
-      }
-    )
+
+    // download csv columns
+    const preAvgScoreColumn = _columns.find((c) => c.key === 'AvgPre')
+    preAvgScoreColumn.render = ({ preTestData }) =>
+      analyseBy === analyseBykeys.RAW_SCORE
+        ? getScoreLabelNoSuffix(preTestData.avgScore, preTestData)
+        : getScoreLabel(preTestData.normScore, preTestInfo)
+
+    const postAvgScoreColumn = _columns.find((c) => c.key === 'AvgPost')
+    postAvgScoreColumn.render = ({ postTestData }) =>
+      analyseBy === analyseBykeys.RAW_SCORE
+        ? getScoreLabelNoSuffix(postTestData.avgScore, postTestData)
+        : getScoreLabel(postTestData.normScore, postTestInfo)
 
     _columns.forEach((item) => {
       if (item.key === sortKey) {
-        Object.assign(item, { sortOrder })
+        item.sortOrder = sortOrder
       }
     })
   })

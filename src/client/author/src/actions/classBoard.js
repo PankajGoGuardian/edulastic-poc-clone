@@ -49,6 +49,7 @@ import {
   REPLACE_ORIGINAL_ITEM,
   SET_CORRECT_ITEM_UPDATE_PROGRESS,
   SET_SILENT_CLONING,
+  SET_REALTIME_ATTEMPT_DATA,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -290,3 +291,7 @@ export const correctItemUpdateProgressAction = createAction(
 )
 
 export const setSilentCloningAction = createAction(SET_SILENT_CLONING)
+
+export const setRealTimeAttemptDataAction = createAction(
+  SET_REALTIME_ATTEMPT_DATA
+)

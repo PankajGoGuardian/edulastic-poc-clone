@@ -17,10 +17,6 @@ export const AdministrationLevelOptions = [
     key: 'Admin 3',
     title: 'Admin 3',
   },
-  {
-    key: 'Admin 4',
-    title: 'Admin 4',
-  },
 ]
 
 const generateDataStructure = (academicFeedTypes, nonAcademicFeedTypes) => {

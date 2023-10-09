@@ -69,6 +69,7 @@ const YouTubePlayer = React.forwardRef(
         playerVars,
         embedConfig,
       })
+      console.log(ref?.current, 'video ref')
     }
     useEffect(() => {
       if (document.getElementById(TAG_ID) === null) {

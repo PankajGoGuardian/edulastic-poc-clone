@@ -14,6 +14,7 @@ import { changePreviewAction } from '../../../author/src/actions/view'
 import { getSnapItemsByIdSelector } from '../../selectors/snapItems'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { replaceVariables, updateVariables } from '../../utils/variables'
+import { handlePreventKeyDown } from '../../utils/helpers'
 
 import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions'
 
@@ -39,6 +40,18 @@ class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext
 
   static contextType = AnswerContext
+
+  componentDidMount() {
+    if (window) {
+      window.addEventListener('keydown', handlePreventKeyDown)
+    }
+  }
+
+  componentWillUnmount() {
+    if (window) {
+      window.removeEventListener('keydown', handlePreventKeyDown)
+    }
+  }
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props

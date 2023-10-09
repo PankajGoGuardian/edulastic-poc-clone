@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd'
+import { Col, Row, Tooltip } from 'antd'
 import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
@@ -10,6 +10,7 @@ import { StyledH3, ColoredCell } from '../../../../../common/styled'
 import { downloadCSV } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
+import { CompareByContainer } from '../../../../dataWarehouseReports/common/components/styledComponents'
 
 const { analyseByOptions, getDisplayValue } = reportUtils.peerPerformance
 
@@ -157,6 +158,15 @@ export const PeerPerformanceTable = ({
         item.sortOrder = sortOrder
       }
     })
+
+    const dimensionCol = arr.find(({ key }) => key === 'dimension')
+    dimensionCol.render = (data) => (
+      <Tooltip title={data}>
+        <CompareByContainer className="dimension-name">
+          {data}
+        </CompareByContainer>
+      </Tooltip>
+    )
 
     if (analyseBy === analyseByOptions.scorePerc) {
       arr[arr.length - 1].render = colorCell('fill', 'dimensionAvg')

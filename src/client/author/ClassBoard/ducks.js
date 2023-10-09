@@ -101,6 +101,7 @@ import {
   CORRECT_ITEM_UPDATE_REQUEST,
   TOGGLE_REGRADE_MODAL,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+  SET_REALTIME_ATTEMPT_DATA,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -113,6 +114,7 @@ import {
   setProgressStatusAction,
   updateServerTimeAction,
   updateAdditionalDataAction,
+  gradebookTestItemAddAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
@@ -142,6 +144,35 @@ const { testContentVisibility, ATTEMPT_WINDOW_TYPE } = test
 export const LCB_LIMIT_QUESTION_PER_VIEW = 20
 export const SCROLL_SHOW_LIMIT = 30
 
+export const stateTestActivitySelector = (state) =>
+  state.author_classboard_testActivity
+
+export const getTestItemsDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => get(state, 'data.testItemsData')
+)
+
+export const getTestItemsByIdSelector = createSelector(
+  getTestItemsDataSelector,
+  (testItems) => keyBy(testItems, '_id')
+)
+
+export const getAdditionalDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.additionalData
+)
+
+export const getIsItemContentHiddenSelector = createSelector(
+  getAdditionalDataSelector,
+  getUserRole,
+  (additionalData, userRole) => {
+    if (!additionalData) return false
+    const hiddenTestContentVisibilty = getManualContentVisibility(
+      additionalData
+    )
+    return hiddenTestContentVisibilty && userRole === roleuser.TEACHER
+  }
+)
 function* receiveGradeBookSaga({ payload }) {
   try {
     const entities = yield call(classBoardApi.gradebook, payload)
@@ -942,6 +973,26 @@ function* correctItemUpdateSaga({ payload }) {
   }
 }
 
+function* setRealTimeAttemptDataSaga({ payload }) {
+  try {
+    const isItemContentHidden = yield select(getIsItemContentHiddenSelector)
+    const testItemsById = yield select(getTestItemsByIdSelector)
+    const result = payload.map((item) => {
+      const currentItem = testItemsById[item.testItemId]
+      if (currentItem && currentItem.autoGrade && isItemContentHidden) {
+        return {
+          ...item,
+          isItemContentHidden,
+        }
+      }
+      return item
+    })
+    yield put(gradebookTestItemAddAction(result))
+  } catch (e) {
+    console.log('error', e)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -973,13 +1024,12 @@ export function* watcherSaga() {
       RELOAD_LCB_DATA_IN_STUDENT_VIEW,
       reloadLcbDataInStudentView
     ),
+    yield takeEvery(SET_REALTIME_ATTEMPT_DATA, setRealTimeAttemptDataSaga),
   ])
 }
 
 export const stateGradeBookSelector = (state) =>
   state.author_classboard_gradebook
-export const stateTestActivitySelector = (state) =>
-  state.author_classboard_testActivity
 export const stateClassResponseSelector = (state) => state.classResponse
 export const stateStudentResponseSelector = (state) => state.studentResponse
 export const stateClassStudentResponseSelector = (state) =>
@@ -1369,11 +1419,6 @@ export const getAllStudentsList = createSelector(
   (state) => get(state, 'data.students', [])
 )
 
-export const getAdditionalDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => state.additionalData
-)
-
 export const getScoringTypeSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'scoringType', '')
@@ -1489,15 +1534,20 @@ export const getSortedTestActivitySelector = createSelector(
 
 export const getSortedAndContentHiddenActivitySelector = createSelector(
   getSortedTestActivitySelector,
-  (state) =>
-    state
-      .filter((uta) => uta.UTASTATUS === testActivityStatus.SUBMITTED)
-      ?.map((item) => ({
-        ...item,
-        questionActivities: item.questionActivities?.filter(
-          (uqa) => !uqa.isItemContentHidden
-        ),
-      }))
+  getTestItemsByIdSelector,
+  getIsItemContentHiddenSelector,
+  (testActivities, testItemsById, isItemContentHidden) => {
+    if (!isItemContentHidden) {
+      return testActivities
+    }
+    return testActivities?.map((item) => ({
+      ...item,
+      questionActivities: item.questionActivities?.filter(
+        (uqa) =>
+          !uqa.isItemContentHidden && !testItemsById[uqa.testItemId]?.autoGrade
+      ),
+    }))
+  }
 )
 
 export const getGradeBookSelector = createSelector(
@@ -1747,11 +1797,6 @@ export const showPasswordButonSelector = createSelector(
   }
 )
 
-export const getTestItemsDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => get(state, 'data.testItemsData')
-)
-
 export const getTestItemsOrderSelector = createSelector(
   stateTestActivitySelector,
   (state) =>
@@ -1943,18 +1988,6 @@ export const getShowCorrectItemButton = createSelector(
       )
     }
     return false
-  }
-)
-
-export const getIsItemContentHiddenSelector = createSelector(
-  getAdditionalDataSelector,
-  getUserRole,
-  (additionalData, userRole) => {
-    if (!additionalData) return false
-    const hiddenTestContentVisibilty = getManualContentVisibility(
-      additionalData
-    )
-    return hiddenTestContentVisibilty && userRole === roleuser.TEACHER
   }
 )
 

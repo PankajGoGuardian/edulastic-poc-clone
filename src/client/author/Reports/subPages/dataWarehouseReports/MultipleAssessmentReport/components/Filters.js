@@ -114,7 +114,11 @@ const MultipleAssessmentReportFilters = ({
 
   useEffect(() => {
     if (reportId) {
-      fetchFiltersDataRequest({ reportId })
+      fetchFiltersDataRequest({
+        reportId,
+        externalTestTypesRequired: true,
+        externalTestsRequired: true,
+      })
       setFilters({ ...filters, ...search })
     } else {
       const termId =

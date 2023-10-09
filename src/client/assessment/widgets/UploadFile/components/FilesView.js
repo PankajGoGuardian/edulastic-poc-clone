@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import { FlexContainer } from '@edulastic/common'
@@ -13,15 +13,27 @@ const FilesView = ({
   disableLink,
   openAttachmentViewModal = false,
 }) => {
+  const contRef = useRef()
   if (isEmpty(files)) {
     return null
   }
 
+  useEffect(() => {
+    if (contRef.current) {
+      setTimeout(() => {
+        contRef.current?.setAttribute('tabindex', 0)
+        contRef.current.focus()
+      }, 10)
+    }
+  }, [contRef])
+
   return (
     <FlexContainer
+      ref={contRef}
       flexWrap="wrap"
       justifyContent="flex-start"
       mt={mt}
+      tabIndex="0"
       width="100%"
     >
       {files.map((f, i) => (

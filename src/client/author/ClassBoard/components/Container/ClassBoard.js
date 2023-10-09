@@ -1106,9 +1106,7 @@ class ClassBoard extends Component {
     const allUserQuestionActivities = []
     testActivity.forEach(({ questionActivities = [] }) => {
       allUserQuestionActivities.push(
-        ...questionActivities.filter(
-          (item) => !item.notStarted && !item.isItemContentHidden
-        )
+        ...questionActivities.filter((item) => !item.isItemContentHidden)
       )
     })
     const [firstQuestion] = allUserQuestionActivities

@@ -220,7 +220,7 @@ const getTableColumns = (
                 ? currentTest.averageScore
                 : currentTest.averageScorePercentage
               averageScoreRender = isNumber(normScore)
-                ? round(normScore)
+                ? getScoreLabel(round(normScore), currentTest)
                 : normScore
             }
             return `${averageScoreRender}`
@@ -271,14 +271,13 @@ const getDownloadCsvColumnHeadersFunc = (
       externalTestType,
       averageScore,
     } = assessment
+    const scoreLabel = isNumber(averageScore)
+      ? getScoreLabel(round(averageScore), { externalTestType })
+      : averageScore
     dowloadCsvTableColumnHeaders.dates.push(formatDate(assessmentDate))
     dowloadCsvTableColumnHeaders.testType.push(externalTestType || testType)
     dowloadCsvTableColumnHeaders.totalStudents.push(`${totalGraded}`)
-    dowloadCsvTableColumnHeaders.avgScore.push(
-      `${isNumber(averageScore) ? round(averageScore) : averageScore}${
-        assessment.externalTestType ? '' : '%'
-      }`
-    )
+    dowloadCsvTableColumnHeaders.avgScore.push(scoreLabel)
   }
 
   overallAssessmentsData.forEach((assessment) => {

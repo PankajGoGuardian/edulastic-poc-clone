@@ -1,12 +1,23 @@
 import React, { useState } from 'react'
 import { CustomModalStyled, FlexContainer } from '@edulastic/common'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { TextWrapper } from '../../../../../styledComponents'
 import { AIFeatureContentWrapper, Image, TextLink } from './styled'
+import { navigationState } from '../../../../../../../src/constants/navigation'
 
-const AIFeaturedTiles = ({ onVideoQuizClick }) => {
+const AIFeaturedTiles = ({
+  onVideoQuizClick,
+  videoQuizPath,
+  isVideoQuizAndAIEnabled,
+  history,
+}) => {
   const [isModelOpen, setIsModelOpen] = useState(false)
-
+  const handelClick = () => {
+    history.push({
+      pathname: '/author/subscription',
+      state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+    })
+  }
   const title = 'Get Started with VideoQuiz'
   const quickTourLink = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
   return (
@@ -43,27 +54,48 @@ const AIFeaturedTiles = ({ onVideoQuizClick }) => {
         </TextWrapper>
         <FlexContainer justifyContent="flex-start" flexWrap="wrap">
           <FlexContainer flexDirection="column" alignItems="flex-end">
-            <a onClick={onVideoQuizClick}>
+            {isVideoQuizAndAIEnabled ? (
+              <Link onClick={onVideoQuizClick} to={videoQuizPath}>
+                <Image
+                  alt="videoquiz"
+                  src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"
+                  width="240px"
+                />
+              </Link>
+            ) : (
               <Image
                 alt="videoquiz"
                 src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"
                 width="240px"
+                onClick={handelClick}
+                style={{ cursor: 'pointer' }}
               />
-            </a>
+            )}
             <TextLink onClick={() => setIsModelOpen(true)}>
               WATCH QUICK TOUR
             </TextLink>
           </FlexContainer>
-          <Link to="/author/tests/select?open=aiquiz">
+          {isVideoQuizAndAIEnabled ? (
+            <Link to="/author/tests/select?open=aiquiz">
+              <Image
+                alt="aiquiz"
+                src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
+                width="240px"
+              />
+            </Link>
+          ) : (
             <Image
               alt="aiquiz"
               src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
               width="240px"
+              onClick={handelClick}
+              style={{ cursor: 'pointer' }}
             />
-          </Link>
+          )}
         </FlexContainer>
       </AIFeatureContentWrapper>
     </>
   )
 }
-export default AIFeaturedTiles
+
+export default withRouter(AIFeaturedTiles)

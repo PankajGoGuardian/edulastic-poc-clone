@@ -192,7 +192,7 @@ export const buildDrillDownUrl = ({
       arrayFormat: 'comma',
     })}`
   }
-  return `${reportUrl}?${qs.stringify(_filters)}`
+  return `${reportUrl}?${qs.stringify(_filters, { arrayFormat: 'comma' })}`
 }
 
 export const getHasAvailableExternalTestTypes = (testTypes = []) => {

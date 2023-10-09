@@ -421,7 +421,7 @@ const VideoPreview = ({
                   playsinline: 1,
                   api_key: appConfig.edYouTubePlayerKey,
                 },
-                embedConfig: { contentFilter: 1 },
+                embedConfig: { contentFilter: 2 },
               },
             }}
             onPause={onPause}

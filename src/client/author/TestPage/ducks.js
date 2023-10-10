@@ -2232,7 +2232,7 @@ export function* receiveTestByIdSaga({ payload }) {
     const userRole = yield select(getUserRole)
     const assignSettings = getAssignSettings({
       userRole,
-      testEntity,
+      entity: testEntity,
       isPlaylist: payload.isPlaylist,
       features,
     })

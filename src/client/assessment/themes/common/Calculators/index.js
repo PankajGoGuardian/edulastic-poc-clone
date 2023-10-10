@@ -12,6 +12,7 @@ const CalculatorsWithResources = ({ calcProvider, calcTypes, changeTool }) => (
       <WithResources
         resources={[
           AppConfig.desmosPath,
+          AppConfig.matrixCalculatorPath,
           AppConfig.geoGebraPath,
           AppConfig.jqueryPath,
           AppConfig.eduScientificCalcJsPath,

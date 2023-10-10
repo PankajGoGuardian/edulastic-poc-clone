@@ -7,6 +7,7 @@ import { GraphingDesmosCalculator } from '../components/GraphingDesmosCalculator
 import { ScientificEdulasticCalculator } from '../components/ScientificEdulasticCalculator'
 import { GraphingGeogebraCalculator } from '../components/GraphingGeogebraCalculator'
 import { ScientificGeogebraCalculator } from '../components/ScientificGeogebraCalculator'
+import { MatrixDesmosCalculator } from '../components/MatrixDesmosCalculator'
 import {
   CALC_MAP,
   CALC_MODES,
@@ -40,6 +41,8 @@ const getCalculatorComponent = (calcMode) => {
     case CALC_MODES.GRAPHING_DESMOS:
     case CALC_MODES.GRAPHING_STATE_DESMOS:
       return GraphingDesmosCalculator
+    case CALC_MODES.MATRIX_DESMOS:
+      return MatrixDesmosCalculator
     default:
       return () => null
   }

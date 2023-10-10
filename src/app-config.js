@@ -15,6 +15,7 @@ const zwibbler2Path = `${thirdPartyLibPath}/zwibbler/v2`
 const katexPath = `${thirdPartyLibPath}/katex/v0.11.1`
 const ttsChoicesPath = `${cdnURI}/tts`
 const desmosPath = `${thirdPartyLibPath}/desmos/v1.7.3/calculator.js`
+const matrixCalculatorPath = `${thirdPartyLibPath}/desmos/v1.8.0/matrix-calculator.js`
 const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0/deployggb.js`
 const sentryWhiteListURLRegex = /edulastic\.com|snapwiz\.net/
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
@@ -244,6 +245,7 @@ export default {
   sentryWhiteListURLRegex,
   geoGebraPath,
   desmosPath,
+  matrixCalculatorPath,
   katexPath,
   mathquillPath,
   zwibbler2Path,

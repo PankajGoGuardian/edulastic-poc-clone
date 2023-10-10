@@ -108,3 +108,17 @@ export const getFormattedName = (item) => {
         .join(' ')
     : ''
 }
+
+export const getChartYAxisReferenceValue = (chartData, analyseBy) => {
+  let dimensionAvgSum = 0
+  let validDimensionsCount = 0
+  chartData.forEach(({ dimensionAvg }) => {
+    dimensionAvgSum += dimensionAvg
+    // we will not consider dimension entry having null dimensionAvg
+    validDimensionsCount += dimensionAvg === null ? 0 : 1
+  })
+  const referenceAverage = dimensionAvgSum / validDimensionsCount
+  return analyseBy === analyseByOptions.scorePerc
+    ? (referenceAverage || 0).toFixed(0)
+    : referenceAverage
+}

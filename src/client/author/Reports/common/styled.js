@@ -894,7 +894,7 @@ export const StyledSpan = styled.span`
   background-color: ${({ color }) => color};
   padding: 5px;
   flex-wrap: nowrap;
-  color: ${({ color }) => getFGColor(color)};
+  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
   width: ${({ value }) => value}%;
   font-size: 11px;
 `

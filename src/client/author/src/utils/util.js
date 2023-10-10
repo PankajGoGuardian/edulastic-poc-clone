@@ -55,7 +55,5 @@ export function pickFGColor(fgColorList, bgColorStr) {
   const mostVisibleFGColor = maxBy(fgColorList, (fgColor) =>
     bgColor.contrast(Color(fgColor))
   )
-  if (bgColor.contrast(Color(mostVisibleFGColor)) < 7)
-    console.warn('Contrast lesser than WCAG standard')
   return mostVisibleFGColor
 }

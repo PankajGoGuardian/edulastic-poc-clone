@@ -139,7 +139,7 @@ export const getTableColumns = ({
             ...b,
             color: RISK_BAND_COLOR_INFO[b.bandLabel],
           })) || []
-        return <HorizontalBar data={academicRisk} />
+        return <HorizontalBar data={academicRisk} dynamicColor />
       }
 
       const attendanceRiskColumnIdx = _columns.findIndex(
@@ -151,7 +151,7 @@ export const getTableColumns = ({
             ...b,
             color: RISK_BAND_COLOR_INFO[b.bandLabel],
           })) || []
-        return <HorizontalBar data={attendanceRisk} />
+        return <HorizontalBar data={attendanceRisk} dynamicColor />
       }
 
       if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {

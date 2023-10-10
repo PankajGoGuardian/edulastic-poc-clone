@@ -212,7 +212,7 @@ const CollectionsTable = ({
         ) : (
           <>
             <PermissionsButton
-              data-cy="permission-button"
+              data-cy={`permissionButton-${record._id}`}
               onClick={() =>
                 handlePermissionClick({
                   itemBankName: record.name,

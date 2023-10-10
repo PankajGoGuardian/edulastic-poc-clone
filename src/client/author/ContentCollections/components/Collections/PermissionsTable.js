@@ -239,6 +239,7 @@ const PermissionsTable = ({
                 <EduButton
                   isGhost
                   height="34px"
+                  data-cy="addPermissionButton"
                   onClick={() => setPermissionModalVisibility(true)}
                 >
                   Add Permission

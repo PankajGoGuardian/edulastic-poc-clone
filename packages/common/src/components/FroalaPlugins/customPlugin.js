@@ -1,6 +1,7 @@
 /* eslint-disable */
 import uuid from 'uuid/v4'
 import { canInsert } from '../../helpers'
+import { toolbarMapping } from './helpers'
 
 function customPlugin(FroalaEditor) {
   // register custom math buttton
@@ -252,7 +253,7 @@ function customPlugin(FroalaEditor) {
         var $button = $(this)
         var command = $button.data('cmd')
         var title = $button.attr('title')
-
+        console.log('command', command)
         $button.attr({
           role: 'button',
           'aria-label': title,
@@ -264,14 +265,20 @@ function customPlugin(FroalaEditor) {
     // Add keyboard event handlers.
     function addKeyboardHandlers() {
       var toolbar = editor.$tb[0]
+      let command = ''
       toolbar.addEventListener('keydown', function (e) {
         if (e.keyCode === FroalaEditor.KEYCODE.ENTER) {
           e.preventDefault()
           const $focusedButton = editor.$tb.find('.fr-command:focus')
           if ($focusedButton.length) {
-            const command = $focusedButton[0].getAttribute('data-cmd')
+            command = $focusedButton[0].getAttribute('data-cmd')
             // Execute the command.
-            if (command && editor.commands[command]) {
+            console.log('editor.....................', command, editor)
+            if (Object.keys(toolbarMapping).includes(command)) {
+              editor[toolbarMapping[command]]?.showInsertPopup()
+              const $input = editor.$tb.find('.fr-popup input[type="file"]')
+              if ($input.length) $input[0].click()
+            } else if (command && editor.commands[command]) {
               editor.commands[command]()
             }
           }

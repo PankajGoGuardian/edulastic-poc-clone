@@ -64,3 +64,10 @@ export const isContainsMathContent = (node) => {
   }
   return false
 }
+
+export const toolbarMapping = {
+  insertImage: 'image',
+  insertLink: 'link',
+  insertTable: 'table',
+  insertVideo: 'video',
+}

@@ -1,4 +1,5 @@
 import { get, maxBy } from 'lodash'
+import { black, white } from '@edulastic/colors'
 import Color from 'color'
 
 export const convertCollectionOptionsToArray = (options = []) => {
@@ -36,14 +37,6 @@ export const getAllRubricNames = (item = {}) => {
 }
 
 /**
- * Get the foreground color which is most visible on the background color
- * @param {string} bgColorStr - Background color string. Could be hex, rgb, rgba, hsl, hsla or named color
- */
-export function getFGColor(bgColorStr) {
-  return Color(bgColorStr).isLight() ? '#000000' : '#FFFFFF'
-}
-
-/**
  * Get the most visible foreground color from the list of foreground colors on the background color
  * @template {string} T
  * @param {T[]} fgColorList list of foreground colors to choose from
@@ -56,4 +49,12 @@ export function pickFGColor(fgColorList, bgColorStr) {
     bgColor.contrast(Color(fgColor))
   )
   return mostVisibleFGColor
+}
+
+/**
+ * Get the foreground color which is most visible on the background color
+ * @param {string} bgColorStr - Background color string. Could be hex, rgb, rgba, hsl, hsla or named color
+ */
+export function getFGColor(bgColorStr) {
+  return pickFGColor([black, white], bgColorStr)
 }

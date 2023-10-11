@@ -153,16 +153,6 @@ export const validationCreators = {
   [SHORT_TEXT]: updateShortText,
 }
 
-export const createSection = (qIndex = 0, title = '') => ({
-  id: uuid(),
-  type: 'sectionLabel',
-  stimulus: 'Section Label - Text',
-  width: 0,
-  height: 0,
-  title,
-  qIndex,
-})
-
 export const formatStandard = (standard = {}) => {
   const formattedStandard = pick(standard, [
     '_id',

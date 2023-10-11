@@ -31,7 +31,6 @@ import {
   AddQuestionIcon,
   QuestionTypes,
   ContentWrapper,
-  AddButton,
   CustomStyleBtn2,
 } from '../styled-components/AddQuestion'
 import { formatStandard } from '../utils/questionsHelpers'
@@ -118,7 +117,6 @@ class AddQuestion extends React.Component {
     const { bulkModalVisible } = this.state
     const {
       onAddQuestion,
-      onAddSection,
       minAvailableQuestionIndex,
       enableAudioResponseQuestion,
       disableAutoGenerate,
@@ -194,7 +192,7 @@ class AddQuestion extends React.Component {
               <CustomStyleBtn2
                 margin="0px"
                 height="32px"
-                width="154px"
+                width="100%"
                 onClick={this.toggleBulkModal}
                 data-cy="addBulk"
                 disabled={disableAutoGenerate}
@@ -203,9 +201,6 @@ class AddQuestion extends React.Component {
                 Auto Generate
               </CustomStyleBtn2>
             </Tooltip>
-            <AddButton onClick={onAddSection} data-cy="addSection" width="40%">
-              Add Section
-            </AddButton>
           </QuestionTypes>
           <AddBulkModal
             visible={bulkModalVisible}
@@ -223,7 +218,6 @@ class AddQuestion extends React.Component {
 AddQuestion.propTypes = {
   minAvailableQuestionIndex: PropTypes.number.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
-  onAddSection: PropTypes.func.isRequired,
   disableAutoGenerate: PropTypes.bool.isRequired,
   questions: PropTypes.array.isRequired,
 }

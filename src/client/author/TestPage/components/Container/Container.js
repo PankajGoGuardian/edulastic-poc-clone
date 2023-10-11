@@ -424,11 +424,15 @@ class Container extends PureComponent {
         test._id !== prevProps.test._id &&
         test.isDocBased
       ) {
+        const { testCategory = '' } = test
         const testItem = test.itemGroups?.[0].items?.[0] || {}
         const testItemId =
           typeof testItem === 'object' ? testItem._id : testItem
         if (testItemId) {
-          receiveItemDetailById(testItemId, { testId: test._id })
+          receiveItemDetailById(testItemId, {
+            testId: test._id,
+            isVideoQuiz: testCategory === testCategoryTypes.VIDEO_BASED,
+          })
         }
       }
       const { editAssigned = false } = history.location.state || {}

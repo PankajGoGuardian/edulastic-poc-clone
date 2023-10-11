@@ -1118,7 +1118,9 @@ export function reducer(state = initialState, { type, payload }) {
 
 function* receiveItemSaga({ payload }) {
   try {
-    const data = yield call(testItemsApi.getById, payload.id, payload.params)
+    const { isVideoQuiz = false } = payload.params
+    console.log('payload', payload)
+    const data = yield call(testItemsApi.getById, payload.id, _omit(payload.params, 'isVideoQuiz'))
     let questions = (data.data && data.data.questions) || []
     const questionsArr = (data.data && data.data.questions) || []
     let resources = (data.data && data.data.resources) || []
@@ -1133,6 +1135,9 @@ function* receiveItemSaga({ payload }) {
     }
 
     questions = [...questions, ...resources]
+    if (isVideoQuiz) {
+      questions = questions.filter((question) => question?.type !== 'sectionLabel')
+    }
 
     // if there is only one question, set it as currentQuestionId, since
     // questionView will be loaded instead.

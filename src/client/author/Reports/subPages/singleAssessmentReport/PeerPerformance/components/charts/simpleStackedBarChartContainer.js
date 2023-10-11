@@ -88,7 +88,7 @@ export const SimpleStackedBarChartContainer = ({
   const getChartSpecifics = () => {
     let referenceLineY = 0
     if (chartData.length) {
-      referenceLineY = getChartYAxisReferenceValue(chartData)
+      referenceLineY = getChartYAxisReferenceValue(chartData, analyseBy)
     }
     if (analyseBy === analyseByOptions.scorePerc) {
       let yAxisLabel = 'Avg. Score %'

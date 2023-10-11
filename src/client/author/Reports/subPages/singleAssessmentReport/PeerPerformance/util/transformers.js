@@ -109,12 +109,16 @@ export const getFormattedName = (item) => {
     : ''
 }
 
-export const getChartYAxisReferenceValue = (chartData) => {
-  let sumTotalScore = 0
-  let sumTotalMaxScore = 0
-  chartData.forEach(({ dimensionMaxScore, dimensionTotalScore }) => {
-    sumTotalScore += dimensionTotalScore
-    sumTotalMaxScore += dimensionMaxScore
+export const getChartYAxisReferenceValue = (chartData, analyseBy) => {
+  let dimensionAvgSum = 0
+  let validDimensionsCount = 0
+  chartData.forEach(({ dimensionAvg }) => {
+    dimensionAvgSum += dimensionAvg
+    // we will not consider dimension entry having null dimensionAvg
+    validDimensionsCount += dimensionAvg === null ? 0 : 1
   })
-  return ((sumTotalScore / sumTotalMaxScore) * 100 || 0).toFixed(0)
+  const referenceAverage = dimensionAvgSum / validDimensionsCount
+  return analyseBy === analyseByOptions.scorePerc
+    ? (referenceAverage || 0).toFixed(0)
+    : referenceAverage
 }

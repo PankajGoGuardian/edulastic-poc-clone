@@ -1796,18 +1796,18 @@ function* googleSSOLogin({ payload }) {
       }
     }
     const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
-    if (res.reAuthGoogle) {
-      TokenStorage.storeInLocalStorage(
-        'payloadForUserData',
-        JSON.stringify(res)
-      )
-      window.location.href = '/auth/google'
-    } else {
-      if (isNewUser) {
-        yield call(segmentApi.trackTeacherSignUp, { user: res })
-      }
-      yield put(getUserDataAction(res))
-    }
+    // if (res.reAuthGoogle) {
+    //   TokenStorage.storeInLocalStorage(
+    //     'payloadForUserData',
+    //     JSON.stringify(res)
+    //   )
+    //   window.location.href = '/auth/google'
+    // } else {
+    //   if (isNewUser) {
+    //     yield call(segmentApi.trackTeacherSignUp, { user: res })
+    //   }
+    //   yield put(getUserDataAction(res))
+    // }
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'Google Login failed')
     if (e.status === 409) {

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
+import { sortBy, maxBy, uniqBy, isEmpty, keyBy, isEqual } from 'lodash'
 import produce from 'immer'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
@@ -141,37 +141,10 @@ class Questions extends React.Component {
   componentDidMount() {
     this.resetTimeSpentOnQuestion()
     console.log('componentDidMount')
-    const { setQuestionsById, annotations, setTestData, editMode } = this.props
+    const { editMode } = this.props
+    // editmode, not student, not view as student - add all checks
     if (editMode) {
-      const questionsSortedByTimeStamp = this.questionList
-      if (questionsSortedByTimeStamp?.length) {
-        const updatedQuestions = []
-        console.log('questionsSortedByTimeStamp', questionsSortedByTimeStamp)
-        questionsSortedByTimeStamp.forEach((question, index) => {
-          if (question.type !== 'sectionLabel') {
-            updatedQuestions.push({
-              ...question,
-              qIndex: index + 1,
-            })
-          }
-        })
-        console.log('updatedQuestions', updatedQuestions)
-        const updatedQuestionsKeyedById = keyBy(updatedQuestions, 'id')
-        setQuestionsById(updatedQuestionsKeyedById)
-        if (annotations?.length && !isEmpty(updatedQuestionsKeyedById)) {
-          console.log('updatedQuestionsKeyedById', updatedQuestionsKeyedById)
-          setTestData({
-            annotations: produce(annotations, (draft) => {
-              draft.forEach((_annotation) => {
-                if (_annotation.toolbarMode === 'question') {
-                  _annotation.qIndex =
-                    updatedQuestionsKeyedById[_annotation.questionId].qIndex
-                }
-              })
-            }),
-          })
-        }
-      }
+      this.updateQuestionsQIndex()
     }
   }
 
@@ -184,7 +157,6 @@ class Questions extends React.Component {
       videoQuizQuestionsToDisplay,
       studentWork,
       list,
-      setQuestionsById,
     } = this.props
 
     if (
@@ -236,11 +208,55 @@ class Questions extends React.Component {
       this.scrollToQuestion(videoQuizQuestionsToDisplay[0].questionId)
     }
 
-    // if (prevProps.list.length !== list.length) {
-    //   console.log('componentDidUpdate')
-    //   const questionsSortedByTimeStamp = this.questionList
-    //   setQuestionsById(questionsSortedByTimeStamp)
-    // }
+    if (editMode) {
+      const oldQuestionsIdIndexMap = {}
+      const newQuestionsIdIndexMap = {}
+      const oldQuestions = prevProps.list || []
+      const newQuestions = list || []
+      oldQuestions.forEach((question) => {
+        oldQuestionsIdIndexMap[question.id] = question.qIndex
+      })
+      newQuestions.forEach((question) => {
+        newQuestionsIdIndexMap[question.id] = question.qIndex
+      })
+      if (!isEqual(oldQuestionsIdIndexMap, newQuestionsIdIndexMap)) {
+        console.log('updated')
+        // console.log('oldQuestionsIdIndexMap', oldQuestionsIdIndexMap)
+        // console.log('newQuestionsIdIndexMap', newQuestionsIdIndexMap)
+        this.updateQuestionsQIndex()
+      }
+    }
+  }
+
+  updateQuestionsQIndex = () => {
+    const { setQuestionsById, annotations, setTestData } = this.props
+    const questionsSortedByTimeStamp = this.questionList
+    if (questionsSortedByTimeStamp?.length) {
+      const updatedQuestions = []
+      console.log('questionsSortedByTimeStamp', questionsSortedByTimeStamp)
+      questionsSortedByTimeStamp.forEach((question, index) => {
+        updatedQuestions.push({
+          ...question,
+          qIndex: index + 1,
+        })
+      })
+      console.log('updatedQuestions', updatedQuestions)
+      const updatedQuestionsKeyedById = keyBy(updatedQuestions, 'id')
+      setQuestionsById(updatedQuestionsKeyedById)
+      if (annotations?.length && !isEmpty(updatedQuestionsKeyedById)) {
+        console.log('updatedQuestionsKeyedById', updatedQuestionsKeyedById)
+        setTestData({
+          annotations: produce(annotations, (draft) => {
+            draft.forEach((_annotation) => {
+              if (_annotation.toolbarMode === 'question') {
+                _annotation.qIndex =
+                  updatedQuestionsKeyedById[_annotation.questionId].qIndex
+              }
+            })
+          }),
+        })
+      }
+    }
   }
 
   scrollToQuestion = (questionId) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Spin, Row, Col, Statistic, Table } from 'antd'
@@ -19,10 +19,12 @@ import {
   LineChart,
   Line,
 } from 'recharts'
+import { EduButton } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import styled from 'styled-components'
 // import './recharts-theme.less' TODO: need to check the impact
 import moment from 'moment'
+import { cardTitleColor, secondaryTextColor } from '@edulastic/colors'
 import {
   getChartDataAction,
   getChartDataSelector,
@@ -32,7 +34,7 @@ import { buildChartData } from '../util'
 
 const localeFormatter = (item) => (item || '').toLocaleString()
 const dateFormatter = (item) => moment(item).format('MMM YY')
-const colors = ['#7DB3FF', '#49457B', '#FF7C78']
+const colors = ['#3DB04E', 'EB9C5C', '#393B23', '#F3FCCF']
 const xAxisFormatter = (item) => {
   if (moment(item).isValid()) {
     return dateFormatter(item)
@@ -58,46 +60,101 @@ function getYAxesType(member) {
   }
 }
 
-const CartesianChart = ({ resultSet, children, ChartComponent, height }) => (
-  <ResponsiveContainer width="100%" height={height}>
-    <ChartComponent margin={{ left: -10 }} data={resultSet.data}>
-      <XAxis
-        axisLine={false}
-        tickLine={false}
-        tickFormatter={
-          resultSet.xAxesFields.length === 1 &&
-          resultSet.xAxesFields[0].type === 'time'
-            ? xAxisFormatter
-            : undefined
-        }
-        dataKey="x"
-        minTickGap={20}
-      />
-      {resultSet.yAxesFields.map((member, i) => (
-        <YAxis
+const CartesianChart = ({
+  resultSet,
+  children,
+  ChartComponent,
+  height,
+  goToNextPage,
+  goToPrevPage,
+  chartNavLeftVisibility,
+  chartNavRightVisibility,
+  finalAxesLabel,
+}) => (
+  <MainDiv>
+    {finalAxesLabel?.y && (
+      <YAxisLabelContainer>{finalAxesLabel.y}</YAxisLabelContainer>
+    )}
+    {finalAxesLabel?.x && (
+      <XAxisLabelContainer>{finalAxesLabel.x}</XAxisLabelContainer>
+    )}
+    <StyledChartNavButton
+      type="primary"
+      shape="circle"
+      icon="caret-left"
+      size="large"
+      className="navigator navigator-left"
+      onClick={goToPrevPage}
+      style={{
+        visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+      }}
+    />
+    <StyledChartNavButton
+      type="primary"
+      shape="circle"
+      icon="caret-right"
+      size="large"
+      className="navigator navigator-right"
+      onClick={goToNextPage}
+      style={{
+        visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+      }}
+    />
+    <ResponsiveContainer width="100%" height={height}>
+      <ChartComponent margin={{ left: -10 }} data={resultSet.data}>
+        <XAxis
           axisLine={false}
           tickLine={false}
-          key={member.name}
-          // tickFormatter={localeFormatter}
-          yAxisId={member.name}
-          label={{ value: member.title ?? member.name, angle: -90 }}
-          type={getYAxesType(member)}
-          orientation={i >= resultSet.yAxesFields.length / 2 ? 'right' : 'left'}
+          tickFormatter={
+            resultSet.xAxesFields.length === 1 &&
+            resultSet.xAxesFields[0].type === 'time'
+              ? xAxisFormatter
+              : undefined
+          }
+          dataKey="x"
+          minTickGap={20}
         />
-      ))}
-      <CartesianGrid vertical={false} />
-      {children}
-      <Legend />
-      <Tooltip formatter={localeFormatter} />
-    </ChartComponent>
-  </ResponsiveContainer>
+        {resultSet.yAxesFields.map((member, i) => (
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            key={member.name}
+            // tickFormatter={localeFormatter}
+            yAxisId={member.name}
+            label={{ value: member.title ?? member.name, angle: -90 }}
+            type={getYAxesType(member)}
+            orientation={
+              i >= resultSet.yAxesFields.length / 2 ? 'right' : 'left'
+            }
+          />
+        ))}
+        <CartesianGrid vertical={false} />
+        {children}
+        <Legend />
+        <Tooltip formatter={localeFormatter} />
+      </ChartComponent>
+    </ResponsiveContainer>
+  </MainDiv>
 )
 const TypeToChartComponent = {
-  line: ({ resultSet, height }) => (
+  line: ({
+    resultSet,
+    height,
+    goToNextPage,
+    goToPrevPage,
+    chartNavLeftVisibility,
+    chartNavRightVisibility,
+    finalAxesLabel,
+  }) => (
     <CartesianChart
       resultSet={resultSet}
       height={height}
       ChartComponent={LineChart}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      chartNavLeftVisibility={chartNavLeftVisibility}
+      chartNavRightVisibility={chartNavRightVisibility}
+      finalAxesLabel={finalAxesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
         <Line
@@ -111,11 +168,24 @@ const TypeToChartComponent = {
       ))}
     </CartesianChart>
   ),
-  bar: ({ resultSet, height }) => (
+  bar: ({
+    resultSet,
+    height,
+    goToNextPage,
+    goToPrevPage,
+    chartNavLeftVisibility,
+    chartNavRightVisibility,
+    finalAxesLabel,
+  }) => (
     <CartesianChart
       resultSet={resultSet}
       height={height}
       ChartComponent={BarChart}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      chartNavLeftVisibility={chartNavLeftVisibility}
+      chartNavRightVisibility={chartNavRightVisibility}
+      finalAxesLabel={finalAxesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
         <Bar
@@ -129,11 +199,24 @@ const TypeToChartComponent = {
       ))}
     </CartesianChart>
   ),
-  area: ({ resultSet, height }) => (
+  area: ({
+    resultSet,
+    height,
+    goToNextPage,
+    goToPrevPage,
+    chartNavLeftVisibility,
+    chartNavRightVisibility,
+    finalAxesLabel,
+  }) => (
     <CartesianChart
       resultSet={resultSet}
       height={height}
       ChartComponent={AreaChart}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      chartNavLeftVisibility={chartNavLeftVisibility}
+      chartNavRightVisibility={chartNavRightVisibility}
+      finalAxesLabel={finalAxesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
         <Area
@@ -167,9 +250,15 @@ const TypeToChartComponent = {
       </PieChart>
     </ResponsiveContainer>
   ),
-  table: ({ resultSet }) => (
-    <Table
-      pagination={false}
+  table: ({ resultSet, pageFilter, handlePagination }) => (
+    <TableData
+      pagination={{
+        pageSize: pageFilter.limit,
+        total: pageFilter.total,
+        current: Math.ceil(pageFilter.offset / pageFilter.limit) + 1,
+        position: 'top',
+      }}
+      onChange={(pagination) => handlePagination(pagination?.current || 1)}
       columns={resultSet.columns.map((c) => ({ ...c, dataIndex: c.key }))}
       dataSource={resultSet.table}
     />
@@ -203,9 +292,31 @@ const Spinner = () => (
   </SpinContainer>
 )
 
-const renderChart = (Component) => ({ resultSet, error, height, widgetId }) =>
-  (resultSet && <Component height={height} resultSet={resultSet} />) ||
-  (error && error.toString()) ||
+const renderChart = (Component) => ({
+  resultSet,
+  height,
+  widgetId,
+  goToNextPage,
+  goToPrevPage,
+  pageFilter,
+  handlePagination,
+  chartNavLeftVisibility,
+  chartNavRightVisibility,
+  finalAxesLabel,
+}) =>
+  (resultSet && (
+    <Component
+      height={height}
+      resultSet={resultSet}
+      goToNextPage={goToNextPage}
+      goToPrevPage={goToPrevPage}
+      pageFilter={pageFilter}
+      handlePagination={handlePagination}
+      chartNavLeftVisibility={chartNavLeftVisibility}
+      chartNavRightVisibility={chartNavRightVisibility}
+      finalAxesLabel={finalAxesLabel}
+    />
+  )) ||
   (!widgetId ? <StyledDiv>Click on Apply Button</StyledDiv> : <Spinner />)
 
 const ChartRenderer = ({
@@ -216,16 +327,23 @@ const ChartRenderer = ({
   isChartDataLoading,
   widget,
   widgetId,
+  axesLabel,
 }) => {
   const { layout, query } = widget
   const { options } = layout
+  const [pageFilter, setPageFilter] = useState({
+    limit: 10,
+    offset: 0,
+    total: query?.total ?? 25,
+  })
 
   const component = TypeToMemoChartComponent[chartType]
   useEffect(() => {
     if (!isEmpty(query) && widgetId) {
-      getChartData({ widgetId, query })
+      const queryWithPageFilters = { ...query, ...pageFilter }
+      getChartData({ widgetId, query: queryWithPageFilters })
     }
-  }, [JSON.stringify(query)])
+  }, [JSON.stringify(query), pageFilter])
 
   const resultSet = useMemo(() => {
     if (!isEmpty(chartData)) {
@@ -234,12 +352,49 @@ const ChartRenderer = ({
     return null
   }, [chartType, chartData, widget])
 
+  const goToPrevPage = () => {
+    setPageFilter(() => ({
+      ...pageFilter,
+      offset: pageFilter.offset - pageFilter.limit,
+    }))
+  }
+  const goToNextPage = () => {
+    setPageFilter(() => ({
+      ...pageFilter,
+      offset: pageFilter.offset + pageFilter.limit,
+    }))
+  }
+  const handlePagination = (pageNumber) => {
+    setPageFilter(() => ({
+      ...pageFilter,
+      offset: Math.max(pageNumber - 1, 0) * pageFilter.limit,
+    }))
+  }
+
+  const chartNavLeftVisibility = pageFilter.offset !== 0
+  const chartNavRightVisibility =
+    pageFilter.total - pageFilter.offset > pageFilter.limit
+
+  const finalAxesLabel = axesLabel ?? layout.options.axesLabel
+  // const finalAxesLabel = axesLabel ?? { x: 'x axis label', y: 'y axis label' }
+
   if (isChartDataLoading && !widgetId) {
     return <Spinner />
   }
 
   return component ? (
-    renderChart(component)({ height: chartHeight, resultSet, widgetId })
+    renderChart(component)({
+      height: chartHeight,
+      resultSet,
+      widgetId,
+      goToPrevPage,
+      goToNextPage,
+      pageFilter,
+      handlePagination,
+      chartNavLeftVisibility,
+      chartNavRightVisibility,
+      finalAxesLabel,
+    })
   ) : (
     <h1>No Layout selected !!</h1>
   )
@@ -270,4 +425,93 @@ const SpinContainer = styled.div`
   text-align: center;
   padding: 30px 50px;
   margin-top: 30px;
+`
+
+export const StyledChartNavButton = styled(EduButton)`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+
+  .ant-btn > .anticon {
+    line-height: 0.8;
+  }
+
+  @media print {
+    display: none;
+  }
+`
+
+const MainDiv = styled.div`
+  position: relative;
+  width: 100%;
+  padding: 30px 35px 15px 55px;
+  height: 100%;
+
+  .navigator-left {
+    left: 0px;
+    top: 35%;
+  }
+
+  .navigator-right {
+    right: 0px;
+    top: 35%;
+  }
+`
+
+export const TableData = styled(Table)`
+  color: ${secondaryTextColor};
+  width: auto;
+  cursor: pointer;
+  .ant-table-thead {
+    > tr > th {
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: ${cardTitleColor};
+      white-space: nowrap;
+      padding: 0px 16px 24px;
+      background: transparent;
+      border-bottom: none;
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+      }
+
+      .ant-table-column-sorter {
+        vertical-align: baseline;
+      }
+    }
+  }
+
+  .ant-table-tbody {
+    > tr > td {
+      padding: 8px 16px;
+      font-weight: 600;
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+      }
+    }
+  }
+`
+
+const YAxisLabelContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: rotate(-90deg) translate(50%, -50%);
+`
+
+const XAxisLabelContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  transform: translate(-50%, 0%);
+  display: flex;
+  align-items: center;
 `

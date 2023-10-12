@@ -34,7 +34,7 @@ const DEFAULT_QUERY = {
 }
 
 // TODO create custom hooks inside `./hooks` to reduce component size
-const WidgetQueryBuilder = ({
+export const WidgetQueryBuilder = ({
   value: valueFromProps,
   defaultValue,
   dataSources = [],
@@ -211,5 +211,3 @@ const WidgetQueryBuilder = ({
     </ControlsRow>
   )
 }
-
-export default WidgetQueryBuilder

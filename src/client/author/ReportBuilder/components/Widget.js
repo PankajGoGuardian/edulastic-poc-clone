@@ -4,15 +4,32 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import { themeColorLighter1, white } from '@edulastic/colors'
 
 import { updateReportDefinitionAction } from '../ducks'
 
 const StyledCard = styled(Card)`
-  box-shadow: 0px 2px 4px rgba(141, 149, 166, 0.1);
-  border-radius: 4px;
-
+  border-radius: 15px;
+  background-color: ${white};
+  box-shadow: 0px 3px 8px #00000029;
   .ant-card-head {
     border: none;
+    padding-left: 0px;
+    .ant-card-head-wrapper {
+      justify-content: space-between;
+      width: 100%;
+      .ant-card-head-title {
+        font-size: 15px;
+        font-weight: bold;
+        max-width: fit-content;
+        padding-inline: 30px;
+        align-self: stretch;
+        display: flex;
+        place-items: center;
+        background-color: ${themeColorLighter1};
+        border-radius: 15px 0px;
+      }
+    }
   }
   .ant-card-body {
     padding-top: 12px;
@@ -24,7 +41,7 @@ const WidgetDropdown = ({ updateReport, widgetId, report }) => {
     <Menu>
       <Menu.Item>
         <Link
-          to={`/author/reportBuilder/explore/definition/${report?._id}/widget/${widgetId}`}
+          to={`/author/reports/report-builder/explore/definition/${report?._id}/widget/${widgetId}`}
         >
           Edit
         </Link>

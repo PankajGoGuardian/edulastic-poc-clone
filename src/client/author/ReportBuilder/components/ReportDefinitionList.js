@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react'
-import { Table, Button, Spin } from 'antd'
+import { Button, Spin } from 'antd'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import { IconAddItems, IconTrash } from '@edulastic/icons'
+import { TableContainer, StyledTable } from '../../../common/styled'
 import {
   getReportDefinitionsAction,
   deleteReportDefinitionAction,
   getReportsSelector,
   isReportsLoadingSelector,
 } from '../ducks'
+import { SubHeader } from '../../Reports/common/components/Header'
 
 const ReportDefinitionList = ({
   history,
@@ -16,6 +20,8 @@ const ReportDefinitionList = ({
   reports,
   getReports,
   deleteReport,
+  breadcrumbData,
+  isCliUser,
 }) => {
   /** @type {import('antd/lib/table').ColumnProps[]} */
   const columns = [
@@ -24,38 +30,46 @@ const ReportDefinitionList = ({
       dataIndex: 'title',
       key: 'title',
       align: 'left',
-      width: 300,
+      width: '30%',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+      align: 'left',
+      width: '50%',
     },
     {
       title: 'Action',
       dataIndex: '_id',
       key: '_id',
-      width: 150,
+      width: '20%',
       render: (_id) => (
         <Button
           key="delete-button"
-          type="danger"
-          style={{ border: 'none' }}
+          style={{ border: 'none', background: 'transparent' }}
           onClick={() => deleteReport(_id)}
         >
-          Delete Report
+          <IconTrash style={{ height: '25px' }} />
         </Button>
       ),
     },
   ]
 
   const tableData = (
-    <Table
-      style={{ marginBottom: '20px' }}
-      columns={columns}
-      dataSource={reports}
-      pagination={false}
-      onRow={(row) => ({
-        onClick: () => {
-          history.push(`/author/reportBuilder/definition/${row._id}`)
-        },
-      })}
-    />
+    <TableContainer>
+      <StyledTable
+        columns={columns}
+        dataSource={reports}
+        onRow={(report) => ({
+          onClick: () => {
+            history.push(
+              `/author/reports/report-builder/definition/${report._id}`
+            )
+          },
+        })}
+      />
+    </TableContainer>
   )
 
   useEffect(() => {
@@ -64,17 +78,19 @@ const ReportDefinitionList = ({
 
   return (
     <StyledDiv>
-      <h1>Report Definition List</h1>
+      <FlexContainer justifyContent="space-between">
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+        <EduButton
+          key="add-report-button"
+          type="primary"
+          onClick={() => {
+            history.push('/author/reports/report-builder/explore')
+          }}
+        >
+          <IconAddItems /> Add Report
+        </EduButton>
+      </FlexContainer>
       <Spin spinning={isLoading}>{tableData} </Spin>
-      <Button
-        key="add-report-button"
-        type="primary"
-        onClick={() => {
-          history.push('/author/reportBuilder/explore')
-        }}
-      >
-        Add Report
-      </Button>
     </StyledDiv>
   )
 }
@@ -95,9 +111,5 @@ const enhance = compose(
 export default enhance(ReportDefinitionList)
 
 const StyledDiv = styled.div`
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
 `

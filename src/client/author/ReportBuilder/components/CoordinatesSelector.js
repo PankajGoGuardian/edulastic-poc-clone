@@ -14,12 +14,12 @@ function CoordinatesSelector({
   setSelectedYCoords,
 }) {
   const children = availableOptions
-    .filter((o) => {
-      const foundX = selectedXCoords.includes(o.name)
-      const foundY = selectedYCoords.includes(o.name)
+    .filter((val) => {
+      const foundX = selectedXCoords.includes(val)
+      const foundY = selectedYCoords.includes(val)
       return !(foundX || foundY)
     })
-    .map((o) => <Option key={o.name}>{o.title}</Option>)
+    .map((val) => <Option key={val}>{val}</Option>)
 
   const handleXChange = (value) => {
     setSelectedXCoords(value)

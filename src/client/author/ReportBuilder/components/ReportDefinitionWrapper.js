@@ -63,7 +63,7 @@ const ReportDefinitionWrapper = (props) => {
     >
       <h2>There are no Widgets on this Report</h2>
       <Link
-        to={`/author/reportBuilder/explore/definition/${currentReport?._id}`}
+        to={`/author/reports/report-builder/explore/definition/${currentReport?._id}`}
       >
         <Button type="primary" size="large" icon="plus">
           Add Widget to Report
@@ -84,7 +84,7 @@ const ReportDefinitionWrapper = (props) => {
               Save Report
             </StyledButton>
             <Link
-              to={`/author/reportBuilder/explore/definition/${currentReport._id}`}
+              to={`/author/reports/report-builder/explore/definition/${currentReport._id}`}
             >
               <StyledButton type="primary">Add Widget to Report</StyledButton>
             </Link>

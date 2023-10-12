@@ -38,18 +38,10 @@ const ReportDefinitionWrapper = loadable(
     fallback: <Progress />,
   }
 )
-const ReportDefinitionList = loadable(
-  () => import('../ReportBuilder/components/ReportDefinitionList'),
-  {
-    fallback: <Progress />,
-  }
-)
-const ExplorePage = loadable(
-  () => import('../ReportBuilder/components/Explore'),
-  {
-    fallback: <Progress />,
-  }
-)
+
+const Explore = loadable(() => import('../ReportBuilder/components/Explore'), {
+  fallback: <Progress />,
+})
 const Assignments = loadable(() => import('../Assignments'), {
   fallback: <Progress />,
 })
@@ -341,30 +333,30 @@ const Author = ({
                   path={`${match.url}/assignments`}
                   component={Assignments}
                 />
-                <Route
+                {/* <Route
                   exact
-                  path="/author/reportBuilder"
+                  path="/author/reports/report-builder"
                   component={ReportDefinitionList}
-                />
+                /> */}
                 <Route
                   exact
-                  path="/author/reportBuilder/definition/:id"
+                  path="/author/reports/report-builder/definition/:id"
                   component={ReportDefinitionWrapper}
                 />
                 <Route
                   exact
-                  path="/author/reportBuilder/explore"
-                  component={ExplorePage}
+                  path="/author/reports/report-builder/explore"
+                  component={Explore}
                 />
                 <Route
                   exact
-                  path="/author/reportBuilder/explore/definition/:definitionId"
-                  component={ExplorePage}
+                  path="/author/reports/report-builder/explore/definition/:definitionId"
+                  component={Explore}
                 />
                 <Route
                   exact
-                  path="/author/reportBuilder/explore/definition/:definitionId/widget/:widgetId"
-                  component={ExplorePage}
+                  path="/author/reports/report-builder/explore/definition/:definitionId/widget/:widgetId"
+                  component={Explore}
                 />
                 <Route
                   exact

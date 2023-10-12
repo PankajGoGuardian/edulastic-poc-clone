@@ -1,1 +1,1 @@
-export { default } from './WidgetQueryBuilder'
+export { WidgetQueryBuilder } from './WidgetQueryBuilder'

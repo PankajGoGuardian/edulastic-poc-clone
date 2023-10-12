@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { isEmpty } from 'lodash'
 import produce from 'immer'
 import { Button, Spin } from 'antd'
@@ -8,13 +8,12 @@ import { connect } from 'react-redux'
 import TitleModal from '../TitleModal'
 import PageHeader from '../PageHeader'
 import ExploreTitle from '../ExploreTitle'
-import QueryBuilderOptions from '../QueryBuilderOptions'
+import EditWidgetLayout from '../EditWidgetLayout'
 import {
   getIsMetaDataLoadingSelector,
   getMetaDataAction,
   getMetaDataSelector,
   getIsWidgetDataLoadingSelector,
-  getChartDataSelector,
   getChartDataAction,
   getActiveReportSelector,
   getReportDataAction,
@@ -22,14 +21,15 @@ import {
   updateReportDefinitionAction,
   setChartDataAction,
 } from '../../ducks'
-import WidgetQueryBuilder from '../WidgetQueryBuilder'
+import { WidgetQueryBuilder } from '../WidgetQueryBuilder'
+import { DEFAULT_WIDGET_LAYOUT } from '../../const'
 
 const isValidQuery = (query) => {
   return query?.dimensions?.length || query?.facts?.length
 }
 
 // TODO create custom hooks inside `./hooks` to reduce component size
-const ExplorePage = (props) => {
+const Explore = (props) => {
   const {
     history,
     getReportData,
@@ -38,7 +38,6 @@ const ExplorePage = (props) => {
     isItemDataLoading,
     report,
     dataSources,
-    chartData,
     getChartData,
     match,
     addReportDefinition,
@@ -51,6 +50,10 @@ const ExplorePage = (props) => {
   const isCreateReportWithWidgetFlow = !definitionId && !widgetId
 
   const [addingToReport, setAddingToReport] = useState(false)
+  const [editQuery, setEditQuery] = useState({})
+  const [editWidgetLayout, setEditWidgetLayout] = useState(
+    DEFAULT_WIDGET_LAYOUT
+  )
 
   useEffect(() => {
     if (definitionId) {
@@ -59,114 +62,45 @@ const ExplorePage = (props) => {
   }, [definitionId])
 
   // TODO better create an `editWidget` or `editReport` with same approach as `editQuery`
-  const [editQuery, setEditQuery] = useState({})
   useEffect(() => {
     if (isEmpty(report)) return
     const widget = report.widgets.find((w) => w._id === widgetId)
     if (!widget) return
     setEditQuery(widget.query)
+    setEditWidgetLayout(widget.layout)
   }, [report, widgetId])
 
-  const { availableFacts, availableDimensions } = useMemo(() => {
-    if (isEmpty(dataSources)) return []
-    const selectedDataSource = dataSources.find(
-      (ds) => ds._id === editQuery.source
-    )
-    return {
-      selectedDataSources: selectedDataSource ? [selectedDataSource] : [],
-      availableFacts: selectedDataSource?.sourceSchema.facts ?? [],
-      availableDimensions: selectedDataSource?.sourceSchema.dimensions ?? [],
-    }
-  })
-
   // TODO following state can either be grouped(editReport, editWidget, editLayout, etc) or sent to child to manage or converted to useMemo.
-  const [selectedFacts, setSelectedFacts] = useState([])
-  const [selectedDimensions, setSelectedDimensions] = useState([])
-  const [selectedChartType, setSelectedChartType] = useState('table')
   const [titleModalVisible, setTitleModalVisible] = useState(false)
   const [title, setTitle] = useState('New Widget')
   const [reportTitle, setReportTitle] = useState('New Report Title')
   const [reportDescription, setReportDescription] = useState(
     'New Report Description'
   )
-  const [selectedXCoords, setSelectedXCoords] = useState([])
-  const [selectedYCoords, setSelectedYCoords] = useState([])
 
   useEffect(() => {
     getMetaData()
   }, [])
 
   useEffect(() => {
-    if (!isEmpty(chartData)) {
-      setSelectedXCoords(editQuery.facts)
-      setSelectedYCoords(editQuery.dimensions)
-    }
-  }, [chartData])
-
-  useEffect(() => {
     setChartData({ widgetId: 'draft', data: {} })
   }, [editQuery])
 
+  // TODO : combine editQuery & editWidgetLayout
   const widgetData =
     isEditWidgetFlow && !isEmpty(report)
       ? produce(
           report.widgets.find((w) => w._id === widgetId),
           (draft) => {
             draft.query = editQuery
-            draft.layout.options.type = selectedChartType
-            draft.layout.options.coOrds.xCoOrds = selectedXCoords
-            draft.layout.options.coOrds.yCoOrds = selectedYCoords
+            draft.layout = editWidgetLayout
           }
         )
-      : !isEmpty(editQuery)
-      ? {
+      : {
           ...(widgetId ? { _id: widgetId } : {}),
           query: editQuery,
-          layout: {
-            options: {
-              type: selectedChartType,
-              coOrds: { xCoOrds: selectedXCoords, yCoOrds: selectedYCoords },
-            },
-          },
+          layout: editWidgetLayout,
         }
-      : {}
-
-  useEffect(() => {
-    // TODO cleanup required
-    if (report?._id && !isEmpty(widgetData)) {
-      const { title: _reportTitle, description: _reportDescription } = report
-      const {
-        query: { facts = [], dimensions = [] },
-        layout: { type, options },
-        title: _title,
-      } = widgetData
-      if (
-        (availableDimensions.length || availableFacts.length) &&
-        !(selectedDimensions.length || selectedFacts.length)
-      ) {
-        const _facts = availableFacts.filter((am) => facts.includes(am.name))
-        const _dimensions = availableDimensions.filter((am) =>
-          dimensions.includes(am.name)
-        )
-        setSelectedFacts(_facts)
-        setSelectedDimensions(_dimensions)
-        setSelectedXCoords(_facts.map((o) => o.name))
-        setSelectedYCoords(_dimensions.map((o) => o.name))
-        setSelectedChartType(type)
-        setTitle(_title)
-        setReportTitle(_reportTitle)
-        setReportDescription(_reportDescription)
-      }
-      if (
-        (options.coOrds?.xCoOrds?.length || options.coOrds?.xCoOrds?.length) &&
-        isEmpty(selectedXCoords) &&
-        isEmpty(selectedYCoords)
-      ) {
-        setSelectedXCoords(options.coOrds.xCoOrds)
-        setSelectedYCoords(options.coOrds.YCoOrds)
-      }
-    }
-  }, [report, availableFacts, availableDimensions])
 
   // TODO : Don't use `||`, cannot set empty ('') value to description
   const finalTitle = title || widgetData?.title || 'New Widget'
@@ -184,11 +118,6 @@ const ExplorePage = (props) => {
   const canAddOrUpdateChart = isValidQuery(editQuery)
 
   const handleSaveOrUpdateOfReport = async () => {
-    // TODO cleanup required
-    const coOrds = {
-      xCoOrds: selectedXCoords,
-      yCoOrds: selectedYCoords,
-    }
     setTitleModalVisible(false)
     setAddingToReport(true)
     if (isEditWidgetFlow) {
@@ -202,13 +131,7 @@ const ExplorePage = (props) => {
               return {
                 ...widget,
                 ...widgetData,
-                layout: {
-                  type: selectedChartType,
-                  options: {
-                    ...widgetData.layout.options,
-                    coOrds,
-                  },
-                },
+                layout: editWidgetLayout,
                 query: editQuery,
                 title: finalTitle,
               }
@@ -227,16 +150,7 @@ const ExplorePage = (props) => {
             widgets: [
               ...report.widgets,
               {
-                layout: {
-                  type: selectedChartType,
-                  options: {
-                    x: 0,
-                    y: 0,
-                    w: 8,
-                    h: 8,
-                    coOrds,
-                  },
-                },
+                layout: editWidgetLayout,
                 query: editQuery,
                 title: finalTitle,
               },
@@ -250,16 +164,7 @@ const ExplorePage = (props) => {
       addReportDefinition({
         widgets: [
           {
-            layout: {
-              type: selectedChartType,
-              options: {
-                x: 0,
-                y: 0,
-                w: 8,
-                h: 8,
-                coOrds,
-              },
-            },
+            layout: editWidgetLayout,
             query: editQuery,
             title: finalTitle,
           },
@@ -272,7 +177,7 @@ const ExplorePage = (props) => {
   }
 
   const handleApply = () => {
-    getChartData({ query: editQuery })
+    getChartData({ query: { ...editQuery, limit: 10, offset: 0 } })
   }
 
   return (
@@ -299,7 +204,7 @@ const ExplorePage = (props) => {
               key="goto-report-button"
               type="primary"
               style={{ marginLeft: '15px' }}
-              onClick={() => history.push('/author/reportBuilder')}
+              onClick={() => history.push('/author/reports/report-builder')}
             >
               Go to Reports List
             </Button>
@@ -321,17 +226,7 @@ const ExplorePage = (props) => {
         onChange={setEditQuery}
         dataSources={dataSources}
       />
-      <QueryBuilderOptions
-        selectedChartType={selectedChartType}
-        selectedDimensions={selectedDimensions}
-        selectedFacts={selectedFacts}
-        selectedXCoords={selectedXCoords}
-        selectedYCoords={selectedYCoords}
-        setSelectedChartType={setSelectedChartType}
-        setSelectedXCoords={setSelectedXCoords}
-        setSelectedYCoords={setSelectedYCoords}
-        widgetData={widgetData}
-      />
+      <EditWidgetLayout value={widgetData} onChange={setEditWidgetLayout} />
     </div>
   )
 }
@@ -344,7 +239,6 @@ const enhance = compose(
       dataSources: getMetaDataSelector(state),
       isItemDataLoading: getIsWidgetDataLoadingSelector(state),
       report: getActiveReportSelector(state),
-      chartData: getChartDataSelector(state),
     }),
     {
       getMetaData: getMetaDataAction,
@@ -357,4 +251,4 @@ const enhance = compose(
   )
 )
 
-export default enhance(ExplorePage)
+export default enhance(Explore)

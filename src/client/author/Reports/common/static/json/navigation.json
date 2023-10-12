@@ -418,6 +418,16 @@
       ],
       "group": "mainReport"
     },
+    "report-builder": {
+      "title": "Report Builder Section",
+      "breadcrumb": [
+        {
+          "title": "REPORT BUILDER SECTION",
+          "to": "/author/reports/shared-reports"
+        }
+      ],
+      "group": "mainReport"
+    },
     "goals-and-interventions": {
       "title": "Set Goals & Interventions",
       "breadcrumb": [
@@ -570,6 +580,12 @@
         "title": "EDULASTIC DATA STUDIO",
         "isNew": true,
         "location": "/author/reports/data-warehouse-reports/"
+      },
+      {
+        "key": "report-builder",
+        "title": "Report Builder Section",
+        "isNew": true,
+        "location": "/author/reports/report-builder/"
       }
     ],
     "data-warehouse-reports": [

@@ -2,7 +2,6 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
 import MemberDropdown from './MemberDropdown'
 import RemoveButtonGroup from './RemoveButtonGroup'
 import MemberGroupTitle from './MemberGroupTitle'
@@ -41,7 +40,7 @@ const MemberGroup = ({
           </MemberDropdown>
         </RemoveButtonGroup>
       ))}
-      <EduIf condition={!members.length || multiple}>
+      {(!members.length || multiple) && (
         <MemberDropdown
           type={members.length > 0 ? 'icon' : 'new'}
           onClick={(m) => updateMethods([...members, m])}
@@ -59,7 +58,7 @@ const MemberGroup = ({
             }}
           />
         </MemberDropdown>
-      </EduIf>
+      )}
     </div>
   )
 }

@@ -173,11 +173,10 @@ function* getReportDefinitionsSaga() {
 
 function* deleteReportDefinitionSaga({ payload }) {
   try {
-    const reportDefinitions = yield call(reportBuilderApi.deleteReport, payload)
-    yield put(getReportDefinitionsSuccessAction(reportDefinitions))
+    yield call(reportBuilderApi.deleteReport, payload)
   } catch (err) {
     yield put(getReportDefinitionsFailedAction(err))
-    const errorMessage = 'Unable to retrieve report definitions info.'
+    const errorMessage = 'Unable to delete report definitions info.'
     notification({ type: 'error', msg: errorMessage })
   }
 }
@@ -218,7 +217,9 @@ function* updateReportSaga({ payload }) {
       yield put(setReportDataAction(updatedReport))
     } else {
       return yield put(
-        push(`/author/reportBuilder?reportDefinitionId=${updatedReport._id}`)
+        push(
+          `/author/reports/report-builder?reportDefinitionId=${updatedReport._id}`
+        )
       )
     }
   } catch (err) {
@@ -238,7 +239,7 @@ function* addReportDefinitionSaga({ payload }) {
       msg: 'Successfully created report with widgets',
     })
     return yield put(
-      push(`/author/reportBuilder/definition/${addedReport._id}`)
+      push(`/author/reports/report-builder/definition/${addedReport._id}`)
     )
   } catch (err) {
     const errorMessage = 'Unable to create report with following widget.'

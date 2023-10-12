@@ -113,7 +113,7 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
   return {
     yAxesFields: facts,
     xAxesFields: dimensions,
-    data: finalDataPivot,
+    data: finalDataPivot.slice(0, 10),
     seriesNames: finalSeriesNames,
   }
 }

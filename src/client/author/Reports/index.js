@@ -15,6 +15,7 @@ import { PrintableScreen } from './common/styled'
 import CustomReports from './components/customReport'
 import CustomReportIframe from './components/customReport/customReportIframe'
 import SharedReports from './components/sharedReports'
+import ReportDefinitionList from '../ReportBuilder/components/ReportDefinitionList'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import { DW_REPORT_URLS } from './common/constants/dataWarehouseReports'
@@ -386,6 +387,20 @@ const Container = ({
             setShowHeader(true)
             return (
               <SharedReports
+                {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/report-builder"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <ReportDefinitionList
                 {..._props}
                 isCliUser={isCliUser}
                 breadcrumbData={headerSettings.breadcrumbData}

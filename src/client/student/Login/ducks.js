@@ -1906,10 +1906,10 @@ function* msoSSOLogin({ payload }) {
       }
     }
     const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
-    if (isNewUser) {
-      yield call(segmentApi.trackTeacherSignUp, { user: res })
-    }
-    yield put(getUserDataAction(res))
+    // if (isNewUser) {
+    //   yield call(segmentApi.trackTeacherSignUp, { user: res })
+    // }
+    // yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')
     if (e.status === 409) {

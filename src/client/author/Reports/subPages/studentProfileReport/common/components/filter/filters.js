@@ -687,7 +687,8 @@ const StudentProfileReportFilters = ({
                 data-cy="standardProficiency"
               >
                 <MultiSelectDropdown
-                  dataCy="domain"
+                  dataCy="standardProficiency"
+                  label="Domain(s)"
                   onChange={(e) => {
                     const selected = domainOptions.filter((a) =>
                       e.includes(a.key)
@@ -700,7 +701,6 @@ const StudentProfileReportFilters = ({
                       : []
                   }
                   options={domainOptions}
-                  label="Domains"
                   displayLabel={false}
                 />
               </StyledDropDownContainer>
@@ -711,7 +711,8 @@ const StudentProfileReportFilters = ({
                 data-cy="standardProficiency"
               >
                 <MultiSelectDropdown
-                  dataCy="standard"
+                  dataCy="standardProficiency"
+                  label="Standard(s)"
                   onChange={(e) => {
                     const selected = standardOptions.filter((a) =>
                       e.includes(a.key)
@@ -724,7 +725,6 @@ const StudentProfileReportFilters = ({
                       : []
                   }
                   options={standardOptions}
-                  label="Standards"
                   displayLabel={false}
                 />
               </StyledDropDownContainer>

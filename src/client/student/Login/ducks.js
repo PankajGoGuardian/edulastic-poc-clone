@@ -1795,7 +1795,7 @@ function* googleSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
+    const res = yield call(authApi.googleSSOLogin, _payload)
     // if (res.reAuthGoogle) {
     //   TokenStorage.storeInLocalStorage(
     //     'payloadForUserData',
@@ -1905,7 +1905,7 @@ function* msoSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
+    const res = yield call(authApi.msoSSOLogin, _payload)
     // if (isNewUser) {
     //   yield call(segmentApi.trackTeacherSignUp, { user: res })
     // }

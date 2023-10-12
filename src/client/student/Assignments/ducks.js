@@ -68,6 +68,7 @@ import { isiOS } from '../../assessment/utils/helpers'
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
+import { getApiUri } from '../../../commonUtils'
 
 const { COMMON, TESTLET, PRACTICE } = testTypesConstants.TEST_TYPES
 
@@ -558,14 +559,15 @@ export function getSebUrl({
   }
 
   let url
-  if (process.env.REACT_APP_API_URI.startsWith('http')) {
-    url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
+  const apiUri = getApiUri()
+  if (apiUri.startsWith('http')) {
+    url = `${apiUri.replace('http', 'seb').replace(
       'https',
       'seb'
     )}/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
-  } else if (process.env.REACT_APP_API_URI.startsWith('//')) {
+  } else if (apiUri.startsWith('//')) {
     url = `${window.location.protocol.replace('http', 'seb')}${
-      process.env.REACT_APP_API_URI
+      apiUri
     }/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
   } else {
     console.warn(`** can't figure out where to put seb protocol **`)

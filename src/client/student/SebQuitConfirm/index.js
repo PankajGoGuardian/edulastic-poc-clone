@@ -10,7 +10,8 @@ const SebQuitConfirm = ({ history }) => {
       history.push('/home/grades')
     }
   }, [])
-
+  const location = history.location
+  const quitUrl = `${location.protocol}//${location.host}/home/grades`
   return (
     <MainContainer>
       <Container>
@@ -18,7 +19,7 @@ const SebQuitConfirm = ({ history }) => {
         <Col md={24} sm={24}>
           {/* its completely fine hardcoding this url, since this is just an indication */}
           <StyledButton
-            href="https://app.edulastic.com/home/grades"
+            href={quitUrl}
             data-cy="submit"
             type="primary"
             btnType={2}

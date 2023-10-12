@@ -623,6 +623,12 @@ export const apiForms = [
         displayName: 'Enter test ID',
         required: true,
       },
+      {
+        displayName: 'Use LLM (AI)',
+        name: 'useLLM',
+        type: 'checkbox',
+        required: false,
+      },
     ],
   },
   {

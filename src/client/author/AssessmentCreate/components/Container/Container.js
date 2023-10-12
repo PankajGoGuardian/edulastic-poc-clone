@@ -21,8 +21,6 @@ import DropArea from '../DropArea/DropArea'
 import {
   receiveTestByIdAction,
   getTestsLoadingSelector,
-  getYoutubeThumbnailSelector,
-  getYoutubeThumbnailAction,
 } from '../../../TestPage/ducks'
 import {
   createAssessmentRequestAction,
@@ -232,14 +230,12 @@ const enhance = compose(
       assessmentLoading: getTestsLoadingSelector(state),
       percentageUploaded: percentageUploadedSelector(state),
       fileInfo: fileInfoSelector(state),
-      thumbnail: getYoutubeThumbnailSelector(state),
     }),
     {
       createAssessment: createAssessmentRequestAction,
       receiveTestById: receiveTestByIdAction,
       setPercentUploaded: setPercentUploadedAction,
       uploadToDrive: uploadToDriveAction,
-      getYoutubeThumbnail: getYoutubeThumbnailAction,
     }
   )
 )

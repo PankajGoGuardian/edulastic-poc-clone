@@ -164,8 +164,6 @@ class Container extends React.Component {
       isAddPdf,
       uploadToDrive,
       t,
-      thumbnail,
-      getYoutubeThumbnail,
     } = this.props
     if (
       location &&
@@ -217,11 +215,7 @@ class Container extends React.Component {
             />
           )}
           <EduIf condition={method === creationMethods.VIDEO}>
-            <CreateVideoQuiz
-              onValidUrl={this.handleNext}
-              ytThumbnail={thumbnail}
-              getYoutubeThumbnail={getYoutubeThumbnail}
-            />
+            <CreateVideoQuiz onValidUrl={this.handleNext} />
           </EduIf>
         </MainContentWrapper>
       </>

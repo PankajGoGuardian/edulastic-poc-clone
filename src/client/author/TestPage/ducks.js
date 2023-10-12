@@ -459,6 +459,9 @@ export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 export const getYoutubeThumbnailAction = createAction(
   GET_YOUTUBE_THUMBNAIL_REQUEST
 )
+export const setYoutubeThumbnailAction = createAction(
+  GET_YOUTUBE_THUMBNAIL_SUCCESS
+)
 
 export const receiveTestByIdAction = (
   id,

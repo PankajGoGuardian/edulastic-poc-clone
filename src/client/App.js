@@ -57,6 +57,8 @@ import RosterSyncNotification from './author/RosterImport/components/RosterSyncN
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
 import BubbleScanNotificationsListener from './scanScore/BubbleScanNotificationsListener'
+import TTSUpdateNotificationLister from './author/TestPage/components/TtsUpdateNotification'
+
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -232,11 +234,13 @@ const ADMIN_FIRESTORE_NOTIFICATIONS = [
   ReportsNotificationListener,
   RosterSyncNotification,
   BulkAssignNotification,
+  TTSUpdateNotificationLister,
 ]
 const TEACHER_FIRESTORE_NOTIFICATIONS = [
   ClassSyncNotification,
   ReportsNotificationListener,
   BulkAssignNotification,
+  TTSUpdateNotificationLister,
 ]
 
 class App extends Component {

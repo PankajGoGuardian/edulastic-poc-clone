@@ -61,7 +61,7 @@ function getYAxesType(member) {
   }
 }
 
-function getTrimmedText(stringVal = '', letterCount = '20') {
+function getTrimmedText(stringVal = '', letterCount = '15') {
   let shortenString = stringVal.substring(0, letterCount)
   if (shortenString.length !== stringVal.length) {
     shortenString = shortenString.concat('...')
@@ -84,14 +84,14 @@ const CartesianChart = ({
     {finalAxesLabel?.y && (
       <AntDToolTip title={finalAxesLabel.y}>
         <YAxisLabelContainer>
-          {getTrimmedText(finalAxesLabel.y)}
+          <span>{getTrimmedText(finalAxesLabel.y)}</span>
         </YAxisLabelContainer>
       </AntDToolTip>
     )}
     {finalAxesLabel?.x && (
       <AntDToolTip title={finalAxesLabel.x}>
         <XAxisLabelContainer>
-          {getTrimmedText(finalAxesLabel.x, 40)}
+          <span>{getTrimmedText(finalAxesLabel.x, 30)}</span>
         </XAxisLabelContainer>
       </AntDToolTip>
     )}

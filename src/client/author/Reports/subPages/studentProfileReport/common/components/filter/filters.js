@@ -357,8 +357,8 @@ const StudentProfileReportFilters = ({
       delete nextTagsData.classIds
     }
     if (key === 'domainId' && prevFilters[key] !== selected) {
-      prevFilters.standardId = standardOptions[0].key
-      nextTagsData.standardId = standardOptions[0]
+      prevFilters.standardId = 'All'
+      nextTagsData.standardId = {}
     }
   }
 
@@ -686,15 +686,6 @@ const StudentProfileReportFilters = ({
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                {/* <ControlDropDown
-                  by={filters.domainId}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(selected, 'domainId', false, true)
-                  }
-                  data={domainOptions}
-                  prefix="Domain(s)"
-                  showPrefixOnSelected={false}
-                /> */}
                 <MultiSelectDropdown
                   dataCy="standardProficiency"
                   label="Domain(s)"
@@ -719,15 +710,6 @@ const StudentProfileReportFilters = ({
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                {/* <ControlDropDown
-                  by={filters.standardId}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(selected, 'standardId', false, true)
-                  }
-                  data={standardOptions}
-                  prefix="Standard(s)"
-                  showPrefixOnSelected={false}
-                /> */}
                 <MultiSelectDropdown
                   dataCy="standardProficiency"
                   label="Standard(s)"

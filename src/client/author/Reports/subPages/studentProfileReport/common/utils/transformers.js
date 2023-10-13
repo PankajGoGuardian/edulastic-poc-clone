@@ -225,7 +225,6 @@ export const getDomains = (
 }
 
 export const getDomainOptions = (skillInfo = [], curriculumId = 'All') => [
-  { key: 'All', title: 'All Domains' },
   ...uniqBy(
     skillInfo.filter(
       (x) => `${x.curriculumId}` === `${curriculumId}` || curriculumId === 'All'
@@ -241,20 +240,24 @@ export const getStandardOptions = (
   skillInfo = [],
   domainId = 'All',
   curriculumId = 'All'
-) => [
-  { key: 'All', title: 'All Standards' },
-  ...uniqBy(
-    skillInfo.filter(
-      (x) =>
-        (`${x.domainId}` === `${domainId}` || domainId === 'All') &&
-        (`${x.curriculumId}` === `${curriculumId}` || curriculumId === 'All')
-    ),
-    'standardId'
-  ).map((x) => ({
-    key: `${x.standardId}`,
-    title: x.standard,
-  })),
-]
+) => {
+  const selectedDomains = domainId.split(',')
+  return [
+    ...uniqBy(
+      skillInfo.filter(
+        (x) =>
+          (selectedDomains.includes(`${x.domainId}`) ||
+            domainId === 'All' ||
+            domainId === '') &&
+          (`${x.curriculumId}` === `${curriculumId}` || curriculumId === 'All')
+      ),
+      'standardId'
+    ).map((x) => ({
+      key: `${x.standardId}`,
+      title: x.standard,
+    })),
+  ]
+}
 
 export const getDomainOptionsByGradeSubject = (
   domains,

@@ -38,6 +38,7 @@ import {
   tooltipParams,
   getHoveredBarDimensions,
 } from '../../util'
+import { getFGColor } from '../../../../src/utils/util'
 
 const Bar = withAnimationInfo(_Bar)
 
@@ -61,6 +62,7 @@ const LabelText = ({
   onBarMouseLeave,
   bdIndex,
   payload,
+  style,
 }) => {
   return (
     <g
@@ -74,6 +76,7 @@ const LabelText = ({
         y={y + height / 2}
         textAnchor="middle"
         dominantBaseline="middle"
+        style={style}
       >
         {formatter(value, payload)}
       </text>
@@ -446,6 +449,7 @@ export const SignedStackedBarChart = ({
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
+                        style={{ fill: getFGColor(bdItem.fill) }}
                       />
                     }
                   />

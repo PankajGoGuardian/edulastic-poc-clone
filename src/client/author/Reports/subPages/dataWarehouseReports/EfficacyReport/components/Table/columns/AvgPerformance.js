@@ -24,6 +24,7 @@ const AvgPerformance = ({ data, analyseBy, testInfo }) => {
         justify="center"
         color={preTestData.band?.color}
         padding="15px"
+        $dynamicColor
       >
         {preTestScore}
       </CustomStyledCell>
@@ -31,6 +32,7 @@ const AvgPerformance = ({ data, analyseBy, testInfo }) => {
         justify="center"
         color={postTestData.band?.color}
         padding="15px"
+        $dynamicColor
       >
         {postTestScore}
       </CustomStyledCell>

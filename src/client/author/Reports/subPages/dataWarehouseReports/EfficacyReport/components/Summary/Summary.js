@@ -74,7 +74,7 @@ const SummaryContainer = ({
       <SummaryWrapper>
         <StyledCard>
           <Tooltip title={preTestInfo.name}>
-            <StyledTitle color={preCardInfo.color}>
+            <StyledTitle color={preCardInfo.color} $dynamicColor>
               <TestTypeTag>PRE</TestTypeTag>&nbsp;
               {preTestInfo.name}
             </StyledTitle>
@@ -86,7 +86,7 @@ const SummaryContainer = ({
         </StyledCard>
         <StyledCard>
           <Tooltip title={postTestInfo.name}>
-            <StyledTitle color={postCardInfo.color}>
+            <StyledTitle color={postCardInfo.color} $dynamicColor>
               <TestTypeTag>POST</TestTypeTag>&nbsp;{postTestInfo.name}
             </StyledTitle>
           </Tooltip>
@@ -97,7 +97,9 @@ const SummaryContainer = ({
         </StyledCard>
         <EduIf condition={change !== null}>
           <StyledCard>
-            <StyledTitle color={grey}>Change</StyledTitle>
+            <StyledTitle color={grey} $dynamicColor>
+              Change
+            </StyledTitle>
             <div className="value">
               <span>
                 <div data-testid="change">

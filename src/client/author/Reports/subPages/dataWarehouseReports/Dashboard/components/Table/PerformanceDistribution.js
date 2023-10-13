@@ -42,7 +42,7 @@ const PerformanceDistribution = ({
   return (
     <EduIf condition={showDistribution}>
       <EduThen>
-        <HorizontalBar data={barData} />
+        <HorizontalBar data={barData} dynamicColor />
       </EduThen>
       <EduElse>
         <Tooltip title={band.name || ''}>

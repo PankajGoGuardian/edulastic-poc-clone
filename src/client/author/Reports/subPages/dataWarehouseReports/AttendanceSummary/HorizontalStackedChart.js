@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { sortDistributionBand } from '../common/utils'
+import { getFGColor } from '../../../../src/utils/util'
 
 const chartWrapWidth = 300
 
@@ -48,6 +49,7 @@ const ChartWrap = styled.div`
 const ChartBar = styled.div`
   width: ${(props) => (chartWrapWidth / 100) * props.width + 35}px;
   background-color: ${(props) => props.bgColor};
+  ${({ bgColor }) => (bgColor ? `color: ${getFGColor(bgColor)};` : '')}
   opacity: ${(props) => props.opacity};
   height: 35px;
   text-align: center;

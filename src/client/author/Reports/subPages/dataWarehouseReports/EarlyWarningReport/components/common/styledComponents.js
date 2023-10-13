@@ -9,6 +9,7 @@ import {
 import { Divider } from 'antd'
 import styled from 'styled-components'
 import { CustomStyledTable } from '../../../common/components/styledComponents'
+import { getFGColor } from '../../../../../../src/utils/util'
 
 export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};
@@ -30,6 +31,7 @@ export const CustomStyledCell = styled.div`
   font-weight: 800;
   box-shadow: ${(p) => (p.showBoxShadow ? '0px 10px 11px #0000000f' : '')};
   background-color: ${(p) => p.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
 `
 export const StyledEarlyWarningTable = styled(CustomStyledTable)`
   .ant-table-bordered .ant-table-tbody > tr > td {

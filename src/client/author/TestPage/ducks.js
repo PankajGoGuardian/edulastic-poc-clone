@@ -2942,6 +2942,12 @@ function* publishTestSaga({ payload }) {
       }
     }
   } catch (error) {
+    if (error.status === 403) {
+      return notification({
+        type: 'warn',
+        msg: error.message,
+      })
+    }
     Sentry.captureException(error)
     console.error(error)
     notification({

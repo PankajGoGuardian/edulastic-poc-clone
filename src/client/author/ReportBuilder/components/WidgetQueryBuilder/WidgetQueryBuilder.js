@@ -30,7 +30,9 @@ const DEFAULT_QUERY = {
   segments: [],
   timeDimensions: [],
   filters: [],
+  order: [],
   source: '',
+  total: true,
 }
 
 // TODO create custom hooks inside `./hooks` to reduce component size
@@ -70,6 +72,7 @@ export const WidgetQueryBuilder = ({
     segments,
     timeDimensions,
     filters,
+    orderFields,
   } = useMemo(() => {
     const selectedDatasource = dataSources.find((ds) => ds._id === value.source)
     const result = {
@@ -86,20 +89,31 @@ export const WidgetQueryBuilder = ({
       filtersOptions: [...result.factsOptions, ...result.dimensionsOptions],
     })
     Object.assign(result, {
-      facts: result.factsOptions.filter((m) => value.facts.includes(m.name)),
-      dimensions: result.dimensionsOptions.filter((m) =>
-        value.dimensions.includes(m.name)
-      ),
-      segments: result.segmentsOptions.filter((m) =>
-        value.segments.includes(m.name)
-      ),
-      timeDimensions: result.timeDimensionsOptions.filter((m) =>
-        value.timeDimensions.includes(m.name)
-      ),
-      filters: result.filtersOptions.flatMap((member) => {
-        const filter = value.filters.find((f) => f.member === member.name)
-        return filter ? [{ ...filter, dimension: member }] : []
+      facts: value.facts.flatMap((n) => {
+        const member = result.factsOptions.find((m) => m.name === n)
+        return member ? [member] : []
       }),
+      dimensions: value.dimensions.flatMap((n) => {
+        const member = result.dimensionsOptions.find((m) => m.name === n)
+        return member ? [member] : []
+      }),
+      segments: value.segments.flatMap((n) => {
+        const member = result.segmentsOptions.find((m) => m.name === n)
+        return member ? [member] : []
+      }),
+      timeDimensions: value.timeDimensions.flatMap((n) => {
+        const member = result.timeDimensionsOptions.find((m) => m.name === n)
+        return member ? [member] : []
+      }),
+      filters: value.filters.flatMap((filter) => {
+        const member = result.filtersOptions.find(
+          (m) => filter.member === m.name
+        )
+        return member ? [{ ...filter, dimension: member }] : []
+      }),
+      orderFields: result.filtersOptions.filter((m) =>
+        value.order?.some((of) => of[0] === m.name)
+      ),
     })
 
     return result
@@ -127,6 +141,12 @@ export const WidgetQueryBuilder = ({
         operator: m.operator,
         values: m.values,
       })),
+    })
+  }
+  const handleOrderChange = (_orderFields) => {
+    handleChange({
+      ...value,
+      order: _orderFields.map((m) => [m.name, 'asc']),
     })
   }
 
@@ -171,6 +191,15 @@ export const WidgetQueryBuilder = ({
             availableMembers={segmentsOptions}
             addMemberName="Segment"
             updateMethods={getMemberChangeHandler('segments', segmentsOptions)}
+            multiple
+          />
+          <StyledDivider type="vertical" />
+          <MemberGroup
+            title="Order"
+            members={orderFields}
+            availableMembers={filtersOptions}
+            addMemberName="Order"
+            updateMethods={handleOrderChange}
             multiple
           />
           <StyledDivider type="vertical" />

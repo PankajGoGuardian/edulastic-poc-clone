@@ -24,6 +24,16 @@ const FilterInputs = {
       value={(values && values[0]) || ''}
     />
   ),
+  boolean: ({ onChange }) => (
+    <Select
+      style={{ width: 300 }}
+      mode="tags"
+      onChange={(values) => onChange(values.map((v) => v === 'true'))}
+    >
+      <Select.Option value="true">True</Select.Option>
+      <Select.Option value="false">False</Select.Option>
+    </Select>
+  ),
 }
 FilterInputs.string.propTypes = {
   values: PropTypes.array,

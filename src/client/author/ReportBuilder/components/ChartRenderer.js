@@ -1,7 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Spin, Row, Col, Statistic, Table, Tooltip as AntDToolTip } from 'antd'
+import {
+  Spin,
+  Row,
+  Col,
+  Statistic,
+  Table,
+  Tooltip as AntDToolTip,
+  Input,
+} from 'antd'
 import {
   CartesianGrid,
   PieChart,
@@ -67,6 +75,28 @@ function getTrimmedText(stringVal = '', letterCount = '15') {
     shortenString = shortenString.concat('...')
   }
   return shortenString
+}
+const EditableLabel = (props) => {
+  const { value, ...rest } = props
+  console.log(props)
+  return (
+    <foreignObject
+      x={20 ?? props.viewBox.x}
+      y={174.5 ?? props.viewBox.y}
+      width={props.viewBox.width}
+      height={props.viewBox.height}
+      transform={`rotate(-90, ${20 ?? props.viewBox.x}, ${
+        174.5 ?? props.viewBox.y
+      })`}
+      {...rest}
+    >
+      <Input
+        style={{ border: 'none' }}
+        defaultValue={props.value}
+        className="asd"
+      />
+    </foreignObject>
+  )
 }
 
 const CartesianChart = ({
@@ -139,6 +169,7 @@ const CartesianChart = ({
             // tickFormatter={localeFormatter}
             yAxisId={member.name}
             label={{ value: member.title ?? member.name, angle: -90 }}
+            // label={<EditableLabel value={member.title} />}
             type={getYAxesType(member)}
             orientation={
               i >= resultSet.yAxesFields.length / 2 ? 'right' : 'left'
@@ -148,7 +179,7 @@ const CartesianChart = ({
         <CartesianGrid vertical={false} />
         {children}
         <Legend />
-        <Tooltip formatter={localeFormatter} />
+        <Tooltip formatter={localeFormatter} cursor={false} />
       </ChartComponent>
     </ResponsiveContainer>
   </MainDiv>
@@ -278,6 +309,7 @@ const TypeToChartComponent = {
       onChange={(pagination) => handlePagination(pagination?.current || 1)}
       columns={resultSet.columns.map((c) => ({ ...c, dataIndex: c.key }))}
       dataSource={resultSet.table}
+      scroll={{ x: true }}
     />
   ),
   number: ({ resultSet }) => (
@@ -349,7 +381,7 @@ const ChartRenderer = ({
   const { layout, query } = widget
   const { options } = layout
   const [pageFilter, setPageFilter] = useState({
-    limit: 10,
+    limit: 50,
     offset: 0,
     total: query?.total ?? 25,
   })

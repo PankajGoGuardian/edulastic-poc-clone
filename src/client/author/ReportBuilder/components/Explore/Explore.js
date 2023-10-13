@@ -175,7 +175,7 @@ const Explore = (props) => {
   }
 
   const handleApply = () => {
-    getChartData({ query: { ...editQuery, limit: 10, offset: 0 } })
+    getChartData({ query: { ...editQuery, limit: 100, offset: 0 } })
   }
 
   return (

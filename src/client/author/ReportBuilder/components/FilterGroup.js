@@ -21,20 +21,22 @@ const operators = [
   {
     name: 'equals',
     title: 'equals',
-    type: ['time', 'string', ...NUMBER_TYPES],
+    type: ['time', 'string', ...NUMBER_TYPES, 'boolean'],
   },
-  { name: 'AND', title: 'AND', type: ['string', ...NUMBER_TYPES] },
-  { name: 'OR', title: 'OR', type: ['string', ...NUMBER_TYPES] },
   {
     name: 'notEquals',
     title: 'does not equal',
-    type: ['time', 'string', ...NUMBER_TYPES],
+    type: ['time', 'string', ...NUMBER_TYPES, 'boolean'],
   },
-  { name: 'set', title: 'is set', type: ['time', 'string', ...NUMBER_TYPES] },
+  {
+    name: 'set',
+    title: 'is set',
+    type: ['time', 'string', ...NUMBER_TYPES, 'boolean'],
+  },
   {
     name: 'notSet',
     title: 'is not set',
-    type: ['time', 'string', ...NUMBER_TYPES],
+    type: ['time', 'string', ...NUMBER_TYPES, 'boolean'],
   },
   { name: 'contains', title: 'contains', type: ['time', 'string'] },
   {

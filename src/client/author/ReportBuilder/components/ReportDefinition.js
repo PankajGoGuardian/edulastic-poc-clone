@@ -29,7 +29,7 @@ const defaultLayout = (w) => ({
   y: w.options.y || 0,
   w: w.options.w || 8,
   h: w.options.h || 8,
-  minW: 4,
+  minW: 8,
   minH: 8,
 })
 
@@ -81,7 +81,7 @@ const ReportDefinition = ({ report, setCurrentReport }) => {
 
   return (
     <DragField
-      margin={[12, 12]}
+      margin={[18, 18]}
       containerPadding={[0, 0]}
       onDragStart={() => setIsDragging(true)}
       onDragStop={() => setIsDragging(false)}

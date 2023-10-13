@@ -15,7 +15,8 @@ const EditWidgetLayout = ({ value, onChange, chartData }) => {
   const { query, layout } = value
   const chartType = layout.type
   const { facts = [], dimensions = [] } = query
-  const showCustomAxesOption = ['bar', 'line', 'area'].includes(chartType)
+  const showCustomAxesOption =
+    ['bar', 'line', 'area'].includes(chartType) && !isEmpty(chartData)
 
   useEffect(() => {
     if (!isEmpty(chartData)) {

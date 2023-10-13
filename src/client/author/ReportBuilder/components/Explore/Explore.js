@@ -54,6 +54,11 @@ const Explore = (props) => {
   const [editWidgetLayout, setEditWidgetLayout] = useState(
     DEFAULT_WIDGET_LAYOUT
   )
+  const [title, setTitle] = useState('New Widget')
+  const [reportTitle, setReportTitle] = useState('New Report Title')
+  const [reportDescription, setReportDescription] = useState(
+    'New Report Description'
+  )
 
   useEffect(() => {
     if (definitionId) {
@@ -64,19 +69,21 @@ const Explore = (props) => {
   // TODO better create an `editWidget` or `editReport` with same approach as `editQuery`
   useEffect(() => {
     if (isEmpty(report)) return
+    setReportTitle(report.title)
+    setReportDescription(report.description)
     const widget = report.widgets.find((w) => w._id === widgetId)
     if (!widget) return
     setEditQuery(widget.query)
-    setEditWidgetLayout(widget.layout)
+    setEditWidgetLayout({
+      ...editWidgetLayout,
+      ...widget.layout,
+      options: { ...editWidgetLayout.options, ...widget.layout.options },
+    })
+    setTitle(widget.title)
   }, [report, widgetId])
 
   // TODO following state can either be grouped(editReport, editWidget, editLayout, etc) or sent to child to manage or converted to useMemo.
   const [titleModalVisible, setTitleModalVisible] = useState(false)
-  const [title, setTitle] = useState('New Widget')
-  const [reportTitle, setReportTitle] = useState('New Report Title')
-  const [reportDescription, setReportDescription] = useState(
-    'New Report Description'
-  )
 
   useEffect(() => {
     getMetaData()
@@ -102,15 +109,6 @@ const Explore = (props) => {
           layout: editWidgetLayout,
         }
 
-  // TODO : Don't use `||`, cannot set empty ('') value to description
-  const finalTitle = title || widgetData?.title || 'New Widget'
-  const finalReportTitle =
-    reportTitle || (report && report.title) || 'New Report'
-  const finalReportDescription =
-    reportDescription ||
-    (report && report.description) ||
-    'New Report Description'
-
   if (isLoading || isItemDataLoading) {
     return <Spin />
   }
@@ -133,11 +131,11 @@ const Explore = (props) => {
                 ...widgetData,
                 layout: editWidgetLayout,
                 query: editQuery,
-                title: finalTitle,
+                title,
               }
             }),
-            title: finalReportTitle,
-            description: finalReportDescription,
+            title: reportTitle,
+            description: reportDescription,
           },
         },
       })
@@ -152,11 +150,11 @@ const Explore = (props) => {
               {
                 layout: editWidgetLayout,
                 query: editQuery,
-                title: finalTitle,
+                title,
               },
             ],
-            title: finalReportTitle,
-            description: finalReportDescription,
+            title: reportTitle,
+            description: reportDescription,
           },
         },
       })
@@ -166,11 +164,11 @@ const Explore = (props) => {
           {
             layout: editWidgetLayout,
             query: editQuery,
-            title: finalTitle,
+            title,
           },
         ],
-        title: finalReportTitle,
-        description: finalReportDescription,
+        title: reportTitle,
+        description: reportDescription,
       })
     }
     setAddingToReport(false)
@@ -185,11 +183,11 @@ const Explore = (props) => {
       <TitleModal
         titleModalVisible={titleModalVisible}
         setTitleModalVisible={setTitleModalVisible}
-        setTitle={setTitle}
         title={title}
+        setTitle={setTitle}
         reportTitle={reportTitle}
-        reportDescription={reportDescription}
         setReportTitle={setReportTitle}
+        reportDescription={reportDescription}
         setReportDescription={setReportDescription}
         handleSaveOrUpdateOfReport={handleSaveOrUpdateOfReport}
       />

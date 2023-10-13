@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Spin, Button, Typography } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import ReportDefinition from './ReportDefinition'
 import {
   getReportDataAction,
@@ -17,6 +18,8 @@ const ReportDefinitionWrapper = (props) => {
   const { isLoading, report, getReportData, match, updateReport } = props
   const { id } = match.params
   const [currentReport, setCurrentReport] = useState(report)
+  const previousWidgetsState = useRef(null)
+
   useEffect(() => {
     setCurrentReport(report)
   }, [report])
@@ -29,6 +32,7 @@ const ReportDefinitionWrapper = (props) => {
 
   // TODO maybe implement autosave using setTimeout also ?
   const saveReport = useCallback(() => {
+    previousWidgetsState.current = null
     if (!currentReport || currentReport === report) return
     updateReport({
       updateDoc: {
@@ -52,6 +56,59 @@ const ReportDefinitionWrapper = (props) => {
         </div>
       </Spin>
     )
+  }
+
+  const sorter = (widgetA, widgetB) => {
+    if (isEmpty(widgetA) || isEmpty(widgetB)) return 0
+    const {
+      layout: {
+        options: { x: xa, y: ya },
+      },
+    } = widgetA
+    const {
+      layout: {
+        options: { x: xb, y: yb },
+      },
+    } = widgetB
+    if (ya !== yb) return ya - yb
+    return xa - xb
+  }
+
+  const autoAdjustLayout = () => {
+    setCurrentReport((prevReport) => {
+      if (!prevReport) return prevReport
+      previousWidgetsState.current = prevReport.widgets
+      return {
+        ...prevReport,
+        widgets: prevReport.widgets.sort(sorter).map((widget, index) => {
+          return {
+            ...widget,
+            layout: {
+              ...widget.layout,
+              options: {
+                ...widget.layout.options,
+                x: index % 2 === 1 ? 13 : 0,
+                y: 0,
+                w: 12,
+                h: 8,
+              },
+            },
+          }
+        }),
+      }
+    })
+  }
+
+  const undoAutoAdjustLayoutAction = () => {
+    if (!previousWidgetsState.current) return
+    setCurrentReport((prevReport) => {
+      if (!prevReport) return prevReport
+      return {
+        ...prevReport,
+        widgets: previousWidgetsState.current,
+      }
+    })
+    previousWidgetsState.current = null
   }
 
   const Empty = () => (
@@ -80,6 +137,18 @@ const ReportDefinitionWrapper = (props) => {
         }
         button={
           <>
+            <StyledButton
+              type="primary"
+              onClick={
+                previousWidgetsState.current
+                  ? undoAutoAdjustLayoutAction
+                  : autoAdjustLayout
+              }
+            >
+              {previousWidgetsState.current
+                ? 'Undo Changes'
+                : 'Auto Adjust Layout'}
+            </StyledButton>
             <StyledButton type="primary" onClick={saveReport}>
               Save Report
             </StyledButton>

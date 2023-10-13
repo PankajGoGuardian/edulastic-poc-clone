@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Spin, Row, Col, Statistic, Table } from 'antd'
+import { Spin, Row, Col, Statistic, Table, Tooltip as AntDToolTip } from 'antd'
 import {
   CartesianGrid,
   PieChart,
@@ -31,10 +31,11 @@ import {
   getIsChartDataLoadingSelector,
 } from '../ducks'
 import { buildChartData } from '../util'
+// import { CustomizedTooltip } from './CustomizedTooltip'
 
 const localeFormatter = (item) => (item || '').toLocaleString()
 const dateFormatter = (item) => moment(item).format('MMM YY')
-const colors = ['#3DB04E', 'EB9C5C', '#393B23', '#F3FCCF']
+const colors = ['#3DB04E', '#ee6c4d', '#118ab2', '#073b4c', '#ffd166']
 const xAxisFormatter = (item) => {
   if (moment(item).isValid()) {
     return dateFormatter(item)
@@ -60,6 +61,14 @@ function getYAxesType(member) {
   }
 }
 
+function getTrimmedText(stringVal = '', letterCount = '20') {
+  let shortenString = stringVal.substring(0, letterCount)
+  if (shortenString.length !== stringVal.length) {
+    shortenString = shortenString.concat('...')
+  }
+  return shortenString
+}
+
 const CartesianChart = ({
   resultSet,
   children,
@@ -73,10 +82,18 @@ const CartesianChart = ({
 }) => (
   <MainDiv>
     {finalAxesLabel?.y && (
-      <YAxisLabelContainer>{finalAxesLabel.y}</YAxisLabelContainer>
+      <AntDToolTip title={finalAxesLabel.y}>
+        <YAxisLabelContainer>
+          {getTrimmedText(finalAxesLabel.y)}
+        </YAxisLabelContainer>
+      </AntDToolTip>
     )}
     {finalAxesLabel?.x && (
-      <XAxisLabelContainer>{finalAxesLabel.x}</XAxisLabelContainer>
+      <AntDToolTip title={finalAxesLabel.x}>
+        <XAxisLabelContainer>
+          {getTrimmedText(finalAxesLabel.x, 40)}
+        </XAxisLabelContainer>
+      </AntDToolTip>
     )}
     <StyledChartNavButton
       type="primary"
@@ -250,12 +267,12 @@ const TypeToChartComponent = {
       </PieChart>
     </ResponsiveContainer>
   ),
-  table: ({ resultSet, pageFilter, handlePagination }) => (
+  table: ({ resultSet, finalPageFilter, handlePagination }) => (
     <TableData
       pagination={{
-        pageSize: pageFilter.limit,
-        total: pageFilter.total,
-        current: Math.ceil(pageFilter.offset / pageFilter.limit) + 1,
+        pageSize: finalPageFilter.limit,
+        total: finalPageFilter.total,
+        current: Math.ceil(finalPageFilter.offset / finalPageFilter.limit) + 1,
         position: 'top',
       }}
       onChange={(pagination) => handlePagination(pagination?.current || 1)}
@@ -298,7 +315,7 @@ const renderChart = (Component) => ({
   widgetId,
   goToNextPage,
   goToPrevPage,
-  pageFilter,
+  finalPageFilter,
   handlePagination,
   chartNavLeftVisibility,
   chartNavRightVisibility,
@@ -310,7 +327,7 @@ const renderChart = (Component) => ({
       resultSet={resultSet}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-      pageFilter={pageFilter}
+      finalPageFilter={finalPageFilter}
       handlePagination={handlePagination}
       chartNavLeftVisibility={chartNavLeftVisibility}
       chartNavRightVisibility={chartNavRightVisibility}
@@ -345,6 +362,8 @@ const ChartRenderer = ({
     }
   }, [JSON.stringify(query), pageFilter])
 
+  const finalPageFilter = useMemo(() => pageFilter, [chartData])
+
   const resultSet = useMemo(() => {
     if (!isEmpty(chartData)) {
       return buildChartData(chartData, chartType, options.coOrds)
@@ -371,12 +390,11 @@ const ChartRenderer = ({
     }))
   }
 
-  const chartNavLeftVisibility = pageFilter.offset !== 0
+  const chartNavLeftVisibility = finalPageFilter.offset !== 0
   const chartNavRightVisibility =
-    pageFilter.total - pageFilter.offset > pageFilter.limit
+    finalPageFilter.total - finalPageFilter.offset > finalPageFilter.limit
 
   const finalAxesLabel = axesLabel ?? layout.options.axesLabel
-  // const finalAxesLabel = axesLabel ?? { x: 'x axis label', y: 'y axis label' }
 
   if (isChartDataLoading && !widgetId) {
     return <Spinner />
@@ -389,7 +407,7 @@ const ChartRenderer = ({
       widgetId,
       goToPrevPage,
       goToNextPage,
-      pageFilter,
+      finalPageFilter,
       handlePagination,
       chartNavLeftVisibility,
       chartNavRightVisibility,

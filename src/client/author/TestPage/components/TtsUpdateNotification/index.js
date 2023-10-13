@@ -37,17 +37,18 @@ const NotificationListener = ({ user, location, history }) => {
         successCount, // how many test has been process successfully
         totalCount, // how many total test should be processed
         status,
+        testId,
       } = doc
 
       if (status === 'done' && !notificationIds.includes(doc.__id)) {
         let _message = message
 
-        // updating message based upon notification document for bulk update assignment settings
+        // updating message based upon notification document for tts update
         if (collection === ttsUpdateNotificationCollection) {
           if (successCount !== totalCount) {
-            _message = `TTS failed for ${totalCount} assignments. Please try again.`
+            _message = `Text to speech generation failed.`
           } else {
-            _message = `TTS updated for ${successCount} out of ${totalCount} assignments.`
+            _message = `Text to speech generated successfully.`
           }
         }
 
@@ -61,13 +62,11 @@ const NotificationListener = ({ user, location, history }) => {
         // if status is initiated and we are displaying, delete the notification document from firebase
         deleteNotificationDocument(doc.__id, collection)
 
-        // if user at assignments home page and bulk action has been processed successfully
-        const isAssignmentsHomePage = location?.pathname?.includes(
-          'author/assignments'
-        )
+        // if user at test page and tts has been processed successfully
+        const isTestPage = location?.pathname?.includes(testId)
 
-        if (isAssignmentsHomePage) {
-          setTimeout(() => history.push('author/assignments'), 3000)
+        if (successCount > 0 && isTestPage) {
+          setTimeout(() => history.push(location.pathname), 3000)
         }
       }
     })

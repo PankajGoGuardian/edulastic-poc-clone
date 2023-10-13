@@ -4033,7 +4033,9 @@ function* fetchSavedTestSettingsListSaga({ payload }) {
     const settingsList = yield call(settingsApi.getTestSettingsList, payload) ||
       []
     yield put(
-      setTestSettingsListAction(settingsList.filter(({ title }) => !!title))
+      setTestSettingsListAction(
+        settingsList.filter((setting) => !!setting?.title)
+      )
     )
   } catch (err) {
     Sentry.captureException(err)

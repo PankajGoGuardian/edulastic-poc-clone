@@ -22,7 +22,7 @@ import {
   setChartDataAction,
 } from '../../ducks'
 import { WidgetQueryBuilder } from '../WidgetQueryBuilder'
-import { DEFAULT_WIDGET_LAYOUT } from '../../const'
+import { DEFAULT_PAGESIZE, DEFAULT_WIDGET_LAYOUT } from '../../const'
 
 const isValidQuery = (query) => {
   return query?.dimensions?.length || query?.facts?.length
@@ -175,7 +175,9 @@ const Explore = (props) => {
   }
 
   const handleApply = () => {
-    getChartData({ query: { ...editQuery, limit: 100, offset: 0 } })
+    getChartData({
+      query: { ...editQuery, limit: DEFAULT_PAGESIZE, offset: 0 },
+    })
   }
 
   return (

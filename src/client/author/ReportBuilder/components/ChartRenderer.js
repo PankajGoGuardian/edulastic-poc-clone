@@ -39,6 +39,7 @@ import {
   getIsChartDataLoadingSelector,
 } from '../ducks'
 import { buildChartData } from '../util'
+import { DEFAULT_PAGESIZE } from '../const'
 // import { CustomizedTooltip } from './CustomizedTooltip'
 
 const localeFormatter = (item) => (item || '').toLocaleString()
@@ -381,18 +382,18 @@ const ChartRenderer = ({
   const { layout, query } = widget
   const { options } = layout
   const [pageFilter, setPageFilter] = useState({
-    limit: 50,
+    limit: DEFAULT_PAGESIZE,
     offset: 0,
     total: query?.total ?? 25,
   })
 
   const component = TypeToMemoChartComponent[chartType]
   useEffect(() => {
-    if (!isEmpty(query) && widgetId) {
-      const queryWithPageFilters = { ...query, ...pageFilter }
+    if (!isEmpty(query)) {
+      const queryWithPageFilters = { ...query, ...pageFilter, total: true }
       getChartData({ widgetId, query: queryWithPageFilters })
     }
-  }, [JSON.stringify(query), pageFilter])
+  }, [pageFilter])
 
   const finalPageFilter = useMemo(() => pageFilter, [chartData])
 
@@ -404,21 +405,21 @@ const ChartRenderer = ({
   }, [chartType, chartData, widget])
 
   const goToPrevPage = () => {
-    setPageFilter(() => ({
-      ...pageFilter,
-      offset: pageFilter.offset - pageFilter.limit,
+    setPageFilter((p) => ({
+      ...p,
+      offset: p.offset - p.limit,
     }))
   }
   const goToNextPage = () => {
-    setPageFilter(() => ({
-      ...pageFilter,
-      offset: pageFilter.offset + pageFilter.limit,
+    setPageFilter((p) => ({
+      ...p,
+      offset: p.offset + p.limit,
     }))
   }
   const handlePagination = (pageNumber) => {
-    setPageFilter(() => ({
-      ...pageFilter,
-      offset: Math.max(pageNumber - 1, 0) * pageFilter.limit,
+    setPageFilter((p) => ({
+      ...p,
+      offset: Math.max(pageNumber - 1, 0) * p.limit,
     }))
   }
 

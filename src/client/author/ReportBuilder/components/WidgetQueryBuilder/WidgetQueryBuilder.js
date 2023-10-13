@@ -146,7 +146,7 @@ export const WidgetQueryBuilder = ({
   const handleOrderChange = (_orderFields) => {
     handleChange({
       ...value,
-      order: _orderFields.map((m) => [m.name, 'asc']),
+      order: _orderFields.map((m) => [m.name, 'desc']),
     })
   }
 

@@ -53,7 +53,9 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
       }
       timeGroup.forEach((timeGroupObj) => {
         if (!isEmpty(facts)) {
-          facts.forEach(({ name: factName, title: factTitle }) => {
+          facts.forEach((f) => {
+            if (!f) return
+            const { name: factName, title: factTitle } = f
             const key = !isEmpty(dimensions)
               ? `${dimensions
                   .map(({ name: dimensionName }) => timeGroupObj[dimensionName])
@@ -90,7 +92,9 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
         category: key,
       }
       if (!isEmpty(facts)) {
-        facts.forEach(({ name: factName, title: factTitle }) => {
+        facts.forEach((f) => {
+          if (!f) return
+          const { name: factName, title: factTitle } = f
           dataPivotRow[factName] = record[factName]
           seriesNames.push({ key: factName, title: factTitle })
         })
@@ -113,7 +117,7 @@ export const buildChartData = (apiData, chartType, coOrds = {}) => {
   return {
     yAxesFields: facts,
     xAxesFields: dimensions,
-    data: finalDataPivot.slice(0, 10),
+    data: finalDataPivot,
     seriesNames: finalSeriesNames,
   }
 }

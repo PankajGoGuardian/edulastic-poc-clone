@@ -217,9 +217,7 @@ function* updateReportSaga({ payload }) {
       yield put(setReportDataAction(updatedReport))
     } else {
       return yield put(
-        push(
-          `/author/reports/report-builder?reportDefinitionId=${updatedReport._id}`
-        )
+        push(`/author/reports/report-builder/definition/${updatedReport._id}`)
       )
     }
   } catch (err) {

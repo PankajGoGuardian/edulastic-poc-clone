@@ -1,3 +1,5 @@
+export const DEFAULT_PAGESIZE = 20
+
 export const DEFAULT_WIDGET_LAYOUT = {
   type: 'table',
   options: {

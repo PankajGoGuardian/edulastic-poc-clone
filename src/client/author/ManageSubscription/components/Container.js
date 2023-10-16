@@ -201,7 +201,7 @@ const ManageSubscriptionContainer = ({
       setDataSource(users)
       return
     }
-    const filteredData = users.filter(
+    const filteredData = users?.filter(
       (entry) =>
         entry?.username?.includes(currValue) ||
         entry?.email?.includes(currValue)

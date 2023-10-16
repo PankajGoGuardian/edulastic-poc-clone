@@ -132,11 +132,11 @@ const VideoPreview = ({
      */
     if (isiOS()) {
       if (videoRef?.current?.isMuted?.()) {
-        videoRef?.current?.unMute()
-        videoRef?.current?.mute()
+        videoRef?.current?.unMute?.()
+        videoRef?.current?.mute?.()
       } else {
-        videoRef?.current?.mute()
-        videoRef?.current?.unMute()
+        videoRef?.current?.mute?.()
+        videoRef?.current?.unMute?.()
       }
     }
 

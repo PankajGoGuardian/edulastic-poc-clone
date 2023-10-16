@@ -14,6 +14,7 @@ import MuteUnmute from './MuteUnmute'
 import PlayPause from './PlayPause'
 import SeekBar from './SeekBar'
 import Volume from './Volume'
+import { SEEK_DATA } from '../../constants'
 
 import {
   AnnotationsContainer,
@@ -72,6 +73,8 @@ const VideoPreview = ({
   const videoRef = forwardedVideoRef
   const markerArea = useRef()
   const annotationsRef = useRef()
+  const sliderRef = useRef()
+  const isSeekBarFocusedRef = useRef(false)
 
   const [
     visibleAnnotation,
@@ -84,6 +87,10 @@ const VideoPreview = ({
   const [muted, setMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [isReady, setIsReady] = useState(0)
+
+  const handleSetIsSeekBarFocused = (isFocused) => {
+    isSeekBarFocusedRef.current = isFocused
+  }
 
   const onReady = () => {
     setIsReady(true)
@@ -235,12 +242,34 @@ const VideoPreview = ({
 
   const seekTo = (time) => {
     if (videoRef) {
+      setCurrentTime(time)
       videoRef.current?.seekTo?.(time)
     }
     if (visibleAnnotation?.length) {
       setVisibleAnnotation([])
     }
     markerArea?.current?.close?.()
+  }
+
+  const handleKeyboardSeek = (direction) => {
+    const isSeekBarFocused = isSeekBarFocusedRef.current
+    if (!isSeekBarFocused && videoRef.current) {
+      sliderRef?.current?.focus?.()
+      const videoDuration = getVideoDuration(videoRef)
+      let _currentTime = getCurrentTime(videoRef)
+      let updatedCurrentTime = _currentTime
+      if (direction === SEEK_DATA.FORWARD) {
+        updatedCurrentTime = _currentTime + SEEK_DATA.SEEK_STEP_COUNT
+        _currentTime =
+          updatedCurrentTime > videoDuration ? _currentTime : updatedCurrentTime
+        seekTo(_currentTime)
+      } else if (direction === SEEK_DATA.BACKWARD) {
+        updatedCurrentTime = _currentTime - SEEK_DATA.SEEK_STEP_COUNT
+        _currentTime =
+          updatedCurrentTime < 1 ? _currentTime : updatedCurrentTime
+        seekTo(_currentTime)
+      }
+    }
   }
 
   const onEnded = () => {
@@ -430,6 +459,7 @@ const VideoPreview = ({
             onProgress={onProgress}
             volume={volumne}
             muted={muted}
+            handleKeyboardSeek={handleKeyboardSeek}
           />
           {!playing && currentTime === 0 && (
             <BigPlayButton>
@@ -551,6 +581,8 @@ const VideoPreview = ({
             duration={duration}
             currentTime={currentTime}
             seekTo={seekTo}
+            sliderRef={sliderRef}
+            handleSetIsSeekBarFocused={handleSetIsSeekBarFocused}
           />
         </Col>
         <Col style={{ flex: '0 0 auto' }}>

@@ -156,3 +156,13 @@ export const isValidVideoUrl = (url: string) => {
     return false
   }
 }
+
+export const isInputElement = (targetElement) => {
+  if (
+    targetElement?.tagName === 'INPUT' ||
+    targetElement?.contentEditable === 'true'
+  ) {
+    return true
+  }
+  return false
+}

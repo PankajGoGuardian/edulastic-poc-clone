@@ -1,9 +1,16 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { Slider } from 'antd'
 import styled from 'styled-components'
 
-const SeekBar = ({ duration, currentTime, style, seekTo, marks = {} }) => {
-  const sliderRef = useRef()
+const SeekBar = ({
+  duration,
+  currentTime,
+  style,
+  seekTo,
+  marks = {},
+  sliderRef,
+  handleSetIsSeekBarFocused,
+}) => {
   const _handleChange = (value) => {
     seekTo(value)
   }
@@ -20,6 +27,12 @@ const SeekBar = ({ duration, currentTime, style, seekTo, marks = {} }) => {
       style={{ ...style }}
       onChange={_handleChange}
       tooltipVisible={false}
+      onFocus={() => {
+        handleSetIsSeekBarFocused(true)
+      }}
+      onBlur={() => {
+        handleSetIsSeekBarFocused(false)
+      }}
     />
   )
 }

@@ -81,6 +81,7 @@ import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
 import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
 import { SectionsStartPage } from './student/SectionsStart'
+import TestPreview from './author/Assignments/components/Container/TestPreview'
 
 const {
   ASSESSMENT,
@@ -901,6 +902,10 @@ class App extends Component {
                 <Route
                   path="/public/test/:id"
                   render={() => <TestDemoPlayer />}
+                />
+                <Route
+                  path="/public/test-preview/:testId"
+                  render={() => <TestPreview />}
                 />
                 <Route
                   path="/v1/testItem/:id"

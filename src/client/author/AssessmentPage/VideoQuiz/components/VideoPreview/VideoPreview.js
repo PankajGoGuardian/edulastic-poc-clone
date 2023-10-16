@@ -248,7 +248,6 @@ const VideoPreview = ({
     if (visibleAnnotation?.length) {
       setVisibleAnnotation([])
     }
-    markerArea?.current?.close?.()
   }
 
   const handleKeyboardSeek = (direction) => {

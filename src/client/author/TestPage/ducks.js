@@ -2037,6 +2037,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.showHintsToStudents = true
     settings.penaltyOnUsingHints = 0
     settings.showTtsForPassages = true
+    settings.referenceDocAttributes = {}
     delete settings.keypad
   }
 
@@ -2225,34 +2226,42 @@ export function* receiveTestByIdSaga({ payload }) {
           createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
       )
     }
-    const questions = getQuestions(entity.itemGroups)
+    const features = yield select(getUserFeatures)
+
+    const testEntity = produce(entity, (draft) => {
+      // Setting default value for free user
+      if (!payload.isPlaylist && features.free && !features.premium) {
+        draft.referenceDocAttributes = {}
+      }
+    })
+
+    const questions = getQuestions(testEntity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
-    yield put(receiveTestByIdSuccess(entity))
-    yield put(getDefaultTestSettingsAction(entity))
+    yield put(receiveTestByIdSuccess(testEntity))
+    yield put(getDefaultTestSettingsAction(testEntity))
     yield take(SET_DEFAULT_SETTINGS_LOADING)
     yield take(SET_DEFAULT_SETTINGS_LOADING)
-    if (!isEmpty(entity.freeFormNotes)) {
+    if (!isEmpty(testEntity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
-          [entity.itemGroups?.[0]?.items?.[0]?._id]: {
-            scratchpad: entity.freeFormNotes || {},
+          [testEntity.itemGroups?.[0]?.items?.[0]?._id]: {
+            scratchpad: testEntity.freeFormNotes || {},
           },
         })
       )
     }
-    if (entity.thumbnail === defaultImage) {
+    if (testEntity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: get(entity, 'subjects[0]', 'Other Subjects'),
-        standard: get(entity, 'summary.standards[0].identifier', ''),
+        subject: get(testEntity, 'subjects[0]', 'Other Subjects'),
+        standard: get(testEntity, 'summary.standards[0].identifier', ''),
       })
       yield put(updateDefaultThumbnailAction(thumbnail))
     }
 
     const userRole = yield select(getUserRole)
-    const features = yield select(getUserFeatures)
     const assignSettings = getAssignSettings({
       userRole,
-      entity,
+      entity: testEntity,
       isPlaylist: payload.isPlaylist,
       features,
     })
@@ -2281,7 +2290,7 @@ export function* receiveTestByIdSaga({ payload }) {
     ])
     defaultTestSettings = {
       ...defaultTestSettings,
-      testContentVisibility: entity.testContentVisibility,
+      testContentVisibility: testEntity.testContentVisibility,
     }
     const state = yield select((s) => ({
       performanceBands: get(s, 'performanceBandReducer.profiles', []),
@@ -2292,18 +2301,18 @@ export function* receiveTestByIdSaga({ payload }) {
     if (payload.options?.assigningNew) {
       const performanceBandId =
         state.defaultTestTypeProfiles.performanceBand?.[
-          getProfileKey(entity.testType)
+          getProfileKey(testEntity.testType)
         ]
       const standardProficiencyId =
         state.defaultTestTypeProfiles.standardProficiency?.[
-          getProfileKey(entity.testType)
+          getProfileKey(testEntity.testType)
         ]
       assignmentSettings = { ...assignmentSettings }
       assignmentSettings.performanceBand = pick(
         multiFind(
           state.performanceBands,
-          [{ _id: entity.performanceBand._id }, { _id: performanceBandId }],
-          entity.performanceBand
+          [{ _id: testEntity.performanceBand._id }, { _id: performanceBandId }],
+          testEntity.performanceBand
         ),
         ['_id', 'name']
       )
@@ -2311,17 +2320,17 @@ export function* receiveTestByIdSaga({ payload }) {
         multiFind(
           state.standardsProficiencies,
           [
-            { _id: entity.standardGradingScale._id },
+            { _id: testEntity.standardGradingScale._id },
             { _id: standardProficiencyId },
           ],
-          entity.standardGradingScale
+          testEntity.standardGradingScale
         ),
         ['_id', 'name']
       )
     }
     yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
-    yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    yield put(addItemsToAutoselectGroupsRequestAction(testEntity))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })

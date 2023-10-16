@@ -28,6 +28,18 @@ const isValidQuery = (query) => {
   return query?.dimensions?.length || query?.facts?.length
 }
 
+/**
+ * @param {string} name
+ */
+const nextName = (name) => {
+  let appended = false
+  const appendedName = name.replace(/ - copy (\d+)$/, (match, number) => {
+    appended = true
+    return ` - copy ${parseInt(number, 10) + 1}`
+  })
+  return appended ? appendedName : `${name} - copy 1`
+}
+
 // TODO create custom hooks inside `./hooks` to reduce component size
 const Explore = (props) => {
   const {
@@ -44,17 +56,23 @@ const Explore = (props) => {
     updateReportDefinition,
     setChartData,
   } = props
+  const { widget: sourceWidget } = history.location.state || {}
   const { definitionId, widgetId } = match.params
   const isEditWidgetFlow = definitionId && widgetId
   const isAddWidgetToReportFlow = definitionId && !widgetId
   const isCreateReportWithWidgetFlow = !definitionId && !widgetId
 
   const [addingToReport, setAddingToReport] = useState(false)
-  const [editQuery, setEditQuery] = useState({})
-  const [editWidgetLayout, setEditWidgetLayout] = useState(
-    DEFAULT_WIDGET_LAYOUT
+  // TODO combine editQuery & editWidgetLayout & title into editWidget.
+  const [editQuery, setEditQuery] = useState(
+    sourceWidget ? sourceWidget.query : {}
   )
-  const [title, setTitle] = useState('New Widget')
+  const [editWidgetLayout, setEditWidgetLayout] = useState(
+    sourceWidget ? sourceWidget.layout : DEFAULT_WIDGET_LAYOUT
+  )
+  const [title, setTitle] = useState(
+    sourceWidget ? nextName(sourceWidget.title) : 'New Widget'
+  )
   const [reportTitle, setReportTitle] = useState('New Report Title')
   const [reportDescription, setReportDescription] = useState(
     'New Report Description'

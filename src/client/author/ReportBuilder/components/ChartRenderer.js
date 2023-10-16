@@ -384,7 +384,7 @@ const ChartRenderer = ({
   const [pageFilter, setPageFilter] = useState({
     limit: DEFAULT_PAGESIZE,
     offset: 0,
-    total: query?.total ?? 25,
+    total: chartData?.total ?? chartData?.data?.length ?? 0,
   })
 
   const component = TypeToMemoChartComponent[chartType]

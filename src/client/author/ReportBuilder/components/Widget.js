@@ -41,9 +41,19 @@ const WidgetDropdown = ({ updateReport, widgetId, report }) => {
     <Menu>
       <Menu.Item>
         <Link
-          to={`/author/reports/report-builder/explore/definition/${report?._id}/widget/${widgetId}`}
+          to={`/author/reports/report-builder/explore/definition/${report._id}/widget/${widgetId}`}
         >
           Edit
+        </Link>
+      </Menu.Item>
+      <Menu.Item>
+        <Link
+          to={{
+            pathname: `/author/reports/report-builder/explore/definition/${report._id}/`,
+            state: { widget: report.widgets.find((w) => w._id === widgetId) },
+          }}
+        >
+          Create New
         </Link>
       </Menu.Item>
       <Menu.Item

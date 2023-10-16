@@ -48,7 +48,10 @@ const ReportDefinitionList = ({
         <Button
           key="delete-button"
           style={{ border: 'none', background: 'transparent' }}
-          onClick={() => deleteReport(_id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            deleteReport(_id)
+          }}
         >
           <IconTrash style={{ height: '25px' }} />
         </Button>

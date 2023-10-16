@@ -1,6 +1,13 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { put, all, call, takeLatest, takeEvery } from 'redux-saga/effects'
+import {
+  put,
+  all,
+  call,
+  takeLatest,
+  takeEvery,
+  select,
+} from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { notification } from '@edulastic/common'
 import { reportBuilderApi } from '@edulastic/api'
@@ -174,6 +181,11 @@ function* getReportDefinitionsSaga() {
 function* deleteReportDefinitionSaga({ payload }) {
   try {
     yield call(reportBuilderApi.deleteReport, payload)
+    const reportDefinitionsState = yield select(getReportsSelector)
+    const newReportDefinitionsState = reportDefinitionsState.filter(
+      (r) => r._id !== payload
+    )
+    yield put(getReportDefinitionsSuccessAction(newReportDefinitionsState))
   } catch (err) {
     yield put(getReportDefinitionsFailedAction(err))
     const errorMessage = 'Unable to delete report definitions info.'

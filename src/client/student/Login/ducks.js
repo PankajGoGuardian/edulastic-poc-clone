@@ -1795,19 +1795,19 @@ function* googleSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.googleSSOLogin, _payload)
-    // if (res.reAuthGoogle) {
-    //   TokenStorage.storeInLocalStorage(
-    //     'payloadForUserData',
-    //     JSON.stringify(res)
-    //   )
-    //   window.location.href = '/auth/google'
-    // } else {
-    //   if (isNewUser) {
-    //     yield call(segmentApi.trackTeacherSignUp, { user: res })
-    //   }
-    //   yield put(getUserDataAction(res))
-    // }
+    const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
+    if (res.reAuthGoogle) {
+      TokenStorage.storeInLocalStorage(
+        'payloadForUserData',
+        JSON.stringify(res)
+      )
+      window.location.href = '/auth/google'
+    } else {
+      if (isNewUser) {
+        yield call(segmentApi.trackTeacherSignUp, { user: res })
+      }
+      yield put(getUserDataAction(res))
+    }
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'Google Login failed')
     if (e.status === 409) {
@@ -1905,11 +1905,11 @@ function* msoSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.msoSSOLogin, _payload)
-    // if (isNewUser) {
-    //   yield call(segmentApi.trackTeacherSignUp, { user: res })
-    // }
-    // yield put(getUserDataAction(res))
+    const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
+    if (isNewUser) {
+      yield call(segmentApi.trackTeacherSignUp, { user: res })
+    }
+    yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')
     if (e.status === 409) {

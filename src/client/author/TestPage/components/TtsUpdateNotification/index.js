@@ -46,9 +46,13 @@ const NotificationListener = ({ user, location, history }) => {
         // updating message based upon notification document for tts update
         if (collection === ttsUpdateNotificationCollection) {
           if (successCount !== totalCount) {
-            _message = `Text to speech generation failed.`
+            _message = `Text to speech generation failed on test: #${testId.slice(
+              -6
+            )}. Please contact support.`
           } else {
-            _message = `Text to speech generated successfully.`
+            _message = `Text to speech is generated on test: #${testId.slice(
+              -6
+            )}.`
           }
         }
 

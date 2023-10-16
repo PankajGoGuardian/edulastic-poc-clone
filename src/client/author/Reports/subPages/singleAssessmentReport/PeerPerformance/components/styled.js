@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
 import { StyledTable as Table } from '../../../../common/styled'
 import { FilterDropDownWithDropDown } from '../../../../common/components/widgets/filterDropDownWithDropDown'
 
@@ -61,9 +60,6 @@ export const StyledTable = styled(Table)`
           font-size: 11px;
           color: #434b5d;
           font-weight: 600;
-          @media (min-width: ${extraDesktopWidthMax}) {
-            font-size: 14px;
-          }
         }
       }
     }

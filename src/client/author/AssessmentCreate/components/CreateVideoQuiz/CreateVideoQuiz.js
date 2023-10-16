@@ -12,8 +12,14 @@ import { themeColor } from '@edulastic/colors'
 import { Col, Form, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { IconPlayButton } from '@edulastic/icons'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.png'
-
+import {
+  getYoutubeThumbnailSelector,
+  getYoutubeThumbnailAction,
+  setYoutubeThumbnailAction,
+} from '../../../TestPage/ducks'
 import {
   extractVideoId,
   isValidVideoUrl,
@@ -62,10 +68,19 @@ const VideoQuickGuide = () => {
 }
 
 // Takes video url from user and validate same for creating video quiz
-const CreateVideoQuiz = ({ onValidUrl, ytThumbnail, getYoutubeThumbnail }) => {
+const CreateVideoQuiz = ({
+  onValidUrl,
+  ytThumbnail,
+  getYoutubeThumbnail,
+  setYoutubeThumbnail,
+}) => {
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
+
+  useEffect(() => {
+    setYoutubeThumbnail('')
+  })
 
   useEffect(() => {
     if (!hasError) {
@@ -162,4 +177,15 @@ const StyledIconPlayButton = styled(IconPlayButton)`
   margin-right: 0px !important;
 `
 
-export default CreateVideoQuiz
+const enhance = compose(
+  connect(
+    (state) => ({
+      ytThumbnail: getYoutubeThumbnailSelector(state),
+    }),
+    {
+      getYoutubeThumbnail: getYoutubeThumbnailAction,
+      setYoutubeThumbnail: setYoutubeThumbnailAction,
+    }
+  )
+)
+export default enhance(CreateVideoQuiz)

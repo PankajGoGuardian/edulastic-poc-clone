@@ -459,6 +459,9 @@ export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 export const getYoutubeThumbnailAction = createAction(
   GET_YOUTUBE_THUMBNAIL_REQUEST
 )
+export const setYoutubeThumbnailAction = createAction(
+  GET_YOUTUBE_THUMBNAIL_SUCCESS
+)
 
 export const receiveTestByIdAction = (
   id,
@@ -1151,6 +1154,7 @@ const initialState = {
   },
   hasPenaltyOnUsingHints: false,
   ytThumbnail: '',
+  ytloading: false,
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1798,10 +1802,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         enableAudioResponseQuestion: payload,
       }
+    case GET_YOUTUBE_THUMBNAIL_REQUEST:
+      return {
+        ...state,
+        ytloading: true,
+      }
     case GET_YOUTUBE_THUMBNAIL_SUCCESS:
       return {
         ...state,
         ytThumbnail: payload,
+        ytloading: false,
       }
     default:
       return state

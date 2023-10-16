@@ -29,7 +29,11 @@ import {
   addNewTagAction,
   toggleTestLikeAction,
   getTestsLoadingSelector,
+  getYoutubeThumbnailAction,
+  getYoutubeThumbnailSelector,
 } from '../../../../ducks'
+import { extractVideoId } from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+import { uploadTestImageAction } from '../../../../../src/actions/uploadTestImage'
 
 const Summary = ({
   setData,
@@ -63,10 +67,19 @@ const Summary = ({
   showCancelButton,
   toggleTestLikeRequest,
   isTestLoading,
+  getYoutubeThumbnail,
+  ytThumbnail,
+  updateThumbnail,
 }) => {
   const handleChangeField = (field, value) => {
     if (field === 'thumbnail') {
       updateDefaultThumbnail('')
+    }
+    if (field === 'videoUrl' && value !== test.videoUrl) {
+      const videoId = extractVideoId(value)
+      if (videoId) {
+        getYoutubeThumbnail(videoId)
+      }
     }
     setData({ ...test, [field]: value })
   }
@@ -74,6 +87,12 @@ const Summary = ({
   useEffect(() => {
     getAllTags({ type: isPlaylist ? 'playlist' : ['test', 'assignment'] })
   }, [])
+
+  useEffect(() => {
+    if (test && ytThumbnail.length && ytThumbnail !== test.thumbnail) {
+      updateThumbnail(ytThumbnail)
+    }
+  }, [ytThumbnail])
 
   useEffect(() => {
     // pre-populate collections initially
@@ -210,12 +229,15 @@ const enhance = compose(
       features: getUserFeatures(state),
       lastUsedCollections: getlastUsedCollectionListSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
+      ytThumbnail: getYoutubeThumbnailSelector(state),
     }),
     {
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,
       toggleTestLikeRequest: toggleTestLikeAction,
+      getYoutubeThumbnail: getYoutubeThumbnailAction,
+      updateThumbnail: uploadTestImageAction,
     }
   )
 )

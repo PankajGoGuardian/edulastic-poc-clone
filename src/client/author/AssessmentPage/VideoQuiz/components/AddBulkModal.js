@@ -152,12 +152,19 @@ class AddBulkModal extends React.Component {
     const {
       aiGenerateQuestionState: { result, apiStatus } = {},
       setAIGeneratedQuestionState,
+      setSortQuestionsByTimestamp,
     } = this.props
 
     if (
       (result || []).length > 0 &&
       ['SUCCESS', 'FAILED'].includes(apiStatus)
     ) {
+      if (
+        result?.length > 0 &&
+        typeof setSortQuestionsByTimestamp === 'function'
+      ) {
+        setSortQuestionsByTimestamp(true)
+      }
       this.handleApply(result || [])
       setAIGeneratedQuestionState({
         apiStatus: false,

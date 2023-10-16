@@ -74,6 +74,9 @@ const VideoQuizWorksheetComponent = ({
     setVideoQuizQuestionsToDisplay,
   ] = useState([])
   const [questionClickSeekTime, setQuestionClickSeekTime] = useState(null)
+  const [sortQuestionsByTimestamp, setSortQuestionsByTimestamp] = useState(
+    false
+  )
 
   const onPlay = () => {
     videoRef?.current.playVideo?.()
@@ -348,6 +351,10 @@ const VideoQuizWorksheetComponent = ({
           handleDeleteAnnotationAndUpdateQIndex={
             handleDeleteAnnotationAndUpdateQIndex
           }
+          sortQuestionsByTimestamp={sortQuestionsByTimestamp}
+          setSortQuestionsByTimestamp={setSortQuestionsByTimestamp}
+          setQuestionsById={setQuestionsById}
+          setTestData={setTestData}
         />
       </WorksheetWrapper>
     </div>

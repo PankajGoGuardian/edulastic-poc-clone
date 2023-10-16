@@ -7,6 +7,7 @@ import connect from 'react-redux/es/connect/connect'
 import { compose } from 'redux'
 import i18 from '@edulastic/localization'
 import { Tooltip } from 'antd'
+import { withRouter } from 'react-router-dom'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
 import { getStandardsListSelector } from '../../../src/selectors/dictionaries'
 import AiTestBanner from './CreateAiTestBanner'
@@ -20,6 +21,8 @@ import {
 } from '../../../TestPage/ducks'
 import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
 import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
+import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
+import AddOnTag from '../common/AddOnTag'
 
 const EduAIQuiz = ({
   test,
@@ -31,6 +34,7 @@ const EduAIQuiz = ({
   setDefaultTest,
   clearCreatedItem,
   history,
+  isVideoQuizAndAIEnabled,
 }) => {
   const {
     selectSectionVisible,
@@ -52,6 +56,8 @@ const EduAIQuiz = ({
     addItems,
     setDefaultTest,
     clearCreatedItem,
+    history,
+    isVideoQuizAndAIEnabled,
   })
   const { open = '' } = qs.parse(window.location.search, {
     ignoreQueryPrefix: true,
@@ -71,29 +77,44 @@ const EduAIQuiz = ({
       setSelectSectionVisible(false)
     }
   }
+  const EduAiAddItemsButton = (
+    <AiEduButton
+      margin="0 5px"
+      aiStyle
+      disabled={!isVideoQuizAndAIEnabled}
+      onClick={onCreateItems}
+    >
+      <IconMagicWand fill={`${white}`} />
+      Create Items Using AI
+    </AiEduButton>
+  )
 
   const isDateLessThanSep30 = checkIsDateLessThanSep30()
   return (
     <>
       <EduIf condition={addItems}>
         <EduThen>
-          <Tooltip
-            title={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${i18.t('author:rubric.infoText')}${
-                    isDateLessThanSep30 &&
-                    '<br><br>Note: This is free to use until September 30'
-                  }`,
-                }}
+          <EduIf condition={isVideoQuizAndAIEnabled}>
+            <EduThen>
+              <Tooltip
+                title={
+                  <>
+                    <p>{i18.t('author:rubric.infoText')}</p>
+                    <EduIf condition={isDateLessThanSep30}>
+                      <br />
+                      <p>Note: This is free to use until September 30</p>
+                    </EduIf>
+                  </>
+                }
               />
-            }
-          >
-            <AiEduButton margin="0 5px" aiStyle onClick={onCreateItems}>
-              <IconMagicWand fill={`${white}`} />
-              Create Items Using AI
-            </AiEduButton>
-          </Tooltip>
+            </EduThen>
+            <EduElse>
+              <AddOnTag
+                component={EduAiAddItemsButton}
+                message={i18.t('author:aiSuite.addOnText')}
+              />
+            </EduElse>
+          </EduIf>
         </EduThen>
         <EduElse>
           <AiTestBanner onCreateItems={onCreateItems} />
@@ -130,10 +151,12 @@ const EduAIQuiz = ({
   )
 }
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       aiTestStatus: state?.aiTestDetails?.status,
       standardsList: getStandardsListSelector(state),
+      isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       getAiGeneratedTestItems: aiTestActions.getAiGeneratedTestItems,

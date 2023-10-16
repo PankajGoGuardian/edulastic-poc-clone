@@ -75,6 +75,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
+  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -93,7 +94,6 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -556,6 +556,7 @@ class AddItems extends PureComponent {
       aiTestStatus = false,
       isDynamicTest,
       hasSections,
+      isGcpsDistrict,
     } = this.props
     const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -621,13 +622,8 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <EduIf condition={!isDynamicTest}>
-                    <FeaturesSwitch
-                      inputFeatures={['isVideoQuizAndAIEnabled']}
-                      actionOnInaccessible="hidden"
-                    >
-                      <EduAIQuiz addItems test={test} />
-                    </FeaturesSwitch>
+                  <EduIf condition={!isDynamicTest && !isGcpsDistrict}>
+                    <EduAIQuiz addItems test={test} />
                   </EduIf>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
@@ -741,6 +737,7 @@ const enhance = compose(
       aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       receiveTestItems: (search, sort, page, limit) => {

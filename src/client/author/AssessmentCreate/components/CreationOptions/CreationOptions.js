@@ -15,19 +15,16 @@ import OptionQti from '../OptionQTI/OptionQTI'
 import { QTI_DISTRICTS } from '../../../../config'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import EduAiQuiz from '../CreateAITest'
+import { isGcpsDistrictSelector } from '../../../src/selectors/user'
 
-const CreationOptions = ({ onUploadPDF, isShowQTI, history }) => (
+const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
   <BodyWrapper>
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
-      <FeaturesSwitch
-        inputFeatures={['isVideoQuizAndAIEnabled']}
-        actionOnInaccessible="hidden"
-      >
+      <EduIf condition={!isGcpsDistrict}>
         <OptionVideo />
-      </FeaturesSwitch>
-
+      </EduIf>
       <FeaturesSwitch
         inputFeatures="enableDynamicTests"
         actionOnInaccessible="hidden"
@@ -38,12 +35,9 @@ const CreationOptions = ({ onUploadPDF, isShowQTI, history }) => (
         <OptionQti />
       </EduIf>
     </FlexWrapper>
-    <FeaturesSwitch
-      inputFeatures={['isVideoQuizAndAIEnabled']}
-      actionOnInaccessible="hidden"
-    >
-      <EduAiQuiz history={history} />
-    </FeaturesSwitch>
+    <EduIf condition={!isGcpsDistrict}>
+      <EduAiQuiz />
+    </EduIf>
   </BodyWrapper>
 )
 
@@ -58,6 +52,7 @@ const enhance = compose(
       (state?.user?.user?.districtIds || []).includes(qtiDistrict)
     ),
     aiTestStatus: get(state, 'aiTestDetails.status'),
+    isGcpsDistrict: isGcpsDistrictSelector(state),
   }))
 )
 

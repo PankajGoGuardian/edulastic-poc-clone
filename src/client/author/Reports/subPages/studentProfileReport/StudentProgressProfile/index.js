@@ -185,9 +185,8 @@ const StudentProgressProfile = ({
         isSharedReport={isSharedReport}
         showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
-          <FlexContainer width="1500px" style={{ gap: '5px' }}>
+          <FlexContainer flex="1 1 0" style={{ gap: '5px' }}>
             <MultiSelectDropdown
-              height="20px"
               dataCy="tests"
               label="Test(s)"
               onChange={(e) => {

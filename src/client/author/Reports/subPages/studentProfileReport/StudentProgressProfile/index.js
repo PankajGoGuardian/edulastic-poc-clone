@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withNamespaces } from '@edulastic/localization'
-import { SpinLoader } from '@edulastic/common'
+import { FlexContainer, SpinLoader } from '@edulastic/common'
 import { get, head, isEmpty } from 'lodash'
 import TrendStats from '../../multipleAssessmentReport/common/components/trend/TrendStats'
 import TrendTable from '../../multipleAssessmentReport/common/components/trend/TrendTable'
@@ -24,6 +24,8 @@ import { useGetBandData } from '../../multipleAssessmentReport/StudentProgress/h
 import dropDownData from './static/json/dropDownData.json'
 import { downloadCSV } from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
+import MultiSelectDropdown from '../../../common/components/widgets/MultiSelectDropdown'
+import { getTestsFilterDropdownOptions } from './utils'
 
 const compareBy = {
   key: 'standard',
@@ -47,6 +49,7 @@ const StudentProgressProfile = ({
 }) => {
   const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
+  const [selectedTests, setSelectedTests] = useState([])
   const [selectedTrend, setSelectedTrend] = useState('')
   const [pageFilters, setPageFilters] = useState({
     page: 0,
@@ -85,15 +88,19 @@ const StudentProgressProfile = ({
     ) || bands[0]
   )?.performanceBand
 
-  const { metricInfo = [], skillInfo = [], standardsCount = 0 } = useMemo(
-    () => get(studentProgressProfile, 'data.result', {}),
-    [studentProgressProfile]
-  )
+  const {
+    metricInfo: rawMetricInfo = [],
+    skillInfo = [],
+    standardsCount = 0,
+  } = useMemo(() => get(studentProgressProfile, 'data.result', {}), [
+    studentProgressProfile,
+  ])
 
   useEffect(() => () => resetStudentProgressProfile(), [])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    setSelectedTests([])
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
@@ -115,6 +122,14 @@ const StudentProgressProfile = ({
     }
   }, [pageFilters])
 
+  const metricInfo = useMemo(
+    () =>
+      isEmpty(selectedTests)
+        ? rawMetricInfo
+        : rawMetricInfo.filter((d) => selectedTests.includes(d.assignmentId)),
+    [selectedTests, rawMetricInfo]
+  )
+
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)
 
@@ -133,6 +148,10 @@ const StudentProgressProfile = ({
     skillInfo,
     selectedTrend,
     bandInfo
+  )
+
+  const testsFilterDropdownOptions = getTestsFilterDropdownOptions(
+    rawMetricInfo
   )
 
   if (loading) {
@@ -166,12 +185,25 @@ const StudentProgressProfile = ({
         isSharedReport={isSharedReport}
         showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
-          <ControlDropDown
-            prefix="Analyze By"
-            by={analyseBy}
-            selectCB={onAnalyseBySelect}
-            data={dropDownData.analyseByData}
-          />
+          <FlexContainer width="1500px" style={{ gap: '5px' }}>
+            <MultiSelectDropdown
+              height="20px"
+              dataCy="tests"
+              label="Test(s)"
+              onChange={(e) => {
+                setSelectedTests(e)
+              }}
+              value={selectedTests}
+              options={testsFilterDropdownOptions}
+              displayLabel={false}
+            />
+            <ControlDropDown
+              prefix="Analyze By"
+              by={analyseBy}
+              selectCB={onAnalyseBySelect}
+              data={dropDownData.analyseByData}
+            />
+          </FlexContainer>
         )}
       />
       {!isEmpty(metricInfo) ? (

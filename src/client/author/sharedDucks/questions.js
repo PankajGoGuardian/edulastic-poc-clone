@@ -174,9 +174,10 @@ const setFirstMount = (state, { id }) => {
 
 // add a new question
 const addQuestion = (state, { payload }) => {
-  const { updated = true } = payload
+  const { updated = true, videoQuizAiGeneratedQuestion = false } = payload
 
   delete payload.updated
+  delete payload.videoQuizAiGeneratedQuestion
 
   state.byId[payload.id] = payload
   state.current = payload.id
@@ -187,6 +188,25 @@ const addQuestion = (state, { payload }) => {
     const qids = Object.values(state.byId)
       .sort((a, b) => a.qIndex - b.qIndex)
       .map((obj) => obj.id)
+    qids.forEach((id, i) => {
+      state.byId[id].qIndex = i + 1
+    })
+  }
+
+  if (videoQuizAiGeneratedQuestion) {
+    const qids = Object.values(state.byId)
+      .filter((question) => question.type !== 'sectionLabel')
+      .sort((a, b) => {
+        // keep null questionDisplayTimestamp values to last
+        if (typeof a.questionDisplayTimestamp !== 'number') {
+          return 1
+        }
+        if (typeof b.questionDisplayTimestamp !== 'number') {
+          return -1
+        }
+        return a.questionDisplayTimestamp - b.questionDisplayTimestamp
+      })
+      .map((question) => question.id)
     qids.forEach((id, i) => {
       state.byId[id].qIndex = i + 1
     })

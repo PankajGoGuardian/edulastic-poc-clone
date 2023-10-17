@@ -68,6 +68,11 @@ export const createQuestion = ({
     } = aiQuestion
 
     staticQuestionData.aiGenerated = true
+    /**
+     * This is a unique flag which is used in the reducer and removed after the usage.
+     * aiGenerated key is added from several places
+     */
+    staticQuestionData.videoQuizAiGeneratedQuestion = true
     staticQuestionData.stimulus = name
     if (typeof displayAtSecond === 'number') {
       const updatedDisplayAtSecond = displayAtSecond === 0 ? 4 : displayAtSecond

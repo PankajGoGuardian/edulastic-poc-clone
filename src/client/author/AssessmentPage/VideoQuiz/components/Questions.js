@@ -4,11 +4,11 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { sortBy, maxBy, uniqBy, isEmpty, keyBy, isEqual } from 'lodash'
+import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
 import produce from 'immer'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
@@ -139,61 +139,30 @@ class Questions extends React.Component {
   }
 
   componentDidMount() {
+    const { editMode, isSnapQuizVideoPlayer } = this.props
     this.resetTimeSpentOnQuestion()
+    if (!isSnapQuizVideoPlayer && editMode) {
+      this.removeSectionsFromQuestions()
+    }
   }
 
   componentDidUpdate(prevProps) {
     const {
-      annotations,
-      handleAddBulkQuestionAnnotations,
+      setTestData,
       editMode,
       isSnapQuizVideoPlayer,
       videoQuizQuestionsToDisplay,
       studentWork,
-      sortQuestionsByTimestamp,
       list,
     } = this.props
 
     if (
       !isSnapQuizVideoPlayer &&
       editMode &&
-      typeof handleAddBulkQuestionAnnotations === 'function'
+      typeof setTestData === 'function' &&
+      prevProps.list?.length !== list?.length
     ) {
-      let questions = this.questionList
-      questions = (questions || []).map((question) => {
-        if (question.type === 'sectionLabel') {
-          return null
-        }
-        const annotationIndex = (annotations || []).findIndex(
-          (annotation) => annotation?.questionId === question.id
-        )
-        if (annotationIndex === -1) {
-          return question
-        }
-        return null
-      })
-      if (questions?.length) {
-        const newAnnotations = []
-        const allQuestionIndexes = this.getQIndexForDocBasedItems()
-        questions.forEach((question, index) => {
-          if (
-            question?.type !== 'sectionLabel' &&
-            typeof question?.questionDisplayTimestamp === 'number'
-          ) {
-            const annotation = {
-              x: -1,
-              y: -1,
-              questionId: question.id,
-              qIndex: allQuestionIndexes[index],
-              time: question.questionDisplayTimestamp,
-            }
-            newAnnotations.push(annotation)
-          }
-        })
-        if (newAnnotations.length) {
-          handleAddBulkQuestionAnnotations(newAnnotations)
-        }
-      }
+      this.addAndUpdateAnnotations()
     }
 
     if (
@@ -202,69 +171,96 @@ class Questions extends React.Component {
     ) {
       this.scrollToQuestion(videoQuizQuestionsToDisplay[0].questionId)
     }
-
-    if (
-      editMode &&
-      prevProps.sortQuestionsByTimestamp !== sortQuestionsByTimestamp &&
-      prevProps.list?.length !== list?.length &&
-      sortQuestionsByTimestamp &&
-      list?.length
-    ) {
-      this.sortQuestionsByTimestampAndUpdateQindex()
-    }
   }
 
-  sortQuestionsByTimestampAndUpdateQindex = () => {
-    const {
-      setQuestionsById,
-      annotations,
-      setTestData,
-      list,
-      setSortQuestionsByTimestamp,
-    } = this.props
-    const oldQuestionsIdIndexMap = {}
-    const newQuestionsIdIndexMap = {}
-    const filteredQuestions = list.filter(
+  addAndUpdateAnnotations = () => {
+    const { annotations, setTestData, list } = this.props
+    let questions = list || []
+    let hasSections = false
+    const questionsKeyedById = {}
+    const newAnnotations = []
+    let updatedAnnotations = []
+    questions.forEach((question) => {
+      if (question.type === 'sectionLabel') {
+        hasSections = true
+        return
+      }
+      questionsKeyedById[question.id] = question
+    })
+    if (hasSections) {
+      this.removeSectionsFromQuestions()
+      return
+    }
+
+    questions = (questions || []).map((question) => {
+      if (question.type === 'sectionLabel') {
+        return null
+      }
+      const annotationIndex = (annotations || []).findIndex(
+        (annotation) => annotation?.questionId === question.id
+      )
+      if (annotationIndex === -1) {
+        return question
+      }
+      return null
+    })
+
+    if (questions?.length) {
+      questions.forEach((question) => {
+        if (
+          question?.type !== 'sectionLabel' &&
+          typeof question?.questionDisplayTimestamp === 'number'
+        ) {
+          const annotation = {
+            uuid: helpers.uuid(),
+            type: 'point',
+            class: 'Annotation',
+            toolbarMode: 'question',
+            x: -1,
+            y: -1,
+            questionId: question.id,
+            qIndex: question.qIndex,
+            time: question.questionDisplayTimestamp,
+          }
+          newAnnotations.push(annotation)
+        }
+      })
+    }
+
+    if (annotations?.length && !isEmpty(questionsKeyedById)) {
+      updatedAnnotations = produce(annotations, (draft) => {
+        draft.forEach((_annotation) => {
+          if (_annotation.toolbarMode === 'question') {
+            _annotation.qIndex =
+              questionsKeyedById[_annotation.questionId].qIndex
+          }
+        })
+      })
+    }
+
+    if (newAnnotations.length) {
+      updatedAnnotations = [...updatedAnnotations, ...newAnnotations]
+    }
+
+    setTestData({
+      annotations: updatedAnnotations,
+    })
+  }
+
+  removeSectionsFromQuestions = () => {
+    const { list, setQuestionsById } = this.props
+    const filteredQuestions = (list || []).filter(
       (question) => question?.type !== 'sectionLabel'
     )
-    const oldQuestions = filteredQuestions || []
-    oldQuestions.forEach((question) => {
-      oldQuestionsIdIndexMap[question.id] = question.qIndex
+    const questionsWithUpdatedIndex = []
+    ;(filteredQuestions || []).forEach((question, index) => {
+      questionsWithUpdatedIndex.push({
+        ...question,
+        qIndex: index + 1,
+      })
     })
-    const questionsSortedByTimeStamp = sortBy(
-      filteredQuestions,
-      (item) => item.questionDisplayTimestamp
-    )
-    if (questionsSortedByTimeStamp?.length) {
-      const updatedQuestions = []
-      const newQuestions = []
-      questionsSortedByTimeStamp.forEach((question, index) => {
-        updatedQuestions.push({
-          ...question,
-          qIndex: index + 1,
-        })
-      })
-      newQuestions.forEach((question) => {
-        newQuestionsIdIndexMap[question.id] = question.qIndex
-      })
-      if (!isEqual(oldQuestionsIdIndexMap, newQuestionsIdIndexMap)) {
-        setSortQuestionsByTimestamp(false)
-      }
-      const updatedQuestionsKeyedById = keyBy(updatedQuestions, 'id')
-      setQuestionsById(updatedQuestionsKeyedById)
-      if (annotations?.length && !isEmpty(updatedQuestionsKeyedById)) {
-        setTestData({
-          annotations: produce(annotations, (draft) => {
-            draft.forEach((_annotation) => {
-              if (_annotation.toolbarMode === 'question') {
-                _annotation.qIndex =
-                  updatedQuestionsKeyedById[_annotation.questionId].qIndex
-              }
-            })
-          }),
-        })
-      }
-    }
+    const questionsKeyedById = keyBy(questionsWithUpdatedIndex, 'id')
+    setQuestionsById(questionsKeyedById)
   }
 
   scrollToQuestion = (questionId) => {

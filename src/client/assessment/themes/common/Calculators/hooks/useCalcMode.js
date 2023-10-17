@@ -41,9 +41,8 @@ const getCalculatorComponent = (calcMode) => {
     case CALC_MODES.GRAPHING_DESMOS:
     case CALC_MODES.GRAPHING_STATE_DESMOS:
       return GraphingDesmosCalculator
-    case CALC_MODES.MATRIX_DESMOS:
-      return MatrixDesmosCalculator
     case CALC_MODES.MATRIX_EDULASTIC:
+    case CALC_MODES.MATRIX_DESMOS:
       return MatrixDesmosCalculator
     default:
       return () => null

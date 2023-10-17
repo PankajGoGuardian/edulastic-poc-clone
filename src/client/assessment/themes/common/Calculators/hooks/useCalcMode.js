@@ -43,6 +43,8 @@ const getCalculatorComponent = (calcMode) => {
       return GraphingDesmosCalculator
     case CALC_MODES.MATRIX_DESMOS:
       return MatrixDesmosCalculator
+    case CALC_MODES.MATRIX_EDULASTIC:
+      return MatrixDesmosCalculator
     default:
       return () => null
   }

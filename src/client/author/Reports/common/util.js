@@ -756,7 +756,7 @@ export const getErrorMessage = (error, statusCode, defaultMessage) => {
 
 /**
  * Function to convert list of records to filter dropdown options
- * @param {Record} data Array of all records
+ * @param {Record[]} data Array of all records
  * @param {string} keyName data key for key in filter options
  * @param {string} titleName data key for title in filter options
  * @returns filter options with key & title values

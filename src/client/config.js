@@ -11,5 +11,4 @@ export const QTI_DISTRICTS = [
   '5ebc2adfda6952de6ce9ffb7',
   '5e3d194d03b7ad09241ce6d6',
   '5ebbbb3b03b7ad0924d19c46',
-  '5e4a3ce103b7ad09241750e4',
 ]

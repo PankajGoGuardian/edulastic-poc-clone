@@ -121,7 +121,6 @@ class AddQuestion extends React.Component {
       enableAudioResponseQuestion,
       disableAutoGenerate,
       questions,
-      setSortQuestionsByTimestamp,
     } = this.props
 
     const tooltipMessage = disableAutoGenerate
@@ -209,7 +208,6 @@ class AddQuestion extends React.Component {
             onCancel={this.toggleBulkModal}
             onApply={this.handleApply}
             minAvailableQuestionIndex={minAvailableQuestionIndex}
-            setSortQuestionsByTimestamp={setSortQuestionsByTimestamp}
           />
         </ContentWrapper>
       </AddQuestionWrapper>

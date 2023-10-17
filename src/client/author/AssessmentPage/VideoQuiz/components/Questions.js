@@ -525,7 +525,6 @@ class Questions extends React.Component {
       videoUrl,
       videoRef,
       questionsContainerRef,
-      setSortQuestionsByTimestamp,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -644,7 +643,6 @@ class Questions extends React.Component {
               minAvailableQuestionIndex={minAvailableQuestionIndex}
               scrollToBottom={this.scrollToBottom}
               enableAudioResponseQuestion={enableAudioResponseQuestion}
-              setSortQuestionsByTimestamp={setSortQuestionsByTimestamp}
             />
           )}
           {review && !noCheck && !reportMode && (

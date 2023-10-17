@@ -1,4 +1,7 @@
-import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
+import {
+  allDepthOfKnowledgeMap,
+  allDepthOfKnowledgeMapAI,
+} from '@edulastic/constants/const/question'
 import {
   MULTIPLE_CHOICE,
   MULTIPLE_SELECTION,
@@ -99,6 +102,8 @@ const allQuestionTypes = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Select question' },
 ]
 
+const allDepthOfKnowledgeAI = Object.values(allDepthOfKnowledgeMapAI)
+
 export default {
   allGrades,
   allSubjects,
@@ -114,4 +119,5 @@ export default {
   defaultStandards,
   extraStatus,
   allQuestionTypes,
+  allDepthOfKnowledgeAI,
 }

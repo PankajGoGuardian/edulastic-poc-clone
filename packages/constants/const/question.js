@@ -13,6 +13,19 @@ module.exports = {
   EMPTY_ANSWER: 'EDULASTIC_EMPTY_CORRECT_ANSWER',
   allDepthOfKnowledgeMap: {
     '': { value: '', text: 'Not Specified' },
+    Recall: { value: 'Recall', text: '1 - Recall' },
+    'Skill/Concept': { value: 'Skill/Concept', text: '2 - Skill/Concept' },
+    'Strategic Thinking': {
+      value: 'Strategic Thinking',
+      text: '3 - Strategic Thinking',
+    },
+    'Extended Thinking': {
+      value: 'Extended Thinking',
+      text: '4 - Extended Thinking',
+    },
+  },
+  allDepthOfKnowledgeMapAI: {
+    '': { value: '', text: 'Not Specified' },
     Recall: { value: 'Factual', text: '1 - Recall' },
     'Skill/Concept': { value: 'Conceptual', text: '2 - Skill/Concept' },
     'Strategic Thinking': {

@@ -135,7 +135,7 @@ const FormFields = ({
             onChange={(value) => handleFieldDataChange(DOK, value)}
             value={dok}
           >
-            {selectsData.allDepthOfKnowledge
+            {selectsData.allDepthOfKnowledgeAI
               .filter(({ value }) => value)
               .map(({ value, text }) => (
                 <Select.Option key={value} value={value}>

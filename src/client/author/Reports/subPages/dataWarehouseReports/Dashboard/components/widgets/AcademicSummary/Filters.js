@@ -2,18 +2,22 @@ import { FlexContainer } from '@edulastic/common'
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
 import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
 import { StyledText } from '../../../../common/components/styledComponents'
 import {
   academicSummaryFiltersTypes,
   getPerformanceBandList,
   getAvailableAcademicTestTypesWithBands,
+  tableFilterTypes,
 } from '../../../utils'
 import { filtersData } from '../../../ducks/selectors'
 
 const AcademicSummaryWidgetFilters = ({
   filters,
   setFilters,
+  tableFilters,
+  setTableFilters,
   performanceBandsList,
   availableTestTypes,
   dataFilters,
@@ -29,26 +33,41 @@ const AcademicSummaryWidgetFilters = ({
   )
 
   const updateFilterDropdownCB = (e, selected, comData) => {
-    const additionalData = {}
     if (comData === academicSummaryFiltersTypes.TEST_TYPE) {
-      const performanceBandList = getPerformanceBandList(
-        bandInfo,
-        externalBands,
-        selected.key,
-        availableAcademicTestTypes
-      )
-      if (performanceBandList?.length) {
-        additionalData[academicSummaryFiltersTypes.PERFORMANCE_BAND] = {
-          key: performanceBandList[0].key,
-          title: performanceBandList[0].title,
+      const additionalData = {}
+      // if user changes test type from an external to internal test type, profileId remains whatever was previously selected for internal test type but it's representation in the filter does not update, so we need to update it manually.
+      if (!selected?.key?.includes(EXTERNAL_TEST_KEY_SEPARATOR)) {
+        const performanceBandList = getPerformanceBandList(
+          bandInfo,
+          externalBands,
+          selected.key,
+          availableAcademicTestTypes
+        )
+        if (performanceBandList?.length) {
+          const selectedPerformanceBandOption =
+            performanceBandList.find(
+              (pb) =>
+                pb.key ===
+                filters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+            ) || performanceBandList[0]
+          additionalData[
+            academicSummaryFiltersTypes.PERFORMANCE_BAND
+          ] = selectedPerformanceBandOption
         }
       }
+      setFilters({
+        ...filters,
+        [comData]: selected,
+        ...additionalData,
+      })
+      setTableFilters({
+        ...tableFilters,
+        [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
+        [tableFilterTypes.BELOW_AVG]: true,
+      })
+    } else {
+      setFilters({ ...filters, [comData]: selected })
     }
-    setFilters({
-      ...filters,
-      [comData]: selected,
-      ...additionalData,
-    })
   }
 
   return (

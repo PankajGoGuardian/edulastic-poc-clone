@@ -229,3 +229,7 @@ export const CustomStyledCell = styled.div`
   ${({ $backgroundColor }) =>
     $backgroundColor ? `color: ${getFGColor($backgroundColor)};` : ''}
 `
+export const ColoredText = styled.div`
+  font-weight: ${(p) => p.$fontWeight || 'bold'};
+  color: ${(p) => p.$color};
+`

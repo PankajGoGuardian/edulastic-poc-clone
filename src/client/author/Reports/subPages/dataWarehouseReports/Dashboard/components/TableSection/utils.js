@@ -9,7 +9,6 @@ import {
 import { Link } from 'react-router-dom'
 import { IoMdLink } from 'react-icons/io'
 import { EduIf } from '@edulastic/common'
-import { ALL_TEST_TYPES_VALUES } from '@edulastic/constants/const/testTypes'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import TestColumnTitle from './TestColumnTitle'
@@ -77,13 +76,10 @@ export const getTableColumns = ({
   isStudentCompareBy,
   getTableDrillDownUrl,
   selectedPerformanceBand,
-  selectedTestType,
   availableTestTypes,
 }) => {
+  if (isEmpty(metricInfo)) return []
   const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
-  const isSelectedTestTypeExternal = !ALL_TEST_TYPES_VALUES.includes(
-    selectedTestType
-  )
 
   const rowWithMaxTestTypes = maxBy(
     metricInfo,
@@ -137,13 +133,10 @@ export const getTableColumns = ({
         externalTestType,
       }) => {
         const isExternal = !!externalTestType
-        const testBand =
-          (!isSelectedTestTypeExternal && !isExternal) ||
-          (isSelectedTestTypeExternal &&
-            isExternal &&
-            selectedTestType === testTypeKey)
-            ? selectedPerformanceBand
-            : columnPerformanceBand
+        const testBand = isExternal
+          ? columnPerformanceBand
+          : selectedPerformanceBand
+
         return {
           title: (
             <TestColumnTitle testType={testTypeTitle} isExternal={isExternal} />

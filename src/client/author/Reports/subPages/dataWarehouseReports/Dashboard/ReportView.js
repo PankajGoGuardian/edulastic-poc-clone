@@ -10,13 +10,14 @@ import {
   WidgetColumn,
 } from '../common/components/styledComponents'
 import SectionDescription from '../../../common/components/SectionDescription'
+import useTableFilters from './hooks/useTableFilters'
 
 function ReportView({
   history,
   location,
   search,
   performanceBandList,
-  selectedPerformanceBandOption,
+  bandInfo,
   setAcademicSummaryFilters,
   compareByOptions,
   isCsvDownloading,
@@ -34,8 +35,30 @@ function ReportView({
   attendanceBandInfo,
 }) {
   const { academicSummaryFilters } = settings
+  const internalPerformanceBandsList = bandInfo.map(
+    ({ _id, name, performanceBand }) => ({
+      key: _id,
+      title: name,
+      performanceBand,
+    })
+  )
 
-  const selectedPerformanceBand = selectedPerformanceBandOption?.performanceBand
+  const {
+    tableFilters,
+    setTableFilters,
+    pageFilters,
+    setPageFilters,
+    updateTableFiltersCB,
+    onTableHeaderCellClick,
+    getTableDrillDownUrl,
+  } = useTableFilters({
+    history,
+    location,
+    search,
+    defaultCompareBy: selectedCompareBy,
+    settings,
+    setSettings,
+  })
 
   return (
     <>
@@ -54,11 +77,12 @@ function ReportView({
 
       <WidgetsContainer>
         <AcademicSummary
-          selectedPerformanceBand={selectedPerformanceBand}
           performanceBandList={performanceBandList}
           availableTestTypes={availableTestTypes}
           widgetFilters={academicSummaryFilters}
           setWidgetFilters={setAcademicSummaryFilters}
+          tableFilters={tableFilters}
+          setTableFilters={setTableFilters}
           settings={settings}
         />
         <WidgetColumn>
@@ -73,20 +97,22 @@ function ReportView({
         </WidgetColumn>
       </WidgetsContainer>
       <TableSection
-        history={history}
-        location={location}
-        search={search}
+        tableFilters={tableFilters}
+        setTableFilters={setTableFilters}
+        pageFilters={pageFilters}
+        setPageFilters={setPageFilters}
+        updateTableFiltersCB={updateTableFiltersCB}
+        onTableHeaderCellClick={onTableHeaderCellClick}
+        getTableDrillDownUrl={getTableDrillDownUrl}
         academicSummaryFilters={academicSummaryFilters}
         setAcademicSummaryFilters={setAcademicSummaryFilters}
         compareByOptions={compareByOptions}
         fetchDashboardTableDataRequest={fetchDashboardTableDataRequest}
         isCsvDownloading={isCsvDownloading}
         loadingTableData={loadingTableData}
-        selectedPerformanceBandOption={selectedPerformanceBandOption}
+        performanceBandsList={internalPerformanceBandsList}
         loadingTableDataWithFilters={loadingTableDataWithFilters}
         settings={settings}
-        setSettings={setSettings}
-        selectedCompareBy={selectedCompareBy}
         districtAveragesData={districtAveragesData}
         tableData={tableData}
         tableDataRequestError={tableDataRequestError}

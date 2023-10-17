@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
-import SectionLabel from '../../../../common/components/SectionLabel'
-import { StyledRow } from './common/styledComponents'
+import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import SectionLabel from '../../../../../common/components/SectionLabel'
+import { StyledRow } from '../common/styledComponents'
 
-import { tableFilterTypes } from '../utils'
-import StudentGroupBtn from '../../common/components/StudentGroupBtn'
+import { tableFilterTypes } from '../../utils'
+import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
 
 const DashboardTableFilters = ({
   tableFilters,

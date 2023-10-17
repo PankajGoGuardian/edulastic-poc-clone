@@ -129,7 +129,3 @@ export const TimeframeText = styled.span`
   font-weight: bold;
   color: ${({ checked }) => (checked ? green : darkGrey5)};
 `
-export const ColoredText = styled.div`
-  font-weight: bold;
-  color: ${(p) => p.color};
-`

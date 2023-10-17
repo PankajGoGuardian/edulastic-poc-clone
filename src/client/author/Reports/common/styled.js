@@ -477,6 +477,9 @@ export const ColorBandRow = styled.div`
 `
 
 export const ColorCircle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   border: 2px solid #ffffff;
   height: ${({ height }) => height || '20px'};

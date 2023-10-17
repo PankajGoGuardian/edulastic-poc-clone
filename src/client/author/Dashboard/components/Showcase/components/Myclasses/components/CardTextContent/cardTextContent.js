@@ -19,7 +19,7 @@ import { TextWrapper } from '../../../../../styledComponents'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
 
 export const CardTextContent = ({ data, history }) => {
-  const { asgnStatus, asgnTitle, asgnId, _id, asgnThumbnail } = data
+  const { asgnStatus, asgnTitle, asgnId, _id, asgnThumbnail, isPaused } = data
 
   const gotoAssignedAssessment = () => {
     if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`)
@@ -45,7 +45,8 @@ export const CardTextContent = ({ data, history }) => {
                 </AssignmentTitle>
               </Tooltip>
               <AssignmentStatusText data-cy="assignmentStatus">
-                {asgnStatus}
+                {asgnStatus}{' '}
+                {isPaused && asgnStatus !== 'DONE' ? '(PAUSED)' : ''}
               </AssignmentStatusText>
             </CenterCol>
           </FlexContainer>

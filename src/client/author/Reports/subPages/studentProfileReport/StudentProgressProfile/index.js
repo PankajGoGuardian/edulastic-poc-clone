@@ -22,10 +22,9 @@ import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetBandData } from '../../multipleAssessmentReport/StudentProgress/hooks'
 
 import dropDownData from './static/json/dropDownData.json'
-import { downloadCSV } from '../../../common/util'
+import { downloadCSV, getFilterOptions } from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
 import MultiSelectDropdown from '../../../common/components/widgets/MultiSelectDropdown'
-import { getTestsFilterDropdownOptions } from './utils'
 
 const compareBy = {
   key: 'standard',
@@ -89,12 +88,14 @@ const StudentProgressProfile = ({
   )?.performanceBand
 
   const {
-    metricInfo: rawMetricInfo = [],
-    skillInfo = [],
-    standardsCount = 0,
-  } = useMemo(() => get(studentProgressProfile, 'data.result', {}), [
-    studentProgressProfile,
-  ])
+    metricInfo: rawMetricInfo,
+    skillInfo,
+    standardsCount,
+  } = studentProgressProfile?.data?.result || {
+    metricInfo: [],
+    skillInfo: [],
+    standardsCount: 0,
+  }
 
   useEffect(() => () => resetStudentProgressProfile(), [])
 
@@ -150,8 +151,10 @@ const StudentProgressProfile = ({
     bandInfo
   )
 
-  const testsFilterDropdownOptions = getTestsFilterDropdownOptions(
-    rawMetricInfo
+  const testsFilterDropdownOptions = getFilterOptions(
+    rawMetricInfo,
+    'assignmentId',
+    'testName'
   )
 
   if (loading) {
@@ -189,9 +192,7 @@ const StudentProgressProfile = ({
             <MultiSelectDropdown
               dataCy="tests"
               label="Test(s)"
-              onChange={(e) => {
-                setSelectedTests(e)
-              }}
+              onChange={setSelectedTests}
               value={selectedTests}
               options={testsFilterDropdownOptions}
               displayLabel={false}

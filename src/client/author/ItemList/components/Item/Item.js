@@ -703,7 +703,7 @@ class Item extends Component {
                   </TestStatusWrapper>
                 )}
                 {windowWidth > MAX_TAB_WIDTH && isDynamicItem && (
-                  <DynamicIconWrapper title="Every student may get different values in there assignment">
+                  <DynamicIconWrapper title="Every student may get different values in their assignment">
                     <IconDynamic color={themeColor} />
                   </DynamicIconWrapper>
                 )}
@@ -778,7 +778,7 @@ class Item extends Component {
                 )}
               </TestStatusWrapper>
               {isDynamicItem && (
-                <DynamicIconWrapper title="Every student may get different values in there assignment">
+                <DynamicIconWrapper title="Every student may get different values in their assignment">
                   <IconDynamic color={themeColor} />
                 </DynamicIconWrapper>
               )}

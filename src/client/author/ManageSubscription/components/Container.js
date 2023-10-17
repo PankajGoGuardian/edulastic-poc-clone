@@ -79,6 +79,18 @@ const ManageSubscriptionContainer = ({
   setSaveButtonState,
   fetchUserSubscriptionStatus,
   setQuantities,
+  //
+  isFetchingOrganization,
+  districtList,
+  searchRequest,
+  addSubscription,
+  handleSelectDistrict,
+  handleSearch,
+  fieldData,
+  setFieldData,
+  deleteLicense,
+  searchType,
+  page,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showRenewLicenseModal, setShowRenewLicenseModal] = useState(false)
@@ -244,6 +256,19 @@ const ManageSubscriptionContainer = ({
           setSelectedLicenseId={setSelectedLicenseId}
           setQuantities={setQuantities}
           subType={subType}
+          licenseOwnerId={licenseOwnerId}
+          products={products}
+          isFetchingOrganization={isFetchingOrganization}
+          districtList={districtList}
+          searchRequest={searchRequest}
+          addSubscription={addSubscription}
+          handleSelectDistrict={handleSelectDistrict}
+          handleSearch={handleSearch}
+          fieldData={fieldData}
+          setFieldData={setFieldData}
+          deleteLicense={deleteLicense}
+          searchType={searchType}
+          page={page}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}

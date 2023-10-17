@@ -11,6 +11,10 @@ import { combineReducers } from 'redux'
 import { all, call, put, select, takeEvery } from 'redux-saga/effects'
 import { createAction, createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import {
+  fetchManageSubscriptionsSuccessAction,
+  fetchMultipleSubscriptionsAction,
+} from '../../author/ManageSubscription/ducks'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -564,12 +568,26 @@ function* fetchLicensesByTypeSaga({ payload }) {
 
 function* deleteLicensesByIdsSaga({ payload }) {
   try {
-    const { licenseIds, search } = payload
-    const result = yield call(manageSubscriptionsApi.deleteLicenses, {
+    const {
       licenseIds,
-    })
+      search,
+      notes,
+      handleSingleLicense,
+      licenseOwnerId,
+    } = payload
+    let dataToSend = { licenseIds }
+    if (handleSingleLicense)
+      dataToSend = { licenseIds, notes, handleSingleLicense }
+    const result = yield call(manageSubscriptionsApi.deleteLicenses, dataToSend)
     if (!result.error) {
       notification({ type: 'success', msg: result.message })
+      if (handleSingleLicense) {
+        const licenses = yield call(manageSubscriptionsApi.fetchLicenses, {
+          licenseOwnerId,
+        })
+
+        yield put(fetchManageSubscriptionsSuccessAction(licenses))
+      }
       const licenses = yield call(
         manageSubscriptionsApi.fetchManageLicenses,
         search
@@ -624,8 +642,24 @@ function* fetchProductsSaga() {
 
 function* addSubscriptionSaga({ payload }) {
   try {
+    const { editLicense = false, licenseOwnerId = '' } = payload
     const result = yield call(paymentApi.licensePurchase, payload) || {}
-    if (result.licenseKeys) {
+    if (editLicense) {
+      if (result.success) {
+        yield put(
+          fetchMultipleSubscriptionsAction({ background: true, licenseOwnerId })
+        )
+        notification({
+          type: 'success',
+          msg: result.message,
+        })
+      } else {
+        notification({
+          type: 'error',
+          msg: result.message,
+        })
+      }
+    } else if (result.licenseKeys) {
       const { searchType } = yield select(getManageSubscriptionByLicensesData)
       const data = {
         type: searchType,
@@ -633,7 +667,10 @@ function* addSubscriptionSaga({ payload }) {
         limit: 10,
       }
       yield put(manageSubscriptionsByLicenses.actions.fetchLicenses(data))
-      notification({ type: 'success', msg: 'License(s) created successfully!' })
+      notification({
+        type: 'success',
+        msg: 'License(s) created successfully!',
+      })
     } else {
       notification({ type: 'error', msg: 'License(s) creation failed!' })
     }

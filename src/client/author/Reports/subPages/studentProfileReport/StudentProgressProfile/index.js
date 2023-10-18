@@ -196,7 +196,8 @@ const StudentProgressProfile = ({
               value={selectedTests}
               options={testsFilterDropdownOptions}
               displayLabel={false}
-              maxTagCount={2}
+              maxTagCount={3}
+              tagMaxWidth="145px"
               inputBoxHeight="32px"
               tagHeight="20px"
             />

@@ -307,6 +307,7 @@ export const SelectInputStyled = styled(Select)`
           .ant-select-selection__choice {
             border-radius: 4px;
             height: ${(props) => props.$tagHeight || '24px'};
+            max-width: ${(p) => p.$tagMaxWidth || 'unset'};
             display: flex;
             align-items: center;
             border: none;

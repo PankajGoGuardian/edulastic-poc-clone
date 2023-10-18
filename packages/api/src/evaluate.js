@@ -1,6 +1,7 @@
+import { getApiUri } from '../../../src/utils/commons'
 import API from './utils/API'
 
-const api = new API(`${process.env.REACT_APP_API_URI}`)
+const api = new API(getApiUri())
 
 const evaluate = (data, type) =>
   api

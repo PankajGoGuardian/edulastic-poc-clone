@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/browser'
 import { debounce } from 'lodash'
 import config from '../config'
 import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
+import { getApiUri } from '../../../../src/utils/commons'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
@@ -195,7 +196,7 @@ export function forceLogout() {
 }
 
 export default class API {
-  constructor(baseURL = config.api, defaultToken = false) {
+  constructor(baseURL = getApiUri(), defaultToken = false) {
     this.baseURL = baseURL
 
     this.instance = axios.create({
@@ -210,7 +211,7 @@ export default class API {
         // such APIs are routed to another url which will use a aws lambda with much higher timeout
         // some of the example APIs are in packages/api/src/reports.js
         if (_config.useSlowApi) {
-          _config.baseURL = config.apis || _config.baseURL
+          _config.headers['X-Slow-API'] = true
         }
         _config['client-epoch'] = Date.now().toString()
         _config.headers['X-Client-Time'] = new Date().toISOString()

@@ -1229,6 +1229,9 @@ export const triggerEvent = (el, eventName, options) => {
   }
 }
 
+export const getTimestampFromMongoId = (id) =>
+  parseInt(id.toString().substring(0, 8), 16) * 1000
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1262,4 +1265,5 @@ export default {
   getYoutubeId,
   formatFileSize,
   triggerEvent,
+  getTimestampFromMongoId,
 }

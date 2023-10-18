@@ -38,8 +38,6 @@ const PerformanceReport = ({
   interventionsData,
   toggleInterventionInfo,
 }) => {
-  console.log('TestTypes', testTypes)
-  console.log('InterventaionsData', interventionsData)
   return (
     <>
       <EduIf condition={!isEmpty(chartData)}>

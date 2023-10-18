@@ -1,42 +1,34 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { FlexContainer, EduIf } from '@edulastic/common'
-import styled from 'styled-components'
-import { themeColor, themeColorBlue, white } from '@edulastic/colors'
-import { Button } from 'antd'
+import { EduIf } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
 import { IconCollapse2 } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
-import { filter, get } from 'lodash'
-import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { StyledCard } from '../../../../../common/styled'
-import StudentPerformanceSummary from '../../../../studentProfileReport/StudentMasteryProfile/common/components/table/StudentPerformanceSummary'
+import { get } from 'lodash'
+import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
+import StudentPerformanceSummary from '../../../../../studentProfileReport/StudentMasteryProfile/common/components/table/StudentPerformanceSummary'
 import {
   getCurriculumsList,
   getDomainOptionsByGradeSubject,
-} from '../../../../studentProfileReport/common/utils/transformers'
-import { useGetStudentMasteryData } from '../../../../studentProfileReport/common/hooks'
+  getFullName,
+} from '../../../../../studentProfileReport/common/utils/transformers'
+import { useGetStudentMasteryData } from '../../../../../studentProfileReport/common/hooks'
 import {
   getInterestedCurriculumsSelector,
   getUserRole,
-} from '../../../../../../src/selectors/user'
-import staticDropDownData from '../../../../singleAssessmentReport/common/static/staticDropDownData.json'
-import { downloadCSV } from '../../../../../common/util'
+} from '../../../../../../../src/selectors/user'
+import staticDropDownData from '../../../../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { downloadCSV } from '../../../../../../common/util'
+import useFilterRecords from './hooks/useFilterRecords'
+import StandardsAssignmentModal from './StandardsAssignmentModal'
+import {
+  ReStyledCard,
+  FilterRow,
+  DropdownContainer,
+  StyledButton,
+} from './styled'
 
-const usefilterRecords = (records, domain, grade, subject, curriculumId) =>
-  // Note: record.domainId could be integer or string
-  useMemo(
-    () =>
-      filter(
-        records,
-        (record) =>
-          (domain === 'All' || String(record.domainId) === String(domain)) &&
-          (grade === 'All' || record.grades.includes(grade)) &&
-          (subject === 'All' || record.subject === subject) &&
-          (curriculumId === 'All' || `${record.curriculumId}` === curriculumId)
-      ),
-    [records, domain, grade, subject, curriculumId]
-  )
 const allGrades = [
   { key: 'All', title: 'All Grades' },
   ...staticDropDownData.grades,
@@ -50,9 +42,9 @@ const MasteryTable = ({
   interestedCurriculums,
   userRole,
   studentMasteryProfile,
-  SPRFFilterData,
   settings,
   isCsvDownloading,
+  selectedScale,
 }) => {
   const [expandRows, setExpandRows] = useState(false)
   const [selectedMastery, setSelectedMastery] = useState([])
@@ -72,21 +64,19 @@ const MasteryTable = ({
     key: 'All',
     title: 'All Standard Sets',
   })
-
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)
   const onCurriculumSelect = (_, selected) => setSelectedCurriculum(selected)
+
+  const [clickedStandard, setClickedStandard] = useState(undefined)
 
   const { metricInfo = [], skillInfo = [] } = get(
     studentMasteryProfile,
     'data.result',
     {}
   )
-  const { scaleInfo: scales = [] } = get(SPRFFilterData, 'data.result', {})
-  const scaleInfo = (
-    scales.find((x) => x._id === settings.requestFilters.profileId) || scales[0]
-  )?.scale
+  const scaleInfo = selectedScale.scale
 
   const [studentStandards, studentDomains] = useGetStudentMasteryData(
     metricInfo,
@@ -94,14 +84,14 @@ const MasteryTable = ({
     scaleInfo
   )
 
-  const filteredStandards = usefilterRecords(
+  const filteredStandards = useFilterRecords(
     studentStandards,
     selectedDomain.key,
     selectedGrade.key,
     selectedSubject.key,
     selectedCurriculum.key
   )
-  const filteredDomains = usefilterRecords(
+  const filteredDomains = useFilterRecords(
     studentDomains,
     selectedDomain.key,
     selectedGrade.key,
@@ -136,11 +126,28 @@ const MasteryTable = ({
   }, [selectedDomain.key])
 
   const onCsvConvert = (data) =>
-    downloadCSV(
-      `Standard Performance Details-inside Whole Learner
-      }.csv`,
-      data
-    )
+    downloadCSV(`Standard Performance Details-inside Whole Learner.csv`, data)
+
+  const closeStudentAssignmentModal = () => {
+    setClickedStandard(undefined)
+  }
+  const handleOnClickStandard = (params, standardName) => {
+    setClickedStandard({ standardId: params.standardId, standardName })
+  }
+
+  const standardPopupFilters = useMemo(() => {
+    return {
+      termId: settings.requestFilters.termId,
+      profileId: selectedScale._id,
+      studentId: settings.selectedStudentInformation.studentId,
+      standardId: clickedStandard?.standardId,
+    }
+  }, [
+    settings.requestFilters.termId,
+    settings.selectedStudentInformation.studentId,
+    selectedScale._id,
+    clickedStandard?.standardId,
+  ])
 
   return (
     <ReStyledCard>
@@ -195,11 +202,19 @@ const MasteryTable = ({
           isCsvDownloading,
           data: filteredStandards,
           selectedMastery,
-          // handleOnClickStandard,
+          handleOnClickStandard,
           filters: settings.requestFilters,
         }}
         expandAllRows={expandRows}
         setExpandAllRows={(flag) => setExpandRows(flag)}
+      />
+      <StandardsAssignmentModal
+        visible={!!clickedStandard}
+        standard={clickedStandard}
+        scaleInfo={scaleInfo}
+        onCancel={closeStudentAssignmentModal}
+        studentName={getFullName(settings.selectedStudentInformation)}
+        filters={standardPopupFilters}
       />
     </ReStyledCard>
   )
@@ -211,61 +226,3 @@ const withConnect = connect((state) => ({
 }))
 
 export default compose(withConnect)(MasteryTable)
-
-const ReStyledCard = styled(StyledCard)`
-  margin: 0px;
-  padding: 20px;
-  border: 1px solid #dadae4;
-  max-width: ${({ maxW }) => maxW};
-  flex: ${({ flex }) => flex};
-  margin-left: ${({ ml }) => ml};
-`
-
-const FilterRow = styled(FlexContainer)`
-  @media print {
-    display: none;
-  }
-`
-
-const DropdownContainer = styled.div`
-  display: flex;
-
-  .control-dropdown {
-    .ant-btn {
-      width: 100%;
-    }
-  }
-  .control-dropdown {
-    margin-left: 10px;
-  }
-  .control-dropown:first-child {
-    margin-left: 0px;
-  }
-`
-
-const StyledButton = styled(Button)`
-  float: right;
-  margin: 5px;
-  padding-left: 8px;
-  padding-right: 0px;
-  text-align: center;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  color: ${themeColor};
-  border-color: ${themeColor};
-  &:hover {
-    background: ${themeColorBlue};
-    color: ${white};
-    border-color: ${themeColorBlue};
-    svg > * {
-      fill: ${white};
-    }
-  }
-  &:focus {
-    color: ${themeColor};
-  }
-  .button-label {
-    padding: 0px 20px;
-  }
-`

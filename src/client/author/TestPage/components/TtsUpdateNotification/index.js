@@ -10,7 +10,7 @@ import { getUser } from '../../../src/selectors/user'
 
 const ttsUpdateNotificationCollection = 'TTSUpdateNotification'
 
-const NotificationListener = ({ user, location, history }) => {
+const NotificationListener = ({ user }) => {
   const [notificationIds, setNotificationIds] = useState([])
 
   const ttsUpdateNotification = Fbs.useFirestoreRealtimeDocuments(
@@ -67,11 +67,11 @@ const NotificationListener = ({ user, location, history }) => {
         deleteNotificationDocument(doc.__id, collection)
 
         // if user at test page and tts has been processed successfully
-        const isTestPage = location?.pathname?.includes(testId)
+        // const isTestPage = location?.pathname?.includes(testId)
 
-        if (successCount > 0 && isTestPage) {
-          setTimeout(() => history.push(location.pathname), 3000)
-        }
+        // if (successCount > 0 && isTestPage) {
+        //   setTimeout(() => history.push(location.pathname), 3000)
+        // }
       }
     })
   }

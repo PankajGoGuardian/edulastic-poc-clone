@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { isEmpty } from 'lodash'
 import produce from 'immer'
 import { Button, Spin } from 'antd'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import TitleModal from '../TitleModal'
-import PageHeader from '../PageHeader'
-import ExploreTitle from '../ExploreTitle'
-import EditWidgetLayout from '../EditWidgetLayout'
+import { TitleModal } from '../TitleModal'
+import { PageHeader } from '../PageHeader'
+import { ExploreTitle } from '../ExploreTitle'
+import { EditWidgetLayout } from '../EditWidgetLayout'
 import {
   getIsMetaDataLoadingSelector,
   getMetaDataAction,
@@ -20,13 +20,14 @@ import {
   addReportDefinitionAction,
   updateReportDefinitionAction,
   setChartDataAction,
+  setReportDataAction,
 } from '../../ducks'
 import { WidgetQueryBuilder } from '../WidgetQueryBuilder'
-import { DEFAULT_PAGESIZE, DEFAULT_WIDGET_LAYOUT } from '../../const'
-
-const isValidQuery = (query) => {
-  return query?.dimensions?.length || query?.facts?.length
-}
+import {
+  DEFAULT_PAGESIZE,
+  DEFAULT_WIDGET_LAYOUT,
+  isValidQuery,
+} from '../../const'
 
 /**
  * @param {string} name
@@ -47,7 +48,7 @@ const Explore = (props) => {
     getReportData,
     isLoading,
     getMetaData,
-    isItemDataLoading,
+    isWidgetDataLoading,
     report,
     dataSources,
     getChartData,
@@ -55,6 +56,7 @@ const Explore = (props) => {
     addReportDefinition,
     updateReportDefinition,
     setChartData,
+    setReportData,
   } = props
   const { widget: sourceWidget } = history.location.state || {}
   const { definitionId, widgetId } = match.params
@@ -104,11 +106,14 @@ const Explore = (props) => {
   const [titleModalVisible, setTitleModalVisible] = useState(false)
 
   useEffect(() => {
+    setReportData({})
     getMetaData()
   }, [])
 
   useEffect(() => {
-    setChartData({ widgetId: 'draft', data: {} })
+    if (!isValidQuery(editQuery)) {
+      setChartData({ widgetId: 'draft', data: {} })
+    }
   }, [editQuery])
 
   // TODO : combine editQuery & editWidgetLayout
@@ -127,7 +132,7 @@ const Explore = (props) => {
           layout: editWidgetLayout,
         }
 
-  if (isLoading || isItemDataLoading) {
+  if (isLoading || isWidgetDataLoading) {
     return <Spin />
   }
 
@@ -194,7 +199,7 @@ const Explore = (props) => {
 
   const handleApply = () => {
     getChartData({
-      query: { ...editQuery, limit: DEFAULT_PAGESIZE, offset: 0 },
+      query: { ...editQuery, limit: DEFAULT_PAGESIZE, offset: 0, total: true },
     })
   }
 
@@ -212,20 +217,28 @@ const Explore = (props) => {
         handleSaveOrUpdateOfReport={handleSaveOrUpdateOfReport}
       />
       <PageHeader
-        title={<ExploreTitle widgetId={widgetId} />}
+        title={
+          <ExploreTitle
+            reportId={report?._id}
+            reportTitle={reportTitle}
+            reportDescription={reportDescription}
+            widgetTitle={title}
+          />
+        }
         button={
           <>
             <Button key="apply-button" type="primary" onClick={handleApply}>
               Apply
             </Button>
-            <Button
-              key="goto-report-button"
-              type="primary"
-              style={{ marginLeft: '15px' }}
-              onClick={() => history.push('/author/reports/report-builder')}
-            >
-              Go to Reports List
-            </Button>
+            <Link to="/author/reports/report-builder">
+              <Button
+                key="goto-report-button"
+                type="primary"
+                style={{ marginLeft: '15px' }}
+              >
+                Go to Reports List
+              </Button>
+            </Link>
             <Button
               key="update-button"
               type="primary"
@@ -255,7 +268,7 @@ const enhance = compose(
     (state) => ({
       isLoading: getIsMetaDataLoadingSelector(state),
       dataSources: getMetaDataSelector(state),
-      isItemDataLoading: getIsWidgetDataLoadingSelector(state),
+      isWidgetDataLoading: getIsWidgetDataLoadingSelector(state),
       report: getActiveReportSelector(state),
     }),
     {
@@ -265,6 +278,7 @@ const enhance = compose(
       addReportDefinition: addReportDefinitionAction,
       updateReportDefinition: updateReportDefinitionAction,
       setChartData: setChartDataAction,
+      setReportData: setReportDataAction,
     }
   )
 )

@@ -3,9 +3,9 @@ import * as PropTypes from 'prop-types'
 import { Select } from 'antd'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import MemberDropdown from './MemberDropdown'
-import RemoveButtonGroup from './RemoveButtonGroup'
-import FilterInput from './FilterInput'
+import { MemberDropdown } from './MemberDropdown'
+import { RemoveButtonGroup } from './RemoveButtonGroup'
+import { FilterInput } from './FilterInput'
 
 const NUMBER_TYPES = [
   'number',
@@ -66,7 +66,7 @@ const operators = [
   },
 ]
 
-const FilterGroup = ({
+export const FilterGroup = ({
   members,
   availableMembers,
   addMemberName,
@@ -80,6 +80,7 @@ const FilterGroup = ({
     existingMembers[idxToReplace] = {
       dimension: newMember,
       operators: operators.filter((op) => op.type.includes(newMember.type)),
+      operator: 'equals',
     }
     updateMethods(existingMembers)
   }
@@ -149,6 +150,7 @@ const FilterGroup = ({
             {
               dimension: m,
               operators: operators.filter((op) => op.type.includes(m.type)),
+              operator: 'equals',
             },
           ])
         }

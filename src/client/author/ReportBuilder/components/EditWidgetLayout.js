@@ -6,17 +6,34 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { FlexContainer, TextInputStyled } from '@edulastic/common'
 import { themeColor, white } from '@edulastic/colors'
-import SelectChartType from './SelectChartType'
-import ChartRenderer from './ChartRenderer'
-import CoordinatesSelector from './CoordinatesSelector'
-import { getChartDataSelector } from '../ducks'
+import { SelectChartType } from './SelectChartType'
+import { ChartRenderer } from './ChartRenderer'
+import { CoordinatesSelector } from './CoordinatesSelector'
+import {
+  getChartDataAction,
+  getChartDataSelector,
+  getIsChartDataLoadingSelector,
+} from '../ducks'
+import { isValidQuery } from '../const'
+import { useChartRenderer } from './customHooks/useChartRenderer'
 
-const EditWidgetLayout = ({ value, onChange, chartData }) => {
+const EditWidgetLayout = ({
+  value,
+  onChange,
+  chartData,
+  getChartData,
+  isChartDataLoading,
+}) => {
   const { query, layout } = value
   const chartType = layout.type
   const { facts = [], dimensions = [] } = query
-  const showCustomAxesOption =
-    ['bar', 'line', 'area'].includes(chartType) && !isEmpty(chartData)
+
+  const { pageFilter, setPageFilter } = useChartRenderer({
+    widget: value,
+    chartData,
+    getChartData,
+    isControlled: true,
+  })
 
   useEffect(() => {
     if (!isEmpty(chartData)) {
@@ -68,6 +85,9 @@ const EditWidgetLayout = ({ value, onChange, chartData }) => {
     }
   }
 
+  const showCustomAxesOption =
+    ['bar', 'line', 'area'].includes(chartType) && !isEmpty(chartData)
+
   return (
     <ChartRow
       type="flex"
@@ -77,59 +97,64 @@ const EditWidgetLayout = ({ value, onChange, chartData }) => {
       key="2"
     >
       <Col span={24}>
-        {!isEmpty(query) ? (
-          <>
-            <FlexContainer
-              style={{ marginTop: 15, marginBottom: 25, width: '100%' }}
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <SelectChartType
-                chartType={chartType}
-                updateChartType={handleChartTypeChange}
-              />
-              {showCustomAxesOption && (
-                <CoordinatesSelector
-                  availableOptions={[...facts, ...dimensions]}
-                  selectedXCoords={layout.options.coOrds.xCoOrds}
-                  selectedYCoords={layout.options.coOrds.yCoOrds}
-                  setSelectedXCoords={handleCoOrdsChange('xCoOrds')}
-                  setSelectedYCoords={handleCoOrdsChange('yCoOrds')}
+        {isValidQuery(query) ? (
+          !isEmpty(chartData) || isChartDataLoading ? (
+            <>
+              <FlexContainer
+                style={{ marginTop: 15, marginBottom: 25, width: '100%' }}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <SelectChartType
+                  chartType={chartType}
+                  updateChartType={handleChartTypeChange}
                 />
-              )}
-            </FlexContainer>
-            <ChartCard style={{ minHeight: 420 }}>
-              {showCustomAxesOption && (
-                <>
-                  <YAxisLabelContainer>
-                    <Title>Y-Axis Label</Title>
-                    <TextInputStyled
-                      data-cy="yAxisLabel"
-                      placeholder="Y axis Label"
-                      value={layout.options.axesLabel.y}
-                      onChange={handleAxesLabelChange('y')}
-                    />
-                  </YAxisLabelContainer>
-                  <XAxisLabelContainer>
-                    <Title>X-Axis Label</Title>
-                    <TextInputStyled
-                      data-cy="xAxisLabel"
-                      placeholder="X axis Label"
-                      value={layout.options.axesLabel.x}
-                      onChange={handleAxesLabelChange('x')}
-                    />
-                  </XAxisLabelContainer>
-                </>
-              )}
-              <ChartRenderer
-                query={query}
-                chartType={chartType}
-                chartHeight={400}
-                widget={value}
-                axesLabel={layout.options.axesLabel}
-              />
-            </ChartCard>
-          </>
+                {showCustomAxesOption && (
+                  <CoordinatesSelector
+                    availableOptions={[...facts, ...dimensions]}
+                    selectedXCoords={layout.options.coOrds.xCoOrds}
+                    selectedYCoords={layout.options.coOrds.yCoOrds}
+                    setSelectedXCoords={handleCoOrdsChange('xCoOrds')}
+                    setSelectedYCoords={handleCoOrdsChange('yCoOrds')}
+                  />
+                )}
+              </FlexContainer>
+              <ChartCard style={{ minHeight: 420 }}>
+                {showCustomAxesOption && (
+                  <>
+                    <YAxisLabelContainer>
+                      <Title>Y-Axis Label</Title>
+                      <TextInputStyled
+                        data-cy="yAxisLabel"
+                        placeholder="Y axis Label"
+                        value={layout.options.axesLabel.y}
+                        onChange={handleAxesLabelChange('y')}
+                      />
+                    </YAxisLabelContainer>
+                    <XAxisLabelContainer>
+                      <Title>X-Axis Label</Title>
+                      <TextInputStyled
+                        data-cy="xAxisLabel"
+                        placeholder="X axis Label"
+                        value={layout.options.axesLabel.x}
+                        onChange={handleAxesLabelChange('x')}
+                      />
+                    </XAxisLabelContainer>
+                  </>
+                )}
+                <ChartRenderer
+                  chartHeight={400}
+                  widget={value}
+                  chartData={chartData}
+                  pageFilter={pageFilter}
+                  setPageFilter={setPageFilter}
+                  isChartDataLoading={isChartDataLoading}
+                />
+              </ChartCard>
+            </>
+          ) : (
+            <StyledDiv>Click on apply to build the chart</StyledDiv>
+          )
         ) : (
           <Empty>
             <h2>Build Your Query</h2>
@@ -143,13 +168,16 @@ const EditWidgetLayout = ({ value, onChange, chartData }) => {
 
 const enhance = compose(
   connect(
-    (state) => ({
-      chartData: getChartDataSelector(state),
+    (state, props) => ({
+      isChartDataLoading: getIsChartDataLoadingSelector(state, props),
+      chartData: getChartDataSelector(state, props),
     }),
-    {}
+    { getChartData: getChartDataAction }
   )
 )
-export default enhance(EditWidgetLayout)
+
+const EditWidgetLayoutContainer = enhance(EditWidgetLayout)
+export { EditWidgetLayoutContainer as EditWidgetLayout }
 
 const Title = styled.p`
   margin-bottom: 10px;
@@ -193,4 +221,12 @@ const ChartRow = styled(Row)`
 const Empty = styled.div`
   text-align: center;
   margin-top: 185px;
+`
+
+const StyledDiv = styled.div`
+width: '90%',
+margin: auto;
+margin-top: 8%;  
+text-align: center;
+font-size: 1.5rem;
 `

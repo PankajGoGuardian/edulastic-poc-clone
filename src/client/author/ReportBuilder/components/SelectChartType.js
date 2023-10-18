@@ -1,18 +1,7 @@
 import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Menu, Icon, Dropdown } from 'antd'
-
 import styled from 'styled-components'
-
-const StyledDropdownTrigger = styled.span`
-  color: #43436b;
-  cursor: pointer;
-  margin-left: 13px;
-
-  & > span {
-    margin: 0 8px;
-  }
-`
 
 const ChartTypes = [
   { name: 'line', title: 'Line', icon: 'line-chart' },
@@ -23,7 +12,7 @@ const ChartTypes = [
   { name: 'number', title: 'Number', icon: 'info-circle' },
 ]
 
-const SelectChartType = ({ chartType, updateChartType }) => {
+export const SelectChartType = ({ chartType, updateChartType }) => {
   const menu = (
     <Menu>
       {ChartTypes.map((m) => (
@@ -57,4 +46,12 @@ SelectChartType.propTypes = {
   updateChartType: PropTypes.func.isRequired,
 }
 
-export default SelectChartType
+const StyledDropdownTrigger = styled.span`
+  color: #43436b;
+  cursor: pointer;
+  margin-left: 13px;
+
+  & > span {
+    margin: 0 8px;
+  }
+`

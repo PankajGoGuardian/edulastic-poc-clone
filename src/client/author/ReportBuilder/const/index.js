@@ -17,3 +17,7 @@ export const DEFAULT_WIDGET_LAYOUT = {
     },
   },
 }
+
+export const isValidQuery = (query) => {
+  return query?.dimensions?.length || query?.facts?.length
+}

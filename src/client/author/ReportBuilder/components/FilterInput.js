@@ -50,7 +50,7 @@ FilterInputs.number.defaultProps = {
   values: [],
 }
 
-const FilterInput = ({ member, updateMethods }) => {
+export const FilterInput = ({ member, updateMethods }) => {
   const Filter = FilterInputs[member.dimension.type] || FilterInputs.string
   return (
     <Filter
@@ -65,4 +65,3 @@ FilterInput.propTypes = {
   member: PropTypes.object.isRequired,
   updateMethods: PropTypes.object.isRequired,
 }
-export default FilterInput

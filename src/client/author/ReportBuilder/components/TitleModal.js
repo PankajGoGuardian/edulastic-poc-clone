@@ -3,7 +3,7 @@ import { Modal, Input } from 'antd'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 
-const TitleModal = ({
+export const TitleModal = ({
   titleModalVisible,
   setTitleModalVisible,
   title,
@@ -43,8 +43,6 @@ const TitleModal = ({
     </Modal>
   )
 }
-
-export default TitleModal
 
 const StyledDiv = styled.div`
   margin-top: 10px;

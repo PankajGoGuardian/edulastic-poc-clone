@@ -2,7 +2,7 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { Menu } from 'antd'
 import { sortBy, prop } from 'ramda'
-import ButtonDropdown from './ButtonDropdown' // Can't be a Pure Component due to Dropdown lookups overlay component type to set appropriate styles
+import { ButtonDropdown } from './ButtonDropdown'
 
 const sortByTitle = sortBy(prop('title'))
 
@@ -26,7 +26,7 @@ const memberMenu = (onClick, availableMembers, members) => {
   )
 }
 
-const MemberDropdown = ({
+export const MemberDropdown = ({
   onClick,
   availableMembers,
   members,
@@ -42,4 +42,3 @@ MemberDropdown.propTypes = {
   onClick: PropTypes.func.isRequired,
   availableMembers: PropTypes.array.isRequired,
 }
-export default MemberDropdown

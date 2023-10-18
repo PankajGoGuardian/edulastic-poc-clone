@@ -11,11 +11,9 @@ const ButtonsCol = styled(Col)`
   text-align: right;
 `
 
-const PageHeader = ({ title, button, noBorder }) => (
+export const PageHeader = ({ title, button }) => (
   <StyledRow>
     <Col span={12}>{title}</Col>
     <ButtonsCol span={12}>{button}</ButtonsCol>
   </StyledRow>
 )
-
-export default PageHeader

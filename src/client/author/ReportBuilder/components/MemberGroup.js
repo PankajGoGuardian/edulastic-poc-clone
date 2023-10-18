@@ -2,11 +2,11 @@ import React from 'react'
 import * as PropTypes from 'prop-types'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import MemberDropdown from './MemberDropdown'
-import RemoveButtonGroup from './RemoveButtonGroup'
-import MemberGroupTitle from './MemberGroupTitle'
+import { MemberDropdown } from './MemberDropdown'
+import { RemoveButtonGroup } from './RemoveButtonGroup'
+import { MemberGroupTitle } from './MemberGroupTitle'
 
-const MemberGroup = ({
+export const MemberGroup = ({
   members,
   availableMembers,
   addMemberName,

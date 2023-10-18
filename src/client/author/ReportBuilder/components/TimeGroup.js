@@ -4,10 +4,10 @@ import { Menu } from 'antd'
 import styled from 'styled-components'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import ButtonDropdown from './ButtonDropdown'
-import MemberDropdown from './MemberDropdown'
-import RemoveButtonGroup from './RemoveButtonGroup'
-import MemberGroupTitle from './MemberGroupTitle'
+import { ButtonDropdown } from './ButtonDropdown'
+import { MemberDropdown } from './MemberDropdown'
+import { RemoveButtonGroup } from './RemoveButtonGroup'
+import { MemberGroupTitle } from './MemberGroupTitle'
 
 const DateRanges = [
   { title: 'All time', value: undefined },
@@ -34,12 +34,7 @@ const granularities = [
   { name: 'year', title: 'Year' },
 ]
 
-const GroupLabel = styled.span`
-  font-size: 14px;
-  margin: 0 12px;
-`
-
-const TimeGroup = ({
+export const TimeGroup = ({
   members,
   availableMembers,
   addMemberName,
@@ -151,4 +146,7 @@ TimeGroup.propTypes = {
   updateMethods: PropTypes.object.isRequired,
 }
 
-export default TimeGroup
+const GroupLabel = styled.span`
+  font-size: 14px;
+  margin: 0 12px;
+`

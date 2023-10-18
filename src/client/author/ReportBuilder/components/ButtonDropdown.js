@@ -5,6 +5,46 @@ import styled from 'styled-components'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 
+export const ButtonDropdown = ({ overlay, type, ...buttonProps }) => {
+  let component
+  if (type === 'icon') {
+    component = (
+      <PlusIconButton>
+        <IconPlusCircle style={{ fill: themeColor, cursor: 'pointer' }} />
+      </PlusIconButton>
+    )
+  } else if (type === 'selected') {
+    component = <StyledButton {...buttonProps} />
+  } else if (type === 'time-group') {
+    component = <TimeGroupButton {...buttonProps} />
+  } else if (type === 'selected-filter') {
+    component = <SelectedFilterButton {...buttonProps} />
+  } else {
+    component = <NewButton {...buttonProps} />
+  }
+
+  return (
+    <Dropdown overlay={overlay} placement="bottomLeft" trigger={['click']}>
+      {component}
+    </Dropdown>
+  )
+}
+
+ButtonDropdown.defaultProps = {
+  type: 'new',
+}
+
+ButtonDropdown.propTypes = {
+  overlay: PropTypes.object.isRequired,
+  type: PropTypes.oneOf([
+    'new',
+    'icon',
+    'selected',
+    'time-group',
+    'selected-filter',
+  ]),
+}
+
 const StyledButton = styled(Button)`
   font-size: 14px;
   height: 48px;
@@ -68,41 +108,3 @@ const PlusIconButton = styled.span`
   top: 5px;
   position: relative;
 `
-
-const ButtonDropdown = ({ overlay, type, ...buttonProps }) => {
-  let component
-  if (type === 'icon') {
-    component = (
-      <PlusIconButton>
-        <IconPlusCircle style={{ fill: themeColor, cursor: 'pointer' }} />
-      </PlusIconButton>
-    )
-  } else if (type === 'selected') {
-    component = <StyledButton {...buttonProps} />
-  } else if (type === 'time-group') {
-    component = <TimeGroupButton {...buttonProps} />
-  } else if (type === 'selected-filter') {
-    component = <SelectedFilterButton {...buttonProps} />
-  } else {
-    component = <NewButton {...buttonProps} />
-  }
-
-  return (
-    <Dropdown overlay={overlay} placement="bottomLeft" trigger={['click']}>
-      {component}
-    </Dropdown>
-  )
-}
-
-ButtonDropdown.propTypes = {
-  overlay: PropTypes.object.isRequired,
-  type: PropTypes.oneOf([
-    'new',
-    'icon',
-    'selected',
-    'time-group',
-    'selected-filter',
-  ]),
-}
-
-export default ButtonDropdown

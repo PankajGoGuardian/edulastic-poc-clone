@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react'
 import { Row, Col, Divider } from 'antd'
 import styled from 'styled-components'
-import MemberGroup from '../MemberGroup'
-import FilterGroup from '../FilterGroup'
-import TimeGroup from '../TimeGroup'
+import { MemberGroup } from '../MemberGroup'
+import { FilterGroup } from '../FilterGroup'
+import { TimeGroup } from '../TimeGroup'
 
 const ControlsRow = styled(Row)`
   background: #ffffff;
@@ -165,7 +165,7 @@ export const WidgetQueryBuilder = ({
           />
           <StyledDivider type="vertical" />
           <MemberGroup
-            title="Measures"
+            title="Facts"
             members={facts}
             availableMembers={factsOptions}
             addMemberName="Measure"

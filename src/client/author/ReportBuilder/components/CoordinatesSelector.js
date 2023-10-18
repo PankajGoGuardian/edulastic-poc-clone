@@ -6,13 +6,13 @@ import { themeColor } from '@edulastic/colors'
 
 const { Option } = Select
 
-function CoordinatesSelector({
+export const CoordinatesSelector = ({
   availableOptions,
   selectedXCoords,
   selectedYCoords,
   setSelectedXCoords,
   setSelectedYCoords,
-}) {
+}) => {
   const children = availableOptions
     .filter((val) => {
       const foundX = selectedXCoords.includes(val)
@@ -57,8 +57,6 @@ function CoordinatesSelector({
     </FlexContainer>
   )
 }
-
-export default CoordinatesSelector
 
 const Title = styled.p`
   margin-bottom: 10px;

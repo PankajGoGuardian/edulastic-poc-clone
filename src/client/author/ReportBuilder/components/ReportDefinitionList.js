@@ -3,6 +3,7 @@ import { Button, Spin } from 'antd'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
 import { TableContainer, StyledTable } from '../../../common/styled'
@@ -83,15 +84,11 @@ const ReportDefinitionList = ({
     <StyledDiv>
       <FlexContainer justifyContent="space-between">
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
-        <EduButton
-          key="add-report-button"
-          type="primary"
-          onClick={() => {
-            history.push('/author/reports/report-builder/explore')
-          }}
-        >
-          <IconAddItems /> Add Report
-        </EduButton>
+        <Link to="/author/reports/report-builder/explore">
+          <EduButton key="add-report-button" type="primary">
+            <IconAddItems /> Add Report
+          </EduButton>
+        </Link>
       </FlexContainer>
       <Spin spinning={isLoading}>{tableData} </Spin>
     </StyledDiv>

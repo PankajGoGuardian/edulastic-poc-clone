@@ -6,35 +6,14 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { themeColorLighter1, white } from '@edulastic/colors'
 
-import { updateReportDefinitionAction } from '../ducks'
-
-const StyledCard = styled(Card)`
-  border-radius: 15px;
-  background-color: ${white};
-  box-shadow: 0px 3px 8px #00000029;
-  .ant-card-head {
-    border: none;
-    padding-left: 0px;
-    .ant-card-head-wrapper {
-      justify-content: space-between;
-      width: 100%;
-      .ant-card-head-title {
-        font-size: 15px;
-        font-weight: bold;
-        max-width: fit-content;
-        padding-inline: 30px;
-        align-self: stretch;
-        display: flex;
-        place-items: center;
-        background-color: ${themeColorLighter1};
-        border-radius: 15px 0px;
-      }
-    }
-  }
-  .ant-card-body {
-    padding-top: 12px;
-  }
-`
+import {
+  getChartDataAction,
+  getChartDataSelector,
+  getIsChartDataLoadingSelector,
+  updateReportDefinitionAction,
+} from '../ducks'
+import { ChartRenderer } from './ChartRenderer'
+import { useChartRenderer } from './customHooks/useChartRenderer'
 
 const WidgetDropdown = ({ updateReport, widgetId, report }) => {
   const WidgetDropdownMenu = (
@@ -92,33 +71,91 @@ const WidgetDropdown = ({ updateReport, widgetId, report }) => {
   )
 }
 
-const Widget = ({ updateReport, widgetId, children, title, report }) => (
-  <StyledCard
-    title={title}
-    bordered={false}
-    style={{
-      height: '100%',
-      width: '100%',
-    }}
-    bodyStyle={{
-      height: 'calc(100% - 53px)', // TODO `53px` is the height of the card header. Find alternative.
-    }}
-    extra={
-      <WidgetDropdown
-        updateReport={updateReport}
-        widgetId={widgetId}
-        report={report}
+const Widget = ({
+  report,
+  updateReport,
+  widget,
+  chartData,
+  getChartData,
+  isChartDataLoading,
+}) => {
+  const { pageFilter, setPageFilter } = useChartRenderer({
+    widget,
+    chartData,
+    getChartData,
+  })
+
+  return (
+    <StyledCard
+      title={widget.title}
+      bordered={false}
+      style={{
+        height: '100%',
+        width: '100%',
+      }}
+      bodyStyle={{
+        height: 'calc(100% - 53px)', // TODO `53px` is the height of the card header. Find alternative.
+      }}
+      extra={
+        <WidgetDropdown
+          updateReport={updateReport}
+          widgetId={widget._id}
+          report={report}
+        />
+      }
+    >
+      <ChartRenderer
+        widget={widget}
+        chartData={chartData}
+        pageFilter={pageFilter}
+        setPageFilter={setPageFilter}
+        isChartDataLoading={isChartDataLoading}
       />
-    }
-  >
-    {children}
-  </StyledCard>
-)
+    </StyledCard>
+  )
+}
 
 const enhance = compose(
-  connect(() => ({}), {
-    updateReport: updateReportDefinitionAction,
-  })
+  connect(
+    (state, props) => ({
+      isChartDataLoading: getIsChartDataLoadingSelector(state, props),
+      chartData: getChartDataSelector(state, props),
+    }),
+    {
+      updateReport: updateReportDefinitionAction,
+      getChartData: getChartDataAction,
+    }
+  )
 )
 
-export default enhance(Widget)
+const WidgetContainer = enhance(Widget)
+export { WidgetContainer as Widget }
+
+const StyledCard = styled(Card)`
+  border-radius: 15px;
+  background-color: ${white};
+  box-shadow: 0px 3px 8px #00000029;
+  .ant-card-head {
+    border: none;
+    padding-left: 0px;
+    .ant-card-head-wrapper {
+      justify-content: space-between;
+      width: 100%;
+      .ant-card-head-title {
+        font-size: 15px;
+        font-weight: bold;
+        max-width: fit-content;
+        padding-inline: 30px;
+        align-self: stretch;
+        display: flex;
+        place-items: center;
+        background-color: ${themeColorLighter1};
+        border-radius: 15px 0px;
+      }
+    }
+  }
+  .ant-card-body {
+    padding-top: 12px;
+    overflow: auto;
+  }
+`

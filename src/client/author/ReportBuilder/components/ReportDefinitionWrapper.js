@@ -5,23 +5,23 @@ import { Spin, Button, Typography } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { isEmpty } from 'lodash'
-import ReportDefinition from './ReportDefinition'
+import { ReportDefinition } from './ReportDefinition'
 import {
   getReportDataAction,
   getActiveReportSelector,
   isReportDefinitionLoadingSelector,
   updateReportDefinitionAction,
 } from '../ducks'
-import PageHeader from './PageHeader'
+import { PageHeader } from './PageHeader'
 
 const ReportDefinitionWrapper = (props) => {
   const { isLoading, report, getReportData, match, updateReport } = props
   const { id } = match.params
-  const [currentReport, setCurrentReport] = useState(report)
+  const [editReport, setEditReport] = useState(report)
   const previousWidgetsState = useRef(null)
 
   useEffect(() => {
-    setCurrentReport(report)
+    setEditReport(report)
   }, [report])
 
   useEffect(() => {
@@ -33,15 +33,15 @@ const ReportDefinitionWrapper = (props) => {
   // TODO maybe implement autosave using setTimeout also ?
   const saveReport = useCallback(() => {
     previousWidgetsState.current = null
-    if (!currentReport || currentReport === report) return
+    if (!editReport || editReport === report) return
     updateReport({
       updateDoc: {
-        $set: currentReport,
+        $set: editReport,
       },
       isReportDefinitionPage: true,
       definitionId: report._id,
     })
-  }, [currentReport])
+  }, [editReport])
 
   if (isLoading) {
     return (
@@ -75,7 +75,7 @@ const ReportDefinitionWrapper = (props) => {
   }
 
   const autoAdjustLayout = () => {
-    setCurrentReport((prevReport) => {
+    setEditReport((prevReport) => {
       if (!prevReport) return prevReport
       previousWidgetsState.current = prevReport.widgets
       return {
@@ -101,7 +101,7 @@ const ReportDefinitionWrapper = (props) => {
 
   const undoAutoAdjustLayoutAction = () => {
     if (!previousWidgetsState.current) return
-    setCurrentReport((prevReport) => {
+    setEditReport((prevReport) => {
       if (!prevReport) return prevReport
       return {
         ...prevReport,
@@ -120,7 +120,7 @@ const ReportDefinitionWrapper = (props) => {
     >
       <h2>There are no Widgets on this Report</h2>
       <Link
-        to={`/author/reports/report-builder/explore/definition/${currentReport?._id}`}
+        to={`/author/reports/report-builder/explore/definition/${editReport?._id}`}
       >
         <Button type="primary" size="large" icon="plus">
           Add Widget to Report
@@ -129,11 +129,11 @@ const ReportDefinitionWrapper = (props) => {
     </div>
   )
 
-  return currentReport?.widgets?.length ? (
+  return editReport?.widgets?.length ? (
     <div>
       <PageHeader
         title={
-          <Typography.Title level={4}>{currentReport.title}</Typography.Title>
+          <Typography.Title level={4}>{editReport.title}</Typography.Title>
         }
         button={
           <>
@@ -153,17 +153,14 @@ const ReportDefinitionWrapper = (props) => {
               Save Report
             </StyledButton>
             <Link
-              to={`/author/reports/report-builder/explore/definition/${currentReport._id}`}
+              to={`/author/reports/report-builder/explore/definition/${editReport._id}`}
             >
               <StyledButton type="primary">Add Widget to Report</StyledButton>
             </Link>
           </>
         }
       />
-      <ReportDefinition
-        report={currentReport}
-        setCurrentReport={setCurrentReport}
-      />
+      <ReportDefinition editReport={editReport} setEditReport={setEditReport} />
     </div>
   ) : (
     <Empty />

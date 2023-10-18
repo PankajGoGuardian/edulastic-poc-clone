@@ -21,7 +21,12 @@ const StyledButton = styled.a`
   }
 `
 
-const RemoveButtonGroup = ({ onRemoveClick, children, display, ...props }) => (
+export const RemoveButtonGroup = ({
+  onRemoveClick,
+  children,
+  display,
+  ...props
+}) => (
   <Button.Group style={{ marginRight: 8 }} {...props}>
     {children}
     <StyledButton onClick={onRemoveClick} />
@@ -32,5 +37,3 @@ RemoveButtonGroup.propTypes = {
   onRemoveClick: PropTypes.func.isRequired,
   children: PropTypes.object.isRequired,
 }
-
-export default RemoveButtonGroup

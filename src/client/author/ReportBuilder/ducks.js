@@ -79,7 +79,8 @@ export const getIsMetaDataLoadingSelector = createSelector(
   (state) => state.isMetaDataLoading
 )
 export const getChartDataSelector = (state, props = {}) => {
-  const { widgetId = 'draft' } = props
+  const { widget } = props
+  const widgetId = widget?._id ?? 'draft'
   const reportBuider = reportBuiderSelector(state)
   return reportBuider?.chartData?.[widgetId]
 }
@@ -205,8 +206,7 @@ function* getReportDataSaga({ payload }) {
 
 function* getChartDataSaga({ payload }) {
   try {
-    const { widgetId = 'draft', query: _query } = payload
-    const query = _query
+    const { widgetId = 'draft', query } = payload
     const data = yield call(reportBuilderApi.loadChartData, {
       query,
     })

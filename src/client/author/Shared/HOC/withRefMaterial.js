@@ -11,6 +11,7 @@ import {
   formatFileSize,
   notification,
   uploadToS3,
+  EduIf,
 } from '@edulastic/common'
 import { cardTitleColor, linkColor1, themeColor } from '@edulastic/colors'
 import { IconClose } from '@edulastic/icons'
@@ -89,7 +90,7 @@ export const withRefMaterial = (WrappedComponent) => {
         onChangeSwitch={handleToggleSwitch}
         enableUpload={enableUpload}
       >
-        {!hasRefMaterial && enableUpload && premium && (
+        <EduIf condition={!hasRefMaterial && enableUpload && premium}>
           <FlexContainer
             mt="16px"
             justifyContent="flex-start"
@@ -100,17 +101,18 @@ export const withRefMaterial = (WrappedComponent) => {
             </EduButton>
             <NormalText>PNG, JPG, PDF (Max 2MB)</NormalText>
           </FlexContainer>
-        )}
-        {hasRefMaterial && enableUpload && (
+        </EduIf>
+
+        <EduIf condition={hasRefMaterial && enableUpload && premium}>
           <FlexContainer
             mt="16px"
             justifyContent="flex-start"
             alignItems="center"
           >
             <FileIcon type={referenceDocAttributes?.type} />
-            <FileName>{referenceDocAttributes.name}</FileName>
+            <FileName>{referenceDocAttributes?.name}</FileName>
             <NormalText>
-              {formatFileSize(referenceDocAttributes.size)}
+              {formatFileSize(referenceDocAttributes?.size)}
             </NormalText>
             {!disabled && (
               <CloseIcon
@@ -121,7 +123,8 @@ export const withRefMaterial = (WrappedComponent) => {
               />
             )}
           </FlexContainer>
-        )}
+        </EduIf>
+
         <UploadInput
           multiple
           type="file"

@@ -1103,6 +1103,7 @@ class Board {
         })
       )
     )
+    Area.updateShadingsForAreaPoints(this, this.bgElements)
   }
 
   removeIneqalities() {

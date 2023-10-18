@@ -592,7 +592,7 @@ const WholeLearnerReportFilters = ({
             data-testid="testTypes"
           >
             <MultiSelectDropdown
-              height="40px"
+              minHeight="40px"
               maxTagCount={1}
               dataCy="testTypes"
               label="Test Type"

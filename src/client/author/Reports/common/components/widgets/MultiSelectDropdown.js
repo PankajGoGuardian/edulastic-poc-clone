@@ -15,6 +15,8 @@ const MultiSelectDropdown = ({
   onBlur = () => {},
   maxTagCount = 4,
   height = 'auto',
+  minHeight = 'auto',
+  tagHeight = '24px',
   labelFontSize = '10px',
   displayLabel = true,
 }) => {
@@ -55,6 +57,8 @@ const MultiSelectDropdown = ({
       )}
       <SelectInputStyled
         height={height}
+        minHeight={minHeight}
+        tagHeight={tagHeight}
         showSearch={showSearch}
         placeholder={`All ${label}`}
         mode="multiple"

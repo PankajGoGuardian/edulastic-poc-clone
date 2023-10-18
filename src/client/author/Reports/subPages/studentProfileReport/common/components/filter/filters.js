@@ -681,6 +681,7 @@ const StudentProfileReportFilters = ({
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
+                flex="0 0 230px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
@@ -702,9 +703,13 @@ const StudentProfileReportFilters = ({
                   }
                   options={domainOptions}
                   displayLabel={false}
+                  maxTagCount={2}
+                  tagHeight="20px"
+                  height="32px"
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
+                flex="0 0 280px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
@@ -726,6 +731,9 @@ const StudentProfileReportFilters = ({
                   }
                   options={standardOptions}
                   displayLabel={false}
+                  maxTagCount={2}
+                  tagHeight="20px"
+                  height="32px"
                 />
               </StyledDropDownContainer>
             </>

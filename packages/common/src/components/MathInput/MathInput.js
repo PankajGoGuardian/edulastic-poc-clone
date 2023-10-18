@@ -13,6 +13,7 @@ import React from 'react'
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 import PeriodicTable from '../PeriodicTable'
+import { EDIT } from '../../../../../src/client/assessment/constants/constantsForQuestions'
 
 const { EMBED_RESPONSE, keyboardMethods, NO_KEYPAD } = math
 const MAX_CONTENT_LENGTH = 1200
@@ -82,7 +83,13 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { defaultFocus, value, onInput: saveAnswer, isTemplate } = this.props
+    const {
+      defaultFocus,
+      value,
+      onInput: saveAnswer,
+      isTemplate,
+      view,
+    } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -107,9 +114,16 @@ class MathInput extends React.PureComponent {
      * Mathinput is rendered in Template section of question. saveAnswer need not to be called for template section on mount
      * Update the answer in redux only when user inputs a value. Avoid updating in redux if the value is null or undefined
      */
+    const mathFieldValue = this.sanitizeLatex(value)
     if (value !== null && value !== undefined && !isTemplate) {
-      const mathFieldValue = this.sanitizeLatex(value)
       saveAnswer(mathFieldValue)
+      mathField.write(mathFieldValue)
+    }
+    /**
+     * Complete the equation/matrices qType have template field in edit mode.
+     * Write the template value in the mathfield in edit mode and if its template field
+     */
+    if (view === EDIT && isTemplate) {
       mathField.write(mathFieldValue)
     }
     this.mathField1 = mathField

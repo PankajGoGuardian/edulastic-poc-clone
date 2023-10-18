@@ -20,7 +20,14 @@ import { latexKeys } from './constants'
 
 class Template extends Component {
   render() {
-    const { item, setQuestionData, t, fillSections, cleanSections } = this.props
+    const {
+      item,
+      setQuestionData,
+      t,
+      fillSections,
+      cleanSections,
+      view,
+    } = this.props
 
     const handleUpdateTemplate = (val) => {
       setQuestionData(
@@ -96,6 +103,7 @@ class Template extends Component {
           onInput={(latex) => {
             handleUpdateTemplate(latex)
           }}
+          view={view}
         />
       </Question>
     )

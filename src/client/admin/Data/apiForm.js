@@ -1110,4 +1110,48 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'assignment-response-copy',
+    name: 'Assignment Response Copy',
+    endPoint: 'admin-tool/assignment-response-copy',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'srcAssignmentId',
+        displayName: 'Source Assignment Id',
+        placeholder: 'Enter Source Assignment Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'srcGroupId',
+        displayName: 'Source Group Id',
+        placeholder: 'Enter Source Group Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'desAssignmentId',
+        displayName: 'Destination Assignment Id',
+        placeholder: 'Enter Destination Assignment Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'desGroupId',
+        displayName: 'Destination Group Id',
+        placeholder: 'Enter Destination Group Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'studentId',
+        displayName: 'Enter the student Id',
+        placeholder: 'Enter the student Id',
+        type: 'string',
+        required: false,
+      },
+    ],
+  },
 ]

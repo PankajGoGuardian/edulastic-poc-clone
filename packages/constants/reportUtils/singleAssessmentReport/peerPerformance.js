@@ -17,7 +17,7 @@ const tableDataIndexKeys = {
   districtAvg: 'districtAvg',
   aboveStandard: 'aboveStandard',
   belowStandard: 'belowStandard',
-  avgSore: 'avgSore',
+  avgScore: 'avgScore',
 }
 
 const standardConst = {
@@ -182,6 +182,14 @@ const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
 const compareColumn = (title, ...ext) =>
   makeColumn(title, 'dimension.name', 250, 'left', ...ext)
 
+const makeDimensionAverageColumns = (title) => {
+  const _title = typeof title === 'string' ? title : title.title
+  return [
+    makeColumn(`${_title} Average`, 'districtAvg'),
+    makeColumn(`Filtered ${_title} Average`, 'avgScore'),
+  ]
+}
+
 const compareSchool = compareColumn('School')
 const compareTeacher = compareColumn('Teacher')
 const compareStudGroup = compareColumn('Student Group')
@@ -195,16 +203,9 @@ const compareHispanicEthnicity = compareColumn('Hispanic Ethnicity')
 
 const submitted = makeColumn('#Submitted', 'submittedStudents', 70)
 const absent = makeColumn('#Absent', 'absentStudents', 70)
-const districtAvgPc = makeColumn('District(Score%)', 'districtAvg')
-const avgStudentScorePercentUnrounded = makeColumn(
-  'Avg.Student(Score%)',
-  'avgSore'
-)
 const school = makeColumn('School', 'schoolName', 250)
 const teacher = makeColumn('Teacher', 'teacherName', 250)
 const createdBy = makeColumn('Created By', 'teacherName', 250)
-const districtAvg = makeColumn('District Avg.Score', 'districtAvg')
-const avgStudentScoreUnrounded = makeColumn('Avg.Score', 'avgSore')
 const belowStandard = makeColumn('Below Standard', 'belowStandard')
 const aboveStandard = makeColumn('Above Standard', 'aboveStandard')
 
@@ -214,8 +215,7 @@ const makeScorePc = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  districtAvgPc,
-  avgStudentScorePercentUnrounded,
+  ...makeDimensionAverageColumns(title),
 ]
 // helper functions to create rows for "Raw Score" analyzer
 const makeRaw = (title, ...extColumns) => [
@@ -223,8 +223,7 @@ const makeRaw = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  districtAvg,
-  avgStudentScoreUnrounded,
+  ...makeDimensionAverageColumns(title),
 ]
 // helper functions to create rows for "Above/Below Standard" analyzer
 const makeAboveBelowStd = (title, ...extColumns) => [
@@ -369,11 +368,11 @@ const columnValueTransform = [
   tableDataIndexKeys.districtAvg,
   tableDataIndexKeys.aboveStandard,
   tableDataIndexKeys.belowStandard,
-  tableDataIndexKeys.avgSore,
+  tableDataIndexKeys.avgScore,
 ]
 
 const columnKeyMap = {
-  avgSore: 'dimensionAvg',
+  avgScore: 'dimensionAvg',
 }
 
 const prepareTableDataRow = (columns, dataSource, analyseBy) => {

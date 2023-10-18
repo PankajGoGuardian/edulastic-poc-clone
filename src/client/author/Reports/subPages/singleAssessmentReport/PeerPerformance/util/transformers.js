@@ -109,16 +109,68 @@ export const getFormattedName = (item) => {
     : ''
 }
 
-export const getChartYAxisReferenceValue = (chartData, analyseBy) => {
-  let dimensionAvgSum = 0
-  let validDimensionsCount = 0
-  chartData.forEach(({ dimensionAvg }) => {
-    dimensionAvgSum += dimensionAvg
-    // we will not consider dimension entry having null dimensionAvg
-    validDimensionsCount += dimensionAvg === null ? 0 : 1
-  })
-  const referenceAverage = dimensionAvgSum / validDimensionsCount
+export const getOverallAvg = (data, analyseBy) => {
+  const { overallAvg, overallAvgPerf } = data[0]
   return analyseBy === analyseByOptions.scorePerc
-    ? (referenceAverage || 0).toFixed(0)
-    : referenceAverage
+    ? (overallAvgPerf || 0).toFixed(0)
+    : overallAvg
+}
+
+export const getOverallRow = (data, analyseBy, bandInfo) => {
+  const districtAvg = +getOverallAvg(data, analyseBy)
+  const {
+    submittedStudents,
+    absentStudents,
+    aboveStandard,
+    belowStandard,
+    totalStudents,
+    performanceBandDetails,
+    totalWeightedScore,
+  } = data.reduce(
+    (acc, curr) => {
+      acc.submittedStudents += curr.submittedStudents
+      acc.absentStudents += curr.absentStudents
+      acc.aboveStandard += curr.aboveStandard
+      acc.belowStandard += curr.belowStandard
+      acc.totalStudents += curr.totalStudents
+      acc.totalWeightedScore += curr.dimensionAvg * curr.submittedStudents
+      bandInfo.forEach(({ name }) => {
+        acc.performanceBandDetails[name] =
+          (acc.performanceBandDetails[name] || 0) + curr[name]
+      })
+      return acc
+    },
+    {
+      submittedStudents: 0,
+      absentStudents: 0,
+      aboveStandard: 0,
+      belowStandard: 0,
+      totalStudents: 0,
+      performanceBandDetails: {},
+      totalWeightedScore: 0,
+    }
+  )
+  const dimensionAvg = totalWeightedScore / submittedStudents
+  return {
+    dimension: {
+      _id: null,
+      name: 'Overall',
+    },
+    districtAvg,
+    dimensionAvg,
+    submittedStudents,
+    absentStudents,
+    totalStudents,
+    aboveStandard,
+    belowStandard,
+    ...performanceBandDetails,
+  }
+}
+
+export const getTableData = (data, bandInfo, filter, analyseBy) => {
+  const overallRowData = getOverallRow(data, analyseBy, bandInfo)
+  const filteredData = data.filter((item) => {
+    return filter[item.dimension._id] || Object.keys(filter).length === 0
+  })
+  return [overallRowData, ...filteredData]
 }

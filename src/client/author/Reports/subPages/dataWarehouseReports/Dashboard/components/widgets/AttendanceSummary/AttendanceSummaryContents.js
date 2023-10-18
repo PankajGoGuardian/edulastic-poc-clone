@@ -65,6 +65,7 @@ function AttendanceSummaryContents({ data, selectedPeriodType }) {
             margin="0 10px 5px 10px"
             fontSize="18px"
             color={fontColor}
+            data-cy="attendanceAvgChange"
           >
             {Math.abs(attendanceAvgChange)}%{' '}
             <EduIf condition={attendanceAvgChange >= 0}>

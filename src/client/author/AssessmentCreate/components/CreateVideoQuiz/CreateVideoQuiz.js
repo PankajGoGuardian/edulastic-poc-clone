@@ -9,9 +9,9 @@ import {
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
-import { Col, Form, Row, Spin } from 'antd'
+import { Col, Form, Row, Spin, Switch, Tooltip } from 'antd'
 import styled from 'styled-components'
-import { IconPlayButton } from '@edulastic/icons'
+import { IconPlayButton, IconInfo } from '@edulastic/icons'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -79,6 +79,7 @@ const CreateVideoQuiz = ({
   isVideoQuizAndAIEnabled,
   history,
 }) => {
+  const [mode, setMode] = useState(true)
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
@@ -150,6 +151,26 @@ const CreateVideoQuiz = ({
                 margin="0px 0px 15px"
               />
             </Form.Item>
+            <Row type="flex" align="middle" justify="space-between">
+              <Row type="flex" align="middle" gutter={[5, 0]}>
+                <Col>Switch to Moderate Restricted Mode</Col>
+                <Col>
+                  <Tooltip
+                    title="This will open/play the video by default when opened by students"
+                    placement="bottom"
+                  >
+                    <IconInfo />
+                  </Tooltip>
+                </Col>
+              </Row>
+              <Row type="flex" align="middle">
+                <Switch
+                  checked={mode}
+                  onChange={(checked) => setMode(checked)}
+                />
+                <StyledSwitchText>{mode ? 'On' : 'Off'}</StyledSwitchText>
+              </Row>
+            </Row>
           </Form>
         </Spin>
       </StyledCol>
@@ -192,6 +213,11 @@ const StyledIconPlayButton = styled(IconPlayButton)`
   position: relative;
   top: 2px;
   margin-right: 0px !important;
+`
+
+const StyledSwitchText = styled.p`
+  position: absolute;
+  right: -25px;
 `
 
 const enhance = compose(

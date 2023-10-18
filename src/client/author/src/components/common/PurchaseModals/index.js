@@ -463,6 +463,7 @@ const PurchaseFlowModals = (props) => {
           emailIds,
           licenseIds: [selectedLicenseId],
           licenseOwnerId,
+          renewLicense: true,
         })
         handleSubscriptionAddonModalClose()
         setCartVisible(false)

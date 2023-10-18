@@ -30,6 +30,13 @@ const AddSubscriptionModal = ({
   handleSearch,
   setFieldData,
   fieldData,
+  editLicense,
+  currentLicense,
+  licenseId,
+  licenseOwnerId,
+  totalTpLicenseCount,
+  isEdited,
+  setIsEdited,
 }) => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [usersList, setUsersList] = useState([])
@@ -48,21 +55,20 @@ const AddSubscriptionModal = ({
         })
       }
     }
-
+    if (editLicense) setIsEdited(true)
     setFieldData((prev) => ({
       ...prev,
       [fieldName]: isNumber(value) ? Math.round(value) : value,
     }))
   }
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (!editLicense)
       products.forEach((x) => {
-        let initialFieldValue = 0
+        const initialFieldValue = 0
         handleFieldChange(x.type)(initialFieldValue)
-      }),
-    [products]
-  )
+      })
+  }, [products, editLicense])
 
   const fetchUsers = async (searchString) => {
     const { districtId } = fieldData
@@ -150,6 +156,9 @@ const AddSubscriptionModal = ({
       opportunityId,
       notes,
       districtId,
+      editLicense,
+      licenseOwnerId,
+      licenseId,
     }
 
     const payload = omitBy(data, (x) => !x)
@@ -173,7 +182,11 @@ const AddSubscriptionModal = ({
       <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
         CANCEL
       </EduButton>
-      <EduButton data-cy="applyButton" onClick={handleValidateFields}>
+      <EduButton
+        data-cy="applyButton"
+        onClick={handleValidateFields}
+        disabled={editLicense && !isEdited}
+      >
         APPLY
       </EduButton>
     </>
@@ -196,10 +209,11 @@ const AddSubscriptionModal = ({
           placeholder="Search for an organization"
           filterOption={false}
           showSearch
+          disabled={editLicense}
           notFoundContent={
             isFetchingOrganization ? <Spin size="small" /> : null
           }
-          value={fieldData.districtId}
+          value={editLicense ? fieldData.districtName : fieldData.districtId}
           onSearch={(d) => handleSearch(d, 'DISTRICT', 50)}
           onFocus={() =>
             !fieldData.districtName && handleSearch('', 'DISTRICT', 50)
@@ -258,10 +272,12 @@ const AddSubscriptionModal = ({
                 style={{ width: '100%' }}
                 placeholder={`${product.name.toLowerCase()} license`}
                 value={fieldData[product.type]}
-                min={0}
+                min={editLicense ? currentLicense.usedCount || 1 : 0}
                 max={
                   product.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM
                     ? Infinity
+                    : editLicense
+                    ? totalTpLicenseCount
                     : fieldData.PREMIUM
                 }
                 onChange={(value) => handleFieldChange(product.type)(value)}

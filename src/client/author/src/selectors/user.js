@@ -10,6 +10,7 @@ import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
+const gcpsDistrict = '635918f1559a0f00082f0694'
 
 export const stateSelector = (state) => state.user
 
@@ -530,6 +531,17 @@ export const getIsPowerPremiumAccount = createSelector(
 
 export const isPremiumUserSelector = createSelector(getUser, (userData) =>
   _get(userData, ['features', 'premium'], false)
+)
+
+export const isGcpsDistrictSelector = createSelector(
+  getUserOrgId,
+  (districtId) => districtId === gcpsDistrict
+)
+
+export const isVideoQuizAndAIEnabledSelector = createSelector(
+  getUser,
+
+  (userData) => _get(userData, ['features', 'isVideoQuizAndAIEnabled'], false)
 )
 
 export const getInterestedCurriculumsByOrgType = createSelector(

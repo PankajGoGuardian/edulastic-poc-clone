@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
-import { extractVideoId } from '../../utils/videoPreviewHelpers'
+import { extractVideoId, isInputElement } from '../../utils/videoPreviewHelpers'
 import { StyledYouTubePlayer } from '../../styled-components/VideoPreview'
 import appConfig from '../../../../../../app-config'
+import { SEEK_DATA, KEYCODES } from '../../constants'
 
 const PLAYER_ID = 'youtube-player'
 const TAG_ID = 'iframe_api'
@@ -26,6 +27,7 @@ const YouTubePlayer = React.forwardRef(
       config,
       onEnded,
       onReady,
+      handleKeyboardSeek,
     },
     ref
   ) => {
@@ -70,6 +72,41 @@ const YouTubePlayer = React.forwardRef(
         embedConfig,
       })
     }
+
+    const handleKeyDown = (e) => {
+      if (ref.current) {
+        e = e || window.event
+        if (isInputElement(e?.target || document.activeElement)) {
+          return true
+        }
+        const keyCode = window.event ? e.which : e.keyCode
+        const isPlaying =
+          ref.current?.getPlayerState?.() === window.YT.PlayerState.PLAYING
+
+        if (keyCode == KEYCODES.SPACE) {
+          e.preventDefault()
+          if (isPlaying) {
+            onPause()
+          } else {
+            onPlay()
+          }
+          return false
+        }
+
+        if (keyCode == KEYCODES.LEFT_ARROW) {
+          e.preventDefault()
+          handleKeyboardSeek(SEEK_DATA.BACKWARD)
+          return false
+        }
+
+        if (keyCode == KEYCODES.RIGHT_ARROW) {
+          e.preventDefault()
+          handleKeyboardSeek(SEEK_DATA.FORWARD)
+          return false
+        }
+      }
+    }
+
     useEffect(() => {
       if (document.getElementById(TAG_ID) === null) {
         // Load the YouTube iframe API script
@@ -87,11 +124,14 @@ const YouTubePlayer = React.forwardRef(
         initialize()
       }
 
+      document.addEventListener('keydown', handleKeyDown)
+
       // Clean up the YouTube player when the component is unmounted
       return () => {
         if (ref.current) {
           ref.current?.destroy()
         }
+        document.removeEventListener('keydown', handleKeyDown)
       }
     }, [])
 

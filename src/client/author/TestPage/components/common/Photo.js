@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { IconPhotoCamera } from '@edulastic/icons'
 import { aws } from '@edulastic/constants'
-import { Upload, Spin, message } from 'antd'
+import { Upload, Spin } from 'antd'
 import { white, greyishDarker2, themeColorBlue } from '@edulastic/colors'
 import { beforeUpload, notification } from '@edulastic/common'
 import { uploadToS3 } from '../../../src/utils/upload'
@@ -44,7 +44,14 @@ class Photo extends React.Component {
   }
 
   render() {
-    const { height, windowWidth, url, owner, isEditable = false } = this.props
+    const {
+      height,
+      windowWidth,
+      url,
+      owner,
+      isEditable = false,
+      ytLoading,
+    } = this.props
 
     const uploadButton = (
       <Container height={height}>
@@ -72,7 +79,7 @@ class Photo extends React.Component {
         <Upload disabled={!owner || !isEditable} {...props}>
           <Container height={height}>
             <ImageContainer height={height} data-cy="imageContainer">
-              {loading ? (
+              {loading || ytLoading ? (
                 <ImageLoading />
               ) : imageUrl ? (
                 <Image
@@ -109,9 +116,16 @@ Photo.defaultProps = {
   url: defaultImage,
   height: 165,
   onChangeField: () => null,
+  owner: false,
+  isEditable: false,
 }
 
-export default connect(null, { uploadTestImage: uploadTestImageAction })(Photo)
+export default connect(
+  (state) => ({
+    ytLoading: state.tests.ytloading,
+  }),
+  { uploadTestImage: uploadTestImageAction }
+)(Photo)
 
 const Container = styled.div`
   height: ${(props) => props.height}px;

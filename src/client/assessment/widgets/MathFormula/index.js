@@ -85,6 +85,7 @@ const MathFormula = ({
               setQuestionData={setQuestionData}
               fillSections={fillSections}
               cleanSections={cleanSections}
+              view={view}
             />
           )}
           <Question

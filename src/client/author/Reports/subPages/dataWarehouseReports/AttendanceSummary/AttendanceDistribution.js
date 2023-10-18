@@ -7,6 +7,7 @@ import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
 import { useResetAnimation } from '../../../common/hooks/useResetAnimation'
 import { sortDistributionBand } from '../common/utils'
+import { getFGColor } from '../../../../src/utils/util'
 
 const DEG_HALF_CIRCLE = 180
 const ROUNDING_PRECISION = 1
@@ -153,6 +154,7 @@ export const LegendSymbol = styled.span`
   width: 12px;
   height: 12px;
   background: ${(props) => props.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
   display: flex;
   border-radius: 50%;
   margin-right: 10px;

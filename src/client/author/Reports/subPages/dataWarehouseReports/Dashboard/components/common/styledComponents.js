@@ -9,7 +9,10 @@ import {
 } from '@edulastic/colors'
 import { Row } from 'antd'
 import styled from 'styled-components'
+import { FlexContainer } from '@edulastic/common'
+import { IconCaretDown } from '@edulastic/icons'
 import { StyledTable } from '../../../../../common/styled'
+import { getFGColor } from '../../../../../../src/utils/util'
 
 export const StyledRow = styled(Row)`
   justify-content: ${(p) => p.justifyContent || 'center'};
@@ -31,54 +34,30 @@ export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};
   min-height: 300px;
   justify-content: center;
-  padding-inline: 15px;
-  padding-block: 15px 40px;
+  padding: 20px;
   border-radius: 25px;
   .based-on-test-type {
     .ant-btn.ant-dropdown-trigger {
       background-color: white;
-      @media (max-width: 1309px) {
-        margin-top: 10px;
-      }
     }
   }
 `
 
-export const TableHeaderCellWrapper = styled.div`
+export const FilterCellWrapper = styled.div`
   display: flex;
-  margin-right: 30px;
-  box-shadow: 0px 10px 13px #0000000f;
-  height: ${({ isSelected }) => (isSelected ? '42px' : '40px')};
+  gap: 10px;
+  padding-inline: 20px 20px;
+  height: ${(p) => p.$cellHeight}px;
+  margin-right: 20px;
   align-items: center;
-  border-radius: 10px;
+  font-size: 16px;
   border-width: ${({ isSelected }) => (isSelected ? '1px' : '0px')};
   border-style: solid;
-  border-color: ${({ borderColor }) => borderColor};
-  cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'not-allowed')};
-  div {
-    height: 40px;
-    line-height: 14px;
-    &:first-child {
-      display: flex;
-      align-items: center;
-      padding: 13px 15px 13px 20px;
-      font-weight: 600;
-      font-size: 14px;
-      background-color: ${white};
-      border-radius: 10px 0px 0px 10px;
-      svg {
-        margin-right: 15px;
-        display: ${({ isSelected }) => (isSelected ? 'block' : 'none')};
-      }
-    }
-    &:last-child {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 80px;
-      font-weight: bold;
-      background-color: ${({ color }) => color};
-      border-radius: 0px 10px 10px 0px;
+  border-color: ${({ isSelected }) => (isSelected ? themeColor : '')};
+  background-color: ${({ isSelected }) => (isSelected ? white : '')};
+  .filter-text {
+      cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'not-allowed')};
+      opacity: ${({ isClickable }) => (isClickable ? 1 : 0.5)};
     }
   }
 `
@@ -115,6 +94,7 @@ export const CustomStyledTable = styled(StyledTable)`
     .external-link {
       border-width: 0px;
       background-color: white;
+      border-left: 1px dashed ${lightGrey8};
     }
     .ant-table-fixed-columns-in-body.dimension {
       border-radius: 15px;
@@ -129,20 +109,6 @@ export const CustomStyledTable = styled(StyledTable)`
     }
     .ant-tag {
       text-transform: capitalize;
-    }
-  }
-
-  .ant-table-fixed-left {
-    .ant-table-fixed {
-      background-color: #efefef;
-      padding-bottom: 25px;
-      border-radius: 15px;
-      thead {
-        th {
-          background-color: #efefef;
-          border-radius: 15px 15px 0px 0px;
-        }
-      }
     }
   }
 
@@ -226,6 +192,34 @@ export const CustomStyledCell = styled.div`
   font-size: 12px;
   font-weight: bold;
   background-color: ${(p) => p.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
   margin: 0px auto;
   border-radius: 8px;
+`
+export const StyledContainer = styled.div`
+  text-align: left;
+  padding: 8px;
+  ul {
+    list-style-type: lower-alpha;
+  }
+`
+export const OverallAverageWrapper = styled(FlexContainer)`
+  min-height: 80px;
+  background-color: ${greyThemeLighter};
+  gap: 10px;
+  padding: 10px 0 10px 20px;
+  border-radius: 25px;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  .based-on-test-type {
+    .ant-btn.ant-dropdown-trigger {
+      background-color: white;
+    }
+  }
+`
+export const StyledIconCaretDown = styled(IconCaretDown)`
+  position: relative;
+  width: ${(p) => p.$arrowWidth}px;
+  top: ${(p) => p.$arrowTopPosition}px;
+  left: -50%;
 `

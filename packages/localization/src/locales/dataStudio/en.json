@@ -1,6 +1,11 @@
 {
   "dataStudio": {
     "academicHelperText": "Please specify the test instance or occurrence. For tests conducted multiple times in a year, use a unique identifier (e.g., Admin A, Admin B) or enter the corresponding date/month. This helps differentiate instances for accurate visualization.",
-    "attendanceHelperText": "Please clearly identify the attendance period or academic term for which you're uploading data. If you intend to submit information on a weekly, monthly, or semester basis, utilize a consistent and unique identifier—such as \"Week 42,\" \"December,\" \"Semester 1,\" or \"Quarter 3\"—to label each data set. Alternatively, you may also provide the exact start and end dates for each period. Accurate identification of attendance periods is crucial for precise analysis and visualization of the data."
+    "attendanceHelperText": "Please clearly identify the attendance period or academic term for which you're uploading data. If you intend to submit information on a weekly, monthly, or semester basis, utilize a consistent and unique identifier—such as \"Week 42,\" \"December,\" \"Semester 1,\" or \"Quarter 3\"—to label each data set. Alternatively, you may also provide the exact start and end dates for each period. Accurate identification of attendance periods is crucial for precise analysis and visualization of the data.",
+    "dashboardAverageHelperText": {
+      "header": "The Overall Average in the above chart and here may differ because they are calculated differently.",
+      "chart": "Shows the average performance of all individual students.",
+      "table": "Shows the average of averages across chosen compare dimensions like class or teacher."
+    }
   }
 }

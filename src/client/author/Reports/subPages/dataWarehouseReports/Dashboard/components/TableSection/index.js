@@ -1,38 +1,46 @@
 import React, { useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
 import {
+  EduElse,
   EduIf,
   EduThen,
-  EduElse,
-  notification,
+  FlexContainer,
   SpinLoader,
+  notification,
 } from '@edulastic/common'
+import { black } from '@edulastic/colors'
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
-import useTableFilters from '../hooks/useTableFilters'
 import {
   academicSummaryFiltersTypes,
   districtAvgDimension,
   getTableApiQuery,
   tableFilterTypes,
-} from '../utils'
-import BackendPagination from '../../../../common/components/BackendPagination'
-import { TableContainer } from './common/styledComponents'
-import AddToGroupModal from '../../../../common/components/Popups/AddToGroupModal'
-import FeaturesSwitch from '../../../../../../features/components/FeaturesSwitch'
-import { StyledEmptyContainer } from '../../common/components/styledComponents'
-import { isAddToStudentGroupEnabled } from '../../common/utils'
+} from '../../utils'
+import AddToGroupModal from '../../../../../common/components/Popups/AddToGroupModal'
+import FeaturesSwitch from '../../../../../../../features/components/FeaturesSwitch'
+import { isAddToStudentGroupEnabled } from '../../../common/utils'
+import AverageAnalysis from './AverageAnalysis'
+import { TableContainer } from '../common/styledComponents'
+import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import {
+  StyledEmptyContainer,
+  StyledText,
+} from '../../../common/components/styledComponents'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 
 function TableSection({
-  history,
-  location,
-  search,
+  tableFilters,
+  setTableFilters,
+  pageFilters,
+  setPageFilters,
+  updateTableFiltersCB,
+  onTableHeaderCellClick,
+  getTableDrillDownUrl,
   compareByOptions,
-  selectedPerformanceBandOption,
+  performanceBandsList,
   isCsvDownloading,
   settings,
-  setSettings,
-  selectedCompareBy,
   academicSummaryFilters,
   setAcademicSummaryFilters,
   fetchDashboardTableDataRequest,
@@ -44,24 +52,6 @@ function TableSection({
   isSharedReport = false,
   availableTestTypes,
 }) {
-  const {
-    tableFilters,
-    setTableFilters,
-    pageFilters,
-    setPageFilters,
-    updateTableFiltersCB,
-    onTableHeaderCellClick,
-    getTableDrillDownUrl,
-  } = useTableFilters({
-    history,
-    location,
-    search,
-    defaultCompareBy: selectedCompareBy,
-    settings,
-    setSettings,
-    availableTestTypes,
-  })
-
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
@@ -71,6 +61,14 @@ function TableSection({
   const [loadTableDataWithFilters, setLoadTableDataWithFilters] = useState(
     false
   )
+
+  const selectedPerformanceBandOption =
+    performanceBandsList.find(
+      (pb) =>
+        pb.key ===
+        academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]
+          ?.key
+    ) || performanceBandsList[0]
 
   const selectedPerformanceBand = selectedPerformanceBandOption?.performanceBand
   const profileId = selectedPerformanceBandOption?.key
@@ -137,6 +135,8 @@ function TableSection({
       setLoadTableDataWithFilters(false)
     }
   }, [pageFilters])
+
+  const { metricInfo: districtAveragesMetricInfo } = districtAveragesData
 
   // handle add student to group
   const rowSelection = {
@@ -218,8 +218,59 @@ function TableSection({
         showAddToStudentGroupBtn={showAddToStudentGroupBtn}
         compareByOptions={compareByOptions}
       />
+      <AverageAnalysis
+        loading={loadingTableDataWithFilters}
+        hasDistrictAveragesContent={hasDistrictAveragesContent}
+        onTableHeaderCellClick={onTableHeaderCellClick}
+        districtAveragesMetricInfo={districtAveragesMetricInfo}
+        tableFilters={tableFilters}
+        setTableFilters={setTableFilters}
+        academicSummaryFilters={academicSummaryFilters}
+        setAcademicSummaryFilters={setAcademicSummaryFilters}
+        availableTestTypes={availableTestTypes}
+        academicTestType={academicTestType}
+      />
       <TableContainer>
-        <EduIf condition={loadingTableDataWithFilters}>
+        <FlexContainer
+          alignItems="center"
+          justifyContent="space-between"
+          marginBottom="25px"
+        >
+          <StyledText fontSize="16px" color={black}>
+            Performance Drilldown
+          </StyledText>
+          <FlexContainer alignItems="center">
+            <StyledText
+              fontWeight={600}
+              fontSize="14px"
+              color={black}
+              margin="0 10px 0 0"
+            >
+              Edulastic Performance Band
+            </StyledText>
+            <ControlDropDown
+              height="35px"
+              buttonWidth="224px"
+              by={
+                academicSummaryFilters[
+                  academicSummaryFiltersTypes.PERFORMANCE_BAND
+                ]
+              }
+              selectCB={(e, selected, comData) =>
+                setAcademicSummaryFilters({
+                  ...academicSummaryFilters,
+                  [comData]: selected,
+                })
+              }
+              data={performanceBandsList}
+              comData={academicSummaryFiltersTypes.PERFORMANCE_BAND}
+              prefix="Test Type"
+              showPrefixOnSelected={false}
+              containerClassName="based-on-test-type"
+            />
+          </FlexContainer>
+        </FlexContainer>
+        <EduIf condition={loadingTableData}>
           <EduThen>
             <SpinLoader
               tip="Loading Table Data"
@@ -228,34 +279,24 @@ function TableSection({
             />
           </EduThen>
           <EduElse>
-            <EduIf condition={hasDistrictAveragesContent}>
+            <EduIf condition={hasTableContent}>
               <EduThen>
                 <DashboardTable
                   tableFilters={tableFilters}
                   setTableFilters={setTableFilters}
-                  academicSummaryFilters={academicSummaryFilters}
-                  setAcademicSummaryFilters={setAcademicSummaryFilters}
-                  onTableHeaderCellClick={onTableHeaderCellClick}
                   getTableDrillDownUrl={getTableDrillDownUrl}
                   districtAveragesData={districtAveragesData}
                   tableData={tableData}
                   selectedPerformanceBand={selectedPerformanceBand}
                   rowSelection={_rowSelection}
-                  loadingTableData={loadingTableData}
                   isCsvDownloading={isCsvDownloading}
                   availableTestTypes={availableTestTypes}
-                  hasTableContent={hasTableContent}
-                  emptyContainerDesc={emptyContainerDesc}
                 />
-                <EduIf condition={hasTableContent}>
-                  <EduThen>
-                    <BackendPagination
-                      itemsCount={tableData.dimensionCount}
-                      backendPagination={pageFilters}
-                      setBackendPagination={setPageFilters}
-                    />
-                  </EduThen>
-                </EduIf>
+                <BackendPagination
+                  itemsCount={tableData.dimensionCount}
+                  backendPagination={pageFilters}
+                  setBackendPagination={setPageFilters}
+                />
               </EduThen>
               <EduElse>
                 <StyledEmptyContainer description={emptyContainerDesc} />

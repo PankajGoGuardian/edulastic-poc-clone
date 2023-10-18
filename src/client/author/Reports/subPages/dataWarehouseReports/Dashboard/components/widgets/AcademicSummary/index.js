@@ -42,11 +42,12 @@ import useErrorNotification from '../../../../../../common/hooks/useErrorNotific
 const title = 'Academic Summary and Performance Distribution'
 
 const AcademicSummary = ({
-  selectedPerformanceBand,
   performanceBandList,
   availableTestTypes,
   widgetFilters,
   setWidgetFilters,
+  tableFilters,
+  setTableFilters,
   settings,
 }) => {
   const query = useMemo(
@@ -80,6 +81,21 @@ const AcademicSummary = ({
       deDuplicate: false,
     }
   )
+
+  const selectedPerformanceBand = useMemo(() => {
+    const selectedPerformanceBandOption = externalTestType
+      ? performanceBandList[0]
+      : performanceBandList.filter(
+          ({ key }) =>
+            key ===
+            widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND]?.key
+        )[0] || performanceBandList[0]
+    return selectedPerformanceBandOption?.performanceBand
+  }, [
+    externalTestType,
+    performanceBandList,
+    widgetFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND],
+  ])
 
   const PieChartData = useMemo(() => {
     const { result: { bandDistribution = [] } = {} } = data || {}
@@ -144,6 +160,8 @@ const AcademicSummary = ({
       <AcademicSummaryWidgetFilters
         filters={widgetFilters}
         setFilters={setWidgetFilters}
+        tableFilters={tableFilters}
+        setTableFilters={setTableFilters}
         performanceBandsList={performanceBandList}
         availableTestTypes={availableTestTypes}
       />

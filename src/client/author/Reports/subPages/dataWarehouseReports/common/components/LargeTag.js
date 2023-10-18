@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { isEmpty } from 'lodash'
 import { Tooltip } from 'antd'
 import { greyThemeDark1 } from '@edulastic/colors'
+import { getFGColor } from '../../../../../src/utils/util'
 
 const LargeTagParent = styled.div`
   display: flex;
@@ -13,7 +14,11 @@ const LargeTagParent = styled.div`
   height: 32px;
   border-radius: 4px;
   ${(props) => (props.background ? `background: ${props.background};` : '')}
-  color: ${(props) => props.color || greyThemeDark1} !important;
+  color: ${(props) =>
+    props.color ||
+    (props.background
+      ? getFGColor(props.background)
+      : greyThemeDark1)} !important;
   div.left-text {
     font-weight: 500;
     width: ${({ width }) => width || 'auto'};

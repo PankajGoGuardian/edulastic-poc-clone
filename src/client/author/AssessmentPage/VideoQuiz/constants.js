@@ -106,3 +106,19 @@ export const standardsFields = {
   STANDARD_SET,
   CURRICULUM_STANDARDS,
 }
+
+const FORWARD = 'FORWARD'
+const BACKWARD = 'BACKWARD'
+const SEEK_STEP_COUNT = 1
+
+export const SEEK_DATA = {
+  FORWARD,
+  BACKWARD,
+  SEEK_STEP_COUNT,
+}
+
+export const KEYCODES = {
+  SPACE: 32,
+  LEFT_ARROW: 37,
+  RIGHT_ARROW: 39,
+}

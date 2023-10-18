@@ -3,6 +3,7 @@ import { cloneDeep, isEmpty } from 'lodash'
 import { useState, useEffect } from 'react'
 import { segmentApi } from '@edulastic/api'
 import { selectsData } from '../../../../TestPage/components/common'
+import { navigationState } from '../../../../src/constants/navigation'
 
 export const useSaveForm = ({
   hasSections,
@@ -12,6 +13,8 @@ export const useSaveForm = ({
   testTitle = '',
   setDefaultTest,
   clearCreatedItem,
+  history,
+  isVideoQuizAndAIEnabled,
 }) => {
   const initialAiFormData = {
     itemTypes: '',
@@ -53,6 +56,13 @@ export const useSaveForm = ({
       source,
     })
     resetTestDetails()
+    if (!isVideoQuizAndAIEnabled) {
+      history.push({
+        pathname: '/author/subscription',
+        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+      })
+      return
+    }
     if (addItems && showSelectGroup && hasSections) {
       setSelectSectionVisible(true)
     } else {

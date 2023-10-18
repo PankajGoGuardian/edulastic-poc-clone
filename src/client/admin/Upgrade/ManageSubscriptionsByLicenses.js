@@ -114,7 +114,12 @@ const LicensesInvoiceTable = ({
             <IconEye
               data-cy={`${row.username}-viewLicense`}
               onClick={() =>
-                handleViewLicense(licenseIds, row.districtId, row.userId)
+                handleViewLicense(
+                  licenseIds,
+                  row.districtId,
+                  row.userId,
+                  row.orgName
+                )
               }
               color={themeColor}
               style={IconStyles}
@@ -287,7 +292,12 @@ const ManageSubscriptionsByLicenses = ({
       districtId: fieldData.districtId,
     })
   }
-  const handleViewLicense = (licenseIds, districtId, userId) => {
+  const handleViewLicense = (licenseIds, districtId, userId, orgName) => {
+    setFieldData((prevState) => ({
+      ...prevState,
+      districtName: orgName,
+      districtId,
+    }))
     setCurrentLicenseIds(licenseIds)
     setCurrentDistrictId(districtId)
     setCurrentUserId(userId)
@@ -358,12 +368,21 @@ const ManageSubscriptionsByLicenses = ({
     searchRequest(data)
   }
 
+  const closeManageSubscriptionModal = () => {
+    setVisible(false)
+    setFieldData((prevState) => ({
+      ...prevState,
+      districtId: '',
+      districtName: '',
+    }))
+  }
+
   return (
     <>
       <ManageSubscriptinModal
         visible={isVisible}
         title="Manage Subscription"
-        onCancel={() => setVisible(false)}
+        onCancel={closeManageSubscriptionModal}
         fullscreen
         destroyOnClose
         footer={null}
@@ -373,6 +392,17 @@ const ManageSubscriptionsByLicenses = ({
           licenseIds={currentLicenseIds}
           districtId={currentDistrictId}
           licenseOwnerId={currentUserId}
+          isFetchingOrganization={isFetchingOrganization}
+          districtList={districtList}
+          searchRequest={searchRequest}
+          addSubscription={addSubscription}
+          handleSelectDistrict={handleSelectDistrict}
+          handleSearch={handleSearch}
+          fieldData={fieldData}
+          setFieldData={setFieldData}
+          deleteLicense={deleteLicense}
+          searchType={searchType}
+          page={page}
         />
       </ManageSubscriptinModal>
 

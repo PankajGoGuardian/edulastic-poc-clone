@@ -12,6 +12,7 @@ import {
 import { IconCarets } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
 import { StyledTable } from '../../../../common/styled'
+import { getFGColor } from '../../../../../src/utils/util'
 
 const { IconCaretUp, IconCaretDown } = IconCarets
 export const StyledIconCaretUp = styled(IconCaretUp)`
@@ -150,6 +151,7 @@ export const StyledCell = styled.div`
   font-size: ${(props) => cellStyles[props.cellType].font};
   margin: 10px auto;
   background-color: ${(props) => props.color};
+  ${({ color }) => (color ? `color: ${getFGColor(color)};` : '')}
   border-radius: 10px;
   font-weight: 600;
 `
@@ -224,4 +226,10 @@ export const CustomStyledCell = styled.div`
   font-weight: 800;
   box-shadow: ${(p) => (p.$showBoxShadow ? '0px 10px 11px #0000000f' : '')};
   background-color: ${(p) => p.$backgroundColor};
+  ${({ $backgroundColor }) =>
+    $backgroundColor ? `color: ${getFGColor($backgroundColor)};` : ''}
+`
+export const ColoredText = styled.div`
+  font-weight: ${(p) => p.$fontWeight || 'bold'};
+  color: ${(p) => p.$color};
 `

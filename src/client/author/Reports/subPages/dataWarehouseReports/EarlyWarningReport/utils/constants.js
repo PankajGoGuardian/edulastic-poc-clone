@@ -1,6 +1,6 @@
 import React from 'react'
 import { reportUtils } from '@edulastic/constants'
-import { ColoredText } from '../components/common/styledComponents'
+import { ColoredText } from '../../common/components/styledComponents'
 
 const {
   GRADE_OPTIONS,
@@ -116,7 +116,7 @@ export const compareByStudentColumns = [
         render: (value) => {
           const color =
             value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.HIGH] : ''
-          return <ColoredText color={color}>{value}</ColoredText>
+          return <ColoredText $color={color}>{value}</ColoredText>
         },
       },
       {
@@ -127,7 +127,7 @@ export const compareByStudentColumns = [
         render: (value) => {
           const color =
             value > 0 ? RISK_BAND_COLOR_INFO[RISK_BAND_LABELS.MEDIUM] : ''
-          return <ColoredText color={color}>{value}</ColoredText>
+          return <ColoredText $color={color}>{value}</ColoredText>
         },
       },
     ],

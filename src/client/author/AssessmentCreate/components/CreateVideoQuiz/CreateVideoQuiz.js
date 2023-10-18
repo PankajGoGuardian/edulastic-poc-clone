@@ -12,12 +12,21 @@ import { themeColor } from '@edulastic/colors'
 import { Col, Form, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { IconPlayButton } from '@edulastic/icons'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.png'
-
+import {
+  getYoutubeThumbnailSelector,
+  getYoutubeThumbnailAction,
+  setYoutubeThumbnailAction,
+} from '../../../TestPage/ducks'
 import {
   extractVideoId,
   isValidVideoUrl,
 } from '../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+import { navigationState } from '../../../src/constants/navigation'
+import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
 
 const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
 
@@ -62,10 +71,30 @@ const VideoQuickGuide = () => {
 }
 
 // Takes video url from user and validate same for creating video quiz
-const CreateVideoQuiz = ({ onValidUrl, ytThumbnail, getYoutubeThumbnail }) => {
+const CreateVideoQuiz = ({
+  onValidUrl,
+  ytThumbnail,
+  getYoutubeThumbnail,
+  setYoutubeThumbnail,
+  isVideoQuizAndAIEnabled,
+  history,
+}) => {
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
+
+  useEffect(() => {
+    setYoutubeThumbnail('')
+  }, [])
+
+  useEffect(() => {
+    if (!isVideoQuizAndAIEnabled) {
+      history.push({
+        pathname: '/author/subscription',
+        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+      })
+    }
+  }, [isVideoQuizAndAIEnabled])
 
   useEffect(() => {
     if (!hasError) {
@@ -89,6 +118,9 @@ const CreateVideoQuiz = ({ onValidUrl, ytThumbnail, getYoutubeThumbnail }) => {
     }
 
     return undefined
+  }
+  if (!isVideoQuizAndAIEnabled) {
+    return null
   }
 
   return (
@@ -162,4 +194,17 @@ const StyledIconPlayButton = styled(IconPlayButton)`
   margin-right: 0px !important;
 `
 
-export default CreateVideoQuiz
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      ytThumbnail: getYoutubeThumbnailSelector(state),
+      isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+    }),
+    {
+      getYoutubeThumbnail: getYoutubeThumbnailAction,
+      setYoutubeThumbnail: setYoutubeThumbnailAction,
+    }
+  )
+)
+export default enhance(CreateVideoQuiz)

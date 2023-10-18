@@ -3,7 +3,7 @@ import { Tooltip } from 'antd'
 import React from 'react'
 import { HorizontalBarWrapper, StyledSpan } from '../styled'
 
-const HorizontalBar = ({ data = [] }) => {
+const HorizontalBar = ({ data = [], dynamicColor = false }) => {
   return (
     <HorizontalBarWrapper>
       {data.map(({ value, color }) => {
@@ -11,7 +11,11 @@ const HorizontalBar = ({ data = [] }) => {
         return (
           <EduIf key={color} condition={value}>
             <Tooltip title={`${value}%`}>
-              <StyledSpan color={color} value={value}>
+              <StyledSpan
+                color={color}
+                value={value}
+                $dynamicColor={dynamicColor}
+              >
                 {valueToShow}
               </StyledSpan>
             </Tooltip>

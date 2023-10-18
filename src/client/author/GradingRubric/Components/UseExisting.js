@@ -5,13 +5,20 @@ import {
   faPencilAlt,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons'
+import i18, { withNamespaces } from '@edulastic/localization'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Col, Form, Icon, Pagination } from 'antd'
 import produce from 'immer'
 import { maxBy, sumBy, uniqBy, debounce, isEmpty, intersection } from 'lodash'
-import { EduIf, notification } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+  notification,
+} from '@edulastic/common'
 import { TAG_NAMES } from '@edulastic/constants/const/tags'
-import { withNamespaces } from '@edulastic/localization'
 import {
   ESSAY_PLAIN_TEXT,
   ESSAY_RICH_TEXT,
@@ -22,6 +29,7 @@ import { compose } from 'redux'
 import { v4 } from 'uuid'
 import { sanitizeForReview } from '@edulastic/common/src/helpers'
 import { tagsApi } from '@edulastic/api'
+import { withRouter } from 'react-router-dom'
 import {
   CustomStyleBtn,
   CustomStyleBtn2,
@@ -72,7 +80,12 @@ import {
   setQuestionDataAction,
 } from '../../QuestionEditor/ducks'
 import { getAllTagsSelector, addNewTagAction } from '../../TestPage/ducks'
-import { getIsAiEvaulationDistrictSelector } from '../../src/selectors/user'
+import {
+  getIsAiEvaulationDistrictSelector,
+  isGcpsDistrictSelector,
+} from '../../src/selectors/user'
+import AddOnTag from '../../AssessmentCreate/components/common/AddOnTag'
+import { navigationState } from '../../src/constants/navigation'
 
 const { AI_ASSISTED_RUBRICS } = TAG_NAMES
 
@@ -108,7 +121,9 @@ const UseExisting = ({
   rubricUUIDs,
   setRubricGenerationStimulus,
   previousRubricGeneratedStimulus,
+  history,
   isAiEvaulationDistrict,
+  isGcpsDistrict,
 }) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showShareModal, setShowShareModal] = useState(false)
@@ -166,6 +181,7 @@ const UseExisting = ({
   const disableAutoGenerateRubricBtn = [
     isEmpty(currentQuestion?.stimulus),
     previousRubricGeneratedStimulus === currentQuestion?.stimulus,
+    !isAiEvaulationDistrict,
   ].some((o) => !!o)
 
   const isEssayTypeQuestion = [ESSAY_PLAIN_TEXT, ESSAY_RICH_TEXT].includes(
@@ -176,6 +192,7 @@ const UseExisting = ({
     isEssayTypeQuestion,
     premium,
     !currentRubricData?._id,
+    !isGcpsDistrict,
   ].every((o) => !!o)
 
   const handlePaginationChange = (page) => {
@@ -189,6 +206,13 @@ const UseExisting = ({
   }
 
   const generateRubricByOpenAI = () => {
+    if (!isAiEvaulationDistrict) {
+      history.push({
+        pathname: '/author/subscription',
+        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+      })
+      return
+    }
     const stimulus = sanitizeForReview(currentQuestion?.stimulus)
     if (stimulus) {
       autoGenerateRubric({ stimulus })
@@ -440,6 +464,20 @@ const UseExisting = ({
     }
   }
 
+  const AutoGenerateRubricBtn = (
+    <CustomStyleBtn2
+      style={btnStyle}
+      onClick={generateRubricByOpenAI}
+      disabled={disableAutoGenerateRubricBtn}
+      ghost={disableAutoGenerateRubricBtn}
+      title={isAiEvaulationDistrict ? autoGenerateRubricTooltip : ''}
+      loading={isRubricGenerationInProgress}
+    >
+      <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
+      Auto Generate Rubric
+    </CustomStyleBtn2>
+  )
+
   const getContent = () => (
     <>
       {(!['RUBRIC_TABLE', 'SEARCH'].includes(currentMode) ||
@@ -486,20 +524,18 @@ const UseExisting = ({
             )}
           </div>
           <div>
-            <EduIf
-              condition={showAutoGenerateRubricBtn && isAiEvaulationDistrict}
-            >
-              <CustomStyleBtn2
-                style={btnStyle}
-                onClick={generateRubricByOpenAI}
-                disabled={disableAutoGenerateRubricBtn}
-                ghost={disableAutoGenerateRubricBtn}
-                title={autoGenerateRubricTooltip}
-                loading={isRubricGenerationInProgress}
-              >
-                <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
-                Auto Generate Rubric
-              </CustomStyleBtn2>
+            <EduIf condition={showAutoGenerateRubricBtn}>
+              <FlexContainer>
+                <EduIf condition={isAiEvaulationDistrict}>
+                  <EduThen>{AutoGenerateRubricBtn}</EduThen>
+                  <EduElse>
+                    <AddOnTag
+                      component={AutoGenerateRubricBtn}
+                      message={i18.t('author:aiSuite.addOnText')}
+                    />
+                  </EduElse>
+                </EduIf>
+              </FlexContainer>
             </EduIf>
             <CustomStyleBtn
               style={btnStyle}
@@ -671,6 +707,7 @@ const UseExisting = ({
 
 const enhance = compose(
   Form.create(),
+  withRouter,
   withNamespaces('author'),
   connect(
     (state) => ({
@@ -690,6 +727,7 @@ const enhance = compose(
         state
       ),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       updateRubricData: updateRubricDataAction,

@@ -6,15 +6,14 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { EDULASTIC_ADMIN } from '@edulastic/constants/const/roleType'
 import notification from '@edulastic/common/src/components/Notification'
-import { getUserId, getUserRole } from '../../../student/Login/ducks'
+import { getUserRole } from '../../../student/Login/ducks'
 import { destroyNotificationMessage } from '../../../common/components/Notification'
-import {
-  getUserIdSelector,
-  getUserSelector,
-} from '../../../author/src/selectors/user'
+import { getUserIdSelector } from '../../../author/src/selectors/user'
 import { saveGenerateMappingDateAction } from '../../MergeSyncTable/ducks'
 
 const collectionName = 'lmsMappingStatus'
+const firestoreAssignmentResponseCopyStatusCollection =
+  'AssignmentResponseCopyStatus'
 
 const AdminNotificationListener = ({
   userRole,
@@ -26,7 +25,13 @@ const AdminNotificationListener = ({
     (db) => db.collection(collectionName).where('userId', '==', `${userId}`),
     [userId]
   )
-
+  const responseCopyNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreAssignmentResponseCopyStatusCollection)
+        .where('userId', '==', `${userId}`),
+    [userId]
+  )
   const deleteNotificationDocument = (docId) => {
     Fbs.db
       .collection(collectionName)
@@ -53,11 +58,39 @@ const AdminNotificationListener = ({
     })
   }
 
+  const showResponseCopyNotifications = (docs) => {
+    uniqBy(docs, '__id').forEach((doc) => {
+      const { status, message } = doc
+      if (!notificationIds.includes(doc.__id)) {
+        if (status === 'completed') {
+          notification({ type: 'success', msg: message })
+          setNotificationIds([...notificationIds, doc.__id])
+          deleteNotificationDocument(
+            doc.__id,
+            firestoreAssignmentResponseCopyStatusCollection
+          )
+        } else if (status === 'failed') {
+          notification({ type: 'error', msg: message })
+          setNotificationIds([...notificationIds, doc.__id])
+          deleteNotificationDocument(
+            doc.__id,
+            firestoreAssignmentResponseCopyStatusCollection
+          )
+        }
+      }
+    })
+  }
+
   useEffect(() => {
     if (userRole === EDULASTIC_ADMIN) {
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
+  useEffect(() => {
+    if (userRole === EDULASTIC_ADMIN) {
+      showResponseCopyNotifications(responseCopyNotifications)
+    }
+  }, [responseCopyNotifications])
 
   useEffect(
     () => () => {

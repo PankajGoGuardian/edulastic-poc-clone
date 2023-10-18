@@ -15,14 +15,12 @@ import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
 import {
+  ColoredText,
   StyledIconCaretDown,
   StyledIconCaretUp,
   StyledTag,
 } from '../../common/components/styledComponents'
-import {
-  ColoredText,
-  CustomStyledCell,
-} from '../components/common/styledComponents'
+import { CustomStyledCell } from '../components/common/styledComponents'
 import {
   tableColumnKeys,
   timeframeFilterKeys,
@@ -139,7 +137,7 @@ export const getTableColumns = ({
             ...b,
             color: RISK_BAND_COLOR_INFO[b.bandLabel],
           })) || []
-        return <HorizontalBar data={academicRisk} />
+        return <HorizontalBar data={academicRisk} dynamicColor />
       }
 
       const attendanceRiskColumnIdx = _columns.findIndex(
@@ -151,7 +149,7 @@ export const getTableColumns = ({
             ...b,
             color: RISK_BAND_COLOR_INFO[b.bandLabel],
           })) || []
-        return <HorizontalBar data={attendanceRisk} />
+        return <HorizontalBar data={attendanceRisk} dynamicColor />
       }
 
       if (filters.riskType === RISK_TYPE_KEYS.ACADEMIC) {

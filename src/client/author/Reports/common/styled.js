@@ -21,6 +21,7 @@ import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 import { CustomTooltip } from './components/charts/chartUtils/CustomTooltip'
 import { getTooltipArrowStyles } from './util'
+import { getFGColor } from '../../src/utils/util'
 
 export const styledNotification = ({ ...props }) =>
   notification({
@@ -476,6 +477,9 @@ export const ColorBandRow = styled.div`
 `
 
 export const ColorCircle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   border: 2px solid #ffffff;
   height: ${({ height }) => height || '20px'};
@@ -893,6 +897,7 @@ export const StyledSpan = styled.span`
   background-color: ${({ color }) => color};
   padding: 5px;
   flex-wrap: nowrap;
+  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
   width: ${({ value }) => value}%;
   font-size: 11px;
 `

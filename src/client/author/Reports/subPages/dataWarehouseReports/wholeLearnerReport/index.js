@@ -129,6 +129,14 @@ const WholeLearnerReport = ({
     [reportId, sharedReportList]
   )
   const [showInterventions, setShowInterventions] = useState(false)
+  const { scaleInfo: masterScales } = get(SPRFFilterData, 'data.result', {})
+  const [selectedMasteryScale, setSelectedMasteryScale] = useState(
+    masterScales?.[0] || {}
+  )
+  useEffect(() => {
+    setSelectedMasteryScale(masterScales?.[0] || {})
+  }, [masterScales])
+
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
       sharedReport?._id
@@ -279,15 +287,35 @@ const WholeLearnerReport = ({
         termId,
         studentId: settings.selectedStudent.key,
       })
-      fetchStudentsMasteryDataRequest({
-        ...settings.requestFilters,
-        studentId: settings.selectedStudent.key,
-      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
   }, [settings.selectedStudent.key, settings.requestFilters.termId])
+
+  useEffect(() => {
+    if (
+      !selectedMasteryScale._id ||
+      !settings.selectedStudent.key ||
+      !settings.frontEndFilters.performanceBandProfileId ||
+      !settings.requestFilters.termId
+    ) {
+      return
+    }
+    fetchStudentsMasteryDataRequest({
+      ...settings.requestFilters,
+      standardsProficiencyProfileId: selectedMasteryScale._id,
+      profileId: selectedMasteryScale._id,
+      performanceBandProfileId:
+        settings.frontEndFilters.performanceBandProfileId,
+      studentId: settings.selectedStudent.key,
+    })
+  }, [
+    settings.selectedStudent.key,
+    settings.requestFilters.termId,
+    settings.frontEndFilters.performanceBandProfileId,
+    selectedMasteryScale._id,
+  ])
 
   const selectedPerformanceBand = (
     bandInfo.find(
@@ -369,13 +397,11 @@ const WholeLearnerReport = ({
     setShowInterventions((v) => !v)
   }
 
-  // const onTestSelect = (item) =>
-  //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
     downloadCSV(`Whole Learner-${studentName}.csv`, data)
 
-  const isReportLoading =
-    loadingReportData || loadingAttendanceData || loadingMasteryData
+  // TODO cleanup+fix loading states and error/empty handling
+  const isReportLoading = loadingReportData || loadingAttendanceData
 
   return (
     <>
@@ -506,6 +532,12 @@ const WholeLearnerReport = ({
                       toggleAttendanceChart={toggleAttendanceChart}
                       interventionsData={interventionsData}
                       toggleInterventionInfo={toggleInterventionInfo}
+                      fetchStudentsMasteryDataRequest={
+                        fetchStudentsMasteryDataRequest
+                      }
+                      selectedMasteryScale={selectedMasteryScale}
+                      setSelectedMasteryScale={setSelectedMasteryScale}
+                      loadingMasteryData={loadingMasteryData}
                     />
                   </EduElse>
                 </EduIf>

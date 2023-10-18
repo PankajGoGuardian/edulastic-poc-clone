@@ -259,10 +259,9 @@ function* fetchStudentsMasteryDataRequestSaga({ payload }) {
       actions.fetchStudentsMasteryDataRequestSuccess({ studentMasteryProfile })
     )
   } catch (error) {
-    console.log('err', error.stack)
     const msg =
       'Error getting student mastery profile report data. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ msg, type: 'error' })
     yield put(actions.fetchStudentsMasteryDataRequestError({ error: msg }))
   }
 }
@@ -415,6 +414,10 @@ const attendanceData = createSelector(
   stateSelector,
   (state) => state.attendanceData
 )
+const loadingAttendanceData = createSelector(
+  stateSelector,
+  (state) => state.loadingAttendanceData
+)
 const studentMasteryProfile = createSelector(
   stateSelector,
   (state) => state.studentMasteryProfile
@@ -447,6 +450,7 @@ export const selectors = {
   reportData,
   error,
   attendanceData,
+  loadingAttendanceData,
   studentMasteryProfile,
   SPRFFilterData,
 }

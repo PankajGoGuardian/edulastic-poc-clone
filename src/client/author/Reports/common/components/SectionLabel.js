@@ -9,6 +9,15 @@ import {
   StyledTextSpan,
 } from '../styled'
 
+/**
+ * @type {React.FC<{
+ *   showHelp?: boolean
+ *   url: string | null
+ *   sectionLabelFilters?: React.ReactElement
+ *   separator?: React.ReactElement | null
+ *   wrapperStyle?: React.CSSProperties
+ * } & React.HTMLAttributes>}
+ */
 const SectionLabel = (props) => {
   const {
     children,
@@ -16,10 +25,12 @@ const SectionLabel = (props) => {
     showHelp,
     url = null,
     sectionLabelFilters,
+    separator = <DashedLine />,
+    wrapperStyle,
     ...restProps
   } = props
   return (
-    <SectionLabelWrapper {...restProps}>
+    <SectionLabelWrapper {...restProps} style={wrapperStyle}>
       <Typography.Title style={{ margin: 0, ...style }} level={3}>
         {children}
       </Typography.Title>
@@ -27,14 +38,14 @@ const SectionLabel = (props) => {
         <StyledButton
           type="small"
           href={url}
-          target="_black"
+          target="_blank"
           rel="noopener noreferrer"
         >
           <StyledIconQuestionCircle />
           <StyledTextSpan>Help</StyledTextSpan>
         </StyledButton>
       </EduIf>
-      <DashedLine />
+      {separator}
       <EduIf condition={sectionLabelFilters}>{sectionLabelFilters}</EduIf>
     </SectionLabelWrapper>
   )

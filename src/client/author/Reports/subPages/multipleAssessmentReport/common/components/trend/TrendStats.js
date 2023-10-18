@@ -45,7 +45,7 @@ const TrendStats = ({
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            paddingLeft: '15px',
+            paddingLeft: '5px',
           }}
         >
           {!!handleAddToGroupClick && !isSharedReport && (

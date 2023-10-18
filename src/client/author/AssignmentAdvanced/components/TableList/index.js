@@ -209,8 +209,11 @@ const TableList = ({
   isProxiedByEAAccount,
   hasRandomQuestions = false,
   t,
+  totalSelectedRowData = [],
+  handleSelectedRows,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
+  const [selectedAllRows, setSelectedAllRows] = useState(false)
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
   )
@@ -282,8 +285,32 @@ const TableList = ({
    * Here we are resetting the selected rows to unselect whenever thre is a change in rows.
    * Change in row can occur when we filter the rows based on status of the row.
    */
+
+  const getSelectedRowsInCurrentPage = (
+    currentPageData,
+    totalData,
+    field1,
+    field2
+  ) => {
+    return (
+      currentPageData.filter((currentItem) =>
+        totalData.some(
+          (selected) =>
+            currentItem[field1] === selected[field1] &&
+            currentItem[field2] === selected[field2]
+        )
+      ) || []
+    )
+  }
   useEffect(() => {
-    setSelectedRows([])
+    const updatedSelectedRows = getSelectedRowsInCurrentPage(
+      rowData,
+      totalSelectedRowData,
+      'classId',
+      'assignmentId'
+    )
+    setSelectedRows(updatedSelectedRows.map(({ key }) => key))
+    setSelectedAllRows(false)
   }, [rowData])
 
   let showPagination = false
@@ -298,17 +325,42 @@ const TableList = ({
   const handleSelectAll = (selected) => {
     if (selected) {
       setSelectedRows(rowData.map(({ key }) => key))
+      handleSelectedRows(rowData, selected)
+      setSelectedAllRows(true)
     } else {
       setSelectedRows([])
+      handleSelectedRows([], selected)
+      setSelectedAllRows(false)
     }
   }
 
   const rowSelection = {
     selectedRowKeys: selectedRows.map((key) => key),
-    onSelect: (_, __, selectedRowz) => {
+    onSelect: (record, selected, selectedRowz) => {
       setSelectedRows(selectedRowz.map(({ key }) => key))
+      handleSelectedRows(selectedRowz, selected, record)
     },
     onSelectAll: handleSelectAll,
+    hideDefaultSelections: true,
+    selections: [
+      {
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          setSelectedRows(rowData.map(({ key }) => key))
+          handleSelectedRows(rowData, true)
+          setSelectedAllRows(true)
+        },
+      },
+      {
+        key: 'current-page-data',
+        text: 'Current Page Data',
+        onSelect: () => {
+          setSelectedRows(rowData.map(({ key }) => key))
+          handleSelectedRows(rowData)
+        },
+      },
+    ],
   }
 
   const handleBulkAction = (type, releaseScoreResponse) => {
@@ -325,10 +377,8 @@ const TableList = ({
       })
     }
     let selectedRowsGroupByAssignment = {}
-    if (rowData.length > selectedRows.length) {
-      const selectedRowsData = rowData.filter((_, i) =>
-        selectedRows.includes(i)
-      )
+    if (rowData.length >= selectedRows.length && !selectedAllRows) {
+      const selectedRowsData = totalSelectedRowData
       selectedRowsGroupByAssignment = groupBy(selectedRowsData, 'assignmentId')
       for (const [key, value] of Object.entries(
         selectedRowsGroupByAssignment
@@ -443,8 +493,8 @@ const TableList = ({
     <BulkActionsWrapper>
       <div>
         <span data-cy="totalSelected">
-          {rowData.length > selectedRows.length
-            ? selectedRows.length
+          {rowData.length >= selectedRows.length && !selectedAllRows
+            ? totalSelectedRowData.length
             : totalAssignmentsClasses}
         </span>
         <span>Class(es) Selected</span>

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import qs from 'qs'
-import { find, get } from 'lodash'
+import { find, get, isUndefined } from 'lodash'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
@@ -82,6 +82,7 @@ class AssignmentAdvanced extends Component {
     isHeaderAction: false,
     openPrintModal: false,
     pageNo: 1,
+    totalSelectedRowData: [],
   }
 
   componentDidMount() {
@@ -158,6 +159,7 @@ class AssignmentAdvanced extends Component {
       this.setState({
         filterStatus: '',
         pageNo: 1,
+        totalSelectedRowData: [],
       })
     }
   }
@@ -203,6 +205,31 @@ class AssignmentAdvanced extends Component {
 
   handleFilterStatusChange = (filterStatus) => {
     this.setState({ filterStatus, pageNo: 1 }, () => this.handleListSearch())
+  }
+
+  handleSelectedRows = (currentSelectedRowData, selected, record) => {
+    const { totalSelectedRowData } = this.state
+    const newSelectedRows = currentSelectedRowData.filter(
+      (value) => !totalSelectedRowData.includes(value)
+    )
+    if (newSelectedRows.length) {
+      this.setState({
+        totalSelectedRowData: [...totalSelectedRowData, ...newSelectedRows],
+      })
+    } else {
+      if (record && selected === false) {
+        this.setState({
+          totalSelectedRowData: totalSelectedRowData.filter(
+            (value) => value !== record
+          ),
+        })
+      }
+      if (isUndefined(record) && selected === false) {
+        this.setState({
+          totalSelectedRowData: [],
+        })
+      }
+    }
   }
 
   renderBreadcrumbs = () => {
@@ -334,7 +361,13 @@ class AssignmentAdvanced extends Component {
   }
 
   render() {
-    const { filterStatus, isHeaderAction, openPrintModal, pageNo } = this.state
+    const {
+      filterStatus,
+      isHeaderAction,
+      openPrintModal,
+      pageNo,
+      totalSelectedRowData,
+    } = this.state
     const {
       classList,
       match,
@@ -458,6 +491,8 @@ class AssignmentAdvanced extends Component {
                 totalAssignmentsClasses={totalCountToShow}
                 handlePagination={this.handlePagination}
                 filterStatus={filterStatus}
+                totalSelectedRowData={totalSelectedRowData}
+                handleSelectedRows={this.handleSelectedRows}
               />
             </StyledCard>
           </TableWrapper>

@@ -529,6 +529,7 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
       emailIds: userEmailIds,
       licenseIds,
       licenseOwnerId,
+      renewLicense,
     } = payload
     const _products = products.reduce((allProducts, product) => {
       const { quantity, id, linkedProductId } = product
@@ -540,6 +541,7 @@ function* handleEdulasticAdminProductLicenseSaga({ payload }) {
       userEmailIds,
       licenseIds,
       licenseOwnerId,
+      renewLicense,
     })
     if (apiPaymentResponse.licenseKeys) {
       yield put(

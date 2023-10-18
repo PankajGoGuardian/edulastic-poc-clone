@@ -705,7 +705,7 @@ const StudentProfileReportFilters = ({
                   displayLabel={false}
                   maxTagCount={2}
                   tagHeight="20px"
-                  height="32px"
+                  inputBoxHeight="32px"
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
@@ -733,7 +733,7 @@ const StudentProfileReportFilters = ({
                   displayLabel={false}
                   maxTagCount={2}
                   tagHeight="20px"
-                  height="32px"
+                  inputBoxHeight="32px"
                 />
               </StyledDropDownContainer>
             </>

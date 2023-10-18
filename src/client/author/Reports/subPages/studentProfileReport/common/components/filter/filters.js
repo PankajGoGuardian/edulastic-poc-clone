@@ -681,7 +681,7 @@ const StudentProfileReportFilters = ({
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
-                flex="1 1 0"
+                flex="0 0 230px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
@@ -709,7 +709,7 @@ const StudentProfileReportFilters = ({
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
-                flex="1 1 0"
+                flex="0 0 280px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}

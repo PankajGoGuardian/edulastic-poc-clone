@@ -23,4 +23,5 @@ export const TD = styled.div`
   margin: 8px;
   align-items: ${({ center }) => (center ? 'center' : null)};
   margin-top: ${({ marginTop }) => marginTop || ''};
+  width: 100%;
 `

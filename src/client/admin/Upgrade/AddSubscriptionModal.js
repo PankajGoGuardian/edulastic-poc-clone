@@ -248,7 +248,7 @@ const AddSubscriptionModal = ({
     <CustomModalStyled
       visible={isVisible}
       width={750}
-      title="Add Subscription"
+      title={editLicense ? 'Edit License' : 'Add Subscription'}
       onCancel={handleModalClose}
       footer={footer}
       centered

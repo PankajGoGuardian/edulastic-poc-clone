@@ -6,7 +6,13 @@ import {
 } from '@edulastic/common'
 import { StyledButton } from './styled'
 
-function DeleteLicenseModal({ visible, onCancel, setNotes, onDeleteLicense }) {
+function DeleteLicenseModal({
+  visible,
+  onCancel,
+  setNotes,
+  onDeleteLicense,
+  notes,
+}) {
   const onChange = (e) => setNotes(e.target.value)
   const footer = (
     <>
@@ -26,8 +32,8 @@ function DeleteLicenseModal({ visible, onCancel, setNotes, onDeleteLicense }) {
       onCancel={onCancel}
     >
       <p>
-        Deleting the subscription will revoke acess for all the users associated
-        with the license. Are you sure you want to do this?
+        Deleting the subscription will revoke access for all the users
+        associated with the license. Are you sure you want to do this?
       </p>
       <br />
       <br />
@@ -35,6 +41,7 @@ function DeleteLicenseModal({ visible, onCancel, setNotes, onDeleteLicense }) {
         height="80px"
         onChange={onChange}
         placeholder="Notes"
+        value={notes}
       />
     </CustomModalStyled>
   )

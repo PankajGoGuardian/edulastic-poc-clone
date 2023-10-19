@@ -169,6 +169,9 @@ const LicenseCountSection = ({
     [currentLicense.productName, products]
   )
 
+  const subscLicenseExceptTeacherPremium =
+    subsLicenses?.filter(({ productType }) => productType !== PREMIUM) || []
+
   const LicenseCountContainer =
     subsLicenses &&
     subsLicenses.map((license) => (
@@ -223,17 +226,24 @@ const LicenseCountSection = ({
               >
                 Edit
               </EduButton>
-              <StyledButton
-                key={`delete-${license.productId}`}
-                isGhost
-                height="24px"
-                mr="10px"
-                ml="0px"
-                onClick={() => openDeleteLicenseModal(license)}
-                data-cy={`${license.productName}-delete`}
+              <EduIf
+                condition={
+                  license.productType !== PREMIUM ||
+                  !subscLicenseExceptTeacherPremium.length
+                }
               >
-                Delete
-              </StyledButton>
+                <StyledButton
+                  key={`delete-${license.productId}`}
+                  isGhost
+                  height="24px"
+                  mr="10px"
+                  ml="0px"
+                  onClick={() => openDeleteLicenseModal(license)}
+                  data-cy={`${license.productName}-delete`}
+                >
+                  Delete
+                </StyledButton>
+              </EduIf>
             </EduIf>
           </FlexContainer>
         </LeftCol>
@@ -285,6 +295,7 @@ const LicenseCountSection = ({
           onCancel={onCancelDeleteLiceseModal}
           onDeleteLicense={onDeleteLicense}
           setNotes={setArchiveNotes}
+          notes={archiveNotes}
         />
       </EduIf>
     </>

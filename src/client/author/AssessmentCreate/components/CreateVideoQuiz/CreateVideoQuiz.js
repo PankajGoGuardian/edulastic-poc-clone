@@ -79,7 +79,7 @@ const CreateVideoQuiz = ({
   isVideoQuizAndAIEnabled,
   history,
 }) => {
-  const [mode, setMode] = useState(true)
+  const [mode, setMode] = useState(false)
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
@@ -109,7 +109,7 @@ const CreateVideoQuiz = ({
   useEffect(() => {
     if (ytThumbnail.length) {
       setThumbnail(ytThumbnail)
-      onValidUrl(linkValue, ytThumbnail, mode ? 2 : 1)
+      onValidUrl(linkValue, ytThumbnail, mode ? 1 : 2)
     }
   }, [ytThumbnail])
 
@@ -153,21 +153,30 @@ const CreateVideoQuiz = ({
             </Form.Item>
             <Row type="flex" align="middle" justify="space-between">
               <Row type="flex" align="middle" gutter={[5, 0]}>
-                <Col>Switch to Moderate Restricted Mode</Col>
-                <Col>
-                  <Tooltip
-                    title="This will open/play the video by default when opened by students"
-                    placement="bottom"
-                  >
-                    <IconInfo />
-                  </Tooltip>
-                </Col>
+                <span style={{ marginRight: 5 }}>
+                  Switch to Moderate Restricted Mode{' '}
+                </span>
+                <Tooltip
+                  title="This will open/play the video by default when opened by students"
+                  placement="bottom"
+                >
+                  <IconInfo />
+                </Tooltip>
               </Row>
               <Row type="flex" align="middle">
-                <Switch
-                  checked={mode}
-                  onChange={(checked) => setMode(checked)}
-                />
+                <Tooltip
+                  title={
+                    mode
+                      ? 'Restricted mode: Moderate'
+                      : 'Restricted mode: Strict'
+                  }
+                  placement="bottom"
+                >
+                  <Switch
+                    checked={mode}
+                    onChange={(checked) => setMode(checked)}
+                  />
+                </Tooltip>
                 <StyledSwitchText>{mode ? 'On' : 'Off'}</StyledSwitchText>
               </Row>
             </Row>

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import { videoContentRestriction } from '@edulastic/constants/const/test'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -450,7 +451,9 @@ const VideoPreview = ({
                   playsinline: 1,
                   api_key: appConfig.edYouTubePlayerKey,
                 },
-                embedConfig: { contentFilter: videoMode },
+                embedConfig: {
+                  contentFilter: videoContentRestriction[videoMode],
+                },
               },
             }}
             onPause={onPause}

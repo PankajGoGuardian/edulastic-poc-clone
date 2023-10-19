@@ -15,6 +15,7 @@ import { IconPlayButton, IconInfo } from '@edulastic/icons'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { videoContentRestrictionTypes } from '@edulastic/constants/const/test'
 import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.png'
 import {
   getYoutubeThumbnailSelector,
@@ -79,7 +80,7 @@ const CreateVideoQuiz = ({
   isVideoQuizAndAIEnabled,
   history,
 }) => {
-  const [mode, setMode] = useState(false)
+  const [isModerateRestriction, setIsModerateRestriction] = useState(false)
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
@@ -109,7 +110,10 @@ const CreateVideoQuiz = ({
   useEffect(() => {
     if (ytThumbnail.length) {
       setThumbnail(ytThumbnail)
-      onValidUrl(linkValue, ytThumbnail, mode ? 1 : 2)
+      const videoMode = isModerateRestriction
+        ? videoContentRestrictionTypes.MODERATE
+        : videoContentRestrictionTypes.STRICT
+      onValidUrl(linkValue, ytThumbnail, videoMode)
     }
   }, [ytThumbnail])
 
@@ -166,18 +170,20 @@ const CreateVideoQuiz = ({
               <Row type="flex" align="middle">
                 <Tooltip
                   title={
-                    mode
+                    isModerateRestriction
                       ? 'Restricted mode: Moderate'
                       : 'Restricted mode: Strict'
                   }
                   placement="bottom"
                 >
                   <Switch
-                    checked={mode}
-                    onChange={(checked) => setMode(checked)}
+                    checked={isModerateRestriction}
+                    onChange={(checked) => setIsModerateRestriction(checked)}
                   />
                 </Tooltip>
-                <StyledSwitchText>{mode ? 'On' : 'Off'}</StyledSwitchText>
+                <StyledSwitchText>
+                  {isModerateRestriction ? 'On' : 'Off'}
+                </StyledSwitchText>
               </Row>
             </Row>
           </Form>

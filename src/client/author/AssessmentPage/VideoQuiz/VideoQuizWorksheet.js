@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { withWindowSizes, helpers, toggleChatDisplay } from '@edulastic/common'
 
+import { videoContentRestrictionTypes } from '@edulastic/constants/const/test'
 import { setTestDataAction } from '../../TestPage/ducks'
 
 import Questions from './components/Questions'
@@ -32,7 +33,11 @@ const VideoQuizWorksheetComponent = ({
   noCheck,
   questions,
   questionsById,
-  test: { isDocBased, videoUrl: entityLink, videoMode = 2 },
+  test: {
+    isDocBased,
+    videoUrl: entityLink,
+    videoMode = videoContentRestrictionTypes.STRICT,
+  },
   testMode = false,
   studentWorkAnswersById,
   studentWork = false,

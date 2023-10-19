@@ -531,4 +531,14 @@ module.exports = {
   },
   SHOW_IMMERSIVE_READER,
   TEST_CONTENT_VISIBILITY,
+  videoContentRestrictionTypes: {
+    OFF: 'OFF',
+    MODERATE: 'MODERATE',
+    STRICT: 'STRICT',
+  },
+  videoContentRestriction: {
+    OFF: 0,
+    MODERATE: 1,
+    STRICT: 2,
+  },
 }

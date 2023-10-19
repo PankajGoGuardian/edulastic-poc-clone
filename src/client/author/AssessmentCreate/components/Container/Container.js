@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 
 import { withNamespaces } from 'react-i18next'
+import { videoContentRestrictionTypes } from '@edulastic/constants/const/test'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import CreationOptions from '../CreationOptions/CreationOptions'
 import DropArea from '../DropArea/DropArea'
@@ -126,7 +127,11 @@ class Container extends React.Component {
     })
   }, 1000)
 
-  handleNext = (videoUrl, thumbnail, videoMode = 2) => {
+  handleNext = (
+    videoUrl,
+    thumbnail,
+    videoMode = videoContentRestrictionTypes.STRICT
+  ) => {
     const { location, createAssessment } = this.props
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,

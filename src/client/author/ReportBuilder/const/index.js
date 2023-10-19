@@ -19,8 +19,8 @@ export const DEFAULT_WIDGET_LAYOUT = {
 }
 
 export const DEFAULT_REPORT_STATE = {
-  title: 'New Report Title',
-  description: 'New Report Description',
+  title: 'Untitled Report',
+  description: '',
   widgets: [],
 }
 

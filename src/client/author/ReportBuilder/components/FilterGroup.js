@@ -79,7 +79,8 @@ export const FilterGroup = ({
         return {
           dimension: newMember,
           operators: operators.filter((op) => op.type.includes(newMember.type)),
-          operator: operators[0].name,
+          operator: operators.find((op) => op.type.includes(newMember.type))
+            .name,
         }
       })
     )
@@ -150,7 +151,7 @@ export const FilterGroup = ({
             {
               dimension: m,
               operators: operators.filter((op) => op.type.includes(m.type)),
-              operator: operators[0].name,
+              operator: operators.find((op) => op.type.includes(m.type)).name,
             },
           ])
         }

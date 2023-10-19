@@ -126,7 +126,7 @@ class Container extends React.Component {
     })
   }, 1000)
 
-  handleNext = (videoUrl, thumbnail) => {
+  handleNext = (videoUrl, thumbnail, mode = 2) => {
     const { location, createAssessment } = this.props
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
@@ -136,6 +136,7 @@ class Container extends React.Component {
       videoUrl,
       assessmentId,
       thumbnail,
+      mode,
     })
   }
 

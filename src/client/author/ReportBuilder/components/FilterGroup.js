@@ -80,7 +80,7 @@ export const FilterGroup = ({
     existingMembers[idxToReplace] = {
       dimension: newMember,
       operators: operators.filter((op) => op.type.includes(newMember.type)),
-      operator: 'equals',
+      operator: operators[0].name,
     }
     updateMethods(existingMembers)
   }
@@ -150,7 +150,7 @@ export const FilterGroup = ({
             {
               dimension: m,
               operators: operators.filter((op) => op.type.includes(m.type)),
-              operator: 'equals',
+              operator: operators[0].name,
             },
           ])
         }

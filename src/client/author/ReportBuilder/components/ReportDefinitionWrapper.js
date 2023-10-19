@@ -120,7 +120,7 @@ const ReportDefinitionWrapper = (props) => {
     >
       <h2>There are no Widgets on this Report</h2>
       <Link
-        to={`/author/reports/report-builder/explore/definition/${editReport?._id}`}
+        to={`/author/reports/report-builder/explore/definition/${editReport._id}`}
       >
         <Button type="primary" size="large" icon="plus">
           Add Widget to Report

@@ -71,7 +71,7 @@ const WidgetDropdown = ({ updateReport, widgetId, report }) => {
   )
 }
 
-const Widget = ({
+const WidgetInner = ({
   report,
   updateReport,
   widget,
@@ -128,8 +128,7 @@ const enhance = compose(
   )
 )
 
-const WidgetContainer = enhance(Widget)
-export { WidgetContainer as Widget }
+export const Widget = enhance(WidgetInner)
 
 const StyledCard = styled(Card)`
   border-radius: 15px;

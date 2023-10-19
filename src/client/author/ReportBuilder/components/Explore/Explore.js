@@ -26,6 +26,7 @@ import { WidgetQueryBuilder } from '../WidgetQueryBuilder'
 import {
   DEFAULT_PAGESIZE,
   DEFAULT_WIDGET_LAYOUT,
+  DEFAULT_REPORT_STATE,
   isValidQuery,
 } from '../../const'
 
@@ -75,10 +76,10 @@ const Explore = (props) => {
   const [title, setTitle] = useState(
     sourceWidget ? nextName(sourceWidget.title) : 'New Widget'
   )
-  const [reportTitle, setReportTitle] = useState('New Report Title')
-  const [reportDescription, setReportDescription] = useState(
-    'New Report Description'
-  )
+  const [editReport, setEditReport] = useState({
+    ...DEFAULT_REPORT_STATE,
+    ...report,
+  })
 
   useEffect(() => {
     if (definitionId) {
@@ -86,11 +87,9 @@ const Explore = (props) => {
     }
   }, [definitionId])
 
-  // TODO better create an `editWidget` or `editReport` with same approach as `editQuery`
   useEffect(() => {
     if (isEmpty(report)) return
-    setReportTitle(report.title)
-    setReportDescription(report.description)
+    setEditReport(report)
     const widget = report.widgets.find((w) => w._id === widgetId)
     if (!widget) return
     setEditQuery(widget.query)
@@ -102,12 +101,13 @@ const Explore = (props) => {
     setTitle(widget.title)
   }, [report, widgetId])
 
-  // TODO following state can either be grouped(editReport, editWidget, editLayout, etc) or sent to child to manage or converted to useMemo.
   const [titleModalVisible, setTitleModalVisible] = useState(false)
 
   useEffect(() => {
-    setReportData({})
     getMetaData()
+    return () => {
+      setReportData({})
+    }
   }, [])
 
   useEffect(() => {
@@ -116,7 +116,6 @@ const Explore = (props) => {
     }
   }, [editQuery])
 
-  // TODO : combine editQuery & editWidgetLayout
   const widgetData =
     isEditWidgetFlow && !isEmpty(report)
       ? produce(
@@ -143,10 +142,10 @@ const Explore = (props) => {
     setAddingToReport(true)
     if (isEditWidgetFlow) {
       updateReportDefinition({
-        definitionId: report._id,
+        definitionId: editReport._id,
         updateDoc: {
           $set: {
-            ...report,
+            ...editReport,
             widgets: report.widgets.map((widget) => {
               if (widget._id !== widgetData._id) return widget
               return {
@@ -157,17 +156,15 @@ const Explore = (props) => {
                 title,
               }
             }),
-            title: reportTitle,
-            description: reportDescription,
           },
         },
       })
     } else if (isAddWidgetToReportFlow) {
       updateReportDefinition({
-        definitionId: report._id,
+        definitionId: editReport._id,
         updateDoc: {
           $set: {
-            ...report,
+            ...editReport,
             widgets: [
               ...report.widgets,
               {
@@ -176,13 +173,12 @@ const Explore = (props) => {
                 title,
               },
             ],
-            title: reportTitle,
-            description: reportDescription,
           },
         },
       })
     } else if (isCreateReportWithWidgetFlow) {
       addReportDefinition({
+        ...editReport,
         widgets: [
           {
             layout: editWidgetLayout,
@@ -190,13 +186,12 @@ const Explore = (props) => {
             title,
           },
         ],
-        title: reportTitle,
-        description: reportDescription,
       })
     }
     setAddingToReport(false)
   }
 
+  // TODO: Have pagination prop inside editQuery
   const handleApply = () => {
     getChartData({
       query: { ...editQuery, limit: DEFAULT_PAGESIZE, offset: 0, total: true },
@@ -210,21 +205,12 @@ const Explore = (props) => {
         setTitleModalVisible={setTitleModalVisible}
         title={title}
         setTitle={setTitle}
-        reportTitle={reportTitle}
-        setReportTitle={setReportTitle}
-        reportDescription={reportDescription}
-        setReportDescription={setReportDescription}
+        editReport={editReport}
+        setEditReport={setEditReport}
         handleSaveOrUpdateOfReport={handleSaveOrUpdateOfReport}
       />
       <PageHeader
-        title={
-          <ExploreTitle
-            reportId={report?._id}
-            reportTitle={reportTitle}
-            reportDescription={reportDescription}
-            widgetTitle={title}
-          />
-        }
+        title={<ExploreTitle widgetTitle={title} />}
         button={
           <>
             <Button key="apply-button" type="primary" onClick={handleApply}>

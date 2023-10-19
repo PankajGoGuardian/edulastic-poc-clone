@@ -20,12 +20,9 @@ import {
 import { EduButton } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import styled from 'styled-components'
-// import './recharts-theme.less' TODO: need to check the impact
 import moment from 'moment'
 import { cardTitleColor, secondaryTextColor } from '@edulastic/colors'
 import { buildChartData } from '../util'
-import { DEFAULT_PAGESIZE } from '../const'
-// import { CustomizedTooltip } from './CustomizedTooltip'
 
 const localeFormatter = (item) => (item || '').toLocaleString()
 const dateFormatter = (item) => moment(item).format('MMM YY')
@@ -70,8 +67,8 @@ const CartesianChart = ({
   height,
   goToNextPage,
   goToPrevPage,
-  chartNavLeftVisibility,
-  chartNavRightVisibility,
+  isFirstPage,
+  isLastPage,
   axesLabel,
 }) => (
   <>
@@ -97,7 +94,7 @@ const CartesianChart = ({
       className="navigator navigator-left"
       onClick={goToPrevPage}
       style={{
-        visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
+        visibility: isFirstPage ? 'hidden' : 'visible',
       }}
     />
     <StyledChartNavButton
@@ -108,7 +105,7 @@ const CartesianChart = ({
       className="navigator navigator-right"
       onClick={goToNextPage}
       style={{
-        visibility: chartNavRightVisibility ? 'visible' : 'hidden',
+        visibility: isLastPage ? 'hidden' : 'visible',
       }}
     />
     <ResponsiveContainer width="100%" height={height}>
@@ -130,10 +127,8 @@ const CartesianChart = ({
             axisLine={false}
             tickLine={false}
             key={member.name}
-            // tickFormatter={localeFormatter}
             yAxisId={member.name}
             label={{ value: member.title ?? member.name, angle: -90 }}
-            // label={<EditableLabel value={member.title} />}
             type={getYAxesType(member)}
             orientation={
               i >= resultSet.yAxesFields.length / 2 ? 'right' : 'left'
@@ -154,8 +149,8 @@ const TypeToChartComponent = {
     height,
     goToNextPage,
     goToPrevPage,
-    chartNavLeftVisibility,
-    chartNavRightVisibility,
+    isFirstPage,
+    isLastPage,
     axesLabel,
   }) => (
     <CartesianChart
@@ -164,8 +159,8 @@ const TypeToChartComponent = {
       ChartComponent={LineChart}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-      chartNavLeftVisibility={chartNavLeftVisibility}
-      chartNavRightVisibility={chartNavRightVisibility}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
       axesLabel={axesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
@@ -185,8 +180,8 @@ const TypeToChartComponent = {
     height,
     goToNextPage,
     goToPrevPage,
-    chartNavLeftVisibility,
-    chartNavRightVisibility,
+    isFirstPage,
+    isLastPage,
     axesLabel,
   }) => (
     <CartesianChart
@@ -195,8 +190,8 @@ const TypeToChartComponent = {
       ChartComponent={BarChart}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-      chartNavLeftVisibility={chartNavLeftVisibility}
-      chartNavRightVisibility={chartNavRightVisibility}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
       axesLabel={axesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
@@ -216,8 +211,8 @@ const TypeToChartComponent = {
     height,
     goToNextPage,
     goToPrevPage,
-    chartNavLeftVisibility,
-    chartNavRightVisibility,
+    isFirstPage,
+    isLastPage,
     axesLabel,
   }) => (
     <CartesianChart
@@ -226,8 +221,8 @@ const TypeToChartComponent = {
       ChartComponent={AreaChart}
       goToNextPage={goToNextPage}
       goToPrevPage={goToPrevPage}
-      chartNavLeftVisibility={chartNavLeftVisibility}
-      chartNavRightVisibility={chartNavRightVisibility}
+      isFirstPage={isFirstPage}
+      isLastPage={isLastPage}
       axesLabel={axesLabel}
     >
       {resultSet.seriesNames.map((series, i) => (
@@ -299,39 +294,6 @@ const TypeToMemoChartComponent = Object.keys(TypeToChartComponent)
   }))
   .reduce((a, b) => ({ ...a, ...b }))
 
-const Spinner = () => (
-  <SpinContainer>
-    <Spin size="large" />
-  </SpinContainer>
-)
-
-const renderChart = (Component) => ({
-  resultSet,
-  height,
-  goToNextPage,
-  goToPrevPage,
-  pageFilter,
-  handlePagination,
-  chartNavLeftVisibility,
-  chartNavRightVisibility,
-  axesLabel,
-}) =>
-  resultSet ? (
-    <Component
-      height={height}
-      resultSet={resultSet}
-      goToNextPage={goToNextPage}
-      goToPrevPage={goToPrevPage}
-      pageFilter={pageFilter}
-      handlePagination={handlePagination}
-      chartNavLeftVisibility={chartNavLeftVisibility}
-      chartNavRightVisibility={chartNavRightVisibility}
-      axesLabel={axesLabel}
-    />
-  ) : (
-    <Spinner />
-  )
-
 export const ChartRenderer = ({
   chartData,
   chartHeight,
@@ -342,13 +304,6 @@ export const ChartRenderer = ({
 }) => {
   const { layout } = widget
   const { options, type: chartType } = layout
-  // const [pageFilter, setPageFilter] = useState({
-  //   limit: DEFAULT_PAGESIZE,
-  //   offset: 0,
-  //   total: chartData?.total ?? chartData?.data?.length ?? 0,
-  // })
-  console.log({ pageFilter, chartData })
-  // const pageFilter = useMemo(() => pageFilter, [chartData])
 
   const resultSet = useMemo(() => {
     if (!isEmpty(chartData)) {
@@ -376,27 +331,27 @@ export const ChartRenderer = ({
     }))
   }
 
-  const chartNavLeftVisibility = pageFilter.offset !== 0
-  const chartNavRightVisibility =
-    pageFilter.total - pageFilter.offset > pageFilter.limit
+  const isFirstPage = pageFilter.offset === 0
+  const isLastPage = pageFilter.total - pageFilter.offset <= pageFilter.limit
   const axesLabel = layout.options.axesLabel
-  const component = TypeToMemoChartComponent[chartType]
+  const Component = TypeToMemoChartComponent[chartType]
 
   return (
-    <MainDiv isLoading={isChartDataLoading}>
-      {component ? (
-        renderChart(component)({
-          height: chartHeight,
-          resultSet,
-          goToPrevPage,
-          goToNextPage,
-          pageFilter,
-          handlePagination,
-          chartNavLeftVisibility,
-          chartNavRightVisibility,
-          axesLabel,
-          isChartDataLoading,
-        })
+    <MainDiv $isLoading={isChartDataLoading}>
+      {Component ? (
+        resultSet && (
+          <Component
+            height={chartHeight}
+            resultSet={resultSet}
+            goToNextPage={goToNextPage}
+            goToPrevPage={goToPrevPage}
+            pageFilter={pageFilter}
+            handlePagination={handlePagination}
+            isFirstPage={isFirstPage}
+            isLastPage={isLastPage}
+            axesLabel={axesLabel}
+          />
+        )
       ) : (
         <h1>No Layout selected !!</h1>
       )}
@@ -404,22 +359,6 @@ export const ChartRenderer = ({
     </MainDiv>
   )
 }
-
-const StyledDiv = styled.div`
-width: '90%',
-margin: auto;
-margin-top: 8%;  
-text-align: center;
-font-size: 1.5rem;
-`
-
-const SpinContainer = styled.div`
-  text-align: center;
-  padding: 30px 50px;
-  margin-top: 30px;
-  background: transparent;
-  opacity: 0.5;
-`
 
 export const StyledChartNavButton = styled(EduButton)`
   position: absolute;
@@ -442,7 +381,7 @@ const MainDiv = styled.div`
   position: relative;
   padding: 30px 35px 15px 55px;
   height: 100%;
-  opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
+  opacity: ${({ $isLoading }) => ($isLoading ? 0.6 : 1)};
 
   .navigator-left {
     left: 0px;

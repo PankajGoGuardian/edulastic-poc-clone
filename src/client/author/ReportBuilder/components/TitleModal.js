@@ -8,12 +8,13 @@ export const TitleModal = ({
   setTitleModalVisible,
   title,
   setTitle,
-  reportTitle,
-  setReportTitle,
-  reportDescription,
-  setReportDescription,
+  editReport,
+  setEditReport,
   handleSaveOrUpdateOfReport,
 }) => {
+  const handleChange = (key, value) => {
+    setEditReport((prevReport) => ({ ...prevReport, [key]: value }))
+  }
   return (
     <Modal
       key="modal"
@@ -31,14 +32,14 @@ export const TitleModal = ({
       <StyledDiv>Report Name</StyledDiv>
       <Input
         placeholder="Report Name"
-        value={reportTitle}
-        onChange={(e) => setReportTitle(e.target.value)}
+        value={editReport.title}
+        onChange={(e) => handleChange('title', e.target.value)}
       />
       <StyledDiv>Report Description</StyledDiv>
       <Input
         placeholder="Report Description"
-        value={reportDescription}
-        onChange={(e) => setReportDescription(e.target.value)}
+        value={editReport.description}
+        onChange={(e) => handleChange('description', e.target.value)}
       />
     </Modal>
   )

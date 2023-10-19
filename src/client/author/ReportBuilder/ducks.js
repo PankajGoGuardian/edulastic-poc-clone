@@ -68,7 +68,7 @@ export const isReportDefinitionLoadingSelector = createSelector(
 )
 export const getActiveReportSelector = createSelector(
   reportBuiderSelector,
-  (state) => state.report
+  (state) => state.report || {}
 )
 export const getMetaDataSelector = createSelector(
   reportBuiderSelector,
@@ -97,7 +97,7 @@ export const getDataSourceSelector = createSelector(
   (state) => state.dataSource
 )
 export const getIsChartDataLoadingSelector = createSelector(
-  [reportBuiderSelector, (s, props) => props.widgetId || 'draft'],
+  [reportBuiderSelector, (s, props) => props?.widget?._id ?? 'draft'],
   (state, widgetId) => !!state.isChartDataLoading?.[widgetId]
 )
 

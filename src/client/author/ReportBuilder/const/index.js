@@ -18,6 +18,12 @@ export const DEFAULT_WIDGET_LAYOUT = {
   },
 }
 
+export const DEFAULT_REPORT_STATE = {
+  title: 'New Report Title',
+  description: 'New Report Description',
+  widgets: [],
+}
+
 export const isValidQuery = (query) => {
   return query?.dimensions?.length || query?.facts?.length
 }

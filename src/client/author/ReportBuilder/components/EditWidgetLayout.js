@@ -17,7 +17,7 @@ import {
 import { isValidQuery } from '../const'
 import { useChartRenderer } from './customHooks/useChartRenderer'
 
-const EditWidgetLayout = ({
+const EditWidgetLayoutInner = ({
   value,
   onChange,
   chartData,
@@ -176,8 +176,7 @@ const enhance = compose(
   )
 )
 
-const EditWidgetLayoutContainer = enhance(EditWidgetLayout)
-export { EditWidgetLayoutContainer as EditWidgetLayout }
+export const EditWidgetLayout = enhance(EditWidgetLayoutInner)
 
 const Title = styled.p`
   margin-bottom: 10px;
@@ -198,7 +197,6 @@ const XAxisLabelContainer = styled.div`
   position: absolute;
   right: 0px;
   bottom: -20px;
-  // transform: translate(-50%, 60%);
   display: flex;
   align-items: center;
 `
@@ -224,9 +222,9 @@ const Empty = styled.div`
 `
 
 const StyledDiv = styled.div`
-width: '90%',
-margin: auto;
-margin-top: 8%;  
-text-align: center;
-font-size: 1.5rem;
+  width: '90%';
+  margin: auto;
+  margin-top: 8%;
+  text-align: center;
+  font-size: 1.5rem;
 `

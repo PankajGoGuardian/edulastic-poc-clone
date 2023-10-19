@@ -16,6 +16,7 @@ export const useChartRenderer = ({
     total: 0,
   })
 
+  // TODO: Have two state for query appliedQuery & savedQuery, and pass savedQuery in dependency array in below useEffect.
   useEffect(() => {
     if (!isEmpty(query)) {
       const queryWithPageFilters = { ...query, ...pageFilter, total: true }

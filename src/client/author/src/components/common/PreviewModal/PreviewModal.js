@@ -313,35 +313,43 @@ class PreviewModal extends React.Component {
       this.closeModal()
     }
 
-    const bodyContent = (
-      <>
-        <p>
-          This passage has {passage.testItems.length} Items associated with it.
-          Would you like to clone complete passage or a single item?
-        </p>
-        <FlexContainer justifyContent="flex-end" mt="24px">
-          <EduButton
-            isGhost
-            onClick={handleCompletePassageClick}
-            data-cy="completePassageBtn"
-          >
-            Complete Passage
-          </EduButton>
-          <EduButton onClick={handleCurrentItemClick} data-cy="currentItemBtn">
-            Current Item
-          </EduButton>
-        </FlexContainer>
-      </>
-    )
+    // show confirmation message only if more than one item to be cloned
+    if (passage.testItems.length > 1) {
+      const bodyContent = (
+        <>
+          <p>
+            This passage has {passage.testItems.length} Items associated with
+            it. Would you like to clone complete passage or a single item?
+          </p>
+          <FlexContainer justifyContent="flex-end" mt="24px">
+            <EduButton
+              isGhost
+              onClick={handleCompletePassageClick}
+              data-cy="completePassageBtn"
+            >
+              Complete Passage
+            </EduButton>
+            <EduButton
+              onClick={handleCurrentItemClick}
+              data-cy="currentItemBtn"
+            >
+              Current Item
+            </EduButton>
+          </FlexContainer>
+        </>
+      )
 
-    Modal.confirm({
-      title: 'Clone Passage Item',
-      content: bodyContent,
-      onCancel: () => this.setState({ flag: false }),
-      centered: true,
-      width: 500,
-      className: 'passage-clone-modal',
-    })
+      Modal.confirm({
+        title: 'Clone Passage Item',
+        content: bodyContent,
+        onCancel: () => this.setState({ flag: false }),
+        centered: true,
+        width: 500,
+        className: 'passage-clone-modal',
+      })
+    } else {
+      handleCompletePassageClick()
+    }
 
     // const duplicatedItem = await duplicateTestItem(itemId);
 

@@ -322,7 +322,7 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
-        newAssessment.mode = payload.mode
+        newAssessment.videoMode = payload.videoMode
 
         if (payload.thumbnail) {
           newAssessment.thumbnail = payload.thumbnail

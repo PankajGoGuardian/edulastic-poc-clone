@@ -57,6 +57,7 @@ const VideoPreview = ({
   onHighlightQuestion,
   isEditable,
   videoUrl,
+  videoMode,
   pathname,
   handleRemoveAnnotation,
   editMode,
@@ -449,7 +450,7 @@ const VideoPreview = ({
                   playsinline: 1,
                   api_key: appConfig.edYouTubePlayerKey,
                 },
-                embedConfig: { contentFilter: 2 },
+                embedConfig: { contentFilter: videoMode },
               },
             }}
             onPause={onPause}

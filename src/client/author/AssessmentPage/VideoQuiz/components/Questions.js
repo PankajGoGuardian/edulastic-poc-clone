@@ -4,20 +4,17 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { sortBy, maxBy, uniqBy, isEmpty } from 'lodash'
+import { sortBy, maxBy, uniqBy, isEmpty, keyBy } from 'lodash'
+import produce from 'immer'
 import { SortableElement, SortableContainer } from 'react-sortable-hoc'
 
-import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, helpers } from '@edulastic/common'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  createQuestion,
-  validationCreators,
-  createSection,
-} from '../utils/questionsHelpers'
+import { createQuestion, validationCreators } from '../utils/questionsHelpers'
 
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
@@ -30,7 +27,6 @@ import {
 import AddQuestion from './AddQuestion'
 import QuestionItem from './QuestionItem/QuestionItem'
 import QuestionEditModal from './QuestionEditModal/QuestionEditModal'
-import Section from './Section'
 import {
   QuestionsWrapper,
   AnswerActionsWrapper,
@@ -143,59 +139,30 @@ class Questions extends React.Component {
   }
 
   componentDidMount() {
+    const { editMode, isSnapQuizVideoPlayer } = this.props
     this.resetTimeSpentOnQuestion()
+    if (!isSnapQuizVideoPlayer && editMode) {
+      this.removeSectionsFromQuestions()
+    }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const {
-      annotations,
-      handleAddBulkQuestionAnnotations,
+      setTestData,
       editMode,
       isSnapQuizVideoPlayer,
       videoQuizQuestionsToDisplay,
       studentWork,
+      list,
     } = this.props
 
     if (
       !isSnapQuizVideoPlayer &&
       editMode &&
-      typeof handleAddBulkQuestionAnnotations === 'function'
+      typeof setTestData === 'function' &&
+      prevProps.list?.length !== list?.length
     ) {
-      let questions = this.questionList
-      questions = (questions || []).map((question) => {
-        if (question.type === 'sectionLabel') {
-          return null
-        }
-        const annotationIndex = (annotations || []).findIndex(
-          (annotation) => annotation?.questionId === question.id
-        )
-        if (annotationIndex === -1) {
-          return question
-        }
-        return null
-      })
-      if (questions?.length) {
-        const newAnnotations = []
-        const allQuestionIndexes = this.getQIndexForDocBasedItems()
-        questions.forEach((question, index) => {
-          if (
-            question?.type !== 'sectionLabel' &&
-            typeof question?.questionDisplayTimestamp === 'number'
-          ) {
-            const annotation = {
-              x: -1,
-              y: -1,
-              questionId: question.id,
-              qIndex: allQuestionIndexes[index],
-              time: question.questionDisplayTimestamp,
-            }
-            newAnnotations.push(annotation)
-          }
-        })
-        if (newAnnotations.length) {
-          handleAddBulkQuestionAnnotations(newAnnotations)
-        }
-      }
+      this.addAndUpdateAnnotations()
     }
 
     if (
@@ -204,6 +171,96 @@ class Questions extends React.Component {
     ) {
       this.scrollToQuestion(videoQuizQuestionsToDisplay[0].questionId)
     }
+  }
+
+  addAndUpdateAnnotations = () => {
+    const { annotations, setTestData, list } = this.props
+    let questions = list || []
+    let hasSections = false
+    const questionsKeyedById = {}
+    const newAnnotations = []
+    let updatedAnnotations = []
+    questions.forEach((question) => {
+      if (question.type === 'sectionLabel') {
+        hasSections = true
+        return
+      }
+      questionsKeyedById[question.id] = question
+    })
+    if (hasSections) {
+      this.removeSectionsFromQuestions()
+      return
+    }
+
+    questions = (questions || []).map((question) => {
+      if (question.type === 'sectionLabel') {
+        return null
+      }
+      const annotationIndex = (annotations || []).findIndex(
+        (annotation) => annotation?.questionId === question.id
+      )
+      if (annotationIndex === -1) {
+        return question
+      }
+      return null
+    })
+
+    if (questions?.length) {
+      questions.forEach((question) => {
+        if (
+          question?.type !== 'sectionLabel' &&
+          typeof question?.questionDisplayTimestamp === 'number'
+        ) {
+          const annotation = {
+            uuid: helpers.uuid(),
+            type: 'point',
+            class: 'Annotation',
+            toolbarMode: 'question',
+            x: -1,
+            y: -1,
+            questionId: question.id,
+            qIndex: question.qIndex,
+            time: question.questionDisplayTimestamp,
+          }
+          newAnnotations.push(annotation)
+        }
+      })
+    }
+
+    if (annotations?.length && !isEmpty(questionsKeyedById)) {
+      updatedAnnotations = produce(annotations, (draft) => {
+        draft.forEach((_annotation) => {
+          if (_annotation.toolbarMode === 'question') {
+            _annotation.qIndex =
+              questionsKeyedById[_annotation.questionId].qIndex
+          }
+        })
+      })
+    }
+
+    if (newAnnotations.length) {
+      updatedAnnotations = [...updatedAnnotations, ...newAnnotations]
+    }
+
+    setTestData({
+      annotations: updatedAnnotations,
+    })
+  }
+
+  removeSectionsFromQuestions = () => {
+    const { list, setQuestionsById } = this.props
+    const filteredQuestions = (list || []).filter(
+      (question) => question?.type !== 'sectionLabel'
+    )
+    const questionsWithUpdatedIndex = []
+    ;(filteredQuestions || []).forEach((question, index) => {
+      questionsWithUpdatedIndex.push({
+        ...question,
+        qIndex: index + 1,
+      })
+    })
+    const questionsKeyedById = keyBy(questionsWithUpdatedIndex, 'id')
+    setQuestionsById(questionsKeyedById)
   }
 
   scrollToQuestion = (questionId) => {
@@ -289,28 +346,6 @@ class Questions extends React.Component {
         questionId,
         deleteQuestionIndex,
       })
-    }
-  }
-
-  handleAddSection = () => {
-    const { addQuestion, list } = this.props
-    const sectionIndex = list.length
-    const section = createSection(sectionIndex)
-
-    addQuestion(section)
-    this.scrollToBottom()
-  }
-
-  handleUpdateSection = (sectionId, title) => {
-    const { questionsById, updateQuestion } = this.props
-    const section = questionsById[sectionId]
-
-    if (section) {
-      const updatedSection = {
-        ...section,
-        title,
-      }
-      updateQuestion(updatedSection)
     }
   }
 
@@ -449,7 +484,10 @@ class Questions extends React.Component {
 
   get questionList() {
     const { list } = this.props
-    return sortBy(list, (item) => item.qIndex)
+    const filteredQuestions = (list || []).filter(
+      (question) => question?.type !== 'sectionLabel'
+    )
+    return sortBy(filteredQuestions, (item) => item.qIndex)
   }
 
   getQIndexForDocBasedItems() {
@@ -537,21 +575,11 @@ class Questions extends React.Component {
               <EduElse>
                 <EduIf condition={isVisibleQuestion || haveSection}>
                   <EduThen>
-                    {this.questionList.map((question, i) =>
-                      question.type === 'sectionLabel' ? (
-                        <Section
-                          key={question.id}
-                          section={question}
-                          viewMode={viewMode}
-                          questionIndex={questionIndex[i]}
-                          onUpdate={this.handleUpdateSection}
-                          onDelete={this.handleDeleteQuestion(
-                            question.id,
-                            question.type,
-                            questionIndex[i]
-                          )}
-                        />
-                      ) : (
+                    {this.questionList.map((question, i) => {
+                      if (question.type === 'sectionLabel') {
+                        return null
+                      }
+                      return (
                         <EduIf condition={this.isQuestionVisible(question.id)}>
                           <SortableQuestionItem
                             videoRef={videoRef}
@@ -594,7 +622,7 @@ class Questions extends React.Component {
                           />
                         </EduIf>
                       )
-                    )}
+                    })}
                   </EduThen>
                   <EduElse>
                     <StyledEmptyQuestionContainer>
@@ -612,7 +640,6 @@ class Questions extends React.Component {
               questions={this.questionList}
               disableAutoGenerate={!isValidYouTubeVideo}
               onAddQuestion={this.handleAddQuestion}
-              onAddSection={this.handleAddSection}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
               scrollToBottom={this.scrollToBottom}
               enableAudioResponseQuestion={enableAudioResponseQuestion}

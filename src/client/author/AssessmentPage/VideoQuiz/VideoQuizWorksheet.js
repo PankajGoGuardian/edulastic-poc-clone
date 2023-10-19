@@ -348,6 +348,8 @@ const VideoQuizWorksheetComponent = ({
           handleDeleteAnnotationAndUpdateQIndex={
             handleDeleteAnnotationAndUpdateQIndex
           }
+          setQuestionsById={setQuestionsById}
+          setTestData={setTestData}
         />
       </WorksheetWrapper>
     </div>

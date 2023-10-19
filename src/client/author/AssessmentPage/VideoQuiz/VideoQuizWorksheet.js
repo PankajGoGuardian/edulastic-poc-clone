@@ -36,7 +36,7 @@ const VideoQuizWorksheetComponent = ({
   test: {
     isDocBased,
     videoUrl: entityLink,
-    videoMode = videoContentRestrictionTypes.STRICT,
+    videoContentRestriction = videoContentRestrictionTypes.STRICT,
   },
   testMode = false,
   studentWorkAnswersById,
@@ -301,7 +301,7 @@ const VideoQuizWorksheetComponent = ({
             forwardedVideoRef={videoRef}
             review={review}
             videoUrl={finalvideoUrl}
-            videoMode={videoMode}
+            videoContentRestriction={videoContentRestriction}
             itemId={itemDetail?._id || testItemId}
             handleRemoveAnnotation={handleRemoveAnnotation}
             editMode={editMode}

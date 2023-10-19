@@ -130,7 +130,7 @@ class Container extends React.Component {
   handleNext = (
     videoUrl,
     thumbnail,
-    videoMode = videoContentRestrictionTypes.STRICT
+    videoContentRestriction = videoContentRestrictionTypes.STRICT
   ) => {
     const { location, createAssessment } = this.props
     const { assessmentId } = qs.parse(location.search, {
@@ -141,7 +141,7 @@ class Container extends React.Component {
       videoUrl,
       assessmentId,
       thumbnail,
-      videoMode,
+      videoContentRestriction,
     })
   }
 

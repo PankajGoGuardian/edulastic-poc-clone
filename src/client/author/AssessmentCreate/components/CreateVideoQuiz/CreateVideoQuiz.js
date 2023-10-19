@@ -110,10 +110,10 @@ const CreateVideoQuiz = ({
   useEffect(() => {
     if (ytThumbnail.length) {
       setThumbnail(ytThumbnail)
-      const videoMode = isModerateRestriction
+      const videoContentRestriction = isModerateRestriction
         ? videoContentRestrictionTypes.MODERATE
         : videoContentRestrictionTypes.STRICT
-      onValidUrl(linkValue, ytThumbnail, videoMode)
+      onValidUrl(linkValue, ytThumbnail, videoContentRestriction)
     }
   }, [ytThumbnail])
 

@@ -26,7 +26,7 @@ const TrendStats = ({
   return (
     <UpperContainer>
       <Row>
-        <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+        <Col xs={24} sm={24} md={16} lg={16} xl={9}>
           {showTrendStats && (
             <>
               <StyledH3 fontSize="16px" margin="0">
@@ -39,12 +39,13 @@ const TrendStats = ({
           xs={24}
           sm={24}
           md={8}
-          lg={8}
-          xl={8}
+          lg={18}
+          xl={15}
           style={{
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'flex-end',
+            paddingLeft: '15px',
           }}
         >
           {!!handleAddToGroupClick && !isSharedReport && (

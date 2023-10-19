@@ -583,6 +583,7 @@ export const StyledSignedBarContainer = styled.div`
   }
 `
 
+/** @type {typeof Col} */
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
   flex: ${({ flex, autoFlex }) => flex ?? (autoFlex ? '1 1 0' : '0 0 auto')};

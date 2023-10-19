@@ -174,6 +174,7 @@ const StyledDiv = styled.div`
   }
 `
 
+/** @type {typeof ControlDropDown} */
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
   overflow: auto;

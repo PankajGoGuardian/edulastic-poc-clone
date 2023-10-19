@@ -357,8 +357,8 @@ const StudentProfileReportFilters = ({
       delete nextTagsData.classIds
     }
     if (key === 'domainId' && prevFilters[key] !== selected) {
-      prevFilters.standardId = standardOptions[0].key
-      nextTagsData.standardId = standardOptions[0]
+      prevFilters.standardId = 'All'
+      nextTagsData.standardId = {}
     }
   }
 
@@ -492,8 +492,8 @@ const StudentProfileReportFilters = ({
                               ? filters.courseIds.split(',')
                               : []
                           }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'courseIds', true)
+                          selectCB={(values) =>
+                            updateFilterDropdownCB(values, 'courseIds', true)
                           }
                         />
                       </Col>
@@ -501,9 +501,9 @@ const StudentProfileReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="classGrade"
                           label="Class Grade"
-                          onChange={(e) => {
+                          onChange={(values) => {
                             const selected = staticDropDownData.grades.filter(
-                              (a) => e.includes(a.key)
+                              (a) => values.includes(a.key)
                             )
                             updateFilterDropdownCB(selected, 'grades', true)
                           }}
@@ -519,9 +519,9 @@ const StudentProfileReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="classSubject"
                           label="Class Subject"
-                          onChange={(e) => {
+                          onChange={(values) => {
                             const selected = staticDropDownData.subjects.filter(
-                              (a) => e.includes(a.key)
+                              (a) => values.includes(a.key)
                             )
                             updateFilterDropdownCB(selected, 'subjects', true)
                           }}
@@ -543,8 +543,8 @@ const StudentProfileReportFilters = ({
                           selectedClassIds={
                             filters.classIds ? filters.classIds.split(',') : []
                           }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'classIds', true)
+                          selectCB={(values) =>
+                            updateFilterDropdownCB(values, 'classIds', true)
                           }
                         />
                       </Col>
@@ -560,7 +560,7 @@ const StudentProfileReportFilters = ({
                   isGhost
                   key="cancelButton"
                   data-cy="cancelFilter"
-                  onClick={(e) => toggleFilter(e, false)}
+                  onClick={(values) => toggleFilter(values, false)}
                 >
                   Cancel
                 </StyledEduButton>
@@ -681,35 +681,59 @@ const StudentProfileReportFilters = ({
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
+                flex="0 0 230px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                <ControlDropDown
-                  by={filters.domainId}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(selected, 'domainId', false, true)
+                <MultiSelectDropdown
+                  dataCy="standardProficiency"
+                  label="Domain(s)"
+                  onChange={(values) => {
+                    const selected = domainOptions.filter((a) =>
+                      values.includes(a.key)
+                    )
+                    updateFilterDropdownCB(selected, 'domainId', true, true)
+                  }}
+                  value={
+                    filters.domainId && filters.domainId !== 'All'
+                      ? filters.domainId.split(',')
+                      : []
                   }
-                  data={domainOptions}
-                  prefix="Domain(s)"
-                  showPrefixOnSelected={false}
+                  options={domainOptions}
+                  displayLabel={false}
+                  maxTagCount={2}
+                  tagHeight="20px"
+                  inputBoxHeight="32px"
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
+                flex="0 0 280px"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
-                <ControlDropDown
-                  by={filters.standardId}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(selected, 'standardId', false, true)
+                <MultiSelectDropdown
+                  dataCy="standardProficiency"
+                  label="Standard(s)"
+                  onChange={(values) => {
+                    const selected = standardOptions.filter((a) =>
+                      values.includes(a.key)
+                    )
+                    updateFilterDropdownCB(selected, 'standardId', true, true)
+                  }}
+                  value={
+                    filters.standardId && filters.standardId !== 'All'
+                      ? filters.standardId.split(',')
+                      : []
                   }
-                  data={standardOptions}
-                  prefix="Standard(s)"
-                  showPrefixOnSelected={false}
+                  options={standardOptions}
+                  displayLabel={false}
+                  maxTagCount={2}
+                  tagHeight="20px"
+                  inputBoxHeight="32px"
                 />
               </StyledDropDownContainer>
             </>

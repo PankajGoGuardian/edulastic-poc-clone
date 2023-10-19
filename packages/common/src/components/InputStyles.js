@@ -191,6 +191,7 @@ export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${(props) => props.width || '100%'};
     min-height: ${(props) => props.height || 'auto'};
+    height: ${(props) => props.$inputBoxHeight || 'auto'};
     margin: ${(props) => props.margin || '0px'};
     min-width: ${({ minWidth }) => minWidth || ''};
     &.ant-select-disabled {
@@ -305,7 +306,8 @@ export const SelectInputStyled = styled(Select)`
           }
           .ant-select-selection__choice {
             border-radius: 4px;
-            height: 24px;
+            height: ${(props) => props.$tagHeight || '24px'};
+            max-width: ${(p) => p.$tagMaxWidth || 'unset'};
             display: flex;
             align-items: center;
             border: none;

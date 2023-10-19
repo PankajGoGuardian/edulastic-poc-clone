@@ -19,6 +19,7 @@ import {
   getAssessmentChartData,
 } from '../utils'
 import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
+import { Spacer } from '../../../../../../common/styled'
 
 const { formatDate } = reportUtils.common
 
@@ -145,6 +146,8 @@ const AssessmentsChart = ({
         $margin="32px 0 0 0"
         style={{ fontSize: '18px' }}
         sectionLabelFilters={sectionLabelFilters}
+        wrapperStyle={{ alignItems: 'flex-end' }}
+        separator={<Spacer />}
       >
         Performance Summary across Assessments
       </SectionLabel>

@@ -52,6 +52,10 @@ const initialState = {
   reportData: {},
   loadingAttendanceData: false,
   attendanceData: {},
+  loadingMasteryData: false,
+  studentMasteryProfile: {},
+  SPRFFilterData: {},
+  loadingSPRFFilterData: false,
   error: '',
 }
 
@@ -86,6 +90,30 @@ const slice = createSlice({
     },
     fetchStudentsDataRequestError: (state, { payload }) => {
       state.loadingFiltersData = false
+      state.error = payload.error
+    },
+    fetchStudentsMasteryDataRequest: (state) => {
+      state.loadingMasteryData = true
+    },
+    fetchStudentsMasteryDataRequestSuccess: (state, { payload }) => {
+      state.loadingMasteryData = false
+      state.studentMasteryProfile = payload.studentMasteryProfile
+      state.error = ''
+    },
+    fetchStudentsMasteryDataRequestError: (state, { payload }) => {
+      state.loadingMasteryData = false
+      state.error = payload.error
+    },
+    fetchSPRFFilterDataRequest: (state) => {
+      state.loadingSPRFFilterData = true
+    },
+    fetchSPRFFilterDataRequestSuccess: (state, { payload }) => {
+      state.loadingSPRFFilterData = false
+      state.SPRFFilterData = payload.SPRFFilterData
+      state.error = ''
+    },
+    fetchSPRFFilterDataRequestError: (state, { payload }) => {
+      state.loadingSPRFFilterData = false
       state.error = payload.error
     },
     setFirstLoad: (state, { payload }) => {
@@ -211,6 +239,46 @@ function* fetchReportDataRequestSaga({ payload }) {
   }
 }
 
+function* fetchStudentsMasteryDataRequestSaga({ payload }) {
+  try {
+    const studentMasteryProfile = yield call(
+      reportsApi.fetchStudentMasteryProfileReport,
+      payload
+    )
+    const dataSizeExceeded =
+      studentMasteryProfile?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put(
+        actions.fetchStudentsMasteryDataRequestError({
+          error: { ...studentMasteryProfile.data },
+        })
+      )
+      return
+    }
+    yield put(
+      actions.fetchStudentsMasteryDataRequestSuccess({ studentMasteryProfile })
+    )
+  } catch (error) {
+    const msg =
+      'Error getting student mastery profile report data. Please try again after a few minutes.'
+    notification({ msg, type: 'error' })
+    yield put(actions.fetchStudentsMasteryDataRequestError({ error: msg }))
+  }
+}
+
+function* fetchSPRFFilterDataRequestSaga({ payload }) {
+  try {
+    const SPRFFilterData = yield call(reportsApi.fetchSPRFilterData, payload)
+
+    yield put(actions.fetchSPRFFilterDataRequestSuccess({ SPRFFilterData }))
+  } catch (error) {
+    const msg =
+      'Error getting filter data. Please try again after a few minutes.'
+    notification({ msg })
+    yield put(actions.fetchSPRFFilterDataRequestError({ error: msg }))
+  }
+}
+
 function* fetchAttendanceDataRequestSaga({ payload }) {
   try {
     const params = payload.reportId
@@ -246,6 +314,14 @@ export function* watcherSaga() {
     takeLatest(
       actions.fetchAttendanceDataRequest,
       fetchAttendanceDataRequestSaga
+    ),
+    takeLatest(
+      actions.fetchSPRFFilterDataRequest,
+      fetchSPRFFilterDataRequestSaga
+    ),
+    takeLatest(
+      actions.fetchStudentsMasteryDataRequest,
+      fetchStudentsMasteryDataRequestSaga
     ),
   ])
 }
@@ -323,12 +399,32 @@ const loadingReportData = createSelector(
   stateSelector,
   (state) => state.loadingReportData
 )
+const loadingMasteryData = createSelector(
+  stateSelector,
+  (state) => state.loadingMasteryData
+)
+const loadingSPRFFilterData = createSelector(
+  stateSelector,
+  (state) => state.loadingSPRFFilterData
+)
 const settings = createSelector(stateSelector, (state) => state.settings)
 const reportData = createSelector(stateSelector, (state) => state.reportData)
 const error = createSelector(stateSelector, (state) => state.error)
 const attendanceData = createSelector(
   stateSelector,
   (state) => state.attendanceData
+)
+const loadingAttendanceData = createSelector(
+  stateSelector,
+  (state) => state.loadingAttendanceData
+)
+const studentMasteryProfile = createSelector(
+  stateSelector,
+  (state) => state.studentMasteryProfile
+)
+const SPRFFilterData = createSelector(
+  stateSelector,
+  (state) => state.SPRFFilterData
 )
 
 export const selectors = {
@@ -348,10 +444,15 @@ export const selectors = {
   studentsList,
   studentsListQuery,
   loadingReportData,
+  loadingMasteryData,
+  loadingSPRFFilterData,
   settings,
   reportData,
   error,
   attendanceData,
+  loadingAttendanceData,
+  studentMasteryProfile,
+  SPRFFilterData,
 }
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //

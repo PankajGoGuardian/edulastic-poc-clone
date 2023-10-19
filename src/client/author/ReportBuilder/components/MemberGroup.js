@@ -15,10 +15,12 @@ export const MemberGroup = ({
   multiple = false,
 }) => {
   const updateMembers = (oldMember, newMember) => {
-    const idxToReplace = members.findIndex((o) => o.name === oldMember.name)
-    const existingMembers = [...members]
-    existingMembers[idxToReplace] = newMember
-    updateMethods(existingMembers)
+    updateMethods(
+      members.map((m) => {
+        if (m.name !== oldMember.name) return m
+        return newMember
+      })
+    )
   }
   return (
     <div>
@@ -52,8 +54,8 @@ export const MemberGroup = ({
             style={{
               marginLeft: '7px',
               fill: themeColor,
-              height: '18',
-              width: '18',
+              height: '18px',
+              width: '18px',
               marginBottom: '-3px',
             }}
           />

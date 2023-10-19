@@ -73,16 +73,16 @@ export const FilterGroup = ({
   updateMethods,
 }) => {
   const updateMembers = (oldMember, newMember) => {
-    const idxToReplace = members.findIndex(
-      (o) => o.dimension.name === oldMember.dimension.name
+    updateMethods(
+      members.map((m) => {
+        if (m.dimension.name !== oldMember.dimension.name) return m
+        return {
+          dimension: newMember,
+          operators: operators.filter((op) => op.type.includes(newMember.type)),
+          operator: operators[0].name,
+        }
+      })
     )
-    const existingMembers = [...members]
-    existingMembers[idxToReplace] = {
-      dimension: newMember,
-      operators: operators.filter((op) => op.type.includes(newMember.type)),
-      operator: operators[0].name,
-    }
-    updateMethods(existingMembers)
   }
 
   const updateValue = (member, key, value) => {

@@ -24,6 +24,19 @@ module.exports = {
       text: '4 - Extended Thinking',
     },
   },
+  allDepthOfKnowledgeMapAI: {
+    '': { value: '', text: 'Not Specified' },
+    Recall: { value: 'Factual', text: '1 - Recall' },
+    'Skill/Concept': { value: 'Conceptual', text: '2 - Skill/Concept' },
+    'Strategic Thinking': {
+      value: 'Critical thinking',
+      text: '3 - Strategic Thinking',
+    },
+    'Extended Thinking': {
+      value: 'Creative questions',
+      text: '4 - Extended Thinking',
+    },
+  },
   IR_MCQ_LABEL_SELECTOR: 'mcqLabelImmersiveReader',
   IR_CONTENT_SELECTOR: 'immersive-reader-content',
 }

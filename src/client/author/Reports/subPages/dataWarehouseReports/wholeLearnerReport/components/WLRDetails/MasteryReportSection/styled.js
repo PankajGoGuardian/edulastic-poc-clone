@@ -8,9 +8,6 @@ export const ReStyledCard = styled(StyledCard)`
   margin: 0px;
   padding: 20px;
   border: 1px solid #dadae4;
-  max-width: ${({ maxW }) => maxW};
-  flex: ${({ flex }) => flex};
-  margin-left: ${({ ml }) => ml};
 `
 export const FilterRow = styled(FlexContainer)`
   @media print {

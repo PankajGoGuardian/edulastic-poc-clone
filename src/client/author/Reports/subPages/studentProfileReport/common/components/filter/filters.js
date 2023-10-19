@@ -492,8 +492,8 @@ const StudentProfileReportFilters = ({
                               ? filters.courseIds.split(',')
                               : []
                           }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'courseIds', true)
+                          selectCB={(values) =>
+                            updateFilterDropdownCB(values, 'courseIds', true)
                           }
                         />
                       </Col>
@@ -501,9 +501,9 @@ const StudentProfileReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="classGrade"
                           label="Class Grade"
-                          onChange={(e) => {
+                          onChange={(values) => {
                             const selected = staticDropDownData.grades.filter(
-                              (a) => e.includes(a.key)
+                              (a) => values.includes(a.key)
                             )
                             updateFilterDropdownCB(selected, 'grades', true)
                           }}
@@ -519,9 +519,9 @@ const StudentProfileReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="classSubject"
                           label="Class Subject"
-                          onChange={(e) => {
+                          onChange={(values) => {
                             const selected = staticDropDownData.subjects.filter(
-                              (a) => e.includes(a.key)
+                              (a) => values.includes(a.key)
                             )
                             updateFilterDropdownCB(selected, 'subjects', true)
                           }}
@@ -543,8 +543,8 @@ const StudentProfileReportFilters = ({
                           selectedClassIds={
                             filters.classIds ? filters.classIds.split(',') : []
                           }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'classIds', true)
+                          selectCB={(values) =>
+                            updateFilterDropdownCB(values, 'classIds', true)
                           }
                         />
                       </Col>
@@ -560,7 +560,7 @@ const StudentProfileReportFilters = ({
                   isGhost
                   key="cancelButton"
                   data-cy="cancelFilter"
-                  onClick={(e) => toggleFilter(e, false)}
+                  onClick={(values) => toggleFilter(values, false)}
                 >
                   Cancel
                 </StyledEduButton>
@@ -690,9 +690,9 @@ const StudentProfileReportFilters = ({
                 <MultiSelectDropdown
                   dataCy="standardProficiency"
                   label="Domain(s)"
-                  onChange={(e) => {
+                  onChange={(values) => {
                     const selected = domainOptions.filter((a) =>
-                      e.includes(a.key)
+                      values.includes(a.key)
                     )
                     updateFilterDropdownCB(selected, 'domainId', true, true)
                   }}
@@ -718,9 +718,9 @@ const StudentProfileReportFilters = ({
                 <MultiSelectDropdown
                   dataCy="standardProficiency"
                   label="Standard(s)"
-                  onChange={(e) => {
+                  onChange={(values) => {
                     const selected = standardOptions.filter((a) =>
-                      e.includes(a.key)
+                      values.includes(a.key)
                     )
                     updateFilterDropdownCB(selected, 'standardId', true, true)
                   }}

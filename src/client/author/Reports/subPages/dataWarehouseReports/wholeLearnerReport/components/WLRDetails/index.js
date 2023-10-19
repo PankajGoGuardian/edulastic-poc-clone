@@ -7,33 +7,33 @@ import { FilledTabBar } from './FilledTabBar'
 
 const { TabPane } = Tabs
 
-const PerformanceAndMastery = ({
+const WLRDetails = ({
   isAttendanceChartVisible,
   attendanceChartData,
-  showInterventions,
-  attendanceInterventions,
-  tableData,
-  isSharedReport,
+  showInterventions, // bool: show interventions in performance report
+  attendanceInterventions, // array: interventions for attendance chart
+  tableData, // array: table data for performance report
+  isSharedReport, // bool: is shared report
   onCsvConvert,
   isCsvDownloading,
-  studentMasteryProfile,
-  SPRFFilterData,
-  settings,
-  chartData,
+  studentMasteryProfile, // data for mastery report table
+  SPRFFilterData, // Student Profile Report Filter Data - contains Standard Proficiency
+  settings, // WL report settings
+  chartData, // data for performance report chart
   selectedPerformanceBand,
   academicInterventions,
-  history,
-  location,
-  filtersData,
-  testTypes,
+  history, // react router history
+  location, // react router location
+  filtersData, // WLR filters' metadata (required to populate filter dropdowns)
+  testTypes, // test types from WLR filters
   externalScoreType,
-  filters,
+  filters, // WLR filters
   setFilters,
   filterTagsData,
   setFilterTagsData,
   setSettings,
   toggleAttendanceChart,
-  interventionsData,
+  interventionsData, // interventions data for performance report
   toggleInterventionInfo,
   selectedMasteryScale,
   setSelectedMasteryScale,
@@ -53,7 +53,6 @@ const PerformanceAndMastery = ({
           isSharedReport={isSharedReport}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
-          studentMasteryProfile={studentMasteryProfile}
           SPRFFilterData={SPRFFilterData}
           settings={settings}
           chartData={chartData}
@@ -102,4 +101,4 @@ const PerformanceAndMastery = ({
   )
 }
 
-export default PerformanceAndMastery
+export default WLRDetails

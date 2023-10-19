@@ -36,7 +36,6 @@ const StandardsAssignmentModal = (props) => {
         filters.standardId &&
         filters.studentId &&
         filters.termId,
-      deDuplicate: false,
     }
   )
 

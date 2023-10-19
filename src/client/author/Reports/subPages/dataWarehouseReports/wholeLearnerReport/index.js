@@ -52,7 +52,7 @@ import {
 import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
-import PerformanceAndMastery from './components/PerformanceAndMastery'
+import WLRDetails from './components/WLRDetails'
 
 const { downloadCSV } = reportUtils.common
 
@@ -504,7 +504,7 @@ const WholeLearnerReport = ({
                       studentClassData={studentClassData}
                       settings={settings}
                     />
-                    <PerformanceAndMastery
+                    <WLRDetails
                       isAttendanceChartVisible={isAttendanceChartVisible}
                       attendanceChartData={attendanceChartData}
                       showInterventions={showInterventions}

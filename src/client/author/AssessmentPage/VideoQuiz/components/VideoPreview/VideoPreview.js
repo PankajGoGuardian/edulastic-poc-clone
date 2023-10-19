@@ -110,14 +110,8 @@ const VideoPreview = ({
            * Delete the notes field as this field is coming as undefined sometimes.
            * This is causing the isEqual check to fail and adds a redundant annotation.
            */
-          ;(item.markerJsData || []).forEach((mark) => {
-            delete mark.notes
-            return mark
-          })
-          ;(markerState.markers || []).forEach((mark) => {
-            delete mark.notes
-            return mark
-          })
+          ;(item.markerJsData || []).forEach((mark) => delete mark.notes)
+          ;(markerState.markers || []).forEach((mark) => delete mark.notes)
 
           return (
             item.markerJsData && isEqual(item.markerJsData, markerState.markers)

@@ -2228,32 +2228,25 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     const features = yield select(getUserFeatures)
 
-    const testEntity = produce(entity, (draft) => {
-      // Setting default value for free user
-      if (!payload.isPlaylist && features.free && !features.premium) {
-        draft.referenceDocAttributes = {}
-      }
-    })
-
-    const questions = getQuestions(testEntity.itemGroups)
+    const questions = getQuestions(entity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
-    yield put(receiveTestByIdSuccess(testEntity))
-    yield put(getDefaultTestSettingsAction(testEntity))
+    yield put(receiveTestByIdSuccess(entity))
+    yield put(getDefaultTestSettingsAction(entity))
     yield take(SET_DEFAULT_SETTINGS_LOADING)
     yield take(SET_DEFAULT_SETTINGS_LOADING)
-    if (!isEmpty(testEntity.freeFormNotes)) {
+    if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
-          [testEntity.itemGroups?.[0]?.items?.[0]?._id]: {
-            scratchpad: testEntity.freeFormNotes || {},
+          [entity.itemGroups?.[0]?.items?.[0]?._id]: {
+            scratchpad: entity.freeFormNotes || {},
           },
         })
       )
     }
-    if (testEntity.thumbnail === defaultImage) {
+    if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: get(testEntity, 'subjects[0]', 'Other Subjects'),
-        standard: get(testEntity, 'summary.standards[0].identifier', ''),
+        subject: get(entity, 'subjects[0]', 'Other Subjects'),
+        standard: get(entity, 'summary.standards[0].identifier', ''),
       })
       yield put(updateDefaultThumbnailAction(thumbnail))
     }
@@ -2261,7 +2254,7 @@ export function* receiveTestByIdSaga({ payload }) {
     const userRole = yield select(getUserRole)
     const assignSettings = getAssignSettings({
       userRole,
-      entity: testEntity,
+      entity,
       isPlaylist: payload.isPlaylist,
       features,
     })
@@ -2290,7 +2283,7 @@ export function* receiveTestByIdSaga({ payload }) {
     ])
     defaultTestSettings = {
       ...defaultTestSettings,
-      testContentVisibility: testEntity.testContentVisibility,
+      testContentVisibility: entity.testContentVisibility,
     }
     const state = yield select((s) => ({
       performanceBands: get(s, 'performanceBandReducer.profiles', []),
@@ -2301,18 +2294,18 @@ export function* receiveTestByIdSaga({ payload }) {
     if (payload.options?.assigningNew) {
       const performanceBandId =
         state.defaultTestTypeProfiles.performanceBand?.[
-          getProfileKey(testEntity.testType)
+          getProfileKey(entity.testType)
         ]
       const standardProficiencyId =
         state.defaultTestTypeProfiles.standardProficiency?.[
-          getProfileKey(testEntity.testType)
+          getProfileKey(entity.testType)
         ]
       assignmentSettings = { ...assignmentSettings }
       assignmentSettings.performanceBand = pick(
         multiFind(
           state.performanceBands,
-          [{ _id: testEntity.performanceBand._id }, { _id: performanceBandId }],
-          testEntity.performanceBand
+          [{ _id: entity.performanceBand._id }, { _id: performanceBandId }],
+          entity.performanceBand
         ),
         ['_id', 'name']
       )
@@ -2320,17 +2313,17 @@ export function* receiveTestByIdSaga({ payload }) {
         multiFind(
           state.standardsProficiencies,
           [
-            { _id: testEntity.standardGradingScale._id },
+            { _id: entity.standardGradingScale._id },
             { _id: standardProficiencyId },
           ],
-          testEntity.standardGradingScale
+          entity.standardGradingScale
         ),
         ['_id', 'name']
       )
     }
     yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
-    yield put(addItemsToAutoselectGroupsRequestAction(testEntity))
+    yield put(addItemsToAutoselectGroupsRequestAction(entity))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })

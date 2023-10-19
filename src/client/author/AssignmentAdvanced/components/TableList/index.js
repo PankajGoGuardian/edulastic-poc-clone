@@ -212,7 +212,6 @@ const TableList = ({
   totalSelectedRowData = [],
   handleSelectedRows,
 }) => {
-  const [selectedRows, setSelectedRows] = useState([])
   const [selectedAllRows, setSelectedAllRows] = useState(false)
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
@@ -300,16 +299,19 @@ const TableList = ({
             currentItem[field2] === selected[field2]
         )
       ) || []
-    )
+    ).map(({ key }) => key)
   }
+  const selectedRowKeys = useMemo(
+    () =>
+      getSelectedRowsInCurrentPage(
+        rowData,
+        totalSelectedRowData,
+        'classId',
+        'assignmentId'
+      ),
+    [totalSelectedRowData, rowData]
+  )
   useEffect(() => {
-    const updatedSelectedRows = getSelectedRowsInCurrentPage(
-      rowData,
-      totalSelectedRowData,
-      'classId',
-      'assignmentId'
-    )
-    setSelectedRows(updatedSelectedRows.map(({ key }) => key))
     setSelectedAllRows(false)
   }, [rowData])
 
@@ -324,20 +326,17 @@ const TableList = ({
 
   const handleSelectAll = (selected) => {
     if (selected) {
-      setSelectedRows(rowData.map(({ key }) => key))
       handleSelectedRows(rowData, selected)
       setSelectedAllRows(true)
     } else {
-      setSelectedRows([])
       handleSelectedRows([], selected)
       setSelectedAllRows(false)
     }
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedRows.map((key) => key),
+    selectedRowKeys,
     onSelect: (record, selected, selectedRowz) => {
-      setSelectedRows(selectedRowz.map(({ key }) => key))
       handleSelectedRows(selectedRowz, selected, record)
     },
     onSelectAll: handleSelectAll,
@@ -347,7 +346,6 @@ const TableList = ({
         key: 'all-data',
         text: 'Select All Data',
         onSelect: () => {
-          setSelectedRows(rowData.map(({ key }) => key))
           handleSelectedRows(rowData, true)
           setSelectedAllRows(true)
         },
@@ -356,7 +354,6 @@ const TableList = ({
         key: 'current-page-data',
         text: 'Current Page Data',
         onSelect: () => {
-          setSelectedRows(rowData.map(({ key }) => key))
           handleSelectedRows(rowData)
         },
       },
@@ -364,7 +361,7 @@ const TableList = ({
   }
 
   const handleBulkAction = (type, releaseScoreResponse) => {
-    if (selectedRows.length === 0) {
+    if (totalSelectedRowData.length === 0) {
       return notification({
         msg: missingSelectionTostMessage,
       })
@@ -377,7 +374,7 @@ const TableList = ({
       })
     }
     let selectedRowsGroupByAssignment = {}
-    if (rowData.length >= selectedRows.length && !selectedAllRows) {
+    if (!selectedAllRows) {
       const selectedRowsData = totalSelectedRowData
       selectedRowsGroupByAssignment = groupBy(selectedRowsData, 'assignmentId')
       for (const [key, value] of Object.entries(
@@ -422,7 +419,7 @@ const TableList = ({
     <MoreOptionsContainer>
       <MoreOption
         onClick={() => {
-          if (selectedRows.length === 0) {
+          if (totalSelectedRowData.length === 0) {
             return notification({
               msg: missingSelectionTostMessage,
             })
@@ -475,7 +472,7 @@ const TableList = ({
       </Tooltip>
       <MoreOption
         onClick={() => {
-          if (selectedRows.length === 0) {
+          if (totalSelectedRowData.length === 0) {
             return notification({
               msg: missingSelectionTostMessage,
             })
@@ -493,7 +490,7 @@ const TableList = ({
     <BulkActionsWrapper>
       <div>
         <span data-cy="totalSelected">
-          {rowData.length >= selectedRows.length && !selectedAllRows
+          {!selectedAllRows
             ? totalSelectedRowData.length
             : totalAssignmentsClasses}
         </span>

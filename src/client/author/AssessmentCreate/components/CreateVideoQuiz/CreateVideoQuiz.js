@@ -106,7 +106,7 @@ const CreateVideoQuiz = ({
   }, [linkValue, hasError])
 
   useEffect(() => {
-    if (ytThumbnail.length) {
+    if (linkValue.length && ytThumbnail.length) {
       setThumbnail(ytThumbnail)
       onValidUrl?.(linkValue, ytThumbnail)
     }

@@ -508,7 +508,7 @@ class DistrictPolicyForm extends Component {
                     </CheckboxLabel>
                     <Tooltip
                       placement="bottom"
-                      title="If checked, teachers can enroll students or co-teachers to an exiting or new class."
+                      title="If checked, teachers can enroll students or co-teachers to an existing or new class."
                     >
                       <IconInfo style={{ marginTop: '4px' }} />
                     </Tooltip>

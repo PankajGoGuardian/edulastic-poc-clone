@@ -297,7 +297,6 @@ const WholeLearnerReport = ({
     if (
       !selectedMasteryScale._id ||
       !settings.selectedStudent.key ||
-      !settings.frontEndFilters.performanceBandProfileId ||
       !settings.requestFilters.termId
     ) {
       return
@@ -306,14 +305,11 @@ const WholeLearnerReport = ({
       ...settings.requestFilters,
       standardsProficiencyProfileId: selectedMasteryScale._id,
       profileId: selectedMasteryScale._id,
-      performanceBandProfileId:
-        settings.frontEndFilters.performanceBandProfileId,
       studentId: settings.selectedStudent.key,
     })
   }, [
     settings.selectedStudent.key,
     settings.requestFilters.termId,
-    settings.frontEndFilters.performanceBandProfileId,
     selectedMasteryScale._id,
   ])
 

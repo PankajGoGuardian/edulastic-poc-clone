@@ -106,7 +106,9 @@ const EduAIQuiz = ({
                     </EduIf>
                   </>
                 }
-              />
+              >
+                {EduAiAddItemsButton}
+              </Tooltip>
             </EduThen>
             <EduElse>
               <AddOnTag

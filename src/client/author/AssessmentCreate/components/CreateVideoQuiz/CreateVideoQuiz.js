@@ -99,10 +99,12 @@ const CreateVideoQuiz = ({
   }, [isVideoQuizAndAIEnabled])
 
   useEffect(() => {
-    if (!hasError) {
-      const videoId = extractVideoId(linkValue || '')
+    if (!hasError && linkValue.length > 0) {
+      const videoId = extractVideoId(linkValue)
       if (videoId) {
         getYoutubeThumbnail(videoId)
+      } else {
+        onValidUrl(linkValue)
       }
     }
   }, [linkValue, hasError])

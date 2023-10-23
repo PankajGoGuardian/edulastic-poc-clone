@@ -83,6 +83,7 @@ class AssignmentAdvanced extends Component {
     openPrintModal: false,
     pageNo: 1,
     totalSelectedRowData: [],
+    selectedAllRows: false,
   }
 
   componentDidMount() {
@@ -160,6 +161,7 @@ class AssignmentAdvanced extends Component {
         filterStatus: '',
         pageNo: 1,
         totalSelectedRowData: [],
+        selectedAllRows: false,
       })
     }
   }
@@ -230,6 +232,10 @@ class AssignmentAdvanced extends Component {
         })
       }
     }
+  }
+
+  handleSelectAllRows = (selectedAllRows) => {
+    this.setState({ selectedAllRows })
   }
 
   renderBreadcrumbs = () => {
@@ -367,6 +373,7 @@ class AssignmentAdvanced extends Component {
       openPrintModal,
       pageNo,
       totalSelectedRowData,
+      selectedAllRows,
     } = this.state
     const {
       classList,
@@ -493,6 +500,8 @@ class AssignmentAdvanced extends Component {
                 filterStatus={filterStatus}
                 totalSelectedRowData={totalSelectedRowData}
                 handleSelectedRows={this.handleSelectedRows}
+                selectedAllRows={selectedAllRows}
+                handleSelectAllRows={this.handleSelectAllRows}
               />
             </StyledCard>
           </TableWrapper>

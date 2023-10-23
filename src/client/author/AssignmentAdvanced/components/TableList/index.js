@@ -211,8 +211,9 @@ const TableList = ({
   t,
   totalSelectedRowData = [],
   handleSelectedRows,
+  selectedAllRows,
+  handleSelectAllRows,
 }) => {
-  const [selectedAllRows, setSelectedAllRows] = useState(false)
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
   )
@@ -312,7 +313,9 @@ const TableList = ({
     [totalSelectedRowData, rowData]
   )
   useEffect(() => {
-    setSelectedAllRows(false)
+    if (selectedAllRows) {
+      handleSelectedRows(rowData, true)
+    }
   }, [rowData])
 
   let showPagination = false
@@ -327,10 +330,10 @@ const TableList = ({
   const handleSelectAll = (selected) => {
     if (selected) {
       handleSelectedRows(rowData, selected)
-      setSelectedAllRows(true)
+      handleSelectAllRows(true)
     } else {
       handleSelectedRows([], selected)
-      setSelectedAllRows(false)
+      handleSelectAllRows(false)
     }
   }
 
@@ -347,7 +350,7 @@ const TableList = ({
         text: 'Select All Data',
         onSelect: () => {
           handleSelectedRows(rowData, true)
-          setSelectedAllRows(true)
+          handleSelectAllRows(true)
         },
       },
       {

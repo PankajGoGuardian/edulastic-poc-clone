@@ -18,3 +18,9 @@ export const isRestrictedTimeWindowForAssignment = (
     isOutsideTimeWindow
   )
 }
+
+export const assignmentStatus = (status, isPaused, startDate) => {
+  return status === 'NOT OPEN' && startDate && startDate < Date.now()
+    ? `IN PROGRESS${isPaused ? ' (PAUSED)' : ''}`
+    : `${status}${isPaused && status !== 'DONE' ? ' (PAUSED)' : ''}`
+}

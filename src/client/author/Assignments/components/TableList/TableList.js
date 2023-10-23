@@ -66,7 +66,7 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
-import { canEditTest } from '../../utils'
+import { canEditTest, assignmentStatus } from '../../utils'
 import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
 import {
   getIsProxiedByEAAccountSelector,
@@ -130,12 +130,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   assignmentId: data._id,
   class: data.className,
   assigned: data.assignedBy.name,
-  status:
-    data.status === 'NOT OPEN' && data.startDate && data.startDate < Date.now()
-      ? `IN PROGRESS${data.isPaused ? ' (PAUSED)' : ''}`
-      : `${data.status}${
-          data.isPaused && data.status !== 'DONE' ? ' (PAUSED)' : ''
-        }`,
+  status: assignmentStatus(data.status, data.isPaused, data.startDate),
   submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${
     data.totalNumber || 0
   }`,

@@ -17,9 +17,18 @@ import {
 } from './styled'
 import { TextWrapper } from '../../../../../styledComponents'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import { assignmentStatus } from '../../../../../../../Assignments/utils'
 
 export const CardTextContent = ({ data, history }) => {
-  const { asgnStatus, asgnTitle, asgnId, _id, asgnThumbnail } = data
+  const {
+    asgnStatus,
+    asgnTitle,
+    asgnId,
+    _id,
+    asgnThumbnail,
+    isPaused,
+    asgnStartDate,
+  } = data
 
   const gotoAssignedAssessment = () => {
     if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`)
@@ -45,7 +54,7 @@ export const CardTextContent = ({ data, history }) => {
                 </AssignmentTitle>
               </Tooltip>
               <AssignmentStatusText data-cy="assignmentStatus">
-                {asgnStatus}
+                {assignmentStatus(asgnStatus, isPaused, asgnStartDate)}
               </AssignmentStatusText>
             </CenterCol>
           </FlexContainer>

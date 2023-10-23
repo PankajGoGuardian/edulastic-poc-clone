@@ -1,7 +1,26 @@
 // Don't put any sensitive information
 // https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
+
+const customCDNKey = process.env.REACT_APP_CUSTOM_CDN_KEY
+const customCDNValue = process.env.REACT_APP_CUSTOM_CDN_VALUE
+const generateCDNURIFromOrigin = () => {
+  const cdnMap = { [customCDNKey]: customCDNValue }
+  const origin = new URL(window.origin)
+  const protocol = origin.protocol
+  const host = origin.host
+  const subdomain = host.split('.')[0]
+  const domain = host.split('.').splice(-2).join('.')
+  const customcdnSubdomain = cdnMap[subdomain]
+
+  let cdn = `${protocol}//cdn-${host}`
+  if (customcdnSubdomain) {
+    cdn = `${protocol}//${customcdnSubdomain}.${domain}`
+  }
+  return cdn
+}
+
 const cdnURI =
-  process.env.REACT_APP_CDN_URI ||
+  generateCDNURIFromOrigin ||
   'https://cdnedupoc.snapwiz.net/edulasticv2-development'
 const appEnv = process.env.REACT_APP_ENV
 const appStage = process.env.REACT_APP_STAGE || 'development'

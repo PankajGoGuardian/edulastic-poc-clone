@@ -1399,6 +1399,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         createdItems: [],
         thumbnail: '',
         sharedUsersList: [],
+        ytThumbnail: '',
       }
     case SET_CREATED_ITEM_TO_TEST:
       return {

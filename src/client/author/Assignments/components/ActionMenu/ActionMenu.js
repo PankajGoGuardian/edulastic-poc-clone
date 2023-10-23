@@ -12,6 +12,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 
+import { intersection } from 'lodash'
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
 import infomationIcon from '../../assets/information.svg'
@@ -123,14 +124,14 @@ const ActionMenu = ({
     } = testContentVisibilityOptions
     if (
       !isAdmin &&
-      ((assignmentVisibility.includes(HIDDEN) &&
-        (assignmentVisibility.includes(SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN) ||
-          assignmentVisibility.includes(SHOW_RUBRIC_CONTENT_VIS_HIDDEN))) ||
-        (assignmentVisibility.includes(GRADING) &&
-          (assignmentVisibility.includes(
-            SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT
-          ) ||
-            assignmentVisibility.includes(SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT))))
+      intersection(assignmentVisibility, [
+        HIDDEN,
+        GRADING,
+        SHOW_QTN_RUBRIC_CONTENT_VIS_HIDDEN,
+        SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+        SHOW_QTN_RUBRIC_PRE_GRADING_ASSIGNMENT,
+        SHOW_RUBRIC_PRE_GRADING_ASSIGNMENT,
+      ]).length
     ) {
       return notification({
         type: 'warn',

@@ -113,11 +113,16 @@ const ActionMenu = ({
     const isAdmin =
       userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
     const { assignmentVisibility = [] } = row
-    const { HIDDEN, GRADING } = testContentVisibilityOptions
+    const {
+      HIDDEN,
+      GRADING,
+      SHOW_RUBRIC_CONTENT_VIS_HIDDEN,
+    } = testContentVisibilityOptions
     if (
       !isAdmin &&
       (assignmentVisibility.includes(HIDDEN) ||
-        assignmentVisibility.includes(GRADING))
+        assignmentVisibility.includes(GRADING) ||
+        assignmentVisibility.includes(SHOW_RUBRIC_CONTENT_VIS_HIDDEN))
     ) {
       return notification({
         type: 'warn',

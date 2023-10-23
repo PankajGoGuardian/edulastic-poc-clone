@@ -190,7 +190,7 @@ export const PeerPerformanceTable = ({
         return (
           <span className="custom-column-title">
             {dimensionAvgTitle}
-            <Tooltip title="Average score irrespective of filters applied.">
+            <Tooltip title="Average Score calculated excluding All Filters, except 'Test Type'">
               <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
             </Tooltip>
           </span>

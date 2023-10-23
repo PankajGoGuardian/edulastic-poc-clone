@@ -87,6 +87,9 @@ const CreateVideoQuiz = ({
 
   useEffect(() => {
     setYoutubeThumbnail('')
+    return () => {
+      setYoutubeThumbnail('')
+    }
   }, [])
 
   useEffect(() => {

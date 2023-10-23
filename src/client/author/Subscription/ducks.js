@@ -496,11 +496,11 @@ function* fetchUserSubscription(...args) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }
-    if (result.subscription) {
+    if (result?.subscription) {
       Object.assign(data, {
-        subscription: result.subscription,
+        subscription: result?.subscription,
       })
-      if (result.subscription._id) {
+      if (result?.subscription._id) {
         Object.assign(data, {
           success: true,
         })

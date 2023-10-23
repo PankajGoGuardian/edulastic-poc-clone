@@ -15,7 +15,7 @@ const { analyseByOptions, getOverallAvg } = reportUtils.peerPerformance
 const customLegendContent = () => {
   return (
     <FlexContainer justifyContent="end">
-      <Tooltip title="District-wide average score irrespective of filters applied.">
+      <Tooltip title="District-wide average Score calculated excluding All Filters, except 'Test Type'">
         <FlexContainer alignItems="center">
           <StyledIcon type="line" $fontSize="20px" $marginRight="5px" />
           <span>District Avg</span>

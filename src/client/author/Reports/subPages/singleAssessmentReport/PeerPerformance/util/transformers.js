@@ -1,4 +1,4 @@
-import { startCase } from 'lodash'
+import { startCase, isEmpty, round } from 'lodash'
 
 const _idToLabel = {
   schoolId: 'schoolName',
@@ -108,16 +108,21 @@ export const getFormattedName = (item) => {
         .join(' ')
     : ''
 }
-
-export const getOverallAvg = (data, analyseBy) => {
+// This method can be imported from edulastic/constants reportUtils.peerPerformance
+// constants import having issue in this file so kept the method here as well.
+const getOverallAvg = (data, analyseBy) => {
   const { overallAvg, overallAvgPerf } = data[0]
   return analyseBy === analyseByOptions.scorePerc
-    ? (overallAvgPerf || 0).toFixed(0)
+    ? overallAvgPerf
+      ? round(overallAvgPerf)
+      : overallAvgPerf
     : overallAvg
 }
 
-export const getOverallRow = (data, analyseBy, bandInfo) => {
-  const districtAvg = +getOverallAvg(data, analyseBy)
+// This method can be imported from edulastic/constants reportUtils.peerPerformance
+// constants import having issue in this file so kept the method here as well.
+const getOverallRow = (data, analyseBy, bandInfo) => {
+  const districtAvg = getOverallAvg(data, analyseBy)
   const {
     submittedStudents,
     absentStudents,
@@ -134,10 +139,12 @@ export const getOverallRow = (data, analyseBy, bandInfo) => {
       acc.belowStandard += curr.belowStandard
       acc.totalStudents += curr.totalStudents
       acc.totalWeightedScore += curr.dimensionAvg * curr.submittedStudents
-      bandInfo.forEach(({ name }) => {
-        acc.performanceBandDetails[name] =
-          (acc.performanceBandDetails[name] || 0) + curr[name]
-      })
+      if (!isEmpty(bandInfo)) {
+        bandInfo.forEach(({ name }) => {
+          acc.performanceBandDetails[name] =
+            (acc.performanceBandDetails[name] || 0) + curr[name]
+        })
+      }
       return acc
     },
     {

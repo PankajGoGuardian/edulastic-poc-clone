@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react'
 import { Row, Col, Tooltip } from 'antd'
 import { ticks } from 'd3-array'
-import { isEmpty, isNil, maxBy } from 'lodash'
+import { isEmpty, isNil, maxBy, round } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
-import { getOverallAvg, idToName } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
 import { StyledInfoIcon, StyledIcon } from '../styled'
 
-const { analyseByOptions } = reportUtils.peerPerformance
+const { analyseByOptions, getOverallAvg } = reportUtils.peerPerformance
 
 const customLegendContent = () => {
   return (
@@ -60,8 +60,8 @@ export const SimpleStackedBarChartContainer = ({
       const { districtAvg, dimension } = payload[0].payload
       const districtValue =
         analyseBy === analyseByOptions.scorePerc
-          ? `${districtAvg.toFixed(0)}%`
-          : districtAvg.toFixed(2)
+          ? `${round(districtAvg)}%`
+          : round(districtAvg, 2)
 
       return (
         <div>

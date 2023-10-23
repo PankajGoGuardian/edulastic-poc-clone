@@ -99,7 +99,7 @@ export const PeerPerformanceTable = ({
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">
-                {`Filtered${idToName(compareBy)} Average:`}
+                {`Filtered ${idToName(compareBy)} Average:`}
               </Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(rec.avgScore, rec, analyseBy, 'dimensionAvg')}

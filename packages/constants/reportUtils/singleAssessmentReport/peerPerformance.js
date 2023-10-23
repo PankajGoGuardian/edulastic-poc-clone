@@ -1,4 +1,4 @@
-const { get, isNil } = require('lodash')
+const { get, isNil, isEmpty, round } = require('lodash')
 const {
   idToName,
 } = require('../../../../src/client/author/Reports/subPages/singleAssessmentReport/PeerPerformance/util/transformers')
@@ -399,6 +399,68 @@ const prepareHeaderRow = (columns) => {
   return columns.map((item) => item.title)
 }
 
+const getOverallAvg = (data, analyseBy) => {
+  const { overallAvg, overallAvgPerf } = data[0]
+  return analyseBy === analyseByOptions.scorePerc
+    ? overallAvgPerf
+      ? round(overallAvgPerf)
+      : overallAvgPerf
+    : overallAvg
+}
+
+const getOverallRow = (data, analyseBy, bandInfo) => {
+  const districtAvg = getOverallAvg(data, analyseBy)
+  const {
+    submittedStudents,
+    absentStudents,
+    aboveStandard,
+    belowStandard,
+    totalStudents,
+    performanceBandDetails,
+    totalWeightedScore,
+  } = data.reduce(
+    (acc, curr) => {
+      acc.submittedStudents += curr.submittedStudents
+      acc.absentStudents += curr.absentStudents
+      acc.aboveStandard += curr.aboveStandard
+      acc.belowStandard += curr.belowStandard
+      acc.totalStudents += curr.totalStudents
+      acc.totalWeightedScore += curr.dimensionAvg * curr.submittedStudents
+      if (!isEmpty(bandInfo)) {
+        bandInfo.forEach(({ name }) => {
+          acc.performanceBandDetails[name] =
+            (acc.performanceBandDetails[name] || 0) + curr[name]
+        })
+      }
+      return acc
+    },
+    {
+      submittedStudents: 0,
+      absentStudents: 0,
+      aboveStandard: 0,
+      belowStandard: 0,
+      totalStudents: 0,
+      performanceBandDetails: {},
+      totalWeightedScore: 0,
+    }
+  )
+  const dimensionAvg = totalWeightedScore / submittedStudents
+  return {
+    dimension: {
+      _id: null,
+      name: 'Overall',
+    },
+    districtAvg,
+    dimensionAvg,
+    submittedStudents,
+    absentStudents,
+    totalStudents,
+    aboveStandard,
+    belowStandard,
+    ...performanceBandDetails,
+  }
+}
+
 module.exports = {
   transformData,
   analyseByOptions,
@@ -406,4 +468,6 @@ module.exports = {
   prepareHeaderRow,
   prepareTableDataRow,
   getDisplayValue,
+  getOverallAvg,
+  getOverallRow,
 }

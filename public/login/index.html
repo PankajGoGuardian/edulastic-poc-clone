@@ -39,68 +39,7 @@
     <!-- End Google Tag Manager -->
     <title>Edulastic: Formative and Summative Assessments Made Easy</title>
   </head>
-  <script>
-    /**
-     * The event listener on load is used to replace
-     * the Place holder(PUBLIC_URL_ORIGIN) href in
-     * the stylesheet
-     * and src in the JS scripts to a CDNURI derived.
-     * For existing CDN URLs of no pattern is derived
-     * from .env variables if exist
-     * otherwise build pattern from origin
-     */
-    window.addEventListener('load', function () {
-      const origin = new URL(window.origin)
-      const protocol = origin.protocol
-      const host = origin.host
 
-      const customCDNKey = document
-        .getElementById('custom-cdn-key')
-        ?.getAttribute('data-cdn')
-      const customCDNValue = document
-        .getElementById('custom-cdn-value')
-        ?.getAttribute('data-cdn')
-
-      const cdnMap = { [customCDNKey]: customCDNValue }
-
-      const subdomain = host.split('.')[0]
-      const domain = host.split('.').slice(-2).join('.')
-      const customCDNSubdomain = cdnMap[subdomain]
-
-      let cdn = `${protocol}//cdn-${host}`
-      if (customCDNSubdomain) {
-        cdn = `${protocol}//${customCDNSubdomain}.${domain}`
-      }
-
-      // Update stylesheet links
-      const linkElements = document.head.querySelectorAll(
-        'link[rel="stylesheet"]'
-      )
-      linkElements.forEach((link) => {
-        const href = link.href
-        if (href.includes('PUBLIC_URL_ORIGIN')) {
-          const filePath = link.attributes.href.nodeValue.replace(
-            'PUBLIC_URL_ORIGIN',
-            cdn
-          )
-          link.href = filePath
-        }
-      })
-
-      // Update script sources
-      const scriptElements = document.querySelectorAll('script[src]')
-      scriptElements.forEach((script) => {
-        const src = script.src
-        if (src.includes('PUBLIC_URL_ORIGIN')) {
-          const filePath = script.attributes.src.nodeValue.replace(
-            'PUBLIC_URL_ORIGIN',
-            cdn
-          )
-          script.src = filePath
-        }
-      })
-    })
-  </script>
   <body id="body">
     <!-- Google Tag Manager (noscript) -->
     <noscript
@@ -113,7 +52,5 @@
     ></noscript>
     <!-- End Google Tag Manager (noscript) -->
     <section id="app-login"></section>
-    <span id="custom-cdn-key" data-cdn="%REACT_APP_CUSTOM_CDN_KEY%"></span>
-    <span id="custom-cdn-value" data-cdn="%REACT_APP_CUSTOM_CDN_VALUE%"></span>
   </body>
 </html>

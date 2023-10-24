@@ -1,10 +1,21 @@
 // Don't put any sensitive information
 // https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
 
-const customCDNKey = process.env.REACT_APP_CUSTOM_CDN_KEY
-const customCDNValue = process.env.REACT_APP_CUSTOM_CDN_VALUE
+const customCDNSubDomainKey = process.env.REACT_APP_CUSTOM_CDN_SUBDOMAIN_KEY
+const customCDNSubDomainValue =
+  process.env.REACT_APP_CUSTOM_CDN_SUBDOMAIN__VALUE
+
+// To support CDN for local development, define below .env variable
+const devCdnURI = process.env.REACT_APP_CDN_URI
+
+// Create a CDN URI based on the origin. Some existing CDN URLs
+// don't follow a predictable pattern and require .env variables to map them.
+// For example, 'app.edulastic.com' can be mapped to the subdomain 'app' and the CDN 'cdn'.
 const generateCDNURIFromOrigin = () => {
-  const cdnMap = { [customCDNKey]: customCDNValue }
+  if (devCdnURI) {
+    return devCdnURI
+  }
+  const cdnMap = { [customCDNSubDomainKey]: customCDNSubDomainValue }
   const origin = new URL(window.origin)
   const protocol = origin.protocol
   const host = origin.host

@@ -37,7 +37,7 @@
     "build:extension": "webpack --config src/chrome-extension/webpack.config.js",
     "start": "APP_MODE_DEV=1 react-app-rewired start",
     "start:test": "CYPRESS=true APP_MODE_DEV=1 react-app-rewired -r @cypress/instrument-cra start",
-    "build": "NODE_ENV=production REACT_APP_CUSTOM_CDN_KEY='app' REACT_APP_CUSTOM_CDN_VALUE='cdn' react-app-rewired build",
+    "build": "NODE_ENV=production react-app-rewired build",
     "buildwlimit": "NODE_ENV=production react-app-rewired --max_old_space_size=6096 build",
     "build:login2": "webpack --config src/webpack.login.config.js",
     "prod-serve": "serve -s build -p 3001",

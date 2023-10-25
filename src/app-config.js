@@ -30,8 +30,8 @@ const generateCDNURIFromOrigin = () => {
   return cdn
 }
 
-const cdnURI =
-  generateCDNURIFromOrigin ||
+export const cdnURI =
+  generateCDNURIFromOrigin() ||
   'https://cdnedupoc.snapwiz.net/edulasticv2-development'
 const appEnv = process.env.REACT_APP_ENV
 const appStage = process.env.REACT_APP_STAGE || 'development'

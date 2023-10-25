@@ -209,8 +209,11 @@ const TableList = ({
   isProxiedByEAAccount,
   hasRandomQuestions = false,
   t,
+  totalSelectedRowData = [],
+  handleSelectedRows,
+  selectedAllRows,
+  handleSelectAllRows,
 }) => {
-  const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
     false
   )
@@ -282,8 +285,37 @@ const TableList = ({
    * Here we are resetting the selected rows to unselect whenever thre is a change in rows.
    * Change in row can occur when we filter the rows based on status of the row.
    */
+
+  const getSelectedRowsInCurrentPage = (
+    currentPageData,
+    totalData,
+    field1,
+    field2
+  ) => {
+    return (
+      currentPageData.filter((currentItem) =>
+        totalData.some(
+          (selected) =>
+            currentItem[field1] === selected[field1] &&
+            currentItem[field2] === selected[field2]
+        )
+      ) || []
+    ).map(({ key }) => key)
+  }
+  const selectedRowKeys = useMemo(
+    () =>
+      getSelectedRowsInCurrentPage(
+        rowData,
+        totalSelectedRowData,
+        'classId',
+        'assignmentId'
+      ),
+    [totalSelectedRowData, rowData]
+  )
   useEffect(() => {
-    setSelectedRows([])
+    if (selectedAllRows) {
+      handleSelectedRows(rowData, true)
+    }
   }, [rowData])
 
   let showPagination = false
@@ -297,22 +329,42 @@ const TableList = ({
 
   const handleSelectAll = (selected) => {
     if (selected) {
-      setSelectedRows(rowData.map(({ key }) => key))
+      handleSelectedRows(rowData, selected)
+      handleSelectAllRows(true)
     } else {
-      setSelectedRows([])
+      handleSelectedRows([], selected)
+      handleSelectAllRows(false)
     }
   }
 
   const rowSelection = {
-    selectedRowKeys: selectedRows.map((key) => key),
-    onSelect: (_, __, selectedRowz) => {
-      setSelectedRows(selectedRowz.map(({ key }) => key))
+    selectedRowKeys,
+    onSelect: (record, selected, selectedRowz) => {
+      handleSelectedRows(selectedRowz, selected, record)
     },
     onSelectAll: handleSelectAll,
+    hideDefaultSelections: true,
+    selections: [
+      {
+        key: 'all-data',
+        text: 'Select All Data',
+        onSelect: () => {
+          handleSelectedRows(rowData, true)
+          handleSelectAllRows(true)
+        },
+      },
+      {
+        key: 'current-page-data',
+        text: 'Current Page Data',
+        onSelect: () => {
+          handleSelectedRows(rowData)
+        },
+      },
+    ],
   }
 
   const handleBulkAction = (type, releaseScoreResponse) => {
-    if (selectedRows.length === 0) {
+    if (totalSelectedRowData.length === 0) {
       return notification({
         msg: missingSelectionTostMessage,
       })
@@ -325,10 +377,8 @@ const TableList = ({
       })
     }
     let selectedRowsGroupByAssignment = {}
-    if (rowData.length > selectedRows.length) {
-      const selectedRowsData = rowData.filter((_, i) =>
-        selectedRows.includes(i)
-      )
+    if (!selectedAllRows) {
+      const selectedRowsData = totalSelectedRowData
       selectedRowsGroupByAssignment = groupBy(selectedRowsData, 'assignmentId')
       for (const [key, value] of Object.entries(
         selectedRowsGroupByAssignment
@@ -372,7 +422,7 @@ const TableList = ({
     <MoreOptionsContainer>
       <MoreOption
         onClick={() => {
-          if (selectedRows.length === 0) {
+          if (totalSelectedRowData.length === 0) {
             return notification({
               msg: missingSelectionTostMessage,
             })
@@ -425,7 +475,7 @@ const TableList = ({
       </Tooltip>
       <MoreOption
         onClick={() => {
-          if (selectedRows.length === 0) {
+          if (totalSelectedRowData.length === 0) {
             return notification({
               msg: missingSelectionTostMessage,
             })
@@ -443,8 +493,8 @@ const TableList = ({
     <BulkActionsWrapper>
       <div>
         <span data-cy="totalSelected">
-          {rowData.length > selectedRows.length
-            ? selectedRows.length
+          {!selectedAllRows
+            ? totalSelectedRowData.length
             : totalAssignmentsClasses}
         </span>
         <span>Class(es) Selected</span>

@@ -241,11 +241,11 @@ class Assignments extends Component {
   }
 
   gotoPrintView = (data) => {
-    const { type, customValue } = data
+    const { type, customValue, showAnswers } = data
     const { currentTestId, currentAssignmentId, currentClassId } = this.state
 
     window.open(
-      `/author/printAssessment/${currentTestId}?type=${type}&assignmentId=${currentAssignmentId}${
+      `/author/printAssessment/${currentTestId}?type=${type}&showAnswers=${showAnswers}&assignmentId=${currentAssignmentId}${
         currentClassId ? `&groupId=${currentClassId}` : ''
       }${type === 'custom' ? `&qs=${customValue}` : ''}`,
       '_blank'

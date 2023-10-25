@@ -100,6 +100,7 @@ import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.s
 
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
+import { cdnURI } from '../../../../../app-config'
 
 export const getCards = (
   onSelectQuestionType,
@@ -1551,8 +1552,7 @@ export const getCards = (
         firstMount: true,
         stimulus: 'Sample image background with an overlaid drop area(s)',
         imageWidth: 0,
-        imageUrl:
-          'https://cdn2.edulastic.com/default/1558946005996_transparent.png',
+        imageUrl: `${cdnURI}/default/1558946005996_transparent.png`,
         maxRespCount: 1,
         options: [
           { id: uuidsForFill[0], value: defaultOptions[0] },
@@ -1602,8 +1602,7 @@ export const getCards = (
         firstMount: true,
         stimulus: 'Sample image background with overlaid drop downs',
         imageWidth: 0,
-        imageUrl:
-          'https://cdn2.edulastic.com/default/1558946005996_transparent.png',
+        imageUrl: `${cdnURI}/default/1558946005996_transparent.png`,
         keepAspectRatio: true,
         options: [
           [defaultOptions[0], defaultOptions[1]],
@@ -1654,8 +1653,7 @@ export const getCards = (
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: 'Sample image background with overlaid text fields',
         options: [],
-        imageUrl:
-          'https://cdn2.edulastic.com/default/1558946005996_transparent.png',
+        imageUrl: `${cdnURI}/default/1558946005996_transparent.png`,
         keepAspectRatio: true,
         uiStyle: {
           width: 140,

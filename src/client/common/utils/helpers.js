@@ -9,11 +9,12 @@ import { signUpState } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
 import qs from 'qs'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
 import { getProfileKey } from './testTypeUtils'
-import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
+import { cdnURI } from '../../../app-config'
 
 // eslint-disable-next-line no-control-regex
 export const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
@@ -506,9 +507,7 @@ export const isImagesBlockedByBrowser = async () => {
     }
     // else fetch 1x1 image and try rendering it in background
     const image = document.createElement('img')
-    const fetchResult = await fetch(
-      'https://cdn.edulastic.com/default/edu-logo.png'
-    )
+    const fetchResult = await fetch(`${cdnURI}/default/edu-logo.png`)
     const id = 'customRenderedEduImage'
     const src = await convertBlobToBase64(await fetchResult.blob())
     image.setAttribute('src', src)

@@ -14,6 +14,9 @@ import {
   testStatusBackgroundColor as backgroundColor,
   testStatusTextColor as textColor,
 } from '../../../src/constants/colors'
+import { cdnURI } from '../../../../../app-config'
+
+export const defaultImage = `${cdnURI}/default/default-test-1.jpg`
 
 export const ModalTitle = styled.h2`
   font-weight: bolder;
@@ -46,9 +49,7 @@ export const Image = styled.div`
   height: 200px;
   position: relative;
   background: ${(props) =>
-    props.src
-      ? `url(${props.src})`
-      : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
+    props.src ? `url(${props.src})` : `url(${defaultImage}`};
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center center;

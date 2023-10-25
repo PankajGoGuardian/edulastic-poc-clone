@@ -28,6 +28,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { cdnURI } from '../../../../../app-config'
 
 const Header = ({
   classGroups,
@@ -244,7 +245,7 @@ const Header = ({
             >
               <img
                 alt="Canvas"
-                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                src={`${cdnURI}/JS/webresources/images/as/canvas.png`}
                 width={18}
                 height={18}
               />

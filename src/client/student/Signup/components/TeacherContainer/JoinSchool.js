@@ -53,6 +53,7 @@ import {
   getUserOrgId,
 } from '../../../../author/src/selectors/user'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
+import { cdnURI } from '../../../../../app-config'
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school
@@ -170,8 +171,7 @@ const JoinSchool = ({
     setIsDisabled(true)
     toggleModal()
   }
-  const schoolIcon =
-    '//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png'
+  const schoolIcon = `${cdnURI}/JS/webresources/images/as/signup-join-school-icon.png`
   const deselectClassDisabledMsg =
     'You cannot edit the school now. If you want to change complete the signup and go to my profile to update school.'
 

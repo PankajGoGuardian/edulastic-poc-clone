@@ -48,7 +48,7 @@ import {
   uploadToDriveAction,
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
-import AppConfig from '../../../../../app-config'
+import AppConfig, { cdnURI } from '../../../../../app-config'
 import { isImagesBlockedByBrowser } from '../../../../common/utils/helpers'
 import { toggleImageBlockNotificationAction } from '../../../../student/Login/ducks'
 
@@ -58,8 +58,7 @@ const swap = (array, i, j) => {
   return copy
 }
 
-export const BLANK_URL =
-  'https://cdn.edulastic.com/default/blank_doc-3425532845-1501676954359.pdf'
+export const BLANK_URL = `${cdnURI}/default/blank_doc-3425532845-1501676954359.pdf`
 
 const defaultPage = {
   pageId: helpers.uuid(),

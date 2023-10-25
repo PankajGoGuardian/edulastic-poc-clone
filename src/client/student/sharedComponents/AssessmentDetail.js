@@ -23,6 +23,7 @@ import {
   formatStudentPastDueTag,
 } from '../utils'
 import { submitLTIForm } from '../../author/CurriculumSequence/components/CurriculumModuleRow'
+import { cdnURI } from '../../../app-config'
 
 const { pastDueTagBackground, pastDueTagColor } = themes.default.default
 
@@ -133,7 +134,7 @@ const AssessmentDetails = ({
                 </StatusButton>
                 {safeBrowser && (
                   <SafeExamIcon
-                    src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
+                    src={`${cdnURI}/JS/webresources/images/as/seb.png`}
                     title={t('common.safeExamToolTip')}
                   />
                 )}

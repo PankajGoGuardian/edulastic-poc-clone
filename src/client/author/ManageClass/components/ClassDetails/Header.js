@@ -58,6 +58,7 @@ import { getUserOrgId } from '../../../src/selectors/user'
 import { setFilterInSession } from '../../../../common/utils/helpers'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
+import { cdnURI } from '../../../../../app-config'
 
 const Option = Select.Option
 
@@ -390,7 +391,7 @@ const Header = ({
                     <span className="menu-label">Sync with Canvas</span>
                     <img
                       alt="Canvas"
-                      src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                      src={`${cdnURI}/JS/webresources/images/as/canvas.png`}
                       width={18}
                       height={18}
                     />
@@ -471,7 +472,7 @@ const Header = ({
               >
                 <img
                   alt="Canvas"
-                  src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                  src={`${cdnURI}/JS/webresources/images/as/canvas.png`}
                   width={18}
                   height={18}
                   style={{ marginRight: '10px' }}

@@ -55,12 +55,12 @@ import {
 } from '../../duck'
 import { ContainerForButtonAtEnd } from '../../styled'
 import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
+import { cdnURI } from '../../../../../app-config'
 
 const { allGrades, allSubjects } = selectsData
 
 const { Option } = Select
-const schoolIcon =
-  '//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png'
+const schoolIcon = `${cdnURI}/JS/webresources/images/as/signup-join-school-icon.png`
 
 class SubjectGrade extends React.Component {
   constructor(props) {

@@ -35,6 +35,7 @@ import {
 import { SubResourceView } from '../../../author/CurriculumSequence/components/PlaylistResourceRow'
 import { submitLTIForm } from '../../../author/CurriculumSequence/components/CurriculumModuleRow'
 import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import { cdnURI } from '../../../../app-config'
 
 const Recommendations = ({
   startAssignment,
@@ -325,7 +326,7 @@ const Recommendations = ({
                             </DescriptionTitle>
                             <DescriptionContent>
                               <img
-                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                src={`${cdnURI}/images/assessmentThumbnails/3.G.A.1-2.gif`}
                                 style={{ width: '18%' }}
                                 alt=""
                               />
@@ -341,7 +342,7 @@ const Recommendations = ({
                             </DescriptionTitle>
                             <DescriptionContent>
                               <img
-                                src="https://cdn.edulastic.com/images/assessmentThumbnails/3.G.A.1-2.gif"
+                                src={`${cdnURI}/images/assessmentThumbnails/3.G.A.1-2.gif`}
                                 style={{ width: '18%' }}
                                 alt=""
                               />

@@ -13,6 +13,7 @@ import {
 import { Card, MathFormulaDisplay } from '@edulastic/common'
 import { Rate, Icon } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
+import { cdnURI } from '../../../../../app-config'
 
 export const Container = styled(Card)`
   border: ${(props) => (props.isPlaylist ? 'none' : '1px solid #dfdfdf')};
@@ -63,8 +64,7 @@ export const Container = styled(Card)`
         opacity: 0.3;
         background: ${({ isPlaylist, src }) =>
           isPlaylist
-            ? `url(${src})` ||
-              `url(https://cdn2.edulastic.com/default/default-test-1.jpg)`
+            ? `url(${src})` || `url(${cdnURI}/default/default-test-1.jpg)`
             : ''};
       }
     }
@@ -113,9 +113,7 @@ export const CardCover = styled.div`
   background-position: left top;
   background-repeat: no-repeat;
   background-image: ${({ uri }) =>
-    uri
-      ? `url(${uri})`
-      : `url(https://cdn2.edulastic.com/default/default-test-1.jpg)`};
+    uri ? `url(${uri})` : `url(${cdnURI}/default/default-test-1.jpg)`};
   border-top-right-radius: 8px;
   border-top-left-radius: 8px;
 

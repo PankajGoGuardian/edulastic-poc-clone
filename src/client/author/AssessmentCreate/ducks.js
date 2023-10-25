@@ -25,6 +25,7 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
+import { cdnURI } from '../../../app-config'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -126,8 +127,7 @@ const defaultTestItem = {
 const defaultPageStructure = [
   {
     pageId: helpers.uuid(),
-    URL:
-      'https://cdn.edulastic.com/default/blank_doc-3425532845-1501676954359.pdf',
+    URL: `${cdnURI}/default/blank_doc-3425532845-1501676954359.pdf`,
     pageNo: 1,
     rotate: 0,
   },

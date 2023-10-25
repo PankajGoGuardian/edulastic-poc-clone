@@ -50,6 +50,7 @@ import {
   IconStep4,
   IconStep5,
 } from './icons/StepsIcons'
+import { cdnURI } from '../../../app-config'
 
 function useInstructions() {
   const [_instructions, setInstructions] = useState(null)
@@ -766,7 +767,7 @@ const ScanAnswerSheetsInner = ({
 
 const ScanAnswerSheets = (props) => {
   return (
-    <OpenCvProvider openCvPath="https://cdn.edulastic.com/modified/opencv/opencv.js">
+    <OpenCvProvider openCvPath={`${cdnURI}/modified/opencv/opencv.js`}>
       {' '}
       <ScanAnswerSheetsInner {...props} />{' '}
     </OpenCvProvider>

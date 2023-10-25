@@ -17,6 +17,7 @@ import {
   testStatusTextColor as textColor,
 } from '../../../src/constants/colors'
 import { StyledLink } from '../Item/styled'
+import { cdnURI } from '../../../../../app-config'
 
 export const Container = styled.div`
   display: flex;
@@ -139,9 +140,7 @@ export const Header = styled.div`
   width: 100%;
   position: relative;
   background: url(${(props) =>
-    props.src
-      ? props.src
-      : 'https://cdn2.edulastic.com/default/default-test-1.jpg'});
+    props.src ? props.src : `${cdnURI}/default/default-test-1.jpg`});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

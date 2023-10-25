@@ -108,6 +108,7 @@ import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
+import { cdnURI } from '../../../app-config'
 
 const {
   ITEM_GROUP_TYPES,
@@ -624,8 +625,7 @@ export const updateTestSettingRequestAction = createAction(
 )
 export const toggleRegradeModalAction = createAction(TOGGLE_REGRADE_MODAL)
 
-export const defaultImage =
-  'https://cdn2.edulastic.com/default/default-test-1.jpg'
+export const defaultImage = `${cdnURI}/default/default-test-1.jpg`
 
 // selectors
 

@@ -30,9 +30,7 @@ const generateCDNURIFromOrigin = () => {
   return cdn
 }
 
-export const cdnURI =
-  generateCDNURIFromOrigin() ||
-  'https://cdnedupoc.snapwiz.net/edulasticv2-development'
+export const cdnURI = generateCDNURIFromOrigin()
 const appEnv = process.env.REACT_APP_ENV
 const appStage = process.env.REACT_APP_STAGE || 'development'
 // __CLIENT_VERSION__ is injected to envs in poi.config.js

@@ -22,6 +22,7 @@ import {
   getCurrentPlaylistTermId,
   toggleManageContentActiveAction,
 } from '../CurriculumSequence/ducks'
+import { cdnURI } from '../../../app-config'
 
 // constants
 const playlistStatusConstants = {
@@ -31,8 +32,7 @@ const playlistStatusConstants = {
   ARCHIVED: 'archived',
 }
 
-export const defaultImage =
-  'https://cdn2.edulastic.com/default/default-test-1.jpg'
+export const defaultImage = `${cdnURI}/default/default-test-1.jpg`
 
 export const SET_ASSIGNMENT = '[assignments] set assignment' // TODO remove cyclic dependency
 export const CREATE_PLAYLIST_REQUEST = '[playlist] create playlist request'

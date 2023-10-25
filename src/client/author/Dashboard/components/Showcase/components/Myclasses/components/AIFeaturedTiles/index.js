@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { TextWrapper } from '../../../../../styledComponents'
 import { AIFeatureContentWrapper, Image, TextLink } from './styled'
 import { navigationState } from '../../../../../../../src/constants/navigation'
+import { cdnURI } from '../../../../../../../../../app-config'
 
 const AIFeaturedTiles = ({
   onVideoQuizClick,
@@ -58,14 +59,14 @@ const AIFeaturedTiles = ({
               <Link onClick={onVideoQuizClick} to={videoQuizPath}>
                 <Image
                   alt="videoquiz"
-                  src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"
+                  src={`${cdnURI}/webresources/dashboard/video-quiz.svg`}
                   width="240px"
                 />
               </Link>
             ) : (
               <Image
                 alt="videoquiz"
-                src="https://cdn.edulastic.com/webresources/dashboard/video-quiz.svg"
+                src={`${cdnURI}/webresources/dashboard/video-quiz.svg`}
                 width="240px"
                 onClick={handelClick}
                 style={{ cursor: 'pointer' }}
@@ -79,14 +80,14 @@ const AIFeaturedTiles = ({
             <Link to="/author/tests/select?open=aiquiz">
               <Image
                 alt="aiquiz"
-                src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
+                src={`${cdnURI}/webresources/dashboard/ai_quiz.svg`}
                 width="240px"
               />
             </Link>
           ) : (
             <Image
               alt="aiquiz"
-              src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
+              src={`${cdnURI}/webresources/dashboard/ai_quiz.svg`}
               width="240px"
               onClick={handelClick}
               style={{ cursor: 'pointer' }}

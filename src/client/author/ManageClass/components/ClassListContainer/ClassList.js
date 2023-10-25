@@ -35,6 +35,7 @@ import {
   getManualEnrollmentAllowedSelector,
 } from '../../../src/selectors/user'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
+import { cdnURI } from '../../../../../app-config'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -130,7 +131,7 @@ const ClassList = ({
           syncIconList.push(
             <Tooltip title="Canvas" placement="bottom">
               <img
-                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                src={`${cdnURI}/JS/webresources/images/as/canvas.png`}
                 alt="Canvas"
                 height="18"
                 width="18"

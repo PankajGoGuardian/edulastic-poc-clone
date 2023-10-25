@@ -32,7 +32,7 @@ const ShowSectionSettings = ({
           </Title>
           <Body smallSize={isSmallSize}>
             <Row>
-              <Col span={8}>
+              <Col span={8} data-cy={`calculatorSelector-${g.groupName}`}>
                 <CalculatorSettings
                   isCheckBoxGroup
                   disabled={disabled}
@@ -65,7 +65,7 @@ const ShowSectionSettings = ({
             />
           </Title>
           <Body smallSize={isSmallSize}>
-            <Description>
+            <Description data-cy="preventSectionNavigationText">
               Test can be attempted in a sequential manner. Within a section,
               you can navigate between questions using the &apos;previous&apos;
               and &apos;next&apos; options. Once a section is submitted,
@@ -76,7 +76,11 @@ const ShowSectionSettings = ({
       </Block>
 
       {sectionTabs && (
-        <Block id="section-settings" smallSize={isSmallSize}>
+        <Block
+          id="section-settings"
+          smallSize={isSmallSize}
+          data-cy="sectionWiseCalculatorSettings"
+        >
           <Tabs>
             {sectionTabs.map((item) => (
               <TabPane tab={item.label} key={item.key}>

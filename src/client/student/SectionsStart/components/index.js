@@ -64,7 +64,7 @@ const RenderButton = ({
   }
   if (preventSectionNavigation && status === SECTION_STATUS.SUBMITTED) {
     return (
-      <Completed>
+      <Completed data-cy={`completedSectionStatus-${index}`}>
         <IconTick fill={themeColor} />
         Completed
       </Completed>

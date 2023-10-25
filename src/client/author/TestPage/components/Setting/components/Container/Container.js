@@ -2463,7 +2463,10 @@ class Setting extends Component {
               )}
               {/* Displaying the section settings header and component. */}
               {hasSections && (
-                <SettingsCategoryBlock id="section-settings">
+                <SettingsCategoryBlock
+                  id="section-settings"
+                  data-cy="sectionSettings"
+                >
                   <span>
                     Sections <DollarPremiumSymbol premium={premium} />
                   </span>

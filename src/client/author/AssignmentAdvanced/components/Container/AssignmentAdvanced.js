@@ -320,12 +320,12 @@ class AssignmentAdvanced extends Component {
   }
 
   gotoPrintView = (data) => {
-    const { type, customValue } = data
+    const { type, customValue, showAnswers } = data
     const { match } = this.props
     const { testId } = match.params
 
     window.open(
-      `/author/printAssessment/${testId}?type=${type}&qs=${
+      `/author/printAssessment/${testId}?type=${type}&showAnswers=${showAnswers}&qs=${
         type === 'custom' ? customValue : ''
       }`,
       '_blank'

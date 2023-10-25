@@ -1110,4 +1110,27 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'removeStudentFromAssignment',
+    name: 'Remove Students From Assignment',
+    endPoint: 'admin-tool/remove-student-from-assignments',
+    method: 'post',
+    fields: [
+      {
+        name: 'activateUtaId',
+        displayName: 'Activate UTA Id',
+        placeholder: 'Enter UTA id to make it active',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'removeUtaIds',
+        displayName: 'Remove UTA Id(s)',
+        placeholder: 'Enter comma separated UTA ids to remove',
+        type: 'string',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

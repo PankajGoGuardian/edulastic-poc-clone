@@ -4,13 +4,16 @@ import next from 'immer'
 import { sumBy, sortBy, groupBy, omit } from 'lodash'
 import React from 'react'
 import moment from 'moment'
+
 import {
   EXTERNAL_TEST_KEY_SEPARATOR,
   RISK_TYPE_KEYS,
 } from '@edulastic/constants/reportUtils/common'
+import { sortTestTypes } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import { EduIf } from '@edulastic/common'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
+
 import HorizontalBar from '../../../../common/components/HorizontalBar'
 import LinkCell from '../../common/components/LinkCell'
 import LargeTag from '../../common/components/LargeTag'
@@ -27,7 +30,6 @@ import {
   timeframeFilterValues,
   CHART_LABEL_KEY,
 } from './constants'
-import { sortTestTypes } from '../../common/utils'
 
 const {
   percentage,

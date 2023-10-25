@@ -5,12 +5,17 @@ import { get, isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import {
+  commonFilterKeys,
+  filterKeysToCompareByKeys,
+  nextCompareByKeys,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
+import {
   getPerformanceBandsListByTestType,
   resetStudentFilters as resetFilters,
 } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import { staticDropDownData } from '../../utils'
-
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useUrlSearchParams from '../../../../../common/hooks/useUrlSearchParams'
@@ -23,11 +28,6 @@ import {
 } from '../../../../../../src/selectors/user'
 import { actions, selectors } from '../../ducks'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
-import {
-  commonFilterKeys,
-  filterKeysToCompareByKeys,
-  nextCompareByKeys,
-} from '../../../common/utils'
 import usePerformanceBandsList from '../../../../../common/hooks/usePerformanceBandsList'
 
 const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(

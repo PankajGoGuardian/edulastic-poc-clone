@@ -1,14 +1,10 @@
 import React, { useMemo } from 'react'
 import { get, mapValues } from 'lodash'
-
 import { connect } from 'react-redux'
 
+import { reportUtils } from '@edulastic/constants'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { TEST_TYPES } from '@edulastic/constants/const/testTypes'
-import {
-  removeFilter,
-  resetStudentFilters as resetFilters,
-} from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
 import { staticDropDownData } from '../../utils'
 
@@ -23,6 +19,11 @@ import FiltersView from './FiltersView'
 import useFiltersFromURL from './hooks/useFiltersFromURL'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
+
+const {
+  removeFilter,
+  resetStudentFilters: resetFilters,
+} = reportUtils.dataWarehouseReports
 
 const Filters = ({
   showFilter,

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { sortDistributionBand } from '../common/utils'
+import { sortDistributionBand } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { getFGColor } from '../../../../src/utils/util'
 
 const chartWrapWidth = 300

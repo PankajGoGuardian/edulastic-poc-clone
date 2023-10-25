@@ -1,4 +1,5 @@
 import React from 'react'
+import { isEmpty, isNull } from 'lodash'
 import {
   lightBrown,
   lightGreen12,
@@ -8,9 +9,8 @@ import {
   lightRed6,
 } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
-import { isEmpty, isNull } from 'lodash'
+import { getTrendPeriodLabel } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
-import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
   trendPeriodDateFormat,
   trendPeriodPrefix,

@@ -11,6 +11,8 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
+import { EXTERNAL_SCORE_TYPES } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import Summary from './components/Summary'
@@ -51,7 +53,6 @@ import {
 } from './utils'
 import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
-import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
 
 const { downloadCSV } = reportUtils.common

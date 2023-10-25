@@ -22,6 +22,7 @@ import {
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
+import { isAddToStudentGroupEnabled } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 import { SubHeader } from '../../../common/components/Header'
 import {
@@ -70,7 +71,6 @@ import { getSelectedCompareBy } from '../../../common/util'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
-import { isAddToStudentGroupEnabled } from '../common/utils'
 import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
 import useFiltersData from '../../../common/hooks/useFiltersData'
 

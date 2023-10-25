@@ -6,7 +6,8 @@ import { EduIf } from '@edulastic/common'
 import {
   EXTERNAL_SCORE_TYPES,
   getExternalScoreTypesListByTestTypes,
-} from '../../../common/utils'
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import ExternalScoreTypeFilter from '../../../common/components/ExternalScoreTypeFilter'
 

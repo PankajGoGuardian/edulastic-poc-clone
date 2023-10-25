@@ -1,33 +1,26 @@
-import { lightGreen12, lightGrey9, lightRed5 } from '@edulastic/colors'
-import moment from 'moment'
-import qs from 'qs'
-import { isEmpty, round } from 'lodash'
-import { roleuser } from '@edulastic/constants'
-import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
-import {
-  ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
+const moment = require('moment')
+const { isEmpty, round } = require('lodash')
+const roleuser = require('../../const/roleType')
+const {
+  ALL_TEST_TYPES_VALUES: INTERNAL_TEST_TYPES,
   TEST_TYPES_VALUES_MAP,
   DEFAULT_ADMIN_TEST_TYPE_MAP,
-} from '@edulastic/constants/const/testTypes'
-import { resetStudentFilters as resetFilters } from '../../../../common/util'
-import { allFilterValue } from '../../../../common/constants'
-import {
-  StyledIconCaretDown,
-  StyledIconCaretUp,
-} from '../components/styledComponents'
-import {
+} = require('../../const/testTypes')
+const {
+  PERIOD_TYPES,
+  resetStudentFilters: resetFilters,
+  allFilterValue,
+} = require('../common')
+const {
   EXTERNAL_SCORE_PREFIX,
   EXTERNAL_SCORE_SUFFIX,
   EXTERNAL_SCORE_TYPES_LIST,
   EXTERNAL_SCORE_TYPES_TO_TEST_TYPES,
   INTERNAL_TEST_TYPES_ORDER,
   compareByKeys,
-  compareByKeysToFilterKeys,
-  nextCompareByKeys,
-} from './constants'
-import { DW_WLR_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
+} = require('./constants')
 
-export function buildRequestFilters(_settings) {
+function buildRequestFilters(_settings) {
   const _requestFilters = {}
   Object.keys(_settings.requestFilters).forEach((filterType) => {
     _requestFilters[filterType] =
@@ -38,13 +31,7 @@ export function buildRequestFilters(_settings) {
   return _requestFilters
 }
 
-export function removeFilter(
-  filterTagsData,
-  filters,
-  type,
-  key,
-  staticDropDownData
-) {
+function removeFilter(filterTagsData, filters, type, key, staticDropDownData) {
   const _filterTagsData = { ...filterTagsData }
   const _filters = { ...filters }
   resetFilters(_filterTagsData, _filters, type, '')
@@ -63,7 +50,7 @@ export function removeFilter(
   return { _filters, _filterTagsData }
 }
 
-export function getDateLabel(period) {
+function getDateLabel(period) {
   if (isEmpty(period)) return ''
   const dateFormat = `MMM YYYY`
   const periodStart = moment([
@@ -73,7 +60,7 @@ export function getDateLabel(period) {
   return periodStart
 }
 
-export const filterPopupFilterSelectedTestTypes = (
+const filterPopupFilterSelectedTestTypes = (
   selectedAssessmentTypes,
   availableTestTypes
 ) => {
@@ -86,9 +73,9 @@ export const filterPopupFilterSelectedTestTypes = (
       )
 }
 
-export const sortDistributionBand = (data) => data.sort((a, b) => a.max - b.max)
+const sortDistributionBand = (data) => data.sort((a, b) => a.max - b.max)
 
-export const getTrendPeriodLabel = (
+const getTrendPeriodLabel = (
   selectedPeriodType,
   period,
   prefix = '',
@@ -136,20 +123,7 @@ export const getTrendPeriodLabel = (
   }
 }
 
-export const getWidgetCellFooterInfo = (value, showReverseTrend) => {
-  let color = lightGrey9
-  let Icon = null
-  if (value > 0) {
-    color = showReverseTrend ? lightRed5 : lightGreen12
-    Icon = StyledIconCaretUp
-  } else if (value < 0) {
-    color = showReverseTrend ? lightGreen12 : lightRed5
-    Icon = StyledIconCaretDown
-  }
-  return [color, Icon]
-}
-
-export const getDemographicsFilterTagsData = (search, demographics) => {
+const getDemographicsFilterTagsData = (search, demographics) => {
   const demographicsFilterTagsData = {}
   demographics.forEach((d) => {
     demographicsFilterTagsData[d.key] = {
@@ -160,49 +134,20 @@ export const getDemographicsFilterTagsData = (search, demographics) => {
   return demographicsFilterTagsData
 }
 
-export const isAddToStudentGroupEnabled = (isSharedReport, compareByKey) => {
+const isAddToStudentGroupEnabled = (isSharedReport, compareByKey) => {
   return [!isSharedReport, compareByKey === compareByKeys.STUDENT].every(
     (e) => e
   )
 }
 
-export const buildDrillDownUrl = ({
-  key,
-  selectedCompareBy,
-  reportFilters,
-  reportUrl,
-}) => {
-  if (isEmpty(key)) return null
-  const filterField = compareByKeysToFilterKeys[selectedCompareBy]
-
-  const _filters = {
-    ...reportFilters,
-    [filterField]: key,
-    selectedCompareBy: nextCompareByKeys[selectedCompareBy],
-  }
-
-  if (selectedCompareBy === compareByKeys.STUDENT) {
-    delete _filters[filterField]
-    Object.assign(_filters, {
-      courseIds: _filters.courseId,
-      testTypes: _filters.assessmentTypes,
-      performanceBandProfileId: _filters.profileId,
-    })
-    return `${DW_WLR_REPORT_URL}${key}?${qs.stringify(_filters, {
-      arrayFormat: 'comma',
-    })}`
-  }
-  return `${reportUrl}?${qs.stringify(_filters, { arrayFormat: 'comma' })}`
-}
-
-export const getHasAvailableExternalTestTypes = (testTypes = []) => {
+const getHasAvailableExternalTestTypes = (testTypes = []) => {
   const hasAvailableExternalTestTypes = testTypes.some(
     (testType) => !INTERNAL_TEST_TYPES.includes(testType.key)
   )
   return hasAvailableExternalTestTypes
 }
 
-export const getDefaultTestTypes = (testTypes = []) => {
+const getDefaultTestTypes = (testTypes = []) => {
   const availableExternalTestTypes = testTypes
     .filter((testType) => !INTERNAL_TEST_TYPES.includes(testType.key))
     .map((t) => t.key)
@@ -212,7 +157,7 @@ export const getDefaultTestTypes = (testTypes = []) => {
   ].join(',')
 }
 
-export const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
+const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
   const availableExternalTestTypes = testTypes
     .filter((testType) => !INTERNAL_TEST_TYPES.includes(testType.key))
     .map((t) => t.key)
@@ -226,7 +171,7 @@ export const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
   ].join(',')
 }
 
-export const sortTestTypes = (testTypes) => {
+const sortTestTypes = (testTypes) => {
   const internalTestTypes = []
   const externalTestTypes = []
   testTypes.forEach((testType) => {
@@ -243,7 +188,7 @@ export const sortTestTypes = (testTypes) => {
   return [...internalTestTypes, ...externalTestTypes]
 }
 
-export const getExternalScoreTypesListByTestTypes = (
+const getExternalScoreTypesListByTestTypes = (
   testTypesStr,
   availableTestTypes
 ) => {
@@ -266,9 +211,9 @@ export const getExternalScoreTypesListByTestTypes = (
   return externalScoreTypesList
 }
 
-export const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')
+const getScoreSuffix = (isExternal) => (isExternal ? '' : '%')
 
-export const getExternalScoreFormattedByType = (
+const getExternalScoreFormattedByType = (
   externalScore,
   externalScoreType,
   formatScore = false
@@ -281,4 +226,22 @@ export const getExternalScoreFormattedByType = (
     externalScore < 0 ? EXTERNAL_SCORE_PREFIX[externalScoreType] : ''
   const externalScoreSuffix = EXTERNAL_SCORE_SUFFIX[externalScoreType] || ''
   return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
+}
+
+module.exports = {
+  buildRequestFilters,
+  removeFilter,
+  getDateLabel,
+  filterPopupFilterSelectedTestTypes,
+  sortDistributionBand,
+  getTrendPeriodLabel,
+  getDemographicsFilterTagsData,
+  isAddToStudentGroupEnabled,
+  getHasAvailableExternalTestTypes,
+  getDefaultTestTypes,
+  getDefaultTestTypesForUser,
+  sortTestTypes,
+  getExternalScoreTypesListByTestTypes,
+  getScoreSuffix,
+  getExternalScoreFormattedByType,
 }

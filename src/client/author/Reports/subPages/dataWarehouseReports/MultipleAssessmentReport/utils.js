@@ -20,13 +20,14 @@ import {
   compareByOptions,
   compareByOptionsInfo,
   getExternalScoreFormattedByType,
-} from '../common/utils'
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 const {
   getProficiencyBand,
   percentage,
   TABLE_SORT_ORDER_TYPES,
 } = reportUtils.common
+
 const { getAchievementLevels } = dataWarehouseConstants
 
 /**

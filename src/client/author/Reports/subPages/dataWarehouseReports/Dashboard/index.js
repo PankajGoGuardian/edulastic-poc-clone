@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { get, isEmpty, mapValues } from 'lodash'
 import qs from 'qs'
 
+import { buildRequestFilters } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { SubHeader } from '../../../common/components/Header'
 
@@ -20,7 +21,6 @@ import {
   getAvailableAcademicTestTypesWithBands,
   getFilteredAcademicSummaryTestTypes,
 } from './utils'
-import { buildRequestFilters } from '../common/utils'
 import {
   getCsvDownloadingState,
   getSharingState,

@@ -5,10 +5,10 @@ import { call, put, all, takeLatest } from 'redux-saga/effects'
 // import { get, pick } from 'lodash'
 
 import { reportsApi, dataWarehouseApi } from '@edulastic/api'
+import { EXTERNAL_SCORE_TYPES } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 import { staticDropDownData } from './utils'
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 
 const initialState = {
   firstLoad: true,

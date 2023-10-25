@@ -14,6 +14,7 @@ import {
   isNaN,
 } from 'lodash'
 import moment from 'moment'
+
 import {
   reportUtils,
   colors as colorConstants,
@@ -27,11 +28,12 @@ import {
   EXTERNAL_TEST_KEY_SEPARATOR,
   RISK_BAND_LABELS,
 } from '@edulastic/constants/reportUtils/common'
-import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 import {
   EXTERNAL_SCORE_TYPES,
   getExternalScoreFormattedByType,
-} from '../common/utils'
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
+import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
 

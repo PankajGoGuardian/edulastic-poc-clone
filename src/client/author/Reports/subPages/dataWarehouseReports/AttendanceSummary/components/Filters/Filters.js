@@ -8,7 +8,8 @@ import { reportGroupType } from '@edulastic/constants/const/report'
 import {
   removeFilter,
   resetStudentFilters as resetFilters,
-} from '../../../../../common/util'
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { getTermOptions } from '../../../../../../utils/reports'
 import { filterKeys, staticDropDownData } from '../../utils/constants'
 

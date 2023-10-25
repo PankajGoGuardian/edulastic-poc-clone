@@ -1,8 +1,10 @@
 import React from 'react'
+
 import { FlexContainer } from '@edulastic/common'
+import { PIE_CHART_LABEL_THRESHOLD } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { TooltipContainer } from './styledComponents'
 import { ColorCircle, TooltipRowValue } from '../../../../common/styled'
-import { PIE_CHART_LABEL_THRESHOLD } from '../utils'
 
 export const TooltipContent = ({ value, name, color }) => (
   <>

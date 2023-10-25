@@ -3,6 +3,11 @@ import next from 'immer'
 import { get, groupBy, map, maxBy, sumBy } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import {
+  compareByFieldKeys,
+  compareByKeys,
+  compareByOptionsInfo,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+import {
   getScoreLabel,
   getScoreLabelNoSuffix,
 } from '@edulastic/constants/const/dataWarehouse'
@@ -20,11 +25,6 @@ import AvgPerformance from './columns/AvgPerformance'
 import PerformanceChange from './columns/PerformanceChange'
 import TestNamesCell from './columns/TestNamesCell'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
-import {
-  compareByFieldKeys,
-  compareByKeys,
-  compareByOptionsInfo,
-} from '../../../common/utils'
 import LinkCell from '../../../common/components/LinkCell'
 
 const {

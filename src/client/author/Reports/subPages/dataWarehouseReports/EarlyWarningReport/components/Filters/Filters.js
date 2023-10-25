@@ -4,6 +4,7 @@ import { mapValues } from 'lodash'
 
 import { connect } from 'react-redux'
 
+import { removeFilter } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 import { getTermOptions } from '../../../../../../utils/reports'
@@ -15,7 +16,6 @@ import {
   getOrgDataSelector,
   getUserRole,
 } from '../../../../../../src/selectors/user'
-import { removeFilter } from '../../../common/utils'
 import FiltersView from './FiltersView'
 import useFiltersPreload from '../../../../../common/hooks/useFiltersPreload'
 import useFiltersFromURL from './hooks/useFiltersFromURL'

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { isEmpty } from 'lodash'
+
 import {
   EduElse,
   EduIf,
@@ -9,6 +10,8 @@ import {
   notification,
 } from '@edulastic/common'
 import { black } from '@edulastic/colors'
+import { isAddToStudentGroupEnabled } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import DashboardTableFilters from './TableFilters'
 import DashboardTable from './Table'
 import {
@@ -19,7 +22,6 @@ import {
 } from '../../utils'
 import AddToGroupModal from '../../../../../common/components/Popups/AddToGroupModal'
 import FeaturesSwitch from '../../../../../../../features/components/FeaturesSwitch'
-import { isAddToStudentGroupEnabled } from '../../../common/utils'
 import AverageAnalysis from './AverageAnalysis'
 import { TableContainer } from '../common/styledComponents'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'

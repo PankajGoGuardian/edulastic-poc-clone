@@ -1,3 +1,8 @@
+import { isEmpty } from 'lodash'
+import qs from 'qs'
+import React, { useMemo } from 'react'
+import { Tooltip } from 'antd'
+
 import { dataWarehouseApi } from '@edulastic/api'
 import { lightGreen13, lightGrey8, themeColor } from '@edulastic/colors'
 import {
@@ -9,17 +14,14 @@ import {
   useApiQuery,
 } from '@edulastic/common'
 import { EXTERNAL_TEST_KEY_SEPARATOR } from '@edulastic/constants/reportUtils/common'
-import { isEmpty } from 'lodash'
-import qs from 'qs'
-import React, { useMemo } from 'react'
+import { getTrendPeriodLabel } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { IconInfo } from '@edulastic/icons'
-import { Tooltip } from 'antd'
+
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import { DW_MAR_REPORT_URL } from '../../../../../../common/constants/dataWarehouseReports'
 import { DashedLine } from '../../../../../../common/styled'
 import PieChartLabel from '../../../../common/components/PieChartLabel'
 import { PieChartTooltip } from '../../../../common/components/PieChartTooltip'
-import { getTrendPeriodLabel } from '../../../../common/utils'
 import {
   getCellColor,
   getAcademicSummaryPieChartData,

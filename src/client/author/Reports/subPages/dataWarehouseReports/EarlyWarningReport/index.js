@@ -2,6 +2,11 @@ import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
+
+import {
+  buildRequestFilters,
+  compareByOptions as compareByOptionsRaw,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 
 import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
@@ -11,10 +16,6 @@ import { StyledReportContainer } from '../../../common/styled'
 import ReportView from './ReportView'
 import Filters from './components/Filters'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
-import {
-  buildRequestFilters,
-  compareByOptions as compareByOptionsRaw,
-} from '../common/utils'
 import { selectors, actions } from './ducks'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import { getSelectedCompareBy } from '../../../common/util'

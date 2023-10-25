@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import { get, isEmpty, reject } from 'lodash'
 
 import { roleuser } from '@edulastic/constants'
-
 import { reportGroupType } from '@edulastic/constants/const/report'
-import { staticDropDownData } from '../../../utils'
 import {
-  getDefaultTestTypesForUser,
   getDemographicsFilterTagsData,
-} from '../../../../common/utils'
+  getDefaultTestTypesForUser,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
+import { staticDropDownData } from '../../../utils'
 
 function useFiltersFromURL({
   _onGoClick,

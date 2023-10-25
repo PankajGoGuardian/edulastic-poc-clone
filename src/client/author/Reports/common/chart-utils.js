@@ -1,11 +1,13 @@
 import React from 'react'
 import { Dot } from 'recharts'
-import { EduIf } from '@edulastic/common'
 import { isNull } from 'lodash'
+
+import { EduIf } from '@edulastic/common'
+import { ATTENDANCE_EVENT_CATEGORY_LABELS } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { percentage } from '@edulastic/constants/reportUtils/common'
+
 import { TooltipRow, TooltipRowTitle, TooltipRowValue } from './styled'
 import { setProperties, tooltipParams } from './util'
-import { ATTENDANCE_EVENT_CATEGORY_LABELS } from '../subPages/dataWarehouseReports/common/utils'
 
 const { spaceForLittleTriangle } = tooltipParams
 

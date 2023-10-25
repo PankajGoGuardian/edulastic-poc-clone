@@ -6,6 +6,12 @@ import { Row, Col, Tabs } from 'antd'
 import { EduIf, FieldLabel } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
+import {
+  EXTERNAL_SCORE_TYPES,
+  getDemographicsFilterTagsData,
+  getExternalScoreTypesListByTestTypes,
+  getDefaultTestTypesForUser,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 import {
   ReportFiltersContainer,
@@ -32,12 +38,6 @@ import { staticDropDownData } from '../utils'
 
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 import { allFilterValue } from '../../../../common/constants'
-import {
-  EXTERNAL_SCORE_TYPES,
-  getDemographicsFilterTagsData,
-  getExternalScoreTypesListByTestTypes,
-  getDefaultTestTypesForUser,
-} from '../../common/utils'
 import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
 
 const internalTestTypes = getArrayOfAllTestTypes()

@@ -4,6 +4,7 @@ import { Row, Col, Tooltip } from 'antd'
 import { isNumber, round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
+import { compareByKeys } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { EduIf, EduThen } from '@edulastic/common'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import CsvTable from '../../../../common/components/tables/CsvTable'
@@ -32,7 +33,7 @@ import { tableColumnsData, compareByMap, sortKeys, getTestName } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import LinkCell from '../../common/components/LinkCell'
-import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
+import { buildDrillDownUrl } from '../../common/utils'
 
 const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 

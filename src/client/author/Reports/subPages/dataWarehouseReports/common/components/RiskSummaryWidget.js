@@ -1,6 +1,7 @@
 import { get, isEmpty } from 'lodash'
 import React, { useMemo } from 'react'
 import qs from 'qs'
+
 import { dataWarehouseApi } from '@edulastic/api'
 import { lightGrey8 } from '@edulastic/colors'
 import {
@@ -12,8 +13,14 @@ import {
   useApiQuery,
 } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
-import { reportNavType } from '@edulastic/constants/const/report'
 import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
+import {
+  getTrendPeriodLabel,
+  trendPeriodDateFormat,
+  trendPeriodPrefix,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+import { reportNavType } from '@edulastic/constants/const/report'
+
 import SimplePieChart from '../../../../common/components/charts/SimplePieChart'
 import useErrorNotification from '../../../../common/hooks/useErrorNotification'
 import { DashedLine } from '../../../../common/styled'
@@ -28,11 +35,6 @@ import {
 } from './styledComponents'
 import WidgetCell from './WidgetCell'
 import WidgetHeader from './WidgetHeader'
-import {
-  getTrendPeriodLabel,
-  trendPeriodDateFormat,
-  trendPeriodPrefix,
-} from '../utils'
 import { transformRiskSummaryData } from '../../EarlyWarningReport/utils'
 import { DW_EARLY_WARNING_REPORT_URL } from '../../../../common/constants/dataWarehouseReports'
 import { Spacer } from '../../../../../../common/styled'
@@ -43,6 +45,7 @@ const {
   RISK_TYPE_OPTIONS,
   RISK_TYPE_KEYS,
 } = reportUtils.common
+
 const RiskSummary = ({ settings, loc = '' }) => {
   const query = useMemo(
     () =>

@@ -2,7 +2,10 @@ import {
   GRADE_OPTIONS,
   SUBJECT_OPTIONS,
 } from '@edulastic/constants/reportUtils/common'
-import { compareByKeys, compareByOptionsInfo } from '../../common/utils'
+import {
+  compareByKeys,
+  compareByOptionsInfo,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 // decimal base value for parseInt()
 export const TESTIDS_COUNT_FOR_PRE_POST = 2

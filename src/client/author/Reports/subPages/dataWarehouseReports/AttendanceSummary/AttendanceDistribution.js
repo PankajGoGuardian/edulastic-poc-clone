@@ -5,8 +5,8 @@ import { round } from 'lodash'
 import React from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
+import { sortDistributionBand } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { useResetAnimation } from '../../../common/hooks/useResetAnimation'
-import { sortDistributionBand } from '../common/utils'
 import { getFGColor } from '../../../../src/utils/util'
 
 const DEG_HALF_CIRCLE = 180

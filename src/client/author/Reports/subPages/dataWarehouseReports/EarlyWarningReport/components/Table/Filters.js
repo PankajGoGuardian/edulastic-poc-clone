@@ -1,12 +1,14 @@
 import React from 'react'
 import { Row } from 'antd'
+
 import { EduIf, FlexContainer } from '@edulastic/common'
+import { isAddToStudentGroupEnabled } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import SectionLabel from '../../../../../common/components/SectionLabel'
 import { tableFilterTypes } from '../../utils'
 import { StyledDropDownContainer } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
-import { isAddToStudentGroupEnabled } from '../../../common/utils'
 import RiskFilter from './RiskFilter'
 
 const TableFilters = ({

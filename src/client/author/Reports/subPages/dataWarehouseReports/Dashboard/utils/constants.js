@@ -1,10 +1,12 @@
-import {
+import { reportUtils } from '@edulastic/constants'
+import { compareByKeys } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
+const {
   GRADE_OPTIONS,
   PERIOD_NAMES,
   PERIOD_TYPES,
   SUBJECT_OPTIONS,
-} from '@edulastic/constants/reportUtils/common'
-import { compareByKeys } from '../../common/utils'
+} = reportUtils.common
 
 export const availableTestTypes = [
   {

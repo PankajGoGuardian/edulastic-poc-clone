@@ -28,3 +28,5 @@ export const DW_REPORT_URLS = [
   DW_GOALS_AND_INTERVENTIONS_URL,
   DW_EFFICACY_REPORT_URL,
 ]
+
+export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiveKey=2`

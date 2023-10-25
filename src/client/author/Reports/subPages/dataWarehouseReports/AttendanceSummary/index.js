@@ -2,6 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { omit } from 'lodash'
+
+import { buildRequestFilters } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { getOrgDataSelector } from '../../../../src/selectors/user'
 import { SubHeader } from '../../../common/components/Header'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
@@ -12,7 +15,6 @@ import {
 } from '../../../ducks'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
-import { buildRequestFilters } from '../common/utils'
 import { selectors, actions } from './ducks'
 import Filters from './components/Filters'
 import { resetAllReportsAction } from '../../../common/reportsRedux'

@@ -1,12 +1,10 @@
-import { invert } from 'lodash'
-import {
-  TEST_TYPES_VALUES_MAP,
-  ALL_TEST_TYPES_VALUES,
-} from '@edulastic/constants/const/testTypes'
-import { testTypes } from '@edulastic/constants'
-import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
+const { invert } = require('lodash')
 
-export const compareByKeys = {
+const testTypes = require('../../const/testTypes')
+
+const { TEST_TYPES_VALUES_MAP, ALL_TEST_TYPES_VALUES } = testTypes
+
+const compareByKeys = {
   SCHOOL: 'school',
   TEACHER: 'teacher',
   CLASS: 'class',
@@ -29,7 +27,7 @@ const demographicFilterFields = {
   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
 }
 
-export const compareByOptionsInfo = {
+const compareByOptionsInfo = {
   [compareByKeys.SCHOOL]: { key: 'schoolId', name: 'schoolName' },
   [compareByKeys.TEACHER]: { key: 'teacherId', name: 'teacherName' },
   [compareByKeys.CLASS]: { key: 'groupId', name: 'groupName' },
@@ -61,14 +59,14 @@ export const compareByOptionsInfo = {
   },
 }
 
-export const compareByFieldKeys = Object.keys(compareByOptionsInfo).reduce(
+const compareByFieldKeys = Object.keys(compareByOptionsInfo).reduce(
   (res, ele) => {
     return { ...res, [ele]: compareByOptionsInfo[ele].key }
   },
   {}
 )
 
-export const compareByKeysToFilterKeys = {
+const compareByKeysToFilterKeys = {
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
@@ -76,9 +74,9 @@ export const compareByKeysToFilterKeys = {
   ...demographicFilterFields,
 }
 
-export const filterKeysToCompareByKeys = invert(compareByKeysToFilterKeys)
+const filterKeysToCompareByKeys = invert(compareByKeysToFilterKeys)
 
-export const commonFilterKeys = [
+const commonFilterKeys = [
   compareByKeysToFilterKeys[compareByKeys.SCHOOL],
   compareByKeysToFilterKeys[compareByKeys.TEACHER],
   compareByKeysToFilterKeys[compareByKeys.CLASS],
@@ -91,7 +89,7 @@ export const commonFilterKeys = [
   compareByKeys.HISPANIC_ETHNICITY,
 ]
 
-export const nextCompareByKeys = {
+const nextCompareByKeys = {
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,
@@ -104,7 +102,7 @@ export const nextCompareByKeys = {
   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.STUDENT,
 }
 
-export const compareByOptions = [
+const compareByOptions = [
   { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.CLASS, title: 'Class' },
@@ -118,7 +116,7 @@ export const compareByOptions = [
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
 
-export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
+const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
   (acc, curr, currIndex) => {
     if (curr === TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT) acc[curr] = 0
     else if (curr === TEST_TYPES_VALUES_MAP.SCHOOL_COMMON_ASSESSMENT)
@@ -130,26 +128,25 @@ export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(
   {}
 )
 
-export const trendPeriodDateFormat = `MMM'YY`
-export const trendPeriodPrefix = 'vs '
+const trendPeriodDateFormat = `MMM'YY`
 
-export const createStudentGroupUrl = `${DW_GOALS_AND_INTERVENTIONS_URL}?subActiveKey=2`
+const trendPeriodPrefix = 'vs '
 
-export const PIE_CHART_LABEL_THRESHOLD = 5
+const PIE_CHART_LABEL_THRESHOLD = 5
 
-export const EXTERNAL_SCORE_TYPES = {
+const EXTERNAL_SCORE_TYPES = {
   SCALED_SCORE: 'score',
   LEXILE_SCORE: 'lexileScore',
   QUANTILE_SCORE: 'quantileScore',
 }
 
-export const EXTERNAL_SCORE_TYPES_LIST = [
+const EXTERNAL_SCORE_TYPES_LIST = [
   { key: EXTERNAL_SCORE_TYPES.SCALED_SCORE, title: 'Scaled Score' },
   { key: EXTERNAL_SCORE_TYPES.LEXILE_SCORE, title: 'Lexile Score' },
   { key: EXTERNAL_SCORE_TYPES.QUANTILE_SCORE, title: 'Quantile Score' },
 ]
 
-export const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
+const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
   [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: [
     testTypes.CAASPP,
     testTypes.iReady_ELA,
@@ -167,17 +164,17 @@ export const EXTERNAL_SCORE_TYPES_TO_TEST_TYPES = {
   ],
 }
 
-export const EXTERNAL_SCORE_PREFIX = {
+const EXTERNAL_SCORE_PREFIX = {
   [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: 'BR',
   [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: 'EM',
 }
 
-export const EXTERNAL_SCORE_SUFFIX = {
+const EXTERNAL_SCORE_SUFFIX = {
   [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]: 'L',
   [EXTERNAL_SCORE_TYPES.QUANTILE_SCORE]: 'Q',
 }
 
-export const EXTERNAL_SCORE_TOOLTIP_TEXT = {
+const EXTERNAL_SCORE_TOOLTIP_TEXT = {
   [EXTERNAL_SCORE_TYPES.SCALED_SCORE]: '',
   [EXTERNAL_SCORE_TYPES.LEXILE_SCORE]:
     'Lexile score is applicable for ELA assessments only',
@@ -185,11 +182,34 @@ export const EXTERNAL_SCORE_TOOLTIP_TEXT = {
     'Quantile score is applicable for Math assessments only',
 }
 
-export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
+const ATTENDANCE_EVENT_CATEGORY_LABELS = {
   inAttendanceDays: 'In Attendance',
   excusedAbsenceDays: 'Excused Absences',
   unexcusedAbsenceDays: 'Unexcused Absences',
   tardyDays: 'Tardy',
   earlyDepartureDays: 'Early Departure',
   partialDays: 'Partial',
+}
+
+module.exports = {
+  compareByKeys,
+  demographicFilterFields,
+  compareByOptionsInfo,
+  compareByFieldKeys,
+  compareByKeysToFilterKeys,
+  filterKeysToCompareByKeys,
+  commonFilterKeys,
+  nextCompareByKeys,
+  compareByOptions,
+  INTERNAL_TEST_TYPES_ORDER,
+  trendPeriodDateFormat,
+  trendPeriodPrefix,
+  PIE_CHART_LABEL_THRESHOLD,
+  EXTERNAL_SCORE_TYPES,
+  EXTERNAL_SCORE_TYPES_LIST,
+  EXTERNAL_SCORE_TYPES_TO_TEST_TYPES,
+  EXTERNAL_SCORE_PREFIX,
+  EXTERNAL_SCORE_SUFFIX,
+  EXTERNAL_SCORE_TOOLTIP_TEXT,
+  ATTENDANCE_EVENT_CATEGORY_LABELS,
 }

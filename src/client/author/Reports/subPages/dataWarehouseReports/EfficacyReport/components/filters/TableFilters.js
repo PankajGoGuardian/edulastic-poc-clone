@@ -1,8 +1,10 @@
 import React from 'react'
 import { Row } from 'antd'
+
+import { isAddToStudentGroupEnabled } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import StudentGroupBtn from '../../../common/components/StudentGroupBtn'
-import { isAddToStudentGroupEnabled } from '../../../common/utils'
 import { tableFilterKeys } from '../../utils'
 
 const TableFilters = ({

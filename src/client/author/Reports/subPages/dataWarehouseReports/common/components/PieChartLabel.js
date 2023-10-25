@@ -1,9 +1,11 @@
-import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
-import { DEGREE_TO_RADIAN } from '@edulastic/constants/reportUtils/common'
 import { Tooltip } from 'antd'
 import { max } from 'lodash'
 import React from 'react'
-import { PIE_CHART_LABEL_THRESHOLD } from '../utils'
+
+import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
+import { DEGREE_TO_RADIAN } from '@edulastic/constants/reportUtils/common'
+import { PIE_CHART_LABEL_THRESHOLD } from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import { TooltipContent } from './PieChartTooltip'
 
 const PieChartLabel = ({

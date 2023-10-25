@@ -4,7 +4,11 @@ import { Tooltip } from 'antd'
 import { IconInfo } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
-import { EXTERNAL_SCORE_TOOLTIP_TEXT, EXTERNAL_SCORE_TYPES } from '../utils'
+import {
+  EXTERNAL_SCORE_TOOLTIP_TEXT,
+  EXTERNAL_SCORE_TYPES,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+
 import LabelledControlDropdown from './LabelledControlDropdown'
 
 const ExternalScoreTypeFilter = ({

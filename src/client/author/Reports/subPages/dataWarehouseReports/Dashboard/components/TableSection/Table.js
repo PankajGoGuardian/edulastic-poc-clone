@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo } from 'react'
 import { reportUtils } from '@edulastic/constants'
+import { compareByKeys } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { CustomStyledTable } from '../common/styledComponents'
 
 import { districtAvgDimension, tableFilterTypes } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
-import { compareByKeys } from '../../../common/utils'
 
 const { DB_SORT_ORDER_TYPES, tableToDBSortOrderMap } = reportUtils.common
 

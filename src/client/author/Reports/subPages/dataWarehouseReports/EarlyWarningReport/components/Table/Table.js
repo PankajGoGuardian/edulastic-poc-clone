@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react'
+import { isEmpty } from 'lodash'
+
 import {
   EduIf,
   EduThen,
@@ -7,8 +9,12 @@ import {
   useApiQuery,
 } from '@edulastic/common'
 import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
+import {
+  compareByKeys,
+  isAddToStudentGroupEnabled,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { dataWarehouseApi } from '@edulastic/api'
-import { isEmpty } from 'lodash'
+
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import {
@@ -26,10 +32,6 @@ import {
 import TableFilters from './Filters'
 import { StyledEmptyContainer } from '../../../common/components/styledComponents'
 import useErrorNotification from '../../../../../common/hooks/useErrorNotification'
-import {
-  compareByKeys,
-  isAddToStudentGroupEnabled,
-} from '../../../common/utils'
 import FeaturesSwitch from '../../../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../../../common/components/Popups/AddToGroupModal'
 import useRowSelection from '../../../../../common/hooks/useRowSelection'

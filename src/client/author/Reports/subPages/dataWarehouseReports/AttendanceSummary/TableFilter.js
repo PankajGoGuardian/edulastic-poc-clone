@@ -1,11 +1,13 @@
 import React from 'react'
 import { Row, Typography } from 'antd'
+
+import { isAddToStudentGroupEnabled } from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { darkGrey } from '@edulastic/colors'
+
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledRow } from '../../multipleAssessmentReport/PreVsPost/common/styledComponents'
 import { DashedLine } from '../../../common/styled'
 import { compareByToPluralName } from './utils/constants'
-import { isAddToStudentGroupEnabled } from '../common/utils'
 import StudentGroupBtn from '../common/components/StudentGroupBtn'
 
 const TableFilters = ({

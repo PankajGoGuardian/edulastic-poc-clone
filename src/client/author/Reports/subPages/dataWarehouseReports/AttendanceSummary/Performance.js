@@ -2,6 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import { reportUtils } from '@edulastic/constants'
+import {
+  compareByKeysToFilterKeys,
+  nextCompareByKeys,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
 import { EduIf, SpinLoader, notification } from '@edulastic/common'
 import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledCard } from '../../../common/styled'
@@ -16,7 +20,6 @@ import {
   pageSize,
   sortKeys,
 } from './utils/constants'
-import { compareByKeysToFilterKeys, nextCompareByKeys } from '../common/utils'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { StyledTable } from './styled-component'
 import LinkCell from '../common/components/LinkCell'

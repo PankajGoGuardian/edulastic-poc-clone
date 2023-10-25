@@ -7,6 +7,10 @@ import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { FieldLabel } from '@edulastic/common'
 import {
+  EXTERNAL_SCORE_TYPES,
+  getDefaultTestTypesForUser,
+} from '@edulastic/constants/reportUtils/dataWarehouseReports'
+import {
   ReportFiltersContainer,
   StyledEduButton,
   ReportFiltersWrapper,
@@ -30,10 +34,6 @@ import {
   staticDropDownData,
 } from '../../utils'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
-import {
-  EXTERNAL_SCORE_TYPES,
-  getDefaultTestTypesForUser,
-} from '../../../common/utils'
 
 const filtersDefaultValues = [
   {

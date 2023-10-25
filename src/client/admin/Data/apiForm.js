@@ -1117,6 +1117,14 @@ export const apiForms = [
     method: 'post',
     fields: [
       {
+        key: 'groupId',
+        name: 'groupId',
+        displayName: 'Assignment Group Id',
+        placeholder: 'Enter assignment group id',
+        type: 'string',
+        required: true,
+      },
+      {
         name: 'activateUtaId',
         displayName: 'Activate UTA Id',
         placeholder: 'Enter UTA id to make it active',

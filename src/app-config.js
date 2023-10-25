@@ -1,8 +1,12 @@
+const pearDeckSLD = 'peardeck' // Peardeck Second-level Domain
 // Don't put any sensitive information
 // https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
-const cdnURI =
+let cdnURI =
   process.env.REACT_APP_CDN_URI ||
   'https://cdnedupoc.snapwiz.net/edulasticv2-development'
+if (window.origin.indexOf(pearDeckSLD) > -1) {
+  cdnURI = process.env.REACT_APP_PEAR_CDN_URI || cdnURI
+}
 const appEnv = process.env.REACT_APP_ENV
 const appStage = process.env.REACT_APP_STAGE || 'development'
 // __CLIENT_VERSION__ is injected to envs in poi.config.js
@@ -27,9 +31,12 @@ const testletMathJax =
 
 const sentryURI =
   process.env.REACT_APP_SENTRY_DSN || process.env.REACT_APP_SENTRY_URI
-const segmentURI =
+let segmentURI =
   process.env.REACT_APP_SEGMENT_URI ||
   `${thirdPartyLibPath}/segmentjs/v4.2.2/analytics.js`
+if (window.origin.indexOf(pearDeckSLD) > -1) {
+  segmentURI = process.env.REACT_APP_PEAR_SEGMENT_URI || segmentURI
+}
 const segmentVersion = process.env.REACT_APP_SEGMENT_VERSION || '4.2.2'
 const isSegmentEnabled = process.env.REACT_APP_ENABLE_SEGMENT === 'true'
 const isChatWidgetEnabled = process.env.REACT_APP_ENABLE_CHAT_WIDGET === 'true'

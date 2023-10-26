@@ -76,6 +76,12 @@ export const SignedStackedBarChartContainer = ({
               })`}
             </Col>
           </Row>
+          <Row className="tooltip-row" type="flex" justify="start">
+            <Col className="tooltip-key">Absent: </Col>
+            <Col className="tooltip-value">
+              {`${payload[0].payload.absentStudents} (count)`}
+            </Col>
+          </Row>
         </div>
       )
     }
@@ -169,22 +175,25 @@ export const SignedStackedBarChartContainer = ({
   const legendPayload = getLegendPayload()
 
   return (
-    <SignedStackedBarChart
-      margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
-      data={chartData}
-      barsData={chartSpecifics.barsData}
-      xAxisDataKey="dimensionId"
-      getTooltipJSX={getTooltipJSX}
-      onBarClickCB={_onBarClickCB}
-      onResetClickCB={_onResetClickCB}
-      getXTickText={getXTickText}
-      yAxisLabel={chartSpecifics.yAxisLabel}
-      yTickFormatter={yTickFormatter}
-      barsLabelFormatter={barsLabelFormatter}
-      filter={filter}
-      legendPayload={legendPayload}
-      pageSize={10}
-      {...chartProps}
-    />
+    <>
+      <div>Excludes absent students</div>
+      <SignedStackedBarChart
+        margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
+        data={chartData}
+        barsData={chartSpecifics.barsData}
+        xAxisDataKey="dimensionId"
+        getTooltipJSX={getTooltipJSX}
+        onBarClickCB={_onBarClickCB}
+        onResetClickCB={_onResetClickCB}
+        getXTickText={getXTickText}
+        yAxisLabel={chartSpecifics.yAxisLabel}
+        yTickFormatter={yTickFormatter}
+        barsLabelFormatter={barsLabelFormatter}
+        filter={filter}
+        legendPayload={legendPayload}
+        pageSize={10}
+        {...chartProps}
+      />
+    </>
   )
 }

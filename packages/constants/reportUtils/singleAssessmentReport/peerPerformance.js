@@ -46,7 +46,7 @@ const getDisplayValue = (data, record, analyseBy, columnKey) => {
     analyseBy === analyseByOptions.aboveBelowStandard
   ) {
     printData = `${data} (${Math.abs(
-      (record[columnKey] * 100) / record.totalStudents
+      (record[columnKey] * 100) / record.submittedStudents
     )?.toFixed(0)}%)`
   }
   return printData
@@ -85,7 +85,7 @@ const transformByProficiencyBand = (data, bandInfo) => {
     const bandDetails = calculateStudentsInPerformanceBands(
       item?.performanceBandDetails,
       bandInfo?.performanceBand,
-      item?.totalStudents
+      item?.submittedStudents
     )
     return {
       ...item,

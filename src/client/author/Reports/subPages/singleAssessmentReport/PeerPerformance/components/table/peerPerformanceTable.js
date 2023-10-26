@@ -123,7 +123,7 @@ export const PeerPerformanceTable = ({
                 {rec[columnKey] === 0
                   ? 'N/A'
                   : `${Math.abs(
-                      (rec[columnKey] * 100) / rec.totalStudents
+                      (rec[columnKey] * 100) / rec.submittedStudents
                     ).toFixed(0)}%`}
               </Col>
             </Row>

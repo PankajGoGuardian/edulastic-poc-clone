@@ -15,11 +15,10 @@ const MultiSelectDropdown = ({
   onBlur = () => {},
   maxTagCount = 4,
   height = 'auto',
-  inputBoxHeight = 'auto',
-  tagMaxWidth = 'unset',
-  tagHeight = '24px',
+  InputComponent = SelectInputStyled,
   labelFontSize = '10px',
   displayLabel = true,
+  className,
 }) => {
   const [searchText, setSearchText] = useState('')
   const handleSearch = useCallback(
@@ -57,11 +56,9 @@ const MultiSelectDropdown = ({
           {label}
         </FilterLabel>
       )}
-      <SelectInputStyled
+      <InputComponent
+        className={className}
         height={height}
-        $inputBoxHeight={inputBoxHeight}
-        $tagHeight={tagHeight}
-        $tagMaxWidth={tagMaxWidth}
         showSearch={showSearch}
         placeholder={`All ${label}`}
         mode="multiple"
@@ -86,7 +83,7 @@ const MultiSelectDropdown = ({
         }
       >
         {dropDownData}
-      </SelectInputStyled>
+      </InputComponent>
     </>
   )
 }

@@ -1,6 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  useLayoutEffect,
+  useRef,
+} from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import ResizeObserver from 'rc-resize-observer'
 import { withNamespaces } from '@edulastic/localization'
 import { FlexContainer, SpinLoader } from '@edulastic/common'
 import { get, head, isEmpty } from 'lodash'
@@ -25,6 +32,8 @@ import dropDownData from './static/json/dropDownData.json'
 import { downloadCSV, getFilterOptions } from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
 import MultiSelectDropdown from '../../../common/components/widgets/MultiSelectDropdown'
+import { StyledSelectInput } from '../common/components/styledComponents'
+import { updateFilterTagsCount } from './utils'
 
 const compareBy = {
   key: 'standard',
@@ -49,11 +58,13 @@ const StudentProgressProfile = ({
   const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTests, setSelectedTests] = useState([])
+  const [maxTagsCount, setMaxTagsCount] = useState(7)
   const [selectedTrend, setSelectedTrend] = useState('')
   const [pageFilters, setPageFilters] = useState({
     page: 0,
     pageSize: 10,
   })
+  const renderFiltersRef = useRef(null)
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -143,6 +154,10 @@ const StudentProgressProfile = ({
       _data
     )
 
+  useLayoutEffect(() => {
+    updateFilterTagsCount(renderFiltersRef, selectedTests, setMaxTagsCount)
+  }, [selectedTests, setMaxTagsCount, renderFiltersRef])
+
   const [data, trendCount] = useGetBandData(
     metricInfo,
     compareBy.key,
@@ -188,19 +203,32 @@ const StudentProgressProfile = ({
         isSharedReport={isSharedReport}
         showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
-          <FlexContainer flex="1 1 0" style={{ gap: '5px' }}>
-            <MultiSelectDropdown
-              dataCy="tests"
-              label="Test(s)"
-              onChange={setSelectedTests}
-              value={selectedTests}
-              options={testsFilterDropdownOptions}
-              displayLabel={false}
-              maxTagCount={3}
-              tagMaxWidth="145px"
-              inputBoxHeight="32px"
-              tagHeight="20px"
-            />
+          <FlexContainer
+            flex="1 1 0"
+            style={{ gap: '5px' }}
+            ref={renderFiltersRef}
+          >
+            <ResizeObserver
+              onResize={() => {
+                updateFilterTagsCount(
+                  renderFiltersRef,
+                  selectedTests,
+                  setMaxTagsCount
+                )
+              }}
+            >
+              <MultiSelectDropdown
+                className="student-standards-progress-tests-filter"
+                dataCy="tests"
+                label="Test(s)"
+                onChange={setSelectedTests}
+                value={selectedTests}
+                options={testsFilterDropdownOptions}
+                displayLabel={false}
+                maxTagCount={maxTagsCount}
+                InputComponent={StyledSelectInput}
+              />
+            </ResizeObserver>
             <ControlDropDown
               prefix="Analyze By"
               by={analyseBy}

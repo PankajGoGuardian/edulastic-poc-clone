@@ -54,6 +54,7 @@ import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+import { StyledSelectInput } from '../styledComponents'
 
 const filtersDefaultValues = [
   {
@@ -588,7 +589,7 @@ const StudentProfileReportFilters = ({
           align="middle"
           style={{
             paddingLeft: '10px',
-            width: '75%',
+            width: 'calc(100% + 150px)',
             float: 'right',
             paddingTop: '5px',
             display: reportId ? 'none' : 'flex',
@@ -704,8 +705,7 @@ const StudentProfileReportFilters = ({
                   options={domainOptions}
                   displayLabel={false}
                   maxTagCount={2}
-                  tagHeight="20px"
-                  inputBoxHeight="32px"
+                  InputComponent={StyledSelectInput}
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
@@ -732,8 +732,7 @@ const StudentProfileReportFilters = ({
                   options={standardOptions}
                   displayLabel={false}
                   maxTagCount={2}
-                  tagHeight="20px"
-                  inputBoxHeight="32px"
+                  InputComponent={StyledSelectInput}
                 />
               </StyledDropDownContainer>
             </>

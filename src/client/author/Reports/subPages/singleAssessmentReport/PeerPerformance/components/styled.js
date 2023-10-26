@@ -1,7 +1,4 @@
 import styled from 'styled-components'
-import { Icon } from 'antd'
-import { fadedGrey } from '@edulastic/colors'
-import { IconInfo } from '@edulastic/icons'
 import { StyledTable as Table } from '../../../../common/styled'
 import { FilterDropDownWithDropDown } from '../../../../common/components/widgets/filterDropDownWithDropDown'
 
@@ -26,11 +23,6 @@ export const StyledFilterDropDownWithDropDown = styled(
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
-      table thead tr th {
-        .custom-column-title {
-          display: flex;
-        }
-      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
@@ -63,14 +55,6 @@ export const StyledTable = styled(Table)`
         }
       }
       .ant-table-tbody {
-        tr:first-child {
-          background: ${fadedGrey};
-          td {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size 12px;
-          }
-        }
         td {
           padding: 10px 0px 10px 8px;
           font-size: 11px;
@@ -91,14 +75,6 @@ export const StyledTable = styled(Table)`
       }
 
       tbody {
-        tr:first-child {
-          background: ${fadedGrey};
-          td {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size 12px;
-          }
-        }
         tr {
           td {
             &:nth-last-child(-n + ${(props) => props.colouredCellsNo}) {
@@ -114,11 +90,4 @@ export const StyledTable = styled(Table)`
       }
     }
   }
-`
-export const StyledInfoIcon = styled(IconInfo)`
-  margin-left: ${({ $marginLeft }) => $marginLeft || '0'};
-`
-export const StyledIcon = styled(Icon)`
-  font-size: ${({ $fontSize }) => $fontSize || '12px'};
-  margin-right: ${({ $marginRight }) => $marginRight || '0'};
 `

@@ -16,9 +16,15 @@ import {
   signUpState,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
+import {
+  DragDrop,
+  notification,
+  OfflineNotifier,
+  WithResources,
+} from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
+import { storeAccessToken } from '@edulastic/api/src/utils/Storage'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -84,6 +90,12 @@ import CreateAssignmentModal from './author/AssignmentCreate'
 import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
 import { SectionsStartPage } from './student/SectionsStart'
 import TestPreview from './author/Assignments/components/Container/TestPreview'
+import appConfig from '../app-config'
+import {
+  isPearDomain,
+  pearIdentifyProduct,
+  pearIdentifyUser,
+} from '../utils/pear'
 
 const {
   ASSESSMENT,
@@ -263,10 +275,30 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location } = this.props
+    const { fetchUser, location, history } = this.props
     const publicPath = location.pathname.split('/').includes('public')
     const ssoPath = location.pathname.split('/').includes('auth')
     const partnerPath = location.pathname.split('/').includes('partnerLogin')
+    const pearLoginPath = location.pathname.includes('/pear/sign-in')
+    const pearSignUpPath = location.pathname.includes('/pear/sign-up')
+
+    if (pearLoginPath) {
+      try {
+        const token = new URLSearchParams(location.search).get('token')
+        if (token) {
+          const { _id, role } = JSON.parse(window.atob(token.split('.')[1]))
+
+          storeAccessToken(token, _id, role)
+        }
+      } catch (e) {
+        console.error('Invalid pear login')
+      }
+    }
+
+    if (pearSignUpPath) {
+      history.push(`/GetStarted/${location.search}`)
+    }
+
     const isV1Redirect =
       location.pathname.includes('/fwd') ||
       isLocationInTestRedirectRoutes(location)
@@ -647,317 +679,327 @@ class App extends Component {
       userInfo?.isPolicyAccepted === false
 
     return (
-      <div>
-        {showPrivacyPolicyModal && (
-          <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
-            <PrivacyPolicyModal
-              userID={userInfo._id}
-              userRole={userRole}
-              roleuser={roleuser}
+      <WithResources
+        resources={isPearDomain ? [`${appConfig.pearScriptPath}`] : []}
+        fallBack={<Loading />}
+        onLoaded={() => {
+          pearIdentifyProduct()
+          pearIdentifyUser(user?.user?.pearToken)
+        }}
+      >
+        <div>
+          {showPrivacyPolicyModal && (
+            <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
+              <PrivacyPolicyModal
+                userID={userInfo._id}
+                userRole={userRole}
+                roleuser={roleuser}
+              />
+            </FeaturesSwitch>
+          )}
+          {showClassCreationModal && (
+            <CreateClassModal isVisible={showClassCreationModal} />
+          )}
+          {showAssignmentCreationModal && (
+            <CreateAssignmentModal visible={showAssignmentCreationModal} />
+          )}
+          <WelcomeContainer />
+          {(isSAWithoutSchools ||
+            (!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole))) && (
+            <AdminAlertModal
+              history={history}
+              setRequestQuoteModal={setRequestQuoteModal}
+              setShowSelectStates={this.setShowSelectStates}
             />
-          </FeaturesSwitch>
-        )}
-        {showClassCreationModal && (
-          <CreateClassModal isVisible={showClassCreationModal} />
-        )}
-        {showAssignmentCreationModal && (
-          <CreateAssignmentModal visible={showAssignmentCreationModal} />
-        )}
-        <WelcomeContainer />
-        {(isSAWithoutSchools ||
-          (!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole))) && (
-          <AdminAlertModal
-            history={history}
-            setRequestQuoteModal={setRequestQuoteModal}
+          )}
+          {isRequestQuoteModalVisible && (
+            <RequestQuoteModal
+              visible={isRequestQuoteModalVisible}
+              onCancel={this.closeRequestQuoteModal}
+            />
+          )}
+          {showVerifyEmailModal &&
+            !window.location.pathname.includes('/verify/') && (
+              <VerifyEmailPopup />
+            )}
+          {isRequestOrSubmitSuccessModalVisible && (
+            <InvoiceSuccessModal
+              visible={isRequestOrSubmitSuccessModalVisible}
+              onCancel={this.closeRequestOrSubmitSuccessModal}
+            />
+          )}
+          <CalendlyScheduleModal
+            visible={showSelectStates}
             setShowSelectStates={this.setShowSelectStates}
           />
-        )}
-        {isRequestQuoteModalVisible && (
-          <RequestQuoteModal
-            visible={isRequestQuoteModalVisible}
-            onCancel={this.closeRequestQuoteModal}
-          />
-        )}
-        {showVerifyEmailModal &&
-          !window.location.pathname.includes('/verify/') && (
-            <VerifyEmailPopup />
+          {shouldWatch && <RealTimeCollectionWatch />}
+          {userRole && (
+            <CheckRoutePatternsEffectContainer
+              role={userRole}
+              location={location}
+              history={history}
+            />
           )}
-        {isRequestOrSubmitSuccessModalVisible && (
-          <InvoiceSuccessModal
-            visible={isRequestOrSubmitSuccessModalVisible}
-            onCancel={this.closeRequestOrSubmitSuccessModal}
-          />
-        )}
-        <CalendlyScheduleModal
-          visible={showSelectStates}
-          setShowSelectStates={this.setShowSelectStates}
-        />
-        {shouldWatch && <RealTimeCollectionWatch />}
-        {userRole && (
-          <CheckRoutePatternsEffectContainer
-            role={userRole}
-            location={location}
-            history={history}
-          />
-        )}
-        <StudentSessionExpiredModal />
-        <UserTokenExpiredModal />
-        <AppUpdate visible={showAppUpdate} />
-        <OfflineNotifier />
-        {tutorial && (
-          <Joyride continuous showProgress showSkipButton steps={tutorial} />
-        )}
-        <Suspense fallback={<Loading />}>
-          <DragDrop.Provider>
-            {(isProxyUser || isDemoAccountProxy) && (
-              <Banner
-                text={bannerText}
-                showButton
-                buttonText={bannerButtonText}
-                onButtonClick={logout}
-              />
-            )}
-            <ThemeProvider theme={themes.default}>
-              <Switch>
-                {location.pathname.toLocaleLowerCase() !==
-                  redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
-                  <Redirect exact to={redirectRoute} />
-                ) : null}
-                <PrivateRoute
-                  path="/author"
-                  component={Author}
-                  redirectPath={redirectRoute}
-                  notifications={
-                    roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                      ? ADMIN_FIRESTORE_NOTIFICATIONS
-                      : roleuser.TEACHER === userRole
-                      ? TEACHER_FIRESTORE_NOTIFICATIONS
-                      : null
-                  }
+          <StudentSessionExpiredModal />
+          <UserTokenExpiredModal />
+          <AppUpdate visible={showAppUpdate} />
+          <OfflineNotifier />
+          {tutorial && (
+            <Joyride continuous showProgress showSkipButton steps={tutorial} />
+          )}
+          <Suspense fallback={<Loading />}>
+            <DragDrop.Provider>
+              {(isProxyUser || isDemoAccountProxy) && (
+                <Banner
+                  text={bannerText}
+                  showButton
+                  buttonText={bannerButtonText}
+                  onButtonClick={logout}
                 />
-                <PrivateRoute
-                  path="/publisher"
-                  component={Publisher}
-                  redirectPath={redirectRoute}
-                />
-                <PrivateRoute
-                  path="/home"
-                  component={Dashboard}
-                  notifications={[NotificationListener]}
-                  redirectPath={redirectRoute}
-                />
-                <PrivateRoute
-                  path="/admin"
-                  component={Admin}
-                  redirectPath={redirectRoute}
-                  notifications={
-                    roleuser.EDULASTIC_ADMIN
-                      ? [AdminNotificationListener]
-                      : null
-                  }
-                />
-                <PrivateRoute
-                  path={[
-                    '/uploadAnswerSheets',
-                    '/uploadAnswerSheets/cameraScan',
-                    '/uploadAnswerSheets/scanProgress',
-                  ]}
-                  component={ScanScore}
-                  redirectPath={redirectRoute}
-                  notifications={[BubbleScanNotificationsListener]}
-                />
-                <Route exact path="/kid" component={Kid} />
-                <LoggedOutRoute
-                  exact
-                  path="/resetPassword/"
-                  component={ResetPassword}
-                  redirectPath={defaultRoute}
-                />
-                <Route
-                  path="/verify/:vc"
-                  component={VerifyEmail}
-                  redirectPath={defaultRoute}
-                />
-                <Route
-                  exact
-                  path="/public/parentInvitation/:code"
-                  render={() => <SetParentPassword parentInvitation />}
-                />
-                <LoggedOutRoute
-                  path="/district/:orgShortName"
-                  component={DistrictRoutes}
-                  redirectPath={defaultRoute}
-                  orgType="district"
-                />
-                <LoggedOutRoute
-                  path="/districtLogin/:orgShortName"
-                  component={DistrictRoutes}
-                  redirectPath={defaultRoute}
-                  orgType="districtLogin"
-                />
-                <LoggedOutRoute
-                  path="/school/:orgShortName"
-                  component={DistrictRoutes}
-                  redirectPath={defaultRoute}
-                  orgType="school"
-                />
-                <LoggedOutRoute
-                  path="/Signup"
-                  component={TeacherSignup}
-                  redirectPath={defaultRoute}
-                  notifications={
-                    roleuser.TEACHER === userRole
-                      ? [ClassSyncNotification]
-                      : null
-                  }
-                />
-                <LoggedOutRoute
-                  exact
-                  path="/partnerLogin/:partner/Signup"
-                  component={TeacherSignup}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  path="/login"
-                  component={Auth}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  exact
-                  path="/partnerLogin/:partner"
-                  component={Auth}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  path="/GetStarted"
-                  component={GetStarted}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  exact
-                  path="/partnerLogin/:partner/GetStarted"
-                  component={GetStarted}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  path="/AdminSignup"
-                  component={AdminSignup}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  exact
-                  path="/partnerLogin/:partner/AdminSignup"
-                  component={AdminSignup}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  path="/StudentSignup"
-                  component={StudentSignup}
-                  redirectPath={defaultRoute}
-                />
-                <LoggedOutRoute
-                  exact
-                  path="/partnerLogin/:partner/StudentSignup"
-                  component={StudentSignup}
-                  redirectPath={defaultRoute}
-                />
-                {/* New route is created to handle the section submit review page.
+              )}
+              <ThemeProvider theme={themes.default}>
+                <Switch>
+                  {location.pathname.toLocaleLowerCase() !==
+                    redirectRoute.toLocaleLowerCase() &&
+                  redirectRoute !== '' ? (
+                    <Redirect exact to={redirectRoute} />
+                  ) : null}
+                  <PrivateRoute
+                    path="/author"
+                    component={Author}
+                    redirectPath={redirectRoute}
+                    notifications={
+                      roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                        ? ADMIN_FIRESTORE_NOTIFICATIONS
+                        : roleuser.TEACHER === userRole
+                        ? TEACHER_FIRESTORE_NOTIFICATIONS
+                        : null
+                    }
+                  />
+                  <PrivateRoute
+                    path="/publisher"
+                    component={Publisher}
+                    redirectPath={redirectRoute}
+                  />
+                  <PrivateRoute
+                    path="/home"
+                    component={Dashboard}
+                    notifications={[NotificationListener]}
+                    redirectPath={redirectRoute}
+                  />
+                  <PrivateRoute
+                    path="/admin"
+                    component={Admin}
+                    redirectPath={redirectRoute}
+                    notifications={
+                      roleuser.EDULASTIC_ADMIN
+                        ? [AdminNotificationListener]
+                        : null
+                    }
+                  />
+                  <PrivateRoute
+                    path={[
+                      '/uploadAnswerSheets',
+                      '/uploadAnswerSheets/cameraScan',
+                      '/uploadAnswerSheets/scanProgress',
+                    ]}
+                    component={ScanScore}
+                    redirectPath={redirectRoute}
+                    notifications={[BubbleScanNotificationsListener]}
+                  />
+                  <Route exact path="/kid" component={Kid} />
+                  <LoggedOutRoute
+                    exact
+                    path="/resetPassword/"
+                    component={ResetPassword}
+                    redirectPath={defaultRoute}
+                  />
+                  <Route
+                    path="/verify/:vc"
+                    component={VerifyEmail}
+                    redirectPath={defaultRoute}
+                  />
+                  <Route
+                    exact
+                    path="/public/parentInvitation/:code"
+                    render={() => <SetParentPassword parentInvitation />}
+                  />
+                  <LoggedOutRoute
+                    path="/district/:orgShortName"
+                    component={DistrictRoutes}
+                    redirectPath={defaultRoute}
+                    orgType="district"
+                  />
+                  <LoggedOutRoute
+                    path="/districtLogin/:orgShortName"
+                    component={DistrictRoutes}
+                    redirectPath={defaultRoute}
+                    orgType="districtLogin"
+                  />
+                  <LoggedOutRoute
+                    path="/school/:orgShortName"
+                    component={DistrictRoutes}
+                    redirectPath={defaultRoute}
+                    orgType="school"
+                  />
+                  <LoggedOutRoute
+                    path="/Signup"
+                    component={TeacherSignup}
+                    redirectPath={defaultRoute}
+                    notifications={
+                      roleuser.TEACHER === userRole
+                        ? [ClassSyncNotification]
+                        : null
+                    }
+                  />
+                  <LoggedOutRoute
+                    exact
+                    path="/partnerLogin/:partner/Signup"
+                    component={TeacherSignup}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    path="/login"
+                    component={Auth}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    exact
+                    path="/partnerLogin/:partner"
+                    component={Auth}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    path="/GetStarted"
+                    component={GetStarted}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    exact
+                    path="/partnerLogin/:partner/GetStarted"
+                    component={GetStarted}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    path="/AdminSignup"
+                    component={AdminSignup}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    exact
+                    path="/partnerLogin/:partner/AdminSignup"
+                    component={AdminSignup}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    path="/StudentSignup"
+                    component={StudentSignup}
+                    redirectPath={defaultRoute}
+                  />
+                  <LoggedOutRoute
+                    exact
+                    path="/partnerLogin/:partner/StudentSignup"
+                    component={StudentSignup}
+                    redirectPath={defaultRoute}
+                  />
+                  {/* New route is created to handle the section submit review page.
                 It renders the same component as the final submit review page. */}
-                <PrivateRoute
-                  path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-                  component={TestAttemptReview}
+                  <PrivateRoute
+                    path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                    component={TestAttemptReview}
+                  />
+                  <PrivateRoute
+                    path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
+                    component={TestAttemptReview}
+                  />
+                  <Route
+                    path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
+                    component={SectionsStartPage}
+                  />
+                  <Route
+                    path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                    render={() => <AssessmentPlayer defaultAP />}
+                  />
+                  <Route
+                    path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                    render={() => <AssessmentPlayer defaultAP />}
+                  />
+                  <Route
+                    path={`/student/${ASSESSMENT}/:id`}
+                    render={() => <AssessmentPlayer defaultAP />}
+                  />
+                  <PrivateRoute
+                    path="/student/test-summary"
+                    component={TestAttemptReview}
+                  />
+                  <Route
+                    path="/student/seb-quit-confirm"
+                    component={SebQuitConfirm}
+                  />
+                  <Route
+                    path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                    render={() => <AssessmentPlayer defaultAP={false} />}
+                  />
+                  <Route
+                    path={`/student/${PRACTICE}/:id`}
+                    render={() => <AssessmentPlayer defaultAP={false} />}
+                  />
+                  <Route
+                    path="/public/test/:id"
+                    render={() => <TestDemoPlayer />}
+                  />
+                  <Route
+                    path="/public/test-preview/:testId"
+                    render={() => <TestPreview />}
+                  />
+                  <Route
+                    path="/v1/testItem/:id"
+                    render={() => <TestItemDemoPlayer />}
+                  />
+                  <Route exact path="/fwd" render={() => <V1Redirect />} />
+                  <Route path="/inviteTeacher" render={() => <Invite />} />
+                  <Route path="/auth" render={() => <Auth />} />
+                  {testRedirectRoutes.map((route) => {
+                    return (
+                      <Route
+                        path={route}
+                        component={RedirectToTest}
+                        key={route}
+                      />
+                    )
+                  })}
+                  <Route
+                    path="/public/view-test/:testId"
+                    render={(props) => <PublicTest {...props} />}
+                  />
+                  <PrivateRoute
+                    path="/assignments/embed/:testId"
+                    redirectPath={redirectRoute}
+                    component={AssignmentEmbedLink}
+                  />
+                  <Route
+                    path="/audio-test"
+                    render={() => <AudioTagPlayer user={user?.user} />}
+                  />
+                  <Redirect exact to={defaultRoute} />
+                </Switch>
+              </ThemeProvider>
+            </DragDrop.Provider>
+            {cliBannerVisible &&
+              canShowCliBanner &&
+              !sessionStorage.cliBannerShown && (
+                <CLIAccessBanner
+                  visible={cliBannerVisible && canShowCliBanner}
+                  location={location}
+                  onClose={() => {
+                    this.setState({ canShowCliBanner: false })
+                    sessionStorage.cliBannerShown = true
+                  }}
                 />
-                <PrivateRoute
-                  path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
-                  component={TestAttemptReview}
-                />
-                <Route
-                  path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
-                  component={SectionsStartPage}
-                />
-                <Route
-                  path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-                  render={() => <AssessmentPlayer defaultAP />}
-                />
-                <Route
-                  path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-                  render={() => <AssessmentPlayer defaultAP />}
-                />
-                <Route
-                  path={`/student/${ASSESSMENT}/:id`}
-                  render={() => <AssessmentPlayer defaultAP />}
-                />
-                <PrivateRoute
-                  path="/student/test-summary"
-                  component={TestAttemptReview}
-                />
-                <Route
-                  path="/student/seb-quit-confirm"
-                  component={SebQuitConfirm}
-                />
-                <Route
-                  path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-                  render={() => <AssessmentPlayer defaultAP={false} />}
-                />
-                <Route
-                  path={`/student/${PRACTICE}/:id`}
-                  render={() => <AssessmentPlayer defaultAP={false} />}
-                />
-                <Route
-                  path="/public/test/:id"
-                  render={() => <TestDemoPlayer />}
-                />
-                <Route
-                  path="/public/test-preview/:testId"
-                  render={() => <TestPreview />}
-                />
-                <Route
-                  path="/v1/testItem/:id"
-                  render={() => <TestItemDemoPlayer />}
-                />
-                <Route exact path="/fwd" render={() => <V1Redirect />} />
-                <Route path="/inviteTeacher" render={() => <Invite />} />
-                <Route path="/auth" render={() => <Auth />} />
-                {testRedirectRoutes.map((route) => {
-                  return (
-                    <Route
-                      path={route}
-                      component={RedirectToTest}
-                      key={route}
-                    />
-                  )
-                })}
-                <Route
-                  path="/public/view-test/:testId"
-                  render={(props) => <PublicTest {...props} />}
-                />
-                <PrivateRoute
-                  path="/assignments/embed/:testId"
-                  redirectPath={redirectRoute}
-                  component={AssignmentEmbedLink}
-                />
-                <Route
-                  path="/audio-test"
-                  render={() => <AudioTagPlayer user={user?.user} />}
-                />
-                <Redirect exact to={defaultRoute} />
-              </Switch>
-            </ThemeProvider>
-          </DragDrop.Provider>
-          {cliBannerVisible &&
-            canShowCliBanner &&
-            !sessionStorage.cliBannerShown && (
-              <CLIAccessBanner
-                visible={cliBannerVisible && canShowCliBanner}
-                location={location}
-                onClose={() => {
-                  this.setState({ canShowCliBanner: false })
-                  sessionStorage.cliBannerShown = true
-                }}
-              />
-            )}
-        </Suspense>
-      </div>
+              )}
+          </Suspense>
+        </div>
+      </WithResources>
     )
   }
 }

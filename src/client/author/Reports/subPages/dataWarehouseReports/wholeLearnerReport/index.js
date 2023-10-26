@@ -12,7 +12,7 @@ import {
   reportNavType,
 } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../../common/components/Header'
-import { NoDataContainer, ReportContainer } from '../../../common/styled'
+import { NoDataContainer } from '../../../common/styled'
 import Summary from './components/Summary'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import WholeLearnerReportFilters from './components/Filters/Filters'
@@ -53,6 +53,7 @@ import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
+import { ReportContainer } from './common/styled'
 
 const { downloadCSV } = reportUtils.common
 

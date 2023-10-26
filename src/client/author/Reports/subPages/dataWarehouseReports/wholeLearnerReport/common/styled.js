@@ -214,3 +214,10 @@ export const StyledButton = styled(Button)`
     background: transparent;
   }
 `
+export const ReportContainer = styled.div`
+  @media print {
+    width: 100%;
+    overflow: visible;
+    zoom: 50%;
+  }
+`

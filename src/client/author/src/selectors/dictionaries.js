@@ -111,7 +111,7 @@ export const getDictionariesAlignmentsSelector = createSelector(
   (state) => state.alignments
 )
 export const standardsSelector = createSelector(stateSelector, (state) => {
-  const standardsWithId = state.standards.data.map((el) => ({
+  const standardsWithId = state.standards?.data?.map((el) => ({
     _id: el.id,
     ...el,
   }))

@@ -25,6 +25,8 @@ const ManageSubscriptionByDistrictAndUserId = ({
   setLicenseDetails,
   licenseDetails = {},
   userId,
+  fieldData,
+  setFieldData,
 }) => {
   const [isVisible, setVisible] = useState(false)
 
@@ -140,6 +142,8 @@ const ManageSubscriptionByDistrictAndUserId = ({
             licenseIds={licenseDetails?.licenseIds}
             districtId={districtId}
             licenseOwnerId={licenseDetails?.ownerId}
+            fieldData={fieldData}
+            setFieldData={setFieldData}
           />
         </SubscriptionContainer>
       </ManageSubscriptionModal>

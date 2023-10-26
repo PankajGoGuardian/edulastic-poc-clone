@@ -274,7 +274,7 @@ const AddSubscriptionModal = ({
           onChange={handleSelectDistrict}
         >
           {(isFetchingOrganization ? [] : districtList)
-            .sort((a, b) => {
+            ?.sort((a, b) => {
               const _aName = (a.name || '').toLowerCase()
               const _bName = (b.name || '').toLowerCase()
               return _aName.localeCompare(_bName)
@@ -319,6 +319,8 @@ const AddSubscriptionModal = ({
             setLicenseDetails={setLicenseDetails}
             licenseDetails={licenseDetails}
             userId={userId}
+            fieldData={fieldData}
+            setFieldData={setFieldData}
           />
         </EduIf>
       </StyledFieldRow>

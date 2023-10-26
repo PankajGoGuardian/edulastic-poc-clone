@@ -30,6 +30,7 @@ const EMPTY_ARRAY = []
 const EXTERNAL_TEST_KEY_SEPARATOR = '__'
 const EXTERNAL_TEST_NAME_SEPARATOR = '-'
 const LAST_PAGE_INDEX = -1
+const ALL_FILTER_VALUE = 'all'
 
 const performanceBandKeys = {
   INTERNAL: 'threshold',
@@ -639,6 +640,7 @@ module.exports = {
   LAST_PAGE_INDEX,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
+  ALL_FILTER_VALUE,
   tableToDBSortOrderMap,
   dbToTableSortOrderMap,
   performanceBandKeys,

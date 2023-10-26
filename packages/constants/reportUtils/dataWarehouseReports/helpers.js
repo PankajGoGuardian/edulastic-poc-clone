@@ -7,9 +7,9 @@ const {
   DEFAULT_ADMIN_TEST_TYPE_MAP,
 } = require('../../const/testTypes')
 const {
+  ALL_FILTER_VALUE,
   PERIOD_TYPES,
   resetStudentFilters: resetFilters,
-  allFilterValue,
 } = require('../common')
 const {
   EXTERNAL_SCORE_PREFIX,
@@ -24,7 +24,7 @@ function buildRequestFilters(_settings) {
   const _requestFilters = {}
   Object.keys(_settings.requestFilters).forEach((filterType) => {
     _requestFilters[filterType] =
-      _settings.requestFilters[filterType]?.toLowerCase?.() === allFilterValue
+      _settings.requestFilters[filterType]?.toLowerCase?.() === ALL_FILTER_VALUE
         ? ''
         : _settings.requestFilters[filterType]
   })

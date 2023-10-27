@@ -40,7 +40,7 @@ export const CALC_MODES = {
 
 export const RND_PROPS = {
   defaultProps: { x: 0, y: 0, width: 350, height: 500 },
-  [CALC_MODES.BASIC_DESMOS]: { x: 0, y: 0, width: 350, height: 500 },
+  [CALC_MODES.BASIC_DESMOS]: { x: 0, y: 0, width: 410, height: 500 },
   [CALC_MODES.MATRIX_DESMOS]: { x: 0, y: 0, width: 600, height: 500 },
   [CALC_MODES.SCIENTIFIC_DESMOS]: { x: 0, y: 0, width: 600, height: 500 },
   [CALC_MODES.GRAPHING_DESMOS]: { x: 0, y: 0, width: 600, height: 400 },

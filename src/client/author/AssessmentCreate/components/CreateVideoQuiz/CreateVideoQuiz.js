@@ -9,13 +9,12 @@ import {
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
-import { Col, Form, Row, Spin, Switch, Tooltip } from 'antd'
+import { Col, Form, Row, Spin } from 'antd'
 import styled from 'styled-components'
-import { IconPlayButton, IconInfo } from '@edulastic/icons'
+import { IconPlayButton } from '@edulastic/icons'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { videoContentRestrictionTypes } from '@edulastic/constants/const/test'
 import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.png'
 import {
   getYoutubeThumbnailSelector,
@@ -80,7 +79,6 @@ const CreateVideoQuiz = ({
   isVideoQuizAndAIEnabled,
   history,
 }) => {
-  const [isModerateRestriction, setIsModerateRestriction] = useState(false)
   const [linkValue, setLinkValue] = useState('')
   const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
   const hasError = !isValidVideoUrl(linkValue)
@@ -115,10 +113,7 @@ const CreateVideoQuiz = ({
   useEffect(() => {
     if (linkValue.length && ytThumbnail.length) {
       setThumbnail(ytThumbnail)
-      const videoContentRestriction = isModerateRestriction
-        ? videoContentRestrictionTypes.MODERATE
-        : videoContentRestrictionTypes.STRICT
-      onValidUrl(linkValue, ytThumbnail, videoContentRestriction)
+      onValidUrl?.(linkValue, ytThumbnail)
     }
   }, [ytThumbnail])
 
@@ -160,37 +155,6 @@ const CreateVideoQuiz = ({
                 margin="0px 0px 15px"
               />
             </Form.Item>
-            <Row type="flex" align="middle" justify="space-between">
-              <Row type="flex" align="middle" gutter={[5, 0]}>
-                <span style={{ marginRight: 5 }}>
-                  Switch to Moderate Restricted Mode{' '}
-                </span>
-                <Tooltip
-                  title="This will open/play the video by default when opened by students"
-                  placement="bottom"
-                >
-                  <IconInfo />
-                </Tooltip>
-              </Row>
-              <Row type="flex" align="middle">
-                <Tooltip
-                  title={
-                    isModerateRestriction
-                      ? 'Restricted mode: Moderate'
-                      : 'Restricted mode: Strict'
-                  }
-                  placement="bottom"
-                >
-                  <Switch
-                    checked={isModerateRestriction}
-                    onChange={(checked) => setIsModerateRestriction(checked)}
-                  />
-                </Tooltip>
-                <StyledSwitchText>
-                  {isModerateRestriction ? 'On' : 'Off'}
-                </StyledSwitchText>
-              </Row>
-            </Row>
           </Form>
         </Spin>
       </StyledCol>
@@ -233,11 +197,6 @@ const StyledIconPlayButton = styled(IconPlayButton)`
   position: relative;
   top: 2px;
   margin-right: 0px !important;
-`
-
-const StyledSwitchText = styled.p`
-  position: absolute;
-  right: -25px;
 `
 
 const enhance = compose(

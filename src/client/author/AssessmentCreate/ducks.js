@@ -322,7 +322,6 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
-        newAssessment.videoContentRestriction = payload.videoContentRestriction
 
         if (payload.thumbnail) {
           newAssessment.thumbnail = payload.thumbnail

@@ -143,7 +143,7 @@ module.exports = {
       text: 'Graphing (Desmos State Test Version)',
       stateVersionOnly: true,
     },
-    MATRIX: { id: 'MATRIX', text: 'Matrix' },
+    MATRIX: { id: 'MATRIX', text: 'Desmos Matrix Calculator' },
   },
   DEFAULT_CALC_TYPES: [],
   evalTypes: {

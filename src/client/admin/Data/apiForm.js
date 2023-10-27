@@ -1025,6 +1025,22 @@ export const apiForms = [
         required: true,
       },
       {
+        key: 'action-type',
+        name: 'action-type',
+        placeholder:
+          'Link Collections/Update Status/Update CreatedBy/Update Co-Author/Update Thumbnail',
+        type: 'radiogroup',
+        values: [
+          'Link Collections',
+          'Update Status',
+          'Update CreatedBy',
+          'Update Co-Author',
+          'Update Thumbnail',
+        ],
+        defaultValue: 'Link Collections',
+        formatter: (value) => value === 'Link Collections',
+      },
+      {
         name: 'collectionId',
         displayName: 'Collection Id',
         placeholder: 'Enter Collection Id',
@@ -1038,6 +1054,14 @@ export const apiForms = [
         type: 'textarea',
         formatter: (value) => value.split(',').map((v) => v.trim()),
         required: true,
+      },
+      {
+        name: 'update-content-status',
+        displayName: 'Content Status',
+        placeholder: 'Select content status',
+        type: 'dropdown',
+        required: true,
+        values: ['PUBLISH', 'IN REVIEW', 'DRAFT'],
       },
     ],
   },

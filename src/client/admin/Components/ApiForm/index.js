@@ -14,6 +14,7 @@ const ApiFormsMain = ({
   customSections,
   id,
   setFileUploadData,
+  setUpdateFields,
   endPoint,
 }) => {
   const [data, setData] = useState({})
@@ -47,6 +48,15 @@ const ApiFormsMain = ({
       }
       setFileUploadData({ data: value.data, subject: standardImportSubject })
       return
+    }
+    if (type === 'action-type') {
+      if (value === 'Update Status') {
+        const fieldsToRemove = ['collectionId', 'bucketIds']
+        const filteredFields = fields.filter(
+          (field) => !fieldsToRemove.includes(field.name)
+        )
+        setUpdateFields({ filteredFields })
+      }
     }
     setData({ ...data, [type]: value })
   }

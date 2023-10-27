@@ -151,6 +151,7 @@ const Summary = ({
         isTestLoading={isTestLoading}
         title={test.title}
         videoUrl={test.videoUrl}
+        videoContentRestriction={test.videoContentRestriction}
         alignmentInfo={test.alignmentInfo}
         description={test.description}
         tags={test.tags}

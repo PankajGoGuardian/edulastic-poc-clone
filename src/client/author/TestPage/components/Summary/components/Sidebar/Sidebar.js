@@ -18,7 +18,11 @@ import React, { createRef, useEffect, useMemo, useState } from 'react'
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
-import { isValidVideoUrl } from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+import {
+  extractVideoId,
+  isValidVideoUrl,
+} from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+import SwitchRestrictedMode from '../../../../../AssessmentCreate/components/CreateVideoQuiz/SwitchRestrictedMode'
 
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
@@ -51,6 +55,7 @@ const Sidebar = ({
   toggleTestLikeRequest,
   videoUrl,
   isTestLoading,
+  videoContentRestriction,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
   const subjectsList = selectsData.allSubjects
@@ -181,6 +186,12 @@ const Sidebar = ({
                   </EduElse>
                 </EduIf>
               </EduIf>
+              {extractVideoId(videoUrl) && (
+                <SwitchRestrictedMode
+                  handleChange={onChangeField}
+                  value={videoContentRestriction}
+                />
+              )}
             </>
           </EduIf>
           <FieldLabel>Description</FieldLabel>

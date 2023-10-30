@@ -680,6 +680,10 @@
     "message": "View of Items is restricted by the admin if content visibility is set to 'Always hidden' OR 'Hide prior to grading'",
     "description": ""
   },
+  "autoGradeRestricedByAdmin": {
+    "message": "Admin has restricted visibility to manual gradable questions",
+    "description": ""
+  },
   "overrrideSettingsRestricted": {
     "message": "Override settings is restricted by the Admin.",
     "description": ""

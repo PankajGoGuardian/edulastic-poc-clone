@@ -106,6 +106,7 @@ import {
   getStudentsPrevSubmittedUtasSelector,
   getIsDocBasedTestSelector,
   getAttemptWindowSelector,
+  getIsItemContentHiddenSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -405,6 +406,7 @@ class ClassBoard extends Component {
       testActivity,
       allTestActivitiesForStudent,
       testItemsData,
+      isContentHidden,
     } = props
 
     const { itemId, selectedQid } = state
@@ -420,18 +422,40 @@ class ClassBoard extends Component {
       props.location.pathname.includes('question-activity')
     ) {
       // first load for question-activity page
-      const questions = testActivity[0].questionActivities
+      const submittedTestActivity = testActivity.find(
+        (item) => item.UTASTATUS === testActivityStatus.SUBMITTED
+      )
+      let questions = []
+      if (isContentHidden) {
+        questions = submittedTestActivity.questionActivities.filter(
+          (item) => !item.isItemContentHidden
+        )
+      } else {
+        questions = submittedTestActivity.questionActivities
+      }
+
       const questionIndex = questions.findIndex(
         (item) => item._id === state.selectedQid
       )
-
       const question = questions[questionIndex]
+      const [firstQuestion] = questions
       if (question) {
         newState = {
           ...newState,
           itemId: question.testItemId,
           selectedQuestion: questionIndex,
         }
+      } else if (firstQuestion) {
+        newState = {
+          ...newState,
+          itemId: firstQuestion.testItemId,
+          selectedQuestion: 0,
+          selectedQid: firstQuestion._id,
+        }
+        notification({
+          type: 'warn',
+          messageKey: 'autoGradeRestricedByAdmin',
+        })
       }
     }
 
@@ -2206,6 +2230,7 @@ const enhance = compose(
       isDocBasedTest: getIsDocBasedTestSelector(state),
       userId: getUserId(state),
       attemptWindow: getAttemptWindowSelector(state),
+      isContentHidden: getIsItemContentHiddenSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

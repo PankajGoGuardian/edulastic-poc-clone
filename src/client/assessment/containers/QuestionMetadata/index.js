@@ -42,6 +42,7 @@ import { ShowAlignmentRowsContainer } from './styled/ShowAlignmentRowsContainer'
 import SecondBlock from './SecondBlock'
 import AlignmentRow from './AlignmentRow'
 import {
+  getInterestedCurriculumsSelector,
   getOrgDataSelector,
   getUserFeatures,
   getCollectionsToAddContent,
@@ -67,6 +68,7 @@ const QuestionMetadata = ({
   addNewTag,
   getCurriculums,
   removeAlignment,
+  interestedCurriculums,
   editAlignment,
   curriculumStandardsLoading,
   setCollections,
@@ -205,6 +207,7 @@ const QuestionMetadata = ({
                 curriculumStandardsTLO={curriculumStandards.tlo}
                 curriculumStandardsLoading={curriculumStandardsLoading}
                 editAlignment={editAlignment}
+                interestedCurriculums={interestedCurriculums}
                 createUniqGradeAndSubjects={createUniqGradeAndSubjects}
                 authorQuestionStatus={authorQuestionStatus}
               />
@@ -293,6 +296,7 @@ const enhance = compose(
       curriculumStandards: getStandardsListSelector(state),
       questionData: getQuestionDataSelector(state),
       allTagsData: getAllTagsSelector(state, 'testitem'),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state),
       collections: getCollectionsSelector(state),
       orgData: getOrgDataSelector(state),

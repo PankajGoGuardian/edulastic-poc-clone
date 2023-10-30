@@ -9,7 +9,7 @@ import {
   EduIf,
 } from '@edulastic/common'
 import { Col, Row, Select } from 'antd'
-import { get, pick as _pick, isEmpty } from 'lodash'
+import { get, pick as _pick } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Fragment, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
@@ -27,7 +27,6 @@ import {
 import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
-  getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
 } from '../../../author/src/selectors/user'
 import selectsData from '../../../author/TestPage/components/common/selectsData'
@@ -67,6 +66,7 @@ const AlignmentRow = ({
   updateDefaultCurriculum,
   defaultSubject,
   defaultCurriculumId,
+  defaultCurriculumName,
   updateDefaultGrades,
   updateDefaultSubject,
   interestedCurriculums,
@@ -78,6 +78,7 @@ const AlignmentRow = ({
   standardsRequiredFields = [],
   testSelectedSubjects = [],
   testSelectedGrades = [],
+  considerCustomAlignmentDataSettingPriority = false,
 }) => {
   const {
     subject = 'Mathematics',
@@ -251,130 +252,75 @@ const AlignmentRow = ({
      * 2. Update all places where subject occurs to use an string. Search for occurrences of setDefaultInterests. [DONE]
      * 3. Remove the array check from below.
      */
-
-    /**
-     * When subject is available in test and it does not with previously selected curriculum's subject we use empty string
-     * Else we use previously selected curriculum's name
-     * */
-    const getCurriculumDetails = (
-      curriculumIdentifier,
-      testSubject,
-      testGrades
-    ) => {
-      const _curriculum =
-        curriculums.find(
-          (item) => item._id === parseInt(curriculumIdentifier, 10)
-        ) || {}
-      const _curriculumName =
-        !isEmpty(testSubject) && testSubject !== _curriculum.subject
-          ? ''
-          : _curriculum.curriculum || ''
-
-      const _curriculumId = _curriculumName
-        ? parseInt(curriculumIdentifier, 10) || ''
-        : ''
-
-      const _alignmentSubject = _curriculumName
-        ? _curriculum.subject || ''
-        : testSubject || ''
-
-      const _alignmentGrades = (_curriculum?.grades || []).filter((grade) =>
-        (testGrades || []).includes(grade)
-      )
-
-      return {
-        _curriculumName,
-        _curriculumId,
-        _alignmentGrades: _alignmentGrades.length
-          ? _alignmentGrades
-          : testGrades,
-        _alignmentSubject,
-      }
-    }
-
     let _subject = defaultInterests?.subject
     _subject = (Array.isArray(_subject) ? _subject[0] : _subject) || ''
+    if (!alCurriculumId && considerCustomAlignmentDataSettingPriority) {
+      const testSubject = testSelectedSubjects?.length
+        ? testSelectedSubjects[0]
+        : ''
+      const userDefaultSubject = defaultSubject?.length ? defaultSubject : ''
+      const testGrades = testSelectedGrades?.length ? testSelectedGrades : null
+      const userDefaultGrades = defaultGrades?.length ? defaultGrades : null
 
-    const testSubject = testSelectedSubjects?.length
-      ? testSelectedSubjects[0]
-      : ''
-    const testGrades = testSelectedGrades?.length ? testSelectedGrades : null
+      editAlignment(alignmentIndex, {
+        subject: testSubject || userDefaultSubject || _subject || '',
+        grades:
+          testGrades ||
+          userDefaultGrades ||
+          (defaultInterests.grades?.length ? defaultInterests.grades : []) ||
+          [],
+        curriculum:
+          curriculums.find(
+            (item) => item._id === parseInt(defaultInterests.curriculumId, 10)
+          )?.curriculum || '',
+        curriculumId: parseInt(defaultInterests.curriculumId, 10) || '',
+      })
+
+      return
+    }
 
     if (!alCurriculumId) {
       if (
-        _subject ||
+        defaultInterests.subject ||
         defaultInterests.grades?.length ||
         defaultInterests.curriculumId
       ) {
-        const {
-          _curriculumName,
-          _curriculumId,
-          _alignmentSubject,
-          _alignmentGrades,
-        } = getCurriculumDetails(
-          defaultInterests.curriculumId,
-          testSubject,
-          testGrades
-        )
-
         editAlignment(alignmentIndex, {
-          subject: _alignmentSubject || _subject,
-          curriculum: _curriculumName,
-          curriculumId: _curriculumId,
-          grades:
-            _alignmentGrades || defaultInterests.grades?.length
-              ? defaultInterests.grades
-              : [],
+          subject: _subject,
+          curriculum:
+            curriculums.find(
+              (item) => item._id === parseInt(defaultInterests.curriculumId, 10)
+            )?.curriculum || '',
+          curriculumId: parseInt(defaultInterests.curriculumId, 10) || '',
+          grades: defaultInterests.grades?.length
+            ? defaultInterests.grades
+            : [],
         })
       } else if (defaultSubject && defaultCurriculumId) {
-        const {
-          _curriculumName,
-          _curriculumId,
-          _alignmentSubject,
-          _alignmentGrades,
-        } = getCurriculumDetails(defaultCurriculumId, testSubject, testGrades)
         editAlignment(alignmentIndex, {
-          subject: _alignmentSubject || defaultSubject,
-          curriculum: _curriculumName,
-          curriculumId: _curriculumId,
-          grades: _alignmentGrades || defaultGrades || interestedGrades || [],
+          subject: defaultSubject,
+          curriculum: defaultCurriculumName,
+          curriculumId: defaultCurriculumId,
+          grades: defaultGrades || interestedGrades || [],
         })
       } else if (interestedCurriculums && interestedCurriculums.length > 0) {
-        const {
-          _curriculumName,
-          _curriculumId,
-          _alignmentSubject,
-          _alignmentGrades,
-        } = getCurriculumDetails(
-          interestedCurriculums[0]._id,
-          testSubject,
-          testGrades
-        )
-
         editAlignment(alignmentIndex, {
-          subject: _alignmentSubject || interestedCurriculums[0].subject,
-          curriculum: _curriculumName,
-          curriculumId: _curriculumId,
-          grades: _alignmentGrades || defaultGrades || interestedGrades || [],
+          subject: interestedCurriculums[0].subject,
+          curriculum: interestedCurriculums[0].name,
+          curriculumId: interestedCurriculums[0]._id,
+          grades: defaultGrades || interestedGrades || [],
         })
       } else {
-        const {
-          _curriculumName,
-          _curriculumId,
-          _alignmentSubject,
-          _alignmentGrades,
-        } = getCurriculumDetails(212, testSubject, testGrades)
-
         editAlignment(alignmentIndex, {
-          subject: _alignmentSubject || 'Mathematics',
-          curriculumId: _curriculumId,
-          curriculum: _curriculumName,
-          grades: _alignmentGrades || ['7'],
+          subject: 'Mathematics',
+          curriculumId: 212,
+          curriculum: 'Math - Common Core',
+          grades: ['7'],
           standards: [],
         })
       }
     }
-  }, [qId, curriculums])
+  }, [qId])
   const showMoreButtonEnabled =
     !curriculumStandardsLoading &&
     curriculumStandardsELO &&
@@ -617,12 +563,14 @@ AlignmentRow.propTypes = {
   standardsRequiredFields: PropTypes.array,
   testSelectedSubjects: PropTypes.array,
   testSelectedGrades: PropTypes.array,
+  considerCustomAlignmentDataSettingPriority: PropTypes.bool,
 }
 
 AlignmentRow.defaultProps = {
   standardsRequiredFields: [],
   testSelectedSubjects: [],
   testSelectedGrades: [],
+  considerCustomAlignmentDataSettingPriority: false,
 }
 
 export default connect(
@@ -639,7 +587,6 @@ export default connect(
     recentStandardsList: getRecentStandardsListSelector(state),
     testSelectedSubjects: getTestEntitySubjectsSelector(state),
     testSelectedGrades: getTestEntityGradesSelector(state),
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     updateDefaultCurriculum: updateDefaultCurriculumAction,

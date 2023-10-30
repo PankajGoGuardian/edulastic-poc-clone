@@ -2,6 +2,7 @@ import { grey, greyLight1, white, darkGrey4 } from '@edulastic/colors'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../multipleAssessmentReport/PreVsPost/common/styledComponents'
+import { getFGColor } from '../../../../../src/utils/util'
 
 export const LegendWrapper = styled.div`
   display: flex;
@@ -22,6 +23,7 @@ export const StyledLegendItem = styled.span`
 `
 export const TestTypeTag = styled.span`
   background-color: ${grey};
+  color: ${getFGColor(grey)};
   width: 40px;
   padding: 2px 5px;
   text-align: center;

@@ -3,7 +3,6 @@ import {
   CustomModalStyled,
   DatePickerStyled,
   EduButton,
-  EduIf,
   FieldLabel,
   notification,
   NumberInputStyled,
@@ -14,13 +13,11 @@ import {
 import { Col, Row, Spin } from 'antd'
 import { debounce, isNumber, omitBy } from 'lodash'
 import moment from 'moment'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { SUBSCRIPTION_DEFINITION_TYPES } from '../Data'
-import ManageSubscriptionByDistrictAndUserId from './ManageSubscriptionByDistrictAndUserId'
 
-const sanitizeSearchResult = (data = []) =>
-  data.map((x) => ({ emailId: x?._source?.email, userId: x?._id }))
+const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 
 const AddSubscriptionModal = ({
   isVisible,
@@ -33,8 +30,6 @@ const AddSubscriptionModal = ({
   handleSearch,
   setFieldData,
   fieldData,
-  allowManageSubscription = false,
-  mode = 'multiple',
   editLicense,
   currentLicense,
   licenseId,
@@ -46,11 +41,6 @@ const AddSubscriptionModal = ({
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [usersList, setUsersList] = useState([])
   const [startDate, setStartDate] = useState(moment())
-
-  const [licenseDetails, setLicenseDetails] = useState({
-    loading: false,
-    premiumQuantity: 0,
-  })
 
   const disabledStartDate = (current) =>
     current && current < moment().subtract(1, 'day')
@@ -71,25 +61,6 @@ const AddSubscriptionModal = ({
       [fieldName]: isNumber(value) ? Math.round(value) : value,
     }))
   }
-
-  const handleManagerEmailChange = (value) => {
-    if (mode === 'single') {
-      const _value = value?.filter((v) => fieldData?.managerEmail[0] !== v)
-      handleFieldChange('managerEmail')(_value)
-    } else {
-      handleFieldChange('managerEmail')(value)
-    }
-  }
-
-  const productsWithDisableKey = useMemo(() => {
-    return products.map((product) => {
-      const productIds = licenseDetails?.productIds || []
-      if (productIds?.length && productIds?.includes(product._id)) {
-        return { ...product, isDisable: true }
-      }
-      return product
-    })
-  }, [licenseDetails, products])
 
   useEffect(() => {
     if (!editLicense)
@@ -203,53 +174,29 @@ const AddSubscriptionModal = ({
     }
     return pressedKey
   }
-  const userId = useMemo(() => {
-    return usersList.find(
-      (user) => user?.emailId === fieldData?.managerEmail[0]
-    )?.userId
-  }, [usersList, fieldData?.managerEmail])
 
   const sortProducts = (product1, product2) => product1.order - product2.order
 
-  const handleModalClose = () => {
-    if (allowManageSubscription) {
-      handleFieldChange('managerEmail')([])
-    }
-    closeModal()
-  }
-  const isApplyDisable = useMemo(() => {
-    let disable = false
-    if (allowManageSubscription) {
-      disable = licenseDetails?.error
-    }
-    return disable
-  }, [licenseDetails, allowManageSubscription])
-
   const footer = (
     <>
-      <EduButton data-cy="cancelButton" isGhost onClick={handleModalClose}>
+      <EduButton data-cy="cancelButton" isGhost onClick={closeModal}>
         CANCEL
       </EduButton>
       <EduButton
         data-cy="applyButton"
         onClick={handleValidateFields}
-        disabled={(editLicense && !isEdited) || isApplyDisable}
+        disabled={editLicense && !isEdited}
       >
         APPLY
       </EduButton>
     </>
   )
 
-  // show allowManageSubscriptionByDistrictAndUserId component when allowManageSubscription is true and districtId and userId is selected
-  const showManageSubscription =
-    allowManageSubscription && fieldData?.districtId && userId
-
   return (
     <CustomModalStyled
       visible={isVisible}
-      width={750}
       title={editLicense ? 'Edit License' : 'Add Subscription'}
-      onCancel={handleModalClose}
+      onCancel={closeModal}
       footer={footer}
       centered
     >
@@ -295,41 +242,29 @@ const AddSubscriptionModal = ({
         <FieldLabel>Manager Email (Bookkeeper)</FieldLabel>
         <SelectInputStyled
           data-cy="managerEmailInputField"
-          placeholder={`Enter the Manager Email ID${
-            allowManageSubscription ? '' : 's'
-          }`}
+          placeholder="Enter the Manager Email IDs"
           mode="multiple"
           filterOption={false}
           onSearch={handleUsersSearch}
           value={fieldData.managerEmail || []}
-          onChange={handleManagerEmailChange}
+          onChange={(value) => handleFieldChange('managerEmail')(value)}
           getPopupContainer={(e) => e.parentNode}
           disabled={!fieldData.districtId}
           notFoundContent={isFetchingUsers ? <Spin size="small" /> : null}
         >
-          {usersList?.map(({ emailId }) => (
+          {usersList.map((emailId) => (
             <SelectInputStyled.Option key={emailId} data-cy={emailId}>
               {emailId}
             </SelectInputStyled.Option>
           ))}
         </SelectInputStyled>
-        <EduIf condition={showManageSubscription}>
-          <ManageSubscriptionByDistrictAndUserId
-            districtId={fieldData?.districtId}
-            setLicenseDetails={setLicenseDetails}
-            licenseDetails={licenseDetails}
-            userId={userId}
-            fieldData={fieldData}
-            setFieldData={setFieldData}
-          />
-        </EduIf>
       </StyledFieldRow>
       <StyledFieldRow>
         <Row gutter={20}>
           <Col span={24}>
             <h3>Products</h3>
           </Col>
-          {productsWithDisableKey.sort(sortProducts).map((product) => (
+          {products.sort(sortProducts).map((product) => (
             <Col span={12} key={product._id} style={{ marginBottom: '15px' }}>
               <FieldLabel>{product.name}</FieldLabel>
               <NumberInputStyled
@@ -337,18 +272,13 @@ const AddSubscriptionModal = ({
                 style={{ width: '100%' }}
                 placeholder={`${product.name.toLowerCase()} license`}
                 value={fieldData[product.type]}
-                disabled={
-                  product?.isDisable ||
-                  !fieldData?.managerEmail?.length ||
-                  licenseDetails?.loading
-                }
                 min={editLicense ? currentLicense.usedCount || 1 : 0}
                 max={
                   product.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM
                     ? Infinity
                     : editLicense
                     ? totalTpLicenseCount
-                    : fieldData.PREMIUM || licenseDetails?.premiumQuantity
+                    : fieldData.PREMIUM
                 }
                 onChange={(value) => handleFieldChange(product.type)(value)}
                 data-cy={product.type}

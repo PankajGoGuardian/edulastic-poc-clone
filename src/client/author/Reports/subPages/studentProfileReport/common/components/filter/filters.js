@@ -122,7 +122,8 @@ const StudentProfileReportFilters = ({
       (performanceBandRequired || t.key !== 'performanceBandProfileId') &&
       (standardProficiencyRequired ||
         t.key !== 'standardsProficiencyProfileId') &&
-      (standardFiltersRequired || !['domainId', 'standardId'].includes(t.key))
+      (standardFiltersRequired ||
+        !['domainId', 'standardId', 'testIds'].includes(t.key))
   )
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]

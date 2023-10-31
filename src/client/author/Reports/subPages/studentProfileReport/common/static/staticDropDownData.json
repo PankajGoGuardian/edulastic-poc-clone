@@ -16,7 +16,8 @@
     { "key": "standardsProficiencyProfileId" },
     { "key": "domainId" },
     { "key": "standardId" },
-    { "key": "assignedBy", "tabKey": "0" }
+    { "key": "assignedBy", "tabKey": "0" },
+    { "key": "testIds" }
   ],
   "initialFilters": {
     "reportId": "",

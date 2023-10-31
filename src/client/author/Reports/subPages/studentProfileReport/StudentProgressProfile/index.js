@@ -42,6 +42,7 @@ const compareBy = {
 
 const StudentProgressProfile = ({
   settings,
+  setSPRTagsData,
   pageTitle,
   sharedReport,
   loading,
@@ -113,6 +114,7 @@ const StudentProgressProfile = ({
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
     setSelectedTests([])
+    setSPRTagsData({ ...settings.tagsData, testIds: [] })
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
@@ -172,6 +174,17 @@ const StudentProgressProfile = ({
     'testName'
   )
 
+  const onTestsSelect = (selected) => {
+    setSelectedTests(selected)
+    const selectedTestsFilterOptions = testsFilterDropdownOptions.filter(
+      (option) => selected.includes(option.key)
+    )
+    setSPRTagsData({
+      ...settings.tagsData,
+      testIds: selectedTestsFilterOptions,
+    })
+  }
+
   if (loading) {
     return (
       <SpinLoader
@@ -221,7 +234,7 @@ const StudentProgressProfile = ({
                 className="student-standards-progress-tests-filter"
                 dataCy="tests"
                 label="Test(s)"
-                onChange={setSelectedTests}
+                onChange={onTestsSelect}
                 value={selectedTests}
                 options={testsFilterDropdownOptions}
                 displayLabel={false}

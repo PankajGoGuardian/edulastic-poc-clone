@@ -267,6 +267,7 @@ const StudentProfileReportContainer = (props) => {
               <StudentProgressProfile
                 {..._props}
                 settings={settings}
+                setSPRTagsData={setSPRTagsData}
                 pageTitle={loc}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}

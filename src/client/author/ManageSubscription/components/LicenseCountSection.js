@@ -46,6 +46,7 @@ const LicenseCountSection = ({
   deleteLicense,
   searchType,
   page,
+  allowManageSubscription,
 }) => {
   const [showSubscriptionAddonModal, setShowAddSubscriptionModal] = useState(
     false
@@ -289,6 +290,7 @@ const LicenseCountSection = ({
           totalTpLicenseCount={totalTpLicenseCount}
           isEdited={isEdited}
           setIsEdited={setIsEdited}
+          allowManageSubscription={allowManageSubscription}
         />
         <DeleteLicenseModal
           visible={showDeleteLicenseModal}

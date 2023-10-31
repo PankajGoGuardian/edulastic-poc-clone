@@ -42,6 +42,11 @@ const AddSubscriptionModal = ({
   totalTpLicenseCount,
   isEdited,
   setIsEdited,
+  searchRequest,
+  deleteLicense,
+  searchType,
+  page,
+  shouldCloseModal = false,
 }) => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [usersList, setUsersList] = useState([])
@@ -192,7 +197,9 @@ const AddSubscriptionModal = ({
 
     const payload = omitBy(data, (x) => !x)
     addSubscription(payload)
-    closeModal()
+    if (!allowManageSubscription || shouldCloseModal) {
+      closeModal()
+    }
   }
 
   const handleKeyPress = (e) => {
@@ -215,7 +222,10 @@ const AddSubscriptionModal = ({
     if (allowManageSubscription) {
       handleFieldChange('managerEmail')([])
     }
-    closeModal()
+
+    if (!allowManageSubscription || shouldCloseModal) {
+      closeModal()
+    }
   }
   const isApplyDisable = useMemo(() => {
     let disable = false
@@ -321,6 +331,15 @@ const AddSubscriptionModal = ({
             userId={userId}
             fieldData={fieldData}
             setFieldData={setFieldData}
+            handleSelectDistrict={handleSelectDistrict}
+            handleSearch={handleSearch}
+            isFetchingOrganization={isFetchingOrganization}
+            districtList={districtList}
+            searchRequest={searchRequest}
+            addSubscription={addSubscription}
+            deleteLicense={deleteLicense}
+            searchType={searchType}
+            page={page}
           />
         </EduIf>
       </StyledFieldRow>

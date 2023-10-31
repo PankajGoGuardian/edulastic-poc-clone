@@ -39,7 +39,6 @@ import Header from './Header'
 import LicenseCountSection from './LicenseCountSection'
 import Userlist from './Userlist'
 import { ContentWrapper, StyledSpin } from './styled'
-import { manageSubscriptionsByLicenses } from '../../../admin/Upgrade/ducks'
 
 const AddUsersModal = loadable(() => import('./AddUsersModal'))
 const AddUsersConfirmationModal = loadable(() =>
@@ -92,6 +91,7 @@ const ManageSubscriptionContainer = ({
   deleteLicense,
   searchType,
   page,
+  allowManageSubscription,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [showRenewLicenseModal, setShowRenewLicenseModal] = useState(false)
@@ -270,6 +270,7 @@ const ManageSubscriptionContainer = ({
           deleteLicense={deleteLicense}
           searchType={searchType}
           page={page}
+          allowManageSubscription={allowManageSubscription}
         />
         <AddUsersSection
           setShowAddUsersModal={setShowAddUsersModal}
@@ -369,7 +370,6 @@ const enhance = compose(
       setSaveButtonState: updateSaveButtonState,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setQuantities: slice.actions.setCartQuantities,
-      addSubscription: manageSubscriptionsByLicenses.actions.addSubscription,
     }
   )
 )

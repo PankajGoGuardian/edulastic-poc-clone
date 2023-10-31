@@ -477,7 +477,11 @@ const ManageSubscriptionsByLicenses = ({
           fieldData={fieldData}
           setFieldData={setFieldData}
           allowManageSubscription
+          deleteLicense={deleteLicense}
           mode="single"
+          searchType={searchType}
+          page={page}
+          shouldCloseModal
         />
       )}
     </>

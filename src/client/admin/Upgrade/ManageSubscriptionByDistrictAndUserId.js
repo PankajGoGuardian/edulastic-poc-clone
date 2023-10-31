@@ -27,6 +27,15 @@ const ManageSubscriptionByDistrictAndUserId = ({
   userId,
   fieldData,
   setFieldData,
+  districtList,
+  isFetchingOrganization,
+  handleSelectDistrict,
+  handleSearch,
+  deleteLicense,
+  addSubscription,
+  searchRequest,
+  searchType,
+  page,
 }) => {
   const [isVisible, setVisible] = useState(false)
 
@@ -144,6 +153,16 @@ const ManageSubscriptionByDistrictAndUserId = ({
             licenseOwnerId={licenseDetails?.ownerId}
             fieldData={fieldData}
             setFieldData={setFieldData}
+            isFetchingOrganization={isFetchingOrganization}
+            districtList={districtList}
+            handleSelectDistrict={handleSelectDistrict}
+            handleSearch={handleSearch}
+            deleteLicense={deleteLicense}
+            addSubscription={addSubscription}
+            searchRequest={searchRequest}
+            searchType={searchType}
+            page={page}
+            allowManageSubscription
           />
         </SubscriptionContainer>
       </ManageSubscriptionModal>

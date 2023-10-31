@@ -640,7 +640,7 @@ class ClassHeader extends Component {
         ? 'RESUME Assignment to Scan Responses'
         : null
       const isMenuItemActive =
-        !canOpen && !isPaused && canClose && isAccessible && !hasRandomQuestions
+        !canOpen && !isPaused && isAccessible && !hasRandomQuestions
       const menuText = (
         <span
           style={{

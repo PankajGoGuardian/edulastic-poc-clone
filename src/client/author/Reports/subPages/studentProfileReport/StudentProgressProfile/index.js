@@ -129,6 +129,7 @@ const StudentProgressProfile = ({
       ...pageFilters,
       studentId: settings.selectedStudent.key,
     }
+    setSelectedTests([])
     if ((q.termId || q.reportId) && q.studentId && pageFilters.page) {
       getStudentProgressProfileRequest(q)
     }

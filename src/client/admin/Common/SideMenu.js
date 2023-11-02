@@ -29,6 +29,8 @@ import {
   getAccountSwitchDetails,
   getUserOrgId,
 } from '../../author/src/selectors/user'
+import { isPearDomain } from '../../../utils/pear'
+import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 
 const { Sider } = Layout
 
@@ -189,9 +191,9 @@ const SideMenu = ({
         aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
       >
         {isCollapsed ? (
-          <LogoCompact margin="0px" />
+          isPearDomain ? <PearAssessLogoCompact /> : <LogoCompact margin="0px" />
         ) : (
-          <OnDarkBgLogo height="26px" />
+          isPearDomain ? <AssessPeardeckOnDarkBgLogo height="30px" /> : <OnDarkBgLogo height="26px" />
         )}
       </LogoWrapper>
 

@@ -342,6 +342,19 @@ const updateManyUserAdminTool = ({ users }) =>
     data: { users },
   })
 
+const addBulkAdminsAdminTool = ({
+  districtId,
+  schoolId,
+  emails,
+  names,
+  personIds,
+}) =>
+  api.callApi({
+    url: `/admin-tool/create-insights-admins`,
+    method: 'POST',
+    data: { districtId, schoolId, emails, names, personIds },
+  })
+
 const logout = () =>
   api.callApi({
     url: `${prefix}/logout`,
@@ -406,6 +419,7 @@ export default {
   activateUser,
   updateUserAdminTool,
   updateManyUserAdminTool,
+  addBulkAdminsAdminTool,
   logout,
   getDemoPlaygroundUser,
   updateCollectionVisited,

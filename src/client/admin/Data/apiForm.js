@@ -350,6 +350,20 @@ export const apiForms = [
     ],
   },
   {
+    id: 'create-insights-admins',
+    name: 'Create Insights Only SA/DA',
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'District ID',
+        placeholder: 'Enter districtId',
+        type: 'string',
+        required: true,
+      },
+    ],
+  },
+
+  {
     id: 'archive-unarchive-classes',
     name: 'Archive / Unarchive Classes',
     fields: [

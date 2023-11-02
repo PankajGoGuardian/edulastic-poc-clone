@@ -10,6 +10,7 @@ import ApiFormsMain from '../Components/ApiForm'
 
 import { submit } from '../Components/ApiForm/apis'
 import CreateAdmin from '../Components/CreateAdmin'
+import CreateInsightAdmins from '../Components/CreateInsightsAdmins'
 import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
 import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
@@ -19,6 +20,7 @@ import { emailRegex } from '../../common/utils/helpers'
 import EnableDataTypes from '../Components/EnableDataTypes'
 
 const CREATE_ADMIN = 'create-admin'
+const CREATE_INSIGHTS_ADMINS = 'create-insights-admins'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
 const UPDATE_USER = 'update-user'
@@ -91,7 +93,10 @@ const ApiForm = () => {
             notification({ type: 'warn', msg: e.message })
           }
         })
-    } else if (option.id === CREATE_ADMIN) {
+    } else if (
+      option.id === CREATE_ADMIN ||
+      option.id === CREATE_INSIGHTS_ADMINS
+    ) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
           setDistrictData(res.data[0])
@@ -285,6 +290,12 @@ const ApiForm = () => {
         >
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin
+              districtData={districtData}
+              clearDistrictData={clearDistrictData}
+            />
+          )}
+          {districtData && id === CREATE_INSIGHTS_ADMINS && (
+            <CreateInsightAdmins
               districtData={districtData}
               clearDistrictData={clearDistrictData}
             />

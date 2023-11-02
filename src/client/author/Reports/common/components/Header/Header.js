@@ -21,6 +21,7 @@ import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/du
 import navigation from '../../static/json/navigation.json'
 import { getUserOrgId } from '../../../../src/selectors/user'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../../../../src/constants/others'
+import { CUSTOM_TO_STATE_REPORTS_DISTRICT_IDS } from '../../constants/customReports'
 
 const dataWarehouseReportTypes = navigation.navigation[
   'data-warehouse-reports'
@@ -31,7 +32,7 @@ const CustomizedHeaderWrapper = ({
   onShareClickCB,
   onPrintClickCB,
   onDownloadCSVClickCB,
-  navigationItems = [],
+  navigationItems: _navigationItems = [],
   activeNavigationKey = '',
   hideSideMenu,
   orgId,
@@ -44,6 +45,7 @@ const CustomizedHeaderWrapper = ({
   updateCsvDocs,
   isProxiedByEAAccount,
   t,
+  districtId: _districtId,
 }) => {
   const _onShareClickCB = () => {
     onShareClickCB()
@@ -61,7 +63,20 @@ const CustomizedHeaderWrapper = ({
     windowWidth >= parseInt(tabletWidth, 10) &&
     windowWidth <= parseInt(smallDesktopWidth, 10)
 
+  // NOTE: changes for demo district data with custom reports
+  // ref. EV-40723
+  const navigationItems = CUSTOM_TO_STATE_REPORTS_DISTRICT_IDS.includes(
+    _districtId
+  )
+    ? _navigationItems.map((item) =>
+        item.key === 'custom-reports'
+          ? { ...item, title: 'State Reports' }
+          : item
+      )
+    : _navigationItems
+
   let filterNavigationItems = navigationItems
+
   if (isCliUser) {
     filterNavigationItems = navigationItems.filter(
       (item) =>

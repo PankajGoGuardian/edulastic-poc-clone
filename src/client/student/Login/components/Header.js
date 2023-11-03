@@ -5,7 +5,7 @@ import {
   mobileWidthMax,
   themeColor,
 } from '@edulastic/colors'
-import { EduElse, EduIf, EduThen, OnDarkBgLogo } from '@edulastic/common'
+import { OnDarkBgLogo } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Button, Col, Row, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
@@ -18,8 +18,6 @@ import {
   getPartnerGetStartedUrl,
   isDistrictPolicyAllowed,
 } from '../../../common/utils/helpers'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
-import { isPearDomain } from '../../../../utils/pear'
 
 const Header = ({
   t,
@@ -32,14 +30,7 @@ const Header = ({
 }) => (
   <RegistrationHeader type="flex" align="middle">
     <Col span={12} style={{ display: 'flex' }}>
-      <EduIf condition={isPearDomain}>
-        <EduThen>
-          <AssessPeardeckOnDarkBgLogo height="37px" />
-        </EduThen>
-        <EduElse>
-          <OnDarkBgLogo height="30px" />
-        </EduElse>
-      </EduIf>
+      <OnDarkBgLogo height="30px" />
       {Partners.name !== 'login' && (
         <PartnerLogo
           Partners={Partners}

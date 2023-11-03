@@ -9,7 +9,7 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import { IconLock, IconMail } from '@edulastic/icons'
-import { CopyRight, EduIf } from '@edulastic/common'
+import { CopyRight } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import { trim, get } from 'lodash'
@@ -43,7 +43,6 @@ import {
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
-import { isPearDomain } from '../../../../utils/pear'
 
 const FormItem = Form.Item
 
@@ -358,10 +357,6 @@ class LoginContainer extends React.Component {
                     </FormBody>
                   ) : null}
                 </FormWrapper>
-                <EduIf condition={isPearDomain}>
-                  <br />
-                  <div id="psi_sign_in" />
-                </EduIf>
               </Col>
             </RegistrationBody>
           </Col>

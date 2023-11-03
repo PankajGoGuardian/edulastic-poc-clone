@@ -2,9 +2,8 @@ import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { Spin } from 'antd'
-import { WithResources, notification } from '@edulastic/common'
-import appConfig from '../app-config'
-import { isPearDomain, pearIdentifyProduct } from '../utils/pear'
+import qs from 'qs'
+import { notification } from '@edulastic/common'
 
 if (
   window.location.hash.includes('#renderResource/close/') ||
@@ -57,15 +56,8 @@ const AppLogin = () => {
       sessionStorage.removeItem('errorMessage')
     }
   }, [])
-
   return (
-    <WithResources
-      resources={isPearDomain ? [`${appConfig.pearScriptPath}`] : []}
-      fallBack={<Loading />}
-      onLoaded={() => {
-        pearIdentifyProduct()
-      }}
-    >
+    <>
       <Switch>
         <Route exact path="/login" component={Auth} />
         <Route exact path="/resetPassword/" component={ResetPassword} />
@@ -110,7 +102,7 @@ const AppLogin = () => {
         />
         <Route exact path="/" component={Auth} />
       </Switch>
-    </WithResources>
+    </>
   )
 }
 

@@ -11,9 +11,6 @@ import {
   OnDarkBgLogo,
   notification,
   CopyRight,
-  EduIf,
-  EduThen,
-  EduElse,
 } from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
@@ -67,8 +64,6 @@ import {
 } from '../../../author/src/constants/others'
 import PasswordPopup from './PasswordPopup'
 import TermsAndPrivacy from './TermsAndPrivacy/TermsAndPrivacy'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
-import { isPearDomain } from '../../../../utils/pear'
 
 const FormItem = Form.Item
 const GOOGLE = 'google'
@@ -500,14 +495,7 @@ class StudentSignup extends React.Component {
         >
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
-              <EduIf condition={isPearDomain}>
-                <EduThen>
-                  <AssessPeardeckOnDarkBgLogo height="37px" />
-                </EduThen>
-                <EduElse>
-                  <OnDarkBgLogo height="30px" />
-                </EduElse>
-              </EduIf>
+              <OnDarkBgLogo height="30px" />
             </Col>
             <Col span={12} align="right">
               <AlreadyhaveAccount>

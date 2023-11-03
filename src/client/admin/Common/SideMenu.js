@@ -19,8 +19,9 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { logoutAction } from '../../author/src/actions/auth'
-import { LogoCompact } from './StyledComponents'
+import { AssessPeardeckLogoCompact, LogoCompact } from './StyledComponents'
 import { toggleSideBarAction } from '../../author/src/actions/toggleMenu'
 import SwitchUserModal from '../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../author/authUtils'
@@ -30,7 +31,6 @@ import {
   getUserOrgId,
 } from '../../author/src/selectors/user'
 import { isPearDomain } from '../../../utils/pear'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 
 const { Sider } = Layout
 
@@ -191,9 +191,15 @@ const SideMenu = ({
         aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
       >
         {isCollapsed ? (
-          isPearDomain ? <PearAssessLogoCompact /> : <LogoCompact margin="0px" />
+          isPearDomain ? (
+            <AssessPeardeckLogoCompact />
+          ) : (
+            <LogoCompact margin="0px" />
+          )
+        ) : isPearDomain ? (
+          <AssessPeardeckOnDarkBgLogo height="30px" />
         ) : (
-          isPearDomain ? <AssessPeardeckOnDarkBgLogo height="30px" /> : <OnDarkBgLogo height="26px" />
+          <OnDarkBgLogo height="26px" />
         )}
       </LogoWrapper>
 

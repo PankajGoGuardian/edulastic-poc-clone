@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { StyledTable as Table } from '../../../../common/styled'
+import { extraDesktopWidthMax } from '@edulastic/colors'
+import { StyledTable as PreStyledTable } from '../../../../common/styled'
 import { FilterDropDownWithDropDown } from '../../../../common/components/widgets/filterDropDownWithDropDown'
 
 export const UpperContainer = styled.div`
@@ -20,7 +21,7 @@ export const StyledFilterDropDownWithDropDown = styled(
   }
 `
 
-export const StyledTable = styled(Table)`
+export const StyledTable = styled(PreStyledTable)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
       table tbody tr td {
@@ -64,6 +65,10 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+
+  /**
+   * styles applied to both fixed/scrollable table cells
+   */
   .ant-table-body {
     table {
       thead {
@@ -73,7 +78,6 @@ export const StyledTable = styled(Table)`
           }
         }
       }
-
       tbody {
         tr {
           td {
@@ -84,6 +88,14 @@ export const StyledTable = styled(Table)`
                 width: 100%;
                 padding: 10px;
               }
+            }
+            /**
+             * ref. src/client/author/Reports/common/styled.js > StyledTable
+             * since, .ant-table-scroll is set with the following media css in the inhertied-from file
+             * ideally, we set it for both .ant-table-scroll and .ant-table-fixed-left to achieve consistency when resolutions are changed
+             */
+            @media (min-width: ${extraDesktopWidthMax}) {
+              font-size: 14px;
             }
           }
         }

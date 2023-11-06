@@ -3,7 +3,13 @@ import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { reportUtils } from '@edulastic/constants'
+
+import {
+  analyseByOptions,
+  getDisplayValue,
+  COLUMN_WIDTH,
+} from '@edulastic/constants/reportUtils/singleAssessmentReport/peerPerformance'
+
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
@@ -12,13 +18,13 @@ import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 import { CompareByContainer } from '../../../../dataWarehouseReports/common/components/styledComponents'
 
-const { analyseByOptions, getDisplayValue } = reportUtils.peerPerformance
-
 const enableSorts = {
   'dimension.name': 'dimension',
   aboveStandard: 'aboveStandard',
   avgSore: 'scorePerc',
 }
+
+const compareByContainerStyle = { maxWidth: `${COLUMN_WIDTH}px` }
 
 export const PeerPerformanceTable = ({
   columns,
@@ -162,7 +168,10 @@ export const PeerPerformanceTable = ({
     const dimensionCol = arr.find(({ key }) => key === 'dimension')
     dimensionCol.render = (data) => (
       <Tooltip title={data}>
-        <CompareByContainer className="dimension-name">
+        <CompareByContainer
+          className="dimension-name"
+          style={compareByContainerStyle}
+        >
           {data}
         </CompareByContainer>
       </Tooltip>

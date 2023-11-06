@@ -3,6 +3,9 @@ const {
   idToName,
 } = require('../../../../src/client/author/Reports/subPages/singleAssessmentReport/PeerPerformance/util/transformers')
 
+const COLUMN_WIDTH = 250
+const COUNTS_COLUMN_WIDTH = 70
+
 const getHSLFromRange1 = (val, light = 79) => `hsla(${val}, 100%, ${light}%, 1)`
 
 const analyseByOptions = {
@@ -169,7 +172,7 @@ const transformData = (filter, bandInfo, data) => {
 }
 
 // helper function to create column
-const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
+const makeColumn = (title, dataIndex, width = COLUMN_WIDTH, align, fixed) => ({
   title,
   dataIndex,
   key: dataIndex,
@@ -180,7 +183,7 @@ const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
 
 // helper function to create first column i.e. column with compareByLabel
 const compareColumn = (title, ...ext) =>
-  makeColumn(title, 'dimension.name', 250, 'left', ...ext)
+  makeColumn(title, 'dimension.name', COLUMN_WIDTH, 'left', ...ext)
 
 const compareSchool = compareColumn('School')
 const compareTeacher = compareColumn('Teacher')
@@ -193,16 +196,20 @@ const compareIepStatus = compareColumn('IEP Status')
 const compareClass = compareColumn('Class')
 const compareHispanicEthnicity = compareColumn('Hispanic Ethnicity')
 
-const submitted = makeColumn('#Submitted', 'submittedStudents', 70)
-const absent = makeColumn('#Absent', 'absentStudents', 70)
+const submitted = makeColumn(
+  '#Submitted',
+  'submittedStudents',
+  COUNTS_COLUMN_WIDTH
+)
+const absent = makeColumn('#Absent', 'absentStudents', COUNTS_COLUMN_WIDTH)
 const districtAvgPc = makeColumn('District(Score%)', 'districtAvg')
 const avgStudentScorePercentUnrounded = makeColumn(
   'Avg.Student(Score%)',
   'avgSore'
 )
-const school = makeColumn('School', 'schoolName', 250)
-const teacher = makeColumn('Teacher', 'teacherName', 250)
-const createdBy = makeColumn('Created By', 'teacherName', 250)
+const school = makeColumn('School', 'schoolName', COLUMN_WIDTH)
+const teacher = makeColumn('Teacher', 'teacherName', COLUMN_WIDTH)
+const createdBy = makeColumn('Created By', 'teacherName', COLUMN_WIDTH)
 const districtAvg = makeColumn('District Avg.Score', 'districtAvg')
 const avgStudentScoreUnrounded = makeColumn('Avg.Score', 'avgSore')
 const belowStandard = makeColumn('Below Standard', 'belowStandard')
@@ -333,8 +340,8 @@ const createColumns = () => {
   )
   columns.proficiencyBand.gender = [
     compareGender,
-    { ...submitted, width: 250 },
-    { ...absent, width: 250 },
+    { ...submitted, width: COLUMN_WIDTH },
+    { ...absent, width: COLUMN_WIDTH },
   ]
   columns.proficiencyBand.frlStatus = makeProficiencyBand(compareFrlStatus)
   columns.proficiencyBand.ellStatus = makeProficiencyBand(compareEllStatus)
@@ -401,6 +408,7 @@ const prepareHeaderRow = (columns) => {
 }
 
 module.exports = {
+  COLUMN_WIDTH,
   transformData,
   analyseByOptions,
   getColumns,

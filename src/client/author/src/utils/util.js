@@ -56,5 +56,6 @@ export function pickFGColor(fgColorList, bgColorStr) {
  * @param {string} bgColorStr - Background color string. Could be hex, rgb, rgba, hsl, hsla or named color
  */
 export function getFGColor(bgColorStr) {
+  bgColorStr = bgColorStr || white
   return pickFGColor([black, white], bgColorStr)
 }

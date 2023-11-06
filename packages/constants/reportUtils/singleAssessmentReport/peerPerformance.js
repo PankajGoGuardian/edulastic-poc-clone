@@ -1,4 +1,4 @@
-const { get, isNil, isEmpty, round } = require('lodash')
+const { get, isNil } = require('lodash')
 const {
   idToName,
 } = require('../../../../src/client/author/Reports/subPages/singleAssessmentReport/PeerPerformance/util/transformers')
@@ -17,7 +17,7 @@ const tableDataIndexKeys = {
   districtAvg: 'districtAvg',
   aboveStandard: 'aboveStandard',
   belowStandard: 'belowStandard',
-  avgScore: 'avgScore',
+  avgSore: 'avgSore',
 }
 
 const standardConst = {
@@ -182,14 +182,6 @@ const makeColumn = (title, dataIndex, width = 250, align, fixed) => ({
 const compareColumn = (title, ...ext) =>
   makeColumn(title, 'dimension.name', 250, 'left', ...ext)
 
-const makeDimensionAverageColumns = (title) => {
-  const _title = typeof title === 'string' ? title : title.title
-  return [
-    makeColumn(`${_title} Average`, 'districtAvg'),
-    makeColumn(`Filtered ${_title} Average`, 'avgScore'),
-  ]
-}
-
 const compareSchool = compareColumn('School')
 const compareTeacher = compareColumn('Teacher')
 const compareStudGroup = compareColumn('Student Group')
@@ -203,9 +195,16 @@ const compareHispanicEthnicity = compareColumn('Hispanic Ethnicity')
 
 const submitted = makeColumn('#Submitted', 'submittedStudents', 70)
 const absent = makeColumn('#Absent', 'absentStudents', 70)
+const districtAvgPc = makeColumn('District(Score%)', 'districtAvg')
+const avgStudentScorePercentUnrounded = makeColumn(
+  'Avg.Student(Score%)',
+  'avgSore'
+)
 const school = makeColumn('School', 'schoolName', 250)
 const teacher = makeColumn('Teacher', 'teacherName', 250)
 const createdBy = makeColumn('Created By', 'teacherName', 250)
+const districtAvg = makeColumn('District Avg.Score', 'districtAvg')
+const avgStudentScoreUnrounded = makeColumn('Avg.Score', 'avgSore')
 const belowStandard = makeColumn('Below Standard', 'belowStandard')
 const aboveStandard = makeColumn('Above Standard', 'aboveStandard')
 
@@ -215,7 +214,8 @@ const makeScorePc = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  ...makeDimensionAverageColumns(title),
+  districtAvgPc,
+  avgStudentScorePercentUnrounded,
 ]
 // helper functions to create rows for "Raw Score" analyzer
 const makeRaw = (title, ...extColumns) => [
@@ -223,7 +223,8 @@ const makeRaw = (title, ...extColumns) => [
   ...extColumns,
   submitted,
   absent,
-  ...makeDimensionAverageColumns(title),
+  districtAvg,
+  avgStudentScoreUnrounded,
 ]
 // helper functions to create rows for "Above/Below Standard" analyzer
 const makeAboveBelowStd = (title, ...extColumns) => [
@@ -368,11 +369,11 @@ const columnValueTransform = [
   tableDataIndexKeys.districtAvg,
   tableDataIndexKeys.aboveStandard,
   tableDataIndexKeys.belowStandard,
-  tableDataIndexKeys.avgScore,
+  tableDataIndexKeys.avgSore,
 ]
 
 const columnKeyMap = {
-  avgScore: 'dimensionAvg',
+  avgSore: 'dimensionAvg',
 }
 
 const prepareTableDataRow = (columns, dataSource, analyseBy) => {
@@ -399,68 +400,6 @@ const prepareHeaderRow = (columns) => {
   return columns.map((item) => item.title)
 }
 
-const getOverallAvg = (data, analyseBy) => {
-  const { overallAvg, overallAvgPerf } = data[0]
-  return analyseBy === analyseByOptions.scorePerc
-    ? overallAvgPerf
-      ? round(overallAvgPerf)
-      : overallAvgPerf
-    : overallAvg
-}
-
-const getOverallRow = (data, analyseBy, bandInfo) => {
-  const districtAvg = getOverallAvg(data, analyseBy)
-  const {
-    submittedStudents,
-    absentStudents,
-    aboveStandard,
-    belowStandard,
-    totalStudents,
-    performanceBandDetails,
-    totalWeightedScore,
-  } = data.reduce(
-    (acc, curr) => {
-      acc.submittedStudents += curr.submittedStudents
-      acc.absentStudents += curr.absentStudents
-      acc.aboveStandard += curr.aboveStandard
-      acc.belowStandard += curr.belowStandard
-      acc.totalStudents += curr.totalStudents
-      acc.totalWeightedScore += curr.dimensionAvg * curr.submittedStudents
-      if (!isEmpty(bandInfo)) {
-        bandInfo.forEach(({ name }) => {
-          acc.performanceBandDetails[name] =
-            (acc.performanceBandDetails[name] || 0) + curr[name]
-        })
-      }
-      return acc
-    },
-    {
-      submittedStudents: 0,
-      absentStudents: 0,
-      aboveStandard: 0,
-      belowStandard: 0,
-      totalStudents: 0,
-      performanceBandDetails: {},
-      totalWeightedScore: 0,
-    }
-  )
-  const dimensionAvg = totalWeightedScore / submittedStudents
-  return {
-    dimension: {
-      _id: null,
-      name: 'Overall',
-    },
-    districtAvg,
-    dimensionAvg,
-    submittedStudents,
-    absentStudents,
-    totalStudents,
-    aboveStandard,
-    belowStandard,
-    ...performanceBandDetails,
-  }
-}
-
 module.exports = {
   transformData,
   analyseByOptions,
@@ -468,6 +407,4 @@ module.exports = {
   prepareHeaderRow,
   prepareTableDataRow,
   getDisplayValue,
-  getOverallAvg,
-  getOverallRow,
 }

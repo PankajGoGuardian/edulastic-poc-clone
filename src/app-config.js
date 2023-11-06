@@ -12,6 +12,11 @@ const appStage = process.env.REACT_APP_STAGE || 'development'
 // __CLIENT_VERSION__ is injected to envs in poi.config.js
 // using it to avoid importing json for just version
 const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
+const pearScriptPath =
+  process.env.REACT_APP_PEAR_SCRIPT_PATH ||
+  'https://dev-account.peardeck.com/psi/index.js'
+const pearScriptDomainIdentifier =
+  process.env.REACT_APP_PEAR_SCRIPT_DOMAIN_IDENTIFIER || 'peardeck.com'
 const thirdPartyLibPath = `${cdnURI}/JS/thirdpartylib`
 const jqueryPath = `${thirdPartyLibPath}/jquery/v1.11.0/jquery.min.js`
 const mathquillPath = `${thirdPartyLibPath}/mathquill/v0.10.1`
@@ -269,4 +274,6 @@ export default {
   isAntiScreenshotEnabled,
   getCDNOrigin,
   edYouTubePlayerKey,
+  pearScriptPath,
+  pearScriptDomainIdentifier,
 }

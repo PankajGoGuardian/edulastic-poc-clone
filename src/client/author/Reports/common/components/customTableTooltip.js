@@ -41,7 +41,6 @@ const StyledCustomTableTooltip = styled(CustomTableTooltip)`
       border-top-color: white;
     }
     .ant-tooltip-inner {
-      text-align: ${({ $textAlign }) => $textAlign || 'center'};
       background-color: white;
       color: ${black};
       .custom-table-tooltip-value {

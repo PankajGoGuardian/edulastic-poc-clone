@@ -143,7 +143,7 @@ module.exports = {
       text: 'Graphing (Desmos State Test Version)',
       stateVersionOnly: true,
     },
-    MATRIX: { id: 'MATRIX', text: 'Matrix' },
+    MATRIX: { id: 'MATRIX', text: 'Desmos Matrix Calculator' },
   },
   DEFAULT_CALC_TYPES: [],
   evalTypes: {
@@ -531,14 +531,4 @@ module.exports = {
   },
   SHOW_IMMERSIVE_READER,
   TEST_CONTENT_VISIBILITY,
-  videoContentRestrictionTypes: {
-    OFF: 'OFF',
-    MODERATE: 'MODERATE',
-    STRICT: 'STRICT',
-  },
-  videoContentRestriction: {
-    OFF: 0,
-    MODERATE: 1,
-    STRICT: 2,
-  },
 }

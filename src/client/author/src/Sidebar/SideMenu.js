@@ -103,6 +103,9 @@ import {
 } from './styledComponents'
 import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
+import { isPearDomain } from '../../../../utils/pear'
+import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
+import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -855,9 +858,16 @@ class SideMenu extends Component {
                 />
               </EduIf>
               {isCollapsed ? (
-                !isMobile && <LogoCompact />
+                !isMobile && (isPearDomain ? <AssessPeardeckLogoCompact /> : <LogoCompact />)
               ) : (
-                <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
+                <>
+                  <EduIf condition={isPearDomain}>
+                    <PSILauncherStyled>
+                      <div id="psi_launcher" />
+                    </PSILauncherStyled>
+                  </EduIf>
+                  {isPearDomain ? <AssessPeardeckOnDarkBgLogo height={isMobile ? '16px' : '30px'} /> : <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />}
+                </>
               )}
             </LogoWrapper>
             <MenuWrapper
@@ -1126,6 +1136,10 @@ class SideMenu extends Component {
     )
   }
 }
+
+const PSILauncherStyled = styled.div`
+  margin-right: 10px;
+`
 
 SideMenu.propTypes = {
   windowWidth: PropTypes.number.isRequired,

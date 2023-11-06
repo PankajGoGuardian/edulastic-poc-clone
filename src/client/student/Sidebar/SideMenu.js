@@ -37,6 +37,9 @@ import {
   logoutAction,
   isProxyUser as isProxyUserSelector,
 } from '../Login/ducks'
+import { AssessPeardeckLogoCompact } from '../../admin/Common/StyledComponents'
+import { isPearDomain } from '../../../utils/pear'
+import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 
 const menuItems = [
   {
@@ -249,7 +252,12 @@ class SideMenu extends Component {
                 />
               )}
               {isSidebarCollapsed ? (
-                !isMobile && <LogoCompact />
+                !isMobile &&
+                (isPearDomain ? <AssessPeardeckLogoCompact /> : <LogoCompact />)
+              ) : isPearDomain ? (
+                <AssessPeardeckOnDarkBgLogo
+                  height={isMobile ? '16px' : '30px'}
+                />
               ) : (
                 <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
               )}

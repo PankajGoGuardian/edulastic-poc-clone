@@ -8,6 +8,7 @@ const fetchSkillReport = (data) =>
     .callApi({
       url: `${prefix}/${data.classId}/${data.curriculumId}`,
       method: 'get',
+      useSlowApi: true,
     })
     .then((result) => result.data.result)
 

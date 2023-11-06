@@ -94,6 +94,7 @@ const getAttendanceMetrics = (data) => {
 
 const getRiskMetrics = (data) =>
   api.callApi({
+    useSlowApi: true,
     url: `${prefix}/${WHOLE_LEARNER_REPORT}/risk`,
     method: 'get',
     params: data,

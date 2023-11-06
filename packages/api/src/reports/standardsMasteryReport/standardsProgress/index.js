@@ -13,6 +13,7 @@ const fetchStandardsProgressTestInfo = (params) =>
       method: 'get',
       params,
       paramsSerializer: (param) => qs.stringify(param),
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -23,6 +24,7 @@ const fetchStandardsProgressSummary = (params) =>
       method: 'get',
       params,
       paramsSerializer: (param) => qs.stringify(param),
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -33,6 +35,7 @@ const fetchStandardsProgressDetails = (params) =>
       method: 'get',
       params,
       paramsSerializer: (param) => qs.stringify(param),
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 

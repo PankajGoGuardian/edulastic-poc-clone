@@ -37,6 +37,7 @@ const StandardSet = ({
   isDocBased,
   showIconBrowserBtn,
   standardsRequiredFields,
+  considerCustomAlignmentDataSettingPriority,
 }) => {
   const [searchProps, setSearchProps] = useState({
     id: '',
@@ -115,6 +116,9 @@ const StandardSet = ({
       isDocBased={isDocBased}
       showIconBrowserBtn={showIconBrowserBtn}
       standardsRequiredFields={standardsRequiredFields}
+      considerCustomAlignmentDataSettingPriority={
+        considerCustomAlignmentDataSettingPriority
+      }
     />
   )
 }
@@ -136,11 +140,13 @@ StandardSet.propTypes = {
   getCurriculums: PropTypes.func.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   standardsRequiredFields: PropTypes.array,
+  considerCustomAlignmentDataSettingPriority: PropTypes.bool,
 }
 
 StandardSet.defaultProps = {
   alignment: [],
   standardsRequiredFields: [],
+  considerCustomAlignmentDataSettingPriority: false,
 }
 
 const mapStateToProps = (state) => ({

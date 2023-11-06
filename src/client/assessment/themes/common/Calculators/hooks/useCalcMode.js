@@ -70,7 +70,9 @@ export const useCalcMode = ({
 
       const { text, id } = CALC_MAP[calcType]
       const stateName = getStateName(schoolState)
-      let calcTitle = `${text} Calculator`
+      let calcTitle = `${text}${
+        !CALC_MODES.MATRIX_EDULASTIC.includes(calcType) ? ' Calculator' : ''
+      }`
       if (stateName && calcMode === CALC_MODES.GRAPHING_STATE_DESMOS) {
         calcTitle = `Desmos ${calcTitle} | ${stateName}`
       } else if (calcMode === CALC_MODES.GRAPHING_DESMOS) {

@@ -12,6 +12,7 @@ import { CalculatorTitle } from '../CalculatorTitle'
 import { useCalcMode } from '../../hooks/useCalcMode'
 import { useRndParams } from '../../hooks/useRndParams'
 import { CalcContainer, RndWrapper } from './styled-components'
+import { CALC_MODES } from '../../constants'
 
 const tabStyle = { margin: 0 }
 
@@ -21,7 +22,11 @@ const renderTabs = ({ currentCalc, calcOptions, setCurrentCalc }) => {
       {calcOptions.map((calcOption) => (
         <Tabs.Tab
           key={calcOption.calcMode}
-          label={calcOption.calcTabLabel}
+          label={`${
+            CALC_MODES.MATRIX_EDULASTIC.includes(calcOption?.calcId)
+              ? calcOption?.calcId
+              : calcOption?.calcTabLabel
+          }`}
           style={tabStyle}
         />
       ))}

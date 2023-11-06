@@ -2,6 +2,9 @@ import React, { useMemo } from 'react'
 import { Row, Col } from 'antd'
 import { isEmpty, isNaN } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
+import { FlexContainer } from '@edulastic/common'
+import { IconInfo } from '@edulastic/icons'
+import { themeColor } from '@edulastic/colors'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
@@ -176,7 +179,14 @@ export const SignedStackedBarChartContainer = ({
 
   return (
     <>
-      <div>Excludes absent students</div>
+      <FlexContainer
+        justifyContent="left"
+        alignItems="center"
+        style={{ gap: '5px' }}
+      >
+        <IconInfo fill={themeColor} />
+        Excludes absent students
+      </FlexContainer>
       <SignedStackedBarChart
         margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
         data={chartData}

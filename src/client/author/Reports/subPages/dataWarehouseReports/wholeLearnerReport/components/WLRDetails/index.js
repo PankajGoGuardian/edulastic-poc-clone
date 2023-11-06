@@ -91,7 +91,10 @@ const WLRDetails = ({
   ]
 
   return (
-    <Tabs renderTabBar={FilledTabBar} style={{ marginBlock: '32px' }}>
+    <Tabs
+      renderTabBar={FilledTabBar}
+      style={{ marginBlock: '32px', overflow: 'visible' }} // to allow tooltips tabPanel to overflow. No side-effect as panel cover full page width.
+    >
       {performanceAndMasteryTabs.map((item) => (
         <TabPane tab={item.label} key={item.key}>
           {item.children}

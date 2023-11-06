@@ -10,11 +10,12 @@ import HTML5Backend from 'react-dnd-html5-backend'
 import { compose } from 'redux'
 import Spin from 'antd/es/spin'
 import Joyride from 'react-joyride'
-import PrivateRoute from './common/components/privateRoute'
 import OfflineNotifier from '@edulastic/common/src/components/OfflineNotifier'
 import { isMobileDevice } from '@edulastic/common/src/helpers'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import * as firebase from 'firebase/app'
+import { WithResources } from '@edulastic/common'
+import PrivateRoute from './common/components/privateRoute'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import { SectionsStartPage } from './student/SectionsStart'
 import SebQuitConfirm from './student/SebQuitConfirm'
@@ -32,6 +33,12 @@ import StudentSessionExpiredModal from './common/components/StudentSessionExpire
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
+import appConfig from '../app-config'
+import {
+  isPearDomain,
+  pearIdentifyProduct,
+  pearIdentifyUser,
+} from '../utils/pear'
 
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
@@ -141,87 +148,96 @@ class App extends Component {
     const { showAppUpdate } = this.state
 
     return (
-      <div>
-        {shouldWatch && <RealTimeCollectionWatch />}
-        {userRole && (
-          <CheckRoutePatternsEffectContainer
-            role={userRole}
-            location={location}
-            history={history}
-          />
-        )}
-        <AppUpdate visible={showAppUpdate} />
-        <StudentSessionExpiredModal />
-        <UserTokenExpiredModal />
-        <OfflineNotifier />
-        {tutorial && (
-          <Joyride continuous showProgress showSkipButton steps={tutorial} />
-        )}
-        <Suspense fallback={<Loading />}>
-          <DndProvider
-            backend={dndBackend}
-            options={{
-              enableTouchEvents: true,
-              enableMouseEvents: true,
-            }}
-          >
-            <Switch>
-              {/* {location.pathname.toLocaleLowerCase() !==
+      <WithResources
+        resources={isPearDomain ? [`${appConfig.pearScriptPath}`] : []}
+        fallBack={<Loading />}
+        onLoaded={() => {
+          pearIdentifyProduct()
+          pearIdentifyUser(user?.user?.pearToken)
+        }}
+      >
+        <div>
+          {shouldWatch && <RealTimeCollectionWatch />}
+          {userRole && (
+            <CheckRoutePatternsEffectContainer
+              role={userRole}
+              location={location}
+              history={history}
+            />
+          )}
+          <AppUpdate visible={showAppUpdate} />
+          <StudentSessionExpiredModal />
+          <UserTokenExpiredModal />
+          <OfflineNotifier />
+          {tutorial && (
+            <Joyride continuous showProgress showSkipButton steps={tutorial} />
+          )}
+          <Suspense fallback={<Loading />}>
+            <DndProvider
+              backend={dndBackend}
+              options={{
+                enableTouchEvents: true,
+                enableMouseEvents: true,
+              }}
+            >
+              <Switch>
+                {/* {location.pathname.toLocaleLowerCase() !==
                 redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
                 <Redirect exact to={redirectRoute} />
               ) : null} */}
-              <PrivateRoute
-                path="/home"
-                component={Dashboard}
-                notifications={[NotificationListener]}
-                redirectPath={redirectRoute}
-              />
-              {/* New route is created to handle the section submit review page. It
+                <PrivateRoute
+                  path="/home"
+                  component={Dashboard}
+                  notifications={[NotificationListener]}
+                  redirectPath={redirectRoute}
+                />
+                {/* New route is created to handle the section submit review page. It
               renders the same component as the final submit review page. */}
-              <PrivateRoute
-                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-                component={TestAttemptReview}
-              />
-              <PrivateRoute
-                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
-                component={TestAttemptReview}
-              />
-              <Route
-                path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
-                component={SectionsStartPage}
-              />
-              <Route
-                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <Route
-                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <Route
-                path={`/student/${ASSESSMENT}/:id`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <PrivateRoute
-                path="/student/test-summary"
-                component={TestAttemptReview}
-              />
-              <Route
-                path="/student/seb-quit-confirm"
-                component={SebQuitConfirm}
-              />
-              <Route
-                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP={false} />}
-              />
-              <Route
-                path={`/student/${PRACTICE}/:id`}
-                render={() => <AssessmentPlayer defaultAP={false} />}
-              />
-            </Switch>
-          </DndProvider>
-        </Suspense>
-      </div>
+                <PrivateRoute
+                  path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                  component={TestAttemptReview}
+                />
+                <PrivateRoute
+                  path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/section/:sectionId/test-summary"
+                  component={TestAttemptReview}
+                />
+                <Route
+                  path="/student/:assessmentType/:testId/class/:groupId/uta/:utaId/sections-start"
+                  component={SectionsStartPage}
+                />
+                <Route
+                  path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <Route
+                  path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <Route
+                  path={`/student/${ASSESSMENT}/:id`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <PrivateRoute
+                  path="/student/test-summary"
+                  component={TestAttemptReview}
+                />
+                <Route
+                  path="/student/seb-quit-confirm"
+                  component={SebQuitConfirm}
+                />
+                <Route
+                  path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP={false} />}
+                />
+                <Route
+                  path={`/student/${PRACTICE}/:id`}
+                  render={() => <AssessmentPlayer defaultAP={false} />}
+                />
+              </Switch>
+            </DndProvider>
+          </Suspense>
+        </div>
+      </WithResources>
     )
   } // render
 }

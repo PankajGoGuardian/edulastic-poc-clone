@@ -14,8 +14,14 @@ export const StyledSelectInput = styled(SelectInputStyled)`
         .ant-select-selection__rendered .ant-select-selection__choice {
           height: 20px;
           max-width: ${MAX_TAG_WIDTH}px;
+          @media print {
+            max-width: fit-content;
+          }
         }
       }
+    }
+    @media print {
+      height: fit-content;
     }
   }
 `

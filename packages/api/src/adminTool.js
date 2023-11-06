@@ -5,7 +5,7 @@ const prefix = '/admin-tool'
 
 const api = new API()
 
-export const showErrorNotification = (error) => {
+const showErrorNotification = (error) => {
   const message = error?.response?.data?.message || 'Something went wrong'
   notification({ type: 'error', msg: message })
 }

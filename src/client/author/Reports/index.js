@@ -39,7 +39,11 @@ import { StandardsMasteryReportContainer } from './subPages/standardsMasteryRepo
 import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
-import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  isSAWithoutSchoolsSelector,
+} from '../src/selectors/user'
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
@@ -48,6 +52,7 @@ import {
   isDefaultDASelector,
 } from '../../student/Login/ducks'
 import { getHeaderSettings } from './common/util'
+import { CUSTOM_TO_STATE_REPORTS_DISTRICT_IDS } from './common/constants/customReports'
 
 const Container = ({
   history,
@@ -75,6 +80,7 @@ const Container = ({
   premium,
   fetchCollaborationGroups,
   fetchSharedReports,
+  districtId,
 }) => {
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
@@ -178,6 +184,17 @@ const Container = ({
     [navigationItems, dynamicBreadcrumb, location]
   )
 
+  // NOTE: changes for demo district data with custom reports
+  // ref. EV-40723
+  const customReportsBCData = CUSTOM_TO_STATE_REPORTS_DISTRICT_IDS.includes(
+    districtId
+  )
+    ? headerSettings.breadcrumbData.map((item) => ({
+        ...item,
+        title: item.title === 'CUSTOM REPORTS' ? 'STATE REPORTS' : item.title,
+      }))
+    : headerSettings.breadcrumbData
+
   if (loadingSharedReports) {
     return <Spin size="small" />
   }
@@ -208,6 +225,7 @@ const Container = ({
           isSharedReport={headerSettings.isSharedReport}
           hasCsvDocs={hasCsvDocs}
           updateCsvDocs={updateCsvDocs}
+          districtId={districtId}
         />
       )}
       <MainContentWrapper>
@@ -221,7 +239,7 @@ const Container = ({
                 <CustomReports
                   {..._props}
                   isCliUser={isCliUser}
-                  breadcrumbData={headerSettings.breadcrumbData}
+                  breadcrumbData={customReportsBCData}
                   setDynamicBreadcrumb={setDynamicBreadcrumb}
                 />
               )
@@ -374,7 +392,7 @@ const Container = ({
               <CustomReportIframe
                 {..._props}
                 isCliUser={isCliUser}
-                breadcrumbData={headerSettings.breadcrumbData}
+                breadcrumbData={customReportsBCData}
                 setDynamicBreadcrumb={setDynamicBreadcrumb}
               />
             )
@@ -433,6 +451,7 @@ const Container = ({
 
 const enhance = connect(
   (state) => ({
+    districtId: getUserOrgId(state),
     role: getUserRole(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),

@@ -476,8 +476,6 @@ const ManageSubscriptionsByLicenses = ({
           handleSearch={handleSearch}
           fieldData={fieldData}
           setFieldData={setFieldData}
-          allowManageSubscription
-          mode="single"
         />
       )}
     </>

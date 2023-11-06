@@ -21,6 +21,7 @@ const fetchReports = (
       testId,
       assignmentId,
     },
+    useSlowApi: true,
   }
 
   return api.callApi(config).then((result) => result.data.result)
@@ -42,14 +43,17 @@ const fetchTestActivityReport = (id, groupId) =>
       params: {
         groupId,
       },
+      useSlowApi: true,
     })
     .then((result) => result.data.result)
 
 const fetchSkillReport = (classId) =>
   api
     .callApi({
+      // FIXME: is this a dummy API ? Verify and remove API or this comment.
       url: `/skill-report/${classId}`,
       method: 'get',
+      useSlowApi: true,
     })
     .then((result) => result.data.result)
 
@@ -162,6 +166,7 @@ const fetchStandardMasteryBrowseStandards = ({
     url: `/search/browse-standards`,
     data,
     method: 'POST',
+    useSlowApi: true,
   })
 }
 
@@ -299,6 +304,7 @@ const generateCSV = (params) =>
       url: '/report/generate-csv',
       method: 'POST',
       data: params,
+      useSlowApi: true,
     })
     .then(({ data }) => data.result)
 
@@ -307,6 +313,7 @@ const fetchGeneratedCSVs = () =>
     .callApi({
       url: '/report/generated-csv',
       method: 'GET',
+      useSlowApi: true,
     })
     .then(({ data }) => data.result)
 
@@ -315,6 +322,7 @@ const fetchPerformanceByRubricsCriteriaChartData = (params) =>
     .callApi({
       url: '/report/performance-by-rubric/chart',
       params,
+      useSlowApi: true,
     })
     // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
@@ -324,6 +332,7 @@ const fetchPerformanceByRubricsCriteriaTableData = (params) =>
     .callApi({
       url: '/report/performance-by-rubric/table',
       params,
+      useSlowApi: true,
     })
     // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
@@ -333,6 +342,7 @@ const fetchPreVsPostReportSummaryData = (params) =>
     .callApi({
       url: '/report/pre-vs-post-test/summary',
       params,
+      useSlowApi: true,
     })
     .then((res) => res.data)
 
@@ -341,6 +351,7 @@ const fetchPreVsPostReportTableData = (params) =>
     .callApi({
       url: '/report/pre-vs-post-test/table',
       params,
+      useSlowApi: true,
     })
     .then((res) => res.data)
 
@@ -349,6 +360,7 @@ const fetchAttendanceReportDetails = (params) =>
     .callApi({
       url: '/data-warehouse/attendance/report/details',
       params,
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -357,6 +369,7 @@ const fetchAttendanceSummaryReport = (params) =>
     .callApi({
       url: `/data-warehouse/attendance/report`,
       params,
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -365,6 +378,7 @@ const fetchAttendanceDistributionReport = (params) =>
     .callApi({
       url: `/data-warehouse/attendance/distribution`,
       params,
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -425,6 +439,7 @@ const getGoals = () =>
     .callApi({
       url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/goals`,
       method: 'get',
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -433,6 +448,7 @@ const fetchAttendanceBands = () =>
     .callApi({
       url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/attendance-band`,
       method: 'get',
+      useSlowApi: true,
     })
     .then((result) => result.data.result)
 
@@ -443,6 +459,7 @@ const getInterventions = (params) =>
       method: 'get',
       params,
       paramsSerializer: (param) => qs.stringify(param),
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result)
 
@@ -452,6 +469,7 @@ const getInterventionsByGroups = (params) => {
       url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/report-interventions`,
       method: 'get',
       params: { jsonQuery: JSON.stringify(params) },
+      useSlowApi: true,
     })
     .then((response) => response?.data?.result?.responseData)
 }

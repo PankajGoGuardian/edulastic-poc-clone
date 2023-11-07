@@ -18,7 +18,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { segmentApi } from '@edulastic/api'
 import {
   isDistrictPolicyAllowed,
   isEmailValid,
@@ -75,7 +74,6 @@ class LoginContainer extends React.Component {
           })
         }
         login(payload)
-        segmentApi.genericEventTrack('Signin_ButtonClick', { Method: 'Email' })
       }
     })
   }

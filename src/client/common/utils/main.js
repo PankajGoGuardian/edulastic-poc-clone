@@ -62,7 +62,6 @@ export const initializeSegment = (forceEnable = false) => {
   }
   analytics.SNIPPET_VERSION = AppConfig.segmentVersion
   analytics.load()
-  analytics.page()
 }
 
 /**

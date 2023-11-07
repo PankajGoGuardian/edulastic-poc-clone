@@ -16,6 +16,7 @@ import { YAxisLabel } from './chartUtils/yAxisLabel'
 const SimpleLineChart = ({
   data,
   xAxisLabelKey,
+  width = '100%',
   lines,
   xAxisTicks,
   xAxisInterval = 'preserveEnd',
@@ -28,7 +29,7 @@ const SimpleLineChart = ({
   const tooltipFormatter = (value, name) => [`${value}%`, startCase(name)]
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width={width} height="100%">
       <LineChart
         width={500}
         height={300}

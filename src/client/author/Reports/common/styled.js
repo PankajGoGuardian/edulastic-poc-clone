@@ -916,7 +916,6 @@ export const StyledReportContainer = styled.div`
   @media print {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
-    width: 1800px;
   }
 `
 

@@ -2,7 +2,10 @@ import React, { useMemo } from 'react'
 import { isEmpty } from 'lodash'
 import { Row, Col } from 'antd'
 
-import { RISK_BAND_LABELS } from '@edulastic/constants/reportUtils/common'
+import {
+  RISK_BAND_LABELS,
+  stringifyArrayFilters,
+} from '@edulastic/constants/reportUtils/common'
 import { dataWarehouseApi } from '@edulastic/api'
 import {
   useApiQuery,
@@ -12,7 +15,6 @@ import {
   SpinLoader,
   FlexContainer,
 } from '@edulastic/common'
-import { stringifyArrayFilters } from '@edulastic/constants/reportUtils/common'
 import {
   Widget,
   StyledEmptyContainer,
@@ -87,7 +89,14 @@ const renderLegend = ({ payload }) => (
   </FlexContainer>
 )
 
-const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
+const PRINT_WIDTH = 770
+
+const RiskTimeline = ({
+  isPrinting,
+  settings,
+  widgetFilters,
+  setWidgetFilters,
+}) => {
   const query = useMemo(
     () =>
       stringifyArrayFilters({
@@ -160,6 +169,7 @@ const RiskTimeline = ({ settings, widgetFilters, setWidgetFilters }) => {
                       <StyledCustomChartTooltip getJSX={getTooltipJSX} />
                     ),
                   }}
+                  width={isPrinting ? PRINT_WIDTH : '100%'}
                 />
               </FlexContainer>
             </EduThen>

@@ -150,6 +150,7 @@ const EarlyWarningReport = ({
           <ReportView
             loc={loc}
             location={location}
+            isPrinting={isPrinting}
             selectedCompareBy={selectedCompareBy}
             compareByOptions={compareByOptions}
             settings={settings}

@@ -16,8 +16,11 @@ export const TableContainer = styled.div`
   min-height: 300px;
   justify-content: center;
   margin-top: 60px;
-  padding: 20px 15px;
+  padding: 0 15px 20px 15px;
   border-radius: 25px;
+  @media print {
+    width: fit-content;
+  }
 `
 export const CustomStyledCell = styled.div`
   border-radius: 6px;
@@ -70,10 +73,16 @@ export const StyledEarlyWarningTable = styled(CustomStyledTable)`
       font-size: 12px;
       .left-text {
         margin-left: 65px;
+        @media print {
+          margin-left: 0;
+        }
       }
       .right-text {
         margin-right: -40px;
         font-weight: 600;
+        @media print {
+          margin-right: 0;
+        }
       }
     }
   }

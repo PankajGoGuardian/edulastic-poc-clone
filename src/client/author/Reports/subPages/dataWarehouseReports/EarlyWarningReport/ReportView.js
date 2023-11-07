@@ -10,6 +10,7 @@ import useTableFilters from './hooks/useTableFilters'
 const ReportView = ({
   loc,
   location,
+  isPrinting,
   settings,
   selectedCompareBy,
   compareByOptions,
@@ -65,6 +66,7 @@ const ReportView = ({
       <WidgetsContainer>
         <RiskSummary loc={loc} settings={settings} />
         <RiskTimeline
+          isPrinting={isPrinting}
           settings={settings}
           setWidgetFilters={setRiskTimelineFilters}
           widgetFilters={riskTimelineFilters}

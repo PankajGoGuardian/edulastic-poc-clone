@@ -84,6 +84,9 @@ export const WidgetsContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   gap: 30px;
+  @media print {
+    flex-wrap: nowrap;
+  }
 `
 export const Widget = styled.div`
   border-radius: 20px;

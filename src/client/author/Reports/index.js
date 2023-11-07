@@ -8,6 +8,7 @@ import { MainContentWrapper } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { ReportPaths } from '@edulastic/constants/const/report'
 
+import { segmentApi } from '@edulastic/api'
 import { Header } from './common/components/Header'
 import StandardReport from './components/StandardReport'
 import navigation from './common/static/json/navigation.json'
@@ -183,6 +184,25 @@ const Container = ({
       ),
     [navigationItems, dynamicBreadcrumb, location]
   )
+
+  useEffect(() => {
+    const ignoreNames = [
+      'standard-reports',
+      'data-warehouse-reports',
+      'shared-reports',
+    ] // not report page
+
+    if (reportType && !ignoreNames.includes(reportType)) {
+      const category = headerSettings?.breadcrumbData?.[0]?.title
+
+      if (category) {
+        segmentApi.genericEventTrack('Report_visit', {
+          name: reportType,
+          category,
+        })
+      }
+    }
+  }, [reportType])
 
   // NOTE: changes for demo district data with custom reports
   // ref. EV-40723

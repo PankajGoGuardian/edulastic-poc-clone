@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { FlexContainer } from '@edulastic/common'
-import { segmentApi } from '@edulastic/api'
 import { TextWrapper } from '../../../../../styledComponents'
 import {
   TestRecommendationsWrapper,
@@ -19,12 +18,6 @@ const TestRecommendationsContainer = ({
   isDemoPlaygroundUser = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-
-  useEffect(() => {
-    if (recommendations && recommendations.length > 1) {
-      segmentApi.genericEventTrack('2plus_testsRecommended', {})
-    }
-  }, [recommendations])
 
   const gridCountInARow =
     windowWidth >= 1800

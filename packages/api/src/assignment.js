@@ -296,6 +296,7 @@ const editTagsRequest = (payload) =>
 const getBubbleSheet = ({ assignmentId, groupId }) =>
   api.callApi({
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
+    method: 'post',
   })
 
 const bulkEditSettings = (payload) =>

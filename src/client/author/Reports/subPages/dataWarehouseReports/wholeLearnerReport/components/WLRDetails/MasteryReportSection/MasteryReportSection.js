@@ -35,6 +35,7 @@ const MasteryReportSection = (props) => {
             by={selectedScaleOption}
             selectCB={onSelectScale}
             data={scaleOptions}
+            showPrefix={false}
           />
         }
         separator={<Spacer />}

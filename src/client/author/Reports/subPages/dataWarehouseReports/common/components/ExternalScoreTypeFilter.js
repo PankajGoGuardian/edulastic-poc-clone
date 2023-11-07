@@ -38,6 +38,7 @@ const ExternalScoreTypeFilter = ({
       }
       data={externalScoreTypesList}
       label="External Score"
+      showPrefix={false}
     />
   )
 }

@@ -76,7 +76,7 @@ const WLRDetails = ({
     },
     {
       key: 'mastery',
-      label: 'Mastery',
+      label: 'Standard Mastery',
       children: (
         <MasteryReportSection
           studentMasteryProfile={studentMasteryProfile}

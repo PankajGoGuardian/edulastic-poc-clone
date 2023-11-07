@@ -15,6 +15,7 @@ const LabelledControlDropdown = (props) => {
   const {
     dataCy,
     label,
+    showPrefix = true,
     labelComponent = label,
     containerProps = {},
     ...controlProps
@@ -35,7 +36,7 @@ const LabelledControlDropdown = (props) => {
         </FlexContainer>
       </FieldLabel>
       <ControlDropDown
-        prefix={label}
+        prefix={showPrefix ? label : ''}
         showPrefixOnSelected={false}
         {...controlProps}
       />

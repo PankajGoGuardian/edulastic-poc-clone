@@ -17,6 +17,7 @@ const LineReader = ({
   btnComponent,
   btnText,
   onClick,
+  hideButton,
 }) => {
   const [showReader, destoryReader] = useLineReader(hideLineReader)
 
@@ -51,7 +52,7 @@ const LineReader = ({
     return btnComponent
   }, [btnComponent])
 
-  return (
+  return !hideButton ? (
     <Tooltip placement="top" title="Line Reader">
       <Button
         isGhost
@@ -63,7 +64,7 @@ const LineReader = ({
         {btnText || <IconLineReader />}
       </Button>
     </Tooltip>
-  )
+  ) : null
 }
 
 export default connect(

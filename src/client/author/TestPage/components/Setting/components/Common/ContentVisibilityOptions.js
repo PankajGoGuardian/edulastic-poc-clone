@@ -104,7 +104,9 @@ const ContentVisibilityOptions = ({
                 >
                   {combinedVisibilityOptions[contentVisibility].map((ele) => (
                     <RadioBtn
-                      data-cy={`item-visibility-${ele.key}`}
+                      data-cy={`item-visibility-${
+                        ele.key || contentVisibility
+                      }`}
                       value={ele.key}
                       key={ele.key}
                     >

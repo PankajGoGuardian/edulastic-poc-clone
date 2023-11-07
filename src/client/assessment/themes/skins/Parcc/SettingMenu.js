@@ -10,6 +10,7 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { StyledButton, StyledDropdown, StyledMenu } from './styled'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
+import { lineReaderVisible } from '../../../../common/components/LineReader/duck'
 
 const menuItems = {
   changeColor: 'Change the background and foreground color',
@@ -31,6 +32,7 @@ const SettingMenu = ({
   multiLanguageEnabled,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  isLineReaderVisible,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -57,7 +59,8 @@ const SettingMenu = ({
             }}
           >
             {menuItems[key]}
-            {key === 'enableMagnifier' && enableMagnifier && (
+            {((key === 'enableMagnifier' && enableMagnifier) ||
+              (key === 'showLineReaderMask' && isLineReaderVisible)) && (
               <FontAwesomeIcon icon={faCheck} />
             )}
           </MenuItem>
@@ -103,6 +106,7 @@ const enhance = compose(
     (state) => ({
       user: get(state, ['user', 'user'], {}),
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+      isLineReaderVisible: lineReaderVisible(state),
     }),
     {}
   )

@@ -42,6 +42,13 @@ import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import ChangeColor from './ChangeColor'
+import {
+  hideLineReaderAction,
+  lineReaderVisible,
+  showLineReaderAction,
+} from '../../../../common/components/LineReader/duck'
+import useLineReader from '../../../../common/components/LineReader/components/useLineReader'
+import LineReader from '../../../../common/components/LineReader'
 
 const {
   playerSkin: { parcc },
@@ -102,6 +109,9 @@ const PlayerHeader = ({
   openReferenceModal,
   isShowReferenceModal,
   canShowReferenceMaterial,
+  showLineReader,
+  hideLineReader,
+  isLineReaderVisible,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -116,6 +126,7 @@ const PlayerHeader = ({
       totalUnanswered > 0 ? `0${totalUnanswered}`.slice(-2) : totalUnanswered,
   }
   const isFirst = () => (isDocbased ? true : currentItem === 0)
+  const [, destoryReader] = useLineReader(hideLineReader)
 
   const [showChangeColor, setShowChangeColor] = useState(false)
   const onSettingsChange = (e) => {
@@ -128,6 +139,8 @@ const PlayerHeader = ({
         return setSettingsModalVisibility(true)
       case 'changeColor':
         return setShowChangeColor(true)
+      case 'showLineReaderMask':
+        return isLineReaderVisible ? destoryReader() : showLineReader()
       default:
         break
     }
@@ -326,6 +339,7 @@ const PlayerHeader = ({
           </BreadcrumbContainer>
         </StyledHeaderTitle>
       </Header>
+      <LineReader hideButton />
     </FlexContainer>
   )
 }
@@ -343,9 +357,12 @@ const enhance = compose(
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,
+      isLineReaderVisible: lineReaderVisible(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,
+      showLineReader: showLineReaderAction,
+      hideLineReader: hideLineReaderAction,
     }
   )
 )

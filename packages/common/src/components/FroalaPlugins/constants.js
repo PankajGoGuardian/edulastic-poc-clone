@@ -3,6 +3,7 @@ const buttons = [
   'italic',
   'underline',
   'insertVideo',
+  'insertAudio',
   'fontSize',
   'indent',
   'outdent',
@@ -20,7 +21,6 @@ const buttons = [
   'undo',
   'redo',
   'specialCharacters',
-  'insertAudio',
 ]
 
 export const DEFAULT_TOOLBAR_BUTTONS = {

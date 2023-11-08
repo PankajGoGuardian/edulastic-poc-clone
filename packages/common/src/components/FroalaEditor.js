@@ -101,6 +101,7 @@ const CustomEditor = ({
 
   const onRecordingComplete = ({ audioFile, audioUrl }) => {
     window.audioUrl = audioUrl
+    window.audioFile = audioFile
   }
 
   const setErrorData = (data) => {

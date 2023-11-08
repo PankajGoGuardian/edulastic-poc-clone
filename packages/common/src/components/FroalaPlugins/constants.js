@@ -3,6 +3,7 @@ const buttons = [
   'italic',
   'underline',
   'insertVideo',
+  'insertAudio',
   'fontSize',
   'indent',
   'outdent',

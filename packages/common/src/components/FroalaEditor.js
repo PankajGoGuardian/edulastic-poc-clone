@@ -45,6 +45,8 @@ import {
   replaceLatexesWithMathHtml,
   replaceMathHtmlWithLatexes,
 } from '../utils/mathUtils'
+import audioPlugin from './FroalaPlugins/audioPlugin'
+import useAudioRecorder from '../../../../src/client/assessment/widgets/AudioResponse/hooks/useAudioRecorder'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -96,6 +98,28 @@ const CustomEditor = ({
   const EditorRef = useRef(null)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
+
+  const onRecordingComplete = ({ audioFile, audioUrl }) => {
+    window.audioUrl = audioUrl
+    window.audioFile = audioFile
+  }
+
+  const setErrorData = (data) => {
+    window.audioError = data
+  }
+
+  const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
+    onChangeRecordingState: () => {},
+    onRecordingComplete,
+    setErrorData,
+  })
+
+  useEffect(() => {
+    if (window.jQuery) {
+      // add audio plugin
+      audioPlugin(FroalaEditor, onClickRecordAudio, onClickStopRecording)
+    }
+  }, [window?.jQuery])
 
   const toolbarButtons = getToolbarButtons(
     'STD',

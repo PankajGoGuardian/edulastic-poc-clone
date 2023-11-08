@@ -2,6 +2,7 @@ import { Col, Row, Tooltip } from 'antd'
 import next from 'immer'
 import { sumBy } from 'lodash'
 import React, { useMemo } from 'react'
+import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import styled from 'styled-components'
 
 import {
@@ -10,18 +11,19 @@ import {
   COLUMN_WIDTH,
 } from '@edulastic/constants/reportUtils/singleAssessmentReport/peerPerformance'
 
+import { themeColor } from '@edulastic/colors'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
 import { downloadCSV } from '../../../../../common/util'
-import { idToName } from '../../util/transformers'
-import { StyledTable } from '../styled'
+import { getTableData, idToName } from '../../util/transformers'
+import { StyledTable, StyledInfoIcon } from '../styled'
 import { CompareByContainer } from '../../../../dataWarehouseReports/common/components/styledComponents'
 
 const enableSorts = {
   'dimension.name': 'dimension',
   aboveStandard: 'aboveStandard',
-  avgSore: 'scorePerc',
+  avgScore: 'scorePerc',
 }
 
 const compareByContainerStyle = { maxWidth: `${COLUMN_WIDTH}px` }
@@ -45,22 +47,34 @@ export const PeerPerformanceTable = ({
 }) => {
   let _columns = []
 
-  const colorCell = (colorkey, columnKey, columnTitle) => (data, record) => {
+  const colorCell = (colorkey, columnKey, columnTitle, showTooltip = true) => (
+    data,
+    record
+  ) => {
+    const { dimension } = record
     const tooltipText = (rec) => () => (
       <div>
         <Row className="tooltip-row" type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Assessment Name: </Col>
           <Col className="custom-table-tooltip-value">{assessmentName}</Col>
         </Row>
-        <Row className="tooltip-row" type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">{`${idToName(
-            compareBy
-          )}: `}</Col>
-          <Col className="custom-table-tooltip-value">{rec.dimension.name}</Col>
-        </Row>
-        {analyseBy === analyseByOptions.scorePerc ||
-        analyseBy === analyseByOptions.rawScore ? (
-          <>
+        <EduIf condition={dimension._id}>
+          <Row className="tooltip-row" type="flex" justify="start">
+            <Col className="custom-table-tooltip-key">{`${idToName(
+              compareBy
+            )}: `}</Col>
+            <Col className="custom-table-tooltip-value">
+              {rec.dimension.name}
+            </Col>
+          </Row>
+        </EduIf>
+        <EduIf
+          condition={
+            analyseBy === analyseByOptions.scorePerc ||
+            analyseBy === analyseByOptions.rawScore
+          }
+        >
+          <EduThen>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Assigned: </Col>
               <Col className="custom-table-tooltip-value">
@@ -80,7 +94,9 @@ export const PeerPerformanceTable = ({
               </Col>
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
-              <Col className="custom-table-tooltip-key">District Avg: </Col>
+              <Col className="custom-table-tooltip-key">
+                {`${idToName(compareBy)} Average:`}
+              </Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(
                   rec.districtAvg,
@@ -92,15 +108,14 @@ export const PeerPerformanceTable = ({
             </Row>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">
-                Student Avg Score:{' '}
+                {`Filtered ${idToName(compareBy)} Average:`}
               </Col>
               <Col className="custom-table-tooltip-value">
-                {getDisplayValue(rec.avgSore, rec, analyseBy, 'dimensionAvg')}
+                {getDisplayValue(rec.avgScore, rec, analyseBy, 'dimensionAvg')}
               </Col>
             </Row>
-          </>
-        ) : (
-          <>
+          </EduThen>
+          <EduElse>
             <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Performance Band: </Col>
               <Col className="custom-table-tooltip-value">{columnTitle}</Col>
@@ -121,8 +136,8 @@ export const PeerPerformanceTable = ({
                     ).toFixed(0)}%`}
               </Col>
             </Row>
-          </>
-        )}
+          </EduElse>
+        </EduIf>
       </div>
     )
 
@@ -132,24 +147,22 @@ export const PeerPerformanceTable = ({
     }
 
     const printData = getDisplayValue(data, record, analyseBy, columnKey)
-
+    const tooltipTitle = showTooltip ? tooltipText(record) : ''
     return (
       <CustomTableTooltip
+        $textAlign="left"
         printData={printData}
         colorKey={colorkey}
         placement="top"
-        title={tooltipText(record)}
+        title={tooltipTitle}
         getCellContents={getCellContents}
       />
     )
   }
 
   const tableData = useMemo(
-    () =>
-      dataSource.filter((item) => {
-        return filter[item.dimension._id] || Object.keys(filter).length === 0
-      }),
-    [dataSource, filter]
+    () => getTableData(dataSource, bandInfo, filter, analyseBy),
+    [dataSource, bandInfo, filter, analyseBy]
   )
 
   let colouredCellsNo = 0
@@ -176,16 +189,43 @@ export const PeerPerformanceTable = ({
         </CompareByContainer>
       </Tooltip>
     )
+    const dimensionAvgCol = arr.find(({ key }) => key === 'districtAvg')
+    const filteredDimensionAvgCol = arr.find(({ key }) => key === 'scorePerc')
 
-    if (analyseBy === analyseByOptions.scorePerc) {
-      arr[arr.length - 1].render = colorCell('fill', 'dimensionAvg')
-      arr[arr.length - 2].render = colorCell('dFill', 'districtAvg')
+    if (
+      [analyseByOptions.scorePerc, analyseByOptions.rawScore].includes(
+        analyseBy
+      )
+    ) {
+      const dimensionAvgTitle = dimensionAvgCol.title
+      dimensionAvgCol.title = () => {
+        return (
+          <span className="custom-column-title">
+            {dimensionAvgTitle}
+            <Tooltip title="Average Score calculated excluding All Filters, except 'Test Type'">
+              <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
+            </Tooltip>
+          </span>
+        )
+      }
+      dimensionAvgCol.render = colorCell('dFill', 'districtAvg', '', false)
+
+      const filteredDimensionAvgTitle = filteredDimensionAvgCol.title
+      filteredDimensionAvgCol.title = () => {
+        return (
+          <span className="custom-column-title">
+            {filteredDimensionAvgTitle}
+            <Tooltip title="Average score considering the filters.">
+              <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
+            </Tooltip>
+          </span>
+        )
+      }
+      filteredDimensionAvgCol.render = colorCell('fill', 'dimensionAvg', '')
       colouredCellsNo = 2
-    } else if (analyseBy === analyseByOptions.rawScore) {
-      arr[arr.length - 1].render = colorCell('fill', 'dimensionAvg')
-      arr[arr.length - 2].render = colorCell('dFill', 'districtAvg')
-      colouredCellsNo = 2
-    } else if (analyseBy === analyseByOptions.aboveBelowStandard) {
+    }
+
+    if (analyseBy === analyseByOptions.aboveBelowStandard) {
       arr[arr.length - 1].render = colorCell(
         'fill_0',
         'aboveStandard',
@@ -197,7 +237,7 @@ export const PeerPerformanceTable = ({
         'Below Standard'
       )
       colouredCellsNo = 2
-    } else {
+    } else if (analyseBy === analyseByOptions.proficiencyBand) {
       for (let i = 0; i < bandInfo.length; i++) {
         dataSource.forEach((d) => {
           d[`fill_${i}`] = bandInfo[i].color

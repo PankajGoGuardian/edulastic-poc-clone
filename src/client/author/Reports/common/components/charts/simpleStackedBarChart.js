@@ -110,6 +110,7 @@ const SimpleStackedBarChartComponent = ({
   totalRows,
   chartBackNavigation,
   setChartBackNavigation,
+  customLegendContent = null,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -509,6 +510,14 @@ const SimpleStackedBarChartComponent = ({
               onMouseEnter={onLegendMouseEnter}
               onMouseLeave={onLegendMouseLeave}
               payload={legendPayload}
+            />
+          )}
+          {customLegendContent !== null && (
+            <Legend
+              align="right"
+              verticalAlign="top"
+              wrapperStyle={legendWrapperStyle}
+              content={customLegendContent}
             />
           )}
           <Tooltip

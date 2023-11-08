@@ -1,13 +1,30 @@
 import React, { useMemo } from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import { ticks } from 'd3-array'
-import { isEmpty, isNil, maxBy } from 'lodash'
+import { isEmpty, isNil, maxBy, round } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
+import { themeColor } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { getHSLFromRange1 } from '../../../../../common/util'
-import { getChartYAxisReferenceValue, idToName } from '../../util/transformers'
+import { idToName } from '../../util/transformers'
+import { StyledInfoIcon, StyledIcon } from '../styled'
 
-const { analyseByOptions } = reportUtils.peerPerformance
+const { analyseByOptions, getOverallAvg } = reportUtils.peerPerformance
+
+const customLegendContent = () => {
+  return (
+    <FlexContainer justifyContent="end">
+      <Tooltip title="District-wide average Score calculated excluding All Filters, except 'Test Type'">
+        <FlexContainer alignItems="center">
+          <StyledIcon type="line" $fontSize="20px" $marginRight="5px" />
+          <span>District Avg</span>
+          <StyledInfoIcon fill={themeColor} $marginLeft="5px" />
+        </FlexContainer>
+      </Tooltip>
+    </FlexContainer>
+  )
+}
 
 export const SimpleStackedBarChartContainer = ({
   data,
@@ -43,8 +60,8 @@ export const SimpleStackedBarChartContainer = ({
       const { districtAvg, dimension } = payload[0].payload
       const districtValue =
         analyseBy === analyseByOptions.scorePerc
-          ? `${districtAvg.toFixed(0)}%`
-          : districtAvg.toFixed(2)
+          ? `${round(districtAvg)}%`
+          : round(districtAvg, 2)
 
       return (
         <div>
@@ -88,7 +105,7 @@ export const SimpleStackedBarChartContainer = ({
   const getChartSpecifics = () => {
     let referenceLineY = 0
     if (chartData.length) {
-      referenceLineY = getChartYAxisReferenceValue(chartData, analyseBy)
+      referenceLineY = getOverallAvg(chartData, analyseBy)
     }
     if (analyseBy === analyseByOptions.scorePerc) {
       let yAxisLabel = 'Avg. Score %'
@@ -141,6 +158,7 @@ export const SimpleStackedBarChartContainer = ({
       filter={filter}
       referenceLineY={chartSpecifics.referenceLineY}
       pageSize={10}
+      customLegendContent={customLegendContent}
       {...chartProps}
     />
   )

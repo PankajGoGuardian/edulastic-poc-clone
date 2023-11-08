@@ -1,4 +1,4 @@
-import { startCase } from 'lodash'
+import { startCase, isEmpty, round } from 'lodash'
 
 const _idToLabel = {
   schoolId: 'schoolName',
@@ -108,17 +108,77 @@ export const getFormattedName = (item) => {
         .join(' ')
     : ''
 }
-
-export const getChartYAxisReferenceValue = (chartData, analyseBy) => {
-  let dimensionAvgSum = 0
-  let validDimensionsCount = 0
-  chartData.forEach(({ dimensionAvg }) => {
-    dimensionAvgSum += dimensionAvg
-    // we will not consider dimension entry having null dimensionAvg
-    validDimensionsCount += dimensionAvg === null ? 0 : 1
-  })
-  const referenceAverage = dimensionAvgSum / validDimensionsCount
+// This method can be imported from edulastic/constants reportUtils.peerPerformance
+// constants import having issue in this file so kept the method here as well.
+const getOverallAvg = (data, analyseBy) => {
+  const { overallAvg, overallAvgPerf } = data[0]
   return analyseBy === analyseByOptions.scorePerc
-    ? (referenceAverage || 0).toFixed(0)
-    : referenceAverage
+    ? overallAvgPerf
+      ? round(overallAvgPerf)
+      : overallAvgPerf
+    : overallAvg
+}
+
+// This method can be imported from edulastic/constants reportUtils.peerPerformance
+// constants import having issue in this file so kept the method here as well.
+const getOverallRow = (data, analyseBy, bandInfo) => {
+  const districtAvg = getOverallAvg(data, analyseBy)
+  const {
+    submittedStudents,
+    absentStudents,
+    aboveStandard,
+    belowStandard,
+    totalStudents,
+    performanceBandDetails,
+    totalWeightedScore,
+  } = data.reduce(
+    (acc, curr) => {
+      acc.submittedStudents += curr.submittedStudents
+      acc.absentStudents += curr.absentStudents
+      acc.aboveStandard += curr.aboveStandard
+      acc.belowStandard += curr.belowStandard
+      acc.totalStudents += curr.totalStudents
+      acc.totalWeightedScore += curr.dimensionAvg * curr.submittedStudents
+      if (!isEmpty(bandInfo)) {
+        bandInfo.forEach(({ name }) => {
+          acc.performanceBandDetails[name] =
+            (acc.performanceBandDetails[name] || 0) + curr[name]
+        })
+      }
+      return acc
+    },
+    {
+      submittedStudents: 0,
+      absentStudents: 0,
+      aboveStandard: 0,
+      belowStandard: 0,
+      totalStudents: 0,
+      performanceBandDetails: {},
+      totalWeightedScore: 0,
+    }
+  )
+  const dimensionAvg = totalWeightedScore / submittedStudents
+  return {
+    dimension: {
+      _id: null,
+      name: 'Overall',
+    },
+    districtAvg,
+    dimensionAvg,
+    submittedStudents,
+    absentStudents,
+    totalStudents,
+    aboveStandard,
+    belowStandard,
+    ...performanceBandDetails,
+  }
+}
+
+export const getTableData = (data, bandInfo, filter, analyseBy) => {
+  // @TODO: Uncomment this code and return overallRowData to show overall row after 38.0.3 release fix.
+  // const overallRowData = getOverallRow(data, analyseBy, bandInfo)
+  const filteredData = data.filter((item) => {
+    return filter[item.dimension._id] || Object.keys(filter).length === 0
+  })
+  return filteredData
 }

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, fadedGrey } from '@edulastic/colors'
+import { Icon } from 'antd'
+import { IconInfo } from '@edulastic/icons'
 import { StyledTable as PreStyledTable } from '../../../../common/styled'
 import { FilterDropDownWithDropDown } from '../../../../common/components/widgets/filterDropDownWithDropDown'
 
@@ -24,6 +26,11 @@ export const StyledFilterDropDownWithDropDown = styled(
 export const StyledTable = styled(PreStyledTable)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
+      table thead tr th {
+        .custom-column-title {
+          display: flex;
+        }
+      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
@@ -102,4 +109,11 @@ export const StyledTable = styled(PreStyledTable)`
       }
     }
   }
+`
+export const StyledInfoIcon = styled(IconInfo)`
+  margin-left: ${({ $marginLeft }) => $marginLeft || '0'};
+`
+export const StyledIcon = styled(Icon)`
+  font-size: ${({ $fontSize }) => $fontSize || '12px'};
+  margin-right: ${({ $marginRight }) => $marginRight || '0'};
 `

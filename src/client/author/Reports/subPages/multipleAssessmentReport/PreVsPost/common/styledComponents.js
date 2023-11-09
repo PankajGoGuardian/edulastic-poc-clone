@@ -74,11 +74,11 @@ export const StyledTable = styled(Table)`
   }
 `
 
-// TODO $dynamicColor prop is only added to limit scope to DS reports.
+// TODO p.theme.dynamicFGColor prop is only added to limit scope to DS reports.
 // Remove this prop if such limitation is removed.
 export const CustomStyledCell = styled(StyledCell)`
   background-color: ${(props) => props.color};
-  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
+  ${(p) => (p.theme.dynamicFGColor ? `color: ${getFGColor(p.color)};` : '')}
   padding: ${(props) => props.padding};
 `
 
@@ -219,7 +219,7 @@ export const StyledTitle = styled.div`
   font-size: 12px;
   border-radius: 20px 20px 0px 0px;
   background-color: ${({ color }) => color};
-  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
+  ${(p) => (p.theme.dynamicFGColor ? `color: ${getFGColor(p.color)};` : '')}
   font-weight: bold;
   padding-inline: 10px;
   padding-top: 12px;
@@ -415,7 +415,7 @@ export const PerformanceMatrixContainer = styled(Row)`
 `
 export const StyledPerformanceMatrixCell = styled(PerformanceMatrixCell)`
   background-color: ${({ color }) => color};
-  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
+  ${(p) => (p.theme.dynamicFGColor ? `color: ${getFGColor(p.color)};` : '')}
 `
 
 export const StyledEduButton = styled(EduButton)`

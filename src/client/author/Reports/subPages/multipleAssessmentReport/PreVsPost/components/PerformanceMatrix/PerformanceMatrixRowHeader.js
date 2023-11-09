@@ -1,8 +1,10 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 import { getFGColor } from '../../../../../../src/utils/util'
 
-const PerformanceMatrixRowHeader = ({ text, color, dynamicColor }) => {
-  const extraStyles = dynamicColor
+const PerformanceMatrixRowHeader = ({ text, color }) => {
+  const theme = useTheme()
+  const extraStyles = theme.dynamicFGColor
     ? {
         color: getFGColor(color),
       }

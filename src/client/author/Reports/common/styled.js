@@ -45,7 +45,11 @@ export const StyledCell = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${(props) => props.justify || 'flex-end'};
-
+  ${(p) => (p.$bgColor ? `background-color: ${p.$bgColor};` : '')}
+  ${(p) =>
+    p.$bgColor && p.theme.dynamicFGColor
+      ? `color: ${getFGColor(p.$bgColor)};`
+      : ''}
   @media print {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
@@ -682,7 +686,10 @@ export const StyledTag = styled.div`
   height: 28px;
   width: 128px;
   font-size: 9px;
-  color: ${(props) => props.textColor || '#ffffff'};
+  color: ${(p) =>
+    p.theme.dynamicFGColor
+      ? getFGColor(p.bgColor || themeColor)
+      : p.textColor || '#ffffff'};
   font-weight: ${(props) => props.fontWeight || '600'};
   letter-spacing: ${(props) => props.spacing || '0.2px'};
   border-radius: ${(props) => props.borderRadius || '5px'};
@@ -898,7 +905,7 @@ export const StyledSpan = styled.span`
   background-color: ${({ color }) => color};
   padding: 5px;
   flex-wrap: nowrap;
-  ${(p) => (p.$dynamicColor ? `color: ${getFGColor(p.color)};` : '')}
+  ${(p) => (p.theme.dynamicFGColor ? `color: ${getFGColor(p.color)};` : '')}
   width: ${({ value }) => value}%;
   font-size: 11px;
 `

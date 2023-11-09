@@ -13,7 +13,7 @@ import CsvTable from '../../../../../../common/components/tables/CsvTable'
 import { ReStyledTag, StyledSpan, StyledTable } from '../../styled'
 
 const getCol = (text, backgroundColor) => (
-  <StyledCell style={{ backgroundColor }} justify="center">
+  <StyledCell justify="center" $bgColor={backgroundColor}>
     {text}
   </StyledCell>
 )

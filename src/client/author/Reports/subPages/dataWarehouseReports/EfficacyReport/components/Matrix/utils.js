@@ -80,7 +80,6 @@ const getPreVsPostCellsRender = ({
         text={cellText}
         color={cellColor}
         onClick={onMatrixCellClick(d2.preThreshold, d2.postThreshold)}
-        $dynamicColor
       />
     )
   })
@@ -115,7 +114,7 @@ export const getPreVsPostRowsRender = ({
     })
     return (
       <React.Fragment key={`section-matrix-row-${ri}`}>
-        <PerformanceMatrixRowHeader text={text} color={d.color} dynamicColor />
+        <PerformanceMatrixRowHeader text={text} color={d.color} />
         {preVsPostCells}
       </React.Fragment>
     )

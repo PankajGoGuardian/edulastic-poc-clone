@@ -99,8 +99,6 @@ const CustomEditor = ({
   const { currentLanguage } = useContext(LanguageContext)
   const EditorRef = useRef(null)
 
-  console.log('buttons', buttons, isPremiumUser)
-
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
   const onRecordingComplete = ({ audioFile, audioUrl }) => {
@@ -133,7 +131,6 @@ const CustomEditor = ({
     null,
     isPremiumUser
   )
-  console.log('buttons', toolbarButtons, isPremiumUser)
 
   const toolbarButtonsMD = getToolbarButtons(
     'MD',

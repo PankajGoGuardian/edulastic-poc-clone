@@ -9,7 +9,7 @@ import { isEmpty, sortBy, keyBy, isEqual } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
-import { questionType, roleuser } from '@edulastic/constants'
+import { questionType } from '@edulastic/constants'
 import {
   withWindowSizes,
   EduIf,
@@ -61,15 +61,19 @@ class AssessmentPlayerDocBased extends React.Component {
     currentPage: 0,
   }
 
+  observer = null
+
   componentDidMount() {
     const { changeView } = this.props
     changeView('review')
   }
 
-  componentDidUpdate(prevProps) {
-    const { enableMagnifier, loading, testId, userRole } = this.props
+  componentDidUpdate(prevProps, prevState) {
+    const { enableMagnifier, loading } = this.props
+    const { currentPage } = this.state
     if (
-      !isEqual(prevProps.enableMagnifier, enableMagnifier) &&
+      (!isEqual(prevProps.enableMagnifier, enableMagnifier) ||
+        !isEqual(prevState.currentPage, currentPage)) &&
       enableMagnifier &&
       !loading
     ) {
@@ -79,37 +83,39 @@ class AssessmentPlayerDocBased extends React.Component {
       const maginfierBox = document.querySelector(
         '#magnifier-wrapper :nth-child(2)'
       )
-
       ReactDOM.render(
         <div style={{ background: '#fff', height: '100%' }}>
           <SpinLoader position="relative" height="100%" />
         </div>,
         maginfierBox
       )
-      const newIframe = document.createElement('iframe')
-      newIframe.width = '100%'
-      newIframe.height = '100%'
-      newIframe.setAttribute('frameBorder', 0)
-      newIframe.src =
-        userRole === roleuser.STUDENT
-          ? window.location.href
-          : `${window.location.origin}/public/test-preview/${testId}`
-      magnifierEle.innerHTML = ''
-      magnifierEle.appendChild(newIframe)
-      newIframe.addEventListener('load', () => {
-        newIframe.contentWindow.document.body.addEventListener(
-          'DOMNodeInserted',
-          () => {
-            const content = newIframe.contentWindow.document.body.querySelector(
-              '.unzoom-container-wrapper'
-            )
-            if (content) {
-              maginfierBox.innerHTML = ''
-            }
-          }
+      this.observer = new MutationObserver(() => {
+        const canvas = document.querySelector(
+          `.unzoom-container-wrapper #viewer .canvasWrapper canvas[id="page${
+            currentPage + 1
+          }"]`
         )
+        const pdfViewer = magnifierEle.querySelector('.pdfViewer')
+        if (canvas && pdfViewer && !pdfViewer.querySelector('img')) {
+          const imgTag = document.createElement('img')
+          imgTag.style.width = canvas.style.width
+          imgTag.style.height = canvas.style.height
+          imgTag.src = canvas.toDataURL()
+          pdfViewer.innerHTML = ''
+          pdfViewer.appendChild(imgTag)
+          maginfierBox.innerHTML = ''
+        }
       })
+      if (magnifierEle) {
+        this.observer.observe(magnifierEle, {
+          childList: true,
+        })
+      }
     }
+  }
+
+  componentWillUnmount() {
+    if (this.observer) this.observer.disconnect()
   }
 
   openExitPopup = () => {

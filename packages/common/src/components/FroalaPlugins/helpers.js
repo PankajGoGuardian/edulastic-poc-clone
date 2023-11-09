@@ -1,12 +1,17 @@
 import { cloneDeep, isEmpty } from 'lodash'
-import { defaultCharacterSets, DEFAULT_TOOLBAR_BUTTONS } from './constants'
+import {
+  defaultCharacterSets,
+  DEFAULT_TOOLBAR_BUTTONS,
+  premiumToolbarButtons,
+} from './constants'
 
 export const getToolbarButtons = (
   size,
   toolbarSize,
   additionalToolbarOptions,
   buttons,
-  buttonCounts
+  buttonCounts,
+  isPremiumUser
 ) => {
   const sizeMap = {
     STD: { STD: 'STD', MD: 'MD', SM: 'SM', XS: 'XS' },
@@ -18,7 +23,13 @@ export const getToolbarButtons = (
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize])
   toolbarButtons.moreText.buttons = buttons
     ? [...buttons]
-    : [...toolbarButtons.moreText.buttons]
+    : [
+        ...toolbarButtons.moreText.buttons.filter(
+          (btn) =>
+            isPremiumUser ||
+            (!isPremiumUser && !premiumToolbarButtons.includes(btn))
+        ),
+      ]
   toolbarButtons.moreText.buttonsVisible =
     buttonCounts || toolbarButtons.moreText.buttonsVisible
   toolbarButtons.moreMisc = {

@@ -47,6 +47,7 @@ import {
 } from '../utils/mathUtils'
 import audioPlugin from './FroalaPlugins/audioPlugin'
 import useAudioRecorder from '../../../../src/client/assessment/widgets/AudioResponse/hooks/useAudioRecorder'
+import { get } from 'lodash'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -81,6 +82,7 @@ const CustomEditor = ({
   editorHeight,
   allowQuickInsert = true,
   unsetMaxWidth = false,
+  isPremiumUser,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -96,6 +98,8 @@ const CustomEditor = ({
   const [mathField, setMathField] = useState(null)
   const { currentLanguage } = useContext(LanguageContext)
   const EditorRef = useRef(null)
+
+  console.log('buttons', buttons, isPremiumUser)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
@@ -125,25 +129,35 @@ const CustomEditor = ({
     'STD',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
+  console.log('buttons', toolbarButtons, isPremiumUser)
+
   const toolbarButtonsMD = getToolbarButtons(
     'MD',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const toolbarButtonsSM = getToolbarButtons(
     'SM',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const toolbarButtonsXS = getToolbarButtons(
     'XS',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
   const initialConfig = Object.assign(
@@ -526,28 +540,32 @@ const CustomEditor = ({
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsMD = getToolbarButtons(
       'MD',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsSM = getToolbarButtons(
       'SM',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsXS = getToolbarButtons(
       'XS',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
 
     const updatedConfig = {
@@ -720,6 +738,7 @@ const enhance = compose(
   withMathFormula,
   withTheme,
   connect((state) => ({
+    isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
     advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
   }))
 )

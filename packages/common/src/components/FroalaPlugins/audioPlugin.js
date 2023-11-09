@@ -9,10 +9,11 @@ import {
 } from '@edulastic/icons'
 
 import { renderToString } from 'react-dom/server'
-
 import { Icon } from 'antd'
 import { uploadToS3 } from '../../helpers'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../src/client/assessment/utils/timeUtils'
+import { maxAudioDurationLimit } from '../../../../../src/client/assessment/widgets/AudioResponse/constants'
+import { audioUploadFileLimit } from './constants'
 
 function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
   if (window.jQuery) {
@@ -38,11 +39,15 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
     FE.PLUGINS.audio = function (editor) {
       const MISSING_LINK = 1
       const ERROR_DURING_UPLOAD = 2
+      const INVALID_URL = 3
       const BAD_RESPONSE = 4
-      const BAD_FILE_TYPE = 8
+      const BAD_FILE_TYPE = 5
+      const MAX_SIZE_ERROR = 6
 
       const errorMessages = {
         [MISSING_LINK]: 'No link in upload response.',
+        [INVALID_URL]: 'Enter a valid url',
+        [MAX_SIZE_ERROR]: 'Maximum allowed audio size limit is 10mb',
         [ERROR_DURING_UPLOAD]: 'Error during file upload.',
         [BAD_RESPONSE]: 'Parsing response failed.',
         [BAD_FILE_TYPE]:
@@ -90,7 +95,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
             if (dt && dt.files) {
               const inst = $popup.data('instance') || editor
               inst.events.disableBlur()
-              inst.audio.upload(dt.files)
+              inst.audio.upload(dt.files, 'audio-upload')
               inst.events.enableBlur()
             }
           },
@@ -119,7 +124,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
               inst.events.disableBlur()
               $popup.find('input:focus').blur()
               inst.events.enableBlur()
-              inst.audio.upload(this.files)
+              inst.audio.upload(this.files, 'audio-upload')
             }
 
             // Else IE 9 case.
@@ -155,7 +160,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           editor.id
         }">
 				  <div class="fr-input-line" style="display:flex;justify-items:center;align-items:center;flex-direction:column;">
-            <button type="button" class="fr-command fr-submit" tabIndex="2" role="button" data-cmd="audioRecordStart" style="background-color:#1AB394;border-radius:50%;border:none;cursor:pointer;width:50px;height:50px;box-shadow:0 2px 5px 10px #c6c6c633; margin-bottom: 30px;">
+            <button type="button" class="fr-command fr-submit" tabIndex="2" role="button" data-cmd="audioRecordStart" style="background-color:#1AB394;border-radius:50%;border:none;cursor:pointer;width:50px;height:50px;box-shadow:0 2px 5px 10px #c6c6c633; margin-bottom: 10px;">
                ${renderToString(<IconWhiteMic />)}
             </button>
             <p>Tap on mic to record</p>
@@ -187,7 +192,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           editor.id
         }">
 				  <strong>${editor.language.translate(
-            'Drop audio'
+            'Drop audio file'
           )}</strong><br />(${editor.language.translate('or click')})
 				  <div class="fr-form">
 					  <input type="file" accept="${accept}" tabIndex="-1" aria-labelledby="fr-audio-upload-layer-${
@@ -211,6 +216,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           progress_bar,
         })
         bindInsertEvents($popup)
+        $('.fr-layer').css({ height: '113px' })
         return $popup
       }
 
@@ -263,18 +269,29 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         const $layer = $popup.find('.fr-audio-progress-bar-layer')
         $layer.addClass('fr-error')
         const $messageHeader = $layer.find('h3')
+        $layer
+          .find('.fr-loader')
+          .html(
+            renderToString(
+              <Icon
+                type="close-circle"
+                theme="filled"
+                style={{ fontSize: 32, color: '#ea4335' }}
+              />
+            )
+          )
         $messageHeader.text(editor.language.translate(message))
         editor.events.disableBlur()
         $messageHeader.focus()
       }
 
-      const throwError = function (code, response) {
+      const throwError = function (code, name) {
         editor.edit.on()
         showErrorMessage(errorMessages[code])
-        editor.events.trigger('audio.error', [
-          { code, message: errorMessages[code] },
-          response,
-        ])
+        setTimeout(() => {
+          editor.audio.hideProgressBar(true)
+          editor.audio.showLayer(name)
+        }, 1000)
       }
 
       const addNewAudio = function (src) {
@@ -383,6 +400,23 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           }
         },
 
+        stopAudioRecording(recording) {
+          onClickStopRecording()
+          clearInterval(recording)
+          const interval = setInterval(() => {
+            if (window.audioFile) {
+              this.audio.upload([window.audioFile], 'audio-record')
+              clearInterval(interval)
+              const $popup = this.shared.popups['audio.insert']
+              const $layer = $popup.find('.fr-audio-record-layer')
+              $layer.find('button').attr('data-cmd', 'audioRecordStart')
+              $layer.find('button').html(renderToString(<IconWhiteMic />))
+              $layer.find('p').html(`Tap on mic to record`)
+              $layer.find('small').html('')
+            }
+          }, 100)
+        },
+
         showLayer(name) {
           const $popup = editor.popups.get('audio.insert')
           editor.popups.setContainer('audio.insert', editor.$tb)
@@ -451,11 +485,14 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
             // $popup.find('input, button').prop({ disabled: true })
           }
 
-          if (!/^http/.test(link) && !link.includes('blob'))
-            link = `https://${link}`
-          insertHtmlAudio(link)
+          try {
+            const url = new URL(link)
+            insertHtmlAudio(url.href)
+          } catch (error) {
+            throwError(INVALID_URL, 'audio-by-url')
+          }
         },
-        upload(audios) {
+        upload(audios, name) {
           showProgressBar()
           // Make sure we have what to upload.
           if (!(audios && audios.length)) return false
@@ -474,7 +511,13 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
               audio.type.replace(/audio\//g, '')
             )
           ) {
-            throwError(BAD_FILE_TYPE)
+            throwError(BAD_FILE_TYPE, name)
+            return false
+          }
+
+          const size = audio.size / (1024 * 1024)
+          if (size > audioUploadFileLimit) {
+            throwError(MAX_SIZE_ERROR, name)
             return false
           }
 
@@ -483,41 +526,23 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           uploadToS3(audio, aws.s3Folders.DEFAULT)
             .then((url) => {
               showProgressMessage('Successfully Uploaded', 100)
-              setTimeout(() => {
-                if (url) {
-                  insertHtmlAudio(url)
-                } else {
-                  throwError(MISSING_LINK)
-                }
-              }, 1000)
+              if (url) {
+                insertHtmlAudio(url)
+              } else {
+                throwError(MISSING_LINK, name)
+              }
             })
-            .catch((e) => {
-              console.error(e)
-              editor.edit.on()
-              editor.audio.hideProgressBar(true)
-              throwError(ERROR_DURING_UPLOAD, e)
+            .catch(() => {
+              throwError(ERROR_DURING_UPLOAD, name)
             })
 
-          // showProgressBar()
           editor.events.disableBlur()
           editor.edit.off()
           editor.events.enableBlur()
-
-          //   const $popup = $(editor.popups.get('audio.insert'))
-          //   if ($popup) {
-          //     $popup.off('abortUpload').on('abortUpload', function () {
-          //       if (xhr.readyState !== 4) xhr.abort()
-          //     })
-          //   }
-
-          // Send data.
-          //   xhr.send(formData)
           return true
         },
       }
     }
-
-    let timer
 
     FE.DefineIcon('insertAudio', {
       NAME: 'volume-up',
@@ -568,7 +593,11 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         let ms = 0
         let time = getFormattedTimeInMinutesAndSeconds(ms)
         $layer.find('p').html(`Recording ... | ${time}`)
-        timer = setInterval(() => {
+        const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
+        const timer = setInterval(() => {
+          if (ms === maxmilliseconds) {
+            this.audio.stopAudioRecording(timer)
+          }
           ms += 1000
           time = getFormattedTimeInMinutesAndSeconds(ms)
           $layer.find('p').html(`Recording ... | ${time}`)
@@ -579,22 +608,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
     FE.RegisterCommand('audioRecordStop', {
       undo: true,
       focus: true,
-      callback() {
-        onClickStopRecording()
-        clearInterval(timer)
-        timer = setInterval(() => {
-          if (window.audioFile) {
-            this.audio.upload([window.audioFile])
-            clearInterval(timer)
-            const $popup = this.shared.popups['audio.insert']
-            const $layer = $popup.find('.fr-audio-record-layer')
-            $layer.find('button').attr('data-cmd', 'audioRecordStart')
-            $layer.find('button').html(renderToString(<IconWhiteMic />))
-            $layer.find('p').html(`Tap on mic to record`)
-            $layer.find('small').html('')
-          }
-        }, 100)
-      },
+      callback() {},
     })
 
     FE.DefineIcon('audioByURL', { NAME: 'link', SVG_KEY: 'insertLink' })

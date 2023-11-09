@@ -1,9 +1,19 @@
 import { isEmpty } from 'lodash'
+import moment from 'moment'
+import { testTypes } from '@edulastic/constants'
 
 export const getYear = (timestamp) => new Date(timestamp).getFullYear()
 
 export const NON_ACADEMIC_DATA_TYPE_KEY = 'non-academic'
 export const ACADEMIC_DATA_TYPE_KEY = 'academic'
+export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
+  testTypes.FP_BAS,
+  testTypes.TERM_GRADES,
+  testTypes.MCAS,
+  testTypes.ILEARN,
+  testTypes.ACCESS,
+  testTypes.NHSAS,
+]
 export const AdministrationLevelOptions = [
   {
     key: 'Admin 1',
@@ -67,4 +77,19 @@ export const getFeedTypeOptions = (feedTypes) => {
     nonAcademicFeedTypes
   )
   return dataStructure
+}
+
+export const isDateWithinTermTillPresent = (
+  date,
+  termStartDate,
+  termEndDate
+) => {
+  if (!termStartDate || !termEndDate) return true
+  const toDate = Math.min(termEndDate, Date.now())
+  return date <= toDate && date >= termStartDate
+}
+
+export const formatDate = (date) => {
+  // edu-wh & redshift expect date in this format
+  return moment(date).format('MM/DD/YYYY')
 }

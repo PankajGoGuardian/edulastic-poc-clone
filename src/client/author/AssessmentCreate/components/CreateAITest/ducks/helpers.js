@@ -37,19 +37,21 @@ export const processAiGeneratedItems = (
   return testItems
 }
 
-export const getAlignmentDataForAiQuestions = ([alignment], standardNames) => {
+export const getAlignmentDataForAiQuestions = ([alignment]) => {
   const {
     grades,
     subject,
     standards = [],
     curriculum: standardSet = '',
   } = alignment
-  let standardIds = []
-  standardIds = standards.map(({ identifier }) => identifier)
-  if ((standardNames || []).length) {
-    standardIds = standardNames
-  }
-  return { grades, subject, standardIds, standardSet }
+  const standardIds = (standards || []).map(({ identifier }) => identifier)
+  const standardDescriptions = (standards || []).map(
+    ({ identifier = '', description = '' }) => ({
+      id: identifier,
+      description,
+    })
+  )
+  return { grades, subject, standardIds, standardSet, standardDescriptions }
 }
 export const getAlignmentForEduItems = ([alignment], standardName) => {
   const { domains = [], standards = [], ...rest } = cloneDeep(alignment)

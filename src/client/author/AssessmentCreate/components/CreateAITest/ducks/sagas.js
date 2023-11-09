@@ -131,7 +131,6 @@ function* regenerateAiTestItemsSaga({ payload }) {
       difficulty,
       alignment = [],
       preference,
-      standardNames,
       existingQidToRegenerate,
       groupIndex,
     } = payload
@@ -141,7 +140,8 @@ function* regenerateAiTestItemsSaga({ payload }) {
       subject,
       standardIds: commonCoreStandards,
       standardSet,
-    } = getAlignmentDataForAiQuestions(alignment, standardNames)
+      standardDescriptions: commonCoresStandardDescriptions,
+    } = getAlignmentDataForAiQuestions(alignment)
 
     const testEntity = yield select(getTestEntitySelector)
 
@@ -157,6 +157,7 @@ function* regenerateAiTestItemsSaga({ payload }) {
       depthsOfKnowledge: dok,
       difficultLevels: difficulty,
       commonCoreStandards,
+      commonCoresStandardDescriptions,
       grades,
       subject,
       ...(!isEmpty(preference) && { preference }),
@@ -217,7 +218,6 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       difficulty,
       alignment = [],
       preference,
-      standardNames,
       groupIndex,
     } = payload
 
@@ -226,7 +226,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       subject,
       standardIds: commonCoreStandards,
       standardSet,
-    } = getAlignmentDataForAiQuestions(alignment, standardNames)
+      standardDescriptions: commonCoresStandardDescriptions,
+    } = getAlignmentDataForAiQuestions(alignment)
 
     const testEntity = yield select(getTestEntitySelector)
 
@@ -246,6 +247,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       subject,
       ...(!isEmpty(preference) && { preference }),
       existingQuestions,
+      commonCoresStandardDescriptions,
     }
 
     const { result } = yield call(

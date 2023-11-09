@@ -122,8 +122,13 @@ class AddBulkModal extends React.Component {
     }
 
     const curriculumStandardsIdsIdentifiers = []
-    ;(standards || []).forEach((standard) => {
-      curriculumStandardsIdsIdentifiers.push(standard?.identifier || '')
+    const curriculumStandardsDescriptions = []
+    ;(standards || []).forEach(({ identifier = '', description = '' }) => {
+      curriculumStandardsDescriptions.push({
+        id: identifier,
+        description,
+      })
+      curriculumStandardsIdsIdentifiers.push(identifier)
     })
 
     const { fetchAIGeneratedQuestion, videoUrl } = this.props
@@ -139,13 +144,14 @@ class AddBulkModal extends React.Component {
             .filter((difficultyValue) => difficultyValue),
       depthsOfKnowledge: depthOfKnowledge?.length
         ? [depthOfKnowledge]
-        : selectsData.allDepthOfKnowledge
+        : selectsData.allDepthOfKnowledgeAI
             .map((dok) => dok?.value || '')
             .filter((dokValue) => dokValue),
       grades,
       subject,
       ...(curriculum?.length ? { standardSet: curriculum } : {}),
       commonCoreStandards: curriculumStandardsIdsIdentifiers,
+      commonCoresStandardDescriptions: curriculumStandardsDescriptions,
       existingQuestions: questions
         ?.map(({ stimulus, questionDisplayTimestamp }) => ({
           name: stimulus,
@@ -323,7 +329,7 @@ class AddBulkModal extends React.Component {
                     <Select.Option key="Select DOK" value="">
                       Select DOK
                     </Select.Option>
-                    {selectsData.allDepthOfKnowledge.map(
+                    {selectsData.allDepthOfKnowledgeAI.map(
                       (el) =>
                         el.value && (
                           <Select.Option key={el.value} value={el.value}>

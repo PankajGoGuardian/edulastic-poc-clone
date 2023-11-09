@@ -2,44 +2,30 @@
 import React from 'react'
 import { aws } from '@edulastic/constants'
 import _ from 'lodash'
-import { IconWhiteMic, IconWhiteStop, IconTick } from '@edulastic/icons'
+import {
+  IconWhiteMic,
+  IconWhiteStop,
+  IconCircleCheck as IconTick,
+} from '@edulastic/icons'
 
 import { renderToString } from 'react-dom/server'
 
+import { Icon } from 'antd'
 import { uploadToS3 } from '../../helpers'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../src/client/assessment/utils/timeUtils'
-import SpinLoader from '../Spinner'
 
 function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
   if (window.jQuery) {
     $.extend(FE.POPUP_TEMPLATES, {
       'audio.insert':
         '[_BUTTONS_][_RECORD_AUDIO_][_BY_URL_LAYER_][_UPLOAD_LAYER_][_PROGRESS_BAR_]',
-      'audio.edit': '[_BUTTONS_]',
     })
     $.extend(FE.DEFAULTS, {
       audioAllowedTypes: ['mp3', 'mpeg', 'x-m4a', 'wav'],
-      audioEditButtons: [
-        'audioReplace',
-        'audioRemove',
-        '|',
-        'audioAutoplay',
-        'audioAlign',
-      ],
-      audioInsertButtons: [
-        'audioBack',
-        '|',
-        'audioRecord',
-        'audioByURL',
-        'audioUpload',
-      ],
+      audioInsertButtons: ['audioRecord', 'audioByURL', 'audioUpload'],
       audioMove: true,
       audioSplitHTML: false,
       audioUpload: true,
-      audioUploadMethod: 'POST',
-      audioUploadParam: 'file',
-      audioUploadParams: {},
-      audioUploadURL: 'https://i.froala.com/upload',
     })
 
     // This SVG icon is licensed under Apache 2.0 and was retrieved from
@@ -211,9 +197,9 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
 			  </div>`
 
         const progress_bar = `<div class="fr-audio-progress-bar-layer fr-layer">
-          <div style="display:flex;justify-items:center;align-items:center;">
-            <div class="fr-loader" style="margin-right: 20px"></div>
-            <h3 tabIndex="-1" class="fr-message"></h3>
+          <div style="display:flex;justify-items:center;align-items:center;flex-direction: column;">
+            <div class="fr-loader" style="margin-bottom: 20px"></div>
+            <h3 class="fr-message"></h3>
           </div>
 			  </div>`
 
@@ -237,11 +223,24 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         $layer.removeClass('fr-error')
 
         if (progress) {
-          $layer.find('.fr-loader').html(renderToString(<IconTick />))
+          $layer
+            .find('.fr-loader')
+            .html(
+              renderToString(
+                <IconTick style={{ fill: '#19b394', color: '#fff' }} />
+              )
+            )
         } else {
           $layer
             .find('.fr-loader')
-            .html(renderToString(<SpinLoader position="relative" />))
+            .html(
+              renderToString(
+                <Icon
+                  type="loading"
+                  style={{ fontSize: 32, color: '#19b394' }}
+                />
+              )
+            )
         }
       }
 
@@ -253,7 +252,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           .removeClass('fr-active')
           .addClass('fr-pactive')
         $popup.find('.fr-audio-progress-bar-layer').addClass('fr-active')
-        $popup.find('.fr-buttons').hide()
+        // $popup.find('.fr-buttons').hide()
 
         if (message) showProgressMessage(message, 0)
       }
@@ -344,13 +343,6 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
       }
 
       return {
-        _init() {
-          // editor.events.$on(editor.$el, 'mousedown', 'span.fr-audio', function (
-          //   e
-          // ) {
-          //   e.stopPropagation()
-          // })
-        },
         showInsertPopup() {
           if (!editor.popups.get('audio.insert')) initInsertPopup()
 
@@ -488,27 +480,22 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
 
           if (!editor.drag_support.formdata) return false
 
-          //   const formData = new FormData()
-          //   _.each(editor.opts.audioUploadParams, (key, value) =>
-          //     formData.append(key, value)
-          //   )
-          //   formData.append(editor.opts.audioUploadParam, audio)
-
-          //   const url = editor.opts.audioUploadURL
-          //   const xhr = editor.core.getXHR(url, editor.opts.audioUploadMethod)
-          // showProgressBar('Uploading.....')
           uploadToS3(audio, aws.s3Folders.DEFAULT)
             .then((url) => {
               showProgressMessage('Successfully Uploaded', 100)
               setTimeout(() => {
-                insertHtmlAudio(url)
+                if (url) {
+                  insertHtmlAudio(url)
+                } else {
+                  throwError(MISSING_LINK)
+                }
               }, 1000)
             })
             .catch((e) => {
               console.error(e)
               editor.edit.on()
               editor.audio.hideProgressBar(true)
-              throwError(BAD_RESPONSE, e)
+              throwError(ERROR_DURING_UPLOAD, e)
             })
 
           // showProgressBar()

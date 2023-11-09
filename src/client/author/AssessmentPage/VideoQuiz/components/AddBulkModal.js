@@ -34,7 +34,8 @@ import {
 import StandardSet from './QuestionEditModal/common/StandardSet'
 import { StandardSelectWrapper } from '../styled-components/StandardSet'
 import { validateStandardsData } from '../utils/common'
-import { standardsFields } from '../constants'
+import { standardsFields, questionGenerationStatus } from '../constants'
+import LoaderModal from './LoaderModal'
 
 class AddBulkModal extends React.Component {
   static propTypes = {
@@ -48,6 +49,7 @@ class AddBulkModal extends React.Component {
   state = {
     number: 2,
     type: MULTIPLE_CHOICE,
+    generatedQuestionsCount: 0,
     authorDifficulty: '',
     depthOfKnowledge: '',
     alignment: [
@@ -60,6 +62,12 @@ class AddBulkModal extends React.Component {
         subject: '',
       },
     ],
+  }
+
+  setGeneratedQuestionsCount = (count) => {
+    this.setState({
+      generatedQuestionsCount: count,
+    })
   }
 
   handleChange = (field) => (value) =>
@@ -99,7 +107,7 @@ class AddBulkModal extends React.Component {
 
   generateViaAI = ({ questionCount, questionType }) => {
     const { alignment, authorDifficulty, depthOfKnowledge } = this.state
-    const { questions } = this.props
+    const { questions, setAiQuestionsGenerationStatus } = this.props
 
     const { grades = [], standards = [], subject = '', curriculum = '' } =
       alignment?.[0] || {}
@@ -119,6 +127,7 @@ class AddBulkModal extends React.Component {
     })
 
     const { fetchAIGeneratedQuestion, videoUrl } = this.props
+    setAiQuestionsGenerationStatus(questionGenerationStatus.IN_PROGRESS)
     fetchAIGeneratedQuestion({
       videoUrl,
       count: questionCount,
@@ -148,21 +157,36 @@ class AddBulkModal extends React.Component {
     })
   }
 
-  componentDidUpdate = () => {
+  componentDidUpdate = (prevProps) => {
     const {
       aiGenerateQuestionState: { result, apiStatus } = {},
       setAIGeneratedQuestionState,
+      setAiQuestionsGenerationStatus,
     } = this.props
 
     if (
       (result || []).length > 0 &&
       ['SUCCESS', 'FAILED'].includes(apiStatus)
     ) {
+      setAiQuestionsGenerationStatus(
+        apiStatus === 'SUCCESS' && result?.length > 0
+          ? questionGenerationStatus.SUCCESS
+          : questionGenerationStatus.INITIAL
+      )
+      this.setGeneratedQuestionsCount(result?.length || 0)
       this.handleApply(result || [])
       setAIGeneratedQuestionState({
         apiStatus: false,
         result: [],
       })
+    }
+
+    if (
+      prevProps?.aiGenerateQuestionState?.apiStatus !== apiStatus &&
+      apiStatus === 'FAILED'
+    ) {
+      setAiQuestionsGenerationStatus(questionGenerationStatus.INITIAL)
+      this.setGeneratedQuestionsCount(0)
     }
   }
 
@@ -186,140 +210,155 @@ class AddBulkModal extends React.Component {
       alignment,
       authorDifficulty,
       depthOfKnowledge,
+      generatedQuestionsCount,
     } = this.state
     const {
       onCancel,
       visible,
       aiGenerateQuestionState: { apiStatus } = {},
+      aiQuestionsGenerationStatus,
+      setAiQuestionsGenerationStatus,
     } = this.props
 
     const loading = apiStatus === 'INITIATED'
 
     return (
-      <CustomModalStyled
-        visible={visible}
-        title={
-          <>
-            Auto Generate <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
-          </>
-        }
-        onCancel={onCancel}
-        maskClosable={false}
-        footer={[
-          <ModalFooter marginTop="35px">
-            <EduButton isGhost onClick={onCancel}>
-              Cancel
-            </EduButton>
-            <EduButton
-              disabled={loading}
-              onClick={() => this.handleApply()}
-              data-cy="apply"
-            >
-              Generate Questions
-              <EduIf condition={loading}>
-                <Spin size="small" indicator={<Icon type="loading" />} />
-              </EduIf>
-            </EduButton>
-          </ModalFooter>,
-        ]}
-      >
-        <ModalWrapper width="100%">
-          <QuestionFormWrapper>
-            <Row gutter={20}>
-              <Col span={6}>
-                <FieldLabel>Number</FieldLabel>
-                <NumberInputStyled
-                  min={1}
-                  max={10}
-                  value={number}
-                  onChange={this.handleChange('number')}
-                  data-cy="questionCount"
-                />
-              </Col>
-              <Col span={18}>
-                <FieldLabel>Type of Question</FieldLabel>
-                <SelectInputStyled
-                  value={type}
-                  onChange={this.handleChange('type')}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  data-cy="questionType"
-                >
-                  <Select.Option value={MULTIPLE_CHOICE}>
-                    Multiple Choice
-                  </Select.Option>
-                  {/* <Select.Option value={SHORT_TEXT}>Text</Select.Option> */}
-                  {/* <Select.Option value={CLOZE_DROP_DOWN}>
+      <>
+        <LoaderModal
+          status={aiQuestionsGenerationStatus}
+          generatedQuestionsCount={generatedQuestionsCount}
+          setAiQuestionsGenerationStatus={setAiQuestionsGenerationStatus}
+        />
+        <CustomModalStyled
+          visible={
+            visible &&
+            aiQuestionsGenerationStatus === questionGenerationStatus.INITIAL
+          }
+          title={
+            <>
+              Auto Generate{' '}
+              <StyledBetaTag alignItems="left">BETA</StyledBetaTag>
+            </>
+          }
+          onCancel={onCancel}
+          maskClosable={false}
+          footer={[
+            <ModalFooter marginTop="35px">
+              <EduButton isGhost onClick={onCancel}>
+                Cancel
+              </EduButton>
+              <EduButton
+                disabled={loading}
+                onClick={() => this.handleApply()}
+                data-cy="apply"
+              >
+                Generate Questions
+                <EduIf condition={loading}>
+                  <Spin size="small" indicator={<Icon type="loading" />} />
+                </EduIf>
+              </EduButton>
+            </ModalFooter>,
+          ]}
+        >
+          <ModalWrapper width="100%">
+            <QuestionFormWrapper>
+              <Row gutter={20}>
+                <Col span={6}>
+                  <FieldLabel>Number</FieldLabel>
+                  <NumberInputStyled
+                    min={1}
+                    max={10}
+                    value={number}
+                    onChange={this.handleChange('number')}
+                    data-cy="questionCount"
+                  />
+                </Col>
+                <Col span={18}>
+                  <FieldLabel>Type of Question</FieldLabel>
+                  <SelectInputStyled
+                    value={type}
+                    onChange={this.handleChange('type')}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    data-cy="questionType"
+                  >
+                    <Select.Option value={MULTIPLE_CHOICE}>
+                      Multiple Choice
+                    </Select.Option>
+                    {/* <Select.Option value={SHORT_TEXT}>Text</Select.Option> */}
+                    {/* <Select.Option value={CLOZE_DROP_DOWN}>
                     Drop down
                   </Select.Option> */}
-                  {/* <Select.Option value={MATH}>Math</Select.Option> */}
-                  {/* <Select.Option value={ESSAY_PLAIN_TEXT}>Essay</Select.Option> */}
-                  <Select.Option value={TRUE_OR_FALSE}>
-                    True or False
-                  </Select.Option>
-                </SelectInputStyled>
-              </Col>
-            </Row>
-          </QuestionFormWrapper>
-
-          <StandardSelectWrapper>
-            <StandardSet
-              alignment={alignment}
-              onUpdate={(data) => this.setState({ alignment: data.alignment })}
-              isDocBased
-              showIconBrowserBtn
-              standardsRequiredFields={[
-                standardsFields.SUBJECT,
-                standardsFields.GRADES,
-              ]}
-              considerCustomAlignmentDataSettingPriority
-            />
-            <Row style={{ marginTop: '10px' }} gutter={20}>
-              <Col md={12}>
-                <FieldLabel>DOK</FieldLabel>
-                <SelectInputStyled
-                  placeholder="Select DOK"
-                  onSelect={(val) => this.setState({ depthOfKnowledge: val })}
-                  value={depthOfKnowledge}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                >
-                  <Select.Option key="Select DOK" value="">
-                    Select DOK
-                  </Select.Option>
-                  {selectsData.allDepthOfKnowledge.map(
-                    (el) =>
-                      el.value && (
-                        <Select.Option key={el.value} value={el.value}>
-                          {el.text}
-                        </Select.Option>
-                      )
-                  )}
-                </SelectInputStyled>
-              </Col>
-              <Col md={12}>
-                <FieldLabel>Difficulty</FieldLabel>
-                <SelectInputStyled
-                  placeholder="Select Difficulty Level"
-                  onSelect={(val) => this.setState({ authorDifficulty: val })}
-                  value={authorDifficulty}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                >
-                  <Select.Option key="Select Difficulty Level" value="">
-                    Select Difficulty Level
-                  </Select.Option>
-                  {selectsData.allAuthorDifficulty.map(
-                    (el) =>
-                      el.value && (
-                        <Select.Option key={el.value} value={el.value}>
-                          {el.text}
-                        </Select.Option>
-                      )
-                  )}
-                </SelectInputStyled>
-              </Col>
-            </Row>
-          </StandardSelectWrapper>
-        </ModalWrapper>
-      </CustomModalStyled>
+                    {/* <Select.Option value={MATH}>Math</Select.Option> */}
+                    {/* <Select.Option value={ESSAY_PLAIN_TEXT}>Essay</Select.Option> */}
+                    <Select.Option value={TRUE_OR_FALSE}>
+                      True or False
+                    </Select.Option>
+                  </SelectInputStyled>
+                </Col>
+              </Row>
+            </QuestionFormWrapper>
+            <StandardSelectWrapper>
+              <StandardSet
+                alignment={alignment}
+                onUpdate={(data) =>
+                  this.setState({ alignment: data.alignment })
+                }
+                isDocBased
+                showIconBrowserBtn
+                standardsRequiredFields={[
+                  standardsFields.SUBJECT,
+                  standardsFields.GRADES,
+                ]}
+                considerCustomAlignmentDataSettingPriority
+              />
+              <Row style={{ marginTop: '10px' }} gutter={20}>
+                <Col md={12}>
+                  <FieldLabel>DOK</FieldLabel>
+                  <SelectInputStyled
+                    placeholder="Select DOK"
+                    onSelect={(val) => this.setState({ depthOfKnowledge: val })}
+                    value={depthOfKnowledge}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <Select.Option key="Select DOK" value="">
+                      Select DOK
+                    </Select.Option>
+                    {selectsData.allDepthOfKnowledge.map(
+                      (el) =>
+                        el.value && (
+                          <Select.Option key={el.value} value={el.value}>
+                            {el.text}
+                          </Select.Option>
+                        )
+                    )}
+                  </SelectInputStyled>
+                </Col>
+                <Col md={12}>
+                  <FieldLabel>Difficulty</FieldLabel>
+                  <SelectInputStyled
+                    placeholder="Select Difficulty Level"
+                    onSelect={(val) => this.setState({ authorDifficulty: val })}
+                    value={authorDifficulty}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <Select.Option key="Select Difficulty Level" value="">
+                      Select Difficulty Level
+                    </Select.Option>
+                    {selectsData.allAuthorDifficulty.map(
+                      (el) =>
+                        el.value && (
+                          <Select.Option key={el.value} value={el.value}>
+                            {el.text}
+                          </Select.Option>
+                        )
+                    )}
+                  </SelectInputStyled>
+                </Col>
+              </Row>
+            </StandardSelectWrapper>
+          </ModalWrapper>
+        </CustomModalStyled>
+      </>
     )
   }
 }

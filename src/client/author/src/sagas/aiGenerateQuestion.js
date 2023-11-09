@@ -8,11 +8,6 @@ function* fetchAIGeneratedQuestionSaga({ payload }) {
   const failedMessage =
     "Apologies for the inconvenience. We encountered an issue while generating questions based on the video's transcript. Please try again"
   try {
-    notification({
-      type: 'info',
-      msg:
-        "Generating personalized questions based on the video's content. This might take a moment, but we promise it'll be worth the wait!",
-    })
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'INITIATED', result: [] })
     )
@@ -20,12 +15,7 @@ function* fetchAIGeneratedQuestionSaga({ payload }) {
     yield put(
       setAIGeneratedQuestionStateAction({ apiStatus: 'SUCCESS', result })
     )
-    if (result?.length) {
-      notification({
-        type: 'success',
-        msg: `Great news! We have successfully generated ${result.length} questions based on the video. We encourage you to review the questions and make any necessary adjustments to ensure they meet your learning objectives and preferences. Feel free to customize the questions further, if desired.`,
-      })
-    } else {
+    if (!result?.length) {
       notification({
         type: 'error',
         msg: failedMessage,

@@ -29,10 +29,6 @@ function* processAiGeneratedTestItemsSaga({
   groupIndex,
 }) {
   if (!isEmpty(aiGeneratedQuestions)) {
-    notification({
-      type: 'success',
-      msg: `Great news! We have successfully generated ${aiGeneratedQuestions.length} questions. We encourage you to review the questions and make any necessary adjustments to ensure they meet your learning objectives and preferences. Feel free to customize the questions further, if desired.`,
-    })
     let existingTestItems = []
     /** Unsaved test */
     if ((assessment._id || '').length !== 24 && !existingQidToRegenerate) {
@@ -167,11 +163,6 @@ function* regenerateAiTestItemsSaga({ payload }) {
       existingQuestions,
     }
 
-    notification({
-      type: 'info',
-      messageKey: 'generateAiQuestions',
-    })
-
     const { result } = yield call(
       testItemsApi.generateQuestionViaAI,
       requestBody
@@ -256,11 +247,6 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       ...(!isEmpty(preference) && { preference }),
       existingQuestions,
     }
-
-    notification({
-      type: 'info',
-      messageKey: 'generateAiQuestions',
-    })
 
     const { result } = yield call(
       testItemsApi.generateQuestionViaAI,

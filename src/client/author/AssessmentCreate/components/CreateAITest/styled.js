@@ -4,11 +4,17 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { EduButton, FieldLabel, FlexContainer } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FieldLabel,
+  FlexContainer,
+} from '@edulastic/common'
 
 import { Form } from 'antd'
 import styled from 'styled-components'
 import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
+import { STATUS } from './ducks/constants'
 
 export const FormWrapper = styled(Form)`
   .ant-row {
@@ -108,4 +114,12 @@ export const CreateAiTestWrapper = styled(FlexContainer)`
 export const StyledDiv = styled.div`
   width: calc(100% - 2.5rem);
   padding-left: 2rem;
+`
+export const StyledCreateAiTestModal = styled(CustomModalStyled)`
+  .ant-modal-content {
+    .ant-modal-close {
+      display: ${(props) =>
+        props?.aiTestStatus === STATUS.INPROGRESS ? 'none' : 'initial'};
+    }
+  }
 `

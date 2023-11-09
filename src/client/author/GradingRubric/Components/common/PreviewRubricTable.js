@@ -55,6 +55,14 @@ const RatingCards = ({
     }
   }, [psRef?.contentWidth, psRef?.containerWidth])
 
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+      }
+    }
+  }, [timerRef])
+
   return (
     <RatingContainer>
       {hasScroll && (

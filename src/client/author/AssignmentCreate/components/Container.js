@@ -17,6 +17,7 @@ import {
   StyledDiv2,
   Title,
 } from './styled'
+import { isPearDomain } from '../../../../utils/pear'
 
 const CreateAssignmentModal = ({
   visible,
@@ -49,6 +50,8 @@ const CreateAssignmentModal = ({
     </>
   )
 
+  const pearOrEdulasticText = isPearDomain ? 'Pear Assess' : 'Edulastic'
+
   return (
     <CustomModalStyled
       title={modalTitle}
@@ -71,7 +74,7 @@ const CreateAssignmentModal = ({
             <DottedLine margin="0px 0px 30px 0px" />
             <InfoText>
               Select a pre-built assessment from <b>100k+ assesments</b> in the
-              Edulastic Library.
+              {pearOrEdulasticText} Library.
             </InfoText>
           </Col>
           <Col span={12}>

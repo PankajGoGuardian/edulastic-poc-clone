@@ -23,7 +23,7 @@ import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import qs from 'qs'
 import { IconMail, IconUser } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
@@ -123,7 +123,7 @@ const GetStarted = ({
         <Col span={12}>
           <EduIf condition={isPearDomain}>
             <EduThen>
-              <AssessPeardeckOnDarkBgLogo height="37px" />
+              <AssessPeardeckLabelOnDarkBgLogo height="37px" />
             </EduThen>
             <EduElse>
               <OnDarkBgLogo height="30px" />

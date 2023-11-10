@@ -17,6 +17,7 @@ import {
 } from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -66,8 +67,6 @@ import {
   LARGE_DESKTOP_WIDTH,
 } from '../../../author/src/constants/others'
 import PasswordPopup from './PasswordPopup'
-import TermsAndPrivacy from './TermsAndPrivacy/TermsAndPrivacy'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { isPearDomain } from '../../../../utils/pear'
 
 const FormItem = Form.Item
@@ -474,6 +473,10 @@ class StudentSignup extends React.Component {
         !isSignupUsingDaURL) &&
       method !== GOOGLE &&
       method !== OFFICE
+
+    const pearOrEdulasticText = isPearDomain
+      ? t('common.pearAssessText')
+      : t('common.edulastictext')
     return (
       <div>
         <PasswordPopup
@@ -502,7 +505,7 @@ class StudentSignup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckOnDarkBgLogo height="37px" />
+                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />
@@ -529,7 +532,7 @@ class StudentSignup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t('common.edulastictext')}
+                    {pearOrEdulasticText}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
                     {t('component.signup.student.forstudent')}
                   </h1>

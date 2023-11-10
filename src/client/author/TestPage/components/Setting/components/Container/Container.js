@@ -130,6 +130,7 @@ import {
   BetaTag2,
 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
+import { isPearDomain } from '../../../../../../../utils/pear'
 
 const {
   settingCategories: defaultSettingCategories,
@@ -955,7 +956,10 @@ class Setting extends Component {
       return null
     })
 
-    const edulastic = `${playerSkinTypes.edulastic} ${
+    const pearOrEdulasticText = isPearDomain
+      ? 'Pear Assess'
+      : playerSkinTypes.edulastic
+    const edulastic = `${pearOrEdulasticText} ${
       testType.includes('assessment') ? 'Test' : 'Practice'
     }`
     const skinTypes = {
@@ -2597,7 +2601,8 @@ class Setting extends Component {
                               assessments to more closely align with formats
                               similar to state and nationally administered
                               assessments. If you don’t see your state, select
-                              the generic option, Edulastic Test.
+                              the generic option,{' '}
+                              {isPearDomain ? 'Pear Assess' : 'Edulastic'} Test.
                             </Description>
                           </Col>
                         </Body>

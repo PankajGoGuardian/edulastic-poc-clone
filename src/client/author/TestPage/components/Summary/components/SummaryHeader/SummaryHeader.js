@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { IconShare, IconHeart, IconEduLogo } from '@edulastic/icons'
 import { FlexContainer } from '@edulastic/common'
 
+import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
 import { Photo } from '../../../common'
 import {
   Container,
@@ -15,6 +16,7 @@ import {
 } from './styled'
 import { Block, AnalyticsContainer } from '../Sidebar/styled'
 import { renderAnalytics } from '../Sidebar/Sidebar'
+import { isPearDomain } from '../../../../../../../utils/pear'
 
 const SummaryHeader = ({
   createdBy,
@@ -55,9 +57,18 @@ const SummaryHeader = ({
         <AvatarContainer>
           <FlexContainer justifyContent="flex-start" alignItems="center">
             <Avatar>
-              {' '}
-              <IconEduLogo />
-            </Avatar>{' '}
+              {isPearDomain ? (
+                <IconPearAssessLogoCompact
+                  isBgLight
+                  width="50px"
+                  height="50px"
+                />
+              ) : (
+                <>
+                  <IconEduLogo />
+                </>
+              )}
+            </Avatar>
             {/* Default Icon */}
             <FlexContainer
               flexDirection="column"

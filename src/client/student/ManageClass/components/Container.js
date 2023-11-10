@@ -27,6 +27,8 @@ import { StudentSlectCommon } from '../../sharedComponents/ClassSelector'
 import { NoDataBox } from '../../styled'
 import ClassCard from './CardContainer'
 import NoDataIcon from '../../assets/nodata.svg'
+import NoDataPearAssessIcon from '../../../common/components/NoDataNotification/noDataPearAssess.svg'
+import { isPearDomain } from '../../../../utils/pear'
 
 // constants
 
@@ -166,7 +168,10 @@ const ManageClassContainer = ({
         ) : (
           <NoDataBoxWrapper>
             <NoDataBox>
-              <img src={NoDataIcon} alt="noData" />
+              <img
+                src={isPearDomain ? NoDataPearAssessIcon : NoDataIcon}
+                alt="noData"
+              />
               <h4>
                 {showClass
                   ? t('common.noActiveClassesTitle')

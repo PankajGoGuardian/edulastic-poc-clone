@@ -1431,7 +1431,7 @@ const getLoggedOutUrl = () => {
   const pathname = window.location.pathname.toLocaleLowerCase()
   const search = window.location?.search
   if (pathname === '/getstarted') {
-    return '/getStarted'
+    return `/getStarted${search}`
   }
   if (pathname === '/signup') {
     return `/signup${search}`

@@ -3,7 +3,7 @@ import {
   IconLogoWhite,
   IconOnDarkLogo,
   IconOnWhiteLogo,
-  IconPearAssessOnDarkLog,
+  IconPearAssessLogo,
 } from '@edulastic/icons'
 import styled from 'styled-components'
 
@@ -17,7 +17,12 @@ export const OnDarkBgLogo = styled(IconOnDarkLogo)`
   height: ${(props) => props.height || '30px'};
 `
 
-export const AssessPeardeckOnDarkBgLogo = styled(IconPearAssessOnDarkLog)`
+export const AssessPeardeckOnDarkBgLogo = styled(IconPearAssessLogo)`
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || '30px'};
+`
+
+export const AssessPeardeckOnLightBgLogo = styled(IconPearAssessLogo)`
   width: ${(props) => props.width || 'auto'};
   height: ${(props) => props.height || '30px'};
 `

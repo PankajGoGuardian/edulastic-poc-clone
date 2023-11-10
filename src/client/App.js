@@ -295,7 +295,7 @@ class App extends Component {
     }
 
     if (pearSignUpPath) {
-      history.push(`/GetStarted/${location.search}`)
+      history.push(`/getStarted${location.search}`)
     }
 
     const isV1Redirect =

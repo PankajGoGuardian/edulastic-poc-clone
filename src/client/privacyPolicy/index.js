@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import {
   CheckboxLabel,
   EduButton,
+  EduElse,
+  EduIf,
+  EduThen,
   notification,
   OnWhiteBgLogo,
   SpinLoader,
@@ -23,6 +26,8 @@ import {
 import { setLocationToUserAction } from '../student/Login/ducks'
 import { setShowWelcomePopupAction } from '../author/Dashboard/ducks'
 import { getUser, isPublisherUserSelector } from '../author/src/selectors/user'
+import { isPearDomain } from '../../utils/pear'
+import PearPolicyModal from './PearPolicyModal'
 
 const eeaTitle =
   'Product Terms of Service and End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
@@ -147,39 +152,50 @@ const PrivacyPolicyModal = ({
   if (!showModal) return null
 
   return (
-    <>
-      <StyledPrivacyPolicyModal
-        wrapClassName="privacyPolicyModal"
-        visible={showModal}
-        closable={false}
-        footer={footer}
-        title={headerContent}
-        width="80%"
-        height="calc(100vh - 50px)"
-        maskStyle={{
-          background: 'rgba(0,0,0,0.8)',
-          zIndex: '300000',
-        }}
-      >
-        {showSpinner && <SpinLoader />}
-        <ModalTextBody>
-          <EulaPolicyContent />
-          <ProductPolicyContent />
-          {(isEEAUser || noLocation) && <EeaPolicyContent />}
-          <CheckboxWrapper data-cy="policyAgreeCheckboxText">
-            <CheckboxLabel
-              onChange={onCheck}
-              data-cy="policyAgreeCheckbox"
-              data-testid="check"
-            >
-              By checking the box and clicking “Accept”, I agree to the Terms of
-              Service and End User License Agreement and Privacy Policy of the
-              Product
-            </CheckboxLabel>
-          </CheckboxWrapper>
-        </ModalTextBody>
-      </StyledPrivacyPolicyModal>
-    </>
+    <EduIf condition={isPearDomain}>
+      <EduThen>
+        <PearPolicyModal
+          isChecked={isChecked}
+          setIsChecked={setIsChecked}
+          onAccept={onAccept}
+          isLoading={showSpinner}
+          showEEAPolicy={isEEAUser || noLocation}
+        />
+      </EduThen>
+      <EduElse>
+        <StyledPrivacyPolicyModal
+          wrapClassName="privacyPolicyModal"
+          visible={showModal}
+          closable={false}
+          footer={footer}
+          title={headerContent}
+          width="80%"
+          height="calc(100vh - 50px)"
+          maskStyle={{
+            background: 'rgba(0,0,0,0.8)',
+            zIndex: '300000',
+          }}
+        >
+          {showSpinner && <SpinLoader />}
+          <ModalTextBody>
+            <EulaPolicyContent />
+            <ProductPolicyContent />
+            {(isEEAUser || noLocation) && <EeaPolicyContent />}
+            <CheckboxWrapper data-cy="policyAgreeCheckboxText">
+              <CheckboxLabel
+                onChange={onCheck}
+                data-cy="policyAgreeCheckbox"
+                data-testid="check"
+              >
+                By checking the box and clicking “Accept”, I agree to the Terms
+                of Service and End User License Agreement and Privacy Policy of
+                the Product
+              </CheckboxLabel>
+            </CheckboxWrapper>
+          </ModalTextBody>
+        </StyledPrivacyPolicyModal>
+      </EduElse>
+    </EduIf>
   )
 }
 

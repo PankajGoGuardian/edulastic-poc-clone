@@ -57,7 +57,7 @@ const RatingCards = ({
 
   useEffect(() => {
     return () => {
-      if (timerRef.current) {
+      if (timerRef?.current) {
         clearInterval(timerRef.current)
       }
     }

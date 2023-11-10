@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import Editor from 'react-froala-wysiwyg'
 import FroalaEditor from 'froala-editor'
 import { withTheme } from 'styled-components'
-import { notification, LanguageContext } from '@edulastic/common'
+import { notification, LanguageContext, EduIf } from '@edulastic/common'
 import { aws, math, appLanguages } from '@edulastic/constants'
 import { withMathFormula } from '../HOC/withMathFormula'
 import 'froala-editor/js/plugins.pkgd.min'
@@ -669,13 +669,13 @@ const CustomEditor = ({
 
   return (
     <>
-      {audioError && (
+      <EduIf condition={audioError}>
         <ErrorPopup
           isOpen={audioError?.isOpen}
           errorMessage={audioError?.errorMessage}
           setErrorData={setErrorData}
         />
-      )}
+      </EduIf>
       <MathModal
         isEditable={mathModalIsEditable}
         show={showMathModal}

@@ -1,16 +1,21 @@
 import React from 'react'
 import { Divider } from 'antd'
 import { upperCase } from 'lodash'
+import moment from 'moment'
 
 import { FEED_NAME_LABEL } from '@edulastic/constants/const/dataWarehouse'
+import { formatDate } from '@edulastic/constants/reportUtils/common'
+import { EduIf } from '@edulastic/common'
 import ContentRow from './ContentRow'
 import {
   Header,
   ModalContentWrapper,
 } from '../../../common/components/StyledComponents'
+import { FEED_TYPES_WITH_TEST_DATE_INPUT } from '../../../../../../Shared/Components/DataWarehouseUploadModal/utils'
 
 const LeftContent = ({ data, termsMap, isEditModal }) => {
-  const { feedType, feedName, termId, addedCount } = data
+  const { feedType, feedName, termId, addedCount, testDate: testDateStr } = data
+  const testDate = formatDate(+moment(testDateStr))
 
   const leftHeaderText = isEditModal
     ? 'Edit External Data'
@@ -31,6 +36,9 @@ const LeftContent = ({ data, termsMap, isEditModal }) => {
           title="SCHOOL YEAR"
           value={termsMap.get(termId)?.name || '-'}
         />
+        <EduIf condition={FEED_TYPES_WITH_TEST_DATE_INPUT.includes(feedType)}>
+          <ContentRow title="TEST DATE" value={testDate} />
+        </EduIf>
         <Divider dashed />
         <ContentRow title="NO. OF RECORDS" value={addedCount || 'N/A'} />
       </div>

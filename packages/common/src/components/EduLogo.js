@@ -4,6 +4,8 @@ import {
   IconOnDarkLogo,
   IconOnWhiteLogo,
   IconPearAssessOnDarkLog,
+  IconPearAssessLabelOnDarkLogo,
+  IconPearAssessLogo,
 } from '@edulastic/icons'
 import styled from 'styled-components'
 
@@ -18,6 +20,18 @@ export const OnDarkBgLogo = styled(IconOnDarkLogo)`
 `
 
 export const AssessPeardeckOnDarkBgLogo = styled(IconPearAssessOnDarkLog)`
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || '30px'};
+`
+
+export const AssessPeardeckOnLightBgLogo = styled(IconPearAssessLogo)`
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || '30px'};
+`
+
+export const AssessPeardeckLabelOnDarkBgLogo = styled(
+  IconPearAssessLabelOnDarkLogo
+)`
   width: ${(props) => props.width || 'auto'};
   height: ${(props) => props.height || '30px'};
 `

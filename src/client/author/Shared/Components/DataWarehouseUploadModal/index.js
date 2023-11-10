@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
-import { Select, Spin } from 'antd'
+import { DatePicker, Select, Spin } from 'antd'
 import { isEmpty, get } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -29,7 +29,13 @@ import {
   getFeedTypes,
 } from '../../../sharedDucks/dataWarehouse'
 import { getOrgDataSelector } from '../../../src/selectors/user'
-import { getYear, getFeedTypeOptions } from './utils'
+import {
+  getYear,
+  getFeedTypeOptions,
+  isDateWithinTermTillPresent,
+  formatDate,
+  FEED_TYPES_WITH_TEST_DATE_INPUT,
+} from './utils'
 import { getTermOptions } from '../../../utils/reports'
 import DownloadTemplate from './DownloadTemplate'
 import FeedNameInput from './FeedNameInput'
@@ -69,6 +75,7 @@ const DataWarehouseUploadModal = ({
   const [isInvalidFeedName, setIsInvalidFeedName] = useState(false)
   const [termId, setTermId] = useState(undefined)
   const [category, setCategory] = useState(undefined)
+  const [testDate, setTestDate] = useState(undefined)
 
   useEffect(() => {
     if (!isVisible) {
@@ -100,20 +107,26 @@ const DataWarehouseUploadModal = ({
 
   const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
-  const selectedSchoolYear = useMemo(
-    () => schoolYearOptions.find(({ key }) => key === termId)?.title,
+  const {
+    title: selectedSchoolYear,
+    startDate: termStartDate,
+    endDate: termEndDate,
+  } = useMemo(() => schoolYearOptions.find(({ key }) => key === termId) || {}, [
+    schoolYearOptions,
+    termId,
+  ])
 
-    [schoolYearOptions, termId]
-  )
-
-  const isUploadBtnDisabled =
-    loading ||
-    [file, category, feedName, termId].some(isEmpty) ||
-    isInvalidFeedName
+  const isInvalidTestDate =
+    FEED_TYPES_WITH_TEST_DATE_INPUT.includes(category) && isEmpty(testDate)
+  const isRequiredFieldsEmpty = [file, category, feedName, termId].some(isEmpty)
+  const isUploadBtnDisabled = [
+    loading,
+    isRequiredFieldsEmpty,
+    isInvalidFeedName,
+    isInvalidTestDate,
+  ].some((e) => e)
 
   const handleFileUpload = () => {
-    const termEndDate = schoolYearOptions.find(({ key }) => key === termId)
-      ?.endDate
     const versionYear = getYear(termEndDate)
     uploadFile({
       file,
@@ -122,6 +135,7 @@ const DataWarehouseUploadModal = ({
       setCancelUpload,
       termId,
       feedName,
+      testDate,
       versionYear,
     })
   }
@@ -187,14 +201,38 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
         <EduIf condition={!isEmpty(category)}>
           <>
-            <FeedNameInput
-              isInvalidFeedName={isInvalidFeedName}
-              category={category}
-              feedName={feedName}
-              dataFomatDropdownOptions={dataFomatDropdownOptions}
-              setFeedName={setFeedName}
-              selectedSchoolYear={selectedSchoolYear}
-            />
+            <StyledRow>
+              <StyledCol span={12}>
+                <FeedNameInput
+                  isInvalidFeedName={isInvalidFeedName}
+                  category={category}
+                  feedName={feedName}
+                  dataFomatDropdownOptions={dataFomatDropdownOptions}
+                  setFeedName={setFeedName}
+                  selectedSchoolYear={selectedSchoolYear}
+                />
+              </StyledCol>
+              <EduIf
+                condition={FEED_TYPES_WITH_TEST_DATE_INPUT.includes(category)}
+              >
+                <StyledCol span={12}>
+                  <DatePicker
+                    style={{ width: '100%' }}
+                    disabled={isEmpty(selectedSchoolYear)}
+                    disabledDate={(date) =>
+                      !isDateWithinTermTillPresent(
+                        date,
+                        termStartDate,
+                        termEndDate
+                      )
+                    }
+                    onChange={(date) => {
+                      setTestDate(formatDate(date))
+                    }}
+                  />
+                </StyledCol>
+              </EduIf>
+            </StyledRow>
             <DownloadTemplate url={getTemplateFilePath(category, feedTypes)} />
           </>
         </EduIf>

@@ -1,11 +1,12 @@
-import { CustomModalStyled, EduIf, FlexContainer } from '@edulastic/common'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import React from 'react'
-import { Spin } from 'antd'
 
-import { STATUS, STATUS_TEXT } from './ducks/constants'
-import { StyledFilterLabel } from './styled'
+import { STATUS } from './ducks/constants'
+import { StyledCreateAiTestModal } from './styled'
 import FormFields from './FormFields'
 import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
+import VerticalTextSlider from '../../../../common/components/VerticalTextSlider'
+import { questionGenerationLoadingTexts } from '../../../AssessmentPage/VideoQuiz/constants'
 
 export const CreateAiTestModal = ({
   onCancel,
@@ -18,12 +19,14 @@ export const CreateAiTestModal = ({
   updateAlignment,
 }) => {
   return (
-    <CustomModalStyled
+    <StyledCreateAiTestModal
       visible={isVisible}
       title={
-        <>
-          Auto-generate items <StyledBetaTag>BETA</StyledBetaTag>
-        </>
+        aiTestStatus === STATUS.INPROGRESS ? null : (
+          <>
+            Auto-generate items <StyledBetaTag>BETA</StyledBetaTag>
+          </>
+        )
       }
       footer={null}
       width="50%"
@@ -35,23 +38,28 @@ export const CreateAiTestModal = ({
       closeTopAlign="14px"
       closeRightAlign="10px"
       closeIconColor="black"
+      maskClosable={false}
+      aiTestStatus={aiTestStatus}
       destroyOnClose
     >
-      <Spin spinning={aiTestStatus === STATUS.INPROGRESS}>
-        <FormFields
-          handleFieldDataChange={handleFieldDataChange}
-          handleAiFormSubmit={handleAiFormSubmit}
-          onCancel={onCancel}
-          addItems={addItems}
-          aiFormContent={aiFormContent}
-          updateAlignment={updateAlignment}
-        />
-        <EduIf condition={aiTestStatus !== STATUS.INIT}>
-          <FlexContainer mt="1rem" justifyContent="center" alignItems="center">
-            <StyledFilterLabel>{STATUS_TEXT[aiTestStatus]}</StyledFilterLabel>
-          </FlexContainer>
-        </EduIf>
-      </Spin>
-    </CustomModalStyled>
+      <EduIf condition={aiTestStatus === STATUS.INPROGRESS}>
+        <EduThen>
+          <VerticalTextSlider
+            texts={questionGenerationLoadingTexts}
+            textChangeInterval={5}
+          />
+        </EduThen>
+        <EduElse>
+          <FormFields
+            handleFieldDataChange={handleFieldDataChange}
+            handleAiFormSubmit={handleAiFormSubmit}
+            onCancel={onCancel}
+            addItems={addItems}
+            aiFormContent={aiFormContent}
+            updateAlignment={updateAlignment}
+          />
+        </EduElse>
+      </EduIf>
+    </StyledCreateAiTestModal>
   )
 }

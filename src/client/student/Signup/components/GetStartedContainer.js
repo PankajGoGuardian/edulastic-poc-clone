@@ -5,21 +5,28 @@ import {
   mobileWidthMax,
   tabletWidth,
   themeColor,
+  white,
 } from '@edulastic/colors'
 import {
   CopyRight,
   EduElse,
   EduIf,
   EduThen,
+  FlexContainer,
   OnDarkBgLogo,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Form, Row } from 'antd'
+import { Col, Form, Row, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
+import qs from 'qs'
+import { IconMail, IconUser } from '@edulastic/icons'
+import { roleuser } from '@edulastic/constants'
 import {
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
@@ -42,8 +49,9 @@ import {
   RegistrationBody,
   RegistrationHeader,
 } from '../styled'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { isPearDomain } from '../../../../utils/pear'
+import { signupAction } from '../../Login/ducks'
+import ClassCodeContainer from './ClassCodeContainer'
 
 const GetStarted = ({
   t,
@@ -52,9 +60,52 @@ const GetStarted = ({
   districtPolicy,
   orgShortName,
   orgType,
+  signup,
 }) => {
+  const [isClassCodeModalVisible, setIsClassCodeModalVisible] = useState(false)
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
   const partner = Partners[partnerKey]
+
+  const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+  const isSignUpDetailsPresent = query && query.email
+
+  const getFormattedName = () => {
+    const formattedName = `${query.firstName || ''} ${
+      query.lastName || ''
+    }`.trim()
+    return formattedName
+  }
+
+  const handleSignUp = (role, isAdmin, classCode) => {
+    const signUpObj = {
+      email: query.email,
+      name: getFormattedName(),
+      role,
+    }
+
+    if (role === roleuser.STUDENT) {
+      Object.assign(signUpObj, {
+        classCode,
+        policyViolation: t('common.policyviolation'),
+      })
+    }
+    if (role === roleuser.TEACHER) {
+      if (isAdmin) {
+        Object.assign(signUpObj, { isAdmin })
+      } else {
+        Object.assign(signUpObj, {
+          policyViolation: t('common.policyviolation'),
+        })
+      }
+    }
+    signup(signUpObj)
+  }
+
+  const handleStudentSignUp = (classCode) => {
+    setIsClassCodeModalVisible(false)
+    handleSignUp(roleuser.STUDENT, false, classCode)
+  }
+
   return (
     <RegistrationWrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
@@ -72,7 +123,7 @@ const GetStarted = ({
         <Col span={12}>
           <EduIf condition={isPearDomain}>
             <EduThen>
-              <AssessPeardeckOnDarkBgLogo height="37px" />
+              <AssessPeardeckLabelOnDarkBgLogo height="37px" />
             </EduThen>
             <EduElse>
               <OnDarkBgLogo height="30px" />
@@ -102,16 +153,59 @@ const GetStarted = ({
           lg={{ span: 12, offset: 6 }}
         >
           <Row>
-            <BannerText xs={24}>
-              <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
-              <h4>
-                {t('component.signup.getstarted.subtext')} <br />{' '}
-                {t('component.signup.getstarted.subtext2')}
-              </h4>
-            </BannerText>
+            {isSignUpDetailsPresent ? (
+              <StyledDiv>
+                <h1>One Last Step!</h1>
+                <InnerStyledDiv>
+                  <h2>Account Details</h2>
+                  <FlexContainer justifyContent="start">
+                    <FlexContainer
+                      alignItems="center"
+                      mr="30px"
+                      maxWidth="47%"
+                      style={{ flexGrow: 0 }}
+                    >
+                      <IconUser color={white} />
+                      <Tooltip title={getFormattedName()}>
+                        <StyledText>{getFormattedName()}</StyledText>
+                      </Tooltip>
+                    </FlexContainer>
+                    <FlexContainer
+                      alignItems="center"
+                      style={{
+                        flexGrow: 1,
+                        minWidth: '0px',
+                      }}
+                    >
+                      <IconMail color={white} />
+                      <Tooltip title={query.email}>
+                        <StyledText>{query.email}</StyledText>
+                      </Tooltip>
+                    </FlexContainer>
+                  </FlexContainer>
+                </InnerStyledDiv>
+              </StyledDiv>
+            ) : (
+              <BannerText xs={24}>
+                <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
+                <h4>
+                  {t('component.signup.getstarted.subtext')} <br />{' '}
+                  {t('component.signup.getstarted.subtext2')}
+                </h4>
+              </BannerText>
+            )}
           </Row>
+          <ClassCodeContainer
+            visible={isClassCodeModalVisible}
+            setVisibility={setIsClassCodeModalVisible}
+            onProceed={handleStudentSignUp}
+          />
           <ChooseSignupBox>
-            <h3>{t('component.signup.getstarted.createaccount')}</h3>
+            {isSignUpDetailsPresent ? (
+              <StyledHeader>Select Your role</StyledHeader>
+            ) : (
+              <h3>{t('component.signup.getstarted.createaccount')}</h3>
+            )}
             <div className="signupbox-container">
               {isDistrictPolicyAllowed(
                 isSignupUsingDaURL,
@@ -125,6 +219,12 @@ const GetStarted = ({
                       ? getDistrictStudentSignupUrl(orgShortName, orgType)
                       : getPartnerStudentSignupUrl(partner)
                   }
+                  onClick={(e) => {
+                    if (isSignUpDetailsPresent) {
+                      e.preventDefault()
+                      setIsClassCodeModalVisible(true)
+                    }
+                  }}
                   xs={24}
                   sm={8}
                 >
@@ -143,6 +243,12 @@ const GetStarted = ({
                       ? getDistrictTeacherSignupUrl(orgShortName, orgType)
                       : getPartnerTeacherSignupUrl(partner)
                   }
+                  onClick={(e) => {
+                    if (isSignUpDetailsPresent) {
+                      e.preventDefault()
+                      handleSignUp(roleuser.TEACHER, false)
+                    }
+                  }}
                   xs={24}
                   sm={8}
                 >
@@ -153,6 +259,12 @@ const GetStarted = ({
                 <AdminSignupBox
                   data-cy="admin"
                   to={getPartnerDASignupUrl(partner)}
+                  onClick={(e) => {
+                    if (isSignUpDetailsPresent) {
+                      e.preventDefault()
+                      handleSignUp(roleuser.TEACHER, true)
+                    }
+                  }}
                   xs={24}
                   sm={8}
                 >
@@ -178,7 +290,10 @@ GetStarted.propTypes = {
 
 const ChooseSignup = Form.create()(GetStarted)
 
-const enhance = compose(withNamespaces('login'))
+const enhance = compose(
+  withNamespaces('login'),
+  connect(null, { signup: signupAction })
+)
 
 export default enhance(ChooseSignup)
 
@@ -343,5 +458,62 @@ const AdminSignupBox = styled(StudentSignupBox)`
 export const StyledLink = styled(Link)`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
+  }
+`
+
+export const StyledDiv = styled.div`
+  width: 600px;
+  margin: auto;
+  padding: 10px 20px;
+  h1 {
+    color: white;
+    font-size: 42px;
+    line-height: 1.3;
+    letter-spacing: -2px;
+    font-weight: 700;
+    margin-top: 0px;
+    margin-bottom: 15px;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 55px;
+    }
+  }
+  h2 {
+    color: white;
+    line-height: 1.7;
+    font-size: 28px;
+    letter-spacing: -1px;
+    font-weight: 600;
+    @media (min-width: ${extraDesktopWidthMax}) {
+      font-size: 30px;
+    }
+  }
+`
+export const InnerStyledDiv = styled.div`
+  color: ${white};
+  border-radius: 10px;
+  background: rgba(73, 127, 110, 0.5);
+  opacity: 0.8;
+  padding: 10px 25px;
+`
+
+export const StyledText = styled.p`
+  margin-left: 5px;
+  color: ${white};
+  font-size: 16px;
+  font-weight: 500;
+  width: 95%;
+  white-space: nowrap;
+  overflow: hidden;
+`
+export const StyledHeader = styled.div`
+  color: white;
+  line-height: 1.7;
+  font-size: 25px;
+  letter-spacing: -1.5px;
+  font-weight: 600;
+  text-align: start;
+  margin-bottom: 10px;
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 28px;
   }
 `

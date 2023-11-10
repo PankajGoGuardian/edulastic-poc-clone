@@ -1,0 +1,37 @@
+import React from 'react'
+import SVG from './common/SVG'
+import withIconStyles from './HOC/withIconStyles'
+
+const IconPearAssessCertifiedLogo = (props) => (
+  <SVG
+    width="22"
+    height="24"
+    viewBox="0 0 22 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="21.8" height="24" fill="url(#pattern0)" />
+    <defs>
+      <pattern
+        id="pattern0"
+        patternContentUnits="objectBoundingBox"
+        width="1"
+        height="1"
+      >
+        <use
+          xlinkHref="#image0_276_1492"
+          transform="scale(0.00917431 0.00833333)"
+        />
+      </pattern>
+      <image
+        id="image0_276_1492"
+        width="109"
+        height="120"
+        xlinkHref="data:image/png;base64,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"
+      />
+    </defs>
+  </SVG>
+)
+
+export default withIconStyles(IconPearAssessCertifiedLogo)

@@ -35,16 +35,24 @@ import {
 } from '../styled-components/AddQuestion'
 import { formatStandard } from '../utils/questionsHelpers'
 import { alignmentStandardsFromUIToMongo } from '../../../../assessment/utils/helpers'
+import { questionGenerationStatus } from '../constants'
 
 class AddQuestion extends React.Component {
   state = {
     bulkModalVisible: false,
+    aiQuestionsGenerationStatus: questionGenerationStatus.INITIAL,
   }
 
   toggleBulkModal = () => {
     this.setState(({ bulkModalVisible }) => ({
       bulkModalVisible: !bulkModalVisible,
     }))
+  }
+
+  setAiQuestionsGenerationStatus = (status) => {
+    this.setState({
+      aiQuestionsGenerationStatus: status,
+    })
   }
 
   handleApply = ({
@@ -114,7 +122,7 @@ class AddQuestion extends React.Component {
   }
 
   render() {
-    const { bulkModalVisible } = this.state
+    const { bulkModalVisible, aiQuestionsGenerationStatus } = this.state
     const {
       onAddQuestion,
       minAvailableQuestionIndex,
@@ -208,6 +216,8 @@ class AddQuestion extends React.Component {
             onCancel={this.toggleBulkModal}
             onApply={this.handleApply}
             minAvailableQuestionIndex={minAvailableQuestionIndex}
+            aiQuestionsGenerationStatus={aiQuestionsGenerationStatus}
+            setAiQuestionsGenerationStatus={this.setAiQuestionsGenerationStatus}
           />
         </ContentWrapper>
       </AddQuestionWrapper>

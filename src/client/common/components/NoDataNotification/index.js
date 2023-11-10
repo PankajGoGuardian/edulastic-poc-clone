@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
 import NoDataIcon from './nodata.svg'
+import NoDataPearAssessIcon from './noDataPearAssess.svg'
+import { isPearDomain } from '../../../../utils/pear'
 
 const NoDataNotification = ({
   heading,
@@ -11,7 +13,10 @@ const NoDataNotification = ({
 }) => (
   <Wrapper style={wrapperStyle}>
     <NoDataBox style={style}>
-      <img src={NoDataIcon} alt="noData" />
+      <img
+        src={isPearDomain ? NoDataPearAssessIcon : NoDataIcon}
+        alt="noData"
+      />
       <h4>{heading}</h4>
       <p>{description}</p>
     </NoDataBox>

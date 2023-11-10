@@ -17,6 +17,8 @@ import {
 } from '@edulastic/common'
 import { IconLock, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
+import { segmentApi } from '@edulastic/api'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -62,8 +64,6 @@ import {
   LARGE_DESKTOP_WIDTH,
 } from '../../../../author/src/constants/others'
 import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
-import { segmentApi } from '@edulastic/api'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { isPearDomain } from '../../../../../utils/pear'
 
 const FormItem = Form.Item
@@ -79,6 +79,7 @@ class AdminSignup extends React.Component {
     confirmDirty: false,
     signupError: {},
   }
+
   componentDidMount() {
     if (window?.analytics?.track) {
       window.analytics.track('SignupLanded', {
@@ -175,6 +176,10 @@ class AdminSignup extends React.Component {
       )) ||
       getFieldError('email')
 
+    const pearOrEdulasticText = isPearDomain
+      ? t('common.pearAssessText')
+      : t('common.edulastictext')
+
     return (
       <div>
         {!validatePartnerUrl(partner) ? <Redirect exact to="/" /> : null}
@@ -183,9 +188,9 @@ class AdminSignup extends React.Component {
         >
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
-            <EduIf condition={isPearDomain}>
+              <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckOnDarkBgLogo height="37px" />
+                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />
@@ -196,7 +201,15 @@ class AdminSignup extends React.Component {
               <AlreadyhaveAccount>
                 {t('component.signup.alreadyhaveanaccount')}
               </AlreadyhaveAccount>
-              <Link onClick={()=>segmentApi.genericEventTrack('SignupPage_SigninButtonClick', {})} to={getPartnerLoginUrl(partner)}>
+              <Link
+                onClick={() =>
+                  segmentApi.genericEventTrack(
+                    'SignupPage_SigninButtonClick',
+                    {}
+                  )
+                }
+                to={getPartnerLoginUrl(partner)}
+              >
                 {t('common.signinbtn')}
               </Link>
             </Col>
@@ -206,7 +219,7 @@ class AdminSignup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={13} lg={12} xl={14}>
                   <h1>
-                    {t('common.edulastictext')}
+                    {pearOrEdulasticText}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
                     {t('component.signup.admin.foradmin')}
                   </h1>

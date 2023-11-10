@@ -45,6 +45,7 @@ class QuestionModal extends React.Component {
       maxQuestions: null,
       maxStudents: null,
       editResponse: false,
+      studentId: '',
     }
     this.containerRef = createRef()
   }
@@ -69,6 +70,7 @@ class QuestionModal extends React.Component {
       maxQuestions,
       maxStudents,
       editResponse: !scoreMode,
+      studentId: record?.studentId,
     })
     document.addEventListener('keyup', this.keyListener, false)
   }
@@ -92,6 +94,27 @@ class QuestionModal extends React.Component {
         maxStudents,
       })
     }
+  }
+
+  // When a new row inserted as part of real time update in the EG table the current row index will change
+  // to find the new index and update the popup data
+  static getDerivedStateFromProps(props, state) {
+    const { tableData } = props
+    const { studentId, rowIndex } = state
+    const newRowIndex = tableData.findIndex(
+      (ele) => ele.students.studentId === studentId
+    )
+    if (
+      state.maxStudents < tableData.length &&
+      rowIndex !== newRowIndex &&
+      newRowIndex !== -1
+    ) {
+      return {
+        maxStudents: tableData.length,
+        rowIndex: newRowIndex,
+      }
+    }
+    return null
   }
 
   componentWillUnmount() {

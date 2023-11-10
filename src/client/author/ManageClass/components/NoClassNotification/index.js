@@ -2,11 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import { mobileWidthMax, themeColor } from '@edulastic/colors'
 import NoDataIcon from './nodata.svg'
+import NoDataPearAssessIcon from '../../../../common/components/NoDataNotification/noDataPearAssess.svg'
+import { isPearDomain } from '../../../../../utils/pear'
 
 const NoDataNotification = ({ heading, description, data }) => (
   <Wrapper>
     <NoDataBox>
-      <img src={NoDataIcon} alt="noClass" />
+      <img
+        src={isPearDomain ? NoDataPearAssessIcon : NoDataIcon}
+        alt="noClass"
+      />
       <h4>{heading}</h4>
       <p>
         {description} <ThemeColorText>{data}</ThemeColorText>

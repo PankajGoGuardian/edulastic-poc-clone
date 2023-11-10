@@ -122,3 +122,19 @@ export const KEYCODES = {
   LEFT_ARROW: 37,
   RIGHT_ARROW: 39,
 }
+
+export const questionGenerationLoadingTexts = [
+  'Your personalized quiz is in the making!',
+  'AI engines are analyzing your inputs',
+  'Crafting tailored items just for you',
+  'AI wizards are curating items based on your inputs',
+  'Aligning items with your chosen standards and subjects',
+  'Building your quiz empire!',
+  'Your questions are in the oven, baking to perfection. Thanks for your patience',
+]
+
+export const questionGenerationStatus = {
+  INITIAL: 'INITIAL',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUCCESS: 'SUCCESS',
+}

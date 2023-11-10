@@ -5,6 +5,8 @@ import {
   NoDataWrapper,
   NoDataBox,
 } from '../../src/components/common/NoDataNotification'
+import { isPearDomain } from '../../../../utils/pear'
+import NoDataPearAssessIcon from '../../../common/components/NoDataNotification/noDataPearAssess.svg'
 
 const NoDataNotification = ({
   heading,
@@ -19,7 +21,10 @@ const NoDataNotification = ({
         onClick={clickHandler}
         cursor={!hideEditableInstances && 'pointer'}
       >
-        <img src={NoDataIcon} alt="No Members" />
+        <img
+          src={isPearDomain ? NoDataPearAssessIcon : NoDataIcon}
+          alt="No Members"
+        />
         <h4>{heading}</h4>
         <p>{description}</p>
       </NoDataBox>

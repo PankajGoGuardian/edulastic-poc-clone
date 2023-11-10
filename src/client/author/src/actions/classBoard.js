@@ -88,7 +88,32 @@ export const receiveTestActivitydAction = (
   studentResponseParams
 ) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId, isQuestionsView, studentResponseParams },
+  payload: {
+    assignmentId,
+    classId,
+    isQuestionsView,
+    studentResponseParams,
+    loader: true,
+  },
+})
+
+// This new action is same as existing fetch action,
+// however with the help of additional reload: false flag we are restricting loader to show in UI
+export const receiveTestActivityRealTimeAction = ({
+  assignmentId,
+  classId,
+  isQuestionsView = false,
+  studentResponseParams,
+  loader,
+}) => ({
+  type: RECEIVE_TESTACTIVITY_REQUEST,
+  payload: {
+    assignmentId,
+    classId,
+    isQuestionsView,
+    studentResponseParams,
+    loader,
+  },
 })
 
 export const releaseScoreAction = (

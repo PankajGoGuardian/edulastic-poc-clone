@@ -33,7 +33,6 @@ export const useSaveForm = ({
         subject: '',
       },
     ],
-    standardNames: [],
   }
 
   useEffect(() => {
@@ -136,7 +135,7 @@ export const useSaveForm = ({
     }
 
     if (isEmpty(dok)) {
-      _aiFormContent.dok = selectsData.allDepthOfKnowledge
+      _aiFormContent.dok = selectsData.allDepthOfKnowledgeAI
         .map(({ value }) => value)
         .filter((x) => x)
     } else {

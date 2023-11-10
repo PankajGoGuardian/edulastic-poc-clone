@@ -104,13 +104,10 @@ export const getTableColumns = (
         return (
           <>
             <div>
-              <HorizontalBar data={preTestData.bandDistribution} dynamicColor />
+              <HorizontalBar data={preTestData.bandDistribution} />
             </div>
             <div style={{ marginTop: '20px' }}>
-              <HorizontalBar
-                data={postTestData.bandDistribution}
-                dynamicColor
-              />
+              <HorizontalBar data={postTestData.bandDistribution} />
             </div>
           </>
         )

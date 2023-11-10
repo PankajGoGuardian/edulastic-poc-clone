@@ -69,7 +69,7 @@ const FeedNameInput = ({
         />
       </EduIf>
       <StyledRow>
-        <StyledCol span={12}>
+        <StyledCol span={23}>
           <EduIf condition={category === testTypes.FP_BAS}>
             <EduThen>
               <StyledSelect

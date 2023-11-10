@@ -29,10 +29,6 @@ function* processAiGeneratedTestItemsSaga({
   groupIndex,
 }) {
   if (!isEmpty(aiGeneratedQuestions)) {
-    notification({
-      type: 'success',
-      msg: `Great news! We have successfully generated ${aiGeneratedQuestions.length} questions. We encourage you to review the questions and make any necessary adjustments to ensure they meet your learning objectives and preferences. Feel free to customize the questions further, if desired.`,
-    })
     let existingTestItems = []
     /** Unsaved test */
     if ((assessment._id || '').length !== 24 && !existingQidToRegenerate) {
@@ -135,7 +131,6 @@ function* regenerateAiTestItemsSaga({ payload }) {
       difficulty,
       alignment = [],
       preference,
-      standardNames,
       existingQidToRegenerate,
       groupIndex,
     } = payload
@@ -145,7 +140,8 @@ function* regenerateAiTestItemsSaga({ payload }) {
       subject,
       standardIds: commonCoreStandards,
       standardSet,
-    } = getAlignmentDataForAiQuestions(alignment, standardNames)
+      standardDescriptions: commonCoresStandardDescriptions,
+    } = getAlignmentDataForAiQuestions(alignment)
 
     const testEntity = yield select(getTestEntitySelector)
 
@@ -161,16 +157,12 @@ function* regenerateAiTestItemsSaga({ payload }) {
       depthsOfKnowledge: dok,
       difficultLevels: difficulty,
       commonCoreStandards,
+      commonCoresStandardDescriptions,
       grades,
       subject,
       ...(!isEmpty(preference) && { preference }),
       existingQuestions,
     }
-
-    notification({
-      type: 'info',
-      messageKey: 'generateAiQuestions',
-    })
 
     const { result } = yield call(
       testItemsApi.generateQuestionViaAI,
@@ -226,7 +218,6 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       difficulty,
       alignment = [],
       preference,
-      standardNames,
       groupIndex,
     } = payload
 
@@ -235,7 +226,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       subject,
       standardIds: commonCoreStandards,
       standardSet,
-    } = getAlignmentDataForAiQuestions(alignment, standardNames)
+      standardDescriptions: commonCoresStandardDescriptions,
+    } = getAlignmentDataForAiQuestions(alignment)
 
     const testEntity = yield select(getTestEntitySelector)
 
@@ -255,12 +247,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       subject,
       ...(!isEmpty(preference) && { preference }),
       existingQuestions,
+      commonCoresStandardDescriptions,
     }
-
-    notification({
-      type: 'info',
-      messageKey: 'generateAiQuestions',
-    })
 
     const { result } = yield call(
       testItemsApi.generateQuestionViaAI,

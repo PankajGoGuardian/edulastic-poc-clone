@@ -1,4 +1,6 @@
 const EDULASTIC = 'edulastic'
+
+// These are 3P test types supported by Edulastic, if a specific feature needs to be implemented for some test types, these constants can be used.
 const AIR = 'AIR'
 const CAASPP = 'CAASPP'
 const ELPAC = 'ELPAC'
@@ -12,6 +14,13 @@ const ILEARN = 'ILEARN'
 const STARR = 'STARR'
 const TERM_GRADES = 'Term_Grades'
 const FP_BAS = 'FP_BAS'
+const LEAP_3_8 = 'LEAP_3_8'
+const HS_LEAP = 'HS_LEAP'
+const DRC_BEACON_MATH = 'DRC_BEACON_MATH'
+const MCAS = 'MCAS'
+const DRC_BEACON_ELA = 'DRC_BEACON_ELA'
+const ACCESS = 'ACCESS'
+const NHSAS = 'NHSAS'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -101,5 +110,12 @@ module.exports = {
   STARR,
   TERM_GRADES,
   FP_BAS,
+  LEAP_3_8,
+  DRC_BEACON_ELA,
+  DRC_BEACON_MATH,
+  HS_LEAP,
+  MCAS,
+  NHSAS,
+  ACCESS,
   ATTENDANCE,
 }

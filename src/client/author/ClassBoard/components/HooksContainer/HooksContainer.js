@@ -19,7 +19,7 @@ import useRealtimeUpdates from '../../useRealtimeUpdates'
 import {
   receiveAnswersAction,
   receiveStudentResponseAction,
-  receiveTestActivitydAction,
+  receiveTestActivityRealTimeAction,
   setCurrentTestActivityIdAction,
   setRealTimeAttemptDataAction,
   setUpdateActivityIdInEntityAction,
@@ -90,7 +90,7 @@ const Shell = ({
   setUpdateActivityIdInEntity,
 }) => {
   const reloadLCB = () => {
-    loadTestActivity(assignmentId, classId)
+    loadTestActivity({ assignmentId, classId, loader: !isEG })
   }
 
   const { openPolicy, closePolicy, startDate, endDate } = additionalData || {}
@@ -115,7 +115,7 @@ const Shell = ({
 
     const studentName = getStudentName(studentsList, userId)
     if (selectedTab === 'Both') {
-      loadTestActivity(assignmentId, classId)
+      loadTestActivity({ assignmentId, classId })
     }
     if (selectedTab === 'Student' && testActivityId === oldActivityId) {
       setUpdateActivityIdInEntity({ oldActivityId, newActivityId })
@@ -130,7 +130,7 @@ const Shell = ({
       )
     }
     if (selectedTab === 'questionView') {
-      loadTestActivity(assignmentId, classId, true)
+      loadTestActivity({ assignmentId, classId, isQuestionsView: true })
       loadClassQuestionResponses(assignmentId, classId, qid, itemId)
     }
     notification({
@@ -169,7 +169,7 @@ export default compose(
       submitActivity: realtimeGradebookActivitySubmitAction,
       // removeQuestions: realtimeGradebookQuestionsRemoveAction,
       // addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
-      loadTestActivity: receiveTestActivitydAction,
+      loadTestActivity: receiveTestActivityRealTimeAction,
       redirect: realtimeGradebookRedirectAction,
       // closeAssignment: realtimeGradebookCloseAction,
       // realtimeUpdateAssignment: realtimeUpdateAssignmentAction,

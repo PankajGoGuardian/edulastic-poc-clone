@@ -192,7 +192,8 @@ function* receiveGradeBookSaga({ payload }) {
 }
 
 export function* receiveTestActivitySaga({ payload }) {
-  const { studentResponseParams, ...classResponseParams } = payload || {}
+  const { studentResponseParams, loader, ...classResponseParams } =
+    payload || {}
   try {
     let additionalData = {}
     const gradebookData = {
@@ -248,6 +249,7 @@ export function* receiveTestActivitySaga({ payload }) {
        */
       additionalData.recentTestActivitiesGrouped = {}
     }
+    // TODO: needs to cache this based on loader flag as this data doesn't have to be loaded every realtime update
     const classResponse = yield call(classResponseApi.classResponse, {
       ...classResponseParams,
       testId: additionalData.testId,

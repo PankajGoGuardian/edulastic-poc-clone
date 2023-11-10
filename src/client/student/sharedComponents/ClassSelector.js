@@ -142,7 +142,7 @@ ClassSelector.propTypes = {
 
 const stateToProps = (state) => ({
   currentGroup: getCurrentGroupExactValue(state),
-  allClasses: state.studentEnrollClassList.allClasses,
+  allClasses: state.studentEnrollClassList.allClasses || [],
   currentTerm: getCurrentTerm(state),
 })
 export default connect(stateToProps, {

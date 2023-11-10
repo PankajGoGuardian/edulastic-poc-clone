@@ -101,13 +101,18 @@ const CustomEditor = ({
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
-  const onRecordingComplete = ({ audioFile, audioUrl }) => {
-    window.audioUrl = audioUrl
-    window.audioFile = audioFile
+  const onRecordingComplete = ({ audioFile }) => {
+    FroalaEditor.AUDIO_PLUGIN_DATA = {
+      ...FroalaEditor.AUDIO_PLUGIN_DATA,
+      audioFile,
+    }
   }
 
-  const setErrorData = (data) => {
-    window.audioError = data
+  const setErrorData = (audioError) => {
+    FroalaEditor.AUDIO_PLUGIN_DATA = {
+      ...FroalaEditor.AUDIO_PLUGIN_DATA,
+      audioError,
+    }
   }
 
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({

@@ -402,9 +402,12 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         stopAudioRecording(recording) {
           onClickStopRecording()
           clearInterval(recording)
+
           const interval = setInterval(() => {
-            if (window.audioFile) {
-              editor.audio.upload([window.audioFile], 'audio-record')
+            const audioFile = FE.AUDIO_PLUGIN_DATA?.audioFile
+
+            if (audioFile) {
+              editor.audio.upload([audioFile], 'audio-record')
               clearInterval(interval)
               const $popup = editor.shared.popups['audio.insert']
               const $layer = $popup.find('.fr-audio-record-layer')

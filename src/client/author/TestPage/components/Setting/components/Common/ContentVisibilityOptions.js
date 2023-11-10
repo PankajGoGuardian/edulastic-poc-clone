@@ -106,7 +106,7 @@ const ContentVisibilityOptions = ({
                     <RadioBtn
                       data-cy={`item-visibility-${
                         ele.key || contentVisibility
-                      }`}
+                      }-suboption`}
                       value={ele.key}
                       key={ele.key}
                     >

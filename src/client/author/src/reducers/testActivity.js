@@ -138,7 +138,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_TESTACTIVITY_REQUEST:
       return {
         ...state,
-        loading: true,
+        loading: payload.loader,
         assignmentId: payload.assignmentId,
         classId: payload.classId,
       }

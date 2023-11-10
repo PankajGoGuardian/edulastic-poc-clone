@@ -50,8 +50,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         [MAX_SIZE_ERROR]: 'Maximum allowed audio size limit is 10mb',
         [ERROR_DURING_UPLOAD]: 'Error during file upload.',
         [BAD_RESPONSE]: 'Parsing response failed.',
-        [BAD_FILE_TYPE]:
-          'Unsupported file type - please provide an audio file.',
+        [BAD_FILE_TYPE]: `Unsupported file type - supported audio files are ${editor.opts.audioAllowedTypes.join()}`,
       }
 
       const bindInsertEvents = function ($popup) {
@@ -405,9 +404,9 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
           clearInterval(recording)
           const interval = setInterval(() => {
             if (window.audioFile) {
-              this.audio.upload([window.audioFile], 'audio-record')
+              editor.audio.upload([window.audioFile], 'audio-record')
               clearInterval(interval)
-              const $popup = this.shared.popups['audio.insert']
+              const $popup = editor.shared.popups['audio.insert']
               const $layer = $popup.find('.fr-audio-record-layer')
               $layer.find('button').attr('data-cmd', 'audioRecordStart')
               $layer.find('button').html(renderToString(<IconWhiteMic />))
@@ -544,6 +543,8 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
       }
     }
 
+    let timer
+
     FE.DefineIcon('insertAudio', {
       NAME: 'volume-up',
       FA5NAME: 'volume-up',
@@ -594,7 +595,7 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
         let time = getFormattedTimeInMinutesAndSeconds(ms)
         $layer.find('p').html(`Recording ... | ${time}`)
         const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
-        const timer = setInterval(() => {
+        timer = setInterval(() => {
           if (ms === maxmilliseconds) {
             this.audio.stopAudioRecording(timer)
           }
@@ -608,7 +609,9 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
     FE.RegisterCommand('audioRecordStop', {
       undo: true,
       focus: true,
-      callback() {},
+      callback() {
+        this.audio.stopAudioRecording(timer)
+      },
     })
 
     FE.DefineIcon('audioByURL', { NAME: 'link', SVG_KEY: 'insertLink' })

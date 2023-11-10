@@ -48,6 +48,7 @@ import {
 import audioPlugin from './FroalaPlugins/audioPlugin'
 import useAudioRecorder from '../../../../src/client/assessment/widgets/AudioResponse/hooks/useAudioRecorder'
 import { get } from 'lodash'
+import ErrorPopup from '../../../../src/client/assessment/widgets/AudioResponse/components/ErrorPopup'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -96,11 +97,18 @@ const CustomEditor = ({
   const [prevValue, setPrevValue] = useState('')
   const [configState, setConfigState] = useState(null)
   const [mathField, setMathField] = useState(null)
+  const [audioError, setAudioError] = useState(null)
   const { currentLanguage } = useContext(LanguageContext)
   const EditorRef = useRef(null)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
+  const onChangeRecordingState = (recordingState) => {
+    FroalaEditor.AUDIO_PLUGIN_DATA = {
+      ...FroalaEditor.AUDIO_PLUGIN_DATA,
+      recordingState,
+    }
+  }
   const onRecordingComplete = ({ audioFile }) => {
     FroalaEditor.AUDIO_PLUGIN_DATA = {
       ...FroalaEditor.AUDIO_PLUGIN_DATA,
@@ -109,6 +117,7 @@ const CustomEditor = ({
   }
 
   const setErrorData = (audioError) => {
+    setAudioError(audioError)
     FroalaEditor.AUDIO_PLUGIN_DATA = {
       ...FroalaEditor.AUDIO_PLUGIN_DATA,
       audioError,
@@ -116,7 +125,7 @@ const CustomEditor = ({
   }
 
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
-    onChangeRecordingState: () => {},
+    onChangeRecordingState,
     onRecordingComplete,
     setErrorData,
   })
@@ -660,6 +669,13 @@ const CustomEditor = ({
 
   return (
     <>
+      {audioError && (
+        <ErrorPopup
+          isOpen={audioError?.isOpen}
+          errorMessage={audioError?.errorMessage}
+          setErrorData={setErrorData}
+        />
+      )}
       <MathModal
         isEditable={mathModalIsEditable}
         show={showMathModal}

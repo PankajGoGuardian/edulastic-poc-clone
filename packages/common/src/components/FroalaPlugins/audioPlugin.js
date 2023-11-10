@@ -12,7 +12,10 @@ import { renderToString } from 'react-dom/server'
 import { Icon } from 'antd'
 import { uploadToS3 } from '../../helpers'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../src/client/assessment/utils/timeUtils'
-import { maxAudioDurationLimit } from '../../../../../src/client/assessment/widgets/AudioResponse/constants'
+import {
+  RECORDING_ACTIVE,
+  maxAudioDurationLimit,
+} from '../../../../../src/client/assessment/widgets/AudioResponse/constants'
 import { audioUploadFileLimit } from './constants'
 
 function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
@@ -590,23 +593,30 @@ function audioPlugin(FE, onClickRecordAudio, onClickStopRecording) {
       refreshAfterCallback: true,
       callback() {
         onClickRecordAudio()
-        const $popup = this.shared.popups['audio.insert']
-        const $layer = $popup.find('.fr-audio-record-layer')
-        $layer.find('button').attr('data-cmd', 'audioRecordStop')
-        $layer.find('button').html(renderToString(<IconWhiteStop />))
-        let ms = 0
-        let time = getFormattedTimeInMinutesAndSeconds(ms)
-        $layer.find('p').html(`Recording ... | ${time}`)
-        const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
-        timer = setInterval(() => {
-          if (ms === maxmilliseconds) {
-            this.audio.stopAudioRecording(timer)
+        const interval = setInterval(() => {
+          if (FE?.AUDIO_PLUGIN_DATA?.recordingState === RECORDING_ACTIVE) {
+            const $popup = this.shared.popups['audio.insert']
+            const $layer = $popup.find('.fr-audio-record-layer')
+            $layer.find('button').attr('data-cmd', 'audioRecordStop')
+            $layer.find('button').html(renderToString(<IconWhiteStop />))
+            let ms = 0
+            let time = getFormattedTimeInMinutesAndSeconds(ms)
+            $layer.find('p').html(`Recording ... | ${time}`)
+            const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
+            timer = setInterval(() => {
+              if (ms === maxmilliseconds) {
+                this.audio.stopAudioRecording(timer)
+              }
+              ms += 1000
+              time = getFormattedTimeInMinutesAndSeconds(ms)
+              $layer.find('p').html(`Recording ... | ${time}`)
+            }, 1000)
+            $layer.find('small').html('Click to stop recording')
+            clearInterval(interval)
+          } else if (FE?.AUDIO_PLUGIN_DATA?.audioError) {
+            clearInterval(interval)
           }
-          ms += 1000
-          time = getFormattedTimeInMinutesAndSeconds(ms)
-          $layer.find('p').html(`Recording ... | ${time}`)
-        }, 1000)
-        $layer.find('small').html('Click to stop recording')
+        }, 100)
       },
     })
     FE.RegisterCommand('audioRecordStop', {

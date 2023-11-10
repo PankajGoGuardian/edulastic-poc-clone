@@ -18,6 +18,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   LARGE_DESKTOP_WIDTH,
   MAX_TAB_WIDTH,
@@ -68,7 +69,6 @@ import {
 } from '../../styled'
 import PasswordPopup from '../PasswordPopup'
 import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { isPearDomain } from '../../../../../utils/pear'
 
 const FormItem = Form.Item
@@ -258,6 +258,10 @@ class Signup extends React.Component {
       )) ||
       getFieldError('email')
 
+    const pearOrEdulasticText = isPearDomain
+      ? t('common.pearAssessText')
+      : t('common.edulastictext')
+
     return (
       <div>
         <PasswordPopup
@@ -276,7 +280,7 @@ class Signup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckOnDarkBgLogo height="37px" />
+                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />
@@ -309,7 +313,7 @@ class Signup extends React.Component {
               <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
-                    {t('common.edulastictext')}
+                    {pearOrEdulasticText}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && <br />}
                     {t('component.signup.teacher.forteacher')}
                   </h1>

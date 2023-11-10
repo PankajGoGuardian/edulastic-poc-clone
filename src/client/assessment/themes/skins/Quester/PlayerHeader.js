@@ -19,6 +19,7 @@ import {
   IconSignoutHighlight,
   IconQuester,
   IconImmersiveReader,
+  IconPearAssessLogoCompact,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -41,6 +42,7 @@ import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/du
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
+import { isPearDomain } from '../../../../../utils/pear'
 
 const {
   playerSkin: { quester },
@@ -149,7 +151,11 @@ const PlayerHeader = ({
           zIndex: 505,
         }}
       >
-        <IconEduLogoStyled circleFill={header1.background} />
+        {isPearDomain ? (
+          <LogoPearAssessCompactIcon />
+        ) : (
+          <IconEduLogoStyled circleFill={header1.background} />
+        )}
         <StyledHeaderTitle>
           <div style={{ display: 'flex' }}>
             {!!grades.length && (
@@ -396,4 +402,11 @@ const IconEduLogoStyled = styled(IconEduLogo)`
   width: 30px;
   top: -5px;
   left: 8px;
+`
+const LogoPearAssessCompactIcon = styled(IconPearAssessLogoCompact)`
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 6px;
+  left: 13px;
 `

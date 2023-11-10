@@ -10,6 +10,7 @@ import {
 } from '@edulastic/colors'
 import { Card } from '@edulastic/common'
 import IconELogo from '@edulastic/icons/src/IconELogo'
+import IconPearAssessCertifiedLogo from '@edulastic/icons/src/IconPearAssessCertifiedLogo'
 import { Col, Rate, Row } from 'antd'
 import styled from 'styled-components'
 import {
@@ -17,6 +18,9 @@ import {
   testStatusTextColor as textColor,
 } from '../../../src/constants/colors'
 import { StyledLink } from '../Item/styled'
+import { isPearDomain } from '../../../../../utils/pear'
+
+const CertifiedIcon = isPearDomain ? IconPearAssessCertifiedLogo : IconELogo
 
 export const Container = styled.div`
   display: flex;
@@ -76,7 +80,7 @@ export const TestStatus = styled.span`
   justify-content: center;
 `
 
-export const EdulasticVerified = styled(IconELogo)`
+export const EdulasticVerified = styled(CertifiedIcon)`
   ${(props) => {
     if (props.bottom) {
       return `margin-left:10px;`

@@ -50,6 +50,7 @@ import {
   NoDataWrapper,
   NoDataIcon,
 } from '../../../src/components/common/NoDataNotification'
+import NoDataPearAssessIcon from '../../../../common/components/NoDataNotification/noDataPearAssess.svg'
 import { getAvatarName, getStudentCardStatus } from '../../Transformer'
 import {
   isItemVisibiltySelector,
@@ -64,6 +65,7 @@ import {
   maxDueDateFromClassess,
 } from '../../../../student/utils'
 import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
+import { isPearDomain } from '../../../../../utils/pear'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
@@ -157,7 +159,11 @@ class DisneyCardContainer extends Component {
         )}
         <NoDataWrapper height="300px" margin="20px auto">
           <NoDataBox width="300px" height="200px" descSize="14px">
-            <img src={NoDataIcon} svgWidth="40px" alt="noData" />
+            <img
+              src={isPearDomain ? NoDataPearAssessIcon : NoDataIcon}
+              svgWidth="40px"
+              alt="noData"
+            />
             <h4>No Data</h4>
             <p>Students have not yet been assigned</p>
           </NoDataBox>

@@ -13,12 +13,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   getDistrictGetStartedUrl,
   getPartnerGetStartedUrl,
   isDistrictPolicyAllowed,
 } from '../../../common/utils/helpers'
-import { AssessPeardeckOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { isPearDomain } from '../../../../utils/pear'
 
 const Header = ({
@@ -34,7 +34,7 @@ const Header = ({
     <Col span={12} style={{ display: 'flex' }}>
       <EduIf condition={isPearDomain}>
         <EduThen>
-          <AssessPeardeckOnDarkBgLogo height="37px" />
+          <AssessPeardeckLabelOnDarkBgLogo height="37px" />
         </EduThen>
         <EduElse>
           <OnDarkBgLogo height="30px" />

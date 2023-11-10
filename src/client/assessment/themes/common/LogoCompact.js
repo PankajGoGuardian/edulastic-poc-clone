@@ -3,17 +3,22 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import { white } from '@edulastic/colors'
-import { IconLogoCompact } from '@edulastic/icons'
+import { IconLogoCompact, IconPearAssessLogoCompact } from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import {
   MAX_MOBILE_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   IPAD_LANDSCAPE_WIDTH,
 } from '../../constants/others'
+import { isPearDomain } from '../../../../utils/pear'
 
-const LogoCompact = ({ isMobile, buttons, title, fillColor }) => (
+const LogoCompact = ({ isMobile, buttons, title, fillColor, isBgLight }) => (
   <LogoCompactContainer>
-    <LogoCompactIcon marginRight="12px" color={fillColor} />
+    {isPearDomain ? (
+      <LogoPearAssessCompactIcon marginRight="12px" isBgLight={isBgLight} />
+    ) : (
+      <LogoCompactIcon marginRight="12px" color={fillColor} />
+    )}
     {isMobile && buttons}
     {title && (
       <Tooltip title={title}>
@@ -42,6 +47,12 @@ const LogoCompactContainer = styled(FlexContainer)`
     width: 100%;
     justify-content: space-between;
   }
+`
+
+const LogoPearAssessCompactIcon = styled(IconPearAssessLogoCompact)`
+  width: 31px;
+  height: 31px;
+  margin-right: ${({ marginRight }) => marginRight};
 `
 
 const LogoCompactIcon = styled(IconLogoCompact)`

@@ -180,7 +180,11 @@ const PlayerHeader = ({
           <HeaderPracticePlayer>
             <HeaderWrapper justifyContent="space-between">
               <FlexContainer>
-                <LogoCompact isMobile={isMobile} fillColor={header.logoColor} />
+                <LogoCompact
+                  isMobile={isMobile}
+                  fillColor={header.logoColor}
+                  isBgLight
+                />
                 <MainActionWrapper>
                   <Tooltip
                     placement="top"

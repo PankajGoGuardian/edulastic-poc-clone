@@ -9,8 +9,8 @@ import {
   Spin,
 } from 'antd'
 import styled from 'styled-components'
-import { StyledTable as AntdTable } from '../../../common/styled'
 import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
+import { StyledTable as AntdTable } from '../../../common/styled'
 
 const { Search } = Input
 const { Content } = Layout

@@ -1,7 +1,7 @@
 import { white } from '@edulastic/colors'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import qs from 'qs'
 import connect from 'react-redux/es/connect/connect'
 import { compose } from 'redux'
@@ -35,10 +35,11 @@ const EduAIQuiz = ({
   clearCreatedItem,
   history,
   isVideoQuizAndAIEnabled,
+  currentGroupIndexValueFromStore,
+  showSelectGroupIndexModal,
 }) => {
   const {
     selectSectionVisible,
-    setSelectSectionVisible,
     isVisible,
     onCreateItems,
     onCancel,
@@ -47,6 +48,8 @@ const EduAIQuiz = ({
     aiFormContent,
     handleChangeStandard,
     updateAlignment,
+    selectedGroupIndex,
+    handleSelectGroupResponse,
   } = useSaveForm({
     hasSections: test?.hasSections,
     getAiGeneratedTestItems,
@@ -58,28 +61,22 @@ const EduAIQuiz = ({
     clearCreatedItem,
     history,
     isVideoQuizAndAIEnabled,
+    currentGroupIndexValueFromStore,
+    showSelectGroupIndexModal,
   })
+
   const { open = '' } = qs.parse(window.location.search, {
     ignoreQueryPrefix: true,
   })
+
   useEffect(() => {
     if (open === 'aiquiz') {
       onCreateItems(undefined, 'Dashboard')
     }
   }, [])
 
-  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)
-  const handleSelectGroupResponse = (groupIndex) => {
-    if (groupIndex > -1) {
-      setSelectedGroupIndex(groupIndex)
-      onCreateItems(false)
-    } else {
-      setSelectSectionVisible(false)
-    }
-  }
   const EduAiAddItemsButton = (
     <AiEduButton
-      margin="0 5px"
       aiStyle
       disabled={!isVideoQuizAndAIEnabled}
       onClick={onCreateItems}

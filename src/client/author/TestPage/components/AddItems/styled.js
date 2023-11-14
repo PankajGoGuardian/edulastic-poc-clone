@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Divider } from 'antd'
 import {
   desktopWidth,
   mobileWidth,
@@ -152,4 +153,9 @@ export const ListWrapper = styled(Paper)`
 `
 export const Selected = styled.span`
   white-space: nowrap;
+  margin-right: 5px;
+`
+export const StyledVerticalDivider = styled(Divider)`
+  height: 36px;
+  background: #bbbbbb;
 `

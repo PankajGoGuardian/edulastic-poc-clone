@@ -257,3 +257,9 @@ export const SaveButton = styled(Button)`
     color: ${themeColor};
   }
 `
+export const SectionsTestCreateGroupWrapper = styled.div`
+  width: 80%;
+  background: ${white};
+  margin: auto;
+  padding: 40px 80px;
+`

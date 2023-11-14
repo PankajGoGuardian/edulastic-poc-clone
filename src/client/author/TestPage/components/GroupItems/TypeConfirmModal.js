@@ -9,6 +9,7 @@ const TypeConfirmModal = ({
   handleResponse,
   confirmModalCategory,
   groupName,
+  additionalDeleteText = '',
 }) => {
   const Footer = [
     <Button data-cy="NoOverRide" onClick={() => handleResponse('NO')}>
@@ -32,10 +33,13 @@ const TypeConfirmModal = ({
         <span>
           {confirmModalCategory === 'TYPE' ? (
             'The changes will get overridden with new criteria. Are you sure you want to proceed ?'
+          ) : confirmModalCategory === 'DELETE LAST GROUP' ? (
+            'This action will remove all sections and items and change to a normal test.'
           ) : (
             <span>
               Are you sure you want to delete
-              <span style={{ color: themeColor }}> {groupName} </span>?
+              <span style={{ color: themeColor }}> {groupName} </span>?{' '}
+              {additionalDeleteText}
             </span>
           )}
         </span>

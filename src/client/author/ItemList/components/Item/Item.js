@@ -367,11 +367,26 @@ class Item extends Component {
     const {
       test: { itemGroups },
       setCurrentGroupIndex,
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
     } = this.props
     const staticGroups = (itemGroups || []).filter(
       (g) => g.type === ITEM_GROUP_TYPES.STATIC
     )
     if (isAdd) {
+      /**
+       * For sections test if group index is known, directly add the item to respective index
+       * without setting index in store
+       * showSelectGroupIndexModal - this value is always "true" for all other tests except sections test
+       */
+      if (
+        staticGroups?.length > 1 &&
+        !showSelectGroupIndexModal &&
+        typeof currentGroupIndexValueFromStore === 'number'
+      ) {
+        this.handleSelectGroupModalResponse(currentGroupIndexValueFromStore)
+        return
+      }
       if (staticGroups?.length === 1) {
         const index = itemGroups.findIndex(
           (g) => g.groupName === staticGroups[0].groupName

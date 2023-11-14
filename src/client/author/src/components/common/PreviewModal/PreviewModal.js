@@ -64,7 +64,6 @@ import {
   setCurrentGroupIndexAction,
   setTestDataAction,
   isDynamicTestSelector,
-  hasSectionsSelector,
 } from '../../../../TestPage/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { changePreviewAction, changeViewAction } from '../../../actions/view'
@@ -488,12 +487,29 @@ class PreviewModal extends React.Component {
   }
 
   handleSelectGroupModalResponse = (index) => {
-    const { setCurrentGroupIndex } = this.props
+    const { setCurrentGroupIndex, item, hasSections } = this.props
     if (index || index === 0) {
       setCurrentGroupIndex(index)
-      this.handleDynamicTestSelection()
+      if (hasSections && item.passageId) {
+        this.handleAddPassageItemsToSection()
+      } else {
+        this.handleDynamicTestSelection()
+      }
     }
     this.setState({ showSelectGroupModal: false })
+  }
+
+  handleAddPassageItemsToSection = () => {
+    const {
+      passageItems,
+      passage,
+      page,
+      selectedRows,
+      setAndSavePassageItems,
+    } = this.props
+    const passageTestItems = get(passage, 'testItems', [])
+    const isAdding = passageTestItems.some((x) => !selectedRows.includes(x))
+    setAndSavePassageItems({ passageItems, page, remove: !isAdding })
   }
 
   handleDynamicTestSelection = async () => {
@@ -548,7 +564,23 @@ class PreviewModal extends React.Component {
     const {
       test: { itemGroups },
       setCurrentGroupIndex,
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
     } = this.props
+    /**
+     * For sections test if group index is known, directly add the item to respective index
+     * without setting index in store
+     * showSelectGroupIndexModal - this value is always "true" for all other tests except sections test
+     */
+    if (
+      staticGroups?.length > 1 &&
+      !showSelectGroupIndexModal &&
+      typeof currentGroupIndexValueFromStore === 'number'
+    ) {
+      this.handleSelectGroupModalResponse(currentGroupIndexValueFromStore)
+      return
+    }
+
     if (staticGroups?.length === 1) {
       const index = itemGroups.findIndex(
         (g) => g.groupName === staticGroups[0].groupName
@@ -614,6 +646,7 @@ class PreviewModal extends React.Component {
       item,
       test,
       test: { itemGroups },
+      hasSections,
     } = this.props
 
     if (item?.unsavedItem) {
@@ -623,6 +656,11 @@ class PreviewModal extends React.Component {
     const staticGroups = (itemGroups || []).filter(
       (g) => g.type === ITEM_GROUP_TYPES.STATIC
     )
+
+    if (hasSections && this.isAddOrRemove) {
+      this.handleAddToSection(staticGroups, item)
+      return
+    }
 
     if (
       test.testCategory !== testCategoryTypes.DYNAMIC_TEST ||
@@ -693,6 +731,38 @@ class PreviewModal extends React.Component {
     }
   }
 
+  handleAddMultiplePassageItemsToSections = () => {
+    const {
+      test: { itemGroups },
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
+      setCurrentGroupIndex,
+    } = this.props
+
+    const staticGroups = (itemGroups || []).filter(
+      (g) => g.type === ITEM_GROUP_TYPES.STATIC
+    )
+
+    if (
+      staticGroups?.length > 1 &&
+      !showSelectGroupIndexModal &&
+      typeof currentGroupIndexValueFromStore === 'number'
+    ) {
+      this.handleAddPassageItemsToSection()
+      return
+    }
+
+    if (staticGroups?.length === 1) {
+      const index = itemGroups.findIndex(
+        (g) => g.groupName === staticGroups[0].groupName
+      )
+      setCurrentGroupIndex(index)
+      this.handleAddPassageItemsToSection()
+    } else if (staticGroups.length > 1) {
+      this.setState({ showSelectGroupModal: true })
+    }
+  }
+
   handleAddAllPassageItems = () => {
     const {
       passageItems,
@@ -700,10 +770,16 @@ class PreviewModal extends React.Component {
       page,
       selectedRows,
       setAndSavePassageItems,
+      hasSections,
     } = this.props
     const passageTestItems = get(passage, 'testItems', [])
 
     const isAdding = passageTestItems.some((x) => !selectedRows.includes(x))
+
+    if (hasSections) {
+      this.handleAddMultiplePassageItemsToSections()
+      return
+    }
 
     setAndSavePassageItems({ passageItems, page, remove: !isAdding })
   }
@@ -844,7 +920,6 @@ class PreviewModal extends React.Component {
 
       t,
       isDynamicTest,
-      hasSections,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -1114,20 +1189,11 @@ class PreviewModal extends React.Component {
                 </Popover>
               ) : (
                 <Tooltip
-                  title={
-                    isDynamicTest
-                      ? t('authoringItemDisabled.info')
-                      : hasSections
-                      ? t('sectionFeatBetaAction.info')
-                      : ''
-                  }
+                  title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
                 >
                   <span
                     style={{
-                      cursor:
-                        isDynamicTest || hasSections
-                          ? 'not-allowed'
-                          : 'pointer',
+                      cursor: isDynamicTest ? 'not-allowed' : 'pointer',
                     }}
                   >
                     <EduButton
@@ -1150,15 +1216,10 @@ class PreviewModal extends React.Component {
                         isDisableEdit ||
                         !!premiumCollectionWithoutAccess ||
                         isDynamicTest ||
-                        item.unsavedItem ||
-                        hasSections
+                        item.unsavedItem
                       }
                       onClick={this.editTestItem}
-                      style={
-                        isDynamicTest || hasSections
-                          ? { pointerEvents: 'none' }
-                          : {}
-                      } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                      style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                     >
                       <IconPencilEdit color={themeColor} title="Edit item" />
                     </EduButton>
@@ -1166,18 +1227,11 @@ class PreviewModal extends React.Component {
                 </Tooltip>
               )}
               <Tooltip
-                title={
-                  isDynamicTest
-                    ? t('authoringItemDisabled.info')
-                    : hasSections
-                    ? t('sectionFeatBetaAction.info')
-                    : ''
-                }
+                title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
               >
                 <span
                   style={{
-                    cursor:
-                      isDynamicTest || hasSections ? 'not-allowed' : 'pointer',
+                    cursor: isDynamicTest ? 'not-allowed' : 'pointer',
                   }}
                 >
                   <EduButton
@@ -1197,15 +1251,10 @@ class PreviewModal extends React.Component {
                       isDisableDuplicate ||
                       !!premiumCollectionWithoutAccess ||
                       isDynamicTest ||
-                      item.unsavedItem ||
-                      hasSections
+                      item.unsavedItem
                     }
                     onClick={this.handleDuplicateTestItem}
-                    style={
-                      isDynamicTest || hasSections
-                        ? { pointerEvents: 'none' }
-                        : {}
-                    } // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                    style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic & Sections test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
                   >
                     <IconCopy color={themeColor} />
                   </EduButton>
@@ -1418,7 +1467,6 @@ const enhance = compose(
         passageItemIds: passageItemIdsSelector(state),
         aiTestStatus: state?.aiTestDetails?.status,
         isDynamicTest: isDynamicTestSelector(state),
-        hasSections: hasSectionsSelector(state),
       }
     },
     {

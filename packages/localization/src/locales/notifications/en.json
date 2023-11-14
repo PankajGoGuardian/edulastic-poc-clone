@@ -844,6 +844,10 @@
     "message": "  Cannot create more than 15 groups",
     "description": ""
   },
+  "cantCreateMoreThan7Groups": {
+    "message": "  Cannot create more than 7 sections",
+    "description": ""
+  },
   "pleaseSelectStantdardBeforeApplying": {
     "message": "  Please select a standard before applying",
     "description": ""
@@ -1878,6 +1882,10 @@
   },
   "eachStaticGroupShouldContainAtleastOneItems": {
     "message": "Select at least one item to save the section",
+    "description": ""
+  },
+  "eachSectionShouldAtleastOneItem": {
+    "message": "Add atleast one item in each section",
     "description": ""
   },
   "eachGroupShouldHaveUniqueGroupName": {

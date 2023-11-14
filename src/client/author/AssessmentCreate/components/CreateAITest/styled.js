@@ -77,6 +77,7 @@ export const StyledRequired = styled.span`
 
 export const AiEduButton = styled(EduButton)`
   font-weight: ${({ fontWeight }) => fontWeight};
+  margin-left: 0px !important;
 
   &.ant-btn.ant-btn-primary {
     border: none;

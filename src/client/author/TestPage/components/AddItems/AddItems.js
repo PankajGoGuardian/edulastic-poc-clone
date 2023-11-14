@@ -5,7 +5,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
 import { Pagination, Spin, Tooltip } from 'antd'
-import { roleuser, sortOptions } from '@edulastic/constants'
+import {
+  roleuser,
+  sortOptions,
+  test as testConstants,
+} from '@edulastic/constants'
 import {
   withWindowSizes,
   FlexContainer,
@@ -14,12 +18,16 @@ import {
   EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
+import {
+  IconPlusCircle,
+  IconItemGroup,
+  IconTestSection,
+} from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 
-import { ItemsPagination, Selected } from './styled'
+import { ItemsPagination, Selected, StyledVerticalDivider } from './styled'
 import {
   getCurriculumsListSelector,
   getStandardsListSelector,
@@ -57,6 +65,7 @@ import {
   setCurrentGroupIndexAction,
   isDynamicTestSelector,
   hasSectionsSelector,
+  getCurrentGroupIndexSelector,
 } from '../../ducks'
 import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
@@ -94,6 +103,8 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
+
+const { sectionTestActions } = testConstants
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -288,6 +299,8 @@ class AddItems extends PureComponent {
       handleSaveTest,
       updated,
       hasSections,
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
     } = this.props
     if (!title) {
       notification({ messageKey: 'nameShouldNotEmpty' })
@@ -307,6 +320,20 @@ class AddItems extends PureComponent {
       handleSaveTest()
     }
 
+    /**
+     * For sections test the select group index modal should only be shown if group index is not known.
+     * When click on select items in a section the group index is known and select group index
+     * modal need not be shown once again.
+     * showSelectGroupIndexModal - this value is always "true" for all other tests except sections test
+     */
+    if (
+      itemGroups.length > 1 &&
+      !showSelectGroupIndexModal &&
+      typeof currentGroupIndexValueFromStore === 'number'
+    ) {
+      this.handleSelectGroupModalResponse(currentGroupIndexValueFromStore)
+      return
+    }
     if (itemGroups.length > 1) {
       this.setState({ showSelectGroupModal: true })
       return
@@ -421,6 +448,27 @@ class AddItems extends PureComponent {
     receiveTestItems(search, sort, page, limit)
   }
 
+  /*
+    When the Add new Sections button is clicked, we will set the hasSections flag to true. 
+    As a result, the Add Items tab will be replaced by Add Sections. Also in order to navigate 
+    to the Add Sections, we are using the handleNavChange method.
+  */
+  handleAddSections = () => {
+    const {
+      setData,
+      gotoManageSections,
+      setSectionsState,
+      testId,
+      handleSaveTest,
+      setCurrentGroupDetails,
+    } = this.props
+    setData({ hasSections: true })
+    gotoManageSections()
+    setSectionsState(true)
+    if (testId) handleSaveTest(sectionTestActions.ADD)
+    setCurrentGroupDetails()
+  }
+
   renderItems = (selectedItemIds) => {
     const {
       items,
@@ -437,6 +485,8 @@ class AddItems extends PureComponent {
       search,
       setCurrentGroupIndex,
       current,
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
     } = this.props
     if (items.length < 1) {
       return (
@@ -470,6 +520,8 @@ class AddItems extends PureComponent {
         page="addItems"
         openPreviewModal={this.openPreviewModal(index)}
         setCurrentGroupIndex={setCurrentGroupIndex}
+        showSelectGroupIndexModal={showSelectGroupIndexModal}
+        currentGroupIndexValueFromStore={currentGroupIndexValueFromStore}
       />
     ))
   }
@@ -552,11 +604,17 @@ class AddItems extends PureComponent {
       search,
       userRole,
       sort = {},
-      gotoAddSections,
+      gotoManageSections,
       aiTestStatus = false,
       isDynamicTest,
       hasSections,
       isGcpsDistrict,
+      isOwner,
+      isEditable,
+      isDefaultTest,
+      isEnterprise,
+      showSelectGroupIndexModal,
+      currentGroupIndexValueFromStore,
     } = this.props
     const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -565,8 +623,8 @@ class AddItems extends PureComponent {
     const itemGroupCount = selectedItemIds?.length || 0
 
     return (
-      // The Add item screen will be displayed in full screen mode for dynamic test and test with sections
-      <AddItemsContainer isFullScreenMode={isDynamicTest || hasSections}>
+      // The Add item screen will be displayed in full screen mode for dynamic test
+      <AddItemsContainer isFullScreenMode={isDynamicTest}>
         {showSelectGroupModal && (
           <SelectGroupModal
             visible={showSelectGroupModal}
@@ -622,12 +680,45 @@ class AddItems extends PureComponent {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <EduIf condition={!isDynamicTest && !isGcpsDistrict}>
-                    <EduAIQuiz addItems test={test} />
-                  </EduIf>
                   <Selected style={{ fontSize: '12px' }}>
                     {itemGroupCount} SELECTED
                   </Selected>
+                  <EduIf
+                    condition={
+                      !isDynamicTest &&
+                      !hasSections &&
+                      isOwner &&
+                      isEditable &&
+                      isDefaultTest &&
+                      isEnterprise
+                    }
+                  >
+                    <EduButton
+                      height="28px"
+                      isGhost
+                      data-cy="createSectionsTest"
+                      disabled={isDynamicTest || hasSections}
+                      onClick={this.handleAddSections}
+                    >
+                      <IconTestSection
+                        color={themeColor}
+                        width={12}
+                        height={12}
+                      />
+                      <span>CREATE SECTION</span>
+                    </EduButton>
+                    <StyledVerticalDivider type="vertical" />
+                  </EduIf>
+                  <EduIf condition={!isDynamicTest && !isGcpsDistrict}>
+                    <EduAIQuiz
+                      addItems
+                      test={test}
+                      currentGroupIndexValueFromStore={
+                        currentGroupIndexValueFromStore
+                      }
+                      showSelectGroupIndexModal={showSelectGroupIndexModal}
+                    />
+                  </EduIf>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
                     <Tooltip
                       title={
@@ -663,8 +754,8 @@ class AddItems extends PureComponent {
                 {(isDynamicTest || hasSections) && (
                   <EduButton
                     style={{ height: '32px !important' }}
-                    data-cy="gotoAddSections"
-                    onClick={gotoAddSections}
+                    data-cy="gotoManageSections"
+                    onClick={gotoManageSections}
                   >
                     <IconItemGroup color={white} width={12} height={12} />
                     <span>Done</span>
@@ -700,6 +791,11 @@ class AddItems extends PureComponent {
                     onClose={this.closePreviewModal}
                     checkAnswer={this.checkItemAnswer}
                     showAnswer={this.showItemAnswer}
+                    hasSections={hasSections}
+                    currentGroupIndexValueFromStore={
+                      currentGroupIndexValueFromStore
+                    }
+                    showSelectGroupIndexModal={showSelectGroupIndexModal}
                   />
                 </Spin>
               )}
@@ -738,6 +834,7 @@ const enhance = compose(
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
       isGcpsDistrict: isGcpsDistrictSelector(state),
+      currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
     }),
     {
       receiveTestItems: (search, sort, page, limit) => {

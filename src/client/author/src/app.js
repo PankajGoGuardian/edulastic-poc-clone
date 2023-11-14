@@ -296,7 +296,7 @@ const Author = ({
     history.location.pathname.includes('students-report-card')
   const assessmentTabs = [
     'description',
-    'addSections',
+    'manageSections',
     'addItems',
     'review',
     'settings',

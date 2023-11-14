@@ -15,6 +15,8 @@ export const useSaveForm = ({
   clearCreatedItem,
   history,
   isVideoQuizAndAIEnabled,
+  currentGroupIndexValueFromStore,
+  showSelectGroupIndexModal,
 }) => {
   const initialAiFormData = {
     itemTypes: '',
@@ -45,6 +47,7 @@ export const useSaveForm = ({
   const [selectSectionVisible, setSelectSectionVisible] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [aiFormContent, setAiFromContent] = useState(initialAiFormData)
+  const [selectedGroupIndex, setSelectedGroupIndex] = useState(0)
 
   const updateAlignment = (alignment) => {
     setAiFromContent((state) => ({ ...state, alignment }))
@@ -63,10 +66,27 @@ export const useSaveForm = ({
       return
     }
     if (addItems && showSelectGroup && hasSections) {
+      if (
+        !showSelectGroupIndexModal &&
+        typeof currentGroupIndexValueFromStore === 'number'
+      ) {
+        // eslint-disable-next-line no-use-before-define
+        handleSelectGroupResponse(currentGroupIndexValueFromStore)
+        return
+      }
       setSelectSectionVisible(true)
     } else {
       setSelectSectionVisible(false)
       setIsVisible(true)
+    }
+  }
+
+  const handleSelectGroupResponse = (groupIndex) => {
+    if (groupIndex > -1) {
+      setSelectedGroupIndex(groupIndex)
+      onCreateItems(false)
+    } else {
+      setSelectSectionVisible(false)
     }
   }
 
@@ -83,7 +103,7 @@ export const useSaveForm = ({
     setAiFromContent({ ...aiFormContent, [field]: value })
   }
 
-  const handleAiFormSubmit = (selectedGroupIndex = 0) => {
+  const handleAiFormSubmit = (_selectedGroupIndex = 0) => {
     const _aiFormContent = cloneDeep(aiFormContent)
     const {
       testName,
@@ -153,7 +173,7 @@ export const useSaveForm = ({
       ..._aiFormContent,
       testName: testName.trim(),
       preference: preference.trim(),
-      groupIndex: selectedGroupIndex,
+      groupIndex: _selectedGroupIndex,
     })
   }
 
@@ -168,5 +188,8 @@ export const useSaveForm = ({
     resetAiFormData,
     handleAiFormSubmit,
     updateAlignment,
+    selectedGroupIndex,
+    setSelectedGroupIndex,
+    handleSelectGroupResponse,
   }
 }

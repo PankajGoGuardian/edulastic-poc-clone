@@ -35,6 +35,7 @@ import {
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
+import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -80,6 +81,8 @@ import {
   isDynamicTestSelector,
   hasSectionsSelector,
   createNewStaticGroup,
+  isDefaultTestSelector,
+  setCurrentGroupIndexAction,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -146,6 +149,8 @@ import TeacherSignup from '../../../../student/Signup/components/TeacherContaine
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
 import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
+import { getSubscriptionSelector } from '../../../Subscription/ducks'
+import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -162,6 +167,7 @@ const {
   sectionTestActions,
 } = testConstants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
+const { PARTIAL_PREMIUM, ENTERPRISE } = SUBSCRIPTION_SUB_TYPES
 
 class Container extends PureComponent {
   constructor() {
@@ -181,6 +187,7 @@ class Container extends PureComponent {
       groupNotEdited: true,
       goToTabProps: {},
       showConfirmationOnTabChange: false,
+      showSectionsTestSelectGroupIndexModal: true,
     }
   }
 
@@ -658,18 +665,30 @@ class Container extends PureComponent {
       return
     }
     let hasValidGroups = false
+    let hasValidGroupsForSectionsTest = false
     // condition to validate Add Sections has been updated successfully before navigating to other tabs
     // Add Items needs to be exempt from this as it is a full-screen popup which works in tandem with Add Sections
     // Description page navigation should be allowed if there was no edit made to the groups
     if (
-      location?.pathname?.includes('addSections') &&
-      !['addItems', 'addSections'].includes(value) &&
+      location?.pathname?.includes('manageSections') &&
+      !['addItems', 'manageSections'].includes(value) &&
       !(value === 'description' && groupNotEdited) &&
-      (isDynamicTest || hasSections)
+      isDynamicTest
     ) {
       hasValidGroups = this.validateGroups()
       if (!hasValidGroups) return
     }
+
+    if (
+      !isDynamicTest &&
+      hasSections &&
+      location?.pathname?.includes('manageSections') &&
+      !(value === 'description' && groupNotEdited)
+    ) {
+      hasValidGroupsForSectionsTest = this.validateGroupsForSectionsTest()
+      if (!hasValidGroupsForSectionsTest) return
+    }
+
     if (value === 'source') {
       this.setState({
         showModal: true,
@@ -678,7 +697,7 @@ class Container extends PureComponent {
     }
 
     /** For AI quiz we need to unselect section */
-    if (value === 'addSections' && test?.aiGenerated) {
+    if (value === 'manageSections' && test?.aiGenerated) {
       this.setState({
         currentGroupIndex: null,
       })
@@ -741,8 +760,9 @@ class Container extends PureComponent {
     const { currentGroupIndex } = this.state
     /* 
         Apart from dynamic and sections test, it is not required to validate the item groups.
+        Separate validate group method is created for sections test as the conditions are different.
     */
-    if (!isDynamicTest && (!hasSections || isCreateNewItem)) {
+    if (!isDynamicTest && (hasSections || isCreateNewItem)) {
       return true
     }
     if (currentGroupIndex !== null) {
@@ -803,6 +823,32 @@ class Container extends PureComponent {
       }
       if (!deliverItemsCount) {
         notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        return false
+      }
+    }
+    return true
+  }
+
+  validateGroupsForSectionsTest = (isPublishFlow = false) => {
+    const { test } = this.props
+    const groupNamesFromTest = _uniq(
+      test.itemGroups.map((g) => `${g.groupName || ''}`.toLowerCase())
+    )
+    if (
+      !(test?.itemGroups || []).every((group) => group?.groupName?.length > 0)
+    ) {
+      notification({ messageKey: 'pleaseEnterGroupName' })
+      return false
+    }
+    if (groupNamesFromTest.length !== test.itemGroups.length) {
+      notification({ messageKey: 'eachGroupShouldHaveUniqueGroupName' })
+      return false
+    }
+    if (isPublishFlow) {
+      if (
+        !(test?.itemGroups || []).every((group) => group?.items?.length > 0)
+      ) {
+        notification({ messageKey: 'eachSectionShouldAtleastOneItem' })
         return false
       }
     }
@@ -954,6 +1000,24 @@ class Container extends PureComponent {
     saveCurrentEditingTestId(test._id)
   }
 
+  handleSectionsTestSetGroupIndex = (
+    groupIndex,
+    updateShowSelectGroupIndexModalValue = false
+  ) => {
+    const { setCurrentGroupIndexInStore } = this.props
+    if (updateShowSelectGroupIndexModalValue) {
+      this.setState({
+        currentGroupIndex: groupIndex,
+        showSectionsTestSelectGroupIndexModal: false,
+      })
+    } else {
+      this.setState({
+        currentGroupIndex: groupIndex,
+      })
+    }
+    setCurrentGroupIndexInStore(groupIndex)
+  }
+
   renderContent = () => {
     const {
       test,
@@ -973,7 +1037,12 @@ class Container extends PureComponent {
       collections,
       writableCollections,
       isPlaylist,
+      isDefaultTest,
+      subscription: { subType } = {},
+      isDynamicTest,
+      hasSections,
     } = this.props
+    const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const { params = {} } = match
     const { showCancelButton = false } =
       history.location.state || this.state || {}
@@ -982,6 +1051,7 @@ class Container extends PureComponent {
       currentGroupIndex,
       currentGroupDetails,
       groupNotEdited,
+      showSectionsTestSelectGroupIndexModal,
     } = this.state
     const current = currentTab
     const {
@@ -992,6 +1062,7 @@ class Container extends PureComponent {
       pageStructure,
       freeFormNotes = {},
       videoUrl = '',
+      _id: testId,
     } = test
     const isCollectionContentEditable = isContentOfCollectionEditable(
       test.collections,
@@ -1034,7 +1105,7 @@ class Container extends PureComponent {
               onSaveTestId={this.handleSaveTestId}
               test={test}
               gotoSummary={this.handleNavChange('description')}
-              gotoAddSections={() => {
+              gotoManageSections={() => {
                 if (
                   test.itemGroups?.[currentGroupIndex]?.type ===
                   ITEM_GROUP_TYPES.STATIC
@@ -1044,13 +1115,23 @@ class Container extends PureComponent {
                     currentGroupDetails: test.itemGroups[currentGroupIndex],
                   })
                 }
-                this.handleNavChange('addSections')()
+                this.handleNavChange('manageSections')()
               }}
               toggleFilter={this.toggleFilter}
               isShowFilter={isShowFilter}
               handleSaveTest={this.handleSave}
+              setSectionsState={this.setSectionsState}
+              setCurrentGroupDetails={this.setCurrentGroupDetails}
+              showSelectGroupIndexModal={
+                hasSections ? showSectionsTestSelectGroupIndexModal : true
+              }
               updated={updated}
               userRole={userRole}
+              setData={setData}
+              isOwner={isOwner}
+              isDefaultTest={isDefaultTest}
+              isEnterprise={isEnterprise}
+              testId={testId}
             />
           </Content>
         )
@@ -1102,7 +1183,7 @@ class Container extends PureComponent {
             onChangeSubjects={this.handleChangeSubject}
             onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
-            handleNavChange={this.handleNavChange('addSections', true)}
+            handleNavChange={this.handleNavChange('manageSections', true)}
             handleSave={this.handleSave}
             setSectionsState={this.setSectionsState}
             setCurrentGroupDetails={this.setCurrentGroupDetails}
@@ -1149,25 +1230,43 @@ class Container extends PureComponent {
             <Assign test={test} setData={setData} current={current} />
           </Content>
         )
-      case 'addSections':
+      case 'manageSections':
         return (
           <Content>
-            <GroupItems
-              currentGroupIndex={currentGroupIndex}
-              setCurrentGroupIndex={(groupIndex, cb = undefined) =>
-                this.setState({ currentGroupIndex: groupIndex }, cb)
-              }
-              currentGroupDetails={currentGroupDetails}
-              setCurrentGroupDetails={(itemGroup, cb = undefined) =>
-                this.setState({ currentGroupDetails: itemGroup }, cb)
-              }
-              groupNotEdited={groupNotEdited}
-              setGroupNotEdited={(value, cb = undefined) =>
-                this.setState({ groupNotEdited: value }, cb)
-              }
-              validateGroups={this.validateGroups}
-              handleSaveTest={this.handleSave}
-            />
+            <EduIf condition={isDynamicTest}>
+              <EduThen>
+                <GroupItems
+                  currentGroupIndex={currentGroupIndex}
+                  setCurrentGroupIndex={(groupIndex, cb = undefined) =>
+                    this.setState({ currentGroupIndex: groupIndex }, cb)
+                  }
+                  currentGroupDetails={currentGroupDetails}
+                  setCurrentGroupDetails={(itemGroup, cb = undefined) =>
+                    this.setState({ currentGroupDetails: itemGroup }, cb)
+                  }
+                  groupNotEdited={groupNotEdited}
+                  setGroupNotEdited={(value, cb = undefined) =>
+                    this.setState({ groupNotEdited: value }, cb)
+                  }
+                  validateGroups={this.validateGroups}
+                  handleSaveTest={this.handleSave}
+                />
+              </EduThen>
+              <EduElse>
+                <SectionsTestGroupItems
+                  testId={testId}
+                  currentGroupIndex={currentGroupIndex}
+                  setCurrentGroupIndex={this.handleSectionsTestSetGroupIndex}
+                  groupNotEdited={groupNotEdited}
+                  setGroupNotEdited={(value, cb = undefined) =>
+                    this.setState({ groupNotEdited: value }, cb)
+                  }
+                  setSectionsState={this.setSectionsState}
+                  gotoAddItems={this.handleNavChange('addItems')}
+                  handleSaveTest={this.handleSave}
+                />
+              </EduElse>
+            </EduIf>
           </Content>
         )
       default:
@@ -1238,7 +1337,8 @@ class Container extends PureComponent {
     if (
       !this.validateTimedAssignment() ||
       !this.validatePenaltyOnUsingHintsValue() ||
-      !this.validateGroups(true) // validate groups for dynamic tests before save
+      !this.validateGroups(true) || // validate groups for dynamic tests before save
+      !this.validateGroupsForSectionsTest()
     ) {
       return
     }
@@ -1317,6 +1417,7 @@ class Container extends PureComponent {
       safeBrowser,
       sebPassword,
       passages,
+      hasSections,
     } = test
     const { userFeatures, isOrganizationDistrictUser } = this.props
     if (!title) {
@@ -1361,6 +1462,9 @@ class Container extends PureComponent {
     }
     if (!this.validateGroups()) {
       // validate groups for dynamic tests
+      return false
+    }
+    if (hasSections && !this.validateGroupsForSectionsTest(true)) {
       return false
     }
     if (!this.validatePenaltyOnUsingHintsValue()) {
@@ -1899,6 +2003,8 @@ const enhance = compose(
       aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
+      isDefaultTest: isDefaultTestSelector(state),
+      subscription: getSubscriptionSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1934,6 +2040,7 @@ const enhance = compose(
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       setTestSettingsList: setTestSettingsListAction,
+      setCurrentGroupIndexInStore: setCurrentGroupIndexAction,
     }
   )
 )

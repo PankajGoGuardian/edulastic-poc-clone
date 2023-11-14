@@ -174,7 +174,7 @@ export const docBasedButtons = [
     text: 'Settings',
   },
 ]
-export const navButtonsDynamicAndSectionsTest = [
+export const navButtonsDynamicTest = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
     value: 'description',
@@ -182,8 +182,35 @@ export const navButtonsDynamicAndSectionsTest = [
   },
   {
     icon: <IconItemGroup color={white} width={16} height={16} />,
-    value: 'addSections',
-    text: 'Add Sections',
+    value: 'manageSections',
+    text: 'Manage Sections',
+  },
+  {
+    icon: <IconTick color={white} width={16} height={16} />,
+    value: 'review',
+    text: 'Review',
+  },
+  {
+    icon: <IconSettings color={white} width={16} height={16} />,
+    value: 'settings',
+    text: 'Settings',
+  },
+]
+export const navButtonsSectionsTest = [
+  {
+    icon: <IconDescription color={white} width={16} height={16} />,
+    value: 'description',
+    text: 'Description',
+  },
+  {
+    icon: <IconItemGroup color={white} width={16} height={16} />,
+    value: 'manageSections',
+    text: 'Manage Sections',
+  },
+  {
+    icon: <IconAddItems color={white} width={16} height={16} />,
+    value: 'addItems',
+    text: 'Add Items',
   },
   {
     icon: <IconTick color={white} width={16} height={16} />,
@@ -271,8 +298,10 @@ const TestPageHeader = ({
       : isDocBased
       ? [...docBasedButtons]
       : // In order to display the Add Sections tab instead of Add Items for dynamic or a test with sections
-      isDynamicTest || hasSections
-      ? [...navButtonsDynamicAndSectionsTest]
+      isDynamicTest
+      ? [...navButtonsDynamicTest]
+      : hasSections
+      ? [...navButtonsSectionsTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)

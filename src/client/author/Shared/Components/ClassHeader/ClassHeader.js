@@ -633,14 +633,20 @@ class ClassHeader extends Component {
 
     const scanBubbleSheetMenuItem = ({ isAccessible }) => {
       const tooltipTitle = hasRandomQuestions
-        ? t('common.randomItemsBubbleScanDisableMessage')
+        ? t('common.bubbleScanRandomItemsDisableMessage')
         : canOpen
-        ? 'OPEN Assignment to Scan Responses'
+        ? t('common.bubbleScanAssignmentCanOpenMessage')
         : isPaused
-        ? 'RESUME Assignment to Scan Responses'
+        ? t('common.bubbleScanAssignmentPausedMessage')
+        : isAssignmentDone
+        ? t('common.bubbleScanAssignmentDoneMessage')
         : null
       const isMenuItemActive =
-        !canOpen && !isPaused && isAccessible && !hasRandomQuestions
+        !canOpen &&
+        !isPaused &&
+        !isAssignmentDone &&
+        isAccessible &&
+        !hasRandomQuestions
       const menuText = (
         <span
           style={{
@@ -672,7 +678,7 @@ class ClassHeader extends Component {
           onClick={() =>
             hasRandomQuestions
               ? notification({
-                  msg: t('common.randomItemsBubbleScanDisableMessage'),
+                  msg: t('common.bubbleScanRandomItemsDisableMessage'),
                 })
               : null
           }
@@ -745,7 +751,7 @@ class ClassHeader extends Component {
                   ? this.showPremiumPopup(e.domEvent.target)
                   : hasRandomQuestions
                   ? notification({
-                      msg: t('common.randomItemsBubbleScanDisableMessage'),
+                      msg: t('common.bubbleScanRandomItemsDisableMessage'),
                     })
                   : this.generateBubbleSheet(assignmentId, classId)
               }
@@ -757,9 +763,9 @@ class ClassHeader extends Component {
               <Tooltip
                 title={
                   hasRandomQuestions
-                    ? t('common.randomItemsBubbleScanDisableMessage')
+                    ? t('common.bubbleScanRandomItemsDisableMessage')
                     : isAssignmentDone
-                    ? 'Assignment is not open'
+                    ? t('common.bubbleScanAssignmentDoneMessage')
                     : null
                 }
                 placement="right"

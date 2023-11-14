@@ -1295,6 +1295,7 @@ function* signup({ payload }) {
       passwordForExistingUser,
       isAdmin,
       utm_source,
+      token,
     } = payload
     let nameList = name.split(' ')
     nameList = nameList.filter((item) => !!(item && item.trim()))
@@ -1348,6 +1349,9 @@ function* signup({ payload }) {
     const addAccountTo = yield select(getAddAccountUserId)
     if (addAccount === true) {
       obj.addAccountTo = addAccountTo
+    }
+    if (token) {
+      obj.token = token
     }
 
     const response = yield call(authApi.signup, obj)

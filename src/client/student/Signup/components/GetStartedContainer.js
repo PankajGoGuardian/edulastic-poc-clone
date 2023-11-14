@@ -24,9 +24,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
-import qs from 'qs'
 import { IconMail, IconUser } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import {
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
@@ -65,22 +65,24 @@ const GetStarted = ({
   const [isClassCodeModalVisible, setIsClassCodeModalVisible] = useState(false)
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
   const partner = Partners[partnerKey]
-
-  const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
-  const isSignUpDetailsPresent = query && query.email
+  const token = new URLSearchParams(window.location.search).get('token')
+  const { firstName, lastName, email } = token
+    ? JSON.parse(window.atob(token.split('.')[1]))
+    : {}
+  const isSignUpDetailsPresent = !isEmpty(email)
+  // TODO: remove token from browser url once we read it
 
   const getFormattedName = () => {
-    const formattedName = `${query.firstName || ''} ${
-      query.lastName || ''
-    }`.trim()
+    const formattedName = `${firstName || ''} ${lastName || ''}`.trim()
     return formattedName
   }
 
   const handleSignUp = (role, isAdmin, classCode) => {
     const signUpObj = {
-      email: query.email,
+      email,
       name: getFormattedName(),
       role,
+      token,
     }
 
     if (role === roleuser.STUDENT) {
@@ -178,8 +180,8 @@ const GetStarted = ({
                       }}
                     >
                       <IconMail color={white} />
-                      <Tooltip title={query.email}>
-                        <StyledText>{query.email}</StyledText>
+                      <Tooltip title={email}>
+                        <StyledText>{email}</StyledText>
                       </Tooltip>
                     </FlexContainer>
                   </FlexContainer>

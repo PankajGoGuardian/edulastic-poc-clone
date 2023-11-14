@@ -164,6 +164,13 @@ class LoginContainer extends React.Component {
                       )}
                     </h3>
 
+                    <EduIf condition={isPearDomain}>
+                      <br />
+                      <PsiSignInContainer>
+                        <div id="psi_sign_in" />
+                      </PsiSignInContainer>
+                    </EduIf>
+
                     {isDistrictPolicyAllowed(
                       isSignupUsingDaURL,
                       districtPolicy,
@@ -356,10 +363,6 @@ class LoginContainer extends React.Component {
                     </FormBody>
                   ) : null}
                 </FormWrapper>
-                <EduIf condition={isPearDomain}>
-                  <br />
-                  <div id="psi_sign_in" />
-                </EduIf>
               </Col>
             </RegistrationBody>
           </Col>
@@ -486,7 +489,10 @@ const DistrictLogo = styled.img`
   width: 100%;
   object-fit: contain;
 `
-
+const PsiSignInContainer = styled.div`
+  width: 83%;
+  margin: 0 auto;
+`
 const ThirdPartyLoginBtn = styled(Col)`
   background: #ffffff;
   margin-top: 5px;

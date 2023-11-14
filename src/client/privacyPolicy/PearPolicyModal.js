@@ -5,7 +5,7 @@ import { Checkbox, EduButton, EduIf } from '@edulastic/common'
 import { AssessPeardeckOnLightBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
 
-const PRODUCT_TERMS_URL = 'https://www.peardeck.com/policies/website-terms'
+// const PRODUCT_TERMS_URL = 'https://www.peardeck.com/policies/website-terms'
 const EULA_TERMS_URL = 'https://www.peardeck.com/policies/product-terms-eula'
 const PRIVACY_POLICY_URL = 'https://www.peardeck.com/policies/product-privacy'
 const DATA_PROCESSING_ADDENDUM_URL =
@@ -41,10 +41,6 @@ const PearPolicyModal = ({
               <StyledOrderedList>
                 <li>
                   To the{' '}
-                  <Link href={PRODUCT_TERMS_URL} target="_blank">
-                    Product Terms
-                  </Link>{' '}
-                  &{' '}
                   <Link href={EULA_TERMS_URL} target="_blank">
                     End User License Agreement
                   </Link>

@@ -197,7 +197,10 @@ const SideMenu = ({
             <LogoCompact margin="0px" />
           )
         ) : isPearDomain ? (
-          <AssessPeardeckOnDarkBgLogo height="30px" />
+          <AssessPeardeckOnDarkBgLogo
+            style={{ marginLeft: '-5px' }}
+            height="36px"
+          />
         ) : (
           <OnDarkBgLogo height="26px" />
         )}

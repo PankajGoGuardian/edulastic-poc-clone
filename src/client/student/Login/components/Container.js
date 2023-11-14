@@ -165,10 +165,9 @@ class LoginContainer extends React.Component {
                     </h3>
 
                     <EduIf condition={isPearDomain}>
-                      <br />
-                      <PsiSignInContainer>
+                      <PsiContainer>
                         <div id="psi_sign_in" />
-                      </PsiSignInContainer>
+                      </PsiContainer>
                     </EduIf>
 
                     {isDistrictPolicyAllowed(
@@ -489,7 +488,7 @@ const DistrictLogo = styled.img`
   width: 100%;
   object-fit: contain;
 `
-const PsiSignInContainer = styled.div`
+const PsiContainer = styled.div`
   width: 83%;
   margin: 0 auto;
 `

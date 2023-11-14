@@ -86,6 +86,7 @@ const LabelText = ({
 
 export const SignedStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
+  width = '100%',
   legendProps = {
     wrapperStyle: { top: -10 },
   },
@@ -178,10 +179,12 @@ export const SignedStackedBarChart = ({
 
   const updateTooltipPosition = (hoveredBarDimensions) => {
     if (!parentContainerRef.current) return
-    const { width, x, y } = hoveredBarDimensions
+    const { width: barWidth, x, y } = hoveredBarDimensions
 
     const tooltipProperties = {
-      '--first-tooltip-transform': `translate(${x + width / 2 - 100}px, calc(${
+      '--first-tooltip-transform': `translate(${
+        x + barWidth / 2 - 100
+      }px, calc(${
         y - spaceForLittleTriangle - spaceForPercentageLabel
       }px - 100% ))`,
       '--first-tooltip-top': '0',
@@ -339,7 +342,7 @@ export const SignedStackedBarChart = ({
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
       {preLabelContent}
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width={width} height={400}>
         <BarChart
           width={730}
           height={400}

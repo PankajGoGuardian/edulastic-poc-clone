@@ -10,7 +10,7 @@ import {
   greyThemeLighter,
   fadedBlack,
 } from '@edulastic/colors'
-import { Checkbox, Button } from 'antd'
+import { Checkbox, Button, Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 
 export const AssessmentNameContainer = styled.div`
@@ -214,10 +214,10 @@ export const StyledButton = styled(Button)`
     background: transparent;
   }
 `
-export const ReportContainer = styled.div`
+export const ClaimsRow = styled(Row)`
+  gap: 8px;
+  flex-wrap: nowrap;
   @media print {
-    width: 100%;
-    overflow: visible;
-    zoom: 50%;
+    flex-wrap: wrap;
   }
 `

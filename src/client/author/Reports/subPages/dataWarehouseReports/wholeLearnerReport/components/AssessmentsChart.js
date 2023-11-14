@@ -105,7 +105,11 @@ const getXTickTagText = (payload, _data) => {
   return _data[payload.index]?.externalTestType || ''
 }
 
+// print width for chart for A4 size & in landscape mode
+const PRINT_WIDTH = 1500
+
 const AssessmentsChart = ({
+  isPrinting,
   chartData,
   settings,
   selectedPerformanceBand,
@@ -152,6 +156,7 @@ const AssessmentsChart = ({
         Performance Summary across Assessments
       </SectionLabel>
       <SignedStackedBarChart
+        width={isPrinting ? PRINT_WIDTH : '100%'}
         data={data}
         settings={settings}
         barsData={

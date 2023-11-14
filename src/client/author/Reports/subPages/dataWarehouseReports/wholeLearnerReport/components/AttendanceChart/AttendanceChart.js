@@ -54,7 +54,11 @@ const CustomizedLabel = (props) => {
   )
 }
 
+// print width for chart for A4 size & in landscape mode
+const PRINT_WIDTH = 1500
+
 const AttendanceChart = ({
+  isPrinting,
   attendanceChartData,
   onResetClick = () => {},
   pageSize = 8,
@@ -183,7 +187,10 @@ const AttendanceChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer
+        width={isPrinting ? PRINT_WIDTH : '100%'}
+        height={400}
+      >
         <LineChart
           width={730}
           height={250}

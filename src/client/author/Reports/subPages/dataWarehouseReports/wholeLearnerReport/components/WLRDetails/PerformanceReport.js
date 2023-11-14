@@ -12,6 +12,7 @@ import { ChartPreLabelWrapper } from '../../../../../common/components/charts/st
 import { NoDataContainer } from '../../../../../common/styled'
 
 const PerformanceReport = ({
+  isPrinting,
   isAttendanceChartVisible,
   attendanceChartData,
   showInterventions,
@@ -43,6 +44,7 @@ const PerformanceReport = ({
       <EduIf condition={!isEmpty(chartData)}>
         <EduThen>
           <AssessmentsChart
+            isPrinting={isPrinting}
             chartData={chartData}
             selectedPerformanceBand={selectedPerformanceBand}
             showInterventions={showInterventions}
@@ -95,6 +97,7 @@ const PerformanceReport = ({
       </EduIf>
       <EduIf condition={isAttendanceChartVisible}>
         <AttendanceChart
+          isPrinting={isPrinting}
           attendanceChartData={attendanceChartData}
           showInterventions={showInterventions}
           interventionsData={attendanceInterventions}

@@ -53,7 +53,6 @@ import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
 import { computeChartNavigationLinks } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
-import { ReportContainer } from './common/styled'
 
 const { downloadCSV } = reportUtils.common
 
@@ -455,7 +454,7 @@ const WholeLearnerReport = ({
           fetchUpdateTagsData={fetchUpdateTagsData}
         />
       </SubHeader>
-      <ReportContainer>
+      <div>
         <EduIf condition={firstLoad}>
           <Spin size="large" />
         </EduIf>
@@ -502,6 +501,7 @@ const WholeLearnerReport = ({
                       settings={settings}
                     />
                     <WLRDetails
+                      isPrinting={isPrinting}
                       isAttendanceChartVisible={isAttendanceChartVisible}
                       attendanceChartData={attendanceChartData}
                       showInterventions={showInterventions}
@@ -542,7 +542,7 @@ const WholeLearnerReport = ({
             </EduIf>
           </EduElse>
         </EduIf>
-      </ReportContainer>
+      </div>
     </>
   )
 }

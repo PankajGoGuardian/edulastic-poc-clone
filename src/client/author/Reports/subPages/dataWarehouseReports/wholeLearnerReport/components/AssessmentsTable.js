@@ -15,7 +15,7 @@ import {
 
 import { tableColumnsData } from '../utils'
 import LargeTag from '../../common/components/LargeTag'
-import { AssessmentNameContainer } from '../common/styled'
+import { AssessmentNameContainer, ClaimsRow } from '../common/styled'
 import SectionLabel from '../../../../common/components/SectionLabel'
 
 const getTableColumns = (isSharedReport) => {
@@ -120,11 +120,7 @@ const getTableColumns = (isSharedReport) => {
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
     _columns[claimsInfoIdx].render = (claimsInfo) => (
-      <Row
-        type="flex"
-        justify="flex-start"
-        style={{ gap: '8px', flexWrap: 'nowrap' }}
-      >
+      <ClaimsRow type="flex" justify="flex-start">
         {!isEmpty(claimsInfo)
           ? Object.values(claimsInfo).map((claim) => (
               <LargeTag
@@ -142,7 +138,7 @@ const getTableColumns = (isSharedReport) => {
               />
             ))
           : '-'}
-      </Row>
+      </ClaimsRow>
     )
   })
 }

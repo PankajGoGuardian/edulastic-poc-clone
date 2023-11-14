@@ -8,6 +8,7 @@ import { FilledTabBar } from './FilledTabBar'
 const { TabPane } = Tabs
 
 const WLRDetails = ({
+  isPrinting,
   isAttendanceChartVisible,
   attendanceChartData,
   showInterventions, // bool: show interventions in performance report
@@ -45,6 +46,7 @@ const WLRDetails = ({
       label: 'Performance',
       children: (
         <PerformanceReport
+          isPrinting={isPrinting}
           isAttendanceChartVisible={isAttendanceChartVisible}
           attendanceChartData={attendanceChartData}
           showInterventions={showInterventions}

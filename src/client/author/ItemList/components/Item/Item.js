@@ -627,6 +627,7 @@ class Item extends Component {
                   loading={selectedId === item._id}
                   onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
                   isAddOrRemove={this.isAddOrRemove}
+                  data-cy="addRemoveButton"
                 >
                   {this.isAddOrRemove ? 'ADD' : `${groupName}`}
                   {this.isAddOrRemove ? '' : <Icon type="close" />}
@@ -651,6 +652,7 @@ class Item extends Component {
                         isAddOrRemove={this.isAddOrRemove}
                         className="disabled"
                         noHover
+                        data-cy="addRemoveButton"
                       >
                         {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
                       </AddRemoveBtn>
@@ -664,6 +666,7 @@ class Item extends Component {
                         this.handleAddRemove(item, this.isAddOrRemove)
                       }}
                       isAddOrRemove={this.isAddOrRemove}
+                      data-cy="addRemoveButton"
                     >
                       {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
                     </AddRemoveBtn>
@@ -750,6 +753,7 @@ class Item extends Component {
                         this.handleAddRemove(item, this.isAddOrRemove)
                       }}
                       isAddOrRemove={this.isAddOrRemove}
+                      data-cy="addRemoveButton"
                     >
                       {this.isAddOrRemove ? 'ADD' : `${groupName}`}
                       {this.isAddOrRemove ? '' : <Icon type="close" />}
@@ -761,6 +765,7 @@ class Item extends Component {
                         this.handleAddRemove(item, this.isAddOrRemove)
                       }}
                       isAddOrRemove={this.isAddOrRemove}
+                      data-cy="addRemoveButton"
                     >
                       {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
                     </AddRemoveBtn>

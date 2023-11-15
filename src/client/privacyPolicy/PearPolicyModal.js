@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Modal, Spin } from 'antd'
 import { Checkbox, EduButton, EduIf } from '@edulastic/common'
-import { AssessPeardeckOnLightBgLogo } from '@edulastic/common/src/components/EduLogo'
+import { AssessPeardeckLogo } from '@edulastic/common/src/components/EduLogo'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 const EULA_TERMS_URL = 'https://www.peardeck.com/policies/product-terms-eula'
@@ -27,7 +27,7 @@ const PearPolicyModal = ({
       <Spin spinning={isLoading}>
         <ModalContentWrapper>
           <UpperContainer>
-            <AssessPeardeckOnLightBgLogo isBgLight height="35px" />
+            <AssessPeardeckLogo isBgLight height="35px" />
             <StyledHeader>Welcome to Pear Assess!</StyledHeader>
             <p>Before we proceed, please review the following terms</p>
           </UpperContainer>

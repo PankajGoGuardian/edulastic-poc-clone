@@ -319,6 +319,15 @@ const ManageSubscriptionsByLicenses = ({
   }
   const closeAddSubscriptionModal = () => {
     setShowAddSubscriptionModal(false)
+    setFieldData({
+      ...fieldData,
+      districtId: '',
+      districtName: '',
+      managerEmail: [],
+      customerSuccessManager: '',
+      opportunityId: '',
+      notes: '',
+    })
   }
 
   const handleDeleteLicense = () => {
@@ -476,6 +485,11 @@ const ManageSubscriptionsByLicenses = ({
           handleSearch={handleSearch}
           fieldData={fieldData}
           setFieldData={setFieldData}
+          allowManageSubscription
+          deleteLicense={deleteLicense}
+          mode="single"
+          searchType={searchType}
+          page={page}
         />
       )}
     </>

@@ -25,6 +25,18 @@ const ManageSubscriptionByDistrictAndUserId = ({
   setLicenseDetails,
   licenseDetails = {},
   userId,
+  fieldData,
+  setFieldData,
+  districtList,
+  isFetchingOrganization,
+  handleSelectDistrict,
+  handleSearch,
+  deleteLicense,
+  addSubscription,
+  searchRequest,
+  searchType,
+  page,
+  managerEmail = '',
 }) => {
   const [isVisible, setVisible] = useState(false)
 
@@ -72,7 +84,7 @@ const ManageSubscriptionByDistrictAndUserId = ({
     [districtId, userId]
   )
 
-  const { data, loading } = useApiQuery(
+  const { data, loading, error } = useApiQuery(
     manageSubscriptionsApi.getAllLicensedUserInDistrict,
     [query],
     {
@@ -94,16 +106,25 @@ const ManageSubscriptionByDistrictAndUserId = ({
       }
       setLicenseDetails({ loading, ...licenses })
     }
+    if (error) {
+      const message = error?.response?.data?.message || 'Something went wrong'
+      notification({ type: 'error', msg: message })
+      setLicenseDetails({ loading, premiumQuantity: 0, error: true })
+    }
   }, [data, loading])
 
-  const handleAddSubscription = () => {
+  const closeSubscriptionModal = () => {
     setVisible(false)
+    setFieldData((prev) => ({
+      ...prev,
+      managerEmail: [managerEmail],
+    }))
   }
 
   const title = (
     <TitleContainer>
       <span>Manage Subscription</span>
-      <EduButton onClick={handleAddSubscription}>Add Subscription</EduButton>
+      <EduButton onClick={closeSubscriptionModal}>Add Subscription</EduButton>
     </TitleContainer>
   )
 
@@ -114,7 +135,7 @@ const ManageSubscriptionByDistrictAndUserId = ({
           <Message isCenter>Please wait,fetching license details...</Message>
         </EduThen>
         <EduElse>
-          <EduIf condition={licenseDetails?.licenseIds?.length > 0}>
+          <EduIf condition={licenseDetails?.licenseIds?.length > 0 && userId}>
             <span>
               This organization has already some subscriptions click
               <ManageSubscriptionText onClick={() => setVisible(true)}>
@@ -129,7 +150,7 @@ const ManageSubscriptionByDistrictAndUserId = ({
       <ManageSubscriptionModal
         visible={isVisible}
         title={title}
-        onCancel={() => setVisible(false)}
+        onCancel={closeSubscriptionModal}
         fullscreen
         destroyOnClose
         footer={null}
@@ -140,6 +161,17 @@ const ManageSubscriptionByDistrictAndUserId = ({
             licenseIds={licenseDetails?.licenseIds}
             districtId={districtId}
             licenseOwnerId={licenseDetails?.ownerId}
+            fieldData={fieldData}
+            setFieldData={setFieldData}
+            isFetchingOrganization={isFetchingOrganization}
+            districtList={districtList}
+            handleSelectDistrict={handleSelectDistrict}
+            handleSearch={handleSearch}
+            deleteLicense={deleteLicense}
+            addSubscription={addSubscription}
+            searchRequest={searchRequest}
+            searchType={searchType}
+            page={page}
           />
         </SubscriptionContainer>
       </ManageSubscriptionModal>

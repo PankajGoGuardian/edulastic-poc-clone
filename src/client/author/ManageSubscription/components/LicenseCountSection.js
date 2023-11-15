@@ -59,13 +59,12 @@ const LicenseCountSection = ({
     setIsEdited(false)
     setFieldData((prevData) => ({
       ...prevData,
-      [currentLicense.productType]: '',
+      [currentLicense.productType]: 0,
       customerSuccessManager: '',
       opportunityId: '',
       notes: '',
-      managerEmail: [],
-      subEndDate: '',
-      subStartDate: '',
+      subStartDate: moment().valueOf(),
+      subEndDate: moment().add(365, 'days').valueOf(),
     }))
   }
   const clickOnEdit = (license) => {

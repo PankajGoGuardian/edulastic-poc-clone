@@ -43,6 +43,7 @@ import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
 import { isPearDomain } from '../../../../utils/pear'
+import { PsiContainer } from '../../Signup/styled'
 
 const FormItem = Form.Item
 
@@ -510,11 +511,6 @@ const ThirdPartyLoginBtn = styled(Col)`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
   }
-`
-
-const PsiContainer = styled.div`
-  width: 83%;
-  margin: 0 auto;
 `
 
 const FormBody = styled(Row)`

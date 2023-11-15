@@ -408,7 +408,11 @@ class StudentSignup extends React.Component {
           <InfoIcon span={3}>
             <IconLock color={white} />
           </InfoIcon>
-          <Col span={21}>{t('component.signup.infotext')}</Col>
+          <Col span={21}>
+            {isPearDomain
+              ? t('component.signup.pearAssessInfotext')
+              : t('component.signup.infotext')}
+          </Col>
         </InfoBox>
       </FormHead>
     )

@@ -665,3 +665,12 @@ export const handlePreventKeyDown = (e) => {
     return false
   }
 }
+
+export const handleBrowserKeyDown = (e) => {
+  console.log('Keydown', e.key)
+  if (['BrowserBack', 'BrowserForward', 'BrowserRefresh'].includes(e.key)) {
+    e.preventDefault()
+    e.stopPropagation()
+    return false
+  }
+}

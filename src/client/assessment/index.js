@@ -23,6 +23,7 @@ import {
 } from './selectors/test'
 import RequirePassword from './RequirePassword'
 import { showTestInfoModal } from '../publicTest/utils'
+import { handleBrowserKeyDown } from './utils/helpers'
 
 const isPublic = window.location.href.indexOf('/public/') > -1
 
@@ -132,6 +133,7 @@ const AssessmentPlayer = ({
     window.removeEventListener('popstate', window.confirmBeforeGoBack)
     if (!demo && !preview) {
       window.addEventListener('popstate', window.confirmBeforeGoBack)
+      window.addEventListener('keydown', handleBrowserKeyDown)
     }
     return () => {
       if (!demo && !preview && window.confirmBeforeGoBack) {
@@ -140,6 +142,7 @@ const AssessmentPlayer = ({
           delete window.confirmBeforeGoBack
         }, 1000)
       }
+      window.removeEventListener('keydown', handleBrowserKeyDown)
       window.removeEventListener('beforeunload', confirmBeforeQuitting)
     }
   }, [])

@@ -95,6 +95,7 @@ import {
   pearIdentifyProduct,
   pearIdentifyUser,
 } from '../utils/pear'
+import RedirectToSSO from './author/RedirectToSSO'
 
 const {
   ASSESSMENT,
@@ -763,6 +764,11 @@ class App extends Component {
                   redirectRoute !== '' ? (
                     <Redirect exact to={redirectRoute} />
                   ) : null}
+                  <Route
+                    path="/redirect-sso"
+                    component={RedirectToSSO}
+                    redirectPath={defaultRoute}
+                  />
                   <PrivateRoute
                     path="/author"
                     component={Author}

@@ -1433,6 +1433,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/getstarted') {
     return `/getStarted${search}`
   }
+  if (pathname === '/redirect-sso') {
+    return `/redirect-sso${search}`
+  }
   if (pathname === '/signup') {
     return `/signup${search}`
   }

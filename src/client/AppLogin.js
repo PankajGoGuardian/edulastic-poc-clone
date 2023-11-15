@@ -5,6 +5,7 @@ import { Spin } from 'antd'
 import { WithResources, notification } from '@edulastic/common'
 import appConfig from '../app-config'
 import { isPearDomain, pearIdentifyProduct } from '../utils/pear'
+import RedirectToSSO from './author/RedirectToSSO'
 
 if (
   window.location.hash.includes('#renderResource/close/') ||
@@ -67,6 +68,7 @@ const AppLogin = () => {
       }}
     >
       <Switch>
+        <Route path="/redirect-sso" component={RedirectToSSO} />
         <Route exact path="/login" component={Auth} />
         <Route exact path="/resetPassword/" component={ResetPassword} />
         <Route

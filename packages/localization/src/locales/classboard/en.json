@@ -16,7 +16,8 @@
     "bubbleScanRandomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, bubble sheet actions are unavailable",
     "bubbleScanAssignmentCanOpenMessage": "OPEN Assignment to Scan Responses",
     "bubbleScanAssignmentPausedMessage": "RESUME Assignment to Scan Responses",
-    "bubbleScanAssignmentDoneMessage": "Assignment is not open",
+    "bubbleScanAssignmentDoneMessage": "Scan disabled as Assignment is closed. Please contact support to reopen.",
+    "bubbleSheetGenerateAssignmentDoneMessage": "Generate sheet disabled as Assignment is closed. Please contact support to reopen.",
     "uqaArchiveMessage": "Question level data for this assignment has been archived. Please contact support@edulastic.com for assistance."
   }
 }

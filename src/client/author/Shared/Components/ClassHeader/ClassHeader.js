@@ -765,7 +765,7 @@ class ClassHeader extends Component {
                   hasRandomQuestions
                     ? t('common.bubbleScanRandomItemsDisableMessage')
                     : isAssignmentDone
-                    ? t('common.bubbleScanAssignmentDoneMessage')
+                    ? t('common.bubbleSheetGenerateAssignmentDoneMessage')
                     : null
                 }
                 placement="right"

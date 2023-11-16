@@ -32,7 +32,7 @@ import {
   mobileWidthLarge,
   themeColorBlue,
 } from '@edulastic/colors'
-import { AssessPeardeckLogo } from '@edulastic/common/src/components/EduLogo'
+import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { toggleSideBarAction } from './ducks'
 import {
   logoutAction,
@@ -255,7 +255,9 @@ class SideMenu extends Component {
                 !isMobile &&
                 (isPearDomain ? <AssessPeardeckLogoCompact /> : <LogoCompact />)
               ) : isPearDomain ? (
-                <AssessPeardeckLogo height={isMobile ? '16px' : '30px'} />
+                <AssessPeardeckLabelOnDarkBgLogo
+                  height={isMobile ? '16px' : '36px'}
+                />
               ) : (
                 <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
               )}

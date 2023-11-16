@@ -73,7 +73,7 @@ const CreateAssignmentModal = ({
             <Title>Pre-built assessment </Title>
             <DottedLine margin="0px 0px 30px 0px" />
             <InfoText>
-              Select a pre-built assessment from <b>100k+ assesments</b> in the
+              Select a pre-built assessment from <b>100k+ assesments</b> in the{' '}
               {pearOrEdulasticText} Library.
             </InfoText>
           </Col>

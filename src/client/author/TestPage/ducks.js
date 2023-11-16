@@ -294,6 +294,8 @@ export const UPDATE_GROUP_DATA = '[tests] update group data'
 export const ADD_NEW_GROUP = '[tests] add new group'
 export const SET_CURRENT_GROUP_INDEX = '[tests] set current group index'
 export const DELETE_ITEMS_GROUP = '[tests] delete items group'
+export const DELETE_ITEM_GROUP_BY_GROUP_INDEX =
+  '[tests] delete item group by group index'
 export const ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST =
   '[test] add items to autoselect groups request'
 export const ADD_ITEMS_TO_AUTOSELECT_GROUP =
@@ -401,6 +403,9 @@ export const updateGroupDataAction = createAction(UPDATE_GROUP_DATA)
 export const addNewGroupAction = createAction(ADD_NEW_GROUP)
 export const setCurrentGroupIndexAction = createAction(SET_CURRENT_GROUP_INDEX)
 export const deleteItemsGroupAction = createAction(DELETE_ITEMS_GROUP)
+export const deleteItemGroupByGroupIndexAction = createAction(
+  DELETE_ITEM_GROUP_BY_GROUP_INDEX
+)
 export const addItemsToAutoselectGroupsRequestAction = createAction(
   ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST
 )
@@ -1548,6 +1553,17 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           itemGroups: state.entity.itemGroups.filter(
             (g) => g.groupName !== payload
+          ),
+        },
+      }
+    case DELETE_ITEM_GROUP_BY_GROUP_INDEX:
+      return {
+        ...state,
+        updated: true,
+        entity: {
+          ...state.entity,
+          itemGroups: state.entity.itemGroups.filter(
+            (_, index) => index !== payload
           ),
         },
       }

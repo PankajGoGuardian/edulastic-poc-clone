@@ -15,7 +15,7 @@ import Breadcrumb from '../../../src/components/Breadcrumb'
 import {
   addNewGroupAction,
   createNewStaticGroup,
-  deleteItemsGroupAction,
+  deleteItemGroupByGroupIndexAction,
   getTestEntitySelector,
   hasSectionsSelector,
   updateGroupDataAction,
@@ -45,7 +45,7 @@ const SectionsTestGroupItems = ({
   updateGroupData,
   addNewGroup,
   removeTestItems,
-  deleteItemsGroup,
+  deleteGroupByGroupIndex,
   test,
   history,
   currentGroupIndex,
@@ -122,8 +122,8 @@ const SectionsTestGroupItems = ({
     if (value === 'YES') {
       if (confirmModalCategory === 'DELETE GROUP') {
         const groupToDelete = test.itemGroups[deleteGroupIndex]
-        // deleteItemsGroup => deletes the group and updates the index for remaining
-        deleteItemsGroup(groupToDelete.groupName)
+        // deleteGroupByGroupIndex => deletes the group and updates the index for remaining
+        deleteGroupByGroupIndex(deleteGroupIndex)
         // removeTestItems => removes selected test items for the deleted group
         removeTestItems(groupToDelete.items.map((i) => i._id))
         // if the group being edited is deleted, reset the edit details
@@ -347,7 +347,7 @@ const enhance = compose(
       updateGroupData: updateGroupDataAction,
       addNewGroup: addNewGroupAction,
       removeTestItems: removeTestItemsAction,
-      deleteItemsGroup: deleteItemsGroupAction,
+      deleteGroupByGroupIndex: deleteItemGroupByGroupIndexAction,
       setTestData: setTestDataAction,
     }
   )

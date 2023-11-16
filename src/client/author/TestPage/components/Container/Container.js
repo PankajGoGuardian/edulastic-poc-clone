@@ -762,7 +762,7 @@ class Container extends PureComponent {
         Apart from dynamic and sections test, it is not required to validate the item groups.
         Separate validate group method is created for sections test as the conditions are different.
     */
-    if (!isDynamicTest && (hasSections || isCreateNewItem)) {
+    if (hasSections || (!isDynamicTest && (!hasSections || isCreateNewItem))) {
       return true
     }
     if (currentGroupIndex !== null) {

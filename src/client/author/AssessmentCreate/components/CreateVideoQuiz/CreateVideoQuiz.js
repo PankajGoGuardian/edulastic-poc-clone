@@ -1,76 +1,54 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-import {
-  CustomModalStyled,
-  EduButton,
-  FieldLabel,
-  Image,
-  TextInputStyled,
-} from '@edulastic/common'
+import { EduElse, EduIf, EduThen, FlexContainer } from '@edulastic/common'
 
-import { themeColor } from '@edulastic/colors'
-import { Col, Form, Row, Spin } from 'antd'
-import styled from 'styled-components'
-import { IconPlayButton } from '@edulastic/icons'
+import { Icon, Spin, Switch, Tooltip } from 'antd'
+
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import DefaultThumbnail from '../../../src/assets/video-quiz/default-thumbnail.png'
+import IconDailyMotion from '@edulastic/icons/src/IconDailyMotion'
+import IconYoutube from '@edulastic/icons/src/IconYoutube'
+import IconVimeo from '@edulastic/icons/src/IconVimeo'
+import IconTwitch from '@edulastic/icons/src/IconTwitch'
+
 import {
   getYoutubeThumbnailSelector,
   getYoutubeThumbnailAction,
   setYoutubeThumbnailAction,
+  isYtLoadingSelector,
 } from '../../../TestPage/ducks'
+
 import {
-  extractVideoId,
-  isValidVideoUrl,
-} from '../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
-import { navigationState } from '../../../src/constants/navigation'
-import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
+  isVideoQuizAndAIEnabledSelector,
+} from '../../../src/selectors/user'
 
-const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
+import useVideoAssessmentUtils from './hooks/useVideoAssessmentUtils'
+import VideoList from './Components/VideoList'
+import {
+  SearchBoxBody,
+  SearchBoxFooter,
+  FooterText,
+  FooterWrapper,
+  SafeSearchText,
+  SearchBoxContainer,
+  SearchBoxWrapper,
+  SearchInput,
+  StyledSwitchText,
+} from './styledComponents/searchBox'
+import {
+  VideoListWrapper,
+  SubHeader,
+  LightSubHeader,
+  SpinLoader,
+} from './styledComponents/videoList'
+import { getAssessmentCreatingSelector } from '../../ducks'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
+import { trimTextToGivenLength } from './utils'
+import { CommonInlineWrapper, MainWrapper } from './styledComponents/common'
 
-const VideoQuickGuide = () => {
-  const [showQuickTour, setShowQuickTour] = useState(false)
-
-  return (
-    <>
-      <StyledHeading>
-        Create Video Quiz
-        <StyledEduButton
-          onClick={() => setShowQuickTour(true)}
-          height="20px"
-          fontSize="9px"
-          type="secondary"
-        >
-          <StyledIconPlayButton height={10} width={10} />
-          How it works?
-        </StyledEduButton>
-      </StyledHeading>
-      <CustomModalStyled
-        visible={showQuickTour}
-        onCancel={() => setShowQuickTour(false)}
-        title="Get Started with VideoQuiz"
-        footer={null}
-        destroyOnClose
-        width="768px"
-      >
-        <iframe
-          title="Get Started with VideoQuiz"
-          width="100%"
-          height="400px"
-          src={QUICK_TOUR_LINK}
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          frameBorder="0"
-          allowFullScreen
-          scrolling="no"
-        />
-      </CustomModalStyled>
-    </>
-  )
-}
-
-// Takes video url from user and validate same for creating video quiz
 const CreateVideoQuiz = ({
   onValidUrl,
   ytThumbnail,
@@ -78,126 +56,182 @@ const CreateVideoQuiz = ({
   setYoutubeThumbnail,
   isVideoQuizAndAIEnabled,
   history,
+  interestedGrades,
+  interestedSubjects,
+  isThumbnailLoading,
+  creatingAssessment,
+  scrollerRef,
 }) => {
-  const [linkValue, setLinkValue] = useState('')
-  const [thumbnail, setThumbnail] = useState(DefaultThumbnail)
-  const hasError = !isValidVideoUrl(linkValue)
+  const {
+    linkValue,
+    setLinkValue,
+    textIsUrl,
+    videos,
+    isModerateRestriction,
+    setIsModerateRestriction,
+    searchedText,
+    isLoading,
+    handleOnSearch,
+    handleOnChange,
+    loaderRef,
+  } = useVideoAssessmentUtils({
+    setYoutubeThumbnail,
+    ytThumbnail,
+    isVideoQuizAndAIEnabled,
+    getYoutubeThumbnail,
+    onValidUrl,
+    history,
+    interestedGrades,
+    interestedSubjects,
+    scrollerRef,
+  })
 
-  useEffect(() => {
-    setYoutubeThumbnail('')
-    return () => {
-      setYoutubeThumbnail('')
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isVideoQuizAndAIEnabled) {
-      history.push({
-        pathname: '/author/subscription',
-        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
-      })
-    }
-  }, [isVideoQuizAndAIEnabled])
-
-  useEffect(() => {
-    if (!hasError && linkValue.length > 0) {
-      const videoId = extractVideoId(linkValue)
-      if (videoId) {
-        getYoutubeThumbnail(videoId)
-      } else {
-        onValidUrl(linkValue)
-      }
-    }
-  }, [linkValue, hasError])
-
-  useEffect(() => {
-    if (linkValue.length && ytThumbnail.length) {
-      setThumbnail(ytThumbnail)
-      onValidUrl?.(linkValue, ytThumbnail)
-    }
-  }, [ytThumbnail])
-
-  const errorMessage = () => {
-    if (linkValue && hasError) {
-      return `This link can't be played.`
-    }
-
-    return undefined
-  }
   if (!isVideoQuizAndAIEnabled) {
     return null
   }
 
+  const showSpinnerVideoList = isThumbnailLoading || creatingAssessment
+
+  const showNoData = !isLoading && linkValue && !textIsUrl && !videos.length
+
+  const disableSearchInput = isThumbnailLoading || creatingAssessment
+
+  const disableSafeSearchSwitch =
+    isLoading || isThumbnailLoading || creatingAssessment || !videos.length
+
+  const showLoaderButton = isLoading
+
   return (
-    <Row type="flex" justify="center" align="middle">
-      <StyledCol>
-        <Spin spinning={!hasError}>
-          <VideoQuickGuide />
-          <br />
-          <div>
-            <StyledThumbnailImage alt="video-quiz" src={thumbnail} />
-          </div>
-          <br />
-          <Form colon={false}>
-            <FieldLabel>ENTER URL</FieldLabel>
-            <Form.Item
-              validateStatus={hasError ? 'error' : 'success'}
-              help={errorMessage()}
+    <FlexContainer width="100%" justifyContent="center">
+      <MainWrapper>
+        <SearchBoxWrapper flexDirection="column" alignItems="center">
+          <SearchBoxContainer>
+            <SearchBoxBody>
+              <FlexContainer
+                justifyContent="flex-start"
+                alignItems="center"
+                height="100%"
+              >
+                <CommonInlineWrapper padding="0 0 0 4rem" width="45%">
+                  <SubHeader mb="0.5rem">
+                    Search YouTube/ Paste Video URL
+                  </SubHeader>
+                  <SearchInput
+                    allowClear
+                    data-cy="videolink"
+                    onChange={handleOnChange}
+                    onSearch={(value) => handleOnSearch(value)}
+                    value={linkValue}
+                    placeholder="SEARCH YOUTUBE OR ENTER URL"
+                    disabled={disableSearchInput}
+                    prefix={
+                      <Icon
+                        style={{ fontSize: '1rem' }}
+                        type="youtube"
+                        theme="filled"
+                      />
+                    }
+                    enterButton
+                  />
+                </CommonInlineWrapper>
+              </FlexContainer>
+            </SearchBoxBody>
+            <SearchBoxFooter justifyContent="flex-start">
+              <FooterWrapper>
+                <FlexContainer mr="0.5rem" alignItems="center">
+                  <FooterText>Video URLs supported from</FooterText>
+                </FlexContainer>
+                <FlexContainer mr="0.5rem" alignItems="center">
+                  <IconYoutube />
+                </FlexContainer>
+                <FlexContainer mr="0.5rem" alignItems="center">
+                  <IconVimeo />
+                </FlexContainer>
+                <FlexContainer mr="0.5rem" alignItems="center">
+                  <IconTwitch />
+                </FlexContainer>
+                <FlexContainer mr="0.5rem" alignItems="center">
+                  <IconDailyMotion />
+                </FlexContainer>
+              </FooterWrapper>
+            </SearchBoxFooter>
+          </SearchBoxContainer>
+
+          <EduIf condition={searchedText}>
+            <FlexContainer
+              padding="20px 0px"
+              width="100%"
+              justifyContent="center"
             >
-              <TextInputStyled
-                showArrow
-                data-cy="videolink"
-                onChange={(e) => {
-                  setLinkValue(e.target.value)
-                }}
-                size="large"
-                placeholder="Eg : www.youtube.com/videoId"
-                margin="0px 0px 15px"
-              />
-            </Form.Item>
-          </Form>
-        </Spin>
-      </StyledCol>
-    </Row>
+              <FlexContainer width="90%" justifyContent="space-between">
+                <FlexContainer justifyContent="flex-start">
+                  <LightSubHeader>
+                    Showing Search Results for&nbsp;
+                  </LightSubHeader>
+                  <Tooltip
+                    title={`${searchedText}`}
+                    mouseEnterDelay={1}
+                    mouseLeaveDelay={1}
+                    placement="bottom"
+                  >
+                    <SubHeader maxWidth="100%">
+                      {`"${trimTextToGivenLength(searchedText, 50)}"`}
+                    </SubHeader>
+                  </Tooltip>
+                </FlexContainer>
+                <span>
+                  <SafeSearchText>Safe Search&nbsp;</SafeSearchText>
+                  <Tooltip
+                    title={
+                      isModerateRestriction
+                        ? 'Restricted mode: None'
+                        : 'Restricted mode: Moderate'
+                    }
+                    placement="bottom"
+                    mouseEnterDelay={1}
+                    mouseLeaveDelay={1}
+                  >
+                    <Switch
+                      checked={isModerateRestriction}
+                      onChange={(checked) => setIsModerateRestriction(checked)}
+                      disabled={disableSafeSearchSwitch}
+                    />
+                  </Tooltip>
+                  &nbsp;
+                  <StyledSwitchText>
+                    {isModerateRestriction ? 'On' : 'Off'}
+                  </StyledSwitchText>
+                </span>
+              </FlexContainer>
+            </FlexContainer>
+          </EduIf>
+        </SearchBoxWrapper>
+
+        <SpinLoader spinning={showSpinnerVideoList}>
+          <div>
+            <EduIf condition={videos.length}>
+              <EduThen>
+                <VideoListWrapper justifyContent="center">
+                  <VideoList videos={videos} setLinkValue={setLinkValue} />
+                </VideoListWrapper>
+              </EduThen>
+              <EduElse>
+                <EduIf condition={showNoData}>
+                  <NoDataNotification heading="No results found" />
+                </EduIf>
+              </EduElse>
+            </EduIf>
+          </div>
+        </SpinLoader>
+        <FlexContainer justifyContent="center" mt="20px" ref={loaderRef}>
+          <EduIf condition={showLoaderButton}>
+            <Spin spinning={isLoading} />
+          </EduIf>
+        </FlexContainer>
+      </MainWrapper>
+    </FlexContainer>
   )
 }
-
-const StyledCol = styled(Col)`
-  width: 390px;
-`
-
-const StyledHeading = styled.div`
-  font-size: 14px;
-  font-weight: bold;
-`
-
-const StyledThumbnailImage = styled(Image)`
-  width: 100%;
-  border-radius: 8px;
-  height: 240px;
-`
-
-const StyledEduButton = styled(EduButton)`
-  font-weight: bold;
-  top: -2px;
-  display: inline;
-  color: ${themeColor};
-  padding: 0px;
-  text-transform: capitalize;
-
-  &:hover {
-    color: ${themeColor};
-  }
-  &:focus {
-    color: ${themeColor};
-  }
-`
-
-const StyledIconPlayButton = styled(IconPlayButton)`
-  position: relative;
-  top: 2px;
-  margin-right: 0px !important;
-`
 
 const enhance = compose(
   withRouter,
@@ -205,6 +239,10 @@ const enhance = compose(
     (state) => ({
       ytThumbnail: getYoutubeThumbnailSelector(state),
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
+      creatingAssessment: getAssessmentCreatingSelector(state),
+      isThumbnailLoading: isYtLoadingSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

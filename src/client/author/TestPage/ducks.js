@@ -841,6 +841,11 @@ export const getTestsLoadingSelector = createSelector(
   (state) => state.loading
 )
 
+export const isYtLoadingSelector = createSelector(
+  stateSelector,
+  (state) => state.ytloading
+)
+
 export const getAutoSelectItemsLoadingStatusSelector = createSelector(
   stateSelector,
   (state) => state.isFetchingAutoselectItems

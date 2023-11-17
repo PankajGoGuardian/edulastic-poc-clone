@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 
 import { withNamespaces } from 'react-i18next'
+import { white } from '@edulastic/colors'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import CreationOptions from '../CreationOptions/CreationOptions'
 import DropArea from '../DropArea/DropArea'
@@ -77,6 +78,8 @@ class Container extends React.Component {
   }
 
   cancelUpload
+
+  scrollerRef = React.createRef()
 
   componentDidMount() {
     const { location, receiveTestById } = this.props
@@ -170,6 +173,14 @@ class Container extends React.Component {
     ) {
       method = creationMethods.VIDEO
       newBreadcrumb.push(snapquizVideoBreadcrumb)
+
+      Object.assign(breadcrumbStyle, {
+        position: 'sticky',
+        top: '0px',
+        zIndex: 1,
+        background: white,
+        padding: '20px 0px',
+      })
     } else if (
       location &&
       location.pathname &&
@@ -181,6 +192,9 @@ class Container extends React.Component {
     if (assessmentLoading) {
       return <Spin />
     }
+
+    /** Todo:  should be coming from component props */
+    const isVideoQuiz = location?.pathname?.includes('videoquiz')
 
     return (
       <>
@@ -197,7 +211,10 @@ class Container extends React.Component {
           />
         )}
         <MainHeader headingText={t('common.newTest')} />
-        <MainContentWrapper>
+        <MainContentWrapper
+          padding={isVideoQuiz && '0px 30px 30px 30px'}
+          ref={this.scrollerRef}
+        >
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
           {!method && <CreationOptions />}
           {method === creationMethods.PDF && (
@@ -213,7 +230,10 @@ class Container extends React.Component {
             />
           )}
           <EduIf condition={method === creationMethods.VIDEO}>
-            <CreateVideoQuiz onValidUrl={this.handleNext} />
+            <CreateVideoQuiz
+              onValidUrl={this.handleNext}
+              scrollerRef={this.scrollerRef}
+            />
           </EduIf>
         </MainContentWrapper>
       </>

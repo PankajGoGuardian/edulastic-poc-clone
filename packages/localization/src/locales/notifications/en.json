@@ -2207,6 +2207,14 @@
     "message": "Error in getting the Immersive Reader",
     "description": ""
   },
+  "youtubeSearchApiError": {
+    "message": "Error in getting youtube videos",
+    "description": ""
+  },
+  "creatingTestForSelectedVideo": {
+    "message": "Creating test for selected video",
+    "description": ""
+  },
   "multipleEmailIdError": {
     "message": "Atleast one of the given input email Id is invalid.",
     "description": ""

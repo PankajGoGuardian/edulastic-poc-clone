@@ -237,6 +237,13 @@ const getCDNOrigin = () => {
 
 const edYouTubePlayerKey = process.env.REACT_APP_ED_YOUTUBE_PLAYER_KEY
 
+const videoQuizDefaultCollection = {
+  collectionId: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_ID,
+  collectionName: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_NAME,
+  collectionBucketId: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_BUCKET_ID,
+  collectionType: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_TYPE,
+}
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -276,4 +283,5 @@ export default {
   edYouTubePlayerKey,
   pearScriptPath,
   pearScriptDomainIdentifier,
+  videoQuizDefaultCollection,
 }

@@ -2,10 +2,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { createPortal } from 'react-dom'
 import PropTypes from 'prop-types'
 import Editor from 'react-froala-wysiwyg'
 import FroalaEditor from 'froala-editor'
 import { withTheme } from 'styled-components'
+import { get } from 'lodash'
 import { notification, LanguageContext } from '@edulastic/common'
 import { aws, math, appLanguages } from '@edulastic/constants'
 import { withMathFormula } from '../HOC/withMathFormula'
@@ -45,6 +47,7 @@ import {
   replaceLatexesWithMathHtml,
   replaceMathHtmlWithLatexes,
 } from '../utils/mathUtils'
+import AudioPluginContainer from './FroalaPlugins/AudioPluginContainer'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -79,6 +82,7 @@ const CustomEditor = ({
   editorHeight,
   allowQuickInsert = true,
   unsetMaxWidth = false,
+  isPremiumUser,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -92,6 +96,7 @@ const CustomEditor = ({
   const [prevValue, setPrevValue] = useState('')
   const [configState, setConfigState] = useState(null)
   const [mathField, setMathField] = useState(null)
+  const [audioElement, setAudioElement] = useState(null)
   const { currentLanguage } = useContext(LanguageContext)
   const EditorRef = useRef(null)
 
@@ -101,25 +106,34 @@ const CustomEditor = ({
     'STD',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
+
   const toolbarButtonsMD = getToolbarButtons(
     'MD',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const toolbarButtonsSM = getToolbarButtons(
     'SM',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const toolbarButtonsXS = getToolbarButtons(
     'XS',
     toolbarSize,
     additionalToolbarOptions,
-    buttons
+    buttons,
+    null,
+    isPremiumUser
   )
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
   const initialConfig = Object.assign(
@@ -274,6 +288,9 @@ const CustomEditor = ({
               return
             }
           }
+        },
+        'audio.insert': function (audio) {
+          setAudioElement(audio)
         },
         'video.beforeUpload': function (video) {
           if (
@@ -502,28 +519,32 @@ const CustomEditor = ({
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsMD = getToolbarButtons(
       'MD',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsSM = getToolbarButtons(
       'SM',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
     const _toolbarButtonsXS = getToolbarButtons(
       'XS',
       toolbarSize,
       additionalToolbarOptions,
       buttons,
-      buttonCounts
+      buttonCounts,
+      isPremiumUser
     )
 
     const updatedConfig = {
@@ -616,6 +637,11 @@ const CustomEditor = ({
 
   return (
     <>
+      {audioElement &&
+        createPortal(
+          <AudioPluginContainer EditorRef={EditorRef} />,
+          audioElement
+        )}
       <MathModal
         isEditable={mathModalIsEditable}
         show={showMathModal}
@@ -644,7 +670,6 @@ const CustomEditor = ({
             toolbarInline={initialConfig.toolbarInline}
           />
         )}
-
         {configState && (
           <Editor
             model={content}
@@ -696,6 +721,7 @@ const enhance = compose(
   withMathFormula,
   withTheme,
   connect((state) => ({
+    isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
     advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
   }))
 )

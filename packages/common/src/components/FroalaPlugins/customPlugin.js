@@ -293,6 +293,45 @@ function customPlugin(FroalaEditor) {
     focus: true,
     plugin: 'accessibleToolbar',
   })
+
+  // Define audio popup template.
+  Object.assign(FroalaEditor.POPUP_TEMPLATES, {
+    'audio.insert': '[_RECORD_AUDIO_]',
+  })
+  // Define insertAudio.
+  Object.assign(FroalaEditor.SVG, {
+    insertAudio:
+      'M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1.2-9.1c0-.66.54-1.2 1.2-1.2.66 0 1.2.54 1.2 1.2l-.01 6.2c0 .66-.53 1.2-1.19 1.2-.66 0-1.2-.54-1.2-1.2V4.9zm6.5 6.1c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z',
+  })
+  // Define insertAudio Icon
+  FroalaEditor.DefineIcon('insertAudio', {
+    NAME: 'insertAudio',
+    FA5NAME: 'insertAudio',
+    SVG_KEY: 'insertAudio',
+  })
+  FroalaEditor.RegisterCommand('insertAudio', {
+    title: 'Insert Audio',
+    undo: false,
+    focus: true,
+    popup: true,
+    refreshAfterCallback: true,
+    callback() {
+      if (!this.popups.isVisible('audio.insert')) {
+        const record_audio = `<div></div>`
+        const $popup = this.popups.create('audio.insert', {
+          record_audio,
+        })
+        $popup.addClass('audio-popup')
+        this.events.trigger('audio.insert', $popup)
+        const $btn = this.$tb.find('.fr-command[data-cmd="insertAudio"]')
+        const offset = $btn.offset()
+        const left = offset.left + $btn.outerWidth() / 2
+        const top =
+          offset.top + (this.opts.toolbarBottom ? 10 : $btn.outerHeight() - 10)
+        this.popups.show('audio.insert', left, top, 0)
+      }
+    },
+  })
 }
 
 export default customPlugin

@@ -1262,9 +1262,10 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
               h = rect.height
               w = rect.width
               x = parseInt(el.getAttribute('x'), 10)
-              y = parseInt(el.getAttribute('y'), 10) - h
+              y =
+                parseInt(el.getAttribute('y'), 10) -
+                parseInt(el.getAttribute('font-size'), 10) // Correction Annotation wrapper position
               break
-
             case 'g':
               var _getOffset2 = getOffset(el)
 
@@ -2542,7 +2543,21 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
         function _interopRequireDefault(obj) {
           return obj && obj.__esModule ? obj : { default: obj }
         }
+        function convertToMultiLineSvg(text, x, y, fontSize) {
+          // Split the text into lines.
+          const lines = text.split('\n')
 
+          // Create an SVG element for each line.
+          const svg_elements = []
+          for (let i = 0; i < lines.length; i++) {
+            svg_elements.push(
+              `<tspan x="${x}" y="${i * fontSize + y}">${lines[i]}</tspan>`
+            )
+          }
+
+          // Return the innerHTML for <text>.
+          return svg_elements.join('')
+        }
         /**
          * Create SVGTextElement from an annotation definition.
          * This is used for anntations of type `textbox`.
@@ -2563,7 +2578,13 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
             fill: (0, _normalizeColor2.default)(a.color || '#000'),
             fontSize: a.size,
           })
-          text.innerHTML = a.content
+          var texttoprint = convertToMultiLineSvg(
+            `${a.content}`,
+            a.x,
+            a.y + (parseInt(a.size, 10) || 0),
+            parseInt(a.size, 10)
+          )
+          text.innerHTML = texttoprint
 
           return text
         }
@@ -3565,6 +3586,7 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
           var parentNode = (0, _utils.findSVGContainer)(target).parentNode
           var id = target.getAttribute('data-pdf-annotate-id')
           var rect = (0, _utils.getAnnotationRect)(target)
+
           var styleLeft = rect.left - OVERLAY_BORDER_SIZE
           var styleTop = rect.top - OVERLAY_BORDER_SIZE
 
@@ -3574,7 +3596,17 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
           overlay.style.position = 'absolute'
           overlay.style.top = styleTop + 'px'
           overlay.style.left = styleLeft + 'px'
-          overlay.style.width = rect.width + 'px'
+
+          //max allowed width
+          // removing 8 px so its box is inside PDF area
+          var parentRect = parentNode.getBoundingClientRect()
+          const maxAllowedWidth = parentRect.width - styleLeft - 8
+
+          // width of svg box should not cross PDF area width
+          const actualWidth =
+            rect.width <= maxAllowedWidth ? rect.width : maxAllowedWidth
+
+          overlay.style.width = actualWidth + 'px'
           overlay.style.height = rect.height + 'px'
           overlay.style.border =
             OVERLAY_BORDER_SIZE + 'px solid ' + _utils.BORDER_COLOR
@@ -3762,7 +3794,8 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
             overlay.style.top = y + 'px'
           }
 
-          if (x > minX && x + overlay.offsetWidth < maxX) {
+          // 32px offset to avoid loss of element from PDF area
+          if (x > minX && x + 32 < maxX) {
             overlay.style.left = x + 'px'
           }
         }
@@ -4742,9 +4775,12 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
             return
           }
 
-          input = document.createElement('input')
+          // textarea takes newline as input
+          input = document.createElement('textarea')
           input.setAttribute('id', 'pdf-annotate-text-input')
           input.setAttribute('placeholder', 'Enter text')
+          // Initially shows one row
+          input.setAttribute('rows', '1')
           input.style.border = '3px solid ' + _utils.BORDER_COLOR
           input.style.borderRadius = '3px'
           input.style.position = 'absolute'
@@ -4752,6 +4788,11 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
           input.style.left = e.clientX + 'px'
           input.style.fontSize = _textSize + 'px'
           input.style.zIndex = 9999
+          // Increases textarea hight as per the input
+          input.addEventListener('input', () => {
+            if (input.offsetHeight && input.scrollHeight > input.offsetHeight)
+              input.style.height = `${input.scrollHeight}px`
+          })
 
           input.addEventListener('blur', handleInputBlur)
           input.addEventListener('keyup', handleInputKeyup)
@@ -4775,7 +4816,8 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
         function handleInputKeyup(e) {
           if (e.keyCode === 27) {
             closeInput()
-          } else if (e.keyCode === 13) {
+          } else if (e.keyCode === 13 && !event.shiftKey) {
+            // Save test on enter add new line on shift+enter
             saveText()
           }
         }
@@ -4801,6 +4843,7 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
               var pageNumber = _getMetadata.pageNumber
 
               var rect = svg.getBoundingClientRect()
+
               var annotation = Object.assign(
                 {
                   type: 'textbox',
@@ -6223,7 +6266,6 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
         // ------------------------ textBox edit start ------------------------------------------ //
         function createTextBoxUpdateOverlay(target) {
           destroyTextBoxUpdateOverlay()
-
           var isEditable = target.getAttribute('data-view-mode') === 'edit'
           // show edit modal only authoring mode
           if (!isEditable) {
@@ -6277,12 +6319,29 @@ const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
               `
               parentNode.appendChild(overlay)
 
-              var closeBtn = document.getElementById('edu-annotate-close')
-              closeBtn.addEventListener('click', destroyTextBoxUpdateOverlay)
-              var editBtn = document.getElementById('edu-annotate-edit')
-              editBtn.addEventListener('click', () =>
-                updatedTextBox(annotation, documentId)
+              var textarea = document.getElementById(
+                'edu-annotate-text-edit-box'
               )
+              textarea.addEventListener('click', (e) => {
+                /**
+                 * prevents event propagation to background element
+                 * As both the elements have there own click event
+                 * The Same is done in other places
+                 * */
+                e.stopPropagation()
+              })
+
+              var closeBtn = document.getElementById('edu-annotate-close')
+              closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation()
+                destroyTextBoxUpdateOverlay()
+              })
+              var editBtn = document.getElementById('edu-annotate-edit')
+              editBtn.addEventListener('click', (e) => {
+                e.stopPropagation()
+                updatedTextBox(annotation, documentId)
+              })
+
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
               document.addEventListener('mousedown', handleDocumentMousedown)

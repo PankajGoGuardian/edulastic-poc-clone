@@ -224,6 +224,25 @@ const generateQuestionViaAI = (data) =>
     })
     .then((result) => result.data)
 
+const getTTSText = ({ itemId, questionId }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      method: 'get',
+      url: `${prefix}/${itemId}/question/${questionId}/tts-text`,
+    })
+    .then((result) => result.data)
+
+const updateTTSText = ({ itemId, questionId, data }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      method: 'post',
+      url: `${prefix}/${itemId}/question/${questionId}/custom-tts-generate`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   getAll,
   getById,
@@ -242,4 +261,6 @@ export default {
   evaluateAsStudent,
   addItems,
   generateQuestionViaAI,
+  getTTSText,
+  updateTTSText,
 }

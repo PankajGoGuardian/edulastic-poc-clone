@@ -73,6 +73,9 @@ const slice = createSlice({
     setInterventionsList: (state, { payload }) => {
       state.interventions.list = payload
     },
+    setIntervention: (state, { payload }) => {
+      state.interventions.list = [...state.interventions.list, payload]
+    },
 
     getAttendanceBandList: (state) => {
       state.attendanceBand.isLoading = true
@@ -134,6 +137,7 @@ const {
   getInterventionsList,
   getInterventionsListComplete,
   setInterventionsList,
+  setIntervention,
   resetFormData,
   getAttendanceBandList,
   getAttendanceBandListComplete,
@@ -168,6 +172,7 @@ export const actions = {
   getInterventionsList,
   getInterventionsListComplete,
   setInterventionsList,
+  setIntervention,
   resetFormData,
   getAttendanceBandList,
   getAttendanceBandListComplete,

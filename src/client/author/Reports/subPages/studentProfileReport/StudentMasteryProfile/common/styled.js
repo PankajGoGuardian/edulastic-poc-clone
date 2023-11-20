@@ -50,6 +50,9 @@ export const StyledTable = styled(Table)`
       }
     }
     .ant-table-fixed-left {
+      th.ant-table-selection-column {
+        visibility: hidden;
+      }
       .ant-table-thead {
         th {
           padding: 8px;

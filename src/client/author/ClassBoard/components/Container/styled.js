@@ -112,7 +112,7 @@ export const StudentButtonDiv = styled(Col)`
   }
 `
 
-const StyledTabButton = styled.a`
+export const StyledTabButton = styled.a`
   height: 24px;
   padding: 6px 15px;
   font-size: 11px;
@@ -198,6 +198,13 @@ export const RedirectButton = styled(StyledTabButton)`
       display: none;
     }
   }
+`
+
+export const AssignTutoring = styled(StyledTabButton)`
+  margin-right: 10px;
+  background-color: #19b394;
+  color: #fff;
+  border-radius: 2px;
 `
 
 export const DropMenu = styled(Menu)`

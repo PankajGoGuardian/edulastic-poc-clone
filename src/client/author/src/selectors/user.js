@@ -46,6 +46,11 @@ export const getUserFullNameSelector = createSelector(
   }
 )
 
+export const getUserEmailSelector = createSelector(
+  stateSelector,
+  (state) => state.user.email || ''
+)
+
 export const getOrgDataSelector = createSelector(
   stateSelector,
   (state) => state?.user?.orgData || {}
@@ -69,6 +74,11 @@ export const getUserRole = createSelector(
 export const isSuperAdminSelector = createSelector(
   stateSelector,
   (state) => state?.user?.features?.isSuperAdmin
+)
+
+export const getIsTutorMeEnabled = createSelector(
+  stateSelector,
+  (state) => state?.user?.features?.isTutorMeEnabled
 )
 
 export const getChildrens = createSelector(
@@ -212,6 +222,11 @@ export const getUserFeatures = createSelector(stateSelector, (state) =>
 export const getIsAiEvaulationDistrictSelector = createSelector(
   getUserFeatures,
   (features) => features.isVideoQuizAndAIEnabled
+)
+
+export const getIsTutorMeEnabledSelector = createSelector(
+  getUserFeatures,
+  (features) => features.isTutorMeEnabled
 )
 
 export const getUserOrgData = createSelector(stateSelector, (state) =>

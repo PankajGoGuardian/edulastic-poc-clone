@@ -12,5 +12,9 @@
     "solutionLabel": "Solution",
     "answerLabel": "Answer",
     "teacherFeedbackLabel": "Teacher Feedback"
+  },
+  "wholeLearnerReport": {
+    "chooseStdOrDomain": "Please choose a standard or domain to assign a tutor.",
+    "selectMax5Stds": "Please select max 5 standards for the tutor to focus on."
   }
 }

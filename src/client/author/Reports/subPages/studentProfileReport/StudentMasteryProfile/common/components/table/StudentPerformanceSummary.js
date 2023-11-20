@@ -131,6 +131,7 @@ const StudentPerformanceSummary = ({
   expandedRowProps,
   expandAllRows,
   setExpandAllRows,
+  rowSelection = null,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
 
@@ -204,6 +205,7 @@ const StudentPerformanceSummary = ({
         <StyledTable
           id="student_reports_table"
           dataSource={filteredDomains}
+          rowKey={(record) => record.key}
           columns={columns}
           pagination={false}
           expandIconAsCell={false}
@@ -214,9 +216,10 @@ const StudentPerformanceSummary = ({
           expandRowByClick
           onRow={(record) => ({
             onClick: () =>
-              handleExpandedRowsChange(record.rowIndex, filteredDomains.length),
+              handleExpandedRowsChange(record.key, filteredDomains.length),
           })}
           expandedRowKeys={expandedRows}
+          rowSelection={rowSelection}
         />
       </Col>
     </Row>

@@ -173,6 +173,7 @@ export const getIsItemContentHiddenSelector = createSelector(
     return hiddenTestContentVisibilty && userRole === roleuser.TEACHER
   }
 )
+
 function* receiveGradeBookSaga({ payload }) {
   try {
     const entities = yield call(classBoardApi.gradebook, payload)

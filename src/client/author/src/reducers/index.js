@@ -68,6 +68,7 @@ import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
 import { advanceSearchReducer } from '../../AdvanceSearch'
 import { aiTestDetails } from '../../AssessmentCreate/components/CreateAITest/ducks'
+import { reducer as tutorMeReducer } from '../../TutorMe'
 import aiGenerateQuestionState from './aiGenerateQuestion'
 
 const authorReducers = {
@@ -142,6 +143,7 @@ const authorReducers = {
   advanceSearchReducer,
   aiTestDetails,
   aiGenerateQuestionState,
+  tutorMeReducer,
 }
 
 export default authorReducers

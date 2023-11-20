@@ -547,6 +547,7 @@ export function getStandardsForStandardBasedReport(
         standardsQuestionsMap[`${std.id}`] = {
           ...std,
           desc: standardsDescriptionsKeyed[`${std.id}`]?.desc,
+          tloDesc: standardsDescriptionsKeyed[`${std.id}`]?.tloDescription,
           qIds: [`${q.itemId}_${q.id}`],
           ...(std.name ? { identifier: std.name } : {}),
           ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id

@@ -11,6 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import { CheckboxLabel } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
+import { IconTutorMeAssigned } from '@edulastic/icons'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import {
   ScratchPadIcon,
@@ -65,6 +66,7 @@ import {
   maxDueDateFromClassess,
 } from '../../../../student/utils'
 import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
+import { interventionsByStudentIdSelector } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
 import { isPearDomain } from '../../../../../utils/pear'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
@@ -143,6 +145,8 @@ class DisneyCardContainer extends Component {
       bulkAssignedCountProcessed,
       loadTestActivity,
       match,
+      handleOpenTutor,
+      interventionsByStudentId,
     } = this.props
     const { assignmentId, classId } = match.params
     const noDataNotification = () => (
@@ -314,7 +318,7 @@ class DisneyCardContainer extends Component {
                       }
                     }}
                   >
-                    {getAvatarName(student.studentName || 'Anonymous')}
+                    {getAvatarName(student.studentName || 'Anonymous')}{' '}
                   </CircularDiv>
                 )}
                 <StyledName>
@@ -329,7 +333,20 @@ class DisneyCardContainer extends Component {
                       }
                     }}
                   >
-                    {name}
+                    {name}{' '}
+                    {!!interventionsByStudentId?.[student.studentId]
+                      ?.length && (
+                      <IconTutorMeAssigned
+                        style={{ cursor: 'pointer' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleOpenTutor(
+                            student.studentId,
+                            student.studentName
+                          )
+                        }}
+                      />
+                    )}
                   </StyledParaF>
                   {student.present ? (
                     <>
@@ -679,6 +696,7 @@ const withConnect = connect(
     showRefreshMessage: getShowRefreshMessage(state),
     bulkAssignedCount: getBulckAssignedCount(state),
     bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state),
+    interventionsByStudentId: interventionsByStudentIdSelector(state),
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

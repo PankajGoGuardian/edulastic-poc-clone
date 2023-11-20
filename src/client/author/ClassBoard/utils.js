@@ -62,6 +62,33 @@ const items = [
   },
 ]
 
+export const TUTORME_TO_EDULASTIC_GRADES = {
+  0: 'K',
+  1: '1',
+  2: '2',
+  3: '3',
+  4: '4',
+  5: '5',
+  6: '6',
+  7: '7',
+  8: '8',
+  9: '9',
+  10: '10',
+  11: '11',
+  12: '12',
+  13: 'O',
+}
+
+export const TUTORME_TO_EDULASTIC_SUBJECTS = {
+  Math: 'Mathematics',
+  'English Language Arts': 'ELA',
+  'Natural Science': 'Science',
+  'Social Science': 'Social Studies',
+  'Computer Science': 'Computer Science',
+  NA: 'Other Subjects',
+  Spanish: 'Other Subjects',
+}
+
 /**
  * generate "count" number of fake names and details!
  * @param {number} count

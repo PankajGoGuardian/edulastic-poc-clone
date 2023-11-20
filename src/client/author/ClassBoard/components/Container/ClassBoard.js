@@ -44,6 +44,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
+import { segmentApi } from '@edulastic/api'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -67,6 +68,7 @@ import {
   removeStudentAction,
   setCurrentTestActivityIdAction,
 } from '../../../src/actions/classBoard'
+import { actions } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/actionReducers'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import { InfoMessage } from '../../../../common/styled'
@@ -141,6 +143,7 @@ import {
   FilterSelect,
   FilterSpan,
   TagWrapper,
+  AssignTutoring,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -157,9 +160,17 @@ import {
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
+  invokeTutorMeSDKtoAssignTutor,
+  openTutorMeBusinessPage,
+} from '../../../TutorMe/helper'
+import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
   getUserId,
+  getIsTutorMeEnabledSelector,
+  getUserOrgId,
+  getUserEmailSelector,
+  getUserFullNameSelector,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
@@ -167,6 +178,15 @@ import {
   studentIsEnrolled,
   studentIsUnEnrolled,
 } from '../../../utils/userEnrollment'
+import TutorDetailsPopup from '../../../TutorMe/TutorDetailsPopup'
+import {
+  getIsTutorMeVisibleToDistrictSelector,
+  actions as tutorMeActions,
+} from '../../../TutorMe/ducks'
+import {
+  getMastery,
+  getPerfomancePercentage,
+} from '../../../StandardsBasedReport/components/TableDisplay'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -283,6 +303,11 @@ class ClassBoard extends Component {
       hasStickyHeader: false,
       toggleBackTopIcon: false,
       studentFilter: 'ALL ASSIGNED',
+      showAssignedTutors: false,
+      studentToAssignTutor: {
+        studentName: '',
+        studentId: '',
+      },
     }
   }
 
@@ -332,6 +357,9 @@ class ClassBoard extends Component {
       toggleAdminAlertModal,
       toggleVerifyEmailModal,
       userRole,
+      fetchInterventionsList,
+      isTutorMeEnabled,
+      isTutorMeVisibleToDistrict,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -356,6 +384,9 @@ class ClassBoard extends Component {
     const { search, state } = location
     setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
+    if (isTutorMeEnabled && isTutorMeVisibleToDistrict) {
+      fetchInterventionsList({ type: 'tutorme', assignmentId, classId })
+    }
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')
@@ -994,6 +1025,10 @@ class ClassBoard extends Component {
     this.setState({ showAddStudentsPopup: false })
   }
 
+  handleCloseAssignedTutorPopup = () => {
+    this.setState({ showAssignedTutors: false })
+  }
+
   handleCancelMarkSubmitted = () => {
     this.setState({ showMarkSubmittedPopup: false })
   }
@@ -1056,6 +1091,96 @@ class ClassBoard extends Component {
         messageKey: 'youCanOnlyPrintAfterAssignmentBeenSubmited',
       })
     }
+  }
+
+  onAssignTutoring = () => {
+    const {
+      testActivity,
+      selectedStudents,
+      assignTutorForStudents,
+      match,
+      additionalData,
+      reportStandards,
+      studentsList,
+      districtId,
+      isTutorMeEnabled,
+      userEmail,
+      userFullName,
+    } = this.props
+    const selectedStudentsKeys = Object.keys(selectedStudents)
+    if (!isTutorMeEnabled) {
+      return openTutorMeBusinessPage()
+    }
+    if (!selectedStudentsKeys.length) {
+      notification({
+        messageKey: 'atleastOneStudentShouldBeSelectedToAssignTutoring',
+      })
+      return
+    }
+    // for now only one student can be selected for assigning tutor so next line works
+    const [selectedStudentId] = selectedStudentsKeys
+    const testActivitiesByStudentId = keyBy(testActivity, 'studentId')
+    const selectedStudent = studentsList.find(
+      (student) => student._id === selectedStudentId
+    )
+    const selectedTestActivity = testActivitiesByStudentId[selectedStudentId]
+    const { assignmentId, classId } = match.params
+    segmentApi.genericEventTrack('Assign Tutor', { selectedStudentsKeys })
+
+    // TODO pass to the respective api or sdk
+    const { termId, className, testName } = additionalData
+    const standardsMasteryData = reportStandards.map((std) => {
+      const masterySummary = getPerfomancePercentage(
+        [selectedTestActivity],
+        std
+      )
+      const masteryInfo = getMastery(
+        additionalData.assignmentMastery,
+        masterySummary
+      )
+      return {
+        masteryScore: masterySummary,
+        masteryColor: masteryInfo.color,
+        standardId: std._id,
+        standardIdentifier: std.identifier,
+        standardDesc: std.desc,
+        domainId: std.tloId,
+        domainIdentifier: std.tloIdentifier,
+        domainDesc: std.tloDesc,
+      }
+    })
+    invokeTutorMeSDKtoAssignTutor({
+      standardsMasteryData,
+      selectedStudentDetails: {
+        firstName: selectedStudent.firstName,
+        lastName: selectedStudent.lastName || '',
+        studentId: selectedTestActivity.studentId,
+        studentName: selectedTestActivity.studentName,
+        email: selectedTestActivity.email,
+      },
+      assignmentId,
+      classId,
+      districtId,
+      termId,
+      className,
+      testName,
+      assignedBy: {
+        assignedByEmail: userEmail,
+        assignedByName: userFullName,
+      },
+    }).then((tutorMeInterventionResponse) =>
+      assignTutorForStudents(tutorMeInterventionResponse)
+    )
+  }
+
+  handleOpenTutor = (studentId, studentName) => {
+    this.setState({
+      showAssignedTutors: true,
+      studentToAssignTutor: {
+        studentId,
+        studentName,
+      },
+    })
   }
 
   closePrintModal = () => this.setState({ openPrintModal: false })
@@ -1201,8 +1326,9 @@ class ClassBoard extends Component {
       userRole,
       userId,
       attemptWindow,
+      isTutorMeEnabled,
+      isTutorMeVisibleToDistrict,
     } = this.props
-
     const {
       selectedTab,
       flag,
@@ -1220,8 +1346,9 @@ class ClassBoard extends Component {
       hasStickyHeader,
       toggleBackTopIcon,
       studentFilter,
+      showAssignedTutors,
+      studentToAssignTutor,
     } = this.state
-
     const isRedirectButtonDisabled =
       COMMON.includes(additionalData?.testType) &&
       !additionalData?.allowTeacherRedirect &&
@@ -1647,158 +1774,185 @@ class ClassBoard extends Component {
                       <IconInfo fill={green} height={10} /> {attemptWindow}
                     </InfoMessage>
                   </EduIf>
-                  <ClassBoardFeats>
-                    <RedirectButton
-                      disabled={!isItemsVisible}
-                      first
-                      data-cy="printButton"
-                      target="_blank"
-                      onClick={this.onClickPrint}
-                    >
-                      <ButtonIconWrap>
-                        <IconPrint />
-                      </ButtonIconWrap>
-                      PRINT
-                    </RedirectButton>
-                    <Tooltip
-                      placement="top"
-                      title={
-                        isRedirectButtonDisabled
-                          ? 'Redirect is not permitted'
-                          : ''
-                      }
-                    >
-                      <div>
-                        <RedirectButton
-                          data-cy="rediectButton"
-                          onClick={this.handleRedirect}
-                          disabled={isRedirectButtonDisabled}
-                        >
-                          <ButtonIconWrap>
-                            <IconRedirect />
-                          </ButtonIconWrap>
-                          REDIRECT
-                        </RedirectButton>
-                      </div>
-                    </Tooltip>
-                    <Dropdown
-                      getPopupContainer={(triggerNode) => {
-                        return triggerNode.parentNode
-                      }}
-                      overlay={
-                        <DropMenu>
-                          <FeaturesSwitch
-                            inputFeatures="LCBmarkAsSubmitted"
-                            key="LCBmarkAsSubmitted"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
+                  <div style={{ display: 'flex' }}>
+                    {isTutorMeVisibleToDistrict && (
+                      <Tooltip
+                        placement="top"
+                        title={
+                          selectedStudentsKeys.length > 1 && isTutorMeEnabled
+                            ? t('common.assignTutoringRestricted')
+                            : ''
+                        }
+                      >
+                        <div>
+                          <AssignTutoring
+                            disabled={
+                              selectedStudentsKeys.length > 1 &&
+                              isTutorMeEnabled
+                            }
+                            data-cy="assignTutoring"
+                            target="_blank"
+                            onClick={this.onAssignTutoring}
                           >
-                            <MenuItems
-                              data-cy="markSubmitted"
-                              disabled={disableMarkSubmitted}
-                              onClick={this.handleShowMarkAsSubmittedModal}
-                            >
-                              <IconMarkAsSubmitted width={12} />
-                              <span>Mark as Submitted</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
-                          <FeaturesSwitch
-                            inputFeatures="LCBmarkAsAbsent"
-                            key="LCBmarkAsAbsent"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems
-                              data-cy="markAbsent"
-                              disabled={disableMarkAbsent}
-                              onClick={this.handleShowMarkAsAbsentModal}
-                            >
-                              <IconMarkAsAbsent />
-                              <span>Mark as Absent</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
+                            ASSIGN TUTORING
+                          </AssignTutoring>
+                        </div>
+                      </Tooltip>
+                    )}
 
-                          <MenuItems
-                            data-cy="addStudents"
-                            disabled={actionInProgress}
-                            onClick={this.handleShowAddStudentsPopup}
-                          >
-                            <IconAddStudents />
-                            <span>Add Students</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="removeStudents"
-                            onClick={this.handleShowRemoveStudentsModal}
-                          >
-                            <IconRemove />
-                            <span>Unassign Students</span>
-                          </MenuItems>
-                          <FeaturesSwitch
-                            inputFeatures="premium"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems
-                              data-cy="pauseStudents"
-                              onClick={this.handleTogglePauseStudents(true)}
-                              disabled={disableMarkAbsent}
-                            >
-                              <IconPause />
-                              <span>Pause Students</span>
-                            </MenuItems>
-                          </FeaturesSwitch>
-                          {showResume && (
-                            <MenuItems
-                              data-cy="resumeStudents"
-                              onClick={this.handleTogglePauseStudents(false)}
-                              disabled={disableMarkAbsent}
-                            >
-                              <IconPlay />
-                              <span>Resume Students</span>
-                            </MenuItems>
-                          )}
-                          <MenuItems
-                            data-cy="downloadGrades"
-                            disabled={!enableDownload || isProxiedByEAAccount}
-                            title={
-                              isProxiedByEAAccount
-                                ? 'Bulk action disabled for EA proxy accounts.'
-                                : ''
-                            }
-                            onClick={() => this.handleDownloadGrades(false)}
-                          >
-                            <IconDownload />
-                            <span>Download Grades</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="downloadResponse"
-                            disabled={!enableDownload || isProxiedByEAAccount}
-                            title={
-                              isProxiedByEAAccount
-                                ? 'Bulk action disabled for EA proxy accounts.'
-                                : ''
-                            }
-                            onClick={() => this.handleDownloadGrades(true)}
-                          >
-                            <IconDownload
-                              color={
-                                isProxiedByEAAccount ? lightFadedBlack : null
-                              }
-                            />
-                            <span>Download Response</span>
-                          </MenuItems>
-                        </DropMenu>
-                      }
-                      placement="bottomRight"
-                    >
-                      <RedirectButton data-cy="moreAction" last>
-                        <ButtonIconWrap className="more">
-                          <IconMoreHorizontal />
+                    <ClassBoardFeats>
+                      <RedirectButton
+                        disabled={!isItemsVisible}
+                        first
+                        data-cy="printButton"
+                        target="_blank"
+                        onClick={this.onClickPrint}
+                      >
+                        <ButtonIconWrap>
+                          <IconPrint />
                         </ButtonIconWrap>
-                        MORE
+                        PRINT
                       </RedirectButton>
-                    </Dropdown>
-                  </ClassBoardFeats>
+                      <Tooltip
+                        placement="top"
+                        title={
+                          isRedirectButtonDisabled
+                            ? 'Redirect is not permitted'
+                            : ''
+                        }
+                      >
+                        <div>
+                          <RedirectButton
+                            data-cy="rediectButton"
+                            onClick={this.handleRedirect}
+                            disabled={isRedirectButtonDisabled}
+                          >
+                            <ButtonIconWrap>
+                              <IconRedirect />
+                            </ButtonIconWrap>
+                            REDIRECT
+                          </RedirectButton>
+                        </div>
+                      </Tooltip>
+                      <Dropdown
+                        getPopupContainer={(triggerNode) => {
+                          return triggerNode.parentNode
+                        }}
+                        overlay={
+                          <DropMenu>
+                            <FeaturesSwitch
+                              inputFeatures="LCBmarkAsSubmitted"
+                              key="LCBmarkAsSubmitted"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="markSubmitted"
+                                disabled={disableMarkSubmitted}
+                                onClick={this.handleShowMarkAsSubmittedModal}
+                              >
+                                <IconMarkAsSubmitted width={12} />
+                                <span>Mark as Submitted</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                            <FeaturesSwitch
+                              inputFeatures="LCBmarkAsAbsent"
+                              key="LCBmarkAsAbsent"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="markAbsent"
+                                disabled={disableMarkAbsent}
+                                onClick={this.handleShowMarkAsAbsentModal}
+                              >
+                                <IconMarkAsAbsent />
+                                <span>Mark as Absent</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+
+                            <MenuItems
+                              data-cy="addStudents"
+                              disabled={actionInProgress}
+                              onClick={this.handleShowAddStudentsPopup}
+                            >
+                              <IconAddStudents />
+                              <span>Add Students</span>
+                            </MenuItems>
+                            <MenuItems
+                              data-cy="removeStudents"
+                              onClick={this.handleShowRemoveStudentsModal}
+                            >
+                              <IconRemove />
+                              <span>Unassign Students</span>
+                            </MenuItems>
+                            <FeaturesSwitch
+                              inputFeatures="premium"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="pauseStudents"
+                                onClick={this.handleTogglePauseStudents(true)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPause />
+                                <span>Pause Students</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                            {showResume && (
+                              <MenuItems
+                                data-cy="resumeStudents"
+                                onClick={this.handleTogglePauseStudents(false)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPlay />
+                                <span>Resume Students</span>
+                              </MenuItems>
+                            )}
+                            <MenuItems
+                              data-cy="downloadGrades"
+                              disabled={!enableDownload || isProxiedByEAAccount}
+                              title={
+                                isProxiedByEAAccount
+                                  ? 'Bulk action disabled for EA proxy accounts.'
+                                  : ''
+                              }
+                              onClick={() => this.handleDownloadGrades(false)}
+                            >
+                              <IconDownload />
+                              <span>Download Grades</span>
+                            </MenuItems>
+                            <MenuItems
+                              data-cy="downloadResponse"
+                              disabled={!enableDownload || isProxiedByEAAccount}
+                              title={
+                                isProxiedByEAAccount
+                                  ? 'Bulk action disabled for EA proxy accounts.'
+                                  : ''
+                              }
+                              onClick={() => this.handleDownloadGrades(true)}
+                            >
+                              <IconDownload
+                                color={
+                                  isProxiedByEAAccount ? lightFadedBlack : null
+                                }
+                              />
+                              <span>Download Response</span>
+                            </MenuItems>
+                          </DropMenu>
+                        }
+                        placement="bottomRight"
+                      >
+                        <RedirectButton data-cy="moreAction" last>
+                          <ButtonIconWrap className="more">
+                            <IconMoreHorizontal />
+                          </ButtonIconWrap>
+                          MORE
+                        </RedirectButton>
+                      </Dropdown>
+                    </ClassBoardFeats>
+                  </div>
                 </StickyFlex>
                 <div ref={this.disneyCardsContainerRef}>
                   {flag ? (
@@ -1815,6 +1969,7 @@ class ClassBoard extends Component {
                       closed={additionalData.closed}
                       detailedClasses={additionalData.detailedClasses}
                       studentUnselect={this.onUnselectCardOne}
+                      handleOpenTutor={this.handleOpenTutor}
                       viewResponses={(e, selected, _testActivityId) => {
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
@@ -1875,6 +2030,11 @@ class ClassBoard extends Component {
                     closePopup={this.handleHideAddStudentsPopup}
                   />
                 )}
+                <TutorDetailsPopup
+                  open={showAssignedTutors}
+                  selectedStudent={studentToAssignTutor}
+                  closePopup={this.handleCloseAssignedTutorPopup}
+                />
               </>
             )}
 
@@ -2231,6 +2391,12 @@ const enhance = compose(
       userId: getUserId(state),
       attemptWindow: getAttemptWindowSelector(state),
       isContentHidden: getIsItemContentHiddenSelector(state),
+      reportStandards: state.classResponse?.data?.reportStandards || [],
+      isTutorMeEnabled: getIsTutorMeEnabledSelector(state),
+      districtId: getUserOrgId(state),
+      isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
+      userEmail: getUserEmailSelector(state),
+      userFullName: getUserFullNameSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -2255,6 +2421,8 @@ const enhance = compose(
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
+      assignTutorForStudents: tutorMeActions.assignTutorRequest,
+      fetchInterventionsList: actions.getInterventionsList,
     }
   )
 )

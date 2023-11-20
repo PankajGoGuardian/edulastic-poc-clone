@@ -169,6 +169,7 @@ const StudentMasteryTable = ({
   onCsvConvert,
   handleOnClickStandard,
   filters,
+  rowSelection = null,
 }) => {
   const filteredStandards = filter(
     data,
@@ -190,6 +191,8 @@ const StudentMasteryTable = ({
           tableToRender={StyledTable}
           onCsvConvert={onCsvConvert}
           scroll={{ x: '100%' }}
+          rowKey={(record) => record.standardId}
+          rowSelection={rowSelection}
         />
       </Col>
     </Row>

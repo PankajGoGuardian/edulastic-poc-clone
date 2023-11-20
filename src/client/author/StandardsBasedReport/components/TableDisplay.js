@@ -26,7 +26,7 @@ import {
 } from './styled'
 import NoDataNotification from '../../../common/components/NoDataNotification'
 
-const getMastery = (assignmentMasteryArray, performancePercentage) => {
+export const getMastery = (assignmentMasteryArray, performancePercentage) => {
   performancePercentage = performancePercentage || 0
 
   for (const mastery of assignmentMasteryArray) {
@@ -50,7 +50,7 @@ const sortAlphaNum = (a, b) => {
   return 0
 }
 
-const getPerfomancePercentage = (testActivities, std) => {
+export const getPerfomancePercentage = (testActivities, std) => {
   const performances = values(
     getStandardWisePerformanceMemoized(testActivities, std)
   )

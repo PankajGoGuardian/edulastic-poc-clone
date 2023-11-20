@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Form, Input, DatePicker } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
+
 import { HeadingSpan } from '../StyledComponents/upgradePlan'
 import { subscriptionAdditionalDetails } from '../../Data'
 
@@ -25,7 +26,7 @@ const DatesFormItem = ({
   initialStartDate,
   initialEndDate,
 }) => {
-  const disabledDate = (val) => val < moment().startOf('day')
+  const disabledDate = useCallback((val) => val < moment().startOf('day'), [])
   const formLayout = { labelCol: { span: 3 }, labelAlign: 'left' }
   return (
     <>
@@ -43,6 +44,11 @@ const DatesFormItem = ({
       </Form.Item>
     </>
   )
+}
+
+DatesFormItem.defaultProps = {
+  initialStartDate: moment(),
+  initialEndDate: moment().add(365, 'days'),
 }
 
 const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
@@ -64,9 +70,49 @@ const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
   return children
 }
 
-DatesFormItem.defaultProps = {
-  initialStartDate: moment(),
-  initialEndDate: moment().add(365, 'days'),
+const TutorMeFormItems = ({
+  getFieldDecorator,
+  initialTutorMeStartDate,
+  initialTutorMeEndDate,
+  getFieldValue,
+}) => {
+  const tutorMeStartDate = getFieldValue('tutorMeStartDate')
+  const disabledEndDate = useCallback(
+    (val) => val < moment(tutorMeStartDate).startOf('day'),
+    [tutorMeStartDate]
+  )
+  const formLayout = {
+    labelCol: { span: 3 },
+    labelAlign: 'left',
+    wrapperCol: { span: 5 },
+  }
+  return (
+    <>
+      <Form.Item
+        label={<HeadingSpan>TutorMe Start Date</HeadingSpan>}
+        {...formLayout}
+      >
+        {getFieldDecorator('tutorMeStartDate', {
+          rules: [{ required: true }],
+          initialValue: initialTutorMeStartDate,
+        })(<DatePicker />)}
+      </Form.Item>
+      <Form.Item
+        label={<HeadingSpan>TutorMe End Date</HeadingSpan>}
+        {...formLayout}
+      >
+        {getFieldDecorator('tutorMeEndDate', {
+          rules: [{ required: true }],
+          initialValue: initialTutorMeEndDate,
+        })(<DatePicker disabledDate={disabledEndDate} />)}
+      </Form.Item>
+    </>
+  )
+}
+
+TutorMeFormItems.defaultProps = {
+  initialTutorMeStartDate: moment(),
+  initialTutorMeEndDate: moment().add(365, 'days'),
 }
 
 const NotesFormItem = ({
@@ -97,15 +143,16 @@ NotesFormItem.defaultProps = {
 
 const DatesNotesFormItem = ({
   getFieldDecorator,
+  getFieldValue,
   initialStartDate,
   initialEndDate,
+  initialTutorMeStartDate,
+  initialTutorMeEndDate,
   notesFieldName,
   initialValue,
   placeholder,
-  customerSuccessManager,
-  opportunityId,
-  licenceCount,
-  showAdditionalDetails = false,
+  showAdditionalDetails,
+  showTutorMeFormItems,
   children,
 }) => (
   <>
@@ -115,15 +162,16 @@ const DatesNotesFormItem = ({
       initialEndDate={initialEndDate}
     />
     {showAdditionalDetails ? (
-      <AdditionalDetailsFormItems
+      <AdditionalDetailsFormItems getFieldDecorator={getFieldDecorator} />
+    ) : null}
+    {showTutorMeFormItems ? (
+      <TutorMeFormItems
         getFieldDecorator={getFieldDecorator}
-        customerSuccessManager={customerSuccessManager}
-        opportunityId={opportunityId}
-        licenceCount={licenceCount}
+        initialTutorMeStartDate={initialTutorMeStartDate}
+        initialTutorMeEndDate={initialTutorMeEndDate}
+        getFieldValue={getFieldValue}
       />
-    ) : (
-      ''
-    )}
+    ) : null}
 
     {children}
 
@@ -139,6 +187,8 @@ const DatesNotesFormItem = ({
 DatesNotesFormItem.defaultProps = {
   ...NotesFormItem.defaultProps,
   ...DatesFormItem.defaultProps,
+  showAdditionalDetails: false,
+  showTutorMeFormItems: false,
 }
 
 export { DatesFormItem, NotesFormItem }

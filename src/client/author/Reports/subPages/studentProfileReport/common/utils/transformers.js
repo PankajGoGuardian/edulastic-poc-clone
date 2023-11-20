@@ -171,6 +171,7 @@ export const augmentStandardMetaInfo = (
         assessmentCount: 0,
         totalQuestions: 0,
         scale,
+        key: standard.standardId,
       }
     }
     return null
@@ -218,6 +219,7 @@ export const getDomains = (
       assessmentCount: asessmentMetricInfo?.length || 0,
       curriculumName,
       curriculumId,
+      key: domainId,
     }
   })
 
@@ -281,8 +283,10 @@ export const getDomainOptionsByGradeSubject = (
   ]
 }
 
-export const getCurriculumsList = (interestedCurriculums) => {
-  const curriculums = [{ key: 'All', title: 'All Standard Sets' }]
+export const getCurriculumsList = (interestedCurriculums, includeAllOption) => {
+  const curriculums = includeAllOption
+    ? [{ key: 'All', title: 'All Standard Sets' }]
+    : []
   if (interestedCurriculums?.length) {
     interestedCurriculums.forEach((item) => {
       curriculums.push({

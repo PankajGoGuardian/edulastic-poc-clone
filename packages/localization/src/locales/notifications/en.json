@@ -1324,6 +1324,10 @@
     "message": "At least one student should be selected to print responses.",
     "description": ""
   },
+  "atleastOneStudentShouldBeSelectedToAssignTutoring": {
+    "message": "At least one student should be selected to assign tutoring.",
+    "description": ""
+  },
   "youCanOnlyPrintAfterAssignmentBeenSubmited": {
     "message": "You can print only after the assignment has been submitted by the student(s).",
     "description": ""
@@ -2253,6 +2257,10 @@
   },
   "insertFeedTypesSucess": {
     "message": "Feed type(s) enabled successfully.",
+    "description": ""
+  },
+  "selectMaxFiveStandardsWarning": {
+    "message": "Please select max 5 standards for the tutor to focus on.",
     "description": ""
   }
 }

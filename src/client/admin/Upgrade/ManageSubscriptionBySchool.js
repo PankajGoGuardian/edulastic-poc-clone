@@ -109,6 +109,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       subEndDate: editedEndDate,
       notes: editedNotes,
       adminPremium: editedAdminPremium,
+      tutorMeStartDate: editedTutorMeStartDate,
+      tutorMeEndDate: editedTutorMeEndDate,
     },
     setEditableRowFieldValues,
   }) => {
@@ -139,6 +141,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             customerSuccessManager,
             opportunityId,
             licenceCount,
+            tutorMeStartDate,
+            tutorMeEndDate,
           }
         ) => {
           if (!err) {
@@ -152,6 +156,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
               customerSuccessManager,
               opportunityId,
               licenceCount,
+              tutorMeStartDate: tutorMeStartDate.valueOf(),
+              tutorMeEndDate: tutorMeEndDate.valueOf(),
             })
           }
         }
@@ -194,6 +200,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           schoolIds: [schoolId],
           subType: subTypeParam,
           adminPremium: editedAdminPremium,
+          tutorMeStartDate: editedTutorMeStartDate || currentTimeInMilliSec,
+          tutorMeEndDate: editedTutorMeEndDate || currentTimeInMilliSec,
         })
       }
 
@@ -203,7 +211,14 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           setPartialPremiumDataAction(record)
           changeTab(manageByUserSegmentTabKey)
         } else {
-          const { subEndDate, subStartDate, notes, adminPremium } = subscription
+          const {
+            subEndDate,
+            subStartDate,
+            notes,
+            adminPremium,
+            tutorMeStartDate,
+            tutorMeEndDate,
+          } = subscription
           updateCurrentEditableRow({
             schoolId,
             subEndDate,
@@ -211,6 +226,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             notes,
             subType,
             adminPremium,
+            tutorMeStartDate,
+            tutorMeEndDate,
           })
         }
       }
@@ -258,6 +275,36 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             setEditableRowFieldValues({
               fieldName: 'subEndDate',
               value: endDate?.valueOf(),
+            })
+          }
+        />
+      ) : (
+        moment(date).format('YYYY-MM-DD')
+      )
+
+    const renderTutorMeStartDate = (date, record) =>
+      record.schoolId === currentEditableRow ? (
+        <DatePicker
+          value={moment(editedTutorMeStartDate)}
+          onChange={(_tutorMeStartDate) =>
+            setEditableRowFieldValues({
+              fieldName: 'tutorMeStartDate',
+              value: _tutorMeStartDate?.valueOf(),
+            })
+          }
+        />
+      ) : (
+        moment(date).format('YYYY-MM-DD')
+      )
+
+    const renderTutorMeEndDate = (date, record) =>
+      record.schoolId === currentEditableRow ? (
+        <DatePicker
+          value={moment(editedTutorMeEndDate)}
+          onChange={(_tutorMeEndDate) =>
+            setEditableRowFieldValues({
+              fieldName: 'tutorMeEndDate',
+              value: _tutorMeEndDate?.valueOf(),
             })
           }
         />
@@ -349,6 +396,18 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             render={renderEndDate}
           />
           <Column
+            title="TutorMe Start Date"
+            dataIndex="subscription.tutorMeStartDate"
+            key="tutorMeStartDate"
+            render={renderTutorMeStartDate}
+          />
+          <Column
+            title="TutorMe End Date"
+            dataIndex="subscription.tutorMeEndDate"
+            key="tutorMeEndDate"
+            render={renderTutorMeEndDate}
+          />
+          <Column
             title="Notes"
             dataIndex="subscription.notes"
             key="notes"
@@ -384,6 +443,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           disabled={!selectedSchools.length}
           handleSubmit={handleSubmit}
           getFieldDecorator={getFieldDecorator}
+          getFieldValue={getFieldValue}
           ctaText={submitCtaText}
         />
       </>
@@ -394,6 +454,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
 const BulkSubscribeForm = ({
   handleSubmit,
   getFieldDecorator,
+  getFieldValue,
   ctaText,
   disabled,
   firstSchoolSubType,
@@ -421,7 +482,11 @@ const BulkSubscribeForm = ({
         </Select>
       )}
     </Form.Item>
-    <DatesNotesFormItem getFieldDecorator={getFieldDecorator}>
+    <DatesNotesFormItem
+      getFieldDecorator={getFieldDecorator}
+      getFieldValue={getFieldValue}
+      showTutorMeFormItems
+    >
       <Form.Item label={<HeadingSpan>CS Manager</HeadingSpan>}>
         {getFieldDecorator('customerSuccessManager')(
           <Input

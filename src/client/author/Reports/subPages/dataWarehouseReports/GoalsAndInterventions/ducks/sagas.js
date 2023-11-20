@@ -20,7 +20,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { titleCase, ucFirst } from '../common/utils'
 import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-config'
-import { GOAL, editFormFields } from '../constants/form'
+import { GOAL, editFormFields, TUTORME } from '../constants/form'
 import { actions } from './actionReducers'
 import {
   setGroupsAction,
@@ -130,7 +130,7 @@ function* getInterventionsListSaga({ payload }) {
       omit(payload, 'id')
     )
 
-    if (payload) {
+    if (payload && payload.type !== TUTORME) {
       yield put(
         actions.setRelatedInterventions({ [payload.id]: interventionsList })
       )

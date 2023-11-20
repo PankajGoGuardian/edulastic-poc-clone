@@ -77,7 +77,7 @@ const ManageDistrictPrimaryForm = Form.create({
   name: 'manageDistrictPrimaryForm',
 })(
   ({
-    form: { getFieldDecorator, validateFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, validateFields, setFieldsValue, getFieldValue },
     selectedDistrict,
     upgradeDistrictSubscriptionAction,
     saveOrgPermissions,
@@ -105,9 +105,12 @@ const ManageDistrictPrimaryForm = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
+      tutorMeStartDate,
+      tutorMeEndDate,
       _id: subscriptionId,
     } = subscription
-    const { subType: currentSubType = 'free' } = getFieldsValue(['subType'])
+    const currentSubType =
+      getFieldValue('subType') || SUBSCRIPTION_TYPES.free.subType
 
     const savedDate = useRef()
 
@@ -151,6 +154,8 @@ const ManageDistrictPrimaryForm = Form.create({
         customerSuccessManager,
         opportunityId,
         licenceCount,
+        tutorMeStartDate: moment(subStartDate || savedDate.current.currentDate),
+        tutorMeEndDate: moment(tutorMeEndDate || savedDate.current.oneYearDate),
       })
     }, [
       subType,
@@ -161,6 +166,8 @@ const ManageDistrictPrimaryForm = Form.create({
       opportunityId,
       licenceCount,
       selectedDistrict,
+      tutorMeStartDate,
+      tutorMeEndDate,
     ])
 
     useUpdateEffect(() => {
@@ -175,7 +182,16 @@ const ManageDistrictPrimaryForm = Form.create({
 
     const handleSubmit = (evt) => {
       validateFields(
-        (err, { subStartDate: startDate, subEndDate: endDate, ...rest }) => {
+        (
+          err,
+          {
+            subStartDate: startDate,
+            subEndDate: endDate,
+            tutorMeStartDate: _tutorMeStartDate,
+            tutorMeEndDate: _tutorMeEndDate,
+            ...rest
+          }
+        ) => {
           if (!err) {
             const _isDataStudio =
               currentSubType === SUBSCRIPTION_TYPES.dataStudio.subType
@@ -234,6 +250,8 @@ const ManageDistrictPrimaryForm = Form.create({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
+              tutorMeStartDate: _tutorMeStartDate.valueOf(),
+              tutorMeEndDate: _tutorMeEndDate.valueOf(),
               ...rest,
               dataStudio,
               seedDsData,
@@ -335,7 +353,9 @@ const ManageDistrictPrimaryForm = Form.create({
         </Form.Item>
         <DatesNotesFormItem
           getFieldDecorator={getFieldDecorator}
+          getFieldValue={getFieldValue}
           showAdditionalDetails
+          showTutorMeFormItems
         />
         <Form.Item>
           <Button data-cy="submit-btn" type="primary" htmlType="submit">

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Empty, Tag } from 'antd'
+import { Empty, Tag, Button } from 'antd'
 import {
   lightGrey9,
   extraDesktopWidthMax,
@@ -8,6 +8,7 @@ import {
   fadedBlack,
   fadedBlack1,
   mainTextColor,
+  themeColor,
 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
@@ -235,4 +236,17 @@ export const CustomStyledCell = styled.div`
 export const ColoredText = styled.div`
   font-weight: ${(p) => p.$fontWeight || 'bold'};
   color: ${(p) => p.$color};
+`
+export const StyledFilledButton = styled(Button)`
+  background-color: ${themeColor};
+  color: ${white};
+  &.ant-btn[disabled] {
+    opacity: 0.3;
+    color: ${white};
+    background-color: ${themeColor};
+  }
+  &.ant-btn:hover {
+    color: ${white};
+    background-color: ${themeColor};
+  }
 `

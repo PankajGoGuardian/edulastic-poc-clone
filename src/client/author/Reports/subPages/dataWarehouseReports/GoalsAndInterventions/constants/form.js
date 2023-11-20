@@ -5,6 +5,7 @@ const { TEST_TYPE_LABELS } = testTypesConstants
 
 export const ACADEMIC = 'academic'
 export const ATTENDANCE = 'attendance'
+export const TUTORME = 'tutorme'
 const AVERAGE_SCORE = 'averageScore'
 const MINIMUM_SCORE = 'minimumScore'
 export const PERFORMANCE_BAND = 'performanceBand'

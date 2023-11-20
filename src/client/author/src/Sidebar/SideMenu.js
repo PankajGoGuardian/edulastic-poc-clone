@@ -64,6 +64,7 @@ import { toggleSideBarAction } from '../actions/toggleMenu'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import {
   getAccountSwitchDetails,
+  getPearTokenSelector,
   getUserOrgId,
   isFreeAdminSelector,
   isOrganizationDistrictSelector,
@@ -591,6 +592,7 @@ class SideMenu extends Component {
       isDefaultDA,
       setSignedUpUsingUsernameAndPassword,
       isSignupUsingUNAndPassSet,
+      pearToken,
     } = this.props
     const {
       isCurator,
@@ -862,14 +864,15 @@ class SideMenu extends Component {
                 (isPearDomain ? <AssessPeardeckLogoCompact /> : <LogoCompact />)
               ) : (
                 <>
-                  <EduIf condition={isPearDomain}>
+                  <EduIf condition={isPearDomain && pearToken}>
                     <PSILauncherStyled>
                       <div id="psi_launcher" />
                     </PSILauncherStyled>
                   </EduIf>
                   {isPearDomain ? (
                     <AssessPeardeckLabelOnDarkBgLogo
-                      height={isMobile ? '16px' : '30px'}
+                      style={{ marginTop: '4px' }}
+                      height={isMobile ? '16px' : '36px'}
                     />
                   ) : (
                     <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
@@ -1145,7 +1148,14 @@ class SideMenu extends Component {
 }
 
 const PSILauncherStyled = styled.div`
-  margin-right: 10px;
+  margin-left: -3px;
+  #psi_launcher {
+    transform: scale(1.35);
+    &.active,
+    &:hover {
+      transform: none;
+    }
+  }
 `
 
 SideMenu.propTypes = {
@@ -1202,6 +1212,7 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
       isSuperAdmin: isSuperAdminSelector(state),
+      pearToken: getPearTokenSelector(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

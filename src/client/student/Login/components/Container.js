@@ -43,6 +43,7 @@ import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
 import { isPearDomain } from '../../../../utils/pear'
+import { PsiContainer } from '../../Signup/styled'
 
 const FormItem = Form.Item
 
@@ -163,6 +164,12 @@ class LoginContainer extends React.Component {
                         />
                       )}
                     </h3>
+
+                    <EduIf condition={isPearDomain}>
+                      <PsiContainer>
+                        <div id="psi_sign_in" />
+                      </PsiContainer>
+                    </EduIf>
 
                     {isDistrictPolicyAllowed(
                       isSignupUsingDaURL,
@@ -356,10 +363,6 @@ class LoginContainer extends React.Component {
                     </FormBody>
                   ) : null}
                 </FormWrapper>
-                <EduIf condition={isPearDomain}>
-                  <br />
-                  <div id="psi_sign_in" />
-                </EduIf>
               </Col>
             </RegistrationBody>
           </Col>

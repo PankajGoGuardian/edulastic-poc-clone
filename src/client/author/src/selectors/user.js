@@ -172,6 +172,10 @@ export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
   }
 )
 
+export const getPearTokenSelector = createSelector(stateSelector, (state) =>
+  _get(state, 'user.pearToken', undefined)
+)
+
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district

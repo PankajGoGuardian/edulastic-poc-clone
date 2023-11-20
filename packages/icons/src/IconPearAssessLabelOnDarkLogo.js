@@ -5,7 +5,7 @@ import SVG from './common/SVG'
 
 const IconPearAssessLabelOnDarkLogo = (props) => (
   <SVG
-    viewBox="0 0 140 34"
+    viewBox="0 0 110 32"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}

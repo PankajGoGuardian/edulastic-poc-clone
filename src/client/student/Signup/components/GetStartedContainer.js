@@ -108,6 +108,10 @@ const GetStarted = ({
     handleSignUp(roleuser.STUDENT, false, classCode)
   }
 
+  const pearOrEdulasticText = isPearDomain
+    ? t('component.signup.getstarted.pearAssess')
+    : t('component.signup.getstarted.edulasticAssessment')
+
   return (
     <RegistrationWrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
@@ -191,8 +195,9 @@ const GetStarted = ({
               <BannerText xs={24}>
                 <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
                 <h4>
-                  {t('component.signup.getstarted.subtext')} <br />{' '}
-                  {t('component.signup.getstarted.subtext2')}
+                  {t('component.signup.getstarted.subtext')}{' '}
+                  {pearOrEdulasticText}
+                  <br /> {t('component.signup.getstarted.subtext2')}
                 </h4>
               </BannerText>
             )}

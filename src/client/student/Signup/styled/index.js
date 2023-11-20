@@ -381,3 +381,8 @@ export const ContainerForButtonAtEnd = styled.div`
   margin-top: ${(props) => props.mT || '0px'};
   margin-bottom: ${(props) => props.mB || '0px'};
 `
+
+export const PsiContainer = styled.div`
+  width: 83%;
+  margin: 0 auto;
+`

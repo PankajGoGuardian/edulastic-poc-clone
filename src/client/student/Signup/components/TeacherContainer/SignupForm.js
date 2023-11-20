@@ -61,6 +61,7 @@ import {
   InfoIcon,
   LinkDiv,
   MobileViewLinks,
+  PsiContainer,
   RegisterButton,
   RegistrationBody,
   RegistrationHeader,
@@ -360,6 +361,11 @@ class Signup extends React.Component {
                       <h3 align="center">
                         <b>{t('component.signup.signupboxheading')}</b>
                       </h3>
+                      <EduIf condition={isPearDomain}>
+                        <PsiContainer>
+                          <div id="psi_sign_in" />
+                        </PsiContainer>
+                      </EduIf>
                       {isDistrictPolicyAllowed(
                         isSignupUsingDaURL,
                         districtPolicy,
@@ -413,7 +419,11 @@ class Signup extends React.Component {
                         <InfoIcon span={3}>
                           <IconLock color={white} />
                         </InfoIcon>
-                        <Col span={21}>{t('component.signup.infotext')}</Col>
+                        <Col span={21}>
+                          {isPearDomain
+                            ? t('component.signup.pearAssessInfotext')
+                            : t('component.signup.infotext')}
+                        </Col>
                       </InfoBox>
                     </FormHead>
                     {isDistrictPolicyAllowed(
@@ -548,7 +558,9 @@ class Signup extends React.Component {
                                 {t('component.signup.teacher.signupteacher')}
                               </RegisterButton>
                             </FormItem>
-                            <TermsAndPrivacy />
+                            <EduIf condition={!isPearDomain}>
+                              <TermsAndPrivacy />
+                            </EduIf>
                           </Form>
                         </Col>
                       </FormBody>

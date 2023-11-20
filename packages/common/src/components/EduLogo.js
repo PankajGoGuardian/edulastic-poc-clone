@@ -24,7 +24,7 @@ export const AssessPeardeckOnDarkBgLogo = styled(IconPearAssessOnDarkLog)`
   height: ${(props) => props.height || '30px'};
 `
 
-export const AssessPeardeckOnLightBgLogo = styled(IconPearAssessLogo)`
+export const AssessPeardeckLogo = styled(IconPearAssessLogo)`
   width: ${(props) => props.width || 'auto'};
   height: ${(props) => props.height || '30px'};
 `

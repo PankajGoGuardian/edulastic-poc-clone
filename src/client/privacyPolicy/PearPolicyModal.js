@@ -2,10 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Modal, Spin } from 'antd'
 import { Checkbox, EduButton, EduIf } from '@edulastic/common'
-import { AssessPeardeckOnLightBgLogo } from '@edulastic/common/src/components/EduLogo'
+import { AssessPeardeckLogo } from '@edulastic/common/src/components/EduLogo'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
 
-const PRODUCT_TERMS_URL = 'https://www.peardeck.com/policies/website-terms'
 const EULA_TERMS_URL = 'https://www.peardeck.com/policies/product-terms-eula'
 const PRIVACY_POLICY_URL = 'https://www.peardeck.com/policies/product-privacy'
 const DATA_PROCESSING_ADDENDUM_URL =
@@ -28,7 +27,7 @@ const PearPolicyModal = ({
       <Spin spinning={isLoading}>
         <ModalContentWrapper>
           <UpperContainer>
-            <AssessPeardeckOnLightBgLogo isBgLight height="35px" />
+            <AssessPeardeckLogo isBgLight height="35px" />
             <StyledHeader>Welcome to Pear Assess!</StyledHeader>
             <p>Before we proceed, please review the following terms</p>
           </UpperContainer>
@@ -41,12 +40,8 @@ const PearPolicyModal = ({
               <StyledOrderedList>
                 <li>
                   To the{' '}
-                  <Link href={PRODUCT_TERMS_URL} target="_blank">
-                    Product Terms
-                  </Link>{' '}
-                  &{' '}
                   <Link href={EULA_TERMS_URL} target="_blank">
-                    End User License Agreement
+                    Product Terms & End User License Agreement
                   </Link>
                 </li>
                 <li>

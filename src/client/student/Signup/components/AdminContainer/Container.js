@@ -39,6 +39,7 @@ import {
   MobileViewLinks,
   DesktopVieLinks,
   DesktopViewCopyright,
+  PsiContainer,
 } from '../../styled'
 import {
   signupAction,
@@ -249,6 +250,11 @@ class AdminSignup extends React.Component {
                       <h3 align="center">
                         <b>{t('component.signup.signupboxheading')}</b>
                       </h3>
+                      <EduIf condition={isPearDomain}>
+                        <PsiContainer>
+                          <div id="psi_sign_in" />
+                        </PsiContainer>
+                      </EduIf>
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
@@ -279,7 +285,11 @@ class AdminSignup extends React.Component {
                         <InfoIcon span={3}>
                           <IconLock color={white} />
                         </InfoIcon>
-                        <Col span={21}>{t('component.signup.infotext')}</Col>
+                        <Col span={21}>
+                          {isPearDomain
+                            ? t('component.signup.pearAssessInfotext')
+                            : t('component.signup.infotext')}
+                        </Col>
                       </InfoBox>
                     </FormHead>
                     <FormBody>
@@ -369,7 +379,9 @@ class AdminSignup extends React.Component {
                               {t('component.signup.admin.signupadminbtn')}
                             </RegisterButton>
                           </FormItem>
-                          <TermsAndPrivacy />
+                          <EduIf condition={!isPearDomain}>
+                            <TermsAndPrivacy />
+                          </EduIf>
                         </Form>
                       </Col>
                     </FormBody>

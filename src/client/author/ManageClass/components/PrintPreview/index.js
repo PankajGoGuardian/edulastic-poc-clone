@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { Table } from 'antd'
 import qs from 'qs'
 import { connect } from 'react-redux'
-import { get, isInteger, floor, isEmpty } from 'lodash'
+import { get, isInteger, floor, isEmpty, orderBy, toUpper } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
 import Title from './Title'
 import StudentCard from './StudentCard'
@@ -80,7 +80,12 @@ class PrintPreviewClass extends React.Component {
         (student) => student.enrollmentStatus === 1 && student.status === 1
       )
     }
-
+    // sort the data same as manage class student table
+    tableData = orderBy(
+      tableData,
+      [(data) => toUpper(data?.lastName || '')],
+      ['asc']
+    )
     let pages = tableData?.length / numOfCard
     if (!isInteger(pages)) {
       pages = floor(pages + 1)

@@ -27,6 +27,10 @@ const StyledModal = styled(Modal)`
   min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
+    ${(props) =>
+      props.modalMinHeight && {
+        'min-height': props.modalMinHeight,
+      }}
     background: ${(props) => (props.bgColor ? props.bgColor : white)};
     padding: ${(props) => props.padding || '25px 45px'};
     border-radius: ${(props) => props.borderRadius};

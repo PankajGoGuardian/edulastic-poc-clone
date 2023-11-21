@@ -70,6 +70,7 @@ import { advanceSearchReducer } from '../../AdvanceSearch'
 import { aiTestDetails } from '../../AssessmentCreate/components/CreateAITest/ducks'
 import { reducer as tutorMeReducer } from '../../TutorMe'
 import aiGenerateQuestionState from './aiGenerateQuestion'
+import ttsTextReducer from './ttsText'
 
 const authorReducers = {
   authorUi,
@@ -144,6 +145,7 @@ const authorReducers = {
   aiTestDetails,
   aiGenerateQuestionState,
   tutorMeReducer,
+  ttsTextReducer,
 }
 
 export default authorReducers

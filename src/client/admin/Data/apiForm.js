@@ -629,6 +629,12 @@ export const apiForms = [
         type: 'checkbox',
         required: false,
       },
+      {
+        displayName: 'Use TTS Text',
+        name: 'useTTSText',
+        type: 'checkbox',
+        required: false,
+      },
     ],
   },
   {

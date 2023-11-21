@@ -18,6 +18,7 @@ const Checkbox = ({
   labelFontSize,
   textTransform,
   disabled,
+  darkBorder,
 }) => {
   const onClickHandler = () => {
     if (!disabled) {
@@ -33,7 +34,11 @@ const Checkbox = ({
       disabled={disabled}
     >
       <Input type="checkbox" checked={checked} onChange={() => {}} />
-      <span />
+      <span
+        style={{
+          border: darkBorder ? `solid 1px ${darkGrey}` : `solid 1px ${grey}`,
+        }}
+      />
       {label && (
         <span
           style={{

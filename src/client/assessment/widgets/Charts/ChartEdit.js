@@ -95,6 +95,15 @@ const ChartEdit = ({
             } else {
               delete draft.chart_data.data[index].notInteractive
             }
+            if (
+              draft?.validation?.validResponse?.value?.[index] &&
+              !draft?.validation?.validResponse?.value?.[index]?.notInteractive
+            ) {
+              draft.validation.validResponse.value[index].notInteractive = true
+            } else {
+              delete draft?.validation?.validResponse?.value?.[index]
+                ?.notInteractive
+            }
             break
           }
           case 'label': {

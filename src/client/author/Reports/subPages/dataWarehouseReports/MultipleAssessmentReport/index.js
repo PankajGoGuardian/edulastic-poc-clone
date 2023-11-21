@@ -47,6 +47,7 @@ import {
   getInterventionsByGroup,
   getSharingState,
   setSharingStateAction,
+  setEnableReportSharingAction,
 } from '../../../ducks'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
@@ -134,6 +135,7 @@ const MultipleAssessmentReport = ({
   fetchInterventionsByGroups,
   setInterventionsByGroup,
   interventionsData,
+  setEnableReportSharing,
 }) => {
   const [sortFilters, setSortFilters] = useState({
     sortKey: sortKeys.COMPARE_BY,
@@ -213,13 +215,13 @@ const MultipleAssessmentReport = ({
     setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Multiple Assessment Report Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   useTabNavigation({
     settings,
@@ -234,6 +236,9 @@ const MultipleAssessmentReport = ({
 
   // get report data
   useEffect(() => {
+    if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
+    }
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
       fetchDWMARChartDataRequest(q)
@@ -557,6 +562,7 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     setInterventionsByGroup: fetchInterventionsByGroupsSuccess,
+    setEnableReportSharing: setEnableReportSharingAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW,

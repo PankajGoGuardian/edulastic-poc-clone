@@ -25,7 +25,11 @@ import {
 } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContainer } from '../../common/styled'
-import { getSharingState, setSharingStateAction } from '../../ducks'
+import {
+  getSharingState,
+  setSharingStateAction,
+  setEnableReportSharingAction,
+} from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import navigation from '../../common/static/json/navigation.json'
@@ -52,6 +56,7 @@ const StudentProfileReportContainer = (props) => {
     breadcrumbData,
     isCliUser,
     isPrinting,
+    setEnableReportSharing,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -64,13 +69,13 @@ const StudentProfileReportContainer = (props) => {
     [reportId, sharedReportList]
   )
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Student Profile Reports Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[loc]) {
@@ -93,6 +98,7 @@ const StudentProfileReportContainer = (props) => {
 
   useEffect(() => {
     if (settings.selectedStudent.key) {
+      setEnableReportSharing(true)
       const path = `${settings.selectedStudent.key}?${qs.stringify(
         settings.requestFilters
       )}`
@@ -291,6 +297,7 @@ const enhance = connect(
     setSPRSettings: setSPRSettingsAction,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )
 

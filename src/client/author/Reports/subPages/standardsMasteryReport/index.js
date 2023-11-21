@@ -34,7 +34,11 @@ import {
   setTempTagsDataAction,
   getFiltersSelector,
 } from './common/filterDataDucks'
-import { getSharingState, setSharingStateAction } from '../../ducks'
+import {
+  getSharingState,
+  setSharingStateAction,
+  setEnableReportSharingAction,
+} from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import {
   getUserRole,
@@ -82,6 +86,7 @@ const StandardsMasteryReportContainer = (props) => {
     standardsPerformanceSummary,
     standardsGradebookSkillInfo,
     filters,
+    setEnableReportSharing,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -106,13 +111,13 @@ const StandardsMasteryReportContainer = (props) => {
     return [_sharedReport, _userRole]
   }, [reportId, sharedReportList])
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Standards Mastery Report Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   useEffect(() => {
     if (!isEmpty(sharedReport?.filters?.ddfilter)) {
@@ -154,6 +159,7 @@ const StandardsMasteryReportContainer = (props) => {
 
   useEffect(() => {
     if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -452,6 +458,7 @@ const ConnectedStandardsMasteryReportContainer = connect(
     setTempDdFilter: setTempDdFilterAction,
     setTempTagsData: setTempTagsDataAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )(StandardsMasteryReportContainer)
 

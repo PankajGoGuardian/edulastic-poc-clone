@@ -18,6 +18,7 @@ import {
   getCsvDownloadingState,
   getSharingState,
   setSharingStateAction,
+  setEnableReportSharingAction,
 } from '../../../ducks'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import { getUserRole } from '../../../../src/selectors/user'
@@ -77,6 +78,7 @@ const EfficacyReport = ({
   setSettings,
   fetchReportSummaryDataRequest,
   fetchReportTableDataRequest,
+  setEnableReportSharing,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -166,13 +168,13 @@ const EfficacyReport = ({
     pageSize: TABLE_PAGE_SIZE,
   })
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Efficacy Report Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   const extraNavFilters = useMemo(
     () => ({
@@ -195,6 +197,9 @@ const EfficacyReport = ({
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
+    }
+    if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
     }
     if (!isInvalidSharedFilters) {
       setPageFilters({ ...pageFilters, page: 1 })
@@ -368,6 +373,7 @@ const enhance = connect(
     ...actions,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )
 

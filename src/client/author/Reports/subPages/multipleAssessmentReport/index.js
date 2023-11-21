@@ -37,7 +37,11 @@ import {
   setTempTagsDataAction,
 } from './common/filterDataDucks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { getSharingState, setSharingStateAction } from '../../ducks'
+import {
+  getSharingState,
+  setSharingStateAction,
+  setEnableReportSharingAction,
+} from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import { ReportContainer, FilterLabel } from '../../common/styled'
@@ -70,6 +74,7 @@ const MultipleAssessmentReportContainer = (props) => {
     isCliUser,
     breadcrumbData,
     isPrinting,
+    setEnableReportSharing,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -87,13 +92,13 @@ const MultipleAssessmentReportContainer = (props) => {
     [reportId, sharedReportList]
   )
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Multiple Assessment Summary Component Unmount')
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   useEffect(() => {
     if (!isEmpty(sharedReport?.filters?.ddfilter)) {
@@ -133,6 +138,7 @@ const MultipleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -393,6 +399,7 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     setTempDdFilter: setTempDdFilterAction,
     setTempTagsData: setTempTagsDataAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )(MultipleAssessmentReportContainer)
 

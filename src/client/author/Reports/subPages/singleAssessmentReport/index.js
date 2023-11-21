@@ -38,7 +38,11 @@ import {
   getTempTagsDataSelector,
   setTempTagsDataAction,
 } from './common/filterDataDucks'
-import { getSharingState, setSharingStateAction } from '../../ducks'
+import {
+  getSharingState,
+  setEnableReportSharingAction,
+  setSharingStateAction,
+} from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
@@ -90,6 +94,7 @@ const SingleAssessmentReportContainer = (props) => {
     sharedReportList,
     breadcrumbData,
     isPrinting,
+    setEnableReportSharing,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -113,6 +118,7 @@ const SingleAssessmentReportContainer = (props) => {
   )
 
   useEffect(() => {
+    setEnableReportSharing(false)
     if (isCliUser) {
       updateCliUser(true)
     }
@@ -150,6 +156,7 @@ const SingleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (settings.selectedTest.key) {
+      setEnableReportSharing(true)
       const arr = Object.keys(settings.requestFilters)
 
       let obj = {}
@@ -466,6 +473,7 @@ const ConnectedSingleAssessmentReportContainer = connect(
     setTempTagsData: setTempTagsDataAction,
     updateCliUser: updateCliUserAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )(SingleAssessmentReportContainer)
 

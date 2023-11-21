@@ -31,6 +31,7 @@ import {
   getInterventionsByGroup,
   getSharingState,
   setSharingStateAction,
+  setEnableReportSharingAction,
 } from '../../../ducks'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
 import {
@@ -117,6 +118,7 @@ const WholeLearnerReport = ({
   termsData,
   attendanceInterventions,
   academicInterventions,
+  setEnableReportSharing,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -217,12 +219,12 @@ const WholeLearnerReport = ({
     setShowApply(false)
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   useEffect(() => {
     // if user did not toggle attendance checkbox and attendance data is empty - hide attendance chart
@@ -255,6 +257,9 @@ const WholeLearnerReport = ({
   }, [settings])
 
   useEffect(() => {
+    if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
+    }
     if (settings.selectedStudent.key) {
       const path = `${DW_WLR_REPORT_URL}${
         settings.selectedStudent.key
@@ -566,7 +571,7 @@ const enhance = connect(
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
-
+    setEnableReportSharing: setEnableReportSharingAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.WHOLE_LEARNER_REPORT,

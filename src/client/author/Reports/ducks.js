@@ -222,6 +222,7 @@ import {
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
+const SET_ENABLE_REPORT_SHARING = '[reports] set enable report sharing state'
 
 const GENERATE_CSV_REQUEST = '[reports] generate csv request'
 const SET_CSV_MODAL_VISIBLE = '[reports] set csv modal visible'
@@ -251,6 +252,9 @@ export const setSharingStateAction = createAction(SET_SHARING_STATE)
 export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
 export const setCsvDownloadingStateAction = createAction(
   SET_CSV_DOWNLOADING_STATE
+)
+export const setEnableReportSharingAction = createAction(
+  SET_ENABLE_REPORT_SHARING
 )
 
 export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
@@ -288,6 +292,11 @@ export const getPrintingState = createSelector(
 export const getCsvDownloadingState = createSelector(
   stateSelector,
   (state) => state.isCsvDownloading
+)
+
+export const getIsSharedReportEnabled = createSelector(
+  stateSelector,
+  (state) => state.isReportSharingEnabled
 )
 
 const _testListSelectors = {}
@@ -369,6 +378,7 @@ export const getInterventionsLoading = createSelector(
 
 const initialState = {
   isSharing: false,
+  isReportSharingEnabled: false,
   isPrinting: false,
   testList: [],
   testListLoading: true,
@@ -394,6 +404,9 @@ const reports = createReducer(initialState, {
   },
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
     state.isCsvDownloading = payload
+  },
+  [SET_ENABLE_REPORT_SHARING]: (state, { payload }) => {
+    state.isReportSharingEnabled = payload
   },
   [RECEIVE_TEST_LIST_REQUEST]: (state, { payload }) => {
     const { statePrefix = '' } = payload

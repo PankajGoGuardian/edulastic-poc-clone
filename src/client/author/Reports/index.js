@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 
 import { Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
+import { MainContentWrapper, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { ReportPaths } from '@edulastic/constants/const/report'
 
@@ -27,6 +27,7 @@ import {
   setPrintingStateAction,
   updateCsvDocsAction,
   getHasCsvDocs,
+  getIsSharedReportEnabled,
 } from './ducks'
 import {
   getCollaborativeGroupsAction,
@@ -82,6 +83,7 @@ const Container = ({
   fetchCollaborationGroups,
   fetchSharedReports,
   districtId,
+  isSharedReportEnabled,
 }) => {
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
@@ -134,7 +136,15 @@ const Container = ({
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
-    setSharingState(true)
+    if (isSharedReportEnabled) {
+      setSharingState(true)
+    } else {
+      notification({
+        type: 'warn',
+        msg:
+          'Please use a filter to retrieve relevant report data, then share it.',
+      })
+    }
   }
 
   const onPrintClickCB = () => {
@@ -491,6 +501,7 @@ const enhance = connect(
     loadingSharedReports: getSharedReportsLoader(state),
     hasCsvDocs: getHasCsvDocs(state),
     isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
+    isSharedReportEnabled: getIsSharedReportEnabled(state),
   }),
   {
     setSharingState: setSharingStateAction,

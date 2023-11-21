@@ -23,7 +23,11 @@ import {
   setERSettingsAction,
   getReportsERSettings,
 } from './ducks'
-import { getSharingState, setSharingStateAction } from '../../ducks'
+import {
+  getSharingState,
+  setSharingStateAction,
+  setEnableReportSharingAction,
+} from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContainer } from '../../common/styled'
@@ -47,6 +51,7 @@ const EngagementReportContainer = ({
   breadcrumbData,
   isCliUser,
   isPrinting,
+  setEnableReportSharing,
 }) => {
   const [firstLoad, setFirstLoad] = useState(true)
   const [reportId] = useState(
@@ -68,14 +73,14 @@ const EngagementReportContainer = ({
     onRefineResultsCB(null, status, 'applyButton')
   }
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    setEnableReportSharing(false)
+    return () => {
       console.log('Engagement Reports Component Unmount')
       setShowApply(false)
       resetAllReports()
-    },
-    []
-  )
+    }
+  }, [])
 
   const computeChartNavigationLinks = (filt) => {
     if (navigation.locToData[loc]) {
@@ -98,6 +103,7 @@ const EngagementReportContainer = ({
 
   useEffect(() => {
     if (settings.requestFilters.termId) {
+      setEnableReportSharing(true)
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -214,6 +220,7 @@ const ConnectedEngagementReportContainer = connect(
     setERSettings: setERSettingsAction,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,
+    setEnableReportSharing: setEnableReportSharingAction,
   }
 )(EngagementReportContainer)
 

@@ -24,7 +24,10 @@ import {
 } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
-import { updateUserToken } from '@edulastic/api/src/utils/Storage'
+import {
+  removeAllTokens,
+  updateUserToken,
+} from '@edulastic/api/src/utils/Storage'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -295,7 +298,9 @@ class App extends Component {
     }
 
     if (pearSignUpPath) {
-      history.push(`/getStarted${location.search}`)
+      // Logging out any user before pear signup flow
+      removeAllTokens()
+      return history.push(`/getStarted${location.search}`)
     }
 
     const isV1Redirect =

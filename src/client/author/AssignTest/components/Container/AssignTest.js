@@ -98,13 +98,13 @@ import slice from '../../../CurriculumSequence/components/ManageContentBlock/duc
 import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
 import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
+import { getSettingsToSaveOnTestType } from '../../../TestPage/utils'
 
 const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
   evalTypeLabels,
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
-  docBasedSettingsOptions,
   ATTEMPT_WINDOW_TYPE,
 } = testConst
 
@@ -566,9 +566,7 @@ class AssignTest extends React.Component {
           ...assignmentSettings,
           ...pick(
             selectedSetting,
-            testSettings.isDocBased
-              ? docBasedSettingsOptions
-              : testSettingsOptions
+            getSettingsToSaveOnTestType(testSettings.isDocBased)
           ),
           autoRedirect: !!selectedSetting.autoRedirect,
         }

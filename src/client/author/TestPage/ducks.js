@@ -53,7 +53,11 @@ import {
   Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
-import { createGroupSummary, showRubricToStudentsSetting } from './utils'
+import {
+  createGroupSummary,
+  getSettingsToSaveOnTestType,
+  showRubricToStudentsSetting,
+} from './utils'
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -116,8 +120,6 @@ const {
   releaseGradeLabels,
   evalTypeLabels,
   passwordPolicy,
-  testSettingsOptions,
-  docBasedSettingsOptions,
   testCategoryTypes,
   SHOW_IMMERSIVE_READER,
 } = testConstants
@@ -3683,7 +3685,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       const _test = yield select(getTestEntitySelector)
       const defaultSettings = pick(
         _test,
-        _test.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+        getSettingsToSaveOnTestType(_test.isDocBased)
       )
       yield put(setDefaultTestSettingsAction(defaultSettings))
     }

@@ -110,6 +110,7 @@ import {
   skinTypesOrder,
   showRubricToStudentsSetting,
   showAutoEssayEvaluationSetting,
+  getSettingsToSaveOnTestType,
 } from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
@@ -149,8 +150,6 @@ const {
   playerSkinValues,
   settingsList,
   TEST_SETTINGS_SAVE_LIMIT,
-  testSettingsOptions,
-  docBasedSettingsOptions,
   accessibilitySettings,
 } = testConstants
 
@@ -644,7 +643,7 @@ class Setting extends Component {
         newSettings = {
           ...pick(
             selectedSetting,
-            entity.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+            getSettingsToSaveOnTestType(entity.isDocBased)
           ),
         }
       }
@@ -693,7 +692,7 @@ class Setting extends Component {
     const { entity, userId } = this.props
     const obj = pick(
       { ...currentSelectedSettings, ...entity },
-      entity.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+      getSettingsToSaveOnTestType(entity.isDocBased)
     )
     const settings = {
       ...obj,

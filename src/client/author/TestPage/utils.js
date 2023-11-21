@@ -16,6 +16,10 @@ import {
 } from '@edulastic/constants'
 
 import moment from 'moment'
+import {
+  settingsNotApplicableToDocBased,
+  testSettingsOptions,
+} from '@edulastic/constants/const/test'
 import { getQuestions } from './ducks'
 
 const { TOP_ORDER_SKINS } = testConstants
@@ -48,6 +52,12 @@ const getStandardWiseSummary = (question, point) => {
     )
   }
   return standardSummary
+}
+
+export const getSettingsToSaveOnTestType = (isDocBased) => {
+  return isDocBased
+    ? difference(testSettingsOptions, settingsNotApplicableToDocBased)
+    : testSettingsOptions
 }
 
 const createItemsSummaryData = (

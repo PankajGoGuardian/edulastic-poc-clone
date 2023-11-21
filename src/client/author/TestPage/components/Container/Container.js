@@ -149,6 +149,7 @@ import TeacherSignup from '../../../../student/Signup/components/TeacherContaine
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
 import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
+import { getSettingsToSaveOnTestType } from '../../utils'
 import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 
@@ -161,8 +162,6 @@ const {
   passwordPolicy: passwordPolicyValues,
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
-  testSettingsOptions,
-  docBasedSettingsOptions,
   testCategoryTypes,
   sectionTestActions,
 } = testConstants
@@ -587,7 +586,7 @@ class Container extends PureComponent {
 
     // should not check assignment level settings in test settings
     const settingsToPick = difference(
-      test.isDocBased ? docBasedSettingsOptions : testSettingsOptions,
+      getSettingsToSaveOnTestType(test.isDocBased),
       ['autoRedirect', 'autoRedirectSettings']
     )
 

@@ -24,7 +24,7 @@ import {
 } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
-import { storeAccessToken } from '@edulastic/api/src/utils/Storage'
+import { updateUserToken } from '@edulastic/api/src/utils/Storage'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -285,9 +285,8 @@ class App extends Component {
       try {
         const token = new URLSearchParams(location.search).get('token')
         if (token) {
-          const { _id, role } = JSON.parse(window.atob(token.split('.')[1]))
-
-          storeAccessToken(token, _id, role)
+          // updating token
+          updateUserToken(token)
         }
       } catch (e) {
         console.error('Invalid pear login')

@@ -449,3 +449,12 @@ export const FETCH_AI_GENERATE_QUESTION =
   '[ai generate question] fetch AI generate question'
 
 export const SET_REALTIME_ATTEMPT_DATA = '[gradebook] set realtime attempt data'
+
+// view TTS text
+export const SET_TTS_TEXT_STATE = '[view tts text] set tts text state'
+
+export const FETCH_TTS_TEXT = '[view tts text] fetch view tts text'
+
+// update TTS text
+export const SET_TTS_UPDATE_DATA = '[update tts text] set tts update data'
+export const UPDATE_TTS_TEXT = '[update tts text] update tts text'

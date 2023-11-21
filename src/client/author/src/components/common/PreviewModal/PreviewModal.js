@@ -7,6 +7,7 @@ import {
   FlexContainer,
   notification,
   withWindowSizes,
+  CustomModalStyled,
 } from '@edulastic/common'
 import {
   questionType,
@@ -95,6 +96,17 @@ import ReportIssue from './ReportIssue'
 import { ButtonsWrapper, RejectButton } from './styled'
 import { aiTestActions } from '../../../../AssessmentCreate/components/CreateAITest/ducks'
 import { AiEduButton } from '../../../../AssessmentCreate/components/CreateAITest/styled'
+import {
+  fetchTTSTextAction,
+  setTTSTextStateAction,
+  updateTTSTextAction,
+} from '../../../actions/ttsText'
+import {
+  getTTSTextAPIStatusSelector,
+  getTTSTextResultSelector,
+  updateTTSTextAPIStatusSelector,
+} from '../../../selectors/ttsText'
+import SpeakableText from '../SpeakableText'
 
 const {
   ITEM_GROUP_TYPES,
@@ -121,6 +133,7 @@ class PreviewModal extends React.Component {
       fullModal: false,
       isRejectMode: false,
       showSelectGroupModal: false,
+      showTTSTextModal: false,
     }
   }
 
@@ -136,6 +149,18 @@ class PreviewModal extends React.Component {
     const { item } = this.props
     if (item.passageId) {
       this.loadPassage(item.passageId)
+    }
+
+    const { ttsTextAPIStatus, setTTSTextState } = this.props
+
+    if (ttsTextAPIStatus) {
+      setTTSTextState({
+        apiStatus: false,
+        result: [],
+        TTSUpdateData: {
+          apiStatus: false,
+        },
+      })
     }
   }
 
@@ -166,6 +191,7 @@ class PreviewModal extends React.Component {
       updateCurrentItemFromPassagePagination,
       passage,
       clearPreview,
+      updateTTSAPIStatus,
     } = this.props
     const { item: oldItem, archivedItems: newArchivedItems } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
@@ -181,6 +207,13 @@ class PreviewModal extends React.Component {
       } else {
         clearPreview()
       }
+    }
+
+    if (
+      prevProps?.updateTTSAPIStatus !== updateTTSAPIStatus &&
+      updateTTSAPIStatus === 'SUCCESS'
+    ) {
+      this.toggleTTSTextModal()
     }
   }
 
@@ -641,6 +674,54 @@ class PreviewModal extends React.Component {
     this.handleSelection(false)
   }
 
+  toggleTTSTextModal = () => {
+    this.setState(({ showTTSTextModal: prevShowTTSTextModal }) => ({
+      showTTSTextModal: !prevShowTTSTextModal,
+    }))
+  }
+
+  viewTTSText = () => {
+    const {
+      item: { _id: itemId, data: { questions = [] } = {} },
+      fetchTTSText,
+      ttsTextResult,
+    } = this.props
+
+    this.toggleTTSTextModal()
+
+    const questionId = questions?.[0]?.id
+
+    if (questionId) {
+      const requestData = {
+        itemId,
+        questionId,
+      }
+
+      if (isEmpty(ttsTextResult)) {
+        fetchTTSText(requestData)
+      }
+    }
+  }
+
+  updateQuestionTTSText = (updatedTTSTextData) => {
+    const {
+      item: { _id: itemId, data: { questions = [] } = {} },
+      updateTTSText,
+    } = this.props
+
+    const questionId = questions?.[0]?.id
+
+    if (questionId) {
+      const requestData = {
+        itemId,
+        questionId,
+        data: updatedTTSTextData,
+      }
+
+      updateTTSText(requestData)
+    }
+  }
+
   handleAddOrRemove = () => {
     const {
       item,
@@ -917,9 +998,11 @@ class PreviewModal extends React.Component {
       selectedRows,
       passageItemIds = [],
       isPlaylistTestReview,
-
       t,
       isDynamicTest,
+      ttsTextResult,
+      ttsTextAPIStatus,
+      updateTTSAPIStatus,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -938,6 +1021,7 @@ class PreviewModal extends React.Component {
       fullModal,
       isRejectMode,
       showSelectGroupModal,
+      showTTSTextModal,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1024,6 +1108,10 @@ class PreviewModal extends React.Component {
             (grp) => !!grp.items.find((i) => i._id === item._id)
           )?.groupName || 'Test'
 
+    const showviewTTSTextBtn =
+      data?.questions?.length === 1 &&
+      [questionType.MULTIPLE_CHOICE].includes(questionsType?.[0])
+
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 0 }}
@@ -1038,6 +1126,23 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         isMobile={isMobile}
       >
+        <CustomModalStyled
+          title="Customize TTS"
+          footer={null}
+          width="768px"
+          modalMinHeight="400px"
+          visible={showTTSTextModal}
+          destroyOnClose={false}
+          onCancel={this.toggleTTSTextModal}
+        >
+          <SpeakableText
+            ttsTextAPIStatus={ttsTextAPIStatus}
+            updateTTSAPIStatus={updateTTSAPIStatus}
+            ttsTextData={ttsTextResult}
+            updateQuestionTTSText={this.updateQuestionTTSText}
+            question={data?.questions?.[0] || {}}
+          />
+        </CustomModalStyled>
         {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
@@ -1063,6 +1168,21 @@ class PreviewModal extends React.Component {
           </FlexContainer>
 
           <ModalTopAction hidden={isLoading}>
+            <FeaturesSwitch
+              inputFeatures="viewTTSText"
+              actionOnInaccessible="hidden"
+            >
+              <EduIf condition={showviewTTSTextBtn}>
+                <EduButton
+                  isGhost
+                  height="28px"
+                  data-cy="viewTTSText"
+                  onClick={this.viewTTSText}
+                >
+                  Customize TTS
+                </EduButton>
+              </EduIf>
+            </FeaturesSwitch>
             {showAddItemToTestButton &&
               (isPassage && showAddPassageItemToTestButton ? (
                 <>
@@ -1467,6 +1587,9 @@ const enhance = compose(
         passageItemIds: passageItemIdsSelector(state),
         aiTestStatus: state?.aiTestDetails?.status,
         isDynamicTest: isDynamicTestSelector(state),
+        ttsTextAPIStatus: getTTSTextAPIStatusSelector(state),
+        ttsTextResult: getTTSTextResultSelector(state),
+        updateTTSAPIStatus: updateTTSTextAPIStatusSelector(state),
       }
     },
     {
@@ -1492,6 +1615,9 @@ const enhance = compose(
       setCurrentGroupIndex: setCurrentGroupIndexAction,
       regenerateTestItem: aiTestActions.regenerateAiTestItems,
       setTestData: setTestDataAction,
+      setTTSTextState: setTTSTextStateAction,
+      fetchTTSText: fetchTTSTextAction,
+      updateTTSText: updateTTSTextAction,
     }
   )
 )

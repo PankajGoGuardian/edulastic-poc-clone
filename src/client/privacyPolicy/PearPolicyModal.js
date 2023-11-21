@@ -33,7 +33,7 @@ const PearPolicyModal = ({
           </UpperContainer>
           <LowerContainer>
             <div>
-              <Checkbox onChange={onCheck} checked={isChecked} />
+              <Checkbox onChange={onCheck} checked={isChecked} darkBorder />
             </div>
             <div>
               <p>By checking this box, you are agreeing:</p>
@@ -47,14 +47,14 @@ const PearPolicyModal = ({
                 <li>
                   To the{' '}
                   <Link href={PRIVACY_POLICY_URL} target="_blank">
-                    Privacy Policy for Product Users.
+                    Privacy Policy for Product Users
                   </Link>
                 </li>
                 <EduIf condition={showEEAPolicy}>
                   <li>
                     To the{' '}
                     <Link href={DATA_PROCESSING_ADDENDUM_URL} target="_blank">
-                      Edulastic Data Processing Addendum.
+                      Edulastic Data Processing Addendum
                     </Link>
                   </li>
                 </EduIf>

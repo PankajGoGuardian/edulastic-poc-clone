@@ -62,6 +62,7 @@ import { advanceSearchSaga } from '../../AdvanceSearch'
 import { aiTestSaga } from '../../AssessmentCreate/components/CreateAITest/ducks'
 import aiGenerateQuestionSaga from './aiGenerateQuestion'
 import { tutorMeSaga } from '../../TutorMe'
+import ttsTextSaga from './ttsText'
 
 const authorSagas = [
   itemsSaga(),
@@ -128,6 +129,7 @@ const authorSagas = [
   aiTestSaga(),
   aiGenerateQuestionSaga(),
   tutorMeSaga(),
+  ttsTextSaga(),
 ]
 
 export default authorSagas

@@ -224,12 +224,13 @@ const generateQuestionViaAI = (data) =>
     })
     .then((result) => result.data)
 
-const getTTSText = ({ itemId, questionId }) =>
+const getTTSText = ({ itemId, questionId, updateTTSText }) =>
   api
     .callApi({
       useSlowApi: true,
       method: 'get',
       url: `${prefix}/${itemId}/question/${questionId}/tts-text`,
+      ...(updateTTSText ? { params: { updateTTSText: true } } : {}),
     })
     .then((result) => result.data)
 

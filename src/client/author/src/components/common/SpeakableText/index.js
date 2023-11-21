@@ -22,6 +22,8 @@ const SpeakableText = ({
   ttsTextData = {},
   updateQuestionTTSText,
   question,
+  showTTSTextModal,
+  regenerateTTSText,
 }) => {
   const [updatedTtsData, setUpdatedTtsData] = useState(ttsTextData)
 
@@ -30,7 +32,7 @@ const SpeakableText = ({
   }, [ttsTextData])
 
   const { text: stimulusText = '', options = {} } = updatedTtsData || {}
-  const optionIds = Object.keys(options) || []
+  const optionIds = (question?.options || []).map(({ value }) => value)
 
   const handleUpdateTtsData = (text, type, optionId) => {
     if (type === 'stimulus') {
@@ -61,7 +63,11 @@ const SpeakableText = ({
       </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'SUCCESS'}>
         <StyledSpeakableTextContainer>
-          <EduIf condition={question?.tts?.titleAudioURL?.length > 0}>
+          <EduIf
+            condition={
+              question?.tts?.titleAudioURL?.length > 0 && showTTSTextModal
+            }
+          >
             <AudioControls
               key={question?.id}
               item={question}
@@ -100,6 +106,14 @@ const SpeakableText = ({
             )
           })}
           <FlexContainer justifyContent="flex-end">
+            <EduButton
+              isGhost
+              loading={ttsTextAPIStatus === 'INITIATED'}
+              onClick={() => regenerateTTSText(true)}
+              disabled={ttsTextAPIStatus === 'INITIATED'}
+            >
+              Regenerate TTS Text
+            </EduButton>
             <EduButton
               loading={updateTTSAPIStatus === 'INITIATED'}
               onClick={updateTTSText}

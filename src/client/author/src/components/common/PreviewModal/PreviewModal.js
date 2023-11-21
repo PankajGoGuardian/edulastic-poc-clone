@@ -680,14 +680,16 @@ class PreviewModal extends React.Component {
     }))
   }
 
-  viewTTSText = () => {
+  viewTTSText = (updateTTSText = false) => {
     const {
       item: { _id: itemId, data: { questions = [] } = {} },
       fetchTTSText,
       ttsTextResult,
     } = this.props
 
-    this.toggleTTSTextModal()
+    if (!updateTTSText) {
+      this.toggleTTSTextModal()
+    }
 
     const questionId = questions?.[0]?.id
 
@@ -695,9 +697,10 @@ class PreviewModal extends React.Component {
       const requestData = {
         itemId,
         questionId,
+        updateTTSText,
       }
 
-      if (isEmpty(ttsTextResult)) {
+      if (isEmpty(ttsTextResult) || updateTTSText) {
         fetchTTSText(requestData)
       }
     }
@@ -1140,7 +1143,9 @@ class PreviewModal extends React.Component {
             updateTTSAPIStatus={updateTTSAPIStatus}
             ttsTextData={ttsTextResult}
             updateQuestionTTSText={this.updateQuestionTTSText}
+            regenerateTTSText={this.viewTTSText}
             question={data?.questions?.[0] || {}}
+            showTTSTextModal={showTTSTextModal}
           />
         </CustomModalStyled>
         {this.navigationButtonVisibile && this.navigationBtns()}
@@ -1177,7 +1182,7 @@ class PreviewModal extends React.Component {
                   isGhost
                   height="28px"
                   data-cy="viewTTSText"
-                  onClick={this.viewTTSText}
+                  onClick={() => this.viewTTSText(false)}
                 >
                   Customize TTS
                 </EduButton>

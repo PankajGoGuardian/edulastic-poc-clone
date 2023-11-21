@@ -57,6 +57,7 @@ const SectionsTestGroupItems = ({
   testId,
   gotoAddItems,
   handleSaveTest,
+  setShowSectionsTestSelectGroupIndexModal,
 }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [confirmModalCategory, setConfirmModalCategory] = useState(null)
@@ -77,6 +78,15 @@ const SectionsTestGroupItems = ({
   useEffect(() => {
     setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()))
   }, [test])
+
+  useEffect(() => {
+    /**
+     * Show select group index modal in case group index is null or undefined.
+     */
+    if (currentGroupIndex !== 0 && !currentGroupIndex) {
+      setShowSectionsTestSelectGroupIndexModal(true)
+    }
+  }, [currentGroupIndex])
 
   const handleSelectItems = () => {
     const currentGroupDetails = test.itemGroups[currentGroupIndex]
@@ -188,11 +198,14 @@ const SectionsTestGroupItems = ({
     setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()])
     // make the newly created section active
     setCurrentGroupIndex(test.itemGroups.length)
+    setShowSectionsTestSelectGroupIndexModal(true)
   }
 
   const handleEditGroup = (e, itemGroup, index) => {
     if (activePanels.includes((index + 1).toString())) e.stopPropagation()
     setCurrentGroupIndex(index)
+    // Show select group modal as new group is getting edited
+    setShowSectionsTestSelectGroupIndexModal(true)
   }
 
   return (

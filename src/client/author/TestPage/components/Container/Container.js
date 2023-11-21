@@ -1260,6 +1260,11 @@ class Container extends PureComponent {
                   setGroupNotEdited={(value, cb = undefined) =>
                     this.setState({ groupNotEdited: value }, cb)
                   }
+                  setShowSectionsTestSelectGroupIndexModal={(val) =>
+                    this.setState({
+                      showSectionsTestSelectGroupIndexModal: val,
+                    })
+                  }
                   setSectionsState={this.setSectionsState}
                   gotoAddItems={this.handleNavChange('addItems')}
                   handleSaveTest={this.handleSave}

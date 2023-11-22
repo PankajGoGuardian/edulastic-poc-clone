@@ -12,21 +12,12 @@ import {
   UserIcon,
 } from '../../common/styled'
 
-const { getFormattedName } = reportUtils.common
+const { formatName } = reportUtils.common
 
 const StudentDetails = ({ studentInformation, studentClassData }) => {
-  const {
-    firstName = '',
-    middleName = '',
-    lastName = '',
-    thumbnail,
-  } = studentInformation
+  const { thumbnail } = studentInformation
 
-  const studentName = getFormattedName(
-    `${firstName} ${middleName} ${lastName}`,
-    false,
-    true
-  )
+  const studentName = formatName(studentInformation, { lastNameFirst: false })
   const schoolName = getSchools(studentClassData) || '-'
   const grades = getGrades(studentClassData) || '-'
 

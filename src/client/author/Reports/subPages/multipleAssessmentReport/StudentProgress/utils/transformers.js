@@ -1,4 +1,4 @@
-import { map, forEach, find, orderBy, isEmpty, toLower } from 'lodash'
+import { map, forEach, find, orderBy } from 'lodash'
 import next from 'immer'
 import { getProficiencyBand } from '../../../../common/util'
 

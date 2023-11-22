@@ -11,14 +11,11 @@ import {
   uniqBy,
   isEmpty,
 } from 'lodash'
-import { reportUtils } from '@edulastic/constants'
+import { formatName } from '@edulastic/constants/reportUtils/common'
 import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import { percentage, getProficiencyBand } from '../../../../common/util'
 
-const { getFormattedName } = reportUtils.common
-
-export const getFullName = (s) =>
-  getFormattedName(`${s.firstName || ''} ${s.lastName || ''}`, false)
+export const getFullName = (s) => formatName(s, { lastNameFirst: false })
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {

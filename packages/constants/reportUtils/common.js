@@ -372,25 +372,31 @@ const downloadCSV = (filename, data) => {
   document.body.removeChild(link)
 }
 
-const getFormattedName = (
-  name,
-  displayLastNameFirst = true,
-  capitalizeName = false,
-  showAnonymousOnEmpty = false
-) => {
-  let nameArr = (name || '').trim().split(' ')
-  if (capitalizeName) {
-    nameArr = nameArr.map((t) => capitalize(t))
+/**
+ *
+ * | nameParts                          | formatName(nameParts, { lastNameFirst: true }) | formatName(nameParts, { lastNameFirst: false }) |
+ * | ---------------------------------- | ---------------------------------------------- | ----------------------------------------------- |
+ * | `['john', 'doe']`                  | `Doe, John`                                    | `John Doe`                                      |
+ * | `['john', 'doe', 'smith']`         | `Smith, John Doe`                              | `John Doe Smith`                                |
+ * | `['john', 'doe', undefined]`       | `John Doe`                                     | `John Doe`                                      |
+ * | `['john', undefined, 'doe smith']` | `Doe smith, John`                              | `John Doe smith`                                |
+ *
+ * @param {string[] | {firstName?: string, middleName?: string, lastName?: string}} nameParts
+ * @param {{lastNameFirst?: boolean}} [options={}]
+ */
+function formatName(nameParts, { lastNameFirst = true } = {}) {
+  nameParts = Array.isArray(nameParts)
+    ? nameParts
+    : [nameParts.firstName, nameParts.middleName, nameParts.lastName]
+  const hasLastName = !!nameParts[nameParts.length - 1]
+  nameParts = nameParts.filter(Boolean).map(capitalize)
+
+  if (lastNameFirst && hasLastName) {
+    const lastName = nameParts.pop()
+    return nameParts.length ? `${lastName}, ${nameParts.join(' ')}` : lastName
   }
-  let curatedName = nameArr.join(' ')
-  if (displayLastNameFirst) {
-    const lName = nameArr.splice(nameArr.length - 1)[0] || ''
-    curatedName = nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
-  }
-  if (showAnonymousOnEmpty) {
-    curatedName = curatedName || 'Anonymous'
-  }
-  return curatedName
+
+  return nameParts.join(' ')
 }
 
 const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {
@@ -666,7 +672,7 @@ module.exports = {
   toggleItem,
   convertTableToCSV,
   downloadCSV,
-  getFormattedName,
+  formatName,
   getStudentAssignments,
   formatDate,
   resetStudentFilters,

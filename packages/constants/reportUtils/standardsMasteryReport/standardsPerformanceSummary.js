@@ -16,7 +16,7 @@ const {
   roundedPercentage,
   getOverallScore,
   getCsvDataFromTableBE,
-  getFormattedName,
+  formatName,
 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -164,9 +164,7 @@ const getRowName = (compareByKey, rowInfo = {}) => {
       return `${rowInfo.className}`
     case 'studentId':
     default:
-      return getFormattedName(
-        `${rowInfo.firstName || ''} ${rowInfo.lastName || ''}`
-      )
+      return formatName(rowInfo)
   }
 }
 

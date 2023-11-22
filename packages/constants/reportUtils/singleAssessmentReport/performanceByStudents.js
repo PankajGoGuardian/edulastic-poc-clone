@@ -8,14 +8,9 @@ const {
   maxBy,
   get,
   round,
-  upperFirst,
 } = require('lodash')
 
-const {
-  filterAccordingToRole,
-  formatDate,
-  getFormattedName,
-} = require('../common')
+const { filterAccordingToRole, formatDate, formatName } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
@@ -287,9 +282,7 @@ const getTableData = ({ bandInfo = [], studentMetricInfo }) => {
     const proficiencyBand = getProficiency(studentMetric, bandInfo)
 
     return {
-      student: getFormattedName(
-        `${upperFirst(firstName || '')} ${upperFirst(lastName || '')}`
-      ),
+      student: formatName(studentMetric),
       studentId,
       firstName,
       lastName,

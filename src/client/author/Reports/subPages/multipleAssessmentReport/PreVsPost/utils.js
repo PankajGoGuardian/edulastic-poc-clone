@@ -15,9 +15,10 @@ import {
   some,
 } from 'lodash'
 
+import { formatName } from '@edulastic/constants/reportUtils/common'
 import navigation from '../../../common/static/json/navigation.json'
 
-const { getProficiencyBand, percentage, getFormattedName } = reportUtils.common
+const { getProficiencyBand, percentage } = reportUtils.common
 const { getColorsByInterpolation } = colorUtils
 
 // decimal base value for parseInt()
@@ -336,10 +337,7 @@ export const getTableData = (
       studentId,
     } = data[0]
     if (compareByKey === compareByKeys.STUDENT) {
-      compareByColumnTitle = getFormattedName(
-        `${firstName || ''} ${lastName || ''}`,
-        false
-      )
+      compareByColumnTitle = formatName(data[0], { lastNameFirst: false })
     } else compareByColumnTitle = data[0][compareBylabels[compareByKey]]
     return {
       compareByColumnTitle,

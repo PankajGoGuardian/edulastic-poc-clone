@@ -15,7 +15,6 @@ import {
 } from 'lodash'
 import moment from 'moment'
 import {
-  reportUtils,
   colors as colorConstants,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
@@ -26,6 +25,10 @@ import {
 import {
   EXTERNAL_TEST_KEY_SEPARATOR,
   RISK_BAND_LABELS,
+  percentage,
+  getProficiencyBand,
+  formatDate,
+  formatName,
 } from '@edulastic/constants/reportUtils/common'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 import {
@@ -36,13 +39,6 @@ import {
 const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
 
 const EXTERNAL_ASSESSMENTS = 'External Assessment'
-
-const {
-  getFormattedName,
-  percentage,
-  getProficiencyBand,
-  formatDate,
-} = reportUtils.common
 
 const testTypes = getAllTestTypesMap()
 
@@ -180,10 +176,7 @@ export const getStudentName = (studInfo, selectedStudent) => {
   if (selectedStudent?.title) {
     return selectedStudent.title
   }
-  return getFormattedName(
-    `${studInfo.firstName || ''} ${studInfo.lastName || ''}`,
-    false
-  )
+  return formatName(studInfo, { lastNameFirst: false })
 }
 
 const colorByText = (text) => {

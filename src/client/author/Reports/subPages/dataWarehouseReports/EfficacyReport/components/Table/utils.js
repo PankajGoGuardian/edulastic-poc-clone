@@ -29,7 +29,7 @@ import LinkCell from '../../../common/components/LinkCell'
 
 const {
   DECIMAL_BASE,
-  getFormattedName,
+  formatName,
   getProficiencyBand,
   percentage,
   ROUND_OFF_TO_INTEGER,
@@ -295,7 +295,7 @@ export const getTableData = (
         groupName,
         studentId,
       } = data[0]
-      const name = getFormattedName(`${firstName || ''} ${lastName || ''}`)
+      const name = formatName(data[0])
       Object.assign(dimension, { _id: studentId, name, firstName, lastName })
       Object.assign(extraStudentColumns, {
         schoolName,

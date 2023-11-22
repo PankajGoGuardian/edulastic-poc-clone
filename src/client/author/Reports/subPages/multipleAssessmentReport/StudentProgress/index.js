@@ -26,11 +26,7 @@ import { useGetBandData } from './hooks'
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
 
-const {
-  downloadCSV,
-  filterAccordingToRole,
-  getFormattedName,
-} = reportUtils.common
+const { downloadCSV, filterAccordingToRole, formatName } = reportUtils.common
 
 const DefaultBandInfo = [
   {
@@ -186,7 +182,7 @@ const StudentProgress = ({
   const dataSource = data
     .map((d) => ({
       ...d,
-      studentName: getFormattedName(d.studentName),
+      studentName: formatName(d),
       schoolName: isEmpty(d.schoolName) ? '-' : d.schoolName,
     }))
     .sort((a, b) =>

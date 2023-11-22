@@ -7,6 +7,7 @@ import {
   middleMobileWidth,
   smallMobileWidth,
   mobileWidthMax,
+  extraDesktopWidth,
 } from '@edulastic/colors'
 import { MenuIcon } from '@edulastic/common'
 import { Affix } from 'antd'
@@ -14,7 +15,7 @@ import { PropTypes } from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { toggleSideBarAction } from '../../../../src/client/author/src/actions/toggleMenu'
 
 const MainHeader = ({
@@ -200,6 +201,21 @@ export const TitleWrapper = styled.h1`
   @media (max-width: ${smallMobileWidth}) {
     max-width: 7rem;
   }
+  ${(props) =>
+    props.hasSections &&
+    css`
+      min-width: auto !important;
+      max-width: 16rem;
+      @media (max-width: ${extraDesktopWidthMax}) {
+        max-width: 8rem;
+      }
+      @media (max-width: ${extraDesktopWidth}) {
+        max-width: 4rem;
+      }
+      @media (max-width: ${smallDesktopWidth}) {
+        max-width: 8rem;
+      }
+    `}
 `
 
 const TitleIcon = styled.span`

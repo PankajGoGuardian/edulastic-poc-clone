@@ -598,6 +598,7 @@ const TestPageHeader = ({
           headerLeftClassName="headerLeftWrapper"
           containerClassName="tabAlignment"
           hasTestId={hasTestId}
+          hasSections={hasSections}
         >
           <TestPageNav
             onChange={onChangeNav}
@@ -865,6 +866,7 @@ const TestPageHeader = ({
           headingText={title}
           mobileHeaderHeight={120}
           justifyContent="flex-start"
+          hasSections={hasSections}
         >
           <RightWrapper>
             {current === 'addItems' && (

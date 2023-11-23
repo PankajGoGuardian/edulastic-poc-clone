@@ -249,7 +249,6 @@ const CustomEditor = ({
             const cursorEl = parent.childNodes[range.startOffset - 1]
             if (parent && range.startOffset === range.endOffset) {
               if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
-
               if (
                 [
                   'RESPONSE',
@@ -269,9 +268,10 @@ const CustomEditor = ({
                 return
               }
               if (
-                cursorEl.tagName === 'SPAN' &&
-                $(cursorEl).hasClass('input__math') &&
-                $(cursorEl).attr('data-latex')
+                cursorEl.tagName === 'AUDIO' ||
+                (cursorEl.tagName === 'SPAN' &&
+                  $(cursorEl).hasClass('input__math') &&
+                  $(cursorEl).attr('data-latex'))
               ) {
                 cursorEl.remove()
                 return

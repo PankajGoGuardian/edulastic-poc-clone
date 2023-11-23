@@ -23,6 +23,7 @@ import { uploadToS3 } from '../../helpers'
 import { audioUploadFileLimit } from './constants'
 import { Button } from '../StyledComponents'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../../../src/client/assessment/utils/timeUtils'
+import EduButton from '../EduButton'
 
 const { Dragger } = Upload
 
@@ -51,11 +52,11 @@ const tabList = [
   },
 ]
 
-const audioAllowedTypes = ['mp3', 'mpeg', 'x-m4a', 'wav']
+const audioAllowedTypes = ['mp3', 'mpeg', 'm4a', 'ogg', 'wav']
 
 const errorMessages = {
   MISSING_LINK: 'No link in upload response.',
-  INVALID_URL: 'Enter a valid url',
+  INVALID_URL: 'Enter a valid audio url',
   MAX_SIZE_ERROR: 'Maximum allowed audio size limit is 10mb',
   ERROR_DURING_UPLOAD: 'Error during file upload.',
   BAD_RESPONSE: 'Parsing response failed.',
@@ -65,7 +66,13 @@ const errorMessages = {
 const AudioPopup = ({ EditorRef }) => {
   const [selectedTab, setSelectedTab] = useState('audioRecord')
   const [progressData, setProgressData] = useState(null)
+  const [audioError, setAudioError] = useState(null)
+
   const editorId = EditorRef.current.id
+
+  const setErrorData = (error) => {
+    setAudioError(error)
+  }
 
   const insertAudio = (url) => {
     // set cursor at the end of content
@@ -73,7 +80,7 @@ const AudioPopup = ({ EditorRef }) => {
     // EditorRef.current.selection.clear()
 
     EditorRef.current.html.insert(
-      `<span contenteditable="false"><audio controls="controls" src="${url}" controlsList="nodownload"></audio></span>`
+      `<audio contenteditable="false" controls="controls" src="${url}" controlsList="nodownload"></audio>`
     )
     // if html is inserted over using editor methods `saveStep` requires to be called to update the editor.
     EditorRef.current.undo.saveStep()
@@ -93,7 +100,7 @@ const AudioPopup = ({ EditorRef }) => {
     }
 
     const size = audioFile.size / (1024 * 1024)
-    if (size > audioUploadFileLimit) {
+    if (selectedTab !== 'audioRecord' && size > audioUploadFileLimit) {
       setProgressData({ show: true, message: MAX_SIZE_ERROR, isError: true })
       return false
     }
@@ -127,8 +134,9 @@ const AudioPopup = ({ EditorRef }) => {
   const content = {
     audioRecord: (
       <AudioRecord
-        editorId={editorId}
+        EditorRef={EditorRef}
         validateAndUploadFile={validateAndUploadFile}
+        setErrorData={setErrorData}
       />
     ),
     audioUrl: (
@@ -154,10 +162,22 @@ const AudioPopup = ({ EditorRef }) => {
         setSelectedTab(key)
       }}
     >
+      <EduIf condition={audioError}>
+        <ErrorPopup
+          isOpen={audioError?.isOpen}
+          errorMessage={audioError?.errorMessage}
+          setErrorData={setErrorData}
+        />
+      </EduIf>
       {progressData?.show ? (
         <Progress {...progressData} />
       ) : (
         content[selectedTab]
+      )}
+      {progressData?.isError && (
+        <EduButton onClick={() => setProgressData({ show: false })}>
+          Retry
+        </EduButton>
       )}
     </StyledCard>
   )
@@ -186,62 +206,58 @@ const Progress = ({ message, isLoading = false, isError = false }) => {
           style={{ fontSize: 32, color: '#19b394' }}
         />
       )}
-      <h3 style={{ marginTop: 10 }} className="fr-message">
+      <h3 style={{ marginTop: 10, textAlign: 'center' }} className="fr-message">
         {message}
       </h3>
     </Row>
   )
 }
 
-const AudioRecord = ({ editorId, validateAndUploadFile }) => {
+const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
   const [isRecording, setIsRecording] = useState(false)
-  const [time, setTime] = useState('00:00')
-  const [audioError, setAudioError] = useState(null)
+  const [time, setTime] = useState(0)
+  const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
+  const editorId = EditorRef.current.id
 
   const onChangeRecordingState = (recordingState) => {
     setIsRecording(recordingState === RECORDING_ACTIVE)
+    EditorRef.current.isRecording = true
   }
   const onRecordingComplete = ({ audioFile }) => {
     clearInterval(timer)
     setIsRecording(false)
+    EditorRef.current.isRecording = false
     validateAndUploadFile(audioFile)
-  }
-
-  const setErrorData = (error) => {
-    setAudioError(error)
   }
 
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
     onChangeRecordingState,
     onRecordingComplete,
     setErrorData,
+    userId: 'audio-plugin',
   })
+
+  useEffect(() => {
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
 
   useEffect(() => {
     if (isRecording) {
       let ms = 0
-      let _time = getFormattedTimeInMinutesAndSeconds(ms)
-      const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
       timer = setInterval(() => {
         if (ms === maxmilliseconds) {
           onClickStopRecording()
         }
         ms += 1000
-        _time = getFormattedTimeInMinutesAndSeconds(ms)
-        setTime(_time)
+        setTime(ms)
       }, 1000)
     }
   }, [isRecording])
 
   return (
     <div id={`fr-audio-record-layer-${editorId}`}>
-      <EduIf condition={audioError}>
-        <ErrorPopup
-          isOpen={audioError?.isOpen}
-          errorMessage={audioError?.errorMessage}
-          setErrorData={setErrorData}
-        />
-      </EduIf>
       <Row
         type="flex"
         justify="center"
@@ -261,11 +277,20 @@ const AudioRecord = ({ editorId, validateAndUploadFile }) => {
           {isRecording ? <IconWhiteStop /> : <IconWhiteMic />}
         </StyledButton>
         <p style={{ marginTop: 10 }}>
-          {isRecording ? `Recording... | ${time}` : 'Tap on mic to record'}
+          {isRecording ? `Recording...` : 'Tap on mic to record'}
         </p>
         {isRecording && (
-          <small style={{ color: '#666' }}>Click to stop recording</small>
+          <small>
+            {`${getFormattedTimeInMinutesAndSeconds(
+              time
+            )} | ${getFormattedTimeInMinutesAndSeconds(
+              maxmilliseconds - time
+            )} left`}
+          </small>
         )}
+        <small style={{ color: '#666' }}>
+          {isRecording ? 'Click to stop recording' : '(upto 5 minutes)'}
+        </small>
       </Row>
     </div>
   )
@@ -275,11 +300,58 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
   const [inputFocus, setInputFocus] = useState(false)
   const [audioUrl, setAudioUrl] = useState('')
 
-  const validateUrl = () => {
+  function sanitizeAndValidateURL(url) {
+    // Strip leading and trailing spaces
+    url = url.trim()
+
+    // Check if the URL starts with a valid protocol
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      throw new Error('Invalid protocol')
+    }
+
+    // Remove any path traversal characters
+    url = url.replace(/[/\\]\.\.]/g, '')
+
+    // Validate the sanitized URL
+    const regex = new RegExp(
+      // eslint-disable-next-line no-useless-escape
+      `^(http[s]?:\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(\/[^\/\s]+)*\.(${audioAllowedTypes.join(
+        '|'
+      )})$`
+    )
+    if (!regex.test(url)) {
+      throw new Error('Invalid URL format')
+    }
+
+    return url
+  }
+
+  function isValidAudio(url) {
+    return new Promise((resolve, reject) => {
+      const audio = new Audio()
+      audio.addEventListener('loadedmetadata', () => {
+        const duration = audio.duration
+        console.log('audio')
+        if (duration > 0) {
+          resolve(true)
+        } else {
+          reject(new Error('Invalid audio duration'))
+        }
+      })
+      audio.addEventListener('error', () => {
+        reject(new Error('Error loading audio'))
+      })
+      audio.src = url
+    })
+  }
+
+  const validateUrl = async () => {
     const { INVALID_URL } = errorMessages
     try {
-      const url = new URL(audioUrl)
-      insertAudio(url.href)
+      setProgressData({ show: true, message: 'Inserting', isLoading: true })
+      const url = sanitizeAndValidateURL(audioUrl)
+      await isValidAudio(url)
+      insertAudio(url)
     } catch (error) {
       setProgressData({
         show: true,
@@ -293,19 +365,19 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
   }
 
   return (
-    <div id={`fr-audio-by-url-layer-${editorId}`}>
+    <div className="audio-layer" id={`fr-audio-by-url-layer-${editorId}`}>
       <div className="fr-input-line">
         <input
           className="fr-not-empty"
           id={`fr-audio-by-url-layer-text-${editorId}`}
           type="text"
-          placeholder={inputFocus ? '' : 'Paste in an audio URL'}
+          placeholder={inputFocus ? '' : 'Paste audio url'}
           aria-required="true"
           onFocus={() => setInputFocus(true)}
           value={audioUrl}
           onChange={(e) => setAudioUrl(e.target.value)}
         />
-        {inputFocus && <label>Paste in an audio URL</label>}
+        {inputFocus && <label>Paste audio url</label>}
       </div>
       <div className="fr-action-buttons">
         <Button
@@ -323,16 +395,16 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
 const AudioUpload = ({ editorId, validateAndUploadFile }) => {
   return (
     <div
-      className="fr-audio-upload-layer fr-file-upload-layer"
+      className="audio-layer fr-audio-upload-layer fr-file-upload-layer"
       id={`fr-audio-upload-layer-${editorId}`}
     >
       <Dragger
-        accept={audioAllowedTypes.map((type) => `audio/${type}`).join()}
+        accept="audio/*"
         name="file"
         action={null}
         onChange={({ file }) => validateAndUploadFile(file.originFileObj)}
       >
-        <strong>Drop audio file</strong>
+        <strong>Drop audio file (mp3)</strong>
         <br />
         (or click)
       </Dragger>
@@ -390,6 +462,16 @@ const StyledCard = styled(Card)`
     }
   }
   .ant-card-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: calc(203px - 48px);
+    .audio-layer {
+      width: 100%;
+    }
     .fr-file-upload-layer {
       margin: 0;
       padding: 0;

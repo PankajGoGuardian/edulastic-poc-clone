@@ -171,7 +171,7 @@ const StudentPerformanceSummary = ({
 
   useEffect(() => {
     expandAllRows
-      ? setExpandedRows([...filteredDomains.keys()])
+      ? setExpandedRows(filteredDomains.map((d) => d.key))
       : setExpandedRows([])
   }, [expandAllRows])
 

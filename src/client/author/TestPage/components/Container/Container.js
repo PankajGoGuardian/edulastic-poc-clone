@@ -107,6 +107,7 @@ import {
   isOrganizationDistrictSelector,
   isPremiumUserSelector,
   getUserSignupStatusSelector,
+  isVideoQuizAndAIEnabledSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -888,12 +889,21 @@ class Container extends PureComponent {
       updated,
       collections: orgCollections,
       location,
+      isVideoQuiAndAiEnabled,
     } = this.props
     let source = location?.state?.assessmentAssignedFrom
     let assessmentTestCategory = location?.state?.assessmentTestCategory
 
     if (!source) {
       source = 'Created New'
+    }
+
+    if (
+      test?.testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      notification({ messageKey: 'aiSuitNotEnabled' })
+      return
     }
 
     if (!assessmentTestCategory) {
@@ -2009,6 +2019,7 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       isDefaultTest: isDefaultTestSelector(state),
       subscription: getSubscriptionSelector(state),
+      isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       createTest: createTestAction,

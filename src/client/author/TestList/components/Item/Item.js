@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { uniqBy } from 'lodash'
+
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
 import { segmentApi } from '@edulastic/api'
+import { notification } from '@edulastic/common'
+import { testCategoryTypes } from '@edulastic/constants/const/test'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -15,6 +17,7 @@ import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
   isOrganizationDistrictUserSelector,
+  isVideoQuizAndAIEnabledSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -51,6 +54,7 @@ import {
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
+import { getTestCollectionName } from '../../../utils/testCardDetails'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -154,7 +158,15 @@ class Item extends Component {
       toggleVerifyEmailModal,
       orgCollections,
       isTestRecommendation,
+      isVideoQuiAndAiEnabled,
     } = this.props
+    if (
+      item?.testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      notification({ messageKey: 'aiSuitNotEnabled' })
+      return
+    }
     if (isTestRecommendation && !this.state.isOpenModal) {
       segmentApi.genericEventTrack('Recommended_TestClick', {})
     }
@@ -364,27 +376,11 @@ class Item extends Component {
       ? flattenPlaylistStandards(_source?.modules)
       : standards.map((_item) => _item.identifier)
 
-    let collectionName = 'PRIVATE'
-    if (collections?.length > 0 && itemBanks.length > 0) {
-      let filteredCollections = itemBanks.filter((c) =>
-        collections.find((i) => i._id === c._id)
-      )
-      filteredCollections = uniqBy(filteredCollections, '_id')
-      if (filteredCollections.length > 0)
-        collectionName = filteredCollections.map((c) => c.name).join(', ')
-    } else if (
-      collections?.length &&
-      collections.find((o) => o.name === 'Edulastic Certified')
-    ) {
-      collectionName = 'Edulastic Certified'
-    } else if (sharedType) {
-      // sharedType comes as number when "Shared with me" filter is selected
-      if (!Number.isNaN(+sharedType)) {
-        collectionName = sharedTypeMap[+sharedType]
-      } else {
-        collectionName = sharedType
-      }
-    }
+    const collectionName = getTestCollectionName(
+      itemBanks,
+      collections,
+      sharedType
+    )
 
     const btnStyle = {
       margin: '0px',
@@ -552,6 +548,7 @@ const enhance = compose(
         state.curriculumSequence?.previouslyUsedPlaylistClone,
       customTitleModalVisible:
         state.curriculumSequence?.customTitleModalVisible,
+      isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

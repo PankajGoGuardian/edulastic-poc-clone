@@ -87,6 +87,7 @@ import {
   getUserOrgId,
   currentDistrictInstitutionIds,
   getOrgGroupList,
+  isPublisherUserSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -112,6 +113,9 @@ import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
+import appConfig from '../../../app-config'
+
+const { videoQuizDefaultCollection } = appConfig
 
 const {
   ITEM_GROUP_TYPES,
@@ -2906,10 +2910,39 @@ function* publishTestSaga({ payload }) {
         return
       }
     }
+    const {
+      collectionId,
+      collectionName,
+      collectionType,
+      collectionBucketId,
+    } = videoQuizDefaultCollection
+
+    const isPublisher = yield select(isPublisherUserSelector)
+    const newTest = produce(_test, (draft) => {
+      // for non publisher we are adding video collection to the Test
+      if (
+        draft.testCategory === testCategoryTypes.VIDEO_BASED &&
+        !isPublisher
+      ) {
+        draft.collections = uniqBy(
+          [
+            ...(draft.collections || []),
+            {
+              _id: collectionId,
+              name: collectionName,
+              type: collectionType,
+              bucketIds: [collectionBucketId],
+            },
+          ],
+          (collection) => collection._id
+        )
+      }
+    })
+
     const result = yield call(
-      _test.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
+      newTest.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
       {
-        payload: { id, data: _test, assignFlow: true },
+        payload: { id, data: newTest, assignFlow: true },
       }
     )
 
@@ -2941,14 +2974,14 @@ function* publishTestSaga({ payload }) {
     }
     if (assignFlow) {
       let update = {
-        timedAssignment: _test?.timedAssignment,
-        showRubricToStudents: _test.showRubricToStudents,
+        timedAssignment: newTest?.timedAssignment,
+        showRubricToStudents: newTest.showRubricToStudents,
       }
-      if (_test?.timedAssignment) {
+      if (newTest?.timedAssignment) {
         update = {
           ...update,
-          allowedTime: _test?.allowedTime || 10 * 60 * 1000,
-          pauseAllowed: _test?.pauseAllowed || false,
+          allowedTime: newTest?.allowedTime || 10 * 60 * 1000,
+          pauseAllowed: newTest?.pauseAllowed || false,
         }
       }
       /**

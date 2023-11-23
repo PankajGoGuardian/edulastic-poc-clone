@@ -48,7 +48,6 @@ import {
 import {
   deleteSharedUserAction,
   getUserListSelector,
-  receiveSharedWithListAction,
   sendTestShareAction,
   getContentSharingStateSelector,
   getShouldSendEmailStateSelector,
@@ -227,25 +226,13 @@ class ShareModal extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      getSharedUsers,
-      match,
-      isPlaylist,
-      userRole,
-      updateEmailNotificationData,
-      isPublished,
-      testId: _testId,
-    } = this.props
-    const testId = match.params.id || _testId
+    const { userRole, updateEmailNotificationData, isPublished } = this.props
+
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
       this.setState({ permission: 'VIEW' })
     }
-    if (testId && testId !== 'undefined')
-      getSharedUsers({
-        contentId: testId,
-        contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
-      })
+
     if (!isPublished) {
       updateEmailNotificationData({
         sendEmailNotification: true,
@@ -876,7 +863,6 @@ const enhance = compose(
       getUsers: fetchUsersListAction,
       updateShareList: updateUsersListAction,
       shareTest: sendTestShareAction,
-      getSharedUsers: receiveSharedWithListAction,
       deleteShared: deleteSharedUserAction,
       updateEmailNotificationData: updateEmailNotificationDataAction,
     }

@@ -1,4 +1,4 @@
-import { white } from '@edulastic/colors'
+import { themeColor, white } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
 import { Spin } from 'antd'
 import styled from 'styled-components'
@@ -33,13 +33,15 @@ export const VideoTitleText = styled.span`
 `
 
 export const VideoCard = styled(Card)`
+  border: none;
+  box-shadow: none;
   .ant-card-body {
-    padding: 5px;
+    padding: 0px;
     height: ${`${videoCardHeight}px`};
     overflow: hidden;
   }
   :hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 3px 2px ${themeColor};
   }
 `
 export const VideoThumbnail = styled.div`

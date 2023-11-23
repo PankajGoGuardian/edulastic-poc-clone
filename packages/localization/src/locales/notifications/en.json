@@ -2266,5 +2266,9 @@
   "selectMaxFiveStandardsWarning": {
     "message": "Please select max 5 standards for the tutor to focus on.",
     "description": ""
+  },
+  "aiSuitNotEnabled": {
+    "message": "You need VideoQuiz and AI Suite subscription to use this test. Buy it now!",
+    "description": ""
   }
 }

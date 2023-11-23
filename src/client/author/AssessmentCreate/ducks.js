@@ -25,11 +25,8 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
-import appConfig from '../../../app-config'
 
 const pdfjs = require('pdfjs-dist')
-
-const { videoQuizDefaultCollection } = appConfig
 
 pdfjs.GlobalWorkerOptions.workerSrc =
   '//cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
@@ -325,21 +322,6 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
-        const {
-          collectionId,
-          collectionName,
-          collectionType,
-          collectionBucketId,
-        } = videoQuizDefaultCollection
-
-        newAssessment.collections = [
-          {
-            _id: collectionId,
-            name: collectionName,
-            type: collectionType,
-            bucketIds: [collectionBucketId],
-          },
-        ]
         newAssessment.cw = true
 
         if (payload.thumbnail) {

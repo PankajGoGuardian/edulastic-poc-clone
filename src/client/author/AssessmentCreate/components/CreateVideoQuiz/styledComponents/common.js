@@ -1,3 +1,4 @@
+import { Icon } from 'antd'
 import styled from 'styled-components'
 
 export const MainWrapper = styled.div`
@@ -9,4 +10,7 @@ export const CommonInlineWrapper = styled.span`
   height: ${({ height }) => height};
   width: ${({ width }) => width};
   border: ${({ border }) => border};
+`
+export const StyledIcon = styled(Icon)`
+  font-size: ${({ fontSize }) => fontSize || '16px'};
 `

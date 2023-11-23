@@ -2,7 +2,7 @@ import React from 'react'
 
 import { EduElse, EduIf, EduThen, FlexContainer } from '@edulastic/common'
 
-import { Icon, Spin, Switch, Tooltip } from 'antd'
+import { Spin, Switch, Tooltip } from 'antd'
 
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -47,7 +47,11 @@ import {
 import { getAssessmentCreatingSelector } from '../../ducks'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import { trimTextToGivenLength } from './utils'
-import { CommonInlineWrapper, MainWrapper } from './styledComponents/common'
+import {
+  CommonInlineWrapper,
+  MainWrapper,
+  StyledIcon,
+} from './styledComponents/common'
 
 const CreateVideoQuiz = ({
   onValidUrl,
@@ -125,8 +129,8 @@ const CreateVideoQuiz = ({
                     placeholder="SEARCH YOUTUBE OR ENTER URL"
                     disabled={disableSearchInput}
                     prefix={
-                      <Icon
-                        style={{ fontSize: '1rem' }}
+                      <StyledIcon
+                        fontSize="24px"
                         type="youtube"
                         theme="filled"
                       />

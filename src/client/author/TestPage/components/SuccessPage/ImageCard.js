@@ -35,11 +35,12 @@ import {
 } from '../../../TestList/components/Item/styled'
 import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
 import { TestStatus } from '../../../TestList/components/ListItem/styled'
+import { getTestCollectionName } from '../../../utils/testCardDetails'
 
 const ImageCard = ({
   isPlaylist,
   _source = {},
-  collections: allCollections = [],
+  collections: itemBanks = [],
   contentData = {},
 }) => {
   const {
@@ -53,13 +54,20 @@ const ImageCard = ({
     status,
     thumbnail,
     isDocBased,
+    sharedType,
   } = _source
+
+  const collectionName = getTestCollectionName(
+    itemBanks,
+    collections,
+    sharedType
+  )
   const authorName = isPlaylist
     ? getPlaylistAuthorName({ _source })
     : getTestAuthorName(_source)
   const { usage = 0, likes = 0 } = analytics[0] || {}
   const itemId = _id.substr(_id.length - 5)
-  const collectionById = keyBy(allCollections, '_id')
+  const collectionById = keyBy(itemBanks, '_id')
   const filterCollections = collections
     .map((col) => collectionById[col._id])
     .filter((c) => c)
@@ -105,10 +113,10 @@ const ImageCard = ({
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"
-              title="Private Library"
+              title={collectionName}
               style={{ color: secondaryTextColor }}
             >
-              Private Library
+              {collectionName}
             </CollectionNameWrapper>
           </Collection>
           <Qcount>

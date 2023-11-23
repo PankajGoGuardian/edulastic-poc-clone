@@ -11,6 +11,7 @@ const searchBoxHeight = 168
 const footerFontSize = 12
 const switchRightTextFontSize = 10
 const switchLeftTextFontSize = 14
+const inputFontSize = 16
 
 export const SearchBoxBody = styled.div`
   background-image: url(${YtSearchBackground});
@@ -58,16 +59,16 @@ export const SearchInput = styled(Search)`
   .ant-input {
     color:  #000
     font-family: Open Sans;
-    font-size: 16px;
+    font-size:  ${`${inputFontSize}px`};
     font-style: normal;
     font-weight: 600;
     line-height: normal;
     height: auto;
     border-width: 2px;
-    height: 48px;
+    height: ${`${inputFontSize * 3}px`};
   } 
   .ant-input-affix-wrapper .ant-input:not(:first-child){
-    padding-left: 32px;
+    padding-left: 38px;
   }
   .ant-input-group-addon{
     height: 48px;

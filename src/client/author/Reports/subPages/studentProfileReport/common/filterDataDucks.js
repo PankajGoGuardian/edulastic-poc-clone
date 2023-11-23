@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
@@ -243,16 +243,11 @@ function* receiveStudentsListSaga({ payload: query }) {
 
 export function* reportSPRFilterDataSaga() {
   yield all([
-    yield takeEvery(
+    takeLatest(
       GET_REPORTS_SPR_FILTER_DATA_REQUEST,
       getReportsSPRFilterDataRequest
     ),
-  ])
-  yield all([
-    yield takeEvery(
-      GET_REPORTS_SPR_STUDENT_DATA_REQUEST,
-      receiveStudentsListSaga
-    ),
+    takeLatest(GET_REPORTS_SPR_STUDENT_DATA_REQUEST, receiveStudentsListSaga),
   ])
 }
 

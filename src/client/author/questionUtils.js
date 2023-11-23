@@ -55,7 +55,7 @@ export const isRichTextFieldEmpty = (text) => {
    * otherwise, after stripping it considers it as empty
    * @see https://snapwiz.atlassian.net/browse/EV-16093
    */
-  let _text = striptags(text, ['iframe', 'video'])
+  let _text = striptags(text, ['iframe', 'video', 'audio'])
   _text = _text.replace(/&nbsp;/g, ' ')
   if (!_text || (_text && !_text.trim())) {
     return true

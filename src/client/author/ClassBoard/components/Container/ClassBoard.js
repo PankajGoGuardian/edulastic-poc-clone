@@ -1108,14 +1108,19 @@ class ClassBoard extends Component {
       userFullName,
     } = this.props
     const selectedStudentsKeys = Object.keys(selectedStudents)
+    segmentApi.genericEventTrack('Assign Tutor', { selectedStudentsKeys })
     if (!isTutorMeEnabled) {
       return openTutorMeBusinessPage()
     }
     if (!selectedStudentsKeys.length) {
-      notification({
+      return notification({
         messageKey: 'atleastOneStudentShouldBeSelectedToAssignTutoring',
       })
-      return
+    }
+    if (!reportStandards.length) {
+      return notification({
+        messageKey: 'addStandardsWarning',
+      })
     }
     // for now only one student can be selected for assigning tutor so next line works
     const [selectedStudentId] = selectedStudentsKeys
@@ -1125,7 +1130,6 @@ class ClassBoard extends Component {
     )
     const selectedTestActivity = testActivitiesByStudentId[selectedStudentId]
     const { assignmentId, classId } = match.params
-    segmentApi.genericEventTrack('Assign Tutor', { selectedStudentsKeys })
 
     // TODO pass to the respective api or sdk
     const { termId, className, testName } = additionalData

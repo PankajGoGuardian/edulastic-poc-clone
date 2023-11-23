@@ -1328,6 +1328,10 @@
     "message": "At least one student should be selected to assign tutoring.",
     "description": ""
   },
+  "addStandardsWarning": {
+    "message": "Test not linked to a standard. For effective tutoring, link it to a standard, regrade and then assign tutoring.",
+    "description": ""
+  },
   "youCanOnlyPrintAfterAssignmentBeenSubmited": {
     "message": "You can print only after the assignment has been submitted by the student(s).",
     "description": ""

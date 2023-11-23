@@ -19,7 +19,10 @@ import { studentReducers } from './client/studentReducers'
 import { studentsSagas } from './client/studentSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { isMobileDevice, isIOS } from './client/platform'
-import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
+import {
+  changeFaviconAndTitleBasedOnDomain,
+  storeErrorDescriptionInSessionStorage,
+} from './client/common/utils/helpers'
 import { extensionBlocker } from './utils/anticheating/extensionBlocker/extensionBlocker'
 
 if (AppConfig.sentryURI) {
@@ -44,6 +47,7 @@ extensionBlocker.registerMutationObserver()
  *  we have to display as error message and remove it from the url.
  */
 storeErrorDescriptionInSessionStorage()
+changeFaviconAndTitleBasedOnDomain('Pear Assess')
 
 // login - redux store
 const { store } = configureStore({}, studentReducers, studentsSagas)

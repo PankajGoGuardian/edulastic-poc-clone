@@ -19,7 +19,10 @@ import { loginReducer } from './client/loginReducers'
 import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { initializeSegment } from './client/common/utils/main'
-import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
+import {
+  changeFaviconAndTitleBasedOnDomain,
+  storeErrorDescriptionInSessionStorage,
+} from './client/common/utils/helpers'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -42,6 +45,7 @@ if (AppConfig.sentryURI) {
 storeErrorDescriptionInSessionStorage()
 
 initializeSegment()
+changeFaviconAndTitleBasedOnDomain()
 
 // login - redux store
 const { store } = configureStore({}, loginReducer, loginSaga)

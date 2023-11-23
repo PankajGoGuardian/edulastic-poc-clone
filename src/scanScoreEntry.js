@@ -10,6 +10,7 @@ import './client/index.css'
 import AppScanScore from './client/scanScore/app'
 import { isMobileDevice, isIOS } from './client/platform'
 import { initializeSegment } from './client/common/utils/main'
+import { changeFaviconAndTitleBasedOnDomain } from './client/common/utils/helpers'
 
 window.isMobileDevice = isMobileDevice()
 window.isIOS = isIOS()
@@ -17,6 +18,7 @@ window.isIOS = isIOS()
 console.log('this ran')
 
 initializeSegment()
+changeFaviconAndTitleBasedOnDomain()
 
 const RootComp = () => (
   <I18nextProvider i18n={i18n}>

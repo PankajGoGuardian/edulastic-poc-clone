@@ -24,7 +24,10 @@ import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
 import { initializeSegment } from './client/common/utils/main'
-import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
+import {
+  changeFaviconAndTitleBasedOnDomain,
+  storeErrorDescriptionInSessionStorage,
+} from './client/common/utils/helpers'
 
 document.addEventListener('DOMContentLoaded', function () {
   const codeInUrl =
@@ -76,6 +79,7 @@ keyboardEventKeyPolyfill.polyfill()
 smoothscroll.polyfill()
 
 initializeSegment()
+changeFaviconAndTitleBasedOnDomain()
 
 // redux store
 const { store } = configureStore({})

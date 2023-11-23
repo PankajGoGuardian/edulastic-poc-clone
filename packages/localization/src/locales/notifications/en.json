@@ -1332,6 +1332,10 @@
     "message": "Test not linked to a standard. For effective tutoring, link it to a standard, regrade and then assign tutoring.",
     "description": ""
   },
+  "notSubmittedWarning": {
+    "message": "Student hasn’t attempted the test yet. Assign a tutor post-test, or visit the Whole learner Data Studio report for immediate tutoring.",
+    "description": ""
+  },
   "youCanOnlyPrintAfterAssignmentBeenSubmited": {
     "message": "You can print only after the assignment has been submitted by the student(s).",
     "description": ""

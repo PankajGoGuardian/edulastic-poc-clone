@@ -1129,6 +1129,14 @@ class ClassBoard extends Component {
       (student) => student._id === selectedStudentId
     )
     const selectedTestActivity = testActivitiesByStudentId[selectedStudentId]
+    if (
+      !selectedTestActivity ||
+      selectedTestActivity.UTASTATUS !== testActivityStatus.SUBMITTED
+    ) {
+      return notification({
+        messageKey: 'notSubmittedWarning',
+      })
+    }
     const { assignmentId, classId } = match.params
 
     // TODO pass to the respective api or sdk

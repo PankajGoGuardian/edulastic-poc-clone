@@ -365,6 +365,8 @@ export const GET_YOUTUBE_THUMBNAIL_REQUEST =
   '[test] get youtube thumbnail request'
 export const GET_YOUTUBE_THUMBNAIL_SUCCESS =
   '[test] get youtube thumbnail success'
+export const SET_YOUTUBE_THUMBNAIL_FAILURE =
+  '[test] set youtube thumbnail failure'
 
 // actions
 
@@ -472,6 +474,10 @@ export const getYoutubeThumbnailAction = createAction(
 )
 export const setYoutubeThumbnailAction = createAction(
   GET_YOUTUBE_THUMBNAIL_SUCCESS
+)
+
+export const setYoutubeThumbnailFailure = createAction(
+  SET_YOUTUBE_THUMBNAIL_FAILURE
 )
 
 export const receiveTestByIdAction = (
@@ -1839,6 +1845,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         ytThumbnail: payload,
+        ytloading: false,
+      }
+    case SET_YOUTUBE_THUMBNAIL_FAILURE:
+      return {
+        ...state,
         ytloading: false,
       }
     default:
@@ -4164,9 +4175,10 @@ function* getYoutubeThumbnailRequestSaga({ payload }) {
     const result = yield call(testsApi.getYoutubeThumbnail, payload)
     yield put({
       type: GET_YOUTUBE_THUMBNAIL_SUCCESS,
-      payload: result.cdnLocation,
+      payload: result?.cdnLocation,
     })
   } catch (err) {
+    yield put(setYoutubeThumbnailFailure())
     Sentry.captureException(err)
     const errorMessage =
       err?.response?.data?.message || 'Failed to get thumbnail'

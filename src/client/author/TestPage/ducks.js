@@ -3807,6 +3807,8 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
   try {
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
     const _test = yield select(getTestSelector)
+    const hasSections = yield select(hasSectionsSelector)
+    const isDynamicTest = yield select(isDynamicTestSelector)
     const { passageId } = passageItems?.[0] || {}
     const currentPassages = yield select(getCurentTestPassagesSelector)
     const currentPassageIds = currentPassages.map((i) => i._id)
@@ -3827,6 +3829,20 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
       )
     } else {
       let newItems = [...testItems]
+      /**
+       * ref: EV-41010
+       * For sections and dynamic test read existing items from respective current group,
+       * and not read items from all groups to prevent addition of same items
+       * in multiple multiple groups.
+       */
+      if (
+        (hasSections || isDynamicTest) &&
+        typeof currentGroupIndex === 'number'
+      ) {
+        const testItemsInCurrentGroup =
+          _test.itemGroups?.[currentGroupIndex]?.items || []
+        newItems = [...testItemsInCurrentGroup]
+      }
       const lastIdx = findLastIndex(
         newItems,
         (element) => element.passageId === passageId

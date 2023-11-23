@@ -149,7 +149,7 @@ const useVideoAssessmentUtils = ({
   useEffect(() => {
     const defaultValue =
       getDefaultSearchString(interestedSubjects, interestedGrades) ||
-      'colors+and+numbers+for+kids'
+      'colors and numbers for kids'
     setLinkValue(defaultValue)
     handleFetchVideos(false, defaultValue)
   }, [interestedSubjects, interestedGrades])

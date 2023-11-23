@@ -240,6 +240,7 @@ export const ColoredText = styled.div`
 export const StyledFilledButton = styled(Button)`
   background-color: ${themeColor};
   color: ${white};
+  margin-top: 22px;
   &.ant-btn[disabled] {
     opacity: 0.3;
     color: ${white};
@@ -248,5 +249,8 @@ export const StyledFilledButton = styled(Button)`
   &.ant-btn:hover {
     color: ${white};
     background-color: ${themeColor};
+  }
+  &.ant-btn:focus {
+    color: ${themeColor};
   }
 `

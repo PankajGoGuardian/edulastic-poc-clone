@@ -153,6 +153,7 @@ import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
 import { getSettingsToSaveOnTestType } from '../../utils'
 import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
+import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -889,21 +890,12 @@ class Container extends PureComponent {
       updated,
       collections: orgCollections,
       location,
-      isVideoQuiAndAiEnabled,
     } = this.props
     let source = location?.state?.assessmentAssignedFrom
     let assessmentTestCategory = location?.state?.assessmentTestCategory
 
     if (!source) {
       source = 'Created New'
-    }
-
-    if (
-      test?.testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuiAndAiEnabled
-    ) {
-      notification({ messageKey: 'aiSuitNotEnabled' })
-      return
     }
 
     if (!assessmentTestCategory) {
@@ -1728,6 +1720,8 @@ class Container extends PureComponent {
       editEnable,
       writableCollections,
       t,
+      history,
+      isVideoQuiAndAiEnabled,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1801,6 +1795,10 @@ class Container extends PureComponent {
 
     const gradeSubject = { grades, subjects }
 
+    const isBuyAISuiteAlertModalVisible =
+      test?.testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+
     return (
       <>
         <CustomPrompt
@@ -1852,6 +1850,17 @@ class Container extends PureComponent {
           visible={showWarningModal}
           proceedPublish={proceedPublish}
         />
+
+        <EduIf condition={isBuyAISuiteAlertModalVisible}>
+          <BuyAISuiteAlertModal
+            isVisible={isBuyAISuiteAlertModalVisible}
+            setAISuiteAlertModalVisibility={() => {}}
+            history={history}
+            isClosable={false}
+            stayOnSamePage={false}
+          />
+        </EduIf>
+
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}

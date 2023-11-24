@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
 import { segmentApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
 import { testCategoryTypes } from '@edulastic/constants/const/test'
 import {
   getOrgDataSelector,
@@ -158,15 +157,7 @@ class Item extends Component {
       toggleVerifyEmailModal,
       orgCollections,
       isTestRecommendation,
-      isVideoQuiAndAiEnabled,
     } = this.props
-    if (
-      item?.testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuiAndAiEnabled
-    ) {
-      notification({ messageKey: 'aiSuitNotEnabled' })
-      return
-    }
     if (isTestRecommendation && !this.state.isOpenModal) {
       segmentApi.genericEventTrack('Recommended_TestClick', {})
     }
@@ -205,6 +196,18 @@ class Item extends Component {
   }
 
   openModal = (source) => {
+    const {
+      item: { testCategory = '' },
+      isVideoQuiAndAiEnabled,
+      setAISuiteAlertModalVisibility,
+    } = this.props
+    if (
+      testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      setAISuiteAlertModalVisibility(true)
+      return
+    }
     if (this.props.isTestRecommendation && source !== 'more') {
       segmentApi.genericEventTrack('Recommended_TestClick', {})
     }
@@ -219,7 +222,21 @@ class Item extends Component {
 
   showPreviewModal = (testId, e) => {
     e && e.stopPropagation()
-    const { setIsTestPreviewVisible } = this.props
+    const {
+      setIsTestPreviewVisible,
+      item: { testCategory = '' },
+      isVideoQuiAndAiEnabled,
+      setAISuiteAlertModalVisibility,
+    } = this.props
+
+    if (
+      testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      setAISuiteAlertModalVisibility(true)
+      return
+    }
+
     setIsTestPreviewVisible(true)
     this.setState({ currentTestId: testId })
     if (this.props.isTestRecommendation && !this.state.isOpenModal) {

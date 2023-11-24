@@ -48,6 +48,7 @@ class CardWrapper extends Component {
       onRemoveFromCart,
       onAddToCart,
       isTestRecommendation,
+      setAISuiteAlertModalVisibility,
     } = this.props
 
     const itemId = _id?.substr(_id.length - 6)
@@ -78,6 +79,7 @@ class CardWrapper extends Component {
             standards={standards}
             isTestLiked={isTestLiked}
             isTestRecommendation={isTestRecommendation}
+            setAISuiteAlertModalVisibility={setAISuiteAlertModalVisibility}
           />
         </CardBox>
       )
@@ -112,6 +114,7 @@ class CardWrapper extends Component {
           onRemoveFromCart={onRemoveFromCart}
           onAddToCart={onAddToCart}
           isTestLiked={isTestLiked}
+          setAISuiteAlertModalVisibility={setAISuiteAlertModalVisibility}
         />
       </Col>
     )

@@ -19,7 +19,10 @@ import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
-import { testContentVisibility } from '@edulastic/constants/const/test'
+import {
+  testContentVisibility,
+  testCategoryTypes,
+} from '@edulastic/constants/const/test'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -38,6 +41,7 @@ import {
   isSAWithoutSchoolsSelector,
   getUserId,
   getUserFeatures,
+  isVideoQuizAndAIEnabledSelector,
 } from '../../../src/selectors/user'
 import {
   getSearchTermsFilterSelector,
@@ -99,6 +103,7 @@ import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
 import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
 import { getSettingsToSaveOnTestType } from '../../../TestPage/utils'
+import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 
 const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
@@ -805,6 +810,8 @@ class AssignTest extends React.Component {
       isTestLoading,
       match,
       isAssigning,
+      history,
+      isVideoQuiAndAiEnabled,
     } = this.props
     const {
       classList,
@@ -822,7 +829,7 @@ class AssignTest extends React.Component {
       userFeatures: { premium },
       isAdvancedSearchLoading,
     } = this.props
-    const { title, _id } = isPlaylist ? playlist : testItem
+    const { title, _id, testCategory } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
       ? { ...parentMenu[location?.state?.from || from] }
       : {}
@@ -837,6 +844,11 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
+
+    const isBuyAISuiteAlertModalVisible =
+      !isPlaylist &&
+      testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
 
     return (
       <div>
@@ -874,6 +886,16 @@ class AssignTest extends React.Component {
             this.setState({ showUpdateSettingModal: false })
           }}
         />
+
+        <EduIf condition={isBuyAISuiteAlertModalVisible}>
+          <BuyAISuiteAlertModal
+            isVisible={isBuyAISuiteAlertModalVisible}
+            setAISuiteAlertModalVisibility={() => {}}
+            history={history}
+            isClosable={false}
+            stayOnSamePage={false}
+          />
+        </EduIf>
 
         <ListHeader
           title={`Assign ${moduleTitle || title || ''}`}
@@ -1048,6 +1070,7 @@ const enhance = compose(
       isAdvancedSearchLoading: isAdvancedSearchLoadingSelector(state),
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

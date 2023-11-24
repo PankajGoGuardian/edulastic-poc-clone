@@ -195,7 +195,7 @@ const StudentMasteryProfile = ({
   const [clickedStandard, setClickedStandard] = useState(undefined)
 
   const curriculumsOptions = useMemo(() => {
-    return getCurriculumsList(interestedCurriculums, true)
+    return getCurriculumsList(interestedCurriculums)
   }, [interestedCurriculums])
 
   useEffect(() => () => resetStudentMasteryProfile(), [])

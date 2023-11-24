@@ -280,10 +280,11 @@ export const getDomainOptionsByGradeSubject = (
   ]
 }
 
-export const getCurriculumsList = (interestedCurriculums, includeAllOption) => {
-  const curriculums = includeAllOption
-    ? [{ key: 'All', title: 'All Standard Sets' }]
-    : []
+export const getCurriculumsList = (
+  interestedCurriculums,
+  includeAllOption = true
+) => {
+  const curriculums = [{ key: 'All', title: 'All Standard Sets' }]
   if (interestedCurriculums?.length) {
     interestedCurriculums.forEach((item) => {
       curriculums.push({
@@ -291,6 +292,9 @@ export const getCurriculumsList = (interestedCurriculums, includeAllOption) => {
         title: item.name,
       })
     })
+    if (!includeAllOption) {
+      curriculums.shift()
+    }
   }
   return curriculums
 }

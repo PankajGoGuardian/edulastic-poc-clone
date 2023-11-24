@@ -88,6 +88,7 @@ import {
   currentDistrictInstitutionIds,
   getOrgGroupList,
   isPublisherUserSelector,
+  isOrganizationDistrictSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -2929,11 +2930,13 @@ function* publishTestSaga({ payload }) {
     } = videoQuizDefaultCollection
 
     const isPublisher = yield select(isPublisherUserSelector)
+    const isOrganization = yield select(isOrganizationDistrictSelector)
     const newTest = produce(_test, (draft) => {
       // for non publisher we are adding video collection to the Test
       if (
         draft.testCategory === testCategoryTypes.VIDEO_BASED &&
-        !isPublisher
+        !isPublisher &&
+        !isOrganization
       ) {
         draft.collections = uniqBy(
           [

@@ -74,11 +74,13 @@ const fetchAssigned = (
   groupStatus = 'all',
   studentId = '',
   districtId = '',
-  searchWithVersionId = false
+  searchWithVersionId = false,
+  page = 0,
+  limit = 0
 ) =>
   api
     .callApi({
-      url: `${prefix}/all`,
+      url: `${prefix}/all?pageNo=${page}&perPage=${limit}`,
       method: 'post',
       params: {
         groupId,

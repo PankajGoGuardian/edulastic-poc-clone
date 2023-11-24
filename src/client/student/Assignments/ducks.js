@@ -585,8 +585,9 @@ export function getSebUrl({
 
 // sagas
 // fetch and load assignments and reports for the student
-export function* fetchAssignments() {
+export function* fetchAssignments({ payload }) {
   try {
+    const { page = 0, limit = 0, setCount = () => {} } = payload
     yield put(setAssignmentsLoadingAction())
     const groupId = yield select(getCurrentGroup)
     const userId = yield select(getCurrentUserId)
@@ -599,18 +600,23 @@ export function* fetchAssignments() {
     if (!districtId) {
       districtId = yield select(getCurrentStudentDistrictId)
     }
-    const [assignments, reports] = yield all([
+    const [{ assignments }, { reports, reportCount }] = yield all([
+      // const [assignments, reports] = yield all([
       call(
         assignmentApi.fetchAssigned,
         groupId,
         '',
         groupStatus,
         userId,
-        districtId
+        districtId,
+        false,
+        page,
+        limit
       ),
-      call(reportsApi.fetchReports, groupId, '', '', groupStatus),
+      call(reportsApi.fetchReports, groupId, '', '', groupStatus, page, limit),
     ])
 
+    setCount(reportCount)
     const reportsGroupedByClassIdentifier = groupBy(
       reports,
       'assignmentClassIdentifier'

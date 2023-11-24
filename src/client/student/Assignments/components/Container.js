@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { largeDesktopWidth } from '@edulastic/colors'
 import { useRealtimeV2 } from '@edulastic/common'
 import useInterval from '@use-it/interval'
-import { Layout, Spin } from 'antd'
+import { Layout, Pagination, Spin } from 'antd'
 import { get, values } from 'lodash'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -93,10 +93,13 @@ const Content = ({
     showVideoResourcePreviewModal,
     seShowVideoResourcePreviewModal,
   ] = useState(null)
+  const limit = 10
+  const [page, setPage] = useState(1)
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
-    fetchAssignments(currentGroup)
-  }, [currentChild, currentGroup])
+    fetchAssignments({ page, limit, setCount })
+  }, [currentChild, currentGroup, page, limit])
 
   const topics = [
     `student_assignment:user:${userId}`,
@@ -105,6 +108,9 @@ const Content = ({
       : allClasses.map((x) => `student_assignment:class:${x._id}`)),
   ]
 
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage)
+  }
   const transformAssignment = (payload) => {
     addRealtimeAssignment(
       transformAssignmentForRedirect(
@@ -201,7 +207,13 @@ const Content = ({
             : noDataNotification()
           : showLoader()}
       </Wrapper>
-
+      <Pagination
+        current={page}
+        total={count}
+        pageSize={limit}
+        onChange={handlePaginationChange}
+        hideOnSinglePage
+      />
       {showVideoResourcePreviewModal && (
         <EmbeddedVideoPreviewModal
           isVisible={showVideoResourcePreviewModal}

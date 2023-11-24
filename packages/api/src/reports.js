@@ -10,10 +10,12 @@ const fetchReports = (
   groupId = '',
   testId = '',
   assignmentId = '',
-  groupStatus = 'all'
+  groupStatus = 'all',
+  page = 0,
+  limit = 0
 ) => {
   const config = {
-    url: `${prefix}`,
+    url: `${prefix}?pageNo=${page}&perPage=${limit}`,
     method: 'get',
     params: {
       groupId,

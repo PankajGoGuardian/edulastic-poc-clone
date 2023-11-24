@@ -358,7 +358,6 @@ class ClassBoard extends Component {
       toggleVerifyEmailModal,
       userRole,
       fetchInterventionsList,
-      isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
     } = this.props
     if (isSAWithoutSchools) {
@@ -384,7 +383,7 @@ class ClassBoard extends Component {
     const { search, state } = location
     setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
-    if (isTutorMeEnabled && isTutorMeVisibleToDistrict) {
+    if (isTutorMeVisibleToDistrict) {
       fetchInterventionsList({ type: 'tutorme', assignmentId, classId })
     }
     studentUnselectAll()
@@ -1180,9 +1179,10 @@ class ClassBoard extends Component {
         assignedByEmail: userEmail,
         assignedByName: userFullName,
       },
-    }).then((tutorMeInterventionResponse) =>
+    }).then((tutorMeInterventionResponse) => {
       assignTutorForStudents(tutorMeInterventionResponse)
-    )
+      this.onUnselectCardOne(selectedStudentId)
+    })
   }
 
   handleOpenTutor = (studentId, studentName) => {

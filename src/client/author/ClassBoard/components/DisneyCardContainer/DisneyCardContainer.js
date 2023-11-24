@@ -318,7 +318,7 @@ class DisneyCardContainer extends Component {
                       }
                     }}
                   >
-                    {getAvatarName(student.studentName || 'Anonymous')}{' '}
+                    {getAvatarName(student.studentName || 'Anonymous')}
                   </CircularDiv>
                 )}
                 <StyledName>
@@ -333,7 +333,7 @@ class DisneyCardContainer extends Component {
                       }
                     }}
                   >
-                    {name}{' '}
+                    {name}
                     {!!interventionsByStudentId?.[student.studentId]
                       ?.length && (
                       <IconTutorMeAssigned

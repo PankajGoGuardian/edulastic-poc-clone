@@ -4,7 +4,13 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { isEmpty } from 'lodash'
-import { EduIf, withWindowSizes, ImmersiveReader } from '@edulastic/common'
+import {
+  EduIf,
+  withWindowSizes,
+  ImmersiveReader,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   testTypes as testTypesConstants,
@@ -42,6 +48,8 @@ import {
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import QuestionSelectDropdown from '../../common/QuestionSelectDropdown'
+import { isPearDomain } from '../../../../../utils/pear'
+import { AssessPeardeckLogoCompact } from '../../../../admin/Common/StyledComponents'
 
 const {
   playerSkin: { drc },
@@ -137,7 +145,14 @@ const PlayerHeader = ({
           zIndex: 505,
         }}
       >
-        <IconEduLogoStyled circleFill={header1.background} />
+        <EduIf condition={isPearDomain}>
+          <EduThen>
+            <IconPearAssessLogoStyled />
+          </EduThen>
+          <EduElse>
+            <IconEduLogoStyled circleFill={header1.background} />
+          </EduElse>
+        </EduIf>
         <StyledHeaderTitle>
           <div style={{ display: 'flex' }}>
             <Title data-cy="title" title={title}>
@@ -359,6 +374,13 @@ const IconEduLogoStyled = styled(IconEduLogo)`
   width: 30px;
   top: -5px;
   left: 8px;
+`
+
+const IconPearAssessLogoStyled = styled(AssessPeardeckLogoCompact)`
+  position: absolute;
+  height: 24px;
+  top: 7px;
+  left: 5px;
 `
 
 const ButtonWrapper = styled(Button)`

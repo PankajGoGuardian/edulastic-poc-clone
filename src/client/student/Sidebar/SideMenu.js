@@ -242,7 +242,23 @@ class SideMenu extends Component {
             >
               <AntIcon type={isSidebarCollapsed ? 'right' : 'left'} />
             </ToggleSidemenu>
-            <LogoWrapper className="logoWrapper">
+            <LogoWrapper
+              className="logoWrapper"
+              onMouseEnter={
+                isPearDomain && isSidebarCollapsed && !isMobile
+                  ? () => {
+                      this.toggleMenu()
+                    }
+                  : null
+              }
+              onMouseLeave={
+                isPearDomain && !isSidebarCollapsed && !isMobile
+                  ? () => {
+                      this.toggleMenu()
+                    }
+                  : null
+              }
+            >
               {broken && (
                 <AntIcon
                   className="mobileCloseIcon"

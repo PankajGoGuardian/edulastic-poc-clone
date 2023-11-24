@@ -189,6 +189,22 @@ const SideMenu = ({
         onClick={() => toggleState((val) => !val)}
         className="logoWrapper"
         aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
+        onMouseEnter={
+          isPearDomain && isCollapsed && !isExpandedOnHover
+            ? () => {
+                toggleState((val) => !val)
+                setIsExpandedOnHover(true)
+              }
+            : null
+        }
+        onMouseLeave={
+          isPearDomain && !isCollapsed && isExpandedOnHover
+            ? () => {
+                toggleState((val) => !val)
+                setIsExpandedOnHover(false)
+              }
+            : null
+        }
       >
         {isCollapsed ? (
           isPearDomain ? (

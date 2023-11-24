@@ -306,7 +306,7 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
       url = url.trim()
       url = new URL(url)
       // Check if the URL starts with a valid protocol
-      if (!['http', 'https'].includes(url.protocol)) {
+      if (!['http:', 'https:'].includes(url.protocol)) {
         throw new Error('Invalid protocol')
       }
       const extension = url.href?.split('.')?.pop()

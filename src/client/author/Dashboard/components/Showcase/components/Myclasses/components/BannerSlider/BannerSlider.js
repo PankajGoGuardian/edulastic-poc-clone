@@ -162,7 +162,9 @@ const BannerSlider = ({
                   <StyledRow>
                     <StyledCol span={20}>
                       <SlideDescription data-cy={slide.description}>
-                        {slide.description}
+                        {slide.description === 'Edulastic Overview'
+                          ? `${pearOrEdulasticText} Overview`
+                          : slide.description}
                       </SlideDescription>
                     </StyledCol>
                     <StyledCol span={2} offset={2}>

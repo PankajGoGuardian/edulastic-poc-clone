@@ -147,9 +147,11 @@ const useVideoAssessmentUtils = ({
   }, [ytThumbnail])
 
   useEffect(() => {
-    const defaultValue =
-      getDefaultSearchString(interestedSubjects, interestedGrades) ||
-      'colors and numbers for kids'
+    const defaultValue = getDefaultSearchString(
+      interestedSubjects,
+      interestedGrades
+    )
+
     setLinkValue(defaultValue)
     handleFetchVideos(false, defaultValue)
   }, [interestedSubjects, interestedGrades])

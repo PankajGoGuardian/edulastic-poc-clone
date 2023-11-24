@@ -9,11 +9,19 @@ const isURL = (input) => {
 }
 
 const getDefaultSearchString = (subjects = [], grades = []) => {
-  const [subject] = subjects
-  const [grade] = grades
+  const [subject = ''] = subjects
+  const [grade = ''] = grades
 
-  if (!subject && !grade) return ''
-  return `${subject} ${grade && `for Grade ${grade}`}`.trim()
+  switch (true) {
+    case !!subject && !!grade:
+      return `${subject} for Grade ${grade}`
+    case !!subject:
+      return subject
+    case !!grade:
+      return `Grade ${grade}`
+    default:
+      return 'colors and numbers for kids'
+  }
 }
 
 const parseISO8601Duration = (durationString) => {

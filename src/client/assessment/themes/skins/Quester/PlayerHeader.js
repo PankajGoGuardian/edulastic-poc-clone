@@ -19,7 +19,7 @@ import {
   IconSignoutHighlight,
   IconQuester,
   IconImmersiveReader,
-  IconPearAssessLogoCompact,
+  IconPearAssessLogoCompactOnDarkBg,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -403,7 +403,7 @@ const IconEduLogoStyled = styled(IconEduLogo)`
   top: -5px;
   left: 8px;
 `
-const LogoPearAssessCompactIcon = styled(IconPearAssessLogoCompact)`
+const LogoPearAssessCompactIcon = styled(IconPearAssessLogoCompactOnDarkBg)`
   position: absolute;
   width: 25px;
   height: 25px;

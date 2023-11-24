@@ -3,7 +3,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
 import { white } from '@edulastic/colors'
-import { IconLogoCompact, IconPearAssessLogoCompact } from '@edulastic/icons'
+import {
+  IconLogoCompact,
+  IconPearAssessLogoCompact,
+  IconPearAssessLogoCompactOnDarkBg,
+} from '@edulastic/icons'
 import { Tooltip } from 'antd'
 import {
   MAX_MOBILE_WIDTH,
@@ -15,7 +19,11 @@ import { isPearDomain } from '../../../../utils/pear'
 const LogoCompact = ({ isMobile, buttons, title, fillColor, isBgLight }) => (
   <LogoCompactContainer>
     {isPearDomain ? (
-      <LogoPearAssessCompactIcon marginRight="12px" isBgLight={isBgLight} />
+      isBgLight ? (
+        <LogoPearAssessCompactIcon marginRight="12px" />
+      ) : (
+        <LogoPearAssessCompactIconOnDarkBg marginRight="12px" />
+      )
     ) : (
       <LogoCompactIcon marginRight="12px" color={fillColor} />
     )}
@@ -50,6 +58,13 @@ const LogoCompactContainer = styled(FlexContainer)`
 `
 
 const LogoPearAssessCompactIcon = styled(IconPearAssessLogoCompact)`
+  width: 31px;
+  height: 31px;
+  margin-right: ${({ marginRight }) => marginRight};
+`
+const LogoPearAssessCompactIconOnDarkBg = styled(
+  IconPearAssessLogoCompactOnDarkBg
+)`
   width: 31px;
   height: 31px;
   margin-right: ${({ marginRight }) => marginRight};

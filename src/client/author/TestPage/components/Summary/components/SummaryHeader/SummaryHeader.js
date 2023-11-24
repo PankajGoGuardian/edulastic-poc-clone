@@ -58,11 +58,7 @@ const SummaryHeader = ({
           <FlexContainer justifyContent="flex-start" alignItems="center">
             <Avatar>
               {isPearDomain ? (
-                <IconPearAssessLogoCompact
-                  isBgLight
-                  width="50px"
-                  height="50px"
-                />
+                <IconPearAssessLogoCompact width="50px" height="50px" />
               ) : (
                 <>
                   <IconEduLogo />

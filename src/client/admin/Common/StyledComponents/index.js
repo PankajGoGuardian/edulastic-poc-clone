@@ -1,5 +1,8 @@
 import { greyThemeDark1, mobileWidthMax, title } from '@edulastic/colors'
-import { IconLogoCompact } from '@edulastic/icons'
+import {
+  IconLogoCompact,
+  IconPearAssessLogoCompactOnDarkBg,
+} from '@edulastic/icons'
 import {
   Button as AntdButton,
   Dropdown,
@@ -9,7 +12,6 @@ import {
   Spin,
 } from 'antd'
 import styled from 'styled-components'
-import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
 import { StyledTable as AntdTable } from '../../../common/styled'
 
 const { Search } = Input
@@ -25,13 +27,11 @@ export const LogoCompact = styled(IconLogoCompact)`
   }
 `
 
-export const AssessPeardeckLogoCompact = styled(IconPearAssessLogoCompact)`
+export const AssessPeardeckLogoCompact = styled(
+  IconPearAssessLogoCompactOnDarkBg
+)`
   width: 40px;
   height: 40px;
-  fill: #0eb08d;
-  &:hover {
-    fill: #0eb08d;
-  }
 `
 
 export const Button = styled.button`

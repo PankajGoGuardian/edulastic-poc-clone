@@ -51,7 +51,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
 
   if (tutorMeStandardsDetails) {
     for (const [key, value] of Object.entries(tutorMeStandardsDetails)) {
-      if (value.length) {
+      if (value) {
         dynamicFields[key] = value
       }
     }

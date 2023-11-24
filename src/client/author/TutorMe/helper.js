@@ -29,7 +29,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       domainIdentifier,
       domainDesc,
     }) => ({
-      masteryScore,
+      masteryScore: masteryScore || 0,
       masteryColor,
       standardIdentifier,
       standardDesc,
@@ -79,21 +79,13 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
     tutoringId: uuid.v4(),
     tutoringURL: TUTOR_ME_APP_URL,
     studentTutorMeId: uuid.v4(),
-    choosenGrade: 5,
-    choosenSubject: 'Math',
-    choosenSubjectArea: 'Math Practice',
-    choosenStandardsAndDomains: [
-      {
-        domain: standardsMasteryData[0].domainIdentifier,
-        standard: standardsMasteryData[0].standardIdentifier,
-      },
-      {
-        domain: (standardsMasteryData[1] || standardsMasteryData[0])
-          .domainIdentifier,
-        standard: (standardsMasteryData[1] || standardsMasteryData[0])
-          .standardIdentifier,
-      },
-    ],
+    choosenGrade: dynamicFields.tutorMeGrade || 5,
+    choosenSubject: dynamicFields.tutorMeSubject || 'Math',
+    choosenSubjectArea: dynamicFields.tutorMeSubjectArea || 'Math Practice',
+    choosenStandardsAndDomains: standardsMasteryData.map((stdmastery) => ({
+      domain: stdmastery.domainIdentifier,
+      standard: stdmastery.standardIdentifier,
+    })),
     notes: 'Sample tutoring notes',
     tutoringSessions: [],
   }

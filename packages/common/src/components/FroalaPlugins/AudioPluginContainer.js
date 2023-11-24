@@ -52,7 +52,7 @@ const tabList = [
   },
 ]
 
-const audioAllowedTypes = ['mp3', 'mpeg', 'm4a', 'ogg', 'wav']
+const audioAllowedTypes = ['mp3', 'mpeg', 'x-m4a', 'ogg', 'wav', 'm4a']
 
 const errorMessages = {
   MISSING_LINK: 'No link in upload response.',
@@ -301,29 +301,22 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
   const [audioUrl, setAudioUrl] = useState('')
 
   function sanitizeAndValidateURL(url) {
-    // Strip leading and trailing spaces
-    url = url.trim()
-
-    // Check if the URL starts with a valid protocol
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      throw new Error('Invalid protocol')
-    }
-
-    // Remove any path traversal characters
-    url = url.replace(/[/\\]\.\.]/g, '')
-
-    // Validate the sanitized URL
-    const regex = new RegExp(
-      // eslint-disable-next-line no-useless-escape
-      `^(http[s]?:\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(\/[^\/\s]+)*\.(${audioAllowedTypes.join(
-        '|'
-      )})$`
-    )
-    if (!regex.test(url)) {
+    try {
+      // Strip leading and trailing spaces
+      url = url.trim()
+      url = new URL(url)
+      // Check if the URL starts with a valid protocol
+      if (!['http', 'https'].includes(url.protocol)) {
+        throw new Error('Invalid protocol')
+      }
+      const extension = url.href?.split('.')?.pop()
+      if (!audioAllowedTypes.includes(extension)) {
+        throw new Error('Invalid URL format')
+      }
+      return url.href
+    } catch (error) {
       throw new Error('Invalid URL format')
     }
-
-    return url
   }
 
   function isValidAudio(url) {
@@ -331,7 +324,6 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
       const audio = new Audio()
       audio.addEventListener('loadedmetadata', () => {
         const duration = audio.duration
-        console.log('audio')
         if (duration > 0) {
           resolve(true)
         } else {
@@ -358,9 +350,6 @@ const AudioByURL = ({ editorId, setProgressData, insertAudio }) => {
         message: INVALID_URL,
         isError: true,
       })
-      setTimeout(() => {
-        setProgressData({ show: false })
-      }, 1000)
     }
   }
 

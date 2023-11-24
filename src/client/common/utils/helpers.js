@@ -606,8 +606,10 @@ export const changeFaviconAndTitleBasedOnDomain = (titleText) => {
   if (isPearDomain) {
     const linkTags = document.querySelectorAll("link[rel*='icon']")
     linkTags.forEach((linkTag) => {
+      // linkTag.href =
+      //   '//cdn.edulastic.com/JS/webresources/images/as/pear-assess-favicon.png'
       linkTag.href =
-        '//cdn.edulastic.com/JS/webresources/images/as/pear-assess-favicon.png'
+        'https://cdnedupoc.snapwiz.net/JS/webresources/images/as/pear-assess-favicon.png'
     })
     window.document.title =
       titleText || 'Pear Assess: Formative and Summative Assessments Made Easy'

@@ -101,7 +101,7 @@ const CreateVideoQuiz = ({
   const disableSearchInput = isThumbnailLoading || creatingAssessment
 
   const disableSafeSearchSwitch =
-    isLoading || isThumbnailLoading || creatingAssessment || !videos.length
+    isLoading || isThumbnailLoading || creatingAssessment
 
   const showLoaderButton = isLoading
 

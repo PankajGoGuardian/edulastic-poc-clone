@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { throttle } from 'lodash'
 
@@ -31,7 +31,6 @@ const useVideoAssessmentUtils = ({
   const [videoNotFound, setVideoNotFound] = useState(false)
   const textIsUrl = isURL(linkValue)
   const loaderRef = useRef(null)
-  const lastQuery = useRef(null)
 
   const hasError = textIsUrl ? !isValidVideoUrl(linkValue) : false
 
@@ -56,8 +55,7 @@ const useVideoAssessmentUtils = ({
     try {
       setIsLoading(true)
 
-      const searchString =
-        userInput?.trim() || linkValue?.trim() || searchedText.trim()
+      const searchString = userInput?.trim()
 
       if (searchString) {
         const {
@@ -71,7 +69,6 @@ const useVideoAssessmentUtils = ({
         if (items.length) {
           setVideoNotFound(false)
           setSearchedText(searchString)
-          lastQuery.current = searchString
           setNextPageToken(_nextPageToken)
           if (append) {
             setVideos((prevState) => [...prevState, ...items])
@@ -82,7 +79,9 @@ const useVideoAssessmentUtils = ({
           }
         } else if (!append) {
           setVideoNotFound(true)
+          setSearchedText(searchString)
           setVideos([])
+          setNextPageToken('')
         }
       }
       setIsLoading(false)
@@ -120,20 +119,14 @@ const useVideoAssessmentUtils = ({
     }
   }, [linkValue, hasError, textIsUrl])
 
-  const handleLoadMore = () => {
-    if (lastQuery.current) {
-      handleFetchVideos(true, lastQuery.current)
-    }
-  }
-
   const handleOnSearch = (value) => {
     if (value) {
-      handleFetchVideos()
+      handleFetchVideos(false, value)
     }
   }
 
   useEffect(() => {
-    handleFetchVideos()
+    handleFetchVideos(false, searchedText)
   }, [isModerateRestriction])
 
   useEffect(() => {
@@ -161,30 +154,37 @@ const useVideoAssessmentUtils = ({
     setLinkValue(searchString)
   }
 
-  const handleIntersect = (entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        if (!isLoading) {
-          handleLoadMore(true)
-        }
+  const handleIntersect = useCallback(
+    (entries) => {
+      const [entry] = entries
+      if (!isLoading && entry.isIntersecting && videos.length && searchedText) {
+        handleFetchVideos(true, searchedText)
       }
-    }
-  }
+    },
+    [videos, searchedText, isLoading, nextPageToken, isModerateRestriction]
+  )
 
   useEffect(() => {
+    if (!loaderRef?.current) return
     const observer = new IntersectionObserver(handleIntersect, {
       root: null,
       threshold: 0,
     })
-    if (loaderRef?.current) {
-      return observer.observe(loaderRef.current)
-    }
+    observer.observe(loaderRef.current)
+
     return () => {
       if (loaderRef?.current) {
         return observer.unobserve(loaderRef.current)
       }
     }
-  }, [])
+  }, [
+    loaderRef,
+    videos,
+    searchedText,
+    isLoading,
+    nextPageToken,
+    isModerateRestriction,
+  ])
 
   return {
     setLinkValue,

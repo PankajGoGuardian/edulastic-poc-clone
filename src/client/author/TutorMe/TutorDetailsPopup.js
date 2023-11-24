@@ -23,8 +23,7 @@ const History = ({ intervention }) => {
   return (
     <div>
       <AssignedParagraph>
-        Tutoring Assigned for {intervention.studentName} :{' '}
-        {formatDate(intervention.createdAt)}
+        Tutoring Assigned: {formatDate(intervention.createdAt)}
       </AssignedParagraph>
       <StandardsParagraph>
         {Object.keys(masteryDetailsByDomainId).map((domainId) => {

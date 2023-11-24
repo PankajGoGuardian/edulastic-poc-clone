@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, DatePicker, Input, Select, Row, Checkbox } from 'antd'
 import moment from 'moment'
+
+import { notification } from '@edulastic/common'
 import { IconEdit } from '@edulastic/icons'
+
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
 import { Table, Button as CustomButton } from '../Common/StyledComponents'
@@ -156,8 +159,8 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
               customerSuccessManager,
               opportunityId,
               licenceCount,
-              tutorMeStartDate: tutorMeStartDate.valueOf(),
-              tutorMeEndDate: tutorMeEndDate.valueOf(),
+              tutorMeStartDate: tutorMeStartDate?.valueOf(),
+              tutorMeEndDate: tutorMeEndDate?.valueOf(),
             })
           }
         }
@@ -193,16 +196,24 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
 
       const handleClick = (subTypeParam) => {
         const currentTimeInMilliSec = new Date().getTime()
-        bulkSchoolsSubscribeAction({
-          subStartDate: editedStartDate || currentTimeInMilliSec,
-          subEndDate: editedEndDate || currentTimeInMilliSec,
-          notes: editedNotes,
-          schoolIds: [schoolId],
-          subType: subTypeParam,
-          adminPremium: editedAdminPremium,
-          tutorMeStartDate: editedTutorMeStartDate || currentTimeInMilliSec,
-          tutorMeEndDate: editedTutorMeEndDate || currentTimeInMilliSec,
-        })
+        // validate both TutorMe Start & End date are set/unset
+        if (!editedTutorMeEndDate !== !editedTutorMeStartDate) {
+          const msg = editedTutorMeStartDate
+            ? 'TutorMe End Date required!'
+            : 'TutorMe Start Date required!'
+          notification({ msg })
+        } else {
+          bulkSchoolsSubscribeAction({
+            subStartDate: editedStartDate || currentTimeInMilliSec,
+            subEndDate: editedEndDate || currentTimeInMilliSec,
+            notes: editedNotes,
+            schoolIds: [schoolId],
+            subType: subTypeParam,
+            adminPremium: editedAdminPremium,
+            tutorMeStartDate: editedTutorMeStartDate,
+            tutorMeEndDate: editedTutorMeEndDate,
+          })
+        }
       }
 
       const handleEditClick = () => {
@@ -285,31 +296,39 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
     const renderTutorMeStartDate = (date, record) =>
       record.schoolId === currentEditableRow ? (
         <DatePicker
-          value={moment(editedTutorMeStartDate)}
+          value={editedTutorMeStartDate && moment(editedTutorMeStartDate)}
           onChange={(_tutorMeStartDate) =>
             setEditableRowFieldValues({
               fieldName: 'tutorMeStartDate',
               value: _tutorMeStartDate?.valueOf(),
             })
           }
+          disabledDate={(val) =>
+            !!editedTutorMeEndDate &&
+            val > moment(editedTutorMeEndDate).startOf('day')
+          }
         />
       ) : (
-        moment(date).format('YYYY-MM-DD')
+        date && moment(date).format('YYYY-MM-DD')
       )
 
     const renderTutorMeEndDate = (date, record) =>
       record.schoolId === currentEditableRow ? (
         <DatePicker
-          value={moment(editedTutorMeEndDate)}
+          value={editedTutorMeEndDate && moment(editedTutorMeEndDate)}
           onChange={(_tutorMeEndDate) =>
             setEditableRowFieldValues({
               fieldName: 'tutorMeEndDate',
               value: _tutorMeEndDate?.valueOf(),
             })
           }
+          disabledDate={(val) =>
+            !!editedTutorMeStartDate &&
+            val < moment(editedTutorMeStartDate).startOf('day')
+          }
         />
       ) : (
-        moment(date).format('YYYY-MM-DD')
+        date && moment(date).format('YYYY-MM-DD')
       )
 
     const renderNotes = (note, record) =>

@@ -154,8 +154,8 @@ const ManageDistrictPrimaryForm = Form.create({
         customerSuccessManager,
         opportunityId,
         licenceCount,
-        tutorMeStartDate: moment(subStartDate || savedDate.current.currentDate),
-        tutorMeEndDate: moment(tutorMeEndDate || savedDate.current.oneYearDate),
+        tutorMeStartDate: tutorMeStartDate && moment(tutorMeStartDate),
+        tutorMeEndDate: tutorMeEndDate && moment(tutorMeEndDate),
       })
     }, [
       subType,
@@ -250,8 +250,8 @@ const ManageDistrictPrimaryForm = Form.create({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
-              tutorMeStartDate: _tutorMeStartDate.valueOf(),
-              tutorMeEndDate: _tutorMeEndDate.valueOf(),
+              tutorMeStartDate: _tutorMeStartDate?.valueOf(),
+              tutorMeEndDate: _tutorMeEndDate?.valueOf(),
               ...rest,
               dataStudio,
               seedDsData,

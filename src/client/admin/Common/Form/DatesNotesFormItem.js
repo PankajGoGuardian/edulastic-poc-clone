@@ -77,8 +77,14 @@ const TutorMeFormItems = ({
   getFieldValue,
 }) => {
   const tutorMeStartDate = getFieldValue('tutorMeStartDate')
+  const tutorMeEndDate = getFieldValue('tutorMeEndDate')
+  const disabledStartDate = useCallback(
+    (val) => !!tutorMeEndDate && val > moment(tutorMeEndDate).startOf('day'),
+    [tutorMeEndDate]
+  )
   const disabledEndDate = useCallback(
-    (val) => val < moment(tutorMeStartDate).startOf('day'),
+    (val) =>
+      !!tutorMeStartDate && val < moment(tutorMeStartDate).startOf('day'),
     [tutorMeStartDate]
   )
   const formLayout = {
@@ -93,26 +99,21 @@ const TutorMeFormItems = ({
         {...formLayout}
       >
         {getFieldDecorator('tutorMeStartDate', {
-          rules: [{ required: true }],
+          rules: [{ required: !!tutorMeEndDate }],
           initialValue: initialTutorMeStartDate,
-        })(<DatePicker />)}
+        })(<DatePicker disabledDate={disabledStartDate} />)}
       </Form.Item>
       <Form.Item
         label={<HeadingSpan>TutorMe End Date</HeadingSpan>}
         {...formLayout}
       >
         {getFieldDecorator('tutorMeEndDate', {
-          rules: [{ required: true }],
+          rules: [{ required: !!tutorMeStartDate }],
           initialValue: initialTutorMeEndDate,
         })(<DatePicker disabledDate={disabledEndDate} />)}
       </Form.Item>
     </>
   )
-}
-
-TutorMeFormItems.defaultProps = {
-  initialTutorMeStartDate: moment(),
-  initialTutorMeEndDate: moment().add(365, 'days'),
 }
 
 const NotesFormItem = ({

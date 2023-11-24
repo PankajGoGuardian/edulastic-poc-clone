@@ -887,7 +887,7 @@ class SideMenu extends Component {
                   </EduIf>
                   {isPearDomain ? (
                     <AssessPeardeckLabelOnDarkBgLogo
-                      style={{ marginTop: '4px' }}
+                      style={{ marginTop: '4px', marginLeft: '-5px' }}
                       height={isMobile ? '16px' : '36px'}
                     />
                   ) : (
@@ -1165,13 +1165,6 @@ class SideMenu extends Component {
 
 const PSILauncherStyled = styled.div`
   margin-left: -3px;
-  #psi_launcher {
-    transform: scale(1.35);
-    &.active,
-    &:hover {
-      transform: none;
-    }
-  }
 `
 
 SideMenu.propTypes = {

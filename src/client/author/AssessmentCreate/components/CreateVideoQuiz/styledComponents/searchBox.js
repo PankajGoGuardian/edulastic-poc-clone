@@ -1,6 +1,6 @@
 import { white } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
-import { Input } from 'antd'
+import { Form, Input } from 'antd'
 import styled from 'styled-components'
 import YtSearchBackground from '../../../../src/assets/YtSearchBackground.png'
 
@@ -107,4 +107,13 @@ export const SearchBoxWrapper = styled(FlexContainer)`
   top: 61px; // exact height of breadcrumb component
   z-index: 1;
   background: ${white};
+`
+export const FormItem = styled(Form.Item)`
+  &.ant-form-item {
+    margin: 0px;
+  }
+  .ant-form-explain {
+    position: absolute;
+    top: ${`${inputFontSize * 3 + 6}px`};
+  }
 `

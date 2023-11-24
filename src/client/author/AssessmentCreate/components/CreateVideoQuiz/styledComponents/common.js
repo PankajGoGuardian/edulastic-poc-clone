@@ -12,5 +12,6 @@ export const CommonInlineWrapper = styled.span`
   border: ${({ border }) => border};
 `
 export const StyledIcon = styled(Icon)`
+  color: #595959;
   font-size: ${({ fontSize }) => fontSize || '16px'};
 `

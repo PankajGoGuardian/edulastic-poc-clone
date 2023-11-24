@@ -2,7 +2,7 @@ import React from 'react'
 
 import { EduElse, EduIf, EduThen, FlexContainer } from '@edulastic/common'
 
-import { Spin, Switch, Tooltip } from 'antd'
+import { Form, Spin, Switch, Tooltip } from 'antd'
 
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -37,6 +37,7 @@ import {
   SearchBoxWrapper,
   SearchInput,
   StyledSwitchText,
+  FormItem,
 } from './styledComponents/searchBox'
 import {
   VideoListWrapper,
@@ -78,6 +79,7 @@ const CreateVideoQuiz = ({
     handleOnSearch,
     handleOnChange,
     loaderRef,
+    hasError,
   } = useVideoAssessmentUtils({
     setYoutubeThumbnail,
     ytThumbnail,
@@ -93,7 +95,11 @@ const CreateVideoQuiz = ({
   if (!isVideoQuizAndAIEnabled) {
     return null
   }
-
+  const errorMessage = () => {
+    if (linkValue && hasError) {
+      return `This link can't be played.`
+    }
+  }
   const showSpinnerVideoList = isThumbnailLoading || creatingAssessment
 
   const showNoData = !isLoading && linkValue && !textIsUrl && !videos.length
@@ -117,26 +123,33 @@ const CreateVideoQuiz = ({
                 height="100%"
               >
                 <CommonInlineWrapper padding="0 0 0 4rem" width="45%">
-                  <SubHeader mb="0.5rem">
-                    Search YouTube/ Paste Video URL
-                  </SubHeader>
-                  <SearchInput
-                    allowClear
-                    data-cy="videolink"
-                    onChange={handleOnChange}
-                    onSearch={(value) => handleOnSearch(value)}
-                    value={linkValue}
-                    placeholder="SEARCH YOUTUBE OR ENTER URL"
-                    disabled={disableSearchInput}
-                    prefix={
-                      <StyledIcon
-                        fontSize="24px"
-                        type="youtube"
-                        theme="filled"
+                  <Form colon={false}>
+                    <SubHeader mb="0.5rem">
+                      Search YouTube/ Paste Video URL
+                    </SubHeader>
+                    <FormItem
+                      validateStatus={hasError ? 'error' : 'success'}
+                      help={errorMessage()}
+                    >
+                      <SearchInput
+                        allowClear
+                        data-cy="videolink"
+                        onChange={handleOnChange}
+                        onSearch={(value) => handleOnSearch(value)}
+                        value={linkValue}
+                        placeholder="SEARCH YOUTUBE OR ENTER URL"
+                        disabled={disableSearchInput}
+                        prefix={
+                          <StyledIcon
+                            fontSize="24px"
+                            type="youtube"
+                            theme="filled"
+                          />
+                        }
+                        enterButton
                       />
-                    }
-                    enterButton
-                  />
+                    </FormItem>
+                  </Form>
                 </CommonInlineWrapper>
               </FlexContainer>
             </SearchBoxBody>

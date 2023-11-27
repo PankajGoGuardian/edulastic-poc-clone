@@ -54,6 +54,11 @@ import {
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import {
+  SharedTypes,
+  SharedPermissions,
+  ContentTypes,
+} from '@edulastic/constants/const/sharedTypes'
+import {
   createGroupSummary,
   getSettingsToSaveOnTestType,
   showRubricToStudentsSetting,
@@ -2976,6 +2981,7 @@ function* publishTestSaga({ payload }) {
       yield call(testsApi.publishTest, id)
       yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED))
     }
+
     if (features.isCurator || features.isPublisherAuthor) {
       yield put(push(`/author/tests?filter=AUTHORED_BY_ME`))
       return notification({
@@ -2985,6 +2991,28 @@ function* publishTestSaga({ payload }) {
     }
     if (!assignFlow) {
       notification({ type: 'success', messageKey: 'publishedPlaylist' })
+    }
+    /**
+     * Only for video quiz
+     * For non publisher and non organization we are sharing Test to by default public
+     */
+    if (
+      !isEmpty(id) &&
+      newTest.testCategory === testCategoryTypes.VIDEO_BASED &&
+      !isPublisher &&
+      !isOrganization
+    ) {
+      yield put(
+        sendTestShareAction({
+          data: {
+            emails: [],
+            sharedType: SharedTypes.PUBLIC,
+            permission: SharedPermissions.VIEW,
+            contentType: ContentTypes.TEST,
+          },
+          contentId: id,
+        })
+      )
     }
     if (assignFlow) {
       let update = {
@@ -3034,7 +3062,7 @@ function* publishTestSaga({ payload }) {
     Sentry.captureException(error)
     console.error(error)
     notification({
-      type: 'success',
+      type: 'error',
       msg: error?.data?.message || 'publish failed.',
     })
   }

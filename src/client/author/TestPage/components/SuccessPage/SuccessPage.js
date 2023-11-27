@@ -41,7 +41,6 @@ import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
   getTestSelector,
   getUserListSelector as getTestSharedListSelector,
-  receiveSharedWithListAction,
   receiveTestByIdAction,
   removeTestEntityAction,
 } from '../../ducks'
@@ -104,7 +103,6 @@ class SuccessPage extends React.Component {
       setShareWithGCInProgress,
       user,
       setUser,
-      getSharedUsers,
     } = this.props
     const { id: testId, assignmentId } = match.params
     if (isPlaylist) {
@@ -139,12 +137,6 @@ class SuccessPage extends React.Component {
     const temp = user
     temp.recommendedContentUpdated = true
     setUser(temp)
-
-    if (testId && testId !== 'undefined')
-      getSharedUsers({
-        contentId: testId,
-        contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
-      })
   }
 
   componentWillUnmount() {
@@ -755,7 +747,6 @@ const enhance = compose(
       setShareWithGCInProgress: setShareWithGCInProgressAction,
       setUser: setUserAction,
       removeTestEntity: removeTestEntityAction,
-      getSharedUsers: receiveSharedWithListAction,
     }
   )
 )

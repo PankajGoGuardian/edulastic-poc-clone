@@ -1019,6 +1019,12 @@ class Container extends PureComponent {
     setCurrentGroupIndexInStore(groupIndex)
   }
 
+  setShowSectionsTestSelectGroupIndexModal = (val) => {
+    this.setState({
+      showSectionsTestSelectGroupIndexModal: val,
+    })
+  }
+
   renderContent = () => {
     const {
       test,
@@ -1133,6 +1139,12 @@ class Container extends PureComponent {
               isDefaultTest={isDefaultTest}
               isEnterprise={isEnterprise}
               testId={testId}
+              setSectionsTestSetGroupIndex={
+                this.handleSectionsTestSetGroupIndex
+              }
+              setShowSectionsTestSelectGroupIndexModal={
+                this.setShowSectionsTestSelectGroupIndexModal
+              }
             />
           </Content>
         )
@@ -1193,6 +1205,10 @@ class Container extends PureComponent {
             current={current}
             showCancelButton={showCancelButton}
             userId={userId}
+            setSectionsTestSetGroupIndex={this.handleSectionsTestSetGroupIndex}
+            setShowSectionsTestSelectGroupIndexModal={
+              this.setShowSectionsTestSelectGroupIndexModal
+            }
           />
         )
       case 'settings':

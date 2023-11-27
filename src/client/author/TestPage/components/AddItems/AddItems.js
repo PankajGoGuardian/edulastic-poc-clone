@@ -589,6 +589,25 @@ class AddItems extends PureComponent {
     return get(this.selectedItem, 'authors', []).some((x) => x._id === userId)
   }
 
+  get getGroupIndex() {
+    const { test, items } = this.props
+    const { itemIndexForPreview } = this.state
+    const itemGroups = test?.itemGroups || []
+    const item = get(items, `[${itemIndexForPreview}]`, false)
+    const itemId = item?._id || ''
+
+    const groupIndex = itemGroups?.findIndex((group) =>
+      group.items?.some((_item) => _item._id === itemId)
+    )
+
+    // If the item is not added to the test
+    if (groupIndex === -1) {
+      return 0
+    }
+
+    return groupIndex
+  }
+
   render() {
     const {
       windowWidth,
@@ -615,6 +634,8 @@ class AddItems extends PureComponent {
       isEnterprise,
       showSelectGroupIndexModal,
       currentGroupIndexValueFromStore,
+      setSectionsTestSetGroupIndex,
+      setShowSectionsTestSelectGroupIndexModal,
     } = this.props
     const { showSelectGroupModal } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
@@ -796,6 +817,11 @@ class AddItems extends PureComponent {
                       currentGroupIndexValueFromStore
                     }
                     showSelectGroupIndexModal={showSelectGroupIndexModal}
+                    setSectionsTestSetGroupIndex={setSectionsTestSetGroupIndex}
+                    setShowSectionsTestSelectGroupIndexModal={
+                      setShowSectionsTestSelectGroupIndexModal
+                    }
+                    groupIndex={this.getGroupIndex}
                   />
                 </Spin>
               )}

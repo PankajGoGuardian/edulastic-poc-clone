@@ -571,6 +571,8 @@ class Review extends PureComponent {
       setCurrentGroupDetails,
       hasSections,
       isDefaultTest,
+      setSectionsTestSetGroupIndex,
+      setShowSectionsTestSelectGroupIndexModal,
     } = this.props
     const {
       isCollapse,
@@ -767,6 +769,11 @@ class Review extends PureComponent {
               showEvaluationButtons
               isPlaylistTestReview={isPlaylistTestReview}
               playlistId={playlistId}
+              hasSections={hasSections}
+              setSectionsTestSetGroupIndex={setSectionsTestSetGroupIndex}
+              setShowSectionsTestSelectGroupIndexModal={
+                setShowSectionsTestSelectGroupIndexModal
+              }
             />
           </Spin>
         )}

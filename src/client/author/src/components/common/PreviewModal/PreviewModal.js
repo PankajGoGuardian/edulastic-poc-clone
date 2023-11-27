@@ -290,10 +290,18 @@ class PreviewModal extends React.Component {
       item = {},
       isPlaylistTestReview,
       playlistId,
+      groupIndex,
+      hasSections,
+      setSectionsTestSetGroupIndex,
+      setShowSectionsTestSelectGroupIndexModal,
     } = this.props
     const itemId = data.id
     const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
     if (!passage) {
+      if (hasSections) {
+        setSectionsTestSetGroupIndex(groupIndex)
+        setShowSectionsTestSelectGroupIndexModal(true)
+      }
       return duplicateTestItem({
         data,
         testId,
@@ -1553,6 +1561,8 @@ PreviewModal.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   prevItem: PropTypes.func,
   nextItem: PropTypes.func,
+  setSectionsTestSetGroupIndex: PropTypes.func,
+  setShowSectionsTestSelectGroupIndexModal: PropTypes.func,
 }
 
 PreviewModal.defaultProps = {
@@ -1561,6 +1571,8 @@ PreviewModal.defaultProps = {
   gotoSummary: () => {},
   prevItem: () => {},
   nextItem: () => {},
+  setSectionsTestSetGroupIndex: () => {},
+  setShowSectionsTestSelectGroupIndexModal: () => {},
   loading: false,
   isEditable: false,
 }

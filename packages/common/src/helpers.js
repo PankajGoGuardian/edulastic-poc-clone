@@ -494,6 +494,12 @@ export const sanitizeForReview = (stimulus) => {
     }
   })
 
+  // Hiding audio and replacing with text [audio]
+  jqueryEl.find('audio').each(function () {
+    const elem = $(this)
+    elem.replaceWith(['[audio]'])
+  })
+
   jqueryEl.find('iframe').each(function () {
     const elem = $(this)
     elem.replaceWith(['[resource]'])

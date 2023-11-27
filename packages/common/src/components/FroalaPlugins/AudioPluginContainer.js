@@ -80,7 +80,7 @@ const AudioPopup = ({ EditorRef }) => {
     // EditorRef.current.selection.clear()
 
     EditorRef.current.html.insert(
-      `<audio contenteditable="false" controls="controls" src="${url}" controlsList="nodownload">Audio is not supported on this browser.</audio>`
+      `<audio contenteditable="false" style="max-width: 100%" controls="controls" src="${url}" controlsList="nodownload">Audio is not supported on this browser.</audio>`
     )
     // if html is inserted over using editor methods `saveStep` requires to be called to update the editor.
     EditorRef.current.undo.saveStep()

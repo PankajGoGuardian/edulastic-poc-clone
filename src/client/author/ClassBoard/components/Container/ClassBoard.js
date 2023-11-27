@@ -738,7 +738,7 @@ class ClassBoard extends Component {
 
   onClickBarGraph = (data) => {
     const { isItemsVisible, match, history } = this.props
-    if (!isItemsVisible || data.hiddenAttempt) {
+    if (!isItemsVisible || data.clickDisabled) {
       return
     }
     const { assignmentId, classId } = match.params

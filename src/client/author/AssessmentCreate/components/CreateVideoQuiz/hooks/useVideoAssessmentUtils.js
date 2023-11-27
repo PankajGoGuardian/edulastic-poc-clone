@@ -53,10 +53,11 @@ const useVideoAssessmentUtils = ({
 
   const fetchVideos = async (append = false, userInput = '') => {
     try {
-      setIsLoading(true)
-
       const searchString = userInput?.trim()
 
+      if (isURL(searchString)) return
+
+      setIsLoading(true)
       if (searchString) {
         const {
           items = [],

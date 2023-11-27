@@ -1787,7 +1787,8 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    {isTutorMeVisibleToDistrict && (
+                    {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
+                    {/* {isTutorMeVisibleToDistrict && (
                       <Tooltip
                         placement="top"
                         title={
@@ -1810,7 +1811,7 @@ class ClassBoard extends Component {
                           </AssignTutoring>
                         </div>
                       </Tooltip>
-                    )}
+                    )} */}
 
                     <ClassBoardFeats>
                       <RedirectButton

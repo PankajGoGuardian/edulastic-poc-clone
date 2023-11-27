@@ -74,7 +74,10 @@ const TutorDetails = ({
     >
       <BodyContainer>
         <div style={{ fontSize: '14px', color: '#777' }}>
-          View tutoring history, copy link to share to students
+          View tutoring history, copy link to share to students{' '}
+          {selectedInterventions.length > 5
+            ? '(limited to last 5 assignment)'
+            : ''}
         </div>
         <RowsWrap>
           {fiveLatestInterventions.map((intervention) => (

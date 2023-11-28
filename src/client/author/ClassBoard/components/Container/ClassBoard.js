@@ -357,8 +357,6 @@ class ClassBoard extends Component {
       toggleAdminAlertModal,
       toggleVerifyEmailModal,
       userRole,
-      fetchInterventionsList,
-      isTutorMeVisibleToDistrict,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -383,9 +381,6 @@ class ClassBoard extends Component {
     const { search, state } = location
     setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
-    if (isTutorMeVisibleToDistrict) {
-      fetchInterventionsList({ type: 'tutorme', assignmentId, classId })
-    }
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')

@@ -134,6 +134,7 @@ class PreviewModal extends React.Component {
       isRejectMode: false,
       showSelectGroupModal: false,
       showTTSTextModal: false,
+      isAddingSinglePassageItem: false,
     }
   }
 
@@ -150,6 +151,8 @@ class PreviewModal extends React.Component {
     if (item.passageId) {
       this.loadPassage(item.passageId)
     }
+
+    this.setIsAddingSinglePassageItem(false)
 
     const { ttsTextAPIStatus, setTTSTextState } = this.props
 
@@ -528,10 +531,11 @@ class PreviewModal extends React.Component {
   }
 
   handleSelectGroupModalResponse = (index) => {
-    const { setCurrentGroupIndex, item, hasSections } = this.props
+    const { setCurrentGroupIndex, item } = this.props
+    const { isAddingSinglePassageItem } = this.state
     if (index || index === 0) {
       setCurrentGroupIndex(index)
-      if (hasSections && item.passageId) {
+      if (item.passageId && !isAddingSinglePassageItem) {
         this.handleAddPassageItemsToSection()
       } else {
         this.handleDynamicTestSelection()
@@ -739,6 +743,7 @@ class PreviewModal extends React.Component {
       test,
       test: { itemGroups },
       hasSections,
+      isDynamicTest,
     } = this.props
 
     if (item?.unsavedItem) {
@@ -749,8 +754,20 @@ class PreviewModal extends React.Component {
       (g) => g.type === ITEM_GROUP_TYPES.STATIC
     )
 
-    if (hasSections && this.isAddOrRemove) {
-      this.handleAddToSection(staticGroups, item)
+    if (hasSections || isDynamicTest) {
+      const isAdding = this.isAddOrRemove
+      /**
+       * set the following state as there is no way to figure out whether user is
+       * adding single passage item or all passage items, in handleSelectGroupModalResponse method
+       */
+      if (isAdding) {
+        if (item.passageId) {
+          this.setIsAddingSinglePassageItem(true)
+        }
+        this.handleAddToSection(staticGroups, item)
+        return
+      }
+      this.handleSelection()
       return
     }
 
@@ -825,11 +842,26 @@ class PreviewModal extends React.Component {
 
   handleAddMultiplePassageItemsToSections = () => {
     const {
+      passageItems,
+      passageItemIds = [],
       test: { itemGroups },
       showSelectGroupIndexModal,
       currentGroupIndexValueFromStore,
       setCurrentGroupIndex,
+      setAndSavePassageItems,
+      page,
+      selectedRows,
     } = this.props
+
+    const hasPassageItemToAdd = (passageItemIds || []).some(
+      (x) => !selectedRows.includes(x)
+    )
+
+    // remove all passage items from test
+    if (!hasPassageItemToAdd) {
+      setAndSavePassageItems({ passageItems, page, remove: true })
+      return
+    }
 
     const staticGroups = (itemGroups || []).filter(
       (g) => g.type === ITEM_GROUP_TYPES.STATIC
@@ -840,16 +872,18 @@ class PreviewModal extends React.Component {
       !showSelectGroupIndexModal &&
       typeof currentGroupIndexValueFromStore === 'number'
     ) {
-      this.handleAddPassageItemsToSection()
+      setAndSavePassageItems({ passageItems, page, remove: false })
       return
     }
+
+    this.setIsAddingSinglePassageItem(false)
 
     if (staticGroups?.length === 1) {
       const index = itemGroups.findIndex(
         (g) => g.groupName === staticGroups[0].groupName
       )
       setCurrentGroupIndex(index)
-      this.handleAddPassageItemsToSection()
+      setAndSavePassageItems({ passageItems, page, remove: false })
     } else if (staticGroups.length > 1) {
       this.setState({ showSelectGroupModal: true })
     }
@@ -863,12 +897,13 @@ class PreviewModal extends React.Component {
       selectedRows,
       setAndSavePassageItems,
       hasSections,
+      isDynamicTest,
     } = this.props
     const passageTestItems = get(passage, 'testItems', [])
 
     const isAdding = passageTestItems.some((x) => !selectedRows.includes(x))
 
-    if (hasSections) {
+    if (hasSections || isDynamicTest) {
       this.handleAddMultiplePassageItemsToSections()
       return
     }
@@ -970,6 +1005,9 @@ class PreviewModal extends React.Component {
   }
 
   handleReject = () => this.setState({ isRejectMode: true })
+
+  setIsAddingSinglePassageItem = (val) =>
+    this.setState({ isAddingSinglePassageItem: val })
 
   get navigationButtonVisibile() {
     const { item, page } = this.props

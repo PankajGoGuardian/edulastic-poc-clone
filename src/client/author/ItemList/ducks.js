@@ -21,6 +21,7 @@ import {
   getReleaseScorePremiumSelector,
   hasSectionsSelector,
   getCurrentGroupIndexSelector,
+  isDynamicTestSelector,
 } from '../TestPage/ducks'
 import {
   getUserRole,
@@ -158,11 +159,13 @@ export function* addItemToCartSaga({ payload }) {
   const { item, showNotification = true } = payload
   const test = yield select(getTestEntitySelector)
   const hasSections = yield select(hasSectionsSelector)
+  const isDynamicTest = yield select(isDynamicTestSelector)
   const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
 
-  const testItems = hasSections
-    ? test?.itemGroups[currentGroupIndex]?.items
-    : test?.itemGroups?.flatMap((itemGroup) => itemGroup?.items || [])
+  const testItems =
+    hasSections || isDynamicTest
+      ? test?.itemGroups[currentGroupIndex]?.items
+      : test?.itemGroups?.flatMap((itemGroup) => itemGroup?.items || [])
   let updatedTestItems = []
   if ((testItems || []).some((o) => o?._id === item?._id)) {
     updatedTestItems = produce(testItems, (draft) => {

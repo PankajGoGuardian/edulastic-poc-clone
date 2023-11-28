@@ -52,7 +52,7 @@ const tabList = [
   },
 ]
 
-const audioAllowedTypes = ['mp3', 'mpeg', 'x-m4a', 'x-wav', 'wav', 'm4a']
+const audioAllowedTypes = ['mp3', 'x-wav', 'wav']
 
 const errorMessages = {
   MISSING_LINK: 'No link in upload response.',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import Icon from 'antd/lib/icon'
 import Card from 'antd/lib/card'
@@ -215,6 +215,7 @@ const Progress = ({ message, isLoading = false, isError = false }) => {
 
 const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
   const [isRecording, setIsRecording] = useState(false)
+  const isCancelledRef = useRef()
   const [time, setTime] = useState(0)
   const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
   const editorId = EditorRef.current.id
@@ -227,7 +228,11 @@ const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
     clearInterval(timer)
     setIsRecording(false)
     EditorRef.current.isRecording = false
-    validateAndUploadFile(audioFile)
+    if (!isCancelledRef.current) {
+      validateAndUploadFile(audioFile)
+    } else {
+      isCancelledRef.current = false
+    }
   }
 
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
@@ -262,7 +267,6 @@ const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
         type="flex"
         justify="center"
         align="middle"
-        className="fr-input-line"
         style={{ flexDirection: 'column' }}
       >
         <StyledButton
@@ -291,6 +295,17 @@ const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
         <small style={{ color: '#666' }}>
           {isRecording ? 'Click to stop recording' : '(upto 5 minutes)'}
         </small>
+        {isRecording && (
+          <Icon
+            className="cancel-recording"
+            type="close-circle"
+            theme="filled"
+            onClick={() => {
+              isCancelledRef.current = true
+              onClickStopRecording()
+            }}
+          />
+        )}
       </Row>
     </div>
   )
@@ -451,6 +466,7 @@ const StyledCard = styled(Card)`
     }
   }
   .ant-card-body {
+    position: relative;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -464,6 +480,12 @@ const StyledCard = styled(Card)`
     .fr-file-upload-layer {
       margin: 0;
       padding: 0;
+    }
+    .cancel-recording {
+      position: absolute;
+      top: 0px;
+      right: 5px;
+      font-size: 20px;
     }
   }
 `

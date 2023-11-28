@@ -891,7 +891,10 @@ class SideMenu extends Component {
                   </EduIf>
                   {isPearDomain ? (
                     <AssessPeardeckLabelOnDarkBgLogo
-                      style={{ marginTop: '4px', marginLeft: '-5px' }}
+                      style={{
+                        marginTop: '4px',
+                        marginLeft: showPearAppTray ? '-5px' : '0px',
+                      }}
                       height={isMobile ? '16px' : '36px'}
                     />
                   ) : (

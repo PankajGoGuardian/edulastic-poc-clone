@@ -231,7 +231,7 @@ const getTTSText = ({
   itemId,
   questionId,
   updateTTSText,
-  language = languageCodes.en,
+  language = languageCodes.ENGLISH,
 }) =>
   api
     .callApi({
@@ -242,7 +242,12 @@ const getTTSText = ({
     })
     .then((result) => result.data)
 
-const updateTTSText = ({ itemId, questionId, data, language = 'en' }) =>
+const updateTTSText = ({
+  itemId,
+  questionId,
+  data,
+  language = languageCodes.ENGLISH,
+}) =>
   api
     .callApi({
       useSlowApi: true,

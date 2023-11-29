@@ -319,7 +319,7 @@ class Review extends PureComponent {
       const itemsGroupedByGroupId = groupBy(items, 'groupId')
       const testdata = produce(test, (draft) => {
         draft.itemGroups.forEach((itemGroup) => {
-          itemGroup.items = itemsGroupedByGroupId[itemGroup._id]
+          itemGroup.items = itemsGroupedByGroupId[itemGroup._id] || []
         })
       })
       setData(testdata)

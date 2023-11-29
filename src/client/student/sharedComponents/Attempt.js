@@ -60,7 +60,7 @@ const Attempt = ({
               </AnswerAndScore>
             </>
           )}
-          {feedback && (
+          {feedback && releaseScore !== releaseGradeLabels.DONT_RELEASE && (
             <FeedbackWrapper onClick={() => setOverallFeedback(true)}>
               <Tooltip title="Assignment Feedback">
                 <FeedbackIcon />

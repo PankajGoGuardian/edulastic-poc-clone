@@ -37,6 +37,7 @@ import { compose } from 'redux'
 import styled, { css } from 'styled-components'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
 import { QUE_TYPE_BY_TITLE } from '@edulastic/constants/const/questionType'
+import { languageCodes } from '@edulastic/constants/const/test'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -135,6 +136,7 @@ class PreviewModal extends React.Component {
       showSelectGroupModal: false,
       showTTSTextModal: false,
       isAddingSinglePassageItem: false,
+      selectedLanguage: languageCodes.ENGLISH,
     }
   }
 
@@ -692,16 +694,25 @@ class PreviewModal extends React.Component {
     }))
   }
 
-  viewTTSText = (updateTTSText = false) => {
+  onChange = (value) => {
+    this.setState({ selectedLanguage: value })
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    const { selectedLanguage: nextSelectedLanguage } = this.state
+    const { selectedLanguage: prevSelectedLanguage } = prevState
+    if (prevSelectedLanguage !== nextSelectedLanguage) {
+      this.loadTTSText()
+    }
+  }
+
+  requestToGetTTSText = (updateTTSText = false, languageChange) => {
     const {
       item: { _id: itemId, data: { questions = [] } = {} },
       fetchTTSText,
       ttsTextResult,
     } = this.props
-
-    if (!updateTTSText) {
-      this.toggleTTSTextModal()
-    }
+    const { selectedLanguage } = this.state
 
     const questionId = questions?.[0]?.id
 
@@ -710,12 +721,22 @@ class PreviewModal extends React.Component {
         itemId,
         questionId,
         updateTTSText,
+        language: selectedLanguage,
       }
 
-      if (isEmpty(ttsTextResult) || updateTTSText) {
+      if (isEmpty(ttsTextResult) || updateTTSText || languageChange) {
         fetchTTSText(requestData)
       }
     }
+  }
+
+  viewTTSText = (updateTTSText = false) => {
+    this.toggleTTSTextModal()
+    this.requestToGetTTSText(updateTTSText)
+  }
+
+  loadTTSText = () => {
+    this.requestToGetTTSText(false, true)
   }
 
   updateQuestionTTSText = (updatedTTSTextData) => {
@@ -723,6 +744,7 @@ class PreviewModal extends React.Component {
       item: { _id: itemId, data: { questions = [] } = {} },
       updateTTSText,
     } = this.props
+    const { selectedLanguage } = this.state
 
     const questionId = questions?.[0]?.id
 
@@ -731,6 +753,7 @@ class PreviewModal extends React.Component {
         itemId,
         questionId,
         data: updatedTTSTextData,
+        language: selectedLanguage,
       }
 
       updateTTSText(requestData)
@@ -1071,6 +1094,7 @@ class PreviewModal extends React.Component {
       isRejectMode,
       showSelectGroupModal,
       showTTSTextModal,
+      selectedLanguage,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1192,6 +1216,8 @@ class PreviewModal extends React.Component {
             regenerateTTSText={this.viewTTSText}
             question={data?.questions?.[0] || {}}
             showTTSTextModal={showTTSTextModal}
+            onChange={this.onChange}
+            selectedLanguage={selectedLanguage}
           />
         </CustomModalStyled>
         {this.navigationButtonVisibile && this.navigationBtns()}

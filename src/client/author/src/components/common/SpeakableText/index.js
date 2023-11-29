@@ -4,10 +4,14 @@ import {
   EduButton,
   EduIf,
   FlexContainer,
+  SelectInputStyled,
   TextAreaInputStyled,
 } from '@edulastic/common'
 import { Spin } from 'antd'
 import { ALPHABET } from '@edulastic/common/src/helpers'
+import { LANGUAGES_OPTIONS } from '@edulastic/constants/const/languages'
+import connect from 'react-redux/es/connect/connect'
+import { questionType as constantsQuestionType } from '@edulastic/constants'
 import {
   StyledOptionContainer,
   StyledOptionLabel,
@@ -15,6 +19,7 @@ import {
   StyledSpeakableTextContainer,
 } from './styled-components'
 import AudioControls from '../../../../../assessment/AudioControls'
+import { allowedToSelectMultiLanguageInTest } from '../../../selectors/user'
 
 const SpeakableText = ({
   ttsTextAPIStatus,
@@ -24,6 +29,9 @@ const SpeakableText = ({
   question,
   showTTSTextModal,
   regenerateTTSText,
+  onChange,
+  selectedLanguage,
+  allowedToSelectMultiLanguage,
 }) => {
   const [updatedTtsData, setUpdatedTtsData] = useState(ttsTextData)
 
@@ -55,9 +63,30 @@ const SpeakableText = ({
   if (isEmpty(question)) {
     return null
   }
+  const { useLanguageFeatureQn } = constantsQuestionType
+  const showLanguageSelector =
+    allowedToSelectMultiLanguage && useLanguageFeatureQn.includes(question.type)
 
   return (
     <>
+      <EduIf condition={showLanguageSelector}>
+        <FlexContainer justifyContent="flex-end" marginBottom="10px">
+          <SelectInputStyled
+            data-cy="tts-language-selector"
+            width="120px"
+            height="30px"
+            onSelect={onChange}
+            value={selectedLanguage}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          >
+            {LANGUAGES_OPTIONS.map((language) => (
+              <option value={language.value} key={language.value}>
+                {language.label}
+              </option>
+            ))}
+          </SelectInputStyled>
+        </FlexContainer>
+      </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'INITIATED'}>
         <Spin style={{ marginTop: '20px' }} />
       </EduIf>
@@ -76,6 +105,7 @@ const SpeakableText = ({
               className="speakable-text-audio-controls"
             />
           </EduIf>
+
           <h4>Question TTS Text</h4>
           <TextAreaInputStyled
             style={{ paddingLeft: '5px', paddingTop: '5px' }}
@@ -128,4 +158,6 @@ const SpeakableText = ({
   )
 }
 
-export default SpeakableText
+export default connect((state) => ({
+  allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+}))(SpeakableText)

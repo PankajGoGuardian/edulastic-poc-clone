@@ -140,7 +140,8 @@ const SingleAssessmentReportContainer = (props) => {
       const obj = {}
       // eslint-disable-next-line array-callback-return
       arr.map((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
+        const val =
+          filt[item] === '' && item !== 'reportId' ? 'All' : filt[item]
         obj[item] = val
       })
       obj.cliUser = _cliUser

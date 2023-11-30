@@ -20,6 +20,7 @@ import {
 } from './styled-components'
 import AudioControls from '../../../../../assessment/AudioControls'
 import { allowedToSelectMultiLanguageInTest } from '../../../selectors/user'
+import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
 const SpeakableText = ({
   ttsTextAPIStatus,
@@ -29,7 +30,7 @@ const SpeakableText = ({
   question,
   showTTSTextModal,
   regenerateTTSText,
-  onChange,
+  onLanguageChange,
   selectedLanguage,
   allowedToSelectMultiLanguage,
 }) => {
@@ -67,6 +68,12 @@ const SpeakableText = ({
   const showLanguageSelector =
     allowedToSelectMultiLanguage && useLanguageFeatureQn.includes(question.type)
 
+  const questionDataByLanguage = changeDataToPreferredLanguage(
+    question,
+    selectedLanguage
+  )
+  const audioSrc = questionDataByLanguage?.tts?.titleAudioURL
+
   return (
     <>
       <EduIf condition={showLanguageSelector}>
@@ -75,7 +82,7 @@ const SpeakableText = ({
             data-cy="tts-language-selector"
             width="120px"
             height="30px"
-            onSelect={onChange}
+            onSelect={(value) => onLanguageChange(value)}
             value={selectedLanguage}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
@@ -92,16 +99,12 @@ const SpeakableText = ({
       </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'SUCCESS'}>
         <StyledSpeakableTextContainer>
-          <EduIf
-            condition={
-              question?.tts?.titleAudioURL?.length > 0 && showTTSTextModal
-            }
-          >
+          <EduIf condition={audioSrc.length > 0 && showTTSTextModal}>
             <AudioControls
               key={question?.id}
-              item={question}
+              item={questionDataByLanguage}
               qId={question?.id}
-              audioSrc={question?.tts?.titleAudioURL}
+              audioSrc={audioSrc}
               className="speakable-text-audio-controls"
             />
           </EduIf>

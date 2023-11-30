@@ -694,19 +694,13 @@ class PreviewModal extends React.Component {
     }))
   }
 
-  onChange = (value) => {
-    this.setState({ selectedLanguage: value })
+  onLanguageChange = (value) => {
+    this.setState({ selectedLanguage: value }, () =>
+      this.requestToGetTTSText(false, true)
+    )
   }
 
-  componentDidUpdate = (prevProps, prevState) => {
-    const { selectedLanguage: nextSelectedLanguage } = this.state
-    const { selectedLanguage: prevSelectedLanguage } = prevState
-    if (prevSelectedLanguage !== nextSelectedLanguage) {
-      this.loadTTSText()
-    }
-  }
-
-  requestToGetTTSText = (updateTTSText = false, languageChange) => {
+  requestToGetTTSText = (updateTTSText = false, isLanguageChanged = false) => {
     const {
       item: { _id: itemId, data: { questions = [] } = {} },
       fetchTTSText,
@@ -724,19 +718,17 @@ class PreviewModal extends React.Component {
         language: selectedLanguage,
       }
 
-      if (isEmpty(ttsTextResult) || updateTTSText || languageChange) {
+      if (isEmpty(ttsTextResult) || updateTTSText || isLanguageChanged) {
         fetchTTSText(requestData)
       }
     }
   }
 
   viewTTSText = (updateTTSText = false) => {
-    this.toggleTTSTextModal()
+    if (!updateTTSText) {
+      this.toggleTTSTextModal()
+    }
     this.requestToGetTTSText(updateTTSText)
-  }
-
-  loadTTSText = () => {
-    this.requestToGetTTSText(false, true)
   }
 
   updateQuestionTTSText = (updatedTTSTextData) => {
@@ -1216,7 +1208,7 @@ class PreviewModal extends React.Component {
             regenerateTTSText={this.viewTTSText}
             question={data?.questions?.[0] || {}}
             showTTSTextModal={showTTSTextModal}
-            onChange={this.onChange}
+            onLanguageChange={this.onLanguageChange}
             selectedLanguage={selectedLanguage}
           />
         </CustomModalStyled>

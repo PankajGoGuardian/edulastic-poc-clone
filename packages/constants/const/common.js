@@ -1,4 +1,4 @@
-const helpCenterUrl = 'https://edulastic.com/help-center/'
+const helpCenterUrl = 'https://support.goguardian.com/s/'
 
 const sessionFilters = {
   TEST_FILTER: 'filters[testList]',

@@ -3,7 +3,7 @@ import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
@@ -223,10 +223,12 @@ function* getReportsSPRFilterDataRequest({ payload }) {
 function* receiveStudentsListSaga({ payload: query }) {
   try {
     const result = yield call(reportsApi.fetchStudentList, query)
-    const studentList = get(result, 'data.result', []).map((item) => ({
-      _id: item._id,
-      title: getFullName(item),
-    }))
+    const studentList = get(result, 'data.result', [])
+      .map((item) => ({
+        _id: item._id,
+        title: getFullName(item),
+      }))
+      .filter((student) => !isEmpty(student.title))
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
       payload: { studentList, query },

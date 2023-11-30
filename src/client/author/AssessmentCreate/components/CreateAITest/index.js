@@ -80,6 +80,7 @@ const EduAIQuiz = ({
       aiStyle
       disabled={!isVideoQuizAndAIEnabled}
       onClick={onCreateItems}
+      data-cy="createItemUsingAi"
     >
       <IconMagicWand fill={`${white}`} />
       Create Items Using AI

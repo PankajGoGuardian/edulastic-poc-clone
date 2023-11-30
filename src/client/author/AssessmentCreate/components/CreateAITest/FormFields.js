@@ -60,6 +60,7 @@ const FormFields = ({
               Test Name<StyledRequired>*</StyledRequired>
             </StyledFilterLabel>
             <TextInputStyled
+              data-cy="aiTestName"
               placeholder="Enter Test Name"
               maxLength={256}
               value={testName}
@@ -76,6 +77,7 @@ const FormFields = ({
           <SelectInputStyled
             showArrow
             showSearch
+            data-cy="aiItemType"
             placeholder="Select Item Type"
             optionFilterProp="children"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -101,6 +103,7 @@ const FormFields = ({
             step={1}
             height="36px"
             value={numberOfItems}
+            data-cy="numberOfItem"
           />
         </Col>
       </Row>
@@ -129,6 +132,7 @@ const FormFields = ({
             height="36px"
             showArrow
             showSearch
+            data-cy="aiDok"
             placeholder="Select Dok"
             optionFilterProp="children"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -149,6 +153,7 @@ const FormFields = ({
           <SelectInputStyled
             showArrow
             showSearch
+            data-cy="aiDifficulty"
             placeholder="Select Difficulty"
             optionFilterProp="children"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -169,6 +174,7 @@ const FormFields = ({
         <Col xs={24}>
           <StyledFilterLabel>I Want To</StyledFilterLabel>
           <TextAreaInputStyled
+            data-cy="aiDescription"
             placeholder="Eg: Generate items focused on rational numbers where students need to use rational root test and also generate hints."
             maxLength={256}
             onChange={(e) => handleFieldDataChange(PREFERENCE, e.target.value)}
@@ -179,10 +185,17 @@ const FormFields = ({
       </Row>
 
       <FlexContainer mt="2rem" justifyContent="center">
-        <EduButton btnType="primary" isGhost onClick={onCancel}>
+        <EduButton
+          btnType="primary"
+          data-cy="aiCancelButton"
+          isGhost
+          onClick={onCancel}
+        >
           Cancel
         </EduButton>
-        <EduButton onClick={handleGenerate}>Generate</EduButton>
+        <EduButton data-cy="aiGenerateButton" onClick={handleGenerate}>
+          Generate
+        </EduButton>
       </FlexContainer>
     </Row>
   )

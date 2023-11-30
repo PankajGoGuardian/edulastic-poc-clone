@@ -24,8 +24,9 @@ const AiTestBanner = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
       justifyContent="space-between"
       alignItems="center"
       width="calc(100% - 2.5rem)"
+      data-cy="aiTest"
     >
-      <CreateAiTestTitleWrapper>
+      <CreateAiTestTitleWrapper data-cy="aiTestTitle">
         Generate AI-powered test items with a single click!
       </CreateAiTestTitleWrapper>
       <FlexContainer justifyContent="space-between" alignItems="center">
@@ -34,7 +35,12 @@ const AiTestBanner = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
         </EduIf>
 
         <Tooltip title={`${i18.t('author:rubric.infoText')}`}>
-          <AiEduButton isGhost onClick={onCreateItems} fontWeight={700}>
+          <AiEduButton
+            isGhost
+            onClick={onCreateItems}
+            fontWeight={700}
+            data-cy="aiCreateTestButton"
+          >
             <IconMagicWand />
             Create A Quick Test Using AI
           </AiEduButton>

@@ -472,6 +472,7 @@ const UseExisting = ({
       ghost={disableAutoGenerateRubricBtn}
       title={isAiEvaulationDistrict ? autoGenerateRubricTooltip : ''}
       loading={isRubricGenerationInProgress}
+      data-cy="autoGenerateRubic"
     >
       <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
       Auto Generate Rubric

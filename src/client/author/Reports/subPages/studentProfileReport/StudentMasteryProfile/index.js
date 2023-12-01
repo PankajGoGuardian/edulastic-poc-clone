@@ -411,8 +411,8 @@ const StudentMasteryProfile = ({
 
 const withConnect = connect(
   (state) => ({
-    studentMasteryProfile: getReportsStudentMasteryProfile(state),
-    SPRFilterData: getReportsSPRFilterData(state),
+    studentMasteryProfile: getReportsStudentMasteryProfile(state) || {},
+    SPRFilterData: getReportsSPRFilterData(state) || {},
     loading: getReportsStudentMasteryProfileLoader(state),
     error: getReportsStudentMasteryProfileError(state),
     isCsvDownloading: getCsvDownloadingState(state),

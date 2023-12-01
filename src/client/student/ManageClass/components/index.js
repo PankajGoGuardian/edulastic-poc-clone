@@ -62,8 +62,8 @@ const ManageClass = ({
 
 export default connect(
   (state) => ({
-    allClasses: state.studentEnrollClassList.allClasses,
-    filterClasses: state.studentEnrollClassList.filteredClasses,
+    allClasses: state.studentEnrollClassList.allClasses || [],
+    filterClasses: state.studentEnrollClassList.filteredClasses || [],
     loading: state.studentEnrollClassList.loading,
     studentData: getUser(state),
     userRole: state?.user?.user?.role,

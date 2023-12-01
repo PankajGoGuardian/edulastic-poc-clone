@@ -35,6 +35,7 @@ import {
 import { getSelectedItems } from '../../../src/selectors/folder'
 import { canEditTest } from '../../utils'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import Spinner from '../../../../common/components/Spinner'
 import {
   ActionDiv,
@@ -185,6 +186,13 @@ class AdvancedTable extends Component {
         render: (text) => <div> {text} </div>,
       },
       {
+        render: (_, row) => {
+          const { userRole = '' } = this.props
+          return <AnalyzeLink row={row} userRole={userRole} />
+        },
+        width: '5%',
+      },
+      {
         title: () => {
           const { selectedRows } = this.props
           const menu = (
@@ -225,7 +233,8 @@ class AdvancedTable extends Component {
           )
         },
         dataIndex: 'action',
-        width: '10%',
+        width: '5%',
+        minWidth: '75px',
         render: (_, row) => {
           const {
             onOpenReleaseScoreSettings,

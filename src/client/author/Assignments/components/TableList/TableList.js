@@ -29,6 +29,7 @@ import { greyThemeDark3 } from '@edulastic/colors'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import {
   getItemsInFolders,
   getSelectedItems,
@@ -309,8 +310,12 @@ const TableList = ({
         ),
       },
       {
+        width: '5%',
+        render: () => <GreyFont />,
+      },
+      {
         dataIndex: 'action',
-        width: '10%',
+        width: '5%',
         render: (_, row) => (
           <ActionsWrapper
             data-cy="PresentationIcon"
@@ -581,6 +586,16 @@ const TableList = ({
       render: (text) => <GreyFont data-cy="testGraded"> {text} </GreyFont>,
     },
     {
+      width: '5%',
+      render: (_, row) => (
+        <AnalyzeLink
+          row={row}
+          userRole={userRole}
+          showViewSummary={row.showViewSummary}
+        />
+      ),
+    },
+    {
       title: () => {
         const menu = (
           <Menu>
@@ -608,7 +623,8 @@ const TableList = ({
               >
                 <EduButton
                   height="22px"
-                  width="75px"
+                  width="100%"
+                  maxWidth="75px"
                   ml="0px"
                   data-cy="assignmentActions"
                   isBlue
@@ -623,7 +639,7 @@ const TableList = ({
       },
       className: 'assignment-actions',
       dataIndex: 'action',
-      width: '10%',
+      width: '5%',
       render: (_, row) => {
         const assignmentTest = assignmentTests.find(
           (at) => at._id === row.itemId
@@ -666,7 +682,8 @@ const TableList = ({
               <EduButton
                 ml="0px"
                 height="23px"
-                width="75px"
+                width="100%"
+                maxWidth="75px"
                 isGhost
                 data-cy="actions"
               >

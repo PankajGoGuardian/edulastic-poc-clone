@@ -185,6 +185,12 @@ const PublicTestPage = ({
 
   // if test is not public, then redirect to login page
   if (error) {
+    if (error.status === 403) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/tests/tab/review/id/${testId}`
+      )
+    }
     notification({ messageKey: 'tryingToAccessPrivateTest' })
     return <Redirect to="/login" />
   }

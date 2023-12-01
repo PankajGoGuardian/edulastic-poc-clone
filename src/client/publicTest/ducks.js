@@ -114,9 +114,9 @@ export const publicTestReducer = createReducer(initialState, {
     state.loading = false
     state.test = payload.test
   },
-  [FETCH_PUBLIC_TEST_FAILURE]: (state) => {
+  [FETCH_PUBLIC_TEST_FAILURE]: (state, { payload }) => {
     state.loading = false
-    state.error = true
+    state.error = payload
   },
   [FETCH_ASSIGNMENTS_DATA_BY_TEST]: (state) => {
     state.loadingAssignments = true
@@ -134,13 +134,6 @@ function* fetchPublicTest({ payload }) {
     const test = yield call(testsApi.getPublicTest, testId)
     yield put({ type: FETCH_PUBLIC_TEST_SUCCESS, payload: { test } })
   } catch (err) {
-    if (err.status === 403) {
-      yield put(push('/login'))
-      localStorage.setItem(
-        'loginRedirectUrl',
-        `/author/tests/tab/review/id/${testId}`
-      )
-    }
     yield put({ type: FETCH_PUBLIC_TEST_FAILURE, payload: err })
   }
 }

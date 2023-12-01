@@ -53,6 +53,7 @@ import {
   MainWrapper,
   StyledIcon,
 } from './styledComponents/common'
+import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
 
 const CreateVideoQuiz = ({
   onValidUrl,
@@ -125,7 +126,10 @@ const CreateVideoQuiz = ({
                 <CommonInlineWrapper padding="0 0 0 4rem" width="45%">
                   <Form colon={false}>
                     <SubHeader mb="0.5rem">
-                      Search YouTube/ Paste Video URL
+                      Search YouTube/ Paste Video URL{' '}
+                      <sub>
+                        <StyledBetaTag>BETA</StyledBetaTag>
+                      </sub>
                     </SubHeader>
                     <FormItem
                       validateStatus={hasError ? 'error' : 'success'}
@@ -234,7 +238,7 @@ const CreateVideoQuiz = ({
               </EduThen>
               <EduElse>
                 <EduIf condition={showNoData}>
-                  <NoDataNotification heading="No results found" />
+                  {/* <NoDataNotification heading="No results found" /> */}
                 </EduIf>
               </EduElse>
             </EduIf>

@@ -2220,7 +2220,7 @@
     "description": ""
   },
   "youtubeSearchApiError": {
-    "message": "Error in getting youtube videos",
+    "message": "Error in getting YouTube videos. Please paste video URL to proceed.",
     "description": ""
   },
   "creatingTestForSelectedVideo": {

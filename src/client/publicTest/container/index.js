@@ -76,7 +76,7 @@ const PublicTestPage = ({
       const { role } = user
       // fetch test to check if test archieved or not
       testsApi
-        .getPublicTest(testId)
+        .getById(testId)
         .then((_test) => {
           const isTestArchieved =
             _test.status === testConstants.statusConstants.ARCHIVED

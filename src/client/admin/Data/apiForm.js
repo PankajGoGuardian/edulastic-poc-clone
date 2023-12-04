@@ -1166,4 +1166,28 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'add-content-co-authors',
+    name: 'Add content co-authors',
+    endPoint: 'admin-tool/add-content-co-authors',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'collectionId',
+        displayName: 'Collection Id',
+        placeholder: 'Enter Collection Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'userIds',
+        displayName: 'User Ids',
+        placeholder: 'Enter userIds to be added as co-authors',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

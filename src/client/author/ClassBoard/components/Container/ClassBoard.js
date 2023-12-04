@@ -357,9 +357,6 @@ class ClassBoard extends Component {
       toggleAdminAlertModal,
       toggleVerifyEmailModal,
       userRole,
-      fetchInterventionsList,
-      isTutorMeEnabled,
-      isTutorMeVisibleToDistrict,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -384,9 +381,6 @@ class ClassBoard extends Component {
     const { search, state } = location
     setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
-    if (isTutorMeEnabled && isTutorMeVisibleToDistrict) {
-      fetchInterventionsList({ type: 'tutorme', assignmentId, classId })
-    }
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')
@@ -739,7 +733,7 @@ class ClassBoard extends Component {
 
   onClickBarGraph = (data) => {
     const { isItemsVisible, match, history } = this.props
-    if (!isItemsVisible || data.hiddenAttempt) {
+    if (!isItemsVisible || data.clickDisabled) {
       return
     }
     const { assignmentId, classId } = match.params
@@ -1180,9 +1174,10 @@ class ClassBoard extends Component {
         assignedByEmail: userEmail,
         assignedByName: userFullName,
       },
-    }).then((tutorMeInterventionResponse) =>
+    }).then((tutorMeInterventionResponse) => {
       assignTutorForStudents(tutorMeInterventionResponse)
-    )
+      this.onUnselectCardOne(selectedStudentId)
+    })
   }
 
   handleOpenTutor = (studentId, studentName) => {
@@ -1787,7 +1782,8 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    {isTutorMeVisibleToDistrict && (
+                    {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
+                    {/* {isTutorMeVisibleToDistrict && (
                       <Tooltip
                         placement="top"
                         title={
@@ -1810,7 +1806,7 @@ class ClassBoard extends Component {
                           </AssignTutoring>
                         </div>
                       </Tooltip>
-                    )}
+                    )} */}
 
                     <ClassBoardFeats>
                       <RedirectButton

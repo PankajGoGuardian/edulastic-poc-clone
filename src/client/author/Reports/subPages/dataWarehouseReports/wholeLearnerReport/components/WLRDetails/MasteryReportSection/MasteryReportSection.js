@@ -172,7 +172,8 @@ const MasteryReportSection = ({
         wrapperStyle={{ alignItems: 'flex-end' }}
         sectionLabelFilters={
           <FlexContainer alignItems="center" style={{ gap: '20px' }}>
-            <EduIf condition={isTutorMeVisibleToDistrict}>
+            {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
+            {/* <EduIf condition={isTutorMeVisibleToDistrict}>
               <Tooltip title={assignTutorBtnTooltipText}>
                 <StyledFilledButton
                   height="32px"
@@ -193,7 +194,7 @@ const MasteryReportSection = ({
                   Assign Tutoring
                 </StyledFilledButton>
               </Tooltip>
-            </EduIf>
+            </EduIf> */}
             <LabelledControlDropdown
               dataCy="standardsProficiency"
               label="Standard Proficiency"

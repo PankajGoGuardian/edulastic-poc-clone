@@ -263,7 +263,7 @@ class BarGraph extends Component {
         if (item.avgTimeSpent > maxTimeSpent) {
           maxTimeSpent = item.avgTimeSpent
         }
-        const { hiddenAttempt } = item
+        const { hiddenAttempt, clickDisabled } = item
         const result = {
           name: item.barLabel,
           totalAttemps: item.attemptsNum,
@@ -271,6 +271,7 @@ class BarGraph extends Component {
           itemLevelScoring: item.itemLevelScoring,
           itemId: item.itemId,
           qid: item._id,
+          clickDisabled,
         }
         if (hiddenAttempt) {
           return {

@@ -86,11 +86,13 @@ const MasteryTable = ({
           selectedMastery,
           handleOnClickStandard,
           filters: settings.requestFilters,
-          rowSelection: standardsRowSelection,
+          // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
+          // rowSelection: standardsRowSelection,
         }}
         expandAllRows={expandRows}
         setExpandAllRows={(flag) => setExpandRows(flag)}
-        rowSelection={domainRowSelection}
+        // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
+        // rowSelection={domainRowSelection}
       />
       <StandardsAssignmentModal
         visible={!!clickedStandard}

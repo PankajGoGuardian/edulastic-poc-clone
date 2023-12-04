@@ -329,12 +329,12 @@ function customPlugin(FroalaEditor) {
         const top =
           offset.top + (this.opts.toolbarBottom ? 10 : $btn.outerHeight() - 10)
         this.popups.show('audio.insert', left, top, 0)
-        this.isRecording = false
+        this.popupNotClosable = false
         var originalHide = this.popups.hide
         const editor = this
         this.popups.hide = function (popupId) {
           // Stop hidding popup if audio is recording
-          if (popupId === 'audio.insert' && editor.isRecording) {
+          if (popupId === 'audio.insert' && editor.popupNotClosable) {
             return
           }
           // Call the original hide method

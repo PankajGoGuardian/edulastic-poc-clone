@@ -17,7 +17,12 @@ import { compose } from 'redux'
 import moment from 'moment'
 import { Button, Row, Spin, Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
-import { withWindowSizes, FlexContainer, notification } from '@edulastic/common'
+import {
+  withWindowSizes,
+  FlexContainer,
+  notification,
+  EduIf,
+} from '@edulastic/common'
 import { IconList, IconTile, IconTestBank } from '@edulastic/icons'
 import { white, greyLight1, greyThemeLight } from '@edulastic/colors'
 import {
@@ -144,6 +149,7 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -204,6 +210,7 @@ class TestList extends Component {
     moduleModalAdd: null,
     openSidebar: false,
     isSingaporeMath: false,
+    isBuyAISuiteAlertModalVisible: false,
   }
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -631,6 +638,10 @@ class TestList extends Component {
     this.setState({ isShowFilter: false })
   }
 
+  setAISuiteAlertModalVisibility = (value) => {
+    this.setState({ isBuyAISuiteAlertModalVisible: value })
+  }
+
   typeCheck = (parsedQueryData, search) => {
     const parsedQueryDataClone = {}
     for (const key of Object.keys(parsedQueryData)) {
@@ -1018,6 +1029,9 @@ class TestList extends Component {
                 item.alignment,
                 interestedCurriculums
               )}
+              setAISuiteAlertModalVisibility={
+                this.setAISuiteAlertModalVisibility
+              }
             />
           ))}
 
@@ -1053,6 +1067,7 @@ class TestList extends Component {
             handleCheckboxAction={this.handleCheckboxAction}
             onRemoveFromCart={this.onRemoveFromCart}
             onAddToCart={this.onAddToCart}
+            setAISuiteAlertModalVisibility={this.setAISuiteAlertModalVisibility}
           />
         ))}
       </Row>
@@ -1200,6 +1215,7 @@ class TestList extends Component {
       isDemoAccount,
       t,
       sort = {},
+      history,
     } = this.props
 
     const {
@@ -1214,6 +1230,7 @@ class TestList extends Component {
       moduleModalAdd,
       testAdded,
       openSidebar,
+      isBuyAISuiteAlertModalVisible,
     } = this.state
     const search = {
       ...testFilters,
@@ -1400,6 +1417,18 @@ class TestList extends Component {
               handleBulkTestDelete={this.handleBulkTestDelete}
             />
           )}
+
+          <EduIf condition={isBuyAISuiteAlertModalVisible}>
+            <BuyAISuiteAlertModal
+              isVisible={isBuyAISuiteAlertModalVisible}
+              setAISuiteAlertModalVisibility={
+                this.setAISuiteAlertModalVisibility
+              }
+              history={history}
+              isClosable
+              stayOnSamePage
+            />
+          </EduIf>
 
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>

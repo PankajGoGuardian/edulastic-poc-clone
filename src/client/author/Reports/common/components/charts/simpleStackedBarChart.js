@@ -61,6 +61,9 @@ const LabelText = (props) => {
   )
 }
 
+// Note: To create chart components in future, better start scratch, inspired from
+// Table components for pagination and Rechart's Chart components for charting interface.
+// This is heavily patched and too much sensitive to change.
 const SimpleStackedBarChartComponent = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   legendWrapperStyle = { top: -10 },
@@ -117,7 +120,6 @@ const SimpleStackedBarChartComponent = ({
     startIndex: 0,
     endIndex: pageSize - 1,
   })
-  const [copyData, setCopyData] = useState(null)
   const [barIndex, setBarIndex] = useState(null)
   const [isDotActive, setDotActive] = useState(false)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
@@ -153,10 +155,13 @@ const SimpleStackedBarChartComponent = ({
     }
   }
 
-  if (data !== copyData) {
-    onSetVisibleIndices(0, pageSize - 1)
-    setCopyData(data)
-  }
+  useEffect(() => {
+    // If data change causes pagination to be invalid, reset the pagination.
+    // Don't reset always, as `data` isn't restricted to be immutable.
+    if (pagination.startIndex >= data.length) {
+      onSetVisibleIndices(0, pageSize - 1)
+    }
+  }, [data])
 
   const legendPayload = showLegend
     ? [
@@ -177,7 +182,10 @@ const SimpleStackedBarChartComponent = ({
       ]
     : []
 
-  const chartData = useMemo(() => [...data], [pagination])
+  // data needs to mutate if <Brush />'s pagination changes
+  // otherwise recharts won't re-render the chart
+  // Upstream issue: https://github.com/recharts/recharts/issues/2404
+  const chartData = useMemo(() => [...data], [data, pagination])
 
   useEffect(() => {
     if (carousel && chartBackNavigation) {

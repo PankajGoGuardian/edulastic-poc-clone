@@ -53,10 +53,11 @@ const useVideoAssessmentUtils = ({
 
   const fetchVideos = async (append = false, userInput = '') => {
     try {
-      setIsLoading(true)
-
       const searchString = userInput?.trim()
 
+      if (isURL(searchString)) return
+
+      setIsLoading(true)
       if (searchString) {
         const {
           items = [],
@@ -139,15 +140,16 @@ const useVideoAssessmentUtils = ({
     }
   }, [ytThumbnail])
 
-  useEffect(() => {
-    const defaultValue = getDefaultSearchString(
-      interestedSubjects,
-      interestedGrades
-    )
+  // Removing default search
+  // useEffect(() => {
+  //   const defaultValue = getDefaultSearchString(
+  //     interestedSubjects,
+  //     interestedGrades
+  //   )
 
-    setLinkValue(defaultValue)
-    handleFetchVideos(false, defaultValue)
-  }, [interestedSubjects, interestedGrades])
+  //   setLinkValue(defaultValue)
+  //   handleFetchVideos(false, defaultValue)
+  // }, [interestedSubjects, interestedGrades])
 
   const handleOnChange = (e) => {
     const searchString = e.target.value

@@ -515,7 +515,6 @@ export const SignedStackedBarWithLineChart = ({
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
                         offsetY={-30}
-                        style={{ fill: getFGColor(bdItem.fill) }}
                       />
                     }
                   />

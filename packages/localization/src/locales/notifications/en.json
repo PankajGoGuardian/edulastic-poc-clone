@@ -1333,7 +1333,7 @@
     "description": ""
   },
   "notSubmittedWarning": {
-    "message": "Student hasn’t attempted the test yet. Assign a tutor post-test, or visit the Whole learner Data Studio report for immediate tutoring.",
+    "message": "Student hasn’t submitted the test yet. Assign a tutor post-attempt, or visit the Whole learner Data Studio report for immediate tutoring assignment.",
     "description": ""
   },
   "youCanOnlyPrintAfterAssignmentBeenSubmited": {
@@ -2220,7 +2220,7 @@
     "description": ""
   },
   "youtubeSearchApiError": {
-    "message": "Error in getting youtube videos",
+    "message": "Error in getting YouTube videos. Please paste video URL to proceed.",
     "description": ""
   },
   "creatingTestForSelectedVideo": {

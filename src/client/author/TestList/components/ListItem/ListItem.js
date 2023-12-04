@@ -49,6 +49,7 @@ import {
   getCollectionsToAddContent,
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
+  isVideoQuizAndAIEnabledSelector,
 } from '../../../src/selectors/user'
 import {
   approveOrRejectSingleTestRequestAction,
@@ -190,6 +191,18 @@ class ListItem extends Component {
   }
 
   openModal = () => {
+    const {
+      item: { testCategory = '' },
+      isVideoQuiAndAiEnabled,
+      setAISuiteAlertModalVisibility,
+    } = this.props
+    if (
+      testCategory === test.testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      setAISuiteAlertModalVisibility(true)
+      return
+    }
     this.setState({ isOpenModal: true })
   }
 
@@ -200,7 +213,19 @@ class ListItem extends Component {
   }
 
   showPreviewModal = (testId) => {
-    const { setIsTestPreviewVisible } = this.props
+    const {
+      setIsTestPreviewVisible,
+      item: { testCategory = '' },
+      isVideoQuiAndAiEnabled,
+      setAISuiteAlertModalVisibility,
+    } = this.props
+    if (
+      testCategory === test.testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      setAISuiteAlertModalVisibility(true)
+      return
+    }
     setIsTestPreviewVisible(true)
     this.setState({ currentTestId: testId })
   }
@@ -237,9 +262,22 @@ class ListItem extends Component {
   }
 
   handleAddRemoveToCart = (item, isInCart) => (evt) => {
-    const { onRemoveFromCart, onAddToCart } = this.props
+    const {
+      onRemoveFromCart,
+      onAddToCart,
+      item: { testCategory = '' },
+      isVideoQuiAndAiEnabled,
+      setAISuiteAlertModalVisibility,
+    } = this.props
     if (evt) {
       evt.stopPropagation()
+    }
+    if (
+      testCategory === test.testCategoryTypes.VIDEO_BASED &&
+      !isVideoQuiAndAiEnabled
+    ) {
+      setAISuiteAlertModalVisibility(true)
+      return
     }
     if (isInCart) {
       onRemoveFromCart(item)
@@ -650,6 +688,7 @@ const enhance = compose(
       isDefaultDA: isDefaultDASelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

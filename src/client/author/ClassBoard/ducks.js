@@ -1251,11 +1251,13 @@ export const getItemSummary = (
           manualGradedNum: 0,
           unscoredItems: 0,
           hiddenAttempt: 0,
+          clickDisabled: false,
         }
       }
       const isSkipped = skipped && score === 0 && !isPractice
       if (isItemContentHidden && !isSkipped) {
         questionMap[itemQuestionKey].hiddenAttempt += 1
+        questionMap[itemQuestionKey].clickDisabled = true
       }
       if (testItemId) {
         questionMap[itemQuestionKey].itemLevelScoring = true
@@ -1273,6 +1275,9 @@ export const getItemSummary = (
       if (isSkipped) {
         questionMap[itemQuestionKey].skippedNum += 1
         skippedx = true
+        if (isItemContentHidden) {
+          questionMap[itemQuestionKey].clickDisabled = true
+        }
       }
       if (score > 0) {
         skipped = false

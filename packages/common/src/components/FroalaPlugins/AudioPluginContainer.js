@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 import Icon from 'antd/lib/icon'
 import Card from 'antd/lib/card'
@@ -52,7 +52,7 @@ const tabList = [
   },
 ]
 
-const audioAllowedTypes = ['mp3', 'mpeg', 'x-m4a', 'ogg', 'wav', 'm4a']
+const audioAllowedTypes = ['mp3', 'mpeg', 'x-wav', 'wav']
 
 const errorMessages = {
   MISSING_LINK: 'No link in upload response.',
@@ -80,7 +80,7 @@ const AudioPopup = ({ EditorRef }) => {
     // EditorRef.current.selection.clear()
 
     EditorRef.current.html.insert(
-      `<audio contenteditable="false" controls="controls" src="${url}" controlsList="nodownload"></audio>`
+      `<p><audio contenteditable="false" style="max-width: 100%" controls="controls" src="${url}" controlsList="nodownload">Audio is not supported on this browser.</audio><span>&nbsp;</span></p>`
     )
     // if html is inserted over using editor methods `saveStep` requires to be called to update the editor.
     EditorRef.current.undo.saveStep()
@@ -94,13 +94,16 @@ const AudioPopup = ({ EditorRef }) => {
       BAD_FILE_TYPE,
       MAX_SIZE_ERROR,
     } = errorMessages
+    EditorRef.current.popupNotClosable = true
     if (!audioAllowedTypes.includes(audioFile.type.replace(/audio\//g, ''))) {
+      EditorRef.current.popupNotClosable = false
       setProgressData({ show: true, message: BAD_FILE_TYPE, isError: true })
       return false
     }
 
     const size = audioFile.size / (1024 * 1024)
     if (selectedTab !== 'audioRecord' && size > audioUploadFileLimit) {
+      EditorRef.current.popupNotClosable = false
       setProgressData({ show: true, message: MAX_SIZE_ERROR, isError: true })
       return false
     }
@@ -115,9 +118,6 @@ const AudioPopup = ({ EditorRef }) => {
         } else {
           setProgressData({ show: true, message: MISSING_LINK, isError: true })
         }
-        setTimeout(() => {
-          setProgressData({ show: false })
-        }, 1000)
       })
       .catch(() => {
         setProgressData({
@@ -125,6 +125,9 @@ const AudioPopup = ({ EditorRef }) => {
           message: ERROR_DURING_UPLOAD,
           isError: true,
         })
+      })
+      .finally(() => {
+        EditorRef.current.popupNotClosable = false
         setTimeout(() => {
           setProgressData({ show: false })
         }, 1000)
@@ -215,19 +218,23 @@ const Progress = ({ message, isLoading = false, isError = false }) => {
 
 const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
   const [isRecording, setIsRecording] = useState(false)
+  const isCancelledRef = useRef()
   const [time, setTime] = useState(0)
   const maxmilliseconds = maxAudioDurationLimit * 60 * 1000
   const editorId = EditorRef.current.id
 
   const onChangeRecordingState = (recordingState) => {
     setIsRecording(recordingState === RECORDING_ACTIVE)
-    EditorRef.current.isRecording = true
+    EditorRef.current.popupNotClosable = true
   }
   const onRecordingComplete = ({ audioFile }) => {
     clearInterval(timer)
     setIsRecording(false)
-    EditorRef.current.isRecording = false
-    validateAndUploadFile(audioFile)
+    if (!isCancelledRef.current) {
+      validateAndUploadFile(audioFile)
+    } else {
+      isCancelledRef.current = false
+    }
   }
 
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
@@ -262,7 +269,6 @@ const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
         type="flex"
         justify="center"
         align="middle"
-        className="fr-input-line"
         style={{ flexDirection: 'column' }}
       >
         <StyledButton
@@ -291,6 +297,17 @@ const AudioRecord = ({ EditorRef, validateAndUploadFile, setErrorData }) => {
         <small style={{ color: '#666' }}>
           {isRecording ? 'Click to stop recording' : '(upto 5 minutes)'}
         </small>
+        {isRecording && (
+          <Icon
+            className="cancel-recording"
+            type="close-circle"
+            theme="filled"
+            onClick={() => {
+              isCancelledRef.current = true
+              onClickStopRecording()
+            }}
+          />
+        )}
       </Row>
     </div>
   )
@@ -451,6 +468,7 @@ const StyledCard = styled(Card)`
     }
   }
   .ant-card-body {
+    position: relative;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -464,6 +482,17 @@ const StyledCard = styled(Card)`
     .fr-file-upload-layer {
       margin: 0;
       padding: 0;
+    }
+    .cancel-recording {
+      position: absolute;
+      top: 0px;
+      right: 5px;
+      font-size: 20px;
+    }
+    button {
+      &:focus {
+        outline: none;
+      }
     }
   }
 `

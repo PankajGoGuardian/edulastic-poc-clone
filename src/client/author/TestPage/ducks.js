@@ -3826,10 +3826,29 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     newPayload.itemGroups = _test.itemGroups
     if (remove) {
       const passageItemIds = passageItems.map((x) => x._id)
-      newPayload.itemGroups[currentGroupIndex].items = uniqBy(
-        testItems.filter((x) => !passageItemIds.includes(x._id)),
-        (x) => x._id
-      )
+      /**
+       * ref: EV-41116
+       * For sections and dynamic test first item from passage can exist in group 1
+       * and second item from same passage can exist in group 2
+       * Thus when removing passage items need to filter from all groups and not
+       * only from current group index.
+       */
+      if (hasSections || isDynamicTest) {
+        ;(newPayload.itemGroups || []).forEach((currentItemGroup, index) => {
+          const currentGroupItems = currentItemGroup?.items || []
+          if (currentGroupItems.length) {
+            newPayload.itemGroups[index].items = uniqBy(
+              currentGroupItems.filter((x) => !passageItemIds.includes(x._id)),
+              (x) => x._id
+            )
+          }
+        })
+      } else {
+        newPayload.itemGroups[currentGroupIndex].items = uniqBy(
+          testItems.filter((x) => !passageItemIds.includes(x._id)),
+          (x) => x._id
+        )
+      }
     } else {
       let newItems = [...testItems]
       /**

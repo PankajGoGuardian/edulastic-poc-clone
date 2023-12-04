@@ -140,11 +140,22 @@ export default SortableContainer(
                 key={count}
                 extra={rightContent(group, hasSections)}
               >
-                {items.map(
-                  (item, index) =>
-                    item.groupId == group._id &&
-                    renderItem(item, index, group._id)
-                )}
+                {items.map((item, index) => {
+                  // EV-38941: here item can be an object or array of objects
+                  if (isArray(item)) {
+                    const currentGroupItems = (item || []).filter(
+                      (_item) => _item.groupId === group._id
+                    )
+                    if (currentGroupItems?.length) {
+                      return renderItem(currentGroupItems, index, group._id)
+                    }
+                    return null
+                  }
+                  if (item.groupId == group._id) {
+                    return renderItem(item, index, group._id)
+                  }
+                  return null
+                })}
               </Panel>
             ))}
           </GroupCollapse>

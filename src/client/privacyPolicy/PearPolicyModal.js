@@ -27,7 +27,7 @@ const PearPolicyModal = ({
       <Spin spinning={isLoading}>
         <ModalContentWrapper>
           <UpperContainer>
-            <AssessPeardeckLogo isBgLight height="35px" />
+            <AssessPeardeckLogo height="35px" />
             <StyledHeader>Welcome to Pear Assess!</StyledHeader>
             <p>Before we proceed, please review the following terms</p>
           </UpperContainer>

@@ -20,6 +20,12 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
   preSelectStandards = '',
 }) => {
   const { assignedByEmail, assignedByName } = assignedBy
+  standardsMasteryData = standardsMasteryData.map(
+    ({ masteryScore, ...rest }) => ({
+      masteryScore: Math.round(masteryScore || 0),
+      ...rest,
+    })
+  )
   const tutorMeSDKStandardMasteryDetails = standardsMasteryData.map(
     ({
       masteryScore,
@@ -29,7 +35,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       domainIdentifier,
       domainDesc,
     }) => ({
-      masteryScore: masteryScore || 0,
+      masteryScore,
       masteryColor,
       standardIdentifier,
       standardDesc,

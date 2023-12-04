@@ -74,9 +74,8 @@ const PublicTestPage = ({
   useEffect(() => {
     if (user) {
       const { role } = user
-      // fetch test to check if test archieved or not
       testsApi
-        .getById(testId)
+        .getByIdLatestPublishedShared(testId)
         .then((_test) => {
           const isTestArchieved =
             _test.status === testConstants.statusConstants.ARCHIVED

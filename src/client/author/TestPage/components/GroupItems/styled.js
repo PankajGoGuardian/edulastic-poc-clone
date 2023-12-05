@@ -263,3 +263,10 @@ export const SectionsTestCreateGroupWrapper = styled.div`
   margin: auto;
   padding: 40px 80px;
 `
+export const StyledAddSectionsButton = styled.button`
+  padding-block: 12px;
+  border-radius: 7px;
+  border-color: transparent;
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+  font-size: 12px;
+`

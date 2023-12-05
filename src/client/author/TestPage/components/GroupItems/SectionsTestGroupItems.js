@@ -35,10 +35,12 @@ import {
   QuestionTagsWrapper,
   PanelStyled,
   SectionNameInput,
+  StyledAddSectionsButton,
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 
 const { sectionTestActions } = testConstants
+const MAX_SECTION_COUNT = 7
 
 const SectionsTestGroupItems = ({
   match,
@@ -176,7 +178,7 @@ const SectionsTestGroupItems = ({
   }
 
   const handleAddGroup = () => {
-    if (test.itemGroups.length === 7) {
+    if (test.itemGroups.length === MAX_SECTION_COUNT) {
       notification({ type: 'warn', messageKey: 'cantCreateMoreThan7Groups' })
       return
     }
@@ -207,6 +209,9 @@ const SectionsTestGroupItems = ({
     // Show select group modal as new group is getting edited
     setShowSectionsTestSelectGroupIndexModal(true)
   }
+
+  const isAddSectionButtonDisabled =
+    test?.itemGroups?.length >= MAX_SECTION_COUNT
 
   return (
     <Container>
@@ -328,21 +333,25 @@ const SectionsTestGroupItems = ({
           })}
         </Collapse>
         <GroupField style={{ marginTop: '15px', marginLeft: '45%' }}>
-          <button
-            type="button"
-            data-cy="add-section"
-            onClick={handleAddGroup}
-            style={{
-              paddingBlock: '12px',
-              borderRadius: '7px',
-              borderColor: 'transparent',
-              cursor: 'pointer',
-              fontSize: '12px',
-            }}
+          <Tooltip
+            title={
+              isAddSectionButtonDisabled
+                ? `Cannot create more than ${MAX_SECTION_COUNT} sections`
+                : null
+            }
           >
-            <FontAwesomeIcon icon={faPlusCircle} aria-hidden="true" />
-            <span style={{ paddingLeft: 10 }}>ADD SECTION</span>
-          </button>
+            <span>
+              <StyledAddSectionsButton
+                type="button"
+                data-cy="add-section"
+                onClick={handleAddGroup}
+                disabled={isAddSectionButtonDisabled}
+              >
+                <FontAwesomeIcon icon={faPlusCircle} aria-hidden="true" />
+                <span style={{ paddingLeft: 10 }}>ADD SECTION</span>
+              </StyledAddSectionsButton>
+            </span>
+          </Tooltip>
         </GroupField>
       </SectionsTestCreateGroupWrapper>
     </Container>

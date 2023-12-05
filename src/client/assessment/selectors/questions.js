@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'
 import { values, keyBy } from 'lodash'
+import { questionType } from '@edulastic/constants'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 import { changeDataToPreferredLanguage } from '../utils/question'
 import { assignmentLevelSettingsSelector } from './answers'
@@ -33,11 +34,24 @@ export const getQuestionsByIdSelector = createSelector(
       question.customKeys = allCustomKeys
     })
 
-    return keyBy(convertedInPreferredLang, (q) =>
-      q.type === 'passage' || q.type === 'video'
-        ? q.id
-        : `${q.testItemId}_${q.id}`
-    )
+    return keyBy(convertedInPreferredLang, (q) => {
+      /**
+       * EV-40956
+       * Text type question in passage does not have testItemId which results: undefined_${q.id}
+       * Checking if question type is "text" but not a have to testItem then returning q.id instead undefined_${q.id}
+       */
+
+      const isPassageTextItem = q.type === questionType.TEXT && !q.testItemId
+
+      if (
+        [questionType.VIDEO, questionType.PASSAGE].includes(q.type) ||
+        isPassageTextItem
+      ) {
+        return q.id
+      }
+
+      return `${q.testItemId}_${q.id}`
+    })
   }
 )
 

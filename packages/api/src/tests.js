@@ -42,6 +42,14 @@ const getByIdMinimal = (id, params = {}) =>
     })
     .then((result) => result.data.result)
 
+const getByIdLatestPublishedShared = (id) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/latest-published-shared`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 const getSummary = (id) =>
   api
     .callApi({
@@ -168,6 +176,7 @@ export default {
   getAll,
   getById,
   getByIdMinimal,
+  getByIdLatestPublishedShared,
   create,
   update,
   getDefaultImage,

@@ -114,9 +114,9 @@ export const publicTestReducer = createReducer(initialState, {
     state.loading = false
     state.test = payload.test
   },
-  [FETCH_PUBLIC_TEST_FAILURE]: (state) => {
+  [FETCH_PUBLIC_TEST_FAILURE]: (state, { payload }) => {
     state.loading = false
-    state.error = true
+    state.error = payload
   },
   [FETCH_ASSIGNMENTS_DATA_BY_TEST]: (state) => {
     state.loadingAssignments = true

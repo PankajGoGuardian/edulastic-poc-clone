@@ -95,6 +95,7 @@ const ChartEdit = ({
             } else {
               delete draft.chart_data.data[index].notInteractive
             }
+            // Updating validation response when there is change in interactive
             if (
               draft?.validation?.validResponse?.value?.[index] &&
               !draft?.validation?.validResponse?.value?.[index]?.notInteractive
@@ -103,6 +104,19 @@ const ChartEdit = ({
             } else {
               delete draft?.validation?.validResponse?.value?.[index]
                 ?.notInteractive
+            }
+            // Updating Alternate Responses when there is change in interactive
+            if (draft?.validation?.altResponses) {
+              draft.validation.altResponses.forEach((altResp) => {
+                if (
+                  altResp?.value?.[index] &&
+                  draft?.chart_data?.data?.[index].notInteractive
+                ) {
+                  altResp.value[index].notInteractive = true
+                } else {
+                  delete altResp?.value?.[index]?.notInteractive
+                }
+              })
             }
             break
           }

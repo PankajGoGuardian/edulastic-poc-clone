@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Route, Link } from 'react-router-dom'
-import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
@@ -45,7 +44,7 @@ import {
   getInterestedCurriculumsSelector,
 } from '../../../src/selectors/user'
 
-import { getNavigationTabLinks } from '../../common/util'
+import { getTabNavigationItems } from '../../common/util'
 
 import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/json/staticDropDownData.json'
@@ -139,24 +138,6 @@ const StandardsMasteryReportContainer = (props) => {
     }
   }, [showApply, tempDdFilter])
 
-  const computeChartNavigationLinks = (filt) => {
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(filt)
-      const obj = {}
-      arr.forEach((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
-        obj[item] = val
-      })
-      return next(
-        navigation.navigation[navigation.locToData[loc].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `?${qs.stringify(obj)}`)
-        }
-      )
-    }
-    return []
-  }
-
   useEffect(() => {
     if (settings.requestFilters.termId) {
       setEnableReportSharing(true)
@@ -173,9 +154,10 @@ const StandardsMasteryReportContainer = (props) => {
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const _navigationItems = computeChartNavigationLinks(
-      settings.requestFilters
-    )
+    const _navigationItems = getTabNavigationItems({
+      loc,
+      requestFilters: settings.requestFilters,
+    })
     updateNavigation(!premium ? [_navigationItems[1]] : _navigationItems)
   }, [settings])
 

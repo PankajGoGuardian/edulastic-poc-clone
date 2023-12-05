@@ -7,9 +7,8 @@ import { get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
-import { getFullName } from './utils/transformers'
-
 import staticDropDownData from './static/staticDropDownData.json'
+import { getStudentsList } from '../../../common/util'
 
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST =
   '[reports] get reports spr filter data request'
@@ -223,10 +222,7 @@ function* getReportsSPRFilterDataRequest({ payload }) {
 function* receiveStudentsListSaga({ payload: query }) {
   try {
     const result = yield call(reportsApi.fetchStudentList, query)
-    const studentList = get(result, 'data.result', []).map((item) => ({
-      _id: item._id,
-      title: getFullName(item),
-    }))
+    const studentList = getStudentsList(get(result, 'data.result', []))
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
       payload: { studentList, query },

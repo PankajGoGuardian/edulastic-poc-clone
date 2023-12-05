@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
@@ -13,9 +12,8 @@ import ActivityByTeacher from './ActivityByTeacher'
 
 import EngagementReportFilters from './common/components/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
-import { getNavigationTabLinks } from '../../common/util'
+import { getTabNavigationItems } from '../../common/util'
 
-import navigation from '../../common/static/json/navigation.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import {
@@ -82,25 +80,6 @@ const EngagementReportContainer = ({
     }
   }, [])
 
-  const computeChartNavigationLinks = (filt) => {
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(filt)
-      const obj = {}
-      arr.forEach((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
-        obj[item] = val
-      })
-      obj.reportId = reportId || ''
-      return next(
-        navigation.navigation[navigation.locToData[loc].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `?${qs.stringify(obj)}`)
-        }
-      )
-    }
-    return []
-  }
-
   useEffect(() => {
     if (settings.requestFilters.termId) {
       setEnableReportSharing(true)
@@ -117,7 +96,10 @@ const EngagementReportContainer = ({
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
+    const navigationItems = getTabNavigationItems({
+      loc,
+      requestFilters: { ...settings.requestFilters, reportId: reportId || '' },
+    })
     updateNavigation(navigationItems)
   }, [settings])
 

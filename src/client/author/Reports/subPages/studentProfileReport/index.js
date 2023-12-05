@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import { pick, omit } from 'lodash'
-import next from 'immer'
 import qs from 'qs'
 
 import { Spin } from 'antd'
@@ -32,9 +31,7 @@ import {
 } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
-import navigation from '../../common/static/json/navigation.json'
-
-import { getNavigationTabLinks } from '../../common/util'
+import { getTabNavigationItems } from '../../common/util'
 
 const StudentProfileReportContainer = (props) => {
   const {
@@ -77,25 +74,6 @@ const StudentProfileReportContainer = (props) => {
     }
   }, [])
 
-  const computeChartNavigationLinks = (sel, filt) => {
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(filt)
-      const obj = {}
-      arr.map((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
-        obj[item] = val
-      })
-      obj.reportId = reportId || ''
-      return next(
-        navigation.navigation[navigation.locToData[loc].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`)
-        }
-      )
-    }
-    return []
-  }
-
   useEffect(() => {
     if (settings.selectedStudent.key) {
       setEnableReportSharing(true)
@@ -103,17 +81,13 @@ const StudentProfileReportContainer = (props) => {
         settings.requestFilters
       )}`
       history.push(path)
-      const computedChartNavigatorLinks = computeChartNavigationLinks(
-        settings.selectedStudent,
-        settings.requestFilters
-      )
-      updateNavigation(computedChartNavigatorLinks)
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks(
-      settings.selectedStudent,
-      settings.requestFilters
-    )
-    updateNavigation(computedChartNavigatorLinks)
+    const navigationItems = getTabNavigationItems({
+      loc,
+      selected: settings.selectedStudent.key,
+      requestFilters: { ...settings.requestFilters, reportId: reportId || '' },
+    })
+    updateNavigation(navigationItems)
   }, [settings])
 
   const setShowApply = (status) => {

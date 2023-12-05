@@ -25,6 +25,7 @@ import {
   reportNavType,
 } from '@edulastic/constants/const/report'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
+import { formatName } from '@edulastic/constants/reportUtils/common'
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import gradesMap from './static/json/gradesMap.json'
@@ -549,7 +550,8 @@ export const tooltipParams = {
   xAxisHeight: 100,
 }
 
-export const computeChartNavigationLinks = ({
+export const getTabNavigationItems = ({
+  selected = '',
   requestFilters,
   loc,
   hideOtherTabs = false,
@@ -575,7 +577,7 @@ export const computeChartNavigationLinks = ({
     navigationItems = next(_navigationItems, (draft) => {
       draft.forEach((item) => {
         if (item.key !== reportNavType.DW_GOALS_AND_INTERVENTIONS_REPORT) {
-          item.location += `?${qs.stringify(_filters, {
+          item.location += `${selected}?${qs.stringify(_filters, {
             arrayFormat: 'comma',
           })}`
         }
@@ -768,3 +770,11 @@ export const getFilterOptions = (data, keyName, titleName) => {
     title: record[titleName],
   }))
 }
+
+export const getStudentsList = (data) =>
+  data
+    .map((item) => ({
+      _id: item._id,
+      title: formatName(item, { lastNameFirst: false }),
+    }))
+    .filter((student) => !isEmpty(student.title))

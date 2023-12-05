@@ -1,6 +1,6 @@
 import qs from 'qs'
 import { useEffect } from 'react'
-import { computeChartNavigationLinks } from '../util'
+import { getTabNavigationItems } from '../util'
 
 function useTabNavigation({
   settings,
@@ -30,7 +30,7 @@ function useTabNavigation({
       const path = `?${qs.stringify(_filters, { arrayFormat: 'comma' })}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks({
+    const navigationItems = getTabNavigationItems({
       requestFilters: _filters,
       loc,
       hideOtherTabs: !!reportId,

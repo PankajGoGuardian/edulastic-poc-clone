@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
 import { isEmpty, omit } from 'lodash'
-import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
@@ -12,9 +11,7 @@ import { reportNavType, ReportPaths } from '@edulastic/constants/const/report'
 import { EduIf } from '@edulastic/common'
 import { SubHeader } from '../../common/components/Header'
 
-import { getNavigationTabLinks } from '../../common/util'
-
-import navigation from '../../common/static/json/navigation.json'
+import { getTabNavigationItems } from '../../common/util'
 
 import MultipleAssessmentReportFilters from './common/components/filters/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
@@ -118,24 +115,6 @@ const MultipleAssessmentReportContainer = (props) => {
     }
   }, [showApply, tempDdFilter])
 
-  const computeChartNavigationLinks = (filt) => {
-    if (navigation.locToData[pageTitle]) {
-      const arr = Object.keys(filt)
-      const obj = {}
-      arr.forEach((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
-        obj[item] = val
-      })
-      return next(
-        navigation.navigation[navigation.locToData[pageTitle].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `?${qs.stringify(obj)}`)
-        }
-      )
-    }
-    return []
-  }
-
   useEffect(() => {
     if (settings.requestFilters.termId) {
       setEnableReportSharing(true)
@@ -152,7 +131,10 @@ const MultipleAssessmentReportContainer = (props) => {
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks(settings.requestFilters)
+    const navigationItems = getTabNavigationItems({
+      loc: pageTitle,
+      requestFilters: settings.requestFilters,
+    })
     updateNavigation(navigationItems)
   }, [settings])
 

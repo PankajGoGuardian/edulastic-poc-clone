@@ -6,8 +6,9 @@ import { get, pick } from 'lodash'
 
 import { dataWarehouseApi, reportsApi } from '@edulastic/api'
 
-import { staticDropDownData, getStudentName } from './utils'
+import { staticDropDownData } from './utils'
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { getStudentsList } from '../../../common/util'
 
 const initialState = {
   firstLoad: true,
@@ -195,10 +196,7 @@ function* fetchFiltersDataRequestSaga({ payload }) {
 function* fetchStudentsDataRequestSaga({ payload }) {
   try {
     const result = yield call(reportsApi.fetchStudentList, payload)
-    const studentsList = get(result, 'data.result', []).map((item) => ({
-      _id: item._id,
-      title: getStudentName(item),
-    }))
+    const studentsList = getStudentsList(get(result, 'data.result', []))
     yield put(
       actions.fetchStudentsDataRequestSuccess({
         studentsData: {

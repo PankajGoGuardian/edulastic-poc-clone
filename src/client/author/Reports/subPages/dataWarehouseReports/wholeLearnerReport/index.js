@@ -51,7 +51,7 @@ import {
   getAttendanceChartData,
 } from './utils'
 import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
-import { computeChartNavigationLinks } from '../../../common/util'
+import { getTabNavigationItems } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
 
@@ -248,7 +248,7 @@ const WholeLearnerReport = ({
       )}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks({
+    const navigationItems = getTabNavigationItems({
       requestFilters: _requestFilters,
       loc,
       hideOtherTabs: !!reportId,

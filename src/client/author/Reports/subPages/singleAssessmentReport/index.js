@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
@@ -20,9 +19,8 @@ import QuestionAnalysis from './QuestionAnalysis'
 
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
-import { getNavigationTabLinks } from '../../common/util'
+import { getTabNavigationItems } from '../../common/util'
 
-import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/staticDropDownData.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
@@ -134,26 +132,6 @@ const SingleAssessmentReportContainer = (props) => {
     }
   }, [showApply, tempDdFilter])
 
-  const computeChartNavigationLinks = (sel, filt, _cliUser) => {
-    if (navigation.locToData[loc]) {
-      const arr = Object.keys(filt)
-      const obj = {}
-      // eslint-disable-next-line array-callback-return
-      arr.map((item) => {
-        const val = filt[item] === '' ? 'All' : filt[item]
-        obj[item] = val
-      })
-      obj.cliUser = _cliUser
-      return next(
-        navigation.navigation[navigation.locToData[loc].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`)
-        }
-      )
-    }
-    return []
-  }
-
   useEffect(() => {
     if (settings.selectedTest.key) {
       setEnableReportSharing(true)
@@ -181,11 +159,11 @@ const SingleAssessmentReportContainer = (props) => {
       const path = `${settings.selectedTest.key}?${qs.stringify(obj)}`
       history.push(path)
     }
-    const navigationItems = computeChartNavigationLinks(
-      settings.selectedTest,
-      settings.requestFilters,
-      settings.cliUser
-    )
+    const navigationItems = getTabNavigationItems({
+      loc,
+      selected: settings.selectedTest.key,
+      requestFilters: { ...settings.requestFilters, cliUser: settings.cliUser },
+    })
     updateNavigation(navigationItems)
   }, [settings, additionalUrlParams])
 

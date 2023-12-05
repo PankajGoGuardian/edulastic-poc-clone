@@ -88,6 +88,7 @@ export default SortableContainer(
             isEditable={isEditable}
             items={item}
             index={index}
+            collection={groupId}
             groupId={groupId}
             showGroupsPanel={showGroupsPanel}
             removeItem={handleDelete(item)}
@@ -105,6 +106,7 @@ export default SortableContainer(
           disabled={!isEditable}
           isEditable={isEditable}
           index={index}
+          collection={groupId}
           item={item}
           isPublishers={isPublishers}
         />

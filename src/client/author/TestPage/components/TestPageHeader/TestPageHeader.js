@@ -387,10 +387,8 @@ const TestPageHeader = ({
 
   const isNotRegradable = () => {
     const isTeacher = userRole === roleuser.TEACHER
-    const isAuthorsTest =
-      test.itemGroups.some((group) => group.type === 'AUTOSELECT') ||
-      test.itemGroups.length > 1
-    return isTeacher && isAuthorsTest
+
+    return isTeacher && isDynamicTest
   }
 
   const handleRegrade = () => {

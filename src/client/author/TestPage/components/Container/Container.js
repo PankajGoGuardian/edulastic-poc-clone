@@ -258,6 +258,7 @@ class Container extends PureComponent {
 
     if (userRole !== roleuser.STUDENT) {
       setCurrentTestSettingsId('')
+
       if (isPremiumUser) {
         fetchTestSettingsList({
           orgId: userId,

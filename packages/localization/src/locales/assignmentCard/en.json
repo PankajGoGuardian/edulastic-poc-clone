@@ -10,8 +10,8 @@
     "toolTip": {
       "assessment": "Class Assignment",
       "practice": "Practice Assignment",
-      "common assessment": "Common Assignment",
-      "school common assessment": "School Common Assignment",
+      "common assessment": "District Common",
+      "school common assessment": "School Common",
       "testlet": "testlet",
       "homework": "Homework",
       "quiz": "Quiz"

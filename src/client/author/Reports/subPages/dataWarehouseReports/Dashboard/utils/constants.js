@@ -9,11 +9,11 @@ import { compareByKeys } from '../../common/utils'
 export const availableTestTypes = [
   {
     key: 'common assessment',
-    title: 'Common Assessment',
+    title: 'District Common',
   },
   {
     key: 'school common assessment',
-    title: 'School Common Assessment',
+    title: 'School Common',
   },
   {
     key: 'assessment',

@@ -55,7 +55,6 @@ import {
   getTestEntitySelector,
   resetUpdatedStateAction,
   setTestDataAction,
-  fetchTestSettingsListAction,
   saveTestSettingsAction,
   getTestSettingsListSelector,
   getTestDefaultSettingsSelector,
@@ -63,6 +62,7 @@ import {
   updateTestSettingRequestAction,
   togglePenaltyOnUsingHintsAction,
   hasSectionsSelector,
+  canSchoolAdminUseDistrictCommonSelector,
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
@@ -549,6 +549,7 @@ class Setting extends Component {
       entity: { itemGroups },
       userRole,
       hasSections,
+      canSchoolAdminUseDistrictCommon,
     } = this.props
     const newSettings = omit(initialSettings, [
       'autoRedirect',
@@ -575,7 +576,8 @@ class Setting extends Component {
     // Below if block is to sanitize any legacy settings template for School Admins
     if (
       userRole === roleuser.SCHOOL_ADMIN &&
-      newSettings.testType === commonAssessment
+      newSettings.testType === commonAssessment &&
+      canSchoolAdminUseDistrictCommon === false
     ) {
       newSettings.testType = schoolCommonAssessment
     }
@@ -2754,6 +2756,9 @@ const enhance = compose(
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      canSchoolAdminUseDistrictCommon: canSchoolAdminUseDistrictCommonSelector(
+        state
+      ),
       hasSections: hasSectionsSelector(state),
     }),
     {
@@ -2761,7 +2766,6 @@ const enhance = compose(
       setSafePassword: setSafeBrowserPassword,
       setTestData: setTestDataAction,
       resetUpdatedState: resetUpdatedStateAction,
-      fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,

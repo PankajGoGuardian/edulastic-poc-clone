@@ -5,13 +5,15 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { roleuser, subscriptions } from '@edulastic/constants'
-import { IconSaveNew } from '@edulastic/icons'
-import { Select } from 'antd'
+import { IconInfo, IconSaveNew } from '@edulastic/icons'
+import { Select, Tooltip } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { lightGrey9 } from '@edulastic/colors'
 import {
   HeaderSaveButton,
   SpinContainer,
@@ -70,6 +72,7 @@ class TestSetting extends Component {
         isLinkSharingEnabled: false,
         enableAudioResponseQuestion: false,
         canAccessPublicContent: true,
+        canSchoolAdminUseDistrictCommon: true,
       },
     }
   }
@@ -165,6 +168,11 @@ class TestSetting extends Component {
       )
         ? true
         : testSetting.canAccessPublicContent,
+      canSchoolAdminUseDistrictCommon: checkIsUndefinedOrNull(
+        testSetting.canSchoolAdminUseDistrictCommon
+      )
+        ? true
+        : testSetting.canSchoolAdminUseDistrictCommon,
     }
     if (updateData.isLinkSharingEnabled) {
       Object.assign(updateData, {
@@ -193,6 +201,7 @@ class TestSetting extends Component {
       setDefaultProfile,
       subscription: { subType } = {},
       role,
+      t: i18translate,
     } = this.props
 
     const { testSetting } = this.state
@@ -217,6 +226,11 @@ class TestSetting extends Component {
     )
       ? true
       : testSetting.canAccessPublicContent
+    const canSchoolAdminUseDistrictCommon = checkIsUndefinedOrNull(
+      testSetting.canSchoolAdminUseDistrictCommon
+    )
+      ? true
+      : testSetting.canSchoolAdminUseDistrictCommon
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const isUserDa = role === roleuser.DISTRICT_ADMIN
     const showEnterpriseSettings = [isEnterprise, isUserDa].every((o) => !!o)
@@ -317,6 +331,33 @@ class TestSetting extends Component {
                         this.changeSetting(e, 'canAccessPublicContent')
                       }
                       value={canAccessPublicContent}
+                    >
+                      <RadioBtn value>Yes</RadioBtn>
+                      <RadioBtn value={false}>No</RadioBtn>
+                    </StyledRadioGrp>
+                  </StyledCol>
+                </EduIf>
+                <EduIf condition={showEnterpriseSettings}>
+                  <StyledCol data-cy="canSchoolAdminUseDistrictCommon">
+                    <InputLabel>
+                      Allow SA to use District Common Test Type{' '}
+                      <Tooltip
+                        title={i18translate(
+                          'canSchoolAdminUseDistrictCommon.info'
+                        )}
+                      >
+                        <IconInfo
+                          color={lightGrey9}
+                          style={{ marginLeft: '10px', cursor: 'pointer' }}
+                        />
+                      </Tooltip>
+                    </InputLabel>
+                    <StyledRadioGrp
+                      defaultValue={canSchoolAdminUseDistrictCommon}
+                      onChange={(e) =>
+                        this.changeSetting(e, 'canSchoolAdminUseDistrictCommon')
+                      }
+                      value={canSchoolAdminUseDistrictCommon}
                     >
                       <RadioBtn value>Yes</RadioBtn>
                       <RadioBtn value={false}>No</RadioBtn>
@@ -493,6 +534,7 @@ class TestSetting extends Component {
 }
 
 const enhance = compose(
+  withNamespaces('author'),
   connect(
     (state) => ({
       testSetting: get(state, ['testSettingReducer', 'data'], {}),

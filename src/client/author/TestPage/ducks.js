@@ -368,7 +368,8 @@ export const GET_YOUTUBE_THUMBNAIL_SUCCESS =
   '[test] get youtube thumbnail success'
 export const SET_YOUTUBE_THUMBNAIL_FAILURE =
   '[test] set youtube thumbnail failure'
-
+export const SET_ALLOW_SA_DISTRICT_COMMON_SETTING =
+  '[tests] set allow school admin district common setting'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -479,6 +480,9 @@ export const setYoutubeThumbnailAction = createAction(
 
 export const setYoutubeThumbnailFailure = createAction(
   SET_YOUTUBE_THUMBNAIL_FAILURE
+)
+export const setCanSchoolAdminUseDistrictCommonAction = createAction(
+  SET_ALLOW_SA_DISTRICT_COMMON_SETTING
 )
 
 export const receiveTestByIdAction = (
@@ -650,6 +654,11 @@ export const defaultImage =
 export const stateSelector = (state) => state.tests
 
 export const playlistStateSelector = (state) => state.playlist
+
+export const canSchoolAdminUseDistrictCommonSelector = createSelector(
+  stateSelector,
+  (state) => state.canSchoolAdminUseDistrictCommon
+)
 
 export const getPenaltyOnUsingHintsSelector = createSelector(
   stateSelector,
@@ -1176,6 +1185,7 @@ const initialState = {
     isLoading: true,
   },
   hasPenaltyOnUsingHints: false,
+  canSchoolAdminUseDistrictCommon: true,
   ytThumbnail: '',
   ytloading: false,
 }
@@ -1775,6 +1785,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         currentTestSettingsId: payload,
+      }
+    case SET_ALLOW_SA_DISTRICT_COMMON_SETTING:
+      return {
+        ...state,
+        canSchoolAdminUseDistrictCommon: payload,
       }
     case SET_TEST_SETTINGS_LIST:
       return {
@@ -3691,7 +3706,11 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       standardsProficiencyProfiles,
       defaultTestTypeProfiles: defaultTestProfiles,
       partialScore,
+      canSchoolAdminUseDistrictCommon,
     } = defaultTestSettings
+    yield put(
+      setCanSchoolAdminUseDistrictCommonAction(canSchoolAdminUseDistrictCommon)
+    )
     yield put(receivePerformanceBandSuccessAction(performanceBandProfiles))
     yield put(
       receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles)

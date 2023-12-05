@@ -66,6 +66,7 @@ import {
   setTestSettingsListAction,
   getQuestionTypesInTestSelector,
   getIsAudioResponseQuestionEnabled,
+  canSchoolAdminUseDistrictCommonSelector,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -529,6 +530,7 @@ class AssignTest extends React.Component {
       isFreezeSettingsOn,
       totalItems,
       userRole,
+      canSchoolAdminUseDistrictCommon,
     } = this.props
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
@@ -587,7 +589,8 @@ class AssignTest extends React.Component {
       // Below if block is to sanitize any legacy settings template for School Admins
       if (
         userRole === roleuser.SCHOOL_ADMIN &&
-        newSettings.testType === commonAssessment
+        newSettings.testType === commonAssessment &&
+        canSchoolAdminUseDistrictCommon === false
       ) {
         newSettings.testType = schoolCommonAssessment
       }
@@ -1070,6 +1073,9 @@ const enhance = compose(
       isAdvancedSearchLoading: isAdvancedSearchLoadingSelector(state),
       questionTypesInTest: getQuestionTypesInTestSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      canSchoolAdminUseDistrictCommon: canSchoolAdminUseDistrictCommonSelector(
+        state
+      ),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {

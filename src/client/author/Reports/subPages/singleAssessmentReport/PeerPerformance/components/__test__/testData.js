@@ -70,7 +70,7 @@ export const settings = {
     assessmentTypes: [
       {
         key: 'common assessment',
-        title: 'Common Assessment',
+        title: 'District Common',
       },
     ],
     assignedBy: {

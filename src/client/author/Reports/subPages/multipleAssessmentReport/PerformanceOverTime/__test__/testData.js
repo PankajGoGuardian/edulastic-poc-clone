@@ -41,7 +41,7 @@ export const MARFilterData = {
       testTypes: [
         {
           key: 'common assessment',
-          title: 'Common Assessment',
+          title: 'District Common',
         },
         {
           key: 'assessment',

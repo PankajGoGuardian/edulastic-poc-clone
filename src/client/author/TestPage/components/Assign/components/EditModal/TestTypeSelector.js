@@ -9,6 +9,7 @@ import {
   includeCommonOnTestType,
 } from '../../../../../../common/utils/testTypeUtils'
 import { isPremiumUserSelector } from '../../../../../src/selectors/user'
+import { canSchoolAdminUseDistrictCommonSelector } from '../../../../ducks'
 
 const generateReportTypes = {
   YES: {
@@ -28,10 +29,12 @@ const TestTypeSelector = ({
   userRole,
   onGenerateReportFieldChange,
   isPremiumUser,
+  canSchoolAdminUseDistrictCommon,
 }) => {
   const availableTestTypes = getAvailableTestTypesForUser({
     isPremium: isPremiumUser,
     role: userRole,
+    canSchoolAdminUseDistrictCommon,
   })
   const testTypes = includeCommonOnTestType(availableTestTypes, testType)
 
@@ -90,4 +93,7 @@ const TestTypeSelector = ({
 
 export default connect((state) => ({
   isPremiumUser: isPremiumUserSelector(state),
+  canSchoolAdminUseDistrictCommon: canSchoolAdminUseDistrictCommonSelector(
+    state
+  ),
 }))(TestTypeSelector)

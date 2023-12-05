@@ -190,6 +190,9 @@
   "sectionFeatBetaAction": {
     "info": "The test section feature is in beta. This action is coming soon."
   },
+  "canSchoolAdminUseDistrictCommon": {
+    "info": "If set to ON, school admins will be allowed to create and assign District Common Assessment."
+  },
   "showTtsForPassage": {
     "title": "Allow Text To Speech For Passage",
     "info": "Set YES to enable read aloud feature on passage text for students. TTS will work for question content in all both cases."

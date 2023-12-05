@@ -67,8 +67,8 @@ const TEST_TYPES_VALUES_MAP = ALL_TEST_TYPES_VALUES.reduce((acc, curr) => {
 }, {})
 
 const TEST_TYPE_LABELS = {
-  'common assessment': 'Common Assessment',
-  'school common assessment': 'School Common Assessment',
+  'common assessment': 'District Common',
+  'school common assessment': 'School Common',
   assessment: 'Class Assessment',
   practice: 'Practice Assessment',
   homework: 'Homework',

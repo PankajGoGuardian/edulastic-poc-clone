@@ -109,9 +109,14 @@ class LeftFilter extends React.Component {
         folderId,
       })
     } else if (folderId) {
-      loadAssignments({ filters, folderId })
+      loadAssignments({
+        filters,
+        folderId,
+      })
     } else {
-      loadAssignments({ filters })
+      loadAssignments({
+        filters,
+      })
     }
 
     onSetFilter(filters)
@@ -138,7 +143,7 @@ class LeftFilter extends React.Component {
       subject,
       grades,
       termId,
-      testType,
+      testTypes,
       classId,
       status,
       testId,
@@ -146,7 +151,7 @@ class LeftFilter extends React.Component {
       tags = [],
       folderId = '',
     } = filterState
-    const testTypes = isPremiumUser
+    const testTypeOptions = isPremiumUser
       ? getAllTestTypesMap()
       : getNonPremiumTestTypes()
     const classListByTerm = classList.filter(
@@ -220,20 +225,18 @@ class LeftFilter extends React.Component {
 
         <FieldLabel>Test Type</FieldLabel>
         <SelectInputStyled
+          showArrow
           data-cy="filter-testType"
-          mode="default"
+          mode="multiple"
           placeholder="All"
-          value={testType}
-          onChange={this.handleChange('testType')}
+          value={testTypes}
+          onChange={this.handleChange('testTypes')}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
-          <Select.Option key="all" value="">
-            All
-          </Select.Option>
-          {Object.keys(testTypes).map((key, index) => (
-            <Select.Option key={index} value={key}>
-              {testTypes[key]}
+          {Object.keys(testTypeOptions).map((key) => (
+            <Select.Option key={key} value={key}>
+              {testTypeOptions[key]}
             </Select.Option>
           ))}
         </SelectInputStyled>

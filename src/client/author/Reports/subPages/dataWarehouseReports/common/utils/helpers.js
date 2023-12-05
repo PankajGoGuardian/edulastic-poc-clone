@@ -7,7 +7,7 @@ import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
 import {
   ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
   TEST_TYPES_VALUES_MAP,
-  DEFAULT_ADMIN_TEST_TYPE_MAP,
+  DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER,
 } from '@edulastic/constants/const/testTypes'
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { allFilterValue } from '../../../../common/constants'
@@ -219,9 +219,9 @@ export const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
   const isAdmin =
     userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
   return [
-    isAdmin
-      ? DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
-      : TEST_TYPES_VALUES_MAP.ASSESSMENT,
+    ...(isAdmin
+      ? DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole]
+      : [TEST_TYPES_VALUES_MAP.ASSESSMENT]),
     ...availableExternalTestTypes,
   ].join(',')
 }

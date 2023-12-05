@@ -13,7 +13,7 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
-import { DEFAULT_ADMIN_TEST_TYPE_MAP } from '@edulastic/constants/const/testTypes'
+import { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } from '@edulastic/constants/const/testTypes'
 import { EduIf, FieldLabel } from '@edulastic/common'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
@@ -235,7 +235,8 @@ const MultipleAssessmentReportFilters = ({
             user.role === roleuser.SCHOOL_ADMIN)
         ) {
           search.assessmentTypes =
-            search.assessmentTypes || DEFAULT_ADMIN_TEST_TYPE_MAP[user.role]
+            search.assessmentTypes ||
+            DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[user.role].join(',')
         }
         const urlSchoolYear =
           schoolYears.find((item) => item.key === search.termId) ||

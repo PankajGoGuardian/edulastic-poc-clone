@@ -104,7 +104,7 @@ const SingleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   pickAddionalFilters,
 }) => {
-  const { DEFAULT_ADMIN_TEST_TYPE_MAP } = testTypesConstants
+  const { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } = testTypesConstants
   const availableAssessmentType = getArrayOfAllTestTypes()
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -255,7 +255,8 @@ const SingleAssessmentReportFilters = ({
           user.role === roleuser.SCHOOL_ADMIN)
       ) {
         search.assessmentTypes =
-          search.assessmentTypes || DEFAULT_ADMIN_TEST_TYPE_MAP[user.role]
+          search.assessmentTypes ||
+          DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[user.role].join(',')
       }
 
       const urlSchoolYear =

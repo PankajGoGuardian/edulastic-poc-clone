@@ -97,7 +97,7 @@ const fetchTeacherAssignments = ({
     grades = [],
     subject = '',
     termId = '',
-    testType = '',
+    testTypes = [],
     classId = '',
     status = '',
     tags = [],
@@ -108,7 +108,7 @@ const fetchTeacherAssignments = ({
   api
     .callApi({
       useSlowApi: true,
-      url: `${prefix}/all?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}&testId=${testId}`,
+      url: `${prefix}/all?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testTypes=${testTypes}&classId=${classId}&status=${status}&folderId=${folderId}&testId=${testId}`,
       method: 'post',
       data: { tags },
     })

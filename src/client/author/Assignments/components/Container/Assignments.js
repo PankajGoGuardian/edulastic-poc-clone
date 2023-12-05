@@ -88,7 +88,7 @@ import {
 const initialFilterState = {
   grades: [],
   subject: '',
-  testType: '',
+  testTypes: [],
   folderId: '',
   classId: '',
   testId: '',
@@ -154,10 +154,10 @@ class Assignments extends Component {
     if (
       (userRole === roleuser.SCHOOL_ADMIN ||
         userRole === roleuser.DISTRICT_ADMIN) &&
-      !Object.prototype.hasOwnProperty.call(storedFilters, 'testType')
+      !Object.prototype.hasOwnProperty.call(storedFilters, 'testTypes')
     ) {
-      filters.testType =
-        testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole]
+      filters.testTypes =
+        testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole]
     }
     if (defaultTermId && !storedFilters.termId) {
       const isTermExists = terms.some(({ _id }) => _id === defaultTermId)

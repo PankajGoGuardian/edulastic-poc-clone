@@ -8,7 +8,14 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col, Button, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { get, intersection, isEmpty, last } from 'lodash'
-import { EduButton, FlexContainer, withKeyboard } from '@edulastic/common'
+import {
+  EduButton,
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+  withKeyboard,
+} from '@edulastic/common'
 import { IconPhotoCamera, IconSend } from '@edulastic/icons'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -270,14 +277,18 @@ class SummaryTest extends Component {
     const currentSection = sectionId
       ? itemGroups.find((group) => group._id === sectionId)
       : {}
+    const hasSection = !!sectionId
+
     return (
       <ThemeProvider theme={themes.default}>
         <AssignmentContentWrapperSummary>
           <Container>
             <Header>
-              <Title data-cy="headingText">
+              <Title data-cy="headingText" hasSection={hasSection}>
                 {t('common.headingText')}{' '}
-                {!isEmpty(currentSection) ? currentSection.groupName : ''}
+                <SectionName hasSection={hasSection}>
+                  {!isEmpty(currentSection) ? currentSection.groupName : ''}
+                </SectionName>
               </Title>
               <TitleDescription data-cy="titleDescription">
                 {t('common.message')}
@@ -439,7 +450,12 @@ class SummaryTest extends Component {
               )}
             </MainContent>
             <Footer>
-              <ShortDescription>{t('common.nextStep')}</ShortDescription>
+              <ShortDescription>
+                <EduIf condition={hasSection}>
+                  <EduThen>{t('common.submitAndMoveToNextSection')}</EduThen>
+                  <EduElse>{t('common.nextStep')}</EduElse>
+                </EduIf>
+              </ShortDescription>
               <ButtonWrapper>
                 <UploadPaperWorkBtn
                   data-cy="uploadTestAttachments"
@@ -456,11 +472,21 @@ class SummaryTest extends Component {
                   loading={savingResponse || isSectionSubmitting}
                   data-cy="submitButton"
                 >
-                  <IconSend />{' '}
-                  <span>
-                    {t('default:SUBMIT')}{' '}
-                    {!isEmpty(currentSection) ? currentSection.groupName : ''}
-                  </span>
+                  <EduIf condition={hasSection}>
+                    <EduThen>
+                      {' '}
+                      <span>{t('default:proceed')} </span>
+                    </EduThen>
+                    <EduElse>
+                      <IconSend />{' '}
+                      <span>
+                        {t('default:SUBMIT')}{' '}
+                        {!isEmpty(currentSection)
+                          ? currentSection.groupName
+                          : ''}
+                      </span>
+                    </EduElse>
+                  </EduIf>
                 </SubmitButton>
               </ButtonWrapper>
             </Footer>
@@ -554,12 +580,16 @@ const Header = styled(Container)`
 const Title = styled.div`
   font-size: ${(props) => props.theme.attemptReview.headingTextSize};
   color: ${(props) => props.theme.attemptReview.headingColor};
-  font-weight: bold;
+  font-weight: ${(props) => (props.hasSection ? 'unset' : 'bold')};
   letter-spacing: -1px;
   text-align: center;
   @media (min-width: ${smallDesktopWidth}) {
     font-size: ${(props) => props.theme.titleSectionFontSize};
   }
+`
+
+const SectionName = styled.span`
+  font-weight: ${(props) => (props.hasSection ? 'bold' : 'unset')};
 `
 
 const TitleDescription = styled.div`

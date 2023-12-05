@@ -160,7 +160,24 @@ export function* addItemToCartSaga({ payload }) {
   const test = yield select(getTestEntitySelector)
   const hasSections = yield select(hasSectionsSelector)
   const isDynamicTest = yield select(isDynamicTestSelector)
-  const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
+  let currentGroupIndex = yield select(getCurrentGroupIndexSelector)
+
+  if (hasSections || isDynamicTest) {
+    /**
+     * In case of item removal need to update the current group index
+     * as group index changes on adding item to a section.
+     * Cannot rely on group index from store.
+     * Also cannot update this group index in store or else while adding items,
+     * they will be added to different index compared to what user has selected.
+     */
+    const testItemGroups = test?.itemGroups || []
+    const groupIndex = (testItemGroups || []).findIndex((group) =>
+      group.items?.some((_item) => _item._id === item?._id)
+    )
+    if (groupIndex !== -1) {
+      currentGroupIndex = groupIndex
+    }
+  }
 
   const testItems =
     hasSections || isDynamicTest

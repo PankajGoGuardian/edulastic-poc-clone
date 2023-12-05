@@ -7,7 +7,8 @@
     "markedForReview": "You have bookmarked these questions. Review them before submitting the test.",
     "partiallyAttemptedQues": "Please review your partially answered questions before submitting the test",
     "nextStep": "Completed your review?",
-    "questionsLabel": "Questions"
+    "questionsLabel": "Questions",
+    "submitAndMoveToNextSection": "Submit and move to next section"
   },
   "confirmation": {
     "submitAssignment": "Submit assignment?",

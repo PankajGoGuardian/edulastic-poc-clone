@@ -545,16 +545,8 @@ class PreviewModal extends React.Component {
   }
 
   handleAddPassageItemsToSection = () => {
-    const {
-      passageItems,
-      passage,
-      page,
-      selectedRows,
-      setAndSavePassageItems,
-    } = this.props
-    const passageTestItems = get(passage, 'testItems', [])
-    const isAdding = passageTestItems.some((x) => !selectedRows.includes(x))
-    setAndSavePassageItems({ passageItems, page, remove: !isAdding })
+    const { passageItems, page, setAndSavePassageItems } = this.props
+    setAndSavePassageItems({ passageItems, page, remove: false })
   }
 
   handleDynamicTestSelection = async () => {
@@ -762,7 +754,10 @@ class PreviewModal extends React.Component {
        */
       if (isAdding) {
         if (item.passageId) {
-          this.setIsAddingSinglePassageItem(true)
+          this.setState({ isAddingSinglePassageItem: true }, () => {
+            this.handleAddToSection(staticGroups, item)
+          })
+          return
         }
         this.handleAddToSection(staticGroups, item)
         return

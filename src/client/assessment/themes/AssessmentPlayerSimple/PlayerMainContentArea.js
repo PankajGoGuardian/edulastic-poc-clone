@@ -67,7 +67,6 @@ const PlayerContentArea = ({
           evaluation,
           previewTab: 'check',
           preview: 'check',
-          changePreviewTab: changePreview,
         }
       : {
           previewTab,
@@ -113,6 +112,7 @@ const PlayerContentArea = ({
           viewAsStudent={viewAsStudent}
           multipartItem={item?.multipartItem}
           itemId={item._id}
+          changePreviewTab={changePreview}
           {...extraTestItemProps}
         />
       </MainContent>

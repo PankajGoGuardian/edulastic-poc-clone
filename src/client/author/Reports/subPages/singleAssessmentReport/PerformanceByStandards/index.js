@@ -356,6 +356,22 @@ const PerformanceByStandards = ({
                   <Col xs={24} sm={24} md={12} lg={16} xl={12}>
                     <Row type="flex" justify="end" gutter={[5, 10]}>
                       <StyledDropDownContainer
+                        data-cy="standardSet"
+                        xs={24}
+                        sm={24}
+                        md={7}
+                        lg={7}
+                        xl={7}
+                      >
+                        <ControlDropDown
+                          prefix="Standard Set"
+                          by={selectedCurriculumId || { key: '', title: '' }}
+                          selectCB={handleCurriculumIdChange}
+                          data={standardsDropdownData}
+                          showPrefixOnSelected={false}
+                        />
+                      </StyledDropDownContainer>
+                      <StyledDropDownContainer
                         data-cy="viewBy"
                         xs={24}
                         sm={24}
@@ -383,22 +399,6 @@ const PerformanceByStandards = ({
                           by={analyzeBy}
                           selectCB={handleAnalyzeByChange}
                           data={dropDownFormat.analyzeByDropDownData}
-                        />
-                      </StyledDropDownContainer>
-                      <StyledDropDownContainer
-                        data-cy="standardSet"
-                        xs={24}
-                        sm={24}
-                        md={7}
-                        lg={7}
-                        xl={7}
-                      >
-                        <ControlDropDown
-                          prefix="Standard Set"
-                          by={selectedCurriculumId || { key: '', title: '' }}
-                          selectCB={handleCurriculumIdChange}
-                          data={standardsDropdownData}
-                          showPrefixOnSelected={false}
                         />
                       </StyledDropDownContainer>
                     </Row>

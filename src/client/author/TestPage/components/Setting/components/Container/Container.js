@@ -822,6 +822,7 @@ class Setting extends Component {
       togglePenaltyOnUsingHints,
       isAiEvaulationDistrict,
       hasSections,
+      canSchoolAdminUseDistrictCommon,
     } = this.props
     const {
       isDocBased,
@@ -884,6 +885,7 @@ class Setting extends Component {
     const availableTestTypes = getAvailableTestTypesForUser({
       isPremium: premium,
       role: userRole,
+      canSchoolAdminUseDistrictCommon,
     })
     const testTypes = includeCommonOnTestType(availableTestTypes, testType)
     let isSettingPresent = false

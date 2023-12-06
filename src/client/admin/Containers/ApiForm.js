@@ -17,6 +17,7 @@ import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/Up
 import UploadStandard from '../Components/StandardUpload'
 import { emailRegex } from '../../common/utils/helpers'
 import EnableDataTypes from '../Components/EnableDataTypes'
+import MovePublishTests from '../Components/MovePublishTests'
 
 const CREATE_ADMIN = 'create-admin'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
@@ -30,6 +31,7 @@ const API_OPTIONS = {
   manageClass: 'manageClass',
 }
 const UPLOAD_STANDARD = 'upload-standard'
+const MOVE_PUBLISH_TEST = 'move-publish-test'
 
 const ApiForm = () => {
   const [id, setId] = useState()
@@ -282,7 +284,14 @@ const ApiForm = () => {
           id={id}
           setFileUploadData={setFileUploadData}
           endPoint={option.endPoint}
+          description={option.description}
         >
+          {id === MOVE_PUBLISH_TEST && (
+            <MovePublishTests
+              districtData={districtData}
+              clearDistrictData={clearDistrictData}
+            />
+          )}
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin
               districtData={districtData}

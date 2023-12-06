@@ -1042,6 +1042,16 @@ export const apiForms = [
     ],
   },
   {
+    id: 'move-publish-test',
+    name: 'Move test to a collection and Publish the content',
+    description:
+      'This tool can be used to move the tests or items to a new collection, publish the content, replace the authors, or add co-authors for the tests/items.',
+    endPoint: 'admin-tool/move-publish-test',
+    method: 'post',
+    slowApi: true,
+    fields: [],
+  },
+  {
     id: 're-evaluation',
     name: 'Re-Evaluate by Test Id',
     endPoint: 'admin-tool/reevaluate',

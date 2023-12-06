@@ -94,6 +94,20 @@ const saveItemsToBucket = ({
     .then((result) => result.data)
 }
 
+const getDistrictCollections = ({ districtId }) => {
+  return api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/district-item-banks`,
+      method: 'get',
+      params: {
+        type: 'custom',
+        districtId,
+      },
+    })
+    .then((result) => result.data)
+}
+
 export default {
   createNewCollection,
   editCollection,
@@ -105,4 +119,5 @@ export default {
   getPermissions,
   organizationSearch,
   saveItemsToBucket,
+  getDistrictCollections,
 }

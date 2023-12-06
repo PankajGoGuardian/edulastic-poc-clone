@@ -8,6 +8,7 @@ import { FirstDiv, H2, OuterDiv } from '../../Common/StyledComponents'
 const ApiFormsMain = ({
   fields,
   name,
+  description,
   handleOnSave,
   note = {},
   children,
@@ -88,12 +89,34 @@ const ApiFormsMain = ({
   }
 
   const { text, align, parentField } = note
-  const hideSubmit = ['upload-standard', 'enable-feed-types']
+  const hideSubmit = [
+    'upload-standard',
+    'enable-feed-types',
+    'move-publish-test',
+  ]
   return (
     <FormMainWrapper style={{ marginTop: '15px' }}>
       {!customSections && (
         <OuterDiv>
           <H2>{name}</H2>
+          {description && (
+            <>
+              <span
+                className="description"
+                style={{
+                  paddingLeft: '15px',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  marginRight: '10px',
+                }}
+              >
+                Description:
+              </span>
+              <span style={{ fontSize: '15px', color: '#ff0000' }}>
+                {description}
+              </span>
+            </>
+          )}
           <FirstDiv>
             <Form style={{ width: '100%' }}>
               {!!errors.length && (

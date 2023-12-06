@@ -422,6 +422,16 @@ const seedDsDataApi = (data) =>
     })
     .then(({ data: response }) => response)
 
+const moveAndPublishTests = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/admin-tool/move-publish-tests`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -468,4 +478,5 @@ export default {
   stopSyncApi,
   bulkUpgradeCSVSubscriptionApi,
   seedDsDataApi,
+  moveAndPublishTests,
 }

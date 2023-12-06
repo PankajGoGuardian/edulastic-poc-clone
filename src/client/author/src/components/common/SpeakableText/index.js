@@ -4,10 +4,14 @@ import {
   EduButton,
   EduIf,
   FlexContainer,
+  SelectInputStyled,
   TextAreaInputStyled,
 } from '@edulastic/common'
 import { Spin } from 'antd'
 import { ALPHABET } from '@edulastic/common/src/helpers'
+import { LANGUAGES_OPTIONS } from '@edulastic/constants/const/languages'
+import connect from 'react-redux/es/connect/connect'
+import { questionType as constantsQuestionType } from '@edulastic/constants'
 import {
   StyledOptionContainer,
   StyledOptionLabel,
@@ -15,6 +19,8 @@ import {
   StyledSpeakableTextContainer,
 } from './styled-components'
 import AudioControls from '../../../../../assessment/AudioControls'
+import { allowedToSelectMultiLanguageInTest } from '../../../selectors/user'
+import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
 const SpeakableText = ({
   ttsTextAPIStatus,
@@ -24,6 +30,9 @@ const SpeakableText = ({
   question,
   showTTSTextModal,
   regenerateTTSText,
+  onLanguageChange,
+  selectedLanguage,
+  allowedToSelectMultiLanguage,
 }) => {
   const [updatedTtsData, setUpdatedTtsData] = useState(ttsTextData)
 
@@ -55,27 +64,53 @@ const SpeakableText = ({
   if (isEmpty(question)) {
     return null
   }
+  const { useLanguageFeatureQn } = constantsQuestionType
+  const showLanguageSelector =
+    allowedToSelectMultiLanguage &&
+    useLanguageFeatureQn.includes(question.type) &&
+    Object.keys(question.languageFeatures || {}).length
+
+  const questionDataByLanguage = changeDataToPreferredLanguage(
+    question,
+    selectedLanguage
+  )
+  const audioSrc = questionDataByLanguage?.tts?.titleAudioURL
 
   return (
     <>
+      <EduIf condition={showLanguageSelector}>
+        <FlexContainer justifyContent="flex-end" marginBottom="10px">
+          <SelectInputStyled
+            data-cy="tts-language-selector"
+            width="120px"
+            height="30px"
+            onSelect={(value) => onLanguageChange(value)}
+            value={selectedLanguage}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          >
+            {LANGUAGES_OPTIONS.map((language) => (
+              <option value={language.value} key={language.value}>
+                {language.label}
+              </option>
+            ))}
+          </SelectInputStyled>
+        </FlexContainer>
+      </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'INITIATED'}>
         <Spin style={{ marginTop: '20px' }} />
       </EduIf>
       <EduIf condition={ttsTextAPIStatus === 'SUCCESS'}>
         <StyledSpeakableTextContainer>
-          <EduIf
-            condition={
-              question?.tts?.titleAudioURL?.length > 0 && showTTSTextModal
-            }
-          >
+          <EduIf condition={(audioSrc || '').length > 0 && showTTSTextModal}>
             <AudioControls
               key={question?.id}
-              item={question}
+              item={questionDataByLanguage}
               qId={question?.id}
-              audioSrc={question?.tts?.titleAudioURL}
+              audioSrc={audioSrc}
               className="speakable-text-audio-controls"
             />
           </EduIf>
+
           <h4>Question TTS Text</h4>
           <TextAreaInputStyled
             style={{ paddingLeft: '5px', paddingTop: '5px' }}
@@ -109,7 +144,7 @@ const SpeakableText = ({
             <EduButton
               isGhost
               loading={ttsTextAPIStatus === 'INITIATED'}
-              onClick={() => regenerateTTSText(true)}
+              onClick={regenerateTTSText}
               disabled={ttsTextAPIStatus === 'INITIATED'}
             >
               Regenerate TTS Text
@@ -128,4 +163,6 @@ const SpeakableText = ({
   )
 }
 
-export default SpeakableText
+export default connect((state) => ({
+  allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+}))(SpeakableText)

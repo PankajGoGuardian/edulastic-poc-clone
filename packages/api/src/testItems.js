@@ -1,6 +1,9 @@
 import { get } from 'lodash'
+import { test as testConstants } from '@edulastic/constants'
 import API from './utils/API'
 import AttchmentApi from './attachment'
+
+const { languageCodes } = testConstants
 
 const api = new API()
 const prefix = '/testitem'
@@ -224,23 +227,36 @@ const generateQuestionViaAI = (data) =>
     })
     .then((result) => result.data)
 
-const getTTSText = ({ itemId, questionId, updateTTSText }) =>
+const getTTSText = ({
+  itemId,
+  questionId,
+  updateTTSText,
+  language = languageCodes.ENGLISH,
+}) =>
   api
     .callApi({
       useSlowApi: true,
       method: 'get',
       url: `${prefix}/${itemId}/question/${questionId}/tts-text`,
-      ...(updateTTSText ? { params: { updateTTSText: true } } : {}),
+      params: { ...(updateTTSText ? { updateTTSText } : {}), language },
     })
     .then((result) => result.data)
 
-const updateTTSText = ({ itemId, questionId, data }) =>
+const updateTTSText = ({
+  itemId,
+  questionId,
+  data,
+  language = languageCodes.ENGLISH,
+}) =>
   api
     .callApi({
       useSlowApi: true,
       method: 'post',
       url: `${prefix}/${itemId}/question/${questionId}/custom-tts-generate`,
       data,
+      params: {
+        language,
+      },
     })
     .then((result) => result.data)
 

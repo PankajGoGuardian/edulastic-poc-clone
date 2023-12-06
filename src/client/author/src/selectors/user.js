@@ -226,7 +226,7 @@ export const getIsAiEvaulationDistrictSelector = createSelector(
 
 export const getIsTutorMeEnabledSelector = createSelector(
   getUserFeatures,
-  (features) => features.isTutorMeEnabled
+  (features) => features?.isTutorMeEnabled || false
 )
 
 export const getIsPearAppsDisabledSelector = createSelector(

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row, Radio, Button, Collapse, Input } from 'antd'
+import { Row, Radio, Button, Collapse, Input, Typography } from 'antd'
 import {
   boxShadowDefault,
   white,
@@ -269,4 +269,8 @@ export const StyledAddSectionsButton = styled.button`
   border-color: transparent;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   font-size: 12px;
+`
+
+export const StyledInfoMessage = styled(Typography.Paragraph)`
+  padding-top: 12px;
 `

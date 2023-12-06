@@ -52,7 +52,7 @@ const ShowSectionSettings = ({
       <Block id="disable-section-navigation" smallSize={isSmallSize}>
         <SettingContainer>
           <Title>
-            <span>PREVENT NAVIGATION TO SUBMITTED SECTIONS</span>
+            <span>Prevent Navigation to Submitted Sections</span>
             <EduSwitchStyled
               data-cy="disable-section-navigation"
               checked={preventSectionNavigation}

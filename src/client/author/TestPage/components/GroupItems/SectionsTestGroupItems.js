@@ -4,7 +4,7 @@ import { lightRed2 } from '@edulastic/colors'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Collapse, Tooltip } from 'antd'
+import { Collapse, Icon, Tooltip } from 'antd'
 import { maxBy } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
@@ -36,6 +36,7 @@ import {
   PanelStyled,
   SectionNameInput,
   StyledAddSectionsButton,
+  StyledInfoMessage,
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 
@@ -332,6 +333,10 @@ const SectionsTestGroupItems = ({
             )
           })}
         </Collapse>
+        <StyledInfoMessage>
+          <Icon type="info-circle" /> Use Section Settings to add calculators to
+          a section and prevent students from visiting submitted sections
+        </StyledInfoMessage>
         <GroupField style={{ marginTop: '15px', marginLeft: '45%' }}>
           <Tooltip
             title={

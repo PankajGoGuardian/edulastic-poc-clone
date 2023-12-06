@@ -3,6 +3,7 @@ import { IconSectionsCalculator } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
+import { darkGrey5 } from '@edulastic/colors'
 import { SortableGroupItem, SortableSingleItem } from './SortableItem'
 import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageConfirmationModal'
@@ -20,7 +21,7 @@ const rightContent = (group, hasSections = false) => {
       {hasSections && settings?.calcTypes?.length > 0 && (
         <Tooltip title={settings.calcTypes.join()}>
           <span>
-            <IconSectionsCalculator width="30" height="44" />
+            <IconSectionsCalculator width="30" height="44" color={darkGrey5} />
           </span>
         </Tooltip>
       )}

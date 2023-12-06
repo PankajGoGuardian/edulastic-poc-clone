@@ -71,11 +71,15 @@ const VerticalTextSlider = ({ texts, textChangeInterval }) => {
   }
 
   return (
-    <StyledVerticalTextSliderWrapper>
+    <StyledVerticalTextSliderWrapper data-cy="questionGenerationStatusPopUp">
       <StyledSliderContainer>
         {texts.map((text, index) => {
           return (
-            <StyledSliderItem style={getStyles(index)} key={index}>
+            <StyledSliderItem
+              data-cy="questionGenerationStatusMessage"
+              style={getStyles(index)}
+              key={index}
+            >
               {text}
             </StyledSliderItem>
           )

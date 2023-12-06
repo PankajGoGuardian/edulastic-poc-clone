@@ -1343,6 +1343,7 @@ class PreviewModal extends React.Component {
               <EduIf condition={item?.unsavedItem && page === 'review'}>
                 <AiEduButton
                   title="Regenerate"
+                  data-cy="aiRegenerate"
                   width="28px"
                   isGhost
                   height="28px"

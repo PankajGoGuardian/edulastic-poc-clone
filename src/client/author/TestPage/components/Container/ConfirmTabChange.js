@@ -6,15 +6,17 @@ const ConfirmTabChange = ({
   confirmChangeNav,
 }) => {
   const Footer = [
-    <EduButton isGhost onClick={confirmChangeNav(false)}>
+    <EduButton isGhost onClick={confirmChangeNav(false)} data-cy="cancel">
       Cancel
     </EduButton>,
-    <EduButton onClick={confirmChangeNav(true)}>Proceed</EduButton>,
+    <EduButton onClick={confirmChangeNav(true)} data-cy="proceed">
+      Proceed
+    </EduButton>,
   ]
   return (
     <CustomModalStyled
       visible={showConfirmationOnTabChange}
-      title="Unsaved AI Generated Items"
+      title={<p data-cy="unSavedPopUp">Unsaved AI Generated Items</p>}
       footer={Footer}
       onCancel={confirmChangeNav(false)}
       centered
@@ -26,7 +28,12 @@ const ConfirmTabChange = ({
       closeIconColor="black"
       destroyOnClose
     >
-      <FlexContainer justifyContent="center" alignItems="center" padding="2rem">
+      <FlexContainer
+        justifyContent="center"
+        alignItems="center"
+        padding="2rem"
+        data-cy="saveAllGeneratedItemMessage"
+      >
         <span>Click proceed to save all AI generated items to the Test</span>
       </FlexContainer>
     </CustomModalStyled>

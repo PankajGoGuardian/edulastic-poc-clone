@@ -21,6 +21,10 @@ const ImmersiveReader = ({ t: i18translate, title, ImmersiveReaderButton }) => {
       $(`.${IR_CONTENT_SELECTOR}`).each(function () {
         /** cloning jquery object to prevent modification in assessment player content, here we are manipulating html content. */
         const cloned = $(this).clone()
+
+        // Remove span.katex-mathml (non visible math latex) elements from the cloned HTML
+        $(cloned).find('span.katex-mathml').remove()
+
         $(cloned)
           .find(`.${IR_MCQ_LABEL_SELECTOR}`)
           // eslint-disable-next-line func-names

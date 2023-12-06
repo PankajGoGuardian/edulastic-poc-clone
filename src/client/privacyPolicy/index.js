@@ -101,11 +101,16 @@ const PrivacyPolicyModal = ({
       .eulaPolicyStatusUpdate(payload)
       .then(() => {
         setShowModal(false)
-        if (
-          userRole === roleuser.TEACHER &&
-          userInfo?.openIdProvider?.toLowerCase() !== 'cli' &&
-          !isPublisherUser
-        ) {
+        const cliCheck = !(
+          userInfo?.openIdProvider?.toLowerCase() === 'cli' &&
+          window.location?.search?.includes('showCLIBanner=1')
+        )
+        const canShowWelcomePopUp = [
+          userRole === roleuser.TEACHER,
+          cliCheck,
+          !isPublisherUser,
+        ].every((o) => !!o)
+        if (canShowWelcomePopUp) {
           setShowWelcomePopup(true)
         }
       })

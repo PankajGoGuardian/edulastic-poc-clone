@@ -1594,13 +1594,20 @@ export function* fetchUser({ payload }) {
         messageKey,
       })
     }
-    const cliBannerShown = sessionStorage.cliBannerShown === 'true'
-    if (
-      user?.role == roleuser.TEACHER &&
-      user?.openIdProvider?.toLowerCase() === 'cli' &&
-      user?.currentSignUpState !== signUpState.DONE &&
-      (cliBannerShown || !window.location?.search?.includes('showCLIBanner=1'))
-    ) {
+    const cliBannerShown =
+      sessionStorage.cliBannerShown === 'true' ||
+      !window.location?.search?.includes('showCLIBanner=1')
+    const cliCheck = [
+      user?.openIdProvider?.toLowerCase() === 'cli',
+      cliBannerShown,
+    ].every((o) => !!o)
+    const canShowJoinSchoolModal = [
+      user?.role == roleuser.TEACHER,
+      user?.currentSignUpState !== signUpState.DONE,
+      cliCheck,
+      !!user?.isPolicyAccepted,
+    ].every((o) => !!o)
+    if (canShowJoinSchoolModal) {
       yield put(setShowJoinSchoolModalAction(true))
     }
   } catch (error) {

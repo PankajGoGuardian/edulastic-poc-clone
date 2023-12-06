@@ -452,11 +452,13 @@ class ClassBoard extends Component {
       )
       let questions = []
       if (isContentHidden) {
-        questions = submittedTestActivity.questionActivities.filter(
-          (item) => !item.isItemContentHidden
-        )
+        questions = submittedTestActivity
+          ? submittedTestActivity.questionActivities.filter(
+              (item) => !item.isItemContentHidden
+            )
+          : []
       } else {
-        questions = submittedTestActivity.questionActivities
+        questions = testActivity[0].questionActivities // retain old code for content visible scenarios
       }
 
       const questionIndex = questions.findIndex(

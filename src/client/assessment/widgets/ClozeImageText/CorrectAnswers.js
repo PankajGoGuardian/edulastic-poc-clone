@@ -93,7 +93,7 @@ class SetCorrectAnswers extends Component {
   }
 
   updateAnswers = (answers) => {
-    const { item, setQuestionData } = this.props
+    const { item, setQuestionData, updateVariables } = this.props
     const { currentTab } = this.state
     const newAnswers = cloneDeep(answers)
 
@@ -105,6 +105,7 @@ class SetCorrectAnswers extends Component {
           draft.validation.altResponses[currentTab - 1].value = newAnswers
         }
         draft = this.updateResponseBoxWidth(draft)
+        updateVariables(draft)
       })
     )
   }

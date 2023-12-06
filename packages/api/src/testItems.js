@@ -1,9 +1,9 @@
 import { get } from 'lodash'
-import { test as testConstants } from '@edulastic/constants'
+import { appLanguages } from '@edulastic/constants'
 import API from './utils/API'
 import AttchmentApi from './attachment'
 
-const { languageCodes } = testConstants
+const { LANGUAGE_EN, ENGLISH } = appLanguages
 
 const api = new API()
 const prefix = '/testitem'
@@ -231,7 +231,7 @@ const getTTSText = ({
   itemId,
   questionId,
   updateTTSText,
-  language = languageCodes.ENGLISH,
+  language = LANGUAGE_EN,
 }) =>
   api
     .callApi({
@@ -246,7 +246,8 @@ const updateTTSText = ({
   itemId,
   questionId,
   data,
-  language = languageCodes.ENGLISH,
+  language = LANGUAGE_EN,
+  voiceLanguage = ENGLISH,
 }) =>
   api
     .callApi({
@@ -256,6 +257,7 @@ const updateTTSText = ({
       data,
       params: {
         language,
+        voiceLanguage,
       },
     })
     .then((result) => result.data)

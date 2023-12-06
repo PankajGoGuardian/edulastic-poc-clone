@@ -9,7 +9,10 @@ import {
 } from '@edulastic/common'
 import { Spin } from 'antd'
 import { ALPHABET } from '@edulastic/common/src/helpers'
-import { LANGUAGES_OPTIONS } from '@edulastic/constants/const/languages'
+import {
+  LANGUAGES_OPTIONS,
+  VOICE_LANGUAGE_OPTIONS,
+} from '@edulastic/constants/const/languages'
 import connect from 'react-redux/es/connect/connect'
 import { questionType as constantsQuestionType } from '@edulastic/constants'
 import {
@@ -17,6 +20,8 @@ import {
   StyledOptionLabel,
   StyledTextArea,
   StyledSpeakableTextContainer,
+  TTSFormLabel,
+  VoiceLanguageSelector,
 } from './styled-components'
 import AudioControls from '../../../../../assessment/AudioControls'
 import { allowedToSelectMultiLanguageInTest } from '../../../selectors/user'
@@ -33,6 +38,8 @@ const SpeakableText = ({
   onLanguageChange,
   selectedLanguage,
   allowedToSelectMultiLanguage,
+  onChangeVoiceLanguge,
+  voiceLanguage,
 }) => {
   const [updatedTtsData, setUpdatedTtsData] = useState(ttsTextData)
 
@@ -140,22 +147,49 @@ const SpeakableText = ({
               </StyledOptionContainer>
             )
           })}
-          <FlexContainer justifyContent="flex-end">
-            <EduButton
-              isGhost
-              loading={ttsTextAPIStatus === 'INITIATED'}
-              onClick={regenerateTTSText}
-              disabled={ttsTextAPIStatus === 'INITIATED'}
-            >
-              Regenerate TTS Text
-            </EduButton>
-            <EduButton
-              loading={updateTTSAPIStatus === 'INITIATED'}
-              onClick={updateTTSText}
-              disabled={updateTTSAPIStatus === 'INITIATED'}
-            >
-              Generate TTS
-            </EduButton>
+          <FlexContainer justifyContent="space-between">
+            <FlexContainer justifyContent="flex-start">
+              <EduIf condition={!showLanguageSelector}>
+                <FlexContainer justifyContent="flex-start" alignItems="center">
+                  <TTSFormLabel margin="0">Set TTS Language to:</TTSFormLabel>
+                  <VoiceLanguageSelector
+                    data-cy="tts-language-selector"
+                    width="100px"
+                    height="30px"
+                    margin="0px"
+                    onSelect={(value) => onChangeVoiceLanguge(value)}
+                    value={voiceLanguage}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    padding="0px 30px 0px 5px"
+                    bg="transparent"
+                    noBorder
+                  >
+                    {VOICE_LANGUAGE_OPTIONS.map((language) => (
+                      <option value={language.value} key={language.value}>
+                        {language.label}
+                      </option>
+                    ))}
+                  </VoiceLanguageSelector>
+                </FlexContainer>
+              </EduIf>
+            </FlexContainer>
+            <FlexContainer justifyContent="flex-end" alignItems="center">
+              <EduButton
+                isGhost
+                loading={ttsTextAPIStatus === 'INITIATED'}
+                onClick={regenerateTTSText}
+                disabled={ttsTextAPIStatus === 'INITIATED'}
+              >
+                Regenerate TTS Text
+              </EduButton>
+              <EduButton
+                loading={updateTTSAPIStatus === 'INITIATED'}
+                onClick={updateTTSText}
+                disabled={updateTTSAPIStatus === 'INITIATED'}
+              >
+                Generate TTS
+              </EduButton>
+            </FlexContainer>
           </FlexContainer>
         </StyledSpeakableTextContainer>
       </EduIf>

@@ -1,5 +1,5 @@
 import { greyThemeLight } from '@edulastic/colors'
-import { TextAreaInputStyled } from '@edulastic/common'
+import { SelectInputStyled, TextAreaInputStyled } from '@edulastic/common'
 
 import styled from 'styled-components'
 
@@ -23,4 +23,15 @@ export const StyledSpeakableTextContainer = styled.div`
   .speakable-text-audio-controls {
     padding: 0px 0px 20px 0px !important;
   }
+`
+
+export const VoiceLanguageSelector = styled(SelectInputStyled)`
+  &.ant-select {
+    .ant-select-selection {
+      font-size: 14px;
+    }
+  }
+`
+export const TTSFormLabel = styled.h4`
+  margin: 0;
 `

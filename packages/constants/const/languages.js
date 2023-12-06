@@ -1,5 +1,9 @@
-const LANGUAGE_EN = 'en'
-const LANGUAGE_ES = 'es'
+const { languageCodes } = require('./test')
+
+const LANGUAGE_EN = languageCodes.ENGLISH
+const LANGUAGE_ES = languageCodes.SPANISH
+const ENGLISH = 'english'
+const SPANISH = 'spanish'
 
 const LANGUAGES_OPTIONS = [
   {
@@ -12,8 +16,21 @@ const LANGUAGES_OPTIONS = [
   },
 ]
 
+const VOICE_LANGUAGE_OPTIONS = [
+  {
+    value: ENGLISH,
+    label: 'English',
+  },
+  {
+    value: SPANISH,
+    label: 'Spanish',
+  },
+]
 module.exports = {
   LANGUAGE_EN,
   LANGUAGE_ES,
   LANGUAGES_OPTIONS,
+  VOICE_LANGUAGE_OPTIONS,
+  ENGLISH,
+  SPANISH,
 }

@@ -14,6 +14,7 @@ import {
   roleuser,
   collections as collectionConst,
   test as testConstants,
+  appLanguages,
 } from '@edulastic/constants'
 import {
   IconClose,
@@ -122,10 +123,12 @@ const pageType = {
   itemAuthoring: 'itemAuthoring',
 }
 
+const { ENGLISH, LANGUAGE_EN } = appLanguages
+
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props)
-
+    const { item } = props
     this.state = {
       flag: false,
       passageLoading: false,
@@ -135,8 +138,9 @@ class PreviewModal extends React.Component {
       isRejectMode: false,
       showSelectGroupModal: false,
       showTTSTextModal: false,
-      selectedLanguage: languageCodes.ENGLISH,
+      selectedLanguage: LANGUAGE_EN,
       isAddingSinglePassageItem: false,
+      voiceLanguage: item?.language || ENGLISH,
     }
   }
 
@@ -695,6 +699,10 @@ class PreviewModal extends React.Component {
     }
   }
 
+  onChangeVoiceLanguge = (value) => {
+    this.setState({ voiceLanguage: value })
+  }
+
   requestToGetTTSText = ({
     updateTTSText = false,
     isLanguageChanged = false,
@@ -731,7 +739,7 @@ class PreviewModal extends React.Component {
       item: { _id: itemId, data: { questions = [] } = {} },
       updateTTSText,
     } = this.props
-    const { selectedLanguage } = this.state
+    const { selectedLanguage, voiceLanguage } = this.state
 
     const questionId = questions?.[0]?.id
 
@@ -741,6 +749,7 @@ class PreviewModal extends React.Component {
         questionId,
         data: updatedTTSTextData,
         language: selectedLanguage,
+        voiceLanguage,
       }
 
       updateTTSText(requestData)
@@ -1092,6 +1101,7 @@ class PreviewModal extends React.Component {
       showSelectGroupModal,
       showTTSTextModal,
       selectedLanguage,
+      voiceLanguage,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1215,6 +1225,8 @@ class PreviewModal extends React.Component {
             showTTSTextModal={showTTSTextModal}
             onLanguageChange={this.onLanguageChange}
             selectedLanguage={selectedLanguage}
+            onChangeVoiceLanguge={this.onChangeVoiceLanguge}
+            voiceLanguage={voiceLanguage}
           />
         </CustomModalStyled>
         {this.navigationButtonVisibile && this.navigationBtns()}

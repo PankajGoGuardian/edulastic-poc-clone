@@ -562,9 +562,31 @@ function* loadTest({ payload }) {
       yield put(setPasswordStatusAction(''))
     }
     const isAuthorReview = Object.keys(testData).length > 0
-    let [test] = isAuthorReview
-      ? [cloneDeep(testData)]
-      : yield all([testRequest])
+    let test
+    if (demo) {
+      try {
+        ;[test] = isAuthorReview
+          ? [cloneDeep(testData)]
+          : yield all([testRequest])
+      } catch (e) {
+        if (e.status === 403 && !userAuthenticated) {
+          localStorage.setItem(
+            'loginRedirectUrl',
+            `/author/tests/tab/review/id/${testId}`
+          )
+          yield put(push('/login'))
+          return notification({
+            messageKey: 'tryingToAccessPrivateTest',
+          })
+        }
+        throw e
+      }
+    } else {
+      ;[test] = isAuthorReview
+        ? [cloneDeep(testData)]
+        : yield all([testRequest])
+    }
+
     if (test?.testItems && demo) {
       set(test, 'itemGroups[0].items', test.testItems)
     }

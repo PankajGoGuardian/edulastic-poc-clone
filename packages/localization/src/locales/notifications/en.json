@@ -889,7 +889,7 @@
     "description": ""
   },
   "tryingToAccessPrivateTest": {
-    "message": "Login to access the test",
+    "message": "Please login to access the test",
     "description": ""
   },
   "redirectSuccessful": {

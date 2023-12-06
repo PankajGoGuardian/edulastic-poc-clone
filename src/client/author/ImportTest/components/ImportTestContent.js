@@ -31,7 +31,7 @@ const ImportTestContent = ({
   useEffect(() => {
     // When jobIds doesn't exist in session updating status to standby.
     const jobIds = JSON.parse(sessionStorage.getItem('jobIds'))
-    if (!jobIds?.length) {
+    if (!jobIds?.length && pathname !== '/author/import-content') {
       uploadTestStatus(UPLOAD_STATUS.STANDBY)
     }
   }, [])

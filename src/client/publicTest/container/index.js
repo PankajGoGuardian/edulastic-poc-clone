@@ -74,9 +74,8 @@ const PublicTestPage = ({
   useEffect(() => {
     if (user) {
       const { role } = user
-      // fetch test to check if test archieved or not
       testsApi
-        .getPublicTest(testId)
+        .getByIdLatestPublishedShared(testId)
         .then((_test) => {
           const isTestArchieved =
             _test.status === testConstants.statusConstants.ARCHIVED
@@ -185,6 +184,12 @@ const PublicTestPage = ({
 
   // if test is not public, then redirect to login page
   if (error) {
+    if (error.status === 403) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/tests/tab/review/id/${testId}`
+      )
+    }
     notification({ messageKey: 'tryingToAccessPrivateTest' })
     return <Redirect to="/login" />
   }

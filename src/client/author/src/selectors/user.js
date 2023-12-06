@@ -231,7 +231,7 @@ export const getIsTutorMeEnabledSelector = createSelector(
 
 export const getIsPearAppsDisabledSelector = createSelector(
   getUserFeatures,
-  (features) => features.disablePearApps
+  (features) => features?.disablePearApps || false
 )
 
 export const getUserOrgData = createSelector(stateSelector, (state) =>

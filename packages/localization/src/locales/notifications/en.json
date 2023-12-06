@@ -889,7 +889,7 @@
     "description": ""
   },
   "tryingToAccessPrivateTest": {
-    "message": "This test is marked private",
+    "message": "Login to access the test",
     "description": ""
   },
   "redirectSuccessful": {

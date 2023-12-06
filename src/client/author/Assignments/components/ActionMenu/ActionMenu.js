@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
-import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
+import { IconPrint, IconBarChart, IconEdit, IconStar } from '@edulastic/icons'
 import {
   roleuser,
   test,
@@ -52,6 +52,8 @@ const ActionMenu = ({
   isDemoPlaygroundUser = false,
   isProxiedByEAAccount = false,
   showViewSummary = false,
+  isPremiumUser,
+  showPremiumPopup,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -262,10 +264,19 @@ const ActionMenu = ({
               assignmentDetails,
               row
             )}`}
+            onClick={(e) => {
+              if (!isPremiumUser) {
+                e.preventDefault()
+                showPremiumPopup(e.target)
+              }
+              e.stopPropagation()
+            }}
           >
             <IconBarChart />
             <SpaceElement />
             View Summary Report
+            <SpaceElement />
+            {isPremiumUser || <IconStar height="10px" />}
           </Link>
         </Menu.Item>
         {canEdit && (

@@ -26,6 +26,7 @@ import {
   getUserRole,
   getGroupList,
   getUserFeatures,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import {
   toggleRemoveItemsFolderAction,
@@ -51,6 +52,7 @@ import {
 } from '../../../../student/Login/ducks'
 import BulkEditTestModal from '../BulkEditTestModal'
 import { shortTestIdKeyLength } from '../../constants'
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 class AdvancedTable extends Component {
   showBulkUpdate =
@@ -190,7 +192,7 @@ class AdvancedTable extends Component {
           const { userRole = '' } = this.props
           return <AnalyzeLink row={row} userRole={userRole} />
         },
-        width: '5%',
+        width: '6%',
       },
       {
         title: () => {
@@ -233,7 +235,7 @@ class AdvancedTable extends Component {
           )
         },
         dataIndex: 'action',
-        width: '5%',
+        width: '4%',
         minWidth: '75px',
         render: (_, row) => {
           const {
@@ -251,6 +253,7 @@ class AdvancedTable extends Component {
             toggleTagsEditModal,
             isDemoPlayground = false,
             isProxiedByEAAccount = false,
+            isPremiumUser,
           } = this.props
           const isAssignProgress =
             row.bulkAssignedCountProcessed < row.bulkAssignedCount
@@ -262,8 +265,20 @@ class AdvancedTable extends Component {
             _id: row.assignmentIds[0],
             testId: row.testId,
           }
+
+          const showPremiumPopup = (value) => {
+            this.setState({ premiumPopup: value })
+          }
+          const { premiumPopup } = this.state
+
           return (
             <ActionDiv data-cy="testActions">
+              <PremiumPopover
+                target={premiumPopup}
+                onClose={() => this.setState({ premiumPopup: null })}
+                descriptionType="report"
+                imageType="IMG_DATA_ANALYST"
+              />
               <Dropdown
                 data-cy="actionDropDown"
                 overlay={ActionMenu({
@@ -287,6 +302,8 @@ class AdvancedTable extends Component {
                   toggleTagsEditModal,
                   isDemoPlaygroundUser: isDemoPlayground,
                   isProxiedByEAAccount,
+                  isPremiumUser,
+                  showPremiumPopup,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -335,6 +352,7 @@ class AdvancedTable extends Component {
       },
     ],
     showBulkEditTestModal: false,
+    premiumPopup: null,
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -576,6 +594,7 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       features: getUserFeatures(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

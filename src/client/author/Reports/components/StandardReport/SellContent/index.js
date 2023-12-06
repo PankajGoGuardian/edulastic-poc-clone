@@ -2,6 +2,7 @@ import { Col, Row } from 'antd'
 import React, { useEffect } from 'react'
 import { withRouter } from 'react-router'
 import { segmentApi } from '@edulastic/api'
+import { IconNoPremiumWarning } from '@edulastic/icons'
 import { INSIGHT_REPORTS } from '../../../common/constants/standard-reports'
 import { CardContainer } from './CardContainer'
 import { FooterBanner } from './FooterBanner'
@@ -9,6 +10,7 @@ import { FreeBanner } from './FreeBanner'
 import { HeadingContainer } from './HeadingContainer'
 import { PremiumBanner } from './PremiumBanner'
 import { FloatingAction } from './FloatingAction'
+import { NoActivePremiumSubscriptionContainer } from '../styled'
 
 const SellContent = ({ isAdmin, loc, history }) => {
   useEffect(() => {
@@ -17,6 +19,12 @@ const SellContent = ({ isAdmin, loc, history }) => {
 
   return (
     <div>
+      <NoActivePremiumSubscriptionContainer>
+        <IconNoPremiumWarning width="24px" height="24px" />
+        &nbsp; You don’t have an active Premium subscription to access reports.
+        Access the free report below. Upgrade to access Premium reports.
+      </NoActivePremiumSubscriptionContainer>
+      <br />
       <FreeBanner />
       <br />
       <PremiumBanner />

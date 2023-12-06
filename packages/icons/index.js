@@ -353,6 +353,7 @@ export { default as IconTimer } from './src/IconTimer'
 export { default as IconVideoCamera } from './src/IconVideoCamera'
 export { default as IconDataStudio } from './src/IconDataStudio'
 export { default as IconAnnoncement } from './src/IconAnnoncement'
+export { default as IconNoPremiumWarning } from './src/IconNoPremiumWarning'
 
 // data warehouse reports
 export { default as IconMoreReports } from './src/IconMoreReports'

@@ -65,6 +65,7 @@ import {
   getUserIdSelector,
   getUserRole,
   getGroupList,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { canEditTest, assignmentStatus } from '../../utils'
@@ -74,6 +75,7 @@ import {
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import { shortTestIdKeyLength } from '../../constants'
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const convertTableData = (
   data,
@@ -171,9 +173,11 @@ const TableList = ({
   toggleTagsEditModal,
   isDemoPlayground = false,
   isProxiedByEAAccount = false,
+  isPremiumUser,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
+  const [premiumPopup, setPremiumPopup] = useState(null)
   // Show first three rows opened in every re-render
   useEffect(() => {
     setExpandedRows(['0', '1', '2'])
@@ -674,6 +678,8 @@ const TableList = ({
                 isDemoPlaygroundUser: isDemoPlayground,
                 isProxiedByEAAccount,
                 showViewSummary: row.showViewSummary,
+                isPremiumUser,
+                showPremiumPopup: setPremiumPopup,
               })}
               placement="bottomRight"
               trigger={['click']}
@@ -765,6 +771,12 @@ const TableList = ({
         expandedRowKeys={expandedRows}
         scroll={{ x: windowWidth <= 1023 ? 1023 : false }}
       />
+      <PremiumPopover
+        target={premiumPopup}
+        onClose={() => setPremiumPopup(null)}
+        descriptionType="report"
+        imageType="IMG_DATA_ANALYST"
+      />
     </Container>
   )
 }
@@ -805,6 +817,7 @@ const enhance = compose(
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setItemsToFolder: setItemsMoveFolderAction,

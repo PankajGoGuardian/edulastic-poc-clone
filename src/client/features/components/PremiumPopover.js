@@ -17,6 +17,7 @@ import {
 } from '../../author/Subscription/ducks'
 // TODO: Change to SVG
 import IMG from '../../author/Subscription/static/6.png'
+import IMG_DATA_ANALYST from '../../author/Subscription/static/7.png'
 import {
   PopoverCancel,
   PopoverDetail,
@@ -45,6 +46,12 @@ const descriptions = {
     'Get additional reports, options to assist students, collaborate with colleagues, anti-cheating tools and more.',
   bubble:
     'Get bubble sheet feature to take OMR exams, also gain access to additional reports, options to assist students, anti-cheating tools and many more.',
+  report: `You don’t have an active Premium subscription to access reports. Upgrade to Premium/Enterprise to access reports.`,
+}
+
+const images = {
+  default: IMG,
+  IMG_DATA_ANALYST,
 }
 
 const getContent = ({
@@ -54,14 +61,17 @@ const getContent = ({
   isPremiumTrialUsed,
   handleShowTrialModal,
   descriptionType = 'default',
+  imageType = 'default',
 }) => {
   const upgradeDescription =
     descriptions[descriptionType] || descriptionType || descriptions.default
 
+  const upgradeImage = images[imageType] || images.default
+
   return (
     <FlexContainer width="475px" alignItems="flex-start">
       <CloseButton onClick={() => onClose()}>x</CloseButton>
-      <img src={IMG} width="165" height="135" alt="" />
+      <img src={upgradeImage} width="165" height="135" alt="" />
       <FlexContainer
         flexDirection="column"
         width="280px"
@@ -110,6 +120,7 @@ const getContent = ({
 export const PremiumPopover = ({ children, ...props }) => {
   const {
     descriptionType,
+    imageType,
     target,
     onClose: _onClose,
     // from redux
@@ -238,6 +249,7 @@ export const PremiumPopover = ({ children, ...props }) => {
             isPremiumTrialUsed,
             handleShowTrialModal,
             descriptionType,
+            imageType,
           })}
         </Spin>
       </PremiumModal>

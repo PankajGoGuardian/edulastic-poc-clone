@@ -1,12 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
 
-import { IconBarChart } from '@edulastic/icons'
+import { IconBarChart, IconStar } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 
 import { themeColor } from '@edulastic/colors'
+
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { Container, SpaceElement } from './styled'
+
+import { isPremiumUserSelector } from '../../../src/selectors/user'
+
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const getReportPathForAssignment = (testId = '', assignment = {}, row = {}) => {
   const q = {}
@@ -22,6 +29,7 @@ const AnalyzeLink = ({
   row = {},
   userRole = '',
   showViewSummary = false,
+  isPremiumUser,
 }) => {
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
@@ -31,6 +39,8 @@ const AnalyzeLink = ({
 
   const assignmentDetails = getAssignmentDetails()
   const currentTestId = assignmentDetails.testId
+
+  const [premiumPopup, setPremiumPopup] = useState(null)
 
   return (
     <>
@@ -43,17 +53,38 @@ const AnalyzeLink = ({
           )}`}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            if (!isPremiumUser) {
+              e.preventDefault()
+              setPremiumPopup(e.target)
+            }
+            e.stopPropagation()
+          }}
         >
           <Container>
             <IconBarChart color={themeColor} height="10px" />
             <SpaceElement />
             Analyze
+            <SpaceElement />
+            {isPremiumUser || <IconStar height="10px" />}
+            <SpaceElement />
           </Container>
         </Link>
       )}
+      <PremiumPopover
+        target={premiumPopup}
+        onClose={() => setPremiumPopup(null)}
+        descriptionType="report"
+        imageType="IMG_DATA_ANALYST"
+      />
     </>
   )
 }
 
-export default AnalyzeLink
+const enhance = compose(
+  connect((state) => ({
+    isPremiumUser: isPremiumUserSelector(state),
+  }))
+)
+
+export default enhance(AnalyzeLink)

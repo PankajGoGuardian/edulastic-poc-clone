@@ -40,6 +40,7 @@ import {
 } from '../Login/ducks'
 import { AssessPeardeckLogoCompact } from '../../admin/Common/StyledComponents'
 import { isPearDomain } from '../../../utils/pear'
+import { SideMenuContainer } from '../../author/src/Sidebar/styledComponents'
 
 const menuItems = [
   {
@@ -242,45 +243,7 @@ class SideMenu extends Component {
             >
               <AntIcon type={isSidebarCollapsed ? 'right' : 'left'} />
             </ToggleSidemenu>
-            <LogoWrapper
-              className="logoWrapper"
-              onMouseEnter={
-                isPearDomain && isSidebarCollapsed && !isMobile
-                  ? () => {
-                      this.toggleMenu()
-                    }
-                  : null
-              }
-              onMouseLeave={
-                isPearDomain && !isSidebarCollapsed && !isMobile
-                  ? () => {
-                      this.toggleMenu()
-                    }
-                  : null
-              }
-            >
-              {broken && (
-                <AntIcon
-                  className="mobileCloseIcon"
-                  type="close"
-                  theme="outlined"
-                  onClick={this.toggleMenu}
-                />
-              )}
-              {isSidebarCollapsed ? (
-                !isMobile &&
-                (isPearDomain ? <AssessPeardeckLogoCompact /> : <LogoCompact />)
-              ) : isPearDomain ? (
-                <AssessPeardeckLabelOnDarkBgLogo
-                  height={isMobile ? '16px' : '36px'}
-                />
-              ) : (
-                <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
-              )}
-            </LogoWrapper>
-
-            <MenuWrapper
-              isSidebarCollapsed={isSidebarCollapsed}
+            <SideMenuContainer
               onMouseEnter={
                 isSidebarCollapsed && !isMobile
                   ? () => {
@@ -296,124 +259,152 @@ class SideMenu extends Component {
                   : null
               }
             >
-              {isMobile && isSidebarCollapsed ? (
-                <IconBars type="bars" onClick={this.toggleMenu} />
-              ) : null}
-              <Menu
-                isSidebarCollapsed={isSidebarCollapsed}
-                selectedKeys={[menuIndex.toString()]}
-                mode="inline"
-                onClick={this.handleMenu}
-              >
-                {menuItems.map((menu, index) => {
-                  const MenuIcon = this.renderIcon(
-                    menu.icon,
-                    isSidebarCollapsed
-                  )
-                  if (menu?.label === 'Playlist' && !features?.playlist) {
-                    return null
-                  }
-                  return (
-                    <MenuItem
-                      key={index.toString()}
-                      data-cy={menu.label}
-                      onClick={this.toggleMenu}
-                      title={isSidebarCollapsed ? menu.label : ''}
-                      isCollapsed={isSidebarCollapsed}
-                    >
-                      <MenuIcon />
-                      {!isSidebarCollapsed && (
-                        <LabelMenuItem>{menu.label}</LabelMenuItem>
-                      )}
-                    </MenuItem>
-                  )
-                })}
-              </Menu>
-              <MenuFooter>
-                <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
-                  <a
-                    href={helpCenterUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: isSidebarCollapsed && 'center',
-                    }}
-                  >
-                    <IconContainer
-                      className={isSidebarCollapsed ? 'active' : ''}
-                    >
-                      <HelpIcon />
-                    </IconContainer>
-                    <HelpText isSidebarCollapsed={isSidebarCollapsed}>
-                      {t('common.helpButtonText')}
-                    </HelpText>
-                  </a>
-                </QuestionButton>
-
-                <UserInfoButton
-                  data-cy="userInfo"
-                  isVisible={isVisible}
+              <LogoWrapper className="logoWrapper">
+                {broken && (
+                  <AntIcon
+                    className="mobileCloseIcon"
+                    type="close"
+                    theme="outlined"
+                    onClick={this.toggleMenu}
+                  />
+                )}
+                {isSidebarCollapsed ? (
+                  !isMobile &&
+                  (isPearDomain ? (
+                    <AssessPeardeckLogoCompact />
+                  ) : (
+                    <LogoCompact />
+                  ))
+                ) : isPearDomain ? (
+                  <AssessPeardeckLabelOnDarkBgLogo
+                    height={isMobile ? '16px' : '36px'}
+                  />
+                ) : (
+                  <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
+                )}
+              </LogoWrapper>
+              <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
+                {isMobile && isSidebarCollapsed ? (
+                  <IconBars type="bars" onClick={this.toggleMenu} />
+                ) : null}
+                <Menu
                   isSidebarCollapsed={isSidebarCollapsed}
-                  className={`userinfoBtn ${
-                    isSidebarCollapsed ? 'active' : ''
-                  }`}
+                  selectedKeys={[menuIndex.toString()]}
+                  mode="inline"
+                  onClick={this.handleMenu}
                 >
-                  <Dropdown
-                    onClick={this.toggleDropdown}
-                    overlayStyle={{
-                      position: 'fixed',
-                      minWidth: isSidebarCollapsed ? '70px' : '220px',
-                      maxWidth: isSidebarCollapsed ? '70px' : '0px',
-                    }}
-                    className="footerDropdown"
-                    overlay={footerDropdownMenu}
-                    trigger={['click']}
-                    placement="topCenter"
+                  {menuItems.map((menu, index) => {
+                    const MenuIcon = this.renderIcon(
+                      menu.icon,
+                      isSidebarCollapsed
+                    )
+                    if (menu?.label === 'Playlist' && !features?.playlist) {
+                      return null
+                    }
+                    return (
+                      <MenuItem
+                        key={index.toString()}
+                        data-cy={menu.label}
+                        onClick={this.toggleMenu}
+                        title={isSidebarCollapsed ? menu.label : ''}
+                        isCollapsed={isSidebarCollapsed}
+                      >
+                        <MenuIcon />
+                        {!isSidebarCollapsed && (
+                          <LabelMenuItem>{menu.label}</LabelMenuItem>
+                        )}
+                      </MenuItem>
+                    )
+                  })}
+                </Menu>
+                <MenuFooter>
+                  <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
+                    <a
+                      href={helpCenterUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        width: '100%',
+                        justifyContent: isSidebarCollapsed && 'center',
+                      }}
+                    >
+                      <IconContainer
+                        className={isSidebarCollapsed ? 'active' : ''}
+                      >
+                        <HelpIcon />
+                      </IconContainer>
+                      <HelpText isSidebarCollapsed={isSidebarCollapsed}>
+                        {t('common.helpButtonText')}
+                      </HelpText>
+                    </a>
+                  </QuestionButton>
+
+                  <UserInfoButton
+                    data-cy="userInfo"
                     isVisible={isVisible}
                     isSidebarCollapsed={isSidebarCollapsed}
-                    onVisibleChange={this.handleVisibleChange}
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    className={`userinfoBtn ${
+                      isSidebarCollapsed ? 'active' : ''
+                    }`}
                   >
-                    <div>
-                      {profileThumbnail ? (
-                        <UserImg
-                          src={profileThumbnail}
-                          alt="Profile"
-                          isSidebarCollapsed={isSidebarCollapsed}
-                        />
-                      ) : (
-                        <PseudoDiv isSidebarCollapsed={isSidebarCollapsed}>
-                          {this.getInitials()}
-                        </PseudoDiv>
-                      )}
-                      <div
-                        style={{
-                          width: '100px',
-                          display: !isSidebarCollapsed ? 'block' : 'none',
-                        }}
-                      >
-                        <UserName>{userName || 'Anonymous'}</UserName>
-                        <UserType isVisible={isVisible}>
-                          {role === 'parent'
-                            ? 'parent'
-                            : t('common.userRoleStudent')}
-                        </UserType>
-                      </div>
+                    <Dropdown
+                      onClick={this.toggleDropdown}
+                      overlayStyle={{
+                        position: 'fixed',
+                        minWidth: isSidebarCollapsed ? '70px' : '220px',
+                        maxWidth: isSidebarCollapsed ? '70px' : '0px',
+                      }}
+                      className="footerDropdown"
+                      overlay={footerDropdownMenu}
+                      trigger={['click']}
+                      placement="topCenter"
+                      isVisible={isVisible}
+                      isSidebarCollapsed={isSidebarCollapsed}
+                      onVisibleChange={this.handleVisibleChange}
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                    >
+                      <div>
+                        {profileThumbnail ? (
+                          <UserImg
+                            src={profileThumbnail}
+                            alt="Profile"
+                            isSidebarCollapsed={isSidebarCollapsed}
+                          />
+                        ) : (
+                          <PseudoDiv isSidebarCollapsed={isSidebarCollapsed}>
+                            {this.getInitials()}
+                          </PseudoDiv>
+                        )}
+                        <div
+                          style={{
+                            width: '100px',
+                            display: !isSidebarCollapsed ? 'block' : 'none',
+                          }}
+                        >
+                          <UserName>{userName || 'Anonymous'}</UserName>
+                          <UserType isVisible={isVisible}>
+                            {role === 'parent'
+                              ? 'parent'
+                              : t('common.userRoleStudent')}
+                          </UserType>
+                        </div>
 
-                      {!isSidebarCollapsed && (
-                        <IconDropdown
-                          style={{ fontSize: 15, pointerEvents: 'none' }}
-                          className="drop-caret"
-                          type={isVisible ? 'caret-up' : 'caret-down'}
-                        />
-                      )}
-                    </div>
-                  </Dropdown>
-                </UserInfoButton>
-              </MenuFooter>
-            </MenuWrapper>
+                        {!isSidebarCollapsed && (
+                          <IconDropdown
+                            style={{ fontSize: 15, pointerEvents: 'none' }}
+                            className="drop-caret"
+                            type={isVisible ? 'caret-up' : 'caret-down'}
+                          />
+                        )}
+                      </div>
+                    </Dropdown>
+                  </UserInfoButton>
+                </MenuFooter>
+              </MenuWrapper>
+            </SideMenuContainer>
           </SideBar>
         </FixedSidebar>
       </>

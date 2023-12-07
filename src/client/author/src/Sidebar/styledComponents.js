@@ -804,3 +804,7 @@ export const DemoPlaygroundButton = styled.div`
     }
   }
 `
+
+export const SideMenuContainer = styled.div`
+  display: inline;
+`

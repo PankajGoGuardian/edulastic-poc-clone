@@ -31,6 +31,7 @@ import {
   getUserOrgId,
 } from '../../author/src/selectors/user'
 import { isPearDomain } from '../../../utils/pear'
+import { SideMenuContainer } from '../../author/src/Sidebar/styledComponents'
 
 const { Sider } = Layout
 
@@ -185,45 +186,7 @@ const SideMenu = ({
       <ToggleSidemenu onClick={() => toggleState((val) => !val)}>
         <Icon type={isCollapsed ? 'right' : 'left'} />
       </ToggleSidemenu>
-      <LogoWrapper
-        onClick={() => toggleState((val) => !val)}
-        className="logoWrapper"
-        aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
-        onMouseEnter={
-          isPearDomain && isCollapsed && !isExpandedOnHover
-            ? () => {
-                toggleState((val) => !val)
-                setIsExpandedOnHover(true)
-              }
-            : null
-        }
-        onMouseLeave={
-          isPearDomain && !isCollapsed && isExpandedOnHover
-            ? () => {
-                toggleState((val) => !val)
-                setIsExpandedOnHover(false)
-              }
-            : null
-        }
-      >
-        {isCollapsed ? (
-          isPearDomain ? (
-            <AssessPeardeckLogoCompact />
-          ) : (
-            <LogoCompact margin="0px" />
-          )
-        ) : isPearDomain ? (
-          <AssessPeardeckLabelOnDarkBgLogo height="36px" />
-        ) : (
-          <OnDarkBgLogo height="26px" />
-        )}
-      </LogoWrapper>
-
-      <Menu
-        className="main-menu"
-        defaultSelectedKeys={[location.pathname]}
-        mode="inline"
-        isCollapsed={isCollapsed}
+      <SideMenuContainer
         onMouseEnter={
           isCollapsed && !isExpandedOnHover
             ? () => {
@@ -241,58 +204,86 @@ const SideMenu = ({
             : null
         }
       >
-        {siderMenuData.slice(0, 1).map((item) => menuItem(item))}
-
-        {isEASuperAdmin(permissions, userRole) &&
-          siderMenuData.slice(1).map((item) => menuItem(item))}
-      </Menu>
-      <MenuFooter>
-        <UserInfoButton
-          isVisible={isVisible}
-          isCollapsed={isCollapsed}
-          className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
+        <LogoWrapper
+          onClick={() => toggleState((val) => !val)}
+          className="logoWrapper"
+          aria-label={`${isCollapsed ? 'Open' : 'Close'} sidebar`}
         >
-          <Dropdown
-            onClick={toggleDropdown}
-            overlayStyle={{
-              position: 'fixed',
-              minWidth: isCollapsed ? '70px' : '220px',
-              maxWidth: isCollapsed ? '70px' : '0px',
-            }}
-            className="footerDropdown"
-            overlay={footerDropdownMenu}
-            trigger={['click']}
-            placement="topCenter"
+          {isCollapsed ? (
+            isPearDomain ? (
+              <AssessPeardeckLogoCompact />
+            ) : (
+              <LogoCompact margin="0px" />
+            )
+          ) : isPearDomain ? (
+            <AssessPeardeckLabelOnDarkBgLogo height="36px" />
+          ) : (
+            <OnDarkBgLogo height="26px" />
+          )}
+        </LogoWrapper>
+
+        <Menu
+          className="main-menu"
+          defaultSelectedKeys={[location.pathname]}
+          mode="inline"
+          isCollapsed={isCollapsed}
+        >
+          {siderMenuData.slice(0, 1).map((item) => menuItem(item))}
+
+          {isEASuperAdmin(permissions, userRole) &&
+            siderMenuData.slice(1).map((item) => menuItem(item))}
+        </Menu>
+        <MenuFooter>
+          <UserInfoButton
             isVisible={isVisible}
-            onVisibleChange={toggleDropdown}
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            isCollapsed={isCollapsed}
+            className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
           >
-            <div>
-              {profileThumbnail ? (
-                <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
-              ) : (
-                <PseudoDiv isCollapsed={isCollapsed}>{getInitials()}</PseudoDiv>
-              )}
-              <div
-                style={{
-                  width: '100px',
-                  display: !isCollapsed ? 'block' : 'none',
-                }}
-              >
-                <UserName>{userName || 'Anonymous'}</UserName>
-                <UserType isVisible={isVisible}>{userRole}</UserType>
+            <Dropdown
+              onClick={toggleDropdown}
+              overlayStyle={{
+                position: 'fixed',
+                minWidth: isCollapsed ? '70px' : '220px',
+                maxWidth: isCollapsed ? '70px' : '0px',
+              }}
+              className="footerDropdown"
+              overlay={footerDropdownMenu}
+              trigger={['click']}
+              placement="topCenter"
+              isVisible={isVisible}
+              onVisibleChange={toggleDropdown}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              <div>
+                {profileThumbnail ? (
+                  <UserImg src={profileThumbnail} isCollapsed={isCollapsed} />
+                ) : (
+                  <PseudoDiv isCollapsed={isCollapsed}>
+                    {getInitials()}
+                  </PseudoDiv>
+                )}
+                <div
+                  style={{
+                    width: '100px',
+                    display: !isCollapsed ? 'block' : 'none',
+                  }}
+                >
+                  <UserName>{userName || 'Anonymous'}</UserName>
+                  <UserType isVisible={isVisible}>{userRole}</UserType>
+                </div>
+                {!isCollapsed && (
+                  <IconDropdown
+                    style={{ fontSize: 15, pointerEvents: 'none' }}
+                    className="drop-caret"
+                    type={isCollapsed ? 'caret-up' : 'caret-down'}
+                  />
+                )}
               </div>
-              {!isCollapsed && (
-                <IconDropdown
-                  style={{ fontSize: 15, pointerEvents: 'none' }}
-                  className="drop-caret"
-                  type={isCollapsed ? 'caret-up' : 'caret-down'}
-                />
-              )}
-            </div>
-          </Dropdown>
-        </UserInfoButton>
-      </MenuFooter>
+            </Dropdown>
+          </UserInfoButton>
+        </MenuFooter>
+      </SideMenuContainer>
+
       <SwitchUserModal
         userId={userId}
         switchUser={switchUser}

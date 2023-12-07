@@ -475,7 +475,7 @@ class SummaryTest extends Component {
                   <EduIf condition={hasSection}>
                     <EduThen>
                       {' '}
-                      <span>{t('default:proceed')} </span>
+                      <span>{t('default:PROCEED')} </span>
                     </EduThen>
                     <EduElse>
                       <IconSend />{' '}

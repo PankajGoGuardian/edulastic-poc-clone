@@ -1167,6 +1167,29 @@ export const apiForms = [
     ],
   },
   {
+    id: 'add-test-thumbnail',
+    name: 'Bulk add test thumbnail',
+    endPoint: 'admin-tool/add-test-thumbnail',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'collectionId',
+        displayName: 'Collection Id',
+        placeholder: 'Enter Collection Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'path',
+        type: 'upload',
+        multiple: false,
+        required: false,
+        accept: 'image/jpeg, image/png, image/gif',
+      },
+    ],
+  },
+  {
     id: 'add-content-co-authors',
     name: 'Add content co-authors',
     endPoint: 'admin-tool/add-content-co-authors',

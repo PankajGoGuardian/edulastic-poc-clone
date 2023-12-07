@@ -247,6 +247,8 @@ export const StyledParaF = styled.p`
   line-height: 12px;
   font-weight: 600;
   margin-bottom: 5px;
+  display: flex;
+  align-items: center;
   cursor: ${(props) =>
     props.isLink && !props.disabled ? 'pointer' : 'default'};
   color: ${title};

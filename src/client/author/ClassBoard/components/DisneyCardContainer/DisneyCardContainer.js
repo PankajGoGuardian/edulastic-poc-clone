@@ -337,7 +337,7 @@ class DisneyCardContainer extends Component {
                     {!!interventionsByStudentId?.[student.studentId]
                       ?.length && (
                       <IconTutorMeAssigned
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', marginLeft: '3px' }}
                         onClick={(e) => {
                           e.stopPropagation()
                           handleOpenTutor(

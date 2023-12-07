@@ -105,7 +105,7 @@ const HeaderFilter = ({
   const handleCloseTag = (e, type, value) => {
     e.preventDefault()
     if (value === undefined) {
-      handleCloseFilter(type, '')
+      handleCloseFilter(type, type === 'subject' ? [] : '')
     }
 
     if (value) {

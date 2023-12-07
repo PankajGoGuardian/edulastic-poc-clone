@@ -1213,4 +1213,35 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'move-collections',
+    name: 'Move Collections',
+    endPoint: 'admin-tool/move-collections',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'Destination District Id',
+        placeholder: 'Enter Des District Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'collectionIds',
+        displayName: 'Collection Ids',
+        placeholder: 'Enter Collection Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'ownerId',
+        displayName: 'Owner Id',
+        placeholder: 'Enter Owner Id',
+        type: 'string',
+        required: true,
+      },
+    ],
+  },
 ]

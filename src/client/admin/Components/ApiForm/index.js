@@ -15,6 +15,9 @@ const ApiFormsMain = ({
   id,
   setFileUploadData,
   endPoint,
+  setImageFile,
+  imagePreview,
+  setImagePreview,
 }) => {
   const [data, setData] = useState({})
   const [currentId, setCurrentId] = useState('')
@@ -110,6 +113,9 @@ const ApiFormsMain = ({
                   onChange={onChange}
                   note={note}
                   endPoint={endPoint}
+                  setImageFile={setImageFile}
+                  imagePreview={imagePreview}
+                  setImagePreview={setImagePreview}
                 />
               ))}
               <ActionWrapper>

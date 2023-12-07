@@ -13,6 +13,9 @@ const Field = ({
   onChange,
   message,
   note = {},
+  setImageFile,
+  imagePreview,
+  setImagePreview,
   ...rest
 }) => {
   const [response, setResponse] = useState()
@@ -84,14 +87,37 @@ const Field = ({
 
   const onChangeDate = (date) => onChange(date.toDate().getTime(), rest.name)
 
-  const handleUpload = (info, endPoint) => {
+  const readImageFile = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        resolve(event.target.result)
+      }
+      reader.onerror = (error) => {
+        reject(error)
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const handleUpload = async (info, endPoint) => {
     try {
       const { file } = info
       setLoading(true)
-      uploadFile(file, endPoint).then((result) => {
-        onChange(result, type)
+      if (
+        endPoint === 'admin-tool/add-test-thumbnail' &&
+        file.type.match(/image/g)
+      ) {
+        const imageUrl = await readImageFile(file)
+        setImagePreview(imageUrl)
+        setImageFile(file)
         setLoading(false)
-      })
+      } else {
+        uploadFile(file, endPoint).then((result) => {
+          onChange(result, type)
+          setLoading(false)
+        })
+      }
     } catch (err) {
       console.error(err)
     }
@@ -139,14 +165,26 @@ const Field = ({
         return <p>{message}</p>
       case 'upload':
         return (
-          <Upload
-            accept={rest.accept}
-            multiple={rest.multiple}
-            disabled={loading}
-            customRequest={(info) => handleUpload(info, rest.endPoint)}
-          >
-            <Button type="primary">Upload File</Button>
-          </Upload>
+          <>
+            <Upload
+              accept={rest.accept}
+              multiple={rest.multiple}
+              disabled={loading}
+              customRequest={(info) => handleUpload(info, rest.endPoint)}
+            >
+              <Button type="primary">Upload File</Button>
+            </Upload>
+            {imagePreview && (
+              <div>
+                <h2>Preview:</h2>
+                <img
+                  src={imagePreview}
+                  alt="Uploaded"
+                  style={{ maxWidth: '50%' }}
+                />
+              </div>
+            )}
+          </>
         )
       default:
         return null

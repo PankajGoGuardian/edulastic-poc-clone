@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Alert, Select } from 'antd'
-import { EduIf, notification } from '@edulastic/common'
+import { EduIf, notification, beforeUpload } from '@edulastic/common'
 import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
 import { flatten } from 'mathjs/src/utils/array'
-import { regexJs } from '@edulastic/constants'
+import { regexJs, aws } from '@edulastic/constants'
 import { apiForms } from '../Data/apiForm'
 import ApiFormsMain from '../Components/ApiForm'
 
@@ -17,6 +17,7 @@ import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/Up
 import UploadStandard from '../Components/StandardUpload'
 import { emailRegex } from '../../common/utils/helpers'
 import EnableDataTypes from '../Components/EnableDataTypes'
+import { uploadToS3 } from '../../author/src/utils/upload'
 
 const CREATE_ADMIN = 'create-admin'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
@@ -30,6 +31,7 @@ const API_OPTIONS = {
   manageClass: 'manageClass',
 }
 const UPLOAD_STANDARD = 'upload-standard'
+const BULK_ADD_THUMBNAIL = 'add-test-thumbnail'
 
 const ApiForm = () => {
   const [id, setId] = useState()
@@ -40,6 +42,8 @@ const ApiForm = () => {
   const [selectedClass, setSelectedClass] = useState([])
   const [fileUploadData, setFileUploadData] = useState([])
   const [invalidIds, setInvalidIds] = useState([])
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
   const handleOnChange = (_id) => setId(_id)
   const getFormattedData = (arr) => {
     return arr.length > 1
@@ -99,6 +103,41 @@ const ApiForm = () => {
           notification({ msg: res?.result?.message || 'District not found' })
         }
       })
+    } else if (option.id === BULK_ADD_THUMBNAIL) {
+      if (imageFile) {
+        notification({
+          type: 'success',
+          msg: `Test thumbnail update is inprogress`,
+        })
+        if (!beforeUpload(imageFile)) {
+          return
+        }
+        uploadToS3(imageFile, aws.s3Folders.DEFAULT)
+          .then((thumbnail) => {
+            adminApi
+              .updateTestTumbnailByCollectionId({
+                thumbnail,
+                collectionId: data.collectionId,
+              })
+              .then((res) => {
+                notification({
+                  type: res?.type || 'success',
+                  msg: res?.message,
+                })
+                setImageFile(null)
+                setImagePreview(null)
+              })
+              .catch((e) => {
+                notification({ type: 'warn', msg: e.message })
+              })
+          })
+          .catch((e) => {
+            notification({
+              type: 'warn',
+              msg: e?.message || 'file upload failed to s3',
+            })
+          })
+      }
     } else {
       if (id === 'delta-sync') {
         option = apiForms.find((ar) => ar.id === id)
@@ -282,6 +321,9 @@ const ApiForm = () => {
           id={id}
           setFileUploadData={setFileUploadData}
           endPoint={option.endPoint}
+          setImageFile={setImageFile}
+          imagePreview={imagePreview}
+          setImagePreview={setImagePreview}
         >
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin

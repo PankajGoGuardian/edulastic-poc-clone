@@ -24,10 +24,7 @@ import {
 } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
-import {
-  removeAllTokens,
-  updateUserToken,
-} from '@edulastic/api/src/utils/Storage'
+import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -45,6 +42,7 @@ import {
   isProxyUser as isProxyUserSelector,
   isDemoPlaygroundUser,
   superAdminRoutes,
+  getExternalAuthUserAction,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
@@ -98,6 +96,7 @@ import {
   pearIdentifyProduct,
   pearIdentifyUser,
 } from '../utils/pear'
+import { getExternalAuthToken } from '../loginUtils'
 
 const {
   ASSESSMENT,
@@ -277,7 +276,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location, history } = this.props
+    const {
+      fetchUser,
+      location,
+      history,
+      getExternalAuthorizedUser,
+    } = this.props
     const publicPath = location.pathname.split('/').includes('public')
     const ssoPath = location.pathname.split('/').includes('auth')
     const partnerPath = location.pathname.split('/').includes('partnerLogin')
@@ -286,10 +290,9 @@ class App extends Component {
 
     if (pearLoginPath) {
       try {
-        const token = new URLSearchParams(location.search).get('token')
-        if (token) {
-          // updating token
-          updateUserToken(token)
+        const externalAuthToken = getExternalAuthToken()
+        if (!isEmpty(externalAuthToken)) {
+          getExternalAuthorizedUser({ token: externalAuthToken })
         }
       } catch (e) {
         console.error('Invalid pear login')
@@ -1033,6 +1036,7 @@ const enhance = compose(
       setRequestQuoteModal: subscriptionSlice.actions.setRequestQuoteModal,
       toggleRequestOrSubmitSuccessModal:
         subscriptionSlice.actions.toggleRequestOrSubmitSuccessModal,
+      getExternalAuthorizedUser: getExternalAuthUserAction,
     }
   )
 )

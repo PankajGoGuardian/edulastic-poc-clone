@@ -16,9 +16,9 @@ import {
   OnDarkBgLogo,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Form, Row, Tooltip } from 'antd'
+import { Col, Form, Row, Spin, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -50,8 +50,15 @@ import {
   RegistrationHeader,
 } from '../styled'
 import { isPearDomain } from '../../../../utils/pear'
-import { signupAction } from '../../Login/ducks'
+import {
+  getExternalAuthUserAction,
+  getExternalUserTokenSelector,
+  getIsExternalUserLoading,
+  setExternalAuthUserTokenAction,
+  signupAction,
+} from '../../Login/ducks'
 import ClassCodeContainer from './ClassCodeContainer'
+import { getExternalAuthToken } from '../../../../loginUtils'
 
 const GetStarted = ({
   t,
@@ -61,11 +68,33 @@ const GetStarted = ({
   orgShortName,
   orgType,
   signup,
+  getExternalAuthorizedUser,
+  externalUserToken,
+  isExternalUserLoading,
+  setExternalAuthUserToken,
 }) => {
   const [isClassCodeModalVisible, setIsClassCodeModalVisible] = useState(false)
+  const [token, setToken] = useState(null)
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
   const partner = Partners[partnerKey]
-  const token = new URLSearchParams(window.location.search).get('token')
+
+  useEffect(() => {
+    const exttToken = getExternalAuthToken()
+    if (!isEmpty(exttToken)) {
+      getExternalAuthorizedUser({
+        token: exttToken,
+        isPearSignUpFlow: true,
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (externalUserToken) {
+      setToken(externalUserToken)
+      setExternalAuthUserToken(null)
+    }
+  }, [externalUserToken])
+
   const { firstName, lastName, email } = token
     ? JSON.parse(window.atob(token.split('.')[1]))
     : {}
@@ -113,181 +142,183 @@ const GetStarted = ({
     : t('component.signup.getstarted.edulasticAssessment')
 
   return (
-    <RegistrationWrapper>
-      {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-        <Redirect exact to="/" />
-      ) : null}
-      <RegistrationBg
-        src={
-          generalSettings && isSignupUsingDaURL
-            ? generalSettings.pageBackground
-            : partner.background
-        }
-        alt="bg"
-      />
-      <RegistrationHeader type="flex" align="middle">
-        <Col span={12}>
-          <EduIf condition={isPearDomain}>
-            <EduThen>
-              <AssessPeardeckLabelOnDarkBgLogo height="37px" />
-            </EduThen>
-            <EduElse>
-              <OnDarkBgLogo height="30px" />
-            </EduElse>
-          </EduIf>
-        </Col>
-        <Col span={12} align="right">
-          <AlreadyhaveAccount>
-            {t('component.signup.alreadyhaveanaccount')}
-          </AlreadyhaveAccount>
-          <StyledLink
-            to={
-              isSignupUsingDaURL
-                ? getDistrictLoginUrl(orgShortName, orgType)
-                : getPartnerLoginUrl(partner)
-            }
+    <Spin spinning={isExternalUserLoading}>
+      <RegistrationWrapper>
+        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
+          <Redirect exact to="/" />
+        ) : null}
+        <RegistrationBg
+          src={
+            generalSettings && isSignupUsingDaURL
+              ? generalSettings.pageBackground
+              : partner.background
+          }
+          alt="bg"
+        />
+        <RegistrationHeader type="flex" align="middle">
+          <Col span={12}>
+            <EduIf condition={isPearDomain}>
+              <EduThen>
+                <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+              </EduThen>
+              <EduElse>
+                <OnDarkBgLogo height="30px" />
+              </EduElse>
+            </EduIf>
+          </Col>
+          <Col span={12} align="right">
+            <AlreadyhaveAccount>
+              {t('component.signup.alreadyhaveanaccount')}
+            </AlreadyhaveAccount>
+            <StyledLink
+              to={
+                isSignupUsingDaURL
+                  ? getDistrictLoginUrl(orgShortName, orgType)
+                  : getPartnerLoginUrl(partner)
+              }
+            >
+              {t('common.signinbtn')}
+            </StyledLink>
+          </Col>
+        </RegistrationHeader>
+        <RegistrationBody type="flex" align="middle">
+          <Col
+            xs={{ span: 22, offset: 1 }}
+            sm={{ span: 20, offset: 2 }}
+            md={{ span: 18, offset: 3 }}
+            lg={{ span: 12, offset: 6 }}
           >
-            {t('common.signinbtn')}
-          </StyledLink>
-        </Col>
-      </RegistrationHeader>
-      <RegistrationBody type="flex" align="middle">
-        <Col
-          xs={{ span: 22, offset: 1 }}
-          sm={{ span: 20, offset: 2 }}
-          md={{ span: 18, offset: 3 }}
-          lg={{ span: 12, offset: 6 }}
-        >
-          <Row>
-            {isSignUpDetailsPresent ? (
-              <StyledDiv>
-                <h1>One Last Step!</h1>
-                <InnerStyledDiv>
-                  <h2>Account Details</h2>
-                  <FlexContainer justifyContent="start">
-                    <FlexContainer
-                      alignItems="center"
-                      mr="30px"
-                      maxWidth="47%"
-                      style={{ flexGrow: 0 }}
-                    >
-                      <IconUser color={white} />
-                      <Tooltip title={getFormattedName()}>
-                        <StyledText>{getFormattedName()}</StyledText>
-                      </Tooltip>
+            <Row>
+              {isSignUpDetailsPresent ? (
+                <StyledDiv>
+                  <h1>One Last Step!</h1>
+                  <InnerStyledDiv>
+                    <h2>Account Details</h2>
+                    <FlexContainer justifyContent="start">
+                      <FlexContainer
+                        alignItems="center"
+                        mr="30px"
+                        maxWidth="47%"
+                        style={{ flexGrow: 0 }}
+                      >
+                        <IconUser color={white} />
+                        <Tooltip title={getFormattedName()}>
+                          <StyledText>{getFormattedName()}</StyledText>
+                        </Tooltip>
+                      </FlexContainer>
+                      <FlexContainer
+                        alignItems="center"
+                        style={{
+                          flexGrow: 1,
+                          minWidth: '0px',
+                        }}
+                      >
+                        <IconMail color={white} />
+                        <Tooltip title={email}>
+                          <StyledText>{email}</StyledText>
+                        </Tooltip>
+                      </FlexContainer>
                     </FlexContainer>
-                    <FlexContainer
-                      alignItems="center"
-                      style={{
-                        flexGrow: 1,
-                        minWidth: '0px',
-                      }}
-                    >
-                      <IconMail color={white} />
-                      <Tooltip title={email}>
-                        <StyledText>{email}</StyledText>
-                      </Tooltip>
-                    </FlexContainer>
-                  </FlexContainer>
-                </InnerStyledDiv>
-              </StyledDiv>
-            ) : (
-              <BannerText xs={24}>
-                <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
-                <h4>
-                  {t('component.signup.getstarted.subtext')}{' '}
-                  {pearOrEdulasticText}
-                  <br /> {t('component.signup.getstarted.subtext2')}
-                </h4>
-              </BannerText>
-            )}
-          </Row>
-          <ClassCodeContainer
-            visible={isClassCodeModalVisible}
-            setVisibility={setIsClassCodeModalVisible}
-            onProceed={handleStudentSignUp}
-          />
-          <ChooseSignupBox>
-            {isSignUpDetailsPresent ? (
-              <StyledHeader>Select Your role</StyledHeader>
-            ) : (
-              <h3>{t('component.signup.getstarted.createaccount')}</h3>
-            )}
-            <div className="signupbox-container">
-              {isDistrictPolicyAllowed(
-                isSignupUsingDaURL,
-                districtPolicy,
-                'studentSignUp'
-              ) || !isSignupUsingDaURL ? (
-                <StudentSignupBox
-                  data-cy="student"
-                  to={
-                    isSignupUsingDaURL
-                      ? getDistrictStudentSignupUrl(orgShortName, orgType)
-                      : getPartnerStudentSignupUrl(partner)
-                  }
-                  onClick={(e) => {
-                    if (isSignUpDetailsPresent) {
-                      e.preventDefault()
-                      setIsClassCodeModalVisible(true)
+                  </InnerStyledDiv>
+                </StyledDiv>
+              ) : (
+                <BannerText xs={24}>
+                  <h1>{t('component.signup.getstarted.getstartedtext')}</h1>
+                  <h4>
+                    {t('component.signup.getstarted.subtext')}{' '}
+                    {pearOrEdulasticText}
+                    <br /> {t('component.signup.getstarted.subtext2')}
+                  </h4>
+                </BannerText>
+              )}
+            </Row>
+            <ClassCodeContainer
+              visible={isClassCodeModalVisible}
+              setVisibility={setIsClassCodeModalVisible}
+              onProceed={handleStudentSignUp}
+            />
+            <ChooseSignupBox>
+              {isSignUpDetailsPresent ? (
+                <StyledHeader>Select Your role</StyledHeader>
+              ) : (
+                <h3>{t('component.signup.getstarted.createaccount')}</h3>
+              )}
+              <div className="signupbox-container">
+                {isDistrictPolicyAllowed(
+                  isSignupUsingDaURL,
+                  districtPolicy,
+                  'studentSignUp'
+                ) || !isSignupUsingDaURL ? (
+                  <StudentSignupBox
+                    data-cy="student"
+                    to={
+                      isSignupUsingDaURL
+                        ? getDistrictStudentSignupUrl(orgShortName, orgType)
+                        : getPartnerStudentSignupUrl(partner)
                     }
-                  }}
-                  xs={24}
-                  sm={8}
-                >
-                  <span>{t('component.signup.getstarted.imstudent')}</span>
-                </StudentSignupBox>
-              ) : null}
-              {isDistrictPolicyAllowed(
-                isSignupUsingDaURL,
-                districtPolicy,
-                'teacherSignUp'
-              ) || !isSignupUsingDaURL ? (
-                <TeacherSignupBox
-                  data-cy="teacher"
-                  to={
-                    isSignupUsingDaURL
-                      ? getDistrictTeacherSignupUrl(orgShortName, orgType)
-                      : getPartnerTeacherSignupUrl(partner)
-                  }
-                  onClick={(e) => {
-                    if (isSignUpDetailsPresent) {
-                      e.preventDefault()
-                      handleSignUp(roleuser.TEACHER, false)
+                    onClick={(e) => {
+                      if (isSignUpDetailsPresent) {
+                        e.preventDefault()
+                        setIsClassCodeModalVisible(true)
+                      }
+                    }}
+                    xs={24}
+                    sm={8}
+                  >
+                    <span>{t('component.signup.getstarted.imstudent')}</span>
+                  </StudentSignupBox>
+                ) : null}
+                {isDistrictPolicyAllowed(
+                  isSignupUsingDaURL,
+                  districtPolicy,
+                  'teacherSignUp'
+                ) || !isSignupUsingDaURL ? (
+                  <TeacherSignupBox
+                    data-cy="teacher"
+                    to={
+                      isSignupUsingDaURL
+                        ? getDistrictTeacherSignupUrl(orgShortName, orgType)
+                        : getPartnerTeacherSignupUrl(partner)
                     }
-                  }}
-                  xs={24}
-                  sm={8}
-                >
-                  <span>{t('component.signup.getstarted.imteacher')}</span>
-                </TeacherSignupBox>
-              ) : null}
-              {!isSignupUsingDaURL ? (
-                <AdminSignupBox
-                  data-cy="admin"
-                  to={getPartnerDASignupUrl(partner)}
-                  onClick={(e) => {
-                    if (isSignUpDetailsPresent) {
-                      e.preventDefault()
-                      handleSignUp(roleuser.TEACHER, true)
-                    }
-                  }}
-                  xs={24}
-                  sm={8}
-                >
-                  <span>{t('component.signup.getstarted.imadmin')}</span>
-                </AdminSignupBox>
-              ) : null}
-            </div>
-          </ChooseSignupBox>
-        </Col>
-      </RegistrationBody>
-      <Copyright>
-        <Col span={24}>
-          <CopyRight />
-        </Col>
-      </Copyright>
-    </RegistrationWrapper>
+                    onClick={(e) => {
+                      if (isSignUpDetailsPresent) {
+                        e.preventDefault()
+                        handleSignUp(roleuser.TEACHER, false)
+                      }
+                    }}
+                    xs={24}
+                    sm={8}
+                  >
+                    <span>{t('component.signup.getstarted.imteacher')}</span>
+                  </TeacherSignupBox>
+                ) : null}
+                {!isSignupUsingDaURL ? (
+                  <AdminSignupBox
+                    data-cy="admin"
+                    to={getPartnerDASignupUrl(partner)}
+                    onClick={(e) => {
+                      if (isSignUpDetailsPresent) {
+                        e.preventDefault()
+                        handleSignUp(roleuser.TEACHER, true)
+                      }
+                    }}
+                    xs={24}
+                    sm={8}
+                  >
+                    <span>{t('component.signup.getstarted.imadmin')}</span>
+                  </AdminSignupBox>
+                ) : null}
+              </div>
+            </ChooseSignupBox>
+          </Col>
+        </RegistrationBody>
+        <Copyright>
+          <Col span={24}>
+            <CopyRight />
+          </Col>
+        </Copyright>
+      </RegistrationWrapper>
+    </Spin>
   )
 }
 
@@ -299,7 +330,17 @@ const ChooseSignup = Form.create()(GetStarted)
 
 const enhance = compose(
   withNamespaces('login'),
-  connect(null, { signup: signupAction })
+  connect(
+    (state) => ({
+      isExternalUserLoading: getIsExternalUserLoading(state),
+      externalUserToken: getExternalUserTokenSelector(state),
+    }),
+    {
+      signup: signupAction,
+      getExternalAuthorizedUser: getExternalAuthUserAction,
+      setExternalAuthUserToken: setExternalAuthUserTokenAction,
+    }
+  )
 )
 
 export default enhance(ChooseSignup)

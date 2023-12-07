@@ -251,6 +251,8 @@ export const GET_EXTERNAL_AUTH_USER_SUCCESS =
   '[user] get external auth user success'
 export const GET_EXTERNAL_AUTH_USER_FAILED =
   '[user] get external auth user failed'
+export const SET_EXTERNAL_AUTH_USER_TOKEN =
+  '[user] set external auth user token'
 export const SET_USER_ACCESS_PUBLIC_CONTENT = '[user] set access public content'
 
 // actions
@@ -398,6 +400,9 @@ export const getExternalAuthUserAction = createAction(
 export const setUserAccessPublicContent = createAction(
   SET_USER_ACCESS_PUBLIC_CONTENT
 )
+export const setExternalAuthUserTokenAction = createAction(
+  SET_EXTERNAL_AUTH_USER_TOKEN
+)
 
 const initialState = {
   addAccount: false,
@@ -417,6 +422,7 @@ const initialState = {
   signedUpUsingUsernameAndPassword: false,
   isUserIdPresent: true,
   isExternalUserLoading: false,
+  externalUserToken: null,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -946,6 +952,9 @@ export default createReducer(initialState, {
   [GET_EXTERNAL_AUTH_USER_FAILED]: (state) => {
     state.isExternalUserLoading = false
   },
+  [SET_EXTERNAL_AUTH_USER_TOKEN]: (state, { payload }) => {
+    state.externalUserToken = payload || null
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -1118,6 +1127,11 @@ export const getTooManyAtempt = createSelector(
 
 export const getShowVerifyEmailModal = createSelector(
   ['user.showVerifyEmailModal'],
+  (r) => r
+)
+
+export const getExternalUserTokenSelector = createSelector(
+  ['user.externalUserToken'],
   (r) => r
 )
 
@@ -2635,12 +2649,19 @@ function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
 }
 
 function* getAuthorizedExternalUser({ payload }) {
+  const { isPearSignUpFlow } = payload
+  delete payload.isPearSignUpFlow
   try {
     const userDetails = yield call(authApi.getExternalUser, payload)
-    storeUserAuthToken(userDetails)
-    yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
-    localStorage.setItem('loginRedirectUrl', userDetails.redirectPath)
-    window.location.replace(userDetails.redirectPath)
+    if (isPearSignUpFlow) {
+      yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
+      yield put(setExternalAuthUserTokenAction(userDetails?.userToken))
+    } else {
+      storeUserAuthToken(userDetails)
+      yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
+      localStorage.setItem('loginRedirectUrl', userDetails.redirectPath)
+      window.location.replace(userDetails.redirectPath)
+    }
   } catch (e) {
     yield put({ type: GET_EXTERNAL_AUTH_USER_FAILED })
     notification({
@@ -2648,6 +2669,9 @@ function* getAuthorizedExternalUser({ payload }) {
       type: 'error',
       messageKey: 'failedToAutorizeUsingToken',
     })
+    if (isPearSignUpFlow) {
+      yield put(push('/login'))
+    }
   }
 }
 

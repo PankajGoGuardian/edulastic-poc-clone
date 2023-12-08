@@ -591,15 +591,19 @@ const TableList = ({
     },
     {
       width: '5%',
-      render: (_, { testId, termId, testType, showViewSummary }) => (
-        <AnalyzeLink
-          testId={testId}
-          termId={termId}
-          testType={testType}
-          userRole={userRole}
-          showViewSummary={showViewSummary}
-        />
-      ),
+      render: (_, row) => {
+        const { showViewSummary, currentAssignment } = row
+        const { testId, termId, testType } = currentAssignment
+        return (
+          <AnalyzeLink
+            testId={testId}
+            termId={termId}
+            testType={testType}
+            userRole={userRole}
+            showViewSummary={showViewSummary}
+          />
+        )
+      },
     },
     {
       title: () => {

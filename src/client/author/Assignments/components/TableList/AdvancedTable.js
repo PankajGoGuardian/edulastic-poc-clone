@@ -194,7 +194,7 @@ class AdvancedTable extends Component {
             <AnalyzeLink
               testId={testId}
               termId={termId}
-              test={testType}
+              testType={testType}
               userRole={userRole}
             />
           )

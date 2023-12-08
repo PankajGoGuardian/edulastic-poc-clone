@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Link } from 'react-router-dom'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
@@ -23,6 +23,7 @@ import { getTabNavigationItems } from '../../common/util'
 
 import staticDropDownData from './common/static/staticDropDownData.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 
 import {
   setSARSettingsAction,
@@ -45,6 +46,7 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContainer, FilterLabel } from '../../common/styled'
+import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
 
 const pickAddionalFilters = {
   [reportNavType.PEER_PERFORMANCE]: [
@@ -93,6 +95,7 @@ const SingleAssessmentReportContainer = (props) => {
     breadcrumbData,
     isPrinting,
     setEnableReportSharing,
+    interestedCurriculums,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
@@ -292,6 +295,21 @@ const SingleAssessmentReportContainer = (props) => {
     [demographicFilters]
   )
 
+  if (isEmpty(interestedCurriculums) && loc == 'performance-by-standards') {
+    return (
+      <NoDataNotification
+        heading="Standards report not available"
+        description={
+          <>
+            Standards report can be generated based on the Interested Standards.
+            To setup please go to <Link to="/author/profile">My Profile</Link>
+            and select your Interested Standards.
+          </>
+        }
+      />
+    )
+  }
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -442,6 +460,7 @@ const ConnectedSingleAssessmentReportContainer = connect(
     tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
+    interestedCurriculums: getInterestedCurriculumsSelector(state),
   }),
   {
     setSARTagsData: setSARTagsDataAction,

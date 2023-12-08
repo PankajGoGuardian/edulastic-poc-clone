@@ -6,6 +6,7 @@ import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
@@ -34,6 +35,7 @@ import {
   usePerformanceByStandardDetailsFetch,
   usePerformanceByStandardSummaryFetch,
 } from './hooks/useFetch'
+import NoDataNotification from '../../../../../common/components/NoDataNotification'
 
 const {
   viewByMode,
@@ -338,140 +340,182 @@ const PerformanceByStandards = ({
   const noDatacondition =
     !summary.performanceSummaryStats?.length || detailsError || summaryError
 
+  const noStandardsInTest = !summary?.performanceSummaryStats?.find(
+    (stat) => stat.standardId != 0
+  )
+
   const isTableLoading = isViewOrAnalyzeByChanged || detailsLoading
+
+  const noMatchingStandardsCondition =
+    summary.standardsMap &&
+    !Object.keys(summary.standardsMap).length &&
+    summary.performanceSummaryStats?.length
+
   return (
     <>
       <EduIf condition={!summaryLoading}>
         <EduThen>
-          <EduIf condition={!noDatacondition}>
+          <EduIf condition={!noDatacondition && !noStandardsInTest}>
             <EduThen>
-              <StyledCard>
-                <Row type="flex" justify="start">
-                  <Col xs={24} sm={24} md={12} lg={8} xl={12}>
-                    <StyledH3>
-                      Performance by {capitalize(`${viewBy}s`)} |{' '}
-                      {assessmentName}
-                    </StyledH3>
-                  </Col>
-                  <Col xs={24} sm={24} md={12} lg={16} xl={12}>
-                    <Row type="flex" justify="end" gutter={[5, 10]}>
-                      <StyledDropDownContainer
-                        data-cy="standardSet"
-                        xs={24}
-                        sm={24}
-                        md={7}
-                        lg={7}
-                        xl={7}
-                      >
-                        <ControlDropDown
-                          prefix="Standard Set"
-                          by={selectedCurriculumId || { key: '', title: '' }}
-                          selectCB={handleCurriculumIdChange}
-                          data={standardsDropdownData}
-                          showPrefixOnSelected={false}
-                        />
-                      </StyledDropDownContainer>
-                      <StyledDropDownContainer
-                        data-cy="viewBy"
-                        xs={24}
-                        sm={24}
-                        md={8}
-                        lg={8}
-                        xl={8}
-                      >
-                        <ControlDropDown
-                          prefix="View by"
-                          by={viewBy}
-                          selectCB={handleViewByChange}
-                          data={dropDownFormat.viewByDropDownData}
-                        />
-                      </StyledDropDownContainer>
-                      <StyledDropDownContainer
-                        data-cy="analyzeBy"
-                        xs={24}
-                        sm={24}
-                        md={7}
-                        lg={7}
-                        xl={7}
-                      >
-                        <ControlDropDown
-                          prefix="Analyze by"
-                          by={analyzeBy}
-                          selectCB={handleAnalyzeByChange}
-                          data={dropDownFormat.analyzeByDropDownData}
-                        />
-                      </StyledDropDownContainer>
+              <EduIf condition={!noMatchingStandardsCondition}>
+                <EduThen>
+                  <StyledCard>
+                    <Row type="flex" justify="start">
+                      <Col xs={24} sm={24} md={12} lg={8} xl={12}>
+                        <StyledH3>
+                          Performance by {capitalize(`${viewBy}s`)} |{' '}
+                          {assessmentName}
+                        </StyledH3>
+                      </Col>
+                      <Col xs={24} sm={24} md={12} lg={16} xl={12}>
+                        <Row type="flex" justify="end" gutter={[5, 10]}>
+                          <StyledDropDownContainer
+                            data-cy="viewBy"
+                            xs={24}
+                            sm={24}
+                            md={8}
+                            lg={8}
+                            xl={8}
+                          >
+                            <ControlDropDown
+                              prefix="View by"
+                              by={viewBy}
+                              selectCB={handleViewByChange}
+                              data={dropDownFormat.viewByDropDownData}
+                            />
+                          </StyledDropDownContainer>
+                          <StyledDropDownContainer
+                            data-cy="analyzeBy"
+                            xs={24}
+                            sm={24}
+                            md={7}
+                            lg={7}
+                            xl={7}
+                          >
+                            <ControlDropDown
+                              prefix="Analyze by"
+                              by={analyzeBy}
+                              selectCB={handleAnalyzeByChange}
+                              data={dropDownFormat.analyzeByDropDownData}
+                            />
+                          </StyledDropDownContainer>
+                          <StyledDropDownContainer
+                            data-cy="standardSet"
+                            xs={24}
+                            sm={24}
+                            md={7}
+                            lg={7}
+                            xl={7}
+                          >
+                            <ControlDropDown
+                              prefix="Standard Set"
+                              by={
+                                selectedCurriculumId || { key: '', title: '' }
+                              }
+                              selectCB={handleCurriculumIdChange}
+                              data={standardsDropdownData}
+                              showPrefixOnSelected={false}
+                            />
+                          </StyledDropDownContainer>
+                        </Row>
+                      </Col>
                     </Row>
-                  </Col>
-                </Row>
-                <StyledSignedBarContainer>
-                  <BarToRender
-                    report={reportWithFilteredSkills}
-                    viewBy={viewBy}
-                    analyzeBy={analyzeBy}
-                    onBarClick={handleToggleSelectedData}
-                    selectedData={selectedItems}
-                    onResetClick={handleResetSelection}
-                  />
-                </StyledSignedBarContainer>
-              </StyledCard>
-              <StyledCard style={{ marginTop: '20px' }}>
-                <CardHeader>
-                  <CardTitle>
-                    {capitalize(viewBy)} Performance Analysis by{' '}
-                    {findCompareByTitle(compareBy)} | {assessmentName}
-                  </CardTitle>
-                  <CardDropdownWrapper data-cy="compareBy">
-                    <ControlDropDown
-                      prefix="Compare by"
-                      by={compareBy}
-                      selectCB={handleCompareByChange}
-                      data={filteredDropDownData}
-                    />
-                  </CardDropdownWrapper>
-                </CardHeader>
-                <EduIf condition={!isTableLoading}>
-                  <EduThen>
-                    <PerformanceAnalysisTable
-                      report={reportWithFilteredSkills}
-                      viewBy={viewBy}
-                      analyzeBy={analyzeBy}
-                      compareBy={compareBy}
-                      selectedStandards={selectedStandards}
-                      selectedDomains={selectedDomains}
-                      isCsvDownloading={
-                        generateCSVRequired ? null : isCsvDownloading
-                      }
-                      location={location}
-                      pageTitle={pageTitle}
-                      sortKey={sortKey}
-                      setSortKey={onSetSortKey}
-                      sortOrder={sortOrder}
-                      setSortOrder={onSetSortOrder}
-                      setPageNo={onSetPage}
-                    />
-                    <EduIf condition={itemsCount > pageSize}>
-                      <Pagination
-                        style={{ marginTop: '10px' }}
-                        onChange={onSetPage}
-                        current={page}
-                        pageSize={pageSize}
-                        total={itemsCount}
+                    <StyledSignedBarContainer>
+                      <BarToRender
+                        report={reportWithFilteredSkills}
+                        viewBy={viewBy}
+                        analyzeBy={analyzeBy}
+                        onBarClick={handleToggleSelectedData}
+                        selectedData={selectedItems}
+                        onResetClick={handleResetSelection}
                       />
+                    </StyledSignedBarContainer>
+                  </StyledCard>
+                  <StyledCard style={{ marginTop: '20px' }}>
+                    <CardHeader>
+                      <CardTitle>
+                        {capitalize(viewBy)} Performance Analysis by{' '}
+                        {findCompareByTitle(compareBy)} | {assessmentName}
+                      </CardTitle>
+                      <CardDropdownWrapper data-cy="compareBy">
+                        <ControlDropDown
+                          prefix="Compare by"
+                          by={compareBy}
+                          selectCB={handleCompareByChange}
+                          data={filteredDropDownData}
+                        />
+                      </CardDropdownWrapper>
+                    </CardHeader>
+                    <EduIf condition={!isTableLoading}>
+                      <EduThen>
+                        <PerformanceAnalysisTable
+                          report={reportWithFilteredSkills}
+                          viewBy={viewBy}
+                          analyzeBy={analyzeBy}
+                          compareBy={compareBy}
+                          selectedStandards={selectedStandards}
+                          selectedDomains={selectedDomains}
+                          isCsvDownloading={
+                            generateCSVRequired ? null : isCsvDownloading
+                          }
+                          location={location}
+                          pageTitle={pageTitle}
+                          sortKey={sortKey}
+                          setSortKey={onSetSortKey}
+                          sortOrder={sortOrder}
+                          setSortOrder={onSetSortOrder}
+                          setPageNo={onSetPage}
+                        />
+                        <EduIf condition={itemsCount > pageSize}>
+                          <Pagination
+                            style={{ marginTop: '10px' }}
+                            onChange={onSetPage}
+                            current={page}
+                            pageSize={pageSize}
+                            total={itemsCount}
+                          />
+                        </EduIf>
+                      </EduThen>
+                      <EduElse>
+                        <SpinLoader
+                          tip={`Loading ${compareByModeToName[compareBy]} data, it may take a while...`}
+                        />
+                      </EduElse>
                     </EduIf>
-                  </EduThen>
-                  <EduElse>
-                    <SpinLoader
-                      tip={`Loading ${compareByModeToName[compareBy]} data, it may take a while...`}
-                    />
-                  </EduElse>
-                </EduIf>
-              </StyledCard>
+                  </StyledCard>
+                </EduThen>
+                <EduElse>
+                  <NoDataNotification
+                    heading="Report not available"
+                    description={
+                      <>
+                        The test standards are different from your interested
+                        standards. Please go to{' '}
+                        <Link to="/author/profile">My Profile</Link> and add the
+                        standard set for the standards used in this test to view
+                        this report.
+                      </>
+                    }
+                  />
+                </EduElse>
+              </EduIf>
             </EduThen>
             <EduElse>
-              <NoDataContainer>
-                {requestFilters?.termId ? 'No data available currently.' : ''}
-              </NoDataContainer>
+              <EduIf condition={noDatacondition}>
+                <EduThen>
+                  <NoDataContainer>
+                    {requestFilters?.termId
+                      ? 'No data available currently.'
+                      : ''}
+                  </NoDataContainer>
+                </EduThen>
+                <EduElse>
+                  <NoDataNotification
+                    heading="Standards are not available for this test."
+                    description="Please add standards to the test and regrade to view performance by standards."
+                  />
+                </EduElse>
+              </EduIf>
             </EduElse>
           </EduIf>
         </EduThen>

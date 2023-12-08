@@ -29,6 +29,7 @@ import { greyThemeDark3 } from '@edulastic/colors'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import {
   getItemsInFolders,
   getSelectedItems,
@@ -64,6 +65,7 @@ import {
   getUserIdSelector,
   getUserRole,
   getGroupList,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { canEditTest, assignmentStatus } from '../../utils'
@@ -73,6 +75,7 @@ import {
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import { shortTestIdKeyLength } from '../../constants'
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const convertTableData = (
   data,
@@ -170,9 +173,11 @@ const TableList = ({
   toggleTagsEditModal,
   isDemoPlayground = false,
   isProxiedByEAAccount = false,
+  isPremiumUser,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
+  const [premiumPopup, setPremiumPopup] = useState(null)
   // Show first three rows opened in every re-render
   useEffect(() => {
     setExpandedRows(['0', '1', '2'])
@@ -309,8 +314,12 @@ const TableList = ({
         ),
       },
       {
+        width: '5%',
+        render: () => <GreyFont />,
+      },
+      {
         dataIndex: 'action',
-        width: '10%',
+        width: '5%',
         render: (_, row) => (
           <ActionsWrapper
             data-cy="PresentationIcon"
@@ -581,6 +590,21 @@ const TableList = ({
       render: (text) => <GreyFont data-cy="testGraded"> {text} </GreyFont>,
     },
     {
+      width: '5%',
+      render: (_, row) => {
+        const { showViewSummary, currentAssignment } = row
+        const { testId, termId, testType } = currentAssignment
+        return (
+          <AnalyzeLink
+            testId={testId}
+            termId={termId}
+            testType={testType}
+            showAnalyseLink={showViewSummary}
+          />
+        )
+      },
+    },
+    {
       title: () => {
         const menu = (
           <Menu>
@@ -608,7 +632,8 @@ const TableList = ({
               >
                 <EduButton
                   height="22px"
-                  width="75px"
+                  width="100%"
+                  maxWidth="75px"
                   ml="0px"
                   data-cy="assignmentActions"
                   isBlue
@@ -623,7 +648,7 @@ const TableList = ({
       },
       className: 'assignment-actions',
       dataIndex: 'action',
-      width: '10%',
+      width: '5%',
       render: (_, row) => {
         const assignmentTest = assignmentTests.find(
           (at) => at._id === row.itemId
@@ -658,6 +683,8 @@ const TableList = ({
                 isDemoPlaygroundUser: isDemoPlayground,
                 isProxiedByEAAccount,
                 showViewSummary: row.showViewSummary,
+                isPremiumUser,
+                showPremiumPopup: setPremiumPopup,
               })}
               placement="bottomRight"
               trigger={['click']}
@@ -666,7 +693,8 @@ const TableList = ({
               <EduButton
                 ml="0px"
                 height="23px"
-                width="75px"
+                width="100%"
+                maxWidth="75px"
                 isGhost
                 data-cy="actions"
               >
@@ -748,6 +776,12 @@ const TableList = ({
         expandedRowKeys={expandedRows}
         scroll={{ x: windowWidth <= 1023 ? 1023 : false }}
       />
+      <PremiumPopover
+        target={premiumPopup}
+        onClose={() => setPremiumPopup(null)}
+        descriptionType="report"
+        imageType="IMG_DATA_ANALYST"
+      />
     </Container>
   )
 }
@@ -788,6 +822,7 @@ const enhance = compose(
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setItemsToFolder: setItemsMoveFolderAction,

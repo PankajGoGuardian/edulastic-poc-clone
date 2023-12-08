@@ -127,3 +127,12 @@ export const InsightsItemIndex = styled.div`
   font-weight: bold;
   margin-right: 20px;
 `
+export const NoActivePremiumSubscriptionContainer = styled.div`
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 20px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+`

@@ -8,6 +8,7 @@ import { EduIf, MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import { red } from '@edulastic/colors'
+import { Divider } from 'antd'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -33,6 +34,7 @@ import {
   isDefaultDASelector,
 } from '../../student/Login/ducks'
 import { TagWrapper } from '../ClassBoard/components/Container/styled'
+import AnalyzeLink from '../Assignments/components/AnalyzeLink/AnalyzeLink'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -121,7 +123,19 @@ class StandardsBasedReport extends Component {
         <MainContentWrapper>
           <StyledFlexContainer justifyContent="space-between">
             <ClassBreadBrumb />
-            <PresentationToggleSwitch groupId={classId} />
+            <StyledFlexContainer
+              justifyContent="space-between"
+              style={{ width: 'auto', margin: '0px', alignItems: 'center' }}
+            >
+              <AnalyzeLink
+                linkText="DETAILED ANALYSIS"
+                linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                showAnalyseLink
+                visible={!!additionalData.testId}
+              />
+              <Divider type="vertical" />
+              <PresentationToggleSwitch groupId={classId} />
+            </StyledFlexContainer>
           </StyledFlexContainer>
           <EduIf condition={additionalData?.isDataMovedToArchivedDB}>
             <TagWrapper>

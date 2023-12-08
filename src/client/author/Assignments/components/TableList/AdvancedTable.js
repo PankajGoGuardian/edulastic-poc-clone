@@ -26,6 +26,7 @@ import {
   getUserRole,
   getGroupList,
   getUserFeatures,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import {
   toggleRemoveItemsFolderAction,
@@ -35,6 +36,7 @@ import {
 import { getSelectedItems } from '../../../src/selectors/folder'
 import { canEditTest } from '../../utils'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import Spinner from '../../../../common/components/Spinner'
 import {
   ActionDiv,
@@ -50,6 +52,7 @@ import {
 } from '../../../../student/Login/ducks'
 import BulkEditTestModal from '../BulkEditTestModal'
 import { shortTestIdKeyLength } from '../../constants'
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 class AdvancedTable extends Component {
   showBulkUpdate =
@@ -185,6 +188,14 @@ class AdvancedTable extends Component {
         render: (text) => <div> {text} </div>,
       },
       {
+        render: (_, { testId, termId, testType }) => {
+          return (
+            <AnalyzeLink testId={testId} termId={termId} testType={testType} />
+          )
+        },
+        width: '6%',
+      },
+      {
         title: () => {
           const { selectedRows } = this.props
           const menu = (
@@ -225,7 +236,8 @@ class AdvancedTable extends Component {
           )
         },
         dataIndex: 'action',
-        width: '10%',
+        width: '4%',
+        minWidth: '75px',
         render: (_, row) => {
           const {
             onOpenReleaseScoreSettings,
@@ -242,6 +254,7 @@ class AdvancedTable extends Component {
             toggleTagsEditModal,
             isDemoPlayground = false,
             isProxiedByEAAccount = false,
+            isPremiumUser,
           } = this.props
           const isAssignProgress =
             row.bulkAssignedCountProcessed < row.bulkAssignedCount
@@ -253,8 +266,20 @@ class AdvancedTable extends Component {
             _id: row.assignmentIds[0],
             testId: row.testId,
           }
+
+          const showPremiumPopup = (value) => {
+            this.setState({ premiumPopup: value })
+          }
+          const { premiumPopup } = this.state
+
           return (
             <ActionDiv data-cy="testActions">
+              <PremiumPopover
+                target={premiumPopup}
+                onClose={() => this.setState({ premiumPopup: null })}
+                descriptionType="report"
+                imageType="IMG_DATA_ANALYST"
+              />
               <Dropdown
                 data-cy="actionDropDown"
                 overlay={ActionMenu({
@@ -278,6 +303,8 @@ class AdvancedTable extends Component {
                   toggleTagsEditModal,
                   isDemoPlaygroundUser: isDemoPlayground,
                   isProxiedByEAAccount,
+                  isPremiumUser,
+                  showPremiumPopup,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -326,6 +353,7 @@ class AdvancedTable extends Component {
       },
     ],
     showBulkEditTestModal: false,
+    premiumPopup: null,
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -567,6 +595,7 @@ const enhance = compose(
       isDemoPlayground: isDemoPlaygroundUser(state),
       isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       features: getUserFeatures(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

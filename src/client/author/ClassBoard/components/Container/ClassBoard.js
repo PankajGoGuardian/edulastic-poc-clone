@@ -37,6 +37,7 @@ import {
   Select,
   notification as antNotification,
   Tooltip,
+  Divider,
 } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -171,6 +172,7 @@ import {
   getUserOrgId,
   getUserEmailSelector,
   getUserFullNameSelector,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
@@ -187,6 +189,7 @@ import {
   getMastery,
   getPerfomancePercentage,
 } from '../../../StandardsBasedReport/components/TableDisplay'
+import AnalyzeLink from '../../../Assignments/components/AnalyzeLink/AnalyzeLink'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -1617,6 +1620,28 @@ class ClassBoard extends Component {
               />
               {!isCliUser && (
                 <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
+                  <EduIf
+                    condition={
+                      selectedTab == 'Both' || selectedTab == 'Student'
+                    }
+                  >
+                    <AnalyzeLink
+                      linkText="ANALYZE PERFORMANCE"
+                      linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                      showAnalyseLink
+                      visible={!!additionalData.testId}
+                    />
+                    <Divider type="vertical" />
+                  </EduIf>
+                  <EduIf condition={selectedTab == 'questionView'}>
+                    <AnalyzeLink
+                      linkText="Analyze"
+                      linkUrl={`/author/reports/question-analysis/test/${additionalData.testId}`}
+                      showAnalyseLink
+                      visible={!!additionalData.testId}
+                    />
+                    <Divider type="vertical" />
+                  </EduIf>
                   <PresentationToggleSwitch groupId={classId} />
                   <BothButton
                     disabled={isLoading}
@@ -2399,6 +2424,7 @@ const enhance = compose(
       regradeModalState: getRegradeModalStateSelector(state),
       isDocBasedTest: getIsDocBasedTestSelector(state),
       userId: getUserId(state),
+      isPremiumUser: isPremiumUserSelector(state),
       attemptWindow: getAttemptWindowSelector(state),
       isContentHidden: getIsItemContentHiddenSelector(state),
       reportStandards: state.classResponse?.data?.reportStandards || [],

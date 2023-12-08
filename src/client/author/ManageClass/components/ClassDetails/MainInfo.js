@@ -1,8 +1,9 @@
 import { find } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
-import { Col } from 'antd'
+import { Col, Divider } from 'antd'
 import React, { useEffect } from 'react'
+import { EduButton } from '@edulastic/common'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import defaultImage from '../../../src/assets/manageclass/abstract.jpg'
 import selectsData from '../../../TestPage/components/common/selectsData'
@@ -15,6 +16,7 @@ import {
   MainContainer,
   MidWrapper,
   StyledDivider,
+  ViewAssignmentsContainer,
 } from './styled'
 import SubHeader from './SubHeader'
 
@@ -31,6 +33,7 @@ const MainInfo = ({
   allowCanvasLogin,
   syncCanvasModal,
   setCreateClassTypeDetails,
+  onViewAssignmentsClick,
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -47,6 +50,7 @@ const MainInfo = ({
     googleCode,
     canvasCourseName = '',
     canvasCourseSectionName = '',
+    active,
   } = entity
   const _grade =
     allGrades
@@ -193,6 +197,22 @@ const MainInfo = ({
             </MidWrapper>
           </FlexDiv>
         </ClassInfoContainer>
+        {active && (
+          <>
+            <Divider type="vertical" style={{ height: 'auto' }} />
+            <ViewAssignmentsContainer>
+              <EduButton
+                type="secondary"
+                height="30px"
+                style={{ marginBottom: '8px' }}
+                onClick={onViewAssignmentsClick}
+              >
+                View Assignments
+              </EduButton>
+              For this class
+            </ViewAssignmentsContainer>
+          </>
+        )}
       </MainContainer>
       <StyledDivider orientation="left" />
     </div>

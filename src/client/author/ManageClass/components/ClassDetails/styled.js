@@ -640,3 +640,27 @@ export const NotEnrolledMessage = styled.div`
     margin-right: 5px;
   }
 `
+
+export const ViewAssignmentsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto 0px;
+  align-items: center;
+  width: 250px;
+
+  font-size: 10px;
+  font-weight: 400;
+  align: center;
+
+  button {
+    color: ${themeColor};
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 350px;
+  }
+`

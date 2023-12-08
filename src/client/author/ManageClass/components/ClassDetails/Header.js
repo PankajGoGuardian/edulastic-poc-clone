@@ -55,7 +55,6 @@ import {
 } from '../../ducks'
 import SyncModal from './SyncModal'
 import { getUserOrgId } from '../../../src/selectors/user'
-import { setFilterInSession } from '../../../../common/utils/helpers'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 
@@ -107,6 +106,7 @@ const Header = ({
   setCreateClassTypeDetails,
   createClassType,
   manualEnrollmentAllowed,
+  onViewAssignmentsClick,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -220,21 +220,6 @@ const Header = ({
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
     setSyncClassLoading(true)
     syncClassesWithClever({ classList })
-  }
-
-  const getAssignmentsByClass = (classId = '') => () => {
-    const filter = {
-      classId,
-      testType: '',
-      termId: selectedClass.termId,
-    }
-    setFilterInSession({
-      key: 'assignments_filter',
-      userId: user._id,
-      districtId: orgId,
-      filter,
-    })
-    history.push('/author/assignments')
   }
 
   const showSyncButtons =
@@ -538,7 +523,7 @@ const Header = ({
         )}
         {active !== 1 && (
           <>
-            <EduButton isBlue onClick={() => getAssignmentsByClass(_id)()}>
+            <EduButton isBlue onClick={onViewAssignmentsClick}>
               <IconAssignment />
               View Assignments
             </EduButton>
@@ -623,7 +608,7 @@ const Header = ({
                     <span>Manage Co-Teacher</span>
                   </MenuItems>
                 )}
-                <MenuItems onClick={getAssignmentsByClass(_id)}>
+                <MenuItems onClick={onViewAssignmentsClick}>
                   <IconAssignment />
                   <span>View Assignments</span>
                 </MenuItems>

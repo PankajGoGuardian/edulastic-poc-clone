@@ -55,6 +55,7 @@ import {
 import ReauthenticateModal from './ReauthenticateModal'
 import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
+import { setFilterInSession } from '../../../../common/utils/helpers'
 
 const ClassDetails = ({
   location,
@@ -267,6 +268,21 @@ const ClassDetails = ({
     setOpenGCModal(true)
   }
 
+  const onViewAssignmentsClick = () => {
+    const filter = {
+      classId: selectedClass._id,
+      testType: '',
+      termId: selectedClass.termId,
+    }
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId: user._id,
+      districtId: userDistrictId,
+      filter,
+    })
+    history.push('/author/assignments')
+  }
+
   return (
     <>
       {!classLoaded ? (
@@ -398,6 +414,7 @@ const ClassDetails = ({
               archiveClass={archiveClass}
               entity={selectedClass}
               manualEnrollmentAllowed={manualEnrollmentAllowed}
+              onViewAssignmentsClick={onViewAssignmentsClick}
             />
           </div>
           <MainContentWrapper>
@@ -417,6 +434,7 @@ const ClassDetails = ({
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
               setCreateClassTypeDetails={setCreateClassTypeDetails}
+              onViewAssignmentsClick={onViewAssignmentsClick}
             />
 
             <ActionContainer

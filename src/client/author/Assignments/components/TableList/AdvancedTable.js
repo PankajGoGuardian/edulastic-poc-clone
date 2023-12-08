@@ -188,9 +188,16 @@ class AdvancedTable extends Component {
         render: (text) => <div> {text} </div>,
       },
       {
-        render: (_, row) => {
+        render: (_, { testId, termId, testType }) => {
           const { userRole = '' } = this.props
-          return <AnalyzeLink row={row} userRole={userRole} />
+          return (
+            <AnalyzeLink
+              testId={testId}
+              termId={termId}
+              test={testType}
+              userRole={userRole}
+            />
+          )
         },
         width: '6%',
       },

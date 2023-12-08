@@ -1628,7 +1628,7 @@ export function* updateItemSaga({ payload }) {
   } catch (err) {
     captureSentryException(err)
     console.error(err)
-    const errorMessage = 'Unable to save the item.'
+    const errorMessage = err.message || 'Unable to save the item.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,

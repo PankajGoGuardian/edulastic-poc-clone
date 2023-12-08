@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { EduIf } from '@edulastic/common'
 import { Container, SpaceElement } from './styled'
 
-import { isPremiumUserSelector } from '../../../src/selectors/user'
+import { getUserRole, isPremiumUserSelector } from '../../../src/selectors/user'
 
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
@@ -23,12 +23,7 @@ const getReportPathForAssignment = (testId = '', termId, testType) => {
     subject: 'All',
     grade: 'All',
   }
-
-  const url = `/author/reports/assessment-summary/test/${testId}?${qs.stringify(
-    q
-  )}`
-
-  return url
+  return `/author/reports/assessment-summary/test/${testId}?${qs.stringify(q)}`
 }
 
 const AnalyzeLink = ({
@@ -36,8 +31,10 @@ const AnalyzeLink = ({
   termId,
   testType,
   userRole = '',
-  showViewSummary = false,
+  showAnalyseLink = false,
   isPremiumUser,
+  linkText = 'Analyze',
+  linkUrl = '',
 }) => {
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
@@ -52,10 +49,12 @@ const AnalyzeLink = ({
     e.stopPropagation()
   }
 
+  const url = linkUrl || getReportPathForAssignment(testId, termId, testType)
+
   return (
-    <EduIf condition={isAdmin || showViewSummary}>
+    <EduIf condition={isAdmin || showAnalyseLink}>
       <Link
-        to={getReportPathForAssignment(testId, termId, testType)}
+        to={url}
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleAnalyzeClick}
@@ -63,7 +62,7 @@ const AnalyzeLink = ({
         <Container>
           <IconBarChart color={themeColor} height="10px" />
           <SpaceElement />
-          Analyze
+          {linkText}
           <SpaceElement />
           {isPremiumUser || <IconStar height="10px" />}
           <SpaceElement />
@@ -82,6 +81,7 @@ const AnalyzeLink = ({
 const enhance = compose(
   connect((state) => ({
     isPremiumUser: isPremiumUserSelector(state),
+    userRole: getUserRole(state),
   }))
 )
 

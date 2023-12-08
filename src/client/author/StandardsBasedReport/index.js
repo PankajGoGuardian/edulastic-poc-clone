@@ -7,10 +7,8 @@ import { size, isEmpty, get } from 'lodash'
 import { EduIf, MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
-import { red, themeColor } from '@edulastic/colors'
+import { red } from '@edulastic/colors'
 import { Divider } from 'antd'
-import { Link } from 'react-router-dom'
-import { IconBarChart, IconStar } from '@edulastic/icons'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 import PresentationToggleSwitch from '../Shared/Components/PresentationToggleSwitch'
@@ -27,7 +25,6 @@ import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
-  isPremiumUserSelector,
 } from '../src/selectors/user'
 import {
   toggleAdminAlertModalAction,
@@ -37,17 +34,9 @@ import {
   isDefaultDASelector,
 } from '../../student/Login/ducks'
 import { TagWrapper } from '../ClassBoard/components/Container/styled'
-import PremiumPopover from '../../features/components/PremiumPopover'
+import AnalyzeLink from '../Assignments/components/AnalyzeLink/AnalyzeLink'
 
 class StandardsBasedReport extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      premiumPopup: null,
-    }
-  }
-
   componentDidMount() {
     const {
       loadTestActivity,
@@ -116,9 +105,7 @@ class StandardsBasedReport extends Component {
       testQIds,
       testStandardsLength,
       t,
-      isPremiumUser,
     } = this.props
-    const { premiumPopup } = this.state
     const testActivityId = this.getTestActivity(testActivity)
 
     return (
@@ -134,36 +121,17 @@ class StandardsBasedReport extends Component {
         />
         <HooksContainer classId={classId} assignmentId={assignmentId} />
         <MainContentWrapper>
-          <PremiumPopover
-            target={premiumPopup}
-            onClose={() => this.setState({ premiumPopup: null })}
-            descriptionType="report"
-            imageType="IMG_DATA_ANALYST"
-          />
           <StyledFlexContainer justifyContent="space-between">
             <ClassBreadBrumb />
             <StyledFlexContainer
               justifyContent="space-between"
               style={{ width: 'auto', margin: '0px', alignItems: 'center' }}
             >
-              <Link
-                to={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
-                onClick={(e) => {
-                  if (!isPremiumUser) {
-                    e.preventDefault()
-                    this.setState({ premiumPopup: e.target })
-                  }
-                }}
-              >
-                <StyledFlexContainer
-                  justifyContent="space-between"
-                  style={{ width: 'auto', margin: '0px', alignItems: 'center' }}
-                >
-                  <IconBarChart color={themeColor} height="12px" />
-                  &nbsp; DETAILED ANALYSIS&nbsp;&nbsp;
-                  {isPremiumUser || <IconStar />}
-                </StyledFlexContainer>
-              </Link>
+              <AnalyzeLink
+                linkText="DETAILED ANALYSIS"
+                linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                showAnalyseLink
+              />
               <Divider type="vertical" />
               <PresentationToggleSwitch groupId={classId} />
             </StyledFlexContainer>
@@ -208,7 +176,6 @@ const enhance = compose(
       isDefaultDA: isDefaultDASelector(state),
       userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
-      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

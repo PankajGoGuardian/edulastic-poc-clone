@@ -4,7 +4,6 @@ import {
   green,
   lightGreen4,
   red,
-  themeColor,
 } from '@edulastic/colors'
 import {
   MainContentWrapper,
@@ -13,7 +12,6 @@ import {
   LCBScrollContext,
   BackTop,
   EduIf,
-  FlexContainer,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -27,8 +25,6 @@ import {
   IconPrint,
   IconRedirect,
   IconRemove,
-  IconStar,
-  IconBarChart,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -50,7 +46,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import CustomNotificationBar from '@edulastic/common/src/components/CustomNotificationBar/CustomNotificationBar'
 import { segmentApi } from '@edulastic/api'
-import { Link } from 'react-router-dom'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QuestionContainer from '../../../QuestionView'
@@ -194,7 +189,7 @@ import {
   getMastery,
   getPerfomancePercentage,
 } from '../../../StandardsBasedReport/components/TableDisplay'
-import PremiumPopover from '../../../../features/components/PremiumPopover'
+import AnalyzeLink from '../../../Assignments/components/AnalyzeLink/AnalyzeLink'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -316,7 +311,6 @@ class ClassBoard extends Component {
         studentName: '',
         studentId: '',
       },
-      premiumPopup: null,
     }
   }
 
@@ -1346,7 +1340,6 @@ class ClassBoard extends Component {
       isProxiedByEAAccount,
       userRole,
       userId,
-      isPremiumUser,
       attemptWindow,
       isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
@@ -1370,7 +1363,6 @@ class ClassBoard extends Component {
       studentFilter,
       showAssignedTutors,
       studentToAssignTutor,
-      premiumPopup,
     } = this.state
     const isRedirectButtonDisabled =
       COMMON.includes(additionalData?.testType) &&
@@ -1631,70 +1623,26 @@ class ClassBoard extends Component {
               />
               {!isCliUser && (
                 <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
-                  {(selectedTab == 'Both' || selectedTab == 'Student') && (
-                    <>
-                      <Link
-                        to={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
-                        target="_blank"
-                        rel="noopener"
-                        onClick={(e) => {
-                          if (!isPremiumUser) {
-                            e.preventDefault()
-                            this.setState({ premiumPopup: e.target })
-                          }
-                        }}
-                      >
-                        <FlexContainer
-                          justifyContent="space-between"
-                          style={{
-                            width: 'auto',
-                            margin: '0px',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <IconBarChart color={themeColor} height="12px" />
-                          &nbsp; ANALYZE PERFORMANCE&nbsp;&nbsp;
-                          {isPremiumUser || <IconStar />}
-                        </FlexContainer>
-                      </Link>
-                      <Divider type="vertical" />
-                    </>
-                  )}
-                  {selectedTab == 'questionView' && (
-                    <>
-                      <Link
-                        to={`/author/reports/question-analysis/test/${additionalData.testId}`}
-                        target="_blank"
-                        rel="noopener"
-                        onClick={(e) => {
-                          if (!isPremiumUser) {
-                            e.preventDefault()
-                            this.setState({ premiumPopup: e.target })
-                          }
-                        }}
-                      >
-                        <FlexContainer
-                          justifyContent="space-between"
-                          style={{
-                            width: 'auto',
-                            margin: '0px',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <IconBarChart color={themeColor} height="12px" />
-                          &nbsp; QUESTION ANALYSIS&nbsp;&nbsp;
-                          {isPremiumUser || <IconStar />}
-                        </FlexContainer>
-                      </Link>
-                      <Divider type="vertical" />
-                    </>
-                  )}
-                  <PremiumPopover
-                    target={premiumPopup}
-                    onClose={() => this.setState({ premiumPopup: null })}
-                    descriptionType="report"
-                    imageType="IMG_DATA_ANALYST"
-                  />
+                  <EduIf
+                    condition={
+                      selectedTab == 'Both' || selectedTab == 'Student'
+                    }
+                  >
+                    <AnalyzeLink
+                      linkText="ANALYZE PERFORMANCE"
+                      linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                      showAnalyseLink
+                    />
+                    <Divider type="vertical" />
+                  </EduIf>
+                  <EduIf condition={selectedTab == 'questionView'}>
+                    <AnalyzeLink
+                      linkText="Analyze"
+                      linkUrl={`/author/reports/question-analysis/test/${additionalData.testId}`}
+                      showAnalyseLink
+                    />
+                    <Divider type="vertical" />
+                  </EduIf>
                   <PresentationToggleSwitch groupId={classId} />
                   <BothButton
                     disabled={isLoading}

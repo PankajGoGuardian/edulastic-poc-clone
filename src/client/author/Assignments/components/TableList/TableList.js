@@ -599,8 +599,7 @@ const TableList = ({
             testId={testId}
             termId={termId}
             testType={testType}
-            userRole={userRole}
-            showViewSummary={showViewSummary}
+            showAnalyseLink={showViewSummary}
           />
         )
       },

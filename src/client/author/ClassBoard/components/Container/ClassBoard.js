@@ -1632,6 +1632,7 @@ class ClassBoard extends Component {
                       linkText="ANALYZE PERFORMANCE"
                       linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
                       showAnalyseLink
+                      visible={!!additionalData.testId}
                     />
                     <Divider type="vertical" />
                   </EduIf>
@@ -1640,6 +1641,7 @@ class ClassBoard extends Component {
                       linkText="Analyze"
                       linkUrl={`/author/reports/question-analysis/test/${additionalData.testId}`}
                       showAnalyseLink
+                      visible={!!additionalData.testId}
                     />
                     <Divider type="vertical" />
                   </EduIf>

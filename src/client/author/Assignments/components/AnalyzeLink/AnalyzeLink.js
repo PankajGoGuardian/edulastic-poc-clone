@@ -35,6 +35,7 @@ const AnalyzeLink = ({
   isPremiumUser,
   linkText = 'Analyze',
   linkUrl = '',
+  visible = true,
 }) => {
   const isAdmin =
     roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
@@ -52,7 +53,7 @@ const AnalyzeLink = ({
   const url = linkUrl || getReportPathForAssignment(testId, termId, testType)
 
   return (
-    <EduIf condition={isAdmin || showAnalyseLink}>
+    <EduIf condition={(isAdmin || showAnalyseLink) && visible}>
       <Link
         to={url}
         target="_blank"

@@ -1635,7 +1635,7 @@ class ClassBoard extends Component {
                   </EduIf>
                   <EduIf condition={selectedTab == 'questionView'}>
                     <AnalyzeLink
-                      linkText="Analyze"
+                      linkText="QUESTION ANALYSIS"
                       linkUrl={`/author/reports/question-analysis/test/${additionalData.testId}`}
                       showAnalyseLink
                       visible={!!additionalData.testId}

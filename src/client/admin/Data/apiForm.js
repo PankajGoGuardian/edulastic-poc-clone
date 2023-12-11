@@ -1168,7 +1168,7 @@ export const apiForms = [
   },
   {
     id: 'add-test-thumbnail',
-    name: 'Bulk add test thumbnail',
+    name: 'Bulk Add Test Thumbnail',
     endPoint: 'admin-tool/add-test-thumbnail',
     method: 'post',
     slowApi: true,
@@ -1191,10 +1191,16 @@ export const apiForms = [
   },
   {
     id: 'add-content-co-authors',
-    name: 'Add content co-authors',
+    name: 'Add Content Co-authors',
     endPoint: 'admin-tool/add-content-co-authors',
     method: 'post',
     slowApi: true,
+    note: {
+      text:
+        'This action will not grant co-authors access to the collection. Use content page to set up access permissions.',
+      parentField: 'userIds',
+      position: 'bottom',
+    },
     fields: [
       {
         name: 'collectionId',
@@ -1206,7 +1212,8 @@ export const apiForms = [
       {
         name: 'userIds',
         displayName: 'User Ids',
-        placeholder: 'Enter userIds to be added as co-authors',
+        placeholder:
+          'Enter userId (comma separated for multiple userIds) to be added as co-authors',
         type: 'textarea',
         formatter: (value) => value.split(',').map((v) => v.trim()),
         required: true,

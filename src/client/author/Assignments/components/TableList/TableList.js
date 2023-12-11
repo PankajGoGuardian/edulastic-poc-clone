@@ -26,6 +26,10 @@ import {
   TestTypeIcon,
 } from '@edulastic/common'
 import { greyThemeDark3 } from '@edulastic/colors'
+import {
+  TEST_TYPES_VALUES_MAP,
+  TEST_TYPE_LABELS,
+} from '@edulastic/constants/const/testTypes'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
 import ActionMenu from '../ActionMenu/ActionMenu'
@@ -412,6 +416,18 @@ const TableList = ({
   const getAssignmentsByTestId = (Id) =>
     (assignmentsByTestId[Id] || []).filter((item) => !item.redirect)
 
+  const getTestTypeLabel = (testType) => {
+    if (
+      [
+        TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+        TEST_TYPES_VALUES_MAP.SCHOOL_COMMON_ASSESSMENT,
+      ].includes(testType)
+    ) {
+      return TEST_TYPE_LABELS[testType]
+    }
+    return testType
+  }
+
   let data = tests.map((testItem, i) =>
     convertTableData(
       testItem,
@@ -555,7 +571,7 @@ const TableList = ({
       },
       width: '14%',
       render: (text = testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT) => (
-        <TitleCase data-cy="testType">{text}</TitleCase>
+        <TitleCase data-cy="testType">{getTestTypeLabel(text)}</TitleCase>
       ),
     },
     {

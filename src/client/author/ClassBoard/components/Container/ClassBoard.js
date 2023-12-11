@@ -305,10 +305,6 @@ class ClassBoard extends Component {
       toggleBackTopIcon: false,
       studentFilter: 'ALL ASSIGNED',
       showAssignedTutors: false,
-      studentToAssignTutor: {
-        studentName: '',
-        studentId: '',
-      },
       showTutorMeNoLicensePopup: false,
     }
   }
@@ -1197,13 +1193,21 @@ class ClassBoard extends Component {
     })
   }
 
-  handleOpenTutor = (studentId, studentName) => {
+  handleOpenTutor = (studentId) => {
+    const { fetchInterventionsList, testActivity, match } = this.props
+    const { assignmentId, classId } = match.params
+    const currentActivity = testActivity.find(
+      (activity) => activity.studentId === studentId
+    )
+    const interventionIds = currentActivity.interventions?.map(({ _id }) => _id)
+    fetchInterventionsList({
+      type: 'tutorme',
+      _id: interventionIds,
+      assignmentId,
+      classId,
+    })
     this.setState({
       showAssignedTutors: true,
-      studentToAssignTutor: {
-        studentId,
-        studentName,
-      },
     })
   }
 
@@ -1371,7 +1375,6 @@ class ClassBoard extends Component {
       toggleBackTopIcon,
       studentFilter,
       showAssignedTutors,
-      studentToAssignTutor,
       showTutorMeNoLicensePopup,
     } = this.state
     const isRedirectButtonDisabled =
@@ -2091,7 +2094,6 @@ class ClassBoard extends Component {
                 )}
                 <TutorDetailsPopup
                   open={showAssignedTutors}
-                  selectedStudent={studentToAssignTutor}
                   closePopup={this.handleCloseAssignedTutorPopup}
                 />
               </>

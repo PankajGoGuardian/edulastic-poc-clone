@@ -2268,8 +2268,8 @@
     "message": "Feed type(s) enabled successfully.",
     "description": ""
   },
-  "selectMaxFiveStandardsWarning": {
-    "message": "Please select max 5 standards for the tutor to focus on.",
+  "maxCheckedStandardsMessage": {
+    "message": "Please select max 3 standards for the tutor to focus on.",
     "description": ""
   },
   "aiSuitNotEnabled": {

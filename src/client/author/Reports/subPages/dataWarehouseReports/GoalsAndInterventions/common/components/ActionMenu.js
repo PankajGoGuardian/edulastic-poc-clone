@@ -6,7 +6,7 @@ import { IconCaretDown, IconClose } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
 import { flattenFormData } from '../utils'
-import { ACADEMIC } from '../../constants/form'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../constants/form'
 import { GIListActions, IN_PROGRESS, NOT_STARTED } from '../../constants/common'
 import ActionMenuItem from './ActionMenuItem'
 import DeleteModal from './GITable/DeleteModal'
@@ -30,7 +30,9 @@ const ActionMenu = ({
 
     urlData = {
       termId,
-      ...(GIType === ACADEMIC ? { performanceBandId } : {}),
+      ...(GIType === DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC
+        ? { performanceBandId }
+        : {}),
       studentGroupIds: studentGroupIds.join(),
       testTypes: testTypes.join(),
       subjects: subjects.join(),

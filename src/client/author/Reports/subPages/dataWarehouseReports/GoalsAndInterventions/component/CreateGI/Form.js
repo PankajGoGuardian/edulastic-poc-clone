@@ -9,13 +9,13 @@ import {
   StyledSectionContainer,
 } from '../../common/components/Form/styled-components'
 import {
-  ACADEMIC,
   DETAILS_SECTION,
   TARGET_GROUPS_SECTION,
   RELATED_GOALS_COMMENTS_SECTION,
   TARGET_PROFICIENCY_SECTION,
   THRESHOLD_DEADLINE_SECTION,
   INTERVENTION,
+  DW_GOALS_AND_INTERVENTIONS_TYPES,
 } from '../../constants/form'
 
 const Form = ({
@@ -75,7 +75,8 @@ const Form = ({
   } = sectionTitles
 
   const { type = '', formType } = formData
-  const showTestTypeSubjectAndStandardsSection = type === ACADEMIC
+  const showTestTypeSubjectAndStandardsSection =
+    type === DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC
 
   const detailsSectionRef = useRef()
   const targetGroupsSectionRef = useRef()

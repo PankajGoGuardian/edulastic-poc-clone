@@ -1,137 +1,157 @@
-import uuid from 'uuid/v4'
 import { tutorMeApi } from '@edulastic/api'
+import { formatName } from '@edulastic/constants/reportUtils/common'
+import { notification } from '@edulastic/common'
 import {
   TUTORME_TO_EDULASTIC_GRADES,
   TUTORME_TO_EDULASTIC_SUBJECTS,
 } from '../ClassBoard/utils'
-import { validateEmail } from '../../common/utils/helpers'
-import { TUTOR_ME_APP_URL, TUTOR_ME_URL } from './constants'
+import { TUTOR_ME_URL } from './constants'
+import { createSessionRequest } from './service'
 
-export const invokeTutorMeSDKtoAssignTutor = async ({
-  standardsMasteryData,
-  selectedStudentDetails,
+export const createInterventionObject = ({
+  student,
+  termId,
   assignmentId,
   classId,
-  districtId,
-  termId,
-  className,
-  testName,
-  assignedBy,
-  preSelectStandards = '',
+  assignedById,
+  assignedByName,
+  standardsMasteryData,
+  tutorMeResponse,
 }) => {
-  const { assignedByEmail, assignedByName } = assignedBy
-  standardsMasteryData = standardsMasteryData.map(
-    ({ masteryScore, ...rest }) => ({
-      masteryScore: Math.round(masteryScore || 0),
-      ...rest,
-    })
-  )
-  const tutorMeSDKStandardMasteryDetails = standardsMasteryData.map(
-    ({
-      masteryScore,
-      masteryColor,
-      standardIdentifier,
-      standardDesc,
-      domainIdentifier,
-      domainDesc,
-    }) => ({
-      masteryScore,
-      masteryColor,
-      standardIdentifier,
-      standardDesc,
-      domainIdentifier,
-      domainDesc,
-    })
-  )
-
-  // call API to get TutorMe standards details
-  const standardIds = standardsMasteryData
-    .map(({ standardId }) => standardId)
-    .filter((s) => s)
-  const tutorMeStandardsDetails = await tutorMeApi.getTutorMeStandards({
-    standardIds: standardIds.join(','),
-  })
-  const dynamicFields = {}
-  if (validateEmail(selectedStudentDetails.email))
-    dynamicFields.email = selectedStudentDetails.email
-
-  if (tutorMeStandardsDetails) {
-    for (const [key, value] of Object.entries(tutorMeStandardsDetails)) {
-      if (value) {
-        dynamicFields[key] = value
-      }
-    }
-  }
-
-  // curate TutorMe SDK input details object
-  const tutorMeSDKStarterObject = {
-    districtId,
-    studentId: selectedStudentDetails.studentId,
-    firstName: selectedStudentDetails.firstName,
-    lastName: selectedStudentDetails.lastName || '',
-    assignmentName: testName,
-    className,
-    standardMasteryDetails: tutorMeSDKStandardMasteryDetails,
-    preSelectStandards,
-    assignedByEmail,
-    assignedByName,
-  }
-  const tutorMeSDKInputObject = { ...tutorMeSDKStarterObject, ...dynamicFields }
-  console.log('Tutor Me SDK Input Object', tutorMeSDKInputObject)
-
-  // invoke SDK and capture the response
-  const dummySDKresponseObject = {
-    studentId: selectedStudentDetails.studentId,
-    tutoringId: uuid.v4(),
-    tutoringURL: TUTOR_ME_APP_URL,
-    studentTutorMeId: uuid.v4(),
-    choosenGrade: dynamicFields.tutorMeGrade || 5,
-    choosenSubject: dynamicFields.tutorMeSubject || 'Math',
-    choosenSubjectArea: dynamicFields.tutorMeSubjectArea || 'Math Practice',
-    choosenStandardsAndDomains: standardsMasteryData.map((stdmastery) => ({
-      domain: stdmastery.domainIdentifier,
-      standard: stdmastery.standardIdentifier,
-    })),
-    notes: 'Sample tutoring notes',
-    tutoringSessions: [],
-  }
-  const choosenMasteryDetails = []
-  dummySDKresponseObject.choosenStandardsAndDomains.forEach((stdObj) => {
-    choosenMasteryDetails.push(
-      standardsMasteryData.find(
-        (value) => value.standardIdentifier === stdObj.standard
-      )
-    )
-  })
-
-  // curate dummy TutorMe SDK response object
-  const dummytutorMeOutputInfo = {
-    name: `Tutoring for ${selectedStudentDetails.studentName}`,
-    studentId: selectedStudentDetails.studentId,
+  const {
+    subjectArea,
+    subject,
+    grade,
+    standards,
+    studentTutorMeId,
+    tutoringId,
+    tutoringLink,
+    notes,
+  } = tutorMeResponse
+  return {
+    name: `Tutoring for ${student.studentName}`,
+    studentId: student.studentId,
     termId,
     assignmentId,
     type: 'tutorme',
     groupId: classId,
     interventionCriteria: {
       edulasticDetails: {
-        grade: TUTORME_TO_EDULASTIC_GRADES[dummySDKresponseObject.choosenGrade],
-        subject:
-          TUTORME_TO_EDULASTIC_SUBJECTS[dummySDKresponseObject.choosenSubject],
+        grade: TUTORME_TO_EDULASTIC_GRADES[grade],
+        subject: TUTORME_TO_EDULASTIC_SUBJECTS[subjectArea],
       },
       tutorMeDetails: {
-        grade: dummySDKresponseObject.choosenGrade,
-        subject: dummySDKresponseObject.choosenSubject,
-        subjectArea: dummySDKresponseObject.choosenSubjectArea,
+        grade,
+        subject,
+        subjectArea,
       },
-      standardMasteryDetails: choosenMasteryDetails,
+      standardMasteryDetails: standards.map((s) =>
+        standardsMasteryData.find(
+          (d) =>
+            d.domainIdentifier === s.domain &&
+            d.standardIdentifier === s.standard
+        )
+      ),
     },
-    studentTutorMeId: dummySDKresponseObject.studentTutorMeId,
-    tutoringId: dummySDKresponseObject.tutoringId,
-    tutoringLink: dummySDKresponseObject.tutoringURL,
-    notes: dummySDKresponseObject.notes,
+    createdBy: {
+      _id: assignedById,
+      name: assignedByName,
+    },
+    studentTutorMeId,
+    tutoringId,
+    tutoringLink,
+    notes,
+  }
+}
+export const invokeTutorMeSDKtoAssignTutor = async ({
+  standardsMasteryData,
+  student,
+  assignmentId,
+  classId,
+  districtId,
+  termId,
+  assignedBy,
+  hasSelectedStandards,
+}) => {
+  const [assignedById, assignedByEmail, assignedByName] = [
+    assignedBy._id,
+    assignedBy.email,
+    formatName(assignedBy, { lastNameFirst: false }),
+  ]
+
+  // call API to get TutorMe standards details
+  const standardIds = standardsMasteryData
+    .map(({ standardId }) => standardId)
+    .filter(Boolean)
+  const tutorMeStandardsDetails = await tutorMeApi.getTutorMeStandards({
+    standardIds: standardIds.join(','),
+  })
+
+  const requestPayload = {
+    students: [
+      {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        externalId: student.studentId,
+        email: student.email,
+      },
+    ],
+    data: {
+      grade: tutorMeStandardsDetails.tutorMeGrade,
+      subject: tutorMeStandardsDetails.tutorMeSubject,
+      category: tutorMeStandardsDetails.tutorMeSubjectArea,
+      domains: standardsMasteryData.map((s) => ({
+        domain: s.domainIdentifier,
+        domainDescription: s.domainDesc,
+        standard: s.standardIdentifier,
+        standardDescription: s.standardDesc,
+        mastery: Math.round(s.masteryScore || 0),
+        masteryColor: s.masteryColor,
+        selected: hasSelectedStandards,
+      })),
+      meta: {
+        districtId,
+        termId,
+        standards: standardsMasteryData,
+        assignedBy: {
+          assignedById,
+          assignedByEmail,
+          assignedByName,
+        },
+      },
+    },
   }
 
-  return dummytutorMeOutputInfo
+  try {
+    const tutorMeResponse = await createSessionRequest(
+      requestPayload,
+      assignedBy
+    )
+    const { cancelled, step } = tutorMeResponse
+    if (cancelled || step !== 4) {
+      notification({
+        type: 'warning',
+        msg: 'Tutoring session not created.',
+      })
+      return
+    }
+    return createInterventionObject({
+      student,
+      termId,
+      assignmentId,
+      classId,
+      assignedById,
+      assignedByName,
+      standardsMasteryData,
+      tutorMeResponse,
+    })
+  } catch (err) {
+    console.error(err)
+    notification({
+      type: 'error',
+      msg: `Unexpected error: ${err}`,
+    })
+  }
 }
 
 export const openTutorMeBusinessPage = () => {

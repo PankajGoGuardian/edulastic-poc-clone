@@ -355,8 +355,7 @@ const ManageDistrictPrimaryForm = Form.create({
           getFieldDecorator={getFieldDecorator}
           getFieldValue={getFieldValue}
           showAdditionalDetails
-          // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
-          // showTutorMeFormItems
+          showTutorMeFormItems
         />
         <Form.Item>
           <Button data-cy="submit-btn" type="primary" htmlType="submit">

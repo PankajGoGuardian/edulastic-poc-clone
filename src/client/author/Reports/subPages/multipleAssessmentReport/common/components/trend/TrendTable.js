@@ -5,7 +5,7 @@ import React, { useMemo } from 'react'
 import qs from 'qs'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, lightGrey } from '@edulastic/colors'
 import { testActivityStatus, report as reportTypes } from '@edulastic/constants'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -73,6 +73,15 @@ const StyledTable = styled(Table)`
         }
       }
     }
+  }
+  .ant-table-fixed .ant-table-thead .tutorme-column {
+    padding: 15px 0 0 0;
+    position: relative;
+    top: 30px;
+    background-color: ${lightGrey};
+  }
+  .ant-table-fixed .ant-table-tbody .tutorme-column {
+    background-color: ${lightGrey};
   }
 `
 
@@ -214,6 +223,119 @@ const getCellAttributes = (
   return { value, color }
 }
 
+export const getTestColumn = ({
+  location,
+  testId,
+  isIncomplete,
+  testName,
+  assessmentDate,
+  analyseBy,
+  compareBy,
+  masteryScale,
+  pageTitle,
+  isCellClickable,
+  toolTipContent,
+}) => ({
+  key: testId,
+  title: isIncomplete ? `${testName} *` : testName,
+  assessmentDate,
+  align: 'center',
+  dataIndex: 'tests',
+  render: (tests = {}, record) => {
+    const currentTest = tests[testId]
+
+    if (!currentTest) {
+      return getCol('-', 'transparent')
+    }
+
+    const { color, value } = getCellAttributes(
+      currentTest,
+      analyseBy,
+      masteryScale,
+      pageTitle
+    )
+
+    if (value === 'Absent') {
+      return getCol('Absent', '#cccccc')
+    }
+
+    if (value === 'In Progress' || value === 'Not Started') {
+      return getCol(value, 'transparent')
+    }
+
+    const toolTipText = () => (
+      <div>
+        <TableTooltipRow
+          title="Assessment Name: "
+          value={isIncomplete ? `${testName} *` : testName}
+        />
+        {toolTipContent(record, value)}
+        <TableTooltipRow
+          title={`${capitalize(analyseBy.title)} : `}
+          value={value}
+        />
+      </div>
+    )
+
+    return (
+      <CustomTableTooltip
+        placement="top"
+        title={toolTipText()}
+        getCellContents={() =>
+          getCol(
+            value,
+            color,
+            isCellClickable,
+            pageTitle,
+            location,
+            record.tests[testId],
+            compareBy
+          )
+        }
+      />
+    )
+  },
+})
+
+const getDynamicColumnsDefault = ({
+  rawMetric,
+  analyseBy,
+  masteryScale,
+  pageTitle,
+  toolTipContent,
+  isCellClickable,
+  location,
+  compareBy,
+}) => {
+  const groupedAvailableTests = groupBy(rawMetric, 'testId')
+  const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
+    const { assessmentDate, testName = 'N/A', isIncomplete = false } =
+      groupedAvailableTests[testId].reduce((ele, res) =>
+        ele.assessmentDate > res.assessmentDate ? ele : res
+      ) || {}
+    return getTestColumn({
+      location,
+      testId,
+      isIncomplete,
+      testName,
+      assessmentDate,
+      analyseBy,
+      compareBy,
+      masteryScale,
+      pageTitle,
+      isCellClickable,
+      toolTipContent,
+    })
+  })
+  // filter out test data without testName
+  const filteredDynamicColumns = dynamicColumns.filter((t) => t.title)
+  return filteredDynamicColumns.sort((a, b) =>
+    a.assessmentDate !== b.assessmentDate
+      ? a.assessmentDate - b.assessmentDate
+      : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
+  )
+}
+
 const getColumns = (
   rawMetric = [],
   analyseBy = '',
@@ -225,80 +347,32 @@ const getColumns = (
   location,
   pageTitle,
   isSharedReport,
-  masteryScale = {}
+  masteryScale = {},
+  getDynamicColumns,
+  interventionData
 ) => {
-  const groupedAvailableTests = groupBy(rawMetric, 'testId')
-  const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const { assessmentDate, testName = 'N/A', isIncomplete = false } =
-      groupedAvailableTests[testId].reduce((ele, res) =>
-        ele.assessmentDate > res.assessmentDate ? ele : res
-      ) || {}
-
-    return {
-      key: testId,
-      title: isIncomplete ? `${testName} *` : testName,
-      assessmentDate,
-      align: 'center',
-      dataIndex: 'tests',
-      render: (tests = {}, record) => {
-        const currentTest = tests[testId]
-
-        if (!currentTest) {
-          return getCol('-', 'transparent')
-        }
-
-        const { color, value } = getCellAttributes(
-          currentTest,
-          analyseBy,
-          masteryScale,
-          pageTitle
-        )
-
-        if (value === 'Absent') {
-          return getCol('Absent', '#cccccc')
-        }
-
-        if (value === 'In Progress' || value === 'Not Started') {
-          return getCol(value, 'transparent')
-        }
-
-        const toolTipText = () => (
-          <div>
-            <TableTooltipRow
-              title="Assessment Name: "
-              value={isIncomplete ? `${testName} *` : testName}
-            />
-            {toolTipContent(record, value)}
-            <TableTooltipRow
-              title={`${capitalize(analyseBy.title)} : `}
-              value={value}
-            />
-          </div>
-        )
-
-        return (
-          <CustomTableTooltip
-            placement="top"
-            title={toolTipText()}
-            getCellContents={() =>
-              getCol(
-                value,
-                color,
-                isCellClickable,
-                pageTitle,
-                location,
-                record.tests[testId],
-                compareBy
-              )
-            }
-          />
-        )
-      },
-    }
-  })
-
-  // filter out test data without testName
-  const filteredDynamicColumns = dynamicColumns.filter((t) => t.title)
+  const dynamicColumns = getDynamicColumns
+    ? getDynamicColumns({
+        rawMetric,
+        analyseBy,
+        compareBy,
+        toolTipContent,
+        isCellClickable,
+        location,
+        pageTitle,
+        masteryScale,
+        interventionData,
+      })
+    : getDynamicColumnsDefault({
+        rawMetric,
+        analyseBy,
+        masteryScale,
+        pageTitle,
+        toolTipContent,
+        isCellClickable,
+        location,
+        compareBy,
+      })
 
   const leftColumns =
     compareBy.key === 'standard'
@@ -439,13 +513,7 @@ const getColumns = (
     },
   ]
 
-  return columns.concat(
-    filteredDynamicColumns.sort((a, b) =>
-      a.assessmentDate !== b.assessmentDate
-        ? a.assessmentDate - b.assessmentDate
-        : a.title.toLowerCase().localeCompare(b.title.toLowerCase())
-    )
-  )
+  return columns.concat(dynamicColumns)
 }
 
 const TrendTable = ({
@@ -468,6 +536,8 @@ const TrendTable = ({
   setBackendPagination,
   masteryScale = {},
   showTestIncompleteText = false,
+  getDynamicColumns = null,
+  interventionData,
 }) => {
   const columns = getColumns(
     rawMetric,
@@ -480,7 +550,9 @@ const TrendTable = ({
     location,
     pageTitle,
     isSharedReport,
-    masteryScale
+    masteryScale,
+    getDynamicColumns,
+    interventionData
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 

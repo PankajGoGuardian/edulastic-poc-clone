@@ -5,7 +5,7 @@ import { themeColor } from '@edulastic/colors'
 import { titleCase, ucFirst } from '../../utils'
 import EllipsisText from '../EllipsisText'
 import {
-  ATTENDANCE,
+  DW_GOALS_AND_INTERVENTIONS_TYPES,
   PERFORMANCE_BAND,
   ATTENDANCE_BAND,
 } from '../../../constants/form'
@@ -15,7 +15,10 @@ const getMetricTypeTooltipValue = (record) => {
   const measureType = (record?.goalCriteria || record?.interventionCriteria)
     ?.target?.measureType
 
-  if (type === ATTENDANCE && measureType === PERFORMANCE_BAND) {
+  if (
+    type === DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE &&
+    measureType === PERFORMANCE_BAND
+  ) {
     return ucFirst(titleCase(ATTENDANCE_BAND))
   }
   return ucFirst(titleCase(measureType))

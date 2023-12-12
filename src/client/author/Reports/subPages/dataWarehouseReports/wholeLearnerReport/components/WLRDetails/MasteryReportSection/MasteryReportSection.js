@@ -16,11 +16,10 @@ import { StyledFilledButton } from '../../../../common/components/styledComponen
 
 import {
   getIsTutorMeEnabled,
-  getUserFullNameSelector,
-  getUserEmailSelector,
   getUserOrgId,
   getInterestedCurriculumsSelector,
   getUserRole,
+  getUser,
 } from '../../../../../../../src/selectors/user'
 import {
   getIsTutorMeVisibleToDistrictSelector,
@@ -39,7 +38,10 @@ import {
   DEFAULT_CURRICULUM,
   DEFAULT_DOMAIN,
   onAssignTutoring,
+  MAX_CHECKED_STANDARDS,
 } from './utils'
+import StandardTagsList from './StandardTagsList'
+import TutorMeNoLicensePopup from '../../../../../../../TutorMe/components/TutorMeNoLicensePopup'
 
 const MasteryReportSection = ({
   userRole,
@@ -54,9 +56,9 @@ const MasteryReportSection = ({
   loading,
   isTutorMeEnabled,
   districtId,
-  userEmail,
-  userFullName,
   assignTutorRequest,
+  initializeTutorMeService,
+  user,
   t,
 }) => {
   const [selectedDomain, setSelectedDomain] = useState(DEFAULT_DOMAIN)
@@ -67,6 +69,10 @@ const MasteryReportSection = ({
   )
   const [selectedDomains, setSelectedDomains] = useState([])
   const [selectedStandards, setSelectedStandards] = useState([])
+  const [showTutorMeNoLicensePopup, setShowTutorMeNoLicensePopup] = useState(
+    false
+  )
+  const [domainKeyToExpand, setDomainKeyToExpand] = useState(null)
 
   const { scaleInfo: scales } = get(SPRFFilterData, 'data.result', {})
   const { metricInfo = [], skillInfo = [] } = get(
@@ -136,7 +142,8 @@ const MasteryReportSection = ({
     selectedDomains,
     setSelectedDomains,
     selectedStandards,
-    setSelectedStandards
+    setSelectedStandards,
+    setDomainKeyToExpand
   )
 
   useEffect(() => {
@@ -153,16 +160,39 @@ const MasteryReportSection = ({
     }
   }, [curriculumsOptions])
 
-  const assignTutorBtnTooltipText =
-    selectedStandards.length === 0
-      ? t('wholeLearnerReport.chooseStdOrDomain')
-      : selectedStandards.length > 5
-      ? t('wholeLearnerReport.selectMax5Stds')
-      : null
+  const assignTutorBtnTooltipText = !isTutorMeEnabled
+    ? t('wholeLearnerReport.assignTutoringDisabled')
+    : !selectedStandards.length
+    ? t('wholeLearnerReport.noCheckedStandardsMessage')
+    : selectedStandards.length > MAX_CHECKED_STANDARDS
+    ? t('wholeLearnerReport.maxCheckedStandardsMessage')
+    : ''
 
   const disableTutorMeBtn =
     isTutorMeEnabled &&
-    (!selectedStandards.length || selectedStandards.length > 5)
+    (!selectedStandards.length ||
+      selectedStandards.length > MAX_CHECKED_STANDARDS)
+
+  const handleAssignTutoringClick = () =>
+    isTutorMeEnabled
+      ? onAssignTutoring({
+          settings,
+          districtId,
+          filteredStandards,
+          selectedStandards,
+          initializeTutorMeService,
+          assignTutorRequest,
+          user,
+        })
+      : setShowTutorMeNoLicensePopup(true)
+
+  const standardsDetailsForTagsList = useMemo(
+    () =>
+      selectedStandards
+        .map((sid) => filteredStandards.find((s) => s.standardId === sid))
+        .filter((standard) => !!standard),
+    [filteredStandards, selectedStandards]
+  )
 
   return (
     <>
@@ -172,29 +202,18 @@ const MasteryReportSection = ({
         wrapperStyle={{ alignItems: 'flex-end' }}
         sectionLabelFilters={
           <FlexContainer alignItems="center" style={{ gap: '20px' }}>
-            {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
-            {/* <EduIf condition={isTutorMeVisibleToDistrict}>
+            <EduIf condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}>
               <Tooltip title={assignTutorBtnTooltipText}>
                 <StyledFilledButton
                   height="32px"
                   disabled={disableTutorMeBtn}
-                  onClick={() =>
-                    onAssignTutoring({
-                      isTutorMeEnabled,
-                      settings,
-                      districtId,
-                      userEmail,
-                      userFullName,
-                      filteredStandards,
-                      selectedStandards,
-                      assignTutorRequest,
-                    })
-                  }
+                  onClick={handleAssignTutoringClick}
                 >
                   Assign Tutoring
+                  <span>{!isTutorMeEnabled ? ' *' : ''}</span>
                 </StyledFilledButton>
               </Tooltip>
-            </EduIf> */}
+            </EduIf>
             <LabelledControlDropdown
               dataCy="standardsProficiency"
               label="Standard Proficiency"
@@ -238,8 +257,23 @@ const MasteryReportSection = ({
           curriculumsOptions={curriculumsOptions}
           isStudentOrParent={isStudentOrParent}
           domainOptions={domainOptions}
+          domainKeyToExpand={domainKeyToExpand}
+          setDomainKeyToExpand={setDomainKeyToExpand}
+          tableSubHeader={
+            isTutorMeVisibleToDistrict ? (
+              <StandardTagsList
+                maxStandards={MAX_CHECKED_STANDARDS}
+                standards={standardsDetailsForTagsList}
+                onClose={standardsRowSelection.onSelect}
+              />
+            ) : null
+          }
         />
       </Spin>
+      <TutorMeNoLicensePopup
+        open={showTutorMeNoLicensePopup}
+        closePopup={() => setShowTutorMeNoLicensePopup(false)}
+      />
     </>
   )
 }
@@ -249,10 +283,9 @@ const withConnect = connect(
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     districtId: getUserOrgId(state),
     userRole: getUserRole(state),
-    userEmail: getUserEmailSelector(state),
-    userFullName: getUserFullNameSelector(state),
     isTutorMeEnabled: getIsTutorMeEnabled(state),
     isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
+    user: getUser(state),
   }),
   {
     ...tutorMeActions,

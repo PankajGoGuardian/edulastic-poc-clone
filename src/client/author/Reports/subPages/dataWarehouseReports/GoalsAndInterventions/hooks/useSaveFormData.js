@@ -2,7 +2,11 @@ import { notification } from '@edulastic/common'
 import { keyBy, omit, isEmpty } from 'lodash'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { validateAndGetFormattedFormData } from '../common/utils'
-import { ATTENDANCE, INTERVENTION, formFieldNames } from '../constants/form'
+import {
+  DW_GOALS_AND_INTERVENTIONS_TYPES,
+  INTERVENTION,
+  formFieldNames,
+} from '../constants/form'
 
 const {
   goal: {
@@ -96,7 +100,10 @@ const useSaveFormData = ({
         MEASURE_TYPE,
       ])
     }
-    if (field === TYPE && value === ATTENDANCE) {
+    if (
+      field === TYPE &&
+      value === DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE
+    ) {
       updatedFormData = omit(updatedFormData, [
         TEST_TYPES,
         SUBJECTS,

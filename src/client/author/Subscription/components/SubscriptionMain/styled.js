@@ -470,3 +470,14 @@ export const StyledLinkItem = styled.a`
   font-weight: bold;
   padding-right: 32px;
 `
+export const MiddleContentWrapper = styled(FlexContainer)`
+  maxwidth: 100%;
+  min-height: 150px;
+  flexshrink: 0;
+  border-radius: 10px;
+  border: 1.5px solid ${themeColor};
+  background: #fff;
+  svg {
+    margin-bottom: -25px;
+  }
+`

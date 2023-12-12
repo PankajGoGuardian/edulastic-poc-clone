@@ -18,6 +18,7 @@ const MasteryTable = ({
   setSelectedDomain,
   curriculumsOptions,
   isStudentOrParent,
+  tableSubHeader,
   domainOptions,
   filteredDomains,
   filteredStandards,
@@ -26,6 +27,8 @@ const MasteryTable = ({
   selectedScale,
   domainRowSelection,
   standardsRowSelection,
+  domainKeyToExpand,
+  setDomainKeyToExpand,
 }) => {
   const [expandRows, setExpandRows] = useState(false)
   const [selectedMastery, setSelectedMastery] = useState([])
@@ -76,9 +79,12 @@ const MasteryTable = ({
         expandRows={expandRows}
         setExpandRows={setExpandRows}
       />
+      {tableSubHeader}
       <StudentPerformanceSummary
         data={filteredDomains}
         selectedMastery={selectedMastery}
+        domainKeyToExpand={domainKeyToExpand}
+        setDomainKeyToExpand={setDomainKeyToExpand}
         expandedRowProps={{
           onCsvConvert,
           isCsvDownloading,
@@ -86,13 +92,11 @@ const MasteryTable = ({
           selectedMastery,
           handleOnClickStandard,
           filters: settings.requestFilters,
-          // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
-          // rowSelection: standardsRowSelection,
+          rowSelection: standardsRowSelection,
         }}
         expandAllRows={expandRows}
         setExpandAllRows={(flag) => setExpandRows(flag)}
-        // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
-        // rowSelection={domainRowSelection}
+        rowSelection={domainRowSelection}
       />
       <StandardsAssignmentModal
         visible={!!clickedStandard}

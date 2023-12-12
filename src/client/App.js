@@ -635,6 +635,14 @@ class App extends Component {
       }
     }
 
+    // redirectPath is passed in URL when user proxies to demo playground from data studio subscription page (Explore Sample Reports - VIEW NOW)
+    if (user?.user?.isPlayground) {
+      const { redirectPath = '' } = qs.parse(location.search, {
+        ignoreQueryPrefix: true,
+      })
+      if (!isEmpty(redirectPath)) defaultRoute = redirectPath
+    }
+
     /**
      * If error message is stored in the session storage, than we will display it
      * and remove it from the session storage.

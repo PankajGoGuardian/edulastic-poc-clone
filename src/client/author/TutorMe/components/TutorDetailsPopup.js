@@ -3,9 +3,9 @@ import React, { useMemo } from 'react'
 import { groupBy } from 'lodash'
 import { connect } from 'react-redux'
 import { formatDate } from '@edulastic/constants/reportUtils/common'
-import { interventionsByStudentIdSelector } from '../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
-import { BodyContainer } from '../ClassBoard/components/styled'
-import { disabledAddStudentsList } from '../ClassBoard/ducks'
+import { interventionsByStudentIdSelector } from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
+import { BodyContainer } from '../../ClassBoard/components/styled'
+import { disabledAddStudentsList } from '../../ClassBoard/ducks'
 import {
   AssignedParagraph,
   CustomRow,
@@ -13,9 +13,12 @@ import {
   StandardsParagraph,
   TitleCopy,
 } from './styled'
-import { TUTOR_ME_APP_URL } from './constants'
+import { TUTOR_ME_APP_URL } from '../constants'
 
 const History = ({ intervention }) => {
+  const {
+    createdBy: { name = '-' },
+  } = intervention
   const masteryDetailsByDomainId = groupBy(
     intervention.interventionCriteria.standardMasteryDetails,
     'domainId'
@@ -23,7 +26,9 @@ const History = ({ intervention }) => {
   return (
     <div>
       <AssignedParagraph>
-        Tutoring Assigned: {formatDate(intervention.createdAt)}
+        {`Tutoring assigned by ${name} on ${formatDate(
+          intervention.createdAt
+        )}`}
       </AssignedParagraph>
       <StandardsParagraph>
         {Object.keys(masteryDetailsByDomainId).map((domainId) => {
@@ -63,6 +68,8 @@ const TutorDetails = ({
     <CustomModalStyled
       centered
       title="Tutoring Details"
+      titleColor="#000"
+      titleFontWeight={600}
       visible={open}
       onCancel={closePopup}
       borderRadius="20px"
@@ -71,9 +78,10 @@ const TutorDetails = ({
       bodyPadding="8px 0"
       footer={null}
       destroyOnClose
+      closable={false}
     >
       <BodyContainer>
-        <div style={{ fontSize: '14px', color: '#777' }}>
+        <div style={{ fontSize: '12px', color: '#777777' }}>
           View tutoring history
           {selectedInterventions.length > 5 && ' (limited to last 5)'}, copy
           link to share to students{' '}
@@ -82,7 +90,11 @@ const TutorDetails = ({
           {fiveLatestInterventions.map((intervention) => (
             <CustomRow>
               <History intervention={intervention} />
-              <TitleCopy copyable={{ text: TUTOR_ME_APP_URL }} />
+              <TitleCopy
+                copyable={{
+                  text: intervention.tutoringLink ?? TUTOR_ME_APP_URL,
+                }}
+              />
             </CustomRow>
           ))}
         </RowsWrap>

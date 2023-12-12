@@ -214,10 +214,7 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
-import {
-  ACADEMIC,
-  ATTENDANCE,
-} from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -357,12 +354,18 @@ export const getInterventionsByGroup = createSelector(stateSelector, (state) =>
 
 export const getAcademicInterventions = createSelector(
   getInterventionsByGroup,
-  (state) => state.filter(({ type }) => type === ACADEMIC)
+  (state) =>
+    state.filter(
+      ({ type }) => type === DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC
+    )
 )
 
 export const getAttendanceInterventions = createSelector(
   getInterventionsByGroup,
-  (state) => state.filter(({ type }) => type === ATTENDANCE)
+  (state) =>
+    state.filter(
+      ({ type }) => type === DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE
+    )
 )
 
 export const getInterventionsLoading = createSelector(
@@ -933,10 +936,7 @@ export function* receiveTestListSaga({ payload }) {
 
 function* fetchInterventionByGroupsSaga({ payload }) {
   try {
-    const responseData = yield call(
-      reportsApi.getInterventionsByGroups,
-      payload
-    )
+    const responseData = yield call(reportsApi.getReportInterventions, payload)
     yield put(fetchInterventionsByGroupsSuccess(responseData))
   } catch (error) {
     const msg =

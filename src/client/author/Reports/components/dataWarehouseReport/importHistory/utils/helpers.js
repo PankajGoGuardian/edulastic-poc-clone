@@ -2,8 +2,7 @@ import React from 'react'
 import next from 'immer'
 import { Tooltip } from 'antd'
 import { MdEdit, MdDelete } from 'react-icons/md'
-import { capitalize, isEmpty } from 'lodash'
-import { ATTENDANCE } from '@edulastic/constants/const/testTypes'
+import { isEmpty } from 'lodash'
 
 import { EduElse, EduIf, EduThen, notification } from '@edulastic/common'
 import {

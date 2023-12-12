@@ -13,6 +13,7 @@ import moment from 'moment'
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
   getSchoolsByUserRoleSelector,
+  getUserFullNameSelector,
   getUserId,
   getUserOrgData,
   getUserOrgId,
@@ -20,7 +21,11 @@ import {
 } from '../../../../../src/selectors/user'
 import { titleCase, ucFirst } from '../common/utils'
 import { groupType } from '../component/CreateGroups/AdvancedSearch/config/qb-config'
-import { GOAL, editFormFields, TUTORME } from '../constants/form'
+import {
+  GOAL,
+  editFormFields,
+  DW_GOALS_AND_INTERVENTIONS_TYPES,
+} from '../constants/form'
 import { actions } from './actionReducers'
 import {
   setGroupsAction,
@@ -35,13 +40,19 @@ import {
 } from './selectors'
 
 function* saveFormDataRequestSaga({ payload }) {
-  const { formType } = payload
+  const { formType, ...requestPayload } = payload
   const isGoalFormType = formType === GOAL
   try {
-    const apiToCall = isGoalFormType
-      ? reportsApi.createGoal
-      : reportsApi.createIntervention
-    yield call(apiToCall, omit(payload, 'formType'))
+    let apiToCall = reportsApi.createGoal
+    if (!isGoalFormType) {
+      apiToCall = reportsApi.createIntervention
+      const userId = yield select(getUserId)
+      const userFullName = yield select(getUserFullNameSelector)
+      Object.assign(requestPayload, {
+        createdBy: { _id: userId, name: userFullName },
+      })
+    }
+    yield call(apiToCall, requestPayload)
     notification({
       type: 'success',
       msg: `${ucFirst(titleCase(formType))} created successfully`,
@@ -130,7 +141,7 @@ function* getInterventionsListSaga({ payload }) {
       omit(payload, 'id')
     )
 
-    if (payload && payload.type !== TUTORME) {
+    if (payload && payload.type !== DW_GOALS_AND_INTERVENTIONS_TYPES.TUTORME) {
       yield put(
         actions.setRelatedInterventions({ [payload.id]: interventionsList })
       )

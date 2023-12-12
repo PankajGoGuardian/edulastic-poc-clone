@@ -290,6 +290,7 @@ export const authorAssignment = {
 }
 
 export const fadedWhite = '#5196f3'
+export const fadedWhite2 = '#FFFFFFB2'
 export const fadedBlue = '#BED8FA'
 
 export const eastBaycolor = '#51596a'

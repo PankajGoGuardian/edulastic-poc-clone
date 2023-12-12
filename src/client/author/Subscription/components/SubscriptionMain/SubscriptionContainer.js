@@ -25,6 +25,7 @@ const SubscriptionContainer = ({
   showRequestOption,
   data,
   type = 'enterprise',
+  additionalContent = null,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [showSubscriptionsForms, setShowSubscriptionsForms] = useState(false)
@@ -60,6 +61,7 @@ const SubscriptionContainer = ({
         </h1>
         <p>{data.description}</p>
       </TopSection>
+      {additionalContent}
       <EnterpriseSection data-cy="enterpriseCard">
         <FlexContainer justifyContent="flex-start" alignItems="flex-start">
           <IconWrapper>{data.header.icon}</IconWrapper>

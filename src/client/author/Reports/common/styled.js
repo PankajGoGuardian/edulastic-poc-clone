@@ -15,7 +15,17 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu, Row, Icon, Checkbox } from 'antd'
+import {
+  Col,
+  Slider,
+  Table,
+  Button,
+  Menu,
+  Row,
+  Icon,
+  Checkbox,
+  Tag,
+} from 'antd'
 import styled, { css } from 'styled-components'
 import { IconQuestionCircle } from '@edulastic/icons'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
@@ -977,4 +987,18 @@ export const StyledCheckBox = styled(Checkbox)`
   .ant-checkbox {
     margin-right: 10px;
   }
+`
+
+/** @type {typeof Tag} */
+export const FilterTag = styled(Tag)`
+  color: #686f75;
+  background: #bac3ca;
+  padding: 2px 10px;
+  border: none;
+  font-weight: bold;
+  border-radius: 2px;
+  margin-bottom: 5px;
+  margin-right: 0px;
+  margin-top: 7px;
+  margin-right: 6px;
 `

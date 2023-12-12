@@ -66,6 +66,17 @@ export const firebaseConfig = {
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID /* || "ev2-dev-88215" */,
 }
 
+export const tutorMeSdkConfig = {
+  orgId: process.env.REACT_APP_TUTORME_SDK_ORG,
+  accountId: process.env.REACT_APP_TUTORME_SDK_ACCOUNT,
+  secret: process.env.REACT_APP_TUTORME_SDK_SECRET,
+  api:
+    process.env.REACT_APP_TUTORME_SDK_API ??
+    (process.env.NODE_ENV === 'production'
+      ? ''
+      : 'https://app.testing.tutorme.com/api/v1/sdk'),
+}
+
 const sentryIgnoreErrors = [
   // Random plugins/extensions
   'top.GLOBALS',

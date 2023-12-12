@@ -1,6 +1,7 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { isKioskAppEnabled } from '@edulastic/common/src/helpers'
+import qs from 'qs'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -78,7 +79,10 @@ export async function switchUser(newUser, oldUser) {
   }
 }
 
-export async function proxyDemoPlaygroundUser(isAutomation = false) {
+export async function proxyDemoPlaygroundUser(
+  isAutomation = false,
+  redirectPath = ''
+) {
   const result = await userApi.getDemoPlaygroundUser()
   if (result.result?._id && result.result?.role) {
     TokenStorage.storeAccessToken(
@@ -91,8 +95,13 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
     if (isAutomation) {
       option = '_self'
     }
+    const query = qs.stringify({
+      userId: result.result._id,
+      role: result.result.role,
+      redirectPath,
+    })
     window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?${query}`,
       option
     )
   } else {

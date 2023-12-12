@@ -14,7 +14,10 @@
     "teacherFeedbackLabel": "Teacher Feedback"
   },
   "wholeLearnerReport": {
-    "chooseStdOrDomain": "Please choose a standard or domain to assign a tutor.",
-    "selectMax5Stds": "Please select max 5 standards for the tutor to focus on."
+    "assignTutoringDisabled": "Your district/school doesn't have an active Pear Deck Tutor license. Upgrade now to assign expert tutors for targeted student support.",
+    "noCheckedStandardsMessage": "Please choose a standard or domain to assign a tutor.",
+    "maxCheckedStandardsMessage": "Please select max 3 standards for the tutor to focus on.",
+    "noTutoringSessions": "Student hasn’t taken any session yet.",
+    "noPremiumAccess": "You don’t have Edulastic reports access (Premium/Enterprise license)."
   }
 }

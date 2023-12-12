@@ -533,24 +533,25 @@ export function getStandardsForStandardBasedReport(
     if (q?.validation?.unscored) {
       continue
     }
-    const standards =
-      q.alignment
-        ?.flatMap((x) => x?.domains || [])
-        .flatMap((x) => x?.standards || []) || []
-    for (const std of standards) {
-      if (standardsQuestionsMap[`${std.id}`]) {
-        standardsQuestionsMap[`${std.id}`].qIds = uniq([
-          ...standardsQuestionsMap[`${std.id}`].qIds,
-          `${q.itemId}_${q.id}`,
-        ])
-      } else {
-        standardsQuestionsMap[`${std.id}`] = {
-          ...std,
-          desc: standardsDescriptionsKeyed[`${std.id}`]?.desc,
-          tloDesc: standardsDescriptionsKeyed[`${std.id}`]?.tloDescription,
-          qIds: [`${q.itemId}_${q.id}`],
-          ...(std.name ? { identifier: std.name } : {}),
-          ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
+    const domains = q.alignment?.flatMap((x) => x?.domains || []) || []
+    for (const domain of domains) {
+      for (const std of domain.standards || []) {
+        if (standardsQuestionsMap[`${std.id}`]) {
+          standardsQuestionsMap[`${std.id}`].qIds = uniq([
+            ...standardsQuestionsMap[`${std.id}`].qIds,
+            `${q.itemId}_${q.id}`,
+          ])
+        } else {
+          standardsQuestionsMap[`${std.id}`] = {
+            ...std,
+            desc: standardsDescriptionsKeyed[`${std.id}`]?.desc,
+            tloId: domain.id,
+            tloIdentifier: domain.name,
+            tloDesc: standardsDescriptionsKeyed[`${std.id}`]?.tloDescription,
+            qIds: [`${q.itemId}_${q.id}`],
+            ...(std.name ? { identifier: std.name } : {}),
+            ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
+          }
         }
       }
     }

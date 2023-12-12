@@ -192,6 +192,9 @@ const StudentProfileReportFilters = ({
     const urlAssignedBy =
       staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
       staticDropDownData.assignedBy[0]
+    const urlDomainId = search.domainId || ''
+    const urlStandardId = search.standardId || ''
+    const urlCurriculumId = search.curriculumId || ''
 
     const _filters = {
       reportId: reportId || '',
@@ -203,6 +206,9 @@ const StudentProfileReportFilters = ({
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
       assignedBy: urlAssignedBy.key,
+      domainId: urlDomainId,
+      standardId: urlStandardId,
+      curriculumId: urlCurriculumId,
     }
     const _tempTagsData = {
       ...tempTagsData,

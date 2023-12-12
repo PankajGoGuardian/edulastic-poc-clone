@@ -3,9 +3,12 @@ import { staticDropDownData } from '../../wholeLearnerReport/utils'
 
 const { TEST_TYPE_LABELS } = testTypesConstants
 
-export const ACADEMIC = 'academic'
-export const ATTENDANCE = 'attendance'
-export const TUTORME = 'tutorme'
+export const DW_GOALS_AND_INTERVENTIONS_TYPES = {
+  ACADEMIC: 'academic',
+  ATTENDANCE: 'attendance',
+  TUTORME: 'tutorme',
+}
+
 const AVERAGE_SCORE = 'averageScore'
 const MINIMUM_SCORE = 'minimumScore'
 export const PERFORMANCE_BAND = 'performanceBand'
@@ -64,8 +67,8 @@ const STATUS = 'status'
 
 export const dropdownData = {
   goalOrInterventionTypes: [
-    { key: ACADEMIC, title: 'Academic' },
-    { key: ATTENDANCE, title: 'Attendance' },
+    { key: DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC, title: 'Academic' },
+    { key: DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE, title: 'Attendance' },
   ],
   academicMeasureTypes: [
     { key: AVERAGE_SCORE, title: 'Average score' },

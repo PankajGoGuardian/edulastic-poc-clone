@@ -463,7 +463,7 @@ const getInterventions = (params) =>
     })
     .then((response) => response?.data?.result)
 
-const getInterventionsByGroups = (params) => {
+const getReportInterventions = (params) => {
   return api
     .callApi({
       url: `${dataWarehousePrefix}${goalsAndInterventionsPrefix}/report-interventions`,
@@ -525,7 +525,7 @@ export default {
   getGoals,
   fetchAttendanceBands,
   getInterventions,
-  getInterventionsByGroups,
+  getReportInterventions,
   deleteGoal,
   deleteIntervention,
   updateGoal,

@@ -124,7 +124,7 @@ class CreateTermModal extends React.Component {
             No, Cancel
           </EduButton>,
           <EduButton type="primary" key="submit" onClick={this.onCreateTerm}>
-            Yes, Create >
+            Yes, Create {'>'}
           </EduButton>,
         ]}
       >

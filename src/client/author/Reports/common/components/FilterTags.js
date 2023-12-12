@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
-import styled, { css } from 'styled-components'
-import { Tag, Popover, Tooltip } from 'antd'
+import styled from 'styled-components'
+import { Popover, Tooltip } from 'antd'
+import { FilterTag } from '../styled'
 
 const FilterTags = ({
   visible,
@@ -109,7 +110,7 @@ const FilterTags = ({
             </PopoverContentWrapper>
           }
         >
-          <Tag>{`+${popOverArray.length}`}</Tag>
+          <FilterTag>{`+${popOverArray.length}`}</FilterTag>
         </Popover>
       )}
     </TagsContainer>
@@ -117,17 +118,6 @@ const FilterTags = ({
 }
 
 export default FilterTags
-
-const TagsStyle = css`
-  color: #686f75;
-  background: #bac3ca;
-  padding: 2px 10px;
-  border: none;
-  font-weight: bold;
-  border-radius: 2px;
-  margin-bottom: 5px;
-  margin-right: 0px;
-`
 
 const TagsContainer = styled.div`
   width: 100%;
@@ -137,11 +127,6 @@ const TagsContainer = styled.div`
   margin-left: 10px;
   justify-content: flex-end;
   flex-wrap: nowrap;
-  .ant-tag {
-    ${TagsStyle};
-    margin-top: 7px;
-    margin-right: 6px;
-  }
   @media print {
     margin-left: 0px;
     flex-wrap: wrap;
@@ -153,8 +138,7 @@ const TagsContainer = styled.div`
   }
 `
 
-const StyledPopupTag = styled(Tag)`
-  ${TagsStyle};
+const StyledPopupTag = styled(FilterTag)`
   display: flex;
   align-items: center;
   span {

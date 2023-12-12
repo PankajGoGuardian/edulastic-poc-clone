@@ -1,21 +1,29 @@
 import styled from 'styled-components'
 import { Typography } from 'antd'
 
-import { fadedGrey, themeColor, whiteSmoke } from '@edulastic/colors'
+import {
+  fadedGrey,
+  themeColor,
+  whiteSmoke,
+  black,
+  greyThemeDark1,
+} from '@edulastic/colors'
 
 const { Paragraph } = Typography
 
 export const AssignedParagraph = styled.div`
   font-size: 14px;
   font-weight: 600;
+  color: ${black};
 `
 
 export const StandardsParagraph = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: #777;
 `
 
+/** @type {typeof Paragraph} */
 export const TitleCopy = styled(Paragraph)`
   div:first-child {
     background-color: ${whiteSmoke};
@@ -79,7 +87,7 @@ export const CustomRow = styled.div`
     height: 8px;
     top: 26px;
     left: -16px;
-    background: #bbb;
+    background: #d8d8d8;
     border-radius: 50%;
     z-index: 1;
   }
@@ -97,4 +105,28 @@ export const CustomRow = styled.div`
       display: none;
     }
   }
+`
+
+export const TutorMeNoLicensePopupCloseButton = styled.div`
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 18px;
+  cursor: pointer;
+`
+
+export const TutorMeNoLicensePopupTitle = styled.div`
+  color: ${black};
+  text-align: left;
+  width: 100%;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+`
+
+export const TutorMeNoLicensePopupDescription = styled.div`
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: ${greyThemeDark1};
 `

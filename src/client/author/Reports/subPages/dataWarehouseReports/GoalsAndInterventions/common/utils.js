@@ -2,7 +2,7 @@ import { isNaN, omit, set, isObject } from 'lodash'
 import moment from 'moment'
 import { GI_STATUS, MULTIPLE_OF_TENS } from '../constants/common'
 import {
-  ACADEMIC,
+  DW_GOALS_AND_INTERVENTIONS_TYPES,
   APPLICABLE_TO,
   GOAL,
   GOAL_CRITERIA,
@@ -54,7 +54,8 @@ export const getOptionsData = ({
 const getUpdatedIsRequiredValue = ({ field, formData, isRequired }) => {
   let updatedIsRequiredValue = isRequired
   if (
-    (field === TEST_TYPES && formData[TYPE] !== ACADEMIC) ||
+    (field === TEST_TYPES &&
+      formData[TYPE] !== DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC) ||
     (field === PERFORMANCE_BAND_ID &&
       formData[MEASURE_TYPE] !== PERFORMANCE_BAND)
   ) {

@@ -9,13 +9,15 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import ResizeObserver from 'rc-resize-observer'
 import { withNamespaces } from '@edulastic/localization'
-import { FlexContainer, SpinLoader } from '@edulastic/common'
+import { FlexContainer, SpinLoader, useApiQuery } from '@edulastic/common'
 import { get, head, isEmpty } from 'lodash'
+import { reportsApi } from '@edulastic/api'
 import TrendStats from '../../multipleAssessmentReport/common/components/trend/TrendStats'
 import TrendTable from '../../multipleAssessmentReport/common/components/trend/TrendTable'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { NoDataContainer } from '../../../common/styled'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 
 import { getCsvDownloadingState } from '../../../ducks'
 import {
@@ -33,7 +35,13 @@ import { downloadCSV, getFilterOptions } from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
 import MultiSelectDropdown from '../../../common/components/widgets/MultiSelectDropdown'
 import { StyledSelectInput } from '../common/components/styledComponents'
-import { updateFilterTagsCount } from './utils'
+import {
+  getDynamicColumns,
+  transformInterventions,
+  updateFilterTagsCount,
+} from './utils'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../dataWarehouseReports/GoalsAndInterventions/constants/form'
+import useErrorNotification from '../../../common/hooks/useErrorNotification'
 
 const compareBy = {
   key: 'standard',
@@ -42,6 +50,7 @@ const compareBy = {
 
 const StudentProgressProfile = ({
   settings,
+  termsData,
   setSPRTagsData,
   pageTitle,
   sharedReport,
@@ -66,6 +75,7 @@ const StudentProgressProfile = ({
     pageSize: 10,
   })
   const renderFiltersRef = useRef(null)
+  const interventionIdRef = useRef(null)
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -137,6 +147,47 @@ const StudentProgressProfile = ({
     }
   }, [pageFilters])
 
+  const search = useUrlSearchParams(location)
+
+  // TODO fix for page reload - interventionId is not retained on page reload
+  if (search.interventionId) interventionIdRef.current = search.interventionId
+
+  const { termId } = settings.requestFilters
+  const { startDate, endDate } =
+    termsData.find((term) => term._id === termId) || {}
+
+  const apiQuery = useMemo(
+    () => ({
+      type: [DW_GOALS_AND_INTERVENTIONS_TYPES.TUTORME],
+      studentId: settings.selectedStudent.key,
+      termId,
+      startDate,
+      endDate,
+      interventionIds: [interventionIdRef.current],
+    }),
+    [settings.requestFilters.termId, settings.selectedStudent.key]
+  )
+  const {
+    data: tutorMeInterventionsData,
+    loading: tutorMeInterventionsLoading,
+    error: tutorMeInterventionsError,
+  } = useApiQuery(reportsApi.getReportInterventions, [apiQuery], {
+    enabled:
+      !isEmpty(settings.requestFilters.termId) &&
+      !isEmpty(settings.selectedStudent.key) &&
+      !isEmpty(interventionIdRef.current),
+    deDuplicate: false,
+  })
+  useErrorNotification(
+    'Error fetching Tutoring details',
+    tutorMeInterventionsError
+  )
+
+  const interventionData = useMemo(
+    () => transformInterventions(tutorMeInterventionsData),
+    [tutorMeInterventionsData]
+  )
+
   const metricInfo = useMemo(
     () =>
       isEmpty(selectedTests)
@@ -186,7 +237,7 @@ const StudentProgressProfile = ({
     })
   }
 
-  if (loading) {
+  if (loading || tutorMeInterventionsLoading) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."
@@ -271,6 +322,12 @@ const StudentProgressProfile = ({
             itemsCount: standardsCount,
           }}
           setBackendPagination={setPageFilters}
+          getDynamicColumns={
+            interventionIdRef.current && !tutorMeInterventionsError
+              ? getDynamicColumns
+              : null
+          }
+          interventionData={interventionData}
         />
       ) : (
         <NoDataContainer>No data available currently.</NoDataContainer>
@@ -286,6 +343,7 @@ const withConnect = connect(
     error: getReportsStudentProgressProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    termsData: get(state, 'user.user.orgData.terms', []),
   }),
   {
     getStudentProgressProfileRequest: getStudentProgressProfileRequestACtion,

@@ -166,6 +166,9 @@
     "timm": "^1.7.1",
     "uuid": "^3.3.2"
   },
+  "optionalDependencies": {
+    "@goguardian/tutorme-sdk": "^2.0.2"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@commitlint/cli": "11.0.0",

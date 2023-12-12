@@ -72,7 +72,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import { isAddToStudentGroupEnabled } from '../common/utils'
-import { ACADEMIC } from '../GoalsAndInterventions/constants/form'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
 import useFiltersData from '../../../common/hooks/useFiltersData'
 
 const { downloadCSV } = reportUtils.common
@@ -389,7 +389,7 @@ const MultipleAssessmentReport = ({
       const groupIdsArr =
         typeof groupIds === 'string' ? groupIds.split(',') : undefined
       fetchInterventionsByGroups({
-        type: [ACADEMIC],
+        type: [DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC],
         groupIds: groupIdsArr,
         startDate,
         endDate,

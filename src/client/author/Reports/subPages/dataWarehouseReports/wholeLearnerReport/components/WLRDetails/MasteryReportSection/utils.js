@@ -1,10 +1,7 @@
 import { segmentApi } from '@edulastic/api'
 
-import {
-  invokeTutorMeSDKtoAssignTutor,
-  openTutorMeBusinessPage,
-} from '../../../../../../../TutorMe/helper'
-import { getStudentName } from '../../../utils'
+import { formatName } from '@edulastic/constants/reportUtils/common'
+import { invokeTutorMeSDKtoAssignTutor } from '../../../../../../../TutorMe/helper'
 import staticDropDownData from '../../../../../singleAssessmentReport/common/static/staticDropDownData.json'
 
 export const ALL_GRADES = [
@@ -26,30 +23,35 @@ export const DEFAULT_CURRICULUM = {
   title: 'All Standard Sets',
 }
 
+export const MAX_CHECKED_STANDARDS = 3
+
 export const onAssignTutoring = async ({
-  isTutorMeEnabled,
-  settings,
+  settings: {
+    requestFilters: { termId },
+    selectedStudentInformation: student,
+  },
   districtId,
-  userEmail,
-  userFullName,
   filteredStandards,
   selectedStandards,
+  initializeTutorMeService,
   assignTutorRequest,
+  user,
 }) => {
-  const {
-    requestFilters: { termId },
-    selectedStudent,
-    selectedStudentInformation,
-  } = settings
-  const studentName = getStudentName(
-    selectedStudentInformation,
-    selectedStudent
-  )
+  // initialize tutor me sdk for Assign Tutoring
+  initializeTutorMeService()
 
-  // TODO: pass to the respective api or sdk
+  // segment api to track Assign Tutoring event
+  segmentApi.genericEventTrack('Assign Tutoring', {
+    selectedStudentsKeys: [student.studentId],
+  })
+
+  const studentName = formatName(student, {
+    lastNameFirst: false,
+  })
+
   // curate standards with mastery for checked standards
-  const standardsMasteryData = filteredStandards
-    .filter(({ standardId }) => selectedStandards.includes(standardId))
+  const standardsMasteryData = selectedStandards
+    .map((sid) => filteredStandards.find((s) => s.standardId === sid))
     .map(
       ({
         standardId,
@@ -60,6 +62,7 @@ export const onAssignTutoring = async ({
         domainName: domainDesc,
         score: masteryScore,
         scale: { color: masteryColor },
+        curriculumId,
       }) => ({
         domainId,
         standardId,
@@ -69,35 +72,26 @@ export const onAssignTutoring = async ({
         standardDesc,
         domainIdentifier,
         domainDesc,
+        curriculumId,
       })
     )
-
-  // navigate to TutorMe page if not enabled for the user
-  if (!isTutorMeEnabled) {
-    return openTutorMeBusinessPage()
-  }
-
-  // segment api to track Assign Tutoring event
-  segmentApi.genericEventTrack('Assign Tutor', {
-    selectedStudentsKeys: [selectedStudent.key],
-  })
 
   invokeTutorMeSDKtoAssignTutor({
     districtId,
     termId,
     standardsMasteryData,
-    selectedStudentDetails: {
-      firstName: selectedStudentInformation.firstName,
-      lastName: selectedStudentInformation.lastName,
-      studentId: selectedStudent.key,
+    student: {
+      firstName: student.firstName,
+      lastName: student.lastName,
+      studentId: student.studentId,
       studentName,
-      email: selectedStudentInformation.email,
+      email: student.email,
     },
-    assignedBy: {
-      assignedByEmail: userEmail,
-      assignedByName: userFullName,
-    },
-  }).then((tutorMeInterventionResponse) =>
-    assignTutorRequest(tutorMeInterventionResponse)
+    assignedBy: user,
+    hasSelectedStandards: true,
+  }).then(
+    (tutorMeInterventionResponse) =>
+      tutorMeInterventionResponse &&
+      assignTutorRequest(tutorMeInterventionResponse)
   )
 }

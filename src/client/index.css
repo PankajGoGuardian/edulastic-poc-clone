@@ -2171,6 +2171,12 @@ span.token.active-word {
   text-align: center;
 }
 
+.custom-dark-tooltip .ant-tooltip-inner {
+  text-align: left;
+  font-size: 14px;
+}
+
+
 .ant-modal-wrap {
   overflow-y: auto;
 }

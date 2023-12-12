@@ -10,7 +10,7 @@ import {
   getInterventionsByGroup,
 } from '../../../../ducks'
 import { selectedFilterTagsData, settings } from '../ducks/selectors'
-import { ATTENDANCE } from '../../GoalsAndInterventions/constants/form'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../GoalsAndInterventions/constants/form'
 
 const AttendanceSummaryChart = ({
   attendanceData,
@@ -49,7 +49,7 @@ const AttendanceSummaryChart = ({
       const groupIdsArr =
         typeof groupIds === 'string' ? groupIds.split(',') : undefined
       fetchInterventionsByGroups({
-        type: [ATTENDANCE],
+        type: [DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE],
         groupIds: groupIdsArr,
         startDate,
         endDate,

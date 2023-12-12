@@ -1,6 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { intersection, uniq } from 'lodash'
+
 import { notification } from '@edulastic/common'
+
+import { MAX_CHECKED_STANDARDS } from '../utils'
 
 const useRowSelection = (
   domainsData,
@@ -8,7 +11,8 @@ const useRowSelection = (
   selectedDomains,
   setSelectedDomains,
   selectedStandards,
-  setSelectedStandards
+  setSelectedStandards,
+  setDomainKeyToExpand
 ) => {
   const domainRowSelection = useMemo(
     () => ({
@@ -20,6 +24,7 @@ const useRowSelection = (
         if (isInsertOp) {
           setSelectedDomains(uniq([...selectedDomains, domainId]))
           setSelectedStandards(uniq([...selectedStandards, ...standardIds]))
+          setDomainKeyToExpand(domainId)
         } else {
           setSelectedDomains(selectedDomains.filter((key) => key !== domainId))
           setSelectedStandards(
@@ -40,6 +45,20 @@ const useRowSelection = (
         } else {
           setSelectedDomains([])
           setSelectedStandards([])
+        }
+      },
+      getCheckboxProps: ({ standards }) => {
+        const standardIds = standards.map(({ standardId }) => standardId)
+        const checkedStandards = selectedStandards.filter((s) =>
+          standardIds.includes(s)
+        )
+        return {
+          checked:
+            checkedStandards.length &&
+            checkedStandards.length === standardIds.length,
+          indeterminate:
+            checkedStandards.length &&
+            checkedStandards.length < standardIds.length,
         }
       },
     }),
@@ -75,12 +94,15 @@ const useRowSelection = (
   const standardsRowSelection = useMemo(
     () => ({
       selectedRowKeys: selectedStandards,
-      onSelect: ({ standardId }) => {
+      onSelect: ({ standardId, key }) => {
+        standardId = standardId ?? key
         const isInsertOp = !selectedStandards.includes(standardId)
         setSelectedStandards(
           isInsertOp
             ? uniq([...selectedStandards, standardId])
-            : selectedStandards.filter((key) => key !== standardId)
+            : selectedStandards.filter(
+                (_standardId) => _standardId !== standardId
+              )
         )
         setDomainWhenStandardIsSelected(standardId, isInsertOp)
       },
@@ -89,10 +111,10 @@ const useRowSelection = (
   )
 
   useEffect(() => {
-    if (selectedStandards.length > 5) {
+    if (selectedStandards.length > MAX_CHECKED_STANDARDS) {
       notification({
         type: 'info',
-        messageKey: 'selectMaxFiveStandardsWarning',
+        messageKey: 'maxCheckedStandardsMessage',
         destroyAll: true,
       })
     }

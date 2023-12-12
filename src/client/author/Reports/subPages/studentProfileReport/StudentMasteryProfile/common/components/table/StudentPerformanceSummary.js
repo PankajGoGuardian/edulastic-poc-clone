@@ -61,7 +61,9 @@ const columns = [
     key: 'masteryScore',
     align: 'center',
     dataIndex: 'masteryScore',
-    render: (value) => <StyledSpan>{`${round(value)}% Mastered`}</StyledSpan>,
+    render: (value) => (
+      <StyledSpan>{`${round(value)}% Standards Mastered`}</StyledSpan>
+    ),
     sorter: (a, b) => {
       if (a.masteryScore !== b.masteryScore) {
         return a.masteryScore - b.masteryScore
@@ -131,6 +133,8 @@ const StudentPerformanceSummary = ({
   expandedRowProps,
   expandAllRows,
   setExpandAllRows,
+  domainKeyToExpand,
+  setDomainKeyToExpand,
   rowSelection = null,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
@@ -174,6 +178,18 @@ const StudentPerformanceSummary = ({
       ? setExpandedRows(filteredDomains.map((d) => d.key))
       : setExpandedRows([])
   }, [expandAllRows])
+
+  useEffect(() => {
+    if (domainKeyToExpand) {
+      const domainKey = filteredDomains.find((d) => d.key === domainKeyToExpand)
+        ?.key
+      if (domainKey && !expandedRows.includes(domainKey)) {
+        setExpandedRows([...expandedRows, domainKey])
+        setExpandAllRows(expandedRows.length + 1 === filteredDomains.length)
+        setDomainKeyToExpand(null)
+      }
+    }
+  }, [domainKeyToExpand, expandedRows, filteredDomains])
 
   useEffect(() => {
     if (expandedRowProps.isCsvDownloading) {

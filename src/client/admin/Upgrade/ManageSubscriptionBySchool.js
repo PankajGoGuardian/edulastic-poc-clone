@@ -414,8 +414,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             key="endDate"
             render={renderEndDate}
           />
-          {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
-          {/* <Column
+          <Column
             title="TutorMe Start Date"
             dataIndex="subscription.tutorMeStartDate"
             key="tutorMeStartDate"
@@ -426,7 +425,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             dataIndex="subscription.tutorMeEndDate"
             key="tutorMeEndDate"
             render={renderTutorMeEndDate}
-          /> */}
+          />
           <Column
             title="Notes"
             dataIndex="subscription.notes"
@@ -505,8 +504,7 @@ const BulkSubscribeForm = ({
     <DatesNotesFormItem
       getFieldDecorator={getFieldDecorator}
       getFieldValue={getFieldValue}
-      // TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804
-      // showTutorMeFormItems
+      showTutorMeFormItems
     >
       <Form.Item label={<HeadingSpan>CS Manager</HeadingSpan>}>
         {getFieldDecorator('customerSuccessManager')(

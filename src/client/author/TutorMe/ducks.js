@@ -1,27 +1,36 @@
-import { takeEvery, all, call, put } from 'redux-saga/effects'
+import { takeEvery, all, call, select, put } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
 import { reportsApi } from '@edulastic/api'
-import { getUserOrgId } from '../src/selectors/user'
+import { getUser, getUserOrgId } from '../src/selectors/user'
 import { actions as GIActions } from '../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/actionReducers'
+import { initTutorMeService } from './service'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
   assigning: false,
+  isTutorMeServiceInitialized: false,
   // TODO: un-used state, to be rethought once SDK is provided
   // tutorMeStandardsDetails: {
   //   // tutorMeSubject, tutorMeSubjectArea, tutorMeGrade
   // },
 }
+
 const slice = createSlice({
   slice: reduxNamespaceKey,
   initialState,
   reducers: {
+    initializeTutorMeService: () => {
+      // no state change required
+    },
+    setIsTutorMeServiceInitialized: (state, payload) => {
+      state.isTutorMeServiceInitialized = payload
+    },
     assignTutorRequest: (state) => {
       state.assigning = true
     },
-    assignTutorSucces: (state) => {
+    assignTutorSuccess: (state) => {
       state.assigning = false
     },
     // TODO: un-used action, to be rethough once SDK is done
@@ -35,11 +44,18 @@ export const { actions, reducer } = slice
 
 export { reduxNamespaceKey }
 
+const stateSelector = (state) => state.tutorMeReducer
+
+const isTutorMeServiceInitializedSelector = createSelector(
+  stateSelector,
+  (state) => state.isTutorMeServiceInitialized
+)
+
 function* assignTutorForStudentsSaga({ payload }) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
     yield put(GIActions.setIntervention(intervention))
-    yield put(actions.assignTutorSucces())
+    yield put(actions.assignTutorSuccess())
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {
     captureSentryException(err)
@@ -47,6 +63,23 @@ function* assignTutorForStudentsSaga({ payload }) {
       type: 'error',
       msg: 'Unable to assign tutoring to students',
     })
+  }
+}
+
+function* initializeTutorMeServiceSaga() {
+  try {
+    const isTutorMeServiceInitialized = yield select(
+      isTutorMeServiceInitializedSelector
+    )
+    if (!isTutorMeServiceInitialized) {
+      const user = yield select(getUser)
+      yield call(initTutorMeService, user)
+      yield put(actions.setIsTutorMeServiceInitialized(true))
+    }
+  } catch (err) {
+    captureSentryException(err)
+    notification({ msg: 'Unable to initialize TutorMe SDK' })
+    yield put(actions.setIsTutorMeServiceInitialized(false))
   }
 }
 
@@ -74,6 +107,7 @@ function* assignTutorForStudentsSaga({ payload }) {
 export function* watcherSaga() {
   yield all([
     takeEvery(actions.assignTutorRequest, assignTutorForStudentsSaga),
+    takeEvery(actions.initializeTutorMeService, initializeTutorMeServiceSaga),
     // takeLatest(
     //   actions.getTutorMeStandardsDetails,
     //   getTutorMeStandardsDetailsSaga

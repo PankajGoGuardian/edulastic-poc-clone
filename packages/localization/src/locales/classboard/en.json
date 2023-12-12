@@ -14,6 +14,7 @@
     "testHidden": "View of Items is Restricted by the Admin",
     "randomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment",
     "assignTutoringRestricted": "Assigning tutoring for multiple students at once is not currently available. Please select one student at a time",
+    "assignTutoringDisabled": "Your district/school doesn't have an active Pear Deck Tutor license. Upgrade now to assign expert tutors for targeted student support.",
     "bubbleScanRandomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, bubble sheet actions are unavailable",
     "bubbleScanAssignmentCanOpenMessage": "OPEN Assignment to Scan Responses",
     "bubbleScanAssignmentPausedMessage": "RESUME Assignment to Scan Responses",

@@ -1,11 +1,30 @@
-import React from 'react'
-
+import React, { useCallback, useState } from 'react'
 import { Tabs } from 'antd'
+
+import { segmentApi } from '@edulastic/api'
+
 import PerformanceReport from './PerformanceReport'
 import MasteryReportSection from './MasteryReportSection'
 import { FilledTabBar } from './FilledTabBar'
+import { Tutoring } from './Tutoring'
+import { getStudentName } from '../../utils'
 
 const { TabPane } = Tabs
+
+const TABLE_TABS = {
+  PERFORMANCE: {
+    key: 'performance',
+    label: 'Performance',
+  },
+  MASTERY: {
+    key: 'mastery',
+    label: 'Standards Mastery',
+  },
+  TUTORING: {
+    key: 'tutoring',
+    label: 'Tutoring',
+  },
+}
 
 const WLRDetails = ({
   isPrinting,
@@ -15,7 +34,7 @@ const WLRDetails = ({
   attendanceInterventions, // array: interventions for attendance chart
   tableData, // array: table data for performance report
   isSharedReport, // bool: is shared report
-  onCsvConvert,
+  downloadCSV,
   isCsvDownloading,
   studentMasteryProfile, // data for mastery report table
   SPRFFilterData, // Student Profile Report Filter Data - contains Standard Proficiency
@@ -39,11 +58,21 @@ const WLRDetails = ({
   selectedMasteryScale,
   setSelectedMasteryScale,
   loadingMasteryData,
+  tutorMeInterventionsData,
+  tutorMeInterventionsLoading,
+  tutorMeInterventionsError,
 }) => {
-  const performanceAndMasteryTabs = [
+  const [tableTabKey, setTableTabKey] = useState(TABLE_TABS.PERFORMANCE.key)
+
+  const studentName = getStudentName(
+    settings.selectedStudentInformation,
+    settings.selectedStudent
+  )
+
+  const tableTabs = [
     {
-      key: 'performance',
-      label: 'Performance',
+      key: TABLE_TABS.PERFORMANCE.key,
+      label: TABLE_TABS.PERFORMANCE.label,
       children: (
         <PerformanceReport
           isPrinting={isPrinting}
@@ -53,8 +82,12 @@ const WLRDetails = ({
           attendanceInterventions={attendanceInterventions}
           tableData={tableData}
           isSharedReport={isSharedReport}
-          onCsvConvert={onCsvConvert}
-          isCsvDownloading={isCsvDownloading}
+          onCsvConvert={(data) =>
+            downloadCSV(`Whole Learner Report - ${studentName}.csv`, data)
+          }
+          isCsvDownloading={
+            tableTabKey === TABLE_TABS.PERFORMANCE.key && isCsvDownloading
+          }
           SPRFFilterData={SPRFFilterData}
           settings={settings}
           chartData={chartData}
@@ -77,8 +110,8 @@ const WLRDetails = ({
       ),
     },
     {
-      key: 'mastery',
-      label: 'Standard Mastery',
+      key: TABLE_TABS.MASTERY.key,
+      label: TABLE_TABS.MASTERY.label,
       children: (
         <MasteryReportSection
           studentMasteryProfile={studentMasteryProfile}
@@ -90,14 +123,49 @@ const WLRDetails = ({
         />
       ),
     },
+    {
+      key: TABLE_TABS.TUTORING.key,
+      label: TABLE_TABS.TUTORING.label,
+      children: (
+        <Tutoring
+          data={tutorMeInterventionsData}
+          loading={tutorMeInterventionsLoading}
+          error={tutorMeInterventionsError}
+          onCsvConvert={(data) =>
+            downloadCSV(
+              `Whole Learner Report - ${studentName} - Tutoring.csv`,
+              data
+            )
+          }
+          isCsvDownloading={
+            tableTabKey === TABLE_TABS.TUTORING.key && isCsvDownloading
+          }
+        />
+      ),
+    },
   ]
+
+  const onTabClick = useCallback(
+    (key) => {
+      setTableTabKey(key)
+      if (key === TABLE_TABS.TUTORING.key) {
+        // segment api to track click event on Whole Learner Report's Tutoring tab
+        segmentApi.genericEventTrack('Whole Learner: Tutoring Tab', {
+          selectedStudentsKeys: [settings.selectedStudent.key],
+        })
+      }
+    },
+    [settings.selectedStudent.key]
+  )
 
   return (
     <Tabs
       renderTabBar={FilledTabBar}
+      onTabClick={onTabClick}
+      activeKey={tableTabKey}
       style={{ marginBlock: '32px', overflow: 'visible' }} // to allow tooltips tabPanel to overflow. No side-effect as panel cover full page width.
     >
-      {performanceAndMasteryTabs.map((item) => (
+      {tableTabs.map((item) => (
         <TabPane tab={item.label} key={item.key}>
           {item.children}
         </TabPane>

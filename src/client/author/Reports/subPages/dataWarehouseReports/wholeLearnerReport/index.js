@@ -4,7 +4,14 @@ import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
 import { Spin } from 'antd'
 
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { reportsApi } from '@edulastic/api'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  SpinLoader,
+  useApiQuery,
+} from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import {
   helpLinks,
@@ -44,13 +51,12 @@ import { actions, selectors } from './ducks'
 import {
   getChartData,
   getTableData,
-  getStudentName,
   mergeSchoolMetrics,
   mergeDistrictMetrics,
   mergeTestMetrics,
   getAttendanceChartData,
 } from './utils'
-import { ACADEMIC, ATTENDANCE } from '../GoalsAndInterventions/constants/form'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
 import { getTabNavigationItems } from '../../../common/util'
 import { EXTERNAL_SCORE_TYPES } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
@@ -219,6 +225,35 @@ const WholeLearnerReport = ({
     setShowApply(false)
   }
 
+  const { termId } = settings.requestFilters
+  const { startDate, endDate } =
+    termsData.find((term) => term._id === termId) || {}
+
+  /**
+   * TODO: move the following code to be run for TutoringSession tab only
+   * The API should update on call of AssignTutoring (iff. required)
+   */
+  const apiQuery = useMemo(
+    () => ({
+      type: [DW_GOALS_AND_INTERVENTIONS_TYPES.TUTORME],
+      studentId: settings.selectedStudent.key,
+      termId,
+      startDate,
+      endDate,
+    }),
+    [settings.requestFilters.termId, settings.selectedStudent.key]
+  )
+  const {
+    data: tutorMeInterventionsData,
+    loading: tutorMeInterventionsLoading,
+    error: tutorMeInterventionsError,
+  } = useApiQuery(reportsApi.getReportInterventions, [apiQuery], {
+    enabled:
+      !isEmpty(settings.requestFilters.termId) &&
+      !isEmpty(settings.selectedStudent.key),
+    deDuplicate: false,
+  })
+
   useEffect(() => {
     setEnableReportSharing(false)
     return () => {
@@ -278,11 +313,11 @@ const WholeLearnerReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
-      const { termId } = settings.requestFilters
-      const { startDate, endDate } =
-        termsData.find((term) => term._id === termId) || {}
       fetchInterventionsByGroups({
-        type: [ACADEMIC, ATTENDANCE],
+        type: [
+          DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC,
+          DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE,
+        ],
         studentId: settings.selectedStudent.key,
         termId,
         startDate,
@@ -385,10 +420,6 @@ const WholeLearnerReport = ({
     return _attendanceChartData
   }, [attendanceData])
 
-  const studentName = getStudentName(
-    settings.selectedStudentInformation,
-    settings.selectedStudent
-  )
   const toggleAttendanceChart = () => {
     isAttendanceChartToggled.current = true
     setIsAttendanceChartVisible((v) => !v)
@@ -397,9 +428,6 @@ const WholeLearnerReport = ({
   const toggleInterventionInfo = () => {
     setShowInterventions((v) => !v)
   }
-
-  const onCsvConvert = (data) =>
-    downloadCSV(`Whole Learner-${studentName}.csv`, data)
 
   // TODO cleanup+fix loading states and error/empty handling
   const isReportLoading = loadingReportData || loadingAttendanceData
@@ -513,7 +541,7 @@ const WholeLearnerReport = ({
                       attendanceInterventions={attendanceInterventions}
                       tableData={tableData}
                       isSharedReport={isSharedReport}
-                      onCsvConvert={onCsvConvert}
+                      downloadCSV={downloadCSV}
                       isCsvDownloading={isCsvDownloading}
                       studentMasteryProfile={studentMasteryProfile}
                       SPRFFilterData={SPRFFilterData}
@@ -540,6 +568,9 @@ const WholeLearnerReport = ({
                       selectedMasteryScale={selectedMasteryScale}
                       setSelectedMasteryScale={setSelectedMasteryScale}
                       loadingMasteryData={loadingMasteryData}
+                      tutorMeInterventionsData={tutorMeInterventionsData}
+                      tutorMeInterventionsLoading={tutorMeInterventionsLoading}
+                      tutorMeInterventionsError={tutorMeInterventionsError}
                     />
                   </EduElse>
                 </EduIf>

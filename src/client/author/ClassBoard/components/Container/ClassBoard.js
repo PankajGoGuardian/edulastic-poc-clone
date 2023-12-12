@@ -160,18 +160,14 @@ import {
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import {
-  invokeTutorMeSDKtoAssignTutor,
-  openTutorMeBusinessPage,
-} from '../../../TutorMe/helper'
+import { invokeTutorMeSDKtoAssignTutor } from '../../../TutorMe/helper'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
   getUserId,
   getIsTutorMeEnabledSelector,
   getUserOrgId,
-  getUserEmailSelector,
-  getUserFullNameSelector,
+  getUser,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
@@ -180,7 +176,7 @@ import {
   studentIsEnrolled,
   studentIsUnEnrolled,
 } from '../../../utils/userEnrollment'
-import TutorDetailsPopup from '../../../TutorMe/TutorDetailsPopup'
+import TutorDetailsPopup from '../../../TutorMe/components/TutorDetailsPopup'
 import {
   getIsTutorMeVisibleToDistrictSelector,
   actions as tutorMeActions,
@@ -189,6 +185,8 @@ import {
   getMastery,
   getPerfomancePercentage,
 } from '../../../StandardsBasedReport/components/TableDisplay'
+import TutorMeNoLicensePopup from '../../../TutorMe/components/TutorMeNoLicensePopup'
+import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
 import AnalyzeLink from '../../../Assignments/components/AnalyzeLink/AnalyzeLink'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
@@ -311,6 +309,7 @@ class ClassBoard extends Component {
         studentName: '',
         studentId: '',
       },
+      showTutorMeNoLicensePopup: false,
     }
   }
 
@@ -345,6 +344,7 @@ class ClassBoard extends Component {
   componentDidMount() {
     const {
       loadTestActivity,
+      fetchInterventionsList,
       match,
       studentUnselectAll,
       location,
@@ -384,6 +384,11 @@ class ClassBoard extends Component {
     const { search, state } = location
     setShowAllStudents(true)
     loadTestActivity(assignmentId, classId, selectedTab === 'questionView')
+    fetchInterventionsList({
+      type: DW_GOALS_AND_INTERVENTIONS_TYPES.TUTORME,
+      assignmentId,
+      classId,
+    })
     studentUnselectAll()
     window.addEventListener('scroll', this.handleScroll)
     const cliUser = new URLSearchParams(window.location.search).has('cliUser')
@@ -1028,6 +1033,14 @@ class ClassBoard extends Component {
     this.setState({ showAssignedTutors: false })
   }
 
+  handleOpenTutorMeNoLicensePopup = () => {
+    this.setState({ showTutorMeNoLicensePopup: true })
+  }
+
+  handleCloseTutorMeNoLicensePopup = () => {
+    this.setState({ showTutorMeNoLicensePopup: false })
+  }
+
   handleCancelMarkSubmitted = () => {
     this.setState({ showMarkSubmittedPopup: false })
   }
@@ -1096,21 +1109,23 @@ class ClassBoard extends Component {
     const {
       testActivity,
       selectedStudents,
-      assignTutorForStudents,
+      initializeTutorMeService,
+      assignTutorRequest,
       match,
       additionalData,
       reportStandards,
       studentsList,
       districtId,
-      isTutorMeEnabled,
-      userEmail,
-      userFullName,
+      user,
     } = this.props
+
+    // initialize tutor me sdk for Assign Tutoring
+    initializeTutorMeService()
+
+    // segment api to track click event on Whole Learner Report's Tutoring tab
     const selectedStudentsKeys = Object.keys(selectedStudents)
-    segmentApi.genericEventTrack('Assign Tutor', { selectedStudentsKeys })
-    if (!isTutorMeEnabled) {
-      return openTutorMeBusinessPage()
-    }
+    segmentApi.genericEventTrack('Assign Tutoring', { selectedStudentsKeys })
+
     if (!selectedStudentsKeys.length) {
       return notification({
         messageKey: 'atleastOneStudentShouldBeSelectedToAssignTutoring',
@@ -1124,9 +1139,7 @@ class ClassBoard extends Component {
     // for now only one student can be selected for assigning tutor so next line works
     const [selectedStudentId] = selectedStudentsKeys
     const testActivitiesByStudentId = keyBy(testActivity, 'studentId')
-    const selectedStudent = studentsList.find(
-      (student) => student._id === selectedStudentId
-    )
+    const student = studentsList.find((stu) => stu._id === selectedStudentId)
     const selectedTestActivity = testActivitiesByStudentId[selectedStudentId]
     if (
       !selectedTestActivity ||
@@ -1139,7 +1152,7 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
 
     // TODO pass to the respective api or sdk
-    const { termId, className, testName } = additionalData
+    const { termId } = additionalData
     const standardsMasteryData = reportStandards.map((std) => {
       const masterySummary = getPerfomancePercentage(
         [selectedTestActivity],
@@ -1158,13 +1171,14 @@ class ClassBoard extends Component {
         domainId: std.tloId,
         domainIdentifier: std.tloIdentifier,
         domainDesc: std.tloDesc,
+        curriculumId: std.curriculumId,
       }
     })
     invokeTutorMeSDKtoAssignTutor({
       standardsMasteryData,
-      selectedStudentDetails: {
-        firstName: selectedStudent.firstName,
-        lastName: selectedStudent.lastName || '',
+      student: {
+        firstName: student.firstName,
+        lastName: student.lastName || '',
         studentId: selectedTestActivity.studentId,
         studentName: selectedTestActivity.studentName,
         email: selectedTestActivity.email,
@@ -1173,15 +1187,13 @@ class ClassBoard extends Component {
       classId,
       districtId,
       termId,
-      className,
-      testName,
-      assignedBy: {
-        assignedByEmail: userEmail,
-        assignedByName: userFullName,
-      },
+      assignedBy: user,
     }).then((tutorMeInterventionResponse) => {
-      assignTutorForStudents(tutorMeInterventionResponse)
-      this.onUnselectCardOne(selectedStudentId)
+      if (tutorMeInterventionResponse) {
+        assignTutorRequest(tutorMeInterventionResponse).then(
+          this.onUnselectCardOne(selectedStudentId)
+        )
+      }
     })
   }
 
@@ -1360,6 +1372,7 @@ class ClassBoard extends Component {
       studentFilter,
       showAssignedTutors,
       studentToAssignTutor,
+      showTutorMeNoLicensePopup,
     } = this.state
     const isRedirectButtonDisabled =
       COMMON.includes(additionalData?.testType) &&
@@ -1482,6 +1495,16 @@ class ClassBoard extends Component {
         return acc
       }, {})
 
+    const assignTutoringTooltipTitle = !isTutorMeEnabled
+      ? t('common.assignTutoringDisabled')
+      : selectedStudentsKeys.length > 1
+      ? t('common.assignTutoringRestricted')
+      : ''
+
+    const handleAssignTutoringClick = isTutorMeEnabled
+      ? this.onAssignTutoring
+      : this.handleOpenTutorMeNoLicensePopup
+
     return (
       <div>
         {showCanvasShare && (
@@ -1582,6 +1605,10 @@ class ClassBoard extends Component {
             assignmentId={assignmentId}
           />
         )}
+        <TutorMeNoLicensePopup
+          open={showTutorMeNoLicensePopup}
+          closePopup={this.handleCloseTutorMeNoLicensePopup}
+        />
         {selectedTab === 'Both' && studentsList.length && (
           <HooksContainer
             additionalData={additionalData}
@@ -1809,15 +1836,12 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    {/* TODO: uncomment when TutorMe SDK is ready, ref. https://goguardian.atlassian.net/browse/EV-40804 */}
-                    {/* {isTutorMeVisibleToDistrict && (
+                    <EduIf
+                      condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
+                    >
                       <Tooltip
                         placement="top"
-                        title={
-                          selectedStudentsKeys.length > 1 && isTutorMeEnabled
-                            ? t('common.assignTutoringRestricted')
-                            : ''
-                        }
+                        title={assignTutoringTooltipTitle}
                       >
                         <div>
                           <AssignTutoring
@@ -1826,14 +1850,14 @@ class ClassBoard extends Component {
                               isTutorMeEnabled
                             }
                             data-cy="assignTutoring"
-                            target="_blank"
-                            onClick={this.onAssignTutoring}
+                            onClick={handleAssignTutoringClick}
                           >
                             ASSIGN TUTORING
+                            <span>{!isTutorMeEnabled ? ' *' : ''}</span>
                           </AssignTutoring>
                         </div>
                       </Tooltip>
-                    )} */}
+                    </EduIf>
 
                     <ClassBoardFeats>
                       <RedirectButton
@@ -2431,8 +2455,7 @@ const enhance = compose(
       isTutorMeEnabled: getIsTutorMeEnabledSelector(state),
       districtId: getUserOrgId(state),
       isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
-      userEmail: getUserEmailSelector(state),
-      userFullName: getUserFullNameSelector(state),
+      user: getUser(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -2457,7 +2480,8 @@ const enhance = compose(
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
-      assignTutorForStudents: tutorMeActions.assignTutorRequest,
+      initializeTutorMeService: tutorMeActions.initializeTutorMeService,
+      assignTutorRequest: tutorMeActions.assignTutorRequest,
       fetchInterventionsList: actions.getInterventionsList,
     }
   )

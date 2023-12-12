@@ -2659,7 +2659,9 @@ function* getAuthorizedExternalUser({ payload }) {
     } else {
       storeUserAuthToken(userDetails)
       yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
-      const redirectPath = userDetails.redirectPath || ''
+      const redirectPath =
+        userDetails.redirectPath ||
+        getRouteByGeneralRoute({ user: userDetails })
       localStorage.setItem('loginRedirectUrl', redirectPath)
       window.location.replace(redirectPath)
     }

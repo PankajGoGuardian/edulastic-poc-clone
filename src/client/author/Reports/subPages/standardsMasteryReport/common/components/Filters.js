@@ -60,6 +60,7 @@ import {
   getArrayOfNonPremiumTestTypes,
   getArrayOfAllTestTypes,
 } from '../../../../../../common/utils/testTypeUtils'
+import { getDefaultTestTypesForUser } from '../../../dataWarehouseReports/common/utils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -261,6 +262,10 @@ const StandardsMasteryReportFilters = ({
           grades: search.grades || savedFilters.grades,
           subjects: search.subjects || savedFilters.subjects,
           profileId: search.profileId || savedFilters.profileId,
+          assessmentTypes:
+            search.assessmentTypes ||
+            savedFilters.assessmentTypes ||
+            getDefaultTestTypesForUser([], user.role),
         })
       }
       const urlSchoolYear =

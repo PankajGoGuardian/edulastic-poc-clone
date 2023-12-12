@@ -6,7 +6,7 @@ import { roleuser } from '@edulastic/constants'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { staticDropDownData } from '../../../utils'
 import {
-  getDefaultTestTypes,
+  getDefaultTestTypesForUser,
   getDemographicsFilterTagsData,
 } from '../../../../common/utils'
 
@@ -48,7 +48,7 @@ function useFiltersFromURL({
       )
 
       const testTypes = filtersData?.data?.result?.testTypes
-      const defaultTestTypes = getDefaultTestTypes(testTypes)
+      const defaultTestTypes = getDefaultTestTypesForUser(testTypes, userRole)
       const urlAssessmentTypesKeys = (
         search.assessmentTypes || defaultTestTypes
       )

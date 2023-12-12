@@ -218,12 +218,12 @@ export const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
     .map((t) => t.key)
   const isAdmin =
     userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
-  return [
-    ...(isAdmin
-      ? DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole]
-      : [TEST_TYPES_VALUES_MAP.ASSESSMENT]),
-    ...availableExternalTestTypes,
-  ].join(',')
+  return isAdmin
+    ? [
+        ...DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole],
+        ...availableExternalTestTypes,
+      ].join(',')
+    : ''
 }
 
 export const sortTestTypes = (testTypes) => {

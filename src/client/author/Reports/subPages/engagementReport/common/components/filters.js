@@ -34,6 +34,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import staticDropDownData from '../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
+import { getDefaultTestTypesForUser } from '../../../dataWarehouseReports/common/utils'
 
 const EngagementReportFilters = ({
   isPrinting,
@@ -78,6 +79,9 @@ const EngagementReportFilters = ({
     const urlAssignedBy =
       staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
       staticDropDownData.assignedBy[0]
+
+    search.assessmentTypes =
+      search.assessmentTypes || getDefaultTestTypesForUser([], user.role)
 
     const _filters = {
       reportId: search.reportId,

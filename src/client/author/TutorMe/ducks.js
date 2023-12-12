@@ -56,12 +56,14 @@ function* assignTutorForStudentsSaga({ payload }) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
     yield put(GIActions.setIntervention(intervention))
-    yield put(
-      setInterventionDataInUtaAction({
-        testActivityId: payload.testActivityId,
-        intervention: [{ _id: intervention._id, type: intervention.type }],
-      })
-    )
+    if (payload.testActivityId) {
+      yield put(
+        setInterventionDataInUtaAction({
+          testActivityId: payload.testActivityId,
+          intervention: [{ _id: intervention._id, type: intervention.type }],
+        })
+      )
+    }
     yield put(actions.assignTutorSucces())
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {

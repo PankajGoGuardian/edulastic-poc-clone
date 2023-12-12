@@ -1,11 +1,14 @@
-import { CustomModalStyled } from '@edulastic/common'
+import { CustomModalStyled, EduElse, EduIf, EduThen } from '@edulastic/common'
 import React, { useMemo } from 'react'
 import { groupBy } from 'lodash'
 import { connect } from 'react-redux'
 import { formatDate } from '@edulastic/constants/reportUtils/common'
-import { interventionsByStudentIdSelector } from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
+import { Spin } from 'antd'
 import { BodyContainer } from '../../ClassBoard/components/styled'
-import { disabledAddStudentsList } from '../../ClassBoard/ducks'
+import {
+  interventionsList,
+  isInterventionsDataLoading,
+} from '../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
 import {
   AssignedParagraph,
   CustomRow,
@@ -52,17 +55,13 @@ const History = ({ intervention }) => {
 const TutorDetails = ({
   closePopup,
   open,
-  selectedStudent,
-  interventionsByStudentId,
+  _interventionsList,
+  isInterventionsLoading,
 }) => {
-  const selectedInterventions =
-    interventionsByStudentId[selectedStudent.studentId] || []
   const fiveLatestInterventions = useMemo(
     () =>
-      selectedInterventions
-        .sort((a, b) => b.createdAt - a.createdAt)
-        .slice(0, 5),
-    [selectedInterventions]
+      _interventionsList.sort((a, b) => b.createdAt - a.createdAt).slice(0, 5),
+    [_interventionsList]
   )
   return (
     <CustomModalStyled
@@ -81,29 +80,36 @@ const TutorDetails = ({
       closable={false}
     >
       <BodyContainer>
-        <div style={{ fontSize: '12px', color: '#777777' }}>
-          View tutoring history
-          {selectedInterventions.length > 5 && ' (limited to last 5)'}, copy
-          link to share to students{' '}
-        </div>
-        <RowsWrap>
-          {fiveLatestInterventions.map((intervention) => (
-            <CustomRow>
-              <History intervention={intervention} />
-              <TitleCopy
-                copyable={{
-                  text: intervention.tutoringLink ?? TUTOR_ME_APP_URL,
-                }}
-              />
-            </CustomRow>
-          ))}
-        </RowsWrap>
+        <EduIf condition={isInterventionsLoading}>
+          <EduThen>
+            <Spin />
+          </EduThen>
+          <EduElse>
+            <div style={{ fontSize: '12px', color: '#777777' }}>
+              View tutoring history
+              {_interventionsList.length > 5 && ' (limited to last 5)'}, copy
+              link to share to students{' '}
+            </div>
+            <RowsWrap>
+              {fiveLatestInterventions.map((intervention) => (
+                <CustomRow>
+                  <History intervention={intervention} />
+                  <TitleCopy
+                    copyable={{
+                      text: intervention.tutoringLink ?? TUTOR_ME_APP_URL,
+                    }}
+                  />
+                </CustomRow>
+              ))}
+            </RowsWrap>
+          </EduElse>
+        </EduIf>
       </BodyContainer>
     </CustomModalStyled>
   )
 }
 
 export default connect((state) => ({
-  disabledList: disabledAddStudentsList(state),
-  interventionsByStudentId: interventionsByStudentIdSelector(state),
+  _interventionsList: interventionsList(state),
+  isInterventionsLoading: isInterventionsDataLoading(state),
 }))(TutorDetails)

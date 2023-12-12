@@ -1186,9 +1186,12 @@ class ClassBoard extends Component {
       assignedBy: user,
     }).then((tutorMeInterventionResponse) => {
       if (tutorMeInterventionResponse) {
-        assignTutorRequest(tutorMeInterventionResponse).then(
+        assignTutorRequest({
+          ...tutorMeInterventionResponse,
+          testActivityId: selectedTestActivity.testActivityId,
+        }).then(() => {
           this.onUnselectCardOne(selectedStudentId)
-        )
+        })
       }
     })
   }

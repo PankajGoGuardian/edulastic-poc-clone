@@ -1194,17 +1194,15 @@ class ClassBoard extends Component {
   }
 
   handleOpenTutor = (studentId) => {
-    const { fetchInterventionsList, testActivity, match } = this.props
-    const { assignmentId, classId } = match.params
+    const { fetchInterventionsList, testActivity } = this.props
     const currentActivity = testActivity.find(
       (activity) => activity.studentId === studentId
     )
-    const interventionIds = currentActivity.interventions?.map(({ _id }) => _id)
+    const interventionIds =
+      currentActivity.interventions?.map(({ _id }) => _id) || []
     fetchInterventionsList({
       type: 'tutorme',
-      _id: interventionIds,
-      assignmentId,
-      classId,
+      interventionIds: interventionIds.toString(),
     })
     this.setState({
       showAssignedTutors: true,

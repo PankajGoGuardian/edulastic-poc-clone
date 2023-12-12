@@ -55,7 +55,6 @@ const isTutorMeServiceInitializedSelector = createSelector(
 function* assignTutorForStudentsSaga({ payload }) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
-    yield put(GIActions.setIntervention(intervention))
     if (payload.testActivityId) {
       yield put(
         setInterventionDataInUtaAction({

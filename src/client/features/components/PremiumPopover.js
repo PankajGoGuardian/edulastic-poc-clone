@@ -228,6 +228,7 @@ export const PremiumPopover = ({ children, ...props }) => {
     if (isVerificationPending) return
     return _onClose(...args)
   }
+  if (!target) return <></>
   return (
     <>
       <PremiumModal

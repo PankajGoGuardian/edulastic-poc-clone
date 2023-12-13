@@ -127,8 +127,8 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       requestPayload,
       assignedBy
     )
-    const { cancelled, step } = tutorMeResponse
-    if (cancelled || step !== 4) {
+    const { cancelled } = tutorMeResponse
+    if (cancelled) {
       notification({
         type: 'warning',
         msg: 'Tutoring session not created.',

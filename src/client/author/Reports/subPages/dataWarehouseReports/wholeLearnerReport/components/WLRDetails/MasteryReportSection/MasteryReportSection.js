@@ -1,12 +1,14 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { Spin, Tooltip } from 'antd'
+import { Spin, Tooltip, Icon } from 'antd'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { IconInfo } from '@edulastic/icons'
 import { get } from 'lodash'
+
+import { IconInfo } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { EduIf, FlexContainer } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { white } from '@edulastic/colors'
 
 import MasteryTable from './MasteryTable'
 import { Spacer } from '../../../../../../../../common/styled'
@@ -24,6 +26,7 @@ import {
 import {
   getIsTutorMeVisibleToDistrictSelector,
   actions as tutorMeActions,
+  tutorMeServiceInitializingSelector,
 } from '../../../../../../../TutorMe/ducks'
 import { useGetStudentMasteryData } from '../../../../../studentProfileReport/common/hooks'
 import useFilterRecords from './hooks/useFilterRecords'
@@ -58,6 +61,7 @@ const MasteryReportSection = ({
   districtId,
   assignTutorRequest,
   initializeTutorMeService,
+  tutorMeServiceInitializing,
   user,
   t,
 }) => {
@@ -211,6 +215,13 @@ const MasteryReportSection = ({
                 >
                   Assign Tutoring
                   <span>{!isTutorMeEnabled ? ' *' : ''}</span>
+                  <EduIf condition={tutorMeServiceInitializing}>
+                    <Icon
+                      type="loading"
+                      style={{ fontSize: 10, color: white }}
+                      spin
+                    />
+                  </EduIf>
                 </StyledFilledButton>
               </Tooltip>
             </EduIf>
@@ -241,10 +252,14 @@ const MasteryReportSection = ({
           isCsvDownloading={isCsvDownloading}
           selectedScale={selectedScale}
           domainRowSelection={
-            isTutorMeVisibleToDistrict ? domainRowSelection : null
+            isTutorMeVisibleToDistrict && isTutorMeEnabled
+              ? domainRowSelection
+              : null
           }
           standardsRowSelection={
-            isTutorMeVisibleToDistrict ? standardsRowSelection : null
+            isTutorMeVisibleToDistrict && isTutorMeEnabled
+              ? standardsRowSelection
+              : null
           }
           selectedCurriculum={selectedCurriculum}
           setSelectedCurriculum={setSelectedCurriculum}
@@ -260,7 +275,7 @@ const MasteryReportSection = ({
           domainKeyToExpand={domainKeyToExpand}
           setDomainKeyToExpand={setDomainKeyToExpand}
           tableSubHeader={
-            isTutorMeVisibleToDistrict ? (
+            isTutorMeVisibleToDistrict && isTutorMeEnabled ? (
               <StandardTagsList
                 maxStandards={MAX_CHECKED_STANDARDS}
                 standards={standardsDetailsForTagsList}
@@ -286,6 +301,7 @@ const withConnect = connect(
     isTutorMeEnabled: getIsTutorMeEnabled(state),
     isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
     user: getUser(state),
+    tutorMeServiceInitializing: tutorMeServiceInitializingSelector(state),
   }),
   {
     ...tutorMeActions,

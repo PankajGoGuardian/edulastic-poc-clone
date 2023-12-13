@@ -4,6 +4,7 @@ import {
   green,
   lightGreen4,
   red,
+  white,
 } from '@edulastic/colors'
 import {
   MainContentWrapper,
@@ -38,6 +39,7 @@ import {
   notification as antNotification,
   Tooltip,
   Divider,
+  Icon,
 } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -180,6 +182,7 @@ import TutorDetailsPopup from '../../../TutorMe/components/TutorDetailsPopup'
 import {
   getIsTutorMeVisibleToDistrictSelector,
   actions as tutorMeActions,
+  tutorMeServiceInitializingSelector,
 } from '../../../TutorMe/ducks'
 import {
   getMastery,
@@ -1119,9 +1122,6 @@ class ClassBoard extends Component {
       user,
     } = this.props
 
-    // initialize tutor me sdk for Assign Tutoring
-    initializeTutorMeService()
-
     // segment api to track click event on Whole Learner Report's Tutoring tab
     const selectedStudentsKeys = Object.keys(selectedStudents)
     segmentApi.genericEventTrack('Assign Tutoring', { selectedStudentsKeys })
@@ -1136,6 +1136,7 @@ class ClassBoard extends Component {
         messageKey: 'addStandardsWarning',
       })
     }
+
     // for now only one student can be selected for assigning tutor so next line works
     const [selectedStudentId] = selectedStudentsKeys
     const testActivitiesByStudentId = keyBy(testActivity, 'studentId')
@@ -1174,27 +1175,32 @@ class ClassBoard extends Component {
         curriculumId: std.curriculumId,
       }
     })
-    invokeTutorMeSDKtoAssignTutor({
-      standardsMasteryData,
-      student: {
-        firstName: student.firstName,
-        lastName: student.lastName || '',
-        studentId: selectedTestActivity.studentId,
-        studentName: selectedTestActivity.studentName,
-        email: selectedTestActivity.email,
-      },
-      assignmentId,
-      classId,
-      districtId,
-      termId,
-      assignedBy: user,
-    }).then((tutorMeInterventionResponse) => {
-      if (tutorMeInterventionResponse) {
-        assignTutorRequest(tutorMeInterventionResponse).then(
+
+    // function to get tutor me standards, invoke sdk and create TutorMe intervention
+    const onInitializeCallback = () =>
+      invokeTutorMeSDKtoAssignTutor({
+        standardsMasteryData,
+        student: {
+          firstName: student.firstName,
+          lastName: student.lastName || '',
+          studentId: selectedTestActivity.studentId,
+          studentName: selectedTestActivity.studentName,
+          email: selectedTestActivity.email,
+        },
+        assignmentId,
+        classId,
+        districtId,
+        termId,
+        assignedBy: user,
+      }).then((tutorMeInterventionResponse) => {
+        if (tutorMeInterventionResponse) {
+          assignTutorRequest(tutorMeInterventionResponse)
           this.onUnselectCardOne(selectedStudentId)
-        )
-      }
-    })
+        }
+      })
+
+    // initialize tutor me sdk for Assign Tutoring
+    initializeTutorMeService({ callback: onInitializeCallback })
   }
 
   handleOpenTutor = (studentId, studentName) => {
@@ -1352,6 +1358,7 @@ class ClassBoard extends Component {
       attemptWindow,
       isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
+      tutorMeServiceInitializing,
     } = this.props
     const {
       selectedTab,
@@ -1854,6 +1861,13 @@ class ClassBoard extends Component {
                           >
                             ASSIGN TUTORING
                             <span>{!isTutorMeEnabled ? ' *' : ''}</span>
+                            <EduIf condition={tutorMeServiceInitializing}>
+                              <Icon
+                                type="loading"
+                                style={{ fontSize: 10, color: white }}
+                                spin
+                              />
+                            </EduIf>
                           </AssignTutoring>
                         </div>
                       </Tooltip>
@@ -2456,6 +2470,7 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
       user: getUser(state),
+      tutorMeServiceInitializing: tutorMeServiceInitializingSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

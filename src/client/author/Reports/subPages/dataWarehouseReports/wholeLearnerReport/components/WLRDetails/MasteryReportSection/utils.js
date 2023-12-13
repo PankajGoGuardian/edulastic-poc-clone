@@ -37,9 +37,6 @@ export const onAssignTutoring = async ({
   assignTutorRequest,
   user,
 }) => {
-  // initialize tutor me sdk for Assign Tutoring
-  initializeTutorMeService()
-
   // segment api to track Assign Tutoring event
   segmentApi.genericEventTrack('Assign Tutoring', {
     selectedStudentsKeys: [student.studentId],
@@ -76,22 +73,27 @@ export const onAssignTutoring = async ({
       })
     )
 
-  invokeTutorMeSDKtoAssignTutor({
-    districtId,
-    termId,
-    standardsMasteryData,
-    student: {
-      firstName: student.firstName,
-      lastName: student.lastName,
-      studentId: student.studentId,
-      studentName,
-      email: student.email,
-    },
-    assignedBy: user,
-    hasSelectedStandards: true,
-  }).then(
-    (tutorMeInterventionResponse) =>
-      tutorMeInterventionResponse &&
-      assignTutorRequest(tutorMeInterventionResponse)
-  )
+  // function to get tutor me standards, invoke sdk and create TutorMe intervention
+  const onInitializeCallback = () =>
+    invokeTutorMeSDKtoAssignTutor({
+      districtId,
+      termId,
+      standardsMasteryData,
+      student: {
+        firstName: student.firstName,
+        lastName: student.lastName,
+        studentId: student.studentId,
+        studentName,
+        email: student.email,
+      },
+      assignedBy: user,
+      hasSelectedStandards: true,
+    }).then(
+      (tutorMeInterventionResponse) =>
+        tutorMeInterventionResponse &&
+        assignTutorRequest(tutorMeInterventionResponse)
+    )
+
+  // initialize tutor me sdk for Assign Tutoring
+  initializeTutorMeService({ callback: onInitializeCallback })
 }

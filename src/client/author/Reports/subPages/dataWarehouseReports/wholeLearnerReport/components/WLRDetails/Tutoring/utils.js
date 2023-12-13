@@ -6,7 +6,7 @@ import Actions from './Actions'
 import { InfoCell } from './InfoCell'
 import { GreyText, DomainDetailsContainer } from './styled'
 
-export const getTableData = (tutorMeData) => {
+export const getTutoringTableData = (tutorMeData) => {
   return tutorMeData.map((data) => {
     const { interventionCriteria } = data
     const {
@@ -22,7 +22,7 @@ export const getTableData = (tutorMeData) => {
   })
 }
 
-export const tutoringColumns = [
+export const getTutoringTableColumns = (isSharedReport) => [
   {
     title: 'Subject',
     key: 'subject',
@@ -143,6 +143,8 @@ export const tutoringColumns = [
         <InfoCell isHeader title="Actions" tooltipContent={tooltipContent} />
       )
     },
-    render: (actions, record) => <Actions data={record} />,
+    render: (actions, record) => (
+      <Actions data={record} isSharedReport={isSharedReport} />
+    ),
   },
 ]

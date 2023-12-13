@@ -1,4 +1,11 @@
-import { takeEvery, all, call, select, put } from 'redux-saga/effects'
+import {
+  takeEvery,
+  takeLatest,
+  all,
+  call,
+  select,
+  put,
+} from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
@@ -10,22 +17,20 @@ import { initTutorMeService } from './service'
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
   assigning: false,
+  tutorMeServiceInitializing: false,
   isTutorMeServiceInitialized: false,
-  // TODO: un-used state, to be rethought once SDK is provided
-  // tutorMeStandardsDetails: {
-  //   // tutorMeSubject, tutorMeSubjectArea, tutorMeGrade
-  // },
 }
 
 const slice = createSlice({
   slice: reduxNamespaceKey,
   initialState,
   reducers: {
-    initializeTutorMeService: () => {
-      // no state change required
+    initializeTutorMeService: (state) => {
+      state.tutorMeServiceInitializing = true
     },
     setIsTutorMeServiceInitialized: (state, payload) => {
       state.isTutorMeServiceInitialized = payload
+      state.tutorMeServiceInitializing = false
     },
     assignTutorRequest: (state) => {
       state.assigning = true
@@ -33,10 +38,6 @@ const slice = createSlice({
     assignTutorSuccess: (state) => {
       state.assigning = false
     },
-    // TODO: un-used action, to be rethough once SDK is done
-    // getTutorMeStandardsDetails: (state) => {
-    //   state.tutorMeStandardsDetails
-    // },
   },
 })
 
@@ -49,6 +50,11 @@ const stateSelector = (state) => state.tutorMeReducer
 const isTutorMeServiceInitializedSelector = createSelector(
   stateSelector,
   (state) => state.isTutorMeServiceInitialized
+)
+
+export const tutorMeServiceInitializingSelector = createSelector(
+  stateSelector,
+  (state) => state.tutorMeServiceInitializing
 )
 
 function* assignTutorForStudentsSaga({ payload }) {
@@ -66,7 +72,7 @@ function* assignTutorForStudentsSaga({ payload }) {
   }
 }
 
-function* initializeTutorMeServiceSaga() {
+function* initializeTutorMeServiceSaga({ payload: { callback } }) {
   try {
     const isTutorMeServiceInitialized = yield select(
       isTutorMeServiceInitializedSelector
@@ -76,6 +82,7 @@ function* initializeTutorMeServiceSaga() {
       yield call(initTutorMeService, user)
       yield put(actions.setIsTutorMeServiceInitialized(true))
     }
+    yield call(callback)
   } catch (err) {
     captureSentryException(err)
     notification({ msg: 'Unable to initialize TutorMe SDK' })
@@ -83,45 +90,12 @@ function* initializeTutorMeServiceSaga() {
   }
 }
 
-// TODO: un-used saga, to be rethought once SDK is done
-// function* getTutorMeStandardsDetailsSaga({ payload }) {
-//   try {
-//     const tutorMeStandardsDetails = yield call(
-//       tutorMeApi.getTutorMeStandards,
-//       payload
-//     )
-//     yield put(actions.tutorMeStandardsDetails, { tutorMeStandardsDetails })
-//     notification({
-//       type: 'success',
-//       msg: 'TutorMe standards fetched successfully',
-//     })
-//   } catch (err) {
-//     captureSentryException(err)
-//     notification({
-//       type: 'error',
-//       msg: 'Unable to fetch tutorMe standards',
-//     })
-//   }
-// }
-
 export function* watcherSaga() {
   yield all([
     takeEvery(actions.assignTutorRequest, assignTutorForStudentsSaga),
-    takeEvery(actions.initializeTutorMeService, initializeTutorMeServiceSaga),
-    // takeLatest(
-    //   actions.getTutorMeStandardsDetails,
-    //   getTutorMeStandardsDetailsSaga
-    // ),
+    takeLatest(actions.initializeTutorMeService, initializeTutorMeServiceSaga),
   ])
 }
-
-// TODO: un-used selectors, to be rethough once SDK is done
-// const stateSelector = (state) => state.tutorMeReducer
-
-// export const getTutorMeStandardsDetailsSelector = createSelector(
-//   stateSelector,
-//   (state) => state.tutorMeStandardsDetails
-// )
 
 export const getIsTutorMeVisibleToDistrictSelector = createSelector(
   getUserOrgId,

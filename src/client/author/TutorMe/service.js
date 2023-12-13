@@ -23,7 +23,7 @@ export async function initTutorMeService(user) {
     api,
   })
   // FIXME: SDK isn't ready yet, delay until it is.
-  await delay(1000)
+  await delay(100)
 }
 
 /**
@@ -55,7 +55,6 @@ export async function createSessionRequest(request) {
 
     tutorMeService.requestSession({
       analyticsCallback: (event) => {
-        console.log(event)
         // FIXME use event.properties or result after the SDK is updated.
         switch (event.event) {
           case 'assign_tutoring_copy_link_click':
@@ -86,7 +85,8 @@ export async function createSessionRequest(request) {
         }
       },
       ...request,
-      callback: ({ data, cancelled, step } = {}) => {
+      callback: (response) => {
+        const { data = {}, step } = response
         const {
           // FIXME: wrong category fetched in response (got Early Math in place of Math)
           // category: subjectArea,
@@ -108,7 +108,8 @@ export async function createSessionRequest(request) {
           studentTutorMeId,
           tutoringLink,
           standards,
-          cancelled,
+          // FIXME: cancelled in callback to be returned as true if link is not generated
+          cancelled: !tutoringLink,
           step,
         })
       },

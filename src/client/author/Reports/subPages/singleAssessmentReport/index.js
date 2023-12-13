@@ -294,18 +294,20 @@ const SingleAssessmentReportContainer = (props) => {
     () => !isEmpty(Object.values(demographicFilters).filter((val) => !!val)),
     [demographicFilters]
   )
-
+  
   if (isEmpty(interestedCurriculums) && loc == 'performance-by-standards') {
     return (
       <NoDataNotification
-        heading="Standards report not available"
+        heading="Interested Standards are not available"
         description={
           <>
-            Standards report can be generated based on the Interested Standards.
-            To setup please go to <Link to="/author/profile">My Profile</Link>
-            and select your Interested Standards.
+            Standards report cannot be generated as the Interested Standards are unavailable.<br />
+            Please visit <Link to="/author/profile">My Profile</Link> to add your Interested Standards.
           </>
         }
+        style={{
+          width: '620px',
+        }}
       />
     )
   }

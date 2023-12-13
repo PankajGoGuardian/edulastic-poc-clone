@@ -71,7 +71,7 @@ class AdvancedTable extends Component {
         align: 'left',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
-        width: '28%',
+        width: '26%',
         sortOrder: false,
         onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 0) }),
         className: 'assignment-name',
@@ -193,7 +193,7 @@ class AdvancedTable extends Component {
             <AnalyzeLink testId={testId} termId={termId} testType={testType} />
           )
         },
-        width: '6%',
+        width: '8%',
       },
       {
         title: () => {

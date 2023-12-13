@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import qs from 'qs'
 
 import { assignmentApi } from '@edulastic/api'
-import { captureSentryException, notification } from '@edulastic/common'
+import { EduIf, captureSentryException, notification } from '@edulastic/common'
 import { IconPrint, IconBarChart, IconEdit, IconStar } from '@edulastic/icons'
 import {
   roleuser,
@@ -267,7 +267,7 @@ const ActionMenu = ({
             onClick={(e) => {
               if (!isPremiumUser) {
                 e.preventDefault()
-                showPremiumPopup(e.target)
+                showPremiumPopup(true)
               }
               e.stopPropagation()
             }}
@@ -276,7 +276,13 @@ const ActionMenu = ({
             <SpaceElement />
             View Summary Report
             <SpaceElement />
-            {isPremiumUser || <IconStar height="10px" />}
+            <EduIf condition={!isPremiumUser}>
+              <Tooltip title="Premium Feature" placement="bottom">
+                <div style={{ lineHeight: '100%' }}>
+                  <IconStar height="10px" />
+                </div>
+              </Tooltip>
+            </EduIf>
           </Link>
         </Menu.Item>
         {canEdit && (

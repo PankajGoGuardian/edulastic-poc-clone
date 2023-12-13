@@ -1651,18 +1651,22 @@ class ClassBoard extends Component {
                   >
                     <AnalyzeLink
                       linkText="ANALYZE PERFORMANCE"
-                      linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                      linkPrefix={`/author/reports/performance-by-students/test/`}
+                      testId={additionalData.testId}
                       showAnalyseLink
                       visible={!!additionalData.testId}
+                      classId={classId}
                     />
                     <Divider type="vertical" />
                   </EduIf>
                   <EduIf condition={selectedTab == 'questionView'}>
                     <AnalyzeLink
                       linkText="QUESTION ANALYSIS"
-                      linkUrl={`/author/reports/question-analysis/test/${additionalData.testId}`}
+                      linkPrefix={`/author/reports/question-analysis/test/`}
+                      testId={additionalData.testId}
                       showAnalyseLink
                       visible={!!additionalData.testId}
+                      classId={classId}
                     />
                     <Divider type="vertical" />
                   </EduIf>

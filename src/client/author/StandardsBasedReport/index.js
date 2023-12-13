@@ -129,9 +129,11 @@ class StandardsBasedReport extends Component {
             >
               <AnalyzeLink
                 linkText="DETAILED ANALYSIS"
-                linkUrl={`/author/reports/performance-by-standards/test/${additionalData.testId}`}
+                linkPrefix={`/author/reports/performance-by-standards/test/`}
+                testId={additionalData.testId}
                 showAnalyseLink
                 visible={!!additionalData.testId}
+                classId={classId}
               />
               <Divider type="vertical" />
               <PresentationToggleSwitch groupId={classId} />

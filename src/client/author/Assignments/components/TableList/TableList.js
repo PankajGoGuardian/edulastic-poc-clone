@@ -287,7 +287,7 @@ const TableList = ({
       },
       {
         dataIndex: 'submitted',
-        width: '8%',
+        width: '7%',
         render: (text, row) => (
           <GreyFont
             onClick={() =>
@@ -303,7 +303,7 @@ const TableList = ({
       },
       {
         dataIndex: 'graded',
-        width: '8%',
+        width: '7%',
         render: (text, row) => (
           <GreyFont
             onClick={() =>
@@ -318,12 +318,12 @@ const TableList = ({
         ),
       },
       {
-        width: '5%',
+        width: '8%',
         render: () => <GreyFont />,
       },
       {
         dataIndex: 'action',
-        width: '5%',
+        width: '4%',
         render: (_, row) => (
           <ActionsWrapper
             data-cy="PresentationIcon"
@@ -594,7 +594,7 @@ const TableList = ({
       title: 'Submitted',
       dataIndex: 'submitted',
       sortDirections: ['descend', 'ascend'],
-      width: '8%',
+      width: '7%',
       render: (text) => <GreyFont data-cy="testSubmitted"> {text} </GreyFont>,
     },
     {
@@ -602,11 +602,11 @@ const TableList = ({
       dataIndex: 'graded',
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => a.graded - b.graded,
-      width: '8%',
+      width: '7%',
       render: (text) => <GreyFont data-cy="testGraded"> {text} </GreyFont>,
     },
     {
-      width: '5%',
+      width: '8%',
       render: (_, row) => {
         const { showViewSummary, currentAssignment } = row
         const { testId, termId, testType } = currentAssignment
@@ -664,7 +664,7 @@ const TableList = ({
       },
       className: 'assignment-actions',
       dataIndex: 'action',
-      width: '5%',
+      width: '4%',
       render: (_, row) => {
         const assignmentTest = assignmentTests.find(
           (at) => at._id === row.itemId

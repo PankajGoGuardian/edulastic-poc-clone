@@ -41,12 +41,17 @@ const TrialModal = loadable(() =>
   )
 )
 
+const titles = {
+  default: 'Access Additional Features',
+  report: 'Upgrade to Access Reports',
+}
+
 const descriptions = {
   default:
     'Get additional reports, options to assist students, collaborate with colleagues, anti-cheating tools and more.',
   bubble:
     'Get bubble sheet feature to take OMR exams, also gain access to additional reports, options to assist students, anti-cheating tools and many more.',
-  report: `You don’t have an active Premium subscription to access reports. Upgrade to Premium/Enterprise to access reports.`,
+  report: 'You don’t have an active Premium subscription to access Insights.',
 }
 
 const images = {
@@ -63,6 +68,9 @@ const getContent = ({
   descriptionType = 'default',
   imageType = 'default',
 }) => {
+  const upgradeTitle =
+    titles[descriptionType] || descriptionType || titles.default
+
   const upgradeDescription =
     descriptions[descriptionType] || descriptionType || descriptions.default
 
@@ -77,9 +85,7 @@ const getContent = ({
         width="280px"
         padding="15px 0 0 6px"
       >
-        <PopoverTitle data-cy="upgradeTitle">
-          Access Additional Features
-        </PopoverTitle>
+        <PopoverTitle data-cy="upgradeTitle">{upgradeTitle}</PopoverTitle>
         <PopoverDetail data-cy="upgradeDescription">
           {upgradeDescription}
         </PopoverDetail>
@@ -216,13 +222,21 @@ export const PremiumPopover = ({ children, ...props }) => {
   ])
   useEffect(() => {
     if (!target) return
-    const rect = target.getBoundingClientRect?.()
-    const screenWidth = document.body.clientWidth || window.innerWidth
-    const newModalPos = {
-      top: rect.bottom,
-      right: `${Math.max(screenWidth - rect.left, 0)}px`,
+    if (typeof target == 'boolean') {
+      setModalPos({
+        top: `40%`,
+        right: '50%',
+        transform: `translate(50%, 0%)`,
+      })
+    } else {
+      const rect = target.getBoundingClientRect?.()
+      const screenWidth = document.body.clientWidth || window.innerWidth
+      const newModalPos = {
+        top: rect.bottom,
+        right: `${Math.max(screenWidth - rect.left, 0)}px`,
+      }
+      setModalPos(newModalPos)
     }
-    setModalPos(newModalPos)
   }, [target])
   const onClose = (...args) => {
     if (isVerificationPending) return
@@ -239,6 +253,7 @@ export const PremiumPopover = ({ children, ...props }) => {
         style={{
           top: modalPos.top,
           animationDuration: '0s', // disable animation as it moves the modal first to center, then real position.
+          transform: modalPos.transform,
         }}
         right={modalPos.right}
       >

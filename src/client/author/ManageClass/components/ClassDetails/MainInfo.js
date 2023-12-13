@@ -3,7 +3,7 @@ import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import { Col, Divider } from 'antd'
 import React, { useEffect } from 'react'
-import { EduButton } from '@edulastic/common'
+import { EduButton, EduIf } from '@edulastic/common'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import defaultImage from '../../../src/assets/manageclass/abstract.jpg'
 import selectsData from '../../../TestPage/components/common/selectsData'
@@ -197,7 +197,7 @@ const MainInfo = ({
             </MidWrapper>
           </FlexDiv>
         </ClassInfoContainer>
-        {active && (
+        <EduIf condition={active}>
           <>
             <Divider type="vertical" style={{ height: 'auto' }} />
             <ViewAssignmentsContainer>
@@ -209,10 +209,9 @@ const MainInfo = ({
               >
                 View Assignments
               </EduButton>
-              For this class
             </ViewAssignmentsContainer>
           </>
-        )}
+        </EduIf>
       </MainContainer>
       <StyledDivider orientation="left" />
     </div>

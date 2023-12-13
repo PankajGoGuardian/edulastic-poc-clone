@@ -486,16 +486,16 @@ const PerformanceByStandards = ({
                 </EduThen>
                 <EduElse>
                   <NoDataNotification
-                    heading="Report not available"
+                    heading="Report cannot be generated"
                     description={
                       <>
-                        The test standards are different from your interested
-                        standards. Please go to{' '}
-                        <Link to="/author/profile">My Profile</Link> and add the
-                        standard set for the standards used in this test to view
-                        this report.
+                        The test standards differ from your Interested Standards.<br />
+                        Please visit <Link to="/author/profile">My Profile</Link> and add the relevant standard set for this test to your Interested Standards.
                       </>
                     }
+                    style={{
+                      width: '750px',
+                    }}
                   />
                 </EduElse>
               </EduIf>
@@ -511,8 +511,9 @@ const PerformanceByStandards = ({
                 </EduThen>
                 <EduElse>
                   <NoDataNotification
-                    heading="Standards are not available for this test."
+                    heading="Standards are not available for this test"
                     description="Please add standards to the test and regrade to view performance by standards."
+                    style={{ width: '600px' }}
                   />
                 </EduElse>
               </EduIf>

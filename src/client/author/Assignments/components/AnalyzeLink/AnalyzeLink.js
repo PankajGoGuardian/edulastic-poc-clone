@@ -10,31 +10,37 @@ import { themeColor } from '@edulastic/colors'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { EduIf } from '@edulastic/common'
+import { Tooltip } from 'antd'
 import { Container, SpaceElement } from './styled'
 
 import { getUserRole, isPremiumUserSelector } from '../../../src/selectors/user'
 
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
-const getReportPathForAssignment = (testId = '', termId, testType) => {
+const getReportPathForAnalyze = (
+  linkPrefix = '/author/reports/assessment-summary/test/',
+  { testId = '', termId, testType, classId }
+) => {
   const q = {
     termId,
     assessmentTypes: testType,
     subject: 'All',
     grade: 'All',
+    classIds: classId,
   }
-  return `/author/reports/assessment-summary/test/${testId}?${qs.stringify(q)}`
+  return `${linkPrefix}${testId}?${qs.stringify(q)}`
 }
 
 const AnalyzeLink = ({
   testId,
   termId,
+  classId,
   testType,
   userRole = '',
   showAnalyseLink = false,
   isPremiumUser,
   linkText = 'Analyze',
-  linkUrl = '',
+  linkPrefix = '',
   visible = true,
 }) => {
   const isAdmin =
@@ -45,12 +51,17 @@ const AnalyzeLink = ({
   const handleAnalyzeClick = (e) => {
     if (!isPremiumUser) {
       e.preventDefault()
-      setPremiumPopup(e.target)
+      setPremiumPopup(true)
     }
     e.stopPropagation()
   }
 
-  const url = linkUrl || getReportPathForAssignment(testId, termId, testType)
+  const url = getReportPathForAnalyze(linkPrefix, {
+    testId,
+    termId,
+    testType,
+    classId,
+  })
 
   return (
     <EduIf condition={(isAdmin || showAnalyseLink) && visible}>
@@ -65,7 +76,13 @@ const AnalyzeLink = ({
           <SpaceElement />
           {linkText}
           <SpaceElement />
-          {isPremiumUser || <IconStar height="10px" />}
+          <EduIf condition={!isPremiumUser}>
+            <Tooltip title="Premium Feature" placement="bottom">
+              <span>
+                <IconStar height="10px" />
+              </span>
+            </Tooltip>
+          </EduIf>
           <SpaceElement />
         </Container>
       </Link>

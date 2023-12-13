@@ -66,7 +66,6 @@ import {
   maxDueDateFromClassess,
 } from '../../../../student/utils'
 import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
-import { interventionsByStudentIdSelector } from '../../../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/selectors'
 import { isPearDomain } from '../../../../../utils/pear'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
@@ -146,7 +145,6 @@ class DisneyCardContainer extends Component {
       loadTestActivity,
       match,
       handleOpenTutor,
-      interventionsByStudentId,
     } = this.props
     const { assignmentId, classId } = match.params
     const noDataNotification = () => (
@@ -192,7 +190,7 @@ class DisneyCardContainer extends Component {
           serverTimeStamp,
           closed
         )
-        const { questionActivities = [] } = student
+        const { questionActivities = [], interventions = [] } = student
         const isAllPractice =
           questionActivities.length &&
           questionActivities.every((q) => q.isPractice)
@@ -334,16 +332,12 @@ class DisneyCardContainer extends Component {
                     }}
                   >
                     {name}
-                    {!!interventionsByStudentId?.[student.studentId]
-                      ?.length && (
+                    {!!interventions?.length && (
                       <IconTutorMeAssigned
                         style={{ cursor: 'pointer', marginLeft: '3px' }}
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleOpenTutor(
-                            student.studentId,
-                            student.studentName
-                          )
+                          handleOpenTutor(student.studentId)
                         }}
                       />
                     )}
@@ -696,7 +690,6 @@ const withConnect = connect(
     showRefreshMessage: getShowRefreshMessage(state),
     bulkAssignedCount: getBulckAssignedCount(state),
     bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state),
-    interventionsByStudentId: interventionsByStudentIdSelector(state),
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

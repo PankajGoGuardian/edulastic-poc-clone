@@ -69,6 +69,7 @@ export const SET_LCB_QUESTION_LOADER_STATE =
   '[lcb] set lcb question loader state'
 export const SET_QUESTION_ID_TO_SCROLL = '[lcb] set question id to scroll'
 export const UPDATE_ADDITIONAL_DATA = '[lcb] update additional data'
+export const SET_INTERVENTIONS_DATA = '[lcb] update interventions data in uta'
 
 export const realtimeGradebookActivityAddAction = createAction(
   REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD
@@ -111,6 +112,9 @@ export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
 export const setAddedStudentsAction = createAction(SET_ADDED_STUDENTS)
 export const updateServerTimeAction = createAction(UPDATE_SERVER_TIME)
 export const updateAdditionalDataAction = createAction(UPDATE_ADDITIONAL_DATA)
+export const setInterventionDataInUtaAction = createAction(
+  SET_INTERVENTIONS_DATA
+)
 
 const initialState = {
   entities: [],
@@ -733,6 +737,22 @@ const reducer = (state = initialState, { type, payload }) => {
           ...state.additionalData,
           ...payload,
         },
+      }
+    case SET_INTERVENTIONS_DATA:
+      return {
+        ...state,
+        entities: state.entities.map((entity) => {
+          if (entity.testActivityId === payload.testActivityId) {
+            const { interventions = [] } = entity
+            return {
+              ...entity,
+              interventions: interventions.length
+                ? [...interventions, payload.intervention]
+                : payload.intervention,
+            }
+          }
+          return entity
+        }),
       }
     default:
       return state

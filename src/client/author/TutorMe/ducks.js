@@ -6,6 +6,7 @@ import { reportsApi } from '@edulastic/api'
 import { getUser, getUserOrgId } from '../src/selectors/user'
 import { actions as GIActions } from '../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/actionReducers'
 import { initTutorMeService } from './service'
+import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
@@ -54,8 +55,15 @@ const isTutorMeServiceInitializedSelector = createSelector(
 function* assignTutorForStudentsSaga({ payload }) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
-    yield put(GIActions.setIntervention(intervention))
-    yield put(actions.assignTutorSuccess())
+    if (payload.testActivityId) {
+      yield put(
+        setInterventionDataInUtaAction({
+          testActivityId: payload.testActivityId,
+          intervention: [{ _id: intervention._id, type: intervention.type }],
+        })
+      )
+    }
+    yield put(actions.assignTutorSucces())
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {
     captureSentryException(err)

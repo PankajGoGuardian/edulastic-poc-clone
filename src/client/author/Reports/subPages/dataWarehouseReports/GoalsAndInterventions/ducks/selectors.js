@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { groupBy, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { GROUP_TYPE } from '@edulastic/constants/const/report'
 import {
   ADVANCED_SEARCH_DATA,
@@ -42,11 +42,6 @@ const isInterventionsDataLoading = createSelector(
 const interventionsList = createSelector(
   interventionsSelector,
   (state) => state.list
-)
-
-const interventionsByStudentIdSelector = createSelector(
-  interventionsList,
-  (interventions) => groupBy(interventions, 'studentId')
 )
 
 const getCustomGroups = (groups) => {
@@ -195,5 +190,4 @@ export {
   isAdvancedSearchLoading,
   isLoadingOnGroupEdit,
   allGroupsSelector,
-  interventionsByStudentIdSelector,
 }

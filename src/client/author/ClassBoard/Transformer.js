@@ -572,6 +572,7 @@ export const transformGradeBookResponse = (
     ts,
     gradingPolicy,
     applyEBSR,
+    recentTestActivitiesGrouped = {},
   },
   studentResponse
 ) => {
@@ -861,7 +862,21 @@ export const transformGradeBookResponse = (
           pauseReason,
           languagePreference = 'en',
           archived,
+          interventions: _interventions = [],
         } = testActivity
+        const recentActivityByStudent = recentTestActivitiesGrouped[studentId]
+        if (
+          recentActivityByStudent &&
+          recentActivityByStudent.some(
+            ({ interventions }) => interventions && interventions.length
+          )
+        ) {
+          recentActivityByStudent.forEach(({ interventions = [] }) => {
+            if (interventions && interventions.length) {
+              _interventions.push(...interventions)
+            }
+          })
+        }
         return {
           studentId,
           studentName: fullName,
@@ -898,6 +913,7 @@ export const transformGradeBookResponse = (
           outNavigationCounter,
           pauseReason,
           languagePreference,
+          interventions: _interventions,
         }
       }
     )

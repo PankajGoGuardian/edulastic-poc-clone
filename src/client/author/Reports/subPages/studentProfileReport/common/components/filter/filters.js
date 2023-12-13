@@ -192,9 +192,9 @@ const StudentProfileReportFilters = ({
     const urlAssignedBy =
       staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
       staticDropDownData.assignedBy[0]
-    const urlDomainId = search.domainId || ''
-    const urlStandardId = search.standardId || ''
-    const urlCurriculumId = search.curriculumId || ''
+    const urlDomainId = search.domainId || 'All'
+    const urlStandardId = search.standardId || 'All'
+    const urlCurriculumId = search.curriculumId || 'All'
 
     const _filters = {
       reportId: reportId || '',

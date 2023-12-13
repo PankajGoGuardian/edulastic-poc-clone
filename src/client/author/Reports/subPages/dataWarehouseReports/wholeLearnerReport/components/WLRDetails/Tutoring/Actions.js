@@ -29,6 +29,7 @@ const Actions = ({ t, data, isPremiumUser }) => {
       interventionCriteria: { standardMasteryDetails },
       _id: interventionId,
       tutorMeSessions,
+      termId,
     } = data
     const filteredTutorMeSessions = tutorMeSessions.filter(
       ({ sessionCompleteTime }) => !!sessionCompleteTime
@@ -41,6 +42,7 @@ const Actions = ({ t, data, isPremiumUser }) => {
       )
       const curriculumId = standardMasteryDetails[0].curriculumId
       const queryStr = qs.stringify({
+        termId,
         domainId: domainIds,
         standardId: standardIds,
         curriculumId,

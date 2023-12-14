@@ -5,7 +5,7 @@ import { themeColor } from '@edulastic/colors'
 
 import { FilterRow, DropdownContainer, StyledButton } from './styled'
 import { ControlDropDown } from '../../../../../../common/components/widgets/controlDropDown'
-import { ALL_GRADES, ALL_SUBJECTS } from './utils'
+import { ALL_GRADES, ALL_SUBJECTS, DEFAULT_DOMAIN } from './utils'
 
 function MasteryFilters({
   selectedCurriculum,
@@ -23,9 +23,18 @@ function MasteryFilters({
   setExpandRows,
 }) {
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
-  const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
-  const onGradeSelect = (_, selected) => setSelectedGrade(selected)
-  const onCurriculumSelect = (_, selected) => setSelectedCurriculum(selected)
+  const onSubjectSelect = (_, selected) => {
+    setSelectedSubject(selected)
+    setSelectedDomain(DEFAULT_DOMAIN)
+  }
+  const onGradeSelect = (_, selected) => {
+    setSelectedGrade(selected)
+    setSelectedDomain(DEFAULT_DOMAIN)
+  }
+  const onCurriculumSelect = (_, selected) => {
+    setSelectedCurriculum(selected)
+    setSelectedDomain(DEFAULT_DOMAIN)
+  }
   return (
     <FilterRow justifyContent="space-between">
       <DropdownContainer>

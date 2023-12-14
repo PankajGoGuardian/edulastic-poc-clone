@@ -4,6 +4,7 @@ import {
   green,
   lightGreen4,
   red,
+  white,
 } from '@edulastic/colors'
 import {
   MainContentWrapper,
@@ -38,6 +39,7 @@ import {
   notification as antNotification,
   Tooltip,
   Divider,
+  Icon,
 } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -160,7 +162,6 @@ import {
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import { invokeTutorMeSDKtoAssignTutor } from '../../../TutorMe/helper'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
@@ -179,6 +180,7 @@ import {
 import TutorDetailsPopup from '../../../TutorMe/components/TutorDetailsPopup'
 import {
   getIsTutorMeVisibleToDistrictSelector,
+  isSessionRequestActiveSelector,
   actions as tutorMeActions,
 } from '../../../TutorMe/ducks'
 import {
@@ -399,6 +401,8 @@ class ClassBoard extends Component {
       match,
       testActivity,
       getAllTestActivitiesForStudent,
+      selectedStudents,
+      isTutorMeSessionRequestActive,
     } = this.props
 
     const { assignmentId, classId } = match.params
@@ -419,6 +423,15 @@ class ClassBoard extends Component {
           assignmentId,
           groupId: classId,
         })
+    }
+    if (
+      prevProps.isTutorMeSessionRequestActive &&
+      !isTutorMeSessionRequestActive
+    ) {
+      const [_selectedStudentId] = Object.keys(selectedStudents)
+      if (_selectedStudentId) {
+        this.onUnselectCardOne(_selectedStudentId)
+      }
     }
   }
 
@@ -1099,8 +1112,7 @@ class ClassBoard extends Component {
     const {
       testActivity,
       selectedStudents,
-      initializeTutorMeService,
-      assignTutorRequest,
+      tutorMeRequestSession,
       match,
       additionalData,
       reportStandards,
@@ -1108,9 +1120,6 @@ class ClassBoard extends Component {
       districtId,
       user,
     } = this.props
-
-    // initialize tutor me sdk for Assign Tutoring
-    initializeTutorMeService()
 
     // segment api to track click event on Whole Learner Report's Tutoring tab
     const selectedStudentsKeys = Object.keys(selectedStudents)
@@ -1126,6 +1135,7 @@ class ClassBoard extends Component {
         messageKey: 'addStandardsWarning',
       })
     }
+
     // for now only one student can be selected for assigning tutor so next line works
     const [selectedStudentId] = selectedStudentsKeys
     const testActivitiesByStudentId = keyBy(testActivity, 'studentId')
@@ -1164,7 +1174,8 @@ class ClassBoard extends Component {
         curriculumId: std.curriculumId,
       }
     })
-    invokeTutorMeSDKtoAssignTutor({
+
+    tutorMeRequestSession({
       standardsMasteryData,
       student: {
         firstName: student.firstName,
@@ -1178,14 +1189,7 @@ class ClassBoard extends Component {
       districtId,
       termId,
       assignedBy: user,
-    }).then((tutorMeInterventionResponse) => {
-      if (tutorMeInterventionResponse) {
-        assignTutorRequest({
-          ...tutorMeInterventionResponse,
-          testActivityId: selectedTestActivity.testActivityId,
-        })
-      }
-      this.onUnselectCardOne(selectedStudentId)
+      testActivityId: selectedTestActivity.testActivityId,
     })
   }
 
@@ -1350,6 +1354,7 @@ class ClassBoard extends Component {
       attemptWindow,
       isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
+      isTutorMeSessionRequestActive,
     } = this.props
     const {
       selectedTab,
@@ -1498,9 +1503,15 @@ class ClassBoard extends Component {
       ? t('common.assignTutoringRestricted')
       : ''
 
-    const handleAssignTutoringClick = isTutorMeEnabled
+    const handleAssignTutoringClick = !isTutorMeEnabled
+      ? this.handleOpenTutorMeNoLicensePopup
+      : !isTutorMeSessionRequestActive
       ? this.onAssignTutoring
-      : this.handleOpenTutorMeNoLicensePopup
+      : null
+
+    const isAssignTutoringActive =
+      !(selectedStudentsKeys.length > 1 && isTutorMeEnabled) ||
+      !isTutorMeSessionRequestActive
 
     return (
       <div>
@@ -1651,7 +1662,7 @@ class ClassBoard extends Component {
                   >
                     <AnalyzeLink
                       linkText="ANALYZE PERFORMANCE"
-                      linkPrefix={`/author/reports/performance-by-students/test/`}
+                      linkPrefix="/author/reports/performance-by-students/test/"
                       testId={additionalData.testId}
                       showAnalyseLink
                       visible={!!additionalData.testId}
@@ -1662,7 +1673,7 @@ class ClassBoard extends Component {
                   <EduIf condition={selectedTab == 'questionView'}>
                     <AnalyzeLink
                       linkText="QUESTION ANALYSIS"
-                      linkPrefix={`/author/reports/question-analysis/test/`}
+                      linkPrefix="/author/reports/question-analysis/test/"
                       testId={additionalData.testId}
                       showAnalyseLink
                       visible={!!additionalData.testId}
@@ -1846,15 +1857,19 @@ class ClassBoard extends Component {
                       >
                         <div>
                           <AssignTutoring
-                            disabled={
-                              selectedStudentsKeys.length > 1 &&
-                              isTutorMeEnabled
-                            }
+                            active={isAssignTutoringActive}
                             data-cy="assignTutoring"
                             onClick={handleAssignTutoringClick}
                           >
                             ASSIGN TUTORING
                             <span>{!isTutorMeEnabled ? ' *' : ''}</span>
+                            <EduIf condition={isTutorMeSessionRequestActive}>
+                              <Icon
+                                type="loading"
+                                style={{ fontSize: 10, color: white }}
+                                spin
+                              />
+                            </EduIf>
                           </AssignTutoring>
                         </div>
                       </Tooltip>
@@ -2456,6 +2471,7 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
       user: getUser(state),
+      isTutorMeSessionRequestActive: isSessionRequestActiveSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -2480,9 +2496,8 @@ const enhance = compose(
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
-      initializeTutorMeService: tutorMeActions.initializeTutorMeService,
-      assignTutorRequest: tutorMeActions.assignTutorRequest,
       fetchInterventionsList: actions.getInterventionsList,
+      tutorMeRequestSession: tutorMeActions.tutorMeRequestSession,
     }
   )
 )

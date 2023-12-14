@@ -20,7 +20,7 @@ import { Tooltip } from 'antd'
 import { StyledBtn } from './styled'
 import { isPremiumUserSelector } from '../../../../../../../src/selectors/user'
 
-const Actions = ({ t, data, isPremiumUser }) => {
+const Actions = ({ t, data, isPremiumUser, isSharedReport }) => {
   const { tutoringLink } = data
 
   const reportLink = useMemo(() => {
@@ -60,7 +60,9 @@ const Actions = ({ t, data, isPremiumUser }) => {
     })
   }
 
-  const tooltipTitle = !reportLink
+  const isViewProgressEnabled = isPremiumUser && reportLink && !isSharedReport
+
+  const viewProgressDisabledTooltipTitle = !reportLink
     ? t('wholeLearnerReport.noTutoringSessions')
     : !isPremiumUser
     ? t('wholeLearnerReport.noPremiumAccess')
@@ -68,14 +70,14 @@ const Actions = ({ t, data, isPremiumUser }) => {
 
   return (
     <FlexContainer alignItems="center" justifyContent="flex-start">
-      <EduIf condition={isPremiumUser && reportLink}>
+      <EduIf condition={isViewProgressEnabled}>
         <EduThen>
           <Link to={reportLink} target="_blank">
             View Progress
           </Link>
         </EduThen>
         <EduElse>
-          <Tooltip title={tooltipTitle}>
+          <Tooltip title={viewProgressDisabledTooltipTitle}>
             <div style={{ color: greyThemeLight }}>View Progress</div>
           </Tooltip>
         </EduElse>

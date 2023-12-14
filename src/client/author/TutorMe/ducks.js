@@ -1,43 +1,32 @@
-import { takeEvery, all, call, select, put } from 'redux-saga/effects'
+import { takeLatest, all, call, select, put } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
 import { reportsApi } from '@edulastic/api'
 import { getUser, getUserOrgId } from '../src/selectors/user'
-import { actions as GIActions } from '../Reports/subPages/dataWarehouseReports/GoalsAndInterventions/ducks/actionReducers'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
+import { invokeTutorMeSDKtoAssignTutor } from './helper'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
-  assigning: false,
   isTutorMeServiceInitialized: false,
-  // TODO: un-used state, to be rethought once SDK is provided
-  // tutorMeStandardsDetails: {
-  //   // tutorMeSubject, tutorMeSubjectArea, tutorMeGrade
-  // },
+  isSessionRequestActive: false,
 }
 
 const slice = createSlice({
   slice: reduxNamespaceKey,
   initialState,
   reducers: {
-    initializeTutorMeService: () => {
-      // no state change required
+    tutorMeRequestSession: (state) => {
+      state.isSessionRequestActive = true
+    },
+    tutorMeRequestSessionComplete: (state) => {
+      state.isSessionRequestActive = false
     },
     setIsTutorMeServiceInitialized: (state, payload) => {
       state.isTutorMeServiceInitialized = payload
     },
-    assignTutorRequest: (state) => {
-      state.assigning = true
-    },
-    assignTutorSuccess: (state) => {
-      state.assigning = false
-    },
-    // TODO: un-used action, to be rethough once SDK is done
-    // getTutorMeStandardsDetails: (state) => {
-    //   state.tutorMeStandardsDetails
-    // },
   },
 })
 
@@ -52,7 +41,17 @@ const isTutorMeServiceInitializedSelector = createSelector(
   (state) => state.isTutorMeServiceInitialized
 )
 
-function* assignTutorForStudentsSaga({ payload }) {
+export const tutorMeServiceInitializingSelector = createSelector(
+  stateSelector,
+  (state) => state.tutorMeServiceInitializing
+)
+
+export const isSessionRequestActiveSelector = createSelector(
+  stateSelector,
+  (state) => state.isSessionRequestActive
+)
+
+function* createTutorMeInterventionSaga(payload) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
     if (payload.testActivityId) {
@@ -63,7 +62,6 @@ function* assignTutorForStudentsSaga({ payload }) {
         })
       )
     }
-    yield put(actions.assignTutorSucces())
     notification({ type: 'success', msg: 'Tutoring Assigned Successfully' })
   } catch (err) {
     captureSentryException(err)
@@ -91,45 +89,30 @@ function* initializeTutorMeServiceSaga() {
   }
 }
 
-// TODO: un-used saga, to be rethought once SDK is done
-// function* getTutorMeStandardsDetailsSaga({ payload }) {
-//   try {
-//     const tutorMeStandardsDetails = yield call(
-//       tutorMeApi.getTutorMeStandards,
-//       payload
-//     )
-//     yield put(actions.tutorMeStandardsDetails, { tutorMeStandardsDetails })
-//     notification({
-//       type: 'success',
-//       msg: 'TutorMe standards fetched successfully',
-//     })
-//   } catch (err) {
-//     captureSentryException(err)
-//     notification({
-//       type: 'error',
-//       msg: 'Unable to fetch tutorMe standards',
-//     })
-//   }
-// }
+function* tutorMeRequestSesssionSaga({ payload }) {
+  try {
+    yield* initializeTutorMeServiceSaga()
+    const isTutorMeServiceInitialized = yield select(
+      isTutorMeServiceInitializedSelector
+    )
+    if (!isTutorMeServiceInitialized) {
+      return
+    }
+    const tutorMeInterventionResponse = yield call(
+      invokeTutorMeSDKtoAssignTutor,
+      payload
+    )
+    yield* createTutorMeInterventionSaga(tutorMeInterventionResponse)
+  } finally {
+    yield put(actions.tutorMeRequestSessionComplete())
+  }
+}
 
 export function* watcherSaga() {
   yield all([
-    takeEvery(actions.assignTutorRequest, assignTutorForStudentsSaga),
-    takeEvery(actions.initializeTutorMeService, initializeTutorMeServiceSaga),
-    // takeLatest(
-    //   actions.getTutorMeStandardsDetails,
-    //   getTutorMeStandardsDetailsSaga
-    // ),
+    takeLatest(actions.tutorMeRequestSession, tutorMeRequestSesssionSaga),
   ])
 }
-
-// TODO: un-used selectors, to be rethough once SDK is done
-// const stateSelector = (state) => state.tutorMeReducer
-
-// export const getTutorMeStandardsDetailsSelector = createSelector(
-//   stateSelector,
-//   (state) => state.tutorMeStandardsDetails
-// )
 
 export const getIsTutorMeVisibleToDistrictSelector = createSelector(
   getUserOrgId,

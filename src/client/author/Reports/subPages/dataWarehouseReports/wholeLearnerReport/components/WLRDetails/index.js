@@ -140,6 +140,7 @@ const WLRDetails = ({
           isCsvDownloading={
             tableTabKey === TABLE_TABS.TUTORING.key && isCsvDownloading
           }
+          isSharedReport={isSharedReport}
         />
       ),
     },

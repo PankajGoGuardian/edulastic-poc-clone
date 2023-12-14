@@ -1,7 +1,6 @@
 import { segmentApi } from '@edulastic/api'
 
 import { formatName } from '@edulastic/constants/reportUtils/common'
-import { invokeTutorMeSDKtoAssignTutor } from '../../../../../../../TutorMe/helper'
 import staticDropDownData from '../../../../../singleAssessmentReport/common/static/staticDropDownData.json'
 
 export const ALL_GRADES = [
@@ -33,13 +32,9 @@ export const onAssignTutoring = async ({
   districtId,
   filteredStandards,
   selectedStandards,
-  initializeTutorMeService,
-  assignTutorRequest,
   user,
+  tutorMeRequestSession,
 }) => {
-  // initialize tutor me sdk for Assign Tutoring
-  initializeTutorMeService()
-
   // segment api to track Assign Tutoring event
   segmentApi.genericEventTrack('Assign Tutoring', {
     selectedStudentsKeys: [student.studentId],
@@ -76,7 +71,7 @@ export const onAssignTutoring = async ({
       })
     )
 
-  invokeTutorMeSDKtoAssignTutor({
+  tutorMeRequestSession({
     districtId,
     termId,
     standardsMasteryData,
@@ -89,9 +84,5 @@ export const onAssignTutoring = async ({
     },
     assignedBy: user,
     hasSelectedStandards: true,
-  }).then(
-    (tutorMeInterventionResponse) =>
-      tutorMeInterventionResponse &&
-      assignTutorRequest(tutorMeInterventionResponse)
-  )
+  })
 }

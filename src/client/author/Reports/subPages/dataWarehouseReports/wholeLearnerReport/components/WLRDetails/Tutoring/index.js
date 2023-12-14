@@ -3,7 +3,7 @@ import { Spin } from 'antd'
 
 import { EduIf, EduElse, EduThen } from '@edulastic/common'
 import { StyledEmptyContainer } from '../../../../common/components/styledComponents'
-import { tutoringColumns, getTableData } from './utils'
+import { getTutoringTableColumns, getTutoringTableData } from './utils'
 import { StyledTable } from './styled'
 import CsvTable from '../../../../../../common/components/tables/CsvTable'
 
@@ -13,10 +13,15 @@ export const Tutoring = ({
   error,
   onCsvConvert,
   isCsvDownloading,
+  isSharedReport,
 }) => {
-  const tableData = useMemo(() => getTableData(data), [data])
+  const tutoringTableColumns = useMemo(
+    () => getTutoringTableColumns(isSharedReport),
+    [isSharedReport]
+  )
+  const tutoringTableData = useMemo(() => getTutoringTableData(data), [data])
 
-  const hasContent = !loading && !error && tableData.length
+  const hasContent = !loading && !error && tutoringTableData.length
   const emptyContainerDesc = error
     ? 'Sorry, you have hit an unexpected error.'
     : 'No Tutoring assigned to the Student yet.'
@@ -27,8 +32,8 @@ export const Tutoring = ({
         <EduThen>
           <CsvTable
             tableToRender={StyledTable}
-            dataSource={tableData}
-            columns={tutoringColumns}
+            dataSource={tutoringTableData}
+            columns={tutoringTableColumns}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
             pagination={false}

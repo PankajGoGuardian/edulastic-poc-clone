@@ -17,6 +17,7 @@ export const createInterventionObject = ({
   assignedByName,
   standardsMasteryData,
   tutorMeResponse,
+  testActivityId,
 }) => {
   const {
     subjectArea,
@@ -61,8 +62,23 @@ export const createInterventionObject = ({
     tutoringId,
     tutoringLink,
     notes,
+    testActivityId,
   }
 }
+/**
+ * @param {{
+ * standardsMasteryData: Record[];
+ * student: Record;
+ * assignmentId: string;
+ * classId: string;
+ * districtId: string;
+ * termId: string;
+ * assignedBy: Record;
+ * hasSelectedStandards: boolean;
+ * testActivityId?: string;
+ * }} param0
+ * @returns
+ */
 export const invokeTutorMeSDKtoAssignTutor = async ({
   standardsMasteryData,
   student,
@@ -72,6 +88,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
   termId,
   assignedBy,
   hasSelectedStandards,
+  testActivityId,
 }) => {
   const [assignedById, assignedByEmail, assignedByName] = [
     assignedBy._id,
@@ -127,8 +144,8 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       requestPayload,
       assignedBy
     )
-    const { cancelled, step } = tutorMeResponse
-    if (cancelled || step !== 4) {
+    const { cancelled } = tutorMeResponse
+    if (cancelled) {
       notification({
         type: 'warning',
         msg: 'Tutoring session not created.',
@@ -144,6 +161,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       assignedByName,
       standardsMasteryData,
       tutorMeResponse,
+      testActivityId,
     })
   } catch (err) {
     console.error(err)

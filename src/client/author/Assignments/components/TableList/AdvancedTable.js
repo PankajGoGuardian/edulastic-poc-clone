@@ -51,7 +51,10 @@ import {
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import BulkEditTestModal from '../BulkEditTestModal'
-import { shortTestIdKeyLength } from '../../constants'
+import {
+  ASSESSMENT_SUMMARY_LINK_PREFIX,
+  shortTestIdKeyLength,
+} from '../../constants'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 class AdvancedTable extends Component {
@@ -190,7 +193,12 @@ class AdvancedTable extends Component {
       {
         render: (_, { testId, termId, testType }) => {
           return (
-            <AnalyzeLink testId={testId} termId={termId} testType={testType} />
+            <AnalyzeLink
+              testId={testId}
+              termId={termId}
+              testType={testType}
+              linkPrefix={ASSESSMENT_SUMMARY_LINK_PREFIX}
+            />
           )
         },
         width: '8%',

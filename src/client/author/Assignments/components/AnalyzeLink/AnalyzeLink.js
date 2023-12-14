@@ -18,7 +18,7 @@ import { getUserRole, isPremiumUserSelector } from '../../../src/selectors/user'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const getReportPathForAnalyze = (
-  linkPrefix = '/author/reports/assessment-summary/test/',
+  linkPrefix,
   { testId = '', termId, testType, classId }
 ) => {
   const q = {

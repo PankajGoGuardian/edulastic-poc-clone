@@ -78,7 +78,10 @@ import {
   getIsProxiedByEAAccountSelector,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
-import { shortTestIdKeyLength } from '../../constants'
+import {
+  ASSESSMENT_SUMMARY_LINK_PREFIX,
+  shortTestIdKeyLength,
+} from '../../constants'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const convertTableData = (
@@ -616,6 +619,7 @@ const TableList = ({
             termId={termId}
             testType={testType}
             showAnalyseLink={showViewSummary}
+            linkPrefix={ASSESSMENT_SUMMARY_LINK_PREFIX}
           />
         )
       },

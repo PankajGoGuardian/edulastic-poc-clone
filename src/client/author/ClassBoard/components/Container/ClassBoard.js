@@ -1667,6 +1667,7 @@ class ClassBoard extends Component {
                       showAnalyseLink
                       visible={!!additionalData.testId}
                       classId={classId}
+                      termId={additionalData.termId}
                     />
                     <Divider type="vertical" />
                   </EduIf>
@@ -1678,6 +1679,7 @@ class ClassBoard extends Component {
                       showAnalyseLink
                       visible={!!additionalData.testId}
                       classId={classId}
+                      termId={additionalData.termId}
                     />
                     <Divider type="vertical" />
                   </EduIf>

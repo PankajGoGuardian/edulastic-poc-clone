@@ -79,6 +79,9 @@ const StyledTable = styled(Table)`
     position: relative;
     top: 30px;
     background-color: ${lightGrey};
+    @media print {
+      z-index: 2;
+    }
   }
   .ant-table-fixed .ant-table-tbody .tutorme-column {
     background-color: ${lightGrey};

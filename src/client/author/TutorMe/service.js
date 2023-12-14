@@ -90,10 +90,10 @@ export async function createSessionRequest(request) {
       },
       ...request,
       callback: (response) => {
-        const { data = {}, step } = response
+        const { data = {}, cancelled, step } = response
         const {
           // FIXME: wrong category fetched in response (got Early Math in place of Math)
-          // category: subjectArea,
+          category: subjectArea,
           subject,
           description: notes,
           grade,
@@ -104,7 +104,7 @@ export async function createSessionRequest(request) {
         } = data
         resolve({
           ...state,
-          // subjectArea,
+          subjectArea,
           subject,
           notes,
           grade,
@@ -112,8 +112,7 @@ export async function createSessionRequest(request) {
           studentTutorMeId: String(studentTutorMeId),
           tutoringLink,
           standards,
-          // FIXME: cancelled in callback to be returned as true if link is not generated
-          cancelled: !tutoringLink,
+          cancelled,
           step,
         })
       },

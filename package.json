@@ -167,7 +167,7 @@
     "uuid": "^3.3.2"
   },
   "optionalDependencies": {
-    "@goguardian/tutorme-sdk": "^2.0.2"
+    "@goguardian/tutorme-sdk": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

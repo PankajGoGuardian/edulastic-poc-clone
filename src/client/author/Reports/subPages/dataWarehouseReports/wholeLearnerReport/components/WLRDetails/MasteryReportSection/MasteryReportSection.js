@@ -26,6 +26,7 @@ import {
 import {
   getIsTutorMeVisibleToDistrictSelector,
   isSessionRequestActiveSelector,
+  isTutorMeModalLoadingSelector,
   actions as tutorMeActions,
 } from '../../../../../../../TutorMe/ducks'
 import { useGetStudentMasteryData } from '../../../../../studentProfileReport/common/hooks'
@@ -60,6 +61,7 @@ const MasteryReportSection = ({
   isTutorMeEnabled,
   districtId,
   isTutorMeSessionRequestActive,
+  isTutorMeModalLoading,
   tutorMeRequestSession,
   user,
   t,
@@ -214,7 +216,7 @@ const MasteryReportSection = ({
                 >
                   Assign Tutoring
                   <span>{!isTutorMeEnabled ? ' *' : ''}</span>
-                  <EduIf condition={isTutorMeSessionRequestActive}>
+                  <EduIf condition={isTutorMeModalLoading}>
                     <Icon
                       type="loading"
                       style={{ fontSize: 10, color: white }}
@@ -301,6 +303,7 @@ const withConnect = connect(
     isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
     user: getUser(state),
     isTutorMeSessionRequestActive: isSessionRequestActiveSelector(state),
+    isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
   }),
   {
     ...tutorMeActions,

@@ -181,6 +181,7 @@ import TutorDetailsPopup from '../../../TutorMe/components/TutorDetailsPopup'
 import {
   getIsTutorMeVisibleToDistrictSelector,
   isSessionRequestActiveSelector,
+  isTutorMeModalLoadingSelector,
   actions as tutorMeActions,
 } from '../../../TutorMe/ducks'
 import {
@@ -1355,6 +1356,7 @@ class ClassBoard extends Component {
       isTutorMeEnabled,
       isTutorMeVisibleToDistrict,
       isTutorMeSessionRequestActive,
+      isTutorMeModalLoading,
     } = this.props
     const {
       selectedTab,
@@ -1866,7 +1868,7 @@ class ClassBoard extends Component {
                           >
                             ASSIGN TUTORING
                             <span>{!isTutorMeEnabled ? ' *' : ''}</span>
-                            <EduIf condition={isTutorMeSessionRequestActive}>
+                            <EduIf condition={isTutorMeModalLoading}>
                               <Icon
                                 type="loading"
                                 style={{ fontSize: 10, color: white }}
@@ -2475,6 +2477,7 @@ const enhance = compose(
       isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
       user: getUser(state),
       isTutorMeSessionRequestActive: isSessionRequestActiveSelector(state),
+      isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

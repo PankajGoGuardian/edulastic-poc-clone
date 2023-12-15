@@ -176,7 +176,7 @@ const StandardsMasteryReportFilters = ({
     if (reportId) {
       setFilters({ ...filters, ...search })
     }
-  }, [hasOpenedPerformanceByRubricReportRef.current])
+  }, [])
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {

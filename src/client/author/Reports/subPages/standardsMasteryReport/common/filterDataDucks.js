@@ -143,13 +143,10 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
-    const loc = payload.loc
     const params = omit(payload, ['loc'])
-    const isPerformanceByRubricsReport =
-      loc === 'performance-by-rubric-criteria'
     const [standardsFilters, rubrics] = yield all([
       call(reportsApi.fetchStandardMasteryFilter, params),
-      isPerformanceByRubricsReport && call(rubricsApi.getRubricsUsedByDistrict),
+      call(rubricsApi.getRubricsUsedByDistrict),
     ])
 
     yield put({

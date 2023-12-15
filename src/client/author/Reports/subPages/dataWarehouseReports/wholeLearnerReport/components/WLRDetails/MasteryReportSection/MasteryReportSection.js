@@ -173,9 +173,9 @@ const MasteryReportSection = ({
 
   const disableTutorMeBtn =
     isTutorMeEnabled &&
-    isTutorMeSessionRequestActive &&
     (!selectedStandards.length ||
-      selectedStandards.length > MAX_CHECKED_STANDARDS)
+      selectedStandards.length > MAX_CHECKED_STANDARDS ||
+      isTutorMeSessionRequestActive)
 
   const handleAssignTutoringClick = () =>
     isTutorMeEnabled

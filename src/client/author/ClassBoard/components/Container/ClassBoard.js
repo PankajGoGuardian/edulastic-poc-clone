@@ -1510,7 +1510,8 @@ class ClassBoard extends Component {
       : null
 
     const isAssignTutoringActive =
-      !(selectedStudentsKeys.length > 1 && isTutorMeEnabled) ||
+      isTutorMeEnabled &&
+      selectedStudentsKeys.length <= 1 &&
       !isTutorMeSessionRequestActive
 
     return (

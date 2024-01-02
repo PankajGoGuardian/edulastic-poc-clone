@@ -17,7 +17,6 @@ import {
 } from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -39,6 +38,7 @@ import {
   MobileViewLinks,
   DesktopVieLinks,
   DesktopViewCopyright,
+  StyledPearAssessmentLabelImage,
 } from '../styled'
 import {
   signupAction,
@@ -410,7 +410,7 @@ class StudentSignup extends React.Component {
           </InfoIcon>
           <Col span={21}>
             {isPearDomain
-              ? t('component.signup.pearAssessInfotext')
+              ? t('component.signup.pearAssessmentInfotext')
               : t('component.signup.infotext')}
           </Col>
         </InfoBox>
@@ -479,7 +479,7 @@ class StudentSignup extends React.Component {
       method !== OFFICE
 
     const pearOrEdulasticText = isPearDomain
-      ? t('common.pearAssessText')
+      ? t('common.pearAssessmentText')
       : t('common.edulastictext')
     return (
       <div>
@@ -509,7 +509,7 @@ class StudentSignup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+                  <StyledPearAssessmentLabelImage />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />

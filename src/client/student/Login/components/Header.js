@@ -13,13 +13,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   getDistrictGetStartedUrl,
   getPartnerGetStartedUrl,
   isDistrictPolicyAllowed,
 } from '../../../common/utils/helpers'
 import { isPearDomain } from '../../../../utils/pear'
+import { StyledPearAssessmentLabelImage } from '../../Signup/styled'
 
 const Header = ({
   t,
@@ -34,7 +34,7 @@ const Header = ({
     <Col span={12} style={{ display: 'flex' }}>
       <EduIf condition={isPearDomain}>
         <EduThen>
-          <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+          <StyledPearAssessmentLabelImage />
         </EduThen>
         <EduElse>
           <OnDarkBgLogo height="30px" />

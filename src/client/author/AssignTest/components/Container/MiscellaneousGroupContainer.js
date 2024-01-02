@@ -23,7 +23,11 @@ import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import { BetaTag } from '../../../AssessmentCreate/components/OptionDynamicTest/styled'
-import { isPearDomain } from '../../../../../utils/pear'
+import { showPearContent } from '../../../../../utils/pear'
+import {
+  edulasticText,
+  pearAssessmentText,
+} from '../../../../common/utils/helpers'
 
 const { accessibilities, accessibilitySettings } = test
 const {
@@ -364,7 +368,7 @@ const MiscellaneousGroupContainer = ({
                   width={tootltipWidth}
                   title="Test Interface"
                   content={`Teachers can change the look and feel of the assessments to more closely align with formats similar to state and nationally administered assessments. If you don’t see your state, select the generic option, ${
-                    isPearDomain ? 'Pear Assess' : 'Edulastic'
+                    showPearContent ? pearAssessmentText : edulasticText
                   } Test.`}
                   premium={selectPlayerSkinType}
                   placement="rightTop"

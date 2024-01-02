@@ -4,7 +4,7 @@ import React from 'react'
 import { SelectInputStyled } from '@edulastic/common'
 import { ColLabel, Label, StyledRow } from './styled'
 import { skinTypesOrder } from '../../../TestPage/utils'
-import { isPearDomain } from '../../../../../utils/pear'
+import { isPearDomain, showPearContent } from '../../../../../utils/pear'
 
 const { playerSkinTypes, playerSkinValues } = test
 
@@ -17,8 +17,8 @@ const PlayerSkinSelector = ({
   fullwidth = false,
   selectBackgroundWhite = false,
 }) => {
-  const pearOrEdulasticText = isPearDomain
-    ? 'Pear Assess'
+  const pearOrEdulasticText = showPearContent
+    ? 'Pear Assessment'
     : playerSkinTypes.edulastic
   const edulastic = `${pearOrEdulasticText} ${
     testType?.includes('assessment') ? 'Test' : 'Practice'

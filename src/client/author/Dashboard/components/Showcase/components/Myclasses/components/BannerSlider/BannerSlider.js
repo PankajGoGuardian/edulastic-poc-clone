@@ -27,7 +27,10 @@ import {
 } from './styled'
 import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
 import { TextWrapper } from '../../../../../styledComponents'
-import { isPearDomain } from '../../../../../../../../../utils/pear'
+import {
+  isPearDomain,
+  showPearContent,
+} from '../../../../../../../../../utils/pear'
 
 const BannerSlider = ({
   bannerSlides,
@@ -104,7 +107,7 @@ const BannerSlider = ({
 
   const navigateToTest = () => history.push('/author/tests')
 
-  const pearOrEdulasticText = isPearDomain ? 'Pear Assess' : 'Edulastic'
+  const pearOrEdulasticText = showPearContent ? 'Pear Assessment' : 'Edulastic'
 
   return (
     <>

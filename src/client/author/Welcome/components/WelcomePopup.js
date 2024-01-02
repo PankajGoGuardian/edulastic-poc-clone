@@ -7,7 +7,7 @@ import {
 } from '../../Dashboard/ducks'
 import { GreetingUser, WelcomeHeader, WelcomeNote } from '../styled/styled'
 import { getUserNameSelector } from '../../src/selectors/user'
-import { isPearDomain } from '../../../../utils/pear'
+import { isPearDomain, showPearContent } from '../../../../utils/pear'
 
 const WelcomePopup = ({
   isVisible,
@@ -27,7 +27,7 @@ const WelcomePopup = ({
     }
   }, [])
 
-  const pearOrEdulasticText = isPearDomain ? 'Pear Assess' : 'Edulastic'
+  const pearOrEdulasticText = showPearContent ? 'Pear Assessment' : 'Edulastic'
 
   return (
     <CustomModalStyled

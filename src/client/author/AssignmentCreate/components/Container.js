@@ -17,7 +17,7 @@ import {
   StyledDiv2,
   Title,
 } from './styled'
-import { isPearDomain } from '../../../../utils/pear'
+import { isPearDomain, showPearContent } from '../../../../utils/pear'
 
 const CreateAssignmentModal = ({
   visible,
@@ -50,7 +50,7 @@ const CreateAssignmentModal = ({
     </>
   )
 
-  const pearOrEdulasticText = isPearDomain ? 'Pear Assess' : 'Edulastic'
+  const pearOrEdulasticText = showPearContent ? 'Pear Assessment' : 'Edulastic'
 
   return (
     <CustomModalStyled

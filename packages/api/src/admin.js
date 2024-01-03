@@ -430,7 +430,10 @@ const moveAndPublishTests = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data: response }) => response)
+    .then(({ data: response }) => {
+      const message = response.result.message
+      notification({ type: 'success', msg: message })
+    })
 
 export default {
   getSubscription,

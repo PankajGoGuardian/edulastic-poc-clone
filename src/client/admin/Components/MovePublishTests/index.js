@@ -36,7 +36,7 @@ const MovePublishTests = ({ form }) => {
 
   const [collectionDisabled, setCollectionDisabled] = useState(true)
   const [isPublishContent, setIsPublishContent] = useState(false)
-  const [isPublishItems, setIsPublishItems] = useState(true)
+  const [isAddingItems, setIsAddingItems] = useState(true)
   const [isCrossWalkEnabled, setIsCrossWalkEnabled] = useState(false)
 
   const resetFields = () => {
@@ -115,7 +115,7 @@ const MovePublishTests = ({ form }) => {
         console.log(`coAuthorIds: ${coAuthorIds}`)
         console.log(`thumbnailULR: ${thumbnailULR}`)
         console.log(`isPublishContent: ${isPublishContent}`)
-        console.log(`isPublishItems: ${isPublishItems}`)
+        console.log(`isAddingItems: ${isAddingItems}`)
         console.log(`isCrossWalkEnabled: ${isCrossWalkEnabled}`)
         console.log('call function to backend for move tests...')
         const payload = {
@@ -125,7 +125,7 @@ const MovePublishTests = ({ form }) => {
           authorId,
           coAuthorIds,
           isPublishContent,
-          isPublishItems,
+          isAddingItems,
           isCrossWalkEnabled,
         }
         console.log(payload)
@@ -211,11 +211,11 @@ const MovePublishTests = ({ form }) => {
     }
   }
 
-  const changeIsPublishItems = (event) => {
+  const changeIsAddingItems = (event) => {
     if (event.target.checked) {
-      setIsPublishItems(true)
+      setIsAddingItems(true)
     } else {
-      setIsPublishItems(false)
+      setIsAddingItems(false)
     }
   }
 
@@ -343,8 +343,8 @@ const MovePublishTests = ({ form }) => {
         <Row>
           <Col span={24}>
             <CheckboxLabel
-              checked={isPublishItems}
-              onChange={changeIsPublishItems}
+              checked={isAddingItems}
+              onChange={changeIsAddingItems}
             >
               Do you want to add a collection of items?
             </CheckboxLabel>

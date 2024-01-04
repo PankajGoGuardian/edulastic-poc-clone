@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { keyBy } from 'lodash'
+import { keyBy, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import { IconLock, IconTick } from '@edulastic/icons'
 import styled, { ThemeProvider } from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { EduButton, EduElse, EduIf, EduThen } from '@edulastic/common'
+import { test as testConstants } from '@edulastic/constants'
 import { Spin } from 'antd'
 import { SECTION_STATUS } from '@edulastic/constants/const/testActivityStatus'
 import {
@@ -22,6 +23,7 @@ import {
   getAssignmentSettingsSelector,
   getIsLoadingSelector,
   getItemstoDeliverWithAttemptCount,
+  getPasswordValidatedStatusSelector,
   getPreventSectionNavigationSelector,
   slice,
 } from '../ducks'
@@ -29,6 +31,7 @@ import { utaStartTimeUpdateRequired } from '../../sharedDucks/AssignmentModule/d
 import { TIME_UPDATE_TYPE } from '../../../assessment/themes/common/TimedTestTimer'
 import SummaryHeader from '../../TestAttemptReview/components/SummaryHeader'
 import { saveBlurTimeAction } from '../../../assessment/actions/items'
+import SectionsTestRequirePassword from './SectionsTestRequirePassword'
 
 const RenderButton = ({
   attempted,
@@ -187,12 +190,15 @@ const SummaryContainer = (props) => {
     userId,
     saveBlurTime,
     savedBlurTime: blurTimeAlreadySaved = 0,
+    isPasswordValidated,
+    setIsSectionsTestPasswordValidated,
   } = props
   const { groupId, utaId, testId, assessmentType } = match.params
   const {
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
     blockSaveAndContinue,
+    passwordPolicy,
   } = assignmentSettings
   const { testActivity } = activityData
 
@@ -244,7 +250,17 @@ const SummaryContainer = (props) => {
   }
 
   const exitSectionsPage = () => {
+    setIsSectionsTestPasswordValidated(false)
     history.push('/home/assignments')
+  }
+
+  if (
+    !isEmpty(assignmentSettings) &&
+    passwordPolicy !==
+      testConstants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF &&
+    !isPasswordValidated
+  ) {
+    return <SectionsTestRequirePassword />
   }
 
   return (
@@ -324,9 +340,12 @@ const enhance = compose(
       assignmentSettings: getAssignmentSettingsSelector(state),
       userId: state.user?.user?._id,
       savedBlurTime: state.test?.savedBlurTime,
+      isPasswordValidated: getPasswordValidatedStatusSelector(state),
     }),
     {
       fetchSectionsData: slice.actions.fetchSectionsData,
+      setIsSectionsTestPasswordValidated:
+        slice.actions.setIsSectionsTestPasswordValidated,
       utaStartTimeUpdate: utaStartTimeUpdateRequired,
       saveBlurTime: saveBlurTimeAction,
     }

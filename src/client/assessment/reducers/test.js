@@ -81,6 +81,7 @@ const test = (state = initialState, { payload, type }) => {
         testletConfig: payload.testletConfig,
         passages: payload.passages,
         title: payload.title,
+        thumbnail: payload.thumbnail,
         annotations: payload.annotations,
         videoUrl: payload.videoUrl,
         docUrl: payload.docUrl,

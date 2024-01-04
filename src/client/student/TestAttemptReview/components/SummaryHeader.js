@@ -5,7 +5,13 @@ import { IconCircleLogout, IconLogoCompact } from '@edulastic/icons'
 import styled from 'styled-components'
 import { SaveAndExitButton } from '../../../assessment/themes/common/styledCompoenents'
 
-const SummaryHeader = ({ hidePause, onExitClick, showExit }) => {
+const SummaryHeader = ({
+  hidePause,
+  onExitClick,
+  showExit,
+  isTestPreviewModal = false,
+}) => {
+  const exitTestText = isTestPreviewModal ? 'Exit' : 'Save & Exit'
   return (
     <Header>
       <IconLogoCompact style={{ fill: themeColor, marginLeft: '21px' }} />
@@ -15,7 +21,7 @@ const SummaryHeader = ({ hidePause, onExitClick, showExit }) => {
           title={
             hidePause
               ? 'This assignment is configured to completed in a single sitting'
-              : 'Save & Exit'
+              : exitTestText
           }
         >
           <SaveAndExitButton

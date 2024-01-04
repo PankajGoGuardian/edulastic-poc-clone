@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { get, isEmpty, keyBy, keys, values } from 'lodash'
+import { get, groupBy, isEmpty, keyBy, keys, values } from 'lodash'
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
 
 import { testItemsApi } from '@edulastic/api'
@@ -8,9 +8,17 @@ import { questionType } from '@edulastic/constants'
 
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
-import { answersByQId, getItemsSelector } from '../selectors/test'
+import {
+  answersByQId,
+  getItemGroupsByExcludingItemsSelector,
+  getItemsSelector,
+} from '../selectors/test'
 import { clearHintUsageAction } from '../actions/userInteractions'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import {
+  getFormattedItemGroupsToDeliver,
+  getitemGroupToDeliverObject,
+} from '../utils/previewTest'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -52,6 +60,61 @@ export const previewTestQuestionActivities = createSelector(
       })
       .filter((x) => !!x)
     return mergedActivities
+  }
+)
+
+export const itemsToDeliverInGroupSelector = createSelector(
+  previewTestQuestionActivities,
+  getItemGroupsByExcludingItemsSelector,
+  (questionActivities, itemGroupsToDeliver) => {
+    itemGroupsToDeliver = !isEmpty(itemGroupsToDeliver)
+      ? itemGroupsToDeliver
+      : []
+
+    if (isEmpty(questionActivities)) {
+      return getFormattedItemGroupsToDeliver(itemGroupsToDeliver)
+    }
+
+    const questionActivitiesGroupedByItemId = groupBy(
+      questionActivities,
+      'testItemId'
+    )
+
+    const updatedItemGroupsToDeliver = itemGroupsToDeliver.map((itemGroup) => {
+      const itemGroupObject = getitemGroupToDeliverObject(itemGroup)
+      const { items = [] } = itemGroupObject
+      let skippedCount = 0
+      let attemptedCount = 0
+      ;(items || []).forEach((itemId) => {
+        const questionActivitiesForItem =
+          questionActivitiesGroupedByItemId?.[itemId] || []
+        if (questionActivitiesForItem?.length) {
+          const isSkipped = questionActivitiesForItem.every(
+            (qActivity) => !!qActivity?.skipped
+          )
+          const isAttempted = questionActivitiesForItem.some(
+            (qActivity) => !qActivity?.skipped
+          )
+          if (isSkipped) {
+            skippedCount += 1
+          }
+          if (isAttempted) {
+            attemptedCount += 1
+          }
+        }
+      })
+      const isSectionCompleted =
+        attemptedCount + skippedCount === items.length ? 1 : 0
+      const updatedItemGroup = {
+        ...itemGroupObject,
+        skipped: skippedCount,
+        attempted: attemptedCount,
+        status: isSectionCompleted,
+      }
+      return updatedItemGroup
+    })
+
+    return updatedItemGroupsToDeliver
   }
 )
 

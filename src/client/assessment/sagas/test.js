@@ -954,6 +954,7 @@ function* loadTest({ payload }) {
         passages,
         items: testItems,
         title: test.title,
+        thumbnail: test?.thumbnail || '',
         testType: settings.testType || test.testType,
         playerSkinType: settings.playerSkinType || test.playerSkinType,
         testletConfig: test.testletConfig,

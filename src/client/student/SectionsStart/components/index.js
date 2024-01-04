@@ -4,13 +4,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { keyBy, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import { IconLock, IconTick } from '@edulastic/icons'
-import styled, { ThemeProvider } from 'styled-components'
-import { themeColor } from '@edulastic/colors'
-import { EduButton, EduElse, EduIf, EduThen } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
+import { ThemeProvider } from 'styled-components'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { Spin } from 'antd'
-import { SECTION_STATUS } from '@edulastic/constants/const/testActivityStatus'
 import {
   FirestorePings,
   ForceFullScreenModal,
@@ -32,121 +29,9 @@ import { TIME_UPDATE_TYPE } from '../../../assessment/themes/common/TimedTestTim
 import SummaryHeader from '../../TestAttemptReview/components/SummaryHeader'
 import { saveBlurTimeAction } from '../../../assessment/actions/items'
 import SectionsTestRequirePassword from './SectionsTestRequirePassword'
-
-const RenderButton = ({
-  attempted,
-  skipped,
-  preventSectionNavigation,
-  handleReviewSection,
-  handleStartSection,
-  showLockIcon,
-  index,
-  status,
-}) => {
-  // Tried applying EduIf here but looks so much nested hence going with this approach for readability
-  const totalVisited = attempted + skipped
-  if (totalVisited === 0 && !showLockIcon) {
-    return (
-      <EduButton
-        onClick={handleStartSection(index)}
-        data-cy={`startButtton-${index}`}
-      >
-        Start Test
-      </EduButton>
-    )
-  }
-  if (totalVisited > 0 && status !== SECTION_STATUS.SUBMITTED) {
-    return (
-      <EduButton
-        onClick={handleStartSection(index, true)}
-        data-cy={`continueButton-${index}`}
-      >
-        Continue
-      </EduButton>
-    )
-  }
-  if (preventSectionNavigation && status === SECTION_STATUS.SUBMITTED) {
-    return (
-      <Completed data-cy={`completedSectionStatus-${index}`}>
-        <IconTick fill={themeColor} />
-        Completed
-      </Completed>
-    )
-  }
-  if (status === SECTION_STATUS.SUBMITTED) {
-    return (
-      <EduButton
-        onClick={handleReviewSection(index)}
-        data-cy={`reviewButton-${index}`}
-      >
-        Review
-      </EduButton>
-    )
-  }
-  return null
-}
-const TestSectionsContainer = ({
-  itemsToDeliverInGroup,
-  preventSectionNavigation,
-  handleReviewSection,
-  handleStartSection,
-}) => {
-  // Find first non submitted section
-  const nextSection =
-    itemsToDeliverInGroup.find(
-      (item) => item.status !== SECTION_STATUS.SUBMITTED
-    ) || {}
-  return (
-    <TestSections>
-      {itemsToDeliverInGroup.map((section, index) => {
-        const { items, attempted, skipped, status, groupName } = section
-        const isLast = itemsToDeliverInGroup.length == index + 1
-        const showLockIcon =
-          nextSection.groupId !== section.groupId &&
-          section.status !== SECTION_STATUS.SUBMITTED &&
-          preventSectionNavigation
-        if (!items.length) {
-          return null
-        }
-        return (
-          <Section noBorder={isLast} disabled={showLockIcon}>
-            <FlexBox>
-              {showLockIcon && <IconLockStyled />}
-              <SectionContent>
-                <h4 data-cy={`sectionName-${index}`}>{groupName}</h4>
-                <EduIf condition={!showLockIcon}>
-                  <EduThen>
-                    <p data-cy={`questionsCompleted-${index}`}>
-                      {attempted}/{items.length} questions completed
-                    </p>
-                  </EduThen>
-                  <EduElse>
-                    <p>
-                      Opens after completing{' '}
-                      <b>{itemsToDeliverInGroup[index - 1]?.groupName}</b>
-                    </p>
-                  </EduElse>
-                </EduIf>
-              </SectionContent>
-            </FlexBox>
-            <SectionProgress>
-              <RenderButton
-                attempted={attempted}
-                skipped={skipped}
-                preventSectionNavigation={preventSectionNavigation}
-                handleReviewSection={handleReviewSection}
-                handleStartSection={handleStartSection}
-                showLockIcon={showLockIcon}
-                index={index}
-                status={status}
-              />
-            </SectionProgress>
-          </Section>
-        )
-      })}
-    </TestSections>
-  )
-}
+import { MainContainer, ContentArea } from '../styled-components'
+import SectionsInfo from './SectionsInfo'
+import TestSectionsContainer from './TestSectionsContainer'
 
 const getLastVisitedItemId = (activityData, sectionIndex, resume) => {
   const { questionActivities, itemsToBeExcluded, testActivity } = activityData
@@ -297,24 +182,10 @@ const SummaryContainer = (props) => {
               <Spin />
             </EduThen>
             <EduElse>
-              <TestImage>
-                <img
-                  src={activityData?.test?.thumbnail}
-                  alt={activityData?.test?.title}
-                />
-              </TestImage>
-              <TestTitle>{activityData?.test?.title}</TestTitle>
-              <TestInstruction>
-                {/* <IconParent>
-                  <IconMessage />
-                </IconParent>
-                <div>
-                  <span>Teachers Instruction :</span> You are required to submit
-                  the test section by section and once a section is submitted,
-                  you wouldn’t be able to change it.
-                </div> */}
-              </TestInstruction>
-              <SectionTitle>Your Test Sections</SectionTitle>
+              <SectionsInfo
+                title={activityData?.test?.title}
+                thumbnail={activityData?.test?.thumbnail}
+              />
               <TestSectionsContainer
                 itemsToDeliverInGroup={itemsToDeliverInGroup}
                 preventSectionNavigation={preventSectionNavigation}
@@ -357,87 +228,3 @@ export default enhance(SummaryContainer)
 SummaryContainer.propTypes = {
   history: PropTypes.func.isRequired,
 }
-
-const FlexBox = styled.div`
-  display: flex;
-`
-const MainContainer = styled(FlexBox)`
-  justify-content: center;
-`
-
-const ContentArea = styled(FlexBox)`
-  padding: 100px 20px 20px 20px;
-  flex-direction: column;
-  width: 40%;
-  @media (max-width: 1400px) {
-    width: 60%;
-  }
-  @media (max-width: 994px) {
-    width: 80%;
-  }
-`
-
-const TestTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-`
-
-// const IconParent = styled.div`
-//   height: 20px;
-//   margin-right: 5px;
-// `
-
-const SectionTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 10px;
-`
-
-const TestSections = styled.div`
-  border: 1px solid #d8d8d8;
-  padding: 20px;
-  border-radius: 10px;
-`
-
-const Section = styled(FlexBox)`
-  ${(props) => (props.noBorder ? '' : `border-bottom: 1px solid #d8d8d8`)};
-  padding: 15px 0;
-  justify-content: space-between;
-  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'initial')};
-`
-
-const TestInstruction = styled(FlexBox)`
-  span {
-    color: #777777;
-  }
-`
-
-const TestImage = styled.div`
-  width: 114px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  img {
-    width: 100%;
-  }
-`
-
-const Completed = styled(FlexBox)`
-  align-items: center;
-  svg {
-    margin-right: 10px;
-  }
-`
-
-const SectionProgress = styled.div``
-
-const SectionContent = styled.div`
-  h4 {
-    font-weight: 600;
-  }
-`
-
-const IconLockStyled = styled(IconLock)`
-  margin-right: 5px;
-  margin-top: 5px;
-`

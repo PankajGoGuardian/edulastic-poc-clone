@@ -31,6 +31,8 @@ import {
   FireBaseService,
   EduButton,
   EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
@@ -101,6 +103,7 @@ import {
   blockAntiCheatingFeature,
   unblockAntiCheatingFeature,
 } from '../../../utils/anticheating/antiCheatingHelper'
+import SectionsTestStartPage from '../../author/Assignments/components/SectionsTestPreview/SectionsTestStartPage'
 
 const { playerSkinValues } = testConstants
 
@@ -541,6 +544,7 @@ const AssessmentContainer = ({
   view,
   items,
   title,
+  thumbnail,
   defaultAP,
   finishTest,
   history,
@@ -614,6 +618,11 @@ const AssessmentContainer = ({
   deliveringItemGroups,
   ...restProps
 }) => {
+  const [
+    showPreviewModeSectionStartPage,
+    setShowPreviewModeSectionStartPage,
+  ] = useState(false)
+
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
   const _questionsById = useMemo(() => {
     if (preview && questionsById) {
@@ -635,11 +644,12 @@ const AssessmentContainer = ({
     return classSettings
   }, [assignmentById, currentAssignment, groupId])
 
-  const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
+  let itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
   const itemIndex =
     itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
   const qid = itemIndex > 0 ? itemIndex : 0
   const [currentItem, setCurrentItem] = useState(Number(qid))
+  itemId = preview ? items?.[currentItem]?._id || '' : itemId
   const [unansweredPopupSetting, setUnansweredPopupSetting] = useState({
     qLabels: [],
     show: false,
@@ -686,6 +696,9 @@ const AssessmentContainer = ({
 
   const isLast = () => lastItemInTest || (lastItemInsection && hasSections)
   const isFirst = () => currentItem === 0
+
+  const showSectionStartPageCallback = () =>
+    setShowPreviewModeSectionStartPage(true)
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
@@ -801,6 +814,10 @@ const AssessmentContainer = ({
      */
     if (!assignmentById[currentAssignment] && !preview) {
       fetchAssignments()
+    }
+
+    if (preview && hasSections && deliveringItemGroups?.length) {
+      showSectionStartPageCallback()
     }
 
     window.localStorage.assessmentLastTime = Date.now()
@@ -1088,14 +1105,21 @@ const AssessmentContainer = ({
         })
       }
       const _item = items[currentItem]
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+      }
+
+      if (lastItemInTest) {
+        evalArgs.isLastQuestion = true
+        evalArgs.callback = submitPreviewTest
+      } else if (hasSections && lastItemInsection && !lastItemInTest) {
+        evalArgs.callback = showSectionStartPageCallback
+      }
+
       if (!_item.isDummyItem) {
-        evaluateForPreview({
-          currentItem,
-          timeSpent,
-          callback: submitPreviewTest,
-          testId,
-          isLastQuestion: true,
-        })
+        evaluateForPreview(evalArgs)
       }
       if (_item.isDummyItem) {
         submitPreviewTest()
@@ -1189,6 +1213,8 @@ const AssessmentContainer = ({
     if (lastItemInTest) {
       evalArgs.isLastQuestion = true
       evalArgs.callback = submitPreviewTest
+    } else if (hasSections && lastItemInsection && !lastItemInTest) {
+      evalArgs.callback = showSectionStartPageCallback
     }
     evaluateForPreview(evalArgs)
   }
@@ -1567,7 +1593,24 @@ const AssessmentContainer = ({
           regradedRealtimeAssignment={regradedRealtimeAssignment}
         />
       )}
-      {playerComponent}
+      <EduIf
+        condition={preview && hasSections && showPreviewModeSectionStartPage}
+      >
+        <EduThen>
+          <SectionsTestStartPage
+            title={title}
+            thumbnail={thumbnail}
+            closeTestPreviewModal={closeTestPreviewModal}
+            preventSectionNavigation={preventSectionNavigation}
+            setShowPreviewModeSectionStartPage={
+              setShowPreviewModeSectionStartPage
+            }
+            setCurrentItem={setCurrentItem}
+            allItems={items}
+          />
+        </EduThen>
+        <EduElse>{playerComponent}</EduElse>
+      </EduIf>
     </AssessmentPlayerContext.Provider>
   )
 }
@@ -1609,6 +1652,7 @@ const enhance = compose(
       items: getItemsSelector(state),
       passages: state.test.passages || ownProps.passages,
       title: state.test.title,
+      thumbnail: state?.test?.thumbnail || '',
       docUrl: state.test.docUrl,
       videoUrl: state.test.videoUrl,
       testType: state.test.testType,

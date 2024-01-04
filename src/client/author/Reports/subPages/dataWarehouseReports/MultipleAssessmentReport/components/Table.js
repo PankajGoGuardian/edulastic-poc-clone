@@ -6,6 +6,7 @@ import { isNumber, round } from 'lodash'
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
+import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -275,7 +276,9 @@ const getDownloadCsvColumnHeadersFunc = (
       ? getScoreLabel(round(averageScore), { externalTestType })
       : averageScore
     dowloadCsvTableColumnHeaders.dates.push(formatDate(assessmentDate))
-    dowloadCsvTableColumnHeaders.testType.push(externalTestType || testType)
+    dowloadCsvTableColumnHeaders.testType.push(
+      externalTestType || TEST_TYPE_LABELS[testType]
+    )
     dowloadCsvTableColumnHeaders.totalStudents.push(`${totalGraded}`)
     dowloadCsvTableColumnHeaders.avgScore.push(scoreLabel)
   }

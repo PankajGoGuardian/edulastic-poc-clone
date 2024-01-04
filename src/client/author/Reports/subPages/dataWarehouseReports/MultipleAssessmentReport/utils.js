@@ -15,6 +15,7 @@ import {
   reportUtils,
   dataWarehouse as dataWarehouseConstants,
 } from '@edulastic/constants'
+import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import {
   EXTERNAL_SCORE_TYPES,
   compareByOptions,
@@ -359,7 +360,7 @@ const getAggregatedDataByTestId = (metricInfo, filters = {}) => {
     // mix of averageScore(total/count) & averageFractionalScore(total/max)
     const _testName = testData.externalTestType
       ? testName
-      : `${testName} (${testData.testType})`
+      : `${testName} (${TEST_TYPE_LABELS[testData.testType]})`
     result[testId] = {
       ...testData,
       testName: _testName,
@@ -583,7 +584,7 @@ export const getChartData = (
       return {
         ...testData,
         testId,
-        testName: `${testName} (${testData.testType})`,
+        testName: `${testName} (${TEST_TYPE_LABELS[testData.testType]})`,
         isIncomplete,
         totalScore: round(testData.totalScore, 2),
         lineScore: round(averageScore, 2),

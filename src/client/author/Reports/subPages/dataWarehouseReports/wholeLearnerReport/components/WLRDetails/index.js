@@ -126,6 +126,7 @@ const WLRDetails = ({
     {
       key: TABLE_TABS.TUTORING.key,
       label: TABLE_TABS.TUTORING.label,
+      hidden: tutorMeInterventionsData?.length === 0, // hide tab if no data, including loading state
       children: (
         <Tutoring
           data={tutorMeInterventionsData}
@@ -144,7 +145,7 @@ const WLRDetails = ({
         />
       ),
     },
-  ]
+  ].filter((item) => !item.hidden)
 
   const onTabClick = useCallback(
     (key) => {

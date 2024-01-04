@@ -693,6 +693,9 @@ function* startAssignment({ payload }) {
         groupType,
         testId,
       }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
       const { _id } = yield testActivityApi.create(testData)
       const pathname = `/student/${playerTestType}/${testId}/class/${classId}/uta/${_id}/sections-start`
       yield put(

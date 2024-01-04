@@ -54,6 +54,7 @@ const SettingMenu = ({
               (key === 'enableMagnifier' && !showMagnifier) ||
               isPremiumContentWithoutAccess
             }
+            data-cy={key}
             onClick={() => {
               handleSettingsChange({ key })
             }}

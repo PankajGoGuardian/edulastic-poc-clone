@@ -37,7 +37,7 @@ const MovePublishTests = ({ form }) => {
   const [collectionDisabled, setCollectionDisabled] = useState(true)
   const [isPublishContent, setIsPublishContent] = useState(false)
   const [isAddingItems, setIsAddingItems] = useState(true)
-  const [isCrossWalkEnabled, setIsCrossWalkEnabled] = useState(false)
+  const [isCrosswalkEnabled, setIsCrossWalkEnabled] = useState(false)
 
   const resetFields = () => {
     form.resetFields()
@@ -126,7 +126,9 @@ const MovePublishTests = ({ form }) => {
           coAuthorIds,
           isPublishContent,
           isAddingItems,
-          isCrossWalkEnabled,
+          isCrosswalkEnabled,
+          thumbnail: thumbnailULR,
+          // language: 'english',
         }
         console.log(payload)
         adminApi.moveAndPublishTests(payload)

@@ -77,7 +77,7 @@ const TutorDetails = ({
       bodyPadding="8px 0"
       footer={null}
       destroyOnClose
-      closable={false}
+      closable
     >
       <BodyContainer>
         <EduIf condition={isInterventionsLoading}>

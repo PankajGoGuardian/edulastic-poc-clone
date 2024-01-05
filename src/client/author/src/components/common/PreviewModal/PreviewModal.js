@@ -37,7 +37,10 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled, { css } from 'styled-components'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
-import { QUE_TYPE_BY_TITLE } from '@edulastic/constants/const/questionType'
+import {
+  QUE_TYPE_BY_TITLE,
+  TTS_ENABLED_QUESTION_TYPES,
+} from '@edulastic/constants/const/questionType'
 import { languageCodes } from '@edulastic/constants/const/test'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
@@ -1190,7 +1193,7 @@ class PreviewModal extends React.Component {
 
     const showviewTTSTextBtn =
       data?.questions?.length === 1 &&
-      [questionType.MULTIPLE_CHOICE].includes(questionsType?.[0])
+      questionsType.every((type) => TTS_ENABLED_QUESTION_TYPES.includes(type))
 
     return (
       <PreviewModalWrapper

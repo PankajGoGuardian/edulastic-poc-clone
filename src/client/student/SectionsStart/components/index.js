@@ -84,6 +84,7 @@ const SummaryContainer = (props) => {
     restrictNavigationOutAttemptsThreshold,
     blockSaveAndContinue,
     passwordPolicy,
+    questionsDelivery,
   } = assignmentSettings
   const { testActivity } = activityData
 
@@ -189,6 +190,7 @@ const SummaryContainer = (props) => {
               <TestSectionsContainer
                 itemsToDeliverInGroup={itemsToDeliverInGroup}
                 preventSectionNavigation={preventSectionNavigation}
+                questionsDelivery={questionsDelivery}
                 handleStartSection={handleStartSection}
                 handleReviewSection={handleReviewSection}
               />

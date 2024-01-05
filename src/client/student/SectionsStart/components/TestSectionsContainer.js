@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { test as testConstants } from '@edulastic/constants'
 import { SECTION_STATUS } from '@edulastic/constants/const/testActivityStatus'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import {
@@ -12,17 +13,36 @@ import {
 } from '../styled-components'
 import SectionActionButtons from './SectionActionButtons'
 
+const {
+  SKIPPED,
+  SKIPPED_AND_WRONG,
+  SKIPPED_PARTIAL_AND_WRONG,
+} = testConstants.redirectPolicy.QuestionDelivery
+
 const TestSectionsContainer = ({
   itemsToDeliverInGroup,
   preventSectionNavigation,
   handleReviewSection,
   handleStartSection,
   isTestPreviewModal,
+  questionsDelivery,
 }) => {
+  const isRedirectedWithQuestionDelivery = [
+    SKIPPED,
+    SKIPPED_AND_WRONG,
+    SKIPPED_PARTIAL_AND_WRONG,
+  ].includes(questionsDelivery)
+  /**
+   * ref: EV-41340
+   * In case of redirected test with question delivery setting, some sections items can be empty.
+   * Such sections cannot be the nextSection.
+   */
   // Find first non submitted section
   const nextSection =
-    itemsToDeliverInGroup.find(
-      (item) => item.status !== SECTION_STATUS.SUBMITTED
+    itemsToDeliverInGroup.find((item) =>
+      isRedirectedWithQuestionDelivery
+        ? item.status !== SECTION_STATUS.SUBMITTED && !!item?.items?.length
+        : item.status !== SECTION_STATUS.SUBMITTED
     ) || {}
   return (
     <TestSections>

@@ -43,6 +43,7 @@ const TrialModal = loadable(() =>
 
 const titles = {
   default: 'Access Additional Features',
+  bubble: 'Access Additional Features',
   report: 'Upgrade to Access Reports',
 }
 

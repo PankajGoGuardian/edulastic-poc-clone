@@ -1129,7 +1129,7 @@ export const apiForms = [
         displayName: 'Activate UTA Id',
         placeholder: 'Enter UTA id to make it active',
         type: 'string',
-        required: true,
+        required: false,
       },
       {
         name: 'removeUtaIds',
@@ -1138,6 +1138,15 @@ export const apiForms = [
         type: 'string',
         formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
+      },
+      {
+        name: 'markStudentNotStarted',
+        displayName: 'Mark Student Not Started',
+        type: 'checkbox',
+        required: false,
+        labelStyle: {
+          display: 'none',
+        },
       },
     ],
   },

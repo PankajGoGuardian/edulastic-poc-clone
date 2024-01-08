@@ -8,7 +8,7 @@ import { IconInfo } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { EduIf, FlexContainer } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { white } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 
 import MasteryTable from './MasteryTable'
 import { Spacer } from '../../../../../../../../common/styled'
@@ -217,7 +217,7 @@ const MasteryReportSection = ({
                   <EduIf condition={isTutorMeSessionRequestActive}>
                     <Icon
                       type="loading"
-                      style={{ fontSize: 10, color: white }}
+                      style={{ fontSize: 10, color: themeColor }}
                       spin
                     />
                   </EduIf>

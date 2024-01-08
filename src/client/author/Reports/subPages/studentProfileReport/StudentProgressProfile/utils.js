@@ -2,7 +2,10 @@ import React from 'react'
 import { flatMap, groupBy, isEmpty } from 'lodash'
 import { IconTutorMeAssigned } from '@edulastic/icons'
 import { black } from '@edulastic/colors'
-import { formatDate } from '@edulastic/constants/reportUtils/common'
+import {
+  EMPTY_ARRAY,
+  formatDate,
+} from '@edulastic/constants/reportUtils/common'
 import { Row, Tooltip } from 'antd'
 import { getTestColumn } from '../../multipleAssessmentReport/common/components/trend/TrendTable'
 import { StyledText } from '../../dataWarehouseReports/common/components/styledComponents'
@@ -169,7 +172,11 @@ export function getDynamicColumns({
 
     let columns = [testColumn]
 
-    const { standardDetails, tutorMeSessions, totalSessions } = interventionData
+    const {
+      standardDetails,
+      tutorMeSessions = EMPTY_ARRAY,
+      totalSessions,
+    } = interventionData
 
     // add tutorMe column before first assignment if sessions are present
     if (index === 0) {

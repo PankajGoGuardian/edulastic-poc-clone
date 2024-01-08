@@ -195,17 +195,19 @@ const Form = ({
             paddingTop: 30,
           }}
         >
-          <EduIf condition={formType === INTERVENTION}>
-            <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
-            <Col
-              span={24}
-              style={{
-                paddingBottom: 25,
-              }}
-            >
-              {EnhancedComponent(relatedGoalIds)}
-            </Col>
-          </EduIf>
+          {formType === INTERVENTION && (
+            <>
+              <StyledTitle>{relatedGoalsAndCommentSectionTitle}</StyledTitle>
+              <Col
+                span={24}
+                style={{
+                  paddingBottom: 25,
+                }}
+              >
+                {EnhancedComponent(relatedGoalIds)}
+              </Col>
+            </>
+          )}
         </Row>
         <Row>
           <Col span={24}>{EnhancedComponent(notes)}</Col>

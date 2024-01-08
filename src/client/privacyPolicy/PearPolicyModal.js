@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Modal, Spin } from 'antd'
 import { Checkbox, EduButton, EduIf } from '@edulastic/common'
-import { AssessPeardeckLogo } from '@edulastic/common/src/components/EduLogo'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
+import appConfig from '../../app-config'
+import { pearAssessmentText } from '../common/utils/helpers'
 
 const EULA_TERMS_URL = 'https://www.peardeck.com/policies/product-terms-eula'
 const PRIVACY_POLICY_URL = 'https://www.peardeck.com/policies/product-privacy'
@@ -27,8 +28,12 @@ const PearPolicyModal = ({
       <Spin spinning={isLoading}>
         <ModalContentWrapper>
           <UpperContainer>
-            <AssessPeardeckLogo height="35px" />
-            <StyledHeader>Welcome to Pear Assess!</StyledHeader>
+            <img
+              src={`${appConfig.cdnURI}/app-logo/PearDeckLearning_ProductLogo_PearAssessment_MultiColor.png`}
+              alt={pearAssessmentText}
+              width="218px"
+            />
+            <StyledHeader>Welcome to {pearAssessmentText}!</StyledHeader>
             <p>Before we proceed, please review the following terms</p>
           </UpperContainer>
           <LowerContainer>
@@ -59,8 +64,8 @@ const PearPolicyModal = ({
                   </li>
                 </EduIf>
                 <li>
-                  You are authorized to act for your school and you consent to
-                  Pear Assess&apos;s collection of student data in our{' '}
+                  You are authorized to act for your school and you consent to{' '}
+                  {pearAssessmentText}&apos;s collection of student data in our{' '}
                   <Link href={COPPA_URL} target="_blank">
                     COPPA disclosure
                   </Link>

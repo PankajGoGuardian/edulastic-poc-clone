@@ -38,10 +38,7 @@ const MovePublishTests = ({ form }) => {
   const [isPublishContent, setIsPublishContent] = useState(false)
   const [isAddingItems, setIsAddingItems] = useState(true)
   const [isCrosswalkEnabled, setIsCrossWalkEnabled] = useState(false)
-
-  const resetFields = () => {
-    form.resetFields()
-  }
+  const [language, setLanguage] = useState()
 
   const processCollectionDataForDropdown = (collections) => {
     const bucketWiseCollectionData = []
@@ -108,16 +105,6 @@ const MovePublishTests = ({ form }) => {
         }
         const testIds = row.testIds.split(',').map((value) => value.trim())
 
-        console.log(`selectedCollectionId: ${selectedCollectionId}`)
-        console.log(`bucketIds: ${bucketIds}`)
-        console.log(`testIds: ${testIds}`)
-        console.log(`authorId: ${authorId}`)
-        console.log(`coAuthorIds: ${coAuthorIds}`)
-        console.log(`thumbnailULR: ${thumbnailULR}`)
-        console.log(`isPublishContent: ${isPublishContent}`)
-        console.log(`isAddingItems: ${isAddingItems}`)
-        console.log(`isCrossWalkEnabled: ${isCrossWalkEnabled}`)
-        console.log('call function to backend for move tests...')
         const payload = {
           testIds,
           collectionId: selectedCollectionId,
@@ -128,10 +115,31 @@ const MovePublishTests = ({ form }) => {
           isAddingItems,
           isCrosswalkEnabled,
           thumbnail: thumbnailULR,
-          // language: 'english',
+          language,
         }
         console.log(payload)
-        adminApi.moveAndPublishTests(payload)
+        // adminApi.moveAndPublishTests(payload)
+        const result = adminApi.moveAndPublishTests(payload)
+        result
+          .then((val) => {
+            console.log('got promise result...')
+            form.resetFields()
+            console.log('resetFields done....')
+            console.log(val)
+            // reset all form values
+            setCollectionSelected([])
+            setCollectionsList([])
+            setDistrictId('')
+            setAuthorId('')
+            setCoAuthorIds([])
+            setThumbnailULR('')
+            setCollectionDisabled(true)
+            setIsPublishContent(false)
+            setIsAddingItems(true)
+            setIsCrossWalkEnabled(false)
+            setSearchDistrictText('')
+          })
+          .catch((moveError) => console.log(moveError))
       }
     })
   }
@@ -229,6 +237,11 @@ const MovePublishTests = ({ form }) => {
     }
   }
 
+  const handleChangeLanguage = (val) => {
+    console.log(val)
+    setLanguage(val)
+  }
+
   const { getFieldDecorator } = form
   return (
     <>
@@ -256,7 +269,9 @@ const MovePublishTests = ({ form }) => {
                 }
               >
                 {collectionsList.map(({ name, value }) => (
-                  <Option value={value}>{name}</Option>
+                  <Option key={value} value={value}>
+                    {name}
+                  </Option>
                 ))}
               </StyledSelect>
             </div>
@@ -284,15 +299,18 @@ const MovePublishTests = ({ form }) => {
       <SecondDiv>
         <Row>
           <Col span={24}>
-            <label>
-              Do you want to change the author? If yes, please enter the user id
-              below.(optional)
-            </label>
-            <Input
-              data-cy="authorIdInput"
-              onBlur={changeAuthorId}
-              placeholder="Enetr author user Id"
-            />
+            <Form.Item
+              label="Do you want to change the author? If yes, please enter the user
+                id below(optional)"
+            >
+              {getFieldDecorator('authorId')(
+                <Input
+                  data-cy="authorIdsInput"
+                  onBlur={changeAuthorId}
+                  placeholder="Enter author user id"
+                />
+              )}
+            </Form.Item>
           </Col>
         </Row>
       </SecondDiv>
@@ -335,7 +353,10 @@ const MovePublishTests = ({ form }) => {
       <SecondDiv>
         <Row>
           <Col span={24}>
-            <CheckboxLabel onChange={changePublishContent}>
+            <CheckboxLabel
+              onChange={changePublishContent}
+              checked={isPublishContent}
+            >
               Do you want to Publish Content ?
             </CheckboxLabel>
           </Col>
@@ -356,9 +377,30 @@ const MovePublishTests = ({ form }) => {
       <SecondDiv>
         <Row>
           <Col span={24}>
-            <CheckboxLabel onChange={changeCrossWalk}>
+            <CheckboxLabel
+              checked={isCrosswalkEnabled}
+              onChange={changeCrossWalk}
+            >
               Cross-walk for Standards
             </CheckboxLabel>
+          </Col>
+        </Row>
+      </SecondDiv>
+      <SecondDiv>
+        <Row>
+          <Col span={24}>
+            <Form.Item>
+              {getFieldDecorator('language')(
+                <Select
+                  style={{ width: 170 }}
+                  placeholder="Select Language"
+                  onChange={handleChangeLanguage}
+                >
+                  <Option value="english">English</Option>
+                  <Option value="french">French</Option>
+                </Select>
+              )}
+            </Form.Item>
           </Col>
         </Row>
       </SecondDiv>

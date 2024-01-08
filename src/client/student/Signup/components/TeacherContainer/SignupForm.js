@@ -18,7 +18,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   LARGE_DESKTOP_WIDTH,
   MAX_TAB_WIDTH,
@@ -66,6 +65,7 @@ import {
   RegistrationBody,
   RegistrationHeader,
   RegistrationWrapper,
+  StyledPearAssessmentLabelImage,
   ThirdPartyLoginBtn,
 } from '../../styled'
 import PasswordPopup from '../PasswordPopup'
@@ -260,7 +260,7 @@ class Signup extends React.Component {
       getFieldError('email')
 
     const pearOrEdulasticText = isPearDomain
-      ? t('common.pearAssessText')
+      ? t('common.pearAssessmentText')
       : t('common.edulastictext')
 
     return (
@@ -281,7 +281,7 @@ class Signup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+                  <StyledPearAssessmentLabelImage />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />
@@ -421,7 +421,7 @@ class Signup extends React.Component {
                         </InfoIcon>
                         <Col span={21}>
                           {isPearDomain
-                            ? t('component.signup.pearAssessInfotext')
+                            ? t('component.signup.pearAssessmentInfotext')
                             : t('component.signup.infotext')}
                         </Col>
                       </InfoBox>

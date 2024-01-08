@@ -8,6 +8,10 @@ import {
 import { GreetingUser, WelcomeHeader, WelcomeNote } from '../styled/styled'
 import { getUserNameSelector } from '../../src/selectors/user'
 import { isPearDomain } from '../../../../utils/pear'
+import {
+  edulasticText,
+  pearAssessmentText,
+} from '../../../common/utils/helpers'
 
 const WelcomePopup = ({
   isVisible,
@@ -27,7 +31,7 @@ const WelcomePopup = ({
     }
   }, [])
 
-  const pearOrEdulasticText = isPearDomain ? 'Pear Assess' : 'Edulastic'
+  const pearOrEdulasticText = isPearDomain ? pearAssessmentText : edulasticText
 
   return (
     <CustomModalStyled

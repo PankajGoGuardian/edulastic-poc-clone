@@ -1,5 +1,5 @@
 import Tabs from 'antd/lib/tabs'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { SubHeader } from '../../../common/components/Header'
 import { StyledReportContainer } from '../../../common/styled'
@@ -33,6 +33,7 @@ const GoalsAndInterventions = ({
   const [subActiveKey, setSubActiveKey] = useState(search.subActiveKey || '1')
   const [group, setGroup] = useState()
   const [GIData, setGIData] = useState({})
+  const prevTabAndSubTab = useRef([null, null])
 
   const { isEditFlow = false } = GIData
 
@@ -64,6 +65,15 @@ const GoalsAndInterventions = ({
     if (GIFormData) {
       setGIData(GIFormData)
     }
+    prevTabAndSubTab.current = [activeKey, subActiveKey]
+  }
+
+  const handleCancel = () => {
+    switchToTabAndSubTab(
+      prevTabAndSubTab.current[0] ?? activeKey,
+      prevTabAndSubTab.current[1] ?? '1'
+    )
+    prevTabAndSubTab.current = [null, null]
   }
 
   const content = {
@@ -88,9 +98,7 @@ const GoalsAndInterventions = ({
       {
         key: '2',
         label: group ? `EDIT STUDENT GROUP` : `+ ADD NEW STUDENT GROUP`,
-        children: (
-          <AdvancedSearch group={group} onCancel={() => switchSubTab('1')} />
-        ),
+        children: <AdvancedSearch group={group} onCancel={handleCancel} />,
       },
     ],
     2: [
@@ -107,7 +115,11 @@ const GoalsAndInterventions = ({
             }
             onEdit={(GIFormData) => {
               if (GIFormData?.isEditFlow)
-                switchToTabAndSubTab('2', '2', GIFormData)
+                switchToTabAndSubTab(
+                  GIFormData.formType === INTERVENTION ? '3' : '2',
+                  '2',
+                  GIFormData
+                )
             }}
           />
         ),
@@ -117,12 +129,12 @@ const GoalsAndInterventions = ({
         label: isEditFlow ? 'EDIT GOAL' : '+ ADD NEW GOAL',
         children: (
           <CreateGI
-            key="gaols"
+            key="goals"
             view={SAVE_GOAL}
             group={group}
             GIData={GIData}
             setGIData={setGIData}
-            onCancel={() => switchSubTab('1')}
+            onCancel={handleCancel}
             onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),
@@ -157,7 +169,7 @@ const GoalsAndInterventions = ({
             group={group}
             GIData={GIData}
             setGIData={setGIData}
-            onCancel={() => switchSubTab('1')}
+            onCancel={handleCancel}
             onClickCreateGroup={() => switchToTabAndSubTab('1', '2')}
           />
         ),

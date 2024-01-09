@@ -216,6 +216,8 @@ export default class API {
         _config['client-epoch'] = Date.now().toString()
         _config.headers['X-Client-Time'] = new Date().toISOString()
         _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
+        _config.headers['X-Client-Version'] =
+          process.env.__CLIENT_VERSION__ || 'NA'
         if (window.localStorage.getItem('originalreferrer')) {
           _config.headers['X-Orig-Referrer'] = window.localStorage.getItem(
             'originalreferrer'

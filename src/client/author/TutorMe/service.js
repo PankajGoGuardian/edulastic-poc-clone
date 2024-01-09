@@ -21,6 +21,11 @@ export async function initTutorMeService(user) {
       email: user.email,
     },
     api,
+    theme: {
+      modal: {
+        zIndex: 9999, // NOTE: >= 1002 works to occlude header + side menu
+      },
+    },
   })
   // FIXME: SDK isn't ready yet, delay until it is.
   await delay(100)

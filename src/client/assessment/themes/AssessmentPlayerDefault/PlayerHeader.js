@@ -69,6 +69,7 @@ const PlayerHeader = ({
   openReferenceModal,
   isShowReferenceModal,
   canShowReferenceMaterial,
+  showSubmitText,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -158,8 +159,8 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
-                        icon={isLast ? null : 'right'}
-                        aria-label={isLast ? 'SUBMIT' : 'NEXT'}
+                        icon={showSubmitText ? null : 'right'}
+                        aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()
@@ -177,8 +178,8 @@ const PlayerHeader = ({
                             moveToNext()
                         }}
                       >
-                        {isLast && <IconSend />}
-                        {isLast ? 'SUBMIT' : 'NEXT'}
+                        {showSubmitText && <IconSend />}
+                        {showSubmitText ? 'SUBMIT' : 'NEXT'}
                       </ControlBtn.Next>
                     )}
                   </>

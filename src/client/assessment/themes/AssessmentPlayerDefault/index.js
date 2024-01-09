@@ -389,6 +389,8 @@ class AssessmentPlayerDefault extends React.Component {
       calcTypes,
       userFeatures = {},
       preventSectionNavigation,
+      hasSections,
+      lastItemInTest,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -426,6 +428,7 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
+    const showSubmitText = hasSections ? lastItemInTest : isLast()
 
     // calculate width of question area
     const isQuester =
@@ -637,6 +640,7 @@ class AssessmentPlayerDefault extends React.Component {
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
             calcTypes={calcTypes}
             canUseImmersiveReader={canUseImmersiveReader}
+            showSubmitText={showSubmitText}
           >
             <ToolbarModal
               isVisible={isToolbarModalVisible}

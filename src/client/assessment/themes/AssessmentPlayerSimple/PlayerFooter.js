@@ -20,7 +20,6 @@ import { Tooltip } from '../../../common/utils/helpers'
 
 const PlayerFooter = ({
   isFirst,
-  isLast,
   moveToPrev,
   moveToNext,
   t,
@@ -28,6 +27,7 @@ const PlayerFooter = ({
   isSidebarVisible,
   blockNavigationToAnsweredQuestions,
   firstItemInSectionAndRestrictNav,
+  showSubmitText,
 }) => (
   <MainFooter
     isSidebarVisible={isSidebarVisible}
@@ -59,7 +59,7 @@ const PlayerFooter = ({
       <Tooltip placement="right" title="Next">
         <NextButton data-cy="next" onClick={moveToNext}>
           <span>
-            {isLast() ? t('pagination.submit') : t('pagination.next')}
+            {showSubmitText ? t('pagination.submit') : t('pagination.next')}
           </span>
           <FontAwesomeIcon icon={faAngleRight} />
         </NextButton>

@@ -2,6 +2,7 @@ import { EduButton, FlexContainer } from '@edulastic/common'
 import React from 'react'
 import { TopSection } from './styled'
 import ManageSubscriptionButton from './ManageSubscriptionButton'
+import { isPearOrEdulasticText } from '../../../../common/utils/helpers'
 
 const TabHeaderContent = ({
   history,
@@ -25,7 +26,9 @@ const TabHeaderContent = ({
         showMultipleSubscriptions={showMultipleSubscriptions}
       />
       <TopSection>
-        <h1>Edulastic Premium & Add-ons to supercharge instruction.</h1>
+        <h1>
+          {isPearOrEdulasticText} Premium & Add-ons to supercharge instruction.
+        </h1>
         <p>
           Upgrade your subscription to Teacher Premium or school or district
           Enterprise for additional features, and add on subject-specific <br />

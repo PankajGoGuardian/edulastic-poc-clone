@@ -1,3 +1,5 @@
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
+
 export const newGroup = {
   deliveryType: 'ALL_RANDOM',
   difficulty: '',
@@ -11,7 +13,7 @@ export const newGroup = {
 export const GroupWithCollection = {
   deliverItemsCount: 2,
   collectionDetails: {
-    name: 'Edulastic Certified',
+    name: PEAR_ASSESSMENT_CERTIFIED_NAME,
     type: 'free',
     _id: '6564756c61737469635f6365',
   },

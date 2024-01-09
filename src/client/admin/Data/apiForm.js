@@ -1115,6 +1115,17 @@ export const apiForms = [
     name: 'Remove Students From Assignment',
     endPoint: 'admin-tool/remove-student-from-assignments',
     method: 'post',
+    note: {
+      text:
+        'Note: To mark student not started, enter "Assignment Group Id" , "Remove UTA Id(s)" and check the "MARK STUDENT NOT STARTED" checkbox.',
+      parentField: 'markStudentNotStarted',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
     fields: [
       {
         key: 'groupId',
@@ -1126,7 +1137,7 @@ export const apiForms = [
       },
       {
         name: 'activateUtaId',
-        displayName: 'Activate UTA Id',
+        displayName: 'Activate UTA Id (optional)',
         placeholder: 'Enter UTA id to make it active',
         type: 'string',
         required: false,

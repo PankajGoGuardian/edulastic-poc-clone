@@ -114,8 +114,13 @@ const MovePublishTests = ({ form }) => {
           isPublishContent,
           isAddingItems,
           isCrosswalkEnabled,
-          thumbnail: thumbnailULR,
-          language,
+        }
+        // thumbnail is optional
+        if (thumbnailULR) {
+          payload.thumbnail = thumbnailULR
+        }
+        if (language) {
+          payload.language = language
         }
         console.log(payload)
         // adminApi.moveAndPublishTests(payload)

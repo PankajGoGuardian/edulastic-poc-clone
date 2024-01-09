@@ -13,6 +13,7 @@ export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
   testTypes.ILEARN,
   testTypes.ACCESS,
   testTypes.NHSAS,
+  testTypes.KSA,
 ]
 export const AdministrationLevelOptions = [
   {

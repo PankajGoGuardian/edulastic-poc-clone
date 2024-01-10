@@ -238,7 +238,7 @@ export const subscription = {
         {
           icon: <IconPerformanceTrendAddOn />,
           title: 'Performance Trends',
-          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time.`,
+          description: `Proactively identify the strengths and needs of all students by viewing ${isPearOrEdulasticText} data alongside third-party assessments over time.`,
         },
         {
           icon: <IconBehaviourReportAddOn />,

@@ -7,7 +7,7 @@ import {
   FlexContainer,
   notification,
   withWindowSizes,
-  CustomModalStyled,
+  // CustomModalStyled,
 } from '@edulastic/common'
 import {
   questionType,
@@ -25,6 +25,7 @@ import {
   IconTrash,
   IconClear,
 } from '@edulastic/icons'
+import Draggable from '@edulastic/common/src/components/MathInput/Draggable'
 import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -1209,29 +1210,36 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         isMobile={isMobile}
       >
-        <CustomModalStyled
-          title="Customize TTS"
-          footer={null}
-          width="768px"
-          modalMinHeight="400px"
-          visible={showTTSTextModal}
-          destroyOnClose={false}
-          onCancel={this.toggleTTSTextModal}
-        >
-          <SpeakableText
-            ttsTextAPIStatus={ttsTextAPIStatus}
-            updateTTSAPIStatus={updateTTSAPIStatus}
-            ttsTextData={ttsTextResult}
-            updateQuestionTTSText={this.updateQuestionTTSText}
-            regenerateTTSText={this.regenerateTTSText}
-            question={data?.questions?.[0] || {}}
-            showTTSTextModal={showTTSTextModal}
-            onLanguageChange={this.onLanguageChange}
-            selectedLanguage={selectedLanguage}
-            onChangeVoiceLanguge={this.onChangeVoiceLanguge}
-            voiceLanguage={voiceLanguage}
-          />
-        </CustomModalStyled>
+        <EduIf condition={showTTSTextModal}>
+          <Draggable
+            usePortal
+            position={{ x: '50%', y: '50%' }}
+            transform="translate(-50%, -50%)"
+            borderRadius="8px"
+          >
+            <ModalInner width="768px">
+              <ModalHeader justifyContent="space-between" padding="16px 24px">
+                <Title>Customize TTS</Title>
+                <IconClose onClick={this.toggleTTSTextModal} />
+              </ModalHeader>
+              <ModalContentArea tts style={{ minHeight: 400 }}>
+                <SpeakableText
+                  ttsTextAPIStatus={ttsTextAPIStatus}
+                  updateTTSAPIStatus={updateTTSAPIStatus}
+                  ttsTextData={ttsTextResult}
+                  updateQuestionTTSText={this.updateQuestionTTSText}
+                  regenerateTTSText={this.regenerateTTSText}
+                  question={data?.questions?.[0] || {}}
+                  showTTSTextModal={showTTSTextModal}
+                  onLanguageChange={this.onLanguageChange}
+                  selectedLanguage={selectedLanguage}
+                  onChangeVoiceLanguge={this.onChangeVoiceLanguge}
+                  voiceLanguage={voiceLanguage}
+                />
+              </ModalContentArea>
+            </ModalInner>
+          </Draggable>
+        </EduIf>
         {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
@@ -1820,7 +1828,7 @@ const QuestionWrapper = styled.div`
 `
 
 const ModalContentArea = styled.div`
-  border-radius: 0px;
+  border-radius: ${({ tts }) => (tts ? '8px' : '0px')};
   padding: 0px 30px;
   height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '100%')};
 `
@@ -1845,4 +1853,25 @@ const DisabledButton = styled.div`
 
 const DisabledHelperText = styled.div`
   max-width: 320px;
+`
+
+const ModalInner = styled.div`
+  position: relative;
+  background: ${white};
+  width: ${({ width }) => width};
+  z-index: 1003;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 2px #ccc;
+
+  & .input__math {
+    margin: 0px 15px;
+    width: calc(100% - 30px);
+  }
+`
+
+const ModalHeader = styled(FlexContainer)`
+  border-radius: 8px;
+  svg {
+    cursor: pointer;
+  }
 `

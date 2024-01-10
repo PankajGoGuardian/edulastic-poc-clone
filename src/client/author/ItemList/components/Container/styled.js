@@ -130,3 +130,16 @@ export const PaginationContainer = styled.div`
     justify-content: center;
   }
 `
+
+export const ExpandContainer = styled.div`
+  background: #f8f8f8;
+  max-height: ${(props) => (props.height ? '500px' : '0')};
+  transition: max-height 0.3s ease-in-out;
+  overflow: ${(props) => (props.height ? 'auto' : 'hidden')};
+`
+
+export const InnerItems = styled.div`
+  color: #858a94;
+  font-weight: bold;
+  font-size: 12px;
+`

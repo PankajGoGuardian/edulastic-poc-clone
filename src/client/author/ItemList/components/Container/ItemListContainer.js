@@ -26,6 +26,7 @@ import {
   itemInPreviewModalSelector,
   setPrevewItemAction,
 } from '../../../src/components/common/PreviewModal/ducks'
+import { ExpandContainer } from './styled'
 
 const ItemListContainer = ({
   items,
@@ -56,6 +57,7 @@ const ItemListContainer = ({
   }
 
   const [indexForPreview, updateIndexForPreview] = useState(null)
+  const [indexForExpand, updateIndexForExpand] = useState(-1)
 
   const closeModal = () => updateIndexForPreview(null)
 
@@ -146,24 +148,60 @@ const ItemListContainer = ({
           }
         />
       )}
-      {items.map((item, index) => (
-        <Item
-          key={item._id}
-          item={item}
-          history={history}
-          userId={userId}
-          windowWidth={windowWidth}
-          onToggleToCart={addItemToCart}
-          selectedToCart={
-            selectedCartItems ? selectedCartItems.includes(item._id) : false
-          }
-          interestedCurriculums={interestedCurriculums}
-          openPreviewModal={setItemIndexForPreview(index)}
-          checkAnswer={checkAnswer}
-          showAnswer={showAnswer}
-          search={search}
-          page="itemList"
-        />
+      {items.map(({ inner_items = [], ...item }, index) => (
+        <div>
+          <Item
+            key={item._id}
+            item={item}
+            history={history}
+            userId={userId}
+            windowWidth={windowWidth}
+            onToggleToCart={addItemToCart}
+            selectedToCart={
+              selectedCartItems ? selectedCartItems.includes(item._id) : false
+            }
+            interestedCurriculums={interestedCurriculums}
+            openPreviewModal={setItemIndexForPreview(index)}
+            checkAnswer={checkAnswer}
+            showAnswer={showAnswer}
+            search={search}
+            page="itemList"
+            updateIndexForExpand={() =>
+              indexForExpand === index
+                ? updateIndexForExpand(-1)
+                : updateIndexForExpand(index)
+            }
+            innerCount={inner_items.length}
+          />
+          <ExpandContainer height={indexForExpand == index}>
+            <div style={{ padding: '20px 20px 20px 50px' }}>
+              {inner_items.map((_item, _index) => {
+                return (
+                  <Item
+                    key={_item._id}
+                    item={_item}
+                    history={history}
+                    userId={userId}
+                    windowWidth={windowWidth}
+                    onToggleToCart={addItemToCart}
+                    selectedToCart={
+                      selectedCartItems
+                        ? selectedCartItems.includes(_item._id)
+                        : false
+                    }
+                    interestedCurriculums={interestedCurriculums}
+                    openPreviewModal={setItemIndexForPreview(_index)}
+                    checkAnswer={checkAnswer}
+                    showAnswer={showAnswer}
+                    search={search}
+                    page="itemList"
+                    last={_index === inner_items.length - 1}
+                  />
+                )
+              })}
+            </div>
+          </ExpandContainer>
+        </div>
       ))}
     </>
   )

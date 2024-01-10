@@ -98,6 +98,7 @@ import { toggleTestItemLikeAction } from '../../ducks'
 import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
 import { WithToolTip } from './AddOrRemove'
 import { getAllRubricNames } from '../../../src/utils/util'
+import { InnerItems } from '../Container/styled'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
@@ -532,6 +533,9 @@ class Item extends Component {
       collections,
       isDynamicTest,
       hasSections,
+      updateIndexForExpand,
+      last,
+      innerCount,
     } = this.props
     const owner = item.authors && item.authors.some((x) => x._id === userId)
     const {
@@ -560,7 +564,7 @@ class Item extends Component {
 
     return (
       <WithResources resources={[appConfig.jqueryPath]} fallBack={<span />}>
-        <Container data-cy={item._id} className="fr-view">
+        <Container data-cy={item._id} className="fr-view" last={last}>
           {passageConfirmModalVisible && (
             <PassageConfirmationModal
               visible={passageConfirmModalVisible}
@@ -804,6 +808,11 @@ class Item extends Component {
               )}
               <Categories>{this.renderDetails()}</Categories>
             </Details>
+          )}
+          {innerCount && (
+            <InnerItems onClick={updateIndexForExpand}>
+              {innerCount} duplicate Found
+            </InnerItems>
           )}
         </Container>
       </WithResources>

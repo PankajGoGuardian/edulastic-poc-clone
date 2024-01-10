@@ -90,7 +90,7 @@ export const Link = styled.a`
 
 export const Container = styled.div`
   padding: 12px 0px 8px;
-  border-bottom: 1px solid #dadae4;
+  border-bottom: ${(props) => (props.last ? '0' : '1px solid #dadae4')};
 
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;

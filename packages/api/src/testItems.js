@@ -23,10 +23,17 @@ const getAll = (data) =>
       data,
     })
     .then((result) => {
-      const items = get(result, 'data.result.hits.hits', []).map((el) => ({
-        _id: el._id,
-        ...el._source,
-      }))
+      const items = get(result, 'data.result.hits.hits', []).map((el) => {
+        return {
+          _id: el._id,
+          ...el._source,
+          inner_items: get(
+            el,
+            'inner_hits.Similar.hits.hits',
+            []
+          ).map((_el) => ({ _id: _el._id, ..._el._source })),
+        }
+      })
       const count = get(result, 'data.result.hits.total', 0)
       return { items, count }
     })

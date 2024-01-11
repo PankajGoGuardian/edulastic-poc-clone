@@ -897,10 +897,9 @@ class SideMenu extends Component {
                     {isPearDomain ? (
                       <StyledPearAssessmentLabelImage
                         style={{
-                          marginTop: '4px',
                           marginLeft: showPearAppTray ? '8px' : '0px',
                         }}
-                        height={isMobile ? '16px' : '25px'}
+                        height={isMobile ? '16px' : '42px'}
                       />
                     ) : (
                       <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />

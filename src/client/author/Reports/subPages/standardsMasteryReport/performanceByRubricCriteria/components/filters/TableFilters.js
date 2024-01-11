@@ -23,7 +23,7 @@ const TableFilters = ({
         data={compareByOptions}
       />
       <ControlDropDown
-        prefix="Analyse By"
+        prefix="Analyze By"
         by={selectedTableFilters.analyseBy}
         selectCB={(e, selected) => {
           setTableFilters({

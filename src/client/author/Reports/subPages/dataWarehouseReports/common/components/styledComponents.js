@@ -9,6 +9,7 @@ import {
   fadedBlack1,
   mainTextColor,
   themeColor,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
 import { EduButton } from '@edulastic/common'
@@ -238,17 +239,18 @@ export const ColoredText = styled.div`
   color: ${(p) => p.$color};
 `
 export const StyledFilledButton = styled(Button)`
-  background-color: ${themeColor};
-  color: ${white};
+  color: ${themeColor};
   margin-top: 22px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
   &.ant-btn[disabled] {
     opacity: 0.3;
-    color: ${white};
-    background-color: ${themeColor};
+    color: ${themeColor};
   }
   &.ant-btn:hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
   }
   &.ant-btn:focus {
     color: ${themeColor};

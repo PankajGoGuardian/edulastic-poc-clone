@@ -141,7 +141,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
     if (cancelled) {
       notification({
         type: 'warning',
-        msg: 'Tutoring session not created.',
+        msg: 'Tutoring is not assigned.',
       })
       return
     }

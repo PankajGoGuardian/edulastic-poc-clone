@@ -793,6 +793,7 @@ class CoursesTable extends React.Component {
                 height="34px"
                 type="primary"
                 onClick={this.showAddCourseModal}
+                data-cy="createNewCourseButton"
               >
                 {t('course.createcourse')}
               </EduButton>

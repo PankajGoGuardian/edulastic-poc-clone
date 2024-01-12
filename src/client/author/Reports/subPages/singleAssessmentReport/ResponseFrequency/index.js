@@ -9,7 +9,7 @@ import { StyledH3, StyledSlider, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StackedBarChartContainer } from './components/charts/stackedBarChartContainer'
 import { StyledCard, StyledContainer } from './components/styled'
-import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
+import ResponseFrequencyTable from './components/table/responseFrequencyTable'
 
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import {
@@ -22,11 +22,7 @@ import {
 
 import jsonData from './static/json/data.json'
 import { getAssessmentName } from '../../../common/util'
-
-const filterData = (data, filter) =>
-  Object.keys(filter).length > 0
-    ? data.filter((item) => filter[item.qType])
-    : data
+import { filterData, getTableData } from './utils'
 
 const ResponseFrequency = ({
   loading,
@@ -98,10 +94,10 @@ const ResponseFrequency = ({
     return _obj
   }, [res])
 
-  const filteredData = useMemo(() => filterData(obj.data, filter), [
-    filter,
-    obj.data,
-  ])
+  const tableData = useMemo(() => {
+    const filteredData = filterData(obj.data, filter)
+    return getTableData(filteredData, isCsvDownloading)
+  }, [filter, obj.data, isCsvDownloading])
 
   const onChangeDifficultSlider = (value) => {
     setDifficultItems(value)
@@ -209,7 +205,7 @@ const ResponseFrequency = ({
           </Row>
         </StyledCard>
         <ResponseFrequencyTable
-          data={filteredData}
+          data={tableData}
           columns={jsonData.columns}
           assessment={obj.metaData}
           correctThreshold={difficultItems}

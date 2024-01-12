@@ -19,5 +19,11 @@
     "maxCheckedStandardsMessage": "Please select max 3 standards for the tutor to focus on.",
     "noTutoringSessions": "Student hasn’t taken any session yet.",
     "noPremiumAccess": "You don’t have Edulastic reports access (Premium/Enterprise license)."
+  },
+  "responseFrequency": {
+    "performanceColumnTooltip": "Performance % is not available at part level as item level scoring is turned on.",
+    "maxScoreColumnTooltip": "Max Score is not available at part level as item level scoring is turned on.",
+    "responsesColumnTooltip": "Responses are available at part level only.",
+    "skipColumnTooltip": "Skip % is only available at part level."
   }
 }

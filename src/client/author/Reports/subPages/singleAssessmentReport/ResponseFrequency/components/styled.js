@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Row, Col } from 'antd'
 import { themeColor, fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
+import { IconInfoBlack } from '@edulastic/icons'
 import {
   StyledTable as Table,
   StyledCard as Card,
@@ -110,6 +111,13 @@ export const StyledTable = styled(Table)`
           @media (min-width: ${extraDesktopWidthMax}) {
             font-size: 14px;
           }
+          white-space: nowrap;
+        }
+        .ant-table-row-expand-icon {
+          background-color: transparent;
+          color: ${themeColor};
+          font-size: 20px;
+          border: none;
         }
       }
     }
@@ -190,4 +198,8 @@ export const StyledSimpleBarChartContainer = styled(StyledCard)`
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
     stroke-opacity: 0;
   }
+`
+export const StyledIconInfo = styled(IconInfoBlack)`
+  margin-top: 3px;
+  margin-left: 4px;
 `

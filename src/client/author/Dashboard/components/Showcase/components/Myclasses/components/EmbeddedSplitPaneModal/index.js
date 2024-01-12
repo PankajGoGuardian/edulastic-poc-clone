@@ -5,6 +5,8 @@ import { FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 import { title, lightGrey4, themeColor } from '@edulastic/colors'
 import EdulasticResourceModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/common/EdulasticResourceModal'
+import { isPearDomain } from '../../../../../../../../../utils/pear'
+import { pearAssessmentText } from '../../../../../../../../common/utils/helpers'
 
 const getEmbedCodeWithParams = (url) => {
   const regExp = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/
@@ -70,7 +72,10 @@ const EmbeddedSplitPaneModal = (props) => {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {content.title}
+                  {isPearDomain &&
+                  activeItem.title.toLowerCase() === 'extra resources'
+                    ? content.title.replace(/Edulastic/g, pearAssessmentText)
+                    : content.title}
                 </a>
               ))}
             </ListItems>

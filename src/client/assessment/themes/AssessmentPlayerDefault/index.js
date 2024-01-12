@@ -48,6 +48,7 @@ import {
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { changePreviewAction } from '../../../author/src/actions/view'
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
+import { slice as sectionsTestSlice } from '../../../student/SectionsStart/ducks'
 import {
   currentItemAnswerChecksSelector,
   getCalcTypeSelector,
@@ -194,13 +195,18 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   finishTest = () => {
-    const { history, saveCurrentAnswer } = this.props
+    const {
+      history,
+      saveCurrentAnswer,
+      setIsSectionsTestPasswordValidated,
+    } = this.props
     saveCurrentAnswer({
       shouldClearUserWork: true,
       pausing: true,
       urlToGo: this.getGoToUrlPath,
       locState: history?.location?.state,
     })
+    setIsSectionsTestPasswordValidated(false)
   }
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
@@ -1000,6 +1006,8 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       saveHintUsageData: saveHintUsageAction,
       showHints: showHintsAction,
+      setIsSectionsTestPasswordValidated:
+        sectionsTestSlice.actions.setIsSectionsTestPasswordValidated,
     }
   )
 )

@@ -35,6 +35,7 @@ import { saveUserWorkAction } from '../../actions/userWork'
 import { changePreviewAction } from '../../../author/src/actions/view'
 
 import { setUserAnswerAction } from '../../actions/answers'
+import { slice as sectionsTestSlice } from '../../../student/SectionsStart/ducks'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import {
@@ -181,8 +182,13 @@ class AssessmentPlayerSimple extends React.Component {
   }
 
   finishTest = () => {
-    const { history, saveCurrentAnswer } = this.props
+    const {
+      history,
+      saveCurrentAnswer,
+      setIsSectionsTestPasswordValidated,
+    } = this.props
     saveCurrentAnswer({ shouldClearUserWork: true, pausing: true })
+    setIsSectionsTestPasswordValidated(false)
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`)
     } else if (history?.location?.state?.playlistRecommendationsFlow) {
@@ -528,6 +534,8 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       showHints: showHintsAction,
       saveHintUsageData: saveHintUsageAction,
+      setIsSectionsTestPasswordValidated:
+        sectionsTestSlice.actions.setIsSectionsTestPasswordValidated,
     }
   )
 )

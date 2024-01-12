@@ -1,6 +1,7 @@
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
-import { testActivityApi, testsApi } from '@edulastic/api'
+import { captureSentryException } from '@edulastic/common'
+import { assignmentApi, testActivityApi, testsApi } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { keyBy } from 'lodash'
 
@@ -10,6 +11,8 @@ const slice = createSlice({
     isLoading: false,
     testActivity: {},
     error: '',
+    isSectionsTestPasswordValidated: false,
+    sectionsTestPasswordStatusMessage: '',
   },
   reducers: {
     fetchSectionsData: (state) => {
@@ -19,6 +22,15 @@ const slice = createSlice({
       state.isLoading = false
       state.testActivity = payload
       state.error = ''
+    },
+    setIsSectionsTestPasswordValidated: (state, { payload }) => {
+      state.isSectionsTestPasswordValidated = payload
+    },
+    setSectionsTestPasswordStatusMessage: (state, { payload }) => {
+      state.sectionsTestPasswordStatusMessage = payload
+    },
+    validateSectionsTestPassword: (state) => {
+      state.sectionsTestPasswordStatusMessage = ''
     },
   },
 })
@@ -52,9 +64,50 @@ function* fetchSectionsData({ payload }) {
   }
 }
 
+function* validateSectionsTestPassword({ payload }) {
+  try {
+    const { password, assignmentId, groupId } = payload
+    const response = yield call(assignmentApi.validateAssignmentPassword, {
+      assignmentId,
+      password,
+      groupId,
+    })
+    if (response === 'successful') {
+      yield put(slice.actions.setIsSectionsTestPasswordValidated(true))
+    } else if (response === 'unsuccessful') {
+      yield put(
+        slice.actions.setSectionsTestPasswordStatusMessage(
+          'You have entered an invalid password'
+        )
+      )
+    } else {
+      yield put(
+        slice.actions.setSectionsTestPasswordStatusMessage('validation failed')
+      )
+    }
+  } catch (err) {
+    if (err?.status === 403) {
+      yield put(
+        slice.actions.setSectionsTestPasswordStatusMessage(
+          err.response.data.message
+        )
+      )
+    } else {
+      yield put(
+        slice.actions.setSectionsTestPasswordStatusMessage('validation failed')
+      )
+    }
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchSectionsData, fetchSectionsData),
+    yield takeEvery(
+      slice.actions.validateSectionsTestPassword,
+      validateSectionsTestPassword
+    ),
   ])
 }
 
@@ -124,4 +177,14 @@ export const getItemstoDeliverWithAttemptCount = createSelector(
       }
     })
   }
+)
+
+export const getPasswordValidatedStatusSelector = createSelector(
+  stateSelector,
+  (state) => state.isSectionsTestPasswordValidated
+)
+
+export const getPasswordStatusMessageSelector = createSelector(
+  stateSelector,
+  (state) => state.sectionsTestPasswordStatusMessage
 )

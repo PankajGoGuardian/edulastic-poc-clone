@@ -625,7 +625,7 @@ export const apiForms = [
       },
       {
         displayName: 'Use LLM (AI)',
-        name: 'useLLM',
+        name: 'hasLLMPermission',
         type: 'checkbox',
         required: false,
       },

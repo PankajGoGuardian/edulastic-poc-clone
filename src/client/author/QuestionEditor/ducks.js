@@ -97,6 +97,7 @@ import {
   updateRecentCollectionsAction,
 } from '../src/actions/dictionaries'
 import {
+  allowedToSelectMultiLanguageInTest,
   getOrgDataSelector,
   isPublisherUserSelector,
 } from '../src/selectors/user'
@@ -1228,13 +1229,17 @@ function* updateScoreAndValidationSaga({ payload }) {
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
+  const allowedToSelectMultiLanguage = yield select(
+    allowedToSelectMultiLanguageInTest
+  )
 
   yield put({
     type: UPDATE_QUESTION,
     payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
-      payload
+      payload,
+      allowedToSelectMultiLanguage
     ),
   })
 }

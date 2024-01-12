@@ -63,11 +63,8 @@ import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
 import { BackLink, QuestionContentWrapper } from './styled'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
-import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
-
-const { useLanguageFeatureQn } = constantsQuestionType
+import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const multipartItem = get(item, 'multipartItem')
@@ -519,7 +516,6 @@ class Container extends Component {
       hasUnsavedChanges,
       currentLanguage,
       showCalculatingSpinner,
-      allowedToSelectMultiLanguage,
       t,
       isMultipartItem,
       isInModal,
@@ -546,7 +542,6 @@ class Container extends Component {
 
     const { showModal } = this.state
     const itemId = question === null ? '' : question._id
-    const questionType = question && question.type
 
     return (
       <EditorContainer ref={this.innerDiv} isInModal={isInModal}>
@@ -590,10 +585,6 @@ class Container extends Component {
               )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-              {allowedToSelectMultiLanguage &&
-                useLanguageFeatureQn.includes(questionType) && (
-                  <LanguageSelector />
-                )}
               {view !== 'preview' && view !== 'auditTrail' && (
                 <EduButton
                   isGhost
@@ -613,6 +604,7 @@ class Container extends Component {
             getScrollElement: () => this.scrollContainer.current,
           }}
         >
+          <LanguageSelectorTab />
           <QuestionContentWrapper
             zIndex="1"
             isInModal={isInModal}
@@ -691,7 +683,6 @@ const enhance = compose(
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
-      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       changeView: changeViewAction,

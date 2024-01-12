@@ -20,6 +20,8 @@ import {
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
+import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
+import { LANGUAGE_ES } from '@edulastic/constants/const/languages'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -377,6 +379,7 @@ class QuestionWrapper extends Component {
       isExpandedView,
       t: translate,
       aiEvaluationStatus,
+      authLanguage,
       ...restProps
     } = this.props
 
@@ -648,157 +651,173 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer
-                  showScroll={isLCBView || isExpressGrader}
-                  flexDirection="column"
-                  maxWidth="100%"
-                >
-                  {evaluation === 'pending' && (
-                    <Tooltip
-                      title={translate('component.pendingEvaluation.tooltip')}
-                    >
-                      <EvaluationMessage>
-                        {translate('component.pendingEvaluation.text')}
-                      </EvaluationMessage>
-                    </Tooltip>
-                  )}
-                  <EduIf
-                    condition={
-                      aiEvaluationStatus &&
-                      !aiEvaluationStatus?.isGradedExternally
-                    }
+                {!useLanguageFeatureQn.includes(type) &&
+                authLanguage === LANGUAGE_ES ? (
+                  <p>
+                    Multi language authoring is not supported for this question
+                    type
+                  </p>
+                ) : (
+                  <StyledFlexContainer
+                    showScroll={isLCBView || isExpressGrader}
+                    flexDirection="column"
+                    maxWidth="100%"
                   >
-                    <FlexContainer>
-                      <AiEvaluationWrapper
-                        aiEvaluationStatus={aiEvaluationStatus?.status}
+                    {evaluation === 'pending' && (
+                      <Tooltip
+                        title={translate('component.pendingEvaluation.tooltip')}
                       >
-                        <Tooltip
-                          title={
-                            aiEvaluationMsg[aiEvaluationStatus?.status]?.tooltip
-                          }
-                        >
-                          <AiEvaluationMessage>
-                            {aiEvaluationMsg[aiEvaluationStatus?.status]?.text}
-                          </AiEvaluationMessage>
-                        </Tooltip>
-                      </AiEvaluationWrapper>
-                      <Tooltip title={translate('author:rubric.infoText')}>
-                        <FontAwesomeIcon
-                          icon={faInfoCircle}
-                          aria-hidden="true"
-                          style={{
-                            color: 'black',
-                            fontSize: '25px',
-                            marginLeft: '10px',
-                          }}
-                        />
+                        <EvaluationMessage>
+                          {translate('component.pendingEvaluation.text')}
+                        </EvaluationMessage>
                       </Tooltip>
-                    </FlexContainer>
+                    )}
                     <EduIf
                       condition={
-                        aiEvaluationStatus?.status ===
-                        AI_EVALUATION_STATUS.FAILED
+                        aiEvaluationStatus &&
+                        !aiEvaluationStatus?.isGradedExternally
                       }
                     >
-                      <ManualEvaluationMessage>
-                        {translate('component.manualEvaluationNeeded.text')}
-                      </ManualEvaluationMessage>
+                      <FlexContainer>
+                        <AiEvaluationWrapper
+                          aiEvaluationStatus={aiEvaluationStatus?.status}
+                        >
+                          <Tooltip
+                            title={
+                              aiEvaluationMsg[aiEvaluationStatus?.status]
+                                ?.tooltip
+                            }
+                          >
+                            <AiEvaluationMessage>
+                              {
+                                aiEvaluationMsg[aiEvaluationStatus?.status]
+                                  ?.text
+                              }
+                            </AiEvaluationMessage>
+                          </Tooltip>
+                        </AiEvaluationWrapper>
+                        <Tooltip title={translate('author:rubric.infoText')}>
+                          <FontAwesomeIcon
+                            icon={faInfoCircle}
+                            aria-hidden="true"
+                            style={{
+                              color: 'black',
+                              fontSize: '25px',
+                              marginLeft: '10px',
+                            }}
+                          />
+                        </Tooltip>
+                      </FlexContainer>
+                      <EduIf
+                        condition={
+                          aiEvaluationStatus?.status ===
+                          AI_EVALUATION_STATUS.FAILED
+                        }
+                      >
+                        <ManualEvaluationMessage>
+                          {translate('component.manualEvaluationNeeded.text')}
+                        </ManualEvaluationMessage>
+                      </EduIf>
                     </EduIf>
-                  </EduIf>
-                  <ImmersiveReaderWrapper>
-                    <Question
-                      {...restProps}
-                      t={translate}
-                      item={data}
-                      view={view}
-                      evaluation={evaluation}
-                      answerScore={answerScore}
-                      changePreviewTab={changePreviewTab}
-                      qIndex={qIndex}
-                      advancedLink={advancedLink}
-                      advancedAreOpen={this.advancedAreOpen}
-                      cleanSections={this.cleanSections}
-                      fillSections={this.fillSections}
-                      showQuestionNumber={!isPassageOrVideoType && data.qLabel}
-                      flowLayout={flowLayout}
-                      disableResponse={disableResponse}
-                      studentReport={studentReportFeedbackVisible}
-                      isPrintPreview={isPrintPreview}
-                      {...userAnswerProps}
-                      page={page}
-                      setPage={this.setPage}
-                      showAnswerScore={showAnswerScore}
-                      isDefaultTheme={selectedTheme === 'default'}
-                    />
-                  </ImmersiveReaderWrapper>
+                    <ImmersiveReaderWrapper>
+                      <Question
+                        {...restProps}
+                        t={translate}
+                        item={data}
+                        view={view}
+                        evaluation={evaluation}
+                        answerScore={answerScore}
+                        changePreviewTab={changePreviewTab}
+                        qIndex={qIndex}
+                        advancedLink={advancedLink}
+                        advancedAreOpen={this.advancedAreOpen}
+                        cleanSections={this.cleanSections}
+                        fillSections={this.fillSections}
+                        showQuestionNumber={
+                          !isPassageOrVideoType && data.qLabel
+                        }
+                        flowLayout={flowLayout}
+                        disableResponse={disableResponse}
+                        studentReport={studentReportFeedbackVisible}
+                        isPrintPreview={isPrintPreview}
+                        {...userAnswerProps}
+                        page={page}
+                        setPage={this.setPage}
+                        showAnswerScore={showAnswerScore}
+                        isDefaultTheme={selectedTheme === 'default'}
+                      />
+                    </ImmersiveReaderWrapper>
 
-                  {showFeedback && !isPrintPreview && (
-                    <BottomAction
-                      view={view}
-                      isStudentReport={isStudentReport}
-                      hasShowStudentWork={!!showStudentWork}
-                      onClickHandler={this.openStudentWork}
-                      timeSpent={timeSpent}
-                      item={data}
-                      QuestionComp={Question}
-                      advancedLink={advancedLink}
-                      advancedAreOpen={this.advancedAreOpen}
-                      hasDrawingResponse={hasDrawingResponse}
-                      saveAnswer={restProps.saveAnswer}
-                      fillSections={() => {}}
-                      cleanSections={() => {}}
-                      studentId={studentId}
-                      t={translate}
-                      isLCBView={isLCBView}
-                      isExpressGrader={isExpressGrader}
-                      isQuestionView={isQuestionView}
-                      previewTab={previewTab}
-                      isPrintPreview={isPrintPreview}
-                      isGrade={isGrade}
-                      data={data}
-                      enableMagnifier={enableMagnifier}
-                      saveHintUsage={saveHintUsage}
-                      isStudent={userRole === 'student'}
-                      itemIndex={itemIndex}
-                      hideCorrectAnswer={hideCorrectAnswer}
-                      isGradedExternally={answerScore.isGradedExternally}
-                    />
-                  )}
-                  {rubricDetails &&
-                    studentReportFeedbackVisible &&
-                    !isShowStudentWork && (
-                      <RubricTableWrapper data-cy="rubricTable">
-                        <FieldLabel className="rubric-title">
-                          Graded Rubric
-                        </FieldLabel>
-                        <FieldLabel className="rubric-name">
-                          {rubricDetails.name}
-                        </FieldLabel>
-                        <PreviewRubricTable
-                          data={rubricDetails}
-                          rubricFeedback={rubricFeedback}
-                          isDisabled
-                        />
-                      </RubricTableWrapper>
+                    {showFeedback && !isPrintPreview && (
+                      <BottomAction
+                        view={view}
+                        isStudentReport={isStudentReport}
+                        hasShowStudentWork={!!showStudentWork}
+                        onClickHandler={this.openStudentWork}
+                        timeSpent={timeSpent}
+                        item={data}
+                        QuestionComp={Question}
+                        advancedLink={advancedLink}
+                        advancedAreOpen={this.advancedAreOpen}
+                        hasDrawingResponse={hasDrawingResponse}
+                        saveAnswer={restProps.saveAnswer}
+                        fillSections={() => {}}
+                        cleanSections={() => {}}
+                        studentId={studentId}
+                        t={translate}
+                        isLCBView={isLCBView}
+                        isExpressGrader={isExpressGrader}
+                        isQuestionView={isQuestionView}
+                        previewTab={previewTab}
+                        isPrintPreview={isPrintPreview}
+                        isGrade={isGrade}
+                        data={data}
+                        enableMagnifier={enableMagnifier}
+                        saveHintUsage={saveHintUsage}
+                        isStudent={userRole === 'student'}
+                        itemIndex={itemIndex}
+                        hideCorrectAnswer={hideCorrectAnswer}
+                        isGradedExternally={answerScore.isGradedExternally}
+                      />
                     )}
-                  {view === 'preview' && !isPrintPreview && !showFeedback && (
-                    <Hints
-                      question={data}
-                      enableMagnifier={enableMagnifier}
-                      saveHintUsage={saveHintUsage}
-                      isStudent={userRole === 'student'}
-                      itemIndex={itemIndex}
-                      isLCBView={isLCBView}
-                      isExpressGrader={isExpressGrader}
-                      isStudentReport={isStudentReport}
-                      displayRubricInfoButton={this.showRubricToStudentsButton}
-                      rubricDetails={rubricDetails}
-                      showHintsToStudents={showHintsToStudents}
-                      penaltyOnUsingHints={penaltyOnUsingHints}
-                      viewAsStudent={viewAsStudent}
-                    />
-                  )}
-                </StyledFlexContainer>
+                    {rubricDetails &&
+                      studentReportFeedbackVisible &&
+                      !isShowStudentWork && (
+                        <RubricTableWrapper data-cy="rubricTable">
+                          <FieldLabel className="rubric-title">
+                            Graded Rubric
+                          </FieldLabel>
+                          <FieldLabel className="rubric-name">
+                            {rubricDetails.name}
+                          </FieldLabel>
+                          <PreviewRubricTable
+                            data={rubricDetails}
+                            rubricFeedback={rubricFeedback}
+                            isDisabled
+                          />
+                        </RubricTableWrapper>
+                      )}
+                    {view === 'preview' && !isPrintPreview && !showFeedback && (
+                      <Hints
+                        question={data}
+                        enableMagnifier={enableMagnifier}
+                        saveHintUsage={saveHintUsage}
+                        isStudent={userRole === 'student'}
+                        itemIndex={itemIndex}
+                        isLCBView={isLCBView}
+                        isExpressGrader={isExpressGrader}
+                        isStudentReport={isStudentReport}
+                        displayRubricInfoButton={
+                          this.showRubricToStudentsButton
+                        }
+                        rubricDetails={rubricDetails}
+                        showHintsToStudents={showHintsToStudents}
+                        penaltyOnUsingHints={penaltyOnUsingHints}
+                        viewAsStudent={viewAsStudent}
+                      />
+                    )}
+                  </StyledFlexContainer>
+                )}
               </PaperWrapper>
             </QuestionContainer>
           </div>

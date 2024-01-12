@@ -38,7 +38,7 @@ import {
   StyledRadioGrp,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
 import { HeaderSaveButton } from '../../../../admin/Common/StyledComponents'
-import { Tooltip } from '../../../../common/utils/helpers'
+import { Tooltip, pearOrEdulasticUrl } from '../../../../common/utils/helpers'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -571,7 +571,7 @@ class DistrictPolicyForm extends Component {
                   onChange={this.handleTagTeacherChange}
                   limit={512}
                   data-cy="allowed-teachers-domain"
-                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                  placeholder={`Enter allowed domain(s), example - gmail.com, ${pearOrEdulasticUrl}`}
                 />
               </StyledFormItem>
             </StyledCol>
@@ -585,7 +585,7 @@ class DistrictPolicyForm extends Component {
                   data-cy="domain-for-recommending-schools"
                   value={districtPolicy.allowedDomainsForDistrict}
                   onChange={this.handleTagSchoolChange}
-                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                  placeholder={`Enter allowed domain(s), example - gmail.com, ${pearOrEdulasticUrl}`}
                 />
               </StyledFormItem>
             </StyledCol>
@@ -603,7 +603,7 @@ class DistrictPolicyForm extends Component {
                   onChange={this.handleTagStudentChange}
                   limit={512}
                   data-cy="allowed-students-domain"
-                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                  placeholder={`Enter allowed domain(s), example - gmail.com, ${pearOrEdulasticUrl}`}
                 />
               </StyledFormItem>
             </StyledCol>

@@ -17,12 +17,13 @@ import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
 import { navigationState } from '../../../src/constants/navigation'
 import AddOnTag from '../common/AddOnTag'
 import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
+import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
 
 export const videoQuizPath = '/author/tests/videoquiz'
 
 const QUICK_TOUR_LINK = `//fast.wistia.net/embed/iframe/jd8y6sdt1m`
 const descriptionBottom = `
-  Provide your video link and proceed to create an Edulastic Assessment
+  Provide your video link and proceed to create an ${isPearOrEdulasticAssessment}
 `
 
 const OptionVideo = ({ history, isVideoQuizAndAIEnabled }) => {

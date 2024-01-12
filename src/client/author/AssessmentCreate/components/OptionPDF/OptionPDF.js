@@ -5,9 +5,10 @@ import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
 import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
 import { SnapQuiz } from './styled'
+import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
 
 const descriptionBottom = `
-  Upload your assessment in PDF format and proceed to create an Edulastic Assessment
+  Upload your assessment in PDF format and proceed to create an ${isPearOrEdulasticAssessment}
 `
 
 const OptionPDF = () => (

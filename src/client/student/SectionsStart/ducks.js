@@ -16,7 +16,6 @@ const slice = createSlice({
   },
   reducers: {
     fetchSectionsData: (state) => {
-      state.isSectionsTestPasswordValidated = false
       state.isLoading = true
     },
     fetchSectionsDataSuccess: (state, { payload }) => {

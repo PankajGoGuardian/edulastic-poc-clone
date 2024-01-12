@@ -53,6 +53,7 @@ import {
   getUserOrgId,
 } from '../../../../author/src/selectors/user'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
+import { isPearDomain } from '../../../../../utils/pear'
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school
@@ -508,7 +509,11 @@ const JoinSchool = ({
                     </h3>
                     <h5>
                       {t('component.signup.teacher.filldetails')} <br />{' '}
-                      {t('component.signup.teacher.edulasticsupport')}
+                      {t(
+                        `component.signup.teacher.${
+                          isPearDomain ? 'pearsupport' : 'edulasticsupport'
+                        }`
+                      )}
                     </h5>
                   </>
                 ) : (

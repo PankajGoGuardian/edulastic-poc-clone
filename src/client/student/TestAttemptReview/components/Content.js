@@ -56,7 +56,19 @@ class SummaryTest extends Component {
   }
 
   componentDidMount() {
-    const { loadTest, history, match, questionList, saveUserWork } = this.props
+    const {
+      loadTest,
+      history,
+      match,
+      questionList,
+      saveUserWork,
+      preview,
+    } = this.props
+
+    if (preview) {
+      return
+    }
+
     const {
       utaId: testActivityId,
       id: testId,
@@ -131,7 +143,21 @@ class SummaryTest extends Component {
   }
 
   goToQuestion = (testId, testActivityId, q, itemId) => () => {
-    const { history, items, match, test, submitingResponse } = this.props
+    const {
+      history,
+      items,
+      match,
+      test,
+      submitingResponse,
+      preview,
+      setCurrentItemIdForPreview,
+    } = this.props
+
+    if (preview) {
+      setCurrentItemIdForPreview(itemId)
+      return
+    }
+
     if (submitingResponse) {
       return
     }
@@ -184,6 +210,11 @@ class SummaryTest extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { preview } = this.props
+    if (preview) {
+      return
+    }
+
     if (prevProps.userWork !== this.props.userWork && this.props.userWork) {
       localStorage.setItem(
         `${this.props.test?.testId}:userWork`,
@@ -253,6 +284,7 @@ class SummaryTest extends Component {
       studentData,
       sectionId,
       itemGroups,
+      preview = false,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
@@ -449,7 +481,7 @@ class SummaryTest extends Component {
                 </FlexContainer>
               )}
             </MainContent>
-            <Footer>
+            <Footer preview={preview}>
               <ShortDescription>
                 <EduIf condition={hasSection}>
                   <EduThen>{t('common.submitAndMoveToNextSection')}</EduThen>
@@ -457,14 +489,17 @@ class SummaryTest extends Component {
                 </EduIf>
               </ShortDescription>
               <ButtonWrapper>
-                <UploadPaperWorkBtn
-                  data-cy="uploadTestAttachments"
-                  isGhost
-                  onClick={openUserWorkUploadModal}
-                >
-                  <IconPhotoCamera />{' '}
-                  <span>{t('default:UPLOAD PAPER WORK')}</span>
-                </UploadPaperWorkBtn>
+                <EduIf condition={!preview}>
+                  <UploadPaperWorkBtn
+                    data-cy="uploadTestAttachments"
+                    isGhost
+                    onClick={openUserWorkUploadModal}
+                  >
+                    <IconPhotoCamera />{' '}
+                    <span>{t('default:UPLOAD PAPER WORK')}</span>
+                  </UploadPaperWorkBtn>
+                </EduIf>
+
                 <SubmitButton
                   type="primary"
                   onClick={finishTest}
@@ -516,10 +551,14 @@ SummaryTest.propTypes = {
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   test: PropTypes.object.isRequired,
+  preview: PropTypes.bool,
+  setCurrentItemIdForPreview: PropTypes.func,
 }
 
 SummaryTest.defaultProps = {
   questionList: [],
+  preview: false,
+  setCurrentItemIdForPreview: () => {},
 }
 
 const enhance = compose(
@@ -812,7 +851,7 @@ const Footer = styled(Container)`
   width: 100%;
   border-top: 1px solid #cecece;
   padding-top: 20px;
-  height: 36px;
+  height: ${(props) => (props.preview ? 'unset' : '36px')};
   @media (max-width: ${smallDesktopWidth}) {
     margin-top: 43px;
   }

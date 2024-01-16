@@ -61,6 +61,13 @@ const SummaryContainer = (props) => {
     hasSections,
     preventSectionNavigation,
     itemsToDeliverIngroupById,
+    preview,
+    closeTestPreviewModal,
+    setCurrentItemIdForPreview,
+    submitPreviewTest,
+    testPreviewSectionId,
+    showSectionStartPageCallback,
+    setShowTestAttemptReview,
   } = props
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
@@ -99,12 +106,18 @@ const SummaryContainer = (props) => {
   })
 
   useEffect(() => {
+    if (preview) {
+      return
+    }
     if (currentAssignment && !assignmentObj) {
       fetchAssignments()
     }
   }, [currentAssignment])
 
   useEffect(() => {
+    if (preview) {
+      return
+    }
     // Teacher enabled to restrict going back to a submitted section ?
     // There are no UI components that allows student to navigate to this page from a new section
     // Incase if user come through browser back button or hard coded url navigate them to home screen
@@ -143,6 +156,15 @@ const SummaryContainer = (props) => {
 
   // Submit the sections of test on click of submit either from section summary or final summary
   const submitSectionOrTest = (_groupId) => {
+    if (preview) {
+      if (testPreviewSectionId) {
+        setShowTestAttemptReview(false)
+        showSectionStartPageCallback()
+        return
+      }
+      submitPreviewTest()
+      return
+    }
     if (hasSections && sectionId && deliveringItemGroups.length) {
       const urlToGo = `/student/${assessmentType}/${testId}/class/${_groupId}/uta/${utaId}/sections-start`
       const locationState = {
@@ -160,18 +182,23 @@ const SummaryContainer = (props) => {
   }
 
   const exitSectionsPage = () => {
+    if (preview && typeof closeTestPreviewModal === 'function') {
+      closeTestPreviewModal()
+      return
+    }
     history.push('/home/assignments')
   }
 
   return (
     <ThemeProvider theme={themes.default}>
       <SummaryHeader
-        showExit={sectionId}
+        showExit={sectionId || preview}
         hidePause={blockSaveAndContinue}
         onExitClick={exitSectionsPage}
+        isTestPreviewModal={preview}
       />
       <MainContainer>
-        {restrictNavigationOut && (
+        {!preview && restrictNavigationOut && (
           <>
             <ForceFullScreenModal
               testActivityId={utaId}
@@ -181,7 +208,7 @@ const SummaryContainer = (props) => {
             />
           </>
         )}
-        {(blockSaveAndContinue || restrictNavigationOut) && (
+        {!preview && (blockSaveAndContinue || restrictNavigationOut) && (
           <FirestorePings
             testActivityId={utaId}
             history={history}
@@ -194,7 +221,9 @@ const SummaryContainer = (props) => {
         <SummaryTest
           finishTest={() => submitSectionOrTest(groupId)}
           openUserWorkUploadModal={openUserWorkUploadModal}
-          sectionId={sectionId}
+          sectionId={preview ? testPreviewSectionId : sectionId}
+          preview={preview}
+          setCurrentItemIdForPreview={setCurrentItemIdForPreview}
         />
       </MainContainer>
       <UserWorkUploadModal
@@ -252,6 +281,21 @@ export default enhance(SummaryContainerWithjQuery)
 SummaryContainer.propTypes = {
   finishTest: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
+  preview: PropTypes.bool,
+  closeTestPreviewModal: PropTypes.func,
+  setCurrentItemIdForPreview: PropTypes.func,
+  submitPreviewTest: PropTypes.func,
+  showSectionStartPageCallback: PropTypes.func,
+  setShowTestAttemptReview: PropTypes.func,
+}
+
+SummaryContainer.defaultProps = {
+  preview: false,
+  closeTestPreviewModal: () => {},
+  setCurrentItemIdForPreview: () => {},
+  submitPreviewTest: () => {},
+  showSectionStartPageCallback: () => {},
+  setShowTestAttemptReview: () => {},
 }
 
 const MainContainer = styled.div`

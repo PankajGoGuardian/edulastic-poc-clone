@@ -300,6 +300,8 @@ class AssessmentPlayerSimple extends React.Component {
       isLast,
       preventSectionNavigation,
       userFeatures = {},
+      hasSections,
+      lastItemInTest,
     } = this.props
     const {
       showExitPopup,
@@ -335,6 +337,8 @@ class AssessmentPlayerSimple extends React.Component {
       item?.collections
         ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
         .map(({ name }) => name)
+
+    const showSubmitText = hasSections ? lastItemInTest : isLast()
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -377,6 +381,7 @@ class AssessmentPlayerSimple extends React.Component {
             calcTypes={calcTypes}
             isLast={isLast()}
             canUseImmersiveReader={canUseImmersiveReader}
+            showSubmitText={showSubmitText}
           >
             <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer
@@ -420,6 +425,7 @@ class AssessmentPlayerSimple extends React.Component {
               firstItemInSectionAndRestrictNav={
                 firstItemInSectionAndRestrictNav
               }
+              showSubmitText={showSubmitText}
             />
             {!previewPlayer && (
               <SubmitConfirmation

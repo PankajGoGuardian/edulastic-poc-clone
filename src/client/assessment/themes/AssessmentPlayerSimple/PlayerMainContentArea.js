@@ -16,7 +16,6 @@ const PlayerContentArea = ({
   previewTab,
   currentItem,
   isFirst,
-  isLast,
   moveToPrev,
   moveToNext,
   questions,
@@ -50,8 +49,7 @@ const PlayerContentArea = ({
   saveHintUsageData,
   classLevelSettings,
   viewAsStudent,
-  hasSections,
-  lastItemInTest,
+  showSubmitText,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -76,8 +74,6 @@ const PlayerContentArea = ({
           setCrossAction,
           setHighlights,
         }
-
-  const showSubmitText = hasSections ? lastItemInTest : isLast()
 
   const saveHintUsage = (hintUsage) => {
     if (item?._id) {

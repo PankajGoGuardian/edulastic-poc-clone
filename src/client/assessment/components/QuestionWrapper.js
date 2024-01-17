@@ -708,7 +708,7 @@ class QuestionWrapper extends Component {
                     </EduIf>
                   </EduIf>
                   <ImmersiveReaderWrapper>
-                    <LanguageSelectorTab />
+                    {view === EDIT && <LanguageSelectorTab />}
                     <Question
                       {...restProps}
                       t={translate}

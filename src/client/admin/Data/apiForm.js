@@ -1251,4 +1251,36 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'merge-class',
+    name: 'Merge Class',
+    endPoint: 'admin-tool/merge-class',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'District Id',
+        placeholder: 'Enter District Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'srcClassIds',
+        displayName: 'Source Class Ids',
+        placeholder: 'Enter comma separated source class Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'destClassIds',
+        displayName: 'Destination Class Ids',
+        placeholder: 'Enter comma separated destination class Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

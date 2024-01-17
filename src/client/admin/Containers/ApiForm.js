@@ -32,6 +32,7 @@ const API_OPTIONS = {
 }
 const UPLOAD_STANDARD = 'upload-standard'
 const BULK_ADD_THUMBNAIL = 'add-test-thumbnail'
+const MERGE_CLASS = 'merge-class'
 
 const ApiForm = () => {
   const [id, setId] = useState()
@@ -196,7 +197,51 @@ const ApiForm = () => {
           })
           return
         }
+      } else if (id === MERGE_CLASS) {
+        const sourceClassIds = data.srcClassIds
+        const destinationClassIds = data.destClassIds
+
+        // Function to validate a MongoDB ID
+        const isValidMongoDBId = (classId) => /^[0-9a-fA-F]{24}$/.test(classId)
+
+        // Check if every element in the source class Id are valid mongo ID
+        const allSourceIdsValid = sourceClassIds
+          .map(isValidMongoDBId)
+          .every(Boolean)
+        // Check if every element in the destination class Id are valid mongo ID
+        const allDestinationIdsValid = destinationClassIds
+          .map(isValidMongoDBId)
+          .every(Boolean)
+
+        if (!allSourceIdsValid) {
+          notification({
+            type: 'warning',
+            msg: 'Please enter all valid source class Ids.',
+            messageKey: 'apiFormErr',
+          })
+          return
+        }
+
+        if (!allDestinationIdsValid) {
+          // destination Ids are all valid
+          notification({
+            type: 'warning',
+            msg: 'Please enter all valid destination class Ids.',
+            messageKey: 'apiFormErr',
+          })
+          return
+        }
+        if (sourceClassIds.length != destinationClassIds.length) {
+          notification({
+            type: 'warning',
+            msg:
+              'Please enter same number of source and destination class Ids.',
+            messageKey: 'apiFormErr',
+          })
+          return
+        }
       }
+
       submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {

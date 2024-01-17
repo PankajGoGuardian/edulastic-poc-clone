@@ -144,6 +144,7 @@ class PreviewModal extends React.Component {
       selectedLanguage: LANGUAGE_EN,
       isAddingSinglePassageItem: false,
       voiceLanguage: item?.language || ENGLISH,
+      modalDraggable: false,
     }
   }
 
@@ -1105,6 +1106,7 @@ class PreviewModal extends React.Component {
       showTTSTextModal,
       selectedLanguage,
       voiceLanguage,
+      modalDraggable,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1215,6 +1217,7 @@ class PreviewModal extends React.Component {
             position={{ x: '50%', y: '50%' }}
             transform="translate(-50%, -50%)"
             borderRadius="8px"
+            disabled={modalDraggable}
           >
             <ModalInner width="768px">
               <ModalHeader justifyContent="space-between" padding="16px 24px">
@@ -1222,19 +1225,24 @@ class PreviewModal extends React.Component {
                 <IconClose onClick={this.toggleTTSTextModal} />
               </ModalHeader>
               <ModalContentArea tts style={{ minHeight: 400 }}>
-                <SpeakableText
-                  ttsTextAPIStatus={ttsTextAPIStatus}
-                  updateTTSAPIStatus={updateTTSAPIStatus}
-                  ttsTextData={ttsTextResult}
-                  updateQuestionTTSText={this.updateQuestionTTSText}
-                  regenerateTTSText={this.regenerateTTSText}
-                  question={data?.questions?.[0] || {}}
-                  showTTSTextModal={showTTSTextModal}
-                  onLanguageChange={this.onLanguageChange}
-                  selectedLanguage={selectedLanguage}
-                  onChangeVoiceLanguge={this.onChangeVoiceLanguge}
-                  voiceLanguage={voiceLanguage}
-                />
+                <div
+                  onMouseEnter={() => this.setState({ modalDraggable: true })}
+                  onMouseLeave={() => this.setState({ modalDraggable: false })}
+                >
+                  <SpeakableText
+                    ttsTextAPIStatus={ttsTextAPIStatus}
+                    updateTTSAPIStatus={updateTTSAPIStatus}
+                    ttsTextData={ttsTextResult}
+                    updateQuestionTTSText={this.updateQuestionTTSText}
+                    regenerateTTSText={this.regenerateTTSText}
+                    question={data?.questions?.[0] || {}}
+                    showTTSTextModal={showTTSTextModal}
+                    onLanguageChange={this.onLanguageChange}
+                    selectedLanguage={selectedLanguage}
+                    onChangeVoiceLanguge={this.onChangeVoiceLanguge}
+                    voiceLanguage={voiceLanguage}
+                  />
+                </div>
               </ModalContentArea>
             </ModalInner>
           </Draggable>

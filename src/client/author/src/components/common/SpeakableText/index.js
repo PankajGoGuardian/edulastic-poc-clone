@@ -122,7 +122,7 @@ const SpeakableText = ({
 
           <h4>Question TTS Text</h4>
           <TextAreaInputStyled
-            style={{ paddingLeft: '5px', paddingTop: '5px' }}
+            style={{ paddingLeft: '5px', paddingTop: '5px', marginBottom: 10 }}
             value={stimulusText}
             onChange={(e) =>
               handleUpdateTtsData(e?.target?.value || '', 'stimulus')

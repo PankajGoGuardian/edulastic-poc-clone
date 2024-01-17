@@ -96,7 +96,7 @@ const SignedStackedBarChartContainer = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { name = '' } = payload[0].payload
+      const { name = '', domainDesc, standardDesc } = payload[0].payload
       return (
         <div>
           <BarTooltipRow
@@ -104,6 +104,11 @@ const SignedStackedBarChartContainer = ({
               viewBy === viewByMode.STANDARDS ? 'Standard' : 'Domain'
             } : `}
             value={name}
+          />
+          <BarTooltipRow
+            title="Description: "
+            value={viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc}
+            contentAlign="left"
           />
           <BarTooltipRow
             title={`Mastery ${
@@ -137,6 +142,13 @@ const SignedStackedBarChartContainer = ({
     return currentBarData.name || ''
   }
 
+  const getXTickTooltipText = (payload, data) => {
+    const { name, domainDesc, standardDesc } =
+      find(data, (item) => item[xAxisDataKey] === payload.value) || {}
+    const desc = viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc
+    return `${name || ''}: ${desc || ''}`
+  }
+
   const chartSpecifics = getChartSpecifics(analyzeBy, orderedScaleInfo)
 
   return (
@@ -148,6 +160,8 @@ const SignedStackedBarChartContainer = ({
       onBarClickCB={_onBarClickCB}
       onResetClickCB={_onResetClickCB}
       getXTickText={getXTickText}
+      getXTickTooltipText={getXTickTooltipText}
+      xTickTooltipStyles={{ textAlign: 'left' }}
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}

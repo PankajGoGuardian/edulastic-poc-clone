@@ -180,15 +180,19 @@ const PerformanceAnalysisTable = ({
     const aggSummaryStat = aggSummaryStats[columnConfig.key] || {}
     const totalPoints = aggSummaryStat.totalMaxScore || 0
     const aggColumnValue = aggSummaryStat[analyzeByConfig.field] || ''
+    const titleKey =
+      viewBy === viewByMode.STANDARDS ? 'standardDesc' : 'domainDesc'
     return {
       title: (
-        <p>
-          {columnConfig.title}
-          <br />
-          Points - {parseFloat(totalPoints.toFixed(2))}
-          <br />
-          {formatScore(aggColumnValue, analyzeBy)}
-        </p>
+        <Tooltip title={skill[titleKey]}>
+          <p>
+            {columnConfig.title}
+            <br />
+            Points - {parseFloat(totalPoints.toFixed(2))}
+            <br />
+            {formatScore(aggColumnValue, analyzeBy)}
+          </p>
+        </Tooltip>
       ),
       dataIndex: 'standardMetrics',
       key: columnConfig.key,

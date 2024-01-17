@@ -20,6 +20,10 @@ import canvasApi from '@edulastic/api/src/canvas'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { signUpState } from '@edulastic/constants'
 import {
+  ACCESS_WITHOUT_SCHOOL,
+  signupStateBykey,
+} from '@edulastic/constants/const/signUpState'
+import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,
   hideJoinSchoolAction,
@@ -95,6 +99,7 @@ const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS =
 const BULK_SYNC_CANVAS_CLASS = '[signup] bulk sync canvas class'
 const SET_BULK_SYNC_CANVAS_STATUS = '[signup] set bulk sync canvas status'
 const UPDATE_USER_SIGNUP_STATE = '[user] update user signup state'
+const CREATE_AND_JOIN_SCHOOL_STATUS = '[signup] fetch school teachers status'
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -125,6 +130,10 @@ export const signupDistrictIdSelector = createSelector(
 export const signupSchoolsSelector = createSelector(
   ['signup.schools'],
   (subState) => (!isEmpty(subState) ? subState : undefined)
+)
+export const selectedSchoolSelector = createSelector(
+  ['signup'],
+  (state) => state.schoolSelectedInJoinModal
 )
 
 export const isSchoolSearchingSelector = createSelector(
@@ -170,6 +179,10 @@ export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST)
 
 export const createAndJoinSchoolRequestAction = createAction(
   CREATE_AND_JOIN_SCHOOL_REQUEST
+)
+
+export const createAndJoinSchoolStatusAction = createAction(
+  CREATE_AND_JOIN_SCHOOL_STATUS
 )
 export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(
   GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST
@@ -331,6 +344,9 @@ export default createReducer(initialState, {
   [SEARCH_DISTRICTS_FAILED]: failedDistricts,
   [CREATE_AND_JOIN_SCHOOL_REQUEST]: (state) => {
     state.createSchoolRequestPending = true
+  },
+  [CREATE_AND_JOIN_SCHOOL_STATUS]: (state, { payload }) => {
+    state.createSchoolRequestPending = payload
   },
   [CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST]: (state) => {
     state.updateUserWithSchoolLoading = true
@@ -604,9 +620,34 @@ function* saveSubjectGradeSaga({ payload: _payload }) {
     addSchoolFlow,
     ...payload
   } = _payload
+
   let isSaveSubjectGradeSuccessful = false
+  const schoolSelected = yield select(selectedSchoolSelector)
   const initialUser = yield select(getUser)
+
+  // When home school is selected we require to save the school detail
+  if (schoolSelected?.homeSchool) {
+    const { signupStateBykey, ACCESS_WITHOUT_SCHOOL } = signUpState
+    yield put(createAndJoinSchoolStatusAction(true))
+    yield call(createAndJoinSchoolSaga, {
+      payload: {
+        createSchool: schoolSelected,
+        joinSchool: {
+          data: {
+            currentSignUpState: signupStateBykey[ACCESS_WITHOUT_SCHOOL],
+            email: initialUser.email,
+            firstName: initialUser.firstName,
+            middleName: initialUser.middleName,
+            lastName: initialUser.lastName,
+          },
+          userId: initialUser._id,
+        },
+      },
+    })
+  }
+
   try {
+    // False for homeschool
     if (schoolSelectedFromDropdown) {
       const schoolPayload = {
         data: schoolData,

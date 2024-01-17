@@ -117,6 +117,49 @@ export const TextInputStyled = styled((props) => (
   }
 `
 
+export const TextInputOnFocusStyled = styled((props) => (
+  <Input maxLength={props.limit || 128} {...props} ref={props.inputRef} />
+))`
+  &.ant-input {
+    text-align: ${(props) => props.align || 'left'};
+    ${inputCommonStyle};
+    ${(props) => props.style};
+    color: ${({ color, theme }) => color || theme.questionTextColor};
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+    &:focus,
+    &:hover {
+      border: 1px solid ${themeColorBlue} !important;
+      box-shadow: none;
+    }
+  }
+  &.ant-input-affix-wrapper {
+    padding: 0px;
+    .ant-input {
+      ${inputCommonStyle};
+      ${(props) => props.style};
+      text-align: ${(props) => props.align || 'left'};
+      color: ${({ theme }) => theme.questionTextColor};
+      background-color: transparent;
+      border: none;
+      padding: 0px;
+      &:focus,
+      &:hover {
+        border: 1px solid ${themeColorBlue} !important;
+        box-shadow: none;
+      }
+    }
+  }
+  &::placeholder {
+    text-align: ${(props) => props.placeHolderAlign};
+    color: ${greyThemeDark2};
+  }
+  &:focus::placeholder {
+    color: transparent;
+  }
+`
+
 export const TextAreaInputStyled = styled((props) => (
   <Input.TextArea {...props} ref={props.inputRef} />
 ))`

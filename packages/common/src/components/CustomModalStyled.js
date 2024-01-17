@@ -25,6 +25,7 @@ export default CustomModalStyled
 
 const StyledModal = styled(Modal)`
   min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
+  max-width: ${(props) => (props.modalMaxWidth ? props.modalMaxWidth : 'none')};
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     ${(props) =>

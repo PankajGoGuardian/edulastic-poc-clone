@@ -45,6 +45,7 @@ import {
   hasSectionsSelector,
   isDefaultTestSelector,
   getItemGroupsSelector,
+  getAllTagsAction,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -122,6 +123,10 @@ class Review extends PureComponent {
       const { setIsTestPreviewVisible } = this.props
       setIsTestPreviewVisible(true)
     }
+    const { getAllTags, isPlaylistTestReview = false } = this.props
+    getAllTags({
+      type: isPlaylistTestReview ? 'playlist' : ['test', 'assignment'],
+    })
 
     const { test, history } = this.props
 
@@ -908,6 +913,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      getAllTags: getAllTagsAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,

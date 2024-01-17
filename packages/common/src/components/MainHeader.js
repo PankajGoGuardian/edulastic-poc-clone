@@ -9,13 +9,14 @@ import {
   mobileWidthMax,
   extraDesktopWidth,
 } from '@edulastic/colors'
-import { MenuIcon } from '@edulastic/common'
+import { MenuIcon, TextInputOnFocusStyled } from '@edulastic/common'
 import { Affix } from 'antd'
 import { PropTypes } from 'prop-types'
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled, { css } from 'styled-components'
+import { IconPencilEdit } from '@edulastic/icons'
 import { toggleSideBarAction } from '../../../../src/client/author/src/actions/toggleMenu'
 
 const MainHeader = ({
@@ -29,9 +30,12 @@ const MainHeader = ({
   headerLeftClassName,
   hasTestId,
   isInModal,
+  isEditable = false,
+  onTitleChange,
   ...restProps
 }) => {
   const title = titleText || headingText
+  const [showPencil, setShowPencil] = useState(true)
 
   return (
     <HeaderWrapper hasTestId={hasTestId} {...restProps}>
@@ -45,7 +49,7 @@ const MainHeader = ({
           {...restProps}
         >
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
-          {headingText && (
+          {(isEditable || headingText) && (
             <HeaderLeftContainer
               className={headerLeftClassName}
               headingText={headingText}
@@ -58,10 +62,39 @@ const MainHeader = ({
                   <Icon />
                 </TitleIcon>
               )}
-              <TitleWrapper {...restProps} title={title} data-cy="title">
-                {headingText}
-              </TitleWrapper>
-              {restProps.headingSubContent}
+              {isEditable ? (
+                <EditableTitleWrapper>
+                  <EditableSizedWrapper length={title?.length || 0}>
+                    <TextInputOnFocusStyled
+                      showArrow
+                      value={title}
+                      data-cy="testname-header"
+                      onChange={(e) => onTitleChange(e.target.value)}
+                      size="large"
+                      placeholder="Untitled Test"
+                      margin="0px"
+                      fontSize="18px"
+                      onFocus={(event) => {
+                        event.target.select()
+                        setShowPencil(false)
+                      }}
+                      onBlur={() => setShowPencil(true)}
+                      style={{
+                        padding: '6px 12px',
+                      }}
+                    />
+                  </EditableSizedWrapper>
+                  {showPencil && <IconPencilEdit />}
+                  {restProps.headingSubContent}
+                </EditableTitleWrapper>
+              ) : (
+                <>
+                  <TitleWrapper {...restProps} title={title} data-cy="title">
+                    {headingText}
+                  </TitleWrapper>
+                  {restProps.headingSubContent}
+                </>
+              )}
             </HeaderLeftContainer>
           )}
           {children}
@@ -243,4 +276,18 @@ export const HeaderMidContainer = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     display: none;
   }
+`
+
+const EditableTitleWrapper = styled.div`
+  width: 300px;
+  display: flex;
+  align-items: center;
+  fontsize: 18px;
+`
+
+const EditableSizedWrapper = styled.div`
+  width: calc(${(props) => (props.length || 0) + 1}ch + 32px);
+  min-width: calc(${'Untitled Test'.length}ch + 32px);
+  margin-right: 8px;
+  box-sizing: border-box;
 `

@@ -54,6 +54,7 @@ import {
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import {
+  DEFAULT_TEST_TITLE,
   createGroupSummary,
   getSettingsToSaveOnTestType,
   showRubricToStudentsSetting,
@@ -1067,7 +1068,7 @@ export const getQuestionTypesInTestSelector = createSelector(
 
 // reducer
 export const createBlankTest = () => ({
-  title: undefined,
+  title: DEFAULT_TEST_TITLE,
   description: '',
   releaseScore: releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
@@ -2458,6 +2459,9 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
+    const { nextLocation } = payload.data
+    nextLocation && delete payload.data.nextLocation
+
     const testItems = get(payload, 'data.itemGroups[0].items', [])
     let aiGeneratedTestItems = testItems
       .filter(({ unsavedItem }) => unsavedItem)
@@ -2484,14 +2488,18 @@ function* createTestSaga({ payload }) {
 
     yield put(createTestSuccessAction(entity))
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
-    const pathname = yield select((state) => state.router.location.pathname)
-    const currentTabMatch = pathname?.match(
-      /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
-    )
-    // try to keep the user on the same tab after test creation
-    // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
-    const currentTab = currentTabMatch?.[1] || 'description'
-    yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+    if (nextLocation) {
+      yield put(replace(nextLocation))
+    } else {
+      const pathname = yield select((state) => state.router.location.pathname)
+      const currentTabMatch = pathname?.match(
+        /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
+      )
+      // try to keep the user on the same tab after test creation
+      // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
+      const currentTab = currentTabMatch?.[1] || 'description'
+      yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+    }
     if (entity.aiGenerated) {
       yield put(setIsCreatingAction(true))
       yield put(receiveTestByIdAction(entity._id, true, false))
@@ -2545,7 +2553,7 @@ export function* updateTestSaga({ payload }) {
     }
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
-    const { scoring = {}, currentTab } = payload.data
+    const { scoring = {}, currentTab, nextLocation } = payload.data
     const testFieldsToOmit = [
       '_id',
       'updatedDate',
@@ -2561,6 +2569,7 @@ export function* updateTestSaga({ payload }) {
       'summary',
       'alreadyLiked',
       'active',
+      'nextLocation',
     ]
     // remove createdDate and updatedDate
     const oldId = payload.data._id
@@ -2679,7 +2688,18 @@ export function* updateTestSaga({ payload }) {
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)
-    if (oldId !== newId && newId) {
+    if (nextLocation) {
+      const locationState = yield select(
+        (state) => get(state, 'router.location.state'),
+        {}
+      )
+      yield put(
+        push({
+          pathname: nextLocation,
+          state: locationState,
+        })
+      )
+    } else if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
         let url = `/author/tests/${newId}/versioned/old/${oldId}`
         if (currentTab) {

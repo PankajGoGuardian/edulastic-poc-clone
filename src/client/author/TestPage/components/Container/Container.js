@@ -150,10 +150,11 @@ import TeacherSignup from '../../../../student/Signup/components/TeacherContaine
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import ConfirmTabChange from './ConfirmTabChange'
 import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
-import { getSettingsToSaveOnTestType } from '../../utils'
+import { DEFAULT_TEST_TITLE, getSettingsToSaveOnTestType } from '../../utils'
 import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
+import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -169,6 +170,13 @@ const {
 } = testConstants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 const { PARTIAL_PREMIUM, ENTERPRISE } = SUBSCRIPTION_SUB_TYPES
+
+const TEST_ACTIONS = {
+  publish: 'PUBLISH',
+  assign: 'ASSIGN',
+  share: 'SHARE',
+  navigation: 'NAVIGATION',
+}
 
 class Container extends PureComponent {
   constructor() {
@@ -189,6 +197,9 @@ class Container extends PureComponent {
       goToTabProps: {},
       showConfirmationOnTabChange: false,
       showSectionsTestSelectGroupIndexModal: true,
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
+      toBeNavigatedLocation: null,
     }
   }
 
@@ -301,7 +312,7 @@ class Container extends PureComponent {
         this.setState({ testLoaded: false })
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
-        this.gotoTab('description')
+        this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()
         if (
@@ -657,15 +668,16 @@ class Container extends PureComponent {
       isDynamicTest,
       hasSections,
       currentTab,
+      isDefaultTest,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
 
-    // condition to validate if test title is not empty before navigating to other tabs
-    if (!test?.title?.trim()?.length) {
+    if (!isDefaultTest && !test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
-      return
+      return false
     }
+
     let hasValidGroups = false
     let hasValidGroupsForSectionsTest = false
     // condition to validate Add Sections has been updated successfully before navigating to other tabs
@@ -756,6 +768,10 @@ class Container extends PureComponent {
       }))
     }
   }
+
+  checkInvalidTestTitle = (title) =>
+    !title?.trim() ||
+    title?.trim().toLowerCase() === DEFAULT_TEST_TITLE.toLowerCase()
 
   validateGroups = (isCreateNewItem = false) => {
     const { test, isDynamicTest, hasSections } = this.props
@@ -916,7 +932,7 @@ class Container extends PureComponent {
       (x) => x._id === sparkMathId
     )
 
-    if (this.validateTest(test)) {
+    if (this.validateTest(test, TEST_ACTIONS.assign)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
       } else {
@@ -1345,7 +1361,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = (action) => {
+  handleSave = (action, nextLocation) => {
     const {
       test = {},
       updateTest,
@@ -1357,11 +1373,14 @@ class Container extends PureComponent {
       userRole,
       userFeatures,
       testSettingsList,
+      isDefaultTest,
     } = this.props
-    if (!test?.title?.trim()?.length) {
+
+    if (!isDefaultTest && !test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
       return
     }
+
     if (
       !this.validateTimedAssignment() ||
       !this.validatePenaltyOnUsingHintsValue() ||
@@ -1404,6 +1423,9 @@ class Container extends PureComponent {
 
     updateLastUsedCollectionList(test.collections)
 
+    if (!test?.title?.trim()?.length) {
+      newTest.title = DEFAULT_TEST_TITLE
+    }
     if (test._id) {
       // Push `isInEditAndRegrade` flag in test if a user intentionally editing an assigned in progess test.
       if (
@@ -1414,9 +1436,9 @@ class Container extends PureComponent {
       ) {
         newTest.isInEditAndRegrade = true
       }
-      updateTest(test._id, { ...newTest, currentTab })
+      updateTest(test._id, { ...newTest, currentTab, nextLocation })
     } else {
-      createTest({ ...newTest, currentTab })
+      createTest({ ...newTest, currentTab, nextLocation })
     }
   }
 
@@ -1435,7 +1457,7 @@ class Container extends PureComponent {
     updateDocBasedTest(test._id, test, true)
   }
 
-  validateTest = (test) => {
+  validateTest = (test, toBeResumedTestAction = null) => {
     const {
       title,
       subjects,
@@ -1447,8 +1469,19 @@ class Container extends PureComponent {
       passages,
       hasSections,
     } = test
-    const { userFeatures, isOrganizationDistrictUser } = this.props
-    if (!title) {
+    const {
+      userFeatures,
+      isOrganizationDistrictUser,
+      isDefaultTest,
+    } = this.props
+    if (isDefaultTest && this.checkInvalidTestTitle(title)) {
+      this.setState({
+        showTestNameChangeModal: true,
+        toBeResumedTestAction,
+      })
+      return false
+    }
+    if (!isDefaultTest && !title?.trim()?.length) {
       notification({ messageKey: 'nameShouldNotEmpty' })
       return false
     }
@@ -1560,6 +1593,14 @@ class Container extends PureComponent {
 
   onShareModalChange = () => {
     const { showShareModal } = this.state
+    const { test, isDefaultTest } = this.props
+    if (isDefaultTest && this.checkInvalidTestTitle(test.title)) {
+      this.setState({
+        showTestNameChangeModal: true,
+        toBeResumedTestAction: TEST_ACTIONS.share,
+      })
+      return
+    }
     this.setState({
       showShareModal: !showShareModal,
     })
@@ -1601,7 +1642,7 @@ class Container extends PureComponent {
     ) {
       return
     }
-    if (this.validateTest(test)) {
+    if (this.validateTest(test, TEST_ACTIONS.publish)) {
       const newTest = this.modifyTest()
       publishTest({
         _id,
@@ -1723,6 +1764,31 @@ class Container extends PureComponent {
     this.setState({ showCloneModal: visibility })
   }
 
+  handleResumeActivity = () => {
+    const { toBeResumedTestAction, toBeNavigatedLocation } = this.state
+    switch (toBeResumedTestAction) {
+      case TEST_ACTIONS.publish:
+        this.handlePublishTest()
+        break
+      case TEST_ACTIONS.assign:
+        this.handleAssign()
+        break
+      case TEST_ACTIONS.navigation:
+        this.handleSave(null, toBeNavigatedLocation)
+        break
+      case TEST_ACTIONS.share:
+        this.onShareModalChange()
+        break
+      default:
+        break
+    }
+
+    this.setState({
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
+    })
+  }
+
   render() {
     const {
       creating,
@@ -1744,6 +1810,7 @@ class Container extends PureComponent {
       t,
       history,
       isVideoQuiAndAiEnabled,
+      isDefaultTest,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1754,6 +1821,8 @@ class Container extends PureComponent {
       showCloneModal,
       showCompeleteSignUp,
       showConfirmationOnTabChange,
+      showTestNameChangeModal,
+      toBeResumedTestAction,
     } = this.state
     const current = currentTab
     const {
@@ -1824,7 +1893,10 @@ class Container extends PureComponent {
     return (
       <>
         <CustomPrompt
-          when={!!updated}
+          when={
+            !!updated ||
+            (isDefaultTest && this.checkInvalidTestTitle(test.title))
+          }
           onUnload
           message={(loc = {}) => {
             const { pathname = '' } = loc
@@ -1836,6 +1908,15 @@ class Container extends PureComponent {
 
             if (allow) {
               return true
+            }
+
+            if (isDefaultTest && this.checkInvalidTestTitle(test.title)) {
+              this.setState({
+                showTestNameChangeModal: true,
+                toBeResumedTestAction: TEST_ACTIONS.navigation,
+                toBeNavigatedLocation: pathname,
+              })
+              return false
             }
 
             return t('component.common.modal.exitPageWarning')
@@ -1867,7 +1948,19 @@ class Container extends PureComponent {
             gradeSubject={gradeSubject}
           />
         )}
-
+        {showTestNameChangeModal && (
+          <TestNameChangeModal
+            visible={showTestNameChangeModal}
+            showSaveTitle={toBeResumedTestAction === TEST_ACTIONS.navigation}
+            closeModal={() => {
+              this.setState({
+                showTestNameChangeModal: false,
+                toBeResumedTestAction: null,
+              })
+            }}
+            handleResponse={this.handleResumeActivity}
+          />
+        )}
         <WarningModal
           visible={showWarningModal}
           proceedPublish={proceedPublish}
@@ -1915,6 +2008,7 @@ class Container extends PureComponent {
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
           derivedFromPremiumBankId={derivedFromPremiumBankId}
+          isEditable={isDefaultTest}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {creating && !(isTestLoading && !test._id) && (

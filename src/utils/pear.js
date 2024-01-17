@@ -2,9 +2,11 @@ import appConfig from '../app-config'
 
 const PEAR_PRODUCT_IDENTIFIER = 'EDULASTIC'
 
-export const isPearDomain = window.location.host
-  .toLowerCase()
-  .includes(appConfig.pearScriptDomainIdentifier)
+// Setting isPearDomain true for old as well as new domain from Jan 21st 2024 release
+export const isPearDomain =
+  window.location.host
+    .toLowerCase()
+    .includes(appConfig.pearScriptDomainIdentifier) || true
 
 export const pearIdentifyProduct = () => {
   if (window.pear && isPearDomain) {

@@ -45,6 +45,7 @@ import {
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
   setTestItemsSavingAction,
+  setItemLanguage,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -103,7 +104,7 @@ import {
 } from '../src/selectors/user'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { reSequenceQuestionsWithWidgets } from '../../common/utils/helpers'
-import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
 import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
@@ -782,6 +783,8 @@ function* saveQuestionSaga({
       draftData.grades = uniq(itemGrades)
       draftData.subjects = uniq(itemSubjects)
     })
+    // Setting item level langauge
+    data.language = yield setItemLanguage(data)
 
     const redirectTestId = yield select(redirectTestIdSelector)
     // In test flow, if test not created, testId is 'undefined' | EV-27944

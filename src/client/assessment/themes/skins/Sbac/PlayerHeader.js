@@ -46,7 +46,7 @@ import ToolBar from './ToolBar'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
-import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
 
 const {
   playerSkin: { sbac },

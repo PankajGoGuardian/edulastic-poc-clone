@@ -63,8 +63,7 @@ import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
 import { BackLink, QuestionContentWrapper } from './styled'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
-import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
+import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const multipartItem = get(item, 'multipartItem')
@@ -604,7 +603,6 @@ class Container extends Component {
             getScrollElement: () => this.scrollContainer.current,
           }}
         >
-          <LanguageSelectorTab />
           <QuestionContentWrapper
             zIndex="1"
             isInModal={isInModal}

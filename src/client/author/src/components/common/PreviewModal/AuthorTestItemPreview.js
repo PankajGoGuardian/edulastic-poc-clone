@@ -52,7 +52,7 @@ import {
   Scratchpad,
 } from '../../../../../common/components/Scratchpad'
 import PassageDivider from '../../../../../common/components/PassageDivider'
-import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../../../../common/components/LanguageSelectorTab/duck'
 import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
 /**

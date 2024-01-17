@@ -44,7 +44,6 @@ export default connect(
 
 const StyledMenu = styled(Menu)`
   position: relative;
-  left: 316px;
   .ant-menu-item:hover {
     color: #1ab394;
     border-bottom: 2px solid #1ab394;

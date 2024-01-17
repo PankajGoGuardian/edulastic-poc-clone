@@ -13,7 +13,7 @@ import {
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
-import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
 import { locationSelector } from '../../assessment/selectors/routes'
 import { MOVE_WIDGET } from '../src/constants/actions'
 

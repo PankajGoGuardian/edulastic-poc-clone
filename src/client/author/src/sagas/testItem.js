@@ -48,6 +48,7 @@ import {
   getCurrentGroupIndexSelector,
   hasSectionsSelector,
 } from '../../TestPage/ducks'
+import { setItemLanguage } from '../../ItemDetail/ducks'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -100,6 +101,8 @@ function* createTestItemSaga({
       const sectionIndex = hasSections
         ? yield select(getCurrentGroupIndexSelector)
         : undefined
+      // Setting item level language
+      data.language = yield setItemLanguage(data)
 
       // Passing the section index to push the passage
       // or multipart question to the specific item group

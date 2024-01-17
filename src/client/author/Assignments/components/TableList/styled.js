@@ -298,3 +298,7 @@ export const ExpandedTable = styled(Table)`
 export const IconExpand = styled(IconDownEmptyArrow)`
   cursor: pointer;
 `
+
+export const SpacedParagraph = styled.p`
+  margin-bottom: 1em;
+`

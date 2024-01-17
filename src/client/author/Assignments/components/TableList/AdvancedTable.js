@@ -45,6 +45,7 @@ import {
   TableData,
   TestThumbnail,
   TypeWrapper,
+  SpacedParagraph,
 } from './styled'
 import {
   isDemoPlaygroundUser,
@@ -56,6 +57,7 @@ import {
   shortTestIdKeyLength,
 } from '../../constants'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
+import NewAssignmentButton from './NewAssignmentButton'
 
 class AdvancedTable extends Component {
   showBulkUpdate =
@@ -526,9 +528,10 @@ class AdvancedTable extends Component {
     const NoDataMessage = (
       <>
         <p>There are no assignments found for the filter options selected.</p>
-        <p>
+        <SpacedParagraph>
           Something Wrong? Check the filters including the school year selected.
-        </p>
+        </SpacedParagraph>
+        <NewAssignmentButton buttonDataCy="noResultsNewAssignment" />
       </>
     )
 

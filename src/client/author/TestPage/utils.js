@@ -268,6 +268,7 @@ export const checkIsDateLessThanSep30 = () => {
 
   return currentDate.isBefore(targetDate) || currentDate.isSame(targetDate)
 }
+
 export default {
   createGroupSummary,
 }

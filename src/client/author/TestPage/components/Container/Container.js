@@ -1198,6 +1198,7 @@ class Container extends PureComponent {
             onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
             onChangeCollection={this.handleChangeCollection}
             handleNavChange={this.handleNavChange('manageSections', true)}
+            handleNavChangeToAddItems={this.handleNavChange('addItems')}
             handleSave={this.handleSave}
             setSectionsState={this.setSectionsState}
             setCurrentGroupDetails={this.setCurrentGroupDetails}
@@ -1205,10 +1206,14 @@ class Container extends PureComponent {
             isEditable={isEditable}
             current={current}
             showCancelButton={showCancelButton}
+            updated={updated}
             userId={userId}
             setSectionsTestSetGroupIndex={this.handleSectionsTestSetGroupIndex}
             setShowSectionsTestSelectGroupIndexModal={
               this.setShowSectionsTestSelectGroupIndexModal
+            }
+            showSelectGroupIndexModal={
+              hasSections ? showSectionsTestSelectGroupIndexModal : true
             }
           />
         )

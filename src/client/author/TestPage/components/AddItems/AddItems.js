@@ -270,6 +270,8 @@ class AddItems extends PureComponent {
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }
 
+  // A copy of this functions exists at src/client/author/TestPage/components/Review/components/AddMoreQuestionsPannel/AddMoreQuestionsPannel.js
+  // If you make any changes here please do so for the above mentioned copy as well
   handleCreateTestItem = () => {
     const {
       onSaveTestId,
@@ -293,6 +295,8 @@ class AddItems extends PureComponent {
     createTestItem(defaultWidgets, true, testId, false, title)
   }
 
+  // A copy of this functions exists at src/client/author/TestPage/components/Review/components/AddMoreQuestionsPannel/AddMoreQuestionsPannel.js
+  // If you make any changes here please do so for the above mentioned copy as well
   handleCreateNewItem = () => {
     const {
       test: { _id: testId, title, itemGroups },
@@ -341,6 +345,8 @@ class AddItems extends PureComponent {
     this.handleCreateTestItem()
   }
 
+  // A copy of this functions exists at src/client/author/TestPage/components/Review/components/AddMoreQuestionsPannel/AddMoreQuestionsPannel.js
+  // If you make any changes here please do so for the above mentioned copy as well
   handleSelectGroupModalResponse = (index) => {
     const { setCurrentGroupIndex, handleSaveTest } = this.props
     if (index || index === 0) {

@@ -3379,8 +3379,12 @@ function* setTestDataAndUpdateSaga({ payload }) {
       } else {
         yield put(
           replace({
-            pathname: `/author/tests/tab/addItems/id/${entity._id}`,
-            state: { showItemAddedMessage: true, isAuthoredNow: true },
+            pathname: `/author/tests/tab/review/id/${entity._id}`,
+            state: {
+              showItemAddedMessage: true,
+              isAuthoredNow: true,
+              scrollToBottom: true,
+            },
           })
         )
       }
@@ -3936,6 +3940,7 @@ function* updateTestAndNavigate({ payload }) {
       testId,
       isEditing,
       isDuplicating,
+      scrollToBottom,
     } = payload
     const data = { ...(yield select(getTestSelector)) }
     const role = yield select(getUserRole)
@@ -3965,6 +3970,7 @@ function* updateTestAndNavigate({ payload }) {
         fadeSidebar,
         regradeFlow,
         previousTestId,
+        scrollToBottom,
       })
     )
   } catch (e) {

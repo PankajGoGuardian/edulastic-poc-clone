@@ -7,7 +7,6 @@ import {
   FlexContainer,
   notification,
   withWindowSizes,
-  // CustomModalStyled,
 } from '@edulastic/common'
 import {
   questionType,

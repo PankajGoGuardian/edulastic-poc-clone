@@ -50,6 +50,7 @@ import {
   StyledCountText,
   ItemsMenu,
   MobileFilterModal,
+  NoDataMessageContainer,
 } from './styled'
 
 import CardWrapper from '../CardWrapper/CardWrapper'
@@ -111,7 +112,6 @@ import {
   removeTestFromPlaylistAction,
 } from '../../../PlaylistPage/ducks'
 import RemoveTestModal from '../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal'
-import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
@@ -150,6 +150,9 @@ import {
   setFilterInSession,
 } from '../../../../common/utils/helpers'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
+import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
+import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
+import { NoDataContainer } from '../../../Reports/common/styled'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -213,7 +216,7 @@ class TestList extends Component {
     isBuyAISuiteAlertModalVisible: false,
   }
 
-  static getDerivedStateFromProps = (props, prevState) => {
+  static getDerivedStateFromProps(props, prevState) {
     const { features, mode } = props
     const localBlockstyle = getFromSessionStorage('testLibraryBlockstyle')
     if (localBlockstyle) {
@@ -997,11 +1000,16 @@ class TestList extends Component {
       return <Spin size="large" />
     }
     if (tests.length < 1) {
+      const { SEARCH_NO_DATA_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
       return (
-        <NoDataNotification
-          heading="Tests not available"
-          description={`There are no tests found for this filter. You can create new item by clicking the "NEW TEST" button.`}
-        />
+        <NoDataContainer>
+          <FlexContainer flexDirection="column" alignItems="center">
+            <NoDataMessageContainer>
+              No test available for the search criteria
+            </NoDataMessageContainer>
+            <EduAIQuiz displayScreen={SEARCH_NO_DATA_SCREEN} />
+          </FlexContainer>
+        </NoDataContainer>
       )
     }
     const GridCountInARow = windowWidth > 1600 ? 5 : windowWidth >= 1366 ? 4 : 3
@@ -1282,6 +1290,8 @@ class TestList extends Component {
       />
     )
 
+    const { CREATE_TEST_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
+
     return (
       <>
         <RemoveTestModal
@@ -1298,24 +1308,31 @@ class TestList extends Component {
               titleIcon={IconTestBank}
               btnTitle="New Test"
               renderFilter={() => (
-                <StyleChangeWrapper>
-                  <IconTile
-                    data-cy="tileView"
-                    onClick={() => this.handleStyleChange('tile')}
-                    width={18}
-                    height={18}
-                    color={blockstyle === 'tile' ? greyThemeLight : greyLight1}
-                  />
-                  <IconList
-                    data-cy="listView"
-                    onClick={() => this.handleStyleChange('horizontal')}
-                    width={18}
-                    height={18}
-                    color={
-                      blockstyle === 'horizontal' ? greyThemeLight : greyLight1
-                    }
-                  />
-                </StyleChangeWrapper>
+                <>
+                  <StyleChangeWrapper>
+                    <IconTile
+                      data-cy="tileView"
+                      onClick={() => this.handleStyleChange('tile')}
+                      width={18}
+                      height={18}
+                      color={
+                        blockstyle === 'tile' ? greyThemeLight : greyLight1
+                      }
+                    />
+                    <IconList
+                      data-cy="listView"
+                      onClick={() => this.handleStyleChange('horizontal')}
+                      width={18}
+                      height={18}
+                      color={
+                        blockstyle === 'horizontal'
+                          ? greyThemeLight
+                          : greyLight1
+                      }
+                    />
+                  </StyleChangeWrapper>
+                  <EduAIQuiz displayScreen={CREATE_TEST_SCREEN} />
+                </>
               )}
               renderExtra={this.renderExtra}
               toggleSidebar={this.toggleSidebar}

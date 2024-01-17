@@ -27,11 +27,30 @@ function* processAiGeneratedTestItemsSaga({
   existingQidToRegenerate = undefined,
   assessment,
   groupIndex,
+  savePreselected,
 }) {
   if (!isEmpty(aiGeneratedQuestions)) {
     let existingTestItems = []
     /** Unsaved test */
     if ((assessment._id || '').length !== 24 && !existingQidToRegenerate) {
+      if (savePreselected) {
+        // this condition is to apply selected items from cart along with AI generated items
+        existingTestItems = get(
+          assessment,
+          `itemGroups.${groupIndex}.items`,
+          []
+        )
+        assessment.savePreselected = true
+      }
+
+      const aiGeneratedItems = processAiGeneratedItems(
+        aiGeneratedQuestions,
+        itemType,
+        alignment,
+        uniq([...grades]),
+        [subject]
+      )
+
       yield put(
         setTestDataAction({
           ...assessment,
@@ -42,15 +61,7 @@ function* processAiGeneratedTestItemsSaga({
             {
               type: 'STATIC',
               groupName: 'SECTION 1',
-              items: [
-                ...processAiGeneratedItems(
-                  aiGeneratedQuestions,
-                  itemType,
-                  alignment,
-                  uniq([...grades]),
-                  [subject]
-                ),
-              ],
+              items: [...existingTestItems, ...aiGeneratedItems],
               deliveryType: 'ALL',
               _id: uuid(),
               index: 0,
@@ -219,6 +230,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       alignment = [],
       preference,
       groupIndex,
+      savePreselected,
     } = payload
 
     const {
@@ -264,6 +276,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
         itemType,
         assessment,
         groupIndex,
+        savePreselected,
       })
   } catch (error) {
     const errMsg = error?.response?.data?.message

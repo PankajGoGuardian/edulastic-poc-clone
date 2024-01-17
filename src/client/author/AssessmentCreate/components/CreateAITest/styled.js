@@ -1,8 +1,10 @@
 import {
   darkGrey4,
   fieldRequiredColor,
+  smallDesktopWidth,
   themeColor,
   white,
+  aiLinearGradient,
 } from '@edulastic/colors'
 import {
   CustomModalStyled,
@@ -82,7 +84,7 @@ export const AiEduButton = styled(EduButton)`
   &.ant-btn.ant-btn-primary {
     border: none;
     background: ${({ aiStyle }) =>
-      aiStyle ? 'linear-gradient(225deg, #007d65 0%, #1766ce 100%)' : white};
+      aiStyle ? `linear-gradient(225deg, ${aiLinearGradient})` : white};
     color: ${({ aiStyle }) => (aiStyle ? white : themeColor)};
     height: ${({ aiStyle }) => aiStyle && '28px'};
     width: '100%';
@@ -92,12 +94,24 @@ export const AiEduButton = styled(EduButton)`
   &:hover {
     &.ant-btn.ant-btn-primary {
       background: ${({ aiStyle }) =>
-        aiStyle ? 'linear-gradient(225deg, #007d65 0%, #1766ce 100%)' : white};
+        aiStyle ? `linear-gradient(225deg, ${aiLinearGradient})` : white};
       color: ${({ aiStyle }) => (aiStyle ? white : themeColor)};
       border: none;
     }
   }
 `
+
+export const FullHeightAiEduButton = styled(AiEduButton)`
+  &.ant-btn.ant-btn-primary {
+    height: ${({ aiStyle }) => aiStyle && '36px'};
+    margin: ${({ margin }) => margin && '0 5px !important'};
+
+    @media (max-width: ${smallDesktopWidth}) {
+      height: ${({ aiStyle }) => aiStyle && '30px'};
+    }
+  }
+`
+
 export const CreateAiTestTitleWrapper = styled(TitleWrapper)`
   padding: 0;
   margin: 0;
@@ -109,7 +123,7 @@ export const CreateAiTestTitleWrapper = styled(TitleWrapper)`
 
 export const CreateAiTestWrapper = styled(FlexContainer)`
   border-radius: 10px;
-  background: linear-gradient(225deg, #007d65 0%, #1766ce 100%);
+  background: linear-gradient(225deg, ${aiLinearGradient});
 `
 
 export const StyledDiv = styled.div`
@@ -123,4 +137,27 @@ export const StyledCreateAiTestModal = styled(CustomModalStyled)`
         props?.aiTestStatus === STATUS.INPROGRESS ? 'none' : 'initial'};
     }
   }
+`
+
+export const CreateAiTestBannerWrapper = styled(FlexContainer)`
+  border-radius: 12px;
+  border: 1px solid #d8d8d8;
+  height: 62px;
+  background: white;
+  width: max-content;
+  gap: 1rem;
+  padding: 1rem;
+`
+
+export const CreateAiTestBannerTitleWrapper = styled(TitleWrapper)`
+  padding: 0;
+  margin: 0;
+  margin-left: -4px;
+  font-size: 14px;
+  text-align: left;
+  heght: min-content;
+  background: var(--Linear, linear-gradient(269deg, ${aiLinearGradient}));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `

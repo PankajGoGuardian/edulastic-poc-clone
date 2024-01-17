@@ -2428,6 +2428,7 @@ function* createTest(data) {
     'currentTab', // not accepted by backend validator (testSchema) EV-10685,
     'summary',
     'alreadyLiked',
+    'savePreselected',
   ]
   if (!testTypesConstants.TEST_TYPES.COMMON.includes(data.testType)) {
     omitedItems.push('freezeSettings')
@@ -2457,20 +2458,24 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
-
-    const aiGeneratedTestItems = get(payload, 'data.itemGroups[0].items', [])
+    const testItems = get(payload, 'data.itemGroups[0].items', [])
+    let aiGeneratedTestItems = testItems
       .filter(({ unsavedItem }) => unsavedItem)
       .map((item) => pick(item, itemFields))
-
-    let newTestItems
+    const newTestItems = payload.data.savePreselected
+      ? testItems.filter(({ unsavedItem }) => !unsavedItem) || []
+      : []
     if (!isEmpty(aiGeneratedTestItems)) {
-      newTestItems = yield call(testItemsApi.addItems, aiGeneratedTestItems)
+      aiGeneratedTestItems = yield call(
+        testItemsApi.addItems,
+        aiGeneratedTestItems
+      )
     }
-
+    const allTestItems = [...newTestItems, ...aiGeneratedTestItems]
     const entity = yield createTest(
       produce(payload.data, (draft) => {
-        if ((newTestItems || []).length) {
-          draft.itemGroups[0].items = newTestItems
+        if ((allTestItems || []).length) {
+          draft.itemGroups[0].items = allTestItems
         }
       })
     )

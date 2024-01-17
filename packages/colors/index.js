@@ -345,3 +345,10 @@ export const partialIconColor = '#bdb956'
 
 export const lightBrown = '#efe3bb'
 export const lightSkyBlue = '#b9d5fa'
+
+export const aiGradientColors = {
+  color1: '#007d65',
+  color2: '#1766ce',
+}
+
+export const aiLinearGradient = `${aiGradientColors.color1} 0%, ${aiGradientColors.color2} 100%`

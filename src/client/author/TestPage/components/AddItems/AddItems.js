@@ -84,7 +84,6 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
-  isGcpsDistrictSelector,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -103,6 +102,7 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
+import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
 
 const { sectionTestActions } = testConstants
 
@@ -627,7 +627,6 @@ class AddItems extends PureComponent {
       aiTestStatus = false,
       isDynamicTest,
       hasSections,
-      isGcpsDistrict,
       isOwner,
       isEditable,
       isDefaultTest,
@@ -642,6 +641,8 @@ class AddItems extends PureComponent {
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )
     const itemGroupCount = selectedItemIds?.length || 0
+
+    const { ADD_ITEMS_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
 
     return (
       // The Add item screen will be displayed in full screen mode for dynamic test
@@ -730,7 +731,7 @@ class AddItems extends PureComponent {
                     </EduButton>
                     <StyledVerticalDivider type="vertical" />
                   </EduIf>
-                  <EduIf condition={!isDynamicTest && !isGcpsDistrict}>
+                  <EduIf condition={!isDynamicTest}>
                     <EduAIQuiz
                       addItems
                       test={test}
@@ -738,6 +739,7 @@ class AddItems extends PureComponent {
                         currentGroupIndexValueFromStore
                       }
                       showSelectGroupIndexModal={showSelectGroupIndexModal}
+                      displayScreen={ADD_ITEMS_SCREEN}
                     />
                   </EduIf>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
@@ -859,7 +861,6 @@ const enhance = compose(
       aiTestStatus: get(state, 'aiTestDetails.status'),
       isDynamicTest: isDynamicTestSelector(state),
       hasSections: hasSectionsSelector(state),
-      isGcpsDistrict: isGcpsDistrictSelector(state),
       currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
     }),
     {

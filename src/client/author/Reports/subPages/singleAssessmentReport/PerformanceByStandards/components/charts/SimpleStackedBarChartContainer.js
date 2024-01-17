@@ -78,10 +78,14 @@ const SimpleStackedBarChartContainer = ({
   }
 
   const getXTickTooltipText = (payload, chartData) => {
-    const { name, domainDesc, standardDesc } =
+    const { name = '', domainDesc = '', standardDesc = '' } =
       find(chartData, (item) => item[xDataKey] === payload.value) || {}
     const desc = viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc
-    return `${name || ''}: ${desc || ''}`
+    return (
+      <div>
+        <b>{name}:</b> {desc}
+      </div>
+    )
   }
 
   const _onBarClickCB = (key) => {

@@ -143,10 +143,14 @@ const SignedStackedBarChartContainer = ({
   }
 
   const getXTickTooltipText = (payload, data) => {
-    const { name, domainDesc, standardDesc } =
+    const { name = '', domainDesc = '', standardDesc = '' } =
       find(data, (item) => item[xAxisDataKey] === payload.value) || {}
     const desc = viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc
-    return `${name || ''}: ${desc || ''}`
+    return (
+      <div>
+        <b>{name}:</b> {desc}
+      </div>
+    )
   }
 
   const chartSpecifics = getChartSpecifics(analyzeBy, orderedScaleInfo)

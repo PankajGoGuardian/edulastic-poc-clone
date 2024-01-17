@@ -94,7 +94,7 @@ const EdulasticOverviewModel = ({
                 rel="noreferrer"
                 data-cy="edu-tutorials"
               >
-                Edulastic Tutorial
+                {isPearOrEdulasticText} Tutorial
               </a>
             </ExtraResourceSpan>
             <ExtraResourceSpan width="42%">
@@ -134,7 +134,7 @@ const EdulasticOverviewModel = ({
                 rel="noreferrer"
                 data-cy="edu-talk-vid"
               >
-                Edulastic Talk videos
+                {isPearOrEdulasticText} Talk videos
               </a>
             </ExtraResourceSpan>
           </StyledExtraResourceContentDiv>

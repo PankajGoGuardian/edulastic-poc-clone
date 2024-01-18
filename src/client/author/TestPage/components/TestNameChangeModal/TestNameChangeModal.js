@@ -92,6 +92,9 @@ const TestNameChangeModal = ({
           height="40px"
           fontSize="14px"
           bg="transparent"
+          onFocus={(event) => {
+            event.target.select()
+          }}
           style={{ fontWeight: '400' }}
         />
       </ModalContent>

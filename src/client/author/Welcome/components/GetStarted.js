@@ -25,7 +25,7 @@ const row3 = [
   {},
   { text: 'Add your students' },
   {},
-  { text: 'Assign an assignment' },
+  { text: 'Assign a test' },
 ]
 
 const DisplayElement = ({ value, src, text, dashed }) => (

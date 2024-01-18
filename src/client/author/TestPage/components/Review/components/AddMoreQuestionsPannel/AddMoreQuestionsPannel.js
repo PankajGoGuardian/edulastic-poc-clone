@@ -12,7 +12,7 @@ import {
   hasSectionsSelector,
   setCurrentGroupIndexAction,
 } from '../../../../ducks'
-import { AddMoreQuestionsPannelTitle } from './styled'
+import { AddMoreQuestionsPannelTitle, ButtonTextWrapper } from './styled'
 
 const AddMoreQuestionsPannel = ({
   onSaveTestId,
@@ -112,27 +112,27 @@ const AddMoreQuestionsPannel = ({
         id="pageBottom"
       >
         <AddMoreQuestionsPannelTitle>
-          Add more questions
+          Add more items
         </AddMoreQuestionsPannelTitle>
       </FlexContainer>
       <FlexContainer flexDirection="row" justifyContent="center">
         <EduButton
-          height="28px"
+          height="36px"
           isGhost
           data-cy="createFromLibrary"
           onClick={handleNavChangeToAddItems}
         >
-          <IconFolderWithLines color={themeColor} width={12} height={12} />
-          <span>CREATE FROM LIBRARY</span>
+          <IconFolderWithLines color={themeColor} width={16} height={16} />
+          <ButtonTextWrapper>ADD FROM LIBRARY</ButtonTextWrapper>
         </EduButton>
         <EduButton
-          height="28px"
+          height="36px"
           isGhost
           data-cy="createNewItem"
           onClick={handleCreateNewItem}
         >
-          <IconPlusCircle color={themeColor} width={12} height={12} />
-          <span>CREATE NEW ITEM</span>
+          <IconPlusCircle color={themeColor} width={16} height={16} />
+          <ButtonTextWrapper>CREATE NEW ITEM</ButtonTextWrapper>
         </EduButton>
         {showSelectGroupModal && (
           <SelectGroupModal

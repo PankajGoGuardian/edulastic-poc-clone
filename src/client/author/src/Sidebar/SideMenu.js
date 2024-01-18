@@ -800,10 +800,10 @@ class SideMenu extends Component {
 
     const showPearAppTray = isPearDomain && pearToken && !isPearAppsDisabled
     const closePearAppTray = () => {
-      const psi_launcher = document.getElementById('psi_launcher')
       const psi_launcher_frame = document.getElementById('psi_launcher_frame')
-      psi_launcher?.classList?.remove('active')
-      psi_launcher_frame?.classList?.remove('active')
+      if (psi_launcher_frame) {
+        psi_launcher_frame.parentNode.removeChild(psi_launcher_frame)
+      }
     }
     return (
       <>

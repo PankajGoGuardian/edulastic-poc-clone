@@ -13,6 +13,7 @@ import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
 import { testContentVisibility } from '@edulastic/constants/const/test'
 import { IN_PROGRESS } from '@edulastic/constants/const/assignmentStatus'
+import { LANGUAGE_ES } from '@edulastic/constants/const/languages'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
@@ -519,8 +520,14 @@ export const isIncompleteQuestion = (
   }
 
   // item doesnt have a stimulus?
-  if (isRichTextFieldEmpty(item.stimulus)) {
-    return [true, 'Question text should not be empty']
+  if (!isRichTextFieldEmpty(item?.languageFeatures?.[LANGUAGE_ES]?.stimulus)) {
+    if (
+      isRichTextFieldEmpty(
+        item.stimulus || item?.languageFeatures?.[LANGUAGE_ES]?.stimulus
+      )
+    ) {
+      return [true, 'Question text should not be empty']
+    }
   }
 
   // if  empty options are present

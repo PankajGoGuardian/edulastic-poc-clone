@@ -128,7 +128,7 @@ class Draggable extends React.Component {
   }
 
   render() {
-    const { children, usePortal, transform } = this.props
+    const { children, usePortal, transform, borderRadius = 0 } = this.props
     const { position = {} } = this.state
 
     const content = (
@@ -139,6 +139,7 @@ class Draggable extends React.Component {
         left={position.x}
         top={position.y}
         transform={transform}
+        borderRadius={borderRadius}
         ref={this.containerRef}
       >
         {children}
@@ -153,14 +154,18 @@ class Draggable extends React.Component {
 
 export default Draggable
 
-const DraggableContainer = styled.div.attrs(({ left, top, transform }) => ({
-  style: {
-    left,
-    top,
-    transform,
-  },
-}))`
+const DraggableContainer = styled.div.attrs(
+  ({ left, top, transform, borderRadius }) => ({
+    style: {
+      left,
+      top,
+      transform,
+      borderRadius,
+    },
+  })
+)`
   box-shadow: ${boxShadowDefault};
   position: fixed;
   z-index: 1100;
+  cursor: move;
 `

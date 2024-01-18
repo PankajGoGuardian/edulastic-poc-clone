@@ -151,7 +151,8 @@ const findRemovedIndex = (newOptions = [], prevOptions = []) => {
 export const changeDataInPreferredLanguage = (
   language,
   prevQuestion,
-  newQuestion
+  newQuestion,
+  allowedToSelectMultiLanguage
 ) => {
   if (
     language &&
@@ -188,6 +189,8 @@ export const changeDataInPreferredLanguage = (
         const prevData = get(prevQuestion, path)
         if (prevData) {
           set(draft, path, prevData)
+        } else {
+          set(draft, path, '')
         }
         if (questionType.TOKEN_HIGHLIGHT === newQuestion.type) {
           draft.languageFeatures[language].validation = newQuestion.validation
@@ -206,7 +209,8 @@ export const changeDataInPreferredLanguage = (
   if (
     (!language || language === LANGUAGE_EN) &&
     useLanguageFeatureQn.includes(newQuestion.type) &&
-    newQuestion.languageFeatures
+    newQuestion.languageFeatures &&
+    !allowedToSelectMultiLanguage
   ) {
     const changedData = produce(newQuestion, (draft) => {
       keys(draft.languageFeatures).forEach((langKey) => {

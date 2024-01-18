@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { values, keyBy } from 'lodash'
 import { questionType } from '@edulastic/constants'
-import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
 import { changeDataToPreferredLanguage } from '../utils/question'
 import { assignmentLevelSettingsSelector } from './answers'
 

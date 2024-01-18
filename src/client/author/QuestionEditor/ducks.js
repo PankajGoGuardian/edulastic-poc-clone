@@ -45,6 +45,7 @@ import {
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
   setTestItemsSavingAction,
+  setItemLanguage,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -97,12 +98,13 @@ import {
   updateRecentCollectionsAction,
 } from '../src/actions/dictionaries'
 import {
+  allowedToSelectMultiLanguageInTest,
   getOrgDataSelector,
   isPublisherUserSelector,
 } from '../src/selectors/user'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { reSequenceQuestionsWithWidgets } from '../../common/utils/helpers'
-import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
 import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
@@ -781,6 +783,8 @@ function* saveQuestionSaga({
       draftData.grades = uniq(itemGrades)
       draftData.subjects = uniq(itemSubjects)
     })
+    // Setting item level langauge
+    data.language = yield setItemLanguage(data)
 
     const redirectTestId = yield select(redirectTestIdSelector)
     // In test flow, if test not created, testId is 'undefined' | EV-27944
@@ -1230,13 +1234,17 @@ function* updateScoreAndValidationSaga({ payload }) {
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
+  const allowedToSelectMultiLanguage = yield select(
+    allowedToSelectMultiLanguageInTest
+  )
 
   yield put({
     type: UPDATE_QUESTION,
     payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
-      payload
+      payload,
+      allowedToSelectMultiLanguage
     ),
   })
 }

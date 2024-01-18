@@ -52,7 +52,7 @@ import { changeDataToPreferredLanguage } from '../utils/question'
 import {
   languagePreferenceSelector,
   getCurrentLanguage,
-} from '../../common/components/LanguageSelector/duck'
+} from '../../common/components/LanguageSelectorTab/duck'
 import ImmersiveReaderWrapper from './ImmersiveReadeWrapper'
 import {
   StyledFlexContainer,
@@ -65,6 +65,7 @@ import {
   ManualEvaluationMessage,
   PaperWrapper,
 } from '../styled/QuestionWrapperStyledComponents'
+import LanguageSelectorTab from '../../common/components/LanguageSelectorTab'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -377,6 +378,7 @@ class QuestionWrapper extends Component {
       isExpandedView,
       t: translate,
       aiEvaluationStatus,
+      authLanguage,
       ...restProps
     } = this.props
 
@@ -706,6 +708,7 @@ class QuestionWrapper extends Component {
                     </EduIf>
                   </EduIf>
                   <ImmersiveReaderWrapper>
+                    {view === EDIT && <LanguageSelectorTab />}
                     <Question
                       {...restProps}
                       t={translate}

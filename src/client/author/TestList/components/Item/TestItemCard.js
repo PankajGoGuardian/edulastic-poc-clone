@@ -154,12 +154,13 @@ const TestItemCard = ({
         </StyledLink>
         <TagsWrapper testNameHeight={height} data-cy="test-standards">
           <Tags
-            show={3}
+            show={2}
             tags={standardsIdentifiers}
             key="standards"
             isStandards
             margin="0px"
             isTestCard
+            flexWrap="noWrap"
             testId={testId}
           />
         </TagsWrapper>

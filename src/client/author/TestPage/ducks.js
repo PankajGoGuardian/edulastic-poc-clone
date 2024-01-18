@@ -2497,7 +2497,11 @@ function* createTestSaga({ payload }) {
       )
       // try to keep the user on the same tab after test creation
       // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
-      const currentTab = currentTabMatch?.[1] || 'description'
+      const currentTab =
+        currentTabMatch?.[1] ||
+        entity.testCategory === testCategoryTypes.DEFAULT
+          ? 'addItems'
+          : 'description'
       yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     }
     if (entity.aiGenerated) {

@@ -2,6 +2,7 @@ import { isObject, get, set, isEmpty, keys, isString, isArray } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
 import { isValidUpdate } from '@edulastic/common'
+import { LANGUAGE_ES } from '@edulastic/constants/const/languages'
 
 const { useLanguageFeatureQn } = questionType
 const { LANGUAGE_EN } = appLanguages
@@ -309,7 +310,18 @@ export const changeDataInPreferredLanguage = (
   return newQuestion
 }
 
-export const changeDataToPreferredLanguage = (questionData, language) => {
+export const changeDataToPreferredLanguage = (
+  questionData,
+  language,
+  view = ''
+) => {
+  if (
+    view === 'preview' &&
+    language === LANGUAGE_EN &&
+    !questionData?.stimulus?.length
+  ) {
+    language = LANGUAGE_ES
+  }
   if (
     LANGUAGE_EN !== language &&
     useLanguageFeatureQn.includes(questionData.type) &&

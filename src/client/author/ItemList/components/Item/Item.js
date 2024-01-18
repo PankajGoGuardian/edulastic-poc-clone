@@ -98,6 +98,7 @@ import { toggleTestItemLikeAction } from '../../ducks'
 import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
 import { WithToolTip } from './AddOrRemove'
 import { getAllRubricNames } from '../../../src/utils/util'
+import getItemStimulus from '../../../utils/getItemStimulus'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
@@ -148,11 +149,7 @@ class Item extends Component {
 
   get itemStimulus() {
     const { item } = this.props
-    const stimulus = get(
-      item,
-      ['data', 'questions', 0, 'stimulus'],
-      question.DEFAULT_STIMULUS
-    )
+    const stimulus = getItemStimulus(item)
     return helpers.sanitizeForReview(stimulus)
   }
 
@@ -586,11 +583,7 @@ class Item extends Component {
                 this.getPassageInfo}
               <Stimulus
                 onClickHandler={this.handleStimulusClick}
-                stimulus={get(
-                  item,
-                  ['data', 'questions', 0, 'stimulus'],
-                  question.DEFAULT_STIMULUS
-                )}
+                stimulus={this.itemStimulus}
               />
               <MathFormulaDisplay
                 dangerouslySetInnerHTML={{ __html: this.description }}

@@ -229,8 +229,8 @@ class QuestionWrapper extends Component {
 
   // we will use this method only for LCB and student report
   get renderData() {
-    const { data, studentLanguagePreference } = this.props
-    return changeDataToPreferredLanguage(data, studentLanguagePreference)
+    const { data, studentLanguagePreference, view } = this.props
+    return changeDataToPreferredLanguage(data, studentLanguagePreference, view)
   }
 
   get answerScore() {

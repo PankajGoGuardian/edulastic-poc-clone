@@ -20,7 +20,6 @@ import appConfig from '../../../../app-config'
 import { pearAssessmentText } from '../../../common/utils/helpers'
 
 const PEAR_ASSESSMENT_LABEL_IMAGE_URL = `${appConfig.cdnURI}/app-logo/PearDeckLearning_ProductLogo_PearAssessment_Coconut.png`
-const PEAR_ASSESSMENT_FORMERLY_EDULASTIC_LABEL_IMAGE_URL = `${appConfig.cdnURI}/app-logo/PearDeckLearning_ProductLogo_PearAssessmentFormerlyEdulastic_Coconut.png`
 
 export const FlexWrapper = styled(Row)`
   @media (max-width: ${mobileWidthMax}) {
@@ -390,12 +389,4 @@ export const ContainerForButtonAtEnd = styled.div`
 export const PsiContainer = styled.div`
   width: 83%;
   margin: 0 auto;
-`
-
-export const StyledPearAssessmentLabelImage = styled.img.attrs((props) => ({
-  src: props.imgSrc || PEAR_ASSESSMENT_FORMERLY_EDULASTIC_LABEL_IMAGE_URL,
-  alt: props.altText || pearAssessmentText,
-}))`
-  width: 148px;
-  margin-left: ${({ marginLeft }) => marginLeft || '15px'};
 `

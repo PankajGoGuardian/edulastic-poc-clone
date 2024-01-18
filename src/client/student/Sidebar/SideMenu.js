@@ -40,7 +40,7 @@ import {
 import { AssessPeardeckLogoCompact } from '../../admin/Common/StyledComponents'
 import { isPearDomain } from '../../../utils/pear'
 import { SideMenuContainer } from '../../author/src/Sidebar/styledComponents'
-import { StyledPearAssessmentLabelImage } from '../Signup/styled'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const menuItems = [
   {
@@ -276,8 +276,10 @@ class SideMenu extends Component {
                     <LogoCompact />
                   ))
                 ) : isPearDomain ? (
-                  <StyledPearAssessmentLabelImage
-                    height={isMobile ? '16px' : '42px'}
+                  <IconPearAssessmentFormerlyEdulastic
+                    width="148px"
+                    height={isMobile ? '16px' : '43px'}
+                    style={{ marginLeft: '15px' }}
                   />
                 ) : (
                   <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />

@@ -65,12 +65,12 @@ import {
   RegistrationBody,
   RegistrationHeader,
   RegistrationWrapper,
-  StyledPearAssessmentLabelImage,
   ThirdPartyLoginBtn,
 } from '../../styled'
 import PasswordPopup from '../PasswordPopup'
 import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
 import { isPearDomain } from '../../../../../utils/pear'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const FormItem = Form.Item
 
@@ -281,7 +281,11 @@ class Signup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <StyledPearAssessmentLabelImage />
+                  <IconPearAssessmentFormerlyEdulastic
+                    width="148px"
+                    height="42px"
+                    style={{ marginLeft: '15px' }}
+                  />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />

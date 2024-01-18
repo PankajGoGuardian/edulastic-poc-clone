@@ -38,7 +38,6 @@ import {
   MobileViewLinks,
   DesktopVieLinks,
   DesktopViewCopyright,
-  StyledPearAssessmentLabelImage,
 } from '../styled'
 import {
   signupAction,
@@ -68,6 +67,7 @@ import {
 } from '../../../author/src/constants/others'
 import PasswordPopup from './PasswordPopup'
 import { isPearDomain } from '../../../../utils/pear'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const FormItem = Form.Item
 const GOOGLE = 'google'
@@ -509,7 +509,11 @@ class StudentSignup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <StyledPearAssessmentLabelImage />
+                  <IconPearAssessmentFormerlyEdulastic
+                    width="148px"
+                    height="42px"
+                    style={{ marginLeft: '15px' }}
+                  />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />

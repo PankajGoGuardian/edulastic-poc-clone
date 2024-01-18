@@ -47,7 +47,6 @@ import {
   Copyright,
   RegistrationBody,
   RegistrationHeader,
-  StyledPearAssessmentLabelImage,
 } from '../styled'
 import { isPearDomain } from '../../../../utils/pear'
 import {
@@ -59,6 +58,7 @@ import {
 } from '../../Login/ducks'
 import ClassCodeContainer from './ClassCodeContainer'
 import { getExternalAuthToken } from '../../../../loginUtils'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const GetStarted = ({
   t,
@@ -159,7 +159,11 @@ const GetStarted = ({
           <Col span={12}>
             <EduIf condition={isPearDomain}>
               <EduThen>
-                <StyledPearAssessmentLabelImage />
+                <IconPearAssessmentFormerlyEdulastic
+                  width="148px"
+                  height="43px"
+                  style={{ marginLeft: '15px' }}
+                />
               </EduThen>
               <EduElse>
                 <OnDarkBgLogo height="30px" />

@@ -68,7 +68,7 @@ const MainHeader = ({
                     <TextInputOnFocusStyled
                       showArrow
                       value={title}
-                      data-cy="testname-header"
+                      data-cy="title"
                       onChange={(e) => onTitleChange(e.target.value)}
                       size="large"
                       placeholder="Untitled Test"

@@ -54,7 +54,7 @@ function* processAiGeneratedTestItemsSaga({
       yield put(
         setTestDataAction({
           ...assessment,
-          title: assessment.title || testName,
+          title: testName || assessment.title,
           grades: uniq([...assessment.grades, ...grades]),
           subjects: uniq([...assessment.subjects, subject]),
           itemGroups: [

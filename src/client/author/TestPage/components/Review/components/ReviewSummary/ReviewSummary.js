@@ -149,6 +149,7 @@ const ReviewSummary = ({
             placeholder="Enter a description"
             margin="0px 0px 15px"
             height="110px"
+            disabled={!owner || !isEditable}
           />
         </InnerFlex>
         <InnerFlex>
@@ -243,6 +244,7 @@ const ReviewSummary = ({
             optionLabelProp="title"
             placeholder="Please enter"
             value={selectedTags}
+            disabled={!owner || !isEditable}
             onSearch={searchTags}
             onSelect={selectTags}
             onDeselect={deselectTags}

@@ -1044,6 +1044,15 @@ class Container extends PureComponent {
     })
   }
 
+  getIsEditable = () => {
+    const { test, userId, editEnable, match, testStatus } = this.props
+    const isOwner =
+      test?.authors?.some((x) => x._id === userId) || !match?.params?.id
+    const isEditable =
+      isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+    return isEditable
+  }
+
   renderContent = () => {
     const {
       test,
@@ -2014,7 +2023,7 @@ class Container extends PureComponent {
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
           derivedFromPremiumBankId={derivedFromPremiumBankId}
-          isEditable={isDefaultTest}
+          isEditable={isDefaultTest && this.getIsEditable()}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {creating && !(isTestLoading && !test._id) && (

@@ -3,7 +3,12 @@ import { uniqBy } from 'lodash'
 import { useMemo, useState } from 'react'
 import { tagsApi } from '@edulastic/api'
 
-const useTagSelection = ({ allTagsData, tags, onChangeField, addNewTag }) => {
+const useTagSelection = ({
+  allTagsData,
+  tags = [],
+  onChangeField,
+  addNewTag,
+}) => {
   const [searchValue, setSearchValue] = useState('')
   const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
 

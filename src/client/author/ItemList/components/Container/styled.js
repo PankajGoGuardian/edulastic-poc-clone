@@ -1,8 +1,10 @@
 import {
+  black,
   desktopWidth,
   mobileWidth,
   mobileWidthLarge,
   white,
+  greyGraphstroke,
 } from '@edulastic/colors'
 import { Paper, MainContentWrapper } from '@edulastic/common'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -129,4 +131,47 @@ export const PaginationContainer = styled.div`
     align-items: center;
     justify-content: center;
   }
+`
+
+export const ScrollbarContainerFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 55px;
+  font-size: 12px;
+  font-weight: 400;
+`
+
+export const LoadingMoreTestsContainer = styled.div`
+  color: ${black};
+  margin-top: 22px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  i {
+    font-size: 22px;
+  }
+`
+
+export const EndOfSearchResultsContainer = styled.div`
+  color: ${greyGraphstroke};
+  display: block;
+  margin-top: 28px;
+`
+
+export const LoadingFailedContainer = styled.div`
+  color: ${black};
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
 `

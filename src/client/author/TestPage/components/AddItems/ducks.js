@@ -12,7 +12,7 @@ import {
   take,
   race,
 } from 'redux-saga/effects'
-import { push, LOCATION_CHANGE } from 'connected-react-router'
+import { LOCATION_CHANGE } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
 import produce from 'immer'
@@ -93,30 +93,45 @@ export const SET_APPROVE_CONFIRMATION_OPEN =
   '[addItems] set approve confirmation modal open'
 // actions
 
-export const receiveTestItemsSuccess = (items, count, page, limit) => ({
+export const receiveTestItemsSuccess = (
+  items,
+  count,
+  page,
+  limit,
+  preventReset
+) => ({
   type: RECEIVE_TEST_ITEMS_SUCCESS,
   payload: {
     items,
     count,
     page,
     limit,
+    preventReset,
   },
 })
 
-export const receiveTestItemsError = (error) => ({
+export const receiveTestItemsError = (error, preventReset) => ({
   type: RECEIVE_TEST_ITEMS_ERROR,
   payload: {
     error,
+    preventReset,
   },
 })
 
-export const receiveTestItemsAction = (search, sort, page, limit) => ({
+export const receiveTestItemsAction = (
+  search,
+  sort,
+  page,
+  limit,
+  preventReset
+) => ({
   type: RECEIVE_TEST_ITEMS_REQUEST,
   payload: {
     search,
     sort,
     page,
     limit,
+    preventReset,
   },
 })
 
@@ -214,19 +229,27 @@ const initialState = {
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_TEST_ITEMS_REQUEST:
-      return { ...state, loading: true }
+      return { ...state, loading: true, error: null }
     case RECEIVE_TEST_ITEMS_SUCCESS:
       return {
         ...state,
         loading: false,
         archivedItems: [],
-        items: payload.items,
+        items: [
+          ...(payload.preventReset ? state.items || [] : []),
+          ...payload.items,
+        ],
         count: payload.count,
         page: payload.page,
         limit: payload.limit,
       }
     case RECEIVE_TEST_ITEMS_ERROR:
-      return { ...state, loading: false, error: payload.error }
+      return {
+        ...state,
+        loading: false,
+        error: payload.error,
+        items: [...(payload.preventReset ? state.items || [] : [])],
+      }
     case SET_TEST_ITEMS_REQUEST:
       return {
         ...state,
@@ -353,14 +376,15 @@ export const reducer = (state = initialState, { type, payload }) => {
 // saga
 
 function* receiveTestItemsSaga({
-  payload: { search = {}, sort = {}, page = 1, limit = 10 },
+  payload: {
+    search = {},
+    sort = {},
+    page = 1,
+    limit = 10,
+    preventReset = false,
+  },
 }) {
   try {
-    const currentLocation = yield select(
-      (state) => state.router.location.pathname
-    )
-    yield put(push(`${currentLocation}?page=${page}`))
-
     const { tags = [] } = search
     let searchTags = []
     if (tags.some((tag) => typeof tag?.title === 'string')) {
@@ -388,12 +412,12 @@ function* receiveTestItemsSaga({
       page,
       limit,
     })
-    yield put(receiveTestItemsSuccess(items, count, page, limit))
+    yield put(receiveTestItemsSuccess(items, count, page, limit, preventReset))
   } catch (err) {
     captureSentryException(err)
     const errorMessage = 'Unable to retrieve test items.'
     notification({ type: 'error', messageKey: 'receiveItemFailing' })
-    yield put(receiveTestItemsError(errorMessage))
+    yield put(receiveTestItemsError(errorMessage, preventReset))
   }
 }
 
@@ -479,8 +503,12 @@ export function* watcherSaga() {
 }
 
 // selectors
-
 export const stateTestItemsSelector = (state) => state.testsAddItems
+
+export const getReceiveItemsErrorSelector = createSelector(
+  stateTestItemsSelector,
+  (state) => state.error
+)
 
 export const getArchivedItemsSelector = createSelector(
   stateTestItemsSelector,

@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
-import { Pagination, Spin, Tooltip } from 'antd'
+import { Icon, Spin, Tooltip } from 'antd'
 import {
   roleuser,
   sortOptions,
@@ -24,10 +24,9 @@ import {
   IconTestSection,
 } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
-import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 
-import { ItemsPagination, Selected, StyledVerticalDivider } from './styled'
+import { Selected, StyledVerticalDivider } from './styled'
 import {
   getCurriculumsListSelector,
   getStandardsListSelector,
@@ -55,6 +54,7 @@ import {
   initialSearchState,
   getSortFilterStateSelector,
   initialSortState,
+  getReceiveItemsErrorSelector,
 } from './ducks'
 import {
   setAndSavePassageItemsAction,
@@ -71,10 +71,13 @@ import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
   ListItems,
   Element,
-  PaginationContainer,
   ContentWrapper,
   ScrollbarContainer,
   MobileFilterIcon,
+  ScrollbarContainerFooter,
+  LoadingMoreTestsContainer,
+  EndOfSearchResultsContainer,
+  LoadingFailedContainer,
 } from '../../../ItemList/components/Container/styled'
 import AddItemsContainer from './AddItemsContainer'
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
@@ -146,7 +149,6 @@ class AddItems extends PureComponent {
   componentDidMount() {
     const {
       getCurriculums,
-      receiveTestItems,
       getCurriculumStandards,
       limit,
       test,
@@ -157,13 +159,11 @@ class AddItems extends PureComponent {
       interestedSubjects,
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
-      pageNumber,
       needToSetFilter,
       sort: initSort,
       userId,
       districtId,
     } = this.props
-    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
     const sessionSort = getFilterFromSession({
       key: sessionFilterKeys.TEST_ITEM_SORT,
@@ -210,15 +210,16 @@ class AddItems extends PureComponent {
     }
     if (!curriculums.length) getCurriculums()
     getAllTags({ type: 'testitem' })
-    receiveTestItems(
-      search,
-      sort,
-      parseInt(query.page, 10) ? parseInt(query.page, 10) : pageNumber || 1,
-      limit
-    )
+    this.receiveItemsAndUpdateState(search, sort, 1, limit)
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, '')
     }
+  }
+
+  receiveItemsAndUpdateState = (search, sort, page, limit, preventReset) => {
+    const { receiveTestItems } = this.props
+    this.setState({ fullPageLoad: page <= 1 })
+    receiveTestItems(search, sort, page, limit, preventReset)
   }
 
   updateFilterState = (newSearch, sort) => {
@@ -239,12 +240,12 @@ class AddItems extends PureComponent {
   }
 
   handleSearch = (searchState) => {
-    const { receiveTestItems, limit, search, sort } = this.props
-    receiveTestItems(searchState || search, sort, 1, limit)
+    const { limit, search, sort } = this.props
+    this.receiveItemsAndUpdateState(searchState || search, sort, 1, limit)
   }
 
   handleLabelSearch = (e) => {
-    const { limit, receiveTestItems, search } = this.props
+    const { limit, search } = this.props
     const { key: filterType } = e
     const getMatchingObj = filterMenuItems.filter(
       (item) => item.path === filterType
@@ -260,13 +261,18 @@ class AddItems extends PureComponent {
       sortDir: 'desc',
     }
     this.updateFilterState(searchState, sort)
-    receiveTestItems(searchState, sort, 1, limit)
+    this.receiveItemsAndUpdateState(searchState, sort, 1, limit)
   }
 
   handleClearSearch = () => {
-    const { clearFilterState, receiveTestItems, limit } = this.props
+    const { clearFilterState, limit } = this.props
     clearFilterState({ needToSetFilter: false })
-    receiveTestItems(initialSearchState, initialSortState, 1, limit)
+    this.receiveItemsAndUpdateState(
+      initialSearchState,
+      initialSortState,
+      1,
+      limit
+    )
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }
 
@@ -428,24 +434,21 @@ class AddItems extends PureComponent {
     this.searchDebounce(updatedKeys)
   }
 
-  renderPagination = () => {
-    const { windowWidth, count, page } = this.props
-    return (
-      <ItemsPagination>
-        <Pagination
-          simple={windowWidth <= 768 && true}
-          onChange={this.handlePaginationChange}
-          defaultPageSize={10}
-          total={count}
-          current={page}
-        />
-      </ItemsPagination>
+  handlePaginationChange = (target) => {
+    const { search, sort, page, loading, limit, count } = this.props
+    if (loading) return
+    if (
+      target &&
+      this.state.scrollItems >= target.children.length &&
+      !this.state.fullPageLoad
     )
-  }
-
-  handlePaginationChange = (page) => {
-    const { search, receiveTestItems, limit, sort } = this.props
-    receiveTestItems(search, sort, page, limit)
+      return
+    if (count <= page * limit) return
+    this.setState((prevState) => ({
+      scrollItems: target?.children?.length || prevState.scrollItems,
+      fullPageLoad: false,
+    }))
+    this.receiveItemsAndUpdateState(search, sort, page + 1, limit, true)
   }
 
   /*
@@ -564,14 +567,14 @@ class AddItems extends PureComponent {
   }
 
   onSelectSortOption = (value, sortDir) => {
-    const { search, limit, sort, receiveTestItems } = this.props
+    const { search, limit, sort } = this.props
     const updateSort = {
       ...sort,
       sortBy: value,
       sortDir,
     }
     this.updateFilterState(search, updateSort)
-    receiveTestItems(search, updateSort, 1, limit)
+    this.receiveItemsAndUpdateState(search, updateSort, 1, limit)
   }
 
   get selectedItem() {
@@ -636,8 +639,11 @@ class AddItems extends PureComponent {
       currentGroupIndexValueFromStore,
       setSectionsTestSetGroupIndex,
       setShowSectionsTestSelectGroupIndexModal,
+      page,
+      limit,
+      recieveItemsError,
     } = this.props
-    const { showSelectGroupModal } = this.state
+    const { showSelectGroupModal, fullPageLoad } = this.state
     const selectedItemIds = test?.itemGroups?.flatMap(
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )
@@ -685,7 +691,7 @@ class AddItems extends PureComponent {
               />
             </MobileFilterIcon>
             <ContentWrapper borderRadius="0px" padding="0px">
-              {loading && <Spin size="large" />}
+              {loading && fullPageLoad && <Spin size="large" />}
               <ItemsMenu>
                 <PaginationInfo>
                   <span>{count}</span> QUESTIONS FOUND
@@ -784,14 +790,39 @@ class AddItems extends PureComponent {
                 )}
               </ItemsMenu>
 
-              {!loading && (
-                <ScrollbarContainer>
+              {!(loading && fullPageLoad) && (
+                <ScrollbarContainer onYReachEnd={this.handlePaginationChange}>
                   {this.renderItems(selectedItemIds)}
-                  {count > 10 && (
-                    <PaginationContainer>
-                      {this.renderPagination()}
-                    </PaginationContainer>
-                  )}
+                  <EduIf condition={!(fullPageLoad && recieveItemsError)}>
+                    <ScrollbarContainerFooter>
+                      <EduIf condition={loading}>
+                        <LoadingMoreTestsContainer>
+                          <Icon type="loading" height="22px" /> Loading more
+                          tests
+                        </LoadingMoreTestsContainer>
+                      </EduIf>
+                      <EduIf
+                        condition={
+                          count < page * limit && count > 0 && !loading
+                        }
+                      >
+                        <EndOfSearchResultsContainer>
+                          End of search results
+                        </EndOfSearchResultsContainer>
+                      </EduIf>
+                      <EduIf condition={recieveItemsError}>
+                        <LoadingFailedContainer>
+                          Loading failed
+                          <EduButton
+                            onClick={() => this.handlePaginationChange()}
+                            isGhost
+                          >
+                            Try again
+                          </EduButton>
+                        </LoadingFailedContainer>
+                      </EduIf>
+                    </ScrollbarContainerFooter>
+                  </EduIf>
                 </ScrollbarContainer>
               )}
 
@@ -861,14 +892,15 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       isGcpsDistrict: isGcpsDistrictSelector(state),
       currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
+      recieveItemsError: getReceiveItemsErrorSelector(state),
     }),
     {
-      receiveTestItems: (search, sort, page, limit) => {
+      receiveTestItems: (search, sort, page, limit, preventReset) => {
         const _search = {
           ...search,
           standardIds: search?.standardIds?.map((item) => item._id) || [],
         }
-        return receiveTestItemsAction(_search, sort, page, limit)
+        return receiveTestItemsAction(_search, sort, page, limit, preventReset)
       },
       getAllTags: getAllTagsAction,
       getCurriculums: getDictCurriculumsAction,

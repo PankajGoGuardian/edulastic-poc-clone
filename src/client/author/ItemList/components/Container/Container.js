@@ -1,8 +1,8 @@
-import { withWindowSizes } from '@edulastic/common'
+import { EduButton, EduIf, withWindowSizes } from '@edulastic/common'
 import { IconItemLibrary } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, sortOptions } from '@edulastic/constants'
-import { Pagination, Spin } from 'antd'
+import { Icon, Spin } from 'antd'
 import { debounce, omit, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -60,6 +60,7 @@ import {
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
   initialSortState,
+  getReceiveItemsErrorSelector,
 } from '../../../TestPage/components/AddItems/ducks'
 import {
   getAllTagsAction,
@@ -81,10 +82,13 @@ import {
   Container,
   ContentWrapper,
   Element,
+  EndOfSearchResultsContainer,
   ListItems,
+  LoadingFailedContainer,
+  LoadingMoreTestsContainer,
   MobileFilterIcon,
-  PaginationContainer,
   ScrollbarContainer,
+  ScrollbarContainerFooter,
 } from './styled'
 import { setDefaultInterests, getDefaultInterests } from '../../../dataUtils'
 import HeaderFilter from '../HeaderFilter'
@@ -102,11 +106,12 @@ class Contaier extends Component {
   state = {
     isShowFilter: true,
     openSidebar: false,
+    fullPageLoad: true,
+    scrollItems: 0, // required for debouncing
   }
 
   componentDidMount() {
     const {
-      receiveItems,
       curriculums,
       getCurriculums,
       getCurriculumStandards,
@@ -187,10 +192,10 @@ class Contaier extends Component {
         updatedSearch.filter = filterMenuItems[0].filter
       }
 
-      receiveItems(updatedSearch, sort, 1, limit)
+      this.receiveItemsAndUpdateState(updatedSearch, sort, 1, limit)
     } else {
       this.updateFilterState(search, sort)
-      receiveItems(search, sort, 1, limit)
+      this.receiveItemsAndUpdateState(search, sort, 1, limit)
     }
     if (curriculums.length === 0) {
       getCurriculums()
@@ -198,6 +203,12 @@ class Contaier extends Component {
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, '')
     }
+  }
+
+  receiveItemsAndUpdateState = (search, sort, page, limit, preventReset) => {
+    const { receiveItems } = this.props
+    this.setState({ fullPageLoad: page <= 1 })
+    receiveItems(search, sort, page, limit, preventReset)
   }
 
   updateFilterState = (newSearch, sort = {}) => {
@@ -218,20 +229,14 @@ class Contaier extends Component {
   }
 
   handleSearch = (searchState) => {
-    const {
-      limit,
-      receiveItems,
-      userFeatures,
-      search: propSearch,
-      sort,
-    } = this.props
+    const { limit, userFeatures, search: propSearch, sort } = this.props
     let search = searchState || propSearch
     if (!userFeatures.isCurator) search = omit(search, 'authoredByIds')
-    receiveItems(search, sort, 1, limit)
+    this.receiveItemsAndUpdateState(search, sort, 1, limit)
   }
 
   handleLabelSearch = (e) => {
-    const { limit, receiveItems, history, search } = this.props
+    const { limit, history, search } = this.props
     const { key: filterType } = e
     const getMatchingObj = filterMenuItems.filter(
       (item) => item.path === filterType
@@ -259,20 +264,19 @@ class Contaier extends Component {
     )
 
     if (filterType !== 'folders') {
-      receiveItems({ ...updatedSearch, filter }, sort, 1, limit)
+      this.receiveItemsAndUpdateState(
+        { ...updatedSearch, filter },
+        sort,
+        1,
+        limit
+      )
     }
 
     history.push(`/author/items/filter/${filterType}`)
   }
 
   handleClearSearch = () => {
-    const {
-      clearFilterState,
-      limit,
-      receiveItems,
-      search = {},
-      sort = {},
-    } = this.props
+    const { clearFilterState, limit, search = {}, sort = {} } = this.props
 
     // If current filter and initial filter is equal don't need to reset again
     if (isEqual(search, initialSearchState) && isEqual(sort, initialSortState))
@@ -281,7 +285,12 @@ class Contaier extends Component {
     clearFilterState()
 
     this.updateFilterState(initialSearchState, initialSortState)
-    receiveItems(initialSearchState, initialSortState, 1, limit)
+    this.receiveItemsAndUpdateState(
+      initialSearchState,
+      initialSortState,
+      1,
+      limit
+    )
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
   }
 
@@ -396,24 +405,21 @@ class Contaier extends Component {
     })
   }
 
-  handlePaginationChange = (page) => {
-    const { search, sort } = this.props
-    const { receiveItems, limit } = this.props
-    receiveItems(search, sort, page, limit)
-  }
-
-  renderPagination = () => {
-    const { count, page } = this.props
-    return (
-      <Pagination
-        simple={false}
-        showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
-        onChange={this.handlePaginationChange}
-        defaultPageSize={25}
-        total={count}
-        current={page}
-      />
+  handlePaginationChange = (target) => {
+    const { search, sort, page, loading, limit, count } = this.props
+    if (loading) return
+    if (
+      target &&
+      this.state.scrollItems >= target.children.length &&
+      !this.state.fullPageLoad
     )
+      return
+    if (count <= page * limit) return
+    this.setState((prevState) => ({
+      scrollItems: target?.children?.length || prevState.scrollItems,
+      fullPageLoad: false,
+    }))
+    this.receiveItemsAndUpdateState(search, sort, page + 1, limit, true)
   }
 
   toggleFilter = () => {
@@ -453,14 +459,14 @@ class Contaier extends Component {
     this.setState((prevState) => ({ openSidebar: !prevState.openSidebar }))
 
   onSelectSortOption = (value, sortDir) => {
-    const { search, limit, sort, receiveItems } = this.props
+    const { search, limit, sort } = this.props
     const updateSort = {
       ...sort,
       sortBy: value,
       sortDir,
     }
     this.updateFilterState(search, updateSort)
-    receiveItems(search, updateSort, 1, limit)
+    this.receiveItemsAndUpdateState(search, updateSort, 1, limit)
   }
 
   handleApproveItems = () => {
@@ -513,13 +519,16 @@ class Contaier extends Component {
       getCurriculumStandards,
       curriculumStandards,
       loading,
+      page,
       count,
       search,
       userRole,
       sort = {},
+      limit,
+      recieveItemsError,
     } = this.props
 
-    const { isShowFilter, openSidebar } = this.state
+    const { isShowFilter, openSidebar, fullPageLoad } = this.state
     return (
       <div>
         <SideContent
@@ -569,7 +578,7 @@ class Contaier extends Component {
                 {this.renderFilterIcon(isShowFilter)}
               </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
-                {loading && <Spin size="large" />}
+                {loading && fullPageLoad && <Spin size="large" />}
                 <>
                   <ItemsMenu>
                     <PaginationInfo>
@@ -592,17 +601,44 @@ class Contaier extends Component {
                     <Actions type="TESTITEM" />
                   </ItemsMenu>
 
-                  {!loading && (
-                    <ScrollbarContainer>
+                  {!(loading && fullPageLoad) && (
+                    <ScrollbarContainer
+                      onYReachEnd={this.handlePaginationChange}
+                    >
                       <ItemListContainer
                         windowWidth={windowWidth}
                         search={search}
                       />
-                      {count > 10 && (
-                        <PaginationContainer>
-                          {this.renderPagination()}
-                        </PaginationContainer>
-                      )}
+                      <EduIf condition={!(fullPageLoad && recieveItemsError)}>
+                        <ScrollbarContainerFooter>
+                          <EduIf condition={loading}>
+                            <LoadingMoreTestsContainer>
+                              <Icon type="loading" height="22px" /> Loading more
+                              tests
+                            </LoadingMoreTestsContainer>
+                          </EduIf>
+                          <EduIf
+                            condition={
+                              count <= page * limit && count > 0 && !loading
+                            }
+                          >
+                            <EndOfSearchResultsContainer>
+                              End of search results
+                            </EndOfSearchResultsContainer>
+                          </EduIf>
+                          <EduIf condition={recieveItemsError}>
+                            <LoadingFailedContainer>
+                              Loading failed
+                              <EduButton
+                                onClick={() => this.handlePaginationChange()}
+                                isGhost
+                              >
+                                Try again
+                              </EduButton>
+                            </LoadingFailedContainer>
+                          </EduIf>
+                        </ScrollbarContainerFooter>
+                      </EduIf>
                     </ScrollbarContainer>
                   )}
                 </>
@@ -668,14 +704,15 @@ const enhance = compose(
       userId: getUserId(state),
       districtId: getUserOrgId(state),
       test: getTestEntitySelector(state),
+      recieveItemsError: getReceiveItemsErrorSelector(state),
     }),
     {
-      receiveItems: (search, sort, page, limit) => {
+      receiveItems: (search, sort, page, limit, preventReset) => {
         const _search = {
           ...search,
           standardIds: search?.standardIds?.map((item) => item._id) || [],
         }
-        return receiveTestItemsAction(_search, sort, page, limit)
+        return receiveTestItemsAction(_search, sort, page, limit, preventReset)
       },
       createItem: createTestItemAction,
       getCurriculums: getDictCurriculumsAction,

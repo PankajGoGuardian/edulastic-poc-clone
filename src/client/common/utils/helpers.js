@@ -23,6 +23,13 @@ export const edulasticText = 'Edulastic'
 export const isPearOrEdulasticText = isPearDomain
   ? pearAssessmentText
   : edulasticText
+export const pearOrEdulasticUrl = isPearDomain
+  ? 'peardeck.com'
+  : 'edulastic.com'
+
+export const isPearOrEdulasticAssessment = isPearDomain
+  ? 'Pear Assessment test'
+  : 'Edulastic Assessment'
 const api = new API()
 
 export const getWordsInURLPathName = (pathname) => {

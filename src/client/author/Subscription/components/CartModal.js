@@ -2,7 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { connect } from 'react-redux'
 import Styled from 'styled-components'
-import { emailRegex } from '../../../common/utils/helpers'
+import {
+  emailRegex,
+  isPearOrEdulasticText,
+} from '../../../common/utils/helpers'
 import ProductsList from '../../src/components/common/PurchaseModals/ProductsList'
 import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
 import { getSubscriptionSelector, slice as subscriptionSlice } from '../ducks'
@@ -131,7 +134,7 @@ function CartModal({
   return (
     <CustomModalStyled
       visible={visible}
-      title="Your Edulastic Cart"
+      title={`Your ${isPearOrEdulasticText} Cart`}
       modalWidth="510px"
       width="510px"
       destroyOnClose

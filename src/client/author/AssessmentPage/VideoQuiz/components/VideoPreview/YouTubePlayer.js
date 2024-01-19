@@ -7,9 +7,10 @@ import { SEEK_DATA, KEYCODES } from '../../constants'
 const PLAYER_ID = 'youtube-player'
 const TAG_ID = 'iframe_api'
 const ED_YOUTUBE_SDK = 'https://www.youtubeeducation.com/iframe_api'
-const ED_YOUTUBE_HOST = appConfig.edYouTubePlayerKey
-  ? 'https://www.youtubeeducation.com'
-  : 'https://www.youtube.com'
+const getYoutubeHost = (isVideoQuizAndAIEnabled) =>
+  appConfig.edYouTubePlayerKey && isVideoQuizAndAIEnabled
+    ? 'https://www.youtubeeducation.com'
+    : 'https://www.youtube.com'
 
 const YouTubePlayer = React.forwardRef(
   (
@@ -28,6 +29,7 @@ const YouTubePlayer = React.forwardRef(
       onEnded,
       onReady,
       handleKeyboardSeek,
+      isVideoQuizAndAIEnabled,
     },
     ref
   ) => {
@@ -63,7 +65,7 @@ const YouTubePlayer = React.forwardRef(
         videoId,
         height,
         width,
-        host: ED_YOUTUBE_HOST,
+        host: getYoutubeHost(isVideoQuizAndAIEnabled),
         events: {
           onStateChange,
           onReady,

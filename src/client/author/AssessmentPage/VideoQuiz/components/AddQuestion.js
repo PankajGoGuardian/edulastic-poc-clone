@@ -129,11 +129,14 @@ class AddQuestion extends React.Component {
       enableAudioResponseQuestion,
       disableAutoGenerate,
       questions,
+      isVideoQuizAndAIEnabled,
     } = this.props
 
     const tooltipMessage = disableAutoGenerate
       ? `${i18.t('author:videoQuiz.autoGenerateNotSupported')}`
-      : `${i18.t('author:rubric.infoText')}`
+      : isVideoQuizAndAIEnabled
+      ? `${i18.t('author:rubric.infoText')}`
+      : `${i18.t('author:aiSuite.addOnText')}`
 
     return (
       <AddQuestionWrapper>
@@ -195,21 +198,21 @@ class AddQuestion extends React.Component {
               </Tooltip>
             </EduIf>
           </QuestionTypes>
-          <QuestionTypes>
-            <Tooltip title={tooltipMessage}>
+          <Tooltip title={tooltipMessage}>
+            <QuestionTypes>
               <CustomStyleBtn2
                 margin="0px"
                 height="32px"
                 width="100%"
                 onClick={this.toggleBulkModal}
                 data-cy="addBulk"
-                disabled={disableAutoGenerate}
+                disabled={disableAutoGenerate || !isVideoQuizAndAIEnabled}
               >
                 <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
                 Auto Generate
               </CustomStyleBtn2>
-            </Tooltip>
-          </QuestionTypes>
+            </QuestionTypes>
+          </Tooltip>
           <AddBulkModal
             visible={bulkModalVisible}
             questions={questions}

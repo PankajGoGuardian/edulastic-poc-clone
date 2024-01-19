@@ -22,6 +22,7 @@ import {
 import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
 } from '../../../src/selectors/user'
 
@@ -46,7 +47,6 @@ import {
   SpinLoader,
 } from './styledComponents/videoList'
 import { getAssessmentCreatingSelector } from '../../ducks'
-import NoDataNotification from '../../../../common/components/NoDataNotification'
 import { trimTextToGivenLength } from './utils'
 import {
   CommonInlineWrapper,
@@ -67,6 +67,7 @@ const CreateVideoQuiz = ({
   isThumbnailLoading,
   creatingAssessment,
   scrollerRef,
+  isRedirectToAddOn,
 }) => {
   const {
     linkValue,
@@ -91,9 +92,10 @@ const CreateVideoQuiz = ({
     interestedGrades,
     interestedSubjects,
     scrollerRef,
+    isRedirectToAddOn,
   })
 
-  if (!isVideoQuizAndAIEnabled) {
+  if (isRedirectToAddOn) {
     return null
   }
   const errorMessage = () => {
@@ -264,6 +266,7 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       creatingAssessment: getAssessmentCreatingSelector(state),
       isThumbnailLoading: isYtLoadingSelector(state),
+      isRedirectToAddOn: isRedirectToAddOnSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

@@ -196,6 +196,11 @@ export const getAssignmentSettingsSelector = createSelector(
   (state) => state.settings
 )
 
+export const vqPreventQuestionSkippingSelector = createSelector(
+  getAssignmentSettingsSelector,
+  (state) => state.vqPreventSkipping
+)
+
 export const hasSectionsSelector = createSelector(
   stateSelector,
   (state) => state.hasSections

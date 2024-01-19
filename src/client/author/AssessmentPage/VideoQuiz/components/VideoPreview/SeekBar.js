@@ -10,6 +10,7 @@ const SeekBar = ({
   marks = {},
   sliderRef,
   handleSetIsSeekBarFocused,
+  vqPreventSkipping,
 }) => {
   const _handleChange = (value) => {
     seekTo(value)
@@ -21,6 +22,7 @@ const SeekBar = ({
 
   return (
     <StyledSlider
+      disabled={vqPreventSkipping}
       marks={duration && marks}
       ref={sliderRef}
       max={duration?.toFixed(4)}

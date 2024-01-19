@@ -6,7 +6,12 @@ import { push } from 'react-router-redux'
 import produce from 'immer'
 import { get, without, omit } from 'lodash'
 
-import { testsApi, testItemsApi, fileApi } from '@edulastic/api'
+import {
+  testsApi,
+  testItemsApi,
+  fileApi,
+  getVQUsageCountApi,
+} from '@edulastic/api'
 import {
   aws,
   roleuser,
@@ -24,7 +29,12 @@ import {
   NewGroup,
   receiveTestByIdAction,
 } from '../TestPage/ducks'
-import { getUserSelector, getUserRole } from '../src/selectors/user'
+import {
+  getUserSelector,
+  getUserRole,
+  isRedirectToAddOnSelector,
+} from '../src/selectors/user'
+import { setUserFeaturesAction } from '../../student/Login/ducks'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -357,7 +367,15 @@ function* createAssessmentSaga({ payload }) {
       const assesmentPayload = omit(newAssessment, omitedItems)
 
       const assessment = yield call(testsApi.create, assesmentPayload)
+      const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+      yield put(
+        setUserFeaturesAction({
+          featureName: 'vqUsageCount',
+          value: vqUsageCount,
+        })
+      )
       yield put(createAssessmentSuccessAction())
+
       yield put(receiveTestByIdAction(assessment._id, true, false))
       yield put(push(`/author/assessments/${assessment._id}`))
     }

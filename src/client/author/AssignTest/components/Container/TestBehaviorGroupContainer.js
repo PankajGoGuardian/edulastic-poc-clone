@@ -17,6 +17,7 @@ import {
 import {
   TEST_CONTENT_VISIBILITY,
   evalTypeLabels,
+  testCategoryTypes,
   testContentVisibility as testContentVisibilityOptions,
 } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
@@ -100,6 +101,7 @@ const TestBehaviorGroupContainer = ({
     penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
     showTtsForPassages = testSettings?.showTtsForPassages,
     testContentVisibility = testSettings?.testContentVisibility,
+    vqPreventSkipping = testSettings?.vqPreventSkipping,
   } = assignmentSettings
 
   const showRefMaterial = !isDocBased
@@ -480,6 +482,35 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Timed TEST */}
+
+      <EduIf
+        condition={testSettings.testCategory === testCategoryTypes.VIDEO_BASED}
+      >
+        <SettingContainer id="vq-prevent-skipping">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Prevent Skipping"
+            content=" If ON, Students won't be able to skip ahead in a video."
+            placement="rightTop"
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={10}>
+              <Label>Prevent Skipping</Label>
+            </Col>
+            <Col span={14}>
+              <AlignSwitchRight
+                disabled={freezeSettings}
+                size="small"
+                checked={vqPreventSkipping}
+                data-cy="vqPreventSkipping"
+                onChange={(value) =>
+                  overRideSettings('vqPreventSkipping', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      </EduIf>
 
       {!testSettings?.isDocBased && (
         <SettingContainer id="show-rubric-to-students">

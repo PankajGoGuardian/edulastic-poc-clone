@@ -20,6 +20,7 @@ import { compose } from 'redux'
 import {
   getAdditionalDataSelector,
   getIsDocBasedTestSelector,
+  getIsVideoQuizSelector,
   getTestActivitySelector,
 } from '../ClassBoard/ducks'
 import { slice } from './ducks'
@@ -76,6 +77,7 @@ function LCBAssignmentSettings({
   userRole,
   togglePenaltyOnUsingHints,
   isPremiumUser,
+  isVideoQuiz,
   t,
 }) {
   const { openPolicy, closePolicy, openPolicyForAdmin } = selectsData
@@ -309,6 +311,7 @@ function LCBAssignmentSettings({
                 _releaseGradeKeys={releaseGradeKeys}
                 isDocBased={isDocBased}
                 togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
+                isVideoQuiz={isVideoQuiz}
               />
               <Row gutter={0} style={{ marginTop: '15px' }}>
                 <Col offset={12}>
@@ -357,6 +360,7 @@ const enhance = compose(
       isDocBased: getIsDocBasedTestSelector(state),
       userRole: getUserRole(state),
       isPremiumUser: isPremiumUserSelector(state),
+      isVideoQuiz: getIsVideoQuizSelector(state),
     }),
     {
       loadAssignment: slice.actions.loadAssignment,

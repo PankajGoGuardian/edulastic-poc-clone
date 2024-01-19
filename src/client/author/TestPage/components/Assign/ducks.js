@@ -8,7 +8,7 @@ import {
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { assignmentApi, testsApi } from '@edulastic/api'
+import { assignmentApi, getVQUsageCountApi, testsApi } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import {
   all,
@@ -25,7 +25,11 @@ import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
 import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
-import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
+import {
+  getUserFeatures,
+  getUserRole,
+  setUserFeaturesAction,
+} from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
 import {
@@ -448,6 +452,13 @@ function* saveAssignment({ payload }) {
     const result = yield call(
       assignmentApi.createAssignmentV2,
       assignmentPayload
+    )
+    const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+    yield put(
+      setUserFeaturesAction({
+        featureName: 'vqUsageCount',
+        value: vqUsageCount,
+      })
     )
     const gSyncStatus = []
     result.assignments?.forEach((_data) => {

@@ -18,9 +18,8 @@ const useVideoAssessmentUtils = ({
   getYoutubeThumbnail,
   onValidUrl,
   history,
-  interestedGrades,
-  interestedSubjects,
   scrollerRef,
+  isRedirectToAddOn,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -42,11 +41,10 @@ const useVideoAssessmentUtils = ({
   }, [])
 
   useEffect(() => {
-    if (!isVideoQuizAndAIEnabled) {
+    if (isRedirectToAddOn) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },
-        nextPageToken,
       })
     }
   }, [isVideoQuizAndAIEnabled])

@@ -578,6 +578,45 @@ export const isVideoQuizAndAIEnabledSelector = createSelector(
   (userData) => _get(userData, ['features', 'isVideoQuizAndAIEnabled'], false)
 )
 
+export const vqUsageCountSelector = createSelector(getUser, (userData) =>
+  _get(userData, ['features', 'vqUsageCount'], 0)
+)
+
+export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
+  _get(userData, ['features', 'vqQuotaForDistrict'], 0)
+)
+
+export const showVQCountSelector = createSelector(
+  vqQuotaForDistrictSelector,
+  (vqQuotaForDistrict) => {
+    if (vqQuotaForDistrict === -1) {
+      return false
+    }
+    return true
+  }
+)
+
+export const isRedirectToAddOnSelector = createSelector(
+  isPremiumUserSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
+  getIsAiEvaulationDistrictSelector,
+  (
+    isPremiumUser,
+    vqQuotaForDistrict,
+    vqUsageCount,
+    isVideoQuizAndAIEnabled
+  ) => {
+    return (
+      (isPremiumUser &&
+        !isVideoQuizAndAIEnabled &&
+        vqQuotaForDistrict - vqUsageCount === 0 &&
+        vqQuotaForDistrict !== -1) ||
+      (!isPremiumUser && !isVideoQuizAndAIEnabled)
+    )
+  }
+)
+
 export const getInterestedCurriculumsByOrgType = createSelector(
   getInterestedCurriculumsSelector,
   getUserRole,

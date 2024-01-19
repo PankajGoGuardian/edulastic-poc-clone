@@ -37,6 +37,8 @@ import {
 } from '../../utils/videoPreviewHelpers'
 import appConfig from '../../../../../../app-config'
 import { isiOS } from '../../../../../assessment/utils/helpers'
+import { isVideoQuizAndAIEnabledSelector } from '../../../../src/selectors/user'
+import { vqPreventQuestionSkippingSelector } from '../../../../../assessment/selectors/test'
 
 const { DragPreview } = DragDrop
 
@@ -67,6 +69,8 @@ const VideoPreview = ({
   clearHighlighted,
   forwardedVideoRef,
   startAt,
+  vqPreventSkipping,
+  isVideoQuizAndAIEnabled,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -249,6 +253,7 @@ const VideoPreview = ({
   }
 
   const seekTo = (time) => {
+    if (vqPreventSkipping) return
     if (videoRef) {
       setCurrentTime(time)
       videoRef.current?.seekTo?.(time)
@@ -468,6 +473,7 @@ const VideoPreview = ({
             volume={volumne}
             muted={muted}
             handleKeyboardSeek={handleKeyboardSeek}
+            isVideoQuizAndAIEnabled={isVideoQuizAndAIEnabled}
           />
           {!playing && currentTime === 0 && (
             <BigPlayButton>
@@ -591,6 +597,7 @@ const VideoPreview = ({
             seekTo={seekTo}
             sliderRef={sliderRef}
             handleSetIsSeekBarFocused={handleSetIsSeekBarFocused}
+            vqPreventSkipping={vqPreventSkipping}
           />
         </Col>
         <Col style={{ flex: '0 0 auto' }}>
@@ -625,6 +632,8 @@ export default connect(
   (state) => ({
     pathname: state.router.location.pathname,
     previewMode: getPreviewSelector(state),
+    isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+    vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
   }),
   {
     removeAnswers: removeUserAnswerAction,

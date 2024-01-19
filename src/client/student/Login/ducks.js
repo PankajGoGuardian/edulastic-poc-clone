@@ -254,6 +254,7 @@ export const GET_EXTERNAL_AUTH_USER_FAILED =
 export const SET_EXTERNAL_AUTH_USER_TOKEN =
   '[user] set external auth user token'
 export const SET_USER_ACCESS_PUBLIC_CONTENT = '[user] set access public content'
+export const SET_USER_FEATURES_BY_NAME = '[user] set user features'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -270,6 +271,7 @@ export const newselaSSOLoginAction = createAction(NEWSELA_SSO_LOGIN)
 export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
+export const setUserFeaturesAction = createAction(SET_USER_FEATURES_BY_NAME)
 export const signupAction = createAction(SIGNUP)
 export const signupSuccessAction = createAction(SINGUP_SUCCESS)
 export const fetchUserAction = createAction(FETCH_USER)
@@ -954,6 +956,10 @@ export default createReducer(initialState, {
   },
   [SET_EXTERNAL_AUTH_USER_TOKEN]: (state, { payload }) => {
     state.externalUserToken = payload || null
+  },
+  [SET_USER_FEATURES_BY_NAME]: (state, { payload }) => {
+    const { featureName, value } = payload
+    state.user.features[featureName] = value
   },
 })
 

@@ -16,8 +16,15 @@ import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
 import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
 import { navigationState } from '../../../src/constants/navigation'
 import AddOnTag from '../common/AddOnTag'
-import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
 import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
+import {
+  isPremiumUserSelector,
+  isRedirectToAddOnSelector,
+  isVideoQuizAndAIEnabledSelector,
+  showVQCountSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
+} from '../../../src/selectors/user'
 
 export const videoQuizPath = '/author/tests/videoquiz'
 
@@ -26,13 +33,22 @@ const descriptionBottom = `
   Provide your video link and proceed to create an ${isPearOrEdulasticAssessment}
 `
 
-const OptionVideo = ({ history, isVideoQuizAndAIEnabled }) => {
+const OptionVideo = ({
+  history,
+  isVideoQuizAndAIEnabled,
+  showVQCount,
+  vqQuotaForDistrict,
+  vqUsageCount,
+  isPremiumUser,
+  isRedirectToAddOn,
+}) => {
+  const remainingUsageForVq = vqQuotaForDistrict - vqUsageCount
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Test Library',
     })
 
-    if (!isVideoQuizAndAIEnabled) {
+    if (isRedirectToAddOn) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },
@@ -47,9 +63,19 @@ const OptionVideo = ({ history, isVideoQuizAndAIEnabled }) => {
   const isDateLessThanSep30 = checkIsDateLessThanSep30()
   return (
     <CardComponent>
-      <EduIf condition={!isVideoQuizAndAIEnabled}>
+      <EduIf condition={!isVideoQuizAndAIEnabled && showVQCount}>
         <AddonTagPositionTopLeft width="100%" justifyContent="flex-end">
-          <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
+          <AddOnTag
+            isVideoQuiz
+            message={
+              !isPremiumUser
+                ? i18.t('author:aiSuite.addOnText')
+                : i18.t('author:aiSuite.vqLimitReached')
+            }
+            remainingUsageForVq={remainingUsageForVq}
+            vqQuotaForDistrict={vqQuotaForDistrict}
+            isPremiumUser={isPremiumUser}
+          />
         </AddonTagPositionTopLeft>
       </EduIf>
       {isDateLessThanSep30 && (
@@ -86,6 +112,11 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+    vqUsageCount: vqUsageCountSelector(state),
+    vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
+    showVQCount: showVQCountSelector(state),
+    isPremiumUser: isPremiumUserSelector(state),
+    isRedirectToAddOn: isRedirectToAddOnSelector(state),
   }))
 )
 export default enhance(OptionVideo)

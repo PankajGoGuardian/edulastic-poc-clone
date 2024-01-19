@@ -11,6 +11,7 @@ import {
   notification,
   SelectInputStyled,
   CheckboxLabel,
+  EduIf,
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import { get, isEmpty } from 'lodash'
@@ -95,6 +96,7 @@ const Settings = ({
   togglePenaltyOnUsingHints,
   testItemsData,
   isAiEvaulationDistrict,
+  isVideoQuiz = false,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -273,6 +275,7 @@ const Settings = ({
     releaseScore = tempTestSettings.releaseScore,
     calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
+    vqPreventSkipping = tempTestSettings.vqPreventSkipping,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     passwordPolicy = tempTestSettings.passwordPolicy,
     assignmentPassword = tempTestSettings.assignmentPassword,
@@ -1062,6 +1065,34 @@ const Settings = ({
           </StyledRow>
         </SettingContainer>
         {/* Answer on Paper */}
+
+        {/* Prevent vq skipping */}
+        <EduIf condition={isVideoQuiz}>
+          <SettingContainer>
+            <DetailsTooltip
+              title="Prevent Skipping"
+              content="If ON, Students won't be able to skip ahead in a video."
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15p">
+              <Col span={12}>
+                <Label>Prevent Skipping</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  data-cy="ans-on-paper"
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={vqPreventSkipping}
+                  onChange={(value) =>
+                    overRideSettings('vqPreventSkipping', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        </EduIf>
+        {/* Prevent vq skipping */}
 
         {/* Multi language */}
         {showMultiLangSelection && (

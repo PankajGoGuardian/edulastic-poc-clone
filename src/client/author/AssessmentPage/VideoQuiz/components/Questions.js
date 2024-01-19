@@ -42,6 +42,7 @@ import {
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 import { extractVideoId, getCurrentTime } from '../utils/videoPreviewHelpers'
+import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
 
 const SortableQuestionItem = SortableElement(
   ({
@@ -525,6 +526,7 @@ class Questions extends React.Component {
       videoUrl,
       videoRef,
       questionsContainerRef,
+      isVideoQuizAndAIEnabled,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -643,6 +645,7 @@ class Questions extends React.Component {
               minAvailableQuestionIndex={minAvailableQuestionIndex}
               scrollToBottom={this.scrollToBottom}
               enableAudioResponseQuestion={enableAudioResponseQuestion}
+              isVideoQuizAndAIEnabled={isVideoQuizAndAIEnabled}
             />
           )}
           {review && !noCheck && !reportMode && (
@@ -717,6 +720,7 @@ const enhance = compose(
       recentStandardsList: getRecentStandardsListSelector(state),
       previewMode: getPreviewSelector(state),
       enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+      isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     }),
     {
       addQuestion: addQuestionAction,

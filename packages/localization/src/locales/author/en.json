@@ -242,6 +242,7 @@
     "autoGenerateNotSupported": "Please use YouTube video for Auto Generate feature"
   },
   "aiSuite": {
-    "addOnText": "Buy VideoQuiz and AI Suite to unlock this feature."
+    "addOnText": "Buy VideoQuiz and AI Suite to unlock this feature.",
+    "vqLimitReached": "Limit reached, please subscribe to continue using this feature."
   }
 }

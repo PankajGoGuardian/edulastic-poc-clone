@@ -17,6 +17,7 @@ import {
   isSAWithoutSchoolsSelector,
   isOrganizationDistrictUserSelector,
   isVideoQuizAndAIEnabledSelector,
+  isRedirectToAddOnSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -198,12 +199,14 @@ class Item extends Component {
   openModal = (source) => {
     const {
       item: { testCategory = '' },
-      isVideoQuiAndAiEnabled,
+      isVideoQuizAndAiEnabled,
       setAISuiteAlertModalVisibility,
+      isRedirectToAddOn,
     } = this.props
     if (
       testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuiAndAiEnabled
+      !isVideoQuizAndAiEnabled &&
+      isRedirectToAddOn
     ) {
       setAISuiteAlertModalVisibility(true)
       return
@@ -225,13 +228,13 @@ class Item extends Component {
     const {
       setIsTestPreviewVisible,
       item: { testCategory = '' },
-      isVideoQuiAndAiEnabled,
+      isVideoQuizAndAiEnabled,
       setAISuiteAlertModalVisibility,
     } = this.props
 
     if (
       testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuiAndAiEnabled
+      !isVideoQuizAndAiEnabled
     ) {
       setAISuiteAlertModalVisibility(true)
       return
@@ -565,7 +568,8 @@ const enhance = compose(
         state.curriculumSequence?.previouslyUsedPlaylistClone,
       customTitleModalVisible:
         state.curriculumSequence?.customTitleModalVisible,
-      isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
+      isVideoQuizAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
+      isRedirectToAddOn: isRedirectToAddOnSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

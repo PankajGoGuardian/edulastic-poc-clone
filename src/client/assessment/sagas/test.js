@@ -270,6 +270,10 @@ const getSettings = (
     ? test.showImmersiveReader
     : assignmentSettings.showImmersiveReader
 
+  const vqPreventSkipping = isTestPreview
+    ? test.vqPreventSkipping
+    : assignmentSettings.vqPreventSkipping
+
   return {
     testType,
     calcProvider: calculatorProvider,
@@ -305,6 +309,7 @@ const getSettings = (
     penaltyOnUsingHints,
     showTtsForPassages,
     showImmersiveReader,
+    vqPreventSkipping,
   }
 }
 

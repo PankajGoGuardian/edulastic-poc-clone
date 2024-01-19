@@ -1897,7 +1897,7 @@ class Container extends PureComponent {
         <CustomPrompt
           when={
             !!updated ||
-            (isDefaultTest && this.checkInvalidTestTitle(test.title))
+            (isDefaultTest && testId && this.checkInvalidTestTitle(test.title))
           }
           onUnload
           message={(loc = {}) => {
@@ -1912,7 +1912,11 @@ class Container extends PureComponent {
               return true
             }
 
-            if (isDefaultTest && this.checkInvalidTestTitle(test.title)) {
+            if (
+              isDefaultTest &&
+              testId &&
+              this.checkInvalidTestTitle(test.title)
+            ) {
               this.setState({
                 showTestNameChangeModal: true,
                 toBeResumedTestAction: TEST_ACTIONS.navigation,

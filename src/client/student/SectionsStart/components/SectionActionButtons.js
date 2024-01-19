@@ -30,7 +30,7 @@ const SectionActionButtons = ({
         onClick={handleStartSection(index)}
         data-cy={`startButtton-${index}`}
       >
-        Start Test
+        Start Test [es]
       </EduButton>
     )
   }
@@ -43,7 +43,7 @@ const SectionActionButtons = ({
         onClick={handleStartSection(index, true)}
         data-cy={`continueButton-${index}`}
       >
-        Continue
+        Continue [es]
       </EduButton>
     )
   }
@@ -51,7 +51,7 @@ const SectionActionButtons = ({
     return (
       <Completed data-cy={`completedSectionStatus-${index}`}>
         <IconTick fill={themeColor} />
-        Completed
+        Completed [es]
       </Completed>
     )
   }
@@ -61,7 +61,7 @@ const SectionActionButtons = ({
         onClick={handleReviewSection(index)}
         data-cy={`reviewButton-${index}`}
       >
-        Review
+        Review [es]
       </EduButton>
     )
   }

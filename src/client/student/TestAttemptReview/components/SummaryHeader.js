@@ -11,7 +11,7 @@ const SummaryHeader = ({
   showExit,
   isTestPreviewModal = false,
 }) => {
-  const exitTestText = isTestPreviewModal ? 'Exit' : 'Save & Exit'
+  const exitTestText = isTestPreviewModal ? 'Exit [es]' : 'Save & Exit [es]'
   return (
     <Header>
       <IconLogoCompact style={{ fill: themeColor, marginLeft: '21px' }} />
@@ -20,7 +20,7 @@ const SummaryHeader = ({
           placement="bottom"
           title={
             hidePause
-              ? 'This assignment is configured to completed in a single sitting'
+              ? 'This assignment is configured to completed in a single sitting [es]'
               : exitTestText
           }
         >

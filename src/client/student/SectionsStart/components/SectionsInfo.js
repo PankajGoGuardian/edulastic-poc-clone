@@ -26,6 +26,7 @@ const SectionsInfo = ({
           <IconComment />
           <div style={{ marginLeft: 8 }}>
             <span>Teachers Instruction :</span> Reattempt few questions again.
+            [es]
           </div>
         </TestInstruction>
       </EduIf>
@@ -36,10 +37,10 @@ const SectionsInfo = ({
         }
       >
         <SectionTotalItems>
-          Reattempt {totalItemsCountWithQuestionDelivery} questions
+          Reattempt {totalItemsCountWithQuestionDelivery} questions [es]
         </SectionTotalItems>
       </EduIf>
-      <SectionTitle>Your Test Sections</SectionTitle>
+      <SectionTitle>Your Test Sections [es]</SectionTitle>
     </>
   )
 }

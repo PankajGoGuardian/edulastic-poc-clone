@@ -17,7 +17,7 @@ const menuItems = {
   enableMagnifier: 'Enable Magnifier',
   showLineReaderMask: 'Show Line Reader Mask',
   enableAnswerMask: 'Enable Answer Masking',
-  testOptions: 'Test Options',
+  testOptions: 'Test Options [es]',
 }
 
 const MenuItem = withKeyboard(Menu.Item)
@@ -73,7 +73,7 @@ const SettingMenu = ({
           {...(hidePause
             ? {
                 title:
-                  'This assignment is configured to completed in a single sitting',
+                  'This assignment is configured to completed in a single sitting [es]',
               }
             : {})}
           key="save"
@@ -82,7 +82,7 @@ const SettingMenu = ({
             handleSettingsChange({ key: 'save' })
           }}
         >
-          Save & Exit
+          Save & Exit [es]
         </MenuItem>
       )}
     </StyledMenu>

@@ -297,7 +297,11 @@ const PlayerHeader = ({
                   {showPause && (
                     <Tooltip
                       placement="top"
-                      title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+                      title={
+                        hidePause
+                          ? `Save & Exit disabled [es]`
+                          : `Save & Exit [es]`
+                      }
                     >
                       <StyledButton
                         data-cy="finishTest"

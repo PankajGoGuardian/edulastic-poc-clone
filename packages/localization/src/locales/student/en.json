@@ -3,46 +3,46 @@
     "anonymous": "Anonymous",
     "activeModeTexts": {
       "freeDraw": {
-        "title": "FreeHand Draw Tool",
-        "description": "Tap and drag to draw lines"
+        "title": "FreeHand Draw Tool [es]",
+        "description": "Tap and drag to draw lines [es]"
       },
       "drawSimpleLine": {
-        "title": "Draw Single Line",
-        "description": "Tap and drag to draw the line"
+        "title": "Draw Single Line [es]",
+        "description": "Tap and drag to draw the line [es]"
       },
       "drawBreakingLine": {
-        "title": "Draw Breaking Line",
-        "description": "Tap to set the point of line and double tap to set last point and finish the drawing"
+        "title": "Draw Breaking Line [es]",
+        "description": "Tap to set the point of line and double tap to set last point and finish the drawing [es]"
       },
       "drawSquare": {
-        "title": "Draw Square",
-        "description": "Tap to draw small square"
+        "title": "Draw Square [es]",
+        "description": "Tap to draw small square [es]"
       },
       "drawСircle": {
         "title": "Draw Circle",
-        "description": "Tap to draw small circle"
+        "description": "Tap to draw small circle [es]"
       },
       "drawTriangle": {
-        "title": "Draw Triangle",
-        "description": "Tap to draw small triangle"
+        "title": "Draw Triangle [es]",
+        "description": "Tap to draw small triangle [es]"
       },
       "move": {
-        "title": "Move elements",
-        "description": "Tap and drag"
+        "title": "Move elements [es]",
+        "description": "Tap and drag [es]"
       },
       "drawText": {
-        "title": "Create plain text",
-        "description": "Tap to create and double tap to edit"
+        "title": "Create plain text [es]",
+        "description": "Tap to create and double tap to edit [es]"
       }
     },
     "layout": {
-      "nextbtn": "next",
+      "nextbtn": "next [es]",
       "questionlist": {
-        "heading": "Questions",
-        "question": "Item"
+        "heading": "Questions [es]",
+        "question": "Item [es]"
       },
       "selectbox": {
-        "question": "Question"
+        "question": "Question [es]"
       },
       "dashboard": {
         "headerbackbtn": "BACK TO SELECT A QUESTION TYPE",
@@ -56,24 +56,24 @@
       }
     },
     "test": {
-      "checkanswer": "Check Answer",
-      "hint": "hint",
-      "bookmark": "bookmark",
-      "review": "review",
-      "reviewAndSubmit": "Review/Submit",
-      "reviewOrEnd": "Review/End Test",
-      "answerEliminator": "answer eliminator",
-      "ruler": "ruler",
-      "calculator": "calculator",
-      "scratchPad": "scratch pad",
-      "uploadWork": "Upload work",
-      "magnify": "Magnify",
-      "pause": "Pause",
-      "flag": "Flag",
-      "options": "Options",
-      "referenceSheet": "Reference Sheet",
-      "referenceGuide": "Reference Guide",
-      "referenceMaterial": "Reference Material"
+      "checkanswer": "Check Answer [es]",
+      "hint": "hint [es]",
+      "bookmark": "bookmark [es]",
+      "review": "review [es]",
+      "reviewAndSubmit": "Review/Submit [es]",
+      "reviewOrEnd": "Review/End Test [es]",
+      "answerEliminator": "answer eliminator [es]",
+      "ruler": "ruler [es]",
+      "calculator": "calculator [es]",
+      "scratchPad": "scratch pad [es]",
+      "uploadWork": "Upload work [es]",
+      "magnify": "Magnify [es]",
+      "pause": "Pause [es]",
+      "flag": "Flag [es]",
+      "options": "Options [es]",
+      "referenceSheet": "Reference Sheet [es]",
+      "referenceGuide": "Reference Guide [es]",
+      "referenceMaterial": "Reference Material [es]"
     }
   },
   "component": {

@@ -38,7 +38,7 @@ const TestButton = ({
   return (
     <Container>
       {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
-        <Tooltip placement="top" title="Bookmark">
+        <Tooltip placement="top" title={t('common.test.bookmark')}>
           <StyledButton
             onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}
             active={isBookmarked}
@@ -54,10 +54,10 @@ const TestButton = ({
           placement="top"
           title={
             checkAnswerInProgress
-              ? 'In progress'
+              ? 'In progress [es]'
               : answerChecksUsedForItem >= settings.maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
+              ? 'Usage limit exceeded [es]'
+              : 'Check Answer [es]'
           }
         >
           <StyledButton

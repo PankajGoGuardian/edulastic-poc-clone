@@ -50,17 +50,19 @@ const TestSectionsContainer = ({
             <FlexBox>
               {showLockIcon && <IconLockStyled />}
               <SectionContent>
-                <h4 data-cy={`sectionName-${index}`}>{groupName}</h4>
+                <h4 data-cy={`sectionName-${index}`}>
+                  {groupName} [es - coming from db]
+                </h4>
                 <EduIf condition={!showLockIcon}>
                   <EduThen>
                     <p data-cy={`questionsCompleted-${index}`}>
-                      {attempted}/{items.length} questions completed
+                      {attempted}/{items.length} questions completed [es]
                     </p>
                   </EduThen>
                   <EduElse>
                     <p>
-                      Opens after completing{' '}
-                      <b>{itemsToDeliverInGroup[index - 1]?.groupName}</b>
+                      Opens after completing [es]
+                      <b>{itemsToDeliverInGroup[index - 1]?.groupName} [es] </b>
                     </p>
                   </EduElse>
                 </EduIf>

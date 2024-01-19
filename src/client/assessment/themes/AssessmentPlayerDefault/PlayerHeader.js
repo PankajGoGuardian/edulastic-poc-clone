@@ -122,8 +122,8 @@ const PlayerHeader = ({
                       placement="top"
                       title={
                         blockNavigationToAnsweredQuestions
-                          ? 'This assignment is restricted from navigating back to the previous question.'
-                          : 'Previous'
+                          ? 'This assignment is restricted from navigating back to the previous question. [es]'
+                          : 'Previous [es]'
                       }
                       overlayStyle={overlayStyle}
                     >
@@ -179,7 +179,7 @@ const PlayerHeader = ({
                         }}
                       >
                         {showSubmitText && <IconSend />}
-                        {showSubmitText ? 'SUBMIT' : 'NEXT'}
+                        {showSubmitText ? 'SUBMIT [es]' : 'NEXT [es]'}
                       </ControlBtn.Next>
                     )}
                   </>

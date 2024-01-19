@@ -27,52 +27,53 @@ export const rightControls = [
 
 export const options = {
   [drawTools.SELECT_TOOL]: {
-    label: 'Selector',
-    desc: 'Select the relevant button to use a function.',
+    label: 'Selector [es]',
+    desc: 'Select the relevant button to use a function. [es]',
   },
   [drawTools.FREE_DRAW]: {
-    label: 'Freehand Drawing',
-    desc: 'Tap and drag to draw lines and shapes.',
+    label: 'Freehand Drawing [es]',
+    desc: 'Tap and drag to draw lines and shapes. [es]',
   },
   [drawTools.DRAW_BREAKING_LINE]: {
-    label: 'Straight Line',
-    desc: 'Tap to start and add a point, double tap to end.',
+    label: 'Straight Line [es]',
+    desc: 'Tap to start and add a point, double tap to end. [es]',
   },
   [drawTools.DRAW_CURVE_LINE]: {
-    label: 'Curved Line',
-    desc: 'Tap to start and add a point, double tap to end.',
+    label: 'Curved Line [es]',
+    desc: 'Tap to start and add a point, double tap to end. [es]',
   },
   [drawTools.DRAW_SQUARE]: {
-    label: 'Quadrilateral Drawing',
-    desc: 'Tap to start and drag to draw a Quadrilateral',
+    label: 'Quadrilateral Drawing [es]',
+    desc: 'Tap to start and drag to draw a Quadrilateral [es]',
   },
   [drawTools.DRAW_CIRCLE]: {
-    label: 'Circle Drawing',
-    desc: 'Tap to start and drag to draw a Circle.',
+    label: 'Circle Drawing [es]',
+    desc: 'Tap to start and drag to draw a Circle. [es]',
   },
   [drawTools.DRAW_TRIANGLE]: {
-    label: 'Triangle Drawing',
-    desc: 'Tap to start and drag to draw a Triangle.',
+    label: 'Triangle Drawing [es]',
+    desc: 'Tap to start and drag to draw a Triangle. [es]',
   },
   [drawTools.DRAW_TEXT]: {
-    label: 'Text',
-    desc: 'Tap canvas to enter text.',
+    label: 'Text [es]',
+    desc: 'Tap canvas to enter text. [es]',
   },
   [drawTools.DRAW_MATH]: {
-    label: 'Math Equation',
-    desc: 'Use the Math Editor to add an expression or equation to the canvas',
+    label: 'Math Equation [es]',
+    desc:
+      'Use the Math Editor to add an expression or equation to the canvas [es]',
   },
   [drawTools.DRAW_MEASURE_TOOL]: {
-    label: 'Measure',
-    desc: 'Drag and drop a tool to change location.',
+    label: 'Measure [es]',
+    desc: 'Drag and drop a tool to change location. [es]',
   },
   [drawTools.EDITING_TOOL]: {
-    label: 'Editing',
-    desc: 'Select item to apply action, tap again for properties.',
+    label: 'Editing [es]',
+    desc: 'Select item to apply action, tap again for properties. [es]',
   },
   [drawTools.DELETE_TOOL]: {
-    label: 'Deleting',
-    desc: 'Select item to remove it.',
+    label: 'Deleting [es]',
+    desc: 'Select item to remove it. [es]',
   },
 }
 

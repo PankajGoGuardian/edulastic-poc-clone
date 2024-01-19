@@ -123,7 +123,7 @@ const PlayerFooter = ({
             <ButtonWrapper
               isPrimary
               data-cy="testOptions"
-              aria-label="Test Options"
+              aria-label="Test Options [es]"
               onClick={() => setSettingsModalVisibility(true)}
             >
               options

@@ -104,7 +104,7 @@ const QuestionList = ({
           ))}
           {showSubmit && (
             <Select.Option key={options.length} value="SUBMIT">
-              Submit <IconSend />
+              Submit [es] <IconSend />
             </Select.Option>
           )}
         </Select>

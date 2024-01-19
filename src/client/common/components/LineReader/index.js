@@ -53,7 +53,7 @@ const LineReader = ({
   }, [btnComponent])
 
   return !hideButton ? (
-    <Tooltip placement="top" title="Line Reader">
+    <Tooltip placement="top" title="Line Reader [es]">
       <Button
         isGhost
         IconBtn

@@ -192,7 +192,9 @@ const PlayerHeader = ({
             {showPause && (
               <Tooltip
                 placement="top"
-                title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+                title={
+                  hidePause ? `Save & Exit disabled [es]` : `Save & Exit [es]`
+                }
               >
                 <SignOut
                   data-cy="finishTest"
@@ -203,7 +205,7 @@ const PlayerHeader = ({
                   {!hidePause && (
                     <IconSignoutHighlight style={{ marginRight: '10px' }} />
                   )}
-                  SIGN OUT
+                  SIGN OUT [es]
                 </SignOut>
               </Tooltip>
             )}

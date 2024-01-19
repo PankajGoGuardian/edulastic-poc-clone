@@ -128,21 +128,21 @@ const SettingsModal = ({
       playerSkinType={playerSkinType}
       maskClosable={false}
       textAlign="left"
-      title={showReconfirm ? 'Alert' : 'Test Options'}
+      title={showReconfirm ? 'Alert' : 'Test Options [es]'}
       centered
       visible={settingsModalVisible}
       onCancel={handleCancel}
       destroyOnClose
       footer={[
         <EduButton isGhost key="cancel" onClick={handleCancel}>
-          CANCEL
+          CANCEL [es]
         </EduButton>,
         <EduButton
           data-cy={showReconfirm ? 'continue' : 'apply'}
           key="submit"
           onClick={handleApply}
         >
-          {showReconfirm ? 'CONTINUE' : 'APPLY'}
+          {showReconfirm ? 'CONTINUE' : 'APPLY'} [es]
         </EduButton>,
       ]}
     >
@@ -151,7 +151,7 @@ const SettingsModal = ({
           <div style={reconfirmContentStyle}>
             {' '}
             All your previous responses will be lost and assignment will start
-            from the beginning. Are you sure you want to continue?{' '}
+            from the beginning. Are you sure you want to continue? [es]
           </div>
         ) : (
           <>
@@ -159,7 +159,7 @@ const SettingsModal = ({
               <>
                 <div>
                   {/* Color contrast switch is a seperate component for parcc skin any change here should be made for 'parcc/changecolor' component as well */}
-                  <CustomColumn>COLOR CONTRAST</CustomColumn>
+                  <CustomColumn>COLOR CONTRAST [es]</CustomColumn>
                   <StyledSelect
                     value={selectedTheme}
                     onChange={setSelectedTheme}
@@ -169,20 +169,20 @@ const SettingsModal = ({
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="default" aria-label="Default">
-                      Default
+                      Default [es]
                     </Select.Option>
                     {Object.keys(themeColorsMap).map((key) => {
                       const item = themeColorsMap[key]
                       return (
                         <Select.Option value={key} aria-label={item.title}>
-                          {item.title}
+                          {item.title} [es]
                         </Select.Option>
                       )
                     })}
                   </StyledSelect>
                 </div>
                 <div>
-                  <CustomColumn>ZOOM</CustomColumn>
+                  <CustomColumn>ZOOM [es]</CustomColumn>
                   <StyledSelect
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     value={zoomLevel}
@@ -192,19 +192,19 @@ const SettingsModal = ({
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="1" aria-label="None">
-                      None
+                      None [es]
                     </Select.Option>
                     <Select.Option value="1.5" aria-label="1.5X standard">
-                      1.5X standard
+                      1.5X standard [es]
                     </Select.Option>
                     <Select.Option value="1.75" aria-label="1.75X standard">
-                      1.75X standard
+                      1.75X standard [es]
                     </Select.Option>
                     <Select.Option value="2.5" aria-label="2.5X standard">
-                      2.5X standard
+                      2.5X standard [es]
                     </Select.Option>
                     <Select.Option value="3" aria-label="3X standard">
-                      3X standard
+                      3X standard [es]
                     </Select.Option>
                   </StyledSelect>
                 </div>
@@ -212,7 +212,7 @@ const SettingsModal = ({
             )}
             {multiLanguageEnabled && (
               <div>
-                <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
+                <CustomColumn>SELECT PREFERRED LANGUAGE [es]</CustomColumn>
                 <StyledSelect
                   data-cy="langPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -222,7 +222,7 @@ const SettingsModal = ({
                   disabled={isPremiumContentWithoutAccess}
                 >
                   <Select.Option value="" disabled aria-label="Select Language">
-                    Select Language
+                    Select Language [edulastic]
                   </Select.Option>
                   <Select.Option
                     value={languageCodes.ENGLISH}
@@ -241,7 +241,9 @@ const SettingsModal = ({
             )}
             {canShowPlaybackOptionTTS && (
               <div>
-                <CustomColumn>PLAYBACK SPEED (TEXT TO SPEECH)</CustomColumn>
+                <CustomColumn>
+                  PLAYBACK SPEED (TEXT TO SPEECH) [es]
+                </CustomColumn>
                 <StyledSelect
                   data-cy="playBackSpeedPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -250,19 +252,19 @@ const SettingsModal = ({
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
                 >
                   <Select.Option value="0.5" aria-label="0.5X">
-                    0.5X
+                    0.5X [es]
                   </Select.Option>
                   <Select.Option value="0.75" aria-label="0.75X">
-                    0.75X
+                    0.75X [es]
                   </Select.Option>
                   <Select.Option value="1" aria-label="Normal">
-                    Normal
+                    Normal [es]
                   </Select.Option>
                   <Select.Option value="1.5" aria-label="1.5X">
-                    1.5X
+                    1.5X [es]
                   </Select.Option>
                   <Select.Option value="2" aria-label="2X">
-                    2X
+                    2X [es]
                   </Select.Option>
                 </StyledSelect>
               </div>

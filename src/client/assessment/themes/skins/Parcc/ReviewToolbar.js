@@ -77,7 +77,7 @@ const ReviewToolbar = ({
                 color={parcc.menuItem.activeColor}
               />
             )}
-            Question {option + 1}
+            Question {option + 1} [es]
           </MenuItem>
         ))}
       </StyledMenu>
@@ -87,21 +87,21 @@ const ReviewToolbar = ({
           onClick={() => handleCardClick('all')}
         >
           <StyledCounter>{totalQuestions}</StyledCounter>
-          <div>All questions</div>
+          <div>All questions [es]</div>
         </Card>
         <Card
           style={selectedCard === 'notAnswered' ? cardStyle : {}}
           onClick={() => handleCardClick('notAnswered')}
         >
           <StyledCounter>{totalUnanswered}</StyledCounter>
-          <div>Not answered</div>
+          <div>Not answered [es]</div>
         </Card>
         <Card
           style={selectedCard === 'bookmarks' ? cardStyle : {}}
           onClick={() => handleCardClick('bookmarks')}
         >
           <StyledCounter>{totalBookmarks}</StyledCounter>
-          <div>Bookmarks</div>
+          <div>Bookmarks [es]</div>
         </Card>
       </FlexContainer>
     </StyledWrapper>

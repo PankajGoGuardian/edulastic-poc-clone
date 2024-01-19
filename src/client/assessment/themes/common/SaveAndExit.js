@@ -134,7 +134,7 @@ const SaveAndExit = ({
         </EduThen>
       </EduIf>
       {showZoomBtn && !LCBPreviewModal && (
-        <Tooltip placement="bottom" title="Test Options">
+        <Tooltip placement="bottom" title="Test Options [es]">
           <StyledButton
             data-cy="testOptions"
             aria-label="Test options"
@@ -153,8 +153,8 @@ const SaveAndExit = ({
                 placement="bottom"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
-                    : 'Exit'
+                    ? 'This assignment is configured to completed in a single sitting [es]'
+                    : 'Exit [es]'
                 }
               >
                 <SaveAndExitButton
@@ -164,7 +164,7 @@ const SaveAndExit = ({
                   onClick={finishTest}
                 >
                   <IconCircleLogout />
-                  EXIT
+                  EXIT [es]
                 </SaveAndExitButton>
               </Tooltip>
             )}
@@ -176,8 +176,8 @@ const SaveAndExit = ({
                 placement="bottomRight"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
-                    : 'Save & Exit'
+                    ? 'This assignment is configured to completed in a single sitting [es]'
+                    : 'Save & Exit [es]'
                 }
               >
                 <SaveAndExitButton

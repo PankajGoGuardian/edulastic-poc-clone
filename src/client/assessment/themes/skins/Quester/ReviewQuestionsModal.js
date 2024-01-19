@@ -78,7 +78,7 @@ const ReviewQuestionsModal = ({
           onClick={handleClose}
           style={{ padding: '10px 40px' }}
         >
-          NO, CANCEL
+          NO, CANCEL [es]
         </EduButton>,
         <EduButton
           height="40px"
@@ -86,7 +86,7 @@ const ReviewQuestionsModal = ({
           onClick={previewPlayer ? finishTest : gotoSummary}
           style={{ padding: '10px 52px' }}
         >
-          SUBMIT
+          SUBMIT [es]
         </EduButton>,
       ]}
       title="Review"
@@ -94,36 +94,36 @@ const ReviewQuestionsModal = ({
     >
       <div>
         <LeadingParagraph>
-          You have answered{' '}
+          You have answered [es]
           <b>
             {totalQuestions - totalUnanswered} of {totalQuestions}
           </b>{' '}
-          questions. Click on a question number to go back to it.
+          questions. Click on a question number to go back to it. [es]
         </LeadingParagraph>
         <FlexContainer
           marginBottom="20px"
           alignItems="center"
           justifyContent="space-between"
         >
-          <QuestionHead>Questions</QuestionHead>
+          <QuestionHead>Questions [es]</QuestionHead>
           <ReviewFilters>
             <Card
               selected={selectedCard === 'notAnswered'}
               onClick={() => handleCardClick('notAnswered')}
             >
-              <div>UNANSWERED ({totalUnanswered})</div>
+              <div>UNANSWERED ({totalUnanswered}) [es]</div>
             </Card>
             <Card
               selected={selectedCard === 'answered'}
               onClick={() => handleCardClick('answered')}
             >
-              <div>ANSWERED ({totalQuestions - totalUnanswered})</div>
+              <div>ANSWERED ({totalQuestions - totalUnanswered}) [es]</div>
             </Card>
             <Card
               selected={selectedCard === 'bookmarks'}
               onClick={() => handleCardClick('bookmarks')}
             >
-              <div>BOOKMARKED ({totalBookmarks})</div>
+              <div>BOOKMARKED ({totalBookmarks}) [es]</div>
             </Card>
           </ReviewFilters>
         </FlexContainer>
@@ -144,22 +144,22 @@ const ReviewQuestionsModal = ({
                 handleQuestionCLick({ key: option })
               }}
             >
-              {option + 1}
+              {option + 1} [es]
             </MenuItem>
           ))}
         </StyledMenu>
         <LegendsContainer>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('unanswered')} />
-            UNANSWERED
+            UNANSWERED [es]
           </LegendWrapper>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('answered')} />
-            ANSWERED
+            ANSWERED [es]
           </LegendWrapper>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('bookmarks')} />
-            BOOKMARKED
+            BOOKMARKED [es]
           </LegendWrapper>
         </LegendsContainer>
       </div>

@@ -21,6 +21,11 @@ import {
 import { setShowWelcomePopupAction } from '../../ducks'
 import { getUser } from '../../../src/selectors/user'
 import { roleuser, signUpState } from '@edulastic/constants'
+import { isPearDomain } from '../../../../../utils/pear'
+import {
+  edulasticText,
+  pearAssessmentText,
+} from '../../../../common/utils/helpers'
 
 const CLIAccessBanner = ({
   visible = false,
@@ -94,7 +99,7 @@ const CLIAccessBanner = ({
       </StyledSignOut>
       <StyledLogo src={CLILogo} />
       <StyledText data-cy="cliBannerTitle" margin="50px auto 20px auto">
-        Welcome to Edulastic
+        Welcome to {isPearDomain ? pearAssessmentText : edulasticText}
         {/* <HighlightedText>
           {firstName || lastName ? `${firstName} ${lastName}` : 'Anonymous'}!
         </HighlightedText> */}

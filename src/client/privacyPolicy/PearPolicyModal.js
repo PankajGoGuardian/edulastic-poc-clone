@@ -59,7 +59,7 @@ const PearPolicyModal = ({
                   <li>
                     To the{' '}
                     <Link href={DATA_PROCESSING_ADDENDUM_URL} target="_blank">
-                      Edulastic Data Processing Addendum
+                      {pearAssessmentText} Data Processing Addendum
                     </Link>
                   </li>
                 </EduIf>

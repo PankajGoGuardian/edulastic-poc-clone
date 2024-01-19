@@ -14,6 +14,7 @@ export const FEED_TYPES_WITH_TEST_DATE_INPUT = [
   testTypes.ACCESS,
   testTypes.NHSAS,
   testTypes.KSA,
+  testTypes.DRC_WIDA_ELL,
 ]
 export const AdministrationLevelOptions = [
   {

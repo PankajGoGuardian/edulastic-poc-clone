@@ -21,6 +21,7 @@ const MCAS = 'MCAS'
 const DRC_BEACON_ELA = 'DRC_BEACON_ELA'
 const ACCESS = 'ACCESS'
 const NHSAS = 'NHSAS'
+const KSA = 'KSA'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -127,4 +128,5 @@ module.exports = {
   NHSAS,
   ACCESS,
   ATTENDANCE,
+  KSA,
 }

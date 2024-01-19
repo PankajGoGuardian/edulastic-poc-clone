@@ -45,6 +45,7 @@ import {
   hasSectionsSelector,
   isDefaultTestSelector,
   getItemGroupsSelector,
+  getAllTagsAction,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -75,6 +76,7 @@ import { groupTestItemsByPassageId } from '../helper'
 import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 import { STATUS } from '../../../../../AssessmentCreate/components/CreateAITest/ducks/constants'
+import AddMoreQuestionsPannel from '../AddMoreQuestionsPannel/AddMoreQuestionsPannel'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -82,6 +84,8 @@ class Review extends PureComponent {
   containerRef = React.createRef()
 
   listWrapperRef = React.createRef()
+
+  mutationObserver = React.createRef()
 
   constructor(props) {
     super(props)
@@ -101,6 +105,10 @@ class Review extends PureComponent {
     if (this.containerRef.current) {
       this.containerRef.current.removeEventListener('scroll', this.handleScroll)
     }
+
+    if (this.mutationObserver.current) {
+      this.mutationObserver.current.disconnect()
+    }
   }
 
   componentDidMount() {
@@ -115,6 +123,49 @@ class Review extends PureComponent {
       const { setIsTestPreviewVisible } = this.props
       setIsTestPreviewVisible(true)
     }
+    const { getAllTags, isPlaylistTestReview = false } = this.props
+    getAllTags({
+      type: isPlaylistTestReview ? 'playlist' : ['test', 'assignment'],
+    })
+
+    const { test, history } = this.props
+
+    const locationState = history.location.state
+
+    const scrollToBottomCallback = (mutationList) => {
+      if (
+        !(
+          locationState &&
+          locationState.scrollToBottom &&
+          test?.itemGroups?.[0]?.items.length
+        )
+      )
+        return
+      if (this.containerRef.current === undefined) return
+      for (const mutation of mutationList) {
+        if (mutation.type !== 'childList') continue
+
+        const found =
+          mutation.target.id === 'pageBottom' ||
+          mutation.target.querySelector('#pageBottom')
+        if (!found) continue
+
+        this.containerRef.current.scrollTo({
+          top: this.containerRef.current.scrollHeight,
+          left: 0,
+          behavior: 'smooth',
+        })
+        const updatedState = {
+          ...history.location.state,
+          scrollToBottom: false,
+        }
+        history.replace({ ...history.location, state: updatedState })
+      }
+    }
+
+    this.mutationObserver.current = new MutationObserver(scrollToBottomCallback)
+    const config = { attributes: true, childList: true, subtree: true }
+    this.mutationObserver.current.observe(document.body, config)
   }
 
   setSelected = (values) => {
@@ -566,6 +617,7 @@ class Review extends PureComponent {
       aiTestStatus,
       setData,
       handleNavChange,
+      handleNavChangeToAddItems,
       handleSave,
       setSectionsState,
       setCurrentGroupDetails,
@@ -573,6 +625,9 @@ class Review extends PureComponent {
       isDefaultTest,
       setSectionsTestSetGroupIndex,
       setShowSectionsTestSelectGroupIndexModal,
+      onSaveTestId,
+      updated,
+      showSelectGroupIndexModal,
     } = this.props
     const {
       isCollapse,
@@ -723,6 +778,14 @@ class Review extends PureComponent {
                 userId={userId}
                 hasSections={hasSections}
               />
+              <AddMoreQuestionsPannel
+                onSaveTestId={onSaveTestId}
+                test={test}
+                handleSave={handleSave}
+                updated={updated}
+                showSelectGroupIndexModal={showSelectGroupIndexModal}
+                handleNavChangeToAddItems={handleNavChangeToAddItems}
+              />
             </Paper>
           </ReviewLeftContainer>
           {isShowSummary && (
@@ -850,6 +913,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      getAllTags: getAllTagsAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,

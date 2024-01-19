@@ -14,15 +14,26 @@ import AiTestBanner from './CreateAiTestBanner'
 import { CreateAiTestModal } from './CreateAiTestModal'
 import { aiTestActions } from './ducks'
 import { useSaveForm } from './hooks/useSaveForm'
-import { AiEduButton, StyledDiv } from './styled'
+import { AiEduButton, FullHeightAiEduButton } from './styled'
 import {
   clearCreatedItemsAction,
   setDefaultTestDataAction,
 } from '../../../TestPage/ducks'
-import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
-import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
-import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
+import {
+  isGcpsDistrictSelector,
+  isVideoQuizAndAIEnabledSelector,
+} from '../../../src/selectors/user'
 import AddOnTag from '../common/AddOnTag'
+import { CREATE_AI_TEST_DISPLAY_SCREENS } from './constants'
+import CreateAiTestBannerSmall from './CreateAiTestBannerSmall'
+
+const {
+  NEW_TEST_SCREEN,
+  ADD_ITEMS_SCREEN,
+  CREATE_TEST_SCREEN,
+  CREATE_ITEMS_SCREEN,
+  SEARCH_NO_DATA_SCREEN,
+} = CREATE_AI_TEST_DISPLAY_SCREENS
 
 const EduAIQuiz = ({
   test,
@@ -37,6 +48,8 @@ const EduAIQuiz = ({
   isVideoQuizAndAIEnabled,
   currentGroupIndexValueFromStore,
   showSelectGroupIndexModal,
+  isGcpsDistrict,
+  displayScreen = NEW_TEST_SCREEN,
 }) => {
   const {
     selectSectionVisible,
@@ -63,6 +76,7 @@ const EduAIQuiz = ({
     isVideoQuizAndAIEnabled,
     currentGroupIndexValueFromStore,
     showSelectGroupIndexModal,
+    savePreselected: displayScreen === CREATE_ITEMS_SCREEN,
   })
 
   const { open = '' } = qs.parse(window.location.search, {
@@ -87,48 +101,79 @@ const EduAIQuiz = ({
     </AiEduButton>
   )
 
-  const isDateLessThanSep30 = checkIsDateLessThanSep30()
+  const EduAiAddItems = (
+    <EduIf condition={isVideoQuizAndAIEnabled}>
+      <EduThen>
+        <Tooltip
+          title={
+            <>
+              <p>{i18.t('author:rubric.infoText')}</p>
+            </>
+          }
+        >
+          {EduAiAddItemsButton}
+        </Tooltip>
+      </EduThen>
+      <EduElse>
+        <AddOnTag
+          component={EduAiAddItemsButton}
+          message={i18.t('author:aiSuite.addOnText')}
+        />
+      </EduElse>
+    </EduIf>
+  )
+
+  const EduCreateAddonTag = (
+    <EduIf condition={!isVideoQuizAndAIEnabled}>
+      <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
+    </EduIf>
+  )
+
+  const EduCreateItemsWithAiButton = (
+    <FullHeightAiEduButton
+      aiStyle
+      margin
+      onClick={onCreateItems}
+      data-cy="createItemsWithAi"
+    >
+      <IconMagicWand fill={`${white}`} />
+      Create Items with AI
+      {EduCreateAddonTag}
+    </FullHeightAiEduButton>
+  )
+
+  const EduAiCreateTestButton = (
+    <FullHeightAiEduButton
+      aiStyle
+      onClick={onCreateItems}
+      data-cy="createTestWithAi"
+    >
+      <IconMagicWand fill={`${white}`} />
+      Create Test with AI
+      {EduCreateAddonTag}
+    </FullHeightAiEduButton>
+  )
+
+  const getComponentToDisplay = (screen) => {
+    switch (screen) {
+      case ADD_ITEMS_SCREEN:
+        return EduAiAddItems
+      case NEW_TEST_SCREEN:
+        return <AiTestBanner onCreateItems={onCreateItems} />
+      case CREATE_TEST_SCREEN:
+        return EduAiCreateTestButton
+      case CREATE_ITEMS_SCREEN:
+        return EduCreateItemsWithAiButton
+      case SEARCH_NO_DATA_SCREEN:
+        return <CreateAiTestBannerSmall onCreateItems={onCreateItems} />
+      default:
+        return <></>
+    }
+  }
+
   return (
-    <>
-      <EduIf condition={addItems}>
-        <EduThen>
-          <EduIf condition={isVideoQuizAndAIEnabled}>
-            <EduThen>
-              <Tooltip
-                title={
-                  <>
-                    <p>{i18.t('author:rubric.infoText')}</p>
-                    <EduIf condition={isDateLessThanSep30}>
-                      <br />
-                      <p>Note: This is free to use until September 30</p>
-                    </EduIf>
-                  </>
-                }
-              >
-                {EduAiAddItemsButton}
-              </Tooltip>
-            </EduThen>
-            <EduElse>
-              <AddOnTag
-                component={EduAiAddItemsButton}
-                message={i18.t('author:aiSuite.addOnText')}
-              />
-            </EduElse>
-          </EduIf>
-        </EduThen>
-        <EduElse>
-          <AiTestBanner onCreateItems={onCreateItems} />
-          {isDateLessThanSep30 && (
-            <StyledDiv>
-              <FreeVideoQuizAnnouncement
-                title="AI Generated Quiz is free to use until September 30"
-                history={history}
-                style={{ marginTop: '10px', justifyContent: 'flex-start' }}
-              />
-            </StyledDiv>
-          )}
-        </EduElse>
-      </EduIf>
+    <EduIf condition={!isGcpsDistrict}>
+      {getComponentToDisplay(displayScreen)}
       <EduIf condition={addItems}>
         <SelectGroupModal
           visible={selectSectionVisible}
@@ -147,7 +192,7 @@ const EduAIQuiz = ({
         updateAlignment={updateAlignment}
         addItems={addItems}
       />
-    </>
+    </EduIf>
   )
 }
 const enhance = compose(
@@ -157,6 +202,7 @@ const enhance = compose(
       aiTestStatus: state?.aiTestDetails?.status,
       standardsList: getStandardsListSelector(state),
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       getAiGeneratedTestItems: aiTestActions.getAiGeneratedTestItems,

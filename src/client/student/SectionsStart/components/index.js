@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
@@ -32,6 +32,12 @@ import SectionsTestRequirePassword from './SectionsTestRequirePassword'
 import { MainContainer, ContentArea } from '../styled-components'
 import SectionsInfo from './SectionsInfo'
 import TestSectionsContainer from './TestSectionsContainer'
+
+const {
+  SKIPPED,
+  SKIPPED_AND_WRONG,
+  SKIPPED_PARTIAL_AND_WRONG,
+} = testConstants.redirectPolicy.QuestionDelivery
 
 const getLastVisitedItemId = (activityData, sectionIndex, resume) => {
   const { questionActivities, itemsToBeExcluded, testActivity } = activityData
@@ -84,12 +90,24 @@ const SummaryContainer = (props) => {
     restrictNavigationOutAttemptsThreshold,
     blockSaveAndContinue,
     passwordPolicy,
+    questionsDelivery,
   } = assignmentSettings
   const { testActivity } = activityData
 
   useEffect(() => {
     fetchSectionsData({ utaId, groupId })
   }, [])
+
+  const totalItemsCountWithQuestionDelivery = useMemo(() => {
+    const totalCount = (itemsToDeliverInGroup || []).reduce(
+      (acc, itemGroup) => {
+        acc += itemGroup?.items?.length || 0
+        return acc
+      },
+      0
+    )
+    return totalCount
+  }, [itemsToDeliverInGroup])
 
   const currentlyFullScreen = useFullScreenListener({
     enabled: restrictNavigationOut,
@@ -139,6 +157,12 @@ const SummaryContainer = (props) => {
     history.push('/home/assignments')
   }
 
+  const isRedirectedWithQuestionDelivery = [
+    SKIPPED,
+    SKIPPED_AND_WRONG,
+    SKIPPED_PARTIAL_AND_WRONG,
+  ].includes(questionsDelivery)
+
   if (
     !isEmpty(assignmentSettings) &&
     passwordPolicy !==
@@ -185,12 +209,22 @@ const SummaryContainer = (props) => {
               <SectionsInfo
                 title={activityData?.test?.title}
                 thumbnail={activityData?.test?.thumbnail}
+                isRedirectedWithQuestionDelivery={
+                  isRedirectedWithQuestionDelivery
+                }
+                totalItemsCountWithQuestionDelivery={
+                  totalItemsCountWithQuestionDelivery
+                }
               />
               <TestSectionsContainer
                 itemsToDeliverInGroup={itemsToDeliverInGroup}
                 preventSectionNavigation={preventSectionNavigation}
+                questionsDelivery={questionsDelivery}
                 handleStartSection={handleStartSection}
                 handleReviewSection={handleReviewSection}
+                isRedirectedWithQuestionDelivery={
+                  isRedirectedWithQuestionDelivery
+                }
               />
             </EduElse>
           </EduIf>

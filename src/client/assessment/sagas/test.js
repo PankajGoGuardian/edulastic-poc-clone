@@ -102,6 +102,7 @@ import {
   resetStudentAttemptAction,
   setSubmitTestCompleteAction,
 } from '../actions/test'
+import { slice as sectionsTestSlice } from '../../student/SectionsStart/ducks'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
   getCurrentUserId,
@@ -1336,6 +1337,9 @@ function* submitTest({ payload }) {
     })
     yield put(setSelectedThemeAction('default'))
     yield put(setSubmitTestCompleteAction(true))
+    yield put(
+      sectionsTestSlice.actions.setIsSectionsTestPasswordValidated(false)
+    )
     if (!payload.preventRouteChange) {
       yield put(resetStudentAttemptAction())
     }

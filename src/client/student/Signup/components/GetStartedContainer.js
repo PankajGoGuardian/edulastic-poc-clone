@@ -23,7 +23,6 @@ import { Link, Redirect } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { IconMail, IconUser } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -59,6 +58,7 @@ import {
 } from '../../Login/ducks'
 import ClassCodeContainer from './ClassCodeContainer'
 import { getExternalAuthToken } from '../../../../loginUtils'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const GetStarted = ({
   t,
@@ -138,7 +138,7 @@ const GetStarted = ({
   }
 
   const pearOrEdulasticText = isPearDomain
-    ? t('component.signup.getstarted.pearAssess')
+    ? t('component.signup.getstarted.pearAssessment')
     : t('component.signup.getstarted.edulasticAssessment')
 
   return (
@@ -159,7 +159,11 @@ const GetStarted = ({
           <Col span={12}>
             <EduIf condition={isPearDomain}>
               <EduThen>
-                <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+                <IconPearAssessmentFormerlyEdulastic
+                  width="148px"
+                  height="43px"
+                  style={{ marginLeft: '15px' }}
+                />
               </EduThen>
               <EduElse>
                 <OnDarkBgLogo height="30px" />

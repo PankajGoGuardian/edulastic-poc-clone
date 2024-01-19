@@ -17,6 +17,7 @@ export const useSaveForm = ({
   isVideoQuizAndAIEnabled,
   currentGroupIndexValueFromStore,
   showSelectGroupIndexModal,
+  savePreselected,
 }) => {
   const initialAiFormData = {
     itemTypes: '',
@@ -171,6 +172,7 @@ export const useSaveForm = ({
 
     getAiGeneratedTestItems({
       ..._aiFormContent,
+      savePreselected,
       testName: testName.trim(),
       preference: preference.trim(),
       groupIndex: _selectedGroupIndex,

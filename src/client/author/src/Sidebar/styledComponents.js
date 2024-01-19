@@ -116,6 +116,7 @@ export const LogoWrapper = styled(Row)`
   align-items: center;
   justify-content: flex-start;
   padding: 0px 25px;
+  margin-bottom: 8px;
 
   @media (max-width: ${extraDesktopWidthMax}) {
     height: ${({ theme }) => theme.HeaderHeight.md}px;

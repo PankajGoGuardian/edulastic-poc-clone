@@ -250,3 +250,9 @@ export const FiltersWrapper = styled.div`
     margin-bottom: 5px;
   }
 `
+
+export const NoDataMessageContainer = styled.div`
+  max-width: 210px;
+  text-align: center;
+  font-size: 20px;
+`

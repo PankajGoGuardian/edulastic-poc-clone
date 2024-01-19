@@ -62,6 +62,7 @@ import {
   TimedTestIndicator,
   TypeWrapper,
   IndicatorText,
+  SpacedParagraph,
 } from './styled'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
@@ -83,6 +84,7 @@ import {
   shortTestIdKeyLength,
 } from '../../constants'
 import PremiumPopover from '../../../../features/components/PremiumPopover'
+import NewAssignmentButton from './NewAssignmentButton'
 
 const convertTableData = (
   data,
@@ -765,9 +767,10 @@ const TableList = ({
   const NoDataMessage = (
     <>
       <p>There are no assignments found for the filter options selected.</p>
-      <p>
+      <SpacedParagraph>
         Something Wrong? Check the filters including the school year selected.
-      </p>
+      </SpacedParagraph>
+      <NewAssignmentButton buttonDataCy="noResultsNewAssignment" />
     </>
   )
 

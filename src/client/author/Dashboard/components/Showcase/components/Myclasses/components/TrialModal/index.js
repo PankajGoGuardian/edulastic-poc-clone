@@ -12,6 +12,7 @@ import {
   StyledCheckbox,
   TrialContainer,
 } from './styled'
+import { isPearOrEdulasticText } from '../../../../../../../../common/utils/helpers'
 
 const TrialModal = ({
   addOnProductIds = [],
@@ -163,7 +164,7 @@ const TrialModal = ({
         {hasPremiumTrialIncluded ? (
           <p
             dangerouslySetInnerHTML={{
-              __html: ` Experience the additional features of Edulastic Teacher Premium for 
+              __html: ` Experience the additional features of ${isPearOrEdulasticText} Teacher Premium for 
           ${displayText}: OMR exams, read-aloud for students, extra test
           security settings, easier collaboration, in-depth reports and more.`,
             }}

@@ -487,7 +487,11 @@ const Header = ({
           </>
         )}
         <EduIf condition={showAddCoTeacher}>
-          <EduButton isBlue onClick={handleActionMenuClick}>
+          <EduButton
+            data-cy="addCoTeacher"
+            isBlue
+            onClick={handleActionMenuClick}
+          >
             <IconPlusCircle />
             Add Co-Teacher
           </EduButton>

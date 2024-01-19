@@ -35,6 +35,7 @@ import {
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS,
 } from '../src/constants/actions'
 import { getSelectedTestsSelector } from '../TestList/ducks'
+import { DEFAULT_TEST_TITLE } from '../TestPage/utils'
 
 const mapItemsByCollectionCount = (items, itemBanks) => {
   const itemBanksById = keyBy(itemBanks, '_id')
@@ -300,7 +301,7 @@ export function* createTestFromCart({ payload: { testName } }) {
   }
   const updatedTest = {
     ...test,
-    title: testName,
+    title: testName || DEFAULT_TEST_TITLE,
     grades: uniq([...grades, ...questionGrades]),
     subjects: uniq([...subjects, ...questionSubjects]),
   }

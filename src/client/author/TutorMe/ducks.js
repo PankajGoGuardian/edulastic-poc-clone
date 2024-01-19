@@ -2,7 +2,7 @@ import { takeLatest, all, call, select, put } from 'redux-saga/effects'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { reportsApi } from '@edulastic/api'
+import { reportsApi, tutorMeApi } from '@edulastic/api'
 import { getUser, getUserOrgId } from '../src/selectors/user'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
@@ -12,6 +12,7 @@ const reduxNamespaceKey = 'tutorMe'
 const initialState = {
   isTutorMeServiceInitialized: false,
   isSessionRequestActive: false,
+  isTutorMeModalOpen: false,
 }
 
 const slice = createSlice({
@@ -26,6 +27,9 @@ const slice = createSlice({
     },
     setIsTutorMeServiceInitialized: (state, payload) => {
       state.isTutorMeServiceInitialized = payload
+    },
+    setIsTutorMeModalOpen: (state, payload) => {
+      state.isTutorMeModalOpen = payload
     },
   },
 })
@@ -51,6 +55,18 @@ export const isSessionRequestActiveSelector = createSelector(
   (state) => state.isSessionRequestActive
 )
 
+const isTutorMeModalOpenSelector = createSelector(
+  stateSelector,
+  (state) => state.isTutorMeModalOpen
+)
+
+export const isTutorMeModalLoadingSelector = createSelector(
+  isSessionRequestActiveSelector,
+  isTutorMeModalOpenSelector,
+  (isSessionRequestActive, isTutorMeModalOpen) =>
+    isSessionRequestActive && !isTutorMeModalOpen
+)
+
 function* createTutorMeInterventionSaga(payload) {
   try {
     const intervention = yield call(reportsApi.createIntervention, payload)
@@ -58,7 +74,7 @@ function* createTutorMeInterventionSaga(payload) {
       yield put(
         setInterventionDataInUtaAction({
           testActivityId: payload.testActivityId,
-          intervention: [{ _id: intervention._id, type: intervention.type }],
+          intervention: { _id: intervention._id, type: intervention.type },
         })
       )
     }
@@ -91,19 +107,35 @@ function* initializeTutorMeServiceSaga() {
 
 function* tutorMeRequestSesssionSaga({ payload }) {
   try {
-    yield* initializeTutorMeServiceSaga()
+    const [, tutorMeStandards] = yield all([
+      initializeTutorMeServiceSaga(),
+      call(tutorMeApi.getTutorMeStandards, {
+        standardIds: payload.standardsMasteryData
+          .map(({ standardId }) => standardId)
+          .filter(Boolean)
+          .join(','),
+      }),
+    ])
     const isTutorMeServiceInitialized = yield select(
       isTutorMeServiceInitializedSelector
     )
     if (!isTutorMeServiceInitialized) {
       return
     }
+    yield put(actions.setIsTutorMeModalOpen(true))
     const tutorMeInterventionResponse = yield call(
       invokeTutorMeSDKtoAssignTutor,
-      payload
+      {
+        ...payload,
+        tutorMeStandards,
+      }
     )
-    yield* createTutorMeInterventionSaga(tutorMeInterventionResponse)
+    yield put(actions.setIsTutorMeModalOpen(false))
+    if (tutorMeInterventionResponse) {
+      yield* createTutorMeInterventionSaga(tutorMeInterventionResponse)
+    }
   } finally {
+    yield put(actions.setIsTutorMeModalOpen(false))
     yield put(actions.tutorMeRequestSessionComplete())
   }
 }

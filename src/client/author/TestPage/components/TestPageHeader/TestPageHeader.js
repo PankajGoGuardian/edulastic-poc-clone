@@ -59,6 +59,7 @@ import {
   getIsAudioResponseQuestionEnabled,
   isDynamicTestSelector,
   hasSectionsSelector,
+  setTestDataAction,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -84,6 +85,7 @@ import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/de
 import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 import { deletePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
 import { hasUnsavedAiItems } from '../../../../assessment/utils/helpers'
+import { DEFAULT_PLAYLIST_TITLE, DEFAULT_TEST_TITLE } from '../../utils'
 
 /**
  *
@@ -290,6 +292,8 @@ const TestPageHeader = ({
   derivedFromPremiumBankId = false,
   isDynamicTest,
   hasSections,
+  setData,
+  isEditable = false,
 }) => {
   let navButtons =
     buttons ||
@@ -585,8 +589,12 @@ const TestPageHeader = ({
       {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader
           headingText={
-            title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
+            isEditable
+              ? title
+              : title ||
+                (isPlaylist ? DEFAULT_PLAYLIST_TITLE : DEFAULT_TEST_TITLE)
           }
+          onTitleChange={(value) => setData({ ...test, title: value })}
           Icon={IconTestBank}
           headingSubContent={headingSubContent}
           titleMarginTop="10px"
@@ -597,6 +605,7 @@ const TestPageHeader = ({
           containerClassName="tabAlignment"
           hasTestId={hasTestId}
           hasSections={hasSections}
+          isEditable={isEditable}
         >
           <TestPageNav
             onChange={onChangeNav}
@@ -1068,6 +1077,7 @@ const enhance = compose(
     }),
     {
       publishForRegrade: publishForRegradeAction,
+      setData: setTestDataAction,
       fetchAssignments: fetchAssignmentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,

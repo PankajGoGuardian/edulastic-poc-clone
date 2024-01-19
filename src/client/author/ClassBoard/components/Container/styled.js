@@ -205,6 +205,8 @@ export const AssignTutoring = styled(StyledTabButton)`
   background-color: #19b394;
   color: #fff;
   border-radius: 2px;
+  pointer-events: ${(p) => (p.active ? 'auto' : 'none')};
+  opacity: ${(p) => (p.active ? 1 : 0.3)};
 `
 
 export const DropMenu = styled(Menu)`

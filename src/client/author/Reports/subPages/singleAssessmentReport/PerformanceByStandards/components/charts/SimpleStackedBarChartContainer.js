@@ -77,6 +77,17 @@ const SimpleStackedBarChartContainer = ({
     return currentBarData.name || ''
   }
 
+  const getXTickTooltipText = (payload, chartData) => {
+    const { name = '', domainDesc = '', standardDesc = '' } =
+      find(chartData, (item) => item[xDataKey] === payload.value) || {}
+    const desc = viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc
+    return (
+      <div>
+        <b>{name}:</b> {desc}
+      </div>
+    )
+  }
+
   const _onBarClickCB = (key) => {
     const clickedBarData = find(data, (item) => item[xDataKey] === key) || {}
     onBarClick(clickedBarData)
@@ -84,7 +95,7 @@ const SimpleStackedBarChartContainer = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { name = '' } = payload[0].payload
+      const { name = '', domainDesc, standardDesc } = payload[0].payload
 
       let lastItem = null
 
@@ -115,6 +126,11 @@ const SimpleStackedBarChartContainer = ({
             value={name}
           />
           <BarTooltipRow
+            title="Description: "
+            value={viewBy === viewByMode.STANDARDS ? standardDesc : domainDesc}
+            contentAlign="left"
+          />
+          <BarTooltipRow
             title="Total Points : "
             value={get(payload[0], 'payload.totalMaxScore', '')}
           />
@@ -137,6 +153,8 @@ const SimpleStackedBarChartContainer = ({
       topStackDataKey="diffScore"
       yAxisLabel={getYLabelString(analyzeBy)}
       getXTickText={getXTickText}
+      getXTickTooltipText={getXTickTooltipText}
+      xTickTooltipStyles={{ textAlign: 'left' }}
       getTooltipJSX={getTooltipJSX}
       yTickFormatter={yTickformatLabel}
       barsLabelFormatter={barsLabelFormatter}

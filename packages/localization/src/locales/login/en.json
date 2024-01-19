@@ -1,7 +1,7 @@
 {
   "common": {
     "edulastictext": "Edulastic ",
-    "pearAssessText": "Pear Assess ",
+    "pearAssessmentText": "Pear Assessment ",
     "donthaveanaccount": "Don't have an account yet? ",
     "signupbtn": "SIGN UP",
     "loginboxheading": "Login",
@@ -31,7 +31,7 @@
   "component": {
     "signup": {
       "infotext": "Edulastic doesn't share your information with third parties. Your data will be completely private and secure.",
-      "pearAssessInfotext": "Pear Assess doesn't share your information with third parties. Your data will be completely private and secure.",
+      "pearAssessmentInfotext": "Pear Assessment doesn't share your information with third parties. Your data will be completely private and secure.",
       "iamstudent": "No, I'm a Student.",
       "iamteacher": "No, I'm a Teacher.",
       "signupasstudent": "SIGN ME UP AS A STUDENT",
@@ -64,6 +64,7 @@
         "newschool": "a new School",
         "filldetails": "Please fill the details to add a new school.",
         "edulasticsupport": "Edulastic Support will create the school after verifying the data.",
+        "pearsupport": "Pear Assessment Support will create the school after verifying the data.",
         "infotext": "provide details of your school",
         "choosesubject": "Choose your",
         "choosegrade": "subject and grade",
@@ -90,7 +91,7 @@
       "getstarted": {
         "getstartedtext": "Get started with free account!",
         "subtext": "Join the growing community of teachers who are using",
-        "pearAssess": "Pear Assess",
+        "pearAssessment": "Pear Assessment",
         "edulasticAssessment": "Edulastic assessment",
         "subtext2": "to promote learning.",
         "createaccount": "Create your Free Account",

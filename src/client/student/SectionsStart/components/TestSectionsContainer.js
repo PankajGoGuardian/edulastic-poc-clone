@@ -18,12 +18,21 @@ const TestSectionsContainer = ({
   handleReviewSection,
   handleStartSection,
   isTestPreviewModal,
+  isRedirectedWithQuestionDelivery,
 }) => {
+  /**
+   * ref: EV-41340
+   * In case of redirected test with question delivery setting, some sections items can be empty.
+   * Such sections cannot be the nextSection.
+   */
   // Find first non submitted section
   const nextSection =
-    itemsToDeliverInGroup.find(
-      (item) => item.status !== SECTION_STATUS.SUBMITTED
+    itemsToDeliverInGroup.find((item) =>
+      isRedirectedWithQuestionDelivery
+        ? item.status !== SECTION_STATUS.SUBMITTED && !!item?.items?.length
+        : item.status !== SECTION_STATUS.SUBMITTED
     ) || {}
+
   return (
     <TestSections>
       {itemsToDeliverInGroup.map((section, index) => {

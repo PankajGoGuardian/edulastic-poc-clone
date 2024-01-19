@@ -1794,10 +1794,10 @@
   resolved "https://registry.yarnpkg.com/@gilbarbara/deep-equal/-/deep-equal-0.1.1.tgz#91c8f291da6bf7e21cdbfb585fb072d59963acf3"
   integrity sha512-SjSBspHXlclODLtSoPIQwBhfeBjncC05NlNoFELJ6xZQkyYDJsVCcs7+f+etHR2cYPbHLjnh1C06lQlCbMEWEA==
 
-"@goguardian/tutorme-sdk@^2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@goguardian/tutorme-sdk/-/tutorme-sdk-2.0.2.tgz#b8171bf8969bb58290d38398c1ad468f7627334d"
-  integrity sha512-PA5VQWa4zD6L+/PAZITaye4APsErTGxGGyIlUO+1xIxvHeA+PGUrICGQMn2ZJW9NbkbqN0qqeK5IpzKKGEFNCQ==
+"@goguardian/tutorme-sdk@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@goguardian/tutorme-sdk/-/tutorme-sdk-2.0.4.tgz#97749594be93747298aa3cbd0c2b4f8384a96b03"
+  integrity sha512-6z9gFuqqLWhNpQ7xBId7qA5Esp4PVuz4Q4+C6Tu6oFdE1/I+uagnTB0ui2kVKaPyi/Or+qVG/RwI/m9f/7MlIQ==
   dependencies:
     "@headlessui/react" "^1.7.15"
     "@hookform/resolvers" "^3.1.1"

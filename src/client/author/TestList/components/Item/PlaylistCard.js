@@ -4,6 +4,7 @@ import { first } from 'lodash'
 import { IconUser, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, darkGrey } from '@edulastic/colors'
 import { PremiumLabel, EduButton } from '@edulastic/common'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 
 import {
   Container,
@@ -203,7 +204,7 @@ const PlaylistCard = ({
           </ButtonWrapper>
 
           <Stars isPlaylist />
-          {collections.find((o) => o.name === 'Edulastic Certified') &&
+          {collections.find((o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME) &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {showPremiumTag && <PremiumLabel>PREMIUM</PremiumLabel>}
         </Header>
@@ -237,7 +238,9 @@ const PlaylistCard = ({
         {authorName && (
           <Author isPlaylist>
             <AuthorWrapper>
-              {collections.find((o) => o.name === 'Edulastic Certified') ? (
+              {collections.find(
+                (o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME
+              ) ? (
                 getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
               ) : (
                 <IconUser color={cardTitleColor} />

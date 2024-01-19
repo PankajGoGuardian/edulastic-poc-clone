@@ -105,9 +105,9 @@ const PlayerHeader = ({
   openReferenceModal,
   t: i18Translate,
   firstItemInSectionAndRestrictNav,
-  isLast,
   immersiveReaderTitle = '',
   canUseImmersiveReader = false,
+  showSubmitText,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -234,13 +234,13 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title={`${isLast ? 'Submit' : 'Next'}`}
+                    title={`${showSubmitText ? 'Submit' : 'Next'}`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      aria-label={isLast ? 'SUBMIT' : 'NEXT'}
-                      icon={isLast ? null : 'right'}
+                      aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
+                      icon={showSubmitText ? null : 'right'}
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -264,14 +264,14 @@ const PlayerHeader = ({
                         display: 'flex',
                       }}
                     >
-                      {isLast && (
+                      {showSubmitText && (
                         <IconSend
                           style={{
                             marginRight: '10px',
                           }}
                         />
                       )}
-                      {isLast ? 'SUBMIT' : 'NEXT'}
+                      {showSubmitText ? 'SUBMIT' : 'NEXT'}
                     </ControlBtn>
                   </Tooltip>
                 </MainActionWrapper>

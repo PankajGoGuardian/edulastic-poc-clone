@@ -184,7 +184,7 @@ module.exports = {
     { text: 'Private Library', value: 'INDIVIDUAL' },
     { text: 'School Library', value: 'SCHOOL' },
     { text: 'District Library', value: 'DISTRICT' },
-    // { text: "Edulastic Certified", value: "edulastic_certified" }
+    // { text: "Pear Assessment Certified", value: "edulastic_certified" }
   ],
   collectionPublicFilter: [{ text: 'Public Library', value: 'PUBLIC' }],
   statusConstants: {

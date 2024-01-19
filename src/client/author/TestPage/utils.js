@@ -54,6 +54,9 @@ const getStandardWiseSummary = (question, point) => {
   return standardSummary
 }
 
+export const DEFAULT_TEST_TITLE = 'Untitled Test'
+export const DEFAULT_PLAYLIST_TITLE = 'Untitled Playlist'
+
 export const getSettingsToSaveOnTestType = (isDocBased) => {
   return isDocBased
     ? difference(testSettingsOptions, settingsNotApplicableToDocBased)
@@ -268,6 +271,7 @@ export const checkIsDateLessThanSep30 = () => {
 
   return currentDate.isBefore(targetDate) || currentDate.isSame(targetDate)
 }
+
 export default {
   createGroupSummary,
 }

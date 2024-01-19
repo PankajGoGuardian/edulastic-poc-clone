@@ -40,7 +40,6 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { getTokens } from '@edulastic/api/src/utils/Storage'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -109,6 +108,7 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -895,12 +895,10 @@ class SideMenu extends Component {
                       </PSILauncherStyled>
                     </EduIf>
                     {isPearDomain ? (
-                      <AssessPeardeckLabelOnDarkBgLogo
-                        style={{
-                          marginTop: '4px',
-                          marginLeft: showPearAppTray ? '-5px' : '0px',
-                        }}
-                        height={isMobile ? '16px' : '36px'}
+                      <IconPearAssessmentFormerlyEdulastic
+                        width="148px"
+                        height="45px"
+                        style={{ marginLeft: '10px' }}
                       />
                     ) : (
                       <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />

@@ -130,3 +130,9 @@ export const PaginationContainer = styled.div`
     justify-content: center;
   }
 `
+
+export const NoDataMessageContainer = styled.div`
+  max-width: 220px;
+  text-align: center;
+  font-size: 20px;
+`

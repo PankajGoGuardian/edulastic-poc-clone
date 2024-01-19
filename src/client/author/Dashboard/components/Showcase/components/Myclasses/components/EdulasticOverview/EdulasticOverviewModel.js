@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import EdulasticResourceModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/common/EdulasticResourceModal'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import EmbeddedSplitPaneModal from '../EmbeddedSplitPaneModal'
+import { isPearOrEdulasticText } from '../../../../../../../../common/utils/helpers'
 
 const EdulasticOverviewModel = ({
   handleBannerModalClose,
@@ -77,7 +78,7 @@ const EdulasticOverviewModel = ({
           </StyledButton>
           <StyledDescSpan>
             <StyledSpan onClick={handleDemoClick}>
-              Explore Edulastic Demo playground
+              Explore {isPearOrEdulasticText} Demo playground
             </StyledSpan>
             : Access a demo account and explore all the features, including
             Premium.
@@ -93,7 +94,7 @@ const EdulasticOverviewModel = ({
                 rel="noreferrer"
                 data-cy="edu-tutorials"
               >
-                Edulastic Tutorial
+                {isPearOrEdulasticText} Tutorial
               </a>
             </ExtraResourceSpan>
             <ExtraResourceSpan width="42%">
@@ -133,7 +134,7 @@ const EdulasticOverviewModel = ({
                 rel="noreferrer"
                 data-cy="edu-talk-vid"
               >
-                Edulastic Talk videos
+                {isPearOrEdulasticText} Talk videos
               </a>
             </ExtraResourceSpan>
           </StyledExtraResourceContentDiv>

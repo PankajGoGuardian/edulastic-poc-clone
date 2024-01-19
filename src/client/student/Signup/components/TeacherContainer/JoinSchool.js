@@ -39,7 +39,6 @@ import {
   joinSchoolRequestAction,
   updateUserWithSchoolLoadingSelector,
   checkDistrictPolicyRequestAction,
-  createAndJoinSchoolRequestAction,
   fetchSchoolTeachersRequestAction,
   setPreviousAutoSuggestSchools,
   resetSchoolTeachersAction,
@@ -53,6 +52,7 @@ import {
   getUserOrgId,
 } from '../../../../author/src/selectors/user'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
+import { isPearDomain } from '../../../../../utils/pear'
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school
@@ -89,7 +89,6 @@ const JoinSchool = ({
   newSchool,
   userInfo,
   joinSchool,
-  createAndJoinSchool,
   fetchSchoolTeachers,
   updateUserWithSchoolLoading,
   createSchoolRequestPending,
@@ -405,23 +404,9 @@ const JoinSchool = ({
       requestNewSchool: true,
       homeSchool: true,
     }
-
-    createAndJoinSchool({
-      createSchool: body,
-      joinSchool: {
-        data: {
-          currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
-          email: userInfo.email,
-          firstName: userInfo.firstName,
-          middleName: userInfo.middleName,
-          lastName: userInfo.lastName,
-        },
-        userId: userInfo._id,
-      },
-    })
     setSchoolData(body)
     resetSchoolTeachers()
-    setIsDisabled(true)
+
     setHomeSchool(true)
   }
 
@@ -458,6 +443,9 @@ const JoinSchool = ({
   )
 
   const removeSchool = () => {
+    if (createSchoolRequestPending || updateUserWithSchoolLoading) {
+      return
+    }
     setSchoolData(null)
     if (setSchoolSelectedFromDropdown) {
       setSchoolSelectedFromDropdown(false)
@@ -508,7 +496,11 @@ const JoinSchool = ({
                     </h3>
                     <h5>
                       {t('component.signup.teacher.filldetails')} <br />{' '}
-                      {t('component.signup.teacher.edulasticsupport')}
+                      {t(
+                        `component.signup.teacher.${
+                          isPearDomain ? 'pearsupport' : 'edulasticsupport'
+                        }`
+                      )}
                     </h5>
                   </>
                 ) : (
@@ -539,10 +531,14 @@ const JoinSchool = ({
                             {selected.schoolName || selected.name || ''}
                           </span>
                           {!isDisabled && (
-                            <IconClose
+                            <StyledIconClose
                               data-cy="removeSelected"
                               color={themeColor}
                               onClick={removeSchool}
+                              disabled={
+                                createSchoolRequestPending ||
+                                updateUserWithSchoolLoading
+                              }
                             />
                           )}
                         </SelectedTag>
@@ -577,10 +573,6 @@ const JoinSchool = ({
                       >
                         <AnchorBtn
                           data-cy="reqNewSchoolBtn"
-                          loading={
-                            createSchoolRequestPending ||
-                            updateUserWithSchoolLoading
-                          }
                           onClick={
                             showJoinSchoolBanner ? showRequestForm : toggleModal
                           }
@@ -597,10 +589,6 @@ const JoinSchool = ({
                         title={isDisabled && deselectClassDisabledMsg}
                       >
                         <AnchorBtn
-                          loading={
-                            createSchoolRequestPending ||
-                            updateUserWithSchoolLoading
-                          }
                           onClick={onClickHomeSchool}
                           disabled={isDisabled}
                         >
@@ -647,7 +635,7 @@ JoinSchool.propTypes = {
   userInfo: PropTypes.object.isRequired,
   joinSchool: PropTypes.func.isRequired,
   searchSchoolByDistrict: PropTypes.func.isRequired,
-  createAndJoinSchool: PropTypes.func.isRequired,
+
   checkDistrictPolicy: PropTypes.func.isRequired,
   fetchSchoolTeachers: PropTypes.func.isRequired,
   setPreviousAutoSuggestSchoolsContent: PropTypes.func.isRequired,
@@ -698,7 +686,7 @@ const enhance = compose(
       searchSchool: searchSchoolRequestAction,
       searchSchoolByDistrict: searchSchoolByDistrictRequestAction,
       joinSchool: joinSchoolRequestAction,
-      createAndJoinSchool: createAndJoinSchoolRequestAction,
+
       checkDistrictPolicyAction: checkDistrictPolicyRequestAction,
       fetchSchoolTeachers: fetchSchoolTeachersRequestAction,
       setPreviousAutoSuggestSchoolsContent: setPreviousAutoSuggestSchools,
@@ -978,4 +966,9 @@ const SearchWithCityText = styled.div`
   font-size: 12px;
   line-height: 16px;
   color: #8c8c8c;
+`
+
+const StyledIconClose = styled(IconClose)`
+  pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
+  cursor: ${(props) => (props.disabled ? 'none' : 'pointer')};
 `

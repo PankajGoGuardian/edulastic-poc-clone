@@ -17,7 +17,6 @@ import {
 } from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import {
   RegistrationWrapper,
   FlexWrapper,
@@ -68,6 +67,7 @@ import {
 } from '../../../author/src/constants/others'
 import PasswordPopup from './PasswordPopup'
 import { isPearDomain } from '../../../../utils/pear'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const FormItem = Form.Item
 const GOOGLE = 'google'
@@ -410,7 +410,7 @@ class StudentSignup extends React.Component {
           </InfoIcon>
           <Col span={21}>
             {isPearDomain
-              ? t('component.signup.pearAssessInfotext')
+              ? t('component.signup.pearAssessmentInfotext')
               : t('component.signup.infotext')}
           </Col>
         </InfoBox>
@@ -479,7 +479,7 @@ class StudentSignup extends React.Component {
       method !== OFFICE
 
     const pearOrEdulasticText = isPearDomain
-      ? t('common.pearAssessText')
+      ? t('common.pearAssessmentText')
       : t('common.edulastictext')
     return (
       <div>
@@ -509,7 +509,11 @@ class StudentSignup extends React.Component {
             <Col span={12}>
               <EduIf condition={isPearDomain}>
                 <EduThen>
-                  <AssessPeardeckLabelOnDarkBgLogo height="37px" />
+                  <IconPearAssessmentFormerlyEdulastic
+                    width="148px"
+                    height="42px"
+                    style={{ marginLeft: '15px' }}
+                  />
                 </EduThen>
                 <EduElse>
                   <OnDarkBgLogo height="30px" />

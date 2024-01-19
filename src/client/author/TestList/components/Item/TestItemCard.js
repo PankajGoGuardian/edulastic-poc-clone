@@ -10,6 +10,7 @@ import {
   EduElse,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import {
   Container,
   Inner,
@@ -130,7 +131,7 @@ const TestItemCard = ({
               </>
             )}
           </ButtonWrapper>
-          {collections.find((o) => o.name === 'Edulastic Certified') &&
+          {collections.find((o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME) &&
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {/* hiding premium tag temporarily as per CR */}
           {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
@@ -153,12 +154,13 @@ const TestItemCard = ({
         </StyledLink>
         <TagsWrapper testNameHeight={height} data-cy="test-standards">
           <Tags
-            show={3}
+            show={2}
             tags={standardsIdentifiers}
             key="standards"
             isStandards
             margin="0px"
             isTestCard
+            flexWrap="noWrap"
             testId={testId}
           />
         </TagsWrapper>
@@ -198,7 +200,9 @@ const TestItemCard = ({
           {authorName && (
             <Author>
               <AuthorWrapper>
-                {collections.find((o) => o.name === 'Edulastic Certified') ? (
+                {collections.find(
+                  (o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME
+                ) ? (
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                 ) : (
                   <IconUser color={cardTitleColor} />

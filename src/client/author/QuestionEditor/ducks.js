@@ -1109,9 +1109,11 @@ function* addAuthoredItemsToTestSaga({ payload }) {
       })
       // save the test and navigate to test page.
       const pathname = !isEditFlow
-        ? `/author/tests/tab/addItems/id/${testId}`
+        ? `/author/tests/tab/review/id/${testId}`
         : `/author/tests/${testId}/createItem/${item._id}`
-      yield put(updateTestAndNavigateAction({ pathname, testId }))
+      yield put(
+        updateTestAndNavigateAction({ pathname, testId, scrollToBottom: true })
+      )
     }
   } catch (e) {
     console.log(e, 'error')

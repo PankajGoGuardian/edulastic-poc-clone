@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "39.0.2",
+  "version": "40.3.0",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -167,7 +167,7 @@
     "uuid": "^3.3.2"
   },
   "optionalDependencies": {
-    "@goguardian/tutorme-sdk": "^2.0.2"
+    "@goguardian/tutorme-sdk": "^2.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

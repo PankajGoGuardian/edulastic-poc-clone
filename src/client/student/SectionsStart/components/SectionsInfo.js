@@ -1,28 +1,44 @@
 import React from 'react'
+import { IconComment } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 import {
   SectionTitle,
+  SectionTotalItems,
   TestImage,
   TestInstruction,
   TestTitle,
 } from '../styled-components'
 
-const SectionsInfo = ({ thumbnail = '', title = '' }) => {
+const SectionsInfo = ({
+  thumbnail = '',
+  title = '',
+  isRedirectedWithQuestionDelivery = false,
+  totalItemsCountWithQuestionDelivery,
+}) => {
   return (
     <>
       <TestImage>
         <img src={thumbnail} alt={title} />
       </TestImage>
       <TestTitle>{title}</TestTitle>
-      <TestInstruction>
-        {/* <IconParent>
-          <IconMessage />
-        </IconParent>
-        <div>
-          <span>Teachers Instruction :</span> You are required to submit the
-          test section by section and once a section is submitted, you wouldn’t
-          be able to change it.
-        </div> */}
-      </TestInstruction>
+      <EduIf condition={isRedirectedWithQuestionDelivery}>
+        <TestInstruction>
+          <IconComment />
+          <div style={{ marginLeft: 8 }}>
+            <span>Teachers Instruction :</span> Reattempt few questions again.
+          </div>
+        </TestInstruction>
+      </EduIf>
+      <EduIf
+        condition={
+          isRedirectedWithQuestionDelivery &&
+          typeof totalItemsCountWithQuestionDelivery === 'number'
+        }
+      >
+        <SectionTotalItems>
+          Reattempt {totalItemsCountWithQuestionDelivery} questions
+        </SectionTotalItems>
+      </EduIf>
       <SectionTitle>Your Test Sections</SectionTitle>
     </>
   )

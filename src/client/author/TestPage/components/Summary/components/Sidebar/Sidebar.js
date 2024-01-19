@@ -1,4 +1,3 @@
-import { tagsApi } from '@edulastic/api'
 import {
   EduElse,
   EduIf,
@@ -7,18 +6,17 @@ import {
   FlexContainer,
   SelectInputStyled,
   TextInputStyled,
-  notification,
 } from '@edulastic/common'
 import { red } from '@edulastic/colors'
 import { Select, Spin, Tooltip } from 'antd'
 import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
-import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef, useEffect, useMemo, useState } from 'react'
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 import { isValidVideoUrl } from '../../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+import useTagSelection from '../../../common/useTagSelection'
 
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
@@ -52,11 +50,22 @@ const Sidebar = ({
   videoUrl,
   isTestLoading,
 }) => {
-  const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
   const subjectsList = selectsData.allSubjects
-  const [searchValue, setSearchValue] = useState('')
   const testTitleInput = createRef()
   const [isVideoUrlTouched, setIsVideoUrlTouched] = useState(false)
+  const {
+    searchValue,
+    selectTags,
+    searchTags,
+    deselectTags,
+    newAllTagsData,
+    selectedTags,
+  } = useTagSelection({
+    tags,
+    onChangeField,
+    addNewTag,
+    allTagsData,
+  })
 
   useEffect(() => {
     if (testTitleInput.current) {
@@ -70,49 +79,6 @@ const Sidebar = ({
     [collections, collectionsToShow]
   )
 
-  const selectTags = async (id) => {
-    let newTag = {}
-    if (id === searchValue) {
-      const tempSearchValue = searchValue
-      setSearchValue('')
-      try {
-        const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue,
-          tagType: 'test',
-        })
-        newTag = { _id, tagName }
-        addNewTag({ tag: newTag, tagType: 'test' })
-      } catch (e) {
-        notification({ messageKey: 'savingTagErr' })
-      }
-    } else {
-      newTag = newAllTagsData.find((tag) => tag._id === id)
-    }
-    const newTags = [...tags, newTag]
-    onChangeField('tags', newTags)
-    setSearchValue('')
-  }
-
-  const deselectTags = (id) => {
-    const newTags = tags.filter((tag) => tag._id !== id)
-    onChangeField('tags', newTags)
-  }
-
-  const searchTags = async (value) => {
-    if (
-      newAllTagsData.some(
-        (tag) =>
-          tag.tagName.toLowerCase() === value.toLowerCase() ||
-          tag.tagName.toLowerCase() === value.trim().toLowerCase()
-      )
-    ) {
-      setSearchValue('')
-    } else {
-      setSearchValue(value)
-    }
-  }
-
-  const selectedTags = useMemo(() => tags.map((t) => t._id), [tags])
   const { derivedFromPremiumBankId = false } = test
 
   useEffect(() => {

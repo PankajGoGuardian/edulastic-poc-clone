@@ -35,6 +35,7 @@ import { saveUserWorkAction } from '../../actions/userWork'
 import { changePreviewAction } from '../../../author/src/actions/view'
 
 import { setUserAnswerAction } from '../../actions/answers'
+import { slice as sectionsTestSlice } from '../../../student/SectionsStart/ducks'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import {
@@ -181,8 +182,13 @@ class AssessmentPlayerSimple extends React.Component {
   }
 
   finishTest = () => {
-    const { history, saveCurrentAnswer } = this.props
+    const {
+      history,
+      saveCurrentAnswer,
+      setIsSectionsTestPasswordValidated,
+    } = this.props
     saveCurrentAnswer({ shouldClearUserWork: true, pausing: true })
+    setIsSectionsTestPasswordValidated(false)
     if (history?.location?.state?.playlistAssignmentFlow) {
       history.push(`/home/playlist/${history?.location?.state?.playlistId}`)
     } else if (history?.location?.state?.playlistRecommendationsFlow) {
@@ -294,6 +300,8 @@ class AssessmentPlayerSimple extends React.Component {
       isLast,
       preventSectionNavigation,
       userFeatures = {},
+      hasSections,
+      lastItemInTest,
     } = this.props
     const {
       showExitPopup,
@@ -329,6 +337,8 @@ class AssessmentPlayerSimple extends React.Component {
       item?.collections
         ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
         .map(({ name }) => name)
+
+    const showSubmitText = hasSections ? lastItemInTest : isLast()
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -371,6 +381,7 @@ class AssessmentPlayerSimple extends React.Component {
             calcTypes={calcTypes}
             isLast={isLast()}
             canUseImmersiveReader={canUseImmersiveReader}
+            showSubmitText={showSubmitText}
           >
             <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer
@@ -414,6 +425,7 @@ class AssessmentPlayerSimple extends React.Component {
               firstItemInSectionAndRestrictNav={
                 firstItemInSectionAndRestrictNav
               }
+              showSubmitText={showSubmitText}
             />
             {!previewPlayer && (
               <SubmitConfirmation
@@ -528,6 +540,8 @@ const enhance = compose(
       updateTestPlayer: updateTestPlayerAction,
       showHints: showHintsAction,
       saveHintUsageData: saveHintUsageAction,
+      setIsSectionsTestPasswordValidated:
+        sectionsTestSlice.actions.setIsSectionsTestPasswordValidated,
     }
   )
 )

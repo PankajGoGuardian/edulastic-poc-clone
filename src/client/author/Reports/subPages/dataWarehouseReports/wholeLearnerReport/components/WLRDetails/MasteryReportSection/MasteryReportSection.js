@@ -8,7 +8,7 @@ import { IconInfo } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { EduIf, FlexContainer } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { white } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 
 import MasteryTable from './MasteryTable'
 import { Spacer } from '../../../../../../../../common/styled'
@@ -26,6 +26,7 @@ import {
 import {
   getIsTutorMeVisibleToDistrictSelector,
   isSessionRequestActiveSelector,
+  isTutorMeModalLoadingSelector,
   actions as tutorMeActions,
 } from '../../../../../../../TutorMe/ducks'
 import { useGetStudentMasteryData } from '../../../../../studentProfileReport/common/hooks'
@@ -60,6 +61,7 @@ const MasteryReportSection = ({
   isTutorMeEnabled,
   districtId,
   isTutorMeSessionRequestActive,
+  isTutorMeModalLoading,
   tutorMeRequestSession,
   user,
   t,
@@ -173,9 +175,9 @@ const MasteryReportSection = ({
 
   const disableTutorMeBtn =
     isTutorMeEnabled &&
-    isTutorMeSessionRequestActive &&
     (!selectedStandards.length ||
-      selectedStandards.length > MAX_CHECKED_STANDARDS)
+      selectedStandards.length > MAX_CHECKED_STANDARDS ||
+      isTutorMeSessionRequestActive)
 
   const handleAssignTutoringClick = () =>
     isTutorMeEnabled
@@ -214,10 +216,10 @@ const MasteryReportSection = ({
                 >
                   Assign Tutoring
                   <span>{!isTutorMeEnabled ? ' *' : ''}</span>
-                  <EduIf condition={isTutorMeSessionRequestActive}>
+                  <EduIf condition={isTutorMeModalLoading}>
                     <Icon
                       type="loading"
-                      style={{ fontSize: 10, color: white }}
+                      style={{ fontSize: 10, color: themeColor }}
                       spin
                     />
                   </EduIf>
@@ -301,6 +303,7 @@ const withConnect = connect(
     isTutorMeVisibleToDistrict: getIsTutorMeVisibleToDistrictSelector(state),
     user: getUser(state),
     isTutorMeSessionRequestActive: isSessionRequestActiveSelector(state),
+    isTutorMeModalLoading: isTutorMeModalLoadingSelector(state),
   }),
   {
     ...tutorMeActions,

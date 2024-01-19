@@ -147,10 +147,19 @@ class AddCourseModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton
+              isGhost
+              onClick={this.onCloseModal}
+              data-cy="addCourseCancelButton"
+            >
               {t('common.cancel')}
             </EduButton>
-            <EduButton onClick={this.onAddCourse}>{t('common.add')}</EduButton>
+            <EduButton
+              data-cy="addCourseConfirmButton"
+              onClick={this.onAddCourse}
+            >
+              {t('common.add')}
+            </EduButton>
           </ButtonsContainer>,
         ]}
       >
@@ -166,6 +175,7 @@ class AddCourseModal extends React.Component {
               <TextInputStyled
                 placeholder={t('course.coursename')}
                 onChange={this.handleCourseName}
+                data-cy="courseName"
               />
             </ModalFormItem>
           </Col>
@@ -182,6 +192,7 @@ class AddCourseModal extends React.Component {
               <TextInputStyled
                 placeholder={t('course.coursenumber')}
                 onChange={this.handleCourseNumber}
+                data-cy="courseNumber"
               />
             </ModalFormItem>
           </Col>

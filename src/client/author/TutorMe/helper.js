@@ -1,4 +1,3 @@
-import { tutorMeApi } from '@edulastic/api'
 import { formatName } from '@edulastic/constants/reportUtils/common'
 import { notification } from '@edulastic/common'
 import {
@@ -76,6 +75,7 @@ export const createInterventionObject = ({
  * assignedBy: Record;
  * hasSelectedStandards: boolean;
  * testActivityId?: string;
+ * tutorMeStandards: Record[];
  * }} param0
  * @returns
  */
@@ -89,20 +89,13 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
   assignedBy,
   hasSelectedStandards,
   testActivityId,
+  tutorMeStandards,
 }) => {
   const [assignedById, assignedByEmail, assignedByName] = [
     assignedBy._id,
     assignedBy.email,
     formatName(assignedBy, { lastNameFirst: false }),
   ]
-
-  // call API to get TutorMe standards details
-  const standardIds = standardsMasteryData
-    .map(({ standardId }) => standardId)
-    .filter(Boolean)
-  const tutorMeStandardsDetails = await tutorMeApi.getTutorMeStandards({
-    standardIds: standardIds.join(','),
-  })
 
   const requestPayload = {
     students: [
@@ -114,9 +107,9 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
       },
     ],
     data: {
-      grade: tutorMeStandardsDetails.tutorMeGrade,
-      subject: tutorMeStandardsDetails.tutorMeSubject,
-      category: tutorMeStandardsDetails.tutorMeSubjectArea,
+      grade: tutorMeStandards.tutorMeGrade,
+      subject: tutorMeStandards.tutorMeSubject,
+      category: tutorMeStandards.tutorMeSubjectArea,
       domains: standardsMasteryData.map((s) => ({
         domain: s.domainIdentifier,
         domainDescription: s.domainDesc,
@@ -148,7 +141,7 @@ export const invokeTutorMeSDKtoAssignTutor = async ({
     if (cancelled) {
       notification({
         type: 'warning',
-        msg: 'Tutoring session not created.',
+        msg: 'Tutoring is not assigned.',
       })
       return
     }

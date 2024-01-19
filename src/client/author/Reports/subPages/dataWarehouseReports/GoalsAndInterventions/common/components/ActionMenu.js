@@ -52,6 +52,13 @@ const ActionMenu = ({
         setShowModal(true)
       }
       if (key === GIListActions.EDIT) {
+        // FIXME: this is a quick workaround to fix an issue with `flattenFormData`.
+        // Issue being fixed: After flattening, we refer to any nested property not by its path (`createdBy._id`) but by its name (`_id`).
+        //    Because of this, createdBy.{_id, name} overwrites the intervention._id and intervention.name.
+        // Current fix: remove createdBy from the data before flattening. It causes no issue since `createdBy` is already created in saga before save and isn't used in edit flow.
+        // TODO Better fix: fix the issue with `flattenFormData` or use a ready-made form management solution like antd Form component or form management library. Also remove this workaround.
+        delete GIData.createdBy
+
         onAction({
           ...flattenFormData(GIData),
           formType: type,

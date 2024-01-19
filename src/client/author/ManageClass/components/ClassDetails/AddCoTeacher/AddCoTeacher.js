@@ -119,7 +119,11 @@ class AddCoTeacher extends React.Component {
 
     const footer = (
       <>
-        <EduButton height="32px" onClick={this.onAddCoTeacher}>
+        <EduButton
+          height="32px"
+          onClick={this.onAddCoTeacher}
+          data-cy="addCoTeacherButton"
+        >
           Add
         </EduButton>
         <EduButton height="32px" onClick={handleCancel}>
@@ -154,6 +158,7 @@ class AddCoTeacher extends React.Component {
           ) : null}
         </Description>
         <SelectInputStyled
+          data-cy="searchCoTeacher"
           placeholder="Search teacher by name, email or username."
           showSearch
           defaultActiveFirstOption={false}

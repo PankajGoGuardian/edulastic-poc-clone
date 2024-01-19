@@ -239,10 +239,14 @@ class EditClassModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton
+              data-cy="cancelClassButton"
+              isGhost
+              onClick={this.onCloseModal}
+            >
               {t('common.cancel')}
             </EduButton>
-            <EduButton onClick={this.onSaveClass}>
+            <EduButton data-cy="saveClassButton" onClick={this.onSaveClass}>
               {t('class.components.addclass.saveclass')}
             </EduButton>
           </ButtonsContainer>,
@@ -261,6 +265,7 @@ class EditClassModal extends Component {
                 initialValue: name,
               })(
                 <TextInputStyled
+                  data-cy="selectClassName"
                   placeholder={t('class.components.addclass.classname')}
                   maxLength={128}
                 />
@@ -275,6 +280,7 @@ class EditClassModal extends Component {
                 initialValue: subject,
               })(
                 <SelectInputStyled
+                  data-cy="selectSubject"
                   placeholder={t('class.components.addclass.selectsubject')}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
@@ -295,6 +301,7 @@ class EditClassModal extends Component {
                 initialValue: grades,
               })(
                 <SelectInputStyled
+                  data-cy="selectGrade"
                   placeholder={t('class.components.addclass.selectgrade')}
                   mode="multiple"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -316,6 +323,7 @@ class EditClassModal extends Component {
                 initialValue: course && course.id,
               })(
                 <SelectInputStyled
+                  data-cy="selectCourse"
                   showSearch
                   placeholder={t(
                     'class.components.addclass.placeholder.course'
@@ -392,6 +400,7 @@ class EditClassModal extends Component {
                 initialValue: ownerId,
               })(
                 <SelectInputStyled
+                  data-cy="selectTeacher"
                   placeholder="Search by Username"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
@@ -414,6 +423,7 @@ class EditClassModal extends Component {
                 initialValue: institutionId,
               })(
                 <SelectInputStyled
+                  data-cy="selectSchool"
                   placeholder={t('class.components.addclass.selectschool')}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
@@ -430,6 +440,7 @@ class EditClassModal extends Component {
                 initialValue: moment(endDate),
               })(
                 <DatePickerStyled
+                  data-cy="selectEnddate"
                   disabledDate={disabledDate}
                   style={{ width: '100%' }}
                   format="ll"

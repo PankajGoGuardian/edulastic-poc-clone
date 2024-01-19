@@ -81,6 +81,8 @@ export const SignedStackedBarChart = ({
   onBarClickCB,
   onResetClickCB,
   getXTickText,
+  getXTickTooltipText = null,
+  xTickTooltipStyles = {},
   getTooltipJSX,
   yAxisLabel = '',
   yTickFormatter = (val) => `${val}%`,
@@ -206,7 +208,9 @@ export const SignedStackedBarChart = ({
   const onXAxisTickTooltipMouseOver = (payload) => {
     const { coordinate } = payload
     let content
-    if (getXTickText) {
+    if (getXTickTooltipText) {
+      content = getXTickTooltipText(payload, chartData)
+    } else if (getXTickText) {
       content = getXTickText(payload, chartData)
     } else {
       content = payload.value
@@ -314,6 +318,7 @@ export const SignedStackedBarChart = ({
         visibility={xAxisTickTooltipData.visibility}
         color={xAxisTickTooltipData.color}
         width={xTickToolTipWidth}
+        $textAlign={xTickTooltipStyles.textAlign}
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>

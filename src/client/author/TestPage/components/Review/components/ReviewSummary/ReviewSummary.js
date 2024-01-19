@@ -3,6 +3,7 @@ import {
   FieldLabel,
   FlexContainer,
   SelectInputStyled,
+  TextAreaInputStyled,
 } from '@edulastic/common'
 import { Row, Select, Input, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
@@ -12,6 +13,7 @@ import { test as testConstants } from '@edulastic/constants'
 import { get } from 'lodash'
 import { getInterestedStandards } from '../../../../../dataUtils'
 import Tags from '../../../../../src/components/common/Tags'
+import useTagSelection from '../../../common/useTagSelection'
 import {
   getInterestedCurriculumsSelector,
   getCollectionsToAddContent,
@@ -21,6 +23,8 @@ import {
   getDisableAnswerOnPaperSelector as hasRandomQuestionsSelector,
   getTestEntitySelector,
   getTestSummarySelector,
+  getAllTagsSelector,
+  addNewTagAction,
 } from '../../../../ducks'
 import { Photo, selectsData } from '../../../common'
 import {
@@ -61,7 +65,11 @@ const ReviewSummary = ({
     metadata,
     alignment,
     derivedFromPremiumBankId = false,
+    description,
+    tags,
   },
+  allTagsData,
+  addNewTag,
   testCategory,
   summary,
   hasRandomQuestions,
@@ -74,6 +82,20 @@ const ReviewSummary = ({
   const totalPoints = summary?.totalPoints || 0
   const collectionListToUse =
     !owner && !isEditable ? allCollectionsList : collectionsToShow
+
+  const {
+    searchValue,
+    selectTags,
+    searchTags,
+    deselectTags,
+    newAllTagsData,
+    selectedTags,
+  } = useTagSelection({
+    tags,
+    onChangeField,
+    addNewTag,
+    allTagsData,
+  })
 
   const filteredCollections = useMemo(
     () =>
@@ -118,6 +140,17 @@ const ReviewSummary = ({
         </InnerFlex>
       </FlexBoxOne>
       <FlexBoxTwo>
+        <InnerFlex>
+          <FieldLabel>Description</FieldLabel>
+          <TextAreaInputStyled
+            value={description}
+            onChange={(e) => onChangeField('description', e.target.value)}
+            size="large"
+            placeholder="Enter a description"
+            margin="0px 0px 15px"
+            height="110px"
+          />
+        </InnerFlex>
         <InnerFlex>
           <FieldLabel>Grade</FieldLabel>
           <SelectInputStyled
@@ -197,6 +230,41 @@ const ReviewSummary = ({
               ))}
             </SelectInputStyled>
           </Tooltip>
+        </InnerFlex>
+        <InnerFlex>
+          <FieldLabel>Tags</FieldLabel>
+          <SelectInputStyled
+            showArrow
+            data-cy="tagsSelect"
+            className="tagsSelect"
+            mode="multiple"
+            size="large"
+            margin="0px 0px 15px"
+            optionLabelProp="title"
+            placeholder="Please enter"
+            value={selectedTags}
+            onSearch={searchTags}
+            onSelect={selectTags}
+            onDeselect={deselectTags}
+            filterOption={(input, option) =>
+              option.props.title
+                .toLowerCase()
+                .includes(input.trim().toLowerCase())
+            }
+          >
+            {searchValue?.trim() ? (
+              <Select.Option key={0} value={searchValue} title={searchValue}>
+                {`${searchValue} (Create new Tag)`}
+              </Select.Option>
+            ) : (
+              ''
+            )}
+            {newAllTagsData.map(({ tagName, _id }) => (
+              <Select.Option key={_id} value={_id} title={tagName}>
+                {tagName}
+              </Select.Option>
+            ))}
+          </SelectInputStyled>
         </InnerFlex>
       </FlexBoxTwo>
 
@@ -322,6 +390,7 @@ ReviewSummary.defaultProps = {
 
 export default connect(
   (state) => ({
+    allTagsData: getAllTagsSelector(state, 'test'),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     test: getTestEntitySelector(state),
     hasRandomQuestions: hasRandomQuestionsSelector(state),
@@ -330,5 +399,7 @@ export default connect(
     allCollectionsList: getItemBucketsForAllCollectionsSelector(state),
     editEnable: get(state, 'tests.editEnable'),
   }),
-  null
+  {
+    addNewTag: addNewTagAction,
+  }
 )(ReviewSummary)

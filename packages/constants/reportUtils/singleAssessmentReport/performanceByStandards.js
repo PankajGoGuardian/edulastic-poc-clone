@@ -157,16 +157,21 @@ const findGroupInfo = (id, viewBy, skillInfo) => {
   const dataGroup = isViewByStandards ? 'selectedStandards' : 'selectedDomains'
   const field = isViewByStandards ? 'standardId' : 'domainId'
   const groupedSkillInfo = skillInfo.reduce(
-    (total, { standardId, standard, domainId, domain }) => ({
+    (
+      total,
+      { standardId, standard, standardDesc, domainId, domain, domainDesc }
+    ) => ({
       selectedStandards: total.selectedStandards.concat({
         name: standard,
         standard,
         standardId,
+        standardDesc,
       }),
       selectedDomains: total.selectedDomains.concat({
         name: domain,
         domain,
         domainId,
+        domainDesc,
       }),
     }),
     {

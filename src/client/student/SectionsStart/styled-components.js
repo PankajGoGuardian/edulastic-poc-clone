@@ -32,6 +32,11 @@ export const SectionTitle = styled.h3`
   margin-top: 10px;
 `
 
+export const SectionTotalItems = styled.p`
+  font-size: 12px;
+  margin-top: 10px;
+`
+
 export const TestSections = styled.div`
   border: 1px solid #d8d8d8;
   padding: 20px;

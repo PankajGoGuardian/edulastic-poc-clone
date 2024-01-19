@@ -18,6 +18,13 @@ export const RightFlexContainer = styled(FlexContainer)`
   /* flex-basis: 30%; */
 `
 
+export const HeadingSubContectWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0px;
+`
+
 export const AssignButton = styled(EduButton)`
   width: 110px;
 

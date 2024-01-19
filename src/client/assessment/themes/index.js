@@ -104,6 +104,8 @@ import {
   unblockAntiCheatingFeature,
 } from '../../../utils/anticheating/antiCheatingHelper'
 import SectionsTestStartPage from '../../author/Assignments/components/SectionsTestPreview/SectionsTestStartPage'
+import { TestAttemptReview } from '../../student/TestAttemptReview'
+import { loadBookmarkAction } from '../sharedDucks/bookmark'
 
 const { playerSkinValues } = testConstants
 
@@ -616,12 +618,15 @@ const AssessmentContainer = ({
   hasSections,
   preventSectionNavigation,
   deliveringItemGroups,
+  loadBookmarks,
   ...restProps
 }) => {
   const [
     showPreviewModeSectionStartPage,
     setShowPreviewModeSectionStartPage,
   ] = useState(false)
+  const [showTestAttemptReview, setShowTestAttemptReview] = useState(false)
+  const [currentItemIdForPreview, setCurrentItemIdForPreview] = useState(null)
 
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
   const _questionsById = useMemo(() => {
@@ -699,6 +704,9 @@ const AssessmentContainer = ({
 
   const showSectionStartPageCallback = () =>
     setShowPreviewModeSectionStartPage(true)
+
+  const showStudentTestAttemptReviewCallback = () =>
+    setShowTestAttemptReview(true)
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
@@ -820,6 +828,11 @@ const AssessmentContainer = ({
       showSectionStartPageCallback()
     }
 
+    if (preview) {
+      // reset bookmarks on starting test preview
+      loadBookmarks({})
+    }
+
     window.localStorage.assessmentLastTime = Date.now()
     return () => setPasswordValidateStatus(false)
   }, [])
@@ -865,6 +878,18 @@ const AssessmentContainer = ({
       setShowRegradedModal(true)
     }
   }, [regradedAssignment?.newTestId])
+
+  useEffect(() => {
+    if (preview && currentItemIdForPreview) {
+      let itemIndexForPreview = items.findIndex(
+        (ele) => ele._id === currentItemIdForPreview
+      )
+      itemIndexForPreview = itemIndexForPreview > 0 ? itemIndexForPreview : 0
+      setCurrentItem(itemIndexForPreview)
+      setShowTestAttemptReview(false)
+      setCurrentItemIdForPreview(null)
+    }
+  }, [currentItemIdForPreview])
 
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current
@@ -1113,16 +1138,16 @@ const AssessmentContainer = ({
 
       if (lastItemInTest) {
         evalArgs.isLastQuestion = true
-        evalArgs.callback = submitPreviewTest
+        evalArgs.callback = showStudentTestAttemptReviewCallback
       } else if (hasSections && lastItemInsection && !lastItemInTest) {
-        evalArgs.callback = showSectionStartPageCallback
+        evalArgs.callback = showStudentTestAttemptReviewCallback
       }
 
       if (!_item.isDummyItem) {
         evaluateForPreview(evalArgs)
       }
       if (_item.isDummyItem) {
-        submitPreviewTest()
+        showStudentTestAttemptReviewCallback()
       }
     }
 
@@ -1203,7 +1228,7 @@ const AssessmentContainer = ({
     const timeSpent = Date.now() - lastTime.current
     const _item = items[currentItem]
     if (_item.isDummyItem) {
-      return submitPreviewTest()
+      return showStudentTestAttemptReviewCallback()
     }
     const evalArgs = {
       currentItem,
@@ -1212,9 +1237,9 @@ const AssessmentContainer = ({
     }
     if (lastItemInTest) {
       evalArgs.isLastQuestion = true
-      evalArgs.callback = submitPreviewTest
+      evalArgs.callback = showStudentTestAttemptReviewCallback
     } else if (hasSections && lastItemInsection && !lastItemInTest) {
-      evalArgs.callback = showSectionStartPageCallback
+      evalArgs.callback = showStudentTestAttemptReviewCallback
     }
     evaluateForPreview(evalArgs)
   }
@@ -1226,13 +1251,13 @@ const AssessmentContainer = ({
     if (preview) {
       const _item = items[currentItem]
       if (demo || _item.isDummyItem) {
-        return submitPreviewTest()
+        return showStudentTestAttemptReviewCallback()
       }
       const evalArgs = {
         currentItem,
         timeSpent,
         testId,
-        callback: submitPreviewTest,
+        callback: showStudentTestAttemptReviewCallback,
       }
       return evaluateForPreview(evalArgs)
     }
@@ -1437,6 +1462,8 @@ const AssessmentContainer = ({
     classLevelSettings,
     isAntiCheatingEnabled,
     preventSectionNavigation,
+    hasSections,
+    lastItemInTest,
   }
 
   useEffect(() => {
@@ -1594,20 +1621,41 @@ const AssessmentContainer = ({
         />
       )}
       <EduIf
-        condition={preview && hasSections && showPreviewModeSectionStartPage}
+        condition={
+          preview && (showPreviewModeSectionStartPage || showTestAttemptReview)
+        }
       >
         <EduThen>
-          <SectionsTestStartPage
-            title={title}
-            thumbnail={thumbnail}
-            closeTestPreviewModal={closeTestPreviewModal}
-            preventSectionNavigation={preventSectionNavigation}
-            setShowPreviewModeSectionStartPage={
-              setShowPreviewModeSectionStartPage
-            }
-            setCurrentItem={setCurrentItem}
-            allItems={items}
-          />
+          <>
+            <EduIf condition={hasSections && showPreviewModeSectionStartPage}>
+              <SectionsTestStartPage
+                title={title}
+                thumbnail={thumbnail}
+                closeTestPreviewModal={closeTestPreviewModal}
+                preventSectionNavigation={preventSectionNavigation}
+                setShowPreviewModeSectionStartPage={
+                  setShowPreviewModeSectionStartPage
+                }
+                setCurrentItem={setCurrentItem}
+                allItems={items}
+              />
+            </EduIf>
+            <EduIf condition={showTestAttemptReview}>
+              <StyledStudentAttemptReviewContainer>
+                <TestAttemptReview
+                  preview
+                  closeTestPreviewModal={closeTestPreviewModal}
+                  setCurrentItemIdForPreview={setCurrentItemIdForPreview}
+                  showSectionStartPageCallback={showSectionStartPageCallback}
+                  setShowTestAttemptReview={setShowTestAttemptReview}
+                  submitPreviewTest={submitPreviewTest}
+                  testPreviewSectionId={
+                    lastItemInsection && !lastItemInTest ? sectionId : null
+                  }
+                />
+              </StyledStudentAttemptReviewContainer>
+            </EduIf>
+          </>
         </EduThen>
         <EduElse>{playerComponent}</EduElse>
       </EduIf>
@@ -1723,6 +1771,7 @@ const enhance = compose(
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       loadTest: loadTestAction,
       setAntiCheatingEnabled: setIsAntiCheatingEnabled,
+      loadBookmarks: loadBookmarkAction,
     }
   )
 )
@@ -1742,6 +1791,9 @@ const StyledModal = Styled(Modal)`
   .inline-button{
     display: inline-block;
   }
+`
+const StyledStudentAttemptReviewContainer = Styled.div`
+  height: 100vh;
 `
 
 export default enhance(AssessmentContainer)

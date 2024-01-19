@@ -7,7 +7,12 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
+import {
+  EduButton,
+  EduIf,
+  MainHeader,
+  withWindowSizes,
+} from '@edulastic/common'
 // constants
 import { roleuser } from '@edulastic/constants'
 import { IconMoreVertical, IconPlusCircle } from '@edulastic/icons'
@@ -38,6 +43,8 @@ import {
 } from '../../selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
+import EduAiQuiz from '../../../AssessmentCreate/components/CreateAITest'
+import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
 
 const ListHeader = ({
   onCreate,
@@ -81,6 +88,8 @@ const ListHeader = ({
   }
 
   const createNewAssignment = () => setShowAssignmentCreationModal(true)
+
+  const { CREATE_ITEMS_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
 
   return (
     <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
@@ -129,14 +138,17 @@ const ListHeader = ({
                   UNLOCK COLLECTION
                 </EduButton>
               )} */}
-              {btnTitle && btnTitle.length ? null : (
+              <EduIf condition={!(btnTitle && btnTitle.length)}>
                 <CartButton
                   onClick={newTest}
                   buttonText="Create test with"
                   displayDeselect
                 />
-              )}
+              </EduIf>
               {renderExtra()}
+              <EduIf condition={!(btnTitle && btnTitle.length)}>
+                <EduAiQuiz displayScreen={CREATE_ITEMS_SCREEN} />
+              </EduIf>
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
                 <IconPlusStyled />
                 {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}

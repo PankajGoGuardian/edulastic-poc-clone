@@ -32,7 +32,6 @@ import {
   mobileWidthLarge,
   themeColorBlue,
 } from '@edulastic/colors'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
 import { toggleSideBarAction } from './ducks'
 import {
   logoutAction,
@@ -41,6 +40,7 @@ import {
 import { AssessPeardeckLogoCompact } from '../../admin/Common/StyledComponents'
 import { isPearDomain } from '../../../utils/pear'
 import { SideMenuContainer } from '../../author/src/Sidebar/styledComponents'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const menuItems = [
   {
@@ -276,8 +276,10 @@ class SideMenu extends Component {
                     <LogoCompact />
                   ))
                 ) : isPearDomain ? (
-                  <AssessPeardeckLabelOnDarkBgLogo
-                    height={isMobile ? '16px' : '36px'}
+                  <IconPearAssessmentFormerlyEdulastic
+                    width="148px"
+                    height={isMobile ? '16px' : '43px'}
+                    style={{ marginLeft: '15px' }}
                   />
                 ) : (
                   <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />

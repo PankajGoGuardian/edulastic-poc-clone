@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import get from 'lodash/get'
 import { withRouter } from 'react-router'
+import { FlexContainer } from '@edulastic/common'
 import Item from '../Item/Item'
-import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   getTestItemsSelector,
   getSelectedItemSelector,
@@ -26,6 +26,10 @@ import {
   itemInPreviewModalSelector,
   setPrevewItemAction,
 } from '../../../src/components/common/PreviewModal/ducks'
+import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest/index'
+import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
+import { NoDataContainer } from '../../../Reports/common/styled'
+import { NoDataMessageContainer } from './styled'
 
 const ItemListContainer = ({
   items,
@@ -44,14 +48,17 @@ const ItemListContainer = ({
   setPrevewItem,
   itemDetailPreview,
 }) => {
+  const { SEARCH_NO_DATA_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
   if (!items.length) {
     return (
-      <NoDataNotification
-        heading="Items Not Available"
-        description={
-          'There are currently no items available for this filter. You can create new item by clicking the "NEW ITEM" button.'
-        }
-      />
+      <NoDataContainer>
+        <FlexContainer flexDirection="column" alignItems="center">
+          <NoDataMessageContainer>
+            No item available for the search criteria
+          </NoDataMessageContainer>
+          <EduAIQuiz displayScreen={SEARCH_NO_DATA_SCREEN} />
+        </FlexContainer>
+      </NoDataContainer>
     )
   }
 

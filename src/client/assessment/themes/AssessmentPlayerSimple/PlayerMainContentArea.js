@@ -16,7 +16,6 @@ const PlayerContentArea = ({
   previewTab,
   currentItem,
   isFirst,
-  isLast,
   moveToPrev,
   moveToNext,
   questions,
@@ -50,6 +49,7 @@ const PlayerContentArea = ({
   saveHintUsageData,
   classLevelSettings,
   viewAsStudent,
+  showSubmitText,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -119,7 +119,6 @@ const PlayerContentArea = ({
       {playerSkinType.toLowerCase() ===
         test.playerSkinValues.edulastic.toLowerCase() && (
         <PlayerFooter
-          isLast={isLast}
           isFirst={isFirst}
           moveToNext={moveToNext}
           moveToPrev={moveToPrev}
@@ -130,6 +129,7 @@ const PlayerContentArea = ({
             blockNavigationToAnsweredQuestions
           }
           firstItemInSectionAndRestrictNav={firstItemInSectionAndRestrictNav}
+          showSubmitText={showSubmitText}
         />
       )}
       {isShowReferenceModal && referenceDocAttributes && (

@@ -38,7 +38,7 @@ const PlayerFooter = ({
   handleReviewOrSubmit,
   isPremiumContentWithoutAccess = false,
   firstItemInSectionAndRestrictNav,
-  isLast,
+  showSubmitText,
 }) => {
   const isFirst = () => (isDocbased ? true : currentItem === 0)
 
@@ -186,7 +186,7 @@ const PlayerFooter = ({
               moveToNext()
               e.target.blur()
             }}
-            aria-label={isLast ? 'SUBMIT' : 'NEXT'}
+            aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
             // added separate keydown event handler to restrict calling on blur event for keyboard event
             onKeyDown={(e) => {
               const code = e.which || e.keyCode
@@ -201,7 +201,7 @@ const PlayerFooter = ({
             style={{ marginLeft: '5px' }}
           >
             <IconDrc.IconNext style={{ marginRight: '10px' }} />
-            <span>{isLast ? 'SUBMIT' : 'NEXT'}</span>
+            <span>{showSubmitText ? 'SUBMIT' : 'NEXT'}</span>
           </ControlBtn>
         </Tooltip>
       </RightContent>

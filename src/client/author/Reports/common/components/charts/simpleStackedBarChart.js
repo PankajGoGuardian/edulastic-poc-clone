@@ -83,6 +83,8 @@ const SimpleStackedBarChartComponent = ({
   onBarClickCB,
   onResetClickCB,
   getXTickText,
+  getXTickTooltipText = null,
+  xTickTooltipStyles = {},
   getTooltipJSX = () => null,
   TooltipCursor = false,
   yAxisLabel = '',
@@ -253,7 +255,9 @@ const SimpleStackedBarChartComponent = ({
   const onXAxisTickTooltipMouseOver = (payload) => {
     const { coordinate } = payload
     let content
-    if (getXTickText) {
+    if (getXTickTooltipText) {
+      content = getXTickTooltipText(payload, chartData)
+    } else if (getXTickText) {
       content = getXTickText(payload, chartData)
     } else {
       content = payload.value
@@ -356,6 +360,7 @@ const SimpleStackedBarChartComponent = ({
         visibility={xAxisTickTooltipData.visibility}
         color={xAxisTickTooltipData.color}
         width={xTickToolTipWidth}
+        $textAlign={xTickTooltipStyles.textAlign}
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>

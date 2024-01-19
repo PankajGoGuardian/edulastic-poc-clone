@@ -11,7 +11,7 @@ export const Container = styled.div`
   cursor: pointer;
   color: ${themeColor};
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
   user-select: none;
   white-space: nowrap;
 `

@@ -2672,9 +2672,7 @@ function* getAuthorizedExternalUser({ payload }) {
       type: 'error',
       messageKey: 'failedToAutorizeUsingToken',
     })
-    if (isPearSignUpFlow) {
-      yield put(push('/login'))
-    }
+    yield put(push('/login'))
   }
 }
 

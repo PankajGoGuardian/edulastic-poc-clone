@@ -103,7 +103,6 @@ const PlayerHeader = ({
   answerChecksUsedForItem,
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
-  isLast,
   canUseImmersiveReader = false,
   immersiveReaderTitle,
   openReferenceModal,
@@ -112,6 +111,7 @@ const PlayerHeader = ({
   showLineReader,
   hideLineReader,
   isLineReaderVisible,
+  showSubmitText,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -224,13 +224,13 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title={`${isLast ? 'Submit' : 'Next'}`}
+                    title={`${showSubmitText ? 'Submit' : 'Next'}`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      icon={isLast ? null : 'right'}
-                      aria-label={isLast ? 'SUBMIT' : 'NEXT'}
+                      icon={showSubmitText ? null : 'right'}
+                      aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -254,14 +254,14 @@ const PlayerHeader = ({
                         display: 'flex',
                       }}
                     >
-                      {isLast && (
+                      {showSubmitText && (
                         <IconSend
                           style={{
                             marginRight: '10px',
                           }}
                         />
                       )}
-                      {isLast ? 'SUBMIT' : 'NEXT'}
+                      {showSubmitText ? 'SUBMIT' : 'NEXT'}
                     </ControlBtn>
                   </Tooltip>
                   {!isDocbased && (

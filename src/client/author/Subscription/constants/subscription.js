@@ -30,6 +30,7 @@ import ENTERPRISEIMG from '../static/enterprise-bg.png'
 import FREEIMG from '../static/free-forever-bg.png'
 import PREMIUMIMG from '../static/premium-teacher-bg.png'
 import { ExpiryMsg } from '../components/SubscriptionMain/styled'
+import { isPearOrEdulasticText } from '../../../common/utils/helpers'
 
 const expiryMessage = ({ subscribed, expiryDate }) => (
   <>
@@ -47,7 +48,7 @@ const expiryMessage = ({ subscribed, expiryDate }) => (
 
 export const subscription = {
   enterprise: ({ subscribed, expiryDate }) => ({
-    title: 'Edulastic Enterprise & Add-ons to supercharge instruction.',
+    title: `${isPearOrEdulasticText} Enterprise & Add-ons to supercharge instruction.`,
     description: (
       <>
         Upgrade your subscription to Teacher Premium or school or district
@@ -65,10 +66,11 @@ export const subscription = {
       icon: <IconSchool />,
       description: (
         <>
-          Get in-depth insights into schoolwide and districtwide progress with
-          Edulastic Enterprise. Deliver common assessments, analyze the instant
-          student data, and manage everything in one place. Enterprise includes
-          Premium and its collaboration, accommodation, and security tools.
+          Get in-depth insights into schoolwide and districtwide progress with{' '}
+          {isPearOrEdulasticText} Enterprise. Deliver common assessments,
+          analyze the instant student data, and manage everything in one place.
+          Enterprise includes Premium and its collaboration, accommodation, and
+          security tools.
         </>
       ),
     },
@@ -182,10 +184,10 @@ export const subscription = {
       ),
       description: (
         <>
-          Edulastic Data Studio gives educators a holistic view of learning to
-          shape data-driven strategies for student success. See Edulastic
-          reporting alongside third-party sources to inform MTSS planning at the
-          district, school, and student level.
+          {isPearOrEdulasticText} Data Studio gives educators a holistic view of
+          learning to shape data-driven strategies for student success. See{' '}
+          {isPearOrEdulasticText} reporting alongside third-party sources to
+          inform MTSS planning at the district, school, and student level.
         </>
       ),
     },
@@ -236,7 +238,7 @@ export const subscription = {
         {
           icon: <IconPerformanceTrendAddOn />,
           title: 'Performance Trends',
-          description: `Proactively identify the strengths and needs of all students by viewing Edulastic data alongside third-party assessments over time.`,
+          description: `Proactively identify the strengths and needs of all students by viewing ${isPearOrEdulasticText} data alongside third-party assessments over time.`,
         },
         {
           icon: <IconBehaviourReportAddOn />,
@@ -269,7 +271,7 @@ export const comparePlansData = [
       },
       {
         title: '80K & Growing Item Bank',
-        description: 'Edulastic CERTIFIED for Grades K-12.',
+        description: 'Pear Assessment CERTIFIED for Grades K-12.',
       },
       {
         title: '30+ Technology-Enhanced Question Types',

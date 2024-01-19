@@ -19,7 +19,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { AssessPeardeckLabelOnDarkBgLogo } from '@edulastic/common/src/components/EduLogo'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 import { logoutAction } from '../../author/src/actions/auth'
 import { AssessPeardeckLogoCompact, LogoCompact } from './StyledComponents'
 import { toggleSideBarAction } from '../../author/src/actions/toggleMenu'
@@ -216,7 +216,11 @@ const SideMenu = ({
               <LogoCompact margin="0px" />
             )
           ) : isPearDomain ? (
-            <AssessPeardeckLabelOnDarkBgLogo height="36px" />
+            <IconPearAssessmentFormerlyEdulastic
+              width="155"
+              height="43"
+              style={{ marginLeft: '15' }}
+            />
           ) : (
             <OnDarkBgLogo height="26px" />
           )}

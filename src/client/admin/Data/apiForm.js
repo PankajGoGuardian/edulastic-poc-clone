@@ -1251,4 +1251,35 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'merge-same-question-assignments',
+    name: 'Merge Same Question Assignments',
+    endPoint: 'admin-tool/merge-same-question-assignment',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'District Id',
+        placeholder: 'Enter District Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'sourceTestIds',
+        displayName: 'Source Test Ids',
+        placeholder: 'Enter comma separated test Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'destTestId',
+        displayName: 'Destination Test Id',
+        placeholder: 'Enter Destination Test Id',
+        type: 'string',
+        required: true,
+      },
+    ],
+  },
 ]

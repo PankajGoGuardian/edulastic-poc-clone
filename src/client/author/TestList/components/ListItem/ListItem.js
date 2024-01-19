@@ -30,6 +30,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import {
   getAuthorCollectionMap,
@@ -373,9 +374,9 @@ class ListItem extends Component {
         collectionName = filteredCollections?.map((c) => c.name).join(', ')
     } else if (
       collections?.length &&
-      collections?.find((o) => o.name === 'Edulastic Certified')
+      collections?.find((o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME)
     ) {
-      collectionName = 'Edulastic Certified'
+      collectionName = PEAR_ASSESSMENT_CERTIFIED_NAME
     } else if (sharedType) {
       // sharedType comes as number when "Shared with me" filter is selected
       if (!Number.isNaN(+sharedType)) {
@@ -613,7 +614,9 @@ class ListItem extends Component {
                     </TestStatus>
                   )}
                 </TestStatusWrapper>
-                {collections.find((o) => o.name === 'Edulastic Certified') &&
+                {collections.find(
+                  (o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME
+                ) &&
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
                 {isDynamicTest && (
                   <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
@@ -628,7 +631,7 @@ class ListItem extends Component {
                   {authorName && (
                     <Author>
                       {collections.find(
-                        (o) => o.name === 'Edulastic Certified'
+                        (o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME
                       ) ? (
                         getAuthorCollectionMap(true, 30, 30).edulastic_certified
                           .icon

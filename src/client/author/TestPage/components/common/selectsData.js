@@ -44,7 +44,7 @@ const allTags = [
 const allCollections = [
   { value: 'Private', text: 'Private' },
   { value: 'Public', text: 'Public' },
-  // { value: "edulastic_certified", text: "Edulastic Certified" }
+  // { value: "edulastic_certified", text: "Pear Assessment Certified" }
 ]
 
 const allDepthOfKnowledge = Object.values(allDepthOfKnowledgeMap)

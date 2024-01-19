@@ -271,7 +271,7 @@ export const comparePlansData = [
       },
       {
         title: '80K & Growing Item Bank',
-        description: 'Edulastic CERTIFIED for Grades K-12.',
+        description: 'Pear Assessment CERTIFIED for Grades K-12.',
       },
       {
         title: '30+ Technology-Enhanced Question Types',

@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import { sharedTypeMap } from '../TestList/components/Item/Item'
 
 /**
@@ -19,7 +20,7 @@ export const getTestCollectionName = (itemBanks, collections, sharedType) => {
       collectionName = filteredCollections.map((c) => c.name).join(', ')
   } else if (
     collections?.length &&
-    collections.find((o) => o.name === 'Edulastic Certified')
+    collections.find((o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME)
   ) {
     collectionName = 'Edulastic Certified'
   } else if (sharedType) {

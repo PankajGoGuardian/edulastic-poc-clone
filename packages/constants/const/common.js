@@ -41,6 +41,8 @@ const PASSWORD_KEY = 'password'
 
 const PUBLIC_URL_IDENTIFIER = '/public/'
 
+const PEAR_ASSESSMENT_CERTIFIED_NAME = 'Pear Assessment Certified'
+
 module.exports = {
   helpCenterUrl,
   sessionFilters,
@@ -61,4 +63,5 @@ module.exports = {
   THREE_MONTH_IN_MILLISECONDS,
   ONE_MONTH_IN_MILLISECONDS,
   TEN_DAYS_IN_MILLISECONDS,
+  PEAR_ASSESSMENT_CERTIFIED_NAME,
 }

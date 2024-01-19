@@ -2,7 +2,7 @@ module.exports = {
   nonPremiumCollections: {
     '6564756c61737469635f656e': 'Engage Ny',
     '536d61727453746172745f44': 'SmartStart Diagnostics',
-    '6564756c61737469635f6365': 'Edulastic Certified',
+    '6564756c61737469635f6365': 'Pear Assessment Certified',
     '5e3aa8ba83bf19bcab67d0bb': 'CLILESSONS Bank',
     '5e3aa8ba83bf19bcab67d0cb': 'CLI SC MSMS Bank',
     '5e3aa8ba83bf19bcab67d0cc': 'CLI SC HSMS Bank',
@@ -31,7 +31,7 @@ module.exports = {
 
   nonPremiumCollectionsToShareContent: {
     '6564756c61737469635f656e': 'Engage Ny',
-    '6564756c61737469635f6365': 'Edulastic Certified',
+    '6564756c61737469635f6365': 'Pear Assessment Certified',
     '536d61727453746172745f44': 'SmartStart Diagnostics',
   },
 

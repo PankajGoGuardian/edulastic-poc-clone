@@ -2,6 +2,7 @@ import React from 'react'
 import { IconHeart, IconUser, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, secondaryTextColor } from '@edulastic/colors'
 import { keyBy } from 'lodash'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import Tags from '../../../src/components/common/Tags'
 import {
   flattenPlaylistStandards,
@@ -85,8 +86,9 @@ const ImageCard = ({
       title={
         <Header src={thumbnail}>
           <Stars />
-          {filterCollections.find((o) => o.name === 'Edulastic Certified') &&
-            getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
+          {filterCollections.find(
+            (o) => o.name === PEAR_ASSESSMENT_CERTIFIED_NAME
+          ) && getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
         </Header>
       }
     >

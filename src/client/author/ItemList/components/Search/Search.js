@@ -18,6 +18,7 @@ import {
   AUDIO_RESPONSE,
   HIDE_QUESTION_TYPES,
 } from '@edulastic/constants/const/questionType'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -141,10 +142,10 @@ const Search = ({
     ...collectionDefaultFilter.filter((c) => c.value),
     ...collections.map((o) => ({ text: o.name, value: o._id })),
   ].filter((cd) =>
-    // filter public, edulastic certified &
-    // engage ny (name same as Edulastic Certified) for publishers
+    // filter public, pear assessment certified &
+    // engage ny (name same as Pear Assessment Certified) for publishers
     isPublishers
-      ? !['Public Library', 'Edulastic Certified'].includes(cd.text)
+      ? !['Public Library', PEAR_ASSESSMENT_CERTIFIED_NAME].includes(cd.text)
       : isDA
       ? !['School Library'].includes(cd.text)
       : 1

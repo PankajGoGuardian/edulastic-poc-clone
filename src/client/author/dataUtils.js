@@ -2,6 +2,7 @@ import React from 'react'
 import { get, keyBy, uniqBy, uniq, memoize } from 'lodash'
 import { questionType as questionTypes } from '@edulastic/constants'
 import { nonPremiumCollections } from '@edulastic/constants/const/collections'
+import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
 import { UserIcon } from './ItemList/components/Item/styled'
 import { EdulasticVerified } from './TestList/components/ListItem/styled'
 
@@ -22,15 +23,15 @@ export const hasUserGotAccessToPremiumItem = (
 export const getAuthorCollectionMap = (isBottom, width, height) => ({
   edulastic_certified: {
     icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-    displayName: 'Edulastic Certified',
+    displayName: PEAR_ASSESSMENT_CERTIFIED_NAME,
   },
   engage_ny: {
     icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-    displayName: 'Edulastic Certified',
+    displayName: PEAR_ASSESSMENT_CERTIFIED_NAME,
   },
-  'Edulastic Certified': {
+  [PEAR_ASSESSMENT_CERTIFIED_NAME]: {
     icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
-    displayName: 'Edulastic Certified',
+    displayName: PEAR_ASSESSMENT_CERTIFIED_NAME,
   },
   Great_Minds_DATA: { icon: <UserIcon />, displayName: 'Eureka Math' },
   PROGRESS_DATA: { icon: <UserIcon />, displayName: 'PROGRESS Bank' },
@@ -277,7 +278,9 @@ export const showPremiumLabelOnContent = (
   const premiumCollectionIds = orgCollections
     .filter(
       (c) =>
-        !['edulastic certified', 'engage ny'].includes(c.name.toLowerCase())
+        ![PEAR_ASSESSMENT_CERTIFIED_NAME.toLowerCase(), 'engage ny'].includes(
+          c.name.toLowerCase()
+        )
     )
     .map((x) => x._id)
   return itemCollections.some((c) => premiumCollectionIds.includes(c._id))
@@ -285,7 +288,7 @@ export const showPremiumLabelOnContent = (
 
 /**
  * Checks if the item is premium content or not.
- * Any item which has collections excluding edulastic certified and engage ny
+ * Any item which has collections excluding pear assessment certified and engage ny
  * is premium content
  * @param {Array<Object>} _collections
  * @returns {Boolean} isPremium

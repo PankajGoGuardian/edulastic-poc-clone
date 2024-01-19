@@ -390,11 +390,3 @@ export const PsiContainer = styled.div`
   width: 83%;
   margin: 0 auto;
 `
-
-export const StyledPearAssessmentLabelImage = styled.img.attrs((props) => ({
-  src: props.imgSrc || PEAR_ASSESSMENT_LABEL_IMAGE_URL,
-  alt: props.altText || pearAssessmentText,
-}))`
-  width: 148px;
-  margin-left: ${({ marginLeft }) => marginLeft || '15px'};
-`

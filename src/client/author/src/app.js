@@ -313,7 +313,7 @@ const Author = ({
             isBannerShown={isProxyUser || isDemoAccount}
             style={{ display: isCliUser && 'none' }}
           />
-          <Wrapper>
+          <Wrapper id="app-wrapper">
             <ErrorHandler
               disablePage={isDisablePageInMobile(history.location.pathname)}
             >

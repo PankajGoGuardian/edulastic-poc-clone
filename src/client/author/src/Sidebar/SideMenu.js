@@ -40,6 +40,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { getTokens } from '@edulastic/api/src/utils/Storage'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -108,7 +109,6 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
-import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -799,7 +799,10 @@ class SideMenu extends Component {
       !isDefaultDA
 
     const showPearAppTray = isPearDomain && pearToken && !isPearAppsDisabled
-
+    const closePearAppTray = () => {
+      const appWrapper = document.getElementById('app-wrapper')
+      appWrapper?.click?.()
+    }
     return (
       <>
         <PurchaseFlowModals
@@ -867,6 +870,7 @@ class SideMenu extends Component {
                 !isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
+                      closePearAppTray()
                     }
                   : null
               }

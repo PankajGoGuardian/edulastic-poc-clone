@@ -11,6 +11,7 @@ import {
   isPremiumContent,
   showPremiumLabelOnContent,
 } from '../../../../../dataUtils'
+import getItemStimulus from '../../../../../utils/itemStimulus'
 
 const ReviewItem = ({
   item,
@@ -116,7 +117,7 @@ const ReviewItem = ({
     }
 
     if (item.data && item.data.questions && item.data.questions.length) {
-      main.stimulus = item.data.questions[0].stimulus
+      main.stimulus = getItemStimulus(item)
     }
 
     return {

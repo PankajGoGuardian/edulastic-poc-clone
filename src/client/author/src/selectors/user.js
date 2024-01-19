@@ -215,9 +215,19 @@ export const getUserOrgName = createSelector(
   (userOrg) => userOrg?.districtName
 )
 
-export const getUserFeatures = createSelector(stateSelector, (state) =>
-  _get(state, 'user.features')
-)
+export const getUserFeatures = createSelector(stateSelector, (state) => {
+  const features = _get(state, 'user.features')
+  const userHaveImmersiveReader = _get(state, 'user.immersiveReader')
+
+  if (userHaveImmersiveReader) {
+    return {
+      ...features,
+      canUseImmersiveReader: userHaveImmersiveReader === 'yes',
+    }
+  }
+
+  return features
+})
 
 export const getIsAiEvaulationDistrictSelector = createSelector(
   getUserFeatures,

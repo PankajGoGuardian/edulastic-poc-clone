@@ -309,7 +309,22 @@ export const changeDataInPreferredLanguage = (
   return newQuestion
 }
 
-export const changeDataToPreferredLanguage = (questionData, language) => {
+export const changeDataToPreferredLanguage = (
+  questionData,
+  language,
+  view = ''
+) => {
+  // Changing english language to first languageFeatures language only when view is preview
+  if (
+    view === 'preview' &&
+    language === LANGUAGE_EN &&
+    !questionData?.stimulus?.length &&
+    questionData.languageFeatures
+  ) {
+    // Extracting the first languageCode from keys of languageFeatures
+    const languageCode = Object.keys(questionData.languageFeatures).shift()
+    language = languageCode
+  }
   if (
     LANGUAGE_EN !== language &&
     useLanguageFeatureQn.includes(questionData.type) &&

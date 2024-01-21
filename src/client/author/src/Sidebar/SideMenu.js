@@ -799,10 +799,6 @@ class SideMenu extends Component {
       !isDefaultDA
 
     const showPearAppTray = isPearDomain && pearToken && !isPearAppsDisabled
-    const closePearAppTray = () => {
-      const appWrapper = document.getElementById('app-wrapper')
-      appWrapper?.click?.()
-    }
     return (
       <>
         <PurchaseFlowModals
@@ -870,7 +866,6 @@ class SideMenu extends Component {
                 !isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      closePearAppTray()
                     }
                   : null
               }

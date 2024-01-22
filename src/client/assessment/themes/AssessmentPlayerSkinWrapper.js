@@ -103,7 +103,8 @@ const AssessmentPlayerSkinWrapper = ({
     setSidebarVisible(!isSidebarVisible)
   }
 
-  const isDocBased = !!docUrl
+  // isDocBased is flag used for PDF/Video Quiz
+  const isDocBased = !!docUrl || !!videoUrl
 
   const header = () => {
     if (playerSkinType === 'parcc') {

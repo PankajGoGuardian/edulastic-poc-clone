@@ -110,39 +110,12 @@ class DisneyCardContainer extends Component {
   static getDerivedStateFromProps(props, state) {
     const { testActivity, match, isPresentationMode } = props
     const { assignmentId, classId } = match.params
-    let newTestActivity = testActivity
-
-    if (isPresentationMode) {
-      if (state.isPresentationMode) {
-        // check if the activity has the same students if so do not shuffle use the previous order else shuffle
-        let areSameStudents = state.testActivity.length == testActivity.length
-        const testActivityWithIndex = testActivity.map((student) => {
-          if (!areSameStudents) return
-          const indexInShuffeled = state.testActivity.findIndex(
-            (oldStudent) => oldStudent.studentId === student.studentId
-          )
-          if (indexInShuffeled < 0) areSameStudents = false
-          return {
-            ...student,
-            indexInShuffeled,
-          }
-        })
-
-        if (areSameStudents) {
-          testActivityWithIndex
-            .sort((s1, s2) => s1.indexInShuffeled - s2.indexInShuffeled)
-            .forEach((student) => delete student.indexInShuffeled)
-          newTestActivity = testActivityWithIndex
-        } else {
-          newTestActivity = shuffle(testActivity)
-        }
-      } else {
-        newTestActivity = shuffle(testActivity)
-      }
-    }
 
     return {
-      testActivity: newTestActivity,
+      testActivity:
+        !state.isPresentationMode && isPresentationMode
+          ? shuffle(testActivity)
+          : testActivity,
       assignmentId,
       classId,
       isPresentationMode,

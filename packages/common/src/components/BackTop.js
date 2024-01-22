@@ -1,18 +1,38 @@
 import { Button } from 'antd'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
-import { LCBScrollContext } from '@edulastic/common'
+import { EduIf, LCBScrollContext } from '@edulastic/common'
 
-const BackTop = () => {
+const BackTop = ({ toggleBackTopIcon, setToggleBackTopIcon }) => {
   const scrollRef = useContext(LCBScrollContext)
 
+  useEffect(() => {
+    const backTopScroll = () => {
+      const elementTop = scrollRef?.current?.scrollTop || 0
+      if (elementTop < 100 && toggleBackTopIcon) {
+        setToggleBackTopIcon(false)
+      } else if (!toggleBackTopIcon && elementTop >= 100) {
+        setToggleBackTopIcon(true)
+      }
+    }
+
+    scrollRef.current?.addEventListener('scroll', backTopScroll)
+    return () => {
+      scrollRef.current?.removeEventListener('scroll', backTopScroll)
+    }
+  }, [scrollRef.current, toggleBackTopIcon, setToggleBackTopIcon])
+
   return (
-    <ScrollToTopButton
-      type="primary"
-      icon="arrow-up"
-      shape="circle"
-      onClick={() => scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })}
-    />
+    <EduIf condition={toggleBackTopIcon}>
+      <ScrollToTopButton
+        type="primary"
+        icon="arrow-up"
+        shape="circle"
+        onClick={() =>
+          scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      />
+    </EduIf>
   )
 }
 

@@ -1235,16 +1235,6 @@ class ClassBoard extends Component {
     }
   }
 
-  backTopScroll = () => {
-    const { toggleBackTopIcon } = this.state
-    const elementTop = this.MainContentWrapperRef?.current?.scrollTop || 0
-    if (elementTop < 100 && toggleBackTopIcon) {
-      this.setState({ toggleBackTopIcon: false })
-    } else if (!toggleBackTopIcon && elementTop >= 100) {
-      this.setState({ toggleBackTopIcon: true })
-    }
-  }
-
   getActivityId = (_activityId, _studentId) => {
     const { recentAttemptsGrouped, testActivity } = this.props
     const activity =
@@ -1646,7 +1636,6 @@ class ClassBoard extends Component {
         />
         <MainContentWrapper
           ref={this.MainContentWrapperRef}
-          onScroll={this.backTopScroll}
           id="classboard-main-container"
         >
           <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
@@ -2332,9 +2321,12 @@ class ClassBoard extends Component {
                     isCliUser={isCliUser}
                     MainContentWrapperRef={this.MainContentWrapperRef}
                   />
-                  {toggleBackTopIcon && (
-                    <BackTop toggleBackTopIcon={toggleBackTopIcon} />
-                  )}
+                  <BackTop
+                    toggleBackTopIcon={toggleBackTopIcon}
+                    setToggleBackTopIcon={(value) =>
+                      this.setState({ toggleBackTopIcon: value })
+                    }
+                  />
                 </>
               )}
             {selectedTab === 'questionView' &&
@@ -2384,9 +2376,12 @@ class ClassBoard extends Component {
                         })
                       }}
                     />
-                    {toggleBackTopIcon && (
-                      <BackTop toggleBackTopIcon={toggleBackTopIcon} />
-                    )}
+                    <BackTop
+                      toggleBackTopIcon={toggleBackTopIcon}
+                      setToggleBackTopIcon={(value) =>
+                        this.setState({ toggleBackTopIcon: value })
+                      }
+                    />
                   </QuestionContainer>
                 </>
               )}

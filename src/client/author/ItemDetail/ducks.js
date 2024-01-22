@@ -1140,10 +1140,6 @@ export function* setItemLanguage(data) {
         (lang) => lang.value === LANGUAGE_ES
       )?.label?.toLowerCase()
     }
-  } else {
-    language = LANGUAGES_OPTIONS.find(
-      (lang) => lang.value === languageCode
-    )?.label?.toLowerCase()
   }
   return language
 }

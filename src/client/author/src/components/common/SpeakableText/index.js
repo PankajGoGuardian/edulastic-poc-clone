@@ -124,6 +124,7 @@ const SpeakableText = ({
           <TextAreaInputStyled
             style={{ paddingLeft: '5px', paddingTop: '5px', marginBottom: 10 }}
             value={stimulusText}
+            autoSize={{ minRows: 4 }}
             onChange={(e) =>
               handleUpdateTtsData(e?.target?.value || '', 'stimulus')
             }

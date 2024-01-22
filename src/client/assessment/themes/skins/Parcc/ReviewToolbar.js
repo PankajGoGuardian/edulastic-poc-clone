@@ -21,7 +21,7 @@ const {
 const MenuItem = withKeyboard(Menu.Item)
 
 const ReviewToolbar = ({
-  t,
+  t: i18Translate,
   options,
   filterData = {},
   gotoQuestion,
@@ -77,7 +77,8 @@ const ReviewToolbar = ({
                 color={parcc.menuItem.activeColor}
               />
             )}
-            Question {option + 1}
+            {i18Translate('student:common.layout.selectbox.question')}{' '}
+            {option + 1}
           </MenuItem>
         ))}
       </StyledMenu>
@@ -87,21 +88,29 @@ const ReviewToolbar = ({
           onClick={() => handleCardClick('all')}
         >
           <StyledCounter>{totalQuestions}</StyledCounter>
-          <div>All questions</div>
+          <div>
+            {i18Translate('student:common.layout.questionlist.allQuestions')}
+          </div>
         </Card>
         <Card
           style={selectedCard === 'notAnswered' ? cardStyle : {}}
           onClick={() => handleCardClick('notAnswered')}
         >
           <StyledCounter>{totalUnanswered}</StyledCounter>
-          <div>Not answered</div>
+          <div>
+            {i18Translate('student:common.layout.questionlist.notAnswered')}
+          </div>
         </Card>
         <Card
           style={selectedCard === 'bookmarks' ? cardStyle : {}}
           onClick={() => handleCardClick('bookmarks')}
         >
           <StyledCounter>{totalBookmarks}</StyledCounter>
-          <div>Bookmarks</div>
+          <div>
+            {i18Translate(
+              'student:common.layout.questionlist.bookmarkedQuestions'
+            )}
+          </div>
         </Card>
       </FlexContainer>
     </StyledWrapper>
@@ -117,7 +126,7 @@ const ReviewToolbar = ({
       >
         <StyledButton data-cy="options">
           <StyledIconList />
-          <span>{t('common.test.review')}</span>
+          <span>{i18Translate('student:common.test.review')}</span>
         </StyledButton>
       </StyledPopover>
     </Container>

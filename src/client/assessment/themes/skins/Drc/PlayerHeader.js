@@ -183,9 +183,9 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={isShowReferenceModal}
                     onClick={openReferenceModal}
-                    title={i18Translate('common.test.referenceMaterial')}
+                    title={i18Translate('header:toolbar.refMaterial')}
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label={i18Translate('common.test.referenceMaterial')}
+                    aria-label={i18Translate('header:toolbar.refMaterial')}
                   >
                     <IconEduReferenceSheet color={header2.background} />
                   </ButtonWrapper>
@@ -196,13 +196,17 @@ const PlayerHeader = ({
                     onClick={handleCheckAnswer}
                     title={
                       checkAnswerInProgress
-                        ? 'In progress'
+                        ? i18Translate(
+                            'student:common.test.checkAnswerInfoTexts.inProgress'
+                          )
                         : answerChecksUsedForItem >= maxAnswerChecks
-                        ? 'Usage limit exceeded'
-                        : 'Check Answer'
+                        ? i18Translate(
+                            'student:common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                          )
+                        : i18Translate('student:common.test.checkanswer')
                     }
                     data-cy="checkAnswer"
-                    aria-label="Check Answer"
+                    aria-label={i18Translate('student:common.test.checkanswer')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Cursor color={header2.background} />
@@ -216,11 +220,11 @@ const PlayerHeader = ({
                   disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
                   title={
                     isDisableCrossBtn
-                      ? 'This option is available only for multiple choice'
-                      : 'Crossout'
+                      ? i18Translate('header:toolbar.crossDisabled')
+                      : i18Translate('header:toolbar.cross')
                   }
                   data-cy="crossButton"
-                  aria-label="Crossout"
+                  aria-label={i18Translate('header:toolbar.cross')}
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
@@ -228,9 +232,9 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}
-                    title={i18Translate('common.test.calculator')}
+                    title={i18Translate('header:toolbar.calculator')}
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label={i18Translate('common.test.calculator')}
+                    aria-label={i18Translate('header:toolbar.calculator')}
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
@@ -239,9 +243,9 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={tool?.includes(SCRATCHPAD)}
                     onClick={() => changeTool(SCRATCHPAD)}
-                    title={i18Translate('common.test.scratchPad')}
+                    title={i18Translate('header:toolbar.scratchPad')}
                     data-cy="scratchPad"
-                    aria-label={i18Translate('common.test.scratchPad')}
+                    aria-label={i18Translate('header:toolbar.scratchPad')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
@@ -251,9 +255,9 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={enableMagnifier}
                     onClick={handleMagnifier}
-                    title={i18Translate('common.test.magnify')}
+                    title={i18Translate('header:toolbar.magnify')}
                     data-cy="magnify"
-                    aria-label={i18Translate('common.test.magnify')}
+                    aria-label={i18Translate('header:toolbar.magnify')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
@@ -262,10 +266,10 @@ const PlayerHeader = ({
                 <EduIf condition={isTeacherPremium}>
                   <ButtonWrapper
                     onClick={toggleUserWorkUploadModal}
-                    title={i18Translate('common.test.uploadWork')}
+                    title={i18Translate('header:toolbar.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
-                    aria-label={i18Translate('common.test.uploadWork')}
+                    aria-label={i18Translate('header:toolbar.uploadWork')}
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>
@@ -308,7 +312,7 @@ PlayerHeader.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('student'),
+  withNamespaces(['student', 'header']),
   connect(
     (state) => ({
       settings: state.test.settings,

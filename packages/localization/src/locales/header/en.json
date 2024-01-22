@@ -20,7 +20,11 @@
     "assignmentsTitle": "Assignments",
     "profileTitle": "My Profile",
     "subscriptionTitle": "Subscription",
-    "myClassTitle": "My Classes"
+    "myClassTitle": "My Classes",
+    "grade": "GRADE",
+    "cancel": "CANCEL",
+    "continue": "CONTINUE",
+    "apply": "APPLY"
   },
   "toolbar": {
     "bookmark": "Bookmark",
@@ -41,6 +45,43 @@
     "scratchPad": "Scratch Pad",
     "magnify": "Magnify",
     "uploadWork": "Upload work",
-    "lineReader": "Line Reader"
-  }
+    "lineReader": "Line Reader",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "answerEliminator": "Answer eliminator"
+  },
+  "testOptions": {
+    "title": "Test Options",
+    "selectLanguage": "Select Language",
+    "alert": "Alert",
+    "responsesWillBeLostAlert": "All your previous responses will be lost and assignment will start from the beginning. Are you sure you want to continue?",
+    "colorContrast": "COLOR CONTRAST",
+    "default": "Default",
+    "zoom": "ZOOM",
+    "none": "None",
+    "standard": "standard",
+    "selectPreferredLanguage": "SELECT PREFERRED LANGUAGE",
+    "playBackTextToSpeech": "PLAYBACK SPEED (TEXT TO SPEECH)",
+    "playBackTextToSpeechNormalValue": "Normal",
+    "colorContrastOptions": {
+      "MGLG": "Medium Gray on Light Gray",
+      "BOR": "Black on Rose",
+      "RCON": "Reverse Contrast",
+      "YAB": "Yellow on Blue"
+    }
+  },
+  "headerMenuOptions": {
+    "changeColor": "Change the background and foreground color",
+    "enableMagnifier": "Enable Magnifier",
+    "showLineReaderMask": "Show Line Reader Mask",
+    "enableAnswerMask": "Enable Answer Masking",
+    "testOptions": "Test Options"
+  },
+  "saveAndExit": {
+		"assignmentInOneSitting": "This assignment is configured to completed in a single sitting",
+    "exit": "Exit",
+    "saveAndExit": "Save & Exit",
+    "submit": "SUBMIT",
+    "signOut": "SIGN OUT"
+	}
 }

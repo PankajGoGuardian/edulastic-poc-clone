@@ -1,0 +1,117 @@
+{
+  "common": {
+    "anonymous": "Anónimo",
+    "activeModeTexts": {
+      "selectTool": {
+        "title": "Selector [es]",
+        "description": "Seleccione el botón relevante para usar una función."
+      },
+      "freeDraw": {
+        "title": "Dibujo a mano alzada",
+        "description": "Toque y arrastre para dibujar líneas y formas."
+      },
+      "drawBreakingLine": {
+        "title": "Línea recta",
+        "description": "Toque para comenzar y agregar un punto, toque doble para finalizar."
+      },
+      "drawCurveLine": {
+        "title": "Línea curva",
+        "description": "Toque para comenzar y agregar un punto, toque doble para finalizar."
+      },
+      "drawSquare": {
+        "title": "Dibujo cuadrilátero",
+        "description": "Toque para comenzar y arrastrar para dibujar un cuadrilátero."
+      },
+      "drawСircle": {
+        "title": "Dibujo círculo",
+        "description": "Toque para comenzar y arrastrar para dibujar un círculo."
+      },
+      "drawTriangle": {
+        "title": "Dibujo de triángulo",
+        "description": "Toque para comenzar y arrastrar para dibujar un triángulo."
+      },
+      "drawText": {
+        "title": "Texto",
+        "description": "Toque el lienzo para ingresar el texto."
+      },
+      "drawMath": {
+        "title": "Ecuación matemática",
+        "description": "Use el editor de matemáticas para agregar una expresión o ecuación al lienzo."
+      },
+      "drawMeasureTool": {
+        "title": "Medida",
+        "description": "Arrastre y suelte una herramienta para cambiar la ubicación."
+      },
+      "EditingTools": {
+        "title": "Edición",
+        "description": "Seleccione el elemento para aplicar la acción, toque nuevamente para las propiedades."
+      },
+      "deleteTool": {
+        "title": "Eliminación",
+        "description": "Seleccione el elemento para eliminarlo."
+      }
+    },
+    "layout": {
+      "nextbtn": "siguiente",
+      "questionlist": {
+        "heading": "Preguntas",
+        "question": "Artículo",
+				"blockNavigationToAnsweredQuestions": "Esta tarea está restringida de volver a la pregunta anterior.",
+        "allQuestions": "Todas las preguntas",
+        "notAnswered": "No respondido",
+        "bookmarkedQuestions": "Marcadores"
+      },
+      "reviewQuestionsModal": {
+        "reviewTextInitial": "Has respondido preguntas",
+        "reviewTextEnd": "Haga clic en un número de pregunta para volver a él.",
+        "unanswered": "SIN RESPUESTA",
+        "answered": "CONTESTADA",
+        "bookmarked": "Marcado",
+        "noCancel": "Sin cancelar"
+      },
+			"questionNavigation": {
+				"next": "Siguiente",
+        "previous": "Volver",
+        "submit": "Entregar"
+			},
+      "selectbox": {
+        "question": "Pregunta"
+      }
+    },
+    "test": {
+      "checkanswer": "Checar respuesta",
+      "hint": "Pista",
+      "bookmark": "Marcador",
+      "review": "Revisar",
+      "reviewAndSubmit": "Revisar/enviar",
+      "reviewOrEnd": "Prueba de revisión/finalización",
+      "answerEliminator": "Respuesta Eliminador",
+      "ruler": "Gobernante",
+      "calculator": "Calculadora",
+      "scratchPad": "El papel de borador",
+      "uploadWork": "Subir trabajo",
+      "magnify": "Aumentar",
+      "pause": "Pausa",
+      "flag": "Bandera",
+      "options": "Opción",
+      "referenceSheet": "Hoja de referencia",
+      "referenceGuide": "Guia de referencia",
+      "referenceMaterial": "Material de referencia",
+			"tool": "Herramienta",
+			"checkAnswerInfoTexts": {
+        "inProgress": "En curso",
+        "usageLimitExceeded": "Límite de uso excedido"
+      },
+      "ttsButton": {
+        "play": "JUGAR",
+        "pause": "PAUSA",
+        "stop": "DETENER",
+        "playAll": "Jugar todo",
+        "playPassage": "Pasaje de juego",
+        "playQuestion": "Hacer una pregunta",
+        "ttsProcessingInProgress": "Todavía estamos procesando el archivo de audio para esta pregunta. Regrese a esta pregunta después de un tiempo.",
+        "ttsNotSupported": "La reproducción de MP3 no es compatible con este navegador"
+      }
+    }
+  }
+}

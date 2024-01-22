@@ -39,6 +39,7 @@ const ReviewQuestionsModal = ({
   previewPlayer,
   finishTest,
   disabledQuestionDropDownIndexMap,
+  t: i18Translate,
 }) => {
   const [selectedCard, setSelectedCard] = useState('notAnswered')
   const handleCardClick = (cardType) => setSelectedCard(cardType)
@@ -78,7 +79,7 @@ const ReviewQuestionsModal = ({
           onClick={handleClose}
           style={{ padding: '10px 40px' }}
         >
-          NO, CANCEL
+          {i18Translate('common.layout.reviewQuestionsModal.noCancel')}
         </EduButton>,
         <EduButton
           height="40px"
@@ -86,44 +87,55 @@ const ReviewQuestionsModal = ({
           onClick={previewPlayer ? finishTest : gotoSummary}
           style={{ padding: '10px 52px' }}
         >
-          SUBMIT
+          {i18Translate('common.layout.questionNavigation.submit')}
         </EduButton>,
       ]}
-      title="Review"
+      title={i18Translate('common.test.review')}
       width="640px"
     >
       <div>
         <LeadingParagraph>
-          You have answered{' '}
+          {i18Translate('common.layout.reviewQuestionsModal.reviewTextInitial')}{' '}
           <b>
             {totalQuestions - totalUnanswered} of {totalQuestions}
           </b>{' '}
-          questions. Click on a question number to go back to it.
+          {i18Translate('common.layout.reviewQuestionsModal.reviewTextEnd')}
         </LeadingParagraph>
         <FlexContainer
           marginBottom="20px"
           alignItems="center"
           justifyContent="space-between"
         >
-          <QuestionHead>Questions</QuestionHead>
+          <QuestionHead>
+            {i18Translate('common.layout.questionlist.heading')}
+          </QuestionHead>
           <ReviewFilters>
             <Card
               selected={selectedCard === 'notAnswered'}
               onClick={() => handleCardClick('notAnswered')}
             >
-              <div>UNANSWERED ({totalUnanswered})</div>
+              <div>
+                {i18Translate('common.layout.reviewQuestionsModal.unanswered')}{' '}
+                ({totalUnanswered})
+              </div>
             </Card>
             <Card
               selected={selectedCard === 'answered'}
               onClick={() => handleCardClick('answered')}
             >
-              <div>ANSWERED ({totalQuestions - totalUnanswered})</div>
+              <div>
+                {i18Translate('common.layout.reviewQuestionsModal.answered')} (
+                {totalQuestions - totalUnanswered})
+              </div>
             </Card>
             <Card
               selected={selectedCard === 'bookmarks'}
               onClick={() => handleCardClick('bookmarks')}
             >
-              <div>BOOKMARKED ({totalBookmarks})</div>
+              <div>
+                {i18Translate('common.layout.reviewQuestionsModal.bookmarked')}{' '}
+                ({totalBookmarks})
+              </div>
             </Card>
           </ReviewFilters>
         </FlexContainer>
@@ -151,15 +163,15 @@ const ReviewQuestionsModal = ({
         <LegendsContainer>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('unanswered')} />
-            UNANSWERED
+            {i18Translate('common.layout.reviewQuestionsModal.unanswered')}
           </LegendWrapper>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('answered')} />
-            ANSWERED
+            {i18Translate('common.layout.reviewQuestionsModal.answered')}
           </LegendWrapper>
           <LegendWrapper>
             <LegendColor color={getItemStatusColor('bookmarks')} />
-            BOOKMARKED
+            {i18Translate('common.layout.reviewQuestionsModal.bookmarked')}
           </LegendWrapper>
         </LegendsContainer>
       </div>

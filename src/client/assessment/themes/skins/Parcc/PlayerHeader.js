@@ -64,7 +64,7 @@ const ImmersiveReaderButton = (props) => {
 }
 
 const PlayerHeader = ({
-  t: translate,
+  t: i18Translate,
   title,
   currentItem,
   gotoQuestion,
@@ -190,8 +190,12 @@ const PlayerHeader = ({
                     placement="top"
                     title={
                       blockNavigationToAnsweredQuestions
-                        ? 'This assignment is restricted from navigating back to the previous question.'
-                        : 'Previous'
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.blockNavigationToAnsweredQuestions'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.previous'
+                          )
                     }
                     overlayStyle={overlayStyle}
                   >
@@ -224,7 +228,15 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title={`${showSubmitText ? 'Submit' : 'Next'}`}
+                    title={`${
+                      showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )
+                    }`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
@@ -249,7 +261,7 @@ const PlayerHeader = ({
                       }}
                       style={{
                         marginLeft: '5px',
-                        width: '90px',
+                        width: 'auto',
                         alignItems: 'center',
                         display: 'flex',
                       }}
@@ -261,7 +273,13 @@ const PlayerHeader = ({
                           }}
                         />
                       )}
-                      {showSubmitText ? 'SUBMIT' : 'NEXT'}
+                      {showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )}
                     </ControlBtn>
                   </Tooltip>
                   {!isDocbased && (
@@ -287,10 +305,10 @@ const PlayerHeader = ({
                           }
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
-                          aria-label={translate('common.test.bookmark')}
+                          aria-label={i18Translate('header:toolbar.bookmark')}
                         >
                           <StyledIconBookmark />
-                          <span>{translate('common.test.bookmark')}</span>
+                          <span>{i18Translate('header:toolbar.bookmark')}</span>
                         </StyledButton>
                       )}
                     </Container>
@@ -309,7 +327,7 @@ const PlayerHeader = ({
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                   answerChecksUsedForItem={answerChecksUsedForItem}
                   checkAnswer={checkAnswer}
-                  translate={translate}
+                  i18Translate={i18Translate}
                   openReferenceModal={openReferenceModal}
                   canShowReferenceMaterial={canShowReferenceMaterial}
                   isShowReferenceModal={isShowReferenceModal}
@@ -332,6 +350,7 @@ const PlayerHeader = ({
                   hidePause={hidePause}
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                   canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
+                  i18Translate={i18Translate}
                 />
               </FlexContainer>
             </HeaderWrapper>
@@ -355,7 +374,7 @@ PlayerHeader.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('student'),
+  withNamespaces(['student', 'header']),
   connect(
     (state) => ({
       settings: state.test.settings,

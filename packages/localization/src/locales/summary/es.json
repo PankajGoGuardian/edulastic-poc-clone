@@ -1,0 +1,17 @@
+{
+  "common": {
+    "headingText": "Un último paso antes de enviar",
+    "message": "Verifique si todas las preguntas han sido respondidas. Se puede acceder a preguntas individuales haciendo clic en ellas",
+    "markedQuestionLineOne": "Has respondido estas preguntas.",
+    "skippedQues": "Revise sus preguntas omitidas antes de enviar la prueba",
+    "markedForReview": "Has marcado estas preguntas. Revisarlos antes de enviar la prueba.",
+    "partiallyAttemptedQues": "Revise sus preguntas parcialmente respondidas antes de enviar la prueba",
+    "nextStep": "Completó su revisión?",
+    "questionsLabel": "Preguntas",
+    "submitAndMoveToNextSection": "Enviar y pasar a la siguiente sección"
+  },
+  "confirmation": {
+    "submitAssignment": "¿Presentar asignación?",
+    "confirmationMessage": "Esta es su última oportunidad de continuar trabajando en la tarea. Puede hacer clic en Cancelar para volver a la prueba o enviar al final."
+  }
+}

@@ -1,7 +1,9 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { isEmpty } from 'lodash'
 
+import { withNamespaces } from '@edulastic/localization'
 import { IconSearch } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { EduIf, notification } from '@edulastic/common'
@@ -51,6 +53,7 @@ const PlayerHeader = ({
   checkAnswer,
   checkAnswerInProgress,
   isPremiumContentWithoutAccess = false,
+  t: i18Translate,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
 
@@ -98,7 +101,10 @@ const PlayerHeader = ({
               <MainActionWrapper>
                 <ToolBarContainer>
                   <EduIf condition={!isEmpty(calcTypes)}>
-                    <Tooltip placement="top" title="Calculator">
+                    <Tooltip
+                      placement="top"
+                      title={i18Translate('header:toolbar.calculator')}
+                    >
                       <ButtonWithStyle
                         active={currentToolMode.calculator}
                         onClick={() => onChangeTool('calculator')}
@@ -110,7 +116,10 @@ const PlayerHeader = ({
                     </Tooltip>
                   </EduIf>
                   {showMagnifier && (
-                    <Tooltip placement="top" title="Magnify">
+                    <Tooltip
+                      placement="top"
+                      title={i18Translate('header:toolbar.magnify')}
+                    >
                       <ButtonWithStyle
                         active={enableMagnifier}
                         onClick={handleMagnifier}
@@ -125,10 +134,14 @@ const PlayerHeader = ({
                       placement="top"
                       title={
                         checkAnswerInProgress
-                          ? 'In progress'
+                          ? i18Translate(
+                              'student:common.test.checkAnswerInfoTexts.inProgress'
+                            )
                           : answerChecksUsedForItem >= settings.maxAnswerChecks
-                          ? 'Usage limit exceeded'
-                          : 'Check Answer'
+                          ? i18Translate(
+                              'student:common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                            )
+                          : i18Translate('student:common.test.checkanswer')
                       }
                     >
                       <ButtonWithStyle
@@ -171,4 +184,9 @@ const mapDispatchToProps = {
   checkAnswer: checkAnswerEvaluation,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlayerHeader)
+const enhance = compose(
+  withNamespaces(['header', 'student']),
+  connect(mapStateToProps, mapDispatchToProps)
+)
+
+export default enhance(PlayerHeader)

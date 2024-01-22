@@ -25,7 +25,7 @@ const PlayerFooter = ({
   currentItem,
   items,
   isBookmarked,
-  t,
+  t: i18Translate,
   LCBPreviewModal,
   isDocbased,
   finishTest,
@@ -51,15 +51,15 @@ const PlayerFooter = ({
           <Tooltip
             placement="top"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            title={t('common.test.reviewOrEnd')}
+            title={i18Translate('common.test.reviewOrEnd')}
           >
             <ButtonWrapper
               isPrimary={false}
               data-cy="submit"
               onClick={handleReviewOrSubmit}
-              aria-label={t('common.test.reviewOrEnd')}
+              aria-label={i18Translate('common.test.reviewOrEnd')}
             >
-              <span>{t('common.test.reviewOrEnd')}</span>
+              <span>{i18Translate('common.test.reviewOrEnd')}</span>
             </ButtonWrapper>
           </Tooltip>
         )}
@@ -69,8 +69,8 @@ const PlayerFooter = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             title={
               hidePause
-                ? `${t('common.test.pause')} disabled`
-                : t('common.test.pause')
+                ? `${i18Translate('common.test.pause')} disabled`
+                : i18Translate('common.test.pause')
             }
           >
             <ButtonWrapper
@@ -83,9 +83,9 @@ const PlayerFooter = ({
               }}
               disabled={hidePause}
               isPrimary
-              aria-label={t('common.test.pause')}
+              aria-label={i18Translate('common.test.pause')}
             >
-              {t('common.test.pause')}
+              {i18Translate('common.test.pause')}
             </ButtonWrapper>
           </Tooltip>
         )}
@@ -94,7 +94,7 @@ const PlayerFooter = ({
           <Tooltip
             placement="top"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            title={t('common.test.flag')}
+            title={i18Translate('common.test.flag')}
           >
             <ButtonWrapper
               disabled={isPremiumContentWithoutAccess}
@@ -109,7 +109,7 @@ const PlayerFooter = ({
               data-cy="bookmark"
               aria-label="Bookmark"
             >
-              {t('common.test.flag')}
+              {i18Translate('common.test.flag')}
             </ButtonWrapper>
           </Tooltip>
         )}
@@ -118,7 +118,7 @@ const PlayerFooter = ({
           <Tooltip
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             placement="bottom"
-            title="Options"
+            title={i18Translate('common.test.options')}
           >
             <ButtonWrapper
               isPrimary
@@ -126,7 +126,7 @@ const PlayerFooter = ({
               aria-label="Test Options"
               onClick={() => setSettingsModalVisibility(true)}
             >
-              options
+              {i18Translate('common.test.options')}
             </ButtonWrapper>
           </Tooltip>
         )}
@@ -138,8 +138,10 @@ const PlayerFooter = ({
           placement="top"
           title={
             blockNavigationToAnsweredQuestions
-              ? 'This assignment is restricted from navigating back to the previous question.'
-              : 'Previous'
+              ? i18Translate(
+                  'common.layout.questionlist.blockNavigationToAnsweredQuestions'
+                )
+              : i18Translate('common.layout.questionNavigation.previous')
           }
           overlayStyle={overlayStyle}
         >
@@ -175,7 +177,11 @@ const PlayerFooter = ({
         <Tooltip
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           placement="top"
-          title="Next"
+          title={
+            showSubmitText
+              ? i18Translate('common.layout.questionNavigation.submit')
+              : i18Translate('common.layout.questionNavigation.next')
+          }
           overlayStyle={overlayStyle}
         >
           <ControlBtn
@@ -186,7 +192,11 @@ const PlayerFooter = ({
               moveToNext()
               e.target.blur()
             }}
-            aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
+            aria-label={
+              showSubmitText
+                ? i18Translate('common.layout.questionNavigation.submit')
+                : i18Translate('common.layout.questionNavigation.next')
+            }
             // added separate keydown event handler to restrict calling on blur event for keyboard event
             onKeyDown={(e) => {
               const code = e.which || e.keyCode
@@ -201,7 +211,11 @@ const PlayerFooter = ({
             style={{ marginLeft: '5px' }}
           >
             <IconDrc.IconNext style={{ marginRight: '10px' }} />
-            <span>{showSubmitText ? 'SUBMIT' : 'NEXT'}</span>
+            <span>
+              {showSubmitText
+                ? i18Translate('common.layout.questionNavigation.submit')
+                : i18Translate('common.layout.questionNavigation.next')}
+            </span>
           </ControlBtn>
         </Tooltip>
       </RightContent>

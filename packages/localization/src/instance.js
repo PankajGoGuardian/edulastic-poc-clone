@@ -58,7 +58,13 @@ i18n
         qtiimport: require('./locales/qtiImport/en'),
         notifications: require('./locales/notifications/en'),
         upgradePlan: require('./locales/upgradePlan/en'),
-        dataStudio: require('./locales/dataStudio/en')
+        dataStudio: require('./locales/dataStudio/en'),
+      },
+      es: {
+        default: require('./locales/default/es'),
+        header: require('./locales/header/es'),
+        student: require('./locales/student/es'),
+        summary: require('./locales/summary/es'),
       },
     },
   })

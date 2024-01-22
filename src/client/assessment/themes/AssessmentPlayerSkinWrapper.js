@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { withNamespaces } from '@edulastic/localization'
+import { compose } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { test } from '@edulastic/constants'
 import { AssessmentPlayerContext, FlexContainer } from '@edulastic/common'
@@ -31,6 +33,7 @@ const AssessmentPlayerSkinWrapper = ({
   themeForHeader = {},
   videoUrl,
   preventSectionNavigation,
+  t: i18Translate,
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -311,8 +314,10 @@ const AssessmentPlayerSkinWrapper = ({
           placement="right"
           title={
             blockNavigationToAnsweredQuestions
-              ? 'This assignment is restricted from navigating back to the previous question.'
-              : 'Previous'
+              ? i18Translate(
+                  'common.layout.questionlist.blockNavigationToAnsweredQuestions'
+                )
+              : i18Translate('common.layout.questionNavigation.previous')
           }
         >
           <Nav.BackArrow
@@ -329,7 +334,10 @@ const AssessmentPlayerSkinWrapper = ({
           </Nav.BackArrow>
         </Tooltip>
       )}
-      <Tooltip placement="left" title="Next">
+      <Tooltip
+        placement="left"
+        title={i18Translate('common.layout.questionNavigation.next')}
+      >
         <Nav.NextArrow
           right="0px"
           borderRadius="0px"
@@ -451,4 +459,6 @@ const StyledMainContainer = styled.div`
       `
       : ``}
 `
-export default AssessmentPlayerSkinWrapper
+const enhance = compose(withNamespaces(['student', 'header']))
+
+export default enhance(AssessmentPlayerSkinWrapper)

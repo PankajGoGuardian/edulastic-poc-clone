@@ -21,6 +21,7 @@ export const ControlBtn = styled(Button)`
   width: 35px;
   height: 35px;
   border: 1px solid ${navigationButtons.color};
+  text-transform: uppercase;
   ${({ style }) => style};
   background: ${navigationButtons.background};
   color: ${navigationButtons.color};

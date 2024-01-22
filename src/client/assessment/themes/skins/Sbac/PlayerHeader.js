@@ -200,8 +200,12 @@ const PlayerHeader = ({
                     placement="top"
                     title={
                       blockNavigationToAnsweredQuestions
-                        ? 'This assignment is restricted from navigating back to the previous question.'
-                        : 'Previous'
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.blockNavigationToAnsweredQuestions'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.previous'
+                          )
                     }
                     overlayStyle={overlayStyle}
                   >
@@ -234,12 +238,28 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title={`${showSubmitText ? 'Submit' : 'Next'}`}
+                    title={
+                      showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )
+                    }
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
+                      aria-label={
+                        showSubmitText
+                          ? i18Translate(
+                              'student:common.layout.questionNavigation.submit'
+                            )
+                          : i18Translate(
+                              'student:common.layout.questionNavigation.next'
+                            )
+                      }
                       icon={showSubmitText ? null : 'right'}
                       onClick={(e) => {
                         moveToNext()
@@ -259,7 +279,7 @@ const PlayerHeader = ({
                       }}
                       style={{
                         marginLeft: '5px',
-                        width: '90px',
+                        width: 'auto',
                         alignItems: 'center',
                         display: 'flex',
                       }}
@@ -271,13 +291,22 @@ const PlayerHeader = ({
                           }}
                         />
                       )}
-                      {showSubmitText ? 'SUBMIT' : 'NEXT'}
+                      {showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )}
                     </ControlBtn>
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
                   {!blockNavigationToAnsweredQuestions && (
-                    <Tooltip placement="top" title="Bookmark">
+                    <Tooltip
+                      placement="top"
+                      title={i18Translate('header:toolbar.bookmark')}
+                    >
                       <StyledButton
                         data-cy="bookmark"
                         aria-label="Bookmark"
@@ -297,7 +326,13 @@ const PlayerHeader = ({
                   {showPause && (
                     <Tooltip
                       placement="top"
-                      title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+                      title={
+                        hidePause
+                          ? i18Translate(
+                              'header:saveAndExit.assignmentInOneSitting'
+                            )
+                          : i18Translate('header:saveAndExit.saveAndExit')
+                      }
                     >
                       <StyledButton
                         data-cy="finishTest"

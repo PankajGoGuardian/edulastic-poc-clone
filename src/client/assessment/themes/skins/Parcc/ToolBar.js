@@ -43,7 +43,7 @@ const ToolBar = ({
   answerChecksUsedForItem,
   checkAnswer,
   calcTypes,
-  translate,
+  i18Translate,
   openReferenceModal = () => {},
   canShowReferenceMaterial = false,
   isShowReferenceModal = false,
@@ -67,25 +67,32 @@ const ToolBar = ({
           onClick={handleCheckAnswer}
           title={
             checkAnswerInProgress
-              ? 'In progress'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.inProgress'
+                )
               : answerChecksUsedForItem >= maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                )
+              : i18Translate('student:common.test.checkanswer')
           }
           data-cy="checkAnswer"
-          aria-label="Check Answer"
+          aria-label={i18Translate('student:common.test.checkanswer')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck />
         </StyledButton>
       )}
       <EduIf condition={!isEmpty(calcTypes)}>
-        <Tooltip placement="top" title="Calculator">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.calculator')}
+        >
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Calculator"
+            aria-label={i18Translate('header:toolbar.calculator')}
           >
             <CaculatorIcon />
           </StyledButton>
@@ -95,12 +102,12 @@ const ToolBar = ({
       <EduIf condition={!isDocbased && canShowReferenceMaterial}>
         <Tooltip
           placement="top"
-          title={translate('common.test.referenceMaterial')}
+          title={i18Translate('header:toolbar.refMaterial')}
         >
           <StyledButton
             onClick={openReferenceModal}
             active={isShowReferenceModal}
-            aria-label={translate('common.test.referenceMaterial')}
+            aria-label={i18Translate('header:toolbar.refMaterial')}
           >
             <IconEduReferenceSheet height="22" width="20" />
           </StyledButton>
@@ -111,38 +118,44 @@ const ToolBar = ({
           placement="top"
           title={
             isDisableCrossBtn
-              ? 'This option is available only for multiple choice'
-              : 'Crossout'
+              ? i18Translate('header:toolbar.crossDisabled')
+              : i18Translate('header:toolbar.cross')
           }
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
-            aria-label="Crossout"
+            aria-label={i18Translate('header:toolbar.cross')}
           >
             <CloseIcon />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && enableScratchpad && (
-        <Tooltip placement="top" title="Scratch Pad">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.scratchPad')}
+        >
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="ScratchPad"
+            aria-label={i18Translate('header:toolbar.scratchPad')}
           >
             <ScratchPadIcon />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && isTeacherPremium && (
-        <Tooltip placement="top" title="Upload work">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.uploadWork')}
+        >
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Upload Work"
+            aria-label={i18Translate('header:toolbar.uploadWork')}
           >
             <IconCloudUpload />
           </StyledButton>

@@ -61,7 +61,7 @@ const ImmersiveReaderButton = (props) => {
 }
 
 const PlayerHeader = ({
-  t,
+  t: i18Translate,
   title,
   currentItem,
   gotoQuestion,
@@ -159,7 +159,9 @@ const PlayerHeader = ({
         <StyledHeaderTitle>
           <div style={{ display: 'flex' }}>
             {!!grades.length && (
-              <Grades data-cy="grades">GRADE {grades.join(',')}</Grades>
+              <Grades data-cy="grades">
+                {i18Translate('header:common.grade')} {grades.join(',')}
+              </Grades>
             )}
             {!!subjects.length && (
               <Subjects data-cy="subjects">{subjects.join(',')}</Subjects>
@@ -192,18 +194,22 @@ const PlayerHeader = ({
             {showPause && (
               <Tooltip
                 placement="top"
-                title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+                title={
+                  hidePause
+                    ? i18Translate('header:saveAndExit.assignmentInOneSitting')
+                    : i18Translate('header:saveAndExit.saveAndExit')
+                }
               >
                 <SignOut
                   data-cy="finishTest"
                   onClick={finishTest}
                   disabled={hidePause}
-                  aria-label="Save & Exit"
+                  aria-label={i18Translate('header:saveAndExit.signOut')}
                 >
                   {!hidePause && (
                     <IconSignoutHighlight style={{ marginRight: '10px' }} />
                   )}
-                  SIGN OUT
+                  {i18Translate('header:saveAndExit.signOut')}
                 </SignOut>
               </Tooltip>
             )}
@@ -219,14 +225,14 @@ const PlayerHeader = ({
                     onClick={handleOpen}
                     aria-label={
                       showSubmitText
-                        ? t('common.test.reviewAndSubmit')
-                        : t('common.test.review')
+                        ? i18Translate('student:common.test.reviewAndSubmit')
+                        : i18Translate('student:common.test.review')
                     }
                   >
                     <span>
                       {showSubmitText
-                        ? t('common.test.reviewAndSubmit')
-                        : t('common.test.review')}
+                        ? i18Translate('student:common.test.reviewAndSubmit')
+                        : i18Translate('student:common.test.review')}
                     </span>
                   </StyledButton>
                 </Container>
@@ -242,15 +248,20 @@ const PlayerHeader = ({
                 data-cy="questionLeft"
                 aria-label={`Question ${currentItem + 1} of ${totalQuestions}`}
               >
-                Question {currentItem + 1} of {totalQuestions}
+                {i18Translate('student:common.layout.selectbox.question')}{' '}
+                {currentItem + 1} of {totalQuestions}
               </Container>
               <Container>
                 <Tooltip
                   placement="top"
                   title={
                     blockNavigationToAnsweredQuestions
-                      ? 'This assignment is restricted from navigating back to the previous question.'
-                      : 'Previous'
+                      ? i18Translate(
+                          'student:common.layout.questionlist.blockNavigationToAnsweredQuestions'
+                        )
+                      : i18Translate(
+                          'common.layout.questionNavigation.previous'
+                        )
                   }
                   overlayStyle={overlayStyle}
                 >
@@ -263,7 +274,15 @@ const PlayerHeader = ({
                       blockNavigationToAnsweredQuestions ||
                       firstItemInSectionAndRestrictNav
                     }
-                    aria-label="Previous"
+                    aria-label={
+                      blockNavigationToAnsweredQuestions
+                        ? i18Translate(
+                            'student:common.layout.questionlist.blockNavigationToAnsweredQuestions'
+                          )
+                        : i18Translate(
+                            'common.layout.questionNavigation.previous'
+                          )
+                    }
                     onClick={(e) => {
                       moveToPrev()
                       e.target.blur()
@@ -286,14 +305,30 @@ const PlayerHeader = ({
                 </Tooltip>
                 <Tooltip
                   placement="top"
-                  title="Next"
+                  title={
+                    showSubmitText
+                      ? i18Translate(
+                          'student:common.layout.questionNavigation.submit'
+                        )
+                      : i18Translate(
+                          'student:common.layout.questionNavigation.next'
+                        )
+                  }
                   overlayStyle={overlayStyle}
                 >
                   <ControlBtn
                     data-cy="next"
                     type="primary"
                     icon="right"
-                    aria-label={showSubmitText ? 'SUBMIT' : 'NEXT'}
+                    aria-label={
+                      showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )
+                    }
                     onClick={(e) => {
                       moveToNext()
                       e.target.blur()
@@ -313,7 +348,15 @@ const PlayerHeader = ({
                     style={{ marginLeft: '15px' }}
                   >
                     <IconQuester.IconNext style={{ marginRight: '10px' }} />
-                    <span>{showSubmitText ? 'SUBMIT' : 'NEXT'}</span>
+                    <span>
+                      {showSubmitText
+                        ? i18Translate(
+                            'student:common.layout.questionNavigation.submit'
+                          )
+                        : i18Translate(
+                            'student:common.layout.questionNavigation.next'
+                          )}
+                    </span>
                   </ControlBtn>
                 </Tooltip>
               </Container>
@@ -332,7 +375,7 @@ PlayerHeader.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('student'),
+  withNamespaces(['student', 'header']),
   connect(
     (state) => ({
       settings: state.test.settings,

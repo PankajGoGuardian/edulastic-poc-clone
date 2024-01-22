@@ -18,6 +18,7 @@ const LineReader = ({
   btnText,
   onClick,
   hideButton,
+  i18Translate,
 }) => {
   const [showReader, destoryReader] = useLineReader(hideLineReader)
 
@@ -53,7 +54,7 @@ const LineReader = ({
   }, [btnComponent])
 
   return !hideButton ? (
-    <Tooltip placement="top" title="Line Reader">
+    <Tooltip placement="top" title={i18Translate('toolbar.lineReader')}>
       <Button
         isGhost
         IconBtn

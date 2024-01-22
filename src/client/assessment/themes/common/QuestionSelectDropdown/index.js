@@ -15,7 +15,7 @@ const QuestionSelectDropdown = ({
   options = [],
   currentItem,
   skinb,
-  t,
+  t: i18Translate,
   bookmarks = [],
   skipped = [],
   dropdownStyle = {},
@@ -63,7 +63,9 @@ const QuestionSelectDropdown = ({
         placement="bottom"
         title={
           blockNavigationToAnsweredQuestions
-            ? 'This assignment is restricted from navigating back to the previous question.'
+            ? i18Translate(
+                'common.layout.questionlist.blockNavigationToAnsweredQuestions'
+              )
             : null
         }
       >
@@ -87,13 +89,13 @@ const QuestionSelectDropdown = ({
               key={index}
               value={item}
               disabled={disabledQuestionDropDownIndexMap[item]}
-              aria-label={`${t('common.layout.selectbox.question')} ${
+              aria-label={`${i18Translate(
+                'common.layout.selectbox.question'
+              )} ${index + 1}/${options.length}`}
+            >
+              {`${i18Translate('common.layout.selectbox.question')} ${
                 index + 1
               }/${options.length}`}
-            >
-              {`${t('common.layout.selectbox.question')} ${index + 1}/${
-                options.length
-              }`}
               {bookmarks[index] ? (
                 <IconBookmark color="#f8c165" height={16} />
               ) : skipped[index] ? (
@@ -105,7 +107,8 @@ const QuestionSelectDropdown = ({
           ))}
           {showSubmit && (
             <Select.Option key={options.length} value="SUBMIT">
-              Submit <IconSend />
+              {i18Translate('common.layout.questionNavigation.submit')}{' '}
+              <IconSend />
             </Select.Option>
           )}
         </Select>

@@ -86,6 +86,7 @@ export const ControlBtn = styled(Button)`
   width: 45px;
   height: 40px;
   border: none;
+  text-transform: uppercase;
   ${({ style }) => style};
   background: ${navigationButtons.background};
   color: ${navigationButtons.color};

@@ -12,14 +12,6 @@ import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelectorTab/duck'
 import { lineReaderVisible } from '../../../../common/components/LineReader/duck'
 
-const menuItems = {
-  changeColor: 'Change the background and foreground color',
-  enableMagnifier: 'Enable Magnifier',
-  showLineReaderMask: 'Show Line Reader Mask',
-  enableAnswerMask: 'Enable Answer Masking',
-  testOptions: 'Test Options',
-}
-
 const MenuItem = withKeyboard(Menu.Item)
 
 const SettingMenu = ({
@@ -33,10 +25,21 @@ const SettingMenu = ({
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
   isLineReaderVisible,
+  i18Translate,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
   const handleSettingsChange = (e) => e && onSettingsChange(e)
+
+  const menuItems = {
+    changeColor: i18Translate('header:headerMenuOptions.changeColor'),
+    enableMagnifier: i18Translate('header:headerMenuOptions.enableMagnifier'),
+    showLineReaderMask: i18Translate(
+      'header:headerMenuOptions.showLineReaderMask'
+    ),
+    enableAnswerMask: i18Translate('header:headerMenuOptions.enableAnswerMask'),
+    testOptions: i18Translate('header:headerMenuOptions.testOptions'),
+  }
 
   const menu = (
     <StyledMenu onClick={handleSettingsChange}>
@@ -72,8 +75,9 @@ const SettingMenu = ({
           disabled={hidePause}
           {...(hidePause
             ? {
-                title:
-                  'This assignment is configured to completed in a single sitting',
+                title: i18Translate(
+                  'header:saveAndExit.assignmentInOneSitting'
+                ),
               }
             : {})}
           key="save"
@@ -82,7 +86,7 @@ const SettingMenu = ({
             handleSettingsChange({ key: 'save' })
           }}
         >
-          Save & Exit
+          {i18Translate('header:saveAndExit.saveAndExit')}
         </MenuItem>
       )}
     </StyledMenu>

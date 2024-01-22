@@ -6,6 +6,7 @@ import {
   drcThemeColor,
   drcWhite,
 } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
 import { AssessmentPlayerContext, EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
@@ -60,6 +61,7 @@ const SettingsModal = ({
   ttsPlaybackSpeed,
   updateTestPlayer,
   canShowPlaybackOptionTTS,
+  t: i18Translate,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -128,21 +130,27 @@ const SettingsModal = ({
       playerSkinType={playerSkinType}
       maskClosable={false}
       textAlign="left"
-      title={showReconfirm ? 'Alert' : 'Test Options'}
+      title={
+        showReconfirm
+          ? i18Translate('testOptions.alert')
+          : i18Translate('testOptions.title')
+      }
       centered
       visible={settingsModalVisible}
       onCancel={handleCancel}
       destroyOnClose
       footer={[
         <EduButton isGhost key="cancel" onClick={handleCancel}>
-          CANCEL
+          {i18Translate('common.cancel')}
         </EduButton>,
         <EduButton
           data-cy={showReconfirm ? 'continue' : 'apply'}
           key="submit"
           onClick={handleApply}
         >
-          {showReconfirm ? 'CONTINUE' : 'APPLY'}
+          {showReconfirm
+            ? i18Translate('common.continue')
+            : i18Translate('common.apply')}
         </EduButton>,
       ]}
     >
@@ -150,8 +158,7 @@ const SettingsModal = ({
         {showReconfirm ? (
           <div style={reconfirmContentStyle}>
             {' '}
-            All your previous responses will be lost and assignment will start
-            from the beginning. Are you sure you want to continue?{' '}
+            {i18Translate('testOptions.responsesWillBeLostAlert')}{' '}
           </div>
         ) : (
           <>
@@ -159,7 +166,9 @@ const SettingsModal = ({
               <>
                 <div>
                   {/* Color contrast switch is a seperate component for parcc skin any change here should be made for 'parcc/changecolor' component as well */}
-                  <CustomColumn>COLOR CONTRAST</CustomColumn>
+                  <CustomColumn>
+                    {i18Translate('testOptions.colorContrast')}
+                  </CustomColumn>
                   <StyledSelect
                     value={selectedTheme}
                     onChange={setSelectedTheme}
@@ -169,20 +178,24 @@ const SettingsModal = ({
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="default" aria-label="Default">
-                      Default
+                      {i18Translate('testOptions.default')}
                     </Select.Option>
                     {Object.keys(themeColorsMap).map((key) => {
                       const item = themeColorsMap[key]
                       return (
                         <Select.Option value={key} aria-label={item.title}>
-                          {item.title}
+                          {i18Translate(
+                            `testOptions.colorContrastOptions.${key}`
+                          )}
                         </Select.Option>
                       )
                     })}
                   </StyledSelect>
                 </div>
                 <div>
-                  <CustomColumn>ZOOM</CustomColumn>
+                  <CustomColumn>
+                    {i18Translate('testOptions.zoom')}
+                  </CustomColumn>
                   <StyledSelect
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     value={zoomLevel}
@@ -192,19 +205,19 @@ const SettingsModal = ({
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="1" aria-label="None">
-                      None
+                      {i18Translate('testOptions.none')}
                     </Select.Option>
                     <Select.Option value="1.5" aria-label="1.5X standard">
-                      1.5X standard
+                      1.5X {i18Translate('testOptions.standard')}
                     </Select.Option>
                     <Select.Option value="1.75" aria-label="1.75X standard">
-                      1.75X standard
+                      1.75X {i18Translate('testOptions.standard')}
                     </Select.Option>
                     <Select.Option value="2.5" aria-label="2.5X standard">
-                      2.5X standard
+                      2.5X {i18Translate('testOptions.standard')}
                     </Select.Option>
                     <Select.Option value="3" aria-label="3X standard">
-                      3X standard
+                      3X {i18Translate('testOptions.standard')}
                     </Select.Option>
                   </StyledSelect>
                 </div>
@@ -212,7 +225,9 @@ const SettingsModal = ({
             )}
             {multiLanguageEnabled && (
               <div>
-                <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
+                <CustomColumn>
+                  {i18Translate('testOptions.selectPreferredLanguage')}
+                </CustomColumn>
                 <StyledSelect
                   data-cy="langPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -222,7 +237,7 @@ const SettingsModal = ({
                   disabled={isPremiumContentWithoutAccess}
                 >
                   <Select.Option value="" disabled aria-label="Select Language">
-                    Select Language
+                    {i18Translate('testOptions.selectLanguage')}
                   </Select.Option>
                   <Select.Option
                     value={languageCodes.ENGLISH}
@@ -241,7 +256,9 @@ const SettingsModal = ({
             )}
             {canShowPlaybackOptionTTS && (
               <div>
-                <CustomColumn>PLAYBACK SPEED (TEXT TO SPEECH)</CustomColumn>
+                <CustomColumn>
+                  {i18Translate('testOptions.playBackTextToSpeech')}
+                </CustomColumn>
                 <StyledSelect
                   data-cy="playBackSpeedPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -256,7 +273,9 @@ const SettingsModal = ({
                     0.75X
                   </Select.Option>
                   <Select.Option value="1" aria-label="Normal">
-                    Normal
+                    {i18Translate(
+                      'testOptions.playBackTextToSpeechNormalValue'
+                    )}
                   </Select.Option>
                   <Select.Option value="1.5" aria-label="1.5X">
                     1.5X
@@ -275,6 +294,7 @@ const SettingsModal = ({
 }
 
 const enhance = compose(
+  withNamespaces('header'),
   withTheme,
   connect(
     (state) => ({

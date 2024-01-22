@@ -46,7 +46,7 @@ const PlayerFooter = ({
   currentItem,
   items,
   isBookmarked,
-  t,
+  t: i18Translate,
   changeTool,
   tool,
   qType,
@@ -112,25 +112,25 @@ const PlayerFooter = ({
       <ActionContainer
         data-cy="zoomOut"
         onClick={handleZoomOut}
-        aria-label="Zoom Out"
+        aria-label={i18Translate('header:toolbar.zoomOut')}
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
-        <span>ZOOM OUT</span>
+        <span>{i18Translate('header:toolbar.zoomOut')}</span>
       </ActionContainer>
 
       <ActionContainer
         data-cy="zoomIn"
         onClick={handleZoomIn}
-        aria-label="Zoom In"
+        aria-label={i18Translate('header:toolbar.zoomIn')}
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
           <IconPlus color={footer.textColor} />
         </IconWrap>
-        <span>ZOOM IN</span>
+        <span>{i18Translate('header:toolbar.zoomIn')}</span>
       </ActionContainer>
       {!blockNavigationToAnsweredQuestions && (
         <ActionContainer
@@ -141,9 +141,9 @@ const PlayerFooter = ({
               ? toggleBookmark
               : () => toggleBookmark(items[currentItem]?._id)
           }
-          title={t('common.test.bookmark')}
+          title={i18Translate('header:toolbar.bookmark')}
           data-cy="bookmark"
-          aria-label={t('common.test.bookmark')}
+          aria-label={i18Translate('header:toolbar.bookmark')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -153,7 +153,7 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.bookmark')}</span>
+          <span>{i18Translate('header:toolbar.bookmark')}</span>
         </ActionContainer>
       )}
       <Devider />
@@ -162,10 +162,10 @@ const PlayerFooter = ({
         <ActionContainer
           hoverEffect
           onClick={openReferenceModal}
-          title={t('common.test.referenceGuide')}
+          title={i18Translate('header:toolbar.refMaterial')}
           data-cy="referenceGuide"
           disabled={isPremiumContentWithoutAccess}
-          aria-label={t('common.test.referenceGuide')}
+          aria-label={i18Translate('header:toolbar.refMaterial')}
         >
           <IconWrapper>
             <IconReferenceGuide
@@ -174,7 +174,7 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.referenceGuide')}</span>
+          <span>{i18Translate('toolbar.refMaterial')}</span>
         </ActionContainer>
       )}
 
@@ -184,17 +184,21 @@ const PlayerFooter = ({
           onClick={handleCheckAnswer}
           title={
             checkAnswerInProgress
-              ? 'In progress'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.inProgress'
+                )
               : answerChecksUsedForItem >= maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                )
+              : i18Translate('student:common.test.checkanswer')
           }
           data-cy="checkAnswer"
-          aria-label={t('common.test.checkanswer')}
+          aria-label={i18Translate('student:common.test.checkanswer')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck color={footer.textColor} hoverColor={button.background} />
-          <span> {t('common.test.checkanswer')}</span>
+          <span> {i18Translate('student:common.test.checkanswer')}</span>
         </ActionContainer>
       )}
       <ActionContainer
@@ -204,11 +208,11 @@ const PlayerFooter = ({
         disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
         title={
           isDisableCrossBtn
-            ? 'This option is available only for multiple choice'
-            : 'Crossout'
+            ? i18Translate('header:toolbar.crossDisabled')
+            : i18Translate('header:toolbar.cross')
         }
         data-cy="crossButton"
-        aria-label={t('common.test.answerEliminator')}
+        aria-label={i18Translate('header:toolbar.answerEliminator')}
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -217,16 +221,16 @@ const PlayerFooter = ({
           />
         </IconWrapper>
 
-        <span>{t('common.test.answerEliminator')}</span>
+        <span>{i18Translate('header:toolbar.answerEliminator')}</span>
       </ActionContainer>
       <EduIf condition={!isEmpty(calcTypes)}>
         <ActionContainer
           hoverEffect
           active={tool?.includes(CALC)}
           onClick={() => changeTool(CALC)}
-          title={t('common.test.calculator')}
+          title={i18Translate('header:toolbar.calculator')}
           data-cy="calculator"
-          aria-label={t('common.test.calculator')}
+          aria-label={i18Translate('header:toolbar.calculator')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -236,7 +240,7 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.calculator')}</span>
+          <span>{i18Translate('header:toolbar.calculator')}</span>
         </ActionContainer>
       </EduIf>
       <EduIf condition={enableScratchpad && !hasDrawingResponse}>
@@ -244,9 +248,9 @@ const PlayerFooter = ({
           hoverEffect
           active={tool?.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
-          title={t('common.test.scratchPad')}
+          title={i18Translate('header:toolbar.scratchPad')}
           data-cy="scratchPad"
-          aria-label={t('common.test.scratchPad')}
+          aria-label={i18Translate('header:toolbar.scratchPad')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -256,7 +260,7 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.scratchPad')}</span>
+          <span>{i18Translate('header:toolbar.scratchPad')}</span>
         </ActionContainer>
       </EduIf>
       <EduIf condition={showMagnifier}>
@@ -264,10 +268,10 @@ const PlayerFooter = ({
           hoverEffect
           active={enableMagnifier}
           onClick={handleMagnifier}
-          title={t('common.test.magnify')}
+          title={i18Translate('header:toolbar.magnify')}
           data-cy="magnify"
           disabled={isPremiumContentWithoutAccess}
-          aria-label={t('common.test.magnify')}
+          aria-label={i18Translate('header:toolbar.magnify')}
         >
           <IconWrapper>
             <IconMagnify
@@ -276,16 +280,16 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.magnify')}</span>
+          <span>{i18Translate('header:toolbar.magnify')}</span>
         </ActionContainer>
       </EduIf>
       <EduIf condition={isTeacherPremium}>
         <ActionContainer
           hoverEffect
           onClick={toggleUserWorkUploadModal}
-          title={t('common.test.uploadWork')}
+          title={i18Translate('header:toolbar.uploadWork')}
           data-cy="uploadWork"
-          aria-label={t('common.test.uploadWork')}
+          aria-label={i18Translate('header:toolbar.uploadWork')}
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
@@ -295,7 +299,7 @@ const PlayerFooter = ({
             />
           </IconWrapper>
 
-          <span>{t('common.test.uploadWork')}</span>
+          <span>{i18Translate('header:toolbar.uploadWork')}</span>
         </ActionContainer>
       </EduIf>
 
@@ -313,7 +317,7 @@ const PlayerFooter = ({
 }
 
 const enhance = compose(
-  withNamespaces('student'),
+  withNamespaces(['header', 'student']),
   withWindowSizes,
   connect(
     (state) => ({

@@ -92,10 +92,14 @@ const ToolBar = ({
           onClick={handleCheckAnswer}
           title={
             checkAnswerInProgress
-              ? 'In progress'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.inProgress'
+                )
               : answerChecksUsedForItem >= maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
+              ? i18Translate(
+                  'student:common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                )
+              : i18Translate('student:common.test.checkanswer')
           }
           data-cy="checkAnswer"
           disabled={isPremiumContentWithoutAccess}
@@ -108,13 +112,13 @@ const ToolBar = ({
       {canShowReferenceMaterial && (
         <Tooltip
           placement="top"
-          title={i18Translate('common.test.referenceMaterial')}
+          title={i18Translate('header:toolbar.refMaterial')}
         >
           <StyledButton
             onClick={openReferenceModal}
             active={isShowReferenceModal}
             disabled={isPremiumContentWithoutAccess}
-            aria-label={i18Translate('common.test.referenceMaterial')}
+            aria-label={i18Translate('header:toolbar.refMaterial')}
           >
             <IconEduReferenceSheet />
           </StyledButton>
@@ -122,11 +126,14 @@ const ToolBar = ({
       )}
 
       <EduIf condition={!isEmpty(calcTypes)}>
-        <Tooltip placement="top" title="Calculator">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.calculator')}
+        >
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
-            aria-label="Calculator"
+            aria-label={i18Translate('header:toolbar.calculator')}
             disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
@@ -139,15 +146,19 @@ const ToolBar = ({
           placement="top"
           title={
             isDisableCrossBtn
-              ? 'This option is available only for multiple choice'
-              : 'Crossout'
+              ? i18Translate('header:toolbar.crossDisabled')
+              : i18Translate('header:toolbar.cross')
           }
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
-            aria-label="Crossout"
+            aria-label={
+              isDisableCrossBtn
+                ? i18Translate('header:toolbar.crossDisabled')
+                : i18Translate('header:toolbar.cross')
+            }
           >
             <CloseIcon />
           </StyledButton>
@@ -155,69 +166,78 @@ const ToolBar = ({
       )}
 
       {!isDocbased && enableScratchpad && (
-        <Tooltip placement="top" title="Scratch Pad">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.scratchPad')}
+        >
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="ScratchPad"
+            aria-label={i18Translate('header:toolbar.scratchPad')}
           >
             <ScratchPadIcon />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && (
-        <Tooltip placement="top" title="Zoom in">
+        <Tooltip placement="top" title={i18Translate('header:toolbar.zoomIn')}>
           <StyledButton
             onClick={handleZoomIn}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Zoom In"
+            aria-label={i18Translate('header:toolbar.zoomIn')}
           >
             <StyledIcon type="zoom-in" />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && (
-        <Tooltip placement="top" title="Zoom out">
+        <Tooltip placement="top" title={i18Translate('header:toolbar.zoomOut')}>
           <StyledButton
             onClick={handleZoomOut}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Zoom out"
+            aria-label={i18Translate('header:toolbar.zoomOut')}
           >
             <StyledIcon type="zoom-out" />
           </StyledButton>
         </Tooltip>
       )}
       {showMagnifier && (
-        <Tooltip placement="top" title="Magnify">
+        <Tooltip placement="top" title={i18Translate('header:toolbar.magnify')}>
           <StyledButton
             onClick={handleMagnifier}
             active={enableMagnifier}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Magnify"
+            aria-label={i18Translate('header:toolbar.magnify')}
           >
             <IconMagnify />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && isTeacherPremium && (
-        <Tooltip placement="top" title="Upload work">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:toolbar.uploadWork')}
+        >
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Upload Work"
+            aria-label={i18Translate('header:toolbar.uploadWork')}
           >
             <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}
       {multiLanguageEnabled && (
-        <Tooltip placement="top" title="Select Language">
+        <Tooltip
+          placement="top"
+          title={i18Translate('header:testOptions.selectLanguage')}
+        >
           <StyledButton
             onClick={showLangSwitchPopUp}
             data-cy="SBAC_selectLang"
             disabled={isPremiumContentWithoutAccess}
-            aria-label="Select Language"
+            aria-label={i18Translate('header:testOptions.selectLanguage')}
           >
             <IconLanguage />
           </StyledButton>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
+import { compose } from 'redux'
 import { Rnd } from 'react-rnd'
 import styled from 'styled-components'
 import { white } from '@edulastic/colors'
 import { IconMore } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
 import { Dropdown, Menu } from 'antd'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
@@ -27,7 +29,7 @@ const style = {
   zIndex: 999,
 }
 
-const QuestionSelect = ({ questions, onSelect, selected }) => {
+const QuestionSelect = ({ questions, onSelect, selected, i18Translate }) => {
   if (!questions) {
     return null
   }
@@ -49,8 +51,12 @@ const QuestionSelect = ({ questions, onSelect, selected }) => {
         return (
           <Menu.Item key={i} disabled={selected.id === q.id}>
             {q.type === 'passage' || q.type === 'video'
-              ? `Play Passage ${passageIndex}`
-              : `Play Question ${questionIndex}`}
+              ? `${i18Translate(
+                  'common.test.ttsButton.playPassage'
+                )} ${passageIndex}`
+              : `${i18Translate(
+                  'common.test.ttsButton.playQuestion'
+                )} ${questionIndex}`}
           </Menu.Item>
         )
       })}
@@ -76,6 +82,7 @@ const ItemAudioControl = ({
   questionsById,
   userInteractionsPassageData,
   showTtsForPassages,
+  t: i18Translate,
 }) => {
   const [selected, setSelected] = useState()
   const controller = useRef()
@@ -140,9 +147,10 @@ const ItemAudioControl = ({
           questions={questions}
           onSelect={handleSelect}
           selected={selected}
+          i18Translate={i18Translate}
         />
       )}
-      <span>Play All</span>
+      <span>{i18Translate('common.test.ttsButton.playAll')}</span>
       <AudioControls
         item={selected}
         qId={selected.id}
@@ -160,17 +168,22 @@ const ItemAudioControl = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    questionsById: getQuestionsByIdSelector(state),
-    userInteractionsPassageData: get(
-      state,
-      ['userInteractions', 'passages'],
-      {}
-    ),
-  }),
-  null
-)(ItemAudioControl)
+const enhance = compose(
+  withNamespaces('student'),
+  connect(
+    (state) => ({
+      questionsById: getQuestionsByIdSelector(state),
+      userInteractionsPassageData: get(
+        state,
+        ['userInteractions', 'passages'],
+        {}
+      ),
+    }),
+    null
+  )
+)
+
+export default enhance(ItemAudioControl)
 
 const IconMoreVertical = styled(IconMore)`
   transform: rotate(90deg);

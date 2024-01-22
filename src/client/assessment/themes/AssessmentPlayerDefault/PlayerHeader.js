@@ -1,5 +1,6 @@
 import { IconSend } from '@edulastic/icons'
 import React from 'react'
+import { withNamespaces } from '@edulastic/localization'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import qs from 'qs'
@@ -70,6 +71,7 @@ const PlayerHeader = ({
   isShowReferenceModal,
   canShowReferenceMaterial,
   showSubmitText,
+  t: i18Translate,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -122,8 +124,12 @@ const PlayerHeader = ({
                       placement="top"
                       title={
                         blockNavigationToAnsweredQuestions
-                          ? 'This assignment is restricted from navigating back to the previous question.'
-                          : 'Previous'
+                          ? i18Translate(
+                              'common.layout.questionlist.blockNavigationToAnsweredQuestions'
+                            )
+                          : i18Translate(
+                              'common.layout.questionNavigation.previous'
+                            )
                       }
                       overlayStyle={overlayStyle}
                     >
@@ -179,7 +185,13 @@ const PlayerHeader = ({
                         }}
                       >
                         {showSubmitText && <IconSend />}
-                        {showSubmitText ? 'SUBMIT' : 'NEXT'}
+                        {showSubmitText
+                          ? i18Translate(
+                              'common.layout.questionNavigation.submit'
+                            )
+                          : i18Translate(
+                              'common.layout.questionNavigation.next'
+                            )}
                       </ControlBtn.Next>
                     )}
                   </>
@@ -210,7 +222,7 @@ const PlayerHeader = ({
                       <EduThen>
                         <Tooltip
                           placement="top"
-                          title="Tool"
+                          title={i18Translate('common.test.tool')}
                           overlayStyle={overlayStyle}
                         >
                           <ToolButton
@@ -259,6 +271,6 @@ const PlayerHeader = ({
   )
 }
 
-const enhance = compose(withRouter)
+const enhance = compose(withRouter, withNamespaces('student'))
 
 export default enhance(PlayerHeader)

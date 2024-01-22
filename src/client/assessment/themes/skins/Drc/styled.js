@@ -43,6 +43,7 @@ export const ControlBtn = styled(Button)`
   display: inline-flex;
   align-items: center;
   font-size: 10px;
+  text-transform: uppercase;
   svg {
     fill: ${button.textColor};
   }

@@ -173,10 +173,11 @@ const Next = styled(Button)`
   border: ${({ theme }) =>
     `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
   height: 36px;
-  width: 100px;
+  width: auto;
   margin-left: 5px;
   display: flex;
   align-items: center;
+  text-transform: uppercase;
   svg {
     fill: ${({ theme }) =>
       theme.widgets.assessmentPlayers.controlBtnPrimaryColor};

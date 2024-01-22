@@ -44,7 +44,7 @@ const ToolBar = ({
   changeTool,
   hasDrawingResponse,
   isPremiumContentWithoutAccess = false,
-  t: translate,
+  t: i18Translate,
 }) => {
   const { showMagnifier, enableScratchpad, isTeacherPremium } = settings
 
@@ -60,7 +60,7 @@ const ToolBar = ({
     <ToolBarContainer>
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
-        title={translate('toolbar.pointer')}
+        title={i18Translate('toolbar.pointer')}
         icon={<CursorIcon />}
         active={tool.includes(0)}
         onClick={toolbarHandler(0)}
@@ -68,7 +68,7 @@ const ToolBar = ({
       />
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
-        title={translate('toolbar.ruler')}
+        title={i18Translate('toolbar.ruler')}
         icon={<InRulerIcon />}
         active={tool.includes(1)}
         onClick={toolbarHandler(1)}
@@ -77,8 +77,8 @@ const ToolBar = ({
       <EduIf condition={!isEmpty(calcTypes)}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title={translate('toolbar.calculator')}
-          aria-label={translate('toolbar.calculator')}
+          title={i18Translate('toolbar.calculator')}
+          aria-label={i18Translate('toolbar.calculator')}
           icon={
             <CalculatorIconWrapper isMultiCalculators={calcTypes.length > 1} />
           }
@@ -89,8 +89,8 @@ const ToolBar = ({
       <EduIf condition={canShowReferenceMaterial}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title={translate('toolbar.refMaterial')}
-          aria-label={translate('toolbar.refMaterial')}
+          title={i18Translate('toolbar.refMaterial')}
+          aria-label={i18Translate('toolbar.refMaterial')}
           icon={<IconEduReferenceSheet height="22" width="20" />}
           active={isShowReferenceModal}
           onClick={openReferenceModal}
@@ -99,8 +99,8 @@ const ToolBar = ({
       <ActionButton
         title={
           isDisableCrossBtn
-            ? translate('toolbar.crossDisabled')
-            : translate('toolbar.cross')
+            ? i18Translate('toolbar.crossDisabled')
+            : i18Translate('toolbar.cross')
         }
         icon={<CloseIcon />}
         active={tool.includes(3)}
@@ -108,14 +108,14 @@ const ToolBar = ({
         disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
         aria-label={
           isDisableCrossBtn
-            ? translate('toolbar.crossDisabled')
-            : translate('toolbar.cross')
+            ? i18Translate('toolbar.crossDisabled')
+            : i18Translate('toolbar.cross')
         }
       />
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
-        title={translate('toolbar.protactor')}
-        aria-label={translate('toolbar.protactor')}
+        title={i18Translate('toolbar.protactor')}
+        aria-label={i18Translate('toolbar.protactor')}
         icon={<ProtactorIcon />}
         active={tool.includes(4)}
         onClick={toolbarHandler(4)}
@@ -124,8 +124,8 @@ const ToolBar = ({
       <EduIf condition={enableScratchpad && !hasDrawingResponse}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title={translate('toolbar.scratchPad')}
-          aria-label={translate('toolbar.scratchPad')}
+          title={i18Translate('toolbar.scratchPad')}
+          aria-label={i18Translate('toolbar.scratchPad')}
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
           onClick={toolbarHandler(5)}
@@ -134,8 +134,8 @@ const ToolBar = ({
       <EduIf condition={showMagnifier}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title={translate('toolbar.magnify')}
-          aria-label={translate('toolbar.magnify')}
+          title={i18Translate('toolbar.magnify')}
+          aria-label={i18Translate('toolbar.magnify')}
           icon={<IconMagnify />}
           active={enableMagnifier}
           onClick={handleMagnifier}
@@ -144,13 +144,13 @@ const ToolBar = ({
       <EduIf condition={isTeacherPremium}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title={translate('toolbar.uploadWork')}
-          aria-label={translate('toolbar.uploadWork')}
+          title={i18Translate('toolbar.uploadWork')}
+          aria-label={i18Translate('toolbar.uploadWork')}
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />
       </EduIf>
-      <LineReader btnComponent={ButtonWithStyle} />
+      <LineReader btnComponent={ButtonWithStyle} i18Translate={i18Translate} />
     </ToolBarContainer>
   )
 }

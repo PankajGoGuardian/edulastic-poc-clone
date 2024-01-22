@@ -474,7 +474,7 @@ AssessmentPlayerSimple.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
-  withNamespaces('common'),
+  withNamespaces(['common', 'student']),
   connect(
     (state, ownProps) => ({
       user: get(state, 'user.user', {}),

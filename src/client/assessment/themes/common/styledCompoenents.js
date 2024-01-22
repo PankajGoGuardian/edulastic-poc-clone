@@ -71,6 +71,7 @@ export const SaveAndExitButton = styled(StyledButton)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  text-transform: uppercase;
 
   svg {
     position: relative;

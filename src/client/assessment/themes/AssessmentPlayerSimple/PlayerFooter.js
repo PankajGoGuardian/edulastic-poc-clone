@@ -22,7 +22,7 @@ const PlayerFooter = ({
   isFirst,
   moveToPrev,
   moveToNext,
-  t,
+  t: i18Translate,
   unansweredQuestionCount,
   isSidebarVisible,
   blockNavigationToAnsweredQuestions,
@@ -38,8 +38,10 @@ const PlayerFooter = ({
         placement="left"
         title={
           blockNavigationToAnsweredQuestions
-            ? 'This assignment is restricted from navigating back to the previous question.'
-            : 'Previous'
+            ? i18Translate(
+                'student:common.layout.questionlist.blockNavigationToAnsweredQuestions'
+              )
+            : i18Translate('student:common.layout.questionNavigation.previous')
         }
       >
         <span>
@@ -59,7 +61,9 @@ const PlayerFooter = ({
       <Tooltip placement="right" title="Next">
         <NextButton data-cy="next" onClick={moveToNext}>
           <span>
-            {showSubmitText ? t('pagination.submit') : t('pagination.next')}
+            {showSubmitText
+              ? i18Translate('student:common.layout.questionNavigation.submit')
+              : i18Translate('student:common.layout.questionNavigation.next')}
           </span>
           <FontAwesomeIcon icon={faAngleRight} />
         </NextButton>

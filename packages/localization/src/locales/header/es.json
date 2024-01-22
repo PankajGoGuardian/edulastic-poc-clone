@@ -1,0 +1,66 @@
+{
+  "common": {
+		"grade": "CALIFICACIÓN",
+		"cancel": "CANCELAR",
+		"continue": "CONTINUAR",
+    "apply": "APLICAR"
+  },
+  "toolbar": {
+    "bookmark": "Marcador",
+    "checkAnswer": "Checar respuesta",
+    "hint": "Pista",
+    "pointer": "Puntero",
+    "ruler": "Gobernante",
+    "inchRuler": "Regla de pulgada",
+    "cmRuler": "Regla de centímetro",
+    "protactorRuler": "Regulador",
+    "eliminationQuestion": "Cuestión de eliminación",
+    "calculator": "Calculadora",
+    "calculators": "Calculadores",
+    "refMaterial": "Material de referencia",
+    "cross": "Tacha",
+    "crossDisabled": "Esta opción está disponible solo para opciones múltiples y preguntas coincidentes.",
+    "protactor": "Protactor",
+    "scratchPad": "El papel de borador",
+    "magnify": "Aumentar",
+    "uploadWork": "Subir trabajo",
+    "lineReader": "Lector de linea",
+		"zoomIn": "Acercarse",
+    "zoomOut": "Disminuir el zoom",
+		"answerEliminator": "Respuesta Eliminador"
+  },
+	"testOptions": {
+    "title": "Opciones de prueba",
+		"selectLanguage": "Seleccione el idioma",
+		"alert": "Alerta",
+		"responsesWillBeLostAlert": "Todas sus respuestas anteriores se perderán y la asignación comenzará desde el principio. Estás seguro de que quieres continuar?",
+		"colorContrast": "Contraste de color",
+    "default": "Por defecto",
+    "zoom": "ZOOM",
+    "none": "Ninguno",
+    "standard": "estándar",
+    "selectPreferredLanguage": "Seleccione el lenguaje preferido",
+    "playBackTextToSpeech": "Velocidad de reproducción (Texto a voz)",
+		"playBackTextToSpeechNormalValue": "Normal",
+		"colorContrastOptions": {
+      "MGLG": "Gris medio sobre gris claro",
+      "BOR": "Negro en Rose",
+      "RCON": "Contraste inverso",
+      "YAB": "Amarillo sobre azul"
+    }
+  },
+	"headerMenuOptions": {
+    "changeColor": "Cambiar el fondo y el color de primer plano",
+    "enableMagnifier": "Habilitar lupa",
+    "showLineReaderMask": "Show Line Reader Mask",
+    "enableAnswerMask": "Habilitar el enmascaramiento de la respuesta",
+    "testOptions": "Opciones de prueba"
+  },
+  "saveAndExit": {
+		"assignmentInOneSitting": "Esta tarea está configurada para completar en una sola sesión",
+    "exit": "Salida",
+    "saveAndExit": "Guardar la salida",
+    "submit": "ENTREGAR",
+		"signOut": "DESCONECTAR"
+	}
+}

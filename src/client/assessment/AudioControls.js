@@ -1,8 +1,10 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
+import { compose } from 'redux'
 import { white, themeColorBlue } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   IconAudioPause,
@@ -55,6 +57,7 @@ const AudioControls = ({
   playerSkinType,
   isStudentReport,
   controlRef,
+  t: i18Translate,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -317,10 +320,10 @@ const AudioControls = ({
   const isSupported = Howler.codecs('mp3')
 
   const playPauseToolTip = loading
-    ? 'We are still processing the audio file for this question. Please return back to this question after some time.'
+    ? i18Translate('common.test.ttsButton.ttsProcessingInProgress')
     : currentPlayingDetails.qId === qId
-    ? 'Pause'
-    : 'Play'
+    ? i18Translate('common.test.ttsButton.pause')
+    : i18Translate('common.test.ttsButton.play')
 
   return (
     <AudioButtonsWrapper
@@ -345,7 +348,8 @@ const AudioControls = ({
               <>
                 {btnWithText ? (
                   <>
-                    <IconAudioPause /> PAUSE
+                    <IconAudioPause />{' '}
+                    {i18Translate('common.test.ttsButton.pause')}
                   </>
                 ) : (
                   <IconAudioPause color={white} className="audio-pause" />
@@ -355,7 +359,7 @@ const AudioControls = ({
               <>
                 {btnWithText ? (
                   <>
-                    <IconPlayBig /> PLAY
+                    <IconPlayBig /> {i18Translate('common.test.ttsButton.play')}
                   </>
                 ) : (
                   <IconPlayFilled color={white} className="audio-play" />
@@ -364,7 +368,9 @@ const AudioControls = ({
             )}
           </AudioButton>
           <AudioButton
-            title={!btnWithText ? 'Stop' : ''}
+            title={
+              !btnWithText ? i18Translate('common.test.ttsButton.stop') : ''
+            }
             loading={loading}
             height="40px"
             IconBtn={!btnWithText}
@@ -378,7 +384,8 @@ const AudioControls = ({
             <>
               {btnWithText ? (
                 <>
-                  <IconStopCircle /> STOP
+                  <IconStopCircle />{' '}
+                  {i18Translate('common.test.ttsButton.stop')}
                 </>
               ) : (
                 <IconStop color={white} className="audio-stop" />
@@ -387,7 +394,7 @@ const AudioControls = ({
           </AudioButton>
         </>
       ) : (
-        <Tooltip title="MP3 playback is not supported in this browser">
+        <Tooltip title={i18Translate('common.test.ttsButton.ttsNotSupported')}>
           <AudioButton
             height="40px"
             IconBtn={!btnWithText}
@@ -403,16 +410,21 @@ const AudioControls = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    currentPlayingDetails: curentPlayerDetailsSelector(state),
-    ttsPlaybackSpeed: getTextToSpeechPlaybackSpeed(state),
-    playerSkinType: playerSkinTypeSelector(state),
-  }),
-  {
-    setCurrentPlayingDetails: setCurrentAudioDetailsAction,
-  }
-)(AudioControls)
+const enhance = compose(
+  withNamespaces('student'),
+  connect(
+    (state) => ({
+      currentPlayingDetails: curentPlayerDetailsSelector(state),
+      ttsPlaybackSpeed: getTextToSpeechPlaybackSpeed(state),
+      playerSkinType: playerSkinTypeSelector(state),
+    }),
+    {
+      setCurrentPlayingDetails: setCurrentAudioDetailsAction,
+    }
+  )
+)
+
+export default enhance(AudioControls)
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;

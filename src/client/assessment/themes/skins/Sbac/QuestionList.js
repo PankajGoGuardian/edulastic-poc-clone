@@ -62,7 +62,9 @@ const QuestionList = ({
         placement="bottom"
         title={
           blockNavigationToAnsweredQuestions
-            ? 'This assignment is restricted from navigating back to the previous question.'
+            ? i18Translate(
+                'student:common.layout.questionlist.blockNavigationToAnsweredQuestions'
+              )
             : null
         }
       >
@@ -87,10 +89,10 @@ const QuestionList = ({
               value={item}
               disabled={disabledQuestionDropDownIndexMap[item]}
               aria-label={`${i18Translate(
-                'common.layout.selectbox.question'
+                'student:common.layout.selectbox.question'
               )} ${index + 1}/${options.length}`}
             >
-              {`${i18Translate('common.layout.selectbox.question')} ${
+              {`${i18Translate('student:common.layout.selectbox.question')} ${
                 index + 1
               }/${options.length}`}
               {bookmarks[index] ? (
@@ -104,7 +106,8 @@ const QuestionList = ({
           ))}
           {showSubmit && (
             <Select.Option key={options.length} value="SUBMIT">
-              Submit <IconSend />
+              {i18Translate('student:common.layout.questionNavigation.submit')}{' '}
+              <IconSend />
             </Select.Option>
           )}
         </Select>

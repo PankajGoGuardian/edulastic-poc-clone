@@ -15,11 +15,13 @@ import {
   IconMinusRounded,
   IconImmersiveReader,
 } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
 import { Tooltip } from 'antd'
 import { get, isNaN } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { getUserFeatures } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
@@ -81,6 +83,7 @@ const SaveAndExit = ({
   currentItem,
   options,
   features,
+  t: i18Translate,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 
@@ -134,7 +137,7 @@ const SaveAndExit = ({
         </EduThen>
       </EduIf>
       {showZoomBtn && !LCBPreviewModal && (
-        <Tooltip placement="bottom" title="Test Options">
+        <Tooltip placement="bottom" title={i18Translate('testOptions.title')}>
           <StyledButton
             data-cy="testOptions"
             aria-label="Test options"
@@ -153,8 +156,8 @@ const SaveAndExit = ({
                 placement="bottom"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
-                    : 'Exit'
+                    ? i18Translate('saveAndExit.assignmentInOneSitting')
+                    : i18Translate('saveAndExit.exit')
                 }
               >
                 <SaveAndExitButton
@@ -164,7 +167,7 @@ const SaveAndExit = ({
                   onClick={finishTest}
                 >
                   <IconCircleLogout />
-                  EXIT
+                  {i18Translate('saveAndExit.exit')}
                 </SaveAndExitButton>
               </Tooltip>
             )}
@@ -176,8 +179,8 @@ const SaveAndExit = ({
                 placement="bottomRight"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
-                    : 'Save & Exit'
+                    ? i18Translate('saveAndExit.assignmentInOneSitting')
+                    : i18Translate('saveAndExit.saveAndExit')
                 }
               >
                 <SaveAndExitButton
@@ -201,7 +204,7 @@ const SaveAndExit = ({
             loading={savingResponse}
           >
             <IconSend />
-            SUBMIT
+            {i18Translate('saveAndExit.submit')}
           </EduButton>
         </StyledDiv>
       )}
@@ -231,18 +234,25 @@ SaveAndExit.defaultProps = {
   features: {},
 }
 
-export default connect(
-  (state) => ({
-    pauseAllowed: state.test?.settings?.pauseAllowed,
-    isCliUser: get(state, 'user.isCliUser', false),
-    hideData: state?.scratchpad?.hideData,
-    savingResponse: get(state, 'test.savingResponse', false),
-    showImmersiveReader: get(state, 'test.settings.showImmersiveReader', false),
-    features: getUserFeatures(state),
-  }),
-  {
-    adjustScratchpad: adjustScratchpadDimensionsAction,
-    setSettingsModalVisibility: setSettingsModalVisibilityAction,
-    toggleScratchpadVisibility: toggleScratchpadVisbilityAction,
-  }
+export default compose(
+  withNamespaces('header'),
+  connect(
+    (state) => ({
+      pauseAllowed: state.test?.settings?.pauseAllowed,
+      isCliUser: get(state, 'user.isCliUser', false),
+      hideData: state?.scratchpad?.hideData,
+      savingResponse: get(state, 'test.savingResponse', false),
+      showImmersiveReader: get(
+        state,
+        'test.settings.showImmersiveReader',
+        false
+      ),
+      features: getUserFeatures(state),
+    }),
+    {
+      adjustScratchpad: adjustScratchpadDimensionsAction,
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+      toggleScratchpadVisibility: toggleScratchpadVisbilityAction,
+    }
+  )
 )(SaveAndExit)

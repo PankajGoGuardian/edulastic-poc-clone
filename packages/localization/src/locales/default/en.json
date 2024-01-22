@@ -15,5 +15,6 @@
   "missed": "ABSENT",
   "bookmarked": "BOOKMARKED",
   "flagged": "FLAGGED",
-  "skipped": "SKIPPED"
+  "skipped": "SKIPPED",
+  "uploadPaperWork": "UPLOAD PAPER WORK"
 }

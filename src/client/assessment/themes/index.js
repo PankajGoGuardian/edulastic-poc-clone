@@ -22,6 +22,7 @@ import {
   assignmentPolicyOptions,
   questionType,
   roleuser,
+  appLanguages,
 } from '@edulastic/constants'
 import {
   AssessmentPlayerContext,
@@ -34,6 +35,7 @@ import {
   EduThen,
   EduElse,
 } from '@edulastic/common'
+import i18n from '@edulastic/localization'
 
 import { themeColor } from '@edulastic/colors'
 import { testActivityApi, classBoardApi, TokenStorage } from '@edulastic/api'
@@ -106,6 +108,7 @@ import {
 import SectionsTestStartPage from '../../author/Assignments/components/SectionsTestPreview/SectionsTestStartPage'
 import { TestAttemptReview } from '../../student/TestAttemptReview'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
+import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
 
 const { playerSkinValues } = testConstants
 
@@ -619,6 +622,7 @@ const AssessmentContainer = ({
   preventSectionNavigation,
   deliveringItemGroups,
   loadBookmarks,
+  currentLanguage = appLanguages.LANGUAGE_EN,
   ...restProps
 }) => {
   const [
@@ -890,6 +894,13 @@ const AssessmentContainer = ({
       setCurrentItemIdForPreview(null)
     }
   }, [currentItemIdForPreview])
+
+  useEffect(() => {
+    i18n.changeLanguage(currentLanguage)
+    return () => {
+      i18n.changeLanguage(appLanguages.LANGUAGE_EN)
+    }
+  }, [currentLanguage])
 
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current
@@ -1751,6 +1762,7 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       preventSectionNavigation: getPreventSectionNavigationSelector(state),
       deliveringItemGroups: getItemGroupsByExcludingItemsSelector(state),
+      currentLanguage: getCurrentLanguage(state),
     }),
     {
       saveUserResponse,

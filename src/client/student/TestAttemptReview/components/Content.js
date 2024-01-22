@@ -272,7 +272,7 @@ class SummaryTest extends Component {
   render() {
     const {
       questionList: questionsAndOrder,
-      t,
+      t: i18Translate,
       test,
       finishTest,
       savingResponse,
@@ -317,13 +317,13 @@ class SummaryTest extends Component {
           <Container>
             <Header>
               <Title data-cy="headingText" hasSection={hasSection}>
-                {t('common.headingText')}{' '}
+                {i18Translate('common.headingText')}{' '}
                 <SectionName hasSection={hasSection}>
                   {!isEmpty(currentSection) ? currentSection.groupName : ''}
                 </SectionName>
               </Title>
               <TitleDescription data-cy="titleDescription">
-                {t('common.message')}
+                {i18Translate('common.message')}
               </TitleDescription>
             </Header>
             <MainContent>
@@ -333,27 +333,31 @@ class SummaryTest extends Component {
                     <MarkedAnswered />
                     <SpaceLeft>
                       <Description>
-                        {t('common.markedQuestionLineOne')}
+                        {i18Translate('common.markedQuestionLineOne')}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={6} md={24}>
                     <MarkedSkipped />
                     <SpaceLeft>
-                      <Description>{t('common.skippedQues')}</Description>
+                      <Description>
+                        {i18Translate('common.skippedQues')}
+                      </Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={6} md={24}>
                     <MarkedForReview />
                     <SpaceLeft>
-                      <Description>{t('common.markedForReview')}</Description>
+                      <Description>
+                        {i18Translate('common.markedForReview')}
+                      </Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={6} md={24}>
                     <MarkedPartiallyAttempted />
                     <SpaceLeft>
                       <Description>
-                        {t('common.partiallyAttemptedQues')}
+                        {i18Translate('common.partiallyAttemptedQues')}
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
@@ -363,7 +367,7 @@ class SummaryTest extends Component {
                 <Row>
                   <QuestionText lg={8} md={24}>
                     {!isEmpty(currentSection) ? currentSection.groupName : ''}{' '}
-                    {t('common.questionsLabel')}
+                    {i18Translate('common.questionsLabel')}
                   </QuestionText>
                   <Col lg={16} md={24}>
                     <AnsweredTypeButtonContainer>
@@ -372,7 +376,7 @@ class SummaryTest extends Component {
                         onClick={() => this.handlerButton(null)}
                         enabled={buttonIdx === null}
                       >
-                        {t('default:all')}
+                        {i18Translate('default:all')}
                       </StyledButton>
                       {!isDocBasedFlag && (
                         <StyledButton
@@ -380,7 +384,7 @@ class SummaryTest extends Component {
                           onClick={() => this.handlerButton(2)}
                           enabled={buttonIdx === 2}
                         >
-                          {t('default:bookmarked')}
+                          {i18Translate('default:bookmarked')}
                         </StyledButton>
                       )}
                       <StyledButton
@@ -388,7 +392,7 @@ class SummaryTest extends Component {
                         onClick={() => this.handlerButton(0)}
                         enabled={buttonIdx === 0}
                       >
-                        {t('default:skipped')}
+                        {i18Translate('default:skipped')}
                       </StyledButton>
                     </AnsweredTypeButtonContainer>
                   </Col>
@@ -466,7 +470,7 @@ class SummaryTest extends Component {
               {!isEmpty(userWork) && (
                 <FlexContainer flexDirection="column" mt="40px">
                   <QuestionText lg={8} md={24}>
-                    {t('default:Attachments')}
+                    {i18Translate('default:Attachments')}
                   </QuestionText>
                   <PerfectScrollbar>
                     <FilesView
@@ -484,8 +488,10 @@ class SummaryTest extends Component {
             <Footer preview={preview}>
               <ShortDescription>
                 <EduIf condition={hasSection}>
-                  <EduThen>{t('common.submitAndMoveToNextSection')}</EduThen>
-                  <EduElse>{t('common.nextStep')}</EduElse>
+                  <EduThen>
+                    {i18Translate('common.submitAndMoveToNextSection')}
+                  </EduThen>
+                  <EduElse>{i18Translate('common.nextStep')}</EduElse>
                 </EduIf>
               </ShortDescription>
               <ButtonWrapper>
@@ -496,7 +502,7 @@ class SummaryTest extends Component {
                     onClick={openUserWorkUploadModal}
                   >
                     <IconPhotoCamera />{' '}
-                    <span>{t('default:UPLOAD PAPER WORK')}</span>
+                    <span>{i18Translate('default:uploadPaperWork')}</span>
                   </UploadPaperWorkBtn>
                 </EduIf>
 
@@ -510,12 +516,12 @@ class SummaryTest extends Component {
                   <EduIf condition={hasSection}>
                     <EduThen>
                       {' '}
-                      <span>{t('default:PROCEED')} </span>
+                      <span>{i18Translate('default:proceed')} </span>
                     </EduThen>
                     <EduElse>
                       <IconSend />{' '}
                       <span>
-                        {t('default:SUBMIT')}{' '}
+                        {i18Translate('default:submit')}{' '}
                         {!isEmpty(currentSection)
                           ? currentSection.groupName
                           : ''}

@@ -12,7 +12,7 @@ import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 
 const TestButton = ({
-  t,
+  t: i18Translate,
   checkAnswer,
   settings,
   answerChecksUsedForItem,
@@ -38,14 +38,14 @@ const TestButton = ({
   return (
     <Container>
       {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
-        <Tooltip placement="top" title="Bookmark">
+        <Tooltip placement="top" title={i18Translate('common.test.bookmark')}>
           <StyledButton
             onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}
             active={isBookmarked}
             disabled={isPremiumContentWithoutAccess}
           >
             <StyledIconBookmark />
-            <span>{t('common.test.bookmark')}</span>
+            <span>{i18Translate('common.test.bookmark')}</span>
           </StyledButton>
         </Tooltip>
       )}
@@ -54,10 +54,12 @@ const TestButton = ({
           placement="top"
           title={
             checkAnswerInProgress
-              ? 'In progress'
+              ? i18Translate('common.test.checkAnswerInfoTexts.inProgress')
               : answerChecksUsedForItem >= settings.maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
+              ? i18Translate(
+                  'common.test.checkAnswerInfoTexts.usageLimitExceeded'
+                )
+              : i18Translate('common.test.checkanswer')
           }
         >
           <StyledButton
@@ -66,7 +68,7 @@ const TestButton = ({
             disabled={isPremiumContentWithoutAccess}
           >
             <StyledIconCheck />
-            <span> {t('common.test.checkanswer')}</span>
+            <span> {i18Translate('common.test.checkanswer')}</span>
           </StyledButton>
         </Tooltip>
       )}

@@ -51,3 +51,12 @@ export const DISTRICT_SUBSCRIPTION_OPTIONS = [
     label: SUBSCRIPTION_TYPES.enterprisePlusDataStudio.label,
   },
 ]
+
+export const ADDITIONAL_SUBSCRIPTION_TYPES = {
+  TUTORME: 'tutorme',
+}
+
+export const SUBSCRIPTION_STATUS = {
+  ARCHIVED: 0,
+  ACTIVE: 1,
+}

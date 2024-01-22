@@ -9,10 +9,17 @@ import {
   renderEndDate,
   renderStartDate,
   renderSubscriptionType,
+  renderTutorMeEndDate,
+  renderTutorMeStartDate,
 } from '../Common/SubTypeTag'
 import InvalidEmailIdList from './InvalidEmailIdList'
 import { radioButtonUserData } from '../Data'
 import { updateDataStudioPermission } from '../Common/Utils'
+import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_STATUS,
+  SUBSCRIPTION_TYPES,
+} from '../Common/constants/subscription'
 
 const { TextArea } = Input
 const { Group: RadioGroup } = Radio
@@ -131,6 +138,16 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       render: renderEndDate,
     },
     {
+      title: 'TutorMe Start Date',
+      dataIndex: 'subscription',
+      render: renderTutorMeStartDate,
+    },
+    {
+      title: 'TutorMe End Date',
+      dataIndex: 'subscription',
+      render: renderTutorMeEndDate,
+    },
+    {
       title: 'Email ID',
       dataIndex: '_source.email',
     },
@@ -157,13 +174,23 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
 
 const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
   ({
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldValue, getFieldDecorator, validateFields },
     upgradeUserSubscriptionAction,
     validEmailIdsList,
   }) => {
     const handleSubmit = (evt) => {
       validateFields(
-        (err, { subStartDate, subEndDate, notes, subscriptionAction }) => {
+        (
+          err,
+          {
+            subStartDate,
+            subEndDate,
+            notes,
+            subscriptionAction,
+            tutorMeStartDate,
+            tutorMeEndDate,
+          }
+        ) => {
           if (!err) {
             const isDataStudio =
               subscriptionAction === radioButtonUserData.DATA_STUDIO
@@ -181,7 +208,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
                 userIds.push(_id)
               }
             })
-            const isRevokeAccess =
+            const revokePremiumCheck =
               subscriptionAction === radioButtonUserData.FREE || isDataStudio
 
             const dataStudio = {
@@ -225,9 +252,28 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               }
             })
 
+            // filter out add on subscriptions with empty startDate/endDate
+            const additionalSubscriptions = [
+              {
+                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
+                startDate: tutorMeStartDate?.valueOf(),
+                endDate: tutorMeEndDate?.valueOf(),
+              },
+            ].filter((s) => s.startDate && s.endDate)
+
+            // keep subscription active if either premium or additionalSubscriptions are present
+            const statusObj =
+              !revokePremiumCheck || additionalSubscriptions.length
+                ? {}
+                : { status: SUBSCRIPTION_STATUS.ARCHIVED }
+
+            const subType = !revokePremiumCheck
+              ? SUBSCRIPTION_TYPES.premium.subType
+              : SUBSCRIPTION_TYPES.free.subType
+
             upgradeUserSubscriptionAction({
-              ...(isRevokeAccess && { status: 0 }),
-              ...(!isRevokeAccess && { subType: 'premium' }),
+              ...statusObj,
+              subType,
               subStartDate: subStartDate.valueOf(),
               subEndDate: subEndDate.valueOf(),
               notes,
@@ -236,6 +282,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               identifiers,
               dataStudio,
               seedDsData,
+              additionalSubscriptions,
             })
           }
         }
@@ -245,7 +292,11 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
 
     return (
       <Form onSubmit={handleSubmit}>
-        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+        <DatesNotesFormItem
+          getFieldDecorator={getFieldDecorator}
+          getFieldValue={getFieldValue}
+          showTutorMeFormItems
+        />
 
         <Row>
           <Col span={24}>

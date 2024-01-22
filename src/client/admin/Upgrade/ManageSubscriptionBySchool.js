@@ -11,6 +11,11 @@ import { Table, Button as CustomButton } from '../Common/StyledComponents'
 import { renderSubscriptionType } from '../Common/SubTypeTag'
 import { HeadingSpan, ValueSpan } from '../Common/StyledComponents/upgradePlan'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
+import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
+  SUBSCRIPTION_TYPES,
+} from '../Common/constants/subscription'
+import { getTutorMeSubscription } from '../Common/Utils'
 
 const { Column } = Table
 const { Option } = Select
@@ -44,7 +49,7 @@ const SubscriptionButtonConfig = {
   },
   premium: {
     label: 'Revoke',
-    subTypeToBeSent: 'free',
+    subTypeToBeSent: SUBSCRIPTION_TYPES.free.subType,
   },
   partial_premium: {
     label: 'Edit',
@@ -52,7 +57,7 @@ const SubscriptionButtonConfig = {
   },
   enterprise: {
     label: 'Revoke',
-    subTypeToBeSent: 'free',
+    subTypeToBeSent: SUBSCRIPTION_TYPES.free.subType,
   },
 }
 
@@ -107,7 +112,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
     currentEditableRow,
     updateCurrentEditableRow,
     editableRowFieldValues: {
-      subType: editedSubType = 'free',
+      subType: editedSubType = SUBSCRIPTION_TYPES.free.subType,
       subStartDate: editedStartDate,
       subEndDate: editedEndDate,
       notes: editedNotes,
@@ -149,6 +154,16 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           }
         ) => {
           if (!err) {
+            // filter out add on subscriptions with empty startDate/endDate
+            const nextAdditionalSubscriptions = [
+              {
+                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
+                startDate: tutorMeStartDate?.valueOf(),
+                endDate: tutorMeEndDate?.valueOf(),
+              },
+            ].filter((s) => s.startDate && s.endDate)
+
+            // bulk update school subscriptions
             bulkSchoolsSubscribeAction({
               subStartDate: subStartDate.valueOf(),
               subEndDate: subEndDate.valueOf(),
@@ -159,8 +174,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
               customerSuccessManager,
               opportunityId,
               licenceCount,
-              tutorMeStartDate: tutorMeStartDate?.valueOf(),
-              tutorMeEndDate: tutorMeEndDate?.valueOf(),
+              additionalSubscriptions: nextAdditionalSubscriptions,
             })
           }
         }
@@ -178,20 +192,26 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           // if a row is selected for the first time, state set to rowType, so that only identical subType rows
           // can be selected
           const {
-            subscription: { subType = 'free' },
+            subscription: { subType = SUBSCRIPTION_TYPES.free.subType },
           } = record[0]
           setSelectedSchoolSubType(subType)
         }
         setSelectedSchools(selectedSchoolsArray)
       },
-      getCheckboxProps: ({ schoolId, subscription: { subType = 'free' } }) => ({
+      getCheckboxProps: ({
+        schoolId,
+        subscription: { subType = SUBSCRIPTION_TYPES.free.subType },
+      }) => ({
         // if a certain subType is selected, all other subType rows are disabled
         disabled: !!(firstSchoolSubType && subType !== firstSchoolSubType),
         name: schoolId,
       }),
     }
 
-    const renderActions = (subType = 'free', record) => {
+    const renderActions = (
+      subType = SUBSCRIPTION_TYPES.free.subType,
+      record
+    ) => {
       const { schoolId, subscription = {} } = record
 
       const handleClick = (subTypeParam) => {
@@ -203,6 +223,15 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             : 'TutorMe Start Date required!'
           notification({ msg })
         } else {
+          // filter out add on subscriptions with empty startDate/endDate
+          const nextAdditionalSubscriptions = [
+            {
+              type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
+              startDate: editedTutorMeStartDate,
+              endDate: editedTutorMeEndDate,
+            },
+          ].filter((s) => s.startDate && s.endDate)
+          // update single school subscription
           bulkSchoolsSubscribeAction({
             subStartDate: editedStartDate || currentTimeInMilliSec,
             subEndDate: editedEndDate || currentTimeInMilliSec,
@@ -210,8 +239,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             schoolIds: [schoolId],
             subType: subTypeParam,
             adminPremium: editedAdminPremium,
-            tutorMeStartDate: editedTutorMeStartDate,
-            tutorMeEndDate: editedTutorMeEndDate,
+            additionalSubscriptions: nextAdditionalSubscriptions,
           })
         }
       }
@@ -222,14 +250,11 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           setPartialPremiumDataAction(record)
           changeTab(manageByUserSegmentTabKey)
         } else {
+          const { subEndDate, subStartDate, notes, adminPremium } = subscription
           const {
-            subEndDate,
-            subStartDate,
-            notes,
-            adminPremium,
-            tutorMeStartDate,
-            tutorMeEndDate,
-          } = subscription
+            startDate: tutorMeStartDate,
+            endDate: tutorMeEndDate,
+          } = getTutorMeSubscription(subscription)
           updateCurrentEditableRow({
             schoolId,
             subEndDate,
@@ -293,43 +318,51 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
         moment(date).format('YYYY-MM-DD')
       )
 
-    const renderTutorMeStartDate = (date, record) =>
-      record.schoolId === currentEditableRow ? (
-        <DatePicker
-          value={editedTutorMeStartDate && moment(editedTutorMeStartDate)}
-          onChange={(_tutorMeStartDate) =>
-            setEditableRowFieldValues({
-              fieldName: 'tutorMeStartDate',
-              value: _tutorMeStartDate?.valueOf(),
-            })
-          }
-          disabledDate={(val) =>
-            !!editedTutorMeEndDate &&
-            val > moment(editedTutorMeEndDate).startOf('day')
-          }
-        />
-      ) : (
-        date && moment(date).format('YYYY-MM-DD')
+    const renderTutorMeStartDate = (subscription, record) => {
+      if (record.schoolId === currentEditableRow) {
+        return (
+          <DatePicker
+            value={editedTutorMeStartDate && moment(editedTutorMeStartDate)}
+            onChange={(nextTutorMeStartDate) =>
+              setEditableRowFieldValues({
+                fieldName: 'tutorMeStartDate',
+                value: nextTutorMeStartDate?.valueOf(),
+              })
+            }
+            disabledDate={(val) =>
+              !!editedTutorMeEndDate &&
+              val > moment(editedTutorMeEndDate).startOf('day')
+            }
+          />
+        )
+      }
+      const { startDate: tutorMeStartDate } = getTutorMeSubscription(
+        subscription
       )
+      return tutorMeStartDate && moment(tutorMeStartDate).format('YYYY-MM-DD')
+    }
 
-    const renderTutorMeEndDate = (date, record) =>
-      record.schoolId === currentEditableRow ? (
-        <DatePicker
-          value={editedTutorMeEndDate && moment(editedTutorMeEndDate)}
-          onChange={(_tutorMeEndDate) =>
-            setEditableRowFieldValues({
-              fieldName: 'tutorMeEndDate',
-              value: _tutorMeEndDate?.valueOf(),
-            })
-          }
-          disabledDate={(val) =>
-            !!editedTutorMeStartDate &&
-            val < moment(editedTutorMeStartDate).startOf('day')
-          }
-        />
-      ) : (
-        date && moment(date).format('YYYY-MM-DD')
-      )
+    const renderTutorMeEndDate = (subscription, record) => {
+      if (record.schoolId === currentEditableRow) {
+        return (
+          <DatePicker
+            value={editedTutorMeEndDate && moment(editedTutorMeEndDate)}
+            onChange={(nextTutorMeEndDate) =>
+              setEditableRowFieldValues({
+                fieldName: 'tutorMeEndDate',
+                value: nextTutorMeEndDate?.valueOf(),
+              })
+            }
+            disabledDate={(val) =>
+              !!editedTutorMeStartDate &&
+              val < moment(editedTutorMeStartDate).startOf('day')
+            }
+          />
+        )
+      }
+      const { endDate: tutorMeEndDate } = getTutorMeSubscription(subscription)
+      return tutorMeEndDate && moment(tutorMeEndDate).format('YYYY-MM-DD')
+    }
 
     const renderNotes = (note, record) =>
       record.schoolId === currentEditableRow ? (
@@ -350,7 +383,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       record.schoolId === currentEditableRow ? (
         <Select
           style={{ width: '100%' }}
-          value={editedSubType || 'free'}
+          value={editedSubType || SUBSCRIPTION_TYPES.free.subType}
           onChange={(value) =>
             setEditableRowFieldValues({
               fieldName: 'subType',
@@ -416,13 +449,13 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           />
           <Column
             title="TutorMe Start Date"
-            dataIndex="subscription.tutorMeStartDate"
+            dataIndex="subscription"
             key="tutorMeStartDate"
             render={renderTutorMeStartDate}
           />
           <Column
             title="TutorMe End Date"
-            dataIndex="subscription.tutorMeEndDate"
+            dataIndex="subscription"
             key="tutorMeEndDate"
             render={renderTutorMeEndDate}
           />
@@ -487,7 +520,7 @@ const BulkSubscribeForm = ({
       {getFieldDecorator('subType', {
         valuePropName: 'value',
         rules: [{ required: true }],
-        initialValue: 'free',
+        initialValue: SUBSCRIPTION_TYPES.free.subType,
       })(
         <Select style={{ width: 120 }}>
           <Option value="free">Free</Option>

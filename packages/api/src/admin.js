@@ -12,7 +12,7 @@ const searchUpdateDistrict = (params) =>
       url: `districts`,
       method: 'get',
       params,
-      paramsSerializer: (params) => qs.stringify(params),
+      paramsSerializer: (p) => qs.stringify(p),
     })
     .then(({ data }) => data)
 
@@ -22,7 +22,7 @@ const searchClasslinkDistrict = (params) =>
       url: `${atlasPrefix}districts/classlink`,
       method: 'get',
       params,
-      paramsSerializer: (params) => qs.stringify(params),
+      paramsSerializer: (p) => qs.stringify(p),
     })
     .then(({ data }) => data)
 
@@ -77,21 +77,21 @@ const deleteClasslinkDistrictApi = (districtId) =>
     })
     .then(({ data }) => data)
 
-const applyDeltaSyncApi = (data) =>
+const applyDeltaSyncApi = (payload) =>
   api
     .callApi({
       url: `${prefix}update-delta-sync-info`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 
-const applyAtlasDeltaSyncApi = ({ atlasId, ...data }) =>
+const applyAtlasDeltaSyncApi = ({ atlasId, ...payload }) =>
   api
     .callApi({
       url: `${atlasPrefix}${atlasId}/delta-sync-config`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 
@@ -134,21 +134,21 @@ const completeAtlasDistrictSync = ({ atlasId }) =>
     })
     .then(({ data }) => data)
 
-const fetchCleverClassNamesSyncApi = (data) =>
+const fetchCleverClassNamesSyncApi = (payload) =>
   api
     .callApi({
       url: `${prefix}class-name-pattern`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 
-const fetchAtlasClassNamesSyncApi = (data) =>
+const fetchAtlasClassNamesSyncApi = (payload) =>
   api
     .callApi({
-      url: `${atlasPrefix}${data.orgId}/class-name-pattern`,
+      url: `${atlasPrefix}${payload.orgId}/class-name-pattern`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 
@@ -208,21 +208,21 @@ const uploadCSVtoAtlas = ({ districtId, file, mergeType }) => {
     .then(({ data }) => data.result)
 }
 
-const updateCleverSubjectStandardApi = (data) =>
+const updateCleverSubjectStandardApi = (payload) =>
   api
     .callApi({
       url: `${prefix}update-subject-mapping`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 
-const updateAtlasSubjectStandardApi = (data) =>
+const updateAtlasSubjectStandardApi = (payload) =>
   api
     .callApi({
-      url: `${atlasPrefix}${data.orgId}/subject-mapping`,
+      url: `${atlasPrefix}${payload.orgId}/subject-mapping`,
       method: 'post',
-      data,
+      data: payload,
     })
     .then(({ data }) => data)
 

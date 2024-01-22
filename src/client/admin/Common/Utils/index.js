@@ -1,5 +1,7 @@
 import { roleuser, userPermissions } from '@edulastic/constants'
+import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
 import { useEffect, useRef } from 'react'
+import { ADDITIONAL_SUBSCRIPTION_TYPES } from '../constants/subscription'
 
 export const getDate = () => {
   const currentDate = new Date()
@@ -133,4 +135,13 @@ export const updateDataStudioPermission = ({
   }
 
   return removeDataStudio({ permissions, permissionsExpiry })
+}
+
+export const getTutorMeSubscription = (subscription) => {
+  const { additionalSubscriptions = EMPTY_ARRAY } = subscription || {}
+  const tutorMeSubscription =
+    additionalSubscriptions.find(
+      (s) => s.type === ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
+    ) || {}
+  return tutorMeSubscription
 }

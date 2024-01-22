@@ -3,6 +3,7 @@ import { Row as AntdRow, AutoComplete, Button, Col, Form, Select } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
 import {
@@ -13,12 +14,15 @@ import {
 } from '../Common/StyledComponents/upgradePlan'
 import {
   getDate,
+  getTutorMeSubscription,
   updateDataStudioPermission,
   useUpdateEffect,
 } from '../Common/Utils'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
 import {
+  ADDITIONAL_SUBSCRIPTION_TYPES,
   DISTRICT_SUBSCRIPTION_OPTIONS,
+  SUBSCRIPTION_STATUS,
   SUBSCRIPTION_TYPES,
 } from '../Common/constants/subscription'
 
@@ -105,8 +109,7 @@ const ManageDistrictPrimaryForm = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
-      tutorMeStartDate,
-      tutorMeEndDate,
+      additionalSubscriptions = EMPTY_ARRAY,
       _id: subscriptionId,
     } = subscription
     const currentSubType =
@@ -146,6 +149,10 @@ const ManageDistrictPrimaryForm = Form.create({
           _subType = SUBSCRIPTION_TYPES.enterprisePlusDataStudio.subType
         }
       }
+      const {
+        startDate: tutorMeStartDate,
+        endDate: tutorMeEndDate,
+      } = getTutorMeSubscription({ additionalSubscriptions })
       setFieldsValue({
         subType: _subType,
         subStartDate: moment(subStartDate || savedDate.current.currentDate),
@@ -166,8 +173,7 @@ const ManageDistrictPrimaryForm = Form.create({
       opportunityId,
       licenceCount,
       selectedDistrict,
-      tutorMeStartDate,
-      tutorMeEndDate,
+      additionalSubscriptions,
     ])
 
     useUpdateEffect(() => {
@@ -187,8 +193,8 @@ const ManageDistrictPrimaryForm = Form.create({
           {
             subStartDate: startDate,
             subEndDate: endDate,
-            tutorMeStartDate: _tutorMeStartDate,
-            tutorMeEndDate: _tutorMeEndDate,
+            tutorMeStartDate,
+            tutorMeEndDate,
             ...rest
           }
         ) => {
@@ -231,31 +237,44 @@ const ManageDistrictPrimaryForm = Form.create({
               })
             }
 
+            let statusObj = {}
+
             const changedToFree =
               currentSubType === SUBSCRIPTION_TYPES.free.subType &&
               subType !== SUBSCRIPTION_TYPES.free.subType
 
             if (changedToFree || (_isDataStudio && subscriptionId)) {
               Object.assign(rest, {
-                status: 0,
                 isUpdate: true,
                 subscriptionId,
                 dataStudio,
                 seedDsData,
                 searchData,
               })
+              statusObj = { status: SUBSCRIPTION_STATUS.ARCHIVED }
             }
+
+            // filter out add on subscriptions with empty startDate/endDate
+            const nextAdditionalSubscriptions = [
+              {
+                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
+                startDate: tutorMeStartDate?.valueOf(),
+                endDate: tutorMeEndDate?.valueOf(),
+              },
+            ].filter((s) => s.startDate && s.endDate)
+            // keep subscription active if additionalSubscriptions are present
+            statusObj = additionalSubscriptions.length ? {} : statusObj
 
             upgradeDistrictSubscriptionAction({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
-              tutorMeStartDate: _tutorMeStartDate?.valueOf(),
-              tutorMeEndDate: _tutorMeEndDate?.valueOf(),
               ...rest,
+              ...statusObj,
               dataStudio,
               seedDsData,
               searchData,
+              additionalSubscriptions: nextAdditionalSubscriptions,
             })
           }
         }

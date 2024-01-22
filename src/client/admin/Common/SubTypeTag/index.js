@@ -5,6 +5,7 @@ import { userPermissions } from '@edulastic/constants'
 import moment from 'moment'
 import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import { SUBSCRIPTION_TYPES } from '../constants/subscription'
+import { getTutorMeSubscription } from '../Utils'
 
 const dateFormat = 'DD MMM, YYYY'
 
@@ -50,12 +51,13 @@ const renderDSExpiryDate = (record, dateKey = 'perStartDate') => {
   return (
     <EduIf condition={isDataStudio && isDataStudioExpiry}>
       <EduThen>
-        <>{moment(isDataStudioExpiry?.[dateKey]).format(dateFormat)}</>
+        {moment(isDataStudioExpiry?.[dateKey]).format(dateFormat)}
       </EduThen>
       <EduElse>-</EduElse>
     </EduIf>
   )
 }
+
 export const renderStartDate = (subscription = {}, record) => {
   const { subStartDate, subRenewalDate } = subscription
 
@@ -63,7 +65,7 @@ export const renderStartDate = (subscription = {}, record) => {
     <span data-cy="userSubscriptionStartDate">
       <EduIf condition={subStartDate || subRenewalDate}>
         <EduThen>
-          <>{moment(subStartDate || subRenewalDate).format(dateFormat)}</>
+          {moment(subStartDate || subRenewalDate).format(dateFormat)}
         </EduThen>
         <EduElse>{renderDSExpiryDate(record, 'perStartDate')}</EduElse>
       </EduIf>
@@ -77,10 +79,32 @@ export const renderEndDate = (subscription = {}, record) => {
   return (
     <span data-cy="userSubscriptionEndDate">
       <EduIf condition={subEndDate}>
-        <EduThen>
-          <>{moment(subEndDate).format(dateFormat)}</>
-        </EduThen>
+        <EduThen>{moment(subEndDate).format(dateFormat)}</EduThen>
         <EduElse>{renderDSExpiryDate(record, 'perEndDate')}</EduElse>
+      </EduIf>
+    </span>
+  )
+}
+
+export const renderTutorMeStartDate = (subscription) => {
+  const { startDate: tutorMeStartDate } = getTutorMeSubscription(subscription)
+  return (
+    <span data-cy="userSubscriptionTutorMeStartDate">
+      <EduIf condition={tutorMeStartDate}>
+        <EduThen>{moment(tutorMeStartDate).format(dateFormat)}</EduThen>
+        <EduElse>-</EduElse>
+      </EduIf>
+    </span>
+  )
+}
+
+export const renderTutorMeEndDate = (subscription) => {
+  const { endDate: tutorMeEndDate } = getTutorMeSubscription(subscription)
+  return (
+    <span data-cy="userSubscriptionTutorMeEndDate">
+      <EduIf condition={tutorMeEndDate}>
+        <EduThen>{moment(tutorMeEndDate).format(dateFormat)}</EduThen>
+        <EduElse>-</EduElse>
       </EduIf>
     </span>
   )

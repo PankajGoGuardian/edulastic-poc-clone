@@ -1251,4 +1251,36 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'set-release-score-off',
+    name: 'Set Release Scores Off',
+    endPoint: 'admin-tool/set-assignment-score-off',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'District Id',
+        placeholder: 'Enter District Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'termIds',
+        displayName: 'Term Ids',
+        placeholder: 'Enter comma separated term ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'assignedByIds',
+        displayName: 'Assigned By Ids',
+        placeholder: 'Enter comma separated aasigned by ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

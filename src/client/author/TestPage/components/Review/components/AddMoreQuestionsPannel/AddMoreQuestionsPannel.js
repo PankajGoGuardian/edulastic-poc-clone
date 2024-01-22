@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
+import { Tooltip } from 'antd'
 import SelectGroupModal from '../../../AddItems/SelectGroupModal'
 import { createTestItemAction } from '../../../../../src/actions/testItem'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
@@ -13,6 +14,16 @@ import {
   setCurrentGroupIndexAction,
 } from '../../../../ducks'
 import { AddMoreQuestionsPannelTitle, ButtonTextWrapper } from './styled'
+
+const ButtonWrapper = ({ showHowerText, children }) => {
+  return showHowerText ? (
+    <Tooltip title="Edit test to add new item" placement="top">
+      <span>{children}</span>
+    </Tooltip>
+  ) : (
+    <>{children}</>
+  )
+}
 
 const AddMoreQuestionsPannel = ({
   onSaveTestId,
@@ -26,6 +37,7 @@ const AddMoreQuestionsPannel = ({
   currentGroupIndexValueFromStore,
   handleNavChangeToAddItems,
   setCurrentGroupIndex,
+  isEditable,
 }) => {
   const [showSelectGroupModal, setShowSelectGroupModal] = useState(false)
 
@@ -116,24 +128,30 @@ const AddMoreQuestionsPannel = ({
         </AddMoreQuestionsPannelTitle>
       </FlexContainer>
       <FlexContainer flexDirection="row" justifyContent="center">
-        <EduButton
-          height="36px"
-          isGhost
-          data-cy="createFromLibrary"
-          onClick={handleNavChangeToAddItems}
-        >
-          <IconFolderWithLines color={themeColor} width={16} height={16} />
-          <ButtonTextWrapper>ADD FROM LIBRARY</ButtonTextWrapper>
-        </EduButton>
-        <EduButton
-          height="36px"
-          isGhost
-          data-cy="createNewItem"
-          onClick={handleCreateNewItem}
-        >
-          <IconPlusCircle color={themeColor} width={16} height={16} />
-          <ButtonTextWrapper>CREATE NEW ITEM</ButtonTextWrapper>
-        </EduButton>
+        <ButtonWrapper showHowerText={!isEditable}>
+          <EduButton
+            height="36px"
+            isGhost
+            data-cy="createFromLibrary"
+            onClick={handleNavChangeToAddItems}
+            disabled={!isEditable}
+          >
+            <IconFolderWithLines color={themeColor} width={16} height={16} />
+            <ButtonTextWrapper>ADD FROM LIBRARY</ButtonTextWrapper>
+          </EduButton>
+        </ButtonWrapper>
+        <ButtonWrapper showHowerText={!isEditable}>
+          <EduButton
+            height="36px"
+            isGhost
+            data-cy="createNewItem"
+            onClick={handleCreateNewItem}
+            disabled={!isEditable}
+          >
+            <IconPlusCircle color={themeColor} width={16} height={16} />
+            <ButtonTextWrapper>CREATE NEW ITEM</ButtonTextWrapper>
+          </EduButton>
+        </ButtonWrapper>
         {showSelectGroupModal && (
           <SelectGroupModal
             visible={showSelectGroupModal}
@@ -153,6 +171,7 @@ AddMoreQuestionsPannel.propTypes = {
   updated: PropTypes.bool.isRequired,
   showSelectGroupIndexModal: PropTypes.bool.isRequired,
   handleNavChangeToAddItems: PropTypes.func.isRequired,
+  isEditable: PropTypes.bool.isRequired,
 }
 
 AddMoreQuestionsPannel.defaultProps = {

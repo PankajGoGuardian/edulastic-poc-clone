@@ -785,6 +785,7 @@ class Review extends PureComponent {
                 updated={updated}
                 showSelectGroupIndexModal={showSelectGroupIndexModal}
                 handleNavChangeToAddItems={handleNavChangeToAddItems}
+                isEditable={isEditable}
               />
             </Paper>
           </ReviewLeftContainer>

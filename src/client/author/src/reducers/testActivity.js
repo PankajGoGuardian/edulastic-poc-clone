@@ -746,9 +746,7 @@ const reducer = (state = initialState, { type, payload }) => {
             const { interventions = [] } = entity
             return {
               ...entity,
-              interventions: interventions.length
-                ? [...interventions, payload.intervention]
-                : payload.intervention,
+              interventions: [...interventions, payload.intervention],
             }
           }
           return entity

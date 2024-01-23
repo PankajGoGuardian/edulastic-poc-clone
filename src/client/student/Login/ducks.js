@@ -570,7 +570,10 @@ const setUser = (state, { payload }) => {
     get(payload, 'orgData.classList', []).length > 1
       ? ''
       : get(payload, 'orgData.defaultClass')
-  state.user = payload
+  state.user = {
+    ...payload,
+    pearToken: payload?.pearToken ?? state.user?.pearToken,
+  }
   if (payload.role === 'parent' && payload?.children?.length > 0) {
     state.currentChild = payload.children[0]._id
     set(state, 'user.orgData', payload.children[0].orgData)

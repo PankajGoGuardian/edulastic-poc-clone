@@ -20,7 +20,11 @@ import SbacHeader from './skins/Sbac/PlayerHeader'
 import PlayerFooterDrc from './skins/Drc/PlayerFooter'
 import DrcHeader from './skins/Drc/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
-import { Tooltip } from '../../common/utils/helpers'
+import {
+  edulasticText,
+  pearAssessmentText,
+  Tooltip,
+} from '../../common/utils/helpers'
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -368,7 +372,11 @@ const AssessmentPlayerSkinWrapper = ({
           style={getStyle()}
           playerSkin={playerSkinType}
           isSidebarVisible={isSidebarVisible}
-          data-cy={test.playerSkinTypes[originalSkinName]}
+          data-cy={
+            test?.playerSkinTypes[originalSkinName]?.includes(edulasticText)
+              ? pearAssessmentText
+              : test?.playerSkinTypes[originalSkinName]
+          }
         >
           {children}
         </StyledMainContainer>

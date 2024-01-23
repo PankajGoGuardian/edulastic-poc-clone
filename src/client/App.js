@@ -302,7 +302,7 @@ class App extends Component {
     if (pearSignUpPath) {
       // Logging out any user before pear signup flow
       removeAllTokens()
-      return history.push(`/getStarted${location.search}`)
+      return history.replace(`/getStarted${location.search}`)
     }
 
     const isV1Redirect =

@@ -118,7 +118,8 @@ export const NEWSELA_SSO_LOGIN = '[auth] newsela sso login'
 export const GET_USER_DATA = '[auth] get user data from sso response'
 export const SET_USER = '[auth] set user'
 export const SIGNUP = '[auth] signup'
-export const SINGUP_SUCCESS = '[auth] signup success'
+export const SIGNUP_SUCCESS = '[auth] signup success'
+export const SIGNUP_FAILED = '[auth] signup failed'
 export const FETCH_USER = '[auth] fetch user'
 export const FETCH_USER_FAILURE = '[auth] fetch user failure'
 export const FETCH_V1_REDIRECT = '[v1 redirect] fetch'
@@ -271,7 +272,8 @@ export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
 export const signupAction = createAction(SIGNUP)
-export const signupSuccessAction = createAction(SINGUP_SUCCESS)
+export const signupSuccessAction = createAction(SIGNUP_SUCCESS)
+export const signupFailureAction = createAction(SIGNUP_FAILED)
 export const fetchUserAction = createAction(FETCH_USER)
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT)
 export const logoutAction = createAction(LOGOUT)
@@ -423,6 +425,7 @@ const initialState = {
   isUserIdPresent: true,
   isExternalUserLoading: false,
   externalUserToken: null,
+  signupInProgress: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -592,6 +595,7 @@ const setUser = (state, { payload }) => {
   }
   state.isAuthenticated = true
   state.authenticating = false
+  state.signupInProgress = false
   state.signupStatus = payload.currentSignUpState
 }
 
@@ -658,7 +662,13 @@ export default createReducer(initialState, {
   [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
     state.user.isUserGoogleLoggedIn = payload
   },
-  [SINGUP_SUCCESS]: setUser,
+  [SIGNUP]: (state) => {
+    state.signupInProgress = true
+  },
+  [SIGNUP_SUCCESS]: setUser,
+  [SIGNUP_FAILED]: (state) => {
+    state.signupInProgress = false
+  },
   [REQUEST_NEW_PASSWORD_REQUEST]: (state) => {
     state.requestingNewPassword = true
     state.requestNewPasswordSuccess = false
@@ -961,6 +971,10 @@ export default createReducer(initialState, {
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
+export const getSignupProgressStatus = createSelector(
+  ['user'],
+  (user) => user.signupInProgress
+)
 
 export const getCurrentDistrictUsersSelector = createSelector(
   [getUserDetails],
@@ -1392,6 +1406,7 @@ function* signup({ payload }) {
           errorCallback(_responseMsg)
         }
       } else {
+        yield put(signupFailureAction())
         notification({ msg: _responseMsg })
       }
     } else {
@@ -1423,12 +1438,13 @@ function* signup({ payload }) {
         user.role === roleType.TEACHER &&
         user.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
       ) {
-        window.location = '/author/dashboard'
+        window.location.replace('/author/dashboard')
       } else {
         yield put(push('/Signup'))
       }
     }
   } catch (err) {
+    yield put(signupFailureAction())
     const { role } = payload
     let errorMessage = 'Email already exists. Please sign in to your account.'
     errorMessage =

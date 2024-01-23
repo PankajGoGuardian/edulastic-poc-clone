@@ -95,29 +95,6 @@ const ChartEdit = ({
             } else {
               delete draft.chart_data.data[index].notInteractive
             }
-            // Updating validation response when there is change in interactive
-            if (
-              draft?.validation?.validResponse?.value?.[index] &&
-              !draft?.validation?.validResponse?.value?.[index]?.notInteractive
-            ) {
-              draft.validation.validResponse.value[index].notInteractive = true
-            } else {
-              delete draft?.validation?.validResponse?.value?.[index]
-                ?.notInteractive
-            }
-            // Updating Alternate Responses when there is change in interactive
-            if (draft?.validation?.altResponses) {
-              draft.validation.altResponses.forEach((altResp) => {
-                if (
-                  altResp?.value?.[index] &&
-                  draft?.chart_data?.data?.[index].notInteractive
-                ) {
-                  altResp.value[index].notInteractive = true
-                } else {
-                  delete altResp?.value?.[index]?.notInteractive
-                }
-              })
-            }
             break
           }
           case 'label': {
@@ -216,16 +193,11 @@ const ChartEdit = ({
     /*
      * chart data contains additional data as well
      * keep only required data in the validation, ignore the rest
-     * TODO:
-     * check for other chart types and remove the question type check
      */
     setQuestionData(
       produce(item, (draft) => {
         let answerToSave = ans
-        if (
-          draft.type === questionType.LINE_CHART &&
-          Array.isArray(answerToSave)
-        ) {
+        if (Array.isArray(answerToSave)) {
           answerToSave = getFilteredAnswerData(ans)
         }
         if (currentTab === 0) {

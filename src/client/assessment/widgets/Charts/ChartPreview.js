@@ -140,10 +140,8 @@ const ChartPreview = ({
     /*
      * chart data contains additional data as well
      * keep only required data in the validation, ignore the rest
-     * TODO:
-     * check for other chart types and remove the question type check
      */
-    if (chartType === questionType.LINE_CHART && Array.isArray(answerToSave)) {
+    if (Array.isArray(answerToSave)) {
       answerToSave = getFilteredAnswerData(ans)
     }
     if (tool === 'delete' && index >= 0) {

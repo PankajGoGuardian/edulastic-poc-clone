@@ -1,4 +1,5 @@
 import { lightGreen12, lightGrey9, lightRed5 } from '@edulastic/colors'
+import React from 'react'
 import moment from 'moment'
 import qs from 'qs'
 import { isEmpty, round } from 'lodash'
@@ -20,6 +21,7 @@ import {
   EXTERNAL_SCORE_SUFFIX,
   EXTERNAL_SCORE_TYPES_LIST,
   EXTERNAL_SCORE_TYPES_TO_TEST_TYPES,
+  EXTERNAL_TAG_MAX_CHARS_COUNT,
   INTERNAL_TEST_TYPES_ORDER,
   compareByKeys,
   compareByKeysToFilterKeys,
@@ -281,4 +283,25 @@ export const getExternalScoreFormattedByType = (
     externalScore < 0 ? EXTERNAL_SCORE_PREFIX[externalScoreType] : ''
   const externalScoreSuffix = EXTERNAL_SCORE_SUFFIX[externalScoreType] || ''
   return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
+}
+
+export const getXTickTooltipText = (payload, data) => {
+  const { shortTestName = '', testName = '', externalTestType = '' } = data[
+    payload.index
+  ]
+  const _testName = externalTestType ? shortTestName : testName
+  return (
+    <>
+      <div>{_testName}</div>
+      <b>{externalTestType}</b>
+    </>
+  )
+}
+
+export const getXTickTagText = (payload, data) => {
+  const tagText = data[payload.index]?.externalTestType || ''
+  if (tagText.length > EXTERNAL_TAG_MAX_CHARS_COUNT)
+    // since this text is in svg, we need to add ellipsis manually
+    return tagText.slice(0, EXTERNAL_TAG_MAX_CHARS_COUNT - 2).concat('...')
+  return tagText
 }

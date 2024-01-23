@@ -17,6 +17,7 @@ import {
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
 import { getTestName } from '../utils'
+import { getXTickTagText, getXTickTooltipText } from '../../common/utils'
 
 const { formatDate } = reportUtils.common
 
@@ -160,10 +161,6 @@ const barsLabelFormatter = (value) => {
 const getXTickText = (payload, _data) => {
   const _testName = getTestName(_data[payload.index])
   return _testName
-}
-
-const getXTickTagText = (payload, _data) => {
-  return _data[payload.index]?.externalTestType || ''
 }
 
 const Chart = ({
@@ -321,6 +318,7 @@ const Chart = ({
       yTickFormatter={() => ''}
       yAxisLabel="Distribution of Students (%)"
       getXTickText={getXTickText}
+      getXTickTooltipText={getXTickTooltipText}
       getXTickTagText={getXTickTagText}
       filter={selectedTestsFilter}
       onBarClickCB={handleToggleSelectedBars}

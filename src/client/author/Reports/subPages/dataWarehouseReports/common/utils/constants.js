@@ -193,3 +193,5 @@ export const ATTENDANCE_EVENT_CATEGORY_LABELS = {
   earlyDepartureDays: 'Early Departure',
   partialDays: 'Partial',
 }
+
+export const EXTERNAL_TAG_MAX_CHARS_COUNT = 10

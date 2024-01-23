@@ -31,6 +31,10 @@ export const StyledTag = styled(Tag)`
   font-weight: ${(props) => props.font || 'normal'}
   font-size: 0.6rem;
   font-weight: bold;
+  max-width: ${(p) => p.$maxWidth || 'unset'};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 export const CustomStyledTable = styled(StyledTable)`
   table {

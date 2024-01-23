@@ -48,7 +48,11 @@ const getTableColumns = (isSharedReport) => {
             )}
           </div>
           {record.externalTestType ? (
-            <StyledTag color="black">{record.externalTestType}</StyledTag>
+            <Tooltip title={record.externalTestType} placement="right">
+              <StyledTag color="black" $maxWidth="150px">
+                {record.externalTestType}
+              </StyledTag>
+            </Tooltip>
           ) : null}
         </AssessmentNameContainer>
       )

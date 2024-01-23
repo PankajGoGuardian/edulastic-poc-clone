@@ -20,6 +20,7 @@ import {
 } from '../utils'
 import { useResetAnimation } from '../../../../common/hooks/useResetAnimation'
 import { Spacer } from '../../../../../../common/styled'
+import { getXTickTagText, getXTickTooltipText } from '../../common/utils'
 
 const { formatDate } = reportUtils.common
 
@@ -101,10 +102,6 @@ const getXTickText = (payload, _data) => {
   return _data[payload.index]?.testName || '-'
 }
 
-const getXTickTagText = (payload, _data) => {
-  return _data[payload.index]?.externalTestType || ''
-}
-
 // print width for chart for A4 size & in landscape mode
 const PRINT_WIDTH = 1500
 
@@ -170,6 +167,7 @@ const AssessmentsChart = ({
         yTickFormatter={() => ''}
         yAxisLabel="Assessment Performance"
         getXTickText={getXTickText}
+        getXTickTooltipText={getXTickTooltipText}
         getXTickTagText={getXTickTagText}
         filter={{}}
         onBarClickCB={onBarClickCB}

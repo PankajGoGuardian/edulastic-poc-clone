@@ -158,21 +158,25 @@ const getTableColumns = (
         {
           key: testId,
           title: (
-            <Tooltip title={_testName}>
-              <AssessmentNameContainer isPrinting={isPrinting}>
+            <AssessmentNameContainer isPrinting={isPrinting}>
+              <Tooltip title={_testName}>
                 <div className="test-name-container">
                   <AssessmentName>{_testName}</AssessmentName>
                 </div>
-                <div>
-                  <StyledSpan float="left">
-                    {externalTestType ? (
-                      <StyledTag color="black">{externalTestType}</StyledTag>
-                    ) : null}
-                  </StyledSpan>
-                  <StyledSpan float="right">{averageScoreForTitle}</StyledSpan>
-                </div>
-              </AssessmentNameContainer>
-            </Tooltip>
+              </Tooltip>
+              <div>
+                <StyledSpan float="left">
+                  {externalTestType ? (
+                    <Tooltip title={externalTestType}>
+                      <StyledTag color="black" $maxWidth="100px">
+                        {externalTestType}
+                      </StyledTag>
+                    </Tooltip>
+                  ) : null}
+                </StyledSpan>
+                <StyledSpan float="right">{averageScoreForTitle}</StyledSpan>
+              </div>
+            </AssessmentNameContainer>
           ),
           align: 'center',
           dataIndex: 'tests',

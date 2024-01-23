@@ -305,7 +305,6 @@ class ClassBoard extends Component {
       selectedNotStartedStudents: [],
       showScoreImporvement: false,
       hasStickyHeader: false,
-      toggleBackTopIcon: false,
       studentFilter: 'ALL ASSIGNED',
       showAssignedTutors: false,
       showTutorMeNoLicensePopup: false,
@@ -1363,7 +1362,6 @@ class ClassBoard extends Component {
       showMarkSubmittedPopup,
       openPrintModal,
       hasStickyHeader,
-      toggleBackTopIcon,
       studentFilter,
       showAssignedTutors,
       showTutorMeNoLicensePopup,
@@ -2321,12 +2319,7 @@ class ClassBoard extends Component {
                     isCliUser={isCliUser}
                     MainContentWrapperRef={this.MainContentWrapperRef}
                   />
-                  <BackTop
-                    toggleBackTopIcon={toggleBackTopIcon}
-                    setToggleBackTopIcon={(value) =>
-                      this.setState({ toggleBackTopIcon: value })
-                    }
-                  />
+                  <BackTop />
                 </>
               )}
             {selectedTab === 'questionView' &&
@@ -2376,12 +2369,7 @@ class ClassBoard extends Component {
                         })
                       }}
                     />
-                    <BackTop
-                      toggleBackTopIcon={toggleBackTopIcon}
-                      setToggleBackTopIcon={(value) =>
-                        this.setState({ toggleBackTopIcon: value })
-                      }
-                    />
+                    <BackTop />
                   </QuestionContainer>
                 </>
               )}

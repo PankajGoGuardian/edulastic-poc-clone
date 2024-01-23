@@ -1,10 +1,12 @@
 import { Button } from 'antd'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { EduIf, LCBScrollContext } from '@edulastic/common'
 
-const BackTop = ({ toggleBackTopIcon, setToggleBackTopIcon }) => {
+const BackTop = () => {
   const scrollRef = useContext(LCBScrollContext)
+
+  const [toggleBackTopIcon, setToggleBackTopIcon] = useState(false)
 
   useEffect(() => {
     const backTopScroll = () => {

@@ -49,6 +49,7 @@ export function getTableData(metricInfo, isCsvDownloading) {
     const parentRow = {
       ...parentRowInfo,
       uid: key,
+      questionId: parentRowInfo.uid,
       qType: MULTIPART_LABEL,
       qLabel: parentRowInfo.qLabel.split('.')[0],
       standards: combinedStandards,

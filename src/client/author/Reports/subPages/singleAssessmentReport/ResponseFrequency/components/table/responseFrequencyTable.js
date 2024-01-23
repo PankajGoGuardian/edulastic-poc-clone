@@ -88,12 +88,13 @@ const ResponseFrequencyTable = ({
   const qLabelColumnRender = useCallback(
     (text, record) => {
       const { pathname, search } = window.location
+      const { assignmentId, groupId, questionId } = record
       return isSharedReport ? (
         text
       ) : (
         <Link
           to={{
-            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`,
+            pathname: `/author/classboard/${assignmentId}/${groupId}/question-activity/${questionId}`,
             state: {
               from: `${pathname}${search}`,
             },

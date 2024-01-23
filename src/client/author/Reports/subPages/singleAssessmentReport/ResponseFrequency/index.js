@@ -81,6 +81,7 @@ const ResponseFrequency = ({
     if (res && res.metrics && !isEmpty(res.metrics)) {
       const arr = Object.keys(res.metrics).map((key) => {
         res.metrics[key].uid = key
+        res.metrics[key].questionId = key
         res.metrics[key].maxScore = res.metrics[key].maxScore || '-'
         return res.metrics[key]
       })

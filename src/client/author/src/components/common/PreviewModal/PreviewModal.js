@@ -1424,6 +1424,7 @@ class PreviewModal extends React.Component {
                     <EduButton
                       IconBtn
                       isGhost
+                      data-cy="editItem"
                       height="28px"
                       width="28px"
                       title={
@@ -1462,6 +1463,7 @@ class PreviewModal extends React.Component {
                   <EduButton
                     IconBtn
                     isGhost
+                    data-cy="cloneItem"
                     width="28px"
                     height="28px"
                     title={

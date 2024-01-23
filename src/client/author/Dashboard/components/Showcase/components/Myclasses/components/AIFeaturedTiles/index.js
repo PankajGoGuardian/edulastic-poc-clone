@@ -86,6 +86,7 @@ const AIFeaturedTiles = ({
           ) : (
             <Image
               alt="aiquiz"
+              data-cy="aiTile"
               src="https://cdn.edulastic.com/webresources/dashboard/ai_quiz.svg"
               width="240px"
               onClick={handelClick}

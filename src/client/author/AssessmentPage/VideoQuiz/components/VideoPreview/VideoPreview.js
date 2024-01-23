@@ -253,7 +253,6 @@ const VideoPreview = ({
   }
 
   const seekTo = (time) => {
-    if (vqPreventSkipping) return
     if (videoRef) {
       setCurrentTime(time)
       videoRef.current?.seekTo?.(time)
@@ -264,6 +263,7 @@ const VideoPreview = ({
   }
 
   const handleKeyboardSeek = (direction) => {
+    if (vqPreventSkipping) return
     const isSeekBarFocused = isSeekBarFocusedRef.current
     if (!isSeekBarFocused && videoRef.current) {
       sliderRef?.current?.focus?.()

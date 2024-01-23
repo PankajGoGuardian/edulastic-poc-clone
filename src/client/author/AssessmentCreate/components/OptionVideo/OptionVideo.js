@@ -12,19 +12,18 @@ import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
 import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
 import QuickTour from '../QuickTour/QuickTour'
 import { SnapQuiz } from './styled'
-import FreeVideoQuizAnnouncement from '../common/FreeVideoQuizAnnouncement'
-import { checkIsDateLessThanSep30 } from '../../../TestPage/utils'
+
 import { navigationState } from '../../../src/constants/navigation'
-import AddOnTag from '../common/AddOnTag'
+
 import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
 import {
   isPremiumUserSelector,
   isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
-  vqQuotaForDistrictSelector,
-  vqUsageCountSelector,
 } from '../../../src/selectors/user'
+import VideoQuizUsage from './VideoQuizUsage'
+import AddOnTag from '../common/AddOnTag'
 
 export const videoQuizPath = '/author/tests/videoquiz'
 
@@ -37,12 +36,9 @@ const OptionVideo = ({
   history,
   isVideoQuizAndAIEnabled,
   showVQCount,
-  vqQuotaForDistrict,
-  vqUsageCount,
   isPremiumUser,
   isRedirectToAddOn,
 }) => {
-  const remainingUsageForVq = vqQuotaForDistrict - vqUsageCount
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Test Library',
@@ -60,34 +56,32 @@ const OptionVideo = ({
       pathname: videoQuizPath,
     })
   }
-  const isDateLessThanSep30 = checkIsDateLessThanSep30()
+
+  const showVideoUsageCountForPremium =
+    isPremiumUser && !isVideoQuizAndAIEnabled && showVQCount
+
+  const showAddOnTagForFreeUser = !isPremiumUser && !isVideoQuizAndAIEnabled
+
   return (
     <CardComponent>
-      <EduIf condition={!isVideoQuizAndAIEnabled && showVQCount}>
-        <AddonTagPositionTopLeft width="100%" justifyContent="flex-end">
-          <AddOnTag
-            isVideoQuiz
-            message={
-              !isPremiumUser
-                ? i18.t('author:aiSuite.addOnText')
-                : i18.t('author:aiSuite.vqLimitReached')
-            }
-            remainingUsageForVq={remainingUsageForVq}
-            vqQuotaForDistrict={vqQuotaForDistrict}
-            isPremiumUser={isPremiumUser}
-          />
+      <EduIf condition={showAddOnTagForFreeUser}>
+        <AddonTagPositionTopLeft
+          width="100%"
+          justifyContent="flex-end"
+          left="1.5rem"
+        >
+          <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
         </AddonTagPositionTopLeft>
       </EduIf>
-      {isDateLessThanSep30 && (
-        <ExpiryTextContainer>
-          <FreeVideoQuizAnnouncement
-            title="Free to use until September 30"
-            history={history}
-            style={{ padding: '20px 10px 0px 10px' }}
-          />
-          <StyledDivider />
-        </ExpiryTextContainer>
-      )}
+      <EduIf condition={showVideoUsageCountForPremium} left="1rem">
+        <AddonTagPositionTopLeft
+          width="100%"
+          justifyContent="flex-end"
+          left="0.5rem"
+        >
+          <VideoQuizUsage />
+        </AddonTagPositionTopLeft>
+      </EduIf>
       <SnapQuiz>
         <span>Video</span>Quiz
       </SnapQuiz>
@@ -112,8 +106,6 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
-    vqUsageCount: vqUsageCountSelector(state),
-    vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
     showVQCount: showVQCountSelector(state),
     isPremiumUser: isPremiumUserSelector(state),
     isRedirectToAddOn: isRedirectToAddOnSelector(state),
@@ -139,5 +131,5 @@ export const AddonTagPositionTopLeft = styled(FlexContainer)`
   justify-content: flex-end;
   position: relative;
   bottom: 6rem;
-  left: 1.5rem;
+  left: ${({ left }) => left};
 `

@@ -351,4 +351,11 @@ export const aiGradientColors = {
   color2: '#1766ce',
 }
 
+export const vqUsageProgressColor = {
+  red: '#FF0000',
+  orange: '#EDA222',
+  green: '#1AB395',
+  trailColor: '#d8d8d8',
+}
+
 export const aiLinearGradient = `${aiGradientColors.color1} 0%, ${aiGradientColors.color2} 100%`

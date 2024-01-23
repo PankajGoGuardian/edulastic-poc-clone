@@ -24,6 +24,7 @@ import {
   getInterestedSubjectsSelector,
   isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
+  showVQCountSelector,
 } from '../../../src/selectors/user'
 
 import useVideoAssessmentUtils from './hooks/useVideoAssessmentUtils'
@@ -54,6 +55,7 @@ import {
   StyledIcon,
 } from './styledComponents/common'
 import { StyledBetaTag } from '../../../AssessmentPage/VideoQuiz/styled-components/QuestionForm'
+import VideoQuizUsageBanner from './Components/VideoQuizUsageBanner'
 
 const CreateVideoQuiz = ({
   onValidUrl,
@@ -68,6 +70,7 @@ const CreateVideoQuiz = ({
   creatingAssessment,
   scrollerRef,
   isRedirectToAddOn,
+  showVQCount,
 }) => {
   const {
     linkValue,
@@ -118,6 +121,9 @@ const CreateVideoQuiz = ({
     <FlexContainer width="100%" justifyContent="center">
       <MainWrapper>
         <SearchBoxWrapper flexDirection="column" alignItems="center">
+          <EduIf condition={!isVideoQuizAndAIEnabled && showVQCount}>
+            <VideoQuizUsageBanner />
+          </EduIf>
           <SearchBoxContainer>
             <SearchBoxBody>
               <FlexContainer
@@ -267,6 +273,7 @@ const enhance = compose(
       creatingAssessment: getAssessmentCreatingSelector(state),
       isThumbnailLoading: isYtLoadingSelector(state),
       isRedirectToAddOn: isRedirectToAddOnSelector(state),
+      showVQCount: showVQCountSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

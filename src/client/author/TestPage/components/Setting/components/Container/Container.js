@@ -230,12 +230,6 @@ class Setting extends Component {
     if (entity?.safeBrowser) {
       this.updateTestData('safeBrowser')(true)
     }
-    if (
-      entity?.testCategory === testCategoryTypes.VIDEO_BASED &&
-      typeof entity?.vqPreventSkipping !== 'boolean'
-    ) {
-      this.updateTestData('vqPreventSkipping')(true)
-    }
     // resetting updated state on mount
     resetUpdatedState()
   }
@@ -1296,7 +1290,30 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
-
+                  <EduIf
+                    condition={
+                      entity.testCategory === testCategoryTypes.VIDEO_BASED
+                    }
+                  >
+                    <Block id="vq-prevent-skipping" smallSize={isSmallSize}>
+                      <Title>
+                        <span>Prevent Skipping</span>
+                        <EduSwitchStyled
+                          checked={vqPreventSkipping}
+                          data-cy="vqPreventSkipping"
+                          onChange={(v) =>
+                            this.updateTestData('vqPreventSkipping')(v)
+                          }
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          If <b>ON</b>, Students won&apos;t be able to skip
+                          ahead in a video.
+                        </Description>
+                      </Body>
+                    </Block>
+                  </EduIf>
                   {COMMON.includes(testType) && (
                     <Block id="allow-redirect" smallSize={isSmallSize}>
                       <SettingContainer>
@@ -1702,31 +1719,6 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
-
-                  <EduIf
-                    condition={
-                      entity.testCategory === testCategoryTypes.VIDEO_BASED
-                    }
-                  >
-                    <Block id="vq-prevent-skipping" smallSize={isSmallSize}>
-                      <Title>
-                        <span>Prevent Skipping</span>
-                        <EduSwitchStyled
-                          checked={vqPreventSkipping}
-                          data-cy="vqPreventSkipping"
-                          onChange={(v) =>
-                            this.updateTestData('vqPreventSkipping')(v)
-                          }
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Description>
-                          If <b>ON</b>, Students won&apos;t be able to skip
-                          ahead in a video.
-                        </Description>
-                      </Body>
-                    </Block>
-                  </EduIf>
 
                   {COMMON.includes(testType) &&
                     (userRole === roleuser.DISTRICT_ADMIN ||

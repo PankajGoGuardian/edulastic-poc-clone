@@ -374,7 +374,7 @@ export { default as IconWholeLearnerReportAddOn } from './src/IconWholeLearnerRe
 export { default as IconBehaviourReportAddOn } from './src/IconBehaviourReportAddOn'
 export { default as IconSurveyInsightsAddOn } from './src/IconSurveyInsightsAddOn'
 export { default as IconDSSellPage } from './src/IconDSSellPage'
-
+export { default as IconInfoCircle } from './src/IconInfoCircle'
 // Insights Report Icons
 export { default as IconClock } from './src/IconClock'
 export { default as IconUsersGroup } from './src/IconUsersGroup'
@@ -389,3 +389,6 @@ export { default as IconLinkHorizontal } from './src/IconLinkHorizontal'
 export { default as IconImmersiveReader } from './src/IconImmersiveReader'
 export { default as IconTutorMeAssigned } from './src/IconTutorMeAssigned'
 export { default as IconTutorMeNoLicense } from './src/IconTutorMeNoLicense'
+export { default as IconVQTextCheck } from './src/IconVQTextCheck'
+export { default as IconVQVideoBG } from './src/IconVQVideoBG'
+export { default as IconVQVideo } from './src/IconVQVideo'

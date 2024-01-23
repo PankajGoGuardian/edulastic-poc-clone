@@ -212,6 +212,37 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Test type */}
+      {/* Prevent Skipping */}
+      <EduIf
+        condition={testSettings.testCategory === testCategoryTypes.VIDEO_BASED}
+      >
+        <SettingContainer id="vq-prevent-skipping">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Prevent Skipping"
+            content=" If ON, Students won't be able to skip ahead in a video."
+            placement="rightTop"
+            premium={premium}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={10}>
+              <Label>Prevent Skipping</Label>
+            </Col>
+            <Col span={14}>
+              <AlignSwitchRight
+                disabled={freezeSettings}
+                size="small"
+                checked={vqPreventSkipping}
+                data-cy="vqPreventSkipping"
+                onChange={(value) =>
+                  overRideSettings('vqPreventSkipping', value)
+                }
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      </EduIf>
+      {/* Prevent Skipping */}
       {/* Release score */}
       <SettingContainer id="release-score-setting">
         <DetailsTooltip
@@ -482,35 +513,6 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Timed TEST */}
-
-      <EduIf
-        condition={testSettings.testCategory === testCategoryTypes.VIDEO_BASED}
-      >
-        <SettingContainer id="vq-prevent-skipping">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title="Prevent Skipping"
-            content=" If ON, Students won't be able to skip ahead in a video."
-            placement="rightTop"
-          />
-          <StyledRow gutter={16} mb="15px">
-            <Col span={10}>
-              <Label>Prevent Skipping</Label>
-            </Col>
-            <Col span={14}>
-              <AlignSwitchRight
-                disabled={freezeSettings}
-                size="small"
-                checked={vqPreventSkipping}
-                data-cy="vqPreventSkipping"
-                onChange={(value) =>
-                  overRideSettings('vqPreventSkipping', value)
-                }
-              />
-            </Col>
-          </StyledRow>
-        </SettingContainer>
-      </EduIf>
 
       {!testSettings?.isDocBased && (
         <SettingContainer id="show-rubric-to-students">

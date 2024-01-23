@@ -29,11 +29,7 @@ import {
   NewGroup,
   receiveTestByIdAction,
 } from '../TestPage/ducks'
-import {
-  getUserSelector,
-  getUserRole,
-  isRedirectToAddOnSelector,
-} from '../src/selectors/user'
+import { getUserSelector, getUserRole } from '../src/selectors/user'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
 
 const pdfjs = require('pdfjs-dist')
@@ -332,6 +328,7 @@ function* createAssessmentSaga({ payload }) {
       if (payload.videoUrl) {
         newAssessment.testCategory = testCategoryTypes.VIDEO_BASED
         newAssessment.videoUrl = payload.videoUrl
+        newAssessment.vqPreventSkipping = true
         newAssessment.cw = true
 
         if (payload.thumbnail) {

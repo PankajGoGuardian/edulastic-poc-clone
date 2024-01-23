@@ -1080,7 +1080,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
-                  data-cy="ans-on-paper"
+                  data-cy="vqPreventSkipping"
                   disabled={freezeSettings || !premium}
                   size="small"
                   checked={vqPreventSkipping}

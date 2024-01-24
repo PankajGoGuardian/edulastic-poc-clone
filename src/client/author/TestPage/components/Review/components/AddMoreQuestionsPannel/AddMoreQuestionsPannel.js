@@ -14,6 +14,8 @@ import {
   setCurrentGroupIndexAction,
 } from '../../../../ducks'
 import { AddMoreQuestionsPannelTitle, ButtonTextWrapper } from './styled'
+import ConfirmTabChange from '../../../Container/ConfirmTabChange'
+import { hasUnsavedAiItems } from '../../../../../../assessment/utils/helpers'
 
 const ButtonWrapper = ({ showHowerText, children }) => {
   return showHowerText ? (
@@ -40,11 +42,15 @@ const AddMoreQuestionsPannel = ({
   isEditable,
 }) => {
   const [showSelectGroupModal, setShowSelectGroupModal] = useState(false)
+  const [
+    showConfirmationOnTabChange,
+    setShowConfirmationOnTabChange,
+  ] = useState(false)
 
   // A copy of this functions exists at src/client/author/TestPage/components/AddItems/AddItems.js
   // If you make any changes here please do so for the above mentioned copy as well
-  const handleCreateTestItem = () => {
-    const { _id: testId, title } = test
+  const handleCreateTestItem = (_test) => {
+    const { _id: testId, title } = _test
     const defaultWidgets = {
       rows: [
         {
@@ -65,17 +71,23 @@ const AddMoreQuestionsPannel = ({
   // If you make any changes here please do so for the above mentioned copy as well
   const handleSelectGroupModalResponse = (index) => {
     if (index || index === 0) {
-      handleSave()
-      setCurrentGroupIndex(index)
-      handleCreateTestItem()
+      handleSave(undefined, undefined, (_test) => {
+        setCurrentGroupIndex(index)
+        handleCreateTestItem(_test)
+      })
     }
     setShowSelectGroupModal(false)
   }
 
   // A copy of this functions exists at src/client/author/TestPage/components/AddItems/AddItems.js
   // If you make any changes here please do so for the above mentioned copy as well
-  const handleCreateNewItem = () => {
-    const { _id: testId, title, itemGroups } = test
+  const handleCreateNewItem = (checkAiItems = true) => {
+    const { title, itemGroups } = test
+    const _hasUnsavedAiItems = hasUnsavedAiItems(itemGroups)
+    if (checkAiItems && _hasUnsavedAiItems) {
+      setShowConfirmationOnTabChange(true)
+      return
+    }
 
     if (!title) {
       notification({ messageKey: 'nameShouldNotEmpty' })
@@ -85,14 +97,17 @@ const AddMoreQuestionsPannel = ({
 		  On create of new item, trigger the save test when:-
 			- the test is not having any sections and is updated or
 			- the test is having one section or
+      - test has unsaved ai changes and not allowed to show the banner for checking ai items
 			- If the test is having multiple sections, then the save test is called 
 			  after the user selects a particular section from modal
 		*/
-    if (
-      ((!hasSections && updated) || (hasSections && itemGroups.length === 1)) &&
-      testId
-    ) {
-      handleSave()
+    if (!hasSections || itemGroups.length === 1) {
+      // check if update is needed
+      if (hasSections || updated || (!checkAiItems && _hasUnsavedAiItems)) {
+        handleSave(undefined, undefined, handleCreateTestItem)
+      } else {
+        handleCreateTestItem(test)
+      }
     }
 
     /**
@@ -111,9 +126,14 @@ const AddMoreQuestionsPannel = ({
     }
     if (itemGroups.length > 1) {
       setShowSelectGroupModal(true)
-      return
     }
-    handleCreateTestItem()
+  }
+
+  const confirmChangeNav = (confirm) => () => {
+    if (confirm) {
+      handleCreateNewItem(false)
+    }
+    setShowConfirmationOnTabChange(false)
   }
 
   return (
@@ -159,6 +179,10 @@ const AddMoreQuestionsPannel = ({
             handleResponse={handleSelectGroupModalResponse}
           />
         )}
+        <ConfirmTabChange
+          confirmChangeNav={confirmChangeNav}
+          showConfirmationOnTabChange={showConfirmationOnTabChange}
+        />
       </FlexContainer>
     </>
   )

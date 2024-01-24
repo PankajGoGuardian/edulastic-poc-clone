@@ -1374,7 +1374,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = (action, nextLocation) => {
+  handleSave = (action, nextLocation, nextAction) => {
     const {
       test = {},
       updateTest,
@@ -1449,9 +1449,9 @@ class Container extends PureComponent {
       ) {
         newTest.isInEditAndRegrade = true
       }
-      updateTest(test._id, { ...newTest, currentTab, nextLocation })
+      updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
     } else {
-      createTest({ ...newTest, currentTab, nextLocation })
+      createTest({ ...newTest, currentTab, nextLocation, nextAction })
     }
   }
 

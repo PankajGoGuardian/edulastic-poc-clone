@@ -2460,7 +2460,7 @@ function* createTestSaga({ payload }) {
     if (!validateRestrictNavigationOut(payload.data)) {
       return
     }
-    const { nextLocation } = payload.data
+    const { nextLocation, nextAction } = payload.data
     nextLocation && delete payload.data.nextLocation
 
     const testItems = get(payload, 'data.itemGroups[0].items', [])
@@ -2489,27 +2489,30 @@ function* createTestSaga({ payload }) {
 
     yield put(createTestSuccessAction(entity))
     yield put(addItemsToAutoselectGroupsRequestAction(entity))
-    if (nextLocation) {
-      yield put(replace(nextLocation))
-    } else {
-      const pathname = yield select((state) => state.router.location.pathname)
-      const currentTabMatch = pathname?.match(
-        /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
-      )
-      // try to keep the user on the same tab after test creation
-      // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
-      const currentTab =
-        currentTabMatch?.[1] ||
-        (entity.testCategory === testCategoryTypes.DEFAULT
-          ? 'addItems'
-          : 'description')
-      yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+    if (!nextAction) {
+      if (nextLocation) {
+        yield put(replace(nextLocation))
+      } else {
+        const pathname = yield select((state) => state.router.location.pathname)
+        const currentTabMatch = pathname?.match(
+          /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
+        )
+        // try to keep the user on the same tab after test creation
+        // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
+        const currentTab =
+          currentTabMatch?.[1] ||
+          (entity.testCategory === testCategoryTypes.DEFAULT
+            ? 'addItems'
+            : 'description')
+        yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
+      }
     }
-    if (entity.aiGenerated) {
+    if (entity.aiGenerated && !nextAction) {
       yield put(setIsCreatingAction(true))
       yield put(receiveTestByIdAction(entity._id, true, false))
       yield put(setIsCreatingAction(false))
     }
+    if (nextAction) nextAction(entity)
 
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {
@@ -2558,7 +2561,7 @@ export function* updateTestSaga({ payload }) {
     }
     // dont set loading as true
     if (!payload.disableLoadingIndicator) yield put(setTestsLoadingAction(true))
-    const { scoring = {}, currentTab, nextLocation } = payload.data
+    const { scoring = {}, currentTab, nextLocation, nextAction } = payload.data
     const testFieldsToOmit = [
       '_id',
       'updatedDate',
@@ -2693,40 +2696,43 @@ export function* updateTestSaga({ payload }) {
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)
-    if (nextLocation) {
-      const locationState = yield select(
-        (state) => get(state, 'router.location.state'),
-        {}
-      )
-      yield put(
-        push({
-          pathname: nextLocation,
-          state: locationState,
-        })
-      )
-    } else if (oldId !== newId && newId) {
-      if (!payload.assignFlow) {
-        let url = `/author/tests/${newId}/versioned/old/${oldId}`
-        if (currentTab) {
-          url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`
-        }
+    if (!nextAction) {
+      if (nextLocation) {
         const locationState = yield select(
           (state) => get(state, 'router.location.state'),
           {}
         )
         yield put(
           push({
-            pathname: url,
+            pathname: nextLocation,
             state: locationState,
           })
         )
+      } else if (oldId !== newId && newId) {
+        if (!payload.assignFlow) {
+          let url = `/author/tests/${newId}/versioned/old/${oldId}`
+          if (currentTab) {
+            url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`
+          }
+          const locationState = yield select(
+            (state) => get(state, 'router.location.state'),
+            {}
+          )
+          yield put(
+            push({
+              pathname: url,
+              state: locationState,
+            })
+          )
+        }
+      } else if (!payload.assignFlow) {
+        if (userRole === roleuser.EDULASTIC_CURATOR || isCurator)
+          notification({ type: 'success', messageKey: 'testSaved' })
+        else notification({ type: 'success', messageKey: 'testSavedAsDraft' })
       }
-    } else if (!payload.assignFlow) {
-      if (userRole === roleuser.EDULASTIC_CURATOR || isCurator)
-        notification({ type: 'success', messageKey: 'testSaved' })
-      else notification({ type: 'success', messageKey: 'testSavedAsDraft' })
     }
     yield put(setTestsLoadingAction(false))
+    if (nextAction) nextAction(entity)
     return entity
   } catch (err) {
     captureSentryException(err, {

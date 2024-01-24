@@ -24,6 +24,7 @@ import {
   EduIf,
   EduThen,
   EduElse,
+  SpinLoader,
 } from '@edulastic/common'
 import {
   test as testConstants,
@@ -2033,7 +2034,13 @@ class Container extends PureComponent {
           <Spin size="large" style={{ zIndex: 2000 }} />
         )}
         {isTestLoading && test._id && <ContentBackDrop />}
-        {isTestLoading && !test._id ? <Spin /> : this.renderContent()}
+        {isTestLoading && !test._id ? (
+          <Content>
+            <SpinLoader />
+          </Content>
+        ) : (
+          this.renderContent()
+        )}
         <ItemCloneModal
           fallback={<Progress />}
           handleDuplicateTest={this.handleDuplicateTest}

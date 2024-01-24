@@ -20,9 +20,11 @@ import {
   IconTextEntry,
   IconDropDown,
   IconWhiteMic,
+  IconStar,
 } from '@edulastic/icons'
 import { EduIf } from '@edulastic/common'
 import i18 from '@edulastic/localization'
+import { withRouter } from 'react-router'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import AddBulkModal from './AddBulkModal'
@@ -32,10 +34,12 @@ import {
   QuestionTypes,
   ContentWrapper,
   CustomStyleBtn2,
+  AddOnContainer,
 } from '../styled-components/AddQuestion'
 import { formatStandard } from '../utils/questionsHelpers'
 import { alignmentStandardsFromUIToMongo } from '../../../../assessment/utils/helpers'
 import { questionGenerationStatus } from '../constants'
+import { navigationState } from '../../../src/constants/navigation'
 
 class AddQuestion extends React.Component {
   state = {
@@ -44,9 +48,18 @@ class AddQuestion extends React.Component {
   }
 
   toggleBulkModal = () => {
-    this.setState(({ bulkModalVisible }) => ({
-      bulkModalVisible: !bulkModalVisible,
-    }))
+    const { isVideoQuizAndAIEnabled, history } = this.props
+
+    if (isVideoQuizAndAIEnabled) {
+      this.setState(({ bulkModalVisible }) => ({
+        bulkModalVisible: !bulkModalVisible,
+      }))
+    } else {
+      history.push({
+        pathname: '/author/subscription',
+        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
+      })
+    }
   }
 
   setAiQuestionsGenerationStatus = (status) => {
@@ -206,10 +219,15 @@ class AddQuestion extends React.Component {
                 width="100%"
                 onClick={this.toggleBulkModal}
                 data-cy="addBulk"
-                disabled={disableAutoGenerate || !isVideoQuizAndAIEnabled}
+                disabled={disableAutoGenerate}
               >
                 <FontAwesomeIcon icon={faMagic} aria-hidden="true" />
                 Auto Generate
+                <EduIf condition={!isVideoQuizAndAIEnabled}>
+                  <AddOnContainer>
+                    <IconStar />
+                  </AddOnContainer>
+                </EduIf>
               </CustomStyleBtn2>
             </QuestionTypes>
           </Tooltip>
@@ -235,4 +253,4 @@ AddQuestion.propTypes = {
   questions: PropTypes.array.isRequired,
 }
 
-export default AddQuestion
+export default withRouter(AddQuestion)

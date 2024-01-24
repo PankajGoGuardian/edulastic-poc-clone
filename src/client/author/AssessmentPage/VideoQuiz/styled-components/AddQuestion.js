@@ -77,3 +77,12 @@ export const AddButton = styled(Button)`
 export const CustomStyleBtn2 = styled(CustomStyleBtn)`
   background: linear-gradient(to right, #1568c6, #027c6c) !important;
 `
+
+export const AddOnContainer = styled.span`
+  line-height: 0px;
+
+  svg {
+    stroke: none !important;
+    margin: 0px 8px;
+  }
+`

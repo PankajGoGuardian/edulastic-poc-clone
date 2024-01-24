@@ -101,6 +101,7 @@ import { ConfirmationModal } from '../../../src/components/common/ConfirmationMo
 import AuthorTestItemPreview from '../../../src/components/common/PreviewModal/AuthorTestItemPreview'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
+import LanguageSelector from '../../../../common/components/LanguageSelector'
 import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
@@ -126,6 +127,8 @@ const defaultEmptyItem = {
     },
   ],
 }
+
+const { useLanguageFeatureQn } = constantsQuestionType
 
 class Container extends Component {
   constructor(props) {
@@ -1068,6 +1071,7 @@ class Container extends Component {
       showPublishButton,
       hasAuthorPermission,
       t,
+      allowedToSelectMultiLanguage,
       isPremiumUser,
       isEditFlow,
       itemEditDisabled,
@@ -1116,6 +1120,10 @@ class Container extends Component {
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
       (q) => q.rubrics || q?.validation?.unscored
     )
+
+    const showLanguageSelector =
+      isPassageQuestion ||
+      item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     const handleTotalPartScoreChange = (score) => {
       setItemLevelScore(+score)
@@ -1240,6 +1248,9 @@ class Container extends Component {
 
               <FlexContainer alignItems="center" justifyContent="flex-end">
                 {this.passageNavigator}
+                {allowedToSelectMultiLanguage && showLanguageSelector && (
+                  <LanguageSelector />
+                )}
                 {view !== 'preview' &&
                   view !== 'auditTrail' &&
                   showMultipartAllPartsScore && (

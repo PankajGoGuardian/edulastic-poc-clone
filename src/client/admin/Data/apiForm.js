@@ -614,6 +614,17 @@ export const apiForms = [
     name: 'Text to speech',
     endPoint: 'test/tts',
     method: 'post',
+    note: {
+      text:
+        'Note: Enter item ids when you want to create audio for only entered items instead of whole test .',
+      parentField: 'testItemIds',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
     fields: [
       {
         key: 'testId',
@@ -622,6 +633,15 @@ export const apiForms = [
         type: 'string',
         displayName: 'Enter test ID',
         required: true,
+      },
+      {
+        key: 'testItemIds',
+        name: 'testItemIds',
+        placeholder: 'Enter comma separated test item Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        displayName: 'Test item ID ( Optional )',
+        required: false,
       },
       {
         displayName: 'Use LLM (AI)',

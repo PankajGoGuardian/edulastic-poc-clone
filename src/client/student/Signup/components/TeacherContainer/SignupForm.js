@@ -32,6 +32,8 @@ import {
   getPartnerStudentSignupUrl,
   isDistrictPolicyAllowed,
   isEmailValid,
+  removeMetaTag,
+  updateMetaTag,
   validatePartnerUrl,
 } from '../../../../common/utils/helpers'
 import { Partners } from '../../../../common/utils/static/partnerData'
@@ -101,7 +103,13 @@ class Signup extends React.Component {
         role: 'teacher',
         referrer: window.document.referrer,
       })
+      // Adding meta description tag
+      updateMetaTag({ content: 'Pear Assessment for Teachers' })
     }
+  }
+
+  componentWillUnmount() {
+    removeMetaTag() // removing description meta tag
   }
 
   regExp = new RegExp('^[A-Za-z0-9 ]+$')

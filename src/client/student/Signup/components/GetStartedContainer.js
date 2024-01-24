@@ -36,6 +36,8 @@ import {
   getPartnerStudentSignupUrl,
   getPartnerTeacherSignupUrl,
   isDistrictPolicyAllowed,
+  removeMetaTag,
+  updateMetaTag,
   validatePartnerUrl,
 } from '../../../common/utils/helpers'
 import { Partners } from '../../../common/utils/static/partnerData'
@@ -77,6 +79,16 @@ const GetStarted = ({
   const [token, setToken] = useState(null)
   const partnerKey = getPartnerKeyFromUrl(window.location.pathname)
   const partner = Partners[partnerKey]
+
+  useEffect(() => {
+    updateMetaTag({
+      content:
+        'Join the growing community of teachers who are using Pear Assessment to promote learning.',
+    })
+    return () => {
+      removeMetaTag() // Removing description meta tag
+    }
+  }, [])
 
   useEffect(() => {
     const exttToken = getExternalAuthToken()

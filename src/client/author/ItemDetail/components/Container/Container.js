@@ -101,7 +101,6 @@ import { ConfirmationModal } from '../../../src/components/common/ConfirmationMo
 import AuthorTestItemPreview from '../../../src/components/common/PreviewModal/AuthorTestItemPreview'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
-import LanguageSelector from '../../../../common/components/LanguageSelector'
 import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
@@ -109,6 +108,7 @@ import {
 import QuestionManageModal from '../QuestionManageModal'
 import PassageDivider from '../../../../common/components/PassageDivider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
+import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -1248,9 +1248,7 @@ class Container extends Component {
 
               <FlexContainer alignItems="center" justifyContent="flex-end">
                 {this.passageNavigator}
-                {allowedToSelectMultiLanguage && showLanguageSelector && (
-                  <LanguageSelector />
-                )}
+
                 {view !== 'preview' &&
                   view !== 'auditTrail' &&
                   showMultipartAllPartsScore && (
@@ -1282,6 +1280,9 @@ class Container extends Component {
                 )}
               </FlexContainer>
             </BreadCrumbBar>
+            {view === 'preview' &&
+              allowedToSelectMultiLanguage &&
+              showLanguageSelector && <LanguageSelectorTab />}
             {view === 'edit' && this.renderEdit()}
             {view === 'preview' && this.renderPreview()}
             {view === 'auditTrail' && this.renderAuditTrailLogs()}

@@ -8,7 +8,7 @@ import { getCurrentLanguage, setLangAction } from './duck'
 
 const { LANGUAGES_OPTIONS } = appLanguages
 
-const LanguageSelectorTab = ({ currentLang, setLanguage }) => {
+const LanguageSelectorTab = ({ currentLang, setLanguage, hMargin }) => {
   const handleChangeLanguage = ({ key }) => {
     setLanguage(key)
   }
@@ -21,6 +21,7 @@ const LanguageSelectorTab = ({ currentLang, setLanguage }) => {
 
   return (
     <StyledMenu
+      hMargin={hMargin}
       data-cy="language-selector"
       onClick={handleChangeLanguage}
       selectedKeys={[currentLang]}
@@ -44,8 +45,8 @@ export default connect(
 
 const StyledMenu = styled(Menu)`
   position: relative;
-  margin-bottom: 20px;
-  left: 20px;
+  margin: ${({ hMargin }) => `0px ${hMargin || '0px'}`};
+  position: relative;
   .ant-menu-item:hover {
     color: #1ab394;
     border-bottom: 2px solid #1ab394;

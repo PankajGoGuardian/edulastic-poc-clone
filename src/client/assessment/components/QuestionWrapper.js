@@ -20,7 +20,6 @@ import {
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -70,7 +69,6 @@ import {
   ManualEvaluationMessage,
   PaperWrapper,
 } from '../styled/QuestionWrapperStyledComponents'
-import LanguageSelectorTab from '../../common/components/LanguageSelectorTab'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -714,15 +712,6 @@ class QuestionWrapper extends Component {
                     </EduIf>
                   </EduIf>
                   <ImmersiveReaderWrapper>
-                    <EduIf
-                      condition={
-                        view === EDIT &&
-                        allowedToSelectMultiLanguage &&
-                        useLanguageFeatureQn.includes(data.type)
-                      }
-                    >
-                      <LanguageSelectorTab />
-                    </EduIf>
                     <Question
                       {...restProps}
                       t={translate}

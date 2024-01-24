@@ -8,6 +8,7 @@ import {
   smallMobileWidth,
   mobileWidthMax,
   extraDesktopWidth,
+  largeDesktopWidth,
 } from '@edulastic/colors'
 import { MenuIcon, TextInputOnFocusStyled } from '@edulastic/common'
 import { Affix } from 'antd'
@@ -64,7 +65,10 @@ const MainHeader = ({
               )}
               {isEditable ? (
                 <EditableTitleWrapper>
-                  <EditableSizedWrapper length={title?.length || 0}>
+                  <EditableSizedWrapper
+                    length={title?.length || 0}
+                    hasSections={restProps.hasSections}
+                  >
                     <TextInputOnFocusStyled
                       showArrow
                       value={title}
@@ -81,6 +85,7 @@ const MainHeader = ({
                       onBlur={() => setShowPencil(true)}
                       style={{
                         padding: '6px 12px',
+                        textOverflow: 'ellipsis',
                       }}
                     />
                   </EditableSizedWrapper>
@@ -279,7 +284,6 @@ export const HeaderMidContainer = styled.div`
 `
 
 const EditableTitleWrapper = styled.div`
-  width: 300px;
   display: flex;
   align-items: center;
   fontsize: 18px;
@@ -288,6 +292,35 @@ const EditableTitleWrapper = styled.div`
 const EditableSizedWrapper = styled.div`
   width: calc(${(props) => (props.length || 0) + 1}ch + 32px);
   min-width: calc(${'Untitled Test'.length}ch + 32px);
-  margin-right: 8px;
+  max-width: 300px;
+  margin-right: 2px;
   box-sizing: border-box;
+  @media (max-width: ${extraDesktopWidthMax}) {
+    max-width: 14rem;
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    min-width: calc(${'Untitled'.length}ch + 32px);
+    font-size: 14px;
+    max-width: 8rem;
+  }
+  @media (max-width: ${smallMobileWidth}) {
+    min-width: calc(${'Unti'.length}ch + 32px);
+    max-width: 5rem;
+  }
+  ${(props) =>
+    props.hasSections &&
+    css`
+      max-width: 15rem;
+      @media (max-width: ${extraDesktopWidthMax}) {
+        min-width: calc(${'Untitled'.length}ch + 32px);
+        max-width: 7rem;
+      }
+      @media (max-width: ${extraDesktopWidth}) {
+        min-width: calc(${'Unti'.length}ch + 32px);
+        max-width: 3rem;
+      }
+      @media (max-width: ${smallDesktopWidth}) {
+        max-width: 7rem;
+      }
+    `}
 `

@@ -166,7 +166,7 @@ class UserForm extends React.Component {
             <Panel header={BasicDetailsHeader} key="basic">
               {isStudentEdit && (
                 <Field name="Username">
-                  <FieldLabel>Username</FieldLabel>
+                  <FieldLabel>Username/Email</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator('username', {
                       initialValue: get(
@@ -193,7 +193,7 @@ class UserForm extends React.Component {
                       rules: [
                         {
                           required: true,
-                          message: 'Please enter valid username',
+                          message: 'Please enter valid username/email',
                         },
                       ],
                       initialValue: get(

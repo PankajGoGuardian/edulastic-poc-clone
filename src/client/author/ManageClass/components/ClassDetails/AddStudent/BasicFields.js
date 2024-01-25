@@ -250,7 +250,7 @@ const BasicFields = ({
       )}
       {!isEdit ? (
         <Field name="email">
-          <FieldLabel>Username</FieldLabel>
+          <FieldLabel>Username/Email</FieldLabel>
           <Form.Item>
             {getFieldDecorator('email', {
               validateTrigger: ['onBlur'],
@@ -260,7 +260,7 @@ const BasicFields = ({
                 padding="0px 15px 0px 30px"
                 data-cy="username"
                 prefix={<IconMail color={themeColor} />}
-                placeholder="Enter Username"
+                placeholder="Enter Username/Email"
               />
             )}
             {enroll && (
@@ -280,7 +280,7 @@ const BasicFields = ({
                 padding="0px 15px 0px 30px"
                 data-cy="username"
                 prefix={<IconUser color={themeColor} />}
-                placeholder="Enter Username"
+                placeholder="Enter Username/Email"
                 disabled={googleId || canvasId || cliId || cleverId}
               />
             )}

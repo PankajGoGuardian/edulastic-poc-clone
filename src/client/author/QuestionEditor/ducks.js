@@ -51,15 +51,9 @@ import {
   setTestDataAndUpdateAction,
   setCreatedItemToTestAction,
   updateTestAndNavigateAction,
-  getTestSelector,
-  SET_TEST_DATA,
   getCurrentGroupIndexSelector,
   hasSectionsSelector,
 } from '../TestPage/ducks'
-import {
-  setTestItemsAction,
-  getSelectedItemSelector,
-} from '../TestPage/components/AddItems/ducks'
 import {
   SET_RUBRIC_ID,
   UPDATE_QUESTION,
@@ -1068,20 +1062,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
       url = '',
       routerState = {},
     } = payload
-    const testItems = yield select(getSelectedItemSelector)
-    const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
-    // updated testItems should have the current authored item
-    // if it is passage item there could be multiple testitems
-    // merge all into nextTestItems and add to test.
-    let nextTestItems = testItems
-    if (item.passageId) {
-      const passage = yield select(getPassageSelector)
-      nextTestItems = [...nextTestItems, ...passage.testItems]
-    } else {
-      nextTestItems = [...nextTestItems, item._id]
-    }
-
-    yield put(setTestItemsAction(nextTestItems))
     yield put(setCreatedItemToTestAction(item))
 
     // if the item is getting created from test before saving
@@ -1097,16 +1077,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
         })
       )
     } else {
-      const test = yield select(getTestSelector)
-      // update the test store with new test ITem
-      const updatedTest = produce(test, (draft) => {
-        draft.itemGroups[currentGroupIndex].items.push(item)
-      })
-
-      yield put({
-        type: SET_TEST_DATA,
-        payload: { data: updatedTest },
-      })
       // save the test and navigate to test page.
       const pathname = !isEditFlow
         ? `/author/tests/tab/review/id/${testId}`

@@ -26,7 +26,11 @@ export const ClassCodePopup = ({
           <EduButton isGhost onClick={onCancel}>
             No, Cancel
           </EduButton>
-          <EduButton onClick={onOk} disabled={!classCode}>
+          <EduButton
+            data-cy="signInButton"
+            onClick={onOk}
+            disabled={!classCode}
+          >
             Yes, Sign In
           </EduButton>
         </ModalFooter>,

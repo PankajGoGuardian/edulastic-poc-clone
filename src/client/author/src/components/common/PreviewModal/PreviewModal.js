@@ -1224,7 +1224,10 @@ class PreviewModal extends React.Component {
                 <Title>Customize TTS</Title>
                 <IconClose onClick={this.toggleTTSTextModal} />
               </ModalHeader>
-              <ModalContentArea tts style={{ minHeight: 400 }}>
+              <ModalContentArea
+                tts
+                style={{ minHeight: 400, paddingBottom: 30 }}
+              >
                 <div
                   onMouseEnter={() => this.setState({ modalDraggable: true })}
                   onMouseLeave={() => this.setState({ modalDraggable: false })}

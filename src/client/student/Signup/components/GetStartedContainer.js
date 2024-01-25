@@ -26,6 +26,7 @@ import styled from 'styled-components'
 import { IconMail, IconUser } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 import {
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
@@ -53,12 +54,12 @@ import {
   getExternalAuthUserAction,
   getExternalUserTokenSelector,
   getIsExternalUserLoading,
+  getSignupProgressStatus,
   setExternalAuthUserTokenAction,
   signupAction,
 } from '../../Login/ducks'
 import ClassCodeContainer from './ClassCodeContainer'
 import { getExternalAuthToken } from '../../../../loginUtils'
-import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const GetStarted = ({
   t,
@@ -72,6 +73,7 @@ const GetStarted = ({
   externalUserToken,
   isExternalUserLoading,
   setExternalAuthUserToken,
+  isSignupInProgress,
 }) => {
   const [isClassCodeModalVisible, setIsClassCodeModalVisible] = useState(false)
   const [token, setToken] = useState(null)
@@ -141,8 +143,10 @@ const GetStarted = ({
     ? t('component.signup.getstarted.pearAssessment')
     : t('component.signup.getstarted.edulasticAssessment')
 
+  const isLoading = isExternalUserLoading || isSignupInProgress
+
   return (
-    <Spin spinning={isExternalUserLoading}>
+    <Spin spinning={isLoading}>
       <RegistrationWrapper>
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
           <Redirect exact to="/" />
@@ -338,6 +342,7 @@ const enhance = compose(
     (state) => ({
       isExternalUserLoading: getIsExternalUserLoading(state),
       externalUserToken: getExternalUserTokenSelector(state),
+      isSignupInProgress: getSignupProgressStatus(state),
     }),
     {
       signup: signupAction,

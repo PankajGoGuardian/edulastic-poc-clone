@@ -1911,14 +1911,14 @@ class Container extends PureComponent {
           }
           onUnload
           message={(loc = {}) => {
-            const { pathname = '' } = loc
+            const { pathname = '', state } = loc
 
             const testFlowPath = RegExp('/author/tests/\\w*')
             const allow =
               testFlowPath.test(pathname) ||
               pathname.startsWith('/author/assignments/')
 
-            if (allow) {
+            if (allow || !!state?.skipTestNameChangeModal) {
               return true
             }
 

@@ -5,6 +5,7 @@ import {
   CustomModalStyled,
   TextInputStyled,
 } from '@edulastic/common'
+import { Icon } from 'antd'
 import {
   ModalContent,
   ModalHeader,
@@ -14,6 +15,7 @@ import {
 } from './styled'
 import { getTestSelector, setTestDataAction } from '../../ducks'
 import { DEFAULT_TEST_TITLE } from '../../utils'
+import { StyledInfoMessage } from '../GroupItems/styled'
 
 const TestNameChangeModal = ({
   visible,
@@ -41,6 +43,10 @@ const TestNameChangeModal = ({
         width="124px"
         fontSize="14px"
         style={{ textTransform: 'none' }}
+        disabled={
+          !testName?.trim() ||
+          testName?.trim().toLowerCase() === DEFAULT_TEST_TITLE.toLowerCase()
+        }
       >
         {showSaveTitle ? 'Save' : 'Continue'}
       </EduButton>
@@ -97,6 +103,9 @@ const TestNameChangeModal = ({
           }}
           style={{ fontWeight: '400' }}
         />
+        <StyledInfoMessage>
+          <Icon type="info-circle" /> Rename the test to continue
+        </StyledInfoMessage>
       </ModalContent>
     </CustomModalStyled>
   )

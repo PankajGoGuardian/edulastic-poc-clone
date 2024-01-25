@@ -25,6 +25,8 @@ import {
   isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
 } from '../../../src/selectors/user'
 
 import useVideoAssessmentUtils from './hooks/useVideoAssessmentUtils'
@@ -71,6 +73,8 @@ const CreateVideoQuiz = ({
   scrollerRef,
   isRedirectToAddOn,
   showVQCount,
+  vqQuotaForDistrict,
+  vqUsageCount,
 }) => {
   const {
     linkValue,
@@ -96,6 +100,8 @@ const CreateVideoQuiz = ({
     interestedSubjects,
     scrollerRef,
     isRedirectToAddOn,
+    vqQuotaForDistrict,
+    vqUsageCount,
   })
 
   if (isRedirectToAddOn) {
@@ -274,6 +280,8 @@ const enhance = compose(
       isThumbnailLoading: isYtLoadingSelector(state),
       isRedirectToAddOn: isRedirectToAddOnSelector(state),
       showVQCount: showVQCountSelector(state),
+      vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
+      vqUsageCount: vqUsageCountSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

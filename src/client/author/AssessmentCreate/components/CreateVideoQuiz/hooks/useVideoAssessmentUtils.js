@@ -9,7 +9,7 @@ import {
   isValidVideoUrl,
 } from '../../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 import { navigationState } from '../../../../src/constants/navigation'
-import { getDefaultSearchString, isURL } from '../utils'
+import { isURL } from '../utils'
 
 const useVideoAssessmentUtils = ({
   setYoutubeThumbnail,
@@ -20,6 +20,8 @@ const useVideoAssessmentUtils = ({
   history,
   scrollerRef,
   isRedirectToAddOn,
+  vqQuotaForDistrict,
+  vqUsageCount,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -41,7 +43,7 @@ const useVideoAssessmentUtils = ({
   }, [])
 
   useEffect(() => {
-    if (isRedirectToAddOn) {
+    if (isRedirectToAddOn || vqQuotaForDistrict === vqUsageCount) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },

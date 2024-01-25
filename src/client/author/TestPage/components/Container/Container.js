@@ -1822,7 +1822,6 @@ class Container extends PureComponent {
       writableCollections,
       t,
       history,
-      isVideoQuiAndAiEnabled,
       isRedirectToAddOn,
       isDefaultTest,
     } = this.props
@@ -1901,9 +1900,7 @@ class Container extends PureComponent {
     const gradeSubject = { grades, subjects }
 
     const isBuyAISuiteAlertModalVisible =
-      test?.testCategory === testCategoryTypes.VIDEO_BASED &&
-      isRedirectToAddOn &&
-      !isVideoQuiAndAiEnabled
+      test?.testCategory === testCategoryTypes.VIDEO_BASED && isRedirectToAddOn
 
     return (
       <>

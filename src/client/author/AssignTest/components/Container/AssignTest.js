@@ -815,7 +815,6 @@ class AssignTest extends React.Component {
       match,
       isAssigning,
       history,
-      isVideoQuiAndAiEnabled,
       isRedirectToAddOn,
     } = this.props
     const {
@@ -853,8 +852,7 @@ class AssignTest extends React.Component {
     const isBuyAISuiteAlertModalVisible =
       !isPlaylist &&
       testCategory === testCategoryTypes.VIDEO_BASED &&
-      isRedirectToAddOn &&
-      !isVideoQuiAndAiEnabled
+      isRedirectToAddOn
 
     return (
       <div>

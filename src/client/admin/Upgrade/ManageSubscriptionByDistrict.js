@@ -237,22 +237,9 @@ const ManageDistrictPrimaryForm = Form.create({
               })
             }
 
-            let statusObj = {}
-
             const changedToFree =
               currentSubType === SUBSCRIPTION_TYPES.free.subType &&
               subType !== SUBSCRIPTION_TYPES.free.subType
-
-            if (changedToFree || (_isDataStudio && subscriptionId)) {
-              Object.assign(rest, {
-                isUpdate: true,
-                subscriptionId,
-                dataStudio,
-                seedDsData,
-                searchData,
-              })
-              statusObj = { status: SUBSCRIPTION_STATUS.ARCHIVED }
-            }
 
             // filter out add on subscriptions with empty startDate/endDate
             const nextAdditionalSubscriptions = [
@@ -262,15 +249,24 @@ const ManageDistrictPrimaryForm = Form.create({
                 endDate: tutorMeEndDate?.valueOf(),
               },
             ].filter((s) => s.startDate && s.endDate)
+
             // keep subscription active if additionalSubscriptions are present
-            statusObj = additionalSubscriptions.length ? {} : statusObj
+            if (
+              (changedToFree || (_isDataStudio && subscriptionId)) &&
+              !nextAdditionalSubscriptions.length
+            ) {
+              Object.assign(rest, {
+                isUpdate: true,
+                subscriptionId,
+                status: SUBSCRIPTION_STATUS.ARCHIVED,
+              })
+            }
 
             upgradeDistrictSubscriptionAction({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
               ...rest,
-              ...statusObj,
               dataStudio,
               seedDsData,
               searchData,

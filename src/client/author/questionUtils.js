@@ -192,14 +192,30 @@ const textCheck = (item) => {
 }
 
 const passageCheck = (i) => {
-  if (isRichTextFieldEmpty(i.heading)) {
+  if (
+    isRichTextFieldEmpty(
+      i.heading || i?.languageFeatures?.[LANGUAGE_ES]?.heading
+    )
+  ) {
     return 'Heading cannot be empty.'
   }
-  if (isRichTextFieldEmpty(i.contentsTitle)) {
+  if (
+    isRichTextFieldEmpty(
+      i.contentsTitle || i?.languageFeatures?.[LANGUAGE_ES]?.contentsTitle
+    )
+  ) {
     return 'Title cannot be empty.'
   }
   if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
-    return 'Passage cannot be empty.'
+    if (i?.languageFeatures?.[LANGUAGE_ES]?.paginated_content) {
+      for (const o of i?.languageFeatures?.[LANGUAGE_ES]?.pages) {
+        if (isRichTextFieldEmpty(o)) {
+          return 'Passage cannot be empty.'
+        }
+      }
+    } else {
+      return 'Passage cannot be empty.'
+    }
   }
   if (i.paginated_content) {
     for (const o of i.pages) {

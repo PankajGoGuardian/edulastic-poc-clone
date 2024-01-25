@@ -520,14 +520,13 @@ export const isIncompleteQuestion = (
   }
 
   // item doesnt have a stimulus?
-  if (!isRichTextFieldEmpty(item?.languageFeatures?.[LANGUAGE_ES]?.stimulus)) {
-    if (
-      isRichTextFieldEmpty(
-        item.stimulus || item?.languageFeatures?.[LANGUAGE_ES]?.stimulus
-      )
-    ) {
-      return [true, 'Question text should not be empty']
-    }
+
+  if (
+    isRichTextFieldEmpty(
+      item.stimulus || item?.languageFeatures?.[LANGUAGE_ES]?.stimulus
+    )
+  ) {
+    return [true, 'Question text should not be empty']
   }
 
   // if  empty options are present

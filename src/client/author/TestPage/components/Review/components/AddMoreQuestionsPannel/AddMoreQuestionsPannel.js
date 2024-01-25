@@ -5,21 +5,24 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
 import { Tooltip } from 'antd'
+import { compose } from 'redux'
+import { withNamespaces } from 'react-i18next'
 import SelectGroupModal from '../../../AddItems/SelectGroupModal'
 import { createTestItemAction } from '../../../../../src/actions/testItem'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
 import {
   getCurrentGroupIndexSelector,
   hasSectionsSelector,
+  isDynamicTestSelector,
   setCurrentGroupIndexAction,
 } from '../../../../ducks'
 import { AddMoreQuestionsPannelTitle, ButtonTextWrapper } from './styled'
 import ConfirmTabChange from '../../../Container/ConfirmTabChange'
 import { hasUnsavedAiItems } from '../../../../../../assessment/utils/helpers'
 
-const ButtonWrapper = ({ showHowerText, children }) => {
+const ButtonWrapper = ({ showHowerText, children, title }) => {
   return showHowerText ? (
-    <Tooltip title="Edit test to add new item" placement="top">
+    <Tooltip title={title || 'Edit test to add new item'} placement="top">
       <span>{children}</span>
     </Tooltip>
   ) : (
@@ -40,6 +43,8 @@ const AddMoreQuestionsPannel = ({
   handleNavChangeToAddItems,
   setCurrentGroupIndex,
   isEditable,
+  isDynamicTest,
+  t,
 }) => {
   const [showSelectGroupModal, setShowSelectGroupModal] = useState(false)
   const [
@@ -160,13 +165,16 @@ const AddMoreQuestionsPannel = ({
             <ButtonTextWrapper>ADD FROM LIBRARY</ButtonTextWrapper>
           </EduButton>
         </ButtonWrapper>
-        <ButtonWrapper showHowerText={!isEditable}>
+        <ButtonWrapper
+          showHowerText={!isEditable || isDynamicTest}
+          title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
+        >
           <EduButton
             height="36px"
             isGhost
             data-cy="createNewItem"
             onClick={handleCreateNewItem}
-            disabled={!isEditable}
+            disabled={!isEditable || isDynamicTest}
           >
             <IconPlusCircle color={themeColor} width={16} height={16} />
             <ButtonTextWrapper>CREATE NEW ITEM</ButtonTextWrapper>
@@ -202,16 +210,20 @@ AddMoreQuestionsPannel.defaultProps = {
   onSaveTestId: () => {},
 }
 
-const enhance = connect(
-  (state) => ({
-    hasSections: hasSectionsSelector(state),
-    currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
-  }),
-  {
-    createTestItem: createTestItemAction,
-    clearDictAlignment: clearDictAlignmentAction,
-    setCurrentGroupIndex: setCurrentGroupIndexAction,
-  }
+const enhance = compose(
+  withNamespaces('author'),
+  connect(
+    (state) => ({
+      hasSections: hasSectionsSelector(state),
+      currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
+      isDynamicTest: isDynamicTestSelector(state),
+    }),
+    {
+      createTestItem: createTestItemAction,
+      clearDictAlignment: clearDictAlignmentAction,
+      setCurrentGroupIndex: setCurrentGroupIndexAction,
+    }
+  )
 )
 
 export default enhance(AddMoreQuestionsPannel)

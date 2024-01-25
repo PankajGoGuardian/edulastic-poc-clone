@@ -8,7 +8,12 @@ import { getCurrentLanguage, setLangAction } from './duck'
 
 const { LANGUAGES_OPTIONS } = appLanguages
 
-const LanguageSelectorTab = ({ currentLang, setLanguage }) => {
+const LanguageSelectorTab = ({
+  currentLang,
+  setLanguage,
+  isPassage = false,
+  isEditView,
+}) => {
   const handleChangeLanguage = ({ key }) => {
     setLanguage(key)
   }
@@ -25,6 +30,8 @@ const LanguageSelectorTab = ({ currentLang, setLanguage }) => {
       onClick={handleChangeLanguage}
       selectedKeys={[currentLang]}
       mode="horizontal"
+      isPassage={isPassage}
+      isEditView={isEditView}
     >
       {LANGUAGES_OPTIONS.map((language) => (
         <Menu.Item key={language.value}>{language.label}</Menu.Item>
@@ -44,8 +51,12 @@ export default connect(
 
 const StyledMenu = styled(Menu)`
   position: relative;
-  margin-bottom: 20px;
-  left: 20px;
+  top: ${({ isPassage }) => (isPassage ? '-35px' : '35px')};
+  left: ${({ isPassage, isEditView }) =>
+    isPassage ? (isEditView ? '315px' : '0px') : isEditView ? '315px' : '40px'};
+  width: ${({ isPassage }) => (isPassage ? '100%' : '96%;')};
+  background: transparent;
+  z-index: 2;
   .ant-menu-item:hover {
     color: #1ab394;
     border-bottom: 2px solid #1ab394;

@@ -108,6 +108,7 @@ import {
 import QuestionManageModal from '../QuestionManageModal'
 import PassageDivider from '../../../../common/components/PassageDivider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
+import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -127,6 +128,7 @@ const defaultEmptyItem = {
   ],
 }
 
+const { useLanguageFeatureQn } = constantsQuestionType
 class Container extends Component {
   constructor(props) {
     super(props)
@@ -1068,6 +1070,7 @@ class Container extends Component {
       showPublishButton,
       hasAuthorPermission,
       t,
+      allowedToSelectMultiLanguage,
       isPremiumUser,
       isEditFlow,
       itemEditDisabled,
@@ -1116,6 +1119,10 @@ class Container extends Component {
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
       (q) => q.rubrics || q?.validation?.unscored
     )
+
+    const showLanguageSelector =
+      isPassageQuestion ||
+      item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     const handleTotalPartScoreChange = (score) => {
       setItemLevelScore(+score)
@@ -1271,6 +1278,12 @@ class Container extends Component {
                 )}
               </FlexContainer>
             </BreadCrumbBar>
+            {allowedToSelectMultiLanguage && showLanguageSelector && (
+              <LanguageSelectorTab
+                isPassage
+                isEditView={view === EDIT && showQuestionManageModal}
+              />
+            )}
             {view === 'edit' && this.renderEdit()}
             {view === 'preview' && this.renderPreview()}
             {view === 'auditTrail' && this.renderAuditTrailLogs()}

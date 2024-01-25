@@ -85,11 +85,11 @@ import {
   getInterestedSubjectsSelector,
   getUserOrgId,
 } from '../../../src/selectors/user'
-import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
 import {
   PaginationInfo,
   ItemsMenu,
+  NoDataMessageContainer,
 } from '../../../TestList/components/Container/styled'
 import { getDefaultInterests, setDefaultInterests } from '../../../dataUtils'
 import HeaderFilter from '../../../ItemList/components/HeaderFilter'
@@ -103,6 +103,7 @@ import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { STATUS } from '../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import SelectGroupModal from './SelectGroupModal'
 import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
+import { NoDataContainer } from '../../../Reports/common/styled'
 
 const { sectionTestActions } = testConstants
 
@@ -493,14 +494,29 @@ class AddItems extends PureComponent {
       current,
       showSelectGroupIndexModal,
       currentGroupIndexValueFromStore,
+      isDynamicTest,
     } = this.props
+    const { ADD_ITEMS_NO_DATA_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
     if (items.length < 1) {
       return (
-        <NoDataNotification
-          heading="Items Not Available"
-          description='There are currently no items available for this filter. 
-          You can create new item by clicking the "CREATE NEW ITEM" button.'
-        />
+        <NoDataContainer>
+          <FlexContainer flexDirection="column" alignItems="center">
+            <NoDataMessageContainer maxWidth="220px">
+              No item available for the search criteria
+            </NoDataMessageContainer>
+            <EduIf condition={!isDynamicTest}>
+              <EduAIQuiz
+                addItems
+                test={test}
+                currentGroupIndexValueFromStore={
+                  currentGroupIndexValueFromStore
+                }
+                showSelectGroupIndexModal={showSelectGroupIndexModal}
+                displayScreen={ADD_ITEMS_NO_DATA_SCREEN}
+              />
+            </EduIf>
+          </FlexContainer>
+        </NoDataContainer>
       )
     }
     return items.map((item, index) => (

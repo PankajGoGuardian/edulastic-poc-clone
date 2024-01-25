@@ -252,7 +252,7 @@ export const FiltersWrapper = styled.div`
 `
 
 export const NoDataMessageContainer = styled.div`
-  max-width: 210px;
+  max-width: ${({ maxWidth }) => maxWidth || '210px'};
   text-align: center;
   font-size: 20px;
 `

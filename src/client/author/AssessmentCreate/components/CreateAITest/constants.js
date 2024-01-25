@@ -4,4 +4,5 @@ export const CREATE_AI_TEST_DISPLAY_SCREENS = {
   CREATE_ITEMS_SCREEN: 'createItemsScreen',
   CREATE_TEST_SCREEN: 'createTestScreen',
   SEARCH_NO_DATA_SCREEN: 'searchNoDataScreen',
+  ADD_ITEMS_NO_DATA_SCREEN: 'addItemsNoDataScreen',
 }

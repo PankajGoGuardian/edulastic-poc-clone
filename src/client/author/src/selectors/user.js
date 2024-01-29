@@ -217,15 +217,6 @@ export const getUserOrgName = createSelector(
 
 export const getUserFeatures = createSelector(stateSelector, (state) => {
   const features = _get(state, 'user.features')
-  const userHaveImmersiveReader = _get(state, 'user.immersiveReader')
-
-  if (userHaveImmersiveReader) {
-    return {
-      ...features,
-      canUseImmersiveReader: userHaveImmersiveReader === 'yes',
-    }
-  }
-
   return features
 })
 

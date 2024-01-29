@@ -587,9 +587,13 @@ export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
 )
 
 export const showVQCountSelector = createSelector(
+  vqUsageCountSelector,
   vqQuotaForDistrictSelector,
-  (vqQuotaForDistrict) => {
-    if (vqQuotaForDistrict === -1) {
+  (vqUsageCount, vqQuotaForDistrict) => {
+    if (
+      vqQuotaForDistrict === -1 ||
+      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
+    ) {
       return false
     }
     return true

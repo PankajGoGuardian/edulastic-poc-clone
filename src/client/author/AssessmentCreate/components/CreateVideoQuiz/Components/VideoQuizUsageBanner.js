@@ -12,7 +12,7 @@ import {
 } from '../../../../src/selectors/user'
 import VideoQuizUsage from '../../OptionVideo/VideoQuizUsage'
 
-const VideoQuizUsageBanner = ({ vqUsageCount }) => {
+const VideoQuizUsageBanner = ({ vqUsageCount, vqQuotaForDistrict }) => {
   const showUsageCount = vqUsageCount > 0
   return (
     <FlexContainer
@@ -40,7 +40,7 @@ const VideoQuizUsageBanner = ({ vqUsageCount }) => {
                 <FlexContainer justifyContent="flex-start" alignItems="center">
                   <IconVQTextCheck margin="3px 0 0 0" />
                   <UpgradeAiSuitText ml="5px">
-                    20 Free Video Quizzes Included
+                    {vqQuotaForDistrict} Free Video Quizzes Included
                   </UpgradeAiSuitText>
                 </FlexContainer>
               </FlexContainer>

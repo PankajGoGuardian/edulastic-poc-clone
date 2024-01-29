@@ -74,7 +74,7 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
             <FlexContainer justifyContent="flex-start">
               <IconVQTextCheck margin="3px 0 0 0" />
               <UpgradeAiSuitText paddingBottom="16px" ml="5px">
-                20 Free Video Quizzes Included
+                {vqQuotaForDistrict} Free Video Quizzes Included
               </UpgradeAiSuitText>
             </FlexContainer>
           </FlexContainer>

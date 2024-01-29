@@ -1280,7 +1280,6 @@ class Container extends Component {
             </BreadCrumbBar>
             {allowedToSelectMultiLanguage && showLanguageSelector && (
               <LanguageSelectorTab
-                isPassage
                 isEditView={view === EDIT && showQuestionManageModal}
               />
             )}

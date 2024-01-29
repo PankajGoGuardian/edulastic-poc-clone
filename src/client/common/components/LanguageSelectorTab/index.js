@@ -5,14 +5,15 @@ import Menu from 'antd/lib/menu'
 import styled from 'styled-components'
 
 import { getCurrentLanguage, setLangAction } from './duck'
+import { getItemDetailSelector } from '../../../author/ItemDetail/ducks'
 
 const { LANGUAGES_OPTIONS } = appLanguages
 
 const LanguageSelectorTab = ({
   currentLang,
   setLanguage,
-  isPassage = false,
   isEditView,
+  item,
 }) => {
   const handleChangeLanguage = ({ key }) => {
     setLanguage(key)
@@ -30,7 +31,7 @@ const LanguageSelectorTab = ({
       onClick={handleChangeLanguage}
       selectedKeys={[currentLang]}
       mode="horizontal"
-      isPassage={isPassage}
+      isPassage={item.isPassageWithQuestions}
       isEditView={isEditView}
     >
       {LANGUAGES_OPTIONS.map((language) => (
@@ -43,6 +44,7 @@ const LanguageSelectorTab = ({
 export default connect(
   (state) => ({
     currentLang: getCurrentLanguage(state),
+    item: getItemDetailSelector(state),
   }),
   {
     setLanguage: setLangAction,

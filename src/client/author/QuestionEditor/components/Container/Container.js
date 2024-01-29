@@ -19,7 +19,6 @@ import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
 import { desktopWidth } from '@edulastic/colors'
 import { questionType as constantsQuestionType } from '@edulastic/constants'
-import { PASSAGE } from '@edulastic/constants/const/questionType'
 import SourceModal from '../SourceModal/SourceModal'
 import {
   changeViewAction,
@@ -612,10 +611,7 @@ class Container extends Component {
               useLanguageFeatureQn.includes(questionType)
             }
           >
-            <LanguageSelectorTab
-              isPassage={questionType === PASSAGE}
-              isEditView={view === EDIT}
-            />
+            <LanguageSelectorTab isEditView={view === EDIT} />
           </EduIf>
         </HeaderContainer>
         <ScrollContext.Provider

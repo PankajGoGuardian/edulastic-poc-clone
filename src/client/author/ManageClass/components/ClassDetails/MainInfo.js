@@ -202,7 +202,7 @@ const MainInfo = ({
             <Divider type="vertical" style={{ height: 'auto' }} />
             <ViewAssignmentsContainer>
               <EduButton
-                type="secondary"
+                type="primary"
                 height="30px"
                 style={{ marginBottom: '8px' }}
                 onClick={onViewAssignmentsClick}

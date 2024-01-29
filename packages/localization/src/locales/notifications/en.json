@@ -2275,5 +2275,9 @@
   "aiSuitNotEnabled": {
     "message": "You need VideoQuiz and AI Suite subscription to use this test. Buy it now!",
     "description": ""
+  },
+  "preventVQForwardSeek": {
+    "message": "Forward seeking is not allowed.",
+    "description": ""
   }
 }

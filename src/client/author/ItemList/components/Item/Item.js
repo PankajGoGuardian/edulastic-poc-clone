@@ -28,6 +28,7 @@ import {
   notification,
   LikeIconStyled,
   FlexContainer,
+  EduIf,
 } from '@edulastic/common'
 import { testItemsApi } from '@edulastic/api'
 
@@ -631,15 +632,31 @@ class Item extends Component {
                 </ViewButton>
               ) : // to display the section name instead of remove button on selected items
               isPublisher || isDynamicTest || hasSections ? (
-                <AddRemoveBtnPublisher
-                  loading={selectedId === item._id}
-                  onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                  isAddOrRemove={this.isAddOrRemove}
-                  data-cy="addRemoveButton"
-                >
-                  {this.isAddOrRemove ? 'ADD' : `${groupName}`}
-                  {this.isAddOrRemove ? '' : <Icon type="close" />}
-                </AddRemoveBtnPublisher>
+                <>
+                  <EduIf condition={isDynamicTest && !isPublisher}>
+                    <EduButton
+                      width="40px"
+                      height="35px"
+                      isGhost
+                      iconBtn
+                      onClick={openPreviewModal}
+                      style={{ marginTop: '15px', marginRight: '3px' }}
+                    >
+                      <IconEye />
+                    </EduButton>
+                  </EduIf>
+                  <AddRemoveBtnPublisher
+                    loading={selectedId === item._id}
+                    onClick={() =>
+                      this.handleAddRemove(item, this.isAddOrRemove)
+                    }
+                    isAddOrRemove={this.isAddOrRemove}
+                    data-cy="addRemoveButton"
+                  >
+                    {this.isAddOrRemove ? 'ADD' : `${groupName}`}
+                    {this.isAddOrRemove ? '' : <Icon type="close" />}
+                  </AddRemoveBtnPublisher>
+                </>
               ) : (
                 <>
                   <EduButton

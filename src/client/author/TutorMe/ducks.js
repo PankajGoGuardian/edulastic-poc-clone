@@ -7,13 +7,15 @@ import { getUser, getUserOrgId } from '../src/selectors/user'
 import { initTutorMeService } from './service'
 import { setInterventionDataInUtaAction } from '../src/reducers/testActivity'
 import { invokeTutorMeSDKtoAssignTutor } from './helper'
+import { tutorMeSdkConfig } from '../../../app-config'
 
 const reduxNamespaceKey = 'tutorMe'
 const initialState = {
-  isTutorMeServiceInitialized: false,
+  tutorMeInitAt: null,
   isSessionRequestActive: false,
   isTutorMeModalOpen: false,
 }
+const { authTimeout } = tutorMeSdkConfig
 
 const slice = createSlice({
   slice: reduxNamespaceKey,
@@ -25,10 +27,10 @@ const slice = createSlice({
     tutorMeRequestSessionComplete: (state) => {
       state.isSessionRequestActive = false
     },
-    setIsTutorMeServiceInitialized: (state, payload) => {
-      state.isTutorMeServiceInitialized = payload
+    setTutorMeInitAt: (state, { payload }) => {
+      state.tutorMeInitAt = payload
     },
-    setIsTutorMeModalOpen: (state, payload) => {
+    setIsTutorMeModalOpen: (state, { payload }) => {
       state.isTutorMeModalOpen = payload
     },
   },
@@ -40,9 +42,13 @@ export { reduxNamespaceKey }
 
 const stateSelector = (state) => state.tutorMeReducer
 
-const isTutorMeServiceInitializedSelector = createSelector(
+const tutorMeInitAtSelector = createSelector(
   stateSelector,
-  (state) => state.isTutorMeServiceInitialized
+  (state) => state.tutorMeInitAt
+)
+const tutorMeInitExpiredSelector = createSelector(
+  tutorMeInitAtSelector,
+  (tutorMeInitAt) => !tutorMeInitAt || tutorMeInitAt + authTimeout < Date.now()
 )
 
 export const tutorMeServiceInitializingSelector = createSelector(
@@ -90,18 +96,18 @@ function* createTutorMeInterventionSaga(payload) {
 
 function* initializeTutorMeServiceSaga() {
   try {
-    const isTutorMeServiceInitialized = yield select(
-      isTutorMeServiceInitializedSelector
-    )
-    if (!isTutorMeServiceInitialized) {
+    const tutorMeInitExpired = yield select(tutorMeInitExpiredSelector)
+    if (tutorMeInitExpired) {
+      const now = Date.now()
+      const authCredentials = yield call(tutorMeApi.authorizeTutorme)
       const user = yield select(getUser)
-      yield call(initTutorMeService, user)
-      yield put(actions.setIsTutorMeServiceInitialized(true))
+      yield call(initTutorMeService, authCredentials, user)
+      yield put(actions.setTutorMeInitAt(now))
     }
   } catch (err) {
     captureSentryException(err)
     notification({ msg: 'Unable to initialize TutorMe SDK' })
-    yield put(actions.setIsTutorMeServiceInitialized(false))
+    yield put(actions.setTutorMeInitAt(null))
   }
 }
 
@@ -116,10 +122,7 @@ function* tutorMeRequestSesssionSaga({ payload }) {
           .join(','),
       }),
     ])
-    const isTutorMeServiceInitialized = yield select(
-      isTutorMeServiceInitializedSelector
-    )
-    if (!isTutorMeServiceInitialized) {
+    if (yield select(tutorMeInitExpiredSelector)) {
       return
     }
     yield put(actions.setIsTutorMeModalOpen(true))

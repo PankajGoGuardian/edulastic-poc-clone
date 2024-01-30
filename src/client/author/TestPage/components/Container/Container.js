@@ -158,6 +158,7 @@ import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
+import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -1921,8 +1922,10 @@ class Container extends PureComponent {
 
     const gradeSubject = { grades, subjects }
 
-    const isBuyAISuiteAlertModalVisible =
-      test?.testCategory === testCategoryTypes.VIDEO_BASED && isRedirectToAddOn
+    const isBuyAISuiteAlertModalVisible = getIsBuyAiSuiteAlertModalVisible(
+      test?.testCategory,
+      isRedirectToAddOn
+    )
 
     return (
       <>

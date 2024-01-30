@@ -11,7 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import { CheckboxLabel } from '@edulastic/common'
 import { testActivityStatus } from '@edulastic/constants'
-import { IconTutorMeAssigned } from '@edulastic/icons'
+import { IconTutorMe } from '@edulastic/icons'
 import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import {
   ScratchPadIcon,
@@ -333,7 +333,7 @@ class DisneyCardContainer extends Component {
                   >
                     {name}
                     {!!interventions?.length && (
-                      <IconTutorMeAssigned
+                      <IconTutorMe
                         style={{ cursor: 'pointer', marginLeft: '3px' }}
                         onClick={(e) => {
                           e.stopPropagation()

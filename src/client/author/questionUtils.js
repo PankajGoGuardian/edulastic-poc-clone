@@ -8,6 +8,7 @@ import {
   isNil,
   isNaN,
   isArray,
+  isPlainObject,
 } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
@@ -405,6 +406,11 @@ const emptyFieldsValidator = {
 }
 
 const itemHasIncompleteFields = (item) => {
+  // Updating item with languageFeature first language item if english content not available
+  if (!item.stimulus.length && item.languageFeatures) {
+    const languageCode = Object.keys(item.languageFeatures).shift()
+    item = item.languageFeatures[languageCode]
+  }
   if (emptyFieldsValidator[item.type]) {
     return emptyFieldsValidator[item.type](item)
   }
@@ -596,12 +602,15 @@ export const isIncompleteQuestion = (
           item?.validation?.validResponse,
           ...(item?.validation?.altResponses || []),
         ]
+        const answerValues = item?.validation?.validResponse?.value
         // Updating correctAnswers with languageFeature validResponse if english content not available
         if (
-          item?.validation?.validResponse.value.some(
-            (res) => !res?.value?.length
-          ) &&
-          item?.languageFeatures
+          item?.languageFeatures &&
+          ((Array.isArray(answerValues) &&
+            (!answerValues.length ||
+              answerValues?.some((res) => !res?.value?.length))) ||
+            (isPlainObject(answerValues) &&
+              Object.values(answerValues)?.includes('')))
         ) {
           const languageCode = Object.keys(item?.languageFeatures).shift()
           const validation = item?.languageFeatures[languageCode]?.validation

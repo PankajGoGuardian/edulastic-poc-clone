@@ -364,13 +364,16 @@ function* createAssessmentSaga({ payload }) {
       const assesmentPayload = omit(newAssessment, omitedItems)
 
       const assessment = yield call(testsApi.create, assesmentPayload)
-      const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
-      yield put(
-        setUserFeaturesAction({
-          featureName: 'vqUsageCount',
-          value: vqUsageCount,
-        })
-      )
+
+      if (assessment?.testCategory === testCategoryTypes.VIDEO_BASED) {
+        const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+        yield put(
+          setUserFeaturesAction({
+            featureName: 'vqUsageCount',
+            value: vqUsageCount,
+          })
+        )
+      }
       yield put(createAssessmentSuccessAction())
 
       yield put(receiveTestByIdAction(assessment._id, true, false))

@@ -40,6 +40,7 @@ import {
   testItemsApi,
   analyticsApi,
   settingsApi,
+  getVQUsageCountApi,
 } from '@edulastic/api'
 import moment from 'moment'
 import nanoid from 'nanoid'
@@ -116,6 +117,7 @@ import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 import appConfig from '../../../app-config'
+import { setUserFeaturesAction } from '../../student/Login/ducks'
 
 const { videoQuizDefaultCollection } = appConfig
 
@@ -3827,6 +3829,16 @@ function* duplicateTestSaga({ payload }) {
       updateContentVersionId,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
+
+    if (data?.testCategory === testCategoryTypes.VIDEO_BASED) {
+      const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+      yield put(
+        setUserFeaturesAction({
+          featureName: 'vqUsageCount',
+          value: vqUsageCount,
+        })
+      )
+    }
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
       yield put(push(`/author/tests/${data._id}`))

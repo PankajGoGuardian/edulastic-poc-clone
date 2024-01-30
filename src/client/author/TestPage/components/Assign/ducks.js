@@ -19,6 +19,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
+import { testCategoryTypes } from '@edulastic/constants/const/test'
 import { getTestSelector, getTestIdSelector } from '../../ducks'
 
 import { formatAssignment } from './utils'
@@ -453,13 +454,16 @@ function* saveAssignment({ payload }) {
       assignmentApi.createAssignmentV2,
       assignmentPayload
     )
-    const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
-    yield put(
-      setUserFeaturesAction({
-        featureName: 'vqUsageCount',
-        value: vqUsageCount,
-      })
-    )
+
+    if (test.testCategory === testCategoryTypes.VIDEO_BASED) {
+      const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+      yield put(
+        setUserFeaturesAction({
+          featureName: 'vqUsageCount',
+          value: vqUsageCount,
+        })
+      )
+    }
     const gSyncStatus = []
     result.assignments?.forEach((_data) => {
       if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus)

@@ -2277,7 +2277,7 @@
     "description": ""
   },
   "preventVQForwardSeek": {
-    "message": "Forward seeking is not allowed.",
+    "message": "Skipping ahead in the video is locked.",
     "description": ""
   }
 }

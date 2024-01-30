@@ -407,7 +407,7 @@ const emptyFieldsValidator = {
 
 const itemHasIncompleteFields = (item) => {
   // Updating item with languageFeature first language item if english content not available
-  if (!item.stimulus.length && item.languageFeatures) {
+  if (!item?.stimulus?.length && item.languageFeatures) {
     const languageCode = Object.keys(item.languageFeatures).shift()
     item = item.languageFeatures[languageCode]
   }
@@ -608,7 +608,9 @@ export const isIncompleteQuestion = (
           item?.languageFeatures &&
           ((Array.isArray(answerValues) &&
             (!answerValues.length ||
-              answerValues?.some((res) => !res?.value?.length))) ||
+              answerValues?.some((res) =>
+                res?.value ? !res?.value?.length : !res.length
+              ))) ||
             (isPlainObject(answerValues) &&
               Object.values(answerValues)?.includes('')))
         ) {

@@ -31,7 +31,7 @@ const LanguageSelectorTab = ({
       onClick={handleChangeLanguage}
       selectedKeys={[currentLang]}
       mode="horizontal"
-      isPassage={item.isPassageWithQuestions}
+      isPassage={item.isPassageWithQuestions || item.multipartItem}
       isEditView={isEditView}
     >
       {LANGUAGES_OPTIONS.map((language) => (

@@ -243,7 +243,9 @@ export const hasEmptyAnswers = (item) => {
     item?.languageFeatures &&
     ((Array.isArray(answerValues) &&
       (!answerValues.length ||
-        answerValues?.some((res) => !res?.value?.length))) ||
+        answerValues?.some((res) =>
+          res?.value ? !res?.value?.length : !res.length
+        ))) ||
       (isPlainObject(answerValues) &&
         Object.values(answerValues)?.includes('')))
   ) {

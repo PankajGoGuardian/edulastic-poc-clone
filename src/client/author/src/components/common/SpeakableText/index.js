@@ -48,9 +48,7 @@ const SpeakableText = ({
   }, [ttsTextData])
 
   const { text: stimulusText = '', options = {} } = updatedTtsData || {}
-  const optionIds = Array.isArray(question?.options)
-    ? (question?.options || []).map(({ value }) => value)
-    : []
+  const optionIds = (question?.options || []).map(({ value }) => value)
 
   const handleUpdateTtsData = (text, type, optionId) => {
     if (type === 'stimulus') {
@@ -122,36 +120,33 @@ const SpeakableText = ({
 
           <h4>Question TTS Text</h4>
           <TextAreaInputStyled
-            style={{ paddingLeft: '5px', paddingTop: '5px', marginBottom: 10 }}
+            style={{ paddingLeft: '5px', paddingTop: '5px' }}
             value={stimulusText}
-            autoSize={{ minRows: 4 }}
             onChange={(e) =>
               handleUpdateTtsData(e?.target?.value || '', 'stimulus')
             }
           />
-          <EduIf condition={optionIds.length}>
-            <h4 style={{ marginTop: '20px' }}>Options TTS Text</h4>
-            {(optionIds || []).map((optionId, index) => {
-              const optionText = options?.[optionId]?.text || ''
-              return (
-                <StyledOptionContainer>
-                  <StyledOptionLabel>{ALPHABET[index]}</StyledOptionLabel>
-                  <StyledTextArea
-                    bordered={false}
-                    style={{ paddingLeft: '5px', paddingTop: '5px' }}
-                    value={optionText || ''}
-                    onChange={(e) =>
-                      handleUpdateTtsData(
-                        e?.target?.value || '',
-                        'option',
-                        optionId
-                      )
-                    }
-                  />
-                </StyledOptionContainer>
-              )
-            })}
-          </EduIf>
+          <h4 style={{ marginTop: '20px' }}>Options TTS Text</h4>
+          {(optionIds || []).map((optionId, index) => {
+            const optionText = options?.[optionId]?.text || ''
+            return (
+              <StyledOptionContainer>
+                <StyledOptionLabel>{ALPHABET[index]}</StyledOptionLabel>
+                <StyledTextArea
+                  bordered={false}
+                  style={{ paddingLeft: '5px', paddingTop: '5px' }}
+                  value={optionText || ''}
+                  onChange={(e) =>
+                    handleUpdateTtsData(
+                      e?.target?.value || '',
+                      'option',
+                      optionId
+                    )
+                  }
+                />
+              </StyledOptionContainer>
+            )
+          })}
           <FlexContainer justifyContent="space-between">
             <FlexContainer justifyContent="flex-start">
               <EduIf condition={!showLanguageSelector}>

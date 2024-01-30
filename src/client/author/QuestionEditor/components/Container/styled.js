@@ -49,14 +49,14 @@ export const QuestionContentWrapper = styled.div`
   position: relative;
   z-index: ${({ zIndex }) => zIndex};
   @media (min-width: ${mediumDesktopExactWidth}) {
-    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) and languageSelector height is 48px */
+    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
     height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.md + 103 + (isInModal ? 110 : 0)}px)`};
+      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) and languageSelector height is 48px */
+    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
     height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.xl + 103 + (isInModal ? 110 : 0)}px)`};
+      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */

@@ -26,7 +26,7 @@ import {
 import {
   getIsMultiLanguageEnabled,
   getUtaPeferredLanguage,
-} from '../../common/components/LanguageSelectorTab/duck'
+} from '../../common/components/LanguageSelector/duck'
 import {
   setPreviewLanguageAction,
   switchLanguageAction,

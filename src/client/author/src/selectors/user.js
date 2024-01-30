@@ -215,10 +215,9 @@ export const getUserOrgName = createSelector(
   (userOrg) => userOrg?.districtName
 )
 
-export const getUserFeatures = createSelector(stateSelector, (state) => {
-  const features = _get(state, 'user.features')
-  return features
-})
+export const getUserFeatures = createSelector(stateSelector, (state) =>
+  _get(state, 'user.features')
+)
 
 export const getIsAiEvaulationDistrictSelector = createSelector(
   getUserFeatures,

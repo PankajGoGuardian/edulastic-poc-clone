@@ -52,7 +52,7 @@ import { changeDataToPreferredLanguage } from '../utils/question'
 import {
   languagePreferenceSelector,
   getCurrentLanguage,
-} from '../../common/components/LanguageSelectorTab/duck'
+} from '../../common/components/LanguageSelector/duck'
 import ImmersiveReaderWrapper from './ImmersiveReadeWrapper'
 import {
   StyledFlexContainer,
@@ -228,8 +228,8 @@ class QuestionWrapper extends Component {
 
   // we will use this method only for LCB and student report
   get renderData() {
-    const { data, studentLanguagePreference, view } = this.props
-    return changeDataToPreferredLanguage(data, studentLanguagePreference, view)
+    const { data, studentLanguagePreference } = this.props
+    return changeDataToPreferredLanguage(data, studentLanguagePreference)
   }
 
   get answerScore() {
@@ -377,7 +377,6 @@ class QuestionWrapper extends Component {
       isExpandedView,
       t: translate,
       aiEvaluationStatus,
-      authLanguage,
       ...restProps
     } = this.props
 

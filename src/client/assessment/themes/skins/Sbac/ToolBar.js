@@ -21,7 +21,7 @@ import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
-import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelectorTab/duck'
+import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
 import { getCalcTypeSelector } from '../../../selectors/test'
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]

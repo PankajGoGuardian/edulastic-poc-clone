@@ -13,7 +13,6 @@ import {
   CustomPrompt,
   LanguageContext,
   ScrollContext,
-  EduIf,
 } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
@@ -64,10 +63,9 @@ import { removeUserAnswerAction } from '../../../../assessment/actions/answers'
 import { BackLink, QuestionContentWrapper } from './styled'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
-import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
-import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
+import LanguageSelector from '../../../../common/components/LanguageSelector'
+import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
-import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -521,10 +519,10 @@ class Container extends Component {
       hasUnsavedChanges,
       currentLanguage,
       showCalculatingSpinner,
+      allowedToSelectMultiLanguage,
       t,
       isMultipartItem,
       isInModal,
-      allowedToSelectMultiLanguage,
     } = this.props
 
     if (!question) {
@@ -592,6 +590,10 @@ class Container extends Component {
               )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
+              {allowedToSelectMultiLanguage &&
+                useLanguageFeatureQn.includes(questionType) && (
+                  <LanguageSelector />
+                )}
               {view !== 'preview' && view !== 'auditTrail' && (
                 <EduButton
                   isGhost
@@ -605,14 +607,6 @@ class Container extends Component {
               <div>{view === 'preview' && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>
-          <EduIf
-            condition={
-              allowedToSelectMultiLanguage &&
-              useLanguageFeatureQn.includes(questionType)
-            }
-          >
-            <LanguageSelectorTab isEditView={view === EDIT} />
-          </EduIf>
         </HeaderContainer>
         <ScrollContext.Provider
           value={{

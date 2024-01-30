@@ -233,29 +233,10 @@ const answerValidator = {
 // make the helper generic to support all such question types
 export const hasEmptyAnswers = (item) => {
   if (questionType.manuallyGradableQn.includes(item.type)) return false
-  let correctAnswers = [
+  const correctAnswers = [
     item?.validation?.validResponse,
     ...(item?.validation?.altResponses || []),
   ]
-  const answerValues = item?.validation?.validResponse?.value
-  // Updating correctAnswers with languageFeature validResponse if english content not available
-  if (
-    item?.languageFeatures &&
-    ((Array.isArray(answerValues) &&
-      (!answerValues.length ||
-        answerValues?.some((res) =>
-          res?.value ? !res?.value?.length : !res.length
-        ))) ||
-      (isPlainObject(answerValues) &&
-        Object.values(answerValues)?.includes('')))
-  ) {
-    const languageCode = Object.keys(item?.languageFeatures).shift()
-    const validation = item?.languageFeatures[languageCode]?.validation
-    correctAnswers = [
-      validation?.validResponse,
-      ...(validation?.altResponses || []),
-    ]
-  }
   if (isPlainObject(item)) {
     switch (item.type) {
       case questionType.GRAPH:

@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { StyledButton, StyledDropdown, StyledMenu } from './styled'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
-import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelectorTab/duck'
+import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
 import { lineReaderVisible } from '../../../../common/components/LineReader/duck'
 
 const MenuItem = withKeyboard(Menu.Item)

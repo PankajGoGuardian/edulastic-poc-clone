@@ -7,6 +7,7 @@ import {
   FlexContainer,
   notification,
   withWindowSizes,
+  CustomModalStyled,
 } from '@edulastic/common'
 import {
   questionType,
@@ -24,7 +25,6 @@ import {
   IconTrash,
   IconClear,
 } from '@edulastic/icons'
-import Draggable from '@edulastic/common/src/components/MathInput/Draggable'
 import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -37,10 +37,8 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled, { css } from 'styled-components'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
-import {
-  QUE_TYPE_BY_TITLE,
-  TTS_ENABLED_QUESTION_TYPES,
-} from '@edulastic/constants/const/questionType'
+import { QUE_TYPE_BY_TITLE } from '@edulastic/constants/const/questionType'
+import { languageCodes } from '@edulastic/constants/const/test'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -125,7 +123,7 @@ const pageType = {
   itemAuthoring: 'itemAuthoring',
 }
 
-const { ENGLISH, LANGUAGE_EN, LANGUAGES_OPTIONS } = appLanguages
+const { ENGLISH, LANGUAGE_EN } = appLanguages
 
 class PreviewModal extends React.Component {
   constructor(props) {
@@ -143,7 +141,6 @@ class PreviewModal extends React.Component {
       selectedLanguage: LANGUAGE_EN,
       isAddingSinglePassageItem: false,
       voiceLanguage: item?.language || ENGLISH,
-      modalDraggable: false,
     }
   }
 
@@ -157,12 +154,6 @@ class PreviewModal extends React.Component {
 
   componentDidMount() {
     const { item } = this.props
-    if (item.language) {
-      const languageCode = LANGUAGES_OPTIONS.find(
-        (o) => o.label.toLowerCase() === item?.language?.toLowerCase()
-      )?.value
-      this.setState({ selectedLanguage: languageCode })
-    }
     if (item.passageId) {
       this.loadPassage(item.passageId)
     }
@@ -1049,8 +1040,10 @@ class PreviewModal extends React.Component {
   }
 
   onClickCustomizeTTS = () => {
-    this.toggleTTSTextModal()
-    this.requestToGetTTSText({ isLanguageChanged: true })
+    this.setState({ selectedLanguage: languageCodes.ENGLISH }, () => {
+      this.toggleTTSTextModal()
+      this.requestToGetTTSText({ isLanguageChanged: true })
+    })
   }
 
   // TODO consistency for question and resources for previeew
@@ -1109,7 +1102,6 @@ class PreviewModal extends React.Component {
       showTTSTextModal,
       selectedLanguage,
       voiceLanguage,
-      modalDraggable,
     } = this.state
     const resources = keyBy(
       get(item, 'data.resources', []),
@@ -1198,7 +1190,7 @@ class PreviewModal extends React.Component {
 
     const showviewTTSTextBtn =
       data?.questions?.length === 1 &&
-      questionsType.every((type) => TTS_ENABLED_QUESTION_TYPES.includes(type))
+      [questionType.MULTIPLE_CHOICE].includes(questionsType?.[0])
 
     return (
       <PreviewModalWrapper
@@ -1214,45 +1206,29 @@ class PreviewModal extends React.Component {
         className="noOverFlowModal"
         isMobile={isMobile}
       >
-        <EduIf condition={showTTSTextModal}>
-          <Draggable
-            usePortal
-            position={{ x: '50%', y: '50%' }}
-            transform="translate(-50%, -50%)"
-            borderRadius="8px"
-            disabled={modalDraggable}
-          >
-            <ModalInner width="768px">
-              <ModalHeader justifyContent="space-between" padding="16px 24px">
-                <Title>Customize TTS</Title>
-                <IconClose onClick={this.toggleTTSTextModal} />
-              </ModalHeader>
-              <ModalContentArea
-                tts
-                style={{ minHeight: 400, paddingBottom: 30 }}
-              >
-                <div
-                  onMouseEnter={() => this.setState({ modalDraggable: true })}
-                  onMouseLeave={() => this.setState({ modalDraggable: false })}
-                >
-                  <SpeakableText
-                    ttsTextAPIStatus={ttsTextAPIStatus}
-                    updateTTSAPIStatus={updateTTSAPIStatus}
-                    ttsTextData={ttsTextResult}
-                    updateQuestionTTSText={this.updateQuestionTTSText}
-                    regenerateTTSText={this.regenerateTTSText}
-                    question={data?.questions?.[0] || {}}
-                    showTTSTextModal={showTTSTextModal}
-                    onLanguageChange={this.onLanguageChange}
-                    selectedLanguage={selectedLanguage}
-                    onChangeVoiceLanguge={this.onChangeVoiceLanguge}
-                    voiceLanguage={voiceLanguage}
-                  />
-                </div>
-              </ModalContentArea>
-            </ModalInner>
-          </Draggable>
-        </EduIf>
+        <CustomModalStyled
+          title="Customize TTS"
+          footer={null}
+          width="768px"
+          modalMinHeight="400px"
+          visible={showTTSTextModal}
+          destroyOnClose={false}
+          onCancel={this.toggleTTSTextModal}
+        >
+          <SpeakableText
+            ttsTextAPIStatus={ttsTextAPIStatus}
+            updateTTSAPIStatus={updateTTSAPIStatus}
+            ttsTextData={ttsTextResult}
+            updateQuestionTTSText={this.updateQuestionTTSText}
+            regenerateTTSText={this.regenerateTTSText}
+            question={data?.questions?.[0] || {}}
+            showTTSTextModal={showTTSTextModal}
+            onLanguageChange={this.onLanguageChange}
+            selectedLanguage={selectedLanguage}
+            onChangeVoiceLanguge={this.onChangeVoiceLanguge}
+            voiceLanguage={voiceLanguage}
+          />
+        </CustomModalStyled>
         {this.navigationButtonVisibile && this.navigationBtns()}
         <HeadingWrapper>
           <Title>Preview</Title>
@@ -1843,7 +1819,7 @@ const QuestionWrapper = styled.div`
 `
 
 const ModalContentArea = styled.div`
-  border-radius: ${({ tts }) => (tts ? '8px' : '0px')};
+  border-radius: 0px;
   padding: 0px 30px;
   height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '100%')};
 `
@@ -1868,25 +1844,4 @@ const DisabledButton = styled.div`
 
 const DisabledHelperText = styled.div`
   max-width: 320px;
-`
-
-const ModalInner = styled.div`
-  position: relative;
-  background: ${white};
-  width: ${({ width }) => width};
-  z-index: 1003;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px 2px #ccc;
-
-  & .input__math {
-    margin: 0px 15px;
-    width: calc(100% - 30px);
-  }
-`
-
-const ModalHeader = styled(FlexContainer)`
-  border-radius: 8px;
-  svg {
-    cursor: pointer;
-  }
 `

@@ -83,7 +83,6 @@ import {
   isOrganizationDistrictUserSelector,
   getIsCurator,
   getUserOrgId,
-  allowedToSelectMultiLanguageInTest,
 } from '../src/selectors/user'
 
 import {
@@ -111,12 +110,6 @@ import {
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
 import { reSequenceQuestionsWithWidgets } from '../../common/utils/helpers'
-import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
-import {
-  ENGLISH,
-  LANGUAGES_OPTIONS,
-  LANGUAGE_ES,
-} from '@edulastic/constants/const/languages'
 
 // constants
 const testItemStatusConstants = {
@@ -1123,43 +1116,6 @@ export function reducer(state = initialState, { type, payload }) {
 
 // saga
 
-export function* setItemLanguage(data) {
-  // default langauage is english
-  let language = ENGLISH
-  const allowedToSelectMultiLanguage = yield select(
-    allowedToSelectMultiLanguageInTest
-  )
-  const languageCode = yield select(getCurrentLanguage)
-  if (allowedToSelectMultiLanguage) {
-    // Setting language to spanish if english stimulus is empty
-    if (
-      !data?.data?.questions?.[0]?.stimulus?.length &&
-      data?.data?.questions?.[0]?.languageFeatures
-    ) {
-      const languageCode = Object.keys(
-        data?.data?.questions?.[0]?.languageFeatures
-      ).shift()
-      language = LANGUAGES_OPTIONS.find(
-        (lang) => lang.value === languageCode
-      )?.label?.toLowerCase()
-    }
-    // for passage setting language to spanish if english stimulus is empty
-    if (
-      data.testItems &&
-      !data?.data?.[0]?.contentTitle?.length &&
-      data?.data?.[0]?.languageFeatures
-    ) {
-      const languageCode = Object.keys(
-        data?.data?.[0]?.languageFeatures
-      ).shift()
-      language = LANGUAGES_OPTIONS.find(
-        (lang) => lang.value === languageCode
-      )?.label?.toLowerCase()
-    }
-  }
-  return language
-}
-
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params)
@@ -1469,12 +1425,9 @@ export function* updateItemSaga({ payload }) {
      */
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
-    // Setting item level langauge
-    data.language = yield setItemLanguage(data)
+
     if (!isEmpty(passageData) && testIdParam) {
       passageData.testId = testIdParam
-      // Setting item level langauge for passage
-      passageData.language = yield setItemLanguage(passageData)
     }
 
     const [{ testId, ...item }, updatedPassage] = yield all([
@@ -1817,9 +1770,6 @@ function* saveTestItemSaga() {
     questions,
     resources,
   }
-  // Setting item level langauge
-  data.language = yield setItemLanguage(data)
-
   const redirectTestId = yield select(getRedirectTestSelector)
 
   const newTestItem =
@@ -2236,8 +2186,7 @@ function* savePassage({ payload }) {
       const sectionIndex = hasSections
         ? yield select(getCurrentGroupIndexSelector)
         : undefined
-      // Setting item level langauge
-      currentItem.language = yield setItemLanguage(currentItem)
+
       item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
@@ -2257,8 +2206,6 @@ function* savePassage({ payload }) {
       draft.data = passageData
       draft.testItems = uniq([...draft.testItems, currentItemId]) // , currentItemId
     })
-    // Setting item level langauge
-    modifiedPassage.language = yield setItemLanguage(modifiedPassage)
     yield put(updatePassageStructureAction(modifiedPassage))
     if (isTestFlow && hasValidTestId) {
       modifiedPassage.testId = payload.testId

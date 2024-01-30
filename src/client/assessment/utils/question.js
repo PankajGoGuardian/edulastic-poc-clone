@@ -151,8 +151,7 @@ const findRemovedIndex = (newOptions = [], prevOptions = []) => {
 export const changeDataInPreferredLanguage = (
   language,
   prevQuestion,
-  newQuestion,
-  allowedToSelectMultiLanguage
+  newQuestion
 ) => {
   if (
     language &&
@@ -189,8 +188,6 @@ export const changeDataInPreferredLanguage = (
         const prevData = get(prevQuestion, path)
         if (prevData) {
           set(draft, path, prevData)
-        } else {
-          set(draft, path, '')
         }
         if (questionType.TOKEN_HIGHLIGHT === newQuestion.type) {
           draft.languageFeatures[language].validation = newQuestion.validation
@@ -209,8 +206,7 @@ export const changeDataInPreferredLanguage = (
   if (
     (!language || language === LANGUAGE_EN) &&
     useLanguageFeatureQn.includes(newQuestion.type) &&
-    newQuestion.languageFeatures &&
-    !allowedToSelectMultiLanguage
+    newQuestion.languageFeatures
   ) {
     const changedData = produce(newQuestion, (draft) => {
       keys(draft.languageFeatures).forEach((langKey) => {
@@ -309,23 +305,7 @@ export const changeDataInPreferredLanguage = (
   return newQuestion
 }
 
-export const changeDataToPreferredLanguage = (
-  questionData,
-  language,
-  view = ''
-) => {
-  // Changing english language to first languageFeatures language only when view is preview
-  if (
-    view === 'preview' &&
-    language === LANGUAGE_EN &&
-    !questionData?.stimulus?.length &&
-    !questionData?.contentsTitle?.length &&
-    questionData.languageFeatures
-  ) {
-    // Extracting the first languageCode from keys of languageFeatures
-    const languageCode = Object.keys(questionData.languageFeatures).shift()
-    language = languageCode
-  }
+export const changeDataToPreferredLanguage = (questionData, language) => {
   if (
     LANGUAGE_EN !== language &&
     useLanguageFeatureQn.includes(questionData.type) &&

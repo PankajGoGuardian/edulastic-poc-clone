@@ -14,7 +14,7 @@ import {
   getItemsSelector,
 } from '../selectors/test'
 import { clearHintUsageAction } from '../actions/userInteractions'
-import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 import {
   getFormattedItemGroupsToDeliver,
   getitemGroupToDeliverObject,

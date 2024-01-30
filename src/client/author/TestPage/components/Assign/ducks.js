@@ -453,7 +453,6 @@ function* saveAssignment({ payload }) {
       assignmentApi.createAssignmentV2,
       assignmentPayload
     )
-
     const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
     yield put(
       setUserFeaturesAction({
@@ -461,7 +460,6 @@ function* saveAssignment({ payload }) {
         value: vqUsageCount,
       })
     )
-
     const gSyncStatus = []
     result.assignments?.forEach((_data) => {
       if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus)

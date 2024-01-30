@@ -39,6 +39,7 @@ const {
 const EduAIQuiz = ({
   test,
   addItems,
+  retainItems,
   aiTestStatus,
   getAiGeneratedTestItems,
   resetTestDetails,
@@ -71,6 +72,7 @@ const EduAIQuiz = ({
     resetTestDetails,
     standardsList,
     addItems,
+    retainItems,
     setDefaultTest,
     clearCreatedItem,
     history,

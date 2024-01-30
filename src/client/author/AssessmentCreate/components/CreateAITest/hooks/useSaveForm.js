@@ -9,6 +9,7 @@ export const useSaveForm = ({
   hasSections,
   getAiGeneratedTestItems,
   addItems,
+  retainItems,
   resetTestDetails,
   testTitle = '',
   setDefaultTest,
@@ -39,7 +40,7 @@ export const useSaveForm = ({
   }
 
   useEffect(() => {
-    if (!addItems) {
+    if (!addItems && !retainItems) {
       setDefaultTest()
       clearCreatedItem()
     }

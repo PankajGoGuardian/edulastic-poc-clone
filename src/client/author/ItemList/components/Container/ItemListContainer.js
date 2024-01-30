@@ -56,7 +56,7 @@ const ItemListContainer = ({
           <NoDataMessageContainer>
             No item available for the search criteria
           </NoDataMessageContainer>
-          <EduAIQuiz displayScreen={SEARCH_NO_DATA_SCREEN} />
+          <EduAIQuiz retainItems displayScreen={SEARCH_NO_DATA_SCREEN} />
         </FlexContainer>
       </NoDataContainer>
     )

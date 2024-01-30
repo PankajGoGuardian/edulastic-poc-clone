@@ -232,15 +232,22 @@ const passageCheck = (i) => {
   ) {
     return 'Title cannot be empty.'
   }
-  if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
-    if (i?.languageFeatures?.[LANGUAGE_ES]?.paginated_content) {
-      for (const o of i?.languageFeatures?.[LANGUAGE_ES]?.pages) {
-        if (isRichTextFieldEmpty(o)) {
-          return 'Passage cannot be empty.'
-        }
+  if (
+    isRichTextFieldEmpty(
+      i.content || i?.languageFeatures?.[LANGUAGE_ES]?.content
+    )
+  ) {
+    return 'Passage cannot be empty.'
+  }
+  if (
+    isRichTextFieldEmpty(i.content) &&
+    !i.paginated_content &&
+    i?.languageFeatures?.[LANGUAGE_ES]?.paginated_content
+  ) {
+    for (const o of i?.languageFeatures?.[LANGUAGE_ES]?.pages) {
+      if (isRichTextFieldEmpty(o)) {
+        return 'Passage cannot be empty.'
       }
-    } else {
-      return 'Passage cannot be empty.'
     }
   }
   if (i.paginated_content) {

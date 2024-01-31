@@ -20,8 +20,6 @@ const useVideoAssessmentUtils = ({
   history,
   scrollerRef,
   isRedirectToAddOn,
-  vqQuotaForDistrict,
-  vqUsageCount,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -43,11 +41,7 @@ const useVideoAssessmentUtils = ({
   }, [])
 
   useEffect(() => {
-    if (
-      isRedirectToAddOn ||
-      vqQuotaForDistrict === vqUsageCount ||
-      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
-    ) {
+    if (isRedirectToAddOn) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },

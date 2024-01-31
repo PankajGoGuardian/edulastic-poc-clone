@@ -40,8 +40,6 @@ const OptionVideo = ({
   showVQCount,
   isPremiumUser,
   isRedirectToAddOn,
-  vqQuotaForDistrict,
-  vqUsageCount,
 }) => {
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
@@ -64,10 +62,7 @@ const OptionVideo = ({
   const showVideoUsageCountForPremium =
     isPremiumUser && !isVideoQuizAndAIEnabled && showVQCount
 
-  const showAddOnTagForFreeUser =
-    (!isPremiumUser && !isVideoQuizAndAIEnabled) ||
-    (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount) ||
-    vqQuotaForDistrict === 0
+  const showAddOnTagForFreeUser = isRedirectToAddOn
 
   return (
     <CardComponent>

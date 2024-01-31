@@ -602,10 +602,17 @@ export const isRedirectToAddOnSelector = createSelector(
     vqUsageCount,
     isVideoQuizAndAIEnabled
   ) => {
-    return (
-      (isPremiumUser && !isVideoQuizAndAIEnabled && vqQuotaForDistrict === 0) ||
-      (!isPremiumUser && !isVideoQuizAndAIEnabled)
-    )
+    switch (true) {
+      case vqQuotaForDistrict === -1:
+      case isVideoQuizAndAIEnabled:
+      case isPremiumUser && vqQuotaForDistrict > vqUsageCount:
+        return false
+      case !isPremiumUser:
+      case vqQuotaForDistrict === 0:
+        return true
+      default:
+        return false
+    }
   }
 )
 

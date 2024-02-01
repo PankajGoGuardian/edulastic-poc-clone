@@ -2485,7 +2485,13 @@ function* createTestSaga({ payload }) {
       })
     )
 
-    entity.itemGroups = payload.data.itemGroups
+    entity.itemGroups = payload.data.itemGroups.map((group) => {
+      group.items = group.items.map((it) => {
+        if (it.unsavedItem) delete it.unsavedItem
+        return it
+      })
+      return group
+    })
 
     yield put(createTestSuccessAction(entity))
     yield put(addItemsToAutoselectGroupsRequestAction(entity))

@@ -586,44 +586,28 @@ export const showVQCountSelector = createSelector(
     vqUsageCount,
     vqQuotaForDistrict,
     isPremiumUser,
-    isVideoQuizAndAIEnabledUser
-  ) => {
-    switch (true) {
-      case vqQuotaForDistrict === -1:
-      case isVideoQuizAndAIEnabledUser:
-        return false
-      case isPremiumUser && vqQuotaForDistrict > 0:
-        return true
-      default:
-        return false
-    }
-  }
+    isVideoQuizAndAiEnabledUser
+  ) => !isVideoQuizAndAiEnabledUser && isPremiumUser && vqQuotaForDistrict > 0
 )
 
 export const isRedirectToAddOnSelector = createSelector(
   isPremiumUserSelector,
   vqQuotaForDistrictSelector,
   vqUsageCountSelector,
-  getIsAiEvaulationDistrictSelector,
-  (
-    isPremiumUser,
-    vqQuotaForDistrict,
-    vqUsageCount,
-    isVideoQuizAndAIEnabled
-  ) => {
-    // what to do if userUsageCount is equal to district quota
-    switch (true) {
-      case vqQuotaForDistrict === -1:
-      case isVideoQuizAndAIEnabled:
-      case isPremiumUser && vqQuotaForDistrict > vqUsageCount:
-        return false
-      case !isPremiumUser:
-      case vqQuotaForDistrict === 0:
-        return true
-      default:
-        return false
-    }
-  }
+  isVideoQuizAndAIEnabledSelector,
+  (isPremiumUser, vqQuotaForDistrict, vqUsageCount, isVideoQuizAndAIEnabled) =>
+    !isVideoQuizAndAIEnabled && (!isPremiumUser || vqQuotaForDistrict === 0)
+)
+
+export const allowedToCreateVideoQuizSelector = createSelector(
+  isVideoQuizAndAIEnabledSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
+  isPremiumUserSelector,
+  (isVideoQuizAndAIEnabled, vqQuotaForDistrict, vqUsageCount, isPremiumUser) =>
+    isVideoQuizAndAIEnabled ||
+    (isPremiumUser &&
+      (vqQuotaForDistrict === -1 || vqQuotaForDistrict > vqUsageCount))
 )
 
 export const getInterestedCurriculumsByOrgType = createSelector(

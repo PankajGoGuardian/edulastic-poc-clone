@@ -21,8 +21,6 @@ import {
   isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
-  vqQuotaForDistrictSelector,
-  vqUsageCountSelector,
 } from '../../../src/selectors/user'
 import VideoQuizUsage from './VideoQuizUsage'
 import AddOnTag from '../common/AddOnTag'
@@ -34,13 +32,7 @@ const descriptionBottom = `
   Provide your video link and proceed to create an ${isPearOrEdulasticAssessment}
 `
 
-const OptionVideo = ({
-  history,
-
-  showVQCount,
-
-  isRedirectToAddOn,
-}) => {
+const OptionVideo = ({ history, showVQCount, isRedirectToAddOn }) => {
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Test Library',
@@ -59,13 +51,9 @@ const OptionVideo = ({
     })
   }
 
-  const showVideoUsageCountForPremium = showVQCount
-
-  const showAddOnTagForFreeUser = isRedirectToAddOn
-
   return (
     <CardComponent>
-      <EduIf condition={showAddOnTagForFreeUser}>
+      <EduIf condition={isRedirectToAddOn}>
         <AddonTagPositionTopLeft
           width="100%"
           justifyContent="flex-end"
@@ -74,7 +62,7 @@ const OptionVideo = ({
           <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
         </AddonTagPositionTopLeft>
       </EduIf>
-      <EduIf condition={showVideoUsageCountForPremium} left="1rem">
+      <EduIf condition={showVQCount} left="1rem">
         <AddonTagPositionTopLeft
           width="100%"
           justifyContent="flex-end"
@@ -110,8 +98,6 @@ const enhance = compose(
     showVQCount: showVQCountSelector(state),
     isPremiumUser: isPremiumUserSelector(state),
     isRedirectToAddOn: isRedirectToAddOnSelector(state),
-    vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
-    vqUsageCount: vqUsageCountSelector(state),
   }))
 )
 export default enhance(OptionVideo)

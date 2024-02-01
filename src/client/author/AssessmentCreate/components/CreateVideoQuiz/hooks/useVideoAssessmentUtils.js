@@ -14,12 +14,11 @@ import { isURL } from '../utils'
 const useVideoAssessmentUtils = ({
   setYoutubeThumbnail,
   ytThumbnail,
-  isVideoQuizAndAIEnabled,
   getYoutubeThumbnail,
   onValidUrl,
   history,
   scrollerRef,
-  isRedirectToAddOn,
+  allowedToCreateVideoQuiz,
 }) => {
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
@@ -41,13 +40,13 @@ const useVideoAssessmentUtils = ({
   }, [])
 
   useEffect(() => {
-    if (isRedirectToAddOn) {
+    if (!allowedToCreateVideoQuiz) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },
       })
     }
-  }, [isVideoQuizAndAIEnabled])
+  }, [allowedToCreateVideoQuiz])
 
   const fetchVideos = async (append = false, userInput = '') => {
     try {
@@ -189,7 +188,6 @@ const useVideoAssessmentUtils = ({
   return {
     setLinkValue,
     ytThumbnail,
-    isVideoQuizAndAIEnabled,
     linkValue,
     hasError,
     videos,

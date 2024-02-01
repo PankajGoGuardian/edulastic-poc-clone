@@ -580,14 +580,23 @@ export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
 export const showVQCountSelector = createSelector(
   vqUsageCountSelector,
   vqQuotaForDistrictSelector,
-  (vqUsageCount, vqQuotaForDistrict) => {
-    if (
-      vqQuotaForDistrict === -1 ||
-      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
-    ) {
-      return false
+  isPremiumUserSelector,
+  isVideoQuizAndAIEnabledSelector,
+  (
+    vqUsageCount,
+    vqQuotaForDistrict,
+    isPremiumUser,
+    isVideoQuizAndAIEnabledUser
+  ) => {
+    switch (true) {
+      case vqQuotaForDistrict === -1:
+      case isVideoQuizAndAIEnabledUser:
+        return false
+      case isPremiumUser && vqQuotaForDistrict > 0:
+        return true
+      default:
+        return false
     }
-    return true
   }
 )
 
@@ -602,6 +611,7 @@ export const isRedirectToAddOnSelector = createSelector(
     vqUsageCount,
     isVideoQuizAndAIEnabled
   ) => {
+    // what to do if userUsageCount is equal to district quota
     switch (true) {
       case vqQuotaForDistrict === -1:
       case isVideoQuizAndAIEnabled:

@@ -127,7 +127,7 @@ const CreateVideoQuiz = ({
     <FlexContainer width="100%" justifyContent="center">
       <MainWrapper>
         <SearchBoxWrapper flexDirection="column" alignItems="center">
-          <EduIf condition={!isVideoQuizAndAIEnabled && showVQCount}>
+          <EduIf condition={showVQCount}>
             <VideoQuizUsageBanner />
           </EduIf>
           <SearchBoxContainer>

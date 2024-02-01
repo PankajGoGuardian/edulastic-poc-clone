@@ -36,9 +36,9 @@ const descriptionBottom = `
 
 const OptionVideo = ({
   history,
-  isVideoQuizAndAIEnabled,
+
   showVQCount,
-  isPremiumUser,
+
   isRedirectToAddOn,
 }) => {
   const handleCreate = () => {
@@ -59,8 +59,7 @@ const OptionVideo = ({
     })
   }
 
-  const showVideoUsageCountForPremium =
-    isPremiumUser && !isVideoQuizAndAIEnabled && showVQCount
+  const showVideoUsageCountForPremium = showVQCount
 
   const showAddOnTagForFreeUser = isRedirectToAddOn
 

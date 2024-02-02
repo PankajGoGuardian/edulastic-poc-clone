@@ -59,6 +59,7 @@ import {
   getShowRefreshMessage,
   getBulckAssignedCount,
   getBulkAssignedCountProcessedCount,
+  getAiViewRawDataSelector,
 } from '../../ducks'
 import {
   formatStudentPastDueTag,
@@ -145,6 +146,7 @@ class DisneyCardContainer extends Component {
       loadTestActivity,
       match,
       handleOpenTutor,
+      aiViewData,
     } = this.props
 
     const { assignmentId, classId } = match.params
@@ -426,7 +428,11 @@ class DisneyCardContainer extends Component {
                 </RightAlignedCol>
               </PaginationInfoF>
               <div>
-                <StudentAIGraph />
+                <StudentAIGraph
+                  studentAiData={aiViewData.find(
+                    (data) => data?.studentId === student?.studentId
+                  )}
+                />
               </div>
             </WithDisableMessage>
           </StyledCard>
@@ -477,6 +483,7 @@ const withConnect = connect(
     showRefreshMessage: getShowRefreshMessage(state),
     bulkAssignedCount: getBulckAssignedCount(state),
     bulkAssignedCountProcessed: getBulkAssignedCountProcessedCount(state),
+    aiViewData: getAiViewRawDataSelector(state),
   }),
   {
     loadTestActivity: receiveTestActivitydAction,

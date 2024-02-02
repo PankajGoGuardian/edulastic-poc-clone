@@ -3,7 +3,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, Tooltip, Legend } from 'recharts'
 import { MainDiv } from '../BarGraph/styled'
 import { StyledChartNavButton } from '../../../Reports/common/styled'
 
-const StudentAIGraph = (questionData) => {
+const StudentAIGraph = ({ studentAiData }) => {
   const page = 10
   const [pagination, setPagination] = useState({
     startIndex: 0,
@@ -20,6 +20,13 @@ const StudentAIGraph = (questionData) => {
     return 'hard'
   }
 
+  //   const data = (studentAiData?.questions || []).map((q) => ({
+  //     name: q.questionLabel,
+  //     probability: q.probability * 100,
+  //     level: getDifficultyLevel(q.probability),
+  //   }))
+
+  // Todo: Remove this data variable once Api returns some response
   const data = [
     {
       name: 'Q1',
@@ -319,8 +326,6 @@ const StudentAIGraph = (questionData) => {
     pagination.startIndex + page
   )
 
-  console.log('render', pagination, data, renderData)
-
   return (
     <MainDiv className="studentBarChart" style={{ padding: 0 }}>
       <StyledChartNavButton
@@ -333,6 +338,8 @@ const StudentAIGraph = (questionData) => {
         style={{
           visibility: pagination.startIndex === 0 ? 'hidden' : 'visible',
           left: -25,
+          width: 20,
+          height: 25,
         }}
       />
 
@@ -348,6 +355,8 @@ const StudentAIGraph = (questionData) => {
           visibility:
             data.length <= pagination.endIndex + 1 ? 'hidden' : 'visible',
           right: -18,
+          width: 20,
+          height: 25,
         }}
       />
       <BarChart

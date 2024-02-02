@@ -409,8 +409,11 @@ class BarGraph extends Component {
 
   render() {
     const { children, isBoth, aiViewData, entities } = this.props
-    const { pagination, chartData } = this.state
+    const { pagination } = this.state
     const maxAttemps = entities.length || 10
+    const chartData = aiViewData.filter(
+      (d, i) => i <= pagination.endIndex && i >= pagination.startIndex
+    )
     return (
       <MainDiv className="studentBarChart">
         {children}
@@ -435,7 +438,7 @@ class BarGraph extends Component {
           onClick={this.scrollRight}
           style={{
             visibility:
-              chartData.length <= pagination.endIndex + 1
+              aiViewData.length <= pagination.endIndex + 1
                 ? 'hidden'
                 : 'visible',
           }}
@@ -448,7 +451,7 @@ class BarGraph extends Component {
           </LegendContainer>
         )}
         <ResponsiveContainer width="99%" height={240}>
-          <ComposedChart barGap={1} barSize={36} data={aiViewData}>
+          <ComposedChart barGap={1} barSize={36} data={chartData}>
             <XAxis
               dataKey="name"
               tickSize={0}

@@ -577,6 +577,10 @@ export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
   _get(userData, ['features', 'vqQuotaForDistrict'], 0)
 )
 
+/**
+ * Shows video quiz counter
+ * When user don't have subscription and user is premium and vqQuota is greater than 0
+ */
 export const showVQCountSelector = createSelector(
   vqUsageCountSelector,
   vqQuotaForDistrictSelector,
@@ -590,7 +594,13 @@ export const showVQCountSelector = createSelector(
   ) => !isVideoQuizAndAiEnabledUser && isPremiumUser && vqQuotaForDistrict > 0
 )
 
-export const isRedirectToAddOnSelector = createSelector(
+/**
+ * Shows vq add-on popup
+ * Shows premium add-on Tag
+ * We don't show popup when vqQuota and usageCount is equal.
+ * so that user can assign existing Tests
+ */
+export const isRedirectToVQAddOnSelector = createSelector(
   isPremiumUserSelector,
   vqQuotaForDistrictSelector,
   vqUsageCountSelector,
@@ -599,6 +609,9 @@ export const isRedirectToAddOnSelector = createSelector(
     !isVideoQuizAndAIEnabled && (!isPremiumUser || vqQuotaForDistrict === 0)
 )
 
+/**
+ * Redirects user to subscription page when create video quiz is not allowed
+ */
 export const allowedToCreateVideoQuizSelector = createSelector(
   isVideoQuizAndAIEnabledSelector,
   vqQuotaForDistrictSelector,

@@ -17,8 +17,9 @@ import { navigationState } from '../../../src/constants/navigation'
 
 import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
 import {
+  allowedToCreateVideoQuizSelector,
   isPremiumUserSelector,
-  isRedirectToAddOnSelector,
+  isRedirectToVQAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
 } from '../../../src/selectors/user'
@@ -32,13 +33,18 @@ const descriptionBottom = `
   Provide your video link and proceed to create an ${isPearOrEdulasticAssessment}
 `
 
-const OptionVideo = ({ history, showVQCount, isRedirectToAddOn }) => {
+const OptionVideo = ({
+  history,
+  showVQCount,
+  isRedirectToVQAddOn,
+  allowedToCreateVideoQuiz,
+}) => {
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Test Library',
     })
 
-    if (isRedirectToAddOn) {
+    if (!allowedToCreateVideoQuiz) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },
@@ -53,7 +59,7 @@ const OptionVideo = ({ history, showVQCount, isRedirectToAddOn }) => {
 
   return (
     <CardComponent>
-      <EduIf condition={isRedirectToAddOn}>
+      <EduIf condition={isRedirectToVQAddOn}>
         <AddonTagPositionTopLeft
           width="100%"
           justifyContent="flex-end"
@@ -97,7 +103,8 @@ const enhance = compose(
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     showVQCount: showVQCountSelector(state),
     isPremiumUser: isPremiumUserSelector(state),
-    isRedirectToAddOn: isRedirectToAddOnSelector(state),
+    isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
+    allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
   }))
 )
 export default enhance(OptionVideo)

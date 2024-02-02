@@ -458,3 +458,5 @@ export const FETCH_TTS_TEXT = '[view tts text] fetch view tts text'
 // update TTS text
 export const SET_TTS_UPDATE_DATA = '[update tts text] set tts update data'
 export const UPDATE_TTS_TEXT = '[update tts text] update tts text'
+export const FETCH_AI_VIEW_DATA_REQUEST = '[gradebook] fetch ai view data request'
+export const FETCH_AI_VIEW_DATA_SUCCESS = '[gradebook] fetch ai view data success'

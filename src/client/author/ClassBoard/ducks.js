@@ -102,6 +102,7 @@ import {
   TOGGLE_REGRADE_MODAL,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
   SET_REALTIME_ATTEMPT_DATA,
+  FETCH_AI_VIEW_DATA_REQUEST,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -115,6 +116,7 @@ import {
   updateServerTimeAction,
   updateAdditionalDataAction,
   gradebookTestItemAddAction,
+  fetchViewDataSuccessAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
@@ -150,6 +152,11 @@ export const stateTestActivitySelector = (state) =>
 export const getTestItemsDataSelector = createSelector(
   stateTestActivitySelector,
   (state) => get(state, 'data.testItemsData')
+)
+
+export const getAiViewRawDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => get(state, 'aiViewData', [])
 )
 
 export const getTestItemsByIdSelector = createSelector(
@@ -996,6 +1003,16 @@ function* setRealTimeAttemptDataSaga({ payload }) {
   }
 }
 
+function* fetchAiViewDataSaga({ payload }) {
+  try {
+    const result = yield call(classBoardApi.fetchAiViewData, payload)
+    yield put(fetchViewDataSuccessAction(result))
+  } catch (err) {
+    console.log(err, 'there is an error')
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -1028,6 +1045,7 @@ export function* watcherSaga() {
       reloadLcbDataInStudentView
     ),
     yield takeEvery(SET_REALTIME_ATTEMPT_DATA, setRealTimeAttemptDataSaga),
+    yield takeEvery(FETCH_AI_VIEW_DATA_REQUEST, fetchAiViewDataSaga),
   ])
 }
 
@@ -2075,3 +2093,36 @@ export const getAiViewDataSelector = createSelector(
     return Object.values(out)
   }
 )
+
+//TODO: uncomment below when enabling api
+// export const getAiViewDataSelector = createSelector(
+//   getAiViewRawDataSelector,
+//   (aiViewRawData) => {
+//     const result = {}
+// if(!aiViewRawData || !aiViewRawData.length) return
+//     aiViewRawData.forEach((entity) => {
+//       return {
+//         questions: entity.questions.map((q) => {
+//           if (!result[q.id]) {
+//             result[q.id] = {
+//               easyCount: 0,
+//               mediumCount: 0,
+//               difficultCount: 0,
+//               id: q.questionId,
+//               name: q.questionLabel,
+//             }
+//           }
+//           const p = q.probability * 10
+//           if (p > 7) {
+//             result[q.id].easyCount++
+//           } else if (p > 5) {
+//             result[q.id].mediumCount++
+//           } else {
+//             result[q.id].difficultCount++
+//           }
+//         }),
+//       }
+//     })
+//     return Object.values(result)
+//   }
+// )

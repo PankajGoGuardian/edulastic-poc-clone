@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { sumBy, round } from 'lodash'
 import BarGraph from '../BarGraph1/BarGraph'
 import { StyledDiv } from './styled'
+import { fetchAiViewDataRequestAction } from '../../../src/reducers/testActivity'
 
-export default class Graph extends Component {
+class Graph extends Component {
   static propTypes = {
     gradebook: PropTypes.object.isRequired,
     testActivity: PropTypes.object.isRequired,
     onClickHandler: PropTypes.func.isRequired,
+  }
+
+  componentDidMount() {
+    const { fetchAiViewDataRequest } = this.props
+    fetchAiViewDataRequest()
   }
 
   calculateAvgScore = () => {
@@ -50,3 +57,7 @@ export default class Graph extends Component {
     )
   }
 }
+
+export default connect(null, {
+  fetchAiViewDataRequest: fetchAiViewDataRequestAction,
+})(Graph)

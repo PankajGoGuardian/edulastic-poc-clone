@@ -255,6 +255,15 @@ const togglePauseStudents = ({
     })
     .then((result) => result.data.result)
 
+const fetchAiViewData = (payload) =>
+  api
+    .callApi({
+      method: 'get',
+      url: `/report/pear-prediction-difficulty-by-standard`,
+      params: payload,
+    })
+    .then((result) => result.data.result)
+
 export default {
   gradebook,
   testActivity,
@@ -278,4 +287,5 @@ export default {
   bulkUnassignAssignment,
   bulkDownloadGrades,
   togglePauseStudents,
+  fetchAiViewData,
 }

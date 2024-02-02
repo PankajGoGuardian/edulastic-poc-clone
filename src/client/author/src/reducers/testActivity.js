@@ -24,6 +24,8 @@ import {
   UPDATE_PAUSE_STATUS_ACTION,
   SET_UPDATED_ACTIVITY_IN_ENTITY,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+  FETCH_AI_VIEW_DATA_REQUEST,
+  FETCH_AI_VIEW_DATA_SUCCESS,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -114,6 +116,12 @@ export const updateServerTimeAction = createAction(UPDATE_SERVER_TIME)
 export const updateAdditionalDataAction = createAction(UPDATE_ADDITIONAL_DATA)
 export const setInterventionDataInUtaAction = createAction(
   SET_INTERVENTIONS_DATA
+)
+export const fetchAiViewDataRequestAction = createAction(
+  FETCH_AI_VIEW_DATA_REQUEST
+)
+export const fetchViewDataSuccessAction = createAction(
+  FETCH_AI_VIEW_DATA_SUCCESS
 )
 
 const initialState = {
@@ -751,6 +759,11 @@ const reducer = (state = initialState, { type, payload }) => {
           }
           return entity
         }),
+      }
+    case FETCH_AI_VIEW_DATA_SUCCESS:
+      return {
+        ...state,
+        aiViewData: payload,
       }
     default:
       return state

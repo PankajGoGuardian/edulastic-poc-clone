@@ -2401,48 +2401,35 @@ class ClassBoard extends Component {
                   </div>
                 </StickyFlex> */}
                 <div ref={this.disneyCardsContainerRef}>
-                  {flag ? (
-                    <DisneyCardContainer1
-                      selectedStudents={selectedStudents}
-                      testActivity={filteredStudentActivities}
-                      assignmentId={assignmentId}
-                      classId={classId}
-                      studentSelect={this.onSelectCardOne}
-                      endDate={
-                        additionalData.endDate || additionalData.closedDate
+                  <DisneyCardContainer1
+                    selectedStudents={selectedStudents}
+                    testActivity={filteredStudentActivities}
+                    assignmentId={assignmentId}
+                    classId={classId}
+                    studentSelect={this.onSelectCardOne}
+                    endDate={
+                      additionalData.endDate || additionalData.closedDate
+                    }
+                    dueDate={additionalData.dueDate}
+                    closed={additionalData.closed}
+                    detailedClasses={additionalData.detailedClasses}
+                    studentUnselect={this.onUnselectCardOne}
+                    handleOpenTutor={this.handleOpenTutor}
+                    viewResponses={(e, selected, _testActivityId) => {
+                      setCurrentTestActivityId(_testActivityId)
+                      if (!isItemsVisible) {
+                        return
                       }
-                      dueDate={additionalData.dueDate}
-                      closed={additionalData.closed}
-                      detailedClasses={additionalData.detailedClasses}
-                      studentUnselect={this.onUnselectCardOne}
-                      handleOpenTutor={this.handleOpenTutor}
-                      viewResponses={(e, selected, _testActivityId) => {
-                        setCurrentTestActivityId(_testActivityId)
-                        if (!isItemsVisible) {
-                          return
-                        }
-                        getAllTestActivitiesForStudent({
-                          studentId: selected,
-                          assignmentId,
-                          groupId: classId,
-                        })
-                        this.onTabChange(
-                          e,
-                          'Student',
-                          selected,
-                          _testActivityId
-                        )
-                      }}
-                      isPresentationMode={isPresentationMode}
-                      enrollmentStatus={enrollmentStatus}
-                    />
-                  ) : (
-                    <Score
-                      gradebook={gradebook}
-                      assignmentId={assignmentId}
-                      classId={classId}
-                    />
-                  )}
+                      getAllTestActivitiesForStudent({
+                        studentId: selected,
+                        assignmentId,
+                        groupId: classId,
+                      })
+                      this.onTabChange(e, 'Student', selected, _testActivityId)
+                    }}
+                    isPresentationMode={isPresentationMode}
+                    enrollmentStatus={enrollmentStatus}
+                  />
                 </div>
 
                 {redirectPopup && (

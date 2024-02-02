@@ -66,6 +66,7 @@ import {
 } from '../../../../student/utils'
 import { receiveTestActivitydAction } from '../../../src/actions/classBoard'
 import { isPearDomain } from '../../../../../utils/pear'
+import StudentAIGraph from './StudentAIGraph'
 
 const { ABSENT, NOT_STARTED, SUBMITTED } = testActivityStatus
 
@@ -145,6 +146,7 @@ class DisneyCardContainer extends Component {
       match,
       handleOpenTutor,
     } = this.props
+
     const { assignmentId, classId } = match.params
     const noDataNotification = () => (
       <>
@@ -270,15 +272,15 @@ class DisneyCardContainer extends Component {
             bordered={false}
             key={index}
             isClickEnable={canShowResponse}
-            onClick={(e) => {
-              if (canShowResponse) {
-                return viewResponses(
-                  e,
-                  student.studentId,
-                  student.testActivityId
-                )
-              }
-            }}
+            // onClick={(e) => {
+            //   if (canShowResponse) {
+            //     return viewResponses(
+            //       e,
+            //       student.studentId,
+            //       student.testActivityId
+            //     )
+            //   }
+            // }}
           >
             <WithDisableMessage
               disabled={!isItemsVisible}
@@ -424,222 +426,8 @@ class DisneyCardContainer extends Component {
                 </RightAlignedCol>
               </PaginationInfoF>
               <div>
-                <PaginationInfoS>
-                  <PerfomanceSection>
-                    <StyledFlexDiv>
-                      <StyledParaFF>Performance</StyledParaFF>
-                      <StyledParaSSS data-cy="studentPerformance">
-                        {student.status !== 'absent' &&
-                        student.UTASTATUS !== NOT_STARTED
-                          ? student.score > 0 &&
-                            student.status !== 'redirected' &&
-                            !isAllPractice
-                            ? `${round(
-                                (student.score / student.maxScore) * 100,
-                                2
-                              )}%`
-                            : `0%`
-                          : null}
-                      </StyledParaSSS>
-                    </StyledFlexDiv>
-                    <StyledFlexDiv>
-                      <StyledParaSS data-cy="studentScore">
-                        {score(student.UTASTATUS, student.score)}&nbsp;/{' '}
-                        {round(student.maxScore, 2) || 0}
-                      </StyledParaSS>
-                      {responseLink}
-                    </StyledFlexDiv>
-                  </PerfomanceSection>
-                </PaginationInfoS>
-                <PaginationInfoT className="questions-grid" data-cy="questions">
-                  {!student.redirected &&
-                    !recentAttemptsGrouped?.[student.studentId]?.length &&
-                    student.questionActivities
-                      .filter((x) => !x.disabled)
-                      .map((questionAct, questionIndex) => {
-                        const weight = questionAct.weight
-                        // TODO: clean up and create a new component by extracting below logic
-                        if (questionAct.isItemContentHidden) {
-                          if (questionAct.skipped) {
-                            return (
-                              <SquareColorDivGray
-                                title="skipped"
-                                weight={weight}
-                                key={questionIndex}
-                              />
-                            )
-                          }
-                          return <SquareColorDivBrown key={questionIndex} />
-                        }
-                        if (questionAct.isPractice) {
-                          return <SquareColorDivlGrey key={questionIndex} />
-                        }
-                        if (
-                          questionAct.notStarted ||
-                          student.status === 'redirected'
-                        ) {
-                          return <SquareColorDisabled key={questionIndex} />
-                        }
-                        if (questionAct.skipped && questionAct.score === 0) {
-                          return (
-                            <SquareColorDivGray
-                              title="skipped"
-                              weight={weight}
-                              key={questionIndex}
-                            />
-                          )
-                        }
-                        if (
-                          questionAct.graded === false ||
-                          questionAct.pendingEvaluation
-                        ) {
-                          return <SquareColorBlue key={questionIndex} />
-                        }
-                        if (
-                          questionAct.score === questionAct.maxScore &&
-                          questionAct.score > 0
-                        ) {
-                          return <SquareColorDivGreen key={questionIndex} />
-                        }
-                        if (
-                          questionAct.score > 0 &&
-                          questionAct.score < questionAct.maxScore
-                        ) {
-                          return <SquareColorDivYellow key={questionIndex} />
-                        }
-                        if (questionAct.score === 0) {
-                          return <SquareColorDivPink key={questionIndex} />
-                        }
-                        return null
-                      })}
-                </PaginationInfoT>
+                <StudentAIGraph />
               </div>
-              {recentAttemptsGrouped?.[student.studentId]?.length > 0 && (
-                <RecentAttemptsContainer>
-                  <PaginationInfoS>
-                    <PerfomanceSection>
-                      <StyledFlexDiv>
-                        <StyledParaFF>Performance</StyledParaFF>
-                        <StyledParaFF>{responseLink}</StyledParaFF>
-                      </StyledFlexDiv>
-                      <StyledFlexDiv style={{ justifyContent: 'flex-start' }}>
-                        {student.UTASTATUS === NOT_STARTED ||
-                        student.UTASTATUS === ABSENT ? (
-                          <AttemptDiv data-cy="attempt-container">
-                            <CenteredStyledParaSS>
-                              -&nbsp;/ {round(student.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSS
-                              style={{
-                                fontSize: '12px',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              {student.UTASTATUS === NOT_STARTED
-                                ? `Not Started`
-                                : `Absent`}
-                            </StyledParaSS>
-                            <p style={{ fontSize: '12px' }}>
-                              Attempt{' '}
-                              {(recentAttemptsGrouped[student.studentId]?.[0]
-                                ?.number || 0) + 1}
-                            </p>
-                          </AttemptDiv>
-                        ) : (
-                          <AttemptDiv
-                            data-cy="attempt-container"
-                            className="attempt-container"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              viewResponses(
-                                e,
-                                student.studentId,
-                                student.testActivityId,
-                                (recentAttemptsGrouped[student.studentId]?.[0]
-                                  ?.number || 0) + 1
-                              )
-                            }}
-                          >
-                            <CenteredStyledParaSS>
-                              {score(student.status, student.score)}&nbsp;/{' '}
-                              {round(student.maxScore, 2) || 0}
-                            </CenteredStyledParaSS>
-                            <StyledParaSSS>
-                              {student.score > 0
-                                ? round(
-                                    (student.score / student.maxScore) * 100,
-                                    2
-                                  )
-                                : 0}
-                              %
-                            </StyledParaSSS>
-                            <p style={{ fontSize: '12px' }}>
-                              Attempt{' '}
-                              {(recentAttemptsGrouped[student.studentId]?.[0]
-                                ?.number || 0) + 1}
-                            </p>
-                          </AttemptDiv>
-                        )}
-                        {recentAttemptsGrouped?.[student.studentId].map(
-                          (attempt) => (
-                            <AttemptDiv
-                              className={
-                                attempt.status === SUBMITTED &&
-                                'attempt-container'
-                              }
-                              data-cy="attempt-container"
-                              key={attempt._id || attempt.id}
-                              onClick={(e) => {
-                                if (attempt.status === ABSENT) return
-                                e.stopPropagation()
-                                viewResponses(
-                                  e,
-                                  attempt.userId,
-                                  attempt._id,
-                                  attempt.number
-                                )
-                              }}
-                            >
-                              <CenteredStyledParaSS>
-                                {score(attempt.status, attempt.score)}&nbsp;/{' '}
-                                {round(
-                                  attempt.maxScore || student.maxScore,
-                                  2
-                                ) || 0}
-                              </CenteredStyledParaSS>
-
-                              {attempt.status === ABSENT ? (
-                                <StyledParaSS
-                                  style={{
-                                    fontSize: '12px',
-                                    justifyContent: 'center',
-                                  }}
-                                >
-                                  Absent
-                                </StyledParaSS>
-                              ) : (
-                                <StyledParaSSS>
-                                  {attempt.score > 0
-                                    ? round(
-                                        (attempt.score / attempt.maxScore) *
-                                          100,
-                                        2
-                                      )
-                                    : 0}
-                                  %
-                                </StyledParaSSS>
-                              )}
-                              <p style={{ fontSize: '12px' }}>
-                                Attempt {attempt.number}
-                              </p>
-                            </AttemptDiv>
-                          )
-                        )}
-                      </StyledFlexDiv>
-                    </PerfomanceSection>
-                  </PaginationInfoS>
-                </RecentAttemptsContainer>
-              )}
             </WithDisableMessage>
           </StyledCard>
         )

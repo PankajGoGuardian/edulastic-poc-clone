@@ -116,8 +116,10 @@ import {
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
 import DisneyCardContainer from '../DisneyCardContainer/DisneyCardContainer'
+import DisneyCardContainer1 from '../DisneyCardContainer1/DisneyCardContainer'
 import HooksContainer from '../HooksContainer/HooksContainer'
 import Graph from '../ProgressGraph/ProgressGraph'
+import Graph1 from '../ProgressGraph1/ProgressGraph'
 import RedirectPopup from '../RedirectPopUp'
 // components
 import Score from '../Score/Score'
@@ -147,6 +149,7 @@ import {
   FilterSpan,
   TagWrapper,
   AssignTutoring,
+  StyledTabButton,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -1695,6 +1698,14 @@ class ClassBoard extends Component {
                   >
                     CARD VIEW
                   </BothButton>
+                  <StyledTabButton
+                    disabled={isLoading}
+                    // style={{ marginLeft: '20px' }}
+                    active={selectedTab === 'AI_VIEW'}
+                    onClick={(e) => this.onTabChange(e, 'AI_VIEW')}
+                  >
+                    AI VIEW
+                  </StyledTabButton>
                   <WithDisableMessage
                     disabled={!isItemsVisible}
                     errMessage={t('common.testHidden')}
@@ -2037,6 +2048,361 @@ class ClassBoard extends Component {
                 <div ref={this.disneyCardsContainerRef}>
                   {flag ? (
                     <DisneyCardContainer
+                      selectedStudents={selectedStudents}
+                      testActivity={filteredStudentActivities}
+                      assignmentId={assignmentId}
+                      classId={classId}
+                      studentSelect={this.onSelectCardOne}
+                      endDate={
+                        additionalData.endDate || additionalData.closedDate
+                      }
+                      dueDate={additionalData.dueDate}
+                      closed={additionalData.closed}
+                      detailedClasses={additionalData.detailedClasses}
+                      studentUnselect={this.onUnselectCardOne}
+                      handleOpenTutor={this.handleOpenTutor}
+                      viewResponses={(e, selected, _testActivityId) => {
+                        setCurrentTestActivityId(_testActivityId)
+                        if (!isItemsVisible) {
+                          return
+                        }
+                        getAllTestActivitiesForStudent({
+                          studentId: selected,
+                          assignmentId,
+                          groupId: classId,
+                        })
+                        this.onTabChange(
+                          e,
+                          'Student',
+                          selected,
+                          _testActivityId
+                        )
+                      }}
+                      isPresentationMode={isPresentationMode}
+                      enrollmentStatus={enrollmentStatus}
+                    />
+                  ) : (
+                    <Score
+                      gradebook={gradebook}
+                      assignmentId={assignmentId}
+                      classId={classId}
+                    />
+                  )}
+                </div>
+
+                {redirectPopup && (
+                  <RedirectPopup
+                    open={redirectPopup}
+                    allStudents={allStudents}
+                    disabledList={disabledList}
+                    absentList={absentList}
+                    selectedStudents={selectedStudents}
+                    additionalData={additionalData}
+                    enrollmentStatus={enrollmentStatus}
+                    closePopup={this.closeRedirectPopup}
+                    setSelected={setSelected}
+                    assignmentId={assignmentId}
+                    groupId={classId}
+                    testActivity={testActivity}
+                  />
+                )}
+                {showAddStudentsPopup && (
+                  <AddStudentsPopup
+                    open={showAddStudentsPopup}
+                    groupId={classId}
+                    closePolicy={additionalData.closePolicy}
+                    classEndDate={
+                      additionalData.dueDate
+                        ? additionalData.dueDate
+                        : additionalData.endDate
+                    }
+                    serverTimeStamp={additionalData.ts}
+                    assignmentId={assignmentId}
+                    closePopup={this.handleHideAddStudentsPopup}
+                  />
+                )}
+                <TutorDetailsPopup
+                  open={showAssignedTutors}
+                  closePopup={this.handleCloseAssignedTutorPopup}
+                />
+              </>
+            )}
+            {selectedTab === 'AI_VIEW' && (
+              <>
+                <GraphContainer>
+                  <StyledCard bordered={false}>
+                    <Graph1
+                      gradebook={gradebook}
+                      title={additionalData.testName}
+                      testActivity={testActivity}
+                      testQuestionActivities={testQuestionActivities}
+                      onClickHandler={this.onClickBarGraph}
+                      isLoading={isLoading}
+                      isBoth
+                    />
+                  </StyledCard>
+                </GraphContainer>
+                {/* <StickyFlex
+                  justifyContent="space-between"
+                  hasStickyHeader={hasStickyHeader}
+                  className="lcb-student-sticky-bar"
+                >
+                  <div>
+                    <CheckboxLabel
+                      data-cy="selectAllCheckbox"
+                      checked={unselectedStudents.length === 0}
+                      indeterminate={
+                        unselectedStudents.length > 0 &&
+                        unselectedStudents.length <
+                          filteredStudentActivities.length
+                      }
+                      onChange={this.onSelectAllChange}
+                    >
+                      {unselectedStudents.length > 0
+                        ? 'SELECT ALL'
+                        : 'UNSELECT ALL'}
+                    </CheckboxLabel>
+                    <SwitchBox style={{ position: 'relative' }}>
+                      <FilterSpan>FILTER BY STATUS</FilterSpan>
+                      <FilterSelect
+                        data-cy="filterByStatus"
+                        className="student-status-filter"
+                        value={studentFilter}
+                        dropdownMenuStyle={{ fontSize: 29 }}
+                        getPopupContainer={(trigger) => trigger.parentElement}
+                        onChange={(v) => {
+                          studentUnselectAll()
+                          this.setState({ studentFilter: v })
+                        }}
+                        width="170px"
+                        height="24px"
+                      >
+                        {[
+                          'ALL ASSIGNED',
+                          'NOT STARTED',
+                          'IN PROGRESS',
+                          'SUBMITTED',
+                          'GRADED',
+                          'ABSENT',
+                          'PAUSED',
+                          'REDIRECTED',
+                          'UNASSIGNED',
+                          'NOT ENROLLED',
+                        ].map((x) => (
+                          <FilterSelect.Option
+                            className="student-status-filter-item"
+                            key={x}
+                            value={x}
+                            style={{ fontSize: 11 }}
+                          >
+                            {capitalizeIt(x)} (
+                            {x === 'ALL ASSIGNED'
+                              ? testActivity.filter(
+                                  ({ isAssigned, isEnrolled, archived }) =>
+                                    isAssigned &&
+                                    studentIsEnrolled({
+                                      isEnrolled,
+                                      enrollmentStatus,
+                                      archived,
+                                    })
+                                ).length
+                              : studentFilterCategoryCounts[x] || 0}
+                            )
+                          </FilterSelect.Option>
+                        ))}
+                      </FilterSelect>
+                    </SwitchBox>
+                  </div>
+                  <EduIf condition={attemptWindow}>
+                    <InfoMessage color={lightGreen4}>
+                      <IconInfo fill={green} height={10} /> {attemptWindow}
+                    </InfoMessage>
+                  </EduIf>
+                  <div style={{ display: 'flex' }}>
+                    <EduIf
+                      condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
+                    >
+                      <Tooltip
+                        placement="top"
+                        title={assignTutoringTooltipTitle}
+                      >
+                        <div>
+                          <AssignTutoring
+                            active={isAssignTutoringActive}
+                            data-cy="assignTutoring"
+                            onClick={handleAssignTutoringClick}
+                          >
+                            ASSIGN TUTORING
+                            <span>{!isTutorMeEnabled ? ' *' : ''}</span>
+                            <EduIf condition={isTutorMeModalLoading}>
+                              <Icon
+                                type="loading"
+                                style={{ fontSize: 10, color: white }}
+                                spin
+                              />
+                            </EduIf>
+                          </AssignTutoring>
+                        </div>
+                      </Tooltip>
+                    </EduIf>
+
+                    <ClassBoardFeats>
+                      <RedirectButton
+                        disabled={!isItemsVisible}
+                        first
+                        data-cy="printButton"
+                        target="_blank"
+                        onClick={this.onClickPrint}
+                      >
+                        <ButtonIconWrap>
+                          <IconPrint />
+                        </ButtonIconWrap>
+                        PRINT
+                      </RedirectButton>
+                      <Tooltip
+                        placement="top"
+                        title={
+                          isRedirectButtonDisabled
+                            ? 'Redirect is not permitted'
+                            : ''
+                        }
+                      >
+                        <div>
+                          <RedirectButton
+                            data-cy="rediectButton"
+                            onClick={this.handleRedirect}
+                            disabled={isRedirectButtonDisabled}
+                          >
+                            <ButtonIconWrap>
+                              <IconRedirect />
+                            </ButtonIconWrap>
+                            REDIRECT
+                          </RedirectButton>
+                        </div>
+                      </Tooltip>
+                      <Dropdown
+                        getPopupContainer={(triggerNode) => {
+                          return triggerNode.parentNode
+                        }}
+                        overlay={
+                          <DropMenu>
+                            <FeaturesSwitch
+                              inputFeatures="LCBmarkAsSubmitted"
+                              key="LCBmarkAsSubmitted"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="markSubmitted"
+                                disabled={disableMarkSubmitted}
+                                onClick={this.handleShowMarkAsSubmittedModal}
+                              >
+                                <IconMarkAsSubmitted width={12} />
+                                <span>Mark as Submitted</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                            <FeaturesSwitch
+                              inputFeatures="LCBmarkAsAbsent"
+                              key="LCBmarkAsAbsent"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="markAbsent"
+                                disabled={disableMarkAbsent}
+                                onClick={this.handleShowMarkAsAbsentModal}
+                              >
+                                <IconMarkAsAbsent />
+                                <span>Mark as Absent</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+
+                            <MenuItems
+                              data-cy="addStudents"
+                              disabled={actionInProgress}
+                              onClick={this.handleShowAddStudentsPopup}
+                            >
+                              <IconAddStudents />
+                              <span>Add Students</span>
+                            </MenuItems>
+                            <MenuItems
+                              data-cy="removeStudents"
+                              onClick={this.handleShowRemoveStudentsModal}
+                            >
+                              <IconRemove />
+                              <span>Unassign Students</span>
+                            </MenuItems>
+                            <FeaturesSwitch
+                              inputFeatures="premium"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
+                            >
+                              <MenuItems
+                                data-cy="pauseStudents"
+                                onClick={this.handleTogglePauseStudents(true)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPause />
+                                <span>Pause Students</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
+                            {showResume && (
+                              <MenuItems
+                                data-cy="resumeStudents"
+                                onClick={this.handleTogglePauseStudents(false)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPlay />
+                                <span>Resume Students</span>
+                              </MenuItems>
+                            )}
+                            <MenuItems
+                              data-cy="downloadGrades"
+                              disabled={!enableDownload || isProxiedByEAAccount}
+                              title={
+                                isProxiedByEAAccount
+                                  ? 'Bulk action disabled for EA proxy accounts.'
+                                  : ''
+                              }
+                              onClick={() => this.handleDownloadGrades(false)}
+                            >
+                              <IconDownload />
+                              <span>Download Grades</span>
+                            </MenuItems>
+                            <MenuItems
+                              data-cy="downloadResponse"
+                              disabled={!enableDownload || isProxiedByEAAccount}
+                              title={
+                                isProxiedByEAAccount
+                                  ? 'Bulk action disabled for EA proxy accounts.'
+                                  : ''
+                              }
+                              onClick={() => this.handleDownloadGrades(true)}
+                            >
+                              <IconDownload
+                                color={
+                                  isProxiedByEAAccount ? lightFadedBlack : null
+                                }
+                              />
+                              <span>Download Response</span>
+                            </MenuItems>
+                          </DropMenu>
+                        }
+                        placement="bottomRight"
+                      >
+                        <RedirectButton data-cy="moreAction" last>
+                          <ButtonIconWrap className="more">
+                            <IconMoreHorizontal />
+                          </ButtonIconWrap>
+                          MORE
+                        </RedirectButton>
+                      </Dropdown>
+                    </ClassBoardFeats>
+                  </div>
+                </StickyFlex> */}
+                <div ref={this.disneyCardsContainerRef}>
+                  {flag ? (
+                    <DisneyCardContainer1
                       selectedStudents={selectedStudents}
                       testActivity={filteredStudentActivities}
                       assignmentId={assignmentId}

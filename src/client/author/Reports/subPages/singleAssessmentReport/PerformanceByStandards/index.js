@@ -36,6 +36,7 @@ import {
   usePerformanceByStandardSummaryFetch,
 } from './hooks/useFetch'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
+import PearAi from './components/pearAI'
 
 const {
   viewByMode,
@@ -422,6 +423,7 @@ const PerformanceByStandards = ({
                         </Row>
                       </Col>
                     </Row>
+                    <PearAi />
                     <StyledSignedBarContainer>
                       <BarToRender
                         report={reportWithFilteredSkills}
@@ -491,8 +493,13 @@ const PerformanceByStandards = ({
                     heading="Report cannot be generated"
                     description={
                       <>
-                        The test standards differ from your Interested Standards.<br />
-                        Please visit <Link to="/author/profile">My Profile</Link> and add the relevant standard set for this test to your Interested Standards.
+                        The test standards differ from your Interested
+                        Standards.
+                        <br />
+                        Please visit{' '}
+                        <Link to="/author/profile">My Profile</Link> and add the
+                        relevant standard set for this test to your Interested
+                        Standards.
                       </>
                     }
                     style={{

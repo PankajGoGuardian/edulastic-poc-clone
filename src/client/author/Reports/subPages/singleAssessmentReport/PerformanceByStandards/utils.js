@@ -1,3 +1,5 @@
+import { notification } from '@edulastic/common'
+
 export const AI_CHAT_ROLES = {
   SYSTEM: 'system',
   USER: 'user',
@@ -42,11 +44,18 @@ export const getParsedMessages = (messages) => {
       )
       Object.assign(newMessage, { chatText })
     }
-    if (message.role === AI_CHAT_ROLES.ASSISTANT) {
-      const parsedContent = JSON.parse(message.content)
-      Object.assign(newMessage, {
-        chatText: parsedContent.response,
-        questionsText: parsedContent.followup,
+    try {
+      if (message.role === AI_CHAT_ROLES.ASSISTANT) {
+        const parsedContent = JSON.parse(message.content)
+        Object.assign(newMessage, {
+          chatText: parsedContent.response,
+          questionsText: parsedContent.followup,
+        })
+      }
+    } catch (error) {
+      notification({
+        type: 'error',
+        msg: `${error.message}\n Please retry the same query.`,
       })
     }
     return newMessage

@@ -113,6 +113,8 @@ const SingleAssessmentReportContainer = (props) => {
   )
   const [additionalUrlParams, setAdditionalUrlParams] = useState({})
 
+  const [isGptBoxVisible, setIsGptBoxVisible] = useState(true)
+
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -294,7 +296,7 @@ const SingleAssessmentReportContainer = (props) => {
     () => !isEmpty(Object.values(demographicFilters).filter((val) => !!val)),
     [demographicFilters]
   )
-  
+
   if (isEmpty(interestedCurriculums) && loc == 'performance-by-standards') {
     return (
       <NoDataNotification
@@ -357,6 +359,8 @@ const SingleAssessmentReportContainer = (props) => {
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
             pickAddionalFilters={pickAddionalFilters}
+            isGptBoxVisible={isGptBoxVisible}
+            setIsGptBoxVisible={setIsGptBoxVisible}
           />
         </SubHeader>
         <ReportContainer>
@@ -427,6 +431,8 @@ const SingleAssessmentReportContainer = (props) => {
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
                 setAdditionalUrlParams={setAdditionalUrlParams}
+                isGptBoxVisible={isGptBoxVisible}
+                setIsGptBoxVisible={setIsGptBoxVisible}
               />
             )}
           />

@@ -69,6 +69,8 @@ const PerformanceByStandards = ({
   toggleFilter,
   generateCSV,
   setAdditionalUrlParams,
+  isGptBoxVisible,
+  setIsGptBoxVisible,
 }) => {
   const urlSearch = qs.parse(location.search, {
     ignoreQueryPrefix: true,

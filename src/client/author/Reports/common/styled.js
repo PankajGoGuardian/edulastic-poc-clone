@@ -81,7 +81,7 @@ export const FilterLabel = styled(FieldLabel)`
 `
 
 export const ReportFiltersContainer = styled.div`
-  display: ${({ visible }) => (visible ? 'block' : 'none')};
+  display: ${({ visible }) => (visible ? 'flex' : 'none')};
   position: relative;
   @media print {
     display: none;

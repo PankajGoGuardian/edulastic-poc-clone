@@ -4,10 +4,11 @@ import { connect } from 'react-redux'
 import { get, isEmpty, pick, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
-import { Spin, Tabs, Row, Col } from 'antd'
+import { Spin, Tabs, Row, Col, Icon } from 'antd'
 
 import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
@@ -103,6 +104,8 @@ const SingleAssessmentReportFilters = ({
   testList,
   fetchUpdateTagsData,
   pickAddionalFilters,
+  isGptBoxVisible,
+  setIsGptBoxVisible,
 }) => {
   const { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } = testTypesConstants
   const availableAssessmentType = getArrayOfAllTestTypes()
@@ -497,6 +500,16 @@ const SingleAssessmentReportFilters = ({
           <IconFilter width={15} height={15} />
           FILTERS
         </StyledEduButton>
+        <EduIf condition={loc == 'performance-by-standards'}>
+          <StyledEduButton
+            data-cy="gpt-box-toggle"
+            isGhost={!isGptBoxVisible}
+            onClick={() => setIsGptBoxVisible((v) => !v)}
+            style={{ height: '24px' }}
+          >
+            <Icon type="aliwangwang" color="white" />
+          </StyledEduButton>
+        </EduIf>
         <ReportFiltersWrapper visible={showFilter} loading={loading}>
           {loading && <Spin />}
           <Row className="report-filters-inner-wrapper">

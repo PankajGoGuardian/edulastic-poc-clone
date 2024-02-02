@@ -29,6 +29,11 @@ const AiTestBanner = ({
       alignItems="center"
       width="calc(100% - 2.5rem)"
       data-cy="aiTest"
+      style={{
+        ...(isAIQuizFromManualAssessments
+          ? { background: 'linear-gradient(225deg,#3e4d9f 0%,#ff730b 100%)' }
+          : {}),
+      }}
     >
       <CreateAiTestTitleWrapper data-cy="aiTestTitle">
         {isAIQuizFromManualAssessments

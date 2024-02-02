@@ -70,6 +70,7 @@
     "antd": "^3.26.14",
     "axios": "^0.21.1",
     "brace": "^0.11.1",
+    "buffer": "^6.0.3",
     "canvas": "^2.4.1",
     "circular-dependency-plugin": "^5.0.2",
     "color": "^3.1.0",
@@ -101,6 +102,7 @@
     "mathjs": "^7.5.1",
     "mathquill": "^0.10.1-a",
     "memoize-one": "^5.0.4",
+    "microphone-stream": "^6.0.1",
     "mocha-junit-reporter": "^1.23.1",
     "mocha-multi-reporters": "^1.1.7",
     "mqtt": "^2.18.8",
@@ -165,9 +167,6 @@
     "styled-components": "^5.1.0",
     "timm": "^1.7.1",
     "uuid": "^3.3.2"
-  },
-  "optionalDependencies": {
-    "@goguardian/tutorme-sdk": "^2.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

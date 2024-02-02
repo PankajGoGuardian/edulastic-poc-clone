@@ -66,6 +66,7 @@ import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 import ReferenceDocModal from '../common/ReferenceDocModal'
+import AnimatedCompanion from '../../../student/AnimatedCompanion/AnimatedCompanion'
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -568,6 +569,7 @@ class AssessmentPlayerDefault extends React.Component {
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
         >
+          <AnimatedCompanion />
           <AssessmentPlayerSkinWrapper
             hidePause={hidePause}
             title={title}

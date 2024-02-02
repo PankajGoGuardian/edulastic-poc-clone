@@ -34,16 +34,20 @@ const ComposeQuestion = ({
       audio: true,
     })
     const mediaSource = audioContext.createMediaStreamSource(mediaStream)
-    const audioProcessor = audioContext.createScriptProcessor(1024, 1, 1)
-    audioProcessor.onaudioprocess = (event) => {
-      console.log('recording in progress+++')
-      const audioData = event.inputBuffer.getChannelData(0)
-
-      // Convert audio data to chunks and send to the WebSocket server
-      socket.emit('send_message', { audioData })
-    }
+    const audioProcessor = audioContext.createScriptProcessor(4096, 1, 1)
     mediaSource.connect(audioProcessor)
     audioProcessor.connect(audioContext.destination)
+
+    audioProcessor.onaudioprocess = (event) => {
+      console.log('recording in progress+++')
+      const inputData = event.inputBuffer.getChannelData(0)
+      const chunkSize = 44100 // Adjust based on your requirements
+
+      for (let i = 0; i < inputData.length; i += chunkSize) {
+        const chunk = inputData.subarray(i, i + chunkSize)
+        socket.emit('send_message', new Uint8Array(chunk.buffer))
+      }
+    }
   }
 
   useEffect(() => {

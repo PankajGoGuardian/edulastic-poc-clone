@@ -17,6 +17,7 @@ export const CreateAiTestModal = ({
   aiTestStatus,
   aiFormContent,
   updateAlignment,
+  isAIQuizFromManualAssessments = false,
 }) => {
   return (
     <StyledCreateAiTestModal
@@ -57,6 +58,7 @@ export const CreateAiTestModal = ({
             addItems={addItems}
             aiFormContent={aiFormContent}
             updateAlignment={updateAlignment}
+            isAIQuizFromManualAssessments={isAIQuizFromManualAssessments}
           />
         </EduElse>
       </EduIf>

@@ -231,6 +231,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       preference,
       groupIndex,
       savePreselected,
+      type,
+      link,
     } = payload
 
     const {
@@ -260,6 +262,8 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       ...(!isEmpty(preference) && { preference }),
       existingQuestions,
       commonCoresStandardDescriptions,
+      type,
+      link,
     }
 
     const { result } = yield call(

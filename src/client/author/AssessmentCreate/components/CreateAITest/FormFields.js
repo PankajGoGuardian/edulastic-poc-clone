@@ -1,6 +1,8 @@
 import {
   EduButton,
+  EduElse,
   EduIf,
+  EduThen,
   FlexContainer,
   NumberInputStyled,
   SelectInputStyled,
@@ -33,6 +35,7 @@ const FormFields = ({
   addItems,
   aiFormContent,
   updateAlignment,
+  isAIQuizFromManualAssessments = false,
 }) => {
   const {
     testName,
@@ -42,6 +45,8 @@ const FormFields = ({
     difficulty,
     preference,
     alignment,
+    link,
+    type,
   } = aiFormContent
 
   const handleGenerate = (...args) => {
@@ -70,106 +75,153 @@ const FormFields = ({
         </EduIf>
       </Row>
       <Row gutter={30}>
-        <Col xs={12}>
-          <StyledFilterLabel>
-            Item Type<StyledRequired>*</StyledRequired>
-          </StyledFilterLabel>
-          <SelectInputStyled
-            showArrow
-            showSearch
-            data-cy="aiItemType"
-            placeholder="Select Item Type"
-            optionFilterProp="children"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            height="36px"
-            onChange={(value) => handleFieldDataChange(ITEM_TYPE, value)}
-            value={itemType}
-          >
-            {selectsData.allQuestionTypes.map(({ value, text }) => (
-              <Select.Option key={value} value={value}>
-                {text}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
-        </Col>
-        <Col xs={12}>
-          <StyledFilterLabel>
-            Number Of Items<StyledRequired>*</StyledRequired>
-          </StyledFilterLabel>
-          <NumberInputStyled
-            onChange={(value) => handleFieldDataChange(NUMBER_OF_ITEMS, value)}
-            min={1}
-            max={20}
-            step={1}
-            height="36px"
-            value={numberOfItems}
-            data-cy="numberOfItem"
-          />
-        </Col>
+        <EduIf condition={isAIQuizFromManualAssessments}>
+          <EduThen>
+            <Col xs={24}>
+              <StyledFilterLabel>
+                Type<StyledRequired>*</StyledRequired>
+              </StyledFilterLabel>
+              <SelectInputStyled
+                showArrow
+                showSearch
+                data-cy="aiItemType"
+                placeholder="Select Item Type"
+                optionFilterProp="children"
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                height="36px"
+                onChange={(value) => handleFieldDataChange('type', value)}
+                value={type}
+              >
+                {selectsData.manualAssessmentTypes.map(({ value, text }) => (
+                  <Select.Option key={value} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </EduThen>
+          <EduElse>
+            <Col xs={12}>
+              <StyledFilterLabel>
+                Item Type<StyledRequired>*</StyledRequired>
+              </StyledFilterLabel>
+              <SelectInputStyled
+                showArrow
+                showSearch
+                data-cy="aiItemType"
+                placeholder="Select Item Type"
+                optionFilterProp="children"
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                height="36px"
+                onChange={(value) => handleFieldDataChange(ITEM_TYPE, value)}
+                value={itemType}
+              >
+                {selectsData.allQuestionTypes.map(({ value, text }) => (
+                  <Select.Option key={value} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+            <Col xs={12}>
+              <StyledFilterLabel>
+                Number Of Items<StyledRequired>*</StyledRequired>
+              </StyledFilterLabel>
+              <NumberInputStyled
+                onChange={(value) =>
+                  handleFieldDataChange(NUMBER_OF_ITEMS, value)
+                }
+                min={1}
+                max={20}
+                step={1}
+                height="36px"
+                value={numberOfItems}
+                data-cy="numberOfItem"
+              />
+            </Col>
+          </EduElse>
+        </EduIf>
       </Row>
-      <Row gutter={30}>
-        <Col xs={24}>
-          <StyledFilterLabel>
-            Standards <StyledRequired>*</StyledRequired>
-          </StyledFilterLabel>
-          <StandardSet
-            alignment={alignment}
-            onUpdate={(data) => updateAlignment(data.alignment)}
-            showIconBrowserBtn
-            hideLabel
-            standardsRequiredFields={[
-              standardsFields.SUBJECT,
-              standardsFields.GRADES,
-            ]}
-            isDocBased
-          />
-        </Col>
-      </Row>
-      <Row gutter={30}>
-        <Col xs={12}>
-          <StyledFilterLabel>DOK</StyledFilterLabel>
-          <SelectInputStyled
-            height="36px"
-            showArrow
-            showSearch
-            data-cy="aiDok"
-            placeholder="Select Dok"
-            optionFilterProp="children"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            onChange={(value) => handleFieldDataChange(DOK, value)}
-            value={dok}
-          >
-            {selectsData.allDepthOfKnowledgeAI
-              .filter(({ value }) => value)
-              .map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ))}
-          </SelectInputStyled>
-        </Col>
-        <Col xs={12}>
-          <StyledFilterLabel>Difficulty</StyledFilterLabel>
-          <SelectInputStyled
-            showArrow
-            showSearch
-            data-cy="aiDifficulty"
-            placeholder="Select Difficulty"
-            optionFilterProp="children"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            onChange={(value) => handleFieldDataChange(DIFFICULTY, value)}
-            value={difficulty}
-          >
-            {selectsData.allAuthorDifficulty
-              .filter(({ value }) => value)
-              .map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ))}
-          </SelectInputStyled>
-        </Col>
-      </Row>
+      <EduIf condition={isAIQuizFromManualAssessments}>
+        <Row gutter={30}>
+          <Col xs={24}>
+            <StyledFilterLabel>
+              Link <StyledRequired>*</StyledRequired>
+            </StyledFilterLabel>
+            <TextInputStyled
+              placeholder="Link"
+              maxLength={256}
+              value={link}
+              onChange={(e) => handleFieldDataChange('link', e.target.value)}
+            />
+          </Col>
+        </Row>
+      </EduIf>
+      <EduIf condition={!isAIQuizFromManualAssessments}>
+        <Row gutter={30}>
+          <Col xs={24}>
+            <StyledFilterLabel>
+              Standards <StyledRequired>*</StyledRequired>
+            </StyledFilterLabel>
+            <StandardSet
+              alignment={alignment}
+              onUpdate={(data) => updateAlignment(data.alignment)}
+              showIconBrowserBtn
+              hideLabel
+              standardsRequiredFields={[
+                standardsFields.SUBJECT,
+                standardsFields.GRADES,
+              ]}
+              isDocBased
+            />
+          </Col>
+        </Row>
+        <Row gutter={30}>
+          <Col xs={12}>
+            <StyledFilterLabel>DOK</StyledFilterLabel>
+            <SelectInputStyled
+              height="36px"
+              showArrow
+              showSearch
+              data-cy="aiDok"
+              placeholder="Select Dok"
+              optionFilterProp="children"
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              onChange={(value) => handleFieldDataChange(DOK, value)}
+              value={dok}
+            >
+              {selectsData.allDepthOfKnowledgeAI
+                .filter(({ value }) => value)
+                .map(({ value, text }) => (
+                  <Select.Option key={value} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+            </SelectInputStyled>
+          </Col>
+          <Col xs={12}>
+            <StyledFilterLabel>Difficulty</StyledFilterLabel>
+            <SelectInputStyled
+              showArrow
+              showSearch
+              data-cy="aiDifficulty"
+              placeholder="Select Difficulty"
+              optionFilterProp="children"
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              onChange={(value) => handleFieldDataChange(DIFFICULTY, value)}
+              value={difficulty}
+            >
+              {selectsData.allAuthorDifficulty
+                .filter(({ value }) => value)
+                .map(({ value, text }) => (
+                  <Select.Option key={value} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+            </SelectInputStyled>
+          </Col>
+        </Row>
+      </EduIf>
       <Row gutter={30}>
         <Col xs={24}>
           <StyledFilterLabel>I Want To</StyledFilterLabel>

@@ -50,6 +50,7 @@ const EduAIQuiz = ({
   showSelectGroupIndexModal,
   isGcpsDistrict,
   displayScreen = NEW_TEST_SCREEN,
+  isAIQuizFromManualAssessments = false,
 }) => {
   const {
     selectSectionVisible,
@@ -77,6 +78,7 @@ const EduAIQuiz = ({
     currentGroupIndexValueFromStore,
     showSelectGroupIndexModal,
     savePreselected: displayScreen === CREATE_ITEMS_SCREEN,
+    isAIQuizFromManualAssessments,
   })
 
   const { open = '' } = qs.parse(window.location.search, {
@@ -159,7 +161,12 @@ const EduAIQuiz = ({
       case ADD_ITEMS_SCREEN:
         return EduAiAddItems
       case NEW_TEST_SCREEN:
-        return <AiTestBanner onCreateItems={onCreateItems} />
+        return (
+          <AiTestBanner
+            onCreateItems={onCreateItems}
+            isAIQuizFromManualAssessments={isAIQuizFromManualAssessments}
+          />
+        )
       case CREATE_TEST_SCREEN:
         return EduAiCreateTestButton
       case CREATE_ITEMS_SCREEN:
@@ -191,6 +198,7 @@ const EduAIQuiz = ({
         aiFormContent={aiFormContent}
         updateAlignment={updateAlignment}
         addItems={addItems}
+        isAIQuizFromManualAssessments={isAIQuizFromManualAssessments}
       />
     </EduIf>
   )

@@ -102,6 +102,12 @@ const allQuestionTypes = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Select question' },
 ]
 
+const manualAssessmentTypes = [
+  { value: 'google-form', text: 'GOOGLE FORM' },
+  { value: 'pdf', text: 'PDF' },
+  { value: 'video', text: 'VIDEO' },
+]
+
 const allDepthOfKnowledgeAI = Object.values(allDepthOfKnowledgeMapAI)
 
 export default {
@@ -120,4 +126,5 @@ export default {
   extraStatus,
   allQuestionTypes,
   allDepthOfKnowledgeAI,
+  manualAssessmentTypes,
 }

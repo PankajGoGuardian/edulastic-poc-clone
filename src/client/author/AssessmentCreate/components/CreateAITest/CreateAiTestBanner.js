@@ -16,7 +16,11 @@ import AddOnTag from '../common/AddOnTag'
 
 import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
 
-const AiTestBanner = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
+const AiTestBanner = ({
+  onCreateItems,
+  isVideoQuizAndAIEnabled,
+  isAIQuizFromManualAssessments = false,
+}) => {
   return (
     <CreateAiTestWrapper
       mt="1rem"
@@ -27,7 +31,9 @@ const AiTestBanner = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
       data-cy="aiTest"
     >
       <CreateAiTestTitleWrapper data-cy="aiTestTitle">
-        Generate AI-powered test items with a single click!
+        {isAIQuizFromManualAssessments
+          ? 'Generate AI-powered test items through Google forms, PDF, Video with a single click!'
+          : 'Generate AI-powered test items with a single click!'}
       </CreateAiTestTitleWrapper>
       <FlexContainer justifyContent="space-between" alignItems="center">
         <EduIf condition={!isVideoQuizAndAIEnabled}>

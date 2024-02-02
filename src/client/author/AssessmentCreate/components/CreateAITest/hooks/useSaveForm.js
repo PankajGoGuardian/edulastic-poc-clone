@@ -18,6 +18,7 @@ export const useSaveForm = ({
   currentGroupIndexValueFromStore,
   showSelectGroupIndexModal,
   savePreselected,
+  isAIQuizFromManualAssessments = false,
 }) => {
   const initialAiFormData = {
     itemTypes: '',
@@ -26,6 +27,8 @@ export const useSaveForm = ({
     difficulty: '',
     preference: '',
     testName: testTitle,
+    type: '',
+    link: '',
     alignment: [
       {
         curriculum: '',
@@ -114,6 +117,8 @@ export const useSaveForm = ({
       dok,
       difficulty,
       preference,
+      link,
+      type,
     } = _aiFormContent
 
     if (isEmpty(testName) && !addItems) {
@@ -123,36 +128,52 @@ export const useSaveForm = ({
       })
     }
 
-    if (isEmpty(itemType)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'itemTypesEmpty',
-      })
-    }
+    if (isAIQuizFromManualAssessments) {
+      if (isEmpty(link)) {
+        return notification({
+          type: 'warn',
+          msg: 'Please provide assessment link',
+        })
+      }
 
-    if (
-      numberOfItems === null ||
-      numberOfItems === '' ||
-      (parseInt(numberOfItems, 10) < 1 && parseInt(numberOfItems, 10) > 20)
-    ) {
-      return notification({
-        type: 'warn',
-        messageKey: 'pleaseProvideValidNumberOfItems',
-      })
-    }
+      if (isEmpty(type)) {
+        return notification({
+          type: 'warn',
+          msg: 'Please provide assessment type',
+        })
+      }
+    } else {
+      if (isEmpty(itemType)) {
+        return notification({
+          type: 'warn',
+          messageKey: 'itemTypesEmpty',
+        })
+      }
 
-    if (isEmpty(alignment[0].grades)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'gradeFieldEmpty',
-      })
-    }
+      if (
+        numberOfItems === null ||
+        numberOfItems === '' ||
+        (parseInt(numberOfItems, 10) < 1 && parseInt(numberOfItems, 10) > 20)
+      ) {
+        return notification({
+          type: 'warn',
+          messageKey: 'pleaseProvideValidNumberOfItems',
+        })
+      }
 
-    if (isEmpty(alignment[0].subject)) {
-      return notification({
-        type: 'warn',
-        messageKey: 'subjectFieldEmpty',
-      })
+      if (isEmpty(alignment[0].grades)) {
+        return notification({
+          type: 'warn',
+          messageKey: 'gradeFieldEmpty',
+        })
+      }
+
+      if (isEmpty(alignment[0].subject)) {
+        return notification({
+          type: 'warn',
+          messageKey: 'subjectFieldEmpty',
+        })
+      }
     }
 
     if (isEmpty(dok)) {

@@ -36,6 +36,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
       </EduIf>
     </FlexWrapper>
     <EduAiQuiz />
+    <EduAiQuiz isAIQuizFromManualAssessments />
   </BodyWrapper>
 )
 

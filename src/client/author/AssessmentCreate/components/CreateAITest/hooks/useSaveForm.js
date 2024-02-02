@@ -197,6 +197,7 @@ export const useSaveForm = ({
       testName: testName.trim(),
       preference: preference.trim(),
       groupIndex: _selectedGroupIndex,
+      isAIQuizFromManualAssessments,
     })
   }
 

@@ -233,6 +233,7 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
       savePreselected,
       type,
       link,
+      isAIQuizFromManualAssessments = false,
     } = payload
 
     const {
@@ -277,12 +278,15 @@ function* getAiGeneratedTestItemsSaga({ payload }) {
         grades,
         subject,
         alignment,
-        itemType,
+        itemType: isAIQuizFromManualAssessments
+          ? 'multipleSelection'
+          : itemType,
         assessment,
         groupIndex,
         savePreselected,
       })
   } catch (error) {
+    console.log('error', error)
     const errMsg = error?.response?.data?.message
     if (errMsg) {
       notification({

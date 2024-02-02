@@ -14,6 +14,7 @@ export const processMSQ = (
     commonCoreStandard,
     depthOfKnowledge,
     difficultLevel,
+    imageURL = '',
   },
   alignmentData,
   grades,
@@ -52,6 +53,10 @@ export const processMSQ = (
 
   const correctAnswers = []
 
+  if (!correctAnswersIndex?.length) {
+    correctAnswersIndex = [0]
+  }
+
   correctAnswersIndex.forEach((index) => {
     correctAnswers.push(uuidMap[`mapped_${index}`])
   })
@@ -74,7 +79,11 @@ export const processMSQ = (
           id: qId,
           type,
           title,
-          stimulus: name,
+          stimulus: `<p>${name}</p><br />${
+            imageURL
+              ? `<img src="${imageURL}" style="width: 489px; height: 300px" class="fr-fic fr-dii" /><p></p>`
+              : ''
+          }`,
           validation,
           options,
           hints: [],

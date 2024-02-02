@@ -2030,3 +2030,48 @@ export const getFirstQuestionEntitiesSelector = createSelector(
     return result
   }
 )
+
+export const getAiViewDataSelector = createSelector(
+  getClassResponseSelector,
+  getAllActivities,
+  (test, entities) => {
+    console.log(entities, '---entities')
+    const testItems = get(test, 'itemGroups.0.items')
+    const questions = testItems.flatMap((item) =>
+      item.data.questions.map((q) => ({ ...q, itemId: item._id }))
+    )
+    const out = {}
+    console.log(questions, '---questions')
+    questions.forEach((q, i) => {
+      out[`${q.itemId}_${q.id}`] = {
+        easyCount: 0,
+        mediumCount: 0,
+        difficultCount: 0,
+        id: q.id,
+        name: `Q${i + 1}`,
+      }
+    })
+    entities.map((entity) => {
+      return {
+        studentId: entity.studentId,
+        studentName: entity.studentName,
+        questions: questions.map((q, i) => {
+          const p = Math.floor(Math.random() * 10) + 1
+          if (p > 7) {
+            out[`${q.itemId}_${q.id}`].easyCount++
+          } else if (p > 5) {
+            out[`${q.itemId}_${q.id}`].mediumCount++
+          } else {
+            out[`${q.itemId}_${q.id}`].difficultCount++
+          }
+          return {
+            questionId: q.id,
+            questionLabel: `Q${i + 1}`,
+            probability: p,
+          }
+        }),
+      }
+    })
+    return Object.values(out)
+  }
+)

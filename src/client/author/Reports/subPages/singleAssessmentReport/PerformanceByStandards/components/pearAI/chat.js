@@ -1,20 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { FlexContainer } from '@edulastic/common'
 import { StyledTextArea, ChatBubble } from './styled'
+import { AI_CHAT_ROLES, getUserMessage } from '../../utils'
 
-const Roles = {
-  SYSTEM: 'system',
-  USER: 'user',
-}
-
-const Chat = () => {
+const Chat = ({ messages, setMessages, loading }) => {
   const [message, setMessage] = useState('')
-  const [chatData, setChatData] = useState([])
   const messagWindowRef = useRef(null)
-
-  useEffect(() => {
-    console.log(chatData)
-  }, [chatData])
 
   const handleOnTextAreaChange = (e) => {
     setMessage(e.target.value)
@@ -24,20 +15,15 @@ const Chat = () => {
     if (e.keyCode == 13 && e.shiftKey == false) {
       e.preventDefault()
 
-      const _chatData = [
-        ...chatData,
+      const newMessages = [
+        ...messages,
         {
-          content: message,
+          content: getUserMessage(message),
           chatText: message,
-          role: Roles.USER,
-        },
-        {
-          content: 'Hi I am pear Ai',
-          chatText: 'Hi I am pear Ai',
-          role: Roles.SYSTEM,
+          role: AI_CHAT_ROLES.USER,
         },
       ]
-      setChatData(_chatData)
+      setMessages(newMessages)
       console.log(messagWindowRef.current, messagWindowRef.current.scrollHeight)
       //   console.log(messagWindowRef, messagWindowRef.current.scrollTo)
       //   messagWindowRef.current.scrollTo({
@@ -68,21 +54,23 @@ const Chat = () => {
             paddingRight: '15px',
           }}
         >
-          {chatData.map(({ content, role }) => (
-            <ChatBubble
-              key={content}
-              type="flex"
-              justify={role === Roles.USER ? 'end' : 'start'}
-              $bgColor={role === Roles.USER ? '#B8F89A' : '#E3E3E3'}
-            >
-              {content}
-            </ChatBubble>
-          ))}
+          {messages.map(({ chatText, role }) =>
+            role !== AI_CHAT_ROLES.SYSTEM ? (
+              <ChatBubble
+                key={chatText}
+                type="flex"
+                justify={role === AI_CHAT_ROLES.USER ? 'end' : 'start'}
+                $bgColor={role === AI_CHAT_ROLES.USER ? '#B8F89A' : '#E3E3E3'}
+              >
+                {chatText}
+              </ChatBubble>
+            ) : null
+          )}
         </div>
         <StyledTextArea
           value={message}
           rows={1}
-          placeholder="Enter your message"
+          placeholder="Ask PearAI"
           onKeyDown={onEnterPress}
           onChange={handleOnTextAreaChange}
         />

@@ -69,3 +69,4 @@ export { default as standardsProgressApi } from './src/reports/standardsMasteryR
 export { default as tutorMeApi } from './src/tutorMe'
 export { default as youtubeSearchApi } from './src/youtubeSearchApi'
 export { default as getVQUsageCountApi } from './src/vqUsage'
+export { default as openAiApi } from './src/openAiApi'

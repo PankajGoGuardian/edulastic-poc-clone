@@ -113,7 +113,8 @@ const SingleAssessmentReportContainer = (props) => {
   )
   const [additionalUrlParams, setAdditionalUrlParams] = useState({})
 
-  const [isGptBoxVisible, setIsGptBoxVisible] = useState(true)
+  const [isGptBoxVisible, setIsGptBoxVisible] = useState(false)
+  const [isGptResponseLoading, setIsGptResponseLoading] = useState(false)
 
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
@@ -361,6 +362,8 @@ const SingleAssessmentReportContainer = (props) => {
             pickAddionalFilters={pickAddionalFilters}
             isGptBoxVisible={isGptBoxVisible}
             setIsGptBoxVisible={setIsGptBoxVisible}
+            isGptResponseLoading={isGptResponseLoading}
+            setIsGptResponseLoading={setIsGptResponseLoading}
           />
         </SubHeader>
         <ReportContainer>
@@ -433,6 +436,8 @@ const SingleAssessmentReportContainer = (props) => {
                 setAdditionalUrlParams={setAdditionalUrlParams}
                 isGptBoxVisible={isGptBoxVisible}
                 setIsGptBoxVisible={setIsGptBoxVisible}
+                isGptResponseLoading={isGptResponseLoading}
+                setIsGptResponseLoading={setIsGptResponseLoading}
               />
             )}
           />

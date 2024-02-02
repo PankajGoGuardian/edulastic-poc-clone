@@ -1,13 +1,21 @@
-import { SpinLoader, EduIf, EduThen, EduElse } from '@edulastic/common'
+import {
+  SpinLoader,
+  EduIf,
+  EduThen,
+  EduElse,
+  useApiQuery,
+  notification,
+} from '@edulastic/common'
 import { Col, Row, Pagination } from 'antd'
 import next from 'immer'
 import qs from 'qs'
-import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
+import { capitalize, find, indexOf, isEmpty, get, pick } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import { openAiApi } from '@edulastic/api'
 import { report as reportTypes, reportUtils } from '@edulastic/constants'
 
 import { getUserRole } from '../../../../src/selectors/user'
@@ -37,6 +45,7 @@ import {
 } from './hooks/useFetch'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
 import PearAi from './components/pearAI'
+import { AI_CHAT_ROLES, getDefaultAiMessages, getParsedMessages } from './utils'
 
 const {
   viewByMode,
@@ -45,6 +54,7 @@ const {
   compareByMode,
   compareByModeToName,
   getReportWithFilteredSkills,
+  perfByStandardDownloadCSV,
 } = reportUtils.performanceByStandards
 
 const pageSize = 200
@@ -72,6 +82,7 @@ const PerformanceByStandards = ({
   setAdditionalUrlParams,
   isGptBoxVisible,
   setIsGptBoxVisible,
+  setIsGptResponseLoading,
 }) => {
   const urlSearch = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -103,6 +114,7 @@ const PerformanceByStandards = ({
     urlSearch.sortKey || sortKeysMap.overall
   )
   const [recompute, setRecompute] = useState(true)
+  const [aiMessages, setAiMessages] = useState([])
 
   const { viewBy, analyzeBy, isViewOrAnalyzeByChanged } = viewOrAnalzeByState
 
@@ -256,6 +268,33 @@ const PerformanceByStandards = ({
     }
   }, [isCsvDownloading])
 
+  useEffect(() => {
+    if (report) {
+      const csvData = perfByStandardDownloadCSV({
+        result: report,
+        compareBy,
+        viewBy,
+        analyzeBy,
+        curriculumId,
+        selectedStandards,
+        selectedDomains,
+      })
+      const defaultAiMessages = getDefaultAiMessages(csvData)
+      if (csvData.length > 1 && isGptBoxVisible) {
+        setAiMessages(defaultAiMessages)
+      }
+    }
+  }, [
+    isGptBoxVisible,
+    report,
+    compareBy,
+    viewBy,
+    analyzeBy,
+    curriculumId,
+    selectedStandards,
+    selectedDomains,
+  ])
+
   const handleViewByChange = (event, selected) => {
     setRecompute(true)
     setPage(1)
@@ -354,6 +393,55 @@ const PerformanceByStandards = ({
     !Object.keys(summary.standardsMap).length &&
     summary.performanceSummaryStats?.length
 
+  const checkIfLastAiMessageIsFromUser =
+    aiMessages[aiMessages.length - 1]?.role === AI_CHAT_ROLES.USER
+
+  console.log(
+    'check if true',
+    isGptBoxVisible,
+    checkIfLastAiMessageIsFromUser,
+    !noDatacondition,
+    !noStandardsInTest,
+    !noMatchingStandardsCondition
+  )
+
+  console.log('aiMessages', aiMessages)
+
+  const queryData = useMemo(
+    () => [aiMessages.map((m) => pick(m, ['role', 'content']))],
+    [aiMessages]
+  )
+
+  const {
+    data: aiResponseData,
+    loading: aiResponseLoading,
+    error: aiResponseError,
+  } = useApiQuery(openAiApi.getAIResponse, queryData, {
+    enabled:
+      isGptBoxVisible &&
+      aiMessages.length > 1 &&
+      checkIfLastAiMessageIsFromUser &&
+      !noDatacondition &&
+      !noStandardsInTest &&
+      !noMatchingStandardsCondition,
+    deDuplicate: false,
+  })
+
+  useEffect(() => setIsGptResponseLoading(aiResponseLoading), [
+    aiResponseLoading,
+  ])
+
+  useEffect(() => {
+    console.log('aiResponseData', JSON.parse(JSON.stringify(aiResponseData)))
+    if (aiResponseData && !aiResponseError) {
+      const parsedMessages = getParsedMessages(aiResponseData)
+      setAiMessages(parsedMessages)
+    }
+    if (aiResponseError) {
+      notification(aiResponseError?.message)
+    }
+  }, [aiResponseData, aiResponseError])
+
   return (
     <>
       <EduIf condition={!summaryLoading}>
@@ -423,7 +511,13 @@ const PerformanceByStandards = ({
                         </Row>
                       </Col>
                     </Row>
-                    <PearAi />
+                    <EduIf condition={isGptBoxVisible}>
+                      <PearAi
+                        messages={aiMessages}
+                        setMessages={setAiMessages}
+                        loading={aiResponseLoading}
+                      />
+                    </EduIf>
                     <StyledSignedBarContainer>
                       <BarToRender
                         report={reportWithFilteredSkills}

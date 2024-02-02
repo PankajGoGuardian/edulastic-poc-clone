@@ -1,30 +1,46 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Row, Col, List, Tabs } from 'antd'
+
+import { greyThemeLighter } from '@edulastic/colors'
+
 import { StyledCard } from './styled'
 import Chat from './chat'
+import { AI_CHAT_ROLES, DEFAULT_QUESTIONS_TEXT } from '../../utils'
 
 const { TabPane } = Tabs
 
-const DATA = [
-  'Which classes are struggling the most, and in what areas?',
-  'How can I compare the performance of different classes across the same standards?',
-  'What does a low percentage in a specific standard indicate about student understanding?',
-  'What does a low percentage in a specific standard indicate about student understanding?',
-]
+const PearAi = ({ messages, setMessages, loading }) => {
+  const suggestedQuestions = useMemo(() => {
+    const messagesWithQuestions = messages.filter(
+      (m) => m.role === AI_CHAT_ROLES.ASSISTANT && m.questionsText
+    )
+    const lastMessageWithQuestion =
+      messagesWithQuestions[messagesWithQuestions.length - 1]
+    return (
+      lastMessageWithQuestion?.questionsText || DEFAULT_QUESTIONS_TEXT
+    ).split('\n')
+  }, [messages])
 
-const PearAi = () => {
   return (
-    <Row type="flex" justify="start" style={{ height: '300px' }}>
+    <Row
+      type="flex"
+      justify="start"
+      style={{
+        height: '300px',
+        marginTop: '25px',
+        border: `1px solid ${greyThemeLighter}`,
+      }}
+    >
       <Col span={12} style={{ height: '100%' }}>
         <List
           header={<div style={{ fontWeight: 'bold' }}>Suggested Prompts</div>}
           bordered
-          dataSource={DATA}
+          dataSource={suggestedQuestions}
           renderItem={(item) => <List.Item>{item}</List.Item>}
         />
       </Col>
       <Col span={12} style={{ height: '100%' }}>
-        <Chat />
+        <Chat messages={messages} setMessages={setMessages} loading={loading} />
       </Col>
       {/* <Col span={24}>
         <Tabs defaultActiveKey="1">

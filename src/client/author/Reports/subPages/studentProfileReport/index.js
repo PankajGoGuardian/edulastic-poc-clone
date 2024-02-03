@@ -246,6 +246,7 @@ const StudentProfileReportContainer = (props) => {
             render={(_props) => (
               <StudentProgressProfile
                 {..._props}
+                history={history}
                 settings={settings}
                 setSPRTagsData={setSPRTagsData}
                 pageTitle={loc}

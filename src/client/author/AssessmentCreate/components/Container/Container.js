@@ -216,7 +216,7 @@ class Container extends React.Component {
           ref={this.scrollerRef}
         >
           <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
-          {!method && <CreationOptions />}
+          {!method && <CreationOptions location={location} />}
           {method === creationMethods.PDF && (
             <DropArea
               loading={creating}

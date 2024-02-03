@@ -17,7 +17,12 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import EduAiQuiz from '../CreateAITest'
 import { isGcpsDistrictSelector } from '../../../src/selectors/user'
 
-const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
+const CreationOptions = ({
+  location,
+  onUploadPDF,
+  isShowQTI,
+  isGcpsDistrict,
+}) => (
   <BodyWrapper>
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
@@ -35,7 +40,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
         <OptionQti />
       </EduIf>
     </FlexWrapper>
-    <EduAiQuiz />
+    <EduAiQuiz location={location} />
   </BodyWrapper>
 )
 

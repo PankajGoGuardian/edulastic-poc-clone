@@ -42,6 +42,7 @@ import {
 } from './utils'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../../dataWarehouseReports/GoalsAndInterventions/constants/form'
 import useErrorNotification from '../../../common/hooks/useErrorNotification'
+import AIRecommendation from './components/AIRecommendation'
 
 const compareBy = {
   key: 'standard',
@@ -49,6 +50,7 @@ const compareBy = {
 }
 
 const StudentProgressProfile = ({
+  history,
   settings,
   termsData,
   setSPRTagsData,
@@ -113,6 +115,7 @@ const StudentProgressProfile = ({
     metricInfo: rawMetricInfo,
     skillInfo,
     standardsCount,
+    aiResult,
   } = studentProgressProfile?.data?.result || {
     metricInfo: [],
     skillInfo: [],
@@ -143,6 +146,9 @@ const StudentProgressProfile = ({
     }
     setSelectedTests([])
     if ((q.termId || q.reportId) && q.studentId && pageFilters.page) {
+      window.__reportAi__ = (aiTemplate, aiResultType = 'json') => {
+        getStudentProgressProfileRequest({ ...q, aiTemplate, aiResultType })
+      }
       getStudentProgressProfileRequest(q)
     }
   }, [pageFilters])
@@ -260,6 +266,7 @@ const StudentProgressProfile = ({
 
   return (
     <>
+      {!!aiResult && <AIRecommendation history={history} response={aiResult} />}
       <TrendStats
         heading={`Standards progress of ${studentName || anonymousString}`}
         trendCount={trendCount}
@@ -304,31 +311,33 @@ const StudentProgressProfile = ({
         )}
       />
       {!isEmpty(metricInfo) ? (
-        <TrendTable
-          filters={sharedReportFilters || settings.requestFilters}
-          onCsvConvert={onCsvConvert}
-          isCsvDownloading={isCsvDownloading}
-          data={data}
-          masteryScale={selectedScale}
-          compareBy={compareBy}
-          analyseBy={analyseBy}
-          rawMetric={metricInfo}
-          isCellClickable
-          location={location}
-          pageTitle={pageTitle}
-          isSharedReport={isSharedReport}
-          backendPagination={{
-            ...pageFilters,
-            itemsCount: standardsCount,
-          }}
-          setBackendPagination={setPageFilters}
-          getDynamicColumns={
-            interventionIdRef.current && !tutorMeInterventionsError
-              ? getDynamicColumns
-              : null
-          }
-          interventionData={interventionData}
-        />
+        <>
+          <TrendTable
+            filters={sharedReportFilters || settings.requestFilters}
+            onCsvConvert={onCsvConvert}
+            isCsvDownloading={isCsvDownloading}
+            data={data}
+            masteryScale={selectedScale}
+            compareBy={compareBy}
+            analyseBy={analyseBy}
+            rawMetric={metricInfo}
+            isCellClickable
+            location={location}
+            pageTitle={pageTitle}
+            isSharedReport={isSharedReport}
+            backendPagination={{
+              ...pageFilters,
+              itemsCount: standardsCount,
+            }}
+            setBackendPagination={setPageFilters}
+            getDynamicColumns={
+              interventionIdRef.current && !tutorMeInterventionsError
+                ? getDynamicColumns
+                : null
+            }
+            interventionData={interventionData}
+          />
+        </>
       ) : (
         <NoDataContainer>No data available currently.</NoDataContainer>
       )}

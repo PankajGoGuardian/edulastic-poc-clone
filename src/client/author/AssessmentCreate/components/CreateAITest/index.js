@@ -26,6 +26,7 @@ import {
 import AddOnTag from '../common/AddOnTag'
 import { CREATE_AI_TEST_DISPLAY_SCREENS } from './constants'
 import CreateAiTestBannerSmall from './CreateAiTestBannerSmall'
+import useUrlSearchParams from '../../../Reports/common/hooks/useUrlSearchParams'
 
 const {
   NEW_TEST_SCREEN,
@@ -36,6 +37,7 @@ const {
 } = CREATE_AI_TEST_DISPLAY_SCREENS
 
 const EduAIQuiz = ({
+  location,
   test,
   addItems,
   aiTestStatus,
@@ -88,6 +90,8 @@ const EduAIQuiz = ({
       onCreateItems(undefined, 'Dashboard')
     }
   }, [])
+
+  const search = useUrlSearchParams(location)
 
   const EduAiAddItemsButton = (
     <AiEduButton
@@ -183,7 +187,7 @@ const EduAIQuiz = ({
       </EduIf>
       <CreateAiTestModal
         onCancel={onCancel}
-        isVisible={isVisible}
+        isVisible={isVisible /* || !isEmpty(search.standards) */}
         handleFieldDataChange={handleFieldDataChange}
         handleAiFormSubmit={() => handleAiFormSubmit(selectedGroupIndex)}
         aiTestStatus={aiTestStatus}

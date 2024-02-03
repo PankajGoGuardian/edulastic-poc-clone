@@ -26,6 +26,9 @@
       "src/client/**"
     ]
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+    },
   "scripts": {
     "bump": "./bump.sh",
     "lint": "eslint src/**/*.js",

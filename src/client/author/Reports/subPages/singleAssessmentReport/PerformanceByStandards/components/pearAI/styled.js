@@ -15,12 +15,15 @@ export const StyledCard = styled(Card)`
 export const StyledTextArea = styled(Input.TextArea)`
   overflow-y: scroll;
   resize: none;
+  width: 90%;
+  border-radius: 20px;
 `
 
 export const ChatBubble = styled(Row)`
-  width: 100%;
   background: ${({ $bgColor }) => $bgColor};
+  color: ${({ $color }) => $color};
   border-radius: 10px;
   margin: 5px;
-  padding: 5px;
+  padding: 5px 10px;
+  font-weight: bold;
 `

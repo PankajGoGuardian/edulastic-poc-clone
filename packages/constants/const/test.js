@@ -473,6 +473,7 @@ module.exports = {
     'showHintsToStudents',
     'penaltyOnUsingHints',
     'allowTeacherRedirect',
+    'allowCompanion',
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
     'allowAutoEssayEvaluation',

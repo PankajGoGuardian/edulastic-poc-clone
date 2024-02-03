@@ -581,6 +581,9 @@ class Container extends PureComponent {
     if (!settings.hasInstruction) {
       delete settings.instruction
     }
+    if (!settings.allowCompanion) {
+      delete settings.allowCompanion
+    }
     if (!settings.timedAssignment) {
       delete settings.allowedTime
     }

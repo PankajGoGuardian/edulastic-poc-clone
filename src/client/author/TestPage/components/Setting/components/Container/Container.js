@@ -230,8 +230,25 @@ class Setting extends Component {
     if (entity?.safeBrowser) {
       this.updateTestData('safeBrowser')(true)
     }
+
     // resetting updated state on mount
     resetUpdatedState()
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const {
+      entity: { timedAssignment, safeBrowser },
+    } = this.props
+    const { entity: prevEntity } = prevProps
+    console.log({ prevProps })
+
+    if (
+      prevEntity.timedAssignment !== timedAssignment ||
+      prevEntity.safeBrowser !== safeBrowser
+    )
+      if (timedAssignment || safeBrowser) {
+        this.updateTestData('allowCompanion')(false)
+      }
   }
 
   handleShowPassword = () => {
@@ -879,6 +896,7 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      allowCompanion = false,
     } = entity
 
     const showRefMaterial = !isDocBased
@@ -1410,6 +1428,41 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
                   {/* Add instruction ends */}
+                  {/* Add Companion starts */}
+                  <Block id="add-instruction" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        <span>Add Companion</span>
+                        <Tooltip title="Toggle “Yes” to activate the Assessment Summary and AI-generated hints. The Student Companion functionality is limited to Class Assessments and will not be available when Kiosk mode and Timed tests are enabled.">
+                          <IconInfo
+                            color={lightGrey9}
+                            style={{ marginLeft: '10px', cursor: 'pointer' }}
+                          />
+                        </Tooltip>
+                        <EduSwitchStyled
+                          disabled={
+                            entity?.timedAssignment || entity?.safeBrowser
+                          }
+                          data-cy="add-companion"
+                          checked={allowCompanion}
+                          onChange={() =>
+                            this.updateTestData('allowCompanion')(
+                              !allowCompanion
+                            )
+                          }
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          This tool will offer a summary explaining the
+                          assessment&apos;s purpose and content. It will also
+                          provide helpful hints to students on how to approach
+                          them.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+                  {/* Add Companion ends */}
 
                   {/* Allow TTS for Passage starts */}
                   <TtsForPassage

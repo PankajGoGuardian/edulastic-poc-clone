@@ -1137,6 +1137,7 @@ export const createBlankTest = () => ({
   showTtsForPassages: true,
   hasSections: undefined,
   [SHOW_IMMERSIVE_READER]: false,
+  allowCompanion: false,
 })
 
 const initialState = {
@@ -2040,6 +2041,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penaltyOnUsingHints,
     allowTeacherRedirect,
     showTtsForPassages,
+    allowCompanion: entity.allowCompanion,
     showImmersiveReader: entity.showImmersiveReader,
     vqPreventSkipping: entity.vqPreventSkipping,
   }

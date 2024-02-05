@@ -183,6 +183,7 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
         (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
           itemGroup.items?.length)
       ) {
+        delete itemGroup.autoSelectItemsCount
         const isLimitedDeliveryType =
           itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         // For delivery type:LIMITED scoring should be as how item level scoring works

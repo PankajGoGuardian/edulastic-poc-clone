@@ -555,7 +555,7 @@ const GroupItems = ({
             msg: `There are only ${total} items that meet the search criteria`,
           })
         }
-        const itemsToSave = items.map(({ _data, _id, maxScore }) => {
+        const itemsToSave = items.map(({ data: _data, _id, maxScore }) => {
           const { questions } = _data
           const questionsObject = {}
           questions.forEach((q) => {

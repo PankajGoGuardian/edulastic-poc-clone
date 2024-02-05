@@ -1,82 +1,98 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
 import { Menu, Popover } from 'antd'
+import { withWindowSizes } from '@edulastic/common'
+import { get } from 'lodash'
 import HintOrResourcesModal from './HintOrResourcesModal'
 
-const AnimatedCompanion = () => {
-  const [title, setTitle] = useState('')
-  const [hintExhausted, setHintExhausted] = useState(false)
-  const hints = [
-    'The solution involves finding the common factor between the two equations. Consider simplifying each equation and identifying terms that can be factored out. Pay attention to coefficients and variables to streamline the process.',
-    'To solve the puzzle, focus on patterns and sequences. Look for recurring elements or a logical order within the given data. Consider organizing the information in a systematic way to reveal hidden connections or rules guiding the sequence',
-  ]
-  const resources = [
-    'http://www.youtube.com',
-    'http://www.facebook.com',
-    'http://www.baidu.com',
-    'http://www.yahoo.com',
-    'http://www.amazon.com',
-    'http://www.wikipedia.org',
-    'http://www.qq.com',
-    'http://www.google.co.in',
-    'http://www.twitter.com',
-    'http://www.live.com',
-    'http://www.taobao.com',
-    'http://www.bing.com',
-    'http://www.instagram.com',
-    'http://www.weibo.com',
-  ]
-  const data = [
-    {
-      label: 'hint',
-      key: 'hint',
-    },
-    {
-      label: 'Resources',
-      key: 'resources',
-    },
-  ]
-  const onClick = (e) => setTitle(e.key.toUpperCase())
+const { SubMenu } = Menu
+const titleMap = {
+  hintByAI: 'Hint',
+}
+const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
+  console.log({ questions })
+  const [questionData, setQuestionData] = useState({
+    questionIndex: '',
+    selectedField: '',
+    title: '',
+  })
+
+  const handleClick = (e) => {
+    console.log('click ', e)
+    const [questionIndex, selectedField] = e.keyPath
+    setQuestionData({
+      questionIndex,
+      selectedField,
+      title: titleMap[selectedField],
+    })
+  }
+
+  const { questionIndex, selectedField } = questionData
+  const currentQuestionData = get(
+    questions,
+    [questionIndex, selectedField],
+    null
+  )
+
   const content = (
-    <Menu onClick={onClick}>
-      {data.map((item) => (
-        <Menu.Item onClick={item.onCick} key={item.key}>
-          {item.label}
-        </Menu.Item>
-      ))}
+    <Menu mode="inline" style={{ width: 256 }} onClick={handleClick}>
+      <SubMenu key="hintByAI" title="Hint">
+        {questions.map(({ questionNumber }, index) => (
+          <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
+        ))}
+      </SubMenu>
     </Menu>
   )
+  console.log({ windowHeight, windowWidth })
+  const [currentWindowsHeight, setCurrentWindowsHeight] = useState(0)
+  const [currentWindowsWidth, setCurrentWindowsWidth] = useState(0)
+
+  useEffect(() => {
+    setCurrentWindowsWidth(windowWidth)
+  }, [windowWidth])
+  useEffect(() => {
+    setCurrentWindowsHeight(windowHeight)
+  }, [windowHeight])
+
+  if (currentWindowsHeight === 0 || currentWindowsWidth === 0) {
+    return null
+  }
+
   return (
     <>
       <RndWrapper
-        defaultPosition={{
-          x: 90,
-          y: 100,
-          width: 100,
-          height: 100,
-          bounds: 'window',
+        resizable={false}
+        default={{
+          x: currentWindowsWidth - 150,
+          y: currentWindowsHeight - 150,
         }}
       >
-        <Popover content={content}>
+        <Popover
+          overlayInnerStyle={{ backgroundColor: 'transparent' }}
+          style={{
+            '.ant-popover-inner-content': {
+              padding: 0,
+            },
+          }}
+          content={content}
+        >
           <IconPearAssessLogoCompact width="60" height="60" />
         </Popover>
       </RndWrapper>
-      {title && (
+      {questionData.title && currentQuestionData && (
         <HintOrResourcesModal
-          title={title}
-          resources={resources}
-          hints={hints}
-          setTitle={setTitle}
-          hintExhausted={hintExhausted}
-          setHintExhausted={setHintExhausted}
+          title={questionData.title}
+          currentQuestionData={currentQuestionData}
+          setQuestionData={setQuestionData}
         />
       )}
     </>
   )
 }
-export default AnimatedCompanion
+export default withWindowSizes(AnimatedCompanion)
+
 const RndWrapper = styled(Rnd)`
   z-index: 99;
 `

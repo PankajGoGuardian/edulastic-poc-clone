@@ -550,6 +550,20 @@ class AssessmentPlayerDefault extends React.Component {
           }
     const { isStudentAttempt } = this.context
     const { canUseImmersiveReader = false } = userFeatures
+    const [itemRow = []] = itemRows
+    const questionIds = itemRow.widgets
+      .filter(({ widgetType }) => widgetType === 'question')
+      .map(({ reference }) => reference)
+
+    const itemId_questionIds = questionIds.map(
+      (questionId) => `${item._id}_${questionId}`
+    )
+
+    const _questions = itemId_questionIds.map((itemId_questionId, index) => {
+      const { hintByAI } = questions[itemId_questionId]
+      return { hintByAI, questionNumber: index + 1 }
+    })
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -569,7 +583,7 @@ class AssessmentPlayerDefault extends React.Component {
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
         >
-          <AnimatedCompanion />
+          <AnimatedCompanion questions={_questions} />
           <AssessmentPlayerSkinWrapper
             hidePause={hidePause}
             title={title}

@@ -1428,11 +1428,11 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
                   {/* Add instruction ends */}
-                  {/* Add Companion starts */}
-                  <Block id="add-instruction" smallSize={isSmallSize}>
+                  {/* Student Companion starts */}
+                  <Block id="student-companion" smallSize={isSmallSize}>
                     <SettingContainer>
                       <Title>
-                        <span>Add Companion</span>
+                        <span>Student Companion</span>
                         <Tooltip title="Toggle “Yes” to activate the Assessment Summary and AI-generated hints. The Student Companion functionality is limited to Class Assessments and will not be available when Kiosk mode and Timed tests are enabled.">
                           <IconInfo
                             color={lightGrey9}

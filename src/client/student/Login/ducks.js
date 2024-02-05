@@ -485,6 +485,8 @@ const getRouteByGeneralRoute = (user) => {
   switch (user.user.role) {
     case roleuser.EDULASTIC_ADMIN:
       return '/admin/search/clever'
+    case roleuser.DISTRICT_GROUP_ADMIN:
+      return '/author/reports/data-warehouse-reports'
     case roleuser.DISTRICT_ADMIN:
       if (isDataOpsOnlyUser) {
         return '/author/data-warehouse'

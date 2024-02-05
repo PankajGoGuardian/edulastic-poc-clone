@@ -25,6 +25,7 @@ import {
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
+import { ROLE_LABEL } from '@edulastic/constants/const/roleType'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -576,6 +577,8 @@ class App extends Component {
           }
         } else if (role === 'edulastic-curator') {
           defaultRoute = '/author/tests'
+        } else if (role === roleuser.DISTRICT_GROUP_ADMIN) {
+          defaultRoute = '/author/reports/data-warehouse-reports'
         } else if (
           user.user &&
           (user.user.googleId || user.user.msoId || user.user.cleverId)
@@ -665,6 +668,8 @@ class App extends Component {
       _userRole = 'Student'
     } else if (userRole === roleuser.EDULASTIC_CURATOR) {
       _userRole = 'Edulastic Curator'
+    } else if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+      _userRole = ROLE_LABEL[userRole]
     } else {
       _userRole = capitalize(userRole)
     }

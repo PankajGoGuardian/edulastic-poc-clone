@@ -59,13 +59,13 @@ const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
           ))}
         </SubMenu>
       </Menu>
-      <Menu mode="inline" onClick={handleClick}>
+      {/* <Menu mode="inline" onClick={handleClick}>
         <SubMenu key="resourcesByAI" title="Resource">
           {questions.map(({ questionNumber }, index) => (
             <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
           ))}
         </SubMenu>
-      </Menu>
+      </Menu> */}
     </>
   )
   console.log({ windowHeight, windowWidth })

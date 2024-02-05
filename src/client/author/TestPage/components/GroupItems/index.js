@@ -58,6 +58,7 @@ import {
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 import ItemCountWrapperContainer from './ItemCountWrapperContainer'
+import PickItemCountWrapperContainer from './PickItemCountWrapperContainer'
 // import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
@@ -453,12 +454,17 @@ const GroupItems = ({
     return true
   }
 
-  const saveGroupToTest = () => {
+  const saveGroupToTest = (itemsForAutoSelect) => {
     const oldGroupData = test.itemGroups[currentGroupIndex]
     let updatedGroupData = { ...currentGroupDetails }
     if (currentGroupDetails.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-      removeTestItems(oldGroupData.items.map((i) => i._id))
-      updatedGroupData = { ...updatedGroupData, items: [] }
+      // removeTestItems(oldGroupData.items.map((i) => i._id))
+      updatedGroupData = {
+        ...updatedGroupData,
+        items: itemsForAutoSelect || oldGroupData.items || [],
+      }
+
+      console.log('[fnd] updatedGroupData', updatedGroupData)
     } else if (
       currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC &&
       oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
@@ -478,7 +484,7 @@ const GroupItems = ({
         ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
       updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
     if (test.answerOnPaper && disableAnswerOnPaper) {
-      setTestData({ answerOnPaper: false })
+      setTestData({ answerOnPaper: false }) // use this
       notification({
         type: 'warn',
         messageKey: 'answerOnPaperIsNotSupportedForAutoselecteGroup',
@@ -508,7 +514,11 @@ const GroupItems = ({
       (key) => optionalFields[key] === undefined && delete optionalFields[key]
     )
     const data = {
-      limit: currentGroupDetails.deliverItemsCount,
+      limit:
+        currentGroupDetails.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+          ? currentGroupDetails.autoSelectItemsCount || 1
+          : currentGroupDetails.deliverItemsCount,
       search: {
         collectionId: currentGroupDetails.collectionDetails._id,
         standardIds: currentGroupDetails.standardDetails.standards.map(
@@ -519,6 +529,12 @@ const GroupItems = ({
     }
     if (data.limit > 100) {
       notification({ messageKey: 'maximum100Questions' })
+      return
+    }
+    if (data.limit > data.deliverItemsCount) {
+      console.error(
+        'number of items to deliver is more that what can be selected for auto select'
+      )
       return
     }
     setFetchingItems(true)
@@ -539,7 +555,25 @@ const GroupItems = ({
             msg: `There are only ${total} items that meet the search criteria`,
           })
         }
-        saveGroupToTest()
+        const itemsToSave = items.map(({ _data, _id, maxScore }) => {
+          const { questions } = _data
+          const questionsObject = {}
+          questions.forEach((q) => {
+            questionsObject[q.id] = q.validation.validResponse.score
+          })
+          return {
+            itemId: _id,
+            maxScore,
+            questions: questionsObject,
+          }
+        })
+
+        const previousItemGroup = test.itemGroups[currentGroupIndex]
+        previousItemGroup.items = items
+        setTestData({ itemGroups: [...test.itemGroups] })
+        console.log('here', items, itemsToSave)
+
+        saveGroupToTest(items) // saves to db
       })
       .catch((err) => {
         notification({ msg: err.message || 'Failed to fetch test items' })
@@ -932,36 +966,83 @@ const GroupItems = ({
                           </>
                         )}
                       </RadioGrp>
-                      {((currentGroupIndex === index &&
-                        currentGroupDetails.type ===
-                          ITEM_GROUP_TYPES.AUTOSELECT) ||
-                        (currentGroupIndex !== index &&
-                          itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
-                        <>
-                          <span
-                            data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                            value={
-                              currentGroupIndex === index
-                                ? editingDeliveryType
-                                : currentDeliveryType
-                            }
-                            style={{ disabled: true }}
-                          >
-                            <ItemCountWrapperContainer
-                              handleChange={handleChange}
-                              currentGroupDetails={currentGroupDetails}
-                              currentGroupIndex={currentGroupIndex}
-                              index={index}
-                              itemGroup={itemGroup}
-                              isRequired
-                            />
-                          </span>
-                          <RadioMessage>
-                            Use this to deliver a specific number of randomly
-                            picked question per Section.
-                          </RadioMessage>
-                        </>
-                      )}
+                      <RadioGrp
+                        name="radiogroup"
+                        value={
+                          currentGroupIndex === index
+                            ? currentGroupDetails.deliveryType
+                            : itemGroup.deliveryType
+                        }
+                        onChange={(e) => {
+                          console.log('[fnd] changed to', e.target.value)
+                          return handleChange('deliveryType', e.target.value)
+                        }}
+                        disabled={currentGroupIndex !== index}
+                      >
+                        {((currentGroupIndex === index &&
+                          currentGroupDetails.type ===
+                            ITEM_GROUP_TYPES.AUTOSELECT) ||
+                          (currentGroupIndex !== index &&
+                            itemGroup.type ===
+                              ITEM_GROUP_TYPES.AUTOSELECT)) && (
+                          <>
+                            <RadioBtn
+                              defaultChecked
+                              value={ITEM_GROUP_DELIVERY_TYPES.ALL}
+                              vertical
+                              mb="10px"
+                            >
+                              <span
+                                data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
+                                value={
+                                  currentGroupIndex === index
+                                    ? editingDeliveryType
+                                    : currentDeliveryType
+                                }
+                                style={{ disabled: true }}
+                              >
+                                <ItemCountWrapperContainer
+                                  handleChange={handleChange}
+                                  currentGroupDetails={currentGroupDetails}
+                                  currentGroupIndex={currentGroupIndex}
+                                  index={index}
+                                  itemGroup={itemGroup}
+                                  isRequired
+                                />
+                              </span>
+                            </RadioBtn>
+                            <RadioMessage>
+                              Use this to deliver a specific number of randomly
+                              picked question per Section.
+                            </RadioMessage>
+
+                            <RadioBtn
+                              defaultChecked={false}
+                              value={ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM}
+                              vertical
+                              mb="10px"
+                            >
+                              {/* pick
+                              item(s) and deliver
+                              random items per student with
+                              points for each question */}
+                              <PickItemCountWrapperContainer
+                                handleChange={handleChange}
+                                currentGroupDetails={currentGroupDetails}
+                                currentGroupIndex={currentGroupIndex}
+                                index={index}
+                                itemGroup={itemGroup}
+                                isRequired
+                              />
+                            </RadioBtn>
+                            <RadioMessage>
+                              Use this to deliver a specific number of randomly
+                              picked question per student from the selected pool
+                              of items
+                            </RadioMessage>
+                          </>
+                        )}
+                      </RadioGrp>
                     </GroupField>
                   </EduIf>
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">

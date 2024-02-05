@@ -178,7 +178,11 @@ export const getStaticGroupItemIds = (_test) =>
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
   produce(itemGroups, (_itemGroups) => {
     for (const itemGroup of _itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      if (
+        itemGroup.type === ITEM_GROUP_TYPES.STATIC ||
+        (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+          itemGroup.items?.length)
+      ) {
         const isLimitedDeliveryType =
           itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         // For delivery type:LIMITED scoring should be as how item level scoring works
@@ -2464,6 +2468,7 @@ function* createTestSaga({ payload }) {
     nextLocation && delete payload.data.nextLocation
 
     const testItems = get(payload, 'data.itemGroups[0].items', [])
+    console.log('[fnd] saga testItems', testItems)
     let aiGeneratedTestItems = testItems
       .filter(({ unsavedItem }) => unsavedItem)
       .map((item) => pick(item, itemFields))
@@ -2477,11 +2482,15 @@ function* createTestSaga({ payload }) {
       )
     }
     const allTestItems = [...newTestItems, ...aiGeneratedTestItems]
+    console.log('[fnd] all test items', allTestItems)
     const entity = yield createTest(
       produce(payload.data, (draft) => {
         if ((allTestItems || []).length) {
           draft.itemGroups[0].items = allTestItems
+          draft.itemGroups[0].autoSelectItemsCount = undefined
         }
+
+        console.log('[fnd] draft = ', draft)
       })
     )
 

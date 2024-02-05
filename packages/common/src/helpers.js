@@ -608,13 +608,21 @@ const getPoints = (item) => {
   )
 }
 
-const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
+const getQuestionLevelScore = (
+  item,
+  questions,
+  totalMaxScore,
+  newMaxScore,
+  itemsDefaultMaxScore = 1
+) => {
   const questionScore = {}
   const maxScore = newMaxScore || totalMaxScore
   if (item.itemLevelScoring === true || item.isLimitedDeliveryType === true) {
     questions?.forEach((o, i) => {
       if (i === 0) {
-        questionScore[o.id] = item.isLimitedDeliveryType ? 1 : maxScore
+        questionScore[o.id] = item.isLimitedDeliveryType
+          ? itemsDefaultMaxScore
+          : maxScore
       } else {
         questionScore[o.id] = 0
       }

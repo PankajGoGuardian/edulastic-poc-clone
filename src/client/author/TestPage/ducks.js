@@ -190,14 +190,15 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
         itemGroup.items = itemGroup.items.map((o) => ({
           itemId: o._id,
           maxScore: isLimitedDeliveryType
-            ? 1
+            ? itemGroup.itemsDefaultMaxScore || 1
             : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
                 { ...o, isLimitedDeliveryType },
                 o.data.questions,
                 helpers.getPoints(o),
-                scoring[o._id]
+                scoring[o._id],
+                itemGroup.itemsDefaultMaxScore
               )
             : {},
         }))
@@ -4112,7 +4113,8 @@ function* fetchAutoselectGroupItemsSaga(payload) {
 function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   try {
     const hasAutoSelectItems = _test.itemGroups.some(
-      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+      (g) =>
+        g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT && !g.items?.length
     )
     if (!hasAutoSelectItems) return
     yield put(setAutoselectItemsFetchingStatusAction(true))

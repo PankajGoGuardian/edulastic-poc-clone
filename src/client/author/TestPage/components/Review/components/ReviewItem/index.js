@@ -38,6 +38,7 @@ const ReviewItem = ({
   orgCollections,
   isPublishers,
   userId,
+  itemsDefaultMaxScore,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -83,7 +84,7 @@ const ReviewItem = ({
     const main = {
       id: item._id,
       points: item.isLimitedDeliveryType
-        ? 1
+        ? itemsDefaultMaxScore || 1
         : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
       isScoringDisabled,

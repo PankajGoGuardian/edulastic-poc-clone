@@ -24,7 +24,6 @@ const rightContent = (group, hasSections = false) => {
     deliveryType,
     itemsDefaultMaxScore,
   } = group
-  console.log('[fnd] group type here', type)
   return (
     <>
       {/* 
@@ -102,7 +101,7 @@ export default SortableContainer(
       setRemovalPassageItems(null)
     }
 
-    const renderItem = (item, index, groupId) => {
+    const renderItem = (item, index, groupId, itemsDefaultMaxScore) => {
       if (isArray(item)) {
         // when use index or item._id for a key, the SortableGroupItem was unmounted
         // so there was a page blinking bug, when drag and drop
@@ -118,6 +117,7 @@ export default SortableContainer(
             collection={groupId}
             groupId={groupId}
             showGroupsPanel={showGroupsPanel}
+            itemsDefaultMaxScore={itemsDefaultMaxScore}
             removeItem={handleDelete(item)}
             onSortEnd={onSortGroup(index)}
             lockToContainerEdges
@@ -176,12 +176,22 @@ export default SortableContainer(
                       (_item) => _item.groupId === group._id
                     )
                     if (currentGroupItems?.length) {
-                      return renderItem(currentGroupItems, index, group._id)
+                      return renderItem(
+                        currentGroupItems,
+                        index,
+                        group._id,
+                        group.itemsDefaultMaxScore
+                      )
                     }
                     return null
                   }
                   if (item.groupId == group._id) {
-                    return renderItem(item, index, group._id)
+                    return renderItem(
+                      item,
+                      index,
+                      group._id,
+                      group.itemsDefaultMaxScore
+                    )
                   }
                   return null
                 })}

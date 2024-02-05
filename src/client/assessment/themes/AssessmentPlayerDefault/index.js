@@ -560,8 +560,8 @@ class AssessmentPlayerDefault extends React.Component {
     )
 
     const _questions = itemId_questionIds.map((itemId_questionId, index) => {
-      const { hintByAI } = questions[itemId_questionId]
-      return { hintByAI, questionNumber: index + 1 }
+      const { hintByAI, resourcesByAI } = questions[itemId_questionId]
+      return { hintByAI, resourcesByAI, questionNumber: index + 1 }
     })
 
     return (

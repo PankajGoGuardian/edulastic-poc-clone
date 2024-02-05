@@ -10,6 +10,7 @@ import HintOrResourcesModal from './HintOrResourcesModal'
 const { SubMenu } = Menu
 const titleMap = {
   hintByAI: 'Hint',
+  resourcesByAI: 'Resource',
 }
 const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
   console.log({ questions })
@@ -53,6 +54,13 @@ const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
 
       <Menu mode="inline" onClick={handleClick}>
         <SubMenu key="hintByAI" title="Hint">
+          {questions.map(({ questionNumber }, index) => (
+            <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
+          ))}
+        </SubMenu>
+      </Menu>
+      <Menu mode="inline" onClick={handleClick}>
+        <SubMenu key="resourcesByAI" title="Resource">
           {questions.map(({ questionNumber }, index) => (
             <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
           ))}

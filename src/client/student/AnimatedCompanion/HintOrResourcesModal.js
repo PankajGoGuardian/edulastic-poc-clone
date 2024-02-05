@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from 'antd'
+import { List, Modal } from 'antd'
 
 export default function HintOrResourcesModal({
   title,
@@ -13,6 +13,16 @@ export default function HintOrResourcesModal({
       title: '',
     })
   }
+
+  const modalContent = Array.isArray(currentQuestionData) ? (
+    <List
+      dataSource={currentQuestionData}
+      renderItem={(item) => <List.Item>{item}</List.Item>}
+    />
+  ) : (
+    currentQuestionData
+  )
+
   return (
     <>
       <Modal
@@ -22,7 +32,7 @@ export default function HintOrResourcesModal({
         visible={!!title}
         zIndex={10099}
       >
-        {currentQuestionData}
+        {modalContent}
       </Modal>
     </>
   )

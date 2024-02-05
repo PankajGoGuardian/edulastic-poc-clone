@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
 import { Comment, Menu, Popover } from 'antd'
 import { withWindowSizes } from '@edulastic/common'
 import { get } from 'lodash'
+import IconCompanion from '@edulastic/icons/src/IconCompanion'
 import HintOrResourcesModal from './HintOrResourcesModal'
 
 const { SubMenu } = Menu
@@ -101,7 +101,7 @@ const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
           }}
           content={content}
         >
-          <IconPearAssessLogoCompact width="60" height="60" />
+          <IconCompanion height="60" width="60" />
         </Popover>
       </RndWrapper>
       {questionData.title && currentQuestionData && (

@@ -454,17 +454,14 @@ const GroupItems = ({
     return true
   }
 
-  const saveGroupToTest = (itemsForAutoSelect) => {
+  const saveGroupToTest = (items) => {
     const oldGroupData = test.itemGroups[currentGroupIndex]
     let updatedGroupData = { ...currentGroupDetails }
     if (currentGroupDetails.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-      // removeTestItems(oldGroupData.items.map((i) => i._id))
       updatedGroupData = {
         ...updatedGroupData,
-        items: itemsForAutoSelect || oldGroupData.items || [],
+        items: items || oldGroupData.items || [],
       }
-
-      console.log('[fnd] updatedGroupData', updatedGroupData)
     } else if (
       currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC &&
       oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
@@ -555,23 +552,6 @@ const GroupItems = ({
             msg: `There are only ${total} items that meet the search criteria`,
           })
         }
-        const itemsToSave = items.map(({ data: _data, _id, maxScore }) => {
-          const { questions } = _data
-          const questionsObject = {}
-          questions.forEach((q) => {
-            questionsObject[q.id] = q.validation.validResponse.score
-          })
-          return {
-            itemId: _id,
-            maxScore,
-            questions: questionsObject,
-          }
-        })
-
-        const previousItemGroup = test.itemGroups[currentGroupIndex]
-        previousItemGroup.items = items
-        setTestData({ itemGroups: [...test.itemGroups] })
-        console.log('here', items, itemsToSave)
 
         saveGroupToTest(items) // saves to db
       })

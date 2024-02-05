@@ -4,6 +4,11 @@ import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 import { darkGrey5 } from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
+import {
+  ITEM_GROUP_DELIVERY_TYPES,
+  ITEM_GROUP_TYPES,
+} from '@edulastic/constants/const/test'
 import { SortableGroupItem, SortableSingleItem } from './SortableItem'
 import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageConfirmationModal'
@@ -11,7 +16,15 @@ import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageC
 const { Panel } = Collapse
 
 const rightContent = (group, hasSections = false) => {
-  const { deliverItemsCount, items, settings } = group
+  const {
+    deliverItemsCount,
+    items,
+    settings,
+    type,
+    deliveryType,
+    itemsDefaultMaxScore,
+  } = group
+  console.log('[fnd] group type here', type)
   return (
     <>
       {/* 
@@ -35,6 +48,19 @@ const rightContent = (group, hasSections = false) => {
           <Count>{deliverItemsCount || items.length}</Count>
         </InfoDiv>
       )}
+      <EduIf
+        condition={
+          type === ITEM_GROUP_TYPES.AUTOSELECT &&
+          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        }
+      >
+        <InfoDiv>
+          <Text>TOTAL POINTS</Text>
+          <Count>
+            {(deliverItemsCount || items.length) * (itemsDefaultMaxScore || 1)}
+          </Count>
+        </InfoDiv>
+      </EduIf>
     </>
   )
 }

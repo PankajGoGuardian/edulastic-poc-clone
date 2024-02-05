@@ -70,11 +70,11 @@ export default function PickItemCountWrapperContainer({
         min={1}
         value={
           currentGroupIndex === index
-            ? currentGroupDetails?.scorePerItem || 1
-            : itemGroup?.scorePerItem || 1
+            ? currentGroupDetails?.itemsDefaultMaxScore || 1
+            : itemGroup?.itemsDefaultMaxScore || 1
         }
         onChange={(e) =>
-          handleChange('scorePerItem', parseInt(e.target.value, 10))
+          handleChange('itemsDefaultMaxScore', parseInt(e.target.value, 10))
         }
       />
       <span>points for each question</span>

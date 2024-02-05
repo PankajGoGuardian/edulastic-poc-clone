@@ -988,7 +988,7 @@ const GroupItems = ({
                           <>
                             <RadioBtn
                               defaultChecked
-                              value={ITEM_GROUP_DELIVERY_TYPES.ALL}
+                              value={ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM}
                               vertical
                               mb="10px"
                             >

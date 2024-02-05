@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useMemo, useEffect, useRef, useState } from 'react'
 import { FlexContainer } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { Icon } from 'antd'
 import { StyledTextArea, ChatBubble } from './styled'
 import { AI_CHAT_ROLES, getUserMessage } from '../../utils'
 
-const Chat = ({ selectedMessage, messages, setMessages, loading }) => {
+const Chat = ({ selectedMessage, messages, setMessages }) => {
   const [message, setMessage] = useState('')
   const messagWindowRef = useRef(null)
 
@@ -40,8 +40,10 @@ const Chat = ({ selectedMessage, messages, setMessages, loading }) => {
   }
 
   useEffect(() => {
-    console.log('selected message', selectedMessage)
-    sendMessage(selectedMessage)
+    if (selectedMessage) {
+      console.log('selected message', selectedMessage)
+      sendMessage(selectedMessage)
+    }
   }, [selectedMessage])
 
   const onEnterPress = (e) => {
@@ -50,6 +52,11 @@ const Chat = ({ selectedMessage, messages, setMessages, loading }) => {
       sendMessage()
     }
   }
+
+  const messagesToDisplay = useMemo(() => {
+    // hide summary message
+    return messages.slice(3)
+  }, [messages])
 
   return (
     <div style={{ height: '100%', padding: '10px', borderRadius: '20px' }}>
@@ -70,19 +77,17 @@ const Chat = ({ selectedMessage, messages, setMessages, loading }) => {
             padding: '5px',
           }}
         >
-          {messages.map(({ chatText, role }) =>
-            role !== AI_CHAT_ROLES.SYSTEM ? (
-              <ChatBubble
-                key={chatText}
-                type="flex"
-                justify={role === AI_CHAT_ROLES.USER ? 'end' : 'start'}
-                $bgColor={role === AI_CHAT_ROLES.USER ? themeColor : '#C5CCD1'}
-                $color={role === AI_CHAT_ROLES.USER ? 'white' : 'black'}
-              >
-                {chatText}
-              </ChatBubble>
-            ) : null
-          )}
+          {messagesToDisplay.map(({ chatText, role }) => (
+            <ChatBubble
+              key={chatText}
+              type="flex"
+              justify={role === AI_CHAT_ROLES.USER ? 'end' : 'start'}
+              $bgColor={role === AI_CHAT_ROLES.USER ? themeColor : '#C5CCD1'}
+              $color={role === AI_CHAT_ROLES.USER ? 'white' : 'black'}
+            >
+              {chatText}
+            </ChatBubble>
+          ))}
         </div>
         <FlexContainer>
           <StyledTextArea

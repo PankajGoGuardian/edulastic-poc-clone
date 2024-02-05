@@ -45,7 +45,7 @@ import {
 } from './hooks/useFetch'
 import NoDataNotification from '../../../../../common/components/NoDataNotification'
 import PearAi from './components/pearAI'
-import { AI_CHAT_ROLES, getDefaultAiMessages, getParsedMessages } from './utils'
+import { AI_CHAT_ROLES, getDefaultAiMessages, getParsedMessages, obfuscatePIIData } from './utils'
 
 const {
   viewByMode,
@@ -81,7 +81,7 @@ const PerformanceByStandards = ({
   generateCSV,
   setAdditionalUrlParams,
   isGptBoxVisible,
-  setIsGptBoxVisible,
+  // setIsGptBoxVisible,
   setIsGptResponseLoading,
 }) => {
   const urlSearch = qs.parse(location.search, {
@@ -279,8 +279,12 @@ const PerformanceByStandards = ({
         selectedStandards,
         selectedDomains,
       })
-      const defaultAiMessages = getDefaultAiMessages(csvData)
-      if (csvData.length > 1 && isGptBoxVisible) {
+      const [newCsvData] = obfuscatePIIData(csvData)
+      const defaultAiMessages = getDefaultAiMessages(
+        { compareBy, viewBy },
+        newCsvData
+      )
+      if (newCsvData.length > 1 && isGptBoxVisible) {
         setAiMessages(defaultAiMessages)
       }
     }

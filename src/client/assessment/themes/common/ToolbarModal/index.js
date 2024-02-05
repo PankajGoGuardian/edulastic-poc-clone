@@ -203,6 +203,7 @@ const ToolbarModal = ({
           btnComponent={ToolbarButton}
           btnText={translate('toolbar.lineReader')}
           onClick={onClose}
+          i18Translate={translate}
         />
       </ToolbarModalContainer>
     </Modal>

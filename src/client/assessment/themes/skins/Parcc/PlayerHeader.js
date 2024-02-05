@@ -362,7 +362,7 @@ const PlayerHeader = ({
           </BreadcrumbContainer>
         </StyledHeaderTitle>
       </Header>
-      <LineReader hideButton />
+      <LineReader hideButton i18Translate={i18Translate} />
     </FlexContainer>
   )
 }

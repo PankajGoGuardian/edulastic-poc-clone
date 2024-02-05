@@ -408,7 +408,7 @@ class BarGraph extends Component {
   }
 
   render() {
-    const { children, isBoth, aiViewData, entities } = this.props
+    const { children, isBoth, aiViewData = [], entities } = this.props
     const { pagination } = this.state
     const maxAttemps = entities.length || 10
     const chartData = aiViewData.filter(

@@ -14,8 +14,12 @@ class Graph extends Component {
   }
 
   componentDidMount() {
-    const { fetchAiViewDataRequest } = this.props
-    fetchAiViewDataRequest()
+    const { fetchAiViewDataRequest, gradebook, assignmentId, groupId, testId } = this.props
+    fetchAiViewDataRequest({
+      assignmentId,
+      groupId,
+      testId,
+    })
   }
 
   calculateAvgScore = () => {

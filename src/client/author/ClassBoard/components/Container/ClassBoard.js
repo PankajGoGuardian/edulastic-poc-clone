@@ -2134,6 +2134,9 @@ class ClassBoard extends Component {
                     <Graph1
                       gradebook={gradebook}
                       title={additionalData.testName}
+                      assignmentId={assignmentId}
+                      groupId={classId}
+                      testId={additionalData.testId}
                       testActivity={testActivity}
                       testQuestionActivities={testQuestionActivities}
                       onClickHandler={this.onClickBarGraph}

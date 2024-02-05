@@ -222,7 +222,7 @@ export const getUserFeatures = createSelector(stateSelector, (state) => {
 
 export const getIsAiEvaulationDistrictSelector = createSelector(
   getUserFeatures,
-  (features) => features.isVideoQuizAndAIEnabled
+  (features) => features?.isVideoQuizAndAIEnabled || false
 )
 
 export const getIsTutorMeEnabledSelector = createSelector(

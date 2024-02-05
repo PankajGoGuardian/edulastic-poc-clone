@@ -2,7 +2,7 @@ import React from 'react'
 import qs from 'qs'
 import styled from 'styled-components'
 import IconMagicWand from '@edulastic/icons/src/IconMagicWand'
-import { EduButton } from '@edulastic/common'
+import { AiEduButton } from '../../../../../AssessmentCreate/components/CreateAITest/styled'
 
 function AIRecommendation({ history, response }) {
   const {
@@ -43,9 +43,10 @@ function AIRecommendation({ history, response }) {
         <div className="assign-ai-test">
           <IconMagicWand />
           <div>Improvement by AI</div>
-          <EduButton isGhost onClick={onAssignClick}>
+          <AiEduButton isGhost onClick={onAssignClick} fontWeight={700}>
+            <IconMagicWand />
             Assign a quick AI test
-          </EduButton>
+          </AiEduButton>
         </div>
       </StyledCard>
     </Wrapper>

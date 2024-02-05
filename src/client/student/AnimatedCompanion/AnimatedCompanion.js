@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import IconPearAssessLogoCompact from '@edulastic/icons/src/IconPearAssessLogoCompact'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
-import { Menu, Popover } from 'antd'
+import { Comment, Menu, Popover } from 'antd'
 import { withWindowSizes } from '@edulastic/common'
 import { get } from 'lodash'
 import HintOrResourcesModal from './HintOrResourcesModal'
@@ -37,13 +37,28 @@ const AnimatedCompanion = ({ windowWidth, windowHeight, questions }) => {
   )
 
   const content = (
-    <Menu mode="inline" style={{ width: 256 }} onClick={handleClick}>
-      <SubMenu key="hintByAI" title="Hint">
-        {questions.map(({ questionNumber }, index) => (
-          <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
-        ))}
-      </SubMenu>
-    </Menu>
+    <>
+      <Comment
+        style={{ width: '300px' }}
+        content={
+          <p>
+            Test Summary: You will be required to answer a series of questions
+            based on the given information. Some questions require you to plot a
+            bar graph based on the data provided, while others are multiple
+            choice questions. Pay attention to the details in the stimulas and
+            select the correct answer
+          </p>
+        }
+      />
+
+      <Menu mode="inline" onClick={handleClick}>
+        <SubMenu key="hintByAI" title="Hint">
+          {questions.map(({ questionNumber }, index) => (
+            <Menu.Item key={index}>Question {questionNumber}</Menu.Item>
+          ))}
+        </SubMenu>
+      </Menu>
+    </>
   )
   console.log({ windowHeight, windowWidth })
   const [currentWindowsHeight, setCurrentWindowsHeight] = useState(0)

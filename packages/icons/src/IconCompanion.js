@@ -10,7 +10,6 @@ const IconCompanion = (props) => (
     viewBox="0 0 114.98 122.88"
     {...props}
   >
-    <title>idea-bulb</title>
     <path
       fill="#403c47"
       className="cls-1"

@@ -25,6 +25,8 @@ import {
   MainContentWrapper,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { ITEM_GROUP_DELIVERY_TYPES } from '@edulastic/constants/const/test'
+import { testItemsApi } from '@edulastic/api'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
@@ -46,6 +48,7 @@ import {
   isDefaultTestSelector,
   getItemGroupsSelector,
   getAllTagsAction,
+  getStaticGroupItemIds,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -583,6 +586,63 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
+  refreshGroupItems = async (index) => {
+    const { test, handleSave } = this.props
+    const { itemGroups } = test
+    const itemGroup = itemGroups[index]
+
+    const optionalFields = {
+      depthOfKnowledge: itemGroup.dok,
+      authorDifficulty: itemGroup.difficulty,
+      tags: itemGroup.tags?.map((tag) => tag.tagName) || [],
+    }
+    Object.keys(optionalFields).forEach(
+      (key) => optionalFields[key] === undefined && delete optionalFields[key]
+    )
+
+    const data = {
+      limit:
+        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+          ? itemGroup.autoSelectItemsCount || itemGroup.items.length || 1
+          : itemGroup.deliverItemsCount,
+      search: {
+        collectionId: itemGroup.collectionDetails._id,
+        standardIds: itemGroup.standardDetails.standards.map(
+          (std) => std.standardId
+        ),
+        ...optionalFields,
+      },
+    }
+    if (data.limit > 100) {
+      notification({ messageKey: 'maximum100Questions' })
+      return
+    }
+    const allStaticGroupItemIds = getStaticGroupItemIds(test)
+    await testItemsApi
+      .getAutoSelectedItems({
+        ...data,
+        search: { ...data.search, nInItemIds: allStaticGroupItemIds },
+      })
+      .then((res) => {
+        const { items, total } = res
+        if (items.length === 0) {
+          notification({ messageKey: 'noItemsFoundForCurrentCombination' })
+          return
+        }
+        if (total < data.limit) {
+          return notification({
+            msg: `There are only ${total} items that meet the search criteria`,
+          })
+        }
+
+        itemGroup.items = items
+        handleSave()
+      })
+      .catch((err) => {
+        notification({ msg: err.message || 'Failed to fetch test items' })
+      })
+  }
+
   render() {
     const {
       test,
@@ -768,6 +828,7 @@ class Review extends PureComponent {
                 questions={questions}
                 owner={owner}
                 itemGroups={test.itemGroups}
+                refreshGroupItems={this.refreshGroupItems}
                 isPublishers={isPublishers}
                 isFetchingAutoselectItems={isFetchingAutoselectItems}
                 userRole={userRole}

@@ -1,10 +1,10 @@
 import { Collapse, Tooltip } from 'antd'
-import { IconSectionsCalculator } from '@edulastic/icons'
+import { IconRedo, IconSectionsCalculator } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 import { darkGrey5 } from '@edulastic/colors'
-import { EduIf } from '@edulastic/common'
+import { EduButton, EduIf } from '@edulastic/common'
 import {
   ITEM_GROUP_DELIVERY_TYPES,
   ITEM_GROUP_TYPES,
@@ -15,7 +15,7 @@ import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageC
 
 const { Panel } = Collapse
 
-const rightContent = (group, hasSections = false) => {
+const rightContent = (group, hasSections = false, refreshGroupItems) => {
   const {
     deliverItemsCount,
     items,
@@ -30,6 +30,23 @@ const rightContent = (group, hasSections = false) => {
         when any calc is selected for a section, the calc Icon and tooltip 
         will be displayed. Add a condition hasSections for the same. 
       */}
+      <EduIf
+        condition={
+          type === ITEM_GROUP_TYPES.AUTOSELECT &&
+          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        }
+      >
+        <InfoDiv>
+          <EduButton
+            onClick={(e) => {
+              e.stopPropagation()
+              refreshGroupItems()
+            }}
+          >
+            <IconRedo />
+          </EduButton>
+        </InfoDiv>
+      </EduIf>
       {hasSections && settings?.calcTypes?.length > 0 && (
         <Tooltip title={settings.calcTypes.join()}>
           <span>
@@ -69,6 +86,7 @@ export default SortableContainer(
     items,
     isEditable,
     itemGroups,
+    refreshGroupItems,
     isPublishers,
     userRole,
     isPowerPremiumAccount,
@@ -167,7 +185,9 @@ export default SortableContainer(
               <Panel
                 header={<span dataCy={group.groupName}>{group.groupName}</span>}
                 key={count}
-                extra={rightContent(group, hasSections)}
+                extra={rightContent(group, hasSections, () =>
+                  refreshGroupItems(count)
+                )}
               >
                 {items.map((item, index) => {
                   // EV-38941: here item can be an object or array of objects

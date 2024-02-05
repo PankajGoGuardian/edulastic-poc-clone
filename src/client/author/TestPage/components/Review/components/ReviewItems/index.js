@@ -37,6 +37,7 @@ const ReviewItems = ({
   orgCollections,
   userId,
   hasSections,
+  refreshGroupItems,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -111,6 +112,7 @@ const ReviewItems = ({
           removeMultiple={removeMultiple}
           getContainer={getContainer}
           itemGroups={itemGroups}
+          refreshGroupItems={refreshGroupItems}
           isPublishers={isPublishers}
           userRole={userRole}
           isPowerPremiumAccount={isPowerPremiumAccount}

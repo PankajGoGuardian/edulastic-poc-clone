@@ -331,6 +331,7 @@ const enhance = compose(
       enableMagnifier: state.testPlayer.enableMagnifier,
       testId: state.test.testId,
       userRole: getUserRole(state),
+      userId: state?.user?.user?._id,
     }),
     {
       changeView: changeViewAction,

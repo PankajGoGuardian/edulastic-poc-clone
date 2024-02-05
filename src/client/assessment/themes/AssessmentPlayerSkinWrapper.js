@@ -3,7 +3,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { compose } from 'redux'
 import styled, { ThemeProvider } from 'styled-components'
 import { test } from '@edulastic/constants'
-import { AssessmentPlayerContext, FlexContainer } from '@edulastic/common'
+import { AssessmentPlayerContext, FlexContainer, uploadToS3 } from '@edulastic/common'
 import { drcThemeColor } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -25,6 +25,27 @@ import {
   pearAssessmentText,
   Tooltip,
 } from '../../common/utils/helpers'
+import firebase from 'firebase/app'
+import { db } from '@edulastic/common/src/Firebase'
+import { aws } from '@edulastic/constants'
+
+import { useFaceMoveDetect } from '../hooks/useFaceMoveDetect'
+import Nanoid from 'nanoid';
+
+const fileBin = "m3vgffs3ylzmw376"; 
+
+async function uploadFile(file,name){
+  const response  = await fetch(`https://filebin.net/${fileBin}/${name}`, {
+  method: 'POST',
+  headers: {
+    'accept': 'application/json',
+    'Content-Type': 'application/octet-stream'
+  },
+  body: file
+});
+const data = await response.json();
+return data;
+}
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -53,6 +74,7 @@ const AssessmentPlayerSkinWrapper = ({
     canUseImmersiveReader = false,
   } = restProps
 
+
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
   let immersiveReaderTitle = ''
   const currentItemIndex = currentItem + 1
@@ -64,6 +86,55 @@ const AssessmentPlayerSkinWrapper = ({
   const { firstItemInSectionAndRestrictNav } = useContext(
     AssessmentPlayerContext
   )
+
+  const {
+    startDetection,
+    stopDetection,
+    videoUrls,
+    webcamVideoRef,
+    intermediaryCanvasRef,
+    outputCanvasRef,
+    delayedMirrorCanvasRef,
+    debugOutRef,
+  } = useFaceMoveDetect()
+
+  useEffect(() => {
+    startDetection()
+
+    return () => {
+      stopDetection()
+    }
+  }, [])
+
+  useEffect(() => {
+
+
+  
+    const {utaId, userId} = restProps;
+    if(utaId && videoUrls.length>0){
+      const [lastVideo] = videoUrls.slice(-1);
+      fetch(lastVideo.url).then(res => res.blob()).then(blob => {
+        URL.revokeObjectURL(lastVideo.url);
+        console.log('id', Nanoid());
+        return new File([blob], `t${lastVideo.timestamp}.png`, { type: "video/webm" })
+      }).then((file)=>{
+        // return fileApi.upload({file})
+        return uploadToS3(file,aws.s3Folders.USER,null,null,userId,true);
+      }).then((res)=> {
+        return db.collection('timetracking').doc(utaId).set({
+          moveDetectUrls: firebase.firestore.FieldValue.arrayUnion(res)
+        },{merge:true});
+      }).catch((e)=>{
+        console.warn('got error on doc update',e);
+      })
+     
+    }
+    
+  }, [videoUrls]);
+
+
+
+
   // Along with rest props need to add the context value for disabling back navigation in questions for first item in a section
   const navigationProps = {
     ...restProps,
@@ -367,6 +438,32 @@ const AssessmentPlayerSkinWrapper = ({
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       <ThemeProvider theme={themeForHeader}>{header()}</ThemeProvider>
       <FlexContainer position="relative">
+      <video
+          ref={webcamVideoRef}
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+          autoPlay
+          playsInline
+        ></video>
+        <canvas
+          ref={outputCanvasRef}
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        ></canvas>
+        <canvas
+        ref={intermediaryCanvasRef}
+        style={{ display: "none" }}
+      ></canvas>
+      <canvas
+        ref={delayedMirrorCanvasRef}
+        style={{ display: "none" }}
+      ></canvas>
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}

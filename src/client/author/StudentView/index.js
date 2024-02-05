@@ -61,6 +61,7 @@ import {
 } from '../ClassBoard/components/Container/styled'
 import TestAttachementsModal from './Modals/TestAttachementsModal'
 import StudentResponse from '../QuestionView/component/studentResponses/studentResponse'
+import {MoveDetectVideos} from './MoveDetectVideos';
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -447,6 +448,7 @@ class StudentViewContainer extends Component {
             </AnswerContext.Provider>
           )}
         </div>
+        {studentTestActivity?._id ? <MoveDetectVideos testActivityId={studentTestActivity?._id} />: null}
         <ScrollToTopButton
           type="primary"
           icon="arrow-up"

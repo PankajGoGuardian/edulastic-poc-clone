@@ -290,7 +290,7 @@ class AssessmentPlayerSimple extends React.Component {
       highlights,
       utaId,
       uploadToS3,
-      user: { firstName = '', lastName = '' },
+      user: { firstName = '', lastName = '', _id: userId },
       playerSkinType,
       canShowPlaybackOptionTTS,
       classLevelSettings,
@@ -345,6 +345,7 @@ class AssessmentPlayerSimple extends React.Component {
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
           <AssessmentPlayerSkinWrapper
             {...this.props}
+            userId={userId}
             headerRef={this.headerRef}
             theme={themeToPass}
             LCBPreviewModal={LCBPreviewModal}

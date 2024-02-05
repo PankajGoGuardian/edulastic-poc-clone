@@ -23,6 +23,38 @@
       rel="stylesheet"
     />
 
+    <script type="module">
+      /** 
+       * Workaround for loading new esm modules with outdated build system
+      */
+      async function createFaceLandmarker() {
+        const vision = await import(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3'
+        )
+        const { FaceLandmarker, FilesetResolver, DrawingUtils } = vision
+        window.DrawingUtils = DrawingUtils;
+        window.FaceLandmarker = FaceLandmarker;
+        const filesetResolver = await FilesetResolver.forVisionTasks(
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm'
+        )
+        const faceLandmarker = await FaceLandmarker.createFromOptions(
+          filesetResolver,
+          {
+            baseOptions: {
+              modelAssetPath: `/models/face_landmarker.task`,
+            },
+            outputFaceBlendshapes: true,
+            runningMode: 'VIDEO',
+            numFaces: 2,
+          }
+        )
+
+        return faceLandmarker
+      }
+
+      window.createFaceLandmarker = createFaceLandmarker;
+    </script>
+
     <!-- Google Tag Manager -->
     <script>
       ;(function (w, d, s, l, i) {

@@ -49,7 +49,7 @@ export const getFormattedCurriculums = (
     }
   })
   const interestedCurriculumsMap = interestedCurriculums.reduce((map, o) => {
-    if (subject.includes(o.subject.toLowerCase())) {
+    if (subject.includes(o?.subject?.toLowerCase())) {
       map[o.name] = o
     }
     return map

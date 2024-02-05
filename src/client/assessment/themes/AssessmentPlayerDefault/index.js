@@ -398,7 +398,8 @@ class AssessmentPlayerDefault extends React.Component {
       hasSections,
       lastItemInTest,
     } = this.props
-    const { firstName = '', lastName = '' } = user
+
+    const { firstName = '', lastName = '',_id: userId } = user
     const { settings } = this.props
     const {
       testItemState,
@@ -574,6 +575,7 @@ class AssessmentPlayerDefault extends React.Component {
             LCBPreviewModal={LCBPreviewModal}
             headerHeight={headerHeight}
             isMobile={isMobile}
+            userId={userId}
             // key={currentItem}
             currentItem={currentItem}
             gotoQuestion={gotoQuestion}

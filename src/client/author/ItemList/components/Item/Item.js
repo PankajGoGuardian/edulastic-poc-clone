@@ -633,7 +633,7 @@ class Item extends Component {
               ) : // to display the section name instead of remove button on selected items
               isPublisher || isDynamicTest || hasSections ? (
                 <>
-                  <EduIf condition={isDynamicTest && !isPublisher}>
+                  <EduIf condition={!isPublisher}>
                     <EduButton
                       width="40px"
                       height="35px"

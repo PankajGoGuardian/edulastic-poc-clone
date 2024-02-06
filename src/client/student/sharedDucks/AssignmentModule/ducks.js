@@ -46,8 +46,6 @@ export const SET_SELECTED_GROUP_STATUS =
   '[studentAssignments] set selected group status'
 export const SET_LANGUAGE_PREFERENCE =
   '[studentAssignments] set selected language'
-export const SET_ASSIGNEE_FEATURES =
-  '[studentAssignments] set assignee features'
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
@@ -82,8 +80,6 @@ export const setShowRetakeModalAction = createAction(
 )
 
 export const setSelectedLanguageAction = createAction(SET_LANGUAGE_PREFERENCE)
-
-export const setAssigneeFeatures = createAction(SET_ASSIGNEE_FEATURES)
 
 // initial State
 const initialState = {
@@ -195,9 +191,6 @@ export default createReducer(initialState, {
   },
   [SET_LANGUAGE_PREFERENCE]: (state, { payload }) => {
     state.languagePreference = payload
-  },
-  [SET_ASSIGNEE_FEATURES]: (state, { payload }) => {
-    state.assigneeFeatures = payload
   },
 })
 

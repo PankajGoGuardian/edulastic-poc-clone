@@ -38,10 +38,7 @@ import {
 import appConfig from '../../../../../../app-config'
 import { isiOS } from '../../../../../assessment/utils/helpers'
 import { isVideoQuizAndAIEnabledSelector } from '../../../../src/selectors/user'
-import {
-  assigneeFeaturesSelector,
-  vqPreventQuestionSkippingSelector,
-} from '../../../../../assessment/selectors/test'
+import { vqPreventQuestionSkippingSelector } from '../../../../../assessment/selectors/test'
 
 const { DragPreview } = DragDrop
 
@@ -74,7 +71,6 @@ const VideoPreview = ({
   startAt,
   vqPreventSkipping,
   isVideoQuizAndAIEnabled,
-  assigneeFeatures,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -480,10 +476,7 @@ const VideoPreview = ({
             volume={volumne}
             muted={muted}
             handleKeyboardSeek={handleKeyboardSeek}
-            isVideoQuizAndAIEnabled={
-              isVideoQuizAndAIEnabled ||
-              assigneeFeatures.isVideoQuizAndAIEnabled
-            }
+            isVideoQuizAndAIEnabled={isVideoQuizAndAIEnabled}
           />
           {!playing && currentTime === 0 && (
             <BigPlayButton>
@@ -644,7 +637,6 @@ export default connect(
     previewMode: getPreviewSelector(state),
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
-    assigneeFeatures: assigneeFeaturesSelector(state),
   }),
   {
     removeAnswers: removeUserAnswerAction,

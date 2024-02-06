@@ -52,6 +52,8 @@ import {
   getPartnerStudentSignupUrl,
   getPartnerTeacherSignupUrl,
   isEmailValid,
+  updateMetaTag,
+  removeMetaTag,
 } from '../../../../common/utils/helpers'
 import { Partners } from '../../../../common/utils/static/partnerData'
 
@@ -88,6 +90,13 @@ class AdminSignup extends React.Component {
         referrer: window.document.referrer,
       })
     }
+    updateMetaTag({
+      content: 'Pear Assessment for Administrators',
+    })
+  }
+
+  componentWillUnmount() {
+    removeMetaTag() // Removing description meta tag
   }
 
   handleSubmit = (e) => {

@@ -318,7 +318,7 @@
       "title": "Data Warehouse Reports",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         }
       ],
@@ -328,7 +328,7 @@
       "title": "Whole Learner",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
@@ -342,7 +342,7 @@
       "title": "Performance Trends",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
@@ -356,7 +356,7 @@
       "title": "Attendance Summary",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         },
         {
@@ -370,7 +370,7 @@
       "title": "Dashboard",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
@@ -384,7 +384,7 @@
       "title": "Early Warning",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         },
         {
@@ -398,7 +398,7 @@
       "title": "Efficacy",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         },
         {
@@ -422,7 +422,7 @@
       "title": "Set Goals & Interventions",
       "breadcrumb": [
         {
-          "title": "EDULASTIC DATA STUDIO",
+          "title": "DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
@@ -567,7 +567,7 @@
       },
       {
         "key": "data-warehouse-reports",
-        "title": "EDULASTIC DATA STUDIO",
+        "title": "DATA STUDIO",
         "isNew": true,
         "location": "/author/reports/data-warehouse-reports/"
       }

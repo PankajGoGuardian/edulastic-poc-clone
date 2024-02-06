@@ -1470,7 +1470,6 @@ class Container extends PureComponent {
       }
       updateTest(test._id, { ...newTest, currentTab, nextLocation, nextAction })
     } else {
-      console.log('[fnd] new test', newTest)
       createTest({ ...newTest, currentTab, nextLocation, nextAction })
     }
   }

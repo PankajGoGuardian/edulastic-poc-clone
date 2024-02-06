@@ -4149,11 +4149,9 @@ function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
 
 export function* addAutoselectGroupItems({ payload: _test }) {
   try {
-    console.log('[fnd] here 2')
     const transformedData = getItemGroupsTransformed(_test)
     const allStaticGroupItemIds = getStaticGroupItemIds(_test)
     const promises = transformedData.map(({ data, isFetchItems }) => {
-      console.log('[fnd] trying to fetch for autoselect', data, isFetchItems)
       if (isFetchItems) {
         return testItemsApi
           .getAutoSelectedItems({

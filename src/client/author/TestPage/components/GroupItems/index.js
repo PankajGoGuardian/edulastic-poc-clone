@@ -481,7 +481,7 @@ const GroupItems = ({
         ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
       updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
     if (test.answerOnPaper && disableAnswerOnPaper) {
-      setTestData({ answerOnPaper: false }) // use this
+      setTestData({ answerOnPaper: false })
       notification({
         type: 'warn',
         messageKey: 'answerOnPaperIsNotSupportedForAutoselecteGroup',
@@ -553,7 +553,7 @@ const GroupItems = ({
           })
         }
 
-        saveGroupToTest(items) // saves to db
+        saveGroupToTest(items)
       })
       .catch((err) => {
         notification({ msg: err.message || 'Failed to fetch test items' })
@@ -954,7 +954,6 @@ const GroupItems = ({
                             : itemGroup.deliveryType
                         }
                         onChange={(e) => {
-                          console.log('[fnd] changed to', e.target.value)
                           return handleChange('deliveryType', e.target.value)
                         }}
                         disabled={currentGroupIndex !== index}

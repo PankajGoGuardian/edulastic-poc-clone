@@ -34,6 +34,7 @@ import {
   EXTERNAL_SCORE_TYPES,
   getDefaultTestTypesForUser,
 } from '../../../common/utils'
+import { isPearOrEdulasticText } from '../../../../../../../common/utils/helpers'
 
 const filtersDefaultValues = [
   {
@@ -565,7 +566,7 @@ const WholeLearnerReportFilters = ({
             data-testid="performanceBand"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
-              EDULASTIC PERFORMANCE BAND
+              {isPearOrEdulasticText} PERFORMANCE BAND
             </FieldLabel>
             <ControlDropDown
               height="40px"

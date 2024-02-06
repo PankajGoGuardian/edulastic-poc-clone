@@ -17,14 +17,7 @@ const DragHandle = SortableHandle(DragHandleComponent)
 
 const GroupItems = SortableContainer((props) => {
   // items is always an array of passage items
-  const {
-    items,
-    isEditable,
-    scoring,
-    groupId,
-    showGroupsPanel,
-    itemsDefaultMaxScore = 1,
-  } = props
+  const { items, isEditable, scoring, groupId, showGroupsPanel } = props
   const [localItems, setLocalItems] = useState([])
   const [minimize, setMinimize] = useState(true)
 
@@ -32,7 +25,7 @@ const GroupItems = SortableContainer((props) => {
     (acc, curr) =>
       acc +
       (curr.isLimitedDeliveryType
-        ? itemsDefaultMaxScore
+        ? curr.itemsDefaultMaxScore
         : scoring[curr._id] || helpers.getPoints(curr)),
     0
   )

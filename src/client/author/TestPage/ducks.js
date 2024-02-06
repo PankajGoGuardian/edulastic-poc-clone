@@ -194,11 +194,14 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
             : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-                { ...o, isLimitedDeliveryType },
+                {
+                  ...o,
+                  isLimitedDeliveryType,
+                  itemsDefaultMaxScore: itemGroup.itemsDefaultMaxScore,
+                },
                 o.data.questions,
                 helpers.getPoints(o),
-                scoring[o._id],
-                itemGroup.itemsDefaultMaxScore
+                scoring[o._id]
               )
             : {},
         }))
@@ -784,16 +787,23 @@ export const getTestItemsSelector = createSelector(
   (_test) => {
     const itemGroups = _test.itemGroups || []
     let testItems =
-      itemGroups.flatMap(
-        (itemGroup) =>
+      itemGroups.flatMap((itemGroup) => {
+        const isLimitedDeliveryType =
+          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        const itemExtras = {
+          groupId: itemGroup._id,
+          isLimitedDeliveryType,
+        }
+        if (isLimitedDeliveryType) {
+          itemExtras.itemsDefaultMaxScore = itemGroup.itemsDefaultMaxScore
+        }
+        return (
           itemGroup.items.map((item) => ({
             ...item,
-            groupId: itemGroup._id,
-            isLimitedDeliveryType:
-              itemGroup.deliveryType ===
-              ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM,
+            ...itemExtras,
           })) || []
-      ) || []
+        )
+      }) || []
     testItems = sortTestItemQuestions(testItems)
     return testItems
   }

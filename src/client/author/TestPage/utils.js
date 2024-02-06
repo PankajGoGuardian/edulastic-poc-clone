@@ -92,11 +92,10 @@ const createItemsSummaryData = (
     }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
-      { ...item, isLimitedDeliveryType },
+      { ...item, isLimitedDeliveryType, itemsDefaultMaxScore },
       questions,
       getPoints(item),
-      scoring[_id],
-      itemsDefaultMaxScore
+      scoring[_id]
     )
     for (const question of questions) {
       const standardSummary = getStandardWiseSummary(

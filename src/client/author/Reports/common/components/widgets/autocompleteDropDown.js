@@ -86,8 +86,10 @@ const AutocompleteDropDown = ({
           const _className = isSelected
             ? 'ant-select-dropdown-menu-item-active'
             : null
+          const desc = item.desc ? `: ${item.desc}` : ''
+          const tooltipText = `${item.title}${desc}`
           return (
-            <Option key={item.key} title={item.title} className={_className}>
+            <Option key={item.key} title={tooltipText} className={_className}>
               {dropdownMenuIcon || item.dropdownMenuIcon}
               {item.title}
             </Option>
@@ -149,7 +151,8 @@ const AutocompleteDropDown = ({
 
   const dataSource = buildDropDownData(dropDownData)
 
-  const title = selected.title || prefix
+  const descText = selected.desc ? `: ${selected.desc}` : ''
+  const title = selected.title ? `${selected.title}${descText}` : prefix
 
   return (
     <StyledAutocompleteDropDownContainer

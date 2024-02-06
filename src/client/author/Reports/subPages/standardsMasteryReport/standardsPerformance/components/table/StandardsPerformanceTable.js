@@ -28,33 +28,28 @@ const {
   getColValue,
 } = reportUtils.standardsPerformanceSummary
 
-const getDomainColumnRender = (
-  t,
-  domainId,
-  domainName,
-  compareBy,
-  scaleInfo
-) => (_, record) => {
-  const domain = record.domainData[domainId] || {}
-  const colValue = getColValue(record, domainId, record.analyseByKey, scaleInfo)
+const getDomainColumnRender = (t, currentDomain, compareBy, scaleInfo) => (
+  _,
+  record
+) => {
+  const { domainId, domainName, domainDesc } = currentDomain
+  const { domainData, analyseByKey, name } = record
+  const domain = domainData[domainId] || {}
+  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo)
   const bgColor =
-    (record.analyseByKey === 'masteryLevel' ||
-      record.analyseByKey === 'masteryScore') &&
+    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
     getMasteryScoreColor(domain, scaleInfo)
 
   const tooltipTitle = (
     <div>
       <TableTooltipRow
         title={`${compareBy.title}: `}
-        value={
-          record.name && record.name !== 'undefined'
-            ? record.name
-            : t('common.anonymous')
-        }
+        value={name && name !== 'undefined' ? name : t('common.anonymous')}
       />
       <TableTooltipRow title="Domain: " value={domainName} />
+      <TableTooltipRow title="Description: " value={domainDesc} />
       <TableTooltipRow
-        title={`${getAnalyseByTitle(record.analyseByKey)}: `}
+        title={`${getAnalyseByTitle(analyseByKey)}: `}
         value={colValue}
       />
     </div>
@@ -116,23 +111,17 @@ const getColumns = (
 ) => {
   const domainColumns = map(selectedDomains, (domain) => ({
     title: (
-      <>
+      <Tooltip title={domain.domainDesc}>
         <span>{domain.domainName}</span>
         <br />
         <span>
           {domain[analyseByKey]} {analyseByKey == 'score' ? '%' : ''}
         </span>
-      </>
+      </Tooltip>
     ),
     dataIndex: domain.domainName,
     key: domain.domainName,
-    render: getDomainColumnRender(
-      t,
-      domain.domainId,
-      domain.domainName,
-      compareBy,
-      scaleInfo
-    ),
+    render: getDomainColumnRender(t, domain, compareBy, scaleInfo),
     sorter: getColumnSorter(scaleInfo, domain.domainId),
   }))
 

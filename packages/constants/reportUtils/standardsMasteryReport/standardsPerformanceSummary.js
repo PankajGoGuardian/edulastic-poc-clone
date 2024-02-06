@@ -124,6 +124,8 @@ const groupedByDomain = (
         domainId,
         domainName:
           (domainMetaInformation && domainMetaInformation.domain) || '',
+        domainDesc:
+          (domainMetaInformation && domainMetaInformation.domainName) || '',
         masteryScore,
         diffMasteryScore: maxScore - round(masteryScore, 2),
         score,

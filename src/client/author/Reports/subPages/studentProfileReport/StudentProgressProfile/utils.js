@@ -1,6 +1,6 @@
 import React from 'react'
 import { flatMap, groupBy, isEmpty } from 'lodash'
-import { IconTutorMeAssigned } from '@edulastic/icons'
+import { IconTutorMe } from '@edulastic/icons'
 import { black } from '@edulastic/colors'
 import {
   EMPTY_ARRAY,
@@ -108,7 +108,7 @@ function TutorMeColumnTitle({ sessionText, tooltipText }) {
   return (
     <Tooltip placement="bottom" title={tooltipText}>
       <div>
-        <IconTutorMeAssigned />
+        <IconTutorMe />
         <StyledText fontSize="16px" color={black}>
           {sessionText}
         </StyledText>

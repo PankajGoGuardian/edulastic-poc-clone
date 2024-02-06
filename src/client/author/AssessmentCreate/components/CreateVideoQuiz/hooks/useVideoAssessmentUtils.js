@@ -43,7 +43,11 @@ const useVideoAssessmentUtils = ({
   }, [])
 
   useEffect(() => {
-    if (isRedirectToAddOn || vqQuotaForDistrict === vqUsageCount) {
+    if (
+      isRedirectToAddOn ||
+      vqQuotaForDistrict === vqUsageCount ||
+      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
+    ) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },

@@ -33,14 +33,18 @@ const PearPolicyModal = ({
               alt={pearAssessmentText}
               width="218px"
             />
-            <StyledHeader>Welcome to {pearAssessmentText}!</StyledHeader>
-            <p>Before we proceed, please review the following terms</p>
+            <StyledHeader data-cy="pearPolicyModalTitle">
+              Welcome to {pearAssessmentText}!
+            </StyledHeader>
+            <p data-cy="pearPolicyModalSubTitle">
+              Before we proceed, please review the following terms
+            </p>
           </UpperContainer>
           <LowerContainer>
             <div>
               <Checkbox onChange={onCheck} checked={isChecked} darkBorder />
             </div>
-            <div>
+            <div data-cy="policyAgreeCheckboxText">
               <p>By checking this box, you are agreeing:</p>
               <StyledOrderedList>
                 <li>

@@ -67,9 +67,7 @@ export const firebaseConfig = {
 }
 
 export const tutorMeSdkConfig = {
-  orgId: process.env.REACT_APP_TUTORME_SDK_ORG,
-  accountId: process.env.REACT_APP_TUTORME_SDK_ACCOUNT,
-  secret: process.env.REACT_APP_TUTORME_SDK_SECRET,
+  authTimeout: +process.env.REACT_APP_TUTORME_AUTH_TIMEOUT || 60 * 60 * 1000,
   api:
     process.env.REACT_APP_TUTORME_SDK_API ??
     (process.env.NODE_ENV === 'production'

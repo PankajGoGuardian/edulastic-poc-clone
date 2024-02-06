@@ -15,7 +15,11 @@ import AddOnTag from '../common/AddOnTag'
 
 import { isVideoQuizAndAIEnabledSelector } from '../../../src/selectors/user'
 
-const AiTestBannerSmall = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
+const AiTestBannerSmall = ({
+  onCreateItems,
+  isVideoQuizAndAIEnabled,
+  bannerText,
+}) => {
   return (
     <CreateAiTestBannerWrapper
       mt="1rem"
@@ -25,7 +29,8 @@ const AiTestBannerSmall = ({ onCreateItems, isVideoQuizAndAIEnabled }) => {
     >
       <IconMagicWand fill="#1766ce" />
       <CreateAiTestBannerTitleWrapper>
-        Need more content? Create a quick test using AI-powered items
+        {bannerText ||
+          'Need more content? Create a quick test using AI-powered items'}
       </CreateAiTestBannerTitleWrapper>
       <FlexContainer alignItems="center" justifyContent="space-between">
         <EduIf condition={!isVideoQuizAndAIEnabled}>

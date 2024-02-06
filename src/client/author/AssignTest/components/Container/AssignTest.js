@@ -19,10 +19,7 @@ import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
-import {
-  testContentVisibility,
-  testCategoryTypes,
-} from '@edulastic/constants/const/test'
+import { testContentVisibility } from '@edulastic/constants/const/test'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -106,6 +103,7 @@ import { SpinnerContainer } from '../../../src/MainStyle'
 import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
 import { getSettingsToSaveOnTestType } from '../../../TestPage/utils'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
+import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 
 const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
@@ -851,8 +849,7 @@ class AssignTest extends React.Component {
 
     const isBuyAISuiteAlertModalVisible =
       !isPlaylist &&
-      testCategory === testCategoryTypes.VIDEO_BASED &&
-      isRedirectToAddOn
+      getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)
 
     return (
       <div>

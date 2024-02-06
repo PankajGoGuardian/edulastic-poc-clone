@@ -147,7 +147,7 @@ const ListHeader = ({
               </EduIf>
               {renderExtra()}
               <EduIf condition={!(btnTitle && btnTitle.length)}>
-                <EduAiQuiz displayScreen={CREATE_ITEMS_SCREEN} />
+                <EduAiQuiz retainItems displayScreen={CREATE_ITEMS_SCREEN} />
               </EduIf>
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
                 <IconPlusStyled />

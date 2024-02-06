@@ -33,11 +33,13 @@ const {
   CREATE_TEST_SCREEN,
   CREATE_ITEMS_SCREEN,
   SEARCH_NO_DATA_SCREEN,
+  ADD_ITEMS_NO_DATA_SCREEN,
 } = CREATE_AI_TEST_DISPLAY_SCREENS
 
 const EduAIQuiz = ({
   test,
   addItems,
+  retainItems,
   aiTestStatus,
   getAiGeneratedTestItems,
   resetTestDetails,
@@ -70,6 +72,7 @@ const EduAIQuiz = ({
     resetTestDetails,
     standardsList,
     addItems,
+    retainItems,
     setDefaultTest,
     clearCreatedItem,
     history,
@@ -166,6 +169,13 @@ const EduAIQuiz = ({
         return EduCreateItemsWithAiButton
       case SEARCH_NO_DATA_SCREEN:
         return <CreateAiTestBannerSmall onCreateItems={onCreateItems} />
+      case ADD_ITEMS_NO_DATA_SCREEN:
+        return (
+          <CreateAiTestBannerSmall
+            onCreateItems={onCreateItems}
+            bannerText="Need more content? Create using AI-powered items"
+          />
+        )
       default:
         return <></>
     }

@@ -41,7 +41,6 @@ import {
   QUE_TYPE_BY_TITLE,
   TTS_ENABLED_QUESTION_TYPES,
 } from '@edulastic/constants/const/questionType'
-import { languageCodes } from '@edulastic/constants/const/test'
 import SelectGroupModal from '../../../../TestPage/components/AddItems/SelectGroupModal'
 import { SMALL_DESKTOP_WIDTH } from '../../../../../assessment/constants/others'
 import { Nav } from '../../../../../assessment/themes/common'
@@ -126,7 +125,7 @@ const pageType = {
   itemAuthoring: 'itemAuthoring',
 }
 
-const { ENGLISH, LANGUAGE_EN } = appLanguages
+const { ENGLISH, LANGUAGE_EN, LANGUAGES_OPTIONS } = appLanguages
 
 class PreviewModal extends React.Component {
   constructor(props) {
@@ -158,6 +157,12 @@ class PreviewModal extends React.Component {
 
   componentDidMount() {
     const { item } = this.props
+    if (item.language) {
+      const languageCode = LANGUAGES_OPTIONS.find(
+        (o) => o.label.toLowerCase() === item?.language?.toLowerCase()
+      )?.value
+      this.setState({ selectedLanguage: languageCode })
+    }
     if (item.passageId) {
       this.loadPassage(item.passageId)
     }
@@ -1044,10 +1049,8 @@ class PreviewModal extends React.Component {
   }
 
   onClickCustomizeTTS = () => {
-    this.setState({ selectedLanguage: languageCodes.ENGLISH }, () => {
-      this.toggleTTSTextModal()
-      this.requestToGetTTSText({ isLanguageChanged: true })
-    })
+    this.toggleTTSTextModal()
+    this.requestToGetTTSText({ isLanguageChanged: true })
   }
 
   // TODO consistency for question and resources for previeew
@@ -1224,7 +1227,10 @@ class PreviewModal extends React.Component {
                 <Title>Customize TTS</Title>
                 <IconClose onClick={this.toggleTTSTextModal} />
               </ModalHeader>
-              <ModalContentArea tts style={{ minHeight: 400 }}>
+              <ModalContentArea
+                tts
+                style={{ minHeight: 400, paddingBottom: 30 }}
+              >
                 <div
                   onMouseEnter={() => this.setState({ modalDraggable: true })}
                   onMouseLeave={() => this.setState({ modalDraggable: false })}

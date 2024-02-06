@@ -5,17 +5,18 @@ import { formatName } from '@edulastic/constants/reportUtils/common'
 import { delay } from 'redux-saga'
 import { tutorMeSdkConfig } from '../../../app-config'
 
-const { accountId, api, orgId, secret } = tutorMeSdkConfig
+const { api } = tutorMeSdkConfig
 
 /**
  * @param {{email: string; firstName: string; middleName?: string; lastName?: string}} user
  */
-export async function initTutorMeService(user) {
-  await tutorMeService.init(btoa(`${orgId}:${accountId}:${secret}`), {
+export async function initTutorMeService(auth, user) {
+  await tutorMeService.init(auth.key, {
     requestor: {
       name: formatName(user, { lastNameFirst: false }),
       email: user.email,
     },
+    secret: auth.secret,
     api,
     theme: {
       modal: {

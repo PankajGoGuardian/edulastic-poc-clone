@@ -1134,10 +1134,26 @@ export function* setItemLanguage(data) {
     // Setting language to spanish if english stimulus is empty
     if (
       !data?.data?.questions?.[0]?.stimulus?.length &&
-      data?.data?.questions?.[0]?.languageFeatures?.[LANGUAGE_ES]
+      data?.data?.questions?.[0]?.languageFeatures
     ) {
+      const languageCode = Object.keys(
+        data?.data?.questions?.[0]?.languageFeatures
+      ).shift()
       language = LANGUAGES_OPTIONS.find(
-        (lang) => lang.value === LANGUAGE_ES
+        (lang) => lang.value === languageCode
+      )?.label?.toLowerCase()
+    }
+    // for passage setting language to spanish if english stimulus is empty
+    if (
+      data.testItems &&
+      !data?.data?.[0]?.contentTitle?.length &&
+      data?.data?.[0]?.languageFeatures
+    ) {
+      const languageCode = Object.keys(
+        data?.data?.[0]?.languageFeatures
+      ).shift()
+      language = LANGUAGES_OPTIONS.find(
+        (lang) => lang.value === languageCode
       )?.label?.toLowerCase()
     }
   }

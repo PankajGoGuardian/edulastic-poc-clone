@@ -8,6 +8,7 @@ import {
   isNil,
   isNaN,
   isArray,
+  isPlainObject,
 } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
@@ -88,7 +89,12 @@ const expressionMultipartOptionsCheck = (item) => {
   if (optionsCount !== Object.keys(item.options).length) return true
 
   // make sure that each option in every option set is not empty
-  const options = Object.values(item.options)
+  let options = Object.values(item.options)
+  // Updating options with languageFeature first language options if english content not available
+  if (item.stimulus.length === 0 && item.languageFeatures) {
+    const languageCode = Object.keys(item.languageFeatures).shift()
+    options = item.languageFeatures[languageCode]?.options
+  }
   for (const opt of options) {
     if (!opt.length) {
       return true
@@ -159,10 +165,20 @@ const clozeDropDownOptionsCheck = (item) => {
  * deafult optsions check
  * @param {Object} item
  */
-const multipleChoiceOptionsCheck = ({ options = [] }) => {
+const multipleChoiceOptionsCheck = ({
+  options = [],
+  stimulus,
+  languageFeatures,
+}) => {
   // there should be atleast 1 option.
+
   if (options.length === 0) return true
 
+  // Updating options with languageFeature first language options if english content not available
+  if (stimulus.length === 0 && languageFeatures) {
+    const languageCode = Object.keys(languageFeatures).shift()
+    options = languageFeatures[languageCode]?.options
+  }
   // item should have a label, and label should not be empty
   return options.some(
     (opt) =>
@@ -172,6 +188,11 @@ const multipleChoiceOptionsCheck = ({ options = [] }) => {
 }
 
 const videoCheck = (item) => {
+  // Updating item with languageFeature first language item if english content not available
+  if (!item.sourceURL && item.languageFeatures) {
+    const languageCode = Object.keys(item.languageFeatures).shift()
+    item = item.languageFeatures[languageCode]
+  }
   if (!item.sourceURL || (item.sourceURL && !item.sourceURL.trim())) {
     return 'Source URL should not be empty'
   }
@@ -185,6 +206,11 @@ const videoCheck = (item) => {
 }
 
 const textCheck = (item) => {
+  // Updating item with languageFeature first language item if english content not available
+  if (isRichTextFieldEmpty(item.content) && item.languageFeatures) {
+    const languageCode = Object.keys(item.languageFeatures).shift()
+    item = item.languageFeatures[languageCode]
+  }
   if (isRichTextFieldEmpty(item.content)) {
     return 'Content should not be empty'
   }
@@ -192,14 +218,30 @@ const textCheck = (item) => {
 }
 
 const passageCheck = (i) => {
-  if (isRichTextFieldEmpty(i.heading)) {
+  if (
+    isRichTextFieldEmpty(
+      i.heading || i?.languageFeatures?.[LANGUAGE_ES]?.heading
+    )
+  ) {
     return 'Heading cannot be empty.'
   }
-  if (isRichTextFieldEmpty(i.contentsTitle)) {
+  if (
+    isRichTextFieldEmpty(
+      i.contentsTitle || i?.languageFeatures?.[LANGUAGE_ES]?.contentsTitle
+    )
+  ) {
     return 'Title cannot be empty.'
   }
   if (isRichTextFieldEmpty(i.content) && !i.paginated_content) {
-    return 'Passage cannot be empty.'
+    if (i?.languageFeatures?.[LANGUAGE_ES]?.paginated_content) {
+      for (const o of i?.languageFeatures?.[LANGUAGE_ES]?.pages) {
+        if (isRichTextFieldEmpty(o)) {
+          return 'Passage cannot be empty.'
+        }
+      }
+    } else {
+      return 'Passage cannot be empty.'
+    }
   }
   if (i.paginated_content) {
     for (const o of i.pages) {
@@ -364,6 +406,11 @@ const emptyFieldsValidator = {
 }
 
 const itemHasIncompleteFields = (item) => {
+  // Updating item with languageFeature first language item if english content not available
+  if (!item?.stimulus?.length && item.languageFeatures) {
+    const languageCode = Object.keys(item.languageFeatures).shift()
+    item = item.languageFeatures[languageCode]
+  }
   if (emptyFieldsValidator[item.type]) {
     return emptyFieldsValidator[item.type](item)
   }
@@ -520,14 +567,13 @@ export const isIncompleteQuestion = (
   }
 
   // item doesnt have a stimulus?
-  if (!isRichTextFieldEmpty(item?.languageFeatures?.[LANGUAGE_ES]?.stimulus)) {
-    if (
-      isRichTextFieldEmpty(
-        item.stimulus || item?.languageFeatures?.[LANGUAGE_ES]?.stimulus
-      )
-    ) {
-      return [true, 'Question text should not be empty']
-    }
+
+  if (
+    isRichTextFieldEmpty(
+      item.stimulus || item?.languageFeatures?.[LANGUAGE_ES]?.stimulus
+    )
+  ) {
+    return [true, 'Question text should not be empty']
   }
 
   // if  empty options are present
@@ -552,10 +598,29 @@ export const isIncompleteQuestion = (
       let defaultErrorMessage = 'Correct/Alternate answers should be set'
       const getEmptyCorrectAnswerErrMsg = emptyCorrectAnswerErrMsg[item.type]
       if (typeof getEmptyCorrectAnswerErrMsg === 'function') {
-        const correctAnswers = [
+        let correctAnswers = [
           item?.validation?.validResponse,
           ...(item?.validation?.altResponses || []),
         ]
+        const answerValues = item?.validation?.validResponse?.value
+        // Updating correctAnswers with languageFeature validResponse if english content not available
+        if (
+          item?.languageFeatures &&
+          ((Array.isArray(answerValues) &&
+            (!answerValues.length ||
+              answerValues?.some((res) =>
+                res?.value ? !res?.value?.length : !res.length
+              ))) ||
+            (isPlainObject(answerValues) &&
+              Object.values(answerValues)?.includes('')))
+        ) {
+          const languageCode = Object.keys(item?.languageFeatures).shift()
+          const validation = item?.languageFeatures[languageCode]?.validation
+          correctAnswers = [
+            validation?.validResponse,
+            ...(validation?.altResponses || []),
+          ]
+        }
         defaultErrorMessage = getEmptyCorrectAnswerErrMsg(correctAnswers)
       }
       if (item?.type === questionType.GRAPH) {

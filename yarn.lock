@@ -1794,16 +1794,18 @@
   resolved "https://registry.yarnpkg.com/@gilbarbara/deep-equal/-/deep-equal-0.1.1.tgz#91c8f291da6bf7e21cdbfb585fb072d59963acf3"
   integrity sha512-SjSBspHXlclODLtSoPIQwBhfeBjncC05NlNoFELJ6xZQkyYDJsVCcs7+f+etHR2cYPbHLjnh1C06lQlCbMEWEA==
 
-"@goguardian/tutorme-sdk@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@goguardian/tutorme-sdk/-/tutorme-sdk-2.0.4.tgz#97749594be93747298aa3cbd0c2b4f8384a96b03"
-  integrity sha512-6z9gFuqqLWhNpQ7xBId7qA5Esp4PVuz4Q4+C6Tu6oFdE1/I+uagnTB0ui2kVKaPyi/Or+qVG/RwI/m9f/7MlIQ==
+"@goguardian/tutorme-sdk@^2.0.6":
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/@goguardian/tutorme-sdk/-/tutorme-sdk-2.0.6.tgz#0032f6972eefe78474f993c3f3a18b7d9d69c315"
+  integrity sha512-1HLvTb3PL10nUlp2KeLo62DjNsKfmLAcuSDJmXv6OTKbOcyos4ic3REpTu1GBFo2ggrUcpMYIDy/bcqwkRoxyA==
   dependencies:
     "@headlessui/react" "^1.7.15"
     "@hookform/resolvers" "^3.1.1"
     "@material-design-icons/svg" "^0.14.9"
+    "@types/crypto-js" "^4.2.1"
     classnames "^2.3.2"
     cross-fetch "^4.0.0"
+    crypto-js "^4.2.0"
     react "^18.2.0"
     react-aria "^3.26.0"
     react-dom "^18.2.0"
@@ -4510,6 +4512,11 @@
   integrity sha512-K2waXdXBi2302XUdcHcR1jCeU0LL4TD9HRs/gk0N2Xvrht+G/BfJa4QObBQZfhMdxiCpV3COl5Nfq4uKTeTnJA==
   dependencies:
     "@babel/types" "^7.3.0"
+
+"@types/crypto-js@^4.2.1":
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@types/crypto-js/-/crypto-js-4.2.2.tgz#771c4a768d94eb5922cc202a3009558204df0cea"
+  integrity sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==
 
 "@types/eslint@^7.28.2":
   version "7.29.0"
@@ -8363,6 +8370,11 @@ crypto-browserify@^3.11.0:
     public-encrypt "^4.0.0"
     randombytes "^2.0.0"
     randomfill "^1.0.3"
+
+crypto-js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 crypto-random-string@^1.0.0:
   version "1.0.0"

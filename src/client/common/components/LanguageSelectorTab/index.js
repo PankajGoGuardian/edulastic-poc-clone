@@ -60,12 +60,14 @@ export default connect(
 
 const StyledMenu = styled(Menu)`
   position: relative;
-  top: ${({ isPassage }) => (isPassage ? '-35px' : '35px')};
+  top: ${({ isPassage }) => (isPassage ? '0px' : '35px')};
   left: ${({ isPassage, isEditView }) =>
     isPassage ? (isEditView ? '315px' : '0px') : isEditView ? '315px' : '40px'};
   width: ${({ isPassage }) => (isPassage ? '100%' : '96%;')};
   background: transparent;
-  z-index: 999;
+  .ant-menu-item {
+    z-index: 999;
+  }
   .ant-menu-item:hover {
     color: #1ab394;
     border-bottom: 2px solid #1ab394;

@@ -25,6 +25,7 @@ import {
   Icon,
   Checkbox,
   Tag,
+  Tooltip,
 } from 'antd'
 import styled, { css } from 'styled-components'
 import { IconQuestionCircle } from '@edulastic/icons'
@@ -989,6 +990,15 @@ export const StyledCheckBox = styled(Checkbox)`
   }
 `
 
+export const TableTitleContainer = styled.div`
+  display: flex;
+  gap: 8px;
+
+  svg {
+    margin-top: 4px;
+  }
+`
+
 /** @type {typeof Tag} */
 export const FilterTag = styled(Tag)`
   color: #686f75;
@@ -1001,4 +1011,27 @@ export const FilterTag = styled(Tag)`
   margin-right: 0px;
   margin-top: 7px;
   margin-right: 6px;
+`
+export const SubText = styled.p`
+  font-size: 12px;
+  margin-bottom: 5px;
+`
+const _CustomTooltip = (props) => {
+  const { className, children, ...attrs } = props
+
+  return (
+    <Tooltip {...attrs} overlayClassName={`${className}`}>
+      {children}
+    </Tooltip>
+  )
+}
+export const StyledTooltip = styled(_CustomTooltip)`
+  max-width: 600px;
+  .ant-tooltip-inner {
+    text-align: left;
+    background-color: #f0f0f0;
+    color: black;
+    border: solid 1px #bebebe;
+    box-shadow: 0 0 20px #c0c0c0;
+  }
 `

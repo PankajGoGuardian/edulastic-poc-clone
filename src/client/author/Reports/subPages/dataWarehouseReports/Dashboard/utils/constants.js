@@ -72,13 +72,13 @@ export const academicSummaryFiltersTypes = {
 
 export const staticDropDownData = {
   filterSections: {
-    TEST_FILTERS: {
+    STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Assessments',
+      title: 'Select Students',
     },
-    CLASS_FILTERS: {
+    TEST_FILTERS: {
       key: '1',
-      title: 'Select Classes',
+      title: 'Select Tests',
     },
     DEMOGRAPHIC_FILTERS: {
       key: '2',

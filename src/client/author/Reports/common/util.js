@@ -15,6 +15,7 @@ import {
   uniqBy,
   uniq,
   isEmpty,
+  get,
 } from 'lodash'
 import qs from 'qs'
 import next from 'immer'
@@ -29,7 +30,7 @@ import { formatName } from '@edulastic/constants/reportUtils/common'
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import gradesMap from './static/json/gradesMap.json'
-import { allFilterValue } from './constants'
+import { allFilterValue, ASSESSMENT_TYPES } from './constants'
 import {
   groupByConstants,
   groupByOptions,
@@ -756,6 +757,82 @@ export const getErrorMessage = (error, statusCode, defaultMessage) => {
   return defaultMessage
 }
 
+export const testListTransformer = (
+  response,
+  testType = ASSESSMENT_TYPES.INTERNAL,
+  params
+) => {
+  const {
+    termId = '',
+    termIds = [],
+    grades = [],
+    subjects = [],
+    testTypes = [],
+    searchString = '',
+  } = get(params, 'search', {})
+
+  if (testType === ASSESSMENT_TYPES.INTERNAL) {
+    const assignmentBuckets = get(
+      response,
+      'aggregations.termIdBuckets.buckets',
+      []
+    )
+    const internalTestList = []
+    assignmentBuckets.forEach((assignmentBucket) => {
+      const testTermId = assignmentBucket.key
+      const bucketData = get(assignmentBucket, 'buckets.buckets', [])
+      internalTestList.push(
+        ...bucketData
+          .map(({ key: _id, assignments }) => {
+            const hits = get(assignments, 'hits.hits', [])
+            const title = get(hits[0], '_source.title', '')
+            const testUniqueId = `${_id}_${testTermId}`
+            return { _id, title, termId: testTermId, testUniqueId }
+          })
+          .filter(({ _id, title }) => _id && title)
+      )
+    })
+    return internalTestList
+  }
+  const externalTestList = response
+    .filter((t) => {
+      const _testGrades = (t.testGrades || '').split(',')
+      const _testSubjects = (t.testSubjects || '').split(',')
+      const checkForTermId = termIds?.length
+        ? termIds.includes(t.termId)
+        : termId === t.termId
+      const checkForGrades =
+        !grades.length || !!_testGrades.filter((g) => grades.includes(g)).length
+      const checkForSubjects =
+        !subjects.length ||
+        !!_testSubjects.filter((s) => subjects.includes(s)).length
+      const checkForExternalTestTypes =
+        !testTypes.length || testTypes.includes(t.testCategory)
+      const checkForExternalTestTitle =
+        !searchString ||
+        t.testName.toLowerCase().includes(searchString.toLowerCase())
+      return [
+        checkForTermId,
+        checkForGrades,
+        checkForSubjects,
+        checkForExternalTestTitle,
+        checkForExternalTestTypes,
+      ].every((o) => !!o)
+    })
+    .map(({ testName, termId: _termId }) => {
+      // TODO find permanent fix for issue with AssessmentAutoComplete when _id & title are same. Adding space after testName in title here to avoid it here.
+      return {
+        _id: testName,
+        title: `${testName} `,
+        showId: false,
+        termId: _termId,
+        isExternal: true,
+        testName,
+      }
+    })
+  return externalTestList
+}
+
 /**
  * Function to convert list of records to filter dropdown options
  * @param {Record[]} data Array of all records
@@ -778,3 +855,27 @@ export const getStudentsList = (data) =>
       title: formatName(item, { lastNameFirst: false }),
     }))
     .filter((student) => !isEmpty(student.title))
+
+export const getChartDataBasedOnSchoolYear = (data) => {
+  // Storing the unique termId to identify  single or multi school year
+  const termIdMap = data.reduce((acc, elm) => {
+    if (!acc[elm.termId]) {
+      acc[elm.termId] = true
+    }
+    return acc
+  }, {})
+  const isMultipleSchoolYearDataPresent = Object.keys(termIdMap).length > 1
+  // Sorting the data for multiple school year
+  let result = isMultipleSchoolYearDataPresent
+    ? data.sort((a, b) => a.termEndDate - b.termEndDate)
+    : data
+  if (isMultipleSchoolYearDataPresent) {
+    result = result.map((res, index) => ({
+      ...res,
+      showSchoolYearDivider:
+        result[index + 1] && res.termId !== result[index + 1].termId,
+      schoolYear: result[index + 1] && result[index + 1].termName,
+    }))
+  }
+  return result
+}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { Slider } from 'antd'
 import styled from 'styled-components'
+import { notification } from '@edulastic/common'
 
 const SeekBar = ({
   duration,
@@ -13,7 +14,11 @@ const SeekBar = ({
   vqPreventSkipping,
 }) => {
   const _handleChange = (value) => {
-    seekTo(value)
+    if (!vqPreventSkipping || value <= currentTime) {
+      seekTo(value)
+    } else {
+      notification({ type: 'info', messageKey: 'preventVQForwardSeek' })
+    }
   }
 
   useEffect(() => {
@@ -22,7 +27,6 @@ const SeekBar = ({
 
   return (
     <StyledSlider
-      disabled={vqPreventSkipping}
       marks={duration && marks}
       ref={sliderRef}
       max={duration?.toFixed(4)}

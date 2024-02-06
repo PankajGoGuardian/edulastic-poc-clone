@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { Row, Tooltip } from 'antd'
 import { isEmpty, uniq } from 'lodash'
 import { themeColor } from '@edulastic/colors'
+import { formatDate } from '@edulastic/constants/reportUtils/common'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -27,7 +28,16 @@ const getTableColumns = (isSharedReport) => {
       // space is added after test title so that for external test,
       // there is a space between test title and test tag
       const testTitleElement = (
-        <Tooltip placement="right" title={testTitle}>
+        <Tooltip
+          placement="right"
+          title={
+            <>
+              <span>{testTitle}</span>
+              <br />
+              <span>Date: {formatDate(record.assessmentDate)}</span>
+            </>
+          }
+        >
           {`${testTitle} `}
         </Tooltip>
       )

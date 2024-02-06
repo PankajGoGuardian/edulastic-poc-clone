@@ -12,6 +12,7 @@ import {
   sortBy,
   isEmpty,
   isNaN,
+  keyBy,
 } from 'lodash'
 import moment from 'moment'
 import {
@@ -34,6 +35,7 @@ import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 import {
   EXTERNAL_SCORE_TYPES,
   getExternalScoreFormattedByType,
+  getTestUniqId,
 } from '../common/utils'
 
 const { TEST_TYPES, TEST_TYPE_LABELS } = testTypesConstants
@@ -44,9 +46,13 @@ const testTypes = getAllTestTypesMap()
 
 export const staticDropDownData = {
   filterSections: {
-    CLASS_FILTERS: {
+    STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Classes',
+      title: 'Select Students',
+    },
+    TEST_FILTERS: {
+      key: '1',
+      title: 'Select Tests',
     },
   },
   tagTypes: [
@@ -72,6 +78,12 @@ export const staticDropDownData = {
     performanceBandProfileId: '',
     externalScoreType: EXTERNAL_SCORE_TYPES.SCALED_SCORE,
     showApply: false,
+    testSubjects: '',
+    testGrades: '',
+    testTypes: '',
+    tagIds: '',
+    testTermIds: '',
+    testUniqIds: '',
   },
   subjects: [
     { key: 'Mathematics', title: 'Mathematics' },
@@ -239,6 +251,7 @@ export const mergeTestMetrics = (
           _getClaimInfo
         ),
         schoolCode: metric.schoolCode,
+        termId: metric.termId,
       }
     })
     .map((metric) => {
@@ -264,6 +277,7 @@ export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
       : NaN,
     districtAvgPerf: undefined,
     grade: metric.grade,
+    termId: metric.termId,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -281,6 +295,7 @@ export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
       : NaN,
     schoolAvgPerf: undefined,
     grade: metric.grade,
+    termId: metric.termId,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -331,7 +346,10 @@ export const getChartData = ({
   selectedPerformanceBand = [],
   testTypes: assessmentTypes = [],
   externalScoreType = EXTERNAL_SCORE_TYPES.SCALED_SCORE,
+  termsData,
+  isMultiSchoolYear,
 }) => {
+  const termsKeyedById = keyBy(termsData, '_id')
   if (!assignmentMetrics.length) {
     return []
   }
@@ -342,7 +360,9 @@ export const getChartData = ({
   if (!filteredMetrics.length) {
     return []
   }
-  const groupedByTest = groupBy(filteredMetrics, 'testId')
+  const groupedByTest = isMultiSchoolYear
+    ? groupBy(filteredMetrics, getTestUniqId)
+    : groupBy(filteredMetrics, 'testId')
   const groupedTestsByType = reduce(
     groupedByTest,
     (data, value) => {
@@ -364,6 +384,7 @@ export const getChartData = ({
     const { standardSet, subject } =
       studentClassData.find((s) => s.studentId === studentId) || {}
     const totalScore = sumBy(assignments, 'score') || 0
+    const selectedTerm = termsKeyedById[assignment.termId]
 
     const result = {
       ...assignment,
@@ -371,6 +392,8 @@ export const getChartData = ({
       standardSet,
       subject,
       assessmentDate: +assignment.assignmentDate,
+      termName: selectedTerm?.name || '',
+      termEndDate: selectedTerm?.endDate,
     }
 
     if (externalTestType) {
@@ -418,6 +441,7 @@ export const getTableData = ({
       assignmentDate,
       externalTestType,
       schoolCode,
+      termId,
       grade,
     } = assessment
 
@@ -425,12 +449,13 @@ export const getTableData = ({
     const result = { totalQuestions: 0, ...assessment, assignmentDateFormatted }
 
     if (externalTestType) {
+      const predicate = { testId, grade, termId }
       const testDistrictAvg = round(
-        find(districtMetrics, { testId, grade })?.districtAvgScore
+        find(districtMetrics, predicate)?.districtAvgScore
       )
-      const testDistrictAvgLexile = find(districtMetrics, { testId, grade })
+      const testDistrictAvgLexile = find(districtMetrics, predicate)
         ?.districtAvgLexileScore
-      const testDistrictAvgQuantile = find(districtMetrics, { testId, grade })
+      const testDistrictAvgQuantile = find(districtMetrics, predicate)
         ?.districtAvgQuantileScore
       const districtAvg = getSelectedExternalScore(
         testDistrictAvg,
@@ -441,11 +466,11 @@ export const getTableData = ({
       )
 
       const testSchoolAvg = round(
-        find(schoolMetrics, { testId, schoolCode, grade })?.schoolAvgScore
+        find(schoolMetrics, { ...predicate, schoolCode })?.schoolAvgScore
       )
-      const testSchoolAvgLexile = find(schoolMetrics, { testId, grade })
+      const testSchoolAvgLexile = find(schoolMetrics, predicate)
         ?.schoolAvgLexileScore
-      const testSchoolAvgQuantile = find(schoolMetrics, { testId, grade })
+      const testSchoolAvgQuantile = find(schoolMetrics, predicate)
         ?.schoolAvgQuantileScore
       const schoolAvg = getSelectedExternalScore(
         testSchoolAvg,
@@ -461,15 +486,16 @@ export const getTableData = ({
         schoolAvg,
       })
     } else {
+      const predicate = { testId, termId }
       const rawScore = `${
         assessment.totalScore?.toFixed(2) || '0.00'
       } / ${round(assessment.totalMaxScore, 2)}`
 
       const districtAvg =
-        round(find(districtMetrics, { testId })?.districtAvgPerf) || 0
-      const groupAvg = round(find(groupMetrics, { testId })?.groupAvgPerf || 0)
+        round(find(districtMetrics, predicate)?.districtAvgPerf) || 0
+      const groupAvg = round(find(groupMetrics, predicate)?.groupAvgPerf || 0)
       const schoolAvg =
-        round(find(schoolMetrics, { testId })?.schoolAvgPerf) || 0
+        round(find(schoolMetrics, predicate)?.schoolAvgPerf) || 0
       Object.assign(result, { rawScore, districtAvg, groupAvg, schoolAvg })
     }
     return result

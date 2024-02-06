@@ -7,7 +7,7 @@ import { IconClose } from '@edulastic/icons'
 export const ModalContent = styled.div`
   display: block;
   width: 100%;
-  height: 40px;
+  height: 50px;
   margin-top: 26px;
   margin-bottom: 32px;
 `

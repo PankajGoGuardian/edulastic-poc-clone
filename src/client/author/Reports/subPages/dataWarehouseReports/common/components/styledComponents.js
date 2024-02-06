@@ -260,3 +260,8 @@ export const StyledFilledButton = styled(Button)`
     color: ${themeColor};
   }
 `
+export const MandatorySymbol = styled.span`
+  color: red;
+  font-weight: bold;
+  margin-left: 2px;
+`

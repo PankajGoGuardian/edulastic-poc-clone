@@ -13,6 +13,7 @@ import {
   CustomPrompt,
   LanguageContext,
   ScrollContext,
+  EduIf,
 } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
@@ -64,6 +65,11 @@ import { BackLink, QuestionContentWrapper } from './styled'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
+import LanguageSelectorTab from '../../../../common/components/LanguageSelectorTab'
+import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import { EDIT } from '../../../../assessment/constants/constantsForQuestions'
+
+const { useLanguageFeatureQn } = constantsQuestionType
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
   const multipartItem = get(item, 'multipartItem')
@@ -518,6 +524,7 @@ class Container extends Component {
       t,
       isMultipartItem,
       isInModal,
+      allowedToSelectMultiLanguage,
     } = this.props
 
     if (!question) {
@@ -541,6 +548,7 @@ class Container extends Component {
 
     const { showModal } = this.state
     const itemId = question === null ? '' : question._id
+    const questionType = question && question.type
 
     return (
       <EditorContainer ref={this.innerDiv} isInModal={isInModal}>
@@ -597,6 +605,14 @@ class Container extends Component {
               <div>{view === 'preview' && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>
+          <EduIf
+            condition={
+              allowedToSelectMultiLanguage &&
+              useLanguageFeatureQn.includes(questionType)
+            }
+          >
+            <LanguageSelectorTab isEditView={view === EDIT} />
+          </EduIf>
         </HeaderContainer>
         <ScrollContext.Provider
           value={{
@@ -681,6 +697,7 @@ const enhance = compose(
       showCalculatingSpinner: getCalculatingSelector(state),
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       changeView: changeViewAction,

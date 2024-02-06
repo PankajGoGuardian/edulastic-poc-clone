@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
+import produce from 'immer'
 import { withRouter } from 'react-router-dom'
 import {
   cloneDeep,
@@ -157,6 +158,7 @@ import { getSubscriptionSelector } from '../../../Subscription/ducks'
 import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
+import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -936,7 +938,11 @@ class Container extends PureComponent {
       (x) => x._id === sparkMathId
     )
 
-    if (this.validateTest(test, TEST_ACTIONS.assign)) {
+    // We actually add the item grades and subjects in modifyTest function
+    // which is called later in publish flow. Added getUpdatedTestWithGradeAndSubject
+    // function to pass the respective validation.
+    const testWithGradeAndSubject = this.getUpdatedTestWithGradeAndSubject()
+    if (this.validateTest(testWithGradeAndSubject, TEST_ACTIONS.assign)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
       } else {
@@ -1331,6 +1337,19 @@ class Container extends PureComponent {
     }
   }
 
+  getUpdatedTestWithGradeAndSubject = () => {
+    const { test, itemsSubjectAndGrade } = this.props
+    const newTest = produce(test, (draft) => {
+      draft.subjects = _uniq([
+        ...draft.subjects,
+        ...itemsSubjectAndGrade.subjects,
+      ])
+      draft.grades = _uniq([...draft.grades, ...itemsSubjectAndGrade.grades])
+    })
+
+    return newTest
+  }
+
   modifyTest = () => {
     const { user, test, itemsSubjectAndGrade } = this.props
     const { itemGroups } = test
@@ -1655,7 +1674,11 @@ class Container extends PureComponent {
     ) {
       return
     }
-    if (this.validateTest(test, TEST_ACTIONS.publish)) {
+
+    // We actually add the item grades and subjects in modifyTest function.
+    // Added getUpdatedTestWithGradeAndSubject function to pass the respective validation.
+    const testWithGradeAndSubject = this.getUpdatedTestWithGradeAndSubject()
+    if (this.validateTest(testWithGradeAndSubject, TEST_ACTIONS.publish)) {
       const newTest = this.modifyTest()
       publishTest({
         _id,
@@ -1899,8 +1922,10 @@ class Container extends PureComponent {
 
     const gradeSubject = { grades, subjects }
 
-    const isBuyAISuiteAlertModalVisible =
-      test?.testCategory === testCategoryTypes.VIDEO_BASED && isRedirectToAddOn
+    const isBuyAISuiteAlertModalVisible = getIsBuyAiSuiteAlertModalVisible(
+      test?.testCategory,
+      isRedirectToAddOn
+    )
 
     return (
       <>
@@ -1911,14 +1936,14 @@ class Container extends PureComponent {
           }
           onUnload
           message={(loc = {}) => {
-            const { pathname = '' } = loc
+            const { pathname = '', state } = loc
 
             const testFlowPath = RegExp('/author/tests/\\w*')
             const allow =
               testFlowPath.test(pathname) ||
               pathname.startsWith('/author/assignments/')
 
-            if (allow) {
+            if (allow || !!state?.skipTestNameChangeModal) {
               return true
             }
 

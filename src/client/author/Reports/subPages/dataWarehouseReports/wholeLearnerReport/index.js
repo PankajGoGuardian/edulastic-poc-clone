@@ -58,7 +58,10 @@ import {
 } from './utils'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
 import { getTabNavigationItems } from '../../../common/util'
-import { EXTERNAL_SCORE_TYPES } from '../common/utils'
+import {
+  EXTERNAL_SCORE_TYPES,
+  getIsMultiSchoolYearDataPresent,
+} from '../common/utils'
 import WLRDetails from './components/WLRDetails'
 
 const { downloadCSV } = reportUtils.common
@@ -86,6 +89,7 @@ const WholeLearnerReport = ({
   prevFiltersData,
   student,
   filtersData,
+  filtersTabKey,
   filters,
   filterTagsData,
   selectedFilterTagsData,
@@ -103,6 +107,7 @@ const WholeLearnerReport = ({
   setFirstLoad,
   fetchFiltersDataRequest,
   fetchStudentsDataRequest,
+  setFiltersTabKey,
   setFilters,
   setStudent,
   setFilterTagsData,
@@ -130,6 +135,7 @@ const WholeLearnerReport = ({
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
   )
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   const [isAttendanceChartVisible, setIsAttendanceChartVisible] = useState(true)
   const isAttendanceChartToggled = useRef(false)
   const sharedReport = useMemo(
@@ -189,6 +195,12 @@ const WholeLearnerReport = ({
       'termId',
       'standardsProficiencyProfileId',
       'assignedBy',
+      'testSubjects',
+      'testGrades',
+      'testTypes',
+      'tagIds',
+      'testTermIds',
+      'testUniqIds',
     ]
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
@@ -309,20 +321,22 @@ const WholeLearnerReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
-      fetchAttendanceDataRequest({
-        ...settings.requestFilters,
-        studentId: settings.selectedStudent.key,
-      })
-      fetchInterventionsByGroups({
-        type: [
-          DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC,
-          DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE,
-        ],
-        studentId: settings.selectedStudent.key,
-        termId,
-        startDate,
-        endDate,
-      })
+      if (!isMultiSchoolYear) {
+        fetchAttendanceDataRequest({
+          ...settings.requestFilters,
+          studentId: settings.selectedStudent.key,
+        })
+        fetchInterventionsByGroups({
+          type: [
+            DW_GOALS_AND_INTERVENTIONS_TYPES.ACADEMIC,
+            DW_GOALS_AND_INTERVENTIONS_TYPES.ATTENDANCE,
+          ],
+          studentId: settings.selectedStudent.key,
+          termId,
+          startDate,
+          endDate,
+        })
+      }
       fetchSPRFFilterDataRequest({
         termId,
         studentId: settings.selectedStudent.key,
@@ -331,7 +345,7 @@ const WholeLearnerReport = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedStudent.key, settings.requestFilters.termId])
+  }, [settings.selectedStudent.key, settings.requestFilters])
 
   useEffect(() => {
     if (
@@ -392,6 +406,8 @@ const WholeLearnerReport = ({
       selectedPerformanceBand,
       testTypes,
       externalScoreType,
+      termsData,
+      isMultiSchoolYear,
     })
     const _tableData = getTableData({
       districtMetrics,
@@ -468,6 +484,7 @@ const WholeLearnerReport = ({
           prevFiltersData={prevFiltersData}
           filtersData={filtersData}
           student={student}
+          filtersTabKey={filtersTabKey}
           filters={filters}
           filterTagsData={filterTagsData}
           selectedFilterTagsData={selectedFilterTagsData}
@@ -479,6 +496,7 @@ const WholeLearnerReport = ({
           // action props (from report actions)
           fetchFiltersDataRequest={fetchFiltersDataRequest}
           fetchStudentsDataRequest={fetchStudentsDataRequest}
+          setFiltersTabKey={setFiltersTabKey}
           setFilters={setFilters}
           setStudent={setStudent}
           setFilterTagsData={setFilterTagsData}
@@ -532,6 +550,7 @@ const WholeLearnerReport = ({
                       studentInformation={settings.selectedStudentInformation}
                       studentClassData={studentClassData}
                       settings={settings}
+                      isMultiSchoolYear={isMultiSchoolYear}
                     />
                     <WLRDetails
                       isPrinting={isPrinting}
@@ -565,6 +584,7 @@ const WholeLearnerReport = ({
                       fetchStudentsMasteryDataRequest={
                         fetchStudentsMasteryDataRequest
                       }
+                      isMultiSchoolYear={isMultiSchoolYear}
                       selectedMasteryScale={selectedMasteryScale}
                       setSelectedMasteryScale={setSelectedMasteryScale}
                       loadingMasteryData={loadingMasteryData}

@@ -1,6 +1,14 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
-import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
+import {
+  all,
+  call,
+  put,
+  takeEvery,
+  select,
+  take,
+  takeLatest,
+} from 'redux-saga/effects'
 import { get, isEmpty, omitBy, mapValues, uniqBy, sortBy } from 'lodash'
 
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
@@ -190,7 +198,7 @@ import {
   RECEIVE_TEACHERLIST_ERROR,
   RECEIVE_TEACHERLIST_SUCCESS,
 } from '../Teacher/ducks'
-import { combineNames } from './common/util'
+import { combineNames, testListTransformer } from './common/util'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -215,6 +223,7 @@ import {
   receiveGroupListAction,
 } from '../Groups/ducks'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from './subPages/dataWarehouseReports/GoalsAndInterventions/constants/form'
+import { ASSESSMENT_TYPES } from './common/constants'
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -233,6 +242,13 @@ const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
   '[reports] receive test list request success'
 const RECEIVE_TEST_LIST_REQUEST_ERROR =
   '[reports] receive test list request request error'
+
+const RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST =
+  '[reports] receive multi school year test list request'
+const RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_SUCCESS =
+  '[reports] receive multi school year test list request success'
+const RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_ERROR =
+  '[reports] receive multi school year test list request error'
 
 const FETCH_UPDATE_TAGS_DATA = '[reports] fetch & update tagsData'
 
@@ -255,6 +271,10 @@ export const setEnableReportSharingAction = createAction(
 )
 
 export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
+
+export const receiveMultiSchoolYearTestListAction = createAction(
+  RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST
+)
 
 export const generateCSVAction = createAction(GENERATE_CSV_REQUEST)
 export const setCsvModalVisibleAction = createAction(SET_CSV_MODAL_VISIBLE)
@@ -312,6 +332,11 @@ export const getTestListSelector = createSelector(
   (state) => state.testList
 )
 
+export const getMultiSchoolYearTestList = createSelector(
+  stateSelector,
+  (state) => state.multiSchoolYearTestList
+)
+
 const _testListLoadingSelectors = {}
 export const createTestListLoadingSelector = (statePrefix = '') => {
   if (!(statePrefix in _testListLoadingSelectors)) {
@@ -326,6 +351,11 @@ export const createTestListLoadingSelector = (statePrefix = '') => {
 export const getTestListLoadingSelector = createSelector(
   stateSelector,
   (state) => state.testListLoading
+)
+
+export const getMultiSchoolYearTestListLoadingSelector = createSelector(
+  stateSelector,
+  (state) => state.multiSchoolYearTestListLoading
 )
 
 export const getCsvModalVisible = createSelector(
@@ -392,6 +422,8 @@ const initialState = {
   interventionLoading: false,
   interventionsByGroups: [],
   interventionError: '',
+  multiSchoolYearTestListLoading: false,
+  multiSchoolYearTestList: [],
 }
 
 const reports = createReducer(initialState, {
@@ -426,6 +458,24 @@ const reports = createReducer(initialState, {
     state[`${statePrefix}testList`] = []
     state.error = error
   },
+
+  [RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST]: (state) => {
+    state.multiSchoolYearTestListLoading = true
+  },
+  [RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_SUCCESS]: (
+    state,
+    { payload }
+  ) => {
+    state.multiSchoolYearTestListLoading = false
+    state.multiSchoolYearTestList = payload
+  },
+
+  [RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
+    state.multiSchoolYearTestListLoading = false
+    state.multiSchoolYearTestList = []
+    state.error = payload.error
+  },
+
   [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
     state.csvModalVisible = payload
   },
@@ -872,13 +922,6 @@ function* fetchUpdateTagsData({ payload }) {
 export function* receiveTestListSaga({ payload }) {
   const { statePrefix = '', externalTests = [], ...params } = payload
   try {
-    const {
-      termId = '',
-      grades = [],
-      subjects = [],
-      testTypes = [],
-      searchString = '',
-    } = get(params, 'search', {})
     const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
@@ -892,44 +935,48 @@ export function* receiveTestListSaga({ payload }) {
         return { _id, title }
       })
       .filter(({ _id, title }) => _id && title)
-    const externalTestList = externalTests
-      .filter((t) => {
-        const _testGrades = (t.testGrades || '').split(',')
-        const _testSubjects = (t.testSubjects || '').split(',')
-        const checkForTermId = termId === t.termId
-        const checkForGrades =
-          !grades.length ||
-          !!_testGrades.filter((g) => grades.includes(g)).length
-        const checkForSubjects =
-          !subjects.length ||
-          !!_testSubjects.filter((s) => subjects.includes(s)).length
-        const checkForExternalTestTypes =
-          !testTypes.length || testTypes.includes(t.testCategory)
-        const checkForExternalTestTitle =
-          !searchString ||
-          t.testName.toLowerCase().includes(searchString.toLowerCase())
-        return [
-          checkForTermId,
-          checkForGrades,
-          checkForSubjects,
-          checkForExternalTestTitle,
-          checkForExternalTestTypes,
-        ].every((o) => !!o)
-      })
-      .map(({ testName }) => {
-        // TODO find permanent fix for issue with AssessmentAutoComplete when _id & title are same. Adding space after testName in title here to avoid it here.
-        return { _id: testName, title: `${testName} `, showId: false }
-      })
+    const externalTestList = testListTransformer(
+      externalTests,
+      ASSESSMENT_TYPES.EXTERNAL,
+      params
+    )
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
       payload: { testList: [...testList, ...externalTestList], statePrefix },
     })
   } catch (error) {
     const msg = 'Failed to receive tests dropdown data. Please try again...'
-    styledNotification({ msg })
+    styledNotification({ type: 'error', msg })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_ERROR,
       payload: { error: msg, statePrefix },
+    })
+  }
+}
+
+function* receiveMultiSchoolYearTestListSaga({ payload }) {
+  const { externalTests = [], ...params } = payload
+  try {
+    const searchResult = yield call(
+      assignmentApi.searchMultiSchoolYearAssignments,
+      params
+    )
+    const testList = testListTransformer(searchResult)
+    const _externalAssessments = testListTransformer(
+      externalTests,
+      ASSESSMENT_TYPES.EXTERNAL,
+      params
+    )
+    yield put({
+      type: RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_SUCCESS,
+      payload: [...testList, ..._externalAssessments],
+    })
+  } catch (error) {
+    const msg = 'Failed to receive tests dropdown data. Please try again...'
+    styledNotification({ msg })
+    yield put({
+      type: RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_ERROR,
+      payload: { error: msg },
     })
   }
 }
@@ -988,6 +1035,10 @@ export function* reportSaga() {
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
+    takeLatest(
+      RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST,
+      receiveMultiSchoolYearTestListSaga
+    ),
     takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
     takeEvery(
       FETCH_INTERVENTIONS_BY_GROUPS_REQUEST,

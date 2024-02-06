@@ -270,7 +270,7 @@ function* deleteTestSaga({ payload }) {
         yield put(setEditEnableAction(false))
         yield put(setDeleteTestStateAction('DONE'))
       }
-    } else yield put(push('/author/tests'))
+    } else yield put(push('/author/tests', { skipTestNameChangeModal: true }))
     yield put(setCurrentTestSettingsIdAction(''))
     notification({
       type: 'success',

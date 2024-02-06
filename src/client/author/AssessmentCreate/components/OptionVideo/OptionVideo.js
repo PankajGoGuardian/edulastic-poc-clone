@@ -21,6 +21,8 @@ import {
   isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
 } from '../../../src/selectors/user'
 import VideoQuizUsage from './VideoQuizUsage'
 import AddOnTag from '../common/AddOnTag'
@@ -38,6 +40,8 @@ const OptionVideo = ({
   showVQCount,
   isPremiumUser,
   isRedirectToAddOn,
+  vqQuotaForDistrict,
+  vqUsageCount,
 }) => {
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
@@ -60,7 +64,10 @@ const OptionVideo = ({
   const showVideoUsageCountForPremium =
     isPremiumUser && !isVideoQuizAndAIEnabled && showVQCount
 
-  const showAddOnTagForFreeUser = !isPremiumUser && !isVideoQuizAndAIEnabled
+  const showAddOnTagForFreeUser =
+    (!isPremiumUser && !isVideoQuizAndAIEnabled) ||
+    (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount) ||
+    vqQuotaForDistrict === 0
 
   return (
     <CardComponent>
@@ -109,6 +116,8 @@ const enhance = compose(
     showVQCount: showVQCountSelector(state),
     isPremiumUser: isPremiumUserSelector(state),
     isRedirectToAddOn: isRedirectToAddOnSelector(state),
+    vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
+    vqUsageCount: vqUsageCountSelector(state),
   }))
 )
 export default enhance(OptionVideo)

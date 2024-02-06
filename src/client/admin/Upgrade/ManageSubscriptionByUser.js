@@ -253,7 +253,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             })
 
             // filter out add on subscriptions with empty startDate/endDate
-            const additionalSubscriptions = [
+            const nextAdditionalSubscriptions = [
               {
                 type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
                 startDate: tutorMeStartDate?.valueOf(),
@@ -263,7 +263,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
 
             // keep subscription active if either premium or additionalSubscriptions are present
             const statusObj =
-              !revokePremiumCheck || additionalSubscriptions.length
+              !revokePremiumCheck || nextAdditionalSubscriptions.length
                 ? {}
                 : { status: SUBSCRIPTION_STATUS.ARCHIVED }
 
@@ -282,7 +282,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               identifiers,
               dataStudio,
               seedDsData,
-              additionalSubscriptions,
+              additionalSubscriptions: nextAdditionalSubscriptions,
             })
           }
         }

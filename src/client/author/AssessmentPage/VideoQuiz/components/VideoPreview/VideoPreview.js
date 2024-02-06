@@ -1,4 +1,4 @@
-import { DragDrop } from '@edulastic/common'
+import { DragDrop, notification } from '@edulastic/common'
 import { Col } from 'antd'
 import { Rnd } from 'react-rnd'
 import { round, isEmpty, isEqual } from 'lodash'
@@ -263,7 +263,6 @@ const VideoPreview = ({
   }
 
   const handleKeyboardSeek = (direction) => {
-    if (vqPreventSkipping) return
     const isSeekBarFocused = isSeekBarFocusedRef.current
     if (!isSeekBarFocused && videoRef.current) {
       sliderRef?.current?.focus?.()
@@ -271,6 +270,10 @@ const VideoPreview = ({
       let _currentTime = getCurrentTime(videoRef)
       let updatedCurrentTime = _currentTime
       if (direction === SEEK_DATA.FORWARD) {
+        if (vqPreventSkipping) {
+          notification({ type: 'info', messageKey: 'preventVQForwardSeek' })
+          return
+        }
         updatedCurrentTime = _currentTime + SEEK_DATA.SEEK_STEP_COUNT
         _currentTime =
           updatedCurrentTime > videoDuration ? _currentTime : updatedCurrentTime

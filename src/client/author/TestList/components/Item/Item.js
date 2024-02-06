@@ -6,7 +6,6 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
 import { segmentApi } from '@edulastic/api'
-import { testCategoryTypes } from '@edulastic/constants/const/test'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -55,6 +54,7 @@ import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selecto
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
 import { getTestCollectionName } from '../../../utils/testCardDetails'
+import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -199,15 +199,12 @@ class Item extends Component {
   openModal = (source) => {
     const {
       item: { testCategory = '' },
-      isVideoQuizAndAiEnabled,
+
       setAISuiteAlertModalVisibility,
       isRedirectToAddOn,
     } = this.props
-    if (
-      testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuizAndAiEnabled &&
-      isRedirectToAddOn
-    ) {
+
+    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)) {
       setAISuiteAlertModalVisibility(true)
       return
     }
@@ -228,14 +225,12 @@ class Item extends Component {
     const {
       setIsTestPreviewVisible,
       item: { testCategory = '' },
-      isVideoQuizAndAiEnabled,
+      isRedirectToAddOn,
       setAISuiteAlertModalVisibility,
     } = this.props
+    // here
 
-    if (
-      testCategory === testCategoryTypes.VIDEO_BASED &&
-      !isVideoQuizAndAiEnabled
-    ) {
+    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)) {
       setAISuiteAlertModalVisibility(true)
       return
     }

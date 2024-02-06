@@ -20,7 +20,6 @@ import {
 import { AI_EVALUATION_STATUS } from '@edulastic/constants/const/evaluationType'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { useLanguageFeatureQn } from '@edulastic/constants/const/questionType'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -28,11 +27,7 @@ import { questionTypeToComponent } from '../utils/questionTypeComponent'
 import withAnswerSave from './HOC/withAnswerSave'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
 import { setPassageCurrentPageAction } from '../actions/userInteractions'
-import {
-  getUserRole,
-  getUserFeatures,
-  allowedToSelectMultiLanguageInTest,
-} from '../../author/src/selectors/user'
+import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
 
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
@@ -70,7 +65,6 @@ import {
   ManualEvaluationMessage,
   PaperWrapper,
 } from '../styled/QuestionWrapperStyledComponents'
-import LanguageSelectorTab from '../../common/components/LanguageSelectorTab'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -384,7 +378,6 @@ class QuestionWrapper extends Component {
       t: translate,
       aiEvaluationStatus,
       authLanguage,
-      allowedToSelectMultiLanguage,
       ...restProps
     } = this.props
 
@@ -714,15 +707,6 @@ class QuestionWrapper extends Component {
                     </EduIf>
                   </EduIf>
                   <ImmersiveReaderWrapper>
-                    <EduIf
-                      condition={
-                        view === EDIT &&
-                        allowedToSelectMultiLanguage &&
-                        useLanguageFeatureQn.includes(data.type)
-                      }
-                    >
-                      <LanguageSelectorTab />
-                    </EduIf>
                     <Question
                       {...restProps}
                       t={translate}
@@ -916,7 +900,6 @@ const enhance = compose(
         {}
       ),
       isVideoQuiz: getIsVideoQuizSelector(state),
-      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
     }),
     {
       loadScratchPad: requestScratchPadAction,

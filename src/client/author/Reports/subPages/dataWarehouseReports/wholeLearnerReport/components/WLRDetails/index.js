@@ -55,6 +55,7 @@ const WLRDetails = ({
   toggleAttendanceChart,
   interventionsData, // interventions data for performance report
   toggleInterventionInfo,
+  isMultiSchoolYear,
   selectedMasteryScale,
   setSelectedMasteryScale,
   loadingMasteryData,
@@ -106,6 +107,7 @@ const WLRDetails = ({
           toggleAttendanceChart={toggleAttendanceChart}
           interventionsData={interventionsData}
           toggleInterventionInfo={toggleInterventionInfo}
+          isMultiSchoolYear={isMultiSchoolYear}
         />
       ),
     },

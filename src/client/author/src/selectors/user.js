@@ -217,21 +217,12 @@ export const getUserOrgName = createSelector(
 
 export const getUserFeatures = createSelector(stateSelector, (state) => {
   const features = _get(state, 'user.features')
-  const userHaveImmersiveReader = _get(state, 'user.immersiveReader')
-
-  if (userHaveImmersiveReader) {
-    return {
-      ...features,
-      canUseImmersiveReader: userHaveImmersiveReader === 'yes',
-    }
-  }
-
   return features
 })
 
 export const getIsAiEvaulationDistrictSelector = createSelector(
   getUserFeatures,
-  (features) => features.isVideoQuizAndAIEnabled
+  (features) => features?.isVideoQuizAndAIEnabled || false
 )
 
 export const getIsTutorMeEnabledSelector = createSelector(
@@ -587,9 +578,13 @@ export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
 )
 
 export const showVQCountSelector = createSelector(
+  vqUsageCountSelector,
   vqQuotaForDistrictSelector,
-  (vqQuotaForDistrict) => {
-    if (vqQuotaForDistrict === -1) {
+  (vqUsageCount, vqQuotaForDistrict) => {
+    if (
+      vqQuotaForDistrict === -1 ||
+      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
+    ) {
       return false
     }
     return true

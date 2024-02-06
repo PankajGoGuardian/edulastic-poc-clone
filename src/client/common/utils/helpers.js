@@ -788,3 +788,36 @@ export class PendoHelper {
   }
 }
 PendoHelper.init()
+
+// Add and Remove meta description tag
+export const DEFAULT_ATTR = [{ attrName: 'name', attrVal: 'description' }]
+export const updateMetaTag = ({ attributes = DEFAULT_ATTR, content }) => {
+  // Check if a meta tag with the same attributes already exists
+  const head = document.getElementsByTagName('head')[0]
+  const existingMetaTag = Array.from(head.getElementsByTagName('meta')).find(
+    (meta) => {
+      return attributes.every(
+        ({ attrName, attrVal }) => meta.getAttribute(attrName) === attrVal
+      )
+    }
+  )
+  const metaTag = existingMetaTag || document.createElement('meta')
+  attributes.forEach(({ attrName, attrVal }) => {
+    metaTag.setAttribute(attrName, attrVal)
+  })
+  metaTag.content = content
+
+  head.appendChild(metaTag)
+}
+
+export const removeMetaTag = (
+  attribute = { attrName: 'name', attrVal: 'description' }
+) => {
+  const metaTag = document.querySelector(
+    `meta[${attribute.attrName}="${attribute.attrVal}"]`
+  )
+  if (metaTag) {
+    const head = document.getElementsByTagName('head')[0]
+    head.removeChild(metaTag)
+  }
+}

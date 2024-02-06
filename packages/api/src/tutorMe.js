@@ -13,6 +13,17 @@ const getTutorMeStandards = (params) => {
     })
     .then(({ data }) => data?.result)
 }
+
+function authorizeTutorme() {
+  return api
+    .callApi({
+      url: `${tutorMeApiPrefix}/authorize`,
+      method: 'post',
+    })
+    .then((r) => r.data.result)
+}
+
 export default {
   getTutorMeStandards,
+  authorizeTutorme,
 }

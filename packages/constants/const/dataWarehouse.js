@@ -49,6 +49,7 @@ const getAchievementLevels = (test, allExternalBands) => {
     ...band,
     active: band.rank === test.achievementLevel,
     testId: test.testId,
+    termId: test.termId,
     id: band.rank,
   }))
   return testBands

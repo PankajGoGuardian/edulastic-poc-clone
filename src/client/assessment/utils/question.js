@@ -319,6 +319,7 @@ export const changeDataToPreferredLanguage = (
     view === 'preview' &&
     language === LANGUAGE_EN &&
     !questionData?.stimulus?.length &&
+    !questionData?.contentsTitle?.length &&
     questionData.languageFeatures
   ) {
     // Extracting the first languageCode from keys of languageFeatures

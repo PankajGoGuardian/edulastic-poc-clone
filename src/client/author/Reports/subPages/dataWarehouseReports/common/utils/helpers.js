@@ -285,6 +285,18 @@ export const getExternalScoreFormattedByType = (
   return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
 }
 
+export const getUrlTestTermIds = (schoolYears, testTermIds) =>
+  schoolYears.filter((item) => testTermIds && testTermIds.includes(item.key))
+
+export const convertItemToArray = (item) =>
+  (item && (Array.isArray(item) ? item : item.split(','))) || []
+
+export const getIsMultiSchoolYearDataPresent = (testTermIds) =>
+  convertItemToArray(testTermIds).length > 1
+
+export const getTestUniqId = (assessment) =>
+  `${assessment.testId}_${assessment.termId}`
+
 export const getXTickTooltipText = (payload, data) => {
   const { shortTestName = '', testName = '', externalTestType = '' } = data[
     payload.index

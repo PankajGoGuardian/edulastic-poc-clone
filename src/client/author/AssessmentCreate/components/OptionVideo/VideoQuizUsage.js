@@ -91,7 +91,7 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
                 flexDirection="column"
               >
                 <UpgradeAiSuitTitle>
-                  Upgrade to AI Premium Suite
+                  Upgrade to Premium Suite
                   <DollarSymbolWrapper>
                     <IconStar />
                   </DollarSymbolWrapper>
@@ -151,6 +151,7 @@ const UpgradeAiSuitTitle = styled(FlexContainer)`
   font-size: 12px;
   font-style: normal;
   font-weight: 600;
+  margin-bottom: 8px;
 `
 
 const UpgradeAiSuitText = styled(FlexContainer)`

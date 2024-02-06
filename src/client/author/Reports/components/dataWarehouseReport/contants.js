@@ -18,6 +18,7 @@ import {
   DW_DASHBOARD_URL,
   DW_GOALS_AND_INTERVENTIONS_URL,
   DW_EFFICACY_REPORT_URL,
+  CUSTOM_REPORTS_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 export const DATA_WAREHOUSE_MODAL_MODES = {
@@ -26,7 +27,7 @@ export const DATA_WAREHOUSE_MODAL_MODES = {
   DELETE: 'delete',
 }
 
-export const dataWarehousereportCardsData = [
+export const DATA_WAREHOUSE_REPORT_CARDS_DATA = [
   {
     id: 1,
     title: 'Academic Reports',
@@ -115,6 +116,45 @@ export const dataWarehousereportCardsData = [
         description:
           'Compare student performance across tests pre and post-intervention.',
         url: DW_EFFICACY_REPORT_URL,
+      },
+    ],
+  },
+]
+
+export const DATA_WAREHOUSE_REPORT_CARDS_DATA_FOR_DGA = [
+  {
+    id: 1,
+    title: 'DISTRICT GROUP REPORTS',
+    cards: [
+      {
+        id: 1,
+        IconThumbnail: IconPerformanceTrendAddOn,
+        title: 'Performance Trends',
+        description:
+          "View whether the student's performance is improving over time and take necessary interventions.",
+        url: DW_MAR_REPORT_URL,
+      },
+      {
+        id: 2,
+        IconThumbnail: IconPerformanceTrendAddOn,
+        title: 'Tailored Insights',
+        description: 'View customized reports as per your need.',
+        url: CUSTOM_REPORTS_URL,
+      },
+    ],
+  },
+  {
+    id: 1,
+    title: 'DISTRICT REPORTS',
+    cards: [
+      {
+        id: 1,
+        IconThumbnail: IconPerformanceTrendAddOn,
+        title: 'District Reports',
+        description:
+          'View all district level reports by accessing a district admin view.',
+        url: '',
+        openProxyModal: true,
       },
     ],
   },

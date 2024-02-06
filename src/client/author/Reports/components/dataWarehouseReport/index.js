@@ -22,6 +22,7 @@ import {
   isDataOpsUser as checkIsDataOpsUser,
   getOrgDataSelector,
   getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 
 import {
@@ -63,6 +64,7 @@ const DataWarehouseReports = ({
   resetUploadResponse,
   isDataOpsUser,
   terms,
+  userRole,
   features,
   history,
   uploadResponse,
@@ -170,6 +172,7 @@ const DataWarehouseReports = ({
             <TabPane tab={REPORTS_TAB.label} key={REPORTS_TAB.key}>
               <UpgradeBanner />
               <DataWarehoureReportCardsWrapper
+                userRole={userRole}
                 allowAccess={allowAccess}
                 loc={loc}
               />
@@ -198,6 +201,7 @@ const DataWarehouseReports = ({
         <EduIf condition={!isDataOpsUser}>
           <UpgradeBanner />
           <DataWarehoureReportCardsWrapper
+            userRole={userRole}
             allowAccess={allowAccess}
             loc={loc}
           />
@@ -219,6 +223,7 @@ const withConnect = connect(
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
     isDataOpsUser: checkIsDataOpsUser(state),
+    userRole: getUserRole(state),
     features: getUserFeatures(state),
     terms: get(getOrgDataSelector(state), 'terms', []),
     uploadResponse: getTestDataFileUploadResponse(state),

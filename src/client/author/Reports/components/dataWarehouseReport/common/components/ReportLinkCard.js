@@ -12,12 +12,16 @@ const ReportLinkCard = ({
   title,
   description,
   url,
+  // openProxyModal = false,
   loc,
   history,
   allowAccess,
   comingSoon,
 }) => {
   const navigateToReport = () => {
+    // if (openProxyModal) {
+    //   return setShowProxyModal(true)
+    // }
     if (allowAccess) {
       return history.push({ pathname: url, state: { source: loc } })
     }

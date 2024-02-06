@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { vqUsageProgressColor, white } from '@edulastic/colors'
-import { IconInfoCircle, IconVQTextCheck, IconStar } from '@edulastic/icons'
+import { IconInfoCircle, IconVQTextCheck } from '@edulastic/icons'
 import { withRouter } from 'react-router-dom'
 import { Progress } from 'antd'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
@@ -25,6 +25,11 @@ const getVQTagBgColorForQuota = (remainingPercentage) => {
       return green
   }
 }
+
+const VQ_UPGRADE_MESSAGE_LIST = [
+  'Unlimited Video Quizzes',
+  'Generate Questions using AI',
+]
 
 const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
   const [isVisible, setIsModalOpen] = useState(false)
@@ -85,18 +90,12 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
                 height="50px"
                 flexDirection="column"
               >
-                <UpgradeAiSuitTitle>
-                  Upgrade to AI Premium Suite
-                  <DollarSymbolWrapper>
-                    <IconStar />
-                  </DollarSymbolWrapper>
-                </UpgradeAiSuitTitle>
-                <FlexContainer justifyContent="flex-start">
-                  <IconVQTextCheck margin="3px 0 0 0" />
-                  <UpgradeAiSuitText ml="5px">
-                    Unlimited Video Quizzes
-                  </UpgradeAiSuitText>
-                </FlexContainer>
+                {VQ_UPGRADE_MESSAGE_LIST.map((message, index) => (
+                  <FlexContainer justifyContent="flex-start" key={index}>
+                    <IconVQTextCheck margin="3px 0 0 0" />
+                    <UpgradeAiSuitText ml="5px">{message}</UpgradeAiSuitText>
+                  </FlexContainer>
+                ))}
               </FlexContainer>
               <FlexContainer alignItems="center">
                 <UpgradeAiSuitButton isGhost onClick={goToAddOnsPage}>
@@ -139,13 +138,6 @@ const UpgradeToAiSuitBox = styled.div`
   background: #fcf5eb;
   padding: 16px;
 `
-const UpgradeAiSuitTitle = styled(FlexContainer)`
-  color: #000;
-  font-family: 'Open Sans';
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 600;
-`
 const UpgradeAiSuitText = styled(FlexContainer)`
   color: #3d3d3d;
   font-family: 'Open Sans';
@@ -181,14 +173,4 @@ const UpgradeAiSuitButton = styled(EduButton)`
       border: none;
     }
   }
-`
-const DollarSymbolWrapper = styled.span`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${white};
-  margin-left: 8px;
-  width: 22px;
-  text-align: center;
-  border-radius: 2px;
 `

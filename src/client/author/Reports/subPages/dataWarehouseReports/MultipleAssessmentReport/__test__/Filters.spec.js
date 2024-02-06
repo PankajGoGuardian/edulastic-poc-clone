@@ -68,11 +68,11 @@ describe('Data warehouse reports ', () => {
     const filtersButton = screen.getByText('FILTERS')
     expect(filtersButton).toBeInTheDocument()
 
-    const assessmentsTab = screen.getByText('Select Assessments')
-    expect(assessmentsTab).toBeInTheDocument()
+    const studentsTab = screen.getByText('Select Students')
+    expect(studentsTab).toBeInTheDocument()
 
-    const classesTab = screen.getByText('Select Classes')
-    expect(classesTab).toBeInTheDocument()
+    const testsTab = screen.getByText('Select Tests')
+    expect(testsTab).toBeInTheDocument()
 
     const performanceTab = screen.getByText('Performance')
     expect(performanceTab).toBeInTheDocument()

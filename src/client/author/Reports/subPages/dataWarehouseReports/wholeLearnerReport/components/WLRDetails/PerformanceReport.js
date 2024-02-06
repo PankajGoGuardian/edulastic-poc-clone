@@ -38,6 +38,7 @@ const PerformanceReport = ({
   toggleAttendanceChart,
   interventionsData,
   toggleInterventionInfo,
+  isMultiSchoolYear,
 }) => {
   return (
     <>
@@ -67,25 +68,30 @@ const PerformanceReport = ({
               />
             }
             preLabelContent={
-              <ChartPreLabelWrapper>
-                <FlexContainer alignItems="center" justifyContent="flex-start">
-                  <Checkbox
-                    checked={isAttendanceChartVisible}
-                    onChange={toggleAttendanceChart}
+              <EduIf condition={!isMultiSchoolYear}>
+                <ChartPreLabelWrapper>
+                  <FlexContainer
+                    alignItems="center"
+                    justifyContent="flex-start"
                   >
-                    Show Attendance Chart
-                  </Checkbox>
-                  <EduIf condition={interventionsData?.length}>
                     <Checkbox
-                      checked={showInterventions}
-                      onChange={toggleInterventionInfo}
+                      checked={isAttendanceChartVisible}
+                      onChange={toggleAttendanceChart}
                     >
-                      Show Interventions{' '}
+                      Show Attendance Chart
                     </Checkbox>
-                    <IconInfo fill={blueButton} width={16} height={16} />
-                  </EduIf>
-                </FlexContainer>
-              </ChartPreLabelWrapper>
+                    <EduIf condition={interventionsData?.length}>
+                      <Checkbox
+                        checked={showInterventions}
+                        onChange={toggleInterventionInfo}
+                      >
+                        Show Interventions{' '}
+                      </Checkbox>
+                      <IconInfo fill={blueButton} width={16} height={16} />
+                    </EduIf>
+                  </FlexContainer>
+                </ChartPreLabelWrapper>
+              </EduIf>
             }
           />
         </EduThen>
@@ -95,7 +101,7 @@ const PerformanceReport = ({
           </NoDataContainer>
         </EduElse>
       </EduIf>
-      <EduIf condition={isAttendanceChartVisible}>
+      <EduIf condition={isAttendanceChartVisible && !isMultiSchoolYear}>
         <AttendanceChart
           isPrinting={isPrinting}
           attendanceChartData={attendanceChartData}

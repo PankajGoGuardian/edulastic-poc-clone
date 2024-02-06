@@ -9,6 +9,7 @@ import {
   sum,
   mapValues,
   isNaN,
+  keyBy,
 } from 'lodash'
 
 import {
@@ -21,6 +22,8 @@ import {
   compareByOptions,
   compareByOptionsInfo,
   getExternalScoreFormattedByType,
+  getIsMultiSchoolYearDataPresent,
+  getTestUniqId,
 } from '../common/utils'
 
 const {
@@ -38,13 +41,13 @@ export const TABLE_PAGE_SIZE = 25
 
 export const staticDropDownData = {
   filterSections: {
-    TEST_FILTERS: {
+    STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Assessments',
+      title: 'Select Students',
     },
-    CLASS_FILTERS: {
+    TEST_FILTERS: {
       key: '1',
-      title: 'Select Classes',
+      title: 'Select Tests',
     },
     PERFORMANCE_FILTERS: {
       key: '2',
@@ -77,6 +80,7 @@ export const staticDropDownData = {
     { key: 'frlStatus', tabKey: '3' },
     { key: 'ellStatus', tabKey: '3' },
     { key: 'hispanicEthnicity', tabKey: '3' },
+    { key: 'testTermIds', subType: 'test', tabKey: '1' },
   ],
   initialFilters: {
     reportId: '',
@@ -102,10 +106,14 @@ export const staticDropDownData = {
     frlStatus: 'all',
     ellStatus: 'all',
     hispanicEthnicity: 'all',
+    testTermIds: '',
+    testUniqIds: '',
   },
   requestFilters: {
     reportId: '',
     termId: '',
+    testTermIds: '',
+    testUniqIds: '',
     testSubjects: '',
     testGrades: '',
     assessmentTypes: '',
@@ -269,16 +277,23 @@ const augmentBandData = (tests, bandInfo, externalBands) => {
   return testsWithBandInfo
 }
 
-const getAggregatedDataByTestId = (metricInfo, filters = {}) => {
+const getAggregatedDataByTestId = (
+  metricInfo,
+  filters = {},
+  isMultiSchoolYear
+) => {
   const { externalScoreType } = filters
   const result = {}
-  const groupedByTestId = groupBy(metricInfo, 'testId')
+  const groupedByTestId = isMultiSchoolYear
+    ? groupBy(metricInfo, getTestUniqId)
+    : groupBy(metricInfo, 'testId')
   Object.keys(groupedByTestId).forEach((testId) => {
     const {
       testName = 'N/A',
       isIncomplete = false,
       ...testData
     } = groupedByTestId[testId].reduce(
+      // Note: testId refers to testUniqId i.e. testId_termId in case of multiSchoolYear
       (res, ele) => {
         const _isIncomplete = ele.isIncomplete || res.isIncomplete
         const _res =
@@ -426,6 +441,7 @@ export const getTableData = (
   if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) {
     externalMetricsForTable = []
   }
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   // fallback to prevent intermittent crashes when bandInfo is empty
   const _metricInfo = isEmpty(bandInfo) ? [] : internalMetricsForTable
   // filter out external tests data without achievement level
@@ -464,7 +480,7 @@ export const getTableData = (
   const compareByLabelKey = compareByMap[compareByKey]
   let tableData = Object.keys(groupedByCompareByKey).map((compareByValue) => {
     const _data = groupedByCompareByKey[compareByValue]
-    const tests = getAggregatedDataByTestId(_data, filters)
+    const tests = getAggregatedDataByTestId(_data, filters, isMultiSchoolYear)
     const compareByLabelValue = _data[0][compareByLabelKey]
     return {
       id: compareByValue,
@@ -491,6 +507,7 @@ export const getTableData = (
  * @param {Record[]} bandInfo - contains internal tests performance band info.
  * @param {Record[]} externalBands - contains external tests performance band info.
  * @param {Record} filters - contains either shared report filters or popup filters data.
+ * @param {Object{}} termsKeyedById - contains terms with termId as the key
  * @returns {Record[]} - transformed chart data to render chart.
  */
 export const getChartData = (
@@ -498,27 +515,36 @@ export const getChartData = (
   externalMetricInfo = [],
   bandInfo = [],
   externalBands = [],
-  filters = {}
+  filters = {},
+  termsKeyedById = {}
 ) => {
   const { externalScoreType } = filters
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   // fallback to prevent intermittent crashes when bandInfo is empty
   const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
   const filteredExternalMetricInfo = externalMetricInfo
     .filter((t) => t.externalTestType && t.achievementLevel)
-    .map((t) => ({
-      ...t,
-      assessmentDate: +new Date(t.assessmentDate),
-      achievementLevel: +t.achievementLevel,
-      testId: t.testName,
-    }))
+    .map((t) => {
+      const selectedTerm = termsKeyedById[t.termId]
+      return {
+        ...t,
+        assessmentDate: +new Date(t.assessmentDate),
+        achievementLevel: +t.achievementLevel,
+        testId: t.testName,
+        termName: selectedTerm?.name,
+        termEndDate: selectedTerm?.endDate,
+      }
+    })
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
     return []
   }
   const _bandInfo = bandInfo.sort((a, b) => b.threshold - a.threshold)
 
   // curate chart data for internal tests
-  const internalGroupedByTestId = groupBy(_metricInfo, 'testId')
+  const internalGroupedByTestId = isMultiSchoolYear
+    ? groupBy(_metricInfo, getTestUniqId)
+    : groupBy(_metricInfo, 'testId')
   const internalChartData = Object.keys(internalGroupedByTestId).map(
     (testId) => {
       const records = internalGroupedByTestId[testId]
@@ -602,9 +628,12 @@ export const getChartData = (
   )
 
   // curate chart data for external tests
-  const externalGroupedByTestId = groupBy(filteredExternalMetricInfo, 'testId')
+  const externalGroupedByTestId = isMultiSchoolYear
+    ? groupBy(filteredExternalMetricInfo, getTestUniqId)
+    : groupBy(filteredExternalMetricInfo, 'testId')
   const externalChartData = Object.keys(externalGroupedByTestId).map(
     (testId) => {
+      // Note: testId refers to testUniqId i.e. testId_termId in case of multiSchoolYear
       const records = externalGroupedByTestId[testId]
       const testData = externalGroupedByTestId[testId].reduce(
         (res, ele) => {
@@ -762,12 +791,15 @@ export const getChartData = (
  * @param {Record[]} reportChartData - chart api response.
  * @returns {Record} containing incompleteTests, selectedPerformanceBand and chartData.
  */
+
 export const getChartSpecifics = (
   filtersData,
   sharedReportFilters,
   settings,
-  reportChartData
+  reportChartData,
+  terms = []
 ) => {
+  const termsKeyedById = keyBy(terms, '_id')
   // performance band for chart should update post chart data API response
   const { bandInfo = [] } = get(filtersData, 'data.result', {})
   const selectedPerformanceBand = (
@@ -777,22 +809,30 @@ export const getChartSpecifics = (
     ) || bandInfo[0]
   )?.performanceBand
   // curate chart data from API response
+
   const {
     internalMetricsForChart = [],
     externalMetricsForChart = [],
     incompleteTests = [],
     externalBands = [],
   } = get(reportChartData, 'data.result', {})
-  const _internalMetricsForChart = internalMetricsForChart.map((d) => ({
-    ...d,
-    isIncomplete: incompleteTests.includes(d.testId),
-  }))
+  const _internalMetricsForChart = internalMetricsForChart.map((d) => {
+    const selectedTerm = termsKeyedById[d.termId]
+    return {
+      ...d,
+      isIncomplete: incompleteTests.includes(d.testId),
+      termName: selectedTerm?.name,
+      termEndDate: selectedTerm?.endDate,
+    }
+  })
+
   const chartData = getChartData(
     _internalMetricsForChart,
     externalMetricsForChart,
     selectedPerformanceBand,
     externalBands,
-    sharedReportFilters || settings.requestFilters
+    sharedReportFilters || settings.requestFilters,
+    termsKeyedById
   )
   return {
     incompleteTests,

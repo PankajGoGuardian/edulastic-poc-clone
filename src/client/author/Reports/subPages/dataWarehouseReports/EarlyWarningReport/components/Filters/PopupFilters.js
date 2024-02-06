@@ -13,10 +13,10 @@ import {
 } from '../../../../../common/styled'
 
 import { staticDropDownData } from '../../utils'
-import FilterClassFields from './FilterClassFields'
 import FilterPeriodFields from '../../../../../common/components/FilterPeriodFields'
 import FilterActions from '../../../../../common/components/FilterActions'
 import FilterTestFields from '../../../../../common/components/FilterTestFields'
+import FilterClassFields from '../../../../../common/components/FilterClassFields'
 
 function PopupFilters({
   isPrinting,
@@ -78,20 +78,21 @@ function PopupFilters({
                     onChange={setFiltersTabKey}
                   >
                     <Tabs.TabPane
-                      key={staticDropDownData.filterSections.CLASS_FILTERS.key}
+                      key={
+                        staticDropDownData.filterSections.STUDENT_FILTERS.key
+                      }
                       tab={
-                        staticDropDownData.filterSections.CLASS_FILTERS.title
+                        staticDropDownData.filterSections.STUDENT_FILTERS.title
                       }
                       forceRender
                     >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <FilterClassFields
-                          userRole={userRole}
-                          filters={filters}
-                          updateFilterDropdownCB={updateFilterDropdownCB}
-                          schoolYears={schoolYears}
-                        />
-                      </Row>
+                      <FilterClassFields
+                        userRole={userRole}
+                        filters={filters}
+                        updateFilterDropdownCB={updateFilterDropdownCB}
+                        dropDownData={staticDropDownData}
+                        schoolYears={schoolYears}
+                      />
                     </Tabs.TabPane>
 
                     <Tabs.TabPane

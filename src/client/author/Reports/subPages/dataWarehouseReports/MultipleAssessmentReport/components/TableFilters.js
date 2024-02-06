@@ -1,11 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
+import { Row, Icon } from 'antd'
 import { FlexContainer } from '@edulastic/common'
+import { orange } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
-import { StyledH3 } from '../../../../common/styled'
+import {
+  StyledH3,
+  StyledTooltip,
+  TableTitleContainer,
+} from '../../../../common/styled'
 import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
+const TITLE_TOOLTIP_NOTE =
+  'Note: The performance metrics are calculated based on students allocated to the selected school, class, or teacher. You may also see data from tests that were not specifically assigned to the currently displayed class or teacher.'
 const TableFilters = ({
   updateFilterDropdownCB,
   compareByOptions = [],
@@ -20,10 +27,16 @@ const TableFilters = ({
       align="middle"
       style={{ marginTop: 45 }}
     >
-      <StyledH3>
-        Performance Deep-dive across Assessments by{' '}
-        {selectedCompareBy?.title || '-'}
-      </StyledH3>
+      <TableTitleContainer>
+        <StyledH3>
+          Performance Deep-dive across Assessments by{' '}
+          {selectedCompareBy?.title || '-'}
+        </StyledH3>
+        <StyledTooltip placement="right" title={TITLE_TOOLTIP_NOTE}>
+          <Icon type="warning" theme="filled" style={{ color: orange }} />
+        </StyledTooltip>
+      </TableTitleContainer>
+
       <FlexContainer>
         <StudentGroupBtn
           showAddToStudentGroupBtn={showAddToStudentGroupBtn}

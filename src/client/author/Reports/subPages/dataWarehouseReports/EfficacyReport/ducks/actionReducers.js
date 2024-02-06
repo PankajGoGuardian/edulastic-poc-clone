@@ -10,7 +10,7 @@ const initialState = {
   loadingFiltersData: false,
   prevFiltersData: null,
   filtersData: {},
-  filtersTabKey: staticDropDownData.filterSections.TEST_FILTERS.key,
+  filtersTabKey: staticDropDownData.filterSections.STUDENT_FILTERS.key,
   filters: {
     ...staticDropDownData.initialFilters,
   },

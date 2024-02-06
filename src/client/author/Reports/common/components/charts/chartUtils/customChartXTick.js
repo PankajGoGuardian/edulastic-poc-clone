@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react'
 
 import { StyledAxisTickText } from '../../../styled'
 import InformationIcon from './InformationIcon'
+import SchoolYearsSeparator from './SchoolYearsSeparator'
 
 const EXTERNAL_TAG_PADDING = 2
 
@@ -55,6 +56,9 @@ export const CustomChartXTick = (props) => {
     text = `${text.substr(0, 17)}...`
   }
 
+  // position of "SchoolYearsSeparator" component on the x axis
+  const pathX = x + payload.offset + 0.5
+
   return (
     <>
       <EduIf condition={showInterventions}>
@@ -71,6 +75,7 @@ export const CustomChartXTick = (props) => {
         />
       </EduIf>
 
+      <SchoolYearsSeparator pathX={pathX} y={y} data={data} payload={payload} />
       <g transform={`translate(${x},${y})`}>
         <StyledAxisTickText
           textAnchor="middle"

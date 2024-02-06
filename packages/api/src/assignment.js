@@ -269,6 +269,15 @@ const searchAssignments = (data) =>
     })
     .then((result) => result.data.result)
 
+const searchMultiSchoolYearAssignments = (data) =>
+  api
+    .callApi({
+      url: `search/assessments`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const syncWithSchoologyClassroom = (data) =>
   api
     .callApi({
@@ -328,6 +337,7 @@ export default {
   syncWithGoogleClassroom,
   fetchByTestId,
   searchAssignments,
+  searchMultiSchoolYearAssignments,
   syncWithSchoologyClassroom,
   fetchRegradeSettings,
   editTagsRequest,

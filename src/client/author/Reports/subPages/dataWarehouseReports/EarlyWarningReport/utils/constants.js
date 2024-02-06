@@ -174,13 +174,13 @@ export const TABLE_PAGE_SIZE = 25
 
 export const staticDropDownData = {
   filterSections: {
-    CLASS_FILTERS: {
+    STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Classes',
+      title: 'Select Students',
     },
     TEST_FILTERS: {
       key: '1',
-      title: 'Select Assessments',
+      title: 'Select Tests',
     },
     DEMOGRAPHIC_FILTERS: {
       key: '2',

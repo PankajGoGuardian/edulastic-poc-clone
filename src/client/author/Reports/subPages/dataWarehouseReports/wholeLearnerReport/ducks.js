@@ -23,6 +23,7 @@ const initialState = {
     key: '',
     title: '',
   },
+  filtersTabKey: staticDropDownData.filterSections.STUDENT_FILTERS.key,
   filters: {
     ...staticDropDownData.initialFilters,
   },
@@ -120,6 +121,9 @@ const slice = createSlice({
     setFirstLoad: (state, { payload }) => {
       state.firstLoad = payload
     },
+    setFiltersTabKey: (state, { payload }) => {
+      state.filtersTabKey = payload
+    },
     setFilters: (state, { payload }) => {
       state.filters = { ...payload }
     },
@@ -216,7 +220,19 @@ function* fetchReportDataRequestSaga({ payload }) {
   try {
     const params = payload.reportId
       ? pick(payload, ['reportId'])
-      : pick(payload, ['studentId', 'termId'])
+      : {
+          ...pick(payload, [
+            'studentId',
+            'termId',
+            'testTermIds',
+            'testUniqIds',
+            'testGrades',
+            'testSubjects',
+            'tagIds',
+          ]),
+          assessmentTypes: payload.testTypes,
+        }
+
     const reportData = yield call(
       dataWarehouseApi.getWholeLearnerReport,
       params
@@ -343,6 +359,10 @@ const prevFiltersData = createSelector(
 )
 const student = createSelector(stateSelector, (state) => state.student)
 const filtersData = createSelector(stateSelector, (state) => state.filtersData)
+const filtersTabKey = createSelector(
+  stateSelector,
+  (state) => state.filtersTabKey
+)
 const filters = createSelector(stateSelector, (state) => state.filters)
 const filterTagsData = createSelector(
   stateSelector,
@@ -431,6 +451,7 @@ export const selectors = {
   prevFiltersData,
   student,
   filtersData,
+  filtersTabKey,
   filters,
   filterTagsData,
   selectedFilterTagsData,

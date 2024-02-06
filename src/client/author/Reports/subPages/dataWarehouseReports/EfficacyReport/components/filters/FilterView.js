@@ -81,6 +81,24 @@ function FiltersView({
                     onChange={setFiltersTabKey}
                   >
                     <Tabs.TabPane
+                      key={
+                        staticDropDownData.filterSections.STUDENT_FILTERS.key
+                      }
+                      tab={
+                        staticDropDownData.filterSections.STUDENT_FILTERS.title
+                      }
+                      forceRender
+                    >
+                      <FilterClassFields
+                        userRole={userRole}
+                        filters={filters}
+                        updateFilterDropdownCB={updateFilterDropdownCB}
+                        dropDownData={staticDropDownData}
+                        schoolYears={schoolYears}
+                      />
+                    </Tabs.TabPane>
+
+                    <Tabs.TabPane
                       key={staticDropDownData.filterSections.TEST_FILTERS.key}
                       tab={staticDropDownData.filterSections.TEST_FILTERS.title}
                     >
@@ -92,23 +110,7 @@ function FiltersView({
                           assessmentTypesRef={assessmentTypesRef}
                           availableAssessmentType={availableAssessmentType}
                           dropdownData={staticDropDownData}
-                        />
-                      </Row>
-                    </Tabs.TabPane>
-
-                    <Tabs.TabPane
-                      key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                      tab={
-                        staticDropDownData.filterSections.CLASS_FILTERS.title
-                      }
-                      forceRender
-                    >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <FilterClassFields
-                          userRole={userRole}
-                          filters={filters}
-                          updateFilterDropdownCB={updateFilterDropdownCB}
-                          dropDownData={staticDropDownData}
+                          exclude={['termId']}
                         />
                       </Row>
                     </Tabs.TabPane>

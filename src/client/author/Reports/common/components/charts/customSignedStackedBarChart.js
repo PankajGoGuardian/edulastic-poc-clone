@@ -37,6 +37,8 @@ import {
   setProperties,
   tooltipParams,
   getHoveredBarDimensions,
+  getChartDataBasedOnSchoolYear,
+  formatDate,
 } from '../../util'
 import { getFGColor } from '../../../../src/utils/util'
 
@@ -139,6 +141,10 @@ export const SignedStackedBarChart = ({
     content: null,
   })
 
+  const modifiedData = useMemo(() => {
+    return getChartDataBasedOnSchoolYear(data)
+  }, [data])
+
   const {
     next: nextPage,
     prev: prevPage,
@@ -148,7 +154,7 @@ export const SignedStackedBarChart = ({
     setPage,
   } = useOfflinePagination({
     defaultPage: LAST_PAGE_INDEX,
-    data,
+    data: modifiedData,
     lookbackCount: 0,
     pageSize,
     backFillLastPage: true,
@@ -222,12 +228,20 @@ export const SignedStackedBarChart = ({
   }
 
   const onXAxisTickTooltipMouseOver = (payload) => {
-    const { coordinate } = payload
+    const { coordinate, index } = payload
     let content
     if (getXTickTooltipText) {
       content = getXTickTooltipText(payload, pagedData)
     } else if (getXTickText) {
-      content = getXTickText(payload, pagedData)
+      const testName = getXTickText(payload, pagedData)
+      const test = pagedData[index]
+      content = (
+        <>
+          <span>{testName}</span>
+          <br />
+          <span>Date: {formatDate(test.assessmentDate)}</span>
+        </>
+      )
     } else {
       content = payload.value
     }

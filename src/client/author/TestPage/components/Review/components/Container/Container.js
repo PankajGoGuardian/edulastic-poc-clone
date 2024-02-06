@@ -25,7 +25,10 @@ import {
   MainContentWrapper,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { ITEM_GROUP_DELIVERY_TYPES } from '@edulastic/constants/const/test'
+import {
+  ITEM_GROUP_DELIVERY_TYPES,
+  ITEM_GROUP_TYPES,
+} from '@edulastic/constants/const/test'
 import { testItemsApi } from '@edulastic/api'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
@@ -48,7 +51,6 @@ import {
   isDefaultTestSelector,
   getItemGroupsSelector,
   getAllTagsAction,
-  getStaticGroupItemIds,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -246,15 +248,29 @@ class Review extends PureComponent {
     const { test, setData, setTestItems } = this.props
     const newData = cloneDeep(test)
 
-    const itemsSelected = newData.itemGroups
-      .flatMap((itemGroup) => itemGroup.items || [])
-      .find((item) => item._id === itemId)
+    let itemsSelected
+    let itemsSelectedIndex
+    const itemGroupIndex = newData.itemGroups.findIndex((itemGroup) => {
+      itemsSelectedIndex = itemGroup.items.findIndex(({ _id }) => _id == itemId)
+      if (itemsSelectedIndex >= 0) {
+        itemsSelected = itemGroup.items[itemsSelectedIndex]
+        return true
+      }
+      return false
+    })
 
     if (!itemsSelected) {
       return notification({
         type: 'warn',
         messageKey: 'pleaseSelectAtleastOneQuestion',
       })
+    }
+
+    if (
+      newData.itemGroups[itemGroupIndex].type === ITEM_GROUP_TYPES.AUTOSELECT
+    ) {
+      this.refreshGroupItems(itemGroupIndex, itemsSelectedIndex)
+      return
     }
 
     newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
@@ -586,7 +602,7 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
-  refreshGroupItems = async (index) => {
+  refreshGroupItems = async (index, itemsSelectedIndex = -1) => {
     const { test, handleSave } = this.props
     const { itemGroups } = test
     const itemGroup = itemGroups[index]
@@ -602,7 +618,9 @@ class Review extends PureComponent {
 
     const data = {
       limit:
-        itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        itemsSelectedIndex >= 0
+          ? 1
+          : itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
           ? itemGroup.autoSelectItemsCount || itemGroup.items.length || 1
           : itemGroup.deliverItemsCount,
       search: {
@@ -617,11 +635,16 @@ class Review extends PureComponent {
       notification({ messageKey: 'maximum100Questions' })
       return
     }
-    const allStaticGroupItemIds = getStaticGroupItemIds(test)
+
     await testItemsApi
       .getAutoSelectedItems({
         ...data,
-        search: { ...data.search, nInItemIds: allStaticGroupItemIds },
+        search: {
+          ...data.search,
+          nInItemIds: test.itemGroups
+            .flatMap((_itemGroup) => _itemGroup.items || [])
+            .map(({ _id }) => _id),
+        },
       })
       .then((res) => {
         const { items, total } = res
@@ -634,8 +657,9 @@ class Review extends PureComponent {
             msg: `There are only ${total} items that meet the search criteria`,
           })
         }
-
-        itemGroup.items = items
+        if (itemsSelectedIndex >= 0) {
+          itemGroup.items[itemsSelectedIndex] = items[0]
+        } else itemGroup.items = items
         handleSave()
       })
       .catch((err) => {

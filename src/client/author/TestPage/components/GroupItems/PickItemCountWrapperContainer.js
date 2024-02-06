@@ -12,23 +12,31 @@ export default function PickItemCountWrapperContainer({
   index,
   itemGroup,
 }) {
+  // const correctDeliveryType = (
+  //   currentGroupIndex === index ?
+  //   currentGroupDetails?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM :
+  //   itemGroup?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+  // )
+
+  const disabled =
+    (currentGroupDetails?.deliveryType ===
+      ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM &&
+      currentGroupIndex === index) ||
+    currentGroupIndex !== index
   return (
     <ItemCountWrapper>
       <span>Pick </span>
       <Input
         type="number"
-        disabled={
-          (currentGroupDetails?.deliveryType ===
-            ITEM_GROUP_DELIVERY_TYPES.ALL &&
-            currentGroupIndex === index) ||
-          currentGroupIndex !== index
-        }
+        disabled={disabled}
         min={1}
         max={100}
         value={
           currentGroupIndex === index
-            ? currentGroupDetails?.autoSelectItemsCount || 1
-            : itemGroup?.autoSelectItemsCount || 1
+            ? currentGroupDetails?.items?.length ||
+              currentGroupDetails?.autoSelectItemsCount ||
+              1
+            : itemGroup?.items?.length || itemGroup?.autoSelectItemsCount || 1
         }
         onChange={(e) =>
           handleChange('autoSelectItemsCount', parseInt(e.target.value, 10))
@@ -37,12 +45,7 @@ export default function PickItemCountWrapperContainer({
       <span>item(s) and deliver</span>
       <Input
         type="number"
-        disabled={
-          (currentGroupDetails?.deliveryType ===
-            ITEM_GROUP_DELIVERY_TYPES.ALL &&
-            currentGroupIndex === index) ||
-          currentGroupIndex !== index
-        }
+        disabled={disabled}
         value={
           currentGroupIndex === index
             ? currentGroupDetails?.deliverItemsCount || 1
@@ -61,12 +64,7 @@ export default function PickItemCountWrapperContainer({
       <span>random items per student with</span>
       <Input
         type="number"
-        disabled={
-          (currentGroupDetails?.deliveryType ===
-            ITEM_GROUP_DELIVERY_TYPES.ALL &&
-            currentGroupIndex === index) ||
-          currentGroupIndex !== index
-        }
+        disabled={disabled}
         min={1}
         value={
           currentGroupIndex === index

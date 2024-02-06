@@ -40,6 +40,8 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { getTokens } from '@edulastic/api/src/utils/Storage'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
+import { ROLE_LABEL } from '@edulastic/constants/const/roleType'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -108,7 +110,6 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
-import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -291,6 +292,13 @@ class SideMenu extends Component {
         i.label === 'Manage District' ? { ...i, label: 'Organization' } : i
       )
     }
+
+    if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+      return _menuItems.filter(
+        (i) => i.label === navigationItemLabels.DATA_STUDIO
+      )
+    }
+
     // Normal SA and DA
     if (
       !isSuperAdmin &&
@@ -665,6 +673,8 @@ class SideMenu extends Component {
       _userRole = 'Student'
     } else if (userRole === roleuser.EDULASTIC_CURATOR) {
       _userRole = 'Edulastic Curator'
+    } else if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+      _userRole = ROLE_LABEL[userRole]
     } else {
       _userRole = 'Unknown'
     }
@@ -678,7 +688,12 @@ class SideMenu extends Component {
     const users = get(switchDetails, 'switchAccounts', [])
 
     const showSubscriptionOption = every(
-      [!isDataOpsOnlyUser, !isPublisher, !isInsightsOnlyUser],
+      [
+        !isDataOpsOnlyUser,
+        !isPublisher,
+        !isInsightsOnlyUser,
+        userRole !== roleuser.DISTRICT_GROUP_ADMIN,
+      ],
       Boolean
     )
 
@@ -736,7 +751,9 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {!isDataOpsOnlyUser && users.length > 1 ? ( // since current user is also in this list
+          {!isDataOpsOnlyUser &&
+          users.length > 1 &&
+          userRole !== roleuser.DISTRICT_GROUP_ADMIN ? ( // since current user is also in this list
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
@@ -758,7 +775,9 @@ class SideMenu extends Component {
                 </span>
               </a>
             </Menu.Item>
-          ) : !isDataOpsOnlyUser && userRole !== roleuser.EDULASTIC_CURATOR ? (
+          ) : !isDataOpsOnlyUser &&
+            userRole !== roleuser.EDULASTIC_CURATOR &&
+            userRole !== roleuser.DISTRICT_GROUP_ADMIN ? (
             <Menu.Item
               key="4"
               className="removeSelectedBorder"

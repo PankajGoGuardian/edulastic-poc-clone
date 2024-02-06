@@ -675,9 +675,12 @@ class ProfileBody extends React.Component {
                     <Title>Instructor Information</Title>
                     {!isEditProfile &&
                     !isDefaultDA &&
-                    ['teacher', 'district-admin', 'school-admin'].includes(
-                      user.role
-                    ) ? (
+                    [
+                      roleuser.TEACHER,
+                      roleuser.DISTRICT_ADMIN,
+                      roleuser.SCHOOL_ADMIN,
+                      roleuser.DISTRICT_GROUP_ADMIN,
+                    ].includes(user.role) ? (
                       <>
                         <EditProfileButton
                           data-cy="editMyProfile"

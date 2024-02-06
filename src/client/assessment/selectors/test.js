@@ -201,6 +201,9 @@ export const vqPreventQuestionSkippingSelector = createSelector(
   (state) => state.vqPreventSkipping
 )
 
+export const assigneeFeaturesSelector = (state) =>
+  state.studentAssignment?.assigneeFeatures || {}
+
 export const hasSectionsSelector = createSelector(
   stateSelector,
   (state) => state.hasSections

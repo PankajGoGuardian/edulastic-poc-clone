@@ -58,6 +58,7 @@ import {
   utaStartTimeUpdateRequired,
   setShowRetakeModalAction,
   setSelectedLanguageAction,
+  setAssigneeFeatures,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
@@ -774,10 +775,11 @@ function* startAssignment({ payload }) {
     }
 
     if (assignmentId) {
-      const { timedAssignment = false, restrictNavigationOut } = yield call(
-        assignmentApi.getById,
-        assignmentId
-      ) || {}
+      const {
+        timedAssignment = false,
+        restrictNavigationOut,
+        assigneeFeatures,
+      } = yield call(assignmentApi.getById, assignmentId) || {}
       if (isiOS() && restrictNavigationOut) {
         yield put(push('/home/assignments'))
         yield put(toggleIosRestrictNavigationModalAction(true))
@@ -785,6 +787,10 @@ function* startAssignment({ payload }) {
       }
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
+      }
+
+      if (assigneeFeatures) {
+        yield put(setAssigneeFeatures(assigneeFeatures))
       }
     }
 
@@ -957,12 +963,16 @@ function* resumeAssignment({ payload }) {
       yield put(setActiveAssignmentAction(assignmentId))
       yield put(setResumeAssignment(true))
 
-      const { timedAssignment } = yield call(
+      const { timedAssignment, assigneeFeatures } = yield call(
         assignmentApi.getById,
         assignmentId
       ) || {}
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.RESUME))
+      }
+
+      if (assigneeFeatures) {
+        yield put(setAssigneeFeatures(assigneeFeatures))
       }
     }
 

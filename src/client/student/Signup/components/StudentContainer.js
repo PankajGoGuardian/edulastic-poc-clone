@@ -55,6 +55,8 @@ import {
   getDistrictTeacherSignupUrl,
   isDistrictPolicyAllowed,
   isEmailValid,
+  updateMetaTag,
+  removeMetaTag,
 } from '../../../common/utils/helpers'
 import { Partners } from '../../../common/utils/static/partnerData'
 
@@ -94,6 +96,14 @@ class StudentSignup extends React.Component {
     showModal: false,
     proceedBtnDisabled: true,
     submitting: false,
+  }
+
+  componentDidMount() {
+    updateMetaTag({ content: 'Pear Assessment for Students' })
+  }
+
+  componentWillUnmount() {
+    removeMetaTag() // Removing description meta tag
   }
 
   closeModal = () => {

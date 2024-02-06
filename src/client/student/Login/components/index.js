@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import styled from 'styled-components'
 import { Layout } from 'antd'
@@ -10,6 +10,8 @@ import { Partners } from '../../../common/utils/static/partnerData'
 import {
   validatePartnerUrl,
   getPartnerKeyFromUrl,
+  updateMetaTag,
+  removeMetaTag,
 } from '../../../common/utils/helpers'
 
 const Wrapper = styled(Layout)`
@@ -25,6 +27,17 @@ const Login = ({
   orgType,
 }) => {
   const partnerCheck = getPartnerKeyFromUrl(location.pathname)
+
+  useEffect(() => {
+    updateMetaTag({
+      content:
+        'Simple classroom assessments and scalable common assessments, all in one.',
+    })
+    return () => {
+      removeMetaTag() // Removing description meta tag
+    }
+  }, [])
+
   return (
     <Wrapper>
       {!isSignupUsingDaURL && !validatePartnerUrl(Partners[partnerCheck]) ? (

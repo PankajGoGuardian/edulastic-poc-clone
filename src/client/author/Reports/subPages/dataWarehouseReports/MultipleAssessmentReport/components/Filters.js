@@ -46,6 +46,7 @@ import {
 } from '../../common/utils'
 import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
 import { MandatorySymbol } from '../../common/components/styledComponents'
+import { isPearOrEdulasticText } from '../../../../../../common/utils/helpers'
 
 const internalTestTypes = getArrayOfAllTestTypes()
 
@@ -791,7 +792,9 @@ const MultipleAssessmentReportFilters = ({
             data-cy="performanceBand"
             data-testid="performanceBand"
           >
-            <FieldLabel fs=".7rem">EDULASTIC PERFORMANCE BAND</FieldLabel>
+            <FieldLabel fs=".7rem">
+              {isPearOrEdulasticText} PERFORMANCE BAND
+            </FieldLabel>
             <ControlDropDown
               by={selectedPerformanceBand}
               selectCB={(e, selected) =>

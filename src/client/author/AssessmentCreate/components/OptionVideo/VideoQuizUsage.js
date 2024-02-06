@@ -87,7 +87,7 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
             <FlexContainer justifyContent="space-between">
               <FlexContainer
                 justifyContent="space-between"
-                height="50px"
+                height="58px"
                 flexDirection="column"
               >
                 <UpgradeAiSuitTitle>

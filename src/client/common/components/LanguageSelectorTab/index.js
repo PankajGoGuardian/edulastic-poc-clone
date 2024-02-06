@@ -5,12 +5,13 @@ import Menu from 'antd/lib/menu'
 import styled from 'styled-components'
 
 import get from 'lodash/get'
-import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
+import { LANGUAGE_EN, LANGUAGE_ES } from '@edulastic/constants/const/languages'
 import { getCurrentLanguage, setLangAction } from './duck'
 import {
   getItemDetailSelector,
   getPassageSelector,
 } from '../../../author/ItemDetail/ducks'
+import { StyledBetaTag } from '../../../author/AssessmentPage/VideoQuiz/styled-components/QuestionForm'
 
 const { LANGUAGES_OPTIONS } = appLanguages
 

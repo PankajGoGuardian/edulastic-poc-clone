@@ -82,6 +82,7 @@ import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/s
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 import { STATUS } from '../../../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import AddMoreQuestionsPannel from '../AddMoreQuestionsPannel/AddMoreQuestionsPannel'
+import AutoSelectScoreChangeModal from '../AutoSelectScoreChangeModal/AutoSelectScoreChangeModel'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -103,6 +104,7 @@ class Review extends PureComponent {
       hasStickyHeader: false,
       indexForPreview: 0,
       groupIndex: 0,
+      showAutoSelectScoreChangeModal: null,
     }
   }
 
@@ -712,6 +714,7 @@ class Review extends PureComponent {
       onSaveTestId,
       updated,
       showSelectGroupIndexModal,
+      setCurrentGroupIndex,
     } = this.props
     const {
       isCollapse,
@@ -721,6 +724,7 @@ class Review extends PureComponent {
       currentTestId,
       hasStickyHeader,
       groupIndex,
+      showAutoSelectScoreChangeModal,
     } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
@@ -862,6 +866,10 @@ class Review extends PureComponent {
                 orgCollections={orgCollections}
                 userId={userId}
                 hasSections={hasSections}
+                setShowAutoSelectScoreChangeModal={(value) =>
+                  this.setState({ showAutoSelectScoreChangeModal: value })
+                }
+                setCurrentGroupIndex={setCurrentGroupIndex}
               />
               <AddMoreQuestionsPannel
                 onSaveTestId={onSaveTestId}
@@ -925,6 +933,20 @@ class Review extends PureComponent {
               }
             />
           </Spin>
+        )}
+        {showAutoSelectScoreChangeModal && (
+          <AutoSelectScoreChangeModal
+            visible={showAutoSelectScoreChangeModal}
+            closeModal={() =>
+              this.setState({ showAutoSelectScoreChangeModal: null })
+            }
+            score={showAutoSelectScoreChangeModal?.score}
+            sectionName={showAutoSelectScoreChangeModal?.sectionName}
+            groupIndex={showAutoSelectScoreChangeModal?.groupIndex}
+            setCurrentGroupDetails={setCurrentGroupDetails}
+            handleSave={handleSave}
+            test={test}
+          />
         )}
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}

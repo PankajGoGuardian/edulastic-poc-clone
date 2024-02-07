@@ -1237,6 +1237,9 @@ class Container extends PureComponent {
             handleSave={this.handleSave}
             setSectionsState={this.setSectionsState}
             setCurrentGroupDetails={this.setCurrentGroupDetails}
+            setCurrentGroupIndex={(groupIndex, cb = undefined) =>
+              this.setState({ currentGroupIndex: groupIndex }, cb)
+            }
             owner={isOwner}
             isEditable={isEditable}
             current={current}

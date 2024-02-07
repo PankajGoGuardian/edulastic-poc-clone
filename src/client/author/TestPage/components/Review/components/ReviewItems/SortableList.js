@@ -15,7 +15,13 @@ import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageC
 
 const { Panel } = Collapse
 
-const rightContent = (group, hasSections = false, refreshGroupItems) => {
+const rightContent = (
+  group,
+  hasSections = false,
+  refreshGroupItems,
+  setShowAutoSelectScoreChangeModal,
+  count
+) => {
   const {
     deliverItemsCount,
     items,
@@ -23,6 +29,7 @@ const rightContent = (group, hasSections = false, refreshGroupItems) => {
     type,
     deliveryType,
     itemsDefaultMaxScore,
+    groupName,
   } = group
   return (
     <>
@@ -65,12 +72,24 @@ const rightContent = (group, hasSections = false, refreshGroupItems) => {
           deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         }
       >
-        <InfoDiv>
-          <Text>TOTAL POINTS</Text>
-          <Count>
-            {(deliverItemsCount || items.length) * (itemsDefaultMaxScore || 1)}
-          </Count>
-        </InfoDiv>
+        <span
+          onClick={(e) => {
+            e.stopPropagation()
+            setShowAutoSelectScoreChangeModal({
+              score: itemsDefaultMaxScore || 1,
+              sectionName: groupName,
+              groupIndex: count,
+            })
+          }}
+        >
+          <InfoDiv>
+            <Text>TOTAL POINTS</Text>
+            <Count>
+              {(deliverItemsCount || items.length) *
+                (itemsDefaultMaxScore || 1)}
+            </Count>
+          </InfoDiv>
+        </span>
       </EduIf>
     </>
   )
@@ -90,6 +109,7 @@ export default SortableContainer(
     removeSingle,
     removeMultiple,
     hasSections,
+    setShowAutoSelectScoreChangeModal,
     ...rest
   }) => {
     const [removalObj, setRemovalPassageItems] = useState()
@@ -179,8 +199,12 @@ export default SortableContainer(
               <Panel
                 header={<span dataCy={group.groupName}>{group.groupName}</span>}
                 key={count}
-                extra={rightContent(group, hasSections, () =>
-                  refreshGroupItems(count)
+                extra={rightContent(
+                  group,
+                  hasSections,
+                  () => refreshGroupItems(count),
+                  setShowAutoSelectScoreChangeModal,
+                  count
                 )}
               >
                 {items.map((item, index) => {

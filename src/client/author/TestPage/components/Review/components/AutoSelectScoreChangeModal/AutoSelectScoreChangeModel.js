@@ -1,10 +1,12 @@
-import React, { useRef } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
 import {
   EduButton,
   CustomModalStyled,
   NumberInputStyled,
 } from '@edulastic/common'
 import { Icon } from 'antd'
+import { debounce } from 'lodash'
 import {
   ModalContent,
   ModalHeader,
@@ -13,6 +15,7 @@ import {
   ModalFooterContainer,
 } from './styled'
 import { StyledInfoMessage } from '../../../GroupItems/styled'
+import { getTestEntitySelector, setTestDataAction } from '../../../../ducks'
 
 const AutoSelectScoreChangeModal = ({
   visible,
@@ -22,22 +25,31 @@ const AutoSelectScoreChangeModal = ({
   groupIndex,
   test,
   handleSave,
+  setTestData,
 }) => {
-  const inputRef = useRef(null)
-
-  const handleChange = () => {
-    test.itemGroups[groupIndex].itemsDefaultMaxScore =
-      inputRef.current?.value || 1
+  const handleSaveScore = () => {
     handleSave()
     closeModal()
   }
+  const onChangeScore = debounce((value) => {
+    const updatedItemGroups = test.itemGroups.map((itemGroup, index) => {
+      if (index === groupIndex) {
+        return {
+          ...itemGroup,
+          itemsDefaultMaxScore: value,
+        }
+      }
+      return itemGroup
+    })
+    setTestData({
+      itemGroups: updatedItemGroups,
+    })
+  })
 
   const Footer = [
     <ModalFooterContainer>
       <EduButton
-        onClick={() => {
-          handleChange()
-        }}
+        onClick={handleSaveScore}
         height="36px"
         width="124px"
         fontSize="14px"
@@ -84,11 +96,9 @@ const AutoSelectScoreChangeModal = ({
           Set{' '}
           <NumberInputStyled
             showArrow
-            ref={inputRef}
             defaultValue={score}
-            data-cy="testname-modal"
             size="large"
-            placeholder="Enter name here"
+            placeholder="Enter score"
             margin="0px"
             width="10ch"
             fontSize="14px"
@@ -96,6 +106,7 @@ const AutoSelectScoreChangeModal = ({
             onFocus={(event) => {
               event.target.select()
             }}
+            onChange={onChangeScore}
             style={{ fontWeight: '400' }}
           />{' '}
           for all the items in {sectionName}
@@ -109,4 +120,11 @@ const AutoSelectScoreChangeModal = ({
   )
 }
 
-export default AutoSelectScoreChangeModal
+export default connect(
+  (state) => ({
+    test: getTestEntitySelector(state),
+  }),
+  {
+    setTestData: setTestDataAction,
+  }
+)(AutoSelectScoreChangeModal)

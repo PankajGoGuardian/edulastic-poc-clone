@@ -40,6 +40,9 @@ const RatingCards = ({
   const handleMouseDown = (dir) => () => {
     if (psRef?.element && psRef?.reach?.x !== dir) {
       timerRef.current = setInterval(() => {
+        if (!psRef || !psRef?.element) {
+          return clearInterval(timerRef.current)
+        }
         psRef.element.scrollBy({
           left: dir === 'end' ? 10 : -10,
         })

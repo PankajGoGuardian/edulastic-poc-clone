@@ -327,6 +327,7 @@ const Container = ({
             `/author/reports/student-progress`,
             `/author/reports/performance-over-time`,
             ReportPaths.PRE_VS_POST,
+            `/author/reports/completion-report`,
           ]}
           render={(_props) => (
             <MultipleAssessmentReportContainer

@@ -154,6 +154,17 @@ export const INSIGHT_REPORTS = [
     cards: [
       {
         key: 'performanceOverTime',
+        title: 'Completion Report',
+        sellThumbnail: MarOverTimeIcon,
+        thumbnail: MarOverTime,
+        location: '/author/reports/completion-report',
+        description:
+          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+        sellDescription:
+          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+      },
+      {
+        key: 'performanceOverTime',
         title: 'Performance Over Time',
         sellThumbnail: MarOverTimeIcon,
         thumbnail: MarOverTime,

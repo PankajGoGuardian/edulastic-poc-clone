@@ -43,6 +43,7 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import { ReportContainer, FilterLabel } from '../../common/styled'
 import PreVsPostReport from './PreVsPost'
+import CompletionReport from './CompletionReport/CompletionReport'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -321,6 +322,14 @@ const MultipleAssessmentReportContainer = (props) => {
                 toggleFilter={toggleFilter}
               />
             )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/completion-report/"
+          render={() => {
+            setShowHeader(true)
+            return <CompletionReport />
           }}
         />
         <Route

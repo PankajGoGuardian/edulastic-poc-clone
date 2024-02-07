@@ -57,15 +57,13 @@ const AutoSelectScoreChangeModal = ({
       footer={Footer}
       bodyPadding="0px"
       onCancel={closeModal}
-      modalWidth="398px"
-      modalMaxWidth="398px"
+      modalWidth="450px"
+      modalMaxWidth="450px"
       padding="32px"
     >
       <ModalHeader>
         <ModalHeaderTitle>
-          <span>
-            All items in random distribution should have same score for reports.{' '}
-          </span>
+          <span>Edit Score </span>
         </ModalHeaderTitle>
         <EduButton
           IconBtn
@@ -83,27 +81,28 @@ const AutoSelectScoreChangeModal = ({
       </ModalHeader>
       <ModalContent>
         <StyledInfoMessage>
-          <Icon type="info-circle" /> Set
+          Set{' '}
           <NumberInputStyled
             showArrow
             ref={inputRef}
-            //   value={value}
-            //   onChange={(e) => setValue(e.target.value)}
             defaultValue={score}
             data-cy="testname-modal"
             size="large"
             placeholder="Enter name here"
             margin="0px"
-            //   width="100%"
-            height="40px"
+            width="10ch"
             fontSize="14px"
             bg="transparent"
             onFocus={(event) => {
               event.target.select()
             }}
             style={{ fontWeight: '400' }}
-          />
+          />{' '}
           for all the items in {sectionName}
+          <div style={{ marginTop: '1rem' }}>
+            <Icon type="info-circle" /> All items in random distribution should
+            have same score for reports.{' '}
+          </div>
         </StyledInfoMessage>
       </ModalContent>
     </CustomModalStyled>

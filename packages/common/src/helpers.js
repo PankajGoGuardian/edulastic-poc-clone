@@ -594,7 +594,11 @@ const getPoints = (item) => {
   if (!item) {
     return 0
   }
-  if (item.itemLevelScoring && !isNaN(item.itemLevelScore)) {
+  if (
+    item.itemLevelScoring &&
+    item.itemLevelScore !== undefined &&
+    !isNaN(item.itemLevelScore)
+  ) {
     return item.itemLevelScore
   }
 

@@ -30,12 +30,7 @@ const rightContent = (group, hasSections = false, refreshGroupItems) => {
         when any calc is selected for a section, the calc Icon and tooltip 
         will be displayed. Add a condition hasSections for the same. 
       */}
-      <EduIf
-        condition={
-          type === ITEM_GROUP_TYPES.AUTOSELECT &&
-          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        }
-      >
+      <EduIf condition={type === ITEM_GROUP_TYPES.AUTOSELECT}>
         <InfoDiv>
           <EduButton
             onClick={(e) => {

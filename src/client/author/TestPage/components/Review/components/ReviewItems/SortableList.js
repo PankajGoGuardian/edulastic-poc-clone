@@ -67,10 +67,7 @@ const rightContent = (
         </InfoDiv>
       )}
       <EduIf
-        condition={
-          type === ITEM_GROUP_TYPES.AUTOSELECT &&
-          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        }
+        condition={deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM}
       >
         <span
           onClick={(e) => {
@@ -84,10 +81,7 @@ const rightContent = (
         >
           <InfoDiv>
             <Text>TOTAL POINTS</Text>
-            <Count>
-              {(deliverItemsCount || items.length) *
-                (itemsDefaultMaxScore || 1)}
-            </Count>
+            <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
           </InfoDiv>
         </span>
       </EduIf>

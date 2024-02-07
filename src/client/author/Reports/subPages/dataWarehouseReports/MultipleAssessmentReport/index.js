@@ -328,7 +328,9 @@ const MultipleAssessmentReport = ({
     selectedTests.length ? includes(selectedTests, test.testId) : true
   )
 
-  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(
+    sharedReportFilters?.testTermIds || filters.testTermIds
+  )
 
   // handle add student to group
   const rowSelection = {

@@ -14,21 +14,27 @@ export default function ItemCountWrapperContainer({
   itemGroup,
   isRequired,
 }) {
+  const disabled =
+    (currentGroupDetails?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+      currentGroupIndex === index) ||
+    (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      (currentGroupDetails?.deliveryType !==
+        ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM ||
+        itemGroup?.deliveryType !== ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM)) ||
+    currentGroupIndex !== index
+
   return (
     <ItemCountWrapper>
       <span>Deliver a total of </span>
       <Input
         data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
         type="number"
-        disabled={
-          (currentGroupDetails?.deliveryType ===
-            ITEM_GROUP_DELIVERY_TYPES.ALL &&
-            currentGroupIndex === index) ||
-          currentGroupIndex !== index
-        }
+        disabled={disabled}
         min={0}
         value={
-          currentGroupIndex === index
+          disabled
+            ? ''
+            : currentGroupIndex === index
             ? currentGroupDetails.deliverItemsCount || ''
             : itemGroup.deliverItemsCount || ''
         }

@@ -12,11 +12,11 @@ export default function PickItemCountWrapperContainer({
   index,
   itemGroup,
 }) {
-  // const correctDeliveryType = (
-  //   currentGroupIndex === index ?
-  //   currentGroupDetails?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM :
-  //   itemGroup?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-  // )
+  const correctDeliveryType =
+    currentGroupIndex === index
+      ? currentGroupDetails?.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      : itemGroup?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
 
   const disabled =
     (currentGroupDetails?.deliveryType ===
@@ -32,11 +32,13 @@ export default function PickItemCountWrapperContainer({
         min={1}
         max={100}
         value={
-          currentGroupIndex === index
-            ? currentGroupDetails?.items?.length ||
-              currentGroupDetails?.autoSelectItemsCount ||
-              1
-            : itemGroup?.items?.length || itemGroup?.autoSelectItemsCount || 1
+          correctDeliveryType
+            ? currentGroupIndex === index
+              ? currentGroupDetails?.items?.length ||
+                currentGroupDetails?.autoSelectItemsCount ||
+                1
+              : itemGroup?.items?.length || itemGroup?.autoSelectItemsCount || 1
+            : ''
         }
         onChange={(e) =>
           handleChange('autoSelectItemsCount', parseInt(e.target.value, 10))
@@ -47,9 +49,11 @@ export default function PickItemCountWrapperContainer({
         type="number"
         disabled={disabled}
         value={
-          currentGroupIndex === index
-            ? currentGroupDetails?.deliverItemsCount || 1
-            : itemGroup?.deliverItemsCount || 1
+          correctDeliveryType
+            ? currentGroupIndex === index
+              ? currentGroupDetails?.deliverItemsCount || ''
+              : itemGroup?.deliverItemsCount || ''
+            : ''
         }
         min={1}
         max={
@@ -67,9 +71,11 @@ export default function PickItemCountWrapperContainer({
         disabled={disabled}
         min={1}
         value={
-          currentGroupIndex === index
-            ? currentGroupDetails?.itemsDefaultMaxScore || 1
-            : itemGroup?.itemsDefaultMaxScore || 1
+          correctDeliveryType
+            ? currentGroupIndex === index
+              ? currentGroupDetails?.itemsDefaultMaxScore || 1
+              : itemGroup?.itemsDefaultMaxScore || 1
+            : ''
         }
         onChange={(e) =>
           handleChange('itemsDefaultMaxScore', parseInt(e.target.value, 10))

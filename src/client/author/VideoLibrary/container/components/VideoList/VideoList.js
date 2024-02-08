@@ -1,6 +1,5 @@
-import { FlexContainer } from '@edulastic/common'
-
 import React from 'react'
+import styled from 'styled-components'
 import VideoTile from './VideoTile'
 
 /**
@@ -14,26 +13,24 @@ import VideoTile from './VideoTile'
  */
 const VideoList = ({ videos, setLinkValue }) => {
   return (
-    <FlexContainer
-      flexWrap="wrap"
-      justifyContent="flex-start"
-      flexDirection="row"
-    >
+    <GridContainer>
       {videos.map((video, index) => {
         return (
-          <FlexContainer
-            marginLeft="10px"
-            mr="10px"
-            marginBottom="10px"
-            mt="10px"
+          <VideoTile
             key={`${video?.id?.videoId}-${index}`}
-          >
-            <VideoTile video={video} handleVideoClick={setLinkValue} />
-          </FlexContainer>
+            video={video}
+            handleVideoClick={setLinkValue}
+          />
         )
       })}
-    </FlexContainer>
+    </GridContainer>
   )
 }
 
 export default VideoList
+
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Define 5 equal columns */
+  grid-gap: 32px; /* Add spacing between items (optional) */
+`

@@ -21,7 +21,6 @@ const subHeaderFontSize = 16
 const videoDurationFontSize = videoTitleFontSize
 
 // VideoThubmnail+marginBetween+FooterTextWrapper+verticalPadding
-const videoCardHeight = 100 + 5 + 60.5 + 10
 
 export const VideoTitleText = styled.span`
   display: -webkit-box;
@@ -44,7 +43,7 @@ export const VideoCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
     padding: 0px;
-    height: ${`${videoCardHeight}px`};
+    height: ${`${169 + 5 + 60.5 + 10}px`};
     width: ${({ width }) => width && `${width}`};
     overflow: hidden;
   }

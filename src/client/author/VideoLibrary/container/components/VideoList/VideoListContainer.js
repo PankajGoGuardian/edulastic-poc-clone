@@ -1,13 +1,7 @@
 import React from 'react'
 import { Spin } from 'antd'
-import {
-  EduButton,
-  EduElse,
-  EduIf,
-  EduThen,
-  FlexContainer,
-} from '@edulastic/common'
-import { SpinLoader, VideoListWrapper } from '../../styledComponents/videoList'
+import { EduElse, EduIf, EduThen, FlexContainer } from '@edulastic/common'
+import { SpinLoader } from '../../styledComponents/videoList'
 import VideoList from './VideoList'
 
 const VideoListContainer = ({
@@ -26,9 +20,7 @@ const VideoListContainer = ({
         <div>
           <EduIf condition={videos.length}>
             <EduThen>
-              <VideoListWrapper justifyContent="flex-start">
-                <VideoList videos={videos} setLinkValue={setLinkValue} />
-              </VideoListWrapper>
+              <VideoList videos={videos} setLinkValue={setLinkValue} />
             </EduThen>
             <EduElse>
               <EduIf condition={showNoData}>
@@ -39,10 +31,9 @@ const VideoListContainer = ({
         </div>
       </SpinLoader>
       <EduIf condition={videos.length >= 20 && videos.length % 20 === 0}>
-        <FlexContainer justifyContent="center" mt="20px" ref={loaderRef}>
+        <FlexContainer justifyContent="center" ref={loaderRef}>
           <EduIf condition={showLoaderButton}>
             <Spin spinning={isLoading} />
-            <EduButton />
           </EduIf>
         </FlexContainer>
       </EduIf>

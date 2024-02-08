@@ -26,12 +26,12 @@ const VideoTile = ({ video, handleVideoClick }) => {
     handleVideoClick(`https://www.youtube.com/watch?v=${video?.id?.videoId}`)
   }
   return (
-    <VideoCard width="178px" bordered={false} hoverable onClick={handleOnClick}>
+    <VideoCard bordered={false} hoverable onClick={handleOnClick}>
       <VideoThumbnail
         imgSrc={video?.snippet?.thumbnails?.medium?.url}
         alt={video?.snippet?.title}
-        width="178px"
-        height="100px"
+        width="100%"
+        height="169px"
       >
         <FlexContainer
           width="100%"

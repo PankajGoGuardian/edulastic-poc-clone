@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 const VideoLibrarySubHeader = () => {
   return (
-    <FlexContainer justifyContent="flex-start">
+    <FlexContainer padding="16px 0 16px 90px" justifyContent="flex-start">
       <StyledSubHeader>Browse Video Quiz Libraries</StyledSubHeader>
     </FlexContainer>
   )
@@ -20,6 +20,4 @@ const StyledSubHeader = styled.p`
   font-weight: 600;
   line-height: 24px; /* 150% */
   letter-spacing: -0.16px;
-  margin-left: 82px;
-  margin-top: 6px;
 `

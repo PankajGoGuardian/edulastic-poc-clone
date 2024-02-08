@@ -58,6 +58,12 @@ const VideoLibrary = ({
     hasError,
     currentTab,
     setCurrentTab,
+    setFilterGrades,
+    setFilterSubjects,
+    filterGrades,
+    filterSubjects,
+    filterStatus,
+    setFilterStatus,
   } = useVideoQuizLibrary({
     setYoutubeThumbnail,
     ytThumbnail,
@@ -106,6 +112,12 @@ const VideoLibrary = ({
     currentTab,
     setCurrentTab,
     isTestLibraryLoading,
+    setFilterGrades,
+    setFilterSubjects,
+    filterGrades,
+    filterSubjects,
+    filterStatus,
+    setFilterStatus,
   }
 
   return (

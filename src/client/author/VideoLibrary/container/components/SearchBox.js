@@ -75,11 +75,10 @@ const VideoLibrarySearchBox = ({
           >
             <SearchInput
               allowClear
-              data-cy="videolink"
+              placeholder="For Eg: Algebra"
               onChange={(e) => handleOnChange(e.target.value)}
               onPressEnter={(e) => handleOnSearch(e.target.value)}
               value={linkValue}
-              placeholder="SEARCH YOUTUBE OR ENTER URL"
               disabled={disableSearchInput}
               prefix={
                 <StyledIcon

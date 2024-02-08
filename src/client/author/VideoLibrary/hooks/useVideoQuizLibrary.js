@@ -44,8 +44,9 @@ const useVideoQuizLibrary = ({
   const [currentTab, setCurrentTab] = useState('1')
 
   const [testLibrarySearchFilter, setTestLibrarySearchFilter] = useState({})
-  // const [filterGrades, setFilterGrades] = useState([])
-  // const [filterSubjects, setFilterSubjects] = useState([])
+  const [filterGrades, setFilterGrades] = useState([])
+  const [filterSubjects, setFilterSubjects] = useState([])
+  const [filterStatus, setFilterStatus] = useState('')
 
   const textIsUrl = isURL(linkValue)
   const loaderRef = useRef(null)
@@ -126,11 +127,17 @@ const useVideoQuizLibrary = ({
     )
   }, [fetchVideos])
 
-  const loadMoreTests = () => {
+  const loadMoreTests = (append = false, searchString) => {
     const newSearchFilter = produce(testLibrarySearchFilter, (draft) => {
-      // draft.search.subject = filterSubjects
-      // draft.search.grades = filterGrades
-      draft.page += 1
+      draft.search.subject = filterSubjects
+      draft.search.grades = filterGrades
+      draft.search.status = filterStatus
+      if (typeof searchString === 'string') {
+        draft.search.searchString = [searchString]
+      }
+      if (append) {
+        draft.page += 1
+      }
     })
     console.log('loading more test...page', newSearchFilter.page)
     console.log('currentTab', currentTab)
@@ -142,7 +149,7 @@ const useVideoQuizLibrary = ({
     return throttle(
       async () => {
         await new Promise((resolve) => setTimeout(resolve, 500))
-        await loadMoreTests()
+        await loadMoreTests(true)
       },
       { trailing: true }
     )
@@ -166,6 +173,10 @@ const useVideoQuizLibrary = ({
   const handleOnSearch = (value) => {
     if (value && currentTab === '3') {
       handleFetchVideos(false, value)
+    }
+    if (['1', '3'].includes(currentTab)) {
+      setVideos([])
+      loadMoreTests(false, value)
     }
   }
 
@@ -199,8 +210,8 @@ const useVideoQuizLibrary = ({
     if (currentTab === '1') {
       search = getSearchBody({
         vqCollection: videoQuizDefaultCollection?.collectionId,
-        subjects: [],
-        grades: [],
+        subjects: filterSubjects,
+        grades: filterGrades,
         filter: SMART_FILTERS.ENTIRE_LIBRARY,
         searchString: linkValue ? [linkValue] : [],
       })
@@ -223,10 +234,11 @@ const useVideoQuizLibrary = ({
     }
     if (currentTab === '2') {
       search = getSearchBody({
-        subjects: [],
-        grades: [],
+        subjects: filterSubjects,
+        grades: filterGrades,
         filter: SMART_FILTERS.AUTHORED_BY_ME,
         searchString: linkValue ? [linkValue] : [],
+        status: filterStatus,
       })
       const searchFilter = {
         search,
@@ -243,7 +255,7 @@ const useVideoQuizLibrary = ({
     if (currentTab === '3' && linkValue) {
       handleOnSearch(linkValue)
     }
-  }, [currentTab])
+  }, [currentTab, filterStatus, filterSubjects, filterGrades])
 
   const handleIntersect = useCallback(
     (entries) => {
@@ -326,6 +338,9 @@ const useVideoQuizLibrary = ({
     isTestLibraryLoading,
     testLibrarySearchFilter?.page,
     videos,
+    filterStatus,
+    filterSubjects,
+    filterGrades,
   ])
 
   return {
@@ -346,6 +361,13 @@ const useVideoQuizLibrary = ({
     loaderRef,
     setCurrentTab,
     currentTab,
+    // can be clubbed with filter props object
+    setFilterGrades,
+    setFilterSubjects,
+    filterGrades,
+    filterSubjects,
+    filterStatus,
+    setFilterStatus,
   }
 }
 

@@ -23,7 +23,7 @@ export const VideoStreamingProviders = styled(FlexContainer)`
 export const SearchInput = styled(Input)`
   border: none;
   .ant-input {
-    color: #999;
+    color: #000;
     font-family: 'Open Sans';
     font-size: ${`${inputFontSize}px`};
     font-style: normal;

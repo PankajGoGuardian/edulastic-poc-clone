@@ -1,7 +1,9 @@
 import { Tabs } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
+
 import VideoListContainer from './VideoList/VideoListContainer'
+import Filters from './Filters'
 
 const { TabPane } = Tabs
 
@@ -10,14 +12,34 @@ const VideoLibraryTabs = ({ setCurrentTab, ...rest }) => {
     setCurrentTab(key)
   }
 
-  const { isTestLibraryLoading } = rest
+  const {
+    isTestLibraryLoading,
+    setFilterGrades,
+    setFilterSubjects,
+    filterGrades,
+    filterSubjects,
+    filterStatus,
+    setFilterStatus,
+  } = rest
+
+  const filterProps = {
+    setFilterGrades,
+    setFilterSubjects,
+    filterGrades,
+    filterSubjects,
+    filterStatus,
+    setFilterStatus,
+    isTestLibraryLoading,
+  }
 
   return (
     <StyledTabs defaultActiveKey="1" onChange={handleTabChange}>
       <TabPane tab="Community" key="1" disabled={isTestLibraryLoading}>
+        <Filters {...filterProps} />
         <VideoListContainer {...rest} />
       </TabPane>
       <TabPane tab="My Content" key="2" disabled={isTestLibraryLoading}>
+        <Filters {...filterProps} />
         <VideoListContainer {...rest} />
       </TabPane>
       <TabPane tab="YouTube" key="3" disabled={isTestLibraryLoading}>
@@ -30,8 +52,5 @@ const VideoLibraryTabs = ({ setCurrentTab, ...rest }) => {
 export default VideoLibraryTabs
 
 const StyledTabs = styled(Tabs)`
-  margin-top: 24px;
-  margin-left: 82px;
-  width: 100%;
-  max-width: 1080px;
+  padding: 0px 90px;
 `

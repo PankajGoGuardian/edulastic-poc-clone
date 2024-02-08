@@ -465,6 +465,10 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(tabKey)
     }
   }
+  const networkOptions = useMemo(() => {
+    const networks = get(MARFilterData, 'data.result.networks', [])
+    return networks.map((n) => ({ key: n._id, title: n.name }))
+  }, [MARFilterData])
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -629,6 +633,30 @@ const MultipleAssessmentReportFilters = ({
                     forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      {!isEmpty(networkOptions) && loc === 'completion-report' && (
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="networks"
+                            label="Network"
+                            onChange={(e) => {
+                              const selected = networkOptions.filter((a) =>
+                                e.includes(a.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'networkIds',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.networkIds && filters.networkIds !== 'All'
+                                ? filters.networkIds.split(',')
+                                : []
+                            }
+                            options={networkOptions}
+                          />
+                        </Col>
+                      )}
                       <Col span={6}>
                         <FilterLabel data-cy="assignedBy">
                           Assigned By

@@ -29,6 +29,7 @@ import {
   IconSwitchUser,
   IconTestBank,
   IconUsers,
+  IconVideoLibrary,
 } from '@edulastic/icons'
 import { Icon as AntIcon, Dropdown, Popconfirm, Popover, Tooltip } from 'antd'
 import { cloneDeep, every, get, some } from 'lodash'
@@ -40,6 +41,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { getTokens } from '@edulastic/api/src/utils/Storage'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import {
   getEmailVerified,
@@ -108,7 +110,6 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
-import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -194,6 +195,12 @@ const menuItems = [
     path: 'author/playlists',
   },
   {
+    label: 'Video Library',
+    icon: IconVideoLibrary,
+    allowedPathPattern: [/author\/vqlibrary/],
+    path: 'author/vqlibrary',
+  },
+  {
     label: 'user management',
     divider: true,
     allowSuperAdmin: true,
@@ -223,7 +230,13 @@ const menuItems = [
   },
 ]
 
-const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']
+const libraryItems = [
+  'library',
+  'Item Bank',
+  'Test',
+  'Playlist',
+  'Video Library',
+]
 
 // Only "My Playlist" and assignment screens are visible in mobile
 const allowedPathInMobile = ['assignments', 'playlists/playlist']

@@ -27,6 +27,7 @@ import {
 import ImportTest from '../ImportTest'
 import NotFound from '../../NotFound'
 import { updateRecentCollectionsAction } from './actions/dictionaries'
+import VideoLibrary from '../VideoLibrary'
 
 /* lazy load routes */
 const Dashboard = loadable(() => import('../Dashboard'), {
@@ -917,6 +918,11 @@ const Author = ({
                   exact
                   path="/author/import-content"
                   component={ImportTest}
+                />
+                <Route
+                  exact
+                  path={`${match.url}/vqlibrary`}
+                  component={VideoLibrary}
                 />
                 <Route
                   exact

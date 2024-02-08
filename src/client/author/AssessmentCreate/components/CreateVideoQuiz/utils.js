@@ -1,3 +1,5 @@
+import { extractVideoId } from '../../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
+
 const isURL = (input) => {
   try {
     // eslint-disable-next-line no-new
@@ -49,9 +51,71 @@ const trimTextToGivenLength = (text = '', textLength) => {
   return text
 }
 
+const getSearchBody = ({
+  grades = [],
+  subjects = [],
+  filter = 'AUTHORED_BY_ME',
+  testCategories = [],
+  searchString = [],
+  vqCollection = '',
+}) => {
+  return {
+    questionType: '',
+    depthOfKnowledge: '',
+    authorDifficulty: '',
+    collections: vqCollection ? [vqCollection] : [],
+    curriculumId: '',
+    status: '',
+    standardIds: [],
+    grades,
+    subject: subjects,
+    tags: [],
+    filter,
+    createdAt: '',
+    isSingaporeMath: false,
+    testCategories,
+    searchString,
+  }
+}
+
+const getVideoDetailsFromTests = (tests = []) => {
+  return tests.map(
+    ({ thumbnail, description, title, videoUrl, videoDuration }) => {
+      const videoId = extractVideoId(videoUrl)
+      return {
+        id: {
+          kind: 'youtube#video',
+          videoId,
+        },
+        snippet: {
+          title,
+          description,
+          thumbnails: {
+            medium: {
+              url: thumbnail,
+              width: 320,
+              height: 180,
+            },
+          },
+        },
+        videoDetails: {
+          kind: 'youtube#video',
+          etag: 'WUOcy6aI7a2pu1cnqiw2y2Yo4Do',
+          id: videoId,
+          contentDetails: {
+            duration: videoDuration,
+          },
+        },
+      }
+    }
+  )
+}
+
 export {
   isURL,
   getDefaultSearchString,
   parseISO8601Duration,
   trimTextToGivenLength,
+  getSearchBody,
+  getVideoDetailsFromTests,
 }

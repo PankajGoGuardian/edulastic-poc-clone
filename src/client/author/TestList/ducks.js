@@ -145,6 +145,7 @@ export const getTestsSelector = createSelector(
   stateSelector,
   (state) => state.entities
 )
+
 export const getTestsLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading

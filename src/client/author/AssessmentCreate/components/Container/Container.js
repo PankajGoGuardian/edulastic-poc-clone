@@ -131,6 +131,7 @@ class Container extends React.Component {
 
   handleNext = (videoUrl, thumbnail) => {
     const { location, createAssessment } = this.props
+    console.log({ location })
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })

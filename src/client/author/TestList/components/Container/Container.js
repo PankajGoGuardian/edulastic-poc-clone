@@ -438,6 +438,7 @@ class TestList extends Component {
       userId,
     })
     if (all) {
+      console.log('here', { search, sortState })
       return updateAllTestFilters({ search, sort: sortState })
     }
     updateTestFilters({ search, sort: sortState })

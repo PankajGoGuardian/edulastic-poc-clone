@@ -182,18 +182,26 @@ export const getStaticGroupItemIds = (_test) =>
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
   produce(itemGroups, (_itemGroups) => {
     for (const itemGroup of _itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      if (
+        itemGroup.type === ITEM_GROUP_TYPES.STATIC ||
+        (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+          itemGroup.items?.length)
+      ) {
         const isLimitedDeliveryType =
           itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         // For delivery type:LIMITED scoring should be as how item level scoring works
         itemGroup.items = itemGroup.items.map((o) => ({
           itemId: o._id,
           maxScore: isLimitedDeliveryType
-            ? 1
+            ? itemGroup.itemsDefaultMaxScore || 1
             : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-                { ...o, isLimitedDeliveryType },
+                {
+                  ...o,
+                  isLimitedDeliveryType,
+                  itemsDefaultMaxScore: itemGroup.itemsDefaultMaxScore,
+                },
                 o.data.questions,
                 helpers.getPoints(o),
                 scoring[o._id]
@@ -782,16 +790,23 @@ export const getTestItemsSelector = createSelector(
   (_test) => {
     const itemGroups = _test.itemGroups || []
     let testItems =
-      itemGroups.flatMap(
-        (itemGroup) =>
+      itemGroups.flatMap((itemGroup) => {
+        const isLimitedDeliveryType =
+          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        const itemExtras = {
+          groupId: itemGroup._id,
+          isLimitedDeliveryType,
+        }
+        if (isLimitedDeliveryType) {
+          itemExtras.itemsDefaultMaxScore = itemGroup.itemsDefaultMaxScore
+        }
+        return (
           itemGroup.items.map((item) => ({
             ...item,
-            groupId: itemGroup._id,
-            isLimitedDeliveryType:
-              itemGroup.deliveryType ===
-              ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM,
+            ...itemExtras,
           })) || []
-      ) || []
+        )
+      }) || []
     testItems = sortTestItemQuestions(testItems)
     return testItems
   }

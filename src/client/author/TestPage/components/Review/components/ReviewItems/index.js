@@ -37,6 +37,7 @@ const ReviewItems = ({
   orgCollections,
   userId,
   hasSections,
+  setShowAutoSelectScoreChangeModal,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -122,6 +123,7 @@ const ReviewItems = ({
           orgCollections={orgCollections}
           userId={userId}
           hasSections={hasSections}
+          setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
         />
       </Spin>
     </StyledSpinnerContainer>

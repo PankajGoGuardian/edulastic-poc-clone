@@ -4,14 +4,28 @@ import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 import { darkGrey5 } from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
+import { ITEM_GROUP_DELIVERY_TYPES } from '@edulastic/constants/const/test'
 import { SortableGroupItem, SortableSingleItem } from './SortableItem'
 import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageConfirmationModal'
 
 const { Panel } = Collapse
 
-const rightContent = (group, hasSections = false) => {
-  const { deliverItemsCount, items, settings } = group
+const rightContent = (
+  group,
+  hasSections = false,
+  setShowAutoSelectScoreChangeModal,
+  count
+) => {
+  const {
+    deliverItemsCount,
+    items,
+    settings,
+    deliveryType,
+    itemsDefaultMaxScore,
+    groupName,
+  } = group
   return (
     <>
       {/* 
@@ -35,6 +49,25 @@ const rightContent = (group, hasSections = false) => {
           <Count>{deliverItemsCount || items.length}</Count>
         </InfoDiv>
       )}
+      <EduIf
+        condition={deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM}
+      >
+        <span
+          onClick={(e) => {
+            e.stopPropagation()
+            setShowAutoSelectScoreChangeModal({
+              score: itemsDefaultMaxScore || 1,
+              sectionName: groupName,
+              groupIndex: count,
+            })
+          }}
+        >
+          <InfoDiv>
+            <Text>TOTAL POINTS</Text>
+            <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
+          </InfoDiv>
+        </span>
+      </EduIf>
     </>
   )
 }
@@ -52,6 +85,7 @@ export default SortableContainer(
     removeSingle,
     removeMultiple,
     hasSections,
+    setShowAutoSelectScoreChangeModal,
     ...rest
   }) => {
     const [removalObj, setRemovalPassageItems] = useState()
@@ -141,7 +175,12 @@ export default SortableContainer(
               <Panel
                 header={<span dataCy={group.groupName}>{group.groupName}</span>}
                 key={count}
-                extra={rightContent(group, hasSections)}
+                extra={rightContent(
+                  group,
+                  hasSections,
+                  setShowAutoSelectScoreChangeModal,
+                  count
+                )}
               >
                 {items.map((item, index) => {
                   // EV-38941: here item can be an object or array of objects

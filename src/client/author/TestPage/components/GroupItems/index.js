@@ -197,6 +197,12 @@ const GroupItems = ({
         notification({ messageKey: 'pleaseSelectAtleastTwoItems' })
         return
       }
+      if (value === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM) {
+        updatedGroupData = {
+          ...updatedGroupData,
+          itemsDefaultMaxScore: 1,
+        }
+      }
       updatedGroupData = {
         ...updatedGroupData,
         [fieldName]: value,
@@ -222,7 +228,7 @@ const GroupItems = ({
           ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
         ].includes(updatedGroupData.deliveryType)
       ) {
-        extraPick = ['deliverItemsCount']
+        extraPick = ['deliverItemsCount', 'itemsDefaultMaxScore']
       }
       updatedGroupData = pick(updatedGroupData, [
         'type',

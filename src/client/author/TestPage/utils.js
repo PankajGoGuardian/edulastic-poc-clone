@@ -66,7 +66,8 @@ export const getSettingsToSaveOnTestType = (isDocBased) => {
 const createItemsSummaryData = (
   items = [],
   scoring = {},
-  isLimitedDeliveryType
+  isLimitedDeliveryType,
+  itemsDefaultMaxScore
 ) => {
   const summary = {
     totalPoints: 0,
@@ -91,7 +92,7 @@ const createItemsSummaryData = (
     }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
-      { ...item, isLimitedDeliveryType },
+      { ...item, isLimitedDeliveryType, itemsDefaultMaxScore },
       questions,
       getPoints(item),
       scoring[_id]
@@ -160,7 +161,8 @@ export const createGroupSummary = (test) => {
     const { noStandards, ...summaryData } = createItemsSummaryData(
       itemGroup.items,
       test.scoring,
-      isLimitedDeliveryType
+      isLimitedDeliveryType,
+      itemGroup.itemsDefaultMaxScore
     )
     if (isAutoSelect) {
       summaryData.standards =

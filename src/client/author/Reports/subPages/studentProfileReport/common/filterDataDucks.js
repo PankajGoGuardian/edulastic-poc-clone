@@ -122,7 +122,7 @@ export const getStudentsListSelector = createSelector(
 
 export const getStudentsLoading = createSelector(
   stateSelector,
-  (state) => state.loading
+  (state) => state.loadingStudentList
 )
 
 export const getLastStudentsListQuery = createSelector(
@@ -150,6 +150,7 @@ const initialState = {
   },
   tempTagsData: {},
   loading: false,
+  loadingStudentList: false,
 }
 
 export const reportSPRFilterDataReducer = createReducer(initialState, {
@@ -181,15 +182,15 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [RESET_ALL_REPORTS]: () => initialState,
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: (state) => {
-    state.loading = true
+    state.loadingStudentList = true
   },
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false
+    state.loadingStudentList = false
     state.studentList = payload.studentList
     state.studentListQuery = payload.query
   },
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false
+    state.loadingStudentList = false
     state.error = payload.error
   },
 })

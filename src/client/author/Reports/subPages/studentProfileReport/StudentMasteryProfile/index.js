@@ -5,7 +5,13 @@ import {
   themeColorBlue,
   white,
 } from '@edulastic/colors'
-import { SpinLoader, FlexContainer, EduIf } from '@edulastic/common'
+import {
+  SpinLoader,
+  FlexContainer,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
 import { Avatar, Button } from 'antd'
 import { filter, get, isEmpty } from 'lodash'
@@ -25,10 +31,14 @@ import {
   getStudentAssignments,
   toggleItem,
   getGrades,
+  getNoDataContainerDesc,
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import { getReportsSPRFilterData } from '../common/filterDataDucks'
+import {
+  getReportsSPRFilterData,
+  getReportsSPRFilterLoadingState,
+} from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   getStudentName,
@@ -91,6 +101,7 @@ const allSubjects = [
 const StudentMasteryProfile = ({
   settings,
   loading,
+  loadingFiltersData,
   error,
   SPRFilterData,
   isCsvDownloading,
@@ -288,124 +299,122 @@ const StudentMasteryProfile = ({
     setClickedStandard(undefined)
   }
 
-  if (isEmpty(metricInfo) || !settings.selectedStudent?.key) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
-  }
+  const hasContent = !isEmpty(metricInfo) && !!settings.selectedStudent?.key
+  const noDataDesc = getNoDataContainerDesc(settings, loadingFiltersData)
 
   return (
-    <>
-      <FlexContainer alignItems="stretch" marginBottom="20px">
-        <ReStyledCard flex={1}>
-          <FlexContainer justifyContent="flex-start">
-            <FlexContainer justifyContent="center" mt="20px" width="180px">
-              {studentInformation.thumbnail ? (
-                <StyledAatar size={150} src={studentInformation.thumbnail} />
-              ) : (
-                <StyledAatar size={150} icon="user" />
-              )}
+    <EduIf condition={hasContent}>
+      <EduThen>
+        <FlexContainer alignItems="stretch" marginBottom="20px">
+          <ReStyledCard flex={1}>
+            <FlexContainer justifyContent="flex-start">
+              <FlexContainer justifyContent="center" mt="20px" width="180px">
+                {studentInformation.thumbnail ? (
+                  <StyledAatar size={150} src={studentInformation.thumbnail} />
+                ) : (
+                  <StyledAatar size={150} icon="user" />
+                )}
+              </FlexContainer>
+              <FlexContainer
+                flexDirection="column"
+                alignItems="flex-start"
+                justifyContent="center"
+              >
+                <StyledP marginTop="30px">
+                  <StyledName>{studentName || anonymousString}</StyledName>
+                </StyledP>
+                <StyledP marginTop="12px">
+                  <StyledText weight="Bold"> Grade: </StyledText>
+                  <StyledText>{getGrades(studentClassData)}</StyledText>
+                </StyledP>
+              </FlexContainer>
             </FlexContainer>
-            <FlexContainer
-              flexDirection="column"
-              alignItems="flex-start"
-              justifyContent="center"
-            >
-              <StyledP marginTop="30px">
-                <StyledName>{studentName || anonymousString}</StyledName>
-              </StyledP>
-              <StyledP marginTop="12px">
-                <StyledText weight="Bold"> Grade: </StyledText>
-                <StyledText>{getGrades(studentClassData)}</StyledText>
-              </StyledP>
-            </FlexContainer>
-          </FlexContainer>
-        </ReStyledCard>
-        <ReStyledCard maxW="50%" ml="20px">
-          <StudentPerformancePie
-            selectedMastery={selectedMastery}
-            data={filteredStandards}
-            scaleInfo={scaleInfo}
-            onSectionClick={onSectionClick}
-            getTooltip={getTooltip}
-            showAsRow
-          />
-        </ReStyledCard>
-      </FlexContainer>
-
-      <ReStyledCard>
-        <FilterRow justifyContent="space-between">
-          <DropdownContainer>
-            <ControlDropDown
-              by={selectedCurriculum}
-              selectCB={onCurriculumSelect}
-              data={curriculumsOptions}
-              prefix="Standard Set"
-              showPrefixOnSelected={false}
+          </ReStyledCard>
+          <ReStyledCard maxW="50%" ml="20px">
+            <StudentPerformancePie
+              selectedMastery={selectedMastery}
+              data={filteredStandards}
+              scaleInfo={scaleInfo}
+              onSectionClick={onSectionClick}
+              getTooltip={getTooltip}
+              showAsRow
             />
-            <EduIf condition={!isStudentOrParent}>
+          </ReStyledCard>
+        </FlexContainer>
+        <ReStyledCard>
+          <FilterRow justifyContent="space-between">
+            <DropdownContainer>
               <ControlDropDown
-                by={selectedGrade}
-                selectCB={onGradeSelect}
-                data={allGrades}
-                prefix="Standard Grade"
+                by={selectedCurriculum}
+                selectCB={onCurriculumSelect}
+                data={curriculumsOptions}
+                prefix="Standard Set"
                 showPrefixOnSelected={false}
               />
-            </EduIf>
-            <ControlDropDown
-              by={selectedSubject}
-              selectCB={onSubjectSelect}
-              data={allSubjects}
-              prefix="Standard Subject"
-              showPrefixOnSelected={false}
-            />
-            <ControlDropDown
-              showPrefixOnSelected={false}
-              by={selectedDomain}
-              selectCB={onDomainSelect}
-              data={domainOptions}
-              prefix="Domain(s)"
-            />
-          </DropdownContainer>
-          <StyledButton
-            onClick={() => setExpandRows(!expandRows)}
-            data-cy="expand-row"
-          >
-            <IconCollapse2 color={themeColor} width={12} height={12} />
-            <span className="button-label">
-              {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
-            </span>
-          </StyledButton>
-        </FilterRow>
-        <StudentPerformanceSummary
-          data={filteredDomains}
-          selectedMastery={selectedMastery}
-          expandedRowProps={{
-            onCsvConvert,
-            isCsvDownloading,
-            data: filteredStandards,
-            selectedMastery,
-            handleOnClickStandard,
-            filters: sharedReportFilters || settings.requestFilters,
-          }}
-          expandAllRows={expandRows}
-          setExpandAllRows={(flag) => setExpandRows(flag)}
-        />
-      </ReStyledCard>
-
-      {showStudentAssignmentModal && (
-        <StudentAssignmentModal
-          showModal={showStudentAssignmentModal}
-          closeModal={closeStudentAssignmentModal}
-          studentAssignmentsData={studentAssignmentsData}
-          studentName={studentName || anonymousString}
-          standardName={clickedStandard}
-          loadingStudentStandard={loadingStudentStandard}
-        />
-      )}
-    </>
+              <EduIf condition={!isStudentOrParent}>
+                <ControlDropDown
+                  by={selectedGrade}
+                  selectCB={onGradeSelect}
+                  data={allGrades}
+                  prefix="Standard Grade"
+                  showPrefixOnSelected={false}
+                />
+              </EduIf>
+              <ControlDropDown
+                by={selectedSubject}
+                selectCB={onSubjectSelect}
+                data={allSubjects}
+                prefix="Standard Subject"
+                showPrefixOnSelected={false}
+              />
+              <ControlDropDown
+                showPrefixOnSelected={false}
+                by={selectedDomain}
+                selectCB={onDomainSelect}
+                data={domainOptions}
+                prefix="Domain(s)"
+              />
+            </DropdownContainer>
+            <StyledButton
+              onClick={() => setExpandRows(!expandRows)}
+              data-cy="expand-row"
+            >
+              <IconCollapse2 color={themeColor} width={12} height={12} />
+              <span className="button-label">
+                {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
+              </span>
+            </StyledButton>
+          </FilterRow>
+          <StudentPerformanceSummary
+            data={filteredDomains}
+            selectedMastery={selectedMastery}
+            expandedRowProps={{
+              onCsvConvert,
+              isCsvDownloading,
+              data: filteredStandards,
+              selectedMastery,
+              handleOnClickStandard,
+              filters: sharedReportFilters || settings.requestFilters,
+            }}
+            expandAllRows={expandRows}
+            setExpandAllRows={(flag) => setExpandRows(flag)}
+          />
+        </ReStyledCard>
+        {showStudentAssignmentModal && (
+          <StudentAssignmentModal
+            showModal={showStudentAssignmentModal}
+            closeModal={closeStudentAssignmentModal}
+            studentAssignmentsData={studentAssignmentsData}
+            studentName={studentName || anonymousString}
+            standardName={clickedStandard}
+            loadingStudentStandard={loadingStudentStandard}
+          />
+        )}
+      </EduThen>
+      <EduElse>
+        <NoDataContainer>{noDataDesc}</NoDataContainer>
+      </EduElse>
+    </EduIf>
   )
 }
 
@@ -414,6 +423,7 @@ const withConnect = connect(
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
+    loadingFiltersData: getReportsSPRFilterLoadingState(state),
     error: getReportsStudentMasteryProfileError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     studentStandardData: getStudentStandardData(state),

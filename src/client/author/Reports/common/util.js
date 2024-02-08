@@ -879,3 +879,16 @@ export const getChartDataBasedOnSchoolYear = (data) => {
   }
   return result
 }
+
+export const getNoDataContainerDesc = (settings, loading = false) => {
+  if (loading) return ''
+  const { selectedStudent, requestFilters } = settings
+  let desc = ''
+  if (!selectedStudent?.key) {
+    desc = 'Please select student to generate the report'
+  } else if (requestFilters?.termId) {
+    desc =
+      'No data available currently for selected Student. Please select another Student or try later.'
+  }
+  return desc
+}

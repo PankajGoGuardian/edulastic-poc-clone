@@ -1,12 +1,16 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
-import { get, pickBy, isEmpty, reject } from 'lodash'
+import { get, pickBy, isEmpty, reject, mapValues } from 'lodash'
 import { Row, Col, Tabs } from 'antd'
 
 import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { FieldLabel } from '@edulastic/common'
 import { withNamespaces } from 'react-i18next'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import { reportNavType } from '@edulastic/constants/const/report'
+
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -22,9 +26,19 @@ import FilterTags from '../../../../../common/components/FilterTags'
 import SchoolAutoComplete from '../../../../../common/components/autocompletes/SchoolAutoComplete'
 import CoursesAutoComplete from '../../../../../common/components/autocompletes/CoursesAutoComplete'
 import ClassAutoComplete from '../ClassAutoComplete'
-import StudentAutoComplete from '../StudentAutoComplete'
+import StudentAutoComplete from '../../../../../common/components/autocompletes/StudentAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
+
+import { actions, selectors } from '../../ducks'
+import useFiltersFromUrl from './hooks/useFiltersFromUrl'
+import {
+  getCurrentTerm,
+  getOrgDataSelector,
+  getUserRole,
+} from '../../../../../../src/selectors/user'
+import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+
 import { getTermOptions } from '../../../../../../utils/reports'
 import {
   getStudentName,
@@ -37,7 +51,6 @@ import {
   convertItemToArray,
   getDefaultTestTypesForUser,
   getIsMultiSchoolYearDataPresent,
-  getUrlTestTermIds,
 } from '../../../common/utils'
 import SelectAssessmentsForMultiSchoolYear from '../../../common/components/SelectAssessmentsForMultiSchoolYear'
 import TagFilter from '../../../../../../src/components/common/TagFilter'
@@ -109,6 +122,10 @@ const WholeLearnerReportFilters = ({
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
   history,
+  studentsList,
+  studentsListQuery,
+  loadingStudentsData,
+  fetchStudentsDataRequest,
   t,
 }) => {
   const tagTypes = staticDropDownData.tagTypes
@@ -142,11 +159,6 @@ const WholeLearnerReportFilters = ({
     [location.search]
   )
 
-  const defaultTestTypes = getDefaultTestTypesForUser(
-    availableTestTypes,
-    userRole
-  )
-
   const testUniqIds = useMemo(() => convertItemToArray(filters.testUniqIds), [
     filters.testUniqIds,
   ])
@@ -159,61 +171,35 @@ const WholeLearnerReportFilters = ({
   }, [isMultiSchoolYear, testUniqIds])
 
   useEffect(() => {
-    const urlSchoolYear =
-      termOptions.find((item) => item.key === search.termId) ||
-      termOptions.find((item) => item.key === defaultTermId) ||
-      (termOptions[0] ? termOptions[0] : { key: '', title: '' })
-    const urlSubjects = staticDropDownData.subjects.filter(
-      (item) => search.subjects && search.subjects.includes(item.key)
-    )
-    const urlGrades = staticDropDownData.grades.filter(
-      (item) => search.grades && search.grades.includes(item.key)
-    )
-    const urlTestTermIds = getUrlTestTermIds(termOptions, search.testTermIds)
-
-    const _filters = {
-      reportId: reportId || '',
-      termId: urlSchoolYear.key,
-      testTermIds:
-        urlTestTermIds.map((item) => item.key).join(',') || urlSchoolYear.key,
-      testUniqIds: search.testUniqIds || '',
-      testSubjects: search.testSubjects || '',
-      testGrades: search.testGrades || '',
-      tagIds: search.tagIds || '',
-      grades: urlGrades.map((item) => item.key).join(',') || '',
-      subjects: urlSubjects.map((item) => item.key).join(',') || '',
-      schoolIds: search.schoolIds || '',
-      classIds: search.classIds || '',
-      courseIds: search.courseIds || '',
-      performanceBandProfileId: search.performanceBandProfileId || '',
-      testTypes: search.testTypes || defaultTestTypes,
-      externalScoreType:
-        search.externalScoreType || EXTERNAL_SCORE_TYPES.SCALED_SCORE,
-    }
-    if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
-      delete _filters.schoolIds
-    }
-    const testTypesTags = getTestTypesFromUrl(
-      search.testTypes || defaultTestTypes,
-      availableTestTypes
-    )
-    const _filterTagsData = {
-      ...filterTagsData,
-      termId: urlSchoolYear,
-      testTermIds: urlTestTermIds.length ? urlTestTermIds : [urlSchoolYear],
-      testTypes: testTypesTags,
-      grades: urlGrades,
-      subjects: urlSubjects,
-    }
-    setFilters(_filters)
-    setFilterTagsData(_filterTagsData)
     if (reportId) {
       fetchFiltersDataRequest({ reportId })
+    } else if (urlStudentId && search.termId) {
+      fetchFiltersDataRequest({
+        termId: search.termId,
+        studentId: urlStudentId,
+        externalTestTypesRequired: true,
+        externalTestsRequired: !isMultiSchoolYear,
+      })
     }
-    if (urlStudentId) {
-      setStudent({ key: urlStudentId })
-    }
-  }, [defaultTestTypes])
+  }, [])
+
+  useFiltersFromUrl({
+    location,
+    termOptions,
+    search,
+    staticDropDownData,
+    defaultTermId,
+    reportId,
+    userRole,
+    setFilters,
+    filterTagsData,
+    setFilterTagsData,
+    setShowApply,
+    toggleFilter,
+    setFirstLoad,
+    setStudent,
+    urlStudentId,
+  })
 
   if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {
     const _student = { ...student }
@@ -234,7 +220,11 @@ const WholeLearnerReportFilters = ({
       })
       setShowApply(false)
       setFirstLoad(false)
-    } else if (firstLoad && !reportId && filters.termId) {
+    } else if (firstLoad && !reportId && filters.termId && urlStudentId) {
+      const defaultTestTypes = getDefaultTestTypesForUser(
+        availableTestTypes,
+        userRole
+      )
       const selectedTestTypes = search.testTypes || defaultTestTypes
       const _filters = {
         ...filters,
@@ -253,25 +243,22 @@ const WholeLearnerReportFilters = ({
       }
       setFilters({ ..._filters })
       setFilterTagsData({ ..._filterTagsData })
-      if (location.state?.source === 'data-warehouse-reports') {
-        setShowApply(true)
-        toggleFilter(null, true)
-      } else {
-        _onGoClick({
-          filters: { ..._filters },
-          selectedStudent: _student,
-          selectedFilterTagsData: { ..._filterTagsData },
-        })
-        // TODO: add mapping and support to enable this feature
-        fetchUpdateTagsData({
-          schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-          courseIds: reject(_filters.courseIds?.split(','), isEmpty),
-          classIds: reject(_filters.classIds?.split(','), isEmpty),
-          options: {
-            termId: _filters.termId,
-          },
-        })
-      }
+
+      _onGoClick({
+        filters: { ..._filters },
+        selectedStudent: _student,
+        selectedFilterTagsData: { ..._filterTagsData },
+      })
+      // TODO: add mapping and support to enable this feature
+      fetchUpdateTagsData({
+        schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+        courseIds: reject(_filters.courseIds?.split(','), isEmpty),
+        classIds: reject(_filters.classIds?.split(','), isEmpty),
+        options: {
+          termId: _filters.termId,
+        },
+      })
+
       setFirstLoad(false)
     }
     setPrevFiltersData(filtersData)
@@ -294,9 +281,8 @@ const WholeLearnerReportFilters = ({
     const _filterTagsData = { ...filterTagsData, student: selected }
     if (selected && selected.key) {
       setStudent(selected)
-      if (!firstLoad || location.state?.source === 'data-warehouse-reports') {
-        setFilters({ ...filters, showApply: true })
-      }
+      setFilters({ ...filters, showApply: true })
+
       // BUG updates the student details(student-profile) even before `Apply` is clicked.
       fetchFiltersDataRequest({
         termId: filters.termId,
@@ -726,15 +712,13 @@ const WholeLearnerReportFilters = ({
             </FieldLabel>
             <StudentAutoComplete
               height="40px"
-              firstLoad={firstLoad}
-              termId={filters.termId}
-              schoolIds={filters.schoolIds}
-              grades={filters.grades}
-              subjects={filters.subjects}
-              courseIds={filters.courseIds}
-              classIds={filters.classIds}
-              selectedStudentId={student.key || urlStudentId}
+              filters={filters}
+              selectedStudent={student}
               selectCB={onStudentSelect}
+              studentList={studentsList}
+              activeQuery={studentsListQuery}
+              loading={loadingStudentsData}
+              loadStudentList={fetchStudentsDataRequest}
             />
           </StyledDropDownContainer>
           <StyledDropDownContainer
@@ -781,4 +765,24 @@ const WholeLearnerReportFilters = ({
   )
 }
 
-export default withNamespaces('reports')(WholeLearnerReportFilters)
+const enhance = compose(
+  withNamespaces('reports'),
+  connect(
+    (state) => ({
+      ...mapValues(selectors, (selector) => selector(state)),
+      defaultTermId: getCurrentTerm(state),
+      orgData: getOrgDataSelector(state),
+      userRole: getUserRole(state),
+    }),
+    {
+      ...actions,
+      fetchUpdateTagsData: (opts) =>
+        fetchUpdateTagsDataAction({
+          type: reportNavType.WHOLE_LEARNER_REPORT,
+          ...opts,
+        }),
+    }
+  )
+)
+
+export default enhance(WholeLearnerReportFilters)

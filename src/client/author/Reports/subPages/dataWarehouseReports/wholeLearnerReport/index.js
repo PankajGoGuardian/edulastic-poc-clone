@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
-import { Spin } from 'antd'
 
 import { reportsApi } from '@edulastic/api'
 import {
@@ -13,11 +12,8 @@ import {
   useApiQuery,
 } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
-import {
-  helpLinks,
-  reportGroupType,
-  reportNavType,
-} from '@edulastic/constants/const/report'
+import { helpLinks, reportNavType } from '@edulastic/constants/const/report'
+import { Spin } from 'antd'
 import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer } from '../../../common/styled'
 import Summary from './components/Summary'
@@ -31,7 +27,6 @@ import SectionDescription from '../../../common/components/SectionDescription'
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
   fetchInterventionsByGroupsRequest,
-  fetchUpdateTagsDataAction,
   getAcademicInterventions,
   getAttendanceInterventions,
   getCsvDownloadingState,
@@ -41,11 +36,6 @@ import {
   setEnableReportSharingAction,
 } from '../../../ducks'
 import { getSharedReportList } from '../../../components/sharedReports/ducks'
-import {
-  getUserRole,
-  getOrgDataSelector,
-  getCurrentTerm,
-} from '../../../../src/selectors/user'
 import { actions, selectors } from './ducks'
 
 import {
@@ -57,7 +47,10 @@ import {
   getAttendanceChartData,
 } from './utils'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
-import { getTabNavigationItems } from '../../../common/util'
+import {
+  getTabNavigationItems,
+  getNoDataContainerDesc,
+} from '../../../common/util'
 import {
   EXTERNAL_SCORE_TYPES,
   getIsMultiSchoolYearDataPresent,
@@ -74,25 +67,19 @@ const WholeLearnerReport = ({
   sharingState,
   sharedReportList,
   isCsvDownloading,
-  userRole,
-  orgData,
-  defaultTermId,
   showApply,
   breadcrumbData,
   isCliUser,
   isPrinting,
   updateNavigation,
   // value props (from report selectors)
-  firstLoad,
   showFilter,
   loadingFiltersData,
-  prevFiltersData,
-  student,
+  firstLoad,
   filtersData,
   filtersTabKey,
   filters,
   filterTagsData,
-  selectedFilterTagsData,
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportData,
@@ -104,18 +91,11 @@ const WholeLearnerReport = ({
   resetAllReports,
   setSharingState,
   // action props (from report actions)
-  setFirstLoad,
-  fetchFiltersDataRequest,
-  fetchStudentsDataRequest,
   setFiltersTabKey,
   setFilters,
-  setStudent,
   setFilterTagsData,
-  setPrevFiltersData,
-  resetFiltersData,
   setSettings,
   fetchReportDataRequest,
-  fetchUpdateTagsData,
   loadingAttendanceData,
   attendanceData,
   fetchAttendanceDataRequest,
@@ -448,6 +428,11 @@ const WholeLearnerReport = ({
   // TODO cleanup+fix loading states and error/empty handling
   const isReportLoading = loadingReportData || loadingAttendanceData
 
+  const noDataText = getNoDataContainerDesc(
+    settings,
+    loadingFiltersData && loadingReportData
+  )
+
   return (
     <>
       {sharingState && (
@@ -475,34 +460,14 @@ const WholeLearnerReport = ({
           history={history}
           location={location}
           showApply={showApply}
-          firstLoad={firstLoad}
-          userRole={userRole}
-          orgData={orgData}
-          defaultTermId={defaultTermId}
           // value props (from report selectors)
-          loadingFiltersData={loadingFiltersData}
-          prevFiltersData={prevFiltersData}
-          filtersData={filtersData}
-          student={student}
           filtersTabKey={filtersTabKey}
-          filters={filters}
-          filterTagsData={filterTagsData}
-          selectedFilterTagsData={selectedFilterTagsData}
           // action props (others)
           setShowApply={setShowApply}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
-          setFirstLoad={setFirstLoad}
           // action props (from report actions)
-          fetchFiltersDataRequest={fetchFiltersDataRequest}
-          fetchStudentsDataRequest={fetchStudentsDataRequest}
           setFiltersTabKey={setFiltersTabKey}
-          setFilters={setFilters}
-          setStudent={setStudent}
-          setFilterTagsData={setFilterTagsData}
-          setPrevFiltersData={setPrevFiltersData}
-          resetFiltersData={resetFiltersData}
-          fetchUpdateTagsData={fetchUpdateTagsData}
         />
       </SubHeader>
       <div>
@@ -526,11 +491,7 @@ const WholeLearnerReport = ({
                   condition={isDataEmpty || !settings.selectedStudent?.key}
                 >
                   <EduThen>
-                    <NoDataContainer>
-                      {settings.requestFilters?.termId
-                        ? 'No data available currently.'
-                        : ''}
-                    </NoDataContainer>
+                    <NoDataContainer>{noDataText}</NoDataContainer>
                   </EduThen>
                   <EduElse>
                     <SectionLabel
@@ -609,9 +570,6 @@ const enhance = connect(
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    userRole: getUserRole(state),
-    orgData: getOrgDataSelector(state),
-    defaultTermId: getCurrentTerm(state),
     interventionsData: getInterventionsByGroup(state),
     academicInterventions: getAcademicInterventions(state),
     attendanceInterventions: getAttendanceInterventions(state),
@@ -623,11 +581,6 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchInterventionsByGroups: fetchInterventionsByGroupsRequest,
     setEnableReportSharing: setEnableReportSharingAction,
-    fetchUpdateTagsData: (opts) =>
-      fetchUpdateTagsDataAction({
-        type: reportGroupType.WHOLE_LEARNER_REPORT,
-        ...opts,
-      }),
   }
 )
 

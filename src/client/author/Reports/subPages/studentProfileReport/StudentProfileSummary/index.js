@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
-import { SpinLoader, FlexContainer } from '@edulastic/common'
+import {
+  SpinLoader,
+  FlexContainer,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { Icon, Avatar, Tooltip } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
@@ -11,11 +17,19 @@ import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { downloadCSV, getGrades, getSchools } from '../../../common/util'
+import {
+  downloadCSV,
+  getGrades,
+  getNoDataContainerDesc,
+  getSchools,
+} from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import { getReportsSPRFilterData } from '../common/filterDataDucks'
+import {
+  getReportsSPRFilterData,
+  getReportsSPRFilterLoadingState,
+} from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   augementAssessmentChartData,
@@ -69,6 +83,7 @@ const allSubjects = [
 
 const StudentProfileSummary = ({
   loading,
+  loadingFiltersData,
   error,
   settings,
   isCsvDownloading,
@@ -256,26 +271,6 @@ const StudentProfileSummary = ({
     )
   }
 
-  if (error && error.dataSizeExceeded) {
-    return <DataSizeExceeded />
-  }
-
-  if (
-    isEmpty(studentProfileSummaryData) ||
-    !studentProfileSummaryData ||
-    isEmpty(asessmentMetricInfo) ||
-    isEmpty(metricInfo) ||
-    isEmpty(skillInfo) ||
-    isEmpty(studInfo) ||
-    !settings.selectedStudent?.key
-  ) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
-  }
-
   const studentInformation = studInfo[0] || {}
   const studentName = getStudentName(
     settings.selectedStudent,
@@ -293,94 +288,113 @@ const StudentProfileSummary = ({
 
   const schoolName = getSchools(studentClassData)
 
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
+  const hasContent = [
+    isEmpty(studentProfileSummaryData),
+    isEmpty(asessmentMetricInfo),
+    isEmpty(metricInfo),
+    isEmpty(skillInfo),
+    isEmpty(studInfo),
+    !settings.selectedStudent?.key,
+  ].every((e) => !e)
+  const noDataDesc = getNoDataContainerDesc(settings, loadingFiltersData)
+
   return (
-    <>
-      <FlexContainer marginBottom="20px" alignItems="stretch">
-        <StudentDetailsCard width="280px" mr="20px">
-          <IconContainer>
-            <UserIconWrapper>
-              {studentInformation.thumbnail ? (
-                <StyledAatar size={150} src={studentInformation.thumbnail} />
-              ) : (
-                <StyledIcon type="user" />
-              )}
-            </UserIconWrapper>
-          </IconContainer>
-          <StudentDetailsContainer>
-            <span>NAME</span>
-            <p>{studentName || anonymousString}</p>
-            <span>GRADE</span>
-            <p>{getGrades(studentClassData)}</p>
-            <span>SCHOOL</span>
-            <Tooltip title={schoolName}>
-              <p className="school-name">{schoolName}</p>
-            </Tooltip>
-          </StudentDetailsContainer>
-        </StudentDetailsCard>
-        <Card width="calc(100% - 300px)">
-          <AssessmentChart
-            data={data}
-            studentInformation={studentClassInfo}
-            xTickTooltipPosition={400}
-            onBarClickCB={_onBarClickCB}
-            isBarClickable={!isSharedReport}
-            printWidth={700}
-          />
-        </Card>
-      </FlexContainer>
-      <div>
-        <StyledH3>Standard Mastery Detail by Student</StyledH3>
-        <FlexContainer alignItems="stretch">
-          <Card width="280px" mr="20px">
-            <StudentPerformancePie
-              data={filteredStandards}
-              scaleInfo={scaleInfo}
-              getTooltip={getTooltip}
-              title=""
-            />
-          </Card>
+    <EduIf condition={hasContent}>
+      <EduThen>
+        <FlexContainer marginBottom="20px" alignItems="stretch">
+          <StudentDetailsCard width="280px" mr="20px">
+            <IconContainer>
+              <UserIconWrapper>
+                {studentInformation.thumbnail ? (
+                  <StyledAatar size={150} src={studentInformation.thumbnail} />
+                ) : (
+                  <StyledIcon type="user" />
+                )}
+              </UserIconWrapper>
+            </IconContainer>
+            <StudentDetailsContainer>
+              <span>NAME</span>
+              <p>{studentName || anonymousString}</p>
+              <span>GRADE</span>
+              <p>{getGrades(studentClassData)}</p>
+              <span>SCHOOL</span>
+              <Tooltip title={schoolName}>
+                <p className="school-name">{schoolName}</p>
+              </Tooltip>
+            </StudentDetailsContainer>
+          </StudentDetailsCard>
           <Card width="calc(100% - 300px)">
-            <FilterRow justifyContent="space-between">
-              <DropdownContainer>
-                <ControlDropDown
-                  by={selectedCurriculum}
-                  selectCB={onCurriculumSelect}
-                  data={curriculumsOptions}
-                  prefix="Standard Set"
-                  showPrefixOnSelected={false}
-                />
-                <ControlDropDown
-                  by={selectedGrade}
-                  selectCB={onGradeSelect}
-                  data={allGrades}
-                  prefix="Standard Grade"
-                  showPrefixOnSelected={false}
-                />
-                <ControlDropDown
-                  by={selectedSubject}
-                  selectCB={onSubjectSelect}
-                  data={allSubjects}
-                  prefix="Standard Subject"
-                  showPrefixOnSelected={false}
-                />
-                <ControlDropDown
-                  showPrefixOnSelected={false}
-                  by={selectedDomain}
-                  selectCB={onDomainSelect}
-                  data={domainOptions}
-                  prefix="Domain(s)"
-                />
-              </DropdownContainer>
-            </FilterRow>
-            <StandardMasteryDetailsTable
-              onCsvConvert={onCsvConvert}
-              isCsvDownloading={isCsvDownloading}
-              data={domainsWithMastery}
+            <AssessmentChart
+              data={data}
+              studentInformation={studentClassInfo}
+              xTickTooltipPosition={400}
+              onBarClickCB={_onBarClickCB}
+              isBarClickable={!isSharedReport}
+              printWidth={700}
             />
           </Card>
         </FlexContainer>
-      </div>
-    </>
+        <div>
+          <StyledH3>Standard Mastery Detail by Student</StyledH3>
+          <FlexContainer alignItems="stretch">
+            <Card width="280px" mr="20px">
+              <StudentPerformancePie
+                data={filteredStandards}
+                scaleInfo={scaleInfo}
+                getTooltip={getTooltip}
+                title=""
+              />
+            </Card>
+            <Card width="calc(100% - 300px)">
+              <FilterRow justifyContent="space-between">
+                <DropdownContainer>
+                  <ControlDropDown
+                    by={selectedCurriculum}
+                    selectCB={onCurriculumSelect}
+                    data={curriculumsOptions}
+                    prefix="Standard Set"
+                    showPrefixOnSelected={false}
+                  />
+                  <ControlDropDown
+                    by={selectedGrade}
+                    selectCB={onGradeSelect}
+                    data={allGrades}
+                    prefix="Standard Grade"
+                    showPrefixOnSelected={false}
+                  />
+                  <ControlDropDown
+                    by={selectedSubject}
+                    selectCB={onSubjectSelect}
+                    data={allSubjects}
+                    prefix="Standard Subject"
+                    showPrefixOnSelected={false}
+                  />
+                  <ControlDropDown
+                    showPrefixOnSelected={false}
+                    by={selectedDomain}
+                    selectCB={onDomainSelect}
+                    data={domainOptions}
+                    prefix="Domain(s)"
+                  />
+                </DropdownContainer>
+              </FilterRow>
+              <StandardMasteryDetailsTable
+                onCsvConvert={onCsvConvert}
+                isCsvDownloading={isCsvDownloading}
+                data={domainsWithMastery}
+              />
+            </Card>
+          </FlexContainer>
+        </div>
+      </EduThen>
+      <EduElse>
+        <NoDataContainer>{noDataDesc}</NoDataContainer>
+      </EduElse>
+    </EduIf>
   )
 }
 
@@ -388,6 +402,7 @@ const withConnect = connect(
   (state) => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
+    loadingFiltersData: getReportsSPRFilterLoadingState(state),
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),

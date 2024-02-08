@@ -526,7 +526,7 @@ export const getTestTypesFromUrl = (
   return availableTestTypes.filter((a) => testTypesArr.includes(a.key))
 }
 
-export const getLegendPayload = (selectedPerformanceBand) =>
+export const getLegendPayload = (selectedPerformanceBand = []) =>
   selectedPerformanceBand
     .sort((a, b) => a.threshold - b.threshold)
     .map((pb, index) => ({
@@ -536,7 +536,7 @@ export const getLegendPayload = (selectedPerformanceBand) =>
       type: 'circle',
     }))
 
-export const getBarsDataForInternal = (selectedPerformanceBand) =>
+export const getBarsDataForInternal = (selectedPerformanceBand = []) =>
   selectedPerformanceBand.map((pb, index) => ({
     ...pb,
     key: `bar${index + 1}`,

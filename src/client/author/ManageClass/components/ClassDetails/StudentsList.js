@@ -10,6 +10,7 @@ import { GiDominoMask } from 'react-icons/gi'
 import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
 import { lightBlue3 } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
+import { LANGUAGES_OPTIONS } from '@edulastic/constants/const/languages'
 import {
   NoStudents,
   NoConentDesc,
@@ -34,6 +35,7 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getFormattedName } from '../../../Gradebook/transformers'
+import { fieldsMapping } from '../../constants'
 
 const StudentsList = ({
   cuId,
@@ -109,18 +111,42 @@ const StudentsList = ({
       align: 'left',
     },
     {
-      title: 'TTS Enabled',
-      dataIndex: 'tts',
+      title: 'Accommodation Available',
+      dataIndex: 'accommodations',
       align: 'center',
-      render: (tts) => (
-        <span>
-          {tts === 'yes' ? (
-            <IconCorrect />
-          ) : (
-            <IconClose color="#ff99bb" width="10px" height="10px" />
-          )}
-        </span>
-      ),
+      render: (data) => {
+        if (data) {
+          const result = Object.keys(data).reduce((res, key) => {
+            const label = fieldsMapping.accommodations.find(
+              (field) => field.fieldName === key
+            )?.label
+            if (key === 'preferredLanguage') {
+              const languageCode = LANGUAGES_OPTIONS.find(
+                (o) => o.label.toLowerCase() === data[key]?.toLowerCase()
+              )?.value
+              res.push({ label, value: languageCode.toUpperCase() })
+            } else if (key === 'extraTimeOnTest') {
+              const value = data[key]
+              res.push({ label, value: value > 0 ? `${value}x` : 'UNLIMITED' })
+            } else if (data[key] === 'yes') {
+              res.push({ label, value: key.toUpperCase() })
+            }
+            return res
+          }, [])
+          const tooltip = `${result
+            .map((e) => e.label)
+            .slice(0, -1)
+            .join(', ')} & ${result.map((e) => e.label).slice(-1)}`
+
+          const value = result.map((e) => e.value).join()
+          return (
+            <Tooltip title={tooltip}>
+              <span>{value}</span>
+            </Tooltip>
+          )
+        }
+        return '-'
+      },
       width: '15%',
     },
 

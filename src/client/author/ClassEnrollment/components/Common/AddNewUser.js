@@ -25,6 +25,7 @@ import {
   PanelHeader,
   Title,
 } from './styled'
+import AdditionalFields from '../../../ManageClass/components/ClassDetails/AddStudent/AdditionalFields'
 
 const { Option } = Select
 const { Panel } = Collapse
@@ -312,6 +313,13 @@ class AddNewUserForm extends React.Component {
       <PanelHeader>
         <Icon type="setting" theme="filled" />
         <label>Configure Additional Details</label>
+      </PanelHeader>
+    )
+
+    const AccommodationsHeader = (
+      <PanelHeader>
+        <Icon type="setting" theme="filled" />
+        <label>Accommodations Settings</label>
       </PanelHeader>
     )
 
@@ -670,6 +678,12 @@ class AddNewUserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+            </Panel>
+            <Panel header={AccommodationsHeader} key="accommodations">
+              <AdditionalFields
+                type="accommodations"
+                getFieldDecorator={getFieldDecorator}
+              />
             </Panel>
           </Collapse>
         </Form>

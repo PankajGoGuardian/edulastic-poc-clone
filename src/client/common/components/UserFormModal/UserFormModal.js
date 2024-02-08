@@ -8,8 +8,8 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { IconUser } from '@edulastic/icons'
-import { Collapse, Icon, Select, Tooltip } from 'antd'
-import { get, identity, isEmpty, pickBy, unset } from 'lodash'
+import { Collapse, Icon, Select } from 'antd'
+import { get, identity, isEmpty, pickBy, unset, pick } from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -18,6 +18,7 @@ import keyIcon from '../../../student/assets/key-icon.svg'
 import mailIcon from '../../../student/assets/mail-icon.svg'
 import userIcon from '../../../student/assets/user-icon.svg'
 import { Field, FooterDiv, Form, PanelHeader, Title } from './styled'
+import AdditionalFields from '../../../author/ManageClass/components/ClassDetails/AddStudent/AdditionalFields'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -44,10 +45,25 @@ class UserForm extends React.Component {
           row.contactEmails = [contactEmails]
         }
         unset(row, ['confirmPassword'])
-        const nRow = pickBy(row, identity)
+        let data = pickBy(row, identity)
+        const accommodations = pick(row, [
+          'tts',
+          'stt',
+          'ir',
+          'preferredLanguage',
+          'extraTimeOnTest',
+        ])
+        const accommodationsData = pickBy(accommodations, identity)
+        if (Object.keys(accommodationsData).length) {
+          data = {
+            ...data,
+            accommodations: accommodationsData,
+          }
+        }
+
         modalFunc({
           userId: modalData._id,
-          data: Object.assign(nRow, {
+          data: Object.assign(data, {
             districtId,
           }),
         })
@@ -99,7 +115,6 @@ class UserForm extends React.Component {
       modalData: { _source } = {},
       buttonText,
       isStudentEdit,
-      t,
     } = this.props
     const dobValue = get(_source, 'dob')
     const contactEmails = get(_source, 'contactEmails')
@@ -141,6 +156,13 @@ class UserForm extends React.Component {
       <PanelHeader>
         <Icon type="setting" theme="filled" />
         <label>Configure Additional Details</label>
+      </PanelHeader>
+    )
+
+    const AccommodationsHeader = (
+      <PanelHeader>
+        <Icon type="setting" theme="filled" />
+        <label>Accommodations Settings</label>
       </PanelHeader>
     )
 
@@ -493,6 +515,14 @@ class UserForm extends React.Component {
                 </Field>
               </Panel>
             )}
+            <Panel header={AccommodationsHeader} key="accommodations">
+              <AdditionalFields
+                type="accommodations"
+                getFieldDecorator={getFieldDecorator}
+                std={_source}
+                foundUserContactEmails={contactEmails}
+              />
+            </Panel>
           </Collapse>
         </Form>
       </CustomModalStyled>

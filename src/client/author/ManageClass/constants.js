@@ -155,3 +155,199 @@ export const canvasSyncStatus = {
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
 }
+
+export const fieldsMapping = {
+  additional: [
+    {
+      label: 'SIS ID',
+      fieldName: 'sisId',
+      placeholder: 'Enter SIS ID',
+    },
+    {
+      label: 'Student Number',
+      fieldName: 'studentNumber',
+      placeholder: 'Enter Student Number',
+    },
+    {
+      label: 'Free Reduced Lunch',
+      fieldName: 'frlStatus',
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
+    },
+    {
+      label: 'Individual Education Plan',
+      fieldName: 'iepStatus',
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
+    },
+    {
+      label: 'English Language Learner',
+      fieldName: 'ellStatus',
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
+    },
+    {
+      label: 'Special ED',
+      fieldName: 'sedStatus',
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
+    },
+    {
+      label: 'Hispanic Ethnicity',
+      fieldName: 'hispanicEthnicity',
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
+    },
+    {
+      label: 'Race',
+      fieldName: 'race',
+      placeholder: 'Race',
+    },
+    {
+      label: 'DOB',
+      fieldName: 'dob',
+      isDate: true,
+      format: 'DD MMM, YYYY',
+    },
+    {
+      label: 'Gender',
+      fieldName: 'gender',
+      options: [
+        {
+          label: 'Male',
+          value: 'male',
+        },
+        {
+          label: 'Female',
+          value: 'female',
+        },
+        {
+          label: 'Other',
+          value: 'other',
+        },
+      ],
+    },
+    {
+      label: 'Parents/Guardians',
+      fieldName: 'contactEmails',
+      placeholder: 'Enter email comma separated...',
+    },
+    {
+      label: 'Enable Text to Speech',
+      fieldName: 'tts',
+      options: [
+        {
+          label: 'Yes',
+          value: 'yes',
+        },
+        {
+          label: 'No',
+          value: 'no',
+        },
+      ],
+    },
+  ],
+  accommodations: [
+    {
+      label: 'Text to Speech',
+      fieldName: 'tts',
+      options: [
+        {
+          label: 'Yes',
+          value: 'yes',
+        },
+        {
+          label: 'No',
+          value: 'no',
+        },
+      ],
+    },
+    {
+      label: 'Speech to Text',
+      fieldName: 'stt',
+      options: [
+        {
+          label: 'Yes',
+          value: 'yes',
+        },
+        {
+          label: 'No',
+          value: 'no',
+        },
+      ],
+    },
+    {
+      label: 'Immersive Reader',
+      fieldName: 'ir',
+      options: [
+        {
+          label: 'Yes',
+          value: 'yes',
+        },
+        {
+          label: 'No',
+          value: 'no',
+        },
+      ],
+    },
+    {
+      label: 'Preferred Language',
+      fieldName: 'preferredLanguage',
+      options: [
+        {
+          label: 'English',
+          value: 'english',
+        },
+        {
+          label: 'Spanish',
+          value: 'spanish',
+        },
+      ],
+    },
+    {
+      label: 'Extra time on the test',
+      fieldName: 'extraTimeOnTest',
+      isNumber: true,
+    },
+  ],
+}

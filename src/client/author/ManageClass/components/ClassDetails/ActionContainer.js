@@ -184,9 +184,25 @@ const ActionContainer = ({
             } else {
               stdData.contactEmails = []
             }
+
+            const accommodations = pick(std, [
+              'tts',
+              'stt',
+              'ir',
+              'preferredLanguage',
+              'extraTimeOnTest',
+            ])
+            const accommodationsData = pickBy(accommodations, identity)
+            let data = pickBy(stdData, identity)
+            if (Object.keys(accommodationsData).length) {
+              data = {
+                ...data,
+                accommodations: accommodationsData,
+              }
+            }
             updateStudentRequest({
               userId,
-              data: pickBy(stdData, identity),
+              data,
             })
             setModalStatus(false)
           } else {
@@ -212,10 +228,26 @@ const ActionContainer = ({
               values.dob = moment(values.dob).format('x')
             }
 
+            const accommodations = pick(values, [
+              'tts',
+              'stt',
+              'ir',
+              'preferredLanguage',
+              'extraTimeOnTest',
+            ])
+            const accommodationsData = pickBy(accommodations, identity)
+            let data = pickBy(values, identity)
+            if (Object.keys(accommodationsData).length) {
+              data = {
+                ...data,
+                accommodations: accommodationsData,
+              }
+            }
+
             unset(values, ['confirmPassword'])
             unset(values, ['fullName'])
 
-            addStudentRequest(pickBy(values, identity))
+            addStudentRequest(data)
             setReqStatus(true)
           }
         }

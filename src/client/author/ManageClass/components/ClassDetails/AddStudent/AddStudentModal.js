@@ -88,7 +88,6 @@ class AddStudentModal extends React.Component {
       foundUserId,
       showClassCodeField,
       fetchClassDetailsUsingCode,
-      showTtsField,
       validatedClassDetails,
       resetClassDetails,
     } = this.props
@@ -142,6 +141,11 @@ class AddStudentModal extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     )
+    const AccommodationsHeader = (
+      <PanelHeader>
+        <label>Accommodations Settings</label>
+      </PanelHeader>
+    )
 
     return (
       <CustomModalStyled
@@ -188,7 +192,25 @@ class AddStudentModal extends React.Component {
                   isEdit={isEdit}
                   stds={stds}
                   foundUserContactEmails={this.state.foundUserContactEmails}
-                  showTtsField
+                />
+              </Panel>
+            </Collapse>
+            <br />
+            <Collapse
+              accordion
+              defaultActiveKey={keys}
+              expandIcon={expandIcon}
+              expandIconPosition="right"
+            >
+              <Panel header={AccommodationsHeader} key="accommodations">
+                <AdditionalFields
+                  type="accommodations"
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  std={std}
+                  isEdit={isEdit}
+                  stds={stds}
+                  foundUserContactEmails={this.state.foundUserContactEmails}
                 />
               </Panel>
             </Collapse>

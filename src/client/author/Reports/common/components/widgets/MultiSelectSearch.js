@@ -8,6 +8,7 @@ const MultiSelectSearch = ({
   dataCy,
   options,
   suffixIcon,
+  loc,
   ...props
 }) => {
   const updatedOptions = useMemo(() =>
@@ -23,6 +24,7 @@ const MultiSelectSearch = ({
         ref={el}
         options={updatedOptions}
         suffixIcon={suffixIcon}
+        loc={loc}
         mode="multiple"
         {...props}
       />

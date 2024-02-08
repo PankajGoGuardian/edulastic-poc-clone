@@ -164,6 +164,7 @@ const AssessmentAutoComplete = ({
       options={!loading ? dropdownData : []}
       loading={loading}
       suffixIcon={suffixIcon}
+      loc={loc}
     />
   )
 }

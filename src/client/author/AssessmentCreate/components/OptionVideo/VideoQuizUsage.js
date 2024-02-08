@@ -26,10 +26,16 @@ const getVQTagBgColorForQuota = (remainingPercentage) => {
   }
 }
 
-const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
+const VideoQuizUsage = ({
+  history,
+  vqUsageCount,
+  vqQuotaForDistrict,
+  videoQuizLibrary,
+}) => {
   const [isVisible, setIsModalOpen] = useState(false)
 
-  if (vqUsageCount === 0) return null
+  // Don't show 0 count on other places but videoQuizLibrary
+  if (vqUsageCount === 0 && !videoQuizLibrary) return null
 
   const remainingUsageForVq = vqQuotaForDistrict - vqUsageCount
 

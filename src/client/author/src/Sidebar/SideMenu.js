@@ -464,6 +464,7 @@ class SideMenu extends Component {
       if (label === 'My Playlist' && !premium) {
         return this.handleBlockedClick()
       }
+
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
@@ -617,6 +618,7 @@ class SideMenu extends Component {
       isInsightsOnlyUser,
       playlist,
       gradebook,
+      premium,
     } = features
     if (userRole === roleuser.STUDENT) {
       return null
@@ -941,6 +943,13 @@ class SideMenu extends Component {
                         </MenuItem>
                       )
                     }
+                    /**
+                     * Show vq library
+                     */
+                    if (menu.label === 'Video Library' && !premium) {
+                      return null
+                    }
+
                     /**
                      * show playlist based on `features` list
                      */

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { throttle } from 'lodash'
-
+import qs from 'qs'
 import { youtubeSearchApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import produce from 'immer'
+import { test as testConstants } from '@edulastic/constants'
+import { testCategoryTypes } from '@edulastic/constants/const/test'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import {
   getSearchBody,
   getVideoDetailsFromTests,
@@ -17,6 +19,10 @@ import {
 } from '../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 import { navigationState } from '../../src/constants/navigation'
 import appConfig from '../../../../app-config'
+import { setFilterInSession } from '../../../common/utils/helpers'
+import { setDefaultInterests } from '../../dataUtils'
+
+const { PUBLISHED } = testConstants.statusConstants
 
 const { videoQuizDefaultCollection } = appConfig
 
@@ -24,28 +30,33 @@ const useVideoQuizLibrary = ({
   setYoutubeThumbnail,
   ytThumbnail,
   getYoutubeThumbnail,
-  onValidUrl,
   history,
   scrollerRef,
   allowedToCreateVideoQuiz,
   receiveTestsRequest,
   testList,
   isTestLibraryLoading,
+  isVideoQuizAndAIEnabled,
+  location,
+  createAssessment,
+  updateAllTestFilters,
+  districtId,
+  userId,
+  prevSubject = [],
+  prevGrades = [],
 }) => {
   const videoDetailsFromTests = getVideoDetailsFromTests(testList)
   const [linkValue, setLinkValue] = useState('')
   const [isModerateRestriction, setIsModerateRestriction] = useState(false)
   const [videos, setVideos] = useState([])
-
   const [nextPageToken, setNextPageToken] = useState('')
   const [searchedText, setSearchedText] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [videoNotFound, setVideoNotFound] = useState(false)
   const [currentTab, setCurrentTab] = useState('1')
-
   const [testLibrarySearchFilter, setTestLibrarySearchFilter] = useState({})
-  const [filterGrades, setFilterGrades] = useState([])
-  const [filterSubjects, setFilterSubjects] = useState([])
+  const [filterGrades, setFilterGrades] = useState(prevGrades)
+  const [filterSubjects, setFilterSubjects] = useState(prevSubject)
   const [filterStatus, setFilterStatus] = useState('')
 
   const textIsUrl = isURL(linkValue)
@@ -72,6 +83,19 @@ const useVideoQuizLibrary = ({
       })
     }
   }, [allowedToCreateVideoQuiz])
+
+  const onValidUrl = (videoUrl, thumbnail) => {
+    console.log({ location })
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+
+    createAssessment({
+      videoUrl,
+      assessmentId,
+      thumbnail,
+    })
+  }
 
   const fetchVideos = async (append = false, userInput = '') => {
     try {
@@ -132,14 +156,22 @@ const useVideoQuizLibrary = ({
       draft.search.subject = filterSubjects
       draft.search.grades = filterGrades
       draft.search.status = filterStatus
-      if (typeof searchString === 'string') {
-        draft.search.searchString = [searchString]
+
+      // override search.status as we only show PUBLISHED Tests in Community TAB
+      if (currentTab === 1) {
+        draft.search.status = PUBLISHED
       }
+
+      // override search string onSearch event, uses existing search string when not provided
+      if (typeof searchString === 'string') {
+        draft.search.searchString = searchString.length ? [searchString] : []
+      }
+
       if (append) {
         draft.page += 1
       }
     })
-    console.log('loading more test...page', newSearchFilter.page)
+    console.log('loading more test page...:', newSearchFilter.page)
     console.log('currentTab', currentTab)
 
     setTestLibrarySearchFilter(newSearchFilter)
@@ -198,10 +230,15 @@ const useVideoQuizLibrary = ({
     setLinkValue(value)
   }
 
+  const vqCollection = isVideoQuizAndAIEnabled
+    ? videoQuizDefaultCollection?.collectionId || []
+    : []
+
+  const testCategories = [testCategoryTypes.VIDEO_BASED]
+
   useEffect(() => {
     let search = {}
     setVideos([])
-
     const sortState = {
       sortBy: 'popularity',
       sortDir: 'desc',
@@ -209,11 +246,13 @@ const useVideoQuizLibrary = ({
 
     if (currentTab === '1') {
       search = getSearchBody({
-        vqCollection: videoQuizDefaultCollection?.collectionId,
+        vqCollection,
         subjects: filterSubjects,
         grades: filterGrades,
+        testStatus: PUBLISHED, // We only show PUBLISHED Tests in Community TAB
         filter: SMART_FILTERS.ENTIRE_LIBRARY,
         searchString: linkValue ? [linkValue] : [],
+        testCategories,
       })
       setTestLibrarySearchFilter({
         search,
@@ -231,14 +270,17 @@ const useVideoQuizLibrary = ({
 
       setTestLibrarySearchFilter({ ...searchFilter })
       receiveTestsRequest(searchFilter)
+      updateAllTestFilters({ search, sort: sortState })
     }
     if (currentTab === '2') {
       search = getSearchBody({
         subjects: filterSubjects,
         grades: filterGrades,
+        testStatus: filterStatus,
         filter: SMART_FILTERS.AUTHORED_BY_ME,
         searchString: linkValue ? [linkValue] : [],
-        status: filterStatus,
+        vqCollection: [],
+        testCategories,
       })
       const searchFilter = {
         search,
@@ -250,10 +292,33 @@ const useVideoQuizLibrary = ({
 
       setTestLibrarySearchFilter({ ...searchFilter })
       receiveTestsRequest(searchFilter)
+
+      setFilterInSession({
+        key: sessionFilterKeys.TEST_FILTER,
+        filter: search,
+        districtId,
+        userId,
+      })
+      setFilterInSession({
+        key: sessionFilterKeys.TEST_SORT,
+        filter: sortState,
+        districtId,
+        userId,
+      })
+
+      // use in test and other library selects searchType
+      updateAllTestFilters({ search, sort: sortState })
     }
 
     if (currentTab === '3' && linkValue) {
       handleOnSearch(linkValue)
+    }
+
+    if (Array.isArray(filterGrades)) {
+      setDefaultInterests({ grades: filterGrades })
+    }
+    if (Array.isArray(filterSubjects)) {
+      setDefaultInterests({ subject: filterSubjects })
     }
   }, [currentTab, filterStatus, filterSubjects, filterGrades])
 

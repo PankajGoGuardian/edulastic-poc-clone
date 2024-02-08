@@ -2,6 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { get } from 'lodash'
 import VideoLibraryHeader from './Header'
 import VideoLibrarySearchBox from './SearchBox'
 import VideoLibrarySubHeader from './SubHeader'
@@ -17,20 +18,25 @@ import {
   allowedToCreateVideoQuizSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserOrgId,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
   vqQuotaForDistrictSelector,
   vqUsageCountSelector,
 } from '../../../src/selectors/user'
-import { getAssessmentCreatingSelector } from '../../../AssessmentCreate/ducks'
+import {
+  createAssessmentRequestAction,
+  getAssessmentCreatingSelector,
+} from '../../../AssessmentCreate/ducks'
 import {
   getTestsLoadingSelector,
   getTestsSelector,
   receiveTestsAction,
+  updateAllTestSearchFilterAction,
 } from '../../../TestList/ducks'
+import { getDefaultInterests } from '../../../dataUtils'
 
 const VideoLibrary = ({
-  onValidUrl,
   ytThumbnail,
   getYoutubeThumbnail,
   setYoutubeThumbnail,
@@ -45,7 +51,17 @@ const VideoLibrary = ({
   receiveTestsRequest,
   testList,
   isTestLibraryLoading,
+  location,
+  createAssessment,
+  userId,
+  districtId,
+  updateAllTestFilters,
 }) => {
+  const {
+    subject: prevSubject = interestedSubjects,
+    grades: prevGrades = interestedGrades || [],
+  } = getDefaultInterests()
+
   const {
     linkValue,
     setLinkValue,
@@ -69,7 +85,6 @@ const VideoLibrary = ({
     ytThumbnail,
     isVideoQuizAndAIEnabled,
     getYoutubeThumbnail,
-    onValidUrl,
     history,
     interestedGrades,
     interestedSubjects,
@@ -78,6 +93,13 @@ const VideoLibrary = ({
     receiveTestsRequest,
     testList,
     isTestLibraryLoading,
+    location,
+    createAssessment,
+    userId,
+    districtId,
+    updateAllTestFilters,
+    prevSubject,
+    prevGrades,
   })
 
   const errorMessage = () => {
@@ -86,7 +108,10 @@ const VideoLibrary = ({
     }
   }
 
-  const showNoData = !isLoading && linkValue && !textIsUrl && !videos.length
+  const showNoData = !isLoading && !isTestLibraryLoading && !videos.length
+
+  const hasSearchedText = linkValue && !textIsUrl
+
   const disableSearchInput = isThumbnailLoading || creatingAssessment
 
   const showLoaderButton = isLoading
@@ -118,6 +143,7 @@ const VideoLibrary = ({
     filterSubjects,
     filterStatus,
     setFilterStatus,
+    hasSearchedText,
   }
 
   return (
@@ -147,11 +173,15 @@ const enhance = compose(
       allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
       testList: getTestsSelector(state),
       isTestLibraryLoading: getTestsLoadingSelector(state),
+      userId: get(state, 'user.user._id', false),
+      districtId: getUserOrgId(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,
       setYoutubeThumbnail: setYoutubeThumbnailAction,
       receiveTestsRequest: receiveTestsAction,
+      createAssessment: createAssessmentRequestAction,
+      updateAllTestFilters: updateAllTestSearchFilterAction,
     }
   )
 )

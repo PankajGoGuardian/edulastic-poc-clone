@@ -54,18 +54,19 @@ const trimTextToGivenLength = (text = '', textLength) => {
 const getSearchBody = ({
   grades = [],
   subjects = [],
+  testStatus = '',
   filter = 'AUTHORED_BY_ME',
-  testCategories = [],
   searchString = [],
-  vqCollection = '',
+  vqCollection = [],
+  testCategories,
 }) => {
   return {
     questionType: '',
     depthOfKnowledge: '',
     authorDifficulty: '',
-    collections: vqCollection ? [vqCollection] : [],
+    collections: vqCollection,
     curriculumId: '',
-    status: '',
+    status: testStatus,
     standardIds: [],
     grades,
     subject: subjects,

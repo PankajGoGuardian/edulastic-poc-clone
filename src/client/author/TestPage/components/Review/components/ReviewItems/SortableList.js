@@ -15,8 +15,7 @@ const { Panel } = Collapse
 const rightContent = (
   group,
   hasSections = false,
-  setShowAutoSelectScoreChangeModal,
-  count
+  setShowAutoSelectScoreChangeModal
 ) => {
   const {
     deliverItemsCount,
@@ -24,7 +23,6 @@ const rightContent = (
     settings,
     deliveryType,
     itemsDefaultMaxScore,
-    groupName,
   } = group
   return (
     <>
@@ -55,11 +53,7 @@ const rightContent = (
         <span
           onClick={(e) => {
             e.stopPropagation()
-            setShowAutoSelectScoreChangeModal({
-              score: itemsDefaultMaxScore || 1,
-              sectionName: groupName,
-              groupIndex: count,
-            })
+            setShowAutoSelectScoreChangeModal(group._id)
           }}
         >
           <InfoDiv>
@@ -178,8 +172,7 @@ export default SortableContainer(
                 extra={rightContent(
                   group,
                   hasSections,
-                  setShowAutoSelectScoreChangeModal,
-                  count
+                  setShowAutoSelectScoreChangeModal
                 )}
               >
                 {items.map((item, index) => {

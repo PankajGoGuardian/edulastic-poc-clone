@@ -23,6 +23,7 @@ import {
   withWindowSizes,
   notification,
   MainContentWrapper,
+  EduIf,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
@@ -99,7 +100,8 @@ class Review extends PureComponent {
       hasStickyHeader: false,
       indexForPreview: 0,
       groupIndex: 0,
-      showAutoSelectScoreChangeModal: null,
+      showAutoSelectScoreChangeModal: false,
+      currentGroupId: '',
     }
   }
 
@@ -640,6 +642,7 @@ class Review extends PureComponent {
       hasStickyHeader,
       groupIndex,
       showAutoSelectScoreChangeModal,
+      currentGroupId,
     } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
@@ -780,8 +783,11 @@ class Review extends PureComponent {
                 orgCollections={orgCollections}
                 userId={userId}
                 hasSections={hasSections}
-                setShowAutoSelectScoreChangeModal={(value) =>
-                  this.setState({ showAutoSelectScoreChangeModal: value })
+                setShowAutoSelectScoreChangeModal={(groupId) =>
+                  this.setState({
+                    showAutoSelectScoreChangeModal: true,
+                    currentGroupId: groupId,
+                  })
                 }
               />
               <AddMoreQuestionsPannel
@@ -847,20 +853,19 @@ class Review extends PureComponent {
             />
           </Spin>
         )}
-        {showAutoSelectScoreChangeModal && (
+        <EduIf condition={showAutoSelectScoreChangeModal}>
           <AutoSelectScoreChangeModal
             visible={showAutoSelectScoreChangeModal}
             closeModal={() =>
-              this.setState({ showAutoSelectScoreChangeModal: null })
+              this.setState({
+                showAutoSelectScoreChangeModal: false,
+                currentGroupId: '',
+              })
             }
-            score={showAutoSelectScoreChangeModal?.score}
-            sectionName={showAutoSelectScoreChangeModal?.sectionName}
-            groupIndex={showAutoSelectScoreChangeModal?.groupIndex}
-            setCurrentGroupDetails={setCurrentGroupDetails}
+            currentGroupId={currentGroupId}
             handleSave={handleSave}
-            test={test}
           />
-        )}
+        </EduIf>
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}

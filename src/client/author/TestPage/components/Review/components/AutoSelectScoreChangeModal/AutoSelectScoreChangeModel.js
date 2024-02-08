@@ -20,10 +20,8 @@ import { getTestEntitySelector, setTestDataAction } from '../../../../ducks'
 const AutoSelectScoreChangeModal = ({
   visible,
   closeModal,
-  score = 1,
-  sectionName = 'default name',
-  groupIndex,
   test,
+  currentGroupId,
   handleSave,
   setTestData,
 }) => {
@@ -31,9 +29,12 @@ const AutoSelectScoreChangeModal = ({
     handleSave()
     closeModal()
   }
+  const currentGroup =
+    test.itemGroups.find((itemGroup) => itemGroup._id == currentGroupId) || {}
+  const { groupName, itemsDefaultMaxScore } = currentGroup
   const onChangeScore = debounce((value) => {
-    const updatedItemGroups = test.itemGroups.map((itemGroup, index) => {
-      if (index === groupIndex) {
+    const updatedItemGroups = test.itemGroups.map((itemGroup) => {
+      if (itemGroup._id === currentGroupId) {
         return {
           ...itemGroup,
           itemsDefaultMaxScore: value,
@@ -96,7 +97,7 @@ const AutoSelectScoreChangeModal = ({
           Set{' '}
           <NumberInputStyled
             showArrow
-            defaultValue={score}
+            defaultValue={itemsDefaultMaxScore}
             size="large"
             placeholder="Enter score"
             margin="0px"
@@ -109,7 +110,7 @@ const AutoSelectScoreChangeModal = ({
             onChange={onChangeScore}
             style={{ fontWeight: '400' }}
           />{' '}
-          for all the items in {sectionName}
+          for all the items in {groupName}
           <div style={{ marginTop: '1rem' }}>
             <Icon type="info-circle" /> All items in random distribution should
             have same score for reports.{' '}

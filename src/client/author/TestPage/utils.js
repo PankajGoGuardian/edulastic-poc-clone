@@ -88,7 +88,7 @@ const createItemsSummaryData = (
       scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
 
     if (isLimitedDeliveryType) {
-      itemPoints = 1
+      itemPoints = itemsDefaultMaxScore || 1
     }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
@@ -172,11 +172,9 @@ export const createGroupSummary = (test) => {
           curriculumId: std.curriculumId,
         })) || []
     }
-    if (
-      (!isAutoSelect && isLimitedDeliveryType && itemGroup.deliverItemsCount) ||
-      isAutoSelect
-    ) {
-      summaryData.totalPoints = itemGroup.deliverItemsCount
+    if (isLimitedDeliveryType && itemGroup.deliverItemsCount) {
+      summaryData.totalPoints =
+        itemGroup.deliverItemsCount * itemGroup.itemsDefaultMaxScore
       summaryData.totalItems = itemGroup.deliverItemsCount
       summaryData.totalQuestions = itemGroup.deliverItemsCount
     }

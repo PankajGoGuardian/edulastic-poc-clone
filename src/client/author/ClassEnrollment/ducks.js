@@ -1,8 +1,7 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { enrollmentApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 
 const RECEIVE_CLASSENROLLMENT_LIST_REQUEST =
@@ -102,10 +101,10 @@ function* enrolExistingUserToClass({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(
+    takeLatest(
       RECEIVE_CLASSENROLLMENT_LIST_REQUEST,
       receiveClassEnrollmentListSaga
     ),
-    yield takeEvery(REQ_ENROL_EXISTING_USER_TO_CLASS, enrolExistingUserToClass),
+    takeEvery(REQ_ENROL_EXISTING_USER_TO_CLASS, enrolExistingUserToClass),
   ])
 }

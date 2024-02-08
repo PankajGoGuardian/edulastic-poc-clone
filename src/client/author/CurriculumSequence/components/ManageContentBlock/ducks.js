@@ -461,27 +461,21 @@ function* searchResourceSaga() {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
-    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsBySearchString),
-    yield takeLatest(
-      slice.actions.setTestSearchAction,
-      fetchTestsBySearchString
-    ),
-    yield takeEvery(
+    takeLatest(slice.actions.fetchTests, fetchTestsSaga),
+    takeLatest(slice.actions.resetAndFetchTests, fetchTestsBySearchString),
+    takeLatest(slice.actions.setTestSearchAction, fetchTestsBySearchString),
+    takeEvery(
       slice.actions.fetchExternalToolProvidersAction,
       fetchExternalToolsSaga
     ),
-    yield takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
-    yield takeEvery(slice.actions.addResource, addResourceSaga),
-    yield takeEvery(slice.actions.updateResource, updateResourceSaga),
-    yield takeEvery(slice.actions.deleteResource, deleteResourceSaga),
-    yield takeEvery(slice.actions.searchResource, searchResourceSaga),
-    yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
-    yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
-    yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
-    yield takeEvery(
-      slice.actions.fetchRecommendedResourcesAction,
-      getResourcesSaga
-    ),
+    takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
+    takeEvery(slice.actions.addResource, addResourceSaga),
+    takeEvery(slice.actions.updateResource, updateResourceSaga),
+    takeEvery(slice.actions.deleteResource, deleteResourceSaga),
+    takeLatest(slice.actions.searchResource, searchResourceSaga),
+    takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
+    takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
+    takeLatest(slice.actions.fetchResources, searchResourceSaga),
+    takeLatest(slice.actions.fetchRecommendedResourcesAction, getResourcesSaga),
   ])
 }

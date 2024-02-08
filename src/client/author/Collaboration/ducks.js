@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { collaborationApi } from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { captureSentryException, notification } from '@edulastic/common'
@@ -227,13 +227,13 @@ function* updateGroupNameSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(FETCH_COLLABORATION_GROUP_BY_ID, fetchGroupByIdSaga),
-    yield takeEvery(FETCH_USERS, fetchUsersSaga),
-    yield takeEvery(ADD_MEMBERS, addMembersSaga),
-    yield takeEvery(MAKE_GROUP_ADMIN, makeMembersAdminSaga),
-    yield takeEvery(REMOVE_GROUP_ADMIN, removeMembersAsAdminSaga),
-    yield takeEvery(REMOVE_FROM_GROUP, removeMembersFromGroup),
-    yield takeEvery(UPDATE_USER_MEMBERSHIPS_REQUEST, updateUserMembershipsSaga),
-    yield takeEvery(UPDATE_GROUP_NAME, updateGroupNameSaga),
+    takeEvery(FETCH_COLLABORATION_GROUP_BY_ID, fetchGroupByIdSaga),
+    takeLatest(FETCH_USERS, fetchUsersSaga),
+    takeEvery(ADD_MEMBERS, addMembersSaga),
+    takeEvery(MAKE_GROUP_ADMIN, makeMembersAdminSaga),
+    takeEvery(REMOVE_GROUP_ADMIN, removeMembersAsAdminSaga),
+    takeEvery(REMOVE_FROM_GROUP, removeMembersFromGroup),
+    takeEvery(UPDATE_USER_MEMBERSHIPS_REQUEST, updateUserMembershipsSaga),
+    takeEvery(UPDATE_GROUP_NAME, updateGroupNameSaga),
   ])
 }

@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
@@ -118,7 +118,7 @@ function* getReportsPeerProgressAnalysisRequest({ payload }) {
 
 export function* reportPeerProgressAnalysisSaga() {
   yield all([
-    yield takeEvery(
+    takeLatest(
       GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST,
       getReportsPeerProgressAnalysisRequest
     ),

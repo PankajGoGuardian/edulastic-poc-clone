@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { userApi } from '@edulastic/api'
-import { call, put, all, takeEvery } from 'redux-saga/effects'
-import { message } from 'antd'
+import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 
 // constants
@@ -54,7 +53,7 @@ function* fetchAllUsersSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(FETCH_USERS, fetchAllUsersSaga)])
+  yield all([takeLatest(FETCH_USERS, fetchAllUsersSaga)])
 }
 // selectors
 

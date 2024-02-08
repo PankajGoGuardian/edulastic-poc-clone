@@ -322,27 +322,24 @@ function* deleteStandardsProficiencySaga({ payload: _id }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(
+    takeEvery(
       RECEIVE_STANDARDS_PROFICIENCY_REQUEST,
       receiveStandardsProficiencySaga
     ),
   ])
   yield all([
-    yield takeEvery(
+    takeEvery(
       UPDATE_STANDARDS_PROFICIENCY_REQUEST,
       updateStandardsProficiencySaga
     ),
   ])
   yield all([
-    yield takeEvery(
+    takeEvery(
       CREATE_STANDARDS_PROFICIENCY_REQUEST,
       createStandardsProficiencySaga
     ),
   ])
   yield all([
-    yield takeEvery(
-      DELETE_STANDARDS_PROFICIENCY,
-      deleteStandardsProficiencySaga
-    ),
+    takeEvery(DELETE_STANDARDS_PROFICIENCY, deleteStandardsProficiencySaga),
   ])
 }

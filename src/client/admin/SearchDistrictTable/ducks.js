@@ -1,6 +1,6 @@
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { put, takeEvery, call, all } from 'redux-saga/effects'
+import { put, takeEvery, takeLatest, call, all } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
 
@@ -176,12 +176,12 @@ function* getUsersDataSaga({ payload: { districtId, index, isClasslink } }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(GET_TABLE_DATA, fetchTableDataGenerator),
-    yield takeEvery(GET_CLASSLINK_TABLE_DATA, fetchClasslinkTableData),
-    yield takeEvery(UPDATE_CLEVER, updateCleverRequest),
-    yield takeEvery(UPDATE_CLASSLINK, updateClasslinkRequest),
-    yield takeEvery(DELETE_DISTRICT_ID, fetchDeleteDistrictIdRequest),
-    yield takeEvery(GET_USERS_DATA, getUsersDataSaga),
+    takeLatest(GET_TABLE_DATA, fetchTableDataGenerator),
+    takeLatest(GET_CLASSLINK_TABLE_DATA, fetchClasslinkTableData),
+    takeEvery(UPDATE_CLEVER, updateCleverRequest),
+    takeEvery(UPDATE_CLASSLINK, updateClasslinkRequest),
+    takeEvery(DELETE_DISTRICT_ID, fetchDeleteDistrictIdRequest),
+    takeEvery(GET_USERS_DATA, getUsersDataSaga),
   ])
 }
 

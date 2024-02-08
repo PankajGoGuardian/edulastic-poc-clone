@@ -222,14 +222,11 @@ function* receiveRemoveItemsFromFolder({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_FOLDER_REQUEST, receiveGetFoldersRequest),
-    yield takeEvery(RECEIVE_FOLDER_CREATE_REQUEST, receiveCreateFolderRequest),
-    yield takeEvery(ADD_MOVE_FOLDER_REQUEST, receiveAddMoveFolderRequest),
-    yield takeEvery(DELETE_FOLDER_REQUEST, receiveDeleteFolderRequest),
-    yield takeEvery(RENAME_FOLDER_REQUEST, receiveRenameFolderRequest),
-    yield takeEvery(
-      REMOVAL_ITEMS_FROM_FOLDER_REQUEST,
-      receiveRemoveItemsFromFolder
-    ),
+    takeEvery(RECEIVE_FOLDER_REQUEST, receiveGetFoldersRequest),
+    takeEvery(RECEIVE_FOLDER_CREATE_REQUEST, receiveCreateFolderRequest),
+    takeEvery(ADD_MOVE_FOLDER_REQUEST, receiveAddMoveFolderRequest),
+    takeEvery(DELETE_FOLDER_REQUEST, receiveDeleteFolderRequest),
+    takeEvery(RENAME_FOLDER_REQUEST, receiveRenameFolderRequest),
+    takeEvery(REMOVAL_ITEMS_FROM_FOLDER_REQUEST, receiveRemoveItemsFromFolder),
   ])
 }

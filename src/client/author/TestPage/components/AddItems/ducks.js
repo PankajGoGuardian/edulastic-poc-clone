@@ -470,11 +470,11 @@ function* locationChangedSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
-    yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
-    yield takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
-    yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
-    yield takeLatest(LOCATION_CHANGE, locationChangedSaga),
+    takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
+    takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
+    takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+    takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])
 }
 

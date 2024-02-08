@@ -1,7 +1,7 @@
 import React from 'react'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { put, takeEvery, call, all } from 'redux-saga/effects'
+import { put, takeEvery, takeLatest, call, all } from 'redux-saga/effects'
 import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
 import { get as _get, isEmpty, omit } from 'lodash'
@@ -744,21 +744,21 @@ function* setStopSyncSaga({
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
-    yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
-    yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
-    yield takeEvery(SYNC_CLEVER_ORPHAN_USERS, fetchSyncCleverOrphanUsers),
-    yield takeEvery(SYNC_EDLINK_ORPHAN_USERS, fetchSyncEdlinkOrphanUsers),
-    yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
-    yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
-    yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
-    yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
-    yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
-    yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
-    yield takeEvery(FETCH_MAPPED_DATA, getMappedData),
-    yield takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
+    takeLatest(SEARCH_EXISTING_DATA_API, fetchExistingData),
+    takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
+    takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
+    takeEvery(SYNC_CLEVER_ORPHAN_USERS, fetchSyncCleverOrphanUsers),
+    takeEvery(SYNC_EDLINK_ORPHAN_USERS, fetchSyncEdlinkOrphanUsers),
+    takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
+    takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
+    takeLatest(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
+    takeEvery(UPLOAD_CSV, uploadCSVSaga),
+    takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
+    takeLatest(FETCH_LOGS_DATA, fetchLogsData),
+    takeLatest(FETCH_MAPPED_DATA, getMappedData),
+    takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
     takeEvery(SET_STOP_SYNC, setStopSyncSaga),
-    yield takeEvery(GENERATE_MAPPED_DATA, generateMappingData),
+    takeEvery(GENERATE_MAPPED_DATA, generateMappingData),
   ])
 }
 

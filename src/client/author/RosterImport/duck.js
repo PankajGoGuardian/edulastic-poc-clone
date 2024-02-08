@@ -177,15 +177,12 @@ export function* downloadCsvErrorDataSaga({
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_ROSTER_LOG_REQUEST, receiveRosterLogSaga)])
+  yield all([takeEvery(RECEIVE_ROSTER_LOG_REQUEST, receiveRosterLogSaga)])
   yield all([
-    yield takeEvery(
-      UPLOAD_ONEROSTER_ZIP_FILE_REQUEST,
-      uploadOneRosterZipFileSaga
-    ),
+    takeEvery(UPLOAD_ONEROSTER_ZIP_FILE_REQUEST, uploadOneRosterZipFileSaga),
   ])
   yield all([
-    yield takeEvery(DOWNLOAD_CSV_ERROR_DATA_REQUEST, downloadCsvErrorDataSaga),
+    takeEvery(DOWNLOAD_CSV_ERROR_DATA_REQUEST, downloadCsvErrorDataSaga),
   ])
 }
 

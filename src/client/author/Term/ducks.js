@@ -188,8 +188,8 @@ function* deleteTermSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_TERM_REQUEST, receiveTermeSaga)])
-  yield all([yield takeEvery(CREATE_TERM_REQUEST, createTermSaga)])
-  yield all([yield takeEvery(UPDATE_TERM_REQUEST, updateTermSaga)])
-  yield all([yield takeEvery(DELETE_TERM_REQUEST, deleteTermSaga)])
+  yield all([takeEvery(RECEIVE_TERM_REQUEST, receiveTermeSaga)])
+  yield all([takeEvery(CREATE_TERM_REQUEST, createTermSaga)])
+  yield all([takeEvery(UPDATE_TERM_REQUEST, updateTermSaga)])
+  yield all([takeEvery(DELETE_TERM_REQUEST, deleteTermSaga)])
 }

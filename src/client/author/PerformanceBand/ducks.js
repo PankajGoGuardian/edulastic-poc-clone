@@ -1,4 +1,11 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import {
+  takeEvery,
+  takeLatest,
+  call,
+  put,
+  all,
+  select,
+} from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { notification } from '@edulastic/common'
@@ -312,18 +319,15 @@ function* deletePerformanceBandSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(
-      RECEIVE_PERFORMANCE_BAND_REQUEST,
-      receivePerformanceBandSaga
-    ),
+    takeLatest(RECEIVE_PERFORMANCE_BAND_REQUEST, receivePerformanceBandSaga),
   ])
   yield all([
-    yield takeEvery(UPDATE_PERFORMANCE_BAND_REQUEST, updatePerformanceBandSaga),
+    takeEvery(UPDATE_PERFORMANCE_BAND_REQUEST, updatePerformanceBandSaga),
   ])
   yield all([
-    yield takeEvery(CREATE_PERFORMANCE_BAND_REQUEST, createPerformanceBandSaga),
+    takeEvery(CREATE_PERFORMANCE_BAND_REQUEST, createPerformanceBandSaga),
   ])
   yield all([
-    yield takeEvery(DELETE_PERFORMANCE_BAND_REQUEST, deletePerformanceBandSaga),
+    takeEvery(DELETE_PERFORMANCE_BAND_REQUEST, deletePerformanceBandSaga),
   ])
 }

@@ -62,7 +62,7 @@ function* updateTTSTextSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(FETCH_TTS_TEXT, fetchTTSTextSaga),
-    yield takeLatest(UPDATE_TTS_TEXT, updateTTSTextSaga),
+    takeEvery(FETCH_TTS_TEXT, fetchTTSTextSaga),
+    takeLatest(UPDATE_TTS_TEXT, updateTTSTextSaga),
   ])
 }

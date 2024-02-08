@@ -31,6 +31,23 @@ export default VideoList
 
 const GridContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* Define 5 equal columns */
+  grid-template-columns: repeat(2, 1fr); /* Define 5 equal columns */
   grid-gap: 32px; /* Add spacing between items (optional) */
+  @media (min-width: 1024px) {
+    /* Styles for screens between 768px and 1024px wide */
+    grid-template-columns: repeat(3, 1fr); /* Define 5 equal columns */
+  }
+  @media (min-width: 1366px) {
+    /* Styles for screens between 768px and 1024px wide */
+    grid-template-columns: repeat(4, 1fr); /* Define 5 equal columns */
+  }
+
+  @media (min-width: 1600px) {
+    /* Styles for screens between 768px and 1024px wide */
+    grid-template-columns: repeat(5, 1fr); /* Define 5 equal columns */
+  }
+  @media (min-width: 1900px) {
+    /* Styles for screens between 768px and 1024px wide */
+    grid-template-columns: repeat(6, 1fr); /* Define 5 equal columns */
+  }
 `

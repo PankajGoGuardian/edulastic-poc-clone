@@ -31,7 +31,7 @@ const VideoTile = ({ video, handleVideoClick }) => {
         imgSrc={video?.snippet?.thumbnails?.medium?.url}
         alt={video?.snippet?.title}
         width="100%"
-        height="169px"
+        height="180px"
       >
         <FlexContainer
           width="100%"

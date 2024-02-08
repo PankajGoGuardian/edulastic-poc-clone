@@ -15,8 +15,8 @@ export const SpinLoader = styled(Spin)`
 `
 
 // Following values are in pixel
-const videoTitleFontSize = 12
-const channelTitleFontSize = 10
+const channelTitleFontSize = 12
+const videoTitleFontSize = channelTitleFontSize + 2
 const subHeaderFontSize = 16
 const videoDurationFontSize = videoTitleFontSize
 
@@ -43,7 +43,7 @@ export const VideoCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
     padding: 0px;
-    height: ${`${169 + 5 + 60.5 + 10}px`};
+    height: ${`${180 + 68.5 + 10}px`};
     width: ${({ width }) => width && `${width}`};
     overflow: hidden;
   }

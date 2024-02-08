@@ -13,7 +13,10 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
-import { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } from '@edulastic/constants/const/testTypes'
+import {
+  DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER,
+  TEST_TYPES,
+} from '@edulastic/constants/const/testTypes'
 import { EduIf, FieldLabel } from '@edulastic/common'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
@@ -68,7 +71,7 @@ const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   {}
 )
 const ddFilterKeys = Object.keys(staticDropDownData.initialDdFilters)
-const availableAssessmentType = getArrayOfAllTestTypes()
+const allTestTypes = getArrayOfAllTestTypes()
 const clearTestFilterKeys = [
   FILTER_KEYS_MAP.termId,
   FILTER_KEYS_MAP.testGrades,
@@ -112,6 +115,9 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
 }) => {
+  const [availableAssessmentType, setAvailableAssessmentType] = useState(
+    allTestTypes
+  )
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
@@ -132,6 +138,16 @@ const MultipleAssessmentReportFilters = ({
     'data.result.testSettings.testTypesProfile.performanceBand',
     {}
   )
+
+  useEffect(() => {
+    if (loc === 'completion-report') {
+      setAvailableAssessmentType(
+        availableAssessmentType.filter((e) => TEST_TYPES.COMMON.includes(e.key))
+      )
+    } else {
+      setAvailableAssessmentType(allTestTypes)
+    }
+  }, [loc])
 
   const [
     performanceBandList,
@@ -585,6 +601,7 @@ const MultipleAssessmentReportFilters = ({
                         <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
+                            loc={loc}
                             termId={filters.termId}
                             grades={filters.testGrades}
                             subjects={filters.testSubjects}

@@ -14,6 +14,7 @@ const SelectSearch = React.forwardRef(function SelectSearch(
     placeholder,
     value,
     tagsSearch,
+    suffixIcon,
     ...props
   },
   ref
@@ -64,6 +65,8 @@ const SelectSearch = React.forwardRef(function SelectSearch(
           description="No matching results"
         />
       }
+      suffixIcon={suffixIcon}
+      showArrow
       {...props}
     >
       {dropDownData}

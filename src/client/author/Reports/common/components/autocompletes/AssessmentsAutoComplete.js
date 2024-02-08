@@ -41,6 +41,7 @@ const AssessmentAutoComplete = ({
   tagIds,
   districtId,
   institutionIds,
+  loc,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -119,6 +120,10 @@ const AssessmentAutoComplete = ({
     }))
     selectCB(_selectedTests)
   }
+
+  const onSelectAll = () => {
+    selectCB(dropdownData)
+  }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
@@ -143,6 +148,10 @@ const AssessmentAutoComplete = ({
     })
   }, [testList])
 
+  const suffixIcon = loc === 'completion-report' && (
+    <a onClick={onSelectAll}>SELECT ALL </a>
+  )
+
   return (
     <MultiSelectSearch
       dataCy={dataCy}
@@ -154,6 +163,7 @@ const AssessmentAutoComplete = ({
       value={selectedTestIds}
       options={!loading ? dropdownData : []}
       loading={loading}
+      suffixIcon={suffixIcon}
     />
   )
 }

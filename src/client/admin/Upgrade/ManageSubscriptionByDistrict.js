@@ -3,6 +3,7 @@ import { Row as AntdRow, AutoComplete, Button, Col, Form, Select } from 'antd'
 import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+
 import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
@@ -14,13 +15,14 @@ import {
 } from '../Common/StyledComponents/upgradePlan'
 import {
   getDate,
+  getNextAdditionalSubscriptions,
   getTutorMeSubscription,
   updateDataStudioPermission,
   useUpdateEffect,
+  validateForTutorMeAuthTokenCheck,
 } from '../Common/Utils'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
 import {
-  ADDITIONAL_SUBSCRIPTION_TYPES,
   DISTRICT_SUBSCRIPTION_OPTIONS,
   SUBSCRIPTION_STATUS,
   SUBSCRIPTION_TYPES,
@@ -152,6 +154,7 @@ const ManageDistrictPrimaryForm = Form.create({
       const {
         startDate: tutorMeStartDate,
         endDate: tutorMeEndDate,
+        authToken: tutorMeAuthToken,
       } = getTutorMeSubscription({ additionalSubscriptions })
       setFieldsValue({
         subType: _subType,
@@ -163,6 +166,8 @@ const ManageDistrictPrimaryForm = Form.create({
         licenceCount,
         tutorMeStartDate: tutorMeStartDate && moment(tutorMeStartDate),
         tutorMeEndDate: tutorMeEndDate && moment(tutorMeEndDate),
+        tutorMeAuthToken,
+        tutorMeAuthTokenCheck: false,
       })
     }, [
       subType,
@@ -193,12 +198,26 @@ const ManageDistrictPrimaryForm = Form.create({
           {
             subStartDate: startDate,
             subEndDate: endDate,
-            tutorMeStartDate,
-            tutorMeEndDate,
+            tutorMeStartDate: rawTutorMeStartDate,
+            tutorMeEndDate: rawTutorMeEndDate,
+            tutorMeAuthToken,
+            tutorMeAuthTokenCheck,
             ...rest
           }
         ) => {
           if (!err) {
+            const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
+            const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+
+            // ensure tutorMe authentication key has been double checked
+            const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
+            if (!isValidTutorMeAuth) return
+
             const _isDataStudio =
               currentSubType === SUBSCRIPTION_TYPES.dataStudio.subType
             const _isEnterprisePlusDataStudio =
@@ -241,14 +260,13 @@ const ManageDistrictPrimaryForm = Form.create({
               currentSubType === SUBSCRIPTION_TYPES.free.subType &&
               subType !== SUBSCRIPTION_TYPES.free.subType
 
-            // filter out add on subscriptions with empty startDate/endDate
-            const nextAdditionalSubscriptions = [
-              {
-                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
-                startDate: tutorMeStartDate?.valueOf(),
-                endDate: tutorMeEndDate?.valueOf(),
-              },
-            ].filter((s) => s.startDate && s.endDate)
+            // curate additional subscriptions to sync
+            const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
 
             // keep subscription active if additionalSubscriptions are present
             if (

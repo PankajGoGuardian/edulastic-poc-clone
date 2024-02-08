@@ -11,11 +11,12 @@ import { Table, Button as CustomButton } from '../Common/StyledComponents'
 import { renderSubscriptionType } from '../Common/SubTypeTag'
 import { HeadingSpan, ValueSpan } from '../Common/StyledComponents/upgradePlan'
 import { SUBSCRIPTION_TYPE_CONFIG } from '../Data'
+import { SUBSCRIPTION_TYPES } from '../Common/constants/subscription'
 import {
-  ADDITIONAL_SUBSCRIPTION_TYPES,
-  SUBSCRIPTION_TYPES,
-} from '../Common/constants/subscription'
-import { getTutorMeSubscription } from '../Common/Utils'
+  getNextAdditionalSubscriptions,
+  getTutorMeSubscription,
+  validateForTutorMeAuthTokenCheck,
+} from '../Common/Utils'
 
 const { Column } = Table
 const { Option } = Select
@@ -119,6 +120,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       adminPremium: editedAdminPremium,
       tutorMeStartDate: editedTutorMeStartDate,
       tutorMeEndDate: editedTutorMeEndDate,
+      tutorMeAuthToken: editedTutorMeAuthToken,
     },
     setEditableRowFieldValues,
   }) => {
@@ -149,19 +151,32 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             customerSuccessManager,
             opportunityId,
             licenceCount,
-            tutorMeStartDate,
-            tutorMeEndDate,
+            tutorMeStartDate: rawTutorMeStartDate,
+            tutorMeEndDate: rawTutorMeEndDate,
+            tutorMeAuthToken,
+            tutorMeAuthTokenCheck,
           }
         ) => {
           if (!err) {
-            // filter out add on subscriptions with empty startDate/endDate
-            const nextAdditionalSubscriptions = [
-              {
-                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
-                startDate: tutorMeStartDate?.valueOf(),
-                endDate: tutorMeEndDate?.valueOf(),
-              },
-            ].filter((s) => s.startDate && s.endDate)
+            const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
+            const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+
+            // ensure tutorMe authentication key has been double checked
+            const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
+            if (!isValidTutorMeAuth) return
+
+            // curate additional subscriptions to sync
+            const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
 
             // bulk update school subscriptions
             bulkSchoolsSubscribeAction({
@@ -216,32 +231,40 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
 
       const handleClick = (subTypeParam) => {
         const currentTimeInMilliSec = new Date().getTime()
-        // validate both TutorMe Start & End date are set/unset
-        if (!editedTutorMeEndDate !== !editedTutorMeStartDate) {
-          const msg = editedTutorMeStartDate
+        const editedTutorMeFields = [
+          editedTutorMeStartDate,
+          editedTutorMeEndDate,
+          editedTutorMeAuthToken,
+        ]
+        // validate all TutorMe fields should be either set or unset
+        if (
+          !editedTutorMeFields.every((v) => !v) &&
+          !editedTutorMeFields.every((v) => !!v)
+        ) {
+          const msg = !editedTutorMeStartDate
+            ? 'TutorMe Start Date required!'
+            : !editedTutorMeEndDate
             ? 'TutorMe End Date required!'
-            : 'TutorMe Start Date required!'
+            : 'TutorMe Authentication Key required!'
           notification({ msg })
-        } else {
-          // filter out add on subscriptions with empty startDate/endDate
-          const nextAdditionalSubscriptions = [
-            {
-              type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
-              startDate: editedTutorMeStartDate,
-              endDate: editedTutorMeEndDate,
-            },
-          ].filter((s) => s.startDate && s.endDate)
-          // update single school subscription
-          bulkSchoolsSubscribeAction({
-            subStartDate: editedStartDate || currentTimeInMilliSec,
-            subEndDate: editedEndDate || currentTimeInMilliSec,
-            notes: editedNotes,
-            schoolIds: [schoolId],
-            subType: subTypeParam,
-            adminPremium: editedAdminPremium,
-            additionalSubscriptions: nextAdditionalSubscriptions,
-          })
+          return
         }
+        // curate additional subscriptions to sync
+        const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
+          tutorMeStartDate: editedTutorMeStartDate,
+          tutorMeEndDate: editedTutorMeEndDate,
+          tutorMeAuthToken: editedTutorMeAuthToken,
+        })
+        // update single school subscription
+        bulkSchoolsSubscribeAction({
+          subStartDate: editedStartDate || currentTimeInMilliSec,
+          subEndDate: editedEndDate || currentTimeInMilliSec,
+          notes: editedNotes,
+          schoolIds: [schoolId],
+          subType: subTypeParam,
+          adminPremium: editedAdminPremium,
+          additionalSubscriptions: nextAdditionalSubscriptions,
+        })
       }
 
       const handleEditClick = () => {
@@ -254,6 +277,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           const {
             startDate: tutorMeStartDate,
             endDate: tutorMeEndDate,
+            authToken: tutorMeAuthToken,
           } = getTutorMeSubscription(subscription)
           updateCurrentEditableRow({
             schoolId,
@@ -264,6 +288,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             adminPremium,
             tutorMeStartDate,
             tutorMeEndDate,
+            tutorMeAuthToken,
           })
         }
       }
@@ -364,6 +389,26 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       return tutorMeEndDate && moment(tutorMeEndDate).format('YYYY-MM-DD')
     }
 
+    const renderTutorMeAuthToken = (subscription, record) => {
+      if (record.schoolId === currentEditableRow) {
+        return (
+          <Input.TextArea
+            value={editedTutorMeAuthToken}
+            onChange={(e) =>
+              setEditableRowFieldValues({
+                fieldName: 'tutorMeAuthToken',
+                value: e.target.value,
+              })
+            }
+          />
+        )
+      }
+      const { authToken: tutorMeAuthToken } = getTutorMeSubscription(
+        subscription
+      )
+      return tutorMeAuthToken
+    }
+
     const renderNotes = (note, record) =>
       record.schoolId === currentEditableRow ? (
         <Input.TextArea
@@ -458,6 +503,12 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             dataIndex="subscription"
             key="tutorMeEndDate"
             render={renderTutorMeEndDate}
+          />
+          <Column
+            title="TutorMe Auth Key"
+            dataIndex="subscription"
+            key="tutorMeAuthToken"
+            render={renderTutorMeAuthToken}
           />
           <Column
             title="Notes"

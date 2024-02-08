@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react'
-import { Form, Input, DatePicker } from 'antd'
+import { Form, Input, DatePicker, Checkbox } from 'antd'
 import styled from 'styled-components'
 import moment from 'moment'
 
+import { red } from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
 import { HeadingSpan } from '../StyledComponents/upgradePlan'
 import { subscriptionAdditionalDetails } from '../../Data'
 
@@ -74,10 +76,13 @@ const TutorMeFormItems = ({
   getFieldDecorator,
   initialTutorMeStartDate,
   initialTutorMeEndDate,
+  initialTutorMeAuthToken,
+  initialTutorMeAuthTokenCheck,
   getFieldValue,
 }) => {
   const tutorMeStartDate = getFieldValue('tutorMeStartDate')
   const tutorMeEndDate = getFieldValue('tutorMeEndDate')
+  const tutorMeAuthToken = getFieldValue('tutorMeAuthToken')
   const disabledStartDate = useCallback(
     (val) => !!tutorMeEndDate && val > moment(tutorMeEndDate).startOf('day'),
     [tutorMeEndDate]
@@ -92,6 +97,10 @@ const TutorMeFormItems = ({
     labelAlign: 'left',
     wrapperCol: { span: 5 },
   }
+  const authKeyFormLayout = {
+    ...formLayout,
+    wrapperCol: { span: 12 },
+  }
   return (
     <>
       <Form.Item
@@ -99,18 +108,76 @@ const TutorMeFormItems = ({
         {...formLayout}
       >
         {getFieldDecorator('tutorMeStartDate', {
-          rules: [{ required: !!tutorMeEndDate }],
+          rules: [
+            {
+              required: !!tutorMeEndDate || !!tutorMeAuthToken,
+              message: 'TutorMe Start Date is required',
+            },
+          ],
           initialValue: initialTutorMeStartDate,
-        })(<DatePicker disabledDate={disabledStartDate} />)}
+        })(
+          <DatePicker
+            data-cy="tutorMeStartDate"
+            disabledDate={disabledStartDate}
+          />
+        )}
       </Form.Item>
       <Form.Item
         label={<HeadingSpan>TutorMe End Date</HeadingSpan>}
         {...formLayout}
       >
         {getFieldDecorator('tutorMeEndDate', {
-          rules: [{ required: !!tutorMeStartDate }],
+          rules: [
+            {
+              required: !!tutorMeStartDate || !!tutorMeAuthToken,
+              message: 'TutorMe End Date is required',
+            },
+          ],
           initialValue: initialTutorMeEndDate,
-        })(<DatePicker disabledDate={disabledEndDate} />)}
+        })(
+          <DatePicker data-cy="tutorMeEndDate" disabledDate={disabledEndDate} />
+        )}
+      </Form.Item>
+      <Form.Item
+        label={<HeadingSpan>TutorMe Auth Key</HeadingSpan>}
+        {...authKeyFormLayout}
+        style={{ marginBottom: '0px' }}
+      >
+        {getFieldDecorator('tutorMeAuthToken', {
+          rules: [
+            {
+              required: !!tutorMeStartDate || !!tutorMeEndDate,
+              max: 100,
+              message: 'TutorMe Authentication Key is required',
+            },
+          ],
+          initialValue: initialTutorMeAuthToken,
+          type: 'string',
+        })(
+          <Input
+            data-cy="tutorMeAuthToken"
+            placeholder="Paste Authentication Key here. Ensure the key is accurate for these org(s) / user(s)."
+          />
+        )}
+      </Form.Item>
+      <Form.Item label={<span />} colon={false} {...authKeyFormLayout}>
+        {getFieldDecorator('tutorMeAuthTokenCheck', {
+          valuePropName: 'checked',
+          initialValue: initialTutorMeAuthTokenCheck,
+        })(
+          <Checkbox disabled={!tutorMeAuthToken}>
+            <EduIf
+              condition={
+                !!tutorMeStartDate ||
+                !!initialTutorMeEndDate ||
+                !!tutorMeAuthToken
+              }
+            >
+              <span style={{ color: red }}>*</span>
+            </EduIf>
+            <span>{`I've double checked this key is intended for these org(s) / user(s)`}</span>
+          </Checkbox>
+        )}
       </Form.Item>
     </>
   )
@@ -149,6 +216,8 @@ const DatesNotesFormItem = ({
   initialEndDate,
   initialTutorMeStartDate,
   initialTutorMeEndDate,
+  initialTutorMeAuthToken,
+  initialTutorMeAuthTokenCheck,
   notesFieldName,
   initialValue,
   placeholder,
@@ -170,6 +239,8 @@ const DatesNotesFormItem = ({
         getFieldDecorator={getFieldDecorator}
         initialTutorMeStartDate={initialTutorMeStartDate}
         initialTutorMeEndDate={initialTutorMeEndDate}
+        initialTutorMeAuthToken={initialTutorMeAuthToken}
+        initialTutorMeAuthTokenCheck={initialTutorMeAuthTokenCheck}
         getFieldValue={getFieldValue}
       />
     ) : null}

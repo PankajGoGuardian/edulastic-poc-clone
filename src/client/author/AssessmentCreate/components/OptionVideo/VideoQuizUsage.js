@@ -26,6 +26,11 @@ const getVQTagBgColorForQuota = (remainingPercentage) => {
   }
 }
 
+const VQ_UPGRADE_MESSAGE_LIST = [
+  'Unlimited Video Quizzes',
+  'Generate Questions using AI',
+]
+
 const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
   const [isVisible, setIsModalOpen] = useState(false)
 
@@ -82,21 +87,21 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
             <FlexContainer justifyContent="space-between">
               <FlexContainer
                 justifyContent="space-between"
-                height="50px"
+                height="58px"
                 flexDirection="column"
               >
                 <UpgradeAiSuitTitle>
-                  Upgrade to AI Premium Suite
+                  Upgrade to Premium Suite
                   <DollarSymbolWrapper>
                     <IconStar />
                   </DollarSymbolWrapper>
                 </UpgradeAiSuitTitle>
-                <FlexContainer justifyContent="flex-start">
-                  <IconVQTextCheck margin="3px 0 0 0" />
-                  <UpgradeAiSuitText ml="5px">
-                    Unlimited Video Quizzes
-                  </UpgradeAiSuitText>
-                </FlexContainer>
+                {VQ_UPGRADE_MESSAGE_LIST.map((message, index) => (
+                  <FlexContainer justifyContent="flex-start" key={index}>
+                    <IconVQTextCheck margin="3px 0 0 0" />
+                    <UpgradeAiSuitText ml="5px">{message}</UpgradeAiSuitText>
+                  </FlexContainer>
+                ))}
               </FlexContainer>
               <FlexContainer alignItems="center">
                 <UpgradeAiSuitButton isGhost onClick={goToAddOnsPage}>
@@ -139,13 +144,16 @@ const UpgradeToAiSuitBox = styled.div`
   background: #fcf5eb;
   padding: 16px;
 `
+
 const UpgradeAiSuitTitle = styled(FlexContainer)`
   color: #000;
   font-family: 'Open Sans';
   font-size: 12px;
   font-style: normal;
   font-weight: 600;
+  margin-bottom: 8px;
 `
+
 const UpgradeAiSuitText = styled(FlexContainer)`
   color: #3d3d3d;
   font-family: 'Open Sans';

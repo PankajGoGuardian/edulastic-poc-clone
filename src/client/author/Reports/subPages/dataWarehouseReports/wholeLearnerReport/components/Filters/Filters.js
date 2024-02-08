@@ -43,6 +43,8 @@ import SelectAssessmentsForMultiSchoolYear from '../../../common/components/Sele
 import TagFilter from '../../../../../../src/components/common/TagFilter'
 import { MandatorySymbol } from '../../../common/components/styledComponents'
 
+import { isPearOrEdulasticText } from '../../../../../../../common/utils/helpers'
+
 const filtersDefaultValues = [
   {
     key: 'termId',
@@ -744,7 +746,7 @@ const WholeLearnerReportFilters = ({
             data-testid="performanceBand"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
-              EDULASTIC PERFORMANCE BAND
+              PERFORMANCE BAND ({isPearOrEdulasticText})
             </FieldLabel>
             <ControlDropDown
               height="40px"

@@ -28,6 +28,7 @@ import {
   StyledText,
 } from '../../../common/components/styledComponents'
 import BackendPagination from '../../../../../common/components/BackendPagination'
+import { isPearOrEdulasticText } from '../../../../../../../common/utils/helpers'
 
 function TableSection({
   tableFilters,
@@ -246,7 +247,7 @@ function TableSection({
               color={black}
               margin="0 10px 0 0"
             >
-              Edulastic Performance Band
+              Performance Band ({isPearOrEdulasticText})
             </StyledText>
             <ControlDropDown
               height="35px"

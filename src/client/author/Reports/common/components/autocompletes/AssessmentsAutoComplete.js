@@ -149,7 +149,12 @@ const AssessmentAutoComplete = ({
   }, [testList])
 
   const suffixIcon = loc === 'completion-report' && (
-    <a onClick={onSelectAll}>SELECT ALL </a>
+    <a
+      onClick={onSelectAll}
+      style={{ color: 'blue', fontSize: '15px', fontWeight: 400 }}
+    >
+      <u>SELECT ALL </u>
+    </a>
   )
 
   return (

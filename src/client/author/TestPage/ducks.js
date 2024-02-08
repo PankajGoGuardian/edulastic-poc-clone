@@ -54,6 +54,10 @@ import {
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
 import {
+  DISTRICT_ADMIN,
+  SCHOOL_ADMIN,
+} from '@edulastic/constants/const/roleType'
+import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
   getSettingsToSaveOnTestType,
@@ -1925,8 +1929,13 @@ export const getReleaseScorePremiumSelector = createSelector(
 export const getIsOverrideFreezeSelector = createSelector(
   getTestSelector,
   getUserIdSelector,
-  (_test, userId) => {
+  getUserRole,
+  (_test, userId, role) => {
+    const allowedRoles = [SCHOOL_ADMIN, DISTRICT_ADMIN]
     if (!_test.freezeSettings) {
+      return false
+    }
+    if (allowedRoles.includes(role)) {
       return false
     }
     if (_test?.authors?.some((author) => author._id === userId)) {

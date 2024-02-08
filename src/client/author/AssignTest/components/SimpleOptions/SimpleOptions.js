@@ -16,8 +16,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { DEFAULT_TEST_TYPES_BY_USER_ROLES } from '@edulastic/constants/const/testTypes'
 import { multiFind } from '../../../../common/utils/main'
-import { getProfileKey } from '../../../../common/utils/testTypeUtils'
+import {
+  getAvailableTestTypesForUser,
+  getProfileKey,
+} from '../../../../common/utils/testTypeUtils'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -33,6 +37,7 @@ import {
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
+  canSchoolAdminUseDistrictCommonSelector,
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
@@ -135,11 +140,41 @@ class SimpleOptions extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { group, fetchStudents } = this.props
+    const {
+      group,
+      fetchStudents,
+      assignment,
+      testSettings,
+      userRole,
+      features,
+      freezeSettings,
+      canSchoolAdminUseDistrictCommon,
+    } = this.props
+    const { testType = testSettings.testType } = assignment
     // no class available yet in assign module flow initial render
     if (group?.length === 1 && prevProps.group?.length === 0) {
       this.onChange('class', [group[0]._id])
       fetchStudents({ classId: group[0]._id })
+    }
+
+    // If the user is allowed to edit the test type, check if they have the permission
+    // to assign test type added originally by the test author.
+    // If don't, change the test type to the highest permitted type.
+    if (
+      !freezeSettings &&
+      testType &&
+      userRole &&
+      testTypesConstants.TEST_TYPES.COMMON.includes(testType)
+    ) {
+      const availableTestTypes = getAvailableTestTypesForUser({
+        isPremium: features?.premium,
+        role: userRole,
+        canSchoolAdminUseDistrictCommon,
+      })
+
+      if (!availableTestTypes[testType]) {
+        this.onChange('testType', DEFAULT_TEST_TYPES_BY_USER_ROLES[userRole])
+      }
     }
   }
 
@@ -795,6 +830,9 @@ const enhance = compose(
         []
       ),
       isAiEvaulationDistrict: getIsAiEvaulationDistrictSelector(state),
+      canSchoolAdminUseDistrictCommon: canSchoolAdminUseDistrictCommonSelector(
+        state
+      ),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

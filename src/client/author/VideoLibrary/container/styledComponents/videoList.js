@@ -44,7 +44,8 @@ export const VideoCard = styled(Card)`
   margin-bottom: 4px;
   .ant-card-body {
     padding: 0px;
-    height: ${`${180 + 68.5 + 10}px`};
+    height: ${({ channelTitle }) =>
+      channelTitle ? `${180 + 68.5 + 10}px` : `${180 + 52 + 10}px`}} 
     width: ${({ width }) => width && `${width}`};
     overflow: hidden;
   }

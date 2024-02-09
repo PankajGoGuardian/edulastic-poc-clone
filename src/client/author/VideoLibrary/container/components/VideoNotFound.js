@@ -76,4 +76,5 @@ const Description = styled.div`
   font-style: normal;
   font-weight: 700;
   line-height: 24px; /* 150% */
+  cursor: pointer;
 `

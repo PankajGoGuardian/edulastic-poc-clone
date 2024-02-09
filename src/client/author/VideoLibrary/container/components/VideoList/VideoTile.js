@@ -44,9 +44,16 @@ const VideoTile = ({
     video?.videoDetails?.contentDetails?.duration
   )
 
+  const channelTitle = video?.snippet?.channelTitle
+
   return (
     <>
-      <VideoCard bordered={false} hoverable onClick={handleOnClick}>
+      <VideoCard
+        channelTitle={!!channelTitle}
+        bordered={false}
+        hoverable
+        onClick={handleOnClick}
+      >
         <VideoThumbnail
           imgSrc={video?.snippet?.thumbnails?.medium?.url}
           alt={video?.snippet?.title}
@@ -76,10 +83,10 @@ const VideoTile = ({
           <Tooltip
             mouseEnterDelay={1}
             mouseLeaveDelay={1}
-            title={video?.snippet?.channelTitle}
+            title={channelTitle}
             placement="bottomLeft"
           >
-            <ChannelTitleText>{video?.snippet?.channelTitle}</ChannelTitleText>
+            <ChannelTitleText>{channelTitle}</ChannelTitleText>
           </Tooltip>
         </VideoTextWrapper>
       </VideoCard>

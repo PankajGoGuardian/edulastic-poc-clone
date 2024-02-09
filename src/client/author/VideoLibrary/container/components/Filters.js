@@ -21,7 +21,7 @@ const Filters = ({
       <FlexContainer
         justifyContent="flex-start"
         mr="16px"
-        marginBottom="16px"
+        marginBottom="32px"
         mt="16px"
       >
         <FlexContainer mr="16px" width="250px">

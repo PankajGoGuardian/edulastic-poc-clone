@@ -1,6 +1,6 @@
 import React from 'react'
 import { Spin } from 'antd'
-import { EduElse, EduIf, EduThen, FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import { SpinLoader } from '../../styledComponents/videoList'
 import VideoList from './VideoList'
 
@@ -8,7 +8,7 @@ const VideoListContainer = ({
   showSpinnerVideoList,
   setLinkValue,
   videos = [],
-  showNoData,
+
   loaderRef,
   showLoaderButton,
   isLoading = false,
@@ -19,14 +19,7 @@ const VideoListContainer = ({
       <SpinLoader spinning={showSpinnerVideoList || isTestLibraryLoading}>
         <div>
           <EduIf condition={videos.length}>
-            <EduThen>
-              <VideoList videos={videos} setLinkValue={setLinkValue} />
-            </EduThen>
-            <EduElse>
-              <EduIf condition={showNoData}>
-                {/* <NoDataNotification heading="No results found" /> */}
-              </EduIf>
-            </EduElse>
+            <VideoList videos={videos} setLinkValue={setLinkValue} />
           </EduIf>
         </div>
       </SpinLoader>

@@ -205,7 +205,6 @@ export const createGroupSummary = (test) => {
       groupId: groupId || groupName,
     })
   }
-  console.log(summary, '--summary')
   return summary
 }
 

@@ -31,9 +31,10 @@ const LanguageSelectorTab = ({
     if (item._id !== 'new' && !isIntialLanguageSet.current) {
       let languageCode = LANGUAGE_EN
       if (item.isPassageWithQuestions) {
-        languageCode = LANGUAGES_OPTIONS.find(
-          (o) => o.label.toLowerCase() === passage.language?.toLowerCase()
-        )?.value
+        languageCode =
+          LANGUAGES_OPTIONS.find(
+            (o) => o.label.toLowerCase() === passage.language?.toLowerCase()
+          )?.value || LANGUAGE_EN
       } else {
         const firstQuestion = get(item, ['data', 'questions', '0'])
         if (

@@ -19,6 +19,7 @@ import {
   FilterLabel,
   SecondaryFilterRow,
   SubText,
+  StyledTooltip,
 } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
@@ -398,6 +399,36 @@ const WholeLearnerReportFilters = ({
     )
   }
 
+  const applyButton = () => {
+    const ApplyButton = ({ width = '25%' }) => (
+      <StyledEduButton
+        width={width}
+        height="40px"
+        style={{ maxWidth: '200px' }}
+        key="applyButton"
+        data-cy="applyFilter"
+        data-testid="applyFilter"
+        disabled={!showApply || loadingFiltersData || isDisable}
+        onClick={() => onGoClick()}
+      >
+        Apply
+      </StyledEduButton>
+    )
+    if (isDisable) {
+      return (
+        <StyledTooltip
+          placement="topRight"
+          title="Please select a test to activate 'Apply' filter."
+        >
+          <span style={{ width: '25%', height: '40px', maxWidth: '200px' }}>
+            <ApplyButton width="100%" />
+          </span>
+        </StyledTooltip>
+      )
+    }
+    return <ApplyButton />
+  }
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -681,18 +712,7 @@ const WholeLearnerReportFilters = ({
                 >
                   Cancel
                 </StyledEduButton>
-                <StyledEduButton
-                  width="25%"
-                  height="40px"
-                  style={{ maxWidth: '200px' }}
-                  key="applyButton"
-                  data-cy="applyFilter"
-                  data-testid="applyFilter"
-                  disabled={!showApply || loadingFiltersData || isDisable}
-                  onClick={() => onGoClick()}
-                >
-                  Apply
-                </StyledEduButton>
+                {applyButton()}
               </Col>
             </Row>
           </ReportFiltersWrapper>

@@ -3,11 +3,14 @@ import { Tabs } from 'antd'
 
 import { segmentApi } from '@edulastic/api'
 
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
 import PerformanceReport from './PerformanceReport'
 import MasteryReportSection from './MasteryReportSection'
 import { FilledTabBar } from './FilledTabBar'
 import { Tutoring } from './Tutoring'
 import { getStudentName } from '../../utils'
+import { convertItemToArray } from '../../../common/utils'
+import { NoDataContainer } from './MasteryReportSection/styled'
 
 const { TabPane } = Tabs
 
@@ -25,7 +28,8 @@ const TABLE_TABS = {
     label: 'Tutoring',
   },
 }
-
+const DISABLE_MSG =
+  'Data not available: Select a single, matching school year for both Students and Tests Filters to view this data.'
 const WLRDetails = ({
   isPrinting,
   isAttendanceChartVisible,
@@ -69,6 +73,10 @@ const WLRDetails = ({
     settings.selectedStudentInformation,
     settings.selectedStudent
   )
+  const testTermIdsArr = convertItemToArray(filters.testTermIds)
+  const isDisableTab =
+    (testTermIdsArr.length === 1 && filters.termId !== testTermIdsArr[0]) ||
+    isMultiSchoolYear
 
   const tableTabs = [
     {
@@ -114,6 +122,7 @@ const WLRDetails = ({
     {
       key: TABLE_TABS.MASTERY.key,
       label: TABLE_TABS.MASTERY.label,
+      disabledInfo: { disabled: isDisableTab, message: DISABLE_MSG },
       children: (
         <MasteryReportSection
           studentMasteryProfile={studentMasteryProfile}
@@ -128,6 +137,7 @@ const WLRDetails = ({
     {
       key: TABLE_TABS.TUTORING.key,
       label: TABLE_TABS.TUTORING.label,
+      disabledInfo: { disabled: isDisableTab, message: DISABLE_MSG },
       hidden: tutorMeInterventionsData?.length === 0, // hide tab if no data, including loading state
       children: (
         <Tutoring
@@ -170,8 +180,19 @@ const WLRDetails = ({
       style={{ marginBlock: '32px', overflow: 'visible' }} // to allow tooltips tabPanel to overflow. No side-effect as panel cover full page width.
     >
       {tableTabs.map((item) => (
-        <TabPane tab={item.label} key={item.key}>
-          {item.children}
+        <TabPane
+          disabledInfo={item.disabledInfo}
+          tab={item.label}
+          key={item.key}
+        >
+          <EduIf condition={item?.disabledInfo.disabled}>
+            <EduThen>
+              <NoDataContainer>
+                <p>{DISABLE_MSG}</p>
+              </NoDataContainer>
+            </EduThen>
+            <EduElse>{item.children}</EduElse>
+          </EduIf>
         </TabPane>
       ))}
     </Tabs>

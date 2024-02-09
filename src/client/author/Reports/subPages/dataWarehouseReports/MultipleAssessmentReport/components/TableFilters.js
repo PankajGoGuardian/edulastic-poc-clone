@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Row, Icon } from 'antd'
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 import { orange } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import {
@@ -19,6 +19,7 @@ const TableFilters = ({
   selectedCompareBy,
   handleAddToGroupClick,
   showAddToStudentGroupBtn,
+  isMultiSchoolYear,
 }) => {
   return (
     <Row
@@ -32,9 +33,11 @@ const TableFilters = ({
           Performance Deep-dive across Assessments by{' '}
           {selectedCompareBy?.title || '-'}
         </StyledH3>
-        <StyledTooltip placement="right" title={TITLE_TOOLTIP_NOTE}>
-          <Icon type="warning" theme="filled" style={{ color: orange }} />
-        </StyledTooltip>
+        <EduIf condition={isMultiSchoolYear}>
+          <StyledTooltip placement="right" title={TITLE_TOOLTIP_NOTE}>
+            <Icon type="warning" theme="filled" style={{ color: orange }} />
+          </StyledTooltip>
+        </EduIf>
       </TableTitleContainer>
 
       <FlexContainer>

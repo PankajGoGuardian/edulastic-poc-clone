@@ -2,7 +2,7 @@ import React from 'react'
 import { Radio, Row } from 'antd'
 import { lightGreen10 } from '@edulastic/colors'
 import styled from 'styled-components'
-import { DashedLine } from '../../../../../common/styled'
+import { DashedLine, StyledTooltip } from '../../../../../common/styled'
 
 /** @type {typeof import('antd/lib/radio').Group} */
 const FilledRadioGroup = styled(Radio.Group)`
@@ -23,6 +23,22 @@ const FilledRadioGroup = styled(Radio.Group)`
  */
 export const FilledTabBar = (props) => {
   const { activeKey, panels, onTabClick } = props
+  const radioButton = (panel) => {
+    const {
+      disabledInfo: { disabled = false, message } = {},
+      tab,
+    } = panel.props
+    const _radioButton = (
+      <Radio.Button disabled={disabled} key={panel.key} value={panel.key}>
+        {tab}
+      </Radio.Button>
+    )
+
+    if (disabled) {
+      return <StyledTooltip title={message}>{_radioButton}</StyledTooltip>
+    }
+    return _radioButton
+  }
   return (
     <Row
       type="flex"
@@ -37,11 +53,7 @@ export const FilledTabBar = (props) => {
         onChange={(e) => onTabClick(e.target.value, e)}
         size="large"
       >
-        {panels.map((panel) => (
-          <Radio.Button key={panel.key} value={panel.key}>
-            {panel.props.tab}
-          </Radio.Button>
-        ))}
+        {panels.map((panel) => radioButton(panel))}
       </FilledRadioGroup>
       <DashedLine />
     </Row>

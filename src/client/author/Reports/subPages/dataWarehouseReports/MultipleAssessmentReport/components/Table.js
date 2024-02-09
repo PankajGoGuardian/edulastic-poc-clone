@@ -151,10 +151,11 @@ const getTableColumns = (
         testId, // here testId refers to testUniqId in case of multiSchoolYear
         externalTestType,
         averageScore,
-        termName = '',
+        assessmentDate = '',
       } = assessment
 
       const _testName = getTestName(assessment)
+      const testDate = formatDate(assessmentDate)
       const averageScoreForTitle = getScoreLabel(
         isNumber(averageScore) ? round(averageScore) : averageScore,
         assessment
@@ -163,7 +164,7 @@ const getTableColumns = (
       const tooltipTitle = (
         <>
           <p>{_testName}</p>
-          <p>School Year: {termName}</p>
+          <p>Test Date: {testDate}</p>
         </>
       )
       return [

@@ -90,7 +90,6 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const getTerm = (_termId) => schoolYears.find((sy) => sy.key === _termId)
   const dropdownData = useMemo(() => {
     const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
-
     return tests.map((item) => {
       const term = isLongitudinalReport
         ? getTerm(item?.termId)
@@ -236,10 +235,11 @@ const SelectAssessmentsForMultiSchoolYear = ({
     </>
   )
 
-  const placeholder = isDisable
+  const disabledPlaceholder = isDisable
     ? 'Select a Test Grade and Subject to activate the Test Filter'
     : 'Select Test'
 
+  const placeholder = !isMultiSchoolYear ? 'All Tests' : disabledPlaceholder
   const multiSelectSearch = (
     <MultiSelectSearch
       dataCy={dataCy}

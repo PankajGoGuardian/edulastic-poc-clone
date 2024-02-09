@@ -532,6 +532,7 @@ const MultipleAssessmentReport = ({
               selectedCompareBy={selectedCompareBy}
               handleAddToGroupClick={handleAddToGroupClick}
               showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+              isMultiSchoolYear={isMultiSchoolYear}
             />
             <Table
               tableData={tableData}

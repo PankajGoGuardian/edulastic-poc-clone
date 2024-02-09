@@ -16,6 +16,7 @@ import {
   FilterLabel,
   SecondaryFilterRow,
   SubText,
+  StyledTooltip,
 } from '../../../../common/styled'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -378,6 +379,36 @@ const MultipleAssessmentReportFilters = ({
     ) : (
       text
     )
+  }
+
+  const applyButton = () => {
+    const ApplyButton = ({ width = '25%' }) => (
+      <StyledEduButton
+        width={width}
+        height="40px"
+        style={{ maxWidth: '200px' }}
+        key="applyButton"
+        data-cy="applyFilter"
+        data-testid="applyFilter"
+        disabled={!showApply || loadingFiltersData || isDisable}
+        onClick={() => onGoClick()}
+      >
+        Apply
+      </StyledEduButton>
+    )
+    if (isDisable) {
+      return (
+        <StyledTooltip
+          placement="topRight"
+          title="Please select a test to activate 'Apply' filter."
+        >
+          <span style={{ width: '25%', height: '40px', maxWidth: '200px' }}>
+            <ApplyButton width="100%" />
+          </span>
+        </StyledTooltip>
+      )
+    }
+    return <ApplyButton />
   }
 
   return (
@@ -757,18 +788,8 @@ const MultipleAssessmentReportFilters = ({
                 >
                   Cancel
                 </StyledEduButton>
-                <StyledEduButton
-                  width="25%"
-                  height="40px"
-                  style={{ maxWidth: '200px' }}
-                  key="applyButton"
-                  data-cy="applyFilter"
-                  data-testid="applyFilter"
-                  disabled={!showApply || loadingFiltersData || isDisable}
-                  onClick={() => onGoClick()}
-                >
-                  Apply
-                </StyledEduButton>
+                {/* Apply button */}
+                {applyButton()}
               </Col>
             </Row>
           </ReportFiltersWrapper>

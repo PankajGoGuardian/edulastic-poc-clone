@@ -55,3 +55,14 @@ export const StyledButton = styled(Button)`
     padding: 0px 20px;
   }
 `
+export const NoDataContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+
+  p {
+    font-size: 16px;
+    font-weight: 600;
+  }
+`

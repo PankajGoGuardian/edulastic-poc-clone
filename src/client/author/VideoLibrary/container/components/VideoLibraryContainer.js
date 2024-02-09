@@ -79,6 +79,7 @@ const VideoLibrary = ({
     filterSubjects,
     filterStatus,
     setFilterStatus,
+    handleVideoSelect,
   } = useVideoQuizLibrary({
     setYoutubeThumbnail,
     ytThumbnail,
@@ -88,7 +89,6 @@ const VideoLibrary = ({
     interestedGrades,
     interestedSubjects,
     scrollerRef,
-
     receiveTestsRequest,
     testList,
     isTestLibraryLoading,
@@ -143,6 +143,7 @@ const VideoLibrary = ({
     filterStatus,
     setFilterStatus,
     hasSearchedText,
+    handleVideoSelect,
   }
 
   return (

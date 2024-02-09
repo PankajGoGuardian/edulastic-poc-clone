@@ -11,7 +11,7 @@ import VideoTile from './VideoTile'
  * @param {function} setLinkValue The setLinkValue is provide to VideoTile as handleVideoClick.
  *
  */
-const VideoList = ({ videos, setLinkValue }) => {
+const VideoList = ({ videos, handleVideoSelect }) => {
   return (
     <GridContainer>
       {videos.map((video, index) => {
@@ -19,7 +19,7 @@ const VideoList = ({ videos, setLinkValue }) => {
           <VideoTile
             key={`${video?.id?.videoId}-${index}`}
             video={video}
-            handleVideoClick={setLinkValue}
+            handleVideoClick={handleVideoSelect}
           />
         )
       })}

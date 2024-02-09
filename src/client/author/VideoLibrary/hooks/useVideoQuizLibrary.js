@@ -30,9 +30,7 @@ const useVideoQuizLibrary = ({
   setYoutubeThumbnail,
   ytThumbnail,
   getYoutubeThumbnail,
-
   scrollerRef,
-
   receiveTestsRequest,
   testList,
   isTestLibraryLoading,
@@ -58,25 +56,15 @@ const useVideoQuizLibrary = ({
   const [filterGrades, setFilterGrades] = useState(prevGrades)
   const [filterSubjects, setFilterSubjects] = useState(prevSubject)
   const [filterStatus, setFilterStatus] = useState('')
+  const [selectedYoutubeLink, setSelectedYoutubeLink] = useState('')
 
   const textIsUrl = isURL(linkValue)
   const loaderRef = useRef(null)
 
   const hasError = textIsUrl ? !isValidVideoUrl(linkValue) : false
 
-  useEffect(() => {
-    setVideos((prevState) => [...prevState, ...videoDetailsFromTests])
-  }, [testList])
-
-  useEffect(() => {
-    setYoutubeThumbnail('')
-    return () => {
-      setYoutubeThumbnail('')
-    }
-  }, [])
-
-  const onValidUrl = (videoUrl, thumbnail) => {
-    console.log({ location })
+  /** Creates new VQ */
+  const createVQAssessment = ({ videoUrl, thumbnail }) => {
     const { assessmentId } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -88,6 +76,22 @@ const useVideoQuizLibrary = ({
     })
   }
 
+  /** Appends testList - result from test library */
+  useEffect(() => {
+    setVideos((prevState) => [...prevState, ...videoDetailsFromTests])
+  }, [testList])
+
+  /** Reset state - Todo */
+  useEffect(() => {
+    setYoutubeThumbnail('')
+    setSelectedYoutubeLink('')
+    return () => {
+      setYoutubeThumbnail('')
+      setSelectedYoutubeLink('')
+    }
+  }, [])
+
+  /** Load/Append YouTube videos - result from YouTube APIs  */
   const fetchVideos = async (append = false, userInput = '') => {
     try {
       const searchString = userInput?.trim()
@@ -132,6 +136,7 @@ const useVideoQuizLibrary = ({
     }
   }
 
+  /** Append YouTube videos - Youtube Pagination Starts */
   const handleFetchVideos = useMemo(() => {
     return throttle(
       async (append, userInput) => {
@@ -142,6 +147,54 @@ const useVideoQuizLibrary = ({
     )
   }, [fetchVideos])
 
+  const handleIntersect = useCallback(
+    (entries) => {
+      const [entry] = entries
+      if (
+        !isLoading &&
+        entry.isIntersecting &&
+        videos.length &&
+        searchedText &&
+        currentTab === '3'
+      ) {
+        handleFetchVideos(true, searchedText)
+      }
+    },
+    [
+      videos,
+      searchedText,
+      isLoading,
+      nextPageToken,
+      isModerateRestriction,
+      currentTab,
+    ]
+  )
+
+  useEffect(() => {
+    if (!loaderRef?.current) return
+    const observer = new IntersectionObserver(handleIntersect, {
+      root: null,
+      threshold: 0,
+    })
+    observer.observe(loaderRef.current)
+
+    return () => {
+      if (loaderRef?.current) {
+        return observer.unobserve(loaderRef.current)
+      }
+    }
+  }, [
+    loaderRef,
+    videos,
+    searchedText,
+    isLoading,
+    nextPageToken,
+    isModerateRestriction,
+    currentTab,
+  ])
+  /** Append YouTube videos - Youtube Pagination Ends */
+
+  /** Tests Pagination starts */
   const loadMoreTests = (append = false, searchString) => {
     const newSearchFilter = produce(testLibrarySearchFilter, (draft) => {
       draft.search.subject = filterSubjects
@@ -177,9 +230,55 @@ const useVideoQuizLibrary = ({
       { trailing: true }
     )
   }, [loadMoreTests])
+  const handleIntersect2 = useCallback(
+    (entries) => {
+      const [entry] = entries
 
+      if (
+        (currentTab === '1' || currentTab === '2') &&
+        entry.isIntersecting &&
+        !isTestLibraryLoading &&
+        videos?.length >= 20
+      ) {
+        handleFetchMoreTests()
+      }
+    },
+    [currentTab, isTestLibraryLoading, testLibrarySearchFilter?.page, videos]
+  )
+  useEffect(() => {
+    if (!loaderRef?.current) return
+    const observer = new IntersectionObserver(handleIntersect2, {
+      root: null,
+      threshold: 0,
+    })
+    observer.observe(loaderRef.current)
+
+    return () => {
+      if (loaderRef?.current) {
+        return observer.unobserve(loaderRef.current)
+      }
+    }
+  }, [
+    currentTab,
+    loaderRef,
+    isTestLibraryLoading,
+    testLibrarySearchFilter?.page,
+    videos,
+    filterStatus,
+    filterSubjects,
+    filterGrades,
+  ])
+  /** Tests Pagination Ends */
+
+  /**
+   * Handles any supported URLs for videos
+   * textIsUrl: When true provided test is URL
+   * hasError: When false provided URL is playable
+   * linkValue: Input text/URL on Search bar
+   */
   useEffect(() => {
     if (textIsUrl && !hasError && linkValue.length > 0) {
+      /** Extracts only youtube videoId to get thumbnail, otherwise using playable video link to create */
       const videoId = extractVideoId(linkValue)
       if (videoId) {
         getYoutubeThumbnail(videoId)
@@ -188,11 +287,12 @@ const useVideoQuizLibrary = ({
           type: 'info',
           messageKey: 'creatingTestForSelectedVideo',
         })
-        onValidUrl(linkValue)
+        createVQAssessment({ videoUrl: linkValue })
       }
     }
   }, [linkValue, hasError, textIsUrl])
 
+  /** Handle press enter event triggers Test library search or Youtube search */
   const handleOnSearch = (value) => {
     if (value && currentTab === '3') {
       handleFetchVideos(false, value)
@@ -203,30 +303,39 @@ const useVideoQuizLibrary = ({
     }
   }
 
+  /** Handle search safe search */
   useEffect(() => {
     handleFetchVideos(false, searchedText)
   }, [isModerateRestriction])
 
+  /** When youtube thumbnail is generated create new assessment */
   useEffect(() => {
-    if (linkValue.length && ytThumbnail.length) {
+    if (selectedYoutubeLink.length && ytThumbnail.length) {
       notification({
         type: 'info',
         messageKey: 'creatingTestForSelectedVideo',
       })
-      onValidUrl?.(linkValue, ytThumbnail)
+      createVQAssessment({
+        videoUrl: selectedYoutubeLink,
+        thumbnail: ytThumbnail,
+      })
     }
-  }, [ytThumbnail])
+  }, [ytThumbnail, selectedYoutubeLink])
 
+  /** Handle search input changes */
   const handleOnChange = (value) => {
     setLinkValue(value)
   }
 
+  /** VQ Collection  used to fetch Test from test library when user has subscribed the AI suit */
   const vqCollection = isVideoQuizAndAIEnabled
     ? videoQuizDefaultCollection?.collectionId || []
     : []
 
+  /** Test categories used to fetch Test from test library */
   const testCategories = [testCategoryTypes.VIDEO_BASED]
 
+  /** Handle Tab Changes sets search filter values */
   useEffect(() => {
     let search = {}
     setVideos([])
@@ -317,91 +426,15 @@ const useVideoQuizLibrary = ({
     }
   }, [currentTab, filterStatus, filterSubjects, filterGrades])
 
-  const handleIntersect = useCallback(
-    (entries) => {
-      const [entry] = entries
-      if (
-        !isLoading &&
-        entry.isIntersecting &&
-        videos.length &&
-        searchedText &&
-        currentTab === '3'
-      ) {
-        handleFetchVideos(true, searchedText)
-      }
-    },
-    [
-      videos,
-      searchedText,
-      isLoading,
-      nextPageToken,
-      isModerateRestriction,
-      currentTab,
-    ]
-  )
-
-  const handleIntersect2 = useCallback(
-    (entries) => {
-      const [entry] = entries
-
-      if (
-        (currentTab === '1' || currentTab === '2') &&
-        entry.isIntersecting &&
-        !isTestLibraryLoading &&
-        videos?.length >= 20
-      ) {
-        handleFetchMoreTests()
-      }
-    },
-    [currentTab, isTestLibraryLoading, testLibrarySearchFilter?.page, videos]
-  )
-
-  useEffect(() => {
-    if (!loaderRef?.current) return
-    const observer = new IntersectionObserver(handleIntersect, {
-      root: null,
-      threshold: 0,
-    })
-    observer.observe(loaderRef.current)
-
-    return () => {
-      if (loaderRef?.current) {
-        return observer.unobserve(loaderRef.current)
-      }
+  /** handleVideoSelect for youtube videos to create new Test */
+  const handleVideoSelect = (selectedYtVideoLink) => {
+    // Extract videoId for YouTube link
+    const videoId = extractVideoId(selectedYtVideoLink)
+    setSelectedYoutubeLink(selectedYtVideoLink)
+    if (videoId) {
+      getYoutubeThumbnail(videoId)
     }
-  }, [
-    loaderRef,
-    videos,
-    searchedText,
-    isLoading,
-    nextPageToken,
-    isModerateRestriction,
-    currentTab,
-  ])
-
-  useEffect(() => {
-    if (!loaderRef?.current) return
-    const observer = new IntersectionObserver(handleIntersect2, {
-      root: null,
-      threshold: 0,
-    })
-    observer.observe(loaderRef.current)
-
-    return () => {
-      if (loaderRef?.current) {
-        return observer.unobserve(loaderRef.current)
-      }
-    }
-  }, [
-    currentTab,
-    loaderRef,
-    isTestLibraryLoading,
-    testLibrarySearchFilter?.page,
-    videos,
-    filterStatus,
-    filterSubjects,
-    filterGrades,
-  ])
+  }
 
   return {
     setLinkValue,
@@ -428,6 +461,7 @@ const useVideoQuizLibrary = ({
     filterSubjects,
     filterStatus,
     setFilterStatus,
+    handleVideoSelect,
   }
 }
 

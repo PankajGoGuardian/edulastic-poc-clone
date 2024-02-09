@@ -6,9 +6,8 @@ import VideoList from './VideoList'
 
 const VideoListContainer = ({
   showSpinnerVideoList,
-  setLinkValue,
+  handleVideoSelect,
   videos = [],
-
   loaderRef,
   showLoaderButton,
   isLoading = false,
@@ -19,7 +18,7 @@ const VideoListContainer = ({
       <SpinLoader spinning={showSpinnerVideoList || isTestLibraryLoading}>
         <div>
           <EduIf condition={videos.length}>
-            <VideoList videos={videos} setLinkValue={setLinkValue} />
+            <VideoList videos={videos} handleVideoSelect={handleVideoSelect} />
           </EduIf>
         </div>
       </SpinLoader>

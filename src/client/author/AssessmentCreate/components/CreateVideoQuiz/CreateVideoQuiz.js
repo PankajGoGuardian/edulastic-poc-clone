@@ -20,9 +20,9 @@ import {
 } from '../../../TestPage/ducks'
 
 import {
+  allowedToCreateVideoQuizSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  isRedirectToAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
   vqQuotaForDistrictSelector,
@@ -71,10 +71,9 @@ const CreateVideoQuiz = ({
   isThumbnailLoading,
   creatingAssessment,
   scrollerRef,
-  isRedirectToAddOn,
+
   showVQCount,
-  vqQuotaForDistrict,
-  vqUsageCount,
+  allowedToCreateVideoQuiz,
 }) => {
   const {
     linkValue,
@@ -99,12 +98,10 @@ const CreateVideoQuiz = ({
     interestedGrades,
     interestedSubjects,
     scrollerRef,
-    isRedirectToAddOn,
-    vqQuotaForDistrict,
-    vqUsageCount,
+    allowedToCreateVideoQuiz,
   })
 
-  if (isRedirectToAddOn) {
+  if (!allowedToCreateVideoQuiz) {
     return null
   }
   const errorMessage = () => {
@@ -127,7 +124,7 @@ const CreateVideoQuiz = ({
     <FlexContainer width="100%" justifyContent="center">
       <MainWrapper>
         <SearchBoxWrapper flexDirection="column" alignItems="center">
-          <EduIf condition={!isVideoQuizAndAIEnabled && showVQCount}>
+          <EduIf condition={showVQCount}>
             <VideoQuizUsageBanner />
           </EduIf>
           <SearchBoxContainer>
@@ -278,10 +275,11 @@ const enhance = compose(
       interestedSubjects: getInterestedSubjectsSelector(state),
       creatingAssessment: getAssessmentCreatingSelector(state),
       isThumbnailLoading: isYtLoadingSelector(state),
-      isRedirectToAddOn: isRedirectToAddOnSelector(state),
+
       showVQCount: showVQCountSelector(state),
       vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
       vqUsageCount: vqUsageCountSelector(state),
+      allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

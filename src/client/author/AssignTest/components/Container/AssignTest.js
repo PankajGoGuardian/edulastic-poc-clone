@@ -39,7 +39,7 @@ import {
   getUserId,
   getUserFeatures,
   isVideoQuizAndAIEnabledSelector,
-  isRedirectToAddOnSelector,
+  isRedirectToVQAddOnSelector,
 } from '../../../src/selectors/user'
 import {
   getSearchTermsFilterSelector,
@@ -813,7 +813,7 @@ class AssignTest extends React.Component {
       match,
       isAssigning,
       history,
-      isRedirectToAddOn,
+      isRedirectToVQAddOn,
     } = this.props
     const {
       classList,
@@ -849,7 +849,7 @@ class AssignTest extends React.Component {
 
     const isBuyAISuiteAlertModalVisible =
       !isPlaylist &&
-      getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)
+      getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToVQAddOn)
 
     return (
       <div>
@@ -1075,7 +1075,7 @@ const enhance = compose(
         state
       ),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
-      isRedirectToAddOn: isRedirectToAddOnSelector(state),
+      isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

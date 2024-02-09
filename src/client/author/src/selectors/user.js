@@ -577,36 +577,50 @@ export const vqQuotaForDistrictSelector = createSelector(getUser, (userData) =>
   _get(userData, ['features', 'vqQuotaForDistrict'], 0)
 )
 
+/**
+ * Shows video quiz counter
+ * When user don't have subscription and user is premium and vqQuota is greater than 0
+ */
 export const showVQCountSelector = createSelector(
   vqUsageCountSelector,
   vqQuotaForDistrictSelector,
-  (vqUsageCount, vqQuotaForDistrict) => {
-    if (
-      vqQuotaForDistrict === -1 ||
-      (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount)
-    ) {
-      return false
-    }
-    return true
-  }
+  isPremiumUserSelector,
+  isVideoQuizAndAIEnabledSelector,
+  (
+    vqUsageCount,
+    vqQuotaForDistrict,
+    isPremiumUser,
+    isVideoQuizAndAiEnabledUser
+  ) => !isVideoQuizAndAiEnabledUser && isPremiumUser && vqQuotaForDistrict > 0
 )
 
-export const isRedirectToAddOnSelector = createSelector(
+/**
+ * Shows vq add-on popup
+ * Shows premium add-on Tag
+ * We don't show popup when vqQuota and usageCount is equal.
+ * so that user can assign existing Tests
+ */
+export const isRedirectToVQAddOnSelector = createSelector(
   isPremiumUserSelector,
   vqQuotaForDistrictSelector,
   vqUsageCountSelector,
-  getIsAiEvaulationDistrictSelector,
-  (
-    isPremiumUser,
-    vqQuotaForDistrict,
-    vqUsageCount,
-    isVideoQuizAndAIEnabled
-  ) => {
-    return (
-      (isPremiumUser && !isVideoQuizAndAIEnabled && vqQuotaForDistrict === 0) ||
-      (!isPremiumUser && !isVideoQuizAndAIEnabled)
-    )
-  }
+  isVideoQuizAndAIEnabledSelector,
+  (isPremiumUser, vqQuotaForDistrict, vqUsageCount, isVideoQuizAndAIEnabled) =>
+    !isVideoQuizAndAIEnabled && (!isPremiumUser || vqQuotaForDistrict === 0)
+)
+
+/**
+ * Redirects user to subscription page when create video quiz is not allowed
+ */
+export const allowedToCreateVideoQuizSelector = createSelector(
+  isVideoQuizAndAIEnabledSelector,
+  vqQuotaForDistrictSelector,
+  vqUsageCountSelector,
+  isPremiumUserSelector,
+  (isVideoQuizAndAIEnabled, vqQuotaForDistrict, vqUsageCount, isPremiumUser) =>
+    isVideoQuizAndAIEnabled ||
+    (isPremiumUser &&
+      (vqQuotaForDistrict === -1 || vqQuotaForDistrict > vqUsageCount))
 )
 
 export const getInterestedCurriculumsByOrgType = createSelector(

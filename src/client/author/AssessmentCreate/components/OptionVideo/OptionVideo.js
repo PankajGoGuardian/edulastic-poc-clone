@@ -17,12 +17,11 @@ import { navigationState } from '../../../src/constants/navigation'
 
 import { isPearOrEdulasticAssessment } from '../../../../common/utils/helpers'
 import {
+  allowedToCreateVideoQuizSelector,
   isPremiumUserSelector,
-  isRedirectToAddOnSelector,
+  isRedirectToVQAddOnSelector,
   isVideoQuizAndAIEnabledSelector,
   showVQCountSelector,
-  vqQuotaForDistrictSelector,
-  vqUsageCountSelector,
 } from '../../../src/selectors/user'
 import VideoQuizUsage from './VideoQuizUsage'
 import AddOnTag from '../common/AddOnTag'
@@ -36,19 +35,16 @@ const descriptionBottom = `
 
 const OptionVideo = ({
   history,
-  isVideoQuizAndAIEnabled,
   showVQCount,
-  isPremiumUser,
-  isRedirectToAddOn,
-  vqQuotaForDistrict,
-  vqUsageCount,
+  isRedirectToVQAddOn,
+  allowedToCreateVideoQuiz,
 }) => {
   const handleCreate = () => {
     segmentApi.genericEventTrack('VideoQuizCreateTestClick', {
       source: 'Test Library',
     })
 
-    if (isRedirectToAddOn) {
+    if (!allowedToCreateVideoQuiz) {
       history.push({
         pathname: '/author/subscription',
         state: { view: navigationState.SUBSCRIPTION.view.ADDON },
@@ -61,17 +57,9 @@ const OptionVideo = ({
     })
   }
 
-  const showVideoUsageCountForPremium =
-    isPremiumUser && !isVideoQuizAndAIEnabled && showVQCount
-
-  const showAddOnTagForFreeUser =
-    (!isPremiumUser && !isVideoQuizAndAIEnabled) ||
-    (vqQuotaForDistrict !== -1 && vqQuotaForDistrict < vqUsageCount) ||
-    vqQuotaForDistrict === 0
-
   return (
     <CardComponent>
-      <EduIf condition={showAddOnTagForFreeUser}>
+      <EduIf condition={isRedirectToVQAddOn}>
         <AddonTagPositionTopLeft
           width="100%"
           justifyContent="flex-end"
@@ -80,7 +68,7 @@ const OptionVideo = ({
           <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
         </AddonTagPositionTopLeft>
       </EduIf>
-      <EduIf condition={showVideoUsageCountForPremium} left="1rem">
+      <EduIf condition={showVQCount} left="1rem">
         <AddonTagPositionTopLeft
           width="100%"
           justifyContent="flex-end"
@@ -115,9 +103,8 @@ const enhance = compose(
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     showVQCount: showVQCountSelector(state),
     isPremiumUser: isPremiumUserSelector(state),
-    isRedirectToAddOn: isRedirectToAddOnSelector(state),
-    vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
-    vqUsageCount: vqUsageCountSelector(state),
+    isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
+    allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
   }))
 )
 export default enhance(OptionVideo)

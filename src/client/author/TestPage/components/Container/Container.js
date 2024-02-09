@@ -110,7 +110,7 @@ import {
   isPremiumUserSelector,
   getUserSignupStatusSelector,
   isVideoQuizAndAIEnabledSelector,
-  isRedirectToAddOnSelector,
+  isRedirectToVQAddOnSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -1845,7 +1845,7 @@ class Container extends PureComponent {
       writableCollections,
       t,
       history,
-      isRedirectToAddOn,
+      isRedirectToVQAddOn,
       isDefaultTest,
     } = this.props
     if (userRole === roleuser.STUDENT) {
@@ -1924,7 +1924,7 @@ class Container extends PureComponent {
 
     const isBuyAISuiteAlertModalVisible = getIsBuyAiSuiteAlertModalVisible(
       test?.testCategory,
-      isRedirectToAddOn
+      isRedirectToVQAddOn
     )
 
     return (
@@ -2192,7 +2192,7 @@ const enhance = compose(
       isDefaultTest: isDefaultTestSelector(state),
       subscription: getSubscriptionSelector(state),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
-      isRedirectToAddOn: isRedirectToAddOnSelector(state),
+      isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
     }),
     {
       createTest: createTestAction,

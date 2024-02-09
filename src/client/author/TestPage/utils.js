@@ -153,30 +153,37 @@ export const createGroupSummary = (test) => {
   }
   if (!test.itemGroups.length) return summary
   for (const itemGroup of test.itemGroups) {
+    const {
+      deliveryType,
+      type,
+      itemsDefaultMaxScore = 1,
+      items,
+      deliverItemsCount,
+      _id: groupId,
+      standardDetails,
+      groupName,
+    } = itemGroup
     const isLimitedDeliveryType =
-      itemGroup.deliveryType ===
-      testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-    const isAutoSelect =
-      itemGroup.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+      deliveryType === testConstants.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+    const isAutoSelect = type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
     const { noStandards, ...summaryData } = createItemsSummaryData(
-      itemGroup.items,
+      items,
       test.scoring,
       isLimitedDeliveryType,
-      itemGroup.itemsDefaultMaxScore
+      itemsDefaultMaxScore
     )
     if (isAutoSelect) {
       summaryData.standards =
-        itemGroup?.standardDetails?.standards.map((std) => ({
+        standardDetails?.standards.map((std) => ({
           isEquivalentStandard: false,
           identifier: std.identifier,
           curriculumId: std.curriculumId,
         })) || []
     }
-    if (isLimitedDeliveryType && itemGroup.deliverItemsCount) {
-      summaryData.totalPoints =
-        itemGroup.deliverItemsCount * itemGroup.itemsDefaultMaxScore
-      summaryData.totalItems = itemGroup.deliverItemsCount
-      summaryData.totalQuestions = itemGroup.deliverItemsCount
+    if (isLimitedDeliveryType && deliverItemsCount) {
+      summaryData.totalPoints = deliverItemsCount * itemsDefaultMaxScore
+      summaryData.totalItems = deliverItemsCount
+      summaryData.totalQuestions = deliverItemsCount
     }
 
     summary.totalPoints += summaryData.totalPoints
@@ -195,9 +202,10 @@ export const createGroupSummary = (test) => {
     summary.noStandards.totalPoints += noStandards.totalPoints
     summary.groupSummary.push({
       ...summaryData,
-      groupId: itemGroup._id || itemGroup.groupName,
+      groupId: groupId || groupName,
     })
   }
+  console.log(summary, '--summary')
   return summary
 }
 

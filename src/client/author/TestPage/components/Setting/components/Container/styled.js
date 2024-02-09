@@ -162,23 +162,39 @@ export const Description = styled.div`
   margin-bottom: ${({ marginTop }) => marginTop};
 `
 export const StyledRadioCheckboxGroup = styled(Checkbox.Group)`
+  .ant-checkbox-wrapper {
+    margin-right: ${({ isAssignment }) => (isAssignment ? '32px' : '100px')};
+    span {
+      font-size: ${({ isAssignment }) => (isAssignment ? '13px' : '12px')};
+      font-weight: 600;
+    }
+  }
   .ant-checkbox {
     .ant-checkbox-inner {
       border-radius: 50%;
+      border-color: #bdbdbd;
+      width: ${({ isAssignment }) => (isAssignment ? '16px' : '18px')};
+      height: ${({ isAssignment }) => (isAssignment ? '16px' : '18px')};
+      margin-right: ${({ isAssignment }) => (isAssignment ? '25px' : '10px')};
     }
-    &.ant-checkbox-checked .ant-checkbox-inner {
-      border: 1px solid #1890ff;
-      background-color: #ffffff;
+    &.ant-checkbox-checked {
       &::after {
-        transform: none;
-        background-color: #1890ff;
-        width: 12px;
-        height: 12px;
-        top: 1px;
-        left: 1px;
         border: none;
-        border-radius: 50%;
-        scale: 0.7;
+      }
+      .ant-checkbox-inner {
+        border: 1px solid #3f85e5;
+        background-color: #ffffff;
+        &::after {
+          transform: none;
+          background-color: #3f85e5;
+          width: 10px;
+          height: 10px;
+          top: ${({ isAssignment }) => (isAssignment ? '2px' : '3px')};
+          left: ${({ isAssignment }) => (isAssignment ? '2px' : '3px')};
+          border: none;
+          border-radius: 50%;
+          scale: 0.8;
+        }
       }
     }
   }

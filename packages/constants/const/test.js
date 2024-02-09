@@ -51,6 +51,11 @@ module.exports = {
       type: 'student-tools',
     },
     {
+      id: 'accommodations',
+      title: 'Accommodations',
+      type: 'settings-category',
+    },
+    {
       id: 'anti-cheating',
       title: 'Anti-Cheating',
       type: 'settings-category',
@@ -74,6 +79,8 @@ module.exports = {
       key: 'enableSkipAlert',
       id: 'skip-alert',
     },
+  },
+  accommodationsSettings: {
     immersiveReader: { key: SHOW_IMMERSIVE_READER, id: 'immersive-reader' },
     speechToText: { key: SHOW_SPEECH_TO_TEXT, id: 'speech-to-text' },
   },
@@ -179,6 +186,8 @@ module.exports = {
     showMagnifier: 'MAGNIFIER',
     enableScratchpad: 'SCRATCHPAD',
     enableSkipAlert: 'SHOW SKIP ALERT TO STUDENT',
+  },
+  accommodations: {
     showImmersiveReader: 'IMMERSIVE READER',
     showSpeechToText: 'SPEECH TO TEXT',
   },

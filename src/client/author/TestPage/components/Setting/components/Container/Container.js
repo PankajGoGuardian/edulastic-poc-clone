@@ -166,15 +166,12 @@ const {
   settingsList,
   TEST_SETTINGS_SAVE_LIMIT,
   accessibilitySettings,
+  accommodations,
+  accommodationsSettings,
 } = testConstants
 
-const {
-  magnifier,
-  scratchPad,
-  skipAlert,
-  immersiveReader,
-  speechToText,
-} = accessibilitySettings
+const { magnifier, scratchPad, skipAlert } = accessibilitySettings
+const { immersiveReader, speechToText } = accommodationsSettings
 
 const { Option } = Select
 
@@ -206,6 +203,7 @@ class Setting extends Component {
       showUpdateSettingModal: false,
       settingDetails: null,
       isStudentToolsGroupExpanded: true,
+      isAccommodationsExpanded: true,
     }
 
     this.containerRef = React.createRef()
@@ -810,6 +808,7 @@ class Setting extends Component {
       settingDetails,
       showUpdateSettingModal,
       isStudentToolsGroupExpanded,
+      isAccommodationsExpanded,
     } = this.state
     const {
       current,
@@ -862,7 +861,7 @@ class Setting extends Component {
       testContentVisibility,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
-      showImmersiveReader = false,
+      showImmersiveReader,
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
@@ -1015,27 +1014,27 @@ class Setting extends Component {
       },
     ]
 
-    if (canUseImmersiveReader && !isDocBased) {
-      accessibilityData.unshift({
-        key: speechToText.key,
-        value: showSpeechToText,
-        description: i18translate(
-          'accessibilitySettings.speechToText.description'
-        ),
-        isCheckbox: true,
-        id: speechToText.id,
-      })
-    }
+    const accommodationsData = []
 
     if (canUseImmersiveReader && !isDocBased) {
-      accessibilityData.unshift({
+      accommodationsData.push({
         key: immersiveReader.key,
         value: showImmersiveReader,
         description: i18translate(
-          'accessibilitySettings.immersiveReader.description'
+          'accommodationsSettings.immersiveReader.description'
         ),
-        isCheckbox: true,
         id: immersiveReader.id,
+      })
+    }
+
+    if (features.speechToText && !isDocBased) {
+      accommodationsData.push({
+        key: speechToText.key,
+        value: showSpeechToText,
+        description: i18translate(
+          'accommodationsSettings.speechToText.description'
+        ),
+        id: speechToText.id,
       })
     }
 
@@ -1078,8 +1077,6 @@ class Setting extends Component {
       !isCurator &&
       (testStatus === 'draft' || editEnable)
     const disabled = !owner || !isEditable
-
-    console.log('disable', disabled, features)
 
     const performanceBand = pick(
       multiFind(
@@ -1979,57 +1976,27 @@ class Setting extends Component {
                               </span>
                             </Col>
                             <Col span={12}>
-                              {o.isCheckbox ? (
-                                <StyledRadioCheckboxGroup
-                                  disabled={
-                                    disabled ||
-                                    (o.key === immersiveReader.key
-                                      ? !canUseImmersiveReader
-                                      : !features[o.key])
-                                  }
-                                  onChange={(value) =>
-                                    this.updateTestData(o.key)(value.pop())
-                                  }
-                                  value={[o.value]}
+                              <StyledRadioGroup
+                                disabled={disabled || !features[o.key]}
+                                onChange={(e) =>
+                                  this.updateTestData(o.key)(e.target.value)
+                                }
+                                value={o.value}
+                                style={{
+                                  flexDirection: 'row',
+                                  height: '18px',
+                                }}
+                              >
+                                <RadioBtn data-cy={`${o.key}-enable`} value>
+                                  ENABLE
+                                </RadioBtn>
+                                <RadioBtn
+                                  data-cy={`${o.key}-disable`}
+                                  value={false}
                                 >
-                                  <Checkbox data-cy={`${o.key}-enable`} value>
-                                    ENABLE
-                                  </Checkbox>
-                                  <Checkbox
-                                    data-cy={`${o.key}-disable`}
-                                    value={false}
-                                  >
-                                    DISABLE
-                                  </Checkbox>
-                                </StyledRadioCheckboxGroup>
-                              ) : (
-                                <StyledRadioGroup
-                                  disabled={
-                                    disabled ||
-                                    (o.key === immersiveReader.key
-                                      ? !canUseImmersiveReader
-                                      : !features[o.key])
-                                  }
-                                  onChange={(e) =>
-                                    this.updateTestData(o.key)(e.target.value)
-                                  }
-                                  value={o.value}
-                                  style={{
-                                    flexDirection: 'row',
-                                    height: '18px',
-                                  }}
-                                >
-                                  <RadioBtn data-cy={`${o.key}-enable`} value>
-                                    ENABLE
-                                  </RadioBtn>
-                                  <RadioBtn
-                                    data-cy={`${o.key}-disable`}
-                                    value={false}
-                                  >
-                                    DISABLE
-                                  </RadioBtn>
-                                </StyledRadioGroup>
-                              )}
+                                  DISABLE
+                                </RadioBtn>
+                              </StyledRadioGroup>
                             </Col>
                             <Col span={24}>
                               <Description>{o.description}</Description>
@@ -2105,6 +2072,73 @@ class Setting extends Component {
                     </RadioWrapper>
                   </Block>
                 </>
+              )}
+              <EduIf condition={accommodationsData.length}>
+                <SettingsCategoryBlock id="accommodations">
+                  <span>
+                    Accommodations <DollarPremiumSymbol premium={premium} />
+                  </span>
+                  <span
+                    onClick={() =>
+                      this.togglePanel(
+                        'isAccommodationsExpanded',
+                        !isAccommodationsExpanded
+                      )
+                    }
+                  >
+                    <Icon type={isAccommodationsExpanded ? 'minus' : 'plus'} />
+                  </span>
+                </SettingsCategoryBlock>
+              </EduIf>
+              {isAccommodationsExpanded && (
+                <Block id="accessibility" smallSize={isSmallSize}>
+                  <RadioWrapper
+                    disabled={disabled}
+                    style={{
+                      marginTop: '20px',
+                      marginBottom: 0,
+                      flexDirection: 'row',
+                    }}
+                  >
+                    {accommodationsData.map((o) => (
+                      <StyledRow key={o.key} align="middle">
+                        <Col span={6}>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {accommodations[o.key]}
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <StyledRadioCheckboxGroup
+                            disabled={disabled}
+                            onChange={(value) =>
+                              this.updateTestData(o.key)(value.pop())
+                            }
+                            value={[o.value]}
+                          >
+                            <Checkbox data-cy={`${o.key}-enable`} value>
+                              ENABLE
+                            </Checkbox>
+                            <Checkbox
+                              data-cy={`${o.key}-disable`}
+                              value={false}
+                            >
+                              DISABLE
+                            </Checkbox>
+                          </StyledRadioCheckboxGroup>
+                        </Col>
+                        <Col span={24}>
+                          <Description>{o.description}</Description>
+                        </Col>
+                      </StyledRow>
+                    ))}
+                  </RadioWrapper>
+                </Block>
               )}
               <SettingsCategoryBlock id="anti-cheating">
                 <span>

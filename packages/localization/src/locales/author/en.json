@@ -219,13 +219,15 @@
     "singleStudentPasswordReset": "Password can’t be edited as the selected student(s) is/are part of multiple districts. Please ask the admin to reset the password.",
     "multiStudentPasswordReset": "Reset password is not allowed for student(s) belonging to multiple districts. Please ask the admin to reset the password for:"
   },
-  "accessibilitySettings": {
+  "accommodationsSettings": {
     "immersiveReader": {
       "description": "Enable immersive reader to get full screen reading, increased readability with options like focus mode, font spacing, parts of speech identification, syllabification & translation"
     },
     "speechToText": {
-      "description": "Set speech to text to convert speech to text on this test."
-    },
+      "description": "Enable STT to allow student to use their voice to enter text on constructive response question types."
+    }
+  },
+  "accessibilitySettings": {
     "skipAlert": {
       "description": "When enabled, a student can not skip a question without confirmation."
     },

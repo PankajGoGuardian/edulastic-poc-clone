@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Col, Radio } from 'antd'
+import { Col, Radio, Checkbox } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import { EduButton, EduIf, EduThen } from '@edulastic/common'
@@ -28,15 +28,16 @@ import {
   edulasticText,
   pearAssessmentText,
 } from '../../../../common/utils/helpers'
+import { StyledRadioCheckboxGroup } from '../../../TestPage/components/Setting/components/Container/styled'
 
-const { accessibilities, accessibilitySettings } = test
 const {
-  magnifier,
-  scratchPad,
-  skipAlert,
-  immersiveReader,
-  speechToText,
-} = accessibilitySettings
+  accessibilities,
+  accessibilitySettings,
+  accommodations,
+  accommodationsSettings,
+} = test
+const { magnifier, scratchPad, skipAlert } = accessibilitySettings
+const { immersiveReader, speechToText } = accommodationsSettings
 
 const MiscellaneousGroupContainer = ({
   assignmentSettings,
@@ -112,21 +113,22 @@ const MiscellaneousGroupContainer = ({
     },
   ]
 
-  if (canUseImmersiveReader && !isDocBased) {
-    accessibilityData.unshift({
+  const accommodationsData = []
+  if (featuresAvailable.speechToText && !isDocBased) {
+    accommodationsData.unshift({
       key: speechToText.key,
       value: showSpeechToText,
-      description: translate('accessibilitySettings.speechToText.description'),
+      description: translate('accommodationsSettings.speechToText.description'),
       id: speechToText.id,
     })
   }
 
   if (canUseImmersiveReader && !isDocBased) {
-    accessibilityData.unshift({
+    accommodationsData.unshift({
       key: immersiveReader.key,
       value: showImmersiveReader,
       description: translate(
-        'accessibilitySettings.immersiveReader.description'
+        'accommodationsSettings.immersiveReader.description'
       ),
       id: immersiveReader.id,
     })
@@ -250,6 +252,59 @@ const MiscellaneousGroupContainer = ({
       {/* Standards Based Grading Scale */}
 
       <div>
+        <Block smallSize id="accommodations">
+          {!!accommodationsData.length && (
+            <>
+              <Title>Accommodations Settings</Title>
+              {!isDocBased && (
+                <RadioWrapper
+                  disabled={freezeSettings}
+                  style={{ marginTop: '10px', marginBottom: 0 }}
+                >
+                  {accommodationsData.map(({ key, value, description, id }) => (
+                    <SettingContainer id={id}>
+                      <DetailsTooltip
+                        width={tootltipWidth}
+                        title={accommodations[key]}
+                        content={description}
+                        premium
+                        placement="rightTop"
+                      />
+                      <StyledRow
+                        key={accommodations[key]}
+                        style={{ width: '100%' }}
+                      >
+                        <Col span={10}>
+                          <span style={{ fontSize: 12, fontWeight: 600 }}>
+                            {accommodations[key]}
+                          </span>
+                        </Col>
+
+                        <Col span={14}>
+                          <StyledRadioCheckboxGroup
+                            isAssignment
+                            disabled={freezeSettings}
+                            onChange={(valueArray) =>
+                              overRideSettings(key, valueArray.pop())
+                            }
+                            value={[value]}
+                          >
+                            <Checkbox data-cy={`${key}-enable`} value>
+                              ENABLE
+                            </Checkbox>
+                            <Checkbox data-cy={`${key}-disable`} value={false}>
+                              DISABLE
+                            </Checkbox>
+                          </StyledRadioCheckboxGroup>
+                        </Col>
+                      </StyledRow>
+                    </SettingContainer>
+                  ))}
+                </RadioWrapper>
+              )}
+            </>
+          )}
+        </Block>
         <Block smallSize id="accessibility">
           {!!accessibilityData.length && (
             <>

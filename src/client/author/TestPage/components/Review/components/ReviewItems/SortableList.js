@@ -57,17 +57,15 @@ const rightContent = (
           deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         }
       >
-        <span
+        <InfoDiv
           onClick={(e) => {
             e.stopPropagation()
             setShowAutoSelectScoreChangeModal(group._id)
           }}
         >
-          <InfoDiv>
-            <Text>TOTAL POINTS</Text>
-            <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
-          </InfoDiv>
-        </span>
+          <Text>TOTAL POINTS</Text>
+          <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
+        </InfoDiv>
       </EduIf>
     </>
   )

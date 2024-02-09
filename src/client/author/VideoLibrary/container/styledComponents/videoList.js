@@ -41,6 +41,7 @@ export const VideoTitleText = styled.span`
 export const VideoCard = styled(Card)`
   border: none;
   box-shadow: none;
+  margin-bottom: 4px;
   .ant-card-body {
     padding: 0px;
     height: ${`${180 + 68.5 + 10}px`};

@@ -17,7 +17,7 @@ import {
   extractVideoId,
   isValidVideoUrl,
 } from '../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
-import { navigationState } from '../../src/constants/navigation'
+
 import appConfig from '../../../../app-config'
 import { setFilterInSession } from '../../../common/utils/helpers'
 import { setDefaultInterests } from '../../dataUtils'
@@ -30,9 +30,9 @@ const useVideoQuizLibrary = ({
   setYoutubeThumbnail,
   ytThumbnail,
   getYoutubeThumbnail,
-  history,
+
   scrollerRef,
-  allowedToCreateVideoQuiz,
+
   receiveTestsRequest,
   testList,
   isTestLibraryLoading,
@@ -74,15 +74,6 @@ const useVideoQuizLibrary = ({
       setYoutubeThumbnail('')
     }
   }, [])
-
-  useEffect(() => {
-    if (!allowedToCreateVideoQuiz) {
-      history.push({
-        pathname: '/author/subscription',
-        state: { view: navigationState.SUBSCRIPTION.view.ADDON },
-      })
-    }
-  }, [allowedToCreateVideoQuiz])
 
   const onValidUrl = (videoUrl, thumbnail) => {
     console.log({ location })
@@ -239,10 +230,6 @@ const useVideoQuizLibrary = ({
   useEffect(() => {
     let search = {}
     setVideos([])
-    const sortState = {
-      sortBy: 'popularity',
-      sortDir: 'desc',
-    }
 
     if (currentTab === '1') {
       search = getSearchBody({
@@ -254,6 +241,10 @@ const useVideoQuizLibrary = ({
         searchString: linkValue ? [linkValue] : [],
         testCategories,
       })
+      const sortState = {
+        sortBy: 'popularity',
+        sortDir: 'desc',
+      }
       setTestLibrarySearchFilter({
         search,
         sort: sortState,
@@ -282,6 +273,10 @@ const useVideoQuizLibrary = ({
         vqCollection: [],
         testCategories,
       })
+      const sortState = {
+        sortBy: 'recency',
+        sortDir: 'desc',
+      }
       const searchFilter = {
         search,
         sort: sortState,

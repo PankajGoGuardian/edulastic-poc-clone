@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Tooltip } from 'antd'
-import { FlexContainer } from '@edulastic/common'
+import { EduIf, FlexContainer } from '@edulastic/common'
 
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router'
 import { parseISO8601Duration } from '../../../../AssessmentCreate/components/CreateVideoQuiz/utils'
 import {
   ChannelTitleText,
@@ -11,6 +14,8 @@ import {
   VideoThumbnail,
   VideoTitleText,
 } from '../../styledComponents/videoList'
+import { allowedToCreateVideoQuizSelector } from '../../../../src/selectors/user'
+import BuyAISuiteAlertModal from '../../../../../common/components/BuyAISuiteAlertModal'
 
 /**
  * VideoTile component
@@ -21,51 +26,79 @@ import {
  * @param {function} handleVideoClick The onClick handler for the VideoCard.
  *
  */
-const VideoTile = ({ video, handleVideoClick }) => {
+const VideoTile = ({
+  video,
+  handleVideoClick,
+  allowedToCreateVideoQuiz,
+  history,
+}) => {
+  const [isAddOnAlertVisible, setIsAddOnAlertVisible] = useState(false)
   const handleOnClick = () => {
-    handleVideoClick(`https://www.youtube.com/watch?v=${video?.id?.videoId}`)
+    if (allowedToCreateVideoQuiz) {
+      handleVideoClick(`https://www.youtube.com/watch?v=${video?.id?.videoId}`)
+    } else {
+      setIsAddOnAlertVisible((prevState) => !prevState)
+    }
   }
+  const videoDuration = parseISO8601Duration(
+    video?.videoDetails?.contentDetails?.duration
+  )
+
   return (
-    <VideoCard bordered={false} hoverable onClick={handleOnClick}>
-      <VideoThumbnail
-        imgSrc={video?.snippet?.thumbnails?.medium?.url}
-        alt={video?.snippet?.title}
-        width="100%"
-        height="180px"
-      >
-        <FlexContainer
+    <>
+      <VideoCard bordered={false} hoverable onClick={handleOnClick}>
+        <VideoThumbnail
+          imgSrc={video?.snippet?.thumbnails?.medium?.url}
+          alt={video?.snippet?.title}
           width="100%"
-          height="100%"
-          justifyContent="flex-end"
-          alignItems="flex-end"
+          height="180px"
         >
-          <VideoDuration>
-            {parseISO8601Duration(
-              video?.videoDetails?.contentDetails?.duration
-            )}
-          </VideoDuration>
-        </FlexContainer>
-      </VideoThumbnail>
-      <VideoTextWrapper>
-        <Tooltip
-          mouseEnterDelay={1}
-          mouseLeaveDelay={1}
-          title={video?.snippet?.title}
-          placement="bottomLeft"
-        >
-          <VideoTitleText>{video?.snippet?.title}</VideoTitleText>
-        </Tooltip>
-        <Tooltip
-          mouseEnterDelay={1}
-          mouseLeaveDelay={1}
-          title={video?.snippet?.channelTitle}
-          placement="bottomLeft"
-        >
-          <ChannelTitleText>{video?.snippet?.channelTitle}</ChannelTitleText>
-        </Tooltip>
-      </VideoTextWrapper>
-    </VideoCard>
+          <EduIf condition={videoDuration}>
+            <FlexContainer
+              width="100%"
+              height="100%"
+              justifyContent="flex-end"
+              alignItems="flex-end"
+            >
+              <VideoDuration>{videoDuration}</VideoDuration>
+            </FlexContainer>
+          </EduIf>
+        </VideoThumbnail>
+        <VideoTextWrapper>
+          <Tooltip
+            mouseEnterDelay={1}
+            mouseLeaveDelay={1}
+            title={video?.snippet?.title}
+            placement="bottomLeft"
+          >
+            <VideoTitleText>{video?.snippet?.title}</VideoTitleText>
+          </Tooltip>
+          <Tooltip
+            mouseEnterDelay={1}
+            mouseLeaveDelay={1}
+            title={video?.snippet?.channelTitle}
+            placement="bottomLeft"
+          >
+            <ChannelTitleText>{video?.snippet?.channelTitle}</ChannelTitleText>
+          </Tooltip>
+        </VideoTextWrapper>
+      </VideoCard>
+      <BuyAISuiteAlertModal
+        isVisible={isAddOnAlertVisible}
+        setAISuiteAlertModalVisibility={setIsAddOnAlertVisible}
+        history={history}
+        isClosable={false}
+        stayOnSamePage
+      />
+    </>
   )
 }
 
-export default VideoTile
+const enhanced = compose(
+  withRouter,
+  connect((state) => ({
+    allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
+  }))
+)
+
+export default enhanced(VideoTile)

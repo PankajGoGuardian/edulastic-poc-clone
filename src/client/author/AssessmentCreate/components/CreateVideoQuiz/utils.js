@@ -41,7 +41,7 @@ const parseISO8601Duration = (durationString) => {
       minute ? minute.padStart(2, '0') : '00'
     }:${second ? second.padStart(2, '0') : '00'}`
   }
-  return '--:--'
+  return ''
 }
 
 const trimTextToGivenLength = (text = '', textLength) => {
@@ -81,7 +81,13 @@ const getSearchBody = ({
 
 const getVideoDetailsFromTests = (tests = []) => {
   return tests.map(
-    ({ thumbnail, description, title, videoUrl, videoDuration }) => {
+    ({
+      thumbnail,
+      description,
+      title = 'Untitled',
+      videoUrl,
+      videoDuration,
+    }) => {
       const videoId = extractVideoId(videoUrl)
       return {
         id: {
@@ -104,7 +110,7 @@ const getVideoDetailsFromTests = (tests = []) => {
           etag: 'WUOcy6aI7a2pu1cnqiw2y2Yo4Do',
           id: videoId,
           contentDetails: {
-            duration: videoDuration,
+            duration: videoDuration || '',
           },
         },
       }

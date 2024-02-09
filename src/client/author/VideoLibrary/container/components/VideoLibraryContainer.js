@@ -15,7 +15,6 @@ import {
   setYoutubeThumbnailAction,
 } from '../../../TestPage/ducks'
 import {
-  allowedToCreateVideoQuizSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
@@ -47,7 +46,7 @@ const VideoLibrary = ({
   isThumbnailLoading,
   creatingAssessment,
   scrollerRef,
-  allowedToCreateVideoQuiz,
+
   receiveTestsRequest,
   testList,
   isTestLibraryLoading,
@@ -89,7 +88,7 @@ const VideoLibrary = ({
     interestedGrades,
     interestedSubjects,
     scrollerRef,
-    allowedToCreateVideoQuiz,
+
     receiveTestsRequest,
     testList,
     isTestLibraryLoading,
@@ -170,7 +169,6 @@ const enhance = compose(
       showVQCount: showVQCountSelector(state),
       vqQuotaForDistrict: vqQuotaForDistrictSelector(state),
       vqUsageCount: vqUsageCountSelector(state),
-      allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
       testList: getTestsSelector(state),
       isTestLibraryLoading: getTestsLoadingSelector(state),
       userId: get(state, 'user.user._id', false),

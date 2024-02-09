@@ -23,7 +23,7 @@ import {
   notification,
   EduIf,
 } from '@edulastic/common'
-import { IconList, IconTile, IconTestBank } from '@edulastic/icons'
+import { IconList, IconTile, IconTestBank, IconFilter } from '@edulastic/icons'
 import { white, greyLight1, greyThemeLight } from '@edulastic/colors'
 import {
   storeInLocalStorage,
@@ -32,6 +32,7 @@ import {
 import { libraryFilters, sortOptions } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
+
 import {
   ScrollBox,
   Container,
@@ -50,7 +51,6 @@ import {
   StyledCountText,
   ItemsMenu,
   MobileFilterModal,
-  NoDataMessageContainer,
 } from './styled'
 
 import CardWrapper from '../CardWrapper/CardWrapper'
@@ -126,6 +126,7 @@ import {
   getInterestedStandards,
   getDefaultInterests,
   setDefaultInterests,
+  getNoDataTextForFilter,
 } from '../../../dataUtils'
 import {
   updateDefaultGradesAction,
@@ -143,7 +144,6 @@ import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
-import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import ApproveConfirmModal from '../../../ItemList/components/ApproveConfirmModal'
 import {
   getFilterFromSession,
@@ -152,7 +152,11 @@ import {
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest'
 import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
-import { NoDataContainer } from '../../../Reports/common/styled'
+import {
+  NoDataContainer,
+  StyledEduButton,
+} from '../../../Reports/common/styled'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -978,6 +982,7 @@ class TestList extends Component {
       userId,
       mode,
       interestedCurriculums,
+      testFilters,
       playlist = {},
     } = this.props
     const { blockstyle, selectedTests, markedTests } = this.state
@@ -988,7 +993,6 @@ class TestList extends Component {
         title: module.title,
         data: [...module.data.map((it) => it.contentId)],
       })) || []
-
     const testIds = tests?.map((test) => test._id) || []
     testIds.forEach((testId) => {
       for (const obj of modulesMap) {
@@ -1002,11 +1006,13 @@ class TestList extends Component {
     if (tests.length < 1) {
       const { SEARCH_NO_DATA_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
       return (
-        <NoDataContainer>
+        <NoDataContainer margin="190px">
           <FlexContainer flexDirection="column" alignItems="center">
-            <NoDataMessageContainer>
-              No test available for the search criteria
-            </NoDataMessageContainer>
+            <NoDataNotification
+              wrapperStyle={{ minHeight: '15vh' }}
+              style={{ width: 'auto', height: 'auto' }}
+              heading={getNoDataTextForFilter(testFilters, 'test')}
+            />
             <EduAIQuiz displayScreen={SEARCH_NO_DATA_SCREEN} />
           </FlexContainer>
         </NoDataContainer>
@@ -1284,10 +1290,15 @@ class TestList extends Component {
     }))
 
     const renderFilterIcon = () => (
-      <FilterToggleBtn
-        isShowFilter={isShowFilter}
-        toggleFilter={this.toggleFilter}
-      />
+      <StyledEduButton
+        data-cy="filter"
+        isGhost={!isShowFilter}
+        onClick={this.toggleFilter}
+        style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
+      >
+        <IconFilter width={15} height={15} />
+        FILTERS
+      </StyledEduButton>
     )
 
     const { CREATE_TEST_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
@@ -1473,10 +1484,10 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main isShowFilter={isShowFilter}>
-              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
+                {renderFilterIcon()}
                 <PaginationInfo>
-                  <span>{count}</span> TESTS FOUND
+                  <span>{count}</span> TESTS MATCH
                 </PaginationInfo>
 
                 <HeaderFilter

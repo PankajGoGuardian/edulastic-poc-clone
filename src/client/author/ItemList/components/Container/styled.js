@@ -132,7 +132,7 @@ export const PaginationContainer = styled.div`
 `
 
 export const NoDataMessageContainer = styled.div`
-  max-width: 220px;
+  max-width: ${(props) => props.maxWidth || '220px'};
   text-align: center;
   font-size: 20px;
 `

@@ -29,7 +29,8 @@ import {
 import EduAIQuiz from '../../../AssessmentCreate/components/CreateAITest/index'
 import { CREATE_AI_TEST_DISPLAY_SCREENS } from '../../../AssessmentCreate/components/CreateAITest/constants'
 import { NoDataContainer } from '../../../Reports/common/styled'
-import { NoDataMessageContainer } from './styled'
+import { getNoDataTextForFilter } from '../../../dataUtils'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 
 const ItemListContainer = ({
   items,
@@ -51,11 +52,13 @@ const ItemListContainer = ({
   const { SEARCH_NO_DATA_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
   if (!items.length) {
     return (
-      <NoDataContainer>
+      <NoDataContainer margin="190px">
         <FlexContainer flexDirection="column" alignItems="center">
-          <NoDataMessageContainer>
-            No item available for the search criteria
-          </NoDataMessageContainer>
+          <NoDataNotification
+            wrapperStyle={{ minHeight: '15vh' }}
+            style={{ width: 'auto', height: 'auto' }}
+            heading={getNoDataTextForFilter(search, 'item')}
+          />
           <EduAIQuiz retainItems displayScreen={SEARCH_NO_DATA_SCREEN} />
         </FlexContainer>
       </NoDataContainer>

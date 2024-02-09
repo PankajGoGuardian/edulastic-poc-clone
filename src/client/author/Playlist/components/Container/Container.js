@@ -1,7 +1,7 @@
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { greyLight1, greyThemeLight } from '@edulastic/colors'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
-import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
+import { IconFilter, IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
 import { debounce, get, pick, isEqual, isEmpty } from 'lodash'
@@ -81,17 +81,21 @@ import {
 } from '../../ducks'
 import Actions from '../../../ItemList/components/Actions'
 import SelectCollectionModal from '../../../ItemList/components/Actions/SelectCollection'
-import { getDefaultInterests, setDefaultInterests } from '../../../dataUtils'
+import {
+  getDefaultInterests,
+  getNoDataTextForFilter,
+  setDefaultInterests,
+} from '../../../dataUtils'
 import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
-import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import PlaylistAvailableModal from '../../playListAvailable/playListAvailableModal'
 import {
   setFilterInSession,
   getFilterFromSession,
 } from '../../../../common/utils/helpers'
+import { StyledEduButton } from '../../../Reports/common/styled'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -483,6 +487,7 @@ class TestList extends Component {
       match,
       playlists,
       selectedPlayLists,
+      playListFilters,
     } = this.props
     const { blockStyle } = this.state
     if (loading) {
@@ -491,7 +496,12 @@ class TestList extends Component {
     if (playlists.length < 1) {
       return (
         <NoDataNotification
-          heading="Playlists not available"
+          style={{ width: 'auto' }}
+          heading={getNoDataTextForFilter(
+            playListFilters,
+            'playlist',
+            'Playlists not available'
+          )}
           description={`There are no playlists found for this filter. You can create new playlist by clicking the "NEW PLAYLIST" button.`}
         />
       )
@@ -612,10 +622,15 @@ class TestList extends Component {
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
-      <FilterToggleBtn
-        isShowFilter={isShowFilter}
-        toggleFilter={this.toggleFilter}
-      />
+      <StyledEduButton
+        data-cy="filter"
+        isGhost={!isShowFilter}
+        onClick={this.toggleFilter}
+        style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
+      >
+        <IconFilter width={15} height={15} />
+        FILTERS
+      </StyledEduButton>
     )
 
     const sparkDescription = dashboardTiles?.find(
@@ -731,10 +746,10 @@ class TestList extends Component {
               )}
             </Filter>
             <Main isShowFilter={isShowFilter}>
-              {renderFilterIcon()}
               <ItemsMenu justifyContent="space-between">
+                {renderFilterIcon()}
                 <PaginationInfo>
-                  <span>{count}</span> PLAYLISTS FOUND
+                  <span>{count}</span> PLAYLISTS MATCH
                 </PaginationInfo>
                 <HeaderFilter
                   search={playListFilters}

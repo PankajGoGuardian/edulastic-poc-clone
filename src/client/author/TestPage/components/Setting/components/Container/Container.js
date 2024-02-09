@@ -5,7 +5,16 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject, pick, omit } from 'lodash'
 import Styled from 'styled-components'
-import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
+import {
+  Anchor,
+  Col,
+  Icon,
+  InputNumber,
+  Row,
+  Select,
+  Tooltip,
+  Checkbox,
+} from 'antd'
 import {
   blueBorder,
   green,
@@ -90,6 +99,7 @@ import {
   Title,
   SavedSettingsContainerStyled,
   SubHeaderContainer,
+  StyledRadioCheckboxGroup,
 } from './styled'
 import PerformanceBand from './PerformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
@@ -163,6 +173,7 @@ const {
   scratchPad,
   skipAlert,
   immersiveReader,
+  speechToText,
 } = accessibilitySettings
 
 const { Option } = Select
@@ -879,6 +890,7 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      showSpeechToText,
     } = entity
 
     const showRefMaterial = !isDocBased
@@ -1005,11 +1017,24 @@ class Setting extends Component {
 
     if (canUseImmersiveReader && !isDocBased) {
       accessibilityData.unshift({
+        key: speechToText.key,
+        value: showSpeechToText,
+        description: i18translate(
+          'accessibilitySettings.speechToText.description'
+        ),
+        isCheckbox: true,
+        id: speechToText.id,
+      })
+    }
+
+    if (canUseImmersiveReader && !isDocBased) {
+      accessibilityData.unshift({
         key: immersiveReader.key,
         value: showImmersiveReader,
         description: i18translate(
           'accessibilitySettings.immersiveReader.description'
         ),
+        isCheckbox: true,
         id: immersiveReader.id,
       })
     }
@@ -1053,6 +1078,8 @@ class Setting extends Component {
       !isCurator &&
       (testStatus === 'draft' || editEnable)
     const disabled = !owner || !isEditable
+
+    console.log('disable', disabled, features)
 
     const performanceBand = pick(
       multiFind(
@@ -1952,29 +1979,57 @@ class Setting extends Component {
                               </span>
                             </Col>
                             <Col span={12}>
-                              <StyledRadioGroup
-                                disabled={
-                                  disabled ||
-                                  (o.key === immersiveReader.key
-                                    ? !canUseImmersiveReader
-                                    : !features[o.key])
-                                }
-                                onChange={(e) =>
-                                  this.updateTestData(o.key)(e.target.value)
-                                }
-                                value={o.value}
-                                style={{ flexDirection: 'row', height: '18px' }}
-                              >
-                                <RadioBtn data-cy={`${o.key}-enable`} value>
-                                  ENABLE
-                                </RadioBtn>
-                                <RadioBtn
-                                  data-cy={`${o.key}-disable`}
-                                  value={false}
+                              {o.isCheckbox ? (
+                                <StyledRadioCheckboxGroup
+                                  disabled={
+                                    disabled ||
+                                    (o.key === immersiveReader.key
+                                      ? !canUseImmersiveReader
+                                      : !features[o.key])
+                                  }
+                                  onChange={(value) =>
+                                    this.updateTestData(o.key)(value.pop())
+                                  }
+                                  value={[o.value]}
                                 >
-                                  DISABLE
-                                </RadioBtn>
-                              </StyledRadioGroup>
+                                  <Checkbox data-cy={`${o.key}-enable`} value>
+                                    ENABLE
+                                  </Checkbox>
+                                  <Checkbox
+                                    data-cy={`${o.key}-disable`}
+                                    value={false}
+                                  >
+                                    DISABLE
+                                  </Checkbox>
+                                </StyledRadioCheckboxGroup>
+                              ) : (
+                                <StyledRadioGroup
+                                  disabled={
+                                    disabled ||
+                                    (o.key === immersiveReader.key
+                                      ? !canUseImmersiveReader
+                                      : !features[o.key])
+                                  }
+                                  onChange={(e) =>
+                                    this.updateTestData(o.key)(e.target.value)
+                                  }
+                                  value={o.value}
+                                  style={{
+                                    flexDirection: 'row',
+                                    height: '18px',
+                                  }}
+                                >
+                                  <RadioBtn data-cy={`${o.key}-enable`} value>
+                                    ENABLE
+                                  </RadioBtn>
+                                  <RadioBtn
+                                    data-cy={`${o.key}-disable`}
+                                    value={false}
+                                  >
+                                    DISABLE
+                                  </RadioBtn>
+                                </StyledRadioGroup>
+                              )}
                             </Col>
                             <Col span={24}>
                               <Description>{o.description}</Description>

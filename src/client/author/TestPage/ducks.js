@@ -2050,6 +2050,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     allowTeacherRedirect,
     showTtsForPassages,
     showImmersiveReader: entity.showImmersiveReader,
+    showSpeechToText: entity.showSpeechToText,
     vqPreventSkipping: entity.vqPreventSkipping,
   }
 

@@ -1,4 +1,5 @@
 const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
+const SHOW_SPEECH_TO_TEXT = 'showSpeechToText'
 const TEST_CONTENT_VISIBILITY = 'testContentVisibility'
 module.exports = {
   settingsList: [
@@ -74,6 +75,7 @@ module.exports = {
       id: 'skip-alert',
     },
     immersiveReader: { key: SHOW_IMMERSIVE_READER, id: 'immersive-reader' },
+    speechToText: { key: SHOW_SPEECH_TO_TEXT, id: 'speech-to-text' },
   },
   settingCategoriesFeatureMap: {
     'test-type': 'selectTestType',
@@ -178,6 +180,7 @@ module.exports = {
     enableScratchpad: 'SCRATCHPAD',
     enableSkipAlert: 'SHOW SKIP ALERT TO STUDENT',
     showImmersiveReader: 'IMMERSIVE READER',
+    showSpeechToText: 'SPEECH TO TEXT',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },

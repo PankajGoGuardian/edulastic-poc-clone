@@ -270,6 +270,10 @@ const getSettings = (
     ? test.showImmersiveReader
     : assignmentSettings.showImmersiveReader
 
+  const showSpeechToText = isTestPreview
+    ? test.showSpeechToText
+    : assignmentSettings.showSpeechToText
+
   const vqPreventSkipping = isTestPreview
     ? test.vqPreventSkipping
     : assignmentSettings.vqPreventSkipping
@@ -309,6 +313,7 @@ const getSettings = (
     penaltyOnUsingHints,
     showTtsForPassages,
     showImmersiveReader,
+    showSpeechToText,
     vqPreventSkipping,
   }
 }

@@ -223,6 +223,9 @@
     "immersiveReader": {
       "description": "Enable immersive reader to get full screen reading, increased readability with options like focus mode, font spacing, parts of speech identification, syllabification & translation"
     },
+    "speechToText": {
+      "description": "Set speech to text to convert speech to text on this test."
+    },
     "skipAlert": {
       "description": "When enabled, a student can not skip a question without confirmation."
     },

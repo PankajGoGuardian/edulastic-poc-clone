@@ -13,7 +13,16 @@ import {
   backgroundGrey,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Col,
+  Input,
+  Radio,
+  Select,
+  Table,
+} from 'antd'
 import styled from 'styled-components'
 import { SavedSettingsContainer } from '../../../../../AssignTest/components/Container/styled'
 
@@ -152,7 +161,28 @@ export const Description = styled.div`
   margin-top: ${({ marginTop }) => marginTop || '10px'};
   margin-bottom: ${({ marginTop }) => marginTop};
 `
-
+export const StyledRadioCheckboxGroup = styled(Checkbox.Group)`
+  .ant-checkbox {
+    .ant-checkbox-inner {
+      border-radius: 50%;
+    }
+    &.ant-checkbox-checked .ant-checkbox-inner {
+      border: 1px solid #1890ff;
+      background-color: #ffffff;
+      &::after {
+        transform: none;
+        background-color: #1890ff;
+        width: 12px;
+        height: 12px;
+        top: 1px;
+        left: 1px;
+        border: none;
+        border-radius: 50%;
+        scale: 0.7;
+      }
+    }
+  }
+`
 export const StyledRadioGroup = styled(Radio.Group)`
   display: flex;
   flex-direction: ${(props) => (props.isHorizontal ? 'row' : 'column')};

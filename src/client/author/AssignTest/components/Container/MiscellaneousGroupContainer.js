@@ -35,6 +35,7 @@ const {
   scratchPad,
   skipAlert,
   immersiveReader,
+  speechToText,
 } = accessibilitySettings
 
 const MiscellaneousGroupContainer = ({
@@ -62,6 +63,7 @@ const MiscellaneousGroupContainer = ({
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
     showImmersiveReader = !!testSettings.showImmersiveReader,
+    showSpeechToText = !!testSettings.showSpeechToText,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -109,6 +111,15 @@ const MiscellaneousGroupContainer = ({
       id: skipAlert.id,
     },
   ]
+
+  if (canUseImmersiveReader && !isDocBased) {
+    accessibilityData.unshift({
+      key: speechToText.key,
+      value: showSpeechToText,
+      description: translate('accessibilitySettings.speechToText.description'),
+      id: speechToText.id,
+    })
+  }
 
   if (canUseImmersiveReader && !isDocBased) {
     accessibilityData.unshift({

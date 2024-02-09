@@ -562,7 +562,13 @@ function* receiveClassQuestionSaga({ payload }) {
       (state) => state.author_classboard_testActivity?.data?.test?.isDocBased
     )
     if (isDocBased) {
-      const responseGroupedByUta = groupBy(feedbackResponse, 'testActivityId')
+      const feedbackResponseWithAnnotations = yield feedbackResponse.filter(
+        (uqa) => uqa?.scratchPad?.docAnnotationsUsed
+      )
+      const responseGroupedByUta = groupBy(
+        feedbackResponseWithAnnotations,
+        'testActivityId'
+      )
 
       yield all(
         Object.keys(responseGroupedByUta).map((utaId) => {

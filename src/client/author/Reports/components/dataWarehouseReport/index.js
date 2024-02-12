@@ -8,6 +8,7 @@ import { EduButton, EduIf, FlexContainer } from '@edulastic/common'
 import { IconUpload } from '@edulastic/icons'
 import { withRouter } from 'react-router'
 import { segmentApi } from '@edulastic/api'
+import { roleuser } from '@edulastic/constants'
 import DataWarehouseUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 import { SubHeader } from '../../common/components/Header'
 import { StyledContainer } from '../../common/styled'
@@ -22,6 +23,7 @@ import {
   isDataOpsUser as checkIsDataOpsUser,
   getOrgDataSelector,
   getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 
 import {
@@ -42,6 +44,7 @@ import {
 } from '../../../sharedDucks/dataWarehouse'
 import { navigationState } from '../../../src/constants/navigation'
 import { FloatingAction } from '../StandardReport/SellContent/FloatingAction'
+import DSPageForDGA from './common/components/DSPageForDGA'
 
 const TabPane = Tabs.TabPane
 const IMPORTS_HISTORY_TAB = {
@@ -63,6 +66,7 @@ const DataWarehouseReports = ({
   resetUploadResponse,
   isDataOpsUser,
   terms,
+  userRole,
   features,
   history,
   uploadResponse,
@@ -150,6 +154,11 @@ const DataWarehouseReports = ({
     triggerSegmentEventsOnLanding()
   }, [])
 
+  const ReportCardsComponent =
+    userRole === roleuser.DISTRICT_GROUP_ADMIN
+      ? DSPageForDGA
+      : DataWarehoureReportCardsWrapper
+
   return (
     <>
       <FlexContainer justifyContent="space-between" marginBottom="10px">
@@ -169,9 +178,10 @@ const DataWarehouseReports = ({
           >
             <TabPane tab={REPORTS_TAB.label} key={REPORTS_TAB.key}>
               <UpgradeBanner />
-              <DataWarehoureReportCardsWrapper
+              <ReportCardsComponent
                 allowAccess={allowAccess}
                 loc={loc}
+                hasCustomReportAccess={features.customReport}
               />
             </TabPane>
             <TabPane
@@ -197,9 +207,10 @@ const DataWarehouseReports = ({
         </EduIf>
         <EduIf condition={!isDataOpsUser}>
           <UpgradeBanner />
-          <DataWarehoureReportCardsWrapper
+          <ReportCardsComponent
             allowAccess={allowAccess}
             loc={loc}
+            hasCustomReportAccess={features.customReport}
           />
         </EduIf>
         <DataWarehouseUploadModal
@@ -219,6 +230,7 @@ const withConnect = connect(
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
     isDataOpsUser: checkIsDataOpsUser(state),
+    userRole: getUserRole(state),
     features: getUserFeatures(state),
     terms: get(getOrgDataSelector(state), 'terms', []),
     uploadResponse: getTestDataFileUploadResponse(state),

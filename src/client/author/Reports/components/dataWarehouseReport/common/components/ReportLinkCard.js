@@ -1,11 +1,17 @@
-import { Col, Icon, Row, Tag } from 'antd'
+import { Col, Row, Tag } from 'antd'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import styled from 'styled-components'
-import { lightGrey1, themeColor } from '@edulastic/colors'
 import { EduIf } from '@edulastic/common'
+import { skippedBgColor } from '@edulastic/colors'
 import { navigationState } from '../../../../../src/constants/navigation'
 import { CustomStyledCard, HeaderContainer } from '../../../../common/styled'
+import {
+  ImageContainer,
+  StyledIcon,
+  TagContainer,
+  TextContainer,
+  TitleContainer,
+} from './StyledComponents'
 
 const ReportLinkCard = ({
   IconThumbnail,
@@ -48,12 +54,17 @@ const ReportLinkCard = ({
           </TitleContainer>
         </HeaderContainer>
         <Row gutter={16}>
-          <TextContainer span={12}>
+          <TextContainer span={12} $height="145px">
             <p>{description}</p>
             <StyledIcon type="right" theme="outlined" />
           </TextContainer>
           <Col span={12}>
-            <ImageContainer type="flex" justify="center" align="middle">
+            <ImageContainer
+              type="flex"
+              justify="center"
+              align="middle"
+              $color={skippedBgColor}
+            >
               <Col>
                 <IconThumbnail />
               </Col>
@@ -64,44 +75,5 @@ const ReportLinkCard = ({
     </Col>
   )
 }
-
-const ImageContainer = styled(Row)`
-  background: #f5f5f5;
-  border-radius: 16px;
-  height: 145px;
-`
-const TextContainer = styled(Col)`
-  position: relative;
-  padding: 6px 0px;
-  height: 145px;
-`
-export const StyledIcon = styled(Icon)`
-  position: absolute;
-  bottom: 0;
-  font-size: 12px;
-  font-weight: bold;
-  background-color: ${lightGrey1};
-  padding: 3px;
-  border-radius: 6px;
-  color: ${themeColor};
-`
-
-export const TagContainer = styled.span`
-  .ant-tag {
-    position: relative;
-    top: -8px;
-    font-weight: bold;
-    margin: 0px;
-    border: 1px solid ${themeColor};
-    background: transparent;
-    color: ${themeColor};
-    border-radius: 50px;
-    font-size: 10px;
-  }
-`
-
-export const TitleContainer = styled(Row)`
-  width: 100%;
-`
 
 export default withRouter(ReportLinkCard)

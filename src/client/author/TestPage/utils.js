@@ -173,10 +173,11 @@ export const createGroupSummary = (test) => {
         })) || []
     }
     if (
-      (!isAutoSelect && isLimitedDeliveryType && itemGroup.deliverItemsCount) ||
+      (isLimitedDeliveryType && itemGroup.deliverItemsCount) ||
       isAutoSelect
     ) {
-      summaryData.totalPoints = itemGroup.deliverItemsCount
+      summaryData.totalPoints =
+        itemGroup.deliverItemsCount * (itemGroup.itemsDefaultMaxScore || 1)
       summaryData.totalItems = itemGroup.deliverItemsCount
       summaryData.totalQuestions = itemGroup.deliverItemsCount
     }

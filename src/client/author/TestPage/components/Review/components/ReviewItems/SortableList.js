@@ -1,10 +1,10 @@
 import { Collapse, Tooltip } from 'antd'
-import { IconRedo, IconSectionsCalculator } from '@edulastic/icons'
+import { IconReloadCircle, IconSectionsCalculator } from '@edulastic/icons'
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 import { darkGrey5 } from '@edulastic/colors'
-import { EduButton, EduIf } from '@edulastic/common'
+import { EduIf } from '@edulastic/common'
 import {
   ITEM_GROUP_DELIVERY_TYPES,
   ITEM_GROUP_TYPES,
@@ -17,6 +17,7 @@ const { Panel } = Collapse
 
 const rightContent = (
   group,
+  isEditable,
   hasSections = false,
   refreshGroupItems,
   setShowAutoSelectScoreChangeModal,
@@ -37,16 +38,16 @@ const rightContent = (
         when any calc is selected for a section, the calc Icon and tooltip 
         will be displayed. Add a condition hasSections for the same. 
       */}
-      <EduIf condition={type === ITEM_GROUP_TYPES.AUTOSELECT}>
+      <EduIf condition={type === ITEM_GROUP_TYPES.AUTOSELECT && isEditable}>
         <InfoDiv>
-          <EduButton
+          <span
             onClick={(e) => {
               e.stopPropagation()
               refreshGroupItems()
             }}
           >
-            <IconRedo />
-          </EduButton>
+            <IconReloadCircle />
+          </span>
         </InfoDiv>
       </EduIf>
       {hasSections && settings?.calcTypes?.length > 0 && (
@@ -195,6 +196,7 @@ export default SortableContainer(
                 key={count}
                 extra={rightContent(
                   group,
+                  isEditable,
                   hasSections,
                   () => refreshGroupItems(count),
                   setShowAutoSelectScoreChangeModal,

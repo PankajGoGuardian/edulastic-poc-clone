@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
-import { debounce } from 'lodash'
+import { debounce, keyBy } from 'lodash'
 
 // components & constants
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
@@ -87,17 +87,15 @@ const SelectAssessmentsForMultiSchoolYear = ({
   }, [testTermIds, subjects, grades])
   // build dropdown data
 
-  const getTerm = (_termId) => schoolYears.find((sy) => sy.key === _termId)
+  const termsMap = keyBy(schoolYears, 'key')
   const dropdownData = useMemo(() => {
     const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
-    return tests.map((item) => {
-      const term = isLongitudinalReport
-        ? getTerm(item?.termId)
-        : getTerm(testTermIds)
+    return tests.map((test) => {
+      const term = termsMap[test.termId ?? termId]
       return {
-        key: `${!item.isExternal ? item._id : item.testName}_${term.key}`,
-        title: `${item.title}${
-          isLongitudinalReport ? ` [ SY:${term?.title || ''} ]` : ''
+        key: `${!test.isExternal ? test._id : test.testName}_${term.key}`,
+        title: `${test.title}${
+          isLongitudinalReport ? ` [ SY:${term.title || ''} ]` : ''
         } `,
         disabled: true,
       }

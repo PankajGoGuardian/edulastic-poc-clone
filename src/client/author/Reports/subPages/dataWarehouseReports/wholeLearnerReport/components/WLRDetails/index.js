@@ -185,7 +185,7 @@ const WLRDetails = ({
           tab={item.label}
           key={item.key}
         >
-          <EduIf condition={item?.disabledInfo.disabled}>
+          <EduIf condition={item?.disabledInfo?.disabled}>
             <EduThen>
               <NoDataContainer>
                 <p>{DISABLE_MSG}</p>

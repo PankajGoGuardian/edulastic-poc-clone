@@ -161,6 +161,7 @@ const GroupItems = ({
               ...currentGroupDetails,
               ...omit(NewGroupAutoselect, ['index', 'groupName']),
             }
+      delete updatedGroupData.deliverItemsCount
     } else if (fieldName === 'deliverItemsCount') {
       if (value < 0) {
         notification({
@@ -175,12 +176,23 @@ const GroupItems = ({
         notification({ messageKey: 'totalItemsToBeDelivered' })
         return
       }
+      if (updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT && value > 20) {
+        notification({
+          messageKey: 'totalItemsToBeDeliveredCannotBeMOreThan20',
+        })
+        return
+      }
       if (
         updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT &&
-        value > 100
+        updatedGroupData.deliveryType ===
+          ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        value >=
+          (updatedGroupData.autoSelectItemsCount ||
+            updatedGroupData.items?.length ||
+            2)
       ) {
         notification({
-          messageKey: 'totalItemsToBeDeliveredCannotBeMOreThan100',
+          messageKey: 'totalItemsToBeDelivered',
         })
         return
       }
@@ -208,11 +220,38 @@ const GroupItems = ({
         ...updatedGroupData,
         [fieldName]: value,
       }
+      delete updatedGroupData.deliverItemsCount
     } else if (fieldName === 'tags') {
       const allTagsKeyById = keyBy(allTagsData, '_id')
       updatedGroupData = {
         ...updatedGroupData,
         [fieldName]: value.map((tagId) => allTagsKeyById[tagId]),
+      }
+    } else if (fieldName === 'autoSelectItemsCount') {
+      if (
+        updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+        updatedGroupData.deliveryType ===
+          ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        value < 2
+      ) {
+        notification({ messageKey: 'pleaseSelectAtleastTwoItems' })
+        return
+      }
+      if (
+        updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+        updatedGroupData.deliveryType ===
+          ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        value <= (currentGroupDetails.deliverItemsCount || 1)
+      ) {
+        notification({
+          messageKey: 'itemsToBeDeliveredShouldBeLessThanPickCount',
+        })
+        return
+      }
+
+      updatedGroupData = {
+        ...updatedGroupData,
+        [fieldName]: value,
       }
     } else {
       updatedGroupData = {
@@ -520,7 +559,7 @@ const GroupItems = ({
       limit:
         currentGroupDetails.deliveryType ===
         ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-          ? currentGroupDetails.autoSelectItemsCount || 1
+          ? currentGroupDetails.autoSelectItemsCount || 2
           : currentGroupDetails.deliverItemsCount,
       search: {
         collectionId: currentGroupDetails.collectionDetails._id,

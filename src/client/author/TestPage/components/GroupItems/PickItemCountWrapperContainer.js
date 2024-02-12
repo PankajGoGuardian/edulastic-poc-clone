@@ -34,10 +34,10 @@ export default function PickItemCountWrapperContainer({
         value={
           correctDeliveryType
             ? currentGroupIndex === index
-              ? currentGroupDetails?.items?.length ||
-                currentGroupDetails?.autoSelectItemsCount ||
-                1
-              : itemGroup?.items?.length || itemGroup?.autoSelectItemsCount || 1
+              ? currentGroupDetails?.autoSelectItemsCount ||
+                currentGroupDetails?.items?.length ||
+                2
+              : itemGroup?.items?.length || itemGroup?.autoSelectItemsCount || 2
             : ''
         }
         onChange={(e) =>
@@ -56,11 +56,6 @@ export default function PickItemCountWrapperContainer({
             : ''
         }
         min={1}
-        max={
-          currentGroupIndex === index
-            ? currentGroupDetails?.autoSelectItemsCount || 100
-            : itemGroup?.autoSelectItemsCount || 100
-        }
         onChange={(e) =>
           handleChange('deliverItemsCount', parseInt(e.target.value, 10))
         }

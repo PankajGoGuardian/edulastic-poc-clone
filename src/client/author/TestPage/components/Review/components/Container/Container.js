@@ -623,7 +623,7 @@ class Review extends PureComponent {
         itemsSelectedIndex >= 0
           ? 1
           : itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-          ? itemGroup.autoSelectItemsCount || itemGroup.items.length || 1
+          ? itemGroup.autoSelectItemsCount || itemGroup.items.length || 2
           : itemGroup.deliverItemsCount,
       search: {
         collectionId: itemGroup.collectionDetails._id,

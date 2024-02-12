@@ -1880,6 +1880,14 @@
     "message": "Total Items to be delivered cannot be more than 100",
     "description": ""
   },
+  "totalItemsToBeDeliveredCannotBeMOreThan20": {
+    "message": "Total Items to be delivered cannot be more than 20",
+    "description": ""
+  },
+  "itemsToBeDeliveredShouldBeLessThanPickCount": {
+    "message": "Items to be delivered should be less than pick count",
+    "description": ""
+  },
   "totalItemsToBeDeliveredCannotBeLessThanZero": {
     "message": "Total Items to be delivered cannot be less than zero.",
     "description": ""

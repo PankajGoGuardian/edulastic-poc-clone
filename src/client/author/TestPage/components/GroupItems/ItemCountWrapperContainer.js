@@ -14,13 +14,22 @@ export default function ItemCountWrapperContainer({
   itemGroup,
   isRequired,
 }) {
+  const showBlank =
+    (currentGroupDetails?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      currentGroupDetails?.deliveryType !==
+        ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM &&
+      currentGroupIndex === index) ||
+    (itemGroup?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      itemGroup?.deliveryType !== ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM &&
+      currentGroupIndex !== index)
+
   const disabled =
     (currentGroupDetails?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
       currentGroupIndex === index) ||
-    (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
-      (currentGroupDetails?.deliveryType !==
-        ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM ||
-        itemGroup?.deliveryType !== ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM)) ||
+    (currentGroupDetails?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      currentGroupDetails?.deliveryType !==
+        ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM &&
+      currentGroupIndex === index) ||
     currentGroupIndex !== index
 
   return (
@@ -32,7 +41,7 @@ export default function ItemCountWrapperContainer({
         disabled={disabled}
         min={0}
         value={
-          disabled
+          showBlank
             ? ''
             : currentGroupIndex === index
             ? currentGroupDetails.deliverItemsCount || ''

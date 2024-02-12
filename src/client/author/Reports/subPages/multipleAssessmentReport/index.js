@@ -327,9 +327,18 @@ const MultipleAssessmentReportContainer = (props) => {
         <Route
           exact
           path="/author/reports/completion-report/"
-          render={() => {
+          render={(_props) => {
             setShowHeader(true)
-            return <CompletionReport />
+            return (
+              <CompletionReport
+                {..._props}
+                settings={settings}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
           }}
         />
         <Route

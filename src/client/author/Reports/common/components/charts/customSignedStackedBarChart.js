@@ -65,6 +65,8 @@ const LabelText = ({
   bdIndex,
   payload,
   style,
+  yOffset = 0,
+  xOffset = 0,
 }) => {
   return (
     <g
@@ -74,13 +76,13 @@ const LabelText = ({
       style={{ pointerEvents: 'none' }}
     >
       <text
-        x={x + width / 2}
-        y={y + height / 2}
+        x={x + (xOffset || width / 2)}
+        y={y + (yOffset || height / 2)}
         textAnchor="middle"
         dominantBaseline="middle"
         style={style}
       >
-        {formatter(value, payload)}
+        {formatter(value, payload, height)}
       </text>
     </g>
   )
@@ -129,6 +131,14 @@ export const SignedStackedBarChart = ({
   animate = true,
   onAnimationStart = () => {},
   setAnimate = () => {},
+  onMouseBarOver = null,
+  onMouseBarLeave = null,
+  hideOnlyYAxis = false,
+  barSize,
+  referenceLines = {},
+  tickMargin = 20,
+  tooltipType = 'top',
+  navButtonTopMargin,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -160,10 +170,12 @@ export const SignedStackedBarChart = ({
     backFillLastPage: true,
   })
 
-  useEffect(() => {
-    setPage(LAST_PAGE_INDEX)
-    setAnimate(true)
-  }, [settings.frontEndFilters.testTypes])
+  if (settings) {
+    useEffect(() => {
+      setPage(LAST_PAGE_INDEX)
+      setAnimate(true)
+    }, [settings.frontEndFilters.testTypes])
+  }
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -186,9 +198,8 @@ export const SignedStackedBarChart = ({
 
   const updateTooltipPosition = (hoveredBarDimensions) => {
     if (!parentContainerRef.current) return
-    const { width: barWidth, x, y } = hoveredBarDimensions
-
-    const tooltipProperties = {
+    const { width: barWidth, x, y, height } = hoveredBarDimensions
+    let tooltipProperties = {
       '--first-tooltip-transform': `translate(${
         x + barWidth / 2 - 100
       }px, calc(${
@@ -197,10 +208,20 @@ export const SignedStackedBarChart = ({
       '--first-tooltip-top': '0',
       '--first-tooltip-left': '0',
     }
+    if (tooltipType === 'left') {
+      tooltipProperties = {
+        '--first-tooltip-transform': `translate(${
+          x - barWidth - 100 - spaceForLittleTriangle
+        }px, calc(${y + 75 + height / 2}px - 100% ))`,
+        '--first-tooltip-top': '0',
+        '--first-tooltip-left': '0',
+      }
+    }
+
     setProperties(parentContainerRef, tooltipProperties)
   }
 
-  const onBarMouseOver = (index) => (event) => {
+  const onBarMouseOver = (index, category) => (event) => {
     tooltipRef.current?.updateBarIndex(index)
     if (isEmpty(event)) return
     let d = {
@@ -214,12 +235,17 @@ export const SignedStackedBarChart = ({
     // label's parent element contains x,y coordinate relative to chart container.
     if (!isEmpty(event.target)) d = getHoveredBarDimensions(event)
     updateTooltipPosition(d)
+    if (onMouseBarOver) {
+      onMouseBarOver(category)
+    }
   }
 
   const onBarMouseLeave = () => () => {
     tooltipRef.current?.resetBarIndex()
+    if (onMouseBarLeave) {
+      onMouseBarLeave()
+    }
   }
-
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
   const onLegendMouseLeave = () => setActiveLegend(null)
 
@@ -316,7 +342,10 @@ export const SignedStackedBarChart = ({
   }
 
   return (
-    <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
+    <StyledSignedStackedBarChartContainer
+      ref={parentContainerRef}
+      navButtonTopMargin={navButtonTopMargin}
+    >
       <ResetButtonClear
         onClick={onResetClick}
         style={
@@ -384,7 +413,7 @@ export const SignedStackedBarChart = ({
               />
             }
             tickLine={false}
-            tickMargin={20}
+            tickMargin={tickMargin}
             stroke={greyLight1}
             interval={0}
             onMouseOver={onXAxisTickTooltipMouseOver}
@@ -393,9 +422,10 @@ export const SignedStackedBarChart = ({
           {!hideYAxis ? (
             <YAxis
               type="number"
+              axisLine={hideOnlyYAxis}
               domain={yDomain}
               tick={false}
-              stroke={greyLight1}
+              stroke={!hideOnlyYAxis ? greyLight1 : null}
               ticks={ticks}
               tickFormatter={yTickFormatter}
               label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
@@ -407,6 +437,7 @@ export const SignedStackedBarChart = ({
               <StyledCustomChartTooltipDark
                 ref={tooltipRef}
                 getJSX={getTooltipJSX}
+                tooltipType={tooltipType}
               />
             }
           />
@@ -423,6 +454,19 @@ export const SignedStackedBarChart = ({
           {isSignedChart ? (
             <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           ) : null}
+          {referenceLines.length &&
+            Object.keys(referenceLines).map((ref) => (
+              <ReferenceLine
+                y={ref}
+                stroke={ref === 0 ? 'black' : '#D3D3D3'}
+                label={{
+                  position: 'insideLeft',
+                  value: `${ref}%`,
+                  textAnchor: 'end',
+                  dx: -50,
+                }}
+              />
+            ))}
           {barsData.map((bdItem, bdIndex) => {
             let fillOpacity = 1
 
@@ -439,8 +483,8 @@ export const SignedStackedBarChart = ({
                 fill={bdItem.fill}
                 unit={bdItem.unit}
                 onClick={onBarClick}
-                barSize={45}
-                onMouseOver={onBarMouseOver(bdIndex, true)}
+                barSize={barSize || 45}
+                onMouseOver={onBarMouseOver(bdIndex, bdItem, true)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
                 isAnimationActive={animate}
                 onAnimationStart={onAnimationStart}
@@ -450,14 +494,14 @@ export const SignedStackedBarChart = ({
                     dataKey={bdItem.topLabelKey}
                     position="top"
                     fill="#010101"
-                    onMouseOver={onBarMouseOver(bdIndex, true)}
+                    onMouseOver={onBarMouseOver(bdIndex, bdItem, true)}
                     onMouseLeave={onBarMouseLeave(bdIndex)}
                   />
                 ) : null}
                 {hasBarInsideLabels ? (
                   <LabelList
                     dataKey={bdItem.insideLabelKey}
-                    position="inside"
+                    position={bdItem.position || 'inside'}
                     fill="#010101"
                     offset={5}
                     onMouseOver={onBarMouseOver(bdIndex)}
@@ -468,6 +512,8 @@ export const SignedStackedBarChart = ({
                         onBarMouseOver={onBarMouseOver}
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
+                        yOffset={10}
+                        xOffset={0}
                         formatter={barsLabelFormatter}
                         style={{ fill: getFGColor(bdItem.fill) }}
                       />

@@ -8,12 +8,12 @@ export const StyledSignedStackedBarChartContainer = styled.div`
 
   .navigator-left {
     left: 5px;
-    top: 50%;
+    top: ${(props) => props.navButtonTopMargin || '50%'};
   }
 
   .navigator-right {
     right: 5px;
-    top: 50%;
+    top: ${(props) => props.navButtonTopMargin || '50%'};
   }
 
   .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,

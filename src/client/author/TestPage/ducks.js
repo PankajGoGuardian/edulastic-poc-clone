@@ -58,6 +58,7 @@ import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
+import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
 import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
@@ -95,6 +96,7 @@ import {
   getOrgGroupList,
   isPublisherUserSelector,
   isOrganizationDistrictSelector,
+  vqQuotaForDistrictSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -3881,10 +3883,19 @@ function* duplicateTestSaga({ payload }) {
           msg: 'Duplicating the test permission denied and failed to regrade',
         })
       }
+      if (errorMessage === VQ_QUOTA_EXHAUSTED) {
+        const vqQuotaForDistrict = yield select(vqQuotaForDistrictSelector)
+        return notification({
+          type: 'warn',
+          msg: `You have reached the maximum limit of ${vqQuotaForDistrict} tests for VideoQuiz.`,
+        })
+      }
+
       return notification({
         msg: 'You do not have the permission to clone the test.',
       })
     }
+
     return notification({ msg: errorMessage || 'Failed to duplicate test' })
   }
 }

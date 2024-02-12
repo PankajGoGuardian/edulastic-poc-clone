@@ -198,14 +198,14 @@ const fetchMARFilterData = (params) =>
 const fetchCompletionReportChart = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `report/completion-report/chart`,
+    url: `report/completion/chart`,
     params,
   })
 
 const fetchCompletionReportTable = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `report/completion-report/table`,
+    url: `report/completion/table`,
     params,
   })
 

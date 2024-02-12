@@ -7,7 +7,7 @@ import { notification } from '@edulastic/common'
 const initialState = {
   loadingCompletionReportChartData: false,
   loadingCompletionReportTableData: false,
-  completionReportChartData: {},
+  completionReportChartData: [],
   error: '',
   completionReportTableData: {},
 }
@@ -50,19 +50,17 @@ export const { actions, reducer } = slice
 
 function* fetchCompletionReportChartDataRequestSaga({ payload }) {
   try {
-    const reportChartData = yield call(
-      reportsApi.fetchCompletionReportChart,
-      payload
-    )
-    if (reportChartData.error) {
+    const result = yield call(reportsApi.fetchCompletionReportChart, payload)
+    const reportChartData = result.data.result.chartMetricInfo
+    if (result.error) {
       yield put(
         actions.fetchCompletionChartDataFailure({
-          error: { ...reportChartData.data },
+          error: { ...result.data },
         })
       )
       return
     }
-    yield put(actions.fetchCompletionChartDataSuccess({ reportChartData }))
+    yield put(actions.fetchCompletionChartDataSuccess(reportChartData))
   } catch (error) {
     console.log('err', error.stack)
     const msg =
@@ -107,28 +105,30 @@ export function* watcherSaga() {
     ),
   ])
 }
-const stateSelector = (state) => state.reportReducer.completionReportData
-const completionReportChartData = createSelector(
+const stateSelector = (state) =>
+  state.reportReducer.reportCompletionReportReducers
+export const getCompletionReportChartData = createSelector(
   stateSelector,
   (state) => state.completionReportChartData
 )
-const completionReportTableData = createSelector(
+export const getCompletionReportTableData = createSelector(
   stateSelector,
   (state) => state.completionReportTableData
 )
-const completionReportChartDataLoading = createSelector(
+export const getCompletionReportChartDataLoading = createSelector(
   stateSelector,
   (state) => state.loadingCompletionReportChartData
 )
-const completionReportTableDataLoading = createSelector(
+export const getCompletionReportTableDataLoading = createSelector(
   stateSelector,
   (state) => state.loadingCompletionReportTableData
 )
-const completionReportDataError = (state) => state.reportReducer.error
+export const getCompletionReportDataError = (state) => state.reportReducer.error
+
 export const selectors = {
-  completionReportChartData,
-  completionReportTableData,
-  completionReportDataError,
-  completionReportChartDataLoading,
-  completionReportTableDataLoading,
+  getCompletionReportChartData,
+  getCompletionReportTableData,
+  getCompletionReportDataError,
+  getCompletionReportChartDataLoading,
+  getCompletionReportTableDataLoading,
 }

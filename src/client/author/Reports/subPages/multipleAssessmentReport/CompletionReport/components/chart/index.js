@@ -8,7 +8,7 @@ import {
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
 
 const Chart = (props) => {
-  const { chartData } = props
+  const { chartData = [] } = props
   const [hoveredCategory, setHoveredCategory] = useState(null)
   const pageSize = 5
   const referenceLines = {
@@ -19,65 +19,22 @@ const Chart = (props) => {
     100: 'grey',
   }
 
-  const dataForChart = chartData?.map((item) => ({
+  const dataForChart = chartData.map((item) => ({
     testName: item.testName,
-    gradedPercentage: (
-      (item.graded /
-        (item.submitted +
-          item.inProgress +
-          item.notStarted +
-          item.absent +
-          item.graded)) *
-      100
-    ).toFixed(2),
-    submittedPercentage: (
-      (item.submitted /
-        (item.submitted +
-          item.inProgress +
-          item.notStarted +
-          item.absent +
-          item.graded)) *
-      100
-    ).toFixed(2),
-    inProgressPercentage: (
-      (item.inProgress /
-        (item.submitted +
-          item.inProgress +
-          item.notStarted +
-          item.absent +
-          item.graded)) *
-      100
-    ).toFixed(2),
-    notStartedPercentage: (
-      (item.notStarted /
-        (item.submitted +
-          item.inProgress +
-          item.notStarted +
-          item.absent +
-          item.graded)) *
-      100
-    ).toFixed(2),
-    absentPercentage: (
-      (item.absent /
-        (item.submitted +
-          item.inProgress +
-          item.notStarted +
-          item.absent +
-          item.graded)) *
-      100
-    ).toFixed(2),
+    gradedPercentage: ((item.graded / item.assigned) * 100).toFixed(2),
+    submittedPercentage: ((item.submitted / item.assigned) * 100).toFixed(2),
+    inProgressPercentage: ((item.inProgress / item.assigned) * 100).toFixed(2),
+    notStartedPercentage: ((item.notStarted / item.assigned) * 100).toFixed(2),
+    absentPercentage: ((item.absent / item.assigned) * 100).toFixed(2),
     graded: item.graded,
     submitted: item.submitted,
     inProgress: item.inProgress,
     notStarted: item.notStarted,
     absent: item.absent,
-    totalCount:
-      item.submitted +
-      item.inProgress +
-      item.notStarted +
-      item.absent +
-      item.graded,
-    testDate: formatDate(item.testDate),
+    totalCount: item.assigned,
+    testDate: formatDate(item.assessmentDate),
+    testId: item.testId,
+    testType: item.testType,
   }))
 
   const barData = [
@@ -135,11 +92,11 @@ const Chart = (props) => {
   const getTooltipJSX = (payload) => {
     if (payload.length && payload[0].payload && hoveredCategory) {
       const result = payload[0].payload
-      const progressStatus = `${hoveredCategory.name} : `
+      const progressStatus = `${hoveredCategory.name}: `
       const dataToDisplay = {
-        'Test Name : ': result.testName,
-        'Test Date : ': result.testDate,
-        'Students Assigned : ': result.totalCount,
+        'Test Name: ': result.testName,
+        'Test Date: ': result.testDate,
+        'Students Assigned: ': result.totalCount,
       }
       dataToDisplay[progressStatus] = `${
         result[hoveredCategory.insideLabelKey]

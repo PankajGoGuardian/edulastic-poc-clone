@@ -1,110 +1,36 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import Chart from './components/chart'
+import { actions, getCompletionReportChartData } from './ducks'
 
-function CompletionReport() {
-  const chartData = [
-    {
-      testName: `Test 1`,
-      graded: 743,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello1}`,
-    },
-    {
-      testName: `Test 2`,
-      graded: 270,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello12}`,
-    },
-    {
-      testName: `Test 3`,
-      graded: 984,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello1}`,
-    },
-    {
-      testName: `Test 4`,
-      graded: 750,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello12}`,
-    },
-    {
-      testName: `Test 5`,
-      graded: 450,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello1}`,
-    },
-    {
-      testName: `Test 6`,
-      graded: 645,
-      submitted: 223,
-      inProgress: 456,
-      notStarted: 345,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello12}`,
-    },
-    {
-      testName: `Test 7`,
-      graded: 2345,
-      submitted: 223,
-      inProgress: 744,
-      notStarted: 435,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello1}`,
-    },
-    {
-      testName: `Test 8`,
-      graded: 2020,
-      submitted: 223,
-      inProgress: 345,
-      notStarted: 456,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello12}`,
-    },
-    {
-      testName: `Test 9`,
-      graded: 1231,
-      submitted: 223,
-      inProgress: 123,
-      notStarted: 120,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello1}`,
-    },
-    {
-      testName: `Test 10`,
-      graded: 2040,
-      submitted: 223,
-      inProgress: 324,
-      notStarted: 453,
-      absent: 923,
-      testDate: new Date().getTime(),
-      key: `hello12}`,
-    },
-  ]
-  return <Chart chartData={chartData} />
+function CompletionReport({
+  fetchCompletionReportChartDataRequest,
+  settings,
+  setEnableReportSharing,
+  toggleFilter,
+  ddfilter,
+  sharedReport,
+  chartData,
+  setMARSettings,
+  ...props
+}) {
+  // const [pageNo, setPageNo] = useState(1)
+  useEffect(() => {
+    const q = { ...settings.requestFilters }
+    if (q.termId || q.reportId) {
+      fetchCompletionReportChartDataRequest(q)
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.requestFilters])
+  console.log({ chartData })
+  return <Chart chartData={chartData} {...props} />
 }
 
-export default CompletionReport
+const enhance = connect(
+  (state) => ({
+    chartData: getCompletionReportChartData(state),
+  }),
+  { ...actions }
+)
+
+export default enhance(CompletionReport)

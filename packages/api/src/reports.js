@@ -195,6 +195,20 @@ const fetchMARFilterData = (params) =>
     params,
   })
 
+const fetchCompletionReportChart = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `report/completion-report/chart`,
+    params,
+  })
+
+const fetchCompletionReportTable = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `report/completion-report/table`,
+    params,
+  })
+
 const fetchPeerProgressAnalysisReport = (params) =>
   api.callApi({
     useSlowApi: true,
@@ -530,4 +544,6 @@ export default {
   deleteIntervention,
   updateGoal,
   updateIntervention,
+  fetchCompletionReportChart,
+  fetchCompletionReportTable,
 }

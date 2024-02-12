@@ -15,6 +15,10 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  reducer as reportCompletionReportReducers,
+  watcherSaga as completionReportSaga,
+} from './subPages/multipleAssessmentReport/CompletionReport/ducks'
 import { styledNotification } from './common/styled'
 
 import {
@@ -544,6 +548,7 @@ export const reportReducer = combineReducers({
   sharedReportsReducer,
   reportWholeLearnerReducer,
   reportMultipleAssessmentDwReducer,
+  reportCompletionReportReducers,
   [dwAttendanceSummaryDucks.reduxNamespaceKey]:
     dwAttendanceSummaryDucks.reducer,
   [dwDashboardDucks.reduxNamespaceKey]: dwDashboardDucks.reducer,
@@ -1013,6 +1018,7 @@ export function* reportSaga() {
     reportPeerProgressAnalysisSaga(),
     reportStudentProgressSaga(),
     reportPreVsPostSaga(),
+    completionReportSaga(),
     reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),

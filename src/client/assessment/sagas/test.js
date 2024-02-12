@@ -131,6 +131,7 @@ import {
 } from '../selectors/test'
 import {
   setActiveAssignmentAction,
+  setVqEnableYouTubeEdAction,
   utaStartTimeUpdateRequired,
 } from '../../student/sharedDucks/AssignmentModule/ducks'
 import { getClassIds } from '../../student/Reports/ducks'
@@ -451,6 +452,9 @@ function* loadTest({ payload }) {
     if (testActivity?.testActivity?.testId) {
       testId = testActivity?.testActivity?.testId
     }
+    yield put(
+      setVqEnableYouTubeEdAction(testActivity.vqEnableYouTubeEd || false)
+    )
     let enableAudioResponseQuestion =
       testActivity?.enableAudioResponseQuestion || false
     const userAuthenticated = getAccessToken()

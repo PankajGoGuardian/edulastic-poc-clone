@@ -1120,9 +1120,9 @@ class Container extends Component {
       (q) => q.rubrics || q?.validation?.unscored
     )
 
-    const showLanguageSelector = item?.data?.questions?.some((q) =>
-      useLanguageFeatureQn.includes(q.type)
-    )
+    const showLanguageSelector =
+      useLanguageFeatureQn.includes(questionType.PASSAGE) &&
+      item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     const handleTotalPartScoreChange = (score) => {
       setItemLevelScore(+score)

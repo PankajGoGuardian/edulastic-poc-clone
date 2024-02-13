@@ -509,6 +509,18 @@ const curateApiFiltersQuery = (
   return { query, queryStr }
 }
 
+const getDistrictGroupTestTermIds = (orgData, testTermIds) => {
+  const { terms = [], districtGroup } = orgData || {}
+  const districtGroupTerms = districtGroup?.terms || EMPTY_ARRAY
+  const testTermNames = terms
+    .filter(({ _id }) => testTermIds.includes(_id))
+    .map(({ name }) => name)
+  const filteredDistrictGroupTermIds = districtGroupTerms
+    .filter(({ name }) => testTermNames.includes(name))
+    .map(({ _id }) => _id)
+  return filteredDistrictGroupTermIds
+}
+
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -679,6 +691,7 @@ module.exports = {
   stringifyArrayFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
+  getDistrictGroupTestTermIds,
   PERIOD_TYPES,
   PERIOD_NAMES,
   SUBJECTS,

@@ -7,3 +7,6 @@ export const getTermOptions = (terms = []) =>
     startDate,
     endDate,
   }))
+
+export const getDistrictOptions = (districts = []) =>
+  map(districts, ({ _id, name }) => ({ key: _id, title: name }))

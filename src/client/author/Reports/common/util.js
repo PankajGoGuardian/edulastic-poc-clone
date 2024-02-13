@@ -26,7 +26,10 @@ import {
   reportNavType,
 } from '@edulastic/constants/const/report'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
-import { formatName } from '@edulastic/constants/reportUtils/common'
+import {
+  formatName,
+  getDistrictGroupTestTermIds,
+} from '@edulastic/constants/reportUtils/common'
 import calcMethod from './static/json/calcMethod.json'
 import navigation from './static/json/navigation.json'
 import gradesMap from './static/json/gradesMap.json'
@@ -757,11 +760,12 @@ export const getErrorMessage = (error, statusCode, defaultMessage) => {
   return defaultMessage
 }
 
-export const testListTransformer = (
+export const testListTransformer = ({
   response,
   testType = ASSESSMENT_TYPES.INTERNAL,
-  params
-) => {
+  params,
+  orgData,
+}) => {
   const {
     termId = '',
     termIds = [],
@@ -770,6 +774,13 @@ export const testListTransformer = (
     testTypes = [],
     searchString = '',
   } = get(params, 'search', {})
+
+  const districtGroupTermIds = getDistrictGroupTestTermIds(orgData, [
+    termId,
+    ...termIds,
+  ])
+  const { terms = [], districtGroup = {} } = orgData
+  const { terms: districtGroupTerms = [] } = districtGroup
 
   if (testType === ASSESSMENT_TYPES.INTERNAL) {
     const assignmentBuckets = get(
@@ -780,6 +791,8 @@ export const testListTransformer = (
     const internalTestList = []
     assignmentBuckets.forEach((assignmentBucket) => {
       const testTermId = assignmentBucket.key
+      const testTermName =
+        terms.find(({ _id }) => _id === testTermId)?.name || ''
       const bucketData = get(assignmentBucket, 'buckets.buckets', [])
       internalTestList.push(
         ...bucketData
@@ -787,7 +800,13 @@ export const testListTransformer = (
             const hits = get(assignments, 'hits.hits', [])
             const title = get(hits[0], '_source.title', '')
             const testUniqueId = `${_id}_${testTermId}`
-            return { _id, title, termId: testTermId, testUniqueId }
+            return {
+              _id,
+              title,
+              testUniqueId,
+              termId: testTermId,
+              termName: testTermName,
+            }
           })
           .filter(({ _id, title }) => _id && title)
       )
@@ -801,6 +820,9 @@ export const testListTransformer = (
       const checkForTermId = termIds?.length
         ? termIds.includes(t.termId)
         : termId === t.termId
+      const checkForDistrictGroupTermId =
+        districtGroupTermIds?.length &&
+        !!districtGroupTermIds.includes(t.termId)
       const checkForGrades =
         !grades.length || !!_testGrades.filter((g) => grades.includes(g)).length
       const checkForSubjects =
@@ -812,20 +834,25 @@ export const testListTransformer = (
         !searchString ||
         t.testName.toLowerCase().includes(searchString.toLowerCase())
       return [
-        checkForTermId,
+        checkForTermId || checkForDistrictGroupTermId,
         checkForGrades,
         checkForSubjects,
         checkForExternalTestTitle,
         checkForExternalTestTypes,
       ].every((o) => !!o)
     })
-    .map(({ testName, termId: _termId }) => {
+    .map(({ testName, termId: testTermId }) => {
+      const testTermName =
+        terms.find(({ _id }) => _id === testTermId)?.name ||
+        districtGroupTerms.find(({ _id }) => _id === testTermId)?.name ||
+        ''
       // TODO find permanent fix for issue with AssessmentAutoComplete when _id & title are same. Adding space after testName in title here to avoid it here.
       return {
         _id: testName,
         title: `${testName} `,
         showId: false,
-        termId: _termId,
+        termId: testTermId,
+        termName: testTermName,
         isExternal: true,
         testName,
       }

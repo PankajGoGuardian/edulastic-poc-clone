@@ -285,11 +285,16 @@ export const getExternalScoreFormattedByType = (
   return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
 }
 
+export const convertItemToArray = (item) =>
+  (item && (Array.isArray(item) ? item : item.split(','))) || []
+
 export const getUrlTestTermIds = (schoolYears, testTermIds) =>
   schoolYears.filter((item) => testTermIds && testTermIds.includes(item.key))
 
-export const convertItemToArray = (item) =>
-  (item && (Array.isArray(item) ? item : item.split(','))) || []
+export const getUrlDistricts = (districts, districtIds) => {
+  const districtIdsArr = convertItemToArray(districtIds)
+  return districts.filter((d) => districtIdsArr.includes(d.key))
+}
 
 export const getIsMultiSchoolYearDataPresent = (testTermIds) =>
   convertItemToArray(testTermIds).length > 1

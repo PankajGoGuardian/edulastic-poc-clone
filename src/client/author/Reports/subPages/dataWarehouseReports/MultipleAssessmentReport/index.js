@@ -20,6 +20,7 @@ import {
 } from '@edulastic/constants/const/report'
 import {
   TABLE_SORT_ORDER_TYPES,
+  getDistrictGroupTestTermIds,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
 
@@ -72,6 +73,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import {
+  convertItemToArray,
   getIsMultiSchoolYearDataPresent,
   isAddToStudentGroupEnabled,
 } from '../common/utils'
@@ -246,10 +248,19 @@ const MultipleAssessmentReport = ({
     }
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
+      const testTermIdsArr = convertItemToArray(q.testTermIds)
+      const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
+        orgData,
+        testTermIdsArr
+      )
+      const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
+        ','
+      )
+      Object.assign(q, { testTermIds })
       fetchDWMARChartDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters])
+  }, [settings.requestFilters, orgData])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -265,6 +276,15 @@ const MultipleAssessmentReport = ({
       requireTotalCount: pageFilters.page === 1,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
+      const testTermIdsArr = convertItemToArray(q.testTermIds)
+      const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
+        orgData,
+        testTermIdsArr
+      )
+      const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
+        ','
+      )
+      Object.assign(q, { testTermIds })
       fetchDWMARTableDataRequest(q)
       return () => toggleFilter(null, false)
     }

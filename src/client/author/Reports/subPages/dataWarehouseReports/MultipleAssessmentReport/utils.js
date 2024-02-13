@@ -43,7 +43,7 @@ export const staticDropDownData = {
   filterSections: {
     STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Students',
+      title: 'Select Student Set',
     },
     TEST_FILTERS: {
       key: '1',
@@ -60,19 +60,20 @@ export const staticDropDownData = {
   },
   tagTypes: [
     { key: 'termId', tabKey: '0' },
-    { key: 'testGrades', subType: 'test', tabKey: '0' },
-    { key: 'testSubjects', subType: 'test', tabKey: '0' },
-    { key: 'tagIds', tabKey: '0' },
-    { key: 'assessmentTypes', tabKey: '0' },
-    { key: 'testIds', tabKey: '0' },
-    { key: 'schoolIds', tabKey: '1' },
-    { key: 'teacherIds', tabKey: '1' },
-    { key: 'grades', subType: 'class', tabKey: '1' },
-    { key: 'subjects', subType: 'class', tabKey: '1' },
-    { key: 'assignedBy', tabKey: '1' },
-    { key: 'courseId', tabKey: '1' },
-    { key: 'classIds', tabKey: '1' },
-    { key: 'groupIds', tabKey: '1' },
+    { key: 'schoolIds', tabKey: '0' },
+    { key: 'teacherIds', tabKey: '0' },
+    { key: 'grades', subType: 'class', tabKey: '0' },
+    { key: 'subjects', subType: 'class', tabKey: '0' },
+    { key: 'assignedBy', tabKey: '0' },
+    { key: 'courseId', tabKey: '0' },
+    { key: 'classIds', tabKey: '0' },
+    { key: 'groupIds', tabKey: '0' },
+    { key: 'testTermIds', subType: 'test', tabKey: '1' },
+    { key: 'testGrades', subType: 'test', tabKey: '1' },
+    { key: 'testSubjects', subType: 'test', tabKey: '1' },
+    { key: 'tagIds', tabKey: '1' },
+    { key: 'assessmentTypes', tabKey: '1' },
+    { key: 'testUniqIds', tabKey: '1' },
     { key: 'profileId', tabKey: '2' },
     { key: 'race', tabKey: '3' },
     { key: 'gender', tabKey: '3' },
@@ -80,16 +81,11 @@ export const staticDropDownData = {
     { key: 'frlStatus', tabKey: '3' },
     { key: 'ellStatus', tabKey: '3' },
     { key: 'hispanicEthnicity', tabKey: '3' },
-    { key: 'testTermIds', subType: 'test', tabKey: '1' },
   ],
   initialFilters: {
     reportId: '',
     termId: '',
-    testGrades: '',
-    testSubjects: '',
-    tagIds: '',
-    assessmentTypes: '',
-    testIds: '',
+    districtIds: '',
     schoolIds: '',
     teacherIds: '',
     grades: '',
@@ -97,17 +93,22 @@ export const staticDropDownData = {
     courseId: 'All',
     classIds: '',
     groupIds: '',
+    assignedBy: 'anyone',
+    testTermIds: '',
+    testGrades: '',
+    testSubjects: '',
+    tagIds: '',
+    assessmentTypes: '',
+    testIds: '', // TODO: check if still required?
+    testUniqIds: '',
     profileId: '',
     externalScoreType: 'scaledScore',
-    assignedBy: 'anyone',
     race: 'all',
     gender: 'all',
     iepStatus: 'all',
     frlStatus: 'all',
     ellStatus: 'all',
     hispanicEthnicity: 'all',
-    testTermIds: '',
-    testUniqIds: '',
   },
   requestFilters: {
     reportId: '',
@@ -192,6 +193,8 @@ export const getCompareByOptions = (userRole) => {
 
 const groupByCompareByKey = (metricInfo, compareBy) => {
   switch (compareBy) {
+    case 'district':
+      return groupBy(metricInfo, 'districtId')
     case 'school':
       return groupBy(metricInfo, 'schoolId')
     case 'student':

@@ -132,7 +132,7 @@ const WholeLearnerReportFilters = ({
   const tagTypes = staticDropDownData.tagTypes
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
-  const { terms = [] } = orgData
+  const { terms = [], districtGroup } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
 
   const {
@@ -172,15 +172,18 @@ const WholeLearnerReportFilters = ({
   }, [isMultiSchoolYear, testUniqIds])
 
   useEffect(() => {
+    const q = { districtGroupId: districtGroup?._id }
     if (reportId) {
-      fetchFiltersDataRequest({ reportId })
+      Object.assign(q, { reportId })
+      fetchFiltersDataRequest(q)
     } else if (urlStudentId && search.termId) {
-      fetchFiltersDataRequest({
+      Object.assign(q, {
         termId: search.termId,
         studentId: urlStudentId,
         externalTestTypesRequired: true,
         externalTestsRequired: !isMultiSchoolYear,
       })
+      fetchFiltersDataRequest(q)
     }
   }, [])
 

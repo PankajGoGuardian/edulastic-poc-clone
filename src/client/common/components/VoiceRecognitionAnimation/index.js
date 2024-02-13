@@ -5,9 +5,9 @@ const VoiceRecognitionAnimation = () => {
   return (
     <div className="container">
       <div className="dot blue" />
-      <div className="dot red" />
-      <div className="dot yellow" />
       <div className="dot green" />
+      <div className="dot lightBlue" />
+      <div className="dot yellow" />
     </div>
   )
 }

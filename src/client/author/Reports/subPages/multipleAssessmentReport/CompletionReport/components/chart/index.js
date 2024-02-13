@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { formatDate } from '@edulastic/constants/reportUtils/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { Empty } from 'antd'
 import {
   TooltipRowTitle,
   TooltipRowValue,
@@ -8,9 +10,16 @@ import {
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
 
 const Chart = (props) => {
-  const { chartData = [] } = props
+  const {
+    chartData = [],
+    navBtnVisible,
+    setNavBtnVisible,
+    loading,
+    pageNo,
+    setPageNo,
+  } = props
   const [hoveredCategory, setHoveredCategory] = useState(null)
-  const pageSize = 5
+  const pageSize = 2
   const referenceLines = {
     0: 'black',
     25: 'grey',
@@ -80,12 +89,23 @@ const Chart = (props) => {
     },
   ]
 
+  useEffect(() => {
+    if (dataForChart.length === pageSize) {
+      setNavBtnVisible((prevState) => ({ ...prevState, rightNavVisible: true }))
+    } else if (dataForChart.length < pageSize) {
+      setNavBtnVisible((prevState) => ({
+        ...prevState,
+        rightNavVisible: false,
+      }))
+    }
+    console.log({ chartData })
+  }, [])
+
   const handleMouseOver = (category) => {
     setHoveredCategory(category)
   }
 
   const getCategoryContent = (value, payload, height) => {
-    console.log({ value, height })
     if (height > 14) return value
     return ''
   }
@@ -104,7 +124,6 @@ const Chart = (props) => {
       return (
         <div>
           {Object.keys(dataToDisplay).map((title) => {
-            // console.log(title, dataToDisplay[title])
             return (
               <TooltipRow>
                 <TooltipRowTitle>{title}</TooltipRowTitle>
@@ -128,42 +147,65 @@ const Chart = (props) => {
   )
 
   return (
-    <SignedStackedBarChart
-      pageSize={pageSize}
-      barsData={barData}
-      data={dataForChart}
-      yDomain={[0, 100]}
-      xAxisDataKey="testName"
-      onBarClickCB={(bar) => console.log('bar is clicked', bar)}
-      onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
-      onLegendMouseEnter={(payload) =>
-        console.log('Cursor Over Legend', payload)
-      }
-      onLegendMouseLeave={(payload) =>
-        console.log('Cursor away from Legend', payload)
-      }
-      yAxisLabel="DISTRIBUTION OF STUDENTS (%)"
-      hideOnlyYAxis
-      onMouseBarOver={handleMouseOver}
-      onMouseBarLeave={() => setHoveredCategory(null)}
-      getTooltipJSX={getTooltipJSX}
-      getXAxisTickSyle={{ fontWeight: 'bold' }}
-      hideCartesianGrid
-      hasBarInsideLabels
-      barsLabelFormatter={getCategoryContent}
-      labelListContent={getCategoryContent}
-      ticks={false}
-      tick={false}
-      barSize={100}
-      hasRoundedBars={false}
-      referenceLines={referenceLines}
-      tickMargin={10}
-      preLabelContent={preLabelContent}
-      navButtonTopMargin="63%"
-      legendProps={{ wrapperStyle: { top: -10 } }}
-      margin={{ top: 20, right: 60, left: 60, bottom: 0 }}
-      tooltipType="left"
-    />
+    <>
+      {!loading ? (
+        <EduIf condition={dataForChart.length || pageNo > 1}>
+          <EduThen>
+            <SignedStackedBarChart
+              pageSize={pageSize}
+              barsData={barData}
+              data={dataForChart}
+              yDomain={[0, 100]}
+              xAxisDataKey="testName"
+              onBarClickCB={(bar) => console.log('bar is clicked', bar)}
+              onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
+              onLegendMouseEnter={(payload) =>
+                console.log('Cursor Over Legend', payload)
+              }
+              onLegendMouseLeave={(payload) =>
+                console.log('Cursor away from Legend', payload)
+              }
+              yAxisLabel="DISTRIBUTION OF STUDENTS (%)"
+              hideOnlyYAxis
+              onMouseBarOver={handleMouseOver}
+              onMouseBarLeave={() => setHoveredCategory(null)}
+              getTooltipJSX={getTooltipJSX}
+              getXAxisTickSyle={{ fontWeight: 'bold' }}
+              hideCartesianGrid
+              hasBarInsideLabels
+              barsLabelFormatter={getCategoryContent}
+              labelListContent={getCategoryContent}
+              ticks={false}
+              tick={false}
+              barSize={100}
+              hasRoundedBars={false}
+              referenceLines={referenceLines}
+              tickMargin={10}
+              preLabelContent={preLabelContent}
+              navButtonTopMargin="63%"
+              legendProps={{ wrapperStyle: { top: -10 } }}
+              margin={{ top: 20, right: 60, left: 60, bottom: 0 }}
+              tooltipType="left"
+              customizedPagination
+              setNavBtnVisible={setNavBtnVisible}
+              navBtnVisible={navBtnVisible}
+              currentPage={pageNo}
+              setCurrentPage={setPageNo}
+            />
+          </EduThen>
+          <EduElse>
+            <Empty
+              className="ant-empty-small"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ textAlign: 'center', margin: '10px 0' }}
+              description="No matching results"
+            />
+          </EduElse>
+        </EduIf>
+      ) : (
+        <SpinLoader />
+      )}
+    </>
   )
 }
 

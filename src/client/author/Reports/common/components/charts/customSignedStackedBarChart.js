@@ -139,6 +139,12 @@ export const SignedStackedBarChart = ({
   tickMargin = 20,
   tooltipType = 'top',
   navButtonTopMargin,
+  // customized pagination props if done
+  customizedPagination,
+  navBtnVisible,
+  setNavBtnVisible,
+  currentPage,
+  setCurrentPage,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -168,6 +174,7 @@ export const SignedStackedBarChart = ({
     lookbackCount: 0,
     pageSize,
     backFillLastPage: true,
+    customizedPagination,
   })
 
   if (settings) {
@@ -311,11 +318,18 @@ export const SignedStackedBarChart = ({
   // chart navigation visibility and control
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
+
+  // leftNavVisible: true,
+  //   rightNavVisible: true,
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
+    : customizedPagination
+    ? navBtnVisible.leftNavVisible
     : hasPreviousPage
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
+    : customizedPagination
+    ? navBtnVisible.rightNavVisible
     : hasNextPage
 
   const chartNavLeftClick = () => {
@@ -324,6 +338,12 @@ export const SignedStackedBarChart = ({
         ...backendPagination,
         page: backendPagination.page - 1,
       })
+    } else if (customizedPagination && currentPage > 1) {
+      setNavBtnVisible(() => ({
+        rightNavVisible: true,
+        leftNavVisible: currentPage > 2,
+      }))
+      setCurrentPage((prev) => prev - 1)
     } else {
       prevPage()
       setAnimate(true)
@@ -335,6 +355,12 @@ export const SignedStackedBarChart = ({
         ...backendPagination,
         page: backendPagination.page + 1,
       })
+    } else if (customizedPagination) {
+      setNavBtnVisible(() => ({
+        rightNavVisible: data.length === pageSize, // page Size
+        leftNavVisible: true,
+      }))
+      setCurrentPage((prevPageNo) => prevPageNo + 1)
     } else {
       nextPage()
       setAnimate(true)
@@ -454,19 +480,18 @@ export const SignedStackedBarChart = ({
           {isSignedChart ? (
             <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           ) : null}
-          {referenceLines.length &&
-            Object.keys(referenceLines).map((ref) => (
-              <ReferenceLine
-                y={ref}
-                stroke={ref === 0 ? 'black' : '#D3D3D3'}
-                label={{
-                  position: 'insideLeft',
-                  value: `${ref}%`,
-                  textAnchor: 'end',
-                  dx: -50,
-                }}
-              />
-            ))}
+          {Object.keys(referenceLines).map((ref) => (
+            <ReferenceLine
+              y={ref}
+              stroke={ref === 0 ? 'black' : '#D3D3D3'}
+              label={{
+                position: 'insideLeft',
+                value: `${ref}%`,
+                textAnchor: 'end',
+                dx: -50,
+              }}
+            />
+          ))}
           {barsData.map((bdItem, bdIndex) => {
             let fillOpacity = 1
 

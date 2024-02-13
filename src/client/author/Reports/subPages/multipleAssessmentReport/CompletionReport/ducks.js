@@ -107,7 +107,7 @@ export function* watcherSaga() {
 }
 const stateSelector = (state) =>
   state.reportReducer.reportCompletionReportReducers
-export const getCompletionReportChartData = createSelector(
+export const getCompletionChartData = createSelector(
   stateSelector,
   (state) => state.completionReportChartData
 )
@@ -115,7 +115,7 @@ export const getCompletionReportTableData = createSelector(
   stateSelector,
   (state) => state.completionReportTableData
 )
-export const getCompletionReportChartDataLoading = createSelector(
+export const getCompletionChartDataLoading = createSelector(
   stateSelector,
   (state) => state.loadingCompletionReportChartData
 )
@@ -124,11 +124,3 @@ export const getCompletionReportTableDataLoading = createSelector(
   (state) => state.loadingCompletionReportTableData
 )
 export const getCompletionReportDataError = (state) => state.reportReducer.error
-
-export const selectors = {
-  getCompletionReportChartData,
-  getCompletionReportTableData,
-  getCompletionReportDataError,
-  getCompletionReportChartDataLoading,
-  getCompletionReportTableDataLoading,
-}

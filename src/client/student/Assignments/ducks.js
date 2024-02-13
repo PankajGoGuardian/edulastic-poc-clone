@@ -667,12 +667,14 @@ function* startAssignment({ payload }) {
       safeBrowser,
       lastAttemptId,
       hasSections,
+      languagePreference: payloadLanguagePreference,
     } = payload
 
     const institutionId = yield select(getCurrentSchool)
     const userId = yield select(getCurrentUserId)
     const role = yield select(getUserRole)
-    const languagePreference = yield select(getSelectedLanguageSelector)
+    const languagePreference =
+      payloadLanguagePreference || (yield select(getSelectedLanguageSelector))
     const groupType = 'class'
     let testActivityId = null
 

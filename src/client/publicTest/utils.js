@@ -148,6 +148,8 @@ export const showTestInfoModal = ({
   closeTestPreviewModal,
   preview,
   hasSections,
+  safeBrowser,
+  lastAttemptId,
 }) => {
   let selectedLang = ''
   const handlChange = (value) => {
@@ -243,7 +245,7 @@ export const showTestInfoModal = ({
     ),
     content,
     onOk: () => {
-      if (attemptCount < maxAttempts)
+      if (attemptCount < maxAttempts) {
         startAssignment({
           testId,
           assignmentId,
@@ -251,7 +253,10 @@ export const showTestInfoModal = ({
           classId,
           selectedLang,
           hasSections,
+          safeBrowser,
+          lastAttemptId,
         })
+      }
       if (!preview) Modal.destroyAll()
       if (preview && multiLanguageEnabled) {
         return !selectedLang

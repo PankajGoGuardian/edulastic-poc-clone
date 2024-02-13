@@ -47,6 +47,9 @@ export const SET_SELECTED_GROUP_STATUS =
 export const SET_LANGUAGE_PREFERENCE =
   '[studentAssignments] set selected language'
 
+export const SET_VQ_ENABLE_YOUTUBE_ED =
+  '[studentAssignments] set VQ YouTube ED Enable'
+
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS)
@@ -78,6 +81,7 @@ export const utaStartTimeUpdateRequired = createAction(
 export const setShowRetakeModalAction = createAction(
   SET_SHOW_RETAKE_MODAL_STATE
 )
+export const setVqEnableYouTubeEdAction = createAction(SET_VQ_ENABLE_YOUTUBE_ED)
 
 export const setSelectedLanguageAction = createAction(SET_LANGUAGE_PREFERENCE)
 
@@ -191,6 +195,9 @@ export default createReducer(initialState, {
   },
   [SET_LANGUAGE_PREFERENCE]: (state, { payload }) => {
     state.languagePreference = payload
+  },
+  [SET_VQ_ENABLE_YOUTUBE_ED]: (state, { payload }) => {
+    state.vqEnableYouTubeEd = payload
   },
 })
 

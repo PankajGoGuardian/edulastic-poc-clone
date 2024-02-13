@@ -361,6 +361,7 @@ export const SET_MAX_SHARING_LEVEL_ALLOWED =
   '[tests] set max sharing level allowed'
 export const TOGGLE_PENALTY_ON_USING_HINTS =
   '[tests] toggle penalty on using hints'
+export const SET_VQ_ENABLE_YOUTUBE_ED = '[tests] set VQ enable YoutubeED'
 export const SET_ENABLE_AUDIO_RESONSE_QUESTION =
   '[tests] set enable audio response question'
 export const GET_YOUTUBE_THUMBNAIL_REQUEST =

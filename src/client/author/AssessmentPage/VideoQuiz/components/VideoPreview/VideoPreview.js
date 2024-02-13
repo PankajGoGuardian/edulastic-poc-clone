@@ -69,6 +69,7 @@ const VideoPreview = ({
   clearHighlighted,
   forwardedVideoRef,
   startAt,
+  vqEnableYouTubeEd,
   vqPreventSkipping,
   isVideoQuizAndAIEnabled,
 }) => {
@@ -476,7 +477,9 @@ const VideoPreview = ({
             volume={volumne}
             muted={muted}
             handleKeyboardSeek={handleKeyboardSeek}
-            isVideoQuizAndAIEnabled={isVideoQuizAndAIEnabled}
+            isVideoQuizAndAIEnabled={
+              isVideoQuizAndAIEnabled || vqEnableYouTubeEd
+            }
           />
           {!playing && currentTime === 0 && (
             <BigPlayButton>
@@ -637,6 +640,7 @@ export default connect(
     previewMode: getPreviewSelector(state),
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
+    vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
   }),
   {
     removeAnswers: removeUserAnswerAction,

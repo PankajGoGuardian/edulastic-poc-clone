@@ -35,7 +35,9 @@ import {
 } from '../../../src/actions/folder'
 import { getSelectedItems } from '../../../src/selectors/folder'
 import { canEditTest } from '../../utils'
-import ActionMenu from '../ActionMenu/ActionMenu'
+import ActionMenu, {
+  getCompletionReportPathForAssignment,
+} from '../ActionMenu/ActionMenu'
 import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import Spinner from '../../../../common/components/Spinner'
 import {
@@ -63,6 +65,8 @@ class AdvancedTable extends Component {
   showBulkUpdate =
     this.props?.features?.premium &&
     this.props.userRole === roleuser.DISTRICT_ADMIN
+
+  showViewCompletionReport = this.props?.features?.premium
 
   state = {
     enableRowClick: true,
@@ -225,26 +229,36 @@ class AdvancedTable extends Component {
                   Bulk Update
                 </Menu.Item>
               )}
+              {this.showViewCompletionReport && (
+                <Menu.Item onClick={() => this.handleViewCompletionReport()}>
+                  View Completion Report
+                </Menu.Item>
+              )}
             </Menu>
           )
           return (
             selectedRows.length > 0 && (
               <ActionDiv>
-                <Dropdown
-                  overlay={menu}
-                  trigger={['click']}
-                  placement="bottomRight"
+                <Tooltip
+                  placement="bottomLeft"
+                  title="Select tests to perform bulk actions like viewing completion report, adding to folder, and bulk update settings"
                 >
-                  <EduButton
-                    height="28px"
-                    width="100%"
-                    data-cy="actions"
-                    isBlue
-                    isGhost
+                  <Dropdown
+                    overlay={menu}
+                    trigger={['click']}
+                    placement="bottomRight"
                   >
-                    ACTIONS
-                  </EduButton>
-                </Dropdown>
+                    <EduButton
+                      height="28px"
+                      width="100%"
+                      data-cy="actions"
+                      isBlue
+                      isGhost
+                    >
+                      ACTIONS
+                    </EduButton>
+                  </Dropdown>
+                </Tooltip>
               </ActionDiv>
             )
           )
@@ -488,6 +502,19 @@ class AdvancedTable extends Component {
         items: selectedRows,
         isOpen: true,
       })
+    }
+  }
+
+  handleViewCompletionReport = () => {
+    const { selectedRows, history } = this.props
+    if (!isEmpty(selectedRows)) {
+      history.push(
+        `/author/reports/completion-report${getCompletionReportPathForAssignment(
+          selectedRows.map((doc) => doc.itemId).toString(),
+          {},
+          selectedRows
+        )}`
+      )
     }
   }
 

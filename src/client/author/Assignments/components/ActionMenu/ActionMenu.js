@@ -15,6 +15,7 @@ import {
 import { intersection } from 'lodash'
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
+import completionReportIcon from '../../assets/completion-report.svg'
 import infomationIcon from '../../assets/information.svg'
 import responsiveIcon from '../../assets/responses.svg'
 import { Container, StyledMenu, StyledLink, SpaceElement } from './styled'
@@ -30,6 +31,22 @@ const getReportPathForAssignment = (testId = '', assignment = {}, row = {}) => {
   q.subject = 'All'
   q.grade = 'All'
   return `${testId}?${qs.stringify(q)}`
+}
+
+export const getCompletionReportPathForAssignment = (
+  testIds = '',
+  assignment = {},
+  row = []
+) => {
+  const q = {}
+  q.termId = assignment.termId || row[0]?.termId
+  if (row.length === 1) {
+    q.assessmentTypes = assignment.testType || row[0].testType
+  }
+  q.subject = 'All'
+  q.grade = 'All'
+  q.testIds = testIds
+  return `?${qs.stringify(q)}`
 }
 
 const ActionMenu = ({
@@ -343,7 +360,30 @@ const ActionMenu = ({
             Embed Link
           </StyledLink>
         </Menu.Item>
-
+        <Menu.Item
+          data-cy="completion-report"
+          key="completion-report"
+          onClick={() => showEmbedLinkModal(currentTestId)}
+        >
+          <Link
+            to={`/author/reports/completion-report${getCompletionReportPathForAssignment(
+              currentTestId,
+              assignmentDetails,
+              [row]
+            )}`}
+            onClick={(e) => {
+              if (!isPremiumUser) {
+                e.preventDefault()
+                showPremiumPopup(true)
+              }
+              e.stopPropagation()
+            }}
+          >
+            <img alt="icon" src={completionReportIcon} />
+            <SpaceElement />
+            View Completion Report
+          </Link>
+        </Menu.Item>
         {isAssignmentOwner && (
           <Menu.Item
             data-cy="edit-tags"

@@ -32,7 +32,9 @@ import {
 } from '@edulastic/constants/const/testTypes'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
-import ActionMenu from '../ActionMenu/ActionMenu'
+import ActionMenu, {
+  getCompletionReportPathForAssignment,
+} from '../ActionMenu/ActionMenu'
 import AnalyzeLink from '../AnalyzeLink/AnalyzeLink'
 import {
   getItemsInFolders,
@@ -501,6 +503,17 @@ const TableList = ({
     }
   }
 
+  const handleViewCompletionReport = () => {
+    if (!isEmpty(selectedItems)) {
+      history.push(
+        `/author/reports/completion-report${getCompletionReportPathForAssignment(
+          selectedItems.map((doc) => doc.itemId).toString(),
+          {},
+          selectedItems
+        )}`
+      )
+    }
+  }
   const handleDownloadResponses = (testId) => {
     bulkDownloadGradesAndResponses({
       data: {},
@@ -642,28 +655,41 @@ const TableList = ({
             >
               Remove from Folder
             </Menu.Item>
+            {isPremiumUser && (
+              <Menu.Item
+                data-cy="view-completion-report"
+                onClick={() => handleViewCompletionReport()}
+              >
+                View Completion Report
+              </Menu.Item>
+            )}
           </Menu>
         )
         return (
           selectedItems.length > 0 && (
             <ActionDiv>
-              <Dropdown
-                overlay={menu}
-                trigger={['click']}
-                placement="bottomRight"
+              <Tooltip
+                placement="bottomLeft"
+                title="Select tests to perform bulk actions like viewing completion report, adding to folder, and bulk update settings"
               >
-                <EduButton
-                  height="22px"
-                  width="100%"
-                  maxWidth="75px"
-                  ml="0px"
-                  data-cy="assignmentActions"
-                  isBlue
-                  isGhost
+                <Dropdown
+                  overlay={menu}
+                  trigger={['click']}
+                  placement="bottomRight"
                 >
-                  ACTIONS
-                </EduButton>
-              </Dropdown>
+                  <EduButton
+                    height="22px"
+                    width="100%"
+                    maxWidth="75px"
+                    ml="0px"
+                    data-cy="assignmentActions"
+                    isBlue
+                    isGhost
+                  >
+                    ACTIONS
+                  </EduButton>
+                </Dropdown>
+              </Tooltip>
             </ActionDiv>
           )
         )

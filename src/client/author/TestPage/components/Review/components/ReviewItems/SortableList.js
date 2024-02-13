@@ -24,7 +24,8 @@ const rightContent = (
   setShowAutoSelectScoreChangeModal,
   isDynamicTest,
   isEditable,
-  refreshGroupItems
+  refreshGroupItems,
+  count
 ) => {
   const {
     deliverItemsCount,
@@ -45,7 +46,7 @@ const rightContent = (
           <span
             onClick={(e) => {
               e.stopPropagation()
-              refreshGroupItems()
+              refreshGroupItems(count)
             }}
           >
             <IconReloadCircle />
@@ -201,7 +202,8 @@ const ReviewSection = ({
                 setShowAutoSelectScoreChangeModal,
                 isDynamicTest,
                 isEditable,
-                refreshGroupItems
+                refreshGroupItems,
+                count
               )}
             >
               {items.map((item, index) => {

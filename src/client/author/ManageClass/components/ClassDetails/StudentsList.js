@@ -54,6 +54,7 @@ const StudentsList = ({
 }) => {
   const [showCurrentStudents, setShowCurrentStudents] = useState(true)
   const [feedbackStudentId, setFeedbackStudentId] = useState(null)
+  const { dataWarehouseReports } = features
 
   const { _id: groupId, type, active } = selectedClass
   const typeText = type !== 'class' ? 'group' : 'class'
@@ -192,7 +193,7 @@ const StudentsList = ({
               />
             </Tooltip>
           ) : null}
-          {cuRole === 'teacher' ? (
+          {cuRole === 'teacher' && dataWarehouseReports ? (
             <Tooltip placement="topRight" title="Add Feedback">
               <MdRateReview onClick={() => setFeedbackStudentId(_id)} />
             </Tooltip>

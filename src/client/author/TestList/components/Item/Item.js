@@ -16,7 +16,7 @@ import {
   isSAWithoutSchoolsSelector,
   isOrganizationDistrictUserSelector,
   isVideoQuizAndAIEnabledSelector,
-  isRedirectToAddOnSelector,
+  isRedirectToVQAddOnSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -201,10 +201,10 @@ class Item extends Component {
       item: { testCategory = '' },
 
       setAISuiteAlertModalVisibility,
-      isRedirectToAddOn,
+      isRedirectToVQAddOn,
     } = this.props
 
-    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)) {
+    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToVQAddOn)) {
       setAISuiteAlertModalVisibility(true)
       return
     }
@@ -225,12 +225,12 @@ class Item extends Component {
     const {
       setIsTestPreviewVisible,
       item: { testCategory = '' },
-      isRedirectToAddOn,
+      isRedirectToVQAddOn,
       setAISuiteAlertModalVisibility,
     } = this.props
     // here
 
-    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToAddOn)) {
+    if (getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToVQAddOn)) {
       setAISuiteAlertModalVisibility(true)
       return
     }
@@ -564,7 +564,7 @@ const enhance = compose(
       customTitleModalVisible:
         state.curriculumSequence?.customTitleModalVisible,
       isVideoQuizAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
-      isRedirectToAddOn: isRedirectToAddOnSelector(state),
+      isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

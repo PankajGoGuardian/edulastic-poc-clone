@@ -60,7 +60,10 @@ const VideoQuizUsage = ({ history, vqUsageCount, vqQuotaForDistrict }) => {
           width={16}
           trailColor={trailColor}
         />
-        <VideoQuizUsageText>{`${vqUsageCount}/${vqQuotaForDistrict} Free Quizzes Used`}</VideoQuizUsageText>
+        <VideoQuizUsageText>{`${vqUsageCount}/${Math.max(
+          vqUsageCount,
+          vqQuotaForDistrict
+        )} Free Quizzes Used`}</VideoQuizUsageText>
         <span onClick={() => setIsModalOpen(true)}>
           <IconInfoCircle margin="6px 0 0 0" />
         </span>

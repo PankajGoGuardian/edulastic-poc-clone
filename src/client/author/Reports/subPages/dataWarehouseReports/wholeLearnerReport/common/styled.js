@@ -12,6 +12,7 @@ import {
 } from '@edulastic/colors'
 import { Checkbox, Button, Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
+import { CustomStyledTable } from '../../common/components/styledComponents'
 
 export const AssessmentNameContainer = styled.div`
   .test-name-container {
@@ -250,5 +251,17 @@ export const ClaimsRow = styled(Row)`
   flex-wrap: nowrap;
   @media print {
     flex-wrap: wrap;
+  }
+`
+
+export const styledTable = styled(CustomStyledTable)`
+  table {
+    tbody {
+      tr {
+        td {
+          font-weight: 700;
+        }
+      }
+    }
   }
 `

@@ -9,6 +9,7 @@ import MasteryReportSection from './MasteryReportSection'
 import { FilledTabBar } from './FilledTabBar'
 import { Tutoring } from './Tutoring'
 import { getStudentName } from '../../utils'
+import FeedbacksTable from '../FeedbacksTable'
 import { convertItemToArray } from '../../../common/utils'
 import { NoDataContainer } from './MasteryReportSection/styled'
 
@@ -26,6 +27,10 @@ const TABLE_TABS = {
   TUTORING: {
     key: 'tutoring',
     label: 'Tutoring',
+  },
+  FEEDBACK: {
+    key: 'feedback',
+    label: 'Feedback',
   },
 }
 const DISABLE_MSG =
@@ -67,7 +72,9 @@ const WLRDetails = ({
   tutorMeInterventionsLoading,
   tutorMeInterventionsError,
 }) => {
-  const [tableTabKey, setTableTabKey] = useState(TABLE_TABS.PERFORMANCE.key)
+  const [tableTabKey, setTableTabKey] = useState(
+    filters.subActiveKey || TABLE_TABS.PERFORMANCE.key
+  )
 
   const studentName = getStudentName(
     settings.selectedStudentInformation,
@@ -154,6 +161,26 @@ const WLRDetails = ({
             tableTabKey === TABLE_TABS.TUTORING.key && isCsvDownloading
           }
           isSharedReport={isSharedReport}
+        />
+      ),
+    },
+    {
+      key: TABLE_TABS.FEEDBACK.key,
+      label: TABLE_TABS.FEEDBACK.label,
+      children: (
+        <FeedbacksTable
+          studentId={settings.selectedStudent.key}
+          termId={settings.requestFilters.termId}
+          onCsvConvert={(data) => {
+            downloadCSV(
+              `Whole Learner Report - ${studentName} - FeedBacks.csv`,
+              data
+            )
+          }}
+          isCsvDownloading={
+            tableTabKey === TABLE_TABS.FEEDBACK.key && isCsvDownloading
+          }
+          studentData={settings.selectedStudentInformation}
         />
       ),
     },

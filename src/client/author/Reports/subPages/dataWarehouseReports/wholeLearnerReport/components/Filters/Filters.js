@@ -174,9 +174,9 @@ const WholeLearnerReportFilters = ({
   useEffect(() => {
     if (reportId) {
       fetchFiltersDataRequest({ reportId })
-    } else if (urlStudentId && search.termId) {
+    } else if (urlStudentId && (search.termId || search.subActiveKey)) {
       fetchFiltersDataRequest({
-        termId: search.termId,
+        termId: search.termId || defaultTermId,
         studentId: urlStudentId,
         externalTestTypesRequired: true,
         externalTestsRequired: !isMultiSchoolYear,

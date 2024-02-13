@@ -2,6 +2,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
+  themeColor,
   themeColorBlue,
 } from '@edulastic/colors'
 
@@ -134,3 +135,44 @@ export const StyledDiv = styled.div`
 `
 
 export const ImmersiveReaderButton = styled(StyledButton)
+
+export const StyledMenuItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  fill: ${themeColor};
+  font-weight: 550;
+`
+
+export const StyledDefaultMenuItem = styled.div`
+  background: white;
+  width: 180px;
+  padding: 10px;
+  color: ${themeColor};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 550;
+`
+
+export const StyledTextForStudent = styled.p`
+  font-size: ${({ fontSize }) => fontSize || '16px'};
+  font-weight: 550;
+  color: ${({ color }) => color || 'black'};
+  margin-right: ${({ marginRight }) => marginRight || '15px'};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: ${({ maxWidth }) => maxWidth || '180px'};
+  text-transform: uppercase;
+`
+
+export const StyledTextForDropdown = styled.p`
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+`

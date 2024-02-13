@@ -9,7 +9,7 @@ import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 import { Select, Modal, Tooltip } from 'antd'
 import { themeColor } from '@edulastic/colors'
-import { IconSelectCaretDown } from '@edulastic/icons'
+import { IconSelectCaretDown, IconUserRegular } from '@edulastic/icons'
 
 const { Option } = Select
 
@@ -148,6 +148,7 @@ export const showTestInfoModal = ({
   closeTestPreviewModal,
   preview,
   hasSections,
+  userName,
   safeBrowser,
   lastAttemptId,
 }) => {
@@ -230,18 +231,42 @@ export const showTestInfoModal = ({
 
   Modal.confirm({
     title: (
-      <Tooltip title={title}>
-        <div
-          style={{
-            maxWidth: '80%',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {title}
-        </div>
-      </Tooltip>
+      <FlexContainer justifyContent="space-between" alignItems="center">
+        <Tooltip title={title}>
+          <div
+            style={{
+              maxWidth: 'calc(75 - 300px)%',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {title}
+          </div>
+        </Tooltip>
+        <Tooltip title={userName}>
+          <FlexContainer
+            alignItems="center"
+            justifyContent="flex-end"
+            width="300px"
+          >
+            <IconUserRegular height="24px" width="24px" />
+            <div
+              style={{
+                color: '#9501DB',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '250px',
+                width: 'fit-content',
+                fontWeight: '600',
+              }}
+            >
+              Hi, {userName}!
+            </div>
+          </FlexContainer>
+        </Tooltip>
+      </FlexContainer>
     ),
     content,
     onOk: () => {

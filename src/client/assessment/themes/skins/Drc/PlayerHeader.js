@@ -24,6 +24,7 @@ import {
   IconCloudUpload,
   IconEduReferenceSheet,
   IconImmersiveReader,
+  IconProfileCircle,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Button, Select } from 'antd'
@@ -50,6 +51,8 @@ import TimedTestTimer from '../../common/TimedTestTimer'
 import QuestionSelectDropdown from '../../common/QuestionSelectDropdown'
 import { isPearDomain } from '../../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../../admin/Common/StyledComponents'
+import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import { StyledTextForStudent } from '../../common/styledCompoenents'
 
 const {
   playerSkin: { drc },
@@ -103,6 +106,7 @@ const PlayerHeader = ({
   calcTypes,
   immersiveReaderTitle = '',
   canUseImmersiveReader = false,
+  userName,
 }) => {
   const {
     enableScratchpad,
@@ -159,6 +163,12 @@ const PlayerHeader = ({
               {title}
             </Title>
           </div>
+          <FlexContainer alignItems="center">
+            <IconProfileCircle isBgDark />
+            <StyledTextForStudent color="white">
+              {userName}
+            </StyledTextForStudent>
+          </FlexContainer>
         </StyledHeaderTitle>
         <HeaderMainMenu style={{ background: header2.background }}>
           <NavigationHeader>
@@ -321,6 +331,7 @@ const enhance = compose(
       grades: state.test?.grades,
       subjects: state.test?.subjects,
       zoomLevel: state.ui.zoomLevel,
+      userName: getUserNameSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

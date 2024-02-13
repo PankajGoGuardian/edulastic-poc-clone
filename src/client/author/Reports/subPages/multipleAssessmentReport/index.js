@@ -151,12 +151,15 @@ const MultipleAssessmentReportContainer = (props) => {
 
   const onGoClick = (_settings) => {
     const _requestFilters = {}
+
     Object.keys(_settings.filters).forEach((filterType) => {
       _requestFilters[filterType] =
         _settings.filters[filterType] === 'All'
           ? ''
           : _settings.filters[filterType]
     })
+
+    console.log({ _settings, _requestFilters })
     setMARSettings({
       requestFilters: {
         ..._requestFilters,

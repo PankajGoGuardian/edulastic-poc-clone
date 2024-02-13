@@ -6,7 +6,7 @@ import { analyzeBy } from '../../static/json/dropDownData.json'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { compareByOptions } from '../../../common/utils/constants'
 
-const TableHeader = ({ settings, setMARSettings }) => {
+const TableHeader = ({ settings, setMARSettings, compareByCB }) => {
   const [tableFilters, setTableFilters] = useState({
     analyseBy: analyzeBy[0],
     compareBy: compareByOptions[0],
@@ -24,33 +24,26 @@ const TableHeader = ({ settings, setMARSettings }) => {
     setMARSettings({
       requestFilters: {
         ...settings.requestFilters,
-        selectedCompareBy: tableFilters.compareBy,
-        analyseBy: tableFilters.analyseBy,
+        selectedCompareBy: tableFilters.compareBy.key,
       },
     })
   }, [tableFilters])
 
   return (
     <TableHeaderContainer>
-      {/* Left Container */}
       <LeftContainer>
-        {/* Table title */}
         <Heading
           title="Completion report by School"
           description="Click on the number to download list of students"
         />
       </LeftContainer>
-
-      {/* Right Container */}
       <RightContainer>
-        {/* CompareBy Filter */}
         <ControlDropDown
           prefix="Compare by"
           by={tableFilters.compareBy}
-          selectCB={(value) => handleFiltersChange('compareBy')(value)}
+          selectCB={(e, value) => handleFiltersChange('compareBy')(value)}
           data={compareByOptions}
         />
-        {/* Analyze filter */}
         <AnalyseByFilter
           data={analyzeBy}
           analyseBy={tableFilters.analyseBy}

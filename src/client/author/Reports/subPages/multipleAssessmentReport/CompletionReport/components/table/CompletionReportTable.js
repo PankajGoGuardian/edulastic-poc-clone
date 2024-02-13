@@ -103,7 +103,7 @@ const getTableColumns = (isSharedReport, settings, isPrinting, sortFilters) => {
   return staticColumns
 }
 
-const CompletionReportTable = ({ settings, setMARSettings }) => {
+const CompletionReportTable = ({ settings, setMARSettings, compareByCB }) => {
   const _data = [
     {
       assessmentDate: '1696567790009',
@@ -169,7 +169,12 @@ const CompletionReportTable = ({ settings, setMARSettings }) => {
 
   return (
     <TableContainer>
-      <TableHeader settings={settings} setMARSettings={setMARSettings} />
+      <TableHeader
+        com
+        settings={settings}
+        setMARSettings={setMARSettings}
+        compareByCB={compareByCB}
+      />
       {/* Table component */}
       <StyledTable columns={columns} dataSource={dataSource} />
     </TableContainer>

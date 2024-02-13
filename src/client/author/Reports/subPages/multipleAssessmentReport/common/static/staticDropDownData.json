@@ -59,7 +59,8 @@
     "assignedBy": "anyone",
     "preTestId": "",
     "postTestId": "",
-    "showApply": false
+    "showApply": false,
+    "selectedCompareBy": "school"
   },
   "initialDdFilters": {
     "race": "all",

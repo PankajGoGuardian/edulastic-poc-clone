@@ -51,6 +51,15 @@ function CompletionReport({
   //   settings,
   //   compareByOptions,
   // })
+
+  const handleCompareChange = (selected) => {
+    setMARSettings({
+      requestFilters: {
+        ...settings.requestFilters,
+        selectedCompareBy: selected.key,
+      },
+    })
+  }
   useEffect(() => {
     const q = { ...settings.requestFilters, page: pageNo || 1 }
     if (q.termId || q.reportId) {
@@ -88,6 +97,7 @@ function CompletionReport({
         {...props}
       />
       <CompletionReportTable
+        compareByCB={handleCompareChange}
         settings={settings}
         setMARSettings={setMARSettings}
       />

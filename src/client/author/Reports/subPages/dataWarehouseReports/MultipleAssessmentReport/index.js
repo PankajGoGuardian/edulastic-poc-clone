@@ -12,7 +12,7 @@ import {
   SpinLoader,
   notification,
 } from '@edulastic/common'
-import { reportUtils } from '@edulastic/constants'
+import { reportUtils, roleuser } from '@edulastic/constants'
 import {
   helpLinks,
   reportGroupType,
@@ -21,6 +21,7 @@ import {
 import {
   TABLE_SORT_ORDER_TYPES,
   getDistrictGroupTestTermIds,
+  getDistrictTermIdsForDistrictGroup,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
 
@@ -84,6 +85,32 @@ const { downloadCSV } = reportUtils.common
 
 const onCsvConvert = (data) =>
   downloadCSV(`Data Studio - Performance Trends.csv`, data)
+
+const enhanceQueryWithTermIds = (
+  { termId, ...query },
+  { orgData, userRole }
+) => {
+  if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+    const districtIdsArr = convertItemToArray(query.districtIds)
+    const termIdsArr = getDistrictTermIdsForDistrictGroup(orgData, {
+      termId,
+      districtIds: districtIdsArr,
+    })
+    const termIds = termIdsArr.join(',')
+    Object.assign(query, { termIds })
+  } else {
+    const testTermIdsArr = convertItemToArray(query.testTermIds)
+    const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
+      orgData,
+      testTermIdsArr
+    )
+    const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
+      ','
+    )
+    Object.assign(query, { termIds: termId, testTermIds })
+  }
+  return query
+}
 
 const MultipleAssessmentReport = ({
   // value props
@@ -248,16 +275,8 @@ const MultipleAssessmentReport = ({
     }
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
-      const testTermIdsArr = convertItemToArray(q.testTermIds)
-      const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
-        orgData,
-        testTermIdsArr
-      )
-      const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
-        ','
-      )
-      Object.assign(q, { testTermIds })
-      fetchDWMARChartDataRequest(q)
+      const query = enhanceQueryWithTermIds(q, { orgData, userRole })
+      fetchDWMARChartDataRequest(query)
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters, orgData])
@@ -276,19 +295,11 @@ const MultipleAssessmentReport = ({
       requireTotalCount: pageFilters.page === 1,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
-      const testTermIdsArr = convertItemToArray(q.testTermIds)
-      const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
-        orgData,
-        testTermIdsArr
-      )
-      const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
-        ','
-      )
-      Object.assign(q, { testTermIds })
-      fetchDWMARTableDataRequest(q)
+      const query = enhanceQueryWithTermIds(q, { orgData, userRole })
+      fetchDWMARTableDataRequest(query)
       return () => toggleFilter(null, false)
     }
-  }, [pageFilters])
+  }, [pageFilters, orgData])
 
   useEffect(() => {
     const { internalMetricsForChart, externalMetricsForChart } = get(

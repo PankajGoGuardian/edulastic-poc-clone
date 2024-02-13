@@ -138,7 +138,6 @@ export const SignedStackedBarChart = ({
   referenceLines = [],
   tickMargin = 20,
   tooltipType = 'top',
-  navButtonTopMargin,
   // customized pagination props if done
   customizedPagination,
   navBtnVisible,
@@ -368,10 +367,7 @@ export const SignedStackedBarChart = ({
   }
 
   return (
-    <StyledSignedStackedBarChartContainer
-      ref={parentContainerRef}
-      navButtonTopMargin={navButtonTopMargin}
-    >
+    <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
       <ResetButtonClear
         onClick={onResetClick}
         style={

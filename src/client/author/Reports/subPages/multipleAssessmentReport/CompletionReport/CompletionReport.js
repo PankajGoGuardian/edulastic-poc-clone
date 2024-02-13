@@ -52,7 +52,7 @@ function CompletionReport({
   //   compareByOptions,
   // })
   useEffect(() => {
-    const q = { ...settings.requestFilters, page: pageNo }
+    const q = { ...settings.requestFilters, page: pageNo || 1 }
     if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
 
@@ -77,25 +77,16 @@ function CompletionReport({
 
   return (
     <Container>
-      {chartData.length ? (
-        <Chart
-          chartData={chartData}
-          setNavBtnVisible={setNavBtnVisible}
-          navBtnVisible={navBtnVisible}
-          loading={chartDataLoading}
-          pageSize={pageSize}
-          setPageNo={setPageNo}
-          pageNo={pageNo}
-          {...props}
-        />
-      ) : (
-        <Empty
-          className="ant-empty-small"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          style={{ textAlign: 'center', margin: '10px 0' }}
-          description="No matching results"
-        />
-      )}
+      <Chart
+        chartData={chartData}
+        setNavBtnVisible={setNavBtnVisible}
+        navBtnVisible={navBtnVisible}
+        loading={chartDataLoading}
+        pageSize={pageSize}
+        setPageNo={setPageNo}
+        pageNo={pageNo}
+        {...props}
+      />
       <CompletionReportTable
         settings={settings}
         setMARSettings={setMARSettings}

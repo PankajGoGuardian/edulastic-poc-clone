@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { Empty } from 'antd'
 import {
@@ -8,6 +8,7 @@ import {
   xAxisDataKey,
   yDomain,
   yAxisLabel,
+  preLabelHeading,
 } from '../../../common/utils/constants'
 import {
   TooltipRowTitle,
@@ -16,6 +17,9 @@ import {
 } from '../../../../../common/styled'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
 import { chartDataFormatter } from './utils'
+import Heading from '../../../../../common/components/Heading'
+
+const { title, description } = preLabelHeading
 
 const Chart = (props) => {
   const {
@@ -28,7 +32,7 @@ const Chart = (props) => {
   } = props
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
-  const dataForChart = chartDataFormatter(chartData)
+  const dataForChart = useMemo(() => chartDataFormatter(chartData))
 
   useEffect(() => {
     if (dataForChart.length === pageSize) {
@@ -38,8 +42,9 @@ const Chart = (props) => {
         ...prevState,
         rightNavVisible: false,
       }))
+      if (dataForChart.length === 0) setPageNo((prevState) => prevState - 1)
     }
-  }, [])
+  }, [chartData])
 
   const handleMouseOver = (category) => {
     setHoveredCategory(category)
@@ -63,11 +68,11 @@ const Chart = (props) => {
       } (${result[hoveredCategory.key]}%)`
       return (
         <div>
-          {Object.keys(dataToDisplay).map((title) => {
+          {Object.keys(dataToDisplay).map((key) => {
             return (
               <TooltipRow>
-                <TooltipRowTitle>{title}</TooltipRowTitle>
-                <TooltipRowValue>{dataToDisplay[title]}</TooltipRowValue>
+                <TooltipRowTitle>{key}</TooltipRowTitle>
+                <TooltipRowValue>{dataToDisplay[key]}</TooltipRowValue>
               </TooltipRow>
             )
           })}
@@ -76,21 +81,12 @@ const Chart = (props) => {
     }
   }
 
-  const preLabelContent = (
-    <>
-      <h1>Completion report by School</h1>
-      <p>
-        The report provide real-time insights into student progess, submission
-        status and grading updates for informed decision-making.
-      </p>
-    </>
-  )
-
   return (
     <>
       {!loading ? (
         <EduIf condition={dataForChart.length || pageNo > 1}>
           <EduThen>
+            <Heading title={title} description={description} />
             <SignedStackedBarChart
               pageSize={pageSize}
               barsData={barLabelData}
@@ -121,10 +117,7 @@ const Chart = (props) => {
               hasRoundedBars={false}
               referenceLines={referenceLines}
               tickMargin={10}
-              preLabelContent={preLabelContent}
-              navButtonTopMargin="63%"
               legendProps={{ wrapperStyle: { top: -10 } }}
-              margin={{ top: 20, right: 60, left: 60, bottom: 0 }}
               tooltipType="left"
               customizedPagination
               setNavBtnVisible={setNavBtnVisible}

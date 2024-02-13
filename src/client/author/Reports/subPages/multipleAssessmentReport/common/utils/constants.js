@@ -47,6 +47,11 @@ export const completionReportPageSize = 2
 export const xAxisDataKey = 'testName'
 export const yDomain = [0, 100]
 export const yAxisLabel = 'DISTRIBUTION OF STUDENTS (%)'
+export const preLabelHeading = {
+  title: 'Completion report by School',
+  description:
+    'The report provide real-time insights into student progess, submission status and grading updates for informed decision-making',
+}
 export const barDataForCompletionChart = [
   {
     key: 'absentPercentage',

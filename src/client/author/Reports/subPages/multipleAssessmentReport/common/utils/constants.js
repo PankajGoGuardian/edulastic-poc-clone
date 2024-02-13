@@ -34,7 +34,6 @@ export const compareByOptions = [
   { key: compareByKeys.TEACHER, title: 'Teacher' },
   { key: compareByKeys.CLASS, title: 'Class' },
   { key: compareByKeys.GROUP, title: 'Student Group' },
-  { key: compareByKeys.STUDENT, title: 'Student' },
   { key: compareByKeys.RACE, title: 'Race' },
   { key: compareByKeys.GENDER, title: 'Gender' },
   { key: compareByKeys.FRL_STATUS, title: 'FRL Status' },
@@ -127,4 +126,8 @@ export const referenceLinesForCompletionChart = [
     textAnchor: 'end',
     dx: -50,
   },
+]
+export const analyzeBy = [
+  { key: 'score', title: 'Percentage(%)' },
+  { key: 'rawScore', title: 'Number' },
 ]

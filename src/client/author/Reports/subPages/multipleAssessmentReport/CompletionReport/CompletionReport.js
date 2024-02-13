@@ -13,6 +13,7 @@ import { Container } from './styled'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
+import { analyzeBy, compareByOptions } from '../common/utils/constants'
 
 const pageSize = 2
 
@@ -34,7 +35,8 @@ function CompletionReport({
     leftNavVisible: false,
     rightNavVisible: false,
   })
-
+  const [compareBy, setCompareBy] = useState(compareByOptions[0])
+  const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
   const [pageNo, setPageNo] = useState(1)
 
   const [pageFilters, setPageFilters] = useState({

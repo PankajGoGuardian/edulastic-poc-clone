@@ -8,10 +8,6 @@ export const tableColumnsData = [
   {
     dataIndex: sortKeys.COMPARE_BY,
     key: sortKeys.COMPARE_BY,
-    align: 'left',
-    fixed: 'left',
-    width: 200,
-    sorter: true,
   },
   // next up are dynamic columns for each assessment
 ]

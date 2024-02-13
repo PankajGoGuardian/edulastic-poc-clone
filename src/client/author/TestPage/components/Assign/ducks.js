@@ -19,10 +19,15 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
+import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
 import { getTestSelector, getTestIdSelector } from '../../ducks'
 
 import { formatAssignment } from './utils'
-import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
+import {
+  getUserNameSelector,
+  getUserId,
+  vqQuotaForDistrictSelector,
+} from '../../../src/selectors/user'
 import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
 import {
@@ -570,6 +575,13 @@ function* saveAssignment({ payload }) {
       return notification({
         msg:
           'No classes found after removing the duplicates. Select one or more to assign.',
+      })
+    }
+    if (err?.response?.data?.message === VQ_QUOTA_EXHAUSTED) {
+      const vqQuotaForDistrict = yield select(vqQuotaForDistrictSelector)
+      return notification({
+        type: 'warn',
+        msg: `You have reached the maximum limit of ${vqQuotaForDistrict} tests for VideoQuiz.`,
       })
     }
     const errorMessage = err.response?.data?.message || 'Something went wrong'

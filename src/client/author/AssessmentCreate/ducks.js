@@ -19,7 +19,10 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
-import { testCategoryTypes } from '@edulastic/constants/const/test'
+import {
+  VQ_QUOTA_EXHAUSTED,
+  testCategoryTypes,
+} from '@edulastic/constants/const/test'
 import { uploadToS3 } from '../src/utils/upload'
 import {
   createBlankTest,
@@ -29,7 +32,11 @@ import {
   NewGroup,
   receiveTestByIdAction,
 } from '../TestPage/ducks'
-import { getUserSelector, getUserRole } from '../src/selectors/user'
+import {
+  getUserSelector,
+  getUserRole,
+  vqQuotaForDistrictSelector,
+} from '../src/selectors/user'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
 
 const pdfjs = require('pdfjs-dist')
@@ -384,7 +391,15 @@ function* createAssessmentSaga({ payload }) {
     } else {
       errorMessage = 'Unable to create assessment.'
     }
-    notification({ type: 'error', msg: errorMessage })
+    if (error?.response?.data?.message === VQ_QUOTA_EXHAUSTED) {
+      const vqQuotaForDistrict = yield select(vqQuotaForDistrictSelector)
+      notification({
+        type: 'warn',
+        msg: `You have reached the maximum limit of ${vqQuotaForDistrict} tests for VideoQuiz.`,
+      })
+    } else {
+      notification({ type: 'error', msg: errorMessage })
+    }
     yield put(createAssessmentErrorAction({ error: errorMessage }))
   }
 }

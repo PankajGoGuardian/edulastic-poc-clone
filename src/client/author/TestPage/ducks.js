@@ -40,6 +40,7 @@ import {
   testItemsApi,
   analyticsApi,
   settingsApi,
+  getVQUsageCountApi,
 } from '@edulastic/api'
 import moment from 'moment'
 import nanoid from 'nanoid'
@@ -53,6 +54,7 @@ import {
   Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
+import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
 import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
@@ -90,6 +92,7 @@ import {
   getOrgGroupList,
   isPublisherUserSelector,
   isOrganizationDistrictSelector,
+  vqQuotaForDistrictSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -116,6 +119,7 @@ import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
 import appConfig from '../../../app-config'
+import { setUserFeaturesAction } from '../../student/Login/ducks'
 
 const { videoQuizDefaultCollection } = appConfig
 
@@ -3834,6 +3838,16 @@ function* duplicateTestSaga({ payload }) {
       updateContentVersionId,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
+
+    if (data?.testCategory === testCategoryTypes.VIDEO_BASED) {
+      const { vqUsageCount } = yield call(getVQUsageCountApi.getVQUsageCount)
+      yield put(
+        setUserFeaturesAction({
+          featureName: 'vqUsageCount',
+          value: vqUsageCount,
+        })
+      )
+    }
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
       yield put(push(`/author/tests/${data._id}`))
@@ -3860,10 +3874,19 @@ function* duplicateTestSaga({ payload }) {
           msg: 'Duplicating the test permission denied and failed to regrade',
         })
       }
+      if (errorMessage === VQ_QUOTA_EXHAUSTED) {
+        const vqQuotaForDistrict = yield select(vqQuotaForDistrictSelector)
+        return notification({
+          type: 'warn',
+          msg: `You have reached the maximum limit of ${vqQuotaForDistrict} tests for VideoQuiz.`,
+        })
+      }
+
       return notification({
         msg: 'You do not have the permission to clone the test.',
       })
     }
+
     return notification({ msg: errorMessage || 'Failed to duplicate test' })
   }
 }

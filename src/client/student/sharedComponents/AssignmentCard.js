@@ -266,7 +266,10 @@ const AssignmentCard = memo(
         return
       }
 
-      if (multiLanguageEnabled && !lastAttempt?.languagePreference) {
+      if (
+        multiLanguageEnabled &&
+        (!resume || !lastAttempt?.languagePreference)
+      ) {
         return showTestInfoModal({
           pauseAllowed,
           allowedTime,
@@ -288,7 +291,7 @@ const AssignmentCard = memo(
           notifyCancel: false,
           safeBrowser: true,
           hasSections,
-          lastAttemptId: lastAttempt?._id,
+          ...(resume ? { lastAttemptId: lastAttempt?._id } : {}),
         })
       }
 

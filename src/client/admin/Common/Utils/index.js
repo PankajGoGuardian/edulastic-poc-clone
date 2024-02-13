@@ -1,3 +1,4 @@
+import { notification } from '@edulastic/common'
 import { roleuser, userPermissions } from '@edulastic/constants'
 import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
 import { useEffect, useRef } from 'react'
@@ -144,4 +145,45 @@ export const getTutorMeSubscription = (subscription) => {
       (s) => s.type === ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME
     ) || {}
   return tutorMeSubscription
+}
+
+export const validateForTutorMeAuthTokenCheck = ({
+  tutorMeStartDate,
+  tutorMeEndDate,
+  tutorMeAuthToken,
+  tutorMeAuthTokenCheck,
+}) => {
+  const condition =
+    (tutorMeStartDate || tutorMeEndDate) &&
+    tutorMeAuthToken &&
+    !tutorMeAuthTokenCheck
+  if (condition) {
+    notification({ msg: 'Double-check TutorMe Authentication Key' })
+  }
+  return !condition
+}
+
+export const getNextAdditionalSubscriptions = ({
+  tutorMeStartDate,
+  tutorMeEndDate,
+  tutorMeAuthToken,
+  tutorMeAuthTokenCheck = true, // default=true to bypass validation check if not required
+}) => {
+  const nextAdditionalSubscriptions = [
+    {
+      type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
+      startDate: tutorMeStartDate,
+      endDate: tutorMeEndDate,
+      authToken: tutorMeAuthToken,
+    },
+  ]
+  // filter out additional subscriptions with empty startDate/endDate etc.
+  return nextAdditionalSubscriptions.filter((s) => {
+    const startDateCheck = !!s.startDate
+    const endDateCheck = !!s.endDate
+    const tutorMeCheck =
+      s.type !== ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME ||
+      (s.authToken && tutorMeAuthTokenCheck)
+    return startDateCheck && endDateCheck && tutorMeCheck
+  })
 }

@@ -110,6 +110,15 @@ export const renderTutorMeEndDate = (subscription) => {
   )
 }
 
+export const renderTutorMeAuthToken = (subscription) => {
+  const { authToken: tutorMeAuthToken } = getTutorMeSubscription(subscription)
+  return (
+    <span data-cy="userSubscriptionTutorMeAuthToken">
+      {tutorMeAuthToken || '-'}
+    </span>
+  )
+}
+
 export default function SubTypeTag({ children }) {
   const color = {
     [SUBSCRIPTION_TYPES.free.subType]: greenDark,

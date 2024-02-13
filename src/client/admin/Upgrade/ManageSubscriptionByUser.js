@@ -9,14 +9,18 @@ import {
   renderEndDate,
   renderStartDate,
   renderSubscriptionType,
+  renderTutorMeAuthToken,
   renderTutorMeEndDate,
   renderTutorMeStartDate,
 } from '../Common/SubTypeTag'
 import InvalidEmailIdList from './InvalidEmailIdList'
 import { radioButtonUserData } from '../Data'
-import { updateDataStudioPermission } from '../Common/Utils'
 import {
-  ADDITIONAL_SUBSCRIPTION_TYPES,
+  getNextAdditionalSubscriptions,
+  updateDataStudioPermission,
+  validateForTutorMeAuthTokenCheck,
+} from '../Common/Utils'
+import {
   SUBSCRIPTION_STATUS,
   SUBSCRIPTION_TYPES,
 } from '../Common/constants/subscription'
@@ -148,6 +152,11 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       render: renderTutorMeEndDate,
     },
     {
+      title: 'TutorMe Auth Key',
+      dataIndex: 'subscription',
+      render: renderTutorMeAuthToken,
+    },
+    {
       title: 'Email ID',
       dataIndex: '_source.email',
     },
@@ -187,11 +196,25 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
             subEndDate,
             notes,
             subscriptionAction,
-            tutorMeStartDate,
-            tutorMeEndDate,
+            tutorMeStartDate: rawTutorMeStartDate,
+            tutorMeEndDate: rawTutorMeEndDate,
+            tutorMeAuthToken,
+            tutorMeAuthTokenCheck,
           }
         ) => {
           if (!err) {
+            const tutorMeStartDate = rawTutorMeStartDate?.valueOf()
+            const tutorMeEndDate = rawTutorMeEndDate?.valueOf()
+
+            // ensure tutorMe authentication key has been double checked
+            const isValidTutorMeAuth = validateForTutorMeAuthTokenCheck({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
+            if (!isValidTutorMeAuth) return
+
             const isDataStudio =
               subscriptionAction === radioButtonUserData.DATA_STUDIO
             const isPremiumPlusDataStudio =
@@ -252,14 +275,13 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               }
             })
 
-            // filter out add on subscriptions with empty startDate/endDate
-            const nextAdditionalSubscriptions = [
-              {
-                type: ADDITIONAL_SUBSCRIPTION_TYPES.TUTORME,
-                startDate: tutorMeStartDate?.valueOf(),
-                endDate: tutorMeEndDate?.valueOf(),
-              },
-            ].filter((s) => s.startDate && s.endDate)
+            // curate additional subscriptions to sync
+            const nextAdditionalSubscriptions = getNextAdditionalSubscriptions({
+              tutorMeStartDate,
+              tutorMeEndDate,
+              tutorMeAuthToken,
+              tutorMeAuthTokenCheck,
+            })
 
             // keep subscription active if either premium or additionalSubscriptions are present
             const statusObj =

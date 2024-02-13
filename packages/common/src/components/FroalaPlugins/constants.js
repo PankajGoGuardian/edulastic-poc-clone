@@ -26,6 +26,7 @@ const buttons = [
 export const audioUploadFileLimit = 10 // in MB
 
 export const premiumToolbarButtons = ['insertAudio']
+export const initiateSpeechToTextButton = 'initiateSpeechToText'
 
 export const DEFAULT_TOOLBAR_BUTTONS = {
   STD: {

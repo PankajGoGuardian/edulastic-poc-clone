@@ -14,10 +14,12 @@ import {
   QuestionSubLabel,
   QuestionLabelWrapper,
   QuestionContentWrapper,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
 import { calculateWordsCount } from '@edulastic/common/src/helpers'
+import { initiateSpeechToTextButton } from '@edulastic/common/src/components/FroalaPlugins/constants'
 import { Toolbar } from '../../styled/Toolbar'
 import { Item } from '../../styled/Item'
 import {
@@ -30,11 +32,19 @@ import { ValidList } from './constants/validList'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import VoiceRecognitionAnimation from '../../../common/components/VoiceRecognitionAnimation'
 
-const getToolBarButtons = (item) =>
-  (item.formattingOptions || [])
+const getToolBarButtons = (item, isSpeechToTextAllowed) => {
+  const toolBarButtons = (item.formattingOptions || [])
     .filter((x) => x.active && x.value)
     .map((x) => x.value)
+
+  if (isSpeechToTextAllowed) {
+    toolBarButtons.push(initiateSpeechToTextButton)
+  }
+
+  return toolBarButtons
+}
 
 const EssayRichTextPreview = ({
   col,
@@ -51,9 +61,10 @@ const EssayRichTextPreview = ({
   isPrintPreview,
   isStudentAttempt,
   isFeedbackVisible,
+  isSpeechToTextAllowed = true,
 }) => {
   userAnswer = typeof userAnswer === 'object' ? '' : userAnswer
-  const toolbarButtons = getToolBarButtons(item)
+  const toolbarButtons = getToolBarButtons(item, isSpeechToTextAllowed)
   const answerContextConfig = useContext(AnswerContext)
 
   let minHeight = get(item, 'uiStyle.minHeight', 200)
@@ -66,6 +77,9 @@ const EssayRichTextPreview = ({
 
   const characters = get(item, 'characterMap', [])
   const [wordCount, setWordCount] = useState(0)
+  const [isVoiceRecognitionActive, setIsVoiceRecognitionActive] = useState(
+    false
+  )
 
   useEffect(() => {
     if (Array.isArray(userAnswer) || typeof userAnswer !== 'string') {
@@ -166,6 +180,8 @@ const EssayRichTextPreview = ({
                   customCharacters={characters}
                   placeholder={item?.placeholder}
                   toolbarSize="STD"
+                  isSpeechToTextAllowed={isSpeechToTextAllowed}
+                  setIsVoiceRecognitionActive={setIsVoiceRecognitionActive}
                   unsetMaxWidth
                   sanitizeClipboardHtml
                   restrictTags
@@ -192,17 +208,22 @@ const EssayRichTextPreview = ({
                 />
               </FlexContainer>
             )}
-            {item.showWordCount &&
-              (userAnswer || !isReadOnly) &&
+            {(userAnswer || !isReadOnly) &&
               (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
                 <EssayToolbar borderRadiusOnlyBottom>
-                  <FlexContainer />
-                  <Item
-                    data-cy="questionRichEssayAuthorPreviewWordCount"
-                    style={wordCountStyle}
-                  >
-                    {displayWordCount}
-                  </Item>
+                  <FlexContainer>
+                    <EduIf condition={isVoiceRecognitionActive}>
+                      <VoiceRecognitionAnimation />
+                    </EduIf>
+                  </FlexContainer>
+                  <EduIf condition={item.showWordCount}>
+                    <Item
+                      data-cy="questionRichEssayAuthorPreviewWordCount"
+                      style={wordCountStyle}
+                    >
+                      {displayWordCount}
+                    </Item>
+                  </EduIf>
                 </EssayToolbar>
               )}
           </EssayRichTextContainer>

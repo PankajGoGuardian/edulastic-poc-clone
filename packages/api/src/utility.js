@@ -11,6 +11,15 @@ const fetchServerTime = () =>
     })
     .then(({ data: { result } }) => new Date(result.serverTimeISO).getTime())
 
+const generateTranscribeTempCredentials = () =>
+  api
+    .callApi({
+      url: `${prefix}/transcribe-temp-credentials`,
+      method: 'get',
+    })
+    .then(({ data: { result } }) => result)
+
 export default {
   fetchServerTime,
+  generateTranscribeTempCredentials,
 }

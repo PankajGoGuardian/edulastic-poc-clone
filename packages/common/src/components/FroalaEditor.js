@@ -8,7 +8,12 @@ import Editor from 'react-froala-wysiwyg'
 import FroalaEditor from 'froala-editor'
 import { withTheme } from 'styled-components'
 import { get } from 'lodash'
-import { notification, LanguageContext } from '@edulastic/common'
+import {
+  notification,
+  LanguageContext,
+  EduIf,
+  SpinLoader,
+} from '@edulastic/common'
 import { aws, math, appLanguages } from '@edulastic/constants'
 import { withMathFormula } from '../HOC/withMathFormula'
 import 'froala-editor/js/plugins.pkgd.min'
@@ -38,7 +43,15 @@ import {
   NoneDiv,
   ToolbarContainer,
   BackgroundStyleWrapper,
+  StyledMic,
 } from './FroalaPlugins/styled'
+import { actions as transcribeActions } from '../../../../src/client/common/ducks/Transcribe'
+import {
+  tempCredentialsAPIStatusSelector,
+  tempCredentialsDataSelector,
+  activeTranscribeSessionIdSelector,
+  currentTranscribeToolBarIdSelector,
+} from '../../../../src/client/common/ducks/Transcribe/selectors'
 
 import MathModal from './MathModal'
 
@@ -48,6 +61,11 @@ import {
   replaceMathHtmlWithLatexes,
 } from '../utils/mathUtils'
 import AudioPluginContainer from './FroalaPlugins/AudioPluginContainer'
+import useTranscribeService from '../../../../src/client/common/customHooks/useTranscribeService'
+import {
+  GENERATED,
+  IN_PROGRESS,
+} from '../../../../src/client/common/ducks/Transcribe/constants'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -83,6 +101,15 @@ const CustomEditor = ({
   allowQuickInsert = true,
   unsetMaxWidth = false,
   isPremiumUser,
+  isSpeechToTextAllowed,
+  generateTranscribeTempCredentials,
+  transcribeTempCredentialsAPIStatus,
+  transcribeTempCredentials,
+  stopTranscribeAndResetDataInStore,
+  updateTranscribeSessionId,
+  activeTranscribeSessionId,
+  currentTranscribeToolBarId,
+  setIsVoiceRecognitionActive,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -101,6 +128,27 @@ const CustomEditor = ({
   const EditorRef = useRef(null)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
+
+  const showSpeechToTextLoader =
+    isSpeechToTextAllowed &&
+    toolbarId === currentTranscribeToolBarId &&
+    (transcribeTempCredentialsAPIStatus === IN_PROGRESS ||
+      (transcribeTempCredentialsAPIStatus === GENERATED &&
+        !activeTranscribeSessionId))
+
+  const useTranscribeProps = {
+    EditorRef,
+    toolbarId,
+    isSpeechToTextAllowed,
+    generateTranscribeTempCredentials,
+    transcribeTempCredentialsAPIStatus,
+    transcribeTempCredentials,
+    stopTranscribeAndResetDataInStore,
+    updateTranscribeSessionId,
+    activeTranscribeSessionId,
+    currentTranscribeToolBarId,
+    setIsVoiceRecognitionActive,
+  }
 
   const toolbarButtons = getToolbarButtons(
     'STD',
@@ -289,6 +337,9 @@ const CustomEditor = ({
             }
           }
         },
+        'initiate.speechToText': function (evt) {
+          onSpeechToTextClick()
+        },
         'audio.insert': function (audio) {
           setAudioElement(audio)
         },
@@ -372,6 +423,10 @@ const CustomEditor = ({
             if (this.toolbar) {
               this.toolbar.hide()
             }
+          }
+          if (isSpeechToTextAllowed) {
+            console.log('blurrrr===')
+            handleBlurForSpeechToText()
           }
         },
         'file.beforeUpload': function (files = []) {
@@ -635,6 +690,11 @@ const CustomEditor = ({
     }
   }, [placeholder])
 
+  const {
+    onSpeechToTextClick,
+    handleBlurForSpeechToText,
+  } = useTranscribeService(useTranscribeProps)
+
   return (
     <>
       {audioElement &&
@@ -642,6 +702,9 @@ const CustomEditor = ({
           <AudioPluginContainer EditorRef={EditorRef} />,
           audioElement
         )}
+      <EduIf condition={showSpeechToTextLoader}>
+        <SpinLoader />
+      </EduIf>
       <MathModal
         isEditable={mathModalIsEditable}
         show={showMathModal}
@@ -701,6 +764,15 @@ CustomEditor.propTypes = {
   border: PropTypes.string,
   centerContent: PropTypes.bool,
   editorHeight: PropTypes.number,
+  isSpeechToTextAllowed: PropTypes.bool,
+  generateTranscribeTempCredentials: PropTypes.func.isRequired,
+  transcribeTempCredentialsAPIStatus: PropTypes.string.isRequired,
+  transcribeTempCredentials: PropTypes.object.isRequired,
+  stopTranscribeAndResetDataInStore: PropTypes.func.isRequired,
+  updateTranscribeSessionId: PropTypes.func.isRequired,
+  activeTranscribeSessionId: PropTypes.string,
+  currentTranscribeToolBarId: PropTypes.string,
+  setIsVoiceRecognitionActive: PropTypes.func,
 }
 
 CustomEditor.defaultProps = {
@@ -715,15 +787,35 @@ CustomEditor.defaultProps = {
   border: 'none',
   centerContent: false,
   editorHeight: null,
+  isSpeechToTextAllowed: false,
+  activeTranscribeSessionId: '',
+  currentTranscribeToolBarId: '',
+  setIsVoiceRecognitionActive: () => {},
 }
 
 const enhance = compose(
   withMathFormula,
   withTheme,
-  connect((state) => ({
-    isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
-    advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
-  }))
+  connect(
+    (state) => ({
+      isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+      advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
+      transcribeTempCredentialsAPIStatus: tempCredentialsAPIStatusSelector(
+        state
+      ),
+      transcribeTempCredentials: tempCredentialsDataSelector(state),
+      activeTranscribeSessionId: activeTranscribeSessionIdSelector(state),
+      currentTranscribeToolBarId: currentTranscribeToolBarIdSelector(state),
+    }),
+    {
+      generateTranscribeTempCredentials:
+        transcribeActions.generateTempCredentials,
+      stopTranscribeAndResetDataInStore:
+        transcribeActions.stopTranscribeAndResetDataInStore,
+      updateTranscribeSessionId:
+        transcribeActions.updateActiveTranscribeSessionId,
+    }
+  )
 )
 
 export default enhance(CustomEditor)

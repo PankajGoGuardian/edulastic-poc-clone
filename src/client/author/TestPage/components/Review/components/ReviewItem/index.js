@@ -83,7 +83,7 @@ const ReviewItem = ({
     const main = {
       id: item._id,
       points: item.isLimitedDeliveryType
-        ? item.itemsDefaultMaxScore
+        ? item.itemsDefaultMaxScore || 1
         : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
       isScoringDisabled,

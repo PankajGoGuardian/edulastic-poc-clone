@@ -16,7 +16,6 @@ export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   img {
     max-width: 80%;
     height: auto;
@@ -27,8 +26,9 @@ export const ModalHeaderTitle = styled.div`
   display: flex;
   align-items: center;
   color: ${black};
-  font-weight: 400;
+  font-weight: 600;
   font-size: 20px;
+  line-height: 30px;
 `
 
 export const CloseIcon = styled(IconClose)`
@@ -39,6 +39,20 @@ export const ModalFooterContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  flex-flow: row-reverse;
   flex-wrap: nowrap;
+  justify-content: center;
+`
+
+export const StyledInfoMessage = styled.div`
+  font-family: Open Sans;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0em;
+  text-align: left;
+  margin-top: 25px;
+`
+
+export const StyledInfoMessageStrong = styled.span`
+  font-weight: 800;
 `

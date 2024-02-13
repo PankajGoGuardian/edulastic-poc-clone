@@ -25,7 +25,7 @@ const GroupItems = SortableContainer((props) => {
     (acc, curr) =>
       acc +
       (curr.isLimitedDeliveryType
-        ? curr.itemsDefaultMaxScore
+        ? curr.itemsDefaultMaxScore || 1
         : scoring[curr._id] || helpers.getPoints(curr)),
     0
   )

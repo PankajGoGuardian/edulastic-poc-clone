@@ -39,7 +39,6 @@ const ReviewItems = ({
   hasSections,
   refreshGroupItems,
   setShowAutoSelectScoreChangeModal,
-  setCurrentGroupIndex,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -127,7 +126,6 @@ const ReviewItems = ({
           userId={userId}
           hasSections={hasSections}
           setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
-          setCurrentGroupIndex={setCurrentGroupIndex}
         />
       </Spin>
     </StyledSpinnerContainer>

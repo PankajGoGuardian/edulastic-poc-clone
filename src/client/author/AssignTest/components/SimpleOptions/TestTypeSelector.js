@@ -25,7 +25,9 @@ const TestTypeSelector = ({
     role: userRole,
     canSchoolAdminUseDistrictCommon,
   })
-  const testTypes = includeCommonOnTestType(availableTestTypes, testType)
+  const testTypes = disabled
+    ? includeCommonOnTestType(availableTestTypes, testType)
+    : availableTestTypes
 
   const SelectOption = (
     <SelectInputStyled

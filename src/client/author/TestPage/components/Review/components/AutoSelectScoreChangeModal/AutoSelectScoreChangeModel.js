@@ -5,25 +5,21 @@ import {
   CustomModalStyled,
   NumberInputStyled,
 } from '@edulastic/common'
-import { Icon } from 'antd'
 import { debounce } from 'lodash'
 import {
   ModalContent,
   ModalHeader,
   ModalHeaderTitle,
-  CloseIcon,
   ModalFooterContainer,
+  StyledInfoMessage,
 } from './styled'
-import { StyledInfoMessage } from '../../../GroupItems/styled'
 import { getTestEntitySelector, setTestDataAction } from '../../../../ducks'
 
 const AutoSelectScoreChangeModal = ({
   visible,
   closeModal,
-  score = 1,
-  sectionName = 'default name',
-  groupIndex,
   test,
+  currentGroupId,
   handleSave,
   setTestData,
 }) => {
@@ -31,9 +27,12 @@ const AutoSelectScoreChangeModal = ({
     handleSave()
     closeModal()
   }
+  const currentGroup =
+    test.itemGroups.find((itemGroup) => itemGroup._id == currentGroupId) || {}
+  const { groupName, itemsDefaultMaxScore } = currentGroup
   const onChangeScore = debounce((value) => {
-    const updatedItemGroups = test.itemGroups.map((itemGroup, index) => {
-      if (index === groupIndex) {
+    const updatedItemGroups = test.itemGroups.map((itemGroup) => {
+      if (itemGroup._id === currentGroupId) {
         return {
           ...itemGroup,
           itemsDefaultMaxScore: value,
@@ -49,13 +48,24 @@ const AutoSelectScoreChangeModal = ({
   const Footer = [
     <ModalFooterContainer>
       <EduButton
+        onClick={closeModal}
+        height="36px"
+        width="124px"
+        fontSize="14px"
+        style={{ textTransform: 'none' }}
+        type="primary"
+        isGhost
+      >
+        CANCEL
+      </EduButton>
+      <EduButton
         onClick={handleSaveScore}
         height="36px"
         width="124px"
         fontSize="14px"
         style={{ textTransform: 'none' }}
       >
-        Save
+        SAVE
       </EduButton>
     </ModalFooterContainer>,
   ]
@@ -69,39 +79,30 @@ const AutoSelectScoreChangeModal = ({
       footer={Footer}
       bodyPadding="0px"
       onCancel={closeModal}
-      modalWidth="450px"
-      modalMaxWidth="450px"
+      modalWidth="588px"
+      modalMaxWidth="588px"
       padding="32px"
     >
       <ModalHeader>
         <ModalHeaderTitle>
           <span>Edit Score </span>
         </ModalHeaderTitle>
-        <EduButton
-          IconBtn
-          isGhost
-          width="24px"
-          height="24px"
-          onClick={closeModal}
-          title="Close"
-          noHover
-          noBorder
-          style={{ 'box-shadow': 'none' }}
-        >
-          <CloseIcon width={14} height={14} />
-        </EduButton>
       </ModalHeader>
       <ModalContent>
         <StyledInfoMessage>
-          Set{' '}
+          All items in random distribution should have same score for reports.
+        </StyledInfoMessage>
+        <StyledInfoMessage>
+          In {groupName}, set{' '}
           <NumberInputStyled
             showArrow
-            defaultValue={score}
+            defaultValue={itemsDefaultMaxScore}
             size="large"
             placeholder="Enter score"
             margin="0px"
             width="10ch"
             fontSize="14px"
+            textAlign="center"
             bg="transparent"
             onFocus={(event) => {
               event.target.select()
@@ -109,11 +110,7 @@ const AutoSelectScoreChangeModal = ({
             onChange={onChangeScore}
             style={{ fontWeight: '400' }}
           />{' '}
-          for all the items in {sectionName}
-          <div style={{ marginTop: '1rem' }}>
-            <Icon type="info-circle" /> All items in random distribution should
-            have same score for reports.{' '}
-          </div>
+          for each item
         </StyledInfoMessage>
       </ModalContent>
     </CustomModalStyled>

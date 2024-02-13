@@ -42,3 +42,89 @@ export const compareByOptions = [
   { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
+
+// completion Chart Constants
+export const completionReportPageSize = 2
+export const xAxisDataKey = 'testName'
+export const yDomain = [0, 100]
+export const yAxisLabel = 'DISTRIBUTION OF STUDENTS (%)'
+export const barDataForCompletionChart = [
+  {
+    key: 'absentPercentage',
+    insideLabelKey: 'absent',
+    name: 'Absent',
+    fill: '#9e9e9e',
+    position: 'insideTop',
+    stackId: 'completionReport',
+  },
+  {
+    key: 'notStartedPercentage',
+    insideLabelKey: 'notStarted',
+    position: 'insideTop',
+    name: 'Not Started',
+    stackId: 'completionReport',
+    fill: '#f44336',
+  },
+  {
+    key: 'inProgressPercentage',
+    insideLabelKey: 'inProgress',
+    position: 'insideTop',
+    name: 'In Progress',
+    stackId: 'completionReport',
+    fill: '#ffc107',
+  },
+  {
+    key: 'submittedPercentage',
+    insideLabelKey: 'submitted',
+    position: 'insideTop',
+    name: 'Submitted',
+    stackId: 'completionReport',
+    fill: '#2196f3',
+  },
+  {
+    key: 'gradedPercentage',
+    insideLabelKey: 'graded',
+    position: 'insideTop',
+    name: 'Graded',
+    stackId: 'completionReport',
+    fill: '#4caf50',
+  },
+]
+
+export const referenceLinesForCompletionChart = [
+  {
+    ref: 0,
+    stroke: 'black',
+    position: 'insideLeft',
+    textAnchor: 'end',
+    dx: -50,
+  },
+  {
+    ref: 25,
+    stroke: '#D3D3D3',
+    position: 'insideLeft',
+    textAnchor: 'end',
+    dx: -50,
+  },
+  {
+    ref: 50,
+    stroke: '#D3D3D3',
+    position: 'insideLeft',
+    textAnchor: 'end',
+    dx: -50,
+  },
+  {
+    ref: 75,
+    stroke: '#D3D3D3',
+    position: 'insideLeft',
+    textAnchor: 'end',
+    dx: -50,
+  },
+  {
+    ref: 100,
+    stroke: '#D3D3D3',
+    position: 'insideLeft',
+    textAnchor: 'end',
+    dx: -50,
+  },
+]

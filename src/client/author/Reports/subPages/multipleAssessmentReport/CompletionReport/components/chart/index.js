@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { formatDate } from '@edulastic/constants/reportUtils/common'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { Empty } from 'antd'
+import {
+  referenceLinesForCompletionChart as referenceLines,
+  barDataForCompletionChart as barLabelData,
+  completionReportPageSize as pageSize,
+  xAxisDataKey,
+  yDomain,
+  yAxisLabel,
+} from '../../../common/utils/constants'
 import {
   TooltipRowTitle,
   TooltipRowValue,
   TooltipRow,
 } from '../../../../../common/styled'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
+import { chartDataFormatter } from './utils'
 
 const Chart = (props) => {
   const {
@@ -19,75 +27,8 @@ const Chart = (props) => {
     setPageNo,
   } = props
   const [hoveredCategory, setHoveredCategory] = useState(null)
-  const pageSize = 2
-  const referenceLines = {
-    0: 'black',
-    25: 'grey',
-    50: 'grey',
-    75: 'grey',
-    100: 'grey',
-  }
 
-  const dataForChart = chartData.map((item) => ({
-    testName: item.testName,
-    gradedPercentage: ((item.graded / item.assigned) * 100).toFixed(2),
-    submittedPercentage: ((item.submitted / item.assigned) * 100).toFixed(2),
-    inProgressPercentage: ((item.inProgress / item.assigned) * 100).toFixed(2),
-    notStartedPercentage: ((item.notStarted / item.assigned) * 100).toFixed(2),
-    absentPercentage: ((item.absent / item.assigned) * 100).toFixed(2),
-    graded: item.graded,
-    submitted: item.submitted,
-    inProgress: item.inProgress,
-    notStarted: item.notStarted,
-    absent: item.absent,
-    totalCount: item.assigned,
-    testDate: formatDate(item.assessmentDate),
-    testId: item.testId,
-    testType: item.testType,
-  }))
-
-  const barData = [
-    {
-      key: 'absentPercentage',
-      insideLabelKey: 'absent',
-      name: 'Absent',
-      fill: '#9e9e9e',
-      position: 'insideTop',
-      stackId: 'completionReport',
-    },
-    {
-      key: 'notStartedPercentage',
-      insideLabelKey: 'notStarted',
-      position: 'insideTop',
-      name: 'Not Started',
-      stackId: 'completionReport',
-      fill: '#f44336',
-    },
-    {
-      key: 'inProgressPercentage',
-      insideLabelKey: 'inProgress',
-      position: 'insideTop',
-      name: 'In Progress',
-      stackId: 'completionReport',
-      fill: '#ffc107',
-    },
-    {
-      key: 'submittedPercentage',
-      insideLabelKey: 'submitted',
-      position: 'insideTop',
-      name: 'Submitted',
-      stackId: 'completionReport',
-      fill: '#2196f3',
-    },
-    {
-      key: 'gradedPercentage',
-      insideLabelKey: 'graded',
-      position: 'insideTop',
-      name: 'Graded',
-      stackId: 'completionReport',
-      fill: '#4caf50',
-    },
-  ]
+  const dataForChart = chartDataFormatter(chartData)
 
   useEffect(() => {
     if (dataForChart.length === pageSize) {
@@ -98,7 +39,6 @@ const Chart = (props) => {
         rightNavVisible: false,
       }))
     }
-    console.log({ chartData })
   }, [])
 
   const handleMouseOver = (category) => {
@@ -153,10 +93,10 @@ const Chart = (props) => {
           <EduThen>
             <SignedStackedBarChart
               pageSize={pageSize}
-              barsData={barData}
+              barsData={barLabelData}
               data={dataForChart}
-              yDomain={[0, 100]}
-              xAxisDataKey="testName"
+              yDomain={yDomain}
+              xAxisDataKey={xAxisDataKey}
               onBarClickCB={(bar) => console.log('bar is clicked', bar)}
               onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
               onLegendMouseEnter={(payload) =>
@@ -165,7 +105,7 @@ const Chart = (props) => {
               onLegendMouseLeave={(payload) =>
                 console.log('Cursor away from Legend', payload)
               }
-              yAxisLabel="DISTRIBUTION OF STUDENTS (%)"
+              yAxisLabel={yAxisLabel}
               hideOnlyYAxis
               onMouseBarOver={handleMouseOver}
               onMouseBarLeave={() => setHoveredCategory(null)}

@@ -135,7 +135,7 @@ export const SignedStackedBarChart = ({
   onMouseBarLeave = null,
   hideOnlyYAxis = false,
   barSize,
-  referenceLines = {},
+  referenceLines = [],
   tickMargin = 20,
   tooltipType = 'top',
   navButtonTopMargin,
@@ -480,18 +480,19 @@ export const SignedStackedBarChart = ({
           {isSignedChart ? (
             <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           ) : null}
-          {Object.keys(referenceLines).map((ref) => (
-            <ReferenceLine
-              y={ref}
-              stroke={ref === 0 ? 'black' : '#D3D3D3'}
-              label={{
-                position: 'insideLeft',
-                value: `${ref}%`,
-                textAnchor: 'end',
-                dx: -50,
-              }}
-            />
-          ))}
+          {referenceLines.length &&
+            referenceLines.map((line) => (
+              <ReferenceLine
+                y={line.ref}
+                stroke={line.stroke}
+                label={{
+                  position: line.position,
+                  value: `${line.ref}%`,
+                  textAnchor: line.textAnchor,
+                  dx: line.dx,
+                }}
+              />
+            ))}
           {barsData.map((bdItem, bdIndex) => {
             let fillOpacity = 1
 

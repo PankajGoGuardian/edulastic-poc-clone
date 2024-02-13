@@ -42,7 +42,8 @@ const Chart = (props) => {
         ...prevState,
         rightNavVisible: false,
       }))
-      if (dataForChart.length === 0) setPageNo((prevState) => prevState - 1)
+      if (dataForChart.length === 0 && pageNo > 1)
+        setPageNo((prevState) => (prevState > 1 ? prevState - 1 : prevState))
     }
   }, [chartData])
 

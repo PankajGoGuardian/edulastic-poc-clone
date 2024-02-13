@@ -61,7 +61,7 @@ function CompletionReport({
     })
   }
   useEffect(() => {
-    const q = { ...settings.requestFilters, page: pageNo || 1 }
+    const q = { ...settings.requestFilters, page: pageNo }
     if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
 

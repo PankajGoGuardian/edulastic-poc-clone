@@ -6,12 +6,20 @@ import {
   actions,
   getCompletionChartDataLoading,
   getCompletionChartData,
+  getCompletionReportTableData,
 } from './ducks'
+import CompletionReportTable from './components/table/CompletionReportTable'
+import { Container } from './styled'
+
+import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
+import { getSelectedCompareBy } from '../../../common/util'
 
 const pageSize = 2
 
+const TABLE_PAGE_SIZE = 30
 function CompletionReport({
   fetchCompletionReportChartDataRequest,
+  fetchCompletionReportTableDataRequest,
   settings,
   setEnableReportSharing,
   toggleFilter,
@@ -26,17 +34,47 @@ function CompletionReport({
     leftNavVisible: false,
     rightNavVisible: false,
   })
+
   const [pageNo, setPageNo] = useState(1)
+
+  const [pageFilters, setPageFilters] = useState({
+    page: 0,
+    pageSize: TABLE_PAGE_SIZE,
+  })
+  // const [pageNo, setPageNo] = useState(1)
+
+  // const search = useUrlSearchParams(location)
+  // const selectedCompareBy = getSelectedCompareBy({
+  //   search,
+  //   settings,
+  //   compareByOptions,
+  // })
   useEffect(() => {
     const q = { ...settings.requestFilters, page: pageNo }
     if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
+
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters, pageNo])
-  console.log({ chartData })
+
+  useEffect(() => {
+    const q = {
+      ...settings.requestFilters,
+      compareBy: 'school',
+      // sortKey: sortFilters.sortKey,
+      // sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
+      // ...pageFilters,
+      // requireTotalCount: pageFilters.page === 1,
+    }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      fetchCompletionReportTableDataRequest(q)
+      return () => toggleFilter(null, false)
+    }
+  }, [pageFilters])
+
   return (
-    <>
+    <Container>
       {chartData.length ? (
         <Chart
           chartData={chartData}
@@ -56,7 +94,11 @@ function CompletionReport({
           description="No matching results"
         />
       )}
-    </>
+      <CompletionReportTable
+        settings={settings}
+        setMARSettings={setMARSettings}
+      />
+    </Container>
   )
 }
 
@@ -64,6 +106,7 @@ const enhance = connect(
   (state) => ({
     chartData: getCompletionChartData(state),
     chartDataLoading: getCompletionChartDataLoading(state),
+    tableData: getCompletionReportTableData(state),
   }),
   { ...actions }
 )

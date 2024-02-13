@@ -50,6 +50,7 @@ const initialState = {
     assignedBy: 'anyone',
     preTestId: '',
     postTestId: '',
+    selectedCompareBy: {},
   },
   tagsData: {},
 }

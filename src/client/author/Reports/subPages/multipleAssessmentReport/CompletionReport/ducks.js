@@ -10,6 +10,10 @@ const initialState = {
   completionReportChartData: [],
   error: '',
   completionReportTableData: {},
+
+  completionTableDataLoading: false,
+  completionTableData: {},
+  completionTableDataError: '',
 }
 
 const slice = createSlice({
@@ -31,17 +35,17 @@ const slice = createSlice({
     },
 
     fetchCompletionReportTableDataRequest: (state) => {
-      state.loadingCompletionReportChartData = true
+      state.completionTableDataLoading = true
     },
 
     fetchCompletionTableDataSuccess: (state, { payload }) => {
-      state.loadingCompletionReportTableData = false
+      state.completionTableDataLoading = false
       state.completionTableData = payload
-      state.error = ''
+      state.completionTableDataError = ''
     },
     fetchCompletionTableDataFailure: (state, { payload }) => {
-      state.loadingCompletionReportTableData = false
-      state.error = payload.error
+      state.completionTableDataLoading = false
+      state.completionTableDataError = payload.error
     },
   },
 })
@@ -113,7 +117,7 @@ export const getCompletionChartData = createSelector(
 )
 export const getCompletionReportTableData = createSelector(
   stateSelector,
-  (state) => state.completionReportTableData
+  (state) => state.completionTableData
 )
 export const getCompletionChartDataLoading = createSelector(
   stateSelector,
@@ -121,6 +125,6 @@ export const getCompletionChartDataLoading = createSelector(
 )
 export const getCompletionReportTableDataLoading = createSelector(
   stateSelector,
-  (state) => state.loadingCompletionReportTableData
+  (state) => state.completionTableDataLoading
 )
 export const getCompletionReportDataError = (state) => state.reportReducer.error

@@ -337,6 +337,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                setMARSettings={setMARSettings}
               />
             )
           }}

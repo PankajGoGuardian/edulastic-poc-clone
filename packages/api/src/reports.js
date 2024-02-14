@@ -490,7 +490,7 @@ const getReportInterventions = (params) => {
 
 const getCsvData = (params) =>
   api.callApi({
-    url: '/report/generate-csv',
+    url: '/report/completion/generate-csv',
     method: 'get',
     params: { ...params },
   })

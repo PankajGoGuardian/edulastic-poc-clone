@@ -20,6 +20,7 @@ import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
 import {
   compareByOptions,
   compareByOptionsMapByKey,
+  utastatus,
   statusMap,
 } from '../../../common/utils/constants'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
@@ -122,11 +123,11 @@ const CompletionReportTable = ({
     dimensionId: '',
   }
   const handleDownloadCsv = (record, progressStatus) => {
-    console.log({ record })
     getCsvData({
       ...settings.requestFilters,
       analyseBy,
-      progressStatus: statusMap[progressStatus],
+      progressStatus,
+      testName: record.testName,
     })
   }
   const staticColumns = [
@@ -150,7 +151,9 @@ const CompletionReportTable = ({
       dataIndex: 'assigned',
       key: 'assigned',
       render: (value, record) => (
-        <ActionContainer onClick={() => handleDownloadCsv(record)}>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.ASSIGNED)}
+        >
           {getValue(value)}
         </ActionContainer>
       ),
@@ -162,7 +165,11 @@ const CompletionReportTable = ({
       sorter: true,
       className: 'absent',
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.ABSENT)}
+        >
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {
@@ -172,7 +179,11 @@ const CompletionReportTable = ({
       className: 'absent',
       sorter: true,
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.NOT_STARTED)}
+        >
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {
@@ -181,7 +192,11 @@ const CompletionReportTable = ({
       key: 'inProgress',
       sorter: true,
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.IN_PROGRESS)}
+        >
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {
@@ -190,7 +205,11 @@ const CompletionReportTable = ({
       key: 'submitted',
       sorter: true,
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.SUBMITTED)}
+        >
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {
@@ -199,7 +218,11 @@ const CompletionReportTable = ({
       key: 'graded',
       sorter: true,
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer
+          onClick={() => handleDownloadCsv(record, utastatus.GRADED)}
+        >
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {

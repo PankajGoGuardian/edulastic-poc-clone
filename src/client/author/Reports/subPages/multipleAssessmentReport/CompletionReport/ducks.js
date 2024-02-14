@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { downloadCSV } from '../../../common/util'
 
 const initialState = {
   loadingCompletionReportChartData: false,
@@ -99,8 +100,10 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
 }
 function* getCsvDataSaga({ payload }) {
   try {
+    const { progressStatus, testName } = payload
+    delete payload.testName
     const result = yield call(reportsApi.getCsvData, payload)
-    console.log({ result })
+    downloadCSV(`${testName} ${progressStatus}.csv`, result?.data?.result || '')
   } catch (error) {
     notification({ msg: 'Failed to download the data' })
   }

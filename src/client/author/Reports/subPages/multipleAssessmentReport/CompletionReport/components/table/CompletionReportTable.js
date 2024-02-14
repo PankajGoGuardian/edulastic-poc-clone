@@ -7,11 +7,20 @@ import TableHeader from './TableHeader'
 import { ActionContainer, StyledTable, TableContainer } from './styled'
 
 import CopyReportLink from './CopyReportLink'
-import { compareByMap, sortKeys, tableColumnsData } from '../../utils'
+import {
+  compareByMap,
+  getTableDataSource,
+  sortKeys,
+  tableColumnsData,
+} from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
 import { SpinLoader } from '@edulastic/common'
 import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
+import {
+  compareByOptions,
+  compareByOptionsMapByKey,
+} from '../../../common/utils/constants'
 
 const staticColumns = [
   {
@@ -91,8 +100,9 @@ const staticColumns = [
     },
   },
 ]
-const getTableColumns = (isSharedReport, settings, isPrinting, sortFilters) => {
-  const compareBy = { key: 'school', title: 'School' }
+const getTableColumns = (isSharedReport, settings) => {
+  const compareBy =
+    compareByOptionsMapByKey[settings.requestFilters.selectedCompareBy]
   const columnByCompareBy = next(tableColumnsData, (_columns) => {
     const compareByIdx = _columns.findIndex(
       (col) => col.key === sortKeys.COMPARE_BY
@@ -126,13 +136,13 @@ const getTableColumns = (isSharedReport, settings, isPrinting, sortFilters) => {
 const CompletionReportTable = ({
   settings,
   setMARSettings,
-  compareByCB,
   isTableDataLoading,
   location,
   setAnalyseBy,
   analyseBy,
   setStatusColumnSortState,
   setTestColumnSort,
+  tableData,
 }) => {
   const _data = [
     {
@@ -178,24 +188,14 @@ const CompletionReportTable = ({
       dimensionId: '64676f832dceab00089c43fc',
     },
   ]
-  const groupedData = groupBy(_data, 'testId')
-  const dataSource = Object.values(groupedData).flatMap((tests) => {
-    const rowSpan = tests.length
-    return tests.map((test, index) => ({ index, rowSpan, ...test }))
-  })
 
-  // const tableColumns = useMemo(
-  //   () =>
-  //     getTableColumns(
-  //       overallAssessmentsData,
-  //       isSharedReport,
-  //       settings,
-  //       isPrinting,
-  //       sortFilters
-  //     ),
-  //   [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
-  // )
-  const columns = getTableColumns(false, settings, false, {})
+  const dataSource = getTableDataSource(_data)
+
+  const columns = useMemo(() => getTableColumns(false, settings), [
+    tableData,
+    settings,
+  ])
+
   if (isTableDataLoading) {
     return (
       <SpinLoader
@@ -206,7 +206,7 @@ const CompletionReportTable = ({
     )
   }
 
-  const handleTableChange = (pagination, filters, sorter, extra) => {
+  const handleTableChange = (pagination, filters, sorter) => {
     if (sorter.field === 'testName') {
       setTestColumnSort({
         sortKey: 'test',
@@ -224,12 +224,11 @@ const CompletionReportTable = ({
       <TableHeader
         settings={settings}
         setMARSettings={setMARSettings}
-        compareByCB={compareByCB}
         location={location}
         setAnalyseBy={setAnalyseBy}
         analyseBy={analyseBy}
       />
-      {/* Table component */}
+
       <StyledTable
         onChange={handleTableChange}
         columns={columns}

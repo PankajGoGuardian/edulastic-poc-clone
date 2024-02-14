@@ -1,3 +1,5 @@
+import { keyBy } from 'lodash'
+
 export const trendTypes = {
   up: {
     color: '#99cb76',
@@ -41,6 +43,8 @@ export const compareByOptions = [
   { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
+
+export const compareByOptionsMapByKey = keyBy(compareByOptions, 'key')
 
 // completion Chart Constants
 export const completionReportPageSize = 2

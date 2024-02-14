@@ -10,7 +10,6 @@ import { compareByOptions } from '../../../common/utils/constants'
 const TableHeader = ({
   settings,
   setMARSettings,
-  compareByCB,
   location,
   setAnalyseBy,
   analyseBy,

@@ -1,4 +1,4 @@
-import { mapValues } from 'lodash'
+import { groupBy, mapValues } from 'lodash'
 
 export const sortKeys = {
   COMPARE_BY: 'compareBy',
@@ -24,3 +24,11 @@ const compareByOptionsInfo = {
 }
 
 export const compareByMap = mapValues(compareByOptionsInfo, ({ name }) => name)
+
+export const getTableDataSource = (data) => {
+  const groupedData = groupBy(data, 'testId')
+  return Object.values(groupedData).flatMap((tests) => {
+    const rowSpan = tests.length
+    return tests.map((test, index) => ({ index, rowSpan, ...test }))
+  })
+}

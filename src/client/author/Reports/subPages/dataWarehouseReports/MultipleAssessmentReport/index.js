@@ -21,7 +21,6 @@ import {
 import {
   TABLE_SORT_ORDER_TYPES,
   getDistrictGroupTestTermIds,
-  getDistrictIdsForDistrictGroup,
   getDistrictTermIdsForDistrictGroup,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
@@ -93,16 +92,16 @@ const enhanceQueryWithTermIds = (
 ) => {
   console.log('userRole, termId & old query', userRole, termId, query)
   if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
-    const districtIdsArr = convertItemToArray(query.districtIds)
-    const validatedDistrictIdsArr = getDistrictIdsForDistrictGroup(orgData, {
+    const selectedDistrictIdsArr = convertItemToArray(query.districtIds)
+    const {
       districtIds: districtIdsArr,
-    })
-    const termIdsArr = getDistrictTermIdsForDistrictGroup(orgData, {
+      termIds: termIdsArr,
+    } = getDistrictTermIdsForDistrictGroup(orgData, {
       termId,
-      districtIds: validatedDistrictIdsArr,
+      districtIds: selectedDistrictIdsArr,
     })
     Object.assign(query, {
-      districtIds: validatedDistrictIdsArr.join(','),
+      districtIds: districtIdsArr.join(','),
       termIds: termIdsArr.join(','),
     })
   } else {

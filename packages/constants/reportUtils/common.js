@@ -14,6 +14,7 @@ const {
   isEmpty,
   pick,
   invert,
+  uniq,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -509,30 +510,22 @@ const curateApiFiltersQuery = (
   return { query, queryStr }
 }
 
-const getDistrictIdsForDistrictGroup = (orgData, { districtIds }) => {
-  const { districtGroup = {} } = orgData || {}
-  const { districts = [] } = districtGroup
-  const filteredDistrictIds = districts
-    .filter((t) => !districtIds.length || districtIds.includes(t.districtId))
-    .map((t) => t._id)
-  return filteredDistrictIds
-}
-
 const getDistrictTermIdsForDistrictGroup = (
   orgData,
   { termId, districtIds }
 ) => {
-  const { districtGroup = {} } = orgData || {}
-  const { districtTerms = [], terms = [] } = districtGroup
+  const { districtGroup = {}, terms = [] } = orgData || {}
+  const { districtTerms = [] } = districtGroup
   const termName = terms.find((t) => t._id === termId)?.name || ''
-  const filteredDistrictTermIds = districtTerms
-    .filter(
-      (t) =>
-        (!districtIds.length || districtIds.includes(t.districtId)) &&
-        t.name === termName
-    )
-    .map((t) => t._id)
-  return filteredDistrictTermIds
+  const filteredDistrictTerms = districtTerms.filter(
+    (t) =>
+      (!districtIds.length || districtIds.includes(t.districtId)) &&
+      t.name === termName
+  )
+  return {
+    termIds: uniq(filteredDistrictTerms.map((t) => t.districtId)),
+    districtIds: filteredDistrictTerms.map((t) => t._id),
+  }
 }
 
 const getDistrictGroupTestTermIds = (orgData, testTermIds) => {
@@ -717,7 +710,6 @@ module.exports = {
   stringifyArrayFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
-  getDistrictIdsForDistrictGroup,
   getDistrictTermIdsForDistrictGroup,
   getDistrictGroupTestTermIds,
   PERIOD_TYPES,

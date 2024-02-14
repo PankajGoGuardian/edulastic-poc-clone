@@ -523,8 +523,8 @@ const getDistrictTermIdsForDistrictGroup = (
       t.name === termName
   )
   return {
-    termIds: uniq(filteredDistrictTerms.map((t) => t.districtId)),
-    districtIds: filteredDistrictTerms.map((t) => t._id),
+    districtIds: uniq(filteredDistrictTerms.map((t) => t.districtId)),
+    termIds: filteredDistrictTerms.map((t) => t._id),
   }
 }
 

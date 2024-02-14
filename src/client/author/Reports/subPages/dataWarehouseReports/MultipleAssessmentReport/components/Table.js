@@ -102,13 +102,14 @@ const getTooltipText = (currentTest) => {
   )
 }
 
-const getTableColumns = (
+const getTableColumns = ({
+  isDistrictGroupAdmin,
   overallAssessmentsData,
   isSharedReport,
   settings,
   isPrinting,
-  sortFilters
-) => {
+  sortFilters,
+}) => {
   const compareBy = settings.selectedCompareBy
   const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
@@ -121,14 +122,18 @@ const getTableColumns = (
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
     _columns[compareByIdx].render = (data, record) => {
-      const url = isSharedReport
-        ? null
-        : buildDrillDownUrl({
-            key: record.id,
-            selectedCompareBy: compareBy.key,
-            reportFilters: settings.requestFilters,
-            reportUrl: window.location.pathname,
-          })
+      const disableDrilldownForDGA =
+        isDistrictGroupAdmin &&
+        Object.values(compareByKeys).slice(3).includes(compareBy.key)
+      const url =
+        disableDrilldownForDGA || isSharedReport
+          ? null
+          : buildDrillDownUrl({
+              key: record.id,
+              selectedCompareBy: compareBy.key,
+              reportFilters: settings.requestFilters,
+              reportUrl: window.location.pathname,
+            })
       return (
         <LinkCell
           value={{ _id: record.id, name: data }}
@@ -318,6 +323,7 @@ const getDownloadCsvColumnHeadersFunc = (
 }
 
 const AssessmentsTable = ({
+  isDistrictGroupAdmin,
   tableData,
   overallAssessmentsData,
   showIncompleteTestsMessage,
@@ -335,13 +341,14 @@ const AssessmentsTable = ({
 }) => {
   const tableColumns = useMemo(
     () =>
-      getTableColumns(
+      getTableColumns({
+        isDistrictGroupAdmin,
         overallAssessmentsData,
         isSharedReport,
         settings,
         isPrinting,
-        sortFilters
-      ),
+        sortFilters,
+      }),
     [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   )
 

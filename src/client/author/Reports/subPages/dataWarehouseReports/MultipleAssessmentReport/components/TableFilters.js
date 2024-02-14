@@ -14,6 +14,7 @@ import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 const TITLE_TOOLTIP_NOTE =
   'Note: The performance metrics are calculated based on students allocated to the selected school, class, or teacher. You may also see data from tests that were not specifically assigned to the currently displayed class or teacher.'
 const TableFilters = ({
+  isDistrictGroupAdmin,
   updateFilterDropdownCB,
   compareByOptions = [],
   selectedCompareBy,
@@ -41,10 +42,12 @@ const TableFilters = ({
       </TableTitleContainer>
 
       <FlexContainer>
-        <StudentGroupBtn
-          showAddToStudentGroupBtn={showAddToStudentGroupBtn}
-          handleAddToGroupClick={handleAddToGroupClick}
-        />
+        <EduIf condition={!isDistrictGroupAdmin}>
+          <StudentGroupBtn
+            showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+            handleAddToGroupClick={handleAddToGroupClick}
+          />
+        </EduIf>
         <ControlDropDown
           prefix="Compare By"
           by={selectedCompareBy}

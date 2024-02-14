@@ -206,9 +206,13 @@ const MultipleAssessmentReport = ({
     ],
     [sharedReport]
   )
-  const compareByOptions = useMemo(() => [...getCompareByOptions(userRole)], [
-    userRole,
-  ])
+  const { compareByOptions, isDistrictGroupAdmin } = useMemo(
+    () => ({
+      compareByOptions: [...getCompareByOptions(userRole)],
+      isDistrictGroupAdmin: userRole === roleuser.DISTRICT_GROUP_ADMIN,
+    }),
+    [userRole]
+  )
   const { availableFeedTypes } = useFiltersData(filtersData)
 
   const setShowApply = (status) => {
@@ -565,6 +569,7 @@ const MultipleAssessmentReport = ({
               />
             </FeaturesSwitch>
             <TableFilters
+              isDistrictGroupAdmin={isDistrictGroupAdmin}
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
               selectedCompareBy={selectedCompareBy}
@@ -573,6 +578,7 @@ const MultipleAssessmentReport = ({
               isMultiSchoolYear={isMultiSchoolYear}
             />
             <Table
+              isDistrictGroupAdmin={isDistrictGroupAdmin}
               tableData={tableData}
               overallAssessmentsData={filteredOverallAssessmentsData}
               showIncompleteTestsMessage={!!incompleteTests.length}

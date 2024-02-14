@@ -78,8 +78,10 @@ const CustomizedHeaderWrapper = ({
       )
     : _navigationItems
 
+  const isDistrictGroupAdmin = userRole === roleuser.DISTRICT_GROUP_ADMIN
+
   let filterNavigationItems = navigationItems
-  if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+  if (isDistrictGroupAdmin) {
     filterNavigationItems = filterNavigationItems
       .filter((item) => DGA_VISIBLE_TABS.includes(item.key))
       .reverse()
@@ -126,7 +128,7 @@ const CustomizedHeaderWrapper = ({
     (reportType) => reportType === activeNavigationKey
   )
   const showGroupNavItems = [
-    userRole === roleuser.DISTRICT_GROUP_ADMIN,
+    isDistrictGroupAdmin,
     isDataStudioReport,
     filterNavigationItems.length > 1,
   ].some((e) => e)
@@ -182,8 +184,10 @@ const CustomizedHeaderWrapper = ({
     reportTypes[DW_EARLY_WARNING_REPORT].title,
     reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
   ]
-  const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
-  const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)
+  const hideShareIcon =
+    isDistrictGroupAdmin || ReportsWithHiddenShareIcon.includes(title)
+  const hideDownloadIcon =
+    isDistrictGroupAdmin || ReportsWithHiddenDownCSVIcon.includes(title)
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 

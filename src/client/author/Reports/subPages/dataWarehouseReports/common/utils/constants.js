@@ -96,6 +96,7 @@ export const commonFilterKeys = [
 ]
 
 export const nextCompareByKeys = {
+  [compareByKeys.DISTRICT]: compareByKeys.SCHOOL,
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,

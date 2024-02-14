@@ -57,9 +57,10 @@ function CompletionReport({
     sortOrder: 'desc',
   })
 
-  const [testColumnSort, setTestColumnSort] = useState([
-    { sortKey: 'test', sortOrder: 'desc' },
-  ])
+  const [testColumnSort, setTestColumnSort] = useState({
+    sortKey: 'test',
+    sortOrder: 'desc',
+  })
 
   // TODO: mapper for sort order
   // tableToDBSortOrderMap

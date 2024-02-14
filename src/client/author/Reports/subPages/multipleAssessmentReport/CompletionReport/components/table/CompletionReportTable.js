@@ -144,56 +144,25 @@ const CompletionReportTable = ({
   analyseBy,
   setStatusColumnSortState,
   setTestColumnSort,
-  tableData,
-  compareByCB,
+  tableData = [],
   isCsvDownloading,
 }) => {
-  const _data = [
-    {
-      assessmentDate: '1696567790009',
-      testId: '651f954bfec3ee0008dd9278',
-      testName: 'test 12',
-      testType: 'common assessment',
-      assigned: '3',
-      inProgress: '0',
-      submitted: '1',
-      absent: '0',
-      notStarted: '0',
-      graded: '2',
-      dimensionName: 'Keerthi School',
-      dimensionId: '64676f832dceab00089c43fc',
-    },
-    {
-      assessmentDate: '1696567790009',
-      testId: '651f954bfec3ee0008dd9278',
-      testName: 'test 13',
-      testType: 'common assessment',
-      assigned: '31',
-      inProgress: '10',
-      submitted: '11',
-      absent: '10',
-      notStarted: '10',
-      graded: '12',
-      dimensionName: 'Keerthi School',
-      dimensionId: '64676f832dceab00089c43fc',
-    },
-    {
-      assessmentDate: '1696512172897',
-      testId: '651eb89174074399ff8715fc',
-      testName: 'abc 123',
-      testType: 'common assessment',
-      assigned: '3',
-      inProgress: '0',
-      submitted: '1',
-      absent: '0',
-      notStarted: '2',
-      graded: '0',
-      dimensionName: 'Keerthi School',
-      dimensionId: '64676f832dceab00089c43fc',
-    },
-  ]
+  console.log({ tableData })
+  const overAllData = {
+    testId: 'overall_tid',
+    testName: 'Overall',
+    testType: '',
+    assigned: tableData?.[0]?.totalAssigned || 0,
+    inProgress: tableData?.[0]?.totalInProgress || 0,
+    submitted: tableData?.[0]?.totalSubmitted || 0,
+    absent: tableData?.[0]?.totalAbsent || 0,
+    notStarted: tableData?.[0]?.totalNotStarted || 0,
+    graded: tableData?.[0]?.totalGraded || 0,
+    dimensionName: '',
+    dimensionId: '',
+  }
 
-  const dataSource = getTableDataSource(_data)
+  const dataSource = getTableDataSource([overAllData, ...tableData])
 
   const columns = useMemo(() => getTableColumns(false, settings), [
     tableData,

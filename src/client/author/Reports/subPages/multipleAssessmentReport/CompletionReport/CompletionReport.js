@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import Chart from './components/chart'
 import {
@@ -14,7 +14,11 @@ import { Container } from './styled'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
-import { analyzeBy, compareByOptions } from '../common/utils/constants'
+import {
+  analyzeBy,
+  compareByOptions,
+  sortByMap,
+} from '../common/utils/constants'
 import { sortKeys } from './utils'
 import {
   TABLE_SORT_ORDER_TYPES,
@@ -39,7 +43,7 @@ function CompletionReport({
   chartDataLoading,
   isTableDataLoading,
   location,
-  tableData,
+  tableData: _tableData,
   isCsvDownloading,
   ...props
 }) {
@@ -64,6 +68,10 @@ function CompletionReport({
     pageSize,
     pageCount: 0,
   })
+  const tableData = useMemo(
+    () => _tableData?.reportTableData?.data?.result?.tableMetricInfo,
+    [_tableData]
+  )
 
   useEffect(() => {
     const q = {
@@ -90,7 +98,7 @@ function CompletionReport({
       requireTotalCount: pageFilters.page === 1,
       analyseBy: analyseBy.key,
       testOrder: testColumnSort.sortOrder,
-      sortKey: statusColumnSortState.sortKey,
+      sortKey: sortByMap[statusColumnSortState.sortKey],
       sortOrder: statusColumnSortState.sortOrder,
       recompute: true,
     }
@@ -116,7 +124,6 @@ function CompletionReport({
         // isTableDataLoading={isTableDataLoading}
         location={location}
         isCsvDownloading={isCsvDownloading}
-        compareByCB={handleCompareChange}
         settings={settings}
         setMARSettings={setMARSettings}
         setAnalyseBy={setAnalyseBy}

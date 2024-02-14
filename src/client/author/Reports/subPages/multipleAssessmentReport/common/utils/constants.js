@@ -140,3 +140,20 @@ export const analyzeBy = [
   { key: 'score', title: 'Percentage(%)' },
   { key: 'rawScore', title: 'Number' },
 ]
+
+export const sortKey = {
+  NOT_STARTED: 'notStarted',
+  ASSIGNED: 'assigned',
+  ABSENT: 'absent',
+  IN_PROGRESS: 'inProgress',
+  SUBMITTED: 'submitted',
+  GRADED: 'graded',
+}
+export const sortByMap = {
+  [sortKey.NOT_STARTED]: 'not_started',
+  [sortKey.ASSIGNED]: 'assigned',
+  [sortKey.ABSENT]: 'absent',
+  [sortKey.IN_PROGRESS]: 'in_progress',
+  [sortKey.SUBMITTED]: 'submitted',
+  [sortKey.GRADED]: 'graded',
+}

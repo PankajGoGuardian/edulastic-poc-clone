@@ -23,6 +23,7 @@ import {
 } from '../../../common/utils/constants'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { convertTableToCSV } from '../../../../../common/util'
+import qs from 'qs'
 
 const staticColumns = [
   {
@@ -39,7 +40,7 @@ const staticColumns = [
       }
     },
   },
-  // { title: 'Network Name', dataIndex: 'networkName', key: 'networkName' },
+  {},
   {
     title: '# Assigned',
     dataIndex: 'assigned',
@@ -138,7 +139,7 @@ const getTableColumns = (isSharedReport, settings) => {
 const CompletionReportTable = ({
   settings,
   setMARSettings,
-  isTableDataLoading,
+  // isTableDataLoading,
   location,
   setAnalyseBy,
   analyseBy,
@@ -147,7 +148,13 @@ const CompletionReportTable = ({
   tableData = [],
   isCsvDownloading,
 }) => {
-  console.log({ tableData })
+  const search = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
+  })
+  const urlCompareBy = compareByOptions.find(
+    (option) => option.key === search.selectedCompareBy
+  )
   const overAllData = {
     testId: 'overall_tid',
     testName: 'Overall',
@@ -169,15 +176,15 @@ const CompletionReportTable = ({
     settings,
   ])
 
-  if (isTableDataLoading) {
-    return (
-      <SpinLoader
-        tip="Loading completion table data..."
-        position="relative"
-        height="70%"
-      />
-    )
-  }
+  // if (isTableDataLoading) {
+  //   return (
+  //     <SpinLoader
+  //       tip="Loading completion table data..."
+  //       position="relative"
+  //       height="70%"
+  //     />
+  //   )
+  // }
 
   const handleTableChange = (pagination, filters, sorter) => {
     if (sorter.field === 'testName') {
@@ -212,9 +219,15 @@ const CompletionReportTable = ({
       onCsvConvert(csvText, csvRawData)
     }
   }, [isCsvDownloading])
+
+  // if (isTableDataLoading) {
+  //   return <div>Loading...</div>
+  // }
+
   return (
     <TableContainer ref={childrenRef}>
       <TableHeader
+        urlCompareBy={urlCompareBy}
         settings={settings}
         setMARSettings={setMARSettings}
         location={location}

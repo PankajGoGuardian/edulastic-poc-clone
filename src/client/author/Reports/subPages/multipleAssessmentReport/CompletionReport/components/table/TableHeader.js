@@ -13,15 +13,8 @@ const TableHeader = ({
   location,
   setAnalyseBy,
   analyseBy,
+  urlCompareBy,
 }) => {
-  const search = qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-    indices: true,
-  })
-  const urlCompareBy = compareByOptions.find(
-    (option) => option.key === search.selectedCompareBy
-  )
-
   const [compareBy, setCompareBy] = useState(
     urlCompareBy || compareByOptions[0]
   )

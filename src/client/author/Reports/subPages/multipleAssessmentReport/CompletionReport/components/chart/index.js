@@ -81,9 +81,9 @@ const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
     <ChartContainer>
       <EduIf condition={!loading}>
         <EduThen>
-          <Heading title={title} description={description} />
           <EduIf condition={formattedChartData.length}>
             <EduThen>
+              <Heading title={title} description={description} />
               <SignedStackedBarChart
                 pageSize={pageSize}
                 backendPagination={pagination}

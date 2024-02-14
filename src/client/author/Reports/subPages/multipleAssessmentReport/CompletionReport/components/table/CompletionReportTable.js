@@ -24,6 +24,7 @@ import {
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { convertTableToCSV } from '../../../../../common/util'
 import qs from 'qs'
+import { Empty } from 'antd'
 
 const staticColumns = [
   {
@@ -223,13 +224,19 @@ const CompletionReportTable = ({
     }
   }, [isCsvDownloading])
 
-  // if (isTableDataLoading) {
-  //   return <div>Loading...</div>
-  // }
+  if (isTableDataLoading) {
+    return (
+      <SpinLoader
+        tip="Loading completion table data..."
+        position="relative"
+        height="70%"
+      />
+    )
+  }
 
   return (
     <TableContainer>
-      <EduIf condition={!isTableDataLoading}>
+      <EduIf condition={tableData.length}>
         <EduThen>
           <TableHeader
             urlCompareBy={urlCompareBy}
@@ -250,10 +257,14 @@ const CompletionReportTable = ({
           />
         </EduThen>
         <EduElse>
-          <SpinLoader
-            tip="Loading completion table data..."
-            position="relative"
-            height="70%"
+          <Empty
+            className="ant-empty-small"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{
+              textAlign: 'center',
+              margin: '10px 0',
+            }}
+            description="No matching results"
           />
         </EduElse>
       </EduIf>

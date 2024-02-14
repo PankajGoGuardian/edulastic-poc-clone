@@ -186,8 +186,7 @@ const CustomizedHeaderWrapper = ({
   ]
   const hideShareIcon =
     isDistrictGroupAdmin || ReportsWithHiddenShareIcon.includes(title)
-  const hideDownloadIcon =
-    isDistrictGroupAdmin || ReportsWithHiddenDownCSVIcon.includes(title)
+  const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 

@@ -78,6 +78,7 @@ const FeedNameInput = ({
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 value={feedName}
                 disabled={isEmpty(selectedSchoolYear)}
+                data-cy="feedNameDropDown"
               >
                 {administrationLevelDropdownOptions.map(({ key, title }) => (
                   <Option key={key} value={key}>
@@ -92,6 +93,7 @@ const FeedNameInput = ({
                 value={feedName}
                 onChange={(e) => setFeedName(e.target.value)}
                 maxLength={150}
+                data-cy="feedName"
               />
             </EduElse>
           </EduIf>

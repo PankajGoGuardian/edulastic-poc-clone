@@ -151,7 +151,7 @@ export const sortKey = {
   SUBMITTED: 'submitted',
   GRADED: 'graded',
 }
-export const sortByMap = {
+export const statusMap = {
   [sortKey.NOT_STARTED]: 'not_started',
   [sortKey.ASSIGNED]: 'assigned',
   [sortKey.ABSENT]: 'absent',

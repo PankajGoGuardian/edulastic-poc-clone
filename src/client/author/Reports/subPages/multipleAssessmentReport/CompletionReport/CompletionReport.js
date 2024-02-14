@@ -12,7 +12,7 @@ import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
   compareByOptions,
-  sortByMap,
+  statusMap,
 } from '../common/utils/constants'
 import Chart from './components/chart'
 import {
@@ -28,6 +28,7 @@ import { Container } from './styled'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
+
 import { sortKeys } from './utils'
 
 const TABLE_PAGE_SIZE = 30
@@ -46,6 +47,7 @@ function CompletionReport({
   location,
   tableData: _tableData,
   isCsvDownloading,
+  getCsvData,
   ...props
 }) {
   // chart
@@ -122,7 +124,7 @@ function CompletionReport({
       requireTotalCount: pageFilters.page === 1,
       analyseBy: analyseBy.key,
       testOrder: testColumnSort.sortOrder,
-      sortKey: sortByMap[statusColumnSortState.sortKey],
+      sortKey: statusMap[statusColumnSortState.sortKey],
       sortOrder: statusColumnSortState.sortOrder,
       recompute: true,
     }
@@ -157,6 +159,7 @@ function CompletionReport({
         tableData={tableData}
         compareBy={compareBy}
         setCompareBy={setCompareBy}
+        getCsvData={getCsvData}
       />
     </Container>
   )

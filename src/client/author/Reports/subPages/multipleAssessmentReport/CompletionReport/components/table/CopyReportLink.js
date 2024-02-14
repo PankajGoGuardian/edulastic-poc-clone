@@ -7,7 +7,7 @@ const CopyReportLink = ({ report, filterSettings }) => {
     <TitleCopy
       copyable={{
         text: `${
-          window.location.href
+          window.location.origin
         }/author/reports/completion-report${getCompletionReportPathForAssignment(
           report.testId,
           {},

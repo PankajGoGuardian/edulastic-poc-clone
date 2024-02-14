@@ -20,6 +20,7 @@ import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
 import {
   compareByOptions,
   compareByOptionsMapByKey,
+  statusMap,
 } from '../../../common/utils/constants'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { convertTableToCSV } from '../../../../../common/util'
@@ -75,6 +76,7 @@ const CompletionReportTable = ({
   compareBy,
   setCompareBy,
   compareByCB,
+  getCsvData,
 }) => {
   const getValue = (value) => {
     const renderedValue = value.toString().replace(/\.00$/, '')
@@ -100,6 +102,14 @@ const CompletionReportTable = ({
     dimensionName: '',
     dimensionId: '',
   }
+  const handleDownloadCsv = (record, progressStatus) => {
+    console.log({ record })
+    getCsvData({
+      ...settings.requestFilters,
+      analyseBy,
+      progressStatus: statusMap[progressStatus],
+    })
+  }
   const staticColumns = [
     {
       title: 'Test Name',
@@ -121,7 +131,9 @@ const CompletionReportTable = ({
       dataIndex: 'assigned',
       key: 'assigned',
       render: (value, record) => (
-        <ActionContainer>{getValue(value)}</ActionContainer>
+        <ActionContainer onClick={() => handleDownloadCsv(record)}>
+          {getValue(value)}
+        </ActionContainer>
       ),
     },
     {
@@ -254,20 +266,20 @@ const CompletionReportTable = ({
   }, [isCsvDownloading])
 
   return (
-    <TableContainer>
-      <TableHeader
-        urlCompareBy={urlCompareBy}
-        compareBy={compareBy}
-        setCompareBy={setCompareBy}
-        settings={settings}
-        setMARSettings={setMARSettings}
-        compareByCB={compareByCB}
-        location={location}
-        setAnalyseBy={setAnalyseBy}
-        analyseBy={analyseBy}
-      />
-      <EduIf condition={!isTableDataLoading}>
+    <TableContainer ref={childrenRef}>
+      <EduIf condition={tableData.length}>
         <EduThen>
+          <TableHeader
+            urlCompareBy={urlCompareBy}
+            compareBy={compareBy}
+            setCompareBy={setCompareBy}
+            settings={settings}
+            setMARSettings={setMARSettings}
+            compareByCB={compareByCB}
+            location={location}
+            setAnalyseBy={setAnalyseBy}
+            analyseBy={analyseBy}
+          />
           {/* Table component */}
           <StyledTable
             onChange={handleTableChange}

@@ -21,6 +21,7 @@ import {
 import {
   TABLE_SORT_ORDER_TYPES,
   getDistrictGroupTestTermIds,
+  getDistrictIdsForDistrictGroup,
   getDistrictTermIdsForDistrictGroup,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
@@ -90,14 +91,20 @@ const enhanceQueryWithTermIds = (
   { termId, ...query },
   { orgData, userRole }
 ) => {
+  console.log('userRole, termId & old query', userRole, termId, query)
   if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
     const districtIdsArr = convertItemToArray(query.districtIds)
-    const termIdsArr = getDistrictTermIdsForDistrictGroup(orgData, {
-      termId,
+    const validatedDistrictIdsArr = getDistrictIdsForDistrictGroup(orgData, {
       districtIds: districtIdsArr,
     })
-    const termIds = termIdsArr.join(',')
-    Object.assign(query, { termIds })
+    const termIdsArr = getDistrictTermIdsForDistrictGroup(orgData, {
+      termId,
+      districtIds: validatedDistrictIdsArr,
+    })
+    Object.assign(query, {
+      districtIds: validatedDistrictIdsArr.join(','),
+      termIds: termIdsArr.join(','),
+    })
   } else {
     const testTermIdsArr = convertItemToArray(query.testTermIds)
     const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
@@ -109,6 +116,7 @@ const enhanceQueryWithTermIds = (
     )
     Object.assign(query, { termIds: termId, testTermIds })
   }
+  console.log('new query', query)
   return query
 }
 
@@ -279,7 +287,7 @@ const MultipleAssessmentReport = ({
       fetchDWMARChartDataRequest(query)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, orgData])
+  }, [settings.requestFilters])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -299,7 +307,7 @@ const MultipleAssessmentReport = ({
       fetchDWMARTableDataRequest(query)
       return () => toggleFilter(null, false)
     }
-  }, [pageFilters, orgData])
+  }, [pageFilters])
 
   useEffect(() => {
     const { internalMetricsForChart, externalMetricsForChart } = get(

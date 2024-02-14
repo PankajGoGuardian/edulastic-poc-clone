@@ -6,6 +6,54 @@ import { ItemCountWrapper } from './styled'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
+const getShowBlankForDeliverCount = (
+  currentGroupDetails,
+  currentGroupIndex,
+  itemGroup,
+  index
+) => {
+  // for current editing group delivery type is limited random then show blank
+  if (
+    currentGroupDetails?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+    currentGroupDetails?.deliveryType ===
+      ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+    currentGroupIndex === index
+  ) {
+    return true
+  }
+  // for other groups delivery type is limited random then show blank
+  if (
+    itemGroup?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+    itemGroup?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+    currentGroupIndex !== index
+  ) {
+    return true
+  }
+  return false
+}
+
+const isDeliverCountDisabled = (
+  currentGroupDetails,
+  currentGroupIndex,
+  index
+) => {
+  if (
+    currentGroupDetails?.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+    currentGroupIndex === index
+  ) {
+    return true
+  }
+  if (
+    currentGroupDetails?.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+    currentGroupDetails?.deliveryType ===
+      ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+    currentGroupIndex === index
+  ) {
+    return true
+  }
+  return currentGroupIndex !== index
+}
+
 export default function ItemCountWrapperContainer({
   handleChange,
   currentGroupDetails,
@@ -14,21 +62,31 @@ export default function ItemCountWrapperContainer({
   itemGroup,
   isRequired,
 }) {
+  const showBlank = getShowBlankForDeliverCount(
+    currentGroupDetails,
+    currentGroupIndex,
+    itemGroup,
+    index
+  )
+
+  const disabled = isDeliverCountDisabled(
+    currentGroupDetails,
+    currentGroupIndex,
+    index
+  )
+
   return (
     <ItemCountWrapper>
       <span>Deliver a total of </span>
       <Input
         data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
         type="number"
-        disabled={
-          (currentGroupDetails?.deliveryType ===
-            ITEM_GROUP_DELIVERY_TYPES.ALL &&
-            currentGroupIndex === index) ||
-          currentGroupIndex !== index
-        }
+        disabled={disabled}
         min={0}
         value={
-          currentGroupIndex === index
+          showBlank
+            ? ''
+            : currentGroupIndex === index
             ? currentGroupDetails.deliverItemsCount || ''
             : itemGroup.deliverItemsCount || ''
         }

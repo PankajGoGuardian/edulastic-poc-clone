@@ -23,8 +23,14 @@ import {
   withWindowSizes,
   notification,
   MainContentWrapper,
+  EduIf,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import {
+  ITEM_GROUP_DELIVERY_TYPES,
+  ITEM_GROUP_TYPES,
+} from '@edulastic/constants/const/test'
+import { testItemsApi } from '@edulastic/api'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
@@ -46,6 +52,7 @@ import {
   isDefaultTestSelector,
   getItemGroupsSelector,
   getAllTagsAction,
+  MAX_ITEMS_DELIVER_COUNT,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -77,6 +84,7 @@ import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/s
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 import { STATUS } from '../../../../../AssessmentCreate/components/CreateAITest/ducks/constants'
 import AddMoreQuestionsPannel from '../AddMoreQuestionsPannel/AddMoreQuestionsPannel'
+import AutoSelectScoreChangeModal from '../AutoSelectScoreChangeModal/AutoSelectScoreChangeModel'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -98,6 +106,9 @@ class Review extends PureComponent {
       hasStickyHeader: false,
       indexForPreview: 0,
       groupIndex: 0,
+      showAutoSelectScoreChangeModal: false,
+      currentGroupId: '',
+      refreshing: false,
     }
   }
 
@@ -243,15 +254,29 @@ class Review extends PureComponent {
     const { test, setData, setTestItems } = this.props
     const newData = cloneDeep(test)
 
-    const itemsSelected = newData.itemGroups
-      .flatMap((itemGroup) => itemGroup.items || [])
-      .find((item) => item._id === itemId)
+    let itemsSelected
+    let itemsSelectedIndex
+    const itemGroupIndex = newData.itemGroups.findIndex((itemGroup) => {
+      itemsSelectedIndex = itemGroup.items.findIndex(({ _id }) => _id == itemId)
+      if (itemsSelectedIndex >= 0) {
+        itemsSelected = itemGroup.items[itemsSelectedIndex]
+        return true
+      }
+      return false
+    })
 
     if (!itemsSelected) {
       return notification({
         type: 'warn',
         messageKey: 'pleaseSelectAtleastOneQuestion',
       })
+    }
+
+    if (
+      newData.itemGroups[itemGroupIndex].type === ITEM_GROUP_TYPES.AUTOSELECT
+    ) {
+      this.refreshGroupItems(itemGroupIndex, itemsSelectedIndex)
+      return
     }
 
     newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
@@ -583,6 +608,103 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
+  refreshGroupItems = async (groupSelectedIndex, itemsSelectedIndex = -1) => {
+    const { test, handleSave, setData } = this.props
+    const { refreshing } = this.state
+    const { itemGroups } = test
+    const currentGroup = itemGroups[groupSelectedIndex]
+    if (refreshing) {
+      return
+    }
+    this.setState({ refreshing: true })
+    const optionalFields = {
+      depthOfKnowledge: currentGroup.dok,
+      authorDifficulty: currentGroup.difficulty,
+      tags: currentGroup.tags?.map((tag) => tag.tagName) || [],
+    }
+    Object.keys(optionalFields).forEach(
+      (key) => optionalFields[key] === undefined && delete optionalFields[key]
+    )
+
+    const data = {
+      limit:
+        itemsSelectedIndex >= 0
+          ? 1
+          : currentGroup.deliveryType ===
+            ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+          ? currentGroup.pickCount || currentGroup.items.length || 2
+          : currentGroup.deliverItemsCount,
+      search: {
+        collectionId: currentGroup.collectionDetails._id,
+        standardIds: currentGroup.standardDetails.standards.map(
+          (std) => std.standardId
+        ),
+        ...optionalFields,
+      },
+    }
+    if (data.limit > MAX_ITEMS_DELIVER_COUNT) {
+      notification({ messageKey: 'maximum100Questions' })
+      return
+    }
+
+    await testItemsApi
+      .getAutoSelectedItems({
+        ...data,
+        search: {
+          ...data.search,
+          nInItemIds: itemGroups
+            .flatMap((_itemGroup) => _itemGroup.items || [])
+            .map(({ _id }) => _id),
+        },
+      })
+      .then((res) => {
+        const { items, total } = res
+        if (items.length === 0) {
+          notification({ messageKey: 'noItemsFoundForCurrentCombination' })
+          return
+        }
+        if (total < data.limit) {
+          return notification({
+            msg: `There are only ${total} items that meet the search criteria`,
+          })
+        }
+        const updatedItemGroups = produce(itemGroups, (draft) => {
+          if (itemsSelectedIndex >= 0) {
+            draft[groupSelectedIndex].items = draft[
+              groupSelectedIndex
+            ].items.map((item, itemIndex) =>
+              itemIndex === itemsSelectedIndex ? items[0] : item
+            )
+          } else {
+            draft[groupSelectedIndex].items = items
+          }
+        })
+        setData({
+          itemGroups: updatedItemGroups,
+        })
+        handleSave()
+        this.setState({ refreshing: false })
+      })
+      .catch((err) => {
+        this.setState({ refreshing: false })
+        notification({ msg: err.message || 'Failed to fetch test items' })
+      })
+  }
+
+  setShowAutoSelectScoreChangeModal = (groupId) => {
+    this.setState({
+      showAutoSelectScoreChangeModal: true,
+      currentGroupId: groupId,
+    })
+  }
+
+  closeScoreChangeModal = () => {
+    this.setState({
+      showAutoSelectScoreChangeModal: false,
+      currentGroupId: '',
+    })
+  }
+
   render() {
     const {
       test,
@@ -637,6 +759,8 @@ class Review extends PureComponent {
       currentTestId,
       hasStickyHeader,
       groupIndex,
+      showAutoSelectScoreChangeModal,
+      currentGroupId,
     } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
@@ -768,6 +892,7 @@ class Review extends PureComponent {
                 questions={questions}
                 owner={owner}
                 itemGroups={test.itemGroups}
+                refreshGroupItems={this.refreshGroupItems}
                 isPublishers={isPublishers}
                 isFetchingAutoselectItems={isFetchingAutoselectItems}
                 userRole={userRole}
@@ -777,6 +902,9 @@ class Review extends PureComponent {
                 orgCollections={orgCollections}
                 userId={userId}
                 hasSections={hasSections}
+                setShowAutoSelectScoreChangeModal={
+                  this.setShowAutoSelectScoreChangeModal
+                }
               />
               <AddMoreQuestionsPannel
                 onSaveTestId={onSaveTestId}
@@ -841,6 +969,14 @@ class Review extends PureComponent {
             />
           </Spin>
         )}
+        <EduIf condition={showAutoSelectScoreChangeModal}>
+          <AutoSelectScoreChangeModal
+            visible={showAutoSelectScoreChangeModal}
+            closeModal={this.closeScoreChangeModal}
+            currentGroupId={currentGroupId}
+            handleSave={handleSave}
+          />
+        </EduIf>
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}

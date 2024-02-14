@@ -145,6 +145,8 @@ const testItemStatusConstants = {
 }
 const { WIDGET_TYPES } = questionType
 
+export const MAX_ITEMS_DELIVER_COUNT = 100
+
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: 'SECTION 1' /* For now, auto-generated. */,
@@ -183,21 +185,41 @@ export const getStaticGroupItemIds = (_test) =>
     }) || []
   ).filter((e) => !!e)
 
+export const getAllItemIdsFromTest = (itemGroups) => {
+  const itemIds = itemGroups.flatMap(({ items }) => {
+    return items.map((item) => item._id)
+  })
+  return itemIds.filter((item) => !!item)
+}
+
 const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
   produce(itemGroups, (_itemGroups) => {
     for (const itemGroup of _itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.STATIC) {
+      if (
+        itemGroup.type === ITEM_GROUP_TYPES.STATIC ||
+        (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+          itemGroup.items?.length)
+      ) {
+        delete itemGroup.pickCount
         const isLimitedDeliveryType =
           itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+
+        if (isLimitedDeliveryType && !itemGroup.itemsDefaultMaxScore) {
+          itemGroup.itemsDefaultMaxScore = 1
+        }
         // For delivery type:LIMITED scoring should be as how item level scoring works
         itemGroup.items = itemGroup.items.map((o) => ({
           itemId: o._id,
           maxScore: isLimitedDeliveryType
-            ? 1
+            ? itemGroup.itemsDefaultMaxScore || 1
             : scoring[o._id] || helpers.getPoints(o),
           questions: o.data
             ? helpers.getQuestionLevelScore(
-                { ...o, isLimitedDeliveryType },
+                {
+                  ...o,
+                  isLimitedDeliveryType,
+                  itemsDefaultMaxScore: itemGroup.itemsDefaultMaxScore,
+                },
                 o.data.questions,
                 helpers.getPoints(o),
                 scoring[o._id]
@@ -787,16 +809,23 @@ export const getTestItemsSelector = createSelector(
   (_test) => {
     const itemGroups = _test.itemGroups || []
     let testItems =
-      itemGroups.flatMap(
-        (itemGroup) =>
+      itemGroups.flatMap((itemGroup) => {
+        const isLimitedDeliveryType =
+          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+        const itemExtras = {
+          groupId: itemGroup._id,
+          isLimitedDeliveryType,
+        }
+        if (isLimitedDeliveryType) {
+          itemExtras.itemsDefaultMaxScore = itemGroup.itemsDefaultMaxScore
+        }
+        return (
           itemGroup.items.map((item) => ({
             ...item,
-            groupId: itemGroup._id,
-            isLimitedDeliveryType:
-              itemGroup.deliveryType ===
-              ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM,
+            ...itemExtras,
           })) || []
-      ) || []
+        )
+      }) || []
     testItems = sortTestItemQuestions(testItems)
     return testItems
   }
@@ -2495,6 +2524,7 @@ function* createTestSaga({ payload }) {
       produce(payload.data, (draft) => {
         if ((allTestItems || []).length) {
           draft.itemGroups[0].items = allTestItems
+          delete draft.itemGroups[0].pickCount
         }
       })
     )
@@ -4139,7 +4169,8 @@ function* fetchAutoselectGroupItemsSaga(payload) {
 function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   try {
     const hasAutoSelectItems = _test.itemGroups.some(
-      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+      (g) =>
+        g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT && !g.items?.length
     )
     if (!hasAutoSelectItems) return
     yield put(setAutoselectItemsFetchingStatusAction(true))

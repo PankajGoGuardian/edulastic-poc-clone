@@ -55,6 +55,8 @@ export const preLabelHeading = {
   title: 'Completion report by School',
   description:
     'The report provide real-time insights into student progess, submission status and grading updates for informed decision-making',
+  titleFontSize: '16px',
+  descriptionFontSize: '12px',
 }
 export const barDataForCompletionChart = [
   {

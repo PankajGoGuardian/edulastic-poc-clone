@@ -153,7 +153,7 @@ export const INSIGHT_REPORTS = [
     icon: <IconMultipleFile />,
     cards: [
       {
-        key: 'performanceOverTime',
+        key: 'completionReport',
         title: 'Completion Report',
         sellThumbnail: MarOverTimeIcon,
         thumbnail: MarOverTime,

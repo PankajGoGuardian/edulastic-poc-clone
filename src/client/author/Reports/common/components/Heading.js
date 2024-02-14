@@ -3,9 +3,17 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { title as titleColor } from '@edulastic/colors'
 
-const Heading = ({ title, description }) => {
+const Heading = ({
+  title,
+  description,
+  titleFontSize,
+  descriptionFontSize,
+}) => {
   return (
-    <Container>
+    <Container
+      titleFontSize={titleFontSize}
+      descriptionFontSize={descriptionFontSize}
+    >
       <h3>{title}</h3>
       <p>{description}</p>
     </Container>

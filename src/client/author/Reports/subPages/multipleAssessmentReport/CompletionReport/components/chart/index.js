@@ -26,7 +26,12 @@ import {
 import Heading from '../../../../../common/components/Heading'
 import { ChartContainer } from './styled'
 
-const { title, description } = preLabelHeading
+const {
+  title,
+  description,
+  titleFontSize,
+  descriptionFontSize,
+} = preLabelHeading
 
 const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
@@ -83,7 +88,12 @@ const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
         <EduThen>
           <EduIf condition={formattedChartData.length}>
             <EduThen>
-              <Heading title={title} description={description} />
+              <Heading
+                title={title}
+                description={description}
+                titleFontSize={titleFontSize}
+                descriptionFontSize={descriptionFontSize}
+              />
               <SignedStackedBarChart
                 pageSize={pageSize}
                 backendPagination={pagination}

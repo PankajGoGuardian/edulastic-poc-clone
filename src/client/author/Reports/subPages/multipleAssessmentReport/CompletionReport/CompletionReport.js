@@ -49,6 +49,27 @@ function CompletionReport({
   isCsvDownloading,
   ...props
 }) {
+  // chart
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize,
+    pageCount: 0,
+  })
+
+  useEffect(() => {
+    const q = {
+      ...settings.requestFilters,
+      page: pagination.page,
+      ...(pagination.page === 1 && { recompute: true }),
+    }
+    if (q.termId || q.reportId) {
+      fetchCompletionReportChartDataRequest(q)
+
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.requestFilters, pagination.page])
+
+  // table
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
     indices: true,
@@ -85,28 +106,10 @@ function CompletionReport({
     page: 0,
     pageSize: TABLE_PAGE_SIZE,
   })
-  const [pagination, setPagination] = useState({
-    page: 1,
-    pageSize,
-    pageCount: 0,
-  })
   const tableData = useMemo(
     () => _tableData?.reportTableData?.data?.result?.tableMetricInfo,
     [_tableData]
   )
-
-  useEffect(() => {
-    const q = {
-      ...settings.requestFilters,
-      page: pagination.page,
-      ...(pagination.page === 1 && { recompute: true }),
-    }
-    if (q.termId || q.reportId) {
-      fetchCompletionReportChartDataRequest(q)
-
-      return () => toggleFilter(null, false)
-    }
-  }, [settings.requestFilters, pagination.page])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })

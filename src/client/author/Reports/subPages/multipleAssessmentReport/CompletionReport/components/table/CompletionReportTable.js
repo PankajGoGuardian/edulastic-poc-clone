@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
@@ -21,6 +21,8 @@ import {
   compareByOptions,
   compareByOptionsMapByKey,
 } from '../../../common/utils/constants'
+import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+import { convertTableToCSV } from '../../../../../common/util'
 
 const staticColumns = [
   {
@@ -143,6 +145,8 @@ const CompletionReportTable = ({
   setStatusColumnSortState,
   setTestColumnSort,
   tableData,
+  compareByCB,
+  isCsvDownloading,
 }) => {
   const _data = [
     {
@@ -219,8 +223,28 @@ const CompletionReportTable = ({
       })
     }
   }
+  // const tableColumns = useMemo(
+  //   () =>
+  //     getTableColumns(
+  //       overallAssessmentsData,
+  //       isSharedReport,
+  //       settings,
+  //       isPrinting,
+  //       sortFilters
+  //     ),
+  //   [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
+  // )
+  const onCsvConvert = (data) => downloadCSV(`Completion Report.csv`, data)
+  const childrenRef = useRef(null)
+
+  useEffect(() => {
+    if (isCsvDownloading && childrenRef.current) {
+      const { csvText, csvRawData } = convertTableToCSV(childrenRef.current)
+      onCsvConvert(csvText, csvRawData)
+    }
+  }, [isCsvDownloading])
   return (
-    <TableContainer>
+    <TableContainer ref={childrenRef}>
       <TableHeader
         settings={settings}
         setMARSettings={setMARSettings}

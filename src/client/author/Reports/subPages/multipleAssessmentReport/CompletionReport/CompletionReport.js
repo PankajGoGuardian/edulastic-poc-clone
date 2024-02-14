@@ -8,6 +8,7 @@ import {
   getCompletionReportTableData,
   getCompletionReportTableDataLoading,
 } from './ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 
@@ -39,6 +40,7 @@ function CompletionReport({
   isTableDataLoading,
   location,
   tableData,
+  isCsvDownloading,
   ...props
 }) {
   const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
@@ -113,6 +115,8 @@ function CompletionReport({
       <CompletionReportTable
         // isTableDataLoading={isTableDataLoading}
         location={location}
+        isCsvDownloading={isCsvDownloading}
+        compareByCB={handleCompareChange}
         settings={settings}
         setMARSettings={setMARSettings}
         setAnalyseBy={setAnalyseBy}
@@ -131,6 +135,7 @@ const enhance = connect(
     chartDataLoading: getCompletionChartDataLoading(state),
     tableData: getCompletionReportTableData(state),
     isTableDataLoading: getCompletionReportTableDataLoading(state),
+    isCsvDownloading: getCsvDownloadingState(state),
   }),
   { ...actions }
 )

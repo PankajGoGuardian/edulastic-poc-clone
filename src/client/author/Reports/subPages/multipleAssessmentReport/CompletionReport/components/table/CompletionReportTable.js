@@ -78,9 +78,10 @@ const CompletionReportTable = ({
   compareByCB,
   getCsvData,
 }) => {
+  const isAnalyseByPercent = analyseBy.key === 'percentage'
   const getValue = (value) => {
     const renderedValue = value.toString().replace(/\.00$/, '')
-    return `${renderedValue}${analyseBy.key === 'percentage' ? '%' : ''}`
+    return `${renderedValue}${isAnalyseByPercent ? '%' : ''}`
   }
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -93,12 +94,30 @@ const CompletionReportTable = ({
     testId: 'overall_tid',
     testName: 'Overall',
     testType: '',
-    assigned: tableData?.[0]?.totalAssigned || 0,
-    inProgress: tableData?.[0]?.totalInProgress || 0,
-    submitted: tableData?.[0]?.totalSubmitted || 0,
-    absent: tableData?.[0]?.totalAbsent || 0,
-    notStarted: tableData?.[0]?.totalNotStarted || 0,
-    graded: tableData?.[0]?.totalGraded || 0,
+    assigned:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalAssignedP' : 'totalAssigned'}`
+      ] || 0,
+    inProgress:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalInProgressP' : 'totalInProgress'}`
+      ] || 0,
+    submitted:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalSubmittedP' : 'totalSubmitted'}`
+      ] || 0,
+    absent:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalAbsentP' : 'totalAbsent'}`
+      ] || 0,
+    notStarted:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalNotStartedP' : 'totalNotStarted'}`
+      ] || 0,
+    graded:
+      tableData?.[0]?.[
+        `${isAnalyseByPercent ? 'totalGradedP' : 'totalGraded'}`
+      ] || 0,
     dimensionName: '',
     dimensionId: '',
   }

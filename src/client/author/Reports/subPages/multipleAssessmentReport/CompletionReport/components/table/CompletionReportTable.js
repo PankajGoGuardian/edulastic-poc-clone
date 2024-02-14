@@ -77,8 +77,8 @@ const CompletionReportTable = ({
   compareByCB,
 }) => {
   const getValue = (value) => {
-    const renderedValue = value.toString().replace(/\.00$/, '');
-    return `${renderedValue}${analyseBy.key === 'percentage'? '%': ''}`
+    const renderedValue = value.toString().replace(/\.00$/, '')
+    return `${renderedValue}${analyseBy.key === 'percentage' ? '%' : ''}`
   }
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -120,7 +120,9 @@ const CompletionReportTable = ({
       title: '# Assigned',
       dataIndex: 'assigned',
       key: 'assigned',
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'Absent',
@@ -128,7 +130,9 @@ const CompletionReportTable = ({
       key: 'absent',
       sorter: true,
       className: 'absent',
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'Not started',
@@ -136,28 +140,36 @@ const CompletionReportTable = ({
       key: 'notStarted',
       className: 'absent',
       sorter: true,
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'In progress',
       dataIndex: 'inProgress',
       key: 'inProgress',
       sorter: true,
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'Submitted',
       dataIndex: 'submitted',
       key: 'submitted',
       sorter: true,
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'GRADED',
       dataIndex: 'graded',
       key: 'graded',
       sorter: true,
-      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
+      render: (value, record) => (
+        <ActionContainer>{getValue(value)}</ActionContainer>
+      ),
     },
     {
       title: 'VIEW PERFORMANCE',
@@ -241,31 +253,21 @@ const CompletionReportTable = ({
     }
   }, [isCsvDownloading])
 
-  if (isTableDataLoading) {
-    return (
-      <SpinLoader
-        tip="Loading completion table data..."
-        position="relative"
-        height="70%"
-      />
-    )
-  }
-
   return (
     <TableContainer>
-      <EduIf condition={tableData.length}>
+      <TableHeader
+        urlCompareBy={urlCompareBy}
+        compareBy={compareBy}
+        setCompareBy={setCompareBy}
+        settings={settings}
+        setMARSettings={setMARSettings}
+        compareByCB={compareByCB}
+        location={location}
+        setAnalyseBy={setAnalyseBy}
+        analyseBy={analyseBy}
+      />
+      <EduIf condition={!isTableDataLoading}>
         <EduThen>
-          <TableHeader
-            urlCompareBy={urlCompareBy}
-            compareBy={compareBy}
-            setCompareBy={setCompareBy}
-            settings={settings}
-            setMARSettings={setMARSettings}
-            compareByCB={compareByCB}
-            location={location}
-            setAnalyseBy={setAnalyseBy}
-            analyseBy={analyseBy}
-          />
           {/* Table component */}
           <StyledTable
             onChange={handleTableChange}
@@ -274,14 +276,10 @@ const CompletionReportTable = ({
           />
         </EduThen>
         <EduElse>
-          <Empty
-            className="ant-empty-small"
-            image={Empty.PRESENTED_IMAGE_SIMPLE}
-            style={{
-              textAlign: 'center',
-              margin: '10px 0',
-            }}
-            description="No matching results"
+          <SpinLoader
+            tip="Loading completion table data..."
+            position="relative"
+            height="70%"
           />
         </EduElse>
       </EduIf>

@@ -1,16 +1,21 @@
 import React from 'react'
-import { IconCopy } from '@edulastic/icons'
-import { themeColor } from '@edulastic/colors'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { ActionContainer } from './styled'
+import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
+import { TitleCopy } from '../../../../../../TutorMe/components/styled'
 
-const CopyReportLink = ({ report }) => {
+const CopyReportLink = ({ report, filterSettings }) => {
   return (
-    <CopyToClipboard text="New Text" onCopy={() => console.log(report)}>
-      <ActionContainer>
-        <IconCopy color={themeColor} />
-      </ActionContainer>
-    </CopyToClipboard>
+    <TitleCopy
+      copyable={{
+        text: `${
+          window.location.href
+        }/author/reports/completion-report${getCompletionReportPathForAssignment(
+          report.testId,
+          {},
+          [report],
+          filterSettings
+        )}`,
+      }}
+    ></TitleCopy>
   )
 }
 

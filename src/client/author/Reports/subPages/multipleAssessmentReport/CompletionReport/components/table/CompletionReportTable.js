@@ -23,88 +23,12 @@ import {
 } from '../../../common/utils/constants'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { convertTableToCSV } from '../../../../../common/util'
+import { Link } from 'react-router-dom'
+import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
 import qs from 'qs'
 import { Empty } from 'antd'
 
-const staticColumns = [
-  {
-    title: 'Test Name',
-    dataIndex: 'testName',
-    key: 'testName',
-    sorter: true,
-    render: (text, record) => {
-      return {
-        children: record.index === 0 ? record.testName : '',
-        // props: {
-        //   rowSpan: record.index === 0 ? record.rowSpan : 0,
-        // },
-      }
-    },
-  },
-  {},
-  {
-    title: '# Assigned',
-    dataIndex: 'assigned',
-    key: 'assigned',
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'Absent',
-    dataIndex: 'absent',
-    key: 'absent',
-    sorter: true,
-    className: 'absent',
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'Not started',
-    dataIndex: 'notStarted',
-    key: 'notStarted',
-    className: 'absent',
-    sorter: true,
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'In progress',
-    dataIndex: 'inProgress',
-    key: 'inProgress',
-    sorter: true,
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'Submitted',
-    dataIndex: 'submitted',
-    key: 'submitted',
-    sorter: true,
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'GRADED',
-    dataIndex: 'graded',
-    key: 'graded',
-    sorter: true,
-    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
-  },
-  {
-    title: 'VIEW PERFORMANCE',
-    key: 'performance',
-    render: (text, record) => {
-      return (
-        <ActionContainer onClick={() => console.log(record)}>
-          <IconEye color={themeColor} width={18} height={18} />
-        </ActionContainer>
-      )
-    },
-  },
-  {
-    title: 'COPY REPORT LINK',
-    key: 'copyReportLink',
-    render: (text, record) => {
-      return <CopyReportLink report={record} />
-    },
-  },
-]
-const getTableColumns = (isSharedReport, settings) => {
+const getTableColumns = (isSharedReport, settings, staticColumns) => {
   const compareBy =
     compareByOptionsMapByKey[settings.requestFilters.selectedCompareBy]
   const columnByCompareBy = next(tableColumnsData, (_columns) => {
@@ -172,13 +96,102 @@ const CompletionReportTable = ({
     dimensionName: '',
     dimensionId: '',
   }
+  const staticColumns = [
+    {
+      title: 'Test Name',
+      dataIndex: 'testName',
+      key: 'testName',
+      sorter: true,
+      render: (text, record) => {
+        return {
+          children: record.index === 0 ? record.testName : '',
+          // props: {
+          //   rowSpan: record.index === 0 ? record.rowSpan : 0,
+          // },
+        }
+      },
+    },
+    // { title: 'Network Name', dataIndex: 'networkName', key: 'networkName' },
+    {
+      title: '# Assigned',
+      dataIndex: 'assigned',
+      key: 'assigned',
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'Absent',
+      dataIndex: 'absent',
+      key: 'absent',
+      sorter: true,
+      className: 'absent',
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'Not started',
+      dataIndex: 'notStarted',
+      key: 'notStarted',
+      className: 'absent',
+      sorter: true,
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'In progress',
+      dataIndex: 'inProgress',
+      key: 'inProgress',
+      sorter: true,
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'Submitted',
+      dataIndex: 'submitted',
+      key: 'submitted',
+      sorter: true,
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'GRADED',
+      dataIndex: 'graded',
+      key: 'graded',
+      sorter: true,
+      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+    },
+    {
+      title: 'VIEW PERFORMANCE',
+      key: 'performance',
+      render: (text, record) => {
+        return (
+          <Link
+            to={`/author/reports/performance-over-time${getCompletionReportPathForAssignment(
+              record.testId,
+              {},
+              [record]
+            )}`}
+          >
+            <IconEye color={themeColor} width={18} height={18} />
+          </Link>
+        )
+      },
+    },
+    {
+      title: 'COPY REPORT LINK',
+      key: 'copyReportLink',
+      render: (text, record) => {
+        return (
+          <CopyReportLink
+            report={record}
+            filterSettings={settings?.requestFilters || {}}
+          />
+        )
+      },
+    },
+  ]
 
   const dataSource = getTableDataSource([overAllData, ...tableData])
 
-  const columns = useMemo(() => getTableColumns(false, settings), [
-    tableData,
-    settings,
-  ])
+  const columns = useMemo(
+    () => getTableColumns(false, settings, staticColumns),
+    [tableData, settings]
+  )
 
   // if (isTableDataLoading) {
   //   return (

@@ -2,6 +2,7 @@ import React from 'react'
 import { Menu, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
+import { isEmpty } from 'lodash'
 
 import { assignmentApi } from '@edulastic/api'
 import { EduIf, captureSentryException, notification } from '@edulastic/common'
@@ -36,7 +37,8 @@ const getReportPathForAssignment = (testId = '', assignment = {}, row = {}) => {
 export const getCompletionReportPathForAssignment = (
   testIds = '',
   assignment = {},
-  row = []
+  row = [],
+  filterSettings = {}
 ) => {
   const q = {}
   q.termId = assignment.termId || row[0]?.termId
@@ -45,6 +47,13 @@ export const getCompletionReportPathForAssignment = (
   }
   q.subject = 'All'
   q.grade = 'All'
+  if (!isEmpty(filterSettings)) {
+    const arr = Object.keys(filterSettings)
+    arr.forEach((item) => {
+      const val = filterSettings[item] === '' ? 'All' : filterSettings[item]
+      q[item] = val
+    })
+  }
   q.testIds = testIds
   return `?${qs.stringify(q)}`
 }

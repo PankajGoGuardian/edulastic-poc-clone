@@ -9,9 +9,9 @@ import { white, textBlackColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
 import UnScored from '@edulastic/common/src/components/Unscored'
 import {
-  FeedbackByQIdSelector,
   getMaxScoreFromCurrentItem,
   getItemSelector,
+  FeedbackByQIdAndTestItemIdSelector,
 } from '../../sharedDucks/TestItem'
 import { getClasses } from '../../Login/ducks'
 
@@ -26,6 +26,8 @@ const StudentFeedback = ({
   classList = [],
   currentItem,
 }) => {
+  const questionKey = `${qId}_${currentItem._id}`
+
   const isSkipped = useMemo(() => {
     const { itemLevelScoring, multipartItem, _id: itemId } = currentItem || {}
     if (itemLevelScoring && multipartItem) {
@@ -37,8 +39,8 @@ const StudentFeedback = ({
       return skippedWholeItem
     }
 
-    return (question?.[qId] || { skipped: true }).skipped
-  }, [currentItem, question, qId])
+    return (question?.[questionKey] || { skipped: true }).skipped
+  }, [currentItem, question, questionKey])
 
   const {
     score = 0,
@@ -46,7 +48,7 @@ const StudentFeedback = ({
     feedback,
     graded,
     groupId,
-  } = question[qId] || { skipped: true }
+  } = question[questionKey] || { skipped: true }
 
   let _score = isSkipped ? 0 : parseFloat((score || 0).toFixed(2))
   if (!graded) {
@@ -152,7 +154,7 @@ StudentFeedback.propTypes = {
 
 export default connect(
   (state) => ({
-    question: FeedbackByQIdSelector(state),
+    question: FeedbackByQIdAndTestItemIdSelector(state),
     itemMaxScore: getMaxScoreFromCurrentItem(state),
     classList: getClasses(state),
     currentItem: getItemSelector(state),

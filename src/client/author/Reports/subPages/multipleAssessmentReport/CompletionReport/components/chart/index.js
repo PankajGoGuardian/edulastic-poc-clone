@@ -24,6 +24,7 @@ import {
   yTicks,
 } from './utils'
 import Heading from '../../../../../common/components/Heading'
+import { ChartContainer } from './styled'
 
 const { title, description } = preLabelHeading
 
@@ -77,64 +78,77 @@ const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
   }
 
   return (
-    <>
-      {!loading ? (
-        <EduIf condition={formattedChartData.length}>
-          <EduThen>
-            <Heading title={title} description={description} />
-            <SignedStackedBarChart
-              pageSize={pageSize}
-              backendPagination={pagination}
-              setBackendPagination={setPagination}
-              barsData={barLabelData}
-              data={formattedChartData}
-              yDomain={yDomain}
-              xAxisDataKey={xAxisDataKey}
-              onBarClickCB={(bar) => console.log('bar is clicked', bar)}
-              onResetClickCB={(bar) => console.log('Reset bar is clicked', bar)}
-              onLegendMouseEnter={(payload) =>
-                console.log('Cursor Over Legend', payload)
-              }
-              onLegendMouseLeave={(payload) =>
-                console.log('Cursor away from Legend', payload)
-              }
-              yAxisLabel={yAxisLabel}
-              hideOnlyYAxis
-              onMouseBarOver={handleMouseOver}
-              onMouseBarLeave={() => setHoveredCategory(null)}
-              getTooltipJSX={getTooltipJSX}
-              getXAxisTickSyle={{ fontWeight: 'bold' }}
-              hideCartesianGrid
-              hasBarInsideLabels
-              barsLabelFormatter={barsLabelFormatter}
-              ticks={false}
-              tick={false}
-              barSize={100}
-              hasRoundedBars={false}
-              referenceLines={referenceLines}
-              tickMargin={10}
-              legendProps={{ wrapperStyle: { top: -10 } }}
-              tooltipType="left"
-              // yTicks={yTicks}
-              // yTickCount={20}
-              // yTick={customTick}
-              // yTickLine={{ stroke: '#D8D8D8' }}
-              // yTickFormatter={yLabelFormatter}
-            />
-          </EduThen>
-          <EduElse>
-            <Empty
-              className="ant-empty-small"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              style={{ textAlign: 'center', margin: '10px 0' }}
-              description="No matching results"
-            />
-          </EduElse>
-        </EduIf>
-      ) : (
-        <SpinLoader />
-      )}
-    </>
+    <ChartContainer>
+      <EduIf condition={!loading}>
+        <EduThen>
+          <Heading title={title} description={description} />
+          <EduIf condition={formattedChartData.length}>
+            <EduThen>
+              <SignedStackedBarChart
+                pageSize={pageSize}
+                backendPagination={pagination}
+                setBackendPagination={setPagination}
+                barsData={barLabelData}
+                data={formattedChartData}
+                yDomain={yDomain}
+                xAxisDataKey={xAxisDataKey}
+                onBarClickCB={(bar) => console.log('bar is clicked', bar)}
+                onResetClickCB={(bar) =>
+                  console.log('Reset bar is clicked', bar)
+                }
+                onLegendMouseEnter={(payload) =>
+                  console.log('Cursor Over Legend', payload)
+                }
+                onLegendMouseLeave={(payload) =>
+                  console.log('Cursor away from Legend', payload)
+                }
+                yAxisLabel={yAxisLabel}
+                hideOnlyYAxis
+                onMouseBarOver={handleMouseOver}
+                onMouseBarLeave={() => setHoveredCategory(null)}
+                getTooltipJSX={getTooltipJSX}
+                getXAxisTickSyle={{ fontWeight: 'bold' }}
+                hideCartesianGrid
+                hasBarInsideLabels
+                barsLabelFormatter={barsLabelFormatter}
+                ticks={false}
+                tick={false}
+                barSize={100}
+                hasRoundedBars={false}
+                referenceLines={referenceLines}
+                tickMargin={10}
+                legendProps={{ wrapperStyle: { top: -10 } }}
+                tooltipType="left"
+                responsiveContainerHeight={278}
+                // yTicks={yTicks}
+                // yTickCount={20}
+                // yTick={customTick}
+                // yTickLine={{ stroke: '#D8D8D8' }}
+                // yTickFormatter={yLabelFormatter}
+              />
+            </EduThen>
+            <EduElse>
+              <Empty
+                className="ant-empty-small"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                style={{
+                  textAlign: 'center',
+                  margin: '20px 0',
+                }}
+                description="No matching results"
+              />
+            </EduElse>
+          </EduIf>
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Loading completion chart data..."
+            position="relative"
+            height="70%"
+          />
+        </EduElse>
+      </EduIf>
+    </ChartContainer>
   )
 }
 

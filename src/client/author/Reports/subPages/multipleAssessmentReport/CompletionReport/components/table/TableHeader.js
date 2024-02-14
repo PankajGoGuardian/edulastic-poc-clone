@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import qs from 'qs'
 import { LeftContainer, RightContainer, TableHeaderContainer } from './styled'
 import Heading from '../../../../../common/components/Heading'
 import AnalyseByFilter from '../../../common/components/filters/AnalyseByFilter'
@@ -7,27 +6,7 @@ import { analyzeBy } from '../../static/json/dropDownData.json'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { compareByOptions } from '../../../common/utils/constants'
 
-const TableHeader = ({
-  settings,
-  setMARSettings,
-  location,
-  setAnalyseBy,
-  analyseBy,
-  urlCompareBy,
-}) => {
-  const [compareBy, setCompareBy] = useState(
-    urlCompareBy || compareByOptions[0]
-  )
-
-  useEffect(() => {
-    setMARSettings({
-      requestFilters: {
-        ...settings.requestFilters,
-        selectedCompareBy: compareBy.key,
-      },
-    })
-  }, [compareBy])
-
+const TableHeader = ({ compareBy, setCompareBy, setAnalyseBy, analyseBy }) => {
   return (
     <TableHeaderContainer>
       <LeftContainer>

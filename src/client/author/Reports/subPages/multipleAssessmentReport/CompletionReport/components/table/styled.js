@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 export const TableContainer = styled.div`
   display: flex;
+  height: 521px;
   flex-direction: column;
   gap: 32px;
 `

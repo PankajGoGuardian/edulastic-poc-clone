@@ -15,7 +15,7 @@ import {
 } from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
-import { SpinLoader } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
 import {
   compareByOptions,
@@ -139,7 +139,7 @@ const getTableColumns = (isSharedReport, settings) => {
 const CompletionReportTable = ({
   settings,
   setMARSettings,
-  // isTableDataLoading,
+  isTableDataLoading,
   location,
   setAnalyseBy,
   analyseBy,
@@ -147,6 +147,9 @@ const CompletionReportTable = ({
   setTestColumnSort,
   tableData = [],
   isCsvDownloading,
+  compareBy,
+  setCompareBy,
+  compareByCB,
 }) => {
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -225,21 +228,35 @@ const CompletionReportTable = ({
   // }
 
   return (
-    <TableContainer ref={childrenRef}>
-      <TableHeader
-        urlCompareBy={urlCompareBy}
-        settings={settings}
-        setMARSettings={setMARSettings}
-        location={location}
-        setAnalyseBy={setAnalyseBy}
-        analyseBy={analyseBy}
-      />
-
-      <StyledTable
-        onChange={handleTableChange}
-        columns={columns}
-        dataSource={dataSource}
-      />
+    <TableContainer>
+      <EduIf condition={!isTableDataLoading}>
+        <EduThen>
+          <TableHeader
+            urlCompareBy={urlCompareBy}
+            compareBy={compareBy}
+            setCompareBy={setCompareBy}
+            settings={settings}
+            setMARSettings={setMARSettings}
+            compareByCB={compareByCB}
+            location={location}
+            setAnalyseBy={setAnalyseBy}
+            analyseBy={analyseBy}
+          />
+          {/* Table component */}
+          <StyledTable
+            onChange={handleTableChange}
+            columns={columns}
+            dataSource={dataSource}
+          />
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Loading completion table data..."
+            position="relative"
+            height="70%"
+          />
+        </EduElse>
+      </EduIf>
     </TableContainer>
   )
 }

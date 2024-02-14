@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { Empty } from 'antd'
+import qs from 'qs'
+import {
+  TABLE_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
+} from '@edulastic/constants/reportUtils/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { omit } from 'lodash'
 import Chart from './components/chart'
 import {
   actions,
@@ -20,12 +28,6 @@ import {
   sortByMap,
 } from '../common/utils/constants'
 import { sortKeys } from './utils'
-import {
-  TABLE_SORT_ORDER_TYPES,
-  tableToDBSortOrderMap,
-} from '@edulastic/constants/reportUtils/common'
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit } from 'lodash'
 
 const pageSize = 2
 
@@ -40,13 +42,33 @@ function CompletionReport({
   sharedReport,
   chartData,
   setMARSettings,
-  chartDataLoading,
+  isChartDataLoading,
   isTableDataLoading,
   location,
   tableData: _tableData,
   isCsvDownloading,
   ...props
 }) {
+  const search = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
+  })
+  const urlCompareBy = compareByOptions.find(
+    (option) => option.key === search.selectedCompareBy
+  )
+
+  const [compareBy, setCompareBy] = useState(
+    urlCompareBy || compareByOptions[0]
+  )
+
+  useEffect(() => {
+    setMARSettings({
+      requestFilters: {
+        ...settings.requestFilters,
+        selectedCompareBy: compareBy.key,
+      },
+    })
+  }, [location.search])
   const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
 
   const [statusColumnSortState, setStatusColumnSortState] = useState({
@@ -113,7 +135,7 @@ function CompletionReport({
     <Container>
       <Chart
         chartData={chartData}
-        loading={chartDataLoading}
+        loading={isChartDataLoading}
         pageSize={pageSize}
         pagination={pagination}
         setPagination={setPagination}
@@ -121,7 +143,7 @@ function CompletionReport({
       />
 
       <CompletionReportTable
-        // isTableDataLoading={isTableDataLoading}
+        isTableDataLoading={isTableDataLoading}
         location={location}
         isCsvDownloading={isCsvDownloading}
         settings={settings}
@@ -131,6 +153,8 @@ function CompletionReport({
         setStatusColumnSortState={setStatusColumnSortState}
         setTestColumnSort={setTestColumnSort}
         tableData={tableData}
+        compareBy={compareBy}
+        setCompareBy={setCompareBy}
       />
     </Container>
   )
@@ -139,7 +163,7 @@ function CompletionReport({
 const enhance = connect(
   (state) => ({
     chartData: getCompletionChartData(state),
-    chartDataLoading: getCompletionChartDataLoading(state),
+    isChartDataLoading: getCompletionChartDataLoading(state),
     tableData: getCompletionReportTableData(state),
     isTableDataLoading: getCompletionReportTableDataLoading(state),
     isCsvDownloading: getCsvDownloadingState(state),

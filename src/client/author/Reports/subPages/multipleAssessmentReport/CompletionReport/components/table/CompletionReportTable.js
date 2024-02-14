@@ -81,8 +81,8 @@ const CompletionReportTable = ({
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
   const getValue = (value) => {
-    const renderedValue = value.toString().replace(/\.00$/, '')
-    return `${renderedValue}${isAnalyseByPercent ? '%' : ''}`
+    const renderedValue = value?.toString()?.replace(/\.00$/, '')
+    return `${renderedValue || 0}${isAnalyseByPercent ? '%' : ''}`
   }
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -96,9 +96,7 @@ const CompletionReportTable = ({
     testName: 'Overall',
     testType: '',
     assigned:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalAssignedP' : 'totalAssigned'}`
-      ] || 0,
+      tableData?.[0]?.totalAssigned || 0,
     inProgress:
       tableData?.[0]?.[
         `${isAnalyseByPercent ? 'totalInProgressP' : 'totalInProgress'}`
@@ -154,7 +152,7 @@ const CompletionReportTable = ({
         <ActionContainer
           onClick={() => handleDownloadCsv(record, utastatus.ASSIGNED)}
         >
-          {getValue(value)}
+          {value}
         </ActionContainer>
       ),
     },

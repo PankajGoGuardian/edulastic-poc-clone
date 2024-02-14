@@ -41,10 +41,6 @@ function CompletionReport({
   location,
   ...props
 }) {
-  const [navBtnVisible, setNavBtnVisible] = useState({
-    leftNavVisible: false,
-    rightNavVisible: false,
-  })
   const [compareBy, setCompareBy] = useState(compareByOptions[0])
   const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
   const [sortFilters, setSortFilters] = useState({
@@ -64,11 +60,15 @@ function CompletionReport({
 
   // TODO: mapper for sort order
   // tableToDBSortOrderMap
-  const [pageNo, setPageNo] = useState(1)
 
   const [pageFilters, setPageFilters] = useState({
     page: 0,
     pageSize: TABLE_PAGE_SIZE,
+  })
+  const [pagination, setPagination] = useState({
+    page: 1,
+    pageSize,
+    pageCount: 0,
   })
   // const [pageNo, setPageNo] = useState(1)
 
@@ -89,13 +89,17 @@ function CompletionReport({
   }
   // console.log({ isTableDataLoading })
   useEffect(() => {
-    const q = { ...settings.requestFilters, page: pageNo }
+    const q = {
+      ...settings.requestFilters,
+      page: pagination.page,
+      ...(pagination.page === 1 && { recompute: true }),
+    }
     if (q.termId || q.reportId) {
       fetchCompletionReportChartDataRequest(q)
 
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, pageNo])
+  }, [settings.requestFilters, pagination.page])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -128,12 +132,10 @@ function CompletionReport({
     <Container>
       <Chart
         chartData={chartData}
-        setNavBtnVisible={setNavBtnVisible}
-        navBtnVisible={navBtnVisible}
         loading={chartDataLoading}
         pageSize={pageSize}
-        setPageNo={setPageNo}
-        pageNo={pageNo}
+        pagination={pagination}
+        setPagination={setPagination}
         {...props}
       />
 

@@ -17,4 +17,24 @@ export const chartDataFormatter = (chartData = []) =>
     testDate: formatDate(item.assessmentDate),
     testId: item.testId,
     testType: item.testType,
+    totalTests: item.totalRows,
   }))
+
+export const barsLabelFormatter = (value, payload, height) => {
+  if (height > 14) return value
+  return ''
+}
+
+export const yLabelFormatter = () => ''
+
+export const yTicks = Array.from({ length: 21 }, (_, i) => i * 5)
+
+export const customTick = ( payload ) => {
+  if (payload && payload.value) {
+    const value = payload.value
+    console.log(value)
+    // if (!value % 25) return { stroke: '#D8D8D8', strokeWidth: 5 }
+  }
+  // return { stroke: '#B7BABF', strokeWidth: 150 }
+  return {...payload}
+}

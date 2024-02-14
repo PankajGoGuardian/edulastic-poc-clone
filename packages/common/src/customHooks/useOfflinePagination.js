@@ -28,7 +28,6 @@ function useOfflinePagination(options = {}) {
     lookbackCount = 0,
     lookaheadCount = 0,
     backFillLastPage = false,
-    customizedPagination = false,
   } = options
   const totalPages = Math.ceil(data.length / pageSize)
   let defaultPageToUse = Math.min(defaultPage, totalPages - 1)
@@ -69,7 +68,7 @@ function useOfflinePagination(options = {}) {
       const pageEnd = Math.min(data.length, pageOffset + pageSize)
       viewStart = Math.max(0, pageEnd - pageSize - lookbackCount)
     }
-    return !customizedPagination ? data.slice(viewStart, viewEnd) : data
+    return data.slice(viewStart, viewEnd)
   }, [data, page, lookbackCount, lookaheadCount, pageSize])
 
   return {

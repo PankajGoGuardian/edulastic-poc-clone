@@ -138,12 +138,10 @@ export const SignedStackedBarChart = ({
   referenceLines = [],
   tickMargin = 20,
   tooltipType = 'top',
-  // customized pagination props if done
-  customizedPagination,
-  navBtnVisible,
-  setNavBtnVisible,
-  currentPage,
-  setCurrentPage,
+  // yTicks = false,
+  // yTickCount = 0,
+  // yTickLine = false,
+  // yTick,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -173,7 +171,6 @@ export const SignedStackedBarChart = ({
     lookbackCount: 0,
     pageSize,
     backFillLastPage: true,
-    customizedPagination,
   })
 
   if (settings) {
@@ -322,13 +319,9 @@ export const SignedStackedBarChart = ({
   //   rightNavVisible: true,
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
-    : customizedPagination
-    ? navBtnVisible.leftNavVisible
     : hasPreviousPage
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : customizedPagination
-    ? navBtnVisible.rightNavVisible
     : hasNextPage
 
   const chartNavLeftClick = () => {
@@ -337,12 +330,6 @@ export const SignedStackedBarChart = ({
         ...backendPagination,
         page: backendPagination.page - 1,
       })
-    } else if (customizedPagination && currentPage > 1) {
-      setNavBtnVisible(() => ({
-        rightNavVisible: true,
-        leftNavVisible: currentPage > 2,
-      }))
-      setCurrentPage((prev) => prev - 1)
     } else {
       prevPage()
       setAnimate(true)
@@ -354,12 +341,6 @@ export const SignedStackedBarChart = ({
         ...backendPagination,
         page: backendPagination.page + 1,
       })
-    } else if (customizedPagination) {
-      setNavBtnVisible(() => ({
-        rightNavVisible: data.length === pageSize, // page Size
-        leftNavVisible: true,
-      }))
-      setCurrentPage((prevPageNo) => prevPageNo + 1)
     } else {
       nextPage()
       setAnimate(true)
@@ -444,7 +425,7 @@ export const SignedStackedBarChart = ({
           {!hideYAxis ? (
             <YAxis
               type="number"
-              axisLine={hideOnlyYAxis}
+              axisLine={!hideOnlyYAxis}
               domain={yDomain}
               tick={false}
               stroke={!hideOnlyYAxis ? greyLight1 : null}

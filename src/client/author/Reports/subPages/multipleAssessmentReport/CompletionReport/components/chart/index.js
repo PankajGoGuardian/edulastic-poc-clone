@@ -16,34 +16,32 @@ import {
   TooltipRow,
 } from '../../../../../common/styled'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
-import { chartDataFormatter } from './utils'
+import {
+  barsLabelFormatter,
+  chartDataFormatter,
+  customTick,
+  yLabelFormatter,
+  yTicks,
+} from './utils'
 import Heading from '../../../../../common/components/Heading'
 
 const { title, description } = preLabelHeading
 
-const Chart = (props) => {
-  const {
-    chartData = [],
-    navBtnVisible,
-    setNavBtnVisible,
-    loading,
-    pageNo,
-    setPageNo,
-  } = props
+const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
-  const dataForChart = useMemo(() => chartDataFormatter(chartData))
+  const formattedChartData = useMemo(() => chartDataFormatter(chartData))
 
   useEffect(() => {
-    if (dataForChart.length === pageSize) {
-      setNavBtnVisible((prevState) => ({ ...prevState, rightNavVisible: true }))
-    } else if (dataForChart.length < pageSize) {
-      setNavBtnVisible((prevState) => ({
+    if (pagination.page === 1) {
+      const totalTests = formattedChartData.length
+        ? formattedChartData[0].totalTests
+        : 0
+      const totalPages = Math.ceil(totalTests / pageSize)
+      setPagination((prevState) => ({
         ...prevState,
-        rightNavVisible: false,
+        pageCount: totalPages,
       }))
-      if (dataForChart.length === 0 && pageNo > 1)
-        setPageNo((prevState) => (prevState > 1 ? prevState - 1 : prevState))
     }
   }, [chartData])
 
@@ -51,10 +49,6 @@ const Chart = (props) => {
     setHoveredCategory(category)
   }
 
-  const getCategoryContent = (value, payload, height) => {
-    if (height > 14) return value
-    return ''
-  }
   const getTooltipJSX = (payload) => {
     if (payload.length && payload[0].payload && hoveredCategory) {
       const result = payload[0].payload
@@ -85,13 +79,15 @@ const Chart = (props) => {
   return (
     <>
       {!loading ? (
-        <EduIf condition={dataForChart.length || pageNo > 1}>
+        <EduIf condition={formattedChartData.length}>
           <EduThen>
             <Heading title={title} description={description} />
             <SignedStackedBarChart
               pageSize={pageSize}
+              backendPagination={pagination}
+              setBackendPagination={setPagination}
               barsData={barLabelData}
-              data={dataForChart}
+              data={formattedChartData}
               yDomain={yDomain}
               xAxisDataKey={xAxisDataKey}
               onBarClickCB={(bar) => console.log('bar is clicked', bar)}
@@ -110,8 +106,7 @@ const Chart = (props) => {
               getXAxisTickSyle={{ fontWeight: 'bold' }}
               hideCartesianGrid
               hasBarInsideLabels
-              barsLabelFormatter={getCategoryContent}
-              labelListContent={getCategoryContent}
+              barsLabelFormatter={barsLabelFormatter}
               ticks={false}
               tick={false}
               barSize={100}
@@ -120,11 +115,11 @@ const Chart = (props) => {
               tickMargin={10}
               legendProps={{ wrapperStyle: { top: -10 } }}
               tooltipType="left"
-              customizedPagination
-              setNavBtnVisible={setNavBtnVisible}
-              navBtnVisible={navBtnVisible}
-              currentPage={pageNo}
-              setCurrentPage={setPageNo}
+              // yTicks={yTicks}
+              // yTickCount={20}
+              // yTick={customTick}
+              // yTickLine={{ stroke: '#D8D8D8' }}
+              // yTickFormatter={yLabelFormatter}
             />
           </EduThen>
           <EduElse>

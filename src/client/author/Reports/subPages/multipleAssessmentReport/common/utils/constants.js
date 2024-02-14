@@ -57,7 +57,7 @@ export const barDataForCompletionChart = [
     key: 'absentPercentage',
     insideLabelKey: 'absent',
     name: 'Absent',
-    fill: '#9e9e9e',
+    fill: '#C4C4C4',
     position: 'insideTop',
     stackId: 'completionReport',
   },
@@ -67,7 +67,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Not Started',
     stackId: 'completionReport',
-    fill: '#f44336',
+    fill: '#F35F5F',
   },
   {
     key: 'inProgressPercentage',
@@ -75,7 +75,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'In Progress',
     stackId: 'completionReport',
-    fill: '#ffc107',
+    fill: '#ECAB28',
   },
   {
     key: 'submittedPercentage',
@@ -83,7 +83,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Submitted',
     stackId: 'completionReport',
-    fill: '#2196f3',
+    fill: '#3F85E5',
   },
   {
     key: 'gradedPercentage',
@@ -91,7 +91,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Graded',
     stackId: 'completionReport',
-    fill: '#4caf50',
+    fill: '#1AB395',
   },
 ]
 

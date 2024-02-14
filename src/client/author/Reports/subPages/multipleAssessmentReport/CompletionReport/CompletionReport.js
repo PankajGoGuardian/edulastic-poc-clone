@@ -8,6 +8,12 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { omit } from 'lodash'
+import {
+  completionReportChartPageSize as barChartPageSize,
+  analyzeBy,
+  compareByOptions,
+  sortByMap,
+} from '../common/utils/constants'
 import Chart from './components/chart'
 import {
   actions,
@@ -22,14 +28,7 @@ import { Container } from './styled'
 
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
-import {
-  analyzeBy,
-  compareByOptions,
-  sortByMap,
-} from '../common/utils/constants'
 import { sortKeys } from './utils'
-
-const pageSize = 2
 
 const TABLE_PAGE_SIZE = 30
 function CompletionReport({
@@ -52,7 +51,7 @@ function CompletionReport({
   // chart
   const [pagination, setPagination] = useState({
     page: 1,
-    pageSize,
+    pageSize: barChartPageSize,
     pageCount: 0,
   })
 
@@ -139,7 +138,7 @@ function CompletionReport({
       <Chart
         chartData={chartData}
         loading={isChartDataLoading}
-        pageSize={pageSize}
+        pageSize={barChartPageSize}
         pagination={pagination}
         setPagination={setPagination}
         {...props}

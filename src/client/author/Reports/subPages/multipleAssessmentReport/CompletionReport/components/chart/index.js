@@ -4,7 +4,6 @@ import { Empty } from 'antd'
 import {
   referenceLinesForCompletionChart as referenceLines,
   barDataForCompletionChart as barLabelData,
-  completionReportPageSize as pageSize,
   xAxisDataKey,
   yDomain,
   yAxisLabel,
@@ -31,6 +30,7 @@ const {
   description,
   titleFontSize,
   descriptionFontSize,
+  pageSize,
 } = preLabelHeading
 
 const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
@@ -95,7 +95,6 @@ const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
                 descriptionFontSize={descriptionFontSize}
               />
               <SignedStackedBarChart
-                pageSize={pageSize}
                 backendPagination={pagination}
                 setBackendPagination={setPagination}
                 barsData={barLabelData}

@@ -59,11 +59,12 @@ const useTranscribeService = ({
     // TODO: avoid toggle if credentials are being generated
     if (isSpeechToTextAllowed) {
       if (transcribeTempCredentialsAPIStatusRef.current === NOT_STARTED) {
-        const existingContent = EditorRef.current.html.get()
+        const existingContentLength = EditorRef.current?.$el?.text()?.length
         // Place cursor to end
-        if (existingContent?.length > 0) {
+        if (existingContentLength > 0) {
           EditorRef.current?.selection?.setAtEnd?.(
-            EditorRef.current?.$el?.get?.(0)
+            EditorRef.current?.$el?.get?.(0),
+            existingContentLength
           )
           EditorRef.current?.selection?.restore?.()
         }
@@ -169,10 +170,6 @@ const useTranscribeService = ({
         activeTranscribeSessionId &&
         currentTranscribeToolBarId === toolbarId
       ) {
-        notification({
-          type: 'info',
-          msg: 'Start speaking to enter text',
-        })
         setIsVoiceRecognitionActive(true)
       } else {
         setIsVoiceRecognitionActive(false)

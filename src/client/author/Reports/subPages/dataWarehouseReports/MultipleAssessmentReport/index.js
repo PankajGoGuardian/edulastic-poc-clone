@@ -217,7 +217,6 @@ const MultipleAssessmentReport = ({
   }
 
   const updateFilterDropdownCB = (selected) => {
-    console.log({ selected })
     setDWMARSettings({ ...settings, selectedCompareBy: selected })
   }
 

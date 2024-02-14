@@ -60,7 +60,7 @@
     "preTestId": "",
     "postTestId": "",
     "showApply": false,
-    "selectedCompareBy": "school"
+    "compareBy": "school"
   },
   "initialDdFilters": {
     "race": "all",

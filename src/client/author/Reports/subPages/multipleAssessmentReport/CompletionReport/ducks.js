@@ -47,6 +47,7 @@ const slice = createSlice({
       state.completionTableDataLoading = false
       state.completionTableDataError = payload.error
     },
+    getCsvData: () => {},
   },
 })
 
@@ -96,6 +97,14 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
     yield put(actions.fetchCompletionTableDataFailure({ error: msg }))
   }
 }
+function* getCsvDataSaga({ payload }) {
+  try {
+    const result = yield call(reportsApi.getCsvData, payload)
+    console.log({ result })
+  } catch (error) {
+    notification({ msg: 'Failed to download the data' })
+  }
+}
 
 export function* watcherSaga() {
   yield all([
@@ -107,6 +116,7 @@ export function* watcherSaga() {
       actions.fetchCompletionReportTableDataRequest,
       fetchCompletionReportTableDataRequestSaga
     ),
+    takeLatest(actions.getCsvData, getCsvDataSaga),
   ])
 }
 const stateSelector = (state) =>
@@ -127,4 +137,5 @@ export const getCompletionReportTableDataLoading = createSelector(
   stateSelector,
   (state) => state.completionTableDataLoading
 )
+
 export const getCompletionReportDataError = (state) => state.reportReducer.error

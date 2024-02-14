@@ -297,7 +297,9 @@ const MultipleAssessmentReportFilters = ({
           groupIds: search.groupIds || '',
           profileId: urlPerformanceBand?.key || '',
           assignedBy: urlAssignedBy.key,
+          compareBy: search.selectedCompareBy,
         }
+
         if (role === roleuser.TEACHER) {
           delete _filters.schoolIds
           delete _filters.teacherIds

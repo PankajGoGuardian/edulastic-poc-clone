@@ -10,13 +10,15 @@ import CopyReportLink from './CopyReportLink'
 import { compareByMap, sortKeys, tableColumnsData } from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
+import { SpinLoader } from '@edulastic/common'
+import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
 
 const staticColumns = [
   {
     title: 'Test Name',
     dataIndex: 'testName',
     key: 'testName',
-    sorter: (a, b) => a.name.length - b.name.length,
+    sorter: true,
     render: (text, record) => {
       return {
         children: record.index === 0 ? record.testName : '',
@@ -27,35 +29,53 @@ const staticColumns = [
     },
   },
   // { title: 'Network Name', dataIndex: 'networkName', key: 'networkName' },
-  { title: '# Assigned', dataIndex: 'assigned', key: 'assigned' },
+  {
+    title: '# Assigned',
+    dataIndex: 'assigned',
+    key: 'assigned',
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+  },
   {
     title: 'Absent',
     dataIndex: 'absent',
     key: 'absent',
+    sorter: true,
     className: 'absent',
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
   },
   {
     title: 'Not started',
     dataIndex: 'notStarted',
     key: 'notStarted',
     className: 'absent',
+    sorter: true,
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
   },
   {
     title: 'In progress',
     dataIndex: 'inProgress',
     key: 'inProgress',
+    sorter: true,
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
   },
   {
     title: 'Submitted',
     dataIndex: 'submitted',
     key: 'submitted',
+    sorter: true,
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
   },
-  { title: 'GRADED', dataIndex: 'graded', key: 'graded' },
+  {
+    title: 'GRADED',
+    dataIndex: 'graded',
+    key: 'graded',
+    sorter: true,
+    render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+  },
   {
     title: 'VIEW PERFORMANCE',
     key: 'performance',
     render: (text, record) => {
-      console.log({ record })
       return (
         <ActionContainer onClick={() => console.log(record)}>
           <IconEye color={themeColor} width={18} height={18} />
@@ -103,7 +123,17 @@ const getTableColumns = (isSharedReport, settings, isPrinting, sortFilters) => {
   return staticColumns
 }
 
-const CompletionReportTable = ({ settings, setMARSettings, compareByCB }) => {
+const CompletionReportTable = ({
+  settings,
+  setMARSettings,
+  compareByCB,
+  isTableDataLoading,
+  location,
+  setAnalyseBy,
+  analyseBy,
+  setStatusColumnSortState,
+  setTestColumnSort,
+}) => {
   const _data = [
     {
       assessmentDate: '1696567790009',
@@ -166,17 +196,45 @@ const CompletionReportTable = ({ settings, setMARSettings, compareByCB }) => {
   //   [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   // )
   const columns = getTableColumns(false, settings, false, {})
+  if (isTableDataLoading) {
+    return (
+      <SpinLoader
+        tip="Loading completion table data..."
+        position="relative"
+        height="70%"
+      />
+    )
+  }
 
+  const handleTableChange = (pagination, filters, sorter, extra) => {
+    if (sorter.field === 'testName') {
+      setTestColumnSort({
+        sortKey: 'test',
+        sortOrder: tableToDBSortOrderMap[sorter.order],
+      })
+    } else {
+      setStatusColumnSortState({
+        sortKey: sorter.field,
+        sortOrder: tableToDBSortOrderMap[sorter.order],
+      })
+    }
+  }
   return (
     <TableContainer>
       <TableHeader
-        com
         settings={settings}
         setMARSettings={setMARSettings}
         compareByCB={compareByCB}
+        location={location}
+        setAnalyseBy={setAnalyseBy}
+        analyseBy={analyseBy}
       />
       {/* Table component */}
-      <StyledTable columns={columns} dataSource={dataSource} />
+      <StyledTable
+        onChange={handleTableChange}
+        columns={columns}
+        dataSource={dataSource}
+      />
     </TableContainer>
   )
 }

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import qs from 'qs'
 import { LeftContainer, RightContainer, TableHeaderContainer } from './styled'
 import Heading from '../../../../../common/components/Heading'
 import AnalyseByFilter from '../../../common/components/filters/AnalyseByFilter'
@@ -6,28 +7,34 @@ import { analyzeBy } from '../../static/json/dropDownData.json'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { compareByOptions } from '../../../common/utils/constants'
 
-const TableHeader = ({ settings, setMARSettings, compareByCB }) => {
-  const [tableFilters, setTableFilters] = useState({
-    analyseBy: analyzeBy[0],
-    compareBy: compareByOptions[0],
+const TableHeader = ({
+  settings,
+  setMARSettings,
+  compareByCB,
+  location,
+  setAnalyseBy,
+  analyseBy,
+}) => {
+  const search = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+    indices: true,
   })
+  const urlCompareBy = compareByOptions.find(
+    (option) => option.key === search.selectedCompareBy
+  )
 
-  const handleFiltersChange = (filterKey) => (value) => {
-    console.log({ value })
-    setTableFilters((prevFilters) => ({
-      ...prevFilters,
-      [filterKey]: value,
-    }))
-  }
+  const [compareBy, setCompareBy] = useState(
+    urlCompareBy || compareByOptions[0]
+  )
 
   useEffect(() => {
     setMARSettings({
       requestFilters: {
         ...settings.requestFilters,
-        selectedCompareBy: tableFilters.compareBy.key,
+        selectedCompareBy: compareBy.key,
       },
     })
-  }, [tableFilters])
+  }, [compareBy])
 
   return (
     <TableHeaderContainer>
@@ -40,14 +47,14 @@ const TableHeader = ({ settings, setMARSettings, compareByCB }) => {
       <RightContainer>
         <ControlDropDown
           prefix="Compare by"
-          by={tableFilters.compareBy}
-          selectCB={(e, value) => handleFiltersChange('compareBy')(value)}
+          by={compareBy}
+          selectCB={(e, value) => setCompareBy(value)}
           data={compareByOptions}
         />
         <AnalyseByFilter
           data={analyzeBy}
-          analyseBy={tableFilters.analyseBy}
-          onFilterChange={(value) => handleFiltersChange('analyseBy')(value)}
+          analyseBy={analyseBy}
+          onFilterChange={(value) => setAnalyseBy(value)}
         />
       </RightContainer>
     </TableHeaderContainer>

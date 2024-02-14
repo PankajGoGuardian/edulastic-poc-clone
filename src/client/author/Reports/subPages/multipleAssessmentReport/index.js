@@ -130,6 +130,7 @@ const MultipleAssessmentReportContainer = (props) => {
       })
       obj.reportId = reportId || ''
       const path = `?${qs.stringify(obj)}`
+      console.log('main-page->', { settings })
       history.push(path)
     }
     const navigationItems = getTabNavigationItems({
@@ -166,6 +167,7 @@ const MultipleAssessmentReportContainer = (props) => {
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
+        selectedCompareBy: _requestFilters.selectedCompareBy || 'school',
       },
     })
     setMARTagsData({ ..._settings.tagsData })
@@ -341,6 +343,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
                 setMARSettings={setMARSettings}
+                location={location}
               />
             )
           }}

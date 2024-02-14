@@ -357,8 +357,9 @@ const convertTableToCSV = (refComponent) => {
     csvRawData,
   }
 }
-
+// Todo: download csv
 const downloadCSV = (filename, data) => {
+  console.log({ data })
   const link = document.createElement('a')
   link.style.display = 'none'
   link.setAttribute('target', '_blank')

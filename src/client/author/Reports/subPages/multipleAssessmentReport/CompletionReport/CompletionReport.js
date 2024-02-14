@@ -7,6 +7,7 @@ import {
   getCompletionChartDataLoading,
   getCompletionChartData,
   getCompletionReportTableData,
+  getCompletionReportTableDataLoading,
 } from './ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
@@ -14,6 +15,13 @@ import { Container } from './styled'
 import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 import { analyzeBy, compareByOptions } from '../common/utils/constants'
+import { sortKeys } from './utils'
+import {
+  TABLE_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
+} from '@edulastic/constants/reportUtils/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import { omit } from 'lodash'
 
 const pageSize = 2
 
@@ -29,6 +37,8 @@ function CompletionReport({
   chartData,
   setMARSettings,
   chartDataLoading,
+  isTableDataLoading,
+  location,
   ...props
 }) {
   const [navBtnVisible, setNavBtnVisible] = useState({
@@ -37,6 +47,22 @@ function CompletionReport({
   })
   const [compareBy, setCompareBy] = useState(compareByOptions[0])
   const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
+  const [sortFilters, setSortFilters] = useState({
+    sortKey: sortKeys.COMPARE_BY,
+    sortOrder: TABLE_SORT_ORDER_TYPES.ASCEND,
+  })
+
+  const [statusColumnSortState, setStatusColumnSortState] = useState({
+    sortKey: 'notStarted',
+    sortOrder: 'desc',
+  })
+
+  const [testColumnSort, setTestColumnSort] = useState([
+    { sortKey: 'test', sortOrder: 'desc' },
+  ])
+
+  // TODO: mapper for sort order
+  // tableToDBSortOrderMap
   const [pageNo, setPageNo] = useState(1)
 
   const [pageFilters, setPageFilters] = useState({
@@ -60,6 +86,7 @@ function CompletionReport({
       },
     })
   }
+  // console.log({ isTableDataLoading })
   useEffect(() => {
     const q = { ...settings.requestFilters, page: pageNo }
     if (q.termId || q.reportId) {
@@ -70,19 +97,31 @@ function CompletionReport({
   }, [settings.requestFilters, pageNo])
 
   useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [
+    settings.requestFilters,
+    settings.selectedCompareBy,
+    sortFilters,
+    analyseBy,
+  ])
+
+  useEffect(() => {
     const q = {
       ...settings.requestFilters,
-      compareBy: 'school',
-      // sortKey: sortFilters.sortKey,
-      // sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
-      // ...pageFilters,
-      // requireTotalCount: pageFilters.page === 1,
+      compareBy: settings.requestFilters.selectedCompareBy,
+      sortKey: sortFilters.sortKey,
+      sortOrder: tableToDBSortOrderMap[sortFilters.sortOrder],
+      ...pageFilters,
+      requireTotalCount: pageFilters.page === 1,
+      analyseBy: analyseBy.key,
+      sortBy: [statusColumnSortState, testColumnSort],
     }
+    const _q = omit(q, ['selectedCompareBy'])
     if ((q.termId || q.reportId) && pageFilters.page) {
-      fetchCompletionReportTableDataRequest(q)
+      fetchCompletionReportTableDataRequest(_q)
       return () => toggleFilter(null, false)
     }
-  }, [pageFilters])
+  }, [pageFilters, statusColumnSortState, testColumnSort])
 
   return (
     <Container>
@@ -96,10 +135,17 @@ function CompletionReport({
         pageNo={pageNo}
         {...props}
       />
+
       <CompletionReportTable
+        // isTableDataLoading={isTableDataLoading}
+        location={location}
         compareByCB={handleCompareChange}
         settings={settings}
         setMARSettings={setMARSettings}
+        setAnalyseBy={setAnalyseBy}
+        analyseBy={analyseBy}
+        setStatusColumnSortState={setStatusColumnSortState}
+        setTestColumnSort={setTestColumnSort}
       />
     </Container>
   )
@@ -110,6 +156,7 @@ const enhance = connect(
     chartData: getCompletionChartData(state),
     chartDataLoading: getCompletionChartDataLoading(state),
     tableData: getCompletionReportTableData(state),
+    isTableDataLoading: getCompletionReportTableDataLoading(state),
   }),
   { ...actions }
 )

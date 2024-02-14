@@ -488,6 +488,13 @@ const getReportInterventions = (params) => {
     .then((response) => response?.data?.result?.responseData)
 }
 
+const getCsvData = (params) =>
+  api.callApi({
+    url: '/report/generate-csv',
+    method: 'get',
+    params: { ...params },
+  })
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -546,4 +553,5 @@ export default {
   updateIntervention,
   fetchCompletionReportChart,
   fetchCompletionReportTable,
+  getCsvData,
 }

@@ -76,6 +76,10 @@ const CompletionReportTable = ({
   setCompareBy,
   compareByCB,
 }) => {
+  const getValue = (value) => {
+    const renderedValue = value.toString().replace(/\.00$/, '');
+    return `${renderedValue}${analyseBy.key === 'percentage'? '%': ''}`
+  }
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
     indices: true,
@@ -111,12 +115,12 @@ const CompletionReportTable = ({
         }
       },
     },
-    // { title: 'Network Name', dataIndex: 'networkName', key: 'networkName' },
+    {},
     {
       title: '# Assigned',
       dataIndex: 'assigned',
       key: 'assigned',
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'Absent',
@@ -124,7 +128,7 @@ const CompletionReportTable = ({
       key: 'absent',
       sorter: true,
       className: 'absent',
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'Not started',
@@ -132,28 +136,28 @@ const CompletionReportTable = ({
       key: 'notStarted',
       className: 'absent',
       sorter: true,
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'In progress',
       dataIndex: 'inProgress',
       key: 'inProgress',
       sorter: true,
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'Submitted',
       dataIndex: 'submitted',
       key: 'submitted',
       sorter: true,
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'GRADED',
       dataIndex: 'graded',
       key: 'graded',
       sorter: true,
-      render: (value, record) => <ActionContainer>{value}</ActionContainer>,
+      render: (value, record) => <ActionContainer>{getValue(value)}</ActionContainer>,
     },
     {
       title: 'VIEW PERFORMANCE',

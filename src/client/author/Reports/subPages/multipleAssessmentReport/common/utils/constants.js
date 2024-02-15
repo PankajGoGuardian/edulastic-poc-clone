@@ -161,9 +161,9 @@ export const statusMap = {
 }
 
 export const utastatus = {
-  IN_PROGRESS: 0,
-  SUBMITTED: 1,
-  ABSENT: 2,
-  NOT_STARTED: 3,
-  GRADED: 4,
+  IN_PROGRESS: '0',
+  SUBMITTED: '1',
+  ABSENT: '2',
+  NOT_STARTED: '3',
+  GRADED: '4',
 }

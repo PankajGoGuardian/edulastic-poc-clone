@@ -54,6 +54,9 @@ export const getCompletionReportPathForAssignment = (
       q[item] = val
     })
   }
+  if (testIds.includes('overall_tid')) {
+    testIds = 'All'
+  }
   q.testIds = testIds
   return `?${qs.stringify(q)}`
 }

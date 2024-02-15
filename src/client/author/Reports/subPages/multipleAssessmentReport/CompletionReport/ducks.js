@@ -100,10 +100,14 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
 }
 function* getCsvDataSaga({ payload }) {
   try {
-    const { progressStatus, testName } = payload
+    const { progressName, testName, testId } = payload
+    if (testId !== 'overall_tid') {
+      payload.testIds = testId
+    }
     delete payload.testName
+    delete payload.progressName
     const result = yield call(reportsApi.getCsvData, payload)
-    downloadCSV(`${testName} ${progressStatus}.csv`, result?.data?.result || '')
+    downloadCSV(`${testName} ${progressName}.csv`, result?.data?.result || '')
   } catch (error) {
     notification({ msg: 'Failed to download the data' })
   }

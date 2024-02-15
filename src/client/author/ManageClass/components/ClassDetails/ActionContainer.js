@@ -236,6 +236,9 @@ const ActionContainer = ({
               'extraTimeOnTest',
             ])
             const accommodationsData = pickBy(accommodations, identity)
+            unset(values, ['confirmPassword'])
+            unset(values, ['fullName'])
+
             let data = pickBy(values, identity)
             if (Object.keys(accommodationsData).length) {
               data = {
@@ -243,9 +246,6 @@ const ActionContainer = ({
                 accommodations: accommodationsData,
               }
             }
-
-            unset(values, ['confirmPassword'])
-            unset(values, ['fullName'])
 
             addStudentRequest(data)
             setReqStatus(true)

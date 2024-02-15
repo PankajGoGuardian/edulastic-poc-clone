@@ -3,7 +3,6 @@ import { Select, Table, Button } from 'antd'
 import { dataWarehouseApi } from '@edulastic/api'
 import adminTool from '@edulastic/api/src/adminTool'
 import { differenceWith, isEqual } from 'lodash'
-import DistrictSearchForm from '../../Common/Form/DistrictSearchForm'
 
 import {
   ButtonContainer,
@@ -12,11 +11,13 @@ import {
   Wrapper,
 } from './styled'
 import DeleteFeedType from './DeleteFeedType'
+import OrgSearchForm from '../../Common/Form/OrgSearchForm'
 
 const { Option } = Select
 const studentIdentifiers = ['sis_id', 'state_id', 'student_number']
 const EnableDataTypes = () => {
   const [districtId, setDistrictId] = useState()
+  const [districtGroupId, setDistrictGroupId] = useState()
   const [feedTypes, setFeedTypes] = useState([])
   const [distinctFeedTypes, setDistinctFeedTypes] = useState([])
   const [updatedFeedTypes, setUpdatedFeedTypes] = useState([])
@@ -31,7 +32,10 @@ const EnableDataTypes = () => {
 
   const fetchFeedTypes = async () => {
     setLoading(true)
-    const res = await dataWarehouseApi.getFeedTypes(districtId)
+    const res = await dataWarehouseApi.getFeedTypes({
+      districtId,
+      districtGroupId,
+    })
     setFeedTypes(res?.result)
     setUpdatedFeedTypes(res?.result)
     setLoading(false)
@@ -67,6 +71,7 @@ const EnableDataTypes = () => {
     setUpdateLoading(true)
     await adminTool.updateFeedType({
       districtId,
+      districtGroupId,
       feedTypeMapToStudentIdentifier,
     })
     setUpdateLoading(false)
@@ -85,10 +90,11 @@ const EnableDataTypes = () => {
   }
 
   const handleEnableSelected = async () => {
-    if (districtId) {
+    if (districtId || districtGroupId) {
       setEnableLoading(true)
       await adminTool.insertFeedType({
         districtId,
+        districtGroupId,
         feedTypes: feedTypeToBeEnabled,
       })
       fetchFeedTypes()
@@ -102,8 +108,12 @@ const EnableDataTypes = () => {
     setFeedTypeToBeEnabled(data)
   }
 
-  const getSelectedDistrict = (district) => {
-    if (district) setDistrictId(district._id)
+  const setOrg = (org) => {
+    if (org?.districtGroupId) {
+      setDistrictGroupId(org?.districtGroupId)
+    } else if (org?.districtId) {
+      setDistrictId(org?._id)
+    }
   }
 
   useEffect(() => {
@@ -111,10 +121,10 @@ const EnableDataTypes = () => {
   }, [])
 
   useEffect(() => {
-    if (districtId) {
+    if (districtId || districtGroupId) {
       fetchFeedTypes()
     }
-  }, [districtId])
+  }, [districtId, districtGroupId])
 
   const columns = [
     {
@@ -146,6 +156,7 @@ const EnableDataTypes = () => {
         <DeleteFeedType
           feedTypeDetails={record}
           districtId={districtId}
+          districtGroupId={districtGroupId}
           fetchFeedTypes={fetchFeedTypes}
         />
       ),
@@ -154,7 +165,7 @@ const EnableDataTypes = () => {
 
   return (
     <Wrapper>
-      <DistrictSearchForm getCustomReport={getSelectedDistrict} />
+      <OrgSearchForm setOrg={setOrg} />
       <Table
         pagination={false}
         bordered
@@ -189,7 +200,9 @@ const EnableDataTypes = () => {
             ))}
           </Select>
           <Button
-            disabled={!districtId || !filteredFeedTypes()?.length}
+            disabled={
+              !(districtId || districtGroupId) || !filteredFeedTypes()?.length
+            }
             loading={enableLoading}
             type="primary"
             onClick={handleEnableSelected}

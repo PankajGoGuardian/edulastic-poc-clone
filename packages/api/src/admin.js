@@ -16,6 +16,14 @@ const searchUpdateDistrict = (params) =>
     })
     .then(({ data }) => data)
 
+const searchDistrictGroups = (params) =>
+  api
+    .callApi({
+      url: 'district-groups',
+      params,
+    })
+    .then(({ data }) => data)
+
 const searchClasslinkDistrict = (params) =>
   api
     .callApi({
@@ -435,6 +443,7 @@ const updateTestTumbnailByCollectionId = ({ thumbnail, collectionId }) =>
 export default {
   getSubscription,
   searchUpdateDistrict,
+  searchDistrictGroups,
   updateDistrictCleverId,
   updateDistrictClasslinkId,
   fetchExistingDataMergeClever,

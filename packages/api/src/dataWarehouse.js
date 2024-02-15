@@ -236,12 +236,13 @@ const updateGroupWithAdvSearch = (id, data) => {
   })
 }
 
-const getFeedTypes = (districtId) => {
+const getFeedTypes = ({ districtId, districtGroupId } = {}) => {
   const reqObj = {
     url: `${prefix}/feed-types`,
     method: 'get',
   }
   if (districtId) reqObj.params = { districtId }
+  if (districtGroupId) reqObj.params = { districtGroupId }
 
   return api.callApi(reqObj).then((result) => result.data)
 }

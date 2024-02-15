@@ -3,7 +3,12 @@ import adminTool from '@edulastic/api/src/adminTool'
 import { Button } from 'antd'
 import { TrashIcon } from './styled'
 
-const DeleteFeedType = ({ feedTypeDetails, districtId, fetchFeedTypes }) => {
+const DeleteFeedType = ({
+  feedTypeDetails,
+  districtId,
+  fetchFeedTypes,
+  districtGroupId,
+}) => {
   const [loading, setLoading] = useState(false)
 
   const handleDelete = async () => {
@@ -11,6 +16,7 @@ const DeleteFeedType = ({ feedTypeDetails, districtId, fetchFeedTypes }) => {
     await adminTool.deleteFeedType({
       feedType: feedTypeDetails?.key,
       districtId,
+      districtGroupId,
     })
     fetchFeedTypes()
     setLoading(false)

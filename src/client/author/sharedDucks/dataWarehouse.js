@@ -6,7 +6,7 @@ import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 
 import { uploadToS3 } from '../utils/uploadToS3'
-import { getUserOrgId } from '../src/selectors/user'
+import { getUser, getUserOrgId } from '../src/selectors/user'
 
 const UPLOAD_TEST_DATA_FILE_REQUEST = '[reports] upload test data file request'
 const UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS =
@@ -248,7 +248,12 @@ export function* uploadTestDataFileSaga({
     _id,
   },
 }) {
-  const districtId = yield select(getUserOrgId)
+  const [districtId, { districtGroupId, role }] = yield all([
+    select(getUserOrgId),
+    select(getUser),
+  ])
+  const orgType = role === 'district-group-admin' ? 'districtGroup' : 'district'
+  const orgId = orgType === 'districtGroup' ? districtGroupId : districtId
   try {
     notification({
       msg: 'File upload in progress.',
@@ -257,7 +262,7 @@ export function* uploadTestDataFileSaga({
     const result = yield uploadToS3({
       file,
       folder: dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
-      subFolder: `${districtId}/input`,
+      subFolder: `${orgType}/${orgId}/input`,
       feedType,
       progressCallback: (progressData) =>
         handleUploadProgress({ progressData }),

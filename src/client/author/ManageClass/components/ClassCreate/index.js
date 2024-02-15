@@ -196,12 +196,16 @@ class ClassCreate extends React.Component {
     if (keyword == '') {
       searchTerms = {
         districtId,
+        requiresGroupCount: false,
+        limit: 50,
         active: 1,
       }
     } else {
       searchTerms = {
         districtId,
         active: 1,
+        requiresGroupCount: false,
+        limit: 50,
         search: {
           name: [{ type: 'cont', value: key }],
           number: [{ type: 'eq', value: key }],

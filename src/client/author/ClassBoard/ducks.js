@@ -998,36 +998,33 @@ function* setRealTimeAttemptDataSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
-    yield takeLatest(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
-    yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
-    yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
-    yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
-    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
-    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
-    yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
-    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
-    yield takeEvery(MARK_AS_SUBMITTED, markAsSubmittedSaga),
-    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
-    yield takeEvery(PAUSE_STUDENTS, togglePauseStudentsSaga),
-    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
-    yield takeEvery(
+    takeLatest(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
+    takeLatest(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
+    takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
+    takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
+    takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
+    takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
+    takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
+    takeEvery(MARK_AS_ABSENT, markAbsentSaga),
+    takeEvery(MARK_AS_SUBMITTED, markAsSubmittedSaga),
+    takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
+    takeEvery(PAUSE_STUDENTS, togglePauseStudentsSaga),
+    takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
+    takeEvery(
       GET_ALL_TESTACTIVITIES_FOR_STUDENT,
       getAllTestActivitiesForStudentSaga
     ),
-    yield takeEvery(ADD_STUDENTS, addStudentsSaga),
-    yield takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
-    yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
-    yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
-    yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
-    yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
-    yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
-    yield takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
-    yield takeEvery(
-      RELOAD_LCB_DATA_IN_STUDENT_VIEW,
-      reloadLcbDataInStudentView
-    ),
-    yield takeEvery(SET_REALTIME_ATTEMPT_DATA, setRealTimeAttemptDataSaga),
+    takeEvery(ADD_STUDENTS, addStudentsSaga),
+    takeEvery(DOWNLOAD_GRADES_RESPONSES, downloadGradesAndResponseSaga),
+    takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
+    takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
+    takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
+    takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
+    takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
+    takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
+    takeEvery(RELOAD_LCB_DATA_IN_STUDENT_VIEW, reloadLcbDataInStudentView),
+    takeEvery(SET_REALTIME_ATTEMPT_DATA, setRealTimeAttemptDataSaga),
   ])
 }
 

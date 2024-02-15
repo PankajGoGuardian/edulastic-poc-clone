@@ -370,18 +370,18 @@ function* toggleTestLikeSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
-    yield takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
-    yield takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
-    yield takeEvery(
+    takeEvery(RECEIVE_TESTS_REQUEST, receiveTestsSaga),
+    takeEvery(CLEAR_TEST_FILTERS, clearAllTestFiltersSaga),
+    takeEvery(DELETE_TEST_REQUEST, deleteTestSaga),
+    takeEvery(
       APPROVE_OR_REJECT_SINGLE_TEST_REQUEST,
       approveOrRejectSingleTestSaga
     ),
-    yield takeEvery(
+    takeEvery(
       APPROVE_OR_REJECT_MULTIPLE_TESTS_REQUEST,
       approveOrRejectMultipleTestsSaga
     ),
-    yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
+    takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
   ])
 }
 

@@ -17,7 +17,12 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
-import { IconBookmark, IconSend, IconImmersiveReader } from '@edulastic/icons'
+import {
+  IconBookmark,
+  IconSend,
+  IconImmersiveReader,
+  IconProfileCircle,
+} from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -40,13 +45,17 @@ import {
   StyledIcon,
 } from './styled'
 import { themes } from '../../../../theme'
-import { getUserRole } from '../../../../author/src/selectors/user'
+import {
+  getUserNameSelector,
+  getUserRole,
+} from '../../../../author/src/selectors/user'
 import QuestionList from './QuestionList'
 import ToolBar from './ToolBar'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
+import { StyledTextForStudent } from '../../common/styledCompoenents'
 
 const {
   playerSkin: { sbac },
@@ -108,6 +117,7 @@ const PlayerHeader = ({
   immersiveReaderTitle = '',
   canUseImmersiveReader = false,
   showSubmitText,
+  userName,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -177,6 +187,10 @@ const PlayerHeader = ({
             <StyledTitle>{title}</StyledTitle>
           </FlexContainer>
           <FlexContainer>
+            <FlexContainer alignItems="center">
+              <IconProfileCircle />
+              <StyledTextForStudent>{userName}</StyledTextForStudent>
+            </FlexContainer>
             <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
@@ -412,6 +426,7 @@ const enhance = compose(
       testType: state.test?.settings?.testType,
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       utaPreferredLanguage: getCurrentLanguage(state),
+      userName: getUserNameSelector(state),
     }),
     {
       setZoomLevel: setZoomLevelAction,

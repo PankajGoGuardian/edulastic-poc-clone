@@ -20,6 +20,7 @@ import {
   IconQuester,
   IconImmersiveReader,
   IconPearAssessLogoCompactOnDarkBg,
+  IconProfileCircle,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -43,6 +44,8 @@ import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { isPearDomain } from '../../../../../utils/pear'
+import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import { StyledTextForStudent } from '../../common/styledCompoenents'
 
 const {
   playerSkin: { quester },
@@ -91,6 +94,7 @@ const PlayerHeader = ({
   canUseImmersiveReader = false,
   showImmersiveReader,
   showSubmitText,
+  userName,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -171,6 +175,12 @@ const PlayerHeader = ({
             </Title>
           </div>
           <RightContent>
+            <FlexContainer alignItems="center">
+              <IconProfileCircle isBgDark />
+              <StyledTextForStudent color="white">
+                {userName}
+              </StyledTextForStudent>
+            </FlexContainer>
             <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
@@ -384,6 +394,7 @@ const enhance = compose(
       grades: state.test?.grades,
       subjects: state.test?.subjects,
       showImmersiveReader: state.test?.settings?.showImmersiveReader || false,
+      userName: getUserNameSelector(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

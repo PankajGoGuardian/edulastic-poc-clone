@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import qs from 'qs'
 
 import { IconBarChart, IconStar } from '@edulastic/icons'
-import { roleuser } from '@edulastic/constants'
 
 import { themeColor } from '@edulastic/colors'
 
@@ -13,7 +12,7 @@ import { EduIf } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import { Container, SpaceElement } from './styled'
 
-import { getUserRole, isPremiumUserSelector } from '../../../src/selectors/user'
+import { isPremiumUserSelector } from '../../../src/selectors/user'
 
 import PremiumPopover from '../../../../features/components/PremiumPopover'
 
@@ -36,16 +35,12 @@ const AnalyzeLink = ({
   termId,
   classId,
   testType,
-  userRole = '',
   showAnalyseLink = false,
   isPremiumUser,
   linkText = 'Analyze',
   linkPrefix = '',
   visible = true,
 }) => {
-  const isAdmin =
-    roleuser.DISTRICT_ADMIN === userRole || roleuser.SCHOOL_ADMIN === userRole
-
   const [premiumPopup, setPremiumPopup] = useState(null)
 
   const handleAnalyzeClick = (e) => {
@@ -64,7 +59,7 @@ const AnalyzeLink = ({
   })
 
   return (
-    <EduIf condition={(isAdmin || showAnalyseLink) && visible}>
+    <EduIf condition={showAnalyseLink && visible}>
       <Link
         to={url}
         target="_blank"
@@ -99,7 +94,6 @@ const AnalyzeLink = ({
 const enhance = compose(
   connect((state) => ({
     isPremiumUser: isPremiumUserSelector(state),
-    userRole: getUserRole(state),
   }))
 )
 

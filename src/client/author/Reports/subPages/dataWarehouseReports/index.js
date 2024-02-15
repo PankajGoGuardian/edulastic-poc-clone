@@ -1,6 +1,7 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
+import { withNamespaces } from 'react-i18next'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import WholeLearnerReport from './wholeLearnerReport'
@@ -194,4 +195,4 @@ const DataWarehouseReportsContainer = ({
   )
 }
 
-export default DataWarehouseReportsContainer
+export default withNamespaces('reports')(DataWarehouseReportsContainer)

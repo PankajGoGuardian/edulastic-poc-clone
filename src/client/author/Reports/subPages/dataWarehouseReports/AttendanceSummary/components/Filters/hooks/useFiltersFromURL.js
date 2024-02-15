@@ -71,7 +71,6 @@ function useFiltersFromURL({
       const urlPeriod =
         staticDropDownData.periodTypes.find((a) => a.key === periodType) ||
         staticDropDownData.periodTypes[0]
-
       const getClassFilterTagsValue = (list, data) => {
         return !isEmpty(list) && !isNil(data) && isArray(list)
           ? list

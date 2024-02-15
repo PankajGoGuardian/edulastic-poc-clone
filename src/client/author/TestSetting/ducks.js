@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { set } from 'lodash'
@@ -149,13 +149,7 @@ function* createTestSettingSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_TEST_SETTING_REQUEST, receiveTestSettingeSaga),
-  ])
-  yield all([
-    yield takeEvery(UPDATE_TEST_SETTING_REQUEST, updateTestSettingSaga),
-  ])
-  yield all([
-    yield takeEvery(CREATE_TEST_SETTING_REQUEST, createTestSettingSaga),
-  ])
+  yield all([takeLatest(RECEIVE_TEST_SETTING_REQUEST, receiveTestSettingeSaga)])
+  yield all([takeEvery(UPDATE_TEST_SETTING_REQUEST, updateTestSettingSaga)])
+  yield all([takeEvery(CREATE_TEST_SETTING_REQUEST, createTestSettingSaga)])
 }

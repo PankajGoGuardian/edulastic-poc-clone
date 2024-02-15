@@ -1,8 +1,7 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { all, takeEvery, call, put } from 'redux-saga/effects'
+import { all, takeLatest, call, put } from 'redux-saga/effects'
 import { publisherApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 
 // CONSTANTS
@@ -48,9 +47,7 @@ function* getCollectionsDataSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(GET_COLLECTIONS_DATA_REQUEST, getCollectionsDataSaga),
-  ])
+  yield all([takeLatest(GET_COLLECTIONS_DATA_REQUEST, getCollectionsDataSaga)])
 }
 
 export const sagas = [watcherSaga()]

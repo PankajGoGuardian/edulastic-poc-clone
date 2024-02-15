@@ -17,7 +17,11 @@ import {
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
 import { getTestName } from '../utils'
-import { getXTickTagText, getXTickTooltipText } from '../../common/utils'
+import {
+  getTestUniqId,
+  getXTickTagText,
+  getXTickTooltipText,
+} from '../../common/utils'
 
 const { formatDate } = reportUtils.common
 
@@ -28,7 +32,7 @@ const chartLineProps = {
   strokeWidthActive: 20,
 }
 
-const chartMargin = { top: 0, right: 20, left: 20, bottom: 40 }
+const chartMargin = { top: 0, right: 40, left: 40, bottom: 40 }
 
 const TooltipRowItem = ({ title = '', value = '' }) => (
   <TooltipRow>
@@ -66,7 +70,9 @@ const getTooltipJSX = (payload, barIndex) => {
       averageScaledScore,
       averageLexileScore,
       averageQuantileScore,
+      termName,
     } = barData
+
     let colorBandComponent = null
     if (externalTestType) {
       const achievementLevels = [...bands].reverse()
@@ -94,6 +100,7 @@ const getTooltipJSX = (payload, barIndex) => {
         <TooltipRowItem title="Date:" value={formatDate(assessmentDate)} />
         <TooltipRowItem title="Students:" value={totalGraded} />
         <TooltipRowItem title="Score:" value={score} />
+        <TooltipRowItem title="School Year:" value={termName} />
         <EduIf condition={averageLexileScore}>
           <EduThen>
             <TooltipRowItem title="Lexile Score:" value={averageLexileScore} />
@@ -170,6 +177,7 @@ const Chart = ({
   setSelectedTests,
   showInterventions,
   interventionsData,
+  isMultiSchoolYear,
 }) => {
   const achievementLevels = chartData.flatMap((cdItem) =>
     cdItem.externalTestType ? cdItem.bands : []
@@ -224,8 +232,10 @@ const Chart = ({
   const data = chartData.map((d) => {
     if (d.externalTestType) {
       // for external assessments
-      const filteredBarsDataForExternal = barsDataForExternal.filter(
-        (b) => b.testId === d.testId
+      const filteredBarsDataForExternal = barsDataForExternal.filter((b) =>
+        isMultiSchoolYear
+          ? getTestUniqId(b) === d.testId // here d.testId refer testUniqId in case of multiSchoolYear
+          : b.testId === d.testId
       )
       const barsCellDataForExternal = filteredBarsDataForExternal.reduce(
         (res, ele) => {

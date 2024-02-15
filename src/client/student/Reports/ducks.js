@@ -2,7 +2,7 @@ import {
   createAction,
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
-import { takeEvery, put, call, all, select } from 'redux-saga/effects'
+import { takeLatest, put, call, all, select } from 'redux-saga/effects'
 import { values, groupBy, last, maxBy, get } from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
@@ -144,7 +144,7 @@ function* fetchAssignments() {
 
 // set actions watcherss
 export function* watcherSaga() {
-  yield all([yield takeEvery(FETCH_ASSIGNMENTS_DATA, fetchAssignments)])
+  yield all([takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments)])
 }
 
 // selectors

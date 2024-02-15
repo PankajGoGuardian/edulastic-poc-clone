@@ -108,7 +108,7 @@ const ItemsTable = ({
     const main = {
       id: item._id,
       points: item.isLimitedDeliveryType
-        ? 1
+        ? item.itemsDefaultMaxScore || 1
         : scoring[item._id] || helpers.getPoints(item),
       title: item._id,
       isScoringDisabled,

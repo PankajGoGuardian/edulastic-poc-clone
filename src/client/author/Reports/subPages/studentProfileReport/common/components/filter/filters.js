@@ -13,7 +13,7 @@ import { ControlDropDown } from '../../../../../common/components/widgets/contro
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
 import CoursesAutoComplete from '../../../../../common/components/autocompletes/CoursesAutoComplete'
 import ClassAutoComplete from './ClassAutoComplete'
-import StudentAutoComplete from './StudentAutoComplete'
+import StudentAutoComplete from '../../../../../common/components/autocompletes/StudentAutoComplete'
 import {
   ReportFiltersContainer,
   ReportFiltersWrapper,
@@ -40,6 +40,10 @@ import {
   getReportsSPRFilterData,
   setStudentAction,
   setTempTagsDataAction,
+  getStudentsListSelector,
+  getLastStudentsListQuery,
+  getStudentsLoading,
+  getSPRStudentDataRequestAction,
 } from '../../filterDataDucks'
 import { getReportsStudentProgressProfile } from '../../../StudentProgressProfile/ducks'
 
@@ -55,6 +59,7 @@ import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { StyledSelectInput } from '../styledComponents'
+import useFiltersFromUrl from './hooks/useFiltersFromUrl'
 
 const filtersDefaultValues = [
   {
@@ -113,6 +118,10 @@ const StudentProfileReportFilters = ({
   studentProgressProfile,
   fetchUpdateTagsData,
   interestedCurriculums,
+  studentList,
+  activeStudentQuey,
+  studentListLoading,
+  loadStudentList,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -178,54 +187,33 @@ const StudentProfileReportFilters = ({
     [location.search]
   )
 
-  useEffect(() => {
-    const urlSchoolYear =
-      termOptions.find((item) => item.key === search.termId) ||
-      termOptions.find((item) => item.key === defaultTermId) ||
-      (termOptions[0] ? termOptions[0] : { key: '', title: '' })
-    const urlSubjects = staticDropDownData.subjects.filter(
-      (item) => search.subjects && search.subjects.includes(item.key)
-    )
-    const urlGrades = staticDropDownData.grades.filter(
-      (item) => search.grades && search.grades.includes(item.key)
-    )
-    const urlAssignedBy =
-      staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
-      staticDropDownData.assignedBy[0]
-    const urlDomainId = search.domainId || 'All'
-    const urlStandardId = search.standardId || 'All'
-    const urlCurriculumId = search.curriculumId || 'All'
+  useFiltersFromUrl({
+    location,
+    termOptions,
+    defaultTermId,
+    search,
+    staticDropDownData,
+    reportId,
+    setFilters,
+    tempTagsData,
+    setTempTagsData,
+    urlStudentId,
+    setStudent,
+    setShowApply,
+    toggleFilter,
+    setFirstLoad,
+  })
 
-    const _filters = {
-      reportId: reportId || '',
-      termId: urlSchoolYear.key,
-      grades: urlGrades.map((item) => item.key).join(',') || '',
-      subjects: urlSubjects.map((item) => item.key).join(',') || '',
-      classIds: search.classIds || '',
-      courseIds: search.courseIds || '',
-      performanceBandProfileId: '',
-      standardsProficiencyProfileId: '',
-      assignedBy: urlAssignedBy.key,
-      domainId: urlDomainId,
-      standardId: urlStandardId,
-      curriculumId: urlCurriculumId,
-    }
-    const _tempTagsData = {
-      ...tempTagsData,
-      termId: urlSchoolYear,
-      grades: urlGrades,
-      subjects: urlSubjects,
-      assignedBy: urlAssignedBy,
-    }
-    setFilters(_filters)
-    setTempTagsData(_tempTagsData)
+  useEffect(() => {
     if (reportId) {
       getSPRFilterDataRequest({ reportId })
+    } else if (urlStudentId) {
+      getSPRFilterDataRequest({
+        termId: search.termId,
+        studentId: urlStudentId,
+      })
     }
-    if (urlStudentId) {
-      setStudent({ key: urlStudentId })
-    }
-  }, [])
+  }, [search.termId, urlStudentId])
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {
@@ -286,23 +274,20 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      if (location.state?.source === 'standard-reports') {
-        setShowApply(true)
-        toggleFilter(null, true)
-      } else {
-        _onGoClick({
-          filters: { ..._filters },
-          selectedStudent: _student,
-          tagsData: { ..._tempTagsData },
-        })
-        fetchUpdateTagsData({
-          classIds: reject(search.classIds?.split(','), isEmpty),
-          courseIds: reject(search.courseIds?.split(','), isEmpty),
-          options: {
-            termId: _filters.termId,
-          },
-        })
-      }
+
+      _onGoClick({
+        filters: { ..._filters },
+        selectedStudent: _student,
+        tagsData: { ..._tempTagsData },
+      })
+      fetchUpdateTagsData({
+        classIds: reject(search.classIds?.split(','), isEmpty),
+        courseIds: reject(search.courseIds?.split(','), isEmpty),
+        options: {
+          termId: _filters.termId,
+        },
+      })
+
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)
@@ -334,10 +319,6 @@ const StudentProfileReportFilters = ({
       if (!firstLoad || location.state?.source === 'standard-reports') {
         setFilters({ ...filters, showApply: true })
       }
-      getSPRFilterDataRequest({
-        termId: filters.termId,
-        studentId: selected.key,
-      })
     } else {
       delete _tempTagsData.student
     }
@@ -609,14 +590,13 @@ const StudentProfileReportFilters = ({
             data-cy="student"
           >
             <StudentAutoComplete
-              firstLoad={firstLoad}
-              termId={filters.termId}
-              grades={filters.grades}
-              subjects={filters.subjects}
-              courseIds={filters.courseIds}
-              classIds={filters.classIds}
-              selectedStudentId={student.key || urlStudentId}
+              filters={filters}
+              selectedStudent={student}
               selectCB={onStudentSelect}
+              studentList={studentList}
+              activeQuery={activeStudentQuey}
+              loading={studentListLoading}
+              loadStudentList={loadStudentList}
             />
           </StyledDropDownContainer>
           {performanceBandRequired && (
@@ -774,6 +754,9 @@ const enhance = connect(
     defaultTermId: getCurrentTerm(state),
     studentProgressProfile: getReportsStudentProgressProfile(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
+    studentList: getStudentsListSelector(state),
+    activeStudentQuey: getLastStudentsListQuery(state),
+    studentListLoading: getStudentsLoading(state),
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,
@@ -781,6 +764,7 @@ const enhance = connect(
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
     setTempTagsData: setTempTagsDataAction,
+    loadStudentList: getSPRStudentDataRequestAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
         type: reportGroupType.STUDENT_PROFILE_REPORT,

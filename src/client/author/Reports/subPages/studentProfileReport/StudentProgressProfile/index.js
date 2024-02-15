@@ -27,11 +27,18 @@ import {
   getStudentProgressProfileRequestACtion,
   resetStudentProgressProfileAction,
 } from './ducks'
-import { getReportsSPRFilterData } from '../common/filterDataDucks'
+import {
+  getReportsSPRFilterData,
+  getReportsSPRFilterLoadingState,
+} from '../common/filterDataDucks'
 import { useGetBandData } from '../../multipleAssessmentReport/StudentProgress/hooks'
 
 import dropDownData from './static/json/dropDownData.json'
-import { downloadCSV, getFilterOptions } from '../../../common/util'
+import {
+  downloadCSV,
+  getFilterOptions,
+  getNoDataContainerDesc,
+} from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
 import MultiSelectDropdown from '../../../common/components/widgets/MultiSelectDropdown'
 import { StyledSelectInput } from '../common/components/styledComponents'
@@ -55,6 +62,7 @@ const StudentProgressProfile = ({
   pageTitle,
   sharedReport,
   loading,
+  loadingFiltersData,
   location,
   SPRFilterData,
   studentProgressProfile,
@@ -251,11 +259,8 @@ const StudentProgressProfile = ({
   }
 
   if (!settings.selectedStudent?.key) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
+    const noDataDesc = getNoDataContainerDesc(settings, loadingFiltersData)
+    return <NoDataContainer>{noDataDesc}</NoDataContainer>
   }
 
   return (
@@ -340,6 +345,7 @@ const withConnect = connect(
   (state) => ({
     studentProgressProfile: getReportsStudentProgressProfile(state),
     loading: getReportsStudentProgressProfileLoader(state),
+    loadingFiltersData: getReportsSPRFilterLoadingState(state),
     error: getReportsStudentProgressProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),

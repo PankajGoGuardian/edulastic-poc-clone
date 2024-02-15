@@ -93,9 +93,9 @@ export function* updateItemSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
-    yield takeLatest(CREATE_ITEM_REQUEST, createItemSaga),
-    yield takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga),
+    takeEvery(RECEIVE_ITEM_REQUEST, receiveItemSaga),
+    takeLatest(RECEIVE_ITEMS_REQUEST, receiveItemsSaga),
+    takeLatest(CREATE_ITEM_REQUEST, createItemSaga),
+    takeLatest(UPDATE_ITEM_REQUEST, updateItemSaga),
   ])
 }

@@ -2,7 +2,7 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { notification } from '@edulastic/common'
 import { settingsApi } from '@edulastic/api'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { has, pick } from 'lodash'
 
 const FETCH_EXTERNAL_TOOL_PROVIDER = '[External Tool Provider] fetch tool'
@@ -104,15 +104,9 @@ function* deleteExternalToolProviderSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(
-      FETCH_EXTERNAL_TOOL_PROVIDER,
-      fetchExternalToolProviderSaga
-    ),
-    yield takeEvery(SAVE_EXTERNAL_TOOL_PROVIDER, saveExternalToolProviderSaga),
-    yield takeEvery(
-      DELETE_EXTERNAL_TOOL_PROVIDER,
-      deleteExternalToolProviderSaga
-    ),
+    takeLatest(FETCH_EXTERNAL_TOOL_PROVIDER, fetchExternalToolProviderSaga),
+    takeEvery(SAVE_EXTERNAL_TOOL_PROVIDER, saveExternalToolProviderSaga),
+    takeEvery(DELETE_EXTERNAL_TOOL_PROVIDER, deleteExternalToolProviderSaga),
   ])
 }
 

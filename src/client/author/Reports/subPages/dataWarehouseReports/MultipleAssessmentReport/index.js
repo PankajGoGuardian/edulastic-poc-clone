@@ -71,7 +71,10 @@ import { getSelectedCompareBy } from '../../../common/util'
 import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
-import { isAddToStudentGroupEnabled } from '../common/utils'
+import {
+  getIsMultiSchoolYearDataPresent,
+  isAddToStudentGroupEnabled,
+} from '../common/utils'
 import { DW_GOALS_AND_INTERVENTIONS_TYPES } from '../GoalsAndInterventions/constants/form'
 import useFiltersData from '../../../common/hooks/useFiltersData'
 
@@ -197,6 +200,7 @@ const MultipleAssessmentReport = ({
           ? ''
           : _settings.requestFilters[filterType]
     })
+
     const requestFilterKeys = Object.keys(staticDropDownData.requestFilters)
     setDWMARSettings({
       requestFilters: {
@@ -204,6 +208,7 @@ const MultipleAssessmentReport = ({
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
+        testUniqIds: _requestFilters.testUniqIds || '',
       },
       selectedFilterTagsData: _settings.selectedFilterTagsData,
       selectedCompareBy,
@@ -290,7 +295,8 @@ const MultipleAssessmentReport = ({
         filtersData,
         sharedReportFilters,
         settings,
-        reportChartData
+        reportChartData,
+        orgData?.terms
       ),
     [reportChartData]
   )
@@ -320,6 +326,10 @@ const MultipleAssessmentReport = ({
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
     selectedTests.length ? includes(selectedTests, test.testId) : true
+  )
+
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(
+    sharedReportFilters?.testTermIds || filters.testTermIds
   )
 
   // handle add student to group
@@ -503,6 +513,7 @@ const MultipleAssessmentReport = ({
               setSelectedTests={setSelectedTests}
               showInterventions={showInterventions}
               interventionsData={interventionsData}
+              isMultiSchoolYear={isMultiSchoolYear}
             />
             <FeaturesSwitch
               inputFeatures="studentGroups"
@@ -521,6 +532,7 @@ const MultipleAssessmentReport = ({
               selectedCompareBy={selectedCompareBy}
               handleAddToGroupClick={handleAddToGroupClick}
               showAddToStudentGroupBtn={showAddToStudentGroupBtn}
+              isMultiSchoolYear={isMultiSchoolYear}
             />
             <Table
               tableData={tableData}

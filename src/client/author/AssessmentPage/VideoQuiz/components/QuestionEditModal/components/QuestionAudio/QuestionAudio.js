@@ -114,7 +114,7 @@ export default class QuestionAudio extends React.Component {
             />
           </FormGroup>
         </FormInline>
-        <FormGroup style={{ marginTop: 9 }}>
+        <FormGroup style={{ marginTop: 9 }} data-cy="videoQuizTimePicker">
           <FieldLabel>Timestamp (mm:ss)</FieldLabel>
           <VideoQuizTimePicker
             videoRef={videoRef}

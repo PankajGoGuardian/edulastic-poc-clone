@@ -161,6 +161,7 @@ const StandardsMasteryReportFilters = ({
   const standardsList = skillInfo.map((o) => ({
     key: `${o.standardId}`,
     title: o.standard,
+    desc: o.standardName || '',
   }))
 
   const hasOpenedPerformanceByRubricReportRef = useRef(false)

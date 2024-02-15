@@ -13,6 +13,7 @@ import { getStudentsList } from '../../../common/util'
 const initialState = {
   firstLoad: true,
   loadingFiltersData: false,
+  loadingStudentList: false,
   prevFiltersData: null,
   filtersData: {},
   studentsData: {
@@ -23,6 +24,7 @@ const initialState = {
     key: '',
     title: '',
   },
+  filtersTabKey: staticDropDownData.filterSections.STUDENT_FILTERS.key,
   filters: {
     ...staticDropDownData.initialFilters,
   },
@@ -79,10 +81,10 @@ const slice = createSlice({
       state.error = payload.error
     },
     fetchStudentsDataRequest: (state) => {
-      state.loadingFiltersData = true
+      state.loadingStudentList = true
     },
     fetchStudentsDataRequestSuccess: (state, { payload }) => {
-      state.loadingFiltersData = false
+      state.loadingStudentList = false
       state.studentsData = {
         studentsListQuery: payload.studentsData.studentsListQuery,
         studentsList: payload.studentsData.studentsList,
@@ -90,7 +92,7 @@ const slice = createSlice({
       state.error = ''
     },
     fetchStudentsDataRequestError: (state, { payload }) => {
-      state.loadingFiltersData = false
+      state.loadingStudentList = false
       state.error = payload.error
     },
     fetchStudentsMasteryDataRequest: (state) => {
@@ -120,6 +122,9 @@ const slice = createSlice({
     setFirstLoad: (state, { payload }) => {
       state.firstLoad = payload
     },
+    setFiltersTabKey: (state, { payload }) => {
+      state.filtersTabKey = payload
+    },
     setFilters: (state, { payload }) => {
       state.filters = { ...payload }
     },
@@ -140,6 +145,9 @@ const slice = createSlice({
     },
     setSelectedFilterTagsData: (state, { payload }) => {
       state.settings.selectedFilterTagsData = payload
+    },
+    setTestTypes: (state, { payload }) => {
+      state.settings.frontEndFilters.testTypes = payload
     },
     fetchReportDataRequest: (state) => {
       state.loadingReportData = true
@@ -216,7 +224,19 @@ function* fetchReportDataRequestSaga({ payload }) {
   try {
     const params = payload.reportId
       ? pick(payload, ['reportId'])
-      : pick(payload, ['studentId', 'termId'])
+      : {
+          ...pick(payload, [
+            'studentId',
+            'termId',
+            'testTermIds',
+            'testUniqIds',
+            'testGrades',
+            'testSubjects',
+            'tagIds',
+          ]),
+          assessmentTypes: payload.testTypes,
+        }
+
     const reportData = yield call(
       dataWarehouseApi.getWholeLearnerReport,
       params
@@ -343,6 +363,10 @@ const prevFiltersData = createSelector(
 )
 const student = createSelector(stateSelector, (state) => state.student)
 const filtersData = createSelector(stateSelector, (state) => state.filtersData)
+const filtersTabKey = createSelector(
+  stateSelector,
+  (state) => state.filtersTabKey
+)
 const filters = createSelector(stateSelector, (state) => state.filters)
 const filterTagsData = createSelector(
   stateSelector,
@@ -383,7 +407,7 @@ const selectedStandardsProficiency = createSelector(
 )
 const loadingStudentsData = createSelector(
   stateSelector,
-  (state) => state.loadingFiltersData
+  (state) => state.loadingStudentList
 )
 const studentsList = createSelector(
   stateSelector,
@@ -431,6 +455,7 @@ export const selectors = {
   prevFiltersData,
   student,
   filtersData,
+  filtersTabKey,
   filters,
   filterTagsData,
   selectedFilterTagsData,

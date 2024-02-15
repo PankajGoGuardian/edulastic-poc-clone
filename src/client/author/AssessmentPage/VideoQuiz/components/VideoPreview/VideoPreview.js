@@ -591,11 +591,14 @@ const VideoPreview = ({
           <PlayPause isPlaying={playing} onPlay={onPlay} onPause={onPause} />
         </Col>
         <Col style={{ flex: '0 0 auto' }}>
-          <StyledTypographyText strong>
+          <StyledTypographyText strong data-cy="timeDisplay">
             {formateSecondsToMMSS(currentTime)}/{formateSecondsToMMSS(duration)}
           </StyledTypographyText>
         </Col>
-        <Col style={{ flex: '1', minWidth: '0', height: '0px' }}>
+        <Col
+          style={{ flex: '1', minWidth: '0', height: '0px' }}
+          data-cy="videoSlider"
+        >
           <SeekBar
             marks={marks}
             duration={duration}

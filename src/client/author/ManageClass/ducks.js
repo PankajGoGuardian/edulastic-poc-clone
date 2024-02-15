@@ -1302,39 +1302,33 @@ function* updateGroupTeachers({ payload }) {
 // watcher saga
 export function* watcherSaga() {
   yield all([
-    yield takeLatest(FETCH_CLASS_LIST, fetchClassList),
-    yield takeEvery(SYNC_CLASS, syncClass),
-    yield takeEvery(SYNC_CLASS_USING_CODE, syncClassUsingCode),
-    yield takeEvery(CREATE_CLASS_REQUEST, receiveCreateClassRequest),
-    yield takeEvery(FETCH_STUDENTS_BY_ID_REQUEST, fetchStudentsByClassId),
-    yield takeEvery(UPDATE_CLASS_REQUEST, receiveUpdateClass),
-    yield takeEvery(ADD_STUDENT_REQUEST, receiveAddStudentRequest),
-    yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
-    yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
-    yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
-    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
-    yield takeLatest(
-      GET_CANVAS_COURSE_LIST_REQUEST,
-      getCanvasCourseListRequestSaga
-    ),
-    yield takeLatest(
+    takeLatest(FETCH_CLASS_LIST, fetchClassList),
+    takeEvery(SYNC_CLASS, syncClass),
+    takeEvery(SYNC_CLASS_USING_CODE, syncClassUsingCode),
+    takeEvery(CREATE_CLASS_REQUEST, receiveCreateClassRequest),
+    takeEvery(FETCH_STUDENTS_BY_ID_REQUEST, fetchStudentsByClassId),
+    takeEvery(UPDATE_CLASS_REQUEST, receiveUpdateClass),
+    takeEvery(ADD_STUDENT_REQUEST, receiveAddStudentRequest),
+    takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
+    takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
+    takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
+    takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest),
+    takeLatest(GET_CANVAS_COURSE_LIST_REQUEST, getCanvasCourseListRequestSaga),
+    takeLatest(
       GET_CANVAS_SECTION_LIST_REQUEST,
       getCanvasSectionListRequestSaga
     ),
-    yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
-    yield takeLatest(SYNC_CLASS_WITH_ATLAS, syncClassWithAtlasSaga),
-    yield takeLatest(
+    takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
+    takeLatest(SYNC_CLASS_WITH_ATLAS, syncClassWithAtlasSaga),
+    takeLatest(
       FETCH_CLEVER_CLASS_LIST_REQUEST,
       fetchCleverClassListRequestSaga
     ),
-    yield takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga),
-    yield takeLatest(UNARCHIVE_CLASS_REQUEST, unarchiveClass),
-    yield takeLatest(
-      REMOVE_CLASS_SYNC_NOTIFICATION,
-      removeClassSyncNotification
-    ),
-    yield takeLatest(UPDATE_CO_TEACHER_REQUEST, updateGroupTeachers),
-    yield takeLatest(
+    takeLatest(SYNC_CLASS_LIST_WITH_CLEVER, syncClassListWithCleverSaga),
+    takeLatest(UNARCHIVE_CLASS_REQUEST, unarchiveClass),
+    takeLatest(REMOVE_CLASS_SYNC_NOTIFICATION, removeClassSyncNotification),
+    takeLatest(UPDATE_CO_TEACHER_REQUEST, updateGroupTeachers),
+    takeLatest(
       SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC,
       saveGoogleTokensAndRetrySyncSaga
     ),

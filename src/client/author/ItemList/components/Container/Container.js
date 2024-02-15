@@ -1,5 +1,5 @@
 import { withWindowSizes } from '@edulastic/common'
-import { IconItemLibrary } from '@edulastic/icons'
+import { IconFilter, IconItemLibrary } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, sortOptions } from '@edulastic/constants'
 import { Pagination, Spin } from 'antd'
@@ -22,7 +22,6 @@ import {
   getDictStandardsForCurriculumAction,
 } from '../../../src/actions/dictionaries'
 import { createTestItemAction } from '../../../src/actions/testItem'
-import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import ListHeader from '../../../src/components/common/ListHeader'
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
 import {
@@ -96,6 +95,7 @@ import {
   setFilterInSession,
 } from '../../../../common/utils/helpers'
 import { getTestEntitySelector } from '../../../AssignTest/duck'
+import { StyledEduButton } from '../../../Reports/common/styled'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -499,10 +499,15 @@ class Contaier extends Component {
   }
 
   renderFilterIcon = (isShowFilter) => (
-    <FilterToggleBtn
-      isShowFilter={!isShowFilter}
-      toggleFilter={this.toggleFilter}
-    />
+    <StyledEduButton
+      data-cy="filter"
+      isGhost={isShowFilter}
+      onClick={this.toggleFilter}
+      style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
+    >
+      <IconFilter width={15} height={15} />
+      FILTERS
+    </StyledEduButton>
   )
 
   render() {
@@ -565,13 +570,13 @@ class Contaier extends Component {
           />
           <ListItems isShowFilter={isShowFilter}>
             <Element>
-              <MobileFilterIcon>
-                {this.renderFilterIcon(isShowFilter)}
-              </MobileFilterIcon>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
                 <>
                   <ItemsMenu>
+                    <MobileFilterIcon>
+                      {this.renderFilterIcon(isShowFilter)}
+                    </MobileFilterIcon>
                     <PaginationInfo>
                       <span>{count}</span>
                       <span>{t('author:component.item.itemsFound')}</span>

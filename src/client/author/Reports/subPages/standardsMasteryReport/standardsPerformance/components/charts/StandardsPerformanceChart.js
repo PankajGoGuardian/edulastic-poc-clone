@@ -13,6 +13,15 @@ const { getTicks, getMasteryLevel } = reportUtils.standardsPerformanceSummary
 
 const _yTickFormatter = (text) => text
 
+const getXTickTooltipText = ({ index }, records) => {
+  const { domainName = '-', domainDesc = '' } = records[index] || {}
+  return (
+    <div>
+      <b>{domainName}:</b> {domainDesc}
+    </div>
+  )
+}
+
 const StandardsPerformanceChart = ({
   data,
   selectedDomains,
@@ -83,6 +92,8 @@ const StandardsPerformanceChart = ({
           topStackDataKey="diffMasteryScore"
           yAxisLabel="Avg. Mastery Score"
           yTickFormatter={_yTickFormatter}
+          getXTickTooltipText={getXTickTooltipText}
+          xTickTooltipStyles={{ textAlign: 'left' }}
           barsLabelFormatter={_yTickFormatter}
           onBarClickCB={onClickBarData}
           onResetClickCB={() => setSelectedDomains([])}

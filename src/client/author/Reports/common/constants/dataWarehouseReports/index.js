@@ -1,4 +1,7 @@
-import { reportNavType } from '@edulastic/constants/const/report'
+import {
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
 
 const {
   WHOLE_LEARNER_REPORT,
@@ -18,6 +21,7 @@ export const DW_ATTENDANCE_REPORT_URL = `${prefix}/${DW_ATTENDANCE_SUMMARY_REPOR
 export const DW_EARLY_WARNING_REPORT_URL = `${prefix}/${DW_EARLY_WARNING_REPORT}`
 export const DW_GOALS_AND_INTERVENTIONS_URL = `${prefix}/${DW_GOALS_AND_INTERVENTIONS_REPORT}`
 export const DW_EFFICACY_REPORT_URL = `${prefix}/${DW_EFFICACY_REPORT}`
+export const CUSTOM_REPORTS_URL = `${prefix}/${reportGroupType.CUSTOM_REPORT}`
 
 export const DW_REPORT_URLS = [
   DW_DASHBOARD_URL,
@@ -27,4 +31,10 @@ export const DW_REPORT_URLS = [
   DW_EARLY_WARNING_REPORT_URL,
   DW_GOALS_AND_INTERVENTIONS_URL,
   DW_EFFICACY_REPORT_URL,
+]
+
+export const DGA_VISIBLE_TABS = [
+  reportGroupType.DATA_WAREHOUSE_REPORT,
+  reportGroupType.CUSTOM_REPORT,
+  reportNavType.MULTIPLE_ASSESSMENT_REPORT_DW,
 ]

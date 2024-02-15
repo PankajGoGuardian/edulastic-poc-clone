@@ -125,9 +125,9 @@ export const filterKeys = {
 
 export const staticDropDownData = {
   filterSections: {
-    CLASS_FILTERS: {
+    STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Classes',
+      title: 'Select Students',
     },
     DEMOGRAPHIC_FILTERS: {
       key: '1',

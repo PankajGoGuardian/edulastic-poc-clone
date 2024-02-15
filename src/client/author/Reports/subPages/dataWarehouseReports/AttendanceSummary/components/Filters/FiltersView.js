@@ -91,34 +91,21 @@ function FiltersView({
                     onChange={setFiltersTabKey}
                   >
                     <Tabs.TabPane
-                      key={staticDropDownData.filterSections.CLASS_FILTERS.key}
+                      key={
+                        staticDropDownData.filterSections.STUDENT_FILTERS.key
+                      }
                       tab={
-                        staticDropDownData.filterSections.CLASS_FILTERS.title
+                        staticDropDownData.filterSections.STUDENT_FILTERS.title
                       }
                       forceRender
                     >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <Col span={6}>
-                          <FilterLabel data-cy="schoolYear">
-                            School Year
-                          </FilterLabel>
-                          <ControlDropDown
-                            by={filters.termId}
-                            selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, 'termId')
-                            }
-                            data={schoolYears}
-                            prefix="School Year"
-                            showPrefixOnSelected={false}
-                          />
-                        </Col>
-                        <FilterClassFields
-                          userRole={userRole}
-                          filters={filters}
-                          updateFilterDropdownCB={updateFilterDropdownCB}
-                          dropDownData={staticDropDownData}
-                        />
-                      </Row>
+                      <FilterClassFields
+                        userRole={userRole}
+                        filters={filters}
+                        updateFilterDropdownCB={updateFilterDropdownCB}
+                        dropDownData={staticDropDownData}
+                        schoolYears={schoolYears}
+                      />
                     </Tabs.TabPane>
 
                     <Tabs.TabPane

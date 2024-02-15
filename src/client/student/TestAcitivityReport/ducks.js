@@ -1,5 +1,5 @@
 import { createAction, createReducer } from 'redux-starter-kit'
-import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects'
+import { takeLatest, put, call, all, fork, select } from 'redux-saga/effects'
 import {
   keyBy as _keyBy,
   isEmpty,
@@ -456,9 +456,7 @@ function* loadTestActivityReport({ payload }) {
 
 // set actions watcherss
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport),
-  ])
+  yield all([takeLatest(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport)])
 }
 
 // reducer

@@ -7,6 +7,7 @@ import { EduIf, FieldLabel } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
+import { withNamespaces } from 'react-i18next'
 import {
   ReportFiltersContainer,
   StyledEduButton,
@@ -14,6 +15,8 @@ import {
   StyledDropDownContainer,
   FilterLabel,
   SecondaryFilterRow,
+  SubText,
+  StyledTooltip,
 } from '../../../../common/styled'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -22,6 +25,7 @@ import SchoolAutoComplete from '../../../../common/components/autocompletes/Scho
 import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
 import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
 import TagFilter from '../../../../../src/components/common/TagFilter'
+import SelectAssessmentsForMultiSchoolYear from '../../common/components/SelectAssessmentsForMultiSchoolYear'
 // import AssessmentsAutoComplete from '../../../../common/components/autocompletes/AssessmentsAutoComplete'
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
@@ -37,8 +41,12 @@ import {
   getDemographicsFilterTagsData,
   getExternalScoreTypesListByTestTypes,
   getDefaultTestTypesForUser,
+  getUrlTestTermIds,
+  convertItemToArray,
+  getIsMultiSchoolYearDataPresent,
 } from '../../common/utils'
 import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
+import { MandatorySymbol } from '../../common/components/styledComponents'
 
 import { isPearOrEdulasticText } from '../../../../../../common/utils/helpers'
 
@@ -74,6 +82,7 @@ const MultipleAssessmentReportFilters = ({
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
   history,
+  t,
 }) => {
   const tagTypes = staticDropDownData.tagTypes
   const { terms = [], schools } = orgData
@@ -84,6 +93,7 @@ const MultipleAssessmentReportFilters = ({
     bandInfo = [],
     demographics = [],
     testTypes: availableAssessmentTypes = internalTestTypes,
+    externalTests = [],
   } = get(filtersData, 'data.result', {})
   const performanceBandsList = useMemo(
     () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
@@ -165,6 +175,10 @@ const MultipleAssessmentReportFilters = ({
         const urlGrades = staticDropDownData.grades.filter(
           (item) => search.grades && search.grades.includes(item.key)
         )
+        const urlTestTermIds = getUrlTestTermIds(
+          schoolYears,
+          search.testTermIds
+        )
         const urlPerformanceBand =
           performanceBandsList.find((item) => item.key === search.profileId) ||
           performanceBandsList[0]
@@ -174,11 +188,16 @@ const MultipleAssessmentReportFilters = ({
 
         const _filters = {
           termId: urlSchoolYear.key,
+          testTermIds:
+            urlTestTermIds.map((item) => item.key).join(',') ||
+            urlSchoolYear.key,
+
           testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
           testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || defaultTestTypes,
           testIds: search.testIds || '',
+          testUniqIds: search.testUniqIds || '',
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -211,6 +230,7 @@ const MultipleAssessmentReportFilters = ({
         const _filterTagsData = {
           termId: urlSchoolYear,
           testSubjects: urlTestSubjects,
+          testTermIds: urlTestTermIds.length ? urlTestTermIds : [urlSchoolYear],
           testGrades: urlTestGrades,
           assessmentTypes: availableAssessmentTypes.filter((a) =>
             assessmentTypesArr.includes(a.key)
@@ -340,6 +360,57 @@ const MultipleAssessmentReportFilters = ({
     }
   }
 
+  const testUniqIds = useMemo(() => convertItemToArray(filters.testUniqIds), [
+    filters.testUniqIds,
+  ])
+
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
+  const isDisable = useMemo(() => {
+    if (isMultiSchoolYear) {
+      return !testUniqIds.length
+    }
+  }, [isMultiSchoolYear, testUniqIds])
+  const getLabel = (text, isRequired) => {
+    return isRequired ? (
+      <>
+        {text}
+        <MandatorySymbol>*</MandatorySymbol>
+      </>
+    ) : (
+      text
+    )
+  }
+
+  const applyButton = () => {
+    const ApplyButton = ({ width = '25%' }) => (
+      <StyledEduButton
+        width={width}
+        height="40px"
+        style={{ maxWidth: '200px' }}
+        key="applyButton"
+        data-cy="applyFilter"
+        data-testid="applyFilter"
+        disabled={!showApply || loadingFiltersData || isDisable}
+        onClick={() => onGoClick()}
+      >
+        Apply
+      </StyledEduButton>
+    )
+    if (isDisable) {
+      return (
+        <StyledTooltip
+          placement="topRight"
+          title="Please select a test to activate 'Apply' filter."
+        >
+          <span style={{ width: '25%', height: '40px', maxWidth: '200px' }}>
+            <ApplyButton width="100%" />
+          </span>
+        </StyledTooltip>
+      )
+    }
+    return <ApplyButton />
+  }
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -374,10 +445,16 @@ const MultipleAssessmentReportFilters = ({
                   onChange={setFiltersTabKey}
                 >
                   <Tabs.TabPane
-                    key={staticDropDownData.filterSections.TEST_FILTERS.key}
-                    tab={staticDropDownData.filterSections.TEST_FILTERS.title}
+                    key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
+                    tab={
+                      staticDropDownData.filterSections.STUDENT_FILTERS.title
+                    }
+                    forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={24}>
+                        <SubText>{t('common.studentFilterSubText')}</SubText>
+                      </Col>
                       <Col span={6}>
                         <FilterLabel data-cy="schoolYear">
                           School Year
@@ -392,122 +469,6 @@ const MultipleAssessmentReportFilters = ({
                           showPrefixOnSelected={false}
                         />
                       </Col>
-                      <Col span={6}>
-                        <MultiSelectDropdown
-                          dataCy="testGrade"
-                          label="Test Grade"
-                          onChange={(e) => {
-                            const selected = staticDropDownData.grades.filter(
-                              (a) => e.includes(a.key)
-                            )
-                            updateFilterDropdownCB(selected, 'testGrades', true)
-                          }}
-                          value={
-                            filters.testGrades && filters.testGrades !== 'All'
-                              ? filters.testGrades.split(',')
-                              : []
-                          }
-                          options={staticDropDownData.grades}
-                        />
-                      </Col>
-                      <Col span={6}>
-                        <MultiSelectDropdown
-                          dataCy="testSubject"
-                          label="Test Subject"
-                          onChange={(e) => {
-                            const selected = staticDropDownData.subjects.filter(
-                              (a) => e.includes(a.key)
-                            )
-                            updateFilterDropdownCB(
-                              selected,
-                              'testSubjects',
-                              true
-                            )
-                          }}
-                          value={
-                            filters.testSubjects &&
-                            filters.testSubjects !== 'All'
-                              ? filters.testSubjects.split(',')
-                              : []
-                          }
-                          options={staticDropDownData.subjects}
-                        />
-                      </Col>
-                      <Col span={6}>
-                        <MultiSelectDropdown
-                          dataCy="testTypes"
-                          label="Test Type"
-                          onChange={(e) => {
-                            const selected = availableAssessmentTypes.filter(
-                              (a) => e.includes(a.key)
-                            )
-                            updateFilterDropdownCB(
-                              selected,
-                              'assessmentTypes',
-                              true
-                            )
-                          }}
-                          value={
-                            filters.assessmentTypes
-                              ? filters.assessmentTypes.split(',')
-                              : []
-                          }
-                          options={availableAssessmentTypes}
-                        />
-                      </Col>
-                      <Col span={6}>
-                        <FilterLabel data-cy="tags-select">Tags</FilterLabel>
-                        <TagFilter
-                          onChangeField={(type, selected) => {
-                            const _selected = selected.map(
-                              ({ _id: key, tagName: title }) => ({ key, title })
-                            )
-                            updateFilterDropdownCB(_selected, 'tagIds', true)
-                          }}
-                          selectedTagIds={
-                            filters.tagIds ? filters.tagIds.split(',') : []
-                          }
-                        />
-                      </Col>
-                      {/* <Col span={18}>
-                        <AssessmentsAutoComplete
-                          dataCy="tests"
-                          termId={filters.termId}
-                          grades={filters.testGrades}
-                          subjects={filters.testSubjects}
-                          testTypes={filters.assessmentTypes}
-                          tagIds={filters.tagIds}
-                          selectedTestIds={
-                            filters.testIds ? filters.testIds.split(',') : []
-                          }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'testIds', true)
-                          }
-                        />
-                      </Col> */}
-                    </Row>
-                  </Tabs.TabPane>
-
-                  <Tabs.TabPane
-                    key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                    tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
-                    forceRender
-                  >
-                    <Row type="flex" gutter={[5, 10]}>
-                      {/* <Col span={6}>
-                        <FilterLabel data-cy="assignedBy">
-                          Assigned By
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.assignedBy}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'assignedBy')
-                          }
-                          data={staticDropDownData.assignedBy}
-                          prefix="Assigned By"
-                          showPrefixOnSelected={false}
-                        />
-                      </Col> */}
                       {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
                         <>
                           <Col span={6}>
@@ -627,6 +588,139 @@ const MultipleAssessmentReportFilters = ({
                   </Tabs.TabPane>
 
                   <Tabs.TabPane
+                    key={staticDropDownData.filterSections.TEST_FILTERS.key}
+                    tab={staticDropDownData.filterSections.TEST_FILTERS.title}
+                  >
+                    <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          dataCy="schoolYear"
+                          label="School Year"
+                          onChange={(e) => {
+                            const selected = schoolYears?.filter((schoolYear) =>
+                              e.includes(schoolYear.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'testTermIds',
+                              true
+                            )
+                          }}
+                          value={
+                            (filters.testTermIds &&
+                              filters.testTermIds.split(',')) ||
+                            filters?.termId
+                          }
+                          options={schoolYears}
+                        />
+                      </Col>
+
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          dataCy="testGrade"
+                          placeholder="All Test Grade"
+                          label={getLabel('Test Grade', isMultiSchoolYear)}
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'testGrades', true)
+                          }}
+                          value={
+                            filters.testGrades && filters.testGrades !== 'All'
+                              ? filters.testGrades.split(',')
+                              : []
+                          }
+                          options={staticDropDownData.grades}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          placeholder="All Test Subject"
+                          dataCy="testSubject"
+                          label={getLabel('Test Subject', isMultiSchoolYear)}
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'testSubjects',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.testSubjects &&
+                            filters.testSubjects !== 'All'
+                              ? filters.testSubjects.split(',')
+                              : (filters.subjects &&
+                                  filters.subjects.split(',')) ||
+                                []
+                          }
+                          options={staticDropDownData.subjects}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          dataCy="testTypes"
+                          label="Test Type"
+                          onChange={(e) => {
+                            const selected = availableAssessmentTypes.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'assessmentTypes',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.assessmentTypes
+                              ? filters.assessmentTypes.split(',')
+                              : []
+                          }
+                          options={availableAssessmentTypes}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+                        <TagFilter
+                          onChangeField={(type, selected) => {
+                            const _selected = selected.map(
+                              ({ _id: key, tagName: title }) => ({ key, title })
+                            )
+                            updateFilterDropdownCB(_selected, 'tagIds', true)
+                          }}
+                          selectedTagIds={
+                            filters.tagIds ? filters.tagIds.split(',') : []
+                          }
+                        />
+                      </Col>
+                      <Col span={18}>
+                        <SelectAssessmentsForMultiSchoolYear
+                          dataCy="multiSchoolYearTests"
+                          termId={filters.termId}
+                          grades={filters.testGrades}
+                          subjects={filters.testSubjects}
+                          testTypes={filters.assessmentTypes}
+                          testTermIds={filters.testTermIds}
+                          tagIds={filters.tagIds}
+                          schoolYears={schoolYears}
+                          externalTests={externalTests}
+                          selectedTestIds={
+                            filters.testUniqIds
+                              ? filters.testUniqIds.split(',')
+                              : []
+                          }
+                          selectCB={(e) => {
+                            updateFilterDropdownCB(e, 'testUniqIds', true)
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                  </Tabs.TabPane>
+
+                  <Tabs.TabPane
                     key={
                       staticDropDownData.filterSections.PERFORMANCE_FILTERS.key
                     }
@@ -694,18 +788,8 @@ const MultipleAssessmentReportFilters = ({
                 >
                   Cancel
                 </StyledEduButton>
-                <StyledEduButton
-                  width="25%"
-                  height="40px"
-                  style={{ maxWidth: '200px' }}
-                  key="applyButton"
-                  data-cy="applyFilter"
-                  data-testid="applyFilter"
-                  disabled={!showApply || loadingFiltersData}
-                  onClick={() => onGoClick()}
-                >
-                  Apply
-                </StyledEduButton>
+                {/* Apply button */}
+                {applyButton()}
               </Col>
             </Row>
           </ReportFiltersWrapper>
@@ -760,4 +844,4 @@ const MultipleAssessmentReportFilters = ({
   )
 }
 
-export default MultipleAssessmentReportFilters
+export default withNamespaces('reports')(MultipleAssessmentReportFilters)

@@ -6,6 +6,7 @@ const SCHOOL_ADMIN = 'school-admin'
 const EDULASTIC_ADMIN = 'edulastic-admin'
 const EDULASTIC_CURATOR = 'edulastic-curator'
 const PARENT = 'parent'
+const DISTRICT_GROUP_ADMIN = 'district-group-admin'
 
 const DA_SA_ROLE_ARRAY = [DISTRICT_ADMIN, SCHOOL_ADMIN]
 
@@ -32,6 +33,7 @@ const ROLE_LABEL = {
   [SCHOOL_ADMIN]: 'School Admin',
   [TEACHER]: 'Teacher',
   [STUDENT]: 'Student',
+  [DISTRICT_GROUP_ADMIN]: 'District Group Admin',
 }
 
 module.exports = {
@@ -44,6 +46,7 @@ module.exports = {
   EDULASTIC_CURATOR,
   DA_SA_ROLE_ARRAY,
   PARENT,
+  DISTRICT_GROUP_ADMIN,
   ORG_TYPE,
   ROLE_LABEL,
   ORGANIZATION_TYPE,

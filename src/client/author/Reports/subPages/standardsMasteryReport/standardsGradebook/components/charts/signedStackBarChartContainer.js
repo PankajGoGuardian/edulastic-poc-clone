@@ -8,8 +8,17 @@ import { SignedStackedBarChart } from '../../../../../common/components/charts/s
 
 const { CHART_X_AXIS_DATA_KEY, getChartData } = reportUtils.standardsGradebook
 
-const getXTickText = ({ value }, records) =>
-  records.find((t) => t[CHART_X_AXIS_DATA_KEY] === value).standard || '-'
+// TODO use index instead of value for other reports
+const getXTickText = ({ index }, records) => records[index].standard || '-'
+
+const getXTickTooltipText = ({ index }, records) => {
+  const { standard = '-', standardName = '' } = records[index] || {}
+  return (
+    <div>
+      <b>{standard}:</b> {standardName}
+    </div>
+  )
+}
 
 const getChartSpecifics = (scaleInfo) => {
   if (!isEmpty(scaleInfo)) {
@@ -110,6 +119,8 @@ export const SignedStackBarChartContainer = ({
       barsData={chartSpecifics.barsData}
       xAxisDataKey={CHART_X_AXIS_DATA_KEY}
       getXTickText={getXTickText}
+      getXTickTooltipText={getXTickTooltipText}
+      xTickTooltipStyles={{ textAlign: 'left' }}
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
       onResetClickCB={onBarResetClickCB}

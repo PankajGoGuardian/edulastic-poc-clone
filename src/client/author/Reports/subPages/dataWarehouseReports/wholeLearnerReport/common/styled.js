@@ -12,6 +12,7 @@ import {
 } from '@edulastic/colors'
 import { Checkbox, Button, Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
+import { CustomStyledTable } from '../../common/components/styledComponents'
 
 export const AssessmentNameContainer = styled.div`
   .test-name-container {
@@ -54,6 +55,37 @@ export const RightContentWrapper = styled.div`
 export const RiskSummaryWrapper = styled(FlexContainer)`
   height: 180px;
   background: ${greyThemeLighter};
+`
+
+export const StyledDiv = styled.div`
+  position: relative;
+`
+
+export const BlurEffect = styled.div`
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 130px;
+  width: 100%;
+  backdrop-filter: blur(7px);
+`
+
+export const LimitationTextWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 180px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  font-weight: bold;
+`
+
+export const ExclamationIcon = styled.i`
+  color: #000;
+  font-size: 18px;
 `
 
 export const DemographicsWrapper = styled.div`
@@ -219,5 +251,17 @@ export const ClaimsRow = styled(Row)`
   flex-wrap: nowrap;
   @media print {
     flex-wrap: wrap;
+  }
+`
+
+export const styledTable = styled(CustomStyledTable)`
+  table {
+    tbody {
+      tr {
+        td {
+          font-weight: 700;
+        }
+      }
+    }
   }
 `

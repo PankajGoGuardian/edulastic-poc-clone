@@ -35,6 +35,7 @@ import {
   getSelectedLanguageSelector,
 } from '../ducks'
 import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import { getUserNameSelector } from '../../../author/src/selectors/user'
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now()
@@ -88,6 +89,7 @@ const Content = ({
   setSelectedLanguage,
   languagePreference,
   assignmentsGrousByTestId,
+  userName,
 }) => {
   const [
     showVideoResourcePreviewModal,
@@ -185,6 +187,7 @@ const Content = ({
           languagePreference={languagePreference}
           setSelectedLanguage={setSelectedLanguage}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          userName={userName}
         />
       ))}
     </AssignmentWrapper>
@@ -216,6 +219,7 @@ export default connect(
   (state) => ({
     flag: state.ui.flag,
     currentGroup: getCurrentGroup(state),
+    userName: getUserNameSelector(state),
     assignments: getAssignmentsSelector(state),
     allAssignments: values(assignmentsSelector(state)),
     allClasses: getClasses(state),

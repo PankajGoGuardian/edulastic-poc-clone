@@ -8,8 +8,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
-import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
-import { white, themeColor } from '@edulastic/colors'
+import { IconFilter, IconAssignment } from '@edulastic/icons'
 
 import {
   receiveAssignmentsAction,
@@ -56,7 +55,6 @@ import {
   ViewSwitch,
   SwitchWrapper,
   SwitchLabel,
-  FilterButton,
   TableWrapper,
   LeftWrapper,
   FixedWrapper,
@@ -84,6 +82,7 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import { StyledEduButton } from '../../../Reports/common/styled'
 
 const initialFilterState = {
   grades: [],
@@ -461,26 +460,21 @@ class Assignments extends Component {
                     </FixedWrapper>
                   </LeftWrapper>
                   <TableWrapper showFilter={showFilter}>
-                    <FilterButton
-                      showFilter={showFilter}
-                      variant="filter"
+                    <StyledEduButton
+                      data-cy="smart-filter"
+                      data-test={showFilter ? 'expanded' : 'collapsed'}
+                      isGhost={showFilter}
                       onClick={this.toggleFilter}
+                      style={{
+                        height: '24px',
+                        margin: '-15px 0px 5px 25px',
+                        borderRadius: '15px',
+                      }}
                     >
-                      {showFilter ? (
-                        <IconCloseFilter
-                          data-cy="smart-filter"
-                          data-test={showFilter ? 'expanded' : 'collapsed'}
-                        />
-                      ) : (
-                        <IconFilter
-                          data-cy="smart-filter"
-                          data-test={showFilter ? 'expanded' : 'collapsed'}
-                          color={showFilter ? themeColor : white}
-                          width={20}
-                          height={20}
-                        />
-                      )}
-                    </FilterButton>
+                      <IconFilter width={15} height={15} />
+                      FILTERS
+                    </StyledEduButton>
+
                     <StyledCard>
                       {isAdvancedView ? (
                         <AdvancedTable

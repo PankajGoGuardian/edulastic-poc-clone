@@ -147,11 +147,25 @@ const getTableColumns = (
 
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
-      const { testId, externalTestType, averageScore } = assessment
+      const {
+        testId, // here testId refers to testUniqId in case of multiSchoolYear
+        externalTestType,
+        averageScore,
+        assessmentDate = '',
+      } = assessment
+
       const _testName = getTestName(assessment)
+      const testDate = formatDate(assessmentDate)
       const averageScoreForTitle = getScoreLabel(
         isNumber(averageScore) ? round(averageScore) : averageScore,
         assessment
+      )
+
+      const tooltipTitle = (
+        <>
+          <p>{_testName}</p>
+          <p>Test Date: {testDate}</p>
+        </>
       )
       return [
         // assessment column to be rendered in browser
@@ -159,7 +173,7 @@ const getTableColumns = (
           key: testId,
           title: (
             <AssessmentNameContainer isPrinting={isPrinting}>
-              <Tooltip title={_testName}>
+              <Tooltip title={tooltipTitle}>
                 <div className="test-name-container">
                   <AssessmentName>{_testName}</AssessmentName>
                 </div>

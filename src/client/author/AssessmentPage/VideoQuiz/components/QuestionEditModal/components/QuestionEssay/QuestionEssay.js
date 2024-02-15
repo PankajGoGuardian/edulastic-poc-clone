@@ -124,7 +124,7 @@ export default class QuestionEssay extends React.Component {
           />
           <Points>Points</Points>
         </FormGroup>
-        <FormGroup style={{ marginTop: 9 }}>
+        <FormGroup style={{ marginTop: 9 }} data-cy="videoQuizTimePicker">
           <FormLabel>Timestamp (mm:ss)</FormLabel>
           <VideoQuizTimePicker
             videoRef={videoRef}

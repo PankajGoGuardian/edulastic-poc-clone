@@ -2,12 +2,12 @@ import React from 'react'
 import { Row } from 'antd'
 import ReportLinkCard from './common/components/ReportLinkCard'
 import { StyledSectionHeader } from '../../common/styled'
-import { dataWarehousereportCardsData } from './contants'
+import { DATA_WAREHOUSE_REPORT_CARDS_DATA } from './contants'
 
 const DataWarehoureReportCardsWrapper = ({ loc, allowAccess }) => {
   return (
     <>
-      {dataWarehousereportCardsData.map(({ id, title, cards }) => (
+      {DATA_WAREHOUSE_REPORT_CARDS_DATA.map(({ id, title, cards }) => (
         <div key={id}>
           <StyledSectionHeader>{title}</StyledSectionHeader>
           <Row gutter={32}>

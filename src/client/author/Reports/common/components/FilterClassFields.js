@@ -1,13 +1,15 @@
 import React from 'react'
-import { Col } from 'antd'
+import { Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
+import { withNamespaces } from 'react-i18next'
 import ClassAutoComplete from './autocompletes/ClassAutoComplete'
 import CourseAutoComplete from './autocompletes/CourseAutoComplete'
 import GroupsAutoComplete from './autocompletes/GroupsAutoComplete'
 import SchoolAutoComplete from './autocompletes/SchoolAutoComplete'
 import TeacherAutoComplete from './autocompletes/TeacherAutoComplete'
 import MultiSelectDropdown from './widgets/MultiSelectDropdown'
-import { FilterLabel } from '../styled'
+import { FilterLabel, SubText } from '../styled'
+import { ControlDropDown } from './widgets/controlDropDown'
 
 function FilterClassFields(props) {
   const {
@@ -16,9 +18,24 @@ function FilterClassFields(props) {
     updateFilterDropdownCB,
     // TODO dropDownData hardly changes. Better provide a default
     dropDownData,
+    schoolYears,
+    t,
   } = props
   return (
-    <>
+    <Row type="flex" gutter={[5, 10]}>
+      <Col span={24}>
+        <SubText>{t('common.studentFilterSubText')}</SubText>
+      </Col>
+      <Col span={6}>
+        <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
+        <ControlDropDown
+          by={filters.termId}
+          selectCB={(e, selected) => updateFilterDropdownCB(selected, 'termId')}
+          data={schoolYears}
+          prefix="School Year"
+          showPrefixOnSelected={false}
+        />
+      </Col>
       {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
         <>
           <Col span={6}>
@@ -112,7 +129,7 @@ function FilterClassFields(props) {
           selectCB={(e) => updateFilterDropdownCB(e, 'groupIds', true)}
         />
       </Col>
-    </>
+    </Row>
   )
 }
-export default FilterClassFields
+export default withNamespaces('reports')(FilterClassFields)

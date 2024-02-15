@@ -54,6 +54,7 @@ const VideoQuizTimePicker = ({
         handleTimeChange((value?.minutes() || 0) * 60 + (value?.seconds() || 0))
       }
       placeholder="Enter time (mm:ss)"
+      data-cy="videoQuizTimePicker"
     />
   )
 }

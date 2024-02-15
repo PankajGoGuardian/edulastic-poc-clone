@@ -13,18 +13,20 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
+import { roleuser } from '@edulastic/constants'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
 import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 import navigation from '../../static/json/navigation.json'
-import { getUserOrgId } from '../../../../src/selectors/user'
+import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../../../../src/constants/others'
 import { CUSTOM_TO_STATE_REPORTS_DISTRICT_IDS } from '../../constants/customReports'
+import { DGA_VISIBLE_TABS } from '../../constants/dataWarehouseReports'
 
-const dataWarehouseReportTypes = navigation.navigation[
-  'data-warehouse-reports'
+const dataStudioReportTypes = navigation.navigation[
+  reportGroupType.DATA_WAREHOUSE_REPORT
 ].map((item) => item.key)
 
 const CustomizedHeaderWrapper = ({
@@ -36,6 +38,7 @@ const CustomizedHeaderWrapper = ({
   activeNavigationKey = '',
   hideSideMenu,
   orgId,
+  userRole,
   isCliUser,
   showCustomReport,
   showSharedReport,
@@ -69,33 +72,45 @@ const CustomizedHeaderWrapper = ({
     _districtId
   )
     ? _navigationItems.map((item) =>
-        item.key === 'custom-reports'
+        item.key === reportGroupType.CUSTOM_REPORT
           ? { ...item, title: 'State Reports' }
           : item
       )
     : _navigationItems
 
   let filterNavigationItems = navigationItems
+  if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+    filterNavigationItems = filterNavigationItems
+      .filter((item) => DGA_VISIBLE_TABS.includes(item.key))
+      .reverse()
+  }
 
   if (isCliUser) {
-    filterNavigationItems = navigationItems.filter(
+    filterNavigationItems = filterNavigationItems.filter(
       (item) =>
-        item.key !== 'peer-performance' && item.key !== 'response-frequency'
+        item.key !== reportNavType.PEER_PERFORMANCE &&
+        item.key !== reportNavType.RESPONSE_FREQUENCY
     )
   }
-  if (!showCustomReport && activeNavigationKey !== 'custom-reports') {
+  if (
+    !showCustomReport &&
+    activeNavigationKey !== reportGroupType.CUSTOM_REPORT
+  ) {
     filterNavigationItems = filterNavigationItems.filter(
-      (item) => item.key !== 'custom-reports'
+      (item) => item.key !== reportGroupType.CUSTOM_REPORT
     )
   }
-  if (!showSharedReport && activeNavigationKey !== 'shared-reports') {
+  if (
+    !showSharedReport &&
+    activeNavigationKey !== reportGroupType.SHARED_REPORT
+  ) {
     filterNavigationItems = filterNavigationItems.filter(
-      (item) => item.key !== 'shared-reports'
+      (item) => item.key !== reportGroupType.SHARED_REPORT
     )
   }
   if (isSharedReport) {
     filterNavigationItems = filterNavigationItems.filter(
-      (item) => item.key !== 'performance-by-rubric-criteria'
+      (item) => item.key !== reportNavType.PERFORMANCE_BY_RUBRICS_CRITERIA
     )
   }
 
@@ -107,11 +122,19 @@ const CustomizedHeaderWrapper = ({
     )
   }
 
+  const isDataStudioReport = dataStudioReportTypes.find(
+    (reportType) => reportType === activeNavigationKey
+  )
+  const showGroupNavItems = [
+    userRole === roleuser.DISTRICT_GROUP_ADMIN,
+    isDataStudioReport,
+    filterNavigationItems.length > 1,
+  ].some((e) => e)
+
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
     : // TODO remove bottom checks and use only `filterNavigationItems` as not required & approach is misleading/wrong.
-    dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
-      filterNavigationItems.length > 1
+    showGroupNavItems
     ? filterNavigationItems
     : []
 
@@ -284,6 +307,7 @@ const enhance = compose(
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
     orgId: getUserOrgId(state),
+    userRole: getUserRole(state),
   }))
 )
 export default enhance(CustomizedHeaderWrapper)

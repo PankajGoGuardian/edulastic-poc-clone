@@ -1,5 +1,5 @@
 import { createAction, createReducer } from 'redux-starter-kit'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { get } from 'lodash'
@@ -256,19 +256,16 @@ function* saveCanvasKeysRequestSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_DISTRICT_POLICY_REQUEST, receiveDistrictPolicySaga),
+    takeLatest(RECEIVE_DISTRICT_POLICY_REQUEST, receiveDistrictPolicySaga),
   ])
   yield all([
-    yield takeEvery(UPDATE_DISTRICT_POLICY_REQUEST, updateDictrictPolicySaga),
+    takeEvery(UPDATE_DISTRICT_POLICY_REQUEST, updateDictrictPolicySaga),
   ])
   yield all([
-    yield takeEvery(CREATE_DISTRICT_POLICY_REQUEST, createDictrictPolicySaga),
+    takeEvery(CREATE_DISTRICT_POLICY_REQUEST, createDictrictPolicySaga),
   ])
   yield all([
-    yield takeEvery(
-      SAVE_CANVAS_INTEGRATION_KEYS_REQUEST,
-      saveCanvasKeysRequestSaga
-    ),
+    takeEvery(SAVE_CANVAS_INTEGRATION_KEYS_REQUEST, saveCanvasKeysRequestSaga),
   ])
 }
 

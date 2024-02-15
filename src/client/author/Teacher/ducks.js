@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { userApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
@@ -262,10 +262,8 @@ function* deleteTeacherSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([
-    yield takeEvery(RECEIVE_TEACHERLIST_REQUEST, receiveTeachersListSaga),
-  ])
-  yield all([yield takeEvery(UPDATE_TEACHER_REQUEST, updateTeacherSaga)])
-  yield all([yield takeEvery(CREATE_TEACHER_REQUEST, createTeacherSaga)])
-  yield all([yield takeEvery(DELETE_TEACHER_REQUEST, deleteTeacherSaga)])
+  yield all([takeLatest(RECEIVE_TEACHERLIST_REQUEST, receiveTeachersListSaga)])
+  yield all([takeEvery(UPDATE_TEACHER_REQUEST, updateTeacherSaga)])
+  yield all([takeEvery(CREATE_TEACHER_REQUEST, createTeacherSaga)])
+  yield all([takeEvery(DELETE_TEACHER_REQUEST, deleteTeacherSaga)])
 }

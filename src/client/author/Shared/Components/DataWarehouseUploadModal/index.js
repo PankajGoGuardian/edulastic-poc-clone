@@ -157,6 +157,7 @@ const DataWarehouseUploadModal = ({
           width="200px"
           isGhost
           key="cancelButton"
+          data-cy="cancelButton"
           onClick={abortUpload}
         >
           CANCEL
@@ -165,6 +166,7 @@ const DataWarehouseUploadModal = ({
           btnType="primary"
           data-testid="upload-btn"
           width="200px"
+          data-cy="uploadButton"
           onClick={() => handleFileUpload()}
           disabled={isUploadBtnDisabled}
         >
@@ -174,7 +176,7 @@ const DataWarehouseUploadModal = ({
     >
       <Container>
         <StyledRow>
-          <StyledCol span={12}>
+          <StyledCol span={12} data-cy="feedType">
             <StyledTreeSelect
               placeholder="Select Feed Type"
               treeDefaultExpandAll
@@ -190,6 +192,7 @@ const DataWarehouseUploadModal = ({
               onChange={setTermId}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               value={termId}
+              data-cy="selectSchoolYear"
             >
               {schoolYearOptions.map(({ key, title }) => (
                 <Option key={key} value={key}>
@@ -218,6 +221,7 @@ const DataWarehouseUploadModal = ({
                 <StyledCol span={12}>
                   <DatePicker
                     style={{ width: '100%' }}
+                    data-cy="selectDate"
                     disabled={isEmpty(selectedSchoolYear)}
                     disabledDate={(date) =>
                       !isDateWithinTermTillPresent(
@@ -262,6 +266,7 @@ const DataWarehouseUploadModal = ({
                   isDragActive ? 'orders-dropzone--active' : ''
                 }`}
                 isDragActive={isDragActive}
+                data-cy="browseFile"
               >
                 {loading ? (
                   <StyledProgress percent={uploadProgress} />

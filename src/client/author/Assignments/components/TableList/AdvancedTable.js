@@ -193,12 +193,16 @@ class AdvancedTable extends Component {
         render: (text) => <div> {text} </div>,
       },
       {
-        render: (_, { testId, termId, testType }) => {
+        render: (
+          _,
+          { testId, termId, testType, gradedStudents, submittedStudents }
+        ) => {
           return (
             <AnalyzeLink
               testId={testId}
               termId={termId}
               testType={testType}
+              showAnalyseLink={gradedStudents || submittedStudents}
               linkPrefix={ASSESSMENT_SUMMARY_LINK_PREFIX}
             />
           )

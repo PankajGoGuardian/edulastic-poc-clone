@@ -17,7 +17,12 @@ import useErrorNotification from '../../../../../common/hooks/useErrorNotificati
 import { StyledEmptyContainer } from '../../../common/components/styledComponents'
 import { getStudentRiskData } from '../../utils'
 
-const Summary = ({ studentInformation, studentClassData, settings }) => {
+const Summary = ({
+  studentInformation,
+  studentClassData,
+  settings,
+  isMultiSchoolYear,
+}) => {
   const query = useMemo(() => {
     const payload = {
       ...settings.requestFilters,
@@ -66,7 +71,10 @@ const Summary = ({ studentInformation, studentClassData, settings }) => {
           <EduElse>
             <EduIf condition={hasContent}>
               <EduThen>
-                <RiskSummary data={riskData} />
+                <RiskSummary
+                  data={riskData}
+                  isMultiSchoolYear={isMultiSchoolYear}
+                />
               </EduThen>
               <EduElse>
                 <StyledEmptyContainer

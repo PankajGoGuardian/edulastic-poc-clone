@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
 import { round } from 'lodash'
+import { EduIf } from '@edulastic/common'
 import { SignedStackedBarChart } from '../../../../common/components/charts/customSignedStackedBarChart'
 import {
   TooltipRow,
@@ -83,6 +84,9 @@ const getTooltipJSX = (payload, barIndex) => {
               : `${round(barData.averageScore, 2)}%`
           }
         />
+        <EduIf condition={barData.termName}>
+          <TooltipRowItem title="School Year:" value={barData.termName} />
+        </EduIf>
         <DashedHr />
         {colorBandComponent}
       </div>

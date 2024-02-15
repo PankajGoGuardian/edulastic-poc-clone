@@ -1,5 +1,5 @@
 import { createSlice } from 'redux-starter-kit'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { studentPlaylistApi, recommendationsApi } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import moment from 'moment'
@@ -65,8 +65,8 @@ function* fetchRecommendations() {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(slice.actions.fetchStudentPlaylist, fetchPlaylist),
-    yield takeEvery(slice.actions.fetchRecommendations, fetchRecommendations),
+    takeLatest(slice.actions.fetchStudentPlaylist, fetchPlaylist),
+    takeLatest(slice.actions.fetchRecommendations, fetchRecommendations),
   ])
 }
 

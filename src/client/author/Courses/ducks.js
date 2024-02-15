@@ -1,7 +1,7 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { delay } from 'redux-saga'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 
 import { courseApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
@@ -441,11 +441,11 @@ function* saveBulkCourseSaga({ payload }) {
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_COURSE_REQUEST, receiveCourseListSaga)])
-  yield all([yield takeEvery(UPDATE_COURSE_REQUEST, updateCourseSaga)])
-  yield all([yield takeEvery(CREATE_COURSE_REQUEST, createCourseSaga)])
-  yield all([yield takeEvery(DEACTIVATE_COURSE_REQUEST, deactivateCourseSaga)])
-  yield all([yield takeEvery(UPLOAD_COURSE_CSV_REQUEST, uploadCourseCSVSaga)])
-  yield all([yield takeEvery(SEARCH_COURSE_REQUEST, receiveSearchCourseSaga)])
-  yield all([yield takeEvery(SAVE_BULK_COURSE_REQUEST, saveBulkCourseSaga)])
+  yield all([takeLatest(RECEIVE_COURSE_REQUEST, receiveCourseListSaga)])
+  yield all([takeEvery(UPDATE_COURSE_REQUEST, updateCourseSaga)])
+  yield all([takeEvery(CREATE_COURSE_REQUEST, createCourseSaga)])
+  yield all([takeEvery(DEACTIVATE_COURSE_REQUEST, deactivateCourseSaga)])
+  yield all([takeEvery(UPLOAD_COURSE_CSV_REQUEST, uploadCourseCSVSaga)])
+  yield all([takeLatest(SEARCH_COURSE_REQUEST, receiveSearchCourseSaga)])
+  yield all([takeEvery(SAVE_BULK_COURSE_REQUEST, saveBulkCourseSaga)])
 }

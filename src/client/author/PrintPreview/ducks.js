@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import { createAction } from 'redux-starter-kit'
 
 import { receiveClassStudentResponseAction } from '../src/actions/classBoard'
@@ -62,10 +62,7 @@ function* fetchPrintPreviewEssentials({ payload }) {
 
 export function* printPreviewSaga() {
   yield all([
-    yield takeEvery(
-      FETCH_PRINT_PREVIEW_ESSENTIALS,
-      fetchPrintPreviewEssentials
-    ),
+    takeLatest(FETCH_PRINT_PREVIEW_ESSENTIALS, fetchPrintPreviewEssentials),
   ])
 }
 

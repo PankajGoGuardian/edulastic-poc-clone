@@ -340,7 +340,7 @@ const ActionMenu = ({
           <StyledLink target="_blank" rel="noopener noreferrer">
             <i className="fa fa-link" aria-hidden="true" />
             <SpaceElement />
-            Embed Link
+            Share / Embed Link
           </StyledLink>
         </Menu.Item>
 

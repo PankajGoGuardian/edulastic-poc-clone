@@ -19,6 +19,7 @@ import { isEmpty, findLast } from 'lodash'
 import { greyLight1 } from '@edulastic/colors'
 import { useOfflinePagination } from '@edulastic/common'
 import { LAST_PAGE_INDEX } from '@edulastic/constants/reportUtils/common'
+
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
@@ -38,6 +39,8 @@ import {
   setProperties,
   tooltipParams,
   getHoveredBarDimensions,
+  formatDate,
+  getChartDataBasedOnSchoolYear,
 } from '../../util'
 import { getFGColor } from '../../../../src/utils/util'
 
@@ -180,6 +183,10 @@ export const SignedStackedBarWithLineChart = ({
     },
   }
 
+  const modifiedData = useMemo(() => {
+    return getChartDataBasedOnSchoolYear(data)
+  }, [data])
+
   const {
     next: nextPage,
     prev: prevPage,
@@ -188,7 +195,7 @@ export const SignedStackedBarWithLineChart = ({
     totalPages,
   } = useOfflinePagination({
     defaultPage: LAST_PAGE_INDEX,
-    data,
+    data: modifiedData,
     lookbackCount: 0,
     pageSize,
     backFillLastPage: true,
@@ -304,12 +311,20 @@ export const SignedStackedBarWithLineChart = ({
   }
 
   const onXAxisTickTooltipMouseOver = (payload) => {
-    const { coordinate } = payload
+    const { coordinate, index } = payload
     let content
     if (getXTickTooltipText) {
       content = getXTickTooltipText(payload, pagedData)
     } else if (getXTickText) {
-      content = getXTickText(payload, pagedData)
+      const testName = getXTickText(payload, pagedData)
+      const test = pagedData[index]
+      content = (
+        <>
+          <span>{testName}</span>
+          <br />
+          <span>Date: {formatDate(test.assessmentDate)}</span>
+        </>
+      )
     } else {
       content = payload.value
     }
@@ -429,6 +444,7 @@ export const SignedStackedBarWithLineChart = ({
           {!hideCartesianGrid ? (
             <CartesianGrid vertical={false} strokeWidth={0.5} />
           ) : null}
+
           <XAxis
             dataKey={xAxisDataKey}
             tick={
@@ -449,6 +465,7 @@ export const SignedStackedBarWithLineChart = ({
             onMouseOver={onXAxisTickTooltipMouseOver}
             onMouseOut={onXAxisTickTooltipMouseOut}
           />
+
           {!hideYAxis ? (
             <YAxis
               type="number"

@@ -200,7 +200,12 @@ export const getTableColumnsFE = ({
   )
 
   summaryMetricInfoWithSkillInfo.forEach(
-    ({ standardId, standard, performance: standardOverallData }) => {
+    ({
+      standardId,
+      standard,
+      standardName: standardDesc,
+      performance: standardOverallData,
+    }) => {
       const standardColumn = tableColumns.find((c) => c.key == standardId)
       const standardOverallPerformance = getAllAnalyseByPerformanceData({
         ...standardOverallData,
@@ -219,6 +224,7 @@ export const getTableColumnsFE = ({
           <Link to={standardsProgressNav}>
             <StandardTitle
               standardName={standard}
+              standardDesc={standardDesc}
               standardOverallPerformance={
                 standardOverallPerformance[tableFilters.analyseByKey]
               }
@@ -227,6 +233,7 @@ export const getTableColumnsFE = ({
         ) : (
           <StandardTitle
             standardName={standard}
+            standardDesc={standardDesc}
             standardOverallPerformance={
               standardOverallPerformance[tableFilters.analyseByKey]
             }
@@ -239,6 +246,7 @@ export const getTableColumnsFE = ({
             t={t}
             standardId={standardId}
             standardName={standard}
+            standardDesc={standardDesc}
             compareByKey={tableFilters.compareByKey}
             analyseByKey={tableFilters.analyseByKey}
             handleOnClickStandard={handleOnClickStandard}

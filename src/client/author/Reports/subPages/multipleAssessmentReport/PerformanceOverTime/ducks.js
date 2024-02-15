@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
@@ -114,7 +114,7 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
 
 export function* reportPerformanceOverTimeSaga() {
   yield all([
-    yield takeEvery(
+    takeLatest(
       GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST,
       getReportsPerformanceOverTimeRequest
     ),

@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
@@ -154,15 +154,12 @@ function* createDictrictProfileSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(
-      RECEIVE_DISTRICT_PROFILE_REQUEST,
-      receiveDistrictProfileSaga
-    ),
+    takeLatest(RECEIVE_DISTRICT_PROFILE_REQUEST, receiveDistrictProfileSaga),
   ])
   yield all([
-    yield takeEvery(UPDATE_DISTRICT_PROFILE_REQUEST, updateDictrictProfileSaga),
+    takeEvery(UPDATE_DISTRICT_PROFILE_REQUEST, updateDictrictProfileSaga),
   ])
   yield all([
-    yield takeEvery(CREATE_DISTRICT_PROFILE_REQUEST, createDictrictProfileSaga),
+    takeEvery(CREATE_DISTRICT_PROFILE_REQUEST, createDictrictProfileSaga),
   ])
 }

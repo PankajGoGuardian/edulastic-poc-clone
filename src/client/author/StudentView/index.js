@@ -45,7 +45,6 @@ import {
 import { setStudentViewFilterAction } from '../src/reducers/testActivity'
 // selectors
 import {
-  getClassQuestionSelector,
   getStudentResponseSelector,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector,
@@ -474,7 +473,6 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),

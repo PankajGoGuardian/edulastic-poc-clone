@@ -368,15 +368,12 @@ function* searchSchoolRequest({ payload }) {
 
 export function* customReportForDistrictSaga() {
   yield all([
-    yield takeLatest(GET_CUSTOM_REPORT_REQUEST, getCustomReportRequest),
-    yield takeEvery(
-      UPDATE_PERMISSION_STATUS_REQUEST,
-      updatePermissionStatusRequest
-    ),
-    yield takeEvery(UPDATE_CUSTOM_REPORT_REQUEST, updateCustomReportRequest),
-    yield takeEvery(CREATE_CUSTOM_REPORT_REQUEST, createCustomReportRequest),
-    yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
-    yield takeEvery(SEARCH_SCHOOL_REQUEST, searchSchoolRequest),
+    takeLatest(GET_CUSTOM_REPORT_REQUEST, getCustomReportRequest),
+    takeEvery(UPDATE_PERMISSION_STATUS_REQUEST, updatePermissionStatusRequest),
+    takeEvery(UPDATE_CUSTOM_REPORT_REQUEST, updateCustomReportRequest),
+    takeEvery(CREATE_CUSTOM_REPORT_REQUEST, createCustomReportRequest),
+    takeLatest(GET_DISTRICT_DATA, getDistrictData),
+    takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolRequest),
   ])
 }
 

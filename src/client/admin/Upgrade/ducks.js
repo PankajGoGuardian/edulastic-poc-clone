@@ -8,7 +8,14 @@ import {
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
 import { combineReducers } from 'redux'
-import { all, call, put, select, takeEvery } from 'redux-saga/effects'
+import {
+  all,
+  call,
+  put,
+  select,
+  takeEvery,
+  takeLatest,
+} from 'redux-saga/effects'
 import { createAction, createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
@@ -702,40 +709,37 @@ function* bulkUpgradeByCSVSaga({ payload }) {
 
 function* watcherSaga() {
   yield all([
-    yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
-    yield takeEvery(UPGRADE_DISTRICT_SUBSCRIPTION, upgradeDistrict),
-    yield takeEvery(UPGRADE_USER_SUBSCRIPTION, upgradeUserData),
-    yield takeEvery(SEARCH_USERS_BY_EMAIL_IDS, searchUsersByEmailIds),
-    yield takeEvery(SEARCH_SCHOOLS_BY_ID, searchSchoolsById),
-    yield takeEvery(BULK_SCHOOLS_SUBSCRIBE, bulkSchoolsSubscribe),
-    yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
-    yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
-    yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
-    yield takeEvery(
-      REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION,
-      revokePartialPremiumSub
-    ),
-    yield takeEvery(
+    takeLatest(GET_DISTRICT_DATA, getDistrictData),
+    takeEvery(UPGRADE_DISTRICT_SUBSCRIPTION, upgradeDistrict),
+    takeEvery(UPGRADE_USER_SUBSCRIPTION, upgradeUserData),
+    takeLatest(SEARCH_USERS_BY_EMAIL_IDS, searchUsersByEmailIds),
+    takeEvery(SEARCH_SCHOOLS_BY_ID, searchSchoolsById),
+    takeEvery(BULK_SCHOOLS_SUBSCRIBE, bulkSchoolsSubscribe),
+    takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
+    takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
+    takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
+    takeEvery(REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION, revokePartialPremiumSub),
+    takeLatest(
       manageSubscriptionsByLicenses.actions.fetchLicenses,
       fetchLicensesByTypeSaga
     ),
-    yield takeEvery(
+    takeEvery(
       manageSubscriptionsByLicenses.actions.deleteLicense,
       deleteLicensesByIdsSaga
     ),
-    yield takeEvery(
+    takeEvery(
       manageSubscriptionsByLicenses.actions.extendTrialLicense,
       extendTrialLicenseSaga
     ),
-    yield takeEvery(
+    takeLatest(
       manageSubscriptionsByLicenses.actions.fetchProducts,
       fetchProductsSaga
     ),
-    yield takeEvery(
+    takeEvery(
       manageSubscriptionsByLicenses.actions.addSubscription,
       addSubscriptionSaga
     ),
-    yield takeEvery(bulkUpgrade.actions.upgradeByCSV, bulkUpgradeByCSVSaga),
+    takeEvery(bulkUpgrade.actions.upgradeByCSV, bulkUpgradeByCSVSaga),
   ])
 }
 

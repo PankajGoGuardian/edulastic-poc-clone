@@ -17,6 +17,7 @@ const MultiSelectDropdown = ({
   height = 'auto',
   InputComponent = SelectInputStyled,
   labelFontSize = '10px',
+  placeholder = '',
   displayLabel = true,
   className,
 }) => {
@@ -60,7 +61,7 @@ const MultiSelectDropdown = ({
         className={className}
         height={height}
         showSearch={showSearch}
-        placeholder={`All ${label}`}
+        placeholder={placeholder || `All ${label}`}
         mode="multiple"
         ref={el}
         onChange={onChange}

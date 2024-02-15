@@ -156,8 +156,8 @@ function* loadQuestionSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
-    yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
-    yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
+    takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
+    takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
+    takeEvery(LOAD_QUESTION, loadQuestionSaga),
   ])
 }

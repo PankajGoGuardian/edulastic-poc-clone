@@ -1,8 +1,9 @@
 import React from 'react'
-import { get, keyBy, uniqBy, uniq, memoize } from 'lodash'
+import { get, keyBy, uniqBy, uniq, memoize, omit } from 'lodash'
 import { questionType as questionTypes } from '@edulastic/constants'
 import { nonPremiumCollections } from '@edulastic/constants/const/collections'
 import { PEAR_ASSESSMENT_CERTIFIED_NAME } from '@edulastic/constants/const/common'
+import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import { UserIcon } from './ItemList/components/Item/styled'
 import { EdulasticVerified } from './TestList/components/ListItem/styled'
 
@@ -301,4 +302,34 @@ export const isPremiumContent = (_collections = []) => {
   const isPremium = (collection) => !nonPremiumIds.includes(collection._id)
   const result = _collections.filter(isPremium)
   return result.length > 0 && hasPremiumCollection
+}
+
+/**
+ * Checks if the provided object or any of its nested objects have non-empty values.
+ * @param {object} obj - The object to check.
+ * @returns {boolean} - Returns true if any field in the object has a non-empty value, otherwise returns false.
+ */
+const hasValue = (obj) =>
+  Object.values(obj).some((val) =>
+    val && typeof val === 'object' ? hasValue(val) : val
+  )
+
+/**
+ * Generates a message indicating the absence of data based on the provided filters, item type, and default message.
+ * @param {object} filters - The filters applied to the data.
+ * @param {string} itemType - The type of item for which the message is generated.
+ * @param {string} defaultMsg - The default message to be used if no data is found.
+ * @returns {string} - Returns a message indicating the absence of data.
+ */
+export const getNoDataTextForFilter = (filters, itemType, defaultMsg) => {
+  const isEntireLibrary = filters.filter === SMART_FILTERS.ENTIRE_LIBRARY
+  const hasOtherFilter =
+    hasValue(omit(filters, ['filter', 'searchString'])) || !isEntireLibrary
+
+  const isCategoryFilter = isEntireLibrary || filters?.searchString.length > 0
+
+  if (hasOtherFilter || !isCategoryFilter) {
+    return `No ${itemType} matches for applied filters. Please re-check filters applied on the left.`
+  }
+  return defaultMsg || `No ${itemType} available for the search criteria`
 }

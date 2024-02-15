@@ -497,46 +497,37 @@ function* bulkUpdateAssignmentSettingsSaga({ payload }) {
 
 export default function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
-    yield takeLatest(
-      RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
-      receiveAssignmentsSummary
-    ),
-    yield takeEvery(
-      FETCH_CURRENT_EDITING_ASSIGNMENT,
-      receiveAssignmentByIdSaga
-    ),
-    yield takeEvery(
-      FETCH_CURRENT_ASSIGNMENT,
-      receiveAssignmentByAssignmentIdSaga
-    ),
-    yield takeLatest(UPDATE_RELEASE_SCORE_SETTINGS, updateAssignmetSaga),
-    yield takeEvery(
+    takeEvery(RECEIVE_ASSIGNMENTS_REQUEST, receiveAssignmentsSaga),
+    takeLatest(RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST, receiveAssignmentsSummary),
+    takeEvery(FETCH_CURRENT_EDITING_ASSIGNMENT, receiveAssignmentByIdSaga),
+    takeEvery(FETCH_CURRENT_ASSIGNMENT, receiveAssignmentByAssignmentIdSaga),
+    takeLatest(UPDATE_RELEASE_SCORE_SETTINGS, updateAssignmetSaga),
+    takeEvery(
       RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
       receiveAssignmentClassList
     ),
-    yield takeEvery(
+    takeEvery(
       SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
       syncAssignmentWithGoogleClassroomSaga
     ),
-    yield takeEvery(
+    takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
       syncAssignmentGradesWithGoogleClassroomSaga
     ),
-    yield takeEvery(
+    takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
       syncAssignmentGradesWithCleverSaga
     ),
-    yield takeEvery(
+    takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
       syncAssignmentGradesWithSchoologyClassroomSaga
     ),
-    yield takeEvery(
+    takeEvery(
       SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
       syncAssignmentWithSchoologyClassroomSaga
     ),
-    yield takeEvery(EDIT_TAGS_REQUEST, editTagsRequestSaga),
-    yield takeEvery(
+    takeEvery(EDIT_TAGS_REQUEST, editTagsRequestSaga),
+    takeEvery(
       BULK_UPDATE_ASSIGNMENT_SETTINGS,
       bulkUpdateAssignmentSettingsSaga
     ),

@@ -1,6 +1,13 @@
 import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
-import { call, put, all, takeEvery, select } from 'redux-saga/effects'
+import {
+  call,
+  put,
+  all,
+  takeEvery,
+  takeLatest,
+  select,
+} from 'redux-saga/effects'
 import { push, replace } from 'connected-react-router'
 import { omit, get, set, isNumber, isEmpty } from 'lodash'
 import {
@@ -1095,12 +1102,12 @@ function* deleteSharedUserSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
-    yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
-    yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
-    yield takeEvery(TEST_SHARE, shareTestSaga),
-    yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
-    yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
-    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
+    takeLatest(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
+    takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
+    takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
+    takeEvery(TEST_SHARE, shareTestSaga),
+    takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
+    takeLatest(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
+    takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
   ])
 }

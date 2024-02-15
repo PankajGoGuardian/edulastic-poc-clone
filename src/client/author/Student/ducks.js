@@ -1,8 +1,7 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { all, call, put, takeEvery } from 'redux-saga/effects'
+import { all, call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import { userApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 
 import { receiveAdminDataAction } from '../SchoolAdmin/ducks'
@@ -463,23 +462,16 @@ function* moveUsersToOtherClassSaga({ payload }) {
 }
 
 export function* watcherSaga() {
+  yield all([takeLatest(RECEIVE_STUDENTLIST_REQUEST, receiveStudentsListSaga)])
+  yield all([takeEvery(UPDATE_STUDENT_REQUEST, updateStudentSaga)])
+  yield all([takeEvery(CREATE_STUDENT_REQUEST, createStudentSaga)])
+  yield all([takeEvery(DELETE_STUDENT_REQUEST, deleteStudentSaga)])
+  yield all([takeEvery(ADD_MULTI_STUDENTS_REQUEST, addMultiStudentSaga)])
   yield all([
-    yield takeEvery(RECEIVE_STUDENTLIST_REQUEST, receiveStudentsListSaga),
-  ])
-  yield all([yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentSaga)])
-  yield all([yield takeEvery(CREATE_STUDENT_REQUEST, createStudentSaga)])
-  yield all([yield takeEvery(DELETE_STUDENT_REQUEST, deleteStudentSaga)])
-  yield all([yield takeEvery(ADD_MULTI_STUDENTS_REQUEST, addMultiStudentSaga)])
-  yield all([
-    yield takeEvery(ADD_STUDENTS_TO_OTHER_CLASS, addStudentsToOtherClassSaga),
+    takeEvery(ADD_STUDENTS_TO_OTHER_CLASS, addStudentsToOtherClassSaga),
   ])
   yield all([
-    yield takeEvery(
-      FETCH_CLASS_DETAILS_USING_CODE,
-      fetchClassDetailsUsingCodeSaga
-    ),
+    takeEvery(FETCH_CLASS_DETAILS_USING_CODE, fetchClassDetailsUsingCodeSaga),
   ])
-  yield all([
-    yield takeEvery(MOVE_USERS_TO_OTHER_CLASS, moveUsersToOtherClassSaga),
-  ])
+  yield all([takeEvery(MOVE_USERS_TO_OTHER_CLASS, moveUsersToOtherClassSaga)])
 }

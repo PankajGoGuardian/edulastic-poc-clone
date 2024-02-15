@@ -72,6 +72,7 @@ const AssignmentCard = memo(
     languagePreference,
     history,
     setEmbeddedVideoPreviewModal,
+    userName,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -232,6 +233,7 @@ const AssignmentCard = memo(
           title,
           notifyCancel: false,
           hasSections,
+          userName,
         })
       }
 

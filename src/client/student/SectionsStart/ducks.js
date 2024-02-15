@@ -1,5 +1,5 @@
 import { createSlice } from 'redux-starter-kit'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { captureSentryException } from '@edulastic/common'
 import { assignmentApi, testActivityApi, testsApi } from '@edulastic/api'
 import { createSelector } from 'reselect'
@@ -103,8 +103,8 @@ function* validateSectionsTestPassword({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(slice.actions.fetchSectionsData, fetchSectionsData),
-    yield takeEvery(
+    takeLatest(slice.actions.fetchSectionsData, fetchSectionsData),
+    takeEvery(
       slice.actions.validateSectionsTestPassword,
       validateSectionsTestPassword
     ),

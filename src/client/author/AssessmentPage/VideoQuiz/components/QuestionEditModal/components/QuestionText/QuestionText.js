@@ -317,7 +317,7 @@ export default class QuestionText extends React.Component {
               data-cy="points"
             />
           </FormGroup>
-          <FormGroup width="50%" ml="16px">
+          <FormGroup width="50%" ml="16px" data-cy="videoQuizTimePicker">
             <FieldLabel>Timestamp (mm:ss)</FieldLabel>
             <VideoQuizTimePicker
               videoRef={videoRef}

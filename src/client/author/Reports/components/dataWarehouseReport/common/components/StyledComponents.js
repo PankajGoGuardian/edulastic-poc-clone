@@ -8,8 +8,10 @@ import {
   greenPrimary,
   themeColor,
   lightGreen15,
+  lightGrey1,
+  grey,
 } from '@edulastic/colors'
-import { Col, Tabs } from 'antd'
+import { Card, Col, Icon, Row, Tabs } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../../common/styled'
 
@@ -182,4 +184,71 @@ export const CustomStyledTable = styled(StyledTable)`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+`
+export const ImageContainer = styled(Row)`
+  background: ${(p) => p.$color || ''};
+  border-radius: 16px;
+  height: 145px;
+`
+export const TextContainer = styled(Col)`
+  position: relative;
+  padding: 6px 0px;
+  height: ${(p) => p.$height || '145px'};
+`
+export const StyledIcon = styled(Icon)`
+  position: absolute;
+  bottom: 0;
+  font-size: 12px;
+  font-weight: bold;
+  background-color: ${lightGrey1};
+  padding: 3px;
+  border-radius: 6px;
+  color: ${themeColor};
+`
+
+export const TagContainer = styled.span`
+  .ant-tag {
+    position: relative;
+    top: -8px;
+    font-weight: bold;
+    margin: 0px;
+    border: 1px solid ${themeColor};
+    background: transparent;
+    color: ${themeColor};
+    border-radius: 50px;
+    font-size: 10px;
+  }
+`
+
+export const TitleContainer = styled(Row)`
+  width: 100%;
+`
+export const ReportCardFooter = styled.div`
+  cursor: ${(p) => (p.$isClickable ? 'pointer' : 'not-allowed')};
+  padding: 15px 24px;
+  font-weight: 700;
+  font-size: 14px;
+  color: ${themeColor};
+  width: fit-content;
+  a {
+    opacity: ${(p) => (p.$isClickable ? 1 : 0.5)};
+    pointer-events: ${(p) => (p.$isClickable ? 'auto' : 'none')};
+  }
+`
+export const StyledReportCard = styled(Card)`
+  margin: 0 10px 20px;
+  border: 1px solid ${grey};
+  border-radius: 8px;
+  box-shadow: none;
+  .ant-card-body {
+    padding: 0;
+  }
+`
+export const CardMainContent = styled.div`
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid ${grey};
+`
+export const ReportCardTitle = styled(Col)`
+  font-weight: 600;
+  font-size: 19px;
 `

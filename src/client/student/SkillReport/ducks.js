@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { skillReportApi } from '@edulastic/api'
-import { takeEvery, call, all, put } from 'redux-saga/effects'
+import { takeLatest, call, all, put } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 
 // actions
@@ -52,7 +52,7 @@ function* fetchSkillReport(action) {
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(GET_SKILL_REPORT_BY_CLASSID, fetchSkillReport)])
+  yield all([takeLatest(GET_SKILL_REPORT_BY_CLASSID, fetchSkillReport)])
 }
 
 // selectors

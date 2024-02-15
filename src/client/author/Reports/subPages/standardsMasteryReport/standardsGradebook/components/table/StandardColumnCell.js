@@ -21,6 +21,7 @@ const StandardColumnCellTitle = ({
   analyseByKey,
   dimensionName,
   standardName,
+  standardDesc,
 }) => {
   return (
     <div>
@@ -33,6 +34,15 @@ const StandardColumnCellTitle = ({
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">Standard: </Col>
         <Col className="custom-table-tooltip-value">{standardName}</Col>
+      </Row>
+      <Row type="flex" justify="start">
+        <Col className="custom-table-tooltip-key">Description: </Col>
+        <Col
+          className="custom-table-tooltip-value"
+          style={{ textAlign: 'left' }}
+        >
+          {standardDesc}
+        </Col>
       </Row>
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">
@@ -52,6 +62,7 @@ const StandardColumnCell = ({
   t,
   standardId,
   standardName,
+  standardDesc,
   compareByKey,
   analyseByKey,
   handleOnClickStandard,
@@ -86,6 +97,7 @@ const StandardColumnCell = ({
           analyseByKey={analyseByKey}
           dimensionName={dimensionName}
           standardName={standardName}
+          standardDesc={standardDesc}
         />
       }
       getCellContents={() => (

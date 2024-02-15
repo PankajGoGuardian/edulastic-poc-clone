@@ -60,13 +60,13 @@ class TranscribeController {
         const results = event.TranscriptEvent?.Transcript?.Results
         if (results && results.length > 0) {
           const [result] = results
-          const final = !result.IsPartial
+          const isFinal = !result.IsPartial
           const alternatives = result.Alternatives
 
           if (alternatives && alternatives.length > 0) {
             const [alternative] = alternatives
             const text = alternative.Transcript
-            updateText({ text, final })
+            updateText({ text, isFinal })
           }
         }
       }

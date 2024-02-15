@@ -65,7 +65,9 @@ import useTranscribeService from '../../../../src/client/common/customHooks/useT
 import {
   GENERATED,
   IN_PROGRESS,
+  NOT_STARTED,
 } from '../../../../src/client/common/ducks/Transcribe/constants'
+import { removePartialText } from '../../../../src/client/common/customHooks/utils'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -129,15 +131,35 @@ const CustomEditor = ({
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
-  const showSpeechToTextLoader =
-    isSpeechToTextAllowed &&
-    toolbarId === currentTranscribeToolBarId &&
-    (transcribeTempCredentialsAPIStatus === IN_PROGRESS ||
-      (transcribeTempCredentialsAPIStatus === GENERATED &&
-        !activeTranscribeSessionId))
+  const initiateTranscribeCallback = () => {
+    const existingContentLength = EditorRef.current?.$el?.text()?.length
+    // Place cursor to end
+    if (existingContentLength > 0) {
+      EditorRef.current?.selection?.setAtEnd?.(
+        EditorRef.current?.$el?.get?.(0),
+        existingContentLength
+      )
+      EditorRef.current?.selection?.restore?.()
+    }
+  }
+
+  const updateTextCallback = (text, isFinal) => {
+    if (isFinal) {
+      removePartialText({
+        EditorRef,
+        stopSpeechToTextAndReset,
+      })
+      EditorRef.current.html.insert(`${text}`)
+    } else {
+      removePartialText({
+        EditorRef,
+        stopSpeechToTextAndReset,
+      })
+      EditorRef.current.html.insert(`<span id="partial-stt">${text}...</span>`)
+    }
+  }
 
   const useTranscribeProps = {
-    EditorRef,
     toolbarId,
     isSpeechToTextAllowed,
     generateTranscribeTempCredentials,
@@ -148,7 +170,16 @@ const CustomEditor = ({
     activeTranscribeSessionId,
     currentTranscribeToolBarId,
     setIsVoiceRecognitionActive,
+    initiateTranscribeCallback,
+    updateTextCallback,
   }
+
+  const {
+    isSpeechToTextLoading,
+    onSpeechToTextClick,
+    handleBlurForSpeechToText,
+    stopSpeechToTextAndReset,
+  } = useTranscribeService(useTranscribeProps)
 
   const toolbarButtons = getToolbarButtons(
     'STD',
@@ -425,7 +456,6 @@ const CustomEditor = ({
             }
           }
           if (isSpeechToTextAllowed) {
-            console.log('blurrrr===')
             handleBlurForSpeechToText()
           }
         },
@@ -690,11 +720,6 @@ const CustomEditor = ({
     }
   }, [placeholder])
 
-  const {
-    onSpeechToTextClick,
-    handleBlurForSpeechToText,
-  } = useTranscribeService(useTranscribeProps)
-
   return (
     <>
       {audioElement &&
@@ -702,7 +727,7 @@ const CustomEditor = ({
           <AudioPluginContainer EditorRef={EditorRef} />,
           audioElement
         )}
-      <EduIf condition={showSpeechToTextLoader}>
+      <EduIf condition={isSpeechToTextLoading}>
         <SpinLoader />
       </EduIf>
       <MathModal

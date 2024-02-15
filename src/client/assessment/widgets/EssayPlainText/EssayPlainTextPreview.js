@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled, { withTheme } from 'styled-components'
 import { get, isString } from 'lodash'
 
@@ -13,9 +14,12 @@ import {
   QuestionLabelWrapper,
   QuestionContentWrapper,
   sanitizeString,
+  EduIf,
+  SpinLoader,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
+import { IconTranscribe } from '@edulastic/icons'
 import {
   COPY,
   CUT,
@@ -23,6 +27,7 @@ import {
   ON_LIMIT,
   ALWAYS,
   PREVIEW,
+  TRANSCRIBE,
 } from '../../constants/constantsForQuestions'
 
 import { Toolbar } from '../../styled/Toolbar'
@@ -38,6 +43,16 @@ import {
 import Character from './components/Character'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import useTranscribeService from '../../../common/customHooks/useTranscribeService'
+
+import { actions as transcribeActions } from '../../../common/ducks/Transcribe/actionReducers'
+import {
+  tempCredentialsAPIStatusSelector,
+  tempCredentialsDataSelector,
+  activeTranscribeSessionIdSelector,
+  currentTranscribeToolBarIdSelector,
+} from '../../../common/ducks/Transcribe/selectors'
+import VoiceRecognitionAnimation from '../../../common/components/VoiceRecognitionAnimation'
 
 const getWordCount = (val) =>
   val
@@ -65,14 +80,53 @@ const EssayPlainTextPreview = ({
   isLCBView,
   isExpressGrader,
   isStudentReport,
+  isSpeechToTextAllowed,
+  generateTranscribeTempCredentials,
+  stopTranscribeAndResetDataInStore,
+  updateTranscribeSessionId,
+  transcribeTempCredentialsAPIStatus,
+  transcribeTempCredentials,
+  activeTranscribeSessionId,
+  currentTranscribeToolBarId,
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
+  const textRef = useRef(text)
 
   const [wordCount, setWordCount] = useState(getWordCount(text))
 
   const [selection, setSelection] = useState({ start: 0, end: 0 })
+  const [isVoiceRecognitionActive, setIsVoiceRecognitionActive] = useState(
+    false
+  )
 
   const [buffer, setBuffer] = useState('')
+
+  const updateTextCallback = (transcribedText, isFinal) => {
+    if (isFinal) {
+      setText(sanitizeString(`${textRef.current} ${transcribedText}`))
+    }
+  }
+
+  isSpeechToTextAllowed = true
+  const useTranscribeProps = {
+    toolbarId: item.id,
+    isSpeechToTextAllowed,
+    generateTranscribeTempCredentials,
+    transcribeTempCredentialsAPIStatus,
+    transcribeTempCredentials,
+    stopTranscribeAndResetDataInStore,
+    updateTranscribeSessionId,
+    activeTranscribeSessionId,
+    currentTranscribeToolBarId,
+    setIsVoiceRecognitionActive,
+    updateTextCallback,
+  }
+
+  const {
+    isSpeechToTextLoading,
+    onSpeechToTextClick,
+    handleBlurForSpeechToText,
+  } = useTranscribeService(useTranscribeProps)
 
   const reviewTab = isReviewTab && testItem
 
@@ -98,6 +152,7 @@ const EssayPlainTextPreview = ({
   }, [userAnswer])
 
   useEffect(() => {
+    textRef.current = text
     const _text = sanitizeString(text)
     if (!disableResponse) {
       saveAnswer(_text)
@@ -196,6 +251,11 @@ const EssayPlainTextPreview = ({
         }
         break
       }
+      case TRANSCRIBE: {
+        node?.focus()
+        onSpeechToTextClick()
+        break
+      }
       default:
         break
     }
@@ -254,6 +314,9 @@ const EssayPlainTextPreview = ({
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
             }
           >
+            <EduIf condition={isSpeechToTextLoading}>
+              <SpinLoader height="60%" />
+            </EduIf>
             {!disableResponse && (
               <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
                 <FlexContainer
@@ -285,6 +348,11 @@ const EssayPlainTextPreview = ({
                       {t('component.essayText.paste')}
                     </ToolbarItem>
                   )}
+                  <EduIf condition={isSpeechToTextAllowed}>
+                    <ToolbarItem onClick={handleAction(TRANSCRIBE)}>
+                      <IconTranscribe color="none" />
+                    </ToolbarItem>
+                  </EduIf>
 
                   {Array.isArray(item.characterMap) && (
                     <Character
@@ -322,6 +390,7 @@ const EssayPlainTextPreview = ({
                   smallSize ? t('component.essayText.plain.templateText') : text
                 }
                 onChange={handleTextChange}
+                onBlur={handleBlurForSpeechToText}
                 size="large"
                 onPaste={!item.showPaste && preventEvent}
                 readOnly={disableResponse}
@@ -340,7 +409,7 @@ const EssayPlainTextPreview = ({
               </StyledPrintAnswerBox>
             )}
 
-            {!reviewTab && item.showWordCount && (
+            {!reviewTab && (
               <EssayToolbar
                 data-cy="questionPlainEssayAuthorPreviewWordCount"
                 borderRadiusOnlyBottom
@@ -348,9 +417,15 @@ const EssayPlainTextPreview = ({
                 <FlexContainer
                   alignItems="stretch"
                   justifyContent="space-between"
-                />
+                >
+                  <EduIf condition={isVoiceRecognitionActive}>
+                    <VoiceRecognitionAnimation />
+                  </EduIf>
+                </FlexContainer>
 
-                <Item style={wordCountStyle}>{displayWordCount}</Item>
+                <EduIf condition={item.showWordCount}>
+                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                </EduIf>
               </EssayToolbar>
             )}
           </EssayPlainTextBoxContainer>
@@ -378,6 +453,14 @@ EssayPlainTextPreview.propTypes = {
   disableResponse: PropTypes.bool.isRequired,
   isFeedbackVisible: PropTypes.bool,
   isStudentAttempt: PropTypes.bool,
+  isSpeechToTextAllowed: PropTypes.bool,
+  generateTranscribeTempCredentials: PropTypes.func.isRequired,
+  transcribeTempCredentialsAPIStatus: PropTypes.string.isRequired,
+  transcribeTempCredentials: PropTypes.object.isRequired,
+  stopTranscribeAndResetDataInStore: PropTypes.func.isRequired,
+  updateTranscribeSessionId: PropTypes.func.isRequired,
+  activeTranscribeSessionId: PropTypes.string,
+  currentTranscribeToolBarId: PropTypes.string,
 }
 
 EssayPlainTextPreview.defaultProps = {
@@ -388,9 +471,26 @@ EssayPlainTextPreview.defaultProps = {
   qIndex: null,
   isFeedbackVisible: false,
   isStudentAttempt: false,
+  isSpeechToTextAllowed: false,
+  activeTranscribeSessionId: '',
+  currentTranscribeToolBarId: '',
 }
 
-const enhance = compose(withNamespaces('assessment'), withTheme)
+const mapStateToProps = (state) => ({
+  transcribeTempCredentialsAPIStatus: tempCredentialsAPIStatusSelector(state),
+  transcribeTempCredentials: tempCredentialsDataSelector(state),
+  activeTranscribeSessionId: activeTranscribeSessionIdSelector(state),
+  currentTranscribeToolBarId: currentTranscribeToolBarIdSelector(state),
+})
+
+const withConnect = connect(mapStateToProps, {
+  generateTranscribeTempCredentials: transcribeActions.generateTempCredentials,
+  stopTranscribeAndResetDataInStore:
+    transcribeActions.stopTranscribeAndResetDataInStore,
+  updateTranscribeSessionId: transcribeActions.updateActiveTranscribeSessionId,
+})
+
+const enhance = compose(withNamespaces('assessment'), withTheme, withConnect)
 
 export default enhance(EssayPlainTextPreview)
 

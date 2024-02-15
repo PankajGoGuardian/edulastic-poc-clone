@@ -8,12 +8,10 @@ import {
   NOT_STARTED,
 } from '../ducks/Transcribe/constants'
 import TranscribeController from '../lib/TranscribeController.js'
-import { removePartialText } from './utils'
 
 const { languageCodes } = testConstants
 
 const useTranscribeService = ({
-  EditorRef,
   toolbarId,
   isSpeechToTextAllowed,
   generateTranscribeTempCredentials,
@@ -24,6 +22,8 @@ const useTranscribeService = ({
   activeTranscribeSessionId,
   currentTranscribeToolBarId,
   setIsVoiceRecognitionActive,
+  initiateTranscribeCallback,
+  updateTextCallback,
 }) => {
   // TODO: test with existing data/student user response
   // TODO: let transcribeControllerData. Reset on unmount
@@ -32,6 +32,8 @@ const useTranscribeService = ({
   // TODO: if 1 is active and user clicks on second
   // TODO: check in student attempt, active and click on next button
   // TODO: css mic icon
+  // TODO: sentry error
+  // TODO: mic permission denied error
 
   /**
    * Note: Use the ref variables for comparison in callback methods that are called from froala events
@@ -41,7 +43,15 @@ const useTranscribeService = ({
   const activeTranscribeSessionIdRef = useRef(null)
   const currentTranscribeToolBarIdRef = useRef(null)
 
+  const isSpeechToTextLoading =
+    isSpeechToTextAllowed &&
+    toolbarId === currentTranscribeToolBarId &&
+    (transcribeTempCredentialsAPIStatus === IN_PROGRESS ||
+      (transcribeTempCredentialsAPIStatus === GENERATED &&
+        !activeTranscribeSessionId))
+
   const stopSpeechToTextAndReset = (hasErrorOccured = false, message = '') => {
+    $("[data-cmd='initiateSpeechToText']").removeClass('fr-active')
     stopTranscribeAndResetDataInStore()
     transcribeControllerRef?.current?.stopSpeechToText()
     if (hasErrorOccured) {
@@ -56,19 +66,19 @@ const useTranscribeService = ({
 
   // callback called from froala event
   const onSpeechToTextClick = () => {
+    console.log(
+      'onSpeechToTextClick=====',
+      isSpeechToTextAllowed,
+      transcribeTempCredentialsAPIStatusRef.current
+    )
     // TODO: avoid toggle if credentials are being generated
     if (isSpeechToTextAllowed) {
       if (transcribeTempCredentialsAPIStatusRef.current === NOT_STARTED) {
-        const existingContentLength = EditorRef.current?.$el?.text()?.length
-        // Place cursor to end
-        if (existingContentLength > 0) {
-          EditorRef.current?.selection?.setAtEnd?.(
-            EditorRef.current?.$el?.get?.(0),
-            existingContentLength
-          )
-          EditorRef.current?.selection?.restore?.()
-        }
+        $("[data-cmd='initiateSpeechToText']").addClass('fr-active')
         generateTranscribeTempCredentials({ toolbarId })
+        if (typeof initiateTranscribeCallback === 'function') {
+          initiateTranscribeCallback()
+        }
         return
       }
 
@@ -97,21 +107,9 @@ const useTranscribeService = ({
     }
   }
 
-  const updateText = ({ text, final }) => {
-    console.log('updateText', { text, final })
-    if (final) {
-      removePartialText({
-        EditorRef,
-        stopSpeechToTextAndReset,
-      })
-      EditorRef.current.html.insert(`${text}`)
-    } else {
-      removePartialText({
-        EditorRef,
-        stopSpeechToTextAndReset,
-      })
-      EditorRef.current.html.insert(`<span id="partial-stt">${text}...</span>`)
-    }
+  const updateText = ({ text, isFinal }) => {
+    console.log('updateText', { text, isFinal })
+    updateTextCallback(text, isFinal)
   }
 
   useEffect(() => {
@@ -143,6 +141,7 @@ const useTranscribeService = ({
         transcribeControllerRef?.current &&
         currentTranscribeToolBarId === toolbarId
       ) {
+        console.log('transcribeTempCredentials', transcribeTempCredentials)
         const {
           error = null,
         } = await transcribeControllerRef.current?.startSpeechToText({
@@ -150,13 +149,14 @@ const useTranscribeService = ({
             region: process.env.REACT_APP_AWS_REGION,
             ...transcribeTempCredentials,
           },
-          preferredLanguage: languageCodes.ENGLISH,
+          preferredLanguage: languageCodes.ENGLISH, // In future this will be read from accommodations.
           updateText,
           updateTranscribeSessionId,
         })
 
         if (error) {
           console.log('start error=====', error)
+          console.error(error)
           stopSpeechToTextAndReset(true)
         }
       }
@@ -183,7 +183,12 @@ const useTranscribeService = ({
     }
   }, [currentTranscribeToolBarId])
 
-  return { onSpeechToTextClick, handleBlurForSpeechToText }
+  return {
+    isSpeechToTextLoading,
+    onSpeechToTextClick,
+    handleBlurForSpeechToText,
+    stopSpeechToTextAndReset,
+  }
 }
 
 export default useTranscribeService

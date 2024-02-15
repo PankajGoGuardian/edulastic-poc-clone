@@ -17,6 +17,7 @@ export const WORD_MODE = 'word'
 export const DRAW_MODE = 'draw_mode'
 export const DELETE_MODE = 'delete_mode'
 export const CUSTOM_MODE = 'custom'
+export const TRANSCRIBE = 'transcribe'
 
 export const BY_LOCATION_METHOD = 'byLocation'
 export const BY_COUNT_METHOD = 'byCount'

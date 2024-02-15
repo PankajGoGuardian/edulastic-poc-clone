@@ -11,7 +11,7 @@ import { reportNavType, ReportPaths } from '@edulastic/constants/const/report'
 import { EduIf } from '@edulastic/common'
 import { SubHeader } from '../../common/components/Header'
 
-import { getTabNavigationItems } from '../../common/util'
+import { getSelectedCompareBy, getTabNavigationItems } from '../../common/util'
 
 import MultipleAssessmentReportFilters from './common/components/filters/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
@@ -44,6 +44,7 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { ReportContainer, FilterLabel } from '../../common/styled'
 import PreVsPostReport from './PreVsPost'
 import CompletionReport from './CompletionReport/CompletionReport'
+import { compareByOptions } from './common/utils/constants'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -84,7 +85,14 @@ const MultipleAssessmentReportContainer = (props) => {
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
+  const search = qs.parse(location.search, { ignoreQueryPrefix: true })
+  const selectedCompareBy = getSelectedCompareBy({
+    search,
+    settings,
+    compareByOptions,
+  })
 
+  console.log('indexpage', { selectedCompareBy })
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -129,6 +137,8 @@ const MultipleAssessmentReportContainer = (props) => {
         obj[item] = val
       })
       obj.reportId = reportId || ''
+      obj.selectedCompareBy = settings.selectedCompareBy.key
+
       const path = `?${qs.stringify(obj)}`
       console.log('main-page->', { settings })
       history.push(path)
@@ -161,15 +171,17 @@ const MultipleAssessmentReportContainer = (props) => {
     })
 
     console.log({ _settings, _requestFilters })
+
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
-        selectedCompareBy: _requestFilters.selectedCompareBy || 'school',
       },
+      selectedCompareBy,
     })
+
     setMARTagsData({ ..._settings.tagsData })
     setShowApply(false)
   }

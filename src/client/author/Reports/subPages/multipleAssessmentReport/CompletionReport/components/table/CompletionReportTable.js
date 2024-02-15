@@ -31,8 +31,7 @@ import qs from 'qs'
 import { Empty } from 'antd'
 
 const getTableColumns = (isSharedReport, settings, staticColumns) => {
-  const compareBy =
-    compareByOptionsMapByKey[settings.requestFilters.selectedCompareBy]
+  const compareBy = settings.selectedCompareBy
   const columnByCompareBy = next(tableColumnsData, (_columns) => {
     const compareByIdx = _columns.findIndex(
       (col) => col.key === sortKeys.COMPARE_BY
@@ -53,7 +52,6 @@ const getTableColumns = (isSharedReport, settings, staticColumns) => {
         <LinkCell
           value={{ _id: record.dimensionId, name: record.dimensionName }}
           url={url}
-          openNewTab
           showLink
         />
       )
@@ -78,6 +76,9 @@ const CompletionReportTable = ({
   setCompareBy,
   compareByCB,
   getCsvData,
+  pageFilters,
+  setPageFilters,
+  sharedReport,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
   const getValue = (value) => {
@@ -148,6 +149,7 @@ const CompletionReportTable = ({
       title: '# Assigned',
       dataIndex: 'assigned',
       key: 'assigned',
+      sorter: true,
       render: (value, record) => (
         <ActionContainer
           onClick={() => handleDownloadCsv(record, utastatus.ASSIGNED)}
@@ -256,6 +258,7 @@ const CompletionReportTable = ({
 
   const dataSource = getTableDataSource([overAllData, ...tableData])
 
+  console.log({ sharedReport })
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),
     [tableData, settings]
@@ -305,6 +308,15 @@ const CompletionReportTable = ({
     }
   }, [isCsvDownloading])
 
+  const handleTablePageChange = (page) => {
+    setPageFilters({
+      ...pageFilters,
+      page,
+    })
+  }
+
+  const totalPageSize = parseInt(dataSource?.[0].totalRows, 10)
+
   return (
     <TableContainer ref={childrenRef}>
       <EduIf condition={tableData.length}>
@@ -322,9 +334,14 @@ const CompletionReportTable = ({
           />
           {/* Table component */}
           <StyledTable
+            loading={isTableDataLoading}
             onChange={handleTableChange}
             columns={columns}
             dataSource={dataSource}
+            pagination={{
+              total: totalPageSize,
+              onChange: handleTablePageChange,
+            }}
           />
         </EduThen>
         <EduElse>

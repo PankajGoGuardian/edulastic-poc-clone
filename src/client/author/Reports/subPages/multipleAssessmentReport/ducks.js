@@ -50,8 +50,8 @@ const initialState = {
     assignedBy: 'anyone',
     preTestId: '',
     postTestId: '',
-    selectedCompareBy: 'school',
   },
+  selectedCompareBy: {},
   tagsData: {},
 }
 
@@ -61,6 +61,7 @@ export const reportMARSettingsReducer = createReducer(initialState, {
   },
   [SET_MAR_SETTINGS]: (state, { payload }) => {
     state.requestFilters = payload.requestFilters
+    state.selectedCompareBy = payload.selectedCompareBy
   },
   [RESET_ALL_REPORTS]: () => initialState,
 })

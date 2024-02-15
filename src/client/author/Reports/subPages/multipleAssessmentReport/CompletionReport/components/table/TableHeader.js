@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { LeftContainer, RightContainer, TableHeaderContainer } from './styled'
 import Heading from '../../../../../common/components/Heading'
 import AnalyseByFilter from '../../../common/components/filters/AnalyseByFilter'
-import { analyzeBy } from '../../static/json/dropDownData.json'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { compareByOptions } from '../../../common/utils/constants'
+import { compareByOptions, analyzeBy } from '../../../common/utils/constants'
 
 const TableHeader = ({ compareBy, setCompareBy, setAnalyseBy, analyseBy }) => {
   return (

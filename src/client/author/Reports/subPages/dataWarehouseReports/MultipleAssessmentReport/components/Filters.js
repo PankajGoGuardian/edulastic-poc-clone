@@ -276,6 +276,7 @@ const MultipleAssessmentReportFilters = ({
       selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
     }
+    console.log({ settings })
     setFilters({ ...filters, showApply: false })
     setShowApply(false)
     _onGoClick(settings)

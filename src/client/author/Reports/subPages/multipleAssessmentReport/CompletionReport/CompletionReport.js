@@ -71,26 +71,10 @@ function CompletionReport({
   }, [settings.requestFilters, pagination.page])
 
   // table
-  const search = qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-    indices: true,
-  })
-  const urlCompareBy = compareByOptions.find(
-    (option) => option.key === search.selectedCompareBy
-  )
+  const updateFilterDropdownCB = (selected) => {
+    setMARSettings({ ...settings, selectedCompareBy: selected })
+  }
 
-  const [compareBy, setCompareBy] = useState(
-    urlCompareBy || compareByOptions[0]
-  )
-
-  useEffect(() => {
-    setMARSettings({
-      requestFilters: {
-        ...settings.requestFilters,
-        selectedCompareBy: compareBy.key,
-      },
-    })
-  }, [location.search])
   const [analyseBy, setAnalyseBy] = useState(analyzeBy[0])
 
   const [statusColumnSortState, setStatusColumnSortState] = useState({
@@ -119,7 +103,7 @@ function CompletionReport({
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
-      compareBy: settings.requestFilters.selectedCompareBy,
+      compareBy: settings.selectedCompareBy.key,
       ...pageFilters,
       requireTotalCount: pageFilters.page === 1,
       analyseBy: analyseBy.key,
@@ -157,9 +141,12 @@ function CompletionReport({
         setStatusColumnSortState={setStatusColumnSortState}
         setTestColumnSort={setTestColumnSort}
         tableData={tableData}
-        compareBy={compareBy}
-        setCompareBy={setCompareBy}
+        compareBy={settings.selectedCompareBy}
+        setCompareBy={updateFilterDropdownCB}
         getCsvData={getCsvData}
+        pageFilters={pageFilters}
+        setPageFilters={setPageFilters}
+        sharedReport={sharedReport}
       />
     </Container>
   )

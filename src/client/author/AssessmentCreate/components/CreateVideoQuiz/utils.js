@@ -8,22 +8,6 @@ const isURL = (input) => {
   }
 }
 
-const getDefaultSearchString = (subjects = [], grades = []) => {
-  const [subject = ''] = subjects
-  const [grade = ''] = grades
-
-  switch (true) {
-    case !!subject && !!grade:
-      return `${subject} for Grade ${grade}`
-    case !!subject:
-      return subject
-    case !!grade:
-      return `Grade ${grade}`
-    default:
-      return 'colors and numbers for kids'
-  }
-}
-
 const parseISO8601Duration = (durationString) => {
   // Create a regular expression to match the ISO 8601 duration format.
   const regex = /(-?)P(?:([.,\d]+)Y)?(?:([.,\d]+)M)?(?:([.,\d]+)W)?(?:([.,\d]+)D)?T(?:([.,\d]+)H)?(?:([.,\d]+)M)?(?:([.,\d]+)S)?/
@@ -39,7 +23,7 @@ const parseISO8601Duration = (durationString) => {
       minute ? minute.padStart(2, '0') : '00'
     }:${second ? second.padStart(2, '0') : '00'}`
   }
-  return '--:--'
+  return ''
 }
 
 const trimTextToGivenLength = (text = '', textLength) => {
@@ -49,9 +33,4 @@ const trimTextToGivenLength = (text = '', textLength) => {
   return text
 }
 
-export {
-  isURL,
-  getDefaultSearchString,
-  parseISO8601Duration,
-  trimTextToGivenLength,
-}
+export { isURL, parseISO8601Duration, trimTextToGivenLength }

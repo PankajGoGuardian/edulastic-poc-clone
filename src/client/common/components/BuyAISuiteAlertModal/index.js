@@ -11,6 +11,7 @@ const BuyAISuiteAlertModal = ({
   stayOnSamePage,
   setAISuiteAlertModalVisibility,
   history,
+  key,
 }) => {
   const handleCancel = () => {
     if (
@@ -34,6 +35,7 @@ const BuyAISuiteAlertModal = ({
 
   return (
     <StyledAlertModal
+      key={`${key}-addon-alert`}
       modalWidth="500px"
       visible={isVisible}
       centered

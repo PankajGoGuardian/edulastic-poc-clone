@@ -63,6 +63,7 @@ import { aiTestSaga } from '../../AssessmentCreate/components/CreateAITest/ducks
 import aiGenerateQuestionSaga from './aiGenerateQuestion'
 import { tutorMeSaga } from '../../TutorMe'
 import ttsTextSaga from './ttsText'
+import { videoQuizSaga } from '../../VideoLibrary/ducks'
 
 const authorSagas = [
   itemsSaga(),
@@ -130,6 +131,7 @@ const authorSagas = [
   aiGenerateQuestionSaga(),
   tutorMeSaga(),
   ttsTextSaga(),
+  videoQuizSaga(),
 ]
 
 export default authorSagas

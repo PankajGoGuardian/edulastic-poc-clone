@@ -29,6 +29,7 @@ import {
   IconSwitchUser,
   IconTestBank,
   IconUsers,
+  IconVideoLibrary,
 } from '@edulastic/icons'
 import { Icon as AntIcon, Dropdown, Popconfirm, Popover, Tooltip } from 'antd'
 import { cloneDeep, every, get, some } from 'lodash'
@@ -195,6 +196,12 @@ const menuItems = [
     path: 'author/playlists',
   },
   {
+    label: 'VideoQuiz',
+    icon: IconVideoLibrary,
+    allowedPathPattern: [/author\/vqlibrary/],
+    path: 'author/vqlibrary',
+  },
+  {
     label: 'user management',
     divider: true,
     allowSuperAdmin: true,
@@ -224,7 +231,7 @@ const menuItems = [
   },
 ]
 
-const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist']
+const libraryItems = ['library', 'Item Bank', 'Test', 'Playlist', 'VideoQuiz']
 
 // Only "My Playlist" and assignment screens are visible in mobile
 const allowedPathInMobile = ['assignments', 'playlists/playlist']
@@ -465,6 +472,7 @@ class SideMenu extends Component {
       if (label === 'My Playlist' && !premium) {
         return this.handleBlockedClick()
       }
+
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
@@ -618,6 +626,7 @@ class SideMenu extends Component {
       isInsightsOnlyUser,
       playlist,
       gradebook,
+      premium,
     } = features
     if (userRole === roleuser.STUDENT) {
       return null
@@ -962,6 +971,13 @@ class SideMenu extends Component {
                         </MenuItem>
                       )
                     }
+                    /**
+                     * Show vq library
+                     */
+                    if (menu.label === 'VideoQuiz' && !premium) {
+                      return null
+                    }
+
                     /**
                      * show playlist based on `features` list
                      */

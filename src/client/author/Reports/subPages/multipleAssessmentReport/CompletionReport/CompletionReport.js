@@ -30,6 +30,7 @@ import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
 import { getSelectedCompareBy } from '../../../common/util'
 
 import { sortKeys } from './utils'
+import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 
 const TABLE_PAGE_SIZE = 30
 function CompletionReport({
@@ -49,6 +50,8 @@ function CompletionReport({
   tableData: _tableData,
   isCsvDownloading,
   getCsvData,
+  role,
+  districtId,
   ...props
 }) {
   // have initital state when user navigate to completion report for the first time
@@ -154,6 +157,8 @@ function CompletionReport({
             pageFilters={pageFilters}
             setPageFilters={setPageFilters}
             sharedReport={sharedReport}
+            role={role}
+            districtId={districtId}
           />
         </Container>
       </EduThen>
@@ -174,6 +179,8 @@ const enhance = connect(
     tableData: getCompletionReportTableData(state),
     isTableDataLoading: getCompletionReportTableDataLoading(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    role: getUserRole(state),
+    districtId: getUserOrgId(state),
   }),
   { ...actions }
 )

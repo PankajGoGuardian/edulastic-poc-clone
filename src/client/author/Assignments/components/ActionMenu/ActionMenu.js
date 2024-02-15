@@ -280,6 +280,30 @@ const ActionMenu = ({
           </Tooltip>
         </Menu.Item>
         <Menu.Item
+          data-cy="completion-report"
+          key="completion-report"
+          onClick={() => showEmbedLinkModal(currentTestId)}
+        >
+          <Link
+            to={`/author/reports/completion-report${getCompletionReportPathForAssignment(
+              currentTestId,
+              assignmentDetails,
+              [row]
+            )}`}
+            onClick={(e) => {
+              if (!isPremiumUser) {
+                e.preventDefault()
+                showPremiumPopup(true)
+              }
+              e.stopPropagation()
+            }}
+          >
+            <img alt="icon" src={completionReportIcon} />
+            <SpaceElement />
+            View Completion Report
+          </Link>
+        </Menu.Item>
+        <Menu.Item
           data-cy="summary-grades"
           key="summary-report"
           disabled={
@@ -371,30 +395,6 @@ const ActionMenu = ({
             <SpaceElement />
             Embed Link
           </StyledLink>
-        </Menu.Item>
-        <Menu.Item
-          data-cy="completion-report"
-          key="completion-report"
-          onClick={() => showEmbedLinkModal(currentTestId)}
-        >
-          <Link
-            to={`/author/reports/completion-report${getCompletionReportPathForAssignment(
-              currentTestId,
-              assignmentDetails,
-              [row]
-            )}`}
-            onClick={(e) => {
-              if (!isPremiumUser) {
-                e.preventDefault()
-                showPremiumPopup(true)
-              }
-              e.stopPropagation()
-            }}
-          >
-            <img alt="icon" src={completionReportIcon} />
-            <SpaceElement />
-            View Completion Report
-          </Link>
         </Menu.Item>
         {isAssignmentOwner && (
           <Menu.Item

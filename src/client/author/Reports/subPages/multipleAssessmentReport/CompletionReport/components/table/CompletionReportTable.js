@@ -16,7 +16,7 @@ import CopyReportLink from './CopyReportLink'
 import { getTableDataSource, sortKeys, tableColumnsData } from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
-
+import { roleuser } from '@edulastic/constants'
 import {
   compareByOptions,
   compareByOptionsMapByKey,
@@ -77,6 +77,8 @@ const CompletionReportTable = ({
   pageFilters,
   setPageFilters,
   sharedReport,
+  role,
+  districtId,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
   const getValue = (value) => {
@@ -136,12 +138,13 @@ const CompletionReportTable = ({
       sorter: true,
       width: 250,
       render: (text, record) => {
-        return {
-          children: record.index === 0 ? record.testName : '',
-          // props: {
-          //   rowSpan: record.index === 0 ? record.rowSpan : 0,
-          // },
+        let path = '/author/assignments'
+        if ([roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role)) {
+          path = `${path}/${districtId}/${record.testId}`
         }
+        return (
+          <Link to={path}>{record.index === 0 ? record.testName : ''}</Link>
+        )
       },
     },
     {},

@@ -199,7 +199,7 @@ export default class QuestionDropdown extends React.Component {
               />
               <Points>Points</Points>
             </FormGroup>
-            <FormGroup width="40%">
+            <FormGroup width="40%" data-cy="videoQuizTimePicker">
               <FormLabel>Timestamp (mm:ss)</FormLabel>
               <VideoQuizTimePicker
                 videoRef={videoRef}

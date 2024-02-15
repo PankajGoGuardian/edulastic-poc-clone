@@ -30,6 +30,7 @@ const Option = ({
         isSelected={isSelected}
         style={{ display: !optionLabel && 'none' }}
         onClick={() => handleChangeCorrectAnswers(option.value)}
+        data-cy="label"
       >
         {optionLabel}
       </LabelContainer>
@@ -47,7 +48,10 @@ const Option = ({
           backgroundColor
         />
       </StyledInputContainer>
-      <IconTrash onClick={() => handleDeleteOption(option.value)} />
+      <IconTrash
+        onClick={() => handleDeleteOption(option.value)}
+        data-cy="deleteOptionButton"
+      />
     </OptionContainer>
   )
 }

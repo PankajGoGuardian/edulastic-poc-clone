@@ -58,7 +58,7 @@ const OptionVideo = ({
   }
 
   return (
-    <CardComponent>
+    <CardComponent data-cy="videoQuizCard">
       <EduIf condition={isRedirectToVQAddOn}>
         <AddonTagPositionTopLeft
           width="100%"
@@ -77,20 +77,23 @@ const OptionVideo = ({
           <VideoQuizUsage />
         </AddonTagPositionTopLeft>
       </EduIf>
-      <SnapQuiz>
+      <SnapQuiz data-cy="videoQuizTitle">
         <span>Video</span>Quiz
       </SnapQuiz>
       <TitleWrapper>Create from Video</TitleWrapper>
-      <TextWrapper>{descriptionBottom}</TextWrapper>
+      <TextWrapper data-cy="videoQuizDescription">
+        {descriptionBottom}
+      </TextWrapper>
       <EduButton
         onClick={handleCreate}
-        data-cy="createTest"
+        data-cy="videoQuizCreateTest"
         isGhost
         width="180px"
       >
         Create test
       </EduButton>
       <QuickTour
+        data-cy="videoQuizQuickTourLink"
         title="Get Started with VideoQuiz"
         quickTourLink={QUICK_TOUR_LINK}
       />

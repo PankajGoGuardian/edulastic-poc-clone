@@ -138,10 +138,16 @@ const VideoQuizQuestionChoice = ({
           handleChangeCorrectAnswers={handleChangeCorrectAnswers}
           correctAnswers={correctAnswers}
           distance={1}
+          data-cy="anwer-labels"
         />
       </FormGroup>
       <FormGroup>
-        <EduButton height="28px" ml="0px" onClick={handleAddOption}>
+        <EduButton
+          height="28px"
+          ml="0px"
+          onClick={handleAddOption}
+          data-cy="add-new-ch"
+        >
           ADD NEW CHOICE
         </EduButton>
       </FormGroup>
@@ -149,11 +155,16 @@ const VideoQuizQuestionChoice = ({
         <Col>
           <FormGroup>
             <FormLabel>Points</FormLabel>
-            <InputNumber min={1} value={score} onChange={handleChangeScore} />
+            <InputNumber
+              min={1}
+              value={score}
+              onChange={handleChangeScore}
+              data-cy="points"
+            />
           </FormGroup>
         </Col>
         <Col>
-          <FormGroup>
+          <FormGroup data-cy="videoQuizTimePicker">
             <FormLabel>Timestamp (mm:ss)</FormLabel>
             <VideoQuizTimePicker
               videoRef={videoRef}

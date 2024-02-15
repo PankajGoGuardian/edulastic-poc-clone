@@ -18,6 +18,7 @@ const PlayPause = ({ isPlaying, style, onPlay, onPause }) => {
       viewBox="0 0 36 36"
       style={style}
       onClick={_handlePlayPause}
+      data-cy="playPauseIcon"
     >
       <Circle cx="18" cy="18" r="18" />
 

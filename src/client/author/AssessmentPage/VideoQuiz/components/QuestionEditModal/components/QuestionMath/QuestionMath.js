@@ -161,7 +161,7 @@ const QuestionMath = ({
             </FormGroup>
           </Col>
           <Col>
-            <FormGroup>
+            <FormGroup data-cy="videoQuizTimePicker">
               <FormLabel>Timestamp (mm:ss)</FormLabel>
               <VideoQuizTimePicker
                 videoRef={videoRef}

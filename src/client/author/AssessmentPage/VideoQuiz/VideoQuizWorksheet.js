@@ -274,7 +274,7 @@ const VideoQuizWorksheetComponent = ({
         testMode={testMode}
         extraPaddingTop={extraPaddingTop}
       >
-        <VideoViewerContainer>
+        <VideoViewerContainer data-cy="VideoPreview">
           <VideoPreview
             startAt={questionTime}
             onHighlightQuestion={handleHighlightQuestion}

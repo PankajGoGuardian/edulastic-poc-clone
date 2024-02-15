@@ -438,9 +438,10 @@ export const getTableData = (
     .map(({ testType: externalTestType, ...t }) => ({
       ...t,
       externalTestType,
-      districtName: isDistrictGroupAdmin
-        ? districtsInfo.find((d) => d._id === t.districtId)?.name || '-'
-        : undefined,
+      districtName:
+        isDistrictGroupAdmin && !t.districtName
+          ? districtsInfo.find((d) => d._id === t.districtId)?.name
+          : t.districtName,
     }))
   const internalMetricsForTable = metricInfo
     .filter(({ testType }) => !feedTypeKeys.includes(testType))

@@ -349,13 +349,6 @@ const CompletionReportTable = ({
             scroll={{ x: true }}
           />
         </EduThen>
-        <EduElse>
-          <SpinLoader
-            tip="Loading completion table data..."
-            position="relative"
-            height="70%"
-          />
-        </EduElse>
       </EduIf>
     </TableContainer>
   )

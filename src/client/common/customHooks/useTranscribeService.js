@@ -141,7 +141,6 @@ const useTranscribeService = ({
         transcribeControllerRef?.current &&
         currentTranscribeToolBarId === toolbarId
       ) {
-        console.log('transcribeTempCredentials', transcribeTempCredentials)
         const {
           error = null,
         } = await transcribeControllerRef.current?.startSpeechToText({

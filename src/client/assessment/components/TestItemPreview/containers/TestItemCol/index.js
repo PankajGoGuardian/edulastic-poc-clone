@@ -112,6 +112,7 @@ class TestItemCol extends Component {
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question?.id
     )
+    const qType = widget?.type
     const { fullHeight } = restProps
     if (!question) {
       return <div />
@@ -176,7 +177,9 @@ class TestItemCol extends Component {
               (isLCBView ||
                 isReviewTab ||
                 (isStudentAttempt &&
-                  (isPassageWithQuestions || multipartItem))) &&
+                  (isPassageWithQuestions ||
+                    multipartItem ||
+                    qType === questionType.CHOICE_MATRIX))) &&
               '100%'
             }
           >

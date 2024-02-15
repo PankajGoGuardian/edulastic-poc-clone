@@ -30,10 +30,15 @@ const {
   description,
   titleFontSize,
   descriptionFontSize,
-  pageSize,
 } = preLabelHeading
 
-const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
+const Chart = ({
+  chartData = [],
+  loading,
+  pagination,
+  setPagination,
+  pageSize,
+}) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
   const formattedChartData = useMemo(() => chartDataFormatter(chartData))
@@ -126,6 +131,7 @@ const Chart = ({ chartData = [], loading, pagination, setPagination }) => {
               legendProps={{ wrapperStyle: { top: -10 } }}
               tooltipType="left"
               responsiveContainerHeight={278}
+              xTickTooltipPosition={320}
               // yTicks={yTicks}
               // yTickCount={20}
               // yTick={customTick}

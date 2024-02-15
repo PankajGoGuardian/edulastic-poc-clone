@@ -54,7 +54,6 @@ import {
   Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
-import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
 import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,

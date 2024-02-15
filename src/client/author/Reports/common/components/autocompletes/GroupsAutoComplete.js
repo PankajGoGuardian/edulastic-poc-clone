@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import { roleuser } from '@edulastic/constants'
@@ -32,6 +33,8 @@ const GroupsAutoComplete = ({
   dataCy,
   userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -61,11 +64,7 @@ const GroupsAutoComplete = ({
         .split(',')
         .map((t) => ({ type: 'cont', value: t }))
     }
-    if (
-      (userRole === roleuser.DISTRICT_ADMIN ||
-        userRole === roleuser.SCHOOL_ADMIN) &&
-      schoolIds
-    ) {
+    if (roleuser.ADMINS_ROLE_ARRAY.includes(userRole) && schoolIds) {
       q.search.institutionIds = schoolIds.split(',')
     }
     if (grades) {
@@ -114,15 +113,16 @@ const GroupsAutoComplete = ({
     debounce(loadGroupList, 500, { trailing: true }),
     []
   )
-  const getDefaultGroupList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
+      // get default group list
       loadGroupListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedGroupIds.length) {
+    if (selectedGroupIds.length && !disabled) {
       const _search = { ...query.search, groupIds: selectedGroupIds }
       loadGroupListDebounced({ ...query, search: _search })
     }
@@ -133,13 +133,18 @@ const GroupsAutoComplete = ({
     }
   }, [groupList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadGroupListDebounced(query)
     }
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
   }, [
+    disabled,
     termIds,
     districtId,
     schoolIds,
@@ -161,19 +166,21 @@ const GroupsAutoComplete = ({
   )
 
   return (
-    <MultiSelectSearch
-      label="Group"
-      dataCy={dataCy}
-      placeholder="All Groups"
-      el={groupFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={getDefaultGroupList}
-      value={selectedGroupIds}
-      options={!loading ? dropdownData : []}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        label="Group"
+        dataCy={dataCy}
+        placeholder="All Groups"
+        el={groupFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedGroupIds}
+        options={!loading ? dropdownData : []}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 

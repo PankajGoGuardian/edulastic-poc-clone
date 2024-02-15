@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import { roleuser } from '@edulastic/constants'
@@ -32,6 +33,8 @@ const ClassAutoComplete = ({
   dataCy,
   userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -61,11 +64,7 @@ const ClassAutoComplete = ({
         .split(',')
         .map((t) => ({ type: 'cont', value: t }))
     }
-    if (
-      (userRole === roleuser.DISTRICT_ADMIN ||
-        userRole === roleuser.SCHOOL_ADMIN) &&
-      schoolIds
-    ) {
+    if (roleuser.ADMINS_ROLE_ARRAY.includes(userRole) && schoolIds) {
       q.search.institutionIds = schoolIds.split(',')
     }
     if (grades) {
@@ -114,15 +113,16 @@ const ClassAutoComplete = ({
     debounce(loadClassList, 500, { trailing: true }),
     []
   )
-  const getDefaultClassList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
+      // get default class list
       loadClassListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedClassIds.length) {
+    if (selectedClassIds.length && !disabled) {
       const _search = { ...query.search, groupIds: selectedClassIds }
       loadClassListDebounced({ ...query, search: _search })
     }
@@ -133,7 +133,11 @@ const ClassAutoComplete = ({
     }
   }, [classList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadClassListDebounced(query)
     }
   }, [searchTerms])
@@ -148,6 +152,7 @@ const ClassAutoComplete = ({
     subjects,
     courseId,
     networkIds,
+    disabled,
   ])
 
   // build dropdown data
@@ -161,19 +166,21 @@ const ClassAutoComplete = ({
   )
 
   return (
-    <MultiSelectSearch
-      label="Class"
-      dataCy={dataCy}
-      placeholder="All Classes"
-      el={classFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={getDefaultClassList}
-      value={selectedClassIds}
-      options={!loading ? dropdownData : []}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        label="Class"
+        dataCy={dataCy}
+        placeholder="All Classes"
+        el={classFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedClassIds}
+        options={!loading ? dropdownData : []}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 

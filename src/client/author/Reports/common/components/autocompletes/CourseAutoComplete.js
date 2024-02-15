@@ -2,9 +2,9 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
+import { AutoComplete, Input, Icon, Empty } from 'antd'
 
 // components & constants
-import { AutoComplete, Input, Icon, Empty } from 'antd'
 import { themeColorBlue } from '@edulastic/colors'
 
 // ducks
@@ -25,6 +25,7 @@ const CourseAutoComplete = ({
   selectedCourseId,
   userDistrictId,
   districtId,
+  disabled,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -76,9 +77,9 @@ const CourseAutoComplete = ({
     debounce(loadCourseList, 500, { trailing: true }),
     []
   )
-  const getDefaultCourseList = () => {
+  const onFocus = () => {
     setIsFocused(true)
-    if (isEmpty(searchResult)) {
+    if (isEmpty(searchResult) && !disabled) {
       loadCourseListDebounced(query)
     }
   }
@@ -90,7 +91,11 @@ const CourseAutoComplete = ({
     }
   }, [courseList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
@@ -110,10 +115,9 @@ const CourseAutoComplete = ({
       }
     }
   }, [selectedCourseId, courseList])
-
   useEffect(() => {
     setSearchResult([])
-  }, [districtId])
+  }, [districtId, disabled])
 
   // build dropdown data
   const dropdownData = useDropdownData(
@@ -144,7 +148,7 @@ const CourseAutoComplete = ({
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
-        onFocus={() => getDefaultCourseList()}
+        onFocus={onFocus}
         allowClear={!loading && searchTerms.selectedText && isFocused}
         clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
         notFoundContent={

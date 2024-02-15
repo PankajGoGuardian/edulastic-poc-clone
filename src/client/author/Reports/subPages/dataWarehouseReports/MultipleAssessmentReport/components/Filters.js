@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, Tooltip } from 'antd'
 
 import { EduIf, FieldLabel } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
@@ -56,6 +56,9 @@ import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFi
 import { MandatorySymbol } from '../../common/components/styledComponents'
 
 import { isPearOrEdulasticText } from '../../../../../../common/utils/helpers'
+
+const DGA_DISABLE_FILTERS_MESSAGE =
+  'Please select a single district to activate this filter'
 
 const internalTestTypes = getArrayOfAllTestTypes()
 
@@ -398,11 +401,17 @@ const MultipleAssessmentReportFilters = ({
   }, [isMultiSchoolYear, testUniqIds])
 
   // for districtGroupAdmin we need one district / term combination for autocompletes
-  const [selectedDistrictTermId, selectedDistrictId] = useMemo(() => {
+  const [
+    selectedDistrictTermId,
+    selectedDistrictId,
+    studentFiltersDisabled,
+    studentFiltersDisabledMessage,
+  ] = useMemo(() => {
     let termId = filters.termId
     let districtId
+    const districtIdsArr = convertItemToArray(filters.districtIds)
+    const filtersDisabled = isDistrictGroupAdmin && districtIdsArr.length !== 1
     if (isDistrictGroupAdmin) {
-      const districtIdsArr = convertItemToArray(filters.districtIds)
       const {
         termIds: termIdsArr,
         districtIds: filteredDistrictIdsArr,
@@ -410,10 +419,13 @@ const MultipleAssessmentReportFilters = ({
         termId: filters.termId,
         districtIds: districtIdsArr,
       })
-      termId = termIdsArr[0]
-      districtId = filteredDistrictIdsArr[0]
+      termId = termIdsArr[0] || termId
+      districtId = filteredDistrictIdsArr[0] || districtIdsArr[0]
     }
-    return [termId, districtId]
+    const filtersDisabledMessage = filtersDisabled
+      ? DGA_DISABLE_FILTERS_MESSAGE
+      : ''
+    return [termId, districtId, filtersDisabled, filtersDisabledMessage]
   }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
   const applyButton = () => {
@@ -528,7 +540,7 @@ const MultipleAssessmentReportFilters = ({
                           />
                         </Col>
                       </EduIf>
-                      {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
+                      {roleuser.ADMINS_ROLE_ARRAY.includes(userRole) && (
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
@@ -542,6 +554,8 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'schoolIds', true)
                               }
+                              disabled={studentFiltersDisabled}
+                              disabledMessage={studentFiltersDisabledMessage}
                             />
                           </Col>
                           <Col span={6}>
@@ -558,6 +572,8 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'teacherIds', true)
                               }
+                              disabled={studentFiltersDisabled}
+                              disabledMessage={studentFiltersDisabledMessage}
                             />
                           </Col>
                         </>
@@ -599,14 +615,18 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="course">Course</FilterLabel>
-                        <CourseAutoComplete
-                          districtId={selectedDistrictId}
-                          selectedCourseId={filters.courseId}
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'courseId')
-                          }
-                        />
+                        <Tooltip title={studentFiltersDisabledMessage}>
+                          <FilterLabel data-cy="course">Course</FilterLabel>
+                          <CourseAutoComplete
+                            districtId={selectedDistrictId}
+                            selectedCourseId={filters.courseId}
+                            selectCB={(e) =>
+                              updateFilterDropdownCB(e, 'courseId')
+                            }
+                            disabled={studentFiltersDisabled}
+                            disabledMessage={studentFiltersDisabledMessage}
+                          />
+                        </Tooltip>
                       </Col>
                       <Col span={6}>
                         <ClassAutoComplete
@@ -626,6 +646,8 @@ const MultipleAssessmentReportFilters = ({
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'classIds', true)
                           }
+                          disabled={studentFiltersDisabled}
+                          disabledMessage={studentFiltersDisabledMessage}
                         />
                       </Col>
                       <EduIf condition={!isDistrictGroupAdmin}>
@@ -649,6 +671,8 @@ const MultipleAssessmentReportFilters = ({
                             selectCB={(e) =>
                               updateFilterDropdownCB(e, 'groupIds', true)
                             }
+                            disabled={studentFiltersDisabled}
+                            disabledMessage={studentFiltersDisabledMessage}
                           />
                         </Col>
                       </EduIf>

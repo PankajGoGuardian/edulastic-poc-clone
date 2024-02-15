@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
@@ -24,6 +25,8 @@ const SchoolAutoComplete = ({
   selectedSchoolIds,
   userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -75,15 +78,16 @@ const SchoolAutoComplete = ({
     debounce(loadSchoolList, 500, { trailing: true }),
     []
   )
-  const getDefaultSchoolList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
+      // get default school list
       loadSchoolListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedSchoolIds.length) {
+    if (selectedSchoolIds.length && !disabled) {
       loadSchoolListDebounced({ ...query, schoolIds: selectedSchoolIds })
     }
   }, [])
@@ -99,22 +103,24 @@ const SchoolAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [districtId, networkIds])
+  }, [districtId, networkIds, disabled])
 
   return (
-    <MultiSelectSearch
-      dataCy={dataCy}
-      label="School"
-      placeholder="All Schools"
-      el={schoolFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={getDefaultSchoolList}
-      value={selectedSchoolIds}
-      options={dropdownData}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        dataCy={dataCy}
+        label="School"
+        placeholder="All Schools"
+        el={schoolFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedSchoolIds}
+        options={dropdownData}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 

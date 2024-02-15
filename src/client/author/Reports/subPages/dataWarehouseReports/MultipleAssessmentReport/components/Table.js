@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect } from 'react'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
-import { isNumber, round } from 'lodash'
+import { isNumber, round, startCase } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
@@ -125,10 +125,10 @@ const getTableColumns = ({
       const disableDrillDownCheck =
         isSharedReport ||
         (isDistrictGroupAdmin &&
-          [
+          ![
             compareByKeys.DISTRICT,
             compareByKeys.SCHOOL,
-            compareByKeys.CLASS,
+            compareByKeys.TEACHER,
           ].includes(compareBy.key))
       const url = disableDrillDownCheck
         ? null
@@ -156,15 +156,19 @@ const getTableColumns = ({
 
     if (
       isDistrictGroupAdmin &&
-      [compareByKeys.SCHOOL, compareByKeys.CLASS].includes(compareBy.key)
+      [
+        compareByKeys.SCHOOL,
+        compareByKeys.TEACHER,
+        compareByKeys.CLASS,
+      ].includes(compareBy.key)
     ) {
       const districtColumn = {
+        title: startCase(compareByMap[compareByKeys.DISTRICT]),
         dataIndex: compareByMap[compareByKeys.DISTRICT],
         key: compareByMap[compareByKeys.DISTRICT],
         align: 'left',
         fixed: 'left',
         width: 200,
-        sorter: true,
       }
       _columns.push(districtColumn)
     }

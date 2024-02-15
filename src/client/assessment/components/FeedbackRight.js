@@ -184,6 +184,7 @@ class FeedbackRight extends Component {
       let { score: _score, scoreByAI, graded } = activity
       const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
+      console.log('fnd maxScore = ', _maxScore, activity)
       let _feedback = get(activity, 'feedback.text', '')
       const feedbackByAI = get(activity, 'feedbackByAI.text', '')
       const isTeacherEvaluationPresent = _score || !isEmpty(_feedback)

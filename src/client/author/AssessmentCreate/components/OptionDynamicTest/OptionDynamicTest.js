@@ -34,18 +34,6 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
     <CardComponent data-cy="smartBuild">
       <DynamicTestTitle data-testid="title">
         <span>Smart</span>Build
-        <Tag
-          style={{
-            position: 'relative',
-            left: 5,
-            top: 0,
-            backgroundColor: 'inherit',
-            border: `1.5px solid ${themeColorBlue}`,
-            color: themeColorBlue,
-          }}
-        >
-          BETA
-        </Tag>
       </DynamicTestTitle>
       <TitleWrapper>Create Section Test</TitleWrapper>
       <TextWrapper data-testid="description">

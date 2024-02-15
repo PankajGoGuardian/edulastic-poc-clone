@@ -17,7 +17,7 @@ const DragHandle = SortableHandle(DragHandleComponent)
 
 const GroupItems = SortableContainer((props) => {
   // items is always an array of passage items
-  const { items, isEditable, scoring, groupId, showGroupsPanel } = props
+  const { items, isEditable, scoring, groupId, showGroupsPanel, setShowAutoSelectScoreChangeModal } = props
   const [localItems, setLocalItems] = useState([])
   const [minimize, setMinimize] = useState(true)
 
@@ -67,6 +67,7 @@ const GroupItems = SortableContainer((props) => {
                 groupMinimized={minimize}
                 hideHanlde={minimize}
                 disabled={minimize}
+                setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
               />
             )
           })}

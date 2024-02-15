@@ -583,6 +583,92 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
+  refreshGroupItems = async (index, itemsSelectedIndex = -1) => {
+    const { test, handleSave } = this.props
+    const { refreshing } = this.state
+    const { itemGroups } = test
+    const itemGroup = itemGroups[index]
+    if (refreshing) {
+      return
+    }
+    this.setState({ refreshing: true })
+    const optionalFields = {
+      depthOfKnowledge: itemGroup.dok,
+      authorDifficulty: itemGroup.difficulty,
+      tags: itemGroup.tags?.map((tag) => tag.tagName) || [],
+    }
+    Object.keys(optionalFields).forEach(
+      (key) => optionalFields[key] === undefined && delete optionalFields[key]
+    )
+
+    const data = {
+      limit:
+        itemsSelectedIndex >= 0
+          ? 1
+          : itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+          ? itemGroup.pickCount || itemGroup.items.length || 2
+          : itemGroup.deliverItemsCount,
+      search: {
+        collectionId: itemGroup.collectionDetails._id,
+        standardIds: itemGroup.standardDetails.standards.map(
+          (std) => std.standardId
+        ),
+        ...optionalFields,
+      },
+    }
+    if (data.limit > MAX_ITEMS_DELIVER_COUNT) {
+      notification({ messageKey: 'maximum100Questions' })
+      return
+    }
+
+    await testItemsApi
+      .getAutoSelectedItems({
+        ...data,
+        search: {
+          ...data.search,
+          nInItemIds: test.itemGroups
+            .flatMap((_itemGroup) => _itemGroup.items || [])
+            .map(({ _id }) => _id),
+        },
+      })
+      .then((res) => {
+        const { items, total } = res
+        if (items.length === 0) {
+          notification({ messageKey: 'noItemsFoundForCurrentCombination' })
+          return
+        }
+        if (total < data.limit) {
+          return notification({
+            msg: `There are only ${total} items that meet the search criteria`,
+          })
+        }
+        if (itemsSelectedIndex >= 0) {
+          itemGroup.items[itemsSelectedIndex] = items[0]
+        } else itemGroup.items = items
+        handleSave()
+        this.setState({ refreshing: false })
+        notification({ msg: (itemsSelectedIndex > -1) ? `New item is added to ${itemGroup.groupName}` : `New items are added to ${itemGroup.groupName}`})
+      })
+      .catch((err) => {
+        this.setState({ refreshing: false })
+        notification({ msg: err.message || 'Failed to fetch test items' })
+      })
+  }
+
+  setShowAutoSelectScoreChangeModal = (groupId) => {
+    this.setState({
+      showAutoSelectScoreChangeModal: true,
+      currentGroupId: groupId,
+    })
+  }
+
+  closeScoreChangeModal = () => {
+    this.setState({
+      showAutoSelectScoreChangeModal: false,
+      currentGroupId: '',
+    })
+  }
+
   render() {
     const {
       test,

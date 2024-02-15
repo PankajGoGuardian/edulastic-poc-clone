@@ -168,6 +168,8 @@ export async function getFileNameAndQidMap(qId, data, folder) {
 export function* saveUserResponse({ payload }) {
   try {
     // setting savingResponse true only when the saveUserResponse is being called
+
+    console.log('[fnd], payload', payload)
     yield put({
       type: SET_SAVE_USER_RESPONSE,
       payload: true,

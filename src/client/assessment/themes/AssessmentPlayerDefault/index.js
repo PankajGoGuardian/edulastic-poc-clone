@@ -549,6 +549,7 @@ class AssessmentPlayerDefault extends React.Component {
           }
     const { isStudentAttempt } = this.context
     const { canUseImmersiveReader = false } = userFeatures
+
     return (
       /**
        * zoom only in student side, otherwise not

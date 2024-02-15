@@ -58,6 +58,7 @@ import {
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 import ItemCountWrapperContainer from './ItemCountWrapperContainer'
+import PickItemCountWrapperContainer from './PickItemCountWrapperContainer'
 // import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
@@ -932,36 +933,82 @@ const GroupItems = ({
                           </>
                         )}
                       </RadioGrp>
-                      {((currentGroupIndex === index &&
-                        currentGroupDetails.type ===
-                          ITEM_GROUP_TYPES.AUTOSELECT) ||
-                        (currentGroupIndex !== index &&
-                          itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
-                        <>
-                          <span
-                            data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                            value={
-                              currentGroupIndex === index
-                                ? editingDeliveryType
-                                : currentDeliveryType
-                            }
-                            style={{ disabled: true }}
-                          >
-                            <ItemCountWrapperContainer
-                              handleChange={handleChange}
-                              currentGroupDetails={currentGroupDetails}
-                              currentGroupIndex={currentGroupIndex}
-                              index={index}
-                              itemGroup={itemGroup}
-                              isRequired
-                            />
-                          </span>
-                          <RadioMessage>
-                            Use this to deliver a specific number of randomly
-                            picked question per Section.
-                          </RadioMessage>
-                        </>
-                      )}
+                      <RadioGrp
+                        name="radiogroup"
+                        value={
+                          currentGroupIndex === index
+                            ? currentGroupDetails.deliveryType
+                            : itemGroup.deliveryType
+                        }
+                        onChange={(e) => {
+                          return handleChange('deliveryType', e.target.value)
+                        }}
+                        disabled={currentGroupIndex !== index}
+                      >
+                        {((currentGroupIndex === index &&
+                          currentGroupDetails.type ===
+                            ITEM_GROUP_TYPES.AUTOSELECT) ||
+                          (currentGroupIndex !== index &&
+                            itemGroup.type ===
+                              ITEM_GROUP_TYPES.AUTOSELECT)) && (
+                          <>
+                            <RadioBtn
+                              defaultChecked
+                              value={ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM}
+                              vertical
+                              mb="10px"
+                            >
+                              <span
+                                data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
+                                value={
+                                  currentGroupIndex === index
+                                    ? editingDeliveryType
+                                    : currentDeliveryType
+                                }
+                                style={{ disabled: true }}
+                              >
+                                <ItemCountWrapperContainer
+                                  handleChange={handleChange}
+                                  currentGroupDetails={currentGroupDetails}
+                                  currentGroupIndex={currentGroupIndex}
+                                  index={index}
+                                  itemGroup={itemGroup}
+                                  isRequired
+                                />
+                              </span>
+                            </RadioBtn>
+                            <RadioMessage  marginLeft="27px" marginBottom="27px">
+                              Use this to deliver a specific number of randomly
+                              picked question per Section.
+                            </RadioMessage>
+
+                            <RadioBtn
+                              defaultChecked={false}
+                              value={ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM}
+                              vertical
+                              mb="10px"
+                            >
+                              {/* pick
+                              item(s) and deliver
+                              random items per student with
+                              points for each question */}
+                              <PickItemCountWrapperContainer
+                                handleChange={handleChange}
+                                currentGroupDetails={currentGroupDetails}
+                                currentGroupIndex={currentGroupIndex}
+                                index={index}
+                                itemGroup={itemGroup}
+                                isRequired
+                              />
+                            </RadioBtn>
+                            <RadioMessage marginLeft="27px">
+                              Use this to deliver a specific number of randomly
+                              picked question per student from the selected pool
+                              of items
+                            </RadioMessage>
+                          </>
+                        )}
+                      </RadioGrp>
                     </GroupField>
                   </EduIf>
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">

@@ -35,6 +35,8 @@ class MainInfo extends React.Component {
       showAltScoreInfo,
       isPremiumContentWithoutAccess,
       premiumCollectionWithoutAccess,
+      setShowAutoSelectScoreChangeModal,
+      changeAutoSelectScore,
     } = this.props
     const newHtml = helpers.sanitizeForReview(data.stimulus) || ''
     const points = groupMinimized ? groupPoints : data.points
@@ -71,29 +73,31 @@ class MainInfo extends React.Component {
               isEditable={isEditable}
             />
             <ScoreInputWrapper>
-              {!isUnScoredItem ? (
-                <NumberInputStyledTestPage
-                  width="60px"
-                  value={points}
-                  margin="0px 0px 0px 5px"
-                  padding="0px 4px"
-                  textAlign="center"
-                  disabled={
-                    !owner || !isEditable || isScoringDisabled || groupMinimized
-                  }
-                  onChange={(value) => onChangePoints(data.id, value)}
-                  onBlur={() => blur(data.id)}
-                />
-              ) : (
-                <UnScored
-                  width="60px"
-                  height="32px"
-                  margin="0px 0px 0px 5px"
-                  fontSize="10px"
-                  text="Z"
-                  fontWeight="700"
-                />
-              )}
+              <div onClick={setShowAutoSelectScoreChangeModal}>
+                {!isUnScoredItem ? (
+                  <NumberInputStyledTestPage
+                    width="60px"
+                    value={points}
+                    margin="0px 0px 0px 5px"
+                    padding="0px 4px"
+                    textAlign="center"
+                    disabled={
+                      (!owner || !isEditable || isScoringDisabled || groupMinimized) && !changeAutoSelectScore
+                    }
+                    onChange={(value) => (!changeAutoSelectScore) && onChangePoints(data.id, value)}
+                    onBlur={() => blur(data.id)}
+                  />
+                ) : (
+                  <UnScored
+                    width="60px"
+                    height="32px"
+                    margin="0px 0px 0px 5px"
+                    fontSize="10px"
+                    text="Z"
+                    fontWeight="700"
+                  />
+                )}
+              </div>
               {showAltScoreInfo && (
                 <Tooltip title="Question has alternate answers with different score points.">
                   <InfoIcon data-cy="alternate-score-info" />

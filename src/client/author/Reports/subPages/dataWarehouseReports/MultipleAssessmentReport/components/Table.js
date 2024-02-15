@@ -111,6 +111,7 @@ const getTableColumns = ({
   sortFilters,
 }) => {
   const compareBy = settings.selectedCompareBy
+  const isDistrictCompareBy = compareBy.key === compareByKeys.DISTRICT
   const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -122,18 +123,22 @@ const getTableColumns = ({
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
     _columns[compareByIdx].render = (data, record) => {
-      const disableDrilldownForDGA =
-        isDistrictGroupAdmin &&
-        Object.values(compareByKeys).slice(3).includes(compareBy.key)
-      const url =
-        disableDrilldownForDGA || isSharedReport
-          ? null
-          : buildDrillDownUrl({
-              key: record.id,
-              selectedCompareBy: compareBy.key,
-              reportFilters: settings.requestFilters,
-              reportUrl: window.location.pathname,
-            })
+      const disableDrillDownCheck =
+        isSharedReport ||
+        (isDistrictGroupAdmin &&
+          [
+            compareByKeys.DISTRICT,
+            compareByKeys.SCHOOL,
+            compareByKeys.CLASS,
+          ].includes(compareBy.key))
+      const url = disableDrillDownCheck
+        ? null
+        : buildDrillDownUrl({
+            key: record.id,
+            selectedCompareBy: compareBy.key,
+            reportFilters: settings.requestFilters,
+            reportUrl: window.location.pathname,
+          })
       return (
         <LinkCell
           value={{ _id: record.id, name: data }}
@@ -149,6 +154,18 @@ const getTableColumns = ({
         .localeCompare((b[dataIndex] || '').toLowerCase())
     }
     _columns[compareByIdx].defaultSortOrder = 'ascend'
+
+    if (isDistrictGroupAdmin && !isDistrictCompareBy) {
+      const districtColumn = {
+        dataIndex: compareByMap[compareByKeys.DISTRICT],
+        key: compareByMap[compareByKeys.DISTRICT],
+        align: 'left',
+        fixed: 'left',
+        width: 200,
+        sorter: true,
+      }
+      _columns.push(districtColumn)
+    }
 
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {

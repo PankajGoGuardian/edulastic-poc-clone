@@ -6,7 +6,10 @@ import { Row, Col, Tabs } from 'antd'
 import { EduIf, FieldLabel } from '@edulastic/common'
 import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
-import { EMPTY_ARRAY } from '@edulastic/constants/reportUtils/common'
+import {
+  EMPTY_ARRAY,
+  getDistrictTermIdsForDistrictGroup,
+} from '@edulastic/constants/reportUtils/common'
 
 import { withNamespaces } from 'react-i18next'
 import {
@@ -27,7 +30,6 @@ import ClassAutoComplete from '../../../../common/components/autocompletes/Class
 import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
 import TagFilter from '../../../../../src/components/common/TagFilter'
 import SelectAssessmentsForMultiSchoolYear from '../../common/components/SelectAssessmentsForMultiSchoolYear'
-// import AssessmentsAutoComplete from '../../../../common/components/autocompletes/AssessmentsAutoComplete'
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
 
@@ -56,6 +58,17 @@ import { MandatorySymbol } from '../../common/components/styledComponents'
 import { isPearOrEdulasticText } from '../../../../../../common/utils/helpers'
 
 const internalTestTypes = getArrayOfAllTestTypes()
+
+const getLabel = (text, isRequired) => {
+  return isRequired ? (
+    <>
+      {text}
+      <MandatorySymbol>*</MandatorySymbol>
+    </>
+  ) : (
+    text
+  )
+}
 
 const MultipleAssessmentReportFilters = ({
   // value props
@@ -145,11 +158,6 @@ const MultipleAssessmentReportFilters = ({
       fetchFiltersDataRequest(q)
       setFilters({ ...filters, ...search })
     } else {
-      const termId =
-        search.termId ||
-        defaultTermId ||
-        (schoolYears.length ? schoolYears[0].key : '')
-      Object.assign(q, { ...search, termId, ...q })
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
@@ -382,23 +390,31 @@ const MultipleAssessmentReportFilters = ({
   const testUniqIds = useMemo(() => convertItemToArray(filters.testUniqIds), [
     filters.testUniqIds,
   ])
-
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   const isDisable = useMemo(() => {
     if (isMultiSchoolYear) {
       return !testUniqIds.length
     }
   }, [isMultiSchoolYear, testUniqIds])
-  const getLabel = (text, isRequired) => {
-    return isRequired ? (
-      <>
-        {text}
-        <MandatorySymbol>*</MandatorySymbol>
-      </>
-    ) : (
-      text
-    )
-  }
+
+  // for districtGroupAdmin we need one district / term combination for autocompletes
+  const [selectedDistrictTermId, selectedDistrictId] = useMemo(() => {
+    let termId = filters.termId
+    let districtId
+    if (isDistrictGroupAdmin) {
+      const districtIdsArr = convertItemToArray(filters.districtIds)
+      const {
+        termIds: termIdsArr,
+        districtIds: filteredDistrictIdsArr,
+      } = getDistrictTermIdsForDistrictGroup(orgData, {
+        termId: filters.termId,
+        districtIds: districtIdsArr,
+      })
+      termId = termIdsArr[0]
+      districtId = filteredDistrictIdsArr[0]
+    }
+    return [termId, districtId]
+  }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
   const applyButton = () => {
     const ApplyButton = ({ width = '25%' }) => (
@@ -504,11 +520,11 @@ const MultipleAssessmentReportFilters = ({
                               )
                             }}
                             value={
-                              (filters.districtIds &&
-                                filters.districtIds.split(',')) ||
-                              filters?.districtId
+                              filters.districtIds
+                                ? filters.districtIds.split(',')
+                                : []
                             }
-                            options={schoolYears}
+                            options={districtGroupDistricts}
                           />
                         </Col>
                       </EduIf>
@@ -517,6 +533,7 @@ const MultipleAssessmentReportFilters = ({
                           <Col span={6}>
                             <SchoolAutoComplete
                               dataCy="schools"
+                              districtId={selectedDistrictId}
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
@@ -530,7 +547,8 @@ const MultipleAssessmentReportFilters = ({
                           <Col span={6}>
                             <TeacherAutoComplete
                               dataCy="teachers"
-                              termId={filters.termId}
+                              districtId={selectedDistrictId}
+                              termIds={selectedDistrictTermId}
                               school={filters.schoolIds}
                               selectedTeacherIds={
                                 filters.teacherIds
@@ -583,6 +601,7 @@ const MultipleAssessmentReportFilters = ({
                       <Col span={6}>
                         <FilterLabel data-cy="course">Course</FilterLabel>
                         <CourseAutoComplete
+                          districtId={selectedDistrictId}
                           selectedCourseId={filters.courseId}
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'courseId')
@@ -592,7 +611,8 @@ const MultipleAssessmentReportFilters = ({
                       <Col span={6}>
                         <ClassAutoComplete
                           dataCy="classes"
-                          termId={filters.termId}
+                          districtId={selectedDistrictId}
+                          termIds={selectedDistrictTermId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
                           grades={filters.grades}
@@ -608,25 +628,30 @@ const MultipleAssessmentReportFilters = ({
                           }
                         />
                       </Col>
-                      <Col span={6}>
-                        <GroupsAutoComplete
-                          dataCy="groups"
-                          termId={filters.termId}
-                          schoolIds={filters.schoolIds}
-                          teacherIds={filters.teacherIds}
-                          grades={filters.grades}
-                          subjects={filters.subjects}
-                          courseId={
-                            filters.courseId !== 'All' && filters.courseId
-                          }
-                          selectedGroupIds={
-                            filters.groupIds ? filters.groupIds.split(',') : []
-                          }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'groupIds', true)
-                          }
-                        />
-                      </Col>
+                      <EduIf condition={!isDistrictGroupAdmin}>
+                        <Col span={6}>
+                          <GroupsAutoComplete
+                            dataCy="groups"
+                            districtId={selectedDistrictId}
+                            termIds={selectedDistrictTermId}
+                            schoolIds={filters.schoolIds}
+                            teacherIds={filters.teacherIds}
+                            grades={filters.grades}
+                            subjects={filters.subjects}
+                            courseId={
+                              filters.courseId !== 'All' && filters.courseId
+                            }
+                            selectedGroupIds={
+                              filters.groupIds
+                                ? filters.groupIds.split(',')
+                                : []
+                            }
+                            selectCB={(e) =>
+                              updateFilterDropdownCB(e, 'groupIds', true)
+                            }
+                          />
+                        </Col>
+                      </EduIf>
                     </Row>
                   </Tabs.TabPane>
 
@@ -725,20 +750,25 @@ const MultipleAssessmentReportFilters = ({
                           options={availableAssessmentTypes}
                         />
                       </Col>
-                      <Col span={6}>
-                        <FilterLabel data-cy="tags-select">Tags</FilterLabel>
-                        <TagFilter
-                          onChangeField={(type, selected) => {
-                            const _selected = selected.map(
-                              ({ _id: key, tagName: title }) => ({ key, title })
-                            )
-                            updateFilterDropdownCB(_selected, 'tagIds', true)
-                          }}
-                          selectedTagIds={
-                            filters.tagIds ? filters.tagIds.split(',') : []
-                          }
-                        />
-                      </Col>
+                      <EduIf condition={!isDistrictGroupAdmin}>
+                        <Col span={6}>
+                          <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+                          <TagFilter
+                            onChangeField={(type, selected) => {
+                              const _selected = selected.map(
+                                ({ _id: key, tagName: title }) => ({
+                                  key,
+                                  title,
+                                })
+                              )
+                              updateFilterDropdownCB(_selected, 'tagIds', true)
+                            }}
+                            selectedTagIds={
+                              filters.tagIds ? filters.tagIds.split(',') : []
+                            }
+                          />
+                        </Col>
+                      </EduIf>
                       <Col span={18}>
                         <SelectAssessmentsForMultiSchoolYear
                           dataCy="multiSchoolYearTests"
@@ -853,27 +883,29 @@ const MultipleAssessmentReportFilters = ({
               }
             />
           </EduIf>
-          <StyledDropDownContainer
-            flex="0 0 300px"
-            xs={24}
-            sm={12}
-            lg={6}
-            data-cy="performanceBand"
-            data-testid="performanceBand"
-          >
-            <FieldLabel fs=".7rem">
-              PERFORMANCE BAND ({isPearOrEdulasticText})
-            </FieldLabel>
-            <ControlDropDown
-              by={selectedPerformanceBand}
-              selectCB={(e, selected) =>
-                updateFilterDropdownCB(selected, 'profileId', false, true)
-              }
-              data={performanceBandsList}
-              prefix="Performance Band"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
+          <EduIf condition={!isDistrictGroupAdmin}>
+            <StyledDropDownContainer
+              flex="0 0 300px"
+              xs={24}
+              sm={12}
+              lg={6}
+              data-cy="performanceBand"
+              data-testid="performanceBand"
+            >
+              <FieldLabel fs=".7rem">
+                PERFORMANCE BAND ({isPearOrEdulasticText})
+              </FieldLabel>
+              <ControlDropDown
+                by={selectedPerformanceBand}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'profileId', false, true)
+                }
+                data={performanceBandsList}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          </EduIf>
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"

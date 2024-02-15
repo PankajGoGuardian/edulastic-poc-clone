@@ -131,32 +131,26 @@ export const compareByOptions = [
   {
     key: compareByKeys.RACE,
     title: 'Race',
-    hiddenFromRole: ['district-group-admin'],
   },
   {
     key: compareByKeys.GENDER,
     title: 'Gender',
-    hiddenFromRole: ['district-group-admin'],
   },
   {
     key: compareByKeys.FRL_STATUS,
     title: 'FRL Status',
-    hiddenFromRole: ['district-group-admin'],
   },
   {
     key: compareByKeys.ELL_STATUS,
     title: 'ELL Status',
-    hiddenFromRole: ['district-group-admin'],
   },
   {
     key: compareByKeys.IEP_STATUS,
     title: 'IEP Status',
-    hiddenFromRole: ['district-group-admin'],
   },
   {
     key: compareByKeys.HISPANIC_ETHNICITY,
     title: 'Hispanic Ethnicity',
-    hiddenFromRole: ['district-group-admin'],
   },
 ]
 

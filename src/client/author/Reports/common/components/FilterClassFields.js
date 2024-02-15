@@ -106,7 +106,7 @@ function FilterClassFields(props) {
       <Col span={6}>
         <ClassAutoComplete
           dataCy="classes"
-          termId={filters.termId}
+          termIds={filters.termId}
           schoolIds={filters.schoolIds}
           teacherIds={filters.teacherIds}
           grades={filters.grades}
@@ -119,7 +119,7 @@ function FilterClassFields(props) {
       <Col span={6}>
         <GroupsAutoComplete
           dataCy="groups"
-          termId={filters.termId}
+          termIds={filters.termId}
           schoolIds={filters.schoolIds}
           teacherIds={filters.teacherIds}
           grades={filters.grades}

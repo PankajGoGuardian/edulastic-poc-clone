@@ -20,7 +20,8 @@ const GroupsAutoComplete = ({
   groupList: groupListRaw,
   loading,
   loadGroupList,
-  termId,
+  termIds,
+  districtId,
   schoolIds,
   teacherIds,
   grades,
@@ -29,7 +30,7 @@ const GroupsAutoComplete = ({
   selectCB,
   selectedGroupIds,
   dataCy,
-  districtId,
+  userDistrictId,
   networkIds,
 }) => {
   const groupFilterRef = useRef()
@@ -44,7 +45,7 @@ const GroupsAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: searchTerms.text,
         type: ['custom'],
@@ -52,8 +53,8 @@ const GroupsAutoComplete = ({
       },
       queryType: 'OR',
     }
-    if (termId) {
-      q.search.termIds = [termId]
+    if (termIds) {
+      q.search.termIds = termIds.split(',')
     }
     if (teacherIds) {
       q.search.teachers = teacherIds
@@ -81,7 +82,8 @@ const GroupsAutoComplete = ({
     return q
   }, [
     searchTerms.text,
-    termId,
+    termIds,
+    districtId,
     schoolIds,
     teacherIds,
     grades,
@@ -137,7 +139,16 @@ const GroupsAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [termId, schoolIds, teacherIds, grades, subjects, courseId, networkIds])
+  }, [
+    termIds,
+    districtId,
+    schoolIds,
+    teacherIds,
+    grades,
+    subjects,
+    courseId,
+    networkIds,
+  ])
 
   // build dropdown data
   const dropdownData = (searchTerms.text ? groupList : searchResult).map(
@@ -169,7 +180,7 @@ const GroupsAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
     groupList: getGroupListSelector(state),
     loading: get(state, ['groupsReducer', 'loading'], false),
   }),

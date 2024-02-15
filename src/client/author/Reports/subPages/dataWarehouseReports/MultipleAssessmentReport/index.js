@@ -20,8 +20,6 @@ import {
 } from '@edulastic/constants/const/report'
 import {
   TABLE_SORT_ORDER_TYPES,
-  getDistrictGroupTestTermIds,
-  getDistrictTermIdsForDistrictGroup,
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
 
@@ -74,7 +72,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import {
-  convertItemToArray,
+  enhanceQueryWithTermIds,
   getIsMultiSchoolYearDataPresent,
   isAddToStudentGroupEnabled,
 } from '../common/utils'
@@ -85,39 +83,6 @@ const { downloadCSV } = reportUtils.common
 
 const onCsvConvert = (data) =>
   downloadCSV(`Data Studio - Performance Trends.csv`, data)
-
-const enhanceQueryWithTermIds = (
-  { termId, ...query },
-  { orgData, userRole }
-) => {
-  console.log('userRole, termId & old query', userRole, termId, query)
-  if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
-    const selectedDistrictIdsArr = convertItemToArray(query.districtIds)
-    const {
-      districtIds: districtIdsArr,
-      termIds: termIdsArr,
-    } = getDistrictTermIdsForDistrictGroup(orgData, {
-      termId,
-      districtIds: selectedDistrictIdsArr,
-    })
-    Object.assign(query, {
-      districtIds: districtIdsArr.join(','),
-      termIds: termIdsArr.join(','),
-    })
-  } else {
-    const testTermIdsArr = convertItemToArray(query.testTermIds)
-    const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
-      orgData,
-      testTermIdsArr
-    )
-    const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
-      ','
-    )
-    Object.assign(query, { termIds: termId, testTermIds })
-  }
-  console.log('new query', query)
-  return query
-}
 
 const MultipleAssessmentReport = ({
   // value props
@@ -348,6 +313,7 @@ const MultipleAssessmentReport = ({
   const tableData = useMemo(
     () =>
       getTableData(
+        orgData,
         reportTableData,
         reportChartData,
         availableFeedTypes,
@@ -355,14 +321,17 @@ const MultipleAssessmentReport = ({
         selectedPerformanceBand,
         settings.selectedCompareBy.key,
         sortFilters,
-        sharedReportFilters || settings.requestFilters
+        sharedReportFilters || settings.requestFilters,
+        isDistrictGroupAdmin
       ),
     [
+      orgData,
       reportChartData,
       reportTableData,
       incompleteTests,
       selectedPerformanceBand,
       availableFeedTypes,
+      isDistrictGroupAdmin,
     ]
   )
 

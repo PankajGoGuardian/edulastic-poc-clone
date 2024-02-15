@@ -20,8 +20,9 @@ const SchoolAutoComplete = ({
   loading,
   loadSchoolList,
   selectCB,
-  selectedSchoolIds,
   districtId,
+  selectedSchoolIds,
+  userDistrictId,
   networkIds,
 }) => {
   const schoolFilterRef = useRef()
@@ -43,14 +44,14 @@ const SchoolAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: [{ type: 'cont', value: searchTerms.text }],
       },
       networkIds: (networkIds || '').split(',').filter(Boolean),
     }
     return q
-  }, [searchTerms.text, networkIds])
+  }, [searchTerms.text, districtId, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -98,7 +99,7 @@ const SchoolAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [networkIds])
+  }, [districtId, networkIds])
 
   return (
     <MultiSelectSearch
@@ -121,7 +122,7 @@ export default connect(
   (state) => ({
     schoolList: getSchoolsSelector(state),
     loading: get(state, ['schoolsReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
   }),
   {
     loadSchoolList: receiveSchoolsAction,

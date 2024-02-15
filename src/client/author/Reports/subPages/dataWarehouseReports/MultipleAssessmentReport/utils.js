@@ -60,6 +60,7 @@ export const staticDropDownData = {
   },
   tagTypes: [
     { key: 'termId', tabKey: '0' },
+    { key: 'districtIds', tabKey: '0' },
     { key: 'schoolIds', tabKey: '0' },
     { key: 'teacherIds', tabKey: '0' },
     { key: 'grades', subType: 'class', tabKey: '0' },
@@ -417,6 +418,7 @@ const getAggregatedDataByTestId = (
  * @returns {Record[]} - transformed data for rendering the table.
  */
 export const getTableData = (
+  orgData,
   reportTableData,
   reportChartData,
   feedTypes,
@@ -424,16 +426,21 @@ export const getTableData = (
   bandInfo = [],
   compareByKey,
   sortFilters,
-  filters = {}
+  filters = {},
+  isDistrictGroupAdmin
 ) => {
   const { metricInfo = [] } = get(reportTableData, 'data.result', {})
   const { externalBands = [] } = get(reportChartData, 'data.result', {})
+  const { districts: districtsInfo = [] } = orgData?.districtGroup || {}
   const feedTypeKeys = (feedTypes || []).map(({ key }) => key)
   let externalMetricsForTable = metricInfo
     .filter(({ testType }) => feedTypeKeys.includes(testType))
     .map(({ testType: externalTestType, ...t }) => ({
       ...t,
       externalTestType,
+      districtName: isDistrictGroupAdmin
+        ? districtsInfo.find((d) => d._id === t.districtId)?.name || '-'
+        : undefined,
     }))
   const internalMetricsForTable = metricInfo
     .filter(({ testType }) => !feedTypeKeys.includes(testType))
@@ -805,12 +812,13 @@ export const getChartSpecifics = (
   const termsKeyedById = keyBy(terms, '_id')
   // performance band for chart should update post chart data API response
   const { bandInfo = [] } = get(filtersData, 'data.result', {})
-  const selectedPerformanceBand = (
-    bandInfo.find(
-      (x) =>
-        x._id === (sharedReportFilters || settings.requestFilters).profileId
-    ) || bandInfo[0]
-  )?.performanceBand
+  const selectedPerformanceBand =
+    (
+      bandInfo.find(
+        (x) =>
+          x._id === (sharedReportFilters || settings.requestFilters).profileId
+      ) || bandInfo[0]
+    )?.performanceBand || []
   // curate chart data from API response
 
   const {

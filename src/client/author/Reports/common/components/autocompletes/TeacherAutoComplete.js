@@ -27,6 +27,7 @@ const TeacherAutoComplete = ({
   testId,
   termId,
   districtId,
+  userDistrictId,
   networkIds,
 }) => {
   const teacherFilterRef = useRef()
@@ -52,7 +53,7 @@ const TeacherAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: searchTerms.text,
       },
@@ -69,7 +70,7 @@ const TeacherAutoComplete = ({
       q.testIds = [testId]
     }
     return q
-  }, [searchTerms.text, institutionId, testId, termId, networkIds])
+  }, [searchTerms.text, institutionId, testId, termId, districtId, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -117,7 +118,7 @@ const TeacherAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [institutionId, testId, termId, networkIds])
+  }, [institutionId, testId, termId, districtId, networkIds])
 
   return (
     <MultiSelectSearch
@@ -140,7 +141,7 @@ export default connect(
   (state) => ({
     teacherList: getTeachersListSelector(state),
     loading: get(state, ['teacherReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
   }),
   {
     loadTeacherList: receiveTeachersListAction,

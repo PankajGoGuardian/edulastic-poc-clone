@@ -20,7 +20,8 @@ const ClassAutoComplete = ({
   classList: classListRaw,
   loading,
   loadClassList,
-  termId,
+  districtId,
+  termIds,
   schoolIds,
   teacherIds,
   grades,
@@ -29,7 +30,7 @@ const ClassAutoComplete = ({
   selectCB,
   selectedClassIds,
   dataCy,
-  districtId,
+  userDistrictId,
   networkIds,
 }) => {
   const classFilterRef = useRef()
@@ -44,7 +45,7 @@ const ClassAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: searchTerms.text,
         type: ['class'],
@@ -52,8 +53,8 @@ const ClassAutoComplete = ({
       },
       queryType: 'OR',
     }
-    if (termId) {
-      q.search.termIds = [termId]
+    if (termIds) {
+      q.search.termIds = termIds.split(',')
     }
     if (teacherIds) {
       q.search.teachers = teacherIds
@@ -81,7 +82,8 @@ const ClassAutoComplete = ({
     return q
   }, [
     searchTerms.text,
-    termId,
+    districtId,
+    termIds,
     schoolIds,
     teacherIds,
     grades,
@@ -137,7 +139,16 @@ const ClassAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [termId, schoolIds, teacherIds, grades, subjects, courseId, networkIds])
+  }, [
+    districtId,
+    termIds,
+    schoolIds,
+    teacherIds,
+    grades,
+    subjects,
+    courseId,
+    networkIds,
+  ])
 
   // build dropdown data
   const dropdownData = (searchTerms.text ? classList : searchResult).map(
@@ -169,7 +180,7 @@ const ClassAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
     classList: getClassListSelector(state),
     loading: get(state, ['classesReducer', 'loading'], false),
   }),

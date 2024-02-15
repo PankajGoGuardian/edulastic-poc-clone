@@ -23,6 +23,7 @@ const CourseAutoComplete = ({
   loadCourseList,
   selectCB,
   selectedCourseId,
+  userDistrictId,
   districtId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -35,13 +36,13 @@ const CourseAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: [{ type: 'cont', value: searchTerms.text }],
       },
     }
     return q
-  }, [searchTerms.text])
+  }, [searchTerms.text, districtId])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -110,6 +111,10 @@ const CourseAutoComplete = ({
     }
   }, [selectedCourseId, courseList])
 
+  useEffect(() => {
+    setSearchResult([])
+  }, [districtId])
+
   // build dropdown data
   const dropdownData = useDropdownData(
     searchTerms.text ? courseList : searchResult,
@@ -159,7 +164,7 @@ const CourseAutoComplete = ({
 
 export default connect(
   (state) => ({
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
     courseList: getCourseListSelector(state),
     loading: get(state, ['coursesReducer', 'loading'], false),
   }),

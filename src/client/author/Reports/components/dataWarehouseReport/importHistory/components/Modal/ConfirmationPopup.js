@@ -27,7 +27,9 @@ const ConfirmationPopup = ({ handleDeleteFile, closeModal, isVisible }) => {
         <EduButton onClick={() => closeModal()} isGhost>
           Cancel
         </EduButton>
-        <EduButton onClick={() => handleDeleteFile()}>Delete</EduButton>
+        <EduButton data-cy="deleteButton" onClick={() => handleDeleteFile()}>
+          Delete
+        </EduButton>
       </FlexContainer>
     </CustomModalStyled>
   )

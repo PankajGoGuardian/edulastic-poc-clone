@@ -47,7 +47,7 @@ export const compareByOptions = [
 export const compareByOptionsMapByKey = keyBy(compareByOptions, 'key')
 
 // completion Chart Constants
-export const completionReportChartPageSize = 4
+export const completionReportChartPageSize = 5
 export const xAxisDataKey = 'testName'
 export const yDomain = [0, 100]
 export const yAxisLabel = 'DISTRIBUTION OF STUDENTS (%)'

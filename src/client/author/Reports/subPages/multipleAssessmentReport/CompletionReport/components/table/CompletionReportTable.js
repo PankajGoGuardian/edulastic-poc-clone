@@ -353,28 +353,17 @@ const CompletionReportTable = ({
           setAnalyseBy={setAnalyseBy}
           analyseBy={analyseBy}
         />
-        <EduIf condition={!isTableDataLoading}>
-          <EduThen>
-            {/* Table component */}
-            <StyledTable
-              loading={isTableDataLoading}
-              onChange={handleTableChange}
-              columns={columns}
-              dataSource={dataSource}
-              pagination={{
-                total: totalPageSize,
-                onChange: handleTablePageChange,
-              }}
-            />
-          </EduThen>
-          <EduElse>
-            <SpinLoader
-              tip="Loading completion table data..."
-              position="relative"
-              height="70%"
-            />
-          </EduElse>
-        </EduIf>
+        {/* Table component */}
+        <StyledTable
+          loading={isTableDataLoading}
+          onChange={handleTableChange}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={{
+            total: totalPageSize,
+            onChange: handleTablePageChange,
+          }}
+        />
       </EduIf>
     </TableContainer>
   )

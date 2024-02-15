@@ -125,9 +125,9 @@ function CompletionReport({
   }, [pageFilters, statusColumnSortState, testColumnSort])
 
   return (
-    <Container>
-      <EduIf condition={!(isChartDataLoading && isTableDataLoading)}>
-        <EduThen>
+    <EduIf condition={!(isChartDataLoading && isTableDataLoading)}>
+      <EduThen>
+        <Container>
           <Chart
             chartData={chartData}
             loading={isChartDataLoading}
@@ -155,16 +155,15 @@ function CompletionReport({
             setPageFilters={setPageFilters}
             sharedReport={sharedReport}
           />
-        </EduThen>
-        <EduElse>
-          <SpinLoader
-            tip="Please wait while we gather information..."
-            position="relative"
-            height="100%"
-          />
-        </EduElse>
-      </EduIf>
-    </Container>
+        </Container>
+      </EduThen>
+      <EduElse>
+        <SpinLoader
+          tip="Please wait while we gather the required information..."
+          position="fixed"
+        />
+      </EduElse>
+    </EduIf>
   )
 }
 

@@ -342,37 +342,39 @@ const CompletionReportTable = ({
   return (
     <TableContainer ref={childrenRef}>
       <EduIf condition={tableData.length}>
-        <EduThen>
-          <TableHeader
-            urlCompareBy={urlCompareBy}
-            compareBy={compareBy}
-            setCompareBy={setCompareBy}
-            settings={settings}
-            setMARSettings={setMARSettings}
-            compareByCB={compareByCB}
-            location={location}
-            setAnalyseBy={setAnalyseBy}
-            analyseBy={analyseBy}
-          />
-          {/* Table component */}
-          <StyledTable
-            loading={isTableDataLoading}
-            onChange={handleTableChange}
-            columns={columns}
-            dataSource={dataSource}
-            pagination={{
-              total: totalPageSize,
-              onChange: handleTablePageChange,
-            }}
-          />
-        </EduThen>
-        <EduElse>
-          <SpinLoader
-            tip="Loading completion table data..."
-            position="relative"
-            height="70%"
-          />
-        </EduElse>
+        <TableHeader
+          urlCompareBy={urlCompareBy}
+          compareBy={compareBy}
+          setCompareBy={setCompareBy}
+          settings={settings}
+          setMARSettings={setMARSettings}
+          compareByCB={compareByCB}
+          location={location}
+          setAnalyseBy={setAnalyseBy}
+          analyseBy={analyseBy}
+        />
+        <EduIf condition={!isTableDataLoading}>
+          <EduThen>
+            {/* Table component */}
+            <StyledTable
+              loading={isTableDataLoading}
+              onChange={handleTableChange}
+              columns={columns}
+              dataSource={dataSource}
+              pagination={{
+                total: totalPageSize,
+                onChange: handleTablePageChange,
+              }}
+            />
+          </EduThen>
+          <EduElse>
+            <SpinLoader
+              tip="Loading completion table data..."
+              position="relative"
+              height="70%"
+            />
+          </EduElse>
+        </EduIf>
       </EduIf>
     </TableContainer>
   )

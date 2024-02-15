@@ -7,7 +7,7 @@ import {
   tableToDBSortOrderMap,
 } from '@edulastic/constants/reportUtils/common'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit } from 'lodash'
+import { isEmpty, omit } from 'lodash'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
@@ -35,12 +35,13 @@ const TABLE_PAGE_SIZE = 30
 function CompletionReport({
   fetchCompletionReportChartDataRequest,
   fetchCompletionReportTableDataRequest,
+  resetCompletionReportData,
   settings,
   setEnableReportSharing,
   toggleFilter,
   ddfilter,
   sharedReport,
-  chartData,
+  chartData = [],
   setMARSettings,
   isChartDataLoading,
   isTableDataLoading,
@@ -50,6 +51,10 @@ function CompletionReport({
   getCsvData,
   ...props
 }) {
+  // have initital state when user navigate to completion report for the first time
+  useEffect(() => {
+    resetCompletionReportData()
+  }, [])
   // chart
   const [pagination, setPagination] = useState({
     page: 1,
@@ -121,33 +126,44 @@ function CompletionReport({
 
   return (
     <Container>
-      <Chart
-        chartData={chartData}
-        loading={isChartDataLoading}
-        pageSize={barChartPageSize}
-        pagination={pagination}
-        setPagination={setPagination}
-        {...props}
-      />
+      <EduIf condition={!(isChartDataLoading && isTableDataLoading)}>
+        <EduThen>
+          <Chart
+            chartData={chartData}
+            loading={isChartDataLoading}
+            pageSize={barChartPageSize}
+            pagination={pagination}
+            setPagination={setPagination}
+            {...props}
+          />
 
-      <CompletionReportTable
-        isTableDataLoading={isTableDataLoading}
-        location={location}
-        isCsvDownloading={isCsvDownloading}
-        settings={settings}
-        setMARSettings={setMARSettings}
-        setAnalyseBy={setAnalyseBy}
-        analyseBy={analyseBy}
-        setStatusColumnSortState={setStatusColumnSortState}
-        setTestColumnSort={setTestColumnSort}
-        tableData={tableData}
-        compareBy={settings.selectedCompareBy}
-        setCompareBy={updateFilterDropdownCB}
-        getCsvData={getCsvData}
-        pageFilters={pageFilters}
-        setPageFilters={setPageFilters}
-        sharedReport={sharedReport}
-      />
+          <CompletionReportTable
+            isTableDataLoading={isTableDataLoading}
+            location={location}
+            isCsvDownloading={isCsvDownloading}
+            settings={settings}
+            setMARSettings={setMARSettings}
+            setAnalyseBy={setAnalyseBy}
+            analyseBy={analyseBy}
+            setStatusColumnSortState={setStatusColumnSortState}
+            setTestColumnSort={setTestColumnSort}
+            tableData={tableData}
+            compareBy={settings.selectedCompareBy}
+            setCompareBy={updateFilterDropdownCB}
+            getCsvData={getCsvData}
+            pageFilters={pageFilters}
+            setPageFilters={setPageFilters}
+            sharedReport={sharedReport}
+          />
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Please wait while we gather information..."
+            position="relative"
+            height="100%"
+          />
+        </EduElse>
+      </EduIf>
     </Container>
   )
 }

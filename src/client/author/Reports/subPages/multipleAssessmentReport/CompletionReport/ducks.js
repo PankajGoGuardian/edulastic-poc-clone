@@ -48,6 +48,7 @@ const slice = createSlice({
       state.completionTableDataLoading = false
       state.completionTableDataError = payload.error
     },
+    resetCompletionReportData: () => initialState,
     getCsvData: () => {},
   },
 })

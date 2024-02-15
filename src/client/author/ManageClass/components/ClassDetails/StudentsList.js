@@ -36,6 +36,7 @@ import {
 } from '../../../src/selectors/user'
 import { getFormattedName } from '../../../Gradebook/transformers'
 import FeedbackModal from '../../../Student/components/StudentTable/FeedbackModal'
+import { fieldsMapping } from '../../constants'
 
 const StudentsList = ({
   cuId,
@@ -114,18 +115,10 @@ const StudentsList = ({
       align: 'left',
     },
     {
-      title: 'TTS Enabled',
-      dataIndex: 'tts',
+      title: 'Accommodation Available',
+      dataIndex: 'accommodations',
       align: 'center',
-      render: (tts) => (
-        <span>
-          {tts === 'yes' ? (
-            <IconCorrect />
-          ) : (
-            <IconClose color="#ff99bb" width="10px" height="10px" />
-          )}
-        </span>
-      ),
+      render: (data) => <AccommodationRender data={data} />,
       width: '15%',
     },
 
@@ -259,6 +252,36 @@ const StudentsList = ({
   )
 }
 
+const AccommodationRender = ({ data }) => {
+  if (data) {
+    const result = Object.keys(data).reduce((res, key) => {
+      const label = fieldsMapping.accommodations.find(
+        (field) => field.fieldName === key
+      )?.label
+      if (key === 'preferredLanguage') {
+        res.push({ label, value: data[key]?.toUpperCase() })
+      } else if (key === 'extraTimeOnTest') {
+        const value = data[key]
+        res.push({ label, value: value > 0 ? `${value}x` : 'UNLIMITED' })
+      } else if (data[key] === 'yes') {
+        res.push({ label, value: key.toUpperCase() })
+      }
+      return res
+    }, [])
+    const tooltip = `${result
+      .map((e) => e.label)
+      .slice(0, -1)
+      .join(', ')} & ${result.map((e) => e.label).slice(-1)}`
+
+    const value = result.map((e) => e.value).join()
+    return (
+      <Tooltip title={tooltip}>
+        <span>{value}</span>
+      </Tooltip>
+    )
+  }
+  return '-'
+}
 StudentsList.propTypes = {
   loaded: PropTypes.bool.isRequired,
   students: PropTypes.array.isRequired,

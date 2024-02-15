@@ -23,7 +23,10 @@ import {
 import { getUser } from '../../author/src/selectors/user'
 import { redirectToStudentPage, redirectToDashbord } from '../utils'
 
-import { fetchUserAction } from '../../student/Login/ducks'
+import {
+  fetchUserAction,
+  getUserAccommodations,
+} from '../../student/Login/ducks'
 import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../assessment/actions/test'
@@ -50,6 +53,7 @@ const PublicTestPage = ({
   setSelectedLanguage,
   setIsTestPreviewVisible,
   isPreviewModalVisible,
+  accommodations,
 }) => {
   const { testId } = match.params
   const [publicTest, setPublicTest] = useState()
@@ -143,7 +147,8 @@ const PublicTestPage = ({
         resumeAssignment,
         publicTest,
         languagePreference,
-        setSelectedLanguage
+        setSelectedLanguage,
+        accommodations
       )
     }
   }, [loadingAssignments])
@@ -260,6 +265,7 @@ export default connect(
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
     languagePreference: getSelectedLanguageSelector(state),
     isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+    accommodations: getUserAccommodations(state),
   }),
   {
     fetchTest: fetchTestAction,

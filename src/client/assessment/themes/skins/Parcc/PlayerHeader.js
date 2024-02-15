@@ -49,6 +49,8 @@ import {
 } from '../../../../common/components/LineReader/duck'
 import useLineReader from '../../../../common/components/LineReader/components/useLineReader'
 import LineReader from '../../../../common/components/LineReader'
+import { getUserAccommodations } from '../../../../student/Login/ducks'
+import { isImmersiveReaderEnabled } from '../../../utils/helpers'
 
 const {
   playerSkin: { parcc },
@@ -103,7 +105,6 @@ const PlayerHeader = ({
   answerChecksUsedForItem,
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
-  canUseImmersiveReader = false,
   immersiveReaderTitle,
   openReferenceModal,
   isShowReferenceModal,
@@ -112,6 +113,7 @@ const PlayerHeader = ({
   hideLineReader,
   isLineReaderVisible,
   showSubmitText,
+  accommodations,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -335,7 +337,10 @@ const PlayerHeader = ({
               </FlexContainer>
               <FlexContainer>
                 <EduIf
-                  condition={!!showImmersiveReader && canUseImmersiveReader}
+                  condition={isImmersiveReaderEnabled(
+                    showImmersiveReader,
+                    accommodations
+                  )}
                 >
                   <ImmersiveReader
                     ImmersiveReaderButton={ImmersiveReaderButton}
@@ -381,6 +386,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,
       isLineReaderVisible: lineReaderVisible(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

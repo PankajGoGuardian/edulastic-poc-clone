@@ -287,6 +287,12 @@ function* saveAssignment({ payload }) {
   try {
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
     // Penalty true/false is set to determine the case
+    if (payload.showImmersiveReader === null) {
+      payload = omit(payload, 'showImmersiveReader')
+    }
+    if (payload.showSpeechToText === null) {
+      payload = omit(payload, 'showSpeechToText')
+    }
     if (
       payload.scoringType ===
       testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT

@@ -13,7 +13,16 @@ import {
   backgroundGrey,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
+import {
+  Anchor,
+  Button,
+  Checkbox,
+  Col,
+  Input,
+  Radio,
+  Select,
+  Table,
+} from 'antd'
 import styled from 'styled-components'
 import { SavedSettingsContainer } from '../../../../../AssignTest/components/Container/styled'
 
@@ -152,7 +161,44 @@ export const Description = styled.div`
   margin-top: ${({ marginTop }) => marginTop || '10px'};
   margin-bottom: ${({ marginTop }) => marginTop};
 `
-
+export const StyledRadioCheckboxGroup = styled(Checkbox.Group)`
+  .ant-checkbox-wrapper {
+    margin-right: ${({ isAssignment }) => (isAssignment ? '32px' : '100px')};
+    span {
+      font-size: ${({ isAssignment }) => (isAssignment ? '13px' : '12px')};
+      font-weight: 600;
+    }
+  }
+  .ant-checkbox {
+    .ant-checkbox-inner {
+      border-radius: 50%;
+      border-color: #bdbdbd;
+      width: ${({ isAssignment }) => (isAssignment ? '16px' : '18px')};
+      height: ${({ isAssignment }) => (isAssignment ? '16px' : '18px')};
+      margin-right: ${({ isAssignment }) => (isAssignment ? '25px' : '10px')};
+    }
+    &.ant-checkbox-checked {
+      &::after {
+        border: none;
+      }
+      .ant-checkbox-inner {
+        border: 1px solid #3f85e5;
+        background-color: #ffffff;
+        &::after {
+          transform: none;
+          background-color: #3f85e5;
+          width: 10px;
+          height: 10px;
+          top: ${({ isAssignment }) => (isAssignment ? '2px' : '3px')};
+          left: ${({ isAssignment }) => (isAssignment ? '2px' : '3px')};
+          border: none;
+          border-radius: 50%;
+          scale: 0.8;
+        }
+      }
+    }
+  }
+`
 export const StyledRadioGroup = styled(Radio.Group)`
   display: flex;
   flex-direction: ${(props) => (props.isHorizontal ? 'row' : 'column')};

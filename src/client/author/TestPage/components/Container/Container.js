@@ -159,6 +159,7 @@ import SectionsTestGroupItems from '../GroupItems/SectionsTestGroupItems'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
 import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
+import { getUserAccommodations } from '../../../../student/Login/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -439,6 +440,7 @@ class Container extends PureComponent {
       testSettingsList,
       testAssignments,
       setData,
+      accommodations,
     } = this.props
     const { isUsed } = test
     const { testLoaded, studentRedirected, isSettingsChecked } = this.state
@@ -551,7 +553,8 @@ class Container extends PureComponent {
             resumeAssignment,
             test,
             languagePreference,
-            setSelectedLanguage
+            setSelectedLanguage,
+            accommodations
           )
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState({ studentRedirected: true })
@@ -2193,6 +2196,7 @@ const enhance = compose(
       subscription: getSubscriptionSelector(state),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       createTest: createTestAction,

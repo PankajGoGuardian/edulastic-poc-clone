@@ -1,3 +1,5 @@
+import { LANGUAGES_OPTIONS } from '@edulastic/constants/const/languages'
+
 export const thumbnailData = {
   fileNames: [
     'Learning-23.jpg-3.jpg',
@@ -154,4 +156,133 @@ export const canvasSyncStatus = {
   INPROGRESS: 'INPROGRESS',
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
+}
+
+const yesNoOptions = [
+  {
+    label: 'Yes',
+    value: 'yes',
+  },
+  {
+    label: 'No',
+    value: 'no',
+  },
+]
+
+export const fieldsMapping = {
+  additional: [
+    {
+      label: 'SIS ID',
+      fieldName: 'sisId',
+      placeholder: 'Enter SIS ID',
+    },
+    {
+      label: 'Student Number',
+      fieldName: 'studentNumber',
+      placeholder: 'Enter Student Number',
+    },
+    {
+      label: 'Free Reduced Lunch',
+      fieldName: 'frlStatus',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Individual Education Plan',
+      fieldName: 'iepStatus',
+      options: yesNoOptions,
+    },
+    {
+      label: 'English Language Learner',
+      fieldName: 'ellStatus',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Special ED',
+      fieldName: 'sedStatus',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Hispanic Ethnicity',
+      fieldName: 'hispanicEthnicity',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Race',
+      fieldName: 'race',
+      placeholder: 'Race',
+    },
+    {
+      label: 'DOB',
+      fieldName: 'dob',
+      isDate: true,
+      format: 'DD MMM, YYYY',
+    },
+    {
+      label: 'Gender',
+      fieldName: 'gender',
+      options: [
+        {
+          label: 'Male',
+          value: 'male',
+        },
+        {
+          label: 'Female',
+          value: 'female',
+        },
+        {
+          label: 'Other',
+          value: 'other',
+        },
+      ],
+    },
+    {
+      label: 'Parents/Guardians',
+      fieldName: 'contactEmails',
+      placeholder: 'Enter email comma separated...',
+    },
+  ],
+  accommodations: [
+    {
+      label: 'Text to Speech',
+      fieldName: 'tts',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Speech to Text',
+      fieldName: 'stt',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Immersive Reader',
+      fieldName: 'ir',
+      options: yesNoOptions,
+    },
+    {
+      label: 'Preferred Language',
+      fieldName: 'preferredLanguage',
+      options: LANGUAGES_OPTIONS,
+    },
+    {
+      label: 'Extra time on the test',
+      fieldName: 'extraTimeOnTest',
+      options: [
+        {
+          label: '1.2x',
+          value: 1.2,
+        },
+        {
+          label: '1.5x',
+          value: 1.5,
+        },
+        {
+          label: '2x',
+          value: 2,
+        },
+        {
+          label: 'Unlimited',
+          value: -1,
+        },
+      ],
+    },
+  ],
 }

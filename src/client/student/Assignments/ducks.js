@@ -38,6 +38,7 @@ import {
   fetchUserAction,
   getUserRole,
   toggleIosRestrictNavigationModalAction,
+  getUserAccommodations,
 } from '../Login/ducks'
 
 import {
@@ -644,7 +645,31 @@ export function* fetchAssignments() {
       entities: { assignments: assignmentObj },
     } = normalize(assignmentsProcessed, [assignmentSchema])
 
-    yield put(setAssignmentsAction({ allAssignments, assignmentObj }))
+    // Updating allowedTime & timedAssignment based on accommodations
+    const accommodations = yield select(getUserAccommodations)
+    const updatedAssignmentObj = Object.keys(assignmentObj).reduce(
+      (acc, curr) => {
+        acc[curr] = { ...assignmentObj[curr] }
+        if (acc[curr].timedAssignment && accommodations?.extraTimeOnTest > 0) {
+          acc[curr].allowedTime *= accommodations.extraTimeOnTest
+        } else if (
+          acc[curr].timedAssignment &&
+          accommodations?.extraTimeOnTest === -1
+        ) {
+          acc[curr].allowedTime = 0
+          acc[curr].timedAssignment = false
+        }
+        return acc
+      },
+      {}
+    )
+
+    yield put(
+      setAssignmentsAction({
+        allAssignments,
+        assignmentObj: updatedAssignmentObj,
+      })
+    )
   } catch (e) {
     console.log(e)
   }
@@ -667,14 +692,12 @@ function* startAssignment({ payload }) {
       safeBrowser,
       lastAttemptId,
       hasSections,
-      languagePreference: payloadLanguagePreference,
+      languagePreference,
     } = payload
 
     const institutionId = yield select(getCurrentSchool)
     const userId = yield select(getCurrentUserId)
     const role = yield select(getUserRole)
-    const languagePreference =
-      payloadLanguagePreference || (yield select(getSelectedLanguageSelector))
     const groupType = 'class'
     let testActivityId = null
 

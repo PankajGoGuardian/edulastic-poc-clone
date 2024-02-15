@@ -24,6 +24,7 @@ import {
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
 import { getServerTs } from '../utils'
+import { getUserAccommodations } from '../Login/ducks'
 
 const { DONE, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
 
@@ -128,7 +129,31 @@ function* fetchAssignments() {
       entities: { assignments: assignmentObj },
     } = normalize(assignments, [assignmentSchema])
 
-    yield put(setAssignmentsAction({ allAssignments, assignmentObj }))
+    // Updating allowedTime & timedAssignment based on accommodations
+    const accommodations = yield select(getUserAccommodations)
+    const updatedAssignmentObj = Object.keys(assignmentObj).reduce(
+      (acc, curr) => {
+        acc[curr] = { ...assignmentObj[curr] }
+        if (acc[curr]?.timedAssignment && accommodations?.extraTimeOnTest > 0) {
+          acc[curr].allowedTime *= accommodations.extraTimeOnTest
+        } else if (
+          acc[curr]?.timedAssignment &&
+          accommodations?.extraTimeOnTest === -1
+        ) {
+          acc[curr].allowedTime = 0
+          acc[curr].timedAssignment = false
+        }
+        return acc
+      },
+      {}
+    )
+
+    yield put(
+      setAssignmentsAction({
+        allAssignments,
+        assignmentObj: updatedAssignmentObj,
+      })
+    )
 
     // normalize reportsx``
     const {

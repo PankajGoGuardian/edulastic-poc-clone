@@ -1,11 +1,12 @@
 import { enrollmentApi } from '@edulastic/api'
 import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
-import { IconUser } from '@edulastic/icons'
+import { IconAccessibility, IconUser } from '@edulastic/icons'
 import { Collapse, Form, Icon, Spin } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { themeColor } from '@edulastic/colors'
 import { getUserOrgData } from '../../../../src/selectors/user'
 import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
@@ -88,7 +89,6 @@ class AddStudentModal extends React.Component {
       foundUserId,
       showClassCodeField,
       fetchClassDetailsUsingCode,
-      showTtsField,
       validatedClassDetails,
       resetClassDetails,
     } = this.props
@@ -142,6 +142,15 @@ class AddStudentModal extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     )
+    const AccommodationsHeader = (
+      <PanelHeader>
+        <div className="flex">
+          <IconAccessibility style={{ fill: themeColor }} />
+          <label>Configure Accommodations</label>
+        </div>
+        <small>Set TTS, STT, IR acommodations</small>
+      </PanelHeader>
+    )
 
     return (
       <CustomModalStyled
@@ -188,7 +197,25 @@ class AddStudentModal extends React.Component {
                   isEdit={isEdit}
                   stds={stds}
                   foundUserContactEmails={this.state.foundUserContactEmails}
-                  showTtsField
+                />
+              </Panel>
+            </Collapse>
+            <br />
+            <Collapse
+              accordion
+              defaultActiveKey={keys}
+              expandIcon={expandIcon}
+              expandIconPosition="right"
+            >
+              <Panel header={AccommodationsHeader} key="accommodations">
+                <AdditionalFields
+                  type="accommodations"
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  std={std}
+                  isEdit={isEdit}
+                  stds={stds}
+                  foundUserContactEmails={this.state.foundUserContactEmails}
                 />
               </Panel>
             </Collapse>

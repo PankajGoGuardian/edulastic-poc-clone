@@ -23,6 +23,7 @@ import {
 } from './selectors/test'
 import RequirePassword from './RequirePassword'
 import { showTestInfoModal } from '../publicTest/utils'
+import { getUserAccommodations } from '../student/Login/ducks'
 
 const isPublic = window.location.href.indexOf('/public/') > -1
 
@@ -56,6 +57,7 @@ const AssessmentPlayer = ({
   testType,
   isModalVisible,
   isShowStudentWork,
+  accommodations,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -149,13 +151,15 @@ const AssessmentPlayer = ({
     !playerPreviewState.viewTestInfoSuccess &&
     isModalVisible
   ) {
+    const preferredLanguage = accommodations?.preferredLanguage || ''
     if (!isInfoVisible) {
       setIsInfoVisible(true)
       showTestInfoModal({
         pauseAllowed: playerPreviewState.pauseAllowed,
         allowedTime: playerPreviewState.allowedTime,
         multiLanguageEnabled: playerPreviewState.multiLanguageEnabled,
-        languagePreference: playerPreviewState.languagePreference,
+        languagePreference:
+          playerPreviewState.languagePreference || preferredLanguage,
         timedAssignment: playerPreviewState.timedAssignment,
         hasInstruction: playerPreviewState.hasInstruction,
         instruction: playerPreviewState.instruction,
@@ -274,6 +278,7 @@ const enhance = compose(
       title: state.test.title,
       testType: state.test.testType,
       zoomLevel: state.ui.zoomLevel,
+      accommodations: getUserAccommodations(state),
     }),
     {
       loadTest: loadTestAction,

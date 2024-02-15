@@ -989,6 +989,16 @@ export const getCurrentDistrictUsersSelector = createSelector(
   (state) => state.currentDistrictUsers
 )
 
+export const getUserAccommodations = createSelector(
+  [getUserDetails],
+  (state) => state?.accommodations
+)
+
+export const getAccommodationsTtsSelector = createSelector(
+  [getUserDetails],
+  (state) => state?.accommodations?.tts || 'no'
+)
+
 export const getClasses = createSelector(
   ['user.user.orgData.classList'],
   (classes) => classes

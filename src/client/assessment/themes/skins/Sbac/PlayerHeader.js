@@ -16,7 +16,7 @@ import {
   keyboard as keyboardConst,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { get, round } from 'lodash'
+import { round } from 'lodash'
 import {
   IconBookmark,
   IconSend,
@@ -56,6 +56,8 @@ import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelectorTab/duck'
 import { StyledTextForStudent } from '../../common/styledCompoenents'
+import { isImmersiveReaderEnabled } from '../../../utils/helpers'
+import { getAccommodationsTtsSelector } from '../../../../student/Login/ducks'
 
 const {
   playerSkin: { sbac },
@@ -115,9 +117,9 @@ const PlayerHeader = ({
   t: i18Translate,
   firstItemInSectionAndRestrictNav,
   immersiveReaderTitle = '',
-  canUseImmersiveReader = false,
   showSubmitText,
   userName,
+  accommodations,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -191,7 +193,12 @@ const PlayerHeader = ({
               <IconProfileCircle />
               <StyledTextForStudent>{userName}</StyledTextForStudent>
             </FlexContainer>
-            <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+            <EduIf
+              condition={isImmersiveReaderEnabled(
+                showImmersiveReader,
+                accommodations
+              )}
+            >
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
                 title={immersiveReaderTitle}
@@ -420,7 +427,7 @@ const enhance = compose(
   connect(
     (state) => ({
       settings: state.test.settings,
-      showUserTTS: get(state, 'user.user.tts', 'no'),
+      showUserTTS: getAccommodationsTtsSelector(state),
       userRole: getUserRole(state),
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,

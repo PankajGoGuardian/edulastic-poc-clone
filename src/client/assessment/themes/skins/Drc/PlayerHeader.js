@@ -53,6 +53,8 @@ import { isPearDomain } from '../../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../../admin/Common/StyledComponents'
 import { getUserNameSelector } from '../../../../author/src/selectors/user'
 import { StyledTextForStudent } from '../../common/styledCompoenents'
+import { getUserAccommodations } from '../../../../student/Login/ducks'
+import { isImmersiveReaderEnabled } from '../../../utils/helpers'
 
 const {
   playerSkin: { drc },
@@ -105,8 +107,8 @@ const PlayerHeader = ({
   openReferenceModal,
   calcTypes,
   immersiveReaderTitle = '',
-  canUseImmersiveReader = false,
   userName,
+  accommodations,
 }) => {
   const {
     enableScratchpad,
@@ -287,7 +289,10 @@ const PlayerHeader = ({
               </Container>
               <RightContent>
                 <EduIf
-                  condition={!!showImmersiveReader && canUseImmersiveReader}
+                  condition={isImmersiveReaderEnabled(
+                    showImmersiveReader,
+                    accommodations
+                  )}
                 >
                   <ImmersiveReader
                     ImmersiveReaderButton={ImmersiveReaderButton}
@@ -332,6 +337,7 @@ const enhance = compose(
       subjects: state.test?.subjects,
       zoomLevel: state.ui.zoomLevel,
       userName: getUserNameSelector(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

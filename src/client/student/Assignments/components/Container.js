@@ -8,7 +8,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import NoDataNotification from '../../../common/components/NoDataNotification'
-import { getClasses, getCurrentGroup } from '../../Login/ducks'
+import {
+  getClasses,
+  getCurrentGroup,
+  getUserAccommodations,
+} from '../../Login/ducks'
 // components
 import AssignmentCard from '../../sharedComponents/AssignmentCard'
 import {
@@ -90,6 +94,7 @@ const Content = ({
   languagePreference,
   assignmentsGrousByTestId,
   userName,
+  accommodations,
 }) => {
   const [
     showVideoResourcePreviewModal,
@@ -108,6 +113,22 @@ const Content = ({
   ]
 
   const transformAssignment = (payload) => {
+    // Updating allowedTime & timedAssignment based on accommodations
+    if (payload?.timedAssignment && accommodations?.extraTimeOnTest > 0) {
+      payload = {
+        ...payload,
+        allowedTime: payload.allowedTime * accommodations.extraTimeOnTest,
+      }
+    } else if (
+      payload?.timedAssignment &&
+      accommodations?.extraTimeOnTest === -1
+    ) {
+      payload = {
+        ...payload,
+        allowedTime: 0,
+        timedAssignment: false,
+      }
+    }
     addRealtimeAssignment(
       transformAssignmentForRedirect(
         currentGroup,
@@ -230,6 +251,7 @@ export default connect(
     assignmentsGrousByTestId: assignmentIdsGroupIdsByTestIdSelector(state),
     notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
     languagePreference: getSelectedLanguageSelector(state),
+    accommodations: getUserAccommodations(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,

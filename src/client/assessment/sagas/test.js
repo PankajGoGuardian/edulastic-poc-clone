@@ -55,6 +55,7 @@ import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
 import {
   getCurrentGroupWithAllClasses,
+  getUserAccommodations,
   toggleIosRestrictNavigationModalAction,
 } from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
@@ -271,6 +272,10 @@ const getSettings = (
     ? test.showImmersiveReader
     : assignmentSettings.showImmersiveReader
 
+  const showSpeechToText = isTestPreview
+    ? test.showSpeechToText
+    : assignmentSettings.showSpeechToText
+
   const vqPreventSkipping = isTestPreview
     ? test.vqPreventSkipping
     : assignmentSettings.vqPreventSkipping
@@ -310,6 +315,7 @@ const getSettings = (
     penaltyOnUsingHints,
     showTtsForPassages,
     showImmersiveReader,
+    showSpeechToText,
     vqPreventSkipping,
   }
 }
@@ -647,7 +653,7 @@ function* loadTest({ payload }) {
       isDesmosCalculatorEnabledSelector
     )
 
-    const settings = getSettings(
+    let settings = getSettings(
       test,
       testActivity,
       preview,
@@ -955,6 +961,24 @@ function* loadTest({ payload }) {
         )
       )
     )
+
+    // Updating allowedTime & timedAssignment based on accommodations
+    const accommodations = yield select(getUserAccommodations)
+    if (settings?.timedAssignment && accommodations?.extraTimeOnTest > 0) {
+      settings = {
+        ...settings,
+        allowedTime: settings.allowedTime * accommodations.extraTimeOnTest,
+      }
+    } else if (
+      settings?.timedAssignment &&
+      accommodations?.extraTimeOnTest === -1
+    ) {
+      settings = {
+        ...settings,
+        allowedTime: 0,
+        timedAssignment: false,
+      }
+    }
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!

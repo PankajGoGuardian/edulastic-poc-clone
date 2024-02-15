@@ -7,13 +7,11 @@ import {
 } from '@edulastic/common'
 import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
-import { Select, Modal, Tooltip } from 'antd'
-import { themeColor } from '@edulastic/colors'
-import { IconSelectCaretDown, IconUserRegular } from '@edulastic/icons'
+import { IconUserRegular } from '@edulastic/icons'
+import { Modal, Tooltip } from 'antd'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 
-const { Option } = Select
-
-const { languageCodes, releaseGradeLabels } = testConstants
+const { releaseGradeLabels } = testConstants
 
 const ARCHIVED_TEST_MSG =
   'You can no longer use this as sharing access has been revoked by author'
@@ -152,11 +150,7 @@ export const showTestInfoModal = ({
   safeBrowser,
   lastAttemptId,
 }) => {
-  let selectedLang = ''
-  const handlChange = (value) => {
-    setSelectedLanguage(value)
-    selectedLang = value
-  }
+  const selectedLang = languagePreference || LANGUAGE_EN
 
   const timedContent = pauseAllowed ? (
     <p style={{ margin: '10px 0' }}>
@@ -184,35 +178,6 @@ export const showTestInfoModal = ({
 
   const content = (
     <FlexContainer flexDirection="column">
-      {multiLanguageEnabled && (
-        <>
-          <p>
-            This test is offered in multiple languages. Please select your
-            preferred language. You can change the preferred language anytime
-            during the attempt
-          </p>
-          <p style={{ marginTop: '10px' }}>PREFERRED LANGUAGE</p>
-          <p data-cy="selectLang">
-            <Select
-              getPopupContainer={(e) => e.parentElement}
-              defaultValue={languagePreference || ''}
-              style={{ width: 200 }}
-              onChange={handlChange}
-              suffixIcon={<IconSelectCaretDown color={themeColor} />}
-            >
-              <Option value="" disabled aria-label="Select Language">
-                Select Language
-              </Option>
-              <Option value={languageCodes.ENGLISH} aria-label="English">
-                English
-              </Option>
-              <Option value={languageCodes.SPANISH} aria-label="Spanish">
-                Spanish
-              </Option>
-            </Select>
-          </p>
-        </>
-      )}
       {timedAssignment && (
         <div>
           <p style={{ marginTop: '10px' }}>TIME LIMIT</p>
@@ -312,7 +277,8 @@ const redirectToAssessmentPlayer = (
   startAssignment,
   resumeAssignment,
   languagePreference,
-  setSelectedLanguage
+  setSelectedLanguage,
+  accommodations
 ) => {
   const {
     endDate,
@@ -371,13 +337,14 @@ const redirectToAssessmentPlayer = (
   // case assignment is not started yet and is timed assignment, then modal popup with appropriate content
   // on proceed, redirect to assessment player
   // on cancel redirect to student dashboard
-  if (!resume && (timedAssignment || hasInstruction || multiLanguageEnabled)) {
+  if (!resume && (timedAssignment || hasInstruction)) {
+    const preferredLanguage = accommodations?.preferredLanguage || ''
     return showTestInfoModal({
       pauseAllowed,
       allowedTime,
       multiLanguageEnabled,
       setSelectedLanguage,
-      languagePreference,
+      languagePreference: languagePreference || preferredLanguage,
       timedAssignment,
       hasInstruction,
       instruction,
@@ -421,7 +388,8 @@ export const redirectToStudentPage = (
   resumeAssignment,
   test,
   languagePreference,
-  setSelectedLanguage
+  setSelectedLanguage,
+  accommodations
 ) => {
   const formatedAssignments = assignments.map((assignment) =>
     formatAssignment(assignment)
@@ -444,7 +412,8 @@ export const redirectToStudentPage = (
       startAssignment,
       resumeAssignment,
       languagePreference,
-      setSelectedLanguage
+      setSelectedLanguage,
+      accommodations
     )
   } else {
     // if test is archieved/ in draft,

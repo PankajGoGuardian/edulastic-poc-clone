@@ -7,11 +7,12 @@ import {
   SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
-import { IconUser } from '@edulastic/icons'
+import { IconAccessibility, IconUser } from '@edulastic/icons'
 // components
 import { Collapse, Icon, Select, Spin } from 'antd'
 import { get, isEmpty } from 'lodash'
 import React from 'react'
+import { themeColor } from '@edulastic/colors'
 import { isEmailValid, nameValidator } from '../../../../common/utils/helpers'
 import hashIcon from '../../../../student/assets/hashtag-icon.svg'
 import keyIcon from '../../../../student/assets/key-icon.svg'
@@ -25,6 +26,7 @@ import {
   PanelHeader,
   Title,
 } from './styled'
+import AdditionalFields from '../../../ManageClass/components/ClassDetails/AddStudent/AdditionalFields'
 
 const { Option } = Select
 const { Panel } = Collapse
@@ -312,6 +314,16 @@ class AddNewUserForm extends React.Component {
       <PanelHeader>
         <Icon type="setting" theme="filled" />
         <label>Configure Additional Details</label>
+      </PanelHeader>
+    )
+
+    const AccommodationsHeader = (
+      <PanelHeader>
+        <div className="flex">
+          <IconAccessibility style={{ fill: themeColor }} />
+          <label>Configure Accommodations</label>
+        </div>
+        <small>Set TTS, STT, IR acommodations</small>
       </PanelHeader>
     )
 
@@ -670,6 +682,12 @@ class AddNewUserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+            </Panel>
+            <Panel header={AccommodationsHeader} key="accommodations">
+              <AdditionalFields
+                type="accommodations"
+                getFieldDecorator={getFieldDecorator}
+              />
             </Panel>
           </Collapse>
         </Form>

@@ -2,6 +2,7 @@ import {
   greyThemeLight,
   lightGreySecondary,
   themeColor,
+  secondaryTextColor,
 } from '@edulastic/colors'
 import { Button, Form } from 'antd'
 import styled from 'styled-components'
@@ -61,6 +62,14 @@ export const PanelHeader = styled.div`
   label {
     margin-left: 8px;
     color: ${themeColor};
+  }
+  .flex {
+    display: flex;
+    align-items: center;
+  }
+  small {
+    font-size: 12px;
+    color: ${secondaryTextColor};
   }
 `
 

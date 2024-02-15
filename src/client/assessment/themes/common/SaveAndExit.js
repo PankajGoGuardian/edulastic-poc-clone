@@ -25,10 +25,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { themeColor } from '@edulastic/colors'
-import {
-  getUserFeatures,
-  getUserNameSelector,
-} from '../../../author/src/selectors/user'
+import { getUserNameSelector } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
   adjustScratchpadDimensionsAction,
@@ -47,6 +44,8 @@ import {
 } from './styledCompoenents'
 
 import TimedTestTimer from './TimedTestTimer'
+import { getUserAccommodations } from '../../../student/Login/ducks'
+import { isImmersiveReaderEnabled } from '../../utils/helpers'
 
 export function useUtaPauseAllowed(utaId) {
   if (!utaId) {
@@ -92,9 +91,9 @@ const SaveAndExit = ({
   showImmersiveReader,
   currentItem,
   options,
-  features,
   userName,
   t: i18Translate,
+  accommodations,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 
@@ -112,7 +111,6 @@ const SaveAndExit = ({
     immersiveReaderTitle = `Question ${currentItemIndex}/${totalNumberOfItems}`
   }
 
-  const { canUseImmersiveReader = false } = features
   const isIOS = window.isIOS
 
   const isTestTakenByCliUser = isCliUserPreview && isCliUser
@@ -200,7 +198,12 @@ const SaveAndExit = ({
           </ScratchpadVisibilityToggler>
         </>
       )}
-      <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+      <EduIf
+        condition={isImmersiveReaderEnabled(
+          showImmersiveReader,
+          accommodations
+        )}
+      >
         <EduThen>
           <ImmersiveReader
             ImmersiveReaderButton={ImmersiveReaderButton}
@@ -310,7 +313,6 @@ SaveAndExit.propTypes = {
   savingResponse: PropTypes.bool,
   options: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
-  features: PropTypes.object,
 }
 
 SaveAndExit.defaultProps = {
@@ -319,7 +321,6 @@ SaveAndExit.defaultProps = {
   setSettingsModalVisibility: () => null,
   onSubmit: null,
   savingResponse: false,
-  features: {},
 }
 
 export default compose(
@@ -335,8 +336,8 @@ export default compose(
         'test.settings.showImmersiveReader',
         false
       ),
-      features: getUserFeatures(state),
       userName: getUserNameSelector(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       adjustScratchpad: adjustScratchpadDimensionsAction,

@@ -136,6 +136,7 @@ const {
   passwordPolicy,
   testCategoryTypes,
   SHOW_IMMERSIVE_READER,
+  SHOW_SPEECH_TO_TEXT,
 } = testConstants
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
@@ -1174,7 +1175,8 @@ export const createBlankTest = () => ({
   allowTeacherRedirect: true,
   showTtsForPassages: true,
   hasSections: undefined,
-  [SHOW_IMMERSIVE_READER]: false,
+  [SHOW_IMMERSIVE_READER]: undefined,
+  [SHOW_SPEECH_TO_TEXT]: undefined,
 })
 
 const initialState = {
@@ -2084,6 +2086,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     allowTeacherRedirect,
     showTtsForPassages,
     showImmersiveReader: entity.showImmersiveReader,
+    showSpeechToText: entity.showSpeechToText,
     vqPreventSkipping: entity.vqPreventSkipping,
   }
 

@@ -326,7 +326,7 @@ export const getNoDataTextForFilter = (filters, itemType, defaultMsg) => {
   const hasOtherFilter =
     hasValue(omit(filters, ['filter', 'searchString'])) || !isEntireLibrary
 
-  const isCategoryFilter = isEntireLibrary || filters?.searchString.length > 0
+  const isCategoryFilter = isEntireLibrary || filters?.searchString?.length > 0
 
   if (hasOtherFilter || !isCategoryFilter) {
     return `No ${itemType} matches for applied filters. Please re-check filters applied on the left.`

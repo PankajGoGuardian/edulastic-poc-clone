@@ -134,7 +134,7 @@ const CompletionReportTable = ({
       dataIndex: 'testName',
       key: 'testName',
       sorter: true,
-      width: 300,
+      width: 250,
       render: (text, record) => {
         return {
           children: record.index === 0 ? record.testName : '',
@@ -319,7 +319,7 @@ const CompletionReportTable = ({
     })
   }
 
-  const totalPageSize = parseInt(dataSource?.[0].totalRows, 10)
+  const totalPageSize = parseInt(dataSource?.[1]?.totalRows, 10) || 0
 
   return (
     <TableContainer ref={childrenRef}>
@@ -344,9 +344,10 @@ const CompletionReportTable = ({
             pagination={{
               total: totalPageSize,
               onChange: handleTablePageChange,
+              pageSize: pageFilters.pageSize + 1,
             }}
             rowClassName={getRowClassName}
-            scroll={{ x: true }}
+            scroll={{ y: 400 }}
           />
         </EduThen>
       </EduIf>

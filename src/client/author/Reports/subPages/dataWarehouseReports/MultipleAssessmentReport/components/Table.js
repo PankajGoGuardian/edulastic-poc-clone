@@ -111,7 +111,6 @@ const getTableColumns = ({
   sortFilters,
 }) => {
   const compareBy = settings.selectedCompareBy
-  const isDistrictCompareBy = compareBy.key === compareByKeys.DISTRICT
   const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -155,7 +154,10 @@ const getTableColumns = ({
     }
     _columns[compareByIdx].defaultSortOrder = 'ascend'
 
-    if (isDistrictGroupAdmin && !isDistrictCompareBy) {
+    if (
+      isDistrictGroupAdmin &&
+      [compareByKeys.SCHOOL, compareByKeys.CLASS].includes(compareBy.key)
+    ) {
       const districtColumn = {
         dataIndex: compareByMap[compareByKeys.DISTRICT],
         key: compareByMap[compareByKeys.DISTRICT],

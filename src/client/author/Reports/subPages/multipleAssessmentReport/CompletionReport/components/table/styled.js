@@ -1,4 +1,4 @@
-import { themeColor } from '@edulastic/colors'
+import { greyThemeDark4, themeColor, white } from '@edulastic/colors'
 import { Table } from 'antd'
 import styled from 'styled-components'
 
@@ -38,16 +38,29 @@ export const StyledTable = styled(Table)`
   .ant-table-thead th {
     font-weight: 700;
     font-size: 12px;
+    background-color: ${white};
     color: #999999;
     text-transform: uppercase;
   }
   .ant-table-tbody > tr {
+    &.overall-row {
+      background-color: #f9f9f9;
+      > td:first-child {
+        color: ${greyThemeDark4};
+      }
+    }
+
     > td {
+      font-size: 12px;
+      font-weight: 600;
       &.absent {
-        background-color: #d8d8d8;
+        background-color: #cee4ff;
       }
       &:not(.absent) {
         color: ${themeColor};
+      }
+      div > a > .dimension-name {
+        margin: 0;
       }
     }
   }

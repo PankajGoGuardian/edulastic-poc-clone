@@ -2,21 +2,21 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { groupBy } from 'lodash'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
+import {
+  tableToDBSortOrderMap,
+  downloadCSV,
+} from '@edulastic/constants/reportUtils/common'
+import { Link } from 'react-router-dom'
+import qs from 'qs'
 import TableHeader from './TableHeader'
 import { ActionContainer, StyledTable, TableContainer } from './styled'
 
 import CopyReportLink from './CopyReportLink'
-import {
-  compareByMap,
-  getTableDataSource,
-  sortKeys,
-  tableColumnsData,
-} from '../../utils'
+import { getTableDataSource, sortKeys, tableColumnsData } from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
-import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
+
 import {
   compareByOptions,
   compareByOptionsMapByKey,
@@ -24,12 +24,9 @@ import {
   statusMap,
   sortKey,
 } from '../../../common/utils/constants'
-import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+
 import { convertTableToCSV } from '../../../../../common/util'
-import { Link } from 'react-router-dom'
 import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
-import qs from 'qs'
-import { Empty } from 'antd'
 
 const getTableColumns = (isSharedReport, settings, staticColumns) => {
   const compareBy = settings.selectedCompareBy
@@ -137,6 +134,7 @@ const CompletionReportTable = ({
       dataIndex: 'testName',
       key: 'testName',
       sorter: true,
+      width: 300,
       render: (text, record) => {
         return {
           children: record.index === 0 ? record.testName : '',
@@ -280,21 +278,10 @@ const CompletionReportTable = ({
 
   const dataSource = getTableDataSource([overAllData, ...tableData])
 
-  console.log({ sharedReport })
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),
     [tableData, settings]
   )
-
-  // if (isTableDataLoading) {
-  //   return (
-  //     <SpinLoader
-  //       tip="Loading completion table data..."
-  //       position="relative"
-  //       height="70%"
-  //     />
-  //   )
-  // }
 
   const handleTableChange = (pagination, filters, sorter) => {
     if (sorter.field === 'testName') {
@@ -309,17 +296,7 @@ const CompletionReportTable = ({
       })
     }
   }
-  // const tableColumns = useMemo(
-  //   () =>
-  //     getTableColumns(
-  //       overallAssessmentsData,
-  //       isSharedReport,
-  //       settings,
-  //       isPrinting,
-  //       sortFilters
-  //     ),
-  //   [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
-  // )
+
   const onCsvConvert = (data) => downloadCSV(`Completion Report.csv`, data)
   const childrenRef = useRef(null)
 
@@ -329,6 +306,11 @@ const CompletionReportTable = ({
       onCsvConvert(csvText, csvRawData)
     }
   }, [isCsvDownloading])
+  const getRowClassName = (record) => {
+    if (record.testId === 'overall_tid') {
+      return 'overall-row'
+    }
+  }
 
   const handleTablePageChange = (page) => {
     setPageFilters({
@@ -342,28 +324,38 @@ const CompletionReportTable = ({
   return (
     <TableContainer ref={childrenRef}>
       <EduIf condition={tableData.length}>
-        <TableHeader
-          urlCompareBy={urlCompareBy}
-          compareBy={compareBy}
-          setCompareBy={setCompareBy}
-          settings={settings}
-          setMARSettings={setMARSettings}
-          compareByCB={compareByCB}
-          location={location}
-          setAnalyseBy={setAnalyseBy}
-          analyseBy={analyseBy}
-        />
-        {/* Table component */}
-        <StyledTable
-          loading={isTableDataLoading}
-          onChange={handleTableChange}
-          columns={columns}
-          dataSource={dataSource}
-          pagination={{
-            total: totalPageSize,
-            onChange: handleTablePageChange,
-          }}
-        />
+        <EduThen>
+          <TableHeader
+            urlCompareBy={urlCompareBy}
+            compareBy={compareBy}
+            setCompareBy={setCompareBy}
+            settings={settings}
+            setMARSettings={setMARSettings}
+            compareByCB={compareByCB}
+            location={location}
+            setAnalyseBy={setAnalyseBy}
+            analyseBy={analyseBy}
+          />
+          <StyledTable
+            loading={isTableDataLoading}
+            onChange={handleTableChange}
+            columns={columns}
+            dataSource={dataSource}
+            pagination={{
+              total: totalPageSize,
+              onChange: handleTablePageChange,
+            }}
+            rowClassName={getRowClassName}
+            scroll={{ x: true }}
+          />
+        </EduThen>
+        <EduElse>
+          <SpinLoader
+            tip="Loading completion table data..."
+            position="relative"
+            height="70%"
+          />
+        </EduElse>
       </EduIf>
     </TableContainer>
   )

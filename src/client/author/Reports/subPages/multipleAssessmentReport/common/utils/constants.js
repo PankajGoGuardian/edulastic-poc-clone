@@ -139,8 +139,8 @@ export const referenceLinesForCompletionChart = [
   },
 ]
 export const analyzeBy = [
-  { key: 'percentage', title: 'Percentage(%)' },
   { key: 'number', title: 'Number' },
+  { key: 'percentage', title: 'Percentage(%)' },
 ]
 
 export const sortKey = {

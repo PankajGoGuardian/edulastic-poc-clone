@@ -24,7 +24,8 @@
     "grade": "GRADE",
     "cancel": "CANCEL",
     "continue": "CONTINUE",
-    "apply": "APPLY"
+    "apply": "APPLY",
+    "vqLibrary": "Video Quiz"
   },
   "toolbar": {
     "bookmark": "Bookmark",
@@ -78,10 +79,10 @@
     "testOptions": "Test Options"
   },
   "saveAndExit": {
-		"assignmentInOneSitting": "This assignment is configured to completed in a single sitting",
+    "assignmentInOneSitting": "This assignment is configured to completed in a single sitting",
     "exit": "Exit",
     "saveAndExit": "Save & Exit",
     "submit": "SUBMIT",
     "signOut": "SIGN OUT"
-	}
+  }
 }

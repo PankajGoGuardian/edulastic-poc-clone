@@ -167,14 +167,14 @@ export default class FormChoice extends React.Component {
     if (isTrueOrFalse) return this.renderRadioForm(answer, onChangeHandler)
 
     return (
-      <QuestionChunk>
+      <QuestionChunk data-cy="mcqChoice">
         <Stimulus
           style={{ marginBottom: 10, minHeight: 32 }}
           dangerouslySetInnerHTML={{ __html: stimulus }}
         />
         {options.map(({ label, value }, key) => {
           return (
-            <StyledOptionsContainer>
+            <StyledOptionsContainer data-cy="mcqMultiOption">
               <QuestionOption
                 tabIndex="0"
                 mode={mode}

@@ -176,9 +176,9 @@ const WholeLearnerReportFilters = ({
     if (reportId) {
       Object.assign(q, { reportId })
       fetchFiltersDataRequest(q)
-    } else if (urlStudentId && search.termId) {
+    } else if (urlStudentId && (search.termId || search.subActiveKey)) {
       Object.assign(q, {
-        termId: search.termId,
+        termId: search.termId|| defaultTermId,
         studentId: urlStudentId,
         externalTestTypesRequired: true,
         externalTestsRequired: !isMultiSchoolYear,

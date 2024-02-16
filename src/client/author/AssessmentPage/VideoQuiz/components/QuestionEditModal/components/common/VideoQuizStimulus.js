@@ -25,6 +25,7 @@ const VideoQuizStimulus = ({ stimulus, onUpdate }) => {
         onFocus={() => handleFocusBlurEvent('focus')}
         onBlur={() => handleFocusBlurEvent('blur')}
         isQuestionInputActive={isQuestionInputActive}
+        data-cy="questionInputArea"
       >
         <QuestionTextArea
           onChange={(value) => handleStimulusChange(value || '')}

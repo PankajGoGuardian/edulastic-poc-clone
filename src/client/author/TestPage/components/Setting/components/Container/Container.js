@@ -5,7 +5,16 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject, pick, omit } from 'lodash'
 import Styled from 'styled-components'
-import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
+import {
+  Anchor,
+  Col,
+  Icon,
+  InputNumber,
+  Row,
+  Select,
+  Tooltip,
+  Checkbox,
+} from 'antd'
 import {
   blueBorder,
   green,
@@ -26,7 +35,6 @@ import {
   withWindowSizes,
   EduButton,
   EduIf,
-  EduThen,
   FlexContainer,
 } from '@edulastic/common'
 import {
@@ -38,7 +46,6 @@ import { IconInfo, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 
 import {
-  SHOW_IMMERSIVE_READER,
   TEST_CONTENT_VISIBILITY,
   testContentVisibility as contentVisiblityOptions,
   testCategoryTypes,
@@ -90,6 +97,7 @@ import {
   Title,
   SavedSettingsContainerStyled,
   SubHeaderContainer,
+  StyledRadioCheckboxGroup,
 } from './styled'
 import PerformanceBand from './PerformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
@@ -127,10 +135,7 @@ import TtsForPassage from './TtsForPassage'
 import ShowSectionSettings from './SectionSettings'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
-import {
-  BetaTag,
-  BetaTag2,
-} from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
+import { BetaTag2 } from '../../../../../AssessmentCreate/components/OptionDynamicTest/styled'
 import ContentVisibilityOptions from '../Common/ContentVisibilityOptions'
 import { isPearDomain } from '../../../../../../../utils/pear'
 import {
@@ -156,14 +161,12 @@ const {
   settingsList,
   TEST_SETTINGS_SAVE_LIMIT,
   accessibilitySettings,
+  accommodations,
+  accommodationsSettings,
 } = testConstants
 
-const {
-  magnifier,
-  scratchPad,
-  skipAlert,
-  immersiveReader,
-} = accessibilitySettings
+const { magnifier, scratchPad, skipAlert } = accessibilitySettings
+const { immersiveReader, speechToText } = accommodationsSettings
 
 const { Option } = Select
 
@@ -195,6 +198,7 @@ class Setting extends Component {
       showUpdateSettingModal: false,
       settingDetails: null,
       isStudentToolsGroupExpanded: true,
+      isAccommodationsExpanded: true,
     }
 
     this.containerRef = React.createRef()
@@ -202,7 +206,7 @@ class Setting extends Component {
 
   static getDerivedStateFromProps(nextProps) {
     const { features, entity } = nextProps
-    const { grades, subjects } = entity
+    const { grades, subjects, isDocBased } = entity
     if (
       features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
@@ -216,6 +220,12 @@ class Setting extends Component {
       return {
         _releaseGradeKeys: releaseGradeKeys,
       }
+    }
+    if (features.canUseImmersiveReader && !isDocBased) {
+      this.updateTestData(immersiveReader.key)(false)
+    }
+    if (features.speechToText) {
+      this.updateTestData(speechToText.key)(false)
     }
     return {
       _releaseGradeKeys: nonPremiumReleaseGradeKeys,
@@ -799,6 +809,7 @@ class Setting extends Component {
       settingDetails,
       showUpdateSettingModal,
       isStudentToolsGroupExpanded,
+      isAccommodationsExpanded,
     } = this.state
     const {
       current,
@@ -851,7 +862,7 @@ class Setting extends Component {
       testContentVisibility,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
-      showImmersiveReader = false,
+      showImmersiveReader,
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
@@ -879,14 +890,13 @@ class Setting extends Component {
       showTtsForPassages = true,
       allowAutoEssayEvaluation = false,
       vqPreventSkipping,
+      showSpeechToText,
     } = entity
 
     const showRefMaterial = !isDocBased
 
     // Updating the SettingCatogeries based on hasSections field
     const settingCategories = this.getSettingCategories()
-
-    const { canUseImmersiveReader } = features
 
     const availableTestTypes = getAvailableTestTypesForUser({
       isPremium: premium,
@@ -1003,16 +1013,27 @@ class Setting extends Component {
       },
     ]
 
-    if (canUseImmersiveReader && !isDocBased) {
-      accessibilityData.unshift({
+    // Accommodations settings will be visible only for premium & enterprise users
+    const accommodationsData = [
+      {
         key: immersiveReader.key,
         value: showImmersiveReader,
         description: i18translate(
-          'accessibilitySettings.immersiveReader.description'
+          'accommodationsSettings.immersiveReader.description'
         ),
         id: immersiveReader.id,
-      })
-    }
+        isEnabled: features.canUseImmersiveReader && !isDocBased, // IR doesn't work in Doc based so disabling for it
+      },
+      {
+        key: speechToText.key,
+        value: showSpeechToText,
+        description: i18translate(
+          'accommodationsSettings.speechToText.description'
+        ),
+        id: speechToText.id,
+        isEnabled: features.speechToText,
+      },
+    ]
 
     const isTestlet =
       playerSkinType?.toLowerCase() === playerSkinValues.testlet.toLowerCase()
@@ -1940,30 +1961,19 @@ class Setting extends Component {
                                 }}
                               >
                                 {accessibilities[o.key]}
-                                <EduIf
-                                  condition={o.key === SHOW_IMMERSIVE_READER}
-                                >
-                                  <EduThen>
-                                    <BetaTag top="-50%" left="125.55px">
-                                      BETA
-                                    </BetaTag>
-                                  </EduThen>
-                                </EduIf>
                               </span>
                             </Col>
                             <Col span={12}>
                               <StyledRadioGroup
-                                disabled={
-                                  disabled ||
-                                  (o.key === immersiveReader.key
-                                    ? !canUseImmersiveReader
-                                    : !features[o.key])
-                                }
+                                disabled={disabled || !features[o.key]}
                                 onChange={(e) =>
                                   this.updateTestData(o.key)(e.target.value)
                                 }
                                 value={o.value}
-                                style={{ flexDirection: 'row', height: '18px' }}
+                                style={{
+                                  flexDirection: 'row',
+                                  height: '18px',
+                                }}
                               >
                                 <RadioBtn data-cy={`${o.key}-enable`} value>
                                   ENABLE
@@ -2051,6 +2061,77 @@ class Setting extends Component {
                   </Block>
                 </>
               )}
+              <EduIf
+                condition={accommodationsData.filter((a) => a.isEnabled).length}
+              >
+                <SettingsCategoryBlock id="accommodations">
+                  <span>
+                    Accommodations <DollarPremiumSymbol premium={premium} />
+                  </span>
+                  <span
+                    onClick={() =>
+                      this.togglePanel(
+                        'isAccommodationsExpanded',
+                        !isAccommodationsExpanded
+                      )
+                    }
+                  >
+                    <Icon type={isAccommodationsExpanded ? 'minus' : 'plus'} />
+                  </span>
+                </SettingsCategoryBlock>
+                {isAccommodationsExpanded && (
+                  <Block id="accessibility" smallSize={isSmallSize}>
+                    <p>{i18translate('accommodationsSettings.description')}</p>
+                    <RadioWrapper
+                      disabled={disabled}
+                      style={{
+                        marginTop: '20px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {accommodationsData.map((o) => (
+                        <StyledRow key={o.key} align="middle">
+                          <Col span={6}>
+                            <span
+                              style={{
+                                fontSize: 13,
+                                fontWeight: 600,
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              {accommodations[o.key]}
+                            </span>
+                          </Col>
+                          <Col span={12}>
+                            <StyledRadioCheckboxGroup
+                              disabled={disabled}
+                              onChange={([first, last]) => {
+                                const value = last !== undefined ? last : first
+                                this.updateTestData(o.key)(value)
+                              }}
+                              value={[o.value]}
+                            >
+                              <Checkbox data-cy={`${o.key}-enable`} value>
+                                ENABLE
+                              </Checkbox>
+                              <Checkbox
+                                data-cy={`${o.key}-disable`}
+                                value={false}
+                              >
+                                DISABLE
+                              </Checkbox>
+                            </StyledRadioCheckboxGroup>
+                          </Col>
+                          <Col span={24}>
+                            <Description>{o.description}</Description>
+                          </Col>
+                        </StyledRow>
+                      ))}
+                    </RadioWrapper>
+                  </Block>
+                )}
+              </EduIf>
               <SettingsCategoryBlock id="anti-cheating">
                 <span>
                   Anti-Cheating <DollarPremiumSymbol premium={premium} />

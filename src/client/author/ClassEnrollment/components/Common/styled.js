@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 import { Modal, Button, Form as AntdForm } from 'antd'
-import { lightGrey3, title, themeColor, white, red } from '@edulastic/colors'
+import {
+  lightGrey3,
+  themeColor,
+  white,
+  red,
+  secondaryTextColor,
+} from '@edulastic/colors'
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -71,6 +77,14 @@ export const PanelHeader = styled.div`
   label {
     margin-left: 8px;
     color: ${themeColor};
+  }
+  .flex {
+    display: flex;
+    align-items: center;
+  }
+  small {
+    font-size: 12px;
+    color: ${secondaryTextColor};
   }
 `
 

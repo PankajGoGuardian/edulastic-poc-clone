@@ -8,7 +8,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import NoDataNotification from '../../../common/components/NoDataNotification'
-import { getClasses, getCurrentGroup } from '../../Login/ducks'
+import {
+  getClasses,
+  getCurrentGroup,
+  getUserAccommodations,
+} from '../../Login/ducks'
 // components
 import AssignmentCard from '../../sharedComponents/AssignmentCard'
 import {
@@ -35,6 +39,7 @@ import {
   getSelectedLanguageSelector,
 } from '../ducks'
 import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import { getUserNameSelector } from '../../../author/src/selectors/user'
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now()
@@ -88,6 +93,8 @@ const Content = ({
   setSelectedLanguage,
   languagePreference,
   assignmentsGrousByTestId,
+  userName,
+  accommodations,
 }) => {
   const [
     showVideoResourcePreviewModal,
@@ -106,6 +113,22 @@ const Content = ({
   ]
 
   const transformAssignment = (payload) => {
+    // Updating allowedTime & timedAssignment based on accommodations
+    if (payload?.timedAssignment && accommodations?.extraTimeOnTest > 0) {
+      payload = {
+        ...payload,
+        allowedTime: payload.allowedTime * accommodations.extraTimeOnTest,
+      }
+    } else if (
+      payload?.timedAssignment &&
+      accommodations?.extraTimeOnTest === -1
+    ) {
+      payload = {
+        ...payload,
+        allowedTime: 0,
+        timedAssignment: false,
+      }
+    }
     addRealtimeAssignment(
       transformAssignmentForRedirect(
         currentGroup,
@@ -185,6 +208,7 @@ const Content = ({
           languagePreference={languagePreference}
           setSelectedLanguage={setSelectedLanguage}
           setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          userName={userName}
         />
       ))}
     </AssignmentWrapper>
@@ -216,6 +240,7 @@ export default connect(
   (state) => ({
     flag: state.ui.flag,
     currentGroup: getCurrentGroup(state),
+    userName: getUserNameSelector(state),
     assignments: getAssignmentsSelector(state),
     allAssignments: values(assignmentsSelector(state)),
     allClasses: getClasses(state),
@@ -226,6 +251,7 @@ export default connect(
     assignmentsGrousByTestId: assignmentIdsGroupIdsByTestIdSelector(state),
     notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
     languagePreference: getSelectedLanguageSelector(state),
+    accommodations: getUserAccommodations(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,

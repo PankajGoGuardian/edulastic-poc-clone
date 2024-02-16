@@ -14,15 +14,18 @@ import {
   IconPlusRounded,
   IconMinusRounded,
   IconImmersiveReader,
+  IconProfileCircle,
+  IconUserRegular,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Tooltip } from 'antd'
+import { Dropdown, Icon, Menu, Tooltip } from 'antd'
 import { get, isNaN } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { getUserFeatures } from '../../../author/src/selectors/user'
+import { themeColor } from '@edulastic/colors'
+import { getUserNameSelector } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
   adjustScratchpadDimensionsAction,
@@ -30,13 +33,19 @@ import {
 import { setSettingsModalVisibilityAction } from '../../../student/Sidebar/ducks'
 import {
   AdjustScratchpad,
+  StyledMenuItem,
   SaveAndExitButton,
   ScratchpadVisibilityToggler,
   StyledButton,
   StyledDiv,
+  StyledDefaultMenuItem,
+  StyledTextForStudent,
+  StyledTextForDropdown,
 } from './styledCompoenents'
 
 import TimedTestTimer from './TimedTestTimer'
+import { getUserAccommodations } from '../../../student/Login/ducks'
+import { isImmersiveReaderEnabled } from '../../utils/helpers'
 
 export function useUtaPauseAllowed(utaId) {
   if (!utaId) {
@@ -82,8 +91,9 @@ const SaveAndExit = ({
   showImmersiveReader,
   currentItem,
   options,
-  features,
+  userName,
   t: i18Translate,
+  accommodations,
 }) => {
   const utaPauseAllowed = useUtaPauseAllowed(utaId)
 
@@ -101,10 +111,70 @@ const SaveAndExit = ({
     immersiveReaderTitle = `Question ${currentItemIndex}/${totalNumberOfItems}`
   }
 
-  const { canUseImmersiveReader = false } = features
+  const isIOS = window.isIOS
+
+  const isTestTakenByCliUser = isCliUserPreview && isCliUser
+  const showExitButton = showPause && !inSEB && !isTestTakenByCliUser
+
+  const menu = (
+    <Menu>
+      {showZoomBtn && !LCBPreviewModal && (
+        <Menu.Item>
+          <Tooltip placement="left" title={i18Translate('testOptions.title')}>
+            <StyledMenuItem
+              data-cy="testOptions"
+              aria-label="Test options"
+              onClick={() => setSettingsModalVisibility(true)}
+            >
+              <IconAccessibility
+                height="22px"
+                width="22px"
+                style={{ fill: themeColor }}
+              />{' '}
+              Accessibility
+            </StyledMenuItem>
+          </Tooltip>
+        </Menu.Item>
+      )}
+      {showExitButton && (
+        <Menu.Item>
+          <Tooltip
+            placement="left"
+            title={
+              hidePause
+                ? i18Translate('saveAndExit.assignmentInOneSitting')
+                : i18Translate(
+                    `saveAndExit.${previewPlayer ? 'exit' : 'saveAndExit'}`
+                  )
+            }
+          >
+            <StyledMenuItem
+              data-cy="finishTest"
+              aria-label="Save and exit"
+              disabled={hidePause}
+              onClick={finishTest}
+            >
+              <IconCircleLogout
+                height="22px"
+                width="22px"
+                style={{ fill: themeColor }}
+              />{' '}
+              Exit
+            </StyledMenuItem>
+          </Tooltip>
+        </Menu.Item>
+      )}
+    </Menu>
+  )
 
   return (
     <FlexContainer alignItems="center">
+      {!isIOS && (
+        <FlexContainer alignItems="center">
+          <IconProfileCircle isBgDark style={{ marginRight: '8px' }} />
+          <StyledTextForStudent color="white">{userName}</StyledTextForStudent>
+        </FlexContainer>
+      )}
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {LCBPreviewModal && (
         <>
@@ -128,7 +198,12 @@ const SaveAndExit = ({
           </ScratchpadVisibilityToggler>
         </>
       )}
-      <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+      <EduIf
+        condition={isImmersiveReaderEnabled(
+          showImmersiveReader,
+          accommodations
+        )}
+      >
         <EduThen>
           <ImmersiveReader
             ImmersiveReaderButton={ImmersiveReaderButton}
@@ -136,7 +211,7 @@ const SaveAndExit = ({
           />
         </EduThen>
       </EduIf>
-      {showZoomBtn && !LCBPreviewModal && (
+      {showZoomBtn && !LCBPreviewModal && !isIOS && (
         <Tooltip placement="bottom" title={i18Translate('testOptions.title')}>
           <StyledButton
             data-cy="testOptions"
@@ -147,7 +222,23 @@ const SaveAndExit = ({
           </StyledButton>
         </Tooltip>
       )}
-      {showPause &&
+      {isIOS ? (
+        <Dropdown overlay={menu}>
+          <StyledDefaultMenuItem>
+            <FlexContainer alignItems="center">
+              <IconUserRegular
+                height="16px"
+                width="16px"
+                style={{ marginRight: '8px' }}
+                fill={themeColor}
+              />
+              <StyledTextForDropdown>{userName}</StyledTextForDropdown>
+            </FlexContainer>{' '}
+            <Icon type="down" />
+          </StyledDefaultMenuItem>
+        </Dropdown>
+      ) : (
+        showPause &&
         !inSEB &&
         (previewPlayer ? (
           <>
@@ -194,7 +285,8 @@ const SaveAndExit = ({
               </Tooltip>
             )}
           </>
-        ))}
+        ))
+      )}
       {onSubmit && (
         <StyledDiv id="submitTestButton" tabIndex="-1">
           <EduButton
@@ -211,7 +303,6 @@ const SaveAndExit = ({
     </FlexContainer>
   )
 }
-
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
   adjustScratchpad: PropTypes.func.isRequired,
@@ -222,7 +313,6 @@ SaveAndExit.propTypes = {
   savingResponse: PropTypes.bool,
   options: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
-  features: PropTypes.object,
 }
 
 SaveAndExit.defaultProps = {
@@ -231,7 +321,6 @@ SaveAndExit.defaultProps = {
   setSettingsModalVisibility: () => null,
   onSubmit: null,
   savingResponse: false,
-  features: {},
 }
 
 export default compose(
@@ -247,7 +336,8 @@ export default compose(
         'test.settings.showImmersiveReader',
         false
       ),
-      features: getUserFeatures(state),
+      userName: getUserNameSelector(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       adjustScratchpad: adjustScratchpadDimensionsAction,

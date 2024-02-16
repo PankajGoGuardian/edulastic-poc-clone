@@ -71,6 +71,7 @@ import { aiTestDetails } from '../../AssessmentCreate/components/CreateAITest/du
 import { reducer as tutorMeReducer } from '../../TutorMe'
 import aiGenerateQuestionState from './aiGenerateQuestion'
 import ttsTextReducer from './ttsText'
+import { videoQuizReducer } from '../../VideoLibrary/ducks'
 
 const authorReducers = {
   authorUi,
@@ -146,6 +147,7 @@ const authorReducers = {
   aiGenerateQuestionState,
   tutorMeReducer,
   ttsTextReducer,
+  videoQuizReducer,
 }
 
 export default authorReducers

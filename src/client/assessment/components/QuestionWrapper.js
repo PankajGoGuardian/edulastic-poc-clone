@@ -65,6 +65,7 @@ import {
   ManualEvaluationMessage,
   PaperWrapper,
 } from '../styled/QuestionWrapperStyledComponents'
+import { getAccommodationsTtsSelector } from '../../student/Login/ducks'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -875,7 +876,7 @@ const enhance = compose(
         ['author_classboard_testActivity', 'presentationMode'],
         false
       ),
-      showUserTTS: get(state, 'user.user.tts', 'no'),
+      showUserTTS: getAccommodationsTtsSelector(state),
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
       userRole: getUserRole(state),

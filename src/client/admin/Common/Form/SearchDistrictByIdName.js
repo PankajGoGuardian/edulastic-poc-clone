@@ -10,7 +10,9 @@ const CircularInput = styled(Input)`
   margin-right: 10px;
   border-radius: 20px;
 `
-
+/**
+ * The component is named SearchDistrictByIdName, but has no "District" specific logic.
+ */
 export default function SearchDistrictByIdName({
   getFieldDecorator,
   handleSubmit,

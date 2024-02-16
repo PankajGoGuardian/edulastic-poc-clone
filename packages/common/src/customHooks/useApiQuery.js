@@ -16,6 +16,7 @@ import _ from 'lodash'
  * @typedef {{
  *    enabled?: Boolean | (params: ParamType) => Boolean
  *    debounceTimeout?: Number
+ *    deDuplicate?: boolean
  * }} useApiQueryOptions
  */
 

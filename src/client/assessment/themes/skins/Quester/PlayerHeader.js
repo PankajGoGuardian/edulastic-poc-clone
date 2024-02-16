@@ -20,6 +20,7 @@ import {
   IconQuester,
   IconImmersiveReader,
   IconPearAssessLogoCompactOnDarkBg,
+  IconProfileCircle,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -43,6 +44,10 @@ import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { isPearDomain } from '../../../../../utils/pear'
+import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import { StyledTextForStudent } from '../../common/styledCompoenents'
+import { getUserAccommodations } from '../../../../student/Login/ducks'
+import { isImmersiveReaderEnabled } from '../../../utils/helpers'
 
 const {
   playerSkin: { quester },
@@ -88,9 +93,10 @@ const PlayerHeader = ({
   canShowPlaybackOptionTTS,
   firstItemInSectionAndRestrictNav,
   immersiveReaderTitle = '',
-  canUseImmersiveReader = false,
   showImmersiveReader,
   showSubmitText,
+  userName,
+  accommodations,
 }) => {
   const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
@@ -171,7 +177,18 @@ const PlayerHeader = ({
             </Title>
           </div>
           <RightContent>
-            <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
+            <FlexContainer alignItems="center">
+              <IconProfileCircle isBgDark />
+              <StyledTextForStudent color="white">
+                {userName}
+              </StyledTextForStudent>
+            </FlexContainer>
+            <EduIf
+              condition={isImmersiveReaderEnabled(
+                showImmersiveReader,
+                accommodations
+              )}
+            >
               <ImmersiveReader
                 ImmersiveReaderButton={ImmersiveReaderButton}
                 title={immersiveReaderTitle}
@@ -383,7 +400,9 @@ const enhance = compose(
       testType: state.test?.settings?.testType,
       grades: state.test?.grades,
       subjects: state.test?.subjects,
-      showImmersiveReader: state.test?.settings?.showImmersiveReader || false,
+      userName: getUserNameSelector(state),
+      showImmersiveReader: state.test?.settings?.showImmersiveReader,
+      accommodations: getUserAccommodations(state),
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

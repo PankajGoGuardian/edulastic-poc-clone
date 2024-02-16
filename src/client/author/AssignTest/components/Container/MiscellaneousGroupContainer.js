@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Col, Radio } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Col, Radio, Checkbox } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import { EduButton, EduIf, EduThen } from '@edulastic/common'
@@ -28,14 +28,16 @@ import {
   edulasticText,
   pearAssessmentText,
 } from '../../../../common/utils/helpers'
+import { StyledRadioCheckboxGroup } from '../../../TestPage/components/Setting/components/Container/styled'
 
-const { accessibilities, accessibilitySettings } = test
 const {
-  magnifier,
-  scratchPad,
-  skipAlert,
-  immersiveReader,
-} = accessibilitySettings
+  accessibilities,
+  accessibilitySettings,
+  accommodations,
+  accommodationsSettings,
+} = test
+const { magnifier, scratchPad, skipAlert } = accessibilitySettings
+const { immersiveReader, speechToText } = accommodationsSettings
 
 const MiscellaneousGroupContainer = ({
   assignmentSettings,
@@ -61,7 +63,8 @@ const MiscellaneousGroupContainer = ({
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
-    showImmersiveReader = !!testSettings.showImmersiveReader,
+    showImmersiveReader = testSettings.showImmersiveReader,
+    showSpeechToText = testSettings.showSpeechToText,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -110,16 +113,35 @@ const MiscellaneousGroupContainer = ({
     },
   ]
 
-  if (canUseImmersiveReader && !isDocBased) {
-    accessibilityData.unshift({
+  // Accommodations settings will be visible only for premium & enterprise users
+  const accommodationsData = [
+    {
       key: immersiveReader.key,
       value: showImmersiveReader,
       description: translate(
-        'accessibilitySettings.immersiveReader.description'
+        'accommodationsSettings.immersiveReader.description'
       ),
       id: immersiveReader.id,
-    })
-  }
+      isEnabled: canUseImmersiveReader && !isDocBased, // IR doesn't work in Doc based so disabling for it
+    },
+    {
+      key: speechToText.key,
+      value: showSpeechToText,
+      description: translate('accommodationsSettings.speechToText.description'),
+      id: speechToText.id,
+      isEnabled: featuresAvailable.speechToText,
+    },
+  ]
+
+  useEffect(() => {
+    if (accommodationsData.length) {
+      accommodationsData.forEach((acc) => {
+        if (!acc.isEnabled) {
+          overRideSettings(acc.key, false)
+        }
+      })
+    }
+  }, [accommodationsData])
 
   const {
     assessmentSuperPowersAnswerOnPaper,
@@ -239,6 +261,62 @@ const MiscellaneousGroupContainer = ({
       {/* Standards Based Grading Scale */}
 
       <div>
+        <Block smallSize id="accommodations">
+          {!!accommodationsData.filter((a) => a.isEnabled).length && (
+            <>
+              <Title>Accommodations Settings</Title>
+              <p>{translate('accommodationsSettings.description')}</p>
+              {!isDocBased && (
+                <RadioWrapper
+                  disabled={freezeSettings}
+                  style={{ marginTop: '10px', marginBottom: 0 }}
+                >
+                  {accommodationsData.map(({ key, value, description, id }) => (
+                    <SettingContainer id={id}>
+                      <DetailsTooltip
+                        width={tootltipWidth}
+                        title={accommodations[key]}
+                        content={description}
+                        premium
+                        placement="rightTop"
+                      />
+                      <StyledRow
+                        key={accommodations[key]}
+                        style={{ width: '100%' }}
+                      >
+                        <Col span={10}>
+                          <span style={{ fontSize: 12, fontWeight: 600 }}>
+                            {accommodations[key]}
+                          </span>
+                        </Col>
+
+                        <Col span={14}>
+                          <StyledRadioCheckboxGroup
+                            isAssignment
+                            disabled={freezeSettings}
+                            onChange={([first, last]) => {
+                              const checkValue =
+                                last !== undefined ? last : first
+                              overRideSettings(key, checkValue)
+                            }}
+                            value={[value]}
+                          >
+                            <Checkbox data-cy={`${key}-enable`} value>
+                              ENABLE
+                            </Checkbox>
+                            <Checkbox data-cy={`${key}-disable`} value={false}>
+                              DISABLE
+                            </Checkbox>
+                          </StyledRadioCheckboxGroup>
+                        </Col>
+                      </StyledRow>
+                    </SettingContainer>
+                  ))}
+                </RadioWrapper>
+              )}
+            </>
+          )}
+        </Block>
         <Block smallSize id="accessibility">
           {!!accessibilityData.length && (
             <>

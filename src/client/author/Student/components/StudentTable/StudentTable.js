@@ -9,7 +9,7 @@ import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
-import { get, identity, isEmpty, pickBy, unset, debounce } from 'lodash'
+import { get, identity, isEmpty, pickBy, unset, debounce, pick } from 'lodash'
 import * as moment from 'moment'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
@@ -445,12 +445,27 @@ class StudentTable extends Component {
           unset(values, ['confirmPassword'])
           unset(values, ['fullName'])
 
-          const o = {
+          let data = {
             createReq: pickBy(values, identity),
             listReq: this.getSearchQuery(),
           }
 
-          createAdminUser(o)
+          const accommodations = pick(values, [
+            'tts',
+            'stt',
+            'ir',
+            'preferredLanguage',
+            'extraTimeOnTest',
+          ])
+          const accommodationsData = pickBy(accommodations, identity)
+          if (Object.keys(accommodationsData).length) {
+            data = {
+              ...data,
+              accommodations: accommodationsData,
+            }
+          }
+
+          createAdminUser(data)
           this.setState({ addStudentModalVisible: false })
         }
       })

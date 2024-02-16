@@ -18,6 +18,7 @@ import {
 } from '../../student/Assignments/ducks'
 import { redirectToStudentPage } from '../../publicTest/utils'
 import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { getUserAccommodations } from '../../student/Login/ducks'
 
 const { STUDENT, TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = roleuser
 
@@ -34,6 +35,7 @@ const AssignmentEmbedLink = ({
   isVersionId,
   languagePreference,
   setSelectedLanguage,
+  accommodations,
 }) => {
   const { testId, versionId } = match.params
   useEffect(() => {
@@ -71,7 +73,8 @@ const AssignmentEmbedLink = ({
         resumeAssignment,
         {},
         languagePreference,
-        setSelectedLanguage
+        setSelectedLanguage,
+        accommodations
       )
     }
   }, [loadingAssignments])
@@ -85,6 +88,7 @@ export default connect(
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
     assignments: getAllAssignmentsSelector(state),
     languagePreference: getSelectedLanguageSelector(state),
+    accommodations: getUserAccommodations(state),
   }),
   {
     fetchAssignmentsByTestId: fetchAssignmentsByTestIdAction,

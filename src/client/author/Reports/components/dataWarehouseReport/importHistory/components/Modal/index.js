@@ -107,6 +107,7 @@ const Modal = ({
               onClick={() => {
                 setShowConfirmationPopup(true)
               }}
+              data-cy="deleteEntireFileButton"
             >
               <MdDelete color={themeColor} /> Delete Entire File
             </EduButton>

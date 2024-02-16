@@ -452,6 +452,9 @@ export default class API {
     )
   }
 
+  /**
+   * @param {import('axios').AxiosRequestConfig} param0
+   */
   callApi({ method = 'get', ...rest }) {
     const errorContext = new Error('Request made from: ')
     return this.instance({ method, ...rest, errorContext })

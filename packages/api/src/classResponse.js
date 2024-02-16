@@ -86,19 +86,11 @@ const questionClassQuestionResponse = ({ assignmentId, classId, questionId }) =>
     })
     .then((result) => result.data.result)
 
-const questionClassItemQuestionResponse = ({
-  assignmentId,
-  classId,
-  itemId,
-  questionId,
-}) =>
+const questionClassItemQuestionResponse = ({ assignmentId, classId, itemId }) =>
   api
     .callApi({
       url: `/assignments/${assignmentId}/item/${itemId}/group/${classId}`,
       method: 'get',
-      params: {
-        questionId,
-      },
     })
     .then((result) => result.data.result)
 

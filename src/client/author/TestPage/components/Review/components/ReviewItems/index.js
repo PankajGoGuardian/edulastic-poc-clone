@@ -37,6 +37,8 @@ const ReviewItems = ({
   orgCollections,
   userId,
   hasSections,
+  refreshGroupItems,
+  setShowAutoSelectScoreChangeModal,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -111,6 +113,7 @@ const ReviewItems = ({
           removeMultiple={removeMultiple}
           getContainer={getContainer}
           itemGroups={itemGroups}
+          refreshGroupItems={refreshGroupItems}
           isPublishers={isPublishers}
           userRole={userRole}
           isPowerPremiumAccount={isPowerPremiumAccount}
@@ -122,6 +125,7 @@ const ReviewItems = ({
           orgCollections={orgCollections}
           userId={userId}
           hasSections={hasSections}
+          setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
         />
       </Spin>
     </StyledSpinnerContainer>

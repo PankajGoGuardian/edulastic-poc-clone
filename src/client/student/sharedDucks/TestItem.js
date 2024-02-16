@@ -126,6 +126,11 @@ export const FeedbackByQIdSelector = createSelector(
   (testFeedback) => keyBy(testFeedback, 'qid')
 )
 
+export const feedbackByQIdAndTestItemIdSelector = createSelector(
+  getTestFeedbackSelector,
+  (testFeedback) => keyBy(testFeedback, (o) => `${o.qid}_${o.testItemId}`)
+)
+
 export const getMaxScoreFromCurrentItem = (state) => {
   const currentItem =
     state?.studentTestItems?.items?.[state?.studentTestItems?.current || 0]

@@ -32,6 +32,7 @@ import { compose } from 'redux'
 import { Modal } from 'antd'
 import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 
+import { ITEM_GROUP_TYPES } from '@edulastic/constants/const/test'
 import {
   getUserFeatures,
   getUserId,
@@ -508,6 +509,10 @@ const TestPageHeader = ({
     setIsDeleteModalOpen(false)
   }
 
+  const isFetchingAutoselectItems = test.itemGroups.some(
+    ({ type, items }) => type === ITEM_GROUP_TYPES.AUTOSELECT && !items.length
+  )
+
   const headingSubContent = (
     <TestStatus
       data-cy="status"
@@ -536,7 +541,8 @@ const TestPageHeader = ({
     isLoadingData ||
     (history.location.state?.editAssigned &&
       !testAssignments.length &&
-      !test.isInEditAndRegrade)
+      !test.isInEditAndRegrade) ||
+    isFetchingAutoselectItems
 
   const isTestContainsDraftItem = testItems.some(
     (i) => i.status === statusConstants.DRAFT

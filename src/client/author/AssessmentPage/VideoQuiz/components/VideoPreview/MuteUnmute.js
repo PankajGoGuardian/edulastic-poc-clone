@@ -13,6 +13,7 @@ const MuteUnmute = ({ volume, style, muted, setMuted }) => {
       viewBox="0 0 36 36"
       style={style}
       onClick={_handleMuteUnmute}
+      data-cy="muteUnmuteIcon"
     >
       <Circle cx="18" cy="18" r="18" />
       <Polygon points="11,14.844 11,21.442 14.202,21.442 17.656,25 17.656,11 14.074,14.844" />

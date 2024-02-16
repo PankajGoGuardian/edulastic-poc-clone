@@ -2,7 +2,6 @@ import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Icon, Menu } from 'antd'
-import { get } from 'lodash'
 import { IconUser } from '@edulastic/icons'
 import { withKeyboard } from '@edulastic/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -11,11 +10,12 @@ import { StyledButton, StyledDropdown, StyledMenu } from './styled'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelectorTab/duck'
 import { lineReaderVisible } from '../../../../common/components/LineReader/duck'
+import { getUserNameSelector } from '../../../../author/src/selectors/user'
 
 const MenuItem = withKeyboard(Menu.Item)
 
 const SettingMenu = ({
-  user: { firstName },
+  userName,
   onSettingsChange,
   showMagnifier,
   enableMagnifier,
@@ -100,7 +100,7 @@ const SettingMenu = ({
     >
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />
-        {firstName} <Icon type="down" />
+        {userName} <Icon type="down" />
       </StyledButton>
     </StyledDropdown>
   )
@@ -109,7 +109,7 @@ const SettingMenu = ({
 const enhance = compose(
   connect(
     (state) => ({
-      user: get(state, ['user', 'user'], {}),
+      userName: getUserNameSelector(state),
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
       isLineReaderVisible: lineReaderVisible(state),
     }),

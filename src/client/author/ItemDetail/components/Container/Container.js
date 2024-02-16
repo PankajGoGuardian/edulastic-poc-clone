@@ -1121,7 +1121,7 @@ class Container extends Component {
     )
 
     const showLanguageSelector =
-      isPassageQuestion ||
+      useLanguageFeatureQn.includes(questionType.PASSAGE) &&
       item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     const handleTotalPartScoreChange = (score) => {

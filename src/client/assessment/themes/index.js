@@ -109,6 +109,7 @@ import SectionsTestStartPage from '../../author/Assignments/components/SectionsT
 import { TestAttemptReview } from '../../student/TestAttemptReview'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
 import { getCurrentLanguage } from '../../common/components/LanguageSelectorTab/duck'
+import { getAccommodationsTtsSelector } from '../../student/Login/ducks'
 
 const { playerSkinValues } = testConstants
 
@@ -1743,7 +1744,7 @@ const enhance = compose(
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),
-      showUserTTS: get(state, 'user.user.tts', 'no'),
+      showUserTTS: getAccommodationsTtsSelector(state),
       userWork: userWorkSelector(state),
       assignmentById: get(state, 'studentAssignment.byId'),
       currentAssignment: get(state, 'studentAssignment.current'),

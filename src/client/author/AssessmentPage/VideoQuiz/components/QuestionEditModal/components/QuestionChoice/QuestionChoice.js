@@ -192,7 +192,10 @@ export default class QuestionChoice extends React.Component {
               />
               <Points>Points</Points>
               <EduIf condition={trueOrFalse}>
-                <FormGroup style={{ marginTop: 9 }}>
+                <FormGroup
+                  style={{ marginTop: 9 }}
+                  data-cy="videoQuizTimePicker"
+                >
                   <FormLabel>Timestamp (mm:ss)</FormLabel>
                   <VideoQuizTimePicker
                     videoRef={videoRef}

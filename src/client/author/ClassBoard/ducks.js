@@ -1082,7 +1082,7 @@ export const ttsUserIdSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
     const { data: { students = [] } = {} } = state || {}
-    const ttsUser = (student) => student.tts === 'yes'
+    const ttsUser = (student) => student?.accommodations?.tts === 'yes'
     return students.filter(ttsUser).map((student) => student._id)
   }
 )

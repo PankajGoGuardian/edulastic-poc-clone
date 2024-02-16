@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
 import { Row, Col } from 'antd'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -34,7 +35,7 @@ import {
   startAssignmentAction,
   resumeAssignmentAction,
 } from '../Assignments/ducks'
-import { proxyRole } from '../Login/ducks'
+import { getUserAccommodations, proxyRole } from '../Login/ducks'
 import { showTestInfoModal } from '../../publicTest/utils'
 import { isRestrictedTimeWindowForAssignment } from '../../author/Assignments/utils'
 
@@ -69,10 +70,12 @@ const AssignmentCard = memo(
     index,
     uta = {},
     setSelectedLanguage,
-    languagePreference,
     history,
     setEmbeddedVideoPreviewModal,
+    userName,
+    accommodations,
   }) => {
+    const languagePreference = accommodations?.preferredLanguage || LANGUAGE_EN
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
     const { releaseGradeLabels } = testConstants
@@ -208,10 +211,7 @@ const AssignmentCard = memo(
         return
       }
 
-      if (
-        !resume &&
-        (timedAssignment || hasInstruction || multiLanguageEnabled)
-      ) {
+      if (!resume && (timedAssignment || hasInstruction)) {
         return showTestInfoModal({
           pauseAllowed,
           allowedTime,
@@ -232,6 +232,7 @@ const AssignmentCard = memo(
           title,
           notifyCancel: false,
           hasSections,
+          userName,
         })
       }
 
@@ -264,13 +265,43 @@ const AssignmentCard = memo(
         return
       }
 
+      if (
+        multiLanguageEnabled &&
+        (!resume || !lastAttempt?.languagePreference)
+      ) {
+        return showTestInfoModal({
+          pauseAllowed,
+          allowedTime,
+          multiLanguageEnabled,
+          setSelectedLanguage,
+          languagePreference,
+          timedAssignment,
+          hasInstruction,
+          instruction,
+          attemptCount,
+          maxAttempts,
+          startAssignment,
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          history,
+          title,
+          notifyCancel: false,
+          safeBrowser: true,
+          hasSections,
+          ...(resume ? { lastAttemptId: lastAttempt?._id } : {}),
+        })
+      }
+
       if (resume) {
         startAssignment({
           testId,
           assignmentId,
           testType,
           classId,
-          languagePreference,
+          languagePreference:
+            languagePreference || lastAttempt?.languagePreference,
           safeBrowser,
           lastAttemptId: lastAttempt._id,
           hasSections,
@@ -530,6 +561,7 @@ const enhance = compose(
     (state) => ({
       user: state?.user?.user,
       proxyUserRole: proxyRole(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       startAssignment: startAssignmentAction,

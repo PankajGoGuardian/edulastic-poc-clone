@@ -322,13 +322,14 @@ const hasValue = (obj) =>
  * @returns {string} - Returns a message indicating the absence of data.
  */
 export const getNoDataTextForFilter = (filters, itemType, defaultMsg) => {
-  const hasFilter = hasValue(omit(filters, ['filter', 'searchString']))
-  const isCategoryFilter =
-    filters.filter === SMART_FILTERS.ENTIRE_LIBRARY ||
-    filters?.searchString.length > 0
+  const isEntireLibrary = filters.filter === SMART_FILTERS.ENTIRE_LIBRARY
+  const hasOtherFilter =
+    hasValue(omit(filters, ['filter', 'searchString'])) || !isEntireLibrary
 
-  if (hasFilter || !isCategoryFilter) {
-    return `No ${itemType} matches for applied filters. Please re-check filters applied on the left.`
+  const isCategoryFilter = isEntireLibrary || filters?.searchString?.length > 0
+
+  if (hasOtherFilter || !isCategoryFilter) {
+    return `No ${itemType} matches applied filters. Please re-check filters applied on the left.`
   }
   return defaultMsg || `No ${itemType} available for the search criteria`
 }

@@ -665,3 +665,15 @@ export const handlePreventKeyDown = (e) => {
     return false
   }
 }
+
+export const isImmersiveReaderEnabled = (
+  showImmersiveReader,
+  accommodations
+) => {
+  /* Considering accommodation.ir only when Immersive Reader in test setting is not set 
+    otherwise Immersive Reader of test setting will override student acommodations */
+  if (showImmersiveReader === undefined) {
+    return accommodations?.ir === 'yes'
+  }
+  return showImmersiveReader
+}

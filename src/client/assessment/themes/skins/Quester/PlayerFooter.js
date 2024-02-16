@@ -12,7 +12,7 @@ import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
-import { get, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
@@ -23,6 +23,7 @@ import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import { themes } from '../../../../theme'
 import ItemAudioControl from './ItemAudioControl'
+import { getAccommodationsTtsSelector } from '../../../../student/Login/ducks'
 
 const { IconAnswerEliminator, IconBookMark, IconCalculator } = IconQuester
 
@@ -322,7 +323,7 @@ const enhance = compose(
   connect(
     (state) => ({
       settings: state.test.settings,
-      showUserTTS: get(state, 'user.user.tts', 'no'),
+      showUserTTS: getAccommodationsTtsSelector(state),
       userRole: getUserRole(state),
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,

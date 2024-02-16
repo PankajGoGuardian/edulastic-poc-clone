@@ -7,6 +7,7 @@ import * as moment from 'moment'
 // components
 import { Spin, Tooltip } from 'antd'
 import { GiDominoMask } from 'react-icons/gi'
+import { MdRateReview } from 'react-icons/md'
 import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
 import { lightBlue3 } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
@@ -23,7 +24,7 @@ import { isFeatureAccessible } from '../../../../features/components/FeaturesSwi
 
 // ducks
 import { proxyUser } from '../../../authUtils'
-import { selectStudentAction } from '../../ducks'
+import { getSelectedClass, selectStudentAction } from '../../ducks'
 import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
@@ -34,6 +35,8 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getFormattedName } from '../../../Gradebook/transformers'
+import FeedbackModal from '../../../Student/components/StudentTable/FeedbackModal'
+import { fieldsMapping } from '../../constants'
 
 const StudentsList = ({
   cuId,
@@ -48,8 +51,11 @@ const StudentsList = ({
   updating,
   allowCanvasLogin,
   isProxyUser,
+  currentClass,
 }) => {
   const [showCurrentStudents, setShowCurrentStudents] = useState(true)
+  const [feedbackStudentId, setFeedbackStudentId] = useState(null)
+  const { dataWarehouseReports } = features
 
   const { _id: groupId, type, active } = selectedClass
   const typeText = type !== 'class' ? 'group' : 'class'
@@ -109,18 +115,10 @@ const StudentsList = ({
       align: 'left',
     },
     {
-      title: 'TTS Enabled',
-      dataIndex: 'tts',
+      title: 'Accommodation Available',
+      dataIndex: 'accommodations',
       align: 'center',
-      render: (tts) => (
-        <span>
-          {tts === 'yes' ? (
-            <IconCorrect />
-          ) : (
-            <IconClose color="#ff99bb" width="10px" height="10px" />
-          )}
-        </span>
-      ),
+      render: (data) => <AccommodationRender data={data} />,
       width: '15%',
     },
 
@@ -173,20 +171,28 @@ const StudentsList = ({
       ),
     },
     {
-      render: (_, { _id, enrollmentStatus, status }) =>
-        !isProxyUser && enrollmentStatus === 1 && status === 1 ? (
-          <Tooltip placement="topRight" title="View as Student">
-            <GiDominoMask
-              onClick={() =>
-                proxyUser({
-                  userId: _id,
-                  groupId,
-                  currentUser: { _id: cuId, role: cuRole },
-                })
-              }
-            />
-          </Tooltip>
-        ) : null,
+      render: (_, { _id, enrollmentStatus, status }) => (
+        <div>
+          {!isProxyUser && enrollmentStatus === 1 && status === 1 ? (
+            <Tooltip placement="topRight" title="View as Student">
+              <GiDominoMask
+                onClick={() =>
+                  proxyUser({
+                    userId: _id,
+                    groupId,
+                    currentUser: { _id: cuId, role: cuRole },
+                  })
+                }
+              />
+            </Tooltip>
+          ) : null}
+          {cuRole === 'teacher' && dataWarehouseReports ? (
+            <Tooltip placement="topRight" title="Add Feedback">
+              <MdRateReview onClick={() => setFeedbackStudentId(_id)} />
+            </Tooltip>
+          ) : null}
+        </div>
+      ),
     },
   ]
 
@@ -198,6 +204,9 @@ const StudentsList = ({
   const showStudentsHandler = () => {
     setShowCurrentStudents((show) => !show)
   }
+
+  const feedbackStudent =
+    students.find(({ _id: studentId }) => studentId === feedbackStudentId) || {}
 
   return (
     <div>
@@ -231,10 +240,48 @@ const StudentsList = ({
           </>
         </TableWrapper>
       )}
+      <FeedbackModal
+        feedbackStudentId={feedbackStudentId}
+        feedbackStudent={{
+          ...feedbackStudent,
+          classId: currentClass._id,
+        }}
+        onClose={() => setFeedbackStudentId(null)}
+      />
     </div>
   )
 }
 
+const AccommodationRender = ({ data }) => {
+  if (data) {
+    const result = Object.keys(data).reduce((res, key) => {
+      const label = fieldsMapping.accommodations.find(
+        (field) => field.fieldName === key
+      )?.label
+      if (key === 'preferredLanguage') {
+        res.push({ label, value: data[key]?.toUpperCase() })
+      } else if (key === 'extraTimeOnTest') {
+        const value = data[key]
+        res.push({ label, value: value > 0 ? `${value}x` : 'UNLIMITED' })
+      } else if (data[key] === 'yes') {
+        res.push({ label, value: key.toUpperCase() })
+      }
+      return res
+    }, [])
+    const tooltip = `${result
+      .map((e) => e.label)
+      .slice(0, -1)
+      .join(', ')} & ${result.map((e) => e.label).slice(-1)}`
+
+    const value = result.map((e) => e.value).join()
+    return (
+      <Tooltip title={tooltip}>
+        <span>{value}</span>
+      </Tooltip>
+    )
+  }
+  return '-'
+}
 StudentsList.propTypes = {
   loaded: PropTypes.bool.isRequired,
   students: PropTypes.array.isRequired,
@@ -253,6 +300,7 @@ export default connect(
     groupList: getGroupList(state),
     updating: state.manageClass.updating,
     isProxyUser: isProxyUserSelector(state),
+    currentClass: getSelectedClass(state),
   }),
   {
     selectStudents: selectStudentAction,

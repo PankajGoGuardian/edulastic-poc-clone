@@ -594,7 +594,11 @@ const getPoints = (item) => {
   if (!item) {
     return 0
   }
-  if (item.itemLevelScoring && !isNaN(item.itemLevelScore)) {
+  if (
+    item.itemLevelScoring &&
+    item.itemLevelScore !== undefined &&
+    !isNaN(item.itemLevelScore)
+  ) {
     return item.itemLevelScore
   }
 
@@ -614,7 +618,9 @@ const getQuestionLevelScore = (item, questions, totalMaxScore, newMaxScore) => {
   if (item.itemLevelScoring === true || item.isLimitedDeliveryType === true) {
     questions?.forEach((o, i) => {
       if (i === 0) {
-        questionScore[o.id] = item.isLimitedDeliveryType ? 1 : maxScore
+        questionScore[o.id] = item.isLimitedDeliveryType
+          ? item.itemsDefaultMaxScore || 1
+          : maxScore
       } else {
         questionScore[o.id] = 0
       }

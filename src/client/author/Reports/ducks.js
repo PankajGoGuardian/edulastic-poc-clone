@@ -903,7 +903,7 @@ function* fetchUpdateTagsData({ payload }) {
     const params = {
       ...orgData,
       ...options,
-      districtId,
+      districtId: options.districtId || districtId,
       userDetails,
     }
     const result = yield all(

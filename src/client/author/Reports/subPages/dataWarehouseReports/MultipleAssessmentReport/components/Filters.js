@@ -283,18 +283,39 @@ const MultipleAssessmentReportFilters = ({
             selectedCompareBy: search.selectedCompareBy,
             selectedFilterTagsData: { ..._filterTagsData },
           })
-          fetchUpdateTagsData({
-            schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            courseId: reject([search.courseId], isEmpty),
-            classIds: reject(_filters.classIds?.split(','), isEmpty),
-            groupIds: reject(_filters.groupIds?.split(','), isEmpty),
-            teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
-            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
-            options: {
+          const districtIdsArr = _filters.districtIds.split(',')
+          const updateTagsDataParams = {
+            districtIds: reject(districtIdsArr, isEmpty),
+          }
+          if (!isDistrictGroupAdmin || districtIdsArr.length === 1) {
+            const {
+              termIds: termIdsArr,
+              districtIds: filteredDistrictIdsArr,
+            } = getDistrictTermIdsForDistrictGroup(orgData, {
               termId: _filters.termId,
+              districtIds: districtIdsArr,
+            })
+            const termId = termIdsArr[0] || _filters.termId
+            const districtId = filteredDistrictIdsArr[0]
+            Object.assign(updateTagsDataParams, {
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            },
-          })
+              courseId: reject([search.courseId], isEmpty),
+              classIds: reject(_filters.classIds?.split(','), isEmpty),
+              groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+              teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+              options: {
+                termId,
+                districtId,
+                schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+              },
+            })
+          }
+          if (!isDistrictGroupAdmin) {
+            Object.assign(updateTagsDataParams, {
+              tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+            })
+          }
+          fetchUpdateTagsData(updateTagsDataParams)
         }
       }
       setFirstLoad(false)
@@ -817,7 +838,7 @@ const MultipleAssessmentReportFilters = ({
                     </Row>
                   </Tabs.TabPane>
 
-                  <EduIf condition={!isDistrictGroupAdmin}>
+                  {!isDistrictGroupAdmin && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.PERFORMANCE_FILTERS
@@ -845,7 +866,9 @@ const MultipleAssessmentReportFilters = ({
                         </Col>
                       </Row>
                     </Tabs.TabPane>
+                  )}
 
+                  {!isDistrictGroupAdmin && (
                     <Tabs.TabPane
                       key={
                         staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS
@@ -873,7 +896,7 @@ const MultipleAssessmentReportFilters = ({
                         ))}
                       </Row>
                     </Tabs.TabPane>
-                  </EduIf>
+                  )}
                 </Tabs>
               </Col>
               <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>

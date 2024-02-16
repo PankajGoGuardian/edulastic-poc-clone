@@ -93,17 +93,24 @@ const GroupsAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedGroups = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedGroups)
+    if (!disabled) {
+      const _selectedGroups = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedGroups)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })

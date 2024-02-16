@@ -58,17 +58,24 @@ const SchoolAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedSchools = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedSchools)
+    if (!disabled) {
+      const _selectedSchools = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedSchools)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
@@ -97,7 +104,11 @@ const SchoolAutoComplete = ({
     }
   }, [schoolList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadSchoolListDebounced(query)
     }
   }, [searchTerms])

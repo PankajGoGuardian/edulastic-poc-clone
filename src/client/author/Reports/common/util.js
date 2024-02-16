@@ -58,6 +58,19 @@ const testTypeKeyToCategoryMap = {
 
 const studentFiltersDefaultValues = [
   {
+    key: 'districtIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'courseId',
+        value: 'All',
+      },
+    ],
+  },
+  {
     key: 'networkIds',
     value: '',
   },
@@ -463,7 +476,8 @@ export const resetStudentFilters = (
     const filtersToReset = defaultValues.slice(index + 1)
     resetFilter(filtersToReset, prevFilters, tagsData)
   } else if (['grades', 'subjects', 'courseId'].includes(key)) {
-    const filtersToReset = defaultValues.slice(3)
+    const pos = defaultValues === studentFiltersDefaultValues ? 6 : 3
+    const filtersToReset = defaultValues.slice(pos)
     resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }

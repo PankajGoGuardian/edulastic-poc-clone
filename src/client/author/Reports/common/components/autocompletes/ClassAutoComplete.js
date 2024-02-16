@@ -93,17 +93,24 @@ const ClassAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedClasses = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedClasses)
+    if (!disabled) {
+      const _selectedClasses = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedClasses)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })

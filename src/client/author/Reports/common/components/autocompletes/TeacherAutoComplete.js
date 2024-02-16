@@ -77,17 +77,24 @@ const TeacherAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedTeachers = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedTeachers)
+    if (!disabled) {
+      const _selectedTeachers = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedTeachers)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })

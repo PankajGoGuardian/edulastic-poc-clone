@@ -47,24 +47,33 @@ const CourseAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
-  const onChange = useCallback((_text, element) => {
-    const _title = element?.props?.title
-    setSearchTerms((s) => ({ ...s, text: _title || _text }))
-    setFieldValue(_title || _text)
-  }, [])
+  const onChange = (_text, element) => {
+    if (!disabled) {
+      const _title = element?.props?.title
+      setSearchTerms((s) => ({ ...s, text: _title || _text }))
+      setFieldValue(_title || _text)
+    }
+  }
   const onSelect = (key) => {
-    const value = (searchTerms.text ? courseList : searchResult).find(
-      (c) => c._id === key
-    )?.name
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    setFieldValue(value)
-    selectCB({ key, title: value })
+    if (!disabled) {
+      const value = (searchTerms.text ? courseList : searchResult).find(
+        (c) => c._id === key
+      )?.name
+      setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+      setFieldValue(value)
+      selectCB({ key, title: value })
+    }
   }
   const onBlur = () => {
     setIsFocused(false)
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
       setFieldValue('')
       selectCB({ key: 'All', title: '' })

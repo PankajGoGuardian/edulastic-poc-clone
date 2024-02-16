@@ -115,13 +115,7 @@ export const staticDropDownData = {
   requestFilters: {
     reportId: '',
     termId: '',
-    testTermIds: '',
-    testUniqIds: '',
-    testSubjects: '',
-    testGrades: '',
-    assessmentTypes: '',
-    tagIds: '',
-    testIds: '',
+    districtIds: '',
     schoolIds: '',
     teacherIds: '',
     subjects: '',
@@ -129,6 +123,13 @@ export const staticDropDownData = {
     courseId: '',
     classIds: '',
     groupIds: '',
+    testTermIds: '',
+    testUniqIds: '',
+    testSubjects: '',
+    testGrades: '',
+    assessmentTypes: '',
+    tagIds: '',
+    testIds: '',
     profileId: '',
     race: 'all',
     gender: 'all',
@@ -262,22 +263,20 @@ const getLineScoreForExternalData = (records, achievementLevel) => {
 }
 
 const augmentBandData = (tests, bandInfo, externalBands) => {
-  const testsWithBandInfo = tests.map((t) => {
+  const testsWithBandInfo = tests.map(({ ...t }) => {
     let band = { name: '-', color: '#010101' }
     if (t.externalTestType) {
       const achievementLevels = getAchievementLevels(
         { ...t, title: t.testTitle },
         externalBands
       )
-      band = achievementLevels.find((al) => al.active)
-      return {
-        ...t,
-        bands: achievementLevels,
-        band,
-      }
+      Object.assign(t, { bands: achievementLevels })
+      band = achievementLevels.find((al) => al.active) || band
+    } else {
+      band = getProficiencyBand(t.averageScorePercentage, bandInfo) || band
     }
-    band = getProficiencyBand(t.averageScorePercentage, bandInfo)
-    return { ...t, band }
+    Object.assign(t, { band })
+    return t
   })
   return testsWithBandInfo
 }

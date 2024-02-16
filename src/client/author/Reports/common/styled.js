@@ -550,6 +550,7 @@ export const StyledAxisTickText = styled(Text)`
 
 export const StyledText = styled.text`
   font-size: 12px;
+  font-weight: ${(p) => p.$fontWeight || 'normal'};
 `
 
 export const PrintableScreen = styled.div`

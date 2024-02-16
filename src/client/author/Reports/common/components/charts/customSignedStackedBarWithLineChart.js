@@ -153,6 +153,7 @@ export const SignedStackedBarWithLineChart = ({
   setBackendPagination,
   showInterventions,
   interventionsData,
+  preLabelContent = null,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -433,6 +434,7 @@ export const SignedStackedBarWithLineChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
+      {preLabelContent}
       <ResponsiveContainer width="100%" height={400}>
         <ComposedChart
           width={730}

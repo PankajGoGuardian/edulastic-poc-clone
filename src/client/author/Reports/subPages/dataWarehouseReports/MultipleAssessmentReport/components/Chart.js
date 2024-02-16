@@ -6,6 +6,8 @@ import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
+import { IconCarets } from '@edulastic/icons'
+import { Row } from 'antd'
 import { SignedStackedBarWithLineChart } from '../../../../common/components/charts/customSignedStackedBarWithLineChart'
 import {
   TooltipRow,
@@ -14,6 +16,7 @@ import {
   DashedHr,
   ColorCircle,
   ColorBandRow,
+  StyledText,
 } from '../../../../common/styled'
 import { toggleItem } from '../../../../common/util'
 import { getTestName } from '../utils'
@@ -22,6 +25,7 @@ import {
   getXTickTagText,
   getXTickTooltipText,
 } from '../../common/utils'
+import { ChartPreLabelWrapper } from '../../../../common/components/charts/styled-components'
 
 const { formatDate } = reportUtils.common
 
@@ -346,6 +350,17 @@ const Chart = ({
       hasBarTopLabels
       showInterventions={showInterventions}
       interventionsData={interventionsData}
+      preLabelContent={
+        <ChartPreLabelWrapper $translate="20px calc( 100% + 48px )">
+          <Row type="flex" align="middle">
+            <StyledText $fontWeight={600}>
+              <div>AVERAGE</div>
+              <div>SCORE</div>
+            </StyledText>
+            <IconCarets.IconCaretRight style={{ fontSize: '35px' }} />
+          </Row>
+        </ChartPreLabelWrapper>
+      }
     />
   )
 }

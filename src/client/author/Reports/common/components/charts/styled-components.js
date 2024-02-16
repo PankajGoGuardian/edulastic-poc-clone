@@ -66,7 +66,7 @@ export const CustomXAxisTickTooltipContainer = styled.div`
 `
 
 export const ChartPreLabelWrapper = styled.div`
-  translate: 0 100%;
+  translate: ${(p) => p.$translate || '0 100%'};
   position: relative;
   z-index: 1;
 `

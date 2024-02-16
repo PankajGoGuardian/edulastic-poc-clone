@@ -21,7 +21,6 @@ const { Panel } = Collapse
 const rightContent = (
   group,
   hasSections = false,
-  setShowAutoSelectScoreChangeModal,
   isDynamicTest,
   isEditable,
   refreshGroupItems,
@@ -41,11 +40,6 @@ const rightContent = (
     refreshGroupItems(itemGroupIndex)
   }
 
-  const openScoreEditPopup = (e) => {
-    e.stopPropagation()
-    setShowAutoSelectScoreChangeModal(group._id)
-  }
-
   return (
     <>
       {/* 
@@ -53,11 +47,11 @@ const rightContent = (
         will be displayed. Add a condition hasSections for the same. 
       */}
       <EduIf condition={type === ITEM_GROUP_TYPES.AUTOSELECT && isEditable}>
-        <InfoDiv>
+        <Tooltip title="Replaces current items with a new set.">
           <span onClick={refreshSection}>
             <IconReloadCircle />
           </span>
-        </InfoDiv>
+        </Tooltip>
       </EduIf>
       {hasSections && settings?.calcTypes?.length > 0 && (
         <Tooltip title={settings.calcTypes.join()}>
@@ -82,12 +76,10 @@ const rightContent = (
           deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
         }
       >
-        <span onClick={openScoreEditPopup}>
-          <InfoDiv>
-            <Text>TOTAL POINTS</Text>
-            <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
-          </InfoDiv>
-        </span>
+        <InfoDiv>
+          <Text>TOTAL POINTS</Text>
+          <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
+        </InfoDiv>
       </EduIf>
     </>
   )
@@ -132,7 +124,19 @@ const ReviewSection = ({
     setRemovalPassageItems(null)
   }
 
-  const renderItem = (item, index, groupId) => {
+  const renderItem = (item, index, group) => {
+    const { _id: groupId, deliveryType } = group || {}
+
+    const enableScoreEditingForEntireSection =
+      isDynamicTest &&
+      deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+      isEditable
+
+    const openScoreEditPopup = () => {
+      if (!enableScoreEditingForEntireSection) return
+      setShowAutoSelectScoreChangeModal(groupId)
+    }
+
     if (isArray(item)) {
       // when use index or item._id for a key, the SortableGroupItem was unmounted
       // so there was a page blinking bug, when drag and drop
@@ -152,6 +156,7 @@ const ReviewSection = ({
           onSortEnd={onSortGroup(index)}
           lockToContainerEdges
           lockOffset={['10%', '10%']}
+          setShowAutoSelectScoreChangeModal={openScoreEditPopup}
         />
       )
     }
@@ -166,6 +171,7 @@ const ReviewSection = ({
         collection={groupId}
         item={item}
         isPublishers={isPublishers}
+        setShowAutoSelectScoreChangeModal={openScoreEditPopup}
       />
     )
   }
@@ -200,7 +206,6 @@ const ReviewSection = ({
               extra={rightContent(
                 group,
                 hasSections,
-                setShowAutoSelectScoreChangeModal,
                 isDynamicTest,
                 isEditable,
                 refreshGroupItems,
@@ -214,12 +219,12 @@ const ReviewSection = ({
                     (_item) => _item.groupId === group._id
                   )
                   if (currentGroupItems?.length) {
-                    return renderItem(currentGroupItems, _index, group._id)
+                    return renderItem(currentGroupItems, _index, group)
                   }
                   return null
                 }
                 if (item.groupId == group._id) {
-                  return renderItem(item, _index, group._id)
+                  return renderItem(item, _index, group)
                 }
                 return null
               })}

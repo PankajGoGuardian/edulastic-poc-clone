@@ -1034,7 +1034,7 @@ const GroupItems = ({
                                 />
                               </span>
                             </RadioBtn>
-                            <RadioMessage>
+                            <RadioMessage marginLeft="27px" marginBottom="27px">
                               Use this to deliver a specific number of randomly
                               picked question per Section.
                             </RadioMessage>
@@ -1058,7 +1058,7 @@ const GroupItems = ({
                                 isRequired
                               />
                             </RadioBtn>
-                            <RadioMessage>
+                            <RadioMessage marginLeft="27px">
                               Use this to deliver a specific number of randomly
                               picked question per student from the selected pool
                               of items

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
   CustomModalStyled,
   NumberInputStyled,
+  notification,
 } from '@edulastic/common'
-import { debounce } from 'lodash'
 import {
   ModalContent,
   ModalHeader,
@@ -23,14 +23,22 @@ const AutoSelectScoreChangeModal = ({
   handleSave,
   setTestData,
 }) => {
-  const handleSaveScore = () => {
-    handleSave()
-    closeModal()
-  }
   const currentGroup =
     test.itemGroups.find((itemGroup) => itemGroup._id == currentGroupId) || {}
   const { groupName, itemsDefaultMaxScore } = currentGroup
-  const onChangeScore = debounce((value) => {
+
+  const [oldScore] = useState(itemsDefaultMaxScore)
+
+  const handleSaveScore = () => {
+    handleSave(undefined, undefined, () =>
+      notification({
+        msg: `Score updated to ${itemsDefaultMaxScore} for each item in ${groupName}.`,
+      })
+    )
+    closeModal()
+  }
+
+  const onChangeScore = (value) => {
     const updatedItemGroups = test.itemGroups.map((itemGroup) => {
       if (itemGroup._id === currentGroupId) {
         return {
@@ -43,12 +51,17 @@ const AutoSelectScoreChangeModal = ({
     setTestData({
       itemGroups: updatedItemGroups,
     })
-  })
+  }
+
+  const cancel = () => {
+    onChangeScore(oldScore)
+    closeModal()
+  }
 
   const Footer = [
     <ModalFooterContainer>
       <EduButton
-        onClick={closeModal}
+        onClick={cancel}
         height="36px"
         width="124px"
         fontSize="14px"
@@ -78,7 +91,7 @@ const AutoSelectScoreChangeModal = ({
       visible={visible}
       footer={Footer}
       bodyPadding="0px"
-      onCancel={closeModal}
+      onCancel={cancel}
       modalWidth="588px"
       modalMaxWidth="588px"
       padding="32px"

@@ -684,6 +684,12 @@ class Review extends PureComponent {
         })
         handleSave()
         this.setState({ refreshing: false })
+        notification({
+          msg:
+            itemsSelectedIndex > -1
+              ? `New item is added to ${currentGroup.groupName}`
+              : `New items are added to ${currentGroup.groupName}`,
+        })
       })
       .catch((err) => {
         this.setState({ refreshing: false })

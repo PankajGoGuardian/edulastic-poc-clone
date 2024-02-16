@@ -38,6 +38,7 @@ const ReviewItem = ({
   orgCollections,
   isPublishers,
   userId,
+  setShowAutoSelectScoreChangeModal,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -180,6 +181,8 @@ const ReviewItem = ({
           isTestsUpdated={isTestsUpdated}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
+          showScorePopUp={item.isLimitedDeliveryType && isEditable}
         />
       )}
       {!expand && (
@@ -203,6 +206,8 @@ const ReviewItem = ({
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          setShowAutoSelectScoreChangeModal={setShowAutoSelectScoreChangeModal}
+          showScorePopUp={item.isLimitedDeliveryType && isEditable}
         />
       )}
 

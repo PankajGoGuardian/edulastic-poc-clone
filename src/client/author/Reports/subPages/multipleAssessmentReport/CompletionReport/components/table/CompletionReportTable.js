@@ -268,13 +268,11 @@ const CompletionReportTable = ({
     },
   ]
 
-  const dataSource = useMemo(() => {
-    return getTableDataSource([overAllData, ...tableData])
-  }, [analyseBy.key, tableData])
+  const dataSource = getTableDataSource([overAllData, ...tableData])
 
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),
-    [tableData, settings]
+    [tableData, settings, isAnalyseByPercent]
   )
 
   const handleTableChange = (pagination, filters, sorter) => {

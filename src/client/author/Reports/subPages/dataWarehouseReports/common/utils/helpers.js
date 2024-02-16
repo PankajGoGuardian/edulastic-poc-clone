@@ -331,7 +331,7 @@ export const getXTickTagText = (payload, data) => {
 }
 
 export const enhanceQueryWithTermIds = (
-  { termId, ...query },
+  { ...query },
   { orgData, userRole }
 ) => {
   if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
@@ -340,7 +340,7 @@ export const enhanceQueryWithTermIds = (
       districtIds: districtIdsArr,
       termIds: termIdsArr,
     } = getDistrictTermIdsForDistrictGroup(orgData, {
-      termId,
+      termId: query.termId,
       districtIds: selectedDistrictIdsArr,
     })
     Object.assign(query, {
@@ -356,7 +356,7 @@ export const enhanceQueryWithTermIds = (
     const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
       ','
     )
-    Object.assign(query, { termIds: termId, testTermIds })
+    Object.assign(query, { termIds: query.termId, testTermIds })
   }
   return query
 }

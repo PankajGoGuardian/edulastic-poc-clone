@@ -53,9 +53,11 @@ import {
 } from '../../../common/util'
 import {
   EXTERNAL_SCORE_TYPES,
+  enhanceQueryWithTermIds,
   getIsMultiSchoolYearDataPresent,
 } from '../common/utils'
 import WLRDetails from './components/WLRDetails'
+import { getUserOrgData, getUserRole } from '../../../../src/selectors/user'
 
 const { downloadCSV } = reportUtils.common
 
@@ -110,6 +112,8 @@ const WholeLearnerReport = ({
   attendanceInterventions,
   academicInterventions,
   setEnableReportSharing,
+  userRole,
+  orgData,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
@@ -297,10 +301,11 @@ const WholeLearnerReport = ({
       history.push(path)
     }
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
-      fetchReportDataRequest({
-        ...settings.requestFilters,
-        studentId: settings.selectedStudent.key,
-      })
+      const q = enhanceQueryWithTermIds(
+        { ...settings.requestFilters, studentId: settings.selectedStudent.key },
+        { orgData, userRole }
+      )
+      fetchReportDataRequest(q)
       if (!isMultiSchoolYear) {
         fetchAttendanceDataRequest({
           ...settings.requestFilters,
@@ -574,6 +579,8 @@ const enhance = connect(
     academicInterventions: getAcademicInterventions(state),
     attendanceInterventions: getAttendanceInterventions(state),
     termsData: get(state, 'user.user.orgData.terms', []),
+    orgData: getUserOrgData(state),
+    userRole: getUserRole(state),
   }),
   {
     ...actions,

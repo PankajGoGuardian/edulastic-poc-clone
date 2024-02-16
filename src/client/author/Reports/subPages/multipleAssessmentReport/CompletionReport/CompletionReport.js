@@ -1,17 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { Empty } from 'antd'
-import qs from 'qs'
-import {
-  TABLE_SORT_ORDER_TYPES,
-  tableToDBSortOrderMap,
-} from '@edulastic/constants/reportUtils/common'
+
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { isEmpty, omit } from 'lodash'
+import { omit } from 'lodash'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
-  compareByOptions,
   statusMap,
 } from '../common/utils/constants'
 import Chart from './components/chart'
@@ -25,11 +19,6 @@ import {
 import { getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
-
-import useUrlSearchParams from '../../../common/hooks/useUrlSearchParams'
-import { getSelectedCompareBy } from '../../../common/util'
-
-import { sortKeys } from './utils'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 
 const TABLE_PAGE_SIZE = 30
@@ -47,7 +36,7 @@ function CompletionReport({
   isChartDataLoading,
   isTableDataLoading,
   location,
-  tableData: _tableData,
+  tableData,
   isCsvDownloading,
   getCsvData,
   role,
@@ -96,13 +85,9 @@ function CompletionReport({
   })
 
   const [pageFilters, setPageFilters] = useState({
-    page: 0,
+    page: 1,
     pageSize: TABLE_PAGE_SIZE,
   })
-  const tableData = useMemo(
-    () => _tableData?.reportTableData?.data?.result?.tableMetricInfo,
-    [_tableData]
-  )
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })

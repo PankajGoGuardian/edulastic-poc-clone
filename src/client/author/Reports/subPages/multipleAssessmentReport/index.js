@@ -92,7 +92,6 @@ const MultipleAssessmentReportContainer = (props) => {
     compareByOptions,
   })
 
-  console.log('indexpage', { selectedCompareBy })
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -140,7 +139,6 @@ const MultipleAssessmentReportContainer = (props) => {
       obj.selectedCompareBy = settings.selectedCompareBy.key
 
       const path = `?${qs.stringify(obj)}`
-      console.log('main-page->', { settings })
       history.push(path)
     }
     const navigationItems = getTabNavigationItems({
@@ -169,8 +167,6 @@ const MultipleAssessmentReportContainer = (props) => {
           ? ''
           : _settings.filters[filterType]
     })
-
-    console.log({ _settings, _requestFilters })
 
     setMARSettings({
       requestFilters: {

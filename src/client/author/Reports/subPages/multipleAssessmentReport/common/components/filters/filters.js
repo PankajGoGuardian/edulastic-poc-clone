@@ -115,7 +115,7 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
 }) => {
-  const [availableAssessmentType, setAvailableAssessmentType] = useState(
+  const [availableAssessmentTypes, setAvailableAssessmentTypes] = useState(
     allTestTypes
   )
   const [activeTabKey, setActiveTabKey] = useState(
@@ -141,11 +141,13 @@ const MultipleAssessmentReportFilters = ({
 
   useEffect(() => {
     if (loc === 'completion-report') {
-      setAvailableAssessmentType(
-        availableAssessmentType.filter((e) => TEST_TYPES.COMMON.includes(e.key))
+      setAvailableAssessmentTypes(
+        availableAssessmentTypes.filter((e) =>
+          TEST_TYPES.COMMON.includes(e.key)
+        )
       )
     } else {
-      setAvailableAssessmentType(allTestTypes)
+      setAvailableAssessmentTypes(allTestTypes)
     }
   }, [loc])
 
@@ -309,7 +311,7 @@ const MultipleAssessmentReportFilters = ({
           termId: urlSchoolYear,
           testSubjects: urlTestSubjects,
           testGrades: urlTestGrades,
-          assessmentTypes: availableAssessmentType.filter((a) =>
+          assessmentTypes: availableAssessmentTypes.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
@@ -568,7 +570,7 @@ const MultipleAssessmentReportFilters = ({
                           label="Test Type"
                           el={assessmentTypesRef}
                           onChange={(e) => {
-                            const selected = availableAssessmentType.filter(
+                            const selected = availableAssessmentTypes.filter(
                               (a) => e.includes(a.key)
                             )
                             updateFilterDropdownCB(
@@ -582,7 +584,7 @@ const MultipleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={availableAssessmentType}
+                          options={availableAssessmentTypes}
                         />
                       </Col>
                       <Col span={6}>

@@ -68,7 +68,7 @@ const SelectSearch = React.forwardRef(function SelectSearch(
       }
       suffixIcon={!loading && suffixIcon}
       showArrow={!loading && loc === 'completion-report'}
-      paddingRight={!!suffixIcon && '80px'}
+      $paddingRight={!loading && !!suffixIcon && '80px'}
       {...props}
     >
       {dropDownData}

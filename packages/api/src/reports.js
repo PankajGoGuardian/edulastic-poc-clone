@@ -492,7 +492,7 @@ const getCsvData = (params) =>
   api.callApi({
     url: '/report/completion/generate-csv',
     method: 'get',
-    params: { ...params },
+    params,
   })
 
 export default {

@@ -131,7 +131,7 @@ export const SignedStackedBarChart = ({
   animate = true,
   onAnimationStart = () => {},
   setAnimate = () => {},
-  onMouseBarOver = null,
+  handleMouseOver = null,
   onMouseBarLeave = null,
   hideOnlyYAxis = false,
   barSize,
@@ -139,10 +139,6 @@ export const SignedStackedBarChart = ({
   tickMargin = 20,
   tooltipType = 'top',
   responsiveContainerHeight = 400,
-  // yTicks = false,
-  // yTickCount = 0,
-  // yTickLine = false,
-  // yTick,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -174,12 +170,12 @@ export const SignedStackedBarChart = ({
     backFillLastPage: true,
   })
 
-  if (settings) {
-    useEffect(() => {
+  useEffect(() => {
+    if (settings) {
       setPage(LAST_PAGE_INDEX)
       setAnimate(true)
-    }, [settings.frontEndFilters.testTypes])
-  }
+    }
+  }, [settings?.frontEndFilters?.testTypes])
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -239,8 +235,8 @@ export const SignedStackedBarChart = ({
     // label's parent element contains x,y coordinate relative to chart container.
     if (!isEmpty(event.target)) d = getHoveredBarDimensions(event)
     updateTooltipPosition(d)
-    if (onMouseBarOver) {
-      onMouseBarOver(category)
+    if (handleMouseOver) {
+      handleMouseOver(category)
     }
   }
 
@@ -316,8 +312,6 @@ export const SignedStackedBarChart = ({
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
 
-  // leftNavVisible: true,
-  //   rightNavVisible: true,
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
     : hasPreviousPage

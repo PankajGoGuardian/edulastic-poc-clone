@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { Empty } from 'antd'
 import {
   referenceLinesForCompletionChart as referenceLines,
   barDataForCompletionChart as barLabelData,
@@ -15,13 +14,7 @@ import {
   TooltipRow,
 } from '../../../../../common/styled'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
-import {
-  barsLabelFormatter,
-  chartDataFormatter,
-  customTick,
-  yLabelFormatter,
-  yTicks,
-} from './utils'
+import { barsLabelFormatter, chartDataFormatter } from './utils'
 import Heading from '../../../../../common/components/Heading'
 import { ChartContainer } from './styled'
 
@@ -41,7 +34,9 @@ const Chart = ({
 }) => {
   const [hoveredCategory, setHoveredCategory] = useState(null)
 
-  const formattedChartData = useMemo(() => chartDataFormatter(chartData))
+  const formattedChartData = useMemo(() => chartDataFormatter(chartData), [
+    chartData,
+  ])
 
   useEffect(() => {
     if (pagination.page === 1) {
@@ -54,7 +49,7 @@ const Chart = ({
         pageCount: totalPages,
       }))
     }
-  }, [chartData])
+  }, [formattedChartData])
 
   const handleMouseOver = (category) => {
     setHoveredCategory(category)
@@ -76,7 +71,7 @@ const Chart = ({
         <div>
           {Object.keys(dataToDisplay).map((key) => {
             return (
-              <TooltipRow>
+              <TooltipRow key={key}>
                 <TooltipRowTitle>{key}</TooltipRowTitle>
                 <TooltipRowValue>{dataToDisplay[key]}</TooltipRowValue>
               </TooltipRow>
@@ -115,7 +110,7 @@ const Chart = ({
               }
               yAxisLabel={yAxisLabel}
               hideOnlyYAxis
-              onMouseBarOver={handleMouseOver}
+              handleMouseOver={handleMouseOver}
               onMouseBarLeave={() => setHoveredCategory(null)}
               getTooltipJSX={getTooltipJSX}
               getXAxisTickSyle={{ fontWeight: 'bold' }}
@@ -132,11 +127,6 @@ const Chart = ({
               tooltipType="left"
               responsiveContainerHeight={278}
               xTickTooltipPosition={320}
-              // yTicks={yTicks}
-              // yTickCount={20}
-              // yTick={customTick}
-              // yTickLine={{ stroke: '#D8D8D8' }}
-              // yTickFormatter={yLabelFormatter}
             />
           </EduThen>
           <EduElse>

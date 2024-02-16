@@ -11,8 +11,8 @@ const Heading = ({
 }) => {
   return (
     <Container
-      titleFontSize={titleFontSize}
-      descriptionFontSize={descriptionFontSize}
+      $titleFontSize={titleFontSize}
+      $descriptionFontSize={descriptionFontSize}
     >
       <h3>{title}</h3>
       <p>{description}</p>
@@ -33,11 +33,11 @@ export default Heading
 
 const Container = styled.div`
   h3 {
-    font-size: ${({ titleFontSize }) => titleFontSize || '14px;'};
+    font-size: ${({ $titleFontSize }) => $titleFontSize || '14px;'};
     font-weight: 700;
     color: ${titleColor};
   }
   p {
-    font-size: ${({ descriptionFontSize }) => descriptionFontSize || '12px;'};
+    font-size: ${({ $descriptionFontSize }) => $descriptionFontSize || '12px;'};
   }
 `

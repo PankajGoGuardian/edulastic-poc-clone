@@ -321,7 +321,7 @@ export const SelectInputStyled = styled(Select)`
         }
       }
       &.ant-select-selection--multiple {
-        padding-right: ${(props) => props.paddingRight || '25px'};
+        padding-right: ${(props) => props.$paddingRight || '25px'};
         .ant-select-arrow {
           font-size: ${(props) => props.arrowFontSize || '14px'};
           position: absolute;

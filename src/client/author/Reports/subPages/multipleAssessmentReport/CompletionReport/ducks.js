@@ -10,10 +10,9 @@ const initialState = {
   loadingCompletionReportTableData: false,
   completionReportChartData: [],
   error: '',
-  completionReportTableData: {},
 
   completionTableDataLoading: false,
-  completionTableData: {},
+  completionTableData: [],
   completionTableDataError: '',
 }
 
@@ -72,7 +71,7 @@ function* fetchCompletionReportChartDataRequestSaga({ payload }) {
     console.log('err', error.stack)
     const msg =
       'Error fetching completion report data. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ type: 'error', msg })
     yield put(actions.fetchCompletionChartDataFailure({ error: msg }))
   }
 }
@@ -82,6 +81,7 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
       reportsApi.fetchCompletionReportTable,
       payload
     )
+    const tableData = reportTableData.data.result.tableMetricInfo
     if (reportTableData.error) {
       yield put(
         actions.fetchCompletionChartDataFailure({
@@ -90,7 +90,7 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
       )
       return
     }
-    yield put(actions.fetchCompletionTableDataSuccess({ reportTableData }))
+    yield put(actions.fetchCompletionTableDataSuccess(tableData))
   } catch (error) {
     console.log('err', error.stack)
     const msg =

@@ -231,7 +231,7 @@ const findTestWithAverageBand = (tests) => {
   const weightedAverageRank =
     sum(
       tests.map((t) => get(t, 'band.rank', NO_RANK) * t.totalStudentCount || 0)
-    ) / (sumBy(tests, 'totalStudentCount') || 1)
+    ) / sumBy(tests, 'totalStudentCount')
   const item = minBy(
     tests,
     (el) => get(el, 'band.rank', NO_RANK) - weightedAverageRank

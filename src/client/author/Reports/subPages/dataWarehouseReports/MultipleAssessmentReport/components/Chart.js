@@ -176,7 +176,7 @@ const getXTickText = (payload, _data) => {
 
 const Chart = ({
   chartData,
-  selectedPerformanceBand = [],
+  selectedPerformanceBand,
   selectedTests,
   setSelectedTests,
   showInterventions,

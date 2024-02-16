@@ -510,6 +510,8 @@ const curateApiFiltersQuery = (
   return { query, queryStr }
 }
 
+// function required for dga role
+// accepts orgData and district group's termId and districtIds to get equivalent district termIds
 const getDistrictTermIdsForDistrictGroup = (
   orgData,
   { termId, districtIds }
@@ -528,11 +530,13 @@ const getDistrictTermIdsForDistrictGroup = (
   }
 }
 
-const getDistrictGroupTestTermIds = (orgData, testTermIds) => {
+// function required for non-dga role
+// accepts orgData and district's termIds to get equivalent district group termIds
+const getDistrictGroupTestTermIds = (orgData, termIds) => {
   const { terms = [], districtGroup } = orgData || {}
   const districtGroupTerms = districtGroup?.terms || EMPTY_ARRAY
   const testTermNames = terms
-    .filter(({ _id }) => testTermIds.includes(_id))
+    .filter(({ _id }) => termIds.includes(_id))
     .map(({ name }) => name)
   const filteredDistrictGroupTermIds = districtGroupTerms
     .filter(({ name }) => testTermNames.includes(name))

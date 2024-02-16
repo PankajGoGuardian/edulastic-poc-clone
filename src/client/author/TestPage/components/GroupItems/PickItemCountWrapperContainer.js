@@ -57,7 +57,7 @@ export default function PickItemCountWrapperContainer({
         max={100}
         value={
           showValue
-            ? relevantGroup?.items?.length || relevantGroup?.pickCount || 2
+            ? relevantGroup?.pickCount || relevantGroup?.items?.length || 2
             : ''
         }
         onChange={handlePickCountChange}

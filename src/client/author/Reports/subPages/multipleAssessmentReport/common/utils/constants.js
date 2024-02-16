@@ -44,6 +44,13 @@ export const compareByOptions = [
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
 
+export const compareByKeysToFilterKeys = {
+  [compareByKeys.SCHOOL]: 'schoolIds',
+  [compareByKeys.TEACHER]: 'teacherIds',
+  [compareByKeys.CLASS]: 'classIds',
+  [compareByKeys.GROUP]: 'groupIds',
+}
+
 export const compareByOptionsMapByKey = keyBy(compareByOptions, 'key')
 
 // completion Chart Constants

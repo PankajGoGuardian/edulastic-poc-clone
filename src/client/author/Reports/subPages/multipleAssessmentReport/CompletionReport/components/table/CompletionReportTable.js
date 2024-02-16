@@ -23,6 +23,7 @@ import {
   utastatus,
   statusMap,
   sortKey,
+  compareByKeysToFilterKeys,
 } from '../../../common/utils/constants'
 
 import { convertTableToCSV } from '../../../../../common/util'
@@ -110,14 +111,20 @@ const CompletionReportTable = ({
     dimensionId: '',
   }
   const handleDownloadCsv = (record, progressStatus, progressName) => {
-    getCsvData({
+    const params = {
       ...settings.requestFilters,
       analyseBy,
       progressStatus,
       testName: record.testName,
       progressName,
       testId: record.testId,
-    })
+      dimensionVal: record.dimensionId,
+    }
+
+    if (compareByKeysToFilterKeys[compareBy.key]) {
+      params[compareByKeysToFilterKeys[compareBy.key]] = record.dimensionId
+    }
+    getCsvData(params)
   }
   const staticColumns = [
     {

@@ -4,7 +4,7 @@ import ReportLinkCard from './ReportLinkCard'
 import { StyledSectionHeader } from '../../../../../common/styled'
 import { DATA_WAREHOUSE_REPORT_CARDS_DATA_FOR_DGA } from '../../../contants'
 
-const DSPageForDGA = ({ hasCustomReportAccess }) => {
+const DSPageForDGA = ({ loc, hasCustomReportAccess }) => {
   return (
     <>
       {DATA_WAREHOUSE_REPORT_CARDS_DATA_FOR_DGA.map(({ id, title, cards }) => (
@@ -17,6 +17,7 @@ const DSPageForDGA = ({ hasCustomReportAccess }) => {
               <ReportLinkCard
                 key={card.id}
                 {...card}
+                loc={loc}
                 hasCustomReportAccess={hasCustomReportAccess}
               />
             ))}

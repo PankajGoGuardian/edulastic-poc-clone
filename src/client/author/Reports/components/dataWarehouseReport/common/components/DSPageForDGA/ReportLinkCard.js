@@ -18,6 +18,7 @@ const ReportLinkCardForDGA = ({
   url,
   hasCustomReportAccess,
   styles = {},
+  loc,
 }) => {
   const tooltipText =
     url === CUSTOM_REPORTS_URL && !hasCustomReportAccess
@@ -49,7 +50,9 @@ const ReportLinkCardForDGA = ({
             <EduElse>
               <Tooltip title={tooltipText}>
                 <div>
-                  <Link to={url}>View Now</Link>
+                  <Link to={{ pathname: url, state: { source: loc } }}>
+                    View Now
+                  </Link>
                 </div>
               </Tooltip>
             </EduElse>

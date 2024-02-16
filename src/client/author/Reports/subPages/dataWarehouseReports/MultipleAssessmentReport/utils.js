@@ -499,6 +499,8 @@ export const getTableData = (
       [compareByLabelKey]: compareByLabelValue || '',
       [compareByMap[compareByKeys.DISTRICT]]:
         _data[0][compareByMap[compareByKeys.DISTRICT]],
+      [compareByOptionsInfo[compareByKeys.DISTRICT].key]:
+        _data[0][compareByOptionsInfo[compareByKeys.DISTRICT].key],
       tests,
     }
   })

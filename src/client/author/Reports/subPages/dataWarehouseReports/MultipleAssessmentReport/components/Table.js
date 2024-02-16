@@ -130,12 +130,19 @@ const getTableColumns = ({
             compareByKeys.SCHOOL,
             compareByKeys.TEACHER,
           ].includes(compareBy.key))
+      const reportFilters = { ...settings.requestFilters }
+      if (
+        isDistrictGroupAdmin &&
+        [compareByKeys.SCHOOL, compareByKeys.TEACHER].includes(compareBy.key)
+      ) {
+        Object.assign(reportFilters, { districtIds: record.districtId })
+      }
       const url = disableDrillDownCheck
         ? null
         : buildDrillDownUrl({
             key: record.id,
             selectedCompareBy: compareBy.key,
-            reportFilters: settings.requestFilters,
+            reportFilters,
             reportUrl: window.location.pathname,
           })
       return (

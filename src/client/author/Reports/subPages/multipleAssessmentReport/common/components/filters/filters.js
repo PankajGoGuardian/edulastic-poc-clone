@@ -13,7 +13,10 @@ import {
   reportGroupType,
   reportNavType,
 } from '@edulastic/constants/const/report'
-import { DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER } from '@edulastic/constants/const/testTypes'
+import {
+  DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER,
+  TEST_TYPES,
+} from '@edulastic/constants/const/testTypes'
 import { EduIf, FieldLabel } from '@edulastic/common'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
@@ -68,7 +71,7 @@ const FILTER_KEYS_MAP = Object.keys(staticDropDownData.initialFilters).reduce(
   {}
 )
 const ddFilterKeys = Object.keys(staticDropDownData.initialDdFilters)
-const availableAssessmentType = getArrayOfAllTestTypes()
+const allTestTypes = getArrayOfAllTestTypes()
 const clearTestFilterKeys = [
   FILTER_KEYS_MAP.termId,
   FILTER_KEYS_MAP.testGrades,
@@ -112,6 +115,9 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
 }) => {
+  const [availableAssessmentTypes, setAvailableAssessmentTypes] = useState(
+    allTestTypes
+  )
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
@@ -132,6 +138,18 @@ const MultipleAssessmentReportFilters = ({
     'data.result.testSettings.testTypesProfile.performanceBand',
     {}
   )
+
+  useEffect(() => {
+    if (loc === 'completion-report') {
+      setAvailableAssessmentTypes(
+        availableAssessmentTypes.filter((e) =>
+          TEST_TYPES.COMMON.includes(e.key)
+        )
+      )
+    } else {
+      setAvailableAssessmentTypes(allTestTypes)
+    }
+  }, [loc])
 
   const [
     performanceBandList,
@@ -281,7 +299,9 @@ const MultipleAssessmentReportFilters = ({
           groupIds: search.groupIds || '',
           profileId: urlPerformanceBand?.key || '',
           assignedBy: urlAssignedBy.key,
+          compareBy: search.selectedCompareBy,
         }
+
         if (role === roleuser.TEACHER) {
           delete _filters.schoolIds
           delete _filters.teacherIds
@@ -291,7 +311,7 @@ const MultipleAssessmentReportFilters = ({
           termId: urlSchoolYear,
           testSubjects: urlTestSubjects,
           testGrades: urlTestGrades,
-          assessmentTypes: availableAssessmentType.filter((a) =>
+          assessmentTypes: availableAssessmentTypes.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
@@ -449,6 +469,10 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(tabKey)
     }
   }
+  const networkOptions = useMemo(() => {
+    const networks = get(MARFilterData, 'data.result.networks', [])
+    return networks.map((n) => ({ key: n._id, title: n.name }))
+  }, [MARFilterData])
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -546,7 +570,7 @@ const MultipleAssessmentReportFilters = ({
                           label="Test Type"
                           el={assessmentTypesRef}
                           onChange={(e) => {
-                            const selected = availableAssessmentType.filter(
+                            const selected = availableAssessmentTypes.filter(
                               (a) => e.includes(a.key)
                             )
                             updateFilterDropdownCB(
@@ -560,7 +584,7 @@ const MultipleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={availableAssessmentType}
+                          options={availableAssessmentTypes}
                         />
                       </Col>
                       <Col span={6}>
@@ -585,6 +609,7 @@ const MultipleAssessmentReportFilters = ({
                         <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
+                            loc={loc}
                             termId={filters.termId}
                             grades={filters.testGrades}
                             subjects={filters.testSubjects}
@@ -612,6 +637,30 @@ const MultipleAssessmentReportFilters = ({
                     forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      {!isEmpty(networkOptions) && loc === 'completion-report' && (
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="networks"
+                            label="Network"
+                            onChange={(e) => {
+                              const selected = networkOptions.filter((a) =>
+                                e.includes(a.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'networkIds',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.networkIds && filters.networkIds !== 'All'
+                                ? filters.networkIds.split(',')
+                                : []
+                            }
+                            options={networkOptions}
+                          />
+                        </Col>
+                      )}
                       <Col span={6}>
                         <FilterLabel data-cy="assignedBy">
                           Assigned By

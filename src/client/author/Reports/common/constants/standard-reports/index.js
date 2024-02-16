@@ -36,6 +36,7 @@ const CDN_PREFIX = `${appConfig.getCDNOrigin()}/JS/assets`
 
 // sell thumbnail
 const AssessmentSummaryImgIcon = `${CDN_PREFIX}/assessment-summary-icon.png`
+const CompletionReportIcon = `${CDN_PREFIX}/completion-report.svg`
 const MarAnalysisIcon = `${CDN_PREFIX}/mar-analysis-icon.png`
 const MarOverTimeIcon = `${CDN_PREFIX}/mar-over-time-icon.png`
 const MARPreVsPostIcon = `${CDN_PREFIX}/mar-pre-vs-post-icon.png`
@@ -152,6 +153,17 @@ export const INSIGHT_REPORTS = [
     heading: 'Multiple Assessment Report',
     icon: <IconMultipleFile />,
     cards: [
+      {
+        key: 'completionReport',
+        title: 'Completion Report',
+        sellThumbnail: CompletionReportIcon,
+        thumbnail: CompletionReportIcon,
+        location: '/author/reports/completion-report',
+        description:
+          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+        sellDescription:
+          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+      },
       {
         key: 'performanceOverTime',
         title: 'Performance Over Time',

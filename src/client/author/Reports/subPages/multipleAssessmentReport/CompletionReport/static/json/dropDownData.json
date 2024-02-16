@@ -1,0 +1,17 @@
+{
+  "analyzeBy": [
+    { "key": "score", "title": "Percentage(%)" },
+    { "key": "rawScore", "title": "Number" }
+  ],
+  "compareByDropDownData": [
+    {
+      "key": "school",
+      "title": "School"
+    },
+    {
+      "key": "teacher",
+      "title": "Teacher"
+    },
+    { "key": "class", "title": "Class" }
+  ]
+}

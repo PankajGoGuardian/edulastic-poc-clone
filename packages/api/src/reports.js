@@ -195,6 +195,20 @@ const fetchMARFilterData = (params) =>
     params,
   })
 
+const fetchCompletionReportChart = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `report/completion/chart`,
+    params,
+  })
+
+const fetchCompletionReportTable = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `report/completion/table`,
+    params,
+  })
+
 const fetchPeerProgressAnalysisReport = (params) =>
   api.callApi({
     useSlowApi: true,
@@ -474,6 +488,13 @@ const getReportInterventions = (params) => {
     .then((response) => response?.data?.result?.responseData)
 }
 
+const getCsvData = (params) =>
+  api.callApi({
+    url: '/report/completion/generate-csv',
+    method: 'get',
+    params,
+  })
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -530,4 +551,7 @@ export default {
   deleteIntervention,
   updateGoal,
   updateIntervention,
+  fetchCompletionReportChart,
+  fetchCompletionReportTable,
+  getCsvData,
 }

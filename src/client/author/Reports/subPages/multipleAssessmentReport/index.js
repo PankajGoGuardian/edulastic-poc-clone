@@ -11,7 +11,7 @@ import { reportNavType, ReportPaths } from '@edulastic/constants/const/report'
 import { EduIf } from '@edulastic/common'
 import { SubHeader } from '../../common/components/Header'
 
-import { getTabNavigationItems } from '../../common/util'
+import { getSelectedCompareBy, getTabNavigationItems } from '../../common/util'
 
 import MultipleAssessmentReportFilters from './common/components/filters/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
@@ -43,6 +43,8 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import { ReportContainer, FilterLabel } from '../../common/styled'
 import PreVsPostReport from './PreVsPost'
+import CompletionReport from './CompletionReport/CompletionReport'
+import { compareByOptions } from './common/utils/constants'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -83,6 +85,12 @@ const MultipleAssessmentReportContainer = (props) => {
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
+  const search = qs.parse(location.search, { ignoreQueryPrefix: true })
+  const selectedCompareBy = getSelectedCompareBy({
+    search,
+    settings,
+    compareByOptions,
+  })
 
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
@@ -128,6 +136,8 @@ const MultipleAssessmentReportContainer = (props) => {
         obj[item] = val
       })
       obj.reportId = reportId || ''
+      obj.selectedCompareBy = settings.selectedCompareBy.key
+
       const path = `?${qs.stringify(obj)}`
       history.push(path)
     }
@@ -150,12 +160,14 @@ const MultipleAssessmentReportContainer = (props) => {
 
   const onGoClick = (_settings) => {
     const _requestFilters = {}
+
     Object.keys(_settings.filters).forEach((filterType) => {
       _requestFilters[filterType] =
         _settings.filters[filterType] === 'All'
           ? ''
           : _settings.filters[filterType]
     })
+
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
@@ -163,7 +175,9 @@ const MultipleAssessmentReportContainer = (props) => {
         groupIds: _requestFilters.groupIds || '',
         testIds: _requestFilters.testIds || '',
       },
+      selectedCompareBy,
     })
+
     setMARTagsData({ ..._settings.tagsData })
     setShowApply(false)
   }
@@ -319,6 +333,25 @@ const MultipleAssessmentReportContainer = (props) => {
                 MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/completion-report/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <CompletionReport
+                {..._props}
+                settings={settings}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+                setMARSettings={setMARSettings}
+                location={location}
               />
             )
           }}

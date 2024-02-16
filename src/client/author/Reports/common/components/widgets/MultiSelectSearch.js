@@ -2,7 +2,15 @@ import React, { useMemo } from 'react'
 import { SelectSearch } from '@edulastic/common'
 import { FilterLabel } from '../../styled'
 
-const MultiSelectSearch = ({ el, label, dataCy, options, ...props }) => {
+const MultiSelectSearch = ({
+  el,
+  label,
+  dataCy,
+  options,
+  suffixIcon,
+  loc,
+  ...props
+}) => {
   const updatedOptions = useMemo(() =>
     options.map((data) => ({
       ...data,
@@ -15,6 +23,8 @@ const MultiSelectSearch = ({ el, label, dataCy, options, ...props }) => {
       <SelectSearch
         ref={el}
         options={updatedOptions}
+        suffixIcon={suffixIcon}
+        loc={loc}
         mode="multiple"
         {...props}
       />

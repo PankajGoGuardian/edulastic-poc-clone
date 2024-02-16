@@ -684,6 +684,7 @@ export const getSelectedCompareBy = ({
   compareByOptions,
 }) => {
   let [selectedCompareBy] = compareByOptions
+
   if (search.selectedCompareBy) {
     selectedCompareBy =
       compareByOptions.find((o) => o.key === search.selectedCompareBy) ||

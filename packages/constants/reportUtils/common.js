@@ -358,7 +358,6 @@ const convertTableToCSV = (refComponent) => {
     csvRawData,
   }
 }
-
 const downloadCSV = (filename, data) => {
   const link = document.createElement('a')
   link.style.display = 'none'

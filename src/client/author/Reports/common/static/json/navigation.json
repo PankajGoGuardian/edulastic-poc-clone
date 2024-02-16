@@ -154,6 +154,20 @@
       "group": "multipleAssessmentReport",
       "groupTitle": "Multiple Assessment Report"
     },
+    "completion-report": {
+      "title": "Completion Report",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "COMPLETION REPORT"
+        }
+      ],
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
+    },
     "peer-progress-analysis": {
       "title": "Peer Progress Analysis",
       "breadcrumb": [
@@ -489,6 +503,11 @@
       }
     ],
     "multipleAssessmentReport": [
+      {
+        "key": "completion-report",
+        "title": "Completion Report",
+        "location": "/author/reports/completion-report"
+      },
       {
         "key": "performance-over-time",
         "title": "Performance Over Time",

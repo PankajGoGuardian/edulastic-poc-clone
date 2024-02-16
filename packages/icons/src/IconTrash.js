@@ -9,6 +9,7 @@ const IconTrash = ({ title, ...props }) => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 11.729 15.702"
     {...props}
+    data-cy="deleteIcon"
   >
     <g transform="translate(0)">
       <path

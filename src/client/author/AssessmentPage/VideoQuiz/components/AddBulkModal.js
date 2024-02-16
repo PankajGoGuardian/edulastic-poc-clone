@@ -250,13 +250,13 @@ class AddBulkModal extends React.Component {
           maskClosable={false}
           footer={[
             <ModalFooter marginTop="35px">
-              <EduButton isGhost onClick={onCancel}>
+              <EduButton isGhost onClick={onCancel} data-cy="aiCancelButton">
                 Cancel
               </EduButton>
               <EduButton
                 disabled={loading}
                 onClick={() => this.handleApply()}
-                data-cy="apply"
+                data-cy="aiGenerateButton"
               >
                 Generate Questions
                 <EduIf condition={loading}>
@@ -324,6 +324,7 @@ class AddBulkModal extends React.Component {
                     onSelect={(val) => this.setState({ depthOfKnowledge: val })}
                     value={depthOfKnowledge}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    data-cy="aiDok"
                   >
                     <Select.Option key="Select DOK" value="">
                       Select DOK
@@ -345,6 +346,7 @@ class AddBulkModal extends React.Component {
                     onSelect={(val) => this.setState({ authorDifficulty: val })}
                     value={authorDifficulty}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    data-cy="aiDifficulty"
                   >
                     <Select.Option key="Select Difficulty Level" value="">
                       Select Difficulty Level

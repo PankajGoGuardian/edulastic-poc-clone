@@ -354,7 +354,7 @@ class QuestionItem extends React.Component {
       correct = evaluation && evaluation['0']
     }
     return (
-      <AnswerIndicator correct={correct}>
+      <AnswerIndicator correct={correct} data-cy="answerIndicator">
         {correct ? <IconCheck /> : <IconClose />}
       </AnswerIndicator>
     )
@@ -600,6 +600,7 @@ class QuestionItem extends React.Component {
                   <FontAwesomeIcon
                     style={{ height: 15, width: 15 }}
                     icon={faPlayCircle}
+                    data-cy="resumeIcon"
                   />{' '}
                   Resume
                 </NextButton>

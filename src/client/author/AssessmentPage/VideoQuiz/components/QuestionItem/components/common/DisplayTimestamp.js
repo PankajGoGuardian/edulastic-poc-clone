@@ -3,7 +3,7 @@ import { StyledTimeStampContainer } from '../../../../styled-components/Question
 
 const DisplayTimestamp = ({ timestamp }) => {
   return (
-    <StyledTimeStampContainer>
+    <StyledTimeStampContainer data-cy="questionDisplayTimeStamp">
       <span>Display question at: </span>
       {timestamp}
     </StyledTimeStampContainer>

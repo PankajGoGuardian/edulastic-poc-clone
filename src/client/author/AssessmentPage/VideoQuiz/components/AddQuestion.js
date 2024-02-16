@@ -208,7 +208,7 @@ class AddQuestion extends React.Component {
                 height="32px"
                 width="100%"
                 onClick={this.toggleBulkModal}
-                data-cy="addBulk"
+                data-cy="autoGenerateButton"
                 disabled={disableAutoGenerate || !isVideoQuizAndAIEnabled}
               >
                 <FontAwesomeIcon icon={faMagic} aria-hidden="true" />

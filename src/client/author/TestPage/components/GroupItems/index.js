@@ -1030,7 +1030,6 @@ const GroupItems = ({
                                   currentGroupIndex={currentGroupIndex}
                                   index={index}
                                   itemGroup={itemGroup}
-                                  isRequired
                                 />
                               </span>
                             </RadioBtn>

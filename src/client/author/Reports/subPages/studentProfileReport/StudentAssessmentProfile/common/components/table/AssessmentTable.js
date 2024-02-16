@@ -13,6 +13,7 @@ import {
 import { getHSLFromRange1 } from '../../../../../../common/util'
 import CsvTable from '../../../../../../common/components/tables/CsvTable'
 import { reportLinkColor } from '../../../../../multipleAssessmentReport/common/utils/constants'
+import { AssessmentTitle } from '../../styled'
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -102,7 +103,12 @@ const getCol = (
   )
 }
 
-const tableColumns = (location, pageTitle, isSharedReport) => [
+const tableColumns = (
+  location,
+  pageTitle,
+  isSharedReport,
+  setIsTestPreviewVisible
+) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
@@ -112,11 +118,9 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     width: 200,
     render: (data, record) =>
       !isSharedReport ? (
-        <Link
-          to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-        >
+        <AssessmentTitle onClick={() => setIsTestPreviewVisible(record)}>
           {data}
-        </Link>
+        </AssessmentTitle>
       ) : (
         data
       ),
@@ -167,8 +171,14 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
   },
 ]
 
-const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
-  ...tableColumns(location, pageTitle, isSharedReport),
+const getColumns = (
+  studentName = '',
+  location,
+  pageTitle,
+  isSharedReport,
+  setIsTestPreviewVisible
+) => [
+  ...tableColumns(location, pageTitle, isSharedReport, setIsTestPreviewVisible),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -247,8 +257,15 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
+  setIsTestPreviewVisible,
 }) => {
-  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
+  const columns = getColumns(
+    studentName,
+    location,
+    pageTitle,
+    isSharedReport,
+    setIsTestPreviewVisible
+  )
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

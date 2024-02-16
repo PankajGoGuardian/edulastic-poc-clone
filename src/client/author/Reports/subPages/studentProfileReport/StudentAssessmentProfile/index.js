@@ -30,6 +30,9 @@ import {
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
 } from './ducks'
+import { getIsPreviewModalVisibleSelector } from '../../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../../assessment/actions/test'
+import TestActivityModal from './common/components/TestActivityModal'
 
 const StudentAssessmentProfile = ({
   loading,
@@ -46,8 +49,11 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
+  isPreviewModalVisible,
+  setIsTestPreviewVisible,
 }) => {
   const anonymousString = t('common.anonymous')
+  const [currRecord, setCurrentRecord] = useState(null)
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -183,8 +189,25 @@ const StudentAssessmentProfile = ({
             location={location}
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
+            setIsTestPreviewVisible={(_record) => {
+              setCurrentRecord(_record)
+              setIsTestPreviewVisible(true)
+            }}
           />
         </StyledCard>
+        {isPreviewModalVisible && (
+          <TestActivityModal
+            isModalVisible={isPreviewModalVisible}
+            skipPlayer
+            groupId={currRecord.groupId}
+            testActivityId={currRecord.testActivityId}
+            assignmentId={currRecord.assignmentId}
+            testId={currRecord.testId}
+            studentId={settings?.selectedStudent?.key}
+            studentName={settings?.selectedStudent?.title}
+            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
+          />
+        )}
       </EduThen>
       <EduElse>
         <NoDataContainer>{noDataDesc}</NoDataContainer>
@@ -201,10 +224,12 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
     resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
+    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )
 

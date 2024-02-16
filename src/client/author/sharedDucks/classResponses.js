@@ -129,7 +129,10 @@ function* loadAttachmentsFromServer(filter) {
   }
 }
 
-function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
+export function* getAttachmentsForItems({
+  testActivityId,
+  testItemsIdArray = [],
+}) {
   yield all(
     testItemsIdArray.map(({ testItemId, uqaId, _id, qid }) =>
       call(loadAttachmentsFromServer, {
@@ -161,7 +164,7 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
   }
 }
 
-function* loadPassagesForItems({ testActivityId, passages }) {
+export function* loadPassagesForItems({ testActivityId, passages }) {
   const additionalData = yield select(getAdditionalDataSelector)
   const userRole = yield select(getUserRole)
 
@@ -181,7 +184,7 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
-function* loadAnnotationsFromServer({ referrerId, referrerId2 }) {
+export function* loadAnnotationsFromServer({ referrerId, referrerId2 }) {
   try {
     const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
       referrerId,

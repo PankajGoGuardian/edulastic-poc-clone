@@ -558,6 +558,7 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
       hintsUsed,
+      disableAllInputs = false,
     } = this.props
     const {
       score,
@@ -675,7 +676,8 @@ class FeedbackRight extends Component {
                   disabled={
                     isPresentationMode ||
                     isPracticeQuestion ||
-                    isScoreInputDisabled
+                    isScoreInputDisabled ||
+                    disableAllInputs
                   }
                   ref={this.scoreInput}
                   onKeyDown={this.onKeyDownFeedback}
@@ -687,7 +689,7 @@ class FeedbackRight extends Component {
             <GradingPolicyWrapper>
               GRADING POLICY &nbsp;
               <GradingPolicy data-cy="gradingPolicyType">
-                {activity.scoringType}
+                {activity?.scoringType}
               </GradingPolicy>
             </GradingPolicyWrapper>
           </>
@@ -756,7 +758,7 @@ class FeedbackRight extends Component {
                   onChange={this.onChangeFeedback}
                   value={feedback}
                   onFocus={this.focusFeedbackInput}
-                  disabled={!activity || isPresentationMode}
+                  disabled={!activity || isPresentationMode || disableAllInputs}
                   onKeyDown={this.onKeyDownFeedback}
                   isShowFeedbackInput={isShowFeedbackInput}
                   paddingBottom={isAIEvaluated ? '35px' : '4px'}

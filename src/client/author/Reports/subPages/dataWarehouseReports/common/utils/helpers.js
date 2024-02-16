@@ -4,7 +4,11 @@ import moment from 'moment'
 import qs from 'qs'
 import { isEmpty, round } from 'lodash'
 import { roleuser } from '@edulastic/constants'
-import { PERIOD_TYPES } from '@edulastic/constants/reportUtils/common'
+import {
+  PERIOD_TYPES,
+  getDistrictGroupTestTermIds,
+  getDistrictTermIdsForDistrictGroup,
+} from '@edulastic/constants/reportUtils/common'
 import {
   ALL_TEST_TYPES_VALUES as INTERNAL_TEST_TYPES,
   TEST_TYPES_VALUES_MAP,
@@ -218,11 +222,14 @@ export const getDefaultTestTypesForUser = (testTypes = [], userRole) => {
   const availableExternalTestTypes = testTypes
     .filter((testType) => !INTERNAL_TEST_TYPES.includes(testType.key))
     .map((t) => t.key)
-  const isAdmin =
-    userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+  const isAdmin = [
+    roleuser.DISTRICT_GROUP_ADMIN,
+    roleuser.DISTRICT_ADMIN,
+    roleuser.SCHOOL_ADMIN,
+  ].includes(userRole)
   return isAdmin
     ? [
-        ...DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole],
+        ...(DEFAULT_ADMIN_TEST_TYPE_MAP_FILTER[userRole] || []),
         ...availableExternalTestTypes,
       ].join(',')
     : ''
@@ -285,11 +292,16 @@ export const getExternalScoreFormattedByType = (
   return `${externalScorePrefix || ''}${score}${externalScoreSuffix}`
 }
 
+export const convertItemToArray = (item) =>
+  (item && (Array.isArray(item) ? item : item.split(','))) || []
+
 export const getUrlTestTermIds = (schoolYears, testTermIds) =>
   schoolYears.filter((item) => testTermIds && testTermIds.includes(item.key))
 
-export const convertItemToArray = (item) =>
-  (item && (Array.isArray(item) ? item : item.split(','))) || []
+export const getUrlDistricts = (districts, districtIds) => {
+  const districtIdsArr = convertItemToArray(districtIds)
+  return districts.filter((d) => districtIdsArr.includes(d.key))
+}
 
 export const getIsMultiSchoolYearDataPresent = (testTermIds) =>
   convertItemToArray(testTermIds).length > 1
@@ -316,4 +328,35 @@ export const getXTickTagText = (payload, data) => {
     // since this text is in svg, we need to add ellipsis manually
     return tagText.slice(0, EXTERNAL_TAG_MAX_CHARS_COUNT - 2).concat('...')
   return tagText
+}
+
+export const enhanceQueryWithTermIds = (
+  { ...query },
+  { orgData, userRole }
+) => {
+  if (userRole === roleuser.DISTRICT_GROUP_ADMIN) {
+    const selectedDistrictIdsArr = convertItemToArray(query.districtIds)
+    const {
+      districtIds: districtIdsArr,
+      termIds: termIdsArr,
+    } = getDistrictTermIdsForDistrictGroup(orgData, {
+      termId: query.termId,
+      districtIds: selectedDistrictIdsArr,
+    })
+    Object.assign(query, {
+      districtIds: districtIdsArr.join(','),
+      termIds: termIdsArr.join(','),
+    })
+  } else {
+    const testTermIdsArr = convertItemToArray(query.testTermIds)
+    const districtGroupTermIdsArr = getDistrictGroupTestTermIds(
+      orgData,
+      testTermIdsArr
+    )
+    const testTermIds = [...testTermIdsArr, ...districtGroupTermIdsArr].join(
+      ','
+    )
+    Object.assign(query, { termIds: query.termId, testTermIds })
+  }
+  return query
 }

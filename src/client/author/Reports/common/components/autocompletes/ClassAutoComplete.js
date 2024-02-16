@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import { roleuser } from '@edulastic/constants'
@@ -20,7 +21,8 @@ const ClassAutoComplete = ({
   classList: classListRaw,
   loading,
   loadClassList,
-  termId,
+  districtId,
+  termIds,
   schoolIds,
   teacherIds,
   grades,
@@ -29,8 +31,10 @@ const ClassAutoComplete = ({
   selectCB,
   selectedClassIds,
   dataCy,
-  districtId,
+  userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -44,7 +48,7 @@ const ClassAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: searchTerms.text,
         type: ['class'],
@@ -52,19 +56,15 @@ const ClassAutoComplete = ({
       },
       queryType: 'OR',
     }
-    if (termId) {
-      q.search.termIds = [termId]
+    if (termIds) {
+      q.search.termIds = termIds.split(',')
     }
     if (teacherIds) {
       q.search.teachers = teacherIds
         .split(',')
         .map((t) => ({ type: 'cont', value: t }))
     }
-    if (
-      (userRole === roleuser.DISTRICT_ADMIN ||
-        userRole === roleuser.SCHOOL_ADMIN) &&
-      schoolIds
-    ) {
+    if (roleuser.ADMINS_ROLE_ARRAY.includes(userRole) && schoolIds) {
       q.search.institutionIds = schoolIds.split(',')
     }
     if (grades) {
@@ -81,7 +81,8 @@ const ClassAutoComplete = ({
     return q
   }, [
     searchTerms.text,
-    termId,
+    districtId,
+    termIds,
     schoolIds,
     teacherIds,
     grades,
@@ -92,17 +93,24 @@ const ClassAutoComplete = ({
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedClasses = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedClasses)
+    if (!disabled) {
+      const _selectedClasses = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedClasses)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
@@ -112,15 +120,16 @@ const ClassAutoComplete = ({
     debounce(loadClassList, 500, { trailing: true }),
     []
   )
-  const getDefaultClassList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
+      // get default class list
       loadClassListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedClassIds.length) {
+    if (selectedClassIds.length && !disabled) {
       const _search = { ...query.search, groupIds: selectedClassIds }
       loadClassListDebounced({ ...query, search: _search })
     }
@@ -131,13 +140,27 @@ const ClassAutoComplete = ({
     }
   }, [classList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadClassListDebounced(query)
     }
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [termId, schoolIds, teacherIds, grades, subjects, courseId, networkIds])
+  }, [
+    districtId,
+    termIds,
+    schoolIds,
+    teacherIds,
+    grades,
+    subjects,
+    courseId,
+    networkIds,
+    disabled,
+  ])
 
   // build dropdown data
   const dropdownData = (searchTerms.text ? classList : searchResult).map(
@@ -150,26 +173,28 @@ const ClassAutoComplete = ({
   )
 
   return (
-    <MultiSelectSearch
-      label="Class"
-      dataCy={dataCy}
-      placeholder="All Classes"
-      el={classFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={getDefaultClassList}
-      value={selectedClassIds}
-      options={!loading ? dropdownData : []}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        label="Class"
+        dataCy={dataCy}
+        placeholder="All Classes"
+        el={classFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedClassIds}
+        options={!loading ? dropdownData : []}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 
 export default connect(
   (state) => ({
     userDetails: getUser(state),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
     classList: getClassListSelector(state),
     loading: get(state, ['classesReducer', 'loading'], false),
   }),

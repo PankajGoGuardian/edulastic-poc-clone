@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
@@ -20,9 +21,12 @@ const SchoolAutoComplete = ({
   loading,
   loadSchoolList,
   selectCB,
-  selectedSchoolIds,
   districtId,
+  selectedSchoolIds,
+  userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -43,28 +47,35 @@ const SchoolAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: [{ type: 'cont', value: searchTerms.text }],
       },
       networkIds: (networkIds || '').split(',').filter(Boolean),
     }
     return q
-  }, [searchTerms.text, networkIds])
+  }, [searchTerms.text, districtId, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedSchools = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedSchools)
+    if (!disabled) {
+      const _selectedSchools = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedSchools)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
@@ -74,15 +85,16 @@ const SchoolAutoComplete = ({
     debounce(loadSchoolList, 500, { trailing: true }),
     []
   )
-  const getDefaultSchoolList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
+      // get default school list
       loadSchoolListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedSchoolIds.length) {
+    if (selectedSchoolIds.length && !disabled) {
       loadSchoolListDebounced({ ...query, schoolIds: selectedSchoolIds })
     }
   }, [])
@@ -92,28 +104,34 @@ const SchoolAutoComplete = ({
     }
   }, [schoolList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadSchoolListDebounced(query)
     }
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [networkIds])
+  }, [districtId, networkIds, disabled])
 
   return (
-    <MultiSelectSearch
-      dataCy={dataCy}
-      label="School"
-      placeholder="All Schools"
-      el={schoolFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={getDefaultSchoolList}
-      value={selectedSchoolIds}
-      options={dropdownData}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        dataCy={dataCy}
+        label="School"
+        placeholder="All Schools"
+        el={schoolFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedSchoolIds}
+        options={dropdownData}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 
@@ -121,7 +139,7 @@ export default connect(
   (state) => ({
     schoolList: getSchoolsSelector(state),
     loading: get(state, ['schoolsReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
   }),
   {
     loadSchoolList: receiveSchoolsAction,

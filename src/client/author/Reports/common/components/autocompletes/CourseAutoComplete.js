@@ -2,9 +2,9 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
+import { AutoComplete, Input, Icon, Empty } from 'antd'
 
 // components & constants
-import { AutoComplete, Input, Icon, Empty } from 'antd'
 import { themeColorBlue } from '@edulastic/colors'
 
 // ducks
@@ -23,7 +23,9 @@ const CourseAutoComplete = ({
   loadCourseList,
   selectCB,
   selectedCourseId,
+  userDistrictId,
   districtId,
+  disabled,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -35,34 +37,43 @@ const CourseAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: [{ type: 'cont', value: searchTerms.text }],
       },
     }
     return q
-  }, [searchTerms.text])
+  }, [searchTerms.text, districtId])
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
-  const onChange = useCallback((_text, element) => {
-    const _title = element?.props?.title
-    setSearchTerms((s) => ({ ...s, text: _title || _text }))
-    setFieldValue(_title || _text)
-  }, [])
+  const onChange = (_text, element) => {
+    if (!disabled) {
+      const _title = element?.props?.title
+      setSearchTerms((s) => ({ ...s, text: _title || _text }))
+      setFieldValue(_title || _text)
+    }
+  }
   const onSelect = (key) => {
-    const value = (searchTerms.text ? courseList : searchResult).find(
-      (c) => c._id === key
-    )?.name
-    setSearchTerms({ text: value, selectedText: value, selectedKey: key })
-    setFieldValue(value)
-    selectCB({ key, title: value })
+    if (!disabled) {
+      const value = (searchTerms.text ? courseList : searchResult).find(
+        (c) => c._id === key
+      )?.name
+      setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+      setFieldValue(value)
+      selectCB({ key, title: value })
+    }
   }
   const onBlur = () => {
     setIsFocused(false)
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
       setFieldValue('')
       selectCB({ key: 'All', title: '' })
@@ -75,9 +86,9 @@ const CourseAutoComplete = ({
     debounce(loadCourseList, 500, { trailing: true }),
     []
   )
-  const getDefaultCourseList = () => {
+  const onFocus = () => {
     setIsFocused(true)
-    if (isEmpty(searchResult)) {
+    if (isEmpty(searchResult) && !disabled) {
       loadCourseListDebounced(query)
     }
   }
@@ -89,7 +100,11 @@ const CourseAutoComplete = ({
     }
   }, [courseList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
@@ -109,6 +124,9 @@ const CourseAutoComplete = ({
       }
     }
   }, [selectedCourseId, courseList])
+  useEffect(() => {
+    setSearchResult([])
+  }, [districtId, disabled])
 
   // build dropdown data
   const dropdownData = useDropdownData(
@@ -139,7 +157,7 @@ const CourseAutoComplete = ({
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
-        onFocus={() => getDefaultCourseList()}
+        onFocus={onFocus}
         allowClear={!loading && searchTerms.selectedText && isFocused}
         clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
         notFoundContent={
@@ -159,7 +177,7 @@ const CourseAutoComplete = ({
 
 export default connect(
   (state) => ({
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
     courseList: getCourseListSelector(state),
     loading: get(state, ['coursesReducer', 'loading'], false),
   }),

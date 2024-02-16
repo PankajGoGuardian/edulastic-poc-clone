@@ -7,6 +7,7 @@ import { testTypes } from '@edulastic/constants'
 import { DW_GOALS_AND_INTERVENTIONS_URL } from '../../../../common/constants/dataWarehouseReports'
 
 export const compareByKeys = {
+  DISTRICT: 'district',
   SCHOOL: 'school',
   TEACHER: 'teacher',
   CLASS: 'class',
@@ -30,6 +31,7 @@ const demographicFilterFields = {
 }
 
 export const compareByOptionsInfo = {
+  [compareByKeys.DISTRICT]: { key: 'districtId', name: 'districtName' },
   [compareByKeys.SCHOOL]: { key: 'schoolId', name: 'schoolName' },
   [compareByKeys.TEACHER]: { key: 'teacherId', name: 'teacherName' },
   [compareByKeys.CLASS]: { key: 'groupId', name: 'groupName' },
@@ -69,6 +71,7 @@ export const compareByFieldKeys = Object.keys(compareByOptionsInfo).reduce(
 )
 
 export const compareByKeysToFilterKeys = {
+  [compareByKeys.DISTRICT]: 'districtIds',
   [compareByKeys.SCHOOL]: 'schoolIds',
   [compareByKeys.TEACHER]: 'teacherIds',
   [compareByKeys.CLASS]: 'classIds',
@@ -79,6 +82,7 @@ export const compareByKeysToFilterKeys = {
 export const filterKeysToCompareByKeys = invert(compareByKeysToFilterKeys)
 
 export const commonFilterKeys = [
+  compareByKeysToFilterKeys[compareByKeys.DISTRICT],
   compareByKeysToFilterKeys[compareByKeys.SCHOOL],
   compareByKeysToFilterKeys[compareByKeys.TEACHER],
   compareByKeysToFilterKeys[compareByKeys.CLASS],
@@ -92,6 +96,7 @@ export const commonFilterKeys = [
 ]
 
 export const nextCompareByKeys = {
+  [compareByKeys.DISTRICT]: compareByKeys.SCHOOL,
   [compareByKeys.SCHOOL]: compareByKeys.TEACHER,
   [compareByKeys.TEACHER]: compareByKeys.CLASS,
   [compareByKeys.CLASS]: compareByKeys.STUDENT,
@@ -105,17 +110,48 @@ export const nextCompareByKeys = {
 }
 
 export const compareByOptions = [
+  {
+    key: compareByKeys.DISTRICT,
+    title: 'District',
+    hiddenFromRole: ['district-admin', 'school-admin', 'teacher'],
+  },
   { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
   { key: compareByKeys.CLASS, title: 'Class' },
-  { key: compareByKeys.GROUP, title: 'Student Group' },
-  { key: compareByKeys.STUDENT, title: 'Student' },
-  { key: compareByKeys.RACE, title: 'Race' },
-  { key: compareByKeys.GENDER, title: 'Gender' },
-  { key: compareByKeys.FRL_STATUS, title: 'FRL Status' },
-  { key: compareByKeys.ELL_STATUS, title: 'ELL Status' },
-  { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
-  { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
+  {
+    key: compareByKeys.GROUP,
+    title: 'Student Group',
+    hiddenFromRole: ['district-group-admin'],
+  },
+  {
+    key: compareByKeys.STUDENT,
+    title: 'Student',
+    hiddenFromRole: ['district-group-admin'],
+  },
+  {
+    key: compareByKeys.RACE,
+    title: 'Race',
+  },
+  {
+    key: compareByKeys.GENDER,
+    title: 'Gender',
+  },
+  {
+    key: compareByKeys.FRL_STATUS,
+    title: 'FRL Status',
+  },
+  {
+    key: compareByKeys.ELL_STATUS,
+    title: 'ELL Status',
+  },
+  {
+    key: compareByKeys.IEP_STATUS,
+    title: 'IEP Status',
+  },
+  {
+    key: compareByKeys.HISPANIC_ETHNICITY,
+    title: 'Hispanic Ethnicity',
+  },
 ]
 
 export const INTERNAL_TEST_TYPES_ORDER = ALL_TEST_TYPES_VALUES.reduce(

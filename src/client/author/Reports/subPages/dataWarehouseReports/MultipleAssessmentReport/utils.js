@@ -19,6 +19,7 @@ import {
 import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import {
   EXTERNAL_SCORE_TYPES,
+  compareByKeys,
   compareByOptions,
   compareByOptionsInfo,
   getExternalScoreFormattedByType,
@@ -43,7 +44,7 @@ export const staticDropDownData = {
   filterSections: {
     STUDENT_FILTERS: {
       key: '0',
-      title: 'Select Students',
+      title: 'Select Student Set',
     },
     TEST_FILTERS: {
       key: '1',
@@ -60,19 +61,21 @@ export const staticDropDownData = {
   },
   tagTypes: [
     { key: 'termId', tabKey: '0' },
-    { key: 'testGrades', subType: 'test', tabKey: '0' },
-    { key: 'testSubjects', subType: 'test', tabKey: '0' },
-    { key: 'tagIds', tabKey: '0' },
-    { key: 'assessmentTypes', tabKey: '0' },
-    { key: 'testIds', tabKey: '0' },
-    { key: 'schoolIds', tabKey: '1' },
-    { key: 'teacherIds', tabKey: '1' },
-    { key: 'grades', subType: 'class', tabKey: '1' },
-    { key: 'subjects', subType: 'class', tabKey: '1' },
-    { key: 'assignedBy', tabKey: '1' },
-    { key: 'courseId', tabKey: '1' },
-    { key: 'classIds', tabKey: '1' },
-    { key: 'groupIds', tabKey: '1' },
+    { key: 'districtIds', tabKey: '0' },
+    { key: 'schoolIds', tabKey: '0' },
+    { key: 'teacherIds', tabKey: '0' },
+    { key: 'grades', subType: 'class', tabKey: '0' },
+    { key: 'subjects', subType: 'class', tabKey: '0' },
+    { key: 'assignedBy', tabKey: '0' },
+    { key: 'courseId', tabKey: '0' },
+    { key: 'classIds', tabKey: '0' },
+    { key: 'groupIds', tabKey: '0' },
+    { key: 'testTermIds', subType: 'test', tabKey: '1' },
+    { key: 'testGrades', subType: 'test', tabKey: '1' },
+    { key: 'testSubjects', subType: 'test', tabKey: '1' },
+    { key: 'tagIds', tabKey: '1' },
+    { key: 'assessmentTypes', tabKey: '1' },
+    { key: 'testUniqIds', tabKey: '1' },
     { key: 'profileId', tabKey: '2' },
     { key: 'race', tabKey: '3' },
     { key: 'gender', tabKey: '3' },
@@ -80,16 +83,11 @@ export const staticDropDownData = {
     { key: 'frlStatus', tabKey: '3' },
     { key: 'ellStatus', tabKey: '3' },
     { key: 'hispanicEthnicity', tabKey: '3' },
-    { key: 'testTermIds', subType: 'test', tabKey: '1' },
   ],
   initialFilters: {
     reportId: '',
     termId: '',
-    testGrades: '',
-    testSubjects: '',
-    tagIds: '',
-    assessmentTypes: '',
-    testIds: '',
+    districtIds: '',
     schoolIds: '',
     teacherIds: '',
     grades: '',
@@ -97,28 +95,27 @@ export const staticDropDownData = {
     courseId: 'All',
     classIds: '',
     groupIds: '',
+    assignedBy: 'anyone',
+    testTermIds: '',
+    testGrades: '',
+    testSubjects: '',
+    tagIds: '',
+    assessmentTypes: '',
+    testIds: '', // TODO: check if still required?
+    testUniqIds: '',
     profileId: '',
     externalScoreType: 'scaledScore',
-    assignedBy: 'anyone',
     race: 'all',
     gender: 'all',
     iepStatus: 'all',
     frlStatus: 'all',
     ellStatus: 'all',
     hispanicEthnicity: 'all',
-    testTermIds: '',
-    testUniqIds: '',
   },
   requestFilters: {
     reportId: '',
     termId: '',
-    testTermIds: '',
-    testUniqIds: '',
-    testSubjects: '',
-    testGrades: '',
-    assessmentTypes: '',
-    tagIds: '',
-    testIds: '',
+    districtIds: '',
     schoolIds: '',
     teacherIds: '',
     subjects: '',
@@ -126,6 +123,13 @@ export const staticDropDownData = {
     courseId: '',
     classIds: '',
     groupIds: '',
+    testTermIds: '',
+    testUniqIds: '',
+    testSubjects: '',
+    testGrades: '',
+    assessmentTypes: '',
+    tagIds: '',
+    testIds: '',
     profileId: '',
     race: 'all',
     gender: 'all',
@@ -192,6 +196,8 @@ export const getCompareByOptions = (userRole) => {
 
 const groupByCompareByKey = (metricInfo, compareBy) => {
   switch (compareBy) {
+    case 'district':
+      return groupBy(metricInfo, 'districtId')
     case 'school':
       return groupBy(metricInfo, 'schoolId')
     case 'student':
@@ -230,7 +236,7 @@ const findTestWithAverageBand = (tests) => {
     tests,
     (el) => get(el, 'band.rank', NO_RANK) - weightedAverageRank
   )
-  return item
+  return item || {}
 }
 
 const getWeightedAchievementLevel = (records) => {
@@ -257,22 +263,20 @@ const getLineScoreForExternalData = (records, achievementLevel) => {
 }
 
 const augmentBandData = (tests, bandInfo, externalBands) => {
-  const testsWithBandInfo = tests.map((t) => {
+  const testsWithBandInfo = tests.map(({ ...t }) => {
     let band = { name: '-', color: '#010101' }
     if (t.externalTestType) {
       const achievementLevels = getAchievementLevels(
         { ...t, title: t.testTitle },
         externalBands
       )
-      band = achievementLevels.find((al) => al.active)
-      return {
-        ...t,
-        bands: achievementLevels,
-        band,
-      }
+      Object.assign(t, { bands: achievementLevels })
+      band = achievementLevels.find((al) => al.active) || band
+    } else {
+      band = getProficiencyBand(t.averageScorePercentage, bandInfo) || band
     }
-    band = getProficiencyBand(t.averageScorePercentage, bandInfo)
-    return { ...t, band }
+    Object.assign(t, { band })
+    return t
   })
   return testsWithBandInfo
 }
@@ -414,6 +418,7 @@ const getAggregatedDataByTestId = (
  * @returns {Record[]} - transformed data for rendering the table.
  */
 export const getTableData = (
+  orgData,
   reportTableData,
   reportChartData,
   feedTypes,
@@ -421,16 +426,22 @@ export const getTableData = (
   bandInfo = [],
   compareByKey,
   sortFilters,
-  filters = {}
+  filters = {},
+  isDistrictGroupAdmin
 ) => {
   const { metricInfo = [] } = get(reportTableData, 'data.result', {})
   const { externalBands = [] } = get(reportChartData, 'data.result', {})
+  const { districts: districtsInfo = [] } = orgData?.districtGroup || {}
   const feedTypeKeys = (feedTypes || []).map(({ key }) => key)
   let externalMetricsForTable = metricInfo
     .filter(({ testType }) => feedTypeKeys.includes(testType))
     .map(({ testType: externalTestType, ...t }) => ({
       ...t,
       externalTestType,
+      [compareByMap[compareByKeys.DISTRICT]]:
+        isDistrictGroupAdmin && !t[compareByMap[compareByKeys.DISTRICT]]
+          ? districtsInfo.find((d) => d._id === t.districtId)?.name
+          : t[compareByMap[compareByKeys.DISTRICT]],
     }))
   const internalMetricsForTable = metricInfo
     .filter(({ testType }) => !feedTypeKeys.includes(testType))
@@ -486,6 +497,8 @@ export const getTableData = (
       id: compareByValue,
       [compareByKey]: compareByValue,
       [compareByLabelKey]: compareByLabelValue || '',
+      [compareByMap[compareByKeys.DISTRICT]]:
+        _data[0][compareByMap[compareByKeys.DISTRICT]],
       tests,
     }
   })
@@ -802,12 +815,13 @@ export const getChartSpecifics = (
   const termsKeyedById = keyBy(terms, '_id')
   // performance band for chart should update post chart data API response
   const { bandInfo = [] } = get(filtersData, 'data.result', {})
-  const selectedPerformanceBand = (
-    bandInfo.find(
-      (x) =>
-        x._id === (sharedReportFilters || settings.requestFilters).profileId
-    ) || bandInfo[0]
-  )?.performanceBand
+  const selectedPerformanceBand =
+    (
+      bandInfo.find(
+        (x) =>
+          x._id === (sharedReportFilters || settings.requestFilters).profileId
+      ) || bandInfo[0]
+    )?.performanceBand || []
   // curate chart data from API response
 
   const {

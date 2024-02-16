@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useEffect } from 'react'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
-import { isNumber, round } from 'lodash'
+import { isNumber, round, startCase } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
 import { EduIf, EduThen } from '@edulastic/common'
@@ -102,13 +102,14 @@ const getTooltipText = (currentTest) => {
   )
 }
 
-const getTableColumns = (
+const getTableColumns = ({
+  isDistrictGroupAdmin,
   overallAssessmentsData,
   isSharedReport,
   settings,
   isPrinting,
-  sortFilters
-) => {
+  sortFilters,
+}) => {
   const compareBy = settings.selectedCompareBy
   const isStudentCompareBy = compareBy.key === compareByKeys.STUDENT
   return next(tableColumnsData, (_columns) => {
@@ -121,7 +122,15 @@ const getTableColumns = (
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
     _columns[compareByIdx].render = (data, record) => {
-      const url = isSharedReport
+      const disableDrillDownCheck =
+        isSharedReport ||
+        (isDistrictGroupAdmin &&
+          ![
+            compareByKeys.DISTRICT,
+            compareByKeys.SCHOOL,
+            compareByKeys.TEACHER,
+          ].includes(compareBy.key))
+      const url = disableDrillDownCheck
         ? null
         : buildDrillDownUrl({
             key: record.id,
@@ -144,6 +153,25 @@ const getTableColumns = (
         .localeCompare((b[dataIndex] || '').toLowerCase())
     }
     _columns[compareByIdx].defaultSortOrder = 'ascend'
+
+    if (
+      isDistrictGroupAdmin &&
+      [
+        compareByKeys.SCHOOL,
+        compareByKeys.TEACHER,
+        compareByKeys.CLASS,
+      ].includes(compareBy.key)
+    ) {
+      const districtColumn = {
+        title: startCase(compareByMap[compareByKeys.DISTRICT]),
+        dataIndex: compareByMap[compareByKeys.DISTRICT],
+        key: compareByMap[compareByKeys.DISTRICT],
+        align: 'left',
+        fixed: 'left',
+        width: 200,
+      }
+      _columns.push(districtColumn)
+    }
 
     // render rectangular tag for assessment performance
     const assessmentColumns = overallAssessmentsData.flatMap((assessment) => {
@@ -318,6 +346,7 @@ const getDownloadCsvColumnHeadersFunc = (
 }
 
 const AssessmentsTable = ({
+  isDistrictGroupAdmin,
   tableData,
   overallAssessmentsData,
   showIncompleteTestsMessage,
@@ -335,13 +364,14 @@ const AssessmentsTable = ({
 }) => {
   const tableColumns = useMemo(
     () =>
-      getTableColumns(
+      getTableColumns({
+        isDistrictGroupAdmin,
         overallAssessmentsData,
         isSharedReport,
         settings,
         isPrinting,
-        sortFilters
-      ),
+        sortFilters,
+      }),
     [overallAssessmentsData, isSharedReport, settings, isPrinting, sortFilters]
   )
 

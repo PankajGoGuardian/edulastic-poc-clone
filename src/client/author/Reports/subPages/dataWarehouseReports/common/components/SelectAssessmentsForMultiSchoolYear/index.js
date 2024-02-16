@@ -25,7 +25,10 @@ import {
   getUserOrgId,
 } from '../../../../../../src/selectors/user'
 import { MandatorySymbol } from '../styledComponents'
-import { getIsMultiSchoolYearDataPresent } from '../../utils'
+import {
+  convertItemToArray,
+  getIsMultiSchoolYearDataPresent,
+} from '../../utils'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
@@ -62,8 +65,6 @@ const SelectAssessmentsForMultiSchoolYear = ({
 
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const firstRender = useRef(true)
-  const convertItemToArray = (item) =>
-    (item && (Array.isArray(item) ? item : item.split(','))) || []
 
   const testTermIdsArr = useMemo(() => convertItemToArray(testTermIds), [
     testTermIds,
@@ -91,11 +92,13 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const dropdownData = useMemo(() => {
     const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
     return tests.map((test) => {
-      const term = termsMap[test.termId ?? termId]
+      const testTermId = test.termId ?? termId
+      const term = termsMap[testTermId]
+      const testTermName = test.termName || term.title || ''
       return {
-        key: `${!test.isExternal ? test._id : test.testName}_${term.key}`,
+        key: `${!test.isExternal ? test._id : test.testName}_${testTermId}`,
         title: `${test.title}${
-          isLongitudinalReport ? ` [ SY:${term.title || ''} ]` : ''
+          isLongitudinalReport ? ` [ SY:${testTermName} ]` : ''
         } `,
         disabled: true,
       }

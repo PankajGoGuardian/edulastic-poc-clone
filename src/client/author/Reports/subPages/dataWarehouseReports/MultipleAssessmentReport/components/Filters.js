@@ -1,11 +1,15 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject } from 'lodash'
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, Tooltip } from 'antd'
 
 import { EduIf, FieldLabel } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
+import { roleuser } from '@edulastic/constants'
+import {
+  EMPTY_ARRAY,
+  getDistrictTermIdsForDistrictGroup,
+} from '@edulastic/constants/reportUtils/common'
 
 import { withNamespaces } from 'react-i18next'
 import {
@@ -26,12 +30,14 @@ import ClassAutoComplete from '../../../../common/components/autocompletes/Class
 import TeacherAutoComplete from '../../../../common/components/autocompletes/TeacherAutoComplete'
 import TagFilter from '../../../../../src/components/common/TagFilter'
 import SelectAssessmentsForMultiSchoolYear from '../../common/components/SelectAssessmentsForMultiSchoolYear'
-// import AssessmentsAutoComplete from '../../../../common/components/autocompletes/AssessmentsAutoComplete'
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
-import { getTermOptions } from '../../../../../utils/reports'
+import {
+  getDistrictOptions,
+  getTermOptions,
+} from '../../../../../utils/reports'
 import { staticDropDownData } from '../utils'
 
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
@@ -44,13 +50,28 @@ import {
   getUrlTestTermIds,
   convertItemToArray,
   getIsMultiSchoolYearDataPresent,
+  getUrlDistricts,
 } from '../../common/utils'
 import ExternalScoreTypeFilter from '../../common/components/ExternalScoreTypeFilter'
 import { MandatorySymbol } from '../../common/components/styledComponents'
 
 import { isPearOrEdulasticText } from '../../../../../../common/utils/helpers'
 
+const DGA_DISABLE_FILTERS_MESSAGE =
+  'Please select a single district to activate this filter'
+
 const internalTestTypes = getArrayOfAllTestTypes()
+
+const getLabel = (text, isRequired) => {
+  return isRequired ? (
+    <>
+      {text}
+      <MandatorySymbol>*</MandatorySymbol>
+    </>
+  ) : (
+    text
+  )
+}
 
 const MultipleAssessmentReportFilters = ({
   // value props
@@ -84,8 +105,13 @@ const MultipleAssessmentReportFilters = ({
   history,
   t,
 }) => {
+  const isDistrictGroupAdmin = userRole === roleuser.DISTRICT_GROUP_ADMIN
   const tagTypes = staticDropDownData.tagTypes
-  const { terms = [], schools } = orgData
+  const { terms = EMPTY_ARRAY, schools, districtGroup } = orgData
+  const districtGroupDistricts = useMemo(
+    () => getDistrictOptions(districtGroup?.districts),
+    [districtGroup]
+  )
   const schoolYears = useMemo(() => getTermOptions(terms), [terms])
   const institutionIds = useMemo(() => schools.map((s) => s._id), [schools])
 
@@ -125,27 +151,22 @@ const MultipleAssessmentReportFilters = ({
   )
 
   useEffect(() => {
+    const q = {
+      districtGroupId: districtGroup?._id,
+      externalTestTypesRequired: true,
+      externalTestsRequired: true,
+    }
     if (reportId) {
-      fetchFiltersDataRequest({
-        reportId,
-        externalTestTypesRequired: true,
-        externalTestsRequired: true,
-      })
+      Object.assign(q, { reportId })
+      fetchFiltersDataRequest(q)
       setFilters({ ...filters, ...search })
     } else {
-      const termId =
-        search.termId ||
-        defaultTermId ||
-        (schoolYears.length ? schoolYears[0].key : '')
-      const q = { ...search, termId }
       if (firstLoad && isEmpty(search)) {
         q.firstLoad = true
       }
       if (userRole === roleuser.SCHOOL_ADMIN) {
         q.schoolIds = institutionIds.join(',')
       }
-      q.externalTestTypesRequired = true
-      q.externalTestsRequired = true
       fetchFiltersDataRequest(q)
     }
   }, [])
@@ -175,6 +196,10 @@ const MultipleAssessmentReportFilters = ({
         const urlGrades = staticDropDownData.grades.filter(
           (item) => search.grades && search.grades.includes(item.key)
         )
+        const urlDistricts = getUrlDistricts(
+          districtGroupDistricts,
+          search.districtIds
+        )
         const urlTestTermIds = getUrlTestTermIds(
           schoolYears,
           search.testTermIds
@@ -187,17 +212,19 @@ const MultipleAssessmentReportFilters = ({
         const defaultTestTypes = getDefaultTestTypesForUser(testTypes, userRole)
 
         const _filters = {
-          termId: urlSchoolYear.key,
+          // test filters
           testTermIds:
             urlTestTermIds.map((item) => item.key).join(',') ||
             urlSchoolYear.key,
-
           testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
           testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || defaultTestTypes,
-          testIds: search.testIds || '',
+          testIds: search.testIds || '', // TODO: check if still required?
           testUniqIds: search.testUniqIds || '',
+          // student set filters
+          termId: urlSchoolYear.key,
+          districtIds: search.districtIds || '',
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -205,9 +232,11 @@ const MultipleAssessmentReportFilters = ({
           courseId: search.courseId || 'All',
           classIds: search.classIds || '',
           groupIds: search.groupIds || '',
+          // performance filters
           profileId: urlPerformanceBand?.key || '',
           externalScoreType:
             search.externalScoreType || EXTERNAL_SCORE_TYPES.SCALED_SCORE,
+          // demographic filters
           race: search.race || allFilterValue,
           gender: search.gender || allFilterValue,
           iepStatus: search.iepStatus || allFilterValue,
@@ -229,6 +258,7 @@ const MultipleAssessmentReportFilters = ({
         )
         const _filterTagsData = {
           termId: urlSchoolYear,
+          districtIds: urlDistricts,
           testSubjects: urlTestSubjects,
           testTermIds: urlTestTermIds.length ? urlTestTermIds : [urlSchoolYear],
           testGrades: urlTestGrades,
@@ -253,18 +283,39 @@ const MultipleAssessmentReportFilters = ({
             selectedCompareBy: search.selectedCompareBy,
             selectedFilterTagsData: { ..._filterTagsData },
           })
-          fetchUpdateTagsData({
-            schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            courseId: reject([search.courseId], isEmpty),
-            classIds: reject(_filters.classIds?.split(','), isEmpty),
-            groupIds: reject(_filters.groupIds?.split(','), isEmpty),
-            teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
-            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
-            options: {
+          const districtIdsArr = _filters.districtIds.split(',')
+          const updateTagsDataParams = {
+            districtIds: reject(districtIdsArr, isEmpty),
+          }
+          if (!isDistrictGroupAdmin || districtIdsArr.length === 1) {
+            const {
+              termIds: termIdsArr,
+              districtIds: filteredDistrictIdsArr,
+            } = getDistrictTermIdsForDistrictGroup(orgData, {
               termId: _filters.termId,
+              districtIds: districtIdsArr,
+            })
+            const termId = termIdsArr[0] || _filters.termId
+            const districtId = filteredDistrictIdsArr[0]
+            Object.assign(updateTagsDataParams, {
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
-            },
-          })
+              courseId: reject([search.courseId], isEmpty),
+              classIds: reject(_filters.classIds?.split(','), isEmpty),
+              groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+              teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+              options: {
+                termId,
+                districtId,
+                schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+              },
+            })
+          }
+          if (!isDistrictGroupAdmin) {
+            Object.assign(updateTagsDataParams, {
+              tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+            })
+          }
+          fetchUpdateTagsData(updateTagsDataParams)
         }
       }
       setFirstLoad(false)
@@ -363,23 +414,40 @@ const MultipleAssessmentReportFilters = ({
   const testUniqIds = useMemo(() => convertItemToArray(filters.testUniqIds), [
     filters.testUniqIds,
   ])
-
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   const isDisable = useMemo(() => {
     if (isMultiSchoolYear) {
       return !testUniqIds.length
     }
   }, [isMultiSchoolYear, testUniqIds])
-  const getLabel = (text, isRequired) => {
-    return isRequired ? (
-      <>
-        {text}
-        <MandatorySymbol>*</MandatorySymbol>
-      </>
-    ) : (
-      text
-    )
-  }
+
+  // for districtGroupAdmin we need one district / term combination for autocompletes
+  const [
+    selectedDistrictTermId,
+    selectedDistrictId,
+    studentFiltersDisabled,
+    studentFiltersDisabledMessage,
+  ] = useMemo(() => {
+    let termId = filters.termId
+    let districtId
+    const districtIdsArr = convertItemToArray(filters.districtIds)
+    const filtersDisabled = isDistrictGroupAdmin && districtIdsArr.length !== 1
+    if (isDistrictGroupAdmin) {
+      const {
+        termIds: termIdsArr,
+        districtIds: filteredDistrictIdsArr,
+      } = getDistrictTermIdsForDistrictGroup(orgData, {
+        termId: filters.termId,
+        districtIds: districtIdsArr,
+      })
+      termId = termIdsArr[0] || termId
+      districtId = filteredDistrictIdsArr[0] || districtIdsArr[0]
+    }
+    const filtersDisabledMessage = filtersDisabled
+      ? DGA_DISABLE_FILTERS_MESSAGE
+      : ''
+    return [termId, districtId, filtersDisabled, filtersDisabledMessage]
+  }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
   const applyButton = () => {
     const ApplyButton = ({ width = '25%' }) => (
@@ -469,11 +537,36 @@ const MultipleAssessmentReportFilters = ({
                           showPrefixOnSelected={false}
                         />
                       </Col>
-                      {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
+                      <EduIf condition={isDistrictGroupAdmin}>
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="district"
+                            label="District"
+                            onChange={(e) => {
+                              const selected = districtGroupDistricts?.filter(
+                                (district) => e.includes(district.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'districtIds',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.districtIds
+                                ? filters.districtIds.split(',')
+                                : []
+                            }
+                            options={districtGroupDistricts}
+                          />
+                        </Col>
+                      </EduIf>
+                      {roleuser.ADMINS_ROLE_ARRAY.includes(userRole) && (
                         <>
                           <Col span={6}>
                             <SchoolAutoComplete
                               dataCy="schools"
+                              districtId={selectedDistrictId}
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
@@ -482,12 +575,15 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'schoolIds', true)
                               }
+                              disabled={studentFiltersDisabled}
+                              disabledMessage={studentFiltersDisabledMessage}
                             />
                           </Col>
                           <Col span={6}>
                             <TeacherAutoComplete
                               dataCy="teachers"
-                              termId={filters.termId}
+                              districtId={selectedDistrictId}
+                              termIds={selectedDistrictTermId}
                               school={filters.schoolIds}
                               selectedTeacherIds={
                                 filters.teacherIds
@@ -497,6 +593,8 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'teacherIds', true)
                               }
+                              disabled={studentFiltersDisabled}
+                              disabledMessage={studentFiltersDisabledMessage}
                             />
                           </Col>
                         </>
@@ -538,18 +636,24 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="course">Course</FilterLabel>
-                        <CourseAutoComplete
-                          selectedCourseId={filters.courseId}
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'courseId')
-                          }
-                        />
+                        <Tooltip title={studentFiltersDisabledMessage}>
+                          <FilterLabel data-cy="course">Course</FilterLabel>
+                          <CourseAutoComplete
+                            districtId={selectedDistrictId}
+                            selectedCourseId={filters.courseId}
+                            selectCB={(e) =>
+                              updateFilterDropdownCB(e, 'courseId')
+                            }
+                            disabled={studentFiltersDisabled}
+                            disabledMessage={studentFiltersDisabledMessage}
+                          />
+                        </Tooltip>
                       </Col>
                       <Col span={6}>
                         <ClassAutoComplete
                           dataCy="classes"
-                          termId={filters.termId}
+                          districtId={selectedDistrictId}
+                          termIds={selectedDistrictTermId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
                           grades={filters.grades}
@@ -563,27 +667,36 @@ const MultipleAssessmentReportFilters = ({
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'classIds', true)
                           }
+                          disabled={studentFiltersDisabled}
+                          disabledMessage={studentFiltersDisabledMessage}
                         />
                       </Col>
-                      <Col span={6}>
-                        <GroupsAutoComplete
-                          dataCy="groups"
-                          termId={filters.termId}
-                          schoolIds={filters.schoolIds}
-                          teacherIds={filters.teacherIds}
-                          grades={filters.grades}
-                          subjects={filters.subjects}
-                          courseId={
-                            filters.courseId !== 'All' && filters.courseId
-                          }
-                          selectedGroupIds={
-                            filters.groupIds ? filters.groupIds.split(',') : []
-                          }
-                          selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'groupIds', true)
-                          }
-                        />
-                      </Col>
+                      <EduIf condition={!isDistrictGroupAdmin}>
+                        <Col span={6}>
+                          <GroupsAutoComplete
+                            dataCy="groups"
+                            districtId={selectedDistrictId}
+                            termIds={selectedDistrictTermId}
+                            schoolIds={filters.schoolIds}
+                            teacherIds={filters.teacherIds}
+                            grades={filters.grades}
+                            subjects={filters.subjects}
+                            courseId={
+                              filters.courseId !== 'All' && filters.courseId
+                            }
+                            selectedGroupIds={
+                              filters.groupIds
+                                ? filters.groupIds.split(',')
+                                : []
+                            }
+                            selectCB={(e) =>
+                              updateFilterDropdownCB(e, 'groupIds', true)
+                            }
+                            disabled={studentFiltersDisabled}
+                            disabledMessage={studentFiltersDisabledMessage}
+                          />
+                        </Col>
+                      </EduIf>
                     </Row>
                   </Tabs.TabPane>
 
@@ -682,20 +795,25 @@ const MultipleAssessmentReportFilters = ({
                           options={availableAssessmentTypes}
                         />
                       </Col>
-                      <Col span={6}>
-                        <FilterLabel data-cy="tags-select">Tags</FilterLabel>
-                        <TagFilter
-                          onChangeField={(type, selected) => {
-                            const _selected = selected.map(
-                              ({ _id: key, tagName: title }) => ({ key, title })
-                            )
-                            updateFilterDropdownCB(_selected, 'tagIds', true)
-                          }}
-                          selectedTagIds={
-                            filters.tagIds ? filters.tagIds.split(',') : []
-                          }
-                        />
-                      </Col>
+                      <EduIf condition={!isDistrictGroupAdmin}>
+                        <Col span={6}>
+                          <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+                          <TagFilter
+                            onChangeField={(type, selected) => {
+                              const _selected = selected.map(
+                                ({ _id: key, tagName: title }) => ({
+                                  key,
+                                  title,
+                                })
+                              )
+                              updateFilterDropdownCB(_selected, 'tagIds', true)
+                            }}
+                            selectedTagIds={
+                              filters.tagIds ? filters.tagIds.split(',') : []
+                            }
+                          />
+                        </Col>
+                      </EduIf>
                       <Col span={18}>
                         <SelectAssessmentsForMultiSchoolYear
                           dataCy="multiSchoolYearTests"
@@ -720,59 +838,65 @@ const MultipleAssessmentReportFilters = ({
                     </Row>
                   </Tabs.TabPane>
 
-                  <Tabs.TabPane
-                    key={
-                      staticDropDownData.filterSections.PERFORMANCE_FILTERS.key
-                    }
-                    tab={
-                      staticDropDownData.filterSections.PERFORMANCE_FILTERS
-                        .title
-                    }
-                  >
-                    <Row type="flex" gutter={[5, 10]}>
-                      <Col span={6}>
-                        <FilterLabel data-cy="performanceBand">
-                          Performance Band
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={{ key: filters.profileId }}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'profileId')
-                          }
-                          data={performanceBandsList}
-                          prefix="Performance Band"
-                          showPrefixOnSelected={false}
-                        />
-                      </Col>
-                    </Row>
-                  </Tabs.TabPane>
-
-                  <Tabs.TabPane
-                    key={
-                      staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key
-                    }
-                    tab={
-                      staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS
-                        .title
-                    }
-                  >
-                    <Row type="flex" gutter={[5, 10]}>
-                      {demographics.map((item) => (
+                  {!isDistrictGroupAdmin && (
+                    <Tabs.TabPane
+                      key={
+                        staticDropDownData.filterSections.PERFORMANCE_FILTERS
+                          .key
+                      }
+                      tab={
+                        staticDropDownData.filterSections.PERFORMANCE_FILTERS
+                          .title
+                      }
+                    >
+                      <Row type="flex" gutter={[5, 10]}>
                         <Col span={6}>
-                          <FilterLabel data-cy={item.key}>
-                            {item.title}
+                          <FilterLabel data-cy="performanceBand">
+                            Performance Band
                           </FilterLabel>
                           <ControlDropDown
-                            by={filters[item.key] || item.data[0]}
+                            by={{ key: filters.profileId }}
                             selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, item.key)
+                              updateFilterDropdownCB(selected, 'profileId')
                             }
-                            data={item.data}
+                            data={performanceBandsList}
+                            prefix="Performance Band"
+                            showPrefixOnSelected={false}
                           />
                         </Col>
-                      ))}
-                    </Row>
-                  </Tabs.TabPane>
+                      </Row>
+                    </Tabs.TabPane>
+                  )}
+
+                  {!isDistrictGroupAdmin && (
+                    <Tabs.TabPane
+                      key={
+                        staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS
+                          .key
+                      }
+                      tab={
+                        staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS
+                          .title
+                      }
+                    >
+                      <Row type="flex" gutter={[5, 10]}>
+                        {demographics.map((item) => (
+                          <Col span={6}>
+                            <FilterLabel data-cy={item.key}>
+                              {item.title}
+                            </FilterLabel>
+                            <ControlDropDown
+                              by={filters[item.key] || item.data[0]}
+                              selectCB={(e, selected) =>
+                                updateFilterDropdownCB(selected, item.key)
+                              }
+                              data={item.data}
+                            />
+                          </Col>
+                        ))}
+                      </Row>
+                    </Tabs.TabPane>
+                  )}
                 </Tabs>
               </Col>
               <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
@@ -806,27 +930,29 @@ const MultipleAssessmentReportFilters = ({
               }
             />
           </EduIf>
-          <StyledDropDownContainer
-            flex="0 0 300px"
-            xs={24}
-            sm={12}
-            lg={6}
-            data-cy="performanceBand"
-            data-testid="performanceBand"
-          >
-            <FieldLabel fs=".7rem">
-              PERFORMANCE BAND ({isPearOrEdulasticText})
-            </FieldLabel>
-            <ControlDropDown
-              by={selectedPerformanceBand}
-              selectCB={(e, selected) =>
-                updateFilterDropdownCB(selected, 'profileId', false, true)
-              }
-              data={performanceBandsList}
-              prefix="Performance Band"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
+          <EduIf condition={!isDistrictGroupAdmin}>
+            <StyledDropDownContainer
+              flex="0 0 300px"
+              xs={24}
+              sm={12}
+              lg={6}
+              data-cy="performanceBand"
+              data-testid="performanceBand"
+            >
+              <FieldLabel fs=".7rem">
+                PERFORMANCE BAND ({isPearOrEdulasticText})
+              </FieldLabel>
+              <ControlDropDown
+                by={selectedPerformanceBand}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'profileId', false, true)
+                }
+                data={performanceBandsList}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          </EduIf>
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"

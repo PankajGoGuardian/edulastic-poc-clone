@@ -14,6 +14,7 @@ const {
   isEmpty,
   pick,
   invert,
+  uniq,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -509,6 +510,40 @@ const curateApiFiltersQuery = (
   return { query, queryStr }
 }
 
+// function required for dga role
+// accepts orgData and district group's termId and districtIds to get equivalent district termIds
+const getDistrictTermIdsForDistrictGroup = (
+  orgData,
+  { termId, districtIds }
+) => {
+  const { districtGroup = {}, terms = [] } = orgData || {}
+  const { districtTerms = [] } = districtGroup
+  const termName = terms.find((t) => t._id === termId)?.name || ''
+  const filteredDistrictTerms = districtTerms.filter(
+    (t) =>
+      (!districtIds.length || districtIds.includes(t.districtId)) &&
+      t.name === termName
+  )
+  return {
+    districtIds: uniq(filteredDistrictTerms.map((t) => t.districtId)),
+    termIds: filteredDistrictTerms.map((t) => t._id),
+  }
+}
+
+// function required for non-dga role
+// accepts orgData and district's termIds to get equivalent district group termIds
+const getDistrictGroupTestTermIds = (orgData, termIds) => {
+  const { terms = [], districtGroup } = orgData || {}
+  const districtGroupTerms = districtGroup?.terms || EMPTY_ARRAY
+  const testTermNames = terms
+    .filter(({ _id }) => termIds.includes(_id))
+    .map(({ name }) => name)
+  const filteredDistrictGroupTermIds = districtGroupTerms
+    .filter(({ name }) => testTermNames.includes(name))
+    .map(({ _id }) => _id)
+  return filteredDistrictGroupTermIds
+}
+
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -679,6 +714,8 @@ module.exports = {
   stringifyArrayFilters,
   curateApiFiltersQuery,
   getCsvDataFromTableBE,
+  getDistrictTermIdsForDistrictGroup,
+  getDistrictGroupTestTermIds,
   PERIOD_TYPES,
   PERIOD_NAMES,
   SUBJECTS,

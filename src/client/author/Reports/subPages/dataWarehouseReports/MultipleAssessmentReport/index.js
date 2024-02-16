@@ -12,7 +12,7 @@ import {
   SpinLoader,
   notification,
 } from '@edulastic/common'
-import { reportUtils } from '@edulastic/constants'
+import { reportUtils, roleuser } from '@edulastic/constants'
 import {
   helpLinks,
   reportGroupType,
@@ -72,6 +72,7 @@ import useTabNavigation from '../../../common/hooks/useTabNavigation'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import {
+  enhanceQueryWithTermIds,
   getIsMultiSchoolYearDataPresent,
   isAddToStudentGroupEnabled,
 } from '../common/utils'
@@ -170,9 +171,13 @@ const MultipleAssessmentReport = ({
     ],
     [sharedReport]
   )
-  const compareByOptions = useMemo(() => [...getCompareByOptions(userRole)], [
-    userRole,
-  ])
+  const { compareByOptions, isDistrictGroupAdmin } = useMemo(
+    () => ({
+      compareByOptions: [...getCompareByOptions(userRole)],
+      isDistrictGroupAdmin: userRole === roleuser.DISTRICT_GROUP_ADMIN,
+    }),
+    [userRole]
+  )
   const { availableFeedTypes } = useFiltersData(filtersData)
 
   const setShowApply = (status) => {
@@ -246,7 +251,8 @@ const MultipleAssessmentReport = ({
     }
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
-      fetchDWMARChartDataRequest(q)
+      const query = enhanceQueryWithTermIds(q, { orgData, userRole })
+      fetchDWMARChartDataRequest(query)
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
@@ -265,7 +271,8 @@ const MultipleAssessmentReport = ({
       requireTotalCount: pageFilters.page === 1,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
-      fetchDWMARTableDataRequest(q)
+      const query = enhanceQueryWithTermIds(q, { orgData, userRole })
+      fetchDWMARTableDataRequest(query)
       return () => toggleFilter(null, false)
     }
   }, [pageFilters])
@@ -306,6 +313,7 @@ const MultipleAssessmentReport = ({
   const tableData = useMemo(
     () =>
       getTableData(
+        orgData,
         reportTableData,
         reportChartData,
         availableFeedTypes,
@@ -313,14 +321,17 @@ const MultipleAssessmentReport = ({
         selectedPerformanceBand,
         settings.selectedCompareBy.key,
         sortFilters,
-        sharedReportFilters || settings.requestFilters
+        sharedReportFilters || settings.requestFilters,
+        isDistrictGroupAdmin
       ),
     [
+      orgData,
       reportChartData,
       reportTableData,
       incompleteTests,
       selectedPerformanceBand,
       availableFeedTypes,
+      isDistrictGroupAdmin,
     ]
   )
 
@@ -527,6 +538,7 @@ const MultipleAssessmentReport = ({
               />
             </FeaturesSwitch>
             <TableFilters
+              isDistrictGroupAdmin={isDistrictGroupAdmin}
               updateFilterDropdownCB={updateFilterDropdownCB}
               compareByOptions={compareByOptions}
               selectedCompareBy={selectedCompareBy}
@@ -535,6 +547,7 @@ const MultipleAssessmentReport = ({
               isMultiSchoolYear={isMultiSchoolYear}
             />
             <Table
+              isDistrictGroupAdmin={isDistrictGroupAdmin}
               tableData={tableData}
               overallAssessmentsData={filteredOverallAssessmentsData}
               showIncompleteTestsMessage={!!incompleteTests.length}

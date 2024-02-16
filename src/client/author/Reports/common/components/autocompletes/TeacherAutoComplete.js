@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
+import { Tooltip } from 'antd'
 
 // components & constants
 import { roleuser } from '@edulastic/constants'
@@ -27,7 +28,10 @@ const TeacherAutoComplete = ({
   testId,
   termId,
   districtId,
+  userDistrictId,
   networkIds,
+  disabled,
+  disabledMessage,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -52,7 +56,7 @@ const TeacherAutoComplete = ({
     const q = {
       limit: 25,
       page: 1,
-      districtId,
+      districtId: districtId || userDistrictId,
       search: {
         name: searchTerms.text,
       },
@@ -69,21 +73,28 @@ const TeacherAutoComplete = ({
       q.testIds = [testId]
     }
     return q
-  }, [searchTerms.text, institutionId, testId, termId, networkIds])
+  }, [searchTerms.text, institutionId, testId, termId, districtId, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
-    setSearchTerms({ ...searchTerms, text: value })
+    if (!disabled) {
+      setSearchTerms({ ...searchTerms, text: value })
+    }
   }
   const onChange = (selected, selectedElements) => {
-    const _selectedTeachers = selectedElements.map(({ props }) => ({
-      key: props.value,
-      title: props.title,
-    }))
-    selectCB(_selectedTeachers)
+    if (!disabled) {
+      const _selectedTeachers = selectedElements.map(({ props }) => ({
+        key: props.value,
+        title: props.title,
+      }))
+      selectCB(_selectedTeachers)
+    }
   }
   const onBlur = () => {
-    if (searchTerms.text === '' && searchTerms.selectedText !== '') {
+    if (
+      (searchTerms.text === '' && searchTerms.selectedText !== '') ||
+      disabled
+    ) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
@@ -93,15 +104,15 @@ const TeacherAutoComplete = ({
     debounce(loadTeacherList, 500, { trailing: true }),
     []
   )
-  const getDefaultTeacherList = () => {
-    if (isEmpty(searchResult)) {
+  const onFocus = () => {
+    if (isEmpty(searchResult) && !disabled) {
       loadTeacherListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedTeacherIds.length) {
+    if (selectedTeacherIds.length && !disabled) {
       loadTeacherListDebounced({ ...query, teacherIds: selectedTeacherIds })
     }
   }, [])
@@ -111,28 +122,34 @@ const TeacherAutoComplete = ({
     }
   }, [teacherList])
   useEffect(() => {
-    if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
+    if (
+      searchTerms.text &&
+      searchTerms.text !== searchTerms.selectedText &&
+      !disabled
+    ) {
       loadTeacherListDebounced(query)
     }
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [institutionId, testId, termId, networkIds])
+  }, [institutionId, testId, termId, districtId, networkIds, disabled])
 
   return (
-    <MultiSelectSearch
-      dataCy={dataCy}
-      label="Teacher"
-      placeholder="All Teachers"
-      el={teacherFilterRef}
-      onChange={onChange}
-      onSearch={onSearch}
-      onBlur={onBlur}
-      onFocus={() => getDefaultTeacherList()}
-      value={selectedTeacherIds}
-      options={!loading ? dropdownData : []}
-      loading={loading}
-    />
+    <Tooltip title={disabledMessage}>
+      <MultiSelectSearch
+        dataCy={dataCy}
+        label="Teacher"
+        placeholder="All Teachers"
+        el={teacherFilterRef}
+        onChange={onChange}
+        onSearch={onSearch}
+        onBlur={onBlur}
+        onFocus={onFocus}
+        value={selectedTeacherIds}
+        options={!loading ? dropdownData : []}
+        loading={loading}
+      />
+    </Tooltip>
   )
 }
 
@@ -140,7 +157,7 @@ export default connect(
   (state) => ({
     teacherList: getTeachersListSelector(state),
     loading: get(state, ['teacherReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
+    userDistrictId: getUserOrgId(state),
   }),
   {
     loadTeacherList: receiveTeachersListAction,

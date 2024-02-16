@@ -903,7 +903,7 @@ function* fetchUpdateTagsData({ payload }) {
     const params = {
       ...orgData,
       ...options,
-      districtId,
+      districtId: options.districtId || districtId,
       userDetails,
     }
     const result = yield all(
@@ -928,6 +928,7 @@ export function* receiveTestListSaga({ payload }) {
       'aggregations.buckets.buckets',
       []
     )
+    const orgData = yield select(getOrgDataSelector)
     const testList = assignmentBuckets
       .map(({ key: _id, assignments }) => {
         const hits = get(assignments, 'hits.hits', [])
@@ -935,11 +936,12 @@ export function* receiveTestListSaga({ payload }) {
         return { _id, title }
       })
       .filter(({ _id, title }) => _id && title)
-    const externalTestList = testListTransformer(
-      externalTests,
-      ASSESSMENT_TYPES.EXTERNAL,
-      params
-    )
+    const externalTestList = testListTransformer({
+      response: externalTests,
+      testType: ASSESSMENT_TYPES.EXTERNAL,
+      params,
+      orgData,
+    })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
       payload: { testList: [...testList, ...externalTestList], statePrefix },
@@ -961,12 +963,17 @@ function* receiveMultiSchoolYearTestListSaga({ payload }) {
       assignmentApi.searchMultiSchoolYearAssignments,
       params
     )
-    const testList = testListTransformer(searchResult)
-    const _externalAssessments = testListTransformer(
-      externalTests,
-      ASSESSMENT_TYPES.EXTERNAL,
-      params
-    )
+    const orgData = yield select(getOrgDataSelector)
+    const testList = testListTransformer({
+      response: searchResult,
+      orgData,
+    })
+    const _externalAssessments = testListTransformer({
+      response: externalTests,
+      testType: ASSESSMENT_TYPES.EXTERNAL,
+      params,
+      orgData,
+    })
     yield put({
       type: RECEIVE_MULTI_SCHOOL_YEAR_TEST_LIST_REQUEST_SUCCESS,
       payload: [...testList, ..._externalAssessments],

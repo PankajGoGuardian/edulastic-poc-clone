@@ -358,7 +358,6 @@ const convertTableToCSV = (refComponent) => {
   }
 }
 const downloadCSV = (filename, data) => {
-  console.log({ data })
   const link = document.createElement('a')
   link.style.display = 'none'
   link.setAttribute('target', '_blank')

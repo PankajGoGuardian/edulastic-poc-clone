@@ -91,7 +91,7 @@ function CompletionReport({
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings.requestFilters, settings.selectedCompareBy, analyseBy])
+  }, [settings.requestFilters, settings.selectedCompareBy])
 
   useEffect(() => {
     const q = {
@@ -99,7 +99,6 @@ function CompletionReport({
       compareBy: settings.selectedCompareBy.key,
       ...pageFilters,
       requireTotalCount: pageFilters.page === 1,
-      analyseBy: analyseBy.key,
       testOrder: testColumnSort.sortOrder,
       sortKey: statusMap[statusColumnSortState.sortKey],
       sortOrder: statusColumnSortState.sortOrder,

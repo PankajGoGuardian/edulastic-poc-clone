@@ -81,10 +81,6 @@ const CompletionReportTable = ({
   districtId,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
-  const getValue = (value) => {
-    const renderedValue = value?.toString()?.replace(/\.00$/, '')
-    return `${renderedValue || 0}${isAnalyseByPercent ? '%' : ''}`
-  }
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
     indices: true,
@@ -92,31 +88,24 @@ const CompletionReportTable = ({
   const urlCompareBy = compareByOptions.find(
     (option) => option.key === search.selectedCompareBy
   )
+  const getCellValue = (value, total) => {
+    let totalValue = value || 0
+    if (isAnalyseByPercent) {
+      totalValue = Math.round((totalValue * 100) / total)
+    }
+    return `${totalValue || 0}${isAnalyseByPercent ? '%' : ''}`
+  }
+
   const overAllData = {
     testId: 'overall_tid',
     testName: 'Overall',
     testType: '',
     assigned: tableData?.[0]?.totalAssigned || 0,
-    inProgress:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalInProgressP' : 'totalInProgress'}`
-      ] || 0,
-    submitted:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalSubmittedP' : 'totalSubmitted'}`
-      ] || 0,
-    absent:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalAbsentP' : 'totalAbsent'}`
-      ] || 0,
-    notStarted:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalNotStartedP' : 'totalNotStarted'}`
-      ] || 0,
-    graded:
-      tableData?.[0]?.[
-        `${isAnalyseByPercent ? 'totalGradedP' : 'totalGraded'}`
-      ] || 0,
+    inProgress: tableData?.[0]?.totalInProgress || 0,
+    submitted: tableData?.[0]?.totalSubmitted || 0,
+    absent: tableData?.[0]?.totalAbsent || 0,
+    notStarted: tableData?.[0]?.totalNotStarted || 0,
+    graded: tableData?.[0]?.totalGraded || 0,
     dimensionName: '',
     dimensionId: '',
   }
@@ -175,7 +164,7 @@ const CompletionReportTable = ({
             handleDownloadCsv(record, utastatus.ABSENT, sortKey.ABSENT)
           }
         >
-          {getValue(value)}
+          {getCellValue(value, record?.assigned)}
         </ActionContainer>
       ),
     },
@@ -195,7 +184,7 @@ const CompletionReportTable = ({
             )
           }
         >
-          {getValue(value)}
+          {getCellValue(value, record?.assigned)}
         </ActionContainer>
       ),
     },
@@ -214,7 +203,7 @@ const CompletionReportTable = ({
             )
           }
         >
-          {getValue(value)}
+          {getCellValue(value, record?.assigned)}
         </ActionContainer>
       ),
     },
@@ -229,7 +218,7 @@ const CompletionReportTable = ({
             handleDownloadCsv(record, utastatus.SUBMITTED, sortKey.SUBMITTED)
           }
         >
-          {getValue(value)}
+          {getCellValue(value, record?.assigned)}
         </ActionContainer>
       ),
     },
@@ -244,7 +233,7 @@ const CompletionReportTable = ({
             handleDownloadCsv(record, utastatus.GRADED, sortKey.GRADED)
           }
         >
-          {getValue(value)}
+          {getCellValue(value, record?.assigned)}
         </ActionContainer>
       ),
     },
@@ -279,7 +268,9 @@ const CompletionReportTable = ({
     },
   ]
 
-  const dataSource = getTableDataSource([overAllData, ...tableData])
+  const dataSource = useMemo(() => {
+    return getTableDataSource([overAllData, ...tableData])
+  }, [analyseBy.key, tableData])
 
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),

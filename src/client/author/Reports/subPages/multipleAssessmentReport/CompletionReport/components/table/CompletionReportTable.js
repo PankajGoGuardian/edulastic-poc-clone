@@ -9,6 +9,7 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
+import { roleuser } from '@edulastic/constants'
 import TableHeader from './TableHeader'
 import { ActionContainer, StyledTable, TableContainer } from './styled'
 
@@ -16,12 +17,9 @@ import CopyReportLink from './CopyReportLink'
 import { getTableDataSource, sortKeys, tableColumnsData } from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
-import { roleuser } from '@edulastic/constants'
 import {
   compareByOptions,
-  compareByOptionsMapByKey,
   utastatus,
-  statusMap,
   sortKey,
   compareByKeysToFilterKeys,
 } from '../../../common/utils/constants'
@@ -132,14 +130,21 @@ const CompletionReportTable = ({
       dataIndex: 'testName',
       key: 'testName',
       sorter: true,
+      fixed: 'left',
       width: 250,
       render: (text, record) => {
         let path = '/author/assignments'
         if ([roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(role)) {
           path = `${path}/${districtId}/${record.testId}`
         }
+        const testName = record.index === 0 ? record.testName : ''
         return (
-          <Link to={path}>{record.index === 0 ? record.testName : ''}</Link>
+          // <Link to={path}>
+          //   {record.index === 0
+          //     ? record.testName + 'hello and welcome sdfcfwefwefw wfwef'
+          //     : ''}
+          // </Link>
+          <LinkCell value={{ _id: record.testId, name: testName }} url={path} />
         )
       },
     },
@@ -149,6 +154,7 @@ const CompletionReportTable = ({
       dataIndex: 'assigned',
       key: 'assigned',
       sorter: true,
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -165,6 +171,7 @@ const CompletionReportTable = ({
       key: 'absent',
       sorter: true,
       className: 'absent',
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -181,6 +188,7 @@ const CompletionReportTable = ({
       key: 'notStarted',
       className: 'absent',
       sorter: true,
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -200,6 +208,7 @@ const CompletionReportTable = ({
       dataIndex: 'inProgress',
       key: 'inProgress',
       sorter: true,
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -219,6 +228,7 @@ const CompletionReportTable = ({
       dataIndex: 'submitted',
       key: 'submitted',
       sorter: true,
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -234,6 +244,7 @@ const CompletionReportTable = ({
       dataIndex: 'graded',
       key: 'graded',
       sorter: true,
+      align: 'center',
       render: (value, record) => (
         <ActionContainer
           onClick={() =>
@@ -247,6 +258,7 @@ const CompletionReportTable = ({
     {
       title: 'VIEW PERFORMANCE',
       key: 'performance',
+      align: 'center',
       render: (text, record) => {
         return (
           <Link
@@ -264,6 +276,7 @@ const CompletionReportTable = ({
     {
       title: 'COPY REPORT LINK',
       key: 'copyReportLink',
+      align: 'center',
       render: (text, record) => {
         return (
           <CopyReportLink
@@ -281,6 +294,9 @@ const CompletionReportTable = ({
     () => getTableColumns(false, settings, staticColumns),
     [tableData, settings, isAnalyseByPercent]
   )
+  const scrollX = useMemo(() => columns?.length * 160 || '100%', [
+    columns?.length,
+  ])
 
   const handleTableChange = (pagination, filters, sorter) => {
     if (sorter.field === 'testName') {
@@ -335,6 +351,7 @@ const CompletionReportTable = ({
             setAnalyseBy={setAnalyseBy}
             analyseBy={analyseBy}
           />
+
           <StyledTable
             loading={isTableDataLoading}
             onChange={handleTableChange}
@@ -346,7 +363,7 @@ const CompletionReportTable = ({
               pageSize: pageFilters.pageSize + 1,
             }}
             rowClassName={getRowClassName}
-            scroll={{ y: 400 }}
+            scroll={{ x: scrollX }}
           />
         </EduThen>
       </EduIf>

@@ -7,7 +7,7 @@ export const getAudioRecordingErrorMessage = (error, errorName, state) => {
   switch (errorName) {
     case 'NotAllowedError':
       errorMessage =
-        'Edulastic needs access to your microphone so that you can record responses.'
+        'Pear Assessment needs access to your microphone so that you can record responses.'
       break
     default:
       errorMessage = `An error occured while ${

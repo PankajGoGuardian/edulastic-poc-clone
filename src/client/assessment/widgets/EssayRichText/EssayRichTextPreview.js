@@ -14,10 +14,12 @@ import {
   QuestionSubLabel,
   QuestionLabelWrapper,
   QuestionContentWrapper,
+  EduIf,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
 import { calculateWordsCount } from '@edulastic/common/src/helpers'
+import { initiateSpeechToTextButton } from '@edulastic/common/src/components/FroalaPlugins/constants'
 import { Toolbar } from '../../styled/Toolbar'
 import { Item } from '../../styled/Item'
 import {
@@ -30,11 +32,20 @@ import { ValidList } from './constants/validList'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import VoiceRecognitionAnimation from '../../../common/components/VoiceRecognitionAnimation'
+import ErrorPopup from '../AudioResponse/components/ErrorPopup'
 
-const getToolBarButtons = (item) =>
-  (item.formattingOptions || [])
+const getToolBarButtons = (item, isSpeechToTextEnabled) => {
+  let toolBarButtons = (item.formattingOptions || [])
     .filter((x) => x.active && x.value)
     .map((x) => x.value)
+
+  if (isSpeechToTextEnabled) {
+    toolBarButtons = [...toolBarButtons, initiateSpeechToTextButton]
+  }
+
+  return toolBarButtons
+}
 
 const EssayRichTextPreview = ({
   col,
@@ -51,9 +62,10 @@ const EssayRichTextPreview = ({
   isPrintPreview,
   isStudentAttempt,
   isFeedbackVisible,
+  isSpeechToTextEnabled,
 }) => {
   userAnswer = typeof userAnswer === 'object' ? '' : userAnswer
-  const toolbarButtons = getToolBarButtons(item)
+  const toolbarButtons = getToolBarButtons(item, isSpeechToTextEnabled)
   const answerContextConfig = useContext(AnswerContext)
 
   let minHeight = get(item, 'uiStyle.minHeight', 200)
@@ -66,6 +78,11 @@ const EssayRichTextPreview = ({
 
   const characters = get(item, 'characterMap', [])
   const [wordCount, setWordCount] = useState(0)
+  const [isSTTActive, setIsSTTActive] = useState(false)
+  const [sttError, setSTTError] = useState({
+    isOpen: false,
+    errorMessage: '',
+  })
 
   useEffect(() => {
     if (Array.isArray(userAnswer) || typeof userAnswer !== 'string') {
@@ -112,12 +129,19 @@ const EssayRichTextPreview = ({
     (previewTab === 'show' && !answerContextConfig.isAnswerModifiable) ||
     disableResponse
 
+  const { isOpen = false, errorMessage = '' } = sttError
+
   return item.id ? (
     <StyledPaperWrapper
       isV1Multipart={isV1Multipart}
       padding={smallSize}
       boxShadow={smallSize ? 'none' : ''}
     >
+      <ErrorPopup
+        isOpen={isOpen}
+        errorMessage={errorMessage}
+        setErrorData={setSTTError}
+      />
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
           {showQuestionNumber && (
@@ -166,6 +190,9 @@ const EssayRichTextPreview = ({
                   customCharacters={characters}
                   placeholder={item?.placeholder}
                   toolbarSize="STD"
+                  isSpeechToTextEnabled={isSpeechToTextEnabled}
+                  setIsSTTActive={setIsSTTActive}
+                  setSTTError={setSTTError}
                   unsetMaxWidth
                   sanitizeClipboardHtml
                   restrictTags
@@ -192,17 +219,22 @@ const EssayRichTextPreview = ({
                 />
               </FlexContainer>
             )}
-            {item.showWordCount &&
-              (userAnswer || !isReadOnly) &&
+            {(userAnswer || !isReadOnly) &&
               (isPrintPreview && userAnswer ? true : !isPrintPreview) && (
                 <EssayToolbar borderRadiusOnlyBottom>
-                  <FlexContainer />
-                  <Item
-                    data-cy="questionRichEssayAuthorPreviewWordCount"
-                    style={wordCountStyle}
-                  >
-                    {displayWordCount}
-                  </Item>
+                  <FlexContainer>
+                    <EduIf condition={isSTTActive}>
+                      <VoiceRecognitionAnimation />
+                    </EduIf>
+                  </FlexContainer>
+                  <EduIf condition={item.showWordCount}>
+                    <Item
+                      data-cy="questionRichEssayAuthorPreviewWordCount"
+                      style={wordCountStyle}
+                    >
+                      {displayWordCount}
+                    </Item>
+                  </EduIf>
                 </EssayToolbar>
               )}
           </EssayRichTextContainer>

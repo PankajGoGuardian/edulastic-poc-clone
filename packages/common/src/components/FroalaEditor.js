@@ -8,7 +8,12 @@ import Editor from 'react-froala-wysiwyg'
 import FroalaEditor from 'froala-editor'
 import { withTheme } from 'styled-components'
 import { get } from 'lodash'
-import { notification, LanguageContext } from '@edulastic/common'
+import {
+  notification,
+  LanguageContext,
+  EduIf,
+  SpinLoader,
+} from '@edulastic/common'
 import { aws, math, appLanguages } from '@edulastic/constants'
 import { withMathFormula } from '../HOC/withMathFormula'
 import 'froala-editor/js/plugins.pkgd.min'
@@ -48,6 +53,7 @@ import {
   replaceMathHtmlWithLatexes,
 } from '../utils/mathUtils'
 import AudioPluginContainer from './FroalaPlugins/AudioPluginContainer'
+import useTranscribeService from '../../../../src/client/common/customHooks/useTranscribeService'
 
 const symbols = ['all']
 const { defaultNumberPad } = math
@@ -83,6 +89,9 @@ const CustomEditor = ({
   allowQuickInsert = true,
   unsetMaxWidth = false,
   isPremiumUser,
+  isSpeechToTextEnabled,
+  setIsSTTActive,
+  onSTTError,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -101,6 +110,44 @@ const CustomEditor = ({
   const EditorRef = useRef(null)
 
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
+
+  const onInitSTTCallback = () => {
+    $("[data-cmd='initiateSpeechToText']").addClass('fr-active')
+    EditorRef.current?.events?.trigger?.('speechToText.initiateSpeechToText')
+  }
+
+  const onStopSTT = ({ error }) => {
+    $("[data-cmd='initiateSpeechToText']").removeClass('fr-active')
+  }
+
+  const onSTTTextUpdate = (text, isFinal) => {
+    if (isFinal) {
+      EditorRef.current?.events?.trigger?.('speechToText.removePartialText')
+      EditorRef.current.html.insert(`${text}`)
+    } else {
+      EditorRef.current?.events?.trigger?.('speechToText.removePartialText')
+      // adding partial processed text from aws transcribe and later removing
+      EditorRef.current.html.insert(
+        `<span class="fr-partial-stt">${text}...</span>`
+      )
+    }
+  }
+
+  const {
+    isLoading: isLoadingSTT,
+    onStart: onStartSTT,
+    isActive: isSTTActive,
+  } = useTranscribeService({
+    isEnabled: isSpeechToTextEnabled,
+    onTextUpdateCallback: onSTTTextUpdate,
+    onErrorCallback: onSTTError,
+    onStopCallback: onStopSTT,
+    onInitCallback: onInitSTTCallback,
+  })
+
+  useEffect(() => {
+    setIsSTTActive(isSTTActive)
+  }, [isSTTActive])
 
   const toolbarButtons = getToolbarButtons(
     'STD',
@@ -289,6 +336,33 @@ const CustomEditor = ({
             }
           }
         },
+        'initiate.speechToText': function (evt) {
+          if (isSpeechToTextEnabled) {
+            onStartSTT()
+          }
+        },
+        'speechToText.initiateSpeechToText': function (evt) {
+          const existingContentLength = this?.$el?.text()?.length
+          // Place cursor to end
+          if (existingContentLength > 0) {
+            this?.selection?.setAtEnd?.(
+              this?.$el?.get?.(0),
+              existingContentLength
+            )
+            this?.selection?.restore?.()
+          }
+        },
+        'speechToText.removePartialText': function (evt) {
+          this?.selection?.save()
+          const editorContent = this.html.get(true)
+          const tempContainer = document.createElement('span')
+          tempContainer.innerHTML = editorContent
+          const spanToRemove = tempContainer.querySelector('.fr-partial-stt')
+          if (spanToRemove) {
+            spanToRemove.parentNode.removeChild(spanToRemove)
+            this.html.set(tempContainer.innerHTML)
+          }
+        },
         'audio.insert': function (audio) {
           setAudioElement(audio)
         },
@@ -372,6 +446,9 @@ const CustomEditor = ({
             if (this.toolbar) {
               this.toolbar.hide()
             }
+          }
+          if (isSpeechToTextEnabled) {
+            onStartSTT({ isBlurEvent: true })
           }
         },
         'file.beforeUpload': function (files = []) {
@@ -642,6 +719,9 @@ const CustomEditor = ({
           <AudioPluginContainer EditorRef={EditorRef} />,
           audioElement
         )}
+      <EduIf condition={isLoadingSTT}>
+        <SpinLoader />
+      </EduIf>
       <MathModal
         isEditable={mathModalIsEditable}
         show={showMathModal}
@@ -701,6 +781,9 @@ CustomEditor.propTypes = {
   border: PropTypes.string,
   centerContent: PropTypes.bool,
   editorHeight: PropTypes.number,
+  isSpeechToTextEnabled: PropTypes.bool.isRequired,
+  setIsSTTActive: PropTypes.func,
+  onSTTError: PropTypes.func,
 }
 
 CustomEditor.defaultProps = {
@@ -715,6 +798,8 @@ CustomEditor.defaultProps = {
   border: 'none',
   centerContent: false,
   editorHeight: null,
+  setIsSTTActive: () => {},
+  onSTTError: () => {},
 }
 
 const enhance = compose(

@@ -179,7 +179,6 @@ export const StyledModal = styled(Modal)`
     display: none;
   }
   & > .ant-modal-content {
-    width: 450px;
     & > .ant-modal-body {
       padding: 5px;
       display: flex;
@@ -189,7 +188,6 @@ export const StyledModal = styled(Modal)`
     background: ${ligthRed4} 0% 0% no-repeat padding-box;
     border-radius: 6px;
     opacity: 1;
-    height: 27px;
     p {
       text-align: left;
       font: normal normal normal 11px/14px Open Sans;

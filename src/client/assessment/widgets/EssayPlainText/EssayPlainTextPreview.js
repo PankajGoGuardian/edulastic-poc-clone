@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
 import { get, isString } from 'lodash'
+import { Tooltip } from 'antd'
 
 import {
   Stimulus,
@@ -13,9 +14,12 @@ import {
   QuestionLabelWrapper,
   QuestionContentWrapper,
   sanitizeString,
+  EduIf,
+  SpinLoader,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
+import { IconTranscribe } from '@edulastic/icons'
 import {
   COPY,
   CUT,
@@ -23,6 +27,7 @@ import {
   ON_LIMIT,
   ALWAYS,
   PREVIEW,
+  TRANSCRIBE,
 } from '../../constants/constantsForQuestions'
 
 import { Toolbar } from '../../styled/Toolbar'
@@ -38,6 +43,10 @@ import {
 import Character from './components/Character'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import useTranscribeService from '../../../common/customHooks/useTranscribeService'
+
+import VoiceRecognitionAnimation from '../../../common/components/VoiceRecognitionAnimation'
+import ErrorPopup from '../AudioResponse/components/ErrorPopup'
 
 const getWordCount = (val) =>
   val
@@ -65,14 +74,42 @@ const EssayPlainTextPreview = ({
   isLCBView,
   isExpressGrader,
   isStudentReport,
+  isSpeechToTextEnabled,
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
 
   const [wordCount, setWordCount] = useState(getWordCount(text))
 
   const [selection, setSelection] = useState({ start: 0, end: 0 })
+  const [sttError, setSTTError] = useState({
+    isOpen: false,
+    errorMessage: '',
+  })
 
   const [buffer, setBuffer] = useState('')
+
+  const onSTTTextUpdate = (transcribedText, isFinal) => {
+    if (isFinal) {
+      setText((prevText) => sanitizeString(`${prevText} ${transcribedText}`))
+    }
+  }
+
+  const onSTTError = ({ errorMessage }) => {
+    setSTTError({
+      isOpen: true,
+      errorMessage,
+    })
+  }
+
+  const {
+    isLoading: isLoadingSTT,
+    onStart: onStartSTT,
+    isActive: isSTTActive,
+  } = useTranscribeService({
+    isEnabled: isSpeechToTextEnabled,
+    onTextUpdateCallback: onSTTTextUpdate,
+    onErrorCallback: onSTTError,
+  })
 
   const reviewTab = isReviewTab && testItem
 
@@ -86,6 +123,12 @@ const EssayPlainTextPreview = ({
 
     return Math.max(47, maxHeight)
   }, [isLCBView, isExpressGrader, isStudentReport, maxHeight])
+
+  const handleBlur = () => {
+    if (isSpeechToTextEnabled) {
+      onStartSTT({ isBlurEvent: true })
+    }
+  }
 
   useEffect(() => {
     if (isString(userAnswer)) {
@@ -196,6 +239,11 @@ const EssayPlainTextPreview = ({
         }
         break
       }
+      case TRANSCRIBE: {
+        node?.focus()
+        onStartSTT()
+        break
+      }
       default:
         break
     }
@@ -226,12 +274,19 @@ const EssayPlainTextPreview = ({
       ? theme.widgets.essayPlainText.textInputLimitedBgColor
       : theme.widgets.essayPlainText.textInputBgColor
 
+  const { isOpen = false, errorMessage = '' } = sttError
+
   return (
     <StyledPaperWrapper
       isV1Multipart={isV1Multipart}
       padding={smallSize}
       boxShadow={smallSize ? 'none' : ''}
     >
+      <ErrorPopup
+        isOpen={isOpen}
+        errorMessage={errorMessage}
+        setErrorData={setSTTError}
+      />
       <FlexContainer justifyContent="flex-start" alignItems="baseline">
         <QuestionLabelWrapper>
           {showQuestionNumber && (
@@ -254,6 +309,9 @@ const EssayPlainTextPreview = ({
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
             }
           >
+            <EduIf condition={isLoadingSTT}>
+              <SpinLoader height="60%" />
+            </EduIf>
             {!disableResponse && (
               <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
                 <FlexContainer
@@ -302,6 +360,14 @@ const EssayPlainTextPreview = ({
                       characters={item.characterMap}
                     />
                   )}
+
+                  <EduIf condition={isSpeechToTextEnabled}>
+                    <Tooltip title="Speech to Text">
+                      <ToolbarItem onClick={handleAction(TRANSCRIBE)}>
+                        <IconTranscribe color="none" width={22} height={22} />
+                      </ToolbarItem>
+                    </Tooltip>
+                  </EduIf>
                 </FlexContainer>
               </EssayToolbar>
             )}
@@ -322,6 +388,7 @@ const EssayPlainTextPreview = ({
                   smallSize ? t('component.essayText.plain.templateText') : text
                 }
                 onChange={handleTextChange}
+                onBlur={handleBlur}
                 size="large"
                 onPaste={!item.showPaste && preventEvent}
                 readOnly={disableResponse}
@@ -340,7 +407,7 @@ const EssayPlainTextPreview = ({
               </StyledPrintAnswerBox>
             )}
 
-            {!reviewTab && item.showWordCount && (
+            {!reviewTab && (
               <EssayToolbar
                 data-cy="questionPlainEssayAuthorPreviewWordCount"
                 borderRadiusOnlyBottom
@@ -348,9 +415,15 @@ const EssayPlainTextPreview = ({
                 <FlexContainer
                   alignItems="stretch"
                   justifyContent="space-between"
-                />
+                >
+                  <EduIf condition={isSTTActive}>
+                    <VoiceRecognitionAnimation />
+                  </EduIf>
+                </FlexContainer>
 
-                <Item style={wordCountStyle}>{displayWordCount}</Item>
+                <EduIf condition={item.showWordCount}>
+                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                </EduIf>
               </EssayToolbar>
             )}
           </EssayPlainTextBoxContainer>
@@ -378,6 +451,7 @@ EssayPlainTextPreview.propTypes = {
   disableResponse: PropTypes.bool.isRequired,
   isFeedbackVisible: PropTypes.bool,
   isStudentAttempt: PropTypes.bool,
+  isSpeechToTextEnabled: PropTypes.bool.isRequired,
 }
 
 EssayPlainTextPreview.defaultProps = {

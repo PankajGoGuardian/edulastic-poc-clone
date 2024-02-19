@@ -1,8 +1,12 @@
 /* eslint-disable */
 import uuid from 'uuid/v4'
 import { canInsert } from '../../helpers'
+import { initiateSpeechToTextButton } from './constants'
 
 function customPlugin(FroalaEditor) {
+  const isSpeechToTextButtonActive = function (cmd) {
+    return initiateSpeechToTextButton == cmd
+  }
   // register custom math buttton
   FroalaEditor.DefineIconTemplate(
     'math',
@@ -301,7 +305,7 @@ function customPlugin(FroalaEditor) {
   // Define insertAudio.
   Object.assign(FroalaEditor.SVG, {
     insertAudio:
-      'M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1.2-9.1c0-.66.54-1.2 1.2-1.2.66 0 1.2.54 1.2 1.2l-.01 6.2c0 .66-.53 1.2-1.19 1.2-.66 0-1.2-.54-1.2-1.2V4.9zm6.5 6.1c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z',
+      'M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM6 20V4H13V9H18V20H6ZM16 11H12V14.88C11.64 14.64 11.21 14.5 10.75 14.5C9.51 14.5 8.5 15.51 8.5 16.75C8.5 17.99 9.51 19 10.75 19C11.99 19 13 17.99 13 16.75V13H16V11Z',
   })
   // Define insertAudio Icon
   FroalaEditor.DefineIcon('insertAudio', {
@@ -341,6 +345,36 @@ function customPlugin(FroalaEditor) {
           originalHide.apply(this, arguments)
         }
       }
+    },
+  })
+
+  // Define Initiate Speech To Text.
+  FroalaEditor.DefineIconTemplate(
+    initiateSpeechToTextButton,
+    `<svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10.0003 12.0833C11.3837 12.0833 12.5003 10.9666 12.5003 9.58325V4.58325C12.5003 3.19992 11.3837 2.08325 10.0003 2.08325C8.61699 2.08325 7.50033 3.19992 7.50033 4.58325V9.58325C7.50033 10.9666 8.61699 12.0833 10.0003 12.0833ZM9.16699 4.58325C9.16699 4.12492 9.54199 3.74992 10.0003 3.74992C10.4587 3.74992 10.8337 4.12492 10.8337 4.58325V9.58325C10.8337 10.0416 10.4587 10.4166 10.0003 10.4166C9.54199 10.4166 9.16699 10.0416 9.16699 9.58325V4.58325ZM14.167 9.58325C14.167 11.8833 12.3003 13.7499 10.0003 13.7499C7.70033 13.7499 5.83366 11.8833 5.83366 9.58325H4.16699C4.16699 12.5249 6.34199 14.9416 9.16699 15.3499V17.9166H10.8337V15.3499C13.6587 14.9416 15.8337 12.5249 15.8337 9.58325H14.167Z" fill="black"/>
+    </svg>  
+    `
+  )
+  // Define Initiate Speech To Text icon.
+  FroalaEditor.DefineIcon(initiateSpeechToTextButton, {
+    NAME: initiateSpeechToTextButton,
+    template: initiateSpeechToTextButton,
+  })
+  FroalaEditor.RegisterCommand(initiateSpeechToTextButton, {
+    title: 'Speech to Text',
+    icon: initiateSpeechToTextButton,
+    undo: false,
+    focus: true,
+    refreshAfterCallback: false,
+    callback() {
+      this.events.trigger('initiate.speechToText')
+    },
+    refresh: function ($btn) {
+      $btn.toggleClass(
+        'fr-active',
+        isSpeechToTextButtonActive.apply(this, [$btn.data('cmd')])
+      )
     },
   })
 }

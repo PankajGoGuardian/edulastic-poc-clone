@@ -677,3 +677,10 @@ export const isImmersiveReaderEnabled = (
   }
   return showImmersiveReader
 }
+
+export const isSpeechToTextEnabled = (showSpeechToText, accommodations) => {
+  if (showSpeechToText === undefined) {
+    return accommodations?.stt === 'yes'
+  }
+  return showSpeechToText
+}

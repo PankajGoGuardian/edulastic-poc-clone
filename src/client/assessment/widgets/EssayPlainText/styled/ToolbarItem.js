@@ -6,6 +6,8 @@ export const ToolbarItem = styled(Item)`
   height: 100%;
   color: ${greyThemeDark1};
   font-weight: ${({ theme }) => theme.semiBold};
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     cursor: pointer;

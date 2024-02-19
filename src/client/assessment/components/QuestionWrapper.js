@@ -33,7 +33,10 @@ import AudioControls from '../AudioControls'
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
 
 import Hints from './Hints'
-import { EDIT } from '../constants/constantsForQuestions'
+import {
+  EDIT,
+  sttEnabledQuestionTypes,
+} from '../constants/constantsForQuestions'
 import BottomAction from './Common/QuestionBottomAction'
 import {
   getIsPreviewModalVisibleSelector,
@@ -47,7 +50,7 @@ import {
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
 import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
-import { getFontSize } from '../utils/helpers'
+import { getFontSize, isSpeechToTextEnabled } from '../utils/helpers'
 import { changeDataToPreferredLanguage } from '../utils/question'
 import {
   languagePreferenceSelector,
@@ -65,7 +68,10 @@ import {
   ManualEvaluationMessage,
   PaperWrapper,
 } from '../styled/QuestionWrapperStyledComponents'
-import { getAccommodationsTtsSelector } from '../../student/Login/ducks'
+import {
+  getAccommodationsTtsSelector,
+  getUserAccommodations,
+} from '../../student/Login/ducks'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -327,6 +333,42 @@ class QuestionWrapper extends Component {
       view === 'preview' &&
       showRubricToStudents
     )
+  }
+
+  get isSpeechToTextAllowed() {
+    const {
+      viewAsStudent,
+      assignmentLevelSettings: {
+        showSpeechToText: assignmentLevelShowSpeechToText,
+      } = {},
+      isTestPreviewModalVisible = false,
+      isTestDemoPlayer = false,
+      userRole,
+      testLevelSettings: { showSpeechToText: testLevelShowSpeechToText } = {},
+      isPremiumUser,
+      accommodations,
+      type: qType,
+    } = this.props
+
+    if (!sttEnabledQuestionTypes.includes(qType)) {
+      return false
+    }
+
+    const isTestPreview =
+      viewAsStudent || isTestDemoPlayer || isTestPreviewModalVisible
+
+    if (userRole === roleuser.STUDENT) {
+      return isSpeechToTextEnabled(
+        assignmentLevelShowSpeechToText,
+        accommodations
+      )
+    }
+
+    if (isTestPreview) {
+      return testLevelShowSpeechToText
+    }
+
+    return isPremiumUser
   }
 
   get passageCurrentPage() {
@@ -731,6 +773,7 @@ class QuestionWrapper extends Component {
                       setPage={this.setPage}
                       showAnswerScore={showAnswerScore}
                       isDefaultTheme={selectedTheme === 'default'}
+                      isSpeechToTextEnabled={this.isSpeechToTextAllowed}
                     />
                   </ImmersiveReaderWrapper>
 
@@ -901,6 +944,7 @@ const enhance = compose(
         {}
       ),
       isVideoQuiz: getIsVideoQuizSelector(state),
+      accommodations: getUserAccommodations(state),
     }),
     {
       loadScratchPad: requestScratchPadAction,

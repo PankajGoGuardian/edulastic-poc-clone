@@ -19,8 +19,6 @@ const VideoLibraryTabs = ({
   filterGrades,
   filterStatus,
   filterSubjects,
-  loaderRefTestLibrary,
-  loaderRefYTLibrary,
   showNoData,
   isLoading,
   ytSearchNoResult,
@@ -37,8 +35,6 @@ const VideoLibraryTabs = ({
   const videoListProps = {
     vqListData,
     handleCardSelect,
-    loaderRefTestLibrary,
-    loaderRefYTLibrary,
     isLoading,
     currentTab,
   }

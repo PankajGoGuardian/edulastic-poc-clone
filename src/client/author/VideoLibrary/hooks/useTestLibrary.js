@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react'
-import { throttle } from 'lodash'
+import { useEffect } from 'react'
 
 import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import produce from 'immer'
@@ -24,12 +23,7 @@ const useTestListFilter = ({
   isVideoQuizAndAIEnabled,
   searchString,
   history,
-  vqListData,
-  isLoading,
 }) => {
-  const loaderRefTestLibrary = useRef(null)
-  const currentVQCount = vqListData?.length
-
   const { subject, grades, status } = testListSearchFilters
 
   /** Tests Pagination starts */
@@ -65,69 +59,10 @@ const useTestListFilter = ({
     if ([COMMUNITY, MY_CONTENT].includes(currentTab)) {
       fetchTestByFilters({
         append: false,
-        subject,
-        grades,
-        status,
       })
     }
   }, [currentTab, subject, grades, status])
 
-  const handleFetchMoreTests = useMemo(() => {
-    return throttle(
-      async ({ append = false }) => {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        await fetchTestByFilters({ append })
-      },
-      { trailing: true }
-    )
-  }, [fetchTestByFilters])
-
-  const handleIntersectOnTestList = useCallback(
-    (entries) => {
-      const [entry] = entries
-      if (
-        [COMMUNITY, MY_CONTENT].includes(currentTab) &&
-        entry.isIntersecting &&
-        !isLoading
-      ) {
-        handleFetchMoreTests({ append: true })
-      }
-    },
-    [
-      loaderRefTestLibrary,
-      searchString,
-      subject,
-      grades,
-      status,
-      currentVQCount,
-      currentTab,
-    ]
-  )
-  useEffect(() => {
-    if (!loaderRefTestLibrary?.current) return
-    const testIntersectObserver = new IntersectionObserver(
-      handleIntersectOnTestList,
-      {
-        root: null,
-        threshold: 0,
-      }
-    )
-    testIntersectObserver.observe(loaderRefTestLibrary.current)
-
-    return () => {
-      if (loaderRefTestLibrary?.current) {
-        return testIntersectObserver.disconnect()
-      }
-    }
-  }, [
-    loaderRefTestLibrary,
-    searchString,
-    subject,
-    grades,
-    status,
-    currentTab,
-    currentVQCount,
-  ])
   /** Tests Pagination Ends */
 
   const handleTestSelect = (testId) => {
@@ -140,7 +75,6 @@ const useTestListFilter = ({
   }
 
   return {
-    loaderRefTestLibrary,
     fetchTestByFilters,
     handleTestSelect,
   }

@@ -3,6 +3,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import produce from 'immer'
+import { EduIf, EduThen } from '@edulastic/common'
 import VideoLibraryHeader from './Header'
 import VideoLibrarySearchBox from './SearchBox'
 import VideoLibrarySubHeader from './SubHeader'
@@ -23,7 +24,6 @@ import {
 import {
   getTestsCountSelector,
   getTestsFilterSelector,
-  getTestsSelector,
   receiveTestsAction,
   updateAllTestSearchFilterAction,
 } from '../../../TestList/ducks'
@@ -54,6 +54,7 @@ const VideoLibrary = ({
   interestedGrades,
   interestedSubjects,
   isVideoQuizAndAIEnabled,
+  testsCount,
 }) => {
   const {
     testList = [],
@@ -84,27 +85,7 @@ const VideoLibrary = ({
     vqUpdateCurrentTab(selectedTab)
   }
 
-  useVQLibraryCommon({ resetVQLibrary })
-
-  const {
-    loaderRefYTLibrary,
-    handleVideoSelect,
-    fetchVideos,
-    hasError,
-  } = useYoutubeLibrary({
-    createVQAssessment,
-    searchString,
-    isLoading,
-    ytSearchRequest,
-    ytNextPageToken,
-    currentTab,
-  })
-
-  const {
-    loaderRefTestLibrary,
-    fetchTestByFilters,
-    handleTestSelect,
-  } = useTestLibrary({
+  const { fetchTestByFilters, handleTestSelect } = useTestLibrary({
     testSearchRequest,
     testListSearchFilters,
     searchString,
@@ -113,6 +94,25 @@ const VideoLibrary = ({
     vqListData,
     isLoading,
     isVideoQuizAndAIEnabled,
+  })
+
+  const { handleVideoSelect, fetchVideos, hasError } = useYoutubeLibrary({
+    createVQAssessment,
+    searchString,
+    isLoading,
+    ytSearchRequest,
+    ytNextPageToken,
+    currentTab,
+  })
+
+  const { infiniteLoaderRef } = useVQLibraryCommon({
+    resetVQLibrary,
+    fetchVideos,
+    fetchTestByFilters,
+    testList,
+    ytNextPageToken,
+    currentTab,
+    testsCount,
   })
 
   /** Handle press enter event triggers Test library search or Youtube search */
@@ -155,8 +155,6 @@ const VideoLibrary = ({
   }
 
   const videoLibraryTabsProps = {
-    loaderRefTestLibrary,
-    loaderRefYTLibrary,
     handleCardSelect,
     handleFilterChanges,
     vqListData,
@@ -176,6 +174,11 @@ const VideoLibrary = ({
       <VideoLibrarySearchBox {...searchBoxProps} />
       <VideoLibrarySubHeader />
       <VideoLibraryTabs {...videoLibraryTabsProps} />
+      <EduIf condition={!isLoading}>
+        <EduThen>
+          <div ref={infiniteLoaderRef} />
+        </EduThen>
+      </EduIf>
     </>
   )
 }
@@ -188,7 +191,6 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       showVQCount: showVQCountSelector(state),
-      testList: getTestsSelector(state),
       videoQuizLibrary: videoQuizSelector(state),
       testListSearchFilters: getTestsFilterSelector(state),
       testsCount: getTestsCountSelector(state),

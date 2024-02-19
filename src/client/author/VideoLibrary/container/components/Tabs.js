@@ -22,9 +22,8 @@ const VideoLibraryTabs = ({
   loaderRefTestLibrary,
   loaderRefYTLibrary,
   showNoData,
-  isTestLibraryLoading,
-  hasSearchTextWithNoResult = false,
   isLoading,
+  ytSearchNoResult,
 }) => {
   const filterProps = {
     handleFilterChanges,
@@ -32,6 +31,7 @@ const VideoLibraryTabs = ({
     filterGrades,
     filterStatus,
     filterSubjects,
+    isLoading,
   }
 
   const videoListProps = {
@@ -40,7 +40,6 @@ const VideoLibraryTabs = ({
     loaderRefTestLibrary,
     loaderRefYTLibrary,
     isLoading,
-    isTestLibraryLoading,
     currentTab,
   }
 
@@ -50,7 +49,7 @@ const VideoLibraryTabs = ({
       activeKey={currentTab}
       onChange={(selectedTab) => handleTabSelect(selectedTab)}
     >
-      <TabPane tab="Community" key={COMMUNITY} disabled={false}>
+      <TabPane tab="Community" key={COMMUNITY} disabled={isLoading}>
         <Filters {...filterProps} />
         <EduIf condition={showNoData}>
           <EduThen>
@@ -65,11 +64,7 @@ const VideoLibraryTabs = ({
           </EduElse>
         </EduIf>
       </TabPane>
-      <TabPane
-        tab="My Content"
-        key={MY_CONTENT}
-        disabled={isTestLibraryLoading}
-      >
+      <TabPane tab="My Content" key={MY_CONTENT} disabled={isLoading}>
         <Filters {...filterProps} />
         <EduIf condition={showNoData}>
           <EduThen>
@@ -84,10 +79,10 @@ const VideoLibraryTabs = ({
           </EduElse>
         </EduIf>
       </TabPane>
-      <TabPane tab="YouTube" key={YOUTUBE} disabled={isTestLibraryLoading}>
+      <TabPane tab="YouTube" key={YOUTUBE} disabled={isLoading}>
         <EduIf condition={showNoData}>
           <EduThen>
-            <EduIf condition={hasSearchTextWithNoResult}>
+            <EduIf condition={ytSearchNoResult}>
               <EduThen>
                 <VideoNotFound heading="Can't find a certain video? Please copy and paste the YouTube video link into our search bar." />
               </EduThen>

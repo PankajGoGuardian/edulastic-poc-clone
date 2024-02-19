@@ -8,7 +8,7 @@ const TestFiltersDD = ({
   options = [],
   filterValue,
   handleFilterChanges,
-  isTestLibraryLoading,
+  isLoading,
   placeholder,
   filterKey,
   filterHeader,
@@ -22,7 +22,7 @@ const TestFiltersDD = ({
         showSearch
         value={filterValue}
         onChange={(value) => handleFilterChanges({ key: filterKey, value })}
-        disabled={isTestLibraryLoading}
+        disabled={isLoading}
         placeholder={placeholder}
       >
         {options.map(({ text, value }) => (

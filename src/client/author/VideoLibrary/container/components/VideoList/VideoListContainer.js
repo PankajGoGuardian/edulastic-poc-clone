@@ -10,12 +10,11 @@ const VideoListContainer = ({
   loaderRefTestLibrary,
   loaderRefYTLibrary,
   isLoading,
-  isTestLibraryLoading,
   currentTab,
 }) => {
   return (
     <>
-      <SpinLoader spinning={isLoading || isTestLibraryLoading}>
+      <SpinLoader spinning={isLoading}>
         <div>
           <EduIf condition={vqListData.length}>
             <VideoList

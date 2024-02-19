@@ -3,6 +3,7 @@ import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 import { SentryError } from '@sentry/utils'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
+import { pick } from 'lodash'
 import { videoQuizActions } from '.'
 
 import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
@@ -15,12 +16,24 @@ import {
 import { getUserIdSelector, getUserOrgId } from '../../src/selectors/user'
 import { mapListDataFromTestList, mapListDataFromVideoList } from '../utils'
 import { vqConst } from '../const'
+import { setDefaultInterests } from '../../dataUtils'
 
 function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
   try {
+    const vqFilters = pick(search, [
+      'subject',
+      'grades',
+      'status',
+      'filter',
+      'testCategories',
+      'collections',
+      'searchString',
+    ])
+
     const userId = yield select(getUserIdSelector)
     const districtId = yield select(getUserOrgId)
     const testsPage = yield select(getTestsPageSelector)
+    const { grades, subject } = vqFilters
 
     const page = append ? testsPage + 1 : 1
 
@@ -28,7 +41,7 @@ function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
       testsApi.getAll,
       {
         search: {
-          ...search,
+          ...vqFilters,
         },
         sort,
         page,
@@ -38,7 +51,7 @@ function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
 
     setFilterInSession({
       key: sessionFilterKeys.TEST_FILTER,
-      filter: search,
+      filter: vqFilters,
       districtId,
       userId,
     })
@@ -49,38 +62,43 @@ function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
       userId,
     })
 
+    if (Array.isArray(grades)) {
+      setDefaultInterests({ grades })
+    }
+    if (Array.isArray(subject)) {
+      setDefaultInterests({ subject })
+    }
+
     // use in test and other library selects searchType
     const existingList = yield select(vqTestListSelector)
 
     const formattedTestList = mapListDataFromTestList(testList)
 
-    if (testList?.length) {
-      if (append) {
-        yield put(
-          videoQuizActions.testSearchSuccess({
-            testList: [...existingList, ...formattedTestList],
-          })
-        )
-      } else {
-        yield put(
-          videoQuizActions.testSearchSuccess({
-            testList: [...formattedTestList],
-          })
-        )
-      }
+    if (append) {
       yield put(
-        receiveTestSuccessAction({
-          entities: [],
-          count: totalTestCount,
-          page,
-          limit: vqConst.resultLimit,
+        videoQuizActions.testSearchSuccess({
+          testList: [...existingList, ...formattedTestList],
+        })
+      )
+    } else {
+      yield put(
+        videoQuizActions.testSearchSuccess({
+          testList: [...formattedTestList],
         })
       )
     }
+    /** Updates search results */
+    yield put(
+      receiveTestSuccessAction({
+        entities: [],
+        count: totalTestCount,
+        page,
+        limit: vqConst.resultLimit,
+      })
+    )
   } catch (err) {
+    yield put(videoQuizActions.testSearchFailure())
     notification({ type: 'error', messageKey: 'receiveTestFailing' })
-  } finally {
-    yield put(videoQuizActions.resetIsLoading())
   }
 }
 
@@ -91,34 +109,35 @@ function* ytSearchRequestSaga({
     const {
       items: videoList = [],
       nextPageToken: ytNextPageToken = '',
+      pageInfo: { totalResult: ytTotalResult = 0 },
     } = yield youtubeSearchApi.fetchYoutubeVideos({
       query: searchString,
       safeSearch: 'moderate',
       nextPageToken,
     })
-    if (videoList.length) {
-      const formattedVideoList = mapListDataFromVideoList(videoList)
-      if (append) {
-        const vqVideoList = yield select(vqVideoListSelector)
-        yield put(
-          videoQuizActions.ytSearchSuccess({
-            videoList: [...vqVideoList, ...formattedVideoList],
-            ytNextPageToken,
-          })
-        )
-      } else {
-        yield put(
-          videoQuizActions.ytSearchSuccess({
-            videoList: [...formattedVideoList],
-            ytNextPageToken,
-          })
-        )
-      }
+
+    const formattedVideoList = mapListDataFromVideoList(videoList)
+    if (append) {
+      const vqVideoList = yield select(vqVideoListSelector)
+      yield put(
+        videoQuizActions.ytSearchSuccess({
+          videoList: [...vqVideoList, ...formattedVideoList],
+          ytNextPageToken,
+          ytTotalResult,
+        })
+      )
+    } else {
+      yield put(
+        videoQuizActions.ytSearchSuccess({
+          videoList: [...formattedVideoList],
+          ytNextPageToken,
+          ytTotalResult,
+        })
+      )
     }
   } catch (error) {
     notification({ type: 'error', messageKey: 'youtubeSearchApiError' })
-  } finally {
-    yield put(videoQuizActions.resetIsLoading())
+    yield put(videoQuizActions.ytSearchFailure())
   }
 }
 

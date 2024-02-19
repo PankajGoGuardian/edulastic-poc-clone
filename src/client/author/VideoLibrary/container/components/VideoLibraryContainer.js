@@ -23,7 +23,6 @@ import {
 import {
   getTestsCountSelector,
   getTestsFilterSelector,
-  getTestsLoadingSelector,
   getTestsSelector,
   receiveTestsAction,
   updateAllTestSearchFilterAction,
@@ -37,6 +36,7 @@ import useTestLibrary from '../../hooks/useTestLibrary'
 
 import useVQLibraryCommon from '../../hooks/useVQLibraryCommon'
 import { vqConst } from '../../const'
+import { getDefaultInterests } from '../../../dataUtils'
 
 const { YOUTUBE, COMMUNITY, MY_CONTENT } = vqConst.vqTabs
 
@@ -50,8 +50,10 @@ const VideoLibrary = ({
   updateSearchString,
   updateAllTestSearchFilter,
   history,
-  isTestLibraryLoading,
   resetVQLibrary,
+  interestedGrades,
+  interestedSubjects,
+  isVideoQuizAndAIEnabled,
 }) => {
   const {
     testList = [],
@@ -60,15 +62,19 @@ const VideoLibrary = ({
     isLoading = false,
     ytNextPageToken = '',
     searchString = '',
+    ytTotalResult = 1,
   } = videoQuizLibrary
 
   const vqListData = currentTab === YOUTUBE ? videoList : testList
 
+  /** Selected grades and subjects */
   const {
-    subject: filterSubjects,
-    grades: filterGrades,
-    status: filterStatus,
-  } = testListSearchFilters
+    subject: prevSubject = interestedSubjects,
+    grades: prevGrades = interestedGrades || [],
+  } = getDefaultInterests()
+  const { subject, grades, status: filterStatus } = testListSearchFilters
+  const filterSubjects = subject.length ? subject : prevSubject
+  const filterGrades = grades.length ? grades : prevGrades
 
   const handleOnChange = (userInput) => {
     updateSearchString(userInput)
@@ -106,6 +112,7 @@ const VideoLibrary = ({
     currentTab,
     vqListData,
     isLoading,
+    isVideoQuizAndAIEnabled,
   })
 
   /** Handle press enter event triggers Test library search or Youtube search */
@@ -136,6 +143,7 @@ const VideoLibrary = ({
   }
 
   const showNoData = !isLoading && !vqListData?.length
+  const ytSearchNoResult = searchString && !ytTotalResult && !isLoading
   const disableSearchInput = isLoading
 
   const searchBoxProps = {
@@ -158,8 +166,8 @@ const VideoLibrary = ({
     filterStatus,
     filterSubjects,
     showNoData,
-    isTestLibraryLoading,
     isLoading,
+    ytSearchNoResult,
   }
 
   return (
@@ -185,7 +193,6 @@ const enhance = compose(
       testListSearchFilters: getTestsFilterSelector(state),
       testsCount: getTestsCountSelector(state),
       allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
-      isTestLibraryLoading: getTestsLoadingSelector(state),
     }),
     {
       getYoutubeThumbnail: getYoutubeThumbnailAction,

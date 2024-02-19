@@ -28,6 +28,7 @@ const useTestListFilter = ({
   isLoading,
 }) => {
   const loaderRefTestLibrary = useRef(null)
+  const currentVQCount = vqListData?.length
 
   const { subject, grades, status } = testListSearchFilters
 
@@ -98,7 +99,7 @@ const useTestListFilter = ({
       subject,
       grades,
       status,
-      vqListData,
+      currentVQCount,
       currentTab,
     ]
   )
@@ -124,8 +125,8 @@ const useTestListFilter = ({
     subject,
     grades,
     status,
-    vqListData,
     currentTab,
+    currentVQCount,
   ])
   /** Tests Pagination Ends */
 

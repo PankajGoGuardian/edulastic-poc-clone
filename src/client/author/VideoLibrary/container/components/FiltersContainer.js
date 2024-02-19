@@ -9,7 +9,7 @@ const { YOUTUBE } = vqConst.vqTabs
 
 const Filters = ({
   handleFilterChanges,
-  isTestLibraryLoading,
+  isLoading,
   currentTab,
   filterGrades,
   filterStatus,
@@ -44,14 +44,19 @@ const Filters = ({
           }
 
           return (
-            <FlexContainer mr="16px" width="250px" flexDirection="column">
+            <FlexContainer
+              mr="16px"
+              width="250px"
+              flexDirection="column"
+              justifyContent="flex-start"
+            >
               <TestFiltersDD
                 options={options}
                 filterHeader={filterHeader}
                 filterKey={filterKey}
                 placeholder={placeholder}
                 handleFilterChanges={handleFilterChanges}
-                isTestLibraryLoading={isTestLibraryLoading}
+                isLoading={isLoading}
                 filterValue={filterValues[filterName]}
                 mode={mode}
               />

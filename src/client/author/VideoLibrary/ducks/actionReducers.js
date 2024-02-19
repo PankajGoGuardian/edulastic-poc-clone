@@ -11,6 +11,7 @@ const initialState = {
   currentTab: defaultTab,
   searchString: '',
   ytThumbnail: '',
+  ytTotalResult: 1,
 }
 
 const slice = createSlice({
@@ -20,10 +21,20 @@ const slice = createSlice({
     ytSearchRequest: (state) => {
       state.isLoading = true
     },
-    ytSearchSuccess: (state, { payload: { videoList, ytNextPageToken } }) => {
+    ytSearchSuccess: (
+      state,
+      { payload: { videoList, ytNextPageToken, ytTotalResult = 0 } }
+    ) => {
       state.isLoading = false
       state.videoList = [...videoList]
       state.ytNextPageToken = ytNextPageToken
+      state.ytTotalResult = ytTotalResult
+    },
+    ytSearchFailure: (state) => {
+      state.isLoading = false
+      state.videoList = []
+      state.ytNextPageToken = ''
+      state.ytTotalResult = 0
     },
     testSearchRequest: (state) => {
       state.isLoading = true
@@ -32,6 +43,10 @@ const slice = createSlice({
       state.isLoading = false
       state.videoList = []
       state.testList = [...testList]
+    },
+    testSearchFailure: (state) => {
+      state.testList = []
+      state.isLoading = false
     },
     resetVQState: (state) => {
       state.testList = []
@@ -48,7 +63,8 @@ const slice = createSlice({
       state.videoList = []
     },
     updateSearchString: (state, { payload = '' }) => {
-      state.searchString = payload?.trim()
+      state.searchString = payload
+      state.ytTotalResult = 1
     },
     createVQAssessmentRequest: (state) => {
       state.isLoading = true
@@ -69,8 +85,10 @@ const slice = createSlice({
 const {
   ytSearchRequest,
   ytSearchSuccess,
+  ytSearchFailure,
   testSearchRequest,
   testSearchSuccess,
+  testSearchFailure,
   resetVQState,
   updateCurrentTab,
   updateSearchString,
@@ -83,8 +101,10 @@ const {
 export const actions = {
   ytSearchRequest,
   ytSearchSuccess,
+  ytSearchFailure,
   testSearchRequest,
   testSearchSuccess,
+  testSearchFailure,
   resetVQState,
   updateCurrentTab,
   updateSearchString,

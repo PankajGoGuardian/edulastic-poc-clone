@@ -363,7 +363,10 @@ const EssayPlainTextPreview = ({
 
                   <EduIf condition={isSpeechToTextEnabled}>
                     <Tooltip title="Speech to Text">
-                      <ToolbarItem onClick={handleAction(TRANSCRIBE)}>
+                      <ToolbarItem
+                        onClick={handleAction(TRANSCRIBE)}
+                        onMouseDown={(e) => e?.preventDefault()} // To avoid blur event for textarea
+                      >
                         <IconTranscribe color="none" width={22} height={22} />
                       </ToolbarItem>
                     </Tooltip>

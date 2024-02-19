@@ -57,7 +57,7 @@ const useTranscribeService = ({
     if (error) {
       notification({
         type: 'error',
-        msg: 'An error occurred while recognizing speech. Please try again.',
+        msg: 'Speech to text conversion is temporarily unavailable.',
       })
     }
     if (typeof onStopCallback === 'function') {

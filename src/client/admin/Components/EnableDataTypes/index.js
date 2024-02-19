@@ -110,9 +110,9 @@ const EnableDataTypes = () => {
 
   const setOrg = (org) => {
     if (org?.districtGroupId) {
-      setDistrictGroupId(org?.districtGroupId)
-    } else if (org?.districtId) {
-      setDistrictId(org?._id)
+      setDistrictGroupId(org.districtGroupId)
+    } else if (org?.district) {
+      setDistrictId(org.district._id)
     }
   }
 

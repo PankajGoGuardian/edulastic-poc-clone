@@ -63,7 +63,7 @@ const OrgSearch = Form.create({ name: 'orgSearch' })(
 
       // name search is only supported for Districts. Hence, options are for Districts only.
       selectDistrict(option.props.index)
-      setOrg({ districtId: districtList[option.props.index] })
+      setOrg({ district: districtList[option.props.index] })
     }
     const dataSource = districtList.map(({ _source = {} }, index) => (
       <AutocompleteOption key={_source.name} index={index}>

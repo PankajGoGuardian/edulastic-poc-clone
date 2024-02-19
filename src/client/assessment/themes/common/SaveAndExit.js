@@ -331,11 +331,7 @@ export default compose(
       isCliUser: get(state, 'user.isCliUser', false),
       hideData: state?.scratchpad?.hideData,
       savingResponse: get(state, 'test.savingResponse', false),
-      showImmersiveReader: get(
-        state,
-        'test.settings.showImmersiveReader',
-        false
-      ),
+      showImmersiveReader: get(state, 'test.settings.showImmersiveReader'),
       userName: getUserNameSelector(state),
       accommodations: getUserAccommodations(state),
     }),

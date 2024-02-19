@@ -115,7 +115,7 @@ const PlayerHeader = ({
     isTeacherPremium,
     showMagnifier,
     maxAnswerChecks,
-    showImmersiveReader = false,
+    showImmersiveReader,
   } = settings
 
   const { PRACTICE } = testTypesConstants.TEST_TYPES

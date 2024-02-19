@@ -141,7 +141,7 @@ const PlayerHeader = ({
     zIndex: 505,
   }
 
-  const { showMagnifier, showImmersiveReader = false } = settings
+  const { showMagnifier, showImmersiveReader } = settings
 
   return (
     <StyledFlexContainer>

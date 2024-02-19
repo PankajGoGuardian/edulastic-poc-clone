@@ -120,7 +120,7 @@ const stateConfig = {
     images: true,
     folders: true,
     notes: true,
-    degreeMode: false,
+    degreeMode: true,
   },
   louisiana: {
     ...standard,
@@ -213,7 +213,7 @@ const stateConfig = {
     notes: true,
     zoomButtons: true,
     qwertyKeyboard: true,
-    degreeMode: false,
+    degreeMode: true,
     decimalToFraction: true,
     plotSingleVariableImplicitEquations: false,
   },

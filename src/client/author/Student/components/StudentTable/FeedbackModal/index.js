@@ -11,7 +11,7 @@ import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import { Form, Select, Spin } from 'antd'
-import { debounce, difference, differenceBy, isEmpty } from 'lodash'
+import { debounce, difference, differenceBy, isEmpty, uniqBy } from 'lodash'
 import { feedbackApi, userApi } from '@edulastic/api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelopeOpenText } from '@fortawesome/free-solid-svg-icons'
@@ -62,6 +62,7 @@ const FeedbackModal = (props) => {
   const [sharedUserList, setSharedUserList] = useState(
     isEditFlow ? feedbackStudent.sharedWith.users : []
   )
+  const [searchText, setSearchText] = useState('')
 
   const student = useMemo(() => {
     if (isEmpty(feedbackStudent)) return null
@@ -174,12 +175,16 @@ const FeedbackModal = (props) => {
       )
 
       if (!isEmpty(data)) {
-        const _users = differenceBy(
+        let _users = differenceBy(
           filteredUserList,
           sharedUserList,
           (user) => user._id
         )
-        setUserList(_users.map((o) => ({ _id: o._id, ...o._source })))
+        _users = uniqBy(_users, (o) => o._id).map((o) => ({
+          _id: o._id,
+          ...o._source,
+        }))
+        setUserList(_users)
       } else {
         setUserList([])
       }
@@ -196,6 +201,7 @@ const FeedbackModal = (props) => {
   ])
 
   const handleUsersSearch = (searchString) => {
+    setSearchText(searchString)
     if (searchString.length < 3) return
     setIsFetchingUsers(true)
     handleUsersFetch(searchString)
@@ -213,6 +219,11 @@ const FeedbackModal = (props) => {
       const newUser = userList.find((user) => user._id === newSharedUserId)
       return [...existingSelectedUser, ...(newUser ? [newUser] : [])]
     })
+
+  const notFoundText =
+    searchText.length < 3
+      ? 'Please enter 3 or more characters'
+      : 'No result found'
 
   return (
     <StyledModal
@@ -351,9 +362,9 @@ const FeedbackModal = (props) => {
                 <SelectInputStyled
                   data-cy="addUsersInputField"
                   placeholder="Select Users"
-                  mode="tags"
+                  mode="multiple"
                   size="large"
-                  notFoundContent={null}
+                  notFoundContent={notFoundText}
                   filterOption={false}
                   onSearch={handleUsersSearch}
                   value={sharedUserList.map((o) => o._id)}

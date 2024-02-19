@@ -375,6 +375,9 @@ const MultipleAssessmentReportFilters = ({
     multiple = false,
     isPageLevelFilter = false
   ) => {
+    if (!selected.length && keyName === 'testTermIds') {
+      return
+    }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key

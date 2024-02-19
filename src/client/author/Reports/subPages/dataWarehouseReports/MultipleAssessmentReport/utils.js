@@ -19,7 +19,6 @@ import {
 import { TEST_TYPE_LABELS } from '@edulastic/constants/const/testTypes'
 import {
   EXTERNAL_SCORE_TYPES,
-  compareByKeys,
   compareByOptions,
   compareByOptionsInfo,
   getExternalScoreFormattedByType,
@@ -438,10 +437,10 @@ export const getTableData = (
     .map(({ testType: externalTestType, ...t }) => ({
       ...t,
       externalTestType,
-      [compareByMap[compareByKeys.DISTRICT]]:
-        isDistrictGroupAdmin && !t[compareByMap[compareByKeys.DISTRICT]]
+      districtName:
+        isDistrictGroupAdmin && !t.districtName
           ? districtsInfo.find((d) => d._id === t.districtId)?.name
-          : t[compareByMap[compareByKeys.DISTRICT]],
+          : t.districtName,
     }))
   const internalMetricsForTable = metricInfo
     .filter(({ testType }) => !feedTypeKeys.includes(testType))
@@ -497,8 +496,8 @@ export const getTableData = (
       id: compareByValue,
       [compareByKey]: compareByValue,
       [compareByLabelKey]: compareByLabelValue || '',
-      [compareByMap[compareByKeys.DISTRICT]]:
-        _data[0][compareByMap[compareByKeys.DISTRICT]],
+      districtId: _data[0].districtId,
+      districtName: _data[0].districtName,
       tests,
     }
   })

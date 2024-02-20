@@ -11,6 +11,7 @@ import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelectorTab/duck'
 import { lineReaderVisible } from '../../../../common/components/LineReader/duck'
 import { getUserNameSelector } from '../../../../author/src/selectors/user'
+import { StyledTextForDropdown } from '../../common/styledCompoenents'
 
 const MenuItem = withKeyboard(Menu.Item)
 
@@ -101,7 +102,7 @@ const SettingMenu = ({
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />
         <Tooltip title={userName} placement="left">
-          {userName}{' '}
+          <StyledTextForDropdown>{userName} </StyledTextForDropdown>
         </Tooltip>
         <Icon type="down" />
       </StyledButton>

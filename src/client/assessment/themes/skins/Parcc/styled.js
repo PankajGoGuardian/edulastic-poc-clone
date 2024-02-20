@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Popover, Button, Dropdown, Menu, Icon } from 'antd'
 import {
+  desktopWidth,
   smallDesktopWidth,
   themeColor,
   themeColorBlue,
@@ -71,6 +72,9 @@ export const StyledButton = styled.button`
     svg {
       margin-right: 0px;
     }
+  }
+  @media (max-width: ${desktopWidth}) {
+    width: 95px;
   }
 `
 
@@ -169,5 +173,8 @@ export const Container = styled.div`
   align-items: center;
   span {
     line-height: 11px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    margin-left: 30px;
   }
 `

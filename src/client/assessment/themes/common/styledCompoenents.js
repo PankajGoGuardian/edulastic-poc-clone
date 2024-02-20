@@ -1,4 +1,5 @@
 import {
+  desktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
@@ -175,4 +176,10 @@ export const StyledTextForDropdown = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
   text-transform: uppercase;
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 85px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    max-width: 30px;
+  }
 `

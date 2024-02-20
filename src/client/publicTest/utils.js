@@ -10,6 +10,11 @@ import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 import { IconUserRegular } from '@edulastic/icons'
 import { Modal, Tooltip } from 'antd'
 import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
+import {
+  StyledStudentName,
+  StyledStudentNameContainer,
+  StyledTestName,
+} from './styled'
 
 const { releaseGradeLabels } = testConstants
 
@@ -196,40 +201,19 @@ export const showTestInfoModal = ({
 
   Modal.confirm({
     title: (
-      <FlexContainer justifyContent="space-between" alignItems="center">
+      <FlexContainer
+        justifyContent="space-between"
+        alignItems="center"
+        flexWrap="wrap"
+      >
         <Tooltip title={title}>
-          <div
-            style={{
-              maxWidth: 'calc(75 - 300px)%',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {title}
-          </div>
+          <StyledTestName>{title}</StyledTestName>
         </Tooltip>
         <Tooltip title={userName}>
-          <FlexContainer
-            alignItems="center"
-            justifyContent="flex-end"
-            width="300px"
-          >
+          <StyledStudentNameContainer>
             <IconUserRegular height="24px" width="24px" />
-            <div
-              style={{
-                color: '#9501DB',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '250px',
-                width: 'fit-content',
-                fontWeight: '600',
-              }}
-            >
-              Hi, {userName}!
-            </div>
-          </FlexContainer>
+            <StyledStudentName>Hi, {userName}!</StyledStudentName>
+          </StyledStudentNameContainer>
         </Tooltip>
       </FlexContainer>
     ),

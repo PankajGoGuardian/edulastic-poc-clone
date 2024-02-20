@@ -21,7 +21,7 @@ import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
 
-const TABLE_PAGE_SIZE = 30
+const TABLE_PAGE_SIZE = 50
 function CompletionReport({
   fetchCompletionReportChartDataRequest,
   fetchCompletionReportTableDataRequest,

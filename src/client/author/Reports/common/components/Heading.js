@@ -38,6 +38,6 @@ const Container = styled.div`
     color: ${titleColor};
   }
   p {
-    font-size: ${({ $descriptionFontSize }) => $descriptionFontSize || '12px;'};
+    font-size: ${({ $descriptionFontSize }) => $descriptionFontSize || '13px;'};
   }
 `

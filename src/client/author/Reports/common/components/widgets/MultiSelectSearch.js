@@ -8,6 +8,7 @@ const MultiSelectSearch = ({
   dataCy,
   options,
   suffixIcon,
+  onSelectAll,
   loc,
   ...props
 }) => {
@@ -24,6 +25,7 @@ const MultiSelectSearch = ({
         ref={el}
         options={updatedOptions}
         suffixIcon={suffixIcon}
+        onSelectAll={onSelectAll}
         loc={loc}
         mode="multiple"
         {...props}

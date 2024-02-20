@@ -155,14 +155,14 @@
       "groupTitle": "Multiple Assessment Report"
     },
     "completion-report": {
-      "title": "Completion Report",
+      "title": "Test Completion Analysis",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
-          "title": "COMPLETION REPORT"
+          "title": "TEST COMPLETION ANALYSIS"
         }
       ],
       "group": "multipleAssessmentReport",
@@ -505,7 +505,7 @@
     "multipleAssessmentReport": [
       {
         "key": "completion-report",
-        "title": "Completion Report",
+        "title": "Test Completion Analysis",
         "location": "/author/reports/completion-report"
       },
       {

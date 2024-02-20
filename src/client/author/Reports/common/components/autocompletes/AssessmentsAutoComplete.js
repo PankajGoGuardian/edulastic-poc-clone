@@ -4,6 +4,7 @@ import { debounce } from 'lodash'
 
 // components & constants
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
+import { IconClose } from '@edulastic/icons'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
 import {
@@ -124,6 +125,7 @@ const AssessmentAutoComplete = ({
   const onSelectAll = () => {
     selectCB(dropdownData)
   }
+  const onClear = () => selectCB([])
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
@@ -149,12 +151,7 @@ const AssessmentAutoComplete = ({
   }, [testList])
 
   const suffixIcon = loc === 'completion-report' && (
-    <a
-      onClick={onSelectAll}
-      style={{ color: 'blue', fontSize: '12px', fontWeight: 400 }}
-    >
-      <u>SELECT ALL </u>
-    </a>
+    <IconClose height={10} width={10} cursor="pointer" onClick={onClear} />
   )
 
   return (
@@ -169,6 +166,7 @@ const AssessmentAutoComplete = ({
       options={!loading ? dropdownData : []}
       loading={loading}
       suffixIcon={suffixIcon}
+      onSelectAll={onSelectAll}
       loc={loc}
     />
   )

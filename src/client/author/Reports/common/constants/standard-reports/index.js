@@ -155,14 +155,14 @@ export const INSIGHT_REPORTS = [
     cards: [
       {
         key: 'completionReport',
-        title: 'Completion Report',
+        title: 'Test Completion Analysis',
         sellThumbnail: CompletionReportIcon,
         thumbnail: CompletionReportIcon,
         location: '/author/reports/completion-report',
         description:
-          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+          'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly',
         sellDescription:
-          'This report provides real time insights into student progress, submissions status and grading updates for informed decision making.',
+          'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly',
       },
       {
         key: 'performanceOverTime',

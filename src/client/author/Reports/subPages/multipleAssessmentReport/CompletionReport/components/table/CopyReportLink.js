@@ -15,7 +15,7 @@ const CopyReportLink = ({ report, filterSettings }) => {
           filterSettings
         )}`,
       }}
-    ></TitleCopy>
+    />
   )
 }
 

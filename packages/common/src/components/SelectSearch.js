@@ -3,6 +3,8 @@ import { Empty, Select } from 'antd'
 import { SelectInputStyled, useDropdownData } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
+const { OptGroup } = SelectInputStyled
+
 const SelectSearch = React.forwardRef(function SelectSearch(
   {
     loading,
@@ -16,6 +18,7 @@ const SelectSearch = React.forwardRef(function SelectSearch(
     tagsSearch,
     loc,
     suffixIcon,
+    onSelectAll,
     ...props
   },
   ref
@@ -34,6 +37,18 @@ const SelectSearch = React.forwardRef(function SelectSearch(
       onBlur(...e)
     },
     [onBlur]
+  )
+  const CustomGroupLabel = () => (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontWeight: 'bold',
+      }}
+    >
+      <div>SELECT TESTS</div>
+      <a onClick={onSelectAll}>SELECT ALL</a>
+    </div>
   )
   const dropDownData = useDropdownData(options, {
     id_key: tagsSearch ? 'index' : 'key',
@@ -71,7 +86,11 @@ const SelectSearch = React.forwardRef(function SelectSearch(
       $paddingRight={!loading && !!suffixIcon && '80px'}
       {...props}
     >
-      {dropDownData}
+      {loc === 'completion-report' ? (
+        <OptGroup label={<CustomGroupLabel />}>{dropDownData}</OptGroup>
+      ) : (
+        dropDownData
+      )}
     </SelectInputStyled>
   )
 })

@@ -10,8 +10,8 @@ const TableHeader = ({ compareBy, setCompareBy, setAnalyseBy, analyseBy }) => {
     <TableHeaderContainer>
       <LeftContainer>
         <Heading
-          title="Completion report by School"
-          description="Click on the number to download list of students"
+          title={`Test Completion by ${compareBy.title}`}
+          description="Click on the number of students in the table to download the list of students based on their test completion status."
         />
       </LeftContainer>
       <RightContainer>

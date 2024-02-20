@@ -80,7 +80,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Not Started',
     stackId: 'completionReport',
-    fill: '#F35F5F',
+    fill: '#FF0257',
   },
   {
     key: 'inProgressPercentage',
@@ -88,7 +88,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'In Progress',
     stackId: 'completionReport',
-    fill: '#ECAB28',
+    fill: '#FEBE00',
   },
   {
     key: 'submittedPercentage',
@@ -96,7 +96,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Submitted',
     stackId: 'completionReport',
-    fill: '#3F85E5',
+    fill: '#3896BE',
   },
   {
     key: 'gradedPercentage',
@@ -104,45 +104,65 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Graded',
     stackId: 'completionReport',
-    fill: '#1AB395',
+    fill: '#5EB500',
   },
 ]
 
 export const referenceLinesForCompletionChart = [
   {
     ref: 0,
-    stroke: 'black',
-    position: 'insideLeft',
-    textAnchor: 'end',
-    dx: -50,
+    dx: -10,
+    stroke: '#D3D3D3',
   },
   {
-    ref: 25,
+    ref: 10,
+    dx: -10,
     stroke: '#D3D3D3',
-    position: 'insideLeft',
-    textAnchor: 'end',
-    dx: -50,
+  },
+  {
+    ref: 20,
+    dx: -10,
+    stroke: '#D3D3D3',
+  },
+  {
+    ref: 30,
+    dx: -10,
+    stroke: '#D3D3D3',
+  },
+  {
+    ref: 40,
+    dx: -10,
+    stroke: '#D3D3D3',
   },
   {
     ref: 50,
+    dx: -10,
     stroke: '#D3D3D3',
-    position: 'insideLeft',
-    textAnchor: 'end',
-    dx: -50,
   },
   {
-    ref: 75,
+    ref: 60,
+    dx: -10,
     stroke: '#D3D3D3',
-    position: 'insideLeft',
-    textAnchor: 'end',
-    dx: -50,
+  },
+  {
+    ref: 70,
+    dx: -10,
+    stroke: '#D3D3D3',
+  },
+  {
+    ref: 80,
+    dx: -10,
+    stroke: '#D3D3D3',
+  },
+  {
+    ref: 90,
+    dx: -10,
+    stroke: '#D3D3D3',
   },
   {
     ref: 100,
+    dx: -10,
     stroke: '#D3D3D3',
-    position: 'insideLeft',
-    textAnchor: 'end',
-    dx: -50,
   },
 ]
 export const analyzeBy = [

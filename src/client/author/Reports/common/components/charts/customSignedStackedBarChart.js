@@ -22,6 +22,7 @@ import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
   ResetButtonClear,
+  StyledCustomChartTooltip,
 } from '../../styled'
 import {
   CustomXAxisTickTooltipContainer,
@@ -139,6 +140,12 @@ export const SignedStackedBarChart = ({
   tickMargin = 20,
   tooltipType = 'top',
   responsiveContainerHeight = 400,
+  xAxisFontWeight = 600,
+  startFromLast = false,
+  tick = false,
+  yTickLine,
+  yAxisStyle = null,
+  needWhiteBackgroundToolTip = false,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const parentContainerRef = useRef(null)
@@ -210,9 +217,9 @@ export const SignedStackedBarChart = ({
     }
     if (tooltipType === 'left') {
       tooltipProperties = {
-        '--first-tooltip-transform': `translate(${
-          x - barWidth - 100 - spaceForLittleTriangle
-        }px, calc(${y + 75 + height / 2}px - 100% ))`,
+        '--first-tooltip-transform': `translate(${x + barWidth / 2}px, calc(${
+          y + 75 + height / 2
+        }px - 100% ))`,
         '--first-tooltip-top': '0',
         '--first-tooltip-left': '0',
       }
@@ -312,18 +319,26 @@ export const SignedStackedBarChart = ({
   const hasPreviousPage = page !== 0
   const hasNextPage = page < totalPages - 1
 
-  const chartNavLeftVisibility = backendPagination
+  let chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
     : hasPreviousPage
-  const chartNavRightVisibility = backendPagination
+  let chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
     : hasNextPage
+
+  if (startFromLast)
+    [chartNavLeftVisibility, chartNavRightVisibility] = [
+      chartNavRightVisibility,
+      chartNavLeftVisibility,
+    ]
 
   const chartNavLeftClick = () => {
     if (backendPagination) {
       setBackendPagination({
         ...backendPagination,
-        page: backendPagination.page - 1,
+        page: startFromLast
+          ? backendPagination.page + 1
+          : backendPagination.page - 1,
       })
     } else {
       prevPage()
@@ -334,13 +349,29 @@ export const SignedStackedBarChart = ({
     if (backendPagination) {
       setBackendPagination({
         ...backendPagination,
-        page: backendPagination.page + 1,
+        page: startFromLast
+          ? backendPagination.page - 1
+          : backendPagination.page + 1,
       })
     } else {
       nextPage()
       setAnimate(true)
     }
   }
+
+  const tooltipContent = needWhiteBackgroundToolTip ? (
+    <StyledCustomChartTooltip
+      ref={tooltipRef}
+      getJSX={getTooltipJSX}
+      // tooltipType={tooltipType}
+    />
+  ) : (
+    <StyledCustomChartTooltipDark
+      ref={tooltipRef}
+      getJSX={getTooltipJSX}
+      tooltipType={tooltipType}
+    />
+  )
 
   return (
     <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
@@ -404,7 +435,7 @@ export const SignedStackedBarChart = ({
                 data={pagedData}
                 getXTickText={getXTickText}
                 getXTickTagText={getXTickTagText}
-                fontWeight={600}
+                fontWeight={xAxisFontWeight}
                 interventionsData={interventionsData}
                 showInterventions={showInterventions}
                 setXAxisTickTooltipData={setXAxisTickTooltipData}
@@ -422,23 +453,16 @@ export const SignedStackedBarChart = ({
               type="number"
               axisLine={!hideOnlyYAxis}
               domain={yDomain}
-              tick={false}
-              stroke={!hideOnlyYAxis ? greyLight1 : null}
+              tick={tick}
+              tickLine={yTickLine}
+              stroke={greyLight1}
               ticks={ticks}
               tickFormatter={yTickFormatter}
               label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
+              style={yAxisStyle}
             />
           ) : null}
-          <Tooltip
-            cursor={false}
-            content={
-              <StyledCustomChartTooltipDark
-                ref={tooltipRef}
-                getJSX={getTooltipJSX}
-                tooltipType={tooltipType}
-              />
-            }
-          />
+          <Tooltip cursor={false} content={tooltipContent} />
           {!hideLegend ? (
             <Legend
               align="right"
@@ -454,16 +478,7 @@ export const SignedStackedBarChart = ({
           ) : null}
           {referenceLines.length &&
             referenceLines.map((line) => (
-              <ReferenceLine
-                y={line.ref}
-                stroke={line.stroke}
-                label={{
-                  position: line.position,
-                  value: `${line.ref}%`,
-                  textAnchor: line.textAnchor,
-                  dx: line.dx,
-                }}
-              />
+              <ReferenceLine y={line.ref} stroke={line.stroke} dx={line.dx} />
             ))}
           {barsData.map((bdItem, bdIndex) => {
             let fillOpacity = 1
@@ -510,8 +525,6 @@ export const SignedStackedBarChart = ({
                         onBarMouseOver={onBarMouseOver}
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
-                        yOffset={10}
-                        xOffset={0}
                         formatter={barsLabelFormatter}
                         style={{ fill: getFGColor(bdItem.fill) }}
                       />

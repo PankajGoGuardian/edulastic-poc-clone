@@ -8,15 +8,11 @@ import {
   yAxisLabel,
   preLabelHeading,
 } from '../../../common/utils/constants'
-import {
-  TooltipRowTitle,
-  TooltipRowValue,
-  TooltipRow,
-} from '../../../../../common/styled'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/customSignedStackedBarChart'
 import { barsLabelFormatter, chartDataFormatter } from './utils'
 import Heading from '../../../../../common/components/Heading'
 import { ChartContainer } from './styled'
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 
 const {
   title,
@@ -55,6 +51,10 @@ const Chart = ({
     setHoveredCategory(category)
   }
 
+  const yTickFormatter = (value) => {
+    return `${value}%`
+  }
+
   const getTooltipJSX = (payload) => {
     if (payload.length && payload[0].payload && hoveredCategory) {
       const result = payload[0].payload
@@ -70,12 +70,7 @@ const Chart = ({
       return (
         <div>
           {Object.keys(dataToDisplay).map((key) => {
-            return (
-              <TooltipRow key={key}>
-                <TooltipRowTitle>{key}</TooltipRowTitle>
-                <TooltipRowValue>{dataToDisplay[key]}</TooltipRowValue>
-              </TooltipRow>
-            )
+            return <BarTooltipRow title={key} value={dataToDisplay[key]} />
           })}
         </div>
       )
@@ -117,16 +112,21 @@ const Chart = ({
               hideCartesianGrid
               hasBarInsideLabels
               barsLabelFormatter={barsLabelFormatter}
-              ticks={false}
-              tick={false}
-              barSize={100}
+              ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
+              tick
+              yTickLine={{ stroke: 'black' }}
+              margin={{ top: 0, right: 60, left: 60, bottom: 50 }}
               hasRoundedBars={false}
               referenceLines={referenceLines}
               tickMargin={2}
               legendProps={{ wrapperStyle: { top: -10 } }}
               tooltipType="left"
-              responsiveContainerHeight={278}
-              xTickTooltipPosition={320}
+              needWhiteBackgroundToolTip
+              xTickTooltipPosition={380}
+              yTickFormatter={yTickFormatter}
+              xAxisFontWeight={400}
+              startFromLast
+              yAxisStyle={{ transform: 'translate(-15px)', fill: 'black' }}
             />
           </EduThen>
           <EduElse>

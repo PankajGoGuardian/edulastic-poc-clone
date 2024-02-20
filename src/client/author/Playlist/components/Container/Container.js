@@ -1,6 +1,12 @@
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { greyLight1, greyThemeLight } from '@edulastic/colors'
-import { FlexContainer, withWindowSizes } from '@edulastic/common'
+import {
+  EduElse,
+  EduIf,
+  EduThen,
+  FlexContainer,
+  withWindowSizes,
+} from '@edulastic/common'
 import { IconFilter, IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
@@ -96,6 +102,7 @@ import {
   getFilterFromSession,
 } from '../../../../common/utils/helpers'
 import { StyledEduButton } from '../../../Reports/common/styled'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -622,15 +629,29 @@ class TestList extends Component {
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
-      <StyledEduButton
-        data-cy="filter"
-        isGhost={!isShowFilter}
-        onClick={this.toggleFilter}
-        style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
-      >
-        <IconFilter width={15} height={15} />
-        FILTERS
-      </StyledEduButton>
+      <EduIf condition={!isShowFilter}>
+        <EduThen>
+          <FilterToggleBtn
+            isShowFilter={isShowFilter}
+            toggleFilter={this.toggleFilter}
+          />
+        </EduThen>
+        <EduElse>
+          <StyledEduButton
+            data-cy="filter"
+            isGhost={!isShowFilter}
+            onClick={this.toggleFilter}
+            style={{
+              height: '24px',
+              marginRight: '10px',
+              borderRadius: '15px',
+            }}
+          >
+            <IconFilter width={15} height={15} />
+            FILTERS
+          </StyledEduButton>
+        </EduElse>
+      </EduIf>
     )
 
     const sparkDescription = dashboardTiles?.find(
@@ -746,8 +767,9 @@ class TestList extends Component {
               )}
             </Filter>
             <Main isShowFilter={isShowFilter}>
+              <EduIf condition={!isShowFilter}>{renderFilterIcon()}</EduIf>
               <ItemsMenu justifyContent="space-between">
-                {renderFilterIcon()}
+                <EduIf condition={isShowFilter}>{renderFilterIcon()}</EduIf>
                 <PaginationInfo>
                   <span>{count}</span> PLAYLISTS MATCH
                 </PaginationInfo>

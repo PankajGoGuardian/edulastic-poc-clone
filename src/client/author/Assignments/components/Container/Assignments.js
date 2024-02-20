@@ -5,10 +5,16 @@ import { compose } from 'redux'
 import { get, find } from 'lodash'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
-import { withWindowSizes, FlexContainer } from '@edulastic/common'
+import {
+  withWindowSizes,
+  FlexContainer,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
-import { IconFilter, IconAssignment } from '@edulastic/icons'
+import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
 
 import {
   receiveAssignmentsAction,
@@ -58,6 +64,7 @@ import {
   TableWrapper,
   LeftWrapper,
   FixedWrapper,
+  FilterButton,
 } from './styled'
 
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
@@ -460,20 +467,36 @@ class Assignments extends Component {
                     </FixedWrapper>
                   </LeftWrapper>
                   <TableWrapper showFilter={showFilter}>
-                    <StyledEduButton
-                      data-cy="smart-filter"
-                      data-test={showFilter ? 'expanded' : 'collapsed'}
-                      isGhost={showFilter}
-                      onClick={this.toggleFilter}
-                      style={{
-                        height: '24px',
-                        margin: '-15px 0px 5px 25px',
-                        borderRadius: '15px',
-                      }}
-                    >
-                      <IconFilter width={15} height={15} />
-                      FILTERS
-                    </StyledEduButton>
+                    <EduIf condition={!showFilter}>
+                      <EduThen>
+                        <StyledEduButton
+                          data-cy="smart-filter"
+                          data-test={showFilter ? 'expanded' : 'collapsed'}
+                          isGhost={showFilter}
+                          onClick={this.toggleFilter}
+                          style={{
+                            height: '24px',
+                            margin: '-15px 0px 5px 25px',
+                            borderRadius: '15px',
+                          }}
+                        >
+                          <IconFilter width={15} height={15} />
+                          FILTERS
+                        </StyledEduButton>
+                      </EduThen>
+                      <EduElse>
+                        <FilterButton
+                          showFilter={showFilter}
+                          variant="filter"
+                          onClick={this.toggleFilter}
+                        >
+                          <IconCloseFilter
+                            data-cy="smart-filter"
+                            data-test={showFilter ? 'expanded' : 'collapsed'}
+                          />
+                        </FilterButton>
+                      </EduElse>
+                    </EduIf>
 
                     <StyledCard>
                       {isAdvancedView ? (

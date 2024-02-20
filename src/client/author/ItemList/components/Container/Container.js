@@ -1,4 +1,4 @@
-import { withWindowSizes } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, withWindowSizes } from '@edulastic/common'
 import { IconFilter, IconItemLibrary } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, sortOptions } from '@edulastic/constants'
@@ -96,6 +96,7 @@ import {
 } from '../../../../common/utils/helpers'
 import { getTestEntitySelector } from '../../../AssignTest/duck'
 import { StyledEduButton } from '../../../Reports/common/styled'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -498,17 +499,33 @@ class Contaier extends Component {
     )
   }
 
-  renderFilterIcon = (isShowFilter) => (
-    <StyledEduButton
-      data-cy="filter"
-      isGhost={isShowFilter}
-      onClick={this.toggleFilter}
-      style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
-    >
-      <IconFilter width={15} height={15} />
-      FILTERS
-    </StyledEduButton>
-  )
+  renderFilterIcon = (isShowFilter) => {
+    return (
+      <EduIf condition={isShowFilter}>
+        <EduThen>
+          <FilterToggleBtn
+            isShowFilter={!isShowFilter}
+            toggleFilter={this.toggleFilter}
+          />
+        </EduThen>
+        <EduElse>
+          <StyledEduButton
+            data-cy="filter"
+            isGhost={isShowFilter}
+            onClick={this.toggleFilter}
+            style={{
+              height: '24px',
+              marginRight: '10px',
+              borderRadius: '15px',
+            }}
+          >
+            <IconFilter width={15} height={15} />
+            FILTERS
+          </StyledEduButton>
+        </EduElse>
+      </EduIf>
+    )
+  }
 
   render() {
     const {
@@ -569,14 +586,21 @@ class Contaier extends Component {
             }
           />
           <ListItems isShowFilter={isShowFilter}>
+            <EduIf condition={isShowFilter}>
+              <MobileFilterIcon>
+                {this.renderFilterIcon(isShowFilter)}
+              </MobileFilterIcon>
+            </EduIf>
             <Element>
               <ContentWrapper borderRadius="0px" padding="0px">
                 {loading && <Spin size="large" />}
                 <>
                   <ItemsMenu>
-                    <MobileFilterIcon>
-                      {this.renderFilterIcon(isShowFilter)}
-                    </MobileFilterIcon>
+                    <EduIf condition={!isShowFilter}>
+                      <MobileFilterIcon>
+                        {this.renderFilterIcon(isShowFilter)}
+                      </MobileFilterIcon>
+                    </EduIf>
                     <PaginationInfo>
                       <span>{count}</span>
                       <span>{t('author:component.item.itemsFound')}</span>

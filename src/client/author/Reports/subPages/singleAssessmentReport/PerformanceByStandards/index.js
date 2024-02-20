@@ -489,9 +489,6 @@ const PerformanceByStandards = ({
                     heading="Test standards do not match your Standard Set. Details below."
                     description={
                       <>
-                        The test standards differ from your Interested
-                        Standards.
-                        <br />
                         Please visit{' '}
                         <Link to="/author/profile">My Profile</Link> and add the
                         relevant standard set for this test to your Interested

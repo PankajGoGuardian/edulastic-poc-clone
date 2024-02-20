@@ -22,6 +22,8 @@ import {
   FlexContainer,
   notification,
   EduIf,
+  EduThen,
+  EduElse,
 } from '@edulastic/common'
 import { IconList, IconTile, IconTestBank, IconFilter } from '@edulastic/icons'
 import { white, greyLight1, greyThemeLight } from '@edulastic/colors'
@@ -157,6 +159,7 @@ import {
   StyledEduButton,
 } from '../../../Reports/common/styled'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
+import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -1290,15 +1293,29 @@ class TestList extends Component {
     }))
 
     const renderFilterIcon = () => (
-      <StyledEduButton
-        data-cy="filter"
-        isGhost={!isShowFilter}
-        onClick={this.toggleFilter}
-        style={{ height: '24px', marginRight: '10px', borderRadius: '15px' }}
-      >
-        <IconFilter width={15} height={15} />
-        FILTERS
-      </StyledEduButton>
+      <EduIf condition={isShowFilter}>
+        <EduThen>
+          <StyledEduButton
+            data-cy="filter"
+            isGhost={!isShowFilter}
+            onClick={this.toggleFilter}
+            style={{
+              height: '24px',
+              marginRight: '10px',
+              borderRadius: '15px',
+            }}
+          >
+            <IconFilter width={15} height={15} />
+            FILTERS
+          </StyledEduButton>
+        </EduThen>
+        <EduElse>
+          <FilterToggleBtn
+            isShowFilter={isShowFilter}
+            toggleFilter={this.toggleFilter}
+          />
+        </EduElse>
+      </EduIf>
     )
 
     const { CREATE_TEST_SCREEN } = CREATE_AI_TEST_DISPLAY_SCREENS
@@ -1484,8 +1501,9 @@ class TestList extends Component {
               </AffixWrapper>
             </Filter>
             <Main isShowFilter={isShowFilter}>
+              <EduIf condition={!isShowFilter}>{renderFilterIcon()}</EduIf>
               <ItemsMenu justifyContent="space-between">
-                {renderFilterIcon()}
+                <EduIf condition={isShowFilter}>{renderFilterIcon()}</EduIf>
                 <PaginationInfo>
                   <span>{count}</span> TESTS MATCH
                 </PaginationInfo>

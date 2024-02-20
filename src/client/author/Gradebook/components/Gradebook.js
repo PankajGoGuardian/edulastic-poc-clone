@@ -12,6 +12,8 @@ import {
   EduButton,
   withWindowSizes,
   notification,
+  EduIf,
+  EduThen,
 } from '@edulastic/common'
 import {
   IconInterface,
@@ -49,6 +51,7 @@ import {
   INITIAL_FILTERS,
   PAGE_DETAIL,
 } from '../transformers'
+import { StyledEduButton } from '../../Reports/common/styled'
 
 const parseInitialsFromName = (name) =>
   (name || '')
@@ -299,27 +302,37 @@ const Gradebook = ({
               />
             </ScrollbarContainer>
           )}
-          <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
-            {showFilter ? (
-              <IconCloseFilter
-                data-test={showFilter ? 'expanded' : 'collapsed'}
-                data-cy="smart-filter"
-              />
-            ) : (
-              <IconFilter
-                width={20}
-                height={20}
-                data-test={showFilter ? 'expanded' : 'collapsed'}
-                data-cy="smart-filter"
-              />
-            )}
-          </FilterButton>
+          <EduIf condition={showFilter}>
+            <EduThen>
+              <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
+                <IconCloseFilter
+                  data-test={showFilter ? 'expanded' : 'collapsed'}
+                  data-cy="smart-filter"
+                />
+              </FilterButton>
+            </EduThen>
+          </EduIf>
           {loading ? (
             <TableContainer showFilter={showFilter}>
               <Spin />
             </TableContainer>
           ) : (
             <TableContainer showFilter={showFilter}>
+              <EduIf condition={!showFilter}>
+                <StyledEduButton
+                  data-cy="filter"
+                  isGhost={showFilter}
+                  onClick={toggleShowFilter}
+                  style={{
+                    height: '24px',
+                    margin: '-15px 0px 5px 18px',
+                    borderRadius: '15px',
+                  }}
+                >
+                  <IconFilter width={15} height={15} />
+                  FILTERS
+                </StyledEduButton>
+              </EduIf>
               <GradebookTable
                 dataSource={curatedData}
                 assessments={assessmentsData}

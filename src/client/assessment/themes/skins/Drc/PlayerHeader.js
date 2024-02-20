@@ -27,7 +27,7 @@ import {
   IconProfileCircle,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
-import { Button, Select } from 'antd'
+import { Button, Select, Tooltip } from 'antd'
 import {
   lightGreySecondary,
   themeColorBlue,
@@ -167,9 +167,11 @@ const PlayerHeader = ({
           </div>
           <FlexContainer alignItems="center">
             <IconProfileCircle isBgDark />
-            <StyledTextForStudent color="white">
-              {userName}
-            </StyledTextForStudent>
+            <Tooltip title={userName}>
+              <StyledTextForStudent color="white">
+                {userName}
+              </StyledTextForStudent>
+            </Tooltip>
           </FlexContainer>
         </StyledHeaderTitle>
         <HeaderMainMenu style={{ background: header2.background }}>

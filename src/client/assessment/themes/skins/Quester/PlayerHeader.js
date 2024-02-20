@@ -179,9 +179,11 @@ const PlayerHeader = ({
           <RightContent>
             <FlexContainer alignItems="center">
               <IconProfileCircle isBgDark />
-              <StyledTextForStudent color="white">
-                {userName}
-              </StyledTextForStudent>
+              <Tooltip title={userName}>
+                <StyledTextForStudent color="white">
+                  {userName}
+                </StyledTextForStudent>
+              </Tooltip>
             </FlexContainer>
             <EduIf
               condition={isImmersiveReaderEnabled(

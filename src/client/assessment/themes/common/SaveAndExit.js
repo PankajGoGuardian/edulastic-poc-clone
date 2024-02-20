@@ -172,7 +172,11 @@ const SaveAndExit = ({
       {!isIOS && (
         <FlexContainer alignItems="center">
           <IconProfileCircle isBgDark style={{ marginRight: '8px' }} />
-          <StyledTextForStudent color="white">{userName}</StyledTextForStudent>
+          <Tooltip title={userName}>
+            <StyledTextForStudent color="white">
+              {userName}
+            </StyledTextForStudent>
+          </Tooltip>
         </FlexContainer>
       )}
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}

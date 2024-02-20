@@ -5,6 +5,7 @@ import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
+import { formatName } from '@edulastic/constants/reportUtils/common'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
@@ -30,13 +31,15 @@ export const getDefaultSubjectSelector = createSelector(
   (state) => state.user.orgData.selectedSubject || ''
 )
 
-export const getUserNameSelector = createSelector(stateSelector, (state) =>
-  state.user
-    ? `${state.user.firstName ? state.user.firstName : ''} ${
-        state.user.lastName ? state.user.lastName : ''
-      }`
-    : 'Anonymous'
-)
+export const getUserNameSelector = createSelector(stateSelector, (state) => {
+  let name = ''
+  if (state.user) {
+    name = formatName([state.user.firstName, '', state.user.lastName], {
+      lastNameFirst: false,
+    })
+  }
+  return name || 'Anonymous'
+})
 
 export const getUserFullNameSelector = createSelector(
   stateSelector,

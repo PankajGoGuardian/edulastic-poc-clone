@@ -191,7 +191,9 @@ const PlayerHeader = ({
           <FlexContainer>
             <FlexContainer alignItems="center">
               <IconProfileCircle />
-              <StyledTextForStudent>{userName}</StyledTextForStudent>
+              <Tooltip title={userName}>
+                <StyledTextForStudent>{userName}</StyledTextForStudent>
+              </Tooltip>
             </FlexContainer>
             <EduIf
               condition={isImmersiveReaderEnabled(

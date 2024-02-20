@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Icon, Menu } from 'antd'
+import { Icon, Menu, Tooltip } from 'antd'
 import { IconUser } from '@edulastic/icons'
 import { withKeyboard } from '@edulastic/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -100,7 +100,10 @@ const SettingMenu = ({
     >
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />
-        {userName} <Icon type="down" />
+        <Tooltip title={userName} placement="left">
+          {userName}{' '}
+        </Tooltip>
+        <Icon type="down" />
       </StyledButton>
     </StyledDropdown>
   )

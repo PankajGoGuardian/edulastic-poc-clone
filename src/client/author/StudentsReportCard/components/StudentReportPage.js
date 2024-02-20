@@ -1,5 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useLayoutEffectDebounced } from '@edulastic/common'
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { connect } from 'react-redux'
 import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -51,6 +56,7 @@ const StudentReportPage = ({
   index,
   interestedCurriculums,
   audit,
+  allLoaded,
 }) => {
   const performanceRef = useRef()
   const mainContainerRef = useRef()
@@ -67,54 +73,50 @@ const StudentReportPage = ({
     })
   }, [testActivity.studentId])
 
-  useLayoutEffectDebounced(
-    () => {
-      if (
-        studentResponse.byStudentId[testActivity.studentId] &&
-        !dimensionsSetRef.current
-      ) {
-        setTimeout(() => {
-          dimensionsSetRef.current = true
-          setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
-          // get questions table row height
-          const questionsElm =
-            document
-              .getElementById(`report-${testActivity.studentId}`)
-              ?.querySelectorAll(
-                '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
-              ) || []
-          const questionsDims = {}
-          questionsElm.forEach((elm, i) => {
-            questionsDims[i] = elm.clientHeight
-          })
-          if (!isEmpty(questionsDims)) {
-            setQuestionTableDims(questionsDims)
-          }
-          // get standard table row height
-          const standardELms =
-            document
-              .getElementById(`report-${testActivity.studentId}`)
-              ?.querySelectorAll(
-                '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
-              ) || []
-          const standardDims = {}
-          standardELms.forEach((elm, i) => {
-            standardDims[i] = elm.clientHeight
-          })
-          if (!isEmpty(standardDims)) {
-            setStandardTableDims(standardDims)
-          }
-        })
+  useLayoutEffect(() => {
+    if (
+      studentResponse.byStudentId[testActivity.studentId] &&
+      !dimensionsSetRef.current &&
+      allLoaded
+    ) {
+      dimensionsSetRef.current = true
+      setPerformanceBlockHeight(performanceRef.current?.clientHeight || 0)
+      // get questions table row height
+      const questionsElm =
+        document
+          .getElementById(`report-${testActivity.studentId}`)
+          ?.querySelectorAll(
+            '.student-report-card-question-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const questionsDims = {}
+      questionsElm.forEach((elm, i) => {
+        questionsDims[i] = elm.clientHeight
+      })
+      if (!isEmpty(questionsDims)) {
+        setQuestionTableDims(questionsDims)
       }
-    },
-    [
-      studentResponse,
-      author_classboard_testActivity,
-      testActivity,
-      mainContainerRef.current,
-    ],
-    2000
-  )
+      // get standard table row height
+      const standardELms =
+        document
+          .getElementById(`report-${testActivity.studentId}`)
+          ?.querySelectorAll(
+            '.student-report-card-standard-table-container .ant-table-body > table > tbody > tr'
+          ) || []
+      const standardDims = {}
+      standardELms.forEach((elm, i) => {
+        standardDims[i] = elm.clientHeight
+      })
+      if (!isEmpty(standardDims)) {
+        setStandardTableDims(standardDims)
+      }
+    }
+  }, [
+    studentResponse,
+    author_classboard_testActivity,
+    testActivity,
+    mainContainerRef.current,
+    allLoaded,
+  ])
 
   const currentStudentResponse = {
     data: studentResponse.byStudentId[testActivity.studentId],

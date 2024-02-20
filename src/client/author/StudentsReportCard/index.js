@@ -88,6 +88,7 @@ const StudentsReportCard = ({
               index={index}
               setLoaded={setLoadedCb}
               audit={audit}
+              allLoaded={allLoaded}
             />
           ) : null
         )}

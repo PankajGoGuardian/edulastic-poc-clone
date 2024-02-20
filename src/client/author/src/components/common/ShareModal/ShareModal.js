@@ -36,7 +36,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { getFullNameFromAsString } from '../../../../../common/utils/helpers'
+import {
+  getFullNameFromAsString,
+  isPearOrEdulasticText,
+} from '../../../../../common/utils/helpers'
 import { isFeatureAccessible } from '../../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../../student/Login/ducks'
 import {
@@ -550,7 +553,7 @@ class ShareModal extends React.Component {
       (d) => d.districtId === districtId
     )
     const isDA = userRole === roleuser.DISTRICT_ADMIN
-    let sharedTypeMessage = 'The entire Edulastic Community'
+    let sharedTypeMessage = `The entire ${isPearOrEdulasticText} Community`
     if (sharedType === 'DISTRICT')
       sharedTypeMessage = `Anyone in ${districtName}`
     else if (sharedType === 'SCHOOL')

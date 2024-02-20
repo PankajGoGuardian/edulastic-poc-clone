@@ -249,6 +249,9 @@ export const StyledEduButton = styled(EduButton)`
     }
   }
 `
+// work around to enable tooltip over disable buttons
+// https://github.com/ant-design/ant-design/issues/9581#issuecomment-374113785
+StyledEduButton.__ANT_BUTTON = true
 
 export const DropDownContainer = styled.div`
   .dropdown-container {

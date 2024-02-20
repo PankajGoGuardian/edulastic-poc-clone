@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
 import qs from 'qs'
 import { get, pickBy, isEmpty, reject, mapValues } from 'lodash'
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, Tooltip } from 'antd'
 
 import { IconFilter } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
@@ -433,6 +433,9 @@ const WholeLearnerReportFilters = ({
     }
     return <ApplyButton />
   }
+  const testTermIds = convertItemToArray(filters.testTermIds)
+  const testsNotSelectedForMultiTestTerms =
+    testTermIds.length > 1 && !testUniqIds.length
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -774,15 +777,26 @@ const WholeLearnerReportFilters = ({
             />
           </StyledDropDownContainer>
           {filters.showApply && (
-            <StyledEduButton
-              btnType="primary"
-              data-testid="applyRowFilter"
-              data-cy="applyRowFilter"
-              disabled={loadingFiltersData}
-              onClick={() => onGoClick()}
+            <Tooltip
+              placement="left"
+              title={
+                testsNotSelectedForMultiTestTerms
+                  ? `Please select a test to activate 'Apply' filter.`
+                  : ''
+              }
             >
-              APPLY
-            </StyledEduButton>
+              <StyledEduButton
+                btnType="primary"
+                data-testid="applyRowFilter"
+                data-cy="applyRowFilter"
+                disabled={
+                  loadingFiltersData || testsNotSelectedForMultiTestTerms
+                }
+                onClick={() => onGoClick()}
+              >
+                APPLY
+              </StyledEduButton>
+            </Tooltip>
           )}
         </SecondaryFilterRow>
       </Col>

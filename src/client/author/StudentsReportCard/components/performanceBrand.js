@@ -2,14 +2,14 @@ import React from 'react'
 import Moment from 'moment'
 import { Row, Col } from 'antd'
 import { round } from 'lodash'
+import IconPearAssessmentLogo from '@edulastic/icons/src/IconPearAssessmentLogo'
 import { StyledCard } from '../../Reports/common/styled'
 import {
   PerformanceBrandWrapper,
-  StyledTitle,
   Container,
-  Color,
   StyledPerformancePercent,
   PerformanceTitle,
+  LogoContainer,
 } from './styles'
 
 const PerformanceBrand = (props) => {
@@ -67,14 +67,10 @@ const PerformanceBrand = (props) => {
     <div ref={props.performanceRef} className={className}>
       <PerformanceBrandWrapper bordered={false}>
         <Row className="top-container" type="flex" justify="space-between">
-          <div>
-            <StyledTitle>
-              <b>
-                <Color>Edu</Color>
-              </b>
-              lastic
-            </StyledTitle>
-          </div>
+          <LogoContainer>
+            <IconPearAssessmentLogo height="45" width="200" />
+          </LogoContainer>
+
           <div data-cy="report-test-name" className="test-name">
             <p>{testData.title}</p>
           </div>

@@ -1,12 +1,13 @@
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { Icon as AntIcon } from 'antd'
-import { OnDarkBgLogo } from '@edulastic/common'
+import IconPearAssessmentFormerlyEdulastic from '@edulastic/icons/src/IconPearAssessmentFormerlyEdulastic'
 
-export const EduLogo = styled(OnDarkBgLogo)`
+export const EduLogo = styled(IconPearAssessmentFormerlyEdulastic)`
   position: fixed;
   top: 20px;
-  left: 20px;
+  left: 0px;
+  min-width: 200px;
 `
 
 export const StyledSignOut = styled.div`

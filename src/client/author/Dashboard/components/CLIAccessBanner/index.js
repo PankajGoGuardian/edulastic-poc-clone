@@ -4,6 +4,7 @@ import { Dropdown, Menu } from 'antd'
 import { CopyRight } from '@edulastic/common'
 import Modal from 'react-responsive-modal'
 import { get } from 'lodash'
+import { roleuser, signUpState } from '@edulastic/constants'
 import { logoutAction } from '../../../src/actions/auth'
 import CLILogo from '../../assets/svgs/cli-logo.svg'
 import {
@@ -20,7 +21,6 @@ import {
 } from './styled'
 import { setShowWelcomePopupAction } from '../../ducks'
 import { getUser } from '../../../src/selectors/user'
-import { roleuser, signUpState } from '@edulastic/constants'
 import { isPearDomain } from '../../../../../utils/pear'
 import {
   edulasticText,
@@ -73,7 +73,7 @@ const CLIAccessBanner = ({
         },
       }}
     >
-      <EduLogo />
+      <EduLogo height="30" width="200" />
       <StyledSignOut>
         <Dropdown
           overlay={menu}

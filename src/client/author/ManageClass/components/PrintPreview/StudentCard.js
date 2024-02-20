@@ -1,8 +1,15 @@
 import React from 'react'
 import { white } from '@edulastic/colors'
 import PropTypes from 'prop-types'
-import Title from './Title'
-import { StyledCard, BoldText, ParaP, StudnetName, UserInfo } from './styled'
+import IconPearAssessmentLogo from '@edulastic/icons/src/IconPearAssessmentLogo'
+import {
+  StyledCard,
+  BoldText,
+  ParaP,
+  StudnetName,
+  UserInfo,
+  PrintLogoContainer,
+} from './styled'
 
 const StudentCard = ({
   student: { firstName, lastName, email, username },
@@ -13,7 +20,9 @@ const StudentCard = ({
 
   return (
     <StyledCard>
-      <Title bgColor={white} align="center" />
+      <PrintLogoContainer bgColor={white} align="center">
+        <IconPearAssessmentLogo height="45" width="200" />
+      </PrintLogoContainer>
       <ParaP>
         <BoldText>Student Name</BoldText>
       </ParaP>

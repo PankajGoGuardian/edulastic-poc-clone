@@ -303,3 +303,8 @@ export const StyledLegendContainer = styled.div`
     }
   }
 `
+
+export const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+`

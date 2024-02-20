@@ -128,3 +128,10 @@ export const StudnetName = styled.span`
   padding: 4px 8px;
   border-radius: 15px;
 `
+export const PrintLogoContainer = styled.div`
+  display: flex;
+  justify-content: ${({ align }) => align || 'flex-end'}; flex-end;
+  align-items: center;
+  padding: 15px 25px;
+  background: ${({ bgColor }) => bgColor || '#f3f3f4'};
+`

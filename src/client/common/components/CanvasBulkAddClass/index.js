@@ -1,9 +1,4 @@
-import {
-  OnWhiteBgLogo,
-  notification,
-  EduButton,
-  CheckboxLabel,
-} from '@edulastic/common'
+import { notification, EduButton, CheckboxLabel } from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
 import { withNamespaces } from 'react-i18next'
 import { Select } from 'antd'
@@ -12,7 +7,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { Tooltip } from '../../utils/helpers'
+import IconPearAssessmentLogo from '@edulastic/icons/src/IconPearAssessmentLogo'
+import { Tooltip, isPearOrEdulasticText } from '../../utils/helpers'
 import { receiveSearchCourseAction } from '../../../author/Courses/ducks'
 import { getThumbnail } from '../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade'
 import { getDictCurriculumsAction } from '../../../author/src/actions/dictionaries'
@@ -428,7 +424,7 @@ const CanvasBulkAddClass = ({
   return (
     <Container fromManageClass={fromManageClass}>
       <LogoWrapper>
-        <OnWhiteBgLogo />
+        <IconPearAssessmentLogo width="auto" height="30" />
       </LogoWrapper>
       <LogoWrapper>
         <IconCanvasBook height="75px" width="75px" />
@@ -439,7 +435,7 @@ const CanvasBulkAddClass = ({
       <div>
         <p>
           Following classes are imported from your canvas account. Please select
-          Course to create class in Edulastic.
+          Course to create class in {isPearOrEdulasticText}.
         </p>
       </div>
       <CheckboxLabel

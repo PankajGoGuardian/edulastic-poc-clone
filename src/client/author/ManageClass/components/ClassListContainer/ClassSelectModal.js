@@ -15,6 +15,7 @@ import {
 
 // constants
 import selectsData from '../../../TestPage/components/common/selectsData'
+import { isPearOrEdulasticText } from '../../../../common/utils/helpers'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -417,8 +418,9 @@ const ClassSelectModal = ({
           </p>
           <p>
             Please enter/update class name, grade and subject to import and
-            create classes in Edulastic. Once import is successful, Students
-            accounts will be automatically created in Edulastic.
+            create classes in {isPearOrEdulasticText}. Once import is
+            successful, Students accounts will be automatically created in{' '}
+            {isPearOrEdulasticText}.
           </p>
           {type === 'googleClassroom' && allowedInstitutions.length > 1 && (
             <InstitutionSelection />

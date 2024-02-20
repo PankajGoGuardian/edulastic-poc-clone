@@ -7,7 +7,8 @@ import qs from 'qs'
 import { connect } from 'react-redux'
 import { get, isInteger, floor, isEmpty, orderBy, toUpper } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
-import Title from './Title'
+import IconPearAssessmentLogo from '@edulastic/icons/src/IconPearAssessmentLogo'
+
 import StudentCard from './StudentCard'
 import {
   PrintPreviewBack,
@@ -19,6 +20,7 @@ import {
   ClassCode,
   Description,
   CardContainer,
+  PrintLogoContainer,
 } from './styled'
 
 import { fetchStudentsByIdAction } from '../../ducks'
@@ -97,7 +99,9 @@ class PrintPreviewClass extends React.Component {
         <PrintActionWrapper />
         <PrintPreviewBack>
           <PrintPreviewContainer height="auto">
-            <Title />
+            <PrintLogoContainer>
+              <IconPearAssessmentLogo height="45" width="200" />
+            </PrintLogoContainer>
             <ParagraphDiv>
               <BoldText>{`Congratulations ${teacherName} - your class roster is now ready for class ${className}.`}</BoldText>
             </ParagraphDiv>

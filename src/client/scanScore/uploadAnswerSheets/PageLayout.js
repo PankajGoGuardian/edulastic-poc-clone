@@ -9,7 +9,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
-import { IconLogoCompact, IconSettings } from '@edulastic/icons'
+import { IconPearAssessLogoCompact, IconSettings } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { selector } from './ducks'
@@ -52,7 +52,7 @@ const PageLayout = ({
 }) => (
   <Layout>
     <StyledHeader>
-      <IconLogoCompact className="logo" />
+      <IconPearAssessLogoCompact className="logo" height="18" />
       <h2 className="title">SnapScore</h2>
       <h1 className="assignmentTitle">{assignmentTitle}</h1>
       <h3 className="classTitle">{classTitle}</h3>

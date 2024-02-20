@@ -54,7 +54,7 @@ const AcademicRisk = ({ internalAssessmentRisk, externalAssessmentRisk }) => {
             <FlexContainer justifyContent="space-between">
               <AcademicRiskListContainer $marginRight="20px" $width="40%">
                 <Label $fontSize="14px" $margin="0px 0 5px 0">
-                  EDULASTIC
+                  PEAR ASSESSMENT
                 </Label>
                 <TestRiskScoreList riskData={internalAssessmentRisk} />
               </AcademicRiskListContainer>

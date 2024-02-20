@@ -669,7 +669,7 @@ export const getTestRiskTableData = (riskData) => {
     const { type, isExternalTest } = testRisk
     const subjectRiskTexts = getSubjectRiskText(testRisk, 'Avg Score - ')
     const testTypeTitle = !isExternalTest
-      ? `EDULASTIC - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
+      ? `PEAR ASSESSMENT - ${TEST_TYPE_LABELS[type].split(' ')[0]}`
       : type.replace(EXTERNAL_TEST_KEY_SEPARATOR, ' - ')
     return {
       ...testRisk,

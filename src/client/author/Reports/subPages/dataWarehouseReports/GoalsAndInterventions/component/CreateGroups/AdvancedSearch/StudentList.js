@@ -75,7 +75,7 @@ const StudentList = ({ studentsData, isStudentLoading, handleQuickFilter }) => {
       align: 'center',
     },
     {
-      title: 'Avg Score (Edulastic)',
+      title: 'Avg Score (Pear Assessment)',
       dataIndex: 'avgScore',
       key: 'score',
       sorter: true,

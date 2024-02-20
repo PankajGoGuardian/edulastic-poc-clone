@@ -240,8 +240,8 @@ const MasteryReportSection = ({
         separator={<Spacer />}
       >
         Understand how the student is performing across domains and standards
-        for Edulastic Tests &nbsp;
-        <Tooltip title="Standard mastery data is currently supported for Edulastic Tests only.">
+        for Pear Assessment Tests &nbsp;
+        <Tooltip title="Standard mastery data is currently supported for Pear Assessment Tests only.">
           <IconInfo />
         </Tooltip>
       </SectionLabel>

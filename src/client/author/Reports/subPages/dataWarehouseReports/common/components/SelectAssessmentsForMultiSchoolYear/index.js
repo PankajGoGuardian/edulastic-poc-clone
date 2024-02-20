@@ -89,9 +89,10 @@ const SelectAssessmentsForMultiSchoolYear = ({
   // build dropdown data
 
   const termsMap = keyBy(schoolYears, 'key')
-  const dropdownData = useMemo(() => {
-    const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
-    return tests.map((test) => {
+  const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
+
+  const dropDownDataMapper = (_tests) => {
+    return _tests.map((test) => {
       const testTermId = test.termId ?? termId
       const term = termsMap[testTermId]
       const testTermName = test.termName || term.title || ''
@@ -103,6 +104,9 @@ const SelectAssessmentsForMultiSchoolYear = ({
         disabled: true,
       }
     })
+  }
+  const dropdownData = useMemo(() => {
+    return dropDownDataMapper(tests)
   }, [testList, multiSchoolYearTestList])
 
   const query = useMemo(() => {
@@ -204,14 +208,18 @@ const SelectAssessmentsForMultiSchoolYear = ({
     }
   }, [isDisable])
 
-  // Reset when transitioning from multi to single school year and vice versa
+  // Filtering the selected tests from tests
   useEffect(() => {
+    const testsWithUniqId = dropDownDataMapper(tests)
+    const filteredTests = testsWithUniqId.filter((test) => {
+      return selectedTestIds.includes(test.key)
+    })
     if (firstRender.current) {
       firstRender.current = false
       return
     }
-    selectCB([])
-  }, [isMultiSchoolYear])
+    selectCB(filteredTests)
+  }, [tests])
 
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {

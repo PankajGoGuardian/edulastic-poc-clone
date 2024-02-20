@@ -21,11 +21,11 @@ export const SHARE_TYPES_VALUE_TO_KEY_MAP = {
 }
 export const SHARE_TYPES_DISPLAY_TEXT = {
   EVERYONE: 'Everyone',
-  INDIVIDUAL: 'Selected People',
+  INDIVIDUAL: 'Selected Users',
   ME: 'Only to me',
 }
 export const SHARE_TYPES_INFO_TEXT = {
   EVERYONE: 'This feedback will be visible to all teachers and admins',
-  INDIVIDUAL: 'This feedback will be visible to entered users only',
+  INDIVIDUAL: 'This feedback will be visible to selected users only',
   ME: 'This feedback will be visible to only you',
 }

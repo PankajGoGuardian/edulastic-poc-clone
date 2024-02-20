@@ -1,7 +1,7 @@
 import { feedbackApi } from '@edulastic/api'
 import { EduButton, notification } from '@edulastic/common'
 import { IconInfo, IconPencilEdit, IconTrash } from '@edulastic/icons'
-import { formatDate } from '@edulastic/constants/reportUtils/common'
+import { formatDate, formatName } from '@edulastic/constants/reportUtils/common'
 import { Row, Spin, Tooltip, Typography } from 'antd'
 import { get, isEmpty, omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -10,12 +10,12 @@ import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faUnlockAlt } from '@fortawesome/free-solid-svg-icons'
+import { ROLE_LABEL } from '@edulastic/constants/const/roleType'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import FeedbackModal from '../../../../../Student/components/StudentTable/FeedbackModal'
 import DeleteFeedBackModal from './DeleteFeedBackModal'
 import { StyledTableButton } from '../../../../../../assessment/widgets/Coding/styled'
 import { styledTable } from '../common/styled'
-import { getFormattedName } from '../../../../../Gradebook/transformers'
 
 const getFormattedData = (arr) => {
   return arr.length > 1
@@ -31,6 +31,7 @@ const FeedbacksTable = (props) => {
     onCsvConvert,
     isCsvDownloading,
     studentData,
+    isSharedReport,
   } = props
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletedFeedback, setDeleteFeedback] = useState(null)
@@ -83,7 +84,7 @@ const FeedbacksTable = (props) => {
     setIsEditFlow(true)
     setFeedbackStudent({
       ...record.givenTo,
-      classId: record.class._id,
+      classId: record.class?._id,
       ...record,
     })
   }
@@ -92,7 +93,6 @@ const FeedbacksTable = (props) => {
     setFeedbackStudent({
       ...studentData,
       _id: studentId,
-      classId: studentData.groupId,
     })
   }
 
@@ -121,13 +121,16 @@ const FeedbacksTable = (props) => {
       align: 'left',
       width: 150,
       render: (value) =>
-        getFormattedName(value.firstName, value.middleName, value.lastName),
+        formatName([value.firstName, '', value.lastName], {
+          lastNameFirst: false,
+        }) || 'Anonymous',
     },
     {
       title: 'ROLE',
       dataIndex: 'givenBy.role',
       align: 'left',
       width: 100,
+      render: (value) => ROLE_LABEL[value],
     },
     {
       title: 'CLASS',
@@ -135,7 +138,7 @@ const FeedbacksTable = (props) => {
       align: 'left',
       width: 150,
       render: (value) => {
-        return value.name
+        return value?.name || '-'
       },
     },
     {
@@ -224,10 +227,12 @@ const FeedbacksTable = (props) => {
         <Typography.Title style={{ margin: 0 }} level={4}>
           Narrative Feedback
         </Typography.Title>
-        <EduButton onClick={handleAdd}>
-          <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
-          Add Feedback
-        </EduButton>
+        {!isSharedReport && (
+          <EduButton onClick={handleAdd}>
+            <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
+            Add Feedback
+          </EduButton>
+        )}
       </Row>
       <Spin spinning={loading}>
         <CsvTable
@@ -238,7 +243,7 @@ const FeedbacksTable = (props) => {
           isCsvDownloading={isCsvDownloading}
           pagination={{
             hideOnSinglePage: true,
-            pageSize: 5,
+            pageSize: 25,
           }}
         />
         {!isEmpty(feedbackStudent) && (
@@ -248,7 +253,9 @@ const FeedbacksTable = (props) => {
             isEditFlow={isEditFlow}
             onClose={handleClose}
             setData={setData}
+            termId={termId}
             data={data}
+            isWLRReport
           />
         )}
       </Spin>

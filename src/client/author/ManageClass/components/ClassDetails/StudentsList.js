@@ -11,6 +11,8 @@ import { MdRateReview } from 'react-icons/md'
 import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
 import { lightBlue3 } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
+import { GROUP_TYPE } from '@edulastic/constants/const/report'
+import { roleuser } from '@edulastic/constants'
 import {
   NoStudents,
   NoConentDesc,
@@ -88,6 +90,12 @@ const StudentsList = ({
     groupId,
     groupList,
   })
+
+  const showAddFeedbackBtn = [
+    currentClass.type === GROUP_TYPE.CLASS,
+    cuRole === roleuser.TEACHER,
+    dataWarehouseReports,
+  ].every((o) => !!o)
 
   const columns = [
     {
@@ -186,7 +194,7 @@ const StudentsList = ({
               />
             </Tooltip>
           ) : null}
-          {cuRole === 'teacher' && dataWarehouseReports ? (
+          {showAddFeedbackBtn ? (
             <Tooltip placement="topRight" title="Add Feedback">
               <MdRateReview onClick={() => setFeedbackStudentId(_id)} />
             </Tooltip>
@@ -246,6 +254,7 @@ const StudentsList = ({
           ...feedbackStudent,
           classId: currentClass._id,
         }}
+        termId={currentClass.termId}
         onClose={() => setFeedbackStudentId(null)}
       />
     </div>

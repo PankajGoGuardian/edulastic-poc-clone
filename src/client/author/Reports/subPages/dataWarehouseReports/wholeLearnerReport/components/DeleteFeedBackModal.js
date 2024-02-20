@@ -63,7 +63,7 @@ const DeleteFeedBackModal = (props) => {
     >
       <TitleWrapper>
         <ModalTitle>Are you sure you want to delete this feedback?</ModalTitle>
-        <p>it will be deleted permanently and cannot be recovered</p>
+        <p>It will be deleted permanently and cannot be recovered.</p>
       </TitleWrapper>
     </StyledConfirmationModal>
   )

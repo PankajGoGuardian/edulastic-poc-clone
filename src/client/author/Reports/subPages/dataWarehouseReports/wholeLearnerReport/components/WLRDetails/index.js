@@ -85,6 +85,22 @@ const WLRDetails = ({
     (testTermIdsArr.length === 1 && filters.termId !== testTermIdsArr[0]) ||
     isMultiSchoolYear
 
+  const onCsvConvert = (data) => {
+    const splittedData = data.split('\n')
+    const finalData = splittedData
+      .map((row) =>
+        row
+          .split(',')
+          .slice(0, row.split(',').length - 2)
+          .join(',')
+      )
+      .join('\n')
+    downloadCSV(
+      `Whole Learner Report - ${studentName} - FeedBacks.csv`,
+      finalData
+    )
+  }
+
   const tableTabs = [
     {
       key: TABLE_TABS.PERFORMANCE.key,
@@ -171,16 +187,12 @@ const WLRDetails = ({
         <FeedbacksTable
           studentId={settings.selectedStudent.key}
           termId={settings.requestFilters.termId}
-          onCsvConvert={(data) => {
-            downloadCSV(
-              `Whole Learner Report - ${studentName} - FeedBacks.csv`,
-              data
-            )
-          }}
+          onCsvConvert={onCsvConvert}
           isCsvDownloading={
             tableTabKey === TABLE_TABS.FEEDBACK.key && isCsvDownloading
           }
           studentData={settings.selectedStudentInformation}
+          isSharedReport={isSharedReport}
         />
       ),
     },

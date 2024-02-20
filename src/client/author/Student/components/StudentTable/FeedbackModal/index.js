@@ -36,6 +36,7 @@ import {
   SHARE_TYPES_DISPLAY_TEXT,
   SHARE_TYPES_INFO_TEXT,
 } from './constants'
+import { getCurrentTerm } from '../../../../src/selectors/user'
 
 const { Option } = Select
 
@@ -49,6 +50,9 @@ const FeedbackModal = (props) => {
     isEditFlow = false,
     setData,
     data: oldData,
+    termId,
+    defaultTermId,
+    isWLRReport = false,
   } = props
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -66,11 +70,10 @@ const FeedbackModal = (props) => {
 
   const student = useMemo(() => {
     if (isEmpty(feedbackStudent)) return null
-    const fullName = formatName([
-      feedbackStudent.firstName,
-      feedbackStudent.middleName,
-      feedbackStudent.lastName,
-    ])
+    const fullName = formatName(
+      [feedbackStudent.firstName, '', feedbackStudent.lastName],
+      { lastNameFirst: false }
+    )
     return {
       ...feedbackStudent,
       name: fullName || '-',
@@ -100,9 +103,11 @@ const FeedbackModal = (props) => {
           type,
           feedback,
         }
+        if (feedbackStudent.classId) {
+          Object.assign(data, { classId: feedbackStudent.classId })
+        }
         if (!isEditFlow) {
           Object.assign(data, {
-            classId: feedbackStudent.classId,
             givenBy: {
               _id: currentUser._id,
               role: currentUser.role,
@@ -117,6 +122,7 @@ const FeedbackModal = (props) => {
               lastName: feedbackStudent.lastName,
               _id: feedbackStudentId,
             },
+            termId,
           })
         } else {
           setData(
@@ -225,6 +231,8 @@ const FeedbackModal = (props) => {
       ? 'Please enter 3 or more characters'
       : 'No result found'
 
+  const showFeedbackHistoryLink = !isEditFlow && !isWLRReport
+
   return (
     <StyledModal
       visible={!!feedbackStudentId}
@@ -241,9 +249,11 @@ const FeedbackModal = (props) => {
       title={
         <ModalTitle>
           <div>{isEditFlow ? 'Edit' : 'Add'} Feedback</div>
-          {!isEditFlow && (
+          {showFeedbackHistoryLink && (
             <StyledAnchor
-              href={`/author/reports/whole-learner-report/student/${feedbackStudentId}?subActiveKey=feedback`}
+              href={`/author/reports/whole-learner-report/student/${feedbackStudentId}?subActiveKey=feedback&termId=${
+                termId || defaultTermId
+              }`}
             >
               <FontAwesomeIcon icon={faEnvelopeOpenText} /> Feedback History{' '}
             </StyledAnchor>
@@ -265,6 +275,7 @@ const FeedbackModal = (props) => {
             rules: [
               {
                 required: true,
+                message: 'Type is required',
               },
             ],
             ...(isEditFlow ? { initialValue: feedbackStudent.type } : {}),
@@ -407,6 +418,7 @@ const enhance = compose(
   Form.create(),
   connect((state) => ({
     currentUser: getUserDetails(state),
+    defaultTermId: getCurrentTerm(state),
   }))
 )
 

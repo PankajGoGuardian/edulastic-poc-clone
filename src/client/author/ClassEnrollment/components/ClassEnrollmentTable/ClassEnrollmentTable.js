@@ -2,7 +2,6 @@ import { themeColor } from '@edulastic/colors'
 import {
   CheckboxLabel,
   EduButton,
-  FlexContainer,
   notification,
   TypeToConfirmModal,
 } from '@edulastic/common'
@@ -20,7 +19,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import withRouter from 'react-router/withRouter'
 import { compose } from 'redux'
-import { MdRateReview } from 'react-icons/md'
 import {
   StyledActionDropDown,
   StyledClassName,
@@ -74,7 +72,6 @@ import {
 import { AddNewUserModal } from '../Common/AddNewUser'
 import { StyledTable } from './styled'
 import ResetPwd from '../../../ManageClass/components/ClassDetails/ResetPwd/ResetPwd'
-import FeedbackModal from '../../../Student/components/StudentTable/FeedbackModal'
 
 const { Option } = Select
 
@@ -102,7 +99,6 @@ class ClassEnrollmentTable extends React.Component {
       refineButtonActive: false,
       showAddToGroupModal: false,
       showActive: true,
-      feedbackStudent: {},
     }
   }
 
@@ -350,12 +346,6 @@ class ClassEnrollmentTable extends React.Component {
     }
   }
 
-  setFeedbackStudent = (student) => {
-    this.setState({
-      feedbackStudent: student,
-    })
-  }
-
   setPageNo = (page) => {
     this.setState({ currentPage: page }, this.loadClassEnrollmentList)
   }
@@ -573,7 +563,6 @@ class ClassEnrollmentTable extends React.Component {
       showAddToGroupModal,
       showActive,
       resetPasswordModalVisible,
-      feedbackStudent,
     } = this.state
     const {
       fetchClassDetailsUsingCode,
@@ -679,28 +668,13 @@ class ClassEnrollmentTable extends React.Component {
       {
         dataIndex: 'id',
         render: (_, record) => (
-          <FlexContainer alignItem="center">
-            {record.role === roleuser.STUDENT ? (
-              <StyledTableButton
-                key={`${record.key}-feedback`}
-                title="Add Feedback"
-                onClick={() => {
-                  this.setFeedbackStudent(record)
-                }}
-              >
-                <MdRateReview
-                  style={{ fontSize: '17px', marginRight: '-15px' }}
-                />
-              </StyledTableButton>
-            ) : null}
-            <StyledTableButton
-              key={record.key}
-              onClick={() => this.handleDeactivateUser(record)}
-              title="Deactivate"
-            >
-              <IconTrash color={themeColor} />
-            </StyledTableButton>
-          </FlexContainer>
+          <StyledTableButton
+            key={record.key}
+            onClick={() => this.handleDeactivateUser(record)}
+            title="Deactivate"
+          >
+            <IconTrash color={themeColor} />
+          </StyledTableButton>
         ),
         textWrap: 'word-break',
         width: 100,
@@ -993,11 +967,6 @@ class ClassEnrollmentTable extends React.Component {
           resetPasswordUserIds={selectedUsersInfo?.map(
             (info) => info?.user?._id
           )}
-        />
-        <FeedbackModal
-          feedbackStudent={feedbackStudent}
-          feedbackStudentId={feedbackStudent.id}
-          onClose={() => this.setFeedbackStudent({})}
         />
       </MainContainer>
     )

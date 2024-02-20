@@ -172,19 +172,20 @@ const WholeLearnerReportFilters = ({
   }, [isMultiSchoolYear, testUniqIds])
 
   useEffect(() => {
-    const q = { districtGroupId: districtGroup?._id }
+    const q = {
+      districtGroupId: districtGroup?._id,
+      externalTestTypesRequired: true,
+      externalTestsRequired: true,
+    }
     if (reportId) {
       Object.assign(q, { reportId })
-      fetchFiltersDataRequest(q)
     } else if (urlStudentId && (search.termId || search.subActiveKey)) {
       Object.assign(q, {
-        termId: search.termId|| defaultTermId,
+        termId: search.termId || defaultTermId,
         studentId: urlStudentId,
-        externalTestTypesRequired: true,
-        externalTestsRequired: !isMultiSchoolYear,
       })
-      fetchFiltersDataRequest(q)
     }
+    fetchFiltersDataRequest(q)
   }, [])
 
   useFiltersFromUrl({
@@ -289,10 +290,11 @@ const WholeLearnerReportFilters = ({
 
       // BUG updates the student details(student-profile) even before `Apply` is clicked.
       fetchFiltersDataRequest({
+        districtGroupId: districtGroup?._id,
         termId: filters.termId,
         studentId: selected.key,
         externalTestTypesRequired: true,
-        externalTestsRequired: !isMultiSchoolYear,
+        externalTestsRequired: true,
       })
     } else {
       delete _filterTagsData.student

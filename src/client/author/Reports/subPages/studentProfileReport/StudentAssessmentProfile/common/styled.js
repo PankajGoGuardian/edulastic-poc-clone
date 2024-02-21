@@ -83,6 +83,7 @@ export const FeedbackStyledModal = styled(Modal)`
 
 export const AssessmentTitle = styled.span`
   color: ${themeColor};
+  cursor: pointer;
 `
 
 export const ActivityModalContainer = styled.div`
@@ -109,6 +110,7 @@ export const ActivityHeaderLeft = styled.div`
   flex-direction: horizontal;
   justify-content: flex-start;
   align-items: center;
+  cursor: pointer;
 `
 export const ActivityHeaderRight = styled.div`
   display: flex;

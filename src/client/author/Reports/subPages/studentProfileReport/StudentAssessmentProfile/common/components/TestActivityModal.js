@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import { Col, Input, Row } from 'antd'
+import { Col, Input, Row, Tooltip } from 'antd'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { questionType, testTypes } from '@edulastic/constants'
 import { keyBy, get, isEqual } from 'lodash'
+import { withNamespaces } from 'react-i18next'
 import {
   EduButton,
   EduElse,
@@ -97,6 +98,7 @@ const TestActivityModal = ({
   classResponse,
   filter,
   setFilter,
+  t: i18Translate,
 }) => {
   const {
     testActivity: studentTestActivity,
@@ -369,10 +371,24 @@ const TestActivityModal = ({
             </span>
           </ActivityHeaderLeft>
           <ActivityHeaderRight>
-            <ActionBtn onClick={navigateToLCB} disabled={!checkUserLCBAccess()}>
-              <IconPresentation height="18.3px" width="18.3px" />
-              <span data-cy="goToLCB">Go to Live Class Board</span>
-            </ActionBtn>
+            <Tooltip
+              title={
+                checkUserLCBAccess()
+                  ? null
+                  : i18Translate('common.teacherAssignmentRestricted')
+              }
+              placement="bottom"
+            >
+              <div>
+                <ActionBtn
+                  onClick={navigateToLCB}
+                  disabled={!checkUserLCBAccess()}
+                >
+                  <IconPresentation height="18.3px" width="18.3px" />
+                  <span data-cy="goToLCB">Go to Live Class Board</span>
+                </ActionBtn>
+              </div>
+            </Tooltip>
             <ActionBtn onClick={closeTestPreviewModal}>
               <IconClose color={themeColor} width={16} height={16} /> close
             </ActionBtn>
@@ -441,6 +457,7 @@ const TestActivityModal = ({
           toggleShowCorrectAnswers={toggleShowCorrectAnswers}
           setShowFeedbackPopup={setShowFeedbackPopup}
           hideCorrectAnswer={hideCorrectAnswer}
+          i18Translate={i18Translate}
         />
         {classResponse.isDocBased ? (
           <DocStyledModal
@@ -572,6 +589,7 @@ const TestActivityModal = ({
 }
 
 const enhanced = compose(
+  withNamespaces('reports'),
   withRouter,
   connect(
     (state) => ({

@@ -36,6 +36,7 @@ const StudentQuestionFilters = ({
   toggleShowCorrectAnswers,
   setShowFeedbackPopup,
   hideCorrectAnswer,
+  i18Translate,
 }) => {
   const questionStatusCounts = getQuestionStatusCounts(questionActivities)
   const feedbackButtonToolTip = (
@@ -119,27 +120,35 @@ const StudentQuestionFilters = ({
             </span>
           </EduButton>
           <Tooltip
-            title={initFeedbackValue.length ? feedbackButtonToolTip : null}
+            title={
+              checkUserLCBAccess()
+                ? initFeedbackValue.length
+                  ? feedbackButtonToolTip
+                  : null
+                : i18Translate('common.teacherAssignmentRestricted')
+            }
             placement="bottom"
           >
-            <EduButton
-              data-cy="overallFeedback"
-              onClick={() => setShowFeedbackPopup(true)}
-              height="24px"
-              fontSize="9px"
-              isGhost
-              disabled={!checkUserLCBAccess()}
-            >
-              <IconFeedback color={white} height="13px" width="14px" />
-              {initFeedbackValue.length ? (
-                <span>
-                  {`${initFeedbackValue.slice(0, 30)}
+            <div>
+              <EduButton
+                data-cy="overallFeedback"
+                onClick={() => setShowFeedbackPopup(true)}
+                height="24px"
+                fontSize="9px"
+                isGhost
+                disabled={!checkUserLCBAccess()}
+              >
+                <IconFeedback color={white} height="13px" width="14px" />
+                {initFeedbackValue.length ? (
+                  <span>
+                    {`${initFeedbackValue.slice(0, 30)}
                       ${initFeedbackValue.length > 30 ? '.....' : ''}`}
-                </span>
-              ) : (
-                'GIVE OVERALL FEEDBACK'
-              )}
-            </EduButton>
+                  </span>
+                ) : (
+                  'GIVE OVERALL FEEDBACK'
+                )}
+              </EduButton>
+            </div>
           </Tooltip>
         </FlexContainer>
       </StudentButtonWrapper>

@@ -73,6 +73,8 @@ export const ActionBtn = styled.button`
   border-radius: 4px;
   cursor: pointer;
 
+  opacity: ${({ disabled }) => (disabled ? 0.3 : 1)};
+
   svg {
     margin-right: 15px;
   }

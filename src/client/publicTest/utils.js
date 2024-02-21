@@ -322,7 +322,8 @@ const redirectToAssessmentPlayer = (
   // on proceed, redirect to assessment player
   // on cancel redirect to student dashboard
   if (!resume && (timedAssignment || hasInstruction)) {
-    const preferredLanguage = accommodations?.preferredLanguage || ''
+    const preferredLanguage = accommodations?.preferredLanguage || LANGUAGE_EN
+
     return showTestInfoModal({
       pauseAllowed,
       allowedTime,

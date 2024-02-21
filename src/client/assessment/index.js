@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
 import { WithResources } from '@edulastic/common/src/HOC/withResources'
 import { notification } from '@edulastic/common'
+import { LANGUAGE_EN } from '@edulastic/constants/const/languages'
 import AppConfig from '../../app-config'
 
 // themes
@@ -145,13 +146,15 @@ const AssessmentPlayer = ({
       window.removeEventListener('beforeunload', confirmBeforeQuitting)
     }
   }, [])
+
   if (
     preview &&
     !loading &&
     !playerPreviewState.viewTestInfoSuccess &&
     isModalVisible
   ) {
-    const preferredLanguage = accommodations?.preferredLanguage || ''
+    const preferredLanguage = accommodations?.preferredLanguage || LANGUAGE_EN
+
     if (!isInfoVisible) {
       setIsInfoVisible(true)
       showTestInfoModal({

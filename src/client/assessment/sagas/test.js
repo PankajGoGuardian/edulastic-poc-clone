@@ -1022,14 +1022,7 @@ function* loadTest({ payload }) {
           multiLanguageEnabled: test.multiLanguageEnabled,
         },
       })
-      if (
-        !(
-          test.multiLanguageEnabled ||
-          test.hasInstruction ||
-          test.timedAssignment
-        ) ||
-        demo
-      ) {
+      if (!(test.hasInstruction || test.timedAssignment) || demo) {
         yield put(setShowTestInfoSuccesAction(true))
       }
     }

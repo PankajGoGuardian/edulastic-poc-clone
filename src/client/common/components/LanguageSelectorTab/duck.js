@@ -47,7 +47,8 @@ export function* languageSaga() {
 }
 
 export const languageStateSelector = (state) => state.languages
-export const getUtaPeferredLanguage = (state) => state.test.languagePreference
+export const getUtaPeferredLanguage = (state) =>
+  state.test.languagePreference || LANGUAGE_EN
 
 export const getIsMultiLanguageEnabled = (state) => {
   const assignmentById = get(state, 'studentAssignment.byId')

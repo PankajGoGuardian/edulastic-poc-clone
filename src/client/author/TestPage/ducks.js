@@ -94,8 +94,6 @@ import {
   getUserOrgId,
   currentDistrictInstitutionIds,
   getOrgGroupList,
-  isPublisherUserSelector,
-  isOrganizationDistrictSelector,
   vqQuotaForDistrictSelector,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
@@ -122,10 +120,7 @@ import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
 import selectsData from './components/common/selectsData'
 import { itemFields } from '../AssessmentCreate/components/CreateAITest/ducks/constants'
-import appConfig from '../../../app-config'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
-
-const { videoQuizDefaultCollection } = appConfig
 
 const {
   ITEM_GROUP_TYPES,
@@ -3026,41 +3021,11 @@ function* publishTestSaga({ payload }) {
         return
       }
     }
-    const {
-      collectionId,
-      collectionName,
-      collectionType,
-      collectionBucketId,
-    } = videoQuizDefaultCollection
-
-    const isPublisher = yield select(isPublisherUserSelector)
-    const isOrganization = yield select(isOrganizationDistrictSelector)
-    const newTest = produce(_test, (draft) => {
-      // for non publisher we are adding video collection to the Test
-      if (
-        draft.testCategory === testCategoryTypes.VIDEO_BASED &&
-        !isPublisher &&
-        !isOrganization
-      ) {
-        draft.collections = uniqBy(
-          [
-            ...(draft.collections || []),
-            {
-              _id: collectionId,
-              name: collectionName,
-              type: collectionType,
-              bucketIds: [collectionBucketId],
-            },
-          ],
-          (collection) => collection._id
-        )
-      }
-    })
 
     const result = yield call(
-      newTest.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
+      _test.isDocBased ? updateTestDocBasedSaga : updateTestSaga,
       {
-        payload: { id, data: newTest, assignFlow: true },
+        payload: { id, data: _test, assignFlow: true },
       }
     )
 
@@ -3092,14 +3057,14 @@ function* publishTestSaga({ payload }) {
     }
     if (assignFlow) {
       let update = {
-        timedAssignment: newTest?.timedAssignment,
-        showRubricToStudents: newTest.showRubricToStudents,
+        timedAssignment: _test?.timedAssignment,
+        showRubricToStudents: _test.showRubricToStudents,
       }
-      if (newTest?.timedAssignment) {
+      if (_test?.timedAssignment) {
         update = {
           ...update,
-          allowedTime: newTest?.allowedTime || 10 * 60 * 1000,
-          pauseAllowed: newTest?.pauseAllowed || false,
+          allowedTime: _test?.allowedTime || 10 * 60 * 1000,
+          pauseAllowed: _test?.pauseAllowed || false,
         }
       }
       /**

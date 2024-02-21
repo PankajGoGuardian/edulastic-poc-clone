@@ -15,6 +15,7 @@ import { SortableGroupItem, SortableSingleItem } from './SortableItem'
 import { InfoDiv, Text, Count, GroupCollapse } from './styled'
 import PassageConfirmationModal from '../../../PassageConfirmationModal/PassageConfirmationModal'
 import { isDynamicTestSelector } from '../../../../ducks'
+import { roundOff } from '../../../../utils'
 
 const { Panel } = Collapse
 
@@ -78,7 +79,9 @@ const rightContent = (
       >
         <InfoDiv>
           <Text>TOTAL POINTS</Text>
-          <Count>{deliverItemsCount * (itemsDefaultMaxScore || 1)}</Count>
+          <Count>
+            {roundOff(deliverItemsCount * (itemsDefaultMaxScore || 1))}
+          </Count>
         </InfoDiv>
       </EduIf>
     </>

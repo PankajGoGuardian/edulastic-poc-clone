@@ -24,7 +24,7 @@ import { getQuestions } from './ducks'
 
 const { TOP_ORDER_SKINS } = testConstants
 
-const roundOff = (number) =>
+export const roundOff = (number) =>
   number ? Number(Number(number).toFixed(2)) : number
 
 const { sectionLabelType } = questionConstants
@@ -184,7 +184,9 @@ export const createGroupSummary = (test) => {
       (isLimitedDeliveryType && deliverItemsCount) ||
       (isAutoSelect && !itemGroup.items?.length)
     ) {
-      summaryData.totalPoints = deliverItemsCount * (itemsDefaultMaxScore || 1)
+      summaryData.totalPoints = roundOff(
+        deliverItemsCount * (itemsDefaultMaxScore || 1)
+      )
       summaryData.totalItems = deliverItemsCount
       summaryData.totalQuestions = deliverItemsCount
     }

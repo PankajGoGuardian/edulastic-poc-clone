@@ -110,6 +110,7 @@ const AutoSelectScoreChangeModal = ({
           <NumberInputStyled
             showArrow
             defaultValue={itemsDefaultMaxScore}
+            min={1}
             size="large"
             placeholder="Enter score"
             margin="0px"

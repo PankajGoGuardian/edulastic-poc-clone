@@ -45,7 +45,7 @@ export default function PickItemCountWrapperContainer({
     handleChange('deliverItemsCount', parseInt(e.target.value, 10))
   }
   const handleSectionScoreChange = (e) => {
-    handleChange('itemsDefaultMaxScore', parseInt(e.target.value, 10))
+    handleChange('itemsDefaultMaxScore', parseFloat(e.target.value, 10))
   }
   return (
     <ItemCountWrapper>

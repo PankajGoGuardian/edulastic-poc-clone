@@ -339,7 +339,8 @@ const Chart = ({
       onResetClickCB={_onResetClickCB}
       margin={chartMargin}
       legendProps={chartLegendProps}
-      yDomain={[0, 100]}
+      // Set y domain to more than 100 to provide space for bar top labels if legend space is not available.
+      yDomain={isEmpty(legendPayload) ? [0, 115] : [0, 100]}
       ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
       pageSize={10}
       hasRoundedBars={false}
@@ -351,7 +352,9 @@ const Chart = ({
       showInterventions={showInterventions}
       interventionsData={interventionsData}
       preLabelContent={
-        <ChartPreLabelWrapper $translate="20px calc( 100% + 48px )">
+        <ChartPreLabelWrapper
+          $translate={`20px ${isEmpty(legendPayload) ? '28px' : '86px'}`}
+        >
           <Row type="flex" align="middle">
             <StyledText $fontWeight={600}>
               <div>AVERAGE</div>

@@ -104,6 +104,13 @@ const EssayRichTextPreview = ({
     }
   }
 
+  const onSTTError = ({ errorMessage }) => {
+    setSTTError({
+      isOpen: true,
+      errorMessage,
+    })
+  }
+
   const showLimitAlways = item.showWordLimit === ALWAYS
 
   const showOnLimit = item.showWordLimit === ON_LIMIT
@@ -192,7 +199,7 @@ const EssayRichTextPreview = ({
                   toolbarSize="STD"
                   isSpeechToTextEnabled={isSpeechToTextEnabled}
                   setIsSTTActive={setIsSTTActive}
-                  setSTTError={setSTTError}
+                  onSTTError={onSTTError}
                   unsetMaxWidth
                   sanitizeClipboardHtml
                   restrictTags

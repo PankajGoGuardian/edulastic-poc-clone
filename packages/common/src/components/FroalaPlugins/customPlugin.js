@@ -365,7 +365,7 @@ function customPlugin(FroalaEditor) {
     title: 'Speech to Text',
     icon: initiateSpeechToTextButton,
     undo: false,
-    focus: true,
+    focus: false,
     refreshAfterCallback: false,
     callback() {
       this.events.trigger('initiate.speechToText')

@@ -133,6 +133,11 @@ const CustomEditor = ({
     }
   }
 
+  const onSTTActiveCallback = () => {
+    // Focus in froala when transcribe socket connection is active
+    EditorRef.current?.events?.focus(true)
+  }
+
   const {
     isLoading: isLoadingSTT,
     onStart: onStartSTT,
@@ -143,6 +148,7 @@ const CustomEditor = ({
     onErrorCallback: onSTTError,
     onStopCallback: onStopSTT,
     onInitCallback: onInitSTTCallback,
+    onActiveCallback: onSTTActiveCallback,
   })
 
   useEffect(() => {

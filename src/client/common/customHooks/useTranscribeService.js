@@ -19,6 +19,7 @@ const useTranscribeService = ({
   onInitCallback,
   onTextUpdateCallback,
   onStopCallback,
+  onActiveCallback,
 }) => {
   const onTextUpdateCallbackRef = useRef()
 
@@ -55,6 +56,7 @@ const useTranscribeService = ({
     setActiveTranscribeSessionId(null)
     transcribeControllerRef?.current?.stopSpeechToText()
     if (error) {
+      setIsTranscribeActive(false)
       notification({
         type: 'error',
         msg: 'Speech to text conversion is temporarily unavailable.',
@@ -86,10 +88,16 @@ const useTranscribeService = ({
   }, [isEnabled, generateCredentialsError])
 
   useEffect(() => {
-    if (isEnabled && !isTranscribeActive) {
+    if (isEnabled && !isTranscribeActive && activeTranscribeSessionId) {
       stopSpeechToTextAndReset()
     }
-  }, [isEnabled, isTranscribeActive])
+  }, [isEnabled, isTranscribeActive, activeTranscribeSessionId])
+
+  useEffect(() => {
+    if (activeTranscribeSessionId && typeof onActiveCallback === 'function') {
+      onActiveCallback()
+    }
+  }, [activeTranscribeSessionId])
 
   useEffect(() => {
     ;(async () => {
@@ -118,7 +126,7 @@ const useTranscribeService = ({
               errorMessage:
                 'Pear Assessment needs access to your microphone to allow typing using your voice input',
             })
-            stopSpeechToTextAndReset()
+            setIsTranscribeActive(false)
             return
           }
           stopSpeechToTextAndReset({ error })

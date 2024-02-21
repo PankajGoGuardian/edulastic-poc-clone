@@ -91,6 +91,7 @@ class TranscribeController {
   }
 
   stopSpeechToText = () => {
+    this.stopAudioStream()
     this.microphoneStream?.stop()
     this.microphoneStream?.destroy()
     this.microphoneStream = undefined
@@ -98,6 +99,13 @@ class TranscribeController {
 
     this.transcribeClient?.destroy()
     this.transcribeClient = undefined
+  }
+
+  stopAudioStream = () => {
+    ;(this.rawMediaStream?.getAudioTracks?.() || []).forEach((track) => {
+      track?.stop()
+      this.rawMediaStream?.removeTrack?.(track)
+    })
   }
 }
 

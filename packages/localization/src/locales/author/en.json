@@ -220,7 +220,7 @@
     "multiStudentPasswordReset": "Reset password is not allowed for student(s) belonging to multiple districts. Please ask the admin to reset the password for:"
   },
   "accommodationsSettings": {
-    "description": " Use these settings to change the Text-to-Speech and Immersive Reader availability on this test for all students. Skip these settings to inherit the student-level accommodations set in the Manage Class student roster.",
+    "description": " Use these settings to change the Speech-to-Text and Immersive Reader availability on this test for all students. Skip these settings to inherit the student-level accommodations set in the Manage Class student roster.",
     "immersiveReader": {
       "description": "Enable immersive reader to get full screen reading, increased readability with options like focus mode, font spacing, parts of speech identification, syllabification & translation"
     },

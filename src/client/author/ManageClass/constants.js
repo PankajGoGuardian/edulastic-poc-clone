@@ -204,7 +204,16 @@ export const fieldsMapping = {
     {
       label: 'Hispanic Ethnicity',
       fieldName: 'hispanicEthnicity',
-      options: yesNoOptions,
+      options: [
+        {
+          label: 'Yes',
+          value: 'Yes',
+        },
+        {
+          label: 'No',
+          value: 'No',
+        },
+      ],
     },
     {
       label: 'Race',

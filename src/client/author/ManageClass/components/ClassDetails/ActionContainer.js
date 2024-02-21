@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
-import { get, unset, isEmpty, pick, pickBy, identity } from 'lodash'
+import { get, isEmpty, pick, pickBy, identity, omit } from 'lodash'
 import { Dropdown } from 'antd'
 
 import { enrollmentApi } from '@edulastic/api'
@@ -227,7 +227,6 @@ const ActionContainer = ({
             if (values.dob) {
               values.dob = moment(values.dob).format('x')
             }
-
             const accommodations = pick(values, [
               'tts',
               'stt',
@@ -236,10 +235,16 @@ const ActionContainer = ({
               'extraTimeOnTest',
             ])
             const accommodationsData = pickBy(accommodations, identity)
-            unset(values, ['confirmPassword'])
-            unset(values, ['fullName'])
-
             let data = pickBy(values, identity)
+            data = omit(data, [
+              'confirmPassword',
+              'fullName',
+              'tts',
+              'stt',
+              'ir',
+              'preferredLanguage',
+              'extraTimeOnTest',
+            ])
             if (Object.keys(accommodationsData).length) {
               data = {
                 ...data,

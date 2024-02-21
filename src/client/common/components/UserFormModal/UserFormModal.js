@@ -9,7 +9,7 @@ import {
 } from '@edulastic/common'
 import { IconAccessibility, IconUser } from '@edulastic/icons'
 import { Collapse, Icon, Select } from 'antd'
-import { get, identity, isEmpty, pickBy, unset, pick } from 'lodash'
+import { get, identity, isEmpty, pickBy, pick, omit } from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -45,9 +45,16 @@ class UserForm extends React.Component {
         if (contactEmails) {
           row.contactEmails = [contactEmails]
         }
-        unset(row, ['confirmPassword'])
         let data = pickBy(row, identity)
         const accommodations = pick(row, [
+          'tts',
+          'stt',
+          'ir',
+          'preferredLanguage',
+          'extraTimeOnTest',
+        ])
+        data = omit(data, [
+          'confirmPassword',
           'tts',
           'stt',
           'ir',

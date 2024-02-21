@@ -13,7 +13,7 @@ import { roleuser } from '@edulastic/constants'
 import { IconFilter, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Icon, Menu, Select } from 'antd'
-import { get, identity, isEmpty, pickBy, uniqBy, unset } from 'lodash'
+import { get, identity, isEmpty, omit, pick, pickBy, uniqBy } from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -238,10 +238,32 @@ class ClassEnrollmentTable extends React.Component {
           if (values.dob) {
             values.dob = moment(values.dob).format('x')
           }
-          unset(values, ['confirmPassword'])
-          unset(values, ['fullName'])
+          const accommodations = pick(values, [
+            'tts',
+            'stt',
+            'ir',
+            'preferredLanguage',
+            'extraTimeOnTest',
+          ])
+          const accommodationsData = pickBy(accommodations, identity)
+          let data = pickBy(values, identity)
+          data = omit(data, [
+            'confirmPassword',
+            'fullName',
+            'tts',
+            'stt',
+            'ir',
+            'preferredLanguage',
+            'extraTimeOnTest',
+          ])
+          if (Object.keys(accommodationsData).length) {
+            data = {
+              ...data,
+              accommodations: accommodationsData,
+            }
+          }
           const o = {
-            createReq: pickBy(values, identity),
+            createReq: data,
             listReq: {
               districtId,
               limit: 25,

@@ -908,7 +908,10 @@ function* changeUserTTSRequest({ payload }) {
       if (userIds.indexOf(std._id) > -1) {
         return {
           ...std,
-          tts,
+          accommodations: {
+            ...std?.accommodations,
+            tts,
+          },
         }
       }
       return std

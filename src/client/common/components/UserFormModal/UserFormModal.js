@@ -500,23 +500,6 @@ class UserForm extends React.Component {
                     )}
                   </Form.Item>
                 </Field>
-                <Field name="tts">
-                  <FieldLabel>Enable Text To Speech</FieldLabel>
-                  <Form.Item>
-                    {getFieldDecorator('tts', {
-                      initialValue: get(_source, 'tts', ''),
-                    })(
-                      <SelectInputStyled
-                        getPopupContainer={(triggerNode) =>
-                          triggerNode.parentNode
-                        }
-                      >
-                        <Option value="Yes">Yes</Option>
-                        <Option value="No">No</Option>
-                      </SelectInputStyled>
-                    )}
-                  </Form.Item>
-                </Field>
               </Panel>
             )}
             <Panel header={AccommodationsHeader} key="accommodations">

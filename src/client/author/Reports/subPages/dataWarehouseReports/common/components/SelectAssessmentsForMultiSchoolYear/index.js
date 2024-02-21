@@ -210,8 +210,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
 
   // Filtering the selected tests from tests
   useEffect(() => {
-    const testsWithUniqId = dropDownDataMapper(tests)
-    const filteredTests = testsWithUniqId.filter((test) => {
+    const filteredTests = dropdownData.filter((test) => {
       return selectedTestIds.includes(test.key)
     })
     if (firstRender.current) {
@@ -257,7 +256,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
       el={assessmentFilterRef}
       onChange={onChange}
       onSearch={onSearch}
-      value={selectedTestIds}
+      value={tests?.length ? selectedTestIds : []}
       disabled={isDisable}
       options={isLoading ? [] : dropdownData || []}
       loading={isLoading}

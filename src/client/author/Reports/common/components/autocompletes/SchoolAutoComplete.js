@@ -94,6 +94,7 @@ const SchoolAutoComplete = ({
 
   // effects
   useEffect(() => {
+    onFocus()
     if (selectedSchoolIds.length && !disabled) {
       loadSchoolListDebounced({ ...query, schoolIds: selectedSchoolIds })
     }

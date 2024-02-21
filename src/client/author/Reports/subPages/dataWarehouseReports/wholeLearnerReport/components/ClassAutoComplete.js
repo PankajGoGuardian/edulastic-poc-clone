@@ -117,6 +117,10 @@ const ClassAutoComplete = ({
 
   // effects
   useEffect(() => {
+    getDefaultClassList()
+  }, [])
+
+  useEffect(() => {
     if (isEmpty(defaultClassList)) {
       setDefaultClassList(Object.values(classList))
     }

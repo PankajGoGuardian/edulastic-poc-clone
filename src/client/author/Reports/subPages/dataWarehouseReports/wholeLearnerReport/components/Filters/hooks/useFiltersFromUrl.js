@@ -55,6 +55,7 @@ function useFiltersFromUrl({
       externalScoreType:
         search.externalScoreType || EXTERNAL_SCORE_TYPES.SCALED_SCORE,
       subActiveKey: search.subActiveKey || '',
+      testTypes: search.testTypes || '',
     }
     if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
       delete _filters.schoolIds

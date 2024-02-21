@@ -38,7 +38,6 @@ import {
   fetchUserAction,
   getUserRole,
   toggleIosRestrictNavigationModalAction,
-  getUserAccommodations,
 } from '../Login/ducks'
 
 import {
@@ -139,6 +138,8 @@ const getUserId = createSelectorator(
   ['user.user._id', 'user.currentChild'],
   (_id, currentChild) => currentChild || _id
 )
+
+const getAccommodations = createSelectorator(['user.user.accommodations'])
 
 /**
  * get current redirect status of the assignment
@@ -443,7 +444,15 @@ export const getAllAssignmentsSelector = createSelector(
   getCurrentGroup,
   getClassIds,
   getUserId,
-  (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
+  getAccommodations,
+  (
+    assignmentsObj,
+    reportsObj,
+    currentGroup,
+    classIds,
+    userId,
+    accommodations
+  ) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
       item.class.map((i) => i.identifier)
     )
@@ -464,6 +473,27 @@ export const getAllAssignmentsSelector = createSelector(
          * then check for whether the current userId exists
          * in the students array of the class
          */
+
+        // Updating allowedTime & timedAssignment based on accommodations
+        if (
+          assignment?.timedAssignment &&
+          accommodations?.extraTimeOnTest > 0
+        ) {
+          assignment = {
+            ...assignment,
+            allowedTime:
+              assignment.allowedTime * accommodations.extraTimeOnTest,
+          }
+        } else if (
+          assignment?.timedAssignment &&
+          accommodations?.extraTimeOnTest === -1
+        ) {
+          assignment = {
+            ...assignment,
+            allowedTime: 0,
+            timedAssignment: false,
+          }
+        }
         const allClassess = assignment.class.filter(
           (clazz) =>
             clazz.redirect !== true &&
@@ -477,7 +507,12 @@ export const getAllAssignmentsSelector = createSelector(
           classId: clazz._id,
           reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime && !assignment.redir
-            ? { allowedTime: clazz.allowedTime }
+            ? {
+                allowedTime:
+                  accommodations?.extraTimeOnTest > 0
+                    ? clazz.allowedTime * accommodations.extraTimeOnTest
+                    : clazz.allowedTime,
+              }
             : {}),
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
@@ -645,29 +680,10 @@ export function* fetchAssignments() {
       entities: { assignments: assignmentObj },
     } = normalize(assignmentsProcessed, [assignmentSchema])
 
-    // Updating allowedTime & timedAssignment based on accommodations
-    const accommodations = yield select(getUserAccommodations)
-    const updatedAssignmentObj = Object.keys(assignmentObj).reduce(
-      (acc, curr) => {
-        acc[curr] = { ...assignmentObj[curr] }
-        if (acc[curr].timedAssignment && accommodations?.extraTimeOnTest > 0) {
-          acc[curr].allowedTime *= accommodations.extraTimeOnTest
-        } else if (
-          acc[curr].timedAssignment &&
-          accommodations?.extraTimeOnTest === -1
-        ) {
-          acc[curr].allowedTime = 0
-          acc[curr].timedAssignment = false
-        }
-        return acc
-      },
-      {}
-    )
-
     yield put(
       setAssignmentsAction({
         allAssignments,
-        assignmentObj: updatedAssignmentObj,
+        assignmentObj,
       })
     )
   } catch (e) {

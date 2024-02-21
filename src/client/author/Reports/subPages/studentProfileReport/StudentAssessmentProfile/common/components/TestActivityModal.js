@@ -244,7 +244,7 @@ const TestActivityModal = ({
       studentTestActivity.feedback &&
       studentTestActivity.feedback.text) ||
     ''
-  const { videoUrl = '' } = studentTestActivity
+  const { videoUrl = '' } = classResponse
   const isVideoQuiz = videoUrl?.length > 0
 
   const handleShowStudentWork = (testItem) => {

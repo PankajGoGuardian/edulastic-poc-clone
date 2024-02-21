@@ -18,7 +18,12 @@ import {
   SpinLoader,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { lightGrey12, white } from '@edulastic/colors'
+import {
+  black,
+  froalaToolButtonBackgroundColor,
+  lightGrey12,
+  white,
+} from '@edulastic/colors'
 import { IconTranscribe } from '@edulastic/icons'
 import {
   COPY,
@@ -367,7 +372,15 @@ const EssayPlainTextPreview = ({
                         onClick={handleAction(TRANSCRIBE)}
                         onMouseDown={(e) => e?.preventDefault()} // To avoid blur event for textarea
                       >
-                        <IconTranscribe color="none" width={22} height={22} />
+                        <IconTranscribe
+                          color={
+                            isSTTActive
+                              ? froalaToolButtonBackgroundColor
+                              : black
+                          }
+                          width={22}
+                          height={22}
+                        />
                       </ToolbarItem>
                     </Tooltip>
                   </EduIf>

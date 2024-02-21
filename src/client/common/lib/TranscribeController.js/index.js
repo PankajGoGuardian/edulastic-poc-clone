@@ -13,6 +13,7 @@ class TranscribeController {
     this.microphoneStream = null
     this.rawMediaStream = null
     this.transcribeClient = null
+    this.activeSessionId = null
   }
 
   createMicrophoneStream = async () => {
@@ -50,6 +51,7 @@ class TranscribeController {
     })
     const response = await this.transcribeClient.send(command)
     const { SessionId = null } = response
+    this.activeSessionId = SessionId
     updateTranscribeSessionId(SessionId)
 
     if (response.TranscriptResultStream) {
@@ -76,6 +78,10 @@ class TranscribeController {
     updateTextRef,
     updateTranscribeSessionId,
   }) => {
+    // Avoid starting another session if one is already active
+    if (this.transcribeClient || this.activeSessionId) {
+      return {}
+    }
     try {
       await this.createMicrophoneStream()
       await this.createTranscribeClient(configData)
@@ -99,6 +105,7 @@ class TranscribeController {
 
     this.transcribeClient?.destroy()
     this.transcribeClient = undefined
+    this.activeSessionId = undefined
   }
 
   stopAudioStream = () => {

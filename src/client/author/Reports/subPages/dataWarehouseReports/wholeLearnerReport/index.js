@@ -444,7 +444,11 @@ const WholeLearnerReport = ({
         <ShareReportModal
           reportType={loc}
           reportFilters={{
-            ...settings.requestFilters,
+            ...enhanceQueryWithTermIds(
+              { ...settings.requestFilters },
+              { orgData, userRole }
+            ),
+            assessmentTypes: settings.requestFilters.testTypes,
             ...settings.frontEndFilters,
             ...settings.standardFilters,
             studentId: settings?.selectedStudent?.key,

@@ -426,9 +426,10 @@ const MultipleAssessmentReport = ({
       {sharingState && (
         <ShareReportModal
           reportType={loc}
-          reportFilters={{
-            ...settings.requestFilters,
-          }}
+          reportFilters={enhanceQueryWithTermIds(
+            { ...settings.requestFilters },
+            { orgData, userRole }
+          )}
           showModal={sharingState}
           setShowModal={setSharingState}
         />

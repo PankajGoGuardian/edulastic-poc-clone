@@ -12,7 +12,7 @@ import {
 import StudentGroupBtn from '../../common/components/StudentGroupBtn'
 
 const TITLE_TOOLTIP_NOTE =
-  'Note: The performance metrics are calculated based on students allocated to the selected school, class, or teacher. You may also see data from tests that were not specifically assigned to the currently displayed class or teacher.'
+  'Note: Metrics are based on student enrolment in the displayed school, class, or teacher. Data may include tests taken by these students that were not assigned to the displayed class or teacher.'
 const TableFilters = ({
   isDistrictGroupAdmin,
   updateFilterDropdownCB,

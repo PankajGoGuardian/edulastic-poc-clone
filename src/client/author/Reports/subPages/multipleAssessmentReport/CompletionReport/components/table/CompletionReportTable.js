@@ -308,8 +308,11 @@ const CompletionReportTable = ({
 
   useEffect(() => {
     if (isCsvDownloading && childrenRef.current) {
-      const { csvText, csvRawData } = convertTableToCSV(childrenRef.current)
-      onCsvConvert(csvText, csvRawData)
+      const { csvRawData } = convertTableToCSV(childrenRef.current)
+      const finalCsvData = csvRawData
+        .map((row) => row.slice(0, row.length - 2).join(','))
+        .join('\n')
+      onCsvConvert(finalCsvData)
     }
   }, [isCsvDownloading])
   const getRowClassName = (record) => {

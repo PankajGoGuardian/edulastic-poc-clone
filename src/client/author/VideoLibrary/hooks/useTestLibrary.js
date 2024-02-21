@@ -43,9 +43,8 @@ const useTestListFilter = ({
         draft.filter = SMART_FILTERS.ENTIRE_LIBRARY
       }
 
-      if (typeof searchString === 'string') {
-        draft.searchString = searchString.length ? [searchString] : []
-      }
+      const _searchString = searchString?.trim() || ''
+      draft.searchString = _searchString.length ? [searchString] : []
     })
 
     testSearchRequest({

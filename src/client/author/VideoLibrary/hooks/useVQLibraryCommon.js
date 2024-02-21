@@ -33,7 +33,7 @@ const useVQLibraryCommon = ({
           fetchTestByFilters({ append: true })
         }
       } else {
-        fetchVideos(true)
+        fetchVideos({ append: true })
       }
     }
   }

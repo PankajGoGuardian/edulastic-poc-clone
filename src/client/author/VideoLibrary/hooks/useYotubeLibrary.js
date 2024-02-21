@@ -5,6 +5,7 @@ import {
   isValidVideoUrl,
 } from '../../AssessmentPage/VideoQuiz/utils/videoPreviewHelpers'
 import { isURL } from '../../AssessmentCreate/components/CreateVideoQuiz/utils'
+import { vqConst } from '../const'
 
 const useYoutubeLibrary = ({
   createVQAssessment,
@@ -12,6 +13,7 @@ const useYoutubeLibrary = ({
   isLoading,
   ytSearchRequest,
   ytNextPageToken,
+  currentTab,
 }) => {
   // const videoDetailsFromTests = getVideoDetailsFromTests(testList, currentTab)
 
@@ -19,11 +21,25 @@ const useYoutubeLibrary = ({
   const hasError = textIsUrl ? !isValidVideoUrl(searchString) : false
   /** As soon as we enter the Valid URL we start creating assessment */
   useEffect(() => {
-    const youtubeVideoId = extractVideoId(searchString)
-    if (!hasError && !isLoading && youtubeVideoId) {
-      createVQAssessment({ youtubeVideoId, validVideoUrl: searchString })
+    const _searchString = searchString?.trim()
+
+    const ableToCreateTestFromUrl =
+      textIsUrl &&
+      !isValidVideoUrl(hasError) &&
+      !isLoading &&
+      !!_searchString.length
+
+    if (!ableToCreateTestFromUrl) return
+
+    const youtubeVideoId = extractVideoId(_searchString)
+
+    if (youtubeVideoId) {
+      createVQAssessment({ youtubeVideoId, validVideoUrl: _searchString })
+      return
     }
-  }, [searchString, hasError, isLoading])
+
+    createVQAssessment({ validVideoUrl: _searchString })
+  }, [searchString, hasError, isLoading, textIsUrl])
 
   const handleVideoSelect = (youtubeVideoId) => {
     if (!youtubeVideoId) return
@@ -31,14 +47,26 @@ const useYoutubeLibrary = ({
   }
 
   /** Load/Append YouTube videos - result from YouTube APIs  */
-  const fetchVideos = async (append = false) => {
-    if (isValidVideoUrl(searchString)) return null
-    ytSearchRequest({
-      searchString,
-      nextPageToken: ytNextPageToken,
-      append,
-    })
+  const fetchVideos = async ({ append = false }) => {
+    const _searchString = searchString?.trim() || ''
+
+    if (isValidVideoUrl(_searchString)) return null
+
+    if (_searchString.length)
+      ytSearchRequest({
+        searchString: _searchString,
+        nextPageToken: ytNextPageToken,
+        append,
+      })
   }
+
+  useEffect(() => {
+    if (currentTab === vqConst.vqTabs.YOUTUBE) {
+      fetchVideos({
+        append: false,
+      })
+    }
+  }, [currentTab])
 
   return {
     handleVideoSelect,

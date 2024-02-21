@@ -118,7 +118,7 @@ const VideoLibrary = ({
   /** Handle press enter event triggers Test library search or Youtube search */
   const handleOnSearch = () => {
     const fn = {
-      [YOUTUBE]: () => fetchVideos(false),
+      [YOUTUBE]: () => fetchVideos({ append: false }),
       [COMMUNITY]: () => fetchTestByFilters({ append: false }),
       [MY_CONTENT]: () => fetchTestByFilters({ append: false }),
     }

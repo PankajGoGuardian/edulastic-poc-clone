@@ -508,7 +508,7 @@ const TableList = ({
       history.push(
         `/author/reports/completion-report${getCompletionReportPathForAssignment(
           selectedItems.map((doc) => doc.itemId).toString(),
-          {},
+          selectedItems[0].currentAssignment,
           selectedItems
         )}`
       )

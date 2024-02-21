@@ -506,12 +506,12 @@ class AdvancedTable extends Component {
   }
 
   handleViewCompletionReport = () => {
-    const { selectedRows, history } = this.props
+    const { selectedRows, history, assignmentsSummary } = this.props
     if (!isEmpty(selectedRows)) {
       history.push(
         `/author/reports/completion-report${getCompletionReportPathForAssignment(
           selectedRows.map((doc) => doc.itemId).toString(),
-          {},
+          assignmentsSummary[0],
           selectedRows
         )}`
       )

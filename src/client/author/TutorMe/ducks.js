@@ -106,7 +106,7 @@ function* initializeTutorMeServiceSaga() {
     }
   } catch (err) {
     captureSentryException(err)
-    notification({ msg: 'Unable to initialize TutorMe SDK' })
+    notification({ msg: 'Authentication failed. Please contact support.' })
     yield put(actions.setTutorMeInitAt(null))
   }
 }

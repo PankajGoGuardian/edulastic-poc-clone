@@ -2,7 +2,6 @@ import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
-import { EduIf, EduThen } from '@edulastic/common'
 import {
   tableToDBSortOrderMap,
   downloadCSV,
@@ -23,7 +22,6 @@ import {
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
 import {
-  compareByOptions,
   utastatus,
   sortKey,
   compareByKeysToFilterKeys,
@@ -91,15 +89,13 @@ const CompletionReportTable = ({
   setPageFilters,
   role,
   districtId,
+  compareByBasedOnRole,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
   const search = qs.parse(location.search, {
     ignoreQueryPrefix: true,
     indices: true,
   })
-  const urlCompareBy = compareByOptions.find(
-    (option) => option.key === search.selectedCompareBy
-  )
   const getCellValue = (value, total) => {
     let totalValue = value || 0
     if (isAnalyseByPercent) {
@@ -346,7 +342,7 @@ const CompletionReportTable = ({
       <EduIf condition={tableData.length}>
         <EduThen>
           <TableHeader
-            urlCompareBy={urlCompareBy}
+            urlCompareBy={compareByBasedOnRole}
             compareBy={compareBy}
             setCompareBy={setCompareBy}
             settings={settings}

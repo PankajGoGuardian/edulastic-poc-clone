@@ -3,9 +3,15 @@ import { LeftContainer, RightContainer, TableHeaderContainer } from './styled'
 import Heading from '../../../../../common/components/Heading'
 import AnalyseByFilter from '../../../common/components/filters/AnalyseByFilter'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { compareByOptions, analyzeBy } from '../../../common/utils/constants'
+import { analyzeBy } from '../../../common/utils/constants'
 
-const TableHeader = ({ compareBy, setCompareBy, setAnalyseBy, analyseBy }) => {
+const TableHeader = ({
+  compareBy,
+  setCompareBy,
+  setAnalyseBy,
+  analyseBy,
+  urlCompareBy,
+}) => {
   return (
     <TableHeaderContainer>
       <LeftContainer>
@@ -19,7 +25,7 @@ const TableHeader = ({ compareBy, setCompareBy, setAnalyseBy, analyseBy }) => {
           prefix="Compare by"
           by={compareBy}
           selectCB={(e, value) => setCompareBy(value)}
-          data={compareByOptions}
+          data={urlCompareBy}
         />
         <AnalyseByFilter
           data={analyzeBy}

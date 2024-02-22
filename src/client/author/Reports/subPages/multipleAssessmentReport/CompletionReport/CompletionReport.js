@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit } from 'lodash'
+import { omit, head } from 'lodash'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
@@ -20,6 +20,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
+import { getCompareByOptions } from '../../dataWarehouseReports/MultipleAssessmentReport/utils'
 
 const TABLE_PAGE_SIZE = 50
 function CompletionReport({
@@ -43,6 +44,11 @@ function CompletionReport({
   districtId,
   ...props
 }) {
+  const compareByBasedOnRole = getCompareByOptions(role)
+  const compareBy = head(compareByBasedOnRole)
+  if (!settings.requestFilters?.termId) {
+    settings.selectedCompareBy = compareBy
+  }
   // have initital state when user navigate to completion report for the first time
   useEffect(() => {
     resetCompletionReportData()
@@ -143,6 +149,7 @@ function CompletionReport({
             sharedReport={sharedReport}
             role={role}
             districtId={districtId}
+            compareByBasedOnRole={compareByBasedOnRole}
           />
         </Container>
       </EduThen>

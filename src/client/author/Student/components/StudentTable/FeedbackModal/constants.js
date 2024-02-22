@@ -1,6 +1,6 @@
 export const FEEDBACK_TYPES = [
   'Academic',
-  'Behavioural',
+  'Behavioral',
   'Attendance',
   'Engagement',
 ]

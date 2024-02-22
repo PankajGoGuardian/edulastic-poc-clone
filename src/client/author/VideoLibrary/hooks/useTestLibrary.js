@@ -36,7 +36,7 @@ const useTestListFilter = ({
       draft.status = status
       draft.testCategories = [testCategoryTypes.VIDEO_BASED]
       draft.collections = []
-      draft.filter = SMART_FILTERS.AUTHORED_BY_ME
+      draft.filter = SMART_FILTERS.CO_AUTHOR
       if (currentTab === COMMUNITY) {
         draft.collections = collections
         draft.status = PUBLISHED

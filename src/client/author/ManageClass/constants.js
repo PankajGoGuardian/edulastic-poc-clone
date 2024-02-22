@@ -168,6 +168,16 @@ const yesNoOptions = [
     value: 'no',
   },
 ]
+const yesNoCapitilizeOptions = [
+  {
+    label: 'Yes',
+    value: 'Yes',
+  },
+  {
+    label: 'No',
+    value: 'No',
+  },
+]
 
 export const fieldsMapping = {
   additional: [
@@ -184,36 +194,27 @@ export const fieldsMapping = {
     {
       label: 'Free Reduced Lunch',
       fieldName: 'frlStatus',
-      options: yesNoOptions,
+      options: yesNoCapitilizeOptions,
     },
     {
       label: 'Individual Education Plan',
       fieldName: 'iepStatus',
-      options: yesNoOptions,
+      options: yesNoCapitilizeOptions,
     },
     {
       label: 'English Language Learner',
       fieldName: 'ellStatus',
-      options: yesNoOptions,
+      options: yesNoCapitilizeOptions,
     },
     {
       label: 'Special ED',
       fieldName: 'sedStatus',
-      options: yesNoOptions,
+      options: yesNoCapitilizeOptions,
     },
     {
       label: 'Hispanic Ethnicity',
       fieldName: 'hispanicEthnicity',
-      options: [
-        {
-          label: 'Yes',
-          value: 'Yes',
-        },
-        {
-          label: 'No',
-          value: 'No',
-        },
-      ],
+      options: yesNoCapitilizeOptions,
     },
     {
       label: 'Race',

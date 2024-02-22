@@ -97,6 +97,7 @@ const CustomEditor = ({
   const mathFieldRef = useRef(null)
   const editorRef = useRef(null)
   const toolbarContainerRef = useRef(null)
+  const isSTTActiveRef = useRef(false)
   const [showMathModal, setMathModal] = useState(false)
   const [mathModalIsEditable, setMathModalIsEditable] = useState(true)
   const [currentLatex, setCurrentLatex] = useState('')
@@ -112,7 +113,6 @@ const CustomEditor = ({
   useStickyToolbar(toolbarId, EditorRef.current, toolbarContainerRef.current)
 
   const onInitSTTCallback = () => {
-    $("[data-cmd='initiateSpeechToText']").addClass('fr-active')
     EditorRef.current?.events?.trigger?.('speechToText.initiateSpeechToText')
   }
 
@@ -135,7 +135,18 @@ const CustomEditor = ({
 
   const onSTTActiveCallback = () => {
     // Focus in froala when transcribe socket connection is active
+    $(
+      `#${toolbarContainerRef.current?.id} button[data-cmd='initiateSpeechToText']`
+    ).addClass('fr-active')
     EditorRef.current?.events?.focus(true)
+  }
+
+  const onSTTButtonRefresh = () => {
+    if (isSTTActiveRef.current) {
+      $(
+        `#${toolbarContainerRef.current?.id} button[data-cmd='initiateSpeechToText']`
+      ).addClass('fr-active')
+    }
   }
 
   const {
@@ -152,6 +163,7 @@ const CustomEditor = ({
   })
 
   useEffect(() => {
+    isSTTActiveRef.current = isSTTActive
     setIsSTTActive(isSTTActive)
   }, [isSTTActive])
 
@@ -368,6 +380,9 @@ const CustomEditor = ({
             spanToRemove.parentNode.removeChild(spanToRemove)
             this.html.set(tempContainer.innerHTML)
           }
+        },
+        'speechToText.buttonRefresh': function (evt) {
+          onSTTButtonRefresh()
         },
         'audio.insert': function (audio) {
           setAudioElement(audio)

@@ -4,9 +4,6 @@ import { canInsert } from '../../helpers'
 import { initiateSpeechToTextButton } from './constants'
 
 function customPlugin(FroalaEditor) {
-  const isSpeechToTextButtonActive = function (cmd) {
-    return initiateSpeechToTextButton == cmd
-  }
   // register custom math buttton
   FroalaEditor.DefineIconTemplate(
     'math',
@@ -371,10 +368,7 @@ function customPlugin(FroalaEditor) {
       this.events.trigger('initiate.speechToText')
     },
     refresh: function ($btn) {
-      $btn.toggleClass(
-        'fr-active',
-        isSpeechToTextButtonActive.apply(this, [$btn.data('cmd')])
-      )
+      this.events.trigger('speechToText.buttonRefresh')
     },
   })
 }

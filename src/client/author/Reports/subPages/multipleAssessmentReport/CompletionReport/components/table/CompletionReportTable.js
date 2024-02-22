@@ -175,7 +175,7 @@ const CompletionReportTable = ({
       title: 'Absent',
       dataIndex: 'absent',
       key: 'absent',
-      sorter: true,
+      sorter: !isAnalyseByPercent,
       className: 'absent',
       align: 'center',
       render: (value, record) => (
@@ -193,7 +193,7 @@ const CompletionReportTable = ({
       dataIndex: 'notStarted',
       key: 'notStarted',
       className: 'absent',
-      sorter: true,
+      sorter: !isAnalyseByPercent,
       align: 'center',
       render: (value, record) => (
         <ActionContainer
@@ -213,7 +213,7 @@ const CompletionReportTable = ({
       title: 'In progress',
       dataIndex: 'inProgress',
       key: 'inProgress',
-      sorter: true,
+      sorter: !isAnalyseByPercent,
       align: 'center',
       render: (value, record) => (
         <ActionContainer
@@ -233,7 +233,7 @@ const CompletionReportTable = ({
       title: 'Submitted',
       dataIndex: 'submitted',
       key: 'submitted',
-      sorter: true,
+      sorter: !isAnalyseByPercent,
       align: 'center',
       render: (value, record) => (
         <ActionContainer
@@ -249,7 +249,7 @@ const CompletionReportTable = ({
       title: 'GRADED',
       dataIndex: 'graded',
       key: 'graded',
-      sorter: true,
+      sorter: !isAnalyseByPercent,
       align: 'center',
       render: (value, record) => (
         <ActionContainer

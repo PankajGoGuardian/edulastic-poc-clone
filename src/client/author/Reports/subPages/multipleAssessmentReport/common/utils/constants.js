@@ -70,7 +70,7 @@ export const barDataForCompletionChart = [
     key: 'absentPercentage',
     insideLabelKey: 'absent',
     name: 'Absent',
-    fill: '#C4C4C4',
+    fill: '#E8E8E8',
     position: 'insideTop',
     stackId: 'completionReport',
   },
@@ -80,7 +80,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'Not Started',
     stackId: 'completionReport',
-    fill: '#FF0257',
+    fill: '#F35F5F',
   },
   {
     key: 'inProgressPercentage',
@@ -88,7 +88,7 @@ export const barDataForCompletionChart = [
     position: 'insideTop',
     name: 'In Progress',
     stackId: 'completionReport',
-    fill: '#FEBE00',
+    fill: '#FDCC3B',
   },
   {
     key: 'submittedPercentage',

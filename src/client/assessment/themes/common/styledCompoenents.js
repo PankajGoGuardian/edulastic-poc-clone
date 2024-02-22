@@ -168,6 +168,15 @@ export const StyledTextForStudent = styled.p`
   text-overflow: ellipsis;
   max-width: ${({ maxWidth }) => maxWidth || '180px'};
   text-transform: uppercase;
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: ${({ $timedAssignment }) =>
+      $timedAssignment ? '55px' : '85px'};
+    margin-right: 0px;
+  }
+  @media (max-width: ${desktopWidth}) {
+    max-width: ${({ $timedAssignment }) =>
+      $timedAssignment ? '20px' : '85px'};
+  }
 `
 
 export const StyledTextForDropdown = styled.p`
@@ -177,9 +186,9 @@ export const StyledTextForDropdown = styled.p`
   text-overflow: ellipsis;
   text-transform: uppercase;
   @media (max-width: ${smallDesktopWidth}) {
-    max-width: 85px;
+    max-width: ${({ $smallDesktopWidth }) => $smallDesktopWidth || '85px'};
   }
   @media (max-width: ${desktopWidth}) {
-    max-width: 30px;
+    max-width: ${({ $desktopWidth }) => $desktopWidth || '30px'};
   }
 `

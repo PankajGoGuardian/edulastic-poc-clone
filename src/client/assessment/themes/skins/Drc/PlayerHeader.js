@@ -168,7 +168,10 @@ const PlayerHeader = ({
           <FlexContainer alignItems="center">
             <IconProfileCircle isBgDark />
             <Tooltip title={userName}>
-              <StyledTextForStudent color="white">
+              <StyledTextForStudent
+                color="white"
+                $timedAssignment={timedAssignment}
+              >
                 {userName}
               </StyledTextForStudent>
             </Tooltip>

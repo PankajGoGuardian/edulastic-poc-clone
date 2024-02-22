@@ -173,7 +173,10 @@ const SaveAndExit = ({
         <FlexContainer alignItems="center">
           <IconProfileCircle isBgDark style={{ marginRight: '8px' }} />
           <Tooltip title={userName}>
-            <StyledTextForStudent color="white">
+            <StyledTextForStudent
+              color="white"
+              $timedAssignment={timedAssignment}
+            >
               {userName}
             </StyledTextForStudent>
           </Tooltip>
@@ -236,7 +239,12 @@ const SaveAndExit = ({
                 style={{ marginRight: '8px' }}
                 fill={themeColor}
               />
-              <StyledTextForDropdown>{userName}</StyledTextForDropdown>
+              <StyledTextForDropdown
+                $smallDesktopWidth="110px"
+                $desktopWidth="110px"
+              >
+                {userName}
+              </StyledTextForDropdown>
             </FlexContainer>{' '}
             <Icon type="down" />
           </StyledDefaultMenuItem>

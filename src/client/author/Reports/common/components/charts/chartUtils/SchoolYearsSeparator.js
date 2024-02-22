@@ -25,7 +25,7 @@ const SchoolYearsSeparator = ({
   return (
     <>
       <path
-        d={`M${pathX},${y - moveVerticalLine}v${-y}`}
+        d={`M${pathX},${y - moveVerticalLine}v${-y + 2 * moveVerticalLine}`}
         stroke={dividerColor}
         strokeDasharray="5,5"
       />

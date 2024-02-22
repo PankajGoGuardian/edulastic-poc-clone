@@ -4,10 +4,9 @@ import { isEmpty, isNumber, round } from 'lodash'
 
 import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
-import { EduIf, EduThen } from '@edulastic/common'
+import { EduIf, EduThen, FlexContainer } from '@edulastic/common'
 import { getScoreLabel } from '@edulastic/constants/const/dataWarehouse'
 import { IconCarets } from '@edulastic/icons'
-import { Row } from 'antd'
 import { SignedStackedBarWithLineChart } from '../../../../common/components/charts/customSignedStackedBarWithLineChart'
 import {
   TooltipRow,
@@ -353,15 +352,15 @@ const Chart = ({
       interventionsData={interventionsData}
       preLabelContent={
         <ChartPreLabelWrapper
-          $translate={`20px ${isEmpty(legendPayload) ? '28px' : '86px'}`}
+          $translate={`20px ${isEmpty(legendPayload) ? '-8px' : '50px'}`}
         >
-          <Row type="flex" align="middle">
+          <FlexContainer height="0" justifyContent="left">
             <StyledText $fontWeight={600}>
               <div>AVERAGE</div>
               <div>SCORE</div>
             </StyledText>
             <IconCarets.IconCaretRight style={{ fontSize: '35px' }} />
-          </Row>
+          </FlexContainer>
         </ChartPreLabelWrapper>
       }
     />

@@ -638,7 +638,7 @@ class TestList extends Component {
         </EduThen>
         <EduElse>
           <StyledEduButton
-            data-cy="filter"
+            data-cy="smart-filter"
             isGhost={!isShowFilter}
             onClick={this.toggleFilter}
             style={{

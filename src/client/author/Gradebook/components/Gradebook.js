@@ -320,7 +320,7 @@ const Gradebook = ({
             <TableContainer showFilter={showFilter}>
               <EduIf condition={!showFilter}>
                 <StyledEduButton
-                  data-cy="filter"
+                  data-cy="smart-filter"
                   isGhost={showFilter}
                   onClick={toggleShowFilter}
                   style={{

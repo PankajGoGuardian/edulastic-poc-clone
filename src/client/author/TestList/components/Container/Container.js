@@ -1296,7 +1296,7 @@ class TestList extends Component {
       <EduIf condition={isShowFilter}>
         <EduThen>
           <StyledEduButton
-            data-cy="filter"
+            data-cy="smart-filter"
             isGhost={!isShowFilter}
             onClick={this.toggleFilter}
             style={{

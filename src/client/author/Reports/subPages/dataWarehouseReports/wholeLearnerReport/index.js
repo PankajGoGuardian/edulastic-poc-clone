@@ -119,7 +119,6 @@ const WholeLearnerReport = ({
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
   )
-  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
   const [isAttendanceChartVisible, setIsAttendanceChartVisible] = useState(true)
   const isAttendanceChartToggled = useRef(false)
   const sharedReport = useMemo(
@@ -143,6 +142,10 @@ const WholeLearnerReport = ({
       !!sharedReport?._id,
     ],
     [sharedReport]
+  )
+
+  const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(
+    sharedReportFilters?.testTermIds || filters.testTermIds
   )
 
   const { testTypes, externalScoreType } = useMemo(() => {
@@ -561,6 +564,7 @@ const WholeLearnerReport = ({
                       tutorMeInterventionsData={tutorMeInterventionsData}
                       tutorMeInterventionsLoading={tutorMeInterventionsLoading}
                       tutorMeInterventionsError={tutorMeInterventionsError}
+                      sharedReportFilters={sharedReportFilters}
                     />
                   </EduElse>
                 </EduIf>

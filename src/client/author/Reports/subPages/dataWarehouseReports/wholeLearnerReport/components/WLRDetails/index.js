@@ -71,6 +71,7 @@ const WLRDetails = ({
   tutorMeInterventionsData,
   tutorMeInterventionsLoading,
   tutorMeInterventionsError,
+  sharedReportFilters,
 }) => {
   const [tableTabKey, setTableTabKey] = useState(
     filters.subActiveKey || TABLE_TABS.PERFORMANCE.key
@@ -80,9 +81,12 @@ const WLRDetails = ({
     settings.selectedStudentInformation,
     settings.selectedStudent
   )
-  const testTermIdsArr = convertItemToArray(filters.testTermIds)
+  const testTermIdsArr = convertItemToArray(
+    sharedReportFilters?.testTermIds || filters.testTermIds
+  )
+  const termId = sharedReportFilters?.termId || filters.termId
   const isDisableTab =
-    (testTermIdsArr.length === 1 && filters.termId !== testTermIdsArr[0]) ||
+    (testTermIdsArr.length === 1 && termId !== testTermIdsArr[0]) ||
     isMultiSchoolYear
 
   const onCsvConvert = (data) => {

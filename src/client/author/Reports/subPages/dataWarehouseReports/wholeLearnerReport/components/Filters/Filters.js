@@ -781,7 +781,7 @@ const WholeLearnerReportFilters = ({
           </StyledDropDownContainer>
           {filters.showApply && (
             <Tooltip
-              placement="left"
+              placement="bottomRight"
               title={
                 testsNotSelectedForMultiTestTerms
                   ? `Please select a test to activate 'Apply' filter.`

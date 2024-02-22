@@ -972,6 +972,7 @@ function* receiveMultiSchoolYearTestListSaga({ payload }) {
     const testList = testListTransformer({
       response: searchResult,
       orgData,
+      params,
     })
     const _externalAssessments = testListTransformer({
       response: externalTests,

@@ -798,16 +798,51 @@ export const testListTransformer = ({
   const { terms: districtGroupTerms = [] } = districtGroup
 
   if (testType === ASSESSMENT_TYPES.INTERNAL) {
-    const assignmentBuckets = get(response, 'aggregations.buckets.buckets', [])
+    let internalTestList = []
+    if (termIds.length === 1) {
+      const assignmentBuckets = get(
+        response,
+        'aggregations.buckets.buckets',
+        []
+      )
 
-    const internalTestList = assignmentBuckets
-      .map(({ key: _id, assignments }) => {
-        const hits = get(assignments, 'hits.hits', [])
-        const title = get(hits[0], '_source.title', '')
-        return { _id, title }
-      })
-      .filter(({ _id, title }) => _id && title)
+      internalTestList = assignmentBuckets
+        .map(({ key: _id, assignments }) => {
+          const hits = get(assignments, 'hits.hits', [])
+          const title = get(hits[0], '_source.title', '')
+          return { _id, title }
+        })
+        .filter(({ _id, title }) => _id && title)
 
+      return internalTestList
+    }
+    const assignmentBuckets = get(
+      response,
+      'aggregations.termIdBuckets.buckets',
+      []
+    )
+    assignmentBuckets.forEach((assignmentBucket) => {
+      const testTermId = assignmentBucket.key
+      const testTermName =
+        terms.find(({ _id }) => _id === testTermId)?.name || ''
+      const bucketData = get(assignmentBucket, 'buckets.buckets', [])
+      internalTestList.push(
+        ...bucketData
+          .map(({ key: _id, assignments }) => {
+            const hits = get(assignments, 'hits.hits', [])
+            const title = get(hits[0], '_source.title', '')
+            const testUniqueId = `${_id}_${testTermId}`
+            return {
+              _id,
+              title,
+              testUniqueId,
+              termId: testTermId,
+              termName: testTermName,
+            }
+          })
+          .filter(({ _id, title }) => _id && title)
+      )
+    })
     return internalTestList
   }
   const externalTestList = response

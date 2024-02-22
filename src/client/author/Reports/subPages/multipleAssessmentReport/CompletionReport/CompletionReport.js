@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
-import { omit, head } from 'lodash'
+import { omit, head, isEmpty } from 'lodash'
 import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
@@ -20,6 +20,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
 import { Container } from './styled'
 import { getUserOrgId, getUserRole } from '../../../../src/selectors/user'
+import { NoDataContainer } from '../../../common/styled'
 import { getCompareByOptions } from '../../dataWarehouseReports/MultipleAssessmentReport/utils'
 
 const TABLE_PAGE_SIZE = 50
@@ -117,6 +118,13 @@ function CompletionReport({
     }
   }, [pageFilters, statusColumnSortState, testColumnSort])
 
+  if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
+  }
   return (
     <EduIf condition={!(isChartDataLoading && isTableDataLoading)}>
       <EduThen>

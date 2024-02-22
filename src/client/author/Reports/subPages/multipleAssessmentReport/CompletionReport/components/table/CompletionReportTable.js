@@ -292,7 +292,9 @@ const CompletionReportTable = ({
     },
   ]
 
-  const dataSource = getTableDataSource([overAllData, ...tableData])
+  const dataSource = getTableDataSource(
+    tableData.length ? [overAllData, ...tableData] : []
+  )
 
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),
@@ -336,38 +338,32 @@ const CompletionReportTable = ({
   }
 
   const totalPageSize = parseInt(dataSource?.[1]?.totalRows, 10) || 0
-
   return (
     <TableContainer ref={childrenRef}>
-      <EduIf condition={tableData.length}>
-        <EduThen>
-          <TableHeader
-            urlCompareBy={compareByBasedOnRole}
-            compareBy={compareBy}
-            setCompareBy={setCompareBy}
-            settings={settings}
-            setMARSettings={setMARSettings}
-            compareByCB={compareByCB}
-            location={location}
-            setAnalyseBy={setAnalyseBy}
-            analyseBy={analyseBy}
-          />
-
-          <StyledTable
-            loading={isTableDataLoading}
-            onChange={handleTableChange}
-            columns={columns}
-            dataSource={dataSource}
-            pagination={{
-              total: totalPageSize,
-              onChange: handleTablePageChange,
-              pageSize: pageFilters.pageSize + 1,
-            }}
-            rowClassName={getRowClassName}
-            scroll={{ x: 'max-content' }}
-          />
-        </EduThen>
-      </EduIf>
+      <TableHeader
+        urlCompareBy={compareByBasedOnRole}
+        compareBy={compareBy}
+        setCompareBy={setCompareBy}
+        settings={settings}
+        setMARSettings={setMARSettings}
+        compareByCB={compareByCB}
+        location={location}
+        setAnalyseBy={setAnalyseBy}
+        analyseBy={analyseBy}
+      />
+      <StyledTable
+        loading={isTableDataLoading}
+        onChange={handleTableChange}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={{
+          total: totalPageSize,
+          onChange: handleTablePageChange,
+          pageSize: pageFilters.pageSize + 1,
+        }}
+        rowClassName={getRowClassName}
+        scroll={{ x: 'max-content' }}
+      />
     </TableContainer>
   )
 }

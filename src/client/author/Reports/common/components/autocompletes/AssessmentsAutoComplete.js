@@ -46,6 +46,7 @@ const AssessmentAutoComplete = ({
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const firstRender = useRef(true)
 
   // build dropdown data
   const dropdownData = testList.map((item) => ({
@@ -137,6 +138,17 @@ const AssessmentAutoComplete = ({
       loadTestListDebounced(query)
     }
   }, [query])
+
+  useEffect(() => {
+    const validTests = dropdownData.filter((d) =>
+      selectedTestIds.includes(d.key)
+    )
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    selectCB(validTests)
+  }, [testList])
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {
       const validTests = dropdownData.filter((d) =>

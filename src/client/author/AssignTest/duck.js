@@ -134,6 +134,11 @@ export const getTestEntitySelector = createSelector(
   (state) => state.entity
 )
 
+export const getTestEntityVideoDurationSelector = createSelector(
+  testsSelector,
+  (state) => state.entity?.videoDuration
+)
+
 const statePerformanceBandSelector = (state) => state.performanceBandReducer
 
 export const performanceBandSelector = createSelector(

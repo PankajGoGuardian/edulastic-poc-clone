@@ -38,6 +38,7 @@ import {
   vqQuotaForDistrictSelector,
 } from '../src/selectors/user'
 import { setUserFeaturesAction } from '../../student/Login/ducks'
+import { videoQuizActions } from '../VideoLibrary/ducks'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -393,6 +394,9 @@ function* createAssessmentSaga({ payload }) {
     }
     if (error?.response?.data?.message === VQ_QUOTA_EXHAUSTED) {
       const vqQuotaForDistrict = yield select(vqQuotaForDistrictSelector)
+      yield put(videoQuizActions.updateSearchString(''))
+      yield put(videoQuizActions.resetIsLoading())
+
       notification({
         type: 'warn',
         msg: `You have reached the maximum limit of ${vqQuotaForDistrict} tests for VideoQuiz.`,

@@ -24,6 +24,7 @@ import { getTestEntitySelector } from '../../AssignTest/duck'
 
 import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
 import VideoPreview from './components/VideoPreview/VideoPreview'
+import { getVideoDuration } from './utils/videoPreviewHelpers'
 
 const VideoQuizWorksheetComponent = ({
   annotations,
@@ -32,7 +33,7 @@ const VideoQuizWorksheetComponent = ({
   noCheck,
   questions,
   questionsById,
-  test: { isDocBased, videoUrl: entityLink },
+  test: { isDocBased, videoUrl: entityLink, videoDuration },
   testMode = false,
   studentWorkAnswersById,
   studentWork = false,
@@ -77,6 +78,12 @@ const VideoQuizWorksheetComponent = ({
 
   const onPlay = () => {
     videoRef?.current.playVideo?.()
+    const duration = getVideoDuration(videoRef)
+    if (duration > 0 && !videoDuration) {
+      setTestData({
+        videoDuration: duration,
+      })
+    }
   }
 
   const handleUpdateSeektime = (time = null) => {

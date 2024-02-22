@@ -7,7 +7,6 @@ import { withRouter } from 'react-router'
 import IconSmallCircle from '@edulastic/icons/src/IconSmallCircle'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { parseISO8601Duration } from '../../../../AssessmentCreate/components/CreateVideoQuiz/utils'
 import {
   ChannelTitleText,
   VideoCard,
@@ -58,8 +57,6 @@ const VideoTile = ({
     }
   }
 
-  const videoDuration = parseISO8601Duration(duration)
-
   return (
     <>
       <VideoCard key={key} bordered={false} hoverable onClick={handleOnClick}>
@@ -69,14 +66,14 @@ const VideoTile = ({
           width="100%"
           height="180px"
         >
-          <EduIf condition={videoDuration}>
+          <EduIf condition={duration}>
             <FlexContainer
               width="100%"
               height="100%"
               justifyContent="flex-end"
               alignItems="flex-end"
             >
-              <VideoDuration>{videoDuration}</VideoDuration>
+              <VideoDuration>{duration}</VideoDuration>
             </FlexContainer>
           </EduIf>
         </VideoThumbnail>

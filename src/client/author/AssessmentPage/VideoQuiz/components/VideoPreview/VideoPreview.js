@@ -39,6 +39,8 @@ import appConfig from '../../../../../../app-config'
 import { isiOS } from '../../../../../assessment/utils/helpers'
 import { isVideoQuizAndAIEnabledSelector } from '../../../../src/selectors/user'
 import { vqPreventQuestionSkippingSelector } from '../../../../../assessment/selectors/test'
+import { setTestDataAction } from '../../../../TestPage/ducks'
+import { getTestEntityVideoDurationSelector } from '../../../../AssignTest/duck'
 
 const { DragPreview } = DragDrop
 
@@ -72,6 +74,8 @@ const VideoPreview = ({
   vqEnableYouTubeEd,
   vqPreventSkipping,
   isVideoQuizAndAIEnabled,
+  setTestData,
+  vqVideoDuration,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -102,6 +106,13 @@ const VideoPreview = ({
   }
 
   const onPlay = () => {
+    const duration = getVideoDuration(videoRef)
+    if (duration > 0 && !vqVideoDuration) {
+      setTestData({
+        videoDuration: duration,
+      })
+    }
+
     setPlaying(true)
     if (markerArea?.current && markerArea?.current?.isOpen) {
       // Getting any unsaved MarkerJS annotation on play and saving same
@@ -432,6 +443,12 @@ const VideoPreview = ({
   const duration = getVideoDuration(videoRef)
   const marks = getMarks(annotations)
 
+  useEffect(() => {
+    if (duration > 0 && !vqVideoDuration) {
+      setTestData({ videoDuration: duration })
+    }
+  }, [duration, vqVideoDuration])
+
   const containerRect = annotationContainer?.current?.getBoundingClientRect()
 
   return (
@@ -644,8 +661,10 @@ export default connect(
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
     vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
+    vqVideoDuration: getTestEntityVideoDurationSelector(state),
   }),
   {
     removeAnswers: removeUserAnswerAction,
+    setTestData: setTestDataAction,
   }
 )(withRouter(VideoPreview))

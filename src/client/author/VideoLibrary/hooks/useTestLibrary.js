@@ -29,7 +29,7 @@ const useTestListFilter = ({
   /** Tests Pagination starts */
   const fetchTestByFilters = ({ append = false }) => {
     const collections =
-      isVideoQuizAndAIEnabled && collectionId ? [collectionId] : []
+      isVideoQuizAndAIEnabled && collectionId ? [collectionId] : ['PUBLIC']
     const newSearch = produce(testListSearchFilters, (draft) => {
       draft.subject = subject
       draft.grades = grades

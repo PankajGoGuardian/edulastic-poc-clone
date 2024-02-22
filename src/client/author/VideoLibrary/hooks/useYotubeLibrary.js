@@ -25,7 +25,7 @@ const useYoutubeLibrary = ({
 
     const ableToCreateTestFromUrl =
       textIsUrl &&
-      !isValidVideoUrl(hasError) &&
+      isValidVideoUrl(_searchString) &&
       !isLoading &&
       !!_searchString.length
 

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import { test as testConstants } from '@edulastic/constants'
 import { removeUserAnswerAction } from '../../../../../assessment/actions/answers'
 import { getPreviewSelector } from '../../../../src/selectors/view'
 import QuestionItem from '../QuestionItem/QuestionItem'
@@ -39,8 +40,13 @@ import appConfig from '../../../../../../app-config'
 import { isiOS } from '../../../../../assessment/utils/helpers'
 import { isVideoQuizAndAIEnabledSelector } from '../../../../src/selectors/user'
 import { vqPreventQuestionSkippingSelector } from '../../../../../assessment/selectors/test'
-import { setTestDataAction } from '../../../../TestPage/ducks'
-import { getTestEntityVideoDurationSelector } from '../../../../AssignTest/duck'
+import {
+  getTestEntitySelector,
+  setTestDataAction,
+} from '../../../../TestPage/ducks'
+
+const { statusConstants } = testConstants
+const { DRAFT } = statusConstants
 
 const { DragPreview } = DragDrop
 
@@ -75,7 +81,7 @@ const VideoPreview = ({
   vqPreventSkipping,
   isVideoQuizAndAIEnabled,
   setTestData,
-  vqVideoDuration,
+  test: { status, videoDuration: vqVideoDuration },
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -107,7 +113,7 @@ const VideoPreview = ({
 
   const onPlay = () => {
     const duration = getVideoDuration(videoRef)
-    if (duration > 0 && !vqVideoDuration) {
+    if (duration > 0 && status === DRAFT && !vqVideoDuration) {
       setTestData({
         videoDuration: duration,
       })
@@ -444,7 +450,7 @@ const VideoPreview = ({
   const marks = getMarks(annotations)
 
   useEffect(() => {
-    if (duration > 0 && !vqVideoDuration) {
+    if (duration > 0 && status === DRAFT && !vqVideoDuration) {
       setTestData({ videoDuration: duration })
     }
   }, [duration, vqVideoDuration])
@@ -661,7 +667,7 @@ export default connect(
     isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
     vqPreventSkipping: vqPreventQuestionSkippingSelector(state),
     vqEnableYouTubeEd: state.studentAssignment.vqEnableYouTubeEd,
-    vqVideoDuration: getTestEntityVideoDurationSelector(state),
+    test: getTestEntitySelector(state),
   }),
   {
     removeAnswers: removeUserAnswerAction,

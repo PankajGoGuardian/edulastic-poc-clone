@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { withWindowSizes, helpers, toggleChatDisplay } from '@edulastic/common'
 
+import { test as testConstants } from '@edulastic/constants'
 import { setTestDataAction } from '../../TestPage/ducks'
 
 import Questions from './components/Questions'
@@ -26,6 +27,8 @@ import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
 import VideoPreview from './components/VideoPreview/VideoPreview'
 import { getVideoDuration } from './utils/videoPreviewHelpers'
 
+const { statusConstants } = testConstants
+
 const VideoQuizWorksheetComponent = ({
   annotations,
   review,
@@ -33,7 +36,7 @@ const VideoQuizWorksheetComponent = ({
   noCheck,
   questions,
   questionsById,
-  test: { isDocBased, videoUrl: entityLink, videoDuration },
+  test: { isDocBased, videoUrl: entityLink, videoDuration, status },
   testMode = false,
   studentWorkAnswersById,
   studentWork = false,
@@ -79,7 +82,7 @@ const VideoQuizWorksheetComponent = ({
   const onPlay = () => {
     videoRef?.current.playVideo?.()
     const duration = getVideoDuration(videoRef)
-    if (duration > 0 && !videoDuration) {
+    if (duration > 0 && status === statusConstants.DRAFT && !videoDuration) {
       setTestData({
         videoDuration: duration,
       })

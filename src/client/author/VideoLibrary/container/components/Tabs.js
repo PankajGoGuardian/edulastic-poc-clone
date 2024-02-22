@@ -100,4 +100,13 @@ export default VideoLibraryTabs
 
 const StyledTabs = styled(Tabs)`
   padding: 0px 90px;
+
+  .ant-tabs-tab-active {
+    font-weight: bold;
+  }
+
+  .ant-tabs-ink-bar {
+    height: 4px;
+    border-radius: 6px;
+  }
 `

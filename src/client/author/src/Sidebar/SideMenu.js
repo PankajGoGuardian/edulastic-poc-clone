@@ -190,16 +190,16 @@ const menuItems = [
     path: 'author/tests',
   },
   {
-    label: 'Playlist',
-    icon: IconPlaylist2,
-    allowedPathPattern: [/author\/playlists/],
-    path: 'author/playlists',
-  },
-  {
     label: 'VideoQuiz',
     icon: IconVideoLibrary,
     allowedPathPattern: [/author\/vqlibrary/],
     path: 'author/vqlibrary',
+  },
+  {
+    label: 'Playlist',
+    icon: IconPlaylist2,
+    allowedPathPattern: [/author\/playlists/],
+    path: 'author/playlists',
   },
   {
     label: 'user management',

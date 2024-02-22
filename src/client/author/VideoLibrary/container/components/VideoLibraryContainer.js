@@ -6,7 +6,6 @@ import produce from 'immer'
 import { EduIf, EduThen } from '@edulastic/common'
 import VideoLibraryHeader from './Header'
 import VideoLibrarySearchBox from './SearchBox'
-import VideoLibrarySubHeader from './SubHeader'
 import VideoLibraryTabs from './Tabs'
 
 import {
@@ -172,7 +171,7 @@ const VideoLibrary = ({
     <>
       <VideoLibraryHeader />
       <VideoLibrarySearchBox {...searchBoxProps} />
-      <VideoLibrarySubHeader />
+      <br />
       <VideoLibraryTabs {...videoLibraryTabsProps} />
       <EduIf condition={!isLoading}>
         <EduThen>

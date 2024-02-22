@@ -104,7 +104,7 @@ const VideoTile = ({
                   <IconWrapper margin="0 5px 0 0">
                     <IconSmallCircle />
                   </IconWrapper>
-                  <ChannelTitleText>{totalQuestions} items</ChannelTitleText>
+                  <ChannelTitleText>{totalQuestions} Items</ChannelTitleText>
                 </>
               </EduIf>
             </FlexContainer>

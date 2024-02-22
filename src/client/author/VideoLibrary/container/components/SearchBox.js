@@ -1,5 +1,6 @@
 import React from 'react'
 import { FlexContainer } from '@edulastic/common'
+import styled from 'styled-components'
 import {
   FormItem,
   SearchInput,
@@ -28,11 +29,11 @@ const VideoLibrarySearchBox = ({
         flexDirection="column"
         justifyContent="center"
         width="100%"
-        maxWidth="400px"
+        maxWidth="320px"
         padding="28px 0px"
         height="108px"
       >
-        <SubHeader>Search or Paste Youtube URL</SubHeader>
+        <SubHeader>Search or Paste YouTube URL</SubHeader>
       </FlexContainer>
       <FlexContainer
         width="100%"
@@ -45,7 +46,7 @@ const VideoLibrarySearchBox = ({
             validateStatus={hasError ? 'error' : 'success'}
             help={errorMessage()}
           >
-            <SearchInput
+            <StyledSearchInput
               allowClear
               placeholder="For Eg: Algebra"
               onChange={(e) => handleOnChange(e.target.value)}
@@ -66,5 +67,13 @@ const VideoLibrarySearchBox = ({
     </StyledSearchBoxContainer>
   )
 }
+
+const StyledSearchInput = styled(SearchInput)`
+  input::placeholder {
+    padding-left: 8px;
+    font-weight: bold;
+    color: #999999;
+  }
+`
 
 export default VideoLibrarySearchBox

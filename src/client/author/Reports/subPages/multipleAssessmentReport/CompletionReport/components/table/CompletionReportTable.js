@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect } from 'react'
 import next from 'immer'
 import { IconEye } from '@edulastic/icons'
-import { themeColor } from '@edulastic/colors'
+import { greyThemeDark4, themeColor } from '@edulastic/colors'
 import {
   tableToDBSortOrderMap,
   downloadCSV,
@@ -147,8 +147,10 @@ const CompletionReportTable = ({
           path = `${path}/${districtId}/${record.testId}`
         }
         const testName = record.index === 0 ? record.testName : ''
-        return (
+        return testName !== 'Overall' ? (
           <LinkCell value={{ _id: record.testId, name: testName }} url={path} />
+        ) : (
+          <p style={{ color: greyThemeDark4 }}>{testName}</p>
         )
       },
     },
@@ -271,6 +273,7 @@ const CompletionReportTable = ({
               {},
               [record]
             )}`}
+            target="_blank"
           >
             <IconEye color={themeColor} width={18} height={18} />
           </Link>
@@ -320,8 +323,11 @@ const CompletionReportTable = ({
 
   useEffect(() => {
     if (isCsvDownloading && childrenRef.current) {
-      const { csvText, csvRawData } = convertTableToCSV(childrenRef.current)
-      onCsvConvert(csvText, csvRawData)
+      const { csvRawData } = convertTableToCSV(childrenRef.current)
+      const finalCsvData = csvRawData
+        .map((row) => row.slice(0, row.length - 2).join(','))
+        .join('\n')
+      onCsvConvert(finalCsvData)
     }
   }, [isCsvDownloading])
   const getRowClassName = (record) => {

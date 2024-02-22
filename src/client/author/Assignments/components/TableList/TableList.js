@@ -668,28 +668,23 @@ const TableList = ({
         return (
           selectedItems.length > 0 && (
             <ActionDiv>
-              <Tooltip
-                placement="bottomLeft"
-                title="Select tests to perform bulk actions like viewing completion report, adding to folder, and bulk update settings"
+              <Dropdown
+                overlay={menu}
+                trigger={['click']}
+                placement="bottomRight"
               >
-                <Dropdown
-                  overlay={menu}
-                  trigger={['click']}
-                  placement="bottomRight"
+                <EduButton
+                  height="22px"
+                  width="100%"
+                  maxWidth="75px"
+                  ml="0px"
+                  data-cy="assignmentActions"
+                  isBlue
+                  isGhost
                 >
-                  <EduButton
-                    height="22px"
-                    width="100%"
-                    maxWidth="75px"
-                    ml="0px"
-                    data-cy="assignmentActions"
-                    isBlue
-                    isGhost
-                  >
-                    ACTIONS
-                  </EduButton>
-                </Dropdown>
-              </Tooltip>
+                  ACTIONS
+                </EduButton>
+              </Dropdown>
             </ActionDiv>
           )
         )

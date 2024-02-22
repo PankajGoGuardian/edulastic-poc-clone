@@ -239,26 +239,21 @@ class AdvancedTable extends Component {
           return (
             selectedRows.length > 0 && (
               <ActionDiv>
-                <Tooltip
-                  placement="bottomLeft"
-                  title="Select tests to perform bulk actions like viewing completion report, adding to folder, and bulk update settings"
+                <Dropdown
+                  overlay={menu}
+                  trigger={['click']}
+                  placement="bottomRight"
                 >
-                  <Dropdown
-                    overlay={menu}
-                    trigger={['click']}
-                    placement="bottomRight"
+                  <EduButton
+                    height="28px"
+                    width="100%"
+                    data-cy="actions"
+                    isBlue
+                    isGhost
                   >
-                    <EduButton
-                      height="28px"
-                      width="100%"
-                      data-cy="actions"
-                      isBlue
-                      isGhost
-                    >
-                      ACTIONS
-                    </EduButton>
-                  </Dropdown>
-                </Tooltip>
+                    ACTIONS
+                  </EduButton>
+                </Dropdown>
               </ActionDiv>
             )
           )

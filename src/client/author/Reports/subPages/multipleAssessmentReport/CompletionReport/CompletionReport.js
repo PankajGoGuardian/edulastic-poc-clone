@@ -16,6 +16,7 @@ import {
   getCompletionChartData,
   getCompletionReportTableData,
   getCompletionReportTableDataLoading,
+  getCsvDownloadLoader,
 } from './ducks'
 import { getCsvDownloadingState } from '../../../ducks'
 import CompletionReportTable from './components/table/CompletionReportTable'
@@ -44,6 +45,7 @@ function CompletionReport({
   getCsvData,
   role,
   districtId,
+  csvDownloadLoadingState,
   ...props
 }) {
   const compareByBasedOnRole = getCompareByOptions(role).filter(
@@ -160,6 +162,7 @@ function CompletionReport({
             sharedReport={sharedReport}
             role={role}
             districtId={districtId}
+            csvDownloadLoadingState={csvDownloadLoadingState}
             compareByBasedOnRole={compareByBasedOnRole}
           />
         </Container>
@@ -183,6 +186,7 @@ const enhance = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     districtId: getUserOrgId(state),
+    csvDownloadLoadingState: getCsvDownloadLoader(state),
   }),
   { ...actions }
 )

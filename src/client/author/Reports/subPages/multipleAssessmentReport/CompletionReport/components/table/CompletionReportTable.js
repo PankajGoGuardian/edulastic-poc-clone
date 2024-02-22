@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import qs from 'qs'
 import { roleuser } from '@edulastic/constants'
 import TableHeader from './TableHeader'
-import { ActionContainer, StyledTable, TableContainer } from './styled'
+import { StyledTable, TableContainer } from './styled'
 
 import CopyReportLink from './CopyReportLink'
 import {
@@ -29,6 +29,7 @@ import {
 
 import { convertTableToCSV } from '../../../../../common/util'
 import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
+import StatusCsvDownload from './StatusCsvDownload'
 import EllipsisTextWithTooltip from '../../../common/components/EllipsisTextWithTooltip'
 
 const getTableColumns = (isSharedReport, settings, staticColumns) => {
@@ -89,13 +90,11 @@ const CompletionReportTable = ({
   setPageFilters,
   role,
   districtId,
+  csvDownloadLoadingState,
   compareByBasedOnRole,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
-  const search = qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-    indices: true,
-  })
+
   const getCellValue = (value, total) => {
     let totalValue = value || 0
     if (isAnalyseByPercent) {
@@ -117,7 +116,7 @@ const CompletionReportTable = ({
     dimensionName: '',
     dimensionId: '',
   }
-  const handleDownloadCsv = (record, progressStatus, progressName) => {
+  const handleDownloadCsv = (record, progressStatus, progressName, index) => {
     const params = {
       ...settings.requestFilters,
       analyseBy,
@@ -126,6 +125,7 @@ const CompletionReportTable = ({
       progressName,
       testId: record.testId,
       dimensionVal: record.dimensionId,
+      index,
     }
 
     if (compareByKeysToFilterKeys[compareBy.key]) {
@@ -161,14 +161,17 @@ const CompletionReportTable = ({
       key: 'assigned',
       sorter: true,
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(record, utastatus.ASSIGNED, sortKey.ASSIGNED)
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.ASSIGNED}
+          progressName={sortKey.ASSIGNED}
+          index={index}
         >
           {value}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -178,14 +181,17 @@ const CompletionReportTable = ({
       sorter: !isAnalyseByPercent,
       className: 'absent',
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(record, utastatus.ABSENT, sortKey.ABSENT)
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.ABSENT}
+          progressName={sortKey.ABSENT}
+          index={index}
         >
           {getCellValue(value, record?.assigned)}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -195,18 +201,17 @@ const CompletionReportTable = ({
       className: 'absent',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(
-              record,
-              utastatus.NOT_STARTED,
-              sortKey.NOT_STARTED
-            )
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.NOT_STARTED}
+          progressName={sortKey.NOT_STARTED}
+          index={index}
         >
           {getCellValue(value, record?.assigned)}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -215,18 +220,17 @@ const CompletionReportTable = ({
       key: 'inProgress',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(
-              record,
-              utastatus.IN_PROGRESS,
-              sortKey.IN_PROGRESS
-            )
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.IN_PROGRESS}
+          progressName={sortKey.IN_PROGRESS}
+          index={index}
         >
           {getCellValue(value, record?.assigned)}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -235,14 +239,17 @@ const CompletionReportTable = ({
       key: 'submitted',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(record, utastatus.SUBMITTED, sortKey.SUBMITTED)
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.SUBMITTED}
+          progressName={sortKey.SUBMITTED}
+          index={index}
         >
           {getCellValue(value, record?.assigned)}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -251,14 +258,17 @@ const CompletionReportTable = ({
       key: 'graded',
       sorter: !isAnalyseByPercent,
       align: 'center',
-      render: (value, record) => (
-        <ActionContainer
-          onClick={() =>
-            handleDownloadCsv(record, utastatus.GRADED, sortKey.GRADED)
-          }
+      render: (value, record, index) => (
+        <StatusCsvDownload
+          record={record}
+          handleDownloadCsv={handleDownloadCsv}
+          csvDownloadLoadingState={csvDownloadLoadingState}
+          progressStatus={utastatus.GRADED}
+          progressName={sortKey.GRADED}
+          index={index}
         >
           {getCellValue(value, record?.assigned)}
-        </ActionContainer>
+        </StatusCsvDownload>
       ),
     },
     {
@@ -301,7 +311,7 @@ const CompletionReportTable = ({
 
   const columns = useMemo(
     () => getTableColumns(false, settings, staticColumns),
-    [tableData, settings, isAnalyseByPercent]
+    [tableData, settings, isAnalyseByPercent, csvDownloadLoadingState]
   )
 
   const handleTableChange = (pagination, filters, sorter) => {

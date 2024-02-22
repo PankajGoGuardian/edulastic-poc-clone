@@ -14,7 +14,12 @@ import TableHeader from './TableHeader'
 import { ActionContainer, StyledTable, TableContainer } from './styled'
 
 import CopyReportLink from './CopyReportLink'
-import { getTableDataSource, sortKeys, tableColumnsData } from '../../utils'
+import {
+  compareByKeys,
+  getTableDataSource,
+  sortKeys,
+  tableColumnsData,
+} from '../../utils'
 import { buildDrillDownUrl } from '../../../../dataWarehouseReports/common/utils'
 import LinkCell from '../../../../dataWarehouseReports/common/components/LinkCell'
 import {
@@ -26,9 +31,11 @@ import {
 
 import { convertTableToCSV } from '../../../../../common/util'
 import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
+import EllipsisTextWithTooltip from '../../../common/components/EllipsisTextWithTooltip'
 
 const getTableColumns = (isSharedReport, settings, staticColumns) => {
   const compareBy = settings.selectedCompareBy
+  const { SCHOOL, TEACHER } = compareByKeys
   const columnByCompareBy = next(tableColumnsData, (_columns) => {
     const compareByIdx = _columns.findIndex(
       (col) => col.key === sortKeys.COMPARE_BY
@@ -44,12 +51,19 @@ const getTableColumns = (isSharedReport, settings, staticColumns) => {
             reportFilters: settings.requestFilters,
             reportUrl: window.location.pathname,
           })
-
+      if ([SCHOOL, TEACHER].includes(compareBy.key)) {
+        return (
+          <LinkCell
+            value={{ _id: record.dimensionId, name: record.dimensionName }}
+            url={url}
+            showLink
+          />
+        )
+      }
       return (
-        <LinkCell
-          value={{ _id: record.dimensionId, name: record.dimensionName }}
-          url={url}
-          showLink
+        <EllipsisTextWithTooltip
+          toolTipMsg={record.dimensionName}
+          text={record.dimensionName}
         />
       )
     }

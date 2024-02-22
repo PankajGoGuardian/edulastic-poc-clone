@@ -7,6 +7,7 @@ import {
   completionReportChartPageSize as barChartPageSize,
   analyzeBy,
   statusMap,
+  compareByKeys,
 } from '../common/utils/constants'
 import Chart from './components/chart'
 import {
@@ -45,7 +46,9 @@ function CompletionReport({
   districtId,
   ...props
 }) {
-  const compareByBasedOnRole = getCompareByOptions(role)
+  const compareByBasedOnRole = getCompareByOptions(role).filter(
+    (options) => options.key !== compareByKeys.STUDENT
+  )
   const compareBy = head(compareByBasedOnRole)
   if (!settings.requestFilters?.termId) {
     settings.selectedCompareBy = compareBy

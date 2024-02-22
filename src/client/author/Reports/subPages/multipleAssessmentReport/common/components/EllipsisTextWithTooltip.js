@@ -11,7 +11,7 @@ const EllipsisTextWithTooltip = ({
   if (showToolTip) {
     return (
       <Tooltip title={toolTipMsg} {...toolTipProps}>
-        <Text>{text}</Text>
+        <Text>{text || '-'}</Text>
       </Tooltip>
     )
   }

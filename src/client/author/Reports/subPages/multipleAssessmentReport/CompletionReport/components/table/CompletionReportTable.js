@@ -287,10 +287,12 @@ const CompletionReportTable = ({
       render: (text, record) => {
         return (
           <Link
-            to={`/author/reports/performance-over-time${getCompletionReportPathForAssignment(
+            to={`/author/reports/peer-performance/test/${getCompletionReportPathForAssignment(
               record.testId,
               {},
-              [record]
+              [record],
+              settings?.requestFilters,
+              compareBy
             )}`}
             target="_blank"
           >

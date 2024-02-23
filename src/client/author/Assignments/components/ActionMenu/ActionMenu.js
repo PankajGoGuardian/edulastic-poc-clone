@@ -60,6 +60,7 @@ export const getCompletionReportPathForAssignment = (
   }
   q.testIds = testIds
   if (!isEmpty(compareBy)) {
+    q.compareBy = compareBy.key
     q.selectedCompareBy = compareBy.key
     if (compareBy.key in compareByKeysToFilterKeys && row.length === 1) {
       q[compareByKeysToFilterKeys[compareBy.key]] =

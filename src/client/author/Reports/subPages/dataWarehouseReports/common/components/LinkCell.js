@@ -4,11 +4,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { CompareByContainer } from './styledComponents'
 
-const LinkCell = ({ value, url, openNewTab = false }) => {
+const LinkCell = ({ value, url, openNewTab = false, title = value.name }) => {
   const showLink = !!url
   const cellValue = value.name || '-'
 
   const linkProps = {
+    // FIXME if current user is a proxy, then new tab gets opened as proxying user not proxied user.
     target: openNewTab ? '_blank' : '_self',
     rel: openNewTab ? 'opener' : '',
   }
@@ -17,7 +18,7 @@ const LinkCell = ({ value, url, openNewTab = false }) => {
     <div>
       <EduIf condition={showLink}>
         <EduThen>
-          <Tooltip title={value.name}>
+          <Tooltip title={title}>
             <Link to={url} {...linkProps}>
               <CompareByContainer className="dimension-name">
                 {cellValue}
@@ -26,7 +27,7 @@ const LinkCell = ({ value, url, openNewTab = false }) => {
           </Tooltip>
         </EduThen>
         <EduElse>
-          <Tooltip title={value.name}>
+          <Tooltip title={title}>
             <CompareByContainer className="dimension-name">
               {cellValue}
             </CompareByContainer>

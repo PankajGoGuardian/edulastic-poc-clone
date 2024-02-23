@@ -33,7 +33,11 @@ import { tableColumnsData, compareByMap, sortKeys, getTestName } from '../utils'
 import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 import BackendPagination from '../../../../common/components/BackendPagination'
 import LinkCell from '../../common/components/LinkCell'
-import { buildDrillDownUrl, compareByKeys } from '../../common/utils'
+import {
+  buildDrillDownUrl,
+  compareByKeys,
+  nextCompareByKeys,
+} from '../../common/utils'
 
 const { formatDate, TABLE_SORT_ORDER_TYPES } = reportUtils.common
 
@@ -121,7 +125,7 @@ const getTableColumns = ({
     _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
     _columns[compareByIdx].sortOrder =
       sortFilters.sortKey === sortKeys.COMPARE_BY && sortFilters.sortOrder
-    _columns[compareByIdx].render = (data, record) => {
+    _columns[compareByIdx].render = (name, record) => {
       const disableDrillDownCheck =
         isSharedReport ||
         (isDistrictGroupAdmin &&
@@ -145,11 +149,18 @@ const getTableColumns = ({
             reportFilters,
             reportUrl: window.location.pathname,
           })
+      const tooltip =
+        nextCompareByKeys[compareBy.key] === compareByKeys.STUDENT &&
+        isDistrictGroupAdmin &&
+        disableDrillDownCheck
+          ? 'For further drill down, visit the same report from relevant district admin account using District Reports'
+          : name
       return (
         <LinkCell
-          value={{ _id: record.id, name: data }}
+          value={{ _id: record.id, name }}
           url={url}
           openNewTab={isStudentCompareBy}
+          title={tooltip}
         />
       )
     }

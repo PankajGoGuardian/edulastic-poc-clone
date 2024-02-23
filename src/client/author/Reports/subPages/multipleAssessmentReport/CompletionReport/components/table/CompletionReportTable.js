@@ -7,7 +7,6 @@ import {
   downloadCSV,
 } from '@edulastic/constants/reportUtils/common'
 import { Link } from 'react-router-dom'
-import qs from 'qs'
 import { roleuser } from '@edulastic/constants'
 import TableHeader from './TableHeader'
 import { StyledTable, TableContainer } from './styled'
@@ -309,6 +308,7 @@ const CompletionReportTable = ({
           <CopyReportLink
             report={record}
             filterSettings={settings?.requestFilters || {}}
+            compareBy={compareBy}
           />
         )
       },

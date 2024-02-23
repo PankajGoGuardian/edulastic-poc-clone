@@ -2,7 +2,7 @@ import React from 'react'
 import { Menu, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
 import qs from 'qs'
-import { isEmpty } from 'lodash'
+import { isEmpty, intersection } from 'lodash'
 
 import { assignmentApi } from '@edulastic/api'
 import { EduIf, captureSentryException, notification } from '@edulastic/common'
@@ -13,7 +13,6 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 
-import { intersection } from 'lodash'
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
 import completionReportIcon from '../../assets/completion-report.svg'
@@ -21,6 +20,7 @@ import infomationIcon from '../../assets/information.svg'
 import responsiveIcon from '../../assets/responses.svg'
 import { Container, StyledMenu, StyledLink, SpaceElement } from './styled'
 import DuplicateTest from './ItemClone'
+import { compareByKeysToFilterKeys } from '../../../Reports/subPages/dataWarehouseReports/common/utils'
 
 const { duplicateAssignment } = assignmentApi
 const { testContentVisibility: testContentVisibilityOptions } = test
@@ -38,7 +38,8 @@ export const getCompletionReportPathForAssignment = (
   testIds = '',
   assignment = {},
   row = [],
-  filterSettings = {}
+  filterSettings = {},
+  compareBy = {}
 ) => {
   const q = {}
   q.termId = assignment.termId || row[0]?.termId
@@ -58,6 +59,13 @@ export const getCompletionReportPathForAssignment = (
     testIds = 'All'
   }
   q.testIds = testIds
+  if (!isEmpty(compareBy)) {
+    q.selectedCompareBy = compareBy.key
+    if (compareBy.key in compareByKeysToFilterKeys && row.length === 1) {
+      q[compareByKeysToFilterKeys[compareBy.key]] =
+        row[0].testName === 'Overall' ? 'All' : row[0].dimensionId
+    }
+  }
   return `?${qs.stringify(q)}`
 }
 

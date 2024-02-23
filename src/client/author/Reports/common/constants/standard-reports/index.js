@@ -15,6 +15,7 @@ import ActivityByTeacherImg from '../../../../src/assets/reports/activity-by-tea
 import AssessmentSummaryImg from '../../../../src/assets/reports/assessment-summary/assessment-summary.png'
 import EngagementSummaryImg from '../../../../src/assets/reports/engagement-summary/engagement-summary.png'
 import MarAnalysis from '../../../../src/assets/reports/mar-analysis/mar-analysis.png'
+import MarCompletion from '../../../../src/assets/reports/mar-completion/mar-completion.png'
 import MarOverTime from '../../../../src/assets/reports/mar-over-time/mar-over-time.png'
 import MARPreVsPost from '../../../../src/assets/reports/mar-pre-vs-post/mar-pre-vs-post.png'
 import MarProgress from '../../../../src/assets/reports/mar-progress/mar-progress.png'
@@ -157,12 +158,12 @@ export const INSIGHT_REPORTS = [
         key: 'completionReport',
         title: 'Test Completion Analysis',
         sellThumbnail: CompletionReportIcon,
-        thumbnail: CompletionReportIcon,
+        thumbnail: MarCompletion,
         location: '/author/reports/completion-report',
         description:
           'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly',
         sellDescription:
-          'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly',
+          'Understand which students are yet to submit assignments',
       },
       {
         key: 'performanceOverTime',

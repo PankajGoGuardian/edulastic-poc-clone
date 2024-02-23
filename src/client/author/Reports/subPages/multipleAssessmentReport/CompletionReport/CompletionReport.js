@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 
 import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
@@ -48,7 +48,21 @@ function CompletionReport({
   csvDownloadLoadingState,
   ...props
 }) {
-  const compareByBasedOnRole = getCompareByOptions(role).filter(
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
+  const isSharedReport = !isEmpty(sharedReport)
+  if (isSharedReport && (isChartDataLoading || isTableDataLoading)) {
+    settings.requestFilters = sharedReportFilters
+  }
+
+  const compareByBasedOnRole = getCompareByOptions(userRole).filter(
     (options) => options.key !== compareByKeys.STUDENT
   )
   const compareBy = head(compareByBasedOnRole)
@@ -164,6 +178,7 @@ function CompletionReport({
             districtId={districtId}
             csvDownloadLoadingState={csvDownloadLoadingState}
             compareByBasedOnRole={compareByBasedOnRole}
+            isSharedReport={isSharedReport}
           />
         </Container>
       </EduThen>

@@ -92,6 +92,7 @@ const CompletionReportTable = ({
   districtId,
   csvDownloadLoadingState,
   compareByBasedOnRole,
+  isSharedReport,
 }) => {
   const isAnalyseByPercent = analyseBy.key === 'percentage'
 
@@ -147,10 +148,16 @@ const CompletionReportTable = ({
           path = `${path}/${districtId}/${record.testId}`
         }
         const testName = record.index === 0 ? record.testName : ''
-        return testName !== 'Overall' ? (
+        return testName !== 'Overall' && !isSharedReport ? (
           <LinkCell value={{ _id: record.testId, name: testName }} url={path} />
         ) : (
-          <p style={{ color: greyThemeDark4 }}>{testName}</p>
+          <p
+            style={{
+              color: testName === 'Overall' ? greyThemeDark4 : themeColor,
+            }}
+          >
+            {testName}
+          </p>
         )
       },
     },
@@ -310,7 +317,7 @@ const CompletionReportTable = ({
   )
 
   const columns = useMemo(
-    () => getTableColumns(false, settings, staticColumns),
+    () => getTableColumns(isSharedReport, settings, staticColumns),
     [tableData, settings, isAnalyseByPercent, csvDownloadLoadingState]
   )
 

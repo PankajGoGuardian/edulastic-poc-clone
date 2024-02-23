@@ -418,11 +418,6 @@ const MultipleAssessmentReportFilters = ({
     filters.testUniqIds,
   ])
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
-  const isDisable = useMemo(() => {
-    if (isMultiSchoolYear) {
-      return !testUniqIds.length
-    }
-  }, [isMultiSchoolYear, testUniqIds])
 
   // for districtGroupAdmin we need one district / term combination for autocompletes
   const [
@@ -452,6 +447,10 @@ const MultipleAssessmentReportFilters = ({
     return [termId, districtId, filtersDisabled, filtersDisabledMessage]
   }, [filters.termId, filters.districtIds, isDistrictGroupAdmin])
 
+  const isFieldRequired =
+    isMultiSchoolYear || filters.testTermIds !== filters.termId
+  const isApplyDisabledForSelectedTests = isFieldRequired && !testUniqIds.length
+
   const applyButton = () => {
     const ApplyButton = ({ width = '25%' }) => (
       <StyledEduButton
@@ -461,13 +460,15 @@ const MultipleAssessmentReportFilters = ({
         key="applyButton"
         data-cy="applyFilter"
         data-testid="applyFilter"
-        disabled={!showApply || loadingFiltersData || isDisable}
+        disabled={
+          !showApply || loadingFiltersData || isApplyDisabledForSelectedTests
+        }
         onClick={() => onGoClick()}
       >
         Apply
       </StyledEduButton>
     )
-    if (isDisable) {
+    if (isApplyDisabledForSelectedTests) {
       return (
         <StyledTooltip
           placement="topRight"
@@ -735,7 +736,7 @@ const MultipleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testGrade"
                           placeholder="All Test Grade"
-                          label={getLabel('Test Grade', isMultiSchoolYear)}
+                          label={getLabel('Test Grade', isFieldRequired)}
                           onChange={(e) => {
                             const selected = staticDropDownData.grades.filter(
                               (a) => e.includes(a.key)
@@ -754,7 +755,7 @@ const MultipleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           placeholder="All Test Subject"
                           dataCy="testSubject"
-                          label={getLabel('Test Subject', isMultiSchoolYear)}
+                          label={getLabel('Test Subject', isFieldRequired)}
                           onChange={(e) => {
                             const selected = staticDropDownData.subjects.filter(
                               (a) => e.includes(a.key)

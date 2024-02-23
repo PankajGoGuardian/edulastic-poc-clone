@@ -79,13 +79,10 @@ const SelectAssessmentsForMultiSchoolYear = ({
     (testTermIdsArr.length > 1 && subjectArr.length && gradesArr.length)
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(testTermIds)
+  const isFieldRequired = isMultiSchoolYear || testTermIds !== termId
   const isLoading = isLongitudinalReport ? multiSchoolYearLoading : loading
-  const isDisable = useMemo(() => {
-    if (isMultiSchoolYear) {
-      return !subjectArr.length || !gradesArr.length
-    }
-    return false
-  }, [testTermIds, subjects, grades])
+  const isApplyDisabledForSelectedTests =
+    isFieldRequired && (!subjectArr.length || !gradesArr.length)
   // build dropdown data
 
   const termsMap = keyBy(schoolYears, 'key')
@@ -203,10 +200,10 @@ const SelectAssessmentsForMultiSchoolYear = ({
   }, [query])
   // Reset the selected test fields
   useEffect(() => {
-    if (isDisable) {
+    if (isApplyDisabledForSelectedTests) {
       selectCB([])
     }
-  }, [isDisable])
+  }, [isApplyDisabledForSelectedTests])
 
   // Filtering the selected tests from tests
   useEffect(() => {
@@ -235,7 +232,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const label = (
     <>
       Test
-      {isMultiSchoolYear && (
+      {isFieldRequired && (
         <>
           <MandatorySymbol>*</MandatorySymbol> (You can select Max 20)
         </>
@@ -243,7 +240,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
     </>
   )
 
-  const disabledPlaceholder = isDisable
+  const disabledPlaceholder = isApplyDisabledForSelectedTests
     ? 'Select a Test Grade and Subject to activate the Test Filter'
     : 'Select Test'
 
@@ -257,12 +254,12 @@ const SelectAssessmentsForMultiSchoolYear = ({
       onChange={onChange}
       onSearch={onSearch}
       value={tests?.length ? selectedTestIds : []}
-      disabled={isDisable}
+      disabled={isApplyDisabledForSelectedTests}
       options={isLoading ? [] : dropdownData || []}
       loading={isLoading}
     />
   )
-  if (isDisable) {
+  if (isApplyDisabledForSelectedTests) {
     return (
       <Tooltip
         placement="bottomLeft"

@@ -134,6 +134,7 @@ const WholeLearnerReportFilters = ({
   const urlStudentId = splittedPath[splittedPath.length - 1]
   const { terms = [], districtGroup } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
+  const { termId } = filters
 
   const {
     studentClassData = [],
@@ -165,11 +166,9 @@ const WholeLearnerReportFilters = ({
   ])
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(filters.testTermIds)
-  const isDisable = useMemo(() => {
-    if (isMultiSchoolYear) {
-      return !testUniqIds.length
-    }
-  }, [isMultiSchoolYear, testUniqIds])
+  const testTermIds = convertItemToArray(filters.testTermIds)
+  const isFieldRequired = isMultiSchoolYear || filters.termId !== testTermIds[0]
+  const isApplyDisabledForSelectedTests = isFieldRequired && !testUniqIds.length
 
   useEffect(() => {
     const q = {
@@ -416,13 +415,15 @@ const WholeLearnerReportFilters = ({
         key="applyButton"
         data-cy="applyFilter"
         data-testid="applyFilter"
-        disabled={!showApply || loadingFiltersData || isDisable}
+        disabled={
+          !showApply || loadingFiltersData || isApplyDisabledForSelectedTests
+        }
         onClick={() => onGoClick()}
       >
         Apply
       </StyledEduButton>
     )
-    if (isDisable) {
+    if (isApplyDisabledForSelectedTests) {
       return (
         <StyledTooltip
           placement="topRight"
@@ -436,9 +437,11 @@ const WholeLearnerReportFilters = ({
     }
     return <ApplyButton />
   }
-  const testTermIds = convertItemToArray(filters.testTermIds)
-  const testsNotSelectedForMultiTestTerms =
-    testTermIds.length > 1 && !testUniqIds.length
+  const testsNotSelectedForMultiTestTermsOrDifferentTermIds =
+    (testTermIds.length > 1 && !testUniqIds.length) ||
+    (testTermIds.length === 1 &&
+      testTermIds[0] !== termId &&
+      !testUniqIds.length)
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -612,7 +615,7 @@ const WholeLearnerReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testGrade"
                           placeholder="All Test Grade"
-                          label={getLabel('Test Grade', isMultiSchoolYear)}
+                          label={getLabel('Test Grade', isFieldRequired)}
                           onChange={(e) => {
                             const selected = staticDropDownData.grades.filter(
                               (a) => e.includes(a.key)
@@ -631,7 +634,7 @@ const WholeLearnerReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testSubject"
                           placeholder="All Test Subject"
-                          label={getLabel('Test Subject', isMultiSchoolYear)}
+                          label={getLabel('Test Subject', isFieldRequired)}
                           onChange={(e) => {
                             const selected = staticDropDownData.subjects.filter(
                               (a) => e.includes(a.key)
@@ -783,7 +786,7 @@ const WholeLearnerReportFilters = ({
             <Tooltip
               placement="bottomRight"
               title={
-                testsNotSelectedForMultiTestTerms
+                testsNotSelectedForMultiTestTermsOrDifferentTermIds
                   ? `Please select a test to activate 'Apply' filter.`
                   : ''
               }
@@ -793,7 +796,8 @@ const WholeLearnerReportFilters = ({
                 data-testid="applyRowFilter"
                 data-cy="applyRowFilter"
                 disabled={
-                  loadingFiltersData || testsNotSelectedForMultiTestTerms
+                  loadingFiltersData ||
+                  testsNotSelectedForMultiTestTermsOrDifferentTermIds
                 }
                 onClick={() => onGoClick()}
               >

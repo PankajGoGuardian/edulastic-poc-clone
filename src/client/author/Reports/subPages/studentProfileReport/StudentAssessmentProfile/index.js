@@ -29,9 +29,9 @@ import {
   getStudentAssessmentProfileRequestAction,
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
+  getActivityModalVisibleSelector,
+  setIsActivityModalVisibleAction,
 } from './ducks'
-import { getIsPreviewModalVisibleSelector } from '../../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../../assessment/actions/test'
 import TestActivityModal from './common/components/TestActivityModal'
 
 const StudentAssessmentProfile = ({
@@ -49,8 +49,8 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
-  isPreviewModalVisible,
-  setIsTestPreviewVisible,
+  isActivityModalVisible,
+  setIsTestActivityVisible,
 }) => {
   const anonymousString = t('common.anonymous')
   const [currRecord, setCurrentRecord] = useState(null)
@@ -189,15 +189,15 @@ const StudentAssessmentProfile = ({
             location={location}
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
-            setIsTestPreviewVisible={(_record) => {
+            setIsTestActivityVisible={(_record) => {
               setCurrentRecord(_record)
-              setIsTestPreviewVisible(true)
+              setIsTestActivityVisible(true)
             }}
           />
         </StyledCard>
-        {isPreviewModalVisible && (
+        {isActivityModalVisible && (
           <TestActivityModal
-            isModalVisible={isPreviewModalVisible}
+            isModalVisible={isActivityModalVisible}
             skipPlayer
             groupId={currRecord.groupId}
             testActivityId={currRecord.testActivityId}
@@ -205,7 +205,7 @@ const StudentAssessmentProfile = ({
             testId={currRecord.testId}
             studentId={settings?.selectedStudent?.key}
             studentName={settings?.selectedStudent?.title}
-            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
+            closeTestPreviewModal={() => setIsTestActivityVisible(false)}
           />
         )}
       </EduThen>
@@ -224,12 +224,12 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+    isActivityModalVisible: getActivityModalVisibleSelector(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
     resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
-    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+    setIsTestActivityVisible: setIsActivityModalVisibleAction,
   }
 )
 

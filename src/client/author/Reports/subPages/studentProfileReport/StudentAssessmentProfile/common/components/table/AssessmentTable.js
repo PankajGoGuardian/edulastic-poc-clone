@@ -107,7 +107,7 @@ const tableColumns = (
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible
+  setIsTestActivityVisible
 ) => [
   {
     title: 'Assessment Name',
@@ -118,7 +118,7 @@ const tableColumns = (
     width: 200,
     render: (data, record) =>
       !isSharedReport ? (
-        <AssessmentTitle onClick={() => setIsTestPreviewVisible(record)}>
+        <AssessmentTitle onClick={() => setIsTestActivityVisible(record)}>
           {data}
         </AssessmentTitle>
       ) : (
@@ -176,9 +176,14 @@ const getColumns = (
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible
+  setIsTestActivityVisible
 ) => [
-  ...tableColumns(location, pageTitle, isSharedReport, setIsTestPreviewVisible),
+  ...tableColumns(
+    location,
+    pageTitle,
+    isSharedReport,
+    setIsTestActivityVisible
+  ),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -257,14 +262,14 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible,
+  setIsTestActivityVisible,
 }) => {
   const columns = getColumns(
     studentName,
     location,
     pageTitle,
     isSharedReport,
-    setIsTestPreviewVisible
+    setIsTestActivityVisible
   )
 
   const filteredData = filter(data, (test) =>

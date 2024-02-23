@@ -111,6 +111,7 @@ const TestActivityModal = ({
   const [hideCorrectAnswer, setHideCorrectAnswer] = useState(true)
   const [showAttachmentsModal, setShowAttachmentModal] = useState(false)
   const [showTestletPlayer, setShowTestletPlayer] = useState(false)
+  const [showPlayerModal, setShowPlayerModal] = useState(false)
   const [selectedTestItem, setSelectedTestItem] = useState([])
   const [showDocBasedPlayer, setShowDocBasedPlayer] = useState(false)
   const [isStudentWorkCollapseOpen, setIsStudentWorkCollapseOpen] = useState(
@@ -252,9 +253,11 @@ const TestActivityModal = ({
   const handleShowStudentWork = (testItem) => {
     const testData = getStudentWorkData(testItem)
     setSelectedTestItem(testData)
+    setShowPlayerModal(true)
   }
   const hideStudentWork = () => {
     setSelectedTestItem([])
+    setShowPlayerModal(false)
     if (showTestletPlayer) {
       setShowTestletPlayer(false)
     }
@@ -571,7 +574,7 @@ const TestActivityModal = ({
         )}
 
         <TestPreviewModal
-          isModalVisible={showTestletPlayer}
+          isModalVisible={showTestletPlayer || showPlayerModal}
           closeTestPreviewModal={hideStudentWork}
           test={test}
           isShowStudentWork

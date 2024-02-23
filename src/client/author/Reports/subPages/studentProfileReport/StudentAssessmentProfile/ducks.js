@@ -28,6 +28,7 @@ const RECEIVE_STUDENT_REPORT_RESPONSE_ERROR =
   '[reports] receive student report response error'
 const RECEIVE_STUDENT_REPORT_RESPONSE_REQUEST =
   '[reports] receive student report response request'
+const SET_IS_TEST_ACTIVITY_VISIBLE = '[reports] set test activity modal visible'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -43,6 +44,10 @@ export const receiveStudentReportResponseAction = (data) => ({
   payload: data,
 })
 
+export const setIsActivityModalVisibleAction = (payload) => ({
+  type: SET_IS_TEST_ACTIVITY_VISIBLE,
+  payload,
+})
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -81,6 +86,11 @@ export const getReportsStudentResponseLoader = createSelector(
   stateSelector,
   (state) => state.activityModalLoading
 )
+
+export const getActivityModalVisibleSelector = createSelector(
+  stateSelector,
+  (state) => state.isActivityModalVisible
+)
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -93,6 +103,7 @@ const initialState = {
   classResponse: {},
   loading: false,
   activityModalLoading: false,
+  isActivityModalVisible: false,
 }
 
 export const reportStudentAssessmentProfileReducer = createReducer(
@@ -136,6 +147,9 @@ export const reportStudentAssessmentProfileReducer = createReducer(
     ) => {
       state.loading = false
       state.error = payload.error
+    },
+    [SET_IS_TEST_ACTIVITY_VISIBLE]: (state, { payload }) => {
+      state.isActivityModalVisible = payload
     },
   }
 )

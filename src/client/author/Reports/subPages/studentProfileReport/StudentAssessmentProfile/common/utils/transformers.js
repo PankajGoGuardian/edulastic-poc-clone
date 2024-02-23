@@ -1,7 +1,10 @@
 import { map, get, find, round, sumBy, keyBy, isEmpty } from 'lodash'
 import produce from 'immer'
 import { formatDate } from '../../../../../common/util'
-import { getQuestionLabels } from '../../../../../../ClassBoard/Transformer'
+import {
+  getQuestionLabels,
+  transformTestItems as transformTestItemsPassage,
+} from '../../../../../../ClassBoard/Transformer'
 
 export const getData = (rawData = {}, tests = []) => {
   if (!tests.length) {
@@ -95,6 +98,7 @@ export const transformTestItems = (props) => {
     return []
   }
 
+  transformTestItemsPassage({ passageData: passages, testItemsData: testItems })
   const labels = getQuestionLabels(testItems)
   testItems = testItems
     .map((item) => {

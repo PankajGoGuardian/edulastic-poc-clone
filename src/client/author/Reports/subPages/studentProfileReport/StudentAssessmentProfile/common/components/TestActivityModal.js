@@ -506,7 +506,6 @@ const TestActivityModal = ({
           const questionsWithItemId = questions.map((q) => ({
             ...q,
             testItemId: item._id,
-            activity: questionActivity,
           }))
 
           return (

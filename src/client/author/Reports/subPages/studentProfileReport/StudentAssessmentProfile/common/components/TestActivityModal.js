@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
-import { Col, Input, Row, Tooltip } from 'antd'
+import { Col, Input, Row, Tooltip, Pagination } from 'antd'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { questionType, testTypes } from '@edulastic/constants'
@@ -12,7 +12,6 @@ import {
   EduIf,
   EduThen,
   FieldLabel,
-  Pagination,
   SpinLoader,
 } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'

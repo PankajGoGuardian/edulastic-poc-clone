@@ -9,7 +9,7 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
-import { Affix, Input, Pagination, Modal } from 'antd'
+import { Affix, Input, Modal } from 'antd'
 import styled from 'styled-components'
 
 export const ScrollBox = styled.div`
@@ -182,7 +182,7 @@ export const AffixWrapper = styled(Affix)`
   }
 `
 
-export const PaginationWrapper = styled(Pagination)`
+export const PaginationWrapper = styled.div`
   padding: ${(props) => (props.type === 'tile' ? '20px 0' : '24px 32px')};
   padding-right: 55px;
   text-align: right;

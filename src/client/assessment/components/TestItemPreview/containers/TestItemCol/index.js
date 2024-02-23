@@ -89,6 +89,7 @@ class TestItemCol extends Component {
       colIndex,
       itemIdKey,
       aiEvaluationStatus,
+      isReportLcbView = false,
       ...restProps
     } = this.props
     const {
@@ -220,6 +221,7 @@ class TestItemCol extends Component {
               questions={questions}
               itemLevelScoring={itemLevelScoring}
               aiEvaluationStatus={aiEvaluationStatus}
+              isReportLcbView={isReportLcbView}
             />
           </FlexItem>
 

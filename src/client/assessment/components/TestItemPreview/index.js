@@ -411,6 +411,7 @@ class TestItemPreview extends Component {
       currentStudent,
       selectedTheme = 'default',
       aiEvaluationStatus,
+      isReportLcbView = false,
       ...restProps
     } = this.props
     const {
@@ -555,6 +556,7 @@ class TestItemPreview extends Component {
                       selectedTheme === 'default' ? white : theme.themeColor
                     }
                     aiEvaluationStatus={aiEvaluationStatus}
+                    isReportLcbView={isReportLcbView}
                   />
                 )
               })}

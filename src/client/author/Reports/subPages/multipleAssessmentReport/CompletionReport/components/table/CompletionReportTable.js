@@ -47,7 +47,10 @@ const getTableColumns = (isSharedReport, settings, staticColumns) => {
         : buildDrillDownUrl({
             key: record.dimensionId,
             selectedCompareBy: compareBy.key,
-            reportFilters: settings.requestFilters,
+            reportFilters: {
+              ...settings.requestFilters,
+              ...{ testIds: record.testId },
+            },
             reportUrl: window.location.pathname,
           })
       if ([SCHOOL, TEACHER].includes(compareBy.key)) {

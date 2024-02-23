@@ -161,7 +161,7 @@ export const INSIGHT_REPORTS = [
         thumbnail: MarTestCompletionAnalysis,
         location: '/author/reports/completion-report',
         description:
-          'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly',
+          'Understand which students are yet to submit assignments across schools, classes, etc., to help increase completion rates quickly.',
         sellDescription:
           'Understand which students are yet to submit assignments.',
       },

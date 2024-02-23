@@ -15,6 +15,7 @@ const VideoLibrarySearchBox = ({
   disableSearchInput,
   handleOnSearch,
   handleOnChange,
+  handleOnClear,
   hasError,
 }) => {
   const errorMessage = () => {
@@ -47,7 +48,17 @@ const VideoLibrarySearchBox = ({
             help={errorMessage()}
           >
             <StyledSearchInput
-              allowClear
+              suffix={
+                searchString?.length ? (
+                  <StyledIcon
+                    fontSize="16px"
+                    style={{ fontSize: '16px', color: '#999999' }}
+                    type="close-circle"
+                    onClick={handleOnClear}
+                    theme="filled"
+                  />
+                ) : null
+              }
               placeholder="For Eg: Algebra"
               onChange={(e) => handleOnChange(e.target.value)}
               onPressEnter={(e) => handleOnSearch(e.target.value)}

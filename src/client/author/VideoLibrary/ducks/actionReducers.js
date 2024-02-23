@@ -3,15 +3,34 @@ import { vqConst } from '../const'
 
 const { defaultTab, reduxNamespaceKey } = vqConst
 
+const initialFilterValues = {
+  subject: [],
+  grades: [],
+  status: '',
+  filter: '',
+  testCategories: '',
+  collections: [],
+  searchString: '',
+}
+
+const initialSortValues = {
+  sortBy: 'recency',
+  sortDir: 'desc',
+}
+
 const initialState = {
+  searchString: '',
   testList: [],
   videoList: [],
   ytNextPageToken: '',
   isLoading: false,
   currentTab: defaultTab,
-  searchString: '',
-  ytThumbnail: '',
   ytTotalResult: 1,
+  vqFilters: initialFilterValues,
+  vqSort: initialSortValues,
+  vqCount: 0,
+  vqPage: 1,
+  limit: vqConst.resultLimit,
 }
 
 const slice = createSlice({
@@ -27,6 +46,7 @@ const slice = createSlice({
     ) => {
       state.isLoading = false
       state.videoList = [...videoList]
+      state.testList = []
       state.ytNextPageToken = ytNextPageToken
       state.ytTotalResult = ytTotalResult
     },
@@ -36,13 +56,17 @@ const slice = createSlice({
       state.ytNextPageToken = ''
       state.ytTotalResult = 0
     },
-    testSearchRequest: (state) => {
+    testSearchRequest: (state, { payload: { search = {}, sort = {} } }) => {
       state.isLoading = true
+      state.vqFilters = { ...search }
+      state.vqSort = { ...sort }
     },
-    testSearchSuccess: (state, { payload: { testList = [] } }) => {
+    testSearchSuccess: (state, { payload: { testList = [], count, page } }) => {
       state.isLoading = false
       state.videoList = []
       state.testList = [...testList]
+      state.vqCount = count
+      state.vqPage = page
     },
     testSearchFailure: (state) => {
       state.testList = []
@@ -54,8 +78,10 @@ const slice = createSlice({
       state.ytNextPageToken = ''
       state.isLoading = false
       state.currentTab = defaultTab
-      state.searchString = ''
-      state.ytThumbnail = ''
+      state.vqFilters = initialFilterValues
+      state.vqSort = initialFilterValues
+      state.vqCount = 0
+      state.vqPage = 1
     },
     updateCurrentTab: (state, { payload = defaultTab }) => {
       state.currentTab = payload
@@ -68,7 +94,6 @@ const slice = createSlice({
     },
     createVQAssessmentRequest: (state) => {
       state.isLoading = true
-      state.ytThumbnail = ''
     },
     getYoutubeThumbnailSuccess: (state) => {
       state.isLoading = true
@@ -78,6 +103,10 @@ const slice = createSlice({
     },
     resetIsLoading: (state) => {
       state.isLoading = false
+    },
+    setVQFilters: (state, { payload: { search = {}, sort = {} } }) => {
+      state.vqFilters = { ...search }
+      state.vqSort = { ...sort }
     },
   },
 })
@@ -96,6 +125,7 @@ const {
   getYoutubeThumbnailSuccess,
   getYoutubeThumbnailFailure,
   resetIsLoading,
+  setVQFilters,
 } = slice.actions
 
 export const actions = {
@@ -112,6 +142,7 @@ export const actions = {
   getYoutubeThumbnailSuccess,
   getYoutubeThumbnailFailure,
   resetIsLoading,
+  setVQFilters,
 }
 
 export const { reducer } = slice

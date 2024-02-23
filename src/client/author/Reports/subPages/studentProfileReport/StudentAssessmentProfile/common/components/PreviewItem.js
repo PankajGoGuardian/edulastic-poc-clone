@@ -121,6 +121,7 @@ const PreviewItem = ({
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         isExpandedView={isExpandedView}
         aiEvaluationStatus={aiEvaluationStatus}
+        isReportLcbView
       />
     </StyledFlexContainer>
   )

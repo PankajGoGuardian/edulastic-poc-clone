@@ -179,6 +179,7 @@ class TestItemPreview extends Component {
       testItemId,
       isLCBView,
       disableAllInputs = false,
+      isReportLcbView = false,
     } = this.props
     const [
       displayFeedback,
@@ -232,6 +233,7 @@ class TestItemPreview extends Component {
         ref={this.feedbackRef}
         hintsUsed={hintsUsed}
         disableAllInputs={disableAllInputs}
+        isReportLcbView={isReportLcbView}
       />
     ) : null
   }

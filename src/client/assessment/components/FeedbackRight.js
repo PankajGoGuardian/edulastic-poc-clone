@@ -330,6 +330,7 @@ class FeedbackRight extends Component {
       itemId,
       userFullName,
       isQuestionView,
+      isReportLcbView = false,
     } = this.props
     const {
       testActivityId,
@@ -355,6 +356,7 @@ class FeedbackRight extends Component {
       questionId: id,
       itemId: testItemId || itemId,
       isQuestionView,
+      isReportLcbView,
     })
     if (isAIEvaluated) {
       this.setState({ isAIEvaluated: false })

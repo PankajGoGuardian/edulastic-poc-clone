@@ -38,6 +38,7 @@ const FeedbackWrapper = ({
   t,
   hintsUsed,
   disableAllInputs = false,
+  isReportLcbView = false,
 }) => {
   const feedbackRef = useRef()
   const heightOfContainer = feedbackRef.current?.clientHeight
@@ -127,6 +128,7 @@ const FeedbackWrapper = ({
             isQuestionView={isQuestionView}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             hintsUsed={hintsUsed}
+            isReportLcbView={isReportLcbView}
             {...presentationModeProps}
           />
         )}

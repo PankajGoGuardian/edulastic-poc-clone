@@ -389,6 +389,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       questionId,
       body: { groupId, feedback },
       isQuestionView = false,
+      isReportLcbView = false,
     } = payload
 
     const feedbackResponse = yield call(
@@ -406,10 +407,12 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
       payload: feedbackResponse,
     })
-    yield put({
-      type: RECEIVE_STUDENT_RESPONSE_REQUEST,
-      payload: { testActivityId, groupId, studentId },
-    })
+    if (!isReportLcbView) {
+      yield put({
+        type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+        payload: { testActivityId, groupId, studentId },
+      })
+    }
     if (isQuestionView) {
       const classQuestionResponse = yield select(getClassQuestionSelector)
       const questionResponse = classQuestionResponse.map((qResponse) => {

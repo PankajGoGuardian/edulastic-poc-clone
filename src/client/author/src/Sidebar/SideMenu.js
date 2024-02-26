@@ -70,6 +70,7 @@ import {
   getPearTokenSelector,
   getUserOrgId,
   isFreeAdminSelector,
+  isGcpsDistrictSelector,
   isOrganizationDistrictSelector,
   isSAWithoutSchoolsSelector,
   isSuperAdminSelector,
@@ -618,6 +619,7 @@ class SideMenu extends Component {
       isSignupUsingUNAndPassSet,
       pearToken,
       isPearAppsDisabled,
+      isGcpsDistrict,
     } = this.props
     const {
       isCurator,
@@ -974,7 +976,10 @@ class SideMenu extends Component {
                     /**
                      * Show vq library
                      */
-                    if (menu.label === 'VideoQuiz' && !premium) {
+                    if (
+                      menu.label === 'VideoQuiz' &&
+                      (!premium || isGcpsDistrict)
+                    ) {
                       return null
                     }
 
@@ -1272,6 +1277,7 @@ const enhance = compose(
       isSuperAdmin: isSuperAdminSelector(state),
       pearToken: getPearTokenSelector(state),
       isPearAppsDisabled: getIsPearAppsDisabledSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

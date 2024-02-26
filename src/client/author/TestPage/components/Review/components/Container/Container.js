@@ -170,6 +170,9 @@ class Review extends PureComponent {
           ...history.location.state,
           scrollToBottom: false,
         }
+        if (this.mutationObserver.current) {
+          this.mutationObserver.current.disconnect()
+        }
         history.replace({ ...history.location, state: updatedState })
       }
     }

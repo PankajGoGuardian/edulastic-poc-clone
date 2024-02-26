@@ -46,6 +46,8 @@ class QuestionModal extends React.Component {
       maxStudents: null,
       editResponse: false,
       studentId: '',
+      gradingType: 'all',
+      gradingStatus: 'all',
     }
     this.containerRef = createRef()
   }
@@ -72,7 +74,7 @@ class QuestionModal extends React.Component {
       editResponse: !scoreMode,
       studentId: record?.studentId,
     })
-    document.addEventListener('keyup', this.keyListener, false)
+    // document.addEventListener('keyup', this.keyListener, false)
   }
 
   // TODO: refactor to getDerivedStateFromProps
@@ -118,28 +120,43 @@ class QuestionModal extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keyup', this.keyListener, false)
+    // document.removeEventListener('keyup', this.keyListener, false)
   }
 
-  keyListener = (event) => {
-    if (event.keyCode === 37) {
-      this.prevQuestion()
-    }
-    if (event.keyCode === 38) {
-      this.prevStudent(event)
-    }
-    if (event.keyCode === 39) {
-      this.nextQuestion()
-    }
-    if (event.keyCode === 40) {
-      this.nextStudent(event)
-    }
-  }
+  // keyListener = (event) => {
+  //   if (event.keyCode === 37) {
+  //     this.prevQuestion()
+  //   }
+  //   if (event.keyCode === 38) {
+  //     this.prevStudent(event)
+  //   }
+  //   if (event.keyCode === 39) {
+  //     this.nextQuestion()
+  //   }
+  //   if (event.keyCode === 40) {
+  //     this.nextStudent(event)
+  //   }
+  // }
 
   hideModal = () => {
     this.submitResponse()
     const { hideQuestionModal } = this.props
     hideQuestionModal()
+  }
+
+  selectStudent = (idx) => {
+    const { maxStudents, rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+    idx = Math.min(maxStudents - 1, Math.max(0, idx))
+    if (idx === rowIndex) return false
+    this.submitResponse()
+    this.setState({ loaded: false }, () => {
+      this.setState({ rowIndex: idx, loaded: true }, () => {
+        if (typeof updateRecord === 'function') {
+          updateRecord(get(tableData, [idx, `Q${colIndex}`]))
+        }
+      })
+    })
   }
 
   nextStudent = (event) => {
@@ -292,6 +309,21 @@ class QuestionModal extends React.Component {
     }
   }
 
+  selectQuestion = (idx) => {
+    const { maxQuestions, rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+    idx = Math.min(maxQuestions - 1, Math.max(0, idx))
+    if (idx === colIndex) return false
+    this.submitResponse()
+    this.setState({ loaded: false }, () => {
+      this.setState({ colIndex: idx, loaded: true }, () => {
+        if (typeof updateRecord === 'function') {
+          updateRecord(get(tableData, [rowIndex, `Q${colIndex}`]))
+        }
+      })
+    })
+  }
+
   nextQuestion = () => {
     const { maxQuestions } = this.state
     const { rowIndex, colIndex } = this.state
@@ -397,17 +429,30 @@ class QuestionModal extends React.Component {
             </ScrollContext.Provider>
             <BottomNavigationWrapper>
               <BottomNavigation
+                qIndex={colIndex}
+                studentIndex={rowIndex}
+                tableData={tableData}
+                selectStudent={this.selectStudent}
+                selectQuestion={this.selectQuestion}
                 hideModal={this.hideModal}
-                prevStudent={this.prevStudent}
-                nextStudent={this.nextStudent}
-                prevQuestion={this.prevQuestion}
-                nextQuestion={this.nextQuestion}
+                // prevStudent={this.prevStudent}
+                // nextStudent={this.nextStudent}
+                // prevQuestion={this.prevQuestion}
+                // nextQuestion={this.nextQuestion}
                 style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
                 toggleEditResponse={() =>
                   this.setState(({ editResponse: _editResponse }) => ({
                     editResponse: !_editResponse,
                   }))
+                }
+                gradingType={this.state.gradingType}
+                setGradingType={(v) =>
+                  this.setState((s) => ({ ...s, gradingType: v }))
+                }
+                gradingStatus={this.state.gradingStatus}
+                setGradingStatus={(v) =>
+                  this.setState((s) => ({ ...s, gradingStatus: v }))
                 }
               />
             </BottomNavigationWrapper>

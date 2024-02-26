@@ -356,6 +356,7 @@ export const RightFilterDiv = styled.div`
   }
 `
 
+/** @type {typeof Select} */
 export const StyledSelect = styled(Select)`
   .ant-select-selection {
     background: ${white};

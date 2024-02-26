@@ -16,6 +16,7 @@ import {
   sanitizeString,
   EduIf,
   SpinLoader,
+  isMobileDevice,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -44,6 +45,7 @@ import {
   preventEvent,
   getFontSize,
   getSpellCheckAttributes,
+  isiOS,
 } from '../../utils/helpers'
 import Character from './components/Character'
 import { StyledPaperWrapper } from '../../styled/Widget'
@@ -388,7 +390,11 @@ const EssayPlainTextPreview = ({
                   )}
 
                   <EduIf condition={isSpeechToTextEnabled}>
-                    <Tooltip title="Speech to Text">
+                    <Tooltip
+                      title={
+                        isMobileDevice() || isiOS() ? '' : 'Speech to Text'
+                      }
+                    >
                       <ToolbarItem
                         onClick={handleAction(TRANSCRIBE)}
                         onMouseDown={(e) => e?.preventDefault()} // To avoid blur event for textarea

@@ -111,6 +111,7 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
+import appConfig from '../../../../app-config'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -974,7 +975,11 @@ class SideMenu extends Component {
                     /**
                      * Show vq library
                      */
-                    if (menu.label === 'VideoQuiz' && !premium) {
+                    console.log({ gcps: appConfig.gcpsDistrictId, orgId })
+                    if (
+                      menu.label === 'VideoQuiz' &&
+                      (!premium || appConfig.gcpsDistrictId === orgId)
+                    ) {
                       return null
                     }
 

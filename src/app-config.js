@@ -253,7 +253,10 @@ const videoQuizDefaultCollection = {
   collectionType: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_TYPE,
 }
 
+const gcpsDistrictId = process.env.REACT_APP_GCPS_DISTRICT_ID
+
 export default {
+  gcpsDistrictId,
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
   sentryIgnoreUrls,

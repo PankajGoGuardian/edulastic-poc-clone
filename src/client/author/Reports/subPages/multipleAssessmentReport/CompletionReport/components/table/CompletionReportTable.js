@@ -138,38 +138,6 @@ const CompletionReportTable = ({
     getCsvData(params)
   }
 
-  const onViewPerformanceClick = (testIds = '', record = {}) => {
-    if (record.testName === 'Overall') {
-      return (
-        <Link
-          to={`/author/reports/performance-over-time${getCompletionReportPathForAssignment(
-            testIds,
-            {},
-            [record],
-            settings?.requestFilters,
-            compareBy
-          )}`}
-          target="_blank"
-        >
-          <IconEye color={themeColor} width={18} height={18} />
-        </Link>
-      )
-    }
-    return (
-      <Link
-        to={`/author/reports/peer-performance/test/${getCompletionReportPathForAssignment(
-          testIds,
-          {},
-          [record],
-          settings?.requestFilters,
-          compareBy
-        )}`}
-        target="_blank"
-      >
-        <IconEye color={themeColor} width={18} height={18} />
-      </Link>
-    )
-  }
   const staticColumns = [
     {
       title: 'Test Name',
@@ -319,14 +287,27 @@ const CompletionReportTable = ({
       key: 'performance',
       align: 'center',
       render: (text, record) => {
-        return onViewPerformanceClick(
-          record.testId,
-          record,
-          settings?.requestFilters,
-          compareBy
+        return (
+          <Link
+            to={`/author/reports/${
+              record.testName === 'Overall'
+                ? 'performance-over-time'
+                : 'peer-performance/test/'
+            }${getCompletionReportPathForAssignment(
+              record.testId,
+              {},
+              [record],
+              settings?.requestFilters,
+              compareBy
+            )}`}
+            target="_blank"
+          >
+            <IconEye color={themeColor} width={18} height={18} />
+          </Link>
         )
       },
     },
+
     {
       title: 'Copy REPORT LINK TO SHARE',
       key: 'copyReportLink',

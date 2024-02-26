@@ -9,9 +9,9 @@ import { formatName } from '@edulastic/constants/reportUtils/common'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
+import appConfig from '../../../../app-config'
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
-const gcpsDistrict = '635918f1559a0f00082f0694'
 
 export const stateSelector = (state) => state.user
 
@@ -563,7 +563,7 @@ export const isPremiumUserSelector = createSelector(getUser, (userData) =>
 
 export const isGcpsDistrictSelector = createSelector(
   getUserOrgId,
-  (districtId) => districtId === gcpsDistrict
+  (districtId) => districtId === appConfig.gcpsDistrictId
 )
 
 export const isVideoQuizAndAIEnabledSelector = createSelector(

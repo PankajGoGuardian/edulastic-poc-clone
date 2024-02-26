@@ -70,6 +70,7 @@ import {
   getPearTokenSelector,
   getUserOrgId,
   isFreeAdminSelector,
+  isGcpsDistrictSelector,
   isOrganizationDistrictSelector,
   isSAWithoutSchoolsSelector,
   isSuperAdminSelector,
@@ -111,7 +112,6 @@ import { navigationItemLabels, navigationState } from '../constants/navigation'
 import { DATA_STUDIO_DISABLED_DISTRICTS } from '../constants/others'
 import { isPearDomain } from '../../../../utils/pear'
 import { AssessPeardeckLogoCompact } from '../../../admin/Common/StyledComponents'
-import appConfig from '../../../../app-config'
 
 const dataStudioPattern = [
   /\/author\/reports\/dashboard-report/,
@@ -619,6 +619,7 @@ class SideMenu extends Component {
       isSignupUsingUNAndPassSet,
       pearToken,
       isPearAppsDisabled,
+      isGcpsDistrict,
     } = this.props
     const {
       isCurator,
@@ -978,7 +979,7 @@ class SideMenu extends Component {
 
                     if (
                       menu.label === 'VideoQuiz' &&
-                      (!premium || appConfig.gcpsDistrictId === orgId)
+                      (!premium || isGcpsDistrict)
                     ) {
                       return null
                     }
@@ -1277,6 +1278,7 @@ const enhance = compose(
       isSuperAdmin: isSuperAdminSelector(state),
       pearToken: getPearTokenSelector(state),
       isPearAppsDisabled: getIsPearAppsDisabledSelector(state),
+      isGcpsDistrict: isGcpsDistrictSelector(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

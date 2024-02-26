@@ -253,7 +253,8 @@ const videoQuizDefaultCollection = {
   collectionType: process.env.REACT_APP_VIDEO_QUIZ_COLLECTION_TYPE,
 }
 
-const gcpsDistrictId = process.env.REACT_APP_GCPS_DISTRICT_ID
+const gcpsDistrictId =
+  process.env.REACT_APP_GCPS_DISTRICT_ID || '635918f1559a0f00082f0694'
 
 export default {
   gcpsDistrictId,

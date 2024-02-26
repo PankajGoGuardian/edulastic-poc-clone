@@ -975,7 +975,7 @@ class SideMenu extends Component {
                     /**
                      * Show vq library
                      */
-                    console.log({ gcps: appConfig.gcpsDistrictId, orgId })
+
                     if (
                       menu.label === 'VideoQuiz' &&
                       (!premium || appConfig.gcpsDistrictId === orgId)

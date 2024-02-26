@@ -129,6 +129,7 @@ const CompletionReportTable = ({
       testId: record.testId,
       dimensionVal: record.dimensionId,
       index,
+      compareBy: settings.selectedCompareBy?.key,
     }
 
     if (compareByKeysToFilterKeys[compareBy.key]) {
@@ -384,11 +385,15 @@ const CompletionReportTable = ({
         onChange={handleTableChange}
         columns={columns}
         dataSource={dataSource}
-        pagination={{
-          total: totalPageSize,
-          onChange: handleTablePageChange,
-          pageSize: pageFilters.pageSize + 1,
-        }}
+        pagination={
+          dataSource.length > pageFilters.pageSize || pageFilters.page > 1
+            ? {
+                total: totalPageSize,
+                onChange: handleTablePageChange,
+                pageSize: pageFilters.pageSize + 1,
+              }
+            : false
+        }
         rowClassName={getRowClassName}
         scroll={{ x: 'max-content' }}
       />

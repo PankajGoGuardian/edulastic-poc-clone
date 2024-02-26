@@ -1,4 +1,4 @@
-import { smallDesktopWidth } from '@edulastic/colors'
+import { mediumDesktopExactWidth } from '@edulastic/colors'
 import styled from 'styled-components'
 
 export const StyledTestName = styled.div`
@@ -8,7 +8,7 @@ export const StyledTestName = styled.div`
   overflow: hidden;
   white-space: nowrap;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopExactWidth}) {
     max-width: 100%;
     width: 100%;
   }
@@ -19,7 +19,7 @@ export const StyledStudentNameContainer = styled.div`
   max-width: 40%;
   min-width: 200px;
   justify-content: flex-end;
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopExactWidth}) {
     justify-content: flex-start;
     max-width: 100%;
     width: 100%;

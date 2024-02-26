@@ -38,7 +38,6 @@ import {
   SCROLL_SHOW_LIMIT,
   getPageNumberSelector,
 } from '../../../../../../ClassBoard/ducks'
-import { PaginationWrapper } from '../../../../../../TestList/components/Container/styled'
 import {
   setPageNumberAction,
   setStudentViewFilterAction,
@@ -54,6 +53,7 @@ import {
   ContainerStyledModal,
   DocStyledModal,
   FeedbackStyledModal,
+  PaginationWrapper,
   StyledThemeButton,
 } from '../styled'
 import {
@@ -64,6 +64,7 @@ import {
 import { ActionBtn } from '../../../../../../CurriculumSequence/components/PlaylistTestDetailsModal/styled'
 import StudentGraph from './StudentGraph'
 import StudentQuestionFilters from './StudentQuestionFilters'
+import { resetFeedBacksPositionsAction } from '../../../../../../src/reducers/feedback'
 
 const getTestItems = memoizeOne(transformTestItems, isEqual)
 
@@ -98,6 +99,7 @@ const TestActivityModal = ({
   filter,
   setFilter,
   t: i18Translate,
+  resetFeedBacksPositions,
 }) => {
   const {
     testActivity: studentTestActivity,
@@ -164,6 +166,7 @@ const TestActivityModal = ({
           resetOnClose()
         }
       }
+      resetFeedBacksPositions()
     }
   }, [])
 
@@ -609,6 +612,7 @@ const enhanced = compose(
       updateOverallFeedback: updateOverallFeedbackAction,
       setPageNumber: setPageNumberAction,
       setFilter: setStudentViewFilterAction,
+      resetFeedBacksPositions: resetFeedBacksPositionsAction,
     }
   )
 )

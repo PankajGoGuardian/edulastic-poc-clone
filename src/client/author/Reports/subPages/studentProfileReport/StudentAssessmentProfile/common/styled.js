@@ -188,3 +188,9 @@ export const StyledCard = styled(Card)`
   width: 100%;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 `
+
+export const PaginationWrapper = styled.div`
+  padding: ${(props) => (props.type === 'tile' ? '20px 0' : '24px 32px')};
+  padding-right: 55px;
+  text-align: right;
+`

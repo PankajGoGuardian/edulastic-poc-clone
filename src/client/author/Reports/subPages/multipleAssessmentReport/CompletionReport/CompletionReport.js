@@ -137,11 +137,12 @@ function CompletionReport({
     }
   }, [pageFilters, statusColumnSortState, testColumnSort])
 
-  if (
+  const noDataForAppliedFilters =
     isEmpty(chartData) &&
     isEmpty(tableData) &&
     !(isChartDataLoading || isTableDataLoading)
-  ) {
+
+  if (noDataForAppliedFilters) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

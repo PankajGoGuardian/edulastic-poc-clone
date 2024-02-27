@@ -451,10 +451,7 @@ const EssayPlainTextPreview = ({
             )}
 
             {!reviewTab && (
-              <EssayToolbar
-                data-cy="questionPlainEssayAuthorPreviewWordCount"
-                borderRadiusOnlyBottom
-              >
+              <EssayToolbar borderRadiusOnlyBottom>
                 <FlexContainer
                   alignItems="stretch"
                   justifyContent="space-between"
@@ -465,7 +462,12 @@ const EssayPlainTextPreview = ({
                 </FlexContainer>
 
                 <EduIf condition={item.showWordCount}>
-                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                  <Item
+                    data-cy="questionPlainEssayAuthorPreviewWordCount"
+                    style={wordCountStyle}
+                  >
+                    {displayWordCount}
+                  </Item>
                 </EduIf>
               </EssayToolbar>
             )}

@@ -1,5 +1,4 @@
 import { map, get, find, round, sumBy } from 'lodash'
-import { getAllTestTypesMap } from '../../../../../../../common/utils/testTypeUtils'
 import { formatDate } from '../../../../../common/util'
 
 export const getData = (rawData = {}, tests = []) => {
@@ -21,6 +20,7 @@ export const getData = (rawData = {}, tests = []) => {
     const testSchoolAvg = round(
       get(find(schoolAvg, testInfo), 'schoolAvgPerf', 0)
     )
+    const testSchoolId = get(find(schoolAvg, testInfo), 'schoolId', null)
     const rawScore = `${
       sumBy(assignments, 'score')?.toFixed(2) || '0.00'
     } / ${round(sumBy(assignments, 'maxScore'), 2)}`
@@ -34,6 +34,7 @@ export const getData = (rawData = {}, tests = []) => {
       districtAvg: testDistrictAvg,
       groupAvg: testGroupAvg,
       schoolAvg: testSchoolAvg,
+      schoolId: testSchoolId,
       rawScore,
     }
   })

@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Tooltip } from 'antd'
 import { filter, includes, isNaN } from 'lodash'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'
@@ -102,7 +103,13 @@ const getCol = (
   )
 }
 
-const tableColumns = (location, pageTitle, isSharedReport) => [
+const tableColumns = (
+  location,
+  pageTitle,
+  isSharedReport,
+  isLcbNavigationAllowed,
+  titleToolTipText
+) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
@@ -112,11 +119,15 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     width: 200,
     render: (data, record) =>
       !isSharedReport ? (
-        <Link
-          to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-        >
-          {data}
-        </Link>
+        isLcbNavigationAllowed(record.groupId, record.schoolId) ? (
+          <Link
+            to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+          >
+            {data}
+          </Link>
+        ) : (
+          <Tooltip title={titleToolTipText}>{data}</Tooltip>
+        )
       ) : (
         data
       ),
@@ -167,8 +178,21 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
   },
 ]
 
-const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
-  ...tableColumns(location, pageTitle, isSharedReport),
+const getColumns = (
+  studentName = '',
+  location,
+  pageTitle,
+  isSharedReport,
+  isLcbNavigationAllowed,
+  titleToolTipText
+) => [
+  ...tableColumns(
+    location,
+    pageTitle,
+    isSharedReport,
+    isLcbNavigationAllowed,
+    titleToolTipText
+  ),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -247,8 +271,17 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
+  isLcbNavigationAllowed,
+  titleToolTipText,
 }) => {
-  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
+  const columns = getColumns(
+    studentName,
+    location,
+    pageTitle,
+    isSharedReport,
+    isLcbNavigationAllowed,
+    titleToolTipText
+  )
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

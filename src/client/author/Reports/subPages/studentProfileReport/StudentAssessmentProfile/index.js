@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
+import { SCHOOL_ADMIN, TEACHER } from '@edulastic/constants/const/roleType'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
@@ -30,6 +31,7 @@ import {
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
 } from './ducks'
+import { getUserDetails } from '../../../../../student/Login/ducks'
 
 const StudentAssessmentProfile = ({
   loading,
@@ -46,6 +48,7 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
+  userData,
 }) => {
   const anonymousString = t('common.anonymous')
 
@@ -133,6 +136,22 @@ const StudentAssessmentProfile = ({
       `Assessment Performance Report-${studentName || anonymousString}.csv`,
       data
     )
+  const checkUserLCBAccess = (groupId, institutionId) => {
+    if (userData.role === TEACHER) {
+      if (userData.orgData.classList.find((group) => group._id === groupId)) {
+        return true
+      }
+      return false
+    }
+
+    if (userData.role === SCHOOL_ADMIN) {
+      if (userData.orgData.institutionIds?.includes(institutionId)) {
+        return true
+      }
+      return false
+    }
+    return true
+  }
 
   if (loading) {
     return (
@@ -183,6 +202,8 @@ const StudentAssessmentProfile = ({
             location={location}
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
+            isLcbNavigationAllowed={checkUserLCBAccess}
+            titleToolTipText={t('common.assignmentNavigationRestricted')}
           />
         </StyledCard>
       </EduThen>
@@ -201,6 +222,7 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    userData: getUserDetails(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
@@ -210,5 +232,6 @@ const withConnect = connect(
 
 export default compose(
   withConnect,
-  withNamespaces('student')
+  withNamespaces('student'),
+  withNamespaces('reports')
 )(StudentAssessmentProfile)

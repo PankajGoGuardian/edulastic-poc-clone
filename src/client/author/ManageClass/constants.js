@@ -277,6 +277,10 @@ export const fieldsMapping = {
       fieldName: 'extraTimeOnTest',
       options: [
         {
+          label: '1x',
+          value: 1,
+        },
+        {
           label: '1.2x',
           value: 1.2,
         },

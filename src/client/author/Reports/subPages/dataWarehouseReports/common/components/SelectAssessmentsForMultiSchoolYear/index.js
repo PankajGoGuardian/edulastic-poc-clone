@@ -87,16 +87,16 @@ const SelectAssessmentsForMultiSchoolYear = ({
 
   const termsMap = keyBy(schoolYears, 'key')
   const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
-
+  const isMultiYearSelected = testTermIdsArr.length > 1
   const dropDownDataMapper = (_tests) => {
     return _tests.map((test) => {
-      const testTermId = test.termId ?? termId
+      const testTermId = isMultiYearSelected ? test.termId : testTermIdsArr[0]
       const term = termsMap[testTermId]
       const testTermName = test.termName || term.title || ''
       return {
         key: `${!test.isExternal ? test._id : test.testName}_${testTermId}`,
         title: `${test.title}${
-          isLongitudinalReport ? ` [ SY:${testTermName} ]` : ''
+          isMultiYearSelected ? ` [ SY:${testTermName} ]` : ''
         } `,
         disabled: true,
       }

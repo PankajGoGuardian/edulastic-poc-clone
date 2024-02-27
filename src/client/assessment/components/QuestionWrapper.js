@@ -421,7 +421,6 @@ class QuestionWrapper extends Component {
       t: translate,
       aiEvaluationStatus,
       authLanguage,
-      isReportLcbView = false,
       ...restProps
     } = this.props
 
@@ -808,7 +807,6 @@ class QuestionWrapper extends Component {
                       itemIndex={itemIndex}
                       hideCorrectAnswer={hideCorrectAnswer}
                       isGradedExternally={answerScore.isGradedExternally}
-                      isReportLcbView={isReportLcbView}
                     />
                   )}
                   {rubricDetails &&

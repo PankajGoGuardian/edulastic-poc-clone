@@ -142,7 +142,6 @@ const QuestionBottomAction = ({
   reloadLcbDataInStudentView,
   hideCorrectAnswer,
   isGradedExternally,
-  isReportLcbView = false,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -240,7 +239,7 @@ const QuestionBottomAction = ({
         return setNotifyRegradeProgress(true)
       }
       if (
-        latestTest._id !== additionalData?.testId &&
+        latestTest._id !== additionalData.testId &&
         latestTest.status === 'published'
       ) {
         setIsPublishedChanges(true)
@@ -453,7 +452,6 @@ const QuestionBottomAction = ({
             item &&
             !isStudentReport &&
             !isDocBasedTest &&
-            !isReportLcbView &&
             (isDisableCorrectItem ? (
               <Popover
                 content={

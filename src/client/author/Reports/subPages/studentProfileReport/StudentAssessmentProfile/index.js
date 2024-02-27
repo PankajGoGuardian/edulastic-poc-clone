@@ -29,10 +29,7 @@ import {
   getStudentAssessmentProfileRequestAction,
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
-  getActivityModalVisibleSelector,
-  setIsActivityModalVisibleAction,
 } from './ducks'
-import TestActivityModal from './common/components/TestActivityModal'
 
 const StudentAssessmentProfile = ({
   loading,
@@ -49,11 +46,8 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
-  isActivityModalVisible,
-  setIsTestActivityVisible,
 }) => {
   const anonymousString = t('common.anonymous')
-  const [currRecord, setCurrentRecord] = useState(null)
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -189,25 +183,8 @@ const StudentAssessmentProfile = ({
             location={location}
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
-            setIsTestActivityVisible={(_record) => {
-              setCurrentRecord(_record)
-              setIsTestActivityVisible(true)
-            }}
           />
         </StyledCard>
-        {isActivityModalVisible && (
-          <TestActivityModal
-            isModalVisible={isActivityModalVisible}
-            skipPlayer
-            groupId={currRecord.groupId}
-            testActivityId={currRecord.testActivityId}
-            assignmentId={currRecord.assignmentId}
-            testId={currRecord.testId}
-            studentId={settings?.selectedStudent?.key}
-            studentName={settings?.selectedStudent?.title}
-            closeTestPreviewModal={() => setIsTestActivityVisible(false)}
-          />
-        )}
       </EduThen>
       <EduElse>
         <NoDataContainer>{noDataDesc}</NoDataContainer>
@@ -224,12 +201,10 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    isActivityModalVisible: getActivityModalVisibleSelector(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
     resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
-    setIsTestActivityVisible: setIsActivityModalVisibleAction,
   }
 )
 

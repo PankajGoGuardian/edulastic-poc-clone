@@ -178,8 +178,6 @@ class TestItemPreview extends Component {
       itemIdKey,
       testItemId,
       isLCBView,
-      disableAllInputs = false,
-      isReportLcbView = false,
     } = this.props
     const [
       displayFeedback,
@@ -232,8 +230,6 @@ class TestItemPreview extends Component {
         key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
         hintsUsed={hintsUsed}
-        disableAllInputs={disableAllInputs}
-        isReportLcbView={isReportLcbView}
       />
     ) : null
   }
@@ -411,7 +407,6 @@ class TestItemPreview extends Component {
       currentStudent,
       selectedTheme = 'default',
       aiEvaluationStatus,
-      isReportLcbView = false,
       ...restProps
     } = this.props
     const {
@@ -556,7 +551,6 @@ class TestItemPreview extends Component {
                       selectedTheme === 'default' ? white : theme.themeColor
                     }
                     aiEvaluationStatus={aiEvaluationStatus}
-                    isReportLcbView={isReportLcbView}
                   />
                 )
               })}

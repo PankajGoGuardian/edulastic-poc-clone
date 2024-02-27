@@ -37,8 +37,6 @@ const FeedbackWrapper = ({
   isQuestionView,
   t,
   hintsUsed,
-  disableAllInputs = false,
-  isReportLcbView = false,
 }) => {
   const feedbackRef = useRef()
   const heightOfContainer = feedbackRef.current?.clientHeight
@@ -121,14 +119,12 @@ const FeedbackWrapper = ({
             studentId={userId || studentId}
             studentName={userName || studentName || t('common.anonymous')}
             rubricDetails={rubricDetails}
-            disableAllInputs={disableAllInputs}
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
             isExpressGrader={isExpressGrader}
             isQuestionView={isQuestionView}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             hintsUsed={hintsUsed}
-            isReportLcbView={isReportLcbView}
             {...presentationModeProps}
           />
         )}

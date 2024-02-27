@@ -12,8 +12,7 @@
     "solutionLabel": "Solution",
     "answerLabel": "Answer",
     "teacherFeedbackLabel": "Teacher Feedback",
-    "studentFilterSubText": "Select students whose performance you want to view.",
-    "teacherAssignmentRestricted": "This assignment belongs to another teacher."
+    "studentFilterSubText": "Select students whose performance you want to view."
   },
   "wholeLearnerReport": {
     "assignTutoringDisabled": "Your district/school doesn't have an active Pear Deck Tutor license. Upgrade now to assign expert tutors for targeted student support.",

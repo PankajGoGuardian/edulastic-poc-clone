@@ -13,7 +13,6 @@ import {
 import { getHSLFromRange1 } from '../../../../../../common/util'
 import CsvTable from '../../../../../../common/components/tables/CsvTable'
 import { reportLinkColor } from '../../../../../multipleAssessmentReport/common/utils/constants'
-import { AssessmentTitle } from '../../styled'
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -103,12 +102,7 @@ const getCol = (
   )
 }
 
-const tableColumns = (
-  location,
-  pageTitle,
-  isSharedReport,
-  setIsTestActivityVisible
-) => [
+const tableColumns = (location, pageTitle, isSharedReport) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
@@ -118,9 +112,11 @@ const tableColumns = (
     width: 200,
     render: (data, record) =>
       !isSharedReport ? (
-        <AssessmentTitle onClick={() => setIsTestActivityVisible(record)}>
+        <Link
+          to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+        >
           {data}
-        </AssessmentTitle>
+        </Link>
       ) : (
         data
       ),
@@ -171,19 +167,8 @@ const tableColumns = (
   },
 ]
 
-const getColumns = (
-  studentName = '',
-  location,
-  pageTitle,
-  isSharedReport,
-  setIsTestActivityVisible
-) => [
-  ...tableColumns(
-    location,
-    pageTitle,
-    isSharedReport,
-    setIsTestActivityVisible
-  ),
+const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
+  ...tableColumns(location, pageTitle, isSharedReport),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -262,15 +247,8 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
-  setIsTestActivityVisible,
 }) => {
-  const columns = getColumns(
-    studentName,
-    location,
-    pageTitle,
-    isSharedReport,
-    setIsTestActivityVisible
-  )
+  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

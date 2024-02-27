@@ -330,7 +330,6 @@ class FeedbackRight extends Component {
       itemId,
       userFullName,
       isQuestionView,
-      isReportLcbView = false,
     } = this.props
     const {
       testActivityId,
@@ -356,7 +355,6 @@ class FeedbackRight extends Component {
       questionId: id,
       itemId: testItemId || itemId,
       isQuestionView,
-      isReportLcbView,
     })
     if (isAIEvaluated) {
       this.setState({ isAIEvaluated: false })
@@ -560,7 +558,6 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
       hintsUsed,
-      disableAllInputs = false,
     } = this.props
     const {
       score,
@@ -678,8 +675,7 @@ class FeedbackRight extends Component {
                   disabled={
                     isPresentationMode ||
                     isPracticeQuestion ||
-                    isScoreInputDisabled ||
-                    disableAllInputs
+                    isScoreInputDisabled
                   }
                   ref={this.scoreInput}
                   onKeyDown={this.onKeyDownFeedback}
@@ -691,7 +687,7 @@ class FeedbackRight extends Component {
             <GradingPolicyWrapper>
               GRADING POLICY &nbsp;
               <GradingPolicy data-cy="gradingPolicyType">
-                {activity?.scoringType}
+                {activity.scoringType}
               </GradingPolicy>
             </GradingPolicyWrapper>
           </>
@@ -760,7 +756,7 @@ class FeedbackRight extends Component {
                   onChange={this.onChangeFeedback}
                   value={feedback}
                   onFocus={this.focusFeedbackInput}
-                  disabled={!activity || isPresentationMode || disableAllInputs}
+                  disabled={!activity || isPresentationMode}
                   onKeyDown={this.onKeyDownFeedback}
                   isShowFeedbackInput={isShowFeedbackInput}
                   paddingBottom={isAIEvaluated ? '35px' : '4px'}

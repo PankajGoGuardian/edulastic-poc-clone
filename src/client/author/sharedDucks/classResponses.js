@@ -129,10 +129,7 @@ function* loadAttachmentsFromServer(filter) {
   }
 }
 
-export function* getAttachmentsForItems({
-  testActivityId,
-  testItemsIdArray = [],
-}) {
+function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
     testItemsIdArray.map(({ testItemId, uqaId, _id, qid }) =>
       call(loadAttachmentsFromServer, {
@@ -164,7 +161,7 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
   }
 }
 
-export function* loadPassagesForItems({ testActivityId, passages }) {
+function* loadPassagesForItems({ testActivityId, passages }) {
   const additionalData = yield select(getAdditionalDataSelector)
   const userRole = yield select(getUserRole)
 
@@ -184,7 +181,7 @@ export function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
-export function* loadAnnotationsFromServer({ referrerId, referrerId2 }) {
+function* loadAnnotationsFromServer({ referrerId, referrerId2 }) {
   try {
     const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
       referrerId,
@@ -389,7 +386,6 @@ function* receiveFeedbackResponseSaga({ payload }) {
       questionId,
       body: { groupId, feedback },
       isQuestionView = false,
-      isReportLcbView = false,
     } = payload
 
     const feedbackResponse = yield call(
@@ -407,12 +403,10 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
       payload: feedbackResponse,
     })
-    if (!isReportLcbView) {
-      yield put({
-        type: RECEIVE_STUDENT_RESPONSE_REQUEST,
-        payload: { testActivityId, groupId, studentId },
-      })
-    }
+    yield put({
+      type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+      payload: { testActivityId, groupId, studentId },
+    })
     if (isQuestionView) {
       const classQuestionResponse = yield select(getClassQuestionSelector)
       const questionResponse = classQuestionResponse.map((qResponse) => {

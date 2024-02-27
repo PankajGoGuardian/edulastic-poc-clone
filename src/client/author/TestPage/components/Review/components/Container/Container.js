@@ -141,9 +141,8 @@ class Review extends PureComponent {
 
     const { test, history } = this.props
 
-    const locationState = history.location.state
-
     const scrollToBottomCallback = (mutationList) => {
+      const locationState = history.location.state
       if (
         !(
           locationState &&

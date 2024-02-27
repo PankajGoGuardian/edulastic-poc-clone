@@ -150,11 +150,10 @@ export const receiveAnswersAction = (
   assignmentId,
   classId,
   questionId,
-  itemId,
-  questionIds = []
+  itemId
 ) => ({
   type: RECEIVE_CLASS_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, itemId, questionIds },
+  payload: { assignmentId, classId, questionId, itemId },
 })
 
 export const markAsDoneAction = (assignmentId, classId, testId) => ({

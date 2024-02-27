@@ -24,7 +24,7 @@ import {
   setRealTimeAttemptDataAction,
   setUpdateActivityIdInEntityAction,
 } from '../../../src/actions/classBoard'
-import { getFirstQuestionEntitiesSelector, testNameSelector } from '../../ducks'
+import { testNameSelector } from '../../ducks'
 import { getFormattedName } from '../../../Gradebook/transformers'
 
 const needRealtimeDateTracking = ({
@@ -70,6 +70,10 @@ const Shell = ({
   loadTestActivity,
   submitActivity,
   setRealTimeAttemptData,
+  // removeQuestions,
+  // addQuestionsMaxScore,
+  // closeAssignment,
+  // realtimeUpdateAssignment,
   recalculateAssignment,
   additionalData,
   selectedTab,
@@ -84,7 +88,6 @@ const Shell = ({
   isEG,
   history,
   setUpdateActivityIdInEntity,
-  firstQuestionEntities,
 }) => {
   const reloadLCB = () => {
     loadTestActivity({ assignmentId, classId, loader: !isEG })
@@ -127,16 +130,8 @@ const Shell = ({
       )
     }
     if (selectedTab === 'questionView') {
-      const questionIds =
-        firstQuestionEntities.find((entity) => entity._id === qid)?.qids || []
       loadTestActivity({ assignmentId, classId, isQuestionsView: true })
-      loadClassQuestionResponses(
-        assignmentId,
-        classId,
-        qid,
-        itemId,
-        questionIds
-      )
+      loadClassQuestionResponses(assignmentId, classId, qid, itemId)
     }
     notification({
       msg: `student ${studentName} had switched the preferred language for the assignment ${testName}`,
@@ -167,14 +162,17 @@ export default compose(
   connect(
     (state) => ({
       testName: testNameSelector(state),
-      firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
     }),
     {
       addActivity: realtimeGradebookActivityAddAction,
       setRealTimeAttemptData: setRealTimeAttemptDataAction,
       submitActivity: realtimeGradebookActivitySubmitAction,
+      // removeQuestions: realtimeGradebookQuestionsRemoveAction,
+      // addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
       loadTestActivity: receiveTestActivityRealTimeAction,
       redirect: realtimeGradebookRedirectAction,
+      // closeAssignment: realtimeGradebookCloseAction,
+      // realtimeUpdateAssignment: realtimeUpdateAssignmentAction,
       recalculateAssignment: recalculateAdditionalDataAction,
       loadStudentResponses: receiveStudentResponseAction,
       setCurrentTestActivityId: setCurrentTestActivityIdAction,

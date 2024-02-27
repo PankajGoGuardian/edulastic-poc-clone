@@ -137,7 +137,11 @@ function CompletionReport({
     }
   }, [pageFilters, statusColumnSortState, testColumnSort])
 
-  if (isEmpty(chartData) && !(isChartDataLoading && isTableDataLoading)) {
+  if (
+    isEmpty(chartData) &&
+    isEmpty(tableData) &&
+    !(isChartDataLoading || isTableDataLoading)
+  ) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

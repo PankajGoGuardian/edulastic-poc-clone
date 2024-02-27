@@ -64,7 +64,6 @@ import {
 import { ActionBtn } from '../../../../../../CurriculumSequence/components/PlaylistTestDetailsModal/styled'
 import StudentGraph from './StudentGraph'
 import StudentQuestionFilters from './StudentQuestionFilters'
-import { resetFeedBacksPositionsAction } from '../../../../../../src/reducers/feedback'
 
 const getTestItems = memoizeOne(transformTestItems, isEqual)
 
@@ -99,7 +98,6 @@ const TestActivityModal = ({
   filter,
   setFilter,
   t: i18Translate,
-  resetFeedBacksPositions,
 }) => {
   const {
     testActivity: studentTestActivity,
@@ -166,7 +164,6 @@ const TestActivityModal = ({
           resetOnClose()
         }
       }
-      resetFeedBacksPositions()
     }
   }, [])
 
@@ -612,7 +609,6 @@ const enhanced = compose(
       updateOverallFeedback: updateOverallFeedbackAction,
       setPageNumber: setPageNumberAction,
       setFilter: setStudentViewFilterAction,
-      resetFeedBacksPositions: resetFeedBacksPositionsAction,
     }
   )
 )

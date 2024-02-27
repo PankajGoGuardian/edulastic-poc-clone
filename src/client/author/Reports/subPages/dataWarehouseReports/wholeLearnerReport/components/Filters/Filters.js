@@ -505,6 +505,8 @@ const WholeLearnerReportFilters = ({
                             selectedSchoolIds={
                               filters.schoolIds
                                 ? filters.schoolIds.split(',')
+                                : search.schoolIds
+                                ? search.schoolIds.split(',')
                                 : []
                             }
                             selectCB={(e) =>

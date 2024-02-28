@@ -652,9 +652,7 @@ const WholeLearnerReportFilters = ({
                             filters.testSubjects &&
                             filters.testSubjects !== 'All'
                               ? filters.testSubjects.split(',')
-                              : (filters.subjects &&
-                                  filters.subjects.split(',')) ||
-                                []
+                              : []
                           }
                           options={staticDropDownData.subjects}
                         />

@@ -15,6 +15,7 @@ import {
   pick,
   isEqual,
   difference,
+  omit,
 } from 'lodash'
 import uuidv4 from 'uuid/v4'
 import {
@@ -235,7 +236,10 @@ class Container extends PureComponent {
 
     history.push({
       pathname: url,
-      state: { ...history.location.state, showCancelButton },
+      state: {
+        ...omit(history.location.state, ['scrollToBottom']),
+        showCancelButton,
+      },
     })
   }
 

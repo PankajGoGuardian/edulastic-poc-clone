@@ -1,6 +1,7 @@
 import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import { IconFolderWithLines, IconPlusCircle } from '@edulastic/icons'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
@@ -44,6 +45,7 @@ const AddMoreQuestionsPannel = ({
   setCurrentGroupIndex,
   isEditable,
   isDynamicTest,
+  history,
   t,
 }) => {
   const [showSelectGroupModal, setShowSelectGroupModal] = useState(false)
@@ -51,6 +53,31 @@ const AddMoreQuestionsPannel = ({
     showConfirmationOnTabChange,
     setShowConfirmationOnTabChange,
   ] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const targetRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio < 1 && !scrolled) {
+          targetRef.current.scrollIntoView({ behavior: 'smooth' })
+          setScrolled(true)
+        }
+      },
+      {
+        threshold: 0.5,
+      }
+    )
+    const scrollToBottom = history.location.state?.scrollToBottom
+    if (targetRef.current && scrollToBottom) {
+      observer.observe(targetRef.current)
+    }
+    return () => {
+      if (targetRef.current) {
+        observer.unobserve(targetRef.current)
+      }
+    }
+  }, [])
 
   // A copy of this functions exists at src/client/author/TestPage/components/AddItems/AddItems.js
   // If you make any changes here please do so for the above mentioned copy as well
@@ -98,14 +125,14 @@ const AddMoreQuestionsPannel = ({
       notification({ messageKey: 'nameShouldNotEmpty' })
     }
 
-    /* 
-		  On create of new item, trigger the save test when:-
-			- the test is not having any sections and is updated or
-			- the test is having one section or
+    /*
+  	  On create of new item, trigger the save test when:-
+  		- the test is not having any sections and is updated or
+  		- the test is having one section or
       - test has unsaved ai changes and not allowed to show the banner for checking ai items
-			- If the test is having multiple sections, then the save test is called 
-			  after the user selects a particular section from modal
-		*/
+  		- If the test is having multiple sections, then the save test is called
+  		  after the user selects a particular section from modal
+  	*/
     if (!hasSections || itemGroups.length === 1) {
       // check if update is needed
       if (hasSections || updated || (!checkAiItems && _hasUnsavedAiItems)) {
@@ -147,6 +174,7 @@ const AddMoreQuestionsPannel = ({
         flexDirection="row"
         justifyContent="center"
         id="pageBottom"
+        ref={targetRef}
       >
         <AddMoreQuestionsPannelTitle>
           Add more items
@@ -212,6 +240,7 @@ AddMoreQuestionsPannel.defaultProps = {
 
 const enhance = compose(
   withNamespaces('author'),
+  withRouter,
   connect(
     (state) => ({
       hasSections: hasSectionsSelector(state),

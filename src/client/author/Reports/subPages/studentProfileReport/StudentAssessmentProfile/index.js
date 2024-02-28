@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
+import styled from 'styled-components'
 import { SCHOOL_ADMIN, TEACHER } from '@edulastic/constants/const/roleType'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -177,6 +178,13 @@ const StudentAssessmentProfile = ({
 
   const noDataDesc = getNoDataContainerDesc(settings, loadingFiltersData)
 
+  const toolTipInfo = (
+    <AssignmentNameTooltipContainer>
+      <div>{t('common.assignmentNavigationRestricted')}</div>
+      <div>{t('common.restrictedAssignmentAvgInfo')}</div>
+    </AssignmentNameTooltipContainer>
+  )
+
   return (
     <EduIf condition={hasContent}>
       <EduThen>
@@ -203,7 +211,7 @@ const StudentAssessmentProfile = ({
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
             isLcbNavigationAllowed={checkUserLCBAccess}
-            titleToolTipText={t('common.assignmentNavigationRestricted')}
+            titleToolTipText={toolTipInfo}
           />
         </StyledCard>
       </EduThen>
@@ -235,3 +243,7 @@ export default compose(
   withNamespaces('student'),
   withNamespaces('reports')
 )(StudentAssessmentProfile)
+
+const AssignmentNameTooltipContainer = styled.div`
+  text-align: left;
+`

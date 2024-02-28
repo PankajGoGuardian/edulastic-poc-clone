@@ -203,6 +203,7 @@ const WholeLearnerReportFilters = ({
     setFirstLoad,
     setStudent,
     urlStudentId,
+    _onGoClick,
   })
 
   if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {

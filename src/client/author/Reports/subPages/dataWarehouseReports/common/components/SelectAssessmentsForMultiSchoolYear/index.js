@@ -64,7 +64,6 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const assessmentFilterRef = useRef()
 
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
-  const firstRender = useRef(true)
 
   const testTermIdsArr = useMemo(() => convertItemToArray(testTermIds), [
     testTermIds,
@@ -204,18 +203,6 @@ const SelectAssessmentsForMultiSchoolYear = ({
       selectCB([])
     }
   }, [isApplyDisabledForSelectedTests])
-
-  // Filtering the selected tests from tests
-  useEffect(() => {
-    const filteredTests = dropdownData.filter((test) => {
-      return selectedTestIds.includes(test.key)
-    })
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
-    selectCB(filteredTests)
-  }, [tests])
 
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {

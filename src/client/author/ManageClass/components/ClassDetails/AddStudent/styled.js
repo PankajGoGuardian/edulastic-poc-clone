@@ -70,6 +70,7 @@ export const PanelHeader = styled.div`
   small {
     font-size: 12px;
     color: ${secondaryTextColor};
+    margin-left: 30px;
   }
 `
 

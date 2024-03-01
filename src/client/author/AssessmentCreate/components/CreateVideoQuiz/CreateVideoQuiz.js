@@ -136,7 +136,7 @@ const CreateVideoQuiz = ({
               >
                 <CommonInlineWrapper padding="0 0 0 4rem" width="45%">
                   <Form colon={false}>
-                    <SubHeader mb="0.5rem">
+                    <SubHeader mb="0.5rem" data-cy="videoSearchTextBoxLabel">
                       Search YouTube/ Paste Video URL{' '}
                       <sub>
                         <StyledBetaTag>BETA</StyledBetaTag>

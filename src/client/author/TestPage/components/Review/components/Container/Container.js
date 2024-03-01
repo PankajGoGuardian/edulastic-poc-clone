@@ -93,8 +93,6 @@ class Review extends PureComponent {
 
   listWrapperRef = React.createRef()
 
-  mutationObserver = React.createRef()
-
   constructor(props) {
     super(props)
     this.state = {
@@ -116,10 +114,6 @@ class Review extends PureComponent {
     if (this.containerRef.current) {
       this.containerRef.current.removeEventListener('scroll', this.handleScroll)
     }
-
-    if (this.mutationObserver.current) {
-      this.mutationObserver.current.disconnect()
-    }
   }
 
   componentDidMount() {
@@ -138,45 +132,6 @@ class Review extends PureComponent {
     getAllTags({
       type: isPlaylistTestReview ? 'playlist' : ['test', 'assignment'],
     })
-
-    const { test, history } = this.props
-
-    const locationState = history.location.state
-
-    const scrollToBottomCallback = (mutationList) => {
-      if (
-        !(
-          locationState &&
-          locationState.scrollToBottom &&
-          test?.itemGroups?.[0]?.items.length
-        )
-      )
-        return
-      if (this.containerRef.current === undefined) return
-      for (const mutation of mutationList) {
-        if (mutation.type !== 'childList') continue
-
-        const found =
-          mutation.target.id === 'pageBottom' ||
-          mutation.target.querySelector('#pageBottom')
-        if (!found) continue
-
-        this.containerRef.current.scrollTo({
-          top: this.containerRef.current.scrollHeight,
-          left: 0,
-          behavior: 'smooth',
-        })
-        const updatedState = {
-          ...history.location.state,
-          scrollToBottom: false,
-        }
-        history.replace({ ...history.location, state: updatedState })
-      }
-    }
-
-    this.mutationObserver.current = new MutationObserver(scrollToBottomCallback)
-    const config = { attributes: true, childList: true, subtree: true }
-    this.mutationObserver.current.observe(document.body, config)
   }
 
   setSelected = (values) => {

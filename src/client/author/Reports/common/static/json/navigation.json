@@ -445,6 +445,34 @@
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
+    },
+    "social-emotional-learning": {
+      "title": "Social Emotional Learning",
+      "breadcrumb": [
+        {
+          "title": "DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "Social Emotional Learning"
+        }
+      ],
+      "group": "ds-sel-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
+    "sel-response-summary": {
+      "title": "SEL Response Summary",
+      "breadcrumb": [
+        {
+          "title": "DATA STUDIO",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "SEL Response Summary"
+        }
+      ],
+      "group": "ds-sel-reports",
+      "groupTitle": "Data Warehouse Reports"
     }
   },
   "navigation": {
@@ -485,6 +513,11 @@
         "key": "standards-performance-summary",
         "title": "Standards Performance Summary",
         "location": "/author/reports/standards-performance-summary"
+      },
+      {
+        "key": "ds-standards-performance-summary",
+        "title": "Standards Performance Summary",
+        "location": "/author/reports/ds-standards-performance-summary"
       },
       {
         "key": "standards-gradebook",
@@ -626,6 +659,20 @@
         "key": "efficacy-report",
         "title": "Efficacy",
         "location": "/author/reports/efficacy-report"
+      }
+    ],
+    "ds-sel-reports": [
+      {
+        "key": "social-emotional-learning",
+        "title": "Social Emotional Learning",
+        "location": "/author/reports/social-emotional-learning/",
+        "exactPath": true
+      },
+      {
+        "key": "sel-response-summary",
+        "title": "SEL Response Summary",
+        "location": "/author/reports/sel-response-summary/test/",
+        "exactPath": false
       }
     ]
   }

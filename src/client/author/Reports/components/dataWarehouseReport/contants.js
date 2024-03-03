@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   IconAdminDashboardAddOn,
   IconPerformanceTrendAddOn,
@@ -23,6 +24,7 @@ import {
   DW_EFFICACY_REPORT_URL,
   CUSTOM_REPORTS_URL,
 } from '../../common/constants/dataWarehouseReports'
+import { INSIGHT_REPORTS_MAP } from '../../common/constants/standard-reports'
 
 export const DATA_WAREHOUSE_MODAL_MODES = {
   UPLOAD: 'upload',
@@ -119,6 +121,52 @@ export const DATA_WAREHOUSE_REPORT_CARDS_DATA = [
         description:
           'Compare student performance across tests pre and post-intervention.',
         url: DW_EFFICACY_REPORT_URL,
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: 'Social Emotional Learning',
+    cards: [
+      {
+        id: 1,
+        IconThumbnail: () => (
+          <img
+            src={
+              INSIGHT_REPORTS_MAP.standardMasteryReport.cards
+                .standardsPerformanceSummary.thumbnail
+            }
+            alt="Social Emotional Learning"
+          />
+        ),
+        title: 'Social Emotional Learning',
+        description:
+          INSIGHT_REPORTS_MAP.standardMasteryReport.cards
+            .standardsPerformanceSummary.description,
+        url: INSIGHT_REPORTS_MAP.standardMasteryReport.cards.standardsPerformanceSummary.location.replace(
+          'standards-performance-summary',
+          'social-emotional-learning'
+        ),
+      },
+      {
+        id: 2,
+        IconThumbnail: () => (
+          <img
+            src={
+              INSIGHT_REPORTS_MAP.singleAssessmentReport.cards.responseFrequency
+                .thumbnail
+            }
+            alt="SEL Response Summary"
+          />
+        ),
+        title: 'SEL Response Summary',
+        description:
+          INSIGHT_REPORTS_MAP.singleAssessmentReport.cards.responseFrequency
+            .description,
+        url: INSIGHT_REPORTS_MAP.singleAssessmentReport.cards.responseFrequency.location.replace(
+          'response-frequency',
+          'sel-response-summary'
+        ),
       },
     ],
   },

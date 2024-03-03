@@ -232,6 +232,7 @@ const SingleAssessmentReportContainer = (props) => {
     'performance-by-students',
     'question-analysis',
     'response-frequency',
+    'sel-response-summary',
   ].includes(loc)
 
   useEffect(() => {
@@ -294,15 +295,18 @@ const SingleAssessmentReportContainer = (props) => {
     () => !isEmpty(Object.values(demographicFilters).filter((val) => !!val)),
     [demographicFilters]
   )
-  
+
   if (isEmpty(interestedCurriculums) && loc == 'performance-by-standards') {
     return (
       <NoDataNotification
         heading="Interested Standards are not available"
         description={
           <>
-            Standards report cannot be generated as the Interested Standards are unavailable.<br />
-            Please visit <Link to="/author/profile">My Profile</Link> to add your Interested Standards.
+            Standards report cannot be generated as the Interested Standards are
+            unavailable.
+            <br />
+            Please visit <Link to="/author/profile">My Profile</Link> to add
+            your Interested Standards.
           </>
         }
         style={{
@@ -404,7 +408,10 @@ const SingleAssessmentReportContainer = (props) => {
           />
           <Route
             exact
-            path="/author/reports/response-frequency/test/:testId?"
+            path={[
+              '/author/reports/response-frequency/test/:testId?',
+              '/author/reports/sel-response-summary/test/:testId?',
+            ]}
             render={(_props) => (
               <ResponseFrequency
                 {..._props}
@@ -412,6 +419,11 @@ const SingleAssessmentReportContainer = (props) => {
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
                 demographicFilters={demographicFilters2}
+                testTypesAllowed={
+                  _props.match.url.includes('sel-response-summary')
+                    ? 'surveyType'
+                    : 'all'
+                }
               />
             )}
           />

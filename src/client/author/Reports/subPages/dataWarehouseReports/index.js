@@ -21,6 +21,8 @@ import {
 import AttendanceReport from './AttendanceSummary'
 import GoalsAndInterventions from './GoalsAndInterventions'
 import EfficacyReport from './EfficacyReport'
+import { SingleAssessmentReportContainer } from '../singleAssessmentReport'
+import { StandardsMasteryReportContainer } from '../standardsMasteryReport'
 
 const DW_THEME = {
   dynamicFGColor: true,
@@ -35,6 +37,7 @@ const DataWarehouseReportsContainer = ({
   showFilter,
   onRefineResultsCB,
   loc,
+  navigationItems,
   updateNavigation,
   setShowHeader,
   ..._props
@@ -186,6 +189,48 @@ const DataWarehouseReportsContainer = ({
                 onRefineResultsCB={onRefineResultsCB}
                 loc={loc}
                 updateNavigation={updateNavigation}
+              />
+            )
+          }}
+        />
+        <Route
+          path={[`/author/reports/sel-response-summary/test/`]}
+          render={() => {
+            setShowHeader(true)
+            return (
+              <SingleAssessmentReportContainer
+                {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={breadcrumbData}
+                showFilter={showFilter}
+                showApply={showApply}
+                onRefineResultsCB={onRefineResultsCB}
+                loc={loc}
+                updateNavigation={updateNavigation}
+                setShowHeader={setShowHeader}
+              />
+            )
+          }}
+        />
+        <Route
+          path={[`/author/reports/social-emotional-learning`]}
+          render={() => {
+            setShowHeader(true)
+            return (
+              <StandardsMasteryReportContainer
+                {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={breadcrumbData}
+                premium
+                showFilter={showFilter}
+                showApply={showApply}
+                onRefineResultsCB={onRefineResultsCB}
+                loc={loc}
+                navigationItems={navigationItems}
+                updateNavigation={updateNavigation}
+                setShowHeader={setShowHeader}
               />
             )
           }}

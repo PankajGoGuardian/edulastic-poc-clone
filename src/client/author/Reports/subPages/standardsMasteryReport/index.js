@@ -343,7 +343,10 @@ const StandardsMasteryReportContainer = (props) => {
         {firstLoad && <Spin size="large" />}
         <Route
           exact
-          path="/author/reports/standards-performance-summary"
+          path={[
+            '/author/reports/standards-performance-summary',
+            '/author/reports/social-emotional-learning',
+          ]}
           render={(_props) => {
             setShowHeader(true)
             return (
@@ -353,6 +356,11 @@ const StandardsMasteryReportContainer = (props) => {
                 settings={settings}
                 userRole={userRole}
                 sharedReport={sharedReport}
+                testTypesAllowed={
+                  _props.match.url.includes('social-emotional-learning')
+                    ? 'surveyType'
+                    : 'all'
+                }
               />
             )
           }}

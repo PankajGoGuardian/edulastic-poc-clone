@@ -344,3 +344,13 @@ export const INSIGHT_REPORTS = [
     ],
   },
 ]
+export const INSIGHT_REPORTS_MAP = INSIGHT_REPORTS.reduce((acc, report) => {
+  acc[report.key] = {
+    ...report,
+    cards: report.cards.reduce((cardAcc, card) => {
+      cardAcc[card.key] = card
+      return cardAcc
+    }, {}),
+  }
+  return acc
+}, {})

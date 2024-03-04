@@ -111,6 +111,13 @@ const initialFilterState = {
   assignedBy: '',
   showFilter: false,
 }
+
+const teacherViewHeaderStyle = {
+  marginBottom: '10px',
+  marginRight: '25px',
+  alignItems: 'center',
+}
+
 class Assignments extends Component {
   state = {
     filterState: {},
@@ -584,11 +591,7 @@ class Assignments extends Component {
                   <TableWrapper showFilter={showFilter}>
                     <StyledFlexContainer
                       justifyContent="space-between"
-                      style={{
-                        marginBottom: '10px',
-                        marginRight: '25px',
-                        alignItems: 'center',
-                      }}
+                      style={isAdvancedView ? {} : teacherViewHeaderStyle}
                     >
                       <EduIf condition={!showFilter}>
                         <EduThen>
@@ -599,7 +602,9 @@ class Assignments extends Component {
                             onClick={this.toggleFilter}
                             style={{
                               height: '24px',
-                              margin: '0 0px 0px 25px',
+                              margin: isAdvancedView
+                                ? '-15px 0px 5px 25px'
+                                : '0 0px 0px 25px',
                               borderRadius: '15px',
                             }}
                           >
@@ -612,6 +617,7 @@ class Assignments extends Component {
                             showFilter={showFilter}
                             variant="filter"
                             onClick={this.toggleFilter}
+                            isAdvancedView={isAdvancedView}
                           >
                             <IconCloseFilter
                               data-cy="smart-filter"
@@ -620,7 +626,9 @@ class Assignments extends Component {
                           </FilterButton>
                         </EduElse>
                       </EduIf>
-                      {this.renderBreadcrumbs()}
+                      <EduIf condition={!isAdvancedView}>
+                        {this.renderBreadcrumbs()}
+                      </EduIf>
                     </StyledFlexContainer>
                     <StyledCard>
                       {isAdvancedView ? (

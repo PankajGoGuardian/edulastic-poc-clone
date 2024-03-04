@@ -182,7 +182,7 @@ export const FilterButton = styled(Button)`
   padding: 2px;
   padding-top: 5px;
   border-radius: 3px;
-
+  ${(props) => (props.isAdvancedView ? 'position: fixed;' : '')}
   margin-left: -23px;
   margin-top: 8px;
   z-index: 2;

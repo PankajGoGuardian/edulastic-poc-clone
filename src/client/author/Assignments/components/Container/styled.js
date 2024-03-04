@@ -10,6 +10,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
   filterIconColor,
+  largeDesktopWidth,
 } from '@edulastic/colors'
 import {
   FlexContainer,
@@ -181,7 +182,7 @@ export const FilterButton = styled(Button)`
   padding: 2px;
   padding-top: 5px;
   border-radius: 3px;
-  position: fixed;
+
   margin-left: -23px;
   margin-top: 8px;
   z-index: 2;
@@ -217,5 +218,15 @@ export const TestItemPreviewContainer = styled(FlexContainer)`
   height: 100%;
   p {
     padding: 2px 0 0 0;
+  }
+`
+
+export const StyledSpan = styled.span`
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  margin-right: 20px;
+  @media (max-width: ${largeDesktopWidth}) {
+    display: none;
   }
 `

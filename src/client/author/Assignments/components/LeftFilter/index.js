@@ -38,7 +38,7 @@ import { shortTestIdKeyLength } from '../../constants'
 
 const { allGrades, allSubjects } = selectsData
 
-const AssignmentStatus = {
+export const AssignmentStatus = {
   NOT_OPEN: 'NOT OPEN',
   IN_PROGRESS: 'IN PROGRESS',
   IN_GRADING: 'IN GRADING',

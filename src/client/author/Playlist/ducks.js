@@ -276,7 +276,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         filters: {
           ...emptyFilters,
           grades: payload.grades || [],
-          subject: payload.subject[0] || '',
+          subject: payload.subject?.[0] || '',
         },
       }
     case SELECT_PLAYLIST:

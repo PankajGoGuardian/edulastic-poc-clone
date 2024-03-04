@@ -52,6 +52,7 @@ import {
   getUser,
   getUserOrgId,
   getUserRole,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import {
   AddStudentsToOtherClassModal,
@@ -603,6 +604,7 @@ class ClassEnrollmentTable extends React.Component {
       menuActive,
       count,
       history,
+      isPremium,
     } = this.props
 
     const tableDataSource = classEnrollmentData.map((item) => {
@@ -932,6 +934,7 @@ class ClassEnrollmentTable extends React.Component {
           userOrgId={userOrgId}
           resetClassDetails={resetClassDetails}
           location={location}
+          isPremium={isPremium}
         />
 
         <AddStudentsToOtherClassModal
@@ -1001,6 +1004,7 @@ const enhance = compose(
     (state) => ({
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
+      isPremium: isPremiumUserSelector(state),
       institutionIds: currentDistrictInstitutionIds(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),

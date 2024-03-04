@@ -1,5 +1,10 @@
 import { enrollmentApi } from '@edulastic/api'
-import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  EduIf,
+  notification,
+} from '@edulastic/common'
 import { IconAccessibility, IconUser } from '@edulastic/icons'
 import { Collapse, Form, Icon, Spin } from 'antd'
 import { get } from 'lodash'
@@ -7,7 +12,10 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
-import { getUserOrgData } from '../../../../src/selectors/user'
+import {
+  getUserOrgData,
+  isPremiumUserSelector,
+} from '../../../../src/selectors/user'
 import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
 import AdditionalFields from './AdditionalFields'
@@ -91,6 +99,7 @@ class AddStudentModal extends React.Component {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       resetClassDetails,
+      isPremium,
     } = this.props
 
     const { keys, isUpdate } = this.state
@@ -201,24 +210,26 @@ class AddStudentModal extends React.Component {
               </Panel>
             </Collapse>
             <br />
-            <Collapse
-              accordion
-              defaultActiveKey={keys}
-              expandIcon={expandIcon}
-              expandIconPosition="right"
-            >
-              <Panel header={AccommodationsHeader} key="accommodations">
-                <AdditionalFields
-                  type="accommodations"
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  std={std}
-                  isEdit={isEdit}
-                  stds={stds}
-                  foundUserContactEmails={this.state.foundUserContactEmails}
-                />
-              </Panel>
-            </Collapse>
+            <EduIf condition={isPremium}>
+              <Collapse
+                accordion
+                defaultActiveKey={keys}
+                expandIcon={expandIcon}
+                expandIconPosition="right"
+              >
+                <Panel header={AccommodationsHeader} key="accommodations">
+                  <AdditionalFields
+                    type="accommodations"
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                    std={std}
+                    isEdit={isEdit}
+                    stds={stds}
+                    foundUserContactEmails={this.state.foundUserContactEmails}
+                  />
+                </Panel>
+              </Collapse>
+            </EduIf>
           </AddForm>
         </Spin>
       </CustomModalStyled>
@@ -234,6 +245,7 @@ AddStudentModal.propTypes = {
   isOpen: PropTypes.bool,
   stds: PropTypes.array,
   isEdit: PropTypes.bool,
+  isPremium: PropTypes.bool,
 }
 
 AddStudentModal.defaultProps = {
@@ -241,6 +253,7 @@ AddStudentModal.defaultProps = {
   stds: [],
   isEdit: false,
   submitted: false,
+  isPremium: false,
 }
 
 const AddStudentForm = Form.create({ name: 'add_student_form' })(
@@ -250,6 +263,7 @@ const AddStudentForm = Form.create({ name: 'add_student_form' })(
 export default connect(
   (state) => ({
     orgData: getUserOrgData(state),
+    isPremium: isPremiumUserSelector(state),
     selectedClass: getValidatedClassDetails(state) || {},
     classDetails: get(state, 'manageClass.entity'),
   }),

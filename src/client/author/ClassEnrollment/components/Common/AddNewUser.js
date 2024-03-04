@@ -3,6 +3,7 @@ import {
   CustomModalStyled,
   DatePickerStyled,
   EduButton,
+  EduIf,
   FieldLabel,
   SelectInputStyled,
   TextInputStyled,
@@ -261,6 +262,7 @@ class AddNewUserForm extends React.Component {
       addNewUser,
       resetClassDetails,
       location: { pathname },
+      isPremium,
     } = this.props
 
     const { isUserExists, userInfo, userExistsInClass } = this.state
@@ -668,12 +670,14 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
             </Panel>
-            <Panel header={AccommodationsHeader} key="accommodations">
-              <AdditionalFields
-                type="accommodations"
-                getFieldDecorator={getFieldDecorator}
-              />
-            </Panel>
+            <EduIf condition={isPremium}>
+              <Panel header={AccommodationsHeader} key="accommodations">
+                <AdditionalFields
+                  type="accommodations"
+                  getFieldDecorator={getFieldDecorator}
+                />
+              </Panel>
+            </EduIf>
           </Collapse>
         </Form>
       </CustomModalStyled>

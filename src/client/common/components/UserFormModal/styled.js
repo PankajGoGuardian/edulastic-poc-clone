@@ -1,4 +1,9 @@
-import { lightGrey3, themeColor, white } from '@edulastic/colors'
+import {
+  lightGrey3,
+  themeColor,
+  white,
+  secondaryTextColor,
+} from '@edulastic/colors'
 import { Button, Form as AntdForm, Modal } from 'antd'
 import styled from 'styled-components'
 
@@ -55,6 +60,15 @@ export const PanelHeader = styled.div`
   label {
     margin-left: 8px;
     color: ${themeColor};
+  }
+  .flex {
+    display: flex;
+    align-items: center;
+  }
+  small {
+    font-size: 12px;
+    color: ${secondaryTextColor};
+    margin-left: 30px;
   }
 `
 

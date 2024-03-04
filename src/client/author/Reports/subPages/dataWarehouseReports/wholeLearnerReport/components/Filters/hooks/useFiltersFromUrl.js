@@ -22,6 +22,7 @@ function useFiltersFromUrl({
   setFirstLoad,
   setStudent,
   urlStudentId,
+  _onGoClick,
 }) {
   useEffect(() => {
     const urlSchoolYear =
@@ -73,6 +74,12 @@ function useFiltersFromUrl({
       setShowApply(true)
       toggleFilter(null, true)
       setFirstLoad(false)
+    } else {
+      _onGoClick({
+        filters: _filters,
+        selectedStudent: { key: urlStudentId },
+        selectedFilterTagsData: { ...filterTagsData },
+      })
     }
     if (urlStudentId) {
       setStudent({ key: urlStudentId })

@@ -146,6 +146,7 @@ export const SignedStackedBarWithLineChart = ({
   isSignedChart = true,
   hideYAxis = false,
   hideCartesianGrid = false,
+  hideLegend = false,
   hasBarTopLabels = false,
   hasBarInsideLabels = true,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
@@ -490,7 +491,7 @@ export const SignedStackedBarWithLineChart = ({
               />
             }
           />
-          {!isEmpty(legendProps?.payload) ? (
+          {!hideLegend ? (
             <Legend
               align="right"
               verticalAlign="top"

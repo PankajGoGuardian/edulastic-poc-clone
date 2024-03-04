@@ -352,6 +352,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 toggleFilter={toggleFilter}
                 setMARSettings={setMARSettings}
                 location={location}
+                pageTitle={pageTitle}
               />
             )
           }}

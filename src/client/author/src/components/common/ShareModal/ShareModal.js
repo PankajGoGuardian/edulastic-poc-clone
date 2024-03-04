@@ -36,6 +36,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { SHARE_ENTITY_TYPE } from '@edulastic/constants/const/common'
 import {
   getFullNameFromAsString,
   isPearOrEdulasticText,
@@ -71,6 +72,7 @@ import {
 import { RadioInputWrapper } from '../RadioInput'
 
 const { Paragraph } = Typography
+const { PLAYLIST, TEST } = SHARE_ENTITY_TYPE
 
 const permissions = {
   EDIT: `All Actions (edit, duplicate, assign)`,
@@ -247,7 +249,7 @@ class ShareModal extends React.Component {
     if (testId && testId !== 'undefined')
       getSharedUsers({
         contentId: testId,
-        contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
+        contentType: isPlaylist ? PLAYLIST : TEST,
       })
     if (!isPublished) {
       updateEmailNotificationData({
@@ -292,7 +294,7 @@ class ShareModal extends React.Component {
       contentId: testId,
       sharedId,
       sharedWith,
-      contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
+      contentType: isPlaylist ? PLAYLIST : TEST,
     }
     if (v1LinkShareEnabled === 1) {
       unSharePayload.versionId = testVersionId
@@ -409,7 +411,7 @@ class ShareModal extends React.Component {
       emails,
       sharedType,
       permission,
-      contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
+      contentType: isPlaylist ? PLAYLIST : TEST,
     }
     if (sharedType === sharedKeysObj.INDIVIDUAL && sendEmailNotification) {
       data.sendEmailNotification = sendEmailNotification
@@ -626,7 +628,9 @@ class ShareModal extends React.Component {
               )}
               {!isPublished && !!individuals.length && (
                 <>
-                  <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
+                  <ShareListTitle>
+                    CO-AUTHORS FOR THIS {isPlaylist ? PLAYLIST : TEST}
+                  </ShareListTitle>
                   <ShareList>
                     {individuals.map((data, index) => (
                       <SharedRow

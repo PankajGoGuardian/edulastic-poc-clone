@@ -24,6 +24,7 @@ const TestNameChangeModal = ({
   test,
   setData,
   showSaveTitle,
+  testNameSaving,
 }) => {
   const { title: testName } = test
   const inputRef = useRef(null)
@@ -43,6 +44,7 @@ const TestNameChangeModal = ({
         width="124px"
         fontSize="14px"
         style={{ textTransform: 'none' }}
+        loading={testNameSaving}
         disabled={
           !testName?.trim() ||
           testName?.trim().toLowerCase() === DEFAULT_TEST_TITLE.toLowerCase()
@@ -65,6 +67,7 @@ const TestNameChangeModal = ({
       modalWidth="398px"
       modalMaxWidth="398px"
       padding="32px"
+      zIndex="2000"
     >
       <ModalHeader>
         <ModalHeaderTitle>

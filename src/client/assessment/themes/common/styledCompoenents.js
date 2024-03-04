@@ -1,6 +1,7 @@
 import {
   desktopWidth,
   extraDesktopWidthMax,
+  largeDesktopWidth,
   mediumDesktopExactWidth,
   smallDesktopWidth,
   themeColor,
@@ -168,10 +169,22 @@ export const StyledTextForStudent = styled.p`
   text-overflow: ellipsis;
   max-width: ${({ maxWidth }) => maxWidth || '180px'};
   text-transform: uppercase;
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    max-width: ${({ $timedAssignment }) =>
+      $timedAssignment ? '85px' : '130px'};
+    margin-right: 0px;
+  }
+  @media (max-width: ${largeDesktopWidth}) {
+    max-width: ${({ $timedAssignment }) =>
+      $timedAssignment ? '65px' : '120px'};
+  }
+  @media (max-width: 1100px) {
+    max-width: ${({ $timedAssignment }) =>
+      $timedAssignment ? '20px' : '100px'};
+  }
   @media (max-width: ${smallDesktopWidth}) {
     max-width: ${({ $timedAssignment }) =>
       $timedAssignment ? '55px' : '85px'};
-    margin-right: 0px;
   }
   @media (max-width: ${desktopWidth}) {
     max-width: ${({ $timedAssignment }) =>

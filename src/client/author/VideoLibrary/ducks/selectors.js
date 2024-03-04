@@ -35,6 +35,10 @@ export const vqCurrentTabSelector = createSelector(
   (state) => state.currentTab
 )
 
+export const vqPageSelector = createSelector(
+  videoQuizSelector,
+  (state) => state.vqPage
+)
 export const vqIsLoadingSelector = createSelector(
   videoQuizSelector,
   (state) => state.isLoading

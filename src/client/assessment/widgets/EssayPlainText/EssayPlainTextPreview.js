@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
@@ -83,6 +83,7 @@ const EssayPlainTextPreview = ({
   isStudentReport,
   isSpeechToTextEnabled,
 }) => {
+  const node = useRef(null)
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
 
   const [wordCount, setWordCount] = useState(getWordCount(text))
@@ -97,7 +98,28 @@ const EssayPlainTextPreview = ({
 
   const onSTTTextUpdate = (transcribedText, isFinal) => {
     if (isFinal) {
-      setText((prevText) => sanitizeString(`${prevText} ${transcribedText}`))
+      const transcribedTextLength = transcribedText?.length || 0
+      setText((prevText) =>
+        sanitizeString(
+          prevText.slice(0, selection.start) +
+            transcribedText +
+            prevText.slice(selection.end)
+        )
+      )
+      let updatedStart = 0
+      let updatedEnd = 0
+      setSelection((prevSelectionValues) => {
+        updatedStart = (prevSelectionValues?.start || 0) + transcribedTextLength
+        updatedEnd = (prevSelectionValues?.end || 0) + transcribedTextLength
+        return {
+          start: updatedStart,
+          end: updatedEnd,
+        }
+      })
+      node?.current?.resizableTextArea?.textArea?.setSelectionRange?.(
+        updatedStart,
+        updatedEnd
+      )
     }
   }
 
@@ -120,7 +142,6 @@ const EssayPlainTextPreview = ({
 
   const reviewTab = isReviewTab && testItem
 
-  let node
   const { max_height: maxHeight = '' } = item?.uiStyle || {} // Todo: Field name needs to be corrected in DB
 
   const maxHeightPreview = useMemo(() => {
@@ -164,20 +185,20 @@ const EssayPlainTextPreview = ({
 
   const handleSelect = () => {
     if (
-      node?.resizableTextArea?.textArea?.selectionStart !==
-      node?.resizableTextArea?.textArea?.selectionEnd
+      node?.current?.resizableTextArea?.textArea?.selectionStart !==
+      node?.current?.resizableTextArea?.textArea?.selectionEnd
     ) {
       setSelection({
-        start: node.resizableTextArea.textArea.selectionStart,
-        end: node.resizableTextArea.textArea.selectionEnd,
+        start: node?.current.resizableTextArea.textArea.selectionStart,
+        end: node?.current.resizableTextArea.textArea.selectionEnd,
       })
     } else {
       setSelection(null)
     }
 
     setSelection({
-      start: node?.resizableTextArea?.textArea?.selectionStart,
-      end: node?.resizableTextArea?.textArea?.selectionEnd,
+      start: node?.current?.resizableTextArea?.textArea?.selectionStart,
+      end: node?.current?.resizableTextArea?.textArea?.selectionEnd,
     })
   }
 
@@ -247,7 +268,7 @@ const EssayPlainTextPreview = ({
         break
       }
       case TRANSCRIBE: {
-        node?.focus()
+        node?.current?.focus()
         onStartSTT()
         break
       }
@@ -400,7 +421,7 @@ const EssayPlainTextPreview = ({
                 autoSize
                 data-cy="previewBoxContainer"
                 inputRef={(ref) => {
-                  node = ref
+                  node.current = ref
                 }}
                 noBorder
                 fontSize={fontSize}
@@ -430,10 +451,7 @@ const EssayPlainTextPreview = ({
             )}
 
             {!reviewTab && (
-              <EssayToolbar
-                data-cy="questionPlainEssayAuthorPreviewWordCount"
-                borderRadiusOnlyBottom
-              >
+              <EssayToolbar borderRadiusOnlyBottom>
                 <FlexContainer
                   alignItems="stretch"
                   justifyContent="space-between"
@@ -444,7 +462,12 @@ const EssayPlainTextPreview = ({
                 </FlexContainer>
 
                 <EduIf condition={item.showWordCount}>
-                  <Item style={wordCountStyle}>{displayWordCount}</Item>
+                  <Item
+                    data-cy="questionPlainEssayAuthorPreviewWordCount"
+                    style={wordCountStyle}
+                  >
+                    {displayWordCount}
+                  </Item>
                 </EduIf>
               </EssayToolbar>
             )}

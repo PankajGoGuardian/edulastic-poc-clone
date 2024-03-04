@@ -9,23 +9,9 @@ import VideoLibrarySearchBox from './SearchBox'
 import VideoLibraryTabs from './Tabs'
 
 import {
-  getYoutubeThumbnailAction,
-  setYoutubeThumbnailAction,
-} from '../../../TestPage/ducks'
-import {
   allowedToCreateVideoQuizSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
   isVideoQuizAndAIEnabledSelector,
-  showVQCountSelector,
 } from '../../../src/selectors/user'
-
-import {
-  getTestsCountSelector,
-  getTestsFilterSelector,
-  receiveTestsAction,
-  updateAllTestSearchFilterAction,
-} from '../../../TestList/ducks'
 
 import { videoQuizActions } from '../../ducks'
 import useYoutubeLibrary from '../../hooks/useYotubeLibrary'
@@ -35,25 +21,20 @@ import useTestLibrary from '../../hooks/useTestLibrary'
 
 import useVQLibraryCommon from '../../hooks/useVQLibraryCommon'
 import { vqConst } from '../../const'
-import { getDefaultInterests } from '../../../dataUtils'
 
 const { YOUTUBE, COMMUNITY, MY_CONTENT } = vqConst.vqTabs
 
 const VideoLibrary = ({
   testSearchRequest,
-  testListSearchFilters,
   videoQuizLibrary,
   createVQAssessment,
   ytSearchRequest,
   vqUpdateCurrentTab,
   updateSearchString,
-  updateAllTestSearchFilter,
+  setVQFilters,
   history,
   resetVQLibrary,
-  interestedGrades,
-  interestedSubjects,
   isVideoQuizAndAIEnabled,
-  testsCount,
 }) => {
   const {
     testList = [],
@@ -63,18 +44,19 @@ const VideoLibrary = ({
     ytNextPageToken = '',
     searchString = '',
     ytTotalResult = 1,
+    vqFilters = {},
+    vqCount = 0,
   } = videoQuizLibrary
 
   const vqListData = currentTab === YOUTUBE ? videoList : testList
 
   /** Selected grades and subjects */
+
   const {
-    subject: prevSubject = interestedSubjects,
-    grades: prevGrades = interestedGrades || [],
-  } = getDefaultInterests()
-  const { subject, grades, status: filterStatus } = testListSearchFilters
-  const filterSubjects = subject.length ? subject : prevSubject
-  const filterGrades = grades.length ? grades : prevGrades
+    subject: filterSubjects,
+    grades: filterGrades,
+    status: filterStatus,
+  } = vqFilters
 
   const handleOnChange = (userInput) => {
     updateSearchString(userInput)
@@ -86,7 +68,7 @@ const VideoLibrary = ({
 
   const { fetchTestByFilters, handleTestSelect } = useTestLibrary({
     testSearchRequest,
-    testListSearchFilters,
+    vqFilters,
     searchString,
     history,
     currentTab,
@@ -111,7 +93,7 @@ const VideoLibrary = ({
     testList,
     ytNextPageToken,
     currentTab,
-    testsCount,
+    vqCount,
   })
 
   /** Handle press enter event triggers Test library search or Youtube search */
@@ -124,6 +106,16 @@ const VideoLibrary = ({
     fn[currentTab]()
   }
 
+  const handleOnClear = () => {
+    updateSearchString('')
+    if (currentTab !== YOUTUBE) {
+      fetchTestByFilters({
+        append: false,
+        useEmptySearchString: true,
+      })
+    }
+  }
+
   const handleCardSelect = (uniqueId) => {
     const fn = {
       [YOUTUBE]: () => handleVideoSelect(uniqueId),
@@ -134,11 +126,12 @@ const VideoLibrary = ({
   }
 
   const handleFilterChanges = ({ key, value }) => {
-    const newSearch = produce(testListSearchFilters, (draft) => {
+    const newSearch = produce(vqFilters, (draft) => {
       draft[key] = value
     })
+
     const sort = vqConst.sort[currentTab]
-    updateAllTestSearchFilter({ search: newSearch, sort })
+    setVQFilters({ search: newSearch, sort })
   }
 
   const showNoData = !isLoading && !vqListData?.length
@@ -148,6 +141,7 @@ const VideoLibrary = ({
   const searchBoxProps = {
     handleOnSearch,
     handleOnChange,
+    handleOnClear,
     searchString,
     hasError,
     disableSearchInput,
@@ -187,25 +181,17 @@ const enhance = compose(
   connect(
     (state) => ({
       isVideoQuizAndAIEnabled: isVideoQuizAndAIEnabledSelector(state),
-      interestedGrades: getInterestedGradesSelector(state),
-      interestedSubjects: getInterestedSubjectsSelector(state),
-      showVQCount: showVQCountSelector(state),
       videoQuizLibrary: videoQuizSelector(state),
-      testListSearchFilters: getTestsFilterSelector(state),
-      testsCount: getTestsCountSelector(state),
       allowedToCreateVideoQuiz: allowedToCreateVideoQuizSelector(state),
     }),
     {
-      getYoutubeThumbnail: getYoutubeThumbnailAction,
-      setYoutubeThumbnail: setYoutubeThumbnailAction,
-      receiveTestsRequest: receiveTestsAction,
       createVQAssessment: videoQuizActions.createVQAssessmentRequest,
       updateSearchString: videoQuizActions.updateSearchString,
       ytSearchRequest: videoQuizActions.ytSearchRequest,
       vqUpdateCurrentTab: videoQuizActions.updateCurrentTab,
       testSearchRequest: videoQuizActions.testSearchRequest,
       resetVQLibrary: videoQuizActions.resetVQState,
-      updateAllTestSearchFilter: updateAllTestSearchFilterAction,
+      setVQFilters: videoQuizActions.setVQFilters,
     }
   )
 )

@@ -213,6 +213,7 @@ import {
   getOrgDataSelector,
   getUser,
   getUserOrgId,
+  getUserRole,
 } from '../src/selectors/user'
 import {
   getAllTagsAction,
@@ -927,20 +928,25 @@ function* fetchUpdateTagsData({ payload }) {
 export function* receiveTestListSaga({ payload }) {
   const { statePrefix = '', externalTests = [], ...params } = payload
   try {
-    const searchResult = yield call(assignmentApi.searchAssignments, params)
-    const assignmentBuckets = get(
-      searchResult,
-      'aggregations.buckets.buckets',
-      []
-    )
+    let testList = []
     const orgData = yield select(getOrgDataSelector)
-    const testList = assignmentBuckets
-      .map(({ key: _id, assignments }) => {
-        const hits = get(assignments, 'hits.hits', [])
-        const title = get(hits[0], '_source.title', '')
-        return { _id, title }
-      })
-      .filter(({ _id, title }) => _id && title)
+    const userRole = yield select(getUserRole)
+    // internal assessments are not required for district group admin
+    if (userRole !== roleuser.DISTRICT_GROUP_ADMIN) {
+      const searchResult = yield call(assignmentApi.searchAssignments, params)
+      const assignmentBuckets = get(
+        searchResult,
+        'aggregations.buckets.buckets',
+        []
+      )
+      testList = assignmentBuckets
+        .map(({ key: _id, assignments }) => {
+          const hits = get(assignments, 'hits.hits', [])
+          const title = get(hits[0], '_source.title', '')
+          return { _id, title }
+        })
+        .filter(({ _id, title }) => _id && title)
+    }
     const externalTestList = testListTransformer({
       response: externalTests,
       testType: ASSESSMENT_TYPES.EXTERNAL,
@@ -964,16 +970,21 @@ export function* receiveTestListSaga({ payload }) {
 function* receiveMultiSchoolYearTestListSaga({ payload }) {
   const { externalTests = [], ...params } = payload
   try {
-    const searchResult = yield call(
-      assignmentApi.searchMultiSchoolYearAssignments,
-      params
-    )
+    let testList = []
     const orgData = yield select(getOrgDataSelector)
-    const testList = testListTransformer({
-      response: searchResult,
-      orgData,
-      params,
-    })
+    const userRole = yield select(getUserRole)
+    // internal assessments are not required for district group admin
+    if (userRole !== roleuser.DISTRICT_GROUP_ADMIN) {
+      const searchResult = yield call(
+        assignmentApi.searchMultiSchoolYearAssignments,
+        params
+      )
+      testList = testListTransformer({
+        response: searchResult,
+        orgData,
+        params,
+      })
+    }
     const _externalAssessments = testListTransformer({
       response: externalTests,
       testType: ASSESSMENT_TYPES.EXTERNAL,

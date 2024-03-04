@@ -43,6 +43,11 @@ const PUBLIC_URL_IDENTIFIER = '/public/'
 
 const PEAR_ASSESSMENT_CERTIFIED_NAME = 'Pear Assessment Certified'
 
+const SHARE_ENTITY_TYPE = {
+  TEST: 'TEST',
+  PLAYLIST: 'PLAYLIST',
+}
+
 module.exports = {
   helpCenterUrl,
   sessionFilters,
@@ -64,4 +69,5 @@ module.exports = {
   ONE_MONTH_IN_MILLISECONDS,
   TEN_DAYS_IN_MILLISECONDS,
   PEAR_ASSESSMENT_CERTIFIED_NAME,
+  SHARE_ENTITY_TYPE,
 }

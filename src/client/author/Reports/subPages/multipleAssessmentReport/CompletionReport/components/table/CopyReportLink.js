@@ -2,7 +2,7 @@ import React from 'react'
 import { getCompletionReportPathForAssignment } from '../../../../../../Assignments/components/ActionMenu/ActionMenu'
 import { TitleCopy } from '../../../../../../TutorMe/components/styled'
 
-const CopyReportLink = ({ report, filterSettings }) => {
+const CopyReportLink = ({ report, filterSettings, compareBy = {} }) => {
   return (
     <TitleCopy
       copyable={{
@@ -12,7 +12,8 @@ const CopyReportLink = ({ report, filterSettings }) => {
           report.testId,
           {},
           [report],
-          filterSettings
+          filterSettings,
+          compareBy
         )}`,
       }}
     />

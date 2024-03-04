@@ -163,6 +163,7 @@ const CustomizedHeaderWrapper = ({
     DW_DASHBOARD_REPORT,
     DW_EARLY_WARNING_REPORT,
     DW_GOALS_AND_INTERVENTIONS_REPORT,
+    COMPLETION_REPORT,
   } = reportNavType
 
   const reportTypes = navigation.locToData
@@ -176,6 +177,7 @@ const CustomizedHeaderWrapper = ({
     reportTypes[DW_DASHBOARD_REPORT].title,
     reportTypes[DW_EARLY_WARNING_REPORT].title,
     reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+    reportTypes[COMPLETION_REPORT].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
     reportTypes[ENGAGEMENT_SUMMARY].title,

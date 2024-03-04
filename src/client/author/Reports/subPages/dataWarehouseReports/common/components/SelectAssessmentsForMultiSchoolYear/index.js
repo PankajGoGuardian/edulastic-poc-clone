@@ -64,7 +64,6 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const assessmentFilterRef = useRef()
 
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
-  const firstRender = useRef(true)
 
   const testTermIdsArr = useMemo(() => convertItemToArray(testTermIds), [
     testTermIds,
@@ -79,27 +78,24 @@ const SelectAssessmentsForMultiSchoolYear = ({
     (testTermIdsArr.length > 1 && subjectArr.length && gradesArr.length)
 
   const isMultiSchoolYear = getIsMultiSchoolYearDataPresent(testTermIds)
+  const isFieldRequired = isMultiSchoolYear || testTermIds !== termId
   const isLoading = isLongitudinalReport ? multiSchoolYearLoading : loading
-  const isDisable = useMemo(() => {
-    if (isMultiSchoolYear) {
-      return !subjectArr.length || !gradesArr.length
-    }
-    return false
-  }, [testTermIds, subjects, grades])
+  const isApplyDisabledForSelectedTests =
+    isFieldRequired && (!subjectArr.length || !gradesArr.length)
   // build dropdown data
 
   const termsMap = keyBy(schoolYears, 'key')
   const tests = isLongitudinalReport ? multiSchoolYearTestList : testList
-
+  const isMultiYearSelected = testTermIdsArr.length > 1
   const dropDownDataMapper = (_tests) => {
     return _tests.map((test) => {
-      const testTermId = test.termId ?? termId
+      const testTermId = isMultiYearSelected ? test.termId : testTermIdsArr[0]
       const term = termsMap[testTermId]
       const testTermName = test.termName || term.title || ''
       return {
         key: `${!test.isExternal ? test._id : test.testName}_${testTermId}`,
         title: `${test.title}${
-          isLongitudinalReport ? ` [ SY:${testTermName} ]` : ''
+          isMultiYearSelected ? ` [ SY:${testTermName} ]` : ''
         } `,
         disabled: true,
       }
@@ -203,22 +199,10 @@ const SelectAssessmentsForMultiSchoolYear = ({
   }, [query])
   // Reset the selected test fields
   useEffect(() => {
-    if (isDisable) {
+    if (isApplyDisabledForSelectedTests) {
       selectCB([])
     }
-  }, [isDisable])
-
-  // Filtering the selected tests from tests
-  useEffect(() => {
-    const filteredTests = dropdownData.filter((test) => {
-      return selectedTestIds.includes(test.key)
-    })
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
-    selectCB(filteredTests)
-  }, [tests])
+  }, [isApplyDisabledForSelectedTests])
 
   useEffect(() => {
     if (searchTerms.selectedKey && !searchTerms.searchedText) {
@@ -235,7 +219,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
   const label = (
     <>
       Test
-      {isMultiSchoolYear && (
+      {isFieldRequired && (
         <>
           <MandatorySymbol>*</MandatorySymbol> (You can select Max 20)
         </>
@@ -243,7 +227,7 @@ const SelectAssessmentsForMultiSchoolYear = ({
     </>
   )
 
-  const disabledPlaceholder = isDisable
+  const disabledPlaceholder = isApplyDisabledForSelectedTests
     ? 'Select a Test Grade and Subject to activate the Test Filter'
     : 'Select Test'
 
@@ -257,12 +241,12 @@ const SelectAssessmentsForMultiSchoolYear = ({
       onChange={onChange}
       onSearch={onSearch}
       value={tests?.length ? selectedTestIds : []}
-      disabled={isDisable}
+      disabled={isApplyDisabledForSelectedTests}
       options={isLoading ? [] : dropdownData || []}
       loading={isLoading}
     />
   )
-  if (isDisable) {
+  if (isApplyDisabledForSelectedTests) {
     return (
       <Tooltip
         placement="bottomLeft"

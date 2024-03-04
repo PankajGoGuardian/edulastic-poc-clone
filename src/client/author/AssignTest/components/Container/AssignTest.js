@@ -100,7 +100,11 @@ import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPa
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
-import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
+import {
+  isAdvancedSearchLoadingSelector,
+  setAdvancedSearchFilterAction,
+  setIsAdvancedSearchSelectedAction,
+} from '../../../AdvanceSearch/ducks'
 import { getSettingsToSaveOnTestType } from '../../../TestPage/utils'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
@@ -312,10 +316,17 @@ class AssignTest extends React.Component {
       clearAssignmentSettings,
       setAssignments,
       setTestSettingsList,
+      setAdvancedSearchFilter,
+      setIsAdvancedSearchSelected,
     } = this.props
     clearAssignmentSettings()
     setAssignments([])
     setTestSettingsList([])
+    setAdvancedSearchFilter({
+      combinator: 'and',
+      rules: [],
+    })
+    setIsAdvancedSearchSelected(false)
   }
 
   componentDidUpdate(prevProps) {
@@ -1100,6 +1111,8 @@ const enhance = compose(
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
       setTestSettingsList: setTestSettingsListAction,
+      setAdvancedSearchFilter: setAdvancedSearchFilterAction,
+      setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
     }
   )
 )

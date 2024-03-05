@@ -1520,9 +1520,8 @@ class ClassBoard extends Component {
       : null
 
     const isAssignTutoringActive =
-      isTutorMeEnabled &&
-      selectedStudentsKeys.length <= 1 &&
-      !isTutorMeSessionRequestActive
+      !isTutorMeEnabled ||
+      (selectedStudentsKeys.length === 1 && !isTutorMeSessionRequestActive)
 
     return (
       <div>
@@ -1861,9 +1860,7 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    <EduIf
-                      condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
-                    >
+                    <EduIf condition={isTutorMeVisibleToDistrict}>
                       <Tooltip
                         placement="top"
                         title={assignTutoringTooltipTitle}

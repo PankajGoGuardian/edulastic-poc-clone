@@ -12,7 +12,9 @@ import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
 import AdditionalFields from './AdditionalFields'
 import BasicFields from './BasicFields'
-import { AddForm, PanelHeader, Title } from './styled'
+import { AddForm, PanelHeader, StyledCollapse, Title } from './styled'
+import { isEditAllowed } from '../../../../TestSetting/utils/constants'
+import { StyledTooltip } from '../../../../Reports/common/styled'
 
 const { Panel } = Collapse
 class AddStudentModal extends React.Component {
@@ -91,6 +93,7 @@ class AddStudentModal extends React.Component {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       resetClassDetails,
+      districtTestSettings,
     } = this.props
 
     const { keys, isUpdate } = this.state
@@ -142,14 +145,26 @@ class AddStudentModal extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     )
+    const isAccommodationDisable = districtTestSettings
+      ? !isEditAllowed(districtTestSettings, 'manageClass')
+      : false
+
     const AccommodationsHeader = (
-      <PanelHeader>
-        <div className="flex">
-          <IconAccessibility style={{ fill: themeColor }} />
-          <label>Configure Accommodations</label>
-        </div>
-        <small>Set TTS, STT, IR acommodations</small>
-      </PanelHeader>
+      <StyledTooltip
+        title={
+          isAccommodationDisable
+            ? 'Accommodations can only be changed by administrator'
+            : ''
+        }
+      >
+        <PanelHeader>
+          <div className="flex">
+            <IconAccessibility style={{ fill: themeColor }} />
+            <label>Configure Accommodations</label>
+          </div>
+          <small>Set TTS, STT, IR acommodations</small>
+        </PanelHeader>
+      </StyledTooltip>
     )
 
     return (
@@ -201,13 +216,17 @@ class AddStudentModal extends React.Component {
               </Panel>
             </Collapse>
             <br />
-            <Collapse
+            <StyledCollapse
               accordion
               defaultActiveKey={keys}
               expandIcon={expandIcon}
               expandIconPosition="right"
             >
-              <Panel header={AccommodationsHeader} key="accommodations">
+              <Panel
+                disabled={isAccommodationDisable}
+                header={AccommodationsHeader}
+                key="accommodations"
+              >
                 <AdditionalFields
                   type="accommodations"
                   getFieldDecorator={getFieldDecorator}
@@ -215,10 +234,11 @@ class AddStudentModal extends React.Component {
                   std={std}
                   isEdit={isEdit}
                   stds={stds}
+                  districtTestSettings={districtTestSettings}
                   foundUserContactEmails={this.state.foundUserContactEmails}
                 />
               </Panel>
-            </Collapse>
+            </StyledCollapse>
           </AddForm>
         </Spin>
       </CustomModalStyled>

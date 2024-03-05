@@ -4,7 +4,7 @@ import {
   themeColor,
   secondaryTextColor,
 } from '@edulastic/colors'
-import { Button, Form } from 'antd'
+import { Button, Collapse, Form } from 'antd'
 import styled from 'styled-components'
 import { ConfirmationModal } from '../../../../src/components/common/ConfirmationModal'
 
@@ -104,5 +104,11 @@ export const AddForm = styled(Form)`
     & > .ant-collapse-content-box {
       padding: 2rem 2rem 1.2rem 2rem;
     }
+  }
+`
+
+export const StyledCollapse = styled(Collapse)`
+  .ant-collapse-item-disabled {
+    filter: opacity(0.5);
   }
 `

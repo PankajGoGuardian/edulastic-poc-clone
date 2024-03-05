@@ -58,7 +58,10 @@ import {
   DISTRICT_ADMIN,
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
-import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
+import {
+  SHOW_TEXT_TO_SPEECH,
+  VQ_QUOTA_EXHAUSTED,
+} from '@edulastic/constants/const/test'
 import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
@@ -1172,6 +1175,7 @@ export const createBlankTest = () => ({
   hasSections: undefined,
   [SHOW_IMMERSIVE_READER]: undefined,
   [SHOW_SPEECH_TO_TEXT]: undefined,
+  [SHOW_TEXT_TO_SPEECH]: undefined,
 })
 
 const initialState = {
@@ -2082,6 +2086,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showTtsForPassages,
     showImmersiveReader: entity.showImmersiveReader,
     showSpeechToText: entity.showSpeechToText,
+    showTextToSpeech: entity.showTextToSpeech,
     vqPreventSkipping: entity.vqPreventSkipping,
   }
 

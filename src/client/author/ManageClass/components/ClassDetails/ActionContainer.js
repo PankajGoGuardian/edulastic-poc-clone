@@ -87,6 +87,7 @@ const ActionContainer = ({
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
   manualEnrollmentAllowed,
+  districtTestSettings,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
@@ -476,6 +477,7 @@ const ActionContainer = ({
           stds={selectedStudent}
           isEdit={isEdit}
           loadStudents={loadStudents}
+          districtTestSettings={districtTestSettings}
         />
       )}
 

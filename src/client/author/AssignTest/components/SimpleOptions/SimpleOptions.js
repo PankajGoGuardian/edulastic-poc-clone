@@ -530,6 +530,7 @@ class SimpleOptions extends React.Component {
       togglePenaltyOnUsingHints,
       setShowAdvanceSearchModal,
       isAiEvaulationDistrict,
+      districtTestSettings,
     } = this.props
 
     const { collections } = testSettings
@@ -774,6 +775,7 @@ class SimpleOptions extends React.Component {
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
                 canUseImmersiveReader={canUseImmersiveReader}
+                districtTestSettings={districtTestSettings}
               />
             </TabContentContainer>
           </TabPane>

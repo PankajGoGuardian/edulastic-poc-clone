@@ -5,7 +5,11 @@ import { withNamespaces } from '@edulastic/localization'
 import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { isEmpty, lowerCase } from 'lodash'
 import { FEED_NAME_LABEL } from '@edulastic/constants/const/dataWarehouse'
-import { AdministrationLevelOptions, NON_ACADEMIC_DATA_TYPE_KEY } from './utils'
+import {
+  AdministrationLevelOptions,
+  FastBridgeSessionOptions,
+  NON_ACADEMIC_DATA_TYPE_KEY,
+} from './utils'
 import {
   StyledSelect,
   StyledCol,
@@ -48,14 +52,18 @@ const FeedNameInput = ({
     setFeedName(undefined)
   }, [category])
 
-  const administrationLevelDropdownOptions = useMemo(
-    () =>
-      AdministrationLevelOptions.map(({ key, title }) => ({
-        key: `${key} (${selectedSchoolYear})`,
-        title: `${title} (${selectedSchoolYear})`,
-      })),
-    [selectedSchoolYear]
-  )
+  const sessionDropdownOptions = useMemo(() => {
+    const sessionOptions =
+      category === testTypes.FP_BAS
+        ? AdministrationLevelOptions
+        : testTypes.FASTBRIDGE_TEST_TYPES.includes(category)
+        ? FastBridgeSessionOptions
+        : []
+    return sessionOptions.map(({ key, title }) => ({
+      key: `${key} (${selectedSchoolYear})`,
+      title: `${title} (${selectedSchoolYear})`,
+    }))
+  }, [selectedSchoolYear, category])
 
   return (
     <>
@@ -70,7 +78,12 @@ const FeedNameInput = ({
       </EduIf>
       <StyledRow>
         <StyledCol span={23}>
-          <EduIf condition={category === testTypes.FP_BAS}>
+          <EduIf
+            condition={[
+              testTypes.FP_BAS,
+              ...testTypes.FASTBRIDGE_TEST_TYPES,
+            ].includes(category)}
+          >
             <EduThen>
               <StyledSelect
                 placeholder={`Enter ${FEED_NAME_LABEL}`}
@@ -80,7 +93,7 @@ const FeedNameInput = ({
                 disabled={isEmpty(selectedSchoolYear)}
                 data-cy="feedNameDropDown"
               >
-                {administrationLevelDropdownOptions.map(({ key, title }) => (
+                {sessionDropdownOptions.map(({ key, title }) => (
                   <Option key={key} value={key}>
                     {title}
                   </Option>

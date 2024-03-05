@@ -449,6 +449,7 @@ class QuestionItem extends React.Component {
             highlighted={highlighted}
             pdfPreview={pdfPreview}
             zoom={zoom}
+            data-cy="questionNumber"
           >
             {questionIndex}
           </QuestionNumber>

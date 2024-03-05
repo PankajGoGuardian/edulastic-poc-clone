@@ -16,6 +16,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
 
+import { authorAssignment } from '@edulastic/colors'
 import {
   receiveAssignmentsAction,
   receiveAssignmentsSummaryAction,
@@ -53,7 +54,7 @@ import AdvancedTable from '../TableList/AdvancedTable'
 import ReleaseScoreSettingsModal from '../ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import MobileTableList from '../MobileTableList/MobileTableList'
 import ListHeader from '../../../src/components/common/ListHeader'
-import LeftFilter from '../LeftFilter'
+import LeftFilter, { AssignmentStatus } from '../LeftFilter'
 import {
   Container,
   Main,
@@ -64,7 +65,9 @@ import {
   TableWrapper,
   LeftWrapper,
   FixedWrapper,
+  StyledFlexContainer,
   FilterButton,
+  StyledSpan,
 } from './styled'
 
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
@@ -90,6 +93,13 @@ import {
   setFilterInSession,
 } from '../../../../common/utils/helpers'
 import { StyledEduButton } from '../../../Reports/common/styled'
+import {
+  StyledButton,
+  Breadcrumbs,
+} from '../../../AssignmentAdvanced/components/Container/styled'
+import { Breadcrumb } from '../../../AssignmentAdvanced/components/Breadcrumb'
+
+const { assignmentStatusBg } = authorAssignment
 
 const initialFilterState = {
   grades: [],
@@ -101,6 +111,13 @@ const initialFilterState = {
   assignedBy: '',
   showFilter: false,
 }
+
+const teacherViewHeaderStyle = {
+  marginBottom: '10px',
+  marginRight: '25px',
+  alignItems: 'center',
+}
+
 class Assignments extends Component {
   state = {
     filterState: {},
@@ -353,6 +370,111 @@ class Assignments extends Component {
     })
   }
 
+  handleFilterStatusChange = (value) => {
+    const { filterState } = this.state
+    const { loadAssignments } = this.props
+    this.setFilterState({
+      ...filterState,
+      status: value,
+    })
+    loadAssignments({
+      filters: {
+        ...filterState,
+        status: value,
+      },
+      folderId: filterState.folderId,
+    })
+  }
+
+  renderBreadcrumbs = () => {
+    const { filterState } = this.state
+    const { status } = filterState
+    return (
+      <FlexContainer>
+        <div>
+          <StyledSpan>Filter By</StyledSpan>
+          <StyledButton
+            data-cy="allFilter"
+            type="primary"
+            onClick={() => this.handleFilterStatusChange('')}
+          >
+            All
+          </StyledButton>
+        </div>
+        <Breadcrumbs>
+          <Breadcrumb
+            handleClick={() =>
+              this.handleFilterStatusChange(AssignmentStatus.NOT_OPEN)
+            }
+            first
+            color={
+              status === AssignmentStatus.NOT_OPEN
+                ? 'white'
+                : assignmentStatusBg.NOT_OPEN
+            }
+            bgColor={
+              status === AssignmentStatus.NOT_OPEN &&
+              assignmentStatusBg.NOT_OPEN
+            }
+          >
+            <span data-cy="notOpenFilter">&nbsp;</span>
+            Not Open
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() =>
+              this.handleFilterStatusChange(AssignmentStatus.IN_PROGRESS)
+            }
+            color={
+              status === AssignmentStatus.IN_PROGRESS
+                ? 'white'
+                : assignmentStatusBg.IN_PROGRESS
+            }
+            bgColor={
+              status === AssignmentStatus.IN_PROGRESS &&
+              assignmentStatusBg.IN_PROGRESS
+            }
+          >
+            <span data-cy="inProgressFilter">&nbsp;</span>
+            In Progress
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() =>
+              this.handleFilterStatusChange(AssignmentStatus.IN_GRADING)
+            }
+            color={
+              status === AssignmentStatus.IN_GRADING
+                ? 'white'
+                : assignmentStatusBg.IN_GRADING
+            }
+            bgColor={
+              status === AssignmentStatus.IN_GRADING &&
+              assignmentStatusBg.IN_GRADING
+            }
+          >
+            <span data-cy="inGradingFilter">&nbsp;</span>
+            In Grading
+          </Breadcrumb>
+          <Breadcrumb
+            handleClick={() =>
+              this.handleFilterStatusChange(AssignmentStatus.DONE)
+            }
+            color={
+              status === AssignmentStatus.DONE
+                ? 'white'
+                : assignmentStatusBg.DONE
+            }
+            bgColor={
+              status === AssignmentStatus.DONE && assignmentStatusBg.DONE
+            }
+          >
+            <span data-cy="doneFilter">&nbsp;</span>
+            Done
+          </Breadcrumb>
+        </Breadcrumbs>
+      </FlexContainer>
+    )
+  }
+
   render() {
     const {
       assignmentsByTestId,
@@ -467,37 +589,47 @@ class Assignments extends Component {
                     </FixedWrapper>
                   </LeftWrapper>
                   <TableWrapper showFilter={showFilter}>
-                    <EduIf condition={!showFilter}>
-                      <EduThen>
-                        <StyledEduButton
-                          data-cy="smart-filter"
-                          data-test={showFilter ? 'expanded' : 'collapsed'}
-                          isGhost={showFilter}
-                          onClick={this.toggleFilter}
-                          style={{
-                            height: '24px',
-                            margin: '-15px 0px 5px 25px',
-                            borderRadius: '15px',
-                          }}
-                        >
-                          <IconFilter width={15} height={15} />
-                          FILTERS
-                        </StyledEduButton>
-                      </EduThen>
-                      <EduElse>
-                        <FilterButton
-                          showFilter={showFilter}
-                          variant="filter"
-                          onClick={this.toggleFilter}
-                        >
-                          <IconCloseFilter
+                    <StyledFlexContainer
+                      justifyContent="space-between"
+                      style={isAdvancedView ? {} : teacherViewHeaderStyle}
+                    >
+                      <EduIf condition={!showFilter}>
+                        <EduThen>
+                          <StyledEduButton
                             data-cy="smart-filter"
                             data-test={showFilter ? 'expanded' : 'collapsed'}
-                          />
-                        </FilterButton>
-                      </EduElse>
-                    </EduIf>
-
+                            isGhost={showFilter}
+                            onClick={this.toggleFilter}
+                            style={{
+                              height: '24px',
+                              margin: isAdvancedView
+                                ? '-15px 0px 5px 25px'
+                                : '0 0px 0px 25px',
+                              borderRadius: '15px',
+                            }}
+                          >
+                            <IconFilter width={15} height={15} />
+                            FILTERS
+                          </StyledEduButton>
+                        </EduThen>
+                        <EduElse>
+                          <FilterButton
+                            showFilter={showFilter}
+                            variant="filter"
+                            onClick={this.toggleFilter}
+                            isAdvancedView={isAdvancedView}
+                          >
+                            <IconCloseFilter
+                              data-cy="smart-filter"
+                              data-test={showFilter ? 'expanded' : 'collapsed'}
+                            />
+                          </FilterButton>
+                        </EduElse>
+                      </EduIf>
+                      <EduIf condition={!isAdvancedView}>
+                        {this.renderBreadcrumbs()}
+                      </EduIf>
+                    </StyledFlexContainer>
                     <StyledCard>
                       {isAdvancedView ? (
                         <AdvancedTable

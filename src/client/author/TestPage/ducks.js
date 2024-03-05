@@ -398,6 +398,8 @@ export const SET_YOUTUBE_THUMBNAIL_FAILURE =
   '[test] set youtube thumbnail failure'
 export const SET_ALLOW_SA_DISTRICT_COMMON_SETTING =
   '[tests] set allow school admin district common setting'
+export const SET_AUTO_SCROLL_REVIEW_PAGE =
+  '[tests] set auto scroll for review page to create item button'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -673,6 +675,8 @@ export const updateTestSettingRequestAction = createAction(
   UPDATE_TEST_SETTING_REQUEST
 )
 export const toggleRegradeModalAction = createAction(TOGGLE_REGRADE_MODAL)
+
+export const setScrollToBottomAction = createAction(SET_AUTO_SCROLL_REVIEW_PAGE)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -1100,6 +1104,11 @@ export const getQuestionTypesInTestSelector = createSelector(
   }
 )
 
+export const getScrollToBottomSelector = createSelector(
+  stateSelector,
+  (state) => state.scrollToBottom
+)
+
 // reducer
 export const createBlankTest = () => ({
   title: DEFAULT_TEST_TITLE,
@@ -1224,6 +1233,7 @@ const initialState = {
   canSchoolAdminUseDistrictCommon: true,
   ytThumbnail: '',
   ytloading: false,
+  scrollToBottom: false,
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1903,6 +1913,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         ytloading: false,
+      }
+    case SET_AUTO_SCROLL_REVIEW_PAGE:
+      return {
+        ...state,
+        scrollToBottom: payload,
       }
     default:
       return state
@@ -4031,14 +4046,13 @@ function* updateTestAndNavigate({ payload }) {
         pathname = pathname.replace('undefined', _test._id)
       }
     }
-
+    yield put(setScrollToBottomAction(scrollToBottom))
     yield put(
       push(pathname, {
         isTestFlow: true,
         fadeSidebar,
         regradeFlow,
         previousTestId,
-        scrollToBottom,
       })
     )
   } catch (e) {

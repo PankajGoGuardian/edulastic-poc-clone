@@ -1,6 +1,6 @@
 import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import { IconFolderWithLines, IconPlusCircle } from '@edulastic/icons'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
@@ -12,9 +12,11 @@ import { createTestItemAction } from '../../../../../src/actions/testItem'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
 import {
   getCurrentGroupIndexSelector,
+  getScrollToBottomSelector,
   hasSectionsSelector,
   isDynamicTestSelector,
   setCurrentGroupIndexAction,
+  setScrollToBottomAction,
 } from '../../../../ducks'
 import { AddMoreQuestionsPannelTitle, ButtonTextWrapper } from './styled'
 import ConfirmTabChange from '../../../Container/ConfirmTabChange'
@@ -45,12 +47,37 @@ const AddMoreQuestionsPannel = ({
   isEditable,
   isDynamicTest,
   t,
+  scrollToBottom,
+  setScrollToBottom,
 }) => {
   const [showSelectGroupModal, setShowSelectGroupModal] = useState(false)
   const [
     showConfirmationOnTabChange,
     setShowConfirmationOnTabChange,
   ] = useState(false)
+  const targetRef = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio < 1 && scrollToBottom) {
+          targetRef.current.scrollIntoView({ behavior: 'smooth' })
+          setScrollToBottom(false)
+        }
+      },
+      {
+        threshold: 0.5,
+      }
+    )
+    if (targetRef.current && scrollToBottom) {
+      observer.observe(targetRef.current)
+    }
+    return () => {
+      if (targetRef.current) {
+        observer.unobserve(targetRef.current)
+      }
+    }
+  }, [scrollToBottom])
 
   // A copy of this functions exists at src/client/author/TestPage/components/AddItems/AddItems.js
   // If you make any changes here please do so for the above mentioned copy as well
@@ -98,14 +125,14 @@ const AddMoreQuestionsPannel = ({
       notification({ messageKey: 'nameShouldNotEmpty' })
     }
 
-    /* 
-		  On create of new item, trigger the save test when:-
-			- the test is not having any sections and is updated or
-			- the test is having one section or
+    /*
+  	  On create of new item, trigger the save test when:-
+  		- the test is not having any sections and is updated or
+  		- the test is having one section or
       - test has unsaved ai changes and not allowed to show the banner for checking ai items
-			- If the test is having multiple sections, then the save test is called 
-			  after the user selects a particular section from modal
-		*/
+  		- If the test is having multiple sections, then the save test is called
+  		  after the user selects a particular section from modal
+  	*/
     if (!hasSections || itemGroups.length === 1) {
       // check if update is needed
       if (hasSections || updated || (!checkAiItems && _hasUnsavedAiItems)) {
@@ -147,6 +174,7 @@ const AddMoreQuestionsPannel = ({
         flexDirection="row"
         justifyContent="center"
         id="pageBottom"
+        ref={targetRef}
       >
         <AddMoreQuestionsPannelTitle>
           Add more items
@@ -217,11 +245,13 @@ const enhance = compose(
       hasSections: hasSectionsSelector(state),
       currentGroupIndexValueFromStore: getCurrentGroupIndexSelector(state),
       isDynamicTest: isDynamicTestSelector(state),
+      scrollToBottom: getScrollToBottomSelector(state),
     }),
     {
       createTestItem: createTestItemAction,
       clearDictAlignment: clearDictAlignmentAction,
       setCurrentGroupIndex: setCurrentGroupIndexAction,
+      setScrollToBottom: setScrollToBottomAction,
     }
   )
 )

@@ -135,7 +135,7 @@ const YouTubePlayer = React.forwardRef(
         }
         document.removeEventListener('keydown', handleKeyDown)
       }
-    }, [])
+    }, [url])
 
     useEffect(() => {
       if (ref.current) {

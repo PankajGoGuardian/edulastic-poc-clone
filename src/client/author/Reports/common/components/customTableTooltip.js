@@ -22,11 +22,12 @@ const CustomTableTooltip = (props) => {
   )
 }
 
-const CustomWhiteBackgroundTooltip = ({ data, str }) => (
+const CustomWhiteBackgroundTooltip = ({ data, str, placement = 'top' }) => (
   <StyledContainer className="test-container">
     <Tooltip
       title={data || ''}
       getPopupContainer={(triggerNode) => triggerNode}
+      placement={placement}
     >
       <StyledSpan>{str}</StyledSpan>
     </Tooltip>

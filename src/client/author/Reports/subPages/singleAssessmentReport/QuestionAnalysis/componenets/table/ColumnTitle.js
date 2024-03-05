@@ -30,7 +30,13 @@ const ColumnTitle = ({ question, questionLinkData }) => {
         </EduIf>
         <FlexWrap data-cy="headerPoints">points {points}</FlexWrap>
         <FlexWrap>
-          <Tags placement="topRight" tags={standards} show={1} />
+          <Tags
+            placement="topRight"
+            tags={standards}
+            show={1}
+            dataKey="identifier"
+            titleKey="description"
+          />
         </FlexWrap>
       </StyledHeadDiv>
     </>

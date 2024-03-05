@@ -3,7 +3,6 @@ import {
   CustomModalStyled,
   DatePickerStyled,
   EduButton,
-  EduIf,
   FieldLabel,
   SelectInputStyled,
   TextInputStyled,
@@ -670,14 +669,14 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
             </Panel>
-            <EduIf condition={isPremium}>
+            {isPremium && (
               <Panel header={AccommodationsHeader} key="accommodations">
                 <AdditionalFields
                   type="accommodations"
                   getFieldDecorator={getFieldDecorator}
                 />
               </Panel>
-            </EduIf>
+            )}
           </Collapse>
         </Form>
       </CustomModalStyled>

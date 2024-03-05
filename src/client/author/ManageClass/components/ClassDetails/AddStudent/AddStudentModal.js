@@ -1,10 +1,5 @@
 import { enrollmentApi } from '@edulastic/api'
-import {
-  CustomModalStyled,
-  EduButton,
-  EduIf,
-  notification,
-} from '@edulastic/common'
+import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { IconAccessibility, IconUser } from '@edulastic/icons'
 import { Collapse, Form, Icon, Spin } from 'antd'
 import { get } from 'lodash'
@@ -210,7 +205,7 @@ class AddStudentModal extends React.Component {
               </Panel>
             </Collapse>
             <br />
-            <EduIf condition={isPremium}>
+            {isPremium && (
               <Collapse
                 accordion
                 defaultActiveKey={keys}
@@ -229,7 +224,7 @@ class AddStudentModal extends React.Component {
                   />
                 </Panel>
               </Collapse>
-            </EduIf>
+            )}
           </AddForm>
         </Spin>
       </CustomModalStyled>

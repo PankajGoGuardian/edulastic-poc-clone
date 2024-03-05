@@ -3,7 +3,6 @@ import {
   CustomModalStyled,
   DatePickerStyled,
   EduButton,
-  EduIf,
   FieldLabel,
   SelectInputStyled,
   TextInputStyled,
@@ -511,7 +510,7 @@ class UserForm extends React.Component {
                 </Field>
               </Panel>
             )}
-            <EduIf condition={isPremium}>
+            {isPremium && (
               <Panel header={AccommodationsHeader} key="accommodations">
                 <AdditionalFields
                   type="accommodations"
@@ -520,7 +519,7 @@ class UserForm extends React.Component {
                   foundUserContactEmails={contactEmails}
                 />
               </Panel>
-            </EduIf>
+            )}
           </Collapse>
         </Form>
       </CustomModalStyled>

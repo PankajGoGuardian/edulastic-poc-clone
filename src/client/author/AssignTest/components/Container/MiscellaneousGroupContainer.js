@@ -286,56 +286,62 @@ const MiscellaneousGroupContainer = ({
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
                 >
-                  {accommodationsData.map(({ key, value, description, id }) => (
-                    <SettingContainer id={id}>
-                      <DetailsTooltip
-                        width={tootltipWidth}
-                        title={accommodations[key]}
-                        content={description}
-                        premium
-                        placement="rightTop"
-                      />
-                      <StyledRow
-                        key={accommodations[key]}
-                        style={{ width: '100%' }}
-                      >
-                        <Col span={8}>
-                          <span style={{ fontSize: 12, fontWeight: 600 }}>
-                            {accommodations[key]}
-                          </span>
-                        </Col>
+                  {accommodationsData
+                    .filter((accommodation) =>
+                      accommodation.key === speechToText.key
+                        ? districtTestSettings.enableSpeechToText
+                        : true
+                    )
+                    .map(({ key, value, description, id }) => (
+                      <SettingContainer id={id}>
+                        <DetailsTooltip
+                          width={tootltipWidth}
+                          title={accommodations[key]}
+                          content={description}
+                          premium
+                          placement="rightTop"
+                        />
+                        <StyledRow
+                          key={accommodations[key]}
+                          style={{ width: '100%' }}
+                        >
+                          <Col span={8}>
+                            <span style={{ fontSize: 12, fontWeight: 600 }}>
+                              {accommodations[key]}
+                            </span>
+                          </Col>
 
-                        <Col span={16}>
-                          <StyledRadioGroup
-                            isAssignment
-                            disabled={freezeSettings}
-                            // onChange={([first, last]) => {
-                            //   const checkValue =
-                            //     last !== undefined ? last : first
-                            //   overRideSettings(key, checkValue)
-                            // }}
-                            onChange={(e) =>
-                              overRideSettings(key, e.target.value)
-                            }
-                            value={value}
-                          >
-                            <Radio data-cy={`${key}-enable`} value>
-                              ENABLE
-                            </Radio>
-                            <Radio data-cy={`${key}-disable`} value={false}>
-                              DISABLE
-                            </Radio>
-                            <Radio
-                              data-cy={`${key}-student-level`}
-                              value="studentLevel"
+                          <Col span={16}>
+                            <StyledRadioGroup
+                              isAssignment
+                              disabled={freezeSettings}
+                              // onChange={([first, last]) => {
+                              //   const checkValue =
+                              //     last !== undefined ? last : first
+                              //   overRideSettings(key, checkValue)
+                              // }}
+                              onChange={(e) =>
+                                overRideSettings(key, e.target.value)
+                              }
+                              value={value}
                             >
-                              Student Level
-                            </Radio>
-                          </StyledRadioGroup>
-                        </Col>
-                      </StyledRow>
-                    </SettingContainer>
-                  ))}
+                              <Radio data-cy={`${key}-enable`} value>
+                                ENABLE
+                              </Radio>
+                              <Radio data-cy={`${key}-disable`} value={false}>
+                                DISABLE
+                              </Radio>
+                              <Radio
+                                data-cy={`${key}-student-level`}
+                                value="studentLevel"
+                              >
+                                Student Level
+                              </Radio>
+                            </StyledRadioGroup>
+                          </Col>
+                        </StyledRow>
+                      </SettingContainer>
+                    ))}
                 </RadioWrapper>
               )}
             </>

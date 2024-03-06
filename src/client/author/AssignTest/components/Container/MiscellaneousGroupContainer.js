@@ -53,6 +53,7 @@ const MiscellaneousGroupContainer = ({
   premium,
   canUseImmersiveReader,
   districtTestSettings,
+  userId,
   t: translate,
 }) => {
   const {
@@ -115,10 +116,10 @@ const MiscellaneousGroupContainer = ({
     },
   ]
 
-  const isAccommodationEditAllowed = useMemo(
-    () => isEditAllowed(districtTestSettings),
-    [districtTestSettings]
-  )
+  const isAccommodationEditAllowed = useMemo(() => {
+    const isOwner = testSettings.createdBy._id === userId
+    return isEditAllowed({ testSettings: districtTestSettings, isOwner })
+  }, [districtTestSettings])
 
   // Accommodations settings will be visible only for premium & enterprise users
   const accommodationsData = [
@@ -315,11 +316,6 @@ const MiscellaneousGroupContainer = ({
                             <StyledRadioGroup
                               isAssignment
                               disabled={freezeSettings}
-                              // onChange={([first, last]) => {
-                              //   const checkValue =
-                              //     last !== undefined ? last : first
-                              //   overRideSettings(key, checkValue)
-                              // }}
                               onChange={(e) =>
                                 overRideSettings(key, e.target.value)
                               }

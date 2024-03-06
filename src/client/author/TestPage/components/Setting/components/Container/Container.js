@@ -832,6 +832,7 @@ class Setting extends Component {
       hasSections,
       canSchoolAdminUseDistrictCommon,
       districtTestSettings,
+      userId,
     } = this.props
     const {
       isDocBased,
@@ -1007,6 +1008,11 @@ class Setting extends Component {
       },
     ]
 
+    const isOwner = entity.createdBy._id === userId
+    const isAccommodationEditAllowed = isEditAllowed({
+      testSettings: districtTestSettings,
+      isOwner,
+    })
     // Accommodations settings will be visible only for premium & enterprise users
     const accommodationsData = [
       {
@@ -1019,7 +1025,7 @@ class Setting extends Component {
         isEnabled:
           features.canUseImmersiveReader &&
           !isDocBased &&
-          isEditAllowed(districtTestSettings), // IR doesn't work in Doc based so disabling for it
+          isAccommodationEditAllowed, // IR doesn't work in Doc based so disabling for it
       },
       {
         key: speechToText.key,
@@ -1028,7 +1034,7 @@ class Setting extends Component {
           'accommodationsSettings.speechToText.description'
         ),
         id: speechToText.id,
-        isEnabled: features.speechToText && isEditAllowed(districtTestSettings),
+        isEnabled: features.speechToText && isAccommodationEditAllowed,
       },
       {
         key: textToSpeech.key,
@@ -1037,7 +1043,7 @@ class Setting extends Component {
           'accommodationsSettings.textToSpeech.description'
         ),
         id: textToSpeech.id,
-        isEnabled: isEditAllowed(districtTestSettings),
+        isEnabled: isAccommodationEditAllowed,
       },
     ]
 

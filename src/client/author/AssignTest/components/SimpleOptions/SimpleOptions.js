@@ -34,6 +34,7 @@ import {
   getUserRole,
   allowReferenceMaterialSelector,
   getIsAiEvaulationDistrictSelector,
+  getUserId,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -531,6 +532,7 @@ class SimpleOptions extends React.Component {
       setShowAdvanceSearchModal,
       isAiEvaulationDistrict,
       districtTestSettings,
+      userId,
     } = this.props
 
     const { collections } = testSettings
@@ -776,6 +778,7 @@ class SimpleOptions extends React.Component {
                 tootltipWidth={tootltipWidth}
                 canUseImmersiveReader={canUseImmersiveReader}
                 districtTestSettings={districtTestSettings}
+                userId={userId}
               />
             </TabContentContainer>
           </TabPane>
@@ -812,6 +815,7 @@ const enhance = compose(
   connect(
     (state) => ({
       userRole: getUserRole(state),
+      userId: getUserId(state),
       features: getUserFeatures(state),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       freezeSettings: getIsOverrideFreezeSelector(state),

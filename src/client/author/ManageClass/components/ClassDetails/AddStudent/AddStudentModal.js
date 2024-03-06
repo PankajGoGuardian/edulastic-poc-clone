@@ -146,7 +146,10 @@ class AddStudentModal extends React.Component {
       </PanelHeader>
     )
     const isAccommodationDisable = districtTestSettings
-      ? !isEditAllowed(districtTestSettings, 'manageClass')
+      ? !isEditAllowed({
+          testSettings: districtTestSettings,
+          type: 'manageClass',
+        })
       : false
 
     const AccommodationsHeader = (

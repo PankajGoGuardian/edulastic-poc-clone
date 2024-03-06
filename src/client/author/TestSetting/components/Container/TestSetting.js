@@ -14,6 +14,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { lightGrey9 } from '@edulastic/colors'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   HeaderSaveButton,
   SpinContainer,
@@ -45,6 +46,7 @@ import {
   setTestSettingValueAction,
   updateTestSettingAction,
 } from '../../ducks'
+import { getUserFeatures } from '../../../TestPage/ducks'
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Test Settings' }
@@ -202,6 +204,7 @@ class TestSetting extends Component {
       subscription: { subType } = {},
       role,
       t: i18translate,
+      features,
     } = this.props
 
     const { testSetting } = this.state
@@ -234,7 +237,8 @@ class TestSetting extends Component {
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const isUserDa = role === roleuser.DISTRICT_ADMIN
     const showEnterpriseSettings = [isEnterprise, isUserDa].every((o) => !!o)
-
+    const isDSEnabled = features.dataWarehouseReports
+    const spanSize = isDSEnabled ? 6 : 8
     return (
       <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -370,7 +374,7 @@ class TestSetting extends Component {
                 Default Performance Band Profiles
               </StyledHeading1>
               <StyledRow gutter={40} data-cy="defaultPerformanceBand">
-                <StyledCol span={8} data-cy="commonTest">
+                <StyledCol span={spanSize} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
                     data-cy="commonTestBand"
@@ -392,7 +396,7 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8} data-cy="classTest">
+                <StyledCol span={spanSize} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
                     data-cy="classTestBand"
@@ -414,7 +418,7 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
+                <StyledCol span={spanSize} data-cy="practiceHomeworkQuizTest">
                   <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
                     data-cy="practiceHomeworkQuizTestBand"
@@ -436,13 +440,37 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
+                {isDSEnabled && (
+                  <StyledCol span={spanSize} data-cy="surveyTest">
+                    <InputLabel>Survey Test</InputLabel>
+                    <SelectInputStyled
+                      data-cy="surveyTestBand"
+                      value={get(
+                        testSetting,
+                        'testTypesProfile.performanceBand.survey'
+                      )}
+                      onChange={(value) =>
+                        setDefaultProfile({
+                          value,
+                          profileType: 'performanceBand',
+                          testType: TEST_TYPE_SURVEY,
+                        })
+                      }
+                      loading={performanceBandLoading}
+                      placeholder="select one option"
+                      size="large"
+                    >
+                      {performanceBandOptions}
+                    </SelectInputStyled>
+                  </StyledCol>
+                )}
               </StyledRow>
 
               <StyledHeading1 data-cy="standardProficiencyProfiles">
                 Default Standard Proficiency Profiles
               </StyledHeading1>
               <StyledRow gutter={40} data-cy="defaultStandardProficiency">
-                <StyledCol span={8} data-cy="commonTest">
+                <StyledCol span={spanSize} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
                     data-cy="commonTestBand"
@@ -464,7 +492,7 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8} data-cy="classTest">
+                <StyledCol span={spanSize} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
                     data-cy="classTestBand"
@@ -486,7 +514,7 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
+                <StyledCol span={spanSize} data-cy="practiceHomeworkQuizTest">
                   <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
                     data-cy="practiceHomeworkQuizTestProficiency"
@@ -508,6 +536,30 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
+                {isDSEnabled && (
+                  <StyledCol span={spanSize} data-cy="surveyTest">
+                    <InputLabel>Survey Test</InputLabel>
+                    <SelectInputStyled
+                      data-cy="surveyTestProficiency"
+                      value={get(
+                        testSetting,
+                        'testTypesProfile.standardProficiency.survey'
+                      )}
+                      loading={standardsProficiencyLoading}
+                      onChange={(value) =>
+                        setDefaultProfile({
+                          value,
+                          profileType: 'standardProficiency',
+                          testType: TEST_TYPE_SURVEY,
+                        })
+                      }
+                      placeholder="select one option"
+                      size="large"
+                    >
+                      {standardsProficiencyOptions}
+                    </SelectInputStyled>
+                  </StyledCol>
+                )}
               </StyledRow>
 
               <StyledRow
@@ -565,6 +617,7 @@ const enhance = compose(
       role: getUserRole(state),
       schoolId: get(state, 'user.saSettingsSchool'),
       subscription: getSubscriptionSelector(state),
+      features: getUserFeatures(state),
     }),
     {
       loadTestSetting: receiveTestSettingAction,

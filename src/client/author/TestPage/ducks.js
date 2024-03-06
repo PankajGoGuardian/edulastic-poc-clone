@@ -59,6 +59,8 @@ import {
   SCHOOL_ADMIN,
 } from '@edulastic/constants/const/roleType'
 import { VQ_QUOTA_EXHAUSTED } from '@edulastic/constants/const/test'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
+
 import {
   DEFAULT_TEST_TITLE,
   createGroupSummary,
@@ -775,6 +777,14 @@ export const isDefaultTestSelector = createSelector(
 export const isDynamicTestSelector = createSelector(
   getTestEntitySelector,
   (test) => test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+)
+
+export const isSurveyTestSelector = createSelector(
+  getTestEntitySelector,
+  (test) => {
+    console.log(test?.testType)
+    return test?.testType === TEST_TYPE_SURVEY
+  }
 )
 
 export const hasSectionsSelector = createSelector(

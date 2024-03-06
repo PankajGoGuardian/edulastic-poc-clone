@@ -55,6 +55,7 @@ const TEST_TYPES = {
   COMMON: ['common assessment', 'school common assessment'],
   PRACTICE: ['practice', 'homework', 'quiz'],
   TESTLET: ['testlet'],
+  SURVEY: ['survey'],
 }
 
 const ALL_TEST_TYPES_VALUES = Object.values(TEST_TYPES).flat()
@@ -113,6 +114,8 @@ const FASTBRIDGE_TEST_TYPES = [
   FASTBRIDGE_AReading,
 ]
 
+const TEST_TYPE_SURVEY = 'survey'
+
 module.exports = {
   TEST_TYPES,
   ALL_TEST_TYPES_VALUES,
@@ -155,4 +158,5 @@ module.exports = {
   FASTBRIDGE_AMath,
   FASTBRIDGE_AReading,
   FASTBRIDGE_TEST_TYPES,
+  TEST_TYPE_SURVEY,
 }

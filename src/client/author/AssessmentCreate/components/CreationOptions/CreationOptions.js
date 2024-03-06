@@ -16,6 +16,7 @@ import { QTI_DISTRICTS } from '../../../../config'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import EduAiQuiz from '../CreateAITest'
 import { isGcpsDistrictSelector } from '../../../src/selectors/user'
+import OptionSurvey from '../OptionSurvey/OptionSurvey'
 
 const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
   <BodyWrapper>
@@ -34,6 +35,13 @@ const CreationOptions = ({ onUploadPDF, isShowQTI, isGcpsDistrict }) => (
       <EduIf condition={isShowQTI}>
         <OptionQti />
       </EduIf>
+      {/* Below component is for testing until the actual component is not developed */}
+      <FeaturesSwitch
+        inputFeatures="dataWarehouseReports"
+        actionOnInaccessible="hidden"
+      >
+        <OptionSurvey />
+      </FeaturesSwitch>
     </FlexWrapper>
     <EduAiQuiz />
   </BodyWrapper>

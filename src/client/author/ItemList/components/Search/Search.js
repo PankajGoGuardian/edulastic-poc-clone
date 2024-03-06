@@ -43,7 +43,10 @@ import {
 } from './styled'
 import { addItemToCartAction } from '../../ducks'
 import TagField from '../Fields/TagField'
-import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
+import {
+  getIsAudioResponseQuestionEnabled,
+  isSurveyTestSelector,
+} from '../../../TestPage/ducks'
 import { StyledDiv } from '../../../../assessment/containers/QuestionMetadata/styled/ELOList'
 import { getDictStandardsForCurriculumAction } from '../../../src/actions/dictionaries'
 
@@ -78,6 +81,7 @@ const Search = ({
   enableAudioResponseQuestion,
   elosByTloId,
   getCurriculumStandards,
+  isSurveyTest,
 }) => {
   const [showModal, setShowModalValue] = useState(false)
   const [searchProps, setSearchProps] = useState({
@@ -155,7 +159,7 @@ const Search = ({
     questionTypesToBeHidden.push(AUDIO_RESPONSE)
   }
 
-  const questionsType = [
+  let questionsType = [
     { value: '', text: 'All Types' },
     { value: 'multipleChoice', text: 'Multiple Choice' },
     { value: 'math', text: 'Math' },
@@ -165,6 +169,12 @@ const Search = ({
       .filter((el) => !questionTypesToBeHidden.includes(el.value))
       .sort((a, b) => (a.value > b.value ? 1 : -1)),
   ]
+
+  // if test creation flow is having survey test selected
+  // show only likert question type
+  if (isSurveyTest) {
+    questionsType = [{ value: 'likertScale', text: 'Likert Scale' }]
+  }
 
   const getStatusFilter = () => (
     <Item>
@@ -467,6 +477,7 @@ const Search = ({
                     onSelect={onSearchFieldChange('questionType')}
                     value={questionType}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    disabled={isSurveyTest}
                   >
                     {questionsType.map((el) => (
                       <Select.Option
@@ -554,6 +565,7 @@ export default connect(
     userRole: getUserRole(state),
     enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     elosByTloId: get(state, 'dictionaries.elosByTloId', {}),
+    isSurveyTest: isSurveyTestSelector(state),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

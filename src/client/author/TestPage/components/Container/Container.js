@@ -38,6 +38,7 @@ import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { SUBSCRIPTION_SUB_TYPES } from '@edulastic/constants/const/subscriptions'
+import { TEST_TYPE_SURVEY } from '@edulastic/constants/const/testTypes'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -323,21 +324,29 @@ class Container extends PureComponent {
           : this.gotoTab('addItems')
         clearTestAssignments([])
         setDefaultData()
-        if (
-          userRole === roleuser.DISTRICT_ADMIN ||
-          userRole === roleuser.SCHOOL_ADMIN
-        ) {
+        if (_location?.state?.isSurveyTest) {
           setData({
-            testType: testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
-            freezeSettings: !isOrganizationDA,
+            testType: TEST_TYPE_SURVEY,
             updated: false,
           })
-        }
-        if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-          setData({
-            releaseScore: releaseGradeLabels.WITH_ANSWERS,
-            updated: false,
-          })
+        } else {
+          if (
+            userRole === roleuser.DISTRICT_ADMIN ||
+            userRole === roleuser.SCHOOL_ADMIN
+          ) {
+            setData({
+              testType:
+                testTypesConstants.DEFAULT_ADMIN_TEST_TYPE_MAP[userRole],
+              freezeSettings: !isOrganizationDA,
+              updated: false,
+            })
+          }
+          if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
+            setData({
+              releaseScore: releaseGradeLabels.WITH_ANSWERS,
+              updated: false,
+            })
+          }
         }
       }
       // run only when creating a new test and not during edit test

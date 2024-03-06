@@ -1006,6 +1006,55 @@ export const getCards = (
       isAudioResponseQuestionType: true,
     },
     {
+      type: 'likert-scale',
+      // cardImage:,
+      data: {
+        title: questionTitle.LIKERT_SCALE,
+        type: questionType.LIKERT_SCALE,
+        stimulus: '',
+        scaleType: 'agreement',
+        displayOrder: 'ASC',
+        options: [
+          {
+            value: uuids[0],
+            label: 'Strongly Disagree',
+            score: 0,
+            bgColor: '#E43836',
+          },
+          {
+            value: uuids[1],
+            label: 'Disagree',
+            score: 1,
+            bgColor: '#FF7575',
+          },
+          {
+            value: uuids[2],
+            label: 'Undecided',
+            score: 2,
+            bgColor: '#FFC825',
+          },
+          {
+            value: uuids[3],
+            label: 'Agree',
+            score: 3,
+            bgColor: '#9CCD2F',
+          },
+          {
+            value: uuids[4],
+            label: 'Strongly Agree',
+            score: 4,
+            bgColor: '#36AE26',
+          },
+        ],
+        validation: {
+          validResponse: {
+            score: 5,
+          },
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
       type: 'multiple-choice',
       cardImage: MCStandard,
       data: {

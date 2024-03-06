@@ -1,5 +1,8 @@
 const questionTitle = require('./questionTitle')
-const { AUDIO_RESPONSE: audioResponseTitleText } = require('./questionTitle')
+const {
+  AUDIO_RESPONSE: audioResponseTitleText,
+  LIKERT_SCALE: likertScaleTitleText,
+} = require('./questionTitle')
 
 const ALL_QUESTION_TYPES = ''
 const SHORT_TEXT = 'shortText'
@@ -60,6 +63,7 @@ const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
 const PICTOGRAPH = 'pictograph'
 const AUDIO_RESPONSE = 'audioResponse'
+const LIKERT_SCALE = 'likertScale'
 
 const selectsData = [
   { value: ALL_QUESTION_TYPES, text: 'All Types' },
@@ -112,6 +116,7 @@ const selectsData = [
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
   { value: AUDIO_RESPONSE, text: audioResponseTitleText },
+  { value: LIKERT_SCALE, text: likertScaleTitleText },
 ]
 
 const QUE_TYPE_BY_TITLE = {
@@ -128,6 +133,8 @@ const manuallyGradableQn = [
   ESSAY_PLAIN_TEXT,
   AUDIO_RESPONSE,
 ]
+
+const questionTypeWithoutCorrectAnswer = [LIKERT_SCALE]
 
 const useLanguageFeatureQn = [
   CHOICE_MATRIX,
@@ -216,4 +223,6 @@ module.exports = {
   MULTIPLE_SELECTION,
   QUE_TYPE_BY_TITLE,
   TTS_ENABLED_QUESTION_TYPES,
+  LIKERT_SCALE,
+  questionTypeWithoutCorrectAnswer,
 }

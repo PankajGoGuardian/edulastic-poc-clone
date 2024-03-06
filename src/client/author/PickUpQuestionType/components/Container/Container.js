@@ -431,6 +431,10 @@ class Container extends Component {
                       Tools
                     </Menu.Item>
                   )}
+                  <Menu.Item key="likert-scale">
+                    <IconPlay />
+                    Likert Scale
+                  </Menu.Item>
                   {/* implementation is in progress */}
                   {/* <Menu.Item key="other">
                     <IconMore />
@@ -549,6 +553,10 @@ class Container extends Component {
               <Menu.Item key="instruction">
                 <IconPlay />
                 Instructions
+              </Menu.Item>
+              <Menu.Item key="likert-scale">
+                <IconPlay />
+                Likert Scale
               </Menu.Item>
               <Menu.Item
                 key="rulers-calculators"

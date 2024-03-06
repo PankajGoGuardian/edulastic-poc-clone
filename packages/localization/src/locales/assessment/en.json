@@ -1284,6 +1284,16 @@
       "answeringStyle": "Answering style",
       "elementContainers": "Element containers",
       "clickToSelect": "Click to select"
+    },
+    "likertScale": {
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "scaleOptions": "Scale Options",
+      "selectScaleType": "Select Scale Type",
+      "optionPlaceholder": "Option",
+      "addNewChoice": "Add New Choice",
+      "display": "Display",
+      "selectDisplayOrder": "Select Display Order"
     }
   }
 }

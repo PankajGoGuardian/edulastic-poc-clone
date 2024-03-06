@@ -348,6 +348,7 @@ class QuestionWrapper extends Component {
       isPremiumUser,
       accommodations,
       type: qType,
+      features,
     } = this.props
 
     if (!sttEnabledQuestionTypes.includes(qType)) {
@@ -360,7 +361,8 @@ class QuestionWrapper extends Component {
     if (userRole === roleuser.STUDENT) {
       return isSpeechToTextEnabled(
         assignmentLevelShowSpeechToText,
-        accommodations
+        accommodations,
+        features.enableSpeechToText
       )
     }
 

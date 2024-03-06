@@ -2137,10 +2137,7 @@ class Setting extends Component {
                                 >
                                   DISABLE
                                 </RadioBtn>
-                                <RadioBtn
-                                  data-cy={`${o.key}-student-level`}
-                                  value="studentLevel"
-                                >
+                                <RadioBtn data-cy={`${o.key}-student-level`}>
                                   Student Level
                                 </RadioBtn>
                               </StyledRadioGroup>

@@ -331,10 +331,7 @@ const MiscellaneousGroupContainer = ({
                               <Radio data-cy={`${key}-disable`} value={false}>
                                 DISABLE
                               </Radio>
-                              <Radio
-                                data-cy={`${key}-student-level`}
-                                value="studentLevel"
-                              >
+                              <Radio data-cy={`${key}-student-level`}>
                                 Student Level
                               </Radio>
                             </StyledRadioGroup>

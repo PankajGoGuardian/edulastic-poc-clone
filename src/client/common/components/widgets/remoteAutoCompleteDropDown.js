@@ -119,19 +119,6 @@ const RemoteAutocompleteDropDown = ({
   }))
 
   const buildDropDownData = (datum) => {
-    let searchedDatum
-    if (text && text.length >= 3) {
-      searchedDatum = datum.filter((item) => {
-        return some(filterKeys, (fKey) => {
-          let test = item[fKey] || item.title
-          test = `${test}`.toLocaleLowerCase()
-          return test.includes(`${text}`.toLocaleLowerCase())
-        })
-      })
-    } else {
-      searchedDatum = datum
-    }
-
     let arr
     if (
       addCreateNewOption &&
@@ -140,7 +127,7 @@ const RemoteAutocompleteDropDown = ({
       text.length >= 3 &&
       !isLoading
     ) {
-      const existingArr = searchedDatum.map((item) => (
+      const existingArr = datum.map((item) => (
         // cleverId is required to validate district
         <Option
           key={item.key}
@@ -165,7 +152,7 @@ const RemoteAutocompleteDropDown = ({
         </OptGroup>,
       ]
     } else {
-      arr = searchedDatum.map((item) => (
+      arr = datum.map((item) => (
         // cleverId is required to validate district
         <Option
           key={item.key}

@@ -2,72 +2,37 @@ import { testsApi, youtubeSearchApi } from '@edulastic/api'
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 import { SentryError } from '@sentry/utils'
-import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
-import { pick } from 'lodash'
+import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import { videoQuizActions } from '.'
-
 import { createAssessmentRequestAction } from '../../AssessmentCreate/ducks'
-import { vqTestListSelector, vqVideoListSelector } from './selectors'
-import { setFilterInSession } from '../../../common/utils/helpers'
 import {
-  getTestsPageSelector,
-  receiveTestSuccessAction,
-} from '../../TestList/ducks'
-import { getUserIdSelector, getUserOrgId } from '../../src/selectors/user'
+  vqPageSelector,
+  vqTestListSelector,
+  vqVideoListSelector,
+} from './selectors'
+
 import { mapListDataFromTestList, mapListDataFromVideoList } from '../utils'
 import { vqConst } from '../const'
-import { setDefaultInterests } from '../../dataUtils'
 
 function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
   try {
-    const vqFilters = pick(search, [
-      'subject',
-      'grades',
-      'status',
-      'filter',
-      'testCategories',
-      'collections',
-      'searchString',
-    ])
+    const vqPage = yield select(vqPageSelector)
 
-    const userId = yield select(getUserIdSelector)
-    const districtId = yield select(getUserOrgId)
-    const testsPage = yield select(getTestsPageSelector)
-    const { grades, subject } = vqFilters
-
-    const page = append ? testsPage + 1 : 1
+    const page = append ? vqPage + 1 : 1
 
     const { items: testList = [], count: totalTestCount } = yield call(
       testsApi.getAll,
       {
         search: {
-          ...vqFilters,
+          ...search,
+          status:
+            search.filter === SMART_FILTERS.ENTIRE_LIBRARY ? '' : search.status,
         },
         sort,
         page,
         limit: vqConst.resultLimit,
       }
     )
-
-    setFilterInSession({
-      key: sessionFilterKeys.TEST_FILTER,
-      filter: vqFilters,
-      districtId,
-      userId,
-    })
-    setFilterInSession({
-      key: sessionFilterKeys.TEST_SORT,
-      filter: sort,
-      districtId,
-      userId,
-    })
-
-    if (Array.isArray(grades)) {
-      setDefaultInterests({ grades })
-    }
-    if (Array.isArray(subject)) {
-      setDefaultInterests({ subject })
-    }
 
     // use in test and other library selects searchType
     const existingList = yield select(vqTestListSelector)
@@ -78,24 +43,19 @@ function* testSearchRequestSaga({ payload: { search, sort, append = false } }) {
       yield put(
         videoQuizActions.testSearchSuccess({
           testList: [...existingList, ...formattedTestList],
+          count: totalTestCount,
+          page,
         })
       )
     } else {
       yield put(
         videoQuizActions.testSearchSuccess({
           testList: [...formattedTestList],
+          count: totalTestCount,
+          page,
         })
       )
     }
-    /** Updates search results */
-    yield put(
-      receiveTestSuccessAction({
-        entities: [],
-        count: totalTestCount,
-        page,
-        limit: vqConst.resultLimit,
-      })
-    )
   } catch (err) {
     yield put(videoQuizActions.testSearchFailure())
     notification({ type: 'error', messageKey: 'receiveTestFailing' })

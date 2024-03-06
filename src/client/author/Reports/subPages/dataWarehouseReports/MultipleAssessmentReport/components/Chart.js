@@ -345,6 +345,7 @@ const Chart = ({
       hasRoundedBars={false}
       isSignedChart={false}
       hideYAxis={false}
+      hideLegend={isEmpty(legendPayload)}
       hideCartesianGrid
       hasBarInsideLabels
       hasBarTopLabels

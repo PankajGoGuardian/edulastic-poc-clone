@@ -69,6 +69,7 @@ const AIFeaturedTiles = ({
                 width="240px"
                 onClick={handelClick}
                 style={{ cursor: 'pointer' }}
+                data-cy="videoQuizTile"
               />
             )}
             <TextLink onClick={() => setIsModelOpen(true)}>

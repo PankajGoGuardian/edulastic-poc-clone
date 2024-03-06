@@ -1408,10 +1408,18 @@ class ClassBoard extends Component {
       !isEmpty(studentResponse.questionActivities) &&
       status === 0
     ) {
-      studentResponse.questionActivities.forEach((uqa) => {
-        score += uqa.score
-        maxScore += uqa.maxScore
-      })
+      score = studentResponse.questionActivities.reduce(
+        (sum, uqa) => sum + uqa.score,
+        0
+      )
+
+      // It is possible to have a maxScore available inside studentTestActivity even when the status is 0, ie start state. So we only calculate maxScore if it is not available.
+      if (!maxScore) {
+        maxScore = studentResponse.questionActivities.reduce(
+          (sum, uqa) => sum + uqa.maxScore,
+          0
+        )
+      }
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
     let firstStudentId = get(
@@ -1512,9 +1520,8 @@ class ClassBoard extends Component {
       : null
 
     const isAssignTutoringActive =
-      isTutorMeEnabled &&
-      selectedStudentsKeys.length <= 1 &&
-      !isTutorMeSessionRequestActive
+      !isTutorMeEnabled ||
+      (selectedStudentsKeys.length === 1 && !isTutorMeSessionRequestActive)
 
     return (
       <div>
@@ -1853,9 +1860,7 @@ class ClassBoard extends Component {
                     </InfoMessage>
                   </EduIf>
                   <div style={{ display: 'flex' }}>
-                    <EduIf
-                      condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}
-                    >
+                    <EduIf condition={isTutorMeVisibleToDistrict}>
                       <Tooltip
                         placement="top"
                         title={assignTutoringTooltipTitle}

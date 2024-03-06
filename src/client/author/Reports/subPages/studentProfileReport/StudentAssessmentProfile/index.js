@@ -4,6 +4,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
+import styled from 'styled-components'
+import { SCHOOL_ADMIN, TEACHER } from '@edulastic/constants/const/roleType'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
@@ -30,9 +32,7 @@ import {
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
 } from './ducks'
-import { getIsPreviewModalVisibleSelector } from '../../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../../assessment/actions/test'
-import TestActivityModal from './common/components/TestActivityModal'
+import { getUserDetails } from '../../../../../student/Login/ducks'
 
 const StudentAssessmentProfile = ({
   loading,
@@ -49,11 +49,9 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
-  isPreviewModalVisible,
-  setIsTestPreviewVisible,
+  userData,
 }) => {
   const anonymousString = t('common.anonymous')
-  const [currRecord, setCurrentRecord] = useState(null)
 
   const [sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -139,6 +137,22 @@ const StudentAssessmentProfile = ({
       `Assessment Performance Report-${studentName || anonymousString}.csv`,
       data
     )
+  const checkUserLCBAccess = (groupId, institutionId) => {
+    if (userData.role === TEACHER) {
+      if (userData.orgData.classList.find((group) => group._id === groupId)) {
+        return true
+      }
+      return false
+    }
+
+    if (userData.role === SCHOOL_ADMIN) {
+      if (userData.orgData.institutionIds?.includes(institutionId)) {
+        return true
+      }
+      return false
+    }
+    return true
+  }
 
   if (loading) {
     return (
@@ -163,6 +177,13 @@ const StudentAssessmentProfile = ({
   ].every((e) => !e)
 
   const noDataDesc = getNoDataContainerDesc(settings, loadingFiltersData)
+
+  const toolTipInfo = (
+    <AssignmentNameTooltipContainer>
+      <div>{t('common.assignmentNavigationRestricted')}</div>
+      <div>{t('common.restrictedAssignmentAvgInfo')}</div>
+    </AssignmentNameTooltipContainer>
+  )
 
   return (
     <EduIf condition={hasContent}>
@@ -189,25 +210,10 @@ const StudentAssessmentProfile = ({
             location={location}
             pageTitle={pageTitle}
             isSharedReport={isSharedReport}
-            setIsTestPreviewVisible={(_record) => {
-              setCurrentRecord(_record)
-              setIsTestPreviewVisible(true)
-            }}
+            isLcbNavigationAllowed={checkUserLCBAccess}
+            titleToolTipText={toolTipInfo}
           />
         </StyledCard>
-        {isPreviewModalVisible && (
-          <TestActivityModal
-            isModalVisible={isPreviewModalVisible}
-            skipPlayer
-            groupId={currRecord.groupId}
-            testActivityId={currRecord.testActivityId}
-            assignmentId={currRecord.assignmentId}
-            testId={currRecord.testId}
-            studentId={settings?.selectedStudent?.key}
-            studentName={settings?.selectedStudent?.title}
-            closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
-          />
-        )}
       </EduThen>
       <EduElse>
         <NoDataContainer>{noDataDesc}</NoDataContainer>
@@ -224,16 +230,20 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+    userData: getUserDetails(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
     resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
-    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )
 
 export default compose(
   withConnect,
-  withNamespaces('student')
+  withNamespaces('student'),
+  withNamespaces('reports')
 )(StudentAssessmentProfile)
+
+const AssignmentNameTooltipContainer = styled.div`
+  text-align: left;
+`

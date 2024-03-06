@@ -137,7 +137,9 @@ export const augmentWithData = (
       return map(metricInfo, (metric) => {
         const {
           standard = '',
+          standardName = '',
           domain = '',
+          domainName = '',
           curriculumId = '',
           curriculumName = '',
         } =
@@ -150,7 +152,9 @@ export const augmentWithData = (
         return {
           ...metric,
           standard,
+          standardName,
           domain,
+          domainName,
           curriculumId,
           curriculumName,
         }

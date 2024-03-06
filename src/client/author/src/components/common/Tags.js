@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { Tag, Popover } from 'antd'
+import { Tag, Popover, Tooltip } from 'antd'
 
 import {
   darkBlue,
@@ -30,6 +30,8 @@ const Tags = ({
   isTestCard,
   testId = '',
   placement = 'bottomLeft',
+  dataKey = 'tagName',
+  titleKey = null,
 }) => {
   if (!tags.length) return null
 
@@ -40,16 +42,18 @@ const Tags = ({
   const popup = (
     <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
-        <Label
-          data-cy="standards"
-          className={className}
-          popupContainer
-          style={labelStyle}
-          key={tag?._id || i}
-          type={type}
-        >
-          {isStandards || typeof tag === 'string' ? tag : tag.tagName}
-        </Label>
+        <Tooltip title={titleKey ? tag[titleKey] : ''}>
+          <Label
+            data-cy="standards"
+            className={className}
+            popupContainer
+            style={labelStyle}
+            key={tag?._id || i}
+            type={type}
+          >
+            {isStandards || typeof tag === 'string' ? tag : tag[dataKey]}
+          </Label>
+        </Tooltip>
       ))}
     </PopupContainer>
   )
@@ -62,16 +66,21 @@ const Tags = ({
       flexWrap={flexWrap}
     >
       {visibleTags.map((tag, i) => (
-        <Label
-          data-cy="standards"
-          className={className}
-          style={labelStyle}
-          key={i}
-          type={type}
-          {...(showTitle ? { title: tag?.tagName || tag } : {})}
+        <Tooltip
+          overlayClassName="custom-table-tooltip"
+          title={titleKey ? tag[titleKey] : ''}
         >
-          {isStandards || typeof tag === 'string' ? tag : tag.tagName}
-        </Label>
+          <Label
+            data-cy="standards"
+            className={className}
+            style={labelStyle}
+            key={i}
+            type={type}
+            {...(showTitle ? { title: tag?.tagName || tag } : {})}
+          >
+            {isStandards || typeof tag === 'string' ? tag : tag[dataKey]}
+          </Label>
+        </Tooltip>
       ))}
       {hiddenTags && !!hiddenTags.length && (
         <Popover

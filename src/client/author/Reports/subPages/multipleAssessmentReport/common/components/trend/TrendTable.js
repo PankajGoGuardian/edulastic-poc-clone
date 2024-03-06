@@ -7,7 +7,11 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { extraDesktopWidthMax, lightGrey } from '@edulastic/colors'
 import { testActivityStatus, report as reportTypes } from '@edulastic/constants'
-import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
+import { EduElse, EduIf, EduThen } from '@edulastic/common'
+import {
+  CustomTableTooltip,
+  CustomWhiteBackgroundTooltip,
+} from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import {
@@ -393,6 +397,13 @@ const getColumns = (
                 .toLowerCase()
                 .localeCompare(b[keyword].toLowerCase())
             },
+            render: (value, record) => (
+              <CustomWhiteBackgroundTooltip
+                data={record.domainName}
+                str={value}
+                placement="topLeft"
+              />
+            ),
           },
           {
             key: 'standardId',
@@ -410,20 +421,29 @@ const getColumns = (
                 standardId,
                 curriculumId,
               })
-              return !isSharedReport ? (
-                <Link
-                  to={{
-                    pathname: `/author/reports/standards-progress`,
-                    search: `?${queryStr}`,
-                    state: {
-                      source: pageTitle,
-                    },
-                  }}
-                >
-                  {data}
-                </Link>
-              ) : (
-                data
+              const cellContent = (
+                <EduIf condition={isSharedReport}>
+                  <EduThen>{data}</EduThen>
+                  <EduElse>
+                    <Link
+                      to={{
+                        pathname: `/author/reports/standards-progress`,
+                        search: `?${queryStr}`,
+                        state: {
+                          source: pageTitle,
+                        },
+                      }}
+                    >
+                      {data}
+                    </Link>
+                  </EduElse>
+                </EduIf>
+              )
+              return (
+                <CustomWhiteBackgroundTooltip
+                  data={record.standardName}
+                  str={cellContent}
+                />
               )
             },
             sorter: (a, b) => {

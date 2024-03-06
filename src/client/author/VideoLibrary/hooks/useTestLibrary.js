@@ -1,16 +1,11 @@
 import { useEffect } from 'react'
-
 import { SMART_FILTERS } from '@edulastic/constants/const/filters'
 import produce from 'immer'
-import { test as testConstants } from '@edulastic/constants'
 import { testCategoryTypes } from '@edulastic/constants/const/test'
-
 import appConfig from '../../../../app-config'
 import { vqConst } from '../const'
 
 const { COMMUNITY, MY_CONTENT } = vqConst.vqTabs
-
-const { PUBLISHED } = testConstants.statusConstants
 
 const {
   videoQuizDefaultCollection: { collectionId = '' },
@@ -18,19 +13,22 @@ const {
 
 const useTestListFilter = ({
   testSearchRequest,
-  testListSearchFilters,
+  vqFilters,
   currentTab,
   isVideoQuizAndAIEnabled,
   searchString,
   history,
 }) => {
-  const { subject, grades, status } = testListSearchFilters
+  const { subject, grades, status } = vqFilters
 
   /** Tests Pagination starts */
-  const fetchTestByFilters = ({ append = false }) => {
+  const fetchTestByFilters = ({
+    append = false,
+    useEmptySearchString = false,
+  }) => {
     const collections =
       isVideoQuizAndAIEnabled && collectionId ? [collectionId] : ['PUBLIC']
-    const newSearch = produce(testListSearchFilters, (draft) => {
+    const newSearch = produce(vqFilters, (draft) => {
       draft.subject = subject
       draft.grades = grades
       draft.status = status
@@ -39,12 +37,12 @@ const useTestListFilter = ({
       draft.filter = SMART_FILTERS.CO_AUTHOR
       if (currentTab === COMMUNITY) {
         draft.collections = collections
-        draft.status = PUBLISHED
         draft.filter = SMART_FILTERS.ENTIRE_LIBRARY
       }
 
       const _searchString = searchString?.trim() || ''
-      draft.searchString = _searchString.length ? [searchString] : []
+      draft.searchString =
+        _searchString.length && !useEmptySearchString ? [_searchString] : []
     })
 
     testSearchRequest({

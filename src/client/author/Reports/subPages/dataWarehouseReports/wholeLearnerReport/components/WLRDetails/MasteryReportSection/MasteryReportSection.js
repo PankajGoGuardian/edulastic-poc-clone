@@ -207,7 +207,7 @@ const MasteryReportSection = ({
         wrapperStyle={{ alignItems: 'flex-end' }}
         sectionLabelFilters={
           <FlexContainer alignItems="center" style={{ gap: '20px' }}>
-            <EduIf condition={isTutorMeEnabled && isTutorMeVisibleToDistrict}>
+            <EduIf condition={isTutorMeVisibleToDistrict}>
               <Tooltip title={assignTutorBtnTooltipText}>
                 <StyledFilledButton
                   height="32px"

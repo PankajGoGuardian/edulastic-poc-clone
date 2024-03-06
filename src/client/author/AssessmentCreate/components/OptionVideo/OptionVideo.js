@@ -64,6 +64,7 @@ const OptionVideo = ({
           width="100%"
           justifyContent="flex-end"
           left="1.5rem"
+          data-cy="videoQuizStarMark"
         >
           <AddOnTag message={i18.t('author:aiSuite.addOnText')} />
         </AddonTagPositionTopLeft>

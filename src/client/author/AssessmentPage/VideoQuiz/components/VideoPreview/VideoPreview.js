@@ -518,6 +518,7 @@ const VideoPreview = ({
           className="annotations-container"
           ref={annotationContainer}
           enableDrag={viewMode === 'edit' && isEditable && !testMode}
+          data-cy="AnnotationsContainer"
         >
           {visibleAnnotation
             .filter(

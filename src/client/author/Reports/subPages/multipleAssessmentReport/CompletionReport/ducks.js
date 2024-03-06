@@ -14,6 +14,8 @@ const initialState = {
   completionTableDataLoading: false,
   completionTableData: [],
   completionTableDataError: '',
+
+  csvDownloadInfo: {},
 }
 
 const slice = createSlice({
@@ -49,6 +51,12 @@ const slice = createSlice({
     },
     resetCompletionReportData: () => initialState,
     getCsvData: () => {},
+    setCsvDataLoading: (state, { payload }) => {
+      state.csvDownloadInfo[payload.identifier] = payload.loading
+    },
+    resetCsvDataLoading: (state) => {
+      state.csvDownloadInfo = {}
+    },
   },
 })
 
@@ -100,17 +108,32 @@ function* fetchCompletionReportTableDataRequestSaga({ payload }) {
   }
 }
 function* getCsvDataSaga({ payload }) {
+  const { progressName, testName, testId, index } = payload
   try {
-    const { progressName, testName, testId } = payload
+    yield put(
+      actions.setCsvDataLoading({
+        identifier: `${testId}_${progressName}_${index}`,
+        loading: true,
+      })
+    )
     if (testId !== 'overall_tid') {
       payload.testIds = testId
     }
     delete payload.testName
     delete payload.progressName
+    delete payload.index
     const result = yield call(reportsApi.getCsvData, payload)
     downloadCSV(`${testName} ${progressName}.csv`, result?.data?.result || '')
   } catch (error) {
     notification({ msg: 'Failed to download the data' })
+  } finally {
+    yield put(
+      actions.resetCsvDataLoading({
+        identifier: `${testId}_${progressName}_${index}`,
+        loading: false,
+      })
+    )
+    yield put(actions.resetCsvDataLoading)
   }
 }
 
@@ -144,6 +167,10 @@ export const getCompletionChartDataLoading = createSelector(
 export const getCompletionReportTableDataLoading = createSelector(
   stateSelector,
   (state) => state.completionTableDataLoading
+)
+export const getCsvDownloadLoader = createSelector(
+  stateSelector,
+  (state) => state.csvDownloadInfo
 )
 
 export const getCompletionReportDataError = (state) => state.reportReducer.error

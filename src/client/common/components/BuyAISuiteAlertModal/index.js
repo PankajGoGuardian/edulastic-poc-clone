@@ -45,10 +45,12 @@ const BuyAISuiteAlertModal = ({
       onCancel={handleCancel}
       footer={[
         <ButtonsContainer>
-          <EduButton isGhost onClick={handleCancel}>
+          <EduButton isGhost onClick={handleCancel} data-cy="cancelButton">
             Cancel
           </EduButton>
-          <EduButton onClick={handleBuyNow}>Buy now</EduButton>
+          <EduButton onClick={handleBuyNow} data-cy="buyNowButton">
+            Buy now
+          </EduButton>
         </ButtonsContainer>,
       ]}
     >

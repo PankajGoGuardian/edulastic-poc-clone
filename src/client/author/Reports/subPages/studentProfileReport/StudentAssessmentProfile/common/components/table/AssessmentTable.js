@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Tooltip } from 'antd'
 import { filter, includes, isNaN } from 'lodash'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'
@@ -13,7 +14,6 @@ import {
 import { getHSLFromRange1 } from '../../../../../../common/util'
 import CsvTable from '../../../../../../common/components/tables/CsvTable'
 import { reportLinkColor } from '../../../../../multipleAssessmentReport/common/utils/constants'
-import { AssessmentTitle } from '../../styled'
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -107,7 +107,8 @@ const tableColumns = (
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible
+  isLcbNavigationAllowed,
+  titleToolTipText
 ) => [
   {
     title: 'Assessment Name',
@@ -118,9 +119,15 @@ const tableColumns = (
     width: 200,
     render: (data, record) =>
       !isSharedReport ? (
-        <AssessmentTitle onClick={() => setIsTestPreviewVisible(record)}>
-          {data}
-        </AssessmentTitle>
+        isLcbNavigationAllowed(record.groupId, record.schoolId) ? (
+          <Link
+            to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+          >
+            {data}
+          </Link>
+        ) : (
+          <Tooltip title={titleToolTipText}>{data}</Tooltip>
+        )
       ) : (
         data
       ),
@@ -176,9 +183,16 @@ const getColumns = (
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible
+  isLcbNavigationAllowed,
+  titleToolTipText
 ) => [
-  ...tableColumns(location, pageTitle, isSharedReport, setIsTestPreviewVisible),
+  ...tableColumns(
+    location,
+    pageTitle,
+    isSharedReport,
+    isLcbNavigationAllowed,
+    titleToolTipText
+  ),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -257,14 +271,16 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
-  setIsTestPreviewVisible,
+  isLcbNavigationAllowed,
+  titleToolTipText,
 }) => {
   const columns = getColumns(
     studentName,
     location,
     pageTitle,
     isSharedReport,
-    setIsTestPreviewVisible
+    isLcbNavigationAllowed,
+    titleToolTipText
   )
 
   const filteredData = filter(data, (test) =>

@@ -11,6 +11,7 @@ import { ResponseColumn } from './ResponseColumn'
 import { PerformanceColumn } from './PerformanceColumn'
 import { NOT_AVAILABLE_LABEL, onCsvConvert } from '../../utils'
 import { CustomWhiteBackgroundTooltip } from '../../../../../common/components/customTableTooltip'
+import { StyledText } from '../../../../../common/styled'
 
 const ResponseFrequencyTable = ({
   columns: _columns,
@@ -35,15 +36,24 @@ const ResponseFrequencyTable = ({
     const _qLabelColumnSorter = (a, b) =>
       Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1))
 
-    const _standardsColumnRender = (data) => {
-      if (data && Array.isArray(data)) {
-        return data.join(', ')
-      }
-      if (typeof data == 'string') {
-        return data
-      }
-      return ''
-    }
+    const _standardsColumnRender = (data) => (
+      <FlexContainer flexWrap="wrap">
+        {data.map(({ identifier = '-', description = '' }, idx) => {
+          const isLastItem = idx === data.length - 1
+          return (
+            <CustomWhiteBackgroundTooltip
+              key={identifier}
+              data={description}
+              str={
+                <StyledText $fontWeight="bold" $fontSize="14px">
+                  {`${identifier}${isLastItem ? ' ' : ','}`}
+                </StyledText>
+              }
+            />
+          )
+        })}
+      </FlexContainer>
+    )
 
     const _performanceColumnSorter = (a, b) => {
       return (

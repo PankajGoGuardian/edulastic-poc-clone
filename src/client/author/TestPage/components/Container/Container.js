@@ -210,6 +210,7 @@ class Container extends PureComponent {
       showTestNameChangeModal: false,
       toBeResumedTestAction: null,
       toBeNavigatedLocation: null,
+      testNameSaving: false,
     }
   }
 
@@ -1636,7 +1637,17 @@ class Container extends PureComponent {
     return true
   }
 
-  onShareModalChange = () => {
+  saveTestNameSuccess = () => {
+    const { showShareModal } = this.state
+    this.setState({
+      testNameSaving: false,
+      showShareModal: !showShareModal,
+      showTestNameChangeModal: false,
+      toBeResumedTestAction: null,
+    })
+  }
+
+  onShareModalChange = (titleUpdated) => {
     const { showShareModal } = this.state
     const { test, isDefaultTest } = this.props
     if (isDefaultTest && this.checkInvalidTestTitle(test.title)) {
@@ -1646,9 +1657,14 @@ class Container extends PureComponent {
       })
       return
     }
-    this.setState({
-      showShareModal: !showShareModal,
-    })
+    if (titleUpdated === true) {
+      this.setState({ testNameSaving: true })
+      this.handleSave(undefined, undefined, this.saveTestNameSuccess)
+    } else {
+      this.setState({
+        showShareModal: !showShareModal,
+      })
+    }
   }
 
   handleApplySource = (source) => {
@@ -1826,16 +1842,11 @@ class Container extends PureComponent {
         this.handleSave(null, toBeNavigatedLocation)
         break
       case TEST_ACTIONS.share:
-        this.onShareModalChange()
+        this.onShareModalChange(true)
         break
       default:
         break
     }
-
-    this.setState({
-      showTestNameChangeModal: false,
-      toBeResumedTestAction: null,
-    })
   }
 
   render() {
@@ -1872,6 +1883,7 @@ class Container extends PureComponent {
       showConfirmationOnTabChange,
       showTestNameChangeModal,
       toBeResumedTestAction,
+      testNameSaving,
     } = this.state
     const current = currentTab
     const {
@@ -2012,6 +2024,7 @@ class Container extends PureComponent {
                 toBeResumedTestAction: null,
               })
             }}
+            testNameSaving={testNameSaving}
             handleResponse={this.handleResumeActivity}
           />
         )}

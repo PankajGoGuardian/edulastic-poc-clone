@@ -1,7 +1,10 @@
 import { formatDate } from '@edulastic/constants/reportUtils/common'
 
-export const chartDataFormatter = (chartData = []) =>
-  chartData.map((item) => ({
+export const chartDataFormatter = (chartData = []) => {
+  const ascendingChartData = chartData.sort(
+    (a, b) => a.assessmentDate - b.assessmentDate
+  )
+  return ascendingChartData.map((item) => ({
     testName: item.testName,
     gradedPercentage: ((item.graded / item.assigned) * 100).toFixed(2),
     submittedPercentage: ((item.submitted / item.assigned) * 100).toFixed(2),
@@ -19,6 +22,7 @@ export const chartDataFormatter = (chartData = []) =>
     testType: item.testType,
     totalTests: item.totalRows,
   }))
+}
 
 export const barsLabelFormatter = (value, payload, height) => {
   if (height > 14) return value

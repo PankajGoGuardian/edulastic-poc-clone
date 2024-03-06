@@ -8,14 +8,14 @@ const useVQLibraryCommon = ({
   ytNextPageToken,
   testList,
   currentTab,
-  testsCount,
+  vqCount,
 }) => {
   const infiniteLoaderRef = useRef(null)
   const testsCountInTestList = testList?.length
 
   const hasMoreTests =
     currentTab !== vqConst.vqTabs.YOUTUBE
-      ? testsCountInTestList < testsCount
+      ? testsCountInTestList < vqCount
       : false
 
   useEffect(() => {

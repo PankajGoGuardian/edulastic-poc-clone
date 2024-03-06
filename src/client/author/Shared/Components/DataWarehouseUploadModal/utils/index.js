@@ -33,23 +33,23 @@ export const AdministrationLevelOptions = [
 
 export const FastBridgeSessionOptions = [
   {
-    key: 'fall',
+    key: 'Fall',
     title: 'Fall',
   },
   {
-    key: 'october',
+    key: 'October',
     title: 'October',
   },
   {
-    key: 'winter',
+    key: 'Winter',
     title: 'Winter',
   },
   {
-    key: 'feb/mar',
+    key: 'Feb/Mar',
     title: 'Feb/Mar',
   },
   {
-    key: 'spring',
+    key: 'Spring',
     title: 'Spring',
   },
 ]

@@ -19,38 +19,7 @@ const rippleAnimation = keyframes`
 	}
   `
 
-// export const StyledButton = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: ${({ width }) => width};
-//   height: ${({ height }) => height};
-//   position: relative;
-//   margin: ${({ margin }) => margin};
-//   border: none;
-//   border-radius: 50%;
-//   left: ${({ left }) => left};
-//   top: ${({ top }) => top};
-//   color: ${({ isSelected }) => (isSelected ? white : '#111111')};
-//   background-color: ${({ isSelected }) =>
-//     isSelected ? themeColorBlue : white};
-// `
-
-// export const StyledInnerButton = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: ${({ width }) => width};
-//   height: ${({ height }) => height};
-//   position: relative;
-//   border-radius: 50%;
-//   color: white;
-//   background-color: ${({ bgColor }) => bgColor || '#36AE26'};
-//   border: none;
-//   padding: 8px;
-// `
-
-export const StyledButton = styled.div`
+export const StyledOuterButton = styled.div`
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   position: relative;
@@ -62,12 +31,21 @@ export const StyledButton = styled.div`
   background-color: ${({ isSelected }) =>
     isSelected ? themeColorBlue : white};
   border: 1px solid white;
-  .inner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: ${({ bgColor }) => bgColor || '#36AE26'};
-  }
+`
+export const StyledInnerButton = styled.div`
+  width: ${({ width }) => width};
+  height: ${({ height }) => height};
+  position: relative;
+  margin: ${({ margin }) => margin};
+  border-radius: 50%;
+  left: ${({ left }) => left};
+  top: ${({ top }) => top};
+  color: white;
+  border: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ bgColor }) => bgColor || '#36AE26'};
 `
 
 export const StyledSpan = styled.span`

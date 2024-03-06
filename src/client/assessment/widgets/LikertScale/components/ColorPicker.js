@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { Popover, Row, Col } from 'antd'
-import { ColorBox, ColorBoxContainer, StyledButton } from './styled/Radio'
+import { ColorBox, ColorBoxContainer, StyledInnerButton } from './styled/Radio'
 import { SCALE_COLORS } from '../constants'
 
 export const colors = [...SCALE_COLORS]
@@ -44,7 +44,7 @@ function ColorPicker(props) {
       visible={visible}
       onVisibleChange={(v) => setVisible(v)}
     >
-      <StyledButton
+      <StyledInnerButton
         className="inner"
         onClick={(e) => {
           e.stopPropagation()
@@ -58,7 +58,7 @@ function ColorPicker(props) {
         margin="20px"
       >
         {label}
-      </StyledButton>
+      </StyledInnerButton>
     </Popover>
   )
 }

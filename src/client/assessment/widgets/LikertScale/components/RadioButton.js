@@ -1,7 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { ALPHABET } from '@edulastic/common/src/helpers'
-import { StyledButton, StyledSpan } from './styled/Radio'
+import {
+  StyledInnerButton,
+  StyledOuterButton,
+  StyledSpan,
+} from './styled/Radio'
 import { EDIT } from '../../../constants/constantsForQuestions'
 import ColorPicker from './ColorPicker'
 
@@ -30,7 +34,7 @@ const RadioButton = ({
       isSelected={isSelected}
       view={view}
     >
-      <StyledButton
+      <StyledOuterButton
         className="outer"
         width={isEditView ? '30px' : '70px'}
         height={isEditView ? '30px' : '70px'}
@@ -45,20 +49,20 @@ const RadioButton = ({
             onChange={handleColorChange}
           />
         ) : (
-          <StyledButton
+          <StyledInnerButton
             className="inner"
-            width={isEditView ? '30px' : '55px'}
-            height={isEditView ? '30px' : '55px'}
-            left={isEditView ? '-21px' : '-13px'}
-            top={isEditView ? '-21px' : '-13px'}
+            width="55px"
+            height="55px"
+            left="-13px"
+            top="-13px"
             bgColor={option.bgColor}
             margin="20px"
             isSelected={isSelected}
           >
             {label}
-          </StyledButton>
+          </StyledInnerButton>
         )}
-      </StyledButton>
+      </StyledOuterButton>
     </StyledSpan>
   )
 }

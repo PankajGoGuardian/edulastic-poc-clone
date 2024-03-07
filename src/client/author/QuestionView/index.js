@@ -57,7 +57,6 @@ import {
   getPageNumberSelector,
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
-  getFirstQuestionEntitiesSelector,
 } from '../ClassBoard/ducks'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import {
@@ -117,20 +116,10 @@ class QuestionViewContainer extends Component {
       assignmentIdClassId: { assignmentId, classId } = {},
       question,
       itemId,
-      firstQuestionEntities,
     } = nextProps
     const { question: _question = {}, itemId: _itemId } = preState || {}
     if (question.id !== _question.id || itemId !== _itemId) {
-      const questionIds =
-        firstQuestionEntities.find((entity) => entity._id === question.id)
-          ?.qids || []
-      loadClassQuestionResponses(
-        assignmentId,
-        classId,
-        question.id,
-        itemId,
-        questionIds
-      )
+      loadClassQuestionResponses(assignmentId, classId, question.id, itemId)
     }
     return {
       question,
@@ -660,7 +649,6 @@ const enhance = compose(
       studentsList: getAllStudentsList(state),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       pageNumber: getPageNumberSelector(state),
-      firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

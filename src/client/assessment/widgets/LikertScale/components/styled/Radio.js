@@ -41,9 +41,10 @@ export const StyledInnerButton = styled.div`
   left: ${({ left }) => left};
   top: ${({ top }) => top};
   color: white;
-  border: 1px solid white;
+  border: 1px solid ${({ isSelected }) => (isSelected ? themeColorBlue : white)};
   display: flex;
   align-items: center;
+  font-size: ${({ fontsize }) => fontsize || '13px'};
   justify-content: center;
   background-color: ${({ bgColor }) => bgColor || '#36AE26'};
 `

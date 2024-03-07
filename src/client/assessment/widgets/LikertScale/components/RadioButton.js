@@ -41,6 +41,7 @@ const RadioButton = ({
         left="0px"
         top="0px"
         margin="0px"
+        isSelected={isSelected}
       >
         {isEditView ? (
           <ColorPicker
@@ -58,6 +59,7 @@ const RadioButton = ({
             bgColor={option.bgColor}
             margin="20px"
             isSelected={isSelected}
+            fontsize="21px"
           >
             {label}
           </StyledInnerButton>

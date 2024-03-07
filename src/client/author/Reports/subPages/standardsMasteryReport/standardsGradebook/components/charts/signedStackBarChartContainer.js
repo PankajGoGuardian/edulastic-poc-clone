@@ -49,10 +49,16 @@ const getChartSpecifics = (scaleInfo) => {
 const getTooltipJSX = (payload, barIndex) => {
   if (payload && payload.length && barIndex !== null) {
     const { dataKey: masteryLabel, value: studentPercent } = payload[barIndex]
-    const { standard, standardName, masteryLabelInfo, totalStudents } = payload[
-      barIndex
-    ].payload
+    const {
+      standard,
+      standardName,
+      masteryLabelInfo,
+      totalStudents,
+      studentCountsMap,
+    } = payload[barIndex].payload
     const masteryName = masteryLabelInfo[masteryLabel]
+    const currentStudentCount = studentCountsMap[masteryLabel]
+    const studentCountText = `${currentStudentCount} out of ${totalStudents}`
 
     return (
       <div>
@@ -74,7 +80,7 @@ const getTooltipJSX = (payload, barIndex) => {
         </Row>
         <Row type="flex" justify="start">
           <Col className="tooltip-key">Student #: </Col>
-          <Col className="tooltip-value">{totalStudents}</Col>
+          <Col className="tooltip-value">{studentCountText}</Col>
         </Row>
       </div>
     )

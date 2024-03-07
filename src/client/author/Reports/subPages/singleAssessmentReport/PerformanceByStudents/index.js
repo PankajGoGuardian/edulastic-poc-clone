@@ -204,7 +204,9 @@ const PerformanceByStudents = ({
       settings.selectedTest?.key &&
       !res?.studentMetricInfo?.length &&
       !res?.bandDistribution?.length &&
-      !res?.scoreDistribution?.length
+      !res?.scoreDistribution?.length &&
+      !summaryLoading &&
+      !detailsLoading
     ) {
       toggleFilter(null, true)
     } else {

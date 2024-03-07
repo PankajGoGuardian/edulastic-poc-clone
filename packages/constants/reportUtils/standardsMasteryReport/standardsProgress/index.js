@@ -169,31 +169,35 @@ const getChartData = (chartData, masteryScale) => {
         tempMasteryCountHelper[round(masteryScore)] = totalStudentCount
       }
     }
-    const obj = {
+    const result = {
       totalStudents,
       testId: dataItem.testId,
       testName: dataItem.testName,
     }
     const masteryLabelInfo = {}
+    const studentCountsMap = {}
 
     // Calculating each mastery level student percentage which makes up each segment in the bar
     Object.keys(tempMasteryCountHelper).forEach((_item) => {
       if (masteryMap[_item]) {
+        const { masteryLabel, masteryName } = masteryMap[_item]
+        const studentCount = tempMasteryCountHelper[_item]
+        studentCountsMap[masteryLabel] = studentCount
         const masteryPercentage = totalStudents
-          ? round((tempMasteryCountHelper[_item] / totalStudents) * 100)
+          ? round((studentCount / totalStudents) * 100)
           : 0
-        masteryLabelInfo[masteryMap[_item].masteryLabel] =
-          masteryMap[_item].masteryName
+        masteryLabelInfo[masteryLabel] = masteryName
         if (_item == 1) {
-          obj[masteryMap[_item].masteryLabel] = -masteryPercentage
+          result[masteryLabel] = -masteryPercentage
         } else {
-          obj[masteryMap[_item].masteryLabel] = masteryPercentage
+          result[masteryLabel] = masteryPercentage
         }
       }
     })
-    obj.masteryLabelInfo = masteryLabelInfo
+    result.masteryLabelInfo = masteryLabelInfo
+    result.studentCountsMap = studentCountsMap
 
-    return obj
+    return result
   })
 
   return _chartData

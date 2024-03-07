@@ -28,6 +28,8 @@ const ACCESS = 'ACCESS'
 const NHSAS = 'NHSAS'
 const KSA = 'KSA'
 const DRC_WIDA_ELL = 'DRC_WIDA_ELL'
+const IAP_EOY = 'IAP_EOY'
+const IAP_Window = 'IAP_Window'
 
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
@@ -154,4 +156,6 @@ module.exports = {
   FASTBRIDGE_AMath,
   FASTBRIDGE_AReading,
   FASTBRIDGE_TEST_TYPES,
+  IAP_EOY,
+  IAP_Window,
 }

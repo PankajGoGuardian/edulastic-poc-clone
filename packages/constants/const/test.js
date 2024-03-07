@@ -490,6 +490,8 @@ module.exports = {
     'allowTeacherRedirect',
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
+    SHOW_SPEECH_TO_TEXT,
+    SHOW_TEXT_TO_SPEECH,
     'allowAutoEssayEvaluation',
     // It is required to change the test settings state in redux.
     'preventSectionNavigation',

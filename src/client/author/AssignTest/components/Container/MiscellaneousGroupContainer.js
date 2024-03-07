@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Col, Radio, Checkbox } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 import { isUndefined } from 'lodash'
 import { EduButton, EduIf, EduThen } from '@edulastic/common'
@@ -28,7 +28,7 @@ import {
   edulasticText,
   pearAssessmentText,
 } from '../../../../common/utils/helpers'
-import { StyledRadioCheckboxGroup } from '../../../TestPage/components/Setting/components/Container/styled'
+import { isEditAllowed } from '../../../TestSetting/utils/constants'
 
 const {
   accessibilities,
@@ -37,7 +37,7 @@ const {
   accommodationsSettings,
 } = test
 const { magnifier, scratchPad, skipAlert } = accessibilitySettings
-const { immersiveReader, speechToText } = accommodationsSettings
+const { immersiveReader, speechToText, textToSpeech } = accommodationsSettings
 
 const MiscellaneousGroupContainer = ({
   assignmentSettings,
@@ -52,6 +52,7 @@ const MiscellaneousGroupContainer = ({
   tootltipWidth,
   premium,
   canUseImmersiveReader,
+  districtTestSettings,
   t: translate,
 }) => {
   const {
@@ -65,6 +66,7 @@ const MiscellaneousGroupContainer = ({
     enableSkipAlert = testSettings.enableSkipAlert,
     showImmersiveReader = testSettings.showImmersiveReader,
     showSpeechToText = testSettings.showSpeechToText,
+    showTextToSpeech = testSettings.showTextToSpeech,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -113,6 +115,10 @@ const MiscellaneousGroupContainer = ({
     },
   ]
 
+  const isAccommodationEditAllowed = useMemo(() => {
+    return isEditAllowed({ testSettings: districtTestSettings })
+  }, [districtTestSettings])
+
   // Accommodations settings will be visible only for premium & enterprise users
   const accommodationsData = [
     {
@@ -122,21 +128,29 @@ const MiscellaneousGroupContainer = ({
         'accommodationsSettings.immersiveReader.description'
       ),
       id: immersiveReader.id,
-      isEnabled: canUseImmersiveReader && !isDocBased, // IR doesn't work in Doc based so disabling for it
+      isEnabled:
+        canUseImmersiveReader && !isDocBased && isAccommodationEditAllowed, // IR doesn't work in Doc based so disabling for it
     },
     {
       key: speechToText.key,
       value: showSpeechToText,
       description: translate('accommodationsSettings.speechToText.description'),
       id: speechToText.id,
-      isEnabled: featuresAvailable.speechToText,
+      isEnabled: featuresAvailable.speechToText && isAccommodationEditAllowed,
+    },
+    {
+      key: textToSpeech.key,
+      value: showTextToSpeech,
+      description: translate('accommodationsSettings.textToSpeech.description'),
+      id: textToSpeech.id,
+      isEnabled: isAccommodationEditAllowed,
     },
   ]
 
   useEffect(() => {
     if (accommodationsData.length) {
       accommodationsData.forEach((acc) => {
-        if (!acc.isEnabled) {
+        if (!acc.isEnabled && acc.value === undefined) {
           overRideSettings(acc.key, false)
         }
       })
@@ -271,47 +285,54 @@ const MiscellaneousGroupContainer = ({
                   disabled={freezeSettings}
                   style={{ marginTop: '10px', marginBottom: 0 }}
                 >
-                  {accommodationsData.map(({ key, value, description, id }) => (
-                    <SettingContainer id={id}>
-                      <DetailsTooltip
-                        width={tootltipWidth}
-                        title={accommodations[key]}
-                        content={description}
-                        premium
-                        placement="rightTop"
-                      />
-                      <StyledRow
-                        key={accommodations[key]}
-                        style={{ width: '100%' }}
-                      >
-                        <Col span={10}>
-                          <span style={{ fontSize: 12, fontWeight: 600 }}>
-                            {accommodations[key]}
-                          </span>
-                        </Col>
+                  {accommodationsData
+                    .filter((accommodation) =>
+                      accommodation.key === speechToText.key
+                        ? districtTestSettings.enableSpeechToText
+                        : true
+                    )
+                    .map(({ key, value, description, id }) => (
+                      <SettingContainer id={id}>
+                        <DetailsTooltip
+                          width={tootltipWidth}
+                          title={accommodations[key]}
+                          content={description}
+                          premium
+                          placement="rightTop"
+                        />
+                        <StyledRow
+                          key={accommodations[key]}
+                          style={{ width: '100%' }}
+                        >
+                          <Col span={8}>
+                            <span style={{ fontSize: 12, fontWeight: 600 }}>
+                              {accommodations[key]}
+                            </span>
+                          </Col>
 
-                        <Col span={14}>
-                          <StyledRadioCheckboxGroup
-                            isAssignment
-                            disabled={freezeSettings}
-                            onChange={([first, last]) => {
-                              const checkValue =
-                                last !== undefined ? last : first
-                              overRideSettings(key, checkValue)
-                            }}
-                            value={[value]}
-                          >
-                            <Checkbox data-cy={`${key}-enable`} value>
-                              ENABLE
-                            </Checkbox>
-                            <Checkbox data-cy={`${key}-disable`} value={false}>
-                              DISABLE
-                            </Checkbox>
-                          </StyledRadioCheckboxGroup>
-                        </Col>
-                      </StyledRow>
-                    </SettingContainer>
-                  ))}
+                          <Col span={16}>
+                            <StyledRadioGroup
+                              isAssignment
+                              disabled={freezeSettings}
+                              onChange={(e) =>
+                                overRideSettings(key, e.target.value)
+                              }
+                              value={value}
+                            >
+                              <Radio data-cy={`${key}-enable`} value>
+                                ENABLE
+                              </Radio>
+                              <Radio data-cy={`${key}-disable`} value={false}>
+                                DISABLE
+                              </Radio>
+                              <Radio data-cy={`${key}-student-level`}>
+                                Student Level
+                              </Radio>
+                            </StyledRadioGroup>
+                          </Col>
+                        </StyledRow>
+                      </SettingContainer>
+                    ))}
                 </RadioWrapper>
               )}
             </>

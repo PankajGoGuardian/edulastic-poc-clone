@@ -3,6 +3,7 @@ import { settingsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { set } from 'lodash'
 import { createAction, createReducer } from 'redux-starter-kit'
+import { createSelector } from 'reselect'
 import { setUserAccessPublicContent } from '../../student/Login/ducks'
 
 const RECEIVE_TEST_SETTING_REQUEST = '[testSetting] receive data request'
@@ -147,6 +148,12 @@ function* createTestSettingSaga({ payload }) {
     yield put(createTestSettingErrorAction({ error: errorMessage }))
   }
 }
+
+export const stateSelector = (state) => state.testSettingReducer
+export const getTestSettings = createSelector(
+  stateSelector,
+  (state) => state.data
+)
 
 export function* watcherSaga() {
   yield all([takeLatest(RECEIVE_TEST_SETTING_REQUEST, receiveTestSettingeSaga)])

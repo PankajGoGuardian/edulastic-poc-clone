@@ -111,6 +111,7 @@ import {
   getUserSignupStatusSelector,
   isVideoQuizAndAIEnabledSelector,
   isRedirectToVQAddOnSelector,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -160,6 +161,10 @@ import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertM
 import TestNameChangeModal from '../TestNameChangeModal/TestNameChangeModal'
 import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
 import { getUserAccommodations } from '../../../../student/Login/ducks'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -269,10 +274,13 @@ class Container extends PureComponent {
       userSignupStatus,
       test,
       aiTestStatus,
+      loadDistrictTestSetting,
+      districtId,
     } = this.props
 
     const { versionId, id } = match.params
-
+    // Fetching district level test setting
+    loadDistrictTestSetting({ type: 'district', orgId: districtId })
     if (userRole !== roleuser.STUDENT) {
       setCurrentTestSettingsId('')
 
@@ -1088,6 +1096,7 @@ class Container extends PureComponent {
       subscription: { subType } = {},
       isDynamicTest,
       hasSections,
+      districtTestSettings,
     } = this.props
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     const { params = {} } = match
@@ -1267,6 +1276,7 @@ class Container extends PureComponent {
             showCancelButton={showCancelButton}
             isCurator={isCurator}
             isPlaylist={isPlaylist}
+            districtTestSettings={districtTestSettings}
           />
         )
       case 'worksheet':
@@ -2210,6 +2220,8 @@ const enhance = compose(
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
       accommodations: getUserAccommodations(state),
+      districtId: getUserOrgId(state),
+      districtTestSettings: getTestSettings(state),
     }),
     {
       createTest: createTestAction,
@@ -2246,6 +2258,7 @@ const enhance = compose(
       fetchTestSettingsList: fetchTestSettingsListAction,
       setTestSettingsList: setTestSettingsListAction,
       setCurrentGroupIndexInStore: setCurrentGroupIndexAction,
+      loadDistrictTestSetting: receiveTestSettingAction,
     }
   )
 )

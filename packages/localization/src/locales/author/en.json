@@ -226,6 +226,9 @@
     },
     "speechToText": {
       "description": "Enable STT to allow student to use their voice to enter text on constructive response question types."
+    },
+    "textToSpeech": {
+      "description": "Enable text-to-speech read-aloud feature on this test"
     }
   },
   "accessibilitySettings": {

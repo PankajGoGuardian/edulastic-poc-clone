@@ -5,16 +5,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject, pick, omit } from 'lodash'
 import Styled from 'styled-components'
-import {
-  Anchor,
-  Col,
-  Icon,
-  InputNumber,
-  Row,
-  Select,
-  Tooltip,
-  Checkbox,
-} from 'antd'
+import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
 import {
   blueBorder,
   green,
@@ -97,7 +88,6 @@ import {
   Title,
   SavedSettingsContainerStyled,
   SubHeaderContainer,
-  StyledRadioCheckboxGroup,
 } from './styled'
 import PerformanceBand from './PerformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
@@ -143,6 +133,8 @@ import {
   pearAssessmentText,
 } from '../../../../../../common/utils/helpers'
 
+import { isEditAllowed } from '../../../../../TestSetting/utils/constants'
+
 const {
   settingCategories: defaultSettingCategories,
   settingCategoriesFeatureMap,
@@ -166,7 +158,7 @@ const {
 } = testConstants
 
 const { magnifier, scratchPad, skipAlert } = accessibilitySettings
-const { immersiveReader, speechToText } = accommodationsSettings
+const { immersiveReader, speechToText, textToSpeech } = accommodationsSettings
 
 const { Option } = Select
 
@@ -839,6 +831,7 @@ class Setting extends Component {
       isAiEvaulationDistrict,
       hasSections,
       canSchoolAdminUseDistrictCommon,
+      districtTestSettings,
     } = this.props
     const {
       isDocBased,
@@ -863,6 +856,7 @@ class Setting extends Component {
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
       showImmersiveReader,
+      showTextToSpeech,
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
@@ -1013,6 +1007,9 @@ class Setting extends Component {
       },
     ]
 
+    const isAccommodationEditAllowed = isEditAllowed({
+      testSettings: districtTestSettings,
+    })
     // Accommodations settings will be visible only for premium & enterprise users
     const accommodationsData = [
       {
@@ -1022,7 +1019,10 @@ class Setting extends Component {
           'accommodationsSettings.immersiveReader.description'
         ),
         id: immersiveReader.id,
-        isEnabled: features.canUseImmersiveReader && !isDocBased, // IR doesn't work in Doc based so disabling for it
+        isEnabled:
+          features.canUseImmersiveReader &&
+          !isDocBased &&
+          isAccommodationEditAllowed, // IR doesn't work in Doc based so disabling for it
       },
       {
         key: speechToText.key,
@@ -1031,7 +1031,16 @@ class Setting extends Component {
           'accommodationsSettings.speechToText.description'
         ),
         id: speechToText.id,
-        isEnabled: features.speechToText,
+        isEnabled: features.speechToText && isAccommodationEditAllowed,
+      },
+      {
+        key: textToSpeech.key,
+        value: showTextToSpeech,
+        description: i18translate(
+          'accommodationsSettings.textToSpeech.description'
+        ),
+        id: textToSpeech.id,
+        isEnabled: isAccommodationEditAllowed,
       },
     ]
 
@@ -1107,6 +1116,19 @@ class Setting extends Component {
       ),
       ['_id', 'name']
     )
+    const getFilteredCategories = () => {
+      const hasAccommodationsData = accommodationsData.filter(
+        (a) => a.isEnabled
+      ).length
+      if (!hasAccommodationsData) {
+        return settingCategories.filter(
+          (settingCategory) => settingCategory.id !== 'accommodations'
+        )
+      }
+      return settingCategories
+    }
+
+    const filteredCategories = getFilteredCategories()
 
     const applyEBSRComponent = () => {
       return (
@@ -1241,7 +1263,7 @@ class Setting extends Component {
                   offsetTop={125}
                   getContainer={() => this.containerRef.current || window}
                 >
-                  {settingCategories.map((category) => {
+                  {filteredCategories.map((category) => {
                     return (
                       <Anchor.Link
                         key={category.id}
@@ -2090,44 +2112,57 @@ class Setting extends Component {
                         flexDirection: 'row',
                       }}
                     >
-                      {accommodationsData.map((o) => (
-                        <StyledRow key={o.key} align="middle">
-                          <Col span={6}>
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                textTransform: 'uppercase',
-                              }}
-                            >
-                              {accommodations[o.key]}
-                            </span>
-                          </Col>
-                          <Col span={12}>
-                            <StyledRadioCheckboxGroup
-                              disabled={disabled}
-                              onChange={([first, last]) => {
-                                const value = last !== undefined ? last : first
-                                this.updateTestData(o.key)(value)
-                              }}
-                              value={[o.value]}
-                            >
-                              <Checkbox data-cy={`${o.key}-enable`} value>
-                                ENABLE
-                              </Checkbox>
-                              <Checkbox
-                                data-cy={`${o.key}-disable`}
-                                value={false}
+                      {accommodationsData
+                        .filter((accommodation) =>
+                          accommodation.key === speechToText.key
+                            ? districtTestSettings.enableSpeechToText
+                            : true
+                        )
+                        .map((o) => (
+                          <StyledRow key={o.key} align="middle">
+                            <Col span={6}>
+                              <span
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                }}
                               >
-                                DISABLE
-                              </Checkbox>
-                            </StyledRadioCheckboxGroup>
-                          </Col>
-                          <Col span={24}>
-                            <Description>{o.description}</Description>
-                          </Col>
-                        </StyledRow>
-                      ))}
+                                {accommodations[o.key]}
+                              </span>
+                            </Col>
+                            <Col span={18}>
+                              <StyledRadioGroup
+                                disabled={disabled}
+                                onChange={(e) => {
+                                  // const value = last !== undefined ? last : first
+                                  this.updateTestData(o.key)(e.target.value)
+                                }}
+                                value={o.value}
+                                style={{
+                                  flexDirection: 'row',
+                                  height: '18px',
+                                }}
+                              >
+                                <RadioBtn data-cy={`${o.key}-enable`} value>
+                                  ENABLE
+                                </RadioBtn>
+                                <RadioBtn
+                                  data-cy={`${o.key}-disable`}
+                                  value={false}
+                                >
+                                  DISABLE
+                                </RadioBtn>
+                                <RadioBtn data-cy={`${o.key}-student-level`}>
+                                  Student Level
+                                </RadioBtn>
+                              </StyledRadioGroup>
+                            </Col>
+                            <Col span={24}>
+                              <Description>{o.description}</Description>
+                            </Col>
+                          </StyledRow>
+                        ))}
                     </RadioWrapper>
                   </Block>
                 )}

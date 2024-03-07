@@ -1,6 +1,7 @@
 const SHOW_IMMERSIVE_READER = 'showImmersiveReader'
 const SHOW_SPEECH_TO_TEXT = 'showSpeechToText'
 const TEST_CONTENT_VISIBILITY = 'testContentVisibility'
+const SHOW_TEXT_TO_SPEECH = 'showTextToSpeech'
 module.exports = {
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
@@ -82,6 +83,7 @@ module.exports = {
   },
   accommodationsSettings: {
     immersiveReader: { key: SHOW_IMMERSIVE_READER, id: 'immersive-reader' },
+    textToSpeech: { key: SHOW_TEXT_TO_SPEECH, id: 'text-to-speech' },
     speechToText: { key: SHOW_SPEECH_TO_TEXT, id: 'speech-to-text' },
   },
   settingCategoriesFeatureMap: {
@@ -190,6 +192,7 @@ module.exports = {
   accommodations: {
     showImmersiveReader: 'IMMERSIVE READER',
     showSpeechToText: 'SPEECH TO TEXT',
+    showTextToSpeech: 'TEXT TO SPEECH',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },
@@ -487,6 +490,8 @@ module.exports = {
     'allowTeacherRedirect',
     'showTtsForPassages',
     SHOW_IMMERSIVE_READER,
+    SHOW_SPEECH_TO_TEXT,
+    SHOW_TEXT_TO_SPEECH,
     'allowAutoEssayEvaluation',
     // It is required to change the test settings state in redux.
     'preventSectionNavigation',
@@ -530,6 +535,7 @@ module.exports = {
     CUSTOM: 'Custom',
   },
   SHOW_IMMERSIVE_READER,
+  SHOW_TEXT_TO_SPEECH,
   TEST_CONTENT_VISIBILITY,
   VQ_QUOTA_EXHAUSTED: 'VQ_QUOTA_EXHAUSTED',
 }

@@ -19,6 +19,7 @@ const AdditionalFields = ({
   stds,
   isEdit,
   foundUserContactEmails = [],
+  districtTestSettings,
   ...restProps
 }) => {
   const isEditMode = isEdit && stds && stds.length
@@ -31,62 +32,74 @@ const AdditionalFields = ({
   if (type === 'accommodations') {
     data = data?.accommodations || {}
   }
+  const checkHideCondition = (item) => {
+    switch (item.fieldName) {
+      case 'stt':
+        return districtTestSettings
+          ? districtTestSettings.enableSpeechToText
+          : true
+      default:
+        return true
+    }
+  }
 
-  return fieldsMapping[type].map((item) => {
-    if (item.isDate) {
+  return fieldsMapping[type]
+    .filter((item) => checkHideCondition(item))
+    .map((item) => {
+      if (item.isDate) {
+        return (
+          <Field
+            label={item.label}
+            optional
+            {...restProps}
+            fiedlName={item.fieldName}
+            initialValue={
+              data[item.fieldName] ? moment(data[item.fieldName]) : null
+            }
+          >
+            <DatePickerStyled format={item.format} />
+          </Field>
+        )
+      }
+      if (item.options) {
+        return (
+          <Field
+            {...restProps}
+            label={item.label}
+            fiedlName={item.fieldName}
+            initialValue={data[item.fieldName]}
+          >
+            <SelectInputStyled
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              {item.options.map((opt) => (
+                <Option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </Option>
+              ))}
+            </SelectInputStyled>
+          </Field>
+        )
+      }
       return (
         <Field
           label={item.label}
-          optional
           {...restProps}
           fiedlName={item.fieldName}
           initialValue={
-            data[item.fieldName] ? moment(data[item.fieldName]) : null
+            item.fieldName === 'contactEmails'
+              ? _contactEmails
+              : data[item.fieldName]
           }
         >
-          <DatePickerStyled format={item.format} />
+          {item.isNumber ? (
+            <NumberInputStyled min={-1} max={10} step={0.1} />
+          ) : (
+            <TextInputStyled placeholder={item.placeholder} />
+          )}
         </Field>
       )
-    }
-    if (item.options) {
-      return (
-        <Field
-          {...restProps}
-          label={item.label}
-          fiedlName={item.fieldName}
-          initialValue={data[item.fieldName]}
-        >
-          <SelectInputStyled
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          >
-            {item.options.map((opt) => (
-              <Option key={opt.value} value={opt.value}>
-                {opt.label}
-              </Option>
-            ))}
-          </SelectInputStyled>
-        </Field>
-      )
-    }
-    return (
-      <Field
-        label={item.label}
-        {...restProps}
-        fiedlName={item.fieldName}
-        initialValue={
-          item.fieldName === 'contactEmails'
-            ? _contactEmails
-            : data[item.fieldName]
-        }
-      >
-        {item.isNumber ? (
-          <NumberInputStyled min={-1} max={10} step={0.1} />
-        ) : (
-          <TextInputStyled placeholder={item.placeholder} />
-        )}
-      </Field>
-    )
-  })
+    })
 }
 
 AdditionalFields.propTypes = {

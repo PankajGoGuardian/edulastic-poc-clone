@@ -108,6 +108,10 @@ import {
 import { getSettingsToSaveOnTestType } from '../../../TestPage/utils'
 import BuyAISuiteAlertModal from '../../../../common/components/BuyAISuiteAlertModal'
 import { getIsBuyAiSuiteAlertModalVisible } from '../../../utils/videoQuiz'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const { ASSESSMENT } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
@@ -169,6 +173,7 @@ class AssignTest extends React.Component {
       location,
       addRecommendedResourcesAction,
       setAssignments,
+      loadTestSetting,
     } = this.props
 
     if (isSAWithoutSchools) {
@@ -193,6 +198,7 @@ class AssignTest extends React.Component {
 
     const { testId } = match.params
     setAssignments([])
+    loadTestSetting({ type: 'district', orgId: userOrgId })
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -841,6 +847,7 @@ class AssignTest extends React.Component {
       testSettingsList,
       userFeatures: { premium },
       isAdvancedSearchLoading,
+      districtTestSettings,
     } = this.props
     const { title, _id, testCategory } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
@@ -861,7 +868,6 @@ class AssignTest extends React.Component {
     const isBuyAISuiteAlertModalVisible =
       !isPlaylist &&
       getIsBuyAiSuiteAlertModalVisible(testCategory, isRedirectToVQAddOn)
-
     return (
       <div>
         <EduIf condition={isAdvancedSearchLoading}>
@@ -1040,6 +1046,7 @@ class AssignTest extends React.Component {
               isAssigning={isAssigning}
               isPlaylist={isPlaylist}
               setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
+              districtTestSettings={districtTestSettings}
             />
           )}
         </Container>
@@ -1087,6 +1094,7 @@ const enhance = compose(
       ),
       isVideoQuiAndAiEnabled: isVideoQuizAndAIEnabledSelector(state),
       isRedirectToVQAddOn: isRedirectToVQAddOnSelector(state),
+      districtTestSettings: getTestSettings(state),
     }),
     {
       loadClassList: receiveClassListAction,
@@ -1111,6 +1119,7 @@ const enhance = compose(
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
       setTestSettingsList: setTestSettingsListAction,
+      loadTestSetting: receiveTestSettingAction,
       setAdvancedSearchFilter: setAdvancedSearchFilterAction,
       setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
     }

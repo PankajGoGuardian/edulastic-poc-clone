@@ -7,15 +7,19 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { themeColor } from '@edulastic/colors'
+import { roleuser } from '@edulastic/constants'
 import {
   getUserOrgData,
+  getUserRole,
   isPremiumUserSelector,
 } from '../../../../src/selectors/user'
 import { getValidatedClassDetails } from '../../../../Student/ducks'
 import { fetchStudentsByIdAction } from '../../../ducks'
 import AdditionalFields from './AdditionalFields'
 import BasicFields from './BasicFields'
-import { AddForm, PanelHeader, Title } from './styled'
+import { AddForm, PanelHeader, StyledCollapse, Title } from './styled'
+import { isEditAllowed } from '../../../../TestSetting/utils/constants'
+import { StyledTooltip } from '../../../../Reports/common/styled'
 
 const { Panel } = Collapse
 class AddStudentModal extends React.Component {
@@ -94,6 +98,8 @@ class AddStudentModal extends React.Component {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       resetClassDetails,
+      districtTestSettings,
+      userRole,
       isPremium,
     } = this.props
 
@@ -146,14 +152,29 @@ class AddStudentModal extends React.Component {
         <label>Configure Additional Details</label>
       </PanelHeader>
     )
+    const isAccommodationDisable = districtTestSettings
+      ? !isEditAllowed({
+          testSettings: districtTestSettings,
+          type: 'manageClass',
+        }) && userRole === roleuser.TEACHER
+      : false
+
     const AccommodationsHeader = (
-      <PanelHeader>
-        <div className="flex">
-          <IconAccessibility style={{ fill: themeColor }} />
-          <label>Configure Accommodations</label>
-        </div>
-        <small>Set TTS, STT, IR acommodations</small>
-      </PanelHeader>
+      <StyledTooltip
+        title={
+          isAccommodationDisable
+            ? 'Accommodations can only be changed by administrator'
+            : ''
+        }
+      >
+        <PanelHeader>
+          <div className="flex">
+            <IconAccessibility style={{ fill: themeColor }} />
+            <label>Configure Accommodations</label>
+          </div>
+          <small>Set TTS, STT, IR acommodations</small>
+        </PanelHeader>
+      </StyledTooltip>
     )
 
     return (
@@ -206,13 +227,17 @@ class AddStudentModal extends React.Component {
             </Collapse>
             <br />
             {isPremium && (
-              <Collapse
+              <StyledCollapse
                 accordion
                 defaultActiveKey={keys}
                 expandIcon={expandIcon}
                 expandIconPosition="right"
               >
-                <Panel header={AccommodationsHeader} key="accommodations">
+                <Panel
+                  disabled={isAccommodationDisable}
+                  header={AccommodationsHeader}
+                  key="accommodations"
+                >
                   <AdditionalFields
                     type="accommodations"
                     getFieldDecorator={getFieldDecorator}
@@ -220,10 +245,11 @@ class AddStudentModal extends React.Component {
                     std={std}
                     isEdit={isEdit}
                     stds={stds}
+                    districtTestSettings={districtTestSettings}
                     foundUserContactEmails={this.state.foundUserContactEmails}
                   />
                 </Panel>
-              </Collapse>
+              </StyledCollapse>
             )}
           </AddForm>
         </Spin>
@@ -261,6 +287,7 @@ export default connect(
     isPremium: isPremiumUserSelector(state),
     selectedClass: getValidatedClassDetails(state) || {},
     classDetails: get(state, 'manageClass.entity'),
+    userRole: getUserRole(state),
   }),
   { loadStudents: fetchStudentsByIdAction }
 )(AddStudentForm)

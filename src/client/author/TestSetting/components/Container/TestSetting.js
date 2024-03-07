@@ -45,6 +45,8 @@ import {
   setTestSettingValueAction,
   updateTestSettingAction,
 } from '../../ducks'
+import { editTeachersAccommodationOptions } from '../../utils/constants'
+import { OptionContainer } from './styled'
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Test Settings' }
@@ -163,6 +165,8 @@ class TestSetting extends Component {
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
       enableAudioResponseQuestion: testSetting.enableAudioResponseQuestion,
+      editTeacherAccommodation: testSetting.editTeacherAccommodation,
+      enableSpeechToText: testSetting.enableSpeechToText,
       canAccessPublicContent: checkIsUndefinedOrNull(
         testSetting.canAccessPublicContent
       )
@@ -320,6 +324,29 @@ class TestSetting extends Component {
                     </EduIf>
                   </StyledCol>
                 </EduIf>
+                <EduIf condition={role === roleuser.DISTRICT_ADMIN}>
+                  <StyledCol data-cy="enableSpeechToText">
+                    <InputLabel>
+                      ENABLE SPEECH TO TEXT (SCRIBE) ON CONSTRUCTIVE RESPONSE
+                      QUESTIONS{' '}
+                    </InputLabel>
+                    <StyledRadioGrp
+                      defaultValue={testSetting.enableSpeechToText}
+                      onChange={(e) =>
+                        this.changeSetting(e, 'enableSpeechToText')
+                      }
+                      value={testSetting.enableSpeechToText}
+                    >
+                      <RadioBtn value>Yes</RadioBtn>
+                      <RadioBtn value={false}>No</RadioBtn>
+                    </StyledRadioGrp>
+                    <EduIf condition={testSetting.enableSpeechToText}>
+                      <InputLabel>
+                        Student use their voice to respond{' '}
+                      </InputLabel>
+                    </EduIf>
+                  </StyledCol>
+                </EduIf>
                 <EduIf condition={showEnterpriseSettings}>
                   <StyledCol data-cy="canAccessPublicContent">
                     <InputLabel>
@@ -361,6 +388,38 @@ class TestSetting extends Component {
                     >
                       <RadioBtn value>Yes</RadioBtn>
                       <RadioBtn value={false}>No</RadioBtn>
+                    </StyledRadioGrp>
+                  </StyledCol>
+                </EduIf>
+                <EduIf condition={role === roleuser.DISTRICT_ADMIN}>
+                  <StyledCol data-cy="editAccommodation">
+                    <InputLabel>
+                      ALLOW TEACHERS TO CONFIGURE ACCOMMODATIONS{' '}
+                    </InputLabel>
+                    <StyledRadioGrp
+                      defaultValue={testSetting.editTeacherAccommodation}
+                      onChange={(e) =>
+                        this.changeSetting(e, 'editTeacherAccommodation')
+                      }
+                      value={testSetting.editTeacherAccommodation}
+                    >
+                      {editTeachersAccommodationOptions.map((option) => (
+                        <OptionContainer>
+                          <RadioBtn value={option.value}>
+                            {option.title}
+                          </RadioBtn>
+                          <Tooltip title={i18translate(option.helperText)}>
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{
+                                marginLeft: '-12px',
+                                marginRight: '10px',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </Tooltip>
+                        </OptionContainer>
+                      ))}
                     </StyledRadioGrp>
                   </StyledCol>
                 </EduIf>

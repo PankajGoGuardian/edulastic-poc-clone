@@ -56,6 +56,11 @@ import ReauthenticateModal from './ReauthenticateModal'
 import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
 import { setFilterInSession } from '../../../../common/utils/helpers'
+import { fetchTestSettingsListAction } from '../../../TestPage/ducks'
+import {
+  getTestSettings,
+  receiveTestSettingAction,
+} from '../../../TestSetting/ducks'
 
 const ClassDetails = ({
   location,
@@ -95,6 +100,8 @@ const ClassDetails = ({
   setCreateClassTypeDetails,
   studentsLoadingStatus,
   manualEnrollmentAllowed,
+  loadDistrictTestSettings,
+  districtTestSettings,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -161,6 +168,7 @@ const ClassDetails = ({
   }, [classId])
 
   useEffect(() => {
+    loadDistrictTestSettings({ type: 'district', orgId: userDistrictId })
     return () => {
       // componentWillUnmount here:
       studentsLoadingStatus(true)
@@ -445,6 +453,7 @@ const ClassDetails = ({
               searchAndAddStudents={searchAndAddStudents}
               districtId={districtId}
               manualEnrollmentAllowed={manualEnrollmentAllowed}
+              districtTestSettings={districtTestSettings}
             />
             <StudentsList
               selectStudent
@@ -493,6 +502,7 @@ const enhance = compose(
       userDistrictId: getUserOrgId(state),
       isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
       manualEnrollmentAllowed: getManualEnrollmentAllowedSelector(state),
+      districtTestSettings: getTestSettings(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -514,6 +524,8 @@ const enhance = compose(
       setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
       setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
       studentsLoadingStatus: setStudentsLoadingStatusAction,
+      fetchTestSettingsList: fetchTestSettingsListAction,
+      loadDistrictTestSettings: receiveTestSettingAction,
     }
   )
 )

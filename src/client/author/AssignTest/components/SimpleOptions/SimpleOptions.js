@@ -34,7 +34,6 @@ import {
   getUserRole,
   allowReferenceMaterialSelector,
   getIsAiEvaulationDistrictSelector,
-  getUserId,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {

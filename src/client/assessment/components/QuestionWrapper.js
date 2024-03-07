@@ -362,7 +362,7 @@ class QuestionWrapper extends Component {
       return isSpeechToTextEnabled(
         assignmentLevelShowSpeechToText,
         accommodations,
-        features.enableSpeechToText
+        features?.enableSpeechToText
       )
     }
 
